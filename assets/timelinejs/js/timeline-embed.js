@@ -511,6 +511,8 @@ function getEmbedScriptPath(scriptname) {
 
 /* CREATE StoryJS Embed
 ================================================== */
+
+var timelinesToRender = []; /* list of timelines queued for rendering */
 function createStoryJS(c, src) {
   /* VARS
   ================================================== */
@@ -560,6 +562,7 @@ function createStoryJS(c, src) {
       },
       gmap_key:   ""
     }
+
   /* BUILD CONFIG
   ================================================== */
   if (typeof c == 'object') {
@@ -610,6 +613,9 @@ function createStoryJS(c, src) {
   /* PREPARE
   ================================================== */
   createEmbedDiv();
+  
+    
+    timelinesToRender.push(storyjs_e_config);
 
   /* Load CSS
   ================================================== */
@@ -651,7 +657,7 @@ function createStoryJS(c, src) {
     onloaded_check();
   }
   function onloaded_check() {
-    if (ready.checks > 40) {
+    if (ready.checks > 400) {
       return;
       alert("Error Loading Files");
     } else {
@@ -659,7 +665,10 @@ function createStoryJS(c, src) {
       if (ready.js && ready.css && ready.font.css) {
         if (!ready.finished) {
           ready.finished = true;
-          buildEmbed();
+          
+          for(var k in timelinesToRender) {
+          	buildEmbed(timelinesToRender[k]);
+          }
         }
       } else {
         ready.timeout = setTimeout('onloaded_check_again();', 250);
@@ -681,6 +690,11 @@ function createStoryJS(c, src) {
       te = document.getElementById(storyjs_e_config.embed_id);
     } else {
       te = document.getElementById("timeline-embed");
+    }
+    if (storyjs_e_config.embed_id != "") {
+      divName = document.getElementById(storyjs_e_config.embed_id);
+    } else {
+      divName = document.getElementById("timeline-embed");
     }
 
     te.appendChild(t);
@@ -713,15 +727,16 @@ function createStoryJS(c, src) {
     t.style.position = 'relative';
   }
 
-  function buildEmbed() {
-    TL.debug = storyjs_e_config.debug;
+  function buildEmbed(config=null) {
+  	if(!config) { config = storyjs_e_config; }
+    TL.debug = config.debug;
 
-    storyjs_e_config['ga_property_id'] = 'UA-27829802-4';
-    storyjs_e_config.language = storyjs_e_config.lang;
-    if (storyjs_e_config.width == '100%') {
-      storyjs_e_config.is_full_embed = true;
+    config['ga_property_id'] = 'UA-27829802-4';
+    config.language = config.lang;
+    if (config.width == '100%') {
+      config.is_full_embed = true;
     }
-    window.timeline = new TL.Timeline('timeline-embed', storyjs_e_config.source, storyjs_e_config);
+    window.timeline = new TL.Timeline(config.embed_id, config.source, config);
 
   }
 

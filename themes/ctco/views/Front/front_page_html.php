@@ -39,27 +39,30 @@
 	}
 ?>
 <div class="container">
-	<div class="row">
+	<?php
+		print $this->render("Front/featured_set_slideshow_html.php");
+	?>
+<!--	<div class="row">
 		<div class="col-sm-12">
-<?php		
+		
 	if($qr_res && $qr_res->numHits()){
-?>   
+   
 		<div id="myCarousel" class="carousel slide" data-ride="carousel">
 			<ol class="carousel-indicators">
-<?php	
+	
 			$vn_i = 0;	
 			while($qr_res->nextHit()){		
 				print '<li data-target="#myCarousel" data-slide-to="'.$vn_i.'" class="'.($vn_i == 0 ? 'active' : '').'"></li>';
 				$vn_i++;
 			}
-?>				
+				
 			</ol>
 			<div class="carousel-inner" role="listbox">			
-<?php
+
 				$qr_res->seek(0);
 				$vn_i = 0;
 				while($qr_res->nextHit()){
-					if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.medium</l>', array("checkAccess" => $va_access_values))){
+					if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.banner</l>', array("checkAccess" => $va_access_values))){
 						print "<div class='item ".( $vn_i == 0 ? 'active' : '')."'>".$vs_media;
 						$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
 						if($vs_caption){
@@ -70,7 +73,7 @@
 					}
 					$vn_i++;
 				}
-?>
+
 			</div>
 			<a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
 				<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
@@ -80,20 +83,17 @@
 				<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
 				<span class="sr-only">Next</span>
 			</a>
-		</div><!-- end myCarousel -->			
-<?php
-	}
-?>		
-			
-		</div><!--end col-sm-8-->
-	</div><!-- end row -->
+		</div>			
+
+	} 		
+		</div>
+	</div>-->
 	<div class="row" style="margin-top:20px;">
 
 		<div class="col-sm-6 col-sm-offset-1" style="text-align:left;"> 
 			<h2 style='margin-top:45px;'>Welcome to Connecticut Collections</h2>
-			<p class='pageText'>Explore this site to search for the treasures in Connecticut Collections! You can browse by terms, object type, location, or participating organization. </p>
-			<p class='pageText'>Connecticut Collections enables organizations to share their historic archives, artifacts, and other material with the public. Participating organizations also use the system to manage and catalog their collections.</p>
-			<p class='pageText'><i>Connecticut Collections is a project of the Connecticut League of History Organizations.</i></p>
+			{{{homepage_leader}}}
+			<?php print "<div style='width:300px;'>".caGetThemeGraphic($this->request, 'cthumanities.jpg')."</div>"; ?>
 		</div>
 		<div class="col-sm-4" style="text-align:center;">
 <?php
@@ -101,57 +101,7 @@
 ?>
 		</div>			
 	</div>
-	<div class="row" style='background-color:#f5f5f5; padding-bottom:40px;margin-top:40px; '>
-		<div class="col-sm-12"><h2>Participating Institutions</h2></div>
-		<div class="col-sm-3 col-lg-2">
-			<div class='frontTile'>
-<?php
-				print "<div class='tileImage'>".caGetThemeGraphic($this->request, 'fairfield.jpg')."</div>";
-				print "<div class='tileCaption'>Fairfield Museum and History Center</div>";
-?>			
-			</div>
-		</div>
-		<div class="col-sm-3 col-lg-2">
-			<div class='frontTile'>
-<?php
-				print "<div class='tileImage'>".caGetThemeGraphic($this->request, 'fairfield.jpg')."</div>";
-				print "<div class='tileCaption'>The Barnum Museum</div>";
-?>				
-			</div>		
-		</div>
-		<div class="col-sm-3 col-lg-2">
-			<div class='frontTile'>
-<?php
-				print "<div class='tileImage'>".caGetThemeGraphic($this->request, 'fairfield.jpg')."</div>";
-				print "<div class='tileCaption'>Sharon Historical Society</div>";
-?>				
-			</div>		
-		</div>
-		<div class="col-sm-3 col-lg-2">
-			<div class='frontTile'>
-<?php
-				print "<div class='tileImage'>".caGetThemeGraphic($this->request, 'fairfield.jpg')."</div>";
-				print "<div class='tileCaption'>Slater Memorial Museum</div>";
-?>				
-			</div>		
-		</div>
-		<div class="col-sm-3 col-lg-2">
-			<div class='frontTile'>
-<?php
-				print "<div class='tileImage'>".caGetThemeGraphic($this->request, 'fairfield.jpg')."</div>";
-				print "<div class='tileCaption'>Beekley Community Library</div>";
-?>				
-			</div>		
-		</div>	
-		<div class="col-sm-3 col-lg-2">
-			<div class='frontTile'>
-<?php
-				print "<div class='tileImage'>".caGetThemeGraphic($this->request, 'fairfield.jpg')."</div>";
-				print "<div class='tileCaption'>Remembering World War One (CT State Library)</div>";
-?>				
-			</div>		
-		</div>							
-	</div><!-- end row -->	
+	<hr/>
 	<div class="row" style='background-color:#fff; padding-bottom:80px;padding-top:0px; '>
 		<div class="col-sm-12"><h2>Recently Digitized</h2></div>
 <?php
@@ -163,7 +113,7 @@
 		if (!$t_item->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))) {continue;}
 		print "		<div class='col-sm-4'>
 						<div class='newTile'>";
-		print "<div class='tileImage'>".caNavLink($this->request, $t_item->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'objects/'.$va_recent_item['object_id'])."</div>";			
+		print "<div class='digiImage'>".caNavLink($this->request, $t_item->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'objects/'.$va_recent_item['object_id'])."</div>";			
 		print "<div class='tileCaption'>".caNavLink($this->request, $t_item->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$va_recent_item['object_id'])."<p>".$t_item->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p>"."</div>";
 		print "			</div>
 					</div>";

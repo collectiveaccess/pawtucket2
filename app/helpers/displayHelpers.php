@@ -3697,7 +3697,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 					}
 					$va_rep_info[$vn_index] = array("rep_id" => $vn_rep_id, "tag" => $va_rep_tags[$vn_rep_id]);
 				}
-				ksort($va_rep_info);
+			//	ksort($va_rep_info);
 				
 				// reset rep_ids  to ensure same order as slides as order may change if primary is not in first location
 			    $o_view->setVar('representation_ids', array_values(array_map(function($v) { return $v['rep_id']; }, $va_rep_info)));
@@ -3803,7 +3803,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	}
 	# ---------------------------------------
 	/**
-	 * Extract and IIIF service-style media identifier from the current request. First checks for a "identifier" parameter, which is
+	 * Extract an IIIF service-style media identifier from the current request. First checks for a "identifier" parameter, which is
 	 * assumed to be an IIIF service-style media identifier (Ex. representation:114; attribute:29341). If 
 	 * that is not defined the numeric representation_id or value_id parameters are converted into representation and attribute IIIF identifiers respectively.
 	 *
@@ -3819,6 +3819,31 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 			}
 		}
 		return $ps_identifier ? $ps_identifier : null;
+	}
+	# ---------------------------------------
+	/**
+	 * Parse IIIF service-style identifier and return instance for underlying media. Instance will be
+	 * either a ca_object_representations model or a ca_attribute_values model instance.
+	 *
+	 * @param string $identifier
+	 * @param array $options Options include:
+	 *		checkAccess = [TODO: IMPLEMENT THIS]
+	 * @return ca_object_representations|ca_attribute_values instance
+	 */
+	function caGetMediaForMediaIdentifier(string $identifier, array $options=null) {		
+		list($type, $id) = explode(':', $identifier);
+		
+		switch(strtolower($type)) {
+			case 'representation':
+				$rep = new ca_object_representations($id);
+				return ($rep->isLoaded()) ? $rep : null;
+				break;
+			case 'attribute':
+				$val = new ca_attribute_values($id);
+				return ($val->isLoaded()) ? $val : null;
+				break;
+		}
+		return null;
 	}
 	# ---------------------------------------
 	/**
@@ -3969,7 +3994,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
                     throw new ApplicationException(_t('Cannot view media'));
                 }
 				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('value_blob', 'original', 'MIMETYPE')))) {
-					throw new ApplicationException(_t('Invalid viewer'));
+					throw new ApplicationException(_t('Invalid viewer: %1/%2', $ps_display_type, $vs_mimetype));
 				}
 
 				$vs_viewer = $vs_viewer_name::getViewerHTML(
@@ -3981,7 +4006,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 				
 				if ($pb_inline) {
 					$vs_tool_bar = caRepToolbar($po_request, $t_instance, $pt_subject, array('display' => $ps_display_type, 'context' => $ps_context, 'checkAccess' => $pa_check_acccess));
-					$vs_viewer = "<div data-representation_id='{$pn_representation_id}' data-value_id='{$pn_value_id}' class='repViewerContCont'><div id='cont{$pn_representation_id}' class='repViewerCont'>{$vs_viewer}{$vs_tool_bar}{$vs_caption}{$vs_tool_bar}</div></div>";
+					$vs_viewer = "<div data-representation_id='{$pn_representation_id}' data-value_id='{$pn_value_id}' class='repViewerContCont'><div id='cont{$pn_representation_id}' class='repViewerCont'>{$vs_viewer}{$vs_tool_bar}{$vs_caption}</div></div>";
 				}
 				
 				return $vs_viewer;

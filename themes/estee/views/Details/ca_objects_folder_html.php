@@ -208,6 +208,9 @@
 					if($vb_notes_output){
 						print "<HR/>";
 					}
+					if($vs_rights_info = $t_object->get("ca_objects.rights_information.rights_availability", array("convertCodesToDisplayText" => true))){
+						print '<div class="unit"><H6>Rights Infomation</H6>'.$vs_rights_info.'</div><HR/>';
+					}
 
 					#  parent - displayed as collection hierarchy and folder if available
 					$va_collection_hier_ids = array_pop($t_object->get("ca_collections.hierarchy.collection_id", array("returnAsArray" => true)));
@@ -282,6 +285,16 @@
 							}
 						}
 						print "</div><hr/>";
+					}
+					$t_set = new ca_sets();
+					$va_sets = $t_set->getSetsForItem("ca_objects", $t_object->get("ca_objects.object_id"), array("setType" => "public_presentation", "checkAccess" => $va_access_values));
+					if(is_array($va_sets) && sizeof($va_sets)){
+						print "<div class='unit parentObject'><h6>This ".strToLower($t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true)))." is part of Featured ".((sizeof($va_sets) > 1) ? "Stories" : "Story")."</h6>";
+						foreach($va_sets as $va_set){
+							$va_set = array_pop($va_set);
+							print "<div>".caNavLink($this->request, $va_set["name"], "", "", "Gallery", $va_set["set_id"])."</div>";
+						}
+						print "</div><HR/>";
 					}
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTools'><div class='detailTool'><i class='material-icons inline'>save_alt</i>".caDetailLink($this->request, "Download Summary", "", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div></div>";

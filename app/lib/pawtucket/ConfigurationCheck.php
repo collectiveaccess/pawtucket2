@@ -174,7 +174,7 @@ final class ConfigurationCheck {
 	public static function PHPVersionQuickCheck() {
 		$va_php_version = caGetPHPVersion();
 		if($va_php_version["versionInt"]<70000){
-			self::addError(_t("CollectiveAccess requires PHP version 7.0 or higher to function properly. You're running %1. Please upgrade.",$va_php_version["version"]));
+			self::addError(_t("Pawtucket2 requires PHP version 7.0 or higher to function properly. You're running %1. Please upgrade.",$va_php_version["version"]));
 		}
 		return true;
 	}

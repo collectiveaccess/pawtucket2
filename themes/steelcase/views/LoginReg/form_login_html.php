@@ -40,18 +40,36 @@
 <?php
 				if($this->request->isAjax()){
 ?>
-					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'registerForm', null); ?>');"><?php print _t("Click here to register"); ?></a>
-					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'resetForm', null); ?>');"><?php print _t("Forgot your password?"); ?></a>
+					<!--<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'registerForm', null); ?>');"><?php print _t("Click here to register"); ?></a>-->
+					<!--<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'resetForm', null); ?>');"><?php print _t("Forgot your password?"); ?></a>-->
 <?php
 				}else{
-					print caNavLink($this->request, _t("Click here to register"), "", "", "LoginReg", "registerForm", array());
-					print "<br/>".caNavLink($this->request, _t("Forgot your password?"), "", "", "LoginReg", "resetForm", array());
+					#print caNavLink($this->request, _t("Click here to register"), "", "", "LoginReg", "registerForm", array());
+					#print "<br/>".caNavLink($this->request, _t("Forgot your password?"), "", "", "LoginReg", "resetForm", array());
 				}
 ?>
 					</div>
 				</div><!-- end form-group -->
 			</form>
+
 <?php
+	if (!$this->request->isAjax()) {
+?>
+<div class="row">
+<div class="col-md-4"> </div>
+<!--<div class="col-md-4" style="font-size: 12px;">
+<p>If you are experiencing trouble accessing art.steelcase.com please make sure to login with <strong>only your mailbox user name</strong> and not the domain name.</p>
+
+<p>
+Example: if your email address is <em>jdoe@steelcase.com</em> login with <strong>jdoe</strong>
+</p>
+
+<p>For further login assistance please send an email to <a href="mailto:art@steelcase.com">art@steelcase.com</a></p>
+</div>-->
+<div class="col-md-4"> </div>
+</div>
+<?php
+	}
 	if($this->request->isAjax()){
 ?>
 		</div><!-- end caFormOverlay -->

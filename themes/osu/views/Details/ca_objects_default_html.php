@@ -17,8 +17,9 @@
 				{{{representationViewer}}}
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+				
 				<div id="detailTools">
-					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print is_array($va_comments) ? sizeof($va_comments) : 0; ?>)</a></div><!-- end detailTool -->
 					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 				</div><!-- end detailTools -->
@@ -45,9 +46,7 @@
 				{{{<ifdef code="ca_objects.formatNotes">
 					<H6>Notes</H6>
 					<div class="trimText">^ca_objects.formatNotes</div>
-				</ifdef>}}}
-				
-				
+				</ifdef>}}}				
 				
 				<hr></hr>
 					{{{<ifdef code="ca_objects.historical_significance"><H6>Historical Significance</H6>^ca_objects.historical_significance<br/></ifdef>}}}
@@ -71,6 +70,11 @@
 							
 							{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
 							{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}
+<?php
+						if ($t_object->get('ca_objects.media_upload')) {
+							print "<div class='dlButton'><a class='dlFile' href='".$t_object->get('ca_objects.media_upload', array('return' => 'url'))."' target='_blank'>Download Original File</a></div>";
+						}
+?>							
 						</div><!-- end col -->				
 						<div class="col-sm-6 colBorderLeft">
 							{{{map}}}

@@ -90,6 +90,9 @@
  					if ($va_item['id'] === $ps_remove_id) { unset($va_comparison_list[$vn_i]); }
  				}
  			}
+ 			if ($ps_remove_all = $this->request->getParameter('remove_all', pString)) {
+ 				$va_comparison_list = array();
+ 			}
  			
  			if ($ps_id = $this->request->getParameter('id', pString)) {
 				if (sizeof(array_filter($va_comparison_list, function($v) use ($ps_id) { return $v['id'] == $ps_id; })) == 0) {
@@ -99,10 +102,10 @@
 				        if (!is_array($va_compare_config = $va_compare_config[$va_id['subject']])) { $va_compare_config = []; }
 				        
 				        $vs_template = caGetOption('title_template', $va_compare_config, "^".$va_id['subject'].".preferred_labels");
-				        if (($va_id['type'] == 'attribute') && is_object($va_id['instance'])) {
-				            if ($vs_template = caGetOption('attribute_template', $va_compare_config, null)) {
-				                $vs_prefix = $va_id['subject'].".".ca_metadata_elements::getElementCodeForId(ca_metadata_elements::getElementHierarchyID($va_id['instance']->get('element_id')));
-				            } 
+				     
+				        if (($va_id['type'] == 'attribute') && is_object($va_id['instance']) && ($vs_attribute_template = caGetOption('attribute_template', $va_compare_config, null))) {
+							$vs_template = $vs_attribute_template;
+				            $vs_prefix = $va_id['subject'].".".ca_metadata_elements::getElementCodeForId(ca_metadata_elements::getElementHierarchyID($va_id['instance']->get('element_id'))); 
 				            
 				            $attr_ids = array_keys(array_shift($va_id['subject_instance']->get($vs_prefix, ['returnWithStructure' => true])));
 				            $index = array_search($va_id['instance']->get('ca_attribute_values.attribute_id'), $attr_ids);

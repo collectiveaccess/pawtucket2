@@ -67,11 +67,6 @@
         protected $opb_is_login_redirect = false;
         
         /**
-         * @var HTMLPurifier
-         */
-        protected $purifier;
-        
-        /**
          * @var string
          */
         protected $ops_tablename = 'ca_objects';
@@ -117,7 +112,6 @@
 			$this->ops_description_attribute = ($this->opo_config->get("lightbox_set_description_element_code") ? $this->opo_config->get("lightbox_set_description_element_code") : "description");
 			$this->view->setVar('description_attribute', $this->ops_description_attribute);
 			
-			$this->purifier = new HTMLPurifier();
 			
  			parent::setTableSpecificViewVars();
  		}
@@ -452,7 +446,7 @@
  				# --- if making a new reponse set, check there isn't already one for the user
  				$va_user_response_ids = $t_set->getSetResponseIds($this->request->getUserID(), $pn_parent_id);
  				if(is_array($va_user_response_ids) && sizeof($va_user_response_ids)){
- 					$va_errors[] = _t('Only one reponse allowed');
+ 					$va_errors[] = _t('Only one response allowed');
  				}
  			}
  			// check for errors

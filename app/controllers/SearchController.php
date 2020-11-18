@@ -259,7 +259,7 @@
 			    }
 			}
 			//
-			// Add Additional base criteria if necessary
+			// Add additional base criteria if necessary
 			//
 			if($va_base_criteria = $o_search_config->get('baseCriteria')){
 				$va_table_criteria = $va_base_criteria[$va_browse_info['table']];
@@ -358,7 +358,7 @@
 					if (isset($va_facet_info['require_roles']) && is_array($va_facet_info['require_roles']) && sizeof($va_facet_info['require_roles'])) {
 						if (!$this->request->isLoggedIn() || !sizeof(array_filter($va_facet_info['require_roles'], function($v) { return $this->request->user->hasUserRole($v); }))) { continue; }
 					}
-					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request));
+					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request));
 				}
 			}
 		
@@ -379,7 +379,7 @@
 			foreach($va_criteria as $vs_facet_name => $va_criterion) {
 				$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
 				foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
-					$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
+					$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $this->purifier->purify($vs_criterion), 'id' => $vn_criterion_id);
 				}
 			}
 			$this->view->setVar('criteria', $va_criteria_for_display);

@@ -79,33 +79,51 @@ if($vs_detailNav = $this->request->getParameter("detailNav", pString)){
 			$va_filter_facets = array("type_facet");
 		break;
 		# -------------------
+		case "digital_exhibition":
+			$va_filter_facets = array("resource_type_facet", "theme_facet", "narrative_threads_facet");	
+			if($vn_start == 0){
+				# --- set the results since it's not done in the browse controller on ajax loads.  We need it for the add to lightbox link
+				
+				$o_result_context = new ResultContext($this->request, $vs_table, $this->getVar('find_type'));
+				$o_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+				$qr_res->seek($vn_start);
+				$o_result_context->saveContext();
+			}	
+		break;
+		# -------------------
+		
 	}
 ?>
 			<div class='detailFilter'>
 
 <?php
-				$vs_label_output = 0;
-				foreach($va_filter_facets as $vs_filter_facet){
-					if(is_array($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]["content"]) > 1){
-						if(!$vs_label_output){
-							print "Filter by: ";
-							$vs_label_output = 1;
-						}
-?>
-								<div class="btn-group">
-									<a href="#" data-toggle="dropdown"><button class='btn btn-default'><?php print $va_facets[$vs_filter_facet]["label_singular"]; ?> <i class="fa fa-caret-down"></button></i></a>
-									<ul class="dropdown-menu" role="menu">
-<?php
-										foreach($va_facets[$vs_filter_facet]["content"] as $vn_item_id => $va_item){
-											print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'facet' => $vs_filter_facet, 'id' => $va_item['id'], 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">'.$va_item["label"].'</a></li>';
-										}
-?>
-									</ul>
-								</div><!-- end btn-group -->
-<?php
-					}
+				
+				if($vs_detailNav == "digital_exhibition"){
+					print "<div class='resultsLightbox'><a href='#' class='btn btn-default btn-sm' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'><i class='fa fa-folder'></i> "._t("Add to %1", $va_add_to_set_link_info['name_singular'])."</a></div>";
 				}
-					
+				$vs_label_output = 0;
+				if($vs_detailNav != "digital_exhibition"){
+					foreach($va_filter_facets as $vs_filter_facet){
+						if(is_array($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]["content"]) > 1){
+							if(!$vs_label_output){
+								print "Filter by: ";
+								$vs_label_output = 1;
+							}
+?>
+									<div class="btn-group">
+										<a href="#" data-toggle="dropdown"><button class='btn btn-default'><?php print $va_facets[$vs_filter_facet]["label_singular"]; ?> <i class="fa fa-caret-down"></button></i></a>
+										<ul class="dropdown-menu" role="menu">
+<?php
+											foreach($va_facets[$vs_filter_facet]["content"] as $vn_item_id => $va_item){
+												print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'facet' => $vs_filter_facet, 'id' => $va_item['id'], 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">'.$va_item["label"].'</a></li>';
+											}
+?>
+										</ul>
+									</div><!-- end btn-group -->
+<?php
+						}
+					}
+				}					
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 ?>
 					Sort by: <div class="btn-group">
@@ -117,13 +135,13 @@ if($vs_detailNav = $this->request->getParameter("detailNav", pString)){
 								if ($vs_current_sort === $vs_sort) {
 									print "<li><a href='#' onClick='return false;'><em>{$vs_sort}</em></a></li>\n";
 								} else {
-									print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'sort' => $vs_sort, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">'.$vs_sort.'</a></li>';
+									print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'sort' => $vs_sort, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">'.$vs_sort.'</a></li>';
 								}
 							}
 							print "<li class='divider'></li>\n";
 							print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
-							print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'asc'), array('dontURLEncodeParameters' => true)).'\'); return false;">'.(($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : '').'</a></li>';
-							print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'desc'), array('dontURLEncodeParameters' => true)).'\'); return false;">'.(($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : '').'</a></li>';
+							print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'asc'), array('dontURLEncodeParameters' => true)).'\'); return false;">'.(($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : '').'</a></li>';
+							print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'desc'), array('dontURLEncodeParameters' => true)).'\'); return false;">'.(($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : '').'</a></li>';
 ?>
 						</ul>
 					</div>
@@ -132,14 +150,14 @@ if($vs_detailNav = $this->request->getParameter("detailNav", pString)){
 ?>
 				</div>
 <?php
-				if(sizeof($va_criteria) > 1){
+				if((sizeof($va_criteria) > 1) && ($vs_detailNav != "digital_exhibition")){
 ?>
 					<div class='detailFilter'>
 <?php
 					# --- check if type criteria has been selected
 					foreach($va_criteria as $va_facet_criteria){
-						if ($va_facet_criteria['facet_name'] != '_search') {
-							print '<div class="btn-group"><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, 'removeCriterion' => $va_facet_criteria['facet_name'], 'removeID' => urlencode($va_facet_criteria['id'])), array('dontURLEncodeParameters' => true)).'\'); return false;"><button class="btn btn-default">'.$va_facet_criteria["facet"].': '.$va_facet_criteria["value"].' <span class="glyphicon glyphicon-remove-circle"></span></button></a></div>';
+						if (!in_array($va_facet_criteria['facet_name'], array("detail_entity", "detail_occurrence", "detail_place", "detail_occurrence_dig_exhibition"))) {
+							print '<div class="btn-group"><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, 'removeCriterion' => $va_facet_criteria['facet_name'], 'removeID' => urlencode($va_facet_criteria['id'])), array('dontURLEncodeParameters' => true)).'\'); return false;"><button class="btn btn-default">'.$va_facet_criteria["facet"].": ".str_replace("Texts ➜ ", "", $va_facet_criteria["value"]).' <span class="glyphicon glyphicon-remove-circle"></span></button></a></div>';
 						}
 					}
 ?>
@@ -256,7 +274,7 @@ if (!$vb_ajax) {	// !ajax
 			foreach($va_criteria as $va_criterion) {
 				print "<strong>".$va_criterion['facet'].':</strong>';
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.str_replace("Texts ➜ ", "", $va_criterion['value']).' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
 					print ' '.$va_criterion['value'];
 					$vs_search = $va_criterion['value'];
