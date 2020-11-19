@@ -5,7 +5,7 @@
 ?>
 	<div class="row">
 		<div class="col-lg-10 col-lg-offset-1 col-md-12">
-			<H1>Themes</H1>
+			<H1>Academic Themes</H1>
 			<p>
 				{{{themes_introduction}}}
 			</p>

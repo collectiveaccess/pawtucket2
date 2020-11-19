@@ -81,6 +81,9 @@
 </head>
 <body>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
+	<div class="topBar">
+		<a href="https://www.hope.edu" target="_blank"><?php print caGetThemeGraphic($this->request, 'HopeLogo4color.png', array("alt" => "Hope College")); ?></a>
+	</div>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -101,9 +104,8 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-<?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'KAM-Logo_horiz_white_Final.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");
-?>
+				<a href="hope.edu/kam" class="navbar-brand"><?php print caGetThemeGraphic($this->request, 'KAM-Logo_horiz_white_Final.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")); ?></a>
+
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -136,7 +138,6 @@
 					<li <?php print (in_array(strToLower($this->request->getController()), array("browse", "search"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Find"), "", "", "Browse", "objects"); ?></li>
 					<li <?php print (strToLower($this->request->getController()) == "themes") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Themes"), "", "", "Themes", "index"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li class="collegeHome"><a href="https://www.hope.edu" target="_blank"><?php print caGetThemeGraphic($this->request, 'hope_logo_white_horizontal.png', array("alt" => "Hope College")); ?></a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

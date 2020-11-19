@@ -37,6 +37,15 @@ a.browseRemoveFacet .glyphicon {
 .form-control:focus {
     border-color: #000;
 }
+.topBar{
+	text-align:center;
+	padding:8px 0px 8px 0px;
+}
+.topBar img{
+	max-width:220px;
+	width:100%;
+	height:auto;
+}
 /* navbar */
 .navbar{
 	background-color:#002244;
@@ -53,15 +62,7 @@ a.browseRemoveFacet .glyphicon {
     background-color: #FFF;
 }
 ul.navbar-nav.menuItems{
-	margin-right:75px !important;
-}
-ul.navbar-nav li.collegeHome img{
-	width:135px;
-	height:auto;
-}
-
-ul.navbar-nav li.collegeHome a:hover, ul.navbar-nav li.collegeHome a:focus{
-	background-color: #002244;
+	margin-right:15px !important;
 }
 
 #footer{
@@ -129,29 +130,52 @@ ul.navbar-nav li.collegeHome a:hover, ul.navbar-nav li.collegeHome a:focus{
 #browseResultsContainer{
 	margin-top:0px;
 }
-.results H1{
-	margin:0px;
+.results H1 {
+    margin: 0px 0px 7px 0px;
+}
+H1 .btn-group {
+    float: right;
+    text-transform: uppercase;
+	font-size: 14px;
+}
+H1 .btn-group > a{
+	padding: 7px;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	color: #494949;
+}
+H1 .btn-group > a:hover{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+	color: #000;
+	text-decoration:none;
 }
 .bCriteria{
-	margin:5px 0px 15px 0px;
+	margin:5px 0px 35px 0px;
 }
 .results .searchBar {
 	padding-top: 15px;
 	padding-bottom: 25px;
-	text-align:center;
 }
 .results .searchBar label{
 	font-size: 20px;
 	color: #494949;	
 }
+.results .searchBar .searchFormBrowse{
+	position:relative;
+}
 .results .searchBar input{
 	border:2px solid #777777;
 	border-radius:0px;
 	font-size:20px;
-	padding:20px;
+	padding: 20px 20px 20px 50px;
 }
 .results .searchBar button{
 	font-size:25px;
+	position:absolute;
+	left: 5px;
+	top: 1px;
+	background-color:transparent;
 }
 
 /* themes */
@@ -166,6 +190,7 @@ ul.navbar-nav li.collegeHome a:hover, ul.navbar-nav li.collegeHome a:focus{
 	margin-bottom:30px;
 	color:#161616;
 	font-size:15px;
+	font-family: lato;
 }
 .themesList a:hover{
 	text-decoration:none;

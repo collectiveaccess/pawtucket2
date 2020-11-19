@@ -106,7 +106,7 @@
 				if ($vs_medium = $t_object->get('ca_objects.medium_container.display_medium_support', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Medium</h6>".$vs_medium."</div>";
 				}
-				if ($vs_dimensions = $t_object->getWithTemplate('<unit delimiter="<br/>">^ca_objects.dimensions.Type%makeFirstUpper=1 : ^ca_objects.dimensions.display_dimensions</unit>')) {
+				if ($vs_dimensions = $t_object->getWithTemplate('<unit relativeTo="ca_objects.dimensions" sort="ca_objects.dimensions.dimensions_height" delimiter="<br/>">^ca_objects.dimensions.Type%makeFirstUpper=1 : ^ca_objects.dimensions.display_dimensions</unit>')) {
 					print "<div class='unit'><h6>Dimensions</h6>".$vs_dimensions."</div>";
 				}	
 				if ($vs_credit = $t_object->get('ca_objects.credit_line.credit_text', array('delimiter' => '<br/>'))) {
@@ -135,32 +135,38 @@
 				if ($va_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
 					$vs_buf.= "<div class='unit'><h6>Related Objects</h6>".$vs_objects."</div>";
 				}
-				if ($va_aat = $t_object->get('ca_objects.aat', array('returnAsArray' => true))) { //array('delimiter' => '<br/>'))) {
+				if ($t_object->get('ca_objects.aat') && ($va_aat = $t_object->get('ca_objects.aat', array('returnAsArray' => true)))) { //array('delimiter' => '<br/>'))) {
 					$vs_buf.= "<div class='unit'><h6>Getty AAT</h6>";
+					sort($va_aat);
 					foreach ($va_aat as $va_key => $vs_id) {
-						$vs_buf.= caNavLink($this->request, $vs_id, '', 'Browse', 'objects', 'facet/aat/id/'.$vs_id)."<br/>";
+						$vs_buf.= caNavLink($this->request, $vs_id, '', '', 'Search', 'objects', array('search' => 'ca_objects.aat:'.$vs_id))."<br/>";
 					}
 					$vs_buf.= "</div>";
 				}
 				if ($va_lcsh = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) { //array('delimiter' => '<br/>'))) {
 					$vs_buf.= "<div class='unit'><h6>Library of Congress Subject Headings</h6>";
+					sort($va_lcsh);
 					foreach ($va_lcsh as $va_key => $vs_id) {
-						$vs_buf.= caNavLink($this->request, $vs_id, '', 'Browse', 'objects', 'facet/lcsh_terms/id/'.$vs_id)."<br/>";
+						$vs_buf.= caNavLink($this->request, $vs_id, '', '', 'Search', 'objects', array('search' => 'ca_objects.lcsh_terms:'.urlencode($vs_id)))."<br/>";
 					}
 					$vs_buf.= "</div>";
 				}
 				if ($va_aat_media_array = $t_object->get('ca_objects.aat_media', array('returnAsArray' => true))) {
 					$vs_buf.= "<div class='unit'><h6>Medium Terms</h6>";
+					sort($va_aat_media_array);
 					foreach ($va_aat_media_array as $va_key => $vs_aat_media_id) {
-						$vs_buf.= caNavLink($this->request, $vs_aat_media_id, '', 'Browse', 'objects', 'facet/aat_media/id/'.$vs_aat_media_id)."<br/>";
+						$vs_buf.= caNavLink($this->request, $vs_aat_media_id, '', '', 'Search', 'objects', array('search' => 'ca_objects.aat_media:'.$vs_aat_media_id))."<br/>";
 					}
 					$vs_buf.= "</div>";
 				}
 				if ($va_academic_array = $t_object->get('ca_objects.academic_themes_1', array('returnAsArray' => true))) {
 					$vs_buf.= "<div class='unit'><h6>Academic Themes</h6>";
+					$va_links = array();
 					foreach ($va_academic_array as $va_key => $va_academic_id) {
-						$vs_buf.= caNavLink($this->request, caGetListItemByIDForDisplay($va_academic_id, true), '', 'Browse', 'objects', 'facet/academic_themes/id/'.$va_academic_id)."<br/>";
+						$va_links[caGetListItemByIDForDisplay($va_academic_id, true)] = caNavLink($this->request, caGetListItemByIDForDisplay($va_academic_id, true), '', 'Browse', 'objects', 'facet/academic_themes/id/'.$va_academic_id);
 					}
+					ksort($va_links);
+					$vs_buf.= join($va_links, "<br/>");
 					$vs_buf.= "</div>";
 				}				
 				if ($vs_buf != "") {

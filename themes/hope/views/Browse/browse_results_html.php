@@ -72,23 +72,15 @@ if (!$vb_ajax) {	// !ajax
 ?>
 
 <div class="row">
-	<div class="col-sm-12 col-md-8 col-md-offset-2">
+	<div class="col-sm-12 col-md-8">
 		<div class="searchBar">
 			<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>" >
-				<div class="row">
-					<div class="col-sm-9 col-sm-offset-1 text-left">
-						<label for="search_refine">SEARCH THE COLLECTION</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-9 col-sm-offset-1">
-						<input type="text" class="form-control" placeholder="" name="search_refine" >
-						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
-					</div>
-					<div class="col-sm-2 text-left">
-						<button id="browseSearchButton" type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
-					</div>
+				<label for="search_refine">SEARCH THE COLLECTION</label>
+				<div class="searchFormBrowse">
+					<button id="browseSearchButton" type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+					<input type="text" class="form-control" placeholder="" name="search_refine" >
+					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
 				</div>
 			</form>
 		</div>
@@ -124,7 +116,7 @@ if (!$vb_ajax) {	// !ajax
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
 			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
+				<a href="#" data-toggle="dropdown">Options <i class="fa fa-chevron-down" aria-label="Expand"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
@@ -155,7 +147,7 @@ if (!$vb_ajax) {	// !ajax
 						}
 					}
 					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
-						print "<li role='menuitem'>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view))."</li>";
+						print "<li role='menuitem'>".caNavLink($this->request, _t("Start Over"), '', '', 'Browse', '*', array('view' => $vs_current_view))."</li>";
 					}
 					if(is_array($va_export_formats) && sizeof($va_export_formats)){
 						// Export as PDF links
@@ -204,7 +196,7 @@ if (!$vb_ajax) {	// !ajax
 					$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
 				}
 			}
-			print " ".caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'._t("Start Over").'</button>', 'browseRemoveFacet', '*', '*', '*', array('view' => $vs_current_view));
+			print " ".caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'._t("Start Over").'</button>', 'browseRemoveFacet', '', 'Browse', '*', array('view' => $vs_current_view));
 ?>		
 		</div>
 <?php
