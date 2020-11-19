@@ -160,6 +160,12 @@ class ca_ip_bans extends BaseModel {
 
 	protected $FIELDS;
 	
+	
+	/**
+	 * Ban config
+	 */
+    static $ban_config = null;
+	
 	# ------------------------------------------------------
 	# --- Constructor
 	#
@@ -220,7 +226,8 @@ class ca_ip_bans extends BaseModel {
 	 *
 	 */
 	static public function isWhitelisted($options=null) {
-		if (!is_array($whitelist = self::$config->get('ip_whitelist')) || !sizeof($whitelist)) { return false; }
+		if(!self::$ban_config) { self::$ban_config = Configuration::load(__CA_CONF_DIR__.'/ban_hammer.conf'); }
+		if (!is_array($whitelist = self::$ban_config->get('ip_whitelist')) || !sizeof($whitelist)) { return false; }
 		
 		$request_ip = RequestHTTP::ip();
 		$request_ip_long = ip2long($request_ip);
