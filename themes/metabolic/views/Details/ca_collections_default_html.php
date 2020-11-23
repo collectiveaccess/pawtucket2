@@ -102,16 +102,13 @@
 								</div>
 							</div>
 						</ifdef>}}}
-<?php
-						$vs_entities = $t_item->getWithTemplate("<unit relativeTo='ca_objects' aggregateUnique='1' unique='1' delimiter=', '><unit relativeTo='ca_entities' delimiter=', '>^ca_entities.preferred_labels.displayname</unit></unit>", array("checkAccess" => $va_access_values));
-						if($vs_entities){
-?>
+						{{{<ifcount code="ca_entities" min="1">
 							<div class="mb-3">
-								<div class="label">People/Organizations</div>
-								<?php print $vs_entities; ?>
+								<div class="label">Related <ifcount code="ca_entities" max="1">Person</ifcount><ifcount code="ca_entities" min="2">People</ifcount></div>
+								<unit relativeTo="ca_entities" sort="ca_entity_labels.surname" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>
 							</div>
-<?php							
-						}
+						</ifcount>}}}
+<?php
 
 						#$vs_exhibitions = $t_item->getWithTemplate("<unit relativeTo='ca_objects' aggregateUnique='1' unique='1' delimiter=' '><unit relativeTo='ca_occurrences' restrictToTypes='exhibition' delimiter=' '><div class='mb-3'>^ca_occurrences.preferred_labels</div></unit></unit>", array("checkAccess" => $va_access_values));
 						$va_related_exhibition_ids = $t_item->get("ca_occurrences.occurrence_id", array("restrictToTypes" => array("exhibition"), "relativeTo" => "ca_objects", "returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_occurrences.date"));
@@ -222,7 +219,7 @@
 ?>
 		<div class="row mt-3">
 			<div class="col-7 mt-5">
-				<H1>Related Albums</H1>
+				<H1>Investigations</H1>
 			</div>
 			<div class="col-5 mt-5 text-right">
 				<?php print caNavLink("View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>
@@ -239,7 +236,7 @@
 					if($q_objects->get("ca_objects.preferred_labels.name")){
 						$vs_title = "<br/>".$q_objects->get("ca_objects.preferred_labels.name");
 					}
-					print "<div class='pt-2'>".caDetailLink("Album: ".$vs_idno.$vs_title, '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
+					print "<div class='pt-2'>".caDetailLink($vs_idno.$vs_title, '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
 					print "</div>";
 					$i++;
 					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
@@ -261,7 +258,7 @@
 ?>
 		<div class="row mt-3">
 			<div class="col-7 mt-5">
-				<H1>Related Items</H1>
+				<H1>Inspirations</H1>
 			</div>
 			<div class="col-5 mt-5 text-right">
 				<?php print caNavLink("View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>
@@ -274,7 +271,7 @@
 				if($q_objects->get("ca_object_representations.media.widepreview")){
 					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
-					print "<div class='pt-2'>".caDetailLink($q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'>Album: </if>").substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30), '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
+					print "<div class='pt-2'>".caDetailLink(substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30), '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
 					print "</div>";
 					$i++;
 					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");

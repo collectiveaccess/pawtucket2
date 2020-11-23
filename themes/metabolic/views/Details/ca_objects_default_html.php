@@ -58,11 +58,6 @@
 
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0&appId=2210553328991338&autoLogAppEvents=1"></script>
-<div class="row borderBottom">
-	<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
-		<H1>{{{^ca_objects.idno}}}</H1>
-	</div>
-</div>
 <div class="row">
 	<div class='col-12 navTop text-center'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
@@ -178,8 +173,13 @@
 					<div class="col-12 col-md-6">
 						{{{<ifdef code="ca_objects.parent_id">
 							<div class="mb-3">
-								<div class="label">Part of Album</div>
+								<div class="label">Part of Investigation</div>
 								<unit relativeTo="ca_objects.parent"><l>^ca_objects.preferred_labels.name</l></unit>
+							</div>
+						</ifdef>}}}
+						{{{<ifdef code="ca_objects.idno">
+							<div class="mb-3">
+								^ca_objects.idno
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.altID">
@@ -231,35 +231,65 @@
 								<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
-						{{{<ifcount code="ca_entities" min="1">
-							<div class="mb-3">
-								<div class="label"><ifcount code="ca_entities" max="1">Person/Organization</ifcount><ifcount code="ca_entities" min="2">People/Organizations</ifcount></div>
-								<unit relativeTo="ca_entities" delimiter=", ">^ca_entities.preferred_labels</unit>
-							</div>
-						</ifcount>}}}
-
 <?php
-# --- temporarily hide tags
-if($showTags){
-						$va_tags = $t_object->getTags();
-						if(is_array($va_tags) && sizeof($va_tags)){
-							$va_tags_processed = array();
-							foreach($va_tags as $va_tag){
-								$va_tags_processed[$va_tag["tag_id"]] = $va_tag["tag"];
+						# --- rel entities by role
+						$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_entity_labels.surname"));
+						if(is_array($va_entities) && sizeof($va_entities)){
+							$va_entities_by_role = array();
+							foreach($va_entities as $va_entity_info){
+								$va_entities_by_role[$va_entity_info["relationship_typename"]][] = $va_entity_info["displayname"];
 							}
+							ksort($va_entities_by_role);
+							foreach($va_entities_by_role as $vs_role => $va_names){
+?>
+								<div class="mb-3">
+									<div class="label"><?php print $vs_role; ?></div>
+<?php
+									print join($va_names, ", ");
+?>
+								</div>
+<?php
+							}
+						}
+						
+						# --- places
+						$va_places = $t_object->get("ca_places", array("returnWithStructure" => true, "sort" => "ca_places.name", "checkAccess" => $va_access_value));
+						if(is_array($va_places) && sizeof($va_places)){
 ?>
 							<div class="mb-3">
-								<div class="label">Tags</div>
-								<unit relativeTo="ca_item_tags" delimiter=", ">
+								<div class="label"><?php print (sizeof($va_places) > 1) ? "Territories" : "Territory"; ?></H1></div>
 <?php
-									print join(", ", $va_tags_processed);
+								$va_place_links = array();
+								foreach($va_places as $va_place_info){
+									$va_place_links[] = caNavLink($va_place_info["name"], "", "", "Browse", "objects", array("facet" => "place_facet", "id" => $va_place_info["place_id"]));
+								}
+								print join($va_place_links, ", ");
 ?>
-								</unit>
 							</div>
-<?php
+<?php							
 						}
-}				
+						# --- subjects
+						$t_list_item = new ca_list_items();
+						$va_subjects = $t_object->get("ca_objects.subject", array("returnAsArray" => true));
+						if(is_array($va_subjects) && sizeof($va_subjects)){
 ?>
+							<div class="mb-3">
+								<div class="label">Subjects</H1></div>
+<?php
+								$va_subject_links = array();
+								foreach($va_subjects as $vn_subject_id){
+									$t_list_item->load($vn_subject_id);
+									$va_subject_links[] = caNavLink($t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id));
+								}
+								print join($va_subject_links, ", ");
+?>
+							</div>
+<?php								
+							
+
+						}
+?>
+
 					</div>
 				</div>
 						
@@ -279,31 +309,6 @@ if($showTags){
 <div class="row">
 	<div class="col-sm-12">
 <?php
-	# --- subjects
-	$t_list_item = new ca_list_items();
-	$va_subjects = $t_object->get("ca_objects.subject", array("returnAsArray" => true));
-	if(is_array($va_subjects) && sizeof($va_subjects)){
-?>
-		<div class="row mt-3">
-			<div class="col-sm-12 mt-5">
-				<H1>Subjects</H1>
-			</div>
-		</div>
-		<div class="row bg-1 pt-4 mb-5 detailTags">
-<?php
-			foreach($va_subjects as $vn_subject_id){
-				$t_list_item->load($vn_subject_id);
-?>
-				<div class="col-sm-6 col-md-3 pb-4">
-					<?php print caNavLink("<div class='bg-2 text-center py-2 uppercase'>".$t_list_item->get("ca_list_item_labels.name_singular")."</div>", "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id)); ?>
-				</div>
-<?php
-			}
-
-?>
-		</div>
-<?php
-	}
 
 	$vs_related_title = "";
 	# --- related_items - if item is part of an album, show the other siblings otherwise show some other items from the current object's action(ca_collection)
@@ -311,7 +316,7 @@ if($showTags){
 	if($vn_parent_id = $t_object->get("ca_objects.parent_id")){
 		$t_parent = new ca_objects($vn_parent_id);
 		$va_related_item_ids = $t_parent->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
-		$vs_related_title = "Other items from this album";
+		$vs_related_title = $t_parent->get("ca_objects.preferred_labels.name");
 	}else{
 		if($va_projects = $t_object->get("ca_collections.collection_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values))){
 			$q_projects = caMakeSearchResult("ca_collections", $va_projects);
@@ -341,7 +346,7 @@ if($showTags){
 			<div class="col-5 mt-5 text-right">
 <?php
 				if($t_object->get("ca_objects.parent_id")){
-					print caDetailLink("View Album", "btn btn-primary", "ca_objects", $t_object->get("ca_objects.parent_id"));			
+					print caDetailLink("View Investigation", "btn btn-primary", "ca_objects", $t_object->get("ca_objects.parent_id"));			
 				}
 ?>
 			</div>
@@ -354,7 +359,7 @@ if($showTags){
 				if($q_objects->get("ca_object_representations.media.widepreview")){
 					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
-					print "<div class='pt-2'>".$q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'>Album: </if>").substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
+					print "<div class='pt-2'>".$q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'>Investigation: </if>").substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
 					
 					if($alt_id = $q_objects->get('ca_objects.altID')) {
 						print " (".substr(strip_tags($alt_id), 0, 30).")";
@@ -417,13 +422,13 @@ if($showTags){
         'data': {
             item_id: <?php print $vn_id; ?>,
             tablename: 'ca_objects',
-            form_title: '<h1>Add Your Comments and Tags</h1>',
-            list_title: '<h1 class="mt-5">Comments and Tags</h1>',
+            form_title: '<h1>Add Your Comment</h1>',
+            list_title: '<h1 class="mt-5">Comments</h1>',
             tag_field_title: 'Tags',
             comment_field_title: 'Comment',
-            login_button_text: 'Login to Add Your Comments and Tags',
+            login_button_text: 'Login to Add Your Comment',
             comment_button_text: 'Send',
-            no_tags: false,
+            no_tags: true,
             show_form: <?php print ($this->request->isLoggedIn()) ? "true" : "false"; ?>
         }
     };
