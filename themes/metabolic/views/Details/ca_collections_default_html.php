@@ -123,6 +123,46 @@
 								print "</div><HR></HR>";
 							}
 						}
+						
+						
+						# --- bio-regions
+						$t_list_item = new ca_list_items();
+						$va_bio_regions = $t_item->get("ca_collections.bio_regions", array("returnAsArray" => true));
+						if(is_array($va_bio_regions) && sizeof($va_bio_regions)){
+?>
+							<div class="mb-3">
+								<div class="label">Bio-Regions</div>
+<?php
+								$va_bio_region_links = array();
+								foreach($va_bio_regions as $vn_bio_region_id){
+									$t_list_item->load($vn_bio_region_id);
+									$va_bio_region_links[] = caNavLink($t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "bio_regions_facet", "id" => $vn_bio_region_id));
+								}
+								print join($va_bio_region_links, ", ");
+?>
+							</div>
+<?php								
+							
+
+						}
+						# --- places
+if($showplaces){
+						$va_places = $t_item->get("ca_places", array("returnWithStructure" => true, "sort" => "ca_places.name", "checkAccess" => $va_access_value));
+						if(is_array($va_places) && sizeof($va_places)){
+?>
+							<div class="mb-3">
+								<div class="label"><?php print (sizeof($va_places) > 1) ? "Territories" : "Territory"; ?></H1></div>
+<?php
+								$va_place_links = array();
+								foreach($va_places as $va_place_info){
+									$va_place_links[] = caNavLink($va_place_info["name"], "", "", "Browse", "objects", array("facet" => "place_facet", "id" => $va_place_info["place_id"]));
+								}
+								print join($va_place_links, ", ");
+?>
+							</div>
+<?php							
+						}
+}
 ?>
 					</div>
 				</div>

@@ -177,16 +177,6 @@
 								<unit relativeTo="ca_objects.parent"><l>^ca_objects.preferred_labels.name</l></unit>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_objects.idno">
-							<div class="mb-3">
-								^ca_objects.idno
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_objects.altID">
-							<div class="mb-3">
-								^ca_objects.altID
-							</div>
-						</ifdef>}}}
 						{{{<ifdef code="ca_objects.date">
 							<div class="mb-3">
 								^ca_objects.date%delimiter=,_
@@ -252,6 +242,26 @@
 							}
 						}
 						
+						# --- bio-regions
+						$t_list_item = new ca_list_items();
+						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true));
+						if(is_array($va_bio_regions) && sizeof($va_bio_regions)){
+?>
+							<div class="mb-3">
+								<div class="label">Bio-Regions</div>
+<?php
+								$va_bio_region_links = array();
+								foreach($va_bio_regions as $vn_bio_region_id){
+									$t_list_item->load($vn_bio_region_id);
+									$va_bio_region_links[] = caNavLink($t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "bio_regions_facet", "id" => $vn_bio_region_id));
+								}
+								print join($va_bio_region_links, ", ");
+?>
+							</div>
+<?php								
+							
+
+						}
 						# --- places
 						$va_places = $t_object->get("ca_places", array("returnWithStructure" => true, "sort" => "ca_places.name", "checkAccess" => $va_access_value));
 						if(is_array($va_places) && sizeof($va_places)){
@@ -290,6 +300,17 @@
 						}
 ?>
 
+						{{{<ifdef code="ca_objects.idno">
+							<div class="mb-3">
+								<b>^ca_objects.idno</b>
+							</div>
+						</ifdef>}}}
+						{{{<ifdef code="ca_objects.altID">
+							<div class="mb-3">
+								<b>^ca_objects.altID</b>
+							</div>
+						</ifdef>}}}
+						
 					</div>
 				</div>
 						
