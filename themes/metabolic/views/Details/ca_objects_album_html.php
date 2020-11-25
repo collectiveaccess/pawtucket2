@@ -229,9 +229,9 @@
 							$va_visionary = array();
 							foreach($va_entities as $va_entity_info){
 								if(strToLower($va_entity_info["relationship_typename"]) == "visionary"){
-									$va_visionary[] = $va_entity_info["displayname"];
+									$va_visionary[] = caNavLink($va_entity_info["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_entity_info["entity_id"]));
 								}else{
-									$va_entities_by_role[$va_entity_info["relationship_typename"]][] = $va_entity_info["displayname"];
+									$va_entities_by_role[$va_entity_info["relationship_typename"]][] = caNavLink($va_entity_info["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_entity_info["entity_id"]));
 								}
 							}
 							if(sizeof($va_visionary)){
@@ -277,22 +277,6 @@
 <?php								
 							
 
-						}
-						# --- places
-						$va_places = $t_object->get("ca_places", array("returnWithStructure" => true, "sort" => "ca_places.name", "checkAccess" => $va_access_value));
-						if(is_array($va_places) && sizeof($va_places)){
-?>
-							<div class="mb-3">
-								<div class="label"><?php print (sizeof($va_places) > 1) ? "Territories" : "Territory"; ?></H1></div>
-<?php
-								$va_place_links = array();
-								foreach($va_places as $va_place_info){
-									$va_place_links[] = caNavLink($va_place_info["name"], "", "", "Browse", "objects", array("facet" => "place_facet", "id" => $va_place_info["place_id"]));
-								}
-								print join($va_place_links, ", ");
-?>
-							</div>
-<?php							
 						}
 						# --- subjects
 						$t_list_item = new ca_list_items();
