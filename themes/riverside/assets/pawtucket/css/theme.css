@@ -19,13 +19,10 @@
 }
 
 body{
-	margin-top:120px;
+	margin-top:160px;
 	margin-bottom:250px;
 	font-size: 16px;
 	color: #000;
-}
-body.bodyFront{
-	margin-bottom:200px;
 }
 @media(max-width:595px){
 	body{
@@ -185,16 +182,17 @@ header.navigation .navbar-brand-logo {
     z-index: 9;
 }
 .archiveSubTitle{
-	font-size: 17px;
-	font-weight: 600;
-	letter-spacing: 4px;
-	text-transform: uppercase;
 	color: #e29032;
-	position: absolute;
-	top: 54px;
-	background-color: #7e2036;
-	left: 134px;
-	padding-right: 100px;
+	background-color: #183640;
+	text-align:center;
+	padding-top:10px;
+	padding-bottom:10px;
+	
+	font-size: 25px;
+	text-transform: uppercase;
+	font-family: brandon-grotesque,sans-serif;
+	font-weight: 400;
+	letter-spacing: 4px;
 }
 
 
@@ -390,49 +388,105 @@ a, a:hover{
 
 
 /* front */
-.front{
-	margin-top:-25px;
+html.frontContainer {
+    height: 100%;
+    padding:0px -15px 0px -15px;
 }
-.front .hero{
-	background-image: url('../graphics/nave.png');
-	background-repeat: no-repeat;
-  	background-size: cover;
-	margin-left:-15px;
-	margin-right:-15px;
+body.frontContainer {
+	margin-bottom:0px;
+	height: 100%;
 }
-.front .hero .container{
-	background-color: rgb(24, 54, 64, 0.8);
-}
-.front H2.frontSubHeading{
-	font-family: brandon-grotesque,sans-serif;
-	font-size: 40px;
-	margin-top:60px;	
-	font-size: 30px;
-	letter-spacing: .42px;
-	color: #183640;
-	text-transform: uppercase;
-	font-weight:700;
-}
-.front .bgOffWhite{
-	background-color: #fbf9f6;
-	margin-left:-15px;
-	margin-right:-15px;
+body.frontContainer #footer{
+	position:relative;
+	margin-top:-20px;
 }
 
+.parallax {
+	position:relative;
+    background-image: url("../graphics/hero_1.jpg");
+
+    /* Full height */
+    /*height: 100%;*/
+    height: 100vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center -210px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    margin-left: -15px;
+	margin-right: -15px;
+}
+.parallax.hero1 {
+    background-image: url("../graphics/hero_1.jpg");
+}
+.parallax.hero2 {
+    background-image: url("../graphics/hero_2.jpg");
+}
+.parallax.hero3 {
+    background-image: url("../graphics/hero_3.jpg");
+}
+.parallax.hero4 {
+    background-image: url("../graphics/hero_4.jpg");
+}
+@media(max-width:420px), (max-height:420px){
+	/*.heroSearch H1{
+		font-size:50px;
+	}*/
+	.front .heroSearch .form-group{
+		width:300px;
+	}
+	.hpIntro .callout b{
+		font-size:40px;
+	}
+	.hpIntro .callout, .hpIntro .callout i{
+		font-size:24px;
+	}
+}
 .front .heroSearch {
 	position:relative;
 	text-align:center;
 	color:#FFF;
-	margin-top:120px;
-	margin-bottom:120px;
+	margin-top: 23vh;
 	padding-top:50px;
 	padding-bottom:50px;
 	font-size:28px;
 	text-shadow: 0px 0px 3px #000000;
 	font-family: brandon-grotesque,sans-serif;
 	background-color: #183640;
+	background-color: rgb(24, 54, 64, .9);
 	box-shadow:0 2px 14px 0 rgba(0,0,0,.3);
 }
+@media(max-height:420px){
+	.parallax .heroSearch{
+		margin-top: 10vh;
+	}
+}
+.parallax {
+    background-position: center center;
+}
+
+@media (max-device-width:1024px){
+	/* ipad and mobile disable background-attachment: fixed; fallback to no parallax so at lest see image */
+	.parallax {
+		background-attachment: scroll;
+	}
+}
+#hpScrollBar{
+	position:fixed;
+	bottom:0px;
+	width:100%;
+	background-color: rgba(227, 230, 232, 0.3);
+	color:#183640;
+	text-align:center;
+	font-size:30px;
+	padding:10px 0px 10px 0px;
+	opacity:.8;
+}
+
+
+
 .heroSearch H1{
 	font-family: brandon-grotesque,sans-serif;
 	color: #e9e3d4;
@@ -504,13 +558,44 @@ a, a:hover{
 	color:#000;
 	font-size: 20px;
 }
+
+
+
+
+
+
+
+
+.front{
+	margin-top:-25px;
+}
+.front H2.frontSubHeading{
+	font-family: brandon-grotesque,sans-serif;
+	font-size: 40px;
+	margin-top:60px;	
+	font-size: 30px;
+	letter-spacing: .42px;
+	color: #183640;
+	text-transform: uppercase;
+	font-weight:700;
+}
+.front .bgOffWhite{
+	background-color: #fbf9f6;
+	margin-left:-15px;
+	margin-right:-15px;
+}
+.hpIntro{
+	background-color:#FFF;
+	position:relative;
+	z-index:1;
+}
 .hpIntro .callout{
 	text-align:center;
 	font-family: brandon-grotesque,sans-serif;
 	font-size: 35px;
 	color: #183640;
 	font-weight:400;
-	margin:75px 0px 75px 0px;	
+	margin:150px 0px 150px 0px;	
 }
 .hpIntro a{
 	text-decoration:underline;
@@ -523,63 +608,26 @@ a, a:hover{
 
 
 
-/*.hpExplore img{
-	width:100%;
-	height:auto;
-	margin-bottom:5px;
-}
-.hpExplore .col-sm-6{
-	position:relative;
-}
-.hpExplore a.hpExploreTitle{
-	font-size:24px;
-	color:#000;
-	line-height: 1em;
-}
-.hpExplore .exploreTile:hover img{
-	opacity:.4;
-	transition:opacity .75s;
-	-webkit-transition:opacity .75s;
-}
-.hpExplore .exploreTile:hover a{
-	text-decoration:underline;
-}
-.hpExplore .exploreTile{
-	margin-bottom:29px;
-}
-@media(min-width: 768px) and (max-width: 992px) {
-	.hpExplore a.hpExploreTitle{
-		font-size:24px;
-	}
-}
-@media(min-width: 992px) {
-	.hpExplore a.hpExploreTitle{
-		font-size:18px;
-	}
-}
-@media(min-width: 1350px) {
-	.hpExplore a.hpExploreTitle{
-		font-size:24px;
-	}	
-	.hpExplore .exploreTile{
-		margin-bottom:26px;
-	}
-}
-@media(min-width: 1430px) {
-	.hpExplore .exploreTile{
-		margin-bottom:30px;
-	}
-}*/
+
 
 
 .hpBgImgObjects{
-	background-image: url('../graphics/art_architecture.jpg');	
+	background-image: url('../graphics/objects.jpg');	
 }
 .hpBgImgPeople{
 	background-image: url('../graphics/people.jpg');	
 }
 .hpBgImgEvents{
 	background-image: url('../graphics/events.jpg');	
+}
+.hpBgImgResources{
+	background-image: url('../graphics/resources.jpg');	
+}
+.hpBgImgCollections{
+	background-image: url('../graphics/collections.jpg');	
+}
+.hpBgImgGallery{
+	background-image: url('../graphics/gallery.jpg');	
 }
 .blog-index .posts-con {
  display:flex;
@@ -644,6 +692,18 @@ a, a:hover{
  font-family: brandon-grotesque,sans-serif;
  font-weight:600;
  letter-spacing: .03125em;
+}
+.blog-index .post-title a {
+ font-size:20px;
+ line-height:28px;
+ color:#791f34;
+ text-transform:uppercase;
+ font-family: brandon-grotesque,sans-serif;
+ font-weight:600;
+ letter-spacing: .03125em;
+}
+.blog-index .post-title a:hover {
+	text-decoration:none;
 }
 .blog-index .post-excerpt {
 /* font-family:Roboto,sans-serif; */

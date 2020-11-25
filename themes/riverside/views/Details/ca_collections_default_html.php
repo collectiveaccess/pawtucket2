@@ -29,7 +29,7 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 <?php
-				print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default btn-small", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_object->get("collection_id")))."</div>";
+				print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default btn-small", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("collection_id")))."</div>";
 ?>
 					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
 					<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
