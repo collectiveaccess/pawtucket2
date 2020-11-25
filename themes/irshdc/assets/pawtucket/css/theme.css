@@ -1480,6 +1480,12 @@ a .digExhSideNavLinkImg .digExhSideNavLink{
 	background-color: transparent;
 	background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.5), rgba(0,0,0,0));
 }
+a.currentSection .digExhSideNavLink:before {
+    font-family: FontAwesome;
+    content: "\f0da";
+    padding-right:5px;
+}
+
 .detail a:hover .digExhSideNavLinkImg .digExhSideNavLink{
 	color:#FFF;
 	background-color: transparent;
@@ -1553,8 +1559,10 @@ a.digExhAnchors.offset{
 .digExhContentBlock .quoteMargin{
 	font-size:25px;
 	text-align:center;
-	margin-top:90px;
-	margin-bottom:110px;
+	margin-top:30px;
+	margin-bottom:40px;
+/*	margin-top:90px;
+	margin-bottom:110px;*/
 	padding:40px;
 }
 .digExhContentBlock .quote{
@@ -1577,6 +1585,17 @@ a.digExhAnchors.offset{
 	max-width: 100%;
 	height: auto;
 }
+.digExhUnit.digExhUnitOneColImage img{
+	max-height:600px;
+	width:auto;
+}
+@media(max-width:575px){
+	.digExhUnit.digExhUnitOneColImage img{
+		height:400px;
+		width: 100%;
+		object-fit:contain;
+	}
+}
 .digExhContentBlock .imgCol img{
 	width: 100%;
 	height: auto;
@@ -1597,6 +1616,9 @@ a.digExhAnchors.offset{
 #digExhTimeline {
     height: 500px;
 }
+#digExhTimeline .tl-slider-container-mask{
+	background-color:#fafafa;
+}
 #digExhTimeline .tl-slide-content{
 	padding-right:0px !important;
 }
@@ -1605,6 +1627,9 @@ a.digExhAnchors.offset{
 }
 #digExhTimeline .tl-timeline h2.tl-headline-title, #digExhTimeline .tl-text-content-container h2.tl-headline{
 	font-size:22px !important;
+}
+.sectionNavigationLinks .btn-default{
+	margin-bottom:10px;
 }
 /* storymap */
 .vco-storymap h2.vco-headline-title, .vco-storymap h2 {
@@ -1728,8 +1753,10 @@ a.digExhDetailPrev, a.digExhDetailNext{
 		margin-bottom:0px;
 	}
 	.digExhContentBlock .quoteMargin{
-		margin-top:45px;
-		margin-bottom:55px;
+		/*margin-top:45px;
+		margin-bottom:55px;*/
+		margin-top:30px;
+		margin-bottom:40px;
 	}
 	.storymapContainer{
 		height: 450px;

@@ -1,0 +1,212 @@
+/* blue: #002244; grays: #161616 #494949 ochre: #9A6E00; dark ochre: #815c00; dark gray bg:#2f2e2c*/
+
+body{
+	margin-bottom:300px;
+	font-size: 13px;
+	color: #000;
+}
+@media(max-width:992px){
+	body{
+		margin-bottom:500px;
+	}
+}
+.container{
+	max-width:2000px;
+}
+a{
+	color:#161616;
+}
+a:hover{
+	color:#161616;
+}
+.btn-default{
+	background-color:#9A6E00;
+}
+.btn-default, .btn-default:hover, .btn-default:focus, .btn-default:active{
+	background-color:#815c00;
+}
+a.browseRemoveFacet .btn-default{
+	background-color:#FFF;
+	color:#757575;
+	border:1px solid #757575;
+	padding:4px 4px 2px 4px;
+}
+a.browseRemoveFacet .glyphicon {
+    color: #757575 !important;
+}
+.form-control:focus {
+    border-color: #000;
+}
+.topBar{
+	text-align:center;
+	padding:8px 0px 8px 0px;
+}
+.topBar img{
+	max-width:220px;
+	width:100%;
+	height:auto;
+}
+/* navbar */
+.navbar{
+	background-color:#002244;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #FFFFFF;
+    text-transform:uppercase;    
+    background-color: transparent;
+    margin-right:1px;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    color: #002244;  
+    background-color: #FFF;
+}
+ul.navbar-nav.menuItems{
+	margin-right:15px !important;
+}
+
+#footer{
+	background-color:#2f2e2c;
+	color:#FFF;
+	height:auto;
+	padding-top:40px;
+	padding-bottom:40px;
+}
+#footer a, #footer ul a{
+	color:#FFF;
+}
+#footer .museumLogo{
+	border-left:1px solid #FFF;
+	text-align:center;
+	padding:20px 0px 20px 0px;
+}
+@media(max-width:768px){
+	#footer .museumLogo{
+		border-left:0px;
+	}
+}
+#footer .collegeLogo{
+	text-align:center;
+	padding:40px 0px 40px 0px;
+}
+#footer .collegeLogo img{
+	width:250px;
+	height:auto;
+}
+#footer .museumLogo img{
+	width:230px;
+	height:auto;
+}
+#footer .collegeLogo div, #footer .museumLogo div{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+/* browse */
+#bRefine{
+	background-color:#FFF;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	padding:10px 15px 10px 15px;
+}
+#bRefine H2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #161616;
+    margin-top: 0px;
+}
+#bRefine H3, #bRefine a {
+	font-size:16px;
+    color: #161616;
+}
+#bRefine a.more{
+	font-size:14px;
+    color: #494949;
+}
+.bResultItem .bResultItemText {
+    font-size: 12px;
+    color:#161616;
+}
+#browseResultsContainer{
+	margin-top:0px;
+}
+.results H1 {
+    margin: 0px 0px 7px 0px;
+}
+H1 .btn-group {
+    float: right;
+    text-transform: uppercase;
+	font-size: 14px;
+}
+H1 .btn-group > a{
+	padding: 7px;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	color: #494949;
+}
+H1 .btn-group > a:hover{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+	color: #000;
+	text-decoration:none;
+}
+.bCriteria{
+	margin:5px 0px 35px 0px;
+}
+.results .searchBar {
+	padding-top: 15px;
+	padding-bottom: 25px;
+}
+.results .searchBar label{
+	font-size: 20px;
+	color: #494949;	
+}
+.results .searchBar .searchFormBrowse{
+	position:relative;
+}
+.results .searchBar input{
+	border:2px solid #777777;
+	border-radius:0px;
+	font-size:20px;
+	padding: 20px 20px 20px 50px;
+}
+.results .searchBar button{
+	font-size:25px;
+	position:absolute;
+	left: 5px;
+	top: 1px;
+	background-color:transparent;
+}
+
+/* themes */
+.themesList{
+	margin-top:20px;
+}
+.themesContainer{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	text-align:center;
+	padding:15px;
+	margin-bottom:30px;
+	color:#161616;
+	font-size:15px;
+	font-family: lato;
+}
+.themesList a:hover{
+	text-decoration:none;
+}
+a:hover .themesContainer{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+	color:#494949;
+	text-decoration:none;
+}
+
+/* detail */
+.detail{
+	color: #161616;
+	font-size:14px;
+}
+.detail h1{
+	color: #161616;
+}

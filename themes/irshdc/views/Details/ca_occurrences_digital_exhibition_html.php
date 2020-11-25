@@ -45,6 +45,9 @@ $vs_mode = $this->request->getParameter("mode", pString);
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
 	
+	# --- content_block_id indicated which section to load for the exhibition.  If not defined, load the first section
+	$pn_content_block_id = $this->request->getParameter('content_block_id', pInteger);
+	
 	$t_list = new ca_lists();
  	$vn_digital_exhibit_object_type_id = $t_list->getItemIDFromList('object_types', 'digitalExhibitObject'); 		
  					
@@ -62,13 +65,13 @@ $vs_mode = $this->request->getParameter("mode", pString);
 	}elseif(strpos($vs_last_find, "school") !== false){
 		$vs_link_text = "Explore Schools";	
 	}elseif(strpos($vs_last_find, "listing") !== false){
-		$vs_link_text = "Explore Digital Exhibitions";	
+		$vs_link_text = "Explore Exhibitions";	
 	}
 	if($vs_link_text){
 		$va_params["row_id"] = $t_item->getPrimaryKey();
  		$va_breadcrumb_trail[] = $o_context->getResultsLinkForLastFind($this->request, "ca_occurrences", $vs_link_text, null, $va_params);		
  	}else{
- 		$va_breadcrumb_trail[] = caNavLink($this->request, "Explore Digital Exhibitions", '', 'Listing', 'DigitalExhibitions', '');
+ 		$va_breadcrumb_trail[] = caNavLink($this->request, "Explore Exhibitions", '', 'Listing', 'DigitalExhibitions', '');
  	}
  	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_item->get('ca_occurrences.preferred_labels.name'), 60);
 ?>
@@ -96,18 +99,28 @@ $vs_mode = $this->request->getParameter("mode", pString);
 				<div class="col-sm-12 col-md-2">
 					<div class="digExhSideNav">
 <?php
+					# --- build an array of each content block in a section - section is a content block that has side navigation (ca_occurrences.nav_text is defined)
+					$va_section_ids = array();
+					$va_sections = array();
 					if($qr_content_blocks->numHits()){
 						while($qr_content_blocks->nextHit()){
+							if(!$pn_content_block_id){
+								$pn_content_block_id = $qr_content_blocks->get("ca_occurrences.occurrence_id");
+							}
 							$vs_nav_img = $qr_content_blocks->get("ca_object_representations.media.medium.url");
 							if($vs_link_text = $qr_content_blocks->get("ca_occurrences.nav_text")){
-								print "<a href='#".$qr_content_blocks->get("ca_occurrences.idno")."'>";							
+								$va_section_ids[] = $qr_content_blocks->get("ca_occurrences.occurrence_id");
+								$va_section_names[$qr_content_blocks->get("ca_occurrences.occurrence_id")] = $vs_link_text;
+								$vn_last_section_id = $qr_content_blocks->get("ca_occurrences.occurrence_id");
+								$vs_link = "";
 								if($vs_nav_img){
-									print "<div class='digExhSideNavLinkImg' style='background-image: url(\"".$vs_nav_img."\");'><div class='digExhSideNavLink'>".$vs_link_text."</div></div>";
+									$vs_link = "<div class='digExhSideNavLinkImg' style='background-image: url(\"".$vs_nav_img."\");'><div class='digExhSideNavLink'>".$vs_link_text."</div></div>";
 								}else{
-									print "<div class='digExhSideNavLink digExhSideNavLinkNoImg'>".$vs_link_text."</div>";
+									$vs_link = "<div class='digExhSideNavLink digExhSideNavLinkNoImg'>".$vs_link_text."</div>";
 								}
-								print "</a>";
+								print caDetailLink($this->request, $vs_link, (($pn_content_block_id == $qr_content_blocks->get("ca_occurrences.occurrence_id")) ? "currentSection" : ""), 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $qr_content_blocks->get("ca_occurrences.occurrence_id")));
 							}
+							$va_sections[$vn_last_section_id][] = $qr_content_blocks->get("ca_occurrences.occurrence_id");
 						}
 						$qr_content_blocks->seek(0);
 					}
@@ -118,7 +131,8 @@ $vs_mode = $this->request->getParameter("mode", pString);
 						print "<a href='#related'><div class='digExhSideNavLink digExhSideNavLinkNoImg'>Related Resources</div></a>";
 					}
 					print "<div class='digExhSideNavLinkOut'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")));
-					print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
+					#print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'));
+					print "</div>";
 					
 ?>
 					</div>
@@ -149,7 +163,8 @@ $vs_mode = $this->request->getParameter("mode", pString);
 								if($qr_content_blocks->numHits()){
 									while($qr_content_blocks->nextHit()){
 										if($vs_link_text = $qr_content_blocks->get("ca_occurrences.nav_text")){
-											print "<li><a href='#".$qr_content_blocks->get("ca_occurrences.idno")."'>".$vs_link_text."</a></li>";
+											print "<li>".caDetailLink($this->request, $vs_link_text, '', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $qr_content_blocks->get("ca_occurrences.occurrence_id")))."</li>";
+							
 										}
 									}
 								}
@@ -168,22 +183,25 @@ $vs_mode = $this->request->getParameter("mode", pString);
 						</div>
 					</div>
 <?php
-					$qr_content_blocks->seek(0);
-					if($qr_content_blocks->numHits()){
+					#$qr_content_blocks->seek(0);
+					#if($qr_content_blocks->numHits()){
+					# --- only display the content blocks for the current section
+					$qr_section_content_blocks = caMakeSearchResult("ca_occurrences", $va_sections[$pn_content_block_id]);
+					if($qr_section_content_blocks->numHits()){
 						$vn_block_count;
-						while($qr_content_blocks->nextHit()){
+						while($qr_section_content_blocks->nextHit()){
 							$vn_block_count++;
-							$vs_format = $qr_content_blocks->get("display_options", array("convertCodesToDisplayText" => true));
-							$vs_content_block_title = $qr_content_blocks->get("ca_occurrences.preferred_labels.name");
+							$vs_format = $qr_section_content_blocks->get("display_options", array("convertCodesToDisplayText" => true));
+							$vs_content_block_title = $qr_section_content_blocks->get("ca_occurrences.preferred_labels.name");
 							if($vs_content_block_title == "[BLANK]"){
 								$vs_content_block_title = "";
 							}
-							$vs_content_block_subtitle = $qr_content_blocks->get("ca_occurrences.contentBlockSubtitle");
-							$vs_quote = $qr_content_blocks->get("description");
-							$vs_main_text = $qr_content_blocks->get("main_text");
+							$vs_content_block_subtitle = $qr_section_content_blocks->get("ca_occurrences.contentBlockSubtitle");
+							$vs_quote = $qr_section_content_blocks->get("description");
+							$vs_main_text = $qr_section_content_blocks->get("main_text");
 
 							$vn_set_id = "";
-							$vs_set_code = $qr_content_blocks->get("ca_occurrences.set_code");	
+							$vs_set_code = $qr_section_content_blocks->get("ca_occurrences.set_code");	
 							$t_set = new ca_sets();
 							if($vs_set_code){				
 								$t_set->load(array("set_code" => $vs_set_code));
@@ -193,7 +211,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 							}
 							
 							$vs_featured_image = "";
-							$vn_featured_object_ids = $qr_content_blocks->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+							$vn_featured_object_ids = $qr_section_content_blocks->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
 							$vn_featured_object_id = $vn_featured_object_ids[0];
 					
 							if($vn_featured_object_id){
@@ -206,8 +224,8 @@ $vs_mode = $this->request->getParameter("mode", pString);
 								if(($t_featured_object->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($t_featured_object->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($t_featured_object->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes"))){
 									$vb_link_to_object = true;
 								}
-								if($qr_content_blocks->get("ca_occurrences.caption")){
-									$vs_caption = $qr_content_blocks->get("ca_occurrences.caption");
+								if($qr_section_content_blocks->get("ca_occurrences.caption")){
+									$vs_caption = $qr_section_content_blocks->get("ca_occurrences.caption");
 								}else{
 									$vs_caption = $t_featured_object->get("ca_objects.preferred_labels.name");
 								}
@@ -243,7 +261,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 
 ?>
 							<div class="digExhContentBlock">
-								<a name="<?php print $qr_content_blocks->get("ca_occurrences.idno"); ?>" class="digExhAnchors<?php print ($vn_block_count > 1) ? " offset" : ""; ?>"></a>
+								<a name="<?php print $qr_section_content_blocks->get("ca_occurrences.idno"); ?>" class="digExhAnchors<?php print ($vn_block_count > 1) ? " offset" : ""; ?>"></a>
 <?php
 								if($vs_content_block_title){
 									if($vn_block_count > 1){
@@ -311,7 +329,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 										print "<div class='digExhUnit'>".$vs_main_text."</div>";
 									}
 									if($vs_featured_image){								
-										print "<div class='digExhUnit text-center'>".$vs_featured_image."</div>";
+										print "<div class='digExhUnit digExhUnitOneColImage text-center'>".$vs_featured_image."</div>";
 									}
 									if($vs_quote){
 										print "<div class='quoteMargin'>".$vs_quote."</div>";
@@ -556,6 +574,18 @@ $vs_mode = $this->request->getParameter("mode", pString);
 
 
 <?php
+					}
+					# --- out put link to next/previous section if available
+					$vn_section_index = array_search($pn_content_block_id, $va_section_ids);
+					$vs_next_section_link = $vs_previous_section_link = "";
+					if($va_section_ids[$vn_section_index + 1]){
+						$vs_next_section_link = caDetailLink($this->request, 'Next: '.$va_section_names[$va_section_ids[$vn_section_index + 1]]." <i class='fa fa-caret-right' aria-hidden='true'></i>", 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $va_section_ids[$vn_section_index + 1]));
+					}
+					if(($vn_section_index > 0) && ($va_section_ids[$vn_section_index - 1])){
+						$vs_previous_section_link = caDetailLink($this->request, "<i class='fa fa-caret-left' aria-hidden='true'></i> Previous: ".$va_section_names[$va_section_ids[$vn_section_index - 1]], 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $va_section_ids[$vn_section_index - 1]));
+					}
+					if($vs_next_section_link || $vs_previous_section_link){
+						print "<p class='text-center sectionNavigationLinks'>".$vs_previous_section_link.(($vs_next_section_link && $vs_previous_section_link) ? "&nbsp;&nbsp;&nbsp;" : "").$vs_next_section_link."</p><br/>";
 					}
 					if ($vn_comments_enabled) {
 ?>				

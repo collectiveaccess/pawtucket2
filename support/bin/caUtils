@@ -31,10 +31,10 @@
  * ----------------------------------------------------------------------
  */
 
+	define("__CA_APP_TYPE__", "PAWTUCKET");	
 	if (!_caUtilsLoadSetupPHP()) {
 		die("Could not find your CollectiveAccess setup.php file! Please set the COLLECTIVEACCESS_HOME environment variable to the location of your CollectiveAccess installation, or run this command from a sub-directory of your CollectiveAccess installation.\n");
 	}
-	define("__CA_APP_TYPE__", "PAWTUCKET");	
 	require_once(__CA_MODELS_DIR__."/ca_locales.php");
 	require_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
 	require_once(__CA_APP_DIR__."/helpers/CLIHelpers.php");
