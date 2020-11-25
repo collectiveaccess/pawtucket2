@@ -109,7 +109,7 @@
 					if ($vn_inquire_enabled) {
 						print "<div class='detailTool'>".caNavLink("<ion-icon name='ios-mail'></ion-icon> <span>Inquire</span>", "", "", "Contact", "form", array("table" => "ca_objects", "id" => $vn_id))."</div>";
 					}
-					if($this->request->isLoggedIn()){
+					if(caDisplayLightbox($this->requests) && $this->request->isLoggedIn()){
 						print "<div class='detailTool'><div id='lightboxManagement'></div></div>";
 					}
 					print '</div><!-- end detailTools -->';
@@ -226,8 +226,24 @@
 						$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_entity_labels.surname"));
 						if(is_array($va_entities) && sizeof($va_entities)){
 							$va_entities_by_role = array();
+							$va_visionary = array();
 							foreach($va_entities as $va_entity_info){
-								$va_entities_by_role[$va_entity_info["relationship_typename"]][] = $va_entity_info["displayname"];
+								if(strToLower($va_entity_info["relationship_typename"]) == "visionary"){
+									$va_visionary[] = $va_entity_info["displayname"];
+								}else{
+									$va_entities_by_role[$va_entity_info["relationship_typename"]][] = $va_entity_info["displayname"];
+								}
+							}
+							if(sizeof($va_visionary)){
+?>
+								<div class="mb-3">
+									<div class="label">Visionary</div>
+<?php
+									print join($va_visionary, ", ");
+?>
+								</div>
+<?php
+								
 							}
 							ksort($va_entities_by_role);
 							foreach($va_entities_by_role as $vs_role => $va_names){
@@ -404,10 +420,10 @@
 		</div>
 
 <?php		
-		$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
+		//$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
 		//$o_context->setAsLastFind();
-		$o_context->setResultList($va_tmp_ids);
-		$o_context->saveContext();
+		//$o_context->setResultList($va_tmp_ids);
+		//$o_context->saveContext();
 	}
 ?>
 	
