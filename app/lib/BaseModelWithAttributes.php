@@ -1316,7 +1316,16 @@
 				$pa_options['childrenOnlyForItemID'] = $this->get('type_id');
 			}
 			
-			$pa_options['limitToItemsWithID'] = caGetTypeRestrictionsForUser($this->tableName(), $pa_options);
+			$user_type_res = caGetTypeRestrictionsForUser($this->tableName(), $pa_options);
+			if (is_array($pa_options['limitToItemsWithID']) && sizeof($pa_options['limitToItemsWithID'])){
+			    $pa_options['limitToItemsWithID'] = caMakeTypeIDList($this->tableName(), $pa_options['limitToItemsWithID']);
+			}
+			
+			if (is_array($pa_options['limitToItemsWithID']) && sizeof($pa_options['limitToItemsWithID']) && is_array($user_type_res) && sizeof($user_type_res)) {
+			    $pa_options['limitToItemsWithID'] = array_intersect($user_type_res, $pa_options['limitToItemsWithID']);
+			} elseif(is_array($user_type_res) && sizeof($user_type_res)) {
+			    $pa_options['limitToItemsWithID'] = $user_type_res;
+			}
 			
 			if (caGetOption('inUse', $pa_options, false)) {
 				$vs_access_sql = '';
@@ -1478,6 +1487,7 @@
 			$use_current_row_value = caGetOption('useCurrentRowValueAsDefault', $pa_options, false);
 			
 			if ($va_tmp[1] == $this->getTypeFieldName()) {
+			    unset($pa_options['values']);
 				return $this->getTypeListAsHTMLFormElement($ps_field, ($use_current_row_value ? ['value' => $this->get($this->getTypeFieldName())] : null), $pa_options);
 			}
 			
