@@ -86,11 +86,11 @@
 				<HR>
 <?php
 
-				if ($va_publications = $t_object->get('ca_objects.publication_title_name', array('returnAsArray' => 'true'))) {
+				if ($va_publications = $t_object->get('ca_objects.publication_title_name', array('returnAsArray' => true))) {
 					#print_r($va_publications);
 					print "<div class='unit'><h6>Publication Title</h6>";
 					foreach($va_publications as $vs_publication){
-						print caNavLink($this->request, $vs_publication, '', '', 'Browse', 'objects', array('facet' => 'analytics_pub_title_facet', 'id' => urlencode($vs_publication)));
+						print caNavLink($this->request, $vs_publication, '', '', 'Browse', 'objects', array('facet' => 'analytics_pub_title_facet', 'id' => ca_attribute_values::getValueIDFor(ca_metadata_elements::getElementID('publication_title_name'), $vs_publication)));
 					}
 					print "</div>";
 				}
