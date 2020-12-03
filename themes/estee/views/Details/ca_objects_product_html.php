@@ -69,6 +69,35 @@
 			}
 		}
 	}
+	
+	# --- rep viewer loaded here so can use different configuration in media_display.conf to load watermarked image
+	
+	 			if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
+ 					$t_representation = Datamodel::getInstance("ca_object_representations", true);
+ 					$t_representation->load($pn_representation_id);
+ 				}else{
+ 					$t_representation = $t_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
+ 				}
+				if (!$t_representation) {
+					$t_representation = Datamodel::getInstance("ca_object_representations", true);
+				}
+				if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail_watermark', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
+				
+				$vs_rep_viewer = trim(caRepresentationViewer(
+					$this->request, 
+					$t_object, 
+					$t_object,
+					array_merge($va_options, $va_media_display_info, 
+						array(
+							'display' => 'detail_watermark',
+							'showAnnotations' => true, 
+							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $va_options, false), 
+							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), 
+							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false)
+						)
+					)
+				));
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -89,7 +118,8 @@
 					print "<div class='detailTool'><i class='material-icons inline'>bookmark</i><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
 				
 					print "</div>";
-					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
+					
+					if($vs_rep_viewer){
 						$vs_use_statement = trim($t_object->get("ca_objects.use_statement"));
 						if(!$vs_use_statement){
 							$vs_use_statement = $this->getVar("use_statement");
@@ -101,6 +131,18 @@
 							jQuery(document).ready(function() {
 								$('.dlButton').on('click', function () {
 									return confirm('<?php print $vs_use_statement; ?>');
+								});
+								$( ".dlButton" ).each(function() {
+									var href_orig = $( this ).attr('href');
+									$( this ).attr('href', href_orig + '_watermark');
+								});
+							});
+							$( document ).ajaxComplete(function() {
+								$( ".dlButton" ).each(function() {
+									var href_orig = $( this ).attr('href');
+									if(!href_orig.includes("watermark")){
+										$( this ).attr('href', href_orig + '_watermark');
+									}
 								});
 							});
 						</script>
