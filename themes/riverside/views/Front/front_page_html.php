@@ -34,7 +34,7 @@
  	
 	
 ?>
-<div class="parallax hero<?php print $this->request->getParameter('hero', pString); ?>">
+<div class="parallax hero<?php print rand(1, 3); ?>">
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-12 col-md-6 col-md-offset-3">
@@ -97,10 +97,6 @@
 							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Browse", "entities"); ?>">More</a>	
 						</div>
 					</div>
-				</div>
-			</div>
-			<div class="blog-index">
-				<div class="posts-con">
 					<div href="#" class="indiv-blog">
 						<div class="post-image hpBgImgCollections"></div>
 						<div class="post-details">

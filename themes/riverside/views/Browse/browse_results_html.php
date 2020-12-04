@@ -51,7 +51,8 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	#$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$vn_result_size 	= $qr_res->numHits();
 	
 	
 	$va_options			= $this->getVar('options');
@@ -220,7 +221,9 @@ if (!$vb_ajax) {	// !ajax
 			</div>
 <?php
 		}
-
+		if($vs_table == "ca_objects"){
+			print "<div class='advancedSearchLink'>".caNavLink($this->request, 'Advanced Search', '', 'Search', 'Advanced', 'objects')."</div>";
+		}
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->

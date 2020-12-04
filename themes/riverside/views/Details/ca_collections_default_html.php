@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -62,7 +63,7 @@
 					{{{<ifdef code="ca_collections.coverageDates"><div class="unit"><label>Coverage Dates</label>^ca_collections.coverageDates</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.coverageSpacial"><div class="unit"><label>Spacial Coverage</label>^ca_collections.coverageSpacial</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.extent_text"><div class="unit"><label>Extent</label>^ca_collections.extent_text</div></ifdef>}}}
-					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Creators</label><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator"><div class="unit"><label>Creators</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 					{{{<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/biographical history element</label>^ca_collections.adminbiohist</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.originals_location"><div class="unit"><label>Existence and Location of Originals</label>^ca_collections.originals_location</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.scopecontent"><div class="unit"><label>Scope and Content</label>^ca_collections.scopecontent</div></ifdef>}}}
@@ -73,6 +74,30 @@
 					{{{<ifdef code="ca_collections.reproduction_conditions"><div class="unit"><label>Conditions Governing Reproduction</label>^ca_collections.reproduction_conditions</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.langmaterials"><div class="unit"><label>Languages and Scripts of the Material</label>^ca_collections.langmaterials</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.otherfindingaid"><div class="unit"><label>Other Finding Aids</label>^ca_collections.otherfindingaid</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.url.link_url"><div class="unit"><label>External Link</label><unit delimiter="<br/>"><a href="^ca_collections.url.link_url" target="_blank"><ifdef code="ca_collections.url.link_text">^ca_collections.url.link_text<ifdef><ifnotdef code="ca_collections.url.link_text">^ca_collections.url.link_url<ifnotdef></a</div></ifdef>}}}
+					
+<?php
+					$va_LcshSubjects = $t_item->get("ca_collections.lcsh_terms", array("returnAsArray" => true));
+					$va_LcshSubjects_processed = array();
+					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
+						foreach($va_LcshSubjects as $vs_LcshSubjects){
+							if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
+								$vs_url = "https://id.loc.gov".mb_substr($vs_LcshSubjects, strpos($vs_LcshSubjects, "/authorities"), -1);
+								$va_LcshSubjects_processed[] = "<a href='".$vs_url."' target='_blank'>".mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["))."</a>";
+							}else{
+								$va_LcshSubjects_processed[] = $vs_LcshSubjects;
+							}
+						}
+						$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
+					}
+					$vs_keywords = $t_item->get("ca_collections.internal_keywords", array("convertCodesToDisplayText" => true, "delimiter" => "<br/>"));
+					if($vs_LcshSubjects || $vs_keywords){
+						print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keywords) ? "<br/>" : "").$vs_keywords."</div>";	
+					}
+?>
+					
+					{{{<ifcount code="ca_entities" excludeRelationshipTypes="creator" min="1"><div class="unit"><label>Related Entities</label><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="creator"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+				
 				</div><!-- end col -->
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="2">

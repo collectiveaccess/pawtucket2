@@ -3,7 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$va_access_values = $this->getVar("access_values");
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -21,7 +21,7 @@
 					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
 					{{{<ifdef code="ca_occurrences.event_date"><H2>^event_date</H2></ifdef>}}}
 				</div>
-				<div class='col-sm-12 col-md-3'>
+				<div class='col-sm-12 col-md-3 text-center'>
 <?php
 				print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default btn-small", "", "Contact", "Form", array("table" => "ca_occurrences", "id" => $t_item->get("occurrence_id")))."</div>";
 ?>
@@ -30,13 +30,15 @@
 			<div class="row text-center">			
 				<div class='col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3'>
 <?php
-			if($va_dig_audio_recording = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "restrictToTypes" => "audio_digital", "checkAccess" => $va_access_values))){
+			$vb_media = false;
+			if($va_dig_audio_recording = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "restrictToTypes" => array("audio_digital"), "checkAccess" => $va_access_values))){
 ?>
 				<div class="unit">
 <?php
 				foreach($va_dig_audio_recording as $vn_dig_audio_recording_id){
 					$t_dig_audio = new ca_objects($vn_dig_audio_recording_id);
 					if($t_dig_audio_rep = $t_dig_audio->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
+						$vb_media = true;
 						$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_dig_audio->get('object_id'), 'representation_id' => $t_dig_audio_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => $va_access_values);			
 						print "<div class='unit'>".caRepresentationViewer(
 								$this->request, 
@@ -62,13 +64,14 @@
 <?php
 			}
 
-			if($va_dig_movingimage_recording = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "restrictToTypes" => "movingimage_digital", "checkAccess" => $va_access_values))){
+			if($va_dig_movingimage_recording = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "restrictToTypes" => array("movingimage_digital"), "checkAccess" => $va_access_values))){
 ?>
 				<div class="unit">
 <?php
 				foreach($va_dig_movingimage_recording as $vn_dig_movingimage_recording_id){
 					$t_dig_movingimage = new ca_objects($vn_dig_movingimage_recording_id);
 					if($t_dig_movingimage_rep = $t_dig_movingimage->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
+						$vb_media = true;
 						$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_dig_movingimage->get('object_id'), 'representation_id' => $t_dig_movingimage_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => $va_access_values);			
 						print "<div class='unit'>".caRepresentationViewer(
 								$this->request, 
@@ -90,6 +93,13 @@
 					}
 				}
 ?>
+				</div>
+<?php
+			}
+			if(!$vb_media && ($va_dig_movingimage_recording = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "restrictToTypes" => array("movingimage_digital", "audio_digital"), "checkAccess" => array(0))))){
+?>
+				<div class="unit"><br/>
+					<b>{{{event_rights_restrictions}}}</b>
 				</div>
 <?php
 			}
@@ -122,14 +132,32 @@
 					{{{<ifdef code="ca_occurrences.language"><div class="unit"><label>Language</label>^ca_occurrences.language%delimiter=,_</div></ifdef>}}}
 				</div>
 				<div class='col-sm-12 col-md-4'>
-					{{{<ifdef code="ca_occurrences.lcsh_terms"><div class="unit"><label>LOC Subject Headings</label>^ca_occurrences.lcsh_terms%delimiter=<br/></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.internal_keywords"><div class="unit"><label>Keywords</label>^ca_occurrences.internal_keywords%delimiter=<br/></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.lc_names"><div class="unit"><label>LOC Name Authority File</label>^ca_occurrences.lc_names%delimiter=<br/></div></ifdef>}}}
+					
+<?php
+					$va_LcshSubjects = $t_item->get("ca_occurrences.lcsh_terms", array("returnAsArray" => true));
+					$va_LcshSubjects_processed = array();
+					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
+						foreach($va_LcshSubjects as $vs_LcshSubjects){
+							if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
+								$vs_url = "https://id.loc.gov".mb_substr($vs_LcshSubjects, strpos($vs_LcshSubjects, "/authorities"), -1);
+								$va_LcshSubjects_processed[] = "<a href='".$vs_url."' target='_blank'>".mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["))."</a>";
+							}else{
+								$va_LcshSubjects_processed[] = $vs_LcshSubjects;
+							}
+						}
+						$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
+					}
+					$vs_keywords = $t_item->get("ca_occurrences.internal_keywords", array("convertCodesToDisplayText" => true, "delimiter" => "<br/>"));
+					if($vs_LcshSubjects || $vs_keywords){
+						print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keywords) ? "<br/>" : "").$vs_keywords."</div>";	
+					}
+?>
+					
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="subject" min="1"><div class="unit"><label>Entity Subjects</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="subject"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 										
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Related Collection<ifcount code="ca_collections" min="2">s</ifcount></label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					
-					{{{<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences.related" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.related.preferred_labels.name</l></unit></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences.related" min="2" restrictToTypes="event">s</ifcount>/Broadcast<ifcount code="ca_occurrences.related" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.related.preferred_labels.name</l></unit></div></ifcount>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">

@@ -147,7 +147,7 @@
 						<div class='resultItemColImg col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>".
 						caDetailLink($this->request, 
 							"<div class='resultContentImg'>
-								<div class='resultImageImg'>".$vs_rep_detail_link."</div>
+								<div class='resultImageImg'>".$vs_thumbnail."</div>
 								<div class='resultTextImg'>".$qr_res->getWithTemplate($vs_result_text_template)."</div>
 								{$vs_add_to_set_link}<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 							</div>", '', $vs_table, $vn_id, null, array("title" => "View: ".strip_tags($qr_res->get($vs_table.".preferred_labels"))))."
