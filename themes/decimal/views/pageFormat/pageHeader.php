@@ -161,6 +161,7 @@
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>
 					<!--<li <?php print (($this->request->getController() == "Contribute")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contribute"), "", "", "Contribute", "materials"); ?></li>-->
 					<li <?php print (($this->request->getController() == "Analytics")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Analytics"), "", "", "Analytics", "Index"); ?></li>
+					<li <?php print (($this->request->getController() == "Research")) ? 'class="active"' : ''; ?>><a href="/index.php/research">Research</a</li>
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "contact")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "contact"); ?></li>
 					<li><a href='http://www.decimallab.ca/'>Decimal</a></li>
 				</ul>

@@ -359,6 +359,7 @@ a.readmore-js-toggle::after {
 	color:#1a2e51;
 	font-size: 20px;
 	font-family: granville;
+	text-transform: capitalize;
 }
 a .exploreType .fa{
 	font-size:65px;
@@ -388,6 +389,7 @@ a.exploreBrowseTitle{
 	color:#1a2e51;
 	font-size: 20px;
 	font-family: granville;
+	text-transform: capitalize;
 }
 .exploreTypeItem{
 	text-align:center;
