@@ -15,16 +15,16 @@
 		<div class="col-sm-12 col-md-10 col-md-offset-1">
 			<div class='row'>
 				<div class="col-sm-3">
-					<a class="btn btn-default outline btn-large" href="#brands">Brands</a>
+					<?php print caNavLink($this->request, "Brands", "btn btn-default outline btn-large", "", "Collections", "index#brands"); ?>
 				</div>
 				<div class="col-sm-3">
-					<a class="btn btn-default outline btn-large" href="#othercollections">Corporate</a>
+					<?php print caNavLink($this->request, "Corporate", "btn btn-default outline btn-large", "", "Collections", "index#othercollections"); ?>
 				</div>
 				<div class="col-sm-3">
-					<a class="btn btn-default outline btn-large" href="#othercollections">Lauder Family</a>
+					<?php print caNavLink($this->request, "Lauder Family", "btn btn-default outline btn-large", "", "Collections", "index#othercollections"); ?>
 				</div>
 				<div class="col-sm-3">
-					<a class="btn btn-default outline btn-large" href="#othercollections">BCC</a>
+					<?php print caNavLink($this->request, "BCC", "btn btn-default outline btn-large", "", "Collections", "index#othercollections"); ?>
 				</div>
 			</div>
 			<div class='row'>
@@ -40,9 +40,9 @@
 	if($qr_collections && $qr_collections->numHits()) {
 ?>
 
-<a name="brands"></a>
 	<div class="row">
 		<div class='col-md-12'>
+			<a name="brands" style="top:-170px; position:absolute;"></a>
 			<h2>Brands</h2><hr/>
 		</div>
 	</div>

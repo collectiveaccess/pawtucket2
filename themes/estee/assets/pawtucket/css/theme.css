@@ -1028,8 +1028,9 @@ a.logout .material-icons{
 	padding-bottom:5px;
 }
 .filterChronologyButtons a, .filterChronologyButtons a:hover{
-	margin-right:10px;
+	margin-right:5px;
 	text-decoration:none;
+	margin-bottom:3px;
 }
 .filterChronologyButtons a:hover{
 	color:#FFF;
@@ -1039,7 +1040,11 @@ a.logout .material-icons{
 }
 @media (min-width: 768px) {
 	.filterChronologyButtons H4{
-		display:inline;
+		float:left;
+		line-height:1.3em;
+		height:2em;
+		margin-right:5px;
+		margin-top:5px;
 		margin-bottom:0px;
 	}
 }
@@ -1063,7 +1068,7 @@ a.logout .material-icons{
 	margin-top:10px;
 	margin-bottom:10px;
 }
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
 	.bChronoDownloadCol{
 		text-align:right;
 		margin-top:20px;
@@ -1083,7 +1088,7 @@ a.logout .material-icons{
 	margin-top:10px;
 	margin-bottom:10px;
 }
-@media (min-width: 992px) {
+@media (min-width: 1200px) {
 	.bChronoSearchWithin{
 		text-align:right;
 		margin-top:10px;

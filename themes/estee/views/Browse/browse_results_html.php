@@ -299,7 +299,7 @@ if($vb_ajax && $vb_show_chronology_filters){
 ?>
 	<div class="bChronologyHeading">
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col-lg-9">
 				<div class='filterChronologyButtons'><H4>Filter By: </H4>
 <?php
 					foreach($va_chrono_types_process as $va_chrono_type){
@@ -315,9 +315,10 @@ if($vb_ajax && $vb_show_chronology_filters){
 					print "<a href='#' class='btn btn-default".(($vb_chrono_filtered) ? " outline" : "")."' onClick='jQuery(\"#browseCollectionContainer\").load(\"".caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'facet' => 'collection_facet', 'id' => $vn_collection_id))."\"); return false;'>All</a>";
 				
 ?>
+					<div style="clear:both;"></div>
 				</div><!-- end filterChronologyButtons -->
 			</div>
-			<div class="col-md-4 bChronoSearchWithin">
+			<div class="col-lg-3 bChronoSearchWithin">
 				<div class="bSearchWithinContainer">
 					<form role="search" id="searchWithinChrono" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
 						<input type="text" class="form-control" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefineChrono"><button type="submit" class="btn-search-refine"><i class="material-icons">search</i></button>
@@ -328,7 +329,7 @@ if($vb_ajax && $vb_show_chronology_filters){
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-8 bChronoSearchCriteria">
+			<div class="col-lg-9 bChronoSearchCriteria">
 <?php
 				if(sizeof($va_search_within_terms)){
 					print "<H5>Search:";
@@ -339,7 +340,7 @@ if($vb_ajax && $vb_show_chronology_filters){
 				}
 ?>
 			</div>
-			<div class="col-md-4 bChronoDownloadCol">
+			<div class="col-lg-3 bChronoDownloadCol">
 				<div class="btn-group" id="bChronoDownloadDD">
 					<a href="#" data-toggle="dropdown" class="bChronoDownloadDDLink"><i class="material-icons inline">save_alt</i> Download</i></a>
 					<ul class="dropdown-menu" role="menu">
