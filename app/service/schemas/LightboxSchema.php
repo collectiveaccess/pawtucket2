@@ -30,6 +30,7 @@ namespace GraphQLServices\Schemas;
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 
 require_once(__CA_LIB_DIR__.'/Service/GraphQLSchema.php'); 
@@ -79,7 +80,15 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 					],
 					'content_type' => [
 						'type' => Type::string(),
-						'description' => 'Lightbox content type (Eg. objects)'
+						'description' => 'Lightbox content type as internal name (Eg. ca_objects)'
+					],
+					'content_type_singular' => [
+						'type' => Type::string(),
+						'description' => 'Lightbox content type for display, in singular (Eg. object)'
+					],
+					'content_type_plural' => [
+						'type' => Type::string(),
+						'description' => 'Lightbox content type for display, in plural (Eg. objects)'
 					]
 				]
 			]),		
@@ -94,6 +103,10 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 					'url' => [
 						'type' => Type::string(),
 						'description' => 'Media URL'
+					],
+					'tag' => [
+						'type' => Type::string(),
+						'description' => 'Media as HTML tag'
 					],
 					'width' => [
 						'type' => Type::string(),
@@ -137,7 +150,25 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::listOf($lightboxMediaVersionType),
 						'description' => 'Media'
 					],
+					'detailPageUrl' => [
+						'type' => Type::string(),
+						'description' => 'URL for page with detailed information about item'
+					]
 				
+				]
+			]),	
+			$lightboxSortOptionType = new ObjectType([
+				'name' => 'LightSortOption',
+				'description' => 'Sort option for items in lightbox',
+				'fields' => [
+					'label' => [
+						'type' => Type::string(),
+						'description' => 'Sort option label'
+					],
+					'sort' => [
+						'type' => Type::string(),
+						'description' => 'Sort option specification'
+					]
 				]
 			]),		
 			$lightboxContentsType = new ObjectType([
@@ -164,9 +195,87 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::string(),
 						'description' => 'Lightbox content type (Eg. objects)'
 					],
+					'item_count' => [
+						'type' => Type::int(),
+						'description' => 'Number of items in lightbox'
+					],
 					'items' => [
 						'type' => Type::listOf($lightboxItemType),
 						'description' => 'Lightbox items'
+					],
+					'sortOptions' => [
+						'type' => Type::listOf($lightboxSortOptionType),
+						'description' => 'Lightbox item sort options'
+					]
+				]
+			]),
+			$lightboxAccessType = new ObjectType([
+				'name' => 'LightboxAccess',
+				'description' => 'User access to lightbox',
+				'fields' => [
+					'access' => [
+						'type' => Type::int(),
+						'description' => 'Access level'
+					]
+				]
+			]),	
+			$lightboxMutationStatusType = new ObjectType([
+				'name' => 'LightboxMutationStatus',
+				'description' => 'Information relating to update of lightbox metadata',
+				'fields' => [
+					'id' => [
+						'type' => Type::int(),
+						'description' => 'Lightbox ID'
+					],
+					'name' => [
+						'type' => Type::string(),
+						'description' => 'Lightbox name'
+					],
+					'count' => [
+						'type' => Type::int(),
+						'description' => 'Number of items in lightbox',
+						'default' => null
+					],
+				]
+			]),
+			$lightboxCreateInputType = new InputObjectType([
+				'name' => 'LightboxCreateInputType',
+				'fields' => [
+					'name' => [
+						'type' => Type::string(),
+						'description' => 'Lightbox name'
+					],
+					'code' => [
+						'type' => Type::string(),
+						'description' => 'Lightbox code',
+						'default' => ''
+					]
+				]
+			]),
+			$lightboxEditInputType = new InputObjectType([
+				'name' => 'LightboxEditInputType',
+				'fields' => [
+					'name' => [
+						'type' => Type::string(),
+						'description' => 'Lightbox name'
+					]
+				]
+			]),
+			$lightboxReorderInputType = new InputObjectType([
+				'name' => 'LightboxReorderInputType',
+				'fields' => [
+					'sorted_ids' => [
+						'type' => Type::string(),
+						'description' => 'Sorted lightbox item_ids'
+					]
+				]
+			]),
+			$lightboxItemListInputType = new InputObjectType([
+				'name' => 'LightboxItemListInputType',
+				'fields' => [
+					'ids' => [
+						'type' => Type::string(),
+						'description' => 'Lightbox item ids, separated by ampersands, commas or semicolons.'
 					]
 				]
 			])

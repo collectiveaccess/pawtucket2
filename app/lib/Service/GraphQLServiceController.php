@@ -32,6 +32,7 @@ use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type; 
 use GraphQL\Error\DebugFlag;
+use GraphQL\Error\FormattedError;
 use \Firebase\JWT\JWT;
 
 require_once(__CA_LIB_DIR__.'/Service/BaseServiceController.php');
@@ -53,9 +54,9 @@ class GraphQLServiceController extends \BaseServiceController {
 	/**
 	 *
 	 */
-	public function resolve($queryType){
+	public function resolve($queryType, $mutationType=null){
 		$schema = new Schema([
-			'query' => $queryType
+			'query' => $queryType, 'mutation' => $mutationType
 		]);
 
 		$rawInput = file_get_contents('php://input');
@@ -69,7 +70,15 @@ class GraphQLServiceController extends \BaseServiceController {
 			// TODO: make debug mode configurable
 			$debug = DebugFlag::INCLUDE_DEBUG_MESSAGE | DebugFlag::INCLUDE_TRACE;
 			
-			$result = GraphQL::executeQuery($schema, $query, $rootValue, null, $variableValues);
+			$errorFormatter = function(\GraphQL\Error\Error $error) {
+				$formattedError =  FormattedError::createFromException($error);
+				if($error->getMessage() === 'Expired token') {
+					$formattedError['expiredToken'] = true;
+				}
+				return $formattedError;
+			};
+			
+			$result = GraphQL::executeQuery($schema, $query, $rootValue, null, $variableValues)->setErrorFormatter($errorFormatter);
 			$output = $result->toArray($debug);
 		} catch (\Exception $e) {
 			$output = [
@@ -91,7 +100,11 @@ class GraphQLServiceController extends \BaseServiceController {
 			http_response_code(500);
 		}
 		if($result->errors) {
-			http_response_code(500);
+			if(isset($output['errors'][0]['expiredToken']) && $output['errors'][0]['expiredToken']) {
+				http_response_code(401);
+			} else {
+				http_response_code(500);
+			}
 		}
 		
 		if(intval($this->request->getParameter("pretty",pInteger))>0){
@@ -107,6 +120,8 @@ class GraphQLServiceController extends \BaseServiceController {
 	 *
 	 */
 	public static function encodeJWT(array $data, array $options=null) {
+		if(!is_array($options)) { $options = []; }
+		
 		$config = \Configuration::load();
 		$key = $config->get('graphql_services_jwt_token_key');
 		$exp_offset = caGetOption('refresh', $options, false) ? 
@@ -116,14 +131,7 @@ class GraphQLServiceController extends \BaseServiceController {
 			
 		if ($exp_offset <= 0) { $exp_offset = 900; }
 		
-		$payload = array_merge([
-			'iss' => __CA_SITE_HOSTNAME__,
-			'aud' => __CA_SITE_HOSTNAME__,
-			'iat' => $t=time(),
-			'nbf' => $t,
-			'exp' => $t + $exp_offset
-		], $data);
-		return JWT::encode($payload, $key);
+		return \Session::encodeJWT($data, $key, array_merge($options, ['lifetime' => $exp_offset]));
 	}
 	# ------------------------------------------------------
 	/**
@@ -136,9 +144,10 @@ class GraphQLServiceController extends \BaseServiceController {
 	/**
 	 *
 	 */
-	public static function decodeJWT($jwt) {
+	public static function decodeJWT(string $jwt) {
 		$key = \Configuration::load()->get('graphql_services_jwt_token_key');
-		return JWT::decode($jwt, $key, ['HS256']);
+		
+		return \Session::decodeJWT($jwt, $key);
 	}
 	# -------------------------------------------------------
 	/**
