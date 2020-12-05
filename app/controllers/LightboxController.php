@@ -139,6 +139,9 @@
 			$this->opo_result_context->setAsLastFind();
 			
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name));
+			
+			// API key
+			$this->view->setVar('key', GraphQLServices\GraphQLServiceController::encodeJWTRefresh(['id' => $this->request->user->getPrimaryKey()]));
  			
  			$this->render(caGetOption("view", $pa_options, "Lightbox/index_html.php"));
  		}
@@ -670,11 +673,13 @@
 			}
 			$t_set = new ca_sets($set_id);
             if($t_set->isLoaded()){
-				$va_row_ids = array_filter(array_map(function($v) { return (int)$v; }, explode('&', $r=$this->request->getParameter('row_ids', pString))), function($v) { return ($v > 0); });
+				$va_row_ids = array_filter(
+					array_map(function($v) { return (int)$v; }, 
+					explode('&', $r=$this->request->getParameter('row_ids', pString))), function($v) { return ($v > 0); });
 				
-				$va_errors = $t_set->reorderItems($va_row_ids, ['user_id' => $this->request->getUserID()]);
+				$errors = $t_set->reorderItems($va_row_ids, ['user_id' => $this->request->getUserID()]);
 				if(is_array($errors) && sizeof($errors)) {
-					$data = ['status' => 'err', 'error' => _t("There was an error").": ".join('; ', $va_errors)];
+					$data = ['status' => 'err', 'error' => _t("There was an error").": ".join('; ', $errors)];
 				} else {
 					$data = ['status' => 'ok', 'message' => _t("Reordered items for %1", $this->ops_lightbox_display_name, $r)];
 				}

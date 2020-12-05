@@ -12,8 +12,8 @@
 * From react-sortable-hoc: for drag and drop capability
 *    SortableHandle
 *    SortableElement
-* 	  SortableContainer
-* 	  arrayMove
+* 	 SortableContainer
+* 	 arrayMove
 *
 * Props are:
 * 		view : view format to use for display of results
@@ -31,9 +31,10 @@ import ReactDOM from "react-dom";
 import { LightboxContext } from '../Lightbox';
 
 import {SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import arrayMove from 'array-move';
+import arrayMove from 'array-move'; //used for the react-sortable-hoc
 import qs from 'qs';
 
+import { reorderLightboxItems } from "../../../default/js/lightbox";
 import { initBrowseResults } from "../../../default/js/browse";
 import { CommentForm, CommentFormMessage, CommentsTagsList } from ".././comment";
 
@@ -47,7 +48,7 @@ const axios = require('axios');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 const appData = pawtucketUIApps.Lightbox.data;
-const baseUrl = appData.baseUrl; // =  /index.php/Lightbox
+const baseUrl = appData.baseUrl;
 
 const DragHandle = SortableHandle(() => {
 	return(<div style={{outline: '1px solid darkgrey'}}>
@@ -89,11 +90,12 @@ class LightboxResults extends React.Component {
 		this.updateOrderedIds = this.updateOrderedIds.bind(this);
 		this.postOnSortEnd = this.postOnSortEnd.bind(this);
 
-    this.saveFromSortOptions = this.saveFromSortOptions.bind(this);
+    this.saveOrderFromSortOptions = this.saveOrderFromSortOptions.bind(this);
     this.cancelSaveFromSortOptions = this.cancelSaveFromSortOptions.bind(this);
 
 	}
 
+	//required function for react-sortable-hoc, saves the newly drag-sorted position
 	onSortEnd = ({ oldIndex, newIndex }) => {
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			this.setState({
@@ -110,26 +112,27 @@ class LightboxResults extends React.Component {
 		}
 
     this.postOnSortEnd()
-		// console.log("On Sort End State resultList: ", this.state.resultList)
-		// console.log('On Sort End State orderedIds', this.state.orderedIds);
 	};
 
+	//function to reorder the lightbox items
 	postOnSortEnd = () => {
-		axios.post(baseUrl + '/reorderItems' + '/set_id', qs.stringify({
-			set_id: this.context.state.set_id,
-			row_ids: this.state.orderedIds.join('&')
-		})).then((response) => {
-		  // console.log('response: ', response);
-    });
+		const tokens = this.context.state.tokens;
+		const set_id = this.context.state.id;
+		const sorted_ids = this.state.orderedIds.join('&');
+		const name = this.context.state.lightboxList[set_id].title;
+
+		reorderLightboxItems(baseUrl, tokens, set_id, sorted_ids, name, function(data){
+			console.log('reorderLightboxItems: ', data);
+		});
   }
 
+	//function to update the local state resultList
 	updateResultList = (arr, callback) => {
 		this.setState({resultList: arr})
 		callback()
-		// console.log("Before Sort Start State resultList: ", this.state.resultList)
-		// console.log('Before Sort Start State orderedIds', this.state.orderedIds);
 	}
 
+	//gets the current order of object id's pertaining to the resultList of a lightbox
 	updateOrderedIds = () => {
 		let orderedIds = []
 		if (this.state.resultList && this.state.resultList.length > 0) {
@@ -140,28 +143,32 @@ class LightboxResults extends React.Component {
 		this.setState({orderedIds: orderedIds})
 	}
 
-  saveFromSortOptions(arr){
-    let orderedIds = []
-      arr.map(item => {
-        orderedIds.push(item.props.data.id)
-      });
-      // console.log(orderedIds);
-      //'http://metabolic2.whirl-i-gig.com:8085/index.php/Lightbox/reorderItems'
-      axios.post(baseUrl + '/reorderItems' + '/set_id', qs.stringify({
-  			set_id: this.context.state.set_id,
-  			row_ids: orderedIds.join('&')
-  		})).then((response) => {
-  		  console.log('response: ', response);
-      });
+	// saves the order of the results from the sort options dropdown
+	saveOrderFromSortOptions(arr){
+		let orderedIds = []
+			arr.map(item => {
+				orderedIds.push(item.props.data.id)
+			});
 
-    this.context.setState({showSortSaveButton: false})
-  }
+			const tokens = this.context.state.tokens;
+			const set_id = this.context.state.id;
+			const sorted_ids = orderedIds.join('&');
+			const name = this.context.state.lightboxList[set_id].title;
 
+			reorderLightboxItems(baseUrl, tokens, set_id, sorted_ids, name, function(data){
+				console.log('reorderLightboxItems: ', data);
+			});
+
+		this.context.setState({showSortSaveButton: false})
+	}
+
+	//Cancel saveOrderFromSortOptions
   cancelSaveFromSortOptions(){
     this.context.setState({showSortSaveButton: false})
   }
 
 	render() {
+		// console.log('Context State: ', this.context.state);
 		let resultList = [];
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
@@ -183,7 +190,7 @@ class LightboxResults extends React.Component {
             {/* TODO: put save sort button in lightbox controls, needs to have access to the order of the item Id's first */}
               {this.context.state.showSortSaveButton == true ?
                 <div>
-                  <button type="button" className="btn btn-success" onClick={() => this.saveFromSortOptions(resultList)} style={{marginLeft: '6px'}}> Save Sort Permanently</button>
+                  <button type="button" className="btn btn-success" onClick={() => this.saveOrderFromSortOptions(resultList)} style={{marginLeft: '6px'}}> Save Sort Permanently</button>
                   <button type="button" className="btn btn-danger" onClick={() => this.cancelSaveFromSortOptions()} style={{marginLeft: '6px'}}>Cancel</button>
                 </div>
                 :
@@ -203,7 +210,10 @@ class LightboxResults extends React.Component {
 							<LightboxResultLoadMoreButton
                 start={this.context.state.start}
 								itemsPerPage={this.context.state.itemsPerPage}
-								size={this.context.state.resultSize}
+								size={this.context.state.totalSize}
+								baseUrl={baseUrl}
+								id={this.context.state.id}
+								tokens={this.context.state.tokens}
 								loadMoreHandler={this.context.loadMoreResults}
 								loadMoreRef={this.context.loadMoreRef}
               />
@@ -306,7 +316,7 @@ class ShareBlock extends React.Component {
 		return {
 			users: '',
 			access: '',
-			set_id: this.props.setID
+			id: this.props.setID
 		};
 	}
 

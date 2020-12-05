@@ -19,7 +19,7 @@ const appData = pawtucketUIApps.Lightbox.data;
 class LightboxExportOptions extends React.Component {
 	constructor(props) {
 		super(props);
-    
+
     LightboxExportOptions.contextType = LightboxContext;
 	}
 
@@ -27,17 +27,33 @@ class LightboxExportOptions extends React.Component {
 		let exportOptions = [];
 		let exportFormats = null;
 		exportFormats = appData.exportFormats;
+
 		if(exportFormats) {
 			for (let i in exportFormats) {
 				let r = exportFormats[i];
-				exportOptions.push(<a className="dropdown-item" href={appData.baseUrl + '/getContent/getResult/1/download/1/view/' + r.type + '/export_format/' + r.code + '/key/' + this.context.state.key + '/record_ids/' + ((this.context.state.selectedItems.length > 0) ? this.context.state.selectedItems.join(';') : "")} key={i}>{r.name}</a>);
+				exportOptions.push(
+          <a
+            className="dropdown-item"
+            href={appData.siteBaseUrl + '/getContent/getResult/1/download/1/view/' + r.type + '/export_format/' + r.code + '/key/' + this.context.state.key + '/record_ids/' + ((this.context.state.selectedItems.length > 0) ? this.context.state.selectedItems.join(';') : "")}
+            key={i}>{r.name}</a>
+        );
 			}
 		}
+
 		if(this.context.state.selectedItems.length == 0){
-			exportOptions.push(<a className="dropdown-item" href={appData.baseUrl + '/getSetMedia/set_id/' + this.context.state.set_id + '/key/' + this.context.state.key + '/sort/' + this.context.state.sort + '/sort_direction/' + this.context.state.sortDirection} key='dlMedia'>Download media</a>);
+			exportOptions.push(
+        <a
+          className="dropdown-item"
+          href={appData.siteBaseUrl + '/getSetMedia/set_id/' + this.context.state.set_id + '/key/' + this.context.state.key + '/sort/' + this.context.state.sort + '/sort_direction/' + this.context.state.sortDirection}
+          key='dlMedia'>Download media</a>
+      );
 		}else{
-			exportOptions.push(<a className="dropdown-item" href={appData.baseUrl + '/getSetMedia/set_id/' + this.context.state.set_id + '/record_ids/' + this.context.state.selectedItems.join(';')} key='dlMedia'>Download selected media</a>);
+			exportOptions.push(
+        <a
+          className="dropdown-item"
+          href={appData.siteBaseUrl + '/getSetMedia/set_id/' + this.context.state.set_id + '/record_ids/' + this.context.state.selectedItems.join(';')} key='dlMedia'>Download selected media</a>);
 		}
+
 		return (
 			<div id="bExportOptions">
 				<div className="dropdown show">

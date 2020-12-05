@@ -29,33 +29,41 @@ class LightboxDragAndDrop extends React.Component {
 	}
 
   changeDragDrop(){
-    this.context.setState({dragDropMode: true, showSaveButton: false})
-    this.setState({currentlyDragging: true})
+    // this.context.setState({dragDropMode: true, showSaveButton: false})
+    this.context.setState({ dragDropMode: true })
+    this.setState({ currentlyDragging: true })
   }
 
   saveDragDrop(){
     this.context.setState({dragDropMode: false})
-    this.setState({currentlyDragging: false})
+    this.setState({currentlyDragging: false, showSelectButtons: false})
   }
 
   render() {
-    return(
-      <div id='dragAndDrop'>
+    if(this.context.state.userAccess == 2 ){
+      return(
+        <div id='dragAndDrop'>
 
-        {this.state.currentlyDragging == true ?
-          ' '
-          :
-          <button type='button' className='btn btn-secondary' onClick={this.changeDragDrop} style={{marginLeft: '6px'}}>Drag Sort</button>
-        }
+          {this.state.currentlyDragging == true ?
+            ' '
+            :
+            <button
+            type='button'
+            className={(this.context.state.showSelectButtons) ? "btn btn-secondary disabled" : "btn btn-secondary"} disabled={(this.context.state.showSelectButtons) ? "disabled" : ""}
+            onClick={this.changeDragDrop} style={{marginLeft: '6px'}}> Drag Sort </button>
+          }
 
-        {this.context.state.dragDropMode == true ?
-          <button type='button' className='btn btn-success' onClick={this.saveDragDrop} style={{marginLeft: '6px'}}>Save Sort</button>
-          :
-          ' '
-        }
+          {this.context.state.dragDropMode == true ?
+            <button type='button' className='btn btn-success' onClick={this.saveDragDrop} style={{marginLeft: '6px'}}>Save Sort</button>
+            :
+            ' '
+          }
 
-      </div>
-    )
+        </div>
+      )
+    }else{
+      return('');
+    }
   }
 }
 

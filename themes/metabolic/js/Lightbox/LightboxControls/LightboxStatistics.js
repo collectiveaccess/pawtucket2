@@ -22,12 +22,13 @@ class LightboxStatistics extends React.Component {
 	}
 
 	render() {
-		if (this.context.state.resultSize === 0) {
+		let resultSize = this.context.state.totalSize ? this.context.state.totalSize : 0;
+		if (resultSize === 0) {
 			return(<h2 className="my-2">No Items</h2>);
 		}else{
 			return(
-				<h2 className="my-2">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-					"1 Item" : this.context.state.resultSize + " Items") : <div className="text-center">Loading...</div>}</h2>
+				<h2 className="my-2">{(resultSize !== null) ? ((resultSize == 1) ?
+					"1 Item" : resultSize + " Items") : <div className="text-center">Loading...</div>}</h2>
 			);
 		}
 	}

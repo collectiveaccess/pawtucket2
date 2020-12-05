@@ -291,6 +291,7 @@
 			if (sizeof($sort_directions) !== sizeof($sort_fields)) {
 				$sort_directions = array_pad($sort_directions, sizeof($sort_fields), "asc");
 			}
+			$sort_directions = array_map(function($v) { return strtolower($v); }, $sort_directions);
 			
 			$sorted_hits = $sort_key_values = [];
 			$qr_sort = $set_id = null;

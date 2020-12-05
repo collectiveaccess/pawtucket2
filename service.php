@@ -35,8 +35,9 @@
 
 	$app = AppController::getInstance();
 
-	$req = $app->getRequest();
+	$g_request = $req = $app->getRequest();
 	$resp = $app->getResponse();
+	
 
 	// Prevent caching
 	$resp->addHeader('Access-Control-Allow-Origin', '*');

@@ -63,7 +63,7 @@ class LightboxControls extends React.Component {
 
 	render() {
 		let c  = (this.context.state.resultSize === null);
-		console.log('Context', this.context);
+		// console.log('Context', this.context);
 		return(
 			<div className="row">
 				<div className="col-md-6">

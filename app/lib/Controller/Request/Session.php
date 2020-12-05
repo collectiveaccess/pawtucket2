@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2019 Whirl-i-Gig
+ * Copyright 2000-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -30,10 +30,11 @@
  * ----------------------------------------------------------------------
  */
  
+ use \Firebase\JWT\JWT;
+ 
  /**
   *
   */
- 
 require_once(__CA_LIB_DIR__."/ApplicationError.php");
 require_once(__CA_LIB_DIR__."/Configuration.php");
 require_once(__CA_LIB_DIR__."/Db.php");
@@ -320,6 +321,45 @@ class Session {
 		list($em, $et) = explode(" ",microtime());
 
 		return sprintf("%4.{$pn_decimal_places}f", (($et+$em) - ($st+$sm)));
+	}
+	# ----------------------------------------
+	/**
+	 *
+	 */
+	public static function encodeJWT(array $data, string $key=null, array $options=null) {
+		$config = Configuration::load();
+		if(!$key) { $key = $config->get('jwt_token_key'); }
+		$exp_offset = caGetOption('refresh', $options, false) ? 
+			caGetOption('lifetime', $options, (int)$config->get('jwt_access_token_lifetime'))
+			: 
+			caGetOption('lifetime', $options, (int)$config->get('jwt_refresh_token_lifetime'));
+			
+		if ($exp_offset <= 0) { $exp_offset = 900; }
+		
+		$payload = array_merge([
+			'iss' => __CA_SITE_HOSTNAME__,
+			'aud' => __CA_SITE_HOSTNAME__,
+			'iat' => $t=time(),
+			'nbf' => $t,
+			'exp' => ($exp_offset > 0) ? $t + $exp_offset : null
+		], $data);
+		return JWT::encode($payload, $key);
+	}
+	# ----------------------------------------
+	/**
+	 *
+	 */
+	public static function encodeJWTRefresh(array $data, string $key=null, array $options=null) {
+		if(!is_array($options)) { $options = []; }
+		return self::encodeJWT($data, $key, array_merge($options, ['refresh' => true]));
+	}
+	# ----------------------------------------
+	/**
+	 *
+	 */
+	public static function decodeJWT(string $jwt, string $key) {
+		if (!$key) { $key = Configuration::load()->get('jwt_token_key'); }
+		return JWT::decode($jwt, $key, ['HS256']);
 	}
 	# ----------------------------------------
 }

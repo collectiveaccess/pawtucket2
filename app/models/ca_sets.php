@@ -1333,21 +1333,84 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	/**
 	 * Removes all instances of the specified set item from the set as specified by the row_id
 	 *
-	 * @param int $pn_row_id The row_id of the item to remove
-	 * @param int $pn_user_id Option user_id of user to check set access for; if no user_id is specified then no access checking is done
+	 * @param int $row_id The row_id of the item to remove
+	 * @param int $user_id Optional user_id of user to check set access for; if no user_id is specified then no access checking is done
 	 * @return bool True on success, false if an error occurred
 	 */
-	public function removeItem($pn_row_id, $pn_user_id=null) {
-		if(!($vn_set_id = $this->getPrimaryKey())) { return null; }
-		if ($pn_user_id && (!$this->haveAccessToSet($pn_user_id, __CA_SET_EDIT_ACCESS__))) { return false; }
+	public function removeItem(int $row_id, int $user_id=null) {
+		if(!($set_id = $this->getPrimaryKey())) { return null; }
+		if ($user_id && (!$this->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__))) { return false; }
 		
 		$t_item = new ca_set_items();
-		$t_item->setMode(ACCESS_WRITE);
-		while ($t_item->load(array('set_id' => $this->getPrimaryKey(), 'row_id' => $pn_row_id))) {
+		if ($t_item->load(['set_id' => $set_id, 'row_id' => $row_id])) {
 			$t_item->delete(true);
 			if ($t_item->numErrors()) {
 				$this->errors = $t_item->errors;
 				return false;
+			}
+		}
+		return true;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Removes all instances of the specified set items from the set as specified by row_ids
+	 *
+	 * @param array $row_id List of row_ids to remove
+	 * @param int $user_id Optional user_id of user to check set access for; if no user_id is specified then no access checking is done
+	 * @return bool True on success, false if an error occurred
+	 */
+	public function removeItems(array $row_ids, int $user_id=null) {
+		if(!($set_id = $this->getPrimaryKey())) { return null; }
+		if ($user_id && (!$this->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__))) { return false; }
+		
+		$t_item = new ca_set_items();
+		foreach($row_ids as $row_id) {
+			if ($t_item->load(['set_id' => $set_id, 'row_id' => $row_id])) {
+				$t_item->delete(true);
+				if ($t_item->numErrors()) {
+					$this->errors = $t_item->errors;
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Transfers items in currently loaded set with specified row_ids to specified set.
+	 *
+	 * @param mixed $set set_id or set_code of set to transfer items to
+	 * @param array $row_id List of row_ids to transfer
+	 * @param int $user_id Optional user_id of user to check set access for; if no user_id is specified then no access checking is done
+	 * @return bool True on success, false if an error occurred
+	 */
+	public function transferItemsTo($set, array $row_ids, int $user_id=null) {
+		if(!($set_id = $this->getPrimaryKey())) { return null; }
+		if ($user_id && (!$this->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__))) { return false; }
+		
+		$t_dest_set = null;
+		if (is_numeric($set)) {
+			$t_dest_set = ca_sets::find(['set_id' => $set], ['returnAs' => 'firstModelInstance']);
+		}
+		if(!$t_dest_set) {
+			$t_dest_set = ca_sets::find(['set_code' => $set], ['returnAs' => 'firstModelInstance']);
+		}
+		if (!$t_dest_set) { 
+			throw new ApplicationException(_t('Invalid set_id'));
+		}
+		if ($user_id && (!$t_dest_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__))) { return false; }
+		
+		$t_item = new ca_set_items();
+		
+		$dest_set_id = $t_dest_set->getPrimaryKey();
+		foreach($row_ids as $row_id) {
+			if ($t_item->load(['set_id' => $set_id, 'row_id' => $row_id])) {
+				$t_item->set('set_id', $dest_set_id);
+				$t_item->update();
+				if ($t_item->numErrors()) {
+					$this->errors = $t_item->errors;
+					return false;
+				}
 			}
 		}
 		return true;
@@ -1669,6 +1732,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *			user_id = user_id of the current user; used to determine what may be shown
 	 *			thumbnailVersions = A list of of a media versions to return with each item. Only used if the set content type is ca_objects.
 	 *			thumbnailVersion = Same as 'thumbnailVersions' except it is a single value. (Maintained for compatibility with older code.)
+	 *			start = 
 	 *			limit = Limits the total number of records to be returned
 	 *			checkAccess = An array of row-level access values to check set members for, often produced by the caGetUserAccessValues() helper. Set members with access values not in the list will be omitted. If this option is not set or left null no access checking is done.
 	 *			returnRowIdsOnly = If true a simple array of row_ids (keys of the set members) for members of the set is returned rather than full item-level info for each set member. IDs are keys in the returned array.
@@ -1697,6 +1761,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		
 		$o_db = $this->getDb();
 		
+		$sort = caGetOption('sort', $pa_options, null);
+		
 		$t_rel_label_table = null;
 		if (!($t_rel_table = Datamodel::getInstanceByTableNum($this->get('table_num'), true))) { return null; }
 		if (method_exists($t_rel_table, 'getLabelTableName')) {
@@ -1714,7 +1780,11 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		
 		$vs_limit_sql = '';
 		if (isset($pa_options['limit']) && ($pa_options['limit'] > 0)) {
-			$vs_limit_sql = "LIMIT ".$pa_options['limit'];
+			if (isset($pa_options['start']) && ($pa_options['start'] > 0)) {
+				$vs_limit_sql = "LIMIT ".$pa_options['start'].", ".$pa_options['limit'];
+			} else {
+				$vs_limit_sql = "LIMIT ".$pa_options['limit'];
+			}
 		}
 		$vs_item_ids_sql = '';
 		if (isset($pa_options['item_ids']) && (is_array($pa_options['item_ids'])) && (sizeof($pa_options['item_ids']) > 0)) {
@@ -1839,21 +1909,25 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			$qr_res->seek(0);
 		}
 		$va_items = array();
+		$row_ids = [];
 
 		while($qr_res->nextRow()) {
 			$va_row = $qr_res->getRow();
+			$row_ids[] = $va_row['row_id'];
 			
 			unset($va_row['media']);
 			
 			if (
-				(isset($pa_options['returnRowIdsOnly']) && ($pa_options['returnRowIdsOnly']))
+				!$sort 
+				&&
+				((isset($pa_options['returnRowIdsOnly']) && ($pa_options['returnRowIdsOnly']))
 				||
-				(isset($pa_options['idsOnly']) && ($pa_options['idsOnly']))
+				(isset($pa_options['idsOnly']) && ($pa_options['idsOnly'])))
 			) {
 				$va_items[$qr_res->get('row_id')] = true;
 				continue;
 			}
-			if (isset($pa_options['returnItemIdsOnly']) && ($pa_options['returnItemIdsOnly'])) {
+			if (!$sort && isset($pa_options['returnItemIdsOnly']) && ($pa_options['returnItemIdsOnly'])) {
 				$va_items[$qr_res->get('item_id')] = true;
 				continue;
 			}
@@ -1931,6 +2005,24 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 		
 			$va_items[$qr_res->get('item_id')][($qr_res->get('rel_locale_id') ? $qr_res->get('rel_locale_id') : 0)] = $va_row;
 		}
+		
+		if ($sort) {
+			$qr_sort = caMakeSearchResult($t_rel_table->tableName(), $row_ids, ['sort' => $sort, 'sortDirection' => caGetOption('sortDirection', $pa_options, null)]);
+			$sorted_row_ids = $qr_sort->getAllFieldValues($t_rel_table->primaryKey());
+			$sorted_items = [];
+			$pk = $t_rel_table->primaryKey();
+			foreach($sorted_row_ids as $r) {
+				foreach($va_items as $k => $v) {
+					$locale_id = array_shift(array_keys($v));
+					if ($v[$locale_id][$pk] == $r) {
+						$sorted_items[$k] = $v;
+						break;
+					}
+				}
+			}
+			$va_items = $sorted_items;
+		}
+		
 		
 		if (caGetOption('idsOnly', $pa_options, false)) {
 			return array_keys($va_items);

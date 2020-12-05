@@ -21,12 +21,13 @@ import { LightboxContext } from '../../Lightbox'
 import EasyEdit from 'react-easy-edit';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { editLightbox, getLightboxAccessForCurrentUser } from "../../../../default/js/lightbox";
+import { editLightbox, deleteLightbox, createLightbox, getLightboxAccessForCurrentUser } from "../../../../default/js/lightbox";
 
 class LightboxListItem extends React.Component {
 	constructor(props) {
 		super(props);
-   		LightboxListItem.contextType = LightboxContext
+
+   	LightboxListItem.contextType = LightboxContext
 
 		this.state = {
 			deleting: false,
@@ -41,23 +42,24 @@ class LightboxListItem extends React.Component {
 
 	openLightbox(e) {
 		this.context.state.resultList = null;
-		let set_id = e.target.attributes.getNamedItem('data-set_id').value;
+		let id = e.target.attributes.getNamedItem('data-id').value;
 		let state = this.context.state;
-		state.set_id = set_id;
-		if(!state.filters) { state.filters = {}; }
-		if(!state.filters['_search']) { state.filters = {'_search': {}}; }
-		state.filters['_search']['ca_sets.set_id:' + set_id] = 'Lightbox: ' + state.lightboxList.sets[set_id].label;
+		state.id = id;
+
+		// if(!state.filters) { state.filters = {}; }
+		// if(!state.filters['_search']) { state.filters = {'_search': {}}; }
+		// state.filters['_search']['ca_sets.set_id:' + id] = 'Lightbox: ' + state.lightboxList[id].title;
+
 		state.selectedItems = [];
 		state.showSelectButtons = false;
 		this.context.setState(state);
-		this.context.reloadResults(state.filters, false);
+		this.context.loadLightbox(id);
 
 		let that = this;
-		getLightboxAccessForCurrentUser(this.context.props.baseUrl, set_id, function(resp) {
-			if(resp && resp['ok']) {
+		getLightboxAccessForCurrentUser(this.context.props.baseUrl, id, this.context.state.tokens, function(resp) {
+			if(resp && (resp['access'] !== undefined)) {
 				let state = that.state;
 				// TODO: For some reason it gives type error when using this.state
-
 				if(resp['access']){
 					state.userAccess = resp['access'];
 					that.context.setState(state);
@@ -68,29 +70,26 @@ class LightboxListItem extends React.Component {
 
 	saveNewLightbox(name) {
 		let that = this;
-		this.context.saveNewLightbox({'name': name}, function(resp) {
-			let state = that.state;
-			if (resp && resp['err']) {
-				state['newLightboxError'] = resp['err'];
-				if(that.props.newLightboxRef && that.props.newLightboxRef.current) {
-					that.props.newLightboxRef.current.onClick();
-				}
-			} else {
-				state['newLightboxError'] = null;
-			}
-			that.setState(state);
+		createLightbox(this.props.baseUrl, this.props.tokens, name, function(resp) {
+  		delete(that.context.state.lightboxList[-1]);
+
+  		let lightboxList = that.context.state.lightboxList;
+  		lightboxList[resp.id] = {
+  			id: resp.id, title: resp.name, count: 0
+  		// TODO: add author_lname and created
+	  	};
+			that.context.setState({lightboxlist: lightboxList});
 		});
 	}
 
 	saveLightboxEdit(name) {
 		let that = this;
-		editLightbox(this.context.props.baseUrl, {'name': name, set_id: this.props.data.set_id }, function(resp) {
-			// TODO: display potential errors
-
+		editLightbox(this.context.props.baseUrl, this.context.state.tokens, this.props.data.id, name, function(data) {
+			// console.log("saveLightboxEdit ", data);
 			// Update name is context state
-			let state = that.context.state;
-			state.lightboxList.sets[that.props.data.set_id]['label'] = name;
-			that.context.setState(state);
+			let lightboxList = that.context.state.lightboxList;
+			lightboxList[that.props.data.id]['title'] == name;
+			that.context.setState({lightboxlist: lightboxList});
 		});
 	}
 
@@ -100,20 +99,10 @@ class LightboxListItem extends React.Component {
 			customUI: ({ onClose }) => {
 				return (
 					<div className='col info text-gray'>
-						<p>Really delete collection <em>{this.props.data.label}</em>?</p>
-
-						<div className='button'
-							onClick={() => {
-								let state = that.state;
-								state.deleting = true;
-								that.setState(state);
-								// TODO: For some reason it gives type error when using this.setState
-
-								that.props.deleteCallback(that.props.data);
-								onClose();
-							}}>
-							Yes
-						</div>
+						<p>Really delete collection <em>{this.props.data.title}</em>?</p>
+						<div className='button' onClick={() => {
+							that.props.deleteCallback(that.props.data);
+							onClose(); }}> Yes </div>
 						&nbsp;
 						<div className='button' onClick={onClose}>No</div>
 					</div>
@@ -123,41 +112,38 @@ class LightboxListItem extends React.Component {
 	}
 
 	render(){
-		let count_text = (this.props.count == 1) ? this.props.count + " " + this.props.data.item_type_singular : this.props.count + " " + this.props.data.item_type_plural;
+		let count_text = (this.props.count == 1) ? this.props.count + " " + this.props.data.content_type_singular : this.props.count + " " + this.props.data.content_type_plural;
 
 		if (this.state.deleting) {
 			return (
-        <div className="row my-1">
-  				<div className="col-sm-4">
-  					<EasyEdit
-  						type="text"
-  						onSave={this.saveLightboxEdit}
-  						saveButtonLabel="Save"
-  						saveButtonStyle="btn btn-primary btn-sm"
-  						cancelButtonLabel="Cancel"
-  						cancelButtonStyle="btn btn-primary btn-sm"
-  						attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
-  						value={this.props.data.label}
-  					/>
-  				</div>
-  				<div className="col-sm-4">{count_text}</div>
-  				<div className="col-sm-4 info">
-  					<div className="spinner">
-  						<div className="bounce1"></div>
-  						<div className="bounce2"></div>
-  						<div className="bounce3"></div>
-  					</div>
-  				</div>
-  			</div>
-       );
-
-		}else if(this.props.data.set_id > 0) {
-
+				<div className="row my-1">
+						<div className="col-sm-4">
+							<EasyEdit
+								type="text"
+								onSave={this.saveLightboxEdit}
+								saveButtonLabel="Save"
+								saveButtonStyle="btn btn-primary btn-sm"
+								cancelButtonLabel="Cancel"
+								cancelButtonStyle="btn btn-primary btn-sm"
+								attributes={{name: "name", id: "lightbox_name" + this.props.data.id}}
+								value={this.props.data.title}
+							/>
+						</div>
+						<div className="col-sm-4">{count_text}</div>
+						<div className="col-sm-4 info">
+							<div className="spinner">
+								<div className="bounce1"></div>
+								<div className="bounce2"></div>
+								<div className="bounce3"></div>
+							</div>
+						</div>
+					</div>
+			   );
+		} else if(this.props.data.id > 0) {
 			if(!this.state.userAccess){
-
 				let that = this;
-				getLightboxAccessForCurrentUser(this.context.props.baseUrl, this.props.data.set_id, function(resp) {
-					if(resp && resp['ok']) {
+				getLightboxAccessForCurrentUser(this.context.props.baseUrl, this.props.data.id, this.context.state.tokens, function(resp) {
+					if(resp && (resp['access'] !== undefined)) {
 						let state = that.state;
 						state.userAccess = resp['access'];
 						that.setState(state);
@@ -178,28 +164,29 @@ class LightboxListItem extends React.Component {
       						saveButtonStyle="btn btn-primary btn-sm"
       						cancelButtonLabel="Cancel"
       						cancelButtonStyle="btn btn-primary btn-sm"
-      						attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
-      						value={this.props.data.label}
+      						attributes={{name: "name", id: "lightbox_name" + this.props.data.id}}
+      						value={this.props.data.title}
     					  />
-              : this.props.data.label}
+              : this.props.data.title}
     				</div>
   				  <div className="col-sm-6 col-md-3 infoNarrow">{count_text}</div>
   				  <div className="col-sm-6 col-md-3 info text-right">
-    					<a href='#' data-set_id={this.props.data.set_id} className='btn btn-secondary btn-sm' onClick={this.openLightbox}>View</a>
+    					<a href='#' data-id={this.props.data.id} className='btn btn-secondary btn-sm' onClick={this.openLightbox}>View</a>
     					&nbsp;
     					{(this.state.userAccess == 2) ?
-                <a href='#' data-set_id={this.props.data.set_id} className='btn btn-secondary btn-sm' onClick={this.deleteLightboxConfirm}>Delete</a>
+                <a href='#' data-id={this.props.data.id} className='btn btn-secondary btn-sm' onClick={this.deleteLightboxConfirm}>Delete</a>
                : null}
   				  </div>
-  			  </div>
+  			  </div> {/* row-end */}
         </li>
       );
 		}else{
 			return(
         <li className="list-group-item">
           <div className="row my-4">
-  					<div className="col-sm-12 col-md-6 label">
-    						<EasyEdit ref={this.props.newLightboxRef}
+  					<div className="col-sm-12 col-md-8 label">
+    						<EasyEdit
+									ref={this.props.newLightboxRef}
     							type="text"
     							onSave={this.saveNewLightbox}
     							onCancel={this.context.cancelNewLightbox}
@@ -208,8 +195,8 @@ class LightboxListItem extends React.Component {
     							cancelButtonLabel="Cancel"
     							cancelButtonStyle="btn btn-primary btn-sm"
     							placeholder="Enter name"
-    							attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
-    							value={this.props.data.label}
+    							attributes={{name: "name", id: "lightbox_name" + this.props.data.id}}
+    							value={this.props.data.title}
     						/>
   						<div>{this.state.newLightboxError}</div>
   					</div>
