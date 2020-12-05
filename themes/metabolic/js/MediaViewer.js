@@ -26,9 +26,18 @@ class MediaViewer extends React.Component{
 	constructor(props) {
 		super(props);
 		
+		this.viewerRef = React.createRef();
+		
+		let index = 0;
+		for(let i in this.props.media) {
+			if (this.props.media[i]['is_primary'] === '1') {
+				index = i;
+			}
+		}
+		
 		this.state = {
 			media: this.props.media,
-			index: 0,
+			index: index,
 			
 			parent: document.getElementById(selector.substr(1)),
 			
@@ -94,9 +103,20 @@ class MediaViewer extends React.Component{
 			viewerHeight =  (this.state.windowHeight - ncontrolHeight - 8) + 'px';
 		}
 		
-		let nWidth = parseInt(width.replace(/[^\d]+/g, ''));
-		let controlWidth = (nWidth - 26) + 'px';
 		
+		const viewerRef = this.viewerRef.current;
+		
+		let nWidth;
+		if(width.match(/%/g)) {
+			if(viewerRef) {
+				nWidth = viewerRef.clientWidth;
+			} else {
+				nWidth = 500;
+			}
+		} else {
+			nWidth = parseInt(width.replace(/[^\d]+/g, ''));
+		}
+		let controlWidth = (nWidth - 26) + 'px';
 		
 		let standardProps = {
 			width: width, 
@@ -138,7 +158,7 @@ class MediaViewer extends React.Component{
 		if(!fullscreen) {
 			fs.style.display = 'none';
 			return(
-				<div className='mediaViewer' style={{width: width, height: height}}>
+				<div className='mediaViewer' style={{width: width, height: height}} ref={this.viewerRef}>
 					{viewer}
 					<MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen}
 						width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen}/>
@@ -148,7 +168,7 @@ class MediaViewer extends React.Component{
 			fs.style.display = 'block';
 			if (!fs) return null;
 			return ReactDOM.createPortal(
-				(<div className='mediaViewer' style={{width: width, height: height}}>
+				(<div className='mediaViewer' style={{width: width, height: height}} ref={this.viewerRef}>
 					<div style={{height: viewerHeight}}>{viewer}</div>
 					<MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen}
 						width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen}/>
