@@ -44,9 +44,7 @@
 	    $entity_value = $this->request->getParameter('id', pInteger);
 	    $initial_criteria['entity_facet'] = [$entity_value => 'Entity'];
 	}
-?>
-	<section class="ca_nav show-for-mobile">
-<?php
+
 	switch(strToLower($this->request->getAction())){
 		case "archive":
 		case "library":
@@ -57,6 +55,7 @@
 				$vs_section_name = "Library";
 			}
 ?>			
+		<section class="ca_nav show-for-mobile">
 			<nav class="wrap">
 				<div class="module_accordion">
 					<div class="items">
@@ -94,12 +93,14 @@
 					</div>
 				</div>
 			</nav>
+		</section>
 <?php
 		break;
 		# ---------------------------------------
 		case "cr":
 			MetaTagManager::setWindowTitle("The Isamu Noguchi Catalogue Raisonné");
 ?>
+		<section class="ca_nav show-for-mobile">
 			<nav class="wrap">
 				<div class="module_accordion">
 					<div class="items">
@@ -128,11 +129,14 @@
 					</div>
 				</div>
 			</nav>
+		</section>
 <?php
 		break;
 		# ---------------------------------------
-		case "bibliography":
+		case "show bib mobile menu":
+		#case "bibliography":
 ?>
+		<section class="ca_nav show-for-mobile">
 			<nav class="wrap">
 				<div class="module_accordion">
 					<div class="items">
@@ -158,13 +162,13 @@
 					</div>
 				</div>
 			</nav>
+		</section>
 
 <?php
 		break;
 		# ---------------------------------------
 	}
 ?>
-	</section>
 <div id="browse"></div>
 <script type="text/javascript">
 	pawtucketUIApps['Noguchi<?php print ucfirst(strToLower($action)); ?>Browse'] = {

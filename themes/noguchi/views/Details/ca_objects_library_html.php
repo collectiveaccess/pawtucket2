@@ -114,7 +114,7 @@
                 <div class="wrap-max-content">
 
                     <div class="block-quarter">
-                        <h2 class="subheadline-l">{{{^ca_objects.preferred_labels.name}}}</h2>
+                        <h2 class="subheadline-l">{{{^ca_objects.preferred_labels.name<ifdef code="ca_objects.bib_subtitle"><br/>^ca_objects.bib_subtitle</ifdef>}}}</h2>
                     </div>
                     {{{<ifdef code="ca_objects.date.display_date">
 						<div class="block-quarter">

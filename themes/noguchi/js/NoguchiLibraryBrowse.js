@@ -598,7 +598,6 @@ class NoguchiLibraryBrowseResultItem extends React.Component {
 							</div>
 							<div className="text">
 								<div className="text_position">
-									<div className="ca-identifier text-gray">{data.idno}</div>
 									<ClampLines
 										text={(data.label) ? data.label : " "}
 										id={"browse_label_" + data.id}
@@ -608,10 +607,11 @@ class NoguchiLibraryBrowseResultItem extends React.Component {
 										className="thumb-text clamp"
 										innerElement="div"
 									/>
+									<div className="ca-identifier text-gray">{data.author}</div>
 
 									<div className="text_full">
-										<div className="ca-identifier text-gray">{data.idno}</div>
 										<div className="thumb-text">{data.label}</div>
+										<div className="ca-identifier text-gray">{data.author}</div>
 									</div>
 								</div>
 							</div>
