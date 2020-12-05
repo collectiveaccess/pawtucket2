@@ -47,9 +47,9 @@
 			<ul class="navbar-nav ml-auto mr-3">
 			  <?php print join("\n", caGetNavItemsForBootstrap([
 				_t('Find') => ['controller' => 'Browse', 'action' => 'Objects'],
-				_t('Projects') => ['controller' => 'Listing', 'action' => 'Projects'],
-				_t('Collections') => ['controller' => 'Gallery', 'action' => 'Index'],
-				_t('About') => ['controller' => 'About', 'action' => 'Studio']
+				_t('Actions') => ['controller' => 'Listing', 'action' => 'Actions'],
+				#_t('Collections') => ['controller' => 'Gallery', 'action' => 'Index'],
+				#_t('About') => ['controller' => 'About', 'action' => 'Studio']
 			  ])); ?>
 		  
 			  <?php print join("\n", caGetNavUserItemsForBootstrap(($this->request->isLoggedIn()) ? _t('My Metabolic') : _t('Login'), array("showLoginForm" => true))); ?>

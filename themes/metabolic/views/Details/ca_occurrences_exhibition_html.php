@@ -122,7 +122,7 @@
 						if(is_array($va_related_project_ids) && sizeof($va_related_project_ids)){
 							$q_projects = caMakeSearchResult("ca_collections", $va_related_project_ids);
 							if($q_projects->numHits()){
-								print "<div class='mb-3'><div class='label'>Related Project".(($q_projects->numHits() > 1) ? "s" : "")."</div>";
+								print "<div class='mb-3'><div class='label'>Related Action".(($q_projects->numHits() > 1) ? "s" : "")."</div>";
 								while($q_projects->nextHit()){
 									print $q_projects->getWithTemplate("<div class='mb-3'><l>^ca_collections.preferred_labels</l></div>");
 								}
@@ -175,7 +175,7 @@
 				if($q_objects->get("ca_object_representations.media.widepreview")){
 					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
-					print "<div class='pt-2'>".caDetailLink(substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30), '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
+					print "<div class='pt-2'>".caDetailLink(substr(strip_tags($q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'>Investigation: </if>^ca_objects.idno")), 0, 30), '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
 					print "</div>";
 					$i++;
 				}

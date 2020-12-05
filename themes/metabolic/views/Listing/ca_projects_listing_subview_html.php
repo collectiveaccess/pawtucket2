@@ -43,7 +43,7 @@
 <?php		
 		while($qr_list->nextHit()) {
 			print "<div class='col-md-4 colWidePadding '><div class='project'>";
-			$va_images = explode(";",$qr_list->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToTypes='item_select'><unit relativeTo='ca_objects' length='5' restrictToTypes='item_select'><ifdef code='ca_object_representations.media.widepreview'>^ca_object_representations.media.widepreview</ifdef></unit></ifcount>"));
+			$va_images = explode(";",$qr_list->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' length='5' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.widepreview'>^ca_object_representations.media.widepreview</ifdef></unit></ifcount>"));
 			$i = 1;
 			$vs_slides = "";
 			foreach($va_images as $vs_image){

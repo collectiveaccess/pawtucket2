@@ -58,6 +58,11 @@
 
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0&appId=2210553328991338&autoLogAppEvents=1"></script>
+<div class="row borderBottom">
+	<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
+		{{{<ifdef code="ca_objects.preferred_labels.name"><H1>^ca_objects.preferred_labels.name</H1></ifdef>}}}
+	</div>
+</div>
 <div class="row">
 	<div class='col-12 navTop text-center'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
@@ -129,7 +134,7 @@
     };
 </script>
 
-				<div id="mediaDisplay" class="detailPrimaryMedia mt-3">
+				<div id="mediaDisplay" class="detailPrimaryMedia mt-3 text-center">
 					<!-- MediaViewer.js React app goes here -->
 				</div>
 <?php 
@@ -171,12 +176,6 @@
 				</div>
 				<div class="row">
 					<div class="col-12 col-md-6">
-						{{{<ifdef code="ca_objects.parent_id">
-							<div class="mb-3">
-								<div class="label">Part of Investigation</div>
-								<unit relativeTo="ca_objects.parent"><l>^ca_objects.preferred_labels.name</l></unit>
-							</div>
-						</ifdef>}}}
 						{{{<ifdef code="ca_objects.date">
 							<div class="mb-3">
 								^ca_objects.date%delimiter=,_
@@ -209,6 +208,7 @@
 							</div>
 						</ifcount>}}}
 -->
+						
 						{{{<ifcount code="ca_collections" min="1">
 							<div class="mb-3">
 								<div class="label">Action<ifcount code="ca_collections" min="2">s</ifcount></div>
@@ -284,7 +284,7 @@
 						if(is_array($va_subjects) && sizeof($va_subjects)){
 ?>
 							<div class="mb-3">
-								<div class="label">Subjects</H1></div>
+								<div class="label">Subjects</div>
 <?php
 								$va_subject_links = array();
 								foreach($va_subjects as $vn_subject_id){
@@ -299,7 +299,6 @@
 
 						}
 ?>
-
 						{{{<ifdef code="ca_objects.idno">
 							<div class="mb-3">
 								<b>^ca_objects.idno</b>
@@ -310,7 +309,6 @@
 								<b>^ca_objects.altID</b>
 							</div>
 						</ifdef>}}}
-						
 					</div>
 				</div>
 						
@@ -330,44 +328,21 @@
 <div class="row">
 	<div class="col-sm-12">
 <?php
-
-	$vs_related_title = "";
-	# --- related_items - if item is part of an album, show the other siblings otherwise show some other items from the current object's action(ca_collection)
-	$va_related_item_ids = array();
-	if($vn_parent_id = $t_object->get("ca_objects.parent_id")){
-		$t_parent = new ca_objects($vn_parent_id);
-		$va_related_item_ids = $t_parent->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
-		$vs_related_title = $t_parent->get("ca_objects.preferred_labels.name");
-	}else{
-		if($va_projects = $t_object->get("ca_collections.collection_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values))){
-			$q_projects = caMakeSearchResult("ca_collections", $va_projects);
-			if($q_projects->numHits()){
-				while($q_projects->nextHit()){
-					$va_related_item_ids = $va_related_item_ids + $q_projects->get("ca_objects.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
-				}
-			}
-			$vs_related_title = "Other items from this action";
-		}
-	
-	}
-	# --- remove current item
-	if(in_array($vn_id, $va_related_item_ids)){
-		$vn_key = array_search($vn_id, $va_related_item_ids);
-		unset($va_related_item_ids[$vn_key]);
-	}
+	# --- Album items (children)
 	$va_related_items = array();
+	$va_related_item_ids = $t_object->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 	if(sizeof($va_related_item_ids)){
-		shuffle($va_related_item_ids);
 		$q_objects = caMakeSearchResult("ca_objects", $va_related_item_ids);
 ?>
 		<div class="row mt-3">
-			<div class="col-7 mt-5">
-				<H1><?php print $vs_related_title; ?></H1>
+			<div class="col-8 mt-5">
+				<H1><?php print sizeof($va_related_item_ids); ?> Items</H1>
 			</div>
-			<div class="col-5 mt-5 text-right">
+			<div class="col-4 mt-5 text-right">
+
 <?php
-				if($t_object->get("ca_objects.parent_id")){
-					print caDetailLink("View Investigation", "btn btn-primary", "ca_objects", $t_object->get("ca_objects.parent_id"));			
+				if($q_objects->numHits() > 100){
+					print caNavLink("View All", "btn btn-primary", "", "Browse", "children", array("search" => "ca_objects.parent_id:".$t_object->get("ca_objects.object_id")));		
 				}
 ?>
 			</div>
@@ -380,13 +355,10 @@
 				if($q_objects->get("ca_object_representations.media.widepreview")){
 					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
-					print "<div class='pt-2'>".$q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'>Investigation: </if>").substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
+					print "<div class='pt-2'>".substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
 					
 					if($alt_id = $q_objects->get('ca_objects.altID')) {
 						print " (".substr(strip_tags($alt_id), 0, 30).")";
-					}
-					if($album_title = $q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'><br/><l>^ca_objects.preferred_labels.name</l></if>")){
-						print $album_title;
 					}
 					
 					print "</div>";
@@ -396,7 +368,7 @@
 					$i++;
 					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
 				}
-				if($i == 12){
+				if($i == 100){
 					break;
 				}
 			}
@@ -404,10 +376,10 @@
 		</div>
 
 <?php		
-		//$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
-		//$o_context->setAsLastFind();
-		//$o_context->setResultList($va_tmp_ids);
-		//$o_context->saveContext();
+		$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_tmp_ids);
+		$o_context->saveContext();
 	}
 ?>
 	
@@ -444,7 +416,7 @@
             item_id: <?php print $vn_id; ?>,
             tablename: 'ca_objects',
             form_title: '<h1>Add Your Comment</h1>',
-            list_title: '<h1 class="mt-5">Comments</h1>',
+            list_title: '<h1 class="mt-5">Comments and Tags</h1>',
             tag_field_title: 'Tags',
             comment_field_title: 'Comment',
             login_button_text: 'Login to Add Your Comment',
