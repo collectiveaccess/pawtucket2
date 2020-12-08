@@ -273,11 +273,13 @@ if (!$vb_ajax) {	// !ajax
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
 				print "<strong>".$va_criterion['facet'].':</strong>';
+				$vs_value = $va_criterion['value'];
+				$vs_display_value = str_replace(array("Texts ➜ ", "ca_objects.LOC_text:", "ca_objects.tgn:", "ca_objects.local_subject:"), "", $va_criterion['value']);
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.str_replace("Texts ➜ ", "", $va_criterion['value']).' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_display_value.' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
-					print ' '.$va_criterion['value'];
-					$vs_search = $va_criterion['value'];
+					print ' '.$vs_display_value;
+					$vs_search = $vs_value;
 				}
 				$i++;
 				if($i < sizeof($va_criteria)){
@@ -313,22 +315,6 @@ if (!$vb_ajax) {	// !ajax
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
-		if($vb_is_search && !$vn_result_size && $vs_search){
-			# --- try to display did you mean results if available
-			$o_search = caGetSearchInstance($vs_table);
-			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {
-				$va_suggest_links = array();
-				foreach($va_suggestions as $vs_suggestion){
-					$va_suggest_links[] = caNavLink($this->request, $vs_suggestion, '', '*', '*', '*', array('search' => $vs_suggestion, 'sort' => $vs_current_sort, 'view' => $vs_current_view));
-				}
-				
-				if (sizeof($va_suggest_links) > 1) {
-					print "<div class='col-sm-12'>"._t("Did you mean one of these: %1?", join(', ', $va_suggest_links))."</div>";
-				} else {
-					print "<div class='col-sm-12'>"._t("Did you mean %1?", join(', ', $va_suggest_links))."</div>";
-				}
-			}
-		}
 } // !ajax
 
 # --- check if this result page has been cached

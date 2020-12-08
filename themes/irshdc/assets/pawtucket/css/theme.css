@@ -781,6 +781,8 @@ a.readmore-js-toggle {
 .mediaViewerCaption{
 	font-size:12px;
 	margin-top:0px;
+	margin-left: 35px;
+	margin-right: 35px;
 }
 .detail .detailMediaToolbar, .detail .repViewerCont:hover .detailMediaToolbar {
     background-color: #ebebeb;
