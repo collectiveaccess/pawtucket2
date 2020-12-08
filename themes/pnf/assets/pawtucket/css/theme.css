@@ -753,6 +753,23 @@ div.caMediaOverlayControls {
 	padding-top:10px;
 	font-size:14px;
 }
+.listingLetterIntro{
+	margin-top:25px;
+	margin-bottom:25px;
+}
+.listingLetterIntro, .listingLetterIntro p{
+	line-height: 1.3em;
+	font-size: 17px;
+	color: #7f4539;
+	font-family: 'Lusitana', serif;
+}
+.listingLetterIntro p b {
+	line-height: 1.3em;
+	font-size: 17px;
+	color: #7f4539;
+	font-family: 'Lusitana', serif;
+	font-weight:bold;
+}
 .listNoBullet li{
 	list-style-type:none;
 	text-indent: -15px;
@@ -800,7 +817,7 @@ div.caMediaOverlayControls {
     font-weight:bold;
 }
 .listTitle a{
-	/*font-style:italic;*/
+	font-style:italic;
 	font-weight:bold;
 	color:#222;
 }
