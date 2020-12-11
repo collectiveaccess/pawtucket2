@@ -138,6 +138,21 @@ if($vs_mode == "map"){
 					<div class='col-sm-12 col-md-5'>
 						
 						<?php print "<div class='detailPlaceholderContainer'>".$vs_thumbnail."</div>"; ?>
+<?php
+					# --- is there a transcript media - sometimes there is one even though the primary media in not accessible to the public and a placeholder shows for the audio
+					$t_list = new ca_lists();
+					$va_type = $t_list->getItemFromList("object_representation_types", "transcript");
+					$va_transcript_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
+						print "<div id='transcriptLink' class='text-center'>";
+						foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
+							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+							
+							print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
+						}
+						print "</div>";
+					}
+?>
 					</div>
 <?php
 				}
@@ -348,9 +363,14 @@ if($vs_mode == "map"){
   			block.find('.fa').toggleClass("fa-toggle-up");
   			
 		});
+		
 		$( document ).ajaxComplete(function() {
 			if ($('div.caAudioPlayer').length) {
-				$('.caAudioPlayer').prepend('<div class="detailPlaceholderContainer"><i class="fa fa-file-sound-o fa-4x"></i></div>');
+				$('div.caAudioPlayer').each(function(i, obj) {
+					if(!$(this).find(".detailPlaceholderContainer").length) {
+						$(this).prepend('<div class="detailPlaceholderContainer"><i class="fa fa-file-sound-o fa-4x"></i></div>');
+					}
+				});
 			}
 		});
 	});

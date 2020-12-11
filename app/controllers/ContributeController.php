@@ -787,7 +787,7 @@
             	 	# --- send admin email notification
  					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
  					# -- generate email subject line from template
-					$vs_subject_line = $o_view->render("mailTemplates/admin_contribute_subject.tpl");
+					$vs_subject_line = $o_view->render("mailTemplates/admin_contribute_notification_subject.tpl");
 						
 					# -- generate mail text from template - get both the text and the html versions
 					$vs_mail_message_text = $o_view->render("mailTemplates/admin_contribute_notification.tpl");
