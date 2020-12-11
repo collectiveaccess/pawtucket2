@@ -18,6 +18,12 @@
 			<label for='ca_objects_preferred_labels_name' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to Object Titles only.') ?>"><?php _p('Title') ?></label>
 			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
+	</div>		
+	<div class='row'>
+		<div class="advancedSearchField col-sm-12">
+			<label for='ca_entities_preferred_labels_location' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search by object creator.') ?>"><?php _p('Creator') ?></label>
+			{{{ca_entities.preferred_labels%excludeRelationshipTypes=Dedicated,Related,Publisher%width=200px&id=ca_entities_preferred_labels_location}}}
+		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">

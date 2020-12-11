@@ -157,6 +157,7 @@
 <?php
 							print "<li>".caNavLink($this->request, _t("About the Collection"), '', '', 'About', 'Collection', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Resources"), '', '', 'About', 'Resources', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Rights & Reproduction"), '', '', 'About', 'RightsRepo', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("News"), '', '', 'About', 'News', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Contact"), '', '', 'Contact', 'Form', '')."</li>";
 ?>

@@ -879,6 +879,9 @@ a.browseRemoveFacet .glyphicon {
 	overflow-y:auto;
 	margin-bottom:10px;
 }
+#bRefine.fixed {
+	padding-top:160px;
+}
 /*
 #bRefine  #bHierarchyList_place_facet {
 	width:100%;

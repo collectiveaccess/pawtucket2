@@ -81,19 +81,30 @@
 					$va_LcshSubjects_processed = array();
 					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
 						foreach($va_LcshSubjects as $vs_LcshSubjects){
+							$vs_lcsh_subject = "";
 							if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
-								$vs_url = "https://id.loc.gov".mb_substr($vs_LcshSubjects, strpos($vs_LcshSubjects, "/authorities"), -1);
-								$va_LcshSubjects_processed[] = "<a href='".$vs_url."' target='_blank'>".mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["))."</a>";
-							}else{
-								$va_LcshSubjects_processed[] = $vs_LcshSubjects;
+								$vs_LcshSubjects = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
 							}
+							$va_LcshSubjects_processed[] = caNavLink($this->request, $vs_LcshSubjects, "", "", "Search", "objects", array("search" => "ca_objects.lcsh_terms: ".$vs_LcshSubjects));
+						
 						}
 						$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
 					}
-					$vs_keywords = $t_item->get("ca_collections.internal_keywords", array("convertCodesToDisplayText" => true, "delimiter" => "<br/>"));
-					if($vs_LcshSubjects || $vs_keywords){
-						print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keywords) ? "<br/>" : "").$vs_keywords."</div>";	
+					
+					$t_list_item = new ca_list_items;
+					if($va_keywords = $t_item->get("ca_collections.internal_keywords", array("returnAsArray" => true))){
+						$va_keyword_links = array();
+						foreach($va_keywords as $vn_kw_id){
+							$t_list_item->load($vn_kw_id);
+							$va_keyword_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
+						}
+						$vs_keyword_links = join("<br/>", $va_keyword_links);
 					}
+					
+					if($vs_LcshSubjects || $vs_keyword_links){
+						print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keyword_links) ? "<br/>" : "").$vs_keyword_links."</div>";	
+					}
+
 ?>
 					
 					{{{<ifcount code="ca_entities" excludeRelationshipTypes="creator" min="1"><div class="unit"><label>Related Entities</label><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="creator"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}

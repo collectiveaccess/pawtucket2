@@ -88,7 +88,7 @@
 				}				
 
 ?>
-				{{{<ifdef code="ca_objects.date"><div class="unit">^ca_objects.date.date_value <ifdef code="ca_objects.date.date_types">(^ca_objects.date.date_types)</ifdef></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.date"><div class="unit"><unit relativeTo="ca_objects.date" delimiter=", ">^ca_objects.date.date_value <ifdef code="ca_objects.date.date_types">(^ca_objects.date.date_types)</ifdef></unit></div></ifdef>}}}
 				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="Dedicated,Related,Publisher"><div class="unit"><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="Dedicated,Related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.material_techniques"><div class="unit">^ca_objects.material_techniques%,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.description"><div class="unit">^ca_objects.description</div></ifdef>}}}
@@ -153,21 +153,31 @@
 					$va_LcshSubjects_processed = array();
 					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
 						foreach($va_LcshSubjects as $vs_LcshSubjects){
+							$vs_lcsh_subject = "";
 							if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
-								$vs_url = "https://id.loc.gov".mb_substr($vs_LcshSubjects, strpos($vs_LcshSubjects, "/authorities"), -1);
-								$va_LcshSubjects_processed[] = "<a href='".$vs_url."' target='_blank'>".mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["))."</a>";
-							}else{
-								$va_LcshSubjects_processed[] = $vs_LcshSubjects;
+								$vs_LcshSubjects = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
 							}
+							$va_LcshSubjects_processed[] = caNavLink($this->request, $vs_LcshSubjects, "", "", "Search", "objects", array("search" => "ca_objects.lcsh_terms: ".$vs_LcshSubjects));
+						
 						}
 						$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
 					}
-					$vs_keywords = $t_object->get("ca_objects.internal_keywords", array("convertCodesToDisplayText" => true, "delimiter" => "<br/>"));
-					if($vs_LcshSubjects || $vs_keywords){
-						print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keywords) ? "<br/>" : "").$vs_keywords."</div>";	
+					
+					$t_list_item = new ca_list_items;
+					if($va_keywords = $t_object->get("ca_objects.internal_keywords", array("returnAsArray" => true))){
+						$va_keyword_links = array();
+						foreach($va_keywords as $vn_kw_id){
+							$t_list_item->load($vn_kw_id);
+							$va_keyword_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
+						}
+						$vs_keyword_links = join("<br/>", $va_keyword_links);
+					}
+					
+					if($vs_LcshSubjects || $vs_keyword_links){
+						print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keyword_links) ? "<br/>" : "").$vs_keyword_links."</div>";	
 					}
 ?>
-					{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><div class="row"><div class="col-sm-2"><l>^ca_object_representations.media.icon</l></div><div class="col-sm-10"><l>^ca_objects.preferred_labels</l></div></div></unit></div></ifcount>}}}
+					{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><div class="row"><ifdef code="ca_object_representations.media.icon"><div class="col-sm-2"><l>^ca_object_representations.media.icon</l></div></ifdef><div class="col-sm-10"><l>^ca_objects.preferred_labels</l></div></div></unit></div></ifcount>}}}
 				</div>
 			</div>
 				
