@@ -195,7 +195,7 @@
 						foreach($va_notes as $va_note){
 							$va_note["general_notes_text"] = trim($va_note["general_notes_text"]);
 							if($va_note["general_notes_text"] && strToLower($va_note["internal_external"]) == "unrestricted"){
-								$va_notes_filtered[] = ucfirst(strtolower($va_note["general_notes_text"]));
+								$va_notes_filtered[] = ucfirst(mb_strtolower($va_note["general_notes_text"]));
 							}
 						}
 						if(sizeof($va_notes_filtered)){
@@ -270,7 +270,7 @@
 									if($vs_tmp = $qr_children->get("ca_objects.".$vs_child_info_field, array("delimiter" => ", ")) ){
 										if(in_array($vs_child_info_field, array("fragrance", "shade"))){
 											if(!preg_match("/[a-z]/", $vs_tmp)){
-												$vs_tmp = ucwords(strtolower($vs_tmp));
+												$vs_tmp = ucwords(mb_strtolower($vs_tmp));
 											}
 											$va_child_info[] = $vs_tmp;
 										}else{

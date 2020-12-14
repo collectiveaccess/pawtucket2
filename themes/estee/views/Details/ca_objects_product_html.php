@@ -209,7 +209,7 @@
 							foreach($va_tmp as $vs_tmp){
 								if(trim($vs_tmp)){
 									if(!preg_match("/[a-z]/", $vs_tmp)){
-										$vs_tmp = ucwords(strtolower($vs_tmp));
+										$vs_tmp = ucwords(mb_strtolower($vs_tmp));
 									}
 									$va_tmp_formatted[] = $vs_tmp;
 								}
@@ -223,7 +223,7 @@
 							foreach($va_tmp as $vs_tmp){
 								if($vs_tmp){
 									if(!preg_match("/[a-z]/", $vs_tmp)){
-										$vs_tmp = ucwords(strtolower($vs_tmp));
+										$vs_tmp = ucwords(mb_strtolower($vs_tmp));
 									}
 									$va_tmp_formatted[] = $vs_tmp;
 								}
@@ -276,7 +276,7 @@
 						foreach($va_notes as $va_note){
 							$va_note["object_note_value"] = trim($va_note["object_note_value"]);
 							if($va_note["object_note_value"] && strToLower($va_note["object_note_status"]) == "unrestricted"){
-								$va_notes_filtered[] = ucfirst(strtolower($va_note["object_note_value"]));
+								$va_notes_filtered[] = ucfirst(mb_strtolower($va_note["object_note_value"]));
 							}
 						}
 						if(sizeof($va_notes_filtered)){
@@ -310,14 +310,14 @@
 						$vs_caption .= $t_parent->get("ca_objects.preferred_labels").". ";
 						$vs_shade = $t_parent->get("ca_objects.shade");
 						if(!preg_match("/[a-z]/", $vs_shade)){
-							$vs_shade = ucwords(strtolower($vs_shade));
+							$vs_shade = ucwords(mb_strtolower($vs_shade));
 						}
 						if($vs_shade){
 							$vs_caption .= $vs_shade;
 						}
 						$vs_fragrance = $t_parent->get("ca_objects.fragrance");
 						if(!preg_match("/[a-z]/", $vs_fragrance)){
-							$vs_fragrance = ucwords(strtolower($vs_fragrance));
+							$vs_fragrance = ucwords(mb_strtolower($vs_fragrance));
 						}
 						if($vs_fragrance){
 							if($vs_shade){
@@ -381,7 +381,7 @@
 									if($vs_tmp = $qr_children->get("ca_objects.".$vs_child_info_field, array("delimiter" => ", ")) ){
 										if(in_array($vs_child_info_field, array("fragrance", "shade"))){
 											if(!preg_match("/[a-z]/", $vs_tmp)){
-												$vs_tmp = ucwords(strtolower($vs_tmp));
+												$vs_tmp = ucwords(mb_strtolower($vs_tmp));
 											}
 											$va_child_info[] = $vs_tmp;
 										}else{
@@ -443,7 +443,7 @@
 							$vs_caption .= "<br/>";
 							$vs_subbrand = $qr_related->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true));
 							if(!preg_match("/[a-z]/", $vs_subbrand)){
-								$vs_subbrand = ucwords(strtolower($vs_subbrand));
+								$vs_subbrand = ucwords(mb_strtolower($vs_subbrand));
 							}
 							if(($vs_brand = $qr_related->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || $vs_subbrand){
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
