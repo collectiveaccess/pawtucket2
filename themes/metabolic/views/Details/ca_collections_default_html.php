@@ -195,7 +195,7 @@ if($x_show_exhibitions){
 <?php
 	# --- subjects
 	$t_list_item = new ca_list_items();
-	$va_subjects = $t_item->get("ca_collections.subject", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_subjects = $t_item->get("ca_collections.subject", array("returnAsArray" => true));
 	if(is_array($va_subjects) && sizeof($va_subjects)){
 ?>
 		<div class="row mt-3">
@@ -207,11 +207,13 @@ if($x_show_exhibitions){
 <?php
 			foreach($va_subjects as $vn_subject_id){
 				$t_list_item->load($vn_subject_id);
+				if(in_array($t_list_item->get("ca_list_items.access"), $va_access_values)){
 ?>
 				<div class="col-sm-6 col-md-3 pb-4">
 					<?php print caNavLink("<div class='bg-2 text-center py-2 uppercase'>".$t_list_item->get("ca_list_item_labels.name_singular")."</div>", "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id)); ?>
 				</div>
 <?php
+				}
 			}
 
 ?>
