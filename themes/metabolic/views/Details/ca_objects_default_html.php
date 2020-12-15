@@ -58,6 +58,11 @@
 
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0&appId=2210553328991338&autoLogAppEvents=1"></script>
+<div class="row borderBottom">
+	<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
+		{{{<ifdef code="ca_objects.preferred_labels.name"><H1>^ca_objects.preferred_labels.name</H1></ifdef>}}}
+	</div>
+</div>
 <div class="row">
 	<div class='col-12 navTop text-center'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
@@ -112,6 +117,10 @@
 					if(caDisplayLightbox($this->requests) && $this->request->isLoggedIn()){
 						print "<div class='detailTool'><div id='lightboxManagement'></div></div>";
 					}
+					$vs_email_subject = rawurlencode("Share from: aliceb.metabolicstudio.org");
+					$vs_email_body = rawurlencode($t_object->getWithTemplate("<ifdef code='ca_objects.preferred_labels.name'>^ca_objects.preferred_labels.name\n</ifdef><ifdef code='ca_objects.idno'>^ca_objects.idno\n\n</ifdef>").$this->request->config->get("site_host").caNavUrl("*", "*", "*"));
+					print "<div class='detailTool'><a title='Share via e-mail' href='mailto:?body=".$vs_email_body."&subject=".$vs_email_subject."'><ion-icon name='ios-mail'></ion-icon> <span>E-mail</span></a></div>";
+					print "<div class='detailTool'><a title='Copy URL' href='#' onClick='copyUrl(); return false;'><ion-icon name='ios-link'></ion-icon> <span>Copy URL</span></a></div>";
 					print '</div><!-- end detailTools -->';
 				}				
 
@@ -173,7 +182,7 @@
 					<div class="col-12 col-md-6">
 						{{{<ifdef code="ca_objects.parent_id">
 							<div class="mb-3">
-								<div class="label">Part of Investigation</div>
+								<div class="label">Part of Inquiry</div>
 								<unit relativeTo="ca_objects.parent"><l>^ca_objects.preferred_labels.name</l></unit>
 							</div>
 						</ifdef>}}}
@@ -187,6 +196,11 @@
 								^ca_objects.description
 							</div>
 						</ifdef>}}}
+						{{{<ifdef code="ca_objects.url">
+							<div class="mb-3">
+								<unit relativeTo="ca_objects.url" delimiter="<br/>"><a href="^ca_objects.url" target="_blank">^ca_objects.url</a> <ion-icon name="open"></ion-icon></unit>
+							</div>
+						</ifcount>}}}
 <!--
 
 						{{{<ifdef code="ca_objects.dim_width|ca_objects.dim_height|ca_objects.dim_depth|ca_objects.note">
@@ -215,12 +229,13 @@
 								<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
-						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
+<!--						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
 							<div class="mb-3">
 								<div class="label">Event<ifcount code="ca_occurrences" restrictToTypes="action" min="2">s</ifcount></div>
 								<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
+-->
 <?php
 						# --- rel entities by role
 						$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_entity_labels.surname"));
@@ -260,11 +275,14 @@
 						
 						# --- bio-regions
 						$t_list_item = new ca_list_items();
-						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true));
+						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
 						if(is_array($va_bio_regions) && sizeof($va_bio_regions)){
 ?>
 							<div class="mb-3">
-								<div class="label">Bio-Regions</div>
+								<div class="label">Bio-Regions <span class="material-icons" role="button" data-toggle="collapse" data-target="#bioRegionDesc" aria-expanded="false" aria-controls="bioRegionDesc">info</span></div>
+								<div class="mb-3 collapse small" id="bioRegionDesc">
+								  A region defined by characteristics of the natural environment rather than man-made division.
+								</div>
 <?php
 								$va_bio_region_links = array();
 								foreach($va_bio_regions as $vn_bio_region_id){
@@ -280,7 +298,7 @@
 						}
 						# --- subjects
 						$t_list_item = new ca_list_items();
-						$va_subjects = $t_object->get("ca_objects.subject", array("returnAsArray" => true));
+						$va_subjects = $t_object->get("ca_objects.subject", array("returnAsArray" => true, "checkAccess" => $va_access_value));
 						if(is_array($va_subjects) && sizeof($va_subjects)){
 ?>
 							<div class="mb-3">
@@ -367,7 +385,7 @@
 			<div class="col-5 mt-5 text-right">
 <?php
 				if($t_object->get("ca_objects.parent_id")){
-					print caDetailLink("View Investigation", "btn btn-primary", "ca_objects", $t_object->get("ca_objects.parent_id"));			
+					print caDetailLink("View Inquiry", "btn btn-primary", "ca_objects", $t_object->get("ca_objects.parent_id"));			
 				}
 ?>
 			</div>
@@ -453,4 +471,27 @@
             show_form: <?php print ($this->request->isLoggedIn()) ? "true" : "false"; ?>
         }
     };
+</script>
+<script type="text/javascript">	
+	function copyUrl() {
+		if (!window.getSelection) {
+		alert('Please copy the URL from the location bar.');
+		return;
+		}
+		const dummy = document.createElement('p');
+		dummy.textContent = window.location.href;
+		document.body.appendChild(dummy);
+
+		const range = document.createRange();
+		range.setStartBefore(dummy);
+		range.setEndAfter(dummy);
+
+		const selection = window.getSelection();
+		// First clear, in case the user already selected some other text
+		selection.removeAllRanges();
+		selection.addRange(range);
+
+		document.execCommand('copy');
+		document.body.removeChild(dummy);
+	}
 </script>

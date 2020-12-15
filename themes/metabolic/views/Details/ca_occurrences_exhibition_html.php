@@ -46,8 +46,8 @@
 	}
 	if($vs_rep = $t_item->get("ca_object_representations.media.page.url", array("checkAccess" => $va_access_values))){
 		MetaTagManager::addMetaProperty("og:image", $vs_rep);
-		MetaTagManager::addMetaProperty("og:image:width", $t_object->get("ca_object_representations.media.page.width"));
-		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
+		MetaTagManager::addMetaProperty("og:image:width", $t_item->get("ca_object_representations.media.page.width"));
+		MetaTagManager::addMetaProperty("og:image:height", $t_item->get("ca_object_representations.media.page.height"));
 	}
 
 ?>
@@ -105,16 +105,16 @@
 							</div>
 							<HR></HR>
 						</ifdef>}}}
-						{{{<ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1">
+						{{{<ifcount code="ca_entities" restrictToRelationshipTypes="venue" min="1">
 							<div class="mb-3">
 								<div class="label">Venue</div>
-								<unit relativeTo="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" delimiter=", ">^ca_entities.preferred_labels</unit>
+								<unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", ">^ca_entities.preferred_labels</unit>
 							</div>
 						</ifcount>}}}
-						{{{<ifcount code="ca_entities" restrictToTypes="ind" min="1">
+						{{{<ifcount code="ca_entities" restrictToRelationshipTypes="curator" min="1">
 							<div class="mb-3">
-								<div class="label">Related People</div>
-								<unit relativeTo="ca_entities" restrictToTypes="ind" delimiter=", ">^ca_entities.preferred_labels</unit>
+								<div class="label">Curator<ifcount code="ca_entities" restrictToRelationshipTypes="curator" min="2">s</ifcount></div>
+								<unit relativeTo="ca_entities" restrictToRelationshipTypes="curator" delimiter=", ">^ca_entities.preferred_labels</unit>
 							</div>
 						</ifcount>}}}
 <?php
@@ -129,7 +129,14 @@
 								print "</div>";
 							}
 						}
-						if((is_array($va_related_project_ids) && sizeof($va_related_project_ids)) || $t_item->get("ca_entities", array("cheackAccess" => $va_access_values))){
+?>
+						{{{<ifdef code="ca_occurrences.idno">
+							<div class="mb-3">
+								<b>^ca_occurrences.idno</b>
+							</div>
+						</ifdef>}}}
+<?php
+						if((is_array($va_related_project_ids) && sizeof($va_related_project_ids)) || $t_item->get("ca_entities", array("checkAccess" => $va_access_values))){
 							print "<HR></HR>";
 						}
 ?>						
@@ -165,7 +172,7 @@
 ?>
 		<div class="row mt-3">
 			<div class="col-lg-12 mt-5">
-				<H1>Related Items</H1>
+				<H1>Related Assets</H1>
 			</div>
 		</div>
 		<div class="row mb-5 detailRelated">

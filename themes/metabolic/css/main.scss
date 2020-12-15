@@ -574,6 +574,12 @@ p.legend a {
 	font-weight:$label-font-weight;
 	text-transform:$label-text-transform;
 	font-size:$label-font-size;
+	span.material-icons{
+		font-size:inherit;
+		text-decoration:none !important;
+		margin-top: -3px;
+		display: inline-block;
+	}
 }
 
 /* detail */
@@ -633,6 +639,9 @@ p.legend a {
 				ion-icon, span{
 					vertical-align:middle;
 				}
+			}
+			.dropdown{
+				top:2px;
 			}
 		}
 	}
