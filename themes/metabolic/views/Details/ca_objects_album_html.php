@@ -54,10 +54,14 @@
 		MetaTagManager::addMetaProperty("og:image:width", $t_object->get("ca_object_representations.media.page.width"));
 		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
 	}
+	if($this->request->isLoggedIn() && $this->request->user->hasRole("frontendRestricted")) {
 ?>
 
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0&appId=2210553328991338&autoLogAppEvents=1"></script>
+<?php
+	}
+?>
 <div class="row borderBottom">
 	<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
 		{{{<ifdef code="ca_objects.preferred_labels.name"><H1>^ca_objects.preferred_labels.name</H1></ifdef>}}}
@@ -79,12 +83,16 @@
 ?>
 	</div><!-- end col -->
 	<div class='col-12 col-sm-10 col-md-10 col-lg-8'>
+<?php
+	if($this->request->isLoggedIn() && $this->request->user->hasRole("frontendRestricted")) {
+?>
 		<div id='detailShareButtons' class="mt-2">
 			<div class='detailShareButton'>
 				<div class="fb-share-button" data-href="<?php print $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" data-layout="button" data-size="small"><a target="_blank" href="<?php print $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" class="fb-xfbml-parse-ignore">Share</a></div>
 			</div>
 		</div>
 <?php
+	}
 				# Comment/inquire/download pdf/lightbox
 				if ($vn_comments_enabled || $vn_pdf_enabled || $vn_inquire_enabled || $vn_download_all_enabled || caDisplayLightbox($this->requests)) {
 						
@@ -296,7 +304,7 @@
 						if(is_array($va_subjects) && sizeof($va_subjects)){
 ?>
 							<div class="mb-3">
-								<div class="label">Subjects</div>
+								<div class="label">Themes</div>
 <?php
 								$va_subject_links = array();
 								foreach($va_subjects as $vn_subject_id){

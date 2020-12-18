@@ -200,7 +200,7 @@ if($x_show_exhibitions){
 ?>
 		<div class="row mt-3">
 			<div class="col-sm-12 mt-5">
-				<H1>Subjects</H1>
+				<H1>Themes</H1>
 			</div>
 		</div>
 		<div class="row bg-1 pt-4 mb-5 detailTags">
