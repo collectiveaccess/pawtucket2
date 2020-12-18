@@ -68,7 +68,7 @@
 			print "<div class='bCriteria".(($vb_show_filter_panel) ? " catchLinks" : "")."'>";
 			print $vs_criteria;
 			if($vn_num_criteria > 1){
-				print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">Clear All Filters <span class="glyphicon glyphicon-remove-circle" aria-label="Remove all filters"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('clear' => 1, 'view' => $vs_view, 'key' => $vs_key, '_advanced' => $vn_is_advanced ? 1 : 0));
+				print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">Clear All Filters <span class="glyphicon glyphicon-remove-circle" aria-label="Remove all filters"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('view' => $vs_view, '_advanced' => $vn_is_advanced ? 1 : 0));
 			}
 			print "</div>";
 		}

@@ -42,39 +42,23 @@
 ?>
 				</div><!-- end col -->
 			</div><!-- end row -->
-			<div class="row">
-				<div class='col-sm-12'>
-<?php
-			if ($vb_show_hierarchy_viewer) {	
-?>
-				<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-				<script>
-					$(document).ready(function(){
-						$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
-					})
-				</script>
-<?php				
-			}									
-?>				
-				</div><!-- end col -->
-			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-12'>
-					{{{<ifdef code="ca_collections.coverageDates"><div class="unit"><label>Coverage Dates</label>^ca_collections.coverageDates</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.coverageSpacial"><div class="unit"><label>Spacial Coverage</label>^ca_collections.coverageSpacial</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.extent_text"><div class="unit"><label>Extent</label>^ca_collections.extent_text</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.coverageDates"><div class="unit"><label>Coverage Dates</label>^ca_collections.coverageDates%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.coverageSpacial"><div class="unit"><label>Spacial Coverage</label>^ca_collections.coverageSpacial%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.extent_text"><div class="unit"><label>Extent</label>^ca_collections.extent_text%convertLineBreaks=1</div></ifdef>}}}
 					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator"><div class="unit"><label>Creators</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
-					{{{<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/biographical history element</label>^ca_collections.adminbiohist</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.originals_location"><div class="unit"><label>Existence and Location of Originals</label>^ca_collections.originals_location</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.scopecontent"><div class="unit"><label>Scope and Content</label>^ca_collections.scopecontent</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.arrangement"><div class="unit"><label>System of Arrangement</label>^ca_collections.arrangement</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.accessrestrict"><div class="unit"><label>Conditions governing access</label>^ca_collections.accessrestrict</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><label>Physcial access</label>^ca_collections.physaccessrestrict</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.techaccessrestrict"><div class="unit"><label>Technical access</label>^ca_collections.techaccessrestrict</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.reproduction_conditions"><div class="unit"><label>Conditions Governing Reproduction</label>^ca_collections.reproduction_conditions</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.langmaterials"><div class="unit"><label>Languages and Scripts of the Material</label>^ca_collections.langmaterials</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.otherfindingaid"><div class="unit"><label>Other Finding Aids</label>^ca_collections.otherfindingaid</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.url.link_url"><div class="unit"><label>External Link</label><unit delimiter="<br/>"><a href="^ca_collections.url.link_url" target="_blank"><ifdef code="ca_collections.url.link_text">^ca_collections.url.link_text<ifdef><ifnotdef code="ca_collections.url.link_text">^ca_collections.url.link_url<ifnotdef></a</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/biographical history element</label>^ca_collections.adminbiohist%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.originals_location"><div class="unit"><label>Existence and Location of Originals</label>^ca_collections.originals_location%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.scopecontent"><div class="unit"><label>Scope and Content</label>^ca_collections.scopecontent%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.arrangement"><div class="unit"><label>System of Arrangement</label>^ca_collections.arrangement%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.accessrestrict"><div class="unit"><label>Conditions governing access</label>^ca_collections.accessrestrict%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><label>Physcial access</label>^ca_collections.physaccessrestrict%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.techaccessrestrict"><div class="unit"><label>Technical access</label>^ca_collections.techaccessrestrict%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.reproduction_conditions"><div class="unit"><label>Conditions Governing Reproduction</label>^ca_collections.reproduction_conditions%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.langmaterials"><div class="unit"><label>Languages and Scripts of the Material</label>^ca_collections.langmaterials%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.otherfindingaid"><div class="unit"><label>Other Finding Aids</label>^ca_collections.otherfindingaid%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.url.link_url"><div class="unit"><label>External Link</label><unit delimiter="<br/>"><a href="^ca_collections.url.link_url" target="_blank"><ifdef code="ca_collections.url.link_text">^ca_collections.url.link_text</ifdef><ifnotdef code="ca_collections.url.link_text">^ca_collections.url.link_url</ifnotdef></a></div></ifdef>}}}
 					
 <?php
 					$va_LcshSubjects = $t_item->get("ca_collections.lcsh_terms", array("returnAsArray" => true));
@@ -111,7 +95,23 @@
 				
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+			<div class="row">
+				<div class='col-sm-12'>
+<?php
+			if ($vb_show_hierarchy_viewer) {	
+?>
+				<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+				<script>
+					$(document).ready(function(){
+						$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
+					})
+				</script>
+<?php				
+			}									
+?>				
+				</div><!-- end col -->
+			</div><!-- end row -->
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>

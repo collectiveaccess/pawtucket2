@@ -36,7 +36,7 @@ body{
 }
 @media(max-width:768px){
 	body{
-		margin-bottom:250px;
+		margin-bottom:300px;
 	}
 }
 .container{
@@ -47,6 +47,10 @@ body{
 }
 .bgOffWhiteLight{
 	background-color: #fbf9f6;
+}
+.bgOffWhiteLight.bgPadding{
+	background-color: #fbf9f6;
+	padding:15px 25px 25px 25px;
 }
 /* notifications */
 .front .notificationMessage{
@@ -221,7 +225,9 @@ header.navigation .navbar-brand-logo {
 		letter-spacing: 3px;
 	}
 }
-
+.navbar-toggle-user {
+    padding: 6px 10px 3px 10px;
+}
 
 
 
@@ -356,6 +362,9 @@ a, a:hover{
 	background-color:#000;
 	color:#FFF;
 }
+.btn-default{
+	text-decoration:none !Important;
+}
 
 /* footer */
 #footer{
@@ -484,6 +493,16 @@ body.frontContainer #footer{
 	background-color: rgb(24, 54, 64, .9);
 	box-shadow:0 2px 14px 0 rgba(0,0,0,.3);
 }
+@media(max-width:1024px){
+	.parallax .heroSearch{
+		margin-top: 17vh;
+	}
+}
+@media(max-width:768px){
+	.parallax .heroSearch{
+		margin-top: 10vh;
+	}
+}
 @media(max-height:420px){
 	.parallax .heroSearch{
 		margin-top: 10vh;
@@ -494,7 +513,7 @@ body.frontContainer #footer{
 }
 
 @media (max-device-width:1024px){
-	/* ipad and mobile disable background-attachment: fixed; fallback to no parallax so at lest see image */
+	/* ipad and mobile disable background-attachment: fixed; fallback to no parallax so at least see image */
 	.parallax {
 		background-attachment: scroll;
 	}
@@ -609,7 +628,6 @@ body.frontContainer #footer{
 }
 .front H2.frontSubHeading{
 	font-family: brandon-grotesque,sans-serif;
-	font-size: 40px;
 	margin-top:60px;	
 	font-size: 30px;
 	letter-spacing: .42px;
@@ -638,9 +656,13 @@ body.frontContainer #footer{
 .hpIntro a{
 	text-decoration:underline;
 }
-@media(max-width: 900px) {
-	.hpIntro {
-		font-size:14px;
+@media(max-width: 768px) {
+	.hpIntro .callout {
+		font-size:24px;
+		margin:100px 0px 100px 0px;
+	}
+	.front H2.frontSubHeading{
+		font-size: 24px;
 	}
 }
 
@@ -815,6 +837,11 @@ body.frontContainer #footer{
 }
 
 /* BROWSE */
+@media(min-width:768px){
+	#setsSelectMultiple {
+		margin-top: -80px;
+	}
+}
 .bCriteria .btn {
 	margin:0px 0px 5px 0px;
 	display:block;
@@ -955,9 +982,9 @@ a.facetApply {
 }
 /* search within */
 @media(max-width:768px){
-	.results .bSearchWithinContainer{
-		display:none;
-	}
+	#bViewButtons {
+    	text-align: left;
+    }
 }
 .results .bSearchWithinContainer{
 	clear:both;
@@ -1124,10 +1151,12 @@ a.facetApply {
 }
 .inquireButton{
 	margin-bottom:20px;
+	margin-top:10px;
 }
 @media(min-width:992px){
 	.inquireButton{
 		float:right;
+		margin-top:0px;
 	}
 }
 .entityImage{
@@ -1136,6 +1165,18 @@ a.facetApply {
 .entityImage img{
 	width:100%;
 	height:auto;
+}
+.detailImgPlaceholder{
+	background-color: #f7f7f7;
+	color: #858585;
+	padding: 75px 5px 70px;
+	text-align: center;
+	width: 100%;
+	font-size:48px;
+	margin-bottom:25px;
+}
+.detail a{
+	text-decoration:underline;
 }
 
 /* IE styles to fix object fit not being supported - sigh - for IE 9 and above */
@@ -1202,4 +1243,22 @@ a.facetApply {
 /* gallery */
 .tl-timeline {
     font-family: Lato !important;
+}
+
+/* about pages */
+.staticPage H1{
+    margin-bottom: 25px;
+}
+.staticPage img{
+	max-width:100%;
+	height:auto;
+}
+.staticPage{
+	line-height: 1.6em;
+}
+.staticPage a{
+    text-decoration:underline;
+}
+.staticPage .btn-default{
+    text-decoration:none;
 }
