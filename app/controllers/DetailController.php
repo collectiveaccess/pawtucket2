@@ -1351,6 +1351,7 @@
 			} elseif (!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
 				throw new ApplicationException(_t('Invalid context'));
 			}
+			$o_context = ResultContext::getResultContextForLastFind($this->request, $va_context['table']);
 			
 			if (!($pt_subject = Datamodel::getInstance($vs_subject = $va_context['table']))) {
 				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
@@ -1375,6 +1376,8 @@
 			if($va_merged_options['inline']){
 				$va_merged_options['noOverlay'] = false;
 			}
+			
+			$va_merged_options['resultList'] = $o_context->getResultList();
 			
 			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, $va_merged_options));
 		}
