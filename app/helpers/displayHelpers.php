@@ -3755,6 +3755,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	 * @param $pa_options array includes:
 	 *			display = media_display.conf display version to use. [Default is 'detail']
 	 *			context = viewer context value to pass in toolbar. For Pawtucket details this is the detail name. [Default is null]
+	 *			set_id = ID for set item being display is part of. [Default is null]
 	 *
 	 * @return string HTML toolbar output
 	 */
@@ -3776,7 +3777,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		$va_detail_type_config = caGetDetailTypeConfig($ps_context);
 		
 		if (!caGetOption(['no_overlay'], $va_rep_display_info, false)) {
-			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('context' => $ps_context, 'id' => $pn_subject_id, 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' aria-label='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in' aria-label='Zoom'></span></a>\n";
+			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('context' => $ps_context, 'id' => $pn_subject_id, 'representation_id' => $vn_rep_id, 'set_id' => caGetOption('set_id', $pa_options, 0), 'overlay' => 1))."\", function() { var url = jQuery(\"#\" + caMediaPanel.getPanelID()).data(\"reloadUrl\"); if(url) { window.location = url; } }); return false;' aria-label='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in' aria-label='Zoom'></span></a>\n";
 		}
 		
 		if (is_null($vb_show_compare = caGetOption('compare', $va_detail_type_config['options'], null))) {
@@ -3963,7 +3964,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 					$po_request, 
 					"representation:{$pn_representation_id}", 
 					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
-					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess]
+					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 'resultList' => caGetOption('resultList', $pa_options, null)]
 				);
 				
 				if ($pb_inline) {	
