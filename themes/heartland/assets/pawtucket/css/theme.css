@@ -39,7 +39,7 @@ a{cursor:pointer;color:inherit;text-decoration:none}@keyframes tmpl-anim-fade-up
 body{
 	margin-top:100px;
 }
-@media(max-width:800px){	
+@media(max-width:900px){	
 	body{
 		margin-top:150px;
 	}	
