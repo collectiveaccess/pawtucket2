@@ -193,7 +193,7 @@ a.navbar-brand, .navbar-default .navbar-brand{
 	background-color:#1a2e51;
 	color:#fff;
 }
-.btn-default:hover{
+.btn-default:hover, .btn-default:active, .btn-default:focus{
 	background-color:#c90;
 }
 .results .btn, .browse .btn{
@@ -350,8 +350,20 @@ a.readmore-js-toggle::after {
 	font-size:12px !important;
 	text-transform:none;
 }
+@media(max-width:767px){
+	.gallery .galleryItem a.btn-default{
+		display:inline-block;
+		margin-bottom:10px;
+	}	
+}
 
 /* explore */
+.explore H1{
+	margin-bottom: 1rem;
+}
+.exploreIntro{
+	font-size: 20px;
+}
 .exploreType{
 	text-align:center;
 	padding:25px 0px 25px 0px;
