@@ -42,7 +42,7 @@
 					$t_dig_audio = new ca_objects($vn_dig_audio_recording_id);
 					if($t_dig_audio_rep = $t_dig_audio->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
 						$vb_media = true;
-						$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_dig_audio->get('object_id'), 'representation_id' => $t_dig_audio_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => $va_access_values);			
+						$va_opts = array('display' => 'detail', 'object_id' => $t_dig_audio->get('object_id'), 'representation_id' => $t_dig_audio_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => $va_access_values);			
 						print "<div class='unit'>".caRepresentationViewer(
 								$this->request, 
 								$t_dig_audio, 
@@ -81,7 +81,7 @@
 					$t_dig_movingimage = new ca_objects($vn_dig_movingimage_recording_id);
 					if($t_dig_movingimage_rep = $t_dig_movingimage->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
 						$vb_media = true;
-						$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_dig_movingimage->get('object_id'), 'representation_id' => $t_dig_movingimage_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => $va_access_values);			
+						$va_opts = array('display' => 'detail', 'object_id' => $t_dig_movingimage->get('object_id'), 'representation_id' => $t_dig_movingimage_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => $va_access_values);			
 						print "<div class='unit'>".caRepresentationViewer(
 								$this->request, 
 								$t_dig_movingimage, 
@@ -114,11 +114,10 @@
 			if(!$vb_media && ($vb_media_not_accessible)){
 ?>
 				<div class="unit"><br/>
-					<b>{{{event_rights_restrictions}}}</b>
+					<b>{{{restricted_media}}}</b>
 				</div>
 <?php
 			}
-
 ?>	
 	
 				</div>
@@ -203,6 +202,15 @@
 							<unit relativeTo="ca_objects" restrictToTypes="movingimage_physical" delimiter="<br/>"><l>^ca_objects.idno<ifdef code="ca_objects.instantiationPhysMovingImages">, </ifdef^ca_objects.instantiationPhysMovingImages</l></unit>
 						</div>
 					</ifcount>}}}
+<?php
+					if($vb_media || $vb_media_not_accessible){
+?>
+						<div class="unit"><label>Rights and Restrictions</label>
+							{{{media_rights_restrictions}}}
+						</div>
+<?php				
+					}
+?>
 				</div><!-- end col -->
 			</div><!-- end row -->
 

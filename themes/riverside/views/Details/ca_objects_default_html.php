@@ -89,10 +89,10 @@
 <?php
 				}
 				
-				if($t_object->get("ca_object_representations.representation_id", array("checkAccess", array(0)))){
+				if($t_object->get("ca_object_representations.representation_id", array("checkAccess" => array(0)))){
 ?>
-					<div class="unit"><br/>
-						<b>{{{event_rights_restrictions}}}</b>
+					<div class="unit">
+						<b>{{{restricted_media}}}</b>
 					</div>
 <?php
 				}
@@ -212,7 +212,14 @@
 							if($vs_LcshSubjects || $vs_keyword_links){
 								print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keyword_links) ? "<br/>" : "").$vs_keyword_links."</div>";	
 							}
-		?>
+							if($t_object->get("ca_object_representations.representation_id")){
+?>
+								<div class="unit"><label>Rights and Restrictions</label>
+									{{{media_rights_restrictions}}}
+								</div>
+<?php				
+							}
+?>
 						</div>
 					</div></div><!-- end bgOffWhiteLight -->
 				</div>
