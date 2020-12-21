@@ -118,7 +118,9 @@
 		<div class="col-sm-6 field">
 			<?php print _t("Holding Institution Call Number"); ?><br/>
 			{{{ca_objects.idno%width=210px}}}
-		</div>	
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-sm-12 field">
 			<div style="float: right; margin-top:20px; margin-left: 20px; ">{{{resetTag}}}<?php print _t('Reset');?>{{{/resetTag}}}</div>
 			<div style="float: right; margin-top:20px;">{{{submitTag}}}<?php print _t('Search');?>{{{/submitTag}}}</div>
