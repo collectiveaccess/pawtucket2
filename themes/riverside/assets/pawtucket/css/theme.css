@@ -838,8 +838,11 @@ body.frontContainer #footer{
 
 /* BROWSE */
 @media(min-width:768px){
-	#setsSelectMultiple {
+	#pageArea.results.objects #setsSelectMultiple {
 		margin-top: -80px;
+	}
+	#pageArea.results.events #setsSelectMultiple {
+		margin-top: -19px;
 	}
 }
 .bCriteria .btn {

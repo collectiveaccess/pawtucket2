@@ -192,7 +192,7 @@
 							if($vs_LcshSubjects || $vs_keyword_links){
 								print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keyword_links) ? "<br/>" : "").$vs_keyword_links."</div>";	
 							}
-							if($t_object->get("ca_object_representations.representation_id")){
+							if($vs_rep_viewer){
 ?>
 								<div class="unit"><label>Rights and Restrictions</label>
 									{{{media_rights_restrictions}}}

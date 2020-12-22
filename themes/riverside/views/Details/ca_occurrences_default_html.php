@@ -203,7 +203,7 @@
 						</div>
 					</ifcount>}}}
 <?php
-					if($vb_media || $vb_media_not_accessible){
+					if($vb_media){
 ?>
 						<div class="unit"><label>Rights and Restrictions</label>
 							{{{media_rights_restrictions}}}
