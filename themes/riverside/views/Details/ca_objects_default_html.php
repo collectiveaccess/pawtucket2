@@ -35,22 +35,6 @@
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-	$o_icons_conf = caGetIconsConfig();
-	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
-	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
-		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x' aria-label='placeholder image'></i>";
-	}
-	# --- default placeholder tag for related objects at bottom of page
-	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
-
-	# --- placeholder icon for detail page media
-	$t_list_item = new ca_list_items();
-	$t_list_item->load($t_object->get("type_id"));
-	$vs_typecode = $t_list_item->get("idno");
-	$vs_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
-	if(!$vs_placeholder){
-		$vs_placeholder = $vs_default_placeholder;
-	}
 
 ?>
 <div class="row">
@@ -83,10 +67,6 @@
 					print $vs_rep_viewer;
 					print '<div id="detailAnnotations"></div>';
 					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
-				}else{
-?>
-					<div class="detailImgPlaceholder"><?php print $vs_placeholder; ?></div>
-<?php
 				}
 				
 				if($t_object->get("ca_object_representations.representation_id", array("checkAccess" => array(0)))){
