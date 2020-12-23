@@ -112,7 +112,7 @@
 						if($vn_download_all_enabled){
 							if(is_array($va_download_all_types) && sizeof($va_download_all_types)){
 								foreach($va_download_all_types as $vs_dl_name => $vs_dl_type){
-									print caNavLink("Download ".$vs_dl_name, "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "download_type" => $vs_dl_type, "download" => 1));
+									print caNavLink("Download Album ".$vs_dl_name, "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "download_type" => $vs_dl_type, "download" => 1, "exclude_ancestors" => 1));
 								}
 							}
 							#print caNavLink("Download Original", "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "version" => "original", "download" => 1));
@@ -128,7 +128,7 @@
 					$vs_email_subject = rawurlencode("Share from: aliceb.metabolicstudio.org");
 					$vs_email_body = rawurlencode($t_object->getWithTemplate("<ifdef code='ca_objects.preferred_labels.name'>^ca_objects.preferred_labels.name\n</ifdef><ifdef code='ca_objects.idno'>^ca_objects.idno\n\n</ifdef>").$this->request->config->get("site_host").caNavUrl("*", "*", "*"));
 					print "<div class='detailTool'><a title='Share via e-mail' href='mailto:?body=".$vs_email_body."&subject=".$vs_email_subject."'><ion-icon name='ios-mail'></ion-icon> <span>E-mail</span></a></div>";
-					print "<div class='detailTool'><a title='Copy URL' href='#' onClick='copyUrl(); return false;'><ion-icon name='ios-link'></ion-icon> <span>Copy URL</span></a></div>";
+					print "<div class='detailTool'><a title='Copy URL' href='#' onClick='copyUrl(); return false;' class='detailCopy'><ion-icon name='ios-link'></ion-icon> <span>Copy URL</span></a></div>";
 					print '</div><!-- end detailTools -->';
 				}				
 

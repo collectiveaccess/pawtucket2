@@ -290,7 +290,7 @@ if($x_show_events){
 <?php
 			$i = 0;
 			while($q_objects->nextHit()){
-				if(!$q_objects->get("ca_objects.parent_id") && $q_objects->get("ca_object_representations.media.widepreview")){
+				#if(!$q_objects->get("ca_objects.parent_id") && $q_objects->get("ca_object_representations.media.widepreview")){
 					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
 					$vs_idno = substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
@@ -301,7 +301,7 @@ if($x_show_events){
 					print "</div>";
 					$i++;
 					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
-				}
+				#}
 				if($i == 12){
 					break;
 				}

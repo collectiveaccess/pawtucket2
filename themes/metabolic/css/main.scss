@@ -1223,6 +1223,17 @@ h1{
 #CommentsTagsList{
 	display:none; /* hack to hide user contributed comments and tags */
 }
+.detailCopy:active{
+	color:$selected-indicator;
+}
+.detailCopy:active::after{
+	content: "copying";
+	background-color: #ededed;
+	font-size: 12px;
+	line-height: 1em;
+	padding: 5px;
+	margin-left: 5px;
+}
 
 
 /* MediaViewer.js styles */
