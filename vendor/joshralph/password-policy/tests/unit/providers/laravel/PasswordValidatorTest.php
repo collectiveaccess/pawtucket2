@@ -1,4 +1,4 @@
-<?php namespace PasswordPolicy\Tests\Providers\Laravel;
+<?php namespace PasswordPolicy\Tests\Unit\Providers\Laravel;
 
 use PasswordPolicy\Policy;
 use PasswordPolicy\PolicyBuilder;

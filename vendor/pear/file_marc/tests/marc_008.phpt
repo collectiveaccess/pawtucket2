@@ -1,11 +1,11 @@
 --TEST--
 marc_008: Attempt to open a file that does not exist
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
+require __DIR__ . '/bootstrap.php';
 
 try {
     $marc_file = new File_MARC('super_bogus_file');

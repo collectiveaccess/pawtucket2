@@ -54,9 +54,6 @@ class Text extends AbstractFrameReflower
      */
     protected function _collapse_white_space($text)
     {
-        //$text = $this->_frame->get_text();
-//     if ( $this->_block_parent->get_current_line_box->w == 0 )
-//       $text = ltrim($text, " \n\r\t");
         return preg_replace(self::$_whitespace_pattern, " ", $text);
     }
 
@@ -84,12 +81,12 @@ class Text extends AbstractFrameReflower
         // Determine the frame width including margin, padding & border
         $text_width = $this->getFontMetrics()->getTextWidth($text, $font, $size, $word_spacing, $char_spacing);
         $mbp_width =
-            (float)$style->length_in_pt(array($style->margin_left,
+            (float)$style->length_in_pt([$style->margin_left,
                 $style->border_left_width,
                 $style->padding_left,
                 $style->padding_right,
                 $style->border_right_width,
-                $style->margin_right), $line_width);
+                $style->margin_right], $line_width);
 
         $frame_width = $text_width + $mbp_width;
 
@@ -109,7 +106,9 @@ class Text extends AbstractFrameReflower
         }
 
         // split the text into words
-        $words = preg_split('/([\s-]+)/u', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+        // The regex splits on everything that's a separator (^\S double negative), excluding nbsp (\xa0), plus dashes
+        // This currently excludes the "narrow nbsp" character
+        $words = preg_split('/([^\S\xA0]+|-+)/u', $text, -1, PREG_SPLIT_DELIM_CAPTURE);
         $wc = count($words);
 
         // Determine the split point
@@ -396,6 +395,7 @@ class Text extends AbstractFrameReflower
         $word_spacing = (float)$style->length_in_pt($style->word_spacing);
         $char_spacing = (float)$style->length_in_pt($style->letter_spacing);
 
+        // determine minimum text width based on the whitespace setting
         switch ($style->white_space) {
             default:
             case "normal":
@@ -405,13 +405,13 @@ class Text extends AbstractFrameReflower
 
                 // Find the longest word (i.e. minimum length)
 
-                // This technique (using arrays & an anonymous function) is actually
-                // faster than doing a single-pass character by character scan.  Heh,
-                // yes I took the time to bench it ;)
-                $words = array_flip(preg_split("/[\s-]+/u", $str, -1, PREG_SPLIT_DELIM_CAPTURE));
+                // split the text into words
+                // The regex splits on everything that's a separator (^\S double negative), excluding nbsp (\xa0), plus dashes
+                // This currently excludes the "narrow nbsp" character
+                $words = array_flip(preg_split('/([^\S\xA0]+|-+)/u', $str, -1, PREG_SPLIT_DELIM_CAPTURE));
                 $root = $this;
-                array_walk($words, function(&$val, $str) use ($font, $size, $word_spacing, $char_spacing, $root) {
-                    $val = $root->getFontMetrics()->getTextWidth($str, $font, $size, $word_spacing, $char_spacing);
+                array_walk($words, function(&$chunked_text_width, $chunked_text) use ($font, $size, $word_spacing, $char_spacing, $root) {
+                    $chunked_text_width = $root->getFontMetrics()->getTextWidth($chunked_text, $font, $size, $word_spacing, $char_spacing);
                 });
 
                 arsort($words);
@@ -419,10 +419,10 @@ class Text extends AbstractFrameReflower
                 break;
 
             case "pre":
-                $lines = array_flip(preg_split("/\n/u", $str));
+                $lines = array_flip(preg_split("/\R/u", $str));
                 $root = $this;
-                array_walk($lines, function(&$val, $str) use ($font, $size, $word_spacing, $char_spacing, $root) {
-                    $val = $root->getFontMetrics()->getTextWidth($str, $font, $size, $word_spacing, $char_spacing);
+                array_walk($lines, function(&$chunked_text_width, $chunked_text) use ($font, $size, $word_spacing, $char_spacing, $root) {
+                    $chunked_text_width = $root->getFontMetrics()->getTextWidth($chunked_text, $font, $size, $word_spacing, $char_spacing);
                 });
 
                 arsort($lines);
@@ -434,6 +434,7 @@ class Text extends AbstractFrameReflower
                 break;
         }
 
+        // clean up the frame text based on the whitespace setting and use to determine maximum text width
         switch ($style->white_space) {
             default:
             case "normal":
@@ -442,30 +443,29 @@ class Text extends AbstractFrameReflower
                 break;
 
             case "pre-line":
-                //XXX: Is this correct?
                 $str = preg_replace("/[ \t]+/u", " ", $text);
+                break;
 
             case "pre-wrap":
                 // Find the longest word (i.e. minimum length)
-                $lines = array_flip(preg_split("/\n/", $text));
+                $lines = array_flip(preg_split("/\R/u", $text));
                 $root = $this;
-                array_walk($lines, function(&$val, $str) use ($font, $size, $word_spacing, $char_spacing, $root) {
-                    $val = $root->getFontMetrics()->getTextWidth($str, $font, $size, $word_spacing, $char_spacing);
+                array_walk($lines, function(&$chunked_text_width, $chunked_text) use ($font, $size, $word_spacing, $char_spacing, $root) {
+                    $chunked_text_width = $root->getFontMetrics()->getTextWidth($chunked_text, $font, $size, $word_spacing, $char_spacing);
                 });
                 arsort($lines);
                 reset($lines);
                 $str = key($lines);
                 break;
         }
-
         $max = $this->getFontMetrics()->getTextWidth($str, $font, $size, $word_spacing, $char_spacing);
 
-        $delta = (float)$style->length_in_pt(array($style->margin_left,
+        $delta = (float)$style->length_in_pt([$style->margin_left,
             $style->border_left_width,
             $style->padding_left,
             $style->padding_right,
             $style->border_right_width,
-            $style->margin_right), $line_width);
+            $style->margin_right], $line_width);
         $min += $delta;
         $min_word = $min;
         $max += $delta;
@@ -478,7 +478,7 @@ class Text extends AbstractFrameReflower
             $min = $delta + $min_char;
         }
 
-        return $this->_min_max_cache = array($min, $max, $min_word, "min" => $min, "max" => $max, 'min_word' => $min_word);
+        return $this->_min_max_cache = [$min, $max, $min_word, "min" => $min, "max" => $max, 'min_word' => $min_word];
     }
 
     /**

@@ -3,7 +3,6 @@
 namespace Github\HttpClient\Plugin;
 
 use Http\Client\Common\Plugin\Journal;
-use Http\Client\Exception;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -11,9 +10,12 @@ use Psr\Http\Message\ResponseInterface;
  * A plugin to remember the last response.
  *
  * @author Tobias Nyholm <tobias.nyholm@gmail.com>
+ * @final since 2.19
  */
 class History implements Journal
 {
+    use HistoryTrait;
+
     /**
      * @var ResponseInterface
      */
@@ -27,12 +29,11 @@ class History implements Journal
         return $this->lastResponse;
     }
 
+    /**
+     * @return void
+     */
     public function addSuccess(RequestInterface $request, ResponseInterface $response)
     {
         $this->lastResponse = $response;
-    }
-
-    public function addFailure(RequestInterface $request, Exception $exception)
-    {
     }
 }

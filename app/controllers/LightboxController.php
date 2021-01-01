@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2017 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -67,11 +67,6 @@
         protected $opb_is_login_redirect = false;
         
         /**
-         * @var HTMLPurifier
-         */
-        protected $purifier;
-        
-        /**
          * @var string
          */
         protected $ops_tablename = 'ca_objects';
@@ -117,7 +112,6 @@
 			$this->ops_description_attribute = ($this->opo_config->get("lightbox_set_description_element_code") ? $this->opo_config->get("lightbox_set_description_element_code") : "description");
 			$this->view->setVar('description_attribute', $this->ops_description_attribute);
 			
-			$this->purifier = new HTMLPurifier();
 			
  			parent::setTableSpecificViewVars();
  		}
@@ -135,8 +129,8 @@
 
             # Get sets for display
             $t_sets = new ca_sets();
- 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
- 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
+ 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(),"access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
+ 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "parents_only" => true));
 
  			# Remove write sets from the read array
  			$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
@@ -452,7 +446,7 @@
  				# --- if making a new reponse set, check there isn't already one for the user
  				$va_user_response_ids = $t_set->getSetResponseIds($this->request->getUserID(), $pn_parent_id);
  				if(is_array($va_user_response_ids) && sizeof($va_user_response_ids)){
- 					$va_errors[] = _t('Only one reponse allowed');
+ 					$va_errors[] = _t('Only one response allowed');
  				}
  			}
  			// check for errors
@@ -699,7 +693,9 @@
  			if(!$pn_access){
  				$va_errors["access"] = _t("Please select an access level");
  			}
- 			if(sizeof($va_errors) == 0){
+ 			$vs_share_message = $this->purifier->purify($this->request->getParameter('share_message', pString));
+ 			$this->view->setVar('share_message', $vs_share_message);
+ 			if(!is_array($va_errors) || (sizeof($va_errors) == 0)){
 				if($pn_group_id){
 					$t_sets_x_user_groups = new ca_sets_x_user_groups();
 					if($t_sets_x_user_groups->load(array("set_id" => $t_set->get("set_id"), "group_id" => $pn_group_id))){
@@ -726,6 +722,7 @@
 								$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
 								$o_view->setVar("display_name", $vs_display_name);
  								$o_view->setVar("display_name_plural", $vs_display_name_plural);
+ 								$o_view->setVar("share_message", $vs_share_message);
 							
 								# -- generate email subject line from template
 								$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
@@ -737,7 +734,7 @@
 								foreach($va_group_users as $va_user_info){
 									// don't send notification to self
 									if($this->request->user->get("user_id") != $va_user_info["user_id"]){
-										caSendmail($va_user_info["email"], array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+										caSendmail($va_user_info["email"], $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 									}
 								}
 							}							
@@ -751,11 +748,11 @@
 					$va_error_emails = array();
 					$va_success_emails = array();
 					$va_error_emails_has_access = array();
-					$t_user = new ca_users();
+					
 					foreach($va_users as $vs_user){
 						// lookup the user/users
-						$t_user->load(array("email" => $vs_user));
-						if($vn_user_id = $t_user->get("user_id")){
+						$t_user = ca_users::find(['email' => $vs_user, 'active' => 1, 'userclass' => ['<', 255]], ['returnAs' => 'firstModelInstance']);
+						if($t_user && ($vn_user_id = $t_user->get("user_id"))){
 							$t_sets_x_users = new ca_sets_x_users();
 							if(($vn_user_id == $t_set->get("user_id")) || ($t_sets_x_users->load(array("set_id" => $t_set->get("set_id"), "user_id" => $vn_user_id)))){
 								$va_error_emails_has_access[] = $vs_user;
@@ -804,7 +801,7 @@
 						$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
 						$o_view->setVar("display_name", $vs_display_name);
  						$o_view->setVar("display_name_plural", $vs_display_name_plural);
-							
+						$o_view->setVar("share_message", $vs_share_message);
 					
 						# -- generate email subject line from template
 						$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
@@ -814,7 +811,7 @@
 						$vs_mail_message_html = $o_view->render("mailTemplates/share_set_notification_html.tpl");
 					
 						foreach($va_success_emails as $vs_email){
-							caSendmail($vs_email, array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+							caSendmail($vs_email, $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 						}
 					}
 				}
@@ -1347,7 +1344,7 @@
 					
 					$t_download_log->log(array(
 						"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
-						"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+						"ip_addr" => RequestHTTP::ip(), 
 						"table_num" => $t_instance->TableNum(), 
 						"row_id" => $t_instance->get("ca_objects.object_id"), 
 						"representation_id" => $vn_representation_id, 
@@ -1361,48 +1358,17 @@
 	
 					$t_rep = new ca_object_representations($va_rep['representation_id']);
 					$va_rep_info = $t_rep->getMediaInfo("media", $vs_download_version);
-					//$va_rep_info = $va_rep['info'][$vs_download_version];
-					$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $vs_idno);
 
-					switch($this->request->user->getPreference('downloaded_file_naming')) {
-						case 'idno':
-							$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'idno_and_version':
-							$vs_file_name = $vs_idno_proc.'_'.$vs_download_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'idno_and_rep_id_and_version':
-							$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_download_version.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'original_name':
-						default:
-							if ($va_rep['info']['original_filename']) {
-								$va_tmp = explode('.', $va_rep['info']['original_filename']);
-								if (sizeof($va_tmp) > 1) { 
-									if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
-										$va_tmp[] = $vs_ext;
-									}
-								}
-								$vs_file_name = join('_', $va_tmp); 					
-							} else {
-								$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_download_version;
-							}
-							
-							if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {
-								$vs_file_name.= "_{$vn_c}";
-							}
-							$vs_file_name .= '.'.$va_rep_info['EXTENSION'];
-							break;
-					} 
+					$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $vs_download_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
 					
-					$va_file_names[$vs_file_name] = true;
+					$va_file_names[$vs_filename] = true;
 				
 					//
 					// Perform metadata embedding
 					if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $vs_download_version), 'ca_objects', $t_instance->getPrimaryKey(), $t_instance->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
 						$vs_path = $t_rep->getMediaPath('media', $vs_download_version);
 					}
-					$va_file_paths[$vs_path] = $vs_file_name;
+					$va_file_paths[$vs_path] = $vs_filename;
 					
 					$vn_c++;
 				}
@@ -1414,9 +1380,9 @@
 
 				foreach($va_paths as $vn_pk => $va_reps) {
 					$vn_c = 1;
-					foreach($va_reps as $vs_path => $vs_file_name) {
+					foreach($va_reps as $vs_path => $vs_filename) {
 						if (!file_exists($vs_path)) { continue; }
-						$o_zip->addFile($vs_path, $vs_file_name);
+						$o_zip->addFile($vs_path, $vs_filename);
 
 						$vn_c++;
 					}

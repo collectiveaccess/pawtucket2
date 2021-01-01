@@ -1,11 +1,11 @@
 --TEST--
 marc_xml_010: iterate and pretty print a MARC record
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARCXML.php';
+require __DIR__ . '/bootstrap.php';
 
 class MyRecord extends File_MARC_Record {
   public function myNewMethod() {

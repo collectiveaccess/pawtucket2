@@ -6,7 +6,7 @@
  * https://wiki.ucop.edu/display/Curation/BagIt BagIt specification}. Really,
  * it is a port of {@link https://github.com/ahankinson/pybagit/ PyBagIt} for
  * PHP.
- * 
+ *
  * PHP version 5
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -29,7 +29,7 @@
  */
 
 
-require_once 'Archive/Tar.php';
+require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'bagit_fetch.php';
 require_once 'bagit_manifest.php';
 require_once 'bagit_utils.php';
@@ -414,7 +414,7 @@ class BagIt
      * $dest should begin with "data/", but if it doesn't that will be added.
      *
      * @param string $src  The file name for the source file.
-     * @param string $dest The file name for the destination file. This should 
+     * @param string $dest The file name for the destination file. This should
      * be relative to the bag directory.
      *
      * @return void
@@ -546,7 +546,7 @@ class BagIt
 
     /**
      * This returns the value for a key from bagInfoData.
-     * 
+     *
      * @param string $key This is the key to get the value associated with.
      *
      * @return string|null

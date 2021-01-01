@@ -1,11 +1,11 @@
 --TEST--
 marc_011: iterate and pretty print a MARC record (SOURCE_STRING)
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
+require __DIR__ . '/bootstrap.php';
 
 // Pull the MARC records into a string (as though we got it from YAZ)
 $marc_string = file_get_contents($dir . '/' . 'example.mrc');

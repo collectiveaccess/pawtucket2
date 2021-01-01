@@ -19,10 +19,10 @@ This package is based on the PHP MARC package, originally called "php-marc", tha
   <email>dbs@php.net</email>
   <active>yes</active>
  </lead>
- <date>2017-12-04</date>
+ <date>2019-11-13</date>
  <version>
-  <release>1.2.0</release>
-  <api>1.2.0</api>
+  <release>1.4.1</release>
+  <api>1.4.0</api>
  </version>
  <stability>
   <release>stable</release>
@@ -30,10 +30,8 @@ This package is based on the PHP MARC package, originally called "php-marc", tha
  </stability>
  <license uri="http://www.gnu.org/copyleft/lesser.html">GNU Lesser General Public License</license>
  <notes>
-1.2.0
-  * Support injection of extended Record class (thanks Dan Michael O. Heggø!)
-  * Support regular expression matching of subfields (thanks Waldemar Bartikowski!)
-  * Fix deletion of multiple subfields at once (thanks Dan Michael O. Heggø!)
+1.4.1
+  * Reintroduce include_path to composer.json
  </notes>
  <contents>
   <dir name="/" baseinstalldir="File">
@@ -134,7 +132,7 @@ This package is based on the PHP MARC package, originally called "php-marc", tha
  <dependencies>
   <required>
    <php>
-    <min>5.5</min>
+    <min>5.6</min>
    </php>
    <pearinstaller>
     <min>1.4.0</min>

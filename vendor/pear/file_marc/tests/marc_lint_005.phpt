@@ -1,13 +1,12 @@
 --TEST--
 marc_lint_005: Tests check_020() called separately
 --SKIPIF--
-<?php include('skipif.inc'); ?>
-<?php include('skipif_noispn.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
+<?php include('tests/skipif_noispn.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
-require 'File/MARC/Lint.php';
+require __DIR__ . '/bootstrap.php';
 
 // Create test harness to allow direct calls to check methods:
 class File_MARC_Lint_Test_Harness extends File_MARC_Lint

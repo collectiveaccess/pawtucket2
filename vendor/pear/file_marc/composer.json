@@ -10,7 +10,11 @@
     "autoload": {
         "psr-0": {
             "File": "./"
-        }
+        },
+        "classmap": [
+            "./File/MARC/Data_Field.php",
+            "./File/MARC/Control_Field.php"
+        ]
     },
     "description": "Supports the MAchine Readable Cataloging (MARC) file format documented at http://loc.gov/marc/",
     "include-path": [
@@ -27,9 +31,12 @@
         "pear/pear_exception": "1.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+        "squizlabs/php_codesniffer": "*"
     },
     "suggest": {
         "pear/validate_ispn": "Install optionally via your project's composer.json"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

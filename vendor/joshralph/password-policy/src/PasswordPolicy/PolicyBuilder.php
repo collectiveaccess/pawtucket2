@@ -116,16 +116,17 @@ class PolicyBuilder
     /**
      * Add a does not complain rule based on the given phrases
      *
-     * @param $phrases string|array
+     * @param      $phrases string|array
+     * @param      $caseSensitive bool
      *
      * @return $this
      */
-    public function doesNotContain($phrases)
+    public function doesNotContain($phrases, $caseSensitive = true)
     {
         $phrases = is_array($phrases) ? $phrases : func_get_args();
 
         $this->policy->addRule(
-            (new ContainRule)->phrase($phrases)->doesnt()
+            (new ContainRule($caseSensitive))->phrase($phrases)->doesnt()
         );
 
         return $this;
@@ -135,15 +136,16 @@ class PolicyBuilder
      * Add a contains rule based on the given phrases
      *
      * @param $phrases string|array
+     * @param $caseSensitive bool
      *
      * @return $this
      */
-    public function contains($phrases)
+    public function contains($phrases, $caseSensitive = true)
     {
         $phrases = is_array($phrases) ? $phrases : func_get_args();
 
         $this->policy->addRule(
-            (new ContainRule)->phrase($phrases)
+            (new ContainRule($caseSensitive))->phrase($phrases)
         );
 
         return $this;
@@ -168,7 +170,7 @@ class PolicyBuilder
 
     /**
      * Special characters
-     * 
+     *
      * @param int $min
      * @return $this
      */

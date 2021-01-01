@@ -1,11 +1,11 @@
 --TEST--
 marc_023: test extended Record interface
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
+require __DIR__ . '/bootstrap.php';
 
 class MyRecord extends File_MARC_Record {
   public function myNewMethod() {

@@ -55,17 +55,12 @@ class PullRequest extends AbstractApi
      *
      * @param string $username   the username
      * @param string $repository the repository
-     * @param array  $params     a list of extra parameters.
+     * @param array  $parameters a list of extra parameters.
      *
      * @return array array of pull requests for the project
      */
-    public function all($username, $repository, array $params = [])
+    public function all($username, $repository, array $parameters = [])
     {
-        $parameters = array_merge([
-            'page' => 1,
-            'per_page' => 30,
-        ], $params);
-
         return $this->get('/repos/'.rawurlencode($username).'/'.rawurlencode($repository).'/pulls', $parameters);
     }
 
@@ -82,17 +77,17 @@ class PullRequest extends AbstractApi
      */
     public function show($username, $repository, $id)
     {
-        return $this->get('/repos/'.rawurlencode($username).'/'.rawurlencode($repository).'/pulls/'.rawurlencode($id));
+        return $this->get('/repos/'.rawurlencode($username).'/'.rawurlencode($repository).'/pulls/'.$id);
     }
 
-    public function commits($username, $repository, $id)
+    public function commits($username, $repository, $id, array $parameters = [])
     {
-        return $this->get('/repos/'.rawurlencode($username).'/'.rawurlencode($repository).'/pulls/'.rawurlencode($id).'/commits');
+        return $this->get('/repos/'.rawurlencode($username).'/'.rawurlencode($repository).'/pulls/'.rawurlencode($id).'/commits', $parameters);
     }
 
-    public function files($username, $repository, $id)
+    public function files($username, $repository, $id, array $parameters = [])
     {
-        return $this->get('/repos/'.rawurlencode($username).'/'.rawurlencode($repository).'/pulls/'.rawurlencode($id).'/files');
+        return $this->get('/repos/'.rawurlencode($username).'/'.rawurlencode($repository).'/pulls/'.rawurlencode($id).'/files', $parameters);
     }
 
     /**

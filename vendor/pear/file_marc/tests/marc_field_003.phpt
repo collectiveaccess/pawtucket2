@@ -1,11 +1,11 @@
 --TEST--
 marc_field_003: Add subfields to an existing field
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
+require __DIR__ . '/bootstrap.php';
 
 // create some subfields
 $subfields[] = new File_MARC_Subfield('a', 'nothing');

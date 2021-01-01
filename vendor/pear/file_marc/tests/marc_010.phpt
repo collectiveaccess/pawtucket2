@@ -1,11 +1,11 @@
 --TEST--
 marc_010: iterate and pretty print MARC records from a stream
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
+require __DIR__ . '/bootstrap.php';
 
 $marc_file = new File_MARC("compress.zlib://$dir/compressed.mrc.gz");
 

@@ -1,4 +1,4 @@
-<?php namespace PasswordPolicy\Tests;
+<?php namespace PasswordPolicy\Tests\Unit\Rules;
 
 use PasswordPolicy\Policy;
 use PasswordPolicy\PolicyBuilder;

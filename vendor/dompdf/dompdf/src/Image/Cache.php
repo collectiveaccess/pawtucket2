@@ -27,7 +27,7 @@ class Cache
      *
      * @var array
      */
-    protected static $_cache = array();
+    protected static $_cache = [];
 
     /**
      * The url to the "broken image" used when images can't be loaded
@@ -88,7 +88,9 @@ class Cache
                     } // From remote
                     else {
                         $tmp_dir = $dompdf->getOptions()->getTempDir();
-                        $resolved_url = @tempnam($tmp_dir, "ca_dompdf_img_");
+                        if (($resolved_url = @tempnam($tmp_dir, "ca_dompdf_img_")) === false) {
+                            throw new ImageException("Unable to create temporary image in " . $tmp_dir, E_WARNING);
+                        }
                         $image = "";
 
                         if ($data_uri) {
@@ -100,7 +102,7 @@ class Cache
                         }
 
                         // Image not found or invalid
-                        if (strlen($image) == 0) {
+                        if (empty($image)) {
                             $msg = ($data_uri ? "Data-URI could not be parsed" : "Image not found");
                             throw new ImageException($msg, E_WARNING);
                         } // Image found, put in cache and process
@@ -110,7 +112,9 @@ class Cache
                             //- a remote url does not need to have a file extension at all
                             //- local cached file does not have a matching file extension
                             //Therefore get image type from the content
-                            file_put_contents($resolved_url, $image);
+                            if (@file_put_contents($resolved_url, $image) === false) {
+                                throw new ImageException("Unable to create temporary image in " . $tmp_dir, E_WARNING);
+                            }
                         }
                     }
                 } // Not remote, local image
@@ -127,7 +131,7 @@ class Cache
                 list($width, $height, $type) = Helpers::dompdf_getimagesize($resolved_url, $dompdf->getHttpContext());
 
                 // Known image type
-                if ($width && $height && in_array($type, array("gif", "png", "jpeg", "bmp", "svg"))) {
+                if ($width && $height && in_array($type, ["gif", "png", "jpeg", "bmp", "svg"])) {
                     //Don't put replacement image into cache - otherwise it will be deleted on cache cleanup.
                     //Only execute on successful caching of remote image.
                     if ($enable_remote && $remote || $data_uri) {
@@ -145,7 +149,7 @@ class Cache
             Helpers::record_warnings($e->getCode(), $e->getMessage() . " \n $url", $e->getFile(), $e->getLine());
         }
 
-        return array($resolved_url, $type, $message);
+        return [$resolved_url, $type, $message];
     }
 
     /**
@@ -165,7 +169,7 @@ class Cache
             unlink($file);
         }
 
-        self::$_cache = array();
+        self::$_cache = [];
     }
 
     static function detect_type($file, $context = null)

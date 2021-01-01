@@ -2,6 +2,15 @@
 
 namespace Github\Api;
 
+use Github\Api\Repository\Actions\Artifacts;
+use Github\Api\Repository\Actions\Secrets;
+use Github\Api\Repository\Actions\SelfHostedRunners;
+use Github\Api\Repository\Actions\WorkflowJobs;
+use Github\Api\Repository\Actions\WorkflowRuns;
+use Github\Api\Repository\Actions\Workflows;
+use Github\Api\Repository\Checks;
+use Github\Api\Repository\Checks\CheckRuns;
+use Github\Api\Repository\Checks\CheckSuites;
 use Github\Api\Repository\Collaborators;
 use Github\Api\Repository\Comments;
 use Github\Api\Repository\Commits;
@@ -11,6 +20,7 @@ use Github\Api\Repository\Downloads;
 use Github\Api\Repository\Forks;
 use Github\Api\Repository\Hooks;
 use Github\Api\Repository\Labels;
+use Github\Api\Repository\Pages;
 use Github\Api\Repository\Projects;
 use Github\Api\Repository\Protection;
 use Github\Api\Repository\Releases;
@@ -62,7 +72,7 @@ class Repo extends AbstractApi
             return $this->get('/repositories');
         }
 
-        return $this->get('/repositories?since='.rawurldecode($id));
+        return $this->get('/repositories', ['since' => $id]);
     }
 
     /**
@@ -169,7 +179,7 @@ class Repo extends AbstractApi
      */
     public function showById($id)
     {
-        return $this->get('/repositories/'.rawurlencode($id));
+        return $this->get('/repositories/'.$id);
     }
 
     /**
@@ -275,6 +285,25 @@ class Repo extends AbstractApi
     }
 
     /**
+     * Create a repository dispatch event.
+     *
+     * @link https://developer.github.com/v3/repos/#create-a-repository-dispatch-event
+     *
+     * @param string $username   the user who owns the repository
+     * @param string $repository the name of the repository
+     * @param string $eventType  A custom webhook event name
+     *
+     * @return mixed null on success, array on error with 'message'
+     */
+    public function dispatch($username, $repository, $eventType, array $clientPayload)
+    {
+        return $this->post(\sprintf('/repos/%s/%s/dispatches', rawurlencode($username), rawurlencode($repository)), [
+            'event_type' => $eventType,
+            'client_payload' => $clientPayload,
+        ]);
+    }
+
+    /**
      * Manage the collaborators of a repository.
      *
      * @link http://developer.github.com/v3/repos/collaborators/
@@ -308,6 +337,85 @@ class Repo extends AbstractApi
     public function commits()
     {
         return new Commits($this->client);
+    }
+
+    /**
+     * Manage checks on a repository.
+     *
+     * @link https://developer.github.com/v3/checks/
+     * @deprecated since 2.17 and will be removed in 3.0. Use the "checkRuns" or "checkSuites" api's instead.
+     *
+     * @return Checks
+     */
+    public function checks()
+    {
+        @trigger_error(sprintf('The "%s" is deprecated since knp-labs/php-github-api 2.17 and will be removed in knp-labs/php-github-api 3.0. Use the "checkRuns" or "checkSuites" api\'s instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return new Checks($this->client);
+    }
+
+    /**
+     * @link https://docs.github.com/en/free-pro-team@latest/rest/reference/checks#check-runs
+     */
+    public function checkRuns(): CheckRuns
+    {
+        return new CheckRuns($this->client);
+    }
+
+    /**
+     * @link https://docs.github.com/en/free-pro-team@latest/rest/reference/checks#check-suites
+     */
+    public function checkSuites(): CheckSuites
+    {
+        return new CheckSuites($this->client);
+    }
+
+    /**
+     * @link https://developer.github.com/v3/actions/artifacts/#artifacts
+     */
+    public function artifacts(): Artifacts
+    {
+        return new Artifacts($this->client);
+    }
+
+    /**
+     * @link https://docs.github.com/en/free-pro-team@latest/rest/reference/actions#workflows
+     */
+    public function workflows(): Workflows
+    {
+        return new Workflows($this->client);
+    }
+
+    /**
+     * @link https://docs.github.com/en/free-pro-team@latest/rest/reference/actions#workflow-runs
+     */
+    public function workflowRuns(): WorkflowRuns
+    {
+        return new WorkflowRuns($this->client);
+    }
+
+    /**
+     * @link https://docs.github.com/en/free-pro-team@latest/rest/reference/actions#workflow-jobs
+     */
+    public function workflowJobs(): WorkflowJobs
+    {
+        return new WorkflowJobs($this->client);
+    }
+
+    /**
+     * @link https://docs.github.com/en/free-pro-team@latest/rest/reference/actions#self-hosted-runners
+     */
+    public function selfHostedRunners(): SelfHostedRunners
+    {
+        return new SelfHostedRunners($this->client);
+    }
+
+    /**
+     * @link https://docs.github.com/en/free-pro-team@latest/rest/reference/actions#secrets
+     */
+    public function secrets(): Secrets
+    {
+        return new Secrets($this->client);
     }
 
     /**
@@ -576,12 +684,43 @@ class Repo extends AbstractApi
     /**
      * @param string $username
      * @param string $repository
+     * @param array  $parameters
      *
      * @return array
      */
-    public function milestones($username, $repository)
+    public function milestones($username, $repository, array $parameters = [])
     {
-        return $this->get('/repos/'.rawurldecode($username).'/'.rawurldecode($repository).'/milestones');
+        return $this->get('/repos/'.rawurldecode($username).'/'.rawurldecode($repository).'/milestones', $parameters);
+    }
+
+    /**
+     * @link https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#enable-automated-security-fixes
+     *
+     * @param string $username
+     * @param string $repository
+     *
+     * @return array|string
+     */
+    public function enableAutomatedSecurityFixes(string $username, string $repository)
+    {
+        $this->acceptHeaderValue = 'application/vnd.github.london-preview+json';
+
+        return $this->put('/repos/'.rawurlencode($username).'/'.rawurlencode($repository).'/automated-security-fixes');
+    }
+
+    /**
+     * @link https://docs.github.com/en/free-pro-team@latest/rest/reference/repos#disable-automated-security-fixes
+     *
+     * @param string $username
+     * @param string $repository
+     *
+     * @return array|string
+     */
+    public function disableAutomatedSecurityFixes(string $username, string $repository)
+    {
+        $this->acceptHeaderValue = 'application/vnd.github.london-preview+json';
+
+        return $this->delete('/repos/'.rawurlencode($username).'/'.rawurlencode($repository).'/automated-security-fixes');
     }
 
     public function projects()
@@ -592,6 +731,11 @@ class Repo extends AbstractApi
     public function traffic()
     {
         return new Traffic($this->client);
+    }
+
+    public function pages()
+    {
+        return new Pages($this->client);
     }
 
     /**
@@ -606,6 +750,24 @@ class Repo extends AbstractApi
     public function events($username, $repository, $page = 1)
     {
         return $this->get('/repos/'.rawurldecode($username).'/'.rawurldecode($repository).'/events', ['page' => $page]);
+    }
+
+    /**
+     * Get the community profile metrics for a repository.
+     *
+     * @link https://developer.github.com/v3/repos/community/#retrieve-community-profile-metrics
+     *
+     * @param string $username
+     * @param string $repository
+     *
+     * @return array
+     */
+    public function communityProfile($username, $repository)
+    {
+        //This api is in preview mode, so set the correct accept-header
+        $this->acceptHeaderValue = 'application/vnd.github.black-panther-preview+json';
+
+        return $this->get('/repos/'.rawurldecode($username).'/'.rawurldecode($repository).'/community/profile');
     }
 
     /**
@@ -677,9 +839,6 @@ class Repo extends AbstractApi
      */
     public function transfer($username, $repository, $newOwner, $teamId = [])
     {
-        //This api is in preview mode, so set the correct accept-header
-        $this->acceptHeaderValue = 'application/vnd.github.nightshade-preview+json';
-
         return $this->post('/repos/'.rawurldecode($username).'/'.rawurldecode($repository).'/transfer', ['new_owner' => $newOwner, 'team_id' => $teamId]);
     }
 }

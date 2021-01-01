@@ -1,11 +1,11 @@
 --TEST--
 marc_xml_008: generate a single collection of MARCXML records from a MARCXML record
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARCXML.php';
+require __DIR__ . '/bootstrap.php';
 
 $records = new File_MARCXML($dir . '/' . 'music.xml');
 

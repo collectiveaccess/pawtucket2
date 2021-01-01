@@ -19,7 +19,7 @@ Uses [GitHub API v3](http://developer.github.com/v3/) & supports [GitHub API v4]
 
 ## Requirements
 
-* PHP >= 5.6
+* PHP >= 7.1
 * A [HTTP client](https://packagist.org/providers/php-http/client-implementation)
 * A [PSR-7 implementation](https://packagist.org/providers/psr/http-message-implementation)
 * (optional) PHPUnit to run tests.
@@ -91,13 +91,15 @@ See the [`doc` directory](doc/) for more detailed documentation.
 
 `php-github-api` is licensed under the MIT License - see the LICENSE file for details
 
-## Credits
+## Maintainers
 
-### Sponsored by
+Please read [this post](https://knplabs.com/en/blog/news-for-our-foss-projects-maintenance) first.
 
-[![KnpLabs Team](http://knplabs.com/front/images/knp-labs-logo.png)](http://knplabs.com)
+This library is maintained by the following people (alphabetically sorted) :
+- @acrobat
+- @Nyholm
 
-### Contributors
+## Contributors
 
 - Thanks to [Thibault Duplessis aka. ornicar](http://github.com/ornicar) for his first version of this library.
 - Thanks to [Joseph Bielawski aka. stloyd](http://github.com/stloyd) for his contributions and support.
@@ -107,5 +109,6 @@ See the [`doc` directory](doc/) for more detailed documentation.
 - Thanks to [Nicolas Pastorino](http://github.com/jeanvoye) for his contribution on the Pull Request API.
 - Thanks to [Edoardo Rivello](http://github.com/erivello) for his contribution on the Gists API.
 - Thanks to [Miguel Piedrafita](https://github.com/m1guelpf) for his contribution to the v4 & Apps API.
+- Thanks to [Emre DEGER](https://github.com/lexor) for his contribution to the Actions API.
 
 Thanks to GitHub for the high quality API and documentation.

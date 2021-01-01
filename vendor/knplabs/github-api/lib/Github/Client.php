@@ -19,49 +19,50 @@ use Psr\Cache\CacheItemPoolInterface;
 /**
  * Simple yet very cool PHP GitHub client.
  *
- * @method Api\CurrentUser currentUser()
- * @method Api\CurrentUser me()
- * @method Api\Enterprise ent()
- * @method Api\Enterprise enterprise()
- * @method Api\Miscellaneous\CodeOfConduct codeOfConduct()
- * @method Api\Miscellaneous\Emojis emojis()
- * @method Api\Miscellaneous\Licenses licenses()
- * @method Api\GitData git()
- * @method Api\GitData gitData()
- * @method Api\Gists gist()
- * @method Api\Gists gists()
- * @method Api\Miscellaneous\Gitignore gitignore()
- * @method Api\Integrations integration() (deprecated)
- * @method Api\Integrations integrations() (deprecated)
- * @method Api\Apps apps()
- * @method Api\Issue issue()
- * @method Api\Issue issues()
- * @method Api\Markdown markdown()
- * @method Api\Notification notification()
- * @method Api\Notification notifications()
- * @method Api\Organization organization()
- * @method Api\Organization organizations()
- * @method Api\Organization\Projects orgProject()
- * @method Api\Organization\Projects orgProjects()
- * @method Api\Organization\Projects organizationProject()
- * @method Api\Organization\Projects organizationProjects()
- * @method Api\PullRequest pr()
- * @method Api\PullRequest pullRequest()
- * @method Api\PullRequest pullRequests()
- * @method Api\RateLimit rateLimit()
- * @method Api\Repo repo()
- * @method Api\Repo repos()
- * @method Api\Repo repository()
- * @method Api\Repo repositories()
- * @method Api\Search search()
- * @method Api\Organization\Teams team()
- * @method Api\Organization\Teams teams()
- * @method Api\User user()
- * @method Api\User users()
- * @method Api\Authorizations authorization()
- * @method Api\Authorizations authorizations()
- * @method Api\Meta meta()
- * @method Api\GraphQL graphql()
+ * @method Api\CurrentUser                       currentUser()
+ * @method Api\CurrentUser                       me()
+ * @method Api\Enterprise                        ent()
+ * @method Api\Enterprise                        enterprise()
+ * @method Api\Miscellaneous\CodeOfConduct       codeOfConduct()
+ * @method Api\Miscellaneous\Emojis              emojis()
+ * @method Api\Miscellaneous\Licenses            licenses()
+ * @method Api\GitData                           git()
+ * @method Api\GitData                           gitData()
+ * @method Api\Gists                             gist()
+ * @method Api\Gists                             gists()
+ * @method Api\Miscellaneous\Gitignore           gitignore()
+ * @method Api\Integrations                      integration() (deprecated)
+ * @method Api\Integrations                      integrations() (deprecated)
+ * @method Api\Apps                              apps()
+ * @method Api\Issue                             issue()
+ * @method Api\Issue                             issues()
+ * @method Api\Markdown                          markdown()
+ * @method Api\Notification                      notification()
+ * @method Api\Notification                      notifications()
+ * @method Api\Organization                      organization()
+ * @method Api\Organization                      organizations()
+ * @method Api\Organization\Projects             orgProject()
+ * @method Api\Organization\Projects             orgProjects()
+ * @method Api\Organization\Projects             organizationProject()
+ * @method Api\Organization\Projects             organizationProjects()
+ * @method Api\Organization\OutsideCollaborators outsideCollaborators()
+ * @method Api\PullRequest                       pr()
+ * @method Api\PullRequest                       pullRequest()
+ * @method Api\PullRequest                       pullRequests()
+ * @method Api\RateLimit                         rateLimit()
+ * @method Api\Repo                              repo()
+ * @method Api\Repo                              repos()
+ * @method Api\Repo                              repository()
+ * @method Api\Repo                              repositories()
+ * @method Api\Search                            search()
+ * @method Api\Organization\Teams                team()
+ * @method Api\Organization\Teams                teams()
+ * @method Api\User                              user()
+ * @method Api\User                              users()
+ * @method Api\Authorizations                    authorization()
+ * @method Api\Authorizations                    authorizations()
+ * @method Api\Meta                              meta()
+ * @method Api\GraphQL                           graphql()
  *
  * @author Joseph Bielawski <stloyd@gmail.com>
  *
@@ -72,30 +73,48 @@ class Client
     /**
      * Constant for authentication method. Indicates the default, but deprecated
      * login with username and token in URL.
+     *
+     * @deprecated Use `Client::AUTH_ACCESS_TOKEN` instead. See https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/#authenticating-using-query-parameters
      */
     const AUTH_URL_TOKEN = 'url_token';
 
     /**
      * Constant for authentication method. Not indicates the new login, but allows
      * usage of unauthenticated rate limited requests for given client_id + client_secret.
+     *
+     * @deprecated Use `Client::AUTH_CLIENT_ID` instead. See https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/#authenticating-using-query-parameters
      */
     const AUTH_URL_CLIENT_ID = 'url_client_id';
 
     /**
      * Constant for authentication method. Indicates the new favored login method
      * with username and password via HTTP Authentication.
+     *
+     * @deprecated Use `Client::AUTH_ACCESS_TOKEN` instead. See https://developer.github.com/changes/2019-11-05-deprecated-passwords-and-authorizations-api/#authenticating-using-query-parameters
      */
     const AUTH_HTTP_PASSWORD = 'http_password';
 
     /**
      * Constant for authentication method. Indicates the new login method with
      * with username and token via HTTP Authentication.
+     *
+     * @deprecated Use `Client::AUTH_ACCESS_TOKEN` instead.
      */
     const AUTH_HTTP_TOKEN = 'http_token';
 
     /**
+     * Authenticate using a client_id/client_secret combination.
+     */
+    const AUTH_CLIENT_ID = 'client_id_header';
+
+    /**
+     * Authenticate using a GitHub access token.
+     */
+    const AUTH_ACCESS_TOKEN = 'access_token_header';
+
+    /**
      * Constant for authentication method. Indicates JSON Web Token
-     * authentication required for integration access to the API.
+     * authentication required for GitHub apps access to the API.
      */
     const AUTH_JWT = 'jwt';
 
@@ -300,6 +319,11 @@ class Client
                 $api = new Api\GraphQL($this);
                 break;
 
+            case 'outsideCollaborators':
+            case 'outside_collaborators':
+                $api = new Api\Organization\OutsideCollaborators($this);
+                break;
+
             default:
                 throw new InvalidArgumentException(sprintf('Undefined api instance called: "%s"', $name));
         }
@@ -315,6 +339,8 @@ class Client
      * @param null|string $authMethod   One of the AUTH_* class constants
      *
      * @throws InvalidArgumentException If no authentication method was given
+     *
+     * @return void
      */
     public function authenticate($tokenOrLogin, $password = null, $authMethod = null)
     {
@@ -322,7 +348,7 @@ class Client
             throw new InvalidArgumentException('You need to specify authentication method!');
         }
 
-        if (null === $authMethod && in_array($password, [self::AUTH_URL_TOKEN, self::AUTH_URL_CLIENT_ID, self::AUTH_HTTP_PASSWORD, self::AUTH_HTTP_TOKEN, self::AUTH_JWT], true)) {
+        if (null === $authMethod && in_array($password, [self::AUTH_URL_TOKEN, self::AUTH_URL_CLIENT_ID, self::AUTH_HTTP_PASSWORD, self::AUTH_HTTP_TOKEN, self::AUTH_ACCESS_TOKEN, self::AUTH_JWT], true)) {
             $authMethod = $password;
             $password = null;
         }
@@ -339,6 +365,8 @@ class Client
      * Sets the URL of your GitHub Enterprise instance.
      *
      * @param string $enterpriseUrl URL of the API in the form of http(s)://hostname
+     *
+     * @return void
      */
     private function setEnterpriseUrl($enterpriseUrl)
     {
@@ -363,6 +391,8 @@ class Client
      *
      * @param CacheItemPoolInterface $cachePool
      * @param array                  $config
+     *
+     * @return void
      */
     public function addCache(CacheItemPoolInterface $cachePool, array $config = [])
     {
@@ -371,6 +401,8 @@ class Client
 
     /**
      * Remove the cache plugin.
+     *
+     * @return void
      */
     public function removeCache()
     {
@@ -379,8 +411,7 @@ class Client
 
     /**
      * @param string $name
-     *
-     * @throws BadMethodCallException
+     * @param array  $args
      *
      * @return ApiInterface
      */

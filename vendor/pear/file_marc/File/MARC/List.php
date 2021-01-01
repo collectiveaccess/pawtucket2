@@ -9,7 +9,7 @@
  * that is part of the Emilda Project (http://www.emilda.org). Christoffer
  * Landtman generously agreed to make the "php-marc" code available under the
  * GNU LGPL so it could be used as the basis of this PEAR package.
- * 
+ *
  * PHP version 5
  *
  * LICENSE: This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,7 @@
  *
  * For the list of {@link File_MARC_Field} objects in a {@link File_MARC_Record}
  * object, the key() method returns the tag name of the field.
- * 
+ *
  * For the list of {@link File_MARC_Subfield} objects in a {@link
  * File_MARC_Data_Field} object, the key() method returns the code of
  * the subfield.
@@ -133,9 +133,18 @@ class File_MARC_List extends SplDoublyLinkedList
             if ($this->offsetExists($exist_pos + 1)) {
                 $this->add($exist_pos + 1, $new_node);
             } else {
-                $this->push($new_node);
+                $this->appendNode($new_node);
+                return true;
             }
             break;
+        }
+
+        // Fix positions
+        $this->rewind();
+        while ($n = $this->current()) {
+            $n->setPosition($pos);
+            $this->next();
+            $pos++;
         }
 
         return true;

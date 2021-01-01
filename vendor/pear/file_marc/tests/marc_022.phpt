@@ -1,11 +1,11 @@
 --TEST--
 marc_022: Insert fields
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
+require __DIR__ . '/bootstrap.php';
 $marc_file = new File_MARC($dir . '/' . 'music.mrc');
 
 print "\nInsert a new 100 field before the first 650\n";

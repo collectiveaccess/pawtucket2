@@ -1,11 +1,11 @@
 --TEST--
 marc_field_005: Test method getContents
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
+require __DIR__ . '/bootstrap.php';
 
 // create some subfields
 $subfields[] = new File_MARC_Subfield('a', 'nothing');

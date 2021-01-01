@@ -1,3 +1,18 @@
+1.4.1
+  * Reintroduce include_path to composer.json
+
+1.4.0
+  * Update File_MARC_Lint to match MARC::Lint 1.52 (thanks Demian Katz)
+  * Warn about out-of-range skip indicators (thanks Demian Katz)
+  * Support initialization from SimpleXMLELement object (thanks Dan Michael O. Heggø)
+  * Fix Travis-CI support (thanks Daniel O'Connor)
+  * Tweak composer.json to support Composer 2.0
+  * Silence PEAR style errors and warnings in File/MARCBASE.php
+
+1.3.0
+  * Support reading MARC-in-JSON serializations
+  * Fix positions using MARC_List's appendNode method (thanks Waldemar Bartikowski!)
+
 1.2.0
   * Support injection of extended Record class (thanks Dan Michael O. Heggø!)
   * Support regular expression matching of subfields (thanks Waldemar Bartikowski!)

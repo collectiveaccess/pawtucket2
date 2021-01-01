@@ -1,11 +1,11 @@
 --TEST--
 marc_019: generate a MARCXML record not in a collection element
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
+require __DIR__ . '/bootstrap.php';
 
 $records = new File_MARC($dir . '/' . 'music.mrc');
 

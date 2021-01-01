@@ -23,6 +23,17 @@ class ContainRule implements Rule
      */
     protected $phrases = [];
 
+    /**
+     * A flag pointing weather the check is case sensitive or not
+     * @var bool
+     */
+    protected $caseSensitive;
+
+
+    public function __construct($caseSensitive = true)
+    {
+        $this->caseSensitive = $caseSensitive;
+    }
 
     /**
      * Set phrase(s)
@@ -102,6 +113,10 @@ class ContainRule implements Rule
      */
     private function containsPhrase($subject, $phrase)
     {
-        return strpos($subject, $phrase) !== false;
+        if ($this->caseSensitive) {
+            return strpos($subject, $phrase) !== false;
+        }
+
+        return mb_stripos($subject, $phrase) !== false;
     }
 }

@@ -1,11 +1,11 @@
 --TEST--
 marc_xml_005: Round-trip a MARCXML record with a root element of "record" to MARC21
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARCXML.php';
+require __DIR__ . '/bootstrap.php';
 $marc_file = new File_MARCXML($dir . '/' . 'onerecord.xml');
 
 while ($marc_record = $marc_file->next()) {

@@ -1,8 +1,11 @@
 {
     "name": "scholarslab/bagit",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "require": {
-        "pear/archive_tar": "~1.3"
+        "pear/archive_tar": "~1.3",
+        "ext-zip": "*",
+        "ext-iconv": "*",
+        "ext-hash": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.4",

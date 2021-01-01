@@ -1,11 +1,11 @@
 --TEST--
 marc_xml_007: test getTag(), isControlField(), and isDataField() convenience methods on MARCXML
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARCXML.php';
+require __DIR__ . '/bootstrap.php';
 $marc_file = new File_MARCXML($dir . '/' . 'bigarchive.xml');
 
 while ($marc_record = $marc_file->next()) {

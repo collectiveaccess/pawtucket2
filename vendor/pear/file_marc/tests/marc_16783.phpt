@@ -1,11 +1,11 @@
 --TEST--
 marc_16783: iterate and pretty print a non-compliant MARC record (tag = '30-')
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
+require __DIR__ . '/bootstrap.php';
 $marc_file = new File_MARC($dir . '/' . 'bad_example.mrc');
 
 while ($marc_record = $marc_file->next()) {

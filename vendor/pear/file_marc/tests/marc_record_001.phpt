@@ -1,11 +1,11 @@
 --TEST--
 marc_record_001: create a MARC record from scratch
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
+require __DIR__ . '/bootstrap.php';
 $marc = new File_MARC_Record();
 
 $marc->appendField(new File_MARC_Data_Field('245', array(

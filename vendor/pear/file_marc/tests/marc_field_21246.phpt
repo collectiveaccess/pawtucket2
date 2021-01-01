@@ -1,11 +1,11 @@
 --TEST--
 marc_field_21246: Delete multiple subfields
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARC.php';
+require __DIR__ . '/bootstrap.php';
 
 $field = new File_MARC_Data_Field(650, [
     new File_MARC_Subfield('9', 'test1'),

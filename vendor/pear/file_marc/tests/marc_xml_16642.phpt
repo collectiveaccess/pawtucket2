@@ -1,11 +1,11 @@
 --TEST--
 marc_xml_16642: Fix bug 16642: ensure tag and subfield values are returned as strings
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 $dir = dirname(__FILE__);
-require 'File/MARCXML.php';
+require __DIR__ . '/bootstrap.php';
 // Retrieve a set of MARC records from a file
 $marc_file = new File_MARCXML($dir . '/' . 'onerecord.xml');
 // Iterate through the retrieved records

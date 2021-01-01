@@ -35,7 +35,7 @@
  * @link      http://pear.php.net/package/File_MARC
  * @example   read.php Retrieve specific fields and subfields from a record
  * @example   subfields.php Create new subfields and add them in specific order
- * @example   marc_yaz.php Pretty print a MARC record retrieved through the PECL yaz extension
+ * @example   marc_yaz.php Pretty print a MARC record retrieved via yaz extension
  */
 
 require_once 'File/MARC/Record.php';
@@ -86,9 +86,9 @@ class File_MARCBASE
      * ?>
      * </code>
      *
-     * @param string $source        Name of the file, or a raw MARC string
-     * @param int    $type          Source of the input, either SOURCE_FILE or SOURCE_STRING
-     * @param string $record_class  Record class, defaults to File_MARC_Record
+     * @param string $source       Name of the file, or a raw MARC string
+     * @param int    $type         Source of the input: SOURCE_FILE or SOURCE_STRING
+     * @param string $record_class Record class, defaults to File_MARC_Record
      */
     function __construct($source, $type, $record_class)
     {

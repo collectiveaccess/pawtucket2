@@ -1,12 +1,12 @@
 --TEST--
 marc_xml_006: test getFields() in XML
 --SKIPIF--
-<?php include('skipif.inc'); ?>
+<?php include('tests/skipif.inc'); ?>
 --FILE--
 <?php
 
 $dir = dirname(__FILE__);
-require 'File/MARCXML.php';
+require __DIR__ . '/bootstrap.php';
 
 // Read MARC records from a stream (a file, in this case)
 $marc_source = new File_MARCXML($dir . '/' . 'sandburg.xml');
