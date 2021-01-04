@@ -1287,7 +1287,7 @@ p, .collectionsList p {
     height: 40px;
     font-size: 0;
 }
-#header-mobile .logo svg {
+#header-mobile .logo img {
     width: 158px;
     height: 40px;
     transition: all 300ms ease;
