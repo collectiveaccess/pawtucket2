@@ -60,12 +60,15 @@
 					#	print "</div><div class='row'>";
 					#	$i = 0;
 					#}
+					if(strToLower($qr_list->getWithTemplate("^ca_occurrences.exclude_explore_exhibitions")) == "yes"){
+						continue;
+					}
 					
 					$vs_image = $qr_list->getWithTemplate("^ca_object_representations.media.medium", array("checkAccess" => $va_access_values, "limit" => 1));
-					$vs_desc = $qr_list->get("ca_occurrences.description_new.description_new_txt");
-					if(mb_strlen($vs_desc) > 500){
-						$vs_desc = substr($vs_desc, 0, 1500)."...";
-					}
+					$vs_desc = $qr_list->get("ca_occurrences.description");
+					#if(mb_strlen($vs_desc) > 500){
+					#	$vs_desc = substr($vs_desc, 0, 1500)."...";
+					#}
 					$vs_display_date = $qr_list->get("ca_occurrences.displayDate");
 					$vs_exhibition_type = $qr_list->get("ca_occurrences.exhibition_type", array("convertCodesToDisplayText" => true));
 					$vs_link = $qr_list->get("ca_occurrences.online_exhibition");
