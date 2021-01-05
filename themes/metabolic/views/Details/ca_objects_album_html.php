@@ -341,38 +341,42 @@
 			<div class="col-4 mt-5 text-right">
 
 <?php
-				if($q_objects->numHits() > 100){
-					print caNavLink("View All", "btn btn-primary", "", "Browse", "children", array("search" => "ca_objects.parent_id:".$t_object->get("ca_objects.object_id")));		
-				}
+// 				if($q_objects->numHits() > 100){
+// 					print caNavLink("View All", "btn btn-primary", "", "Browse", "children", array("search" => "ca_objects.parent_id:".$t_object->get("ca_objects.object_id")));		
+// 				}
 ?>
 			</div>
 		</div>
 		<div class="row mb-5">
 <?php
-			$va_tmp_ids = array();
-			$i = 0;
-			while($q_objects->nextHit()){
-				if($q_objects->get("ca_object_representations.media.widepreview")){
-					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
-					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
-					print "<div class='pt-2'>".substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
-					
-					if($alt_id = $q_objects->get('ca_objects.altID')) {
-						print " (".substr(strip_tags($alt_id), 0, 30).")";
-					}
-					
-					print "</div>";
-					
-					
-					print "</div>";
-					$i++;
-					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
-				}
-				if($i == 100){
-					break;
-				}
-			}
+// 			$va_tmp_ids = array();
+// 			$i = 0;
+// 			while($q_objects->nextHit()){
+// 				if($q_objects->get("ca_object_representations.media.widepreview")){
+// 					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
+// 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
+// 					print "<div class='pt-2'>".substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
+// 					
+// 					if($alt_id = $q_objects->get('ca_objects.altID')) {
+// 						print " (".substr(strip_tags($alt_id), 0, 30).")";
+// 					}
+// 					
+// 					print "</div>";
+// 					
+// 					
+// 					print "</div>";
+// 					$i++;
+// 					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
+// 				}
+// 				if($i == 100){
+// 					break;
+// 				}
+// 			}
 ?>
+			<div id="relatedGrid" class="detailPrimaryMedia mt-3">
+				<!-- RelatedGrid.js React app goes here -->
+			</div>
+
 		</div>
 
 <?php		
@@ -424,5 +428,16 @@
             no_tags: true,
             show_form: <?php print ($this->request->isLoggedIn()) ? "true" : "false"; ?>
         }
+    };
+    
+    pawtucketUIApps['RelatedGrid'] = {
+    	baseUrl: "<?php print __CA_URL_ROOT__."/service.php/RelatedGrid"; ?>",
+        selector: '#relatedGrid',
+        width: '100%',
+        height: '500px',
+        id: <?= (int)$vn_id; ?>,
+        table: 'ca_objects',
+        gridTable: 'ca_objects', 
+        fetch: 'children'
     };
 </script>

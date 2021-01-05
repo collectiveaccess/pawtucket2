@@ -116,52 +116,10 @@
 				}				
 
 ?>
-<script type="text/javascript">	
-	pawtucketUIApps['MediaViewer'] = {
-        'selector': '#mediaDisplay',
-        'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true]); ?>,
-        'width': '100%',
-        'height': '500px',
-        'controlHeight': '72px',
-        'data': {
-        
-        }
-    };
-</script>
 
 				<div id="mediaDisplay" class="detailPrimaryMedia mt-3">
 					<!-- MediaViewer.js React app goes here -->
 				</div>
-<?php 
-				// $va_representations = $t_object->getRepresentations(array("iconlarge", "large"), null, array("checkAccess" => $va_access_values));
-// 				if(is_array($va_representations) && sizeof($va_representations) > 1){
-// 					print "<div class='detailAllMediaThumbs pt-2'><a data-toggle='collapse' href='#detailMediaAll' role='button' aria-expanded='false' aria-controls='Show all media'>";
-// 					print $t_object->getWithTemplate("<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='0' delimiter=' ' length='6'>^ca_object_representations.media.icon</unit>");
-// 					print " <ion-icon name='apps'></ion-icon> <small>"._t("View All %1", sizeof($va_representations))."</small></a>";
-// 					//print "<span class='viewAll' data-text='View all!' data-target='#detailMediaAll'/>";
-// 					print "</div>";
-// 					print "<div id='detailMediaAll' class='collapse detailMediaAll py-4'>";
-// 					$i = 0;
-// 					foreach($va_representations as $vn_rep_id => $va_representation){
-// 						if($vn_rep_id != $vn_representation_id){
-// 							if($i == 0){
-// 								print "<div class='row'>";
-// 							}
-// 						
-// 							print "<div class='col-sm-12 col-md-6 py-4 align-middle detailMediaAllItem'>".$va_representation["tags"]["large"]."</div>";					
-// 							$i++;
-// 							if($i == 2){
-// 								print "</div>";
-// 								$i = 0;
-// 							}
-// 						}
-// 					}
-// 					if($i > 0){
-// 						print "</div>";
-// 					}
-// 					print "</div>";
-// 				}
-?>
 				
 				<HR></HR>
 				<div class="row">
@@ -327,97 +285,12 @@
 ?>
 	</div><!-- end col -->
 </div><!-- end row -->
-<div class="row">
-	<div class="col-sm-12">
-<?php
 
-	$vs_related_title = "";
-	# --- related_items - if item is part of an album, show the other siblings otherwise show some other items from the current object's action(ca_collection)
-	$va_related_item_ids = array();
-	if($vn_parent_id = $t_object->get("ca_objects.parent_id")){
-		$t_parent = new ca_objects($vn_parent_id);
-		$va_related_item_ids = $t_parent->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
-		$vs_related_title = $t_parent->get("ca_objects.preferred_labels.name");
-	}else{
-		if($va_projects = $t_object->get("ca_collections.collection_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values))){
-			$q_projects = caMakeSearchResult("ca_collections", $va_projects);
-			if($q_projects->numHits()){
-				while($q_projects->nextHit()){
-					$va_related_item_ids = $va_related_item_ids + $q_projects->get("ca_objects.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
-				}
-			}
-			$vs_related_title = "Other items from this action";
-		}
-	
-	}
-	# --- remove current item
-	if(in_array($vn_id, $va_related_item_ids)){
-		$vn_key = array_search($vn_id, $va_related_item_ids);
-		unset($va_related_item_ids[$vn_key]);
-	}
-	$va_related_items = array();
-	if(sizeof($va_related_item_ids)){
-		shuffle($va_related_item_ids);
-		$q_objects = caMakeSearchResult("ca_objects", $va_related_item_ids);
-?>
-		<div class="row mt-3">
-			<div class="col-7 mt-5">
-				<H1><?php print $vs_related_title; ?></H1>
-			</div>
-			<div class="col-5 mt-5 text-right">
-<?php
-				if($t_object->get("ca_objects.parent_id")){
-					print caDetailLink("View Investigation", "btn btn-primary", "ca_objects", $t_object->get("ca_objects.parent_id"));			
-				}
-?>
-			</div>
-		</div>
-		<div class="row mb-5">
-<?php
-			$va_tmp_ids = array();
-			$i = 0;
-			while($q_objects->nextHit()){
-				if($q_objects->get("ca_object_representations.media.widepreview")){
-					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
-					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
-					print "<div class='pt-2'>".$q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'>Investigation: </if>").substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
-					
-					if($alt_id = $q_objects->get('ca_objects.altID')) {
-						print " (".substr(strip_tags($alt_id), 0, 30).")";
-					}
-					if($album_title = $q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'><br/><l>^ca_objects.preferred_labels.name</l></if>")){
-						print $album_title;
-					}
-					
-					print "</div>";
-					
-					
-					print "</div>";
-					$i++;
-					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
-				}
-				if($i == 12){
-					break;
-				}
-			}
-?>
-		</div>
-
-<?php		
-		//$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
-		//$o_context->setAsLastFind();
-		//$o_context->setResultList($va_tmp_ids);
-		//$o_context->saveContext();
-	}
-?>
-	
-		<div class="row mt-3">
-			<div class="col-sm-12 mt-5 col-md-6 offset-md-3">
-				<div id="commentForm" class="mb-5"></div>
-			</div>
-		</div>
+	<div id="relatedGrid" class="detailPrimaryMedia mt-3">
+		<!-- RelatedGrid.js React app goes here -->
 	</div>
-</div>
+
+
 <?php
 	if($this->request->isLoggedIn()) {
 ?>
@@ -453,4 +326,23 @@
             show_form: <?php print ($this->request->isLoggedIn()) ? "true" : "false"; ?>
         }
     };
+    pawtucketUIApps['MediaViewer'] = {
+        'selector': '#mediaDisplay',
+        'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true]); ?>,
+        'width': '100%',
+        'height': '500px',
+        'controlHeight': '72px',
+        'data': {
+        
+        }
+    };
+    pawtucketUIApps['RelatedGrid'] = {
+        'selector': '#relatedGrid',
+        'width': '100%',
+        'height': '500px',
+        'data': {
+        
+        }
+    };
+    
 </script>

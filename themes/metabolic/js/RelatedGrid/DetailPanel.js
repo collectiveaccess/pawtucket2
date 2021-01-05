@@ -35,7 +35,7 @@ const DetailPanel = (props) => {
             }
         } `, variables: { 'id': id }})
       .then(function(result) {
-        // console.log("Data was received:", result);
+        console.log("Data was received:", result);
         setItemData(result.data.item)
         // console.log(itemData);
       });
@@ -82,6 +82,8 @@ const DetailPanel = (props) => {
 		// console.log('itemids', itemIds);
 		e.preventDefault();
 	}
+
+	console.log('itemData: ', itemData);
 
   if(itemData){
     return (
