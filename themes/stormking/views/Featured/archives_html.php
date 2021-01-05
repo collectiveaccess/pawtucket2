@@ -14,7 +14,8 @@
 			<div class="jcarousel">
 				<ul>
 <?php
-			foreach($va_featured_sets as $vn_set_id => $va_featured_set){
+			foreach($va_featured_sets as $vn_set_idno => $va_featured_set){
+						$vn_set_id = $va_featured_set["set_id"];
 						if($vs_media = $va_featured_set["imageLarge"]){
 							print "<li><div class='frontSlide'>".caNavLink($this->request, $vs_media, "", "", "Featured", "Detail", array("set_id" => $vn_set_id, "setMode" => "archives"));
 							print "<div class='frontSlideCaption'>".caNavLink($this->request, $va_featured_set["title"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id, "setMode" => "archives"))."</div>";
@@ -126,7 +127,8 @@
 <?php
 	if(is_array($va_featured_sets) && sizeof($va_featured_sets)){
 		$i = 0;
-		foreach($va_featured_sets as $vn_set_id => $va_featured_set){
+		foreach($va_featured_sets as $vn_set_idno => $va_featured_set){
+			$vn_set_id = $va_featured_set["set_id"];
 			if($i == 0){
 				print "<div class='row'>";
 			}

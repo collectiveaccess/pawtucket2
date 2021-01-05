@@ -23,6 +23,11 @@ body{
 	color:#000000;
 	font-size:13px;
 }
+@media(max-width: 768px) {
+	body{
+		margin-bottom: 250px;
+	}
+}
 .largerText{
 	font-size:13px;
 }
@@ -757,4 +762,7 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 
 .detail .navTop {
     margin-top: 20px;
+}
+.form-control:focus {
+    border-color: #000000;
 }

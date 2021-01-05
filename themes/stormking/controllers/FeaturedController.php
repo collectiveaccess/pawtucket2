@@ -195,6 +195,7 @@
 				ksort($va_sets_for_theme);
 				$this->view->setVar('sets', $va_sets_for_theme);
 			}
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_list_item->get("ca_list_items.preferred_labels"));
 			$this->render('Featured/theme_html.php');
  		}
  		# -------------------------------------------------------
@@ -213,13 +214,12 @@
 				$va_set_first_items_media = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "widepreview", "checkAccess" => $this->opa_access_values));
 				$va_set_first_items_media_large = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "large", "checkAccess" => $this->opa_access_values));
 
-				shuffle($va_sets);
 				foreach($va_sets as $va_set){
 					$va_tmp_large = array_shift($va_set_first_items_media_large[$va_set['set_id']]);
 					$va_tmp_widepreview = array_shift($va_set_first_items_media[$va_set['set_id']]);
-					
-					$va_all_sets_first_items[$va_set['set_id']] = array("imageLarge" => $va_tmp_large['representation_tag'], "imageWidePreview" => $va_tmp_widepreview['representation_tag'], "title" => $va_set['name']);
+					$va_all_sets_first_items[$va_set['set_code']] = array("set_id" => $va_set['set_id'], "imageLarge" => $va_tmp_large['representation_tag'], "imageWidePreview" => $va_tmp_widepreview['representation_tag'], "title" => $va_set['name']);
 				}
+				ksort($va_all_sets_first_items);
 			}
 			$this->view->setVar('featured_sets', $va_all_sets_first_items);
 			
@@ -250,7 +250,7 @@
 				$pn_set_item_id = "";	
 			}
 			$this->view->setVar("set_item_id", $pn_set_item_id);
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('featured_section_name')) ? $this->config->get('featured_section_name') : _t("Featured")).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
 			$vs_display_attribute = $this->config->get('featured_set_presentation_element_code');
 			$vs_display = "";
 			if($vs_display_attribute){
