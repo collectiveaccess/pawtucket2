@@ -13,7 +13,7 @@
 import React from "react"
 import ReactDOM from "react-dom";
 import { LightboxContext } from '../../Lightbox'
-import { addItemsToLightbox } from "../../../../default/js/lightbox";
+import { appendItemstoNewLightbox  } from "../../../../default/js/lightbox";
 
 const appData = pawtucketUIApps.Lightbox.data;
 const lightboxTerminology = appData.lightboxTerminology;
@@ -23,7 +23,7 @@ class LightboxSelectItemsOptions extends React.Component {
 	constructor(props) {
 		super(props);
 
-    LightboxSelectItemsOptions.contextType = LightboxContext;
+    	LightboxSelectItemsOptions.contextType = LightboxContext;
 
 		this.clearSelectLightboxItems = this.clearSelectLightboxItems.bind(this);
 		this.showSelectButtons = this.showSelectButtons.bind(this);
@@ -33,6 +33,7 @@ class LightboxSelectItemsOptions extends React.Component {
 
 	clearSelectLightboxItems() {
 		let state = this.context.state;
+		
 		state.showSelectButtons = false;
 		state.selectedItems = [];
 		this.context.setState(state);
@@ -40,6 +41,7 @@ class LightboxSelectItemsOptions extends React.Component {
 
 	showSelectButtons() {
 		let state = this.context.state;
+		
 		state.showSelectButtons = true;
 		this.context.setState(state);
 	}
@@ -47,18 +49,16 @@ class LightboxSelectItemsOptions extends React.Component {
 	addSelectedItemsToNewLightbox() {
 		let that = this;
 		let state = that.context.state;
-    // TODO: For some reason it gives type error when using this.context.state
-		addItemsToLightbox(appData.baseUrl, null, this.context.state.selectedItems.join(';'), 'ca_objects', function(resp) {
+    	
+    	// TODO: For some reason it gives type error when using this.context.state
+    	appendItemstoNewLightbox(appData.baseUrl, this.context.state.tokens, 'My new lightbox', this.context.state.selectedItems.join(';'), function(resp) { 
 			if (resp && resp['ok']) {
 				state.lightboxList.sets[resp.set_id] = {isMember:true, set_id:resp.set_id, label: resp.label, count: resp.count, item_type_singular: resp.item_type_singular, item_type_plural: resp.item_type_plural };
 				state.set_id = resp.set_id;
-				state.filters = {'_search': {}};
-				state.filters['_search']['ca_sets.set_id:' + resp.set_id] = 'Lightbox: ' + resp.label;
 				state.selectedItems = [];
 				state.showSelectButtons = false;
 				that.context.setState(state);
         // TODO: For some reason it gives type error when using this.context.setState
-				that.context.reloadResults(state.filters, false);
 				state.statusMessage = "Added Item To " + lightboxTerminology.singular;
 				that.setState(state);
 				setTimeout(function() {

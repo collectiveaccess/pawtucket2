@@ -73,7 +73,7 @@ class Lightbox extends React.Component{
 			loadingMore: false,   //No longer being Used?
 			hasAutoScrolled: false,
 
-      sortOptions: null,
+      sortOptions: null, //various options to sort the contents of an individual lightbox
 			sort: null,          // Describes what the contents of a lightbox is sorted by
 			sortDirection: null, // Ascending or Descending based on the value of sort.
 
@@ -82,12 +82,14 @@ class Lightbox extends React.Component{
 
 			selectedItems: [],     // id numbers of the selected objects within a lightbox
 
-      showSelectButtons: false, //checkmark buttons to select a lightbox item
-      showSortSaveButton: false, // button appears when the user selected a sort option for the lightbox so they can choose to save that order
+     		showSelectButtons: false, //checkmark buttons to select a lightbox item
+      		showSortSaveButton: false, // button appears when the user selected a sort option for the lightbox so they can choose to save that order
 			dragDropMode: false,   // is the user currently in drag and drop mode for a lightbox
 			userSort: false,       // true if user is customizing their sort, false if using a sort option
 
-      userAccess: null,
+      userAccess: null, //null if user has no type of access, 1 if user has read-only access, 2 if user has read-write access
+
+      comments: null,
 
 			// API tokens (JWT)
 			tokens: {
@@ -100,11 +102,7 @@ class Lightbox extends React.Component{
 		this.loadLightbox = this.loadLightbox.bind(this);
 		this.newLightbox = this.newLightbox.bind(this);
 		this.cancelNewLightbox = this.cancelNewLightbox.bind(this);
-		// this.saveNewLightbox = this.saveNewLightbox.bind(this);
 		this.deleteLightbox = this.deleteLightbox.bind(this);
-
-		// this.removeItemFromLightbox = this.removeItemFromLightbox.bind(this);
-
 	}
 
 	/**
@@ -120,7 +118,7 @@ class Lightbox extends React.Component{
 
 		loadLightbox(this.props.baseUrl, this.state.tokens, id, function(data) {
       // console.log('Load Lightbox Data: ', data);
-			that.setState({id: id, lightboxTitle: data.title, resultList: data.items, totalSize: data.item_count, sortOptions: data.sortOptions});
+			that.setState({id: id, lightboxTitle: data.title, resultList: data.items, totalSize: data.item_count, sortOptions: data.sortOptions, comments: data.comments});
 		}, { start: 0, limit: that.state.itemsPerPage});
 	}
 
@@ -139,34 +137,6 @@ class Lightbox extends React.Component{
 		});
 	}
 
-	// removeItemFromLightbox(e) {
-	// 	let that = this;
-	// 	if(!this.state.id) { return; }
-  //
-	// 	let item_id = e.target.attributes.getNamedItem('data-item_id').value;
-	// 	if(!item_id) { return; }
-	// 	removeItemFromLightbox(this.props.baseUrl, this.state.id, item_id, function(resp) {
-	// 		if(resp && resp['ok']) {
-	// 			let state = that.state;
-	// 			for(let i in state.resultList) {
-	// 				let r = state.resultList[i];
-	// 				if (r.id == item_id) {
-	// 					delete(state.resultList[i]);
-	// 					let x = null;
-	// 					x = state.selectedItems.indexOf(item_id);
-	// 					if(i > -1){
-	// 						state.selectedItems.splice(x, 1);
-	// 					}
-	// 					that.setState(state);
-	// 					break;
-	// 				}
-	// 			}
-	// 			return;
-	// 		}
-	// 		alert('Could not remove item: ' + resp['err']);
-	// 	});
-	// }
-
   newLightbox() {
     let state = this.state;
     state.lightboxList[-1] = {"id": -1, "label": ""};
@@ -178,19 +148,6 @@ class Lightbox extends React.Component{
 		delete(state.lightboxList[-1]);
 		this.setState(state);
 	}
-
-	// saveNewLightbox(data, callback) {
-	// 	let that = this;
-	// 	addLightbox(this.props.baseUrl, {'name': data['name'], 'table': 'ca_objects'}, function(resp) {
-	// 		if(resp['ok']) {
-	// 			let state = that.state;
-	// 			delete(state.lightboxList.sets[-1]);
-	// 			state.lightboxList.sets[resp.id] = { id: resp.id, label: resp.name, count: 0, item_type_singular: resp.item_type_singular, item_type_plural: resp.item_type_plural };
-	// 			that.setState(state);
-	// 		}
-	// 		callback(resp);
-	// 	});
-	// }
 
 	deleteLightbox(lightbox) {
 		let state = this.state;

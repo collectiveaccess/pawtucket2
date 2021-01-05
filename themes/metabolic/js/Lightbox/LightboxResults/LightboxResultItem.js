@@ -15,7 +15,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { LightboxContext } from '../../Lightbox';
-import { removeItemFromLightbox } from "../../../../default/js/lightbox";
 
 const appData = pawtucketUIApps.Lightbox.data;
 const lightboxTerminology = appData.lightboxTerminology;
@@ -31,7 +30,7 @@ class LightboxResultItem extends React.Component {
 
 	selectLightboxItem(e) {
 		let state = this.context.state;
-		//let item_id = parseInt(e.target.attributes.getNamedItem('data-item_id').value);
+		
 		let item_id = this.props.data.id;
 		if(!item_id) { return; }
 		let i = null;
@@ -43,7 +42,6 @@ class LightboxResultItem extends React.Component {
 		}
 		this.context.setState(state);
 		e.preventDefault();
-		// console.log("selectedItems: " + item_id + " : " + this.context.state.selectedItems.indexOf(item_id), this.context.state.selectedItems);
 	}
 
 	handleImageClick(e) {
@@ -55,7 +53,6 @@ class LightboxResultItem extends React.Component {
 
 	render() {
 		let data = this.props.data;
-    // console.log('resultitem data: ', data);
 		let mediaTag = (data && data.media && data.media[0]) ? data.media[0].tag : '';
 
 		switch(this.props.view) {

@@ -1,10 +1,7 @@
 'use strict';
 import React from 'react';
 import ReactDOM from 'react-dom';
-const axios = require('axios');
-import {addItemToLightbox, removeItemFromLightbox} from "../../default/js/lightbox";
-
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+import {appendItemsToLightbox, removeItemsFromLightbox} from "../../default/js/lightbox";
 
 const selector = pawtucketUIApps.LightboxManagement.selector;
 const appData = pawtucketUIApps.LightboxManagement.data;
@@ -23,7 +20,10 @@ class LightboxManagement extends React.Component {
 
 	addToLightbox(set_id) {
 		let that = this;
-		addItemToLightbox(this.props.baseUrl, set_id, this.props.id, this.props.table, function(resp) {
+		//addItemToLightbox(this.props.baseUrl, set_id, this.props.id, this.props.table, function(resp) {
+		// TODO : get tokens
+		// 		appendItemsToLightbox(uri, tokens, id, items, callback)
+		appendItemsToLightbox(this.props.baseUrl, tokens, set_id, [this.props.id], function(resp) { 
 			if (resp && resp['ok']) {
 				let state = that.state;
 
@@ -52,7 +52,9 @@ class LightboxManagement extends React.Component {
 
 	removeFromLightbox(set_id) {
 		let that = this;
-		removeItemFromLightbox(this.props.baseUrl, set_id, this.props.id, function(resp) {
+		// TODO : get tokens
+		//removeItemFromLightbox(this.props.baseUrl, set_id, this.props.id, function(resp) {
+		removeItemsFromLightbox(this.props.baseUrl, tokens, set_id, [this.props.id], function(resp) {
 			if (resp && resp['ok']) {
 				let state = that.state;
 				state.statusMessage = "Removed Item From " + lightboxTerminology.singular;

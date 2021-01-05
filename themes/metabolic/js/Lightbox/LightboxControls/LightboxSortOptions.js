@@ -64,47 +64,51 @@ class LightboxSortOptions extends React.Component {
       initialSortValue = this.context.state.sortOptions[0].sort;
     }
 
-		return (
-			<div id="bSortOptions">
-				<div className="dropdown show">
-					<a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-					<ion-icon name="funnel"></ion-icon>
-				  </a>
+    if(this.context.state.totalSize > 1){
+      return (
+        <div id="bSortOptions">
+          <div className="dropdown show">
+            <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <ion-icon name="funnel"></ion-icon>
+            </a>
 
-				  <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
 
-            <div className='container' style={{width: '250px'}}>
-              <div className='row'>
-                <form className='form-inline' style={{margin: '10px'}}>
+              <div className='container' style={{width: '250px'}}>
+                <div className='row'>
+                  <form className='form-inline' style={{margin: '10px'}}>
 
-                    <div style={{marginRight: '5px'}}>
-                      <select name="selectedField" required value={this.state.selectedField} onChange={this.handleChange}>
-                        {sortOptions}
-                      </select>
-                    </div>
+                      <div style={{marginRight: '5px'}}>
+                        <select name="selectedField" required value={this.state.selectedField} onChange={this.handleChange}>
+                          {sortOptions}
+                        </select>
+                      </div>
 
-                    <div style={{marginRight: '5px'}}>
-                      <select name="selectedSortDirection" required value={this.state.selectedSortDirection} onChange={this.handleChange}>
-                        <option value='ASC'>↑</option>
-                        <option value='DESC'>↓</option>
-                      </select>
-                    </div>
+                      <div style={{marginRight: '5px'}}>
+                        <select name="selectedSortDirection" required value={this.state.selectedSortDirection} onChange={this.handleChange}>
+                          <option value='ASC'>↑</option>
+                          <option value='DESC'>↓</option>
+                        </select>
+                      </div>
 
-                    <div>
-                      <button type="button" className="btn" onClick={this.submitSort}>
-                        <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-arrow-right-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"></path></svg>
-                      </button>
-                    </div>
+                      <div>
+                        <button type="button" className="btn" onClick={this.submitSort}>
+                          <svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-arrow-right-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"></path></svg>
+                        </button>
+                      </div>
 
-                </form>
-              </div>
-            </div>{/*container end */}
+                  </form>
+                </div>
+              </div>{/*container end */}
 
-				  </div>
-				</div>
-			</div>
-		);
-	}
+            </div>
+          </div>
+        </div>
+      ); //return end
+    }else{
+      return('');
+    }
+	} //render end
 }
 
 export default LightboxSortOptions;

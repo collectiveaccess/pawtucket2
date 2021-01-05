@@ -40,7 +40,7 @@ class LightboxDragAndDrop extends React.Component {
   }
 
   render() {
-    if(this.context.state.userAccess == 2 ){
+    if(this.context.state.userAccess == 2 && this.context.state.totalSize > 1){
       return(
         <div id='dragAndDrop'>
 

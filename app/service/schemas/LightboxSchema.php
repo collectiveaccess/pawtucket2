@@ -158,7 +158,7 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 				]
 			]),	
 			$lightboxSortOptionType = new ObjectType([
-				'name' => 'LightSortOption',
+				'name' => 'LightboxSortOption',
 				'description' => 'Sort option for items in lightbox',
 				'fields' => [
 					'label' => [
@@ -168,6 +168,36 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 					'sort' => [
 						'type' => Type::string(),
 						'description' => 'Sort option specification'
+					]
+				]
+			]),	
+			$lightboxCommentType = new ObjectType([
+				'name' => 'LightboxComment',
+				'description' => 'Lightbox comment',
+				'fields' => [
+					'content' => [
+						'type' => Type::string(),
+						'description' => 'Comment text'
+					],
+					'fname' => [
+						'type' => Type::string(),
+						'description' => 'First name of commenter'
+					],
+					'lname' => [
+						'type' => Type::string(),
+						'description' => 'Last name of commenter'
+					],
+					'email' => [
+						'type' => Type::string(),
+						'description' => 'Email address of commenter'
+					],
+					'user_id' => [
+						'type' => Type::Int(),
+						'description' => 'User id of commenter'
+					],
+					'created' => [
+						'type' => Type::string(),
+						'description' => 'Date created'
 					]
 				]
 			]),		
@@ -206,6 +236,10 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 					'sortOptions' => [
 						'type' => Type::listOf($lightboxSortOptionType),
 						'description' => 'Lightbox item sort options'
+					],
+					'comments' => [
+						'type' => Type::listOf($lightboxCommentType),
+						'description' => 'Lightbox comments'
 					]
 				]
 			]),
@@ -236,6 +270,29 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'Number of items in lightbox',
 						'default' => null
 					],
+				]
+			]),
+			$lightboxMutationNewCommentType = new ObjectType([
+				'name' => 'LightboxMutationNewComment',
+				'description' => 'Information relating to newly created comment',
+				'fields' => [
+					'id' => [
+						'type' => Type::int(),
+						'description' => 'Lightbox ID'
+					],
+					'name' => [
+						'type' => Type::string(),
+						'description' => 'Lightbox name'
+					],
+					'count' => [
+						'type' => Type::int(),
+						'description' => 'Number of items in lightbox',
+						'default' => null
+					],
+					'comment' => [
+						'type' => $lightboxCommentType,
+						'description' => 'New comment, as created'
+					]
 				]
 			]),
 			$lightboxCreateInputType = new InputObjectType([
@@ -276,6 +333,28 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 					'ids' => [
 						'type' => Type::string(),
 						'description' => 'Lightbox item ids, separated by ampersands, commas or semicolons.'
+					]
+				]
+			]),
+			$lightboxShareInputType = new InputObjectType([
+				'name' => 'LightboxShareInputType',
+				'fields' => [
+					'users' => [
+						'type' => Type::string(),
+						'description' => 'User emails to share lightbox with, separated by ampersands, commas or semicolons.'
+					],
+					'access' => [
+						'type' => Type::Int(),
+						'description' => 'Access level for share. (1=read-only; 2=edit)'
+					]
+				]
+			]),
+			$lightboxCommentInputType = new InputObjectType([
+				'name' => 'LightboxCommentInputType',
+				'fields' => [
+					'content' => [
+						'type' => Type::string(),
+						'description' => 'Comment text.'
 					]
 				]
 			])

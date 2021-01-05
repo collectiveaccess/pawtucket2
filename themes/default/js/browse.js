@@ -48,7 +48,7 @@ function initialState() {
 function fetchResults(url, params, callback, useDefaultKey=true) {
 	params['getResult'] = 1;
 	if (useDefaultKey) { params['useDefaultKey'] = 1; }
-
+console.log("load ", url);
 	// Fetch browse facet items
 	axios.post(url, qs.stringify(params))
 		.then(function (resp) {
@@ -150,7 +150,6 @@ function initBrowseContainer(instance, props, loadResults=true, callback=null) {
 	that.loadResults = function(callback, clearFilters=false) {
 		let offset = that.state.start;
 		let filterString = getFilterString(that.state.filters);
-		
 		let params = {
 			s: offset,
 			key: that.state.key ? that.state.key : '',

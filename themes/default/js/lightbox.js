@@ -1,13 +1,10 @@
 /*jshint esversion: 6 */
 'use strict';
-import React from "react";
-import qs from 'qs';
+import React from 'react';
 import { gql } from '@apollo/client';
-import { getGraphQLClient } from "graphqlClient";
+import { getGraphQLClient } from 'graphqlClient';
 import _ from 'lodash';
 
-const axios = require('axios');
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /**
  * Get access JWT using refresh token
@@ -46,7 +43,7 @@ function loadLightbox(uri, tokens, id, callback, options=null) {
 	client
 	  .query({
 		query: gql`
-		  query ($id: Int!, $start: Int!, $limit: Int!, $sort: String, $sortDirection: String){ content(id: $id, mediaVersions: ["small"], start: $start, limit: $limit, sort: $sort, sortDirection: $sortDirection) { id, title, type, item_count, sortOptions { label, sort }, items { id, title, detailPageUrl, caption, identifier, rank, media { version, url, tag, width, height} } } }
+		  query ($id: Int!, $start: Int!, $limit: Int!, $sort: String, $sortDirection: String){ content(id: $id, mediaVersions: ["small"], start: $start, limit: $limit, sort: $sort, sortDirection: $sortDirection) { id, title, type, item_count, comments { content, email, fname, lname, created, user_id }, sortOptions { label, sort }, items { id, title, detailPageUrl, caption, identifier, rank, media { version, url, tag, width, height} } } }
 		`, variables: { 'id': id, 'start': start, 'limit': limit, 'sort': sort, 'sortDirection': sortDirection }})
 	  .then(function(result) {
 		callback(result.data['content']);
@@ -164,6 +161,19 @@ function reorderLightboxItems(uri, tokens, id, sorted_ids, name, callback) {
 	  });
 }
 
+function appendItemsToLightbox(uri, tokens, id, items, callback) {
+	const client = getGraphQLClient(uri + '/lightbox', tokens, { });
+	client
+	  .mutate({
+		mutation: gql`
+		  mutation ($id: Int!, $items: String!){ appendItems(id: $id , items: { ids: $items }) { id, name, count } }
+		`, variables: { 'id': id, 'items': items }
+	  })
+	  .then(function(result) {
+	  		callback(result.data['appendItems']);
+	  });
+}
+
 function appendItemstoNewLightbox(uri, tokens, name, items, callback){
 	const client = getGraphQLClient(uri + '/lightbox', tokens, { });
 	client
@@ -208,78 +218,23 @@ function transferItemsToLightbox(uri, tokens, id, toId, items, callback){
 	  });
 }
 
-
-
-
-/**
- * Add item to lightbox
- *
- * @param url URL to send lightbox add item request to.
- * @param callback Function to call when add item request is completed. The first parameter of the callback will be an object
- * 			containing the result of the action.
- */
-function addItemToLightbox(url, set_id, item_id, table, callback) {
-	axios.post(url + "/addToLightbox", qs.stringify({set_id: set_id, item_id: item_id, table: table }))
-		.then(function (resp) {
-			let data = resp.data;
-
-			callback(data);
+function createLightboxComments(uri, tokens, id, content, callback){
+	id = parseInt(id);
+	content = String(content);
+	
+	const client = getGraphQLClient(uri + '/lightbox', tokens, { });
+	client
+		.mutate({
+			mutation: gql`
+				mutation ($id: Int!, $content: String!){ comment(id: $id, comment: { content: $content }) { id, name, comment { user_id, fname, lname, email, content, created } } }
+			`, variables: { 'id': id, 'content': content }
 		})
-		.catch(function (error) {
-			console.log("Error while adding item lightbox: ", error);
+		.then(function(result) {
+			callback(result.data['comment']);
+		}).catch(function (error) {
+			console.log("Error while attempting to submit comment: ", error);
 		});
 }
-
-/**
- * Add items to lightbox
- *
- * @param url URL to send lightbox add item request to.
- * @param callback Function to call when add item request is completed. The first parameter of the callback will be an object
- * 			containing the result of the action.
- */
-function addItemsToLightbox(url, set_id, item_ids, table, callback) {
-	axios.post(url + "/addToLightbox", qs.stringify({set_id: set_id, item_ids: item_ids, table: table }))
-		.then(function (resp) {
-			let data = resp.data;
-
-			callback(data);
-		})
-		.catch(function (error) {
-			console.log("Error while adding item lightbox: ", error);
-		});
-}
-
-function addResultsToLightbox(url, set_id, table, callback) {
-	axios.post(url + "/addToLightbox/saveLastResults/1", qs.stringify({set_id: set_id, table: table }))
-		.then(function (resp) {
-			let data = resp.data;
-
-			callback(data);
-		})
-		.catch(function (error) {
-			console.log("Error while adding item lightbox: ", error);
-		});
-}
-
-/**
- * Remove item from lightbox
- *
- * @param url URL to send lightbox remove item request to.
- * @param callback Function to call when add item request is completed. The first parameter of the callback will be an object
- * 			containing the result of the action.
- */
-function removeItemFromLightbox(url, set_id, item_id, callback) {
-	axios.post(url + "/removeFromLightbox", qs.stringify({set_id: set_id, item_id: item_id }))
-		.then(function (resp) {
-			let data = resp.data;
-
-			callback(data);
-		})
-		.catch(function (error) {
-			console.log("Error while removing item lightbox: ", error);
-		});
-}
-
 
 /**
  * Get ligthbox access For current users
@@ -293,7 +248,7 @@ function getLightboxAccessForCurrentUser(uri, id, tokens, callback) {
 	client
 	  .query({
 		query: gql`
-		  query($id: Int) { access(id: $id) { access } }
+		  query($id: Int!) { access(id: $id) { access } }
 		`
 	  , variables: { id: parseInt(id) }})
 	  .then(function(result) {
@@ -302,7 +257,8 @@ function getLightboxAccessForCurrentUser(uri, id, tokens, callback) {
 	  });
 }
 
-export { fetchLightboxList, loadLightbox, createLightbox, editLightbox, deleteLightbox, addResultsToLightbox, addItemToLightbox, addItemsToLightbox, removeItemFromLightbox,
-			removeItemsFromLightbox, getLightboxAccessForCurrentUser,
-			newJWTToken, reorderLightboxItems, appendItemstoNewLightbox, transferItemsToLightbox
-	};
+export {
+	fetchLightboxList, loadLightbox, createLightbox, editLightbox, deleteLightbox,
+	getLightboxAccessForCurrentUser, newJWTToken, reorderLightboxItems,
+	appendItemstoNewLightbox, appendItemsToLightbox, transferItemsToLightbox, removeItemsFromLightbox, createLightboxComments,
+};

@@ -158,6 +158,20 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							];
 						}
 						
+						$comments = [];
+						if (is_array($raw_comments = $t_set->getComments())) {
+							$comments = array_values(array_map(function($v) {
+								return [
+									'fname' => $v['fname'],
+									'lname' => $v['lname'],
+									'email' => $v['user_email'],
+									'content' => $v['comment'],
+									'user_id' => $v['user_id'],
+									'created' => date('c', $v['created_on'])
+								];
+							}, $raw_comments));
+						}
+						
 						// TODO: check access
 						$lightbox = [
 							'id' => $t_set->get('ca_sets.set_id'),
@@ -167,7 +181,8 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							'content_type' => Datamodel::getTableName($t_set->get('ca_sets.table_num')),
 							'item_count' => $t_set->getItemCount(),
 							'items' => [],
-							'sortOptions'=> $sort_opts
+							'sortOptions'=> $sort_opts,
+							'comments' => $comments
 						];
 						
 						$items = caExtractValuesByUserLocale($t_set->getItems([
@@ -567,6 +582,141 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						$t_set->transferItemsTo($args['toId'], $item_ids, $u->getPrimaryKey());
 						
  						return ['id' => $args['id'], 'name' => $t_set->get('ca_sets.preferred_labels.name'), 'count' => $t_set->getItemCount()];
+					}
+				],
+				'transferItems' => [
+					'type' => LightboxSchema::get('LightboxMutationStatus'),
+					'description' => _t('Transfer items from lightbox to lightbox'),
+					'args' => [
+						[
+							'name' => 'id',
+							'type' => Type::int(),
+							'description' => _t('ID of lightbox to transfer items from'),
+							'defaultValue' => null
+						],
+						[
+							'name' => 'toId',
+							'type' => Type::int(),
+							'description' => _t('ID of lightbox to transfer items to'),
+							'defaultValue' => null
+						],
+						[
+							'name' => 'items',
+							'type' => LightboxSchema::get('LightboxItemListInputType'),
+							'description' => _t('Items ids to transfer, separated by ampersands, commas or semicolons')
+						],
+						[
+							'name' => 'jwt',
+							'type' => Type::string(),
+							'description' => _t('JWT'),
+							'defaultValue' => self::getBearerToken()
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+						if (!($u = self::authenticate($args['jwt']))) {
+							throw new ServiceException(_t('Invalid JWT'));
+						}
+						
+						if (!is_array($item_ids = preg_split('![&,;]+!', $args['items']['ids'])) || !sizeof($item_ids)) {
+							throw new ServiceException(_t('No item ids set'));
+						}
+					
+						// TOOD: check access
+						$t_set = new ca_sets($args['id']);
+						if(!$t_set->isLoaded()) {
+							throw new ServiceException(_t('Could not load lightbox: %1', join($t_set->getErrors())));
+						}
+						
+						$t_set->transferItemsTo($args['toId'], $item_ids, $u->getPrimaryKey());
+						
+ 						return ['id' => $args['id'], 'name' => $t_set->get('ca_sets.preferred_labels.name'), 'count' => $t_set->getItemCount()];
+					}
+				],
+				'share' => [
+					'type' => LightboxSchema::get('LightboxMutationStatus'),
+					'description' => _t('Share lightbox'),
+					'args' => [
+						[
+							'name' => 'id',
+							'type' => Type::int(),
+							'description' => _t('ID of lightbox to share'),
+							'defaultValue' => null
+						],
+						[
+							'name' => 'share',
+							'type' => LightboxSchema::get('LightboxShareInputType'),
+							'description' => _t('Share settings')
+						],
+						[
+							'name' => 'jwt',
+							'type' => Type::string(),
+							'description' => _t('JWT'),
+							'defaultValue' => self::getBearerToken()
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+						if (!($u = self::authenticate($args['jwt']))) {
+							throw new ServiceException(_t('Invalid JWT'));
+						}
+						
+						// TOOD: check access
+						$t_set = new ca_sets($args['id']);
+						if(!$t_set->isLoaded()) {
+							throw new ServiceException(_t('Could not load lightbox: %1', join($t_set->getErrors())));
+						}
+						
+						// TODO:
+						
+ 						return ['id' => $args['id'], 'name' => $t_set->get('ca_sets.preferred_labels.name'), 'count' => $t_set->getItemCount()];
+					}
+				],
+				'comment' => [
+					'type' => LightboxSchema::get('LightboxMutationNewComment'),
+					'description' => _t('Add comment to lightbox'),
+					'args' => [
+						[
+							'name' => 'id',
+							'type' => Type::int(),
+							'description' => _t('ID of lightbox to comment on'),
+							'defaultValue' => null
+						],
+						[
+							'name' => 'comment',
+							'type' => LightboxSchema::get('LightboxCommentInputType'),
+							'description' => _t('Comment settings')
+						],
+						[
+							'name' => 'jwt',
+							'type' => Type::string(),
+							'description' => _t('JWT'),
+							'defaultValue' => self::getBearerToken()
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+						if (!($u = self::authenticate($args['jwt']))) {
+							throw new ServiceException(_t('Invalid JWT'));
+						}
+						
+						// TOOD: check access
+						$t_set = new ca_sets($args['id']);
+						if(!$t_set->isLoaded()) {
+							throw new ServiceException(_t('Could not load lightbox: %1', join($t_set->getErrors())));
+						}
+						
+						$comment = [];
+						if ($t_comment = $t_set->addComment($args['comment']['content'], null, $u->getPrimaryKey(), null, null, null, 0, null, [])){
+							$user = new ca_users($t_comment->get('ca_item_comments.user_id'));
+							$comment = [
+								'fname' => $user->get('ca_users.fname'),
+								'lname' => $user->get('ca_users.lname'),
+								'email' => $user->get('ca_users.email'),
+								'content' => $t_comment->get('ca_item_comments.comment'),
+								'user_id' => $user->getPrimaryKey(),
+								'created' => date('c', $t_comment->get('ca_item_comments.created_on', ['getDirectDate' => true]))
+								
+							];
+						}
+ 						return ['id' => $args['id'], 'name' => $t_set->get('ca_sets.preferred_labels.name'), 'count' => $t_set->getItemCount(), 'comment' => $comment];
 					}
 				]
 			],

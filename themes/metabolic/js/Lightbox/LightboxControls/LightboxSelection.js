@@ -13,16 +13,14 @@
 import React from "react"
 import ReactDOM from "react-dom";
 import { LightboxContext } from '../../Lightbox'
-import { appendItemstoNewLightbox } from "../../../../default/js/lightbox";
-import { removeItemsFromLightbox } from "../../../../default/js/lightbox";
-import { transferItemsToLightbox } from "../../../../default/js/lightbox";
+import { appendItemstoNewLightbox, removeItemsFromLightbox, transferItemsToLightbox } from "../../../../default/js/lightbox";
 
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const appData = pawtucketUIApps.Lightbox.data;
 const lightboxTerminology = appData.lightboxTerminology;
-const baseUrl = appData.baseUrl; // =  /index.php/Lightbox
+const baseUrl = appData.baseUrl; 
 
 class LightboxSelection extends React.Component {
 

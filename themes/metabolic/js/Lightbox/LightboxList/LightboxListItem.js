@@ -99,7 +99,7 @@ class LightboxListItem extends React.Component {
 			customUI: ({ onClose }) => {
 				return (
 					<div className='col info text-gray'>
-						<p>Really delete collection <em>{this.props.data.title}</em>?</p>
+						<p>Really delete <em>{this.props.data.title}</em>?</p>
 						<div className='button' onClick={() => {
 							that.props.deleteCallback(that.props.data);
 							onClose(); }}> Yes </div>

@@ -55,6 +55,10 @@ class GraphQLServiceController extends \BaseServiceController {
 	 *
 	 */
 	public function resolve($queryType, $mutationType=null){
+		if (strtolower($_SERVER['REQUEST_METHOD']) === 'options') {
+			http_response_code(200);
+			return;	
+		}
 		$schema = new Schema([
 			'query' => $queryType, 'mutation' => $mutationType
 		]);
