@@ -45,8 +45,8 @@
 	}
 	if($vs_rep = $t_item->get("ca_object_representations.media.page.url", array("checkAccess" => $va_access_values))){
 		MetaTagManager::addMetaProperty("og:image", $vs_rep);
-		MetaTagManager::addMetaProperty("og:image:width", $t_object->get("ca_object_representations.media.page.width"));
-		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
+		MetaTagManager::addMetaProperty("og:image:width", $t_item->get("ca_object_representations.media.page.width"));
+		MetaTagManager::addMetaProperty("og:image:height", $t_item->get("ca_object_representations.media.page.height"));
 	}
 ?>
 	<div class="row borderBottom">
@@ -101,37 +101,18 @@
 										<a class="collapsed" data-toggle="collapse" href="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary"></a>
 								</div>
 							</div>
-						</ifdef>}}}
-						{{{<ifcount code="ca_entities" min="1">
-							<div class="mb-3">
-								<div class="label">Related <ifcount code="ca_entities" max="1">Person</ifcount><ifcount code="ca_entities" min="2">People</ifcount></div>
-								<unit relativeTo="ca_entities" sort="ca_entity_labels.surname" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>
-							</div>
-						</ifcount>}}}
-<?php
-
-						#$vs_exhibitions = $t_item->getWithTemplate("<unit relativeTo='ca_objects' aggregateUnique='1' unique='1' delimiter=' '><unit relativeTo='ca_occurrences' restrictToTypes='exhibition' delimiter=' '><div class='mb-3'>^ca_occurrences.preferred_labels</div></unit></unit>", array("checkAccess" => $va_access_values));
-						$va_related_exhibition_ids = $t_item->get("ca_occurrences.occurrence_id", array("restrictToTypes" => array("exhibition"), "relativeTo" => "ca_objects", "returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_occurrences.date"));
-						$va_related_exhibition_ids = array_reverse($va_related_exhibition_ids);
-						if(is_array($va_related_exhibition_ids) && sizeof($va_related_exhibition_ids)){
-							$q_exhibitions = caMakeSearchResult("ca_occurrences", $va_related_exhibition_ids);
-							if($q_exhibitions->numHits()){
-								print "<div class='mb-3'><div class='label'>Exhibitions</div>";
-								while($q_exhibitions->nextHit()){
-									print $q_exhibitions->getWithTemplate("<div class='mb-3'><l>^ca_occurrences.preferred_labels.name</l><case><ifcount code='ca_entities' restrictToTypes='org' restrictToRelationshipTypes='venue' min='1'><br/></ifcount><ifdef code='ca_occurrences.date'><br/></ifdef></case><ifcount code='ca_entities' restrictToTypes='org' restrictToRelationshipTypes='venue' min='1'><unit relativeTo='ca_entities' restrictToTypes='org' restrictToRelationshipTypes='venue' delimiter=', '>^ca_entities.preferred_labels</unit><ifdef code='ca_occurrences.date'>, </ifdef></ifcount><ifdef code='ca_occurrences.date'>^ca_occurrences.date</ifdef></div>");
-								}
-								print "</div><HR></HR>";
-							}
-						}
-						
-						
+						</ifdef>}}}					
+<?php						
 						# --- bio-regions
 						$t_list_item = new ca_list_items();
 						$va_bio_regions = $t_item->get("ca_collections.bio_regions", array("returnAsArray" => true));
 						if(is_array($va_bio_regions) && sizeof($va_bio_regions)){
 ?>
 							<div class="mb-3">
-								<div class="label">Bio-Regions</div>
+								<div class="label">Bio-Regions <span class="material-icons" role="button" data-toggle="collapse" data-target="#bioRegionDesc" aria-expanded="false" aria-controls="bioRegionDesc">info</span></div>
+								<div class="mb-3 collapse small" id="bioRegionDesc">
+								  A region defined by characteristics of the natural environment rather than man-made division.
+								</div>
 <?php
 								$va_bio_region_links = array();
 								foreach($va_bio_regions as $vn_bio_region_id){
@@ -145,6 +126,59 @@
 							
 
 						}
+
+						# --- rel entities by role
+						$va_entities = $t_item->get("ca_entities", array("excludeRelationshipTypes" => array("related"), "returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_entity_labels.surname"));
+						if(is_array($va_entities) && sizeof($va_entities)){
+							$va_entities_by_role = array();
+							$va_visionary = array();
+							foreach($va_entities as $va_entity_info){
+								if(strToLower($va_entity_info["relationship_typename"]) == "visionary"){
+									$va_visionary[] = caNavLink($va_entity_info["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_entity_info["entity_id"]));
+								}else{
+									$va_entities_by_role[$va_entity_info["relationship_typename"]][] = caNavLink($va_entity_info["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_entity_info["entity_id"]));
+								}
+							}
+							if(sizeof($va_visionary)){
+?>
+								<div class="mb-3">
+									<div class="label">Visionary</div>
+<?php
+									print join($va_visionary, ", ");
+?>
+								</div>
+<?php
+								
+							}
+							ksort($va_entities_by_role);
+							foreach($va_entities_by_role as $vs_role => $va_names){
+?>
+								<div class="mb-3">
+									<div class="label"><?php print $vs_role; ?></div>
+<?php
+									print join($va_names, ", ");
+?>
+								</div>
+<?php
+							}
+						}
+
+
+if($x_show_exhibitions){
+						#$vs_exhibitions = $t_item->getWithTemplate("<unit relativeTo='ca_objects' aggregateUnique='1' unique='1' delimiter=' '><unit relativeTo='ca_occurrences' restrictToTypes='exhibition' delimiter=' '><div class='mb-3'>^ca_occurrences.preferred_labels</div></unit></unit>", array("checkAccess" => $va_access_values));
+						$va_related_exhibition_ids = $t_item->get("ca_occurrences.occurrence_id", array("restrictToTypes" => array("exhibition"), "relativeTo" => "ca_objects", "returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_occurrences.date"));
+						$va_related_exhibition_ids = array_reverse($va_related_exhibition_ids);
+						if(is_array($va_related_exhibition_ids) && sizeof($va_related_exhibition_ids)){
+							$q_exhibitions = caMakeSearchResult("ca_occurrences", $va_related_exhibition_ids);
+							if($q_exhibitions->numHits()){
+								print "<div class='mb-3'><div class='label'>Exhibitions</div>";
+								while($q_exhibitions->nextHit()){
+									print $q_exhibitions->getWithTemplate("<div class='mb-3'><l>^ca_occurrences.preferred_labels.name</l><case><ifcount code='ca_entities' restrictToTypes='org' restrictToRelationshipTypes='venue' min='1'><br/></ifcount><ifdef code='ca_occurrences.date'><br/></ifdef></case><ifcount code='ca_entities' restrictToTypes='org' restrictToRelationshipTypes='venue' min='1'><unit relativeTo='ca_entities' restrictToTypes='org' restrictToRelationshipTypes='venue' delimiter=', '>^ca_entities.preferred_labels</unit><ifdef code='ca_occurrences.date'>, </ifdef></ifcount><ifdef code='ca_occurrences.date'>^ca_occurrences.date</ifdef></div>");
+								}
+								print "</div><HR></HR>";
+							}
+						}
+}
 ?>
 					</div>
 				</div>
@@ -166,25 +200,27 @@
 ?>
 		<div class="row mt-3">
 			<div class="col-sm-12 mt-5">
-				<H1>Subjects</H1>
+				<H1>Themes</H1>
 			</div>
 		</div>
 		<div class="row bg-1 pt-4 mb-5 detailTags">
 <?php
 			foreach($va_subjects as $vn_subject_id){
 				$t_list_item->load($vn_subject_id);
+				if(in_array($t_list_item->get("ca_list_items.access"), $va_access_values)){
 ?>
 				<div class="col-sm-6 col-md-3 pb-4">
 					<?php print caNavLink("<div class='bg-2 text-center py-2 uppercase'>".$t_list_item->get("ca_list_item_labels.name_singular")."</div>", "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id)); ?>
 				</div>
 <?php
+				}
 			}
 
 ?>
 		</div>
 <?php
 	}
-
+if($x_show_events){
 	# --- related actions
 	$va_related_action_ids = $t_item->get("ca_occurrences.occurrence_id", array("restrictToTypes" => array("action"), "returnAsArray" => true, "checkAccess" => $va_access_values, "length" => 50));
 	if(is_array($va_related_action_ids) && sizeof($va_related_action_ids)){
@@ -204,6 +240,9 @@
 ?>
 		</div>
 	</div>
+<?php
+}
+?>
 	<div class="row mb-3 detailRelated">
 <?php
 		$i = 0;
@@ -241,7 +280,7 @@
 ?>
 		<div class="row mt-3">
 			<div class="col-7 mt-5">
-				<H1>Investigations</H1>
+				<H1>Inquiries</H1>
 			</div>
 			<div class="col-5 mt-5 text-right">
 				<?php print caNavLink("View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>
@@ -251,7 +290,7 @@
 <?php
 			$i = 0;
 			while($q_objects->nextHit()){
-				if(!$q_objects->get("ca_objects.parent_id") && $q_objects->get("ca_object_representations.media.widepreview")){
+				#if(!$q_objects->get("ca_objects.parent_id") && $q_objects->get("ca_object_representations.media.widepreview")){
 					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
 					$vs_idno = substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
@@ -262,7 +301,7 @@
 					print "</div>";
 					$i++;
 					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
-				}
+				#}
 				if($i == 12){
 					break;
 				}
@@ -280,7 +319,7 @@
 ?>
 		<div class="row mt-3">
 			<div class="col-7 mt-5">
-				<H1>Inspirations</H1>
+				<H1>Assets</H1>
 			</div>
 			<div class="col-5 mt-5 text-right">
 				<?php print caNavLink("View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>

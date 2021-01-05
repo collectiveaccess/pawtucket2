@@ -66,11 +66,11 @@ class PawtucketBrowseStatistics extends React.Component {
 
 	render() {
 		if (this.context.state.resultSize === 0) {
-			return(<h1 className="my-4">No results found</h1>);
+			return(<h1 className="my-4">No {browseConfig.labelPlural} found</h1>);
 		}else{
 			return(
 				<h1 className="my-4">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-					"1 Result" : this.context.state.resultSize + " Results") : <div className="text-center">Loading...</div>}</h1>
+					"1 " + browseConfig.labelSingular : this.context.state.resultSize + " " + browseConfig.labelPlural) : <div className="text-center">Loading...</div>}</h1>
 			);
 		}
 	}
