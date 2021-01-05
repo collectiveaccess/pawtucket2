@@ -759,7 +759,15 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 	opacity:1.0 !important;
 	background-color:rgba(0,0,0,0.5) !important;
 }
-
+div.caMediaOverlayControls .close {
+    float: none;
+    margin: 0px 10px 0px 20px;
+    font-size: 22px;
+    opacity: 0.9;
+    position: fixed;
+    top: 15px;
+    right: 0px;
+}
 .detail .navTop {
     margin-top: 20px;
 }
