@@ -149,6 +149,8 @@
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1" max="1"><H6>Related event</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="event" min="2"><H6>Related events</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_occurrences.related" restrictToTypes="event" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
+					{{{<ifcount code="ca_objects" restrictToTypes="audio,video" min="1"><HR/><H6>Related Audio/Video</H6></ifcount><unit relativeTo="ca_objects" restrictToTypes="audio,video" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit>}}}
+
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
@@ -163,7 +165,7 @@
 					$vn_cap_for_grid = 30;
 					$vs_version = "large";
 					$va_reps = $t_item->getRepresentations(array("large", "mediumlarge"), null, array("checkAccess" => $va_access_values));
-					$va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
+					$va_object_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("artwork"), "returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
 					$q_artworks = caMakeSearchResult("ca_objects", $va_object_ids);
 					$vn_total_images = (sizeof($va_reps) + $q_artworks->numHits());
 					if($vn_total_images > $vn_cap_for_grid){
@@ -248,7 +250,10 @@
 								$vs_caption .= $q_artworks->get("ca_objects.date").".";
 							}
 							$vs_label_detail_link 	= caDetailLink($this->request, $vs_caption, '', 'ca_objects', $q_artworks->get("ca_objects.object_id"));
-							$tmp = array("image" => $vs_image, "label" => $vs_label_detail_link, "image_link" => ($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
+							# --- audio/video related to the work?
+							$vs_rel_audio = $q_artworks->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='audio' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='audio'><div class='text-center' style='padding-top:5px;'><l><button class='btn-default'><i class='fa fa-volume-up' aria-hidden='true'></i> AUDIO</button></l></div></unit></ifcount>", array("checkAccess" => $va_access_values));
+							$vs_rel_video = $q_artworks->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='video' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='video'><div class='text-center' style='padding-top:5px;'><l><button class='btn-default'><i class='fa fa-video-camera' aria-hidden='true'></i> Video</button></l></div></unit></ifcount>", array("checkAccess" => $va_access_values));
+							$tmp = array("image" => $vs_image, "label" => $vs_label_detail_link.$vs_rel_audio.$vs_rel_video, "image_link" => ($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
 							if(!$vb_no_rep){
 								if($va_artworks[$vs_sort_key]){
 									$vs_sort_key .= $q_artworks->get("ca_objects.object_id");

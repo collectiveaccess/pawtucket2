@@ -13,14 +13,11 @@
 	<div class='col-xs-12 col-sm-12'>
 		<div class="row">
 			<div class='col-sm-4'>
-				{{{representationViewer}}}
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 <?php			
 				$va_object_ids = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
 				$q_artworks = caMakeSearchResult("ca_objects", $va_object_ids);
 				if($q_artworks->numHits()){
-					print "<H6>Related Artwork</H6>";
+					print "<br/><br/><br/><H6>Related Artwork</H6>";
 					while($q_artworks->nextHit()){
 						$vs_image = "";
 						$vs_image = $q_artworks->get('ca_object_representations.media.large', array("checkAccess" => $va_access_values));
@@ -58,14 +55,18 @@
 						if($tmp["label"]){
 							print "<br/><small>".$tmp["label"]."</small>";
 						}
-						print "</div><br/>";
+						print "</div>";
 					}
 				}
 ?>					
+				{{{representationViewer}}}
+				
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 			
 			</div><!-- end col -->
 			
 			<div class='col-sm-6'>
+				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 				<H4>{{{<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}</H4>
 				<HR/>
 
@@ -74,7 +75,7 @@
 				{{{<ifdef code="ca_objects.description">^ca_objects.description<br/></ifdev>}}}
 				
 				{{{<ifcount code="ca_entities" min="1" max="1"><HR/><H6>Related person</H6></ifcount>
-					<ifcount code="ca_entities" min="2"><HR/><H6>Related people</H6></ifcount>}}}
+					<ifcount code="ca_entities" min="2"><HR/><H6>Related people</H6></ifcount>
 					<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 				
 				{{{<ifcount code="ca_occurrences" min="1" max="1"><HR/><H6>Related exhibition</H6></ifcount>}}}
