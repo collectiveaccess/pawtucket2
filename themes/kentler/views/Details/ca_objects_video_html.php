@@ -66,7 +66,7 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6'>
-				<H1>{{{<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}</H1>
+				<H1>{{{<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="creator">^ca_entities.preferred_labels.displayname</unit>}}}</H1>
 				<H4>{{{^ca_objects.preferred_labels.name}}}</H4>
 				<HR/>
 
