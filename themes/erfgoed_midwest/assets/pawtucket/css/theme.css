@@ -426,6 +426,15 @@ a.readmore-js-toggle {
 	max-height:365px;
 	overflow-y:scroll;
 }
+.gallery .readmore-js-toggle{
+	color: #00768e;
+	padding: 5px 13px;
+	text-transform:uppercase;
+	font-weight:bold;
+	font-size:16px;
+	margin-bottom:10px;
+	text-align:center;
+}
 /* collections/list browse */
 .bResultListItemText{
 	display: flex;
