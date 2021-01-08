@@ -77,9 +77,9 @@
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 			
-				{{{<ifcount code="ca_entities" min="1" max="1"><HR/><H6>Related person</H6></ifcount>
-					<ifcount code="ca_entities" min="2"><HR/><H6>Related people</H6></ifcount>
-					<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+				{{{<ifcount code="ca_entities" min="1" max="1" excludeRelationshipTypes="creator"><HR/><H6>Related person</H6></ifcount>
+					<ifcount code="ca_entities" min="2" excludeRelationshipTypes="creator"><HR/><H6>Related people</H6></ifcount>
+					<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="creator"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 				
 				{{{<ifcount code="ca_occurrences" min="1" max="1"><HR/><H6>Related exhibition</H6></ifcount>}}}
 				{{{<ifcount code="ca_occurrences" min="2"><HR/><H6>Related exhibitions</H6></ifcount>}}}
