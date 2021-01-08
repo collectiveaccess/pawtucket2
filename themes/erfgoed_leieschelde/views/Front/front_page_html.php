@@ -32,12 +32,14 @@
 		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 	<div class="row">
-		<div class="col-sm-8">
-			<H1>{{{hometext}}}</H1>
-		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
+		<div class="col-sm-12 text-center"><br/><br/>
+			<H1>{{{hometext}}}</H1><br/><br/>
+		</div><!--end col-sm-12-->
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
 <?php
-		print $this->render("Front/gallery_set_links_html.php");
+		print $this->render("Front/gallery_slideshow_html.php");
 ?>
-		</div> <!--end col-sm-4-->	
+		</div> <!--end col-sm-12-->	
 	</div><!-- end row -->
