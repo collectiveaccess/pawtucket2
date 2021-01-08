@@ -79,10 +79,10 @@
 <?php
 						print "<li".(($ps_view == "info") ? " class='active'" : "").">".caDetailLink($this->request, _t("exhibition main"), '', 'ca_occurrences', $t_item->get("occurrence_id"), null, null, array("type_id" => $t_item->get("type_id")))."</li>";
 						if(sizeof($va_object_ids) > 1){
-							print "<li".((in_array($ps_view, array("images", "thumbnails"))) ? " class='active'" : "").">".caDetailLink($this->request, _t("works"), '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" => "images"), null, array("type_id" => $t_item->get("type_id")))."</li>";
+							print "<li".((in_array($ps_view, array("images", "thumbnails"))) ? " class='active'" : "").">".caDetailLink($this->request, _t("works"), '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" => "thumbnails"), null, array("type_id" => $t_item->get("type_id")))."</li>";
 						}
 						if(is_object($o_representations) && $o_representations->numHits()){
-							print "<li".((in_array($ps_view, array("installations", "installationThumbnails"))) ? " class='active'" : "").">".caDetailLink($this->request, _t("installation views"), '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" => "installations"), null, array("type_id" => $t_item->get("type_id")))."</li>";
+							print "<li".((in_array($ps_view, array("installations", "installationThumbnails"))) ? " class='active'" : "").">".caDetailLink($this->request, _t("installation views"), '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" => "installationThumbnails"), null, array("type_id" => $t_item->get("type_id")))."</li>";
 						}
 						if($vs_pr_link = $t_item->get("ca_occurrences.press_release.original.url")){
 ?>

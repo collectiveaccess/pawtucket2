@@ -3,7 +3,7 @@
 	$t_item = $this->getVar("item");
 	$ps_view = $this->request->getParameter("view", pString);	#works, exhibitions, bio
 	if(!$ps_view){
-		$ps_view = "works";
+		$ps_view = "thumbnails";
 	}
 	# --- object id of related image to cue slideshow to
 	$pn_object_id = $this->request->getParameter("id", pInteger);
@@ -97,7 +97,6 @@
 			break;
 			# ----------------------------------------------
 			case "works":
-			default:
 				$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
 				if($q_objects->numHits()){
 					$va_images = array();
@@ -206,6 +205,7 @@
 			break;
 			# -------------------------------------------------------------------------------
 			case "thumbnails":
+			default:
 ?>
 				<div class="row">
 <?php
