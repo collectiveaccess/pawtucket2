@@ -29,14 +29,46 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer" role="contentinfo">
-			<div class="row">
-				<div class="col-sm-6 col-md-6 col-lg-5 col-lg-offset-1 text-left">
-					<a href="https://www.trcnyc.org" target="_blank"><?php print caGetThemeGraphic($this->request, 'trc-footer-logo.svg', array("class" => "logo", "alt" => "The Riverside Church Logo and Title")); ?></a>
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12 logoCol">
+						<a href="https://www.trcnyc.org" target="_blank"><?php print caGetThemeGraphic($this->request, 'trc-footer-logo.svg', array("class" => "logo", "alt" => "The Riverside Church Logo and Title")); ?></a>
+					</div>
 				</div>
-				<div class="col-sm-6 col-md col-lg-5 text-right">
-					<br/>490 Riverside Drive<br/>
-					New York, NY 10027<br/>
-					<a href="mailto:welcome@trcnyc.org">welcome@trcnyc.org</a>
+				<div class="row">
+					<div class="col-sm-12 col-md-3 col-lg-5 text-left addressCol">
+						<p>490 Riverside Drive
+						<br/>New York, NY
+						<br/>10027</p>
+
+						<p><a href="mailto:welcome@trcnyc.org">welcome@trcnyc.org</a></p>
+						<p>(212) 870-6700</p>
+
+						
+					</div>
+					<div class="col-sm-12 col-md-9 col-lg-7">
+						<div class="learnLinks">
+							<h2>Learn</h2>
+							<a href="https://www.trcnyc.org/worshipschedule/">Worship With Us</a><br/>
+							<a href="https://www.trcnyc.org/online/#online-ministries">Our Ministries</a><br/>
+							<a href="https://www.trcnyc.org/about/">Our Story</a><br/>
+							<a href="https://www.trcnyc.org/news/">News</a><br/>
+						</div>
+						<div class="daySchool">
+							<a class="affiliate-logo" href="https://www.wdsnyc.org/"><?php print caGetThemeGraphic($this->request, 'weekdaySchool.png', array("class" => "weekdaySchool", "alt" => "Weekday School")); ?></a>
+							<a class="affiliate-logo" href="https://riversidehawks.org/"><?php print caGetThemeGraphic($this->request, 'riverside-hawks.png', array("class" => "riverside-hawks", "alt" => "Riverside Hawks")); ?></a>
+							
+							<div class="social-con">
+								Follow riverside online:
+							
+									<a class="social-icon first" href="https://www.facebook.com/RiversideNY/" target="_blank"><i class="fa fa-facebook"></i></a>
+									<a class="social-icon" href="https://twitter.com/RiversideNYC" target="_blank"><i class="fa fa-twitter"></i></a>
+									<a class="social-icon" href="https://www.instagram.com/riversidenyc" target="_blank"><i class="fa fa-instagram"></i></a>
+									<a class="social-icon" href="https://youtube.com/TheRiversideChurch" target="_blank"><i class="fa fa-youtube-play"></i></a>
+							
+							</div>
+						
+						</div>
 				</div>
 			</div>
 		</footer><!-- end footer -->
