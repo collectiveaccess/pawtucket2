@@ -82,6 +82,8 @@
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type");
  			}
+ 			$this->opa_access_values = caGetOption('checkAccess', $va_browse_info, $this->opa_access_values);
+ 			
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Browse %1", $va_browse_info["displayName"]));
  			$this->view->setVar("browse_type", $ps_function);
  			$vs_class = $this->ops_tablename = $va_browse_info['table'];
