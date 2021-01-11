@@ -130,7 +130,7 @@ a:hover{
 	font-size:85%;
 	padding-top: 3px !important;
 	color:#000 !important;
-	display:inline-block;
+	display:block;
 }
 .exhibitGrid .fullWidthImg small .btn-default{
 	font-size:11px;
@@ -149,6 +149,13 @@ a:hover{
 }
 .exhibitGrid .fullWidthImg small .btn-default.music:hover{
 	color:#858585;
+}
+@media (max-width: 768px) {
+	.detail .fullWidthImg small .btn-default.music{
+		margin-top:10px;
+		margin-bottom:20px;
+		font-size:20px;
+	}
 }
 .browseRemoveFacet .btn-default .glyphicon{
 	color:#858585 !important;
