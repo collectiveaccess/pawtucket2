@@ -213,6 +213,7 @@
 					$va_artworks = array();
 					$va_artworks_no_media = array();
 					if($q_artworks->numHits()){
+						$va_related_audio_ids = array();
 						while($q_artworks->nextHit()){
 							$vs_image = "";
 							$vs_image = $q_artworks->get('ca_object_representations.media.'.$vs_version, array("checkAccess" => $va_access_values));
@@ -253,6 +254,12 @@
 							# --- audio/video related to the work? - yes no values switched so no means yes :|
 							$vs_rel_audio = $q_artworks->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='audio' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='audio'><div class='text-center' style='padding-top:5px;'><l><case><if rule='^ca_objects.music_audio =~ /no/'><button class='btn-default music'><i class='fa fa-music' aria-hidden='true'></i></button></if><unit><button class='btn-default'><i class='fa fa-volume-up' aria-hidden='true'></i> AUDIO</button></unit></case></l></div></unit></ifcount>", array("checkAccess" => $va_access_values));
 							$vs_rel_video = $q_artworks->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='video' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='video'><div class='text-center' style='padding-top:5px;'><l><button class='btn-default'><i class='fa fa-video-camera' aria-hidden='true'></i> Video</button></l></div></unit></ifcount>", array("checkAccess" => $va_access_values));
+							$vn_rel_audio_ids = $q_artworks->get("ca_objects.related.object_id", array("restrictToTypes" => "audio", "checkAccess" => $va_access_values, "returnAsArray" => true));
+							if(is_array($vn_rel_audio_ids) && sizeof($vn_rel_audio_ids)){
+								foreach($vn_rel_audio_ids as $vn_rel_audio_id){
+									$va_related_audio_ids[] = $vn_rel_audio_id;
+								}
+							}
 							$tmp = array("image" => $vs_image, "label" => $vs_label_detail_link.$vs_rel_audio.$vs_rel_video, "image_link" => ($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
 							if(!$vb_no_rep){
 								if($va_artworks[$vs_sort_key]){
@@ -266,6 +273,13 @@
 								$va_artworks_no_media[$vs_sort_key] = $tmp;
 							}
 						}
+					}
+					# --- if there are audio related to the artworks (this was done for Music as Image and Metaphor exhibition) - set the next and previous results in result context
+					if(is_array($va_related_audio_ids) && sizeof($va_related_audio_ids)){
+						$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
+						$o_context->setAsLastFind();
+						$o_context->setResultList($va_related_audio_ids);
+						$o_context->saveContext();
 					}
 					ksort($va_artworks, SORT_NATURAL);
 					ksort($va_artworks_no_media, SORT_NATURAL);
