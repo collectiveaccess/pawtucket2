@@ -135,6 +135,7 @@ $( document ).ready(function() {
 							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><?php print caNavLink($this->request, _t('Playwrights, translators, and adaptors'), '', '', 'Listing', 'playwrights'); ?></a></li>
 							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><?php print caNavLink($this->request, _t('Printers, publishers, booksellers, and bookstores'), '', '', 'Listing', 'printers');?></a></li>
 							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/"><?php print _t('Printed catalogs of Spanish drama and comedias sueltas in US and Canadian library collections');?></a></li>						
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('CCSSUSA Titles'), '', '', 'Listing', 'ccssusa');?></li>						
 						</ul>
 					</li>
 					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/"><?php print _t('Essays');?></a></li>
