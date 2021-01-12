@@ -138,7 +138,7 @@
 					$va_tag_links = array();
 					$va_tags = $va_tags[$t_object->get("ca_objects.object_id")];
 					foreach($va_tags as $vn_tag_id => $va_tag_info){
-						if($vn_tag_id){
+						if($va_tag_info["object_tags"]){
 							#$va_tag_links[] = caNavLink($this->request, $va_tag_info["object_tags"], "", "", "Browse", "objects", array("facet" => "tags_facet", "id" => $vn_tag_id));
 							$va_tag_links[] = caNavLink($this->request, $va_tag_info["object_tags"], "", "", "Search", "objects", array("search" => "ca_objects.object_tags:".$va_tag_info["object_tags"]));
 						
