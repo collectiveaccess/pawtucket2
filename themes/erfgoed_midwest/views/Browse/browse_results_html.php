@@ -173,7 +173,7 @@ if(($vs_table == "ca_entities") && (strToLower($this->request->getAction()) == "
 				if ($va_criterion['facet_name'] != '_search') {
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
-					print ' '.$va_criterion['value'];
+					print ' '.str_replace("ca_objects.object_tags", "tags", $va_criterion['value']);
 					$vs_search = $va_criterion['value'];
 				}
 				$i++;
