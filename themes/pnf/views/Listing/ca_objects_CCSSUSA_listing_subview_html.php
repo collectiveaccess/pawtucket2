@@ -47,17 +47,23 @@
 		while($qr_list->nextHit()) {
 			$vs_title = $qr_list->get('ca_objects.CCSSUSA_Uniform');
 			if(!in_array($vs_title, $va_ccssusa_titles_output)){
+				
+				
 				$va_ccssusa_titles_output[] = $vs_title;
-				$vs_first_letter = ucfirst(substr($vs_title, 0, 1));
+				$vs_sort = strToLower(strip_tags(str_replace(array(", La", ", El", ", Los", " Las", " Del", ",", ".", "\"", "“", "”", "La ", "El ", "Los ", "Las ", "Del ", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), array("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "u", "u", "u", "N", "n", "S", "s"), trim($vs_title))));
+				$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 				$va_letter_array[$vs_first_letter] = $vs_first_letter;
 				$vn_id = $qr_list->get('ca_objects.object_id');
-				$va_links_array[$vs_first_letter][$vn_id] = "<div class='listLink'><span class='listTitle'>".caNavLink($this->request, $vs_title, "", "", "Browse", "objects", array("facet" => "label_facet", "id" => $vs_title))."</span></div>\n";	
+				$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink'><span class='listTitle'>".caNavLink($this->request, $vs_title, "", "", "Browse", "objects", array("facet" => "label_facet", "id" => $vs_title))."</span></div>\n";	
 			}
 		}
+		ksort($va_links_array);
+		ksort($va_letter_array);
 		foreach ($va_links_array as $va_first_letter => $va_links) {
+			ksort($va_links);
 			print "<p class='separator'><a name='".$vs_first_letter."'></a><br></p>";			
 			print "<h2 id='".$va_first_letter."' class='mw-headline'>".$va_first_letter."</h2>";
-			foreach ($va_links as $va_occurrence_id => $va_link) {
+			foreach ($va_links as $vs_sort => $va_link) {
 				print $va_link;
 			}
 		}
