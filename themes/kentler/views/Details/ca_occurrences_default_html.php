@@ -257,7 +257,7 @@
 							$vn_rel_audio_ids = $q_artworks->get("ca_objects.related.object_id", array("restrictToTypes" => "audio", "checkAccess" => $va_access_values, "returnAsArray" => true));
 							if(is_array($vn_rel_audio_ids) && sizeof($vn_rel_audio_ids)){
 								foreach($vn_rel_audio_ids as $vn_rel_audio_id){
-									$va_related_audio_ids[] = $vn_rel_audio_id;
+									$va_related_audio_ids[$vs_sort_key.$vn_rel_audio_id] = $vn_rel_audio_id;
 								}
 							}
 							$tmp = array("image" => $vs_image, "label" => $vs_label_detail_link.$vs_rel_audio.$vs_rel_video, "image_link" => ($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
@@ -276,9 +276,15 @@
 					}
 					# --- if there are audio related to the artworks (this was done for Music as Image and Metaphor exhibition) - set the next and previous results in result context
 					if(is_array($va_related_audio_ids) && sizeof($va_related_audio_ids)){
+						ksort($va_related_audio_ids, SORT_NATURAL);
+						# setResultList doesn't like keys with text so simplify the array keys
+						$va_tmp = array();
+						foreach($va_related_audio_ids as $audio_id){
+							$va_tmp[] = $audio_id;
+						}
 						$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
 						$o_context->setAsLastFind();
-						$o_context->setResultList($va_related_audio_ids);
+						$o_context->setResultList($va_tmp);
 						$o_context->saveContext();
 					}
 					ksort($va_artworks, SORT_NATURAL);
