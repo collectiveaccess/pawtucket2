@@ -140,7 +140,7 @@
 				<div class='col-md-6 col-lg-6'>
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1" max="1"><H6>Artist</H6></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="2"><H6>Artists</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", " sort="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.displayname</unit>}}}
 					
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="exhibition" min="1" max="1"><H6>Related exhibition</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="exhibition" min="2"><H6>Related exhibitions</H6></ifcount>}}}
