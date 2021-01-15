@@ -27,22 +27,20 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+		</div><!-- end pageArea --></div><!-- end main -->
+<?php
+	if(strToLower($this->request->getController()) != "front"){
+?>
+		</div><!-- end col --></div><!-- end row --></div><!-- end container -->
+<?php	
+	}
+?>
 		<footer id="footer" role="contentinfo">
-			<ul class="list-inline pull-right social">
-				<li><i class="fa fa-twitter" aria-label="<?php print _t("Twitter"); ?>"></i></li>
-				<li><i class="fa fa-facebook-square" aria-label="<?php print _t("Facebook"); ?>"></i></li>
-				<li><i class="fa fa-youtube-play" aria-label="<?php print _t("YouTube"); ?>"></i></li>
-			</ul>
-			<div>
-				Footer text here
+			<div class="container">
+			<div class="text-center">
+				<br/>&copy; Mark Morris Dance Group
 			</div>
-			<ul class="list-inline">
-				<li><a href="#">Link 1</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
-			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2018</a></small></div>
+			</div>
 		</footer><!-- end footer -->
 <?php
 	//
