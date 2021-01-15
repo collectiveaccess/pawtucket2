@@ -1609,6 +1609,42 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ---------------------------------------
 	/**
+	  * Determine if a mimetype is valid using a list of specific mimetypes, wildcard mimetypes and/or classes.
+	  * The mimetype to be tested may be a specified mimetype (Ex. image/jpeg), a wildcard mimetype (Ex. image/*) or a class (Ex. image)
+	  *
+	  * @param string $mimetype A specific or wildcard mimetype or a class. Ex. image/jpeg, image/*, audio, image, video
+	  * @param array $valid_mimetypes A list of specific or wildcard mimetypes or classes to compare $mimetype against.
+	  * @return bool True if $mimetype is in $valid_mimetypes
+	  */
+	function caMimetypeIsValid(string $mimetype, array $valid_mimetypes) {
+		if(strpos($mimetype, '/') === false) {
+			$mimetypes = caGetMimetypesForClass($mimetype);
+		} else {
+			$mimetypes = [$mimetype];
+		}
+		
+		$valid_mimetypes_exp = [];
+		foreach($valid_mimetypes as $m) {
+			if(strpos($m, '/') === false) {
+				$valid_mimetypes_exp = array_merge($valid_mimetypes_exp, caGetMimetypesForClass($m));
+			} else {
+				$valid_mimetypes_exp[] = $m;
+			}	
+		}
+		
+		foreach($mimetypes as $m1) {
+			foreach($valid_mimetypes_exp as $m2) {
+				if(caCompareMimetypes($m1, $m2)) {
+					return true;
+				}
+			}
+		}
+		
+		
+		return false;
+	}
+	# ---------------------------------------
+	/**
 	  * Creates an md5-based cached key from an array of options
 	  *
 	  * @param array $pa_options An options array
