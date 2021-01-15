@@ -416,3 +416,8 @@ a.exploreBrowseTitle{
 .exploreTypeItem a{
 	line-height:1.1em;
 }
+
+.caAudioPlayer { 
+	padding: 0px !important;
+	margin: 0px !important;
+}	

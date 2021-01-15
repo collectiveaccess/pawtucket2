@@ -26,6 +26,7 @@ body{
 	margin-bottom:0px;
 	font-size: 16px;
 	color: #000;
+	margin-bottom:580px;
 }
 @media(max-width:768px){
 	body{
@@ -35,6 +36,21 @@ body{
 @media(min-width:768px) and (max-width:1355px){
 	body{
 		margin-top:195px;
+	}
+}
+@media(max-width:991px){
+	body{
+		margin-bottom:650px;
+	}
+}
+@media(max-width:768px){
+	body{
+		margin-bottom:830px;
+	}
+}
+@media(max-width:508px){
+	body{
+		margin-bottom:880px;
 	}
 }
 .container{
@@ -379,7 +395,6 @@ a, a:hover{
 	height:auto;
 	font-size:14px;
 	display:block;
-	position:relative;
 	margin-top:50px;
 }
 #footer .logoCol{
