@@ -75,6 +75,15 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-32837173-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+ 
+  gtag('config', 'UA-32837173-1');
+</script>
 </head>
 <body>
 	<nav class="navbar navbar-default yamm" role="navigation">

@@ -1516,7 +1516,6 @@ a.browseRemoveFacet img {
 .front .galleryItems-wrapper .jcarousel-control-prev, .front .galleryItems-wrapper .jcarousel-control-next {
     top: 40%;
 }
-
 /* --------------------------------- */
 /* details */
 /* --------------------------------- */
@@ -1638,7 +1637,7 @@ a.browseRemoveFacet img {
 	width:100%;
 	height:auto;
 	max-height: 500px;
-    object-fit: contain;
+    /* object-fit: contain; */
 }
 .detail .unit {
 	margin-bottom:12px;
@@ -2684,6 +2683,25 @@ a.browseRemoveFacet .glyphicon {
 	text-decoration:none;
 	color:#454545;
 }
+.gallery .galleryItem a.btn-default{
+	color:#FFF;
+	font-size:11px;
+	display:none;
+}
+@media(max-width:767px){
+	/* don't show preview for mobile - only the list and show a view gallery button */
+	#gallerySetInfo{
+		display:none;
+	}
+	.galleryItemSetInfoLink{
+		cursor:auto;
+	}
+	.gallery .galleryItem a.btn-default{
+		display:inline;
+	}
+	
+}
+
 .gallery .galleryItem .galleryItemImg{
 	float:left;
 	width:25%;

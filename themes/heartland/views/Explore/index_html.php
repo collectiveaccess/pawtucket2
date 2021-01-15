@@ -3,8 +3,13 @@
 	$va_type_icons = $o_config->get("type_icons");
 	$va_types = $this->getVar("types");
 ?>
-<div class="row"><div class="col-sm-12">
-	<H1 class="text-center">Explore</H1>
+<div class="row"><div class="col-sm-12 col-md-6 col-md-offset-3 text-center">
+	<H1>Explore</H1>
+<?php
+			if($vs_intro = $this->getVar("explore_intro")){
+				print "<p class='exploreIntro'>".$vs_intro."</p><br/>";
+			}
+?>
 </div></div>
 <div class="row exploreTypes">
 <?php
@@ -18,8 +23,13 @@
 	}
 ?>
 </div>
-<div class="row"><div class="col-sm-12">
-	<H1 class="text-center">Browse</H1>
+<div class="row"><div class="col-sm-12 col-md-6 col-md-offset-3 text-center">
+	<H1>Browse</H1>
+<?php
+			if($vs_intro = $this->getVar("explore_browse_intro")){
+				print "<p class='exploreIntro'>".$vs_intro."</p><br/>";
+			}
+?>
 </div></div>
 <div class="row exploreBrowseTypes">
 <?php

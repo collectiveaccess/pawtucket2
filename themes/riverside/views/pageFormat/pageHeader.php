@@ -155,9 +155,10 @@
 					<li class="dropdown<?php print (in_array(strToLower($this->request->getController()), array("about", "contact")) ? ' active' : ''); ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?> <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 <?php
-							print "<li>".caNavLink($this->request, _t("About the Collection"), '', '', 'About', 'Collection', '')."</li>";
+							print "<li><a href='https://www.trcnyc.org/history'>"._t("About the Collection")."</a></li>";
 							print "<li>".caNavLink($this->request, _t("Resources"), '', '', 'About', 'Resources', '')."</li>";
-							print "<li>".caNavLink($this->request, _t("News"), '', '', 'About', 'News', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Rights & Reproduction"), '', '', 'About', 'RightsRepo', '')."</li>";
+							print "<li><a href='https://www.trcnyc.org/give'>"._t("Support Riverside")."</a></li>";
 							print "<li>".caNavLink($this->request, _t("Contact"), '', '', 'Contact', 'Form', '')."</li>";
 ?>
 						</ul>	

@@ -105,9 +105,33 @@
 				{{{<ifdef code="ca_objects.language"><label>Language</label>^ca_objects.language%delimiter=,_<br/></ifdef>}}}
 				{{{<ifdef code="ca_objects.aat"><label>Original Object Format</label>^ca_objects.aat%delimiter=,_<br/></ifdef>}}}
 				{{{<ifdef code="ca_objects.keywords"><label>Keywords</label>^ca_objects.keywords%delimiter=,_<br/></ifdef>}}}
-			
-				
 <?php
+				$va_LcshSubjects = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
+				$va_LcshSubjects_processed = array();
+				if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
+					foreach($va_LcshSubjects as $vs_LcshSubjects){
+						if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
+							$vs_LcshSubjects = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
+						}
+						$va_LcshSubjects_processed[] = $vs_LcshSubjects;
+			
+					}
+					print "<label>Library of Congress Subject Headings</label>".join(", ", $va_LcshSubjects_processed);
+				}
+				
+				$va_LcshNames = $t_object->get("ca_objects.lc_names", array("returnAsArray" => true));
+				$va_LcshNames_processed = array();
+				if(is_array($va_LcshNames) && sizeof($va_LcshNames)){
+					foreach($va_LcshNames as $vs_LcshNames){
+						if($vs_LcshNames && (strpos($vs_LcshNames, " [") !== false)){
+							$vs_LcshNames = mb_substr($vs_LcshNames, 0, strpos($vs_LcshNames, " ["));
+						}
+						$va_LcshNames_processed[] = $vs_LcshNames;
+			
+					}
+					print "<label>Library of Congress Name Authority File</label>".join(", ", $va_LcshNames_processed);
+				}
+
 				if($vs_map = trim($this->getVar("map"))){
 					print "<div class='unit'>".$vs_map."</div>";
 				}

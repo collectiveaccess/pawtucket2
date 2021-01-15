@@ -34,6 +34,8 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
+	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -48,7 +50,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-sm-12 col-md-6 col-md-offset-3 text-center'>
-					<H1>{{{ca_objects.preferred_labels.name}}} {{{<if rule='(^ca_objects.type_id =~ /audio|moving/)'><ifcount code="ca_occurrences" restrictToTypes="event" min="1"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><br/>Event/Broadcast: <l>^ca_occurrences.preferred_labels.name</l> <l><span class="small"><i class="fa fa-external-link" aria-hidden="true"></i></span></l></unit></div></ifcount></if>}}}</H1>
+					<H1>{{{^ca_objects.preferred_labels.name}}} {{{<if rule='(^ca_objects.type_id =~ /audio|moving/)'><ifcount code="ca_occurrences" restrictToTypes="event" min="1"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><br/>Event/Broadcast: <l>^ca_occurrences.preferred_labels.name</l> <l><span class="small"><i class="fa fa-external-link" aria-hidden="true"></i></span></l></unit></div></ifcount></if>}}}</H1>
 					<div class='unit'><H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2></div>			
 				</div>
 				<div class='col-sm-12 col-md-3 text-center'>
@@ -59,15 +61,23 @@
 			</div>
 			<div class="row text-center">			
 				<div class='col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3'>
-			
-				{{{representationViewer}}}
-				
-				
-				<div id="detailAnnotations"></div>
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
 <?php
+				$vs_rep_viewer = trim($this->getVar("representationViewer"));
+				if($vs_rep_viewer){			
+					print $vs_rep_viewer;
+					print '<div id="detailAnnotations"></div>';
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+				}
+				
+				if($t_object->get("ca_object_representations.representation_id", array("checkAccess" => array(0)))){
+?>
+					<div class="unit">
+						<b>{{{restricted_media}}}</b>
+					</div>
+<?php
+				}
+				
+
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
@@ -88,89 +98,151 @@
 				}				
 
 ?>
-				{{{<ifdef code="ca_objects.date"><div class="unit">^ca_objects.date.date_value <ifdef code="ca_objects.date.date_types">(^ca_objects.date.date_types)</ifdef></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.date"><div class="unit"><unit relativeTo="ca_objects.date" delimiter=", ">^ca_objects.date.date_value <ifdef code="ca_objects.date.date_types">(^ca_objects.date.date_types)</ifdef></unit></div></ifdef>}}}
 				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="Dedicated,Related,Publisher"><div class="unit"><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="Dedicated,Related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.material_techniques"><div class="unit">^ca_objects.material_techniques%,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.description"><div class="unit">^ca_objects.description</div></ifdef>}}}
+				
 
 				</div>
 			</div>
-			<div class="row bgOffWhiteLight text-left">
-				<div class='col-sm-12 col-md-6'>
-					{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
-					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifdef code="ca_objects.parent_id"><div class="unit"><label>Part of</label><l>^ca_objects.parent.preferred_labels.name</l></div></ifdef>}}}
-					{{{<ifcount code="ca_objects.children" min="1"><div class="unit"><label>Contains</label><unit relativeTo="ca_objects.children" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Publisher"><div class="unit"><label>Publisher</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="Publisher"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+			<div class="row">
+				<div class='col-sm-12 col-lg-8 col-lg-offset-2'><div class="bgOffWhiteLight bgPadding">
+					<div class="row">
+						<div class='col-sm-12 col-md-6'>
+							{{{<ifdef code="ca_objects.description"><div class="unit"><label>Description</label>^ca_objects.description</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
+							{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
+							{{{<ifdef code="ca_objects.parent_id"><div class="unit"><label>Part of</label><unit relativeTo="ca_objects.parent"><l>^ca_objects.preferred_labels.name</l></unit></div></ifdef>}}}
+							{{{<ifcount code="ca_objects.children" min="1"><div class="unit"><label>Contains</label><unit relativeTo="ca_objects.children" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></div></ifcount>}}}
+							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Publisher"><div class="unit"><label>Publisher</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="Publisher"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 
 				
-					<!-- exent; spacial coverage: photos/artifacts/documents -->
-					{{{<ifdef code="ca_objects.extent"><div class="unit"><label>Extent</label>^ca_objects.extent</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.coverageSpacial"><div class="unit"><label>Spacial Coverage</label>^ca_objects.coverageSpacial</div></ifdef>}}}
+							<!-- exent; spacial coverage: photos/artifacts/documents -->
+							{{{<ifdef code="ca_objects.extent"><div class="unit"><label>Extent</label>^ca_objects.extent</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.coverageSpacial"><div class="unit"><label>Spacial Coverage</label>^ca_objects.coverageSpacial</div></ifdef>}}}
 				
-					<!-- Library fields -->
-					{{{<ifdef code="ca_objects.isbn"><div class="unit"><label>ISBN</label>^ca_objects.isbn</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.edition_statement"><div class="unit"><label>Edition Statement</label>^ca_objects.edition_statement</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.rights_statement"><div class="unit"><label>Rights Statement</label>^ca_objects.rights_statement</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.publication_information"><div class="unit"><label>Publication & Distribution Information</label>^ca_objects.publication_information</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.physical_description"><div class="unit"><label>Physical Description</label>^ca_objects.physical_description</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.library_series"><div class="unit"><label>Series Statement</label>^ca_objects.library_series</div></ifdef>}}}
-					<!-- end Library fields -->
-					<!-- vol; issue: documents/library -->
-					{{{<ifdef code="ca_objects.volume_number"><div class="unit"><label>Volume Number</label>^ca_objects.volume_number</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.issue_number"><div class="unit"><label>Issue Number</label>^ca_objects.issue_number</div></ifdef>}}}
+							<!-- Library fields -->
+							{{{<ifdef code="ca_objects.isbn"><div class="unit"><label>ISBN</label>^ca_objects.isbn</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.edition_statement"><div class="unit"><label>Edition Statement</label>^ca_objects.edition_statement</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.rights_statement"><div class="unit"><label>Rights Statement</label>^ca_objects.rights_statement</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.publication_information"><div class="unit"><label>Publication & Distribution Information</label>^ca_objects.publication_information</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.physical_description"><div class="unit"><label>Physical Description</label>^ca_objects.physical_description</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.library_series"><div class="unit"><label>Series Statement</label>^ca_objects.library_series</div></ifdef>}}}
+							<!-- end Library fields -->
+							<!-- vol; issue: documents/library -->
+							{{{<ifdef code="ca_objects.volume_number"><div class="unit"><label>Volume Number</label>^ca_objects.volume_number</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.issue_number"><div class="unit"><label>Issue Number</label>^ca_objects.issue_number</div></ifdef>}}}
 				
-					<!-- Library fields -->
-					{{{<ifdef code="ca_objects.rare_book"><div class="unit"><label>Rare Book</label>^ca_objects.rare_book</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.rare_book_info"><div class="unit"><label>Rare Book Cataloging</label>
-						<ifdef code="ca_objects.rare_book_info.binding"><b>Binding</b><br/>^ca_objects.rare_book_info.binding<br/><br/></ifdef>
-						<ifdef code="ca_objects.rare_book_info.rarebook_transcription"><b>Transcription of the Title</b><br/>^ca_objects.rare_book_info.rarebook_transcription<br/><br/></ifdef>
-						<ifdef code="ca_objects.rare_book_info.rarebook_marks"><b>Marks/Inscriptions/Signatures</b><br/>^ca_objects.rare_book_info.rarebook_marks<br/><br/></ifdef>
-						<ifdef code="ca_objects.rare_book_info.rarebook_bibhistnote"><b>Bibliographic/Historical Note</b><br/>^ca_objects.rare_book_info.rarebook_bibhistnote<br/><br/></ifdef>
-						<ifdef code="ca_objects.rare_book_info.rarebook_provenance"><b>Provenance</b><br/>^ca_objects.rare_book_info.rarebook_provenance<br/><br/></ifdef>
-					</div></ifdef>}}}
-					<!-- end Library fields -->
-					<!-- Format tab: Photo/Artifact/Art_arch -->
-					{{{<ifdef code="ca_objects.dimensions"><div class="unit"><label>Dimensions</label>
-						<ifdef code="ca_objects.dimensions.dimensions_length">Length: ^ca_objects.dimensions.dimensions_length<br/></div>
-						<ifdef code="ca_objects.dimensions.dimensions_width">Width: ^ca_objects.dimensions.dimensions_width<br/></div>
-						<ifdef code="ca_objects.dimensions.dimensions_height">Height: ^ca_objects.dimensions.dimensions_height<br/></div>
-						<ifdef code="ca_objects.dimensions.dimensions_depth">Depth: ^ca_objects.dimensions.dimensions_depth<br/></div>
-						<ifdef code="ca_objects.dimensions.dimensions_weight">Weight: ^ca_objects.dimensions.dimensions_weight<br/></div>
-						<ifdef code="ca_objects.dimensions.dimension_notes">Notes: ^ca_objects.dimensions.dimension_notes<br/></div>
-					</ifdef>}}}
-					{{{<ifdef code="ca_objects.photograph_format"><div class="unit"><label>Photograph Format (AAT)</label>^ca_objects.photograph_format%,_</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.object_work_type"><div class="unit"><label>Object Work/Type (AAT)</label>^ca_objects.object_work_type%,_</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.components_parts"><div class="unit"><label>Components/Parts</label>^ca_objects.components_parts%,_</div></ifdef>}}}
-				</div>
-				<div class='col-sm-12 col-md-6'>
-					{{{<ifdef code="ca_objects.url.link_url"><div class="unit"><label>External Link</label><unit delimiter="<br/>"><a href="^ca_objects.url.link_url" target="_blank"><ifdef code="ca_objects.url.link_text">^ca_objects.url.link_text<ifdef><ifnotdef code="ca_objects.url.link_text">^ca_objects.url.link_url<ifnotdef></a</div></ifdef>}}}
-					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Dedicated,Related"><div class="unit"><label>Related People & Organizations</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="Dedicated,Related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount>/Broadcast<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifcount>}}}
+							<!-- Library fields -->
+							{{{<ifdef code="ca_objects.rare_book"><div class="unit"><label>Rare Book</label>^ca_objects.rare_book</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.rare_book_info"><div class="unit"><label>Rare Book Cataloging</label>
+								<ifdef code="ca_objects.rare_book_info.binding"><b>Binding</b><br/>^ca_objects.rare_book_info.binding<br/><br/></ifdef>
+								<ifdef code="ca_objects.rare_book_info.rarebook_transcription"><b>Transcription of the Title</b><br/>^ca_objects.rare_book_info.rarebook_transcription<br/><br/></ifdef>
+								<ifdef code="ca_objects.rare_book_info.rarebook_marks"><b>Marks/Inscriptions/Signatures</b><br/>^ca_objects.rare_book_info.rarebook_marks<br/><br/></ifdef>
+								<ifdef code="ca_objects.rare_book_info.rarebook_bibhistnote"><b>Bibliographic/Historical Note</b><br/>^ca_objects.rare_book_info.rarebook_bibhistnote<br/><br/></ifdef>
+								<ifdef code="ca_objects.rare_book_info.rarebook_provenance"><b>Provenance</b><br/>^ca_objects.rare_book_info.rarebook_provenance<br/><br/></ifdef>
+							</div></ifdef>}}}
+							<!-- end Library fields -->
+							<!-- Format tab: Photo/Artifact/Art_arch -->
+							{{{<ifdef code="ca_objects.dimensions"><div class="unit"><label>Dimensions</label>
+								<ifdef code="ca_objects.dimensions.dimensions_length">Length: ^ca_objects.dimensions.dimensions_length<br/></div>
+								<ifdef code="ca_objects.dimensions.dimensions_width">Width: ^ca_objects.dimensions.dimensions_width<br/></div>
+								<ifdef code="ca_objects.dimensions.dimensions_height">Height: ^ca_objects.dimensions.dimensions_height<br/></div>
+								<ifdef code="ca_objects.dimensions.dimensions_depth">Depth: ^ca_objects.dimensions.dimensions_depth<br/></div>
+								<ifdef code="ca_objects.dimensions.dimensions_weight">Weight: ^ca_objects.dimensions.dimensions_weight<br/></div>
+								<ifdef code="ca_objects.dimensions.dimension_notes">Notes: ^ca_objects.dimensions.dimension_notes<br/></div>
+							</ifdef>}}}
+							{{{<ifdef code="ca_objects.photograph_format"><div class="unit"><label>Photograph Format (AAT)</label>^ca_objects.photograph_format%,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.object_work_type"><div class="unit"><label>Object Work/Type (AAT)</label>^ca_objects.object_work_type%,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.components_parts"><div class="unit"><label>Components/Parts</label>^ca_objects.components_parts%,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.classification"><div class="unit"><label>Classification (AAT)</label>^ca_objects.classification%,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.style"><div class="unit"><label>Style</label>^ca_objects.style%,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.inscriptions"><div class="unit"><label>Inscriptions & Markings</label>^ca_objects.inscriptions%,_</div></ifdef>}}}
+						</div>
+						<div class='col-sm-12 col-md-6'>
+							{{{<ifdef code="ca_objects.url.link_url"><div class="unit"><label>External Link</label><unit delimiter="<br/>"><a href="^ca_objects.url.link_url" target="_blank"><ifdef code="ca_objects.url.link_text">^ca_objects.url.link_text</ifdef><ifnotdef code="ca_objects.url.link_text">^ca_objects.url.link_url</ifnotdef></a></div></ifdef>}}}
+							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Dedicated,Related"><div class="unit"><label>Related People & Organizations</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="Dedicated,Related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+							{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount>/Broadcast<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifcount>}}}
 				
-<?php
-					$va_LcshSubjects = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
-					$va_LcshSubjects_processed = array();
-					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
-						foreach($va_LcshSubjects as $vs_LcshSubjects){
-							if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
-								$vs_url = "https://id.loc.gov".mb_substr($vs_LcshSubjects, strpos($vs_LcshSubjects, "/authorities"), -1);
-								$va_LcshSubjects_processed[] = "<a href='".$vs_url."' target='_blank'>".mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["))."</a>";
-							}else{
-								$va_LcshSubjects_processed[] = $vs_LcshSubjects;
+		<?php
+							$va_LcshSubjects = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
+							$va_LcshSubjects_processed = array();
+							if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
+								foreach($va_LcshSubjects as $vs_LcshSubjects){
+									$vs_lcsh_subject = "";
+									if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
+										$vs_LcshSubjects = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
+									}
+									$va_LcshSubjects_processed[] = caNavLink($this->request, $vs_LcshSubjects, "", "", "Search", "objects", array("search" => "ca_objects.lcsh_terms: ".$vs_LcshSubjects));
+						
+								}
+								$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
 							}
-						}
-						$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
-					}
-					$vs_keywords = $t_object->get("ca_objects.internal_keywords", array("convertCodesToDisplayText" => true, "delimiter" => "<br/>"));
-					if($vs_LcshSubjects || $vs_keywords){
-						print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keywords) ? "<br/>" : "").$vs_keywords."</div>";	
-					}
+					
+							$t_list_item = new ca_list_items;
+							if($va_keywords = $t_object->get("ca_objects.internal_keywords", array("returnAsArray" => true))){
+								$va_keyword_links = array();
+								foreach($va_keywords as $vn_kw_id){
+									$t_list_item->load($vn_kw_id);
+									$va_keyword_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
+								}
+								$vs_keyword_links = join("<br/>", $va_keyword_links);
+							}
+					
+							if($vs_LcshSubjects || $vs_keyword_links){
+								print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keyword_links) ? "<br/>" : "").$vs_keyword_links."</div>";	
+							}
+							if($vs_rep_viewer){
 ?>
-					{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><div class="row"><div class="col-sm-2"><l>^ca_object_representations.media.icon</l></div><div class="col-sm-10"><l>^ca_objects.preferred_labels</l></div></div></unit></div></ifcount>}}}
+								<div class="unit"><label>Rights and Restrictions</label>
+									{{{media_rights_restrictions}}}
+								</div>
+<?php				
+							}
+?>
+						</div>
+					</div></div><!-- end bgOffWhiteLight -->
 				</div>
 			</div>
-				
+
+<?php
+$va_related_objects = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true));
+$t_list_item = new ca_list_items();
+if(is_array($va_related_objects) && sizeof($va_related_objects)){
+	$qr_related_objects = caMakeSearchResult("ca_objects", $va_related_objects);
+	if($qr_related_objects->numHits()){
+?>
+			<div class="row">
+				<div id="browseResultsContainer">
+<?php
+		while($qr_related_objects->nextHit()){
+			if(!($vs_thumbnail = $qr_related_objects->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
+				$t_list_item->load($qr_related_objects->get("type_id"));
+				$vs_typecode = $t_list_item->get("idno");
+				if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+					$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+				}else{
+					$vs_thumbnail = $vs_default_placeholder_tag;
+				}
+			}
+			$vs_info = null;
+			$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', 'ca_objects', $qr_related_objects->get("ca_objects.object_id"));				
+
+?>
+					<div class="resultItemColImg col-xs-6 col-sm-6 col-md-3"><div class="resultContentImg">
+							<l><div class="resultImageImg"><?php print $vs_rep_detail_link; ?></div>
+							<div class="resultTextImg"><small><?php print $qr_related_objects->getWithTemplate("<l>^ca_objects.idno</l>"); ?></small><br><?php print $qr_related_objects->getWithTemplate("<l>^ca_objects.preferred_labels.name</l>"); ?></div>
+							<a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array('object_id' => $qr_related_objects->get("ca_objects.object_id"))); ?>"); return false;' title='<?php print $va_add_to_set_link_info['link_text']; ?>'><?php print $va_add_to_set_link_info['icon']; ?></a>
+					</div></div>
+<?php			
+		}
+?>
+				</div><!-- end browseResultsContainer -->
+			</div><!-- end row -->
+<?php
+	}
+}
+?>			
 				
 				
 				
