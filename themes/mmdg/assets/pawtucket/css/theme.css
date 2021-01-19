@@ -240,7 +240,9 @@ H3, h3{
 }
 
 .front H1 {
-    font-size: 28px;
+    font-size: 24px;
+    line-height:1.5em;
+    text-align:center;
     font-family: HelveticaNeue,Arial,sans-serif;
     padding-top: 15px;
     color:#000;
@@ -375,4 +377,8 @@ a.readmore-js-toggle{
 }
 .gallery H3 {
 	line-height:1.3em;
+}
+
+.staticPage H1{
+	margin-top:40px;
 }

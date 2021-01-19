@@ -149,7 +149,7 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Digital Archive"), "", "", "About", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Digital Archive"), "", "", "About", "AboutArchive"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Digital Exhibitions"), "", "", "Gallery", "Index"); ?></li>
 				</ul>
