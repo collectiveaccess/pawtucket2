@@ -624,6 +624,9 @@ a.facetApply, button.facetApplySlider {
 	height: 115px;
 	padding-bottom:0px;
 } 
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a{
+	display:inline-block;
+}
 
 .detail .detailNavBgLeft .fa, .detail .detailNavBgRight .fa {
 	color: #7f4539;
