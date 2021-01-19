@@ -3940,7 +3940,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		$o_view->setVar('context', ($vs_context = $po_request->getParameter('context', pString)) ? $vs_context : $vs_context = $po_request->getAction());
  	
 		$va_rep_ids = array();
-		$vo_data->filterNonPrimaryRepresentations(false);
+		if (method_exists($vo_data, 'filterNonPrimaryRepresentations')) { $vo_data->filterNonPrimaryRepresentations(false); }
  		while($vo_data->nextHit()) {
  			if (!($vn_representation_id = $vo_data->get('ca_object_representations.representation_id', ['checkAccess' => $va_access_values, 'limit' => 1]))) { continue; }
  			$t_instance->load($vo_data->getPrimaryKey());
