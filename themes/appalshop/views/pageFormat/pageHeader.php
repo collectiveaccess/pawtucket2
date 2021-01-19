@@ -130,7 +130,7 @@
 ?>
 				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
 					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
+					<?php print ($this->request->isLoggedIn()) ? $this->request->user->get("fname") : "Log In"; ?>
 				</button>
 <?php
 	}
@@ -188,7 +188,7 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
+						<a href="#" data-toggle="dropdown"><?php print ($this->request->isLoggedIn()) ? $this->request->user->get("fname") : "Log In"; ?></a>
 						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>

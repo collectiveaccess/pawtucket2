@@ -58,24 +58,26 @@
 					</div>
 					<div class="form-group">
 						{{{ca_objects.uc_creator:error}}}
-						<label for="ca_objects.uc_creator[]">Creator(s) name</label>
+						<label for="ca_objects.uc_creator[]">Creator(s) name (person who created the item)</label>
 						{{{ca_objects.uc_creator%class=form-control&width=100%}}}
 					</div>
 					<div class="form-group">
 						{{{ca_objects.preferred_labels.name:error}}}
-						<label for="ca_objects_preferred_labels_name">Title (do you wish to title this piece?)</label>
+						<label for="ca_objects_preferred_labels_name">Title (do you wish to title this item?)</label>
 						{{{ca_objects.preferred_labels.name%width=220px&class=form-control&width=100%}}}
 					</div>
 					<div class="form-group">
 						{{{ca_objects.frontend_location:error}}}
-						<label for="ca_objects.frontend_location[]">Where was it created (city and state)?</label>
+						<label for="ca_objects.frontend_location[]">Where was it created? (City, State if known.  Be as specific as you like.)</label>
 						{{{ca_objects.frontend_location%class=form-control&width=100%}}}
 					</div>
 					<div class="form-group">
 						{{{ca_objects.date:error}}}
-						<label for="ca_objects.date[]">When was it created (e.g. July 20, 2020 or July 2020)?</label>
+						<label for="ca_objects.date[]">When was it created? (e.g. July 20, 2020 or July 2020 or 2020)</label>
 						{{{ca_objects.date.dates_value%class=form-control&width=100%&useDatePicker=0}}}
+						<div style="width:30px; float:left;">{{{ca_objects.date.date_approximate2%class=form-control&width=20%}}}</div><label for="ca_objects.date[]" style="float:left; margin-top:15px;">Date is approximate.</label>
 						{{{ca_objects.date.dates_type%force=created}}}
+						<div style="clear:both;"></div>
 					</div>
 					<div class="form-group">
 						{{{ca_objects.uc_people_depicted:error}}}
@@ -84,8 +86,13 @@
 					</div>
 					<div class="form-group elementRequired">
 						{{{ca_objects.description_w_type.description:error}}}
-						<label for="ca_objects.description_w_type.description[]">What would you like people to know about this piece? <span class="required">(* Required)</span></label>
+						<label for="ca_objects.description_w_type.description[]">What would you like people to know about this item? <span class="required">(* Required)</span></label>
 						{{{ca_objects.description_w_type.description%class=form-control&width=100%&height=5}}}
+					</div>
+					<div class="form-group">
+						{{{ca_objects.description_w_type.description:error}}}
+						<label for="ca_objects.uc_text[]">Essay, poem, or other writing submitted as part of Creating in Place. Please enter into the box below:</label>
+						{{{ca_objects.uc_text%class=form-control&width=100%&height=5}}}
 					</div>
 					<div class="form-group elementRequired">
 						{{{ca_objects.uc_contact:error}}}
@@ -94,7 +101,7 @@
 					</div>
 					<div class="form-group">
 						{{{ca_objects.uc_donate:error}}}
-						<label for="ca_objectsuc_donate[]">Do you wish to donate this digital item to Appalshop's Digital Archive, where it may be viewed by researchers and the public as part of Appalshop Archive's collections?</label>
+						<label for="ca_objectsuc_donate[]">Do you wish to donate this digital item or piece of writing to Appalshop's Digital Archive, where it may be viewed by researchers and the public as part of Appalshop Archive's collections? Your digital object will not be sold or redistributed, copied or distributed as a photograph, electronic file, or any other media without express written consent from you--or the copyright holder--and the Appalshop Archive. At any time you may request that the submitted item be removed from the Appalshop Archive website.</label>
 						{{{ca_objects.uc_donate%class=form-control&width=100%}}}
 					</div>
 					<div class="form-group">
@@ -105,7 +112,7 @@
 							print "<div class='row'><div class='col-sm-6 col-md-4'>".$vs_existing_media."</div><div class='col-sm-6 col-md-8'>";
 						}
 ?>
-						<label>Media <?php print ($vs_existing_media) ? "(Use to replace exisiting media)" : ""; ?></label>
+						<label>Media<?php print ($vs_existing_media) ? "(Use to replace exisiting media)" : ""; ?></label>
 						{{{ca_object_representations.media}}}
 <?php	
 						if($vs_existing_media){
@@ -119,7 +126,7 @@
 					
 <?php					
 			print $this->render('Contribute/spam_check_html.php');
-			print $this->render('Contribute/terms_and_conditions_check_html.php');
+#			print $this->render('Contribute/terms_and_conditions_check_html.php');
 ?>
 
 					<div class="text-center"><br/><button class='btn btn-default'>{{{submit%label=Submit}}}</button>&nbsp;&nbsp;&nbsp;<button class='btn btn-default'>{{{reset%label=Reset}}}</button></div>
@@ -139,6 +146,7 @@
 				});
 				if(vb_show_required_message){
 					alert("<?php print _t("Please enter all required fields."); ?>");
+					return false;
 				}
 			});
 		});
