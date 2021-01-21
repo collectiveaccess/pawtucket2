@@ -117,6 +117,7 @@
 ?>
 					<li><?php print caNavLink($this->request, _t("About HGS Heritage"), '', '', 'About', 'HGSH'); ?></li>
 					<li><?php print caNavLink($this->request, _t("Contact Details"), '', '', 'About', 'contact_details'); ?></li>
+					<li><?php print caNavLink($this->request, _t("Donate"), '', '', 'About', 'donate'); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
