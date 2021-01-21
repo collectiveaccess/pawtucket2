@@ -44,13 +44,13 @@
 		<div class="row">
 			<div class="col-xs-12">
 <?php
-			if($vn_rep_id && ($va_media_info["INPUT"]["MIMETYPE"] == "application/pdf")){
+			if($vn_rep_id){
+			#if($vn_rep_id && ($va_media_info["INPUT"]["MIMETYPE"] == "application/pdf")){
 				print "<div class='pdfRepNav'><a href='#' class='btn btn-blue' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $t_item->get("ca_objects.object_id"), 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'>Fullscreen <span class='glyphicon glyphicon-zoom-in'></span></a>";
 				print caNavLink($this->request, "Download <span class='glyphicon glyphicon-download-alt'></span>", 'btn btn-blue', 'Detail', 'DownloadRepresentation', '', array('context' => 'objects', 'representation_id' => $vn_rep_id, "id" => $t_item->get("ca_objects.object_id"), "download" => 1, "version" => "original"));
 				print "</div>";
 			}
 ?>
-				{{{<ifdef code="ca_object_representations.media"><p><em>To display in FULL SCREEN hover the cursor over the image above ​and click the top left <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span> zoom button</em></p></ifdef>}}}
 			</div>
 		</div>
 		{{{<ifdef code="ca_objects.description"><br/><p>^ca_objects.description</p></ifdef>}}}
@@ -268,6 +268,6 @@
 		}
 	}
 	
-?>
+?><br/><br/>
 </div><!-- end col -->
 </div><!-- end row -->
