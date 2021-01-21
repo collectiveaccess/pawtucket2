@@ -948,3 +948,15 @@ div.caMediaOverlayControls {
 .tl-timeline h1 a, .tl-timeline h2 a, .tl-timeline h3 a{
 	font-size:18px !important;
 }
+a.readmore-js-toggle{
+	color: #7f4539;
+	font-style: italic;
+	font-weight: bold;
+}
+.listing-content a.readmore-js-toggle{
+	color: #7f4539;
+	padding-top: 0px;
+	top: -15px;
+	display: block;
+	position: relative;
+}
