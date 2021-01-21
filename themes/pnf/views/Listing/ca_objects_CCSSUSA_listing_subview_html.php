@@ -64,6 +64,9 @@
 			ksort($va_links);
 			print "<p class='separator'><a name='".$vs_first_letter."'></a><br></p>";			
 			print "<h2 id='".$va_first_letter."' class='mw-headline'>".$va_first_letter."</h2>";
+			if($vs_letter_intro = $this->getVar("modern_titles_".strToLower($va_first_letter))){
+				print '<div class="listingLetterIntro">'.$vs_letter_intro.'</div>';
+			}
 			foreach ($va_links as $vs_sort => $va_link) {
 				print $va_link;
 			}
