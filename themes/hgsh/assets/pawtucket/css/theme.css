@@ -523,6 +523,9 @@ nav, .navbar, .navbar-default{
 	padding:7px 30px 17px 17px;
 	min-height:250px;
 }
+.detailTitle.short{
+	min-height:auto;
+}
 .detailTitleSmall{
 	background-color:#9E8E89;
 	color:#FFFFFF;
@@ -612,7 +615,16 @@ div.detailRelatedTitle{
 .placeDetailImage p{
 	padding-top: 10px;
 }
-
+.btn.btn-default.text-left{
+	text-align:left;
+}
+.pdfRepNav{
+	padding:15px 0px 10px 0px;
+	text-align:center;
+}
+.pdfRepNav a{
+	font-size:13px;
+}
 /* multisearch */
 .multisearch H3{
 	color:#006E9D;
