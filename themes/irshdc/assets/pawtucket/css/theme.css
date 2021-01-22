@@ -1277,7 +1277,8 @@ a.readmore-js-toggle {
 }
 .listingContainer img{
 	width:100%;
-	height:auto;
+	height: 250px;
+	object-fit: cover;
 }
 .listingContainer .listingContainerDesc {
 	background-color:#605b4b;
@@ -1578,6 +1579,10 @@ a.digExhAnchors.offset{
 		padding-top:0px;
 	}
 }	
+.digital_exhibition .mediaViewerCaption{
+	font-size:14px;
+	padding-top: 5px;
+}
 .vcenter {
     display: inline-block;
     vertical-align: middle;
@@ -1623,29 +1628,71 @@ a.digExhAnchors.offset{
 }
 #digExhTimeline .tl-slide-content{
 	padding-right:0px !important;
+	width: 85% !Important;
 }
 #digExhTimeline .tl-slide .tl-slide-scrollable-container{
 	width:100%;
 }
 #digExhTimeline .tl-timeline h2.tl-headline-title, #digExhTimeline .tl-text-content-container h2.tl-headline{
-	font-size:22px !important;
+	font-size:17px !important;
+	line-height: 17px !important;
+}
+@media(min-width:1450px){
+	#digExhTimeline .tl-timeline h2.tl-headline-title, #digExhTimeline .tl-text-content-container h2.tl-headline{
+		font-size:19px !important;
+		line-height: 19px !important;
+	}
+}
+.tl-text-content, .tl-timeline p, .tl-text p{
+	font-size:15px !important;
+}
+@media(min-width:1450px){
+	.tl-text-content, .tl-timeline p, .tl-text p{
+		font-size:16px !important;
+	}
+}
+.tl-text-content{
+	max-height:240px;
+	overflow-y:scroll;
 }
 .sectionNavigationLinks .btn-default{
 	margin-bottom:10px;
+	font-size: 16px;
 }
 /* storymap */
 .vco-storymap h2.vco-headline-title, .vco-storymap h2 {
-    font-size: 22px !important;
-    line-height: 22px !important;
+	font-size: 17px !important;
+	line-height: 17px !important;
+	margin-bottom: 14px;
+}
+@media(min-width:1200px){
+	.vco-storymap h2.vco-headline-title, .vco-storymap h2 {
+		font-size: 19px !important;
+		line-height: 19px !important;
+		margin-bottom: 12px;
+	}
 }
 .storymapContainer{
 	width: 100%;
 	height: 500px;
 }
+.vco-text-content p, .vco-text-content{
+	font-family:LatoLight;
+	font-size:15px !important;	
+}
+@media(min-width:1200px){
+	.vco-text-content p, .vco-text-content{
+		font-size:16px !important;	
+	}
+}
 .vco-map .leaflet-container .leaflet-control-minimap{
 	display:none;
 }
 /* carousel */
+.digital_exhibition .jcarousel-pagination a{
+	font-size:15px;
+	padding:5px;
+}
 .digExhSlide{
 	text-align: center;
 }
@@ -1698,7 +1745,7 @@ a.digExhDetailPrev, a.digExhDetailNext{
 .digExhPagination{
 	width: 100%;
 	text-align: center;
-	bottom: -35px;
+	bottom: -45px;
 }
 .digExhSlide .video-js, .digExhUnit .video-js{
 	width:100% !important;
