@@ -1401,7 +1401,9 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 }
 
 /* digital exhibitions */
-
+#pageArea.digital_exhibition.detail{
+	padding-bottom:800px;
+}
 .exploreDigitalExhibitionsRow{
 	background:
 		linear-gradient(
@@ -1689,12 +1691,18 @@ a.digExhAnchors.offset{
 	display:none;
 }
 /* carousel */
-.digital_exhibition .jcarousel-pagination a{
+/*.digital_exhibition .jcarousel-pagination a{
 	font-size:15px;
 	padding:5px;
+}*/
+.digExhSlideContainer{
+	position:relative;
 }
 .digExhSlide{
 	text-align: center;
+}
+.digExhSlide{
+	min-height:440px
 }
 .digExhSlide img{
 	max-height:400px;
@@ -1745,12 +1753,49 @@ a.digExhDetailPrev, a.digExhDetailNext{
 .digExhPagination{
 	width: 100%;
 	text-align: center;
-	bottom: -45px;
+	bottom: -33px;
+	position:relative
 }
 .digExhSlide .video-js, .digExhUnit .video-js{
 	width:100% !important;
 	height:400px;
 }
+.digExhSlide .caAudioPlayer{
+	padding-top:150px;
+}
+.digExhSlideLoader{
+	padding-top:150px;
+}
+
+
+
+
+.digExhPagination a.active{
+	background: #4E443C;
+	color: #fff;
+}
+.digExhPagination a{
+	font-size: 15px;
+	padding: 5px;
+	color:#d20000;
+	opacity: 1;
+	text-decoration: none;
+	display: inline-block;
+	line-height: 14px;
+	min-width: 14px;
+	background: #fff;
+	border-radius: 14px;
+	text-align: center;
+	margin-right: 2px;
+}
+
+
+
+
+
+
+
+
 #detailDiscussion button.btn{
 	white-space: normal !important;
 }
