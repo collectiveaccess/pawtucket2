@@ -960,3 +960,11 @@ a.readmore-js-toggle{
 	display: block;
 	position: relative;
 }
+
+#statistics .statisticsIntro {
+    margin-bottom: 25px;
+    line-height: 1.3em;
+    font-size: 20px;
+    color: #7f4539;
+    font-family: 'Lusitana', serif;
+}

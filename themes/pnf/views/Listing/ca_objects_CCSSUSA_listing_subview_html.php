@@ -43,7 +43,9 @@
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		print "<h2>{$va_listing_info['displayName']}</h2>\n";		
-		#print '<p>'._t('Intro here...').'</p>';	
+?>
+		{{{modern_titles_intro}}}
+<?php
 		$va_ccssusa_titles_output = array();
 		while($qr_list->nextHit()) {
 			$vs_title = $qr_list->get('ca_objects.CCSSUSA_Uniform');
@@ -51,8 +53,8 @@
 				
 				
 				$va_ccssusa_titles_output[] = $vs_title;
-				$vs_sort = strToLower(strip_tags(str_replace(array("¡", "¿", ", La", ", El", ", Los", ", Las", ",", ".", "\"", "“", "”", "La ", "El ", "Los ", "Las ", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ú", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), 
-															 array("", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "U", "u", "u", "u", "N", "n", "S", "s"), trim($vs_title))));
+				$vs_sort = strToLower(strip_tags(str_replace(array("¡", "¿", ", La", ", El", ", Los", ", Las", ",", ".", "\"", "“", "”", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ú", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), 
+															 array("", "", "", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "U", "u", "u", "u", "N", "n", "S", "s"), trim($vs_title))));
 				$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 				$va_letter_array[$vs_first_letter] = $vs_first_letter;
 				$vn_id = $qr_list->get('ca_objects.object_id');
@@ -61,6 +63,7 @@
 		}
 		ksort($va_links_array);
 		ksort($va_letter_array);
+		$i = 0;
 		foreach ($va_links_array as $va_first_letter => $va_links) {
 			ksort($va_links);
 			print "<p class='separator'><a name='".$vs_first_letter."'></a><br></p>";			
@@ -70,8 +73,10 @@
 			}
 			foreach ($va_links as $vs_sort => $va_link) {
 				print $va_link;
+				$i++;
 			}
 		}
+		print "total: ".$i;
 	}
 ?>
 	<div id='toc_container'>
