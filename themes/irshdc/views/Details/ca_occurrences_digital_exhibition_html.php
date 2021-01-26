@@ -26,15 +26,10 @@
  *
  * ----------------------------------------------------------------------
  */
-?>
-<?php 
-AssetLoadManager::register("storymap");
-AssetLoadManager::register("soundcite");
 
-$vs_mode = $this->request->getParameter("mode", pString);
-#if($vs_mode == "map"){
-#	include("map_large_html.php");
-#}else{
+	AssetLoadManager::register("storymap");
+	AssetLoadManager::register("soundcite");
+
 	AssetLoadManager::register('timeline');
 	$va_options = $this->getVar("config_options"); 
 	$t_item = 				$this->getVar("item");
@@ -410,69 +405,57 @@ $vs_mode = $this->request->getParameter("mode", pString);
 												$va_set_item_ids = array_keys(is_array($va_tmp = $t_set->getItemIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
 												#$va_row_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
 												if(is_array($va_set_item_ids) && sizeof($va_set_item_ids)){
-
-
-
-
-
-
-
-
-
-
 ?>
-<div class="digExhSlideContainer">
-	<div class='digExhSlide digExhSlide<?php print $vn_set_id; ?>'></div>
-	<!-- Prev/next controls -->
-	<a href="#" class="digExhDetailPrev digExhDetailPrev<?php print $vn_set_id; ?>" onClick="previousSlide<?php print $vn_set_id; ?>(); return false;"><i class="fa fa-angle-left" aria-label="<?php print _t("Previous"); ?>"></i></a>
-	<a href="#" class="digExhDetailNext digExhDetailNext<?php print $vn_set_id; ?>" onClick="nextSlide<?php print $vn_set_id; ?>(); return false;"><i class="fa fa-angle-right" aria-label="<?php print _t("Next"); ?>"></i></a>
+													<div class="digExhSlideContainer">
+														<div class='digExhSlide digExhSlide<?php print $vn_set_id; ?>'></div>
+														<!-- Prev/next controls -->
+														<a href="#" class="digExhDetailPrev digExhDetailPrev<?php print $vn_set_id; ?>" onClick="previousSlide<?php print $vn_set_id; ?>(); return false;"><i class="fa fa-angle-left" aria-label="<?php print _t("Previous"); ?>"></i></a>
+														<a href="#" class="digExhDetailNext digExhDetailNext<?php print $vn_set_id; ?>" onClick="nextSlide<?php print $vn_set_id; ?>(); return false;"><i class="fa fa-angle-right" aria-label="<?php print _t("Next"); ?>"></i></a>
 
-	<!-- Pagination -->
-	<p class="digExhPagination" id="digExhPagination<?php print $vn_set_id; ?>">
-<?php
-	$i = 0;
-	foreach($va_set_item_ids as $vn_item_id){
-		$i++;
-		print "<a href='#' id='pageNum".$vn_set_id.$vn_item_id."' onClick='showLoading".$vn_set_id."(); highlightPagination".$vn_set_id."(\"".$vn_item_id."\"); jQuery(\".digExhSlide".$vn_set_id."\").load(\"".caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id, 'set_item_id' => $vn_item_id))."\"); return false;'>".$i."</a>";
-	}
-?>
-	</p>
-</div><!-- end digExhSlideContainer -->
+														<!-- Pagination -->
+														<p class="digExhPagination" id="digExhPagination<?php print $vn_set_id; ?>">
+													<?php
+														$i = 0;
+														foreach($va_set_item_ids as $vn_item_id){
+															$i++;
+															print "<a href='#' id='pageNum".$vn_set_id.$vn_item_id."' onClick='showLoading".$vn_set_id."(); highlightPagination".$vn_set_id."(\"".$vn_item_id."\"); jQuery(\".digExhSlide".$vn_set_id."\").load(\"".caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id, 'set_item_id' => $vn_item_id))."\"); return false;'>".$i."</a>";
+														}
+													?>
+														</p>
+													</div><!-- end digExhSlideContainer -->
 	
-<script type='text/javascript'>
-		jQuery(document).ready(function() {		
-			jQuery(".digExhSlide<?php print $vn_set_id; ?>").load("<?php print caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id, 'set_item_id' => $va_set_item_ids[0])); ?>");
-			highlightPagination<?php print $vn_set_id; ?>("<?php print $va_set_item_ids[0]; ?>");
-		});
-		var i = 0;    
-		var slides<?php print $vn_set_id; ?> = <?php print json_encode($va_set_item_ids); ?>; 
-		function showLoading<?php print $vn_set_id; ?>(){
-			jQuery(".digExhSlide<?php print $vn_set_id; ?>").html("<div class='digExhSlideLoader'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>");
-		}
-		function highlightPagination<?php print $vn_set_id; ?>(id) {		
-			i = slides<?php print $vn_set_id; ?>.indexOf(parseInt(id));
-			jQuery("#digExhPagination<?php print $vn_set_id; ?> a").removeClass("active");
-			jQuery("#pageNum<?php print $vn_set_id;?>" + id).addClass("active");
-		}
-		function nextSlide<?php print $vn_set_id; ?>(){
-			showLoading<?php print $vn_set_id; ?>();
-			i = (i+1)%slides<?php print $vn_set_id; ?>.length;
-			jQuery(".digExhSlide<?php print $vn_set_id; ?>").load("<?php print caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id)); ?>/set_item_id/" + slides<?php print $vn_set_id; ?>[i]);	
-			highlightPagination<?php print $vn_set_id; ?>(slides<?php print $vn_set_id; ?>[i]);
-		}
-		function previousSlide<?php print $vn_set_id; ?>(){
-			showLoading<?php print $vn_set_id; ?>();
-			i = (i-1);
-			if(i < 0){
-				i = slides<?php print $vn_set_id; ?>.length - 1;
-			}
-			jQuery(".digExhSlide<?php print $vn_set_id; ?>").load("<?php print caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id)); ?>/set_item_id/" + slides<?php print $vn_set_id; ?>[i]);	
-			highlightPagination<?php print $vn_set_id; ?>(slides<?php print $vn_set_id; ?>[i]);
-		}
-</script>
-
-<?php
-																								
+													<script type='text/javascript'>
+															jQuery(document).ready(function() {		
+																jQuery(".digExhSlide<?php print $vn_set_id; ?>").load("<?php print caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id, 'set_item_id' => $va_set_item_ids[0])); ?>");
+																highlightPagination<?php print $vn_set_id; ?>("<?php print $va_set_item_ids[0]; ?>");
+															});
+															var i<?php print $vn_set_id; ?> = 0;    
+															var slides<?php print $vn_set_id; ?> = <?php print json_encode($va_set_item_ids); ?>; 
+															function showLoading<?php print $vn_set_id; ?>(){
+																jQuery(".digExhSlide<?php print $vn_set_id; ?>").html("<div class='digExhSlideLoader'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>");
+															}
+															function highlightPagination<?php print $vn_set_id; ?>(id) {		
+																i<?php print $vn_set_id; ?> = slides<?php print $vn_set_id; ?>.indexOf(parseInt(id));
+																jQuery("#digExhPagination<?php print $vn_set_id; ?> a").removeClass("active");
+																jQuery("#pageNum<?php print $vn_set_id;?>" + id).addClass("active");
+															}
+															function nextSlide<?php print $vn_set_id; ?>(){
+																showLoading<?php print $vn_set_id; ?>();
+																i<?php print $vn_set_id; ?> = (i<?php print $vn_set_id; ?>+1)%slides<?php print $vn_set_id; ?>.length;
+																jQuery(".digExhSlide<?php print $vn_set_id; ?>").load("<?php print caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id)); ?>/set_item_id/" + slides<?php print $vn_set_id; ?>[i<?php print $vn_set_id; ?>]);	
+																highlightPagination<?php print $vn_set_id; ?>(slides<?php print $vn_set_id; ?>[i<?php print $vn_set_id; ?>]);
+															}
+															function previousSlide<?php print $vn_set_id; ?>(){
+																showLoading<?php print $vn_set_id; ?>();
+																i<?php print $vn_set_id; ?> = (i<?php print $vn_set_id; ?>-1);
+																if(i<?php print $vn_set_id; ?> < 0){
+																	i<?php print $vn_set_id; ?> = slides<?php print $vn_set_id; ?>.length - 1;
+																}
+																jQuery(".digExhSlide<?php print $vn_set_id; ?>").load("<?php print caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id)); ?>/set_item_id/" + slides<?php print $vn_set_id; ?>[i<?php print $vn_set_id; ?>]);	
+																highlightPagination<?php print $vn_set_id; ?>(slides<?php print $vn_set_id; ?>[i<?php print $vn_set_id; ?>]);
+															}
+													</script>
+<?php																								
 												}
 											break;
 										}
@@ -642,6 +625,3 @@ $vs_mode = $this->request->getParameter("mode", pString);
 		}
 	});
 </script>
-<?php
-#}
-?>

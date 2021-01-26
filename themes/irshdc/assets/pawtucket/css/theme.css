@@ -1702,7 +1702,7 @@ a.digExhAnchors.offset{
 	text-align: center;
 }
 .digExhSlide{
-	min-height:440px
+	min-height:445px
 }
 .digExhSlide img{
 	max-height:400px;
@@ -1753,7 +1753,7 @@ a.digExhDetailPrev, a.digExhDetailNext{
 .digExhPagination{
 	width: 100%;
 	text-align: center;
-	bottom: -33px;
+	bottom: -30px;
 	position:relative
 }
 .digExhSlide .video-js, .digExhUnit .video-js{
