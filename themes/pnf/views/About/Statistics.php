@@ -11,8 +11,8 @@ $va_titles = $o_browse->getFacet("label_facet", array('checkAccess' => $va_publi
 
 
 $o_db = new Db();
-$q_institutions_public = $o_db->query("SELECT distinct c.collection_id FROM ca_collections c where c.access IN (".join(", ", $va_public_access).") AND c.parent_id IS NULL");
-$q_institutions_protected = $o_db->query("SELECT distinct c.collection_id FROM ca_collections c where c.access IN (".join(", ", $va_restricted_access).") AND c.parent_id IS NULL");
+$q_institutions_public = $o_db->query("SELECT distinct c.collection_id FROM ca_collections c where c.deleted = 0 AND c.access IN (".join(", ", $va_public_access).") AND c.parent_id IS NULL");
+$q_institutions_protected = $o_db->query("SELECT distinct c.collection_id FROM ca_collections c where c.deleted = 0 AND  c.access IN (".join(", ", $va_restricted_access).") AND c.parent_id IS NULL");
 
 $va_playwrights = $o_browse->getFacet("playwrights_facet", array('checkAccess' => $va_public_access, 'request' => $this->request));
 $va_printer_seller = $o_browse->getFacet("printer_seller_facet", array('checkAccess' => $va_public_access, 'request' => $this->request));
@@ -70,6 +70,7 @@ $qr_authors = $o_browse_authors->getResults();
 						}
 						$q_institutions = caMakeSearchResult("ca_collections", $va_institution_ids);
 						if($q_institutions->numHits()){
+							$va_inst_stats = array();
 							while($q_institutions->nextHit()){
 								$vn_child_count = $vn_num_objects = 0;
 								$va_children = $q_institutions->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_public_access));
@@ -87,8 +88,10 @@ $qr_authors = $o_browse_authors->getResults();
 								if(is_array($va_objects)){
 									$vn_num_objects += sizeof($va_objects);
 								}
-								print $q_institutions->get("ca_collections.preferred_labels").": <b>".$vn_num_objects."</b><br/><br/>";
+								$va_inst_stats[] = $q_institutions->get("ca_collections.preferred_labels").": <b>".$vn_num_objects."</b><br/><br/>";
 							}
+							sort($va_inst_stats);
+							print join("", $va_inst_stats);
 						}
 					}
 					if(is_array($va_institutions) && sizeof($va_institutions)){
