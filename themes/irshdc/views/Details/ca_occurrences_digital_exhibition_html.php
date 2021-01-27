@@ -184,7 +184,7 @@
 									print "<li><a href='#comments'>Discussion</a></li>";
 								}
 								if($vb_related){
-									print caDetailLink($this->request, "Related Resources", '', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("related" => "resources"));
+									print "<li>".caDetailLink($this->request, "Related Resources", '', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("related" => "resources"))."</li>";
 								}
 								print "<li role='separator' class='divider'></li>";
 								print "<li class='redLink'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")))."</li>";
