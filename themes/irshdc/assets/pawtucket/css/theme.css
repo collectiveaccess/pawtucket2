@@ -1401,8 +1401,10 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 }
 
 /* digital exhibitions */
-#pageArea.digital_exhibition.detail{
-	padding-bottom:800px;
+@media(min-width:992px){
+	#pageArea.digital_exhibition.detail{
+		padding-bottom:800px;
+	}
 }
 .exploreDigitalExhibitionsRow{
 	background:
