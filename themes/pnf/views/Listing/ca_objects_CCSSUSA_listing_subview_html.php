@@ -44,7 +44,7 @@
 		if(!$qr_list) { continue; }
 		print "<h2>{$va_listing_info['displayName']}</h2>\n";		
 ?>
-		{{{modern_titles_intro}}}
+		<div class="listingLetterIntro trimText">{{{modern_titles_intro}}}</div>
 <?php
 		$va_ccssusa_titles_output = array();
 		while($qr_list->nextHit()) {
