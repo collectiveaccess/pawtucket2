@@ -40,10 +40,10 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
 	
-	# --- content_block_id indicated which section to load for the exhibition.  If not defined, load the first section
-	$pn_content_block_id = $this->request->getParameter('content_block_id', pInteger);
+	# --- section indicated which content_block section to load for the exhibition.  If not defined, load the first section
+	$pn_content_block_id = $this->request->getParameter('section', pInteger);
 	$vb_show_related = false;
-	if($this->request->getParameter('section', pString) == "resources"){
+	if($this->request->getParameter('related', pString) == "resources"){
 		$vb_show_related = true;
 	}
 	
@@ -117,7 +117,7 @@
 								}else{
 									$vs_link = "<div class='digExhSideNavLink digExhSideNavLinkNoImg'>".$vs_link_text."</div>";
 								}
-								print caDetailLink($this->request, $vs_link, (($pn_content_block_id == $qr_content_blocks->get("ca_occurrences.occurrence_id")) ? "currentSection" : ""), 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $qr_content_blocks->get("ca_occurrences.occurrence_id")));
+								print caDetailLink($this->request, $vs_link, (($pn_content_block_id == $qr_content_blocks->get("ca_occurrences.occurrence_id")) ? "currentSection" : ""), 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("section" => $qr_content_blocks->get("ca_occurrences.occurrence_id")));
 							}
 							$va_sections[$vn_last_section_id][] = $qr_content_blocks->get("ca_occurrences.occurrence_id");
 						}
@@ -139,7 +139,7 @@
 						}else{
 							$vs_link = "<div class='digExhSideNavLink digExhSideNavLinkNoImg'>Related Resources</div>";
 						}
-						print caDetailLink($this->request, $vs_link, (($vb_show_related) ? "currentSection" : ""), 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("section" => "resources"));
+						print caDetailLink($this->request, $vs_link, (($vb_show_related) ? "currentSection" : ""), 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("related" => "resources"));
 						#print "<a href='#related'><div class='digExhSideNavLink digExhSideNavLinkNoImg'>Related Resources</div></a>";
 					}
 					print "<div class='digExhSideNavLinkOut'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")));
@@ -175,7 +175,7 @@
 								if($qr_content_blocks->numHits()){
 									while($qr_content_blocks->nextHit()){
 										if($vs_link_text = $qr_content_blocks->get("ca_occurrences.nav_text")){
-											print "<li>".caDetailLink($this->request, $vs_link_text, '', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $qr_content_blocks->get("ca_occurrences.occurrence_id")))."</li>";
+											print "<li>".caDetailLink($this->request, $vs_link_text, '', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("section" => $qr_content_blocks->get("ca_occurrences.occurrence_id")))."</li>";
 							
 										}
 									}
@@ -184,7 +184,7 @@
 									print "<li><a href='#comments'>Discussion</a></li>";
 								}
 								if($vb_related){
-									print "<li><a href='#related'>Related Resources</a></li>";
+									print caDetailLink($this->request, "Related Resources", '', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("related" => "resources"));
 								}
 								print "<li role='separator' class='divider'></li>";
 								print "<li class='redLink'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")))."</li>";
@@ -476,10 +476,10 @@
 					$vn_section_index = array_search($pn_content_block_id, $va_section_ids);
 					$vs_next_section_link = $vs_previous_section_link = "";
 					if($va_section_ids[$vn_section_index + 1]){
-						$vs_next_section_link = caDetailLink($this->request, 'Next: '.$va_section_names[$va_section_ids[$vn_section_index + 1]]." <i class='fa fa-caret-right' aria-hidden='true'></i>", 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $va_section_ids[$vn_section_index + 1]));
+						$vs_next_section_link = caDetailLink($this->request, 'Next: '.$va_section_names[$va_section_ids[$vn_section_index + 1]]." <i class='fa fa-caret-right' aria-hidden='true'></i>", 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("section" => $va_section_ids[$vn_section_index + 1]));
 					}
 					if(($vn_section_index > 0) && ($va_section_ids[$vn_section_index - 1])){
-						$vs_previous_section_link = caDetailLink($this->request, "<i class='fa fa-caret-left' aria-hidden='true'></i> Previous: ".$va_section_names[$va_section_ids[$vn_section_index - 1]], 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $va_section_ids[$vn_section_index - 1]));
+						$vs_previous_section_link = caDetailLink($this->request, "<i class='fa fa-caret-left' aria-hidden='true'></i> Previous: ".$va_section_names[$va_section_ids[$vn_section_index - 1]], 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("section" => $va_section_ids[$vn_section_index - 1]));
 					}
 					if($vs_next_section_link || $vs_previous_section_link){
 						print "<p class='text-center sectionNavigationLinks'>".$vs_previous_section_link.(($vs_next_section_link && $vs_previous_section_link) ? "&nbsp;&nbsp;&nbsp;" : "").$vs_next_section_link."</p><br/>";
