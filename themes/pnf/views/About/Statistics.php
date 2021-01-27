@@ -3,16 +3,18 @@
 require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
 $va_public_access = array(1);
 $va_restricted_access = array(2);
+
 $o_browse = caGetBrowseInstance("ca_objects");
 $va_types = caMakeTypeIDList("ca_objects", array("book"), array('dontIncludeSubtypesInTypeRestriction' => true));
 $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => true));
 $o_browse->execute(array('checkAccess' => $va_public_access));
-$va_titles = $o_browse->getFacet("label_facet", array('checkAccess' => $va_public_access, 'request' => $this->request));
 
+$va_titles = $o_browse->getFacet("label_facet", array('checkAccess' => $va_public_access, 'request' => $this->request));
 
 $o_db = new Db();
 $q_institutions_public = $o_db->query("SELECT distinct c.collection_id FROM ca_collections c where c.deleted = 0 AND c.access IN (".join(", ", $va_public_access).") AND c.parent_id IS NULL");
 $q_institutions_protected = $o_db->query("SELECT distinct c.collection_id FROM ca_collections c where c.deleted = 0 AND  c.access IN (".join(", ", $va_restricted_access).") AND c.parent_id IS NULL");
+$q_sueltas_public = $o_db->query("SELECT distinct o.object_id FROM ca_objects o where o.type_id IN (".join(",", $va_types).") AND o.deleted = 0 AND o.access IN (".join(", ", $va_public_access).")");
 
 $va_playwrights = $o_browse->getFacet("playwrights_facet", array('checkAccess' => $va_public_access, 'request' => $this->request));
 $va_printer_seller = $o_browse->getFacet("printer_seller_facet", array('checkAccess' => $va_public_access, 'request' => $this->request));
@@ -61,45 +63,7 @@ $qr_authors = $o_browse_authors->getResults();
 			<div class="row">
 				<div class="col-sm-3"><p><b>NUMBER OF SUELTAS</b><br/>in each institution</p></div>
 				<div class="col-sm-3">
-					<p>Running Tally</p>
-<?php
-					if($q_institutions_public->numRows()){
-						$va_institution_ids = array();
-						while($q_institutions_public->nextRow()){
-							$va_institution_ids[] = $q_institutions_public->get("ca_collections.collection_id");
-						}
-						$q_institutions = caMakeSearchResult("ca_collections", $va_institution_ids);
-						if($q_institutions->numHits()){
-							$va_inst_stats = array();
-							while($q_institutions->nextHit()){
-								$vn_child_count = $vn_num_objects = 0;
-								$va_children = $q_institutions->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_public_access));
-								if(is_array($va_children) && sizeof($va_children)){
-									$q_child_institutions = caMakeSearchResult("ca_collections", $va_children);
-									while($q_child_institutions->nextHit()){
-										$va_child_objects = $q_child_institutions->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_public_access));
-										if(is_array($va_child_objects) && sizeof($va_child_objects)){
-											$vn_child_count = $vn_child_count + sizeof($va_child_objects);
-										}
-									}
-								}
-								$va_objects = $q_institutions->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_public_access));
-								$vn_num_objects = $vn_child_count;
-								if(is_array($va_objects)){
-									$vn_num_objects += sizeof($va_objects);
-								}
-								$va_inst_stats[] = $q_institutions->get("ca_collections.preferred_labels").": <b>".$vn_num_objects."</b><br/><br/>";
-							}
-							sort($va_inst_stats);
-							print join("", $va_inst_stats);
-						}
-					}
-					if(is_array($va_institutions) && sizeof($va_institutions)){
-						foreach($va_institutions as $va_institutions){
-							print "<b>".$va_institutions["label"].":</b> ".$va_institutions["content_count"]."<br/><br/>";
-						}
-					}
-?>
+					<p>Running Tally<br/><?php print $q_sueltas_public->numRows(); ?> </p>
 				</div>
 				<div class="col-sm-6"><p>The number of sueltas held by a library appears as soon as an Institution is selected. Numbers may diminish if we discover a post-1833 imprint or some other reason for eliminating an item.</p></div>
 			</div>
