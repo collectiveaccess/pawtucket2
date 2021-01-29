@@ -6150,8 +6150,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		if (isset($pa_options['width'])) {
 			if ($va_dim = caParseFormElementDimension($pa_options['width'])) {
 				if ($va_dim['type'] == 'pixels') {
-					unset($pa_options['width']);
-					$pa_options['maxPixelWidth'] = $va_dim['dimension'];
+					$pa_options['width'] = ceil($va_dim['dimension']/7);    // Temporary hack to approximate width
 				}
 			}
 		}
@@ -6224,8 +6223,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		if (isset($pa_options['width'])) {
 			if ($va_dim = caParseFormElementDimension($pa_options['width'])) {
 				if ($va_dim['type'] == 'pixels') {
-					unset($pa_options['width']);
-					$pa_options['maxPixelWidth'] = $va_dim['dimension'];
+					$pa_options['width'] = ceil($va_dim['dimension']/7);    // Temporary hack to approximate width
 				}
 			}
 		}
@@ -8870,7 +8868,7 @@ $pa_options["display_form_field_tips"] = true;
 					$post_max_size = caFormatFileSize(caReturnValueInBytes(ini_get( 'post_max_size' )));
 					$upload_max_filesize = caFormatFileSize(caReturnValueInBytes(ini_get( 'upload_max_filesize' )));
 
-					$vs_element = '<div class="formLabelUploadSizeNote"><input type="file" name="'.$pa_options["name"].'" id="'.$pa_options["id"].'" '.$vs_js.'/>'._t("Maximum upload size is ${post_max_size}") . '</div>';
+					$vs_element = '<div class="formLabelUploadSizeNote"><input type="file" name="'.$pa_options["name"].'" id="'.$pa_options["id"].'" '.$vs_js.'/>'._t("Maximum upload size is %1", $post_max_size) . '</div>';
 
 					// show current media icon
 					if ($vs_version = (array_key_exists('displayMediaVersion', $pa_options)) ? $pa_options['displayMediaVersion'] : 'icon') {
