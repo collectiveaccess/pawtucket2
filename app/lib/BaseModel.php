@@ -1239,7 +1239,7 @@ class BaseModel extends BaseObject {
 		", array($va_ids));
 		
 		$va_vals = array();
-		$vs_single_fld = (sizeof($va_fld_list) == 1) ? $va_fld_list[0] : null;
+		$vs_single_fld = (sizeof($va_fld_list) == 1) ? str_replace('`', '', $va_fld_list[0]) : null;
 		while($qr_res->nextRow()) {
 			if ($vs_single_fld) {
 				$va_vals[(int)$qr_res->get($vs_pk)] = $qr_res->get($vs_single_fld);
@@ -6349,7 +6349,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			}
 			
 			if ($t = Datamodel::getInstance($t_attr->get('table_num'), true)) {
-				$va_subject_config = $t->getProperty('LOG_CHANGES_USING_AS_SUBJECT');
+				$va_subject_config = null;
 				$vs_subject_tablename = $t->tableName();
 			}
 		} else {
@@ -6381,7 +6381,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 					}
 				}
 				
-				if(is_array($va_subject_config['RELATED_TABLES'])) {
+				if(is_array($va_subject_config['RELATED_TABLES']) && !$vb_is_metadata && !$vb_is_metadata_value) {
 					$o_db = $this->getDb();
 					if (!isset($o_db) || !$o_db) {
 						$o_db = new Db();
@@ -8372,7 +8372,8 @@ $pa_options["display_form_field_tips"] = true;
 									'readonly' => $pa_options['readonly'],
 									'restrictTypeListForTable' => $this->tableName(),
 									'limitToItemsWithID' => $va_limit_list ? $va_limit_list : null,
-									'checkAccess' => $pa_options['checkAccess']
+									'checkAccess' => $pa_options['checkAccess'],
+									'width' => $pa_options['width']
 								)
 							);
 							
@@ -8864,7 +8865,7 @@ $pa_options["display_form_field_tips"] = true;
 					$post_max_size = caFormatFileSize(caReturnValueInBytes(ini_get( 'post_max_size' )));
 					$upload_max_filesize = caFormatFileSize(caReturnValueInBytes(ini_get( 'upload_max_filesize' )));
 
-					$vs_element = '<div class="formLabelUploadSizeNote"><input type="file" name="'.$pa_options["name"].'" id="'.$pa_options["id"].'" '.$vs_js.'/>'._t("Maximum upload size is ${post_max_size}") . '</div>';
+					$vs_element = '<div class="formLabelUploadSizeNote"><input type="file" name="'.$pa_options["name"].'" id="'.$pa_options["id"].'" '.$vs_js.'/>'._t("Maximum upload size is %1", $post_max_size) . '</div>';
 
 					// show current media icon
 					if ($vs_version = (array_key_exists('displayMediaVersion', $pa_options)) ? $pa_options['displayMediaVersion'] : 'icon') {
@@ -9133,6 +9134,10 @@ $pa_options["display_form_field_tips"] = true;
 
 		if ($va_rel_info['related_table_name'] == $this->tableName()) {
 			// is self relation
+			if ($pn_rel_id === $this->getPrimaryKey()) {
+				$this->postError(1100, _t('Cannot relate a record to itself'), 'BaseModel->addRelationship', $va_rel_info['related_table_name']);
+				return false;
+			}	
 			
 			// is self relationship
 			if ($ps_direction == 'rtol') {
@@ -9272,6 +9277,10 @@ $pa_options["display_form_field_tips"] = true;
 		
 		if ($va_rel_info['related_table_name'] == $this->tableName()) {
 			// is self relation
+			if ($pn_rel_id === $this->getPrimaryKey()) {
+				$this->postError(1100, _t('Cannot relate a record to itself'), 'BaseModel->editRelationship', $va_rel_info['related_table_name']);
+				return false;
+			}
 			if ($t_item_rel->load($pn_relation_id)) {
 				
 				if ($ps_direction == 'rtol') {
