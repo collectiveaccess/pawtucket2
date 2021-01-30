@@ -766,6 +766,11 @@ div.caMediaOverlayControls {
 	color: #7f4539;
 	font-family: 'Lusitana', serif;
 }
+@media(min-width:768px){
+	.listingLetterIntro{
+		padding-right: 150px;
+	}
+}
 .listingLetterIntro p b, .listingLetterIntro b, .listingLetterIntro p strong, .listingLetterIntro strong {
 	line-height: 1.3em;
 	font-size: 17px;

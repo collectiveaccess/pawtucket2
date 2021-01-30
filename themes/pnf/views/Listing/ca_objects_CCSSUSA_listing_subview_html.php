@@ -58,7 +58,9 @@
 				$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 				$va_letter_array[$vs_first_letter] = $vs_first_letter;
 				$vn_id = $qr_list->get('ca_objects.object_id');
-				$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink'><span class='listTitle'>".caNavLink($this->request, $vs_title, "", "", "Browse", "objects", array("facet" => "label_facet", "id" => $vs_title))."</span></div>\n";	
+				if($vs_first_letter){
+					$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink'><span class='listTitle'>".caNavLink($this->request, $vs_title, "", "", "Browse", "objects", array("facet" => "label_facet", "id" => $vs_title))."</span></div>\n";	
+				}
 			}
 		}
 		ksort($va_links_array);
