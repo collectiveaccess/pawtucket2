@@ -26,10 +26,15 @@
  *
  * ----------------------------------------------------------------------
  */
+?>
+<?php 
+AssetLoadManager::register("storymap");
+AssetLoadManager::register("soundcite");
 
-	AssetLoadManager::register("storymap");
-	AssetLoadManager::register("soundcite");
-
+$vs_mode = $this->request->getParameter("mode", pString);
+#if($vs_mode == "map"){
+#	include("map_large_html.php");
+#}else{
 	AssetLoadManager::register('timeline');
 	$va_options = $this->getVar("config_options"); 
 	$t_item = 				$this->getVar("item");
@@ -40,10 +45,10 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
 	
-	# --- section indicated which content_block section to load for the exhibition.  If not defined, load the first section
-	$pn_content_block_id = $this->request->getParameter('section', pInteger);
+	# --- content_block_id indicated which section to load for the exhibition.  If not defined, load the first section
+	$pn_content_block_id = $this->request->getParameter('content_block_id', pInteger);
 	$vb_show_related = false;
-	if($this->request->getParameter('related', pString) == "resources"){
+	if($this->request->getParameter('section', pString) == "resources"){
 		$vb_show_related = true;
 	}
 	
@@ -117,7 +122,7 @@
 								}else{
 									$vs_link = "<div class='digExhSideNavLink digExhSideNavLinkNoImg'>".$vs_link_text."</div>";
 								}
-								print caDetailLink($this->request, $vs_link, (($pn_content_block_id == $qr_content_blocks->get("ca_occurrences.occurrence_id")) ? "currentSection" : ""), 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("section" => $qr_content_blocks->get("ca_occurrences.occurrence_id")));
+								print caDetailLink($this->request, $vs_link, (($pn_content_block_id == $qr_content_blocks->get("ca_occurrences.occurrence_id")) ? "currentSection" : ""), 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $qr_content_blocks->get("ca_occurrences.occurrence_id")));
 							}
 							$va_sections[$vn_last_section_id][] = $qr_content_blocks->get("ca_occurrences.occurrence_id");
 						}
@@ -139,7 +144,7 @@
 						}else{
 							$vs_link = "<div class='digExhSideNavLink digExhSideNavLinkNoImg'>Related Resources</div>";
 						}
-						print caDetailLink($this->request, $vs_link, (($vb_show_related) ? "currentSection" : ""), 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("related" => "resources"));
+						print caDetailLink($this->request, $vs_link, (($vb_show_related) ? "currentSection" : ""), 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("section" => "resources"));
 						#print "<a href='#related'><div class='digExhSideNavLink digExhSideNavLinkNoImg'>Related Resources</div></a>";
 					}
 					print "<div class='digExhSideNavLinkOut'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")));
@@ -175,7 +180,7 @@
 								if($qr_content_blocks->numHits()){
 									while($qr_content_blocks->nextHit()){
 										if($vs_link_text = $qr_content_blocks->get("ca_occurrences.nav_text")){
-											print "<li>".caDetailLink($this->request, $vs_link_text, '', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("section" => $qr_content_blocks->get("ca_occurrences.occurrence_id")))."</li>";
+											print "<li>".caDetailLink($this->request, $vs_link_text, '', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $qr_content_blocks->get("ca_occurrences.occurrence_id")))."</li>";
 							
 										}
 									}
@@ -184,7 +189,7 @@
 									print "<li><a href='#comments'>Discussion</a></li>";
 								}
 								if($vb_related){
-									print "<li>".caDetailLink($this->request, "Related Resources", '', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("related" => "resources"))."</li>";
+									print "<li><a href='#related'>Related Resources</a></li>";
 								}
 								print "<li role='separator' class='divider'></li>";
 								print "<li class='redLink'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")))."</li>";
@@ -405,57 +410,175 @@
 												$va_set_item_ids = array_keys(is_array($va_tmp = $t_set->getItemIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
 												#$va_row_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
 												if(is_array($va_set_item_ids) && sizeof($va_set_item_ids)){
-?>
-													<div class="digExhSlideContainer">
-														<div class='digExhSlide digExhSlide<?php print $vn_set_id; ?>'></div>
-														<!-- Prev/next controls -->
-														<a href="#" class="digExhDetailPrev digExhDetailPrev<?php print $vn_set_id; ?>" onClick="previousSlide<?php print $vn_set_id; ?>(); return false;"><i class="fa fa-angle-left" aria-label="<?php print _t("Previous"); ?>"></i></a>
-														<a href="#" class="digExhDetailNext digExhDetailNext<?php print $vn_set_id; ?>" onClick="nextSlide<?php print $vn_set_id; ?>(); return false;"><i class="fa fa-angle-right" aria-label="<?php print _t("Next"); ?>"></i></a>
+													#$qr_res = caMakeSearchResult('ca_objects', $va_row_ids);
+													#if($qr_res && $qr_res->numHits()){
+	?>   
+														<div class="jcarousel-wrapper jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?>">
+															<!-- Carousel -->
+															<div class="jcarousel jcarousel<?php print $vn_set_id."-".$vn_block_count; ?>">
+																<ul>
+	<?php
+																	#while($qr_res->nextHit()){
+																	foreach($va_set_item_ids as $vn_item_id){	
+																		
+																		
+					
+								$t_set_item = new ca_set_items($vn_item_id);
+								# --- display the rep viewer for the featured object so if it's video, it will play
+								$vn_row_id = $t_set_item->get("ca_set_items.row_id");
+								$t_object = new ca_objects($vn_row_id);
+								$vb_link_to_object = false;
+								if(($t_object->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($t_object->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($t_object->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes"))){
+									$vb_link_to_object = true;
+								}
+								$t_representation = $t_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
+								if($t_representation){
+									$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
+									$vs_version = $va_media_display_info["display_version"];
+									$vs_caption = "";
+									if($t_set_item->get("ca_set_items.preferred_labels") != "[BLANK]"){
+										$vs_caption = $t_set_item->get("ca_set_items.preferred_labels");
+									}
+									if(!$vs_caption){
+										$vs_caption = $t_object->get("ca_objects.preferred_labels.name");
+									}
+									if($vs_caption){
+										#if($vb_link_to_object){
+										#	$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_row_id)."</div>";
+										#}else{
+											$vs_caption = "<div class='mediaViewerCaption text-center'>".$vs_caption."</div>";
+										#}
+									}
+									if($vs_version == "large"){
+										$vs_media = $t_representation->get("ca_object_representations.media.".$vs_version);
+										#if($vb_link_to_object){
+										#	$vs_media = caDetailLink($this->request, $vs_media, '', "ca_objects", $vn_row_id);
+										#}
+										$vs_media = '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $t_object->get("ca_objects.object_id"), "representation_id" => $t_representation->get("ca_object_representations.representation_id"), "overlay" => 1)).'\'); return false;">'.$vs_media.'</a>';
+									
+										if($vs_caption){
+											$vs_media .= $vs_caption;
+										};
+									}else{
+										$vs_media =  caRepresentationViewer(
+																	$this->request, 
+																	$t_object, 
+																	$t_object,
+																	array(
+																		'display' => 'detail',
+																		'showAnnotations' => true, 
+																		'primaryOnly' => true, 
+																		'dontShowPlaceholder' => true, 
+																		#'captionTemplate' => "<unit relativeTo='ca_objects'><l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></l></unit>"
+																		'captionTemplate' => $vs_caption
+																	)
+																);
+									}
+									print "<li><div class='digExhSlide'>".$vs_media."</div></li>";
+									$vb_item_output = true;
+								}
+																														
+																		
+																		
+																		
+																		
+																		#if($qr_res->get("ca_object_representations.media.large")){
+																		#	if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.mediumlarge</l>', array("checkAccess" => $va_access_values))){
+																		#		print "<li><div class='digExhSlide'>".$vs_media;
+																		#		#$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
+																		#		if($vs_caption){
+																		#			#print "<div class='digExhCaption'>".$vs_caption."</div>";
+																		#		}
+																		#		print "</div></li>";
+																		#		$vb_item_output = true;
+																		#	}
+																		#}
+																	}
+	?>
+																</ul>
+															</div><!-- end jcarousel -->
+	<?php
+															if($vb_item_output){
+	?>
+															<!-- Prev/next controls -->
+															<a href="#" class="digExhDetailPrev"><i class="fa fa-angle-left" aria-label="<?php print _t("Previous"); ?>"></i></a>
+															<a href="#" class="digExhDetailNext"><i class="fa fa-angle-right" aria-label="<?php print _t("Next"); ?>"></i></a>
+		
+															<!-- Pagination -->
+															<p class="jcarousel-pagination digExhPagination">
+															<!-- Pagination items will be generated in here -->
+															</p>
+	<?php
+															}
+	?>
+														</div><!-- end jcarousel-wrapper --><br/>
+														<script type='text/javascript'>
+															jQuery(document).ready(function() {
+																/*
+																Carousel initialization
+																*/
+																$('.jcarousel<?php print $vn_set_id."-".$vn_block_count; ?>')
+																	.on('jcarousel:create jcarousel:reload', function() {
+																		var element = $(this),
+																			width = element.innerWidth();
 
-														<!-- Pagination -->
-														<p class="digExhPagination" id="digExhPagination<?php print $vn_set_id; ?>">
-													<?php
-														$i = 0;
-														foreach($va_set_item_ids as $vn_item_id){
-															$i++;
-															print "<a href='#' id='pageNum".$vn_set_id.$vn_item_id."' onClick='showLoading".$vn_set_id."(); highlightPagination".$vn_set_id."(\"".$vn_item_id."\"); jQuery(\".digExhSlide".$vn_set_id."\").load(\"".caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id, 'set_item_id' => $vn_item_id))."\"); return false;'>".$i."</a>";
-														}
-													?>
-														</p>
-													</div><!-- end digExhSlideContainer -->
-	
-													<script type='text/javascript'>
-															jQuery(document).ready(function() {		
-																jQuery(".digExhSlide<?php print $vn_set_id; ?>").load("<?php print caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id, 'set_item_id' => $va_set_item_ids[0])); ?>");
-																highlightPagination<?php print $vn_set_id; ?>("<?php print $va_set_item_ids[0]; ?>");
+																		// This shows 1 item at a time.
+																		// Divide `width` to the number of items you want to display,
+																		// eg. `width = width / 3` to display 3 items at a time.
+																		element.jcarousel('items').css('width', width + 'px');
+																	})
+																	.jcarousel({
+																		// Options go here
+																		wrap:'circular'
+																	});
+		
+																/*
+																 Prev control initialization
+																 */
+																$('.jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?> .digExhDetailPrev')
+																	.on('jcarouselcontrol:active', function() {
+																		$(this).removeClass('inactive');
+																	})
+																	.on('jcarouselcontrol:inactive', function() {
+																		$(this).addClass('inactive');
+																	})
+																	.jcarouselControl({
+																		// Options go here
+																		target: '-=1'
+																	});
+		
+																/*
+																 Next control initialization
+																 */
+																$('.jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?> .digExhDetailNext')
+																	.on('jcarouselcontrol:active', function() {
+																		$(this).removeClass('inactive');
+																	})
+																	.on('jcarouselcontrol:inactive', function() {
+																		$(this).addClass('inactive');
+																	})
+																	.jcarouselControl({
+																		// Options go here
+																		target: '+=1'
+																	});
+		
+																/*
+																 Pagination initialization
+																 */
+																$('.jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?> .jcarousel-pagination')
+																	.on('jcarouselpagination:active', 'a', function() {
+																		$(this).addClass('active');
+																	})
+																	.on('jcarouselpagination:inactive', 'a', function() {
+																		$(this).removeClass('active');
+																	})
+																	.jcarouselPagination({
+																		// Options go here
+																	});
 															});
-															var i<?php print $vn_set_id; ?> = 0;    
-															var slides<?php print $vn_set_id; ?> = <?php print json_encode($va_set_item_ids); ?>; 
-															function showLoading<?php print $vn_set_id; ?>(){
-																jQuery(".digExhSlide<?php print $vn_set_id; ?>").html("<div class='digExhSlideLoader'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>");
-															}
-															function highlightPagination<?php print $vn_set_id; ?>(id) {		
-																i<?php print $vn_set_id; ?> = slides<?php print $vn_set_id; ?>.indexOf(parseInt(id));
-																jQuery("#digExhPagination<?php print $vn_set_id; ?> a").removeClass("active");
-																jQuery("#pageNum<?php print $vn_set_id;?>" + id).addClass("active");
-															}
-															function nextSlide<?php print $vn_set_id; ?>(){
-																showLoading<?php print $vn_set_id; ?>();
-																i<?php print $vn_set_id; ?> = (i<?php print $vn_set_id; ?>+1)%slides<?php print $vn_set_id; ?>.length;
-																jQuery(".digExhSlide<?php print $vn_set_id; ?>").load("<?php print caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id)); ?>/set_item_id/" + slides<?php print $vn_set_id; ?>[i<?php print $vn_set_id; ?>]);	
-																highlightPagination<?php print $vn_set_id; ?>(slides<?php print $vn_set_id; ?>[i<?php print $vn_set_id; ?>]);
-															}
-															function previousSlide<?php print $vn_set_id; ?>(){
-																showLoading<?php print $vn_set_id; ?>();
-																i<?php print $vn_set_id; ?> = (i<?php print $vn_set_id; ?>-1);
-																if(i<?php print $vn_set_id; ?> < 0){
-																	i<?php print $vn_set_id; ?> = slides<?php print $vn_set_id; ?>.length - 1;
-																}
-																jQuery(".digExhSlide<?php print $vn_set_id; ?>").load("<?php print caNavUrl($this->request, '', 'Gallery', 'ajaxGetDigExhibitionSlide', array('set_id' => $vn_set_id)); ?>/set_item_id/" + slides<?php print $vn_set_id; ?>[i<?php print $vn_set_id; ?>]);	
-																highlightPagination<?php print $vn_set_id; ?>(slides<?php print $vn_set_id; ?>[i<?php print $vn_set_id; ?>]);
-															}
-													</script>
-<?php																								
+														</script>
+	<?php
+													#}											
 												}
 											break;
 										}
@@ -476,10 +599,10 @@
 					$vn_section_index = array_search($pn_content_block_id, $va_section_ids);
 					$vs_next_section_link = $vs_previous_section_link = "";
 					if($va_section_ids[$vn_section_index + 1]){
-						$vs_next_section_link = caDetailLink($this->request, 'Next: '.$va_section_names[$va_section_ids[$vn_section_index + 1]]." <i class='fa fa-caret-right' aria-hidden='true'></i>", 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("section" => $va_section_ids[$vn_section_index + 1]));
+						$vs_next_section_link = caDetailLink($this->request, 'Next: '.$va_section_names[$va_section_ids[$vn_section_index + 1]]." <i class='fa fa-caret-right' aria-hidden='true'></i>", 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $va_section_ids[$vn_section_index + 1]));
 					}
 					if(($vn_section_index > 0) && ($va_section_ids[$vn_section_index - 1])){
-						$vs_previous_section_link = caDetailLink($this->request, "<i class='fa fa-caret-left' aria-hidden='true'></i> Previous: ".$va_section_names[$va_section_ids[$vn_section_index - 1]], 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("section" => $va_section_ids[$vn_section_index - 1]));
+						$vs_previous_section_link = caDetailLink($this->request, "<i class='fa fa-caret-left' aria-hidden='true'></i> Previous: ".$va_section_names[$va_section_ids[$vn_section_index - 1]], 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $va_section_ids[$vn_section_index - 1]));
 					}
 					if($vs_next_section_link || $vs_previous_section_link){
 						print "<p class='text-center sectionNavigationLinks'>".$vs_previous_section_link.(($vs_next_section_link && $vs_previous_section_link) ? "&nbsp;&nbsp;&nbsp;" : "").$vs_next_section_link."</p><br/>";
@@ -625,3 +748,6 @@
 		}
 	});
 </script>
+<?php
+#}
+?>

@@ -40,6 +40,7 @@
 <?php					
 					if ($va_works = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$va_related_list = array();
+						$vb_show_view_all = false;
 						foreach ($va_works as $va_work) {
 							$va_related_list[$va_work['relationship_typename']][] = caDetailLink($this->request, $va_work['name'], '', 'ca_occurrences', $va_work['occurrence_id']);
 						}
@@ -47,15 +48,23 @@
 						foreach ($va_related_list as $vs_role => $va_links) {
 							print "<div class='unit detailLinksGrid'><label>".ucfirst($vs_role)."</label>";
 							$i = 0;
+							$c = 0;
+							if(sizeof($va_links) > 12){
+								$vb_show_view_all = true;
+							}
 							foreach($va_links as $vs_link){
 								if($i == 0){
 									print "<div class='row'>";
 								}
 								print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".$vs_link."</div></div>";
 								$i++;
+								$c++;
 								if($i == 3){
 									print "</div>";
 									$i = 0;
+								}
+								if($c == 12){
+									break;
 								}
 							}
 							if($i > 0){
@@ -64,6 +73,9 @@
 							print "</div><!-- end unit -->";
 						}
 						print "</div><!-- end unit -->";
+						if($vb_show_view_all){
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All Works Performed", "btn btn-default", "", "Browse", "works", array("facet" => "event_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
+						}
 					}
 ?>					
 					

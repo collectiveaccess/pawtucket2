@@ -10,7 +10,8 @@
 	if($pn_row_id && $ps_table){
 		$t_instance = Datamodel::getInstanceByTableNum($ps_table);
 		$t_instance->load($pn_row_id);
-		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", str_replace("ca_", "", $ps_table), $pn_row_id);
+		#$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", str_replace("ca_", "", $ps_table), $pn_row_id);
+		$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_row_id);
 		$vs_name = $t_instance->get("preferred_labels");
 	}
 	$va_errors = $this->getVar("errors");
