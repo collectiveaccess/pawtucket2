@@ -30,6 +30,7 @@
 <?php					
 					if ($va_works = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$va_related_list = array();
+						$vb_show_view_all = false;
 						foreach ($va_works as $va_work) {
 							$va_related_list[$va_work['relationship_typename']][] = caDetailLink($this->request, $va_work['name'], '', 'ca_occurrences', $va_work['occurrence_id']);
 						}
@@ -37,15 +38,23 @@
 						foreach ($va_related_list as $vs_role => $va_links) {
 							print "<div class='unit detailLinksGrid'><label>".ucfirst($vs_role)."</label>";
 							$i = 0;
+							$c = 0;
+							if(sizeof($va_links) > 12){
+								$vb_show_view_all = true;
+							}
 							foreach($va_links as $vs_link){
 								if($i == 0){
 									print "<div class='row'>";
 								}
 								print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".$vs_link."</div></div>";
 								$i++;
+								$c++;
 								if($i == 3){
 									print "</div>";
 									$i = 0;
+								}
+								if($c == 12){
+									break;
 								}
 							}
 							if($i > 0){
@@ -54,10 +63,14 @@
 							print "</div><!-- end unit -->";
 						}
 						print "</div><!-- end unit -->";
+						if($vb_show_view_all){
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All Works", "btn btn-default", "", "Browse", "works", array("facet" => "venue_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
+						}
 					}
 					
 					if ($va_events = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('event'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$va_related_list = array();
+						$vb_show_view_all = false;
 						foreach ($va_events as $va_event) {
 							$va_related_list[$va_event['relationship_typename']][] = caDetailLink($this->request, $va_event['name'], '', 'ca_occurrences', $va_event['occurrence_id']);
 						}
@@ -65,15 +78,23 @@
 						foreach ($va_related_list as $vs_role => $va_links) {
 							print "<div class='unit detailLinksGrid'><label>".ucfirst($vs_role)."</label>";
 							$i = 0;
+							$c = 0;
+							if(sizeof($va_links) > 12){
+								$vb_show_view_all = true;
+							}
 							foreach($va_links as $vs_link){
 								if($i == 0){
 									print "<div class='row'>";
 								}
 								print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".$vs_link."</div></div>";
 								$i++;
+								$c++;
 								if($i == 3){
 									print "</div>";
 									$i = 0;
+								}
+								if($c == 12){
+									break;
 								}
 							}
 							if($i > 0){
@@ -82,10 +103,14 @@
 							print "</div><!-- end unit -->";
 						}
 						print "</div><!-- end unit -->";
+						if($vb_show_view_all){
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All Performances & Events", "btn btn-default", "", "Browse", "events", array("facet" => "venue_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
+						}
 					}
 					
 					if ($va_entities = $t_item->get('ca_entities', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$va_related_list = array();
+						$vb_show_view_all = false;
 						foreach ($va_entities as $va_entity) {
 							$va_related_list[$va_entity['relationship_typename']][] = caDetailLink($this->request, $va_entity['displayname'], '', 'ca_occurrences', $va_entity['occurrence_id']);
 						}
@@ -93,15 +118,23 @@
 						foreach ($va_related_list as $vs_role => $va_links) {
 							print "<div class='unit detailLinksGrid'><label>".ucfirst($vs_role)."</label>";
 							$i = 0;
+							$c = 0;
+							if(sizeof($va_links) > 12){
+								$vb_show_view_all = true;
+							}
 							foreach($va_links as $vs_link){
 								if($i == 0){
 									print "<div class='row'>";
 								}
 								print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".$vs_link."</div></div>";
 								$i++;
+								$c++;
 								if($i == 3){
 									print "</div>";
 									$i = 0;
+								}
+								if($c == 12){
+									break;
 								}
 							}
 							if($i > 0){
@@ -110,6 +143,9 @@
 							print "</div><!-- end unit -->";
 						}
 						print "</div><!-- end unit -->";
+						if($vb_show_view_all){
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All People & Organizations", "btn btn-default", "", "Browse", "entities", array("facet" => "venue_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
+						}
 					}
 ?>					
 					

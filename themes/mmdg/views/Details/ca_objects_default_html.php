@@ -77,7 +77,8 @@
 			}
 ?>
 					{{{<ifdef code="ca_objects.recording_date"><div class='unit trimText'><label>Recording Date</label>^ca_objects.recording_date</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.eventDate"><div class='unit trimText'><label>Date</label>^ca_objects.eventDate</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.eventDate"><div class='unit trimText'><label>Event Date</label>^ca_objects.eventDate</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.sourceDate"><div class='unit trimText'><label>Creation Date</label>^ca_objects.sourceDate</div></ifdef>}}}
 					
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="depicts" min="1"><div class='unit trimText'><label>Depicts</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="depicts" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="described" min="1"><div class='unit trimText'><label>Describes</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="described" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
@@ -94,6 +95,7 @@
 <?php					
 					if ($va_works = $t_object->get('ca_occurrences', array('restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$va_related_list = array();
+						$vb_show_view_all = false;
 						foreach ($va_works as $va_work) {
 							$va_related_list[$va_work['relationship_typename']][] = caDetailLink($this->request, $va_work['name'], '', 'ca_occurrences', $va_work['occurrence_id']);
 						}
@@ -101,15 +103,23 @@
 						foreach ($va_related_list as $vs_role => $va_links) {
 							print "<div class='unit detailLinksGrid'><label>".ucfirst($vs_role)."</label>";
 							$i = 0;
+							$c = 0;
+							if(sizeof($va_links) > 12){
+								$vb_show_view_all = true;
+							}
 							foreach($va_links as $vs_link){
 								if($i == 0){
 									print "<div class='row'>";
 								}
 								print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".$vs_link."</div></div>";
 								$i++;
+								$c++;
 								if($i == 3){
 									print "</div>";
 									$i = 0;
+								}
+								if($c == 12){
+									break;
 								}
 							}
 							if($i > 0){
@@ -118,10 +128,14 @@
 							print "</div><!-- end unit -->";
 						}
 						print "</div><!-- end unit -->";
+						if($vb_show_view_all){
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All Works", "btn btn-default", "", "Browse", "works", array("facet" => "object_general_facet", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+						}
 					}
 					
 					if ($va_events = $t_object->get('ca_occurrences', array('restrictToTypes' => array('event'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$va_related_list = array();
+						$vb_show_view_all = false;
 						foreach ($va_events as $va_event) {
 							$va_related_list[$va_event['relationship_typename']][] = caDetailLink($this->request, $va_event['name'], '', 'ca_occurrences', $va_event['occurrence_id']);
 						}
@@ -129,15 +143,23 @@
 						foreach ($va_related_list as $vs_role => $va_links) {
 							print "<div class='unit detailLinksGrid'><label>".ucfirst($vs_role)."</label>";
 							$i = 0;
+							$c = 0;
+							if(sizeof($va_links) > 12){
+								$vb_show_view_all = true;
+							}
 							foreach($va_links as $vs_link){
 								if($i == 0){
 									print "<div class='row'>";
 								}
 								print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".$vs_link."</div></div>";
 								$i++;
+								$c++;
 								if($i == 3){
 									print "</div>";
 									$i = 0;
+								}
+								if($c == 12){
+									break;
 								}
 							}
 							if($i > 0){
@@ -146,6 +168,9 @@
 							print "</div><!-- end unit -->";
 						}
 						print "</div><!-- end unit -->";
+						if($vb_show_view_all){
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All Performances & Events", "btn btn-default", "", "Browse", "events", array("facet" => "object_general_facet", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+						}
 					}
 ?>					
 					
