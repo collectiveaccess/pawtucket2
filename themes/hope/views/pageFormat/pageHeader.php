@@ -36,7 +36,7 @@
 		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$va_user_links[] = '<li class="divider nav-divider"></li>';
 		if(caDisplayLightbox($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
+			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'parent_list', array())."</li>";
 		}
 		if(caDisplayClassroom($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
@@ -104,7 +104,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a href="hope.edu/kam" class="navbar-brand"><?php print caGetThemeGraphic($this->request, 'KAM-Logo_horiz_white_Final.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")); ?></a>
+				<a href="http://www.hope.edu/kam" class="navbar-brand"><?php print caGetThemeGraphic($this->request, 'KAM-Logo_horiz_white_Final.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")); ?></a>
 
 			</div>
 
@@ -137,7 +137,15 @@
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<li <?php print (in_array(strToLower($this->request->getController()), array("browse", "search"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Find"), "", "", "Browse", "objects"); ?></li>
 					<li <?php print (strToLower($this->request->getController()) == "themes") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Themes"), "", "", "Themes", "index"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
+					<li class="dropdown<?php print (in_array(strToLower($this->request->getController()), array("gallery")) ? ' active' : ''); ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Gallery"); ?> <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+<?php
+							print "<li>".caNavLink($this->request, _t("KAM Curated"), "", "", "Gallery", "kam")."</li>";
+							print "<li>".caNavLink($this->request, _t("Student/Faculty Curated"), "", "", "Gallery", "user")."</li>";
+?>
+						</ul>	
+					</li>
+
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
