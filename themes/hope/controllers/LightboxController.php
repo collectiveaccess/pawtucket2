@@ -147,7 +147,7 @@
 
             # Get sets for display
             $t_sets = new ca_sets();
- 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
+ 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->opo_config->get('lightbox_default_access'))) ? $vn_access : 0, "parents_only" => true));
  			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
 
  			# Remove write sets from the read array
@@ -185,7 +185,10 @@
             # Get sets for display
             $t_sets = new ca_sets();
  			
- 			$va_parent_sets = $t_sets->getSetsForUser(array("setType" => "user", "table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
+ 			$t_list = new ca_lists();
+ 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->opo_config->get('user_set_type'));
+ 			
+ 			$va_parent_sets = $t_sets->getSetsForUser(array("setType" => $vn_set_type_user, "table" => "ca_objects", "user_id" => $this->request->getUserID(), "parents_only" => true));
 			$this->view->setVar("parent_sets", $va_parent_sets);
 			$va_set_ids = array_keys($va_parent_sets);
  			
@@ -226,7 +229,7 @@
  			//
             if (!($t_set = $this->_getSet(__CA_SET_READ_ACCESS__))) { $this->Index(); return; }
  			
- 			$vn_set_id = $t_set->get("set_id");
+ 			$vn_set_id = $t_set->get("ca_sets.set_id");
  			$this->view->setVar("set", $t_set);
 
  			$qr_comments = $t_set->getComments(null, null, array('returnAs' => 'searchResult'));
@@ -485,7 +488,7 @@
 				if($ps_mode != "parent"){
 					# --- pass list of user's parent sets
 					$va_user_parents = array();
-					$va_user_parents = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
+					$va_user_parents = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => (!is_null($vn_access = $this->opo_config->get('lightbox_default_access'))) ? $vn_access : 0, "parents_only" => true));
 			
 					$this->view->setVar("user_parents", $va_user_parents);
 				}
@@ -513,7 +516,7 @@
  			$ps_mode = $this->request->getParameter('mode', pString);
  			
  			$t_list = new ca_lists();
- 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
+ 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->opo_config->get('user_set_type'));
  			
  			// check for errors
  			// set name - required
@@ -526,18 +529,6 @@
  			// set description - optional
  			$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));
  			$this->view->setVar("description", $ps_description);
-			$ps_client =  $this->purifier->purify($this->request->getParameter("client", pString));
- 			$this->view->setVar("client", $ps_client);
- 			$ps_address1 =  $this->purifier->purify($this->request->getParameter("address1", pString));
- 			$this->view->setVar("address1", $ps_address1);
- 			$ps_city =  $this->purifier->purify($this->request->getParameter("city", pString));
- 			$this->view->setVar("city", $ps_city);
- 			$ps_stateprovince =  $this->purifier->purify($this->request->getParameter("stateprovince", pString));
- 			$this->view->setVar("stateprovince", $ps_stateprovince);
- 			$ps_postalcode =  $this->purifier->purify($this->request->getParameter("postalcode", pString));
- 			$this->view->setVar("postalcode", $ps_postalcode);
- 			$ps_country =  $this->purifier->purify($this->request->getParameter("country", pString));
- 			$this->view->setVar("country", $ps_country);
 			
 			if($ps_mode != "parent"){
 				// palette -> needs a parent
@@ -557,16 +548,12 @@
  			$vb_is_insert = false;
  			if(sizeof($va_errors) == 0){
 				$t_set->setMode(ACCESS_WRITE);
-				if(strlen($vn_access = $this->request->getParameter('access', pInteger))) {
-					$t_set->set('access', $vn_access);
-				} else {
-					$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
-				}
-				if($t_set->get("set_id")){
+				if($t_set->get("ca_sets.set_id")){
 					// edit/add description
 					$t_set->replaceAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
 					$t_set->update();
 				}else{
+					$t_set->set('access', (!is_null($vn_access = $this->opo_config->get('lightbox_default_access'))) ? $vn_access : 0);
 					$t_set->set('table_num', $vn_object_table_num);
 					$t_set->set('type_id', $vn_set_type_user);
 					$t_set->set('user_id', $this->request->getUserID());
@@ -576,6 +563,37 @@
 					$t_set->addAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
 					$t_set->insert();
 					$vb_is_insert = true;
+					
+					if($t_set->get('parent_id')){
+						$t_parent = new ca_sets($t_set->get('parent_id'));
+						# --- this is a child set.  Give access to all users and groups that have access to the parent
+						$va_set_users = $t_parent->getSetUsers();
+						if(is_array($va_set_users) && sizeof($va_set_users)){
+							foreach($va_set_users as $va_set_user){
+								if($va_set_user["user_id"] != $this->request->getUserID()){
+									$t_sets_x_users = new ca_sets_x_users();
+									$t_sets_x_users->setMode(ACCESS_WRITE);
+									$t_sets_x_users->set('access',  $va_set_user["access"]);
+									$t_sets_x_users->set('user_id',  $va_set_user["user_id"]);
+									$t_sets_x_users->set('set_id',  $t_set->get("ca_sets.set_id"));
+									$t_sets_x_users->insert();							
+								}
+							}
+						}
+						$va_set_groups = $t_parent->getSetGroups();
+						if(is_array($va_set_groups) && sizeof($va_set_groups)){
+							foreach($va_set_groups as $va_set_group){
+								$t_sets_x_user_groups = new ca_sets_x_user_groups();
+								$t_sets_x_user_groups->setMode(ACCESS_WRITE);
+								$t_sets_x_user_groups->set('access',  $va_set_group["access"]);
+								$t_sets_x_user_groups->set('group_id',  $va_set_group["group_id"]);
+								$t_sets_x_user_groups->set('set_id',  $t_set->get("ca_sets.set_id"));
+								$t_sets_x_user_groups->insert();
+							}
+						}
+					}
+					
+					# --- 
 				}
 				if($t_set->numErrors()) {
 					$va_errors[] = join("; ", $t_set->getErrors());
@@ -597,7 +615,7 @@
 					
 					
 					// select the current set
-					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
+					$this->request->user->setVar('current_set_id', $t_set->get("ca_sets.set_id"));
 					
 					$this->view->setVar("message", _t('Saved %1', $vs_display_name));
 					if(($ps_mode == "parent") || ($vb_is_insert)){
@@ -612,7 +630,7 @@
 			}
 
 			if(($ps_mode != "parent") && (!$vb_is_insert)){
-				$this->view->setVar('set_id', $t_set->get("set_id"));	
+				$this->view->setVar('set_id', $t_set->get("ca_sets.set_id"));	
 				$this->view->setVar('is_insert', $vb_is_insert);
 					
 				$this->render("Lightbox/ajax_save_set_info_json.php");
@@ -688,18 +706,34 @@
             	throw new ApplicationException(_t("You do not have access to this lightbox"));
             }
  			$pn_group_id = $this->request->getParameter('group_id', pInteger);
- 			$t_item = new ca_sets_x_user_groups();
-			$t_item->load(array('set_id' => $t_set->get('set_id'), 'group_id' => $pn_group_id));
-			if($t_item->get("relation_id")){
-				$t_item->setMode(ACCESS_WRITE);
-				$t_item->delete(true);
-				if ($t_item->numErrors()) {
-					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
-				}else{
-					$this->view->setVar('message', _t("Removed group access to %1", $this->ops_lightbox_display_name));
+ 			# --- remove access to all children too
+ 			$va_share_set_ids = array($t_set->get("ca_sets.set_id"));
+			$qr_children = ca_sets::find(array('parent_id' => $t_set->get("ca_sets.set_id")), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
+			if($qr_children->numHits()){
+				while($qr_children->nextHit()){
+					$va_share_set_ids[] = $qr_children->get("ca_sets.set_id");
 				}
+			}
+ 			$va_remove_errors = array();
+
+ 			foreach($va_share_set_ids as $vn_share_set_id){
+				$t_item = new ca_sets_x_user_groups();
+				print "set_id: ".$vn_share_set_id." --- group_id: ".$pn_group_id." --- ";
+				$t_item->load(array('set_id' => $vn_share_set_id, 'group_id' => $pn_group_id));
+				if($t_item->get("relation_id")){
+					$t_item->setMode(ACCESS_WRITE);
+					$t_item->delete(true);
+					if ($t_item->numErrors()) {
+						$va_remove_errors[] = join("; ", $t_item->getErrors());
+					}
+				}else{
+					$va_remove_errors[] = _t("invalid group/set id");
+				}
+			}
+			if(is_array($va_remove_errors) && sizeof($va_remove_errors)){	
+				$this->view->setVar('errors', join("; ", $va_remove_errors));
 			}else{
-				$this->view->setVar('errors', _t("invalid group/set id"));
+				$this->view->setVar('message', _t("Removed group access to %1", $this->ops_lightbox_display_name));
 			}
 			$this->setAccess();
  		}
@@ -713,18 +747,34 @@
             	throw new ApplicationException(_t("You do not have access to this lightbox"));
             }
  			$pn_user_id = $this->request->getParameter('user_id', pInteger);
- 			$t_item = new ca_sets_x_users();
-			$t_item->load(array('set_id' => $t_set->get('set_id'), 'user_id' => $pn_user_id));
-			if($t_item->get("relation_id")){
-				$t_item->setMode(ACCESS_WRITE);
-				$t_item->delete(true);
-				if ($t_item->numErrors()) {
-					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
-				}else{
-					$this->view->setVar('message', _t("Removed user access to %1", $this->ops_lightbox_display_name));
+ 			# --- remove access to all children too
+ 			$va_share_set_ids = array($t_set->get("ca_sets.set_id"));
+			$qr_children = ca_sets::find(array('parent_id' => $t_set->get("ca_sets.set_id")), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
+			if($qr_children->numHits()){
+				while($qr_children->nextHit()){
+					$va_share_set_ids[] = $qr_children->get("ca_sets.set_id");
 				}
+			}
+ 			
+ 			$va_remove_errors = array();
+ 			foreach($va_share_set_ids as $vn_share_set_id){
+ 				$t_item = new ca_sets_x_users();
+				$t_item->load(array('set_id' => $vn_share_set_id, 'user_id' => $pn_user_id));
+				if($t_item->get("relation_id")){
+					$t_item->setMode(ACCESS_WRITE);
+					$t_item->delete(true);
+					if ($t_item->numErrors()) {
+						$va_remove_errors[] = join("; ", $t_item->getErrors());
+						
+					}
+				}else{
+					$va_remove_errors[] = _t("invalid user/set id");
+				}
+			}
+			if(is_array($va_remove_errors) && sizeof($va_remove_errors)){
+				$this->view->setVar('errors', join("; ", $va_remove_errors));
 			}else{
-				$this->view->setVar('errors', _t("invalid user/set id"));
+				$this->view->setVar('message', _t("Removed user access to %1", $this->ops_lightbox_display_name));
 			}
  			$this->setAccess();
  		}
@@ -739,19 +789,33 @@
             }
  			$pn_group_id = $this->request->getParameter('group_id', pInteger);
  			$pn_access = $this->request->getParameter('access', pInteger);
- 			$t_item = new ca_sets_x_user_groups();
-			$t_item->load(array('set_id' => $t_set->get('set_id'), 'group_id' => $pn_group_id));
-			if($t_item->get("relation_id") && $pn_access){
-				$t_item->setMode(ACCESS_WRITE);
-				$t_item->set('access', $pn_access);
-				$t_item->update();
-				if ($t_item->numErrors()) {
-					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
+			
+ 			$va_set_ids = array($t_set->get('ca_sets.set_id'));
+ 			$qr_children = ca_sets::find(array('parent_id' => $t_set->get('ca_sets.set_id')), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
+ 			if($qr_children->numHits()){
+ 				while($qr_children->nextHit()){
+ 					$va_set_ids[] = $qr_children->get("ca_sets.set_id");
+ 				}
+ 			}
+  			$va_tmp_errors = array();
+ 			foreach($va_set_ids as $vn_set_id){
+				$t_item = new ca_sets_x_user_groups();
+				$t_item->load(array('set_id' => $vn_set_id, 'group_id' => $pn_group_id));
+				if($t_item->get("relation_id") && $pn_access){
+					$t_item->setMode(ACCESS_WRITE);
+					$t_item->set('access', $pn_access);
+					$t_item->update();
+					if ($t_item->numErrors()) {
+						$va_tmp_errors[] = join("; ", $t_item->getErrors());
+					}
 				}else{
-					$this->view->setVar('message', _t("Changed group access to %1", $this->ops_lightbox_display_name));
+					$va_tmp_errors[] = _t("invalid group/set id or access");
 				}
+			}
+			if(sizeof($va_tmp_errors)){
+				$this->view->setVar('errors', join("; ", $va_tmp_errors));
 			}else{
-				$this->view->setVar('errors', _t("invalid group/set id or access"));
+				$this->view->setVar('message', _t("Changed group access to %1", $this->ops_lightbox_display_name));
 			}
 			$this->setAccess();
  		}
@@ -766,19 +830,33 @@
             }
  			$pn_user_id = $this->request->getParameter('user_id', pInteger);
  			$pn_access = $this->request->getParameter('access', pInteger);
- 			$t_item = new ca_sets_x_users();
-			$t_item->load(array('set_id' => $t_set->get('set_id'), 'user_id' => $pn_user_id));
-			if($t_item->get("relation_id") && $pn_access){
-				$t_item->setMode(ACCESS_WRITE);
-				$t_item->set('access', $pn_access);
-				$t_item->update();
-				if ($t_item->numErrors()) {
-					$this->view->setVar('errors', join("; ", $t_item->getErrors()));
+ 			
+ 			$va_set_ids = array($t_set->get('ca_sets.set_id'));
+ 			$qr_children = ca_sets::find(array('parent_id' => $t_set->get('ca_sets.set_id')), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
+ 			if($qr_children->numHits()){
+ 				while($qr_children->nextHit()){
+ 					$va_set_ids[] = $qr_children->get("ca_sets.set_id");
+ 				}
+ 			}
+ 			$va_tmp_errors = array();
+ 			foreach($va_set_ids as $vn_set_id){
+				$t_item = new ca_sets_x_users();
+				$t_item->load(array('set_id' => $vn_set_id, 'user_id' => $pn_user_id));
+				if($t_item->get("relation_id") && $pn_access){
+					$t_item->setMode(ACCESS_WRITE);
+					$t_item->set('access', $pn_access);
+					$t_item->update();
+					if ($t_item->numErrors()) {
+						$va_tmp_errors[] = join("; ", $t_item->getErrors());
+					}
 				}else{
-					$this->view->setVar('message', _t("Changed user access to %1", $this->ops_lightbox_display_name));
+					$va_tmp_errors[] = _t("invalid user/set id or access");
 				}
+			}
+			if(sizeof($va_tmp_errors)){
+				$this->view->setVar('errors', join("; ", $va_tmp_errors));
 			}else{
-				$this->view->setVar('errors', _t("invalid user/set id or access"));
+				$this->view->setVar('message', _t("Changed user access to %1", $this->ops_lightbox_display_name));
 			}
 			$this->setAccess();
  		}
@@ -805,6 +883,7 @@
  			if(!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
  				throw new ApplicationException(_t("You do not have access to this lightbox"));
  			}
+ 			$va_errors = array();
  			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
  			$vs_display_name_plural = caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural);
  			$this->view->setVar("display_name", $vs_display_name);
@@ -821,19 +900,38 @@
  				$va_errors["access"] = _t("Please select an access level");
  			}
  			if(sizeof($va_errors) == 0){
+				# --- if this is a parent set, also give access to the children
+				$va_share_set_ids = array($t_set->get("ca_sets.set_id"));
+				$qr_children = ca_sets::find(array('parent_id' => $t_set->get("ca_sets.set_id")), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
+				if($qr_children->numHits()){
+					while($qr_children->nextHit()){
+						$va_share_set_ids[] = $qr_children->get("ca_sets.set_id");
+					}
+				}
 				if($pn_group_id){
 					$t_sets_x_user_groups = new ca_sets_x_user_groups();
-					if($t_sets_x_user_groups->load(array("set_id" => $t_set->get("set_id"), "group_id" => $pn_group_id))){
+					if($t_sets_x_user_groups->load(array("set_id" => $t_set->get("ca_sets.set_id"), "group_id" => $pn_group_id))){
 						$this->view->setVar("message", _t('Group already has access to the %1', $vs_display_name));
 						$this->render("Form/reload_html.php");
 					}else{
-						$t_sets_x_user_groups->setMode(ACCESS_WRITE);
-						$t_sets_x_user_groups->set('access',  $pn_access);
-						$t_sets_x_user_groups->set('group_id',  $pn_group_id);
-						$t_sets_x_user_groups->set('set_id',  $t_set->get("set_id"));
-						$t_sets_x_user_groups->insert();
-						if($t_sets_x_user_groups->numErrors()) {
-							$va_errors["general"] = join("; ", $t_sets_x_user_groups->getErrors());
+						$va_add_group_errors = array();
+						foreach($va_share_set_ids as $vn_share_set_id){
+							$t_sets_x_user_groups = new ca_sets_x_user_groups();
+							if($t_sets_x_user_groups->load(array("set_id" => $vn_share_set_id, "group_id" => $pn_group_id))){
+								$va_add_group_errors[] = "Group already has access to set";
+							}else{
+								$t_sets_x_user_groups->setMode(ACCESS_WRITE);
+								$t_sets_x_user_groups->set('access',  $pn_access);
+								$t_sets_x_user_groups->set('group_id',  $pn_group_id);
+								$t_sets_x_user_groups->set('set_id',  $vn_share_set_id);
+								$t_sets_x_user_groups->insert();
+								if($t_sets_x_user_groups->numErrors()) {
+									$va_add_group_errors[] = join("; ", $t_sets_x_user_groups->getErrors());
+								}
+							}
+						}
+						if(is_array($va_add_group_errors) && sizeof($va_add_group_errors)) {
+							$va_errors["general"] = join("; ", $va_add_group_errors);
 							$this->view->setVar('errors', $va_errors);
 							$this->shareSetForm();
 						}else{
@@ -877,22 +975,24 @@
 						// lookup the user/users
 						$t_user->load(array("email" => $vs_user));
 						if($vn_user_id = $t_user->get("user_id")){
-							$t_sets_x_users = new ca_sets_x_users();
-							if(($vn_user_id == $t_set->get("user_id")) || ($t_sets_x_users->load(array("set_id" => $t_set->get("set_id"), "user_id" => $vn_user_id)))){
-								$va_error_emails_has_access[] = $vs_user;
-							}else{
-								$t_sets_x_users->setMode(ACCESS_WRITE);
-								$t_sets_x_users->set('access',  $pn_access);
-								$t_sets_x_users->set('user_id',  $vn_user_id);
-								$t_sets_x_users->set('set_id',  $t_set->get("set_id"));
-								$t_sets_x_users->insert();
-								if($t_sets_x_users->numErrors()) {
-									$va_errors["general"] = _t("There were errors while sharing this %1 with %2", $vs_display_name, $vs_user).join("; ", $t_sets_x_users->getErrors());
-									$this->view->setVar('errors', $va_errors);
-									$this->shareSetForm();
+							foreach($va_share_set_ids as $vn_share_set_id){
+								$t_sets_x_users = new ca_sets_x_users();
+								if(($vn_user_id == $t_set->get("user_id")) || ($t_sets_x_users->load(array("set_id" => $vn_share_set_id, "user_id" => $vn_user_id)))){
+									$va_error_emails_has_access[] = $vs_user;
 								}else{
-									$va_success_emails[] = $vs_user;
-									$va_success_emails_info[] = array("email" => $vs_user, "name" => trim($t_user->get("fname")." ".$t_user->get("lname")));
+									$t_sets_x_users->setMode(ACCESS_WRITE);
+									$t_sets_x_users->set('access',  $pn_access);
+									$t_sets_x_users->set('user_id',  $vn_user_id);
+									$t_sets_x_users->set('set_id',  $vn_share_set_id);
+									$t_sets_x_users->insert();
+									if($t_sets_x_users->numErrors()) {
+										$va_errors["general"] = _t("There were errors while sharing this %1 with %2", $vs_display_name, $vs_user).join("; ", $t_sets_x_users->getErrors());
+										$this->view->setVar('errors', $va_errors);
+										$this->shareSetForm();
+									}else{
+										$va_success_emails[] = $vs_user;
+										$va_success_emails_info[] = array("email" => $vs_user, "name" => trim($t_user->get("fname")." ".$t_user->get("lname")));
+									}
 								}
 							}
 						}else{
@@ -944,6 +1044,148 @@
 				$this->shareSetForm();
 			} 		
  		}
+ 		# ------------------------------------------------------
+        /**
+         *
+         */
+ 		function publishRequest(){
+ 			if($this->opb_is_login_redirect) { return; }
+
+ 			if(!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+ 				throw new ApplicationException(_t("You do not have access to this lightbox"));
+ 			}
+ 			$va_errors = array();
+ 			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
+ 			$vs_display_name_plural = caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural);
+ 			
+ 			# --- Set access of set and all children to restricted (confgured in lightbox.conf as lightbox_under_review_access)
+			$va_pub_set_ids = array($t_set->get("ca_sets.set_id"));
+			$qr_children = ca_sets::find(array('parent_id' => $t_set->get("ca_sets.set_id")), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
+			if($qr_children->numHits()){
+				while($qr_children->nextHit()){
+					$va_pub_set_ids[] = $qr_children->get("ca_sets.set_id");
+				}
+			}
+			$vn_access = $this->opo_config->get('lightbox_under_review_access');
+			foreach($va_pub_set_ids as $vn_pub_set_id){
+				$t_pub_set = new ca_sets($vn_pub_set_id);
+				$t_pub_set->setMode(ACCESS_WRITE);
+				$t_pub_set->set('access', ($vn_access) ? $vn_access : 2);
+				$t_pub_set->update();
+				if($t_pub_set->numErrors()) {
+					$va_errors[] = join("; ", $t_pub_set->getErrors());
+				}
+			}
+			if(sizeof($va_errors)){
+				$this->notification->addNotification(join("; ", $va_errors), __NOTIFICATION_TYPE_ERROR__);
+			}else{
+				$this->notification->addNotification(_t("Thank you for requesting your gallery be published.  You will be notified after review."), __NOTIFICATION_TYPE_INFO__);
+				# --- notify admins there are new galleries to approve publication of
+				$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+				$o_view->setVar("set", $t_set->getLabelForDisplay());
+				$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
+				$o_view->setVar("from_email", $this->request->user->get("email"));
+				$o_view->setVar("display_name", $vs_display_name);
+				$o_view->setVar("display_name_plural", $vs_display_name_plural);
+			
+				# -- generate email subject line from template
+				$vs_subject_line = $o_view->render("mailTemplates/lightbox_request_publish_notification_subject.tpl");
+				
+				# -- generate mail text from template - get both the text and the html versions
+				$vs_mail_message_text = $o_view->render("mailTemplates/lightbox_request_publish_notification.tpl");
+				$vs_mail_message_html = $o_view->render("mailTemplates/lightbox_request_publish_notification_html.tpl");
+			
+				caSendmail($this->opo_config->get('publish_email'), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+			}
+			$this->parent_list();
+ 			
+ 		}
+ 		# ------------------------------------------------------
+        /**
+         *
+         */
+ 		function publishRequestApprove(){
+ 			if($this->opb_is_login_redirect) { return; }
+			# --- this is only for admins
+			if($this->request->hasRole("admin") && ($vn_set_id = $this->request->getParameter('set_id', pInteger))){
+				$t_set = new ca_sets($vn_set_id);
+				$va_set_users = $t_set->getSetUsers();
+				$va_errors = array();
+				$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
+				$vs_display_name_plural = caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural);
+			
+				# --- Set access of set and all children to public (confgured in lightbox.conf as lightbox_public_access)
+				$va_pub_set_ids = array($t_set->get("ca_sets.set_id"));
+				$qr_children = ca_sets::find(array('parent_id' => $t_set->get("ca_sets.set_id")), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
+				if($qr_children->numHits()){
+					while($qr_children->nextHit()){
+						$va_pub_set_ids[] = $qr_children->get("ca_sets.set_id");
+					}
+				}
+				$vn_access = $this->opo_config->get('lightbox_public_access');
+				foreach($va_pub_set_ids as $vn_pub_set_id){
+					$t_pub_set = new ca_sets($vn_pub_set_id);
+					$t_pub_set->setMode(ACCESS_WRITE);
+					$t_pub_set->set('access', ($vn_access) ? $vn_access : 1);
+					$t_pub_set->update();
+					if($t_pub_set->numErrors()) {
+						$va_errors[] = join("; ", $t_pub_set->getErrors());
+					}
+				}
+				if(sizeof($va_errors)){
+					$this->notification->addNotification(join("; ", $va_errors), __NOTIFICATION_TYPE_ERROR__);
+				}else{
+					$this->notification->addNotification(_t("Publication Request Approved"), __NOTIFICATION_TYPE_INFO__);
+					# --- notify users with access to set it was published
+					$va_emails = array();
+					foreach($va_set_users as $va_set_user){
+						$va_emails[] = $va_set_user["email"];
+					}
+					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+					$o_view->setVar("set", $t_set->getLabelForDisplay());
+					$o_view->setVar("display_name", $vs_display_name);
+					$o_view->setVar("display_name_plural", $vs_display_name_plural);
+			
+					# -- generate email subject line from template
+					$vs_subject_line = $o_view->render("mailTemplates/lightbox_approve_publish_notification_subject.tpl");
+				
+					# -- generate mail text from template - get both the text and the html versions
+					$vs_mail_message_text = $o_view->render("mailTemplates/lightbox_approve_publish_notification.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/lightbox_approve_publish_notification_html.tpl");
+			
+					caSendmail($va_emails, $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+				}
+				$this->publishRequestsList();
+			}else{
+				$this->publishRequestsList();
+			} 		
+ 		}
+ 		# ------------------------------------------------------
+        /**
+         *
+         */
+ 		function publishRequestsList(){
+ 			if($this->opb_is_login_redirect) { return; }
+			# --- this is only for admins
+			if($this->request->hasRole("admin")){
+				$t_set = new ca_sets();
+				$t_list = new ca_lists();
+				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->opo_config->get('user_set_type'));
+				$set_opts = array('checkAccess' => array($this->opo_config->get('lightbox_under_review_access')), 'setType' => $vn_set_type_user, 'table' => 'ca_objects');
+				$sets = caExtractValuesByUserLocale($t_set->getSets($set_opts));
+
+				# --- remove child sets
+				foreach($sets as $set_id => $set){
+					if($set["parent_id"]){
+						unset($sets[$set_id]);
+					}
+				}
+				$this->view->setVar("sets", $sets);
+				$this->render("Lightbox/publish_requests_list_html.php");
+			}else{
+				$this->parent_list();
+			}			
+		}
  		# ------------------------------------------------------
         /**
          *
@@ -1172,6 +1414,8 @@
 			$vs_message = $vn_set_id = $vs_set_name = null;
 			
  			if ($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)) { 
+ 				$qr_children = ca_sets::find(array('parent_id' => $t_set->get('ca_sets.set_id')), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
+ 				
  				$vs_set_name = $t_set->getLabelForDisplay();
  				$t_set->setMode(ACCESS_WRITE);
  				$t_set->delete();
@@ -1181,7 +1425,17 @@
  				} else {
  					$vs_message = _t("<em>%1</em> was deleted", $vs_set_name);
  				}
- 				$vn_set_id = $t_set->get('set_id');
+ 				$vn_set_id = $t_set->get('ca_sets.set_id');
+ 				# -- delete all the children if parent was successful
+ 				if($qr_children->numHits()){
+ 					while($qr_children->nextHit()){
+ 						$t_child = new ca_sets($qr_children->get("ca_sets.set_id"));
+						if($t_child->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)){
+							$t_child->setMode(ACCESS_WRITE);
+							$t_child->delete();
+						}
+ 					}
+ 				}
  			} else {
  				throw new ApplicationException(_t("You do not have access to this lightbox"));
  			}
@@ -1202,7 +1456,7 @@
 
             if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
 				
-				$this->view->setVar("set_id", $t_set->get("set_id"));
+				$this->view->setVar("set_id", $t_set->get("ca_sets.set_id"));
 				
 				$va_row_ids = array();
 				$va_row_ids_raw = explode('&', $this->request->getParameter('row_ids', pString));
@@ -1277,7 +1531,7 @@
  				$pn_parent_id = $this->purifier->purify($this->request->getParameter('parent_id', pInteger));
 				if($pn_parent_id < 0){
 					$t_list = new ca_lists();
-					$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
+					$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->opo_config->get('user_set_type'));
 					# --- making a new parent - was the name entered
 					$ps_parent_name = $this->purifier->purify($this->request->getParameter('parent_name', pString));
 					if(!$ps_parent_name){
@@ -1286,7 +1540,7 @@
 					$t_parent = new ca_sets();
 					
 					$t_parent->setMode(ACCESS_WRITE);
-					$t_parent->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
+					$t_parent->set('access', (!is_null($vn_access = $this->opo_config->get('lightbox_default_access'))) ? $vn_access : 0);
 					$t_parent->set('table_num', $vn_object_table_num);
 					$t_parent->set('type_id', $vn_set_type_user);
 					$t_parent->set('user_id', $this->request->getUserID());
@@ -1313,10 +1567,10 @@
 				$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));
 	
 				$t_list = new ca_lists();
-				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
+				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->opo_config->get('user_set_type'));
 				
 				$t_set->setMode(ACCESS_WRITE);
-				$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
+				$t_set->set('access', (!is_null($vn_access = $this->opo_config->get('lightbox_default_access'))) ? $vn_access : 0);
 				$t_set->set('table_num', $vn_object_table_num);
 				$t_set->set('type_id', $vn_set_type_user);
 				$t_set->set('user_id', $this->request->getUserID());
@@ -1336,7 +1590,7 @@
 					// save name - add new label
 					$t_set->addLabel(array('name' => $ps_name), $g_ui_locale_id, null, true);
 					// select the current set
-					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
+					$this->request->user->setVar('current_set_id', $t_set->get("ca_sets.set_id"));
 
 				}			
 			}
@@ -1344,7 +1598,7 @@
 				$pn_item_id = null;
 				$pn_object_id = $this->request->getParameter('id', pInteger);
 				if($pn_object_id){
-					if(!$t_set->isInSet("ca_objects", $pn_object_id, $t_set->get("set_id"))){
+					if(!$t_set->isInSet("ca_objects", $pn_object_id, $t_set->get("ca_sets.set_id"))){
 						if ($pn_item_id = $t_set->addItem($pn_object_id, array(), $this->request->getUserID())) {
 							//
 							// Select primary representation
@@ -1381,7 +1635,7 @@
 						}
 						if(is_array($va_object_ids) && sizeof($va_object_ids)){
 							// check for those already in set
-							$va_object_ids_in_set = $t_set->areInSet("ca_objects", $va_object_ids, $t_set->get("set_id"));
+							$va_object_ids_in_set = $t_set->areInSet("ca_objects", $va_object_ids, $t_set->get("ca_sets.set_id"));
 							$va_object_ids = array_diff($va_object_ids, $va_object_ids_in_set);
 							// insert items
 							$t_set->addItems($va_object_ids);
@@ -1674,158 +1928,5 @@
 			}
 			
 			caExportResult($this->request, $po_result, $ps_template, $ps_output_filename, $pa_options);
-		}
-		# -------------------------------------------------------
-		# Export Order Chart - this needs to be custom in order to get the info on set items
-		# -------------------------------------------------------
-		/**
-		 * 
-		 */
-		protected function _genExportOrderChart($po_result, $t_set) {
-				# --- first get all items from set and the quantity, size and notes field for the set items
-				$va_set_item_ids = $t_set->get("ca_set_items.item_id", array("returnAsArray" => true));
-				
-				$va_set_item_info = array();
-				if(is_array($va_set_item_ids) && sizeof($va_set_item_ids)){
-					$qr_set_items = caMakeSearchResult("ca_set_items", $va_set_item_ids);
-					if($qr_set_items->numHits()){
-						while($qr_set_items->nextHit()){
-							$va_set_item_info[$qr_set_items->get('ca_set_items.row_id')] = array(
-								'object_id' => $qr_set_items->get('ca_set_items.row_id'),
-								'item_id' => $qr_set_items->get('ca_set_items.item_id'),
-								'notes' => $qr_set_items->get('ca_set_items.order_information.order_notes'),
-								'quantity' => $qr_set_items->get('ca_set_items.order_information.order_quantity'),
-								'size' => $qr_set_items->get('ca_set_items.order_information.order_size')
-							);
-						}
-					}
-				
-				}
-				$va_export_info = array();
-				# --- build an array of info to export
-				if($po_result->numHits()){
-					while($po_result->nextHit()){
-						$va_export_info[$po_result->get("ca_objects.object_id")] = array(
-							"Biological Name" => $po_result->getWithTemplate("<i>^ca_objects.genus<ifdef code='ca_objects.species'> ^ca_objects.species</ifdef><ifdef code='ca_objects.variety'> '^ca_objects.variety'</ifdef></i>"),
-							"Common Name" => $po_result->get("ca_objects.preferred_labels.name"),
-							"Quantity" => $va_set_item_info[$po_result->get("ca_objects.object_id")]["quantity"],
-							"Size" => $va_set_item_info[$po_result->get("ca_objects.object_id")]["size"],
-							"Notes" => $va_set_item_info[$po_result->get("ca_objects.object_id")]["notes"]
-						);
-					}
-				}
-				$va_column_titles = array("Biological Name", "Common Name", "Quantity", "Size", "Notes");
-							
-				$vn_ratio_pixels_to_excel_height = 0.85;
-				$vn_ratio_pixels_to_excel_width = 0.135;
-
-				$va_supercol_a_to_z = range('A', 'Z');
-				$vs_supercol = '';
-
-				$va_a_to_z = range('A', 'Z');
-
-				$workbook = new PHPExcel();
-
-				// more accurate (but slower) automatic cell size calculation
-				PHPExcel_Shared_Font::setAutoSizeMethod(PHPExcel_Shared_Font::AUTOSIZE_METHOD_EXACT);
-
-				$o_sheet = $workbook->getActiveSheet();
-				// mise en forme
-				$columntitlestyle = array(
-						'font'=>array(
-								'name' => 'Arial',
-								'size' => 12,
-								'bold' => true),
-						'alignment'=>array(
-								'horizontal'=>PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
-								'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER,
-								'wrap' => true,
-								'shrinkToFit'=> true),
-						'borders' => array(
-								'allborders'=>array(
-										'style' => PHPExcel_Style_Border::BORDER_THICK)));
-				$cellstyle = array(
-						'font'=>array(
-								'name' => 'Arial',
-								'size' => 11,
-								'bold' => false),
-						'alignment'=>array(
-								'horizontal'=>PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
-								'vertical'=>PHPExcel_Style_Alignment::VERTICAL_CENTER,
-								'wrap' => true,
-								'shrinkToFit'=> true),
-						'borders' => array(
-								'allborders'=>array(
-										'style' => PHPExcel_Style_Border::BORDER_THIN)));
-
-				$o_sheet->getDefaultStyle()->applyFromArray($cellstyle);
-				$o_sheet->setTitle("CollectiveAccess");
-
-				$vn_line = 1;
-
-				$vs_column = reset($va_a_to_z);
-
-				// Column headers
-				$o_sheet->getRowDimension($vn_line)->setRowHeight(30);
-				foreach($va_column_titles as $vs_title) {
-					if($vs_column) {
-						$o_sheet->setCellValue($vs_supercol.$vs_column.$vn_line,$vs_title);
-						$o_sheet->getStyle($vs_supercol.$vs_column.$vn_line)->applyFromArray($columntitlestyle);
-						if (!($vs_column = next($va_a_to_z))) {
-							$vs_supercol = array_shift($va_supercol_a_to_z);
-							$vs_column = reset($va_a_to_z);
-						}
-					}
-				}
-
-
-				$vn_line = 2 ;
-
-				foreach($va_export_info as $vn_object_id => $va_export_row) {
-					$vs_column = reset($va_a_to_z);
-	
-					$va_supercol_a_to_z = range('A', 'Z');
-					$vs_supercol = '';
-
-					// default to automatic row height. works pretty well in Excel but not so much in LibreOffice/OOo :-(
-					$o_sheet->getRowDimension($vn_line)->setRowHeight(-1);
-
-					foreach($va_column_titles as $vs_title) {
-						$vs_display_text = $va_export_row[$vs_title];
-
-						$o_sheet->setCellValue($vs_supercol.$vs_column.$vn_line, html_entity_decode(strip_tags(br2nl($vs_display_text)), ENT_QUOTES | ENT_HTML5));
-						// We trust the autosizing up to a certain point, but
-						// we want column widths to be finite :-).
-						// Since Arial is not fixed-with and font rendering
-						// is different from system to system, this can get a
-						// little dicey. The values come from experimentation.
-						if ($o_sheet->getColumnDimension($vs_supercol.$vs_column)->getWidth() == -1) {  // don't overwrite existing settings
-							if(strlen($vs_display_text)>55) {
-								$o_sheet->getColumnDimension($vs_supercol.$vs_column)->setWidth(50);
-							}
-						}
-
-						if (!($vs_column = next($va_a_to_z))) {
-							$vs_supercol = array_shift($va_supercol_a_to_z);
-							$vs_column = reset($va_a_to_z);
-						}
-					}
-
-					$vn_line++;
-				}
-
-				// set column width to auto for all columns where we haven't set width manually yet
-				foreach(range('A','Z') as $vs_chr) {
-					if ($o_sheet->getColumnDimension($vs_chr)->getWidth() == -1) {
-						$o_sheet->getColumnDimension($vs_chr)->setAutoSize(true);	
-					}
-				}
-
-				$o_writer = new PHPExcel_Writer_Excel2007($workbook);
-
-				header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-				header('Content-Disposition:inline;filename=OrderChart.xlsx ');
-				$o_writer->save('php://output');
-				exit;
 		}
  	}

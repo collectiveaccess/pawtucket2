@@ -137,8 +137,6 @@ if (!$vb_ajax) {	// !ajax
 						if($vb_write_access){
 ?>
 							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
-							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
-							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_lightbox_displayname)); ?></a></li>
 							<li><a href='#' data-set_id="<?php print $vn_set_id; ?>" data-set_name="<?php print addslashes($t_set->get("ca_sets.preferred_labels")); ?>" data-toggle='modal' data-target='#confirm-delete'>Delete <?php print ucfirst($vs_lightbox_displayname); ?></a></li>
 <?php
 						}
@@ -159,15 +157,6 @@ if (!$vb_ajax) {	// !ajax
 ?>
 						<li class="divider"></li>
 						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array('parent_id' => $vn_parent_id)); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
-						<li class="divider"></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'userGroupForm', array()); ?>"); return false;' ><?php print _t("New User Group"); ?></a></li>
-<?php
-						if(is_array($this->getVar("user_groups")) && sizeof($this->getVar("user_groups"))){
-?>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Lightbox', 'userGroupList', array()); ?>"); return false;' ><?php print _t("Manage Your User Groups"); ?></a></li>
-<?php
-						}
-?>
 					</ul>
 				</div><!-- end btn-group -->
 			</H1>
