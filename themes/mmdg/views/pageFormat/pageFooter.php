@@ -127,7 +127,7 @@
 								</ul>
 							</nav>
 							<p class="credit_text small-p">MMDG is a member of Dance/USA and the Downtown Brooklyn Arts Alliance.</p>
-							<div class="copyright_text small-p"><p>© 2021 Mark Morris Dance Group - All Rights Reserved | <a href="/privacy">Privacy Policy</a></p></div>
+							<div class="copyright_text small-p"><p>© 2021 Mark Morris Dance Group - All Rights Reserved | <a href="https://markmorrisdancegroup.org/privacy">Privacy Policy</a></p></div>
 						</div>
 					</div>
 					

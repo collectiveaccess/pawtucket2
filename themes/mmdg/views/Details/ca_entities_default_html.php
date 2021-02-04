@@ -57,7 +57,7 @@
 				<div class='col-sm-12'>
 					
 <?php					
-					if ($va_works = $t_item->get('ca_occurrences', array('restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
+					if ($va_works = $t_item->get('ca_occurrences', array('sort' => 'ca_occurrences.premiereDate', 'restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$va_related_list = array();
 						$vb_show_view_all = false;
 						foreach ($va_works as $va_work) {
@@ -97,7 +97,7 @@
 						}
 					}
 					
-					if ($va_events = $t_item->get('ca_occurrences', array('restrictToTypes' => array('event'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
+					if ($va_events = $t_item->get('ca_occurrences', array('sort' => 'ca_occurrences.eventDate', 'restrictToTypes' => array('event'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$va_related_list = array();
 						$vb_show_view_all = false;
 						foreach ($va_events as $va_event) {
@@ -143,31 +143,28 @@
 			</div><!-- end row -->
 			
 {{{<ifcount code="ca_objects" min="1">
-			<div class="row">
-				<div class="col-sm-12">
-					<H3>Object<ifcount code="ca_objects" min="2">s</ifcount></H3>
-				</div>
-			</div>
-			<div class="row">
+			<div class="unit"><H3>Object<ifcount code="ca_objects" min="2">s</ifcount></H3>
 				<div id="browseResultsContainer">
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+					<unit relativeTo="ca_objects" length="12" delimiter=" ">
+						<div class="bResultItemCol col-xs-12 col-sm-4">
+							<div class="bResultItem" id="row^ca_objects.object_id">
+								<div class="bResultItemContent"><div class="text-center bResultItemImg"><ifcount code="ca_object_representations" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></div>
+									<div class="bResultItemText">
+										<l>^ca_objects.preferred_labels.name</l>
+									</div><!-- end bResultItemText -->
+								</div><!-- end bResultItemContent -->
+							</div><!-- end bResultItem -->
+						</div><!-- end col -->
+					</unit>
 				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
+			</div><!-- end unit -->
+			<ifcount code="ca_objects" min="12">
+				<div class="unit text-center">
+					<?php print caNavLink($this->request, "View All Objects", "btn btn-default", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $t_item->get("ca_entities.entity_id"))); ?>
+				</div>
+			</ifcount>
 </ifcount>}}}
+
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">
