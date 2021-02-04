@@ -109,15 +109,14 @@
 <?php
 						print "<div class='row'><div class='col-sm-12'><div class='unit'><b>Publication Status</b><br/>";
 						switch($t_set->get("ca_sets.access")){
-							case "1":
+							case $o_lightbox_config->get("lightbox_public_access"):
 								print "Publicly available in the Gallery section of this site";
 							break;
 							# --------------------------
-							case "2":
+							case $o_lightbox_config->get("lightbox_under_review_access"):
 								print "Under review.  If approved, it will appear in the Gallery section of this site";
 							break;
 							# --------------------------
-							case "0":
 							default:
 								print "Private.  Publish to request this gallery appear in the Gallery section of this site<br/>";
 								print "<div class='unit text-center'>".caNavLink($this->request, "Publish", "btn btn-default btn-sm", "", "Lightbox", "publishRequest", array("set_id" => $t_set->get("ca_sets.set_id")))."</div>";

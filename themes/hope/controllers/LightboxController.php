@@ -138,6 +138,7 @@
          *
          */
  		function index($pa_options = null) {
+ 			# NOT USED
  			if($this->opb_is_login_redirect) { return; }
 
 			
@@ -531,7 +532,7 @@
  			$this->view->setVar("description", $ps_description);
 			
 			if($ps_mode != "parent"){
-				// palette -> needs a parent
+				// slideshow -> needs a parent
 				$pn_parent_id =  $this->request->getParameter('parent_id', pInteger);
 				if(!$pn_parent_id && !($pn_parent_id = $t_set->get("ca_sets.parent_id"))){
 					# --- new project?
@@ -553,12 +554,19 @@
 					$t_set->replaceAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
 					$t_set->update();
 				}else{
-					$t_set->set('access', (!is_null($vn_access = $this->opo_config->get('lightbox_default_access'))) ? $vn_access : 0);
+					$pn_parent_id = $this->request->getParameter('parent_id', pInteger);
+					if($pn_parent_id){
+						# --- if this is a child set, make the access match that of the parent
+						$t_parent = new ca_sets($pn_parent_id);
+						$vn_parent_access = $t_parent->get("ca_sets.access");
+					}
+					
+					$t_set->set('access', (!is_null($vn_parent_access) ? $vn_parent_access : $this->opo_config->get('lightbox_default_access')));
 					$t_set->set('table_num', $vn_object_table_num);
 					$t_set->set('type_id', $vn_set_type_user);
 					$t_set->set('user_id', $this->request->getUserID());
 					$t_set->set('set_code', $this->request->getUserID().'_'.time());
-					$t_set->set('parent_id', $this->request->getParameter('parent_id', pInteger));
+					$t_set->set('parent_id', $pn_parent_id);
 					// create new attribute
 					$t_set->addAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
 					$t_set->insert();
@@ -718,7 +726,6 @@
 
  			foreach($va_share_set_ids as $vn_share_set_id){
 				$t_item = new ca_sets_x_user_groups();
-				print "set_id: ".$vn_share_set_id." --- group_id: ".$pn_group_id." --- ";
 				$t_item->load(array('set_id' => $vn_share_set_id, 'group_id' => $pn_group_id));
 				if($t_item->get("relation_id")){
 					$t_item->setMode(ACCESS_WRITE);
@@ -1556,6 +1563,8 @@
 						$t_parent->addLabel(array('name' => $ps_parent_name), $g_ui_locale_id, null, true);
 						$pn_parent_id = $t_parent->get("set_id");
 					}
+				}else{
+					$t_parent = new ca_sets($pn_parent_id);
 				}
 				
 				// set name - if not sent, make a decent default
@@ -1570,7 +1579,7 @@
 				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->opo_config->get('user_set_type'));
 				
 				$t_set->setMode(ACCESS_WRITE);
-				$t_set->set('access', (!is_null($vn_access = $this->opo_config->get('lightbox_default_access'))) ? $vn_access : 0);
+				$t_set->set('access', (!is_null($t_parent->get("access")) ? $t_parent->get("access") : $this->opo_config->get('lightbox_default_access')));
 				$t_set->set('table_num', $vn_object_table_num);
 				$t_set->set('type_id', $vn_set_type_user);
 				$t_set->set('user_id', $this->request->getUserID());
