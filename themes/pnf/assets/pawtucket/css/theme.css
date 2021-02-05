@@ -136,7 +136,17 @@ a:hover{
 .navTitle li {
 	padding-top:17px;
 }
-
+.nav > li.mobileNavLink{
+	display:none;
+}
+@media(max-width:768px){
+	.nav > li.mobileNavLink{
+		display:block;
+	}
+	.mobileNavLinkHide{
+		display:none !important;
+	}
+}
 /* Browse Panel */
 
 .filterbylabel {
@@ -693,7 +703,7 @@ div.caMediaOverlayControls {
 }
 @media(min-width:768px){
 	.listing-content {
-		padding-right:135px;
+		padding-right:155px;
 	}	
 }
 .listLink {

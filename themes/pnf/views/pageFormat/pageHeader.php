@@ -237,6 +237,7 @@ $( document ).ready(function() {
 				</form>
 				<ul class="navbar-left navTitle"><li><?php print _t('Search The Database');?></li></ul>
 				<ul class="nav navbar-nav navbar-right">
+					<li class="mobileNavLink"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "institutions")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Institutions"), "", "", "Browse", "collections"); ?></li>
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
