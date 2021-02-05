@@ -34,6 +34,7 @@
  	$va_lists = $this->getVar('lists');
  	$va_type_info = $this->getVar('typeInfo');
  	$va_listing_info = $this->getVar('listingInfo');
+ 	global $g_ui_locale;
 ?>
 	<div class="listing-content single-lists">
 <?php 
@@ -42,9 +43,23 @@
 	$va_letter_array = array();
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
-		print "<h2>{$va_listing_info['displayName']}</h2>\n";		
+		if ($g_ui_locale == 'en_US'){
+			print "<h2>{$va_listing_info['displayName']}</h2>\n";
+		}else{
+			print "<H2>Títulos Modernizados</H2>\n";	
+		
+		}		
+	
 ?>
-		<div class="listingLetterIntro trimText">{{{modern_titles_intro}}}</div>
+		<div class="listingLetterIntro trimText">
+<?php
+		if ($g_ui_locale == 'en_US'){
+			print $this->getVar("modern_titles_intro");
+		}else{
+			print $this->getVar("modern_titles_intro_sp");
+		}
+?>
+		</div>
 <?php
 		$va_ccssusa_titles_output = array();
 		while($qr_list->nextHit()) {
@@ -99,9 +114,12 @@
 	</div>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		$('.trimText').readmore({
+		$(".trimText").readmore({
 		  speed: 75,
-		  maxHeight: 65
+		  maxHeight: 65,
+		  moreLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ MORE" : "LEER MÁS"; ?></a>",
+          lessLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ LESS" : "CERRAR"; ?></a>",
+		  
 		});
 	});
 </script>
