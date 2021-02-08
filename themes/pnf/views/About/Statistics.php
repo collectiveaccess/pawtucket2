@@ -61,7 +61,7 @@ $qr_authors = $o_browse_authors->getResults();
 			</div>
 			<hr/>
 			<div class="row">
-				<div class="col-sm-3"><p><b>NUMBER OF SUELTAS</b><br/>in each institution</p></div>
+				<div class="col-sm-3"><p><b>NUMBER OF SUELTAS</b></p></div>
 				<div class="col-sm-2">
 					<p>Running Tally<br/><?php print $q_sueltas_public->numRows(); ?> </p>
 				</div>
