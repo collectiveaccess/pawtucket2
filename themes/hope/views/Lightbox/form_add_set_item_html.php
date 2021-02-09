@@ -35,8 +35,8 @@
 	$vs_display_name = $this->getVar("display_name");
 	$vs_description_attribute 		= $this->getVar("description_attribute");
 	$va_access_values = caGetUserAccessValues($this->request);
-
-	$va_write_parent_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "setType" => "user", "parents_only" => true, "access" => 2));
+	$config = caGetLightboxConfig();
+	$va_write_parent_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "setType" => $config->get("user_set_type"), "parents_only" => true, "access" => 2));
 	#$va_write_palette_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "setType" => "palette", "access" => 2));
 	$va_object_ids = explode(";", $this->getVar("object_ids"));
 ?>

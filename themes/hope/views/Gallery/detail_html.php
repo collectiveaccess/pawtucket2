@@ -9,12 +9,19 @@
 	$pn_parent_id = $this->getVar("parent_id");
 	$vs_parent_name = $this->getVar("parent_name");
 	$vs_parent_description = $this->getVar("parent_description");
+	
+	$this->opo_config = caGetLightboxConfig();
+	$vn_under_review_access = $this->opo_config->get('lightbox_under_review_access');
 		
 	if($pn_parent_id && is_array($va_set_navigation) && sizeof($va_set_navigation)){
 ?>
 	<div class="row">
 		<div class="col-sm-12">
 <?php
+			if($t_set->get("ca_sets.access") == $vn_under_review_access){
+				print "<div class='alert alert-warning' role='alert'>Under review for publication.  Only visable by logged in Administrators.</div>";
+			}
+
 			print "<H1>".$this->getVar("section_name").": ".$this->getVar("parent_name")."</H1>";
 			if($vs_parent_desc = $this->getVar("parent_description")){
 				print "<p class='trimText'>".$vs_parent_desc."</p>";

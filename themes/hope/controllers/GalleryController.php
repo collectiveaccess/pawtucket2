@@ -46,14 +46,14 @@
  			
  			switch(strToLower($function)){
 				case "user":
-					$gallery_set_type_id = "user";
+					$gallery_set_type_id = "user_curated";
 					$section_name = $this->config->get('gallery_section_name_user');
 				break;
 				# -----------------------------
 				case "index":
 				case "kam":
 				default:
-					$gallery_set_type_id = "public_presentation";
+					$gallery_set_type_id = "kam_curated";
 					$section_name = $this->config->get('gallery_section_name_kam');
 				break;
 				# -----------------------------
@@ -92,13 +92,13 @@
  			if(in_array(strToLower($function), array("index", "kam", "user"))){
  				switch(strToLower($function)){
  					case "user":
- 						$gallery_set_type_id = "user";
+ 						$gallery_set_type_id = "user_curated";
  					break;
  					# -----------------------------
  					case "index":
  					case "kam":
  					default:
- 						$gallery_set_type_id = "public_presentation";
+ 						$gallery_set_type_id = "kam_curated";
  					break;
  					# -----------------------------
  				}
@@ -127,7 +127,7 @@
 						}
 						
 						# --- if this is a set of sets, the representative image should be from the child set
-						$q_sets = $o_db->query("SELECT s.set_id FROM ca_sets s WHERE s.parent_id = ? AND s.access IN (".join(", ", $this->opa_access_values).") ORDER BY s.rank ASC LIMIT 1", $set_id);
+						$q_sets = $o_db->query("SELECT s.set_id FROM ca_sets s WHERE s.parent_id = ? AND s.deleted = 0 AND s.access IN (".join(", ", $this->opa_access_values).") ORDER BY s.rank ASC LIMIT 1", $set_id);
 						if($q_sets->numRows()){
 							while($q_sets->nextRow()){
 								$t_child = new ca_sets($q_sets->get("ca_sets.set_id"));
@@ -168,7 +168,7 @@
  				$this->view->setVar("parent_description", $vs_parent_description);
 				# --- get all children or siblings of this set
 				$o_db = new Db();
-				$q_sets = $o_db->query("SELECT s.set_id, csl.name FROM ca_sets s INNER JOIN ca_set_labels AS csl ON s.set_id = csl.set_id WHERE s.parent_id = ? AND s.access IN (".join(", ", $this->opa_access_values).")", $parent_id);
+				$q_sets = $o_db->query("SELECT s.set_id, csl.name FROM ca_sets s INNER JOIN ca_set_labels AS csl ON s.set_id = csl.set_id WHERE s.parent_id = ? AND s.deleted = 0 AND s.access IN (".join(", ", $this->opa_access_values).")", $parent_id);
 				$va_children = array();
 				if($q_sets->numRows()){
 					while($q_sets->nextRow()){
@@ -262,7 +262,7 @@
  			
  			# --- if this is a set of sets, the representative image should be from the child set
 			$o_db = new Db();
-			$q_sets = $o_db->query("SELECT s.set_id FROM ca_sets s WHERE s.parent_id = ? AND s.access IN (".join(", ", $this->opa_access_values).") ORDER BY s.rank ASC LIMIT 1", $set_id);
+			$q_sets = $o_db->query("SELECT s.set_id FROM ca_sets s WHERE s.parent_id = ? AND s.deleted = 0 AND s.access IN (".join(", ", $this->opa_access_values).") ORDER BY s.rank ASC LIMIT 1", $set_id);
 			if($q_sets->numRows()){
 				while($q_sets->nextRow()){
 					$t_child = new ca_sets($q_sets->get("ca_sets.set_id"));
@@ -465,7 +465,7 @@
  		 */
  		private function _getSet($set_id) {
  			$t_set = new ca_sets();
- 			if (!$t_set->load($set_id) || (sizeof($this->opa_access_values) && !in_array((string)$t_set->get('access'), $this->opa_access_values, true))) { throw new ApplicationException(_t('Invalid set')); }
+ 			if (!$t_set->load($set_id) || (sizeof($this->opa_access_values) && !in_array($t_set->get('ca_sets.access'), $this->opa_access_values))) { throw new ApplicationException(_t('Invalid set')); }
  			return $t_set;
  		}
  		# -------------------------------------------------------
