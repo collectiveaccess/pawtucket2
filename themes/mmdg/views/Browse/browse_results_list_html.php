@@ -128,7 +128,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 				<div class='bResultListItemContent'>
 					<div class='bResultListItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+						{$vs_label_detail_link}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
 			</div><!-- end bResultListItem -->
