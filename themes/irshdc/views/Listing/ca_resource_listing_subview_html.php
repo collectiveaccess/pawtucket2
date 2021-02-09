@@ -63,7 +63,7 @@
 			}
 
 			$va_col_content[$vn_i] .= "
-				<div class='listingContainer'>
+				<div class='listingContainer listingContainerResources'>
 					<div class='listingContainerImgContainer'>".caDetailLink($this->request, $vs_image, '', 'ca_objects', $qr_list->get("object_id"))."</div>
 					<div class='listingContainerDesc'>
 						<H2>".$qr_list->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>')."</H2>

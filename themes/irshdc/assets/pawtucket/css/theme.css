@@ -1280,6 +1280,10 @@ a.readmore-js-toggle {
 	height: 250px;
 	object-fit: cover;
 }
+.listingContainerResources .listingContainerImgContainer img{
+	width:100%;
+	height: auto;
+}
 .listingContainer .listingContainerDesc {
 	background-color:#605b4b;
 	color:#fff;
