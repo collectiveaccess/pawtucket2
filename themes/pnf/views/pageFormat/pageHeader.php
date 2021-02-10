@@ -75,6 +75,15 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4CLSP0B9W0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+ 
+  gtag('config', 'G-4CLSP0B9W0');
+</script>
 </head>
 <body>
 	<div id="page" class="hfeed">
@@ -135,10 +144,18 @@ $( document ).ready(function() {
 							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><?php print caNavLink($this->request, _t('Playwrights, translators, and adaptors'), '', '', 'Listing', 'playwrights'); ?></a></li>
 							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><?php print caNavLink($this->request, _t('Printers, publishers, booksellers, and bookstores'), '', '', 'Listing', 'printers');?></a></li>
 							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/"><?php print _t('Printed catalogs of Spanish drama and comedias sueltas in US and Canadian library collections');?></a></li>						
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Titles modernized'), '', '', 'Listing', 'ccssusa');?></li>						
 						</ul>
 					</li>
 					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/"><?php print _t('Essays');?></a></li>
-					<li id="menu-item-207" class="menu-item menu-item-type-post_type_archive menu-item-object-news menu-item-207"><a href="/news/"><?php print _t('Zarzuela');?></a></li>
+					<li id="menu-item-911" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children current-menu-parent current-menu-ancestor menu-item-911"><a href="#">Zarzuela</a>
+						<ul class="sub-menu">
+							<li id="menu-item-207" class="menu-item menu-item-type-post_type_archive menu-item-object-news current-menu-item menu-item-207"><a href="/news/">News &amp; Updates</a></li>
+							<li id="menu-item-ca1" class="menu-item menu-item-type-post_type menu-item-object-news menu-item-ca1"><?php print caNavLink($this->request, _t('Statistical Table'), '', '', 'About', 'Statistics');?></a></li>
+							
+						</ul>
+					</li>
+					
 					<li id="menu-item-523" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-523 aboutMenu"><a href="#"><?php print _t('About');?></a>
 						<ul class="sub-menu">
 							<li id="menu-item-441" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-441"><a href="/about-2/"><?php print _t('About this website');?></a></li> 
@@ -229,6 +246,7 @@ $( document ).ready(function() {
 				</form>
 				<ul class="navbar-left navTitle"><li><?php print _t('Search The Database');?></li></ul>
 				<ul class="nav navbar-nav navbar-right">
+					<li class="mobileNavLink"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "institutions")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Institutions"), "", "", "Browse", "collections"); ?></li>
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>

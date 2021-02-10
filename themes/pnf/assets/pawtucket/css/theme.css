@@ -136,7 +136,17 @@ a:hover{
 .navTitle li {
 	padding-top:17px;
 }
-
+.nav > li.mobileNavLink{
+	display:none;
+}
+@media(max-width:768px){
+	.nav > li.mobileNavLink{
+		display:block;
+	}
+	.mobileNavLinkHide{
+		display:none !important;
+	}
+}
 /* Browse Panel */
 
 .filterbylabel {
@@ -624,6 +634,9 @@ a.facetApply, button.facetApplySlider {
 	height: 115px;
 	padding-bottom:0px;
 } 
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a{
+	display:inline-block;
+}
 
 .detail .detailNavBgLeft .fa, .detail .detailNavBgRight .fa {
 	color: #7f4539;
@@ -688,6 +701,11 @@ div.caMediaOverlayControls {
 	padding-right:85px;
 	padding-top:10px;
 }
+@media(min-width:768px){
+	.listing-content {
+		padding-right:155px;
+	}	
+}
 .listLink {
 	font-family: 'Oxygen', sans-serif;
     font-size: 14px;
@@ -707,6 +725,9 @@ div.caMediaOverlayControls {
 	padding-left: 100px;
 	padding-right: 185px;
 	background-color:#FFF;
+}
+#bibHeading H2{
+	margin-top: 30px;
 }
 .callout{
 	font-family: 'Quintessential', cursive;
@@ -763,6 +784,11 @@ div.caMediaOverlayControls {
 	color: #7f4539;
 	font-family: 'Lusitana', serif;
 }
+/*@media(min-width:768px){
+	.listingLetterIntro{
+		padding-right: 150px;
+	}
+}*/
 .listingLetterIntro p b, .listingLetterIntro b, .listingLetterIntro p strong, .listingLetterIntro strong {
 	line-height: 1.3em;
 	font-size: 17px;
@@ -944,4 +970,24 @@ div.caMediaOverlayControls {
 }
 .tl-timeline h1 a, .tl-timeline h2 a, .tl-timeline h3 a{
 	font-size:18px !important;
+}
+a.readmore-js-toggle{
+	color: #7f4539;
+	font-style: italic;
+	font-weight: bold;
+}
+.listing-content a.readmore-js-toggle{
+	color: #7f4539;
+	padding-top: 0px;
+	top: -15px;
+	display: block;
+	position: relative;
+}
+
+#statistics .statisticsIntro {
+    margin-bottom: 25px;
+    line-height: 1.5em;
+    font-size: 20px;
+    color: #7f4539;
+    font-family: 'Lusitana', serif;
 }
