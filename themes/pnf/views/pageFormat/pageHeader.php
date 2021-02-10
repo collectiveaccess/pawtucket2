@@ -75,6 +75,15 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4CLSP0B9W0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+ 
+  gtag('config', 'G-4CLSP0B9W0');
+</script>
 </head>
 <body>
 	<div id="page" class="hfeed">
