@@ -65,6 +65,9 @@
 
 	</div>
 	<div class="col-sm-6">
+<?php
+	if($vb_write_access){
+?>
 		<form id="setItemForm{{{item_id}}}">					
 			<div class='form-group'>
 				<label for='notes' class='control-label'>Caption</label>
@@ -77,7 +80,12 @@
 			<p class="saving" style="display:none;">
 				saving....
 			</p>
-		</form>		
+		</form>	
+<?php
+	}else{
+		print "<b>Caption</b><br/>".(($vs_tmp = $this->getVar("set_item_caption")) ? $vs_tmp : "<small>No caption available</small>");
+	}
+?>	
 	</div>
 	<div class="col-sm-1">
 <?php

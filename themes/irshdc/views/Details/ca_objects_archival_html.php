@@ -192,10 +192,15 @@ if($vs_mode == "map"){
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.curators_comments.comments">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial Comment</h6>
 								<div class="trimText">^ca_objects.curators_comments.comments</div>
 							</div>
 						</ifdef>}}}
+						{{{<if rule="^ca_objects.show_photo_boilerplate =~ /Yes/">
+							<div class="unit" data-toggle="popover" title="Source" data-content="<?php print $this->getVar("photo_boilerplate_source"); ?>"><h6>About Residential School Photographs</h6>
+								<div class="trimText"><?php print $this->getVar("photo_boilerplate"); ?></div>
+							</div>
+						</if>}}}
 						{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
 								<div class="trimText">^ca_objects.community_input_objects.comments_objects</div>

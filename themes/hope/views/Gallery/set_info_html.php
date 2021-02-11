@@ -1,5 +1,8 @@
 <?php
 	$va_set_item = $this->getVar("set_item");
+	$t_set = $this->getVar("set");
+	$this->opo_config = caGetLightboxConfig();
+	$vn_under_review_access = $this->opo_config->get('lightbox_under_review_access');
 ?>
 <div class="row">
 	<div class='col-xs-12 col-sm-6'>
@@ -8,6 +11,9 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-6'>
 <?php
+		if($t_set->get("ca_sets.access") == $vn_under_review_access){
+			print "<div class='alert alert-warning' role='alert'>Under review for publication.  Only visable by logged in Administrators.</div>";
+		}
 		print "<H2>".caNavLink($this->request, $this->getVar("label"), "", "", "Gallery", $this->getVar("set_id"))."</H2>";
 		#print "<p><small class='uppercase'>".$this->getVar("num_items")." ".(($this->getVar("num_items") == 1) ? _t("item") : _t("items"))."</small></p>";
 		print "<p>".$this->getVar("description")."</p>";

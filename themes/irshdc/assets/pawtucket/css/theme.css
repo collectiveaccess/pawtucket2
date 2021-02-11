@@ -1275,10 +1275,17 @@ a.readmore-js-toggle {
 	max-height:400px;
 	overflow:hidden;
 }
-.listingContainer img{
+.listingContainerExhibitions .listingContainerImgContainer img{
 	width:100%;
 	height: 250px;
 	object-fit: cover;
+}
+.listingContainerResources .listingContainerImgContainer img{
+	width:100%;
+	height: auto;
+}
+.listingContainerResources .listingContainerImgContainer {
+	max-height:650px;
 }
 .listingContainer .listingContainerDesc {
 	background-color:#605b4b;
