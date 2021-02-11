@@ -231,6 +231,10 @@ a.browseRemoveFacet .glyphicon {
     color: #000;
     margin: 0px 0px 5px 0px;
 }
+.detail, .detail a, .detail a:hover {
+    color: #000;
+    font-size: 14px;
+}
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a, .detail .detailNavBgLeft a:hover, .detail .detailNavBgRight a:hover {
     color: #000;
     font-size: 18px;
@@ -239,9 +243,15 @@ a.browseRemoveFacet .glyphicon {
     margin-top: -10px;
     background-color:#FFF;
 }
-.detail, .detail a, .detail a:hover {
+.detail .navTop a{
+	background-color:transparent;
+}
+.detail .navTop a:hover{
+	text-decoration:none;
+}
+.detail .navTop a .small {
+    font-size: 8px;
     color: #000;
-    font-size: 14px;
 }
 .detail label {
     display: block;
@@ -282,15 +292,3 @@ footer{
 .bCriteria strong{
 	padding-left:5px;
 }
-
-
-
-
-
-
-
-
-
-
-
-

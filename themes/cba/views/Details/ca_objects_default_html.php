@@ -162,7 +162,7 @@
 			
 ?>
 				{{{<ifdef code="ca_objects.lcsh_terms"><div class="unit"><label>Library of Congress Subject Headings:</label>^ca_objects.lcsh_terms%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.external_link"><div class="unit"><label>Link:</label><unit relativeTo="ca_objects.external_link" delmiiter="<br/>"><a href='^ca_objects.url_entry' target='_blank'>^ca_objects.url_source</a></unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.external_link"><div class="unit"><label>Link:</label><unit relativeTo="ca_objects.external_link" delimiter="<br/>"><a href='^ca_objects.external_link.url_entry' target='_blank'>^ca_objects.external_link.url_source</a></unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.descritpion"><div class="unit"><label>Description:</label>^ca_objects.description%convertLinkBreaks=1</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.parent_id"><div class="unit"><label>Part of:</label><unit relativeTo="ca_objects.parent"><l>^ca_objects.parent.preferred_labels.name</l></unit></div></ifdef>}}}
 				
