@@ -20,17 +20,18 @@
 			$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
 			if($q_objects->numHits()){
 				while($q_objects->nextHit()){
-					$va_images[$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
+					$va_images[$q_objects->get("ca_entity_labels.surname", array("restrictToRelationshipTypes" => array("creator", "creator_website")))." ".$q_objects->get("ca_objects.preferred_labels.name")." ".$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
 				}
 			}
 		}
 	}
+	ksort($va_images);
 	# --- representations are installation shots
 	$o_representations = $t_item->getRepresentationsAsSearchResult(array("checkAccess" => $va_access_values));
 	if(in_array($ps_view, array("installations", "installationThumbnails"))){
 		if(is_object($o_representations) && $o_representations->numHits()){
 			while($o_representations->nextHit()){
-				$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge", array("alt" => "Installation View of ".$t_item->get("ca_occurrences.preferred_labels.name"))), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
+				$va_images[] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge", array("alt" => "Installation View of ".$t_item->get("ca_occurrences.preferred_labels.name"))), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
 			}
 		}
 	}
@@ -123,7 +124,7 @@
 						<h2>^ca_occurrences.exhibition_subtitle</h2>
 					</ifdef>}}}
 					<div class='date'>{{{^ca_occurrences.opening_closing}}}{{{<ifdef code="ca_occurrences.opening_reception"> | Opening Reception: ^ca_occurrences.opening_reception</ifdef>}}}
-					{{{<ifdef code="ca_occurrences.outside_location"><br/>^ca_occurrences.outside_location</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.outside_location"><br/>^ca_occurrences.outside_location</ifdef>}}}{{{<ifnotdef code="ca_occurrences.outside_location"><br/>46 W 90th St, Floor 2, New York, NY 10024</ifnotdef>}}}
 					</div>
 					{{{^ca_occurrences.description}}}
 				</p>
