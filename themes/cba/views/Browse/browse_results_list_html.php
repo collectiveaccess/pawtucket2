@@ -118,23 +118,23 @@
 					$vs_typecode = "";
 					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
-					#if(!$vs_image){
-					#	if ($vs_table == 'ca_objects') {
-					#		$t_list_item->load($qr_res->get("type_id"));
-					#		$vs_typecode = $t_list_item->get("idno");
-					#		if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-					#			$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-					#		}else{
-					#			$vs_image = $vs_default_placeholder_tag;
-					#		}
-					#	}else{
-					#		$vs_image = $vs_default_placeholder_tag;
-					#	}
-					#}
-					#$vs_rep_detail_link 	= "";
-					#if($vs_image){
-					#	$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
-					#}
+					if(!$vs_image){
+						if ($vs_table == 'ca_objects') {
+							$t_list_item->load($qr_res->get("type_id"));
+							$vs_typecode = $t_list_item->get("idno");
+							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+								$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+							}else{
+								$vs_image = $vs_default_placeholder_tag;
+							}
+						}else{
+							$vs_image = $vs_default_placeholder_tag;
+						}
+					}
+					$vs_rep_detail_link 	= "";
+					if($vs_image){
+						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
+					}
 					$vs_add_to_set_link = "";
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";

@@ -68,11 +68,14 @@ b, strong {
 	border-bottom: 1px dashed rgb(0,0,0);
 }
 #headerSearchInput{
-	border: 1px solid #000;
+	border:0px;
+	border-bottom: 1px solid #000;
 	padding: 0.4rem 0.7rem;
-	border-radius: 0.8rem;
+	border-radius: 0;
 	font-size: 20px;
 	color:#000;
+	box-shadow:none;
+	-websit-box-shadow:none;
 }
 .navbar-form .form-group {
 	width: 150px;
@@ -92,22 +95,51 @@ b, strong {
     padding: 0.5rem 1.4rem;
 }
 /* browse */
+.results H1{
+	margin-top:5px;
+}
 #bRefine H5, #bRefine H3, #bRefine H2{
 	color:#000;
+}
+#bRefine H2{
+	font-size:20px;
+	text-transform:none;
 }
 #bRefine{
 	background-color:#fff;
 	border-left:1px dashed rgb(0,0,0);
 	padding-left:20px;
+	padding-top:5px;
+}
+#bRefine a.more, #bRefine a.more em{
+	color:#000;
+	font-style:normal;
+}
+.results .searchCriteria, .results .searchCriteria strong{
+	font-size:16px;	
+}
+.results .searchCriteria{
+	padding-right: 5px;
 }
 .browse .btn, .sets .btn, .search .btn {
-    background-color: #fff;
+    background-color: #000;
     font-size:10px;
-    color: #000;
-    margin-left: 5px;
-	margin-right: 5px;
+    color: #fff;
+    margin-left: 0px;
+	margin-right: 10px;
 	letter-spacing: 1px;
 	font-size: 13px;
+	padding: 0.5rem 1.2rem;
+}
+.browse .btn span, .sets .btn span, .search .btn span {
+	font-family:latolight;
+	-webkit-transform:scale(1.25,1);
+    -moz-transform:scale(1.25,1);
+    -ms-transform:scale(1.25,1);
+    -o-transform:scale(1.25,1)
+    transform: scale(1.25,1);
+	display: inline-block;
+	padding-right:7px;
 }
 a.browseRemoveFacet .glyphicon {
     color: #000 !important;
@@ -116,8 +148,9 @@ a.browseRemoveFacet .glyphicon {
 	left:15px;
 }
 #searchOptions .btn-group {
-	font-size:12px;
+	font-size:16px;
 	font-family: Helvetica,Arial,sans-serif;
+	letter-spacing: .75px;
 }
 #searchOptions .btn-group em {
 	font-weight:bold;
@@ -132,7 +165,7 @@ a.browseRemoveFacet .glyphicon {
     vertical-align: middle;
     margin-top: 7px;
     display: inline-block;
-    border-top: #999 4px solid;
+    border-top: #000 4px solid;
 }
 .dropdown-menu > li > a:hover {
 	background-color: #f7f7f7;
@@ -145,21 +178,31 @@ a.browseRemoveFacet .glyphicon {
     margin-top: 5px;
     border-radius: 0px;
     border: 0px;
-    padding-left: 5px;
+    padding-left: 0px;
     padding-right: 5px;
-    background-color: #fafafa;
+    background-color: #fff;
     text-align:left;
     text-transform:capitalize;
     margin-left:0px;
     margin-right:0px;
+    color:#000;
 }
 #searchOptions .btn-group a, #searchOptions .btn-group a:hover {
-    padding-left: 5px;
+    padding-left: 0px;
+    text-transform: uppercase;
 }
-#searchOptions .dropdown-menu > li > a{
+#searchOptions .dropdown-menu > li > a, #searchOptions .dropdown-menu > li > a:hover{
 	text-transform:capitalize;
+	padding-left:5px;
+	font-size:13px;
 }
-
+#searchOptions .btn-group em{
+	font-style:normal;
+}
+.btn:active, .btn.active {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
 
 
 .resultItemColImg, .resultItemColList{
@@ -216,7 +259,9 @@ a.browseRemoveFacet .glyphicon {
 .resultTextImg small, .resultTextList small {
     color: #000;
 }
-
+.resultImageList .bResultItemImgPlaceholder {
+    padding: 20px;
+}
 
 
 
@@ -253,12 +298,57 @@ a.browseRemoveFacet .glyphicon {
     font-size: 8px;
     color: #000;
 }
+.detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small{
+	color:#000;
+	font-size: 14px;
+	padding-top: 5px;
+}
+.detail .detailNavBgLeft, .detail .detailNavBgRight{
+	width:65px;
+}
 .detail label {
     display: block;
     font-size: 14px;
     color: #000;
     margin: 15px 0px 3px 0px;
     font-family: Helvetica,Arial,sans-serif;
+}
+.detail HR {
+    color: #000;
+}
+.detailRightCol{
+	margin-top:30px;
+}
+@media(min-width:768px){
+	.detailRightCol{
+		border-left:1px dashed rgb(0,0,0);
+		margin-top:0px;
+	}
+}
+#detailRepresentationThumbnails a img{
+	border:0px;
+	padding:0px;
+}
+#detailRepresentationThumbnails .smallpadding{
+	padding-top: 12px;
+	padding-bottom: 0px;
+}
+.detail #detailRepNav a{
+	color:#000;
+}
+@media(min-width:768px){
+	.detailMainRow {
+		display: -webkit-box;
+		display: -webkit-flex;
+		display: -ms-flexbox;
+		display:         flex;
+		flex-wrap: wrap;
+	}
+
+	.detailMainRow > [class*='col-'] {
+		display: flex;
+		flex-direction: column;
+	}
 }
 /* footer */
 footer{
@@ -272,7 +362,7 @@ footer address{
 	line-height: 1.25;
 }
 footer{
-	margin-top: 100px;
+	margin-top: 15px;
 }
 
 .jcarousel ul.list li::before, .jcarousel ul:not([class]) li::before {
@@ -288,7 +378,4 @@ footer{
 #bRefine a {
     color: #000;
     font-size: 13px;
-}
-.bCriteria strong{
-	padding-left:5px;
 }
