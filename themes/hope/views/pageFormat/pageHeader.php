@@ -37,6 +37,9 @@
 		$va_user_links[] = '<li class="divider nav-divider"></li>';
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'parent_list', array())."</li>";
+			if($this->request->hasRole("admin")){
+				$va_user_links[] = "<li>".caNavLink($this->request, "Publication Requests", '', '', 'Lightbox', 'publishRequestsList', array())."</li>";
+			}
 		}
 		if(caDisplayClassroom($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";

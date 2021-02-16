@@ -1,0 +1,282 @@
+/* gray bg: #666666;  Dark green nav: #2b7c74; Light green nav: #529b8a; */
+
+@font-face {
+    font-display: block;
+    font-family:"Brandon-Grot-W01-Light";
+    src:url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/e00ba30a-0bf3-4c76-9392-8641fa237a92.eot?#iefix");
+    src:url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/e00ba30a-0bf3-4c76-9392-8641fa237a92.eot?#iefix") format("eot"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/69b40392-453a-438a-a121-a49e5fbc9213.woff2") format("woff2"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/9362bca5-b362-4543-a051-2129e2def911.woff") format("woff"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/85060878-ca6c-43cc-ac31-7edccfdca71b.ttf") format("truetype"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/47f089a6-c8ce-46fa-b98f-03b8c0619d8a.svg#47f089a6-c8ce-46fa-b98f-03b8c0619d8a") format("svg");
+}
+@font-face {
+    font-display: block;
+    font-family: "DIN-Next-W01-Light";
+    src: url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/3e0b2cd7-9657-438b-b4af-e04122e8f1f7.eot?#iefix");
+    src: url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/3e0b2cd7-9657-438b-b4af-e04122e8f1f7.eot?#iefix") format("eot"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/bc176270-17fa-4c78-a343-9fe52824e501.woff") format("woff"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/3516f91d-ac48-42cd-acfe-1be691152cc4.ttf") format("truetype"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/d1b1e866-a411-42ba-8f75-72bf28e23694.svg#d1b1e866-a411-42ba-8f75-72bf28e23694") format("svg");
+}
+@font-face {
+    font-display: block;
+    font-family: "DIN-Next-W02-Light";
+    src: url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/48e5a0e1-2d56-46e5-8fc4-3d6d5c973cbf.eot?#iefix");
+    src: url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/48e5a0e1-2d56-46e5-8fc4-3d6d5c973cbf.eot?#iefix") format("eot"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/07d62b21-8d7a-4c36-be86-d32ab1089972.woff") format("woff"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/c0050890-bbed-44b9-94df-2611d72dbb06.ttf") format("truetype"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/9f774d17-c03a-418e-a375-34f3beecbc7a.svg#9f774d17-c03a-418e-a375-34f3beecbc7a") format("svg");
+}
+@font-face {
+    font-display: block;
+    font-family: "DIN-Next-W10-Light";
+    src: url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/3d009cd7-c8fe-40c0-93da-74f4ea8c530b.eot?#iefix");
+    src: url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/3d009cd7-c8fe-40c0-93da-74f4ea8c530b.eot?#iefix") format("eot"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/a9e95a29-98a7-404a-90ee-1929ad09c696.woff") format("woff"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/0a7663fd-eae8-4e50-a67a-225271f8cceb.ttf") format("truetype"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/58ae9be9-5d95-44b6-8b6c-e6da6a46822c.svg#58ae9be9-5d95-44b6-8b6c-e6da6a46822c") format("svg");
+}
+@font-face {
+    font-display: block;
+    font-family:"DINNeuzeitGroteskLTW01-_812426";
+    src:url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/b41558bd-2862-46c0-abf7-536d2542fa26.eot?#iefix");
+    src:url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/b41558bd-2862-46c0-abf7-536d2542fa26.eot?#iefix") format("eot"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/5cee8d6e-89ad-4d8c-a0ac-584d316b15ae.woff2") format("woff2"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/388ef902-2c31-4818-abb1-a40dcd81f6d6.woff") format("woff"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/29c60077-2614-4061-aa8d-5bcfdf7354bb.ttf") format("truetype"),url("//static.parastorage.com/services/third-party/fonts/user-site-fonts/fonts/76250d27-b353-4f3b-90c6-0ff635fabaab.svg#76250d27-b353-4f3b-90c6-0ff635fabaab") format("svg");
+}
+@font-face {
+	font-display: block;
+	font-family: 'Questrial';
+	font-style: normal;
+	font-weight: 400;
+	src: local('Questrial'), local('Questrial-Regular'), url(https://fonts.gstatic.com/s/questrial/v9/QdVUSTchPBm7nuUeVf70viFluW44JQ.woff2) format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@import url('https://fonts.googleapis.com/css?family=Quattrocento:400,700');
+
+body{
+	margin-bottom:80px;
+}
+#pageArea{
+	background-color:#FFFFFF;
+}
+.bg_ltgray{
+	background-color: #f3f3f3;
+}
+.bh_ltTeal{
+	background-color: #c5dfd9;
+	background-color: #dbeae7;
+}
+.btn-default, .browse .btn-default, .gallery .btn-default{
+	background-color:#2b7c74;
+}
+.btn-default:hover, .browse .btn-default:hover, .gallery .btn-default:hover{
+	background-color:#529b8a;
+}
+H1, h1, H2, h2, H3, h3{
+	/*font-family: dinneuzeitgroteskltw01-_812426, sans-serif;*/
+	font-family: Quattrocento;
+}
+@media (min-width: 768px) {
+	ul.menuItems {
+		width:100%;
+		border-top:solid 1px #ddd;
+	}
+	.menuItems.navbar-nav > li > a {
+		padding-top:5px;
+		padding-bottom:5px;
+	}
+	.navbar-collapse .navbar-nav.navbar-right:last-child {
+		margin-right:0px;
+	}
+	.container.menuBar {
+		padding:0px;
+	}
+	.navbar > .container .navbar-brand {
+		margin-left:0px;
+	}
+}
+.navbar-collapse, .navbar{
+	background-color:#666666;
+}
+.navbar-default .navbar-brand, .navbar-default a.navbar-brand:hover {
+    font-family:brandon-grot-w01-light, sans-serif;
+    font-size:20px;
+    width:375px;
+    color:#FFFFFF;
+    line-height:32px;
+}
+.navbar-default .navbar-brand b{
+	line-height:1em;
+	font-family: Quattrocento;
+    font-weight:400;
+    font-size:22px;
+    text-transform:uppercase;
+}
+.navbar-brand img {
+    float: left;
+    width: 90px;
+    margin-right:20px;
+}
+.navbar .formOutline{
+	background-color:#FFF;
+	border:0px;
+}
+@media(min-width:768px){
+	.navbar-form{
+		margin-top:20px;
+		margin-right:15px;
+	}
+}
+ul.menuItems{
+	background-color:#2b7c74;
+	border:0px;
+}
+.navbar-nav > li{
+	border-right:1px solid #666;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+    color: #FFF;
+    background-color: #529b8a;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #FFF;
+    font-family:dinneuzeitgroteskltw01-_812426, sans-serif;
+    text-transform:uppercase;
+    font-size:14px;
+    line-height:29px;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
+	background-color:#529b8a;
+	color:#FFF;
+}
+#footer, #footer a{
+	background-color:#666;
+	color:#fff;
+	text-align:center;
+	font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;
+	line-height:1.2em;
+	font-size: 14px;
+	padding-top:25px;
+}
+
+.detail, .staticPage {
+    font-size: 16px;
+}
+.detail label{
+	font-family: Quattrocento;
+}
+.detail h1 {
+    font-size: 24px;
+}
+.front H1 {
+    font-size: 32px;
+    line-height:1.5em;
+    text-align:center;
+    /*font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;*/
+    font-family: Quattrocento;
+    font-weight:700;
+    padding-top: 15px;
+    color:#454545;
+    margin:60px 0px 100px 0px;
+}
+/* styles for front slideshow also apply to the Exhibition slideshow */
+.frontSlide img {
+    height: 300px;
+    width: auto;
+}
+.exhibition .frontSlide img {
+    height: 400px;
+    width: auto;
+}
+.frontSlide {
+    position: relative;
+    background-color: #f3f3f3;
+    padding: 20px 10px 20px 10px;
+    text-align: center;
+}
+.front .jcarousel-pagination{
+	margin-top:10px;
+}
+.frontSlide .frontSlideCaption, .frontSlide:hover .frontSlideCaption {
+    position: relative;
+    opacity:1;
+    background-color: #666666;
+    font-family: Quattrocento;
+    font-weight:400;
+    font-size:16px;
+}
+
+
+.front H2{
+	/*font-family: dinneuzeitgroteskltw01-_812426, sans-serif;*/
+	font-family: Quattrocento;
+    font-weight:700;
+	font-size: 24px;
+	text-align:center;
+}
+.frontGallerySlideCaption{
+	font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;
+	font-weight:bold;
+}
+
+/* exhibition */
+.exhibition H1 {
+    font-size: 32px;
+    line-height:1.5em;
+    text-align:center;
+    /*font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;*/
+    font-family: Quattrocento;
+    text-transform:none;
+    font-weight:700;
+    padding-top: 15px;
+    color:#000;
+    margin:10px 0px 20px 0px;
+}
+.exhibition .introduction{
+	font-size:16px;
+	line-height:1.5em;
+	margin-bottom:30px;
+}
+.exhibitionItem{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	padding:10px;
+	margin-bottom:30px;
+	
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+	background-color:#407e77;
+	
+}
+.exhibitionItemImage img{
+	width:100%;
+	height:auto;
+}
+.exhibitionItemRow {
+	display: flex;
+    align-items: center;
+}
+.exhibitionItemText a{
+	font-family: Quattrocento;
+	font-size:20px;
+	line-height:1.2;
+	color: #454545;
+	color:#FFF;
+}
+
+/* detail */
+.entityImages{
+	padding:30px 30px 0px 30px;
+}
+.entityImages img{
+	width:100%;
+	height:500px;
+	object-fit:contain;
+}
+.entityMain img{
+	text-align:center;
+}
+.entityMain{
+	margin-bottom:30px;
+}
+.entityImagesThumbs > div{
+	padding-bottom:30px;
+}
+.entityImagesThumbs img{
+	width:100%;
+	height:auto;
+}
+.mainImageCaption{
+	padding-top:5px;
+	text-align:center;
+}
+.detail #detailRepNav {
+    font-size: 24px;
+}

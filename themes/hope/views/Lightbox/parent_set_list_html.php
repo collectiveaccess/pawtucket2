@@ -87,8 +87,8 @@
 						<button class="btn btn-default btn-sm" data-toggle="dropdown">Options <span class="glyphicon glyphicon-cog bGear"></span></button>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id"), 'mode' => 'parent')); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
-							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'shareSetForm', array()); ?>"); return false;' ><?php print _t("Share %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
-							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setAccess', array()); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_lightbox_displayname)); ?></a></li>
+							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'shareSetForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Share %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
+							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setAccess', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Manage %1 Access", ucfirst($vs_lightbox_displayname)); ?></a></li>
 							<li><a href='#' data-set_id="<?php print $vn_set_id; ?>" data-set_name="<?php print addslashes($t_set->get("ca_sets.preferred_labels")); ?>" data-toggle='modal' data-target='#confirm-delete'>Delete <?php print ucfirst($vs_lightbox_displayname); ?></a></li>
 							<li class="divider"></li>
 							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'userGroupForm', array()); ?>"); return false;' ><?php print _t("New User Group"); ?></a></li>
@@ -107,18 +107,31 @@
 ?>
 				<div class="container parentInfo<?php print $vn_set_id; ?>" <?php print ((sizeof($va_parent_sets) > 1) && ($pn_parent_id != $vn_set_id)) ? 'style="display:none;"' : ''; ?>>					
 <?php
+						print "<div class='row'><div class='col-sm-12'><div class='unit'><b>Publication Status</b><br/>";
+						switch($t_set->get("ca_sets.access")){
+							case $o_lightbox_config->get("lightbox_public_access"):
+								print "Publicly available in the Gallery section of this site";
+							break;
+							# --------------------------
+							case $o_lightbox_config->get("lightbox_under_review_access"):
+								print "Under review.  If approved, it will appear in the Gallery section of this site";
+							break;
+							# --------------------------
+							default:
+								print "Private.  Publish to request this gallery appear in the Gallery section of this site<br/>";
+								print "<div class='unit text-center'>".caNavLink($this->request, "Publish", "btn btn-default btn-sm", "", "Lightbox", "publishRequest", array("set_id" => $t_set->get("ca_sets.set_id")))."</div>";
+							break;
+							# --------------------------
+						}
+						print "</div></div></div>";
 						if ($vs_tmp = $t_set->get("ca_sets.".$vs_description_field)) {
 							print "<div class='row'><div class='col-sm-12'><div class='unit'><b>Description</b><div class='trimText'>".$vs_tmp."</div></div></div></div><!-- end row -->";
 						}
-						#print "<div class='unit text-right'>
-						#			<a href='#' class='btn btn-default btn-sm' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'setForm', array('set_id' => $vn_set_id, 'mode' => 'parent'))."\"); return false;' >"._t("Edit ".$o_lightbox_config->get("lightboxDisplayNameParent"))."</a>
-						#			<a href='#' class='btn btn-default btn-sm' data-set_id=\"".$vn_set_id."\" data-set_name=\"".addslashes($t_set->get("ca_sets.preferred_labels"))."\" data-toggle='modal' data-target='#confirm-delete'><span class='glyphicon glyphicon-trash' style='color:#FFF'></span> Delete ".$o_lightbox_config->get("lightboxDisplayNameParent")."</a>
-						#		</div>";
 				
 ?>										
 					<div class="row"><div class="col-sm-12">
 <?php
-				$qr_children = ca_sets::find(array('parent_id' => $vn_set_id), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank', 'checkAccess' => $va_access_values));
+				$qr_children = ca_sets::find(array('parent_id' => $vn_set_id), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
 				$va_child_ids = array();
 				if($qr_children->numHits()){
 					while($qr_children->nextHit()){
