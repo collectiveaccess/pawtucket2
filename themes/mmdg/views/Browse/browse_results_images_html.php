@@ -116,7 +116,12 @@
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
+					if($vs_table == "ca_occurrences" && (strToLower($this->request->getAction()) == "works")){
+						# --- works
+						$vs_label_detail_link 	= $vs_label_detail_link."<br/>".caDetailLink($this->request, $qr_res->get("ca_occurrences.premiereDateField.premiereDate", array("delimiter" => ", ")), '', $vs_table, $vn_id);
+					}
 					if ($vs_table == 'ca_objects') {
+						$vs_label_detail_link 	= "<small>".$qr_res->get("{$vs_table}.type_id", array("convertCodesToDisplayText" => true))."</small><br/>".$vs_label_detail_link;
 						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 							$vs_thumbnail = $vs_default_placeholder_tag;
 						}

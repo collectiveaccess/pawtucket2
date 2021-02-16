@@ -49,7 +49,7 @@
 			}
 ?>
 					
-					{{{<ifdef code="ca_entities.biography.bio_text"><div class='unit trimText'><label>Biographical Information</label>^ca_entities.biography.bio_text%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_entities.biography.bio_text"><div class='unit trimText'><label>Bio</label>^ca_entities.biography.bio_text%convertLineBreaks=1</div></ifdef>}}}
 					
 				</div>
 			</div><!-- end row -->
@@ -143,13 +143,14 @@
 			</div><!-- end row -->
 			
 {{{<ifcount code="ca_objects" min="1">
-			<div class="unit"><H3>Object<ifcount code="ca_objects" min="2">s</ifcount></H3>
+			<div class="unit"><H3>Related Object<ifcount code="ca_objects" min="2">s</ifcount></H3>
 				<div id="browseResultsContainer">
 					<unit relativeTo="ca_objects" length="12" delimiter=" ">
 						<div class="bResultItemCol col-xs-12 col-sm-4">
 							<div class="bResultItem" id="row^ca_objects.object_id">
-								<div class="bResultItemContent"><div class="text-center bResultItemImg"><ifcount code="ca_object_representations" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></div>
+								<div class="bResultItemContent"><div class="text-center bResultItemImg"><case><ifcount code="ca_object_representations.media.medium" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" min="0" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></case></div>
 									<div class="bResultItemText">
+										<small>^ca_objects.type_id</small><br/>
 										<l>^ca_objects.preferred_labels.name</l>
 									</div><!-- end bResultItemText -->
 								</div><!-- end bResultItemContent -->
