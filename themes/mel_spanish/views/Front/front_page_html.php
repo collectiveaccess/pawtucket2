@@ -33,7 +33,7 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2">
-			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
+			<H1>{{{home_intro_text}}}</H1>
 		</div><!--end col-sm-8-->
 	</div>
 	<div class="row bg_ltgray">

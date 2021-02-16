@@ -38,6 +38,8 @@
 	src: local('Questrial'), local('Questrial-Regular'), url(https://fonts.gstatic.com/s/questrial/v9/QdVUSTchPBm7nuUeVf70viFluW44JQ.woff2) format('woff2');
 	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+@import url('https://fonts.googleapis.com/css?family=Quattrocento:400,700');
+
 body{
 	margin-bottom:80px;
 }
@@ -47,6 +49,10 @@ body{
 .bg_ltgray{
 	background-color: #f3f3f3;
 }
+.bh_ltTeal{
+	background-color: #c5dfd9;
+	background-color: #dbeae7;
+}
 .btn-default, .browse .btn-default, .gallery .btn-default{
 	background-color:#2b7c74;
 }
@@ -54,7 +60,8 @@ body{
 	background-color:#529b8a;
 }
 H1, h1, H2, h2, H3, h3{
-	font-family: dinneuzeitgroteskltw01-_812426, sans-serif;
+	/*font-family: dinneuzeitgroteskltw01-_812426, sans-serif;*/
+	font-family: Quattrocento;
 }
 @media (min-width: 768px) {
 	ul.menuItems {
@@ -81,12 +88,16 @@ H1, h1, H2, h2, H3, h3{
 .navbar-default .navbar-brand, .navbar-default a.navbar-brand:hover {
     font-family:brandon-grot-w01-light, sans-serif;
     font-size:20px;
-    width:auto;
+    width:375px;
     color:#FFFFFF;
     line-height:32px;
 }
 .navbar-default .navbar-brand b{
 	line-height:1em;
+	font-family: Quattrocento;
+    font-weight:400;
+    font-size:22px;
+    text-transform:uppercase;
 }
 .navbar-brand img {
     float: left;
@@ -138,29 +149,134 @@ ul.menuItems{
 .detail, .staticPage {
     font-size: 16px;
 }
-.front H1 {
+.detail label{
+	font-family: Quattrocento;
+}
+.detail h1 {
     font-size: 24px;
+}
+.front H1 {
+    font-size: 32px;
     line-height:1.5em;
     text-align:center;
-    font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;
+    /*font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;*/
+    font-family: Quattrocento;
+    font-weight:700;
     padding-top: 15px;
     color:#454545;
     margin:60px 0px 100px 0px;
+}
+/* styles for front slideshow also apply to the Exhibition slideshow */
+.frontSlide img {
+    height: 300px;
+    width: auto;
+}
+.exhibition .frontSlide img {
+    height: 400px;
+    width: auto;
 }
 .frontSlide {
     position: relative;
     background-color: #f3f3f3;
     padding: 20px 10px 20px 10px;
+    text-align: center;
 }
 .front .jcarousel-pagination{
 	margin-top:10px;
 }
+.frontSlide .frontSlideCaption, .frontSlide:hover .frontSlideCaption {
+    position: relative;
+    opacity:1;
+    background-color: #666666;
+    font-family: Quattrocento;
+    font-weight:400;
+    font-size:16px;
+}
+
+
 .front H2{
-	font-family: dinneuzeitgroteskltw01-_812426, sans-serif;
+	/*font-family: dinneuzeitgroteskltw01-_812426, sans-serif;*/
+	font-family: Quattrocento;
+    font-weight:700;
 	font-size: 24px;
 	text-align:center;
 }
 .frontGallerySlideCaption{
 	font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;
 	font-weight:bold;
+}
+
+/* exhibition */
+.exhibition H1 {
+    font-size: 32px;
+    line-height:1.5em;
+    text-align:center;
+    /*font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;*/
+    font-family: Quattrocento;
+    text-transform:none;
+    font-weight:700;
+    padding-top: 15px;
+    color:#000;
+    margin:10px 0px 20px 0px;
+}
+.exhibition .introduction{
+	font-size:16px;
+	line-height:1.5em;
+	margin-bottom:30px;
+}
+.exhibitionItem{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	padding:10px;
+	margin-bottom:30px;
+	
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+	background-color:#407e77;
+	
+}
+.exhibitionItemImage img{
+	width:100%;
+	height:auto;
+}
+.exhibitionItemRow {
+	display: flex;
+    align-items: center;
+}
+.exhibitionItemText a{
+	font-family: Quattrocento;
+	font-size:20px;
+	line-height:1.2;
+	color: #454545;
+	color:#FFF;
+}
+
+/* detail */
+.entityImages{
+	padding:30px 30px 0px 30px;
+}
+.entityImages img{
+	width:100%;
+	height:500px;
+	object-fit:contain;
+}
+.entityMain img{
+	text-align:center;
+}
+.entityMain{
+	margin-bottom:30px;
+}
+.entityImagesThumbs > div{
+	padding-bottom:30px;
+}
+.entityImagesThumbs img{
+	width:100%;
+	height:auto;
+}
+.mainImageCaption{
+	padding-top:5px;
+	text-align:center;
+}
+.detail #detailRepNav {
+    font-size: 24px;
 }

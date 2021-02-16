@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vs_rep_viewer = trim($this->getVar("representationViewer"));
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -17,26 +18,37 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
+				<div class='col-md-12 col-lg-12 text-center'>
 					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
-					<hr/>
 				</div><!-- end col -->
 			</div><!-- end row -->
-
 			<div class="row">			
 <?php
-			if($vs_rep_viewer){
+			if($va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values))){
 ?>
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					
-					<?php print $vs_rep_viewer; ?>
-				
-				
-				<div id="detailAnnotations"></div>
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
-					
+					<div class="entityImages bh_ltTeal">
+						<div class="entityMain">
+<?php
+						if($vs_primary = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='primary' length='1'><l>^ca_object_representations.media.mediumlarge</l><div class='mainImageCaption'>^ca_objects.preferred_labels.name</div></unit>")){
+							print $vs_primary;
+						}else{
+							print $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1'><l>^ca_object_representations.media.mediumlarge</l><div class='mainImageCaption'>^ca_objects.preferred_labels.name</div></unit>");
+						}
+						
+?>
+						</div>
+						<div class="row entityImagesThumbs">
+<?php
+						$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
+						while($q_objects->nextHit()){
+?>
+								<div class="col-xs-4"><a href="#" onClick="$('.entityMain').load('<?php print caNavUrl($this->request, '', 'Exhibition', 'getExhibitionImage', array('object_id' => $q_objects->get('ca_objects.object_id'), 'version' => 'mediumlarge')); ?>'); return false;"><?php print $q_objects->get("ca_object_representations.media.iconlarge"); ?></a></div>
+<?php
+						}
+?>					
+						</div>
+					</div>
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
@@ -46,10 +58,7 @@
 <?php
 			}
 ?>
-					{{{<ifdef code="ca_entities.life_dates"><div class='unit'><H6>Life Dates</H6>^ca_entities.life_dates</div></ifdef>}}}
-					{{{<ifdef code="ca_entities.birthplace"><div class='unit'><H6>Birthplace</H6>^ca_entities.birthplace</div></ifdef>}}}
-					{{{<ifdef code="ca_entities.nationalityCreator"><div class='unit'><H6>Nationality</H6>^ca_entities.nationalityCreator</div></ifdef>}}}
-					{{{<ifdef code="ca_entities.biography"><div class='unit'><H6>Biography</H6><div class='trimText'>^ca_entities.biography%convertLineBreaks=1</div></div></ifdef>}}}
+					{{{<ifdef code="ca_entities.biography"><div class='unit'>^ca_entities.biography%convertLineBreaks=1</div></ifdef>}}}
 					
 				</div><!-- end col -->
 			</div><!-- end row -->
