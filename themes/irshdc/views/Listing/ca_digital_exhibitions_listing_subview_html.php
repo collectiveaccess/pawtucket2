@@ -75,7 +75,7 @@
 					$vs_link_text = ($qr_list->get("ca_occurrences.nav_text")) ? $qr_list->get("ca_occurrences.nav_text") : "More Information";
 					
 					$va_col_content[$vn_i] .= "
-						<div class='listingContainer'>
+						<div class='listingContainer listingContainerExhibitions'>
 							<div class='listingContainerImgContainer'>".caDetailLink($this->request, $vs_image, '', 'ca_occurrences', $qr_list->get("occurrence_id"))."</div>
 							<div class='listingContainerDesc'>
 								<H2>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</H2>
@@ -112,7 +112,7 @@
 						#}
 
 						$va_col_content[$vn_i] .= "
-							<div class='listingContainer'>
+							<div class='listingContainer listingContainerExhibitions'>
 								<div class='listingContainerImgContainer'>".caDetailLink($this->request, $vs_image, '', 'ca_occurrences', $qr_list->get("occurrence_id"))."</div>
 								<div class='listingContainerDesc'>
 									<H2>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</H2>
