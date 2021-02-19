@@ -86,16 +86,17 @@
 					
 					if ($vn_comments_enabled) {
 ?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span><?php print _t("Comments and Tags"); ?> (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?php print _t("Comments and tags"); ?>"></span><?php print _t("Comments and Tags"); ?> (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
+						<div id='detailComments'><?php print $this->getVar("itemComments");?>
 <?php
 						if($this->request->isLoggedIn()){
-?>
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php					
+							print "<button type='button' class='btn btn-default translatedButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_objects", "item_id" => $t_object->get("ca_objects.objects_id")))."\"); return false;' >"._t("Add your tags and comment")."</button>";
 						}else{
-							print "<div id='detailComments'><button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."/"._t("Register")."</button></div>";
-
-						}								
+							print "<button type='button' class='btn btn-default translatedButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."/"._t("Register")."</button>";
+						}
+?>
+						</div><!-- end itemComments -->
+<?php							
 					}
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';

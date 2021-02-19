@@ -369,6 +369,12 @@ a.readmore-js-toggle {
     position: relative;
     z-index: 300;
 }
+.detail #detailComments button{
+	display:none;
+}
+.detail #detailComments button.translatedButton{
+	display:inline;
+}
 /* cookie notice */
 #cookieNotice{
 	position: fixed;

@@ -69,6 +69,8 @@
 			$t_media = isset($pa_data['t_media']) ? $pa_data['t_media'] : $t_subject;
 			$pa_check_access = caGetOption('checkAccess', $pa_options, null);
 			
+			$display_version = caGetOption('display_version', $pa_data['display'], null);
+			
 			// Controls
 			$vs_controls = '';
 			if ($t_subject) {
@@ -106,11 +108,14 @@
 					
 					$o_view->setVar('page', $vn_rep_index);		
 				}
-				$o_view->setVar('original_media_url', $t_instance->getMediaUrl('media', 'original', []));
+				$o_view->setVar('original_media_url', $original_media_url = $t_instance->getMediaUrl('media', 'original', []));
+				$o_view->setVar('display_media_url', $display_version ? $t_instance->getMediaUrl('media', $display_version, []) : $original_media_url);
 			} elseif(is_a($t_instance, 'ca_attribute_values')) {
-				$o_view->setVar('original_media_url', $t_instance->getMediaUrl('value_blob', 'original', []));
+				$o_view->setVar('original_media_url', $original_media_url = $t_instance->getMediaUrl('value_blob', 'original', []));
+				$o_view->setVar('display_media_url', $display_version ? $t_instance->getMediaUrl('value_blob', $display_version, []) : $original_media_url);
 			} elseif(is_a($t_instance, 'ca_site_page_media')) {
-				$o_view->setVar('original_media_url', $t_instance->getMediaUrl('media', 'original', []));
+				$o_view->setVar('original_media_url', $original_media_url = $t_instance->getMediaUrl('media', 'original', []));
+				$o_view->setVar('display_media_url', $display_version ? $t_instance->getMediaUrl('media', $display_version, []) : $original_media_url);
 			}
 			if ($t_subject && $t_instance && ($po_request->user->canDoAction('can_download_media') || $po_request->user->canDoAction('can_download_ca_object_representations'))) {
 					if (is_array($va_versions = $po_request->config->getList('ca_object_representation_download_versions'))) {
@@ -130,39 +135,15 @@
 						$vs_controls .= "</form>\n";
 						
 						if (is_array($va_ids) && (sizeof($va_ids) > 1)) {
-							$vs_controls .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".caNavLink($po_request, _t('Download all')." ".caNavIcon(__CA_NAV_ICON_DOWNLOAD__, 1, [], ['color' => 'white']), '', '*', '*', 'DownloadMedia', [$t_subject->primaryKey() => $t_subject->getPrimaryKey()]);
+							$vs_controls .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".caNavLink($po_request, _t('Download all')." ".caNavIcon(__CA_NAV_ICON_DOWNLOAD__, 1, [], ['color' => 'white']), 'xxx', '*', '*', 'DownloadMedia', [$t_subject->primaryKey() => $t_subject->getPrimaryKey()]);
 						}
 						
 						$vs_controls .= "</div>\n";
 					}
 
 			}
-			
-			if ($set_id = $po_request->getParameter('set_id', pInteger)) {
-				$t_set = new ca_sets($set_id);
-				if($t_set->isLoaded()) {
-					$row_ids = $t_set->getItemRowIDs();
-					$index = array_search($t_subject->getPrimaryKey(), array_keys($row_ids));
-					if ($index > 0) { $vs_controls.= "<a href='#' onclick='caGalleryNav(\"previous\"); return false;'>"._t('← Previous')."</a> &nbsp;&nbsp;&nbsp;"; }
-					if (($index + 1) < sizeof($row_ids)) { $vs_controls.= "<a href='#' onclick='caGalleryNav(\"next\"); return false;'>"._t('Next →')."</a>"; }
-				}
-			} elseif(is_array($row_ids = caGetOption('resultList', $pa_options, null))) {
-				$index = array_search($t_subject->getPrimaryKey(), $row_ids);
-				if ($index > 0) { 
-					$t_subject->load($row_ids[$index-1]);
-					$rep_id = $t_subject->getPrimaryRepresentationID();
-					$vs_controls.= "<a href='#' onclick='caMediaOverlayNav(\"previous\", {$row_ids[$index-1]}, {$rep_id}); return false;'>"._t('← Previous')."</a> &nbsp;&nbsp;&nbsp;"; 
-				}
-				if (($index + 1) < sizeof($row_ids)) { 
-					$t_subject->load($row_ids[$index+1]);
-					$rep_id = $t_subject->getPrimaryRepresentationID();
-					$vs_controls.= "<a href='#' onclick='caMediaOverlayNav(\"next\",{$row_ids[$index+1]}, {$rep_id}); return false;'>"._t('Next →')."</a>"; 
-				}
-			}
-			
 			$o_view->setVar('hideOverlayControls', caGetOption('hideOverlayControls', $pa_options, false));
 			$o_view->setVar('controls', $vs_controls);
-			$o_view->setVar('context', caGetOption('context', $pa_options, null));
 		
 			return $o_view->render(caGetOption('viewerWrapper', $pa_options, 'viewerWrapper').'.php');
 		}

@@ -140,6 +140,14 @@
             <div class="header-nav-folder-item">
               <a href="https://chesapeakeheartland.org/staffandpartners" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Staff &amp; Partners</a>
             </div>
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Blog</a>
+            </div>
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/events" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Events</a>
+            </div>
       </div>
     </div>
     <div class="header-nav-item header-nav-item--folder header-nav-item--active">
@@ -162,7 +170,7 @@
         
           
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/chesapeake-heartland-blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">Chesapeake Heartland Blog</a>
+              <a href="https://chesapeakeheartland.org/history-now" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">History Now</a>
             </div>
           
           
@@ -172,32 +180,6 @@
   
   
 
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/internships-fellowships" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.115789s;">
-        
-        Internships &amp; Fellowships
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/history-now" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.126316s;">
-        
-        History Now
-      </a>
-    </div>
-  
-  
-  
-
-
-  
     <div class="header-nav-item header-nav-item--collection">
       <a href="https://chesapeakeheartland.org/african-american-humanities-truck" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.136842s;">
         
@@ -205,15 +187,19 @@
       </a>
     </div>
   
-  
-  
-
-
-  
+    <div class="header-nav-item header-nav-item--folder">
+      <a class="header-nav-folder-title preFade" href="#" onClick="return false;" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0421053s;">Internships &amp; Fellowships</a>
+      <div class="header-nav-folder-content">        
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0526316s;">About Internships &amp; Fellowships</a>
+            </div>
+      </div>
+    </div>
+    
     <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/events" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.147368s;">
+      <a href="https://chesapeakeheartland.org/exhibit-main" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.147368s;">
         
-        Events
+        Jason Patterson Exhibit
       </a>
     </div>
   
@@ -358,12 +344,16 @@
             <div class="header-nav-folder-item">
               <a href="https://chesapeakeheartland.org/about-chesapeake-heartland" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.221053s;">Chesapeake Heartland</a>
             </div>
-          
-          
-        
+          	<div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/staffandpartners" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.231579s;">Staff &amp; Partners</a>
+            </div>
           
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/staffandpartners" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.231579s;">Staff &amp; Partners</a>
+              <a href="https://chesapeakeheartland.org/blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Blog</a>
+            </div>
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/events" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Events</a>
             </div>
           
           
@@ -395,7 +385,7 @@
         
           
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/chesapeake-heartland-blog" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.273684s;">Chesapeake Heartland Blog</a>
+              <a href="https://chesapeakeheartland.org/history-now" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.273684s;">History Now</a>
             </div>
           
           
@@ -403,50 +393,25 @@
       </div>
     </div>
   
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/internships-fellowships" data-animation-role="header-element" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.284211s;">
-        
-        Internships &amp; Fellowships
-      </a>
-    </div>
-  
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/history-now" data-animation-role="header-element" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.294737s;">
-        
-        History Now
-      </a>
-    </div>
-  
-  
-  
-
-
-  
     <div class="header-nav-item header-nav-item--collection">
       <a href="https://chesapeakeheartland.org/african-american-humanities-truck" data-animation-role="header-element" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.305263s;">
         
         Humanities Truck
       </a>
     </div>
-  
-  
-  
 
-
+    <div class="header-nav-item header-nav-item--folder">
+      <a class="header-nav-folder-title preFade" href="#" onClick="return false;" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0421053s;">Internships &amp; Fellowships</a>
+      <div class="header-nav-folder-content">        
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0526316s;">About Internships &amp; Fellowships</a>
+            </div>
+      </div>
+    </div>
   
     <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/events" data-animation-role="header-element" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.315789s;">
-        
-        Events
+      <a href="https://chesapeakeheartland.org/exhibit-main" data-animation-role="header-element" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.315789s;">
+        Jason Patterson Exhibit
       </a>
     </div>
   
@@ -579,21 +544,6 @@
       </div>
     </a>
   </div>
-  
-
-  <div class="container header-menu-nav-item header-menu-nav-item--collection">
-    <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.378947s;">
-      
-      Internships &amp; Fellowships
-    </a>
-  </div>
-
-  <div class="container header-menu-nav-item header-menu-nav-item--collection">
-    <a href="https://chesapeakeheartland.org/history-now" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.389474s;">
-      
-      History Now
-    </a>
-  </div>
 
   <div class="container header-menu-nav-item header-menu-nav-item--collection">
     <a href="https://chesapeakeheartland.org/african-american-humanities-truck" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.4s;">
@@ -601,11 +551,21 @@
       Humanities Truck
     </a>
   </div>
+  
+  <div class="container header-menu-nav-item">
+    <a data-folder-id="/internships-fellowships" href="/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.368421s;">
+      <div class="header-menu-nav-item-content">
+        <span class="visually-hidden">Folder:</span>
+        <span>Internships &amp; Fellowships</span>
+        <span class="chevron chevron--right"></span>
+      </div>
+    </a>
+  </div>
 
   <div class="container header-menu-nav-item header-menu-nav-item--collection">
-    <a href="https://chesapeakeheartland.org/events" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.410526s;">
+    <a href="https://chesapeakeheartland.org/exhibit-main" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.389474s;">
       
-      Events
+      Jason Patterson Exhibit
     </a>
   </div>
 
@@ -652,8 +612,23 @@
       </a>
     </div>
     
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.463158s;" tabindex="-1">
+        
+        Blog
+      </a>
     </div>
-  </div><div data-folder="/digital-archive" class="header-menu-nav-folder">
+    
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/events" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.463158s;" tabindex="-1">
+        
+        Events
+      </a>
+    </div>
+    
+    </div>
+  </div>
+  <div data-folder="/digital-archive" class="header-menu-nav-folder">
     <div class="header-menu-nav-folder-content">
     <div class="header-menu-controls container header-menu-nav-item">
       <a class="header-menu-controls-control header-menu-controls-control--active preFade " data-action="back" href="/" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.473684s;" tabindex="-1">
@@ -670,10 +645,23 @@
     </div>
     
     <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/digitalarchive-t/chesapeake-heartland-blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.505263s;" tabindex="-1">
-        
-        Chesapeake Heartland Blog
+      <a href="https://chesapeakeheartland.org/history-now" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.505263s;" tabindex="-1">History Now</a>
+    </div>
+    
+    </div>
+  </div>
+  
+
+  <div data-folder="/internships-fellowships" class="header-menu-nav-folder">
+    <div class="header-menu-nav-folder-content">
+    <div class="header-menu-controls container header-menu-nav-item">
+      <a class="header-menu-controls-control header-menu-controls-control--active preFade " data-action="back" href="/" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.473684s;" tabindex="-1">
+        <span class="chevron chevron--left"></span><span>Back</span>
       </a>
+    </div>
+    
+    <div class="container header-menu-nav-item header-menu-nav-item--external">
+      <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.484211s;" tabindex="-1">About Internships &amp; Fellowships</a>
     </div>
     
     </div>

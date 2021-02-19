@@ -27,7 +27,7 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		</div><!-- end pageArea --></div></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer" role="contentinfo">
 			<ul class="list-inline pull-right social">
 				<li><i class="fa fa-twitter" aria-label="<?php print _t("Twitter"); ?>"></i></li>
