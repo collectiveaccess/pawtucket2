@@ -152,6 +152,7 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
+		<div class='browseIntro'>{{{browse_intro}}}</div>
 		<div class='bCriteria'>
 <?php
 		if (sizeof($va_criteria) > 0) {

@@ -30,7 +30,7 @@
 		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer" role="contentinfo">
 			<div>
-				&copy; 2020 by Mel Fisher Maritime Museum
+				&copy; <?php print date("Y"); ?> by Mel Fisher Maritime Museum
 				<br/>200 Greene Street | Key West, Florida 33040
 			</div>
 		</footer><!-- end footer -->

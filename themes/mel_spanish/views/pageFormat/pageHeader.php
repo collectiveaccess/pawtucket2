@@ -78,8 +78,10 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;1,500&display=swap" rel="stylesheet"> 
 </head>
-<body>
+<body <?php print (in_array(strToLower($this->request->getController()), array("front", "browse", "search"))) ? "class='bh_ltTeal'" : ""; ?>>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
@@ -102,7 +104,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ship.jpg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."Mel Fisher Maritime Museum<b><br/>Spanish Collection</b>", "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ship.jpg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."Mel Fisher Maritime Museum<b><br/>Spanish Collections</b>", "navbar-brand", "", "","");
 ?>
 			</div>
 
