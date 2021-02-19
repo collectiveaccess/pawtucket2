@@ -27,11 +27,14 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-12'>
+					{{{<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text"><div class='unit trimText'><label>Description</label>^ca_occurrences.descriptionWithSource.prodesc_text</div></ifdef>}}}
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><div class='unit'><label>Venue<ifcount code="ca_occurrences.related" restrictToTypes="venue" min="2">s</ifcount></label><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></div></ifcount>}}}
 					
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="musician" min="1"><div class='unit trimText'><label>Musician<ifcount code="ca_entities" restrictToRelationshipTypes="musician" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="musician" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="singer" min="1"><div class='unit trimText'><label>Singer<ifcount code="ca_entities" restrictToRelationshipTypes="singer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="singer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="dancer" min="1"><div class='unit trimText'><label>Dancer<ifcount code="ca_entities" restrictToRelationshipTypes="dancer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="dancer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+					
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="related" restrictToTypes="organization" min="1"><div class='unit trimText'><label>Presenter<ifcount code="ca_entities" restrictToRelationshipTypes="related" restrictToTypes="organization" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="related" restrictToTypes="organization" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					
 				</div>
 			</div><!-- end row -->
@@ -85,13 +88,14 @@
 			
 			
 {{{<ifcount code="ca_objects" min="1">
-			<div class="unit"><H3>Object<ifcount code="ca_objects" min="2">s</ifcount></H3>
+			<div class="unit"><H3>Related Object<ifcount code="ca_objects" min="2">s</ifcount></H3>
 				<div id="browseResultsContainer">
 					<unit relativeTo="ca_objects" length="12" delimiter=" ">
 						<div class="bResultItemCol col-xs-12 col-sm-4">
 							<div class="bResultItem" id="row^ca_objects.object_id">
-								<div class="bResultItemContent"><div class="text-center bResultItemImg"><ifcount code="ca_object_representations" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></div>
+								<div class="bResultItemContent"><div class="text-center bResultItemImg"><case><ifcount code="ca_object_representations.media.medium" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" min="0" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></case></div>
 									<div class="bResultItemText">
+										<small>^ca_objects.type_id</small><br/>
 										<l>^ca_objects.preferred_labels.name</l>
 									</div><!-- end bResultItemText -->
 								</div><!-- end bResultItemContent -->

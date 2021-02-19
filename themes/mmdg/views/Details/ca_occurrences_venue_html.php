@@ -26,6 +26,8 @@
 			</div><!-- end row -->
 			<div class="row">
 				<div class='col-sm-12'>
+					{{{<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text"><div class='unit trimText'><label>Description</label>^ca_occurrences.descriptionWithSource.prodesc_text</div></ifdef>}}}
+					
 					
 <?php					
 					if ($va_works = $t_item->get('ca_occurrences.related', array('sort' => 'ca_occurrences.premiereDate', 'restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
@@ -108,11 +110,11 @@
 						}
 					}
 					
-					if ($va_entities = $t_item->get('ca_entities', array('sort' => 'ca_occurrences.surname', 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
+					if ($va_entities = $t_item->get('ca_entities', array('sort' => 'ca_entities.surname', 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$va_related_list = array();
 						$vb_show_view_all = false;
 						foreach ($va_entities as $va_entity) {
-							$va_related_list[$va_entity['relationship_typename']][] = caDetailLink($this->request, $va_entity['displayname'], '', 'ca_occurrences', $va_entity['occurrence_id']);
+							$va_related_list[$va_entity['relationship_typename']][] = caDetailLink($this->request, $va_entity['displayname'], '', 'ca_entities', $va_entity['entity_id']);
 						}
 						print "<div class='unit'><H3>People & Organizations</H3>";
 						foreach ($va_related_list as $vs_role => $va_links) {
@@ -154,13 +156,14 @@
 			</div><!-- end row -->
 			
 {{{<ifcount code="ca_objects" min="1">
-			<div class="unit"><H3>Object<ifcount code="ca_objects" min="2">s</ifcount></H3>
+			<div class="unit"><H3>Related Object<ifcount code="ca_objects" min="2">s</ifcount></H3>
 				<div id="browseResultsContainer">
 					<unit relativeTo="ca_objects" length="12" delimiter=" ">
 						<div class="bResultItemCol col-xs-12 col-sm-4">
 							<div class="bResultItem" id="row^ca_objects.object_id">
-								<div class="bResultItemContent"><div class="text-center bResultItemImg"><ifcount code="ca_object_representations" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></div>
+								<div class="bResultItemContent"><div class="text-center bResultItemImg"><case><ifcount code="ca_object_representations.media.medium" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" min="0" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></case></div>
 									<div class="bResultItemText">
+										<small>^ca_objects.type_id</small><br/>
 										<l>^ca_objects.preferred_labels.name</l>
 									</div><!-- end bResultItemText -->
 								</div><!-- end bResultItemContent -->
