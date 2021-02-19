@@ -1090,6 +1090,10 @@
 			if(caDisplayLightbox($g_request)){
 				$user_links[] = caNavLink($lightbox_section_heading, 'dropdown-item', '', 'Lightbox', 'Index', array('showList' => true));
 			}
+			
+			// TODO: make appearance configurable
+			$user_links[] = caNavLink(_t('Import'), 'dropdown-item', '', 'Import', 'Index', array('showList' => true));
+			
 			$user_links[] = caNavLink(_t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array());
 		
 			if ($g_request->config->get('use_submission_interface')) {

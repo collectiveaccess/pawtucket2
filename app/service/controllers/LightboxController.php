@@ -272,6 +272,11 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							'description' => _t('New values for lightbox')
 						],
 						[
+							'name' => 'items',
+							'type' => LightboxSchema::get('LightboxItemListInputType'),
+							'description' => _t('IDs to add to lightbox, separated by ampersands, commas or semicolons')
+						],
+						[
 							'name' => 'jwt',
 							'type' => Type::string(),
 							'description' => _t('JWT'),
@@ -302,9 +307,15 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						if($t_set->numErrors()) {
 							throw new ServiceException(_t('Could not create lightbox: %1', join($t_set->getErrors())));
 						}
-						$t_set->addLabel(['name' => $name], ca_locales::getDefaultCataloguingLocaleID(), null, true);
+						if (!$t_set->addLabel(['name' => $name], ca_locales::getDefaultCataloguingLocaleID(), null, true)) {
+							throw new ServiceException(_t('Could not add label to lightbox: %1', join($t_set->getErrors())));
+						}
 						
-						return ['id' => $t_set->getPrimaryKey(), 'name' => $t_set->get('ca_sets.preferred_labels.name')];
+						$n = 0;
+						if (is_array($add_item_ids = preg_split('![&,;]+!', $args['items']['ids'])) && sizeof($add_item_ids)) {
+							$n = $t_set->addItems($add_item_ids);
+						}
+						return ['id' => $t_set->getPrimaryKey(), 'name' => $t_set->get('ca_sets.preferred_labels.name'), 'count' => $n];
 					}
 				],
 				'edit' => [

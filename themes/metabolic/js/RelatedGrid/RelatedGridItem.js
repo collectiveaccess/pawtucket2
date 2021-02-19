@@ -3,80 +3,87 @@ import { GridContext } from './GridContext';
 
 const RelatedGridItem = (props) => {
 
-  const { setCurrentlySelectedItem, currentlySelectedItem } = useContext(GridContext)
+  const { setCurrentlySelectedItem, currentlySelectedItem, showSelectButtons, selectedGridItems, setSelectedGridItems} = useContext(GridContext);
 
 	const selectItem = (e) => {
-		setCurrentlySelectedItem(props.item.id)
+		setCurrentlySelectedItem(props.item.id);
 		e.preventDefault();
 	}
 
+  // grab the id of the selected item and add it to the selectedGridItems
+  const selectGridItem = (e) => {
+		let item_id = props.item.id;
+
+    if(!item_id) { return; }
+
+    let i = null;
+		i = selectedGridItems.indexOf(item_id);
+
+		if(i > -1){
+			selectedGridItems.splice(i, 1);
+      setSelectedGridItems([...selectedGridItems]);
+		}else{
+			selectedGridItems.push(item_id);
+      setSelectedGridItems([...selectedGridItems]);
+		}
+    e.preventDefault();
+	}
+
 	if(currentlySelectedItem){
-		return (
-      <div className="col">
-        <div className='card mb-4 border-0' onClick={(e) => selectItem(e)}>
-          <img className={(currentlySelectedItem === props.item.id) ? 'mw-100 mh-100 d-block rg-selectedItem' : 'mw-100 mh-100 d-block'} src={ props.item.media[1].url } alt=""/>
-          <div className='rg-card-body mb-2'>
-    				<div className="card-title mb-2 text-sm-center text-break">{ props.item.label }</div>
+    if(showSelectButtons){
+      return (
+        <div className="col" onClick={(e) => selectGridItem(e)}>
+          <div className={"card" + ((selectedGridItems.includes(props.item.id)) ? ' selected' : '')}>
+            <img className='mw-100 mh-100 d-block' src={ props.item.media[1].url } alt=""/>
+            <div className='card-body'>
+              <div className="card-title text-break">{ props.item.identifier }</div>
+              <div className="float-left">
+                <a className={"selectItem" + ((selectedGridItems.includes(props.item.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'><ion-icon name='checkmark-circle'></ion-icon></a>
+              </div>
+            </div>
+          </div> {/*card end*/}
+        </div>
+      )
+    }else{
+      return (
+        <div className="col">
+          <div className={"card" + ((currentlySelectedItem === (props.item.id)) ? ' selected' : '')} onClick={(e) => selectItem(e)}>
+            <img className='mw-100 mh-100 d-block' src={ props.item.media[1].url } alt=""/>
+            <div className='card-body'>
+              <div className="card-title text-break">{ props.item.identifier }</div>
+            </div>
           </div>
         </div>
-      </div>
-    )
+      )
+    }
   } else {
-    return (
-      <div className="col">
-				<div className="card mb-4 border-0" onClick={(e) => selectItem(e)}>
-					<img className="mw-100 mh-100 d-block" src={ props.item.media[1].url } alt=""/>
-          <div className='rg-card-body mb-2'>
-    				<div className="card-title mb-2 text-sm-center text-break">{ props.item.label }</div>
+    if(showSelectButtons){
+      return (
+        <div className="col" onClick={(e) => selectGridItem(e)}>
+          <div className={"card" + ((selectedGridItems.includes(props.item.id)) ? ' selected' : '')}>
+            <img className='mw-100 mh-100 d-block' src={ props.item.media[1].url } alt=""/>
+            <div className='card-body'>
+              <div className="card-title text-break">{ props.item.identifier }</div>
+              <div className="float-left">
+                <a className={"selectItem" + ((selectedGridItems.includes(props.item.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'><ion-icon name='checkmark-circle'></ion-icon></a>
+              </div>
+            </div>
+          </div> {/*card end*/}
+        </div>
+      )
+    }else{
+      return (
+        <div className="col">
+          <div className="card" onClick={(e) => selectItem(e)}>
+            <img className="mw-100 mh-100 d-block" src={ props.item.media[1].url } alt=""/>
+            <div className='card-body'>
+              <div className="card-title text-break">{ props.item.identifier }</div>
+            </div>
           </div>
-				</div>
-      </div>
-    )
+        </div>
+      )
+    }
 	}
 }
 
 export default RelatedGridItem;
-
-	// const getItemDetails = () => {
-	// 	const client = getGraphQLClient(baseUrl);
-	// 	let id = parseInt(props.item.id);
-	// 	let table = pawtucketUIApps.RelatedGrid.gridTable;
-	// 	client.query({
-	// 		query: gql`
-	// 			query ($id: Int!, $table: String!)
-	// 			{ item(id: $id, table: $table, mediaVersions: ["small", "medium", "large"], data: ["ca_objects.description"])
-	// 				{
-	// 					id, label, identifier, detailPageUrl, media { version, url, tag, width, height, mimetype },
-	// 					data { code, values { code, value } }
-	// 				}
-	// 			} `, variables: { 'id': id, 'table': table }})
-	// 		.then(function(result) {
-	// 			// console.log("Data was received:", result);
-	// 			setCurrentlySelectedItem(result.data.item)
-	// 		});
-	// }
-
-  // const displayDetailPanel = (e) => {
-	// 	getItemDetails();
-	//
-  //   var acc = document.getElementsByClassName("acc");
-  //   for (var i = 0; i < acc.length; i++) {
-  //     acc[i].onclick = function() {
-	// 			for (var i = 0; i < acc.length; i++) {
-  //         acc[i].classList.toggle("active", false);
-  //         acc[i].nextElementSibling.classList.toggle("show", false);
-	// 				acc[i].nextElementSibling.classList.remove('border-top', 'border-bottom', 'border-secondary');
-  //       }
-  //       this.classList.toggle("active");
-  //       this.nextElementSibling.classList.toggle("show");
-	// 			this.nextElementSibling.classList.add('border-top', 'border-bottom', 'border-secondary');
-  //     }
-  //   }
-	//
-	// 	var isActive = document.getElementsByClassName('.active');
-	// 	if (isActive.length > 0) {
-	// 		document.querySelector('.active').scrollIntoView({behavior: 'smooth', block: "center", inline: "center"});
-	// 	}
-	//
-  //   e.preventDefault();
-  // }

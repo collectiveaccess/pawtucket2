@@ -314,10 +314,6 @@
 	</div><!-- end col -->
 </div><!-- end row -->
 
-	<div id="relatedGrid" class="detailPrimaryMedia mt-3">
-		<!-- RelatedGrid.js React app goes here -->
-	</div>
-
 
 <?php
 	if($this->request->isLoggedIn()) {
@@ -360,14 +356,6 @@
         'width': '100%',
         'height': '500px',
         'controlHeight': '72px',
-        'data': {
-        
-        }
-    };
-    pawtucketUIApps['RelatedGrid'] = {
-        'selector': '#relatedGrid',
-        'width': '100%',
-        'height': '500px',
         'data': {
         
         }

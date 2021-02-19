@@ -8,18 +8,16 @@ function getGraphQLClient(uri, options=null) {
 	const httpLink = createHttpLink({
 		uri: uri
 	});
-
 	const client = new ApolloClient({
 		link: httpLink,
 		cache: new InMemoryCache()
 	});
-
 	return client;
 }
 
 const DetailPanel = (props) => {
 
-	const { currentlySelectedItem, setCurrentlySelectedItem, setCurrentlySelectedRow, data, itemIds } = useContext(GridContext)
+	const { currentlySelectedItem, setCurrentlySelectedItem, setCurrentlySelectedRow, itemIds } = useContext(GridContext)
   const [itemData, setItemData] = useState(); //local state variable to store item details for the panel
 
   useEffect(() => {
@@ -35,11 +33,10 @@ const DetailPanel = (props) => {
             }
         } `, variables: { 'id': id }})
       .then(function(result) {
-        console.log("Data was received:", result);
-        setItemData(result.data.item)
-        // console.log(itemData);
-      });
+        setItemData(result.data.item);
+      })
   }, [currentlySelectedItem]);
+
 
   const closeDetailPanel = (e) => {
     setCurrentlySelectedRow('');
@@ -59,9 +56,6 @@ const DetailPanel = (props) => {
 			//set currentlySelectedItem to first item in array
 			setCurrentlySelectedItem(itemIds[0]);
 		}
-		// console.log('currentItemIndex', currentItemIndex + ' ' + currentlySelectedItem);
-		// console.log('nextItemIndex', nextItemIndex + ' ' + nextItem);
-		// console.log('itemids', itemIds);
 		e.preventDefault();
 	}
 
@@ -77,44 +71,44 @@ const DetailPanel = (props) => {
 			//set currentlySelectedItem to last item in array
 			setCurrentlySelectedItem(itemIds[itemIds.length - 1]);
 		}
-		// console.log('currentItemIndex', currentItemIndex + ' ' + currentlySelectedItem);
-		// console.log('previousItemIndex', previousItemIndex + ' ' + previousItem);
-		// console.log('itemids', itemIds);
 		e.preventDefault();
 	}
 
-	console.log('itemData: ', itemData);
-
   if(itemData){
     return (
-      <div className='container-fluid'>
-        <div className='row justify-content-end mt-1 mr-2'>
-          <button type="button" className="close" aria-label="Close" onClick={(e) => {closeDetailPanel(e)}}>
-            <span aria-hidden="true">&times;</span>
+			<>
+        <div className='row justify-content-end pt-3 pr-3 mb-3'>
+          <button type="button" className="close btn-lg" aria-label="Close" onClick={(e) => closeDetailPanel(e)}>
+            <span aria-hidden="true">✕</span>
           </button>
         </div>
-        <div className="row justify-content-center row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mb-2">
-					<div className='col-lg-6 mt-3 panel-item'>
-						<img src={ itemData.media[0].url } alt=""/>
+
+        <div className="row row-cols-3 justify-content-center">
+					<div className="col-2 col-sm-1 text-left mb-1 align-self-center">
+						<a href="#" className="btn btn-secondary" role="button" onClick={(e) => previousItem(e)}><ion-icon name="ios-arrow-back"></ion-icon></a>
 					</div>
-					<div className='col-lg-4 mt-3 h-auto panel-item'>
-						<div className='mb-3 text-left'>{ itemData.label }</div>
-						<div className='mb-3 text-left'>{ itemData.data[0].values[0].value }</div>
-						<div className='mb-3 text-left font-weight-bold'>{ itemData.identifier }</div>
+
+					<div className="col-8 col-sm-10 align-self-center">
+						<div className='row row-cols-1 row-cols-sm-1 row-cols-md-1 row-cols-lg-2'>
+
+							<div className='col-12 col-sm-12 col-md-12 col-lg-7 mb-1'>
+								<img className='mb-3 panel-item' src={ itemData.media[1].url } alt=""/>
+							</div>
+							<div className='col-12 col-sm-12 col-md-12 col-lg-5'>
+								<p className='mb-3 panel-item text-left'>{ itemData.label }</p>
+								<p className='mb-3 panel-item text-left description'>{ itemData.data[0].values[0].value }</p>
+								<p className='mb-3 panel-item text-left font-weight-bold'>{ itemData.identifier }</p>
+								<a className="btn btn-primary float-left" href={itemData.detailPageUrl} role="button">View<ion-icon name='ios-arrow-forward'></ion-icon></a>
+							</div>
+
+						</div>
 					</div>
-					<div className='col-lg-2 mt-3 h-auto panel-item'>
-						<a href={itemData.detailPageUrl} className="btn btn-secondary" role="button">View Item</a>
+
+					<div className="col-2 col-sm-1 text-right mb-1 align-self-center">
+						<a href="#" className="btn btn-secondary" role="button" onClick={(e) => nextItem(e)}><ion-icon name='ios-arrow-forward'></ion-icon></a>
 					</div>
 	      </div>
-				<div className="row justify-content-center mt-3 mb-1">
-					<div className="col-xs-6 text-left pr-1">
-						<a href="#" className="btn btn-secondary btn-sm previous" role="button" onClick={(e) => previousItem(e)}>&#8249;</a>
-					</div>
-					<div className="col-xs-6 text-right pl-1">
-						<a href="#" className="btn btn-secondary btn-sm next" role="button" onClick={(e) => nextItem(e)}>&#8250;</a>
-					</div>
-				</div>
-      </div>
+			</>
     )
   } else{
     return (' ')

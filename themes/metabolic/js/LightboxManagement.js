@@ -183,8 +183,6 @@ class LightboxEntry extends React.Component {
 	}
 }
 
-
-
 /**
  * Initialize browse and render into DOM. This function is exported to allow the Pawtucket
  * app loaders to insert this application into the current view.

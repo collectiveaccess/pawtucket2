@@ -15,14 +15,13 @@ const RelatedGridLoadMoreButton = (props) => {
     return (
       <div className="row">
         <div className="col-sm-12 text-center my-3">
-            <button type="button" className="btn btn-secondary" onClick={(e) => loadMoreGridItems(e)}>Load More</button>
-          </div>
+          <button type="button" className="btn btn-secondary" onClick={(e) => loadMoreGridItems(e)}>Load More</button>
+        </div>
       </div>
       );
   } else {
     return(<span></span>)
   }
-
 };
 
 export default RelatedGridLoadMoreButton;

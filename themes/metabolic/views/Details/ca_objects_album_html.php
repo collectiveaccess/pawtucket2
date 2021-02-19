@@ -357,9 +357,6 @@
 		$q_objects = caMakeSearchResult("ca_objects", $va_related_item_ids);
 ?>
 		<div class="row mt-3">
-			<div class="col-8 mt-5">
-				<H1><?php print sizeof($va_related_item_ids); ?> Assets</H1>
-			</div>
 			<div class="col-4 mt-5 text-right">
 
 <?php
@@ -424,7 +421,7 @@
     pawtucketUIApps['LightboxManagement'] = {
         'selector': '#lightboxManagement',
         'data': {
-            baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
+            baseUrl: "<?= __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
 			lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
 			table: 'ca_objects',
 			id: <?php print (int)$vn_id; ?>,
@@ -454,6 +451,9 @@
     
     pawtucketUIApps['RelatedGrid'] = {
     	baseUrl: "<?php print __CA_URL_ROOT__."/service.php/RelatedGrid"; ?>",
+    	lightboxBaseUrl: "<?php print __CA_URL_ROOT__."/service.php/Lightbox"; ?>",
+        downloadUrl: "<?= caNavUrl('*', '*', 'DownloadMedia'); ?>",
+    	key: '<?= $this->getVar('key'); ?>', 
         selector: '#relatedGrid',
         width: '100%',
         height: '500px',

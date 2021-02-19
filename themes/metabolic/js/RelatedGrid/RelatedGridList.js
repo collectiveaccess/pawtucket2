@@ -1,26 +1,25 @@
 import React, { useEffect, useContext } from 'react';
 import { GridContext } from './GridContext';
+import { ApolloClient, InMemoryCache, createHttpLink, gql } from '@apollo/client';
 import RelatedGridRow from './RelatedGridRow';
 import RelatedGridLoadMoreButton from './RelatedGridLoadMoreButton';
-import { ApolloClient, InMemoryCache, createHttpLink, gql } from '@apollo/client';
 import DetailPanel from './DetailPanel';
+import RelatedGridControls from './RelatedGridControls';
 
 function getGraphQLClient(uri, options=null) {
 	const httpLink = createHttpLink({
 		uri: uri
 	});
-
 	const client = new ApolloClient({
 		link: httpLink,
 		cache: new InMemoryCache()
 	});
-
 	return client;
 }
 
 const RelatedGridList = (props) => {
 
-	const { data, setData, start, itemsPerPage, setTotalItems, currentlySelectedRow, currentlySelectedItem, rawData, setRawData, setItemIds} = useContext(GridContext)
+	const { data, setData, start, itemsPerPage, setTotalItems, currentlySelectedRow, currentlySelectedItem, setRawData, setItemIds, showSelectButtons } = useContext(GridContext)
 
 	useEffect(() => {
 		const client = getGraphQLClient(props.baseUrl);
@@ -57,16 +56,18 @@ const RelatedGridList = (props) => {
 				}
 				setItemIds(itemIds);
 			});
-	}, [data, itemsPerPage, setData, setTotalItems, start]);
+	}, [itemsPerPage]);
 
   return (
-    <div className='container-fluid mb-4'>
+		<div className='container-fluid related-grid-results'>
+			<RelatedGridControls />
+
 			{data.map((row, index) => {
-				if(index === currentlySelectedRow){
+				if(index === currentlySelectedRow && showSelectButtons === false){
 					return(
 						<div key={index}>
 							<RelatedGridRow key={index} rowItems={row} rowIndex={index}/>
-							<div className='panel mt-2 active' id={props.rowIndex} >
+							<div className='panel active container-fluid mb-3' id={props.rowIndex} >
 								<DetailPanel item={currentlySelectedItem}/>
 							</div>
 						</div>
@@ -75,14 +76,15 @@ const RelatedGridList = (props) => {
 					return(
 						<div key={index}>
 							<RelatedGridRow key={index} rowItems={row} rowIndex={index}/>
-							<div className='panel mt-2 ' id={props.rowIndex} >
+							<div className='panel container-fluid mb-3' id={props.rowIndex} >
 							</div>
 						</div>
 					)
 				}
 			})}
+
 			<RelatedGridLoadMoreButton />
-    </div>
+		</div>
   )
 }
 

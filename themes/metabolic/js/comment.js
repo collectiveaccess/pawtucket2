@@ -16,6 +16,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 			);
 		}
 	}
+
 	class CommentFormMessage extends React.Component {
 		render() {
 			return (
@@ -23,6 +24,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 			);
 		}
 	}
+
 	class CommentForm extends React.Component {
 		constructor(props) {
 			super(props);
@@ -50,7 +52,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 				item_id: this.props.itemID
 			};
 		}
-		
+
 		initializeList() {
 			let state = this.state;
  			let that = this;
@@ -65,11 +67,11 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 								let c = data.comments[k];
 								if(c.comment.length){
 									state.commentsTags.comments.push(<li className='list-group-item' key={k}>{c.comment}<br/><small>{c.date} - {c.fname}</small></li>);
-									
+
 								}
 							}
 						}
-						
+
 						if (data.tags) {
 							for(let k in data.tags) {
 								state.commentsTags.tags.push(data.tags[k]);
@@ -132,7 +134,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 						state.errors = that.initializeValues();	// Clear form errors
 						that.setState(state);
 						that.initializeList();
-						
+
 						setTimeout(function() {
 							state.statusMessage = '';
 							that.setState(state);
@@ -153,13 +155,26 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 					<div>
 						<div dangerouslySetInnerHTML={{ __html: this.props.formTitle}} />
 						<CommentFormMessage message={this.state.statusMessage} messageType={this.state.statusMessageType} />
+
 						<form className='ca-form'>
-							{(this.props.noTags) ? null : <div className="form-group">{(this.props.tagFieldTitle) ? <label for='tags'>{this.props.tagFieldTitle}</label> : null}<input className={`form-control form-control-sm${(this.state.errors.tags) ? ' is-invalid' : ''}`} id='tags' name='tags' value={this.state.values.tags} onChange={this.handleForm} type='text' placeholder='Tags separated by commas' />{(this.state.errors.tags) ? <div className='invalid-feedback'>{this.state.errors.tags}</div> : null}</div>}
-							<div className="form-group">{(this.props.commentFieldTitle) ? <label for='comment'>{this.props.commentFieldTitle}</label> : null}<textarea className={`form-control form-control-sm${(this.state.errors.comment) ? ' is-invalid' : ''}`} id='comment' name='comment' value={this.state.values.comment} onChange={this.handleForm} placeholder='Enter your comment' />{(this.state.errors.comment) ? <div className='invalid-feedback'>{this.state.errors.comment}</div> : null}</div>
+							{(this.props.noTags) ?
+								null :
+								<div className="form-group">{(this.props.tagFieldTitle) ? <label for='tags'>{this.props.tagFieldTitle}</label> : null}<input className={`form-control form-control-sm${(this.state.errors.tags) ? ' is-invalid' : ''}`} id='tags' name='tags' value={this.state.values.tags} onChange={this.handleForm} type='text' placeholder='Tags separated by commas' />{(this.state.errors.tags) ? <div className='invalid-feedback'>{this.state.errors.tags}</div> : null}</div>
+							}
+
+							<div className="form-group">{(this.props.commentFieldTitle) ? <label for='comment'>{this.props.commentFieldTitle}</label> : null}
+								<textarea className={`form-control form-control-sm${(this.state.errors.comment) ? ' is-invalid' : ''}`} id='comment' name='comment' value={this.state.values.comment} onChange={this.handleForm} placeholder='Enter your comment' />
+
+								{(this.state.errors.comment) ? <div className='invalid-feedback'>{this.state.errors.comment}</div> : null}
+							</div>
+
 							<input type="hidden" id="tablename" name="tablename" value={this.props.tableName} />
 							<input type="hidden" id="item_id" name="item_id" value={this.props.itemID} />
+
 							<div className="form-group"><input type='submit' className='btn btn-primary btn-sm' value={this.props.commentButtonText} onClick={this.submitForm} /></div>
+
 						</form>
+
 						<CommentsTagsList listTitle={this.props.listTitle} comments={this.state.commentsTags.comments} tags={this.state.commentsTags.tags.join(', ')} />
 					</div>
 				);

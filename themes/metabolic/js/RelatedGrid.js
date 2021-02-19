@@ -1,7 +1,6 @@
 import React from 'react';
 import GridContextProvider from './RelatedGrid/GridContext';
 import RelatedGridList from './RelatedGrid/RelatedGridList';
-import './RelatedGrid/index.css';
 import '../css/main.scss';
 
 const selector = pawtucketUIApps.RelatedGrid.selector;
@@ -9,7 +8,7 @@ const appData = pawtucketUIApps.RelatedGrid.data;
 
 const RelatedGrid = (props) => {
   return(
-    <div className="related-grid-root">
+    <div>
       <RelatedGridList {...props}/>
     </div>
   );

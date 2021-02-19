@@ -844,7 +844,8 @@ p.legend a {
 }
 
 /* search/browse full results */
-.search.results, .browse.results, .multiSearchObjectsCascading, .search.results, .browse.results, .multiSearchObjects, .lightbox.results{
+.search.results, .browse.results, .multiSearchObjectsCascading, .search.results, .browse.results, .multiSearchObjects, .lightbox.results, .related-grid-results{
+
 	.bToolBar{
 		position: fixed;
 		z-index:1000;
@@ -876,6 +877,7 @@ p.legend a {
 			}
 		}
 	}
+
 	H1{
 		text-transform:capitalize;
 		/*display:inline-block;*/
@@ -964,6 +966,7 @@ p.legend a {
 			border:1px solid $selected-indicator;
 		}
 	}
+
 	.bRightCol{
 		background-color:$gray-2;
 		overflow-y:scroll;
@@ -1072,7 +1075,73 @@ p.legend a {
 			}
 		}
 	}
+} /* end search/browse full results */
+
+
+/*-----------------------------
+      RelatedGrid Styles
+-----------------------------*/
+.stickyToolBar{
+	position: sticky;
+	top: 65px;
+
+	padding-top: 40px;
+	z-index:1000;
+	height: $browse-toolbar-height;
+	background-color: $body-bg-color;
+
+	#bExportOptions, #bSelectOptions{
+		font-size:1.5em;
+		line-height: 3.5em;
+		float:right;
+		margin-left:20px;
+	}
+
+	#bExportOptions, #bSelectOptions{
+		.dropdown-menu{
+			font-size:.5em;
+			line-height:1.2em;
+		}
+	}
 }
+
+/*------------------------------------
+ Styles for RelatedGrid detail panel
+------------------------------------*/
+.panel-item{
+  max-height: 350px !important; /* properly sizes image and metadata within panel*/
+}
+
+div.panel{
+  height: 0px;
+  overflow: hidden;
+  transition: all .5s ease-out;
+}
+
+div.panel.active {
+  height: 450px;
+  overflow-y: scroll;
+  transition: all .5s ease-in;
+  border-top: 1px solid lightgrey;
+  border-bottom: 1px solid lightgrey;
+}
+
+@media (max-width: 992px) { /* when screen size is medium */
+	.panel-item.description{
+	  max-height: 500px !important; /* properly sizes metadata within panel*/
+	}
+
+  div.panel.active {
+    height: 900px;
+    transition: all .5s ease-in;
+    border-top: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+  }
+}
+
+
+
+
 .lightbox.results{
 	.bToolBar{
 		height: $browse-toolbar-height-tall;
@@ -1111,6 +1180,9 @@ p.legend a {
 		}
 	}
 }
+
+
+
 /* used when lightbox deleted and names edited inline */
 .react-confirm-alert{
 	background-color:#FFF;
@@ -1152,6 +1224,7 @@ p.legend a {
 		margin: 0px 5px 0px 5px !important;
 	}
 }
+
 h1{
 	.easy-edit-wrapper, .easy-edit-inline-wrapper{
 		display:inline;
@@ -1305,21 +1378,27 @@ h1{
 	margin: 0 auto;
 }
 
-/*-----------------------------*/
-/* RelatedGrid Styles */
-/*-----------------------------*/
-.rg-selectedItem{
-	border:1px solid $selected-indicator;
+// metabolic ImportUploader
+.importUploaderDropZone {
+  height: 250px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 0px;
 }
 
-.rg-card-body{
-	color:$gray-6;
-	padding:.25rem 1rem 1rem 1rem;
-	font-size: 1rem;
-	line-height: 1.2rem;
-	.card-title{
-		margin-bottom:0px;
-		font-family: $headings-font;
-		font-size: 1rem;
-	}
+.importUploaderDropZoneInput {
+	height: 100%;
+	width: 100%;
+  cursor: default !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.importUploaderDropZoneInput:focus {
+  outline: none !important;
 }
