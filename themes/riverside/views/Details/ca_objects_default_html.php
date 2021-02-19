@@ -118,7 +118,7 @@
 
 				
 							<!-- exent; spacial coverage: photos/artifacts/documents -->
-							{{{<ifdef code="ca_objects.extent"><div class="unit"><label>Extent</label>^ca_objects.extent</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.extent_text"><div class="unit"><label>Extent</label>^ca_objects.extent_text</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.coverageSpacial"><div class="unit"><label>Spacial Coverage</label>^ca_objects.coverageSpacial</div></ifdef>}}}
 				
 							<!-- Library fields -->
