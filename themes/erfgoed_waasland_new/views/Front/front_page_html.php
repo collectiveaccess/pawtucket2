@@ -94,7 +94,7 @@
 ?>
 
 <div class="row bgGray"><div class="col-sm-12 col-md-12 col-lg-8 col-lg-offset-2 frontThemes">
-	<h2>Thema's</h2>
+	<h2>Expo's</h2>
 
 		
 <?php
