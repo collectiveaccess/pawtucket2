@@ -202,7 +202,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						$user_id = $u->getPrimaryKey();
 						
 						$log_entries = MediaUploadManager::getLog(['source' => 'FORM', 'user' => $user_id]);
-						//print_R($log_entries);
+						
 						$processed_log = [];
 						foreach($log_entries as $l) {
 							$processed_log[] = [
@@ -262,37 +262,6 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						return ['sessionKey' => $session->get('session_key')];
 					}
 				],
-				// TODO: implement
-				//
-				'processSession' => [
-					'type' => ImporterSchema::get('ImporterSessionList'),
-					'description' => _t('Process media and metdata for session'),
-					'args' => [
-						[
-							'name' => 'sessionKey',
-							'type' => Type::string(),
-							'description' => _t('Session key')
-						],
-						[
-							'name' => 'jwt',
-							'type' => Type::string(),
-							'description' => _t('JWT'),
-							'defaultValue' => self::getBearerToken()
-						]
-					],
-					'resolve' => function ($rootValue, $args) {
-						if(!$args['jwt']) {
-							throw new \ServiceException(_t('No JWT'));
-						}
-						$u = self::authenticate($args['jwt']);
-						$user_id = $u->getPrimaryKey();
-						$session_key = $args['sessionKey'];
-						
-						$s = $this->_getSession($user_id, $session_key);
-						
-						return [];
-					}
-				],
 				//
 				//
 				'getSession' => [
@@ -319,24 +288,48 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						$user_id = $u->getPrimaryKey();
 						$session_key = $args['sessionKey'];
 						
-						if(!is_array($log_entries = MediaUploadManager::getLog(['session_key' => $session_key, 'user' => $user_id])) || !sizeof($log_entries)) {
+						$s = $this->_getSession($user_id, $session_key);
+						if(!$s) {
 							throw new \ServiceException(_t('Invalid session key'));
 						}
-						$s = $this->_getSession($user_id, $session_key);
+						
+						if(!is_array($log_entries = MediaUploadManager::getLog(['sessionKey' => $session_key, 'user' => $user_id])) || !sizeof($log_entries)) {
+							throw new \ServiceException(_t('Invalid session key'));
+						}
 						
 						$fields = [
 							'label' => 'label', 'session_key' => 'sessionKey', 'user_id' => 'user_id',
 							'metadata' => 'formData', 'num_files' => 'files', 'total_bytes' => 'totalBytes',
+							'progress' => 'filesUploaded',
 							'received_bytes' => 'receivedBytes', 'total_display' => 'totalSize', 'received_display' => 'receivedSize'
 						];
 						
 						$data = array_shift($log_entries);
 						foreach($fields as $f => $k) {
 							$v = isset($data[$f]) ? $data[$f] : $s->get($f);
+							unset($data[$f]);
 							switch($k) {
 								case 'formData':
 									$v = json_encode(caUnserializeForDatabase($v), true);
 									break;
+								case 'filesUploaded':
+									$file_list = [];
+									
+									if(is_array($files = caUnserializeForDatabase($v))) {
+										foreach($files as $path => $file_info) {
+											$file_list[] = [
+												'path' => $path,
+												'name' => pathInfo($path, PATHINFO_FILENAME),
+												'complete' => (bool)$file_info['complete'],
+												'totalBytes' => $file_info['totalSizeInBytes'],
+												'receivedBytes' => $file_info['progressInBytes'],
+												'totalSize' => caHumanFilesize($file_info['totalSizeInBytes']),
+												'receivedSize' => caHumanFilesize($file_info['progressInBytes'])
+											];
+										}
+									}
+									$data[$k] = $file_list;
+									continue(2);
 							}
 							$data[$k] = $v;
 						}
@@ -381,7 +374,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						if(!is_array($formdata)) {
 							throw new \ServiceException(_t('Invalid form data'));
 						}
-						// TODO: validate data?
+						// TODO: validate data
 						
 						$s->set('metadata', $formdata);
 						if ($s->update()) {
@@ -390,6 +383,62 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 							throw new \ServiceException(_t('Could not update session: %1', join('; ', $s->getErrors())));
 						}
 						
+					}
+				],
+				// TODO: implement
+				//
+				'submitSession' => [
+					'type' => ImporterSchema::get('ImporterSessionSubmitResult'),
+					'description' => _t('Submit media and metadata for processing'),
+					'args' => [
+						[
+							'name' => 'sessionKey',
+							'type' => Type::string(),
+							'description' => _t('Session key')
+						],
+						[
+							'name' => 'formData',
+							'type' => Type::string(),
+							'description' => _t('JSON-serialized form data')
+						],
+						[
+							'name' => 'jwt',
+							'type' => Type::string(),
+							'description' => _t('JWT'),
+							'defaultValue' => self::getBearerToken()
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+						if(!$args['jwt']) {
+							throw new \ServiceException(_t('No JWT'));
+						}
+						$u = self::authenticate($args['jwt']);
+						$user_id = $u->getPrimaryKey();
+						$session_key = $args['sessionKey'];
+						
+						$s = $this->_getSession($user_id, $session_key);
+						
+						if(is_array($formdata = @json_decode($args['formData'], true)) && sizeof($formdata)) {
+							// TODO: validate data
+							$s->set('metadata', $formdata);
+							$s->set('status', 'SUBMITTED');
+							$s->set('submitted_on', _t('now'));
+							if ($s->update()) {
+								return ['updated' => 1];
+							} else {
+								throw new \ServiceException(_t('Could not update session: %1', join('; ', $s->getErrors())));
+							}
+						
+						}
+						
+						$s->set('status', 'SUBMITTED');
+						$s->update();
+						
+						if ($s->numErrors() > 0) {
+							throw new \ServiceException(_t('Could not mark session as submitted'));
+						}
+						
+						return ['status' => 'SUBMITTED'];
 					}
 				],
 				//

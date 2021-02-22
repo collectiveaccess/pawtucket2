@@ -8,15 +8,19 @@ import { TypeaheadField } from "react-jsonschema-form-extras/lib/TypeaheadField"
 // import fields from "react-jsonschema-form-extras";
 var _ = require('lodash');
 
-import { getNewSession, getFormList, getForm, updateSession } from '../ImportQueries';
+import { getNewSession, getFormList, getForm, updateSession, submitSession } from '../ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
 
 const log = (type) => console.log.bind(console, type);
 
+let debounce_saveFormDataForSession; 
+
 const ImportMetadataForm = (props) => {
 
-  const { uploadStatus, setIsSubmitted, setViewNewImportPage, formData, setFormData, setOpenViewSubmittedImportPage } = useContext(ImportContext);
-  const { setNumFilesOnDrop, setInitialQueueLength, setFilesUploaded, setQueue, setUploadProgress, setUploadStatus, setSubmissionStatus, sessionKey, setSessionKey } = useContext(ImportContext);
+  const { uploadStatus, setIsSubmitted, setViewNewImportPage, setOpenEditPage, formData, setFormData, setOpenViewSubmittedImportPage } = useContext(ImportContext);
+  const { setNumFilesOnDrop, setInitialQueueLength, setFilesUploaded, setQueue, setUploadProgress, setUploadStatus, setSubmissionStatus, sessionKey, setSessionKey, filesUploaded } = useContext(ImportContext);
+  
+  const { previousFilesUploaded, setPreviousFilesUploaded } = useContext(ImportContext);
 
   const [ schema, setSchema ] =  useState();
   const [formCode, setFormCode] = useState(null);
@@ -70,8 +74,10 @@ const ImportMetadataForm = (props) => {
     e.preventDefault();
   };
   
+  // TODO: this code is duplicated (more or less) in EditImportPage.js... need to centralize
   const backToImportList = (e) => {
     setViewNewImportPage(false);
+    setOpenEditPage(false);
     
     setIsSubmitted(false);
     setSessionKey(null);
@@ -89,6 +95,12 @@ const ImportMetadataForm = (props) => {
   
   const submitForm = () => {
     setIsSubmitted('true');
+    
+    // submit form
+    submitSession(baseUrl, sessionKey, formData, function (data) {	// write any data to session and mark as submitted
+		console.log('submitSession: ', data);
+	  });
+    
     confirmAlert({
       customUI: ({ onClose }) => {
         return (
@@ -103,56 +115,51 @@ const ImportMetadataForm = (props) => {
     });
   };
   
-  const initNewSession = () => {
+  const initNewSession = (callback) => {
     getNewSession(baseUrl, function (data) {
-      console.log('newSession: ', data);
-      setSessionKey(data.sessionKey)
-    })
+      console.log('newSession: ', data, data.sessionKey);
+      setSessionKey(data.sessionKey);
+      callback(data.sessionKey);
+    });
   } 
   
-  const checkSessionKey = () => {
+  // NOTE: session_key has to be passed in here, otherwise it'll be a closure and stuck on the value set when this component
+ // is first loaded.
+  const checkSessionKey = (sessionKey, formData, callback) => {
+  	console.log("save session is", sessionKey, formData);
     if (sessionKey == null && (formData !== null && formData !== {})) {  //if there is no sessionkey but there is formdata, create new session
-      console.log("initNewSession");
-      initNewSession()
+      	console.log("initNewSession");
+      	initNewSession(callback);
+    } else {							// Callback with existing session
+    	callback(sessionKey);
     }
   }
-  
-  // const debounce = (func, wait) => {
-  //   console.log('debounce');
-  //   let timeout;
-  //   return function executedFunction(...args) {
-  //     const later = () => {
-  //       timeout = null;
-  //       func(...args);
-  //     };
-  //     clearTimeout(timeout);
-  //     timeout = setTimeout(later, wait);
-  //   };
-  // };
-  
-  // const saveFormData = debounce(function(){
-  //   console.log('saveFormData');
-  //   if (sessionKey !== null && (formData !== null && formData !== {})) { //with sessionkey, updateform on changes
-  //     updateSession(baseUrl, sessionKey, formData, function (data) {
-  //       console.log('updateSession: ', data);
-  //     })
-  //   }
-  // }, 3000);
 
-  
-  const saveFormData = () => {
-    console.log('saveFormData');
-    if (sessionKey !== null && (formData !== null && formData !== { })){ //with sessionkey, updateform on changes
-      updateSession(baseUrl, sessionKey, formData, function (data) {
-        console.log('updateSession: ', data);
-      })
-    }
+ // NOTE: session_key has to be passed in here, otherwise it'll be a closure and stuck on the value set when this component
+ // is first loaded.
+  const saveFormDataForSession = (sessionKey, formData) => {
+  	console.log("saveFormDataForSession", sessionKey, formData);
+  	 checkSessionKey(sessionKey, formData, () => {	// wait until session key has been resolved
+		if (sessionKey !== null && (formData !== null && formData !== { })){ //with sessionkey, updateform on changes
+		  updateSession(baseUrl, sessionKey, formData, function (data) {	// write new data to session
+			console.log('updateSession: ', data);
+		  })
+		}
+	});
   }
-  var debounce_fun = _.debounce(saveFormData, 1000); 
-      
-  // console.log('isSubmitted:', isSubmitted);
-  console.log('schema', schema);
-  console.log('formData: ', formData);
+  
+  
+  // NOTE: Make sure to set debounce only once, otherwise it'll be set every time this function runs, resulting in multiple invocations
+  if(!debounce_saveFormDataForSession) { 
+  	debounce_saveFormDataForSession = _.debounce(saveFormDataForSession, 1000); // 1 second debounce on form edit saves
+  }
+  
+  // NOTE: ade this callable in realtime - only network portion is debounced
+  const saveFormData = (formData) => {
+	setFormData(formData);	// set context state
+	debounce_saveFormDataForSession(sessionKey, formData); // write data to session
+  }
+    
   return (
     <div>
       <div className="mb-3" style={{ backgroundColor: '#D8D7CE', paddingLeft: '5px' }}>
@@ -165,7 +172,7 @@ const ImportMetadataForm = (props) => {
           schema={schema}
           formData={formData}
           uiSchema={uiSchema}
-          onChange={(e) => {setFormData(e.formData); checkSessionKey(); debounce_fun()}}
+          onChange={(e) => {saveFormData(e.formData)}}
           autoComplete="on"
           onSubmit={submitForm}
           onError={log("errors")}
@@ -173,11 +180,11 @@ const ImportMetadataForm = (props) => {
           // fields={fields}
           >
             <div>
-              {/* TODO: User should only submit if there is atleast 1 file uploaded and the required form metadata is filled out */}
+              {/* TODO: User should only submit if there is at least 1 file uploaded and the required form metadata is filled out */}
               {(uploadStatus == 'complete' && (formData !== null && formData !== {}))?
                 <button id="form-submit-button" type="submit" className="btn btn-primary mt-3">Submit</button>
                 :
-                <button id="form-submit-button" type="submit" className="btn btn-primary mt-3" disabled>Submit</button>
+                <button id="form-submit-button" type="submit" className="btn btn-primary mt-3" disabled>Upload files before submitting</button>
               }
             </div>
           </Form>

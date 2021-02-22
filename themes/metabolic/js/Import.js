@@ -12,6 +12,7 @@ const pUIImport = pawtucketUIApps.Import;
 console.log('pUIImport', pUIImport);
 
 const Import = (props) => {
+	// TODO: make replace these three vars with a "mode" var?
   const { viewNewImportPage, openViewSubmittedImportPage, openEditPage } = useContext(ImportContext);
 
   if(viewNewImportPage == true){

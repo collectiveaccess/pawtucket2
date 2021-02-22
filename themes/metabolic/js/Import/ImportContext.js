@@ -34,6 +34,8 @@ const ImportContextProvider = (props) => {
   const [ sessionList, setSessionList ] = useState([]); //List of All imports
 
   const [ currentImports, setCurrentImports ] = useState([]); //list of imports shown in Your Imports
+  
+  const [ previousFilesUploaded, setPreviousFilesUploaded ] = useState([]); // List of previously uploaded files for form 
 
   return (
     <ImportContext.Provider 
@@ -54,6 +56,7 @@ const ImportContextProvider = (props) => {
         sessionKey, setSessionKey,
         sessionList, setSessionList,
         currentImports, setCurrentImports,
+        previousFilesUploaded, setPreviousFilesUploaded
     }}>
         {props.children}
     </ImportContext.Provider>

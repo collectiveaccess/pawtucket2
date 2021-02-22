@@ -1,6 +1,4 @@
-<h2>Import Media</h2>
-
-<div id="import"></div>
+<div id="import" style="margin-top: 20px;"></div>
 
 <script type="text/javascript">
 	pawtucketUIApps['Import'] = {

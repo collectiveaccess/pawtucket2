@@ -9,7 +9,7 @@ const baseUrl = pawtucketUIApps.Import.data.baseUrl;
 const EditImportPage = () => {
   const { setOpenEditPage, setViewNewImportPage, sessionKey, formData, setFormData } = useContext(ImportContext);
 
-  const { setNumFilesOnDrop, setInitialQueueLength, setFilesUploaded, setQueue, setUploadProgress, setUploadStatus, setSubmissionStatus, setSessionKey, setIsSubmitted } = useContext(ImportContext);
+  const { setNumFilesOnDrop, setInitialQueueLength, setFilesUploaded, setQueue, setUploadProgress, setUploadStatus, setSubmissionStatus, setSessionKey, setIsSubmitted, setPreviousFilesUploaded } = useContext(ImportContext);
 
   useEffect(() => {
     if (sessionKey !== null) {
@@ -19,6 +19,15 @@ const EditImportPage = () => {
           let prevFormData = JSON.parse(data.formData);
           console.log('prev formData: ', prevFormData);
           setFormData(prevFormData);
+          
+          // Set list of previously uploaded files (not all are necessarily complete, and user may need to restart uploads)
+          setPreviousFilesUploaded(data.filesUploaded);
+          
+          // If at least one existing upload is complete we can allow submission
+          let nfiles = data.filesUploaded.length;
+          if ((nfiles > 0) && (data.filesUploaded.filter((v) => v.complete).length > 0)) {
+          	setUploadStatus('complete');
+          }	
         }
       })
     }
@@ -26,7 +35,7 @@ const EditImportPage = () => {
 
   const backToImportList = (e) => {
     setOpenEditPage(false);
-    setViewNewImportPage(false)
+    setViewNewImportPage(false);
 
     setIsSubmitted(false);
     setSessionKey(null);

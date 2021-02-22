@@ -207,6 +207,40 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 					]
 				]
 			]),
+			$importerSessionUploadFileType = new ObjectType([
+				'name' => 'ImporterSessionUploadedFile',
+				'description' => 'Uploaded file information',
+				'fields' => [
+					'path' => [
+						'type' => Type::string(),
+						'description' => 'File path'
+					],
+					'name' => [
+						'type' => Type::string(),
+						'description' => 'File name'
+					],
+					'totalBytes' => [
+						'type' => Type::int(),
+						'description' => 'Total quantity of data in file, in bytes'
+					],
+					'receivedBytes' => [
+						'type' => Type::int(),
+						'description' => 'Quantity of data received, in bytes'
+					],
+					'totalSize' => [
+						'type' => Type::string(),
+						'description' => 'Total quantity of data for upload, formatted for display'
+					],
+					'receivedSize' => [
+						'type' => Type::string(),
+						'description' => 'Quantity of data received, formatted for display'
+					],
+					'complete' => [
+						'type' => Type::boolean(),
+						'description' => 'File upload completed?'
+					]
+				]
+			]),
 			$importerSessionDataType = new ObjectType([
 				'name' => 'ImporterSessionData',
 				'description' => 'Full information for importer session',
@@ -263,6 +297,10 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::int(),
 						'description' => 'Number of files uploaded'
 					],
+					'filesUploaded' => [
+						'type' => Type::listOf($importerSessionUploadFileType),
+						'description' => 'Data about uploaded files'
+					],
 					'totalBytes' => [
 						'type' => Type::int(),
 						'description' => 'Total quantity of data for upload, in bytes'
@@ -316,6 +354,20 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 					]
 				]
 			]),
+			$importerSessionSubmitResultType = new ObjectType([
+				'name' => 'ImporterSessionSubmitResult',
+				'description' => 'Result of session submit',
+				'fields' => [
+					'updated' => [
+						'type' => Type::int(),
+						'description' => 'Update status'
+					],
+					'validationErrors' => [			// TODO: should be list
+						'type' => Type::string(),
+						'description' => 'Validation errors'
+					]
+				]
+			]),
 			$importerSessionDeleteResultType = new ObjectType([
 				'name' => 'ImporterSessionDeleteResult',
 				'description' => 'Result of session delete',
@@ -325,7 +377,21 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'Delete status'
 					]
 				]
-			])
+			]),
+			$importerSessionProcessResultType = new ObjectType([
+				'name' => 'ImporterProcessUpdateResult',
+				'description' => 'Result of session processing',
+				'fields' => [
+					'status' => [
+						'type' => Type::int(),
+						'description' => 'Processing status'
+					],
+					'errors' => [			// TODO: should be list
+						'type' => Type::string(),
+						'description' => 'Procssing errors'
+					]
+				]
+			]),
 		];
 	}
 	# -------------------------------------------------------

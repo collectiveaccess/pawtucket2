@@ -30,7 +30,6 @@
  * ----------------------------------------------------------------------
  */
  
- require_once(__CA_MODELS_DIR__."/ca_media_upload_sessions.php");
  require_once(__CA_APP_DIR__."/helpers/batchHelpers.php");
 
 
@@ -68,9 +67,11 @@ class MediaUploadManager {
     		'user_id' => $user_id,
     		'cancelled' => 0,
     		'num_files' => $num_files,
+    		'status' => 'IN_PROGRESS',
     		'total_bytes' => $size,
     		'source' => $source
     	]);
+    	$s->set('source', $source);
     	if ($s->insert()) {
     		return $s;
     	}
@@ -171,6 +172,7 @@ class MediaUploadManager {
         
         if (!sizeof($params)) { $params = '*'; }
         
+    	$t_session = new ca_media_upload_sessions();
 		if ($sessions = ca_media_upload_sessions::find($params, ['returnAs' => 'arrays', 'sort' => 'created_on', 'sortDirection' => 'desc', 'allowWildcards' => true])) {
 			if (!($user_dir_path = caGetMediaUploadPathForUser($user_id))) {
 				$user_dir_path = caGetUserMediaUploadPath(); 
@@ -182,7 +184,7 @@ class MediaUploadManager {
 			
 			$importer_config = Configuration::load(__CA_CONF_DIR__.'/importer.conf');
 			$importer_forms = $importer_config->get('importerForms');
-			$sessions = array_map(function($s) use ($user_dir_path, $importer_forms) {
+			$sessions = array_map(function($s) use ($user_dir_path, $importer_forms, $t_session) {
 				$files = caUnSerializeForDatabase($s['progress']);
 				$files_proc = [];
 				$s['user'] = $u = ca_users::userInfoFor($s['user_id']);
@@ -197,26 +199,11 @@ class MediaUploadManager {
 				
 				$s['files'] = $files_proc;
 
-				foreach(['created_on', 'completed_on', 'last_activity_on'] as $f) {
+				foreach(['created_on', 'submitted_on', 'completed_on', 'last_activity_on'] as $f) {
 					$s[$f] = ($s[$f] > 0) ? caGetLocalizedDate($s[$f], ['dateFormat' => 'delimited']) : null;
 				}
-				if ($s['cancelled'] > 0) {
-					$s['status'] = 'CANCELLED';
-					$s['status_display'] = _t('Cancelled');
-				} elseif ($s['error_code'] > 0) {
-					$s['status'] = 'ERROR';
-					$s['status_display'] = _t('Error');
-					$s['error_display'] = caGetErrorMessage($s['error_code']);	
-				} elseif ($s['completed_on']) {
-					$s['status'] = 'COMPLETED';
-					$s['status_display'] = _t('Completed');
-				} elseif ($s['last_activity_on']) {
-					$s['status'] = 'IN_PROGRESS';
-					$s['status_display'] = _t('In progress');
-				} elseif ($s['last_activity_on']) {
-					$s['status'] = 'UNKNOWN';
-					$s['status_display'] = _t('Unknown');
-				}
+				$s['status_display'] = $t_session->getChoiceListValue('status', $s['status']);
+				
 				if (!is_array($progress_data = caUnSerializeForDatabase($s['progress']))) { $progress_data = []; }
 				
 				$received_bytes = array_reduce($progress_data, function($c, $i) { return $c + $i['progressInBytes']; }, 0);
@@ -237,7 +224,7 @@ class MediaUploadManager {
 					if(isset($importer_forms[$m[1]]) && is_array($form_info = $importer_forms[$m[1]]) && is_array($form_info['content'])) {
 						$disp_template = $form_info['display'];
 						$form_data = caUnSerializeForDatabase($s['metadata']);
-						
+						unset($s['metadata']);
 						if(is_array($form_data) && is_array($form_info['content'])) {
 							foreach($form_info['content'] as $k => $v) {
 								if ($form_data[$v['bundle']]) {

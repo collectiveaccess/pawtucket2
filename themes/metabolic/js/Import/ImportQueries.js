@@ -102,7 +102,7 @@ const getSession = (url, sessionKey, callback) => {
   client
     .query({
       query: gql`
-        query($sessionKey: String) { getSession (sessionKey: $sessionKey) { sessionKey, user_id, formData, files, totalSize, label }}`, variables: { 'sessionKey': sessionKey }
+        query($sessionKey: String) { getSession (sessionKey: $sessionKey) { sessionKey, user_id, formData, files, totalSize, label, filesUploaded { name, path, complete, totalSize, receivedSize, totalBytes, receivedBytes} }}`, variables: { 'sessionKey': sessionKey }
     })
     .then(function (result) {
       // console.log('getSession result: ', result.data);
@@ -128,4 +128,20 @@ const updateSession = (url, sessKey, formData, callback) => {
     });
 }
 
-export { getGraphQLClient, getSessionList, deleteImport, getNewSession, getFormList, getForm, getSession, updateSession } ;
+const submitSession = (url, sessKey, formData, callback) => {
+  const client = getGraphQLClient('http://metabolic3.whirl-i-gig.com:8085' + url + '/Importer', {});
+  let stringFormData = JSON.stringify(formData);
+  // console.log('stringFormData: ', stringFormData);
+  client
+    .query({
+      query: gql`
+        query($sessionKey: String, $formData: String) { submitSession (sessionKey: $sessionKey, formData: $formData) { updated, validationErrors }}`, variables: { 'sessionKey': sessKey, 'formData': stringFormData }
+    })
+    .then(function (result) {
+      callback(result.data['updateSession']);
+    }).catch(function (error) {
+      console.log("Error while attempting to submit form ", error);
+    });
+}
+
+export { getGraphQLClient, getSessionList, deleteImport, getNewSession, getFormList, getForm, getSession, updateSession, submitSession } ;
