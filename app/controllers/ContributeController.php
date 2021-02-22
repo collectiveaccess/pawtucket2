@@ -461,8 +461,8 @@
 									    if (!strlen($va_vals[$vn_i])) { continue; }
 										$va_content_tree[$vs_table][$vn_i]['preferred_labels'][$va_fld_bits[2]] = $va_vals[$vn_i]; 
 									}
-								} elseif ($va_fld_bits[1] == 'nonpreferred_labels') {	// preferred labels
-									if (!strlen($va_vals[$vn_i])) { continue; }
+								} elseif ($va_fld_bits[1] == 'nonpreferred_labels') {	// nonpreferred labels
+									if (!strlen($va_vals[$vn_i])) { break; }
 									if (!isset($va_fld_bits[2])) { $va_fld_bits[2] = $t_instance->getLabelDisplayField(); }
 								
 									foreach($va_vals as $vn_i => $vs_val) {
@@ -470,7 +470,7 @@
 										$va_content_tree[$vs_table][$vn_i]['nonpreferred_labels'][$va_fld_bits[2]] = $va_vals[$vn_i]; 
 									}
 								} elseif ($t_instance->hasElement($va_fld_bits[1])) {
-									 if (!strlen($va_vals[$vn_i])) { continue; }
+									if (!strlen($va_vals[$vn_i])) { break; }
 									if (!isset($va_fld_bits[2])) { $va_fld_bits[2] = $va_fld_bits[1]; }
 									
 									$va_vals = self::_applyTextDelimiters($va_vals, $fld_tag_opts, $text_delimiters);
