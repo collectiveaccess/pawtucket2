@@ -148,7 +148,7 @@
 						</unit>		
 					</ifcount>
 					
-			');
+			', ['checkAccess' => caGetUserAccessValues($this->request)]);
 			
 			print '<hr/><div class="unit"><label>Record Link</label>'.$this->request->config->get("site_host").caDetailUrl($this->request, $t_item->tableName(), $t_item->getPrimaryKey()).'</div>';
 	
