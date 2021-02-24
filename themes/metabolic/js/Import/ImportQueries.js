@@ -22,7 +22,7 @@ function getGraphQLClient(uri, options = null) {
 }
 
 const getSessionList = (url, callback) => {
-  const client = getGraphQLClient('http://metabolic3.whirl-i-gig.com:8085' + url + '/Importer', {});
+  const client = getGraphQLClient(url + '/Importer', {});
   client
     .query({
       query: gql`
@@ -37,7 +37,7 @@ const getSessionList = (url, callback) => {
 }
 
 const deleteImport = (url, sessKey, callback) => {
-  const client = getGraphQLClient('http://metabolic3.whirl-i-gig.com:8085' + url + '/Importer', {});
+  const client = getGraphQLClient(url + '/Importer', {});
   // let sessKey = props.data.sessionKey;
   client
     .query({
@@ -53,7 +53,7 @@ const deleteImport = (url, sessKey, callback) => {
 }
 
 const getNewSession = (url, callback) => {
-  const client = getGraphQLClient('http://metabolic3.whirl-i-gig.com:8085' + url + '/Importer', {});
+  const client = getGraphQLClient(url + '/Importer', {});
   //TODO: Do not hardcode form, add a variable that gets passed to function
   client
     .query({
@@ -69,7 +69,7 @@ const getNewSession = (url, callback) => {
 }
 
 const getFormList = (url, callback) => {
-  const client = getGraphQLClient('http://metabolic3.whirl-i-gig.com:8085' + url + '/Importer', {});
+  const client = getGraphQLClient(url + '/Importer', {});
   client
     .query({
       query: gql` query { formList { forms { code, title, table} }} `
@@ -83,7 +83,7 @@ const getFormList = (url, callback) => {
 }
 
 const getForm = (url, formCode, callback) => {
-  const client = getGraphQLClient('http://metabolic3.whirl-i-gig.com:8085' + url + '/Importer', {});
+  const client = getGraphQLClient(url + '/Importer', {});
   
     client
       .query({
@@ -98,7 +98,7 @@ const getForm = (url, formCode, callback) => {
 }
 
 const getSession = (url, sessionKey, callback) => {
-  const client = getGraphQLClient('http://metabolic3.whirl-i-gig.com:8085' + url + '/Importer', {});
+  const client = getGraphQLClient(url + '/Importer', {});
   client
     .query({
       query: gql`
@@ -113,7 +113,7 @@ const getSession = (url, sessionKey, callback) => {
 }
 
 const updateSession = (url, sessKey, formData, callback) => {
-  const client = getGraphQLClient('http://metabolic3.whirl-i-gig.com:8085' + url + '/Importer', {});
+  const client = getGraphQLClient(url + '/Importer', {});
   let stringFormData = JSON.stringify(formData);
   // console.log('stringFormData: ', stringFormData);
   client
@@ -129,7 +129,7 @@ const updateSession = (url, sessKey, formData, callback) => {
 }
 
 const submitSession = (url, sessKey, formData, callback) => {
-  const client = getGraphQLClient('http://metabolic3.whirl-i-gig.com:8085' + url + '/Importer', {});
+  const client = getGraphQLClient(url + '/Importer', {});
   let stringFormData = JSON.stringify(formData);
   // console.log('stringFormData: ', stringFormData);
   client

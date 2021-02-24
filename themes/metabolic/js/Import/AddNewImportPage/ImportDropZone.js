@@ -6,10 +6,11 @@ const tus = require("tus-js-client");
 
 import { getNewSession } from '../ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
+const siteBaseUrl = pawtucketUIApps.Import.data.siteBaseUrl;
 
 const ImportDropZone = (props) => {
 
-  const { queue, setQueue, setUploadProgress, filesUploaded, setFilesUploaded, uploadStatus, setUploadStatus, initialQueueLength, setInitialQueueLength, numFilesOnDrop, setNumFilesOnDrop, sessionKey, setSessionKey, files, setFiles } = useContext(ImportContext);
+  const { queue, setQueue, setUploadProgress, filesUploaded, setFilesUploaded, setUploadStatus, initialQueueLength, setInitialQueueLength, numFilesOnDrop, setNumFilesOnDrop, sessionKey, setSessionKey, filesSelected, setFilesSelected } = useContext(ImportContext);
   
   useEffect(() => {
     processQueue();
@@ -47,17 +48,17 @@ const ImportDropZone = (props) => {
 
   const processQueue = () => {
     let tempFilesUploaded = [...filesUploaded];
-    let tempFiles = [...files];
+    let tempFilesSelected = [...filesSelected];
     while(queue.length > 0 && sessionKey !== null){
       // setUploadStatus('in_progress');
       queue.forEach((file) => {
         file == queue.shift();
 
-        tempFiles.push(file);
-        setFiles([...tempFiles]);
+        tempFilesSelected.push(file);
+        setFilesSelected([...tempFilesSelected]);
 
         //https://master.tus.io/files/
-        let tusEndpoint = "http://metabolic3.whirl-i-gig.com:8085/index.php/Import/tus";
+        let tusEndpoint = siteBaseUrl + '/tus';
         console.log("Upload to", tusEndpoint, sessionKey);
 
         var upload = new tus.Upload(file, {
@@ -101,7 +102,7 @@ const ImportDropZone = (props) => {
   }
 
   // console.log('====================================');
-  console.log("uploadStatus : ", uploadStatus);
+  // console.log("uploadStatus : ", uploadStatus);
 
   return (
     <div>
@@ -124,7 +125,8 @@ const ImportDropZone = (props) => {
         </Dropzone>
       </div>
        
-      {(uploadStatus == 'in_progress' || uploadStatus == 'complete') ? <SelectedMediaList/> : '' }
+      {/* {(uploadStatus == 'in_progress' || uploadStatus == 'complete') ? <SelectedMediaList/> : '' } */}
+      <SelectedMediaList />
     </div>
   )
 }

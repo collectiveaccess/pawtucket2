@@ -1,54 +1,70 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import ImportContextProvider from './Import/ImportContext';
 import { ImportContext } from './Import/ImportContext';
 import ImportList from './Import/ImportList';
 import AddNewImportPage from './Import/AddNewImportPage';
-import '../css/main.scss';
-import ViewSubmittedImportPage from './Import/ImportList/ViewSubmittedImportPage';
+import ViewImportPage from './Import/ImportList/ViewImportPage';
 import EditImportPage from './Import/ImportList/EditImportPage';
+import '../css/main.scss';
 
 const selector = pawtucketUIApps.Import.selector;
 const pUIImport = pawtucketUIApps.Import;
 console.log('pUIImport', pUIImport);
 
-const Import = (props) => {
-	// TODO: make replace these three vars with a "mode" var?
-  const { viewNewImportPage, openViewSubmittedImportPage, openEditPage } = useContext(ImportContext);
-
-  if(viewNewImportPage == true){
-    return(
-      <div className='new-import-page'>
-        <AddNewImportPage />
-      </div >
-    )
-  }else if(openViewSubmittedImportPage == true){
-    return(
-      <div className='submitted-import-page'>
-        <ViewSubmittedImportPage />
-      </div>
-    )
-  }else if(openEditPage == true){
-    return(
-      <div className='edit-import-page'>
-        <EditImportPage />
-      </div>
-    )
-  }else{
-    return(
+const Import = () => {
+  const { viewMode } = useContext(ImportContext);
+  const { setFilesSelected, setFilesUploaded, setFormCode, setFormData, setInitialQueueLength, setIsSubmitted, setNumFilesOnDrop, setPreviousFilesUploaded, setQueue, setSchema, setSessionKey, setSessionList, setUploadProgress, setUploadStatus, setViewMode } = useContext(ImportContext);
+   
+  const setInitialState = (e) => {
+    setFilesSelected([]);
+    setFilesUploaded([]);
+    setFormCode(null);
+    setFormData(null);
+    setInitialQueueLength(0);
+    setIsSubmitted(false);
+    setNumFilesOnDrop(0);
+    setPreviousFilesUploaded([]);
+    setQueue([]);
+    setSchema();
+    setSessionKey(null);
+    setSessionList([]);
+    setUploadProgress(0);
+    setUploadStatus("not_started");
+    setViewMode("import_list");
+    e.preventDefault();
+  }
+ 
+  if(viewMode == "import_list"){
+    return (
       <div className='import-list'>
         <ImportList />
       </div>
     )
+  }else if (viewMode == "edit_import_page"){
+    return (
+      <div className='edit-import-page'>
+        <EditImportPage setInitialState={(e) => setInitialState(e)}/>
+      </div>
+    )
+  }else if (viewMode == "view_import_page"){
+    return (
+      <div className='view-import-page'>
+        <ViewImportPage setInitialState={(e) => setInitialState(e)} />
+      </div>
+    )
+  }else if(viewMode == "add_new_import_page"){
+    return (
+      <div className='new-import-page'>
+        <AddNewImportPage setInitialState={(e) => setInitialState(e)}/>
+      </div >
+    )
   }
-}
+ }
 
 /**
  * Initialize browse and render into DOM. This function is exported to allow the Pawtucket
  * app loaders to insert this application into the current view.
  */
 export default function _init() {
-	ReactDOM.render(
-    <ImportContextProvider>
-  		<Import />
-    </ImportContextProvider> , document.querySelector(selector));
+	ReactDOM.render(<ImportContextProvider> <Import /> </ImportContextProvider> , document.querySelector(selector));
 }

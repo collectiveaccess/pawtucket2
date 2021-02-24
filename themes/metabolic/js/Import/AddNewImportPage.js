@@ -4,26 +4,7 @@ import ImportMetadataForm from './AddNewImportPage/ImportMetadataForm';
 import ImportDropZone from './AddNewImportPage/ImportDropZone';
 
 const AddNewImportPage = (props) => {
-  const { setViewNewImportPage, setOpenViewSubmittedImportPage, uploadStatus } = useContext(ImportContext);
-  const { setNumFilesOnDrop, setInitialQueueLength, setFilesUploaded, setQueue, setUploadProgress, setUploadStatus, setSubmissionStatus, setSessionKey, setIsSubmitted, setFormData } = useContext(ImportContext);
-  
-  const backToImportList = (e) => {
-    setViewNewImportPage(false);
-    setOpenViewSubmittedImportPage(false);
-
-    setIsSubmitted(false);
-    setSessionKey(null);
-    setFormData(null)
-    setNumFilesOnDrop(0);
-    setInitialQueueLength(0);
-    setFilesUploaded([]);
-    setQueue([]);
-    setUploadProgress(0);
-    setUploadStatus('not_started');
-    setSubmissionStatus();
-
-    e.preventDefault();
-  }
+  const { uploadStatus } = useContext(ImportContext);
 
   useEffect( () => {
     $(window).on("beforeunload", function () {
@@ -38,18 +19,18 @@ const AddNewImportPage = (props) => {
     });
   }, [])
 
-  console.log('uploadStatus: ', uploadStatus);
+  // console.log('uploadStatus: ', uploadStatus);
 
   return (
     <div className='container-fluid' style={{ maxWidth: '60%' }}>
 
       {(uploadStatus == 'in_progress') ?
-        <button type='button' className='btn btn-secondary mb-5' disabled onClick={(e) => backToImportList(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
+        <button type='button' className='btn btn-secondary mb-5' disabled onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
         :
-        <button type='button' className='btn btn-secondary mb-5' onClick={(e) => backToImportList(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
+        <button type='button' className='btn btn-secondary mb-5' onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
       }
       <ImportDropZone />
-      <ImportMetadataForm />
+      <ImportMetadataForm setInitialState={props.setInitialState} />
       
     </div>
   )

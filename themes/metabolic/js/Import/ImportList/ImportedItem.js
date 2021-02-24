@@ -8,7 +8,7 @@ import { getSessionList, deleteImport } from '../ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
 
 const ImportedItem = (props) => {
-  const { setOpenViewSubmittedImportPage, setViewNewImportPage, currentImports, setCurrentImports, openEditPage, setOpenEditPage, setSessionKey, sessionKey, setSessionList } = useContext(ImportContext);
+  const {setSessionKey, sessionKey, setSessionList, setViewMode } = useContext(ImportContext);
 
   // let progressBar = null;
   // let progressPercentage = (props.data.progress_in_bytes / 1000) / (props.data.total_bytes / 1000) * 100;
@@ -33,7 +33,6 @@ const ImportedItem = (props) => {
     deleteImport(baseUrl, props.data.sessionKey, function(data){
       getSessionList(baseUrl, function (data) {
         console.log('sessionList data', data);
-        setCurrentImports(data.sessions);
         setSessionList(data.sessions);
       });
     })
@@ -46,28 +45,27 @@ const ImportedItem = (props) => {
         return (
           <div className='col info text-gray'>
             <p>Would you like to delete this import?</p>
-            <div className='button' onClick={() => { callback(); onClose(); }}>Yes, Delete It!</div>
+            <div className='button' style={{ cursor: "pointer" }} onClick={() => { callback(); onClose(); }}>Yes, Delete It!</div>
 						&nbsp;
-            <div className='button' onClick={() => { onClose() }}>No</div>
+            <div className='button' style={{ cursor: "pointer" }} onClick={() => { onClose() }}>No</div>
           </div>
         );
       }
     });
   }
 
-  // const viewImport = (e) => {
-  //   setOpenViewSubmittedImportPage(true);
-  //   setViewNewImportPage(false);
-  //   e.preventDefault();
-  // }
+  const viewImport = (e) => {
+    setViewMode("view_import_page");
+    e.preventDefault();
+    setSessionKey(props.data.sessionKey);
+  }
 
   const editImport = (e) => {
-    setOpenEditPage(true);
+    setViewMode("edit_import_page");
     setSessionKey(props.data.sessionKey);
     e.preventDefault();
   }
 
-  // console.log('openEditPage: ', openEditPage);
   let percentageDone;
   if(props.data.files >= 1){
     let total = props.data.totalBytes/1000;
@@ -85,28 +83,21 @@ const ImportedItem = (props) => {
         <td>{props.data.files}</td>
         <td>{props.data.totalSize}</td>
         <td>{Math.ceil(percentageDone)}%</td>
-        <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => editImport(e)}>Edit</a></td>
-        <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e)=>deleteAlert(e, deleteImportConfirm)}>Delete</a></td>
+        {(props.data.status == 'IN_PROGRESS') ?
+          <>
+            <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => editImport(e)}>Edit</a></td>
+            <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td>
+          </>
+          : null}
+        {(props.data.status !== 'IN_PROGRESS') ?
+        <>
+          <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => viewImport(e)}>View</a></td>
+          <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td>
+        </>
+          : null}
       </tr>
     </>
   )
 }
 
 export default ImportedItem;
-
-{/* <tr style={{ borderTop: '1px solid lightgrey' }}>
-  <th scope="row">{props.data.identifier}</th>
-  <td>{props.data.album_name}</td>
-  <td>{props.data.date_created}</td>
-  <td>{props.data.size}</td>
-  <td>{props.data.upload_status}</td>
-  <td>{props.data.submission_status}</td>
-  {(props.data.submission_status == 'not_submitted') ?
-    <><td><a href='#' type='button' className='btn btn-secondary btn-sm'>Edit</a></td>
-    <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={()=>deleteAlert()}>Delete</a></td></>
-    : null }
-  {(props.data.submission_status !== 'not_submitted') ?
-    <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e)=>viewImport(e)}>View</a></td>
-    : null }
-</tr>
-{progressBar} */}

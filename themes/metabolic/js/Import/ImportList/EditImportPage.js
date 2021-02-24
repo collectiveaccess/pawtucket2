@@ -6,10 +6,10 @@ import ImportDropZone from '../AddNewImportPage/ImportDropZone';
 import { getSession } from '../ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
 
-const EditImportPage = () => {
-  const { setOpenEditPage, setViewNewImportPage, sessionKey, formData, setFormData } = useContext(ImportContext);
+const EditImportPage = (props) => {
+  const { sessionKey, setFormData } = useContext(ImportContext);
 
-  const { setNumFilesOnDrop, setInitialQueueLength, setFilesUploaded, setQueue, setUploadProgress, setUploadStatus, setSubmissionStatus, setSessionKey, setIsSubmitted, setPreviousFilesUploaded } = useContext(ImportContext);
+  const { setUploadStatus, setPreviousFilesUploaded } = useContext(ImportContext);
 
   useEffect(() => {
     if (sessionKey !== null) {
@@ -17,7 +17,7 @@ const EditImportPage = () => {
         console.log("getSession: ", data);
         if (data.formData !== "null") {
           let prevFormData = JSON.parse(data.formData);
-          console.log('prev formData: ', prevFormData);
+          // console.log('prev formData: ', prevFormData);
           setFormData(prevFormData);
           
           // Set list of previously uploaded files (not all are necessarily complete, and user may need to restart uploads)
@@ -33,29 +33,12 @@ const EditImportPage = () => {
     }
   }, [])
 
-  const backToImportList = (e) => {
-    setOpenEditPage(false);
-    setViewNewImportPage(false);
-
-    setIsSubmitted(false);
-    setSessionKey(null);
-    setFormData(null)
-    setNumFilesOnDrop(0);
-    setInitialQueueLength(0);
-    setFilesUploaded([]);
-    setQueue([]);
-    setUploadProgress(0);
-    setUploadStatus('not_started');
-    setSubmissionStatus();
-
-    e.preventDefault();
-  }
-
   // console.log('Edit Session Key: ', sessionKey);
   return (
     <div className='container-fluid' style={{ maxWidth: '60%' }}>
-      <button type='button' className='btn btn-secondary mb-5' onClick={(e) => backToImportList(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
-      <ImportDropZone /><ImportMetadataForm />
+      <button type='button' className='btn btn-secondary mb-5' onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
+      <ImportDropZone />
+      <ImportMetadataForm setInitialState={props.setInitialState} />
     </div>
   )
 }
