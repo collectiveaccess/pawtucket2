@@ -110,8 +110,12 @@
 	</div>
 </div>
 <div class="row">
+	<div class="col-sm-12">
+		<H1><?php print caGetThemeGraphic($this->request, 'leaf_left_black.jpg', array("alt" => "leaf detail")); ?><?php print $t_set->getLabelForDisplay(); ?><?php print caGetThemeGraphic($this->request, 'leaf_right_black.jpg', array("alt" => "leaf right detail")); ?></H1>	
+	</div>
+</div>
+<div class="row">
 	<div class="col-sm-12 col-md-8 col-md-offset-2">
-		<H1><?php print $t_set->getLabelForDisplay(); ?></H1>
 <?php
 		if($vs_intro = $t_set->get("ca_sets.description")){
 			print "<p class='introduction'>".$vs_intro."</p>";

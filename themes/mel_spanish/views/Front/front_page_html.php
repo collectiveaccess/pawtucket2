@@ -47,7 +47,7 @@
 				<div class="col-sm-8 col-sm-offset-2 col-md-2 col-md-offset-2 text-center">
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'archive.jpg', array("alt" => "Archive")), "", "", "Browse", "objects", array("facet" => "type_facet", "id" => "25"));
-				print caNavLink($this->request, "Archival Items", "", "", "Browse", "objects", array("facet" => "type_facet", "id" => "25"));
+				print caNavLink($this->request, "Archive", "", "", "Browse", "objects", array("facet" => "type_facet", "id" => "25"));
 ?>
 				</div>
 				<div class="col-sm-8 col-sm-offset-2 col-md-offset-0 col-md-2 text-center">

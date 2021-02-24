@@ -82,7 +82,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;1,500&display=swap" rel="stylesheet"> 
 </head>
 <body <?php print (in_array(strToLower($this->request->getController()), array("front", "browse", "search"))) ? "class='bh_ltTeal'" : ""; ?>>
-	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
+	<div id="skipNavigation"><a href="#main">Skip to main content</a></div><a name="top"></a>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
