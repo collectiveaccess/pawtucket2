@@ -233,44 +233,46 @@
 								# --- display the rep viewer for the featured object so if it's video, it will play
 								$t_featured_object = new ca_objects($vn_featured_object_id);
 								$t_representation = $t_featured_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
-								$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
-								$vs_version = $va_media_display_info["display_version"];
-								$vb_link_to_object = false;
-								if(($t_featured_object->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($t_featured_object->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($t_featured_object->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes"))){
-									$vb_link_to_object = true;
-								}
-								if($qr_section_content_blocks->get("ca_occurrences.caption")){
-									$vs_caption = $qr_section_content_blocks->get("ca_occurrences.caption");
-								}else{
-									$vs_caption = $t_featured_object->get("ca_objects.preferred_labels.name");
-								}
-								#if($vb_link_to_object){
-								#	$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
-								#}else{
-									$vs_caption = "<div class='mediaViewerCaption text-center'>".$vs_caption."</div>";
-								#}
-								if($vs_version == "large"){
-									$vs_featured_image = $t_representation->get("ca_object_representations.media.".$vs_version);
+								if($t_representation){
+									$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
+									$vs_version = $va_media_display_info["display_version"];
+									$vb_link_to_object = false;
+									if(($t_featured_object->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($t_featured_object->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($t_featured_object->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes"))){
+										$vb_link_to_object = true;
+									}
+									if($qr_section_content_blocks->get("ca_occurrences.caption")){
+										$vs_caption = $qr_section_content_blocks->get("ca_occurrences.caption");
+									}else{
+										$vs_caption = $t_featured_object->get("ca_objects.preferred_labels.name");
+									}
 									#if($vb_link_to_object){
-									#	$vs_featured_image = caDetailLink($this->request, $vs_featured_image, '', "ca_objects", $vn_featured_object_id);
+									#	$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
+									#}else{
+										$vs_caption = "<div class='mediaViewerCaption text-center'>".$vs_caption."</div>";
 									#}
-									$vs_featured_image = '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $t_featured_object->get("ca_objects.object_id"), "representation_id" => $t_representation->get("ca_object_representations.representation_id"), "overlay" => 1)).'\'); return false;">'.$vs_featured_image.'</a>';
-									if($vs_caption){
-										$vs_featured_image .= $vs_caption;
-									};
-								}else{
-									$vs_featured_image =  caRepresentationViewer(
-																$this->request, 
-																$t_featured_object, 
-																$t_featured_object,
-																array(
-																	'display' => 'detail',
-																	'showAnnotations' => true, 
-																	'primaryOnly' => true, 
-																	'dontShowPlaceholder' => true, 
-																	'captionTemplate' => $vs_caption
-																)
-															);
+									if($vs_version == "large"){
+										$vs_featured_image = $t_representation->get("ca_object_representations.media.".$vs_version);
+										#if($vb_link_to_object){
+										#	$vs_featured_image = caDetailLink($this->request, $vs_featured_image, '', "ca_objects", $vn_featured_object_id);
+										#}
+										$vs_featured_image = '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $t_featured_object->get("ca_objects.object_id"), "representation_id" => $t_representation->get("ca_object_representations.representation_id"), "overlay" => 1)).'\'); return false;">'.$vs_featured_image.'</a>';
+										if($vs_caption){
+											$vs_featured_image .= $vs_caption;
+										};
+									}else{
+										$vs_featured_image =  caRepresentationViewer(
+																	$this->request, 
+																	$t_featured_object, 
+																	$t_featured_object,
+																	array(
+																		'display' => 'detail',
+																		'showAnnotations' => true, 
+																		'primaryOnly' => true, 
+																		'dontShowPlaceholder' => true, 
+																		'captionTemplate' => $vs_caption
+																	)
+																);
+									}
 								}
 							}
 
