@@ -23,7 +23,10 @@ All CollectiveAccess components are freely available under the open source GNU P
 
 ### About CollectiveAccess 1.7.11
 
-Version 1.7.11 is a maintenance release with bug fixes and improved support for MySQL 8.0. 
+Version 1.7.11 is a maintenance release with these bug fixes and minor improvements:
+* Fix for potential indexing issue which would result in incorrectly tokenized search terms and poor or broken search functionality.
+* Fix for issue where image media processed in the background by the task queue would not honor custom center points when cropped.
+* Removed extraneous fonts and trackers.
 
 
 ### Updating from a previous version
