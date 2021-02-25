@@ -632,7 +632,7 @@
 				foreach($va_reps as $vn_representation_id => $va_rep) {
 					$va_rep_info = $va_rep['info'][$ps_version];
 					
-					$vs_filename = caGetRepresentationDownloadFileName($this->ops_tablename, ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
+					$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
 					
 					$va_file_names[$vs_filename] = true;
 					$this->view->setVar('version_download_name', $vs_filename);
