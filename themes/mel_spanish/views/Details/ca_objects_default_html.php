@@ -140,15 +140,6 @@
 						print "<div class='unit'><label>Dimensions</label>".$vs_dims."</div>";
 					}
 				}
-				
-
-				if ($va_list_items = $t_object->get('ca_list_items.item_id', array('returnAsArray' => true))) {
-					print "<div class='unit'><label>Keywords</label>";
-					foreach ($va_list_items as $va_key => $va_list_item_id) {
-						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($va_list_item_id, true), '', '', 'Browse', 'objects', array('facet' => 'term_facet', 'id' => $va_list_item_id))."</div>";
-					}
-					print "</div>";
-				}
 								
 ?>	
 				{{{map}}}					

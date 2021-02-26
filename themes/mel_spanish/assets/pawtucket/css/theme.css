@@ -40,8 +40,14 @@
 }
 
 body{
-	margin-bottom:80px;
+	margin-bottom:250px;
     color:#000;
+}
+#pageArea{
+	padding-bottom:30px;
+}
+#pageArea.front{
+	padding-bottom:0px;
 }
 .bg_ltgray{
 	background-color: #f3f3f3;
@@ -137,7 +143,7 @@ ul.menuItems{
 	background-color:#529b8a;
 	color:#FFF;
 }
-#footer, #footer a{
+#footer{
 	background-color:#666;
 	color:#fff;
 	text-align:center;
@@ -146,6 +152,45 @@ ul.menuItems{
 	font-size: 14px;
 	padding-top:25px;
 	border:0px;
+	height:250px;
+	padding-top:30px;
+}
+#footer a{
+	color:#fff;
+	font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;
+	line-height:1.2em;
+	font-size: 14px;
+}
+#footer .funder img{
+	width:200px;
+	height:auto;
+	padding:10px;
+	background-color:#fff;
+}
+#footer .funder{
+	margin-top:30px;
+	font-style:italic;
+}
+@media(max-width:768px){
+	#footer .text-right{
+		text-align:center;
+	}
+	#footer .text-left{
+		text-align:center;
+	}
+	#footer{
+		height:375px;
+	}
+	#footer .funder{
+		margin-top:0px;
+	}
+	#footer .funder img{
+		margin-top:30px;
+		margin-bottom:30px;
+	}
+	body{
+		margin-bottom:375px;
+	}
 }
 
 .staticPage {
@@ -180,7 +225,7 @@ ul.menuItems{
     width: auto;
 }
 .exhibition .frontSlide img {
-    height: 400px;
+    height: 300px;
     width: auto;
 }
 .frontSlide {
@@ -285,7 +330,12 @@ ul.menuItems{
 	color:#FFF;
 	font-weight: bold;
 }
-
+.fundingDisclaimer{
+	font-style:italic;
+	text-align:center;
+	margin-top:40px;
+	margin-bottom:40px;
+}
 /* detail */
 
 .detail {
@@ -317,6 +367,7 @@ ul.menuItems{
 }
 .entityImages{
 	padding:30px 30px 0px 30px;
+	margin-bottom: 30px;
 }
 .entityImages img{
 	width:100%;
@@ -339,9 +390,24 @@ ul.menuItems{
 .mainImageCaption{
 	padding-top:5px;
 	text-align:center;
+	font-size:18px;
 }
 .detail #detailRepNav {
     font-size: 24px;
+}
+.detail .unit.fullscreen{
+	display:block;
+}
+.detail .unit.mobile{
+	display:none;
+}
+@media(max-width:768px){
+	.detail .unit.fullscreen{
+		display:none;
+	}
+	.detail .unit.mobile{
+		display:block;
+	}
 }
 /* browse */
 

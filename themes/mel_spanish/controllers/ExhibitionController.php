@@ -72,6 +72,8 @@
  			$o_result_context = new ResultContext($this->request, 'ca_entities', 'exhibition');
  			$this->view->setVar('result_context', $o_result_context);
  			$o_result_context->setAsLastFind();
+			$o_result_context->setResultList($va_featured_ids);
+			$o_result_context->saveContext();
  			
  			$this->render("Exhibition/index_html.php");
  		}

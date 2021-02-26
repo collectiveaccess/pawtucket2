@@ -24,7 +24,7 @@
 			</div><!-- end row -->
 			<div class="row">			
 <?php
-			if($va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values))){
+			$va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
 ?>
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					<div class="entityImages bh_ltTeal">
@@ -49,17 +49,13 @@
 ?>					
 						</div>
 					</div>
+					{{{<ifcount code="ca_entities.related" min="1"><div class="unit fullscreen"><label>Other Information</label><unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-<?php
-			}else{
-?>
-				<div class='col-sm-12'>
-<?php
-			}
-?>
-					{{{<ifdef code="ca_entities.biography"><div class='unit'>^ca_entities.biography%convertLineBreaks=1</div></ifdef>}}}
-					
+
+					{{{<ifdef code="ca_entities.biography"><div class='unit'>^ca_entities.biography</div></ifdef>}}}
+					{{{<ifcount code="ca_entities.related" min="1"><div class="unit mobile"><label>Other Information</label><unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+				
 				</div><!-- end col -->
 			</div><!-- end row -->
 		</div><!-- end container -->
