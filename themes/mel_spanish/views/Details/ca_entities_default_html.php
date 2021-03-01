@@ -30,10 +30,10 @@
 					<div class="entityImages bh_ltTeal">
 						<div class="entityMain">
 <?php
-						if($vs_primary = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='primary' length='1'><l>^ca_object_representations.media.mediumlarge</l><div class='mainImageCaption'>^ca_objects.preferred_labels.name</div></unit>")){
+						if($vs_primary = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='primary' length='1'><l>^ca_object_representations.media.mediumlarge</l><div class='mainImageCaption'><l>^ca_objects.preferred_labels.name<ifdef code='ca_objects.preferred_labels.name'><br/></ifdef><small>To find out more click on the image above</small></l></div></unit>")){
 							print $vs_primary;
 						}else{
-							print $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1'><l>^ca_object_representations.media.mediumlarge</l><div class='mainImageCaption'>^ca_objects.preferred_labels.name</div></unit>");
+							print $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1'><l>^ca_object_representations.media.mediumlarge</l><div class='mainImageCaption'><l>^ca_objects.preferred_labels.name<ifdef code='ca_objects.preferred_labels.name'><br/></ifdef><small>To find out more click on the image above</small></l></div></unit>");
 						}
 						
 ?>

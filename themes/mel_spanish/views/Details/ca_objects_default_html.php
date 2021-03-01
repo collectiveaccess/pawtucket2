@@ -79,6 +79,10 @@
 				
 				if ($vs_idno = $t_object->get('ca_objects.idno')) {
 					print "<div class='unit'><label>Accession Number</label>".$vs_idno."</div>";
+				}
+				
+				if ($vs_vessel = $t_object->getWithTemplate('^ca_objects.vessel')) {
+					print "<div class='unit'><label>Vessel</label>".$vs_vessel."</div>";
 				}		
 					
 				if ($vs_date = $t_object->get('ca_objects.date_created', array('delimiter' => '<br/>'))) {
