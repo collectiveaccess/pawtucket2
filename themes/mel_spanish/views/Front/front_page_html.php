@@ -32,8 +32,12 @@
 		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 	<div class="row leaf_bg">
-		<div class="col-sm-12 col-md-8 col-md-offset-2">
-			<H1>{{{home_intro_text}}}</H1>
+		<div class="col-sm-12">
+			<div class="row">
+				<div class="col-sm-12 col-md-12 col-lg-8 col-lg-offset-2">
+					<H1>{{{home_intro_text}}}</H1>
+				</div>
+			</div>
 		</div><!--end col-sm-8-->
 	</div>
 	<div class="row sectionLinks">

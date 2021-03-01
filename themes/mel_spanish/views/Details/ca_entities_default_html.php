@@ -19,14 +19,14 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12 text-center'>
-					<H1><?php print caGetThemeGraphic($this->request, 'leaf_left_black.jpg', array("alt" => "leaf detail")); ?>{{{^ca_entities.preferred_labels.displayname}}}<?php print caGetThemeGraphic($this->request, 'leaf_right_black.jpg', array("alt" => "leaf right detail")); ?></H1>
+					<H1><?php print caGetThemeGraphic($this->request, 'leaf_left_black.jpg', array("alt" => "leaf detail", "class" => "imgLeft")); ?>{{{^ca_entities.preferred_labels.displayname}}}<?php print caGetThemeGraphic($this->request, 'leaf_right_black.jpg', array("alt" => "leaf right detail", "class" => "imgRight")); ?></H1>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
 <?php
 			$va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
 ?>
-				<div class='col-sm-6 col-md-6 col-lg-6'>
+				<div class='col-sm-12 col-md-6 col-lg-6'>
 					<div class="entityImages bh_ltTeal">
 						<div class="entityMain">
 <?php
@@ -51,7 +51,7 @@
 					</div>
 					{{{<ifcount code="ca_entities.related" min="1"><div class="unit fullscreen"><label>Other Information</label><unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 				</div><!-- end col -->
-				<div class='col-sm-6 col-md-6 col-lg-6'>
+				<div class='col-sm-12 col-md-6 col-lg-6'>
 
 					{{{<ifdef code="ca_entities.biography"><div class='unit'>^ca_entities.biography</div></ifdef>}}}
 					{{{<ifcount code="ca_entities.related" min="1"><div class="unit mobile"><label>Other Information</label><unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}

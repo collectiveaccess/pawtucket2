@@ -110,15 +110,15 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-sm-12">
-		<H1><?php print caGetThemeGraphic($this->request, 'leaf_left_black.jpg', array("alt" => "leaf detail")); ?><?php print $t_set->getLabelForDisplay(); ?><?php print caGetThemeGraphic($this->request, 'leaf_right_black.jpg', array("alt" => "leaf right detail")); ?></H1>	
+	<div class="col-sm-12 text-center">
+		<H1><?php print caGetThemeGraphic($this->request, 'leaf_left_black.jpg', array("alt" => "leaf detail", "class" => "imgLeft")); ?><?php print $t_set->getLabelForDisplay(); ?><?php print caGetThemeGraphic($this->request, 'leaf_right_black.jpg', array("alt" => "leaf right detail", "class" => "imgRight")); ?></H1>	
 	</div>
 </div>
 <div class="row">
 	<div class="col-sm-12 col-md-8 col-md-offset-2">
 <?php
 		if($vs_intro = $t_set->get("ca_sets.description")){
-			print "<p class='introduction'>".$vs_intro."</p>";
+			print "<p class='introduction text-center'>".$vs_intro."</p>";
 		}
 $qr_res->seek(0);
 		if($qr_res && $qr_res->numHits()){
