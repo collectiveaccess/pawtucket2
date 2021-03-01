@@ -169,7 +169,11 @@
  				throw new ApplicationException("Invalid detail type");
  			}
  			
- 			$t_subject = Datamodel::getInstance($vs_table, true);
+ 			if (!($t_subject = Datamodel::getInstance($vs_table, true))) {
+ 				throw new ApplicationException("Invalid detail table");
+ 			}
+ 			$this->ops_tablename = $vs_table;
+ 			
  			$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls($vs_table);
  			if ((($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($vs_use_alt_identifier_in_urls)) && (substr($ps_id, 0, 3) == "id:")) {
  				$va_tmp = explode(":", $ps_id);
@@ -628,7 +632,7 @@
 				foreach($va_reps as $vn_representation_id => $va_rep) {
 					$va_rep_info = $va_rep['info'][$ps_version];
 					
-					$vs_filename = caGetRepresentationDownloadFileName($this->ops_tablename, ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
+					$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
 					
 					$va_file_names[$vs_filename] = true;
 					$this->view->setVar('version_download_name', $vs_filename);
@@ -745,7 +749,7 @@
 			    $vals[strtolower($k)] = preg_replace('![^A-Za-z0-9_\-]+!', '_', $v);
 			}
 			
-			$vs_filename = caGetRepresentationDownloadFileName($this->ops_tablename, ['idno' => $t_instance->get('idno'), 'index' => null, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_info['ORIGINAL_FILENAME'], 'representation_id' => $pn_representation_id]);
+			$vs_filename = caGetRepresentationDownloadFileName($va_context['table'], ['idno' => $t_instance->get('idno'), 'index' => null, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_info['ORIGINAL_FILENAME'], 'representation_id' => $pn_representation_id]);
 			$this->view->setVar('version_download_name', $vs_filename);
 			
 			

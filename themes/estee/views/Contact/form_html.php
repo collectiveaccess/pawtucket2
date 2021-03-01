@@ -94,7 +94,7 @@
 		case "inquiry":
 		case "projectInquiry":
 ?>
-	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 
 			<div class="row">
@@ -105,18 +105,7 @@
 					<br/>
 					<input type="hidden" name="itemId" value="<?php print $vs_idno; ?>">
 					<input type="hidden" name="itemTitle" value="<?php print $vs_name; ?>">
-<?php
-					if($ps_contactType == "projectInquiry"){
-						# --- sets need a link to the backend set
-?>
-						<input type="hidden" name="itemURL" value="<?php print $vs_admin_url; ?>">
-<?php
-					}else{
-?>
 					<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
-<?php
-					}
-?>
 					<hr/><br/>
 <?php
 					if($ps_contactType == "inquiry"){
@@ -199,6 +188,14 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
+					<div class="form-group<?php print (($va_errors["attachment"]) ? " has-error" : ""); ?>">
+						<label for="attachment">Attach A File</label>
+						<input type="file" class="form-control-file" id="attachment" name="attachment">
+					</div>
+				</div><!-- end col -->
+			</div><!-- end row -->
+			<div class="row">
+				<div class="col-sm-12">
 					<div class="form-group">
 						<br/><button type="submit" class="btn btn-default">Send</button>
 					</div><!-- end form-group -->
@@ -207,7 +204,8 @@
 		<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
 		<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
 		<input type="hidden" name="set_id" value="<?php print $pn_set_id; ?>">
-		<input type="hidden" name="contactType" value="<?php print ($ps_contactType == "projectInquiry") ? "Project Inquiry" : "Item Inquiry"; ?>">
+		<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
+		<input type="hidden" name="contactTypeLabel" value="<?php print ($ps_contactType == "projectInquiry") ? "Project Inquiry" : "Item Inquiry"; ?>">
 
 	</form>
 <?php		
@@ -217,7 +215,7 @@
 		case "avScanRequest":
 		case "digitizationRequest":
 ?>
-	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 
 			<div class="row">
@@ -258,18 +256,22 @@
 				<div class="col-sm-12">
 					<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
 <?php
+						$ps_contactTypeLabel = "";
 						switch($ps_contactType){
 							case "folderScanRequest":
+								$ps_contactTypeLabel = "Folder Scan Request";
 ?>
 								<label for="message">I would like the full contents of this folder to be scanned</label>
 <?php
 							break;
 							case "avScanRequest":
+								$ps_contactTypeLabel = "AV Scan Request";
 ?>
 								<label for="message">I would like this audiovisual item to be digitized</label>
 <?php
 							break;
 							case "digitizationRequest":
+								$ps_contactTypeLabel = "Digitization Request";
 ?>
 								<label for="message">I would like this item to be digitized</label>
 <?php							
@@ -287,6 +289,14 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-12">
+					<div class="form-group<?php print (($va_errors["attachment"]) ? " has-error" : ""); ?>">
+						<label for="attachment">Attach A File</label>
+						<input type="file" class="form-control-file" id="attachment" name="attachment">
+					</div>
+				</div><!-- end col -->
+			</div><!-- end row -->
+			<div class="row">
+				<div class="col-sm-12">
 					<div class="form-group">
 						<br/><button type="submit" class="btn btn-default">Send</button>
 					</div><!-- end form-group -->
@@ -295,7 +305,8 @@
 		<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
 		<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
 		<input type="hidden" name="set_id" value="<?php print $pn_set_id; ?>">
-		<input type="hidden" name="contactType" value="Folder Scan Request">
+		<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
+		<input type="hidden" name="contactTypeLabel" value="Folder Scan Request">
 
 	</form>
 <?php		
@@ -303,7 +314,7 @@
 		# -----------------------------
 		case "transferOLD":
 ?>
-	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post" enctype="multipart/form-data">
 		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 
 			<div class="row">
@@ -341,6 +352,14 @@
 			</div><!-- end row -->
 			<div class="row">
 				<div class="col-sm-12">
+					<div class="form-group<?php print (($va_errors["attachment"]) ? " has-error" : ""); ?>">
+						<label for="attachment">Attach A File</label>
+						<input type="file" class="form-control-file" id="attachment" name="attachment">
+					</div>
+				</div><!-- end col -->
+			</div><!-- end row -->
+			<div class="row">
+				<div class="col-sm-12">
 					<div class="form-group">
 						<br/><button type="submit" class="btn btn-default">Send</button>
 					</div><!-- end form-group -->
@@ -348,7 +367,8 @@
 			</div>
 		<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
 		<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
-		<input type="hidden" name="contactType" value="Transfer Request">
+		<input type="hidden" name="contactTypeLabel" value="Transfer Request">
+		<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 
 	</form>
 <?php
@@ -371,7 +391,7 @@
 					<div class="tab-content">
 						<div role="tabpanel" class="tab-pane active" id="general">	
 	
-							<form id="contactFormGeneral" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+							<form id="contactFormGeneral" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post" enctype="multipart/form-data">
 								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 
 									<div class="row">
@@ -415,6 +435,14 @@
 											</div>
 										</div><!-- end col -->
 									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group<?php print (($va_errors["attachment"]) ? " has-error" : ""); ?>">
+												<label for="attachment">Attach A File</label>
+												<input type="file" class="form-control-file" id="attachment" name="attachment">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
 			
 									<div class="row">
 										<div class="col-sm-12">
@@ -426,14 +454,15 @@
 		
 								<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
 								<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
-								<input type="hidden" name="contactType" value="General Questions">
+								<input type="hidden" name="contactTypeLabel" value="General Questions">
+								<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 
 							</form>	
 						</div>
 		
 						<div role="tabpanel" class="tab-pane" id="tours">
 	
-							<form id="contactFormHeritageTour" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+							<form id="contactFormHeritageTour" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post" enctype="multipart/form-data">
 								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 		
 									<div class="row">
@@ -533,6 +562,14 @@
 									</div><!-- end row -->
 									<div class="row">
 										<div class="col-sm-12">
+											<div class="form-group<?php print (($va_errors["attachment"]) ? " has-error" : ""); ?>">
+												<label for="attachment">Attach A File</label>
+												<input type="file" class="form-control-file" id="attachment" name="attachment">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-12">
 											<div class="form-group">
 												<br/><button type="submit" class="btn btn-default">Send</button>
 											</div><!-- end form-group -->
@@ -542,12 +579,13 @@
 								<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
 								<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
 								<input type="hidden" name="contactType" value="Heritage Tours">
+								<input type="hidden" name="contactTypeLabel" value="<?php print $ps_contactType; ?>">
 
 							</form>	
 		
 						<hr/>
 	
-							<form id="contactFormOfficeTour" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+							<form id="contactFormOfficeTour" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post" enctype="multipart/form-data">
 								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 		
 									<div class="row">
@@ -640,6 +678,14 @@
 											</div>
 										</div><!-- end col -->
 									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group<?php print (($va_errors["attachment"]) ? " has-error" : ""); ?>">
+												<label for="attachment">Attach A File</label>
+												<input type="file" class="form-control-file" id="attachment" name="attachment">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
 			
 									<div class="row">
 										<div class="col-sm-12">
@@ -651,13 +697,14 @@
 		
 								<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
 								<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
-								<input type="hidden" name="contactType" value="Tours of Mrs. Estée Lauder's Office">
+								<input type="hidden" name="contactTypeLabel" value="Tours of Mrs. Estée Lauder's Office">
+								<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 
 							</form>	
 						</div>
 						<div role="tabpanel" class="tab-pane" id="research">		
 	
-							<form id="contactFormResearchAppointment" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+							<form id="contactFormResearchAppointment" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post" enctype="multipart/form-data">
 								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 		
 			
@@ -760,6 +807,15 @@
 									</div><!-- end row -->
 									<div class="row">
 										<div class="col-sm-12">
+											<div class="form-group<?php print (($va_errors["attachment"]) ? " has-error" : ""); ?>">
+												<label for="attachment">Attach A File</label>
+												<input type="file" class="form-control-file" id="attachment" name="attachment">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+			
+									<div class="row">
+										<div class="col-sm-12">
 											<div class="form-group">
 												<br/><button type="submit" class="btn btn-default">Send</button>
 											</div><!-- end form-group -->
@@ -769,11 +825,12 @@
 		
 								<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
 								<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
-								<input type="hidden" name="contactType" value="Research Appointments">
+								<input type="hidden" name="contactTypeLabel" value="Research Appointments">
+								<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 							</form>
 						</div>
 						<div role="tabpanel" class="tab-pane" id="transfer">
-							<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+							<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post" enctype="multipart/form-data">
 								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 
 									<div class="row">
@@ -812,6 +869,15 @@
 									</div><!-- end row -->
 									<div class="row">
 										<div class="col-sm-12">
+											<div class="form-group<?php print (($va_errors["attachment"]) ? " has-error" : ""); ?>">
+												<label for="attachment">Attach A File</label>
+												<input type="file" class="form-control-file" id="attachment" name="attachment">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+			
+									<div class="row">
+										<div class="col-sm-12">
 											<div class="form-group">
 												<br/><button type="submit" class="btn btn-default">Send</button>
 											</div><!-- end form-group -->
@@ -819,7 +885,8 @@
 									</div>
 								<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
 								<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
-								<input type="hidden" name="contactType" value="Transfer Request">
+								<input type="hidden" name="contactTypeLabel" value="Transfer Request">
+								<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 
 							</form>
 

@@ -56,14 +56,14 @@
 				print "</div><div class='row'>";
 				$i = 0;
 			}
-			$vs_image = $qr_list->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.media.medium</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+			$vs_image = $qr_list->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.media.large</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 			$vs_desc = $qr_list->get("ca_objects.description");
 			if(mb_strlen($vs_desc) > 250){
 				$vs_desc = substr($vs_desc, 0, 250)."...";
 			}
 
 			$va_col_content[$vn_i] .= "
-				<div class='listingContainer'>
+				<div class='listingContainer listingContainerResources'>
 					<div class='listingContainerImgContainer'>".caDetailLink($this->request, $vs_image, '', 'ca_objects', $qr_list->get("object_id"))."</div>
 					<div class='listingContainerDesc'>
 						<H2>".$qr_list->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>')."</H2>

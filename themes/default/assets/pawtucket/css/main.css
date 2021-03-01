@@ -1637,7 +1637,7 @@ a.browseRemoveFacet img {
 	width:100%;
 	height:auto;
 	max-height: 500px;
-    /* object-fit: contain; */
+    object-fit: contain;
 }
 .detail .unit {
 	margin-bottom:12px;
@@ -3237,7 +3237,7 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	font-size:12px !important;
 }
 .tl-timeline em{
-	font-family:lato !important;
+	font-family:LatoLight !important;
 }
 
 /* Advanced Search */

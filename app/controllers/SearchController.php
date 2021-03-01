@@ -177,8 +177,9 @@
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
  			
 			$t_instance = Datamodel::getInstance($vs_class, true);
-			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
-			
+			if($ps_type){
+				$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
+			}
 			$this->view->setVar('t_instance', $t_instance);
  			$this->view->setVar('table', $va_browse_info['table']);
  			$this->view->setVar('primaryKey', $t_instance->primaryKey());

@@ -102,7 +102,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'mmdg_main_logo.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");
+				print "<a href='https://www.markmorrisdancegroup.org' class='navbar-brand' target='_blank'>".caGetThemeGraphic($this->request, 'mmdg_main_logo.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."</a>";
 ?>
 			</div>
 
@@ -149,9 +149,10 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Digital Archive"), "", "", "About", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Archive"), "", "", "About", "AboutArchive"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Digital Exhibitions"), "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibits"), "", "", "Gallery", "Index"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

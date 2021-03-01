@@ -64,7 +64,7 @@
 						continue;
 					}
 					
-					$vs_image = $qr_list->getWithTemplate("^ca_object_representations.media.medium", array("checkAccess" => $va_access_values, "limit" => 1));
+					$vs_image = $qr_list->getWithTemplate("^ca_object_representations.media.large", array("checkAccess" => $va_access_values, "limit" => 1));
 					$vs_desc = $qr_list->get("ca_occurrences.description");
 					#if(mb_strlen($vs_desc) > 500){
 					#	$vs_desc = substr($vs_desc, 0, 1500)."...";
@@ -75,7 +75,7 @@
 					$vs_link_text = ($qr_list->get("ca_occurrences.nav_text")) ? $qr_list->get("ca_occurrences.nav_text") : "More Information";
 					
 					$va_col_content[$vn_i] .= "
-						<div class='listingContainer'>
+						<div class='listingContainer listingContainerExhibitions'>
 							<div class='listingContainerImgContainer'>".caDetailLink($this->request, $vs_image, '', 'ca_occurrences', $qr_list->get("occurrence_id"))."</div>
 							<div class='listingContainerDesc'>
 								<H2>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</H2>
@@ -102,9 +102,9 @@
 						#	print "</div><div class='row'>";
 						#	$i = 0;
 						#}
-						$vs_image = $qr_list->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='featured'>^ca_object_representations.media.medium</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+						$vs_image = $qr_list->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='featured'>^ca_object_representations.media.large</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 						if(!$vs_image){
-							$vs_image = $qr_list->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.media.medium</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+							$vs_image = $qr_list->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.media.large</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 						}
 						$vs_desc = $qr_list->get("ca_occurrences.description");
 						#if(mb_strlen($vs_desc) > 250){
@@ -112,7 +112,7 @@
 						#}
 
 						$va_col_content[$vn_i] .= "
-							<div class='listingContainer'>
+							<div class='listingContainer listingContainerExhibitions'>
 								<div class='listingContainerImgContainer'>".caDetailLink($this->request, $vs_image, '', 'ca_occurrences', $qr_list->get("occurrence_id"))."</div>
 								<div class='listingContainerDesc'>
 									<H2>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</H2>

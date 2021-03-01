@@ -432,7 +432,8 @@
 		}
 		$va_links = array();
 		$vn_primary_id = "";
-		foreach($va_reps as $vn_rep_id => $va_rep){
+		foreach($va_reps as $va_rep){
+			$vn_rep_id = $va_rep["representation_id"];
 			$vs_class = "";
 			if($va_rep["is_primary"]){
 				$vn_primary_id = $vn_rep_id;
