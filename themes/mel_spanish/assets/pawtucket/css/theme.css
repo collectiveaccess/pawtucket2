@@ -40,7 +40,14 @@
 }
 
 body{
-	margin-bottom:80px;
+	margin-bottom:250px;
+    color:#000;
+}
+#pageArea{
+	padding-bottom:30px;
+}
+#pageArea.front{
+	padding-bottom:0px;
 }
 .bg_ltgray{
 	background-color: #f3f3f3;
@@ -57,6 +64,11 @@ body{
 H1, h1, H2, h2, H3, h3{
 	/*font-family: dinneuzeitgroteskltw01-_812426, sans-serif;*/
 	font-family: 'Cormorant', serif;
+	font-weight:bold;
+}
+H1, h1 {
+    font-size: 24px;
+    color: #000000;
 }
 @media (min-width: 768px) {
 	ul.menuItems {
@@ -99,6 +111,19 @@ H1, h1, H2, h2, H3, h3{
     width: 90px;
     margin-right:20px;
 }
+@media(max-width:450px){
+	.navbar-brand img {
+		width: 60px;
+		margin-top: 10px;
+	}
+	.navbar-default .navbar-brand, .navbar-default a.navbar-brand:hover, .navbar-default a.navbar-brand:focus {
+		font-size:17px;
+		width:300px;
+	}
+	.navbar-default .navbar-brand b{
+		font-size:18px;
+	}
+}
 .navbar .formOutline{
 	background-color:#FFF;
 	border:0px;
@@ -109,9 +134,20 @@ H1, h1, H2, h2, H3, h3{
 		margin-right:15px;
 	}
 }
+@media(max-width:768px){
+	.navbar-form{
+		-webkit-box-shadow: none;
+		box-shadow: none;
+	}
+}
 ul.menuItems{
 	background-color:#2b7c74;
 	border:0px;
+}
+@media(max-width:768px){
+	ul.menuItems{
+		margin-left:0px;
+	}
 }
 .navbar-nav > li{
 	border-right:1px solid #666;
@@ -131,7 +167,7 @@ ul.menuItems{
 	background-color:#529b8a;
 	color:#FFF;
 }
-#footer, #footer a{
+#footer{
 	background-color:#666;
 	color:#fff;
 	text-align:center;
@@ -140,28 +176,54 @@ ul.menuItems{
 	font-size: 14px;
 	padding-top:25px;
 	border:0px;
+	height:250px;
+	padding-top:30px;
+}
+#footer a{
+	color:#fff;
+	font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;
+	line-height:1.2em;
+	font-size: 14px;
+}
+#footer .funder img{
+	width:200px;
+	height:auto;
+	padding:10px;
+	background-color:#fff;
+}
+#footer .funder{
+	margin-top:30px;
+	font-style:italic;
+}
+@media(max-width:768px){
+	#footer .text-right{
+		text-align:center;
+	}
+	#footer .text-left{
+		text-align:center;
+	}
+	#footer{
+		height:375px;
+	}
+	#footer .funder{
+		margin-top:0px;
+	}
+	#footer .funder img{
+		margin-top:30px;
+		margin-bottom:30px;
+	}
+	body{
+		margin-bottom:375px;
+	}
 }
 
-.detail, .staticPage {
-    font-size: 16px;
-}
-.detail label{
-	font-family: 'Cormorant', serif;
-}
-.detail h1 {
-    font-size: 24px;
-}
-.entities.detail h1{
-	font-size: 36px;
-	margin-bottom:30px;
-}
-.entities.detail h1 img{
-	width: 100px;
-	height:auto;
-	margin:0px 10px 0px 10px;
+.staticPage {
+    font-size: 18px;
+    color:#000;
+    line-height: 1.7em;
 }
 .front H1 {
-    font-size: 35px;
+    font-size: 42px;
     line-height:1.5em;
     text-align:center;
     /*font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;*/
@@ -181,13 +243,30 @@ ul.menuItems{
 	background-color: #dbeae7;
 	background-color: rgb(219, 234, 231, .65);
 }
+@media(max-width:991px){
+	.front H1{
+		font-size:36px;
+		margin-top:130px;
+	}
+	.leaf_bg{
+		background-position: center center;
+		margin-bottom: 30px;
+		background-size: contain;
+	}
+}
+@media(max-width:768px){
+	.front H1{
+		font-size:22px;
+		margin-top:50px;
+	}
+}
 /* styles for front slideshow also apply to the Exhibition slideshow */
 .frontSlide img {
     height: 300px;
     width: auto;
 }
 .exhibition .frontSlide img {
-    height: 400px;
+    height: 300px;
     width: auto;
 }
 .frontSlide {
@@ -214,9 +293,10 @@ ul.menuItems{
 .front H2{
 	/*font-family: dinneuzeitgroteskltw01-_812426, sans-serif;*/
 	font-family: 'Cormorant', serif;
-	font-size: 24px;
+	font-size: 30px;
 	text-align:center;
 	margin-top:30px;
+	text-transform:uppercase;
 }
 .frontGallerySlideCaption{
 	font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;
@@ -224,17 +304,25 @@ ul.menuItems{
 }
 .sectionLinks{
 	padding-bottom:30px;
-	background-color:#fff;
+	background-color:#efefef;
 }
 .sectionLinks img{
 	width:100%;
 	height:auto;
 	margin-bottom:10px;
+	max-width:400px;
+}
+@media(max-width:991px){
+	.sectionLinks img{
+		margin-top:50px;
+	}
 }
 .sectionLinks a{
 	font-family: 'Cormorant', serif;
-	font-size: 20px;
+	font-size: 24px;
 	color:#000;
+	font-weight:bold;
+	display: block;
 }
 .sectionLinks a:hover img{
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -243,7 +331,7 @@ ul.menuItems{
 
 /* exhibition */
 .exhibition H1 {
-    font-size: 32px;
+    font-size: 36px;
     line-height:1.5em;
     text-align:center;
     /*font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;*/
@@ -251,12 +339,50 @@ ul.menuItems{
     text-transform:none;
     padding-top: 15px;
     color:#000;
-    margin:10px 0px 20px 0px;
+    margin:10px 0px 40px 0px;
+    position:relative;
+    width:auto;
+    display:inline-block;
+    
+    margin-left:110px;
+    margin-right:110px;
+}
+.exhibition h1 img {
+    width: 100px;
+    height: auto;
+}
+.exhibition h1 img.imgLeft {
+    position:absolute;
+    left:-110px;  
+    top: 20%;   
+}
+.exhibition h1 img.imgRight {
+	position:absolute;
+    right:-110px;
+    top: 20%;  
 }
 .exhibition .introduction{
-	font-size:16px;
+	font-size:18px;
 	line-height:1.5em;
 	margin-bottom:30px;
+}
+@media(max-width:1100px){
+	.exhibition H1 {
+    	font-size: 30px;
+    	margin-left:80px;
+   		margin-right:80px;
+    }
+	.exhibition h1 img {
+		width: 70px;
+	}
+	.exhibition h1 img.imgRight {
+		right:-80px;
+		top:33%;
+	}
+	.exhibition h1 img.imgLeft {
+		left:-80px;
+		top:33%;
+	}
 }
 .exhibitionItem{
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -283,16 +409,97 @@ ul.menuItems{
 	line-height:1.2;
 	color: #454545;
 	color:#FFF;
+	font-weight: bold;
 }
-
+.fundingDisclaimer{
+	font-style:italic;
+	text-align:center;
+	margin-top:40px;
+	margin-bottom:40px;
+}
 /* detail */
+
+.detail {
+    font-size: 16px;
+    color:#000;
+    line-height: 1.4em;
+}
+.detail label{
+	font-family: 'Cormorant', serif;
+	font-size:16px;
+	margin-top:20px;
+	color:#000;
+}
+.detail .unit a{
+	color:#000;
+	text-decoration:underline;
+}
+.detail h1 {
+    font-size: 24px;
+}
+@media(max-width:768px){
+	.detail h1{
+		margin-top:50px;
+	}
+}
+.entities.detail h1{
+	font-size: 36px;
+	margin-bottom:30px;
+    position:relative;
+    width:auto;
+    display:inline-block;    
+    margin-left:110px;
+    margin-right:110px;
+    padding-top:3px;
+}
+.entities.detail h1 img{
+	width: 100px;
+	height:auto;
+	top:0px;
+}
+.entities.detail h1 img.imgLeft {
+    position:absolute;
+    left:-110px;
+}
+.entities.detail h1 img.imgRight {
+	position:absolute;
+    right:-110px;
+}
+@media(max-width:1100px){
+	.entities.detail H1 {
+    	font-size: 28px;
+    	margin-left:80px;
+   		margin-right:80px;
+   		padding-top:15px;
+    }
+	.entities.detail h1 img {
+		width: 70px;
+	}
+	.entities.detail h1 img.imgRight {
+		right:-80px;
+		top:30%;
+	}
+	.entities.detail h1 img.imgLeft {
+		left:-80px;
+		top:30%;
+	}
+}
 .entityImages{
 	padding:30px 30px 0px 30px;
+	margin-bottom: 30px;
+}
+.entityImages a{
+	color:#000;
 }
 .entityImages img{
 	width:100%;
 	height:500px;
 	object-fit:contain;
+}
+@media(max-width:991px){
+	.entityImages img{
+		height:350px;
+	}
 }
 .entityMain img{
 	text-align:center;
@@ -310,22 +517,47 @@ ul.menuItems{
 .mainImageCaption{
 	padding-top:5px;
 	text-align:center;
+	font-size:18px;
 }
 .detail #detailRepNav {
     font-size: 24px;
+}
+.detail .unit.fullscreen{
+	display:block;
+}
+.detail .unit.mobile{
+	display:none;
+}
+@media(max-width:768px){
+	.detail .unit.fullscreen{
+		display:none;
+	}
+	.detail .unit.mobile{
+		display:block;
+	}
 }
 /* browse */
 
 .browseIntro{
 	padding-bottom:20px;
-	font-size:15px;
+	font-size:16px;
 	color:#000;
+	text-align: center;
+	padding-top: 10px;
 }
 #bRefine{
 	background-color:#FFF;
 }
 #bRefine H2, #bRefine H3{
 	color:#000;
+}
+#bRefine a {
+    font-size: 15px;
+}
+.bResultItem .bResultItemText a {
+    color: #000;
+    line-height: 1.2em;
+    font-size: 15px;
 }
 .bResultListItemCol {
     height: 172px;
@@ -343,9 +575,23 @@ ul.menuItems{
 .bResultListItem:hover {
     height: 162px;
 }
-.bResultListItem .bResultListItemText {
+.bResultListItem .bResultListItemText a {
     font-size: 15px;
+    color:#000;
 }
 .bResultItemExpandedInfo, .bResultListItemExpandedInfo{
 	display:none !important;
+}
+.bResultItem .bResultItemText small a, .bResultListItem .bResultListItemText small a{
+	font-size:12px;
+}
+.browseTop{
+	position: fixed;
+	z-index: 2000;
+	bottom: 0px;
+	right: 10px;
+	display:none;
+}
+.results a.btn.browseTop .glyphicon{
+	color:#fff !important;
 }
