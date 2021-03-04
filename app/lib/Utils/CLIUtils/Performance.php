@@ -32,12 +32,10 @@
  
 	trait CLIUtilsPerformance { 
 		# -------------------------------------------------------
-		# -------------------------------------------------------
 		/**
 		 *
 		 */
 		public static function precache_simple_services($po_opts=null) {
-			require_once(__CA_LIB_DIR__."/SitePageTemplateManager.php");
 			
 		
 		    $o_app_conf = Configuration::load();
@@ -132,6 +130,92 @@
 		public static function precache_simple_servicesHelp() {
 			return _t('Pre-cache responses for appropriately configurated simple services. Caching can dramatically improve performance for services providing infrequently changing data.');
 		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function precache_browse($po_opts=null) {
+			
 		
+		    $app_config = Configuration::load();
+            $browse_config = Configuration::load(__CA_APP_DIR__.'/conf/browse.conf');
+            
+        	ExternalCache::flush('browse_results');
+        	ExternalCache::flush('facets_for_collection_chron');
+        	
+           	$browses = $browse_config->get('browseTypes');
+			foreach($browses as $k => $b) {
+				$t = $b['table'];
+				print "CACHING ".$b['displayName']." [{$k}] ({$t})\n";
+				$facet_config = $browse_config->get($t);
+				if(is_array($facet_config) && is_array($facet_config['facets'])) {
+					$br = caGetBrowseInstance($t);
+					$br->setTypeRestrictions($b['restrictToTypes']);
+					
+					foreach([false, true] as $include_asterisk) {
+						foreach($facet_config['facets'] as $n => $fi) {
+							if (is_array($facet_vals = $br->getFacet($n))) {
+								print "\tLOAD top level\n";
+								$br->removeAllCriteria();
+								if ($include_asterisk) { $br->addCriteria('_search', ['*']); }
+								$br->execute(['checkAccess' => [1], 'noCache' => true, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => false, 'omitChildRecords' => false, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $b, null)]);
+								$qr = $br->getResults();
+							
+								foreach($facet_config['facets'] as $nn => $fi) {
+									print "\t\t\tPreload facet {$nn}\n";
+									$br->getFacet($nn, ['checkAccess' => [1], 'noCache' => true]);
+								}
+								print "\t\tRETURNED ".$qr->numHits()." hits\n";
+								
+								foreach($facet_vals as $id => $fv) {
+									print "\tLOAD {$n} => {$id}\n";
+									$br->removeAllCriteria();
+									if ($include_asterisk) { $br->addCriteria('_search', ['*']); }
+									$br->addCriteria($n, [$id]);
+									$br->execute(['checkAccess' => [1], 'noCache' => true, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => false, 'omitChildRecords' => false, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $b, null)]);
+									$qr = $br->getResults();
+								
+									foreach($facet_config['facets'] as $nn => $fi) {
+										print "\t\t\tPreload facet {$nn}\n";
+										$br->getFacet($nn, ['checkAccess' => [1], 'noCache' => true]);
+									}
+									print "\t\tRETURNED ".$qr->numHits()." hits\n";
+								}
+							}
+						}
+					}
+				}
+			}
+           
+			
+			CLIUtils::addMessage(_t("Cached browse"));
+		}
+		# -------------------------------------------------------
+		public static function precache_browseParamList() {
+			return [
+				
+			];
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function precache_browseUtilityClass() {
+			return _t('Performance');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function precache_browseShortHelp() {
+			return _t('Pre-cache browses.');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function precache_browseHelp() {
+			return _t('Pre-cache browses.');
+		}
 		# -------------------------------------------------------
     }

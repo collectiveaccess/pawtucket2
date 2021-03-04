@@ -187,7 +187,7 @@
 			$o_mail->send($vo_tr);
 			
 			if (caGetOption('log', $pa_options, true) && caGetOption('logSuccess', $pa_options, true)) {
-				$o_log->log(array('CODE' => 'SYS', 'SOURCE' => caGetOption('source', $pa_options, 'Registration'), 'MESSAGE' => _t(caGetOption('successMessage', $pa_options, 'Email was sent to %1'), join(';', array_keys($pa_to)))));
+				$o_log->log(array('CODE' => 'SYS', 'SOURCE' => caGetOption('source', $pa_options, 'Registration'), 'MESSAGE' => _t(caGetOption('successMessage', $pa_options, 'Email was sent to %1'), join(';', array_values($pa_to)))));
 			}
 			return true;
 		} catch (Exception $e) {

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018-2020 Whirl-i-Gig
+ * Copyright 2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -34,30 +34,18 @@ require_once(__CA_LIB_DIR__.'/Auth/BaseAuthAdapter.php');
 require_once(__CA_MODELS_DIR__.'/ca_users.php');
 
 class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
-	# --------------------------------------------------------------------------------
-	/**
-	 *
-	 */
-	private $auth_config = null;
-	
-	# --------------------------------------------------------------------------------
-	/**
-	 *
-	 */
+
     public function __construct(){
-        $this->auth_config = Configuration::load(__CA_APP_DIR__."/conf/authentication.conf");
-        $shibSP = $this->auth_config->get('shibboleth_service_provider');
+        $this->opo_auth_config = Configuration::load(__CA_APP_DIR__."/conf/authentication.conf");
+        $vs_shibSP = $this->opo_auth_config->get('shibboleth_service_provider');
         try{
-            $this->opo_shibAuth = new \SimpleSAML\Auth\Simple($shibSP);
+                $this->opo_shibAuth = new \SimpleSAML\Auth\Simple($vs_shibSP);
         } catch (Exception $e) {
-            throw new ShibbolethException("Could not create SimpleSAML auth object");
+                throw new ShibbolethException("Could not create SimpleSAML auth object: ".$e->getMessage());
         }
     }
 	# --------------------------------------------------------------------------------
-	/**
-	 *
-	 */
-	public function authenticate($username, $password = '', $options=null) {
+	public function authenticate($ps_username, $ps_password = '', $pa_options=null) {
 		try{
         	$this->opo_shibAuth->requireAuth();
 		} catch (Exception $e){
@@ -67,11 +55,10 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 		if(!$this->opo_shibAuth->isAuthenticated()){
 			return false;
 		}
-		if (!($attrs = $this->opo_shibAuth->getAttributes())) { return false; }
-	    
-	    
-        $map = array_flip($this->auth_config->get('shibboleth_field_map'));
-	    $uid = array_shift($attrs[$map['uid']]);
+		if (!($va_attrs = $this->opo_shibAuth->getAttributes())) { return false; }
+	    if (!is_array($va_attrs['emailAddress'])) { return false; }
+	    ///print_R($va_attrs);
+	    $uid = array_shift($va_attrs['emailAddress']);
 	    if (!$uid) { return false; }
 	    if (ca_users::find(['user_name' => $uid], ['returnAs' => 'count']) > 0) {
 	        return true;
@@ -79,64 +66,45 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	    return false;
 	}
     # --------------------------------------------------------------------------------
-	/**
-	 *
-	 */
-	public function getUserInfo($username, $password, $options=null) {
+    public function getUserInfo($ps_username, $ps_password, $pa_options=null) {
         if(!$this->opo_shibAuth->isAuthenticated()){
-            if (!$this->authenticate($username, $password)) {
+            if (!$this->authenticate($ps_username, $ps_password)) {
                 throw new ShibbolethException(_t("User could not be authenticated."));
             }
         }
         if($this->opo_shibAuth->isAuthenticated()){
-            $default_roles =  $this->auth_config->get('shibboleth_users_default_roles');
-            $default_groups = $this->auth_config->get('shibboleth_users_default_groups');
+            $va_default_roles =  $this->opo_auth_config->get('shibboleth_users_default_roles');
+            $va_default_groups = $this->opo_auth_config->get('shibboleth_users_default_groups');
             
-            $map = array_flip($this->auth_config->get('shibboleth_field_map'));
-            
-            $attrs = $this->opo_shibAuth->getAttributes();
-            
-            if(empty($attrs[$map['uid']][0])) { 
-            	throw new ShibbolethException(_t("User id not set."));
-            }
-            if(empty($attrs[$map['email']][0])) { 
-            	throw new ShibbolethException(_t("User email address not set."));
-            }
+            $va_attrs = $this->opo_shibAuth->getAttributes();
             return [
-                'user_name' => $username ? $username : $attrs[$map['uid']][0],
-				'email' => $attrs[$map['email']][0],
-				'fname' => $attrs[$map['fname']][0],
-				'lname' => $attrs[$map['lname']][0] ? $attrs[$map['lname']][0] : $attrs[$map['email']][0],
+                'user_name' => $ps_username ? $ps_username : $va_attrs['emailAddress'][0],
+				'email' => $va_attrs['emailAddress'][0],
+				'fname' => $va_attrs['fname'][0],
+				'lname' => $va_attrs['emailAddress'][0],
 				'active' => 1,
-				'roles' => $default_roles,
-				'groups' => $default_groups
+				'roles' => $va_default_roles,
+				'groups' => $va_default_groups
             ];
         }
 		throw new ShibbolethException(_t("User could not be found."));
     }
 	# --------------------------------------------------------------------------------
-	/**
-	 * @param string $username Username to create account for
-	 * @param string $passowrd Ignored
-	 */
-	public function createUserAndGetPassword($username, $password=null) {
+	public function createUserAndGetPassword($ps_username, $ps_password) {
 		// ca_users takes care of creating the backend record for us. There's nothing else to do here
 		if(function_exists('mcrypt_create_iv')) {
-			$password = base64_encode(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
+			$vs_password = base64_encode(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
 		} elseif(function_exists('openssl_random_pseudo_bytes')) {
-			$password = base64_encode(openssl_random_pseudo_bytes(32));
+			$vs_password = base64_encode(openssl_random_pseudo_bytes(32));
 		} else {
-			throw new Exception('mcrypt or OpenSSL is required for CollectiveAccess Shibboleth support');
+			throw new Exception('mcrypt or OpenSSL is required for CollectiveAccess to run');
 		}
 
-        return $password;
+        return $vs_password;
 	}
 	# --------------------------------------------------------------------------------
-	/**
-	 *
-	 */
-	public function supports($feature) {
-		switch($feature){
+	public function supports($pn_feature) {
+		switch($pn_feature){
 		    case __CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__:
 		        return true;
 			case __CA_AUTH_ADAPTER_FEATURE_RESET_PASSWORDS__:
@@ -149,26 +117,16 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 		}
 	}
 	# --------------------------------------------------------------------------------
-	/**
-	 * @param string $username Username to update password for
-	 * @param string $passowrd Ignored
-	 */
-	public function updatePassword($username, $password) {
+	public function updatePassword($ps_username, $ps_password) {
 		// ca_users takes care of creating the backend record for us. There's nothing else to do here
-		return create_hash($password);
+		return create_hash($ps_password);
 	}
 	# --------------------------------------------------------------------------------
-	/**
-	 *
-	 */
-	public function deleteUser($username) {
+	public function deleteUser($ps_username) {
 		// ca_users takes care of deleting the db row for us. Nothing else to do here.
 		return true;
 	}
     # --------------------------------------------------------------------------------
-    /**
-	 *
-	 */
     public function getAccountManagementLink() {
         return false;
     }
@@ -176,14 +134,11 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	/**
 	 * Deauthenticate session by removing SimpleSAML cookies
 	 *
-	 * @param array $options No options are currently supported.
-	 *
-	 * @return bool True on success
 	 */
-    public function deauthenticate($options=null) {
+    public function deauthenticate($pa_options=null) {
         setcookie("SimpleSAML", "", time()-3600, '/');
         setcookie("SimpleSAMLAuthToken", "", time()-3600, '/');
-        setcookie($this->auth_config->get('shibboleth_token_cookie'), '', time()-3600, __CA_URL_ROOT__);
+        setcookie($this->opo_auth_config->get('shibboleth_token_cookie'), '', time()-3600, __CA_URL_ROOT__);
         return true;
     }
 	# --------------------------------------------------------------------------------

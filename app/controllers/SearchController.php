@@ -358,7 +358,7 @@
 					if (isset($va_facet_info['require_roles']) && is_array($va_facet_info['require_roles']) && sizeof($va_facet_info['require_roles'])) {
 						if (!$this->request->isLoggedIn() || !sizeof(array_filter($va_facet_info['require_roles'], function($v) { return $this->request->user->hasUserRole($v); }))) { continue; }
 					}
-					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request));
+					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request));
 				}
 			}
 		

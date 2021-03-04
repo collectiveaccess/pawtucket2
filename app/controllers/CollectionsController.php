@@ -116,13 +116,19 @@
  		public function ChildList(){
  			$vn_collection_id = $this->request->getParameter('collection_id', pInteger);
  			if($vn_collection_id){
+ 				if(CompositeCache::contains('c'.$vn_collection_id, 'Collections_child_list_html')) {
+ 					print CompositeCache::fetch('c'.$vn_collection_id, 'Collections_child_list_html');
+ 					return;
+ 				}
  				$t_item = new ca_collections($vn_collection_id);
  				$this->view->setVar("item", $t_item);
  				$this->view->setVar("collection_id", $vn_collection_id);
  			}else{
  				throw new ApplicationException("Invalid collection_id");
  			}
-			$this->render("Collections/child_list_html.php");
+			$content = $this->render("Collections/child_list_html.php", true);
+			CompositeCache::save('c'.$vn_collection_id, $content, 'Collections_child_list_html');
+			print $content;
  		}
  		# -------------------------------------------------------
 		/** 
