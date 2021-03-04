@@ -157,7 +157,7 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 <?php
 							if($vb_show_collection_guide){
 ?>
-								<li role="presentation"<?php print ($ps_last_tab == "guide") ? ' class="active"' : ''; ?>><a href="#guide" aria-controls="Collection Guide" role="tab" data-toggle="tab">Collection Guide</a></li>
+								<li role="presentation"<?php print ($ps_last_tab == "guide") ? ' class="active"' : ''; ?> id='collectionGuideTab'><a href="#guide" aria-controls="Collection Guide" role="tab" data-toggle="tab">Collection Guide</a></li>
 <?php
 							}
 							if($vb_show_collection_chronology){
@@ -212,11 +212,6 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 												<H2><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</H2>
 												<div id="collectionLoad"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 											</div>
-											<script>
-												$(document).ready(function(){
-													$('#collectionLoad').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('show_objects' => true, 'collection_id' => $t_item->get("ca_collections.collection_id"), 'row_id' => $this->request->getParameter('row_id', pInteger))); ?>");
-												});
-											</script>
 										</div>
 									</div>
 								</div><!-- end tabpanel guide -->
@@ -270,7 +265,18 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 										window.location.hash = e.target.hash.replace("#", "#" + prefix);
 									});
 								
+									jQuery('#collectionGuideTab').on('click', loadCollectionGuide);
+									
+if(jQuery('#collectionGuideTab.active').length > 0) {
+									$('#collectionLoad').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('show_objects' => true, 'collection_id' => $t_item->get("ca_collections.collection_id"), 'row_id' => $this->request->getParameter('row_id', pInteger))); ?>");
+}
 								});
+								
+								function loadCollectionGuide() {									
+									$(document).ready(function(){
+										$('#collectionLoad').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('show_objects' => true, 'collection_id' => $t_item->get("ca_collections.collection_id"), 'row_id' => $this->request->getParameter('row_id', pInteger))); ?>");
+									});
+								}
 								
 							</script>
 						</section>
