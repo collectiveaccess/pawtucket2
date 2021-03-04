@@ -120,12 +120,17 @@
 			$this->view->setVar('lightbox_section_heading', $va_lightboxDisplayName["section_heading"]);
 			
 			$va_lightbox_parent_displayname = caGetLightboxDisplayNameParent();
+			$this->ops_lightbox_parent_display_name = $va_lightbox_parent_displayname["singular"];
+			$this->ops_lightbox_parent_display_name_plural = $va_lightbox_parent_displayname["plural"];
 			$this->view->setVar('lightbox_parent_displayname', $va_lightbox_parent_displayname["singular"]);
 			$this->view->setVar('lightbox_parent_displayname_plural', $va_lightbox_parent_displayname["plural"]);
 			$this->view->setVar('lightbox_parent_section_heading', $va_lightbox_parent_displayname["section_heading"]);
 			
 			$this->ops_description_attribute = ($this->opo_config->get("lightbox_set_description_element_code") ? $this->opo_config->get("lightbox_set_description_element_code") : "description");
 			$this->view->setVar('description_attribute', $this->ops_description_attribute);
+			
+			$this->ovb_kam_curator = $this->request->hasRole($this->opo_config->get("kam_curated_role"));
+			$this->view->setVar('kam_curator', $this->ovb_kam_curator);
 			
 			$this->purifier = new HTMLPurifier();
 			
@@ -167,7 +172,7 @@
  			}
  			$this->view->setVar("activity", $va_set_change_log);
 
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name));
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_parent_display_name));
  			
  			$this->render(caGetOption("view", $pa_options, "Lightbox/set_list_html.php"));
  		}
@@ -187,7 +192,7 @@
             $t_sets = new ca_sets();
  			
  			$t_list = new ca_lists();
- 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->opo_config->get('user_set_type'));
+ 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', ($this->ovb_kam_curator) ? $this->opo_config->get('kam_curated_set_type') : $this->opo_config->get('user_set_type'));
  			
  			$va_parent_sets = $t_sets->getSetsForUser(array("setType" => $vn_set_type_user, "table" => "ca_objects", "user_id" => $this->request->getUserID(), "parents_only" => true));
 			$this->view->setVar("parent_sets", $va_parent_sets);
@@ -196,7 +201,7 @@
  			$this->view->setVar("set_ids", $va_set_ids);
 
            
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name));
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_parent_display_name));
  			
  			$this->render(caGetOption("view", $pa_options, "Lightbox/parent_set_list_html.php"));
  		}
@@ -232,6 +237,15 @@
  			
  			$vn_set_id = $t_set->get("ca_sets.set_id");
  			$this->view->setVar("set", $t_set);
+ 			
+ 			if($vn_parent_id = $t_set->get("ca_sets.parent_id")){
+ 				# --- get the cover object id.  Cover is used on gallery landing page as featured image for the gallery.  It is the only object in the parent gallery set
+ 				$t_parent = new ca_sets($vn_parent_id);
+ 				$va_parent_object_ids = array_keys($t_parent->getItems(array("returnRowIdsOnly" => true)));
+ 				if(is_array($va_parent_object_ids) && sizeof($va_parent_object_ids)){
+ 					$this->view->setVar('cover_object_id', $va_parent_object_ids[0]);
+ 				}
+ 			}
 
  			$qr_comments = $t_set->getComments(null, null, array('returnAs' => 'searchResult'));
 
@@ -441,7 +455,7 @@
 				$this->view->setVar('map', $o_map->render('HTML', array()));
 			}
  			
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_parent_display_name).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
  			switch($ps_view) {
  				case 'xlsx':
  				case 'pptx':
@@ -517,7 +531,7 @@
  			$ps_mode = $this->request->getParameter('mode', pString);
  			
  			$t_list = new ca_lists();
- 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->opo_config->get('user_set_type'));
+ 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', ($this->ovb_kam_curator) ? $this->opo_config->get('kam_curated_set_type') : $this->opo_config->get('user_set_type'));
  			
  			// check for errors
  			// set name - required
@@ -1062,10 +1076,10 @@
  				throw new ApplicationException(_t("You do not have access to this lightbox"));
  			}
  			$va_errors = array();
- 			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
- 			$vs_display_name_plural = caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural);
+ 			$vs_display_name = $this->ops_lightbox_parent_display_name;
+ 			$vs_display_name_plural = $this->ops_lightbox_parent_display_name_plural;
  			
- 			# --- Set access of set and all children to restricted (confgured in lightbox.conf as lightbox_under_review_access)
+ 			# --- Set access of set and all children to restricted (confgured in lightbox.conf as lightbox_under_review_access) or to published (lightbox_public_access) if user is a kam curator
 			$va_pub_set_ids = array($t_set->get("ca_sets.set_id"));
 			$qr_children = ca_sets::find(array('parent_id' => $t_set->get("ca_sets.set_id")), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
 			if($qr_children->numHits()){
@@ -1073,38 +1087,123 @@
 					$va_pub_set_ids[] = $qr_children->get("ca_sets.set_id");
 				}
 			}
-			$vn_access = $this->opo_config->get('lightbox_under_review_access');
+			if($this->ovb_kam_curator){
+				$vn_access = $this->opo_config->get('lightbox_public_access');
+			}else{
+				$vn_access = $this->opo_config->get('lightbox_under_review_access');
+				if(!$vn_access){
+					$vn_access = 2;
+				}
+			}
 			foreach($va_pub_set_ids as $vn_pub_set_id){
 				$t_pub_set = new ca_sets($vn_pub_set_id);
 				$t_pub_set->setMode(ACCESS_WRITE);
-				$t_pub_set->set('access', ($vn_access) ? $vn_access : 2);
+				$t_pub_set->set('access', $vn_access);
 				$t_pub_set->update();
 				if($t_pub_set->numErrors()) {
 					$va_errors[] = join("; ", $t_pub_set->getErrors());
 				}
 			}
 			if(sizeof($va_errors)){
-				$this->notification->addNotification(join("; ", $va_errors), __NOTIFICATION_TYPE_ERROR__);
+				$this->view->setVar("notification", join("; ", $va_errors));
 			}else{
-				$this->notification->addNotification(_t("Thank you for requesting your gallery be published.  You will be notified after review."), __NOTIFICATION_TYPE_INFO__);
-				# --- notify admins there are new galleries to approve publication of
+				if($this->ovb_kam_curator){
+					$this->view->setVar("notification", _t("Your gallery was published and now appears in the Gallery > KAM Curated section of this site."));
+				}else{
+					$this->view->setVar("notification", _t("Thank you for requesting your gallery be published.  You will be notified after review."));
+					# --- notify admins there are new galleries to approve publication of
+					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+					$o_view->setVar("set", $t_set->getLabelForDisplay());
+					$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
+					$o_view->setVar("from_email", $this->request->user->get("email"));
+					$o_view->setVar("display_name", $vs_display_name);
+					$o_view->setVar("display_name_plural", $vs_display_name_plural);
+			
+					# -- generate email subject line from template
+					$vs_subject_line = $o_view->render("mailTemplates/lightbox_request_publish_notification_subject.tpl");
+				
+					# -- generate mail text from template - get both the text and the html versions
+					$vs_mail_message_text = $o_view->render("mailTemplates/lightbox_request_publish_notification.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/lightbox_request_publish_notification_html.tpl");
+			
+					caSendmail($this->opo_config->get('publish_email'), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+				}
+			}
+			$this->render("Lightbox/reload_parent_set_list_html.php");
+ 			
+ 		}
+ 		# ------------------------------------------------------
+        /**
+         *
+         */
+ 		function userUnpublishForm(){
+ 			if($this->opb_is_login_redirect) { return; }
+
+ 			if(!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+ 				throw new ApplicationException(_t("You do not have access to this lightbox"));
+ 			}
+ 			$this->view->setVar("set_id", $t_set->get("ca_sets.set_id"));
+ 			$this->render(caGetOption("view", $pa_options, "Lightbox/form_user_unpublish_html.php"));
+ 
+ 			
+ 		}
+ 		# ------------------------------------------------------
+        /**
+         *
+         */
+ 		function ajaxUserUnpublish(){
+ 			if($this->opb_is_login_redirect) { return; }
+ 
+ 			if(!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+ 				throw new ApplicationException(_t("You do not have access to this lightbox"));
+ 			}
+ 			$this->view->setVar("set_id", $t_set->get("ca_sets.set_id"));
+ 			$va_errors = array();
+ 			$vs_display_name = $this->ops_lightbox_parent_display_name;
+ 			$vs_display_name_plural = $this->ops_lightbox_parent_display_name_plural;
+ 			
+ 			# --- Set access of set and all children to restricted (confgured in lightbox.conf as lightbox_default_access)
+			$va_pub_set_ids = array($t_set->get("ca_sets.set_id"));
+			$qr_children = ca_sets::find(array('parent_id' => $t_set->get("ca_sets.set_id")), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
+			if($qr_children->numHits()){
+				while($qr_children->nextHit()){
+					$va_pub_set_ids[] = $qr_children->get("ca_sets.set_id");
+				}
+			}
+			$vn_access = $this->opo_config->get('lightbox_default_access');
+			foreach($va_pub_set_ids as $vn_pub_set_id){
+				$t_pub_set = new ca_sets($vn_pub_set_id);
+				$t_pub_set->setMode(ACCESS_WRITE);
+				$t_pub_set->set('access', ($vn_access) ? $vn_access : 0);
+				$t_pub_set->update();
+				if($t_pub_set->numErrors()) {
+					$va_errors[] = join("; ", $t_pub_set->getErrors());
+				}
+			}
+			if(sizeof($va_errors)){
+				$this->view->setVar("notification", _t("There was an error:").join("; ", $va_errors));
+			}else{
+				$this->view->setVar("notification", _t("Your gallery has been unpublished."));
+				# --- notify admins the galleries was unpublished
 				$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
 				$o_view->setVar("set", $t_set->getLabelForDisplay());
 				$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
 				$o_view->setVar("from_email", $this->request->user->get("email"));
 				$o_view->setVar("display_name", $vs_display_name);
 				$o_view->setVar("display_name_plural", $vs_display_name_plural);
+				$o_view->setVar("message", $this->request->getParameter('message', pString));
 			
 				# -- generate email subject line from template
-				$vs_subject_line = $o_view->render("mailTemplates/lightbox_request_publish_notification_subject.tpl");
+				$vs_subject_line = $o_view->render("mailTemplates/lightbox_user_unpublish_notification_subject.tpl");
 				
 				# -- generate mail text from template - get both the text and the html versions
-				$vs_mail_message_text = $o_view->render("mailTemplates/lightbox_request_publish_notification.tpl");
-				$vs_mail_message_html = $o_view->render("mailTemplates/lightbox_request_publish_notification_html.tpl");
+				$vs_mail_message_text = $o_view->render("mailTemplates/lightbox_user_unpublish_notification.tpl");
+				$vs_mail_message_html = $o_view->render("mailTemplates/lightbox_user_unpublish_notification_html.tpl");
 			
 				caSendmail($this->opo_config->get('publish_email'), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+
 			}
-			$this->parent_list();
+			$this->render("Lightbox/reload_parent_set_list_html.php");
  			
  		}
  		# ------------------------------------------------------
@@ -1118,8 +1217,8 @@
 				$t_set = new ca_sets($vn_set_id);
 				$va_set_users = $t_set->getSetUsers();
 				$va_errors = array();
-				$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
-				$vs_display_name_plural = caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural);
+				$vs_display_name = $this->ops_lightbox_parent_display_name;
+				$vs_display_name_plural = $this->ops_lightbox_parent_display_name_plural;
 			
 				# --- Set access of set and all children to public (confgured in lightbox.conf as lightbox_public_access)
 				$va_pub_set_ids = array($t_set->get("ca_sets.set_id"));
@@ -1159,6 +1258,66 @@
 					# -- generate mail text from template - get both the text and the html versions
 					$vs_mail_message_text = $o_view->render("mailTemplates/lightbox_approve_publish_notification.tpl");
 					$vs_mail_message_html = $o_view->render("mailTemplates/lightbox_approve_publish_notification_html.tpl");
+					caSendmail($va_emails, $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+				}
+				$this->publishRequestsList();
+			}else{
+				$this->publishRequestsList();
+			} 		
+ 		}
+ 		# ------------------------------------------------------
+ 		function unpublish(){
+ 			if($this->opb_is_login_redirect) { return; }
+			# --- this is only for admins
+			if($this->request->hasRole("admin") && ($vn_set_id = $this->request->getParameter('set_id', pInteger))){
+				$t_set = new ca_sets($vn_set_id);
+				$va_set_users = $t_set->getSetUsers();
+				$va_errors = array();
+				$vs_display_name = $this->ops_lightbox_parent_display_name;
+				$vs_display_name_plural = $this->ops_lightbox_parent_display_name_plural;
+			
+				# --- Set access of set and all children to private (confgured in lightbox.conf as lightbox_default_access)
+				$va_pub_set_ids = array($t_set->get("ca_sets.set_id"));
+				$qr_children = ca_sets::find(array('parent_id' => $t_set->get("ca_sets.set_id")), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
+				if($qr_children->numHits()){
+					while($qr_children->nextHit()){
+						$va_pub_set_ids[] = $qr_children->get("ca_sets.set_id");
+					}
+				}
+				$vn_access = $this->opo_config->get('lightbox_default_access');
+				foreach($va_pub_set_ids as $vn_pub_set_id){
+					$t_pub_set = new ca_sets($vn_pub_set_id);
+					$t_pub_set->setMode(ACCESS_WRITE);
+					$t_pub_set->set('access', ($vn_access) ? $vn_access : 0);
+					$t_pub_set->update();
+					if($t_pub_set->numErrors()) {
+						$va_errors[] = join("; ", $t_pub_set->getErrors());
+					}
+				}
+				if(sizeof($va_errors)){
+					$this->notification->addNotification(join("; ", $va_errors), __NOTIFICATION_TYPE_ERROR__);
+				}else{
+					$this->notification->addNotification(_t("Unpublished %1", $vs_display_name), __NOTIFICATION_TYPE_INFO__);
+					# --- notify users with access to set it was published
+					$va_emails = array();
+					foreach($va_set_users as $va_set_user){
+						$va_emails[] = $va_set_user["email"];
+					}
+					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+					$o_view->setVar("set", $t_set->getLabelForDisplay());
+					$o_view->setVar("display_name", $vs_display_name);
+					$o_view->setVar("display_name_plural", $vs_display_name_plural);
+			
+					# -- generate email subject line from template
+					$vs_subject_line = $o_view->render("mailTemplates/lightbox_approve_publish_notification_subject.tpl");
+					$vs_subject_line = $o_view->render("mailTemplates/lightbox_unpublish_notification_subject.tpl");
+				
+					# -- generate mail text from template - get both the text and the html versions
+					$vs_mail_message_text = $o_view->render("mailTemplates/lightbox_approve_publish_notification.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/lightbox_approve_publish_notification_html.tpl");
+					
+					$vs_mail_message_text = $o_view->render("mailTemplates/lightbox_unpublish_notification.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/lightbox_unpublish_notification_html.tpl");
 			
 					caSendmail($va_emails, $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 				}
@@ -1187,7 +1346,20 @@
 						unset($sets[$set_id]);
 					}
 				}
-				$this->view->setVar("sets", $sets);
+				$this->view->setVar("under_review_sets", $sets);
+				
+				# --- published sets so can unpublish
+				$set_opts = array('checkAccess' => array($this->opo_config->get('lightbox_public_access')), 'setType' => $vn_set_type_user, 'table' => 'ca_objects');
+				$sets = caExtractValuesByUserLocale($t_set->getSets($set_opts));
+
+				# --- remove child sets
+				foreach($sets as $set_id => $set){
+					if($set["parent_id"]){
+						unset($sets[$set_id]);
+					}
+				}
+				$this->view->setVar("published_sets", $sets);
+				
 				$this->render("Lightbox/publish_requests_list_html.php");
 			}else{
 				$this->parent_list();
@@ -1477,6 +1649,42 @@
 			$this->view->setVar('errors', $va_errors);
 			$this->render('Lightbox/ajax_reorder_items_json.php');
  		}
+ 		# ------------------------------------------------------
+        /**
+         *
+         */
+ 		public function ajaxReorderChildSets() {
+            if($this->opb_is_login_redirect) { return; }
+
+            if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+				$va_errors = array();
+				# --- this is the parent
+				$this->view->setVar("set_id", $t_set->get("ca_sets.set_id"));
+				
+				$va_set_ids = array();
+				$va_set_ids_raw = explode('&', $this->request->getParameter('set_ids', pString));
+				foreach($va_set_ids_raw as $vn_set_id_raw){
+					$va_set_ids[] = str_replace('set[]=', '', $vn_set_id_raw);
+				}
+				# --- load each child set and set their rank to the index of the array
+				if(is_array($va_set_ids) and sizeof($va_set_ids)){
+					foreach($va_set_ids as $vn_index => $vn_set_id){
+						$t_child = new ca_sets($vn_set_id);
+						$t_child->setMode(ACCESS_WRITE);
+						$t_child->set('rank', $vn_index);
+						$t_child->update();
+						if ($t_child->numErrors()) {
+							$va_errors[] = join("; ", $t_child->getErrors());
+							print_r($t_child->getErrors());
+						}
+					}
+				}
+			}else{
+				throw new ApplicationException(_t("You do not have access to this lightbox"));
+			}
+			$this->view->setVar('errors', $va_errors);
+			$this->render('Lightbox/ajax_reorder_items_json.php');
+ 		}
  		# -------------------------------------------------------
         /**
          *
@@ -1501,6 +1709,50 @@
  			
  			$this->view->setVar('errors', $va_errors);
  			$this->render('Lightbox/ajax_delete_item_json.php');
+ 		}
+ 		# -------------------------------------------------------
+        /**
+         *
+         */
+ 		public function AjaxMakeCoverItem() {
+            if($this->opb_is_login_redirect) { return; }
+
+            if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
+				
+				$pn_object_id = $this->request->getParameter('object_id', pInteger);
+				$vn_parent_id = $t_set->get("ca_sets.parent_id");
+				$t_parent = new ca_sets($vn_parent_id);
+				# --- add this item to the parent set - that is how the cover image is selected
+				if($t_parent->get("ca_sets.set_id")){
+					# --- remove any items in the parent set - we just want one as the cover
+					$va_remove_row_ids = array_keys($t_parent->getItems(array("returnRowIdsOnly" => true)));
+					foreach($va_remove_row_ids as $vn_remove_row_id){
+						$t_parent->removeItem($vn_remove_row_id);
+					}
+					if ($pn_item_id = $t_parent->addItem($pn_object_id, array(), $this->request->getUserID())) {
+						//
+						// Select primary representation
+						//
+						$t_object = new ca_objects($pn_object_id);
+						$vn_rep_id = $t_object->getPrimaryRepresentationID();	// get representation_id for primary
+					
+						$t_item = new ca_set_items($pn_item_id);
+						$t_item->addSelectedRepresentation($vn_rep_id);			// flag as selected in item vars
+						$t_item->update();
+					
+						$va_errors = array();
+					}else{
+						$va_errors["Message"] = "Could not add item";
+					}
+				}else{
+					$va_errors["Message"] = "No Parent";
+				}
+			} else {
+				throw new ApplicationException(_t("You do not have access to this lightbox"));	
+			}
+ 			
+ 			$this->view->setVar('errors', $va_errors);
+ 			$this->render('Lightbox/ajax_make_cover_item_json.php');
  		}
  		# -------------------------------------------------------
         /**
@@ -1538,7 +1790,7 @@
  				$pn_parent_id = $this->purifier->purify($this->request->getParameter('parent_id', pInteger));
 				if($pn_parent_id < 0){
 					$t_list = new ca_lists();
-					$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->opo_config->get('user_set_type'));
+					$vn_set_type_user = $t_list->getItemIDFromList('set_types', ($this->ovb_kam_curator) ? $this->opo_config->get('kam_curated_set_type') : $this->opo_config->get('user_set_type'));
 					# --- making a new parent - was the name entered
 					$ps_parent_name = $this->purifier->purify($this->request->getParameter('parent_name', pString));
 					if(!$ps_parent_name){
@@ -1576,7 +1828,7 @@
 				$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));
 	
 				$t_list = new ca_lists();
-				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->opo_config->get('user_set_type'));
+				$vn_set_type_user = $t_list->getItemIDFromList('set_types', ($this->ovb_kam_curator) ? $this->opo_config->get('kam_curated_set_type') : $this->opo_config->get('user_set_type'));
 				
 				$t_set->setMode(ACCESS_WRITE);
 				$t_set->set('access', (!is_null($t_parent->get("access")) ? $t_parent->get("access") : $this->opo_config->get('lightbox_default_access')));

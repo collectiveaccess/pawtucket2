@@ -30,13 +30,14 @@
  * ----------------------------------------------------------------------
  */
 	$t_set = $this->getVar("set");
+	$vb_kam_curator = $this->getVar("kam_curator");
 	#$va_write_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2));
  	$va_errors = $this->getVar("errors");
 	$vs_display_name = $this->getVar("display_name");
 	$vs_description_attribute 		= $this->getVar("description_attribute");
 	$va_access_values = caGetUserAccessValues($this->request);
 	$config = caGetLightboxConfig();
-	$va_write_parent_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "setType" => $config->get("user_set_type"), "parents_only" => true, "access" => 2));
+	$va_write_parent_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "setType" => ($vb_kam_curator) ? $config->get('kam_curated_set_type') : $config->get(' '), "parents_only" => true, "access" => 2));
 	#$va_write_palette_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "setType" => "palette", "access" => 2));
 	$va_object_ids = explode(";", $this->getVar("object_ids"));
 ?>
@@ -49,23 +50,30 @@
 ?>
 	<form id="AddItemForm" action="#" class="form-horizontal" role="form">
 <?php
+		$vs_add_to_sets = "";
 		$vs_parent_dropdowns = "";
 		if(is_array($va_write_parent_sets) && sizeof($va_write_parent_sets)){
 			$t_write_set = new ca_sets();
-			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><select name='set_id' class='form-control'>";
-			print "<option value=''>"._t("Select a %1", $vs_display_name)."</option>\n";
 			foreach($va_write_parent_sets as $va_write_parent){
 				$t_write_set->load($va_write_parent["set_id"]);
-				$vs_palettes = $t_write_set->getWithTemplate("<unit relativeTo='ca_sets.children' delimiter=' '><option value='^ca_sets.set_id'>&nbsp;&nbsp;&nbsp;^ca_sets.preferred_labels</option></unit>");
-				if($vs_palettes){
-					print "<option value='".$va_write_parent["set_id"]."' disabled>".$t_write_set->getLabelForDisplay()."</option>\n";
-					print $vs_palettes;
+				# --- don't include published or under review sets - only access = 0 /  not accessible to the public sets
+				if($t_write_set->get("ca_sets.access") == 0){
+					$vs_children = $t_write_set->getWithTemplate("<unit relativeTo='ca_sets.children' delimiter=' '><option value='^ca_sets.set_id'>&nbsp;&nbsp;&nbsp;^ca_sets.preferred_labels</option></unit>");
+					if($vs_children){
+						$vs_add_to_sets .= "<option value='".$va_write_parent["set_id"]."' disabled>".$t_write_set->getLabelForDisplay()."</option>\n";
+						$vs_add_to_sets .= $vs_children;
+					}
+					$vs_parent_dropdowns .= "<option value='".$va_write_parent["set_id"]."'>".$t_write_set->getLabelForDisplay()."</option>\n";
 				}
-				$vs_parent_dropdowns .= "<option value='".$va_write_parent["set_id"]."'>".$t_write_set->getLabelForDisplay()."</option>\n";
 			}
-			print "</select>\n";
-			print "</div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
-			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><H3>"._t("OR<br/>Create a New %1", ucfirst($vs_display_name))."</H3></div></div><!-- end form-group -->\n";
+			if($vs_add_to_sets){
+				print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><select name='set_id' class='form-control'>";
+				print "<option value=''>"._t("Select a %1", $vs_display_name)."</option>\n";
+				print $vs_add_to_sets;
+				print "</select>\n";
+				print "</div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+				print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><H3>"._t("OR<br/>Create a New %1", ucfirst($vs_display_name))."</H3></div></div><!-- end form-group -->\n";		
+			}
 		}
 		print "<div class='form-group'><label for='parent' class='col-sm-4 control-label'>"._t("Part of")."</label><div class='col-sm-7'><select id='parent_id' name='parent_id' class='form-control'>".$vs_parent_dropdowns."<option value='-1'>Create a New Gallery</option></select></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		print "<div id='newParent' class='form-group' ".(($vs_parent_dropdowns) ? "style='display:none;'" : "")."><div class='col-sm-7 col-sm-offset-4'><input type='text' name='parent_name' placeholder='"._t("New Gallery Name")."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";

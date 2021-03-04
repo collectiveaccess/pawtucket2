@@ -42,6 +42,10 @@
     $vn_representation_id = $this->getVar('representation_id');
     $vs_representation = $this->getVar('representation');
     $vs_placeholder = $this->getVar('placeholder');
+    
+    # --- cover object id.  Cover is used on gallery landing page as featured image for the gallery.  It is the only object in the parent gallery set
+ 	$pn_cover_object_id				= $this->getVar("cover_object_id");
+
 ?>
 <div class="row"><div class="col-sm-12"><hr/></div></div>
 <div class="row lbListItem">
@@ -53,6 +57,7 @@
 			}
 			if($vn_representation_id){
 				print "<a href='#' title='"._t("Enlarge Image")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+				print " <a href='#' title='"._t("Make Cover Image")."' class='lbItemCoverImageButton".(($vn_object_id == $pn_cover_object_id) ? " currentCover" : "")."' id='lbItemCoverImage".$vn_item_id."' data-item_id='".$vn_item_id."' data-object_id='".$vn_object_id."'><span class='glyphicon glyphicon-check'></span></a>";
 			}
 			if($vn_representation_id || $vb_write_access){
 				print "</div>";

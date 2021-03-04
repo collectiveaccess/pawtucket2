@@ -1,4 +1,4 @@
-/* blue: #002244; grays: #161616 #494949 ochre: #9A6E00; dark ochre: #815c00; dark gray bg:#2f2e2c*/
+/* blue: #002244; grays: #161616 #494949 ochre: #9A6E00; dark ochre: #815c00; orange: #f46a1f; dark gray bg:#2f2e2c*/
 
 body{
 	margin-bottom:300px;
@@ -27,6 +27,10 @@ a.readmore-js-toggle, a.readmore-js-toggle:hover{
 	margin-bottom: 5px;
 	text-align: center;
 }
+.form-control{
+	color:#000;
+	font-family: LatoLight, helvetica, sanserif;
+}
 .btn-default, .lightbox .btn-default, .modal-footer  .btn{
 	background-color:#9A6E00;
 }
@@ -45,6 +49,12 @@ a.browseRemoveFacet .btn-default{
 }
 a.browseRemoveFacet .glyphicon {
     color: #757575 !important;
+}
+#bSetsSelectMultipleButton .btn {
+    background-color: #f46a1f;
+}
+#bSetsSelectMultipleButton .btn:hover {
+    background-color: #002244;
 }
 .form-control:focus {
     border-color: #000;
@@ -231,7 +241,32 @@ a:hover .themesContainer{
 	color: #161616;
 }
 
-
+.repViewerContCont{
+	padding-bottom:38px;
+}
+.detail .detailMediaToolbar/*, .gallery .detailMediaToolbar*/ {
+    background-color: #fff;
+    padding: 2px 5px 7px 5px;
+    font-size: 16px;
+    position: absolute;
+    display: block;
+    top: auto;
+    bottom: -43px;
+    left:30%;
+    right:30%;
+    text-align: center;
+    z-index:1500;
+}
+.detail .detailMediaToolbar a{
+	color: #858585;
+}
+.detail #detailRepNav {
+    padding: 0px 0px 7px 0px;
+    font-size: 12px;
+    position: relative;
+    z-index: 1000;
+    top: -33px;
+}
 
 /* parent ligthboxess */
 .parentList .unit{
@@ -240,7 +275,10 @@ a:hover .themesContainer{
 .parentList .unit .btn{
 	margin-left:0px;
 }
-
+.parentList .parentListDesc{
+	max-height:150px;
+	overflow-y:scroll;
+}
 .lbListItem img{
 	width:100%;
 	height:auto;
@@ -249,12 +287,19 @@ a:hover .themesContainer{
 	font-size:12px;
 	line-height:1.3em;
 }
+.lbListItem .lbItemCoverImageButton.currentCover{
+	color:#f46a1f;
+}
 .parentItem{
 	background-color:#f6f6f6;
 	padding:20px;
 }
 .parentItem H2{
 	margin-top:10px;
+}
+.parentItemCoverImage img{
+	height:72px;
+	width:auto;
 }
 .parentItem H2 a{
 	color: #000000;
@@ -284,48 +329,90 @@ a:hover .themesContainer{
 
 /* gallery */
 .gallery {
-    font-size: 14px;
+    font-size: 16px;
+}
+.gallery #gallerySetInfo {
+    font-size: 15px;
+    line-height: 1.8em;
+    color: #000;
+}
+.gallery #gallerySetInfo a {
+    color: #000;
 }
 .gallery H2{
 	font-size:16px !important;
 	text-transform:none;
 	margin:0px 0px 3px 0px;
 }
-.gallery .container.bg{
-	background-color:#f5f5f5;
-	margin-top:15px;
-}
-.gallery .gallerySectionArea{
-	background-color:#ffffff;
+.gallery H5, .gallery H3{
+	font-size:13px;
 }
 .gallery .tombstone{
-	line-height:1.2em;
-	background-color:#f5f5f5;
+	line-height:1.3em;
+	font-size:15px;
+	/*background-color:#f5f5f5;
 	padding:5px 10px 10px 10px;
-	margin-top:10px;
+	margin-top:10px;*/
 }
 .gallery .setItemCaption{
-	font-size: 15px;
-	font-family: lato;
-	padding:15px 0px 10px 0px;
+	font-size: 16px;
+	padding:15px 0px 0px 0px;
+}
+.gallerySectionNav{
+	max-height:430px;
+	overflow:scroll;
 }
 .gallerySectionNav ul{
 	list-style-type:none;
 	padding:0px;
-	margin-top:15px;
 }
 .gallerySectionNav li{
-	margin-bottom:4px;
+	margin-bottom:10px;
 }
 .gallerySectionNav .btn-default{
 	background-color:#fff;
 	color:#000;
 	display:block;
+	padding: 10px;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	white-space: normal;
 }
-.gallerySectionNav .btn-default:hover{
-	background-color:#777777;
+.gallerySectionNav .btn-default:hover, .gallerySectionNav li.currentSlideshow .btn-default{
+	background-color:#002244;
 	color:#fff;
 }
 .gallerySectionNav .btn-default .fa{
 	font-size: 11px;
+}
+.twoCol{
+	column-count: 2;
+}
+.gallery a.readmore-js-toggle, .gallery a.readmore-js-toggle:hover {
+    color: #161616;
+    text-decoration: underline;
+    display: block;
+    margin-top: -15px;
+    margin-bottom: 25px;
+    text-align: center;
+    text-transform: uppercase;
+	font-size: 12px;
+}
+.gallery .galleryDetailTopText a.readmore-js-toggle, .gallery .galleryDetailTopText  a.readmore-js-toggle:hover {
+	margin-top: -25px;
+}
+.galleryDetailObjectInfoContainer{
+	padding: 10px 10px 10px 10px;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+.gallery .setDescription {
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 1.8em;
+}
+#galleryDetailImageGrid #moreLink{
+	text-decoration: underline;
+    text-transform: uppercase;
+	font-size: 12px;
 }
