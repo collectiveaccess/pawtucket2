@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2017 Whirl-i-Gig
+ * Copyright 2016-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -41,3 +41,10 @@
 	<?php print $this->getVar('controls'); ?>
 </div>
 <?php } ?>
+
+<script>
+	function caMediaOverlayNav(mode, id, representation_id) {
+		jQuery("#caMediaPanelContentArea:visible").load("<?= caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', ['context' => $this->getVar('context'), 'overlay' => 1]); ?>/id/" + id + '/representation_id/' + representation_id);
+		jQuery('#' + caMediaPanel.getPanelID()).data('reloadUrl', '<?= caNavUrl($this->request, '', '*', $this->getVar('context')); ?>/' + id);
+	}
+</script>

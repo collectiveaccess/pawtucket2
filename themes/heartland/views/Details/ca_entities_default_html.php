@@ -23,7 +23,19 @@
 			<div class="row">			
 				<div class='col-sm-12'>
 					{{{<ifdef code="ca_entities.nonpreferred_labels.displayname"><div class='unit'><label>Alternate Names</label>^ca_entities.nonpreferred_labels.displayname%delimiter=<br/> </div></ifdef>}}}
-					
+					{{{<ifdef code="ca_entities.counties"><div class='unit'><label><ifcount code="ca_entities.counties" min="1" max="1">County</ifcount><ifcount code="ca_entities.counties" min="2">Counties</ifcount></label>^ca_entities.counties%delimiter=,_</div></ifdef>}}}
+					{{{<if rule="^ca_entities.type_id !~ /Individual/">
+						<ifdef code="ca_entities.website"><div class='unit'><label>Website<ifcount code="ca_entities.website" min="2">s</ifcount></label><unit relativeTo="ca_entities.website" delimiter="<br/>"><a href="^ca_entities.website" target="_blank">^ca_entities.website</a></unit></div></ifdef>
+						<ifdef code="ca_entities.address.address1|ca_entities.address.address2|ca_entities.address.city|ca_entities.address.stateprovince|ca_entities.address.postalcode|ca_entities.address.country">
+							<div class='unit'><label>Address<ifcount code="ca_entities.address" min="2">es</ifcount></label>
+								<unit relativeTo="ca_entities.address" delimiter="<br/><br/>">
+									<ifdef code="ca_entities.address.address1">^ca_entities.address.address1 <br/></ifdef>
+									<ifdef code="ca_entities.address.address2">^ca_entities.address.address2 <br/></ifdef>
+									<ifdef code="ca_entities.address.city">^ca_entities.address.city, </ifdef><ifdef code="ca_entities.address.state">^ca_entities.address.state </ifdef><ifdef code="ca_entities.address.postalcode">^ca_entities.address.postalcode</ifdef><ifdef code="ca_entities.address.country"> ^ca_entities.address.country</ifdef>
+								</unit>
+							</div>
+						</ifdef>
+					</if>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
 			

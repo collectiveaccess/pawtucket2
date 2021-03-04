@@ -781,6 +781,8 @@ a.readmore-js-toggle {
 .mediaViewerCaption{
 	font-size:12px;
 	margin-top:0px;
+	margin-left: 35px;
+	margin-right: 35px;
 }
 .detail .detailMediaToolbar, .detail .repViewerCont:hover .detailMediaToolbar {
     background-color: #ebebeb;
@@ -1273,9 +1275,17 @@ a.readmore-js-toggle {
 	max-height:400px;
 	overflow:hidden;
 }
-.listingContainer img{
+.listingContainerExhibitions .listingContainerImgContainer img{
 	width:100%;
-	height:auto;
+	height: 250px;
+	object-fit: cover;
+}
+.listingContainerResources .listingContainerImgContainer img{
+	width:100%;
+	height: auto;
+}
+.listingContainerResources .listingContainerImgContainer {
+	max-height:650px;
 }
 .listingContainer .listingContainerDesc {
 	background-color:#605b4b;
@@ -1398,7 +1408,11 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 }
 
 /* digital exhibitions */
-
+@media(min-width:992px){
+	#pageArea.digital_exhibition.detail{
+		padding-bottom:800px;
+	}
+}
 .exploreDigitalExhibitionsRow{
 	background:
 		linear-gradient(
@@ -1480,6 +1494,12 @@ a .digExhSideNavLinkImg .digExhSideNavLink{
 	background-color: transparent;
 	background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.5), rgba(0,0,0,0));
 }
+a.currentSection .digExhSideNavLink:before {
+    font-family: FontAwesome;
+    content: "\f0da";
+    padding-right:5px;
+}
+
 .detail a:hover .digExhSideNavLinkImg .digExhSideNavLink{
 	color:#FFF;
 	background-color: transparent;
@@ -1522,6 +1542,11 @@ a.digExhAnchors.offset{
 .detail .digExhContentBlock, .detail .digExhContentBlock .digExhUnit p{	
 	font-size:15px;
 }
+@media(min-width:1200px){
+	.digExhContentBlock .digExhUnit, .detail .digExhContentBlock .digExhUnit p{
+		font-size:18px;
+	}
+}
 .digExhContentBlock h2{
 	font-weight:normal;
 	font-size:28px;
@@ -1548,8 +1573,10 @@ a.digExhAnchors.offset{
 .digExhContentBlock .quoteMargin{
 	font-size:25px;
 	text-align:center;
-	margin-top:90px;
-	margin-bottom:110px;
+	margin-top:30px;
+	margin-bottom:40px;
+/*	margin-top:90px;
+	margin-bottom:110px;*/
 	padding:40px;
 }
 .digExhContentBlock .quote{
@@ -1563,6 +1590,10 @@ a.digExhAnchors.offset{
 		padding-top:0px;
 	}
 }	
+.digital_exhibition .mediaViewerCaption{
+	font-size:14px;
+	padding-top: 5px;
+}
 .vcenter {
     display: inline-block;
     vertical-align: middle;
@@ -1571,6 +1602,17 @@ a.digExhAnchors.offset{
 .digExhUnit img{
 	max-width: 100%;
 	height: auto;
+}
+.digExhUnit.digExhUnitOneColImage img{
+	max-height:600px;
+	width:auto;
+}
+@media(max-width:575px){
+	.digExhUnit.digExhUnitOneColImage img{
+		height:400px;
+		width: 100%;
+		object-fit:contain;
+	}
 }
 .digExhContentBlock .imgCol img{
 	width: 100%;
@@ -1592,30 +1634,84 @@ a.digExhAnchors.offset{
 #digExhTimeline {
     height: 500px;
 }
+#digExhTimeline .tl-slider-container-mask{
+	background-color:#fafafa;
+}
 #digExhTimeline .tl-slide-content{
 	padding-right:0px !important;
+	width: 85% !Important;
 }
 #digExhTimeline .tl-slide .tl-slide-scrollable-container{
 	width:100%;
 }
 #digExhTimeline .tl-timeline h2.tl-headline-title, #digExhTimeline .tl-text-content-container h2.tl-headline{
-	font-size:22px !important;
+	font-size:17px !important;
+	line-height: 17px !important;
+}
+@media(min-width:1450px){
+	#digExhTimeline .tl-timeline h2.tl-headline-title, #digExhTimeline .tl-text-content-container h2.tl-headline{
+		font-size:19px !important;
+		line-height: 19px !important;
+	}
+}
+.tl-text-content, .tl-timeline p, .tl-text p{
+	font-size:15px !important;
+}
+@media(min-width:1450px){
+	.tl-text-content, .tl-timeline p, .tl-text p{
+		font-size:16px !important;
+	}
+}
+.tl-text-content{
+	max-height:240px;
+	overflow-y:scroll;
+}
+.sectionNavigationLinks .btn-default{
+	margin-bottom:10px;
+	font-size: 16px;
 }
 /* storymap */
 .vco-storymap h2.vco-headline-title, .vco-storymap h2 {
-    font-size: 22px !important;
-    line-height: 22px !important;
+	font-size: 17px !important;
+	line-height: 17px !important;
+	margin-bottom: 14px;
+}
+@media(min-width:1200px){
+	.vco-storymap h2.vco-headline-title, .vco-storymap h2 {
+		font-size: 19px !important;
+		line-height: 19px !important;
+		margin-bottom: 12px;
+	}
 }
 .storymapContainer{
 	width: 100%;
 	height: 500px;
 }
+.vco-text-content p, .vco-text-content{
+	font-family:LatoLight;
+	font-size:15px !important;	
+}
+@media(min-width:1200px){
+	.vco-text-content p, .vco-text-content{
+		font-size:16px !important;	
+	}
+}
 .vco-map .leaflet-container .leaflet-control-minimap{
 	display:none;
 }
 /* carousel */
+/*.digital_exhibition .jcarousel-pagination a{
+	font-size:15px;
+	padding:5px;
+}*/
+.digExhSlideContainer{
+	position:relative;
+}
 .digExhSlide{
 	text-align: center;
+}
+.digExhSlide{
+	min-height:445px
 }
 .digExhSlide img{
 	max-height:400px;
@@ -1666,12 +1762,49 @@ a.digExhDetailPrev, a.digExhDetailNext{
 .digExhPagination{
 	width: 100%;
 	text-align: center;
-	bottom: -35px;
+	bottom: -30px;
+	position:relative
 }
 .digExhSlide .video-js, .digExhUnit .video-js{
 	width:100% !important;
 	height:400px;
 }
+.digExhSlide .caAudioPlayer{
+	padding-top:150px;
+}
+.digExhSlideLoader{
+	padding-top:150px;
+}
+
+
+
+
+.digExhPagination a.active{
+	background: #4E443C;
+	color: #fff;
+}
+.digExhPagination a{
+	font-size: 15px;
+	padding: 5px;
+	color:#d20000;
+	opacity: 1;
+	text-decoration: none;
+	display: inline-block;
+	line-height: 14px;
+	min-width: 14px;
+	background: #fff;
+	border-radius: 14px;
+	text-align: center;
+	margin-right: 2px;
+}
+
+
+
+
+
+
+
+
 #detailDiscussion button.btn{
 	white-space: normal !important;
 }
@@ -1723,8 +1856,10 @@ a.digExhDetailPrev, a.digExhDetailNext{
 		margin-bottom:0px;
 	}
 	.digExhContentBlock .quoteMargin{
-		margin-top:45px;
-		margin-bottom:55px;
+		/*margin-top:45px;
+		margin-bottom:55px;*/
+		margin-top:30px;
+		margin-bottom:40px;
 	}
 	.storymapContainer{
 		height: 450px;

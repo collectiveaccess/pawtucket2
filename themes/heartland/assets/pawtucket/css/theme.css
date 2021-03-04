@@ -39,7 +39,7 @@ a{cursor:pointer;color:inherit;text-decoration:none}@keyframes tmpl-anim-fade-up
 body{
 	margin-top:100px;
 }
-@media(max-width:800px){	
+@media(max-width:900px){	
 	body{
 		margin-top:150px;
 	}	
@@ -85,6 +85,13 @@ a.navbar-brand, .navbar-default .navbar-brand{
 @media(max-width:768px){
 	a.navbar-brand, .navbar-default .navbar-brand{
 		font-size: 18px;
+	}
+}
+@media(max-width:425px){
+	a.navbar-brand, .navbar-default .navbar-brand{
+		width: 200px;
+		line-height: 1.2em;
+		padding-top:7px;
 	}
 }
 .navbar-default .navbar-nav > li > a {
@@ -186,8 +193,17 @@ a.navbar-brand, .navbar-default .navbar-brand{
 	background-color:#1a2e51;
 	color:#fff;
 }
-.btn-default:hover{
+.btn-default:hover, .btn-default:active, .btn-default:focus{
 	background-color:#c90;
+}
+.results .btn, .browse .btn{
+	padding:8px;
+}
+@media(min-width:376px){
+	.results .clearAll{
+		float:right;
+		padding-top:5px;
+	}
 }
 h1{
 	font-size:30px;
@@ -235,7 +251,15 @@ a.readmore-js-toggle::after {
     text-decoration: underline;
     color:#FFF;
 }
-
+.detail #detailAnnotations .detailAnnotationList {
+    max-height: 300px;
+    overflow: auto;
+}
+.detail .downloadIndex{
+	float:right;
+	font-size:13px;
+	margin-top: 4px;
+}
 /* browse */
 #bRefine{
     z-index:5;
@@ -318,10 +342,82 @@ a.readmore-js-toggle::after {
 .frontIntro{
 	font-size: 20px;
 }
-
+.frontGallerySlideCaption{
+	width:250px;
+}
 /* gallery */
 .gallery .tl-timemarker-text H2{
 	font-size:12px !important;
 	text-transform:none;
 }
+@media(max-width:767px){
+	.gallery .galleryItem a.btn-default{
+		display:inline-block;
+		margin-bottom:10px;
+	}	
+}
 
+/* explore */
+.explore H1{
+	margin-bottom: 1rem;
+}
+.exploreIntro{
+	font-size: 20px;
+}
+.exploreType{
+	text-align:center;
+	padding:25px 0px 25px 0px;
+	/*background-color:#1a2e51;*/
+	color:#1a2e51;
+	font-size: 20px;
+	font-family: granville;
+	text-transform: capitalize;
+}
+a .exploreType .fa{
+	font-size:65px;
+	color:#1a2e51;
+	margin-bottom:10px;
+}
+a:hover .exploreType, a:hover .exploreType .fa{
+	color:#c90;
+	text-decoration:none;
+}
+.exploreTypes{
+	margin-bottom:50px;
+}
+.exploreTypes a:hover{
+	text-decoration:none;
+}
+.exploreBrowse{
+	background-color:#EDEDED;
+	padding:25px;
+	margin-bottom:25px;
+}
+.exploreBrowse img{
+	width:100%;
+	height:auto;
+}
+a.exploreBrowseTitle{
+	color:#1a2e51;
+	font-size: 20px;
+	font-family: granville;
+	text-transform: capitalize;
+}
+.exploreTypeItem{
+	text-align:center;
+	margin-bottom:25px;
+}
+.exploreTypeItem img{
+	width:100%;
+	height:auto;
+	max-width:240px;
+	margin-bottom: 5px;
+}
+.exploreTypeItem a{
+	line-height:1.1em;
+}
+
+.caAudioPlayer { 
+	padding: 0px !important;
+	margin: 0px !important;
+}	

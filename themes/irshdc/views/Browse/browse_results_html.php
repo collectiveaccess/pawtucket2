@@ -102,27 +102,28 @@ if($vs_detailNav = $this->request->getParameter("detailNav", pString)){
 					print "<div class='resultsLightbox'><a href='#' class='btn btn-default btn-sm' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'><i class='fa fa-folder'></i> "._t("Add to %1", $va_add_to_set_link_info['name_singular'])."</a></div>";
 				}
 				$vs_label_output = 0;
-				foreach($va_filter_facets as $vs_filter_facet){
-					if(is_array($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]["content"]) > 1){
-						if(!$vs_label_output){
-							print "Filter by: ";
-							$vs_label_output = 1;
+				if($vs_detailNav != "digital_exhibition"){
+					foreach($va_filter_facets as $vs_filter_facet){
+						if(is_array($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]["content"]) > 1){
+							if(!$vs_label_output){
+								print "Filter by: ";
+								$vs_label_output = 1;
+							}
+?>
+									<div class="btn-group">
+										<a href="#" data-toggle="dropdown"><button class='btn btn-default'><?php print $va_facets[$vs_filter_facet]["label_singular"]; ?> <i class="fa fa-caret-down"></button></i></a>
+										<ul class="dropdown-menu" role="menu">
+<?php
+											foreach($va_facets[$vs_filter_facet]["content"] as $vn_item_id => $va_item){
+												print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'facet' => $vs_filter_facet, 'id' => $va_item['id'], 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">'.$va_item["label"].'</a></li>';
+											}
+?>
+										</ul>
+									</div><!-- end btn-group -->
+<?php
 						}
-?>
-								<div class="btn-group">
-									<a href="#" data-toggle="dropdown"><button class='btn btn-default'><?php print $va_facets[$vs_filter_facet]["label_singular"]; ?> <i class="fa fa-caret-down"></button></i></a>
-									<ul class="dropdown-menu" role="menu">
-<?php
-										foreach($va_facets[$vs_filter_facet]["content"] as $vn_item_id => $va_item){
-											print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'facet' => $vs_filter_facet, 'id' => $va_item['id'], 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">'.$va_item["label"].'</a></li>';
-										}
-?>
-									</ul>
-								</div><!-- end btn-group -->
-<?php
 					}
-				}
-					
+				}					
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 ?>
 					Sort by: <div class="btn-group">
@@ -149,13 +150,13 @@ if($vs_detailNav = $this->request->getParameter("detailNav", pString)){
 ?>
 				</div>
 <?php
-				if(sizeof($va_criteria) > 1){
+				if((sizeof($va_criteria) > 1) && ($vs_detailNav != "digital_exhibition")){
 ?>
 					<div class='detailFilter'>
 <?php
 					# --- check if type criteria has been selected
 					foreach($va_criteria as $va_facet_criteria){
-						if (!in_array($va_facet_criteria['facet_name'], array("detail_entity", "detail_occurrence", "detail_place"))) {
+						if (!in_array($va_facet_criteria['facet_name'], array("detail_entity", "detail_occurrence", "detail_place", "detail_occurrence_dig_exhibition"))) {
 							print '<div class="btn-group"><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, 'removeCriterion' => $va_facet_criteria['facet_name'], 'removeID' => urlencode($va_facet_criteria['id'])), array('dontURLEncodeParameters' => true)).'\'); return false;"><button class="btn btn-default">'.$va_facet_criteria["facet"].": ".str_replace("Texts ➜ ", "", $va_facet_criteria["value"]).' <span class="glyphicon glyphicon-remove-circle"></span></button></a></div>';
 						}
 					}
@@ -272,11 +273,13 @@ if (!$vb_ajax) {	// !ajax
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
 				print "<strong>".$va_criterion['facet'].':</strong>';
+				$vs_value = $va_criterion['value'];
+				$vs_display_value = str_replace(array("Texts ➜ ", "ca_objects.LOC_text:", "ca_objects.tgn:", "ca_objects.local_subject:"), "", $va_criterion['value']);
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.str_replace("Texts ➜ ", "", $va_criterion['value']).' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_display_value.' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
-					print ' '.$va_criterion['value'];
-					$vs_search = $va_criterion['value'];
+					print ' '.$vs_display_value;
+					$vs_search = $vs_value;
 				}
 				$i++;
 				if($i < sizeof($va_criteria)){
@@ -312,22 +315,6 @@ if (!$vb_ajax) {	// !ajax
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
-		if($vb_is_search && !$vn_result_size && $vs_search){
-			# --- try to display did you mean results if available
-			$o_search = caGetSearchInstance($vs_table);
-			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {
-				$va_suggest_links = array();
-				foreach($va_suggestions as $vs_suggestion){
-					$va_suggest_links[] = caNavLink($this->request, $vs_suggestion, '', '*', '*', '*', array('search' => $vs_suggestion, 'sort' => $vs_current_sort, 'view' => $vs_current_view));
-				}
-				
-				if (sizeof($va_suggest_links) > 1) {
-					print "<div class='col-sm-12'>"._t("Did you mean one of these: %1?", join(', ', $va_suggest_links))."</div>";
-				} else {
-					print "<div class='col-sm-12'>"._t("Did you mean %1?", join(', ', $va_suggest_links))."</div>";
-				}
-			}
-		}
 } // !ajax
 
 # --- check if this result page has been cached

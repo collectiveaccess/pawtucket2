@@ -30,27 +30,61 @@
 	$va_annotation_times = 		$this->getVar('annotation_times');
 	$vn_representation_id = 	$this->getVar('representation_id');
 
-	if (sizeof($va_annotations) > 0) {
+	# --- this overrides what is passed from DetailController so the timecode can be formatted how client wants
+	if($vn_representation_id){
+ 		$t_rep = new ca_object_representations($vn_representation_id);
+ 		$vn_object_id = $t_rep->get("ca_objects.object_id");
+ 		if (!($vs_template = $va_detail_options['displayAnnotationTemplate'])) { $vs_template = '^ca_representation_annotations.preferred_labels.name'; }
+ 			
+ 			$va_annotation_list = array();
+ 			if (
+				is_array($va_annotations = $t_rep->getAnnotations(array('idsOnly' => true))) //$t_rep->get('ca_representation_annotations.annotation_id', array('returnAsArray' => true))) 
+				&& 
+				sizeof($va_annotations)
+				&&
+				($qr_annotations = caMakeSearchResult('ca_representation_annotations', $va_annotations))
+			) {
+				while($qr_annotations->nextHit()) {
+					if (!preg_match('!^TimeBased!', $qr_annotations->getAnnotationType())) { continue; }
+					#$va_annotation_list[] = $qr_annotations->getWithTemplate($vs_template);
+					$vs_tmp = $qr_annotations->getWithTemplate("<b>^ca_representation_annotations.preferred_labels.name</b> (");
+					$vs_start = $qr_annotations->getWithTemplate("^ca_representation_annotations.start%asTimecode=delimited");
+					if(strpos($vs_start, ".") !== false){
+						$vs_start = substr($vs_start, 0, strpos($vs_start, "."));
+					}
+					$vs_tmp .= $vs_start;
+					$vs_tmp .= $qr_annotations->getWithTemplate(")<ifdef code='ca_representation_annotations.description'><br/>^ca_representation_annotations.description</ifdef>");
+					$va_annotation_list[] = $vs_tmp;
+				}
+			}
+	}
+	if (sizeof($va_annotation_list) > 0) {
 ?>
-<h6><?php print _t('Index (%1)', sizeof($va_annotations)); ?></h6>
+<div class="unit">
+<?php
+	print "<div class='downloadIndex'>".caDetailLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download")."'></span> Download Index", "", "ca_objects",  $vn_object_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary', 'representation_id' => $vn_representation_id))."</div>";
+?>
+	<label><?php print _t('Index (%1)', sizeof($va_annotation_list)); ?></label>
 <div class='detailAnnotationList'>
 	<ul class='detailAnnotation'>
 <?php
-		foreach($va_annotations as $vs_annotation) {
+		foreach($va_annotation_list as $vs_annotation) {
 			print "<li class='detailAnnotation'>{$vs_annotation}</li>\n";
 		}
 ?>
 	</ul>
 <?php
 	}
+	
+
 ?>
-</div>
+</div></div>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 		var detailAnnotationTimes = <?php print json_encode($va_annotation_times); ?>;
 		jQuery('li.detailAnnotation').on('click', function(e) {
-			var i = jQuery('li.detailAnnotation').index(e.target); 
-			
+			//var i = jQuery('li.detailAnnotation').index(e.target); 
+			var i = jQuery('li.detailAnnotation').index($(this));
 			caUI.mediaPlayerManager.seek('<?php print $vs_player_name; ?>', detailAnnotationTimes[i][0]);
 		});
 		

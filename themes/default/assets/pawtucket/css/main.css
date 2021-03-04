@@ -1516,7 +1516,6 @@ a.browseRemoveFacet img {
 .front .galleryItems-wrapper .jcarousel-control-prev, .front .galleryItems-wrapper .jcarousel-control-next {
     top: 40%;
 }
-
 /* --------------------------------- */
 /* details */
 /* --------------------------------- */
@@ -2684,6 +2683,25 @@ a.browseRemoveFacet .glyphicon {
 	text-decoration:none;
 	color:#454545;
 }
+.gallery .galleryItem a.btn-default{
+	color:#FFF;
+	font-size:11px;
+	display:none;
+}
+@media(max-width:767px){
+	/* don't show preview for mobile - only the list and show a view gallery button */
+	#gallerySetInfo{
+		display:none;
+	}
+	.galleryItemSetInfoLink{
+		cursor:auto;
+	}
+	.gallery .galleryItem a.btn-default{
+		display:inline;
+	}
+	
+}
+
 .gallery .galleryItem .galleryItemImg{
 	float:left;
 	width:25%;
@@ -3212,8 +3230,15 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline.tl-headline-fadeout::after, .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline p.tl-headline-fadeout::after{
 	background:none !important;
 }
-
-
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline, .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline p{
+	height:100% !important;
+}
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline, .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline p{
+	font-size:12px !important;
+}
+.tl-timeline em{
+	font-family:LatoLight !important;
+}
 
 /* Advanced Search */
 

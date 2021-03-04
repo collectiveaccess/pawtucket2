@@ -29,6 +29,7 @@
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
+ 	require_once(__CA_LIB_DIR__.'/Media/MediaViewerManager.php');
  	
  	class GalleryController extends BasePawtucketController {
  		# -------------------------------------------------------
@@ -341,6 +342,12 @@
  			}
  			
  			$this->render("Gallery/set_item_info_html.php");
+ 		}
+		# -------------------------------------------------------
+ 		public function ajaxGetDigExhibitionSlide(){
+ 			$pn_set_item_id = $this->request->getParameter('set_item_id', pInteger);
+ 			$this->view->setVar("set_item_id", $pn_set_item_id);
+ 			$this->render("Gallery/set_item_dig_exhibition_slide_html.php");
  		}
  		# -------------------------------------------------------
 		/** 

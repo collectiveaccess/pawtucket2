@@ -287,7 +287,7 @@
 			if(!(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && !in_array($t_rep->get("access"), $this->opa_access_values))){
 				$this->view->setVar("rep_object", $t_rep);
 				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
-				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery']));
+				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery', 'set_id' => $set_id]));
 				$this->view->setVar("representation_id", $set_items[$item_id]["representation_id"]);
 			}
  			$this->view->setVar("object_id", $set_items[$item_id]["row_id"]);
@@ -305,6 +305,11 @@
  			}
  			$this->view->setVar("next_item_id", $next_id);
  			$this->view->setVar("previous_item_id", $previous_id);
+ 			
+ 			$this->view->setVar("next_row_id", $set_items[$next_id]["row_id"]);
+ 			$this->view->setVar("previous_row_id", $set_items[$previous_id]["row_id"]);
+ 			$this->view->setVar("next_representation_id", $set_items[$next_id]["representation_id"]);
+ 			$this->view->setVar("previous_representation_id", $set_items[$previous_id]["representation_id"]);
  			
  			$this->render("Gallery/set_item_rep_html.php");
  		}

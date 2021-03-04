@@ -169,7 +169,11 @@
  				throw new ApplicationException("Invalid detail type");
  			}
  			
- 			$t_subject = Datamodel::getInstance($vs_table, true);
+ 			if (!($t_subject = Datamodel::getInstance($vs_table, true))) {
+ 				throw new ApplicationException("Invalid detail table");
+ 			}
+ 			$this->ops_tablename = $vs_table;
+ 			
  			$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls($vs_table);
  			if ((($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($vs_use_alt_identifier_in_urls)) && (substr($ps_id, 0, 3) == "id:")) {
  				$va_tmp = explode(":", $ps_id);
@@ -287,13 +291,14 @@
 						$t_subject, 
 						$t_subject,
 						array_merge($va_options, $va_media_display_info, 
-							array(
+							[
 								'display' => 'detail',
 								'showAnnotations' => true, 
 								'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $va_options, false), 
 								'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), 
-								'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false)
-							)
+								'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false),
+								'checkAccess' => $this->opa_access_values
+							]
 						)
 					)
 				);
@@ -627,7 +632,7 @@
 				foreach($va_reps as $vn_representation_id => $va_rep) {
 					$va_rep_info = $va_rep['info'][$ps_version];
 					
-					$vs_filename = caGetRepresentationDownloadFileName($this->ops_tablename, ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
+					$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
 					
 					$va_file_names[$vs_filename] = true;
 					$this->view->setVar('version_download_name', $vs_filename);
@@ -744,7 +749,7 @@
 			    $vals[strtolower($k)] = preg_replace('![^A-Za-z0-9_\-]+!', '_', $v);
 			}
 			
-			$vs_filename = caGetRepresentationDownloadFileName($this->ops_tablename, ['idno' => $t_instance->get('idno'), 'index' => null, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_info['ORIGINAL_FILENAME'], 'representation_id' => $pn_representation_id]);
+			$vs_filename = caGetRepresentationDownloadFileName($va_context['table'], ['idno' => $t_instance->get('idno'), 'index' => null, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_info['ORIGINAL_FILENAME'], 'representation_id' => $pn_representation_id]);
 			$this->view->setVar('version_download_name', $vs_filename);
 			
 			
@@ -1206,12 +1211,15 @@
 		 *
 		 */
 		public function GetAnnotations() {
-			if (!$this->request->isLoggedIn()) { throw new ApplicationException(_t('Must be logged in')); }
 			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
 			$t_rep = new ca_object_representations($pn_representation_id);
-			$t_rep->annotationMode('user');
+			
+			$va_annotations_raw = array_map(function($v) { $v['locked'] = 1; return $v; }, $t_rep->getAnnotations());
+			if($this->request->isLoggedIn()) {
+				$t_rep->annotationMode('user');
 
-			$va_annotations_raw = $t_rep->getAnnotations(array('user_id' => $this->request->getUserID(), 'item_id' => $this->request->getParameter('item_id', pInteger)));
+				$va_annotations_raw = array_merge($va_annotations_raw, $t_rep->getAnnotations(array('user_id' => $this->request->getUserID(), 'item_id' => $this->request->getParameter('item_id', pInteger))));
+			}
 			$va_annotations = array();
 
 			if (is_array($va_annotations_raw)) {
@@ -1351,6 +1359,7 @@
 			} elseif (!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
 				throw new ApplicationException(_t('Invalid context'));
 			}
+			$o_context = ResultContext::getResultContextForLastFind($this->request, $va_context['table']);
 			
 			if (!($pt_subject = Datamodel::getInstance($vs_subject = $va_context['table']))) {
 				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
@@ -1375,6 +1384,8 @@
 			if($va_merged_options['inline']){
 				$va_merged_options['noOverlay'] = false;
 			}
+			
+			$va_merged_options['resultList'] = $o_context->getResultList();
 			
 			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, $va_merged_options));
 		}

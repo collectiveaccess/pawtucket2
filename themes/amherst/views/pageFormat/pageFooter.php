@@ -36,10 +36,10 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
-	</div><!-- end pageArea -->
+	</div><!-- end pageArea --></div>
 	
 	<div id="footer">
-		<div class="text-center ">Footer text or links here</div>
+		<div class="text-center"><div class="homeLink"><a href="https://www.amhersthistory.org/" target="_blank">WWW.AMHERSTHISTORY.ORG</a></div>67 Amity Street Amherst, MA 02001<br/><a href="mailto:collections@amhersthistory.org">collections@amhersthistory.org</a></div>
 	</div><!-- end footer -->
 	
 		<?php print TooltipManager::getLoadHTML(); ?>

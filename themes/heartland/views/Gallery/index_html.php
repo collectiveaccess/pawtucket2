@@ -26,11 +26,12 @@
 								$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
 
 								print "<div class='galleryItem'>
-											<a href='#' onclick='jQuery(\"#gallerySetInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetInfo', array('set_id' => $vn_set_id))."\"); return false;'>
+											<a href='#' class='galleryItemSetInfoLink' onclick='jQuery(\"#gallerySetInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetInfo', array('set_id' => $vn_set_id))."\"); return false;'>
 												<div class='galleryItemImg'>".$va_first_item["representation_tag"]."</div>
 												<h3>".$va_set["name"]."</h3>
 												<p><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small></p>
 											</a>
+												".caNavLink($this->request, "<span class='glyphicon glyphicon-th-large' aria-label='View gallery'></span> "._t("view %1", $this->getVar("section_item_name")), "btn btn-default", "", "Gallery", $vn_set_id)."
 											<div style='clear:both;'><!-- empty --></div>
 										</div>\n";
 								$i++;

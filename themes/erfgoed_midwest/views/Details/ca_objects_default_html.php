@@ -33,6 +33,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$va_access_values = caGetUserAccessValues($this->request);
 	
 	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"));
 	MetaTagManager::addMetaProperty("og:title", $t_object->get("ca_objects.preferred_labels.name"));
@@ -85,16 +86,17 @@
 					
 					if ($vn_comments_enabled) {
 ?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span><?php print _t("Comments and Tags"); ?> (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?php print _t("Comments and tags"); ?>"></span><?php print _t("Comments and Tags"); ?> (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
+						<div id='detailComments'><?php print $this->getVar("itemComments");?>
 <?php
 						if($this->request->isLoggedIn()){
-?>
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php					
+							print "<button type='button' class='btn btn-default translatedButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_objects", "item_id" => $t_object->get("ca_objects.objects_id")))."\"); return false;' >"._t("Add your tags and comment")."</button>";
 						}else{
-							print "<div id='detailComments'><button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."/"._t("Register")."</button></div>";
-
-						}								
+							print "<button type='button' class='btn btn-default translatedButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."/"._t("Register")."</button>";
+						}
+?>
+						</div><!-- end itemComments -->
+<?php							
 					}
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
@@ -116,8 +118,39 @@
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="owner" min="1"><div class="unit"><H6>Collectie</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="owner" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Objectnummer</H6>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.object_names"><div class="unit"><H6>Objectnaam</H6>^ca_objects.object_names%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.object_keywords"><div class="unit"><H6>Trefwoorden</H6>^ca_objects.object_keywords%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.object_tags"><div class="unit"><H6>Tags</H6>^ca_objects.object_tags%delimiter=,_</div></ifdef>}}}
+<?php				
+				$t_list_item = new ca_list_items;
+				$vs_keyword_links = "";
+				if($va_keywords = $t_object->get("ca_objects.object_keywords", array("returnAsArray" => true, "check_access" => $va_access_values))){
+					$va_keyword_links = array();
+					foreach($va_keywords as $vn_kw_id){
+						if($vn_kw_id){
+							$t_list_item->load($vn_kw_id);
+							$va_keyword_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
+						}
+					}
+					$vs_keyword_links = join(", ", $va_keyword_links);
+				}
+				if($vs_keyword_links){
+					print "<div class='unit'><H6>Trefwoorden</H6>".$vs_keyword_links."</div>";
+				}
+				$vs_tag_links = "";
+				if($va_tags = $t_object->get("ca_objects.object_tags", array("returnWithStructure" => true, "check_access" => $va_access_values))){
+					$va_tag_links = array();
+					$va_tags = $va_tags[$t_object->get("ca_objects.object_id")];
+					foreach($va_tags as $vn_tag_id => $va_tag_info){
+						if($va_tag_info["object_tags"]){
+							#$va_tag_links[] = caNavLink($this->request, $va_tag_info["object_tags"], "", "", "Browse", "objects", array("facet" => "tags_facet", "id" => $vn_tag_id));
+							$va_tag_links[] = caNavLink($this->request, $va_tag_info["object_tags"], "", "", "Search", "objects", array("search" => "ca_objects.object_tags:".$va_tag_info["object_tags"]));
+						
+						}
+					}
+					$vs_tag_links = join(", ", $va_tag_links);
+				}
+				if($vs_tag_links){
+					print "<div class='unit'><H6>Tags</H6>".$vs_tag_links."</div>";
+				}
+?>				
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><h6>Beschrijvende notitie</h6>
 						<span class="trimText">^ca_objects.description</span>
