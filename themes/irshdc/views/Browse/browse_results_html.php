@@ -274,7 +274,7 @@ if (!$vb_ajax) {	// !ajax
 			foreach($va_criteria as $va_criterion) {
 				print "<strong>".$va_criterion['facet'].':</strong>';
 				$vs_value = $va_criterion['value'];
-				$vs_display_value = str_replace(array("Texts ➜ ", "ca_objects.LOC_text:", "ca_objects.tgn:", "ca_objects.local_subject:"), "", $va_criterion['value']);
+				$vs_display_value = str_replace(array("Texts ➜ ", "ca_objects.LOC_text:", "ca_objects.tgn:", "ca_objects.local_subject:", "ca_objects.subjects:"), "", $va_criterion['value']);
 				if ($va_criterion['facet_name'] != '_search') {
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_display_value.' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
