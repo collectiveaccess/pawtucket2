@@ -49,7 +49,7 @@
 		<div class="col-lg-10 col-lg-offset-1 col-md-12">
 		<H2 class="exhibitionSection">Current</H2>
 <?php
-	$vn_i = 0;
+	$i = 0;
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {
@@ -128,7 +128,7 @@
 		<br/><H2 class="exhibitionSection">Upcoming</H2>
 <?php
 	$qr_list->seek(0);
-	$vn_i = 0;
+	$i = 0;
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {
