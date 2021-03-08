@@ -68,13 +68,10 @@
 					if($i == 0){
 						print "<div class='row'>";
 					}
-					print caDetailLink($this->request, "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>
-							<div class='listingContainerImgContainer'>".$vs_image."</div>
-							<div class='listingContainerDesc'>
+					print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 								<H2>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels.name')."</H2>
 								".(($vs_display_date || $vs_exhibition_type) ? "<p><b>".$vs_display_date.(($vs_display_date && $vs_exhibition_type) ? "<br/>" : "").$vs_exhibition_type."<br/>March 2021</b></p>" : "")."
-							</div>
-						</div></div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"));
+							</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
 					$i++;
 					
 					if($i == 3){
@@ -96,12 +93,10 @@
 						if($i == 0){
 							print "<div class='row'>";
 						}
-						print caDetailLink($this->request, "<l><div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>
-								<div class='listingContainerDesc'>
+						print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 									<H2>".$qr_list->get("ca_occurrences.preferred_labels.name")."</H2>
 									<p><b>Online Exhibition</b></p>
-								</div>
-							</div></div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"));
+								</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
 
 						$i++;
 					
@@ -113,6 +108,8 @@
 				break;
 				# -------------------------------------------
 			}
+# --- SIMULATING HAVING ONLY ONE CURRENT EXHIBIT - JUST FOR TESTING
+			break;
 		}
 		if($i > 0){
 			print "</div>";
@@ -147,13 +144,10 @@
 					if($i == 0){
 						print "<div class='row'>";
 					}
-					print caDetailLink($this->request, "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>
-							<div class='listingContainerImgContainer'>".$vs_image."</div>
-							<div class='listingContainerDesc'>
+					print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 								<H2>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels.name')."</H2>
 								".(($vs_display_date || $vs_exhibition_type) ? "<p><b>".$vs_display_date.(($vs_display_date && $vs_exhibition_type) ? "<br/>" : "").$vs_exhibition_type."<br/>March 2021</b></p>" : "")."
-							</div>
-						</div></div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"));
+							</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
 					$i++;
 					
 					if($i == 3){
@@ -175,12 +169,10 @@
 						if($i == 0){
 							print "<div class='row'>";
 						}
-						print caDetailLink($this->request, "<l><div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>
-								<div class='listingContainerDesc'>
+						print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 									<H2>".$qr_list->get("ca_occurrences.preferred_labels.name")."</H2>
 									<p><b>Online Exhibition</b></p>
-								</div>
-							</div></div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"));
+								</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
 
 						$i++;
 					

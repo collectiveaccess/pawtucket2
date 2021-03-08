@@ -1395,6 +1395,9 @@ h2.exhibitionSection{
 	font-family:Lato;
 	color:#000;
 }
+.listingExhibitionsImageLink:hover{
+	text-decoration:none;
+}
 
 /* About page */
 .staticPage H1.quote{
