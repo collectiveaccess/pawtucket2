@@ -200,9 +200,9 @@ if($vs_mode == "map"){
 							$va_loc = array();
 							$vs_loc = "";
 							# --- LOC are rel entities as subjects, Subject access topical and geographical
-							if($va_local_subject = $t_object->get("ca_objects.local_subject", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
-								foreach($va_local_subject as $vs_local_subject_term){
-									$va_loc[] = caNavLink($this->request, $vs_local_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.local_subject:".$vs_local_subject_term));
+							if($va_subject = $t_object->get("ca_objects.subjects", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
+								foreach($va_subject as $vs_subject_term){
+									$va_loc[] = caNavLink($this->request, $vs_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.subjects:".$vs_subject_term));
 								}
 							}
 							if($vs_subjects = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="subject" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values))){
@@ -218,12 +218,13 @@ if($vs_mode == "map"){
 									$va_loc[] = caNavLink($this->request, $vs_tgn_term, "", "", "Search", "objects", array("search" => "ca_objects.tgn:".$vs_tgn_term));
 								}
 							}
-							
-							if($va_subject = $t_object->get("ca_objects.subjects", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
-								foreach($va_subject as $vs_subject_term){
-									$va_loc[] = caNavLink($this->request, $vs_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.subjects:".$vs_subject_term));
+							if($va_local_subject = $t_object->get("ca_objects.local_subject", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
+								foreach($va_local_subject as $vs_local_subject_term){
+									$va_loc[] = caNavLink($this->request, $vs_local_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.local_subject:".$vs_local_subject_term));
 								}
 							}
+							
+							
 							#if(sizeof($va_loc)){
 							#	$vs_loc = "<div class='unit'><H6>Library of Congress</H6><div class='trimTextSubjects'>".join("<br/>", $va_loc)."</div></div>";
 							#}
