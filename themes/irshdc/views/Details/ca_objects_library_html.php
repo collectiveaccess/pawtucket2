@@ -202,7 +202,10 @@ if($vs_mode == "map"){
 							# --- LOC are rel entities as subjects, Subject access topical and geographical
 							if($va_subject = $t_object->get("ca_objects.subjects", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
 								foreach($va_subject as $vs_subject_term){
-									$va_loc[] = caNavLink($this->request, $vs_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.subjects:".$vs_subject_term));
+									$vs_subject_term = trim($vs_subject_term);
+									if($vs_subject_term){
+										$va_loc[] = caNavLink($this->request, $vs_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.subjects:".$vs_subject_term));
+									}
 								}
 							}
 							if($vs_subjects = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="subject" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values))){
@@ -218,9 +221,9 @@ if($vs_mode == "map"){
 									$va_loc[] = caNavLink($this->request, $vs_tgn_term, "", "", "Search", "objects", array("search" => "ca_objects.tgn:".$vs_tgn_term));
 								}
 							}
-							if($va_local_subject = $t_object->get("ca_objects.local_subject", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
+							if($va_local_subject = $t_object->get("ca_objects.local_subject_text", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
 								foreach($va_local_subject as $vs_local_subject_term){
-									$va_loc[] = caNavLink($this->request, $vs_local_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.local_subject:".$vs_local_subject_term));
+									$va_loc[] = caNavLink($this->request, $vs_local_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.local_subject_text:".$vs_local_subject_term));
 								}
 							}
 							
@@ -260,8 +263,11 @@ if($vs_mode == "map"){
 									{{{<ifdef code="ca_objects.MARC_isbn"><div class='unit'><h6>ISBN</h6><unit delimiter="; ">^ca_objects.MARC_isbn</unit></div></ifdef>}}}
 									{{{<ifdef code="ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote"><div class='unit'><h6>Contents</h6><ifdef code="ca_objects.MARC_formattedContents">^ca_objects.MARC_formattedContents</ifdef><ifdef code="ca_objects.ISADG_titleNote">^ca_objects.ISADG_titleNote</ifdef></div></ifdef>}}}		
 									{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Notes</h6><unit delimiter="<br/>">^ca_objects.MARC_generalNote</unit></div></ifdef>}}}							
-									{{{<ifdef code="ca_objects.electronic_URL|ca_objects.electronic_specified"><div class='unit'><h6>Electronic Location and Access</h6><ifdef code="ca_objects.electronic_URL"><a href="^ca_objects.electronic_URL" target="_blank"><unit delimiter=", ">^ca_objects.electronic_specified</unit> <span class="glyphicon glyphicon-new-window"></span></a></ifdef><ifnotdef code="ca_objects.electronic_URL"><unit delimiter=", ">^ca_objects.electronic_specified</unit></ifnotdef></div></ifdef>}}}							
-
+									{{{<ifdef code="ca_objects.electronic_location.electronic_location_materials,ca_objects.electronic_location.electronic_location_url">
+										<div class='unit'><h6>Electronic Location and Access</h6>
+											<unit relativeTo="ca_objects.electronic_location" delimiter="<br/>"><a href="^ca_objects.electronic_location.electronic_location_url" target="_blank">^ca_objects.electronic_location.electronic_location_materials <span class="glyphicon glyphicon-new-window"></span></a></unit>
+										</div></ifdef>}}}
+									
 <?php
 									print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."</textarea></div>";					
 ?>						

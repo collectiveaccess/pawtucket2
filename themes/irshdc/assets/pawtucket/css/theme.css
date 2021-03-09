@@ -1398,6 +1398,12 @@ h2.exhibitionSection{
 .listingExhibitionsImageLink:hover{
 	text-decoration:none;
 }
+.currentExhibition .listingContainerExhibitions.coverImg .listingContainerDesc{
+	padding: 70px 60px 60px 60px;
+}
+.currentExhibition .listingContainerExhibitions.coverImg H2{
+	font-size: 28px;
+}
 
 /* About page */
 .staticPage H1.quote{
