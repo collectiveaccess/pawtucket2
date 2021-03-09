@@ -213,17 +213,26 @@ if($vs_mode == "map"){
 							}
 							if($va_topical = $t_object->get("ca_objects.LOC_text", array("returnAsArray" => true))){
 								foreach($va_topical as $vs_topical_term){
-									$va_loc[] = caNavLink($this->request, $vs_topical_term, "", "", "Search", "objects", array("search" => "ca_objects.LOC_text:".$vs_topical_term));
+									$vs_topical_term = trim($vs_topical_term);
+									if($vs_topical_term){
+										$va_loc[] = caNavLink($this->request, $vs_topical_term, "", "", "Search", "objects", array("search" => "ca_objects.LOC_text:".$vs_topical_term));
+									}
 								}
 							}
 							if($va_tgn = $t_object->get("ca_objects.tgn", array("returnAsArray" => true))){
 								foreach($va_tgn as $vs_tgn_term){
-									$va_loc[] = caNavLink($this->request, $vs_tgn_term, "", "", "Search", "objects", array("search" => "ca_objects.tgn:".$vs_tgn_term));
+									$vs_tgn_term = trim($vs_tgn_term);
+									if($vs_tgn_term){
+										$va_loc[] = caNavLink($this->request, $vs_tgn_term, "", "", "Search", "objects", array("search" => "ca_objects.tgn:".$vs_tgn_term));
+									}
 								}
 							}
 							if($va_local_subject = $t_object->get("ca_objects.local_subject_text", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
 								foreach($va_local_subject as $vs_local_subject_term){
-									$va_loc[] = caNavLink($this->request, $vs_local_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.local_subject_text:".$vs_local_subject_term));
+									$vs_local_subject_term = trim($vs_local_subject_term);
+									if($vs_local_subject_term){
+										$va_loc[] = caNavLink($this->request, $vs_local_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.local_subject_text:".$vs_local_subject_term));
+									}
 								}
 							}
 							
