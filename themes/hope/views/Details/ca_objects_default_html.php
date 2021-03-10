@@ -187,7 +187,9 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 120,
+		  moreLink: '<a href="#">Read More <i class="fa fa-angle-down"></i></a>',
+		  lessLink: '<a href="#">Read Less <i class="fa fa-angle-up"></i></a>'
 		});
 	});
 </script>
