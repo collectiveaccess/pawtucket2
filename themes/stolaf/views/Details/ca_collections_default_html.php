@@ -190,7 +190,8 @@
 				</div>
 				
 <?php
-			if ($vb_show_hierarchy_viewer) {	
+			$vs_sponsor_image = $t_item->get("ca_collections.sponsor_img.large");
+			if ($vs_sponsor_image || $vb_show_hierarchy_viewer) {	
 ?>
 				<div class='col-sm-5'>
 					<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
@@ -199,6 +200,11 @@
 							$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
 						})
 					</script>
+<?php
+					if($vs_sponsor_image){
+						print "<br/><div class='unit'>".$vs_sponsor_image."</div>";
+					}
+?>
 				</div><!-- end col -->
 <?php				
 			}									
