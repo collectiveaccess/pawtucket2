@@ -79,7 +79,7 @@
 		print "<div id='newParent' class='form-group' ".(($vs_parent_dropdowns) ? "style='display:none;'" : "")."><div class='col-sm-7 col-sm-offset-4'><input type='text' name='parent_name' placeholder='"._t("New Gallery Name")."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' placeholder='"._t("Your %1", $vs_display_name)."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		#print $t_set->htmlFormElement("access","<div class='form-group'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7' class='form-control'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
-		print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' class='form-control' rows='3'></textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		#print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' class='form-control' rows='3'></textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 
 ?>
 		<div class="form-group">

@@ -30,15 +30,33 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-12 col-md-3 gallerySectionNav">
-			<ul>
+		<div class="col-sm-12 col-md-3">
+			<div class="gallerySectionNav">
+<script type='text/javascript'>
+		jQuery(document).ready(function() {	
+			if($(".gallerySectionNav").height() > 439){
+				$('#gallerySectionNavScrollDown').show();
+				$('#gallerySectionNavScrollUp').show();
+			}
+			$('#gallerySectionNavScrollDown').click(function() {
+				$(".gallerySectionNav").scrollTop($('.gallerySectionNav').scrollTop() + 60);
+			});
+			$('#gallerySectionNavScrollUp').click(function() {
+				$(".gallerySectionNav").scrollTop($('.gallerySectionNav').scrollTop() - 60);
+			});
+		});
+</script>
+				<ul>
 <?php
-			foreach($va_set_navigation as $vn_set_nav_id => $vs_set_nav_name){
-				print "<li ".(($vn_set_nav_id == $pn_set_id) ? "class='currentSlideshow'" : "").">".caNavLink($this->request, $vs_set_nav_name, "btn btn-default", "", "Gallery", $vn_set_nav_id)."</li>";
-			}		
+				foreach($va_set_navigation as $vn_set_nav_id => $vs_set_nav_name){
+					print "<li ".(($vn_set_nav_id == $pn_set_id) ? "class='currentSlideshow'" : "").">".caNavLink($this->request, $vs_set_nav_name, "btn btn-default", "", "Gallery", $vn_set_nav_id)."</li>";
+				}		
 ?>		
-			</ul>
+				</ul>
+			</div>
+			<div class="text-center"><button id="gallerySectionNavScrollUp" class="btn btn-default"><i class="fa fa-angle-up"></i></button><button id="gallerySectionNavScrollDown" class="btn btn-default"><i class="fa fa-angle-down"></i></button></div>
 		</div>
+		
 		<div class="col-sm-12 col-md-9">
 <?php
 	}
@@ -49,7 +67,7 @@
 		<div class="col-sm-4" id="galleryDetailObjectInfo"> </div>
 	</div><!-- end row -->
 <?php
-		if(is_array($va_set_navigation) && sizeof($va_set_navigation)){
+		if($pn_parent_id && is_array($va_set_navigation) && sizeof($va_set_navigation)){
 ?>
 					</div><!-- end col -->
 				</div><!-- end row -->
