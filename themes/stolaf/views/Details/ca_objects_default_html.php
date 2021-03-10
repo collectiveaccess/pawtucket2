@@ -176,10 +176,23 @@
 						}
 						print "</div>";	
 					}
+					$va_LcshNames = $t_object->get("ca_objects.LcshNames", array("returnAsArray" => true));
+					$va_LcshNames_processed = array();
+					if(is_array($va_LcshNames) && sizeof($va_LcshNames)){
+						foreach($va_LcshNames as $vs_LcshNames){
+							if($vs_LcshNames && (strpos($vs_LcshNames, " [") !== false)){
+								$va_LcshNames_processed[] = mb_substr($vs_LcshNames, 0, strpos($vs_LcshNames, " ["));
+							}else{
+								$va_LcshNames_processed[] = $vs_LcshNames;
+							}
+						}
+						$vs_LcshNames = join("<br/>", $va_LcshNames_processed);
+					}
+					if($vs_LcshNames){
+						print "<div class='unit'><label>Names</label>".$vs_LcshNames."</div>";	
+					}
 ?>				
-				{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-				{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>}}}
+				{{{<ifcount code="ca_places" min="1"><div class="unit"><ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount><ifcount code="ca_places" min="2"><label>Related places</label></ifcount><unit relativeTo="ca_places" delimiter="<br/>"><unit relativeTo="ca_places.hierarchy" delimiter=" &gt; "><l>^ca_places.preferred_labels</l></unit></unit></div></ifcount>}}}
 				
 				<br/>{{{map}}}
 						
