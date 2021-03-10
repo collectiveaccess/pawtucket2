@@ -47,7 +47,7 @@
 		$vn_parent_id = $this->getVar("parent_id");
 	}
 ?>
-<div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+<div id="caFormOverlay" class="caFormOverlayWide"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
 <H1><?php print _t("%1 Information", ucfirst($vs_lightbox_displayname)); ?></H1>
 <?php
 	if($va_errors["general"]){
@@ -55,9 +55,12 @@
 	}
 ?>
 	<form id="SetForm" action="#" class="form-horizontal" role="form">
+<div class='container'>
+	<div class='row'>
+		<div class='col-sm-12'>
 <?php
 		if(($vs_mode != "parent")){
-			print "<div class='form-group'><label class='col-sm-4 control-label'>Part of</label><div class='col-sm-7'>";
+			print "<div class='form-group'><label class='control-label'>Part of</label><div>";
 			if($vn_parent_id){
 				$t_parent = new ca_sets($vn_parent_id);
 				print $t_parent->get("ca_sets.preferred_labels.name");
@@ -78,19 +81,22 @@
 		if($va_errors["name"]){
 			print "<div class='alert alert-danger'>".$va_errors["name"]."</div>";
 		}
-		print "<div class='form-group".(($va_errors["name"]) ? " has-error" : "")."'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' value='".htmlentities($this->getVar("name"), ENT_QUOTES, 'UTF-8', false)."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group".(($va_errors["name"]) ? " has-error" : "")."'><label for='name' class='control-label'>"._t("Name")."</label><div><input type='text' name='name' value='".htmlentities($this->getVar("name"), ENT_QUOTES, 'UTF-8', false)."' class='form-control'></div></div><!-- end form-group -->\n";
 		if($va_errors["description"]){
 			print "<div class='alert alert-danger'>".$va_errors["description"]."</div>";
 		}
-		print "<div class='form-group".(($va_errors["description"]) ? " has-error" : "")."'><label for='".$vs_description_attribute."' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' class='form-control' rows='3'>".htmlentities($this->getVar("description"), ENT_QUOTES, 'UTF-8', false)."</textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group".(($va_errors["description"]) ? " has-error" : "")."'><label for='".$vs_description_attribute."' class='control-label'>"._t("Description")."</label><div><textarea name='".$vs_description_attribute."' class='form-control' rows='10'>".htmlentities($this->getVar("description"), ENT_QUOTES, 'UTF-8', false)."</textarea></div></div><!-- end form-group -->\n";
 ?>
 		<div class="form-group">
-			<div class="col-sm-offset-4 col-sm-7">
+			<div>
 				<button type="submit" class="btn btn-default"><?php print _t('Save'); ?></button>
 			</div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<input type="hidden" name="set_id" value="<?php print $t_set->get("set_id"); ?>">
 		<input type="hidden" name="mode" value="<?php print $vs_mode; ?>">
+		</div>
+	</div>
+</div>
 	</form>
 </div>
 <?php

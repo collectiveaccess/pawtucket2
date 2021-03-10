@@ -295,7 +295,7 @@ if (!$vb_ajax) {    // !ajax
 			if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
             }
-            if ($vs_description = $t_set->get($vs_description_attribute)) {
+            if ($vs_description = $t_set->get($vs_description_attribute, array("convertLineBreaks" => true))) {
                 print "<span id='lbSetDescription".$t_set->get("set_id")."'>{$vs_description}</span><hr/>";
             }
             print "<b>Part of ".$vs_lightbox_parent_displayname.":</b><br/>";

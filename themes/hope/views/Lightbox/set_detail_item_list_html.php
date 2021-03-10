@@ -65,18 +65,15 @@
 ?>
 
 	</div>
-	<div class="col-sm-3">
-		<div><?php print caDetailLink($this->request, $this->getVar("caption"), '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail"))); ?></div>
-
-	</div>
-	<div class="col-sm-6">
+	<div class="col-sm-9">
+		<p><?php print caDetailLink($this->request, $this->getVar("caption"), '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail"))); ?></p>
 <?php
 	if($vb_write_access){
 ?>
 		<form id="setItemForm{{{item_id}}}">					
 			<div class='form-group'>
 				<label for='notes' class='control-label'>Caption</label>
-				<input type='text' name='set_item_caption' value='{{{set_item_caption}}}' class='form-control'>
+				<textarea name='set_item_caption' class='form-control' rows='6'>{{{set_item_caption}}}</textarea>
 			</div>
 			<div class='form-group'>
 				<input type="submit" value="save" class="btn btn-default">

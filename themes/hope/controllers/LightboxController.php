@@ -233,7 +233,7 @@
             //
             // User must at least have read access to the set
  			//
-            if (!($t_set = $this->_getSet(__CA_SET_READ_ACCESS__))) { $this->Index(); return; }
+            if (!($t_set = $this->_getSet(__CA_SET_READ_ACCESS__))) { $this->parent_list(); return; }
  			
  			$vn_set_id = $t_set->get("ca_sets.set_id");
  			$this->view->setVar("set", $t_set);
@@ -1961,7 +1961,7 @@
 		public function present($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 			if(!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
-				$this->Index();
+				$this->parent_list();
 				return;
 			}
 			$this->view->setVar("controller", caGetOption("controller", $pa_options, "Lightbox"));
@@ -2119,7 +2119,7 @@
 				return;
 			}
 
-			return $this->Index();
+			return $this->parent_list();
 		}
  		# -------------------------------------------------------
  		

@@ -32,10 +32,10 @@ a.readmore-js-toggle, a.readmore-js-toggle:hover{
 	font-family: LatoLight, helvetica, sanserif;
 }
 .btn-default, .lightbox .btn-default, .modal-footer  .btn{
-	background-color:#9A6E00;
+	background-color:#002244;
 }
-.btn-default, .btn-default:hover, .btn-default:focus, .btn-default:active{
-	background-color:#815c00;
+.btn-default:hover, .btn-default:focus, .btn-default:active{
+	background-color:#f46a1f;
 }
 .btn-sm{
 	padding: 4px 5px 3px 5px;
@@ -209,6 +209,9 @@ H1 .btn-group > a:hover{
 }
 
 /* themes */
+.themes p{
+	font-size: 16px;
+}
 .themesList{
 	margin-top:20px;
 }
@@ -315,16 +318,32 @@ a:hover .themesContainer{
 	margin-bottom:10px;
 }
 .childIcons .childPlaceholder{
-	padding:30px 15px;
 	background-color:#FFF;
 	text-align:center;
 }
 .childIcons .childPlaceholder i.fa{
 	font-size:70px;
 	color:#dedede;
+	position: absolute;
+	top: 15%;
+	left: 0;
+	width: 100%;
+}
+.childIcons .childLabel{
+	display:block;
+	height:3.3em;
+	overflow:hidden;
+	margin:5px 0px 10px 0px;
+	font-size:11px;
+	line-height:1.1em;
 }
 .sets .btn .glyphicon {
     color: #FFFFFF;
+}
+.sets .setsBack{
+	background-color: #EBEBEB;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 /* gallery */
@@ -359,8 +378,10 @@ a:hover .themesContainer{
 	padding:15px 0px 0px 0px;
 }
 .gallerySectionNav{
-	max-height:430px;
+	max-height:440px;
 	overflow:scroll;
+	padding-left:2px;
+	padding-right:2px;
 }
 .gallerySectionNav ul{
 	list-style-type:none;
@@ -377,6 +398,7 @@ a:hover .themesContainer{
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 	white-space: normal;
+	overflow: hidden;
 }
 .gallerySectionNav .btn-default:hover, .gallerySectionNav li.currentSlideshow .btn-default{
 	background-color:#002244;
@@ -384,6 +406,18 @@ a:hover .themesContainer{
 }
 .gallerySectionNav .btn-default .fa{
 	font-size: 11px;
+}
+#gallerySectionNavScrollUp, #gallerySectionNavScrollDown{
+	background-color: #EFEFEF;
+	color: #666666;
+	padding: 2px 12px 2px 12px;
+	text-align: center;
+	text-decoration: none;
+	margin:5px 5px 0px 5px;
+	display:none;
+}
+#gallerySectionNavScrollUp .fa, #gallerySectionNavScrollDown .fa{
+	font-size: 26px;
 }
 .twoCol{
 	column-count: 2;
@@ -415,4 +449,14 @@ a:hover .themesContainer{
 	text-decoration: underline;
     text-transform: uppercase;
 	font-size: 12px;
+}
+
+/* form overlay */
+@media(min-width:768px){
+	#caFormOverlay {
+		margin-top: 10%;
+	}
+	#caFormOverlay.caFormOverlayWide{
+		width:700px;
+	}
 }

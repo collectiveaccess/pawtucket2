@@ -222,12 +222,13 @@
 						if(is_array($va_img_info)){
 							$vs_img = $va_img_info["representation_tag"]."<br/>";
 						}else{
-							$vs_img = "<div class='childPlaceholder'><i class='fa fa-picture-o'></i></div><br/>";
+							$vs_img = "<div class='childPlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."<i class='fa fa-picture-o'></i></div>";
 						}
+						$vs_label = "<span class='childLabel'>".$qr_children->get("ca_sets.preferred_labels.name")."</span>";
 						if($vb_write_access){
-							print caNavLink($this->request, $vs_img.$qr_children->get("ca_sets.preferred_labels.name"), "", "", "Lightbox", "setDetail", array("set_id" => $qr_children->get("set_id")));
+							print caNavLink($this->request, $vs_img.$vs_label, "", "", "Lightbox", "setDetail", array("set_id" => $qr_children->get("set_id")));
 						}else{
-							print $vs_img.$qr_children->get("ca_sets.preferred_labels.name");
+							print $vs_img.$vs_label;
 						}
 						print "</div>";
 						$vn_child_count++;
