@@ -592,6 +592,17 @@ a.readmore-js-toggle:hover {
 		margin-top:20px;
 	}
 }
+.detail .unit.sponsorImage{
+	text-align:center;
+}
+.detail .unit.sponsorNote{
+	font-size:16px;
+	padding:10px;
+}
+.detail .unit.sponsorImage img{
+	width:auto;
+	height:auto;
+}
 /* browse list results */
 .bResultItemText, .bResultItemText a {
     font-size: 15px;

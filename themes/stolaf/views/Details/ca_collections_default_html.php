@@ -190,7 +190,8 @@
 				</div>
 				
 <?php
-			$vs_sponsor_image = $t_item->get("ca_collections.sponsor_img.large");
+			$vs_sponsor_image = $t_item->get("ca_collections.sponsor_img.small");
+			$vs_sponsor = $t_item->get("ca_collections.fa_sponsor");
 			if ($vs_sponsor_image || $vb_show_hierarchy_viewer) {	
 ?>
 				<div class='col-sm-5'>
@@ -202,7 +203,10 @@
 					</script>
 <?php
 					if($vs_sponsor_image){
-						print "<br/><div class='unit'>".$vs_sponsor_image."</div>";
+						print "<br/><div class='unit sponsorImage'>".$vs_sponsor_image."</div>";
+					}
+					if($vs_sponsor){
+						print "<div class='unit sponsorNote'>".$vs_sponsor."</div>";
 					}
 ?>
 				</div><!-- end col -->
