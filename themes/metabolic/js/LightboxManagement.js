@@ -1,83 +1,136 @@
 'use strict';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {appendItemsToLightbox, removeItemsFromLightbox} from "../../default/js/lightbox";
+
+import { appendItemsToLightbox, removeItemsFromLightbox, appendItemstoNewLightbox, newJWTToken } from "../../default/js/lightbox";
 
 const selector = pawtucketUIApps.LightboxManagement.selector;
 const appData = pawtucketUIApps.LightboxManagement.data;
 const lightboxTerminology = appData.lightboxTerminology;
 
+//*
+// console.log("LM: PUIApps", pawtucketUIApps.LightboxManagement);
+const baseUrl = pawtucketUIApps.LightboxManagement.data.baseUrl;
+const refreshToken = pawtucketUIApps.LightboxManagement.key;
 
 class LightboxManagement extends React.Component {
 	constructor(props){
 		super(props);
-
-		this.state = {lightboxList: this.props.lightboxes, statusMessage: null};
+		this.state = {lightboxList: this.props.lightboxes, statusMessage: null, 
+			// API tokens (JWT)
+			tokens: {
+				refresh_token: refreshToken,		// from environment
+				access_token: null
+			}
+		};
 
 		this.addToLightbox = this.addToLightbox.bind(this);
+		this.addToNewLightbox = this.addToNewLightbox.bind(this);
 		this.removeFromLightbox = this.removeFromLightbox.bind(this);
 	}
 
+	componentDidMount(){
+		let that = this;
+		let state = this.state;
+
+		// load auth tokens
+		newJWTToken(baseUrl, this.state.tokens, function (data) {
+			console.log("newJWTToken Data: ", data);
+			state.tokens.access_token = data.data.refresh.jwt;
+			that.setState(state);
+		});
+	}
+
+
+	//-------------NEW CODE-----------------------
+
 	addToLightbox(set_id) {
 		let that = this;
-		//addItemToLightbox(this.props.baseUrl, set_id, this.props.id, this.props.table, function(resp) {
-		// TODO : get tokens
-		// 		appendItemsToLightbox(uri, tokens, id, items, callback)
-		appendItemsToLightbox(this.props.baseUrl, tokens, set_id, [this.props.id], function(resp) { 
-			if (resp && resp['ok']) {
-				let state = that.state;
+		let object_id = this.props.id;
+		appendItemsToLightbox(baseUrl, this.state.tokens, parseInt(set_id), object_id.toString() , function (data) {
+			let state = that.state;
 
-				if(set_id === null) {
-					state.lightboxList[state.lightboxList.length] = {'isMember':true, 'set_id':resp.set_id, 'label': resp.label};
-					that.setState(state);
-				}
-				for(let i in state.lightboxList) {
-					if (state.lightboxList[i]['set_id'] == set_id) {
-						state.lightboxList[i]['isMember'] = true;
-						that.setState(state);
-						break;
-					}
-				}
-				state.statusMessage = "Added Item To " + lightboxTerminology.singular;
+			if (set_id === null) {
+				state.lightboxList[state.lightboxList.length] = { 'isMember': true, 'set_id': data.set_id, 'label': data.label };
 				that.setState(state);
-				setTimeout(function() {
-					state.statusMessage = '';
-					that.setState(state);
-				}, 2000);
-				return;
 			}
-			alert("Could not add item to lightbox: " + resp['err']);
+			for (let i in state.lightboxList) {
+				if (state.lightboxList[i]['set_id'] == set_id) {
+					state.lightboxList[i]['isMember'] = true;
+					that.setState(state);
+					break;
+				}
+			}
+			state.statusMessage = "Added Item To " + lightboxTerminology.singular;
+			that.setState(state);
+			setTimeout(function () {
+				state.statusMessage = '';
+				that.setState(state);
+			}, 2000);
+			return;
+		
+		});
+	}
+
+	addToNewLightbox(set_id) {
+		let that = this;
+		let object_id = this.props.id;
+		appendItemstoNewLightbox(baseUrl, that.state.tokens, "New Lightbox", object_id.toString(), function (data) {
+			console.log("appendItemstoNewLightbox: ", data);
+			let state = that.state;
+
+			if (set_id === null) {
+				state.lightboxList[state.lightboxList.length] = { 'isMember': true, 'set_id': data.id, 'label': data.name };
+				that.setState(state);
+			}
+			for (let i in state.lightboxList) {
+				if (state.lightboxList[i]['set_id'] == data.id) {
+					state.lightboxList[i]['isMember'] = true;
+					that.setState(state);
+					break;
+				}
+			}
+			state.statusMessage = "Added Item To " + lightboxTerminology.singular;
+			that.setState(state);
+			setTimeout(function () {
+				state.statusMessage = '';
+				that.setState(state);
+			}, 2000);
+			return;
+
 		});
 	}
 
 	removeFromLightbox(set_id) {
 		let that = this;
-		// TODO : get tokens
-		//removeItemFromLightbox(this.props.baseUrl, set_id, this.props.id, function(resp) {
-		removeItemsFromLightbox(this.props.baseUrl, tokens, set_id, [this.props.id], function(resp) {
-			if (resp && resp['ok']) {
-				let state = that.state;
-				state.statusMessage = "Removed Item From " + lightboxTerminology.singular;
-				setTimeout(function() {
-					state.statusMessage = '';
+		let object_id = this.props.id;
+		removeItemsFromLightbox(baseUrl, this.state.tokens, parseInt(set_id), object_id.toString(), function (data) {
+			let state = that.state;
+			state.statusMessage = "Removed Item From " + lightboxTerminology.singular;
+			setTimeout(function () {
+				state.statusMessage = '';
+				that.setState(state);
+			}, 2000);
+			for (let i in state.lightboxList) {
+				if (state.lightboxList[i]['set_id'] == set_id) {
+					state.lightboxList[i]['isMember'] = false;
 					that.setState(state);
-				}, 2000);
-				for(let i in state.lightboxList) {
-					if (state.lightboxList[i]['set_id'] == set_id) {
-						state.lightboxList[i]['isMember'] = false;
-						that.setState(state);
-						break;
-					}
+					break;
 				}
-				return;
 			}
-			alert("Could not remove item from lightbox: " + resp['err']);
+			return;
 		});
 	}
 
+
+	//--------------------------------------------
+
 	render() {
+
 		let lightboxList = this.state.lightboxList;
+
 		let inLightboxEntries = [], availableLightboxEntries = [];
+
 		for(let i in lightboxList) {
 			let entry = <LightboxEntry
 				key={lightboxList[i].set_id}
@@ -87,6 +140,7 @@ class LightboxManagement extends React.Component {
 				item_id={this.props.id}
 				isMember={lightboxList[i].isMember}
 				addToLightboxCallback={this.addToLightbox}
+				addToNewLightboxCallback={this.addToNewLightbox}
 				removeFromLightboxCallback={this.removeFromLightbox}
 			/>;
 			if (lightboxList[i].isMember) {
@@ -95,6 +149,7 @@ class LightboxManagement extends React.Component {
 				availableLightboxEntries.push(entry);
 			}
 		}
+
 		if ((availableLightboxEntries.length > 0) || (inLightboxEntries.length > 0)) {
 			let availableLightboxList = null, inLightboxList = null;
 			if (availableLightboxEntries.length > 0) {
@@ -118,6 +173,7 @@ class LightboxManagement extends React.Component {
 									item_id={this.props.id}
 									isMember={false}
 									addToLightboxCallback={this.addToLightbox}
+									addToNewLightboxCallback={this.addToNewLightbox}
 									removeFromLightboxCallback={this.removeFromLightbox}
 								/>
 								{(inLightboxList) ? <div className="dropdown-divider"></div> : null}
@@ -138,7 +194,8 @@ class LightboxManagement extends React.Component {
 									set_id={null}
 									item_id={this.props.id}
 									isMember={false}
-									addToLightboxCallback={this.addToLightbox}
+									addToLightboxCallback={this.addToLightbox} 
+									addToNewLightboxCallback={this.addToNewLightbox}
 									removeFromLightboxCallback={this.removeFromLightbox}
 								/>
 							</div>
@@ -153,11 +210,17 @@ class LightboxEntry extends React.Component {
 		super(props);
 
 		this.addToLightbox = this.addToLightbox.bind(this);
+		this.addToNewLightbox = this.addToNewLightbox.bind(this);
 		this.removeFromLightbox = this.removeFromLightbox.bind(this);
 	}
 
 	addToLightbox(e) {
 		this.props.addToLightboxCallback(this.props.set_id);
+		e.preventDefault();
+	}
+
+	addToNewLightbox(e) {
+		this.props.addToNewLightboxCallback(this.props.set_id);
 		e.preventDefault();
 	}
 
@@ -169,7 +232,7 @@ class LightboxEntry extends React.Component {
 	render() {
 		if(this.props.set_id === null) {
 			return (
-				<a href='#' className='dropdown-item' onClick={this.addToLightbox}><ion-icon name="add"></ion-icon> {this.props.label}</a>
+				<a href='#' className='dropdown-item' onClick={this.addToNewLightbox}><ion-icon name="add"></ion-icon> {this.props.label}</a>
 			);
 		} else if(this.props.isMember) {
 			return (

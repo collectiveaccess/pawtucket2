@@ -19,8 +19,10 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const appData = pawtucketUIApps.Lightbox.data;
-const lightboxTerminology = appData.lightboxTerminology;
 const baseUrl = appData.baseUrl; 
+// const lightboxTerminology = appData.lightboxTerminology;
+
+console.log("Lightbox: PUIApps", pawtucketUIApps.Lightbox);
 
 class LightboxSelection extends React.Component {
 
