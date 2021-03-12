@@ -98,11 +98,11 @@
 				if($vs_call_number || $vs_id){
 					print "<div class='row'>";
 					if($vs_call_number){
-						print "<div class='col-sm-6'><div class='unit'><h5>Holding Library Call No.</h5>".$vs_call_number."</div></div>";
+						print "<div class='col-sm-5'><div class='unit'><h5>Holding Library Call No.</h5>".$vs_call_number."</div></div>";
 					}
 				
 					if($vs_id){
-						print "<div class='col-sm-6'><div class='unit'><h5>Manuscript Cookbooks Survey Database ID#</h5>".$vs_id."</div></div>";
+						print "<div class='col-sm-7'><div class='unit'><h5>Manuscript Cookbooks Survey Database ID#</h5>".$vs_id."</div></div>";
 					}
 					print "</div>";
 				}				
