@@ -93,6 +93,9 @@
                     }
                     print "</div>";
 				}
+				if($vs_call_number = $t_object->get('ca_objects.library_location')){
+					print "<div class='unit'><h5>Holding Library Call No.</h5>".$vs_call_number."</div>";
+				}
 
                 #if ($vs_library_title = $t_object->get('ca_objects.nonpreferred_labels')){
                 #    print "<div class='unit'><h5>Library Title</h5>".$vs_library_title."</div>";
@@ -114,6 +117,9 @@
 				}
 				if ($va_notes = $t_object->get('ca_objects.general_notes')) {
 					print "<div class='unit'><h5>Description</h5>".$va_notes."</div>";
+				}
+				if($vs_id = $t_object->get('ca_objects.object_id')){
+					print "<div class='unit'><h5>Manuscript Cookbooks Survey Database ID#</h5>".$vs_id."</div>";
 				}
 
 
