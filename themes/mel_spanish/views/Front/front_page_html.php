@@ -48,7 +48,7 @@
 				</div>
 			</div>
 			<div class="row sectionLinks">
-				<div class="col-sm-8 col-sm-offset-2 col-md-2 col-md-offset-2 text-center">
+				<div class="col-sm-8 col-sm-offset-2 col-md-2 col-md-offset-1 text-center">
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'archive.jpg', array("alt" => "Archive")), "first", "", "Browse", "objects", array("facets" => "type_facet:25;show_on_website:18863"));
 				print caNavLink($this->request, "Archive", "", "", "Browse", "objects", array("facets" => "type_facet:25;show_on_website:18863"));
@@ -64,6 +64,12 @@
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'exhibition.jpg', array("alt" => "Exhibition")), "", "", "Exhibition", "Index");
 				print caNavLink($this->request, "Exhibition", "", "", "Exhibition", "Index");
+?>
+				</div>
+				<div class="col-sm-8 col-sm-offset-2 col-md-offset-0 col-md-2 text-center">
+<?php
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'features.jpg', array("alt" => "Features")), "", "", "Gallery", "Index");
+				print caNavLink($this->request, "Features", "", "", "Gallery", "Index");
 ?>
 				</div>
 				<div class="col-sm-8 col-sm-offset-2 col-md-offset-0 col-md-2 text-center">
