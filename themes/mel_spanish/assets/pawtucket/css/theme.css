@@ -237,33 +237,40 @@ ul.menuItems{
 	background-image: url("../graphics/leaf_double.jpg");
 	background-repeat: no-repeat;
   	background-position: top center;
-  	margin-bottom:30px;
+  	margin-bottom:10px;
 }
 .leaf_bg > div{
 	background-color: #dbeae7;
 	background-color: rgb(219, 234, 231, .65);
 }
-@media(max-width:991px){
-	.front H1{
-		font-size:36px;
-		margin-top:130px;
-	}
+@media(max-width:1024px){
 	.leaf_bg{
-		background-position: center center;
-		margin-bottom: 30px;
 		background-size: contain;
+	}
+	.front H1 {
+		margin: 90px 0px 70px 0px;
+		font-size:34px;
 	}
 }
 @media(max-width:768px){
 	.front H1{
 		font-size:22px;
-		margin-top:50px;
+		margin-top:30px;
+		margin-bottom: 40px;
+	}
+	.leaf_bg{
+		background-position: center center;
 	}
 }
 /* styles for front slideshow also apply to the Exhibition slideshow */
 .frontSlide img {
     height: 300px;
     width: auto;
+}
+@media(max-width:1024px){
+	.frontSlide img{
+		height:250px;
+	}
 }
 .exhibition .frontSlide img {
     height: 300px;
@@ -272,7 +279,7 @@ ul.menuItems{
 .frontSlide {
     position: relative;
     background-color: transparent;
-    padding: 20px 10px 20px 10px;
+    padding: 20px 10px 0px 10px;
     text-align: center;
 }
 .exhibition .frontSlide {
@@ -288,7 +295,9 @@ ul.menuItems{
     font-family: 'Cormorant', serif;
     font-size:16px;
 }
-
+.front .jcarousel-wrapper {
+    margin-bottom: 0px;
+}
 
 .front H2{
 	/*font-family: dinneuzeitgroteskltw01-_812426, sans-serif;*/
@@ -297,6 +306,13 @@ ul.menuItems{
 	text-align:center;
 	margin-top:30px;
 	text-transform:uppercase;
+}
+@media(max-width:768px){
+	.front H2{
+		font-size:20px;
+		padding-bottom: 0px;
+		margin-bottom: 0px;
+	}
 }
 .frontGallerySlideCaption{
 	font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;
@@ -315,6 +331,11 @@ ul.menuItems{
 @media(max-width:991px){
 	.sectionLinks img{
 		margin-top:50px;
+	}
+}
+@media(max-width:768px){
+	.sectionLinks .first img {
+		margin-top:20px;
 	}
 }
 .sectionLinks a{

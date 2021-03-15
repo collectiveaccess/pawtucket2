@@ -50,7 +50,7 @@
 			<div class="row sectionLinks">
 				<div class="col-sm-8 col-sm-offset-2 col-md-2 col-md-offset-2 text-center">
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'archive.jpg', array("alt" => "Archive")), "", "", "Browse", "objects", array("facets" => "type_facet:25;show_on_website:18863"));
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'archive.jpg', array("alt" => "Archive")), "first", "", "Browse", "objects", array("facets" => "type_facet:25;show_on_website:18863"));
 				print caNavLink($this->request, "Archive", "", "", "Browse", "objects", array("facets" => "type_facet:25;show_on_website:18863"));
 ?>
 				</div>
