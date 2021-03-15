@@ -66,6 +66,7 @@
 	$qr_comments 					= $this->getVar("comments");
 	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
 	$vs_description_attribute 		= $this->getVar("description_attribute");
+	$pn_cover_object_id				= $this->getVar("cover_object_id");
 	
 	$va_set_item_ids = $t_set->get("ca_set_items.item_id", array("returnAsArray" => true));
 				
@@ -101,64 +102,19 @@ if (!$vb_ajax) {	// !ajax
     //
     // Gear menu
     //
+
+			if($vb_write_access){
 ?>
 				<div class="btn-group">
 					<button class="btn btn-default btn-sm" data-toggle="dropdown">Options <span class="glyphicon glyphicon-cog bGear"></span></button>
 					<ul class="dropdown-menu" role="menu">
-<?php
-						if(($vs_sort_control_type == "dropdown") && is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
-							print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
-							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-								if ($vs_current_sort === $vs_sort) {
-									print "<li><a href='#'><strong><em>{$vs_sort}</em></strong></a></li>\n";
-								} else {
-									print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort))."</li>\n";
-								}
-							}
-							print "<li class='divider'></li>\n";
-							if(is_array($va_secondary_sorts = $this->getVar('secondarySortBy')) && sizeof($va_secondary_sorts)){
-								print "<li class='dropdown-header'>"._t("Refine sort by:")."</li>\n";
-								foreach($va_secondary_sorts as $vs_secondary_sort => $vs_secondary_sort_flds) {
-									if($vs_secondary_sort != $vs_current_sort){
-										if ($vs_current_secondary_sort === $vs_secondary_sort) {
-											print "<li><a href='#'><strong><em>{$vs_secondary_sort}</em></strong></a></li>\n";
-										} else {
-											print "<li>".caNavLink($this->request, $vs_secondary_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'secondary_sort' => $vs_secondary_sort))."</li>\n";
-										}
-									}
-								}
-								print "<li class='divider'></li>\n";
-							}
-							print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
-							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<strong><em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em></strong>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc'))."</li>";
-							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<strong><em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em></strong>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc'))."</li>";
-							print "<li class='divider'></li>";
-						}
-						if($vb_write_access){
-?>
-							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
-							<li><a href='#' data-set_id="<?php print $vn_set_id; ?>" data-set_name="<?php print addslashes($t_set->get("ca_sets.preferred_labels")); ?>" data-toggle='modal' data-target='#confirm-delete'>Delete <?php print ucfirst($vs_lightbox_displayname); ?></a></li>
-<?php
-						}
-?>
-						<!--<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Lightbox", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>-->
-<?php
-#						if(is_array($va_export_formats) && sizeof($va_export_formats)){
-#							// Export as PDF links
-#							print "<li class='divider'></li>\n";
-#							print "<li class='dropdown-header'>"._t("Download as:")."</li>\n";
-#							foreach($va_export_formats as $va_export_format){
-#								print "<li>".caNavLink($this->request, $va_export_format["name"]." [".$va_export_format["type"]."]", "", "", "Lightbox", "setDetail", array("view" => $va_export_format['type'], "download" => true, "export_format" => $va_export_format["code"]))."</li>";
-#							}
-#							print "<li>".caNavLink($this->request, "Media"." [jpgs]", "", "", "Lightbox", "getLightboxMedia", array("set_id" => $t_set->get("set_id"), "download" => true))."</li>";
-							
-							
-#						}
-?>
-						<li class="divider"></li>
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array('parent_id' => $vn_parent_id)); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
+						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
+						<li><a href='#' data-set_id="<?php print $vn_set_id; ?>" data-set_name="<?php print addslashes($t_set->get("ca_sets.preferred_labels")); ?>" data-toggle='modal' data-target='#confirm-delete'>Delete <?php print ucfirst($vs_lightbox_displayname); ?></a></li>				
 					</ul>
 				</div><!-- end btn-group -->
+<?php
+			}
+?>
 			</H1>
 			<H5>
 <?php
@@ -339,7 +295,7 @@ if (!$vb_ajax) {    // !ajax
 			if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
             }
-            if ($vs_description = $t_set->get($vs_description_attribute)) {
+            if ($vs_description = $t_set->get($vs_description_attribute, array("convertLineBreaks" => true))) {
                 print "<span id='lbSetDescription".$t_set->get("set_id")."'>{$vs_description}</span><hr/>";
             }
             print "<b>Part of ".$vs_lightbox_parent_displayname.":</b><br/>";
@@ -413,6 +369,7 @@ if (!$vb_ajax) {    // !ajax
 			<li><b>Drag and Drop</b> items into your preferred order</li>
 			<li><b>Caption</b> text will appear with items in your gallery slideshow</li>
 			<li><b>Galleries</b> can contain multiple slideshows.</li>
+			<li>Choose a <b>Cover Image</b> to represent your gallery by clicking the <span class='glyphicon glyphicon-check'></span> icon under your slideshow items.</li>
 		</ul>
 		</div><!-- end col -->
 	</div><!-- end row -->
@@ -482,6 +439,23 @@ if (!$vb_ajax) {    // !ajax
                     if(data.status == 'ok') {
                         jQuery('.lbItem' + data.item_id).fadeOut(500, function() { jQuery('.lbItem' + data.item_id).remove(); });
                         jQuery('.lbSetCountInt').html(data.count);  // update count
+                    } else {
+                        alert('Error: ' + data.errors.join(';'));
+                    }
+                });
+
+                e.preventDefault();
+                return false;
+            }
+        );
+
+        jQuery("#lbSetResultLoadContainer").on('click', ".lbItemCoverImageButton", function(e) {
+                var id = jQuery(this).data("item_id");
+                var object_id = jQuery(this).data("object_id");
+                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxMakeCoverItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id, 'object_id':object_id} , function(data) {
+                    if(data.status == 'ok') {
+                    	jQuery('.lbItemCoverImageButton').removeClass('currentCover');
+                    	jQuery('#lbItemCoverImage' + id).addClass('currentCover');
                     } else {
                         alert('Error: ' + data.errors.join(';'));
                     }
