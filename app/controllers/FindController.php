@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2016 Whirl-i-Gig
+ * Copyright 2014-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -45,10 +45,16 @@
          */
  		 protected $ops_view_prefix=null;
  		 
- 		 /**
- 		  * 
- 		  */
- 		  protected $opo_app_plugin_manager;
+ 		/**
+ 		 * 
+ 		 */
+ 		protected $opo_app_plugin_manager;
+ 		  
+        
+        /**
+         * @var HTMLPurifier
+         */
+        protected $purifier;
  		 
  		# -------------------------------------------------------
  		/**
@@ -57,6 +63,8 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			// Make application plugin manager available to superclasses
  			$this->opo_app_plugin_manager = new ApplicationPluginManager();
+ 			
+			$this->purifier = new HTMLPurifier();
  			
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  		}
