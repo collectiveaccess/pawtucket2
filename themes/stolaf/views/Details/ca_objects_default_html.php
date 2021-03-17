@@ -189,7 +189,7 @@
 						$vs_LcshNames = join("<br/>", $va_LcshNames_processed);
 					}
 					if($vs_LcshNames){
-						print "<div class='unit'><label>Names</label>".$vs_LcshNames."</div>";	
+						print "<div class='unit'><label>Library of Congress Names</label>".$vs_LcshNames."</div>";	
 					}
 ?>				
 				{{{<ifcount code="ca_places" min="1"><div class="unit"><ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount><ifcount code="ca_places" min="2"><label>Related places</label></ifcount><unit relativeTo="ca_places" delimiter="<br/>"><unit relativeTo="ca_places.hierarchy" delimiter=" &gt; "><l>^ca_places.preferred_labels</l></unit></unit></div></ifcount>}}}
