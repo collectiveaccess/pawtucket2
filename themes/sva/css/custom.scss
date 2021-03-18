@@ -117,6 +117,8 @@ small {
 		border-bottom: none !important;
 		display: block;
 		break-inside: avoid;
+		display: grid;
+ 	 page-break-inside: avoid;
 	}
 }
 
@@ -659,14 +661,21 @@ div.search-control {
 	display: block;
 }
 .facetlabel {
-	font-size: 10pt;
+	font-size: 12pt;
 	color: #666;
 	text-transform: capitalize;
 }
 .facetname {
-	font-size: 10pt;
+	font-size: 12pt;
 }
 
+.browseRemoveFacet:hover {
+	background-color: $color-block;
+}
+
+.tags a:hover {
+	text-decoration: none;
+}
 .button {
 	border: 1px solid $primary-color;
 	min-width: 90px;
@@ -683,9 +692,8 @@ div.search-control {
 	color: $bg-light;
 }
 
-.options-filter-widget {
-	font-size: 22px;
-	padding-bottom: 10px;
+.options-filter-widget .button {
+	margin-top: 10px;
 }
 .options-filters {
 	font-size: 12pt;
@@ -693,7 +701,9 @@ div.search-control {
 }
 .filters {
 	list-style: none;
-	padding: 0px !important;
+	padding-top: 5px;
+	padding-right: 0px !important;
+	padding-left: 0px !important;
 	 .title a {
 		font-family: $serif;
 		color: $lighter-color;
@@ -723,7 +733,6 @@ div.search-control {
 		padding-top: 90px;
 	}
 	.filters li {
-	display: inline-block;
 	padding-right: 10px;
 	}
 }
@@ -751,7 +760,6 @@ div.search-control {
 		border-bottom: 1px solid $primary-color;
 	}
 	.filters li {
-	display: inline-block;
 	padding-right: 5px;
 	}
 }

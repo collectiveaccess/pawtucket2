@@ -135,7 +135,7 @@ class PawtucketBrowseCurrentFilterList extends React.Component {
 					let label = cv[c];
 					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
 					filterList.push((<a key={ f + '_' + c }href='#'
-										  className='browseRemoveFacet'><br/><span className="facetlabel">{facetLabel}</span>: <span className="facetname"> {label} </span>
+										  className='browseRemoveFacet'><br/><span className="facetlabel">{facetLabel}:</span> <span className="facetname"> {label} </span>
 						<span onClick={this.removeFilter}
 							  data-facet={f}
 							  data-value={c}>&nbsp;&times;</span></a>));
@@ -227,7 +227,7 @@ class PawtucketBrowseFacetList extends React.Component {
 			<div className="options-filter-widget">
 				<div className="options text-gray">
 					<span className="caption-text">{filterLabel}</span>
-					<ul>{facetButtons}</ul>
+					<ul className="filters">{facetButtons}</ul>
 				</div>
 			</div>
 		)
@@ -451,12 +451,14 @@ class PawtucketBrowseResults extends React.Component {
 					<div>
 						<section className="results">
 							<div className="row">
-								<div className="col-lg-2 no-gutters pl-3 p-1">
+								<div className="col-sm-6 col-md-4 col-lg-2">
+									<div className="sticky-top pt-3">
 									<PawtucketBrowseNavigation/>
 									<PawtucketBrowseCurrentFilterList/> <br/>
 									<PawtucketBrowseFacetList facetLoadUrl={this.props.facetLoadUrl}/>
+									</div>
 								</div>
-								<div className="col-lg-10 no-gutters p-1">
+								<div className="col-sm-6 col-md-8 col-lg-10 no-gutters p-1">
 									<div className="card-columns">
 										{resultList}
 									</div>
@@ -534,7 +536,7 @@ class PawtucketBrowseResultItem extends React.Component {
 			case 'list':
 				return(
 					<div className="card mx-auto" ref={this.props.scrollToRef}>
-						<div className="masonry-title"><a href={detail_url}>{data.label}</a></div>
+						<div className="masonry-title--find"><a href={detail_url}>{data.label}</a></div>
 					</div>);
 				break;
 			default:

@@ -42,6 +42,7 @@
 	<div class="row" >
 		<div class="col-sm-12">
 			<div class="col-sm-11"><br>
+				<p style="border: 1px solid #000; background-color: #f2f2f0;">{{{notice}}}</p>
 				<p class="frontpara">{{{exhibitions}}}</p>
 			</div>
 		</div>
