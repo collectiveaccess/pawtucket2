@@ -7,6 +7,9 @@ let selector = pawtucketUIApps.navscroll.selector;
 let sectionSelector = pawtucketUIApps.navscroll.data.sectionSelector;
 let offsetPx = pawtucketUIApps.navscroll.data.offset;
 
+console.log("PUIAPPS navscroll: ", pawtucketUIApps.navscroll);
+
+
 class Navscroll extends React.Component {
     constructor(props) {
         super(props);

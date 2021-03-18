@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 
 const selector = pawtucketUIApps.masonrygrid.selector;
 
+console.log("PUIAPPS masonrygrid: ", pawtucketUIApps.masonrygrid);
+
 let brakePoints = [350, 500, 750];
 let images = [];
 const imgId = [1011, 883, 1074, 823, 64, 65, 839, 314, 256, 316, 92,643];

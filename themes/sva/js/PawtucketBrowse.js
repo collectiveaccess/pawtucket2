@@ -5,6 +5,9 @@ import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList,
 
 const selector = pawtucketUIApps.PawtucketBrowse.selector;
 const appData = pawtucketUIApps.PawtucketBrowse.data;
+
+console.log("PUIAPPS pawtucketbrowse: ", pawtucketUIApps.PawtucketBrowse);
+
 /**
  * Component context making PawtucketBrowse internals accessible to all subcomponents
  *

@@ -4,8 +4,9 @@ import ReactDOM from 'react-dom';
 const axios = require('axios');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-
 let selectors = pawtucketUIApps.exhbrowse;
+
+console.log("PUIAPPS exhbrowse: ", pawtucketUIApps.exhbrowse);
 
 class ExhBrowse extends React.Component {
   constructor(props) {
@@ -235,6 +236,8 @@ class ExhBrowseNavigationItem extends React.Component {
   }
 }
 
+
+//---------------Not being used-----------------
 class ExhBrowseSortButton extends React.Component {
 	constructor(props) {
 		super(props);
