@@ -178,7 +178,7 @@ New York, NY 10001<br><a href="tel:212-481-0295">212-481-0295</a>      </address
 						<div class="form-group">
 							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
 						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
+						<!--<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>-->
 					</div>
 				</form>
 				<script type="text/javascript">
