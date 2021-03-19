@@ -106,6 +106,7 @@
 			<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					jQuery('#SetForm').on('submit', function(e){		
+						CKEDITOR.instances.descriptionTextArea.updateElement();
 						jQuery('#caMediaPanelContentArea').load(
 							'<?php print caNavUrl($this->request, '', 'Lightbox', 'ajaxSaveSetInfo', null); ?>',
 							jQuery('#SetForm').serialize()
@@ -147,6 +148,13 @@
 						e.preventDefault();
 						return false;
 					});
+				});
+			</script>
+<?php
+		}
+?>
+			<script type='text/javascript'>
+				jQuery(document).ready(function() {
 					CKEDITOR.replace('descriptionTextArea', {
 						  height: 150,
 						  // Define the toolbar groups as it is a more accessible solution.
@@ -169,6 +177,3 @@
 					});
 				});
 			</script>
-<?php
-		}
-?>
