@@ -517,6 +517,50 @@ h2.tl-headline{
 	vertical-align: middle;
 	display: table-cell;
 }
+
+
+
+/* front resources slideshow */
+.front .mainSlideNav{
+	top:60%
+}
+.front .jcarousel-wrapper{
+	margin-top:0px;
+	margin-bottom:0px;
+}
+@media (min-width:768px){	
+	.mainSlide .imgCol{
+		text-align:right;
+		overflow:hidden;
+	}
+	.mainSlide .imgCol img{
+		height:100%;
+		width:auto;
+	}
+	.mainSlide .imgCol img{
+		height:100%;
+		width:100%;
+		object-fit:cover;
+	}
+}
+
+.mainSlide H2{
+	padding-top: 120px;
+}
+.mainSlide .imgCol{
+	height:300px;
+}
+@media (min-width:768px){
+	.mainSlide .imgCol{
+		height:450px;
+	}
+}
+@media (min-width:1625px){
+	.mainSlide .imgCol{
+		height:500px;
+	}
+}
+
 /* browse panel */
 
 div.browseFacetItem a:hover {
@@ -1315,6 +1359,52 @@ a.readmore-js-toggle {
 }
 .listingContainer .listingContainerDesc .text-center{
 	margin:40px 0px 30px 0px;
+}
+
+
+
+
+.listingContainerExhibitions.coverImg{
+	background-position: center;
+  	background-repeat: no-repeat;
+  	background-size: cover;
+  	min-height: 275px;
+}
+.listingContainerExhibitions.coverImg H2{
+	margin-bottom: 20px;
+	font-size: 24px;
+	line-height:1.3em;
+}
+.listingContainerExhibitions.coverImg b{
+	font-family: latolight;
+	text-transform: uppercase;
+	font-size: 16px;
+	font-weight: 600;
+}	
+.listingContainerExhibitions.coverImg .listingContainerDesc{
+	background-color:transparent;
+	background: linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,.4), rgba(0,0,0,.4), rgba(0,0,0,0));
+	text-shadow: 2px 2px 4px #000000;
+	padding:40px;
+  	min-height: 275px;
+}
+.listingContainerExhibitions.coverImg .listingContainerDesc:hover{
+	background: rgba(0,0,0,.5);
+}
+h2.exhibitionSection{
+	text-transform:uppercase;
+	font-size:24px;
+	font-family:Lato;
+	color:#D20000;
+}
+.listingExhibitionsImageLink:hover{
+	text-decoration:none;
+}
+.currentExhibition .listingContainerExhibitions.coverImg .listingContainerDesc{
+	padding: 70px 60px 60px 60px;
+}
+.currentExhibition .listingContainerExhibitions.coverImg H2{
+	font-size: 28px;
 }
 
 /* About page */

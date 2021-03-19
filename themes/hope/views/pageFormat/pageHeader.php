@@ -107,8 +107,9 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a href="http://www.hope.edu/kam" class="navbar-brand"><?php print caGetThemeGraphic($this->request, 'KAM-Logo_horiz_white_Final.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")); ?></a>
-
+<?php
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'KAM-Logo_horiz_white_Final.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "", "");
+?>
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->

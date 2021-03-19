@@ -16,9 +16,20 @@
 		}
 		print "<H2>".caNavLink($this->request, $this->getVar("label"), "", "", "Gallery", $this->getVar("set_id"))."</H2>";
 		#print "<p><small class='uppercase'>".$this->getVar("num_items")." ".(($this->getVar("num_items") == 1) ? _t("item") : _t("items"))."</small></p>";
-		print "<p>".$this->getVar("description")."</p>";
+		print "<p class='trimText'>".$this->getVar("description")."</p>";
 		
 		print "<br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-th-large' aria-label='View gallery'></span> "._t("view %1", $this->getVar("section_item_name")), "btn btn-default", "", "Gallery", $this->getVar("set_id"));
 ?>
 	</div><!-- end col -->
 </div><!-- end col --></div><!-- end row -->
+
+<script type='text/javascript'>
+		jQuery(document).ready(function() {		
+			$('.trimText').readmore({
+			  speed: 75,
+			  maxHeight: 455,
+			  moreLink: '<a href="#">Read More <i class="fa fa-angle-down"></i></a>',
+			  lessLink: '<a href="#">Read Less <i class="fa fa-angle-up"></i></a>'
+			});
+		});
+</script>

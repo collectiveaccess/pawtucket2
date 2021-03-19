@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2020 Whirl-i-Gig
+ * Copyright 2013-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -388,7 +388,7 @@
  		 */
  		private function _getSet($set_id) {
  			$t_set = new ca_sets();
- 			if (!$t_set->load($set_id) || (sizeof($this->opa_access_values) && !in_array((string)$t_set->get('access'), $this->opa_access_values, true))) { throw new ApplicationException(_t('Invalid set')); }
+ 			if (!$t_set->load($set_id) || (sizeof($this->opa_access_values) && !in_array((int)$t_set->get('access'), $this->opa_access_values, true))) { throw new ApplicationException(_t('Invalid set')); }
  			return $t_set;
  		}
  		# -------------------------------------------------------

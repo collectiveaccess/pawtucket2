@@ -118,7 +118,7 @@
 
 				
 							<!-- exent; spacial coverage: photos/artifacts/documents -->
-							{{{<ifdef code="ca_objects.extent"><div class="unit"><label>Extent</label>^ca_objects.extent</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.extent_text"><div class="unit"><label>Extent</label>^ca_objects.extent_text</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.coverageSpacial"><div class="unit"><label>Spacial Coverage</label>^ca_objects.coverageSpacial</div></ifdef>}}}
 				
 							<!-- Library fields -->
@@ -165,6 +165,7 @@
 							{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount>/Broadcast<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifcount>}}}
 				
 		<?php
+							$va_all_subjects = array();
 							$va_LcshSubjects = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
 							$va_LcshSubjects_processed = array();
 							if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
@@ -173,10 +174,10 @@
 									if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
 										$vs_LcshSubjects = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
 									}
-									$va_LcshSubjects_processed[] = caNavLink($this->request, $vs_LcshSubjects, "", "", "Search", "objects", array("search" => "ca_objects.lcsh_terms: ".$vs_LcshSubjects));
+									$va_all_subjects[$vs_LcshSubjects] = caNavLink($this->request, $vs_LcshSubjects, "", "", "Search", "objects", array("search" => "ca_objects.lcsh_terms: ".$vs_LcshSubjects));
 						
 								}
-								$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
+								#$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
 							}
 					
 							$t_list_item = new ca_list_items;
@@ -184,13 +185,29 @@
 								$va_keyword_links = array();
 								foreach($va_keywords as $vn_kw_id){
 									$t_list_item->load($vn_kw_id);
-									$va_keyword_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
+									$va_all_subjects[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
 								}
-								$vs_keyword_links = join("<br/>", $va_keyword_links);
+								#$vs_keyword_links = join("<br/>", $va_keyword_links);
+							}
+							
+							$va_lc_names = $t_object->get("ca_objects.lc_names", array("returnAsArray" => true));
+							$va_lc_names_processed = array();
+							if(is_array($va_lc_names) && sizeof($va_lc_names)){
+								foreach($va_lc_names as $vs_lc_names){
+									$vs_lc_name = "";
+									if($vs_lc_names && (strpos($vs_lc_names, " [") !== false)){
+										$vs_lc_name = mb_substr($vs_lc_names, 0, strpos($vs_lc_names, " ["));
+									}
+									$va_all_subjects[] = caNavLink($this->request, $vs_lc_name, "", "", "Search", "objects", array("search" => "ca_objects.lc_names: ".$vs_lc_name));
+						
+								}
+								#$vs_lc_names = join("<br/>", $va_lc_names_processed);
 							}
 					
-							if($vs_LcshSubjects || $vs_keyword_links){
-								print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keyword_links) ? "<br/>" : "").$vs_keyword_links."</div>";	
+							if(is_array($va_all_subjects) && sizeof($va_all_subjects)){
+								ksort($va_all_subjects);
+								$vs_subjects = join("<br/>", $va_all_subjects);
+								print "<div class='unit'><label>Subjects/Keywords</label>".$vs_subjects."</div>";	
 							}
 							if($vs_rep_viewer){
 ?>

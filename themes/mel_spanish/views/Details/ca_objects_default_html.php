@@ -54,7 +54,7 @@
 				
 				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-lg-2 col-xs-3", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				
 				
 			    <?php
@@ -74,53 +74,29 @@
 				<HR>
 <?php				
 				if ($vs_title = $t_object->get('ca_objects.title')){
-				    print "<div class='unit'><h6>Title</h6>".$vs_title."</div>";
+				    print "<div class='unit'><label>Title</label>".$vs_title."</div>";
 				}
 				
 				if ($vs_idno = $t_object->get('ca_objects.idno')) {
-					print "<div class='unit'><h6>Accession Number</h6>".$vs_idno."</div>";
+					print "<div class='unit'><label>Accession Number</label>".$vs_idno."</div>";
+				}
+				
+				if ($vs_vessel = $t_object->getWithTemplate('^ca_objects.vessel')) {
+					print "<div class='unit'><label>Vessel</label>".$vs_vessel."</div>";
 				}		
 					
-				if ($va_chenhall_ids = $t_object->get('ca_objects.chenhall', array('returnAsArray' => true))) {
-					print "<div class='unit'><h6>Category</h6>";
-					foreach ($va_chenhall_ids as $va_key => $vs_chenhall) {
-						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_chenhall, true), '', '', 'Browse', 'objects', array('facet' => 'chenhall_facet', 'id' => $vs_chenhall))."</div>";
-					}
-					print "</div>";
-				}
-				if ($vs_alt = $t_object->get('ca_objects.alternate_object_name')) {
-					print "<div class='unit'><h6>Alternate object names</h6>".$vs_alt."</div>";
-				}
 				if ($vs_date = $t_object->get('ca_objects.date_created', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Creation Date</h6>".$vs_date."</div>";
+					print "<div class='unit'><label>Date</label>".$vs_date."</div>";
 				}
 				if ($va_material_ids = $t_object->get('ca_objects.material', array('returnAsArray' => true))) {
-					print "<div class='unit'><h6>Materials</h6>";
+					print "<div class='unit'><label>Materials</label>";
 					foreach ($va_material_ids as $va_key => $vs_material) {
 						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_material, true), '', '', 'Browse', 'objects', array('facet' => 'material_facet', 'id' => $vs_material))."</div>";
 					}
 					print "</div>";
 				}									
-				if ($va_entities = $t_object->get('ca_entities', array('sort' => 'ca_entities.surname', 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
-						$va_related_list = array();
-						foreach ($va_entities as $va_entity) {
-							$va_related_list[$va_entity['relationship_typename']][] = caDetailLink($this->request, $va_entity['displayname'], '', 'ca_entities', $va_entity['entity_id']);
-						}
-						foreach ($va_related_list as $vs_role => $va_links) {
-							print "<div class='unit'><H6>".ucfirst($vs_role)."</H6>";
-							print join(", ", $va_links);
-							print "</div><!-- end unit -->";
-						}
-				}
-				if ($va_lang_ids = $t_object->get('ca_objects.language', array('returnAsArray' => true))) {
-					print "<div class='unit'><h6>Language</h6>";
-					foreach ($va_lang_ids as $va_key => $vs_lang) {
-						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_lang, true), '', '', 'Browse', 'objects', array('facet' => 'lang_facet', 'id' => $vs_lang))."</div>";
-					}
-					print "</div>";
-				}								
 				if ($vs_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
+					print "<div class='unit'><label>Description</label>".$vs_description."</div>";
 				}
 				if ($va_dimensions = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 					$va_dims = array();
@@ -165,30 +141,8 @@
 						}
 					}
 					if ($vs_dims != "") {
-						print "<div class='unit'><h6>Dimensions</h6>".$vs_dims."</div>";
+						print "<div class='unit'><label>Dimensions</label>".$vs_dims."</div>";
 					}
-				}
-				if ($vs_inscription = $t_object->get('ca_objects.inscription', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Inscription</h6>".$vs_inscription."</div>";
-				}
-				if ($vs_signature = $t_object->getWithTemplate('<if code="ca_objects.signature"><unit>^ca_objects.signature.signedname, ^ca_objects.signature.signloc</unit></if>')) {
-					print "<div class='unit'><h6>Signature</h6>".$vs_signature."</div>";
-				}								
-				if ($vs_ex_label = $t_object->get('ca_objects.exhibition_label', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Exhibition Label</h6>".$vs_ex_label."</div>";
-				}
-
-				
-				
-				
-				
-				
-				if ($va_list_items = $t_object->get('ca_list_items.item_id', array('returnAsArray' => true))) {
-					print "<div class='unit'><h6>Keywords</h6>";
-					foreach ($va_list_items as $va_key => $va_list_item_id) {
-						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($va_list_item_id, true), '', '', 'Browse', 'objects', array('facet' => 'term_facet', 'id' => $va_list_item_id))."</div>";
-					}
-					print "</div>";
 				}
 								
 ?>	

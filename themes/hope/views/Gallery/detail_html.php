@@ -16,53 +16,78 @@
 	if($pn_parent_id && is_array($va_set_navigation) && sizeof($va_set_navigation)){
 ?>
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-sm-12 galleryDetailTopText">
 <?php
 			if($t_set->get("ca_sets.access") == $vn_under_review_access){
 				print "<div class='alert alert-warning' role='alert'>Under review for publication.  Only visable by logged in Administrators.</div>";
 			}
 
-			print "<H1>".$this->getVar("section_name").": ".$this->getVar("parent_name")."</H1>";
+			print "<H1>".$this->getVar("parent_name")."</H1>";
 			if($vs_parent_desc = $this->getVar("parent_description")){
-				print "<p class='trimText'>".$vs_parent_desc."</p>";
+				print "<p class='twoCol trimTextTop'>".$vs_parent_desc."</p>";
 			}
 ?>
 		</div>
 	</div>
-<div class="container bg">
 	<div class="row">
-		<div class="col-sm-12 col-md-3 gallerySectionNav">
-			<ul>
+		<div class="col-sm-12 col-md-3">
+			<div class="gallerySectionNav">
+<script type='text/javascript'>
+		jQuery(document).ready(function() {	
+			if($(".gallerySectionNav").height() > 436){
+				$('#gallerySectionNavScrollDown').show();
+				$('#gallerySectionNavScrollUp').show();
+			}
+			$('#gallerySectionNavScrollDown').click(function() {
+				$(".gallerySectionNav").scrollTop($('.gallerySectionNav').scrollTop() + 60);
+			});
+			$('#gallerySectionNavScrollUp').click(function() {
+				$(".gallerySectionNav").scrollTop($('.gallerySectionNav').scrollTop() - 60);
+			});
+		});
+</script>
+				<ul>
 <?php
-			foreach($va_set_navigation as $vn_set_nav_id => $vs_set_nav_name){
-				print "<li>".caNavLink($this->request, (($vn_set_nav_id == $pn_set_id) ? "<i class='fa fa-chevron-right' aria-hidden='true'></i> " : "").$vs_set_nav_name, "btn btn-default", "", "Gallery", $vn_set_nav_id)."</li>";
-			}		
+				foreach($va_set_navigation as $vn_set_nav_id => $vs_set_nav_name){
+					print "<li ".(($vn_set_nav_id == $pn_set_id) ? "class='currentSlideshow'" : "").">".caNavLink($this->request, $vs_set_nav_name, "btn btn-default", "", "Gallery", $vn_set_nav_id)."</li>";
+				}		
 ?>		
-			</ul>
+				</ul>
+			</div>
+			<div class="text-center"><button id="gallerySectionNavScrollUp" class="btn btn-default"><i class="fa fa-angle-up"></i></button><button id="gallerySectionNavScrollDown" class="btn btn-default"><i class="fa fa-angle-down"></i></button></div>
 		</div>
-		<div class="col-sm-12 col-md-9 gallerySectionArea">
+		
+		<div class="col-sm-12 col-md-9">
 <?php
 	}
 ?>
-	<div class="row">
-		<div class="col-sm-12">
-			<H1><?php print ((!$pn_parent_id) ? $this->getVar("section_name").": " : "").$this->getVar("label")."</H1>"; ?>
-		</div>
-	</div>
 	<div class="row">
 		<div class="col-sm-8"><div id="galleryDetailImageArea">
 		</div><!-- end galleryDetailImageArea --></div><!--end col-sm-8-->
 		<div class="col-sm-4" id="galleryDetailObjectInfo"> </div>
 	</div><!-- end row -->
+<?php
+		if($pn_parent_id && is_array($va_set_navigation) && sizeof($va_set_navigation)){
+?>
+					</div><!-- end col -->
+				</div><!-- end row -->
+<?php
+		}
+?>
 <div class="galleryDetailBottom"></div>
 
 
+	<div class="row">
+		<div class="col-sm-12">
+			<H1><?php print ((!$pn_parent_id) ? $this->getVar("section_name").": " : "").$this->getVar("label"); ?></H1>
+		</div>
+	</div>
 	<div class="row">
 <?php
 	if($ps_description){
 ?>
 		<div class="col-sm-4 setDescription">
-			<?php print "<p>".$ps_description."</p>"; ?>
+			<?php print "<p class='trimTextBottom'>".$ps_description."</p>"; ?>
 		</div><!-- end col -->
 <?php
 	}
@@ -97,7 +122,7 @@
 				
 				if($vn_i == 12){
 					print "<div class='col-sm-3' id='moreLink'>
-								<a href='#' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 12)." "._t("more")."</a>
+								<a href='#' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 12)." "._t("more")." <i class='fa fa-angle-down'></i></a>
 							</div>";
 				}
 			}
@@ -108,13 +133,26 @@
 	</div><!-- end row -->
 <script type='text/javascript'>
 		jQuery(document).ready(function() {		
+<?php
+		if($pn_set_item_id || $vn_first_item_id){
+?>
 			jQuery("#galleryDetailImageArea").load("<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => ($pn_set_item_id) ? $pn_set_item_id : $vn_first_item_id, 'set_id' => $pn_set_id)); ?>");
 			jQuery("#galleryDetailObjectInfo").load("<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => ($pn_set_item_id) ? $pn_set_item_id : $vn_first_item_id, 'set_id' => $pn_set_id)); ?>");
 			galleryHighlightThumbnail("galleryIcon<?php print ($pn_set_item_id) ? $pn_set_item_id : $vn_first_item_id; ?>");
-		
-			$('.trimText').readmore({
+<?php
+		}
+?>
+			$('.trimTextTop').readmore({
 			  speed: 75,
-			  maxHeight: 80
+			  maxHeight: 80,
+			  moreLink: '<a href="#">Read More <i class="fa fa-angle-down"></i></a>',
+			  lessLink: '<a href="#">Read Less <i class="fa fa-angle-up"></i></a>'
+			});
+			$('.trimTextBottom').readmore({
+			  speed: 75,
+			  maxHeight: 345,
+			  moreLink: '<a href="#">Read More <i class="fa fa-angle-down"></i></a>',
+			  lessLink: '<a href="#">Read Less <i class="fa fa-angle-up"></i></a>'
 			});
 		});
 		function galleryHighlightThumbnail(id) {		
@@ -122,12 +160,3 @@
 			jQuery("#" + id).addClass("galleryIconActive");
 		}
 </script>
-<?php
-		if(is_array($va_set_navigation) && sizeof($va_set_navigation)){
-?>
-					</div><!-- end col -->
-				</div><!-- end row -->
-			</div><!-- end container -->
-<?php
-		}
-?>

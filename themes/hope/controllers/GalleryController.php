@@ -44,6 +44,21 @@
             
  			$this->config = caGetGalleryConfig();
  			
+ 			caSetPageCSSClasses(array("gallery"));
+ 			
+ 			AssetLoadManager::register("panel");
+ 			AssetLoadManager::register("mediaViewer");
+ 			AssetLoadManager::register("carousel");
+ 			AssetLoadManager::register("readmore");
+ 		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */ 
+ 		public function __call($function, $pa_args) {
+ 			$function = strtolower($function);
+ 			
+ 			$o_front_config = caGetFrontConfig();
  			switch(strToLower($function)){
 				case "user":
 					$gallery_set_type_id = "user_curated";
@@ -68,21 +83,6 @@
 			}
 			$this->view->setVar("section_item_name", $section_item_name);
  			
- 			caSetPageCSSClasses(array("gallery"));
- 			
- 			AssetLoadManager::register("panel");
- 			AssetLoadManager::register("mediaViewer");
- 			AssetLoadManager::register("carousel");
- 			AssetLoadManager::register("readmore");
- 		}
- 		# -------------------------------------------------------
- 		/**
- 		 *
- 		 */ 
- 		public function __call($function, $pa_args) {
- 			$function = strtolower($function);
- 			
- 			$o_front_config = caGetFrontConfig();
  			$t_set = new ca_sets();
  			$t_list = new ca_lists();
  			
@@ -116,22 +116,24 @@
 							unset($sets[$set_id]);
 						}
 					}
-					$set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
+					$set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($sets), array("version" => "iconlarge", "checkAccess" => $this->opa_access_values));
 					
 					$vs_front_page_set = $o_front_config->get('front_page_set_code');
 					$vb_omit_front_page_set = (bool)$this->config->get('omit_front_page_set_from_gallery');
-					$o_db = new Db();
+					#$o_db = new Db();
 					foreach($sets as $set_id => $va_set) {
 						if ($vb_omit_front_page_set && $va_set['set_code'] == $vs_front_page_set) { 
 							unset($sets[$set_id]); 
 						}
 						
-						# --- if this is a set of sets, the representative image should be from the child set
-						$q_sets = $o_db->query("SELECT s.set_id FROM ca_sets s WHERE s.parent_id = ? AND s.deleted = 0 AND s.access IN (".join(", ", $this->opa_access_values).") ORDER BY s.rank ASC LIMIT 1", $set_id);
-						if($q_sets->numRows()){
-							while($q_sets->nextRow()){
+						if(!$set_first_items[$set_id]){
+							# --- if this is a set of sets, the representative image should be from the child set -IF THIS SET HAS NO IMEMS
+							#$q_sets = $o_db->query("SELECT s.set_id FROM ca_sets s WHERE s.parent_id = ? AND s.deleted = 0 AND s.access IN (".join(", ", $this->opa_access_values).") ORDER BY s.rank ASC LIMIT 1", $set_id);
+							$q_sets = ca_sets::find(array('parent_id' => $set_id), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank', 'checkAccess' => $this->opa_access_values));
+							if($q_sets->numHits()){
+								$q_sets->nextHit();
 								$t_child = new ca_sets($q_sets->get("ca_sets.set_id"));
-								$set_first_items[$set_id] = array_shift($t_child->getPrimaryItemsFromSets(array($q_sets->get("ca_sets.set_id")), array("version" => "large", "checkAccess" => $this->opa_access_values)));
+								$set_first_items[$set_id] = array_shift($t_child->getPrimaryItemsFromSets(array($q_sets->get("ca_sets.set_id")), array("version" => "iconlarge", "checkAccess" => $this->opa_access_values)));
 							}
 						}
 					}
@@ -167,15 +169,17 @@
 				$this->view->setVar("parent_name", $vs_parent_name);
  				$this->view->setVar("parent_description", $vs_parent_description);
 				# --- get all children or siblings of this set
-				$o_db = new Db();
-				$q_sets = $o_db->query("SELECT s.set_id, csl.name FROM ca_sets s INNER JOIN ca_set_labels AS csl ON s.set_id = csl.set_id WHERE s.parent_id = ? AND s.deleted = 0 AND s.access IN (".join(", ", $this->opa_access_values).")", $parent_id);
+				#$o_db = new Db();
+				#$q_sets = $o_db->query("SELECT s.set_id, csl.name FROM ca_sets s INNER JOIN ca_set_labels AS csl ON s.set_id = csl.set_id WHERE s.parent_id = ? AND s.deleted = 0 AND s.access IN (".join(", ", $this->opa_access_values).")", $parent_id);
+				$q_sets = ca_sets::find(array('parent_id' => $parent_id), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank', 'checkAccess' => $this->opa_access_values));
+			
 				$va_children = array();
-				if($q_sets->numRows()){
-					while($q_sets->nextRow()){
-						$va_sets_navigation[$q_sets->get("set_id")] = $q_sets->get("name");
+				if($q_sets->numHits()){
+					while($q_sets->nextHit()){
+						$va_sets_navigation[$q_sets->get("ca_sets.set_id")] = $q_sets->get("ca_sets.preferred_labels");
 						# --- if the current set is the parent, show the first child
 						if($parent_id == $set_id){
-							$set_id = $q_sets->get("set_id");
+							$set_id = $q_sets->get("ca_sets.set_id");
 							$t_set = $this->_getSet($set_id);
 							$this->view->setVar("set_id", $set_id);
  							$this->view->setVar("set", $t_set);
@@ -260,16 +264,19 @@
  			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  			#$this->view->setVar("num_items", $t_set->getItemCount(array("checkAccess" => $this->opa_access_values)));
  			
- 			# --- if this is a set of sets, the representative image should be from the child set
-			$o_db = new Db();
-			$q_sets = $o_db->query("SELECT s.set_id FROM ca_sets s WHERE s.parent_id = ? AND s.deleted = 0 AND s.access IN (".join(", ", $this->opa_access_values).") ORDER BY s.rank ASC LIMIT 1", $set_id);
-			if($q_sets->numRows()){
-				while($q_sets->nextRow()){
+ 			$set_item = array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
+ 			if(!$set_item){
+				# --- if this is a set of sets, the representative image should be from the child set - IF THERE IS NOT AN ITEM IN THE SET
+				#$o_db = new Db();
+				#$q_sets = $o_db->query("SELECT s.set_id FROM ca_sets s WHERE s.parent_id = ? AND s.deleted = 0 AND s.access IN (".join(", ", $this->opa_access_values).") ORDER BY s.rank ASC LIMIT 1", $set_id);
+				$q_sets = ca_sets::find(array('parent_id' => $set_id), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank', 'checkAccess' => $this->opa_access_values));
+				if($q_sets->numHits()){
+					$q_sets->nextHit();
 					$t_child = new ca_sets($q_sets->get("ca_sets.set_id"));
 					$set_item = array_shift(array_shift($t_child->getPrimaryItemsFromSets(array($q_sets->get("ca_sets.set_id")), array("version" => "large", "checkAccess" => $this->opa_access_values))));
- 				}
-			}else{
-				$set_item = array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
+				}else{
+					$set_item = array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
+				}
 			}
  			
  			

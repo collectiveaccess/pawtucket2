@@ -29,9 +29,23 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer" role="contentinfo">
-			<div>
-				&copy; 2020 by Mel Fisher Maritime Museum
-				<br/>200 Greene Street | Key West, Florida 33040
+			<div class="row">
+				<div class="col-sm-12 text-center">
+					&copy; <?php print date("Y"); ?> by Mel Fisher Maritime Museum
+					<br/>200 Greene Street | Key West, Florida 33040
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-6 text-right">
+					<div class='funder'>
+						<a href="https://www.neh.gov/" target="_blank"><?php print caGetThemeGraphic($this->request, 'neh.jpg', array("alt" => "National Endowment for the Humanities Logo")); ?></a>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-5 col-lg-4 text-left">
+					<div class='funder'>
+						{{{footer_funder_text}}}<br/><br/>{{{funder_disclaimer_text}}}
+					</div>
+				</div>
 			</div>
 		</footer><!-- end footer -->
 <?php

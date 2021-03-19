@@ -48,8 +48,9 @@
 <?php
 			}
 ?>
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="choreographer" min="1"><div class='unit trimText'><label>Choreography</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="choreographer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="composer" min="1"><div class='unit trimText'><label>Composer</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="composer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+					{{{<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text"><div class='unit trimText'><label>Description</label>^ca_occurrences.descriptionWithSource.prodesc_text</div></ifdef>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="choreographer" min="1"><div class='unit trimText'><label>Choreographer<ifcount code="ca_entities" restrictToRelationshipTypes="choreographer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="choreographer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="composer" min="1"><div class='unit trimText'><label>Composer<ifcount code="ca_entities" restrictToRelationshipTypes="composer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="composer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					
 					{{{<ifdef code="ca_occurrences.music.music"><div class='unit trimText'><label>Music</label>^ca_occurrences.music.music</div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.music.instruments"><div class='unit trimText'><label>Instrumentation</label>^ca_occurrences.music.instruments</div></ifdef>}}}
@@ -72,9 +73,9 @@
 						}
 					}
 ?>					
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="lighting_designer" min="1"><div class='unit trimText'><label>Lighting Design</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="lighting_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="costume_designer" min="1"><div class='unit trimText'><label>Costume Designer</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="costume_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="set_designer" min="1"><div class='unit trimText'><label>Set Designer</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="set_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="lighting_designer" min="1"><div class='unit trimText'><label>Lighting Designer<ifcount code="ca_entities" restrictToRelationshipTypes="lighting_designer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="lighting_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="costume_designer" min="1"><div class='unit trimText'><label>Costume Designer<ifcount code="ca_entities" restrictToRelationshipTypes="costume_designer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="costume_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="set_designer" min="1"><div class='unit trimText'><label>Set Designer<ifcount code="ca_entities" restrictToRelationshipTypes="set_designer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="set_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="premiere_cast" min="1"><div class='unit trimText'><label>Premiere Cast</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="premiere_cast" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					
 				
@@ -173,13 +174,14 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">
-			<div class="unit"><H3>Object<ifcount code="ca_objects" min="2">s</ifcount></H3>
+			<div class="unit"><H3>Related Object<ifcount code="ca_objects" min="2">s</ifcount></H3>
 				<div id="browseResultsContainer">
 					<unit relativeTo="ca_objects" length="12" delimiter=" ">
 						<div class="bResultItemCol col-xs-12 col-sm-4">
 							<div class="bResultItem" id="row^ca_objects.object_id">
-								<div class="bResultItemContent"><div class="text-center bResultItemImg"><ifcount code="ca_object_representations" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></div>
+								<div class="bResultItemContent"><div class="text-center bResultItemImg"><case><ifcount code="ca_object_representations.media.medium" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" min="0" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></case></div>
 									<div class="bResultItemText">
+										<small>^ca_objects.type_id</small><br/>
 										<l>^ca_objects.preferred_labels.name</l>
 									</div><!-- end bResultItemText -->
 								</div><!-- end bResultItemContent -->

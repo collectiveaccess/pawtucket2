@@ -78,9 +78,11 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,500;1,500&display=swap" rel="stylesheet"> 
 </head>
-<body>
-	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
+<body <?php print (in_array(strToLower($this->request->getController()), array("front", "browse", "search"))) ? "class='bh_ltTeal'" : ""; ?>>
+	<div id="skipNavigation"><a href="#main">Skip to main content</a></div><a name="top"></a>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -102,7 +104,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ship.jpg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."Mel Fisher Maritime Museum<b><br/>SPANISH COLLECTIONS</b>", "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ship.jpg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."Mel Fisher Maritime Museum<b><br/>Spanish Collections</b>", "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -151,7 +153,8 @@
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibitions"), "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Exhibition") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibition"), "", "", "Exhibition", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Education") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Education"), "", "", "Education", ""); ?></li>
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 				</ul>

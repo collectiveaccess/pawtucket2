@@ -64,7 +64,7 @@
 					
 				</div><!-- end col -->
 				<div class='col-sm-<?php print $vn_col_size; ?>'>
-					{{{<ifdef code="ca_occurrences.description"><H6>Introduction</H6>^ca_occurrences.description<br/></ifdef>}}}			
+					{{{<ifdef code="ca_occurrences.description"><label>Introduction</label>^ca_occurrences.description<br/></ifdef>}}}			
 				</div><!-- end col -->
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">

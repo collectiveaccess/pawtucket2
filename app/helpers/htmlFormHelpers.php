@@ -340,12 +340,15 @@
 		
 		$vs_attr_string = _caHTMLMakeAttributeString($pa_attributes, $pa_options);
 	
-		if (isset($pa_options['returnValueIfUnchecked']) && $pa_options['returnValueIfUnchecked']) {
+		if (isset($pa_options['returnValueIfUnchecked']) && strlen($cv = $pa_options['returnValueIfUnchecked'])) {
 			// javascript-y check box that returns form value even if unchecked
-			$vs_element = "<input name='{$ps_name}' {$vs_attr_string} type='checkbox'/>\n";
+			$v = $pa_attributes['value'];
+			$vs_element = "<input name='check_{$ps_name}' onchange='jQuery(this).prev().val(jQuery(this).prop(\"checked\") ? \"".addslashes($v)."\" : \"".addslashes($cv)."\"); return false;' {$vs_attr_string} type='checkbox'/>\n";
 			
+			if(!$pa_attributes['checked']) { $pa_attributes['value'] = $pa_options['returnValueIfUnchecked']; }
+			unset($pa_attributes['checked']);
 			unset($pa_attributes['id']);
-			$pa_attributes['value'] = $pa_options['returnValueIfUnchecked'];
+			
 			$vs_attr_string = _caHTMLMakeAttributeString($pa_attributes, $pa_options);
 			$vs_element = "<input name='{$ps_name}' {$vs_attr_string} type='hidden'/>\n". $vs_element;
 		} else {

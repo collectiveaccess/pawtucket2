@@ -42,6 +42,11 @@
     $vn_representation_id = $this->getVar('representation_id');
     $vs_representation = $this->getVar('representation');
     $vs_placeholder = $this->getVar('placeholder');
+    $vs_object_label = $this->getVar('object_label');
+    
+    # --- cover object id.  Cover is used on gallery landing page as featured image for the gallery.  It is the only object in the parent gallery set
+ 	$pn_cover_object_id				= $this->getVar("cover_object_id");
+
 ?>
 <div class="row"><div class="col-sm-12"><hr/></div></div>
 <div class="row lbListItem">
@@ -53,6 +58,7 @@
 			}
 			if($vn_representation_id){
 				print "<a href='#' title='"._t("Enlarge Image")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+				print " <a href='#' title='"._t("Make Cover Image")."' class='lbItemCoverImageButton".(($vn_object_id == $pn_cover_object_id) ? " currentCover" : "")."' id='lbItemCoverImage".$vn_item_id."' data-item_id='".$vn_item_id."' data-object_id='".$vn_object_id."'><span class='glyphicon glyphicon-check'></span></a>";
 			}
 			if($vn_representation_id || $vb_write_access){
 				print "</div>";
@@ -60,18 +66,28 @@
 ?>
 
 	</div>
-	<div class="col-sm-3">
-		<div><?php print caDetailLink($this->request, $this->getVar("caption"), '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail"))); ?></div>
-
-	</div>
-	<div class="col-sm-6">
+	<div class="col-sm-9">
+		<p><?php print caDetailLink($this->request, $this->getVar("caption"), '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail"))); ?></p>
 <?php
+	if($vs_object_label){
+		print "<p><label>Label</label><br/>".$vs_object_label."</p>";
+	}
 	if($vb_write_access){
 ?>
 		<form id="setItemForm{{{item_id}}}">					
+<?php
+			if($vs_object_label){
+				$vs_include_label = $this->getVar("include_label");
+?>
+				<div class='form-group'>
+					<label for='notes' class='control-label'><input type="checkbox" name="include_label" value="Yes" <?php print ($vs_include_label) ? "checked" : ""; ?>> Include Label?</label>
+				</div>
+<?php
+			}
+?>
 			<div class='form-group'>
 				<label for='notes' class='control-label'>Caption</label>
-				<input type='text' name='set_item_caption' value='{{{set_item_caption}}}' class='form-control'>
+				<textarea name='set_item_caption' id='set_item_caption{{{item_id}}}' class='form-control' rows='6'>{{{set_item_caption}}}</textarea>
 			</div>
 			<div class='form-group'>
 				<input type="submit" value="save" class="btn btn-default">
@@ -100,8 +116,29 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
+		CKEDITOR.replace('set_item_caption{{{item_id}}}', {
+			  height: 150,
+			  // Define the toolbar groups as it is a more accessible solution.
+			  toolbarGroups: [{
+				  "name": "basicstyles",
+				  "groups": ["basicstyles"]
+				},
+				{
+				  "name": "links",
+				  "groups": ["links"]
+				},
+				{
+				  "name": "paragraph",
+				  "groups": ["list", "blocks"]
+				}
+			  ],
+			  // Remove the redundant buttons from toolbar groups defined above.
+			  //removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+			  removeButtons: 'CreateDiv,Anchor'
+		});
 		jQuery('#setItemForm{{{item_id}}}').on('submit', function(e){		
 			jQuery('#setItemForm{{{item_id}}} .saving').show();
+			CKEDITOR.instances.set_item_caption{{{item_id}}}.updateElement();
 			jQuery.getJSON(
 				'<?php print caNavUrl($this->request, '', 'Lightbox', 'ajaxSaveSetItemInfo', null); ?>',
 				jQuery('#setItemForm{{{item_id}}}').serializeObject(), function(data) {
