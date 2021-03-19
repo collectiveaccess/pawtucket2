@@ -25,10 +25,21 @@
 		print "<br/>".$vs_credit;
 	}
 	print "</div>";
-				
-	if($vs_tmp = $t_set_item->get("ca_set_items.caption", array("convertLineBreaks" => true))){
-		print "<div class='setItemCaption trimTextItemInfo'>".$vs_tmp."</div>";
+	print "<div class='trimTextItemInfo'>";		
+	if($vs_tmp = $t_set_item->get("ca_set_items.caption")){
+		print "<div class='setItemCaption'>".$vs_tmp."</div>";
 	}
+	if(($t_set_item->get("ca_set_items.include_label", array("convertCodesToDisplayText" => true)) == "Yes")){
+		if ($va_labels = $t_object->get('ca_objects.label_copy', array('convertCodesToIdno' => true, 'returnWithStructure' => true))) {
+			foreach($va_labels as $l) {
+				foreach($l as $label) {
+					if (!in_array($label['label_copy_type'], ['current', 'dedication'])) { continue; }
+					print "<div class='setItemCaption'>".$label['label_copy_text']."</div>";
+				}
+			}
+		}
+	}
+	print "</div>";
 ?>
 <div>
 <script type='text/javascript'>

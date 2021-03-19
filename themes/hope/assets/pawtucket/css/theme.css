@@ -91,10 +91,32 @@ a.browseRemoveFacet .glyphicon {
     border-top-color: #002244;
     border-bottom-color: #002244;
 }
-ul.navbar-nav.menuItems{
-	margin-right:15px !important;
+.navbar-collapse{
+	padding:0px;
 }
 
+ul.menuItems {
+    border-top: none;
+}
+@media(min-width:769px){
+	ul.navbar-nav.menuItems{
+		margin-right:15px !important;
+	}
+}
+@media(max-width:767px){
+	.navbar-nav{
+		margin-left:0px;
+	}
+	.navbar-nav .dropdown.open{
+		background-color:#fff;
+	}
+	.dropdown-header{
+		color:#fff;
+	}
+	#user-navbar-toggle{
+		overflow:hidden;
+	}
+}
 #footer{
 	background-color:#2f2e2c;
 	color:#FFF;
@@ -207,7 +229,9 @@ H1 .btn-group > a:hover{
 	top: 1px;
 	background-color:transparent;
 }
-
+#bMorePanel #bScrollList a, #bMorePanel #bLetterBar a{
+	font-size:16px;
+}
 /* themes */
 .themes p{
 	font-size: 16px;
@@ -243,7 +267,11 @@ a:hover .themesContainer{
 .detail h1{
 	color: #161616;
 }
-
+@media(max-width:767px){
+	.detail h1{
+		margin-top:20px;
+	}
+}
 .repViewerContCont{
 	padding-bottom:38px;
 }
@@ -296,6 +324,11 @@ a:hover .themesContainer{
 .parentItem{
 	background-color:#f6f6f6;
 	padding:20px;
+}
+@media(max-width:767px){
+	.parentItem{
+		margin-bottom:20px;
+	}
 }
 .parentItem H2{
 	margin-top:10px;
@@ -379,9 +412,10 @@ a:hover .themesContainer{
 }
 .gallerySectionNav{
 	max-height:440px;
-	overflow:scroll;
+	overflow:hidden;
 	padding-left:2px;
 	padding-right:2px;
+	padding-top: 3px;
 }
 .gallerySectionNav ul{
 	list-style-type:none;
