@@ -245,7 +245,7 @@ if (!$vb_ajax) {	// !ajax
 	jQuery(document).ready(function() {
 		jQuery('#browseResultsContainer').jscroll({
 			autoTrigger: true,
-			loadingHtml: "<div style='margin-left:25px;'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>",
+			loadingHtml: "<div class='loadingResults'><?php print addslashes(_t('Loading...')); ?></div>",
 			padding: 800,
 			nextSelector: 'a.jscroll-next'
 		});

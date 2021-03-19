@@ -282,6 +282,9 @@ a.browseRemoveFacet .glyphicon {
 	width:72px;
 	height:72px;
 }
+.resultImageList .bResultItemImgPlaceholder{
+	font-size:10px;
+}
 .resultTextImg, .resultTextList{
 	margin-top:5px;
 	line-height:1.2em;
@@ -326,6 +329,9 @@ a.browseRemoveFacet .glyphicon {
 .detail .unit a, .detail H2 a{
 	text-decoration:underline;
 }
+.detail .unit, .detail .unit p{
+	font-size:14px;
+}
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a, .detail .detailNavBgLeft a:hover, .detail .detailNavBgRight a:hover {
     color: #000;
     font-size: 18px;
@@ -350,6 +356,18 @@ a.browseRemoveFacet .glyphicon {
 	color:#000;
 	font-size: 14px;
 	padding-top: 5px;
+}
+.detail .navTop {
+	margin-top:5px;
+}
+.detail .navTop a{
+	font-size: 18px;
+	color:#000;
+	line-height: 1em;
+}
+.detail .navTop a .small{
+	color:#000;
+	font-size: 14px;
 }
 .detail .detailNavBgLeft, .detail .detailNavBgRight{
 	width:65px;
@@ -410,6 +428,44 @@ a.browseRemoveFacet .glyphicon {
 		flex-direction: column;
 	}
 }
+.detail H2{
+	font-size:20px;
+	border-top: 1px dashed #000;
+	padding:15px 0px 15px 0px;
+	text-transform:none;
+}
+@media(max-width:768px){
+	.detail .row.relatedObjects > div{
+		text-align: center;
+		margin-bottom:20px;
+	}
+}
+@media(min-width:768px){
+	.detail .row.relatedObjects{
+		display: flex;
+		align-items: center;
+	}
+}
+.detail .row.relatedObjects{
+    padding-bottom:20px;
+    padding-top:20px;
+    border-top: 1px dashed #000;
+}
+.detail .row.relatedObjects > div, .detail .row.relatedObjects > div a{
+	font-family: Helvetica,Arial,sans-serif;
+	font-size: 16px;
+	text-decoration:none;
+}
+.detail .row.relatedObjects > div.relatedTitle a{
+	font-family: Helvetica,Arial,sans-serif;
+	font-size: 20px;
+	text-decoration:none;
+	font-family: "Bradford", Georgia, "Times New Roman", Times, serif
+}
+.detail .row.relatedObjects img{
+	width:auto;
+	height:auto;
+}
 /* footer */
 footer{
 	color:#000;
@@ -443,4 +499,54 @@ footer{
 #bRefine a {
     color: #000;
     font-size: 13px;
+}
+.loadingResults{
+	padding-left:32px;
+	position:relative;
+	margin-left:30px;
+}
+.loadingResults::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    background-color: currentColor;
+    width: 16px;
+    height: 16px;
+    border-radius: 16px;
+    -webkit-animation: blink 1s infinite alternate;
+    animation: blink 1s infinite alternate;
+}
+@-webkit-keyframes blink {
+	0% {
+		opacity:1
+	}
+	to {
+		opacity:0
+	}
+}
+@keyframes blink {
+	0% {
+		opacity:1
+	}
+	to {
+		opacity:0
+	}
+}
+.advancedSearchField .formLabel{
+	letter-spacing: .75px;
+	font-family: Helvetica,Arial,sans-serif;
+	color:#000;
+	font-size:16px;
+	margin-top:20px;
+}
+.advancedSearchField input, .advancedSearchField textarea{
+	border: 1px solid #000;
+	border-radius: 8px;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	width:100%;
 }

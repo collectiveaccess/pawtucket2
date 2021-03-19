@@ -169,11 +169,17 @@
 				
 
 			{{{<ifcount code="ca_objects.children" min="1"><div class="unit"><label>Part<ifcount code="ca_objects.children" min="2">s</ifcount></label><unit relativeTo="ca_objects.children" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></div></ifcount>}}}
-			
-			{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Objects</label><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></div></ifcount>}}}
 						
 			</div><!-- end col -->
 		</div><!-- end row -->
+		<div class="row">
+			<div class="col-sm-12">
+				{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><H2>Related Objects</H2>
+					<unit relativeTo="ca_objects.related" delimiter=" "><div class="container"><div class='row relatedObjects'><div class='col-sm-6 col-md-2'><l>^ca_object_representations.media.thumbnail</l></div><div class='col-sm-6 col-md-2 text-center'><l>^ca_objects.type_id</l></div><div class='col-sm-6 text-center relatedTitle'><l>^ca_objects.preferred_labels.name</l></div><div class='col-sm-6 col-md-2 text-center'><l><button class="btn-default">Details</button></l></div></div></div></unit>
+				</div></ifcount>}}}
+			
+			</div>
+		</div>
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">
