@@ -44,7 +44,7 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container"><div class="row bgWhite">
+		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
 				{{{representationViewer}}}
 				
@@ -99,7 +99,7 @@
 
 			</div><!-- end col -->
 
-			<div class='col-sm-6 col-md-6 col-lg-5'>
+			<div class='col-sm-6 col-md-6 col-lg-5 bgWhite'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
 <?php
 				if($vn_collection_id = $t_object->get("ca_objects.object_collection.collection_id")){
@@ -161,6 +161,14 @@
 		print "<hr></hr><div class='unit'>".$vs_map."</div><br/>";
 	}
 ?>
+				{{{<ifcount code="ca_objects.related" min="1">
+					<div class="unit">
+						<H6>Related Objects</H6>
+						<unit relativeTo="ca_objects.related" delimiter="<br/>">
+							<div class="row"><div class="col-sm-3"><l>^ca_object_representations.media.small</l></div><div class="col-sm-8"><l>^ca_objects.preferred_labels.name</l></div></div>
+						</unit>
+					</div>
+				</ifcount>}}}
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->

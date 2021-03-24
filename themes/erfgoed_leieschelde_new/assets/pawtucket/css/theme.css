@@ -159,6 +159,14 @@ body{
 	margin-bottom:250px;
 	color:#000
 }
+@media(max-width:768px){
+	#footer{
+		height:350px;
+	}
+	body{
+		margin-bottom:350px;
+	}
+}
 #footer{
 	font-family: 'Newsreader';
 	border:0px;
@@ -214,6 +222,11 @@ body{
 	color:#fff;
 	line-height:1.2em;
 	margin-top:10px;
+}
+@media(max-width:768px){
+	#footer .footerContact{
+		text-align:center;
+	}
 }
 
 /* front */
