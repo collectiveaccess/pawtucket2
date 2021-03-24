@@ -46,7 +46,7 @@
 					</div><!-- end col -->
 					<div class="col-sm-6">
 						<h5>
-							<span class="openSansBold">HOURS</span>&nbsp;&nbsp; Fri-Sun <span class="openSansBold">&middot;</span> 12-5PM<br/>
+							<span class="openSansBold">HOURS</span>&nbsp;&nbsp; Thurs-Sun <span class="openSansBold">&middot;</span> 12-5PM<br/>
 							<span class="openSansBold">PHONE</span>&nbsp;&nbsp; 718<span class="openSansBold">&middot;</span>875<span class="openSansBold">&middot;</span>2098
 							<br/><ul class="list-inline pull-right social">
 								<li><a href="https://twitter.com/KentlerDrawing" target="_blank"><i class="fa fa-twitter"></i></a></li>
