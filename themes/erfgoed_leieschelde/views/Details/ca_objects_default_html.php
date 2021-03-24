@@ -165,7 +165,7 @@
 					<div class="unit">
 						<H6>Related Objects</H6>
 						<unit relativeTo="ca_objects.related" delimiter="<br/>">
-							<div class="row"><div class="col-sm-3"><l>^ca_object_representations.media.small</l></div><div class="col-sm-8"><l>^ca_objects.preferred_labels.name</l></div></div>
+							<div class="row"><ifdef code="ca_object_representations.media.small"><div class="col-sm-3"><l>^ca_object_representations.media.small</l></div></ifdef><div class="col-sm-9"><l>^ca_objects.preferred_labels.name</l></div></div>
 						</unit>
 					</div>
 				</ifcount>}}}
