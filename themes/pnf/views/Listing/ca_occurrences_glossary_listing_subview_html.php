@@ -47,13 +47,13 @@
 			}		
 			if ($g_ui_locale == 'en_US'){			
 ?>
-				<!--<p class='trimText'>--><p>
+				<p class='trimText'>
 					{{{glossaryIntroEnglish}}}
 				</p>
 <?php
 			}else{
 ?>
-				<!--<p class='trimText'>--><p>
+				<p class='trimText'>
 					{{{glossaryIntroSpanish}}}
 				</p>
 <?php
@@ -155,7 +155,7 @@
 			jQuery(document).ready(function() {
 				$(".trimText").readmore({
 				  speed: 75,
-				  maxHeight: 220,
+				  maxHeight: 112,
 				  moreLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ MORE" : "LEER MÁS"; ?></a>",
 				  lessLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ LESS" : "CERRAR"; ?></a>",
 		  

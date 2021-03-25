@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2018 Whirl-i-Gig
+ * Copyright 2010-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -72,7 +72,7 @@
 					$va_access = array_unique(array_merge($va_access, $va_user_access));
 				}
 			}
-			return $va_access;
+			return array_map('intval', $va_access);
 		}
 		return array();
 	}
