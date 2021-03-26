@@ -46,6 +46,7 @@
 	} else {	
 		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
 		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		$va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'About', 'userTools', array())."\"); return false;' >"._t("Hoe werkt dit?")."</a></li>";
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 	$va_access_values = caGetUserAccessValues($this->request);
@@ -177,10 +178,11 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="Zoek" name="search">
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="Zoeken" name="search">
 						</div>
 						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
+					<div class="headerAdvancedSearch"><?php print caNavLink($this->request, "Geavanceerd zoeken", "", "", "Search", "advanced/objects"); ?></div>
 				</form>
 				<script type="text/javascript">
 					$(document).ready(function(){
@@ -191,18 +193,17 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Expo's", "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
+					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, "Over deze website", "", "", "About", "About"); ?></li>
-							<li><?php print caNavLink($this->request, "Handleiding", "", "", "About", "Guide"); ?></li>
+							<li><a href="https://www.comeet.be/erfgoed-2/">Over Erfgoedcel Meetjesland</a></li>
+							<li><?php print caNavLink($this->request, "Over de Erfgoedbank", "", "", "About", "Guide"); ?></li>
+							<li><?php print caNavLink($this->request, "Jouw collectie op de erfgoedbank", "", "", "About", "Collection"); ?></li>
 						</ul>
 					</li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Zoeken", "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Expo's", "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
-					<li><a href="https://www.comeet.be/erfgoed-2/" target="_blank">Home</a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

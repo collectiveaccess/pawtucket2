@@ -5,10 +5,20 @@
 	$ps_label = $this->getVar("label");
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
+	AssetLoadManager::register("readmore");
 ?>
 	<div class="row">
 		<div class="col-sm-12">
 			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
+<?php
+	if($ps_description){
+?>
+		<div class="setDescription">
+			<?php print "<p>".$ps_description."</p>"; ?>
+		</div><!-- end col -->
+<?php
+	}
+?>	
 		</div>
 	</div>
 	<div class="row">
@@ -18,16 +28,7 @@
 	</div><!-- end row -->
 
 	<div class="row galleryDetailBottom">
-<?php
-	if($ps_description){
-?>
-		<div class="col-sm-4 setDescription">
-			<?php print "<p>".$ps_description."</p>"; ?>
-		</div><!-- end col -->
-<?php
-	}
-?>	
-		<div id="galleryDetailImageGrid" class="col-sm-<?php print ($ps_description) ? "8" : "12"; ?>">
+		<div id="galleryDetailImageGrid" class="col-sm-12">
 			<div class="row">		
 <?php
 		$vn_i = 0;
@@ -51,13 +52,13 @@
 			}
 			if($pa_set_item["representation_tag_".$vs_icon]){
 				$vn_i++;
-				print "<div class='smallpadding col-xs-3 col-sm-2 col-md-".(($ps_description) ? "2" : "1").(($vn_i > 12) ? " galleryIconHidden" : "")."'>";
+				print "<div class='smallpadding col-xs-3 col-sm-2 col-md-1".(($vn_i > 24) ? " galleryIconHidden" : "")."'>";
 				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$vs_rep."</a>";
 				print "</div>\n";
 				
-				if($vn_i == 12){
+				if($vn_i == 24){
 					print "<div class='col-sm-3' id='moreLink'>
-								<a href='#' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 12)." "._t("more")."</a>
+								<a href='#' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 24)." "._t("more")."</a>
 							</div>";
 				}
 			}
