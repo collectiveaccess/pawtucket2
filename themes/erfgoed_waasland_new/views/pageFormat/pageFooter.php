@@ -34,19 +34,20 @@
 					<div class="footerHeading">&copy; Erfgoedbank Waasland</div>
 					<div class="row">
 						<div class="col-sm-4 footerContact">
-							<b>Contact</b><br/>
-							Address line 1<br/>
-							Address line 2<br/>
-							Address line 3<br/><br/>
-							T - 555.555.5555<br/>
-							E - <a href="mailto:erfgoedcel@interwaas.be">erfgoedcel@interwaas.be</a>
+							<b>Contacts</b><br/>
+							Erfgoedcel Waasland<br/>
+							Lamstraat 113<br/>
+							9100 Sint-Niklaas<br/><br/>
+							T - +32 (0)3 500 47 55<br/>
+							E - <a href="mailto:erfgoedcel@interwaas.be">erfgoedcel@interwaas.be</a><br/>
+							W - <a href="https://erfgoedcelwaasland.be" target="_blank">erfgoedcelwaasland.be</a>
 						</div>
 						<div class="col-sm-4">
 							<ul class="list-inline social">
-								<li><a href="#" target="_blank"><i class="fa fa-facebook-square" aria-label="Facebook"></i></a></li>
-								<li><a href="#" target="_blank"><i class="fa fa-instagram" aria-label="Instragram"></i></a></li>
-								<li><a href="#" target="_blank"><i class="fa fa-twitter-square" aria-label="Twitter"></i></a></li>
+								<li><a href="https://www.facebook.com/erfgoedcelwaasland" target="_blank"><i class="fa fa-facebook-square" aria-label="Facebook"></i></a></li>
+								<li><a href="https://www.instagram.com/erfgoedcel_waasland/" target="_blank"><i class="fa fa-instagram" aria-label="Instragram"></i></a></li>
 							</ul>
+							<div class="homeLogo"><a href="http://www.erfgoedcelwaasland.be" target="_blank"><?php print caGetThemeGraphic($this->request, 'erfgoedCelLogo.jpg'); ?></a></div>
 						</div>
 						<div class="col-sm-4">
 							<div class="funder">
@@ -56,6 +57,7 @@
 					</div>
 				</div>
 			</div>
+		</footer>
 <?php
 	//
 	// Output HTML for debug bar
@@ -102,14 +104,31 @@
 				$(window).scroll(function(){
 					$("#hpScrollBar").fadeOut();
 				});
+				
+				$(function() {
+					//caches a jQuery object containing the header element
+					var html = $("html");
+					
+						$(window).scroll(function() {
+							var scroll = $(window).scrollTop();
+
+							if (scroll >= 125) {
+								html.removeClass('initial');
+							} else {
+								html.addClass('initial');
+							}
+							
+						});
+					
+				});
 			});
 		</script>
 <?php
 	if (Session::getVar('cookieAccepted') != 'accepted') {		
 ?>	
-		<div id="cookieNotice">
+		<!--<div id="cookieNotice">
 			{{{cookie_statement}}}
-		</div>	<!--end homePanel-->
+		</div>-->	<!--end homePanel-->
 		
 		
 		<script type="text/javascript">
