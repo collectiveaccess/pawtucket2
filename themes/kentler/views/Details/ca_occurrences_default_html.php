@@ -140,7 +140,7 @@
 				<div class='col-md-6 col-lg-6'>
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1" max="1"><H6>Artist</H6></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="2"><H6>Artists</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>}}}
+					{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter=", " sort="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.displayname</unit>}}}
 					
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="exhibition" min="1" max="1"><H6>Related exhibition</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="exhibition" min="2"><H6>Related exhibitions</H6></ifcount>}}}
@@ -149,6 +149,8 @@
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1" max="1"><H6>Related event</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="event" min="2"><H6>Related events</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_occurrences.related" restrictToTypes="event" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
+					{{{<ifcount code="ca_objects" restrictToTypes="audio,video" min="1"><HR/><H6>Related Audio/Video</H6></ifcount><unit relativeTo="ca_objects" restrictToTypes="audio,video" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit>}}}
+
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
@@ -163,7 +165,7 @@
 					$vn_cap_for_grid = 30;
 					$vs_version = "large";
 					$va_reps = $t_item->getRepresentations(array("large", "mediumlarge"), null, array("checkAccess" => $va_access_values));
-					$va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
+					$va_object_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("artwork"), "returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
 					$q_artworks = caMakeSearchResult("ca_objects", $va_object_ids);
 					$vn_total_images = (sizeof($va_reps) + $q_artworks->numHits());
 					if($vn_total_images > $vn_cap_for_grid){
@@ -211,6 +213,7 @@
 					$va_artworks = array();
 					$va_artworks_no_media = array();
 					if($q_artworks->numHits()){
+						$va_related_audio_ids = array();
 						while($q_artworks->nextHit()){
 							$vs_image = "";
 							$vs_image = $q_artworks->get('ca_object_representations.media.'.$vs_version, array("checkAccess" => $va_access_values));
@@ -248,7 +251,16 @@
 								$vs_caption .= $q_artworks->get("ca_objects.date").".";
 							}
 							$vs_label_detail_link 	= caDetailLink($this->request, $vs_caption, '', 'ca_objects', $q_artworks->get("ca_objects.object_id"));
-							$tmp = array("image" => $vs_image, "label" => $vs_label_detail_link, "image_link" => ($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
+							# --- audio/video related to the work? - yes no values switched so no means yes :|
+							$vs_rel_audio = $q_artworks->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='audio' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='audio'><div class='text-center' style='padding-top:5px;'><l><case><if rule='^ca_objects.music_audio =~ /no/'><button class='btn-default music'><i class='fa fa-music' aria-hidden='true'></i></button></if><unit><button class='btn-default'><i class='fa fa-volume-up' aria-hidden='true'></i> AUDIO</button></unit></case></l></div></unit></ifcount>", array("checkAccess" => $va_access_values));
+							$vs_rel_video = $q_artworks->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='video' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='video'><div class='text-center' style='padding-top:5px;'><l><button class='btn-default'><i class='fa fa-video-camera' aria-hidden='true'></i> Video</button></l></div></unit></ifcount>", array("checkAccess" => $va_access_values));
+							$vn_rel_audio_ids = $q_artworks->get("ca_objects.related.object_id", array("restrictToTypes" => "audio", "checkAccess" => $va_access_values, "returnAsArray" => true));
+							if(is_array($vn_rel_audio_ids) && sizeof($vn_rel_audio_ids)){
+								foreach($vn_rel_audio_ids as $vn_rel_audio_id){
+									$va_related_audio_ids[$vs_sort_key.$vn_rel_audio_id] = $vn_rel_audio_id;
+								}
+							}
+							$tmp = array("image" => $vs_image, "label" => $vs_label_detail_link.$vs_rel_audio.$vs_rel_video, "image_link" => ($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
 							if(!$vb_no_rep){
 								if($va_artworks[$vs_sort_key]){
 									$vs_sort_key .= $q_artworks->get("ca_objects.object_id");
@@ -261,6 +273,19 @@
 								$va_artworks_no_media[$vs_sort_key] = $tmp;
 							}
 						}
+					}
+					# --- if there are audio related to the artworks (this was done for Music as Image and Metaphor exhibition) - set the next and previous results in result context
+					if(is_array($va_related_audio_ids) && sizeof($va_related_audio_ids)){
+						ksort($va_related_audio_ids, SORT_NATURAL);
+						# setResultList doesn't like keys with text so simplify the array keys
+						$va_tmp = array();
+						foreach($va_related_audio_ids as $audio_id){
+							$va_tmp[] = $audio_id;
+						}
+						$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
+						$o_context->setAsLastFind();
+						$o_context->setResultList($va_tmp);
+						$o_context->saveContext();
 					}
 					ksort($va_artworks, SORT_NATURAL);
 					ksort($va_artworks_no_media, SORT_NATURAL);

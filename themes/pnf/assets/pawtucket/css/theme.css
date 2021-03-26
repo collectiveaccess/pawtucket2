@@ -847,6 +847,17 @@ div.caMediaOverlayControls {
 	font-weight:bold;
 	color:#222;
 }
+.listTitleItalic a{
+	font-style:italic;
+	font-weight:bold;
+	color:#222;
+}
+
+.listTitleNoItalic a{
+	font-style:normal;
+	font-weight:bold;
+	color:#222;
+}
 .noLetter {
 	display:none;
 }

@@ -51,7 +51,7 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 
 ?><!DOCTYPE html>
-<html lang="en">
+<html lang="en" <?php print ((strtoLower($this->request->getController()) == "front")) ? "class='frontContainer initial'" : ""; ?>>
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
@@ -117,12 +117,28 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-</head> 
-
-<body>
+ <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"> 
+<?php
+	$vs_body_class = "";
+	switch(strtoLower($this->request->getController())){
+		case "contact":
+			$vs_body_class = "bgGray";
+		break;
+		# -------------------------------------------
+		case "search":
+			if(strtoLower($this->request->getAction()) == "advanced"){
+				$vs_body_class = "bgGray";
+			}
+		break;
+		# -------------------------------------------
+		case "front":
+			$vs_body_class = "frontContainer";
+		break;
+		# -------------------------------------------
+	}
+?>
+<body class='<?php print $vs_body_class; ?>'>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -144,7 +160,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo_white_inner.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'leiescheldeLogo.png'), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -177,10 +193,11 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="Zoek" name="search">
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="Zoeken" name="search">
 						</div>
 						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
+					<div class="headerAdvancedSearch"><?php print caNavLink($this->request, "uitgebreid zoeken", "", "", "Search", "advanced/objects"); ?></div>
 				</form>
 				<script type="text/javascript">
 					$(document).ready(function(){
@@ -191,18 +208,11 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
-						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, "Over deze website", "", "", "About", "About"); ?></li>
-							<li><?php print caNavLink($this->request, "Handleiding", "", "", "About", "Guide"); ?></li>
-						</ul>
-					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Zoeken", "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Expo's", "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
-					<li><a href="www.cultuurregioleieschelde.be" target="_blank">Home</a></li>
+					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "About")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Over ons", "", "", "About", "About"); ?></li>
+					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Contact", "", "", "Contact", "form"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

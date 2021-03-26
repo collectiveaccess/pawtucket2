@@ -29,75 +29,52 @@
  *
  * ----------------------------------------------------------------------
  */
-  $va_access_values = $this->getVar("access_values");
+ $va_access_values = $this->getVar("access_values");
+ $vs_hero = $this->request->getParameter("hero", pString);
+ if(!$vs_hero){
+ 	$vs_hero = rand(1, 5);
+ }
 ?>
-<div class="container frontContainer">
-	<div class="row">
-		<div class="col-sm-4">
-			<div class="frontWelcome">{{{hometextHeading}}}</div>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-3 col-sm-offset-8 col-md-offset-9">
-			<div class="frontSearch">
-				<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-					<div class="formOutline">
-						<div class="form-group">
-							<input type="text" class="form-control" id="frontSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="Search" />
+<div class="parallax hero<?php print $vs_hero; ?>">
+	<div class="heroC"><?php print caGetThemeGraphic($this->request, 'c.png'); ?></div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12 col-md-8 col-md-offset-2">
+				<div class="heroSearch">
+					<h1>{{{hp_search_intro_title}}}</h1>
+					<hr/>
+					<p>{{{hp_search_intro}}}</p>
+					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+						<div class="formOutline">
+							<div class="form-group">
+								<input type="text" class="form-control" id="heroSearchInput" placeholder="Zoeken" name="search" autocomplete="off" aria-label="Zoeken" />
+							</div>
+							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
-						<button type="submit" class="btn-search" id="frontSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
-					</div>
-				</form>
+					</form>
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
-<div class="container introContainer">
-	<div class="row">
-		<div class="col-sm-6 col-sm-offset-1">
-			<div class="frontIntro">{{{hometext}}}</div>
+<div class="row hpIntro bgGray">
+	<div class="col-md-12 col-lg-8 col-lg-offset-2">
+		<div class="callout">
+<?php
+		if($vs_tmp = $this->getVar("hometext_title")){
+			print "<div class='calloutTitle'>".$vs_tmp."</div>";
+		}
+?>
+			<p>{{{hometext}}}</p>
 		</div>
 	</div>
 </div>
-<div class="row"><div class="col-sm-12 colNoPadding">
+
 
 <?php
-		print $this->render("Front/featured_set_slideshow_html.php");
+	print $this->render("Front/featured_collections_html.php");
+
+	print $this->render("Front/featured_galleries_html.php");
 ?>
-</div></div>
-<div class="row bgOffwhite">
-	<div class="col-sm-12 col-md-8 col-md-offset-2 recentlyAdded">
-		<H1>Recently Added</H1>
-<?php
-	$o_db = new Db();
-	$o_recent = $o_db->query("SELECT o.object_id FROM ca_objects o INNER JOIN ca_objects_x_object_representations AS oo ON oo.object_id = o.object_id WHERE o.access IN (".join(", ", $va_access_values).") ORDER BY o.object_id desc LIMIT 10");
-	if($o_recent->numRows()){
-		$i = 0;
-		$c = 0;
-		while($o_recent->nextRow()){
-			$t_object = new ca_objects($o_recent->get("ca_objects.object_id"));
-			if($t_object->get("ca_object_representations.media.iconlarge")){
-				$c++;
-			
-				if($i == 0){
-					print "<div class='row'>";
-				}
-				print "<div class='col-sm-6'><div class='recentlyAddedTile'>".$t_object->getWithTemplate("<l>^ca_object_representations.media.iconlarge</l>").$t_object->getWithTemplate("<l>^ca_objects.preferred_labels.name</l>")."</div>";
-				print "</div>";
-				$i++;
-				if($i == 2){
-					print "</div><!-- end row -->";
-					$i = 0;
-				}
-				if($c == 6){
-					break;
-				}
-			}
-		}
-		if($i > 0){
-			print "</div><!-- end row -->";
-		}
-	}
-?>
-	</div>
-</div>
+
+<div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>

@@ -1,67 +1,39 @@
 
 <div class="row">
-	<div class="col-sm-12 col-md-8">
-		<h1>Zoeken</h1>
+	<div class="col-sm-12 col-md-8 col-md-offset-2">
+		<h1>Uitgebreid zoeken<br/><hr/></h1>
 
-<p>{{{advanced_search_intro}}}</p>
+		<div class="sectionIntro">{{{advanced_search_intro}}}</div>
 
 {{{form}}}
 
-
 <div class='advancedContainer'>
-	
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Collectie</span>
-			{{{ca_objects.object_collection%width=200px}}}
-		</div>
-	</div>			
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoeken in alle velden.">Zoekterm</span>
+			{{{_fulltext%width=200px&height=1}}}
+		</div>			
+	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Titel</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Enkel zoeken op titel.">Titel</span>
 			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
-	</div>	
+	</div>
 	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Inventarisnummer</span>
-			{{{ca_objects.idno%width=220px}}}
+		<div class="advancedSearchField col-sm-6">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek doorheen plaatsen.">Plaats</span>
+			{{{ca_places.preferred_labels.name%width=210px}}}
 		</div>
-	</div>		
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Inhoudelijke Beschrijving</span>
-			{{{ca_objects.content_description%width=220px}}}
+		<div class="advancedSearchField col-sm-6">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek doorheen de collectie.">Collectie</span>
+			{{{ca_objects.object_collection%width=200px}}}
 		</div>
-	</div>			
+	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Plaatsen die verwant zijn met de inhoud</span>
-			{{{ca_places.preferred_labels.name%width=220px}}}
-		</div>
-	</div>		
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Vervaardigers</span>
-			{{{ca_objects.production_maker.maker%width=220px}}}
-		</div>
-	</div>		
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Datum</span>
-			{{{ca_objects.production_dating.earliest_date%width=220px}}}
-		</div>
-	</div>		
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Objecttype</span>
-			{{{ca_list_items.preferred_labels%width=220px}}}
-		</div>
-	</div>		
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Trefwoord</span>
-			{{{ca_objects.object_keywords%width=220px}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek objecten met een specificieke datum of periode .">Periode <i>(vb. 1970-1979)</i></span>
+			{{{ca_objects.production_dating.production_period%width=200px&useDatePicker=0}}}
 		</div>
 	</div>
 	<br style="clear: both;"/>
@@ -70,6 +42,7 @@
 		<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Zoeken}}}</span>
 	</div>
 </div>	
+<input type="hidden" name="view" value="images">
 
 {{{/form}}}
 

@@ -1340,7 +1340,7 @@ class BaseModel extends BaseObject {
 								$vm_value = array_shift($va_ids);
 							}
 						}
-						if (($vm_value !== "") || ($this->getFieldInfo($vs_field, "IS_NULL") && ($vm_value == ""))) {
+						if (($vm_value !== "") || (($this->getFieldInfo($vs_field, "IS_NULL") && ($vm_value == "")))) {
 							if ($vm_value) {
 								if (($vs_list_code = $this->getFieldInfo($vs_field, "LIST_CODE")) && (!is_numeric($vm_value))) {	// translate ca_list_item idno's into item_ids if necessary
 									if ($vn_id = ca_lists::getItemID($vs_list_code, $vm_value)) {
@@ -1351,8 +1351,8 @@ class BaseModel extends BaseObject {
 									}
 								} else {
 									$vm_orig_value = $vm_value;
-									$vm_value = preg_replace("/[^\d-.]+/", "", $vm_value); # strip non-numeric characters
-									if (!preg_match("/^[\-]{0,1}[\d.]+$/", $vm_value)) {
+									$vm_value = preg_replace("/[^\d\-\.]+/", "", $vm_value); # strip non-numeric characters
+									if (!preg_match("/^[\-]{0,1}[\d\.]+$/", $vm_value)) {
 										$this->postError(1100,_t("'%1' for %2 is not numeric", $vm_orig_value, $vs_field),"BaseModel->set()", $this->tableName().'.'.$vs_field);
 										return false;
 									}
@@ -3717,9 +3717,15 @@ class BaseModel extends BaseObject {
 	 * @return string html tag
 	 */
 	public function getMediaTag($ps_field, $ps_version, $pa_options=null) {
+        if(!$pa_options) { $pa_options = []; }
 		if (!is_array($va_media_info = $this->getMediaInfo($ps_field))) { return null; }
 		if (!is_array($va_media_info[$ps_version])) { return null; }
 
+        if ($alt_text_template = Configuration::load()->get($this->tableName()."_alt_text_template")) { 
+		    $alt_text = $this->getWithTemplate($alt_text_template);
+		} else {
+		    $alt_text = $this->get($this->tableName().".preferred_labels");
+		}
 		#
 		# Use icon
 		#
@@ -3740,7 +3746,7 @@ class BaseModel extends BaseObject {
 		$o_vol = new MediaVolumes();
 		$va_volume = $o_vol->getVolumeInformation($va_media_info[$ps_version]['VOLUME']);
 
-		return $m->htmlTag($va_media_info[$ps_version]["MIMETYPE"], $url, $va_media_info[$ps_version]["PROPERTIES"], $pa_options, $va_volume);
+		return $m->htmlTag($va_media_info[$ps_version]["MIMETYPE"], $url, $va_media_info[$ps_version]["PROPERTIES"], array_merge($pa_options, ['alt' => $alt_text]), $va_volume);
 	}
 
 	/**
