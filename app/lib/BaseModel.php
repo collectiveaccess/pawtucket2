@@ -1340,7 +1340,7 @@ class BaseModel extends BaseObject {
 								$vm_value = array_shift($va_ids);
 							}
 						}
-						if (($vm_value !== "") || ($this->getFieldInfo($vs_field, "IS_NULL") && ($vm_value == ""))) {
+						if (($vm_value !== "") || (($this->getFieldInfo($vs_field, "IS_NULL") && ($vm_value == "")))) {
 							if ($vm_value) {
 								if (($vs_list_code = $this->getFieldInfo($vs_field, "LIST_CODE")) && (!is_numeric($vm_value))) {	// translate ca_list_item idno's into item_ids if necessary
 									if ($vn_id = ca_lists::getItemID($vs_list_code, $vm_value)) {
@@ -1351,8 +1351,8 @@ class BaseModel extends BaseObject {
 									}
 								} else {
 									$vm_orig_value = $vm_value;
-									$vm_value = preg_replace("/[^\d-.]+/", "", $vm_value); # strip non-numeric characters
-									if (!preg_match("/^[\-]{0,1}[\d.]+$/", $vm_value)) {
+									$vm_value = preg_replace("/[^\d\-\.]+/", "", $vm_value); # strip non-numeric characters
+									if (!preg_match("/^[\-]{0,1}[\d\.]+$/", $vm_value)) {
 										$this->postError(1100,_t("'%1' for %2 is not numeric", $vm_orig_value, $vs_field),"BaseModel->set()", $this->tableName().'.'.$vs_field);
 										return false;
 									}
