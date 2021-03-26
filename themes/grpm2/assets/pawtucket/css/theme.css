@@ -595,3 +595,8 @@ label{
 	font-size:14px;
 	font-family:museo-slab;
 }
+
+.repCaption {
+	font-size: 11px;
+	margin-top: 5px;
+}
