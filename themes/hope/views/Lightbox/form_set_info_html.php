@@ -85,7 +85,7 @@
 		if($va_errors["description"]){
 			print "<div class='alert alert-danger'>".$va_errors["description"]."</div>";
 		}
-		print "<div class='form-group".(($va_errors["description"]) ? " has-error" : "")."'><label for='".$vs_description_attribute."' class='control-label'>"._t("Description")."</label><div><textarea name='".$vs_description_attribute."' class='form-control' rows='10'>".htmlentities($this->getVar("description"), ENT_QUOTES, 'UTF-8', false)."</textarea></div></div><!-- end form-group -->\n";
+		print "<div class='form-group".(($va_errors["description"]) ? " has-error" : "")."'><label for='".$vs_description_attribute."' class='control-label'>"._t("Description")."</label><div><textarea name='".$vs_description_attribute."' id='descriptionTextArea' class='form-control' rows='10'>".htmlentities($this->getVar("description"), ENT_QUOTES, 'UTF-8', false)."</textarea></div></div><!-- end form-group -->\n";
 ?>
 		<div class="form-group">
 			<div>
@@ -106,6 +106,7 @@
 			<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					jQuery('#SetForm').on('submit', function(e){		
+						CKEDITOR.instances.descriptionTextArea.updateElement();
 						jQuery('#caMediaPanelContentArea').load(
 							'<?php print caNavUrl($this->request, '', 'Lightbox', 'ajaxSaveSetInfo', null); ?>',
 							jQuery('#SetForm').serialize()
@@ -122,6 +123,8 @@
 			<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					jQuery('#SetForm').on('submit', function(e){		
+						CKEDITOR.instances.descriptionTextArea.updateElement();
+			
 						jQuery.getJSON(
 							'<?php print caNavUrl($this->request, '', 'Lightbox', 'ajaxSaveSetInfo', null); ?>',
 							jQuery('#SetForm').serializeObject(), function(data) {
@@ -150,3 +153,27 @@
 <?php
 		}
 ?>
+			<script type='text/javascript'>
+				jQuery(document).ready(function() {
+					CKEDITOR.replace('descriptionTextArea', {
+						  height: 150,
+						  // Define the toolbar groups as it is a more accessible solution.
+						  toolbarGroups: [{
+							  "name": "basicstyles",
+							  "groups": ["basicstyles"]
+							},
+							{
+							  "name": "links",
+							  "groups": ["links"]
+							},
+							{
+							  "name": "paragraph",
+							  "groups": ["list", "blocks"]
+							}
+						  ],
+						  // Remove the redundant buttons from toolbar groups defined above.
+						  //removeButtons: 'Underline,Strike,Subscript,Superscript,Anchor,Styles,Specialchar'
+						  removeButtons: 'CreateDiv,Anchor'
+					});
+				});
+			</script>

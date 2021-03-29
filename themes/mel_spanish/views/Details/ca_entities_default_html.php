@@ -40,11 +40,13 @@
 						</div>
 						<div class="row entityImagesThumbs">
 <?php
-						$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
-						while($q_objects->nextHit()){
+						if(is_array($va_object_ids) & sizeof($va_object_ids)){
+							$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
+							while($q_objects->nextHit()){
 ?>
 								<div class="col-xs-4"><a href="#" onClick="$('.entityMain').load('<?php print caNavUrl($this->request, '', 'Exhibition', 'getExhibitionImage', array('object_id' => $q_objects->get('ca_objects.object_id'), 'version' => 'mediumlarge')); ?>'); return false;"><?php print $q_objects->get("ca_object_representations.media.iconlarge"); ?></a></div>
 <?php
+							}
 						}
 ?>					
 						</div>

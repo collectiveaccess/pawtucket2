@@ -158,12 +158,12 @@
  					$t_parent = new ca_sets($parent_id);
  					#$va_sets_navigation[$parent_id] = $t_parent->getLabelForDisplay();
  					$vs_parent_name = $t_parent->getLabelForDisplay();
- 					$vs_parent_description = $t_parent->get($this->config->get('gallery_set_description_element_code'), array("convertLineBreaks" => true));
+ 					$vs_parent_description = $t_parent->get($this->config->get('gallery_set_description_element_code'));
 				}else{
 					$parent_id = $t_set->get("ca_sets.set_id");
 					#$va_sets_navigation[$parent_id] = $t_set->getLabelForDisplay();
  					$vs_parent_name = $t_set->getLabelForDisplay();
- 					$vs_parent_description = $t_set->get($this->config->get('gallery_set_description_element_code'), array("convertLineBreaks" => true));
+ 					$vs_parent_description = $t_set->get($this->config->get('gallery_set_description_element_code'));
 				}
 				$this->view->setVar("parent_id", $parent_id);
 				$this->view->setVar("parent_name", $vs_parent_name);
@@ -196,7 +196,7 @@
 					$o_context->saveContext();
 				} 				 				
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
- 				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code'), array("convertLineBreaks" => true)));
+ 				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
  				
  				$set_item_id = $this->request->getParameter('set_item_id', pInteger);
@@ -261,7 +261,7 @@
  			$this->view->setVar("set", $t_set);
  			$this->view->setVar("set_id", $set_id);
  			$this->view->setVar("label", $t_set->getLabelForDisplay());
- 			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code'), array("convertLineBreaks" => true)));
+ 			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  			#$this->view->setVar("num_items", $t_set->getItemCount(array("checkAccess" => $this->opa_access_values)));
  			
  			$set_item = array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));

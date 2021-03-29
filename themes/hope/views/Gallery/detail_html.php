@@ -34,7 +34,7 @@
 			<div class="gallerySectionNav">
 <script type='text/javascript'>
 		jQuery(document).ready(function() {	
-			if($(".gallerySectionNav").height() > 439){
+			if($(".gallerySectionNav").height() > 436){
 				$('#gallerySectionNavScrollDown').show();
 				$('#gallerySectionNavScrollUp').show();
 			}

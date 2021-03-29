@@ -70,7 +70,7 @@
 					}
 					print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 								<H2>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels.name')."</H2>
-								".(($vs_display_date || $vs_exhibition_type) ? "<p><b>".$vs_display_date.(($vs_display_date && $vs_exhibition_type) ? "<br/>" : "").$vs_exhibition_type."<br/>March 2021</b></p>" : "")."
+								".(($vs_display_date || $vs_exhibition_type) ? "<p><b>".$vs_display_date.(($vs_display_date && $vs_exhibition_type) ? "<br/>" : "").$vs_exhibition_type."</b></p>" : "")."
 							</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
 					$i++;
 					
@@ -89,13 +89,14 @@
 						if(!$vs_image_url){
 							$vs_image_url = $qr_list->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.media.large.url</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 						}
-						
+						$vs_display_date = $qr_list->get("ca_occurrences.displayDate");
+					
 						if($i == 0){
 							print "<div class='row'>";
 						}
 						print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 									<H2>".$qr_list->get("ca_occurrences.preferred_labels.name")."</H2>
-									<p><b>Online Exhibition</b></p>
+									<p><b>".$vs_display_date.(($vs_display_date) ? "<br/>" : "")."Online Exhibition</b></p>
 								</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
 
 						$i++;
@@ -146,7 +147,7 @@
 					}
 					print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 								<H2>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels.name')."</H2>
-								".(($vs_display_date || $vs_exhibition_type) ? "<p><b>".$vs_display_date.(($vs_display_date && $vs_exhibition_type) ? "<br/>" : "").$vs_exhibition_type."<br/>March 2021</b></p>" : "")."
+								".(($vs_display_date || $vs_exhibition_type) ? "<p><b>".$vs_display_date.(($vs_display_date && $vs_exhibition_type) ? "<br/>" : "").$vs_exhibition_type."</b></p>" : "")."
 							</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
 					$i++;
 					
@@ -165,13 +166,14 @@
 						if(!$vs_image_url){
 							$vs_image_url = $qr_list->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.media.large.url</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 						}
-						
+						$vs_display_date = $qr_list->get("ca_occurrences.displayDate");
+					
 						if($i == 0){
 							print "<div class='row'>";
 						}
 						print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 									<H2>".$qr_list->get("ca_occurrences.preferred_labels.name")."</H2>
-									<p><b>Online Exhibition</b></p>
+									<p><b>".$vs_display_date.(($vs_display_date) ? "<br/>" : "")."Online Exhibition</b></p>
 								</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
 
 						$i++;

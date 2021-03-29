@@ -184,7 +184,7 @@
 							# --------------------------
 						}
 						print "</div></div></div>";
-						if ($vs_tmp = $t_set->get("ca_sets.".$vs_description_field, array("convertLineBreaks" => true))) {
+						if ($vs_tmp = $t_set->get("ca_sets.".$vs_description_field)) {
 							print "<div class='row'><div class='col-sm-12'><div class='unit'><b>Description</b><div class='parentListDesc'>".$vs_tmp."</div></div></div></div><!-- end row -->";
 						}
 						if($vs_cover_image){

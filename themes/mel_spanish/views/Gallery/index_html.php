@@ -8,6 +8,11 @@
 	$va_sets = $this->getVar("sets");
 	$t_set = new ca_sets();
 	$va_first_items_from_set = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
+	$o_context = new ResultContext($this->request, 'ca_sets', 'gallery');
+	$o_context->setAsLastFind();
+	$o_context->setResultList(array_keys($va_sets));
+	$o_context->saveContext();
+
 	if(is_array($va_sets) && sizeof($va_sets)){
 ?>
 		<div class="container">
@@ -36,7 +41,21 @@
 ?>
 							</div>
 						</div>
-					</div>
+					<a href="#top" class="btn btn-default galleryTop"><span class="glyphicon glyphicon-chevron-up"></span> Top</a>
+					<script type="text/javascript">
+						jQuery(document).ready(function() {
+							$(function() {
+								$(window).scroll(function() {
+									var scroll = $(window).scrollTop();
+									if (scroll >= 125) {
+										jQuery('.galleryTop').show();
+									}else{
+										jQuery('.galleryTop').hide();
+									}
+								});
+							});
+						});
+					</script>
 				</div>
 			</div>
 		</div>

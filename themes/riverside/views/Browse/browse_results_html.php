@@ -169,7 +169,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		</div>
 <?php		
-		if($vn_result_size > 1){
+		#if($vn_result_size > 1){
 ?>
 			<div <?php print ($vb_show_filter_panel) ? "class='catchLinks'" : ""; ?>>
 				<div class="bSearchWithinContainer">
@@ -182,7 +182,7 @@ if (!$vb_ajax) {	// !ajax
 				</div>
 			</div>
 <?php
-		}
+		#}
 		if($vs_table == "ca_objects"){
 			print "<div class='advancedSearchLink'>".caNavLink($this->request, 'Advanced Search', '', 'Search', 'Advanced', 'objects')."</div>";
 		}

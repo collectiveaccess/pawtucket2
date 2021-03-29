@@ -135,6 +135,7 @@
 			$this->purifier = new HTMLPurifier();
 			
 			AssetLoadManager::register("readmore");
+			AssetLoadManager::register("ckeditor");
 			
  			parent::setTableSpecificViewVars();
  		}
@@ -674,9 +675,11 @@
  			
  			# --- get the form data
  			$ps_caption =  	$this->purifier->purify($this->request->getParameter("set_item_caption", pString));
+ 			$ps_include_label =  	$this->purifier->purify($this->request->getParameter("include_label", pString));
  			
  			$t_item->setMode(ACCESS_WRITE);
  			$t_item->replaceAttribute(array('caption' => $ps_caption), 'caption');
+ 			$t_item->replaceAttribute(array('include_label' => $ps_include_label), 'include_label');
 			$this->view->setVar('item_id', $vn_item_id);
 			
  			$t_item->update();
