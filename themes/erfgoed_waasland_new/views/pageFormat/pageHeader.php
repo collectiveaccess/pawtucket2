@@ -51,7 +51,7 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 
 ?><!DOCTYPE html>
-<html lang="en" <?php print ((strtoLower($this->request->getController()) == "front")) ? "class='frontContainer'" : ""; ?>>
+<html lang="en" <?php print ((strtoLower($this->request->getController()) == "front")) ? "class='frontContainer initial'" : ""; ?>>
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
@@ -119,11 +119,12 @@
 ?>
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@300;400&display=swap" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet"> 
 
 </head> 
 
 <body class='<?php print (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
-	<nav class="navbar navbar-default yamm" role="navigation">
+	<nav class="navbar navbar-default yamm initial" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -178,7 +179,7 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="Zoek" name="search">
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="Zoeken" name="search">
 						</div>
 						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
@@ -192,18 +193,17 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
-						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, "Over deze website", "", "", "About", "About"); ?></li>
-							<li><?php print caNavLink($this->request, "Handleiding", "", "", "About", "Guide"); ?></li>
-						</ul>
-					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Zoeken", "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Expo's", "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
-					<li><a href="http://www.erfgoedcelwaasland.be" target="_blank">Home</a></li>
+					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, "Over Erfgoedcel Waasland", "", "", "About", "About"); ?></li>
+							<li><?php print caNavLink($this->request, "Over Erfgoedbank Waasland", "", "", "About", "Guide"); ?></li>
+						</ul>
+					</li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

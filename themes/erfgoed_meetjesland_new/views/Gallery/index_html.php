@@ -9,6 +9,7 @@
 
 <div class="row"><div class="col-sm-12 col-md-8 col-md-offset-2">
 	<H1><?php print $this->getVar("section_name"); ?></H1>
+	<p>{{{expos_intro}}}</p>
 <?php
 	if(is_array($va_sets) && sizeof($va_sets)){
 		# --- main area with info about selected set loaded via Ajax				
@@ -20,9 +21,7 @@
 				}
 				print "<div class='col-sm-3'>";
 				$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
-				print "<div class='galleryList'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id).
-							"<label>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $vn_set_id)."</label>
-							<div><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small></div>
+				print "<div class='galleryList'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id).caNavLink($this->request, $va_set["name"]."<br/><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small>", 'labelLink', '', 'Gallery', $vn_set_id)."
 						</div>\n";
 				print "</div><!-- end col -->";
 				if($i == 4){

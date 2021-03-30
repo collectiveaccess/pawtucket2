@@ -31,31 +31,27 @@
 		<footer id="footer">
 			<div class="row">
 				<div class="col-sm-12 col-md-8 col-md-offset-2">
-					<div class="footerHeading">&copy; Erfgoedbank Leie Schelde</div>
+					<div class="footerHeading"><i class="fa fa-home" aria-hidden="true"></i> <a href="https://www.cultuurregioleieschelde.be" target="_blank">www.CultuurRegioLeieSchelde.be</a></div>
 					<div class="row">
-						<div class="col-sm-4 footerContact">
-							<b>Contact</b><br/>
-							Address line 1<br/>
-							Address line 2<br/>
-							Address line 3<br/><br/>
-							T - 555.555.5555<br/>
-							E - <a href="info@egcleieschelde.be">info@egcleieschelde.be</a>
-						</div>
-						<div class="col-sm-4">
+						<div class="col-sm-12 text-center">
 							<ul class="list-inline social">
-								<li><a href="#" target="_blank"><i class="fa fa-facebook-square" aria-label="Facebook"></i></a></li>
-								<li><a href="#" target="_blank"><i class="fa fa-instagram" aria-label="Instragram"></i></a></li>
-								<li><a href="#" target="_blank"><i class="fa fa-twitter-square" aria-label="Twitter"></i></a></li>
+								<li><i class="fa fa-map-marker" aria-hidden="true"></i> Tolpoortstraat 79, 9800 Deinze</li>
+								<li><i class="fa fa-users" aria-hidden="true"></i> <?php print caNavLink($this->request, "Contact", "", "", "Contact", "form"); ?></li>
+								<li><i class="fa fa-phone" aria-hidden="true"></i> 09 386 78 86</li>
+								<li><i class="fa fa-check" aria-hidden="true"></i> <?php print caNavLink($this->request, "Disclaimer", "", "", "About", "disclaimer"); ?></li>
 							</ul>
 						</div>
-						<div class="col-sm-4">
-							<div class="funder">
-								<a href="http://www.vlaanderen.be"><?php print caGetThemeGraphic($this->request, 'Vlaanderen-verbeelding-werkt_vol.png'); ?></a>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="funder text-center">
+								<a href="http://www.vlaanderen.be"><?php print caGetThemeGraphic($this->request, 'Vlaanderen_verbeelding_werkt.png'); ?></a>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
+		</footer>
 <?php
 	//
 	// Output HTML for debug bar
@@ -98,13 +94,35 @@
 //				   return false;
 //				 });
 //			}); 
+			
+			$(document).ready(function(){
+				$(window).scroll(function(){
+					$("#hpScrollBar").fadeOut();
+				});
+				$(function() {
+					//caches a jQuery object containing the header element
+					var html = $("html");
+					
+						$(window).scroll(function() {
+							var scroll = $(window).scrollTop();
+
+							if (scroll >= 125) {
+								html.removeClass('initial');
+							} else {
+								html.addClass('initial');
+							}
+							
+						});
+					
+				});
+			});
 		</script>
 <?php
 	if (Session::getVar('cookieAccepted') != 'accepted') {		
 ?>	
-		<div id="cookieNotice">
+		<!--<div id="cookieNotice">
 			{{{cookie_statement}}}
-		</div>	<!--end homePanel-->
+		</div>-->	<!--end homePanel-->
 		
 		
 		<script type="text/javascript">

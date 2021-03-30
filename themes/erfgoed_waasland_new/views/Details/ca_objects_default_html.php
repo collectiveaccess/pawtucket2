@@ -161,6 +161,14 @@
 		print "<hr></hr><div class='unit'>".$vs_map."</div><br/>";
 	}
 ?>
+				{{{<ifcount code="ca_objects.related" min="1">
+					<div class="unit">
+						<H6>Related Objects</H6>
+						<unit relativeTo="ca_objects.related" delimiter="<br/>">
+							<div class="row"><if rule="^ca_object_representations.access =~ /publiceren/"><div class="col-sm-3"><l>^ca_object_representations.media.small</l></div></if><div class="col-sm-9"><l>^ca_objects.preferred_labels.name</l></div></div>
+						</unit>
+					</div>
+				</ifcount>}}}
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
