@@ -40,7 +40,7 @@
 						</div>
 						<div class="row entityImagesThumbs">
 <?php
-						if(is_array($va_object_ids) & sizeof($va_object_ids)){
+						if(is_array($va_object_ids) && sizeof($va_object_ids)){
 							$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
 							while($q_objects->nextHit()){
 ?>
