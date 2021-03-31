@@ -464,6 +464,8 @@ ul.menuItems{
 	background-color:#666666;
 	padding-top:70px;
 	color:#FFF;
+	position:relative;
+	margin-bottom:30px;
 }
 .gallery .featuresList img{
 	width:100%;
@@ -495,6 +497,16 @@ ul.menuItems{
 	font-family:LatoLight;
 	font-weight:normal;
 	font-size:12px;
+}
+.gallery .featuresList a.galleryTop{
+	position: absolute;
+	z-index: 2000;
+	bottom: -28px;
+	right: 0px;
+	display:none;
+	font-size:13px;
+	font-weight:400;
+	font-family: Lato;
 }
 /* detail */
 

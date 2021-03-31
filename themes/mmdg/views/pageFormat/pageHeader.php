@@ -60,7 +60,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
-
+	<link rel="apple-touch-icon" sizes="120x120" href="<?php print caGetThemeGraphicUrl($this->request, 'apple-touch-icon.png'); ?>">
+	<link rel="icon" type="image/png" sizes="32x32" href="<?php print caGetThemeGraphicUrl($this->request, 'favicon-32x32.png'); ?>">
+	<link rel="icon" type="image/png" sizes="16x16" href="<?php print caGetThemeGraphicUrl($this->request, 'favicon-16x16.png'); ?>">
+	
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	
 	<script type="text/javascript">
