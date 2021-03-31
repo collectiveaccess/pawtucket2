@@ -321,6 +321,15 @@ a:hover .themesContainer{
 .lbListItem .lbItemCoverImageButton.currentCover{
 	color:#f46a1f;
 }
+.lbListItem .handle{
+	cursor: move;
+}
+.lbListItemPlaceholder{
+	border:1px dotted #787878;
+	display:visible;
+	height:100px;
+	width:100%;
+}
 .parentItem{
 	background-color:#f6f6f6;
 	padding:20px;
