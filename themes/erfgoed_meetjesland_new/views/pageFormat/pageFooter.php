@@ -101,11 +101,6 @@
 //				   return false;
 //				 });
 //			}); 
-			$(document).ready(function(){
-				$(window).scroll(function(){
-					$("#hpScrollBar").fadeOut();
-				});
-			});
 		</script>
 <?php
 	if (Session::getVar('cookieAccepted') != 'accepted') {		
@@ -138,6 +133,7 @@
 
 <?php
 	}
+	Session::setVar('visited', 'has_visited');
 ?>
 	</body>
 </html>
