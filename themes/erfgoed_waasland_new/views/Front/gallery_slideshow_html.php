@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/Front/front_page_html : Front page of site 
+ * themes/default/Front/gallery_slideshow_html : Front page of site 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -30,29 +30,59 @@
  * ----------------------------------------------------------------------
  */
 	$va_access_values = $this->getVar("access_values");
-	$qr_res = $this->getVar('featured_set_items_as_search_result');
-	$o_config = $this->getVar("config");
-	$vs_caption_template = $o_config->get("front_page_set_item_caption_template");
-	if(!$vs_caption_template){
-		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
+	$o_config = caGetGalleryConfig();
+	
+	# --- which type of set is configured for display in gallery section
+ 	$t_list = new ca_lists();
+ 	$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 			
+ 	$t_set = new ca_sets();
+	$va_sets = array();
+	if($vn_gallery_set_type_id){
+		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id, 'table' => "ca_objects");
+		$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
+		$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
+		
+		$o_set_res = caMakeSearchResult("ca_sets", array_keys($va_sets), array("checkAccess" => $va_access_values));
+		
+		$o_front_config = caGetFrontConfig();
+		$vs_front_page_set = $o_front_config->get('front_page_set_code');
+		$vb_omit_front_page_set = (bool)$o_config->get('omit_front_page_set_from_gallery');
+		
+		if($o_set_res->numHits()){
+			while($o_set_res->nextHit()){
+				if ($vb_omit_front_page_set && $o_set_res->get('ca_sets.set_code') == $vs_front_page_set) { 
+					unset($va_sets[$o_set_res->get('ca_sets.set_id')]);
+				}
+				if($o_set_res->get('ca_sets.show_homepage', array('convertCodesToDisplayText' => true)) != 'Ja'){
+					unset($va_sets[$o_set_res->get('ca_sets.set_id')]); 	
+				}
+			}
+		}
 	}
-	if($qr_res && $qr_res->numHits()){
-?>   
-		<div class="jcarousel-wrapper">
+	if(is_array($va_sets) && sizeof($va_sets)){
+?>
+		<div class="row bgGray"><div class="col-sm-12"><h2 class="frontExpoTitle">Expo's</h2></div></div>
+<?php	
+	}
+
+	if(is_array($va_sets) && sizeof($va_sets)){
+?>
+
+<div class="row bgGray"><div class="col-sm-12 col-md-12 col-lg-12 frontExpos">
+		<div class="jcarousel-wrapper galleryItems-wrapper">
 			<!-- Carousel -->
-			<div class="jcarousel featured">
+			<div class="jcarousel galleryItems">
 				<ul>
 <?php
-					while($qr_res->nextHit()){
-						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
-							print "<li><div class='frontSlide'>".$vs_media;
-							$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
-							if($vs_caption){
-								print "<div class='frontSlideCaption'>".$vs_caption."</div>";
-							}
-							print "</div></li>";
-							$vb_item_output = true;
+					foreach($va_sets as $vn_set_id => $va_set){
+						$va_first_item = array_shift($va_set_first_items[$vn_set_id]);
+						print "<li>";
+						print caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id);
+						if($va_set["name"]){
+							print "<div>".caNavLink($this->request, $va_set["name"], "frontExposLink", "", "Gallery", $vn_set_id)."</div>"; 
 						}
+						print "</li>";
+						$vb_item_output = 1;
 					}
 ?>
 				</ul>
@@ -61,35 +91,34 @@
 			if($vb_item_output){
 ?>
 			<!-- Prev/next controls -->
-			<a href="#" class="jcarousel-control-prev featured"><i class="fa fa-angle-left"></i></a>
-			<a href="#" class="jcarousel-control-next featured"><i class="fa fa-angle-right"></i></a>
+			<a href="#" class="jcarousel-control-prev galleryItemsNav"><i class="fa fa-angle-left"></i></a>
+			<a href="#" class="jcarousel-control-next galleryItemsNav"><i class="fa fa-angle-right"></i></a>
 		
 			<!-- Pagination -->
-			<p class="jcarousel-pagination featured">
+			<p class="jcarousel-pagination galleryItemsPagination">
 			<!-- Pagination items will be generated in here -->
 			</p>
 <?php
 			}
 ?>
 		</div><!-- end jcarousel-wrapper -->
+	</div>
+</div>
 		<script type='text/javascript'>
 			jQuery(document).ready(function() {
 				/*
 				Carousel initialization
 				*/
-				$('.jcarousel.featured')
+				$('.jcarousel.galleryItems')
 					.jcarousel({
 						// Options go here
 						wrap:'circular'
 					});
-					$('.jcarousel.featured').jcarouselAutoscroll({
-					autostart: true
-				});
 		
 				/*
 				 Prev control initialization
 				 */
-				$('.jcarousel-control-prev.featured')
+				$('.jcarousel-control-prev.galleryItemsNav')
 					.on('jcarouselcontrol:active', function() {
 						$(this).removeClass('inactive');
 					})
@@ -104,7 +133,7 @@
 				/*
 				 Next control initialization
 				 */
-				$('.jcarousel-control-next.featured')
+				$('.jcarousel-control-next.galleryItemsNav')
 					.on('jcarouselcontrol:active', function() {
 						$(this).removeClass('inactive');
 					})
@@ -119,7 +148,7 @@
 				/*
 				 Pagination initialization
 				 */
-				$('.jcarousel-pagination.featured')
+				$('.jcarousel-pagination.galleryItemsPagination')
 					.on('jcarouselpagination:active', 'a', function() {
 						$(this).addClass('active');
 					})
@@ -129,8 +158,10 @@
 					.jcarouselPagination({
 						// Options go here
 					});
+					
 			});
 		</script>
+
 <?php
 	}
 ?>

@@ -35,17 +35,19 @@
 					<div class="row">
 						<div class="col-sm-4 footerContact">
 							<b>Contact</b><br/>
-							Address line 1<br/>
-							Address line 2<br/>
-							Address line 3<br/><br/>
-							T - 555.555.5555<br/>
+							Erfgoedcel Meetjesland - COMEET<br/>
+							Pastoor De Nevestraat 8<br/>
+							9900 Eeklo<br/><br/>
+							T - 09 373 75 96<br/>
 							E - <a href="mailto:erfgoedcel@comeet.be">erfgoedcel@comeet.be</a>
+
+							
 						</div>
 						<div class="col-sm-4">
 							<ul class="list-inline social">
-								<li><a href="#" target="_blank"><i class="fa fa-facebook-square" aria-label="Facebook"></i></a></li>
-								<li><a href="#" target="_blank"><i class="fa fa-instagram" aria-label="Instragram"></i></a></li>
-								<li><a href="#" target="_blank"><i class="fa fa-twitter-square" aria-label="Twitter"></i></a></li>
+								<li><a href="https://www.facebook.com/erfgoedcelmeetjesland/" target="_blank"><i class="fa fa-facebook-square" aria-label="Facebook"></i></a></li>
+								<li><a href="https://www.instagram.com/memorabelmeetjesland/" target="_blank"><i class="fa fa-instagram" aria-label="Instragram"></i></a></li>
+								<li><a href="https://www.comeet.be/erfgoed-2/" target="_blank"><i class="fa fa-home" aria-label="Home"></i></a></li>
 							</ul>
 						</div>
 						<div class="col-sm-4">
@@ -56,10 +58,6 @@
 					</div>
 				</div>
 			</div>
-			
-			
-			
-		
 		</footer><!-- end footer -->
 <?php
 	//
@@ -103,18 +101,13 @@
 //				   return false;
 //				 });
 //			}); 
-			$(document).ready(function(){
-				$(window).scroll(function(){
-					$("#hpScrollBar").fadeOut();
-				});
-			});
 		</script>
 <?php
 	if (Session::getVar('cookieAccepted') != 'accepted') {		
 ?>	
-		<div id="cookieNotice">
+		<!--<div id="cookieNotice">
 			{{{cookie_statement}}}
-		</div>	<!--end homePanel-->
+		</div>	--><!--end homePanel-->
 		
 		
 		<script type="text/javascript">
@@ -140,6 +133,7 @@
 
 <?php
 	}
+	Session::setVar('visited', 'has_visited');
 ?>
 	</body>
 </html>
