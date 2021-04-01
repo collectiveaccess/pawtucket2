@@ -47,7 +47,7 @@
 								<li><a href="https://www.facebook.com/erfgoedcelwaasland" target="_blank"><i class="fa fa-facebook-square" aria-label="Facebook"></i></a></li>
 								<li><a href="https://www.instagram.com/erfgoedcel_waasland/" target="_blank"><i class="fa fa-instagram" aria-label="Instragram"></i></a></li>
 							</ul>
-							<div class="homeLogo"><a href="http://www.erfgoedcelwaasland.be" target="_blank"><?php print caGetThemeGraphic($this->request, 'erfgoedCelLogo.jpg'); ?></a></div>
+							<div class="homeLogo"><a href="http://www.erfgoedcelwaasland.be" target="_blank"><?php print caGetThemeGraphic($this->request, 'erfgoedCelLogoTransparent.png'); ?></a></div>
 						</div>
 						<div class="col-sm-4">
 							<div class="funder">

@@ -552,7 +552,10 @@ body.frontContainer, body.frontContainer #pageArea{
 	font-family: Lato;
 	font-weight:600;
 }
-
+.front .jcarousel-wrapper {
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
 .frontSlide img {
     height: 300px;
     width: auto;
