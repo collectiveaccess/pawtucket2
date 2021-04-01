@@ -11,10 +11,10 @@
 	}
 	
 	$vs_sort = ($o_collections_config->get("landing_page_sort")) ? $o_collections_config->get("landing_page_sort") : "ca_collections.preferred_labels.name";
-	#$qr_collections = ca_collections::find(array('parent_id' => null, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $va_access_values, 'sort' => $vs_sort));
+	$qr_collections = ca_collections::find(array('parent_id' => null, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $va_access_values, 'sort' => $vs_sort));
 	
 	# --- show collections that have objects with the collection set as their object_collection field
-	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids_with_objects);		
+	#$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids_with_objects);		
 ?>
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2 collectionsList">

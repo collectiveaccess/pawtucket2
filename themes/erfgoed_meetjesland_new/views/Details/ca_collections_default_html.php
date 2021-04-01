@@ -101,6 +101,31 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 {{{
+		<ifdef code="ca_collections.children.collection_id" min="1">
+			<div class="row">
+				<H2>Collecties</H2>
+				<div id="browseResultsContainer">
+					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+				</div><!-- end browseResultsContainer -->
+			</div><!-- end row -->
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery('#browseResultsContainer').jscroll({
+							autoTrigger: true,
+							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+							padding: 20,
+							nextSelector: 'a.jscroll-next'
+						});
+					});
+					
+					
+				});
+			</script>
+		</ifdef>
+}}}
+{{{
+		<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -120,6 +145,7 @@
 					
 				});
 			</script>
+		</ifcount>
 }}}
 		</div><!-- end container -->
 	</div><!-- end col -->

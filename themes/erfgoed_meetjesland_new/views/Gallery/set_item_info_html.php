@@ -20,4 +20,15 @@
 	
 <br/>
 
-<?php print caDetailLink($this->request, _t("VIEW RECORD"), 'btn btn-default', $this->getVar("table"),  $this->getVar("row_id")); ?>
+<div class='text-center'><?php print caDetailLink($this->request, _t("Bekijk Details"), 'btn btn-default', $this->getVar("table"),  $this->getVar("row_id")); ?></div>
+
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 130,
+		  moreLink: '<a href="#">Lees meer</a>',
+          lessLink: '<a href="#">Dichtbij</a>'
+		});
+	});
+</script>

@@ -40,21 +40,23 @@
 <div class="parallax hero<?php print $vs_hero; ?>">
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-12 col-md-6 col-md-offset-3">
+			<div class="col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
 				
 				<div class="heroSearch">
 					<H1>
 						<div class="line1">Welkom bij</div>
 						<div class="line2">Erfgoedbank Meetjesland</div>
+						<div class="line3">{{{hp_search_intro}}}</div>
 					</H1>
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 						<div class="formOutline">
 							<div class="form-group">
-								<input type="text" class="form-control" id="heroSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="Search" />
+								<input type="text" class="form-control" id="heroSearchInput" placeholder="Zoeken" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
 							</div>
 							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
 					</form>
+					<div class="heroAdvancedSearchLink"><?php print caNavLink($this->request, "Geavanceerd zoeken", "", "", "Search", "advanced/objects"); ?></div>
 				</div>
 			</div>
 		</div>
@@ -63,101 +65,91 @@
 <div class="container hpIntro">
 	<div class="row">
 		<div class="col-md-12 col-lg-8 col-lg-offset-2">
-			<p class="callout">{{{hometext}}}</p>
+			<div class="callout">
+<?php
+			if($vs_tmp = $this->getVar("hometext_title")){
+				print "<div class='calloutTitle'>".$vs_tmp."</div>";
+			}
+?>
+				<p>{{{hometext}}}</p>
+			</div>
 		</div>
 	</div>
 </div>
-<div class="row"><div class="col-sm-12 colNoPadding">
-
 <?php
-		print $this->render("Front/featured_set_slideshow_html.php");
+	print $this->render("Front/gallery_slideshow_html.php");
 ?>
-</div></div>
+
+<div class="container hpIntro">
+	<div class="row">
+		<div class="col-md-12 col-lg-8 col-lg-offset-2">
+			<div class="callout2">
+				<div class="calloutTitle">{{{home_call_to_action_title}}}</div>
+				<p>{{{home_call_to_action}}}</p>
+				<p class="text-center"><?php print caNavLink($this->request, _t("Lees er meer over"), "btn btn-default", "", "About", "Collection"); ?></p>
+			</div>
+		</div>
+	</div>
+</div>
 <div class="row"><div class="col-sm-12 col-md-12 col-lg-8 col-lg-offset-2 frontPlaces">
-	<h2>Bladeren per stad</h2>
+	<h2>Bladeren per stad of gemeente</h2>
 <?php
-	$o_browse = caGetBrowseInstance("ca_objects");
-	$va_cities = $o_browse->getFacet("city_facet", array('checkAccess' => $this->opa_access_values, 'request' => $this->request));
+	$t_list = new ca_lists();
+	$vn_place_type_id = $t_list->getItemIDFromList('place_types', 'EGC_regio');
+	$r_places = ca_places::find(array('type_id' => $vn_place_type_id), array('returnAs' => 'searchResult', 'sort' => 'ca_places.idno'));
+			
 	$i = 0;
-	if(is_array($va_cities) && sizeof($va_cities)){
-		foreach($va_cities as $va_city){
+	if($r_places->numHits()){
+		while($r_places->nextHit()){
 			if($i == 0){
 				print "<div class='row'>";
 			}
-			print "<div class='col-sm-12 col-md-4'>".caNavLink($this->request, $va_city["label"], "frontPlaceLink", "", "Browse", "objects", array("facet" => "city_facet", "id" => $va_city["id"]))."</div>";
+			$vs_img = "";
+			if($r_places->get("ca_object_representations.media.iconlarge")){
+				$vs_img = $r_places->getWithTemplate("^ca_object_representations.media.iconlarge");	
+				if($vs_img){
+					$vs_img = caNavLink($this->request, $vs_img, "", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."<br/>";
+				}
+			}
+			print "<div class='col-sm-12 col-md-3 text-center'>".$vs_img.caNavLink($this->request, $r_places->get("ca_places.preferred_labels.name"), "frontPlaceLink", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."</div>";
 			$i++;
-			if($i == 3){
+			if($i == 4){
 				print "</div><!-- end row -->";
 				$i = 0;
 			}
 		}
-		if($i > 0){
-			print "</div><!-- end row -->";
-		}
+	}
+	if($i > 0){
+		print "</div><!-- end row -->";
 	}
 	
 ?>
 </div></div>
-<?php
-	$va_access_values = $this->getVar("access_values");
-	$o_config = caGetGalleryConfig();
-	
-	# --- which type of set is configured for display in gallery section
- 	$t_list = new ca_lists();
- 	$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 			
- 	$t_set = new ca_sets();
-	$va_sets = array();
-	if($vn_gallery_set_type_id){
-		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id, 'table' => "ca_objects");
-		$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
-		$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
-		
-		$o_front_config = caGetFrontConfig();
-		$vs_front_page_set = $o_front_config->get('front_page_set_code');
-		$vb_omit_front_page_set = (bool)$o_config->get('omit_front_page_set_from_gallery');
-		foreach($va_sets as $vn_set_id => $va_set) {
-			if ($vb_omit_front_page_set && $va_set['set_code'] == $vs_front_page_set) { 
-				unset($va_sets[$vn_set_id]); 
-			}
-			$va_first_item = $va_set_first_items[$vn_set_id];
-			$va_first_item = array_shift($va_first_item);
-			$vn_item_id = $va_first_item["item_id"];
-		}
-	}
-
-
-	if(is_array($va_sets) && sizeof($va_sets)){
-?>
-
-<div class="row bgOffWhiteLight"><div class="col-sm-12 col-md-12 col-lg-8 col-lg-offset-2 frontThemes">
-	<h2>Expo's</h2>
-
-		
-<?php
-					$i = 0;
-					foreach($va_sets as $vn_set_id => $va_set){
-						if($i == 0){
-							print "<div class='row'>";
-						}
-						$va_first_item = array_shift($va_set_first_items[$vn_set_id]);
-						print "<div class='col-sm-6 col-md-3'>";
-						print caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id);
-						if($va_set["name"]){
-							print caNavLink($this->request, $va_set["name"], "frontThemesLink", "", "Gallery", $vn_set_id); 
-						}
-						print "</div>";
-						$i++;
-						if($i == 4){
-							print "</div><!-- end row -->";
-							$i = 0;
-						}
-					}
-					if($i > 0){
-						print "</div><!-- end row -->";
-					}
-?>
-</div></div>
-<?php
-	}
-?>
 <div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>
+<?php
+if (Session::getVar('visited') != 'has_visited') {
+?>
+	<div class="lightboxAlert">
+		<div class="pull-right pointer ligthboxAlertClose" onclick="$('.lightboxAlert').hide(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+		{{{lightbox_alert}}}
+		<div><?php print "<a href='#' onclick='$(\".lightboxAlert\").hide(); caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'About', 'userTools', array())."\"); return false;' class='btn-default'><span class='glyphicon glyphicon-user'></span> "._t("Hoe werkt dit?")."</a>"; ?></div>	
+	</div>
+<?php
+}
+?>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$(window).scroll(function(){
+					$("#hpScrollBar").fadeOut();
+				});
+<?php
+		if (Session::getVar('visited') != 'has_visited') {
+?>
+			$(window).scroll(function(){
+				$(".lightboxAlert").fadeIn();
+			});
+<?php
+		}
+?>
+			});
+		</script>
