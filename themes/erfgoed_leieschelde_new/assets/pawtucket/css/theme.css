@@ -880,7 +880,7 @@ div.caMediaOverlayControls .close a{
 	padding: 12px 10px 8px 10px;
 }
 div.caMediaOverlayControls .close a .caIcon{
-	color:red !important;
+	color:#fbbf70 !important;
 	text-shadow:#000 0px 1px 0px;
 	font-size:30px !important;
 }
