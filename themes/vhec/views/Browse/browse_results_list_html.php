@@ -48,6 +48,7 @@
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
+	$vs_action 			= strtolower($this->request->getAction());
 
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
@@ -90,6 +91,12 @@
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= "<p>".caDetailLink($this->request, (strlen($qr_res->get("{$vs_table}.preferred_labels")) > 100 ? substr($qr_res->get("{$vs_table}.preferred_labels"), 0, 97)."... " : $qr_res->get("{$vs_table}.preferred_labels")), '', $vs_table, $vn_id)."</p>";
+				$vs_alt_label = "";
+				if($vs_action == "archives"){
+					if($vs_alt_label = $qr_res->get("{$vs_table}.nonpreferred_labels")){
+						$vs_label_detail_link .= "<p>".caDetailLink($this->request, (strlen($vs_alt_label) > 80 ? substr($vs_alt_label)."... " : $vs_alt_label), '', $vs_table, $vn_id)."</p>";
+					}
+				}
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
@@ -130,6 +137,13 @@
 					} else { 
 						$vs_creator = null; 
 					}	
+				}
+				if ($vs_table == 'ca_occurrences') {
+					if ($vs_date_value = $qr_res->get('ca_occurrences.occurrence_dates')) {
+						$vs_date = "<p>".$vs_date_value."</p>";
+					} else {
+						$vs_date = null;
+					}
 				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				

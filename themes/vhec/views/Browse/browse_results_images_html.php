@@ -49,7 +49,7 @@
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
-	
+	$vs_action 			= strtolower($this->request->getAction());
 
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 
@@ -91,6 +91,14 @@
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, (strlen($qr_res->get("{$vs_table}.preferred_labels")) > 80 ? substr($qr_res->get("{$vs_table}.preferred_labels"), 0, 77)."... " : $qr_res->get("{$vs_table}.preferred_labels")), '', $vs_table, $vn_id);
+				$vs_alt_label = "";
+				if(in_array($vs_action, array("archives", "objects"))){
+					if(!in_array($qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)), array("Library Item", "Library Component"))){
+						if($vs_alt_label = $qr_res->get("{$vs_table}.nonpreferred_labels")){
+							$vs_label_detail_link .= "<br/>".caDetailLink($this->request, (strlen($vs_alt_label) > 80 ? substr($vs_alt_label)."... " : $vs_alt_label), '', $vs_table, $vn_id);
+						}
+					}
+				}
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";

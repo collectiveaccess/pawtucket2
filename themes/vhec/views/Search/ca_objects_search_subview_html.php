@@ -96,10 +96,16 @@
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
 ?>
 				<div class='objType'><?php print $qr_results->get('ca_objects.resource_type', array('convertCodesToDisplayText' => true));?></div>
-				<?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."<br/>"; ?>
-				<?php print $qr_results->get('ca_objects.indexingDatesSet', array('delimiter' => ', '))."<br/>"; ?>
-				<?php print $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => ', ')); ?>
-			
+<?php
+				print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."<br/>";
+				if(!in_array($qr_results->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)), array("Library Item", "Library Component"))){
+					if($vs_alt_label = $qr_results->get("ca_objects.nonpreferred_labels", array('returnAsLink' => true))){
+						print (strlen($vs_alt_label) > 80 ? substr($vs_alt_label)."... " : $vs_alt_label)."<br/>";
+					}
+				}
+				print $qr_results->get('ca_objects.indexingDatesSet', array('delimiter' => ', '))."<br/>";
+				print $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'author', 'composer', 'creator', 'filmmaker', 'illustrator', 'photographer'), 'delimiter' => ', '));
+?>			
 			</div><!-- end blockResult -->
 <?php
 			$vn_count++;

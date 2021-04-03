@@ -98,7 +98,7 @@
 	<?php				
 						}
 	?>					
-						<div class="detailTool"><a href="#" onclick='$("#shareWidgetsContainer").toggle(300);return false;'><span class="glyphicon glyphicon-share-alt"></span> Share</a></div><!-- end detailTool -->
+						<!--<div class="detailTool"><a href="#" onclick='$("#shareWidgetsContainer").toggle(300);return false;'><span class="glyphicon glyphicon-share-alt"></span> Share</a></div> end detailTool -->
 	<?php					
 						print '</div><!-- end detailTools -->';
 					}				
@@ -119,7 +119,9 @@
 				if ($va_local_lcsh_subjects = $t_object->get('ca_objects.LOC_text', array('returnAsArray' => true, 'convertCodesToDisplayText' => true, 'delimiter' => '<br/>'))) {
 					foreach ($va_local_lcsh_subjects as $va_key => $va_local_lcsh_subject) {
 						if ($va_local_lcsh_subject) {
-							$vs_access_point_local.= "<div >".caNavLink($this->request, $va_local_lcsh_subject, '', '', 'Browse', 'objects', array('facet' => "loc_facet", "id" => $va_local_lcsh_subject))."</div>";
+							$va_local_lcsh_subject_search = str_replace(array('>', '(', ')'), array('', '', ''), $va_local_lcsh_subject);
+							$vs_access_point_local.= "<div >".caNavLink($this->request, $va_local_lcsh_subject, '', '', 'Search', 'objects', array('search' => 'ca_objects.loc_facet:"'.$va_local_lcsh_subject_search.'"', 'label' => 'Library of Congress Subject Heading'))."</div>";
+							#$vs_access_point_local.= "<div >".caNavLink($this->request, $va_local_lcsh_subject, '', '', 'Browse', 'objects', array('facet' => 'loc_facet', 'id' => $va_local_lcsh_subject))."</div>";
 						}
 					}
 					$vn_num_subjects++;
@@ -191,46 +193,91 @@
 					}
 					print "</div><!--end subjects-->";
 				}
-				
+			if ($vs_type == "Archival Item") {
 				$vs_rights = false;
 				$vs_rights_text = "";
 				if ($vs_conditions_access = $t_object->get('ca_objects.govAccess')) {
 					$vs_rights = true;
-					$vs_rights_text.= "<h8>Conditions on Access</h8>";
-					$vs_rights_text.= "<div>".$vs_conditions_access."</div>";
-				}		
+					$vs_rights_text.= "<div class='unit'><h8>Conditions Governing Access</h8>";
+					$vs_rights_text.= $vs_conditions_access."</div>";
+				}
+				if ($vs_phys_access = $t_object->get('ca_objects.MARC_physical_access')) {
+					$vs_rights = true;
+					$vs_rights_text.= "<div class='unit'><h8>Physical Access Provisions</h8>";
+					$vs_rights_text.= $vs_phys_access."</div>";
+				}
 				if ($vs_conditions_use = $t_object->get('ca_objects.RAD_useRepro')) {
 					$vs_rights = true;
-					$vs_rights_text.= "<h8>Conditions on Use</h8>";
-					$vs_rights_text.= "<div>".$vs_conditions_use."</div>";
+					$vs_rights_text.= "<div class='unit'><h8>Conditions on Use</h8>";
+					$vs_rights_text.= $vs_conditions_use."</div>";
 				}
 				if ($vs_rights_reproduction = $t_object->get('ca_objects.RAD_usePub')) {
 					$vs_rights = true;
-					$vs_rights_text.= "<h8>Conditions on Reproduction and Publications </h8>";
-					$vs_rights_text.= "<div>".$vs_rights_reproduction."</div>";
-				}
-				if ($vs_rights_statement = $t_object->get('ca_objects.rights_holder')) {
-					$vs_rights = true;
-					$vs_rights_text.= "<h8>Rights Holder</h8>";
-					$vs_rights_text.= "<div>".$vs_rights_statement."</div>";
-				}	
-				if (($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'use')) && (($vs_type != "Library Item"))) {
-					$vs_rights = true;
-					$vs_rights_text.= "<div class='unit'><h8>".$vs_licensing."</h8></div>";
-				}
-							
+					$vs_rights_text.= "<div class='unit'><h8>Conditions on Reproduction and Publications</h8>";
+					$vs_rights_text.= $vs_rights_reproduction."</div>";
+				}							
 				if ($vs_rights == true) {
 					print "<div class='rightsBlock'>";
-					print "<h8 style='margin-bottom:10px;'><a href='#' onclick='$(\"#rightsText\").toggle(300);return false;'>Rights <i class='fa fa-chevron-down'></i></a></h8>";
-					print "<div style='display:none;' id='rightsText'>".$vs_rights_text."</div>";
+					print "<h8 style='margin-bottom:10px;'><a href='#' onclick='$(\"#rightsText\").toggle(300);return false;'>Access and Use <i class='fa fa-chevron-down'></i></a></h8>";
+					print "<div id='rightsText' style='display:none;'>".$vs_rights_text."</div>";
 					print "</div>";
-				}												
+				}	
+				
+				
+			}else{	
+				$vs_rights = false;
+				$vs_rights_text = "";
+				if (($vs_type == "Library Item") || ($vs_type == "Library Component")) {
+					if ($vs_conditions_access = $t_object->get('ca_objects.govAccess')) {
+						$vs_rights = true;
+						$vs_rights_text.= "<div class='unit'><h8>Conditions on Access</h8>";
+						$vs_rights_text.= $vs_conditions_access."</div>";
+					}
+				}		
+				if ($vs_conditions_use = $t_object->get('ca_objects.RAD_useRepro')) {
+					$vs_rights = true;
+					$vs_rights_text.= "<div class='unit'><h8>Conditions on Use</h8>";
+					$vs_rights_text.= $vs_conditions_use."</div>";
+				}
+				if ($vs_rights_reproduction = $t_object->get('ca_objects.RAD_usePub')) {
+					$vs_rights = true;
+					$vs_rights_text.= "<div class='unit'><h8>Conditions on Reproduction and Publications </h8>";
+					$vs_rights_text.= $vs_rights_reproduction."</div>";
+				}
+				if (($vs_type == "Library Item") || ($vs_type == "Library Component")) {
+					if ($vs_rights_statement = $t_object->get('ca_objects.rights_holder')) {
+						$vs_rights = true;
+						$vs_rights_text.= "<div class='unit'><h8>Rights Holder</h8>";
+						$vs_rights_text.= $vs_rights_statement."</div>";
+					}
+				}
+				if (($vs_type == "Library Item") || ($vs_type == "Library Component")) {					
+					if ($vs_rights_license = $t_object->get('ca_objects.dc_license')) {
+						$vs_rights = true;
+						$vs_rights_text.= "<div class='unit'><h8>License</h8>";
+						$vs_rights_text.= $vs_rights_license."</div>";
+					}
+				}							
+				if ($vs_rights == true) {
+					print "<div class='rightsBlock'>";
+					#print "<h8 style='margin-bottom:10px;'><a href='#' onclick='$(\"#rightsText\").toggle(300);return false;'>Rights <i class='fa fa-chevron-down'></i></a></h8>";
+					print "<div id='rightsText'>".$vs_rights_text."</div>";
+					print "</div>";
+				}
+			}												
 ?>
 				<div class='map'>{{{map}}}</div>					
 				</div><!-- end col -->
 			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					<H4>{{{ca_objects.preferred_labels.name}}}</H4>
+<?php
+					if($vs_type == "Archival Item"){
+						if($vs_alt_label = $t_object->get('ca_objects.nonpreferred_labels', array('delimiter' => "<br/>"))){
+							print "<H3>".$vs_alt_label."</H3>";
+						}
+					}
+?>
 					<H5><?php print $vs_type; ?></H5>
 					<HR>
 	<?php
@@ -244,7 +291,7 @@
 						}
 						if ($vs_type != "Library Component")  {
 							print "<div class='unit'><h8><a href='#' class='components' onclick='$(\".hiddenComponents\").toggle(300);return false;'>Find or request this item <i class='fa fa-chevron-down'></i></a></h8>";
-							print "<div class='hiddenComponents' style='display:none;'>";
+							print "<div class='hiddenComponents'>";
 						
 							if (ucfirst(substr($t_object->get('ca_objects.alt_id'), 0, 1)) != "F") {
 								$vn_item_id = $t_object->get('ca_objects.object_id');
@@ -318,12 +365,11 @@
 						}
 
 						if (($va_creator = $t_object->getWithTemplate('<unit restrictToTypes="ind" excludeRelationshipTypes="donor,subject" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) | ($va_orgs = $t_object->getWithTemplate('<unit restrictToTypes="org" excludeRelationshipTypes="donor,subject" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) | ($va_subject_entity = $t_object->getWithTemplate('<unit restrictToRelationshipTypes="subject" relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) ) {
-							print "<div class='unit'><h8>Creators & Contributors</h8>".$va_creator;
+							print "<div class='unit trimText'><h8>Creators & Contributors</h8>".$va_creator;
 							if ($va_orgs) { print "<br/>".$va_orgs; }
 							if ($va_subject_entity) { print "<br/>".$va_subject_entity; }
 							print "</div>";
 						}
-
 						if ($va_summary = $t_object->get('ca_objects.MARC_summary')) {
 							print "<div class='unit trimText'><h8>Summary</h8>".$va_summary."</div>";
 						}
@@ -334,13 +380,15 @@
 							print "<div class='unit'><h8>Physical Description </h8>".$va_physical_desc."</div>";
 						}
 						$va_carrier = array();
-						if (($va_carrier_type = $t_object->get('ca_objects.carrier_type_library', array('convertCodesToDisplayText' => true))) != "-") {
-							$va_carrier[] = $va_carrier_type;
+						if (($vs_carrier_type = trim($t_object->get('ca_objects.carrier_type_library', array('convertCodesToDisplayText' => true))))) {
+							if($vs_carrier_type != "-"){
+								$va_carrier[] = $vs_carrier_type;
+							}
 						}
-						if ($va_carrier_note = $t_object->get('ca_objects.carrier_type_note')) {
+						if ($va_carrier_note = trim($t_object->get('ca_objects.carrier_type_note'))) {
 							$va_carrier[] = $va_carrier_note;
 						}
-						if ($va_carrier) {
+						if (sizeof($va_carrier)) {
 							print "<div class='unit'><h8>Carrier Type</h8>".join(', ', $va_carrier)."</div>"; 
 						}
 						$va_language = array();
@@ -401,15 +449,26 @@
 						}
 						if ($va_resource_type_archives = $t_object->get('ca_objects.resource_type', array('convertCodesToDisplayText' => true))) {
 							print "<div class='unit'><h8>Resource Type</h8>".$va_resource_type_archives."</div>";
-						}					
-						if ($va_creation_date = $t_object->get('ca_objects.displayDate', array('delimiter', ', '))) {
+						}
+						if ($va_title_note = $t_object->get('ca_objects.ISADG_titleNote')) {
+							print "<div class='unit'><h8>Title Note</h8>".$va_title_note."</div>";
+						}											
+						if ($va_creation_date = $t_object->get('ca_objects.displayDate', array('delimiter' => ', '))) {
 							print "<div class='unit'><h8>Date of Creation</h8>".$va_creation_date."</div>";
-						}																									
+						}	
+						if ($va_date_note = $t_object->get('ca_objects.ISADG_dateNote', array('delimiter' => ', '))) {
+							print "<div class='unit'><h8>Date Note</h8>".$va_date_note."</div>";
+						}																														
 						if ($va_genre_archives = $t_object->get('ca_objects.genre', array('convertCodesToDisplayText' => true))) {
 							print "<div class='unit'><h8>Genre</h8>".$va_genre_archives."</div>";
 						}						 										
 						if ($va_alt_id = $t_object->get('ca_objects.alt_id')) {
 							print "<div class='unit'><h8>Object ID</h8>".$va_alt_id."</div>";
+						}						 										
+						if($vs_type == "Museum Work"){
+							if ($vs_previous_number = $t_object->get('ca_objects.previous_number')) {
+								print "<div class='unit'><h8>Previous NUmber</h8>".$vs_previous_number."</div>";
+							}
 						}
 						if ($vs_type == "Archival Item") {
 							if ($va_idno = $t_object->get('ca_objects.objectIdno')) {
@@ -417,6 +476,12 @@
 							}						
 							if ($va_creator_archives = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => ', ', 'returnAsLink' => true))) {
 								print "<div class='unit'><h8>Creator</h8>".$va_creator_archives."</div>";
+							}
+							if ($vs_tmp = $t_object->get('ca_objects.RAD_custodial')) {
+								print "<div class='unit trimText'><h8>Archival History</h8>".$vs_tmp."</div>";
+							}
+							if ($vs_tmp = $t_object->get('ca_objects.ISADG_transfer')) {
+								print "<div class='unit trimText'><h8>Immediate Source of Acquisition or Transfer</h8>".$vs_tmp."</div>";
 							}
 							if ($va_item_path = $t_object->get('ca_collections.hierarchy.collection_id', array('returnAsArray' => true))) {
 								$va_path = array();
@@ -434,9 +499,9 @@
 							print "<div class='unit'><h8>Creator</h8>".$va_creator."</div>";
 						}
 						
-						if ($va_bio_hist = $t_object->get('ca_objects.RAD_admin_hist')) {
-							print "<div class='unit trimText'><h8>Administrative/Biographical History</h8>".$va_bio_hist."</div>";
-						}
+						#if ($va_bio_hist = $t_object->get('ca_objects.RAD_admin_hist', array('delimiter' => '<br/><br/>'))) {
+						#	print "<div class='unit trimText'><h8>Administrative/Biographical History</h8>".$va_bio_hist."</div>";
+						#}
 						if ($va_scope = $t_object->get('ca_objects.RAD_scopecontent')) {
 							print "<div class='unit'><h8>Summary</h8>".$va_scope."</div>";
 						}
@@ -445,6 +510,9 @@
 						}
 						if ($va_scope = $t_object->get('ca_objects.ISADG_scope')) {
 							print "<div class='unit'><h8>Scope & Content</h8>".$va_scope."</div>";
+						}
+						if ($vs_tmp = $t_object->get('ca_objects.RAD_caption')) {
+							print "<div class='unit'><h8>Caption, signatures and inscriptions</h8>".$vs_tmp."</div>";
 						}
 #						if ($va_radlanguage = $t_object->get('ca_objects.RAD_langMaterial', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
 #							if ($va_language != '-') {
@@ -476,16 +544,24 @@
 							if ($va_language != '-') {
 								print "<div class='unit'><h8>Language</h8>".$va_language."</div>";
 							}
-						}										
+						}
 						if ($va_language_note = $t_object->get('ca_objects.language_note')) {
 							print "<div class='unit'><h8>Language Note</h8>".$va_language_note."</div>";
+						}
+						#if ($vs_type == "Archival Item") {										
+							if ($va_rights = $t_object->get('ca_objects.dc_rights')) {
+								print "<div class='unit'><h8>Rights</h8>".$va_rights."</div>";
+							}
+						#}
+						if ($vs_tmp = $t_object->get('ca_objects.RAD_condition')) {
+							print "<div class='unit'><h8>Physical Characteristics and Technical Requirements</h8>".$vs_tmp."</div>";
 						}						
 						if ($va_statement_responsibility = $t_object->get('ca_objects.RAD_statement')) {
 							print "<div class='unit'><h8>Statement of Responsibility</h8>".$va_statement_responsibility."</div>";
 						}
-						if ($va_archival_history = $t_object->get('ca_objects.RAD_custodial')) {
-							print "<div class='unit'><h8>Archival History</h8>".$va_archival_history."</div>";
-						}
+						if ($va_archival_publisher = $t_object->get('ca_objects.RAD_pubDist')) {
+							print "<div class='unit'><h8>Publisher</h8>".$va_archival_publisher."</div>";
+						}						
 						if ($va_provenance_museum = $t_object->get('ca_objects.cdwa_ownership.ownership_provenance')) {
 							print "<div class='unit'><h8>Provenance</h8>".$va_provenance_museum."</div>";
 						}											
@@ -499,11 +575,11 @@
 							print "<div class='unit'><h8>Legal Status</h8>".$va_provenance_legal."</div>";
 						}
 						if ($va_provenance_credit = $t_object->get('ca_objects.cdwa_ownership.ownership_credit')) {
-							print "<div class='unit'><h8>Credit Line</h8>".$va_provenance_credit."</div>";
+							print "<div class='unit'><h8>Owner's Credit Line</h8>".$va_provenance_credit."</div>";
 						}												
-						if ($va_collection = $t_object->get('ca_collections.preferred_labels', array('restrictToRelationshipTypes' => array('part_of'), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
-							print "<div class='unit'><h8>Part of</h8>".$va_collection."</div>";
-						}
+						#if ($va_collection = $t_object->get('ca_collections.preferred_labels', array('restrictToRelationshipTypes' => array('part_of'), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+						#	print "<div class='unit'><h8>Part of</h8>".$va_collection."</div>";
+						#}
 						if ($va_compound = $t_object->get('ca_objects.related.preferred_labels', array('restrictToRelationshipTypes' => array('compound'), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
 							print "<div class='unit'><h8>Compound Works</h8>".$va_compound."</div>";  
 						}
@@ -512,7 +588,16 @@
 						}
 						if ($va_assoc_materials_note = $t_object->get('ca_objects.associated_text')) {
 							print "<div class='unit'><h8>Associated Materials Note</h8>".$va_assoc_materials_note."</div>";
-						}						
+						}
+						if ($vs_existence = $t_object->getWithTemplate('<unit relativeTo="ca_objects.RAD_originals" delimiter="<br/>"><a href="^ca_objects.RAD_originals.RAD_originals_Url">^ca_objects.RAD_originals.RAD_originals_text</a></unit>')) {
+							print "<div class='unit'><h8>Existence and Location of Originals</h8>".$vs_existence."</div>";
+						}
+						if ($vs_copies = $t_object->getWithTemplate('<unit relativeTo="ca_objects.RAD_availability" delimiter="<br/>"><a href="^ca_objects.RAD_availability.RAD_availability_Url">^ca_objects.RAD_availability.RAD_availability_text</a></unit>')) {
+							print "<div class='unit'><h8>Existence and Location of Copies</h8>".$vs_copies."</div>";
+						}	
+						if ($vs_units_desc = $t_object->getWithTemplate('<unit relativeTo="ca_objects.RAD_material" delimiter="<br/>"><a href="^ca_objects.RAD_material.RAD_material_Url">^ca_objects.RAD_material.RAD_material_text</a></unit>')) {
+							print "<div class='unit'><h8>Related Units of Description</h8>".$vs_units_desc."</div>";
+						}																	
 						if ($t_object->get('ca_objects.alternate_text.alternate_desc_upload')){
 							$va_assoc_materials_pdf = $t_object->get('ca_objects.alternate_text', array('returnWithStructure' => true, 'ignoreLocale' => true, 'version' => 'preview', 'convertCodesToDisplayText' => true)); 
 							print "<div class='unit document'><h8>Auxiliary Document</h8>";
@@ -541,6 +626,25 @@
 						if ($va_funding_note = $t_object->get('ca_objects.funding_note')) {
 							print "<div class='unit'><h8>Funding Note</h8>".$va_funding_note."</div>";
 						}
+					}
+					if ($vs_type != "Archival Item") {
+						if ($va_idno = $t_object->get('ca_objects.objectIdno')) {
+							print "<div class='unit'><h8>Identifier</h8>".$va_idno."</div>";
+						}						
+						if ($va_creator_archives = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => ', ', 'returnAsLink' => true))) {
+							print "<div class='unit'><h8>Creator</h8>".$va_creator_archives."</div>";
+						}
+						if ($va_item_path = $t_object->get('ca_collections.hierarchy.collection_id', array('returnAsArray' => true))) {
+							$va_path = array();
+							foreach ($va_item_path as $va_key => $va_item_path_t) {
+								foreach ($va_item_path_t as $va_key => $va_item_path_id) {
+									$t_collection = new ca_collections($va_item_path_id);
+									$va_path[] = caNavLink($this->request, $t_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_item_path_id);
+								}
+			
+							}
+							print "<div class='unit'><h8>Location in Collection</h8>".join(' > ', $va_path)."</div>";
+						}	
 					}
 					$vs_permalink = caNavUrl($this->request, 'Detail', 'objects', $vn_object_id, array(), array('absolute' => 1));
 					print "<div class='unit'><h8>Permalink</h8><a href='".$vs_permalink."'>".$vs_permalink."</a></div>";																																																																												
@@ -587,7 +691,7 @@
 			$va_ents_by_type = array();
 			if ($va_related_entities = $t_object->get('ca_entities', array('checkAccess' => $va_access_values, 'returnWithStructure' => true, 'excludeRelationshipTypes' => array('donor')))) {
 				foreach ($va_related_entities as $va_key => $va_related_entity) {
-					$va_ents_by_type[$va_related_entity['item_type_id']][$va_related_entity['entity_id']] = "<div class='col-sm-4'><div class='entityThumb'><p>".caNavLink($this->request, $va_related_entity['label'], '', '', 'Detail', 'entities/'.$va_related_entity['entity_id'])." (".$va_related_entity['relationship_typename'].")</p></div></div>";
+					$va_ents_by_type[$va_related_entity['item_type_id']][] = "<div class='col-sm-4'><div class='entityThumb'><p>".caNavLink($this->request, $va_related_entity['label'], '', '', 'Detail', 'entities/'.$va_related_entity['entity_id'])." (".$va_related_entity['relationship_typename'].")</p></div></div>";
 				}
 				foreach ($va_ents_by_type as $vs_entity_type => $va_entity) {
 					if (($va_type_name = caGetListItemByIDForDisplay($vs_entity_type, true)) == "Individuals" ) {

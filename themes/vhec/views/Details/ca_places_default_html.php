@@ -14,7 +14,7 @@
 			{{{previousLink}}}{{{resultsLink}}}
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10 marginTop'>
 		<div class="container">
 
 			<div class="row">			
@@ -22,7 +22,7 @@
 					<div class='map'>{{{map}}}</div>
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
-					<H4>{{{^ca_places.preferred_labels.name}}}</H4>
+					<H4>{{{^ca_places.preferred_labels.name}}}{{{<ifdef code="ca_places.parent.preferred_labels">, ^ca_places.parent.preferred_labels</ifdef>}}}</H4>
 					<H5>{{{^ca_places.type_id}}}</H5>	
 <?php
 					if ($va_description = $t_item->get('ca_places.description')) {
