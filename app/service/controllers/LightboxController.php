@@ -42,8 +42,8 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 	/**
 	 *
 	 */
-	public function __construct(&$po_request, &$po_response, $pa_view_paths) {
-		parent::__construct($po_request, $po_response, $pa_view_paths);
+	public function __construct(&$request, &$response, $view_paths) {
+		parent::__construct($request, $response, $view_paths);
 	}
 	# -------------------------------------------------------
 	/**

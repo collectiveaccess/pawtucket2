@@ -39,8 +39,8 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 	/**
 	 *
 	 */
-	public function __construct(&$po_request, &$po_response, $pa_view_paths) {
-		parent::__construct($po_request, $po_response, $pa_view_paths);
+	public function __construct(&$request, &$response, $view_paths) {
+		parent::__construct($request, $response, $view_paths);
 	}
 	# -------------------------------------------------------
 	/**
@@ -50,82 +50,151 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 		$qt = new ObjectType([
 			'name' => 'Query',
 			'fields' => [
-				'content' => [
-					'type' => LightboxSchema::get('LightboxContents'),
-					'description' => _t('Content of specified lightbox'),
+				'facet' => [
+					'type' => BrowseSchema::get('BrowseFacet'),
+					'description' => _t('Information about specific facet'),
 					'args' => [
-						'id' => Type::int(),
 						[
-							'name' => 'mediaVersions',
-							'type' => Type::listOf(Type::string()),
-							'description' => _t('List of media versions to return'),
-							'defaultValue' => ['small']
+							'name' => 'key',
+							'type' => Type::string(),
+							'description' => _t('Browse key')
 						],
 						[
-							'name' => 'jwt',
+							'name' => 'facet',
 							'type' => Type::string(),
-							'description' => _t('JWT'),
-							'defaultValue' => self::getBearerToken()
+							'description' => _t('Name of facet')
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
 					
-						try {
-							if (!($u = self::authenticate($args['jwt']))) {
-								throw new \ServiceException(_t('Invalid JWT'));
-							}
-						} catch(Exception $e) {
-						
-						}
-						$t_set = new \ca_sets($args['id']);
-						
-						// TODO: check access
-						$lightbox = [
-							'id' => $t_set->get('ca_sets.set_id'),
-							'title' => $t_set->get('ca_sets.preferred_labels.name'),
-							'type' => $t_set->get('ca_sets.type_id', ['convertCodesToIdno' => true]),
-							'created' => date('c', $t_set->get('ca_sets.created.timestamp')),
-							'content_type' => Datamodel::getTableName($t_set->get('ca_sets.table_num')),
-							'items' => []
-						];
-						
-						$items = caExtractValuesByUserLocale($t_set->getItems(['thumbnailVersions' => $args['mediaVersions']]));
-				
-						$lightbox['items'] = array_map(
-							function($i) {
-								$media_versions = [];
-								foreach($i as $k => $v) {
-									if (preg_match('!^representation_url_(.*)$!', $k, $m)) {
-										if (!$v) { continue; }
-										$media_versions[] = [
-											'version' => $m[1],
-											'url' => $v,
-											'width' => $i['representation_width_'.$m[1]],
-											'height' => $i['representation_height_'.$m[1]],
-											'mimetype' => $i['representation_mimetype_'.$m[1]],
-										];
-									}
-								}
-								return [
-									'item_id' => $i['item_id'],
-									'title' => $i['set_item_label'],
-									'caption' => $i['caption'],
-									'id' => $i['row_id'],
-									'rank' => $i['rank'],
-									'identifier' => $i['idno'],
-									'media' => $media_versions
-								];
-							},
-							$items
-						);
-					
-						return $lightbox;
+						return [];
 					}
-				]
+				],
+				'facets' => [
+					'type' => BrowseSchema::get('BrowseFacetList'),
+					'description' => _t('List of available facets'),
+					'args' => [
+						[
+							'name' => 'key',
+							'type' => Type::string(),
+							'description' => _t('Browse key')
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+					
+						return [];
+					}
+				],
+				'result' => [
+					'type' => BrowseSchema::get('BrowseResult'),
+					'description' => _t('Return browse result for key'),
+					'args' => [
+						[
+							'name' => 'key',
+							'type' => Type::string(),
+							'description' => _t('Browse key')
+						],
+						[
+							'name' => 'sort',
+							'type' => Type::string(),
+							'description' => _t('Sort fields')
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+					
+						return [];
+					}
+				],
+				'filters' => [
+					'type' => BrowseSchema::get('BrowseFilterList'),
+					'description' => _t('List of applied filters'),
+					'args' => [
+						[
+							'name' => 'key',
+							'type' => Type::string(),
+							'description' => _t('Browse key')
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+					
+						return [];
+					}
+				],
 			],
 		]);
 		
-		return self::resolve($qt);
+		$mt = new ObjectType([
+			'name' => 'Mutation',
+			'fields' => [
+				'addFilterValue' => [
+					'type' => BrowseSchema::get('BrowseResult'),
+					'description' => _t('Add filter value to browse.'),
+					'args' => [
+						[
+							'name' => 'key',
+							'type' => Type::string(),
+							'description' => _t('Browse key')
+						],
+						[
+							'name' => 'facet',
+							'type' => Type::string(),
+							'description' => _t('Facet name')
+						],
+						[
+							'name' => 'value',
+							'type' => Type::string(),
+							'description' => _t('Filter value')
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+					
+						return [];
+					}
+				],
+				'removeFilterValue' => [
+					'type' => BrowseSchema::get('BrowseResult'),
+					'description' => _t('Remove filter value from browse. If value is omitted all values for the specified facet are removed.'),
+					'args' => [
+						[
+							'name' => 'key',
+							'type' => Type::string(),
+							'description' => _t('Browse key')
+						],
+						[
+							'name' => 'facet',
+							'type' => Type::string(),
+							'description' => _t('Facet name')
+						],
+						[
+							'name' => 'value',
+							'type' => Type::string(),
+							'description' => _t('Filter value')
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+					
+						return [];
+					}
+				],
+				'removeAllFilterValues' => [
+					'type' => BrowseSchema::get('BrowseResult'),
+					'description' => _t('Remove all filters from browse, resetting to start state.'),
+					'args' => [
+						[
+							'name' => 'key',
+							'type' => Type::string(),
+							'description' => _t('Browse key')
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+					
+						return [];
+					}
+				]
+			]
+		]);
+		
+		return self::resolve($qt, $mt);
 	}
 	# -------------------------------------------------------
 }
