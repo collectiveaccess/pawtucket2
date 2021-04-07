@@ -54,7 +54,9 @@
 							if ($vn_subject > 3) {
 								$vs_subject_style = "class='subjectHidden'";
 							}
-							$vs_access_point.= "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '',  'Search', 'objects', array('search' => "ca_objects.local_subject:'".$va_local_subject."'"))."</div>";
+							$va_local_subject_edit = str_replace('&amp;', ' ', $va_local_subject);
+
+							$vs_access_point.= "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '',  'Search', 'objects', array('search' => "ca_objects.local_subject:'".$va_local_subject_edit."'"))."</div>";
 						
 							if (($vn_subject == 3) && (sizeof($va_local_subjects) > 3)) {
 								$vs_access_point.= "<a class='seeMore' href='#' onclick='jQuery(\".seeMore\").hide();$(\".subjectHidden\").slideDown(300);return false;'>more...</a>";
@@ -96,12 +98,12 @@
 						$vs_rights_text.= "<div class='unit'><h8>".$vs_licensing."</h8></div>";
 					}
 							
-					if ($vs_rights == true) {
-						print "<div class='rightsBlock'>";
-						print "<h8 style='margin-bottom:10px;'><a href='#' onclick='jQuery(\"#rightsText\").toggle(300);return false;'>Rights <i class='fa fa-chevron-down'></i></a></h8>";
-						print "<div style='display:none;' id='rightsText'>".$vs_rights_text."</div>";
-						print "</div>";
-					}					
+					#if ($vs_rights == true) {
+					#	print "<div class='rightsBlock'>";
+					#	print "<h8 style='margin-bottom:10px;'><a href='#' onclick='jQuery(\"#rightsText\").toggle(300);return false;'>Rights <i class='fa fa-chevron-down'></i></a></h8>";
+					#	print "<div style='display:none;' id='rightsText'>".$vs_rights_text."</div>";
+					#	print "</div>";
+					#}					
 ?>				
 					<div class='map'>{{{map}}}</div>
 <?php
@@ -121,16 +123,37 @@
 					if ($va_identifier = $t_item->get('ca_collections.collection_identifier')) {
 						print "<div class='unit'><h8>Identifier</h8>".$va_identifier."</div>";
 					}
+					if($vs_alt_label = $t_item->get('ca_collections.nonpreferred_labels', array('delimiter' => "<br/>"))){
+						print "<div class='unit'><h8>Parallel Title</h8>".$vs_alt_label."</div>";
+					}
+					if ($va_title_note = $t_item->get('ca_collections.ISADG_titleNote')) {
+						print "<div class='unit'><h8>Title Note</h8>".$va_title_note."</div>";
+					}					
 					if ($va_extent = $t_item->get('ca_collections.RAD_extent')) {
 						print "<div class='unit'><h8>Extent & Medium</h8>".$va_extent."</div>";
 					}
 					if ($va_date = $t_item->get('ca_collections.displayDate', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><h8>Date</h8>".$va_date."</div>";
-					}	
+					}
+					if ($va_date_note = $t_item->get('ca_collections.ISADG_dateNote')) {
+						print "<div class='unit'><h8>Date Note</h8>".$va_date_note."</div>";
+					}						
 					if ($va_creator = $t_item->get('ca_entities.preferred_labels', array('delimiter' => ', ', 'restrictToRelationshipTypes' => array('creator'), 'returnAsLink' => true))) {
 						print "<div class='unit'><h8>Creator</h8>".$va_creator."</div>";
 					}
-					if ($va_adminbio = $t_item->get('ca_collections.RAD_admin_hist')) {
+	# --- entities by type - exclude creator
+					if ($va_entities = $t_item->get('ca_entities', array('returnWithStructure' => true, 'excludeRelationshipTypes' => array('creator'), 'returnAsLink' => true))) {
+						$va_entities_by_rel_type = array();
+						foreach($va_entities as $va_entity){
+							$va_entities_by_rel_type[$va_entity["relationship_typename"]][] = caDetailLink($this->request, $va_entity["displayname"], "", "ca_entities", $va_entity["entity_id"]);	
+						}
+						foreach($va_entities_by_rel_type as $vs_rel_type => $va_entities_for_rel){
+							print "<div class='unit'><h8>".$vs_rel_type."</h8>";
+							print join(", ", $va_entities_for_rel);
+							print "</div>";
+						}
+					}
+					if ($va_adminbio = $t_item->get('ca_collections.RAD_admin_hist', array('delimiter' => '<br/><br/>'))) {
 						print "<div class='unit trimText'><h8>Administrative/Biographical History</h8>".$va_adminbio."</div>";
 					}
 					if ($va_scope = $t_item->get('ca_collections.ISADG_scope')) {
@@ -171,7 +194,16 @@
 					}
 					if ($va_date_desc = $t_item->get('ca_collections.dateDescript')) { 
 						print "<div class='unit'><h8>Date of Description</h8>".$va_date_desc."</div>";
-					}					
+					}
+					if ($vs_existence = $t_item->getWithTemplate('<unit relativeTo="ca_collections.RAD_originals" delimiter="<br/>"><ifdef code="ca_collections.RAD_originals.RAD_originals_Url"><a href="^ca_collections.RAD_originals.RAD_originals_Url" target="_blank">^ca_collections.RAD_originals.RAD_originals_text</a></ifdef></unit>')) {
+						print "<div class='unit'><h8>Existence and Location of Originals</h8>".$vs_existence."</div>";
+					}
+					if ($vs_copies = $t_item->getWithTemplate('<unit relativeTo="ca_collections.RAD_availability" delimiter="<br/>"><ifdef code="ca_collections.RAD_availability.RAD_availability_Url"><a href="^ca_collections.RAD_availability.RAD_availability_Url" target="_blank">^ca_collections.RAD_availability.RAD_availability_text</a></ifdef></unit>')) {
+						print "<div class='unit'><h8>Existence and Location of Copies</h8>".$vs_copies."</div>";
+					}	
+					if ($vs_units_desc = $t_item->getWithTemplate('<unit relativeTo="ca_collections.RAD_material" delimiter="<br/>"><ifdef code="ca_collections.RAD_material.RAD_material_Url"><a href="^ca_collections.RAD_material.RAD_material_Url" target="_blank">^ca_collections.RAD_material.RAD_material_text</a></ifdef></unit>')) {
+						print "<div class='unit'><h8>Related Units of Description</h8>".$vs_units_desc."</div>";
+					}											
 /*																																																				
 					if ($va_description = $t_item->get('ca_collections.description')) {
 						print "<div class='unit'><h8>Description</h8>".$va_description."</div>";
@@ -297,7 +329,7 @@
 			
 {{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="part_of">
 			<div class="row">
-				<div class="col-sm-12"><h4 style='font-size:16px;'>Digitized Items</h4></div>
+				<div class="col-sm-12"><h4 style='font-size:16px;'>Select Items</h4></div>
 			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
@@ -334,7 +366,7 @@
 				jQuery(document).ready(function() {
 					$('.trimText').readmore({
 					  speed: 75,
-					  maxHeight: 97
+					  maxHeight: 100
 					});
 				});
 			</script>

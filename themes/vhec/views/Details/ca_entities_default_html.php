@@ -14,7 +14,7 @@
 			{{{previousLink}}}{{{resultsLink}}}
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10 marginTop' >
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
@@ -23,8 +23,10 @@
 						if ($va_entity_dates = $t_item->get('ca_entities.entity_date', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 							foreach ($va_entity_dates as $va_key => $va_entity_date_t) {
 								foreach ($va_entity_date_t as $va_key => $va_entity_date) {
-									if ($va_entity_date['entity_date_supress'] == "No") {
-										print " (".$va_entity_date['entity_date_value'].")";
+									if ($va_entity_date['entity_date_supress'] == "No") { 
+										if ($va_entity_date['entity_date_value']) {
+											print " (".$va_entity_date['entity_date_value'].")";
+										}
 									}
 								}
 							}
