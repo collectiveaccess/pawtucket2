@@ -37,7 +37,7 @@
 			$vn_output = 0;
 			foreach ($va_related_install as $va_id => $va_related_install_id) {
 				$t_rel_install = new ca_objects($va_related_install_id);
-				$vs_install_image = $t_rel_install->get('ca_object_representations.media.large', array('checkAccess' => $va_access_values));
+				$vs_install_image = $t_rel_install->get('ca_object_representations.media.page', array('checkAccess' => $va_access_values));
 				if($vs_install_image){
 					if ($vs_photo_credit = $t_rel_install->getWithTemplate('<unit relativeTo="ca_object_representations"><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer">^ca_entities.preferred_labels</unit></unit>')) {
 						$vs_photo_credit = "<br/><span class='exhibitionRepPhotoCredit'>Photo by ".$vs_photo_credit."</span>";
