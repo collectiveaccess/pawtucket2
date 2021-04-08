@@ -153,6 +153,22 @@
 					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="ind"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><H6>Related person</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="ind"><H6>Related people</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
 					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="org"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><H6>Related organization</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="org"><H6>Related organizations</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
 					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="fam"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><H6>Related family</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="fam"><H6>Related families</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					
+					$va_LcshNames = $t_item->get("ca_collections.LcshNames", array("returnAsArray" => true));
+					$va_LcshNames_processed = array();
+					if(is_array($va_LcshNames) && sizeof($va_LcshNames)){
+						foreach($va_LcshNames as $vs_LcshNames){
+							if($vs_LcshNames && (strpos($vs_LcshNames, " [") !== false)){
+								$va_LcshNames_processed[] = mb_substr($vs_LcshNames, 0, strpos($vs_LcshNames, " ["));
+							}else{
+								$va_LcshNames_processed[] = $vs_LcshNames;
+							}
+						}
+						$vs_LcshNames = join("<br/>", $va_LcshNames_processed);
+					}
+					if($vs_LcshNames){
+						print "<div class='unit'><H6>Library of Congress Names</H6>".$vs_LcshNames."</div>";	
+					}
 
 ?>
 					
