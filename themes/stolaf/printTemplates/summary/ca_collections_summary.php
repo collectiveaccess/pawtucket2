@@ -147,22 +147,16 @@
 					}
 ?>				
 					{{{<ifdef code="ca_collections.preferCite"><div class="unit"><H6>Preferred citation</H6>^ca_collections.preferCite%delimiter=,_</div></ifdef>}}}
-									
-					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><H6>Related person</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2" restrictToTypes="ind"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" restrictToTypes="ind" delimiter=" "><div class="unit">^ca_entities.preferred_labels (^relationship_typename)</div></unit>}}}
-				
-					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><H6>Related organization</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2" restrictToTypes="org"><H6>Related organizations</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" restrictToTypes="org" delimiter=" "><div class="unit">^ca_entities.preferred_labels (^relationship_typename)</div></unit>}}}
-				
-					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><H6>Related family</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2" restrictToTypes="fam"><H6>Related families</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" restrictToTypes="fam" delimiter=" "><div class="unit">^ca_entities.preferred_labels (^relationship_typename)</div></unit>}}}
 	
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter=" "><div class="unit">^ca_places.preferred_labels (^relationship_typename)</div></unit>}}}
+<?php
+					# --- entity name should be the loc name when Entity Source is LCNAF - LcshNames - /\[[^)]+\]/
+					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="ind"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><H6>Related person</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="ind"><H6>Related people</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="org"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><H6>Related organization</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="org"><H6>Related organizations</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="fam"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><H6>Related family</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="fam"><H6>Related families</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+
+?>
+					
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount><ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount><unit relativeTo="ca_places" delimiter="<br/>">^ca_places.preferred_labels (^relationship_typename)</unit></div></ifcount>}}}
 	
 	
 	
