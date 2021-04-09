@@ -173,12 +173,13 @@ New York, NY 10001<br><a href="tel:212-481-0295">212-481-0295</a>      </address
 			<h2 class="is-style-title">Collections</h2>
 			<div class="collectionHeader">	
 				<?php print caNavLink($this->request, _t("Browse All"), "btn btn-default", "", "Browse", "objects"); ?>
+				<?php print caNavLink($this->request, _t("Advanced Search"), "btn btn-default", "", "Search", "advanced/objects"); ?>
 				<form class="navbar-form" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>" aria-label="<?php print _t("Search"); ?>">
 					<div class="formOutline">
 						<div class="form-group">
 							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
 						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
+						<!--<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>-->
 					</div>
 				</form>
 				<script type="text/javascript">

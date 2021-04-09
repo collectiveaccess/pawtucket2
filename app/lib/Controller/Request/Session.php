@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2020 Whirl-i-Gig
+ * Copyright 2000-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -316,7 +316,14 @@ class Session {
 			$va_current_values = [];
 		}
 		
-		$va_current_values = array_merge($va_current_values, Session::$s_session_vars);
+		
+		// Only set changed vars
+		$vars = [];
+		foreach(Session::$s_changed_vars as $k => $v) {
+			$vars[$k] = Session::$s_session_vars[$k];
+		}
+		
+		$va_current_values = array_merge($va_current_values, $vars);
 		
 		ExternalCache::save($session_id, @gzcompress(@serialize($va_current_values)), 'SessionVars', $vn_session_lifetime);
 	}

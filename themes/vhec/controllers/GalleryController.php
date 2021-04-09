@@ -28,7 +28,7 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
- 	include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
+ 	include_once(__CA_LIB_DIR__."/Search/SetSearch.php");
  	
  	class GalleryController extends ActionController {
  		# -------------------------------------------------------
@@ -45,6 +45,7 @@
             }
             
  			$this->config = caGetGalleryConfig();
+ 			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->getRequest());
  		 	$this->opa_access_values = $va_access_values;
  		 	# --- what is the section called - title of page

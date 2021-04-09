@@ -544,18 +544,20 @@ h2.tl-headline{
 	}
 }
 
-
+.mainSlide H2{
+	padding-top: 120px;
+}
 .mainSlide .imgCol{
 	height:300px;
 }
 @media (min-width:768px){
 	.mainSlide .imgCol{
-		height:400px;
+		height:450px;
 	}
 }
 @media (min-width:1625px){
 	.mainSlide .imgCol{
-		height:440px;
+		height:500px;
 	}
 }
 
@@ -1393,7 +1395,7 @@ h2.exhibitionSection{
 	text-transform:uppercase;
 	font-size:24px;
 	font-family:Lato;
-	color:#000;
+	color:#D20000;
 }
 .listingExhibitionsImageLink:hover{
 	text-decoration:none;

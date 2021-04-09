@@ -33,15 +33,42 @@
 	$vs_view			= $this->getVar('view');
 	$vs_browse_type		= $this->getVar('browse_type');
 	$o_browse			= $this->getVar('browse');
-	
+	$vs_table			= $this->getVar('table');	
 	$vn_facet_display_length_initial = 10;
 	$vn_facet_display_length_maximum = 60;
-	
+
 	if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 		print "<H2>"._t("Filter by")."</H2>";
+if($vs_table == "ca_entities"){
+		$va_output = array();
+		foreach($va_facets as $vs_facet_name => $va_facet_info) {
+		# --- list all factes without a lable together - merging role facets made from 2 facet configurations
+			if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
+			print "<h3>".$va_facet_info['label_singular']."</h3>"; 
+			switch($va_facet_info["group_mode"]){
+				case "alphabetical":
+				case "list":
+				default:
+					$vn_facet_size = sizeof($va_facet_info['content']);
+					foreach($va_facet_info['content'] as $va_item) {
+						$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+						$va_output[$va_item['label']] = "<div>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+						
+					}
+					
+				break;
+				# ---------------------------------------------
+			}
+		}
+		if(sizeof($va_output)){
+			ksort($va_output);
+			print join(" ", $va_output);
+		}
+
+}else{	
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
@@ -91,6 +118,7 @@
 				}
 			}
 		}
+}
 		print "</div><!-- end bRefine -->\n";
 ?>
 	<script type="text/javascript">

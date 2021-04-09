@@ -202,6 +202,16 @@ if (!$vb_ajax) {	// !ajax
 							$va_items = $va_placeholders = array();
 							while($qr_set_item_objects->nextHit() && ($vn_c < $vn_hits_per_block)) {
 								$vn_object_id = $qr_set_item_objects->get("ca_objects.object_id");
+								$vs_object_label = "";
+								if ($va_labels = $qr_set_item_objects->get('ca_objects.label_copy', array('convertCodesToIdno' => true, 'returnWithStructure' => true))) {
+									foreach($va_labels as $l) {
+										foreach($l as $label) {
+											if (!in_array($label['label_copy_type'], ['current', 'dedication'])) { continue; }
+											$vs_object_label = $label['label_copy_text'];
+										}
+									}
+								}
+
 								if(is_array($va_set_item_info[$vn_object_id])) {
 									foreach ($va_set_item_info[$vn_object_id] as $va_item_info) {
 										if(!$va_item_info['item_id']) { continue; }
@@ -209,7 +219,8 @@ if (!$vb_ajax) {	// !ajax
 											'object_id' => $vn_object_id,
 											'type_id' => $vn_type_id = $qr_set_item_objects->get('ca_objects.type_id'),
 											'type' => $vs_type_idno = caGetListItemIdno($vn_type_id),
-											'set_item_caption' => $va_set_item_metadata[$vn_object_id]['set_item_caption']
+											'set_item_caption' => $va_set_item_metadata[$vn_object_id]['set_item_caption'],
+											'object_label' => $vs_object_label
 										);
 									}
 								}
@@ -221,6 +232,7 @@ if (!$vb_ajax) {	// !ajax
 
 							$va_captions = caProcessTemplateForIDs($vs_caption_template, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
 							$va_names = caProcessTemplateForIDs($vs_caption_template_name, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
+							$va_include_label = caProcessTemplateForIDs("^ca_set_items.include_label", 'ca_objects', $va_object_ids, array('returnAsArray' => true));
 							$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'small';
 							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
 
@@ -230,6 +242,8 @@ if (!$vb_ajax) {	// !ajax
 								$this->setVar('item_id', $vn_item_id);
 								$this->setVar('object_id', $vn_object_id = $va_items[$vn_item_id]['object_id']);
 								$this->setVar('set_item_caption', $va_items[$vn_item_id]['set_item_caption']);
+								$this->setVar('object_label', $va_items[$vn_item_id]['object_label']);
+								$this->setVar('include_label', $va_include_label[$vn_i]);
 								$this->setVar('caption', $va_captions[$vn_i]);
 								$this->setVar('commentCount', (int)$va_comment_counts[$vn_item_id]);
 			
@@ -295,7 +309,7 @@ if (!$vb_ajax) {    // !ajax
 			if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
             }
-            if ($vs_description = $t_set->get($vs_description_attribute, array("convertLineBreaks" => true))) {
+            if ($vs_description = $t_set->get($vs_description_attribute)) {
                 print "<span id='lbSetDescription".$t_set->get("set_id")."'>{$vs_description}</span><hr/>";
             }
             print "<b>Part of ".$vs_lightbox_parent_displayname.":</b><br/>";
@@ -366,7 +380,7 @@ if (!$vb_ajax) {    // !ajax
 		<hr/>
 		<b>Help Tips</b>
 		<ul class="SetHelp">
-			<li><b>Drag and Drop</b> items into your preferred order</li>
+			<li>Click the image or text to <b>Drag and Drop</b> items into your preferred order</li>
 			<li><b>Caption</b> text will appear with items in your gallery slideshow</li>
 			<li><b>Galleries</b> can contain multiple slideshows.</li>
 			<li>Choose a <b>Cover Image</b> to represent your gallery by clicking the <span class='glyphicon glyphicon-check'></span> icon under your slideshow items.</li>
@@ -423,6 +437,8 @@ if (!$vb_ajax) {    // !ajax
             helper: 'clone',
             appendTo: 'body',
             zIndex: 10000,
+            placeholder: 'lbListItemPlaceholder',
+            handle: '.handle',
             update: function( event, ui ) {
                 var data = $(this).sortable('serialize');
                 jQuery.ajax({

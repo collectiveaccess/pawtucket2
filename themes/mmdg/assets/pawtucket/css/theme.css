@@ -421,6 +421,9 @@ a.readmore-js-toggle{
 #bRefine H3, #bRefine H2, #bRefine a{
 	color:#000;
 }
+.browse.entities #bRefine a{
+	text-transform:capitalize;
+}
 .multisearch H1{
 	font-weight: 700;
 }

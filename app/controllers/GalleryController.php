@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2020 Whirl-i-Gig
+ * Copyright 2013-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -128,8 +128,8 @@
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
  				
  				$set_item_id = $this->request->getParameter('set_item_id', pInteger);
- 				if(!in_array($set_item_id, array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values))))){
- 					$set_item_id = "";	
+ 				if(!$set_item_id || !in_array($set_item_id, array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values))))){
+ 					$set_item_id = Session::getVar("last_item_for_set_{$set_id}");	
  				}
  				$this->view->setVar("set_item_id", $set_item_id);
  				
@@ -341,6 +341,9 @@
  			$this->view->setVar("label", $t_instance->getLabelForDisplay());
  			$this->view->setVar("table", $table);
  			
+ 			Session::setVar("last_item_for_set_{$set_id}", $item_id);
+ 			Session::save();
+ 			
  			//
  			// Tag substitution
  			//
@@ -377,7 +380,7 @@
  			$va_ret = array(
  				'module_path' => '',
  				'controller' => 'Gallery',
- 				'action' => 'Index',
+ 				'action' => '^set_id',
  				'params' => []
  			);
 			return $va_ret;
@@ -388,7 +391,7 @@
  		 */
  		private function _getSet($set_id) {
  			$t_set = new ca_sets();
- 			if (!$t_set->load($set_id) || (sizeof($this->opa_access_values) && !in_array((string)$t_set->get('access'), $this->opa_access_values, true))) { throw new ApplicationException(_t('Invalid set')); }
+ 			if (!$t_set->load($set_id) || (sizeof($this->opa_access_values) && !in_array((int)$t_set->get('access'), $this->opa_access_values, true))) { throw new ApplicationException(_t('Invalid set')); }
  			return $t_set;
  		}
  		# -------------------------------------------------------

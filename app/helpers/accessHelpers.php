@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2018 Whirl-i-Gig
+ * Copyright 2010-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -72,7 +72,7 @@
 					$va_access = array_unique(array_merge($va_access, $va_user_access));
 				}
 			}
-			return $va_access;
+			return array_map('intval', $va_access);
 		}
 		return array();
 	}
@@ -87,6 +87,7 @@
 	  * @return boolean True if user is privileged, false if not
 	  */
 	function caUserIsPrivileged($po_request, $pa_options=null) {
+		if($po_request->isLoggedIn()) { return true; }
 		$va_privileged_networks = isset($pa_options['privileged_networks']) && is_array($pa_options['privileged_networks']) ? $pa_options['privileged_networks'] : (array)$po_request->config->getList('privileged_networks');
 		
 		if (!($va_priv_ips = $va_privileged_networks)) {
@@ -301,7 +302,7 @@
 	 */
 	function caMakeTypeIDList($pm_table_name_or_num, $pa_types, $pa_options=null) {
 		if(!is_array($pa_options)) { $pa_options = []; }
-		if (!is_array($pa_types)) { $pa_types = []; }
+		if (!is_array($pa_types)) { $pa_types = $pa_types ? [$pa_types] : []; }
 		$vs_cache_key = caMakeCacheKeyFromOptions(array_merge($pa_options, $pa_types), "caMakeTypeIDList:{$pm_table_name_or_num}");
 		if (ExternalCache::contains($vs_cache_key, 'listItems')) { return ExternalCache::fetch($vs_cache_key, 'listItems'); }
 		if (is_numeric($pm_table_name_or_num)) {
@@ -311,6 +312,7 @@
 		}
 		$t_instance = Datamodel::getInstanceByTableName($vs_table_name, true);
 		if (!$t_instance) { return null; }	// bad table
+		if(is_a($t_instance, 'BaseLabel')) { $t_instance = $t_instance->getSubjectTableInstance(); }
 		if (!($vs_type_list_code = $t_instance->getTypeListCode())) { return null; }	// table doesn't use types
 		
 		$va_ret = caMakeItemIDList($vs_type_list_code, $pa_types, $pa_options);
@@ -335,8 +337,7 @@
 	 * @return array List of numeric item_ids
 	 */
 	function caMakeItemIDList($pm_list_code_or_id, $pa_item_idnos, $pa_options=null) {
-		if (!is_array($pa_item_idnos) && !strlen($pa_item_idnos)) { return []; }
-		if (!is_array($pa_item_idnos)) { $pa_item_idnos = [$pa_item_idnos]; }
+		if (!is_array($pa_item_idnos)) { $pa_item_idnos = strlen($pa_item_idnos) ? [$pa_item_idnos]: []; }
 		if (!is_array($pa_options)) { $pa_options = []; }
 		$vs_cache_key = caMakeCacheKeyFromOptions(array_merge($pa_options, $pa_item_idnos), "caMakeItemIDList:{$pm_list_code_or_id}");
 		if (ExternalCache::contains($vs_cache_key, 'listItems')) { return ExternalCache::fetch($vs_cache_key, 'listItems'); }
@@ -396,7 +397,7 @@
 	 */
 	function caMakeTypeList($pm_table_name_or_num, $pa_type_ids, $pa_options=null) {
 		if (is_array($pa_type_ids) && !sizeof($pa_type_ids)) { return array(); }
-		if (!is_array($pa_type_ids)) { $pa_type_ids = [$pa_type_ids]; }
+		if (!is_array($pa_type_ids)) { $pa_type_ids = strlen($pa_type_ids) ? [$pa_type_ids] : []; }
 		
 		if(isset($pa_options['dontIncludeSubtypesInTypeRestriction']) && (!isset($pa_options['dont_include_subtypes_in_type_restriction']) || !$pa_options['dont_include_subtypes_in_type_restriction'])) { $pa_options['dont_include_subtypes_in_type_restriction'] = $pa_options['dontIncludeSubtypesInTypeRestriction']; }
 	 	
@@ -456,6 +457,8 @@
 	function caMakeSourceIDList($pm_table_name_or_num, $pa_sources, $pa_options=null) {
 		if(isset($pa_options['dontIncludeSubsourcesInSourceRestriction']) && (!isset($pa_options['dont_include_subsources_in_source_restriction']) || !$pa_options['dont_include_subsources_in_source_restriction'])) { $pa_options['dont_include_subsources_in_source_restriction'] = $pa_options['dontIncludeSubsourcesInSourceRestriction']; }
 	 	
+		if (!is_array($pa_sources)) { $pa_sources = strlen($pa_sources) ? [$pa_sources] : []; }
+		
 		if (isset($pa_options['dont_include_subsources_in_source_restriction']) && $pa_options['dont_include_subsources_in_source_restriction']) {
 			$pa_options['noChildren'] = true;
 		}
@@ -692,7 +695,7 @@ $g_source_access_level_cache = array();
 	 * @param mixed $pm_id A primary key value of the row, or an array of values to check. If a single integer value is provided then a boolean result will be returned; if an array of values is provided then an array will be returned with all ids that are readable
 	 * @param string $ps_bundle_name An optional bundle to check access for
 	 *
-	 * @return If $pm_id is an integer return true if user has read access, otherwise false if the user does not have access; if $pm_id is an array of ids, returns an array with all ids the are readable; returns null if one or more parameters are invalid
+	 * @return array If $pm_id is an integer return true if user has read access, otherwise false if the user does not have access; if $pm_id is an array of ids, returns an array with all ids the are readable; returns null if one or more parameters are invalid
 	 */
 	function caCanRead($pn_user_id, $pm_table, $pm_id, $ps_bundle_name=null, $pa_options=null) {
 		$pb_return_as_array = caGetOption('returnAsArray', $pa_options, false);

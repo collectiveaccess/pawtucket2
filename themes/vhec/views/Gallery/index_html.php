@@ -1,7 +1,7 @@
 <?php
  	$vs_set_theme = $this->request->getParameter('theme', pInteger);
  	$vs_page_type = caGetListItemByIDForDisplay($vs_set_theme, array('return_plural' => 1));
- 	$vs_featured_home = caNavLink($this->request, "Featured Galleries", '', '', 'Gallery', 'featured');
+ 	$vs_featured_home = caNavLink($this->request, "Galleries", '', '', 'Gallery', 'featured');
 	$vs_home = caNavLink($this->request, "Home", '', '', '', '');
 	$breadcrumb_link = $vs_home." > ".$vs_featured_home." > ".$vs_page_type;
 

@@ -154,6 +154,7 @@
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Exhibition") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibition"), "", "", "Exhibition", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Education") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Education"), "", "", "Education", ""); ?></li>
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 				</ul>
