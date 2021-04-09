@@ -55,7 +55,6 @@
 	{{{<ifdef code="ca_collections.repository.repository_country"><div class="unit"><H6 style="display:inline;">Collection Number: </H6>^ca_collections.repository.repository_country</div></ifdef>}}}
 	<div class="unit">
 	{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></H6></ifdef>}}}
-	{{{<ifdef code="ca_collections.label">^ca_collections.label<br/></ifdev>}}}
 	</div>
 
 					{{{<ifdef code="ca_collections.adminbiohist"><div class="unit"><H6>Administrative/Biographical History</H6>^ca_collections.adminbiohist%delimiter=,_</div></ifdef>}}}
@@ -76,14 +75,40 @@
 							</unit>
 						</div>
 					</ifdef>}}}
-				
+					{{{<ifdef code="ca_collections.material_type"><div class="unit"><H6>Material Format</H6>^ca_collections.material_type%delimiter=,_</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.accessrestrict"><div class="unit"><H6>Restrictions</H6>^ca_collections.accessrestrict%delimiter=,_</div></ifdef>}}}
+					
+					{{{<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><H6>Physical Access</H6>^ca_collections.physaccessrestrict%delimiter=,_</div></ifdef>}}}
+
+					{{{<ifdef code="ca_collections.preferCite"><div class="unit"><H6>Preferred Citation</H6>^ca_collections.preferCite%delimiter=,_</div></ifdef>}}}
+					
 					{{{<if rule="^ca_collections.type_id =~ /Folder/"><ifcount code="ca_storage_locations" min="1"><div class="unit"><H6>Location</H6>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
 					</div></ifcount></if>}}}
 				
-					{{{<ifdef code="ca_collections.material_type"><div class="unit"><H6>Material Format</H6>^ca_collections.material_type%delimiter=,_</div></ifdef>}}}
 					
 <?php
+					# --- entity name should be the loc name when Entity Source is LCNAF - LcshNames - /\[[^)]+\]/
+					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="ind"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><H6>Related person</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="ind"><H6>Related people</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="org"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><H6>Related organization</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="org"><H6>Related organizations</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="fam"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><H6>Related family</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="fam"><H6>Related families</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					
+					$va_LcshNames = $t_item->get("ca_collections.LcshNames", array("returnAsArray" => true));
+					$va_LcshNames_processed = array();
+					if(is_array($va_LcshNames) && sizeof($va_LcshNames)){
+						foreach($va_LcshNames as $vs_LcshNames){
+							if($vs_LcshNames && (strpos($vs_LcshNames, " [") !== false)){
+								$va_LcshNames_processed[] = mb_substr($vs_LcshNames, 0, strpos($vs_LcshNames, " ["));
+							}else{
+								$va_LcshNames_processed[] = $vs_LcshNames;
+							}
+						}
+						$vs_LcshNames = join("<br/>", $va_LcshNames_processed);
+					}
+					if($vs_LcshNames){
+						print "<div class='unit'><H6>Library of Congress Names</H6>".$vs_LcshNames."</div>";	
+					}
+
 					$va_LcshSubjects = $t_item->get("ca_collections.LcshSubjects", array("returnAsArray" => true));
 					$va_LcshSubjects_processed = array();
 					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
@@ -99,15 +124,7 @@
 					if($vs_LcshSubjects){
 						print "<div class='unit'><H6>Subjects</H6>".$vs_LcshSubjects."</div>";	
 					}
-?>
-					
-					{{{<ifdef code="ca_collections.relation"><div class="unit"><H6>Related Collections</H6>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
-					
-					{{{<ifdef code="ca_collections.accessrestrict"><div class="unit"><H6>Restrictions</H6>^ca_collections.accessrestrict%delimiter=,_</div></ifdef>}}}
-					
-					{{{<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><H6>Physical access</H6>^ca_collections.physaccessrestrict%delimiter=,_</div></ifdef>}}}
-					
-<?php
+
 					$va_LcshGenre = $t_item->get("ca_collections.LcshGenre", array("returnAsArray" => true));
 					$va_LcshGenre_processed = array();
 					if(is_array($va_LcshGenre) && sizeof($va_LcshGenre)){
@@ -133,7 +150,7 @@
 						$vs_aat = join("<br/>", $va_aat_processed);
 					}
 					if($vs_LcshGenre || $vs_aat){
-						print "<div class='unit'><H6>Genres</h6>";
+						print "<div class='unit'><H6>Genres</H6>";
 						if($vs_LcshGenre){
 							print $vs_LcshGenre;
 						}
@@ -145,33 +162,10 @@
 						}
 						print "</div>";	
 					}
-?>				
-					{{{<ifdef code="ca_collections.preferCite"><div class="unit"><H6>Preferred citation</H6>^ca_collections.preferCite%delimiter=,_</div></ifdef>}}}
-	
-<?php
-					# --- entity name should be the loc name when Entity Source is LCNAF - LcshNames - /\[[^)]+\]/
-					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="ind"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><H6>Related person</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="ind"><H6>Related people</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
-					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="org"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><H6>Related organization</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="org"><H6>Related organizations</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
-					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="fam"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><H6>Related family</H6></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="fam"><H6>Related families</H6></ifcount><unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
-					
-					$va_LcshNames = $t_item->get("ca_collections.LcshNames", array("returnAsArray" => true));
-					$va_LcshNames_processed = array();
-					if(is_array($va_LcshNames) && sizeof($va_LcshNames)){
-						foreach($va_LcshNames as $vs_LcshNames){
-							if($vs_LcshNames && (strpos($vs_LcshNames, " [") !== false)){
-								$va_LcshNames_processed[] = mb_substr($vs_LcshNames, 0, strpos($vs_LcshNames, " ["));
-							}else{
-								$va_LcshNames_processed[] = $vs_LcshNames;
-							}
-						}
-						$vs_LcshNames = join("<br/>", $va_LcshNames_processed);
-					}
-					if($vs_LcshNames){
-						print "<div class='unit'><H6>Library of Congress Names</H6>".$vs_LcshNames."</div>";	
-					}
-
 ?>
 					
+					{{{<ifdef code="ca_collections.relation"><div class="unit"><H6>Related Collections</H6>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
+										
 					{{{<ifcount code="ca_places" min="1"><div class="unit"><ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount><ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount><unit relativeTo="ca_places" delimiter="<br/>">^ca_places.preferred_labels (^relationship_typename)</unit></div></ifcount>}}}
 	
 	
