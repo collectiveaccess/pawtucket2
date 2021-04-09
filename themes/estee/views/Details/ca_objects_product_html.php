@@ -190,7 +190,7 @@
 								<ifnotdef code="ca_objects.codes.product_code"><div class="unit"><H6>Product Code</H6>Not Available</div></ifnotdef>
 							</div>
 							<ifdef code="ca_objects.codes.batch_code"><div class="col-sm-4"><div class="unit"><H6>Batch Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.batch_code</unit></div></div></ifdef>
-							<ifdef code="ca_objects.codes.packaging_code"><div class="col-sm-4"><div class="unit"><H6>Packaging Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.product_code</unit></div></div></ifdef>
+							<ifdef code="ca_objects.codes.packaging_code"><div class="col-sm-4"><div class="unit"><H6>Packaging Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.packaging_code</unit></div></div></ifdef>
 						</div>
 						<ifdef code="ca_objects.codes.product_code|ca_objects.codes.batch_code|ca_objects.codes.packaging_code"><HR></ifdef>
 					</if>}}}
