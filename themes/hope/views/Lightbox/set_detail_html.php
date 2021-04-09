@@ -380,7 +380,7 @@ if (!$vb_ajax) {    // !ajax
 		<hr/>
 		<b>Help Tips</b>
 		<ul class="SetHelp">
-			<li><b>Drag and Drop</b> items into your preferred order</li>
+			<li>Click the image or text to <b>Drag and Drop</b> items into your preferred order</li>
 			<li><b>Caption</b> text will appear with items in your gallery slideshow</li>
 			<li><b>Galleries</b> can contain multiple slideshows.</li>
 			<li>Choose a <b>Cover Image</b> to represent your gallery by clicking the <span class='glyphicon glyphicon-check'></span> icon under your slideshow items.</li>
@@ -437,6 +437,8 @@ if (!$vb_ajax) {    // !ajax
             helper: 'clone',
             appendTo: 'body',
             zIndex: 10000,
+            placeholder: 'lbListItemPlaceholder',
+            handle: '.handle',
             update: function( event, ui ) {
                 var data = $(this).sortable('serialize');
                 jQuery.ajax({

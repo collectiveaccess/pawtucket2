@@ -50,7 +50,7 @@
 ?>
 <div class="row"><div class="col-sm-12"><hr/></div></div>
 <div class="row lbListItem">
-	<div class="col-sm-2 text-center">
+	<div class="col-sm-2 text-center handle">
 		{{{representation}}}
 <?php
 			if($vn_representation_id || $vb_write_access){
@@ -67,11 +67,15 @@
 
 	</div>
 	<div class="col-sm-9">
-		<p><?php print caDetailLink($this->request, $this->getVar("caption"), '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail"))); ?></p>
+		<div class="handle">
+			<p><?php print caDetailLink($this->request, $this->getVar("caption"), '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail"))); ?></p>
 <?php
 	if($vs_object_label){
 		print "<p><label>Label</label><br/>".$vs_object_label."</p>";
 	}
+?>
+		</div>
+<?php
 	if($vb_write_access){
 ?>
 		<form id="setItemForm{{{item_id}}}">					
@@ -87,7 +91,7 @@
 ?>
 			<div class='form-group'>
 				<label for='notes' class='control-label'>Caption</label>
-				<textarea name='set_item_caption' id='set_item_caption{{{item_id}}}' class='form-control' rows='6'>{{{set_item_caption}}}</textarea>
+				<textarea name='set_item_caption' id='set_item_caption{{{item_id}}}' class='form-control set_item_caption' rows='6' autocomplete="off">{{{set_item_caption}}}</textarea>
 			</div>
 			<div class='form-group'>
 				<input type="submit" value="save" class="btn btn-default">
@@ -117,6 +121,7 @@
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		CKEDITOR.replace('set_item_caption{{{item_id}}}', {
+			  extraPlugins: 'divarea',
 			  height: 150,
 			  // Define the toolbar groups as it is a more accessible solution.
 			  toolbarGroups: [{

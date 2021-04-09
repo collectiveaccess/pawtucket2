@@ -34,7 +34,7 @@ h2, h3, h4, h5, h6 {
 	font-family:"futura", "sans serif";
 }
 h1, .advancedSearch.results h1, .findingaid h1 {
-	margin-top:60px;
+	margin-top:30px;
 	margin-bottom:25px;
 	font-size:25px;
 	font-family: "futura bold";
@@ -115,7 +115,7 @@ textarea {
     border-radius: 0px;
 }
 .hero img{
-	margin-top:60px;
+	margin-top:30px;
 	width:100%;
 	height:auto;
 	max-width:1500px;
@@ -175,7 +175,7 @@ textarea {
 	padding-bottom:0px;
 	padding-top:0px;
 	margin-top:50px;
-	margin-bottom:50px;
+	margin-bottom:10px;
 	margin-left:5px !important;
 }
 @media (max-width: 767px){
@@ -218,7 +218,7 @@ textarea {
 .nav .dropdown-menu{
 	box-shadow: none;
 	border: none;
-	border-top:1px solid #dedede;
+	/*border-top:1px solid #dedede;*/
 }
 .navbar .navbar-collapse .dropdown.open .dropdown-toggle, .navbar .navbar-collapse .dropdown.open .dropdown-menu {
 	background-color: #f5f5f5;
@@ -437,13 +437,29 @@ textarea {
 .front .jcarousel-control-prev{
 	margin-left:-20px;
 }
-.frontSlide:hover .frontSlideCaption {
+.frontSlide:hover .frontSlideCaption{
 	background-color: rgba(0, 0, 0, 0.5);
 }
 .frontSlideCaption, .frontSlideCaption a {
     color: #FFF;
     font-size: 16px;
     letter-spacing: 1px;
+}
+.slide .frontSlideCaption {
+	position:absolute;
+	width:100%;
+	bottom:0px;
+	padding:5px;
+	color:#fff;
+	background-color: rgba(0, 0, 0, 0.5);	
+	opacity:0;
+	-webkit-transition: opacity 250ms ease-out;
+    -moz-transition: opacity 250ms ease-out;
+    -o-transition: opacity 250ms ease-out;
+    -ms-transition: opacity 250ms ease-out;
+}
+.slide:hover .frontSlideCaption {
+	opacity:1;
 }
 .front .homeDesc{
 	font-size:18px;
@@ -554,6 +570,10 @@ textarea {
 	font-weight:bold;
 	letter-spacing:1px;
 }
+.featuredObj.findingaid {
+	font-weight:normal;
+	margin-bottom:30px;
+}
 .featuredObj img {
 	width:100%;
 	height:auto;
@@ -582,8 +602,8 @@ textarea {
 	width:100%;
 }
 .spotlight .slide img {
-	width:100%;
-	height:auto;
+	width:auto;
+	height:350px;
 }
 .spotlight .example-pager span{
     color: #fff;
@@ -932,17 +952,17 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 	color: #778459;
 }
 .multisearch .blockResults {
-	height: 220px;
+	height: 240px;
 	margin-bottom:25px;
 }
 .multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
-    height: 210px;
-    padding: 75px 10px 0px 10px;
+    height: 235px;
+    padding: 100px 10px 0px 10px;
     font-size: 25px;
 }
 .multisearch .multisearchResult {
 	width: 220px;
-	height: 210px;
+	height: 230px;
 	font-size:11px;
 	line-height:1.3em;
 	background-color:#f5f5f5;
@@ -988,7 +1008,12 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 .detail .unit {
 	margin-bottom:12px;
 }
-
+.detail H3{
+	padding:0px;
+	margin:6px 0px 0px 0px;
+	font-size:14px;
+	line-height:1.4em;
+}
 a.readmore-js-toggle {
 	padding-top:0px;
 	color:#000;
@@ -1054,6 +1079,9 @@ a.readmore-js-toggle {
 }
 .detail HR {
 	clear:both;
+}
+.detail .marginTop {
+	margin-top:30px;
 }
 .jscroll-next {
 	display:none;
@@ -1369,6 +1397,15 @@ a.thumbControl:hover {
 
 .staticPage h6 a {
 	color: #33450D;
+}
+.resource {
+	padding:15px;
+	border-radius:4px;
+	background-color:#f7f7f7;
+	display:block;
+	clear:both;
+	float:left;
+	margin-bottom:5px;
 }
 
 /* Finding Aids */
