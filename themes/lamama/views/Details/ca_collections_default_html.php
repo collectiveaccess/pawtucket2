@@ -30,7 +30,6 @@
 				<div class='col-sm-12 col-lg-8 col-lg-offset-2 text-center'>
 					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
 					<H2>{{{^ca_collections.type_id}}}</H2>
-					{{{<ifdef code="ca_collections.parent_id"><div class="unit">Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
 					{{{<ifdef code="ca_collections.description">
 						<div class='unit description'>
 							<span class="trimText">^ca_collections.description.description_text<ifdef code="ca_collections.description.description_source"><br/><br/>^ca_collections.description.description_source</ifdef></span>
@@ -40,15 +39,7 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-12'>
-					{{{<ifcount code="ca_collections.related" restrictToRelationshipTypes="cntns" min="1"><div class="unit"><label>Contains</label>
-						<span class="trimText"><unit relativeTo="ca_collections.related" restrictToRelationshipTypes="cntns" delimiter="<br/>"><l>^ca_collections.preferred_labels</l></unit></span>
-					</div></ifcount>}}}
-					{{{<ifcount code="ca_collections.related" restrictToRelationshipTypes="subseries" min="1"><div class="unit"><label>Subseries</label>
-						<span class="trimText"><unit relativeTo="ca_collections.related" restrictToRelationshipTypes="subseries" delimiter="<br/>"><l>^ca_collections.preferred_labels</l></unit></span>
-					</div></ifcount>}}}
-					{{{<ifcount code="ca_collections.related" restrictToRelationshipTypes="related" min="1"><div class="unit"><label>Related collection<ifcount code="ca_collections.related" restrictToRelationshipTypes="related" min="2">s</ifcount></label>
-						<span class="trimText"><unit relativeTo="ca_collections.related" restrictToRelationshipTypes="related" delimiter="<br/>"><l>^ca_collections.preferred_labels</l></unit></span>
-					</div></ifcount>}}}
+					{{{<ifdef code="ca_collections.creationDate"><div class="unit"><label>Date</label>^ca_collections.creationDate</div></ifdef>}}}
 					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related <ifcount code="ca_entities" min="1" max="1">person</ifcount><ifcount code="ca_entities" min="2">people</ifcount></label>
 						<span class="trimText"><unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels (^relationship_typename)</l></unit></span>
 					</div></ifcount>}}}
