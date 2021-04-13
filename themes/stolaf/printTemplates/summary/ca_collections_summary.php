@@ -82,9 +82,9 @@
 
 					{{{<ifdef code="ca_collections.preferCite"><div class="unit"><H6>Preferred Citation</H6>^ca_collections.preferCite%delimiter=,_</div></ifdef>}}}
 					
-					{{{<if rule="^ca_collections.type_id =~ /Folder/"><ifcount code="ca_storage_locations" min="1"><div class="unit"><H6>Location</H6>
+					{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><H6>Location</H6>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
-					</div></ifcount></if>}}}
+					</div></ifcount>}}}
 				
 					
 <?php

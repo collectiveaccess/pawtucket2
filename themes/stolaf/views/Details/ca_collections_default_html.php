@@ -80,9 +80,9 @@
 
 					{{{<ifdef code="ca_collections.preferCite"><div class="unit"><label>Preferred Citation</label>^ca_collections.preferCite%delimiter=,_</div></ifdef>}}}
 					
-					{{{<if rule="^ca_collections.type_id =~ /Folder/"><ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location</label>
+					{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location</label>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
-					</div></ifcount></if>}}}
+					</div></ifcount>}}}
 					
 <?php
 					# --- entity name should be the loc name when Entity Source is LCNAF - LcshNames - /\[[^)]+\]/
