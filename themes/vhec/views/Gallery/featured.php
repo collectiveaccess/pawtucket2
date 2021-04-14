@@ -7,12 +7,12 @@
  	$id =  $t_set->get('ca_sets.set_id');
  	$vn_set_item_ids = $t_set->getItems(array('checkAccess' => $va_access_values));
 	
-	include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
+	include_once(__CA_LIB_DIR__."/Search/SetSearch.php");
 ?>
 
 	<div class='row'>
 		<div class='col-sm-12'>
-			<h1>Featured Galleries</h1>
+			<h1>Galleries</h1>
 		</div>
 	</div>
 	<div class='row'>

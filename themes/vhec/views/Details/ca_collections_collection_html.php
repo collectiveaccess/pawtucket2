@@ -14,7 +14,7 @@
 			{{{previousLink}}}{{{resultsLink}}}
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10 marginTop'>
 		<div class="container">
 			<div class="row">
 				<div class='col-sm-6'>
@@ -55,7 +55,7 @@
 				<hr>
 <?php
 				if ($va_description = $t_item->get('ca_collections.description')) {
-					print "<div class='unit'><h6>Description</h6>".$va_description."</div>";
+					print "<div class='unit'>".$va_description."</div>";
 				}																		
 ?>					
 				</div>
