@@ -29,9 +29,14 @@
 								<span class="trimText">^ca_entities.description.description_text<ifdef code="ca_entities.description.description_source"><br/><br/>^ca_entities.description.description_source</ifdef></span>
 							</div>
 						</ifdef>}}}
+						{{{<ifdef code="ca_entities.biography.bio_text">
+							<div class='unit'><label>Biographical Information</label>
+								<span class="trimText">^ca_entities.biography.bio_text<ifdef code="ca_entities.biography.bio_source"><br/><br/>^ca_entities.biography.bio_source</ifdef></span>
+							</div>
+						</ifdef>}}}
 						{{{<ifdef code="ca_entities.company_date.company_dates_value"><div class="unit"><label>Date</label><unit relativeTo="ca_objects.company_date" delimiter="<br/>"><if rule="^company_date_types !~ /-/">^ca_entities.company_date.company_date_types: </if>^ca_entities.company_date.company_dates_value</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_entities.orgDate.org_dates_value"><div class="unit"><label>Date</label><unit relativeTo="ca_objects.orgDate" delimiter="<br/>"><ifdef code="ca_entities.orgDate.org_dates_types">^ca_entities.orgDate.org_dates_types: </ifdef>^ca_entities.orgDate.org_dates_value</unit></div></ifdef>}}}
-						{{{<ifdef code="ca_entities.lifespan.ind_dates_value"><div class="unit"><label>Lifespan</label><unit relativeTo="ca_entities.lifespan" delimiter="<br/>"><ifdef code="ca_entities.lifespan.ind_dates_types">^ca_entities.lifespan.ind_dates_types: </ifdef>^ca_entities.lifespan.ind_dates_value</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_entities.lifedates.ind_dates_value"><div class="unit"><label>Lifespan</label><unit relativeTo="ca_entities.lifedates" delimiter="<br/>"><ifdef code="ca_entities.lifespan.ind_dates_types">^ca_entities.lifedates.ind_dates_types: </ifdef>^ca_entities.lifedates.ind_dates_value</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_entities.idno"><div class="unit"><label>Identifier</label>^ca_entities.idno</div></ifdef>}}}
 						
 						{{{<ifcount code="ca_entities.related" min="1"><div class="unit"><label>Related <ifcount code="ca_entities.related" min="1" max="1">person</ifcount><ifcount code="ca_entities.related" min="2">people</ifcount></label>
