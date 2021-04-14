@@ -134,9 +134,6 @@
 							if ($va_dimension['dimensions_thickness']) {
 								$vs_dims.= "<p>".$va_dimension['dimensions_thickness']." Thickness </p>";
 							}
-							if ($va_dimension['measurement_notes']) {
-								$vs_dims.= "<p>".$va_dimension['measurement_notes']."</p>";
-							}
 																																			
 						}
 					}
