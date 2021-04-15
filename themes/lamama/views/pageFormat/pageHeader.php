@@ -102,7 +102,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print "<a href='https://www.lamama.org' class='navbar-brand'>".caGetThemeGraphic($this->request, 'LaMaMaLogo.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."</a>";
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'LaMaMaLogoWhite.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -159,4 +159,4 @@
 	</nav>
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div role="main" id="main"><div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
-			<div class="back-menu"><a href="https://www.lamama.org">← home</a> <?php print caNavLink($this->request, "← archives", "", "", "",""); ?></div>
+			<div class="back-menu"><a href="https://www.lamama.org">← La MaMa home</a> <?php print caNavLink($this->request, "← archives", "", "", "",""); ?></div>

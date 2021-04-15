@@ -164,13 +164,16 @@ body{
 
 /* summary styles */
 .title { font-family: 'Optima LT Std'; font-size: 18px; width:100%; margin-top:10px; text-align: center; font-weight: normal;}
-.representationList { width: 100%; margin-top:20px; margin-bottom:20px; padding-top:20px; border-top:1px solid #dedede; text-align: center; }
+.representationList { clear:both; width: 100%; padding-top:50px; text-align: center; }
 .unit {font-size:11px;margin-bottom:12px; text-align:left; clear:left;}
 .unitSmall {font-size:10px;margin-bottom:10px; text-align:left;}
 h6 {margin:0px 0px 5px 0px; padding:0px; font-weight:normal; font-family:'Optima LT Std';}
 .tombstone { margin-top:20px;}
 .clear { clear: both; }
 
+hr.top{
+	margin:20px 0px 20px 0px;
+}
 hr{
 	clear:both;
 	height:2px;
@@ -193,7 +196,7 @@ h4.mainTitle{
 }
 h6.objectType{
 	text-transform:uppercase;
-	line-height:1.3em;
+	line-height:1em;
 	font-family: 'Noto Sans Light';
 	font-size: 11px;
 	font-weight:normal;

@@ -20,11 +20,14 @@ hr{
 .browse .btn, .sets .btn, .btn-default, .browse .btn:hover, .sets .btn:hover, .btn-default:hover{
 	background-color:#000;
 }
+.menuBar{
+	background-color: #C11B17;
+}
 .navbar > .container .navbar-brand {
     width: 203px;
     padding:0px;
     margin-left: 9px;
-	margin-top: 18px;
+	margin-top: 21px;
 }
 .navbar{
 	background-color:transparent;
@@ -34,27 +37,27 @@ hr{
     padding-bottom: 20px;
 }
 .navbar-default .navbar-nav > li > a{
-	font-size: 22px;
+	font-size: 24px;
 	line-height: 30px;
 	text-align: center;
 	text-transform:uppercase;
 }
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li.active > a {
     color: #000;
-	border-bottom: 1px dashed #000;
+	border-bottom: 1px dashed #FFF;
 	top:-1px;
 }
 .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li.active > a, .navbar-default .navbar-nav > li.active > a:hover, .navbar-default .navbar-nav > li.active > a:focus{
 	background-color:transparent;
 	padding:0px;
-	color:#000;
+	color:#ffffff;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
 	background-color:transparent;
-	color:#000;	
+	color:#FFF;	
 }
 .navbar-default .navbar-nav > li{
-	margin: 27px 10px 0px 10px;
+	margin: 27px 30px 0px 10px;
 }
 /*.yamm .nav.navbar-right .dropdown-menu{
 	border:0px;
@@ -76,8 +79,8 @@ hr{
 }*/
 .yamm .nav.navbar-right .dropdown-menu{
 	border:0px;
-	border-top:1px dashed #000;
-	margin-top:-2px;
+	margin-top:32px;
+	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
 }
 .yamm .nav.navbar-right .dropdown-menu a{
 	color:#000;
@@ -91,7 +94,7 @@ hr{
 }
 .navbar .formOutline{
 	border-radius:0px;
-	background-color:#fff;
+	background-color: #C11B17;
 	border:0px;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -102,20 +105,26 @@ hr{
 }
 #headerSearchInput{
 	border-radius:0px;
-	border-bottom:1px solid #000;
+	border:none;
+	background-color:#FFF;
+}
+.form-control::placeholder, .navbar .form-control:focus{
+	color:#000;
 }
 #headerSearchButton{
-	color:#000;
+	color:#ffffff;
 	font-size:20px;
 	top: 2px;
 	position: relative;
+	background-color:#C11B17;
 }
 .headerAdvancedSearch{
 	text-align:left;
 	padding-left:21px;
 }
 .headerAdvancedSearch a{
-	font-size:12px;
+	font-size:13px;
+	color:#FFF;
 }
 .nav > li.dropdown > a.icon{
 	padding-top:0px;
@@ -139,7 +148,7 @@ hr{
     color:#000;
     border-bottom:1px solid transparent;
     font-family:Lato;
-    font-size: 15px;
+    font-size: 18px;
     margin-right:15px;
     position:relative;
     line-height: 1em;
@@ -178,11 +187,13 @@ hr{
 }
 .front h1 {
 	font-weight:700;
-	font-size:111px;
+	/*font-size:111px;
+	margin-top:13vh;
+	text-transform:uppercase;*/
+	font-size:45px;
 	color:#000;
 	font-family:Lato;
-	margin-top:13vh;
-	text-transform:uppercase;
+	margin-top: 2vh;
 }
 .front img{
 	width:100%;
@@ -196,13 +207,13 @@ hr{
 	text-transform:none;
 	padding-bottom:40px;
 	margin-bottom:60px;
-	margin-top:10vh;
+	margin-top:20px;
 }
 .staticPage, .staticPage p{
 	font-family: Lato, sans-serif;
 	color: #000;
-	font-size: 18px;
-	line-height: 30px;
+	font-size: 20px;
+	line-height: 1.6em;
 	font-style: normal;
 	font-weight: 400;
 	text-align: left;
@@ -232,13 +243,16 @@ hr{
 	margin-top:5vh;
 }
 /* detail */
+.detail{
+	font-size: 14px;
+}
 .detail .detailNavBgLeft, .detail .detailNavBgRight, .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small, .detail .detailNavBgLeft a, .detail .detailNavBgRight a{
 	background-color:#FFF;
 	color:#000;
 }
 .detail label, .detail .unit{
 	color:#000;
-	font-size:15px;
+	font-size:17px;
 }
 .detail label{
 	margin: 25px 0px 0px 0px;
@@ -253,7 +267,7 @@ hr{
 	margin-bottom:30px;
 }
 .detail .description{
-	font-size:18px;
+	font-size:20px;
 	margin-bottom:30px;
 }
 .detail .unit a {
@@ -267,15 +281,38 @@ hr{
 	border:0px;
 }
 /* browse */
+.browse H1{
+	font-size:22px
+}
 #bRefine H2, #bRefine H3, #bRefine a{
 	color:#000;
+}
+#bRefine H2{
+	font-size:22px;
+}
+#bRefine H3, #bRefine a{
+	font-size:18px;
+}
+#bRefine a{
+	font-size:16px;
 }
 .bResultListItem .bResultListItemText a, .bResultItem .bResultItemText a {
     color: #000;
     font-size: 14px;
 }
+.bResultListItem .bResultListItemText a{
+	font-size: 17px;
+}
+.bResultListItem .bResultListItemText small{ /* used for dates on entity results */
+	color:#000;
+}
 .bResultListItem .bResultListItemText small a, .bResultItem .bResultItemText small a{
-	font-size:10px;
+	font-size:12px;
+	line-height:1.6em;
+	color: #787878;
+}
+#bLetterBar a{
+	font-size:14px;
 }
 #bLetterBar a:hover{
 	color:#000;
@@ -296,7 +333,7 @@ hr{
 .collectionsList p.collectionIntro{
 	font-family: Lato, sans-serif;
 	color: #000;
-	font-size: 18px;
+	font-size: 20px;
 	line-height: 30px;
 	font-style: normal;
 	font-weight: 400;
@@ -327,8 +364,13 @@ hr{
     text-transform: uppercase;
     color: #000;
 }
+.multisearch .multisearchResult a {
+    color: #000;
+    font-size: 14px;
+    line-height: 1.1em;
+}
 .multisearch .authoritySet a {
-    font-size: 12px;
+    font-size: 14px;
     color: #000;
 }
 /* advanced search */
@@ -344,7 +386,10 @@ hr{
 	text-transform:none;
 	border-bottom:2px solid #000
 }
-
+.advancedSearchField .formLabel{
+	color:#000;
+	font-size:15px;
+}
 .form-control:focus {
     border-color: #000000;
     box-shadow: none;

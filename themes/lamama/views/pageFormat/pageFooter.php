@@ -35,7 +35,7 @@
 						<a href="https://www.lamama.org"><?php print caGetThemeGraphic($this->request, 'LaMaMaLogoWhite.png'); ?></a>
 					</div>
 					<ul class="list-inline">
-						<li><a href="#">Use & Takedown</a></li>
+						<li><?php print caNavLink($this->request, "Use & Takedown", "", "", "UseTakedown", "", ""); ?></a></li>
 					</ul>
 					
 				</div>

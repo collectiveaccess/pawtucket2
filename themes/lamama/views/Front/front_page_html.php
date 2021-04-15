@@ -31,8 +31,8 @@
  */
 ?>
 	<div class="row">
-		<div class="col-sm-12 col-md-7 col-md-offset-5">
-			<H1>Archives</H1>
+		<div class="col-sm-12 text-center">
+			<H1>La MaMa Archives<br/>Ellen Stewart Private Collection</H1>
 		</div>
 	</div>
 	<div class="row">
