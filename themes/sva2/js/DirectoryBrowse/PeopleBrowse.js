@@ -19,8 +19,10 @@ const PeopleBrowse = () => {
       console.log('browseBar data', data);
       const values = [ ];
       data.values.map((val) => {
-        values.push(val.display);
-        // values.push(val);
+        console.log(val);
+
+        // values.push(val.display);
+        values.push(val);
       })
       setDisplayTitle(data.displayTitle)
       setBrowseBarData(values);

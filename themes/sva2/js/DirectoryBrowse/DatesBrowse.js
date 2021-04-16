@@ -21,7 +21,7 @@ const DatesBrowse = () => {
       console.log('browseBar data', data);
       const values = [];
       data.values.map((val) => {
-        values.push(val.display);
+        values.push(val);
       })
       setBrowseBarData(values);
     });

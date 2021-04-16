@@ -1,20 +1,16 @@
 import React, { useContext, useEffect } from 'react';
 import DirectoryBrowseContextProvider from './DirectoryBrowse/DirectoryBrowseContext';
-import { DirectoryBrowseContext } from './DirectoryBrowse/DirectoryBrowseContext';
+// import { DirectoryBrowseContext } from './DirectoryBrowse/DirectoryBrowseContext';
 
 import PeopleBrowse from './DirectoryBrowse/PeopleBrowse';
 import ExhibitionsBrowse from './DirectoryBrowse/ExhibitionsBrowse';
 import DatesBrowse from './DirectoryBrowse/DatesBrowse';
 
 const selector = pawtucketUIApps.DirectoryBrowse.selector;
-const directoryPage = pawtucketUIApps.DirectoryBrowse.currentBrowse;
+const currentBrowse = pawtucketUIApps.DirectoryBrowse.currentBrowse;
 
 const DirectoryBrowse = () => {
-  const { currentBrowse, setCurrentBrowse } = useContext(DirectoryBrowseContext);
-
-  useEffect(() => { 
-    setCurrentBrowse(directoryPage)
-  }, [currentBrowse])
+  // const { currentBrowse, setCurrentBrowse } = useContext(DirectoryBrowseContext);
 
   if(currentBrowse){
     if(currentBrowse == 'people'){

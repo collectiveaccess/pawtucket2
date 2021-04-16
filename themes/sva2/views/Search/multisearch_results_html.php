@@ -8,10 +8,10 @@
 			</ul>
 	</div> -->
 
-	<div class="row filter-search-heading justify-content-start">
+	<!-- <div class="row filter-search-heading justify-content-start">
 		<h2>Filter Search Results</h2>
 		<div class="line-border"></div>
-	</div>
+	</div> -->
 
 	<?php
 		$va_results = $this->getVar('results');

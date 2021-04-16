@@ -736,12 +736,211 @@ a {
 		margin: 50px 0px 50px 0px;
 		border: 1px solid $black;
 		padding: 10px 50px 10px 50px;
+		:hover{
+			$color: $black
+		}
 	}
 
 }
 
+/*-------------Faceted Browse Container-------------*/
+.faceted-browse-container{
+	margin-top: 20px;
+	padding-bottom: 20px;
 
-/*------------Browse Pages--------------*/
+	.row {
+		margin-left: 10%;
+		margin-right: 10%;
+	}
+
+	.faceted-browse-results {
+
+    .total-items-row {
+			margin: 0px 0px 20px 0px;
+			.total-items {
+				font-family: $sans-serif;
+			}
+		}
+
+		.fb-results-row{
+			margin: 0px 0px 20px 0px;
+
+			.card {
+				padding-left: 0;
+				margin-bottom: 20px;
+				background-color: transparent !important;
+				border:0 !important;
+				// width: 350px;
+	
+				img {
+					display:block;
+					// margin:auto;
+					width: 100%;
+					height: auto;
+				}
+				
+				.card-text {
+					text-align: center;
+					font-family: $serif;
+					font-size: 15px;
+	
+					a:hover {
+						text-decoration: underline;
+						color: $black;
+					}
+				}
+			}
+		}
+		
+
+		button, .fb-results-load-more-button{
+			border-radius: 0 !important;
+			color: $black;
+		}
+		button, .fb-results-load-more-button:hover{
+			color: white;
+		}
+
+	}
+
+	.faceted-browse-filters {
+		padding: 5px;
+		background-color: #C8C8C8;
+
+		.sticky-content {
+			padding: 10px;
+			position: -webkit-sticky;
+			position: sticky;
+			top: 50px;
+ 		}
+
+		.filterby-heading{
+			margin-bottom: 15px;
+			font-family: $sans-serif;
+		}
+
+		.filters-container{
+			padding: 0;
+			margin: 0px 0px 20px 0px;
+
+			.filter {
+				margin: 0px 0px 10px 0px;
+
+				button {
+					padding: 5px 5px 5px 5px;
+					background-color: #A9A9A9;
+					width: 100%;
+
+					div, p, span {
+						display: inline;
+						margin: 0;
+						color: $black;
+						font-size: 12pt;
+					}	
+				}
+			}
+
+			.remove-all-filters {
+				cursor: pointer;
+				padding-top: 10px;
+				color: $black;
+				font-size: 10pt;
+			}
+
+			.remove-all-filters:hover {
+				color: $black;
+				text-decoration: underline;
+			}
+		}
+
+		.facets-list{
+			list-style: none;
+
+			.facet-item-label{
+				background-color: transparent !important;
+				padding-left: 0;
+				cursor: pointer;
+				border: none !important;
+				p {
+					font-size: 14pt;
+					margin-bottom: 0;
+					font-family: $sans-serif;
+				}
+			}
+
+			p::before {
+				text-decoration: none;
+				content: "▾ ";
+				font-size: .75em;
+				color: #76766B;
+			}
+
+			.facet-values-container.active {
+				padding: 0px 5px 0px 5px;
+				margin-bottom: 10px;
+				width: auto;
+
+				height: 200px;
+				overflow-y: scroll;
+				transition: height .5s ease-in;
+
+				.facet-value {
+					padding: 5px 5px 5px 5px;
+					color: $black;
+
+					.input-checkbox{
+						padding: 0;
+						margin: 0;
+
+						input{
+							background-color: #a3a3a3 !important;
+							border: 1px solid #636363;
+							margin-right: 2px;
+							border-radius: 0;
+							-webkit-appearance: none !important;
+							height: 10px;
+							width: 10px;
+							cursor: pointer;
+						}
+						input:checked {
+							background-color: $black !important;
+						} 
+
+						label{
+							font-family: $sans-serif;
+							font-size: 10pt;
+						}
+					}
+				}
+
+				.facet-value:hover{
+					background-color: lightgrey;
+				}
+			}
+
+			.facet-values-container {
+				height: 0px;
+				overflow: hidden;
+				transition: height .5s ease-out;
+			}
+
+		}
+	}
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+/*------------Directory Browse Pages--------------*/
 .browse-container {
 	margin-top: 20px;
 	padding: 0px 15px 0px 15px;
@@ -755,7 +954,7 @@ a {
 }
 
 
-/*--------------BrowseBar----------------*/
+/*--------------Directory BrowseBar----------------*/
 .b-bar{
 	margin-top: 20px;
 	margin-bottom: 20px;
@@ -786,13 +985,16 @@ a {
 	}
 
 	.slick-slide, .browse-bar-item{
-		// margin-left: 10px;
-		// display: inline-block;
 		font-family: $sans-serif;
 		font-size: 30pt;
 		font-weight: 500;
 		text-align: center;
 		cursor: pointer;
+	}
+	
+	.disabled {
+		color: #696969;
+		pointer-events: none;
 	}
 
 	.active, .browse-bar-item:hover{
@@ -813,7 +1015,7 @@ a {
 	
 }
 
-/*---------------Browse-Content-Container---------------*/
+/*---------------Directory Browse-Content-Container---------------*/
 .browse-content-container{
 	margin-top: 20px;
 	.column-container{

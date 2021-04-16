@@ -8,10 +8,7 @@ const baseUrl = pawtucketUIApps.DirectoryBrowse.baseUrl;
 
 const BrowseBar = (props) => {
 
-  const { browseBarValue, setBrowseBarValue, setBrowseContentData } = useContext(DirectoryBrowseContext);
-  
-  useEffect(() => {
-  }, []);
+  const { setBrowseBarValue, setBrowseContentData } = useContext(DirectoryBrowseContext);
 
   const settings = {
     infinite: false,
@@ -78,7 +75,6 @@ const BrowseBar = (props) => {
   };
 
   function getAnchor(item) {
-    console.log('get anchor');
     window.location.hash = `#${item}`;
     // var currentUrl = document.URL;
     // var urlParts = currentUrl.split('#');
@@ -123,7 +119,7 @@ const BrowseBar = (props) => {
             <Slider {...settings}>
               {props.data.map((item, index) => {
                 return (
-                  <a key={index} className="browse-bar-item" href={`#${item}`} onClick={(e) => { setValue(e, item); getAnchor(item); }}>{item}</a>
+                  <a key={index} className={(item.disabled == 0) ? "browse-bar-item" :"browse-bar-item disabled"} href={`#${item.display}`} onClick={(e) => { setValue(e, item.display); getAnchor(item.display); }}>{item.display}</a>
                 )
               })}
             </Slider>
@@ -139,7 +135,7 @@ const BrowseBar = (props) => {
             <div className="alpha-cont">
               {props.data.map((item, index) => {
                 return(
-                  <a key={index} className="browse-bar-item alpha-item" href={`#${item}`} onClick={(e) => {setValue(e, item); getAnchor(item);}}>{item}</a>
+                  <a key={index} className={(item.disabled == 0) ? "browse-bar-item alpha-item" : "browse-bar-item disabled alpha-item"} href={`#${item.display}`} onClick={(e) => {setValue(e, item.display); getAnchor(item.display);}}>{item.display}</a>
                 )
               })}
             </div>

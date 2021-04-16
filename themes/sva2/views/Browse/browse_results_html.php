@@ -4,7 +4,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2019 Whirl-i-Gig
+ * Copyright 2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -22,25 +22,18 @@
  *
  * ----------------------------------------------------------------------
  */
-
-	$initial_criteria = null;
-	if ($search = $this->request->getParameter('search', pString)) {
-	    $initial_criteria['_search'] = [$search => $search];
-	}
-	
-	$action = $this->request->getAction();
-	$browse_info = $this->getVar('browseInfo');
 ?>
 
-<div id="browse"></div>
+<div class="container-fluid faceted-browse-container">
+    <div id="facetedBrowse"></div>
+</div>
 
 <script type="text/javascript">
-	pawtucketUIApps['PawtucketBrowse'] = {
-        'selector': '#browse',
+	pawtucketUIApps['FacetedBrowse'] = {
+        'selector': '#facetedBrowse',
         'data': {
 			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
-			endpoint: "<?php print $action; ?>",
-			initialFilters: <?php print json_encode($initial_criteria); ?>,
+			serviceUrl: "http://sva.whirl-i-gig.com:8085/service.php/Browse",
 			view: "<?php print caGetOption('defaultView', $browse_info, 'images'); ?>"
         }
     };
