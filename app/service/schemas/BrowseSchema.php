@@ -44,6 +44,32 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 			//
 			// Facets and filters
 			//
+			$browseFacetValueType = new ObjectType([
+				'name' => 'BrowseFacetValue',
+				'description' => 'Browse facet value',
+				'fields' => [
+					'id' => [
+						'type' => Type::string(),
+						'description' => 'Unique identifier'
+					],
+					'value' => [
+						'type' => Type::string(),
+						'description' => 'Value'
+					],
+					'sortableValue' => [
+						'type' => Type::string(),
+						'description' => 'Sortable value'
+					],
+					'contentCount' => [
+						'type' => Type::int(),
+						'description' => 'Number of items this value will return'
+					],
+					'childCount' => [
+						'type' => Type::int(),
+						'description' => 'Number of facet values contained within this value (for hierarchical facets)'
+					]
+				]
+			]),
 			$browseFacetType = new ObjectType([
 				'name' => 'BrowseFacet',
 				'description' => 'Browse facet',
@@ -52,6 +78,14 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::string(),
 						'description' => 'Facet name'
 					],
+					'labelSingular' => [
+						'type' => Type::string(),
+						'description' => 'Singular facet label, for display'
+					],
+					'labelPlural' => [
+						'type' => Type::string(),
+						'description' => 'Plural facet label, for display'
+					],
 					'type' => [
 						'type' => Type::string(),
 						'description' => 'Facet type'
@@ -59,20 +93,38 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 					'description' => [
 						'type' => Type::string(),
 						'description' => 'Facet description'
-					]
+					],
+					'values' => [
+						'type' => Type::listOf($browseFacetValueType),
+						'description' => 'Facet description'
+					],
 				]
 			]),
 			$browseFilterValueType = new ObjectType([
 				'name' => 'BrowseFilterValue',
 				'description' => 'Browse filter value',
 				'fields' => [
+					'id' => [
+						'type' => Type::string(),
+						'description' => 'Unique identifier for filter value'
+					],
+					'value' => [
+						'type' => Type::string(),
+						'description' => 'Filter value for display'
+					]
+				]
+			]),
+			$browseFacetFilterValuesType = new ObjectType([
+				'name' => 'BrowseFacetFilterValues',
+				'description' => 'Browse filter values for facet',
+				'fields' => [
 					'facet' => [
 						'type' => Type::string(),
 						'description' => 'Facet name'
 					],
-					'value' => [
-						'type' => Type::string(),
-						'description' => 'Filter value'
+					'values' => [
+						'type' => Type::listOf($browseFilterValueType),
+						'description' => 'Filter values'
 					]
 				]
 			]),
@@ -84,8 +136,8 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::string(),
 						'description' => 'Unique identifier for browse'
 					],
-					'filters' => [
-						'type' => Type::listOf($browseFacetValueType),
+					'facets' => [
+						'type' => Type::listOf($browseFacetType),
 						'description' => 'Available facets for current browse'
 					]
 				]
@@ -99,7 +151,7 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'Unique identifier for browse'
 					],
 					'filters' => [
-						'type' => Type::listOf($browseFilterValueType),
+						'type' => Type::listOf($browseFacetFilterValuesType),
 						'description' => 'Filter values for current browse'
 					]
 				]
@@ -159,6 +211,10 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::string(),
 						'description' => 'Title of item'
 					],
+					'detailUrl' => [
+						'type' => Type::string(),
+						'description' => 'Url to detail for item'
+					],
 					'identifier' => [
 						'type' => Type::string(),
 						'description' => 'Item identifier'
@@ -206,7 +262,7 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'Available browse facets'
 					],
 					'filters' => [
-						'type' => Type::listOf($browseFilterValueType),
+						'type' => Type::listOf($browseFacetFilterValuesType),
 						'description' => 'Filter values for current browse'
 					]
 				]
