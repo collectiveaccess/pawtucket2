@@ -32,7 +32,7 @@
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="footerLogo">
-						<a href="https://www.lamama.org"><?php print caGetThemeGraphic($this->request, 'LaMaMaLogoWhite.png'); ?></a>
+						<a href="https://www.lamama.org"><?php print caGetThemeGraphic($this->request, 'LaMaMaLogoWhite.png', array("alt" => $this->request->config->get("app_display_name"))); ?></a>
 					</div>
 				</div>
 				<div class="col-sm-6">
