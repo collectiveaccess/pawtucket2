@@ -83,6 +83,11 @@ b, strong {
 	text-align:left;
 	border-bottom: 1px dashed rgb(0,0,0);
 }
+@media(max-width:540px){
+	.collectionHeader a.btn-default{
+		padding-bottom:5px;
+	}
+}
 #headerSearchInput{
 	border:0px;
 	border-bottom: 1px solid #000;
