@@ -174,6 +174,7 @@ New York, NY 10001<br><a href="tel:212-481-0295">212-481-0295</a>      </address
 			<div class="collectionHeader">	
 				<?php print caNavLink($this->request, _t("Browse All"), "btn btn-default", "", "Browse", "objects"); ?>
 				<?php print caNavLink($this->request, _t("Advanced Search"), "btn btn-default", "", "Search", "advanced/objects"); ?>
+				<?php print caNavLink($this->request, _t("Highlights From CBA"), "btn btn-default", "", "Browse", "objects", array("facet" => "has_affiliated_cba_facet", "id" => 1)); ?>
 				<form class="navbar-form" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>" aria-label="<?php print _t("Search"); ?>">
 					<div class="formOutline">
 						<div class="form-group">

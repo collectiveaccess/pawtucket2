@@ -472,7 +472,7 @@ footer{
 	line-height: 1.25;
 }
 .footer{
-	z-index:10000000000;
+	z-index:1000;
 	position:relative;
 	background-color:#FFF;
 }

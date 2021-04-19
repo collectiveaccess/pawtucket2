@@ -115,7 +115,11 @@ if (!$vb_ajax) {	// !ajax
 			foreach($va_criteria as $va_criterion) {
 				#print "<strong>".$va_criterion['facet'].':</strong>';
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm"><span>X</span>'.$va_criterion['value'].'</button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					if($va_criterion['facet_name'] == "has_affiliated_cba_facet"){
+						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm"><span>X</span> Highlights From CBA</button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					}else{
+						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm"><span>X</span>'.$va_criterion['value'].'</button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					}
 				}else{
 					print "<span class='searchCriteria'><strong>".$va_criterion['facet'].':</strong>';
 					print ' '.$va_criterion['value']."</span>";
