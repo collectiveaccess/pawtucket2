@@ -70,14 +70,14 @@
 			$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			if(!$va_links_array[$vs_first_letter][$vs_sort]){
-				$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listEntryIndentSecondLine'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</div>\n";	
+				$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</div>\n";	
 			}
 		}
-		ksort($va_links_array);
-		ksort($va_letter_array);
+		#ksort($va_links_array);
+		#ksort($va_letter_array);
 		foreach ($va_links_array as $vs_first_letter => $va_links) {
 			ksort($va_links);
-			print "<p class='separator'><a name='".$vs_first_letter."'></a><br></p>";			
+			print "<p class='separator' style='clear:both;'><a name='".$vs_first_letter."'></a><br></p>";			
 			print "<h2 id='".$vs_first_letter."' class='mw-headline'>".$vs_first_letter."</h2>";
 			foreach ($va_links as $vn_i => $va_link) {
 				print $va_link;
