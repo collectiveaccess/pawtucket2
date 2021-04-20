@@ -75,11 +75,11 @@
 		}
 		#ksort($va_links_array);
 		#ksort($va_letter_array);
-		$i = 0;
 		foreach ($va_links_array as $vs_first_letter => $va_links) {
 			ksort($va_links);
 			print "<p class='separator' style='clear:both;'><a name='".$vs_first_letter."'></a><br></p>";			
 			print "<h2 id='".$vs_first_letter."' class='mw-headline'>".$vs_first_letter."</h2>";
+			$i = 0;
 			foreach ($va_links as $vn_i => $va_link) {
 				print $va_link;
 				$i++;
