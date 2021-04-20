@@ -82,11 +82,11 @@
 			print "<h2 id='".$vs_first_letter."' class='mw-headline'>".$vs_first_letter."</h2>";
 			foreach ($va_links as $vn_i => $va_link) {
 				print $va_link;
-			}
-			$i++;
-			if($i == 3){
-				print "<div style='clear:both'></div>";
-				$i = 0;
+				$i++;
+				if($i == 3){
+					print "<div style='clear:both'></div>";
+					$i = 0;
+				}
 			}
 		}
 	}
