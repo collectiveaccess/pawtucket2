@@ -805,6 +805,16 @@ div.caMediaOverlayControls {
 	text-indent: -30px;
 	margin-left: 30px
 }
+@media(min-width:767px){
+	.listCol{
+		float: left;
+		width: 30%;
+		height: auto;
+		line-height: 1.2em;
+		margin-bottom: 30px;
+		padding-right: 3%;
+	}
+}
 #filterByNameContainer{
 	float:right;
 	margin-top:25px;
