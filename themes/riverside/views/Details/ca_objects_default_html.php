@@ -134,14 +134,14 @@
 							{{{<ifdef code="ca_objects.issue_number"><div class="unit"><label>Issue Number</label>^ca_objects.issue_number</div></ifdef>}}}
 				
 							<!-- Library fields -->
-							{{{<ifdef code="ca_objects.rare_book"><div class="unit"><label>Rare Book</label>^ca_objects.rare_book</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.rare_book_info"><div class="unit"><label>Rare Book Cataloging</label>
+							{{{<if rule='(^ca_objects.rare_book =~ /Yes/)'><ifdef code="ca_objects.rare_book"><div class="unit"><label>Rare Book</label>^ca_objects.rare_book</div></ifdef>
+								<ifdef code="ca_objects.rare_book_info"><div class="unit"><label>Rare Book Cataloging</label>
 								<ifdef code="ca_objects.rare_book_info.binding"><b>Binding</b><br/>^ca_objects.rare_book_info.binding<br/><br/></ifdef>
 								<ifdef code="ca_objects.rare_book_info.rarebook_transcription"><b>Transcription of the Title</b><br/>^ca_objects.rare_book_info.rarebook_transcription<br/><br/></ifdef>
 								<ifdef code="ca_objects.rare_book_info.rarebook_marks"><b>Marks/Inscriptions/Signatures</b><br/>^ca_objects.rare_book_info.rarebook_marks<br/><br/></ifdef>
 								<ifdef code="ca_objects.rare_book_info.rarebook_bibhistnote"><b>Bibliographic/Historical Note</b><br/>^ca_objects.rare_book_info.rarebook_bibhistnote<br/><br/></ifdef>
 								<ifdef code="ca_objects.rare_book_info.rarebook_provenance"><b>Provenance</b><br/>^ca_objects.rare_book_info.rarebook_provenance<br/><br/></ifdef>
-							</div></ifdef>}}}
+							</div></ifdef></if>}}}
 							<!-- end Library fields -->
 							<!-- Format tab: Photo/Artifact/Art_arch -->
 							{{{<ifdef code="ca_objects.dimensions"><div class="unit"><label>Dimensions</label>
