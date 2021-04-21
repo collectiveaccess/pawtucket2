@@ -104,9 +104,10 @@
 						$vs_image = "";
 						$vs_image = $q_objects->get("ca_object_representations.media.mediumlarge", array("checkAccess" => $va_access_values));
 						if($vs_image){
-							$va_images[$q_objects->get("ca_objects.object_id")] = array("image" => $vs_image, "caption" => sefaFormatCaption($this->request, $q_objects));
+							$va_images[$q_objects->get("ca_objects.date_created").".".$q_objects->get("ca_objects.object_id")] = array("image" => $vs_image, "caption" => sefaFormatCaption($this->request, $q_objects));
 						}
 					}
+					krsort($va_images);
 ?>
 					<div class="jcarousel-wrapper">
 						<!-- Carousel -->
@@ -213,9 +214,11 @@
 				if($q_objects->numHits()){
 					while($q_objects->nextHit()){
 						if($q_objects->get("ca_object_representations.media.thumbnail300square")){
-							print "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $q_objects->get("ca_object_representations.media.thumbnail300square"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "works", "id" => $q_objects->get("object_id")), null, array("type_id" => $t_item->get("type_id")))."</div>";
+							$va_images[$q_objects->get("ca_objects.date_created").".".$q_objects->get("ca_objects.object_id")] = "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $q_objects->get("ca_object_representations.media.thumbnail300square"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "works", "id" => $q_objects->get("object_id")), null, array("type_id" => $t_item->get("type_id")))."</div>";
 						}
 					}
+					krsort($va_images);
+					print join(" ", $va_images);
 				}
 ?>
 				</div><!-- end row -->

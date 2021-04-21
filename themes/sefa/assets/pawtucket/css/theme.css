@@ -691,6 +691,9 @@ a.footerButton:hover{
 	.socialicon img, .socialiconDibs img{
 		width:18px;
 		height:18px;
+
+		position: relative;
+		top: -1px;
 	}
 }
 /* Newsletter signup */

@@ -40,13 +40,15 @@
 					<b>HUDSON</b>
 					<br/>433 WARREN STREET<br/>HUDSON, NY 12534
 					<br/>THURSDAY-MONDAY, 11AM-5PM AND BY APPOINTMENT
-					<br/><br/>
+					<br/><br/><br/>
+					<div class="text-center">
+						<a href="https://www.facebook.com/pages/Susan-Eley-Fine-Art/137980986325025" class="socialicon"><?php print caGetThemeGraphic($this->request, 'fbook.png', array("alt" => "FaceBook")); ?></a>
+						<a href="https://twitter.com/EleyFineArt" class="socialicon"><?php print caGetThemeGraphic($this->request, 'twitter.png', array("alt" => "Twitter")); ?></a>
+						<a href="https://instagram.com/sefa_gallery" class="socialicon darker"><?php print caGetThemeGraphic($this->request, 'instagram.png', array("alt" => "Instagram")); ?></a>
+					</div>
 				</div>
 				<div class="col-sm-12 col-md-3 socialright footernav">
-					<?php print caNavLink($this->request, _t("Newsletter Signup"), "footerButton", "", "About", "MailingList"); ?><br/>
-					<a href="https://www.facebook.com/pages/Susan-Eley-Fine-Art/137980986325025" class="socialicon"><?php print caGetThemeGraphic($this->request, 'fbook.png', array("alt" => "FaceBook")); ?></a>
-					<a href="https://twitter.com/EleyFineArt" class="socialicon"><?php print caGetThemeGraphic($this->request, 'twitter.png', array("alt" => "Twitter")); ?></a>
-					<a href="https://instagram.com/sefa_gallery" class="socialicon darker"><?php print caGetThemeGraphic($this->request, 'instagram.png', array("alt" => "Instagram")); ?></a>
+					<?php print caNavLink($this->request, _t("Newsletter Signup"), "footerButton", "", "About", "MailingList"); ?>
 					<a href="https://artsy.net/susan-eley-fine-art?utm_source=follow_badge" class="socialicon"><?php print caGetThemeGraphic($this->request, 'artsy.png', array("alt" => "Artsy")); ?></a>
 					<a href="https://www.1stdibs.com/dealers/susan-eley-fine-art/?utm_source=susaneleyfineart.com&utm_medium=referral&utm_campaign=dealer&utm_content=dealer_badge_1stdibs_gray" target="_blank" class="socialiconDibs"><?php print caGetThemeGraphic($this->request, '1stdibs_dark.jpg', array("title" => "Shop Susan Eley Fine Art's fine art on 1stdibs", "alt"=> "Shop Susan Eley Fine Art's fone art on 1stdibs")); ?></a>
 					<a href="mailto:susie@susaneleyfineart.com" class="socialicon"><?php print caGetThemeGraphic($this->request, 'envelope.png', array("alt" => "Email")); ?></a>
@@ -60,7 +62,7 @@
 					<a href="https://www.1stdibs.com/dealers/susan-eley-fine-art/?utm_source=susaneleyfineart.com&utm_medium=referral&utm_campaign=dealer&utm_content=dealer_badge_1stdibs_gray" target="_blank" class="socialiconDibs"><?php print caGetThemeGraphic($this->request, '1stdibs_dark.jpg', array("title" => "Shop Susan Eley Fine Art's fine art on 1stdibs", "alt"=> "Shop Susan Eley Fine Art's fone art on 1stdibs")); ?></a>
 					<a href="mailto:susie@susaneleyfineart.com" class="socialicon"><?php print caGetThemeGraphic($this->request, 'envelope.png', array('alt' => 'Email')); ?></a>
 				</div>
-			</div><!--end row footer-->
+			</div>
 		</div><!-- end pageArea --></div><!-- end container -->
 <?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 

@@ -124,7 +124,7 @@
 						<h2>^ca_occurrences.exhibition_subtitle</h2>
 					</ifdef>}}}
 					<div class='date'>{{{^ca_occurrences.opening_closing}}}{{{<ifdef code="ca_occurrences.opening_reception"> | Opening Reception: ^ca_occurrences.opening_reception</ifdef>}}}
-					{{{<ifdef code="ca_occurrences.outside_location"><br/>^ca_occurrences.outside_location</ifdef>}}}{{{<ifnotdef code="ca_occurrences.outside_location"><br/>46 W 90th St, Floor 2, New York, NY 10024</ifnotdef>}}}
+					{{{<ifdef code="ca_occurrences.location"><br/>^ca_occurrences.location</ifdef>}}}{{{<ifnotdef code="ca_occurrences.location"><ifdef code="ca_occurrences.outside_location"><br/>^ca_occurrences.outside_location</ifdef></ifnotdef>}}}{{{<ifnotdef code="ca_occurrences.outside_location,ca_occurrences.location"><br/>NYC</ifnotdef>}}}
 					</div>
 					{{{^ca_occurrences.description}}}
 				</p>
