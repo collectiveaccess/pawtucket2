@@ -41,7 +41,7 @@
 					<br/>433 WARREN STREET<br/>HUDSON, NY 12534
 					<br/>THURSDAY-MONDAY, 11AM-5PM AND BY APPOINTMENT
 					<br/><br/><br/>
-					<div class="text-center">
+					<div class="text-center footerSocialNav">
 						<a href="https://www.facebook.com/pages/Susan-Eley-Fine-Art/137980986325025" class="socialicon"><?php print caGetThemeGraphic($this->request, 'fbook.png', array("alt" => "FaceBook")); ?></a>
 						<a href="https://twitter.com/EleyFineArt" class="socialicon"><?php print caGetThemeGraphic($this->request, 'twitter.png', array("alt" => "Twitter")); ?></a>
 						<a href="https://instagram.com/sefa_gallery" class="socialicon darker"><?php print caGetThemeGraphic($this->request, 'instagram.png', array("alt" => "Instagram")); ?></a>

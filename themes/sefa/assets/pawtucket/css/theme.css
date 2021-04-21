@@ -637,7 +637,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	padding-top:60px;
 	padding-bottom:30px;
 }
-.footernav{
+.footernav, .footerSocialNav{
 	display:none;
 	line-height:2em;
 }
@@ -650,6 +650,9 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 @media (min-width: 993px) {
 	.footernav{
 		display:inline;
+	}
+	.footerSocialNav{
+		display:block;
 	}
 }	
 .socialicon, .socialiconDibs{
