@@ -815,8 +815,10 @@ div.caMediaOverlayControls {
 }
 @media(min-width:767px){
 	.listCol{
-		line-height: 1.2em;
-		margin-bottom: 20px;
+		float: left;
+		width: 30%;
+		height: auto;
+		padding-right: 3%;	
 	}
 }
 #filterByNameContainer{
