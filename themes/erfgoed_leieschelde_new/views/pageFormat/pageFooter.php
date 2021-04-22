@@ -31,24 +31,38 @@
 		<footer id="footer">
 			<div class="row">
 				<div class="col-sm-12 col-md-8 col-md-offset-2">
-					<div class="footerHeading"><i class="fa fa-home" aria-hidden="true"></i> <a href="https://www.cultuurregioleieschelde.be" target="_blank">www.CultuurRegioLeieSchelde.be</a></div>
+					<div class="footerHeading"><i class="fa fa-home" aria-hidden="true"></i> <a href="https://www.cultuurregioleieschelde.be" target="_blank">www.cultuurregioleieschelde.be</a></div>
 					<div class="row">
 						<div class="col-sm-12 text-center">
 							<ul class="list-inline social">
+								<li><a href="https://www.facebook.com/Cultuurregioleieschelde" target="_blank"><i class="fa fa-facebook-square" aria-label="Facebook"></i></a></li>
+								<li><a href="https://www.instagram.com/cultuurregioleieschelde/" target="_blank"><i class="fa fa-instagram" aria-label="Instragram"></i></a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 text-center">
+							<ul class="list-inline footerLinks">
 								<li><i class="fa fa-map-marker" aria-hidden="true"></i> Tolpoortstraat 79, 9800 Deinze</li>
 								<li><i class="fa fa-users" aria-hidden="true"></i> <?php print caNavLink($this->request, "Contact", "", "", "Contact", "form"); ?></li>
 								<li><i class="fa fa-phone" aria-hidden="true"></i> 09 386 78 86</li>
-								<li><i class="fa fa-check" aria-hidden="true"></i> <?php print caNavLink($this->request, "Disclaimer", "", "", "About", "disclaimer"); ?></li>
 							</ul>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-sm-12">
 							<div class="funder text-center">
-								<a href="http://www.vlaanderen.be"><?php print caGetThemeGraphic($this->request, 'Vlaanderen_verbeelding_werkt.png'); ?></a>
+								<a href="http://www.vlaanderen.be" target="_blank"><?php print caGetThemeGraphic($this->request, 'Vlaanderen_verbeelding_werkt.png'); ?></a>
 							</div>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-sm-12 text-center">
+							<ul class="list-inline footerLinks footerLinksSmall">
+								<li><i class="fa fa-check" aria-hidden="true"></i> <?php print caNavLink($this->request, "Disclaimer", "", "", "About", "disclaimer"); ?></li>
+							</ul>
+						</div>
+					</div>	
 				</div>
 			</div>
 		</footer>
