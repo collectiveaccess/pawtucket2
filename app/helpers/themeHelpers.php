@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2019 Whirl-i-Gig
+ * Copyright 2009-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -433,24 +433,73 @@
 		if (!($t_instance = Datamodel::getInstanceByTableName($pm_table, true))) { return null; }
 		if (method_exists($t_instance, "isRelationship") && $t_instance->isRelationship()) { return array(); }
 		
-		$ps_return = caGetOption("return", $pa_options, 'tags');
+		$ps_return = caGetOption('return', $pa_options, 'tags');
+		$version = caGetOption('version', $pa_options, 'icon');
+		$versions = caGetOption("versions", $pa_options, null);
+		$versions_set = (is_array($versions) && sizeof($versions));
+		
+		if(!is_array($versions) && $version) { $versions = [$version]; }
+		if(!is_array($versions) || !sizeof($versions)) { $versions = [$version]; }
+		$version = $versions[0];
 		
 		if ((!caGetOption("useRelatedObjectRepresentations", $pa_options, array())) && method_exists($t_instance, "getPrimaryMediaForIDs")) {
 			// Use directly related media if defined
-			$va_media = $t_instance->getPrimaryMediaForIDs($pa_ids, array($vs_version = caGetOption('version', $pa_options, 'icon')), $pa_options);
+			$va_media = $t_instance->getPrimaryMediaForIDs($pa_ids, $versions, $pa_options);
 			$va_media_by_id = array();
 			foreach($va_media as $vn_id => $va_media_info) {
 				if(!is_array($va_media_info)) { continue; }
-				$va_media_by_id[$vn_id] = $va_media_info['tags'][$vs_version];
+				
+				switch($ps_return) {
+					default:
+					case 'tags':
+						if($versions_set) {
+							foreach($versions as $v) {
+								$va_media_by_id[$vn_id][$v] = $va_media_info['tags'][$v];
+							}
+						} else {
+							$va_media_by_id[$vn_id] = $va_media_info['tags'][$version];
+						}
+						break;
+					case 'urls':
+						if($versions_set) {
+							foreach($versions as $v) {
+								$va_media_by_id[$vn_id][$v] = $va_media_info['urls'][$v];
+							}
+						} else {
+							$va_media_by_id[$vn_id] = $va_media_info['urls'][$version];
+						}
+					case 'paths':
+						if($versions_set) {
+							foreach($versions as $v) {
+								$va_media_by_id[$vn_id][$v] = $va_media_info['paths'][$v];
+							}
+						} else {
+							$va_media_by_id[$vn_id] = $va_media_info['paths'][$version];
+						}
+						break;
+					case 'data':
+						if($versions_set) {
+							foreach($versions as $v) {
+								$va_media_by_id[$vn_id][$v]['paths'] = $va_media_info['paths'][$v];
+								$va_media_by_id[$vn_id][$v]['urls'] = $va_media_info['urls'][$v];
+								$va_media_by_id[$vn_id][$v]['tags'] = $va_media_info['tags'][$v];
+								$va_media_by_id[$vn_id][$v]['width'] = $va_media_info['info'][$v]['WIDTH'];
+								$va_media_by_id[$vn_id][$v]['height'] = $va_media_info['info'][$v]['HEIGHT'];
+								$va_media_by_id[$vn_id][$v]['mimetype'] = $va_media_info['info'][$v]['MIMETYPE'];
+							}
+						} else {
+							$va_media_by_id[$vn_id] = $va_media_info['paths'][$version];
+						}
+						break;
+				}
+					
 			}
 			if(sizeof($va_media_by_id)){
 				return $va_media_by_id;
 			}
 		}
 
-		if(!is_array($pa_options)){
-			$pa_options = array();
-		}
+		if(!is_array($pa_options)){ $pa_options = [];}
 		$pa_access_values = caGetOption("checkAccess", $pa_options, array());
 		$vs_access_wheres = '';
 		if($pa_options['checkAccess']){
@@ -501,23 +550,60 @@
 
 		$qr_res = $o_db->query($vs_sql, $va_params);
 		$va_res = array();
+		
+		$alt_text_template = Configuration::load()->get("{$vs_table}_alt_text_template");
+		
 		while($qr_res->nextRow()) {
+			$id = $qr_res->get($vs_pk);
 		    switch($ps_return) {
+		        case 'data':
+		        	$t_instance->load($qr_res->get($t_instance->primaryKey(true)));
+		            $alt_text = $alt_text_template ? $t_instance->getWithTemplate($alt_text_template) : $t_instance->get("{$vs_table}.preferred_labels");
+                    
+                    if($versions_set) {
+		        		foreach($versions as $v) {
+		        			$version_info = $qr_res->getMediaInfo("media", $v);
+		        			$va_res[$id][$v]['tag'] = $qr_res->getMediaTag("media", $v);
+		        			$va_res[$id][$v]['url'] = $qr_res->getMediaUrl("media", $v);
+		        			$va_res[$id][$v]['path'] = $qr_res->getMediaPath("media", $v);
+		        			$va_res[$id][$v]['width'] = $version_info['WIDTH'];
+		        			$va_res[$id][$v]['height'] = $version_info['HEIGHT'];
+		        			$va_res[$id][$v]['mimetype'] = $version_info['MIMETYPE'];
+		        		}
+		        	} else {
+			        	$va_res[$id] = $qr_res->getMediaTag("media", $version, ['alt' => $alt_text]);
+			        }
+		        	break;
 		        case 'urls':
-			        $va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaUrl("media", caGetOption('version', $pa_options, 'icon'));
+		        	if($versions_set) {
+		        		foreach($versions as $v) {
+		        			$va_res[$id][$v] = $qr_res->getMediaUrl("media", $v);
+		        		}
+		        	} else {
+			       		$va_res[$id] = $qr_res->getMediaUrl("media", $version);
+			       	}
 			        break;
 		        case 'paths':
-			        $va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaPath("media", caGetOption('version', $pa_options, 'icon'));
+		        	if($versions_set) {
+		        		foreach($versions as $v) {
+		        			$va_res[$id][$v] = $qr_res->getMgetMediaPathediaUrl("media", $v);
+		        		}
+		        	} else {
+			        	$va_res[$id] = $qr_res->getMediaPath("media", $version);
+			        }
 			        break;
 		        case 'tags':
 		        default:
 		            $t_instance->load($qr_res->get($t_instance->primaryKey(true)));
-		            if ($alt_text_template = Configuration::load()->get("{$vs_table}_alt_text_template")) { 
-                        $alt_text = $t_instance->getWithTemplate($alt_text_template);
-                    } else {
-                        $alt_text = $t_instance->get("{$vs_table}.preferred_labels");
-                    }
-			        $va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", caGetOption('version', $pa_options, 'icon'), ['alt' => $alt_text]);
+		            $alt_text = $alt_text_template ? $t_instance->getWithTemplate($alt_text_template) : $t_instance->get("{$vs_table}.preferred_labels");
+                    
+                    if($versions_set) {
+		        		foreach($versions as $v) {
+		        			$va_res[$id][$v] = $qr_res->getMediaTag("media", $v);
+		        		}
+		        	} else {
+			        	$va_res[$id] = $qr_res->getMediaTag("media", $version, ['alt' => $alt_text]);
+			        }
 			        break;
 			}
 		}
