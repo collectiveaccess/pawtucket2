@@ -45,6 +45,9 @@
 				print "<H2>Glossary</H2>\n";	
 			
 			}		
+?>
+			<div class="row"><div class="col-sm-6">
+<?php
 			if ($g_ui_locale == 'en_US'){			
 ?>
 				<p class='trimText'>
@@ -59,7 +62,13 @@
 <?php
 			
 			}		
-
+?>
+			</div><div class="col-sm-6 fullWidthImg">
+<?php
+				print caGetThemeGraphic($this->request, 'Anatomy_State_3.jpg');
+?>
+			</div></div>
+<?php
 	$va_links_array = array();
 	$va_letter_array = array();
 	foreach($va_lists as $vn_type_id => $qr_list) {
@@ -161,7 +170,7 @@
 			jQuery(document).ready(function() {
 				$(".trimText").readmore({
 				  speed: 75,
-				  maxHeight: 112,
+				  maxHeight: 605,
 				  moreLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ MORE" : "LEER MÁS"; ?></a>",
 				  lessLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ LESS" : "CERRAR"; ?></a>",
 		  
