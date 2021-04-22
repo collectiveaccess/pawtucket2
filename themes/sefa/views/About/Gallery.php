@@ -7,7 +7,7 @@
 		<small>Hudson, NY</small>
 	</div>
 	<div class="col-sm-6 fullWidthImg">
-		<?php print caGetThemeGraphic($this->request, 'about_building_cropped.jpg', array('alt' => 'Exterior of Susan Eley Fine Art NYC')); ?>
+		<?php print caGetThemeGraphic($this->request, 'SEFA_NYC.jpg', array('alt' => 'Exterior of Susan Eley Fine Art NYC')); ?>
 		<small>NYC</small>
 	</div>
 </div>
