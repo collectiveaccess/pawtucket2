@@ -14,7 +14,7 @@ const BrowseBar = (props) => {
     infinite: false,
     speed: 500,
     slidesToShow: 10,
-    slidesToScroll: 1,
+    slidesToScroll: 2,
     // initialSlide: 0,
     responsive: [
       {

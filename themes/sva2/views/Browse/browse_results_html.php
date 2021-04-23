@@ -32,9 +32,10 @@
 	pawtucketUIApps['FacetedBrowse'] = {
         'selector': '#facetedBrowse',
         'data': {
-			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
+			baseUrl: "<?= __CA_URL_ROOT__."/index.php/Browse"; ?>",
 			serviceUrl: "http://sva.whirl-i-gig.com:8085/service.php/Browse",
-			view: "<?php print caGetOption('defaultView', $browse_info, 'images'); ?>"
+			view: "<?= caGetOption('defaultView', $browse_info, 'images'); ?>",
+			search: <?= json_encode($this->request->getParameter('search', pString)); ?>
         }
     };
 </script>

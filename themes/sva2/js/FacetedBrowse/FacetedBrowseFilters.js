@@ -3,12 +3,16 @@ import { FacetedBrowseContext } from './FacetedBrowseContext';
 import { getFacets, addFilterValue, removeFilterValue, removeAllFilterValues } from './FacetedQueries';
 
 const serviceUrl = pawtucketUIApps.FacetedBrowse.data.serviceUrl;
+const search = pawtucketUIApps.FacetedBrowse.data.search;
 
 const FacetedBrowseFilters = () => {
 
-  const { browseType, key, setKey, facets, setFacets, setFilters, filters, setResultItems, setTotalResultItems } = useContext(FacetedBrowseContext)
+  const { browseType, key, setKey, facets, setFacets, setFilters, filters, setResultItems, setTotalResultItems, setSort } = useContext(FacetedBrowseContext)
   const [ currentFacet, setCurrentFacet ] = useState();
+  const [ currFacetVals, setCurrFacetVals ] = useState();
   const [ selectedFacets, setSelectedFacets ] = useState([]);
+
+  // console.log("search", search);
 
   useEffect(() => {
     if(key){
@@ -20,13 +24,28 @@ const FacetedBrowseFilters = () => {
     }
   }, [key, setKey])
 
+
+  const toggleFilter = (name) =>{
+    var x = document.getElementById(`curr-facet-vals-${name}`);
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+
   const setFacetResults = (e, name) => {
+
     setCurrentFacet(name);
-    setSelectedFacets([])
+    setCurrFacetVals(`curr-facet-vals-${name}`);
+
+    toggleFilter(name);
+    setSelectedFacets([]);
+
     e.preventDefault();
   }
 
-  const selectFacet = (e, value) => {
+  const selectFacet = (value) => {
     let checkbox = document.getElementById(`checkbox-${value}`);
 
     if(selectedFacets.includes(value) && checkbox){
@@ -42,8 +61,6 @@ const FacetedBrowseFilters = () => {
     setSelectedFacets(tempArr);
 
     checkbox.setAttribute("checked", "true");
-
-    e.preventDefault();
   }
 
   const addFilter = (e) => {
@@ -56,6 +73,8 @@ const FacetedBrowseFilters = () => {
 
       setSelectedFacets([]);
       setCurrentFacet();
+      setCurrFacetVals();
+
     })
     e.preventDefault();
   }
@@ -73,6 +92,8 @@ const FacetedBrowseFilters = () => {
       setKey(data.key);
 
       setCurrentFacet();
+      setCurrFacetVals();
+      setSort();
     })
     e.preventDefault();
   }
@@ -87,6 +108,8 @@ const FacetedBrowseFilters = () => {
       setKey(data.key);
 
       setCurrentFacet();
+      setCurrFacetVals();
+      setSort();
     })
     e.preventDefault();
   }
@@ -148,23 +171,23 @@ const FacetedBrowseFilters = () => {
                         <p>{(facet.values.length > 1) ? facet.labelPlural : facet.labelSingular}</p>
                       </label>
 
-                      {(currentFacet == facet.name) ?
-                        <>
-                          <div className="container-fluid facet-values-container active"> 
-                            <div className="row row-cols-2 m-0 ">
-                              {facet.values.map((val, index) =>
-                                <div className="col facet-value" key={index}>
-                                  <div className="input-checkbox">
-                                    <input type="checkbox" id={`{checkbox-${val.id}`} onChange={(e) => { selectFacet(e, val.id) }} /> 
-                                    <label>{val.value}</label>
-                                  </div>                 
-                                </div>
-                              )}
-                            </div>
+                      <div id={`curr-facet-vals-${facet.name}`} style={{ 'display': (currFacetVals == `curr-facet-vals-${facet.name}`)? 'block' :'none'}}>
+                        <div className="container-fluid facet-values-container active" > 
+                          <div className="row row-cols-2 m-0 ">
+                            {facet.values.map((val, index) =>
+                              <div className="col facet-value" key={index}>
+                                <div className="input-checkbox">
+                                  <input type="checkbox" id={`checkbox-${val.id}`} onChange={() => { selectFacet(val.id) }}/>
+                                  <label htmlFor={`checkbox-${val.id}`}>{val.value}</label>
+                                </div>                 
+                              </div>
+                            )}
                           </div>
-                          <div className="row justify-content-center m-0 mb-3"><a className="btn btn-secondary btn-sm" href="#" onClick={(e) => { addFilter(e) }}>Apply</a></div>
-                        </>
-                      : <div className="container-fluid facet-values-container"></div>} 
+                        </div>
+                        <div className="row justify-content-center m-0 mb-3">
+                          <a className="btn btn-secondary btn-sm" href="#" onClick={(e) => { addFilter(e) }}>Apply</a>
+                        </div>
+                      </div>
                     </>
                   : null}
                 </div>

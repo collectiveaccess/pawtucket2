@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import FacetedBrowseContextProvider from './FacetedBrowse/FacetedBrowseContext';
 import FacetedBrowseFilters from './FacetedBrowse/FacetedBrowseFilters';
 import FacetedBrowseResults from './FacetedBrowse/FacetedBrowseResults';
@@ -6,13 +6,29 @@ import FacetedBrowseResults from './FacetedBrowse/FacetedBrowseResults';
 const selector = pawtucketUIApps.FacetedBrowse.selector;
 
 const FacetedBrowse = () => {
+
+  const [ isLoading, setIsLoading ] = useState(true);
+
+  useEffect(() => {
+    // setTimeout(() => setIsLoading(false), 4000);
+    setIsLoading(false);
+  }, [])
+
   // console.log(selector);
-  return (
-    <div className="row">
-      <FacetedBrowseResults />
-      <FacetedBrowseFilters />
-    </div>
-  )
+  if(isLoading === true){
+    return (
+      <div>
+        <h1>Loading...</h1>
+      </div>
+    )
+  }else{
+    return (
+      <div className="row">
+        <FacetedBrowseResults />
+        <FacetedBrowseFilters />
+      </div>
+    )
+  }
 }
 
 /**

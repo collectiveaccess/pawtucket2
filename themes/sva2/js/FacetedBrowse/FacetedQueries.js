@@ -41,13 +41,14 @@ const getFacet = (url, browseType, key, facet, callback) => {
     });
 }
 
-const getResult = (url, browseType, key, start, limit, callback) => {
+const getResult = (url, browseType, key, start, limit, sort, callback) => {
   const client = getGraphQLClient(url, {});
   client
     .query({
       query: gql`
-        query ($browseType: String, $key: String, $start: Int, $limit: Int) { result (browseType: $browseType, key: $key, start: $start, limit: $limit) { key, created, item_count, items { id, title, detailUrl, identifier, media {version, url, width, height, mimetype} }, filters { facet, values { id, value } } } }`
-      , variables: { 'browseType': browseType, 'key': key, 'start': start, 'limit': limit }
+        query ($browseType: String, $key: String, $start: Int, $limit: Int, $sort: String) { result (browseType: $browseType, key: $key, start: $start, limit: $limit, sort: $sort) { key, created, item_count, content_type, content_type_display, items { id, title, detailUrl, identifier, media {version, url, width, height, mimetype} }, filters { facet, values { id, value } }, available_sorts {name, value} } }`
+      , variables: { 'browseType': browseType, 'key': key, 'start': start, 'limit': limit, 'sort': sort }
+      
     })
     .then(function (result) {
       callback(result.data['result']);

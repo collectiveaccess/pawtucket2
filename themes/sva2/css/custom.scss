@@ -753,14 +753,8 @@ a {
 		margin-right: 10%;
 	}
 
+	//--------Faceted-Browse-Results--------
 	.faceted-browse-results {
-
-    .total-items-row {
-			margin: 0px 0px 20px 0px;
-			.total-items {
-				font-family: $sans-serif;
-			}
-		}
 
 		.fb-results-row{
 			margin: 0px 0px 20px 0px;
@@ -803,6 +797,8 @@ a {
 
 	}
 
+
+	//--------Faceted-Browse-Filters--------
 	.faceted-browse-filters {
 		padding: 5px;
 		background-color: #C8C8C8;
@@ -815,7 +811,7 @@ a {
  		}
 
 		.filterby-heading{
-			margin-bottom: 15px;
+			margin-bottom: 25px;
 			font-family: $sans-serif;
 		}
 
@@ -856,6 +852,10 @@ a {
 		.facets-list{
 			list-style: none;
 
+			.facet-item{
+				margin: 0px 0px 20px 0px;
+			}
+
 			.facet-item-label{
 				background-color: transparent !important;
 				padding-left: 0;
@@ -880,9 +880,10 @@ a {
 				margin-bottom: 10px;
 				width: auto;
 
-				height: 200px;
+				height: auto;
+				max-height: 200px;
 				overflow-y: scroll;
-				transition: height .5s ease-in;
+				// transition: height .5s ease-in;
 
 				.facet-value {
 					padding: 5px 5px 5px 5px;
@@ -902,13 +903,16 @@ a {
 							width: 10px;
 							cursor: pointer;
 						}
-						input:checked {
-							background-color: $black !important;
-						} 
-
 						label{
 							font-family: $sans-serif;
 							font-size: 10pt;
+							cursor: pointer;
+						}
+						input:checked {
+							background-color: $black !important;
+						} 
+						input[type="checkbox"]:checked + label{
+							font-weight: bold;
 						}
 					}
 				}
@@ -918,13 +922,29 @@ a {
 				}
 			}
 
-			.facet-values-container {
-				height: 0px;
-				overflow: hidden;
-				transition: height .5s ease-out;
-			}
+			// .facet-values-container {
+			// 	height: 0px;
+			// 	overflow: hidden;
+			// 	transition: height .5s ease-out;
+			// }
 
 		}
+	}
+
+	//--------Faceted-Browse-Controls--------
+	.faceted-browse-controls{
+
+		.total-items-row {
+			margin: 0px 0px 20px 0px;
+			.total-items {
+				font-family: $sans-serif;
+			}
+		}
+
+		.dropdown-menu.show {
+			min-width: 200px !important;
+		}
+
 	}
 
 

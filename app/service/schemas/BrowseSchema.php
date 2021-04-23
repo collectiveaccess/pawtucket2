@@ -156,6 +156,20 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 					]
 				]
 			]),
+			$browseAvailableSortOption = new ObjectType([
+				'name' => 'BrowseAvailableSortOption',
+				'description' => 'Sort option for browse',
+				'fields' => [
+					'name' => [
+						'type' => Type::string(),
+						'description' => 'Sort name'
+					],
+					'value' => [
+						'type' => Type::string(),
+						'description' => 'Sort value'
+					]
+				]
+			]),
 			//
 			// Results
 			//
@@ -247,7 +261,11 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 					],
 					'content_type' => [
 						'type' => Type::string(),
-						'description' => 'Browse result content type (Eg. objects)'
+						'description' => 'Browse result content type as code (Eg. ca_objects)'
+					],
+					'content_type_display' => [
+						'type' => Type::string(),
+						'description' => 'Browse result content type for display (Eg. objects) '
 					],
 					'item_count' => [
 						'type' => Type::int(),
@@ -264,6 +282,10 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 					'filters' => [
 						'type' => Type::listOf($browseFacetFilterValuesType),
 						'description' => 'Filter values for current browse'
+					],	
+					'available_sorts' => [
+						'type' => Type::listOf($browseAvailableSortOption),
+						'description' => 'Available sort options for result'
 					]
 				]
 			]),
