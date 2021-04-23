@@ -1,23 +1,23 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { FacetedBrowseContext } from './FacetedBrowseContext';
-// import { getResult } from './FacetedQueries';
+import { getResult } from './FacetedQueries';
 
 const serviceUrl = pawtucketUIApps.FacetedBrowse.data.serviceUrl;
 
 const FacetedBrowseResultsLoadMoreButton = () => {
-  const { browseType, key, setKey, setResultItems, resultItemsPerPage, setResultItemsPerPage, totalResultItems, setTotalResultItems } = useContext(FacetedBrowseContext)
+  const { resultItemsPerPage, setResultItemsPerPage, totalResultItems, browseType, key, sort, setTotalResultItems, setFilters, setKey, setResultItems } = useContext(FacetedBrowseContext)
 
   const loadMoreResultItems = (e) => {
     let newLimit = resultItemsPerPage + 30;
     setResultItemsPerPage(newLimit);
 
-    // getResult(serviceUrl, browseType, key, 0, newLimit, function (data) {
-    //   console.log("getResult: ", data);
-    //   setResultItems(data.items);
-    //   setTotalResultItems(data.item_count);
-    //   setFilters(data.filters)
-    //   setKey(data.key);
-    // });
+    getResult(serviceUrl, browseType, key, 0, newLimit, sort, function (data) {
+      console.log("getResult: ", data);
+      setResultItems(data.items);
+      setTotalResultItems(data.item_count);
+      setFilters(data.filters)
+      setKey(data.key);
+    });
 
     e.preventDefault();
   }
@@ -33,4 +33,4 @@ const FacetedBrowseResultsLoadMoreButton = () => {
   }
 }
 
-export default FacetedBrowseResultsLoadMoreButton
+export default FacetedBrowseResultsLoadMoreButton;
