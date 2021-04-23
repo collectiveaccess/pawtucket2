@@ -427,6 +427,21 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 		$qr->seek($start);
 		while($qr->nextHit()) {
 			$id = $qr->getPrimaryKey();
+			
+			$data = [];
+			
+			// TODO: only execute this is 'data' is in the query
+			if(is_array($browse_info['additionalData'])) {
+				foreach($browse_info['additionalData'] as $k => $f) {
+					if (strpos($f, '^') !== false) {
+						$v = $qr->getWithTemplate($f);
+					} else {
+						$v = $qr->get($f);
+					}
+					$data[] = ['name' => $k, 'value' => $v];
+				}
+			}
+			
 			$ret[] = [
 				'id' => $id,
 				'title' => $qr->get("{$table}.preferred_labels"),
@@ -434,7 +449,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 				'identifier' => $qr->get("{$table}.idno"),
 				'rank' => $i,
 				'media' => $m[$id],
-				'data' => []
+				'data' => $data
 			];
 			$i++;
 			if(($limit > 0) && ($i >= $limit)) { break; }
