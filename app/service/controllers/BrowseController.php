@@ -184,21 +184,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 					],
 					'resolve' => function ($rootValue, $args) {
 						list($browse_info, $browse) = self::browseParams($args);
-						
-						if(!($qr = $browse->getResults())) { 
-							throw new \ServiceException(_t('Browse execution failed'));
-						}
-						$items = self::getResultsForResponse($browse, $qr, $browse_info, $args);
-						
-						return [
-							'key' => $browse->getBrowseID(),
-							'created' => date('c'),
-							'content_type' => $browse_info['table'],
-							'item_count' => $qr->numHits(),
-							'items' => $items,
-							'facets' => [],
-							'filters' => self::getFiltersForResponse($browse, $browse_info)
-						];
+						return self::getMutationResponse($browse, $browse_info, $args);
 					}
 				],
 				'filters' => [
@@ -259,6 +245,11 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 							'name' => 'values',
 							'type' => Type::listOf(Type::string()),
 							'description' => _t('Filter values')
+						],
+						[
+							'name' => 'sort',
+							'type' => Type::string(),
+							'description' => _t('Sort fields')
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
@@ -302,6 +293,11 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 							'name' => 'value',
 							'type' => Type::string(),
 							'description' => _t('Filter value')
+						],
+						[
+							'name' => 'sort',
+							'type' => Type::string(),
+							'description' => _t('Sort fields')
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
@@ -333,6 +329,11 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 							'name' => 'key',
 							'type' => Type::string(),
 							'description' => _t('Browse key')
+						],
+						[
+							'name' => 'sort',
+							'type' => Type::string(),
+							'description' => _t('Sort fields')
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
@@ -447,17 +448,32 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 	 *
 	 */
 	private static function getMutationResponse(BrowseEngine $browse, array $browse_info, array $args) {
-		if(!($qr = $browse->getResults())) { 
+		list($sort, $sort_direction) = self::processSortSpec($args['sort']);
+		if(!($qr = $browse->getResults(['sort' => $sort, 'sort_direction' => $sort_direction]))) { 
 			throw new \ServiceException(_t('Browse execution failed'));
 		}
+		
+		// Get available sorts
+		$sorts = caGetOption('sortBy', $browse_info, [], ['castTo' => 'array']);
+		$sort_directions = caGetOption('sortDirection', $browse_info, [], ['castTo' => 'array']);
+		
+		$available_sorts = [];
+		foreach($sorts as $n => $f) {
+			if($d = caGetOption($f, $sort_directions, null)) { $d = ":{$d}"; }
+			$available_sorts[] = ['name' => $n, 'value' => "{$f}{$d}"];
+		}
+		
+		$n = $qr->numHits();
 		return [
 			'key' => $browse->getBrowseID(),
 			'created' => date('c'),
 			'content_type' => $browse_info['table'],
-			'item_count' => $qr->numHits(),
+			'content_type_display' => mb_strtolower($browse_info[($n == 1) ? 'labelSingular' : 'labelPlural']),
+			'item_count' => $n,
 			'items' => self::getResultsForResponse($browse, $qr, $browse_info, $args),
 			'facets' => [],
-			'filters' => self::getFiltersForResponse($browse, $browse_info)
+			'filters' => self::getFiltersForResponse($browse, $browse_info),
+			'available_sorts' => $available_sorts
 		];
 	}
 	# -------------------------------------------------------
@@ -483,6 +499,29 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 		}, $filters, array_keys($filters));
 		
 		return $filters;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	private static function processSortSpec($sort_spec) {
+		if($sort_spec) {
+			$tmp = explode(';', $sort_spec);
+			$sort = join(';', array_map(function($v) { 
+				$t = explode(':', $v);
+				return $t[0];
+			}, $tmp));
+			$sort_direction = join(';', array_map(function($v) { 
+				$t = explode(':', $v);
+				$d = (sizeof($t) > 1) ? strtoupper($t[1]) : 'ASC';
+				if(!in_array($d, ['ASC' , 'DESC'], true)) { $d = 'ASC'; }
+				return $d;
+			}, $tmp));
+			
+			return [$sort, $sort_direction];
+		}
+		
+		return [null, null];
 	}
 	# -------------------------------------------------------
 }
