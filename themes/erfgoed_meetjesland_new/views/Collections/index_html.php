@@ -29,7 +29,12 @@
 		while($qr_collections->nextHit()) {
 			if(in_array($qr_collections->get("ca_collections.access"), $va_access_values)){
 				if ( $vn_i == 0) { print "<div class='row'>"; } 
-				print "<div class='col-sm-6'><div class='collectionTile'>".caDetailLink($this->request, $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>"), "collectionTileImage", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
+				$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>");
+				if(!$vs_image){
+					$va_images = explode(";", $qr_collections->getWithTemplate("<unit relativeTo='ca_collections.children' length='1' limit='1'><unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit></unit>"));
+					$vs_image = $va_images[0];
+				}
+				print "<div class='col-sm-6'><div class='collectionTile'>".caDetailLink($this->request, $vs_image, "collectionTileImage", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
 				print "<div class='title'>".caDetailLink($this->request, $qr_collections->get("ca_collections.preferred_labels"), "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";	
 				if (($o_collections_config->get("description_template")) && ($vs_scope = $qr_collections->getWithTemplate($o_collections_config->get("description_template")))) {
 					print "<div>".$vs_scope."</div>";

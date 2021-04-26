@@ -37,16 +37,16 @@
 	$vn_facet_display_length_initial = 7;
 	$vn_facet_display_length_maximum = 60;
 	
-	# --- only show regions in browse filter
-	$t_list = new ca_lists();
-	$vn_place_type_id = $t_list->getItemIDFromList('place_types', 'EGC_regio');
-	$r_places = ca_places::find(array('type_id' => $vn_place_type_id), array('returnAs' => 'searchResult'));
-	$va_places = array();
-	if($r_places->numHits()){
-		while($r_places->nextHit()){
-			$va_places[] = $r_places->get("ca_places.place_id");
-		}
-	}
+	# --- only show cities in browse filter
+#	$t_list = new ca_lists();
+#	$vn_place_type_id = $t_list->getItemIDFromList('place_types', 'city');
+#	$r_places = ca_places::find(array('type_id' => $vn_place_type_id), array('returnAs' => 'searchResult'));
+#	$va_places = array();
+#	if($r_places->numHits()){
+#		while($r_places->nextHit()){
+#			$va_places[] = $r_places->get("ca_places.place_id");
+#		}
+#	}
 	
 	if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
@@ -54,7 +54,7 @@
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 		print "<H3>"._t("Filter by")."</H3>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
-			if($vs_facet_name == "place_facet"){
+			if($vs_facet_name == "city_facet"){
 				$vn_facet_display_length_initial = 10000;
 			}else{
 				$vn_facet_display_length_initial = 7;
@@ -81,13 +81,13 @@
 						$vn_facet_size = sizeof($va_facet_info['content']);
 						$vn_c = 0;
 						foreach($va_facet_info['content'] as $va_item) {
-						   	if($vs_facet_name == "place_facet"){
-								if(!in_array($va_item["id"], $va_places)){
-									continue;
-								}
-							}
+						   #	if($vs_facet_name == "place_facet"){
+							#	if(!in_array($va_item["id"], $va_places)){
+							#		continue;
+							#	}
+							#}
 
-						    $vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+						    #$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
 							print "<div>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 							$vn_c++;
 						

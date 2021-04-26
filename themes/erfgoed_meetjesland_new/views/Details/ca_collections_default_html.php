@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();

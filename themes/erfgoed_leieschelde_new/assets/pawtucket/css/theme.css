@@ -30,6 +30,10 @@ body, .detail, .gallery, label, b, strong{
 	font-family: "Poppins";
 	font-weight:400;
 }
+b, strong{
+	font-family: "Poppins";
+	font-weight:600;
+}
 /*body{
 	background-color: #f2f1ec;
 }
@@ -164,7 +168,7 @@ H1, h1{
 	text-transform:none;
 	margin-top:20px;
 }
-h1 hr, H1 hr{
+h1 hr, H1 hr, H2 hr, h2 hr{
 	background-color: #fbbf70;
 	width: 190px;
 	height: 10px;
@@ -214,7 +218,7 @@ a:hover{
 	color: #000;
 	padding-top:25px;
 	padding-bottom:25px;
-	height:250px;
+	height:350px;
 	border-top:0px;
 	text-align:center;
 	margin-top:0px;
@@ -223,15 +227,15 @@ a:hover{
 	font-weight:400;
 }
 body{
-	margin-bottom:250px;
+	margin-bottom:370px;
 	color:#000
 }
 @media(max-width:768px){
 	#footer{
-		height:300px;
+		height:390px;
 	}
 	body{
-		margin-bottom:300px;
+		margin-bottom:400px;
 	}
 }
 #footer{
@@ -276,17 +280,34 @@ body{
 	width:150px;
 	height:auto;
 }
-#footer ul.social{
+#footer ul.social, #footer .social a{
+	color:#000;
+	font-size:25px;
+}
+#footer ul.social {
+	margin-top: 20px;
+	margin-bottom:10px;
+}
+#footer ul.footerLinks{
 	margin-top: 20px;
 	margin-bottom:30px;
 }
-#footer ul.social, #footer .social a{
+#footer ul.footerLinks, #footer ul.footerLinks a{
 	font-size: 20px;
 	color:#000;
 	font-size:18px;
 	font-weight:500;
 }
+#footer ul.footerLinksSmall a{
+	font-size:13px;
+}
+#footer ul.footerLinksSmall{
+	margin-top:30px;
+}
 #footer ul.social li {
+    padding: 0px 8px 0px 8px;
+}
+#footer ul.footerLinks li {
     padding: 0px 15px 0px 15px;
 }
 
@@ -351,6 +372,7 @@ body.frontContainer, body.frontContainer #pageArea{
 }
 .parallax.hero6 {
     background-image: url("../graphics/hero_6.jpg");
+    background-position: top center;
 }
 @media(max-width:420px), (max-height:420px){
 	/*.heroSearch H1{
@@ -370,6 +392,14 @@ body.frontContainer, body.frontContainer #pageArea{
 	height:100%;
 	width:auto;
 }
+.front hr{
+	background-color: #fbbf70;
+	width: 190px;
+	height: 10px;
+	border: 0px;
+	display: inline-block;
+	margin: 20px 0px 20px 0px;	
+}
 .front .heroSearch {
 	position:relative;
 	text-align:right;
@@ -388,7 +418,7 @@ body.frontContainer, body.frontContainer #pageArea{
 .front .heroSearch hr{
 	background-color: rgba(251, 191, 112, 0.6);
 	width: 190px;
-	height: 16px;
+	height: 10px;
 	border: 0px;
 	display: inline-block;
 	margin: 20px 0px 7px 0px;
@@ -525,14 +555,7 @@ body.frontContainer, body.frontContainer #pageArea{
 .front H2{
 	font-size:30px;
 }
-.frontFeaturedExpo H2 hr{
-	background-color: #00bfa9;
-	width: 190px;
-	height: 10px;
-	border: 0px;
-	display: inline-block;
-	margin: 20px 0px 20px 0px;	
-}
+
 .frontFeaturedExpoBlock{
 	margin-bottom:100px;
 }
@@ -581,53 +604,39 @@ body.frontContainer, body.frontContainer #pageArea{
 	font-weight:600;
 	font-size:28px;
 }
-.frontFeaturedExpoLink HR{
-	background-color: #00bfa9;
-	width: 190px;
-	height: 10px;
-	border: 0px;
-	display: inline-block;
-	margin: 20px 0px 0px 0px;
-}
 .frontFeaturedExpoText .btn-default{
-	background-color:#fbbf70;
-	background-color:#b1e8cb;
+	background-color:#e7375a;
 	padding:20px;
 	border-radius:35px;
-	color:#000;
+	color:#FFF;
 	font-weight:600;
 	font-size: 20px;
+	text-shadow:none;
 }
-.frontFeaturedCollections{
+.frontFeaturedExpoText .btn-default:hover{
+	background-color:#000;
+}
+.frontFeaturedCollections, .frontFeaturedPlaces{
 	margin-bottom:80px;
 	margin-top:50px;
 }
-.frontFeaturedCollections H2 hr{
-	background-color: #37ccff;
-	width: 190px;
-	height: 10px;
-	border: 0px;
-	display: inline-block;
-	margin: 20px 0px 20px 0px;	
-}
-.frontFeaturedCollectionsItem{
+.frontFeaturedCollectionsItem, .frontFeaturedPlacesItem{
 	margin-bottom:30px;
 	text-align:center;
 }
-.frontFeaturedCollectionsItem a{
+.frontFeaturedCollectionsItem a, .frontFeaturedPlacesItem a{
 	font-family:Poppins;
 	font-weight:500;
 	font-size:24px;
 	line-height:1.2em;
 }
-.frontFeaturedCollectionsImg img{
+.frontFeaturedCollectionsImg img, .frontFeaturedPlacesImg img{
 	width:100%;
 	height:auto;
 	border-radius:20px;
 	margin-bottom:10px;
 	max-width:340px;
 }
-
 
 
 /* detail page */
@@ -798,7 +807,15 @@ table.attributeListItem{
 #bRefine a {
     color: #000;
 }
-
+.results #bViewButtons a{
+    opacity:1;
+}
+.results #bViewButtons a .glyphicon, .results #bViewButtons a .fa {
+    color: #e7375a !important;
+}
+.results #bViewButtons a.active .glyphicon, .results #bViewButtons a.active .fa {
+    color: #000 !important;
+}
 /* gallery */
 .gallery .setDescription {
     font-size: 14px;
@@ -880,7 +897,7 @@ div.caMediaOverlayControls .close a{
 	padding: 12px 10px 8px 10px;
 }
 div.caMediaOverlayControls .close a .caIcon{
-	color:red !important;
+	color:#fbbf70 !important;
 	text-shadow:#000 0px 1px 0px;
 	font-size:30px !important;
 }
@@ -933,7 +950,7 @@ div.caMediaOverlayControls{
 	font-size:20px;
 	margin-bottom:20px;
 }
-.staticPage h2 hr, .staticPage H2 hr{
+/*.staticPage h2 hr, .staticPage H2 hr{
 	background-color: #fbbf70;
 	width: 120px;
 	position: relative;
@@ -943,12 +960,12 @@ div.caMediaOverlayControls{
 	margin: 10px 0px 0px 0px;
 	padding:0px;
 	left: 30px;
-}
+}*/
 .staticPage .btn-default{
-	background-color:#fbbf70;
+	/*background-color:#fbbf70;
+	color:#000;*/
 	padding:15px;
 	border-radius:25px;
-	color:#000;
 	font-weight:600;
 	font-size: 18px;
 }
@@ -969,4 +986,5 @@ div.caMediaOverlayControls{
 .staticPage img{
 	width:100%;
 	height:auto;
+	border-radius:30px;
 }

@@ -96,33 +96,34 @@
 <?php
 	$t_list = new ca_lists();
 	$vn_place_type_id = $t_list->getItemIDFromList('place_types', 'EGC_regio');
-	$r_places = ca_places::find(array('type_id' => $vn_place_type_id), array('returnAs' => 'searchResult', 'sort' => 'ca_places.idno'));
+	if($vn_place_type_id){
+		$r_places = ca_places::find(array('type_id' => $vn_place_type_id), array('returnAs' => 'searchResult', 'sort' => 'ca_places.idno'));
 			
-	$i = 0;
-	if($r_places->numHits()){
-		while($r_places->nextHit()){
-			if($i == 0){
-				print "<div class='row'>";
-			}
-			$vs_img = "";
-			if($r_places->get("ca_object_representations.media.iconlarge")){
-				$vs_img = $r_places->getWithTemplate("^ca_object_representations.media.iconlarge");	
-				if($vs_img){
-					$vs_img = caNavLink($this->request, $vs_img, "", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."<br/>";
+		$i = 0;
+		if($r_places->numHits()){
+			while($r_places->nextHit()){
+				if($i == 0){
+					print "<div class='row'>";
+				}
+				$vs_img = "";
+				if($r_places->get("ca_object_representations.media.iconlarge")){
+					$vs_img = $r_places->getWithTemplate("^ca_object_representations.media.iconlarge");	
+					if($vs_img){
+						$vs_img = caNavLink($this->request, $vs_img, "", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."<br/>";
+					}
+				}
+				print "<div class='col-sm-12 col-md-3 text-center'>".$vs_img.caNavLink($this->request, $r_places->get("ca_places.preferred_labels.name"), "frontPlaceLink", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."</div>";
+				$i++;
+				if($i == 4){
+					print "</div><!-- end row -->";
+					$i = 0;
 				}
 			}
-			print "<div class='col-sm-12 col-md-3 text-center'>".$vs_img.caNavLink($this->request, $r_places->get("ca_places.preferred_labels.name"), "frontPlaceLink", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."</div>";
-			$i++;
-			if($i == 4){
-				print "</div><!-- end row -->";
-				$i = 0;
-			}
 		}
-	}
-	if($i > 0){
-		print "</div><!-- end row -->";
-	}
-	
+		if($i > 0){
+			print "</div><!-- end row -->";
+		}
+	}	
 ?>
 </div></div>
 <div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>
