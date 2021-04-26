@@ -72,7 +72,7 @@ $vs_hero = $this->request->getParameter("hero", pString);
 		</div>
 	</div>
 </div>
-<div class="row"><div class="col-sm-12 colNoPadding">
+<div class="row"><div class="col-sm-12 colNoPadding"><H2>Een greep uit het aanbod</H2>
 
 <?php
 		print $this->render("Front/featured_set_slideshow_html.php");

@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -100,6 +101,30 @@
 ?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
+<?php
+	$qr_collections = ca_collections::find(array('parent_id' => $t_item->get("ca_collections.collection_id"), 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.preferred_labels.name'));
+	$vn_i = 0;
+		if($qr_collections && $qr_collections->numHits()) {
+			while($qr_collections->nextHit()) {
+				if(in_array($qr_collections->get("ca_collections.access"), $va_access_values)){
+					if ( $vn_i == 0) { print "<div class='row'>"; } 
+					print "<div class='col-sm-4'><div class='collectionList'>".$qr_collections->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>").
+								"<label>".$qr_collections->getWithTemplate("<l>^ca_collections.preferred_labels</l>")."</label>
+							</div></div>\n";
+				
+					$vn_i++;
+					if ($vn_i == 3) {
+						print "</div><!-- end row -->\n";
+						$vn_i = 0;
+					}
+				}
+			}
+			if (($vn_i < 3) && ($vn_i != 0) ) {
+				print "</div><!-- end row -->\n";
+			}
+		}
+?>
+
 {{{
 			<div class="row">
 				<div id="browseResultsContainer">

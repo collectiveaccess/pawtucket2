@@ -45,6 +45,9 @@
 				print "<H2>Glossary</H2>\n";	
 			
 			}		
+?>
+			<div class="row"><div class="col-sm-6">
+<?php
 			if ($g_ui_locale == 'en_US'){			
 ?>
 				<p class='trimText'>
@@ -59,7 +62,13 @@
 <?php
 			
 			}		
-
+?>
+			</div><div class="col-sm-6 fullWidthImg">
+<?php
+				print caGetThemeGraphic($this->request, 'Anatomy_State_3.jpg');
+?>
+			</div></div>
+<?php
 	$va_links_array = array();
 	$va_letter_array = array();
 	foreach($va_lists as $vn_type_id => $qr_list) {
@@ -70,17 +79,23 @@
 			$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			if(!$va_links_array[$vs_first_letter][$vs_sort]){
-				$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listEntryIndentSecondLine'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</div>\n";	
+				$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</div>\n";	
 			}
 		}
-		ksort($va_links_array);
-		ksort($va_letter_array);
+		#ksort($va_links_array);
+		#ksort($va_letter_array);
 		foreach ($va_links_array as $vs_first_letter => $va_links) {
 			ksort($va_links);
-			print "<p class='separator'><a name='".$vs_first_letter."'></a><br></p>";			
+			print "<p class='separator' style='clear:both;'><a name='".$vs_first_letter."'></a><br></p>";			
 			print "<h2 id='".$vs_first_letter."' class='mw-headline'>".$vs_first_letter."</h2>";
+			$i = 0;
 			foreach ($va_links as $vn_i => $va_link) {
 				print $va_link;
+				$i++;
+				if($i == 3){
+					print "<div style='clear:both'></div>";
+					$i = 0;
+				}
 			}
 		}
 	}
@@ -155,7 +170,7 @@
 			jQuery(document).ready(function() {
 				$(".trimText").readmore({
 				  speed: 75,
-				  maxHeight: 112,
+				  maxHeight: 605,
 				  moreLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ MORE" : "LEER MÁS"; ?></a>",
 				  lessLink: "<a href='#'><?php print ($g_ui_locale == 'en_US') ? "READ LESS" : "CERRAR"; ?></a>",
 		  
