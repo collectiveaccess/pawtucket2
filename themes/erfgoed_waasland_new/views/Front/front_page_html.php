@@ -79,17 +79,15 @@ $vs_hero = $this->request->getParameter("hero", pString);
 ?>
 </div></div>
 
-
-
-
 <div class="row"><div class="col-sm-12 col-md-12 col-lg-8 col-lg-offset-2 frontPlaces">
 	<h2>Bladeren per stad of gemeente</h2>
 <?php
-	$o_browse = caGetBrowseInstance("ca_objects");
-	$va_cities = $o_browse->getFacet("city_facet", array('checkAccess' => $this->opa_access_values, 'request' => $this->request));
-	$i = 0;
-	if(is_array($va_cities) && sizeof($va_cities)){
-		$r_places = caMakeSearchResult("ca_places", array_keys($va_cities));
+	$t_list = new ca_lists();
+	$vn_place_type_id = $t_list->getItemIDFromList('place_types', 'hoofdgemeente');
+	if($vn_place_type_id){
+		$r_places = ca_places::find(array('type_id' => $vn_place_type_id, 'access' => 1), array('returnAs' => 'searchResult', 'sort' => 'ca_places.idno'));
+			
+		$i = 0;
 		if($r_places->numHits()){
 			while($r_places->nextHit()){
 				if($i == 0){
@@ -97,9 +95,12 @@ $vs_hero = $this->request->getParameter("hero", pString);
 				}
 				$vs_img = "";
 				if($r_places->get("ca_object_representations.media.iconlarge")){
-					$vs_img = $r_places->getWithTemplate("<l>^ca_object_representations.media.iconlarge</l><br/>");	
+					$vs_img = $r_places->getWithTemplate("^ca_object_representations.media.iconlarge");	
+					if($vs_img){
+						$vs_img = caNavLink($this->request, $vs_img, "", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."<br/>";
+					}
 				}
-				print "<div class='col-sm-12 col-md-3 text-center'>".$vs_img.caNavLink($this->request, $r_places->get("ca_places.preferred_labels.name"), "frontPlaceLink", "", "Browse", "objects", array("facet" => "city_facet", "id" => $r_places->get("ca_places.place_id")))."</div>";
+				print "<div class='col-sm-12 col-md-3 text-center'>".$vs_img.caNavLink($this->request, $r_places->get("ca_places.preferred_labels.name"), "frontPlaceLink", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."</div>";
 				$i++;
 				if($i == 4){
 					print "</div><!-- end row -->";
@@ -110,8 +111,7 @@ $vs_hero = $this->request->getParameter("hero", pString);
 		if($i > 0){
 			print "</div><!-- end row -->";
 		}
-	}
-	
+	}	
 ?>
 </div></div>
 
