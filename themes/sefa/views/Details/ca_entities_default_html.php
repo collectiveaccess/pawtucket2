@@ -104,7 +104,7 @@
 						$vs_image = "";
 						$vs_image = $q_objects->get("ca_object_representations.media.mediumlarge", array("checkAccess" => $va_access_values));
 						if($vs_image){
-							$va_images[$q_objects->get("ca_objects.date_created").".".$q_objects->get("ca_objects.object_id")] = array("image" => $vs_image, "caption" => sefaFormatCaption($this->request, $q_objects));
+							$va_images[$q_objects->get("ca_objects.date_created").".".$q_objects->get("ca_objects.object_id")] = array("object_id" => $q_objects->get("ca_objects.object_id"), "image" => $vs_image, "caption" => sefaFormatCaption($this->request, $q_objects));
 						}
 					}
 					krsort($va_images);
@@ -115,9 +115,9 @@
 							<ul>
 <?php
 							$vn_i = 1;
-							foreach($va_images as $vn_image_object_id => $va_image){
+							foreach($va_images as $key => $va_image){
 ?>
-								<li id="slide<?php print $vn_image_object_id; ?>">
+								<li id="slide<?php print $va_image["object_id"]; ?>">
 									<div class="thumbnail">
 										<?php print $va_image["image"]; ?>
 										<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["caption"]; ?></div>

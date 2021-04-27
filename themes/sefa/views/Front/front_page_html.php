@@ -57,8 +57,12 @@
 				print "<h2>".caDetailLink($this->request, $t_exhibition->get("ca_occurrences.exhibition_subtitle"), '', 'ca_occurrences', $t_exhibition->get("ca_occurrences.occurrence_id"), null, null, array("type_id" => $t_exhibition->get("ca_occurrences.type_id")))."</h2>";
 			}
 			print "<div class='date'>".$t_exhibition->get("ca_occurrences.opening_closing").(($t_exhibition->get("ca_occurrences.opening_reception")) ? " | Opening Reception: ".$t_exhibition->get("ca_occurrences.opening_reception") : "");
-			if($vs_location = $t_exhibition->get("ca_occurrences.outside_location")){
-				print "<br>".$vs_location;
+			if($t_exhibition->get("ca_occurrences.location")){
+				print "<br/>".$t_exhibition->get("ca_occurrences.location", array("convertCodesToDisplayText" => true));
+			}elseif($t_exhibition->get("ca_occurrences.outside_location")){
+				print "<br/>".$t_exhibition->get("ca_occurrences.outside_location", array("convertCodesToDisplayText" => true));
+			}else{
+				print "<br/>NYC";
 			}
 			print "</div>";
 			if($i < sizeof($va_exhibition_ids)){
