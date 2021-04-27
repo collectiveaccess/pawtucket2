@@ -33,6 +33,11 @@
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
 	if($this->request->isLoggedIn()){
+		require_once(__CA_MODELS_DIR__."/ca_site_pages.php");
+		$t_site_page = new ca_site_pages(array("path" => "/gallery_instructions"));
+		if($t_site_page->get("ca_site_pages.page_id")){
+			$vs_instructions_link = $t_site_page->getWithTemplate("^ca_site_page_media.media.original.url");
+		}
 		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$va_user_links[] = '<li class="divider nav-divider"></li>';
 		if(caDisplayLightbox($this->request)){
@@ -40,6 +45,7 @@
 			if($this->request->hasRole("admin")){
 				$va_user_links[] = "<li>".caNavLink($this->request, "Publication Requests", '', '', 'Lightbox', 'publishRequestsList', array())."</li>";
 			}
+			$va_user_links[] = "<li><a href='".$vs_instructions_link."'>Gallery Instructions</a></li>";
 		}
 		if(caDisplayClassroom($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
