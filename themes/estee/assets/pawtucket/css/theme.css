@@ -1687,6 +1687,10 @@ h1.primaryLandingBannerTitle {
 	margin-top:30px;
 	font-weight:bold;
 }
+.staticPage .video-js {
+    width: 100% !important;
+    height: auto !Important;
+}
 /*
 #contactTabs.nav-tabs > li, #aboutTabs.nav-tabs > li, #collectionTabs.nav-tabs > li{
 	float:none;

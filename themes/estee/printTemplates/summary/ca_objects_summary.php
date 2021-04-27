@@ -102,7 +102,7 @@
 		# ------------------------
 	}
 ?>
-	<div class="representationList">
+	<hr class="top"/><div class="representationList">
 		
 <?php
 	$va_reps = $t_item->getRepresentations(array("thumbnail", "small"), array("checkAccess" => $va_access_values));

@@ -4,10 +4,10 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	$t_set = $this->getVar('featured_set');
 	$qr_res = $this->getVar('featured_set_items_as_search_result');	
-	include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
+	include_once(__CA_LIB_DIR__."/Search/SetSearch.php");
 	#AssetLoadManager::register("cycle");
 ?>
-<H1><?php print _t("Museum Collections"); ?></H1>
+<H1><?php print _t("Museum"); ?></H1>
 <div class='row'>
 	<div class='col-sm-6'>
 <?php		
@@ -33,7 +33,9 @@
 <?php	
 			if ($qr_res) {
 				while($qr_res->nextHit()) {		
-					print "<div class='slide'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.large'), '', '', 'Detail', 'objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
+					print "<div class='slide'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.large', array('scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px')), '', '', 'Detail', 'objects/'.$qr_res->get('ca_objects.object_id'));
+					print "<div class='frontSlideCaption'>".caNavLink($this->request, $qr_res->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
+					print "</div>";
 				}
 			}
 ?>

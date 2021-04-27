@@ -44,14 +44,23 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-133942620-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-133942620-1');
+	</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
@@ -127,8 +136,9 @@ $va_info_links = array(
 	"<li>".caNavLink($this->request, 'Plan a Research Visit', '', '', 'About', 'plan')."</li>",
 	"<li>".caNavLink($this->request, 'Use and Licensing', '', '', 'About', 'use')."</li>",
 	"<li>".caNavLink($this->request, 'Connect with Us', '', '', 'About', 'connect')."</li>",
-	"<li>".caNavLink($this->request, 'User Guides', '', '', 'About', 'userguide')."</li>",
-	"<li>".caNavLink($this->request, 'Acknowledgments', '', '', 'About', 'acknowledgments')."</li>"
+	"<li>".caNavLink($this->request, 'User Guide', '', '', 'About', 'userguide')."</li>",
+	"<li>".caNavLink($this->request, 'Acknowledgments', '', '', 'About', 'acknowledgments')."</li>",
+	"<li>".caNavLink($this->request, 'Privacy', '', '', 'About', 'privacy')."</li>"
 );
 				print join("\n", $va_info_links);
 ?>
@@ -188,7 +198,7 @@ $va_info_links = array(
 					print "<li>".caNavLink($this->request, 'Archives', 'first', '', 'Archives', 'Index')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Library', '', '', 'Library', 'Index')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Museum', '', '', 'Museum', 'Index')."</li>\n";
-					print "<li>".caNavLink($this->request, 'Testimony', '', '', 'Testimony', 'Index')."</li>\n";
+					print "<li>".caNavLink($this->request, 'Holocaust Testimony', '', '', 'Testimony', 'Index')."</li>\n";
 					print "</ul>";
 					print "</li>";	
 								
@@ -196,7 +206,8 @@ $va_info_links = array(
 					$va_highlight_resources = array("researchers", "voices", "researchguide");
 					print "<li class='dropdown".((in_array($vs_controller, $va_highlight_resources) || in_array($vs_action, $va_highlight_resources)) ? " selected" : "")."' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Resources <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n";
-					print "<li>".caNavLink($this->request, 'Researchers and Educators', 'first', '', 'About', 'researchers')."</li>\n"; 					
+					print "<li>".caNavLink($this->request, 'Researchers', 'first', '', 'About', 'researchers')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Educators', 'first', '', 'About', 'educators')."</li>\n";					
 					print "<li>".caNavLink($this->request, 'Primary Voices', 'first', '', 'About', 'voices')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Finding Aids', 'first', 'FindingAid', 'Collection', 'Index')."</li>\n";
 					print "<li>".caNavLink($this->request, 'Research Guides', '', '', 'About', 'researchguide')."</li>\n"; 
@@ -204,13 +215,13 @@ $va_info_links = array(
 					print "</ul>";
 					print "</li>";	
 					
-					print "<li".(($vs_controller == "gallery") ? " class='selected'" : "").">".caNavLink($this->request, _t("Featured"), "", "", "Gallery", "featured")."</li>";				
+					print "<li".(($vs_controller == "gallery") ? " class='selected'" : "").">".caNavLink($this->request, _t("Galleries"), "", "", "Gallery", "featured")."</li>";				
 					
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Exhibitions <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n";
-					print "<li><a href='http://www.vhec.org/currentexhibits.html' target='_blank'>Current</a></li>\n";
-					print "<li><a href='http://www.vhec.org/pastexhibits.html' target='_blank'>Past</a></li>\n";
-					print "<li><a href='http://www.vhec.org/multimedia.html' target='_blank'>Online</a></li>\n";
+					print "<li><a href='https://www.vhec.org/current-exhibitions/' target='_blank'>Current</a></li>\n";
+					print "<li>".caNavLink($this->request, 'Past', 'first', '', 'Browse', 'exhibitions')."</li>\n";
+					print "<li><a href='https://www.vhec.org/museum/online-exhibitions/' target='_blank'>Online</a></li>\n";
 					print "</ul>";
 					print "</li>";	
 								
@@ -218,7 +229,7 @@ $va_info_links = array(
 					$va_highlight_contribute = array("donate");
 					print "<li class='dropdown".((in_array($vs_action, $va_highlight_contribute)) ? " selected" : "")."' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Contribute <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n";
-					print "<li><a href='https://www.canadahelps.org/dn/15211' target='_blank'>Support the VHEC</a></li>\n";
+					print "<li><a href='https://www.vhec.org/support-us/overview/' target='_blank'>Support the VHEC</a></li>\n";
 					print "<li>".caNavLink($this->request, 'Donate Materials', '', '', 'About', 'donate')."</li>\n"; 
 					print "</ul>";
 					print "</li>";														
@@ -346,8 +357,8 @@ $va_info_links = array(
 		
 		print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>About <span class='caret'></span></a>\n";
 		print "<ul class='dropdown-menu'>\n";
-		print "<li>".caNavLink($this->request, 'The Testimony Collection', 'first', '', 'Testimonies', 'collection')."</li>\n";
-		print "<li>".caNavLink($this->request, 'History of the Testimony Collection', '', '', 'Testimonies', 'history')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'The Holocaust Testimony Collection', 'first', '', 'Testimonies', 'collection')."</li>\n";
+		print "<li>".caNavLink($this->request, 'History of the Holocaust Testimony Collection', '', '', 'Testimonies', 'history')."</li>\n"; 
 		print "<li>".caNavLink($this->request, 'Holocaust Documentation Project Timeline', '', '', 'Gallery', 'Index', array('theme' => 827))."</li>\n"; 
 		print "<li>".caNavLink($this->request, 'Information for Donors', 'last', '', 'About', 'donate/#testimony')."</li>\n"; 
 		print "</ul>";
@@ -362,14 +373,14 @@ $va_info_links = array(
 		
 		print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Learn <span class='caret'></span></a>\n";
 		print "<ul class='dropdown-menu'>\n";
-		print "<li>".caNavLink($this->request, 'Testimony in the Classroom', 'first', '', 'Testimonies', 'classroom')."</li>\n";
+		print "<li>".caNavLink($this->request, 'Holocaust Testimony in the Classroom', 'first', '', 'Testimonies', 'classroom')."</li>\n";
 		print "</ul>";
 		print "</li>";
 		
 		print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Research <span class='caret'></span></a>\n";
 		print "<ul class='dropdown-menu'>\n";
-		print "<li>".caNavLink($this->request, 'Using the Testimonies', 'first', '', 'Testimonies', 'using')."</li>\n";
-		print "<li>".caNavLink($this->request, 'Testimony Research Guides', 'last', '', 'About', 'researchguide/#testimony')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Using the Holocaust Testimonies', 'first', '', 'Testimonies', 'using')."</li>\n";
+		print "<li>".caNavLink($this->request, 'Holocaust Testimony Research Guides', 'last', '', 'About', 'researchguide/#testimony')."</li>\n"; 
 		print "</ul>";
 		print "</li>";			
 				
