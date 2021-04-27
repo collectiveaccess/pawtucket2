@@ -29,7 +29,10 @@
 		while($qr_collections->nextHit()) {
 			if(in_array($qr_collections->get("ca_collections.access"), $va_access_values)){
 				if ( $vn_i == 0) { print "<div class='row'>"; } 
-				$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>");
+				$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_collections' length='1'>^ca_object_representations.media.iconlarge</unit>");
+				if(!$vs_image){
+					$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>");
+				}
 				if(!$vs_image){
 					$va_images = explode(";", $qr_collections->getWithTemplate("<unit relativeTo='ca_collections.children' length='1' limit='1'><unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit></unit>"));
 					$vs_image = $va_images[0];
