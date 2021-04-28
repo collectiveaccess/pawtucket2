@@ -319,7 +319,7 @@ if (!$vb_ajax) {    // !ajax
 			print $t_parent->getLabelForDisplay()."<hr/>";
 			
 			# --- display links to other sets in this parent set
-			$qr_siblings = ca_sets::find(array('parent_id' => $vn_parent_id), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.preferred_labels.name', 'checkAccess' => $va_access_values));
+			$qr_siblings = ca_sets::find(array('parent_id' => $vn_parent_id), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
 			if($qr_siblings->numHits() > 1){
 				print "<b>Other ".$vs_lightbox_displayname_plural." in this ".$vs_lightbox_parent_displayname."</b><br/>";
 				while($qr_siblings->nextHit()){

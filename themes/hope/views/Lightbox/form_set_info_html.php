@@ -85,7 +85,7 @@
 		if($va_errors["credit"]){
 			print "<div class='alert alert-danger'>".$va_errors["credit"]."</div>";
 		}
-		print "<div class='form-group".(($va_errors["credit"]) ? " has-error" : "")."'><label for='credit' class='control-label'>"._t("Gallery Credit")."</label><div><input type='text' name='credit' value='".htmlentities($this->getVar("credit"), ENT_QUOTES, 'UTF-8', false)."' class='form-control'></div></div><!-- end form-group -->\n";
+		print "<div class='form-group".(($va_errors["credit"]) ? " has-error" : "")."'><label for='credit' class='control-label'>"._t("Credit")."</label><div><input type='text' name='credit' value='".htmlentities($this->getVar("credit"), ENT_QUOTES, 'UTF-8', false)."' class='form-control'></div></div><!-- end form-group -->\n";
 		if($va_errors["description"]){
 			print "<div class='alert alert-danger'>".$va_errors["description"]."</div>";
 		}

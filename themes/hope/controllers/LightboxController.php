@@ -1107,6 +1107,9 @@
 				$t_pub_set = new ca_sets($vn_pub_set_id);
 				$t_pub_set->setMode(ACCESS_WRITE);
 				$t_pub_set->set('access', $vn_access);
+				if($this->ovb_kam_curator){
+					$t_pub_set->addAttribute(array('approval_date' => 'today', 'locale_id' => $g_ui_locale_id), 'approval_date');
+				}
 				$t_pub_set->update();
 				if($t_pub_set->numErrors()) {
 					$va_errors[] = join("; ", $t_pub_set->getErrors());

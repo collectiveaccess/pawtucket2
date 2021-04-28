@@ -7,5 +7,5 @@
 	#$vs_share_message = $this->getVar("share_message");
 	
 	print "<p>".$ps_from_name."(".$ps_from_email.") requested publication of their Gallery: ".$vs_set_name."</p>";
-	print "<p>Please login to approve this gallery.</p>"
+	print "<p>Please login to approve this gallery. ".$this->request->config->get("site_host")."</p>";
 ?>
