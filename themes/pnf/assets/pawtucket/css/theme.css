@@ -698,6 +698,12 @@ div.caMediaOverlayControls {
 	font-size: 14px;
 	padding: 0px;
 }
+.detail H6 a{
+	color: #7f4539;
+	font-size: 14px;
+	padding: 0px;
+	text-decoration:underline;
+}
 /* Listing */
 
 .listing-content {
