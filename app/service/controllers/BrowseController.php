@@ -370,7 +370,10 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 		if ($key = trim($args['key'])) {
 			$browse->reload($key);
 		}
+		$restrict_to_types = caGetOption('restrictToTypes', $browse_info, null);
+		if (is_array($restrict_to_types) && sizeof($restrict_to_types)) { $browse->setTypeRestrictions($restrict_to_types); }
 		if (caGetOption('execute', $options, true)) { $browse->execute(); }
+		
 		return [
 			$browse_info, $browse
 		];
@@ -437,7 +440,8 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 					if (strpos($f, '^') !== false) {
 						$v = $qr->getWithTemplate($f);
 					} else {
-						$v = $qr->get($f);
+						$t = caParseTagOptions($f);
+						$v = $qr->get($t['tag'], $t['options']);
 					}
 					$data[] = ['name' => $k, 'value' => $v];
 				}

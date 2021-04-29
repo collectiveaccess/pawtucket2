@@ -1,4 +1,5 @@
-@import "~bootstrap/scss/bootstrap";
+// @import "~bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap/scss/bootstrap";
 @import "~react-responsive-carousel/lib/styles/carousel.css";
 
 /* icons */
@@ -1401,4 +1402,54 @@ h1{
 
 .importUploaderDropZoneInput:focus {
   outline: none !important;
+}
+
+
+/*------------------------------------
+ Styles for Metabolic Chronology
+------------------------------------*/
+
+.metabolic-chronology{
+
+	#media-div, #info-div {
+		overflow: auto;
+	}
+
+	#info-div{
+		a{
+			text-decoration: none;
+		}
+	}
+
+	.disable-scrollbars::-webkit-scrollbar {
+    background: transparent; /* make scrollbar transparent */
+	}
+
+	#year-bar {
+		background-color: #F1F1F1;
+		padding-bottom: 5px;
+		height: auto; 
+		width: 75px;
+		position: fixed; 
+		z-index: 1; 
+		top: 300px; 
+		right: 10px; 
+		overflow-x: hidden;
+
+		.year-bar-cont{
+			margin: 10px 0px 10px 0px;
+
+			ul{
+				list-style: none; 
+				padding: 0; 
+				margin: 0;
+
+				li{
+					margin: 20px 0px 20px 0px; 
+					cursor: pointer;
+				}
+			}
+		}
+	}
+
 }

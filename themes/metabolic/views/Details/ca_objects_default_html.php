@@ -322,11 +322,12 @@
 <script type="text/javascript">
     pawtucketUIApps['LightboxManagement'] = {
         'selector': '#lightboxManagement',
+				'key': '<?= $this->getVar('key'); ?>', 
         'data': {
-            baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
-			lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
-			table: 'ca_objects',
-			id: <?php print (int)$vn_id; ?>,
+          baseUrl: "<?php print __CA_URL_ROOT__."/service.php"; ?>",
+					lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
+					table: 'ca_objects',
+					id: <?php print (int)$vn_id; ?>,
         	lightboxTerminology: <?php print json_encode(caGetLightboxDisplayName()); ?>
         }
     };
