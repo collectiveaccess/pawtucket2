@@ -39,20 +39,21 @@
 
 	<div class="row tanBg exploreRow exploreResourcesRow exploreDigitalExhibitionsRow">
 		<div class="col-sm-12">
-			<H1>Exhibitions Test Layout</H1>
+			<H1>Exhibitions</H1>
 			<p>
 				{{{digital_exhibition_intro}}}
 			</p>
 		</div>
 	</div>
-	<div class='row'>
-		<div class="col-lg-10 col-lg-offset-1 col-md-12">
-		<H2 class="exhibitionSection">Current</H2>
 <?php
-	$i = 0;
+	$vs_current_date = date("Y.md");
+	$va_current = array();
+	$va_upcoming = array();
+	$va_past = array();
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {
+			$vs_tmp = "";
 			switch(strToLower($qr_list->get("ca_occurrences.type_id", array("convertCodesToDisplayText" => true)))){
 				case "exhibition":
 					if(strToLower($qr_list->getWithTemplate("^ca_occurrences.exclude_explore_exhibitions")) == "yes"){
@@ -64,20 +65,11 @@
 					$vs_exhibition_type = $qr_list->get("ca_occurrences.exhibition_type", array("convertCodesToDisplayText" => true));
 					$vs_link = $qr_list->get("ca_occurrences.online_exhibition");
 					$vs_link_text = ($qr_list->get("ca_occurrences.nav_text")) ? $qr_list->get("ca_occurrences.nav_text") : "More Information";
-					
-					if($i == 0){
-						print "<div class='row'>";
-					}
-					print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
+
+					$vs_tmp = "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 								<H2>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels.name')."</H2>
 								".(($vs_display_date || $vs_exhibition_type) ? "<p><b>".$vs_display_date.(($vs_display_date && $vs_exhibition_type) ? "<br/>" : "").$vs_exhibition_type."</b></p>" : "")."
 							</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
-					$i++;
-					
-					if($i == 3){
-						print "</div>";
-						$i = 0;
-					}
 				
 				break;
 				# -----------------------------------------
@@ -90,108 +82,114 @@
 							$vs_image_url = $qr_list->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.media.large.url</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 						}
 						$vs_display_date = $qr_list->get("ca_occurrences.displayDate");
-					
-						if($i == 0){
-							print "<div class='row'>";
-						}
-						print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
+
+						$vs_tmp = "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 									<H2>".$qr_list->get("ca_occurrences.preferred_labels.name")."</H2>
 									<p><b>".$vs_display_date.(($vs_display_date) ? "<br/>" : "")."Online Exhibition</b></p>
 								</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
 
-						$i++;
-					
-						if($i == 3){
-							print "</div>";
-							$i = 0;
-						}
 					}
 				break;
 				# -------------------------------------------
 			}
-# --- SIMULATING HAVING ONLY ONE CURRENT EXHIBIT - JUST FOR TESTING
-			break;
-		}
-		if($i > 0){
-			print "</div>";
+			
+			$va_date = $qr_list->get("ca_occurrences.occurrence_dates", array("returnWithStructure" => true));
+			$vs_start_date = "";
+			if(is_array($va_date) && sizeof($va_date)){
+				$va_date = array_pop($va_date);
+				foreach($va_date as $va_first_date){
+					$va_date_pieces = explode("/", $va_first_date["occurrence_dates_sort_"]);
+					$vs_start_date = $va_date_pieces[0];
+					break;
+				}
+			}
+			if($vs_tmp){
+				if($qr_list->get("ca_occurrences.current_exhibition", array("convertCodesToDisplayText" => true)) == "Yes"){
+					$va_current[] = $vs_tmp;
+				}elseif($vs_start_date > $vs_current_date){
+					$va_upcoming[] = $vs_tmp;
+				}else{
+					$va_past[] = $vs_tmp;
+				}
+			}
 		}
 	}
+	if(sizeof($va_current) > 0){
 ?>
-
-	</div>
-	</div>
 		<div class='row'>
-		<div class="col-lg-10 col-lg-offset-1 col-md-12">
-		
-		<br/><H2 class="exhibitionSection">Upcoming</H2>
+			<div class="col-lg-10 col-lg-offset-1 col-md-12">
+				<H2 class="exhibitionSection">Current</H2>
 <?php
-	$qr_list->seek(0);
-	$i = 0;
-	foreach($va_lists as $vn_type_id => $qr_list) {
-		if(!$qr_list) { continue; }
-		while($qr_list->nextHit()) {
-			switch(strToLower($qr_list->get("ca_occurrences.type_id", array("convertCodesToDisplayText" => true)))){
-				case "exhibition":
-					if(strToLower($qr_list->getWithTemplate("^ca_occurrences.exclude_explore_exhibitions")) == "yes"){
-						continue;
-					}
-					
-					$vs_image_url = $qr_list->getWithTemplate("^ca_object_representations.media.large.url", array("checkAccess" => $va_access_values, "limit" => 1));
-					$vs_display_date = $qr_list->get("ca_occurrences.displayDate");
-					$vs_exhibition_type = $qr_list->get("ca_occurrences.exhibition_type", array("convertCodesToDisplayText" => true));
-					$vs_link = $qr_list->get("ca_occurrences.online_exhibition");
-					$vs_link_text = ($qr_list->get("ca_occurrences.nav_text")) ? $qr_list->get("ca_occurrences.nav_text") : "More Information";
-					
-					if($i == 0){
-						print "<div class='row'>";
-					}
-					print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
-								<H2>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels.name')."</H2>
-								".(($vs_display_date || $vs_exhibition_type) ? "<p><b>".$vs_display_date.(($vs_display_date && $vs_exhibition_type) ? "<br/>" : "").$vs_exhibition_type."</b></p>" : "")."
-							</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
-					$i++;
-					
-					if($i == 3){
-						print "</div>";
-						$i = 0;
-					}
-				
-				break;
-				# -----------------------------------------
-				case "digital exhibition":
-				default:
-			
-					if(($this->request->isLoggedIn() && $this->request->user->hasRole("previewDigExh")) || (strToLower($qr_list->get('ca_occurrences.preview_only', array("convertCodesToDisplayText" => true))) != "yes")){
-						$vs_image_url = $qr_list->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='featured'>^ca_object_representations.media.large.url</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
-						if(!$vs_image_url){
-							$vs_image_url = $qr_list->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.media.large.url</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
-						}
-						$vs_display_date = $qr_list->get("ca_occurrences.displayDate");
-					
-						if($i == 0){
-							print "<div class='row'>";
-						}
-						print "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
-									<H2>".$qr_list->get("ca_occurrences.preferred_labels.name")."</H2>
-									<p><b>".$vs_display_date.(($vs_display_date) ? "<br/>" : "")."Online Exhibition</b></p>
-								</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
-
-						$i++;
-					
-						if($i == 3){
-							print "</div>";
-							$i = 0;
-						}
-					}
-				break;
-				# -------------------------------------------
+			$i = 0;	
+			foreach($va_current as $vs_block){
+				if($i == 0){
+					print "<div class='row'>";
+				}
+				print $vs_block;
+				$i++;
+				if($i == 3){
+					print "</div>";
+					$i = 0;
+				}
 			}
-		}
-		if($i > 0){
-			print "</div>";
-		}
+			if($i > 0){
+				print "</div>";
+			}
+?>
+			</div>
+		</div>
+<?php
+	}
+	if(sizeof($va_upcoming) > 0){
+?>
+		<div class='row'>
+			<div class="col-lg-10 col-lg-offset-1 col-md-12">
+				<H2 class="exhibitionSection">Upcoming</H2>
+<?php
+			$i = 0;	
+			foreach($va_upcoming as $vs_block){
+				if($i == 0){
+					print "<div class='row'>";
+				}
+				print $vs_block;
+				$i++;
+				if($i == 3){
+					print "</div>";
+					$i = 0;
+				}
+			}
+			if($i > 0){
+				print "</div>";
+			}
+?>
+			</div>
+		</div>
+<?php
+	}
+	if(sizeof($va_past) > 0){
+?>
+		<div class='row'>
+			<div class="col-lg-10 col-lg-offset-1 col-md-12">
+				<H2 class="exhibitionSection">Past</H2>
+<?php
+			$i = 0;	
+			foreach($va_past as $vs_block){
+				if($i == 0){
+					print "<div class='row'>";
+				}
+				print $vs_block;
+				$i++;
+				if($i == 3){
+					print "</div>";
+					$i = 0;
+				}
+			}
+			if($i > 0){
+				print "</div>";
+			}
+?>
+			</div>
+		</div>
+<?php
 	}
 ?>
-
-		</div>
-	</div>
