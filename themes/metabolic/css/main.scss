@@ -1425,6 +1425,11 @@ h1{
     background: transparent; /* make scrollbar transparent */
 	}
 
+	#curr-action{
+		padding: 5px;
+		border: 1px solid red;
+	}
+
 	#year-bar {
 		background-color: #F1F1F1;
 		padding-bottom: 5px;
@@ -1438,6 +1443,10 @@ h1{
 
 		.year-bar-cont{
 			margin: 10px 0px 10px 0px;
+
+			.curr-year{
+				font-weight: bold;
+			}
 
 			ul{
 				list-style: none; 

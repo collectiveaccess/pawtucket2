@@ -11,6 +11,8 @@ const ChronologyContextProvider = (props) => {
   const [resultItemsPerPage, setResultItemsPerPage] = useState(20);
   const [totalResultItems, setTotalResultItems] = useState();
   const [years, setYears] = useState();
+  const [currYear, setCurrYear] = useState();
+  const [currentAction, setCurrentAction] = useState();
 
   return (
     <ChronologyContext.Provider
@@ -23,6 +25,8 @@ const ChronologyContextProvider = (props) => {
         resultItemsPerPage, setResultItemsPerPage,
         totalResultItems, setTotalResultItems,
         years, setYears,
+        currYear, setCurrYear,
+        currentAction, setCurrentAction,
       }}>
       {props.children}
     </ChronologyContext.Provider>

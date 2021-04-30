@@ -4,7 +4,11 @@ import { ScrollSyncNode } from "scroll-sync-react";
 
 const ChronologyInfo = () => {
 
-  const { resultItems } = useContext(ChronologyContext)
+  const { resultItems, currentAction, setCurrentAction } = useContext(ChronologyContext)
+
+  const handleMouseOver = (id) => {
+    setCurrentAction(id);
+  }
 
   if (resultItems) {
     let yearValues = [];
@@ -14,7 +18,7 @@ const ChronologyInfo = () => {
           <div style={{ height: '800px'}}>
             {resultItems.map((item, index) => {
               return (
-                <div className="text-container mb-5" key={index}>
+                <div className="text-container mb-5" id={(item.id == currentAction) ? 'curr-action' : ''} key={index} onMouseOver={() => handleMouseOver(item.id)}>
                   {(item.title !== null) ?
                     <a href={item.detailUrl}><h4 className="item-title" dangerouslySetInnerHTML={{ __html: item.title }} /></a>
                     : null}
