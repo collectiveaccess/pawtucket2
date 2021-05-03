@@ -859,7 +859,7 @@ a.readmore-js-toggle {
 .detail .caAudioPlayer{
 	padding-top:0px;
 }
-.detail .noToolBar .detailMediaToolbar{
+.detail .noToolBar .detailMediaToolbar, .detail .noToolBar .repViewerCont:hover .detailMediaToolbar{
 	display:none;
 }
 /* remove ? */
