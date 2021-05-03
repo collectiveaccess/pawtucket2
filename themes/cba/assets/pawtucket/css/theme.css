@@ -180,6 +180,10 @@ b, strong {
 	display: inline-block;
 	padding-right:7px;
 }
+.search .btn a:hover{
+	color:#fff;
+	text-decoration:none;
+}
 a.browseRemoveFacet .glyphicon {
     color: #000 !important;
 }
