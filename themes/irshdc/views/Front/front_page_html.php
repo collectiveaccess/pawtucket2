@@ -92,7 +92,7 @@
 				$va_features_info = array();
 				$vn_page_id = $q_features->get('ca_site_pages.page_id');
 				$t_site_page = new ca_site_pages($vn_page_id);
-				$vs_image = $t_site_page->getWithTemplate("^ca_site_page_media.media.original");
+				$vs_image = $t_site_page->getWithTemplate("^ca_site_page_media.media.page");
 				if(!$vs_image){
 					$vs_image = caGetThemeGraphic($this->request, 'centre6.jpg');
 				}
