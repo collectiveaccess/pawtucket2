@@ -186,7 +186,7 @@
 				if ($vs_form = $t_object->get('ca_objects.530_forms', array("delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>Additional physical form available</h6>".$vs_form."</div>";
 				}				
-				if ($vs_page_number = $t_object->get('ca_objects.page_number', array("delimiter" => "<br/>"))) {
+				if ($vs_page_number = $t_object->get('ca_objects.page_number', array("convertCodesToDisplayText" => true, "delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>Page Number On Page 1</h6>".$vs_page_number."</div>";
 				}	
 				if ($vs_language = $t_object->get('ca_objects.546_language', array("delimiter" => "<br/>"))) {
@@ -239,21 +239,27 @@
 ?>
 
 				
-				<hr></hr>
-					<div class="row">
-						<div class="col-sm-12">		
-							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
+				<hr></hr>		
+				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
+				{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
+
+				{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
+				{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit>}}}
+				
+				{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
+				{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
+<?php
+				$vs_from_printers = $t_object->get('ca_objects.from_printers', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+				$vs_item_specific_info = $t_object->get('ca_objects.item_specific_info', array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+				if ($vs_from_printers || $vs_item_specific_info) {
+?>
+					<div class='unit'><h6><a href="#" onClick="$('#local_terms').toggle(); return false;">Printers' Evidence & Item Specific Information</a></h6><div id='local_terms' style='display:none;'><?php print $vs_from_printers.(($vs_from_printers && $vs_item_specific_info) ? ", " : "").$vs_item_specific_info; ?></div></div>
+<?php
+				}
+?>
 			
-							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
-							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit>}}}
-							
-							{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
-							{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
-						</div><!-- end col -->	
-					</div>
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
