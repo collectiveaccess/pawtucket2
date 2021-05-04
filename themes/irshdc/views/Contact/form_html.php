@@ -118,7 +118,7 @@
 			<div class="row">
 				<div class="col-sm-12 col-md-offset-1 col-md-10">
 					<div class="form-group">
-						<button type="submit" class="btn btn-default">Send</button>
+						<button type="submit" class="btn btn-default" onClick="$('.loadingForm').toggle();"><span class="loadingForm"><?php print _t('Send'); ?></span><span class="loadingForm" style="display:none;"> <?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></span></button>
 					</div><!-- end form-group -->
 				</div>
 			</div>

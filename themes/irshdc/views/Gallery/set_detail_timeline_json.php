@@ -27,6 +27,7 @@
  */
 
 AssetLoadManager::register('timeline');
+header('Content-type: text/json');
 
 /** @var SearchResult $qr_res */
 $qr_res	 						= $this->getVar("result");

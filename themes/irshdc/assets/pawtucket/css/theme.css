@@ -362,7 +362,10 @@ a:hover .frontIconButton{
 @media (max-width: 768px) {
 	.front .blackBg.primer .text-center{
 		margin-bottom:30px; /* --- space below more button */
-	} 
+	}
+	.front .hpFeaturesText{
+		padding:0px 30px 0px 30px;
+	}
 }
 .front #frontTimelineContainer {
     height: 500px;
@@ -855,6 +858,9 @@ a.readmore-js-toggle {
 }
 .detail .caAudioPlayer{
 	padding-top:0px;
+}
+.detail .noToolBar .detailMediaToolbar, .detail .noToolBar .repViewerCont:hover .detailMediaToolbar{
+	display:none;
 }
 /* remove ? */
 .detail a .narrativeThreadLink{

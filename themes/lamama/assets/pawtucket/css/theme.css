@@ -5,6 +5,12 @@ body, .detail, .gallery, label, b, strong{
 body{
 	margin-bottom: 130px;
 	font-family:Lato;
+	margin-bottom:150px;
+}
+@media(max-width:767px){
+	body{
+		margin-bottom:180px;
+	}
 }
 a{
 	color:#000;
@@ -29,6 +35,11 @@ hr{
     margin-left: 9px;
 	margin-top: 21px;
 }
+@media(max-width:767px){
+	.navbar > .container .navbar-brand{
+		margin-top:8px;
+	}
+}
 .navbar{
 	background-color:transparent;
 	-webkit-box-shadow: none;
@@ -42,10 +53,12 @@ hr{
 	text-align: center;
 	text-transform:uppercase;
 }
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li.active > a {
-    color: #000;
-	border-bottom: 1px dashed #FFF;
-	top:-1px;
+@media(min-width:768px){
+	.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li.active > a {
+		color: #000;
+		border-bottom: 1px dashed #FFF;
+		top:-1px;
+	}
 }
 .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li.active > a, .navbar-default .navbar-nav > li.active > a:hover, .navbar-default .navbar-nav > li.active > a:focus{
 	background-color:transparent;
@@ -58,6 +71,18 @@ hr{
 }
 .navbar-default .navbar-nav > li{
 	margin: 27px 30px 0px 10px;
+}
+.navbar-default .navbar-toggle{
+	border-color:#FFF;
+}
+.navbar-default .navbar-toggle .icon-bar {
+    background-color: #FFF;
+}
+.navbar-toggle-user{
+	color:#FFF;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+    background-color: transparent;
 }
 /*.yamm .nav.navbar-right .dropdown-menu{
 	border:0px;
@@ -100,8 +125,38 @@ hr{
     box-shadow: none;
     -webkit-transition: none;
 }
-.navbar-form{
-	margin-top:20px;
+@media(min-width:768px){
+	.navbar-form{
+		margin-top:20px;
+	}
+}
+@media(max-width:767px){
+	.navbar-nav{
+		margin:0px;
+	}
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
+		color: #FFF;
+		text-align: center;
+	}
+	.yamm .nav.navbar-right .dropdown-menu {
+		border: 0px;
+		margin-top: 0px;
+		box-shadow: none;
+    }
+    ul.menuItems{
+    	border:0px;
+    }
+}
+.navbar-default .navbar-collapse, .navbar-default .navbar-form, ul.menuItems {
+    border-color: #fff;
+}
+@media(max-width:1010px){
+	.navbar-default .navbar-nav.menuItems > li, #user-navbar-toggle li {
+		margin: 5px 30px 5px 10px;
+	}
+	.yamm .nav.navbar-right.menuItems .dropdown-menu {
+		margin-top:5px;
+	}
 }
 #headerSearchInput{
 	border-radius:0px;
@@ -117,6 +172,7 @@ hr{
 	top: 2px;
 	position: relative;
 	background-color:#C11B17;
+	border-radius:0px;
 }
 .headerAdvancedSearch{
 	text-align:left;
@@ -130,7 +186,7 @@ hr{
 	padding-top:0px;
 	padding-bottom:0px;
 }
-@media(min-width:768px){
+@media(min-width:769px){
 	#pageArea{
 		margin: 0vh 6vw 6vh;
 	}
@@ -164,13 +220,18 @@ hr{
 	color:#FFF;
 	padding: 20px 3vw 20px 3vw;
 	text-align:right;
-	height:auto;
+	height:90px;
+}
+@media(max-width:767px){
+	#footer{
+		height:120px;
+	}
 }
 #footer a{
 	color:#FFF;
 }
 #footer ul{
-	padding-top:20px;
+	padding-top:15px;
 }
 #footer ul a{
 	font-size:16px;
@@ -178,12 +239,23 @@ hr{
 	color:#FFF;
 }
 #footer .footerLogo{
-	width:22%;
-	float:left;
+	width:230px;
+	text-align:left;
+}
+@media(min-width:1024px){
+	#footer .footerLogo{
+		width:260px;
+	}
 }
 #footer .footerLogo img{
 	width:100%;
 	height:auto;
+}
+@media(max-width:767px){
+	#footer .list-inline li{
+		float:left;
+		margin-left:5px;
+	}
 }
 .front h1 {
 	font-weight:700;
@@ -209,6 +281,7 @@ hr{
 	margin-bottom:60px;
 	margin-top:20px;
 }
+
 .staticPage, .staticPage p{
 	font-family: Lato, sans-serif;
 	color: #000;
@@ -218,6 +291,11 @@ hr{
 	font-weight: 400;
 	text-align: left;
 	text-transform: none;
+}
+@media(max-width:1024px){
+	.staticPage, .staticPage p{
+		font-size: 18px;
+	}
 }
 .staticPage p{
 	margin: 0 0 30px;
@@ -246,7 +324,7 @@ hr{
 .detail{
 	font-size: 14px;
 }
-.detail .detailNavBgLeft, .detail .detailNavBgRight, .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small, .detail .detailNavBgLeft a, .detail .detailNavBgRight a{
+.detail .detailNavBgLeft, .detail .detailNavBgRight, .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small, .detail .detailNavBgLeft a, .detail .detailNavBgRight a, .detail .navTop a .small, .detail .navTop a {
 	background-color:#FFF;
 	color:#000;
 }
@@ -269,6 +347,17 @@ hr{
 .detail .description{
 	font-size:20px;
 	margin-bottom:30px;
+}
+@media(max-width:1024px){
+	.detail h1 {
+   		font-size: 24px;
+   	}
+   	.detail h2 {
+   		font-size: 20px;
+   	}
+   	.detail .description{
+		font-size:18px;
+	}
 }
 .detail .unit a {
     color: #000;
@@ -349,7 +438,6 @@ hr{
 	font-style: normal;
 	font-weight: 400;
 }
-
 .multisearch H3 a, .multisearch H3 a:hover, .multisearch H2 a, .multisearch H2 a:hover {
     text-decoration: none;
     color: #000;
@@ -394,4 +482,30 @@ hr{
     border-color: #000000;
     box-shadow: none;
     outline: 0 none;
+}
+
+@media(max-width:1024px){
+	.front h1 {
+		font-size:30px;
+		margin-top: 40px;
+	}
+	.front h2{
+		font-size: 20px;
+	}
+	.collectionsList h1{
+		font-size:30px;
+		margin-top: 40px;
+	}
+	.collectionsList p.collectionIntro{
+		font-size: 18px;
+		line-height: 27px;
+	}
+	.advancedSearch h1{
+		font-size:30px;
+		margin-top: 40px;
+	}	.staticPage h1 {
+		font-size: 30px;
+		margin-top: 5vh;
+		margin-bottom: 5vh;
+	}
 }

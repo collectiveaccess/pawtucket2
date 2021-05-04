@@ -51,10 +51,13 @@
 				
 				
 				<div id="detailAnnotations"></div>
-				
-				<div id="detailRepresentationThumbnails"><?php print join("", caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "array", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0))); ?></div>
-				
 <?php
+				$va_thumbs = caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "array", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+				if(is_array($va_thumbs) && sizeof($va_thumbs)){
+?>				
+				<div id="detailRepresentationThumbnails"><?php print join("", $va_thumbs); ?></div>				
+<?php
+				}
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
