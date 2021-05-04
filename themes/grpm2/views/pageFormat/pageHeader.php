@@ -165,6 +165,7 @@
 						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, "<span>"._t("Teacher Created Galleries")."</span>", "", "", "TeacherGallery", "Index"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Curator Galleries")."</span>", "", "", "Gallery", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Community Galleries")."</span>", "", "", "CommunityGallery", "Index"); ?></li>
 						</ul>
 					</li>
 					<li class="dropdown" style="position:relative;">
