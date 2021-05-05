@@ -1318,7 +1318,7 @@ a.readmore-js-toggle {
 	padding-bottom:40px;
 }
 .listingContainer{
-	margin-bottom:45px;
+	/*margin-bottom:45px;*/
 	border:1px solid #333;
 }
 .listingContainerImgContainer{
@@ -1411,6 +1411,28 @@ h2.exhibitionSection{
 }
 .currentExhibition .listingContainerExhibitions.coverImg H2{
 	font-size: 28px;
+}
+
+/* styles for uniform col height in exhibiton list */
+.aligned-row {
+    display: flex;
+    flex-flow: row wrap;
+}
+.aligned-row::before {
+	display: block;
+}
+.aligned-row > div{
+	margin-bottom:45px;
+}
+.listingContainerExhibitions.coverImg .listingContainerDesc{
+	height:100%;
+}
+.listingContainer{
+	height:100%;
+}
+.listingExhibitionsImageLink{
+	display:block;
+	height:100%;
 }
 
 /* About page */
