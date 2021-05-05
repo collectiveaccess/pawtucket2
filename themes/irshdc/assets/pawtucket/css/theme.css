@@ -1478,10 +1478,11 @@ h2.exhibitionSection{
 /* User Guide */
 
 .userGuideBody H2{
-	font-size:17px;
+	clear:both;
 }
 .userGuideBody H3{
 	text-transform:none;
+	clear:both;
 }
 .userGuideBody{
 	font-size:16px;
@@ -1497,6 +1498,10 @@ h2.exhibitionSection{
 .userGuideBody ul{
 	line-height:1.8em;
 	font-size:16px;
+}
+.userGuideBody img{
+	height:auto;
+	max-width:100%;
 }
 @media(min-width:768px){
 	.userGuideSideNav{
