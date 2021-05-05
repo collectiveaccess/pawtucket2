@@ -1500,9 +1500,14 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 	background-color:red;
 	padding:0px 3px 3px 3px;
 }
-
-
-
+div.caMediaOverlayControls .objectInfo, div.caMediaOverlayControls .repNav {
+    font-size: 15px;
+    height: 1.4em;
+	overflow: hidden;
+}
+div.caMediaOverlayControls {
+    padding: 10px 0px 5px 0px;
+}
 /* font support test */
 
 
