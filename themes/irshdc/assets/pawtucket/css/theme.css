@@ -146,13 +146,13 @@ body{
 		padding-top:13px;
 	}
 }
-@media (min-width: 1010px) {
+@media (min-width: 1011px) {
 	.navbar-default .navbar-brand{
 		font-size:22px;
 		width: 360px;
 	}
 }
-@media (min-width: 1010px) {
+@media (min-width: 1011px) {
 	.nav > li > a {
 		padding-top: 28px !important;
 		padding-bottom: 28px !important;
@@ -198,6 +198,11 @@ body{
 @media (max-width: 767px) {
 	.navbar-nav{
 		margin:0px;
+	}
+}
+@media (min-width: 1011px) and (max-width: 1050px) {
+	.navbar-form .form-group {
+		width: 105px;
 	}
 }
 .menuBar .dropdown-menu > li > a {
@@ -1470,6 +1475,55 @@ h2.exhibitionSection{
 	height:auto;
 }
 
+/* User Guide */
+
+.userGuideBody H2{
+	font-size:17px;
+}
+.userGuideBody H3{
+	text-transform:none;
+}
+.userGuideBody{
+	font-size:16px;
+	border-left:1px solid #dedede;
+	margin-top: -15px;
+	padding-top:15px;
+}
+@media(min-width:1010px){
+	.userGuideBody{
+		padding-left:55px;
+	}
+}
+.userGuideBody ul{
+	line-height:1.8em;
+	font-size:16px;
+}
+@media(min-width:768px){
+	.userGuideSideNav{
+		position:fixed;
+	}
+}
+.userGuideSideNav{
+	margin-top: -15px;
+	padding-top:15px;
+}
+.userGuideSideNav a{
+	font-size:15px;
+	color:#454545;
+	text-decoration:none;
+}
+.userGuideSideNav ul{
+	padding-left: 0px;
+	list-style: none;
+}
+.userGuideSideNav H2{
+	margin-top: 40px;
+	color:#000;
+}
+.userGuideAnchor{
+	position: relative;
+	top: -95px;
+}
 /* contact form */
 .form-control-static.securityQuestion{
 	color:#000;
