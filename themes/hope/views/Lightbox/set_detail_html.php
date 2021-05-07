@@ -108,7 +108,7 @@ if (!$vb_ajax) {	// !ajax
 				<div class="btn-group">
 					<button class="btn btn-default btn-sm" data-toggle="dropdown">Options <span class="glyphicon glyphicon-cog bGear"></span></button>
 					<ul class="dropdown-menu" role="menu">
-						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
+						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id"))); ?>"); return false;' ><?php print _t("Edit Name/Credit/Description"); ?></a></li>
 						<li><a href='#' data-set_id="<?php print $vn_set_id; ?>" data-set_name="<?php print addslashes($t_set->get("ca_sets.preferred_labels")); ?>" data-toggle='modal' data-target='#confirm-delete'>Delete <?php print ucfirst($vs_lightbox_displayname); ?></a></li>				
 					</ul>
 				</div><!-- end btn-group -->
@@ -312,11 +312,14 @@ if (!$vb_ajax) {    // !ajax
             if ($vs_description = $t_set->get($vs_description_attribute)) {
                 print "<span id='lbSetDescription".$t_set->get("set_id")."'>{$vs_description}</span><hr/>";
             }
+            $vs_credit = $t_set->get("ca_sets.credit");
+            print "<b>Gallery Slideshow Credit:</b><br/><span id='lbSetCredit".$t_set->get("set_id")."'>".(($vs_credit) ? $vs_credit : "-")."</span><hr/>";
+            
             print "<b>Part of ".$vs_lightbox_parent_displayname.":</b><br/>";
 			print $t_parent->getLabelForDisplay()."<hr/>";
 			
 			# --- display links to other sets in this parent set
-			$qr_siblings = ca_sets::find(array('parent_id' => $vn_parent_id), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.preferred_labels.name', 'checkAccess' => $va_access_values));
+			$qr_siblings = ca_sets::find(array('parent_id' => $vn_parent_id), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.rank'));
 			if($qr_siblings->numHits() > 1){
 				print "<b>Other ".$vs_lightbox_displayname_plural." in this ".$vs_lightbox_parent_displayname."</b><br/>";
 				while($qr_siblings->nextHit()){

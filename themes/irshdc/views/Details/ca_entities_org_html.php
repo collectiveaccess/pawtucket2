@@ -80,7 +80,7 @@ if($vs_mode == "map"){
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 				if($vs_representationViewer){
 ?>
-				<div class='col-sm-12 col-md-5'>
+				<div class='col-sm-12 col-md-5 noToolBar'>
 					<?php print $vs_representationViewer; ?>
 				
 				

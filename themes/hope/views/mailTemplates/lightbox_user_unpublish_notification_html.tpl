@@ -8,7 +8,7 @@
 	#$vs_share_message = $this->getVar("share_message");
 	
 	print "<p>".$ps_from_name."(".$ps_from_email.") unpublished their ".$vs_lightbox_parent_displayname.": ".$vs_set_name."</p>";
-	print "<p>The ".$vs_lightbox_parent_displayname." is no longer available for public view.</p>";
+	print "<p>The ".$vs_lightbox_parent_displayname." is no longer available for public view on ".$this->request->config->get("site_host").".</p>";
 	if($ps_message){
 		print "<p>Message: ".$ps_message."</p>";
 	}

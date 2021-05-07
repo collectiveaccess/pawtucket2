@@ -123,6 +123,7 @@
 		CKEDITOR.replace('set_item_caption{{{item_id}}}', {
 			  extraPlugins: 'divarea',
 			  height: 150,
+			  allowedContent: 'div br p b i u ol li sup; a[!href]',
 			  // Define the toolbar groups as it is a more accessible solution.
 			  toolbarGroups: [{
 				  "name": "basicstyles",

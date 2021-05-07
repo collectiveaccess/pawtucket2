@@ -111,8 +111,21 @@
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
 				
+					$vs_date = "";
+					if($vs_table == "ca_entities"){
+						if($vs_tmp = trim($qr_res->get("ca_entities.company_date.company_dates_value"))){
+							$vs_date = $vs_tmp;
+						}elseif($vs_tmp = trim($qr_res->get("ca_entities.orgDate.org_dates_value"))){
+							$vs_date = $vs_tmp;
+						}elseif($vs_tmp = trim($qr_res->get("ca_entities.lifedates.ind_dates_value"))){
+							$vs_date = $vs_tmp;
+						}
+						if(trim($vs_date)){
+							$vs_date = "<br/><small>".$vs_date."</small>";
+						}						
+					}
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels").$vs_date, '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";

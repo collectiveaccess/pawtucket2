@@ -19,7 +19,7 @@
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<label for='ca_entities_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records by their creator.') ?>"><?php _p('Creator') ?></label>
-			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=rel_2,rel_37%width=100%}}}
+			{{{ca_entities.preferred_labels%width=100%}}}
 		</div>
 	</div>
 	<div class='row'>
