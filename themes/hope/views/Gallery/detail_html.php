@@ -86,7 +86,7 @@
 
 	<div class="row">
 		<div class="col-sm-12">
-			<H1><?php print ((!$pn_parent_id) ? $this->getVar("section_name").": " : "").$this->getVar("label"); ?>
+			<H1><?php print ($this->getVar("label") !== "[Untitled]") ? $this->getVar("label") : ""; ?>
 <?php
 			$vs_approval_date_slideshow = "";
 			if(!$vs_approval_date){
