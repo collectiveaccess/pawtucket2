@@ -1310,7 +1310,7 @@ a.readmore-js-toggle {
 }
 
 /* listing */
-.exploreResourcesRow{
+.exploreResourcesRow, .exploreRow{
 	background:
 		linear-gradient(
 		  rgba(224, 215, 186, .95), 
@@ -1330,7 +1330,7 @@ a.readmore-js-toggle {
 	max-height:400px;
 	overflow:hidden;
 }
-.listingContainerExhibitions .listingContainerImgContainer img{
+.listingContainerExhibitions .listingContainerImgContainer img, .listingContainerEduRes .listingContainerImgContainer img{
 	width:100%;
 	height: 250px;
 	object-fit: cover;
@@ -1375,31 +1375,31 @@ a.readmore-js-toggle {
 
 
 
-.listingContainerExhibitions.coverImg{
+.listingContainerExhibitions.coverImg, .listingContainerEduRes.coverImg{
 	background-position: center;
   	background-repeat: no-repeat;
   	background-size: cover;
   	min-height: 275px;
 }
-.listingContainerExhibitions.coverImg H2{
+.listingContainerExhibitions.coverImg H2, .listingContainerEduRes.coverImg H2{
 	margin-bottom: 20px;
 	font-size: 24px;
 	line-height:1.3em;
 }
-.listingContainerExhibitions.coverImg b{
+.listingContainerExhibitions.coverImg b, .listingContainerEduRes.coverImg b{
 	font-family: latolight;
 	text-transform: uppercase;
 	font-size: 16px;
 	font-weight: 600;
 }	
-.listingContainerExhibitions.coverImg .listingContainerDesc{
+.listingContainerExhibitions.coverImg .listingContainerDesc, .listingContainerEduRes.coverImg .listingContainerDesc{
 	background-color:transparent;
 	background: linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,.4), rgba(0,0,0,.4), rgba(0,0,0,0));
 	text-shadow: 2px 2px 4px #000000;
 	padding:40px;
   	min-height: 275px;
 }
-.listingContainerExhibitions.coverImg .listingContainerDesc:hover{
+.listingContainerExhibitions.coverImg .listingContainerDesc:hover, .listingContainerEduRes.coverImg .listingContainerDesc:hover{
 	background: rgba(0,0,0,.5);
 }
 h2.exhibitionSection{
@@ -1408,13 +1408,13 @@ h2.exhibitionSection{
 	font-family:Lato;
 	color:#D20000;
 }
-.listingExhibitionsImageLink:hover{
+.listingExhibitionsImageLink:hover, .listingEduResImageLink:hover{
 	text-decoration:none;
 }
-.currentExhibition .listingContainerExhibitions.coverImg .listingContainerDesc{
+.currentExhibition .listingContainerExhibitions.coverImg .listingContainerDesc, .currentExhibition .listingContainerEduRes.coverImg .listingContainerDesc{
 	padding: 70px 60px 60px 60px;
 }
-.currentExhibition .listingContainerExhibitions.coverImg H2{
+.currentExhibition .listingContainerExhibitions.coverImg H2, .currentExhibition .listingContainerEduRes.coverImg H2{
 	font-size: 28px;
 }
 
@@ -1435,7 +1435,7 @@ h2.exhibitionSection{
 .listingContainer{
 	height:100%;
 }
-.listingExhibitionsImageLink{
+.listingExhibitionsImageLink, .listingEduResImageLink{
 	display:block;
 	height:100%;
 }
@@ -1595,7 +1595,7 @@ div.caMediaOverlayControls {
 		padding-bottom:800px;
 	}
 }
-.exploreDigitalExhibitionsRow{
+.exploreDigitalExhibitionsRow, .exploreEduResRow{
 	background:
 		linear-gradient(
 		  rgba(224, 215, 186, .95), 
