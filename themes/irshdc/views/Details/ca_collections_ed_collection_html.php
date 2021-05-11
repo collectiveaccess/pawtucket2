@@ -53,13 +53,15 @@
 					<div class="stoneBg">	
 						<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
 						<H6>{{{^ca_collections.type_id}}}</H6>
-						{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
+						{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.parent"><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						{{{<ifdef code="ca_collections.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_collections.description_new.description_new_source"><h6>Description</h6>
 								<div class="trimText">^ca_collections.description_new.description_new_txt</div>
 							</div>
 						</ifdef>}}}
+						{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H6>Contains</H6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
+						
 					</div><!-- end stoneBg -->
 <?php
 					include("themes_html.php");
