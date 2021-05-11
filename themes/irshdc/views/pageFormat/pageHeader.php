@@ -160,7 +160,12 @@
 							<li><?php print caNavLink($this->request, "<span>"._t("Exhibitions")."</span>", "", "", "Listing", "DigitalExhibitions"); ?></li>
 <?php
 	}
-?>						
+	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewEduRes")){
+?>
+							<li><?php print caNavLink($this->request, "<span>"._t("Educational Resources Collections")."</span>", "", "", "Listing", "EducationalResources"); ?></li>
+<?php
+	}
+?>					
 						</ul>
 					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
