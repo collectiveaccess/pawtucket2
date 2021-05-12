@@ -39,7 +39,7 @@
 
 	<div class="row tanBg exploreRow exploreRow exploreEduResRow">
 		<div class="col-sm-12">
-			<H1>Educational Resources Collections</H1>
+			<H1>Educational Resources</H1>
 			<p>
 				{{{edu_res_collections_intro}}}
 			</p>
@@ -63,12 +63,12 @@
 
 					$vs_image_url = $qr_list->getWithTemplate("^ca_object_representations.media.large.url", array("checkAccess" => $va_access_values, "limit" => 1));
 					
-					print "<div class='col-sm-4'><div class='listingContainer listingContainerEduRes coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
+					print "<div class='col-sm-3'><div class='listingContainer listingContainerEduRes coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 								<H2>".$qr_list->get("ca_collections.preferred_labels.name")."</H2>
 							</div>", 'listingEduResImageLink', 'ca_collections', $qr_list->get("ca_collections.collection_id"))."</div></div>";
 
 					$i++;
-					if($i == 3){
+					if($i == 4){
 						print "</div>";
 						$i = 0;
 					}
