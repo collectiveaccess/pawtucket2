@@ -1,4 +1,4 @@
-# README: Pawtucket2 version 1.7.8
+# README: Pawtucket2 version 1.8
 
 ### About CollectiveAccess
 
@@ -21,9 +21,9 @@ Pawtucket2 is meant to be customized. The download package includes a neutral de
 All CollectiveAccess components are freely available under the open source GNU Public License version 3.
 
 
-### About CollectiveAccess 1.7.8
+### About CollectiveAccess 1.8
 
-Version 1.7.8 is a maintenance release with a handful of bug fixes. It is compatible with PHP 7.2 and will run under PHP versions 5.6, 7.0, 7.1 and 7.2. It has not been extensively tested with PHP 7.3 or MySQL 8.0. A list of changes is [available](https://clangers.collectiveaccess.org/jira/issues/?filter=11242).
+Pawtucket 1.8 is compatible with PHP 7.2, 7.3 and 7.4. It is not yet compatible with PHP 8.
 
 
 ### Updating from a previous version

@@ -1807,3 +1807,79 @@
 		return $t_set->getPreferredDisplayLabelsForIDs(array_keys($va_sets));
 	}
 	# ---------------------------------------
+	/**
+	 * Get list of terms in search expression
+	 * (Ex. "Berlin Alexanderplatz" and date:1970s will return [Berlin, Alexanderplatz, 1970s])
+	 *
+	 * @param mixed $search A search expression or Lucene Parser element containing the search
+	 *
+	 * @return array A list of terms
+	 */
+	function caExtractTermsForSearch($search) {
+		if(is_string($search)) {
+			$qp = new LuceneSyntaxParser();
+			$qp->setEncoding('UTF-8');
+			$qp->setDefaultOperator(LuceneSyntaxParser::B_AND);
+			try {
+				$parsed = $qp->parse($search, 'UTF-8');
+			} catch (Exception $e) {
+				return [$search];
+			}
+		} else {
+			$parsed = $search;
+		}
+			
+		$terms = [];
+		switch(get_class($parsed)) {
+			case 'Zend_Search_Lucene_Search_Query_Boolean':
+				foreach($parsed->getSubqueries() as $sq) {
+					$terms = array_merge($terms, caExtractTermsForSearch($sq));
+				}
+				break;
+			case 'Zend_Search_Lucene_Search_Query_MultiTerm':
+				$terms = $parsed->getTerms();
+				break;
+			case 'Zend_Search_Lucene_Search_Query_Phrase':
+			case 'Zend_Search_Lucene_Search_Query_Range':
+				foreach($parsed->getQueryTerms() as $t) {
+					$terms[] = $t->text;
+				}
+				break;
+			case 'Zend_Search_Lucene_Index_Term':
+				$terms[] = caConvertSearchTermsToText($parsed->field, $parsed->text);
+				break;
+			case 'Zend_Search_Lucene_Search_Query_Term':
+				$terms[] = caConvertSearchTermsToText($parsed->getTerm()->field, $parsed->getTerm()->text);
+				break;	
+			case 'Zend_Search_Lucene_Search_Query_Wildcard':
+			case 'Zend_Search_Lucene_Search_Query_Fuzzy':
+			case 'Zend_Search_Lucene_Search_Query_Insignificant':
+			case 'Zend_Search_Lucene_Search_Query_Empty':
+				// noop
+				break;
+			default:
+				return [];
+				break;
+		}
+		return $terms;
+	}
+	# ---------------------------------------
+	/**
+	 * Transform code terms into display text. If term is already text it will be returned as-is.
+	 *
+	 * @param string $field The field the term is restricted to
+	 * @param string $term Term text
+	 *
+	 * @return string
+	 */
+	function caConvertSearchTermsToText($field, $term) : string {
+		$tmp = explode('.', $field);
+		
+		if($t_instance = Datamodel::getInstance($tmp[0], true)) {
+			if ($tmp[1] === $t_instance->getProperty('ATTRIBUTE_TYPE_ID_FLD')) {
+				return $t_instance->getTypeName($term);
+			}
+		}
+		return $term;
+	}
+	# ---------------------------------------
