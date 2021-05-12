@@ -1501,7 +1501,7 @@ h2.exhibitionSection{
 }
 .userGuideBody img{
 	height:auto;
-	max-width:100%;
+	max-width:80%;
 }
 @media(min-width:768px){
 	.userGuideSideNav{
