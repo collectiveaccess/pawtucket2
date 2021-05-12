@@ -4278,7 +4278,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 					$po_request, 
 					"representation:{$pn_representation_id}", 
 					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
-					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 'resultList' => caGetOption('resultList', $pa_options, null)]
+					array_merge($pa_options, ['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 'resultList' => caGetOption('resultList', $pa_options, null)])
 				);
 
 				if ($pb_inline) {	
@@ -4552,7 +4552,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 					$po_request, 
 					"representation:{$vn_representation_id}", 
 					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
-					['viewerWrapper' => 'viewerInline', 'context' => caGetOption('context', $pa_options, null), 'checkAccess' => caGetOption('checkAccess', $pa_options, null)]
+					array_merge($pa_options, ['viewerWrapper' => 'viewerInline', 'context' => caGetOption('context', $pa_options, null), 'checkAccess' => caGetOption('checkAccess', $pa_options, null)])
 				).$vs_tool_bar.$vs_caption."</div></div>";
 
 				if (sizeof($va_reps) > 10) { break(2); }
@@ -5083,3 +5083,4 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		return preg_replace("![^A-Za-z0-9_\-\.]+!", "_", $filename);
 	}
 	# ------------------------------------------------------------------
+

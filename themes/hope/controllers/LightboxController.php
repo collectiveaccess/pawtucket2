@@ -539,7 +539,12 @@
  			// set name - required
  			
  			if(!($ps_name = $this->purifier->purify($this->request->getParameter('name', pString)))){
- 				$va_errors[] = _t("Please enter the name of your %1", $vs_display_name);
+				# - slideshow can default to [Untitled] - galleries need a name
+				if($ps_mode != "parent"){
+					$ps_name = "[Untitled]";
+				}else{
+ 					$va_errors["name"] = _t("Please enter the name of your %1", $vs_display_name);
+				}
  			}
  			$this->view->setVar("name", $ps_name);
  			
@@ -655,6 +660,7 @@
 				}
 			}else{
 				$this->view->setVar('errors', $va_errors);
+				$this->setForm();
 			}
 
 			if(($ps_mode != "parent") && (!$vb_is_insert)){
@@ -1835,7 +1841,7 @@
 				// set name - if not sent, make a decent default
 				$ps_name = $this->purifier->purify($this->request->getParameter('name', pString));
 				if(!$ps_name){
-					$ps_name = _t("Your %1", $vs_display_name);
+					$ps_name = _t("[Untitled]");
 				}
 				// set description - optional
 				$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));

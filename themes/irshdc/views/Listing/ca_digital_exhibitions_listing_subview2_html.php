@@ -123,7 +123,7 @@
 			$i = 0;	
 			foreach($va_current as $vs_block){
 				if($i == 0){
-					print "<div class='row'>";
+					print "<div class='row aligned-row'>";
 				}
 				print $vs_block;
 				$i++;
@@ -149,7 +149,7 @@
 			$i = 0;	
 			foreach($va_upcoming as $vs_block){
 				if($i == 0){
-					print "<div class='row'>";
+					print "<div class='row aligned-row'>";
 				}
 				print $vs_block;
 				$i++;
@@ -175,7 +175,7 @@
 			$i = 0;	
 			foreach($va_past as $vs_block){
 				if($i == 0){
-					print "<div class='row'>";
+					print "<div class='row aligned-row'>";
 				}
 				print $vs_block;
 				$i++;

@@ -526,7 +526,7 @@ a:hover .themesContainer{
 /* form overlay */
 @media(min-width:768px){
 	#caFormOverlay {
-		margin-top: 10%;
+		margin-top: 5%;
 	}
 	#caFormOverlay.caFormOverlayWide{
 		width:700px;
