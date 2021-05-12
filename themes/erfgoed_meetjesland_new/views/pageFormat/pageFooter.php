@@ -85,6 +85,11 @@
 					caMediaPanel = caUI.initPanel({ 
 						panelID: 'caMediaPanel',										/* DOM ID of the <div> enclosing the panel */
 						panelContentID: 'caMediaPanelContentArea',		/* DOM ID of the content area <div> in the panel */
+						onCloseCallback: function(data) {
+							if(data && data.url) {
+								window.location = data.url;
+							}
+						},
 						exposeBackgroundColor: '#000000',						/* color (in hex notation) of background masking out page content; include the leading '#' in the color spec */
 						exposeBackgroundOpacity: 0.5,							/* opacity of background color masking out page content; 1.0 is opaque */
 						panelTransitionSpeed: 400, 									/* time it takes the panel to fade in/out in milliseconds */
