@@ -28,6 +28,8 @@ Version 1.7.11 is a maintenance release with these bug fixes and minor improveme
 * Fix for issue where image media processed in the background by the task queue would not honor custom center points when cropped.
 * Removed extraneous fonts and trackers.
 
+Note that this version supports PHP 7.2, 7.3 and 7.4. It is not compatible with PHP 8.
+
 
 ### Updating from a previous version
 
