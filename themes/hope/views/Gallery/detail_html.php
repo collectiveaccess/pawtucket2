@@ -12,6 +12,7 @@
 	
 	$this->opo_config = caGetLightboxConfig();
 	$vn_under_review_access = $this->opo_config->get('lightbox_under_review_access');
+	$vb_side_nav = false;
 		
 	if($pn_parent_id && is_array($va_set_navigation) && sizeof($va_set_navigation)){
 ?>
@@ -37,6 +38,9 @@
 		</div>
 	</div>
 	<div class="row">
+<?php
+		if(sizeof($va_set_navigation) > 1){
+?>
 		<div class="col-sm-12 col-md-3">
 			<div class="gallerySectionNav">
 <script type='text/javascript'>
@@ -66,6 +70,11 @@
 		
 		<div class="col-sm-12 col-md-9">
 <?php
+		}else{
+?>
+			<div class="col-sm-12">
+<?php
+		}
 	}
 ?>
 	<div class="row">
