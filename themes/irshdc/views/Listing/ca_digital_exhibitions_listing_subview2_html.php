@@ -85,7 +85,7 @@
 
 						$vs_tmp = "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
 									<H2>".$qr_list->get("ca_occurrences.preferred_labels.name")."</H2>
-									<p><b>".$vs_display_date.(($vs_display_date) ? "<br/>" : "")."Online Exhibition</b></p>
+									<p><b>".$vs_display_date.(($vs_display_date) ? "<br/>" : "")."Virtual Exhibition</b></p>
 								</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
 
 					}
