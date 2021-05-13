@@ -200,7 +200,7 @@
 					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
 						<ul class="dropdown-menu">
-							<li><a href="https://www.comeet.be/erfgoed-2/">Over Erfgoedcel Meetjesland</a></li>
+							<li><a href="https://www.comeet.be/erfgoed-2/" target="_blank">Over Erfgoedcel Meetjesland</a></li>
 							<li><?php print caNavLink($this->request, "Over de Erfgoedbank", "", "", "About", "Guide"); ?></li>
 							<li><?php print caNavLink($this->request, "Jouw collectie op de erfgoedbank", "", "", "About", "Collection"); ?></li>
 						</ul>

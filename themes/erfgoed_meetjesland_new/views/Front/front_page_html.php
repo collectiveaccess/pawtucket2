@@ -128,7 +128,7 @@
 </div></div>
 <div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>
 <?php
-if (Session::getVar('visited') != 'has_visited') {
+if(!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 14400))){
 ?>
 	<div class="lightboxAlert">
 		<div class="pull-right pointer ligthboxAlertClose" onclick="$('.lightboxAlert').hide(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
@@ -144,7 +144,7 @@ if (Session::getVar('visited') != 'has_visited') {
 					$("#hpScrollBar").fadeOut();
 				});
 <?php
-		if (Session::getVar('visited') != 'has_visited') {
+		if (!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 14400))) {
 ?>
 			$(window).scroll(function(){
 				$(".lightboxAlert").fadeIn();

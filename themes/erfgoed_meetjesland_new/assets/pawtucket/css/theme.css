@@ -38,7 +38,7 @@
 	text-align:right;
 }
 .headerAdvancedSearch a{
-	font-size:12px;
+	font-size:13px;
 }
 #headerSearchButton{
 	color:#004c52;
@@ -258,13 +258,13 @@ body{
 	clear:left;
 }
 .detail H6 a {
-	color: #454545;
+	color: #000000;
 }
 .detail label a {
-	color: #828282;
+	color: #000000;
 }
 .detail H6, .detail h6, .gallery H6, .gallery h6, .detail label, .detail label, .gallery label, .gallery label{
-	color:#454545;
+	color:#000000;
 	font-family:Lato;
 	font-size:14px;
 	margin: 15px 0px 2px 0px;
@@ -425,7 +425,8 @@ body.frontContainer #footer{
 }
 .heroAdvancedSearchLink a{
 	color:#FFF;
-	font-size:14px;
+	font-size:17px;
+	text-decoration:underline;
 }
 @media(max-width:1024px){
 	.parallax .heroSearch{
@@ -476,7 +477,7 @@ body.frontContainer #footer{
     font-family: latolight;
 }
 .heroSearch H1 .line2{
-	font-size: 40px;
+	font-size: 43px;
 	font-weight: 500;
 	text-transform:none;
 	color:#f18e00;
@@ -519,11 +520,11 @@ body.frontContainer #footer{
 		font-size:24px;
 	}
 	.heroSearch H1 .line2 {
-		font-size:30px;
+		font-size:35px;
 	}
 }
 
-@media(max-width: 550px) {
+@media(max-width: 570px) {
 	.heroSearch H1 .line1, .heroSearch H1 .line3{
 		font-size:20px;
 	}
@@ -550,7 +551,7 @@ body.frontContainer #footer{
 	font-weight:400;
 	margin:120px 0px 150px 0px;
 	font-family: "Roboto slab";
-	font-weight:300;
+	font-weight:400;
 }
 .hpIntro .callout2{
 	text-align:center;
@@ -559,7 +560,7 @@ body.frontContainer #footer{
 	font-weight:400;
 	margin:120px 0px 150px 0px;
 	font-family: "Roboto slab";
-	font-weight:300;
+	font-weight:400;
 }
 @media(max-width:767px){
 	.hpIntro .callout, .hpIntro .callout2{
@@ -678,6 +679,7 @@ body.frontContainer #footer{
 .frontFeaturedExpo .frontFeaturedExpoText p{
 	font-size:16px;
 	line-height:1.5em;
+	font-weight:600;
 }
 .frontFeaturedExpo .frontFeaturedExpoImg{
 	height:450px;
@@ -706,6 +708,7 @@ body.frontContainer #footer{
 	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);	
 	width:250px;
 	text-align:center;
+	font-weight: 600;
 }
 .lightboxAlert div{
 	margin-top:15px;
@@ -796,6 +799,9 @@ a.readmore-js-toggle {
     color: #004c52;
     text-decoration:underline;
 }
+.detail .navTop a, .detail .navTop a .small{
+	color:#000;
+}
 /* detail */
 .detail{
 	font-size:15px;
@@ -819,7 +825,18 @@ div.caMediaOverlayControls{
 	opacity:1;
 	background-color:rgb(0,0,0,.7);
 }
-
+.detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small, .detail .detailNavBgLeft a, .detail .detailNavBgRight a {
+	color:#000;
+}
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a{
+	font-size:20px;
+}
+.detail .detailNavBgLeft, .detail .detailNavBgRight{
+	padding-top:10px;
+}
+.detail .unit a{
+	color:#004c52;	
+}
 /* collections */
 .collectionTile a.collectionTileImage{
 	float:left;
@@ -848,6 +865,10 @@ div.caMediaOverlayControls{
 #pageArea.staticPage img{
 	width:100%;
 	height:auto;
+}
+.staticPage p, .staticPage .bodytext{
+	font-weight:600;
+	font-size:16px;
 }
 
 #caMediaPanel {

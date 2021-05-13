@@ -108,37 +108,11 @@
 //			}); 
 		</script>
 <?php
-	if (Session::getVar('cookieAccepted') != 'accepted') {		
-?>	
-		<!--<div id="cookieNotice">
-			{{{cookie_statement}}}
-		</div>	--><!--end homePanel-->
-		
-		
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$('.acceptCookie').click(function(e){
-				  e.preventDefault();
-				  $.ajax({
-					   url: "<?php print caNavUrl($this->request, "", "Cookie", "accept"); ?>",
-					   type: "GET",
-					   success: function (data) {
-						 if(data == 'success'){
-						 	$('#cookieNotice').hide();
-						 }
-					   },
-					   error: function(xhr, ajaxOptions, thrownError){
-						  alert("There was an error, please try again later.");
-					   }
-				  });
-
-				});
-			});
-		</script>
-
-<?php
+	# --- clear out
+	if(!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 14400))){
+		Session::setVar('visited_time', time());
 	}
-	Session::setVar('visited', 'has_visited');
+	
 ?>
 	</body>
 </html>
