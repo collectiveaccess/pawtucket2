@@ -1529,9 +1529,9 @@ h2.exhibitionSection{
 	position: relative;
 	top: -95px;
 }
-.userguideBody .video-js{
+.userGuideBody .video-js{
 	width:100% !important;
-	width:500px !important;
+	height:500px !important;
 }
 /* contact form */
 .form-control-static.securityQuestion{
