@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -36,7 +37,7 @@
 ?>					
 					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
 					<div class="unit"><label>{{{^ca_collections.type_id}}}</label></div>
-					{{{<ifdef code="ca_collections.parent.parent_id"><label>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></label></ifdef>}}}
+					{{{<ifdef code="ca_collections.parent_id"><label>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></label></ifdef>}}}
 <?php					
 					if ($vn_pdf_enabled) {
 						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, _t("Download as PDF"), "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";

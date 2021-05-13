@@ -140,6 +140,24 @@ html.frontContainer .navbar .formOutline .form-control::placeholder {
 		right: auto;
 	}
 }
+.navHomeLink{
+	float: right;
+	font-size: 24px;
+	padding-top: 22px;
+	color: #000;
+	display:none;
+}
+@media (min-width:768px){
+	.navHomeLink{
+		display:block;
+	}
+}
+
+@media (max-width:1010px){
+	.navHomeLink{
+		padding-right:15px;
+	}
+}
 .navbar-default .navbar-toggle{
 	border-color:#000;
 	color:#000;
@@ -254,7 +272,7 @@ a:hover{
 	color: #000;
 	padding-top:25px;
 	padding-bottom:25px;
-	height:350px;
+	height:175px;
 	border-top:0px;
 	text-align:center;
 	margin-top:0px;
@@ -263,12 +281,20 @@ a:hover{
 	font-weight:400;
 }
 body{
-	margin-bottom:370px;
+	margin-bottom:200px;
 	color:#000
 }
-@media(max-width:768px){
+@media(max-width:1306px){
 	#footer{
-		height:390px;
+		height:250px;
+	}
+	body{
+		margin-bottom:275px;
+	}
+}
+@media(max-width:700px){
+	#footer{
+		height:370px;
 	}
 	body{
 		margin-bottom:400px;
@@ -296,6 +322,9 @@ body{
 #footer ul li{
 	padding:0px;
 }
+#footer .footerLinks a{	
+	line-height:50px;
+}
 #footer .footerLinks a, #footer a{
 	color:#000;
 	font-size:18px;
@@ -313,7 +342,7 @@ body{
 	font-family:"Poppins";
 }
 #footer .funder img{
-	width:150px;
+	width:120px;
 	height:auto;
 }
 #footer ul.social, #footer .social a{
@@ -321,12 +350,12 @@ body{
 	font-size:25px;
 }
 #footer ul.social {
-	margin-top: 20px;
-	margin-bottom:10px;
+	margin-top: 0px;
+	margin-bottom:15px;
 }
 #footer ul.footerLinks{
-	margin-top: 20px;
-	margin-bottom:30px;
+	margin-top: 0px;
+	margin-bottom:0px;
 }
 #footer ul.footerLinks, #footer ul.footerLinks a{
 	font-size: 20px;
@@ -872,6 +901,17 @@ table.attributeListItem{
 .results #bViewButtons a.active .glyphicon, .results #bViewButtons a.active .fa {
     color: #000 !important;
 }
+#bViewButtons {
+    text-align: right;
+    font-size: 24px;
+    float:none;
+    text-align:center;
+}
+#bViewButtons .buttonLabel{
+	font-size: 16px;
+	top:-5px;
+	position:relative;
+}
 /* gallery */
 .gallery .setDescription {
     font-size: 14px;
@@ -1047,4 +1087,19 @@ div.caMediaOverlayControls{
 	width:100%;
 	height:auto;
 	border-radius:30px;
+}
+.notificationMessage, .notificationInfo {
+    position: absolute;
+    top: 100px;
+    z-index: 10000;
+    width: 80%;
+    left: 10%;
+}
+
+
+#caMediaPanel {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.multisearch H2 a{
+	color:#000;
 }

@@ -149,12 +149,20 @@
 						print "</div>";
 				}
 				if($va_makers = $t_object->get("ca_objects.production_maker.maker", array("returnAsArray" => true, "convertCodesToDisplayText" => true, "checkAccess" => $va_access_values))){
-					$va_makers_ids = $t_object->get("ca_objects.production_maker.maker", array("returnAsArray" => true));
-					print '<div class="unit"><label>Vervaardiger</label>';
-					foreach($va_makers as $vn_i => $vs_maker){
-						print caNavLink($this->request, $vs_maker, "", "", "Search", "objects", array("search" => "ca_entities.entity_id:".$va_makers_ids[$vn_i]));
+					$va_makers_ids = $t_object->get("ca_objects.production_maker.maker", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+					if(sizeof($va_makers_ids)){
+						$va_tmp = array();
+						foreach($va_makers as $vn_i => $vs_maker){
+							if($vs_maker){
+								$va_tmp[] = caNavLink($this->request, $vs_maker, "", "", "Search", "objects", array("search" => "ca_entities.entity_id:".$va_makers_ids[$vn_i]));
+							}
+						}
+						if(sizeof($va_tmp)){
+							print '<div class="unit"><label>Vervaardiger</label>';
+							print join(", ", $va_tmp);
+							print '</div>';
+						}
 					}
-					print '</div>';
 				}
 				#print $t_object->getWithTemplate('<ifdef code="ca_objects.production_maker.maker"><div class="unit"><label>Vervaardiger</label><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.production_maker.maker">^ca_objects.production_maker.maker</ifdef><ifdef code="ca_objects.production_maker.maker_role">, ^ca_objects.production_maker.maker_role</ifdef><ifdef code="ca_objects.production_maker.maker_sureness">, ^ca_objects.production_maker.maker_sureness</ifdef></unit></div></ifdef>');
 				print $t_object->getWithTemplate('<ifdef code="ca_objects.management_acquisition.acquisition_source|ca_objects.management_acquisition.acquisition_method_type|ca_objects.management_acquisition.acquisition_date|ca_objects.management_acquisition.acquisition_note"><div class="unit"><label>Verwerving</label><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.management_acquisition.acquisition_source">^ca_objects.management_acquisition.acquisition_source</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_method_type">, ^ca_objects.management_acquisition.acquisition_method_type</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_date">, ^ca_objects.management_acquisition.acquisition_date</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_note">, ^ca_objects.management_acquisition.acquisition_note</ifdef></unit></div></ifdef>');
@@ -185,7 +193,9 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 120,
+		  moreLink: '<a href="#">Lees meer</a>',
+          lessLink: '<a href="#">Dichtbij</a>'
 		});
 	});
 </script>

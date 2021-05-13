@@ -75,7 +75,7 @@
 	$t_list = new ca_lists();
 	$vn_place_type_id = $t_list->getItemIDFromList('place_types', 'region');
 	if($vn_place_type_id){
-		$r_places = ca_places::find(array('type_id' => $vn_place_type_id), array('returnAs' => 'searchResult', 'sort' => 'ca_places.idno'));
+		$r_places = ca_places::find(array('type_id' => $vn_place_type_id), array('returnAs' => 'searchResult', 'sort' => 'ca_places.preferred_labels.name'));
 			
 		$i = 0;
 		if($r_places->numHits()){

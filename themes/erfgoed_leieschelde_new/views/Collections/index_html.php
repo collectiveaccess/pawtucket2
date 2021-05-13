@@ -29,7 +29,15 @@
 		while($qr_collections->nextHit()) {
 			if(in_array($qr_collections->get("ca_collections.access"), $va_access_values)){
 				if ( $vn_i == 0) { print "<div class='row'>"; } 
-				print "<div class='col-sm-4'><div class='collectionList'>".$qr_collections->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>").
+				$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_collections' length='1'>^ca_object_representations.media.iconlarge</unit>", $va_access_values);
+				if(!$vs_image){
+					$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>", $va_access_values);
+				}
+				if(!$vs_image){
+					$va_images = explode(";", $qr_collections->getWithTemplate("<unit relativeTo='ca_collections.children' length='1' limit='1'><unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit></unit>", $va_access_values));
+					$vs_image = $va_images[0];
+				}
+				print "<div class='col-sm-4'><div class='collectionList'>".caDetailLink($this->request, $vs_image, "", "ca_collections",  $qr_collections->get("ca_collections.collection_id")).
 							"<label>".$qr_collections->getWithTemplate("<l>^ca_collections.preferred_labels</l>")."</label>
 						</div></div>\n";
 				

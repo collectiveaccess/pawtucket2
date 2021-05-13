@@ -73,7 +73,7 @@
 				#if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
 					print '<div id="detailTools">';
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Hoge resolutie versie bestellen", "", "", "Contact",  "form", array('table' => 'ca_objects', 'id' => $vn_id))."</div>";
+					#print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Hoge resolutie versie bestellen", "", "", "Contact",  "form", array('table' => 'ca_objects', 'id' => $vn_id))."</div>";
 					if ($vn_comments_enabled) {
 ?>				
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span><?php print _t("Comments and Tags"); ?> (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
@@ -104,9 +104,12 @@
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 <?php
 				if($vn_collection_id = $t_object->get("ca_objects.object_collection.collection_id", array("checkAccess" => $va_access_values))){
-					print "<div class='unit'><label>Collectie</label>";
-					print caDetailLink($this->request, $t_object->get("ca_objects.object_collection.preferred_labels.name", array("checkAccess" => $va_access_values)), '', 'ca_collections', $vn_collection_id);
-					print "</div>";
+					$vs_collection_name = $t_object->get("ca_objects.object_collection.preferred_labels.name", array("checkAccess" => $va_access_values));
+					if($vs_collection_name) {
+						print "<div class='unit'><label>Collectie</label>";
+						print caDetailLink($this->request, $vs_collection_name, '', 'ca_collections', $vn_collection_id);
+						print "</div>";
+					}
 				}
 				
 ?>
@@ -149,12 +152,20 @@
 						print "</div>";
 				}
 				if($va_makers = $t_object->get("ca_objects.production_maker.maker", array("returnAsArray" => true, "convertCodesToDisplayText" => true, "checkAccess" => $va_access_values))){
-					$va_makers_ids = $t_object->get("ca_objects.production_maker.maker", array("returnAsArray" => true));
-					print '<div class="unit"><label>Vervaardiger</label>';
-					foreach($va_makers as $vn_i => $vs_maker){
-						print caNavLink($this->request, $vs_maker, "", "", "Search", "objects", array("search" => "ca_entities.entity_id:".$va_makers_ids[$vn_i]));
+					$va_makers_ids = $t_object->get("ca_objects.production_maker.maker", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+					if(sizeof($va_makers_ids)){
+						$va_tmp = array();
+						foreach($va_makers as $vn_i => $vs_maker){
+							if($vs_maker){
+								$va_tmp[] = caNavLink($this->request, $vs_maker, "", "", "Search", "objects", array("search" => "ca_entities.entity_id:".$va_makers_ids[$vn_i]));
+							}
+						}
+						if(sizeof($va_tmp)){
+							print '<div class="unit"><label>Vervaardiger</label>';
+							print join(", ", $va_tmp);
+							print '</div>';
+						}
 					}
-					print '</div>';
 				}
 				#print $t_object->getWithTemplate('<ifdef code="ca_objects.production_maker.maker"><div class="unit"><label>Vervaardiger</label><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.production_maker.maker">^ca_objects.production_maker.maker</ifdef><ifdef code="ca_objects.production_maker.maker_role">, ^ca_objects.production_maker.maker_role</ifdef><ifdef code="ca_objects.production_maker.maker_sureness">, ^ca_objects.production_maker.maker_sureness</ifdef></unit></div></ifdef>');
 				print $t_object->getWithTemplate('<ifdef code="ca_objects.management_acquisition.acquisition_source|ca_objects.management_acquisition.acquisition_method_type|ca_objects.management_acquisition.acquisition_date|ca_objects.management_acquisition.acquisition_note"><div class="unit"><label>Verwerving</label><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.management_acquisition.acquisition_source">^ca_objects.management_acquisition.acquisition_source</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_method_type">, ^ca_objects.management_acquisition.acquisition_method_type</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_date">, ^ca_objects.management_acquisition.acquisition_date</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_note">, ^ca_objects.management_acquisition.acquisition_note</ifdef></unit></div></ifdef>');
@@ -185,7 +196,9 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 120,
+		  moreLink: '<a href="#">Lees meer</a>',
+          lessLink: '<a href="#">Dichtbij</a>'
 		});
 	});
 </script>

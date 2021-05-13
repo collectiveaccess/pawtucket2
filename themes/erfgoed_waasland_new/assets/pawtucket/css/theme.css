@@ -866,3 +866,7 @@ div.caMediaOverlayControls{
 	font-size: 16px;
 	font-weight:bold;
 }
+
+#caMediaPanel {
+    background-color: rgba(0, 0, 0, 0.5);
+}
