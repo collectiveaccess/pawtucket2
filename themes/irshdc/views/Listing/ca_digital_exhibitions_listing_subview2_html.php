@@ -66,10 +66,15 @@
 					$vs_link = $qr_list->get("ca_occurrences.online_exhibition");
 					$vs_link_text = ($qr_list->get("ca_occurrences.nav_text")) ? $qr_list->get("ca_occurrences.nav_text") : "More Information";
 
-					$vs_tmp = "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
+#					$vs_tmp = "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'>".caDetailLink($this->request, "<div class='listingContainerDesc'>
+#								<H2>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels.name')."</H2>
+#								".(($vs_display_date || $vs_exhibition_type) ? "<p><b>".$vs_display_date.(($vs_display_date && $vs_exhibition_type) ? "<br/>" : "").$vs_exhibition_type."</b></p>" : "")."
+#							</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
+
+					$vs_tmp = "<div class='col-sm-4'><div class='listingContainer listingContainerExhibitions coverImg' style='background-image: url(\"".$vs_image_url."\");'><a href='".$vs_link."' class='listingExhibitionsImageLink'><div class='listingContainerDesc'>
 								<H2>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels.name')."</H2>
 								".(($vs_display_date || $vs_exhibition_type) ? "<p><b>".$vs_display_date.(($vs_display_date && $vs_exhibition_type) ? "<br/>" : "").$vs_exhibition_type."</b></p>" : "")."
-							</div>", 'listingExhibitionsImageLink', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div></div>";
+							</div></a></div></div>";
 				
 				break;
 				# -----------------------------------------
