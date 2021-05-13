@@ -157,7 +157,7 @@
 <?php
 	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewDigExh")){
 ?>
-							<li><?php print caNavLink($this->request, "<span>"._t("Exhibitions")."</span>", "", "", "Listing", "DigitalExhibitions"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Exhibitions")."</span>", "", "", "Listing", "exhibitions"); ?></li>
 <?php
 	}
 	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewEduRes")){
