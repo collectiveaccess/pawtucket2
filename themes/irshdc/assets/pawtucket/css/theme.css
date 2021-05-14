@@ -1399,6 +1399,11 @@ a.readmore-js-toggle {
 	padding:40px;
   	min-height: 275px;
 }
+.listingContainerEduRes.coverImg .listingContainerDesc{
+	display: flex;
+	align-items: center;
+	text-align:center;
+}
 .listingContainerExhibitions.coverImg .listingContainerDesc:hover, .listingContainerEduRes.coverImg .listingContainerDesc:hover{
 	background: rgba(0,0,0,.5);
 }
