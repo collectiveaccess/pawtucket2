@@ -49,8 +49,7 @@
 	</div><!-- end detailTop -->
 </div>
 			<div class="row">
-				<div class='col-sm-12 col-md-9'>
-					<div class="stoneBg">	
+				<div class='col-sm-12 col-md-9'>	
 						<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
 						{{{<ifdef code="ca_collections.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_collections.description_new.description_new_source"><h6>Description</h6>
@@ -59,7 +58,6 @@
 						</ifdef>}}}
 						{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H6>Contains</H6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 						
-					</div><!-- end stoneBg -->
 				</div>
 				<div class='col-sm-12 col-md-3'>
 	<?php
