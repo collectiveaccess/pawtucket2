@@ -37,7 +37,22 @@
  	$vs_action = $this->request->getAction();
  	global $g_ui_locale;
 ?>
-	<div class="listing-content single-lists">
+	<nav class="navbar navbar-fixed-top" id="bibHeading">
+
+			<div id="filterByNameContainer">
+				<div>
+					<input type="text" name="filterByName" id="filterByName" placeholder="<?php print _t('search');?>" value="" onfocus="this.value='';"/><a href="#" onclick="jQuery('.listEntry').css('display', 'block'); jQuery('.listing-searchable-intro').css('display', 'block'); jQuery('#filterByName').val(''); jQuery('.mw-headline').removeClass('noLetter'); jQuery('.separator').removeClass('noSeparator'); jQuery('#filterByName').val(''); return false;"> <i class="fa fa-close"></i> 
+<?php		
+			global $g_ui_locale;	
+			if ($g_ui_locale == 'en_US'){			
+				print "clear search";
+			} else {
+				print "Borrar búsqueda";
+			}				
+?>				
+				</a>
+			</div>
+		</div>
 <?php
 			if ($g_ui_locale == 'en_US'){
 				print "<h2>{$va_listing_info['displayName']}</h2>\n";
@@ -46,19 +61,24 @@
 			
 			}		
 ?>
+	</nav>
+
+	<div class="listing-content single-lists">
+		<div class="listing-searchable">
+			<div id='glossaryBodyIntro' class='listing-searchable-intro'>
 			<div class="row"><div class="col-sm-6">
 <?php
 			if ($g_ui_locale == 'en_US'){			
 ?>
-				<p class='trimText'>
+				<div class='trimText'>
 					{{{glossaryIntroEnglish}}}
-				</p>
+				</div>
 <?php
 			}else{
 ?>
-				<p class='trimText'>
+				<div class='trimText'>
 					{{{glossaryIntroSpanish}}}
-				</p>
+				</div>
 <?php
 			
 			}		
@@ -68,6 +88,8 @@
 				print caGetThemeGraphic($this->request, 'Anatomy_State_3.jpg');
 ?>
 			</div></div>
+			</div>
+
 <?php
 	$va_links_array = array();
 	$va_letter_array = array();
@@ -97,9 +119,13 @@
 					$i = 0;
 				}
 			}
+			if($i > 0){
+				print "<div style='clear:both'></div>";
+			}
 		}
 	}
 ?>
+
 	<div id='toc_container'>
 		<div id='toc_content' class='arrow-scroll'>
 			<ul id='tocList'>
@@ -115,7 +141,7 @@
 	</div><!-- end toc_container -->
 
 
-	</div>
+	</div></div>
 	
 		<script type="text/javascript">
 			
@@ -147,6 +173,7 @@
 							if (jQuery(".listEntry:containsi(" + t + ")").length) {
 								jQuery(".mw-headline").addClass("noLetter");
 								jQuery(".separator").addClass("noSeparator");
+								jQuery('.listing-searchable-intro').css('display', 'none');
 								jQuery(".listEntry:containsi(" + t + ")").css("display", "block");
 							}
 						} else {

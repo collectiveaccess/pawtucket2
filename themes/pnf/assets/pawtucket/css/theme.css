@@ -47,7 +47,7 @@ h6 {
 	font-size:14px;
 	font-weight:bold;
 }
-a {
+a, a:focus {
 	color: #7f4539;
 }
 a:hover{
@@ -747,10 +747,11 @@ div.caMediaOverlayControls {
 	margin-top:10px;
 	margin-bottom:10px;
 }
-#bibBody{
+#bibBody, .listing-searchable{
 	margin-top:50px;
 	border-top:2px solid #DEDEDE;
 	padding-top:40px;
+	min-height:600px;
 }
 #bibBodyIntro{
 	font-weight:bold;
@@ -763,6 +764,17 @@ div.caMediaOverlayControls {
 	font-size: 20px;
 	color: #7f4539;
 	font-family: 'Lusitana', serif;
+}
+#glossaryBodyIntro{
+	font-family: 'Oxygen', sans-serif;
+	color: #222222;
+	font-size: 14px;
+	line-height: 26px;
+}
+#glossaryBodyIntro li{
+	list-style-type:none;
+	text-indent: -15px;
+	margin-left: 15px
 }
 #bibBodyIntro ul{
 	font-weight:normal;
@@ -779,10 +791,11 @@ div.caMediaOverlayControls {
 		padding-right:265px;
 	}
 }
-#bibBodyIntro li{
+#bibBodyIntro li, #glossaryBodyIntro li{
 	padding-bottom:5px;
 	padding-top:10px;
 	font-size:14px;
+	margin-right:50px;
 }
 .listingLetterIntro{
 	margin-top:25px;
@@ -830,6 +843,9 @@ div.caMediaOverlayControls {
 #filterByNameContainer{
 	float:right;
 	margin-top:25px;
+}
+#filterByNameContainer.glossaryFilterByNameContainer{
+	float:none;
 }
 #toc_container {
     float: left;
@@ -1015,6 +1031,9 @@ a.readmore-js-toggle{
 	top: -15px;
 	display: block;
 	position: relative;
+}
+#glossaryBodyIntro a.readmore-js-toggle{
+	top:0px;
 }
 
 #statistics .statisticsIntro {

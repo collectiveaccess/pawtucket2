@@ -39,7 +39,7 @@
 
 			<div id="filterByNameContainer">
 				<div>
-					<input type="text" name="filterByName" id="filterByName" placeholder="<?php print _t('author, title and keyword search');?>" value="" onfocus="this.value='';"/><a href="#" onclick="jQuery('.listEntry').css('display', 'block'); jQuery('#filterByName').val(''); return false;"> <i class="fa fa-close"></i> 
+					<input type="text" name="filterByName" id="filterByName" placeholder="<?php print _t('author, title and keyword search');?>" value="" onfocus="this.value='';"/><a href="#" onclick="jQuery('.listEntry').css('display', 'block'); jQuery('#filterByName').val(''); jQuery('.listing-searchable-intro').css('display', 'block'); jQuery('.mw-headline').removeClass('noLetter'); jQuery('.separator').removeClass('noSeparator'); jQuery('#filterByName').val(''); return false;"> <i class="fa fa-close"></i> 
 <?php		
 			global $g_ui_locale;	
 			if ($g_ui_locale == 'en_US'){			
@@ -71,6 +71,7 @@
 	</nav>
 	<div class="listing-content single-lists">
 		<div id="bibBody">
+			 <div class="listing-searchable-intro">
 <?php
 		switch($vs_action){
 			case "bibliography":
@@ -128,6 +129,9 @@
 			}		
 		break;
 	}
+?>
+	</div>
+<?php
 	$va_links_array = array();
 	$va_letter_array = array();
 	foreach($va_lists as $vn_type_id => $qr_list) {
@@ -214,6 +218,7 @@
 							if (jQuery(".listEntry:containsi(" + t + ")").length) {
 								jQuery(".mw-headline").addClass("noLetter");
 								jQuery(".separator").addClass("noSeparator");
+								jQuery('.listing-searchable-intro').css('display', 'none');
 								jQuery(".listEntry:containsi(" + t + ")").css("display", "block");
 							}
 						} else {
