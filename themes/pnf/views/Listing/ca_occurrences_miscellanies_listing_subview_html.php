@@ -155,7 +155,12 @@
 				
 				//jQuery('#filterByName').css('color', '#eeeeee');
 				jQuery('#filterByName').bind('keyup', function(e) {
-					if (!jQuery('#filterByName').val()) { jQuery(".listEntry").css("opacity", 1.0); }
+					if (!jQuery('#filterByName').val()) {
+								jQuery(".mw-headline").removeClass("noLetter");
+								jQuery(".separator").removeClass("noSeparator");
+								jQuery('.listing-searchable-intro').css('display', 'block');
+								jQuery(".listEntry").css("display", "block");
+					}
 					typingTimer = setTimeout(function() {
 						var t = jQuery('#filterByName').val();
 						if (t.length > 0) {
@@ -163,11 +168,19 @@
 							if (jQuery(".listEntry:containsi(" + t + ")").length) {
 								jQuery(".mw-headline").addClass("noLetter");
 								jQuery(".separator").addClass("noSeparator");
-								jQuery('.listing-searchable-intro').css('display', 'none'); 
+								jQuery('.listing-searchable-intro').css('display', 'none');
 								jQuery(".listEntry:containsi(" + t + ")").css("display", "block");
+							}else{
+								jQuery(".mw-headline").removeClass("noLetter");
+								jQuery(".separator").removeClass("noSeparator");
+								jQuery('.listing-searchable-intro').css('display', 'block');
+								jQuery(".listEntry").css("display", "block");
 							}
 						} else {
-							jQuery(".listEntry").css("opacity", "1.0");
+							jQuery(".mw-headline").removeClass("noLetter");
+							jQuery(".separator").removeClass("noSeparator");
+							jQuery('.listing-searchable-intro').css('display', 'block');
+							jQuery(".listEntry").css("display", "block");
 						}
 					}, 1500);
 				});
