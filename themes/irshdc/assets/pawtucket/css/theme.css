@@ -1335,6 +1335,9 @@ a.readmore-js-toggle {
 	height: 250px;
 	object-fit: cover;
 }
+.listingContainerResources{
+	margin-bottom:45px;
+}
 .listingContainerResources .listingContainerImgContainer img{
 	width:100%;
 	height: auto;
