@@ -280,7 +280,7 @@ if($x_show_events){
 ?>
 		<div class="row mt-3">
 			<div class="col-7 mt-5">
-				<H1>Inquiries</H1>
+				<H1>Albums</H1>
 			</div>
 			<div class="col-5 mt-5 text-right">
 				<?php print caNavLink("View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>

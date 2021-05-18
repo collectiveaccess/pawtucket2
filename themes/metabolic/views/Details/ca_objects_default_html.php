@@ -206,7 +206,6 @@
 							</div>
 						</ifcount>}}}
 -->
-<<<<<<< HEAD
 <?php
 						$colls = $t_object->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_collections.name"));
 						
@@ -226,8 +225,6 @@
 								<div class="label">Actions</div>
 								<?= join($coll_links, ", "); ?>
 							</div>
-=======
->>>>>>> f03b9280876a226c3c136c197a52f87e6013ea4c
 <?php
 						}
 
@@ -299,13 +296,10 @@
 						# --- bio-regions
 						$t_list_item = new ca_list_items();
 						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
-<<<<<<< HEAD
-						
 						if($t_parent->isLoaded()) { 
 							$va_bio_regions += $t_parent->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
 						}
-=======
->>>>>>> f03b9280876a226c3c136c197a52f87e6013ea4c
+						
 						if(is_array($va_bio_regions) && sizeof($va_bio_regions)){
 ?>
 							<div class="mb-3">
@@ -406,8 +400,7 @@
 ?>
 	</div><!-- end col -->
 </div><!-- end row -->
-
-<<<<<<< HEAD
+<?php
 	$vs_related_title = "";
 	# --- related_items - if item is part of an album, show the other siblings otherwise show some other items from the current object's action(ca_collection)
 	$va_related_item_ids = array();
@@ -477,10 +470,9 @@
 					break;
 				}
 			}
+		}
 ?>
 		</div>
-=======
->>>>>>> f03b9280876a226c3c136c197a52f87e6013ea4c
 
 <?php
 	if($this->request->isLoggedIn()) {
