@@ -26,6 +26,22 @@ const getResult = (url, browseType, key, start, limit, callback) => {
     });
 }
 
+const getFacet = (url, browseType, key, facet, callback) => {
+  const client = getGraphQLClient(url, {});
+  client
+    .query({
+      query: gql
+      `query ($browseType: String, $key: String, $facet: String) { facet (browseType: $browseType, key: $key, facet: $facet)
+          { name, type, description, values { id, value, sortableValue, displayData {name, value} } } }`
+      , variables: { 'browseType': browseType, 'key': key, 'facet': facet }
+    })
+    .then(function (result) {
+      callback(result.data['facet']);
+    }).catch(function (error) {
+      console.log("Error while attempting to fetch facet: ", error);
+    });
+}
+
 function addFilterValue(uri, browseType, key, facet, values, sort, callback) {
   const client = getGraphQLClient('http://metabolic3.whirl-i-gig.com:8085' + uri, {});
   client
@@ -41,4 +57,4 @@ function addFilterValue(uri, browseType, key, facet, values, sort, callback) {
     });
 }
 
-export { getGraphQLClient, getResult, addFilterValue };
+export { getGraphQLClient, getResult, addFilterValue, getFacet };

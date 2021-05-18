@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { ChronologyContext } from './ChronologyContext';
+import { ChronologyContext } from '../ChronologyContext';
 import Scrollspy from 'react-scrollspy';
 import { Link } from 'react-scroll'
 
@@ -18,14 +18,20 @@ const ChronologyYearBar = (props) => {
         <div className="year-bar-cont">
           <Scrollspy items={[...years]} currentClassName="active" scrolledPastClassName="prev" rootEl="#info-div" onUpdate={e => setCurrentYearSection(e)}>
               {years.map((year, index) => {
-                return (
-                  <li key={index} className={(currYear == year)? 'curr-year' : ''}>
-                    <a href={`#${year}`}></a>
-                    <Link to={`${year}`} containerId="info-div" spy={true} smooth={true}>
-                      {year}
-                    </Link>
-                  </li>
-                )   
+                if (year.includes("–")){
+                  return (null)   
+                } else {
+                  return(
+                    <li key={index} className={(currYear == year) ? 'curr-year' : ''}>
+                      <a href={`#${year}`}></a>
+                      <Link to={`${year}`} containerId="info-div" spy={true} smooth={true}>
+                        <p>
+                          {year}
+                        </p>
+                      </Link>
+                    </li>
+                  )
+                }
               })} 
             </Scrollspy>
         </div>
