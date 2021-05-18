@@ -1034,6 +1034,9 @@ a.readmore-js-toggle{
 }
 #glossaryBodyIntro a.readmore-js-toggle{
 	top:0px;
+	margin-top:15px;
+	margin-bottom:10px;
+	cursor: pointer;
 }
 
 #statistics .statisticsIntro {
