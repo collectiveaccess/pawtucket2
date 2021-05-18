@@ -43,7 +43,7 @@ const getFacet = (url, browseType, key, facet, callback) => {
 }
 
 function addFilterValue(uri, browseType, key, facet, values, sort, callback) {
-  const client = getGraphQLClient('http://metabolic3.whirl-i-gig.com:8085' + uri, {});
+  const client = getGraphQLClient(uri, {});
   client
     .mutate({
       mutation: gql`
