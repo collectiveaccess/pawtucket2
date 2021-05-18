@@ -22,7 +22,6 @@
  *
  * ----------------------------------------------------------------------
  */
-	$vs_file_path = $this->getVar('archive_path');
 	
 	if(!headers_sent()) {
 		header("Content-type: application/octet-stream");
@@ -34,9 +33,17 @@
 	}
 	
 	set_time_limit(0);
-	$o_fp = @fopen($vs_file_path,"rb");
-	while(is_resource($o_fp) && !feof($o_fp)) {
-		print(@fread($o_fp, 1024*64));
-		ob_flush();
+	
+	if($vs_file_path = $this->getVar('archive_path')) {
+		$o_fp = @fopen($vs_file_path,"rb");
+		while(is_resource($o_fp) && !feof($o_fp)) {
+			print(@fread($o_fp, 1024*8));
+			ob_flush();
+		}
+		exit;
+	} elseif($zip = $this->getVar('archive')) {
+		$zip->stream();
+		exit;
+	} else {
+		die("Nothing to download");
 	}
-	exit;

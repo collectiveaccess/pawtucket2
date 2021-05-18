@@ -54,10 +54,14 @@
 		MetaTagManager::addMetaProperty("og:image:width", $t_object->get("ca_object_representations.media.page.width"));
 		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
 	}
+	if($this->request->isLoggedIn() && $this->request->user->hasRole("frontendRestricted")) {
 ?>
 
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0&appId=2210553328991338&autoLogAppEvents=1"></script>
+<?php
+	}
+?>
 <div class="row borderBottom">
 	<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
 		{{{<ifdef code="ca_objects.preferred_labels.name"><H1>^ca_objects.preferred_labels.name</H1></ifdef>}}}
@@ -79,12 +83,16 @@
 ?>
 	</div><!-- end col -->
 	<div class='col-12 col-sm-10 col-md-10 col-lg-8'>
+<?php
+	if($this->request->isLoggedIn() && $this->request->user->hasRole("frontendRestricted")) {
+?>
 		<div id='detailShareButtons' class="mt-2">
 			<div class='detailShareButton'>
 				<div class="fb-share-button" data-href="<?php print $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" data-layout="button" data-size="small"><a target="_blank" href="<?php print $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" class="fb-xfbml-parse-ignore">Share</a></div>
 			</div>
 		</div>
 <?php
+	}
 				# Comment/inquire/download pdf/lightbox
 				if ($vn_comments_enabled || $vn_pdf_enabled || $vn_inquire_enabled || $vn_download_all_enabled || caDisplayLightbox($this->requests)) {
 						
@@ -104,7 +112,7 @@
 						if($vn_download_all_enabled){
 							if(is_array($va_download_all_types) && sizeof($va_download_all_types)){
 								foreach($va_download_all_types as $vs_dl_name => $vs_dl_type){
-									print caNavLink("Download ".$vs_dl_name, "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "download_type" => $vs_dl_type, "download" => 1));
+									print caNavLink("Download Album ".$vs_dl_name, "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "download_type" => $vs_dl_type, "download" => 1, "exclude_ancestors" => 1));
 								}
 							}
 							#print caNavLink("Download Original", "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "version" => "original", "download" => 1));
@@ -117,6 +125,10 @@
 					if(caDisplayLightbox($this->requests) && $this->request->isLoggedIn()){
 						print "<div class='detailTool'><div id='lightboxManagement'></div></div>";
 					}
+					$vs_email_subject = rawurlencode("Share from: aliceb.metabolicstudio.org");
+					$vs_email_body = rawurlencode($t_object->getWithTemplate("<ifdef code='ca_objects.preferred_labels.name'>^ca_objects.preferred_labels.name\n</ifdef><ifdef code='ca_objects.idno'>^ca_objects.idno\n\n</ifdef>").$this->request->config->get("site_host").caNavUrl("*", "*", "*"));
+					print "<div class='detailTool'><a title='Share via e-mail' href='mailto:?body=".$vs_email_body."&subject=".$vs_email_subject."'><ion-icon name='ios-mail'></ion-icon> <span>E-mail</span></a></div>";
+					print "<div class='detailTool'><a title='Copy URL' href='#' onClick='copyUrl(); return false;' class='detailCopy'><ion-icon name='ios-link'></ion-icon> <span>Copy URL</span></a></div>";
 					print '</div><!-- end detailTools -->';
 				}				
 
@@ -125,7 +137,7 @@
 	pawtucketUIApps['MediaViewer'] = {
         'selector': '#mediaDisplay',
         'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true]); ?>,
-        'width': '100%',
+        'width': '900px',
         'height': '500px',
         'controlHeight': '72px',
         'data': {
@@ -186,6 +198,11 @@
 								^ca_objects.description
 							</div>
 						</ifdef>}}}
+						{{{<ifdef code="ca_objects.url">
+							<div class="mb-3">
+								<unit relativeTo="ca_objects.url" delimiter="<br/>"><a href="^ca_objects.url" target="_blank">^ca_objects.url</a> <ion-icon name="open"></ion-icon></unit>
+							</div>
+						</ifcount>}}}
 <!--
 
 						{{{<ifdef code="ca_objects.dim_width|ca_objects.dim_height|ca_objects.dim_depth|ca_objects.note">
@@ -198,7 +215,7 @@
 					</div>
 					<div class="col-12 col-md-6">
 						
-<!--						
+						
 						{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1">
 							<div class="mb-3">
 								<div class="label">Exhibitions</div>
@@ -207,7 +224,7 @@
 								</unit>
 							</div>
 						</ifcount>}}}
--->
+
 						
 						{{{<ifcount code="ca_collections" min="1">
 							<div class="mb-3">
@@ -215,12 +232,13 @@
 								<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
-						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
+<!--						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
 							<div class="mb-3">
 								<div class="label">Event<ifcount code="ca_occurrences" restrictToTypes="action" min="2">s</ifcount></div>
 								<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
+-->
 <?php
 						# --- rel entities by role
 						$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_entity_labels.surname"));
@@ -256,15 +274,17 @@
 								</div>
 <?php
 							}
-						}
-						
+						}		
 						# --- bio-regions
 						$t_list_item = new ca_list_items();
-						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true));
+						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
 						if(is_array($va_bio_regions) && sizeof($va_bio_regions)){
 ?>
 							<div class="mb-3">
-								<div class="label">Bio-Regions</div>
+								<div class="label">Bio-Regions <span class="material-icons" role="button" data-toggle="collapse" data-target="#bioRegionDesc" aria-expanded="false" aria-controls="bioRegionDesc">info</span></div>
+								<div class="mb-3 collapse small" id="bioRegionDesc">
+								  A region defined by characteristics of the natural environment rather than man-made division.
+								</div>
 <?php
 								$va_bio_region_links = array();
 								foreach($va_bio_regions as $vn_bio_region_id){
@@ -284,12 +304,14 @@
 						if(is_array($va_subjects) && sizeof($va_subjects)){
 ?>
 							<div class="mb-3">
-								<div class="label">Subjects</div>
+								<div class="label">Themes</div>
 <?php
 								$va_subject_links = array();
 								foreach($va_subjects as $vn_subject_id){
 									$t_list_item->load($vn_subject_id);
-									$va_subject_links[] = caNavLink($t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id));
+									if(in_array($t_list_item->get("ca_list_items.access"), $va_access_values)){
+										$va_subject_links[] = caNavLink($t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id));
+									}
 								}
 								print join($va_subject_links, ", ");
 ?>
@@ -336,7 +358,7 @@
 ?>
 		<div class="row mt-3">
 			<div class="col-8 mt-5">
-				<H1><?php print sizeof($va_related_item_ids); ?> Items</H1>
+				<H1><?php print sizeof($va_related_item_ids); ?> Assets</H1>
 			</div>
 			<div class="col-4 mt-5 text-right">
 
@@ -425,4 +447,27 @@
             show_form: <?php print ($this->request->isLoggedIn()) ? "true" : "false"; ?>
         }
     };
+</script>
+<script type="text/javascript">	
+	function copyUrl() {
+		if (!window.getSelection) {
+		alert('Please copy the URL from the location bar.');
+		return;
+		}
+		const dummy = document.createElement('p');
+		dummy.textContent = window.location.href;
+		document.body.appendChild(dummy);
+
+		const range = document.createRange();
+		range.setStartBefore(dummy);
+		range.setEndAfter(dummy);
+
+		const selection = window.getSelection();
+		// First clear, in case the user already selected some other text
+		selection.removeAllRanges();
+		selection.addRange(range);
+
+		document.execCommand('copy');
+		document.body.removeChild(dummy);
+	}
 </script>
