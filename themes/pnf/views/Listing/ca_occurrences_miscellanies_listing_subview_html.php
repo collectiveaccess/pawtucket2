@@ -92,7 +92,7 @@
 			$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			if(!$va_links_array[$vs_first_letter][$vs_sort]){
-				$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol listEntryIndentSecondLine'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</div>\n";	
+				$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol listEntryIndentSecondLine'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."<span style='display:none;'>".$qr_list->getWithTemplate('^ca_occurrences.description')."</div>\n";	
 			}
 		}
 		ksort($va_links_array);
