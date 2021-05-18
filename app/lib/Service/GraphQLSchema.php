@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2020 Whirl-i-Gig
+ * Copyright 2020-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -49,7 +49,7 @@ class GraphQLSchema {
 		
 		// Check validity of schema $name
 		if(!isset(self::$schemas[$name])) {
-			throw new ServiceException(_t('Could not load schema for %1::%2', __CLASS__, $name));
+			throw new \ServiceException(_t('Could not load schema for %1::%2', __CLASS__, $name));
 		}
 		return self::$schemas[$name];
 	}

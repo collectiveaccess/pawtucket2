@@ -1,9 +1,7 @@
 /*jshint esversion: 6 */
 import React from "react"
 import ReactDOM from "react-dom";
-import { initBrowseContainer } from "../../default/js/browse";
-import { fetchLightboxList, addLightbox, deleteLightbox, removeItemFromLightbox } from "../../default/js/lightbox";
-// import ClampLines from 'react-clamp-lines';
+import { fetchLightboxList, loadLightbox, createLightbox, deleteLightbox, newJWTToken, getLightboxAccessForCurrentUser } from "../../default/js/lightbox";
 
 import LightboxNavigation from './Lightbox/LightboxNavigation';
 import LightboxIntro from './Lightbox/LightboxIntro';
@@ -13,6 +11,7 @@ import LightboxList from './Lightbox/LightboxList';
 
 const selector = pawtucketUIApps.Lightbox.selector;
 const appData = pawtucketUIApps.Lightbox.data;
+const refreshToken = pawtucketUIApps.Lightbox.key;
 const lightboxTerminology = appData.lightboxTerminology;
 
 /**
@@ -43,132 +42,134 @@ class Lightbox extends React.Component{
 		super(props);
 		let that = this;
 
-		this.dontUseDefaultKey =  !props.showLastLightboxOnLoad;	// try to display by default last lightbox on load?
+		this.state = {
+			id: null,    // id of a lightbox
 
-		initBrowseContainer(this, props, !this.dontUseDefaultKey, function(d) {
-			// If loading with last lightbox visible by default then try to set set_id state after initial load
-			if (d.filters['_search']) {
-				let state = that.state;
-				let vals = Object.values(d.filters['_search']);
-				for(let i in vals) {
-					let m = vals[i].match(/^ca_sets\.set_id:([\d]+)$/);
-					if(m && (parseInt(m[1]) > 0)) {
-						state['set_id'] = parseInt(m[1]);
-					}
-				}
-				that.setState(state);
+			numLoads: 1,			// total number of results sets we've fetched since loading
+
+			totalSize: null,   // total number of objects within a lightbox
+
+			resultList: null,  // current objects being displayed in a lightbox
+
+      isLoading: false,  // Is a lightbox currently loading more objects
+
+			key: null,
+			start: 0,
+			itemsPerPage: 24,   // inital number of objects being displayed in a lightbox
+			availableFacets: null,
+			facetList: null,
+			filters: null,
+			baseFilters: null,
+			selectedFacet: null,
+
+			// introduction: {
+			// 	title: null,
+			// 	description: null
+			// },
+			lightboxTitle: null, //Title of a Lightbox
+
+			view: null,
+			scrollToResultID: null,
+			loadingMore: false,   //No longer being Used?
+			hasAutoScrolled: false,
+
+      sortOptions: null, //various options to sort the contents of an individual lightbox
+			sort: null,          // Describes what the contents of a lightbox is sorted by
+			sortDirection: null, // Ascending or Descending based on the value of sort.
+
+			labelSingular: null,
+			labelPlural: null,
+
+			selectedItems: [],     // id numbers of the selected objects within a lightbox
+
+     		showSelectButtons: false, //checkmark buttons to select a lightbox item
+      		showSortSaveButton: false, // button appears when the user selected a sort option for the lightbox so they can choose to save that order
+			dragDropMode: false,   // is the user currently in drag and drop mode for a lightbox
+			userSort: false,       // true if user is customizing their sort, false if using a sort option
+
+      userAccess: null, //null if user has no type of access, 1 if user has read-only access, 2 if user has read-write access
+
+      comments: null,
+
+			// API tokens (JWT)
+			tokens: {
+				refresh_token: refreshToken,		// from environment
+				access_token: null
 			}
-		});
-
-		this.state['set_id'] = props.showLastLightboxOnLoad ? -1 : null;
-		this.state['filters'] = null;
-		this.state.selectedItems = [];
-
-		this.state.dragDropMode = false;
-		this.state.userSort = true;
-		this.state.showSortSaveButton = false;
+		};
 
 		this.componentDidMount = this.componentDidMount.bind(this);
+		this.loadLightbox = this.loadLightbox.bind(this);
 		this.newLightbox = this.newLightbox.bind(this);
 		this.cancelNewLightbox = this.cancelNewLightbox.bind(this);
-		this.saveNewLightbox = this.saveNewLightbox.bind(this);
 		this.deleteLightbox = this.deleteLightbox.bind(this);
+	}
 
-		this.removeItemFromLightbox = this.removeItemFromLightbox.bind(this);
+	/**
+	 * Load lightbox content with set_id id
+	 */
+	loadLightbox(id) {
+		let that = this;
 
+    getLightboxAccessForCurrentUser(this.props.baseUrl, id, this.state.tokens, function(data) {
+      // console.log('Load Lightbox Data: ', data);
+      that.setState({userAccess: data.access.access});
+    });
+
+		loadLightbox(this.props.baseUrl, this.state.tokens, id, function(data) {
+      // console.log('Load Lightbox Data: ', data);
+			that.setState({id: id, lightboxTitle: data.title, resultList: data.items, totalSize: data.item_count, sortOptions: data.sortOptions, comments: data.comments});
+		}, { start: 0, limit: that.state.itemsPerPage});
 	}
 
 	componentDidMount() {
 		let that = this;
-		fetchLightboxList(this.props.baseUrl, function(data) {
-			let state = that.state;
-			state.lightboxList = data ? data : {};
+		let state = this.state;
+
+		// load auth tokens
+		newJWTToken(this.props.baseUrl, state.tokens, function(data) {
+			state.tokens.access_token = data.data.refresh.jwt;
 			that.setState(state);
-		});
-	}
-
-	removeItemFromLightbox(e) {
-		let that = this;
-		if(!this.state.set_id) { return; }
-
-		let item_id = e.target.attributes.getNamedItem('data-item_id').value;
-		if(!item_id) { return; }
-		removeItemFromLightbox(this.props.baseUrl, this.state.set_id, item_id, function(resp) {
-			if(resp && resp['ok']) {
-				let state = that.state;
-				for(let i in state.resultList) {
-					let r = state.resultList[i];
-					if (r.id == item_id) {
-						delete(state.resultList[i]);
-						state.resultSize--;
-						let x = null;
-						x = state.selectedItems.indexOf(item_id);
-						if(i > -1){
-							state.selectedItems.splice(x, 1);
-						}
-						that.setState(state);
-						break;
-					}
-				}
-				return;
-			}
-			alert('Could not remove item: ' + resp['err']);
-		});
-	}
-
-	newLightbox(e) {
-		let state = this.state;
-		state.lightboxList.sets[-1] = {"set_id": -1, "label": ""};
-		this.setState(state);
-
-		e.preventDefault();
-	}
-
-	cancelNewLightbox(e) {
-		let state = this.state;
-		delete(state.lightboxList.sets[-1]);
-		this.setState(state);
-	}
-
-	saveNewLightbox(data, callback) {
-		let that = this;
-		addLightbox(this.props.baseUrl, {'name': data['name'], 'table': 'ca_objects'}, function(resp) {
-			if(resp['ok']) {
-				let state = that.state;
-				delete(state.lightboxList.sets[-1]);
-				state.lightboxList.sets[resp.set_id] = { set_id: resp.set_id, label: resp.name, count: 0, item_type_singular: resp.item_type_singular, item_type_plural: resp.item_type_plural };
+			fetchLightboxList(that.props.baseUrl, state.tokens, function(data) {
+				state.lightboxList = data ? data : {};
 				that.setState(state);
-			}
-			callback(resp);
+			});
 		});
+	}
+
+  newLightbox() {
+    let state = this.state;
+    state.lightboxList[-1] = {"id": -1, "label": ""};
+    this.setState(state);
+  }
+
+  cancelNewLightbox() {
+		let state = this.state;
+		delete(state.lightboxList[-1]);
+		this.setState(state);
 	}
 
 	deleteLightbox(lightbox) {
 		let state = this.state;
 		let that = this;
 
-		if(state.lightboxList && state.lightboxList.sets) {
-			deleteLightbox(this.props.baseUrl, lightbox.set_id, function(resp) {
-				if(resp && resp.ok) {
-					delete(state.lightboxList.sets[lightbox.set_id]);
-					state.filters = null; // clear filters
-					that.setState(state);
-				}
-			});
-		}
+    deleteLightbox(this.props.baseUrl, state.tokens, lightbox.id, function(data) {
+      // console.log("deleteLightbox ", data);
+      delete(state.lightboxList[lightbox.id]);
+      state.filters = null; // clear filters
+      that.setState(state);
+    });
 	}
 
 	render() {
-		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
+		let facetLoadUrl = this.props.baseUrl + '/lightbox' + (this.state.key ? '?key=' + this.state.key : '');
 
-		let content = (this.state.set_id) ? (
+		let content = (this.state.id) ? (
 			<div>
 				<div className="row">
 					<div className="col-sm-8 bToolBar pt-4">
-						<div className="float-left mr-2">
-              				<LightboxNavigation/>
-            			</div>
-            			<LightboxIntro headline={this.state.introduction.title} description={this.state.introduction.description}/>
+						<div className="float-left mr-2"><LightboxNavigation/></div>
+            <LightboxIntro lightboxTitle={this.state.lightboxTitle}/>
 						<LightboxControls facetLoadUrl={facetLoadUrl}/>
 					</div>
 				</div>
@@ -181,7 +182,7 @@ class Lightbox extends React.Component{
 
 		return(
 			<LightboxContext.Provider value={this}>
-					{content}
+				{content}
 			</LightboxContext.Provider>
 		);
 	}
@@ -193,7 +194,13 @@ class Lightbox extends React.Component{
  */
 export default function _init() {
 	ReactDOM.render(
-		<Lightbox baseUrl={appData.baseUrl} endpoint='getContent'
-							  initialFilters={appData.initialFilters} view={appData.view} showLastLightboxOnLoad={appData.showLastLightboxOnLoad}
-							  browseKey={appData.key}/>, document.querySelector(selector));
+		<Lightbox
+      baseUrl={appData.baseUrl}
+      endpoint='getContent'
+			initialFilters={appData.initialFilters}
+      view={appData.view}
+      showLastLightboxOnLoad={appData.showLastLightboxOnLoad}
+			browseKey={appData.key}
+    />, document.querySelector(selector)
+  );
 }

@@ -111,6 +111,25 @@
  			$this->render($vs_path);
  		}
  		# -------------------------------------------------------
+ 		/**
+ 		 * Prototype service for "frontpage" React app
+ 		 */
+ 		public function getData() {
+ 			$this->request->isDownload(true);
+ 			header("Access-Control-Allow-Origin: *");
+			$o_front_config = caGetFrontConfig();
+ 			header("Content-type: application/json");
+ 			
+ 			$items = ca_sets::setContents($o_front_config->get("front_page_set_code"), [
+ 				'template' => ($vs_tmp = $o_front_config->get("front_page_set_item_caption_template")) ? $vs_tmp : '<l>^ca_objects.preferred_labels.name (^ca_objects.idno)</l>']
+ 			);
+ 			
+ 			print json_encode([['key' => 1, 'set' => 'Front page', 'items' => $items]]);
+ 			
+ 			global $app;
+ 			$app->removeAllPlugins();
+ 		}
+ 		# -------------------------------------------------------
 		/** 
 		 * Generate the URL for the "back to results" link from a browse result item
 		 * as an array of path components.

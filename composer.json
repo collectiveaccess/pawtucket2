@@ -33,7 +33,9 @@
     "ext-iconv": "*",
     "ext-simplexml": "*",
     "phpseclib/phpseclib": "^2.0",
-    "webonyx/graphql-php": "^14.1"
+    "webonyx/graphql-php": "^14.1",
+    "phpseclib/phpseclib": "^2.0",
+    "ankitpokhrel/tus-php": "^2.0"
   },
   "config": {
   	"discard-changes": true

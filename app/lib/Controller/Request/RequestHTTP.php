@@ -975,10 +975,10 @@ class RequestHTTP extends Request {
 	 *
 	 * @return string
 	 */
-	static public function ip() {
+	public static function ip() {
 		if (isset($_SERVER['HTTP_X_REAL_IP']) && $_SERVER['HTTP_X_REAL_IP']) { return $_SERVER['HTTP_X_REAL_IP']; }
 		if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']) { return $_SERVER['HTTP_X_FORWARDED_FOR']; }
 		return $_SERVER['REMOTE_ADDR'];
 	}
-	# ----------------------------------------
+	# ------------------------------------------------------
 }

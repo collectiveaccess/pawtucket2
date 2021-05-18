@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2019 Whirl-i-Gig
+ * Copyright 2008-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -301,6 +301,21 @@ class ca_users extends BaseModel {
 	static $s_user_action_access_cache = [];
 	static $s_user_type_with_access_cache = [];
 	static $s_user_source_with_access_cache = [];
+
+	/**
+	 * Used by ca_users::getUserID() to cache user_id return values
+	 *
+	 * @var array
+	 */
+	static $s_user_id_cache = [];
+
+	/**
+	 * Used by ca_users::getUserName() to cache user_name return values
+	 *
+	 * @var array
+	 */
+	static $s_user_name_cache = [];
+	static $s_user_info_cache = [];
 
 	/**
 	 * List of tables that can have bundle- or type-level access control
@@ -2612,6 +2627,78 @@ class ca_users extends BaseModel {
 		}
 		return false;
 	}
+	# ------------------------------------------------------
+	/**
+	 * Convert user name or email to integer user_id. Will return user_id if a numeric user_id is passed if a user
+	 * with that user_id exists. Will return null if no matching user is found.
+	 *
+	 * @param $user int|string User name, email address or user_id
+	 *
+	 * @return int User_id value, or null if no match was found
+	 */
+	static public function userIDFor($user) {
+		if ($info = self::userInfoFor($user)) {
+			return $info['user_id'];
+		}
+		return null;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Convert user_id or email to user_name value. Will return user_name if a user_name is passed and a user
+	 * with that user_id exists. Will return null if no matching user is found.
+	 *
+	 * @param $user int|string User name, email address or user_id
+	 *
+	 * @return string user_name value, or null if no match was found
+	 */
+	static public function userNameFor($user) {
+		if ($info = self::userInfoFor($user)) {
+			return $info['user_name'];
+		}
+		return null;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Get array of information for  user_id or email.  Will return null if no matching user is found.
+	 *
+	 * @param $user int|string User name, email address or user_id
+	 *
+	 * @return string user_name value, or null if no match was found
+	 */
+	static public function userInfoFor($user) {
+		if (array_key_exists($user, self::$s_user_info_cache)) {
+			return self::$s_user_info_cache[$user];
+		}
+		if(is_numeric($user)) {
+			// $user is valid integer user_id?
+			if ($u = ca_users::find(['user_id' => (int)$user], ['returnAs' => 'firstModelInstance'])) {
+				return self::$s_user_info_cache[$user] = self::_getUserInfoFromInstance($u);
+			}
+		}
+
+		if (!($u = ca_users::findAsInstance(['email' => $user]))) { // $user is email value?
+			$u = ca_users::findAsInstance(['user_name' => $user]);          // $user is user_name value?
+		}
+		if($u && $u->isLoaded()) {
+			return self::$s_user_info_cache[ $user ] = self::_getUserInfoFromInstance($u);
+		}
+		return null;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Get array of information for  user_id or email.  Will return null if no matching user is found.
+	 *
+	 * @param $user int|string User name, email address or user_id
+	 *
+	 * @return string user_name value, or null if no match was found
+	 */
+	static private function _getUserInfoFromInstance($user) {
+		$info = [];
+		foreach(['user_id', 'user_name', 'email', 'fname', 'lname', 'active', 'userclass'] as $f) {
+			$info[$f] = $user->get("ca_users.{$f}");
+		}
+		return $info;
+	}
 	# ----------------------------------------
 	/**
 	 *
@@ -3264,36 +3351,59 @@ class ca_users extends BaseModel {
 	/**
 	 * Checks if user is allowed to perform the specified action (possible actions are defined in app/conf/user_actions.conf)
 	 * Returns true if user can do action, false otherwise.
+	 *
+	 * @param string $action
+	 * @param array $options Options include:
+	 *		throwException = Throw application exception if user does not have specified action. [Default is false]
+	 *		exceptionMessage = Message returned in exception on error. [Default is 'Access Denied']
+	 * @return bool
 	 */
-	public function canDoAction($ps_action) {
-		$vs_cache_key = $ps_action."/".$this->getPrimaryKey();
-		if (isset(ca_users::$s_user_action_access_cache[$vs_cache_key])) { return ca_users::$s_user_action_access_cache[$vs_cache_key]; }
+	public function canDoAction(string $action, array $options=null) : bool {
+		$throw = caGetOption('throwException', $options, false); 
+		$cache_key = $action."/".$this->getPrimaryKey();
+		if (isset(ca_users::$s_user_action_access_cache[$cache_key])) { 
+			if ($throw && !ca_users::$s_user_action_access_cache[$cache_key]) {
+				throw new UserActionException(caGetOption('exceptionMessage', $options, _t('Access denied')));
+			}
+			return ca_users::$s_user_action_access_cache[$cache_key]; 
+		}
 
-		if(!$this->getPrimaryKey()) { return ca_users::$s_user_action_access_cache[$vs_cache_key] = false; } 						// "empty" ca_users object -> no groups or roles associated -> can't do action
-		if(!ca_user_roles::isValidAction($ps_action)) { 
+		if(!$this->getPrimaryKey()) { return ca_users::$s_user_action_access_cache[$cache_key] = false; } 						// "empty" ca_users object -> no groups or roles associated -> can't do action
+		if(!ca_user_roles::isValidAction($action)) { 
 		    // check for alternatives...
-		    if (preg_match("!^can_(create|edit|delete)_ca_([A-Za-z0-9_]+)$!", $ps_action, $m)) {
+		    if (preg_match("!^can_(create|edit|delete)_ca_([A-Za-z0-9_]+)$!", $action, $m)) {
 		        if (ca_user_roles::isValidAction("can_configure_".$m[2])) {
-		            return self::canDoAction("can_configure_".$m[2]);
+		        	$r = self::canDoAction("can_configure_".$m[2]);
+		        	if ($throw && !$r) {
+						throw new UserActionException(caGetOption('exceptionMessage', $options, _t('Access denied')));
+					}
+		            return $r;
 		        }
 		    }
 		    
 			// return false if action is not valid	
-		    return ca_users::$s_user_action_access_cache[$vs_cache_key] = false; 
+			if ($throw) {
+				throw new UserActionException(caGetOption('exceptionMessage', $options, _t('Access denied')));
+			}
+		    return ca_users::$s_user_action_access_cache[$cache_key] = false; 
 		}
 		
 		// is user administrator?
-		if ($this->getPrimaryKey() == $this->_CONFIG->get('administrator_user_id')) { return ca_users::$s_user_action_access_cache[$vs_cache_key] = true; }	// access restrictions don't apply to user with user_id = admin id
+		if ($this->getPrimaryKey() == $this->_CONFIG->get('administrator_user_id')) { return ca_users::$s_user_action_access_cache[$cache_key] = true; }	// access restrictions don't apply to user with user_id = admin id
 		
 		// get user roles
-		$va_roles = $this->getUserRoles();
-		foreach($this->getGroupRoles() as $vn_role_id => $va_role_info) {
-			$va_roles[$vn_role_id] = $va_role_info;
+		$roles = $this->getUserRoles();
+		foreach($this->getGroupRoles() as $role_id => $role_info) {
+			$roles[$role_id] = $role_info;
 		}
 		
-		$va_actions = ca_user_roles::getActionsForRoleIDs(array_keys($va_roles));
-		if (in_array('is_administrator', $va_actions)) { return ca_users::$s_user_action_access_cache[$vs_cache_key] = true; }		// access restrictions don't apply to users with is_administrator role
-		return ca_users::$s_user_action_access_cache[$vs_cache_key] = in_array($ps_action, $va_actions);
+		$actions = ca_user_roles::getActionsForRoleIDs(array_keys($roles));
+		if (in_array('is_administrator', $actions)) { return ca_users::$s_user_action_access_cache[$cache_key] = true; }		// access restrictions don't apply to users with is_administrator role
+		$r =  ca_users::$s_user_action_access_cache[$cache_key] = in_array($action, $actions);
+		if ($throw & !$r) {
+			throw new UserActionException(caGetOption('exceptionMessage', $options, _t('Access denied')));
+		}
+		return $r;
 	}
 	# ----------------------------------------
 	/**
@@ -3625,3 +3735,8 @@ class ca_users extends BaseModel {
 	}
 	# ----------------------------------------
 }
+
+/** 
+ * Exception thrown when user lacks required action-level privs
+ */
+class UserActionException extends Exception {}

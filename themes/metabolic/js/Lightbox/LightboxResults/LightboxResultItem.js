@@ -15,7 +15,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { LightboxContext } from '../../Lightbox';
-import { removeItemFromLightbox } from "../../../../default/js/lightbox";
 
 const appData = pawtucketUIApps.Lightbox.data;
 const lightboxTerminology = appData.lightboxTerminology;
@@ -31,7 +30,7 @@ class LightboxResultItem extends React.Component {
 
 	selectLightboxItem(e) {
 		let state = this.context.state;
-		//let item_id = parseInt(e.target.attributes.getNamedItem('data-item_id').value);
+		
 		let item_id = this.props.data.id;
 		if(!item_id) { return; }
 		let i = null;
@@ -43,9 +42,8 @@ class LightboxResultItem extends React.Component {
 		}
 		this.context.setState(state);
 		e.preventDefault();
-		// console.log("selectedItems: " + item_id + " : " + this.context.state.selectedItems.indexOf(item_id), this.context.state.selectedItems);
 	}
-	
+
 	handleImageClick(e) {
 		if (this.context.state.showSelectButtons) {
 			this.selectLightboxItem(e);
@@ -55,7 +53,7 @@ class LightboxResultItem extends React.Component {
 
 	render() {
 		let data = this.props.data;
-    // console.log('this.props.data', data);
+		let mediaTag = (data && data.media && data.media[0]) ? data.media[0].tag : '';
 
 		switch(this.props.view) {
 			default:
@@ -64,19 +62,9 @@ class LightboxResultItem extends React.Component {
 
             <div className='card-body mb-2'>
 
-              <a href={data.detailUrl}>
-                <div dangerouslySetInnerHTML={{__html: data.representation}} onClick={this.handleImageClick} />
+              <a href={data.detailPageUrl}>
+                <div dangerouslySetInnerHTML={{__html: mediaTag}} onClick={this.handleImageClick} />
               </a>
-
-              {/*(this.context.state.showSelectButtons) ?
-                <a onClick={this.selectLightboxItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'>
-                  <div dangerouslySetInnerHTML={{__html: data.representation}} onClick={this.selectLightboxItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item' style={{cursor: 'pointer'}}/>
-                </a>
-                :
-                <a href={data.detailUrl}>
-                  <div dangerouslySetInnerHTML={{__html: data.representation}}/>
-                </a>
-              */}
 
               {(this.context.state.showSelectButtons) ?
                 <div className='float-left'>
@@ -84,24 +72,14 @@ class LightboxResultItem extends React.Component {
                     <ion-icon name='checkmark-circle' data-item_id={data.id} style={{cursor: 'pointer'}}></ion-icon>
                   </a>
                 </div>
-               : null}
+              : null}
 
-              {(this.context.state.userAccess == 2) ?
-                <div className='float-right'>
-                  <a data-toggle='collapse' href={`#deleteConfirm${data.id}`} className='removeItemInitial' role='button' aria-expanded='false' aria-controls='collapseExample'><ion-icon name='close-circle'></ion-icon></a>
-                </div>
-               : null}
-
-              <a href={data.detailUrl} dangerouslySetInnerHTML={{__html: data.caption}}></a>
-            </div>
-
-            <div className='card-footer collapse text-center' id={`deleteConfirm${data.id}`}>
-              <a data-item_id={data.id} onClick={this.context.removeItemFromLightbox}>Remove Item From {lightboxTerminology.singular}</a>
+              <a href={data.detailPageUrl} dangerouslySetInnerHTML={{__html: data.title}} onClick={this.handleImageClick}></a>
             </div>
 
           </div>
-					);
-				break;
+				);
+			break;
 		}
 	}
 }

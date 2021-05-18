@@ -40,7 +40,7 @@ class PawtucketBrowse extends React.Component{
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 
 		return(
-			<PawtucketBrowseContext.Provider value={this}>	
+			<PawtucketBrowseContext.Provider value={this}>
                 <PawtucketBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
                 <PawtucketBrowseResults view={this.state.view} sort={this.state.sort} facetLoadUrl={facetLoadUrl}/>
 			</PawtucketBrowseContext.Provider>
@@ -66,11 +66,11 @@ class PawtucketBrowseStatistics extends React.Component {
 
 	render() {
 		if (this.context.state.resultSize === 0) {
-			return(<h1 className="my-4">No results found</h1>);
+			return(<h1 className="my-4">No {browseConfig.labelPlural} found</h1>);
 		}else{
 			return(
 				<h1 className="my-4">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-					"1 Result" : this.context.state.resultSize + " Results") : <div className="text-center">Loading...</div>}</h1>
+					"1 " + browseConfig.labelSingular : this.context.state.resultSize + " " + browseConfig.labelPlural) : <div className="text-center">Loading...</div>}</h1>
 			);
 		}
 	}
@@ -140,7 +140,7 @@ class PawtucketBrowseFilterControls extends React.Component {
 		return(<div className="row">
 				<div className="col-md-8 bToolBar">
 					{(this.context.state.statusMessage) ? <div className='row'><div className='col-sm-12 col-md-6 offset-md-3'><div className='alert alert-primary mainNotification' role='alert'>{this.context.state.statusMessage}</div></div></div> : null}
-					
+
 					<div className="row">
 						<div className="col-md-6"><PawtucketBrowseStatistics/></div>
 						<div className="col-md-6">
@@ -185,7 +185,7 @@ class PawtucketBrowseFacetList extends React.Component {
 	render() {
 		let facetButtons = [];
 		let filterLabel = this.context.state.availableFacets ? "Filter By " : "";
-		
+
 		this.facetPanelRefs = {};
 		if (this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
@@ -451,7 +451,7 @@ class PawtucketBrowseViewList extends React.Component {
  * Renders select options
  *
  * Props are:
- * 		
+ *
  *
  * Used by:
  *  	BrowseControls
@@ -466,7 +466,7 @@ class PawtucketBrowseSelectItemsOptions extends React.Component {
 		this.clearSelectBrowseItems = this.clearSelectBrowseItems.bind(this);
 		this.showSelectButtons = this.showSelectButtons.bind(this);
 	}
-		
+
 	clearSelectBrowseItems() {
 		let state = this.context.state;
 		state.showSelectButtons = false;
@@ -476,9 +476,9 @@ class PawtucketBrowseSelectItemsOptions extends React.Component {
 	showSelectButtons() {
 		let state = this.context.state;
 		state.showSelectButtons = true;
-		this.context.setState(state);		
+		this.context.setState(state);
 	}
-	
+
 	render() {
 		return (
 			<div id="bSelectOptions">
@@ -489,7 +489,7 @@ class PawtucketBrowseSelectItemsOptions extends React.Component {
 
 					<div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
 						{(this.context.state.showSelectButtons) ? <a className="dropdown-item" onClick={this.clearSelectBrowseItems}>Clear selection</a> : <a className="dropdown-item" onClick={this.showSelectButtons}>Select items</a> }
-						
+
 					</div>
 				</div>
 			</div>
@@ -502,21 +502,21 @@ class PawtucketBrowseLightboxOptions extends React.Component {
 	static contextType = PawtucketBrowseContext;
 	constructor(props) {
 		super(props);
-		
+
 		this.addSelectedItemsToNewLightbox = this.addSelectedItemsToNewLightbox.bind(this);
 		this.addSelectedItemsToLightbox = this.addSelectedItemsToLightbox.bind(this);
 		this.addResultsToLightbox = this.addResultsToLightbox.bind(this);
 		this.addResultsToNewLightbox = this.addResultsToNewLightbox.bind(this);
-		
+
 	}
-	componentDidMount() {		
+	componentDidMount() {
 		let that = this;
 		fetchLightboxList(appData.baseLightboxUrl, function(data) {
 			let state = that.context.state;
 			state.lightboxList = data ? data : {};
 			that.context.setState(state);
 		});
-		
+
 	}
 
 	addSelectedItemsToNewLightbox(e) {
@@ -558,7 +558,7 @@ class PawtucketBrowseLightboxOptions extends React.Component {
 		});
 		e.preventDefault();
 	}
-	
+
 	addResultsToLightbox(e) {
 		let that = this;
 		let state = that.context.state;
@@ -577,7 +577,7 @@ class PawtucketBrowseLightboxOptions extends React.Component {
 		});
 		e.preventDefault();
 	}
-	
+
 	addResultsToNewLightbox(e) {
 		let that = this;
 		let state = that.context.state;
@@ -596,7 +596,7 @@ class PawtucketBrowseLightboxOptions extends React.Component {
 		});
 		e.preventDefault();
 	}
-	
+
 	render() {
 		let lightboxes = [];
 		if (this.context.state.lightboxList && this.context.state.lightboxList.sets) {
@@ -605,7 +605,7 @@ class PawtucketBrowseLightboxOptions extends React.Component {
 				lightboxes.push(<a className="dropdown-item" key={k} href="#" data-set-id={l.set_id} onClick={(this.context.state.selectedItems.length > 0) ? this.addSelectedItemsToLightbox : this.addResultsToLightbox}><ion-icon name="add"></ion-icon> {l.label}</a>);
 			}
 		}
-		
+
 		return (
 			<div id="bSelectOptions">
 				<div className="dropdown show">
@@ -618,7 +618,7 @@ class PawtucketBrowseLightboxOptions extends React.Component {
 						{(lightboxes.length) ? <div className="dropdown-divider"></div> : null}
 						{(lightboxes.length) ? (this.context.state.selectedItems.length > 0) ? <><div className="dropdown-header">Add Selected Items To:</div><div className="dropdown-divider"></div></> : <><div className="dropdown-header">Add Results To {lightboxTerminology.singular}:</div><div className="dropdown-divider"></div></> : null}
 						{lightboxes}
-						
+
 					</div>
 				</div>
 			</div>
@@ -631,7 +631,7 @@ class PawtucketBrowseLightboxOptions extends React.Component {
  * Renders download options
  *
  * Props are:
- * 		
+ *
  *
  * Used by:
  *  	PawtucketBrowse
@@ -643,7 +643,7 @@ class PawtucketBrowseExportOptions extends React.Component {
 	constructor(props) {
 		super(props);
 	}
-	
+
 	render() {
 		let exportOptions = [];
 		let exportFormats = null;
@@ -676,7 +676,7 @@ class PawtucketBrowseExportOptions extends React.Component {
  * Renders sort options
  *
  * Props are:
- * 		
+ *
  *
  * Used by:
  *  	PawtucketBrowse
@@ -687,7 +687,7 @@ class PawtucketBrowseSortOptions extends React.Component {
 	static contextType = PawtucketBrowseContext;
 	constructor(props) {
 		super(props);
-		
+
 		this.handleSort = this.handleSort.bind(this);
 	}
 	handleSort(e){
@@ -770,7 +770,7 @@ class PawtucketBrowseResults extends React.Component {
 															 itemsPerPage={this.context.state.itemsPerPage}
 															 size={this.context.state.resultSize}
 															 loadMoreHandler={this.context.loadMoreResults}
-															 loadMoreRef={this.context.loadMoreRef}/>	
+															 loadMoreRef={this.context.loadMoreRef}/>
 							</div>
 							<div className="bRightCol col-md-4 col-lg-3 offset-lg-1">
 								<div className="position-fixed vh-100 mr-3 pt-3">
@@ -782,7 +782,7 @@ class PawtucketBrowseResults extends React.Component {
 									<div className="forceWidth">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</div>
 								</div>
 							</div>
-						
+
 					</div>
 				);
 				break;
@@ -841,13 +841,13 @@ class PawtucketBrowseResultItem extends React.Component {
 	static contextType = PawtucketBrowseContext;
 
 	constructor(props) {
-		super(props);	
-		
+		super(props);
+
 		this.selectBrowseItem = this.selectBrowseItem.bind(this);
 	}
 
 	selectBrowseItem(e) {
-		
+
 		let state = this.context.state;
 		let item_id = parseInt(e.target.attributes.getNamedItem('data-item_id').value);
 		if(!item_id) { return; }
@@ -882,7 +882,13 @@ class PawtucketBrowseResultItem extends React.Component {
 							<a href={detail_url}><div dangerouslySetInnerHTML={{__html: data.representation}}/></a>
 							<div className='card-body mb-2'>
 								<a href={detail_url} dangerouslySetInnerHTML={{__html: data.caption}}></a>
-								{(this.context.state.showSelectButtons) ? <div className='float-left'><a onClick={this.selectBrowseItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(parseInt(data.id))) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'><ion-icon name='checkmark-circle' data-item_id={data.id}></ion-icon></a></div> : null}
+								{(this.context.state.showSelectButtons) ?
+                  <div className='float-left'>
+                    <a onClick={this.selectBrowseItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(parseInt(data.id))) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'>
+                      <ion-icon name='checkmark-circle' data-item_id={data.id}></ion-icon>
+                    </a>
+                  </div>
+                : null}
 							</div>
 							<div className='card-footer bSetsSelectMultiple collapse text-right'><input type='checkbox' name='object_ids[]' value='{$vn_id}'/></div>
 						</div>

@@ -21,7 +21,6 @@ import ReactDOM from "react-dom";
 import { LightboxContext } from '../Lightbox';
 
 import LightboxViewList from './LightboxControls/LightboxViewList';
-// import LightboxSelectItemsOptions from './LightboxControls/LightboxSelectItemsOptions';
 import LightboxExportOptions from './LightboxControls/LightboxExportOptions';
 import LightboxSortOptions from './LightboxControls/LightboxSortOptions';
 import LightboxStatistics from './LightboxControls/LightboxStatistics';
@@ -34,36 +33,13 @@ class LightboxControls extends React.Component {
 	constructor(props) {
 		super(props);
 
-    LightboxControls.contextType = LightboxContext;
+    	LightboxControls.contextType = LightboxContext;
 
-    // this.saveFromSortOptions = this.saveFromSortOptions.bind(this);
-    // this.cancelSaveFromSortOptions = this.cancelSaveFromSortOptions.bind(this);
 	}
-
-  // saveFromSortOptions(arr){
-  //   let orderedIds = []
-  //     arr.map(item => {
-  //       orderedIds.push(item.props.data.id)
-  //     });
-  //     console.log(orderedIds);
-  //
-  //     axios.post(this.state.endpoint + '/set_id', qs.stringify({
-  // 			set_id: this.context.state.set_id,
-  // 			row_ids: orderedIds.join('&')
-  // 		})).then((response) => {
-  // 		  console.log('response: ', response);
-  //     });
-  //
-  //   this.context.setState({showSaveButton: false})
-  // }
-  //
-  // cancelSaveFromSortOptions(){
-  //   this.context.setState({showSaveButton: false})
-  // }
 
 	render() {
 		let c  = (this.context.state.resultSize === null);
-		console.log('Context', this.context);
+		// console.log('Context', this.context);
 		return(
 			<div className="row">
 				<div className="col-md-6">

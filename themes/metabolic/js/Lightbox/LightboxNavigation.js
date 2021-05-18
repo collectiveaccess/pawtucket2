@@ -21,16 +21,16 @@ class LightboxNavigation extends React.Component{
 		super(props);
 
 		LightboxNavigation.contextType = LightboxContext
-    
+
 		this.backToList = this.backToList.bind(this);
 	}
 
 	backToList(e) {
 		let state = this.context.state;
 
-		state.set_id = null; // clear set
+		state.id = null; // clear set
 		state.filters = null; // clear filters
-		state.introduction.title = null;
+		state.lightboxTitle = null;
 
 		this.context.setState(state);
 	}

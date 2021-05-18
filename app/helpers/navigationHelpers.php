@@ -135,7 +135,8 @@
 		if(caUseCleanUrls()) {
 			$vs_url = $g_request->getBaseUrlPath();
 		} else {
-			$vs_url = $g_request->getBaseUrlPath().'/'.$g_request->getScriptName();
+			$s = $g_request->getScriptName();
+			$vs_url = $g_request->getBaseUrlPath().'/'.(($s === 'service.php') ? 'index.php' : $s);
 		}
 		if ($ps_module_path == '*') { $ps_module_path = $g_request->getModulePath(); }
 		if ($ps_controller == '*') { $ps_controller = $g_request->getController(); }

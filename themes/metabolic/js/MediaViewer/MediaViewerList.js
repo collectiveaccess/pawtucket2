@@ -13,7 +13,7 @@ class MediaViewerList extends React.Component{
 		super(props);
 		this.state = {
 			media: this.props.media,
-			index: this.props.index
+			index: parseInt(this.props.index)
 		};
 		
 		this.loadMedia = this.loadMedia.bind(this);
@@ -54,8 +54,8 @@ class MediaViewerList extends React.Component{
 		  speed: 500,
 		  slidesToShow: n,
 		  slidesToScroll: n-1,
-		  adaptiveHeight: false,
-		  variableWidth: false
+		  adaptiveHeight: true,
+		  variableWidth: true
 		};
 		let mediaList = this.state.media.map((v, i) => {
 			const selected = (this.state.index === i) ? 'slick-selected' : '';

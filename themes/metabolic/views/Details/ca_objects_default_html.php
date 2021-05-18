@@ -134,52 +134,9 @@
 				}				
 
 ?>
-<script type="text/javascript">	
-	pawtucketUIApps['MediaViewer'] = {
-        'selector': '#mediaDisplay',
-        'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => [1]]); ?>,
-        'width': '900px',
-        'height': '500px',
-        'controlHeight': '72px',
-        'data': {
-        
-        }
-    };
-</script>
-
 				<div id="mediaDisplay" class="detailPrimaryMedia mt-3">
 					<!-- MediaViewer.js React app goes here -->
 				</div>
-<?php 
-				// $va_representations = $t_object->getRepresentations(array("iconlarge", "large"), null, array("checkAccess" => $va_access_values));
-// 				if(is_array($va_representations) && sizeof($va_representations) > 1){
-// 					print "<div class='detailAllMediaThumbs pt-2'><a data-toggle='collapse' href='#detailMediaAll' role='button' aria-expanded='false' aria-controls='Show all media'>";
-// 					print $t_object->getWithTemplate("<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='0' delimiter=' ' length='6'>^ca_object_representations.media.icon</unit>");
-// 					print " <ion-icon name='apps'></ion-icon> <small>"._t("View All %1", sizeof($va_representations))."</small></a>";
-// 					//print "<span class='viewAll' data-text='View all!' data-target='#detailMediaAll'/>";
-// 					print "</div>";
-// 					print "<div id='detailMediaAll' class='collapse detailMediaAll py-4'>";
-// 					$i = 0;
-// 					foreach($va_representations as $vn_rep_id => $va_representation){
-// 						if($vn_rep_id != $vn_representation_id){
-// 							if($i == 0){
-// 								print "<div class='row'>";
-// 							}
-// 						
-// 							print "<div class='col-sm-12 col-md-6 py-4 align-middle detailMediaAllItem'>".$va_representation["tags"]["large"]."</div>";					
-// 							$i++;
-// 							if($i == 2){
-// 								print "</div>";
-// 								$i = 0;
-// 							}
-// 						}
-// 					}
-// 					if($i > 0){
-// 						print "</div>";
-// 					}
-// 					print "</div>";
-// 				}
-?>
 				
 				<HR></HR>
 				<div class="row">
@@ -242,13 +199,14 @@
 								<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
-						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
+<!--						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
 							<div class="mb-3">
 								<div class="label">Event<ifcount code="ca_occurrences" restrictToTypes="action" min="2">s</ifcount></div>
 								<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
 -->
+<<<<<<< HEAD
 <?php
 						$colls = $t_object->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_collections.name"));
 						
@@ -268,6 +226,8 @@
 								<div class="label">Actions</div>
 								<?= join($coll_links, ", "); ?>
 							</div>
+=======
+>>>>>>> f03b9280876a226c3c136c197a52f87e6013ea4c
 <?php
 						}
 
@@ -339,10 +299,13 @@
 						# --- bio-regions
 						$t_list_item = new ca_list_items();
 						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
+<<<<<<< HEAD
 						
 						if($t_parent->isLoaded()) { 
 							$va_bio_regions += $t_parent->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
 						}
+=======
+>>>>>>> f03b9280876a226c3c136c197a52f87e6013ea4c
 						if(is_array($va_bio_regions) && sizeof($va_bio_regions)){
 ?>
 							<div class="mb-3">
@@ -443,10 +406,8 @@
 ?>
 	</div><!-- end col -->
 </div><!-- end row -->
-<div class="row">
-	<div class="col-sm-12">
-<?php
 
+<<<<<<< HEAD
 	$vs_related_title = "";
 	# --- related_items - if item is part of an album, show the other siblings otherwise show some other items from the current object's action(ca_collection)
 	$va_related_item_ids = array();
@@ -518,22 +479,9 @@
 			}
 ?>
 		</div>
+=======
+>>>>>>> f03b9280876a226c3c136c197a52f87e6013ea4c
 
-<?php		
-		//$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
-		//$o_context->setAsLastFind();
-		//$o_context->setResultList($va_tmp_ids);
-		//$o_context->saveContext();
-	}
-?>
-	
-		<div class="row mt-3">
-			<div class="col-sm-12 mt-5 col-md-6 offset-md-3">
-				<div id="commentForm" class="mb-5"></div>
-			</div>
-		</div>
-	</div>
-</div>
 <?php
 	if($this->request->isLoggedIn()) {
 ?>
@@ -541,11 +489,12 @@
 <script type="text/javascript">
     pawtucketUIApps['LightboxManagement'] = {
         'selector': '#lightboxManagement',
+				'key': '<?= $this->getVar('key'); ?>', 
         'data': {
-            baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
-			lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
-			table: 'ca_objects',
-			id: <?php print (int)$vn_id; ?>,
+          baseUrl: "<?php print __CA_URL_ROOT__."/service.php"; ?>",
+					lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
+					table: 'ca_objects',
+					id: <?php print (int)$vn_id; ?>,
         	lightboxTerminology: <?php print json_encode(caGetLightboxDisplayName()); ?>
         }
     };
@@ -569,6 +518,40 @@
             show_form: <?php print ($this->request->isLoggedIn()) ? "true" : "false"; ?>
         }
     };
+    pawtucketUIApps['MediaViewer'] = {
+        'selector': '#mediaDisplay',
+        'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true]); ?>,
+        'width': '100%',
+        'height': '500px',
+        'controlHeight': '72px',
+        'data': {
+        
+        }
+    };
+    
+</script>
+<script type="text/javascript">	
+	function copyUrl() {
+		if (!window.getSelection) {
+		alert('Please copy the URL from the location bar.');
+		return;
+		}
+		const dummy = document.createElement('p');
+		dummy.textContent = window.location.href;
+		document.body.appendChild(dummy);
+
+		const range = document.createRange();
+		range.setStartBefore(dummy);
+		range.setEndAfter(dummy);
+
+		const selection = window.getSelection();
+		// First clear, in case the user already selected some other text
+		selection.removeAllRanges();
+		selection.addRange(range);
+
+		document.execCommand('copy');
+		document.body.removeChild(dummy);
+	}
 </script>
 <script type="text/javascript">	
 	function copyUrl() {

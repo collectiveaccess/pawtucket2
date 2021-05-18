@@ -12,8 +12,8 @@
 * From react-sortable-hoc: for drag and drop capability
 *    SortableHandle
 *    SortableElement
-* 	  SortableContainer
-* 	  arrayMove
+* 	 SortableContainer
+* 	 arrayMove
 *
 * Props are:
 * 		view : view format to use for display of results
@@ -31,11 +31,12 @@ import ReactDOM from "react-dom";
 import { LightboxContext } from '../Lightbox';
 
 import {SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
-import arrayMove from 'array-move';
+import arrayMove from 'array-move'; //used for the react-sortable-hoc
 import qs from 'qs';
 
+import { reorderLightboxItems, createLightboxComments } from "../../../default/js/lightbox";
 import { initBrowseResults } from "../../../default/js/browse";
-import { CommentForm, CommentFormMessage, CommentsTagsList } from ".././comment";
+// import { CommentForm, CommentFormMessage, CommentsTagsList } from ".././comment";
 
 import LightboxCurrentFilterList from './LightboxResults/LightboxCurrentFilterList'
 import LightboxFacetList from './LightboxResults/LightboxFacetList'
@@ -43,11 +44,9 @@ import LightboxResultItem from './LightboxResults/LightboxResultItem'
 import LightboxResultLoadMoreButton from './LightboxResults/LightboxResultLoadMoreButton'
 // import ShareBlock from './LightboxResults/ShareBlock'
 
-const axios = require('axios');
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 const appData = pawtucketUIApps.Lightbox.data;
-const baseUrl = appData.baseUrl; // =  /index.php/Lightbox
+const baseUrl = appData.baseUrl;
 
 const DragHandle = SortableHandle(() => {
 	return(<div style={{outline: '1px solid darkgrey'}}>
@@ -89,11 +88,12 @@ class LightboxResults extends React.Component {
 		this.updateOrderedIds = this.updateOrderedIds.bind(this);
 		this.postOnSortEnd = this.postOnSortEnd.bind(this);
 
-    this.saveFromSortOptions = this.saveFromSortOptions.bind(this);
+    this.saveOrderFromSortOptions = this.saveOrderFromSortOptions.bind(this);
     this.cancelSaveFromSortOptions = this.cancelSaveFromSortOptions.bind(this);
 
 	}
 
+	//required function for react-sortable-hoc, saves the newly drag-sorted position
 	onSortEnd = ({ oldIndex, newIndex }) => {
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			this.setState({
@@ -110,26 +110,27 @@ class LightboxResults extends React.Component {
 		}
 
     this.postOnSortEnd()
-		// console.log("On Sort End State resultList: ", this.state.resultList)
-		// console.log('On Sort End State orderedIds', this.state.orderedIds);
 	};
 
+	//function to reorder the lightbox items
 	postOnSortEnd = () => {
-		axios.post(baseUrl + '/reorderItems' + '/set_id', qs.stringify({
-			set_id: this.context.state.set_id,
-			row_ids: this.state.orderedIds.join('&')
-		})).then((response) => {
-		  // console.log('response: ', response);
-    });
+		const tokens = this.context.state.tokens;
+		const set_id = this.context.state.id;
+		const sorted_ids = this.state.orderedIds.join('&');
+		const name = this.context.state.lightboxList[set_id].title;
+
+		reorderLightboxItems(baseUrl, tokens, set_id, sorted_ids, name, function(data){
+			console.log('reorderLightboxItems: ', data);
+		});
   }
 
+	//function to update the local state resultList
 	updateResultList = (arr, callback) => {
 		this.setState({resultList: arr})
 		callback()
-		// console.log("Before Sort Start State resultList: ", this.state.resultList)
-		// console.log('Before Sort Start State orderedIds', this.state.orderedIds);
 	}
 
+	//gets the current order of object id's pertaining to the resultList of a lightbox
 	updateOrderedIds = () => {
 		let orderedIds = []
 		if (this.state.resultList && this.state.resultList.length > 0) {
@@ -140,28 +141,33 @@ class LightboxResults extends React.Component {
 		this.setState({orderedIds: orderedIds})
 	}
 
-  saveFromSortOptions(arr){
-    let orderedIds = []
-      arr.map(item => {
-        orderedIds.push(item.props.data.id)
-      });
-      // console.log(orderedIds);
-      //'http://metabolic2.whirl-i-gig.com:8085/index.php/Lightbox/reorderItems'
-      axios.post(baseUrl + '/reorderItems' + '/set_id', qs.stringify({
-  			set_id: this.context.state.set_id,
-  			row_ids: orderedIds.join('&')
-  		})).then((response) => {
-  		  console.log('response: ', response);
-      });
+	// saves the order of the results from the sort options dropdown
+	saveOrderFromSortOptions(arr){
+		let orderedIds = []
+			arr.map(item => {
+				orderedIds.push(item.props.data.id)
+			});
 
-    this.context.setState({showSortSaveButton: false})
-  }
+			const tokens = this.context.state.tokens;
+			const set_id = this.context.state.id;
+			const sorted_ids = orderedIds.join('&');
+			const name = this.context.state.lightboxList[set_id].title;
 
+			reorderLightboxItems(baseUrl, tokens, set_id, sorted_ids, name, function(data){
+				console.log('reorderLightboxItems: ', data);
+			});
+
+		this.context.setState({showSortSaveButton: false})
+	}
+
+	//Cancel saveOrderFromSortOptions
   cancelSaveFromSortOptions(){
     this.context.setState({showSortSaveButton: false})
   }
 
 	render() {
+		console.log('Context State: ', this.context.state);
+
 		let resultList = [];
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
@@ -183,7 +189,7 @@ class LightboxResults extends React.Component {
             {/* TODO: put save sort button in lightbox controls, needs to have access to the order of the item Id's first */}
               {this.context.state.showSortSaveButton == true ?
                 <div>
-                  <button type="button" className="btn btn-success" onClick={() => this.saveFromSortOptions(resultList)} style={{marginLeft: '6px'}}> Save Sort Permanently</button>
+                  <button type="button" className="btn btn-success" onClick={() => this.saveOrderFromSortOptions(resultList)} style={{marginLeft: '6px'}}> Save Sort Permanently</button>
                   <button type="button" className="btn btn-danger" onClick={() => this.cancelSaveFromSortOptions()} style={{marginLeft: '6px'}}>Cancel</button>
                 </div>
                 :
@@ -203,7 +209,10 @@ class LightboxResults extends React.Component {
 							<LightboxResultLoadMoreButton
                 start={this.context.state.start}
 								itemsPerPage={this.context.state.itemsPerPage}
-								size={this.context.state.resultSize}
+								size={this.context.state.totalSize}
+								baseUrl={baseUrl}
+								id={this.context.state.id}
+								tokens={this.context.state.tokens}
 								loadMoreHandler={this.context.loadMoreResults}
 								loadMoreRef={this.context.loadMoreRef}
               />
@@ -224,12 +233,24 @@ class LightboxResults extends React.Component {
 										</div>
 									</div>
 
+									{/*
 									<div className="card">
 										<div className="card-header">
 											<a data-toggle="collapse" href="#setComments" role="button" aria-expanded="false" aria-controls="collapseComments">Comments</a>
 										</div>
 										<div id="setComments" className="card-body collapse" data-parent="#accordion">
-											<CommentForm tableName="ca_sets" itemID={this.context.state.set_id} formTitle="" listTitle="" commentFieldTitle="" tagFieldTitle="" loginButtonText="login" commentButtonText="Add" noTags="1" showForm="1" />
+											<CommentForm tableName="ca_sets" itemID={this.context.state.id} formTitle="" listTitle="" commentFieldTitle="" tagFieldTitle="" loginButtonText="login" commentButtonText="Add" noTags="1" showForm="1" />
+										</div>
+									</div>
+									*/}
+
+
+									<div className="card">
+										<div className="card-header">
+											<a data-toggle="collapse" href="#setComments" role="button" aria-expanded="false" aria-controls="collapseComments">Comments</a>
+										</div>
+										<div id="setComments" className="card-body collapse" data-parent="#accordion">
+											<CommentForm tableName="ca_sets" itemID={this.context.state.id} loginButtonText="login" commentButtonText="Add" noTags="1" showForm="1" />
 										</div>
 									</div>
 
@@ -238,7 +259,7 @@ class LightboxResults extends React.Component {
 											<a data-toggle="collapse" href="#setShare" role="button" aria-expanded="false" aria-controls="collapseShare">Share</a>
 										</div>
 										<div id="setShare" className="card-body collapse" data-parent="#accordion">
-											<ShareBlock setID={this.context.state.set_id} />
+											<ShareBlock setID={this.context.state.id} />
 										</div>
 									</div>
 
@@ -251,6 +272,87 @@ class LightboxResults extends React.Component {
 				);
 				break;
 		}
+	}
+}
+
+class CommentForm extends React.Component {
+	constructor(props) {
+		super(props);
+
+		CommentForm.contextType = LightboxContext;
+
+		this.state = {
+			commentContent: '',
+		}
+
+		this.createNewComment = this.createNewComment.bind(this);
+		this.handleForm = this.handleForm.bind(this);
+		this.clearInput = this.clearInput.bind(this);
+	}
+
+	//Clears the input searchbox for lightboxes being searched for.
+	clearInput(){
+		document.getElementById('comment-text').value = '';
+		this.setState({commentContent: ''});
+	}
+
+	handleForm(e){
+		const { value } = e.target;
+		this.setState({ commentContent: value });
+	}
+
+	createNewComment(e){
+		let that = this;
+		createLightboxComments(baseUrl, that.context.state.tokens, that.context.state.id, this.state.commentContent, function(data){
+			console.log('createLightboxComments: ', data);
+
+			let commentsList = [...that.context.state.comments];
+			commentsList.push(data.comment);
+			that.context.setState({comments: commentsList});
+		});
+		this.clearInput();
+		e.preventDefault();
+	}
+
+	render(){
+		let currentComments = [];
+		if(this.context.state.comments != null){
+			this.context.state.comments.map(comment => currentComments.unshift(
+				<div key={comment.created}>
+					<li style={{borderBottom: '1px solid lightgrey'}}>
+						<p style={{fontSize: '12px', margin: '0'}}>{comment.fname} {comment.lname} commented on {(comment.created).substring(0, 10)}</p>
+						<p style={{marginBottom: '5px'}}>{comment.content}</p>
+					</li>
+				</div>
+			)
+			);
+		}
+
+		return(
+			<div>
+
+				{(currentComments.length >= 1) ?
+					<div className='comments-container' style={{overflow: 'auto', height: '200px', marginBottom:'15px', border: '1px solid lightgrey'}}>
+						<ul style={{listStyle: 'none', margin: '0', padding: '5px'}}>
+						{currentComments}
+						</ul>
+					</div>
+					:
+					' '
+				}
+
+				<form className='comment-form'>
+
+					<div className="form-group">
+						<textarea className={`form-control form-control-sm`} id='comment-text' name='comment' value={this.state.commentContent} name='commentContent' onChange={this.handleForm} placeholder='Enter your comment' />
+					</div>
+
+					<div className="form-group"><input type='submit' className='btn btn-primary btn-sm' onClick={this.createNewComment}/></div>
+
+				</form>
+
+			</div>
+		);
 	}
 }
 
@@ -306,40 +408,40 @@ class ShareBlock extends React.Component {
 		return {
 			users: '',
 			access: '',
-			set_id: this.props.setID
+			id: this.props.setID
 		};
 	}
 
 	initializeList() {
 		let state = this.state;
 		let that = this;
-		axios.get(baseUrl + "/getUsers/set_id/" + this.props.setID)
-			.then(function (resp) {
-				console.log('response: ', resp);
-
-				let data = resp.data;
-				if (data.status == 'ok') {
-					state.setUsers.users = [];
-					state.setUsers.owner = [];
-					if (data.users) {
-						for(let k in data.users) {
-							let c = data.users[k];
-							if(c.name.length){
-								if(c.owner){
-									state.setUsers.owner.push(<li className='list-group-item' key={k}>{c.name} ({c.email}) <b>Owner</b></li>);
-								}else{
-									state.setUsers.users.push(<li className='list-group-item' key={k}><a href='#' className='float-right' onClick={that.removeUser} data-user-id={c.user_id} data-set-id={that.props.setID}><ion-icon name='close-circle' data-user-id={c.user_id} data-set-id={that.props.setID}></ion-icon></a>{c.name} ({c.email})<br/><i>Can {(c.access == 2) ? "edit" : "read"}</i></li>);
-								}
-							}
-						}
-					}
-				}
-				// TODO: For some reason it gives type error when using this.setState
-				that.setState(state);
-			})
-			.catch(function (error) {
-				console.log("Error while getting set users: ", error);
-			});
+		// axios.get(baseUrl + "/getUsers/set_id/" + this.props.setID)
+// 			.then(function (resp) {
+// 				console.log('response: ', resp);
+//
+// 				let data = resp.data;
+// 				if (data.status == 'ok') {
+// 					state.setUsers.users = [];
+// 					state.setUsers.owner = [];
+// 					if (data.users) {
+// 						for(let k in data.users) {
+// 							let c = data.users[k];
+// 							if(c.name.length){
+// 								if(c.owner){
+// 									state.setUsers.owner.push(<li className='list-group-item' key={k}>{c.name} ({c.email}) <b>Owner</b></li>);
+// 								}else{
+// 									state.setUsers.users.push(<li className='list-group-item' key={k}><a href='#' className='float-right' onClick={that.removeUser} data-user-id={c.user_id} data-set-id={that.props.setID}><ion-icon name='close-circle' data-user-id={c.user_id} data-set-id={that.props.setID}></ion-icon></a>{c.name} ({c.email})<br/><i>Can {(c.access == 2) ? "edit" : "read"}</i></li>);
+// 								}
+// 							}
+// 						}
+// 					}
+// 				}
+// 				// TODO: For some reason it gives type error when using this.setState
+// 				that.setState(state);
+// 			})
+// 			.catch(function (error) {
+// 				console.log("Error while getting set users: ", error);
+// 			});
 	}
 
 	updateList() {
@@ -368,55 +470,55 @@ class ShareBlock extends React.Component {
 		for(let k in this.state.values) {
 			formData.append(k, this.state.values[k]);
 		}
-		axios.post(baseUrl + "/shareSet", formData)
-			.then(function (resp) {
-				let data = resp.data;
-
-				if (data.status !== 'ok') {
-					// error
-					state.statusMessage = data.error;
-					state.statusMessageType = "error";
-					state.errors = that.initializeValues();
-					// TODO: For some reason it gives type error when using this.initializeValues()
-
-					if(data.fieldErrors) {
-						for(let k in data.fieldErrors) {
-							if((state.errors[k] !== undefined)) {
-								state.errors[k] = data.fieldErrors[k];
-							}
-						}
-					}
-					that.setState(state);
-					// TODO: For some reason it gives type error when using this.setState
-
-				} else {
-					// success
-					if(data.message){
-						state.statusMessage = data.message;
-					}
-					if(data.error){
-						if(data.message){
-							state.statusMessage = state.statusMessage + '; ';
-						}
-						state.statusMessage = state.statusMessage + data.error;
-					}
-					state.statusMessageType = "success";
-					state.values = that.initializeValues();	// Clear form elements
-					state.errors = that.initializeValues();	// Clear form errors
-					that.setState(state);
-					that.initializeList();
-					if(!data.error){
-						setTimeout(function() {
-							state.statusMessage = '';
-							that.setState(state);
-						}, 3000);
-					}
-				}
-
-			})
-			.catch(function (error) {
-				console.log("Error while attempting to invite users: ", error);
-			});
+		// axios.post(baseUrl + "/shareSet", formData)
+// 			.then(function (resp) {
+// 				let data = resp.data;
+//
+// 				if (data.status !== 'ok') {
+// 					// error
+// 					state.statusMessage = data.error;
+// 					state.statusMessageType = "error";
+// 					state.errors = that.initializeValues();
+// 					// TODO: For some reason it gives type error when using this.initializeValues()
+//
+// 					if(data.fieldErrors) {
+// 						for(let k in data.fieldErrors) {
+// 							if((state.errors[k] !== undefined)) {
+// 								state.errors[k] = data.fieldErrors[k];
+// 							}
+// 						}
+// 					}
+// 					that.setState(state);
+// 					// TODO: For some reason it gives type error when using this.setState
+//
+// 				} else {
+// 					// success
+// 					if(data.message){
+// 						state.statusMessage = data.message;
+// 					}
+// 					if(data.error){
+// 						if(data.message){
+// 							state.statusMessage = state.statusMessage + '; ';
+// 						}
+// 						state.statusMessage = state.statusMessage + data.error;
+// 					}
+// 					state.statusMessageType = "success";
+// 					state.values = that.initializeValues();	// Clear form elements
+// 					state.errors = that.initializeValues();	// Clear form errors
+// 					that.setState(state);
+// 					that.initializeList();
+// 					if(!data.error){
+// 						setTimeout(function() {
+// 							state.statusMessage = '';
+// 							that.setState(state);
+// 						}, 3000);
+// 					}
+// 				}
+//
+// 			})
+// 			.catch(function (error) {
+// 				console.log("Error while attempting to invite users: ", error);
+// 			});
 
 		e.preventDefault();
 	}
@@ -429,30 +531,30 @@ class ShareBlock extends React.Component {
 		state.statusMessageUserList = "Removing User...";
 		state.statusMessageTypeUserList = "error";
 		this.setState(state);
-			axios.get(baseUrl + "/removeUserAccess/set_id/" + setID + "/user_id/" + userID)
-			.then(function (resp) {
-				let data = resp.data;
-				if (data.status !== 'ok') {
-					// error
-					state.statusMessageUserList = data.error;
-					state.statusMessageTypeUserList = "error";
-					that.setState(state);
-				} else {
-					// success
-					state.statusMessageTypeUserList = "success";
-					state.statusMessageUserList = data.message;
-					that.setState(state);
-					that.initializeList();
-					setTimeout(function() {
-						state.statusMessageUserList = '';
-						that.setState(state);
-					}, 3000);
-				}
-				that.setState(state);
-			})
-			.catch(function (error) {
-				console.log("Error while getting set users: ", error);
-			});
+			// axios.get(baseUrl + "/removeUserAccess/set_id/" + setID + "/user_id/" + userID)
+// 			.then(function (resp) {
+// 				let data = resp.data;
+// 				if (data.status !== 'ok') {
+// 					// error
+// 					state.statusMessageUserList = data.error;
+// 					state.statusMessageTypeUserList = "error";
+// 					that.setState(state);
+// 				} else {
+// 					// success
+// 					state.statusMessageTypeUserList = "success";
+// 					state.statusMessageUserList = data.message;
+// 					that.setState(state);
+// 					that.initializeList();
+// 					setTimeout(function() {
+// 						state.statusMessageUserList = '';
+// 						that.setState(state);
+// 					}, 3000);
+// 				}
+// 				that.setState(state);
+// 			})
+// 			.catch(function (error) {
+// 				console.log("Error while getting set users: ", error);
+// 			});
 	}
 
 	render() {
@@ -468,8 +570,8 @@ class ShareBlock extends React.Component {
 					</div>
 
 					<div className="form-group">
-						<select name='access' id='access' title='Select and access level' className={`form-control  form-control-sm${(this.state.errors.access) ? ' is-invalid' : ''}`} onChange={this.handleForm}>
-							<option value=''>Select and Access Level</option>
+						<select name='access' id='access' title='Select an access level' className={`form-control  form-control-sm${(this.state.errors.access) ? ' is-invalid' : ''}`} onChange={this.handleForm}>
+							<option value=''>Select an Access Level</option>
 							<option value='1'>Read only</option>
 							<option value='2'>Edit</option>
 						</select>{(this.state.errors.access) ? <div className='invalid-feedback'>{this.state.errors.access}</div> : null}

@@ -13,12 +13,16 @@
 import React from "react"
 import ReactDOM from "react-dom";
 import { LightboxContext } from '../../Lightbox'
-import { addItemsToLightbox } from "../../../../default/js/lightbox";
-import { removeItemFromLightbox } from "../../../../default/js/lightbox";
+import { appendItemstoNewLightbox, removeItemsFromLightbox, transferItemsToLightbox } from "../../../../default/js/lightbox";
+
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const appData = pawtucketUIApps.Lightbox.data;
-const lightboxTerminology = appData.lightboxTerminology;
-const baseUrl = appData.baseUrl; // =  /index.php/Lightbox
+const baseUrl = appData.baseUrl; 
+// const lightboxTerminology = appData.lightboxTerminology;
+
+console.log("Lightbox: PUIApps", pawtucketUIApps.Lightbox);
 
 class LightboxSelection extends React.Component {
 
@@ -33,25 +37,25 @@ class LightboxSelection extends React.Component {
 			searchedLightbox: '',
 			selectedLightbox: '',
 			selectedLightboxId: '',
+			selectedLightboxCount: '',
 		}
 
 		this.clearSelectLightboxItems = this.clearSelectLightboxItems.bind(this);
 		this.showSelectButtons = this.showSelectButtons.bind(this);
-		this.addSelectedItemsToNewLightbox = this.addSelectedItemsToNewLightbox.bind(this);
 
+		this.addSelectedItemsToNewLightbox = this.addSelectedItemsToNewLightbox.bind(this);
 		this.addSelectedItemsToExistingLightbox = this.addSelectedItemsToExistingLightbox.bind(this);
 		this.deleteSelectedItems = this.deleteSelectedItems.bind(this);
+		this.deleteLightboxItemsConfirm = this.deleteLightboxItemsConfirm.bind(this);
 
 		this.clearInput = this.clearInput.bind(this);
-
 		this.handleChange = this.handleChange.bind(this);
-
 		this.toggleDropdown = this.toggleDropdown.bind(this);
-
 		this.transferOption = this. transferOption.bind(this)
 
 	}
 
+	//removes items from selection
 	clearSelectLightboxItems() {
 		let state = this.context.state;
 		state.showSelectButtons = false;
@@ -83,97 +87,103 @@ class LightboxSelection extends React.Component {
 	addSelectedItemsToNewLightbox() {
 		this.toggleDropdown()
 		let that = this;
-		let state = that.context.state;
-    // TODO: For some reason it gives type error when using this.context.state
-		addItemsToLightbox(appData.baseUrl, null, this.context.state.selectedItems.join(';'), 'ca_objects', function(resp) {
-			if (resp && resp['ok']) {
-				state.lightboxList.sets[resp.set_id] = {isMember:true, set_id:resp.set_id, label: resp.label, count: resp.count, item_type_singular: resp.item_type_singular, item_type_plural: resp.item_type_plural };
-				state.set_id = resp.set_id;
-				state.filters = {'_search': {}};
-				state.filters['_search']['ca_sets.set_id:' + resp.set_id] = 'Lightbox: ' + resp.label;
-				state.selectedItems = [];
-				state.showSelectButtons = false;
-				that.context.setState(state);
-        // TODO: For some reason it gives type error when using this.context.setState
-				that.context.reloadResults(state.filters, false);
-				state.statusMessage = "Added Item To " + lightboxTerminology.singular;
-				that.setState(state);
-				setTimeout(function() {
-					state.statusMessage = '';
-					that.setState(state);
-				}, 2000);
-				return;
-			}
-			alert("Could not add item to lightbox: " + resp['err']);
+
+		appendItemstoNewLightbox(baseUrl, that.context.state.tokens, name, that.context.state.selectedItems.join(';'), function(data){
+			// console.log("appendItemstoNewLightbox: ", data);
+			let lightboxList = that.context.state.lightboxList;
+			// TODO: after count of items is displayed, it shows undefined, need it to show objects
+			lightboxList[data.id] = {id: data.id, count: data.count};
+			that.context.setState({lightboxlist: lightboxList});
 		});
+		that.context.setState({selectedItems: []});
+
+		this.context.setState({ showSelectButtons: false });
 	}
 
 	addSelectedItemsToExistingLightbox() {
 		this.toggleDropdown()
 		let that = this;
 		let state = that.context.state;
-    // TODO: For some reason it gives type error when using this.context.state
-		addItemsToLightbox(appData.baseUrl, this.state.selectedLightboxId, this.context.state.selectedItems.join(';'), 'ca_objects', function(resp) {
-			if (resp && resp['ok']) {
-        // TODO: For some reason it gives type error when using this.context.setState
-				that.context.reloadResults(state.filters, false);
-				state.statusMessage = "Added Item To " + lightboxTerminology.singular;
-				that.setState(state);
-				setTimeout(function() {
-					state.statusMessage = '';
-					that.setState(state);
-				}, 2000);
-				return;
+
+		let selectedItems = that.context.state.selectedItems;
+		let resultList = [...that.context.state.resultList];
+
+		let selectedLightboxCount = that.state.selectedLightboxCount;
+		// let selectedLightboxCurrentItems = this.state.context.lightboxList[this.state.selectedLightboxId];
+
+		transferItemsToLightbox(baseUrl, this.context.state.tokens, this.context.state.id, this.state.selectedLightboxId, this.context.state.selectedItems.join(';'), function(data) {
+			// console.log("transferItemsToLightbox: ", data);
+
+			let newResultList = [];
+			for(let i in resultList) {  //i is the index position of item in resultList
+				let r = resultList[i].id; //r is the id of item in resultList
+				if (!selectedItems.includes(r)) {
+					newResultList.push(resultList[i]);
+				}
 			}
-			alert("Could not add item to lightbox: " + resp['err']);
+			that.context.setState({resultList: newResultList, totalSize: newResultList.length});
+
+			let lightboxList = that.context.state.lightboxList;
+			// TODO: after count of items is displayed, it shows undefined, need it to show objects
+			let newItemCount = (selectedItems.length) + (selectedLightboxCount);
+			lightboxList[that.state.selectedLightboxId] = {id: that.state.selectedLightboxId, title: that.state.selectedLightbox, count: newItemCount };
+			lightboxList[that.context.state.id] = { id: that.context.state.id, title: that.context.state.lightboxTitle, count: that.context.state.totalSize }
+			that.context.setState({ lightboxlist: lightboxList });
 		});
 
-		this.setState({transferItems: false})
-		this.context.setState({
-			showSelectButtons: false,
-			selectedItems: [],
-		});
-
+		this.setState({transferItems: false});
+		this.context.setState({ selectedItems: [] });
+		this.context.setState({ showSelectButtons: false });
 	}
 
 	deleteSelectedItems(){
 		this.toggleDropdown()
 
-		let selectedItems = this.context.state.selectedItems;
-		let set_id = this.context.state.set_id;
-
 		let that = this;
-		if(!this.context.state.set_id) { return; }
+		let state = that.context.state;
 
-		selectedItems.forEach(element =>
-			removeItemFromLightbox(baseUrl, set_id, element, function(resp) {
-				if(resp && resp['ok']) {
-					let state = that.context.state;
-					for(let i in state.resultList) {
-						let r = state.resultList[i];
-						if (r.id == element) {
-							delete(state.resultList[i]);
-							state.resultSize--;
-							let x = null;
-							x = state.selectedItems.indexOf(element);
-							if(i > -1){
-								state.selectedItems.splice(x, 1);
-							}
-							that.setState(state);
-							break;
-						}
-					}
-					return;
+		let selectedItems = that.context.state.selectedItems;
+		let set_id = that.context.state.id;
+
+		let resultList = [...that.context.state.resultList];
+		// if(!this.context.state.id) { return; }
+
+		removeItemsFromLightbox(baseUrl, that.context.state.tokens, set_id, selectedItems.join(';'), function(data) {
+			// console.log("removeItemFromLightbox: ", data);
+
+			let lightboxList = that.context.state.lightboxList;
+			// TODO: after count of items is displayed, it shows undefined, need it to show objects
+			lightboxList[data.id] = {id: data.id, title: that.context.state.lightboxTitle, count: data.count};
+			that.context.setState({lightboxlist: lightboxList});
+
+			let newResultList = [];
+			for(let i in resultList) {  //i is the index position of item in resultList
+				let r = resultList[i].id; //r is the id of item in resultList
+				if (!selectedItems.includes(r)) {
+					newResultList.push(resultList[i]);
 				}
-				alert('Could not remove item: ' + resp['err']);
-			})
-		);  {/* end of for each */}
+			}
+			that.context.setState({resultList: newResultList, totalSize: newResultList.length});
+		});
 
-		// setTimeout(this.context.reloadResults(), 2000)
+		that.context.setState({ selectedItems: [] });
+		this.context.setState({ showSelectButtons: false });
+	}
 
-		this.context.setState({
-			showSelectButtons: false,
-			selectedItems: [],
+	deleteLightboxItemsConfirm(){
+		confirmAlert({
+			customUI: ({ onClose }) => {
+				return (
+					<div className='col info text-gray'>
+						<p>Do you want to delete these items?</p>
+						<div className='button' onClick={() => {
+							this.deleteSelectedItems();
+							onClose(); }}> Yes </div>
+						&nbsp;
+						<div className='button' onClick={onClose}>No</div>
+					</div>
+				);
+			}
 		});
 	}
 
@@ -188,32 +198,36 @@ class LightboxSelection extends React.Component {
 	}
 
 	render() {
-
-		// $(document).on('click', '#transferItemsOption', function (e) {
-		// 		e.stopPropagation();
-		// });
+		// console.log('Context State: ', this.context.state);
+		// console.log('selectedLightboxCount: ', this.state.selectedLightboxCount)
+		// console.log('exportFormats: ', appData.exportFormats);
 
 		let lightboxes = [];
-		if (this.context.state.lightboxList && this.context.state.lightboxList.sets) {
-			for(let k in this.context.state.lightboxList.sets) {
-				let l = this.context.state.lightboxList.sets[k];
+		if (this.context.state.lightboxList) {
+			for(let k in this.context.state.lightboxList) {
+				let l = this.context.state.lightboxList[k];
 				lightboxes.unshift(l);
 			}
 		}
-		// console.log('List of lightboxes for selection', lightboxes);
 
 		let filteredLightboxes = lightboxes.filter((lightbox) => {
-      return lightbox.label
-        .toLowerCase()
-        .includes(this.state.searchedLightbox.toLowerCase());
-    });
+			if(lightbox.title){
+				let title = lightbox.title.toLowerCase();
+				let searchedLightbox = this.state.searchedLightbox.toLowerCase();
+				return title.includes(searchedLightbox);
+			}
+	  });
 
 		let numberOfSelectedItems;
 		if(this.context.state.selectedItems && this.context.state.selectedItems.length){
 			numberOfSelectedItems = this.context.state.selectedItems.length;
 		}
 
-		// console.log("numberOfSelectedItems: ", numberOfSelectedItems);
+		$(document).on('click', '#transferItemsOption', function (e) {
+			do {
+				e.stopPropagation();
+			}while (this.state.transferItems == true);
+		});
 
 		return (
 			<div id="selectItems">
@@ -223,7 +237,11 @@ class LightboxSelection extends React.Component {
 					{(this.context.state.showSelectButtons) ?
 						<button type="button" className="btn btn-danger" onClick={this.clearSelectLightboxItems} style={{marginLeft: '6px'}}>Cancel Select</button>
 						:
-						<button type="button" className="btn btn-secondary" onClick={this.showSelectButtons} style={{marginLeft: '6px'}}>Select Items</button>
+						<button
+							type="button"
+							className={(this.context.state.dragDropMode) ? "btn btn-secondary disabled" : "btn btn-secondary"} disabled={(this.context.state.dragDropMode) ? "disabled" : ""}
+							onClick={this.showSelectButtons}
+							style={{marginLeft: '6px'}}>Select Items</button>
 					}
 
 					{(numberOfSelectedItems >= 1) ?
@@ -239,19 +257,24 @@ class LightboxSelection extends React.Component {
 				    <li className='menu-option'>
 							<a className="dropdown-item" href="#" onClick={this.addSelectedItemsToNewLightbox}>Create Lightbox From Selected Items</a>
 						</li>
-						<div className="dropdown-divider"></div>
 
-				    <li className='menu-option'>
-							<a className="dropdown-item" href="#" onClick={this.deleteSelectedItems}>Delete Selected Items</a>
-						</li>
-						<div className="dropdown-divider"></div>
-
-						<li className='menu-option' id='transferItemsOption'>
-							<a className="dropdown-item" onClick={this.transferOption} href="#">Transfer to Lightbox</a>
-						</li>
+						{(this.context.state.userAccess == 2) ?
+							<>
+								<div className="dropdown-divider"></div>
+						    <li className='menu-option'>
+									<a className="dropdown-item" href="#" onClick={this.deleteLightboxItemsConfirm}>Delete Selected Items</a>
+								</li>
+								<div className="dropdown-divider"></div>
+								<li className='menu-option' id='transferItemsOption'>
+									<a className="dropdown-item" onClick={this.transferOption} href="#">Transfer to Lightbox</a>
+								</li>
+							</>
+							:
+							(' ')
+						}
 
 						{(this.state.transferItems) ?
-								<div className='container' id='transferItemsOption' style={{marginBottom: '10px'}}>
+								<div className='container' style={{marginBottom: '10px'}}>
 									<div className='row justify-content-center'>
 										<form className='form-inline' style={{margin: '10px'}}>
 											<div style={{marginRight: '5px'}}>
@@ -280,12 +303,12 @@ class LightboxSelection extends React.Component {
 										</form>
 									</div>
 
-
 									<div className='lightbox-container' style={{marginLeft: '30px' , overflow: 'auto',  width: '350px', height: '200px'}}>
-									{filteredLightboxes.map(lightbox => {
-										return <li key={lightbox.set_id}><a style={{marginBottom: '5px'}} onClick={() => this.setState({searchedLightbox:lightbox.label, selectedLightbox:lightbox.label, selectedLightboxId:lightbox.set_id})} style={{cursor: 'pointer', backgroundColor:'#fafafa', marginBottom: '5px'}}> {lightbox.label} </a></li>
-									})}
+										{filteredLightboxes.map(lightbox => {
+											return <li id='transferItemsOption' key={lightbox.id}><a id='transferItemsOption' style={{marginBottom: '5px'}} onClick={() => this.setState({searchedLightbox:lightbox.title, selectedLightbox:lightbox.title, selectedLightboxId:lightbox.id, selectedLightboxCount: lightbox.count})} style={{cursor: 'pointer', backgroundColor:'#fafafa', marginBottom: '5px'}}> {lightbox.title} </a></li>
+										})}
 									</div>
+
 								</div> /*container end*/
 							:
 							null

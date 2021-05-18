@@ -4,7 +4,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2019 Whirl-i-Gig
+ * Copyright 2019-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -31,13 +31,16 @@
 <script type="text/javascript">
 	pawtucketUIApps['Lightbox'] = {
         'selector': '#lightbox',
+		'key': '<?= $this->getVar('key'); ?>', 
         'data': {
-			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
-            showLastLightboxOnLoad: <?php print ((bool)$this->request->getParameter('showList', pInteger)) ? 'false' : 'true'; ?>,
+			baseUrl: "<?= __CA_URL_ROOT__."/service.php"; ?>",
+			siteBaseUrl: "<?= __CA_URL_ROOT__."/index.php"; ?>/Lightbox",
+			
+            showLastLightboxOnLoad: <?= ((bool)$this->request->getParameter('showList', pInteger)) ? 'false' : 'true'; ?>,
 			view: "thumbnails",
-			browseConfig: <?php print json_encode($config->get("lightboxBrowse")); ?>,
-			exportFormats: <?php print json_encode($export_formats); ?>,
-			lightboxTerminology: <?php print json_encode(caGetLightboxDisplayName()); ?>
+			browseConfig: <?= json_encode($config->get("lightboxBrowse")); ?>,
+			exportFormats: <?= json_encode($export_formats); ?>,
+			lightboxTerminology: <?= json_encode(caGetLightboxDisplayName()); ?>
         }
     };
 </script>

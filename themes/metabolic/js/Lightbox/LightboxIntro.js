@@ -33,26 +33,19 @@ class LightboxIntro extends React.Component {
 		this.saveLightboxEdit = this.saveLightboxEdit.bind(this);
 	}
 
-	saveLightboxEdit(name){
+	saveLightboxEdit(name) {
 		let that = this;
-		editLightbox(this.context.props.baseUrl, {'name': name, set_id: this.context.state.set_id }, function(resp) {
-			// TODO: display potential errors
-
-			// Update name is context state
-			let state = that.context.state;
-			state.lightboxList.sets[state.set_id]['label'] = name;
-			state.headline = name;
-			that.context.setState(state);
+		editLightbox(that.context.props.baseUrl, that.context.state.tokens, that.context.state.id, name, function(data) {
+			console.log("saveLightboxEdit ", data);
+			// Update name in context state
+			let lightboxList = that.context.state.lightboxList;
+			lightboxList[that.context.state.id]['title'] == name;
+			that.context.setState({lightboxlist: lightboxList});
 		});
 	}
 
 	render() {
-		if (!this.props.headline || (this.props.headline.length === 0)) {
-			return (<section></section>);
-		}else{
-			this.context.state.headline = this.props.headline;
-			this.context.state.description = this.props.description;
-		}
+
 		return (
 			<h1>{lightboxTerminology.section_heading}:&nbsp;
 				<EasyEdit
@@ -62,8 +55,8 @@ class LightboxIntro extends React.Component {
 					saveButtonStyle="btn btn-primary btn-sm"
 					cancelButtonLabel="Cancel"
 					cancelButtonStyle="btn btn-primary btn-sm"
-					attributes={{name: "name", id: "lightbox_name" + this.context.state.set_id}}
-					value={this.context.state.headline}
+					attributes={{name: "name", id: "lightbox_name" + this.context.state.id}}
+					value={this.context.state.lightboxTitle}
 				/>
 			</h1>
 
