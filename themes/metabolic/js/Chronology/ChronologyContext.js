@@ -13,6 +13,8 @@ const ChronologyContextProvider = (props) => {
   const [years, setYears] = useState();
   const [currYear, setCurrYear] = useState();
   const [currentAction, setCurrentAction] = useState();
+  const [currentActionTitle, setCurrentActionTitle] = useState();
+  const [currentActionItem, setCurrentActionItem] = useState();
 
   return (
     <ChronologyContext.Provider
@@ -27,6 +29,8 @@ const ChronologyContextProvider = (props) => {
         years, setYears,
         currYear, setCurrYear,
         currentAction, setCurrentAction,
+        currentActionTitle, setCurrentActionTitle,
+        currentActionItem, setCurrentActionItem,
       }}>
       {props.children}
     </ChronologyContext.Provider>

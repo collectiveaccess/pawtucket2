@@ -85,13 +85,31 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						
 						$facet_values = $browse->getFacet($facet);
 						
-						$ret = array_map(function($v) {
+						if(!is_array($facet_values)) {
+							throw new \ServiceException(_t('Facets %1 is not defined for table %2', $facet, $browse_info['table']));
+						}
+						
+						$facet_info = $browse->getInfoForFacet($facet);
+						$data_spec = caGetOption('data', $facet_info, null);
+						$facet_table = caGetOption('table', $facet_info, null);
+						$instance = Datamodel::getInstance($facet_table, true);
+						$ret = array_map(function($v) use ($data_spec, $instance) {
+							$display_data = [];
+							if(is_array($data_spec) && sizeof($data_spec) && $instance && $instance->load($v['id'])) {
+								foreach($data_spec as $n => $t) {
+									$display_data[] = [
+										'name' => $n,
+										'value' => $instance->getWithTemplate($t)
+									];
+								}
+							}
 							return [
 								'id' => $v['id'],
 								'value' => $v['label'],
 								'sortableValue' => $v['label_sort_'],
 								'contentCount' => $v['content_count'],
 								'childCount' => $v['child_count'],
+								'displayData' => $display_data
 							];
 						}, $facet_values);
 						
@@ -468,7 +486,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 	 */
 	private static function getMutationResponse(BrowseEngine $browse, array $browse_info, array $args) {
 		list($sort, $sort_direction) = self::processSortSpec($args['sort']);
-		if(!($qr = $browse->getResults(['sort' => $sort, 'sort_direction' => $sort_direction]))) { 
+		if(!($qr = $browse->getResults(['sort' => $sort, 'sort_direction' => $sort_direction, 'checkAccess' => [1]]))) { 
 			throw new \ServiceException(_t('Browse execution failed'));
 		}
 		
