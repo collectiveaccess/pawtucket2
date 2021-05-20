@@ -34,11 +34,14 @@
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 <?php
 				
-				if($vs_youTube_id = $t_item->get("youTubeID")){
+				$va_youTube_ids = $t_item->get("youTubeID", array("returnAsArray" => true));
+				if(is_array($va_youTube_ids) && sizeof($va_youTube_ids)){
 					if(trim($this->getVar("representationViewer"))){
 						print "<br/><br/>";
 					}
-					print '<iframe width="100%" height="400" src="https://www.youtube.com/embed/'.$vs_youTube_id.'" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
+					foreach($va_youTube_ids as $vs_youTube_id){
+						print '<iframe width="100%" height="400" src="https://www.youtube.com/embed/'.$vs_youTube_id.'" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br/><br/>';
+					}
 				}
 ?>					
 				</div><!-- end col -->
