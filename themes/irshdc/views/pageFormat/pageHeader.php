@@ -162,7 +162,7 @@
 	}
 	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewEduRes")){
 ?>
-							<li><?php print caNavLink($this->request, "<span>"._t("Educational Resources")."</span>", "", "", "Listing", "EducationalResources"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Educational Resources")."</span>", "", "", "Explore", "EducationalResources"); ?></li>
 <?php
 	}
 ?>					

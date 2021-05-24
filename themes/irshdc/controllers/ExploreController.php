@@ -27,6 +27,7 @@
  */
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_collections.php");
  	require_once(__CA_MODELS_DIR__."/ca_entities.php");
  	require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
@@ -126,6 +127,21 @@
 			$this->view->setVar("schools_results", $qr_res);
 
  			$this->render("Explore/schools_html.php");
+ 		}
+ 		# -------------------------------------------------------
+ 		public function EducationalResources(){
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Explore > Educational Resources");
+ 			
+ 			$this->opo_result_context = new ResultContext($this->request, "ca_collections", "exploreEducationalResources");
+ 			$this->opo_result_context->setAsLastFind();
+ 			
+ 			$t_list = new ca_lists();
+			$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", "ed_collection");
+			$qr_collections = ca_collections::find(array('parent_id' => 1, 'type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => 'ca_collections.rank'));
+			$this->view->setVar("collection_results", $qr_collections);
+			caSetPageCSSClasses(array("collections", "landing"));
+
+ 			$this->render("Explore/educational_resources_html.php");
  		}
  		# -------------------------------------------------------
  		
