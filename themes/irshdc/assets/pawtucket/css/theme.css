@@ -1540,6 +1540,29 @@ h2.exhibitionSection{
 	height:auto;
 	max-width:80%;
 }
+.userGuideBody .imgSmall, .userGuideBody .imgMed, .userGuideBody .imgLarge, .userGuideBody .imgFull{
+	text-align:center;
+}
+.userGuideBody .imgSmall img{
+	height:auto;
+	width:25%;
+	max-width:100%;
+}
+.userGuideBody .imgMed img{
+	height:auto;
+	width:50%;
+	max-width:100%;
+}
+.userGuideBody .imgLarge img{
+	height:auto;
+	width:75%;
+	max-width:100%;
+}
+.userGuideBody .imgFull img{
+	height:auto;
+	width:100%;
+	max-width:100%;
+}
 @media(min-width:768px){
 	.userGuideSideNav{
 		position:fixed;
