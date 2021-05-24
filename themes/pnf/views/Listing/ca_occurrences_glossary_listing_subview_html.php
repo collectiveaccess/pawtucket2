@@ -104,8 +104,8 @@
 				$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."<span style='display:none;'>".$qr_list->getWithTemplate('^ca_occurrences.description')."</span></div>\n";	
 			}
 		}
-		#ksort($va_links_array);
-		#ksort($va_letter_array);
+		ksort($va_links_array);
+		ksort($va_letter_array);
 		foreach ($va_links_array as $vs_first_letter => $va_links) {
 			ksort($va_links);
 			print "<p class='separator' style='clear:both;'><a name='".$vs_first_letter."'></a><br></p>";			
