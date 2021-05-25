@@ -137,7 +137,7 @@
  			
  			$t_list = new ca_lists();
 			$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", "ed_collection");
-			$qr_collections = ca_collections::find(array('parent_id' => 1, 'type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => 'ca_collections.rank'));
+			$qr_collections = ca_collections::find(array('parent_id' => 4, 'type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => 'ca_collections.rank'));
 			$this->view->setVar("collection_results", $qr_collections);
 			caSetPageCSSClasses(array("collections", "landing"));
 
