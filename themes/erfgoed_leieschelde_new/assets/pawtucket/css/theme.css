@@ -949,7 +949,7 @@ a.readmore-js-toggle {
 /* image viewer */
 .caMediaOverlayControls .close{
 	position: fixed;
-	top: 10px;
+	top: 40px;
 	right: 10px;
 }
 div.caMediaOverlayControls .close a{
