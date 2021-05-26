@@ -1,0 +1,218 @@
+/* red: #AC143A; gray blue #6C869E;*/
+.tm-navbar .tm-logo > * {
+    max-height: 180px;
+    width: 115px;
+    height: auto;
+}
+.tm-logo-small img{
+	width:92px;
+	height:auto;
+}
+.tm-navbar-fixed .tm-toolbar + .tm-navbar, .tm-toolbar {
+    z-index: 10000 !important;
+}
+.fullWidthImg img{
+	width:100%;
+	height:auto;
+}
+.bg_sand{
+	background-color: #D9D4C2;
+}
+#pageArea{
+	margin-top:30px;
+}
+body{
+	color:#000;
+}
+h1, .front h1{
+	color:#AC143A;
+	font-family: 'Ubuntu', sans-serif;
+	font-weight: 700;
+}
+.front .content-area, .browse.institutions .content-area, .browse.ca_objects, .search.ca_objects, .content-area, .subNav {
+	max-width: 1000px;
+	margin-left: auto;
+	margin-right: auto;
+}
+@media(min-width:768px){
+	.flex{
+		display: flex;
+		align-items: center;
+	}
+}
+#pageArea{
+	padding-bottom:75px;
+}
+.subNavJumpTo{
+	margin-bottom:20px;
+}
+@media(min-width:600px) and (max-width:767px){
+	.subNavJumpTo{
+		margin-top:-20px
+	}
+}
+@media(min-width:768px){
+	.subNavJumpTo{
+		text-align:right;
+	}
+}
+/* home page */
+.hpIntroTop{
+	padding-top:15px;
+	padding-bottom:15px;
+}
+.hpIntroTopDesc{
+	padding-right:5px;
+	text-align:center;
+}
+.hpIntroTopDescTitle{
+	font-weight:500;
+	font-size:16px;
+	margin-bottom:20px;
+	
+}
+.hpCallOut{
+	font-size: 18px;
+	line-height: 1.5em;
+	text-align: center;
+	font-weight: 300;
+	margin-top:40px;
+	margin-bottom:40px;
+}
+.hpCallOutTitle{
+	font-size: 20px;
+	font-weight:500;
+	margin-bottom:30px;
+}
+.front .hpCaption{
+	padding-top:5px;
+	line-height:1.2em;
+	font-size:12px;
+}
+.hpFindBox{
+	background-color:#6C869E;
+	color:#fff;
+	text-align: center;
+	padding:40px;
+	margin-top:30px;
+	margin-bottom:80px;
+}
+a .hpFindBox{
+	color:#fff;
+	font-size: 24px;
+	font-weight: bold;
+	letter-spacing: 0px;
+	line-height: 28px;
+	text-transform:uppercase;
+}
+.hpImages{
+	padding:30px 15px 30px 15px;
+	margin-bottom:50px;
+}
+
+a:hover .hpFindBox{
+	background-color:#999999;
+}
+/* browse */
+.results H1{
+	font-size: 24px;
+	line-height: 30px;
+}
+.browse .btn, .sets .btn, .search .btn {
+    background-color: #000;
+}
+.bResultListItem .bResultListItemText a {
+    line-height: 1.2em;
+    color: #000;
+    font-size: 15px;
+    font-weight: 400;
+}
+#bRefine H2{
+	color:#000;
+}
+#bRefine H3{
+	color: #000;
+	font-size: 16px;
+	text-transform: capitalize;
+}
+#bRefine a {
+    color: #000;
+    font-size: 14px;
+}
+.results .bSearchWithinContainer{
+	clear:both;
+	margin-top:15px;
+	margin-bottom:10px;
+}
+.results .btn-search-refine{	
+	float: right;
+	font-size: 18px;
+	padding-top: 0px 0px 0px 0px;
+	width: 26px;
+	text-align: left;
+	background-color: transparent;
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	outline: 0;
+	border: 0px;
+}
+.results .btn-search-refine .glyphicon{
+	margin-top:5px;
+}
+.bSearchWithin, .bSearchWithin:focus {
+    float: left;
+    width: 80%;
+    box-shadow: none;
+    border: 0px !Important;
+    border-bottom: 1px solid #989697 !important;
+    border-radius: 0px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    padding-left: 5px;
+    height: 30px;
+    font-size: 14px;
+    line-height: 26px;
+    background-color: transparent;
+    margin: 0px 0px 0px 10px;
+}
+/* detail */
+.detail h1{
+	margin-bottom: 0px;
+}
+.detail h2{
+	color:#000;
+	font-family: 'Ubuntu', sans-serif;
+	font-weight: 500;
+	text-transform:none;
+}
+.detail h2 a{
+	text-decoration:underline;
+}
+.detail, .detail .unit{
+	font-size: 14px;
+	line-height: 150%;
+	color:#000;
+}
+.detailImgPlaceholder {
+    background-color: #F5F5F5;
+    border: 2px solid #EDEDED;
+    color: #858585;
+    margin-bottom: 10px;
+    padding: 80px 5px 85px;
+    text-align: center;
+    width: 100%;
+    font-size: 40px;
+}
+.detail label{
+	color:#000;
+	font-family: 'Ubuntu', sans-serif;
+}
+.bResultItem .bResultItemText {
+    font-size: 14px;
+    color:#000;
+}
+#bRefine.fixed {
+    padding-top: 150px;
+}
