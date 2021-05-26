@@ -23,15 +23,13 @@
 		</div>
 	</div>	
 	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Inventarisnummer</span>
-			{{{ca_objects.idno%width=220px}}}
+		<div class="advancedSearchField col-sm-6">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek doorheen plaatsen.">Plaats</span>
+			{{{ca_places.preferred_labels.name%width=210px&autocomplete=1}}}
 		</div>
-	</div>		
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Inhoudelijke Beschrijving</span>
-			{{{ca_objects.content_description%width=220px}}}
+		<div class="advancedSearchField col-sm-6">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek doorheen de collectie.">Collectie</span>
+			{{{ca_objects.object_collection%width=200px&autocomplete=1}}}
 		</div>
 	</div>			
 	<div class='row'>

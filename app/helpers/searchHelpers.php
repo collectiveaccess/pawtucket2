@@ -680,16 +680,20 @@
 							$vs_element_rel_type = "/".join(";", $pa_form_values[$vs_dotless_element.':relationshipTypes']);
 						}
 					
+						// Rewrite autocomplete query to use primary key value
 						if(isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}_autocomplete"])) {
 							$va_fld = explode(".", $vs_element);
 							$t_table = Datamodel::getInstanceByTableName($va_fld[0], true);
-							foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
-								if ($t_table) { $vs_search_element = $t_table->primaryKey(true); }
+							
+							if(!ca_metadata_elements::isAuthorityDatatype($va_fld[1])) {	// only rewrite for relationships, not authority metdata elements
+								foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
+									if ($t_table) { $vs_search_element = $t_table->primaryKey(true); }
 								
-								$va_values[$vs_search_element.$vs_element_rel_type][] = trim($vs_element_value);
-								$va_booleans["{$vs_search_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
+									$va_values[$vs_search_element.$vs_element_rel_type][] = trim($vs_element_value);
+									$va_booleans["{$vs_search_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
+								}
+								continue(2);
 							}
-							continue(2);
 						}
 						foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
 							if(!strlen(trim($vs_element_value))) { continue; }
