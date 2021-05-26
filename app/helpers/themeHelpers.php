@@ -1221,7 +1221,7 @@
                     $.ajax({
                         url: '{$va_json_lookup_info['search']}',
                         dataType: \"json\",
-                        data: { term: '{$ps_field}:' + request.term },
+                        data: { term: ".(caGetOption('restrictToField', $pa_options, true) ? "'{$ps_field}:'" : "''")." + request.term },
                         success: function( data ) {
                             response(data);
                         }

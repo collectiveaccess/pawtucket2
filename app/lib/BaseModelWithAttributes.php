@@ -1795,6 +1795,12 @@
 					continue;
 				}
 				
+				if (caGetOption('autocomplete', $pa_options, false) && ca_metadata_elements::isAuthorityDatatype($va_element['element_id'])) {
+					$pa_options['asArrayElement'] = false;
+					
+					return caGetAdvancedSearchFormAutocompleteJS($po_request, $this->tableName().'.'.$va_element['element_code'], AuthorityAttributeValue::elementTypeToInstance($va_element['datatype']), array_merge($pa_options, ['restrictToField' => false]));
+				}
+				
 				$va_label = $this->getAttributeLabelAndDescription($va_element['element_id']);
 				
 				// Include "current_value" syntax if policy is set
