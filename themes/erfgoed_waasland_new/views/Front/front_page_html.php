@@ -52,7 +52,7 @@ $vs_hero = $this->request->getParameter("hero", pString);
 							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
 					</form>
-					<div class="heroAdvancedSearchLink"><?php print caNavLink($this->request, "Geavanceerd zoeken", "", "", "Search", "advanced/objects"); ?></div>
+					<div class="heroAdvancedSearchLink"><?php print caNavLink($this->request, "Uitgebreid zoeken", "", "", "Search", "advanced/objects"); ?></div>
 				</div>
 			</div>
 		</div>
@@ -121,3 +121,36 @@ $vs_hero = $this->request->getParameter("hero", pString);
 		print $this->render("Front/gallery_slideshow_html.php");
 ?>
 <div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>
+
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$(window).scroll(function(){
+					$("#hpScrollBar").fadeOut();
+				});
+				var html = $("html");
+				var scroll = $(window).scrollTop();
+
+				if (scroll >= 125) {
+					html.removeClass('initial');
+				} else {
+					html.addClass('initial');
+				}
+				$(function() {
+					//caches a jQuery object containing the header element
+					var html = $("html");
+					
+						$(window).scroll(function() {
+							var scroll = $(window).scrollTop();
+
+							if (scroll >= 125) {
+								html.removeClass('initial');
+							} else {
+								html.addClass('initial');
+							}
+							
+						});
+					
+				});
+			});
+		</script>
