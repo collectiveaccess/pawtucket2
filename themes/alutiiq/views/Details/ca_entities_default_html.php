@@ -18,7 +18,7 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
-					{{{<ifdef code="ca_entities.website"><H2><a href="^ca_entities.website" target="_blank">^ca_entities.website</a></H2></ifdef>}}}
+					{{{<ifdef code="ca_entities.website"><H2><a href="^ca_entities.website" target="_blank">^ca_entities.website <i class="fa fa-external-link" aria-hidden="true"></i></a></H2></ifdef>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
