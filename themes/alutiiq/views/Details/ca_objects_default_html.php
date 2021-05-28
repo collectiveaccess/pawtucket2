@@ -125,8 +125,10 @@
 					</unit>
 				</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.age_external_objects"><div class="unit"><label>Age</label>^ca_objects.age_external_objects</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.credit_line"><div class="unit"><label>Credit</label>^ca_objects.credit_line</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.traditions"><div class="unit"><label>Traditions</label>^ca_objects.traditions%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_collections.credit_line"><div class="unit"><label>Credit</label>^ca_collections.credit_line</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.provenance"><div class="unit"><label>Provenance</label>^ca_objects.provenance</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.website"><div class="unit"><unit relativeTo="ca_objects.website" delimiter="<br/>"><a href="^ca_objects.website" target="_blank">^ca_objects.website <i class="fa fa-external-link" aria-hidden="true"></i></a></unit></div></ifdef>}}}
 				
 				
 			</div><!-- end col -->

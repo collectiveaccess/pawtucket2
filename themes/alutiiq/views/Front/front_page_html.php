@@ -33,8 +33,17 @@
  	$va_access_values = caGetUserAccessValues($this->request);
  	require_once(__CA_LIB_DIR__.'/Search/EntitySearch.php');
 ?>
-	<h1 class="text-center">Amutat - Things to Pull</h1>
-	<div class="row hpIntroTop flex bg_sand">
+	<div class="row">
+		<div class="col-sm-12">
+			<h1>Amutat - Things to Pull</h1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			{{{hp_callout}}}
+		</div>
+	</div><!-- end row -->
+	<div class="row hpIntroTop flex bg_gray">
 		<div class="col-sm-12 col-md-6 col-lg-7 fullWidthImg">
 			<?php print caGetThemeGraphic($this->request, 'Finland1.jpg', array("alt" => "Skin sewers study an Alutiiq caribou skin parka at the National Museum of Finland, Helsinki.")); ?>
 			<div class="text-center hpCaption">{{{hp_intro_caption}}}</div>
@@ -45,12 +54,6 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-12 hpCallOut">
-			<div class="hpCallOutTitle">{{{hp_callout_title}}}</div>
-			{{{hp_callout}}}
-		</div>
-	</div><!-- end row -->
-	<div class="row">
 		<div class="col-sm-4 col-sm-offset-1">
 			<?php print caNavLink($this->request, "<div class='hpFindBox'>"._t("Find<br/>Institutions")."</div>", "", "", "browse", "institutions"); ?>
 		</div>
@@ -58,20 +61,6 @@
 			<?php print caNavLink($this->request, "<div class='hpFindBox'>"._t("Find<br/>Objects")."</div>", "", "", "browse", "amutatObjects"); ?>
 		</div>		
 	</div>
-	<div class="row hpImages bg_sand">
-		<div class="col-sm-4">
-			<?php print caGetThemeGraphic($this->request, 'France2.jpg', array("alt" => "Carver Perry Eaton studies Alutiiq masks at the Musée Boulogne-Sur-Mer, France")); ?>
-			<div class="text-center hpCaption">Carver Perry Eaton studies Alutiiq masks at the Musée Boulogne-Sur-Mer, France</div>
-		</div>
-		<div class="col-sm-4">
-			<?php print caGetThemeGraphic($this->request, 'France3.jpg', array("alt" => "Weavers study grass basketry at the Russian Museum of Ethnography, St. Petersburg, Russia.")); ?>
-			<div class="text-center hpCaption">Weavers study grass basketry at the Russian Museum of Ethnography, St. Petersburg, Russia.</div>
-		</div>
-		<div class="col-sm-4">
-			<?php print caGetThemeGraphic($this->request, 'RME1.jpg', array("alt" => "Alutiiq artists studied beaded garments at the Musée Boulogne-Sur-Mer, France")); ?>
-			<div class="text-center hpCaption">Alutiiq artists studied beaded garments at the Musée Boulogne-Sur-Mer, France</div>
-		</div>
-	</div><!-- end row -->
 	<div class="row">
 		<div class="col-sm-12 text-center">
 			<h2>Participating Institutions</h2>
@@ -85,11 +74,25 @@
 			$qr_res = $o_search->search("ca_entities.type_id:".$t_list_item->get("item_id"), array("sort" => "ca_entity_labels.name_sort"));
 	
  			$o_map = new GeographicMap('100%', 500, 'map');
-			$va_map_stats = $o_map->mapFrom($qr_res, "ca_entities.georeference", array("labelTemplate" => "^ca_entities.preferred_labels.displayname%delimiter=; ", "request" => $this->request, "checkAccess" => $va_access_values));
+			$va_map_stats = $o_map->mapFrom($qr_res, "ca_entities.georeference", array("labelTemplate" => "<l>^ca_entities.preferred_labels.displayname%delimiter=;</l>", "request" => $this->request, "checkAccess" => $va_access_values));
 			print $o_map->render('HTML', array('delimiter' => "<br/>"));
 ?>			
 		</div>
 	</div>
+	<div class="row hpImages bg_gray">
+		<div class="col-sm-4">
+			<?php print caGetThemeGraphic($this->request, 'France2.jpg', array("alt" => "Carver Perry Eaton studies Alutiiq masks at the Musée Boulogne-Sur-Mer, France.")); ?>
+			<div class="text-center hpCaption">Carver Perry Eaton studies Alutiiq masks at the Musée Boulogne-Sur-Mer, France.</div>
+		</div>
+		<div class="col-sm-4">
+			<?php print caGetThemeGraphic($this->request, 'France3.jpg', array("alt" => "Alutiiq artists studied beaded garments at the Musée Boulogne-Sur-Mer, France.")); ?>
+			<div class="text-center hpCaption">Alutiiq artists studied beaded garments at the Musée Boulogne-Sur-Mer, France.</div>
+		</div>
+		<div class="col-sm-4">
+			<?php print caGetThemeGraphic($this->request, 'RME1.jpg', array("alt" => "Weavers study grass basketry at the Russian Museum of Ethnography, St. Petersburg, Russia.")); ?>
+			<div class="text-center hpCaption">Weavers study grass basketry at the Russian Museum of Ethnography, St. Petersburg, Russia.</div>
+		</div>
+	</div><!-- end row -->
 	<div class="row">
 		<div class="col-md-6 col-md-offset-3 text-center hpCallOut">
 			<h3>Contact Us</h3>
