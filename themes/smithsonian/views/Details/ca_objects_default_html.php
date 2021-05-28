@@ -1,6 +1,12 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	
+	$filesize = null;
+	if(is_array($reps = $t_object->getRepresentations(['original'])) && sizeof($reps)) {
+		$rep = array_shift($reps);
+		$filesize = $rep['info']['original']['PROPERTIES']['filesize'];
+	}
 ?>
 	<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgLeft">
@@ -23,8 +29,13 @@
 			{{{<unit><ifdef code="ca_objects.idno"><div style='word-wrap: break-word;'><span class='metaTitle'>Identifier</span><span class='meta'>^ca_objects.idno</span></div></ifdef></unit>}}}
 			{{{<unit><ifdef code="ca_occurrences.workType"><div><span class='metaTitle'>Type: </span><span class='meta'><unit delimiter='; '>^ca_occurrences.workType</unit></span></div></ifdef></unit>}}}
 			{{{<unit><ifdef code="ca_objects.technicalNotes"><div><span class='metaTitle'>Technical notes: </span><span class='meta'><unit delimiter='; '>^ca_objects.technicalNotes</unit></span></div></ifdef></unit>}}}
-
+<?php if($filesize > 0) { ?>
+			<div><span class='metaTitle'>File size: </span>
+			<span class='meta'><?= caHumanFilesize($filesize); ?></span>
+			</div>
+		
 <?php
+		}
 			if ($va_essence_track = $t_object->get('ca_objects.essenceTrack', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 				$vs_track = "";
 				foreach ($va_essence_track as $va_key => $va_essence_track_t) {
