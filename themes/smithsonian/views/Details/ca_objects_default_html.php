@@ -151,9 +151,10 @@
 			}
 
 ?>	
-			{{{<ifdef  code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifdef>}}}
+			{{{<ifdef  code="ca_occurrences.restrictions|ca_occurrences.rights|ca_occurrences.sniDepiction|ca_objects.rights|ca_entities.preferred_labels"><hr><h5>Rights & Permissions</h5></ifdef>}}}
 			{{{<unit><ifdef code="ca_occurrences.restrictions"><div><span class='metaTitle'>Restrictions</span><span class='meta'>^ca_occurrences.restrictions</span></div></ifdef></unit>}}}
 			{{{<ifdef code="ca_occurrences.rights"><div><span class='metaTitle'>Rights Note</span><span class='meta'><unit>^ca_occurrences.rights</unit></span></div></ifdef>}}}
+			{{{<ifdef code="ca_objects.rights"><div><span class='metaTitle'>Rights Note</span><span class='meta'><unit>^ca_objects.rights</unit></span></div></ifdef>}}}
 <?php
 
 			if ($qr_occ) {
