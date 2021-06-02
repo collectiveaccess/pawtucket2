@@ -1,7 +1,6 @@
 <?php
 	$t_list = new ca_lists();
-	$vn_facet_id = $t_list->getItemIDFromList("ornament_category", "printers_mark");
-	$vn_facet_id2 = $t_list->getItemIDFromList("ornament_category", "printers_device");
+	$vn_facet_id = $t_list->getItemIDFromList("ornament_category", "printers_device");
 	global $g_ui_locale;
 	AssetLoadManager::register("readmore");
  	
@@ -36,7 +35,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'ornaments', array('facet' => 'ornament_category', 'id' => $vn_facet_id.';'.$vn_facet_id2, 'showFilterPanel' => 1, 'view' => 'list'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'ornaments', array('facet' => 'ornament_category', 'id' => $vn_facet_id, 'showFilterPanel' => 1, 'view' => 'list'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
