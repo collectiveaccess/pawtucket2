@@ -25,7 +25,7 @@
 			
 			}		
 ?>
-		<br/><h3 class="text-center">Browse by Category</h3>
+		<br/><h3 class="text-center">Browse</h3>
 		<hr/>
 <?php
 		if($qr_categories && $qr_categories->numHits()){
@@ -33,7 +33,7 @@
 			<div>
 <?php
 			while($qr_categories->nextHit()){
-				print "<div class='col-sm-12 col-md-6 col-lg-4'>".caNavLink($this->request, "<div class='ornamentsCatItem'>".$qr_categories->get("ca_list_item_labels.name_singular")."</div>", "", "", "Browse", "ornaments", array("facet" => "ornament_category", "id" => $qr_categories->get("ca_list_items.item_id")))."</div>";
+				print "<div class='col-sm-12 col-md-6 col-lg-4'>".caNavLink($this->request, "<div class='ornamentsCatItem'>".strToLower($qr_categories->get("ca_list_item_labels.name_singular"))."</div>", "", "", "Browse", "ornaments", array("facet" => "ornament_category", "id" => $qr_categories->get("ca_list_items.item_id")))."</div>";
 			}
 ?>
 			</div>
