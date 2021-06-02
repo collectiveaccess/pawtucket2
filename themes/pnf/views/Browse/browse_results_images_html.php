@@ -91,12 +91,26 @@
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-				$vs_uniform = null;
-				if ($vs_uniform = $qr_res->get('ca_objects.CCSSUSA_Uniform')) {
-					$vs_label_detail_link 	= caDetailLink($this->request, $vs_uniform, '', $vs_table, $vn_id);
-				} else {
-					$vs_label_detail_link 	= caDetailLink($this->request, '[Short title]', '', $vs_table, $vn_id);
-				}				
+				if(($vs_table === 'ca_objects') && (strToLower($this->request->getAction()) == "objects")){
+					$vs_uniform = null;
+					if ($vs_uniform = $qr_res->get('ca_objects.CCSSUSA_Uniform')) {
+						$vs_label_detail_link 	= caDetailLink($this->request, $vs_uniform, '', $vs_table, $vn_id);
+					} else {
+						$vs_label_detail_link 	= caDetailLink($this->request, '[Short title]', '', $vs_table, $vn_id);
+					}				
+				}elseif (($vs_table === 'ca_objects') && (strToLower($this->request->getAction()) == "ornaments")) {
+					$va_parts = array();
+					if($vs_rel_suelta = $qr_res->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='book' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='book' length='1' limit='1'>^ca_objects.preferred_labels.name</unit></ifcount>")){
+						$va_parts[] = $vs_rel_suelta;
+					}
+					if($vs_printer = $qr_res->getWithTemplate("<ifcount code='ca_entities' restrictToRelationshipTypes='printer' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='printer' length='1' limit='1'>^ca_entities.preferred_labels.displayname</unit></ifcount>")){
+						$va_parts[] = $vs_printer;
+					}
+					if($vs_year = $qr_res->getWithTemplate("^ca_objects.type_date")){
+						$va_parts[] = $vs_year;
+					}
+					$vs_label_detail_link 	= caDetailLink($this->request, join(", ", $va_parts), '', $vs_table, $vn_id);
+				}
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";

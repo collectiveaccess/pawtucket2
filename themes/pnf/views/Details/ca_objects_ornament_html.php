@@ -49,7 +49,7 @@
 				if($vs_representationViewer){
 					print $vs_representationViewer;
 				}else{
-					print "<div class='detailPlaceholder'><i class='fa fa-book fa-5x'></i><div class='placeholderMessage'>Image missing.  We would appreciate if<br/>someone on campus could take a photo<br/>of first and last page and send it to us.</div></div>";
+					print "<div class='detailPlaceholder'><i class='fa fa-book fa-5x'></i></div>";
 				}
 ?>				
 				

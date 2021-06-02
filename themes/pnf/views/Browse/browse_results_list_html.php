@@ -91,7 +91,8 @@
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_uniform = null;
-				if ($vs_table === 'ca_objects') {
+				if (($vs_table === 'ca_objects') && (strToLower($this->request->getAction()) == "objects")) {
+					print "here";
 					if ($vs_uniform = $qr_res->get('ca_objects.CCSSUSA_Uniform')) {
 						$vs_label_detail_link 	= caDetailLink($this->request, $vs_uniform, '', $vs_table, $vn_id);
 					} else {
@@ -104,14 +105,14 @@
 					if(is_array($va_cross_refs) && sizeof($va_cross_refs)){
 						foreach($va_cross_refs as $va_cross_ref){
 							if($va_cross_ref["direction"] == "ltor"){
-								$vs_label_detail_link = $qr_res->getWithTemplate('^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels"> ☜☞ ^ca_occurrences.nonpreferred_labels</ifdef> <i>see</i> <unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.preferred_labels</l></unit>');	
+								$vs_label_detail_link = $qr_res->getWithTemplate('^ca_occurrences.preferred_labels <i>see</i> <unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.preferred_labels</l></unit>');	
 								$vb_cross_ref = true;
 								break;
 							}
 						}
 					}
 					if(!$vb_cross_ref){
-						$vs_label_detail_link = $qr_res->getWithTemplate('<l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels"> ☜☞ ^ca_occurrences.nonpreferred_labels</ifdef></l>');	
+						$vs_label_detail_link = $qr_res->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>');	
 					}				
 				}else{
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
