@@ -17,7 +17,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_occurrences.preferred_labels.name}}}</H4>
+					<H4>{{{^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels"> ☜☞ ^ca_occurrences.nonpreferred_labels</ifdef>}}}</H4>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			

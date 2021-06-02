@@ -75,8 +75,16 @@
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
 <div class="row">
+<?php
+	if(in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies"))){
+?>
+		<div class='col-md-12 col-lg-10 col-lg-offset-1'>
+<?php		
+	}else{
+?>
 	<div class='<?php print ($vs_table == "ca_collections" ? "col-sm-12" : "col-sm-8 col-md-9 col-lg-9"); ?>'>
-<?php 
+<?php
+	}
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 					print "<H5 id='bSortByList'".(($vb_show_filter_panel) ? " class='catchLinks'" : "")."><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
@@ -96,6 +104,23 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 					print "</ul></H5>\n";
 				}
 			}
+
+	if(in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies"))){
+		print "<div>".caNavLink($this->request, '< Back to All '.$this->request->getAction(), 'btn btn-default btn-small', '', 'Listing', $this->request->getAction())."</div>";
+
+?>
+		<form style="float:right;" role="search" action="<?php print caNavUrl($this->request, '', 'Search', $this->request->getAction()); ?>">
+			<div id="filterByNameContainer">
+				<div>
+					<input type="text" name="search" placeholder="<?php print _t('search');?>" value="" onfocus="this.value='';"/>  <button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+				</div>
+			</div>
+		</form>
+<?php
+	}elseif(in_array(strToLower($this->request->getAction()), array("ornaments"))){
+		print "<div>".caNavLink($this->request, '< Back', 'btn btn-default btn-small', '', 'Ornaments', 'intro')."</div>";	
+	}
+
 		if ($vs_table != "ca_collections") {		
 
 		print "<h2 style='margin-bottom:5px;'>".$va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span></h2>";	
@@ -108,7 +133,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
 				if (($va_criterion['facet_name'] != '_search') || (($va_criterion['facet_name'] == '_search') && (strpos($va_criterion['value'], "collection_id") === false))) {
-					if($vb_show_filter_panel && $va_criterion['facet_name'] != 'collection_facet'){
+					if(!$vb_show_filter_panel || ($vb_show_filter_panel && $va_criterion['facet_name'] != 'collection_facet')){
 						print "<strong>".$va_criterion['facet'].':</strong>';
 						if ($va_criterion['facet_name'] != '_search') {
 							print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
@@ -132,7 +157,12 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 		}
 ?>		
 		</H5>
-		<hr>
+		<hr style="clear:both;">
+<?php
+	# --- Hide sort options for those that don't have more than 1
+	if(!in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies", "ornaments"))){
+?>
+		
 		<div id="searchOptions" >
 			<div class='row'>	
 				<div class='col-sm-6 col-md-6 col-lg-6 btn-group'>
@@ -174,6 +204,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 		</div><!-- end searchoptions -->
 
 <?php
+	}
 		}
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
@@ -230,6 +261,10 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 		</div><!-- end row -->
 		</form>
 	</div><!-- end col-8 -->
+<?php
+	if(!in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies"))){
+?>
+
 	<div class="<?php print ($vb_show_filter_panel) ? "catchLinks" : ""; ?> <?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-lg-3"; ?>">
 		<div id="bViewButtons">
 <?php
@@ -250,9 +285,11 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->
+<?php
+	}
+?>	
 	
-	
-</div><!-- end row -->	
+</div><!-- end row -->
 
 <script type="text/javascript">
 	jQuery(document).ready(function() {

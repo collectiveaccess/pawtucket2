@@ -149,7 +149,8 @@ $( document ).ready(function() {
 if($this->request->isLoggedIn()){
 ?>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Glossary'), '', '', 'Listing', 'glossary');?></li>						
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Miscellanies'), '', '', 'Listing', 'miscellanies');?></li>						
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Miscellanies'), '', '', 'Listing', 'miscellanies');?></li>							
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Ornaments'), '', '', 'Ornaments', 'intro');?></li>						
 
 <?php
 }

@@ -45,6 +45,7 @@
 	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
+
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
@@ -96,6 +97,22 @@
 					} else {
 						$vs_label_detail_link 	= caDetailLink($this->request, '[Short title]', '', $vs_table, $vn_id);
 					}
+				}elseif(($vs_table === 'ca_occurrences') && (strToLower($this->request->getAction()) == "glossary")){
+# --- glossary result format
+					$va_cross_refs = $qr_res->get("ca_occurrences.related", array("restrictToRelationshipTypes" => array("related"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
+					$vb_cross_ref = false;
+					if(is_array($va_cross_refs) && sizeof($va_cross_refs)){
+						foreach($va_cross_refs as $va_cross_ref){
+							if($va_cross_ref["direction"] == "ltor"){
+								$vs_label_detail_link = $qr_res->getWithTemplate('^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels"> ☜☞ ^ca_occurrences.nonpreferred_labels</ifdef> <i>see</i> <unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.preferred_labels</l></unit>');	
+								$vb_cross_ref = true;
+								break;
+							}
+						}
+					}
+					if(!$vb_cross_ref){
+						$vs_label_detail_link = $qr_res->getWithTemplate('<l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels"> ☜☞ ^ca_occurrences.nonpreferred_labels</ifdef></l>');	
+					}				
 				}else{
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					#if ($vs_table === 'ca_collections') {
@@ -151,7 +168,9 @@
 				}
 				
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
-
+if(in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies"))){
+				print "<div class='bResultListItemCol col-xs-12 col-sm-12 col-md-4'><div class='bResultListSimpleResult'>{$vs_label_detail_link}</div></div>";
+}else{
 				print "
 	<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
@@ -165,6 +184,7 @@
 	</div><!-- end col -->";
 				
 				$vn_c++;
+}
 			}
 			
 			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));

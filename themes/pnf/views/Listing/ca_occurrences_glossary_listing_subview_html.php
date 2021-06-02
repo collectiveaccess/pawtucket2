@@ -35,24 +35,18 @@
  	$va_type_info = $this->getVar('typeInfo');
  	$va_listing_info = $this->getVar('listingInfo');
  	$vs_action = $this->request->getAction();
+ 	$va_access_values = caGetUserAccessValues($this->request);
  	global $g_ui_locale;
 ?>
 	<nav class="navbar navbar-fixed-top" id="bibHeading">
 
+		<form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'glossary'); ?>">
 			<div id="filterByNameContainer">
 				<div>
-					<input type="text" name="filterByName" id="filterByName" placeholder="<?php print _t('search');?>" value="" onfocus="this.value='';"/><a href="#" onclick="jQuery('.listEntry').css('display', 'block'); jQuery('.listing-searchable-intro').css('display', 'block'); jQuery('#filterByName').val(''); jQuery('.mw-headline').removeClass('noLetter'); jQuery('.separator').removeClass('noSeparator'); jQuery('#filterByName').val(''); return false;"> <i class="fa fa-close"></i> 
-<?php		
-			global $g_ui_locale;	
-			if ($g_ui_locale == 'en_US'){			
-				print "clear search";
-			} else {
-				print "Borrar búsqueda";
-			}				
-?>				
-				</a>
+					<input type="text" name="search" placeholder="<?php print _t('search');?>" value="" onfocus="this.value='';"/>  <button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+				</div>
 			</div>
-		</div>
+		</form>
 <?php
 			if ($g_ui_locale == 'en_US'){
 				print "<h2>{$va_listing_info['displayName']}</h2>\n";
@@ -61,12 +55,12 @@
 			
 			}		
 ?>
-	</nav>
+	</nav><hr style="margin-top:-18px;"/>
 
 	<div class="listing-content single-lists">
 		<div class="listing-searchable">
 			<div id='glossaryBodyIntro' class='listing-searchable-intro'>
-			<div class="row"><div class="col-sm-6">
+			<div class="row"><div class="col-md-6">
 <?php
 			if ($g_ui_locale == 'en_US'){			
 ?>
@@ -83,9 +77,9 @@
 			
 			}		
 ?>
-			</div><div class="col-sm-6 fullWidthImg">
+			</div><div class="col-md-6 fullWidthImg">
 <?php
-				print caGetThemeGraphic($this->request, 'Anatomy_State_3.jpg');
+				print "<a href='".caGetThemeGraphicUrl($this->request, 'Anatomy_State_3.jpg')."' target='_blank'>".caGetThemeGraphic($this->request, 'Anatomy_State_3.jpg')."</a>";
 ?>
 			</div></div>
 			</div>
@@ -101,7 +95,20 @@
 			$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			if(!$va_links_array[$vs_first_letter][$vs_sort]){
-				$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."<span style='display:none;'>".$qr_list->getWithTemplate('^ca_occurrences.description')."</span></div>\n";	
+				$va_cross_refs = $qr_list->get("ca_occurrences.related", array("restrictToRelationshipTypes" => array("related"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
+				$vb_cross_ref = false;
+				if(is_array($va_cross_refs) && sizeof($va_cross_refs)){
+					foreach($va_cross_refs as $va_cross_ref){
+						if($va_cross_ref["direction"] == "ltor"){
+							$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels"> ☜☞ ^ca_occurrences.nonpreferred_labels</ifdef> <i>see</i> <unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.preferred_labels</l></unit>')."</div>\n";	
+							$vb_cross_ref = true;
+							break;
+						}
+					}
+				}
+				if(!$vb_cross_ref){
+					$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels"> ☜☞ ^ca_occurrences.nonpreferred_labels</ifdef></l>')."</div>\n";	
+				}
 			}
 		}
 		ksort($va_links_array);
@@ -145,68 +152,7 @@
 	
 		<script type="text/javascript">
 			
-			// This will break in jQuery 1.8
-			jQuery.extend($.expr[':'], {
-			  'containsi': function(elem, i, match, array)
-			  {
-				return (elem.textContent || elem.innerText || '').toLowerCase()
-				.indexOf((match[3] || "").toLowerCase()) >= 0;
-			  }
-			});
-			jQuery(document).ready(function() {
-				//prevent form submit with enter key
-				jQuery('#filterByName').bind("keypress", function(e) {
-					if (e.keyCode == 13) {
-						return false;
-					}
-				});
-				
-				var typingTimer;
-				
-				//jQuery('#filterByName').css('color', '#eeeeee');
-				jQuery('#filterByName').bind('keyup', function(e) {
-					if (!jQuery('#filterByName').val()) {
-								jQuery(".mw-headline").removeClass("noLetter");
-								jQuery(".separator").removeClass("noSeparator");
-								jQuery('.listing-searchable-intro').css('display', 'block');
-								jQuery(".listEntry").css("display", "block");
-					}
-					typingTimer = setTimeout(function() {
-						var t = jQuery('#filterByName').val();
-						if (t.length > 0) {
-							jQuery(".listEntry").css("display", "none");
-							if (jQuery(".listEntry:containsi(" + t + ")").length) {
-								jQuery(".mw-headline").addClass("noLetter");
-								jQuery(".separator").addClass("noSeparator");
-								jQuery('.listing-searchable-intro').css('display', 'none');
-								jQuery(".listEntry:containsi(" + t + ")").css("display", "block");
-							}else{
-								jQuery(".mw-headline").removeClass("noLetter");
-								jQuery(".separator").removeClass("noSeparator");
-								jQuery('.listing-searchable-intro').css('display', 'block');
-								jQuery(".listEntry").css("display", "block");
-							}
-						} else {
-							jQuery(".mw-headline").removeClass("noLetter");
-							jQuery(".separator").removeClass("noSeparator");
-							jQuery('.listing-searchable-intro').css('display', 'block');
-							jQuery(".listEntry").css("display", "block");
-						}
-					}, 1500);
-				});
-				jQuery('#filterByName').bind('keydown', function(){
-					clearTimeout(typingTimer);
-					//jQuery('#filterByName').css('color', '#999999');
-				});
-				
-				jQuery('#filterByName').bind('focus', function(){
-					//jQuery('#filterByName').css('color', '#000000');
-					if (jQuery('#filterByName').val() == 'Name') {
-						jQuery('#filterByName').val('');
-					}
-				});
-			});
-			
+
 			jQuery(document).ready(function() {
 				$(".trimText").readmore({
 				  speed: 75,
