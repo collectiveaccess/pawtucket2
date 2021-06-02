@@ -150,7 +150,9 @@ if($this->request->isLoggedIn()){
 ?>
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Glossary'), '', '', 'Listing', 'glossary');?></li>						
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Miscellanies'), '', '', 'Listing', 'miscellanies');?></li>							
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Ornaments'), '', '', 'Pictorials', 'ornaments');?></li>						
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Ornaments'), '', '', 'Pictorials', 'ornaments');?></li>							
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Printer's Marks & Devices"), '', '', 'Pictorials', 'PrintersDevices');?></li>	
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Illustrations"), '', '', 'Pictorials', 'Illustrations');?></li>						
 
 <?php
 }
