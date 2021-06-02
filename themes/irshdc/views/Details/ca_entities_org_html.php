@@ -102,7 +102,7 @@ if($vs_mode == "map"){
 						
 						{{{<ifdef code="ca_entities.indexingDatesSet"><div class="unit"><unit relativeTo="ca_entities" delimiter=", ">^ca_entities.indexingDatesSet</unit></div></ifdef>}}}
 						
-						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><l><unit relativeTo="ca_entities.related">^ca_entities.preferred_labels.displayname</unit></l> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</unit></div></ifcount>}}}
+						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities.related" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						{{{<ifdef code="ca_entities.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
 								<div class="trimText">^ca_entities.description_new.description_new_txt</div>
