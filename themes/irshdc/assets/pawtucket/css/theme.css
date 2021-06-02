@@ -1496,9 +1496,12 @@ h2.exhibitionSection{
 .staticPage H1{
 	margin-top:40px;
 }
-.staticPage p, .staticPage div{
+.staticPage p{
 	font-size:16px;
 	margin-bottom:20px;
+}
+.staticPage p, .staticPage div {
+    line-height: 1.8em;
 }
 .staticPage b{
 	font-family: lato;
