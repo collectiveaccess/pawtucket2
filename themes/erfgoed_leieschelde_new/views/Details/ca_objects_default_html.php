@@ -35,9 +35,7 @@
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
 
-	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"));
 	MetaTagManager::addMetaProperty("og:title", $t_object->get("ca_objects.preferred_labels.name"));
-	MetaTagManager::addMetaProperty("og:type", "website");
 	if($vs_tmp = $t_object->getWithTemplate("^ca_objects.content_description")){
 		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
 	}
@@ -209,9 +207,9 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120,
+		  maxHeight: 127,
 		  moreLink: '<a href="#">Lees meer</a>',
-          lessLink: '<a href="#">Dichtbij</a>'
+          lessLink: '<a href="#">Lees Minder</a>'
 		});
 	});
 </script>
