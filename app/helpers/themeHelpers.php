@@ -425,8 +425,28 @@
 		
 		if(!$pa_options["currentRepClass"]){ $pa_options["currentRepClass"] = "active"; }
 		
+		$show_only_media_types_when_present = caGetOption('representationViewerShowOnlyMediaTypesWhenPresent', $pa_options, null);
+ 		if(($show_only_media_types_when_present) && !is_array($show_only_media_types_when_present)) { $show_only_media_types_when_present = [$show_only_media_types_when_present]; }
+		
 		# --- get reps as thumbnails
 		$va_reps = $pt_object->findRepresentations(['version' => $ps_version, "class" => caGetOption('class', $pa_options, null), "checkAccess" => caGetUserAccessValues($po_request), 'primaryOnly' => $pb_primary_only]);
+		
+		if ($show_only_media_types_when_present) {
+			$mimetypes_present = array_reduce($va_reps, function($c, $i) { $c[$i['mimetype']] = true; return $c; }, []);
+			
+			foreach($show_only_media_types_when_present as $t) {
+				if (caMimetypeIsValid($t, array_keys($mimetypes_present))) {
+					$show_only_media_types_when_present_reduced[] = $t;
+				}
+			}
+			
+			if(sizeof($show_only_media_types_when_present_reduced) > 0) {
+				$va_reps = array_filter($va_reps, function($v) use ($show_only_media_types_when_present_reduced) {
+					return caMimetypeIsValid($v['mimetype'], array_values($show_only_media_types_when_present_reduced));
+				});	
+			}
+		}
+		
 		if(sizeof($va_reps) < 2){
 			return null;
 		}
@@ -1221,7 +1241,7 @@
                     $.ajax({
                         url: '{$va_json_lookup_info['search']}',
                         dataType: \"json\",
-                        data: { term: '{$ps_field}:' + request.term },
+                        data: { term: ".(caGetOption('restrictToField', $pa_options, true) ? "'{$ps_field}:'" : "''")." + request.term },
                         success: function( data ) {
                             response(data);
                         }

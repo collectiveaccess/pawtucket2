@@ -143,6 +143,7 @@
 						#print "<a href='#related'><div class='digExhSideNavLink digExhSideNavLinkNoImg'>Related Resources</div></a>";
 					}
 					print "<div class='digExhSideNavLinkOut'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")));
+					print "<a href='https://irshdc.ubc.ca/for-survivors/healing-and-wellness-resources/' target='_blank'>Wellness & Support</a>";
 					#print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'));
 					print "</div>";
 					
@@ -367,7 +368,7 @@
 													jQuery(document).ready(function() {
 														// storymap_data can be an URL or a Javascript object
 														//var storymap_data = '//media.knightlab.com/StoryMapJS/demo/demo.json';
-														var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'storymap', 'set_id' => $vn_set_id)); ?>';
+														var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'storymap', 'set_id' => $vn_set_id, 'download' => 1)); ?>';
 
 														// certain settings must be passed within a separate options object
 														var storymap_options = {};

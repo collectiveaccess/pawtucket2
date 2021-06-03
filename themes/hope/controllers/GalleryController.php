@@ -159,15 +159,21 @@
  					#$va_sets_navigation[$parent_id] = $t_parent->getLabelForDisplay();
  					$vs_parent_name = $t_parent->getLabelForDisplay();
  					$vs_parent_description = $t_parent->get($this->config->get('gallery_set_description_element_code'));
+ 					$vs_parent_credit = $t_parent->get("ca_sets.credit");
+ 					$vs_parent_approval_date = $t_parent->get("ca_sets.approval_date");
 				}else{
 					$parent_id = $t_set->get("ca_sets.set_id");
 					#$va_sets_navigation[$parent_id] = $t_set->getLabelForDisplay();
  					$vs_parent_name = $t_set->getLabelForDisplay();
  					$vs_parent_description = $t_set->get($this->config->get('gallery_set_description_element_code'));
+ 					$vs_parent_credit = $t_set->get("ca_sets.credit");
+ 					$vs_parent_approval_date = $t_set->get("ca_sets.approval_date");
 				}
 				$this->view->setVar("parent_id", $parent_id);
 				$this->view->setVar("parent_name", $vs_parent_name);
  				$this->view->setVar("parent_description", $vs_parent_description);
+ 				$this->view->setVar("parent_credit", $vs_parent_credit);
+ 				$this->view->setVar("parent_approval_date", $vs_parent_approval_date);
 				# --- get all children or siblings of this set
 				#$o_db = new Db();
 				#$q_sets = $o_db->query("SELECT s.set_id, csl.name FROM ca_sets s INNER JOIN ca_set_labels AS csl ON s.set_id = csl.set_id WHERE s.parent_id = ? AND s.deleted = 0 AND s.access IN (".join(", ", $this->opa_access_values).")", $parent_id);
@@ -197,6 +203,8 @@
 				} 				 				
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
  				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
+ 				$this->view->setVar("credit", $t_set->get("ca_sets.credit"));
+ 				$this->view->setVar("approval_date", $t_set->get("ca_sets.approval_date"));
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
  				
  				$set_item_id = $this->request->getParameter('set_item_id', pInteger);
@@ -262,6 +270,8 @@
  			$this->view->setVar("set_id", $set_id);
  			$this->view->setVar("label", $t_set->getLabelForDisplay());
  			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
+ 			$this->view->setVar("credit", $t_set->get("ca_sets.credit"));
+ 			$this->view->setVar("approval_date", $t_set->get("ca_sets.approval_date"));
  			#$this->view->setVar("num_items", $t_set->getItemCount(array("checkAccess" => $this->opa_access_values)));
  			
  			$set_item = array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));

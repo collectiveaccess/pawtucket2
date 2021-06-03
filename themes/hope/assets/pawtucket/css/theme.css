@@ -153,7 +153,25 @@ ul.menuItems {
 	padding-top:5px;
 	padding-bottom:5px;
 }
-
+/* Front */
+.frontIntro{
+	font-size: 18px;
+	margin-top:40px;
+}
+.frontIntro a{
+	text-decoration:underline;
+}
+.front H1, .front H2{
+	font-size: 20px;
+	color: #000000;
+	text-transform: uppercase;
+	margin-top: 0px;
+	font-family:Lato;
+	padding-top:0px;
+}
+.front H2{
+	margin-top:60px;
+}
 /* browse */
 #bRefine{
 	background-color:#FFF;
@@ -408,6 +426,16 @@ a:hover .themesContainer{
 .gallery H5, .gallery H3{
 	font-size:13px;
 }
+.gallery .credit{
+	font-size:13px;
+	color:#777;
+	text-transform:uppercase;
+	padding-top:5px;
+}
+.gallery .credit i{
+	text-transform:none;
+	font-size:12px;
+}
 .gallery .tombstone{
 	line-height:1.3em;
 	font-size:15px;
@@ -464,6 +492,7 @@ a:hover .themesContainer{
 }
 .twoCol{
 	column-count: 2;
+	margin-bottom: 15px;
 }
 .gallery a.readmore-js-toggle, .gallery a.readmore-js-toggle:hover {
     color: #161616;
@@ -497,9 +526,10 @@ a:hover .themesContainer{
 /* form overlay */
 @media(min-width:768px){
 	#caFormOverlay {
-		margin-top: 10%;
+		margin-top: 5%;
 	}
 	#caFormOverlay.caFormOverlayWide{
 		width:700px;
+		max-height:600px;
 	}
 }

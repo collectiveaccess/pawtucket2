@@ -151,12 +151,17 @@
 					}
 					$vs_buf.= "</div>";
 				}
-				if ($va_aat_media_array = $t_object->get('ca_objects.aat_media', array('returnAsArray' => true))) {
-					$vs_buf.= "<div class='unit'><h6>Medium Terms</h6>";
-					sort($va_aat_media_array);
-					foreach ($va_aat_media_array as $va_key => $vs_aat_media_id) {
-						$vs_buf.= caNavLink($this->request, $vs_aat_media_id, '', '', 'Search', 'objects', array('search' => 'ca_objects.aat_media:'.$vs_aat_media_id))."<br/>";
+				if ($va_primary_classification = $t_object->get('ca_objects.primary_classification', array('returnAsArray' => true))) {
+					$t_list_item = new ca_list_items();
+					$vs_buf.= "<div class='unit'><h6>Object Type</h6>";
+					$va_links = array();
+					foreach ($va_primary_classification as $vn_item_id) {
+						$t_list_item->load($vn_item_id);
+						$vs_term = $t_list_item->get("ca_list_item_labels.name_singular");
+						$va_links[$vs_term] = caNavLink($this->request, $vs_term, '', '', 'Browse', 'objects', array('facet' => 'type_facet', 'id' => $vn_item_id));
 					}
+					ksort($va_links);
+					$vs_buf.= join("<br/>", $va_links);
 					$vs_buf.= "</div>";
 				}
 				if ($va_academic_array = $t_object->get('ca_objects.academic_themes_1', array('returnAsArray' => true))) {

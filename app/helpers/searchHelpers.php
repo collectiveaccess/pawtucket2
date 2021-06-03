@@ -680,16 +680,20 @@
 							$vs_element_rel_type = "/".join(";", $pa_form_values[$vs_dotless_element.':relationshipTypes']);
 						}
 					
+						// Rewrite autocomplete query to use primary key value
 						if(isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}_autocomplete"])) {
 							$va_fld = explode(".", $vs_element);
 							$t_table = Datamodel::getInstanceByTableName($va_fld[0], true);
-							foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
-								if ($t_table) { $vs_search_element = $t_table->primaryKey(true); }
+							
+							if(!ca_metadata_elements::isAuthorityDatatype($va_fld[1])) {	// only rewrite for relationships, not authority metdata elements
+								foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
+									if ($t_table) { $vs_search_element = $t_table->primaryKey(true); }
 								
-								$va_values[$vs_search_element.$vs_element_rel_type][] = trim($vs_element_value);
-								$va_booleans["{$vs_search_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
+									$va_values[$vs_search_element.$vs_element_rel_type][] = trim($vs_element_value);
+									$va_booleans["{$vs_search_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
+								}
+								continue(2);
 							}
-							continue(2);
 						}
 						foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
 							if(!strlen(trim($vs_element_value))) { continue; }
@@ -1805,5 +1809,81 @@
 		if(sizeof($va_sets) == 0) { return false; }
 		$t_set = new ca_sets();
 		return $t_set->getPreferredDisplayLabelsForIDs(array_keys($va_sets));
+	}
+	# ---------------------------------------
+	/**
+	 * Get list of terms in search expression
+	 * (Ex. "Berlin Alexanderplatz" and date:1970s will return [Berlin, Alexanderplatz, 1970s])
+	 *
+	 * @param mixed $search A search expression or Lucene Parser element containing the search
+	 *
+	 * @return array A list of terms
+	 */
+	function caExtractTermsForSearch($search) {
+		if(is_string($search)) {
+			$qp = new LuceneSyntaxParser();
+			$qp->setEncoding('UTF-8');
+			$qp->setDefaultOperator(LuceneSyntaxParser::B_AND);
+			try {
+				$parsed = $qp->parse($search, 'UTF-8');
+			} catch (Exception $e) {
+				return [$search];
+			}
+		} else {
+			$parsed = $search;
+		}
+		if(!is_object($parsed)) { return []; }
+		$terms = [];
+		switch(get_class($parsed)) {
+			case 'Zend_Search_Lucene_Search_Query_Boolean':
+				foreach($parsed->getSubqueries() as $sq) {
+					$terms = array_merge($terms, caExtractTermsForSearch($sq));
+				}
+				break;
+			case 'Zend_Search_Lucene_Search_Query_MultiTerm':
+				$terms = $parsed->getTerms();
+				break;
+			case 'Zend_Search_Lucene_Search_Query_Phrase':
+			case 'Zend_Search_Lucene_Search_Query_Range':
+				foreach($parsed->getQueryTerms() as $t) {
+					$terms[] = $t->text;
+				}
+				break;
+			case 'Zend_Search_Lucene_Index_Term':
+				$terms[] = caConvertSearchTermsToText($parsed->field, $parsed->text);
+				break;
+			case 'Zend_Search_Lucene_Search_Query_Term':
+				$terms[] = caConvertSearchTermsToText($parsed->getTerm()->field, $parsed->getTerm()->text);
+				break;	
+			case 'Zend_Search_Lucene_Search_Query_Wildcard':
+			case 'Zend_Search_Lucene_Search_Query_Fuzzy':
+			case 'Zend_Search_Lucene_Search_Query_Insignificant':
+			case 'Zend_Search_Lucene_Search_Query_Empty':
+				// noop
+				break;
+			default:
+				return [];
+				break;
+		}
+		return $terms;
+	}
+	# ---------------------------------------
+	/**
+	 * Transform code terms into display text. If term is already text it will be returned as-is.
+	 *
+	 * @param string $field The field the term is restricted to
+	 * @param string $term Term text
+	 *
+	 * @return string
+	 */
+	function caConvertSearchTermsToText($field, $term) : string {
+		$tmp = explode('.', $field);
+		
+		if($t_instance = Datamodel::getInstance($tmp[0], true)) {
+			if ($tmp[1] === $t_instance->getProperty('ATTRIBUTE_TYPE_ID_FLD')) {
+				return $t_instance->getTypeName($term);
+			}
+		}
+		return $term;
 	}
 	# ---------------------------------------

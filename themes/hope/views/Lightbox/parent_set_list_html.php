@@ -111,7 +111,7 @@
 					<div class="btn-group pull-right">
 						<button class="btn btn-default btn-sm" data-toggle="dropdown">Options <span class="glyphicon glyphicon-cog bGear"></span></button>
 						<ul class="dropdown-menu" role="menu">
-							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id"), 'mode' => 'parent')); ?>"); return false;' ><?php print _t("Edit Name/Description"); ?></a></li>
+							<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array("set_id" => $t_set->get("set_id"), 'mode' => 'parent')); ?>"); return false;' ><?php print _t("Edit Name/Credit/Description"); ?></a></li>
 <?php
 						if($vb_creator){
 ?>
@@ -186,6 +186,9 @@
 						print "</div></div></div>";
 						if ($vs_tmp = $t_set->get("ca_sets.".$vs_description_field)) {
 							print "<div class='row'><div class='col-sm-12'><div class='unit'><b>Description</b><div class='parentListDesc'>".$vs_tmp."</div></div></div></div><!-- end row -->";
+						}
+						if ($vs_tmp = $t_set->get("ca_sets.credit")) {
+							print "<div class='row'><div class='col-sm-12'><div class='unit'><b>Credit</b><div class='parentListDesc'>".$vs_tmp."</div></div></div></div><!-- end row -->";
 						}
 						if($vs_cover_image){
 							print "<div class='row'><div class='col-sm-12'><div class='unit'><b>Cover Image</b> (Featured image on gallery landing page)<div class='parentItemCoverImage'>".$vs_cover_image."</div></div></div></div>";

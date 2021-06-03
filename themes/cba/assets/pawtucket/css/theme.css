@@ -83,6 +83,11 @@ b, strong {
 	text-align:left;
 	border-bottom: 1px dashed rgb(0,0,0);
 }
+@media(max-width:540px){
+	.collectionHeader a.btn-default{
+		padding-bottom:5px;
+	}
+}
 #headerSearchInput{
 	border:0px;
 	border-bottom: 1px solid #000;
@@ -174,6 +179,10 @@ b, strong {
     transform: scale(1.25,1);
 	display: inline-block;
 	padding-right:7px;
+}
+.search .btn a:hover{
+	color:#fff;
+	text-decoration:none;
 }
 a.browseRemoveFacet .glyphicon {
     color: #000 !important;
@@ -472,7 +481,7 @@ footer{
 	line-height: 1.25;
 }
 .footer{
-	z-index:10000000000;
+	z-index:1000;
 	position:relative;
 	background-color:#FFF;
 }

@@ -284,7 +284,7 @@
 				}
 				if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
 				
-				$this->view->setVar('representationViewerPrimaryOnly', caGetOption('representationViewerPrimaryOnly', $va_options, false));
+				$this->view->setVar('representationViewerPrimaryOnly', $rep_viewer_primary_only = caGetOption('representationViewerPrimaryOnly', $va_options, false));
 				$this->view->setVar('representationViewer', 
 					caRepresentationViewer(
 						$this->request, 
@@ -301,6 +301,9 @@
 							]
 						)
 					)
+				);
+				$this->view->setVar('representationViewerThumbnailBar', 
+					caObjectRepresentationThumbnails($this->request, $this->view->getVar("representation_id"), $t_subject, array_merge($va_options, ["returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $rep_viewer_primary_only ? 1 : 0]))
 				);
 			}
 			

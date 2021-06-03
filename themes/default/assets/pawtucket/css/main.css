@@ -348,6 +348,10 @@ h1 i {
 	position:relative;
 	border-radius: 3px;
 }
+.navbar-form{
+	-webkit-box-shadow: none;
+	box-shadow:none;
+}
 .navbar-form .form-group {
 	width:140px;
 }
@@ -2925,6 +2929,17 @@ div.caMediaOverlayControls .close{
 	font-size: 22px;
 	opacity: 0.9;
 }
+
+div.caMediaOverlayControls .nextPreviousLinks{
+	float:right;
+	margin: 0px 10px 0px 20px;
+	font-size: 22px;
+	opacity: 0.9;
+	
+	color:#FFF;
+	font-size: 11px;
+}
+
 div.caMediaOverlayControls .download{
 	float:right;
 	margin: 2px 0 0 20px;

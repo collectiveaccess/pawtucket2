@@ -496,6 +496,7 @@
 					// pass name and description to populate form
 					$this->view->setVar("name", $t_set->getLabelForDisplay());
 					$this->view->setVar("description", $t_set->get($this->ops_description_attribute));
+					$this->view->setVar("credit", $t_set->get("ca_sets.credit"));
 				}else{
 					throw new ApplicationException(_t("You do not have access to this item"));
 				}
@@ -538,13 +539,20 @@
  			// set name - required
  			
  			if(!($ps_name = $this->purifier->purify($this->request->getParameter('name', pString)))){
- 				$va_errors[] = _t("Please enter the name of your %1", $vs_display_name);
+				# - slideshow can default to [Untitled] - galleries need a name
+				if($ps_mode != "parent"){
+					$ps_name = "[Untitled]";
+				}else{
+ 					$va_errors["name"] = _t("Please enter the name of your %1", $vs_display_name);
+				}
  			}
  			$this->view->setVar("name", $ps_name);
  			
  			// set description - optional
  			$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));
  			$this->view->setVar("description", $ps_description);
+ 			$ps_credit =  $this->purifier->purify($this->request->getParameter("credit", pString));
+ 			$this->view->setVar("credit", $ps_credit);
 			
 			if($ps_mode != "parent"){
 				// slideshow -> needs a parent
@@ -567,6 +575,7 @@
 				if($t_set->get("ca_sets.set_id")){
 					// edit/add description
 					$t_set->replaceAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
+					$t_set->replaceAttribute(array('credit' => $ps_credit, 'locale_id' => $g_ui_locale_id), 'credit');
 					$t_set->update();
 				}else{
 					$pn_parent_id = $this->request->getParameter('parent_id', pInteger);
@@ -584,6 +593,7 @@
 					$t_set->set('parent_id', $pn_parent_id);
 					// create new attribute
 					$t_set->addAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
+					$t_set->addAttribute(array('credit' => $ps_credit, 'locale_id' => $g_ui_locale_id), 'credit');
 					$t_set->insert();
 					$vb_is_insert = true;
 					
@@ -650,6 +660,7 @@
 				}
 			}else{
 				$this->view->setVar('errors', $va_errors);
+				$this->setForm();
 			}
 
 			if(($ps_mode != "parent") && (!$vb_is_insert)){
@@ -1102,6 +1113,9 @@
 				$t_pub_set = new ca_sets($vn_pub_set_id);
 				$t_pub_set->setMode(ACCESS_WRITE);
 				$t_pub_set->set('access', $vn_access);
+				if($this->ovb_kam_curator){
+					$t_pub_set->addAttribute(array('approval_date' => 'today', 'locale_id' => $g_ui_locale_id), 'approval_date');
+				}
 				$t_pub_set->update();
 				if($t_pub_set->numErrors()) {
 					$va_errors[] = join("; ", $t_pub_set->getErrors());
@@ -1194,7 +1208,7 @@
 				$o_view->setVar("from_email", $this->request->user->get("email"));
 				$o_view->setVar("display_name", $vs_display_name);
 				$o_view->setVar("display_name_plural", $vs_display_name_plural);
-				$o_view->setVar("message", $this->request->getParameter('message', pString));
+				$o_view->setVar("message", $this->purifier->purify($this->request->getParameter('message', pString)));
 			
 				# -- generate email subject line from template
 				$vs_subject_line = $o_view->render("mailTemplates/lightbox_user_unpublish_notification_subject.tpl");
@@ -1236,6 +1250,8 @@
 					$t_pub_set = new ca_sets($vn_pub_set_id);
 					$t_pub_set->setMode(ACCESS_WRITE);
 					$t_pub_set->set('access', ($vn_access) ? $vn_access : 1);
+					$t_pub_set->addAttribute(array('approval_date' => 'today', 'locale_id' => $g_ui_locale_id), 'approval_date');
+				
 					$t_pub_set->update();
 					if($t_pub_set->numErrors()) {
 						$va_errors[] = join("; ", $t_pub_set->getErrors());
@@ -1825,7 +1841,7 @@
 				// set name - if not sent, make a decent default
 				$ps_name = $this->purifier->purify($this->request->getParameter('name', pString));
 				if(!$ps_name){
-					$ps_name = _t("Your %1", $vs_display_name);
+					$ps_name = _t("[Untitled]");
 				}
 				// set description - optional
 				$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));

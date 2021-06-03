@@ -12,6 +12,7 @@
 	
 	$this->opo_config = caGetLightboxConfig();
 	$vn_under_review_access = $this->opo_config->get('lightbox_under_review_access');
+	$vb_side_nav = false;
 		
 	if($pn_parent_id && is_array($va_set_navigation) && sizeof($va_set_navigation)){
 ?>
@@ -22,14 +23,24 @@
 				print "<div class='alert alert-warning' role='alert'>Under review for publication.  Only visable by logged in Administrators.</div>";
 			}
 
-			print "<H1>".$this->getVar("parent_name")."</H1>";
+			print "<H1>".$this->getVar("parent_name");
+			$vs_credit = $this->getVar("parent_credit");
+			$vs_approval_date = $this->getVar("parent_approval_date");
+			
+			if($vs_credit || $vs_approval_date){
+				print "<div class='credit'>".$vs_credit.(($vs_credit && $vs_approval_date) ? " - " : "")."<i>".$vs_approval_date."</i></div>";
+			}
+			print "</H1>";
 			if($vs_parent_desc = $this->getVar("parent_description")){
-				print "<p class='twoCol trimTextTop'>".$vs_parent_desc."</p>";
+				print "<div class='twoCol trimTextTop'>".$vs_parent_desc."</div>";
 			}
 ?>
 		</div>
 	</div>
 	<div class="row">
+<?php
+		if(sizeof($va_set_navigation) > 1){
+?>
 		<div class="col-sm-12 col-md-3">
 			<div class="gallerySectionNav">
 <script type='text/javascript'>
@@ -59,6 +70,11 @@
 		
 		<div class="col-sm-12 col-md-9">
 <?php
+		}else{
+?>
+			<div class="col-sm-12">
+<?php
+		}
 	}
 ?>
 	<div class="row">
@@ -79,7 +95,18 @@
 
 	<div class="row">
 		<div class="col-sm-12">
-			<H1><?php print ((!$pn_parent_id) ? $this->getVar("section_name").": " : "").$this->getVar("label"); ?></H1>
+			<H1><?php print ($this->getVar("label") !== "[Untitled]") ? $this->getVar("label") : ""; ?>
+<?php
+			$vs_approval_date_slideshow = "";
+			if(!$vs_approval_date){
+				$vs_approval_date_slideshow = $this->getVar("approval_date");
+			}
+			if($this->getVar("credit") || $vs_approval_date_slideshow){
+				
+				print "<div class='credit'>".$this->getVar("credit").(($this->getVar("credit") && $vs_approval_date_slideshow) ? " - " : "")."<i>".$vs_approval_date_slideshow."</i></div>";
+			}
+?>
+			</H1>
 		</div>
 	</div>
 	<div class="row">

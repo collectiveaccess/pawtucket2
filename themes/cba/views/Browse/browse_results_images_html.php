@@ -128,7 +128,9 @@
 						#		$vs_thumbnail = $vs_default_placeholder_tag;
 						#	}
 						#}
-						$vs_thumbnail = $vs_default_placeholder_tag;
+						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
+							$vs_thumbnail = $vs_default_placeholder_tag;
+						}
 						$vs_info = null;
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					} else {
