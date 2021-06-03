@@ -52,10 +52,11 @@
 					
 					
 					
-					{{{<ifcount code="ca_collections.related" min="1" max="1"><label>Collectie</label></ifcount>}}}
-					{{{<ifcount code="ca_collections.related" min="2"><label>Collecties</label></ifcount>}}}
-					{{{<unit relativeTo="ca_collections_x_collections"><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.related.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
-					
+					{{{<ifcount code="ca_collections.related" min="1">
+							<ifcount code="ca_collections.related" min="1" max="1"><label>Collectie</label></ifcount>
+							<ifcount code="ca_collections.related" min="2"><label>Collecties</label></ifcount>
+							<unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>
+					</ifcount>}}}
 <?php
 				print '<div id="detailTools">';
 				print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, _t("Inquire About This Collection"), "", "", "Contact",  "form", array('table' => 'ca_collections', 'id' => $t_item->get("ca_collections.collection_id")))."</div>";
@@ -113,7 +114,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => 'ca_collections.parent_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsCollectionContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
