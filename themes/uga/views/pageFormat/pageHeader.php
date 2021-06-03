@@ -44,8 +44,8 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
@@ -81,7 +81,7 @@
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   (function() {
-    var u="//uga.whirl-i-gig.com/pikwik/";
+    var u="//bmac.libs.uga.edu/pawtucket2/pikwik/";
     _paq.push(['setTrackerUrl', u+'piwik.php']);
     _paq.push(['setSiteId', '1']);
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
@@ -156,8 +156,11 @@
 					  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Browse Collections<span class="caret"></span></a>
 					  <ul class="dropdown-menu">
 				
+						
 						<li <?php print ($this->request->getController() == "Browse All") ? 'class="active"' : ''; ?>>
 						<?php print caNavLink($this->request, _t("Browse All"), "", "", "FindingAids", "Collections"); ?></li>
+						<li><a href="https://bmac.libs.uga.edu/pawtucket2/index.php/Peabody/Index">Peabody</a></li>
+						<li><a href="https://bmac.libs.uga.edu/pawtucket2/index.php/Newsfilm/Index">Newsfilm</a></li>
 						<li <?php print ($this->request->getController() == "Audio/Radio") ? 'class="active"' : ''; ?>>
 						<?php print caNavLink($this->request, _t("Audio/Radio"), "", "", "FindingAids", "Collections",
 							 array('key' => '8e901317e36cd5591162a1079efcc97a', 'facet' => 'collection_area', 'id' => '1015', 'view' => 'images')); ?></li>
@@ -186,19 +189,21 @@
 						<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>>
 						<?php print caNavLink($this->request, _t("UGA Related"), "", "", "FindingAids", "Collections",
 							 array('key' => '8e901317e36cd5591162a1079efcc97a', 'facet' => 'collection_area', 'id' => '1025', 'view' => 'images')); ?></li>
+						
 					  </ul>
 					</li>
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-					<li <?php print ($this->request->getController() == "Licensing") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Licensing"), "", "", "Licensing", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Donate") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Donate"), "", "", "Donate", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Peabody") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Peabody"), "", "", "Peabody", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Newsfilm") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Newsfilm"), "", "", "Newsfilm", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Licensing") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Licensing"), "", "", "Licensing", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Donate") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Donate"), "", "", "Donate", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>			
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>>
 					<?php print caNavLink($this->request, _t("Search Collections"), "", "", "Search", "advanced/objects"); ?></li>
 					<li>
-						<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" class="form-inline menuSearch">
-							<input class="form-control query width100" id="brownSearch" name="search" placeholder="Search" type="text">
+						<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" class="form-inline menuSearch"
+						style="background-color: white; border: 2px solid darkgray; margin-top: -3px;">
+							<input class="form-control query width100" id="brownSearch" name="search" placeholder="Search" style="color: gray;text-align: right;" type="text">
 							<button class="btn btn-primary" id="searchButton" name="rows" type="submit" value="20"><i class="fa fa-search"></i></button>
 						</form>	
 					</li>

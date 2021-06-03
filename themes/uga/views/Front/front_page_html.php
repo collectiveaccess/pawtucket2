@@ -33,11 +33,11 @@
 ?>
 <div class="container">
 	<div class="row contenttab">
-		<div class="col-sm-8">
+		<div class="col-md-8">
 			<H1 class="slogan">The only public archive in Georgia devoted solely to the preservation of audiovisual materials</H1>
 			
 			<div class="row">
-				<div class="col-sm-6 contentcol">
+				<div class="col-md-7">
 					
 				<div class="nwidget layout block title-box clearfix " data-additional-classes="" data-title="Search Brown Media Archives">				
 					<h2>Search Brown Media Archives</h2>	
@@ -165,13 +165,9 @@
 						<button class="btn btn-primary space-above" id="searchButton" name="rows" type="submit" value="20">Search</button>
 					</form>				
 				</div>
-				
-				<!--
-				<div class="text"></div>
-				-->
 					
 				</div>
-				<div class="col-sm-6 contentcol">
+				<div class="col-md-5">
 					<div class="headerbox">
 						<div class="headertab middletab">
 							<H2 class="colheader"><a href="http://www.libs.uga.edu/blog/?cat=33">NEWS</a></H2>
@@ -184,7 +180,7 @@
 			</div>
 		</div><!--end col-sm-8 for left Columns-->
 		
-		<div class="col-sm-4 contentcol">
+		<div class="col-md-4">
 			<div class="headerbox">
 						<div class="headertab middletab">
 							<H2 class="colheader"><a href="http://www.libs.uga.edu/blog/?event-categories=mediaarchivespeabodyevents">UPCOMING EVENTS</a></H2>
@@ -195,8 +191,8 @@
 
 			<div id="aeon">
 				<div id="aeoncaption">
-					<a href="https://uga.aeon.atlas-sys.com/aeon/">Special Collections <br />Research Account</a>
-					<a href="https://uga.aeon.atlas-sys.com/aeon/"><img src="themes/uga/assets/pawtucket/graphics/aeonra3.jpg" /></a>
+					<a href="https://uga.aeon.atlas-sys.com/logon/">Special Collections <br />Research Account</a>
+					<a href="https://uga.aeon.atlas-sys.com/logon/"><img src="themes/uga/assets/pawtucket/graphics/aeonra3.jpg" /></a>
 				</div>
 			</div><!-- end aeon-->
 		</div> <!--end col-sm-4-->	
