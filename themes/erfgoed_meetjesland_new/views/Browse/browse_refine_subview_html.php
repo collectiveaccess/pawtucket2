@@ -63,10 +63,14 @@
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
 				print "<H5>".$va_facet_info['label_singular']."</H5>";
 				print "<p>".$va_facet_info['description']."</p>";
+					$vn_begian_id = null;
+					if($vs_facet_name == "place_facet"){
+						$vn_begian_id = 3;
+					}
 ?>
 					<script type="text/javascript">
 						jQuery(document).ready(function() {
-							jQuery("#bHierarchyList_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'linkTo' => 'morePanel')); ?>");
+							jQuery("#bHierarchyList_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('id' => $vn_begian_id, 'facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'linkTo' => 'morePanel')); ?>");
 						});
 					</script>
 					<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>

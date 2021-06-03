@@ -262,7 +262,7 @@ a{
 	color:#000;
 }
 a:hover{
-	color:#eb5725;
+	color:#e7375a;
 }
 
 /* footer */
@@ -1046,9 +1046,10 @@ div.caMediaOverlayControls{
 .staticPage h1{
 	margin-top:30px;
 }
-.staticPage h2, .staticPage H2{
+.staticPage h2, .staticPage H2, .staticPage h3, .staticPage H3, .staticPage h4, .staticPage H4, .staticPage h5, .staticPage H5, .staticPage h6, .staticPage H6{
 	font-size:20px;
 	margin-bottom:20px;
+	margin-top: 20px;
 }
 /*.staticPage h2 hr, .staticPage H2 hr{
 	background-color: #fbbf70;
@@ -1102,4 +1103,8 @@ div.caMediaOverlayControls{
 }
 .multisearch H2 a{
 	color:#000;
+}
+
+::selection {
+    background: rgb(251, 191, 112, .6);
 }

@@ -33,7 +33,24 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$va_config_options = 	$this->getVar("config_options");
 	$va_access_values = caGetUserAccessValues($this->request);
+
+	
+	
+	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"));
+	MetaTagManager::addMetaProperty("og:title", $t_object->get("ca_objects.preferred_labels.name"));
+	MetaTagManager::addMetaProperty("og:type", "website");
+	if($vs_tmp = $t_object->getWithTemplate("^ca_objects.content_description")){
+		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
+	}
+	if($vs_rep = $t_object->get("ca_object_representations.media.page.url", array("checkAccess" => $va_access_values))){
+		MetaTagManager::addMetaProperty("og:image", $vs_rep);
+		MetaTagManager::addMetaProperty("og:image:width", $t_object->get("ca_object_representations.media.page.width"));
+		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
+	}
+
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -52,7 +69,7 @@
 				
 				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+				<?= $this->getVar('representationViewerThumbnailBar'); ?>
 <div id="fb-root"></div>
   <script>(function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
@@ -195,7 +212,7 @@
 		  speed: 75,
 		  maxHeight: 120,
 		  moreLink: '<a href="#">Lees meer</a>',
-          lessLink: '<a href="#">Dichtbij</a>'
+          lessLink: '<a href="#">Lees Minder</a>'
 		});
 	});
 </script>
