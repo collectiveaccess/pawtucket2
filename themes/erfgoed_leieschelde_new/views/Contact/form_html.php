@@ -35,7 +35,7 @@
 ?>
 <div class="row">
 	<div class="col-sm-12 col-md-8 col-md-offset-2">
-			<H1><?php print $vs_page_title; ?><br/><hr/></H1>
+			<H1><?php print $vs_page_title; ?><br/></H1>
 <?php
 	if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
@@ -49,12 +49,12 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<p>{{{inquire_form}}}</p>
-				<HR/>
-				<p><b><?php print _t("Title"); ?>: </b><?php print $vs_name; ?>
+				
+				<br/><p><b><?php print _t("Title"); ?>: </b><?php print $vs_name; ?>
 <?php 
-					if($vs_idno){
-						print "<br/><b>"._t("ID").": </b>".$vs_idno;
-					}
+					#if($vs_idno){
+					#	print "<br/><b>"._t("ID").": </b>".$vs_idno;
+					#}
 ?>
 				<br/><b><?php print _t("Regarding this URL"); ?>: </b><a href="<?php print $vs_url; ?>" class="purpleLink"><?php print $vs_url; ?></a>
 				</p>
@@ -63,7 +63,7 @@
 				<input type="hidden" name="itemURL" value="<?php print ($vs_admin_url) ? $vs_admin_url : $vs_url; ?>">
 				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
-				<hr/><br/><br/>
+				<br/><br/>
 	
 			</div>
 		</div>

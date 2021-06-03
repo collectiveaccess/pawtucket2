@@ -60,44 +60,15 @@
 	
 	<meta property="og:url" content="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" />
 	<meta property="og:type" content="website" />
+<?php
+	if(!in_array(strToLower($this->request->getAction), array("objects"))){
+		# --- this is set on detail page
+?>
 	<meta property="og:description" content="<?php print htmlspecialchars((MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name")); ?>" />
 	<meta property="og:title" content="<?php print $this->request->config->get("app_display_name"); ?>" />
 <?php
-	# --- what should the image to share be?
-	# --- default to logo --- use image from detail page if on object page
-	$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'LEIE_SCHELDE_Logo.jpg'); # --- replace this with logos for institutions
-	if((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "objects")){
-		$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra()));
-		$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls("ca_objects");
-		$t_subject = new ca_objects();
-		if ((($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($vs_use_alt_identifier_in_urls)) && (substr($ps_id, 0, 3) == "id:")) {
-			$va_tmp = explode(":", $ps_id);
-			$ps_id = (int)$va_tmp[1];
-			$vb_use_identifiers_in_urls = $vs_use_alt_identifier_in_urls = false;
-		}
-
-		if($vs_use_alt_identifier_in_urls && $t_subject->hasElement($vs_use_alt_identifier_in_urls)) {
-			$va_load_params = [$vs_use_alt_identifier_in_urls => $ps_id];
-		} elseif ($vb_use_identifiers_in_urls && $t_subject->getProperty('ID_NUMBERING_ID_FIELD')) {
-			$va_load_params = [$t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id];
-		} else {
-			$va_load_params = [$t_subject->primaryKey() => (int)$ps_id];
-		}
-		
-		if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($va_load_params, ['returnAs' => 'firstModelInstance'])))) {
-			// invalid id - throw error
-			throw new ApplicationException("Invalid id");
-		}else{
-			if($vs_rep = $t_subject->get("ca_object_representations.media.medium.url", array("checkAccess" => $va_access_values))){
-				$vs_og_image = $vs_rep;
-			}
-			
-		}
 	}
-?>
-	<meta property="og:image" content="<?php print $vs_og_image; ?>" />
-
-	
+?>	
 	<?php print MetaTagManager::getHTML(); ?>
     <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
@@ -163,7 +134,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'leiescheldeLogo.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'Ergoedbank-RGB_Logo-liggend-small.png'), "navbar-brand", "", "","");
 ?>
 			</div>
 
