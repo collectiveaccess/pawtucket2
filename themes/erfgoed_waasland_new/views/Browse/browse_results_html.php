@@ -74,7 +74,7 @@ if (!$vb_ajax) {	// !ajax
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
+					print "<div id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
 					$i = 0;
 					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 						$i++;
@@ -87,14 +87,14 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='divide'>&nbsp;</li>";
 						}
 					}
-					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-					print "</ul></H5>\n";
+					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+					print "</ul></div>\n";
 				}
 			}
 ?>
 		<H1>
 <?php
-			print _t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? $va_browse_info["labelSingular"] : $va_browse_info["labelPlural"]);		
+			print _t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? $va_browse_info["labelSingular"] : $va_browse_info["labelPlural"]);	
 ?>		
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
@@ -152,7 +152,7 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
-		<H5>
+		<div class='bCriteria'>
 <?php
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
@@ -177,7 +177,7 @@ if (!$vb_ajax) {	// !ajax
 			}
 		}
 ?>		
-		</H5>
+		</div>
 <?php
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
@@ -218,10 +218,6 @@ if (!$vb_ajax) {	// !ajax
 		</form>
 	</div><!-- end col-8 -->
 	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
-		
-		<div class="pull-left">
-			<?php print caNavLink($this->request, "Geavanceerd zoeken", "", "", "Search", "advanced/objects"); ?>
-		</div>
 		<div id="bViewButtons">
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
@@ -241,7 +237,7 @@ if (!$vb_ajax) {	// !ajax
 	</div><!-- end col-2 -->
 	
 	
-</div><!-- end row -->	
+</div><!-- end row -->
 
 <script type="text/javascript">
 	jQuery(document).ready(function() {
