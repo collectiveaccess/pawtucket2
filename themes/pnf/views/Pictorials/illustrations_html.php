@@ -1,6 +1,6 @@
 <?php
 	$t_list = new ca_lists();
-	$vn_facet_id = $t_list->getItemIDFromList("ornament_category", "Illustrations");
+	$vn_facet_id = $t_list->getItemIDFromList("type_category", "illustration");
 	global $g_ui_locale;
 	AssetLoadManager::register("readmore");
  	
@@ -36,12 +36,7 @@
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'ornaments', array('facet' => 'ornament_category', 'id' => $vn_facet_id, 'showFilterPanel' => 1, 'view' => 'list'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
+						
 					});
 					
 					
