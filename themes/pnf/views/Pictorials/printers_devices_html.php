@@ -1,6 +1,6 @@
 <?php
 	$t_list = new ca_lists();
-	$vn_facet_id = $t_list->getItemIDFromList("ornament_category", "printers_device");
+	$vn_facet_id = $t_list->getItemIDFromList("type_category", "printers_mark_device");
 	global $g_ui_locale;
 	AssetLoadManager::register("readmore");
  	
