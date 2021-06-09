@@ -65,7 +65,7 @@
 				
 				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+				<?= $this->getVar('representationViewerThumbnailBar'); ?>
 <div id="fb-root"></div>
   <script>(function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
@@ -208,7 +208,7 @@
 		  speed: 75,
 		  maxHeight: 120,
 		  moreLink: '<a href="#">Lees meer</a>',
-          lessLink: '<a href="#">Dichtbij</a>'
+          lessLink: '<a href="#">Lees Minder</a>'
 		});
 	});
 </script>

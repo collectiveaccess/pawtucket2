@@ -278,6 +278,32 @@ body{
 		margin-top:30px;
 	}
 }
+.repViewerContCont{
+	padding-bottom:38px;
+}
+.detail .detailMediaToolbar/*, .gallery .detailMediaToolbar*/ {
+    background-color: #fff;
+    padding: 2px 5px 7px 5px;
+    font-size: 16px;
+    position: absolute;
+    display: block;
+    top: auto;
+    bottom: -43px;
+    left:30%;
+    right:30%;
+    text-align: center;
+    z-index:1500;
+}
+.detail .detailMediaToolbar a{
+	color: #858585;
+}
+.detail #detailRepNav {
+    padding: 0px 0px 7px 0px;
+    font-size: 12px;
+    position: relative;
+    z-index: 1000;
+    top: -33px;
+}
 /* lightbox */
 .lightboxAsk{
 	margin-bottom:5px;
@@ -546,12 +572,12 @@ body.frontContainer #footer{
 
 .hpIntro .callout{
 	text-align:center;
-	font-size: 30px;
+	font-size: 28px;
 	color: #004c52;
-	font-weight:400;
 	margin:120px 0px 150px 0px;
 	font-family: "Roboto slab";
-	font-weight:400;
+	font-weight:300;
+	line-height:1.8em;
 }
 .hpIntro .callout2{
 	text-align:center;
@@ -560,26 +586,30 @@ body.frontContainer #footer{
 	font-weight:400;
 	margin:120px 0px 150px 0px;
 	font-family: "Roboto slab";
-	font-weight:400;
+	font-weight: 300;
+	line-height: 1.8em;
+}
+
+.hpIntro .calloutTitle{
+	text-align:center;
+	font-size: 28px;
+	color: #f18e00;
+	margin-bottom:15px;
+	font-family: "Roboto slab";
+	font-weight:600;
 }
 @media(max-width:767px){
 	.hpIntro .callout, .hpIntro .callout2{
 		font-size: 20px;
+	}
+	.hpIntro .calloutTitle{
+		font-size: 24px;
 	}
 }
 .hpIntro .callout2 .btn-default{
 	font-size:16px;
 	padding: 9px 10px 8px 10px;
 	margin-top:15px;
-}
-
-.hpIntro .calloutTitle{
-	text-align:center;
-	font-size: 24px;
-	color: #f18e00;
-	margin-bottom:15px;
-	font-family: "Roboto slab";
-	font-weight:600;
 }
 
 .frontSlide img {
@@ -809,7 +839,7 @@ a.readmore-js-toggle {
 /* image viewer */
 .caMediaOverlayControls .close{
 	position: fixed;
-	top: 10px;
+	top: 40px;
 	right: 10px;
 }
 div.caMediaOverlayControls .close a{
@@ -867,8 +897,7 @@ div.caMediaOverlayControls{
 	height:auto;
 }
 .staticPage p, .staticPage .bodytext{
-	font-weight:600;
-	font-size:16px;
+	font-size:18px;
 }
 
 #caMediaPanel {

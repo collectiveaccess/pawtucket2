@@ -59,8 +59,15 @@
 	
 	<meta property="og:url" content="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" />
 	<meta property="og:type" content="website" />
+<?php
+	if(!in_array(strToLower($this->request->getAction), array("objects"))){
+		# --- this is set on detail page
+?>
 	<meta property="og:description" content="<?php print htmlspecialchars((MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name")); ?>" />
 	<meta property="og:title" content="<?php print $this->request->config->get("app_display_name"); ?>" />
+<?php
+	}
+?>	
 
 	
 	<?php print MetaTagManager::getHTML(); ?>
