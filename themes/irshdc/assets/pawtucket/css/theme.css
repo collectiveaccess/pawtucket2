@@ -1231,9 +1231,16 @@ a.readmore-js-toggle {
     background-color: #8a0000;
     border-color: #8a0000;
 }
+.gallery #galleryDetailImageGrid #moreLink{
+	color:#FFFFFF;
+}
 .gallery .setDescription{
 	font-size:13px;
 	padding-top:10px;
+}
+.gallery .setDescription a{
+	color:#FFFFFF;
+	text-decoration:#FFFFFF;
 }
 .gallery #galleryDetailObjectInfo{
 	padding:25px;
@@ -2116,4 +2123,8 @@ a.digExhDetailPrev, a.digExhDetailNext{
 	.vco-mobile.vco-skinny .vco-media .vco-media-image{
 		max-height:125px !important;
 	}
+}
+
+::selection {
+    background: rgba(0, 112, 255, 0.3);
 }
