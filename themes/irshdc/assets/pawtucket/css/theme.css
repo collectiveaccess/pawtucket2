@@ -1231,7 +1231,7 @@ a.readmore-js-toggle {
     background-color: #8a0000;
     border-color: #8a0000;
 }
-.gallery #galleryDetailImageGrid #moreLink{
+.gallery #galleryDetailImageGrid #moreLink a{
 	color:#FFFFFF;
 }
 .gallery .setDescription{
@@ -1240,7 +1240,7 @@ a.readmore-js-toggle {
 }
 .gallery .setDescription a{
 	color:#FFFFFF;
-	text-decoration:#FFFFFF;
+	text-decoration:underline;
 }
 .gallery #galleryDetailObjectInfo{
 	padding:25px;
