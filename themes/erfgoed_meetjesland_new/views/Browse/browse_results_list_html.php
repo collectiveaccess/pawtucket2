@@ -114,10 +114,14 @@
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					$vs_collection = "";
+					$vs_audio = "";
 					if ($vs_table == 'ca_objects') {
 						$vs_collection = $qr_res->get("ca_objects.object_collection.preferred_labels.name");
 						if($vs_collection){
 							$vs_collection = "<br/>".$vs_collection;
+						}
+						if(strToLower($qr_res->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))) == "geluidsfragment"){
+							$vs_audio = "<div class='resultAudioIcon'><i class='fa fa-volume-up' aria-hidden='true'></i></div>";
 						}
 					}
 					$vs_thumbnail = "";
@@ -127,7 +131,18 @@
 				
 					$vs_image = $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values));
 					if(!$vs_image && ($vs_table != 'ca_objects')){
-						$vs_image = $va_images[$vn_id];
+						if($vs_table == 'ca_collections'){
+							$o_browse = caGetBrowseInstance('ca_objects');
+							$o_browse->addCriteria("collection_field_facet", $qr_res->get("ca_collections.collection_id"));
+							$o_browse->execute(array('checkAccess' => $va_access_values, 'request' => $this->request));
+							$qr_object_image = $o_browse->getResults(array('sort' => 'ca_objects.idno', 'sort_direction' => 'asc', 'limit' => 1));
+							if($qr_object_image->numHits()){
+								$qr_object_image->nextHit();
+								$vs_image = $qr_object_image->getWithTemplate("^ca_object_representations.media.small");
+							}
+						}else{
+							$vs_image = $va_images[$vn_id];
+						}
 					}
 				
 					if(!$vs_image){
@@ -158,7 +173,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultListItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_collection}
+						{$vs_audio}<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_collection}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
 				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>

@@ -54,6 +54,7 @@
 							<div class="funder">
 								<a href="http://www.vlaanderen.be"><?php print caGetThemeGraphic($this->request, 'Vlaanderen-verbeelding-werkt_vol.png'); ?></a>
 							</div>
+							<br/><?php print caNavLink($this->request, "Disclaimer", "", "", "About", "disclaimer")."<br/>".caNavLink($this->request, "Manage Cookies", "", "", "Cookies", "manage"); ?>
 						</div>
 					</div>
 				</div>
@@ -112,7 +113,7 @@
 	if(!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 14400))){
 		Session::setVar('visited_time', time());
 	}
-	
+	print $this->render("Cookies/banner_html.php");	
 ?>
 	</body>
 </html>
