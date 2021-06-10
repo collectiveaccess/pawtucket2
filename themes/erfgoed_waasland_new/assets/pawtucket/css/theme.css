@@ -774,6 +774,12 @@ H2.frontExpoTitle{
 #bRefine H3{
 	color: #507811;
 }
+.resultAudioIcon{
+	float:right;
+	padding:0px 0px 5px 5px;
+	font-size:16px;
+	color:#777;
+}
 /* gallery */
 .gallery{
 	font-size:15px;

@@ -1,10 +1,9 @@
 <?php
 	$o_collections_config = $this->getVar("collections_config");
-	#$qr_collections = $this->getVar("collection_results");
 	$va_access_values = caGetUserAccessValues($this->request);
 	$o_browse = caGetBrowseInstance("ca_objects");
 	
-	$va_collections_with_objects = $o_browse->getFacet("collection_facet", array('checkAccess' => $va_access_values, 'request' => $this->request, 'checkAvailabilityOnly' => false));
+	$va_collections_with_objects = $o_browse->getFacet("collection_field_facet", array('checkAccess' => $va_access_values, 'request' => $this->request, 'checkAvailabilityOnly' => false));
 	$va_collection_ids_with_objects = array();
 	foreach($va_collections_with_objects as $va_facet_collection){
 		$va_collection_ids_with_objects[] = $va_facet_collection["id"];
@@ -31,14 +30,30 @@
 				if ( $vn_i == 0) { print "<div class='row'>"; } 
 				$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_collections' length='1'>^ca_object_representations.media.iconlarge</unit>");
 				if(!$vs_image){
-					$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>");
-					if(!$vs_image){
-						$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' length='2'>^ca_object_representations.media.iconlarge</unit>");
-					}
+					#$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>");
+					#$qr_res = $o_search->search("ca_objects.object_collection.collection_id:".$qr_collections->get("ca_collections.collection_id"), array("limit" => 1));
+					$o_browse = caGetBrowseInstance('ca_objects');
+					$o_browse->addCriteria("collection_field_facet", $qr_collections->get("ca_collections.collection_id"));
+					$o_browse->execute(array('checkAccess' => $va_access_values, 'request' => $this->request));
+					$qr_res = $o_browse->getResults(array('sort' => 'ca_objects.idno', 'sort_direction' => 'asc', 'limit' => 1));
+					if($qr_res->numHits()){
+						$qr_res->nextHit();
+						$vs_image = $qr_res->getWithTemplate("^ca_object_representations.media.iconlarge");
+					}				
 				}
 				if(!$vs_image){
-					$va_images = explode(";", $qr_collections->getWithTemplate("<unit relativeTo='ca_collections.children' length='1' limit='1'><unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit></unit>"));
-					$vs_image = $va_images[0];
+					$va_child_collection = $qr_collections->get("ca_collections.children.collection_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+					if(is_array($va_child_collection) && sizeof($va_child_collection)){
+						$vn_child_collection = array_shift($va_child_collection);
+						$o_browse = caGetBrowseInstance('ca_objects');
+						$o_browse->addCriteria("collection_field_facet", $vn_child_collection);
+						$o_browse->execute(array('checkAccess' => $va_access_values, 'request' => $this->request));
+						$qr_res = $o_browse->getResults(array('sort' => 'ca_objects.idno', 'sort_direction' => 'asc', 'limit' => 1));
+						if($qr_res->numHits()){
+							$qr_res->nextHit();
+							$vs_image = $qr_res->getWithTemplate("^ca_object_representations.media.iconlarge");
+						}
+					}
 				}
 				
 				print "<div class='col-sm-6'><div class='collectionTile'>".caDetailLink($this->request, $vs_image, "collectionTileImage", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
