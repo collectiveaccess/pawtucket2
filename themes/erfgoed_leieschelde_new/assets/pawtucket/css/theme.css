@@ -912,6 +912,12 @@ table.attributeListItem{
 	top:-5px;
 	position:relative;
 }
+.resultAudioIcon{
+	float:right;
+	padding:0px 0px 5px 5px;
+	font-size:16px;
+	color:#777;
+}
 /* gallery */
 .gallery .setDescription {
     font-size: 14px;
