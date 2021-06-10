@@ -147,9 +147,26 @@
 ?>				
 				
 				{{{<ifdef code="ca_objects.dimensions"><div class="unit"><label>Afmetingen</label><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.dimensions.dimensions_name">^ca_objects.dimensions.dimensions_name: </ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth</ifdef><ifdef code="ca_objects.dimensions.dimensions_unit"> ^ca_objects.dimensions.dimensions_unit</ifdef><ifdef code="ca_objects.dimensions.weight"> ^ca_objects.dimensions.weight</ifdef><ifdef code="ca_objects.dimensions.weight,ca_objects.dimensions.weight_unit"> ^ca_objects.dimensions.weight_unit</ifdef></unit></div></ifdef>}}}
-				{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Plaatsen</label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels</unit></div></ifcount>}}}
+				{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Plaatsen</label><unit relativeTo="ca_places" delimiter="<br/>">
+					<unit relativeTo="ca_places.parent">
+						<if rule="^ca_places.type_id !~ /land/">
+							<unit relativeTo="ca_places.parent"><if rule="^ca_places.type_id !~ /land/"><?php print caNavLink($this->request, "^ca_places.preferred_labels", "", "", "Browse", "objects/facet/place_facet/id/^ca_places.place_id"); ?> > </if></unit>
+							<?php print caNavLink($this->request, "^ca_places.preferred_labels", "", "", "Browse", "objects/facet/place_facet/id/^ca_places.place_id"); ?> > 
+						</if>
+					</unit>
+					<if rule="^ca_places.type_id !~ /straat/"><?php print caNavLink($this->request, "^ca_places.preferred_labels", "", "", "Browse", "objects/facet/place_facet/id/^ca_places.place_id"); ?></if>
+					<if rule="^ca_places.type_id =~ /straat/"><unit relativeTo="ca_places">^ca_places.preferred_labels</unit></if>
+				
+				</unit></div></ifcount>}}}
+				
 				
 <?php
+				$va_place_ids = $t_object->get("ca_places.place_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+				if(is_array($va_place_ids) && sizeof($va_place_ids)){
+					foreach($va_place_ids as $vn_place_id){
+						$t_place = new ca_places();
+					}	
+				}
 				if($vs_date = $t_object->getWithTemplate('<ifdef code="ca_objects.production_dating.Style|ca_objects.production_dating.earliest_date|ca_objects.production_dating.production_period"><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.production_dating.Style">^ca_objects.production_dating.Style </ifdef><ifdef code="ca_objects.production_dating.earliest_date">^ca_objects.production_dating.earliest_date </ifdef><ifdef code="ca_objects.production_dating.production_period">^ca_objects.production_dating.production_period </ifdef></unit></ifdef>')){
 					print '<div class="unit"><label>Datering</label>';
 					print caNavLink($this->request, $vs_date, "", "", "Search", "objects", array("search" => "'".$vs_date."'"));
@@ -159,7 +176,7 @@
 					$va_object_keywords = array_pop($va_object_keywords);
 					$va_tmp = array();
 					foreach($va_object_keywords as $va_object_keyword){
-						$va_tmp[] = caNavLink($this->request, $va_object_keyword["object_keywords"], "", "", "Browse", "objects", array("facet" => "trefwoorden_facet", "id" => $va_object_keyword["object_keywords"]));
+						$va_tmp[] = caNavLink($this->request, $va_object_keyword["object_keywords"], "", "", "Search", "objects", array("search" => $va_object_keyword["object_keywords"]));
 					}
 						print '<div class="unit"><label>Trefwoord</label>';
 						print join(", ", $va_tmp);
