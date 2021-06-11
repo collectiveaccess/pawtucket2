@@ -86,7 +86,14 @@
 						$vs_thumbnail = $vs_default_placeholder_tag;
 					}
 				}
-				
+				$vs_audio = "";
+				$vs_collection = $qr_results->get("ca_objects.object_collection.preferred_labels.name");
+				if($vs_collection){
+					$vs_collection = "<br/>".$vs_collection;
+				}
+				if(strToLower($qr_results->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))) == "geluidsfragment"){
+					$vs_audio = "<div class='resultAudioIcon'><i class='fa fa-volume-up' aria-hidden='true'></i></div>";
+				}
 				if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', 'ca_objects', $vn_id);
 				}else{
@@ -109,7 +116,7 @@
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+					{$vs_audio}<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_collection}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
