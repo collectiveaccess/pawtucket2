@@ -1248,7 +1248,7 @@ a.readmore-js-toggle {
 }
 .gallery .galleryTombstoneScroll{
 	max-height:325px;
-	overflow-y:scroll;
+	overflow-y:auto;
 }
 .gallery .unit{
 	margin-top:10px;

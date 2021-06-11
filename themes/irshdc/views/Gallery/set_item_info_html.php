@@ -1,3 +1,7 @@
+<?php
+	$t_item = $this->getVar("set_item");
+	$t_object = $this->getVar("object");
+?>
 <?php print "(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")<br/>"; ?>
 <div class="galleryTombstoneScroll">
 
@@ -20,12 +24,19 @@
 	</case>}}}
 	
 	{{{<ifcount code="ca_entities" restrictToTypes="school" min="1"><div class="unit"><ifcount code="ca_entities" restrictToTypes="school" min="1" max="1"><h6>School</h6></ifcount><ifcount code="ca_entities" restrictToTypes="school" min="2"><h6>Schools</h6></ifcount><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+<?php
+	$vs_set_item_description = caConvertLineBreaks($t_item->get("ca_set_items.set_item_description"));
 
-	{{{<ifdef code="ca_objects.curators_comments.comments">
-		<div class="unit" data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
-			<span class="trimText">^ca_objects.curators_comments.comments</span>
-		</div>
-	</ifdef>}}}
+	if($vs_set_item_description){
+		print "<div class='unit'>".$vs_set_item_description."</div>";
+	}else{
+		print $t_object->getWithTemplate('<ifdef code="ca_objects.curators_comments.comments">
+			<div class="unit" data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
+				<span class="trimText">^ca_objects.curators_comments.comments</span>
+			</div>
+		</ifdef>');
+	}
+?>
 		
 	{{{<case>
 		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Library/'>^ca_objects.description_new.description_new_txt</if>
