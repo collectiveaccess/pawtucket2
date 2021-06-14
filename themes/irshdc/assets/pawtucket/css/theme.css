@@ -994,6 +994,9 @@ a.readmore-js-toggle {
     text-transform:none;
     padding:3px 15px 3px 15px !important;
 }
+h3.popover-title{
+	margin-top:0px;
+}
 .popover-content {
     font-size: 12px !important;
 }
