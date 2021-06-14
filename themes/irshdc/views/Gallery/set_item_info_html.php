@@ -61,9 +61,9 @@
 	if($vs_set_item_description){
 		print "<div class='unit'>".$vs_set_item_description."</div>";
 	}elseif($vs_curatorial_comments){
-		print $vs_curatorial_comments;
-	}elseif($vs_item_description){
 		print $vs_item_description;
+	}else($vs_item_description){
+		print $vs_curatorial_comments;
 	}
 ?>
 	
