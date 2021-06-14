@@ -26,27 +26,46 @@
 	{{{<ifcount code="ca_entities" restrictToTypes="school" min="1"><div class="unit"><ifcount code="ca_entities" restrictToTypes="school" min="1" max="1"><h6>School</h6></ifcount><ifcount code="ca_entities" restrictToTypes="school" min="2"><h6>Schools</h6></ifcount><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 <?php
 	$vs_set_item_description = caConvertLineBreaks($t_item->get("ca_set_items.set_item_description"));
-
-	if($vs_set_item_description){
-		print "<div class='unit'>".$vs_set_item_description."</div>";
-	}else{
-		print $t_object->getWithTemplate('<ifdef code="ca_objects.curators_comments.comments">
+	$vs_curatorial_comments = $t_object->getWithTemplate('<ifdef code="ca_objects.curators_comments.comments">
 			<div class="unit" data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
 				<span class="trimText">^ca_objects.curators_comments.comments</span>
 			</div>
 		</ifdef>');
+	$vs_item_description = $t_object->getWithTemplate('<case><if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Library/">
+				<ifdef code="ca_objects.description_new.description_new_txt">
+					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.description_new.description_new_source"><h6>Description</h6>
+						<div class="trimText">^ca_objects.description_new.description_new_txt</div>
+					</div>
+				</ifdef>
+			</if>
+			<if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /RG10/">
+				<ifdef code="ca_objects.record_group_id|ca_objects.file_series">^ca_objects.record_group_id: ^ca_objects.file_series</ifdef>
+			</if>
+			<if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Archival/">
+				<ifdef code="ca_objects.scope_new.scope_new_text">
+					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.scope_new.scope_new_source"><h6>Description</h6>
+						<div class="trimText">^ca_objects.scope_new.scope_new_text</div>
+					</div>
+				</ifdef>
+			</if>
+			<if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Museum/">
+				<ifdef code="ca_objects.curatorial_description.curatorial_desc_value">
+					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curatorial_description.curatorial_desc_source"><h6>Description</h6>
+						<div class="trimText">^ca_objects.curatorial_description.curatorial_desc_value</div>
+					</div>
+				</ifdef>
+			</if>
+			<if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Resource/"><ifdef code="ca_objects.description"><div class="unit">^ca_objects.description</div></ifdef></if>
+		</case>');
+	
+	if($vs_set_item_description){
+		print "<div class='unit'>".$vs_set_item_description."</div>";
+	}elseif($vs_curatorial_comments){
+		print $vs_curatorial_comments;
+	}elseif($vs_item_description){
+		print $vs_item_description;
 	}
 ?>
-		
-	{{{<case>
-		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Library/'>^ca_objects.description_new.description_new_txt</if>
-		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /RG10/'>
-			<ifdef code='ca_objects.record_group_id|ca_objects.file_series'>^ca_objects.record_group_id: ^ca_objects.file_series</ifdef>
-		</if>
-		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Archival/'>^ca_objects.scope_new.scope_new_text</if>
-		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Museum/'>^ca_objects.curatorial_description.curatorial_desc_value</if>
-		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Resource/'>^ca_objects.description</if>
-	</case>}}}
 	
 </div>
 <?php print "<div class='unit text-center'>".caDetailLink($this->request, _t("More Information"), 'btn-default', $this->getVar("table"),  $this->getVar("row_id"))."</div>"; ?>
