@@ -32,7 +32,7 @@
 	}else{
 		$vs_item_description = $t_object->getWithTemplate('<case><if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Library/">
 				<ifdef code="ca_objects.description_new.description_new_txt">
-					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.description_new.description_new_source"><h6>Description</h6>
+					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.description_new.description_new_source">
 						<div class="trimText">^ca_objects.description_new.description_new_txt</div>
 					</div>
 				</ifdef>
@@ -42,14 +42,14 @@
 			</if>
 			<if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Archival/">
 				<ifdef code="ca_objects.scope_new.scope_new_text">
-					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.scope_new.scope_new_source"><h6>Description</h6>
+					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.scope_new.scope_new_source">
 						<div class="trimText">^ca_objects.scope_new.scope_new_text</div>
 					</div>
 				</ifdef>
 			</if>
 			<if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Museum/">
 				<ifdef code="ca_objects.curatorial_description.curatorial_desc_value">
-					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curatorial_description.curatorial_desc_source"><h6>Description</h6>
+					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curatorial_description.curatorial_desc_source">
 						<div class="trimText">^ca_objects.curatorial_description.curatorial_desc_value</div>
 					</div>
 				</ifdef>
@@ -60,7 +60,7 @@
 			print $vs_item_description;
 		}else{
 			print $t_object->getWithTemplate('<ifdef code="ca_objects.curators_comments.comments">
-					<div class="unit" data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
+					<div class="unit" data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.curators_comments.comment_reference">
 						<span class="trimText">^ca_objects.curators_comments.comments</span>
 					</div>
 				</ifdef>');
