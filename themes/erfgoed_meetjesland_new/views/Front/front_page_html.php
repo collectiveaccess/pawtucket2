@@ -131,7 +131,6 @@
 if(!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 14400))){
 	# --- display lightbox alert
 	if(!CookieOptionsManager::showBanner()){
-		print "setting visited_time";
 		Session::setVar('visited_time', time());
 	}
 
