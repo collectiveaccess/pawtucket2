@@ -105,10 +105,35 @@
 	$qr_collections = ca_collections::find(array('parent_id' => $t_item->get("ca_collections.collection_id"), 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.preferred_labels.name'));
 	$vn_i = 0;
 		if($qr_collections && $qr_collections->numHits()) {
+			$coll = Datamodel::getInstance('ca_collections', true);	
+			print '<div class="row">
+				<div class="col-sm-12"><H2>Collecties</H2></div>
+			</div>';
 			while($qr_collections->nextHit()) {
 				if(in_array($qr_collections->get("ca_collections.access"), $va_access_values)){
 					if ( $vn_i == 0) { print "<div class='row'>"; } 
-					print "<div class='col-sm-4'><div class='collectionList'>".$qr_collections->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>").
+					$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_collections' length='1'>^ca_object_representations.media.iconlarge</unit>", $va_access_values);
+					if (!$vs_image) {
+						$collection_ids = array_merge([$qr_collections->getPrimaryKey()], $qr_collections->get("ca_collections.children.collection_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "sort" => "ca_collection_labels.name")));
+				
+						foreach($collection_ids as $collection_id) {
+							$refs = $coll->getAuthorityElementReferences(['row_id' => $collection_id]);
+							if(isset($refs['57']) && sizeof($refs['57'])) { // 57 = ca_objects
+								$qr_objects = caMakeSearchResult('ca_objects', array_keys($refs['57']), array("checkAccess" => $va_access_values, "sort" => 'ca_objects.idno'));
+								while($qr_objects->nextHit()) {
+									if(in_array($qr_objects->get("ca_objects.access"), $va_access_values)){
+										if($vs_image = $qr_objects->get('ca_object_representations.media.iconlarge')) {
+											break(2);
+										}
+									}
+								}
+							}
+						}
+					}
+					
+					
+					
+					print "<div class='col-sm-4'><div class='collectionList'>".caDetailLink($this->request, $vs_image, "", "ca_collections",  $qr_collections->get("ca_collections.collection_id")).
 								"<label>".$qr_collections->getWithTemplate("<l>^ca_collections.preferred_labels</l>")."</label>
 							</div></div>\n";
 				
