@@ -184,7 +184,6 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 * @return Configuration 
 	 */
 	function caGetBrowseConfig() {
-		$o_config = Configuration::load();
 		return Configuration::load(__CA_CONF_DIR__.'/browse.conf');
 	}
 	# ---------------------------------------

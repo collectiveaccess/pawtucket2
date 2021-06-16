@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2019 Whirl-i-Gig
+ * Copyright 2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,195 +26,96 @@
  * ----------------------------------------------------------------------
  */
  
+$cookies_by_category = $this->getVar('cookiesByCategory');
+$config = $this->getVar('config');
+$intro = "";
+if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->get("cookiesIntroGlobalValue")))){
+	$intro = $config->get("cookiesFormIntro");
+}
 ?>
 <div class="row">
 	<div class="col-xs-8 col-sm-8 col-md-offset-2 col-md-6 col-lg-offset-3 col-lg-4">
-		<H1><?php print _t("Manage Cookies"); ?></H1>
+		<H1><?= _t("Manage Cookies"); ?></H1>
 	</div>
 	<div class="col-xs-4 col-sm-4 col-md-2 text-right">
-		<button class="btn btn-default"><?php print _t('Accept All'); ?></button>
+		
 	</div>
 </div>
 <div class="row">
 	<div class="col-sm-12 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
-
-	<form id="CookieForm" action="" class="form-horizontal" role="form" method="POST">
-    	
-				<div class="row">
-					<div class="col-sm-12"><HR/></div>
-				</div>
-    			<div class="row">
-    				<div class="col-sm-10 col-md-9">
-    					<label>Essential</label>
-    					<div class="cookieByCategory">
-    						<div class="cookieCount">2 Cookies <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></div>
-							<div class="cookiesList">
-								<div class="row">
-									<div class="col-sm-4">
-										<b>Name</b>
-									</div>
-									<div class="col-sm-4">
-										<b>Description</b>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-4">
-										Name
-									</div>
-									<div class="col-sm-4">
-										Description (including length and site)
-									</div>
-								</div>
+	<div class="cookieIntro"><?php print $intro; ?></div>
+	<form id="CookieForm" action="<?= caNavUrl($this->request, '*', '*', 'save'); ?>" class="form-horizontal" role="form" method="POST">
+ 
+<?php
+ 	foreach($cookies_by_category as $category_code => $category_info) {
+?>
+		<div class="row">
+			<div class="col-sm-12"><HR/></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-9 col-md-9">
+				<label><?= caGetOption('title', $category_info, '???'); ?></label>
+				<div class="cookieByCategory">
+					<div class="cookieCount"><?= caGetOption('cookieCount', $category_info, ''); ?> <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></div>
+					<div class="cookiesList">
+						<div class="row">
+							<div class="col-sm-4">
+								<b>Name</b>
+							</div>
+							<div class="col-sm-4">
+								<b>Description</b>
 							</div>
 						</div>
-    					<div>These cookies are strictly necessary to provide you with services available through our website and to use some of its features, such as logging in.</div>
-					</div>
-					<div class="col-sm-2 col-md-3 text-center">
-    					
-					</div>
+<?php
+		foreach($category_info['cookies'] as $cookie_code => $cookie_info) {
+?>
+			<div class="row">
+				<div class="col-sm-4">
+					<?= caGetOption('name', $cookie_info, '???'); ?>
 				</div>
-				<div class="row">
-					<div class="col-sm-12"><HR/></div>
+				<div class="col-sm-8">
+					<?= caGetOption('description', $cookie_info, '???'); ?>
 				</div>
-    			<div class="row">
-    				<div class="col-sm-10 col-md-9">
-    					<label>Performance and functionality</label>
-    					<div class="cookieByCategory">
-    						<div class="cookieCount">2 Cookies <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></div>
-							<div class="cookiesList">
-								<div class="row">
-									<div class="col-sm-4">
-										<b>Name</b>
-									</div>
-									<div class="col-sm-4">
-										<b>Description</b>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-4">
-										Name
-									</div>
-									<div class="col-sm-4">
-										Description (including length and site)
-									</div>
-								</div>
-							</div>
-						</div>
-    					<div>These cookies are used to enhance the performance and functionality of our website but are non-essential to their use. However, without these cookies, certain functionality (like next and previous buttons) may become unavailable.</div>
-					</div>
-					<div class="col-sm-2 col-md-3 text-center">
-    					<div class="btn-group btn-toggle"> 
-							<button class="btn active">ON</button>
-							<button class="btn btn-success">OFF</button>
-						</div>
+			</div>	
+<?php
+		}
+?>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-sm-12"><HR/></div>
+				<div><?= caGetOption('description', $category_info, ''); ?></div>
+			</div>			
+			<div class="col-sm-3 col-md-3 text-center">
+<?php
+		if(!caGetOption('required', $category_info, false)) {
+			$allow = (bool)CookieOptionsManager::allow($category_code);
+?>
+				<div class="btn-group btn-toggle"> 
+					<button class="btn <?= ($allow ? ' active btn-success' : ''); ?>" data-value="1" data-code="<?= $category_code; ?>"><?= _t('ON'); ?></button>
+					<input type="hidden" name="<?= "cookie_options_{$category_code}"; ?>" id="<?= "cookie_options_{$category_code}"; ?>" value="<?= $allow ? 1 : 0; ?>"/>
+					<button class="btn <?= (!$allow ? ' active btn-success' : ''); ?>" data-value="0" data-code="<?= $category_code; ?>"><?= _t('OFF'); ?></button>
 				</div>
-    			<div class="row">
-    				<div class="col-sm-10 col-md-9">
-    					<label>Analytics</label>
-    					<div class="cookieByCategory">
-    						<div class="cookieCount">2 Cookies <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></div>
-							<div class="cookiesList">
-								<div class="row">
-									<div class="col-sm-4">
-										<b>Name</b>
-									</div>
-									<div class="col-sm-4">
-										<b>Description</b>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-4">
-										Name
-									</div>
-									<div class="col-sm-4">
-										Description (including length and site)
-									</div>
-								</div>
-							</div>
-						</div>
-    					<div>Also known as “performance cookies,” these cookies collect information about how you use a website, like which pages you visited and which links you clicked on. None of this information can be used to identify you. It is all aggregated and, therefore, anonymized. Their sole purpose is to improve website functions. This includes cookies from third-party analytics services as long as the cookies are for the exclusive use of the owner of the website visited.</div>
-    				</div>
-					<div class="col-sm-2 col-md-3 text-center">
-    					<div class="btn-group btn-toggle"> 
-							<button class="btn active">ON</button>
-							<button class="btn btn-success">OFF</button>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12"><HR/></div>
-				</div>
-    			<div class="row">
-    				<div class="col-sm-10 col-md-9">
-    					<label>Marketing cookies</label>
-    					<div class="cookieByCategory">
-    						<div class="cookieCount">0 Cookies <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></div>
-							<div class="cookiesList">
-								<b>Our website does not use any marketing Cookies</b>
-							</div>
-						</div>
-    					<div>These cookies track your online activity to help advertisers deliver more relevant advertising or to limit how many times you see an ad. These cookies can share that information with other organizations or advertisers. These are persistent cookies and almost always of third-party provenance.</div>
-    				</div>
-					<div class="col-sm-2 col-md-3 text-center">
-    					<div class="btn-group btn-toggle disabled"> 
-							<button class="btn">ON</button>
-							<button class="btn btn-success">OFF</button>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12"><HR/></div>
-				</div>
-    			<div class="row">
-    				<div class="col-sm-10 col-md-9">
-    					<label>Social networking</label>
-    					<div class="cookieByCategory">
-    						<div class="cookieCount">2 Cookies <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></div>
-							<div class="cookiesList">
-								<div class="row">
-									<div class="col-sm-4">
-										<b>Name</b>
-									</div>
-									<div class="col-sm-4">
-										<b>Description</b>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-4">
-										Name
-									</div>
-									<div class="col-sm-4">
-										Description (including length and site)
-									</div>
-								</div>
-							</div>
-						</div>
-    					<div>These cookies are used to enable you to share pages and content that you find interesting on our websites through third party social networking and other websites. These cookies may also be used for advertising purposes.</div>
-    				</div>
-					<div class="col-sm-2 col-md-3 text-center">
-    					<div class="btn-group btn-toggle"> 
-							<button class="btn active">ON</button>
-							<button class="btn btn-success">OFF</button>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-12"><HR/></div>
-				</div>
-    			<div class="form-group text-center">
-					<button type="submit" class="btn btn-default"><?php print _t('Update'); ?></button> <button class="btn btn-default"><?php print _t('Accept All'); ?></button>
-				</div><!-- end form-group -->
+<?php
+		}
+?>
+			</div>
+		</div>
+<?php
+ 	}
+?>   	
+		<div class="row">
+			<div class="col-sm-12"><HR/></div>
+		</div>
+		<div class="form-group text-center">
+			<button type="submit" class="btn btn-default"><?= _t('Update'); ?></button> <button class="btn btn-default" name="accept_all"  value="1"><?= _t('Accept All'); ?></button>
+		</div><!-- end form-group -->
 	</form>
 
 <script type="text/javascript">
 	$('.btn-toggle').click(function() {
 		if(!$(this).hasClass('disabled')){
 			$(this).find('.btn').toggleClass('active');  
-	
+			$("#cookie_options_" + $(this).find('.btn').data('code')).val($(this).find('.btn.active').data('value'));
+
 			if ($(this).find('.btn-success').size()>0) {
 				$(this).find('.btn').toggleClass('btn-success');
 			}

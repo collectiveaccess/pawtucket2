@@ -260,6 +260,15 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific cookies configuration
+	 *
+	 * @return Configuration
+	 */
+	function caGetCookiesConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/cookies.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Returns associative array, keyed by primary key value with values being
 	 * the preferred label of the row from a suitable locale, ready for display
 	 *
@@ -434,6 +443,7 @@
 		if ($show_only_media_types_when_present) {
 			$mimetypes_present = array_reduce($va_reps, function($c, $i) { $c[$i['mimetype']] = true; return $c; }, []);
 			
+			$show_only_media_types_when_present_reduced = [];
 			foreach($show_only_media_types_when_present as $t) {
 				if (caMimetypeIsValid($t, array_keys($mimetypes_present))) {
 					$show_only_media_types_when_present_reduced[] = $t;
