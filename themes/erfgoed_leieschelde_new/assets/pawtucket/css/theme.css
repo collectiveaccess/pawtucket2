@@ -806,7 +806,7 @@ table.attributeListItem{
     border-color: #000000;
 }
 /* cookie notice */
-#cookieNotice{
+/*#cookieNotice{
 	position: fixed;
 	bottom: 0px;
 	width: 100%;
@@ -829,7 +829,7 @@ table.attributeListItem{
 #cookieNotice a{
 	font-weight:bold;
 	text-decoration:underline;
-}
+}*/
 
 
 

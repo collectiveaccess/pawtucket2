@@ -54,6 +54,7 @@
 					<div class="row">
 						<div class="col-sm-12 text-center">
 							Erfgoedbank Leie Schelde is een initiatief van de Cultuurregio Leie Schelde i.s.m. Deinze, De Pinte, Gavere, Nazareth, Sint-Martens-Latem en Zulte.
+							<?php print ((CookieOptionsManager::cookieManagerEnabled()) ? "<br/>".caNavLink($this->request, _t("Manage Cookies"), "small", "", "Cookies", "manage") : ""); ?>
 						</div>
 					</div>
 				</div>
@@ -125,36 +126,8 @@
 			});
 		</script>
 <?php
-	if (Session::getVar('cookieAccepted') != 'accepted') {		
-?>	
-		<!--<div id="cookieNotice">
-			{{{cookie_statement}}}
-		</div>-->	<!--end homePanel-->
-		
-		
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$('.acceptCookie').click(function(e){
-				  e.preventDefault();
-				  $.ajax({
-					   url: "<?php print caNavUrl($this->request, "", "Cookie", "accept"); ?>",
-					   type: "GET",
-					   success: function (data) {
-						 if(data == 'success'){
-						 	$('#cookieNotice').hide();
-						 }
-					   },
-					   error: function(xhr, ajaxOptions, thrownError){
-						  alert("There was an error, please try again later.");
-					   }
-				  });
-
-				});
-			});
-		</script>
-
-<?php
-	}
+	print $this->render("Cookies/banner_html.php");	
 ?>
+
 	</body>
 </html>

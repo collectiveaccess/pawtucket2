@@ -66,22 +66,28 @@
 				<div id="detailAnnotations"></div>
 				
 				<?= $this->getVar('representationViewerThumbnailBar'); ?>
-<div id="fb-root"></div>
-  <script>(function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) return;
-    js = d.createElement(s); js.id = id;
-    js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
-    fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));</script>
-
-  <!-- Your share button code -->
-  <div class="detailFbShare"><div class="fb-share-button" 
-		data-href="<?php print $this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $t_object->get("object_id")); ?>" 
-		data-layout="button">
-	  </div>
-  </div>				
 <?php
+	$allow_social_cookies = (bool)CookieOptionsManager::allow("social");
+	if($allow_social_cookies){
+?>
+
+	<div id="fb-root"></div>
+	  <script>(function(d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id)) return;
+		js = d.createElement(s); js.id = id;
+		js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+		fjs.parentNode.insertBefore(js, fjs);
+	  }(document, 'script', 'facebook-jssdk'));</script>
+
+	  <!-- Your share button code -->
+	  <div class="detailFbShare"><div class="fb-share-button" 
+			data-href="<?php print $this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $t_object->get("object_id")); ?>" 
+			data-layout="button">
+		  </div>
+	  </div>				
+<?php
+}
 				# Comment and Share Tools
 				#if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						

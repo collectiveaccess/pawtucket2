@@ -878,7 +878,14 @@ div.caMediaOverlayControls{
 .staticPage p, .staticPage .bodytext{
 	font-size:18px;
 }
-
+.staticPage h2, h3, h4{
+	color: #004c52;
+	font-family: 'Roboto slab';
+	font-size:20px;
+	text-transform:none;
+	margin-top: 30px;
+	margin-bottom: 20px;
+}
 #caMediaPanel {
     background-color: rgba(0, 0, 0, 0.5);
 }
