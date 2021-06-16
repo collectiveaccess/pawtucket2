@@ -3520,6 +3520,8 @@ input[type='text'].ui-autocomplete-loading {
 	font-size: 16px;
 	z-index: 9999;
 	box-shadow: rgba(0,0,0,.5) 0px 5px 50px;
+	padding-left:15px;
+	padding-right:15px;
 }
 #cookieNotice .cookieNoticeHeading{
 	font-weight:bold;
@@ -3536,6 +3538,14 @@ input[type='text'].ui-autocomplete-loading {
 #cookieNotice .btn-inverse:hover{
 	color:#000;
 	background-color:#f1f1f1;
+}
+.cookieIntro{
+	font-size: 1.2em;
+}
+@media(max-width:768px){
+	.cookies .btn-group{
+		margin-top:20px;
+	}
 }
 .cookies label{
 	font-size:15px;
@@ -3556,5 +3566,9 @@ input[type='text'].ui-autocomplete-loading {
 	padding:10px;
 	margin:10px;
 	background-color:#F2F2F2;
+}
+.cookieByCategory .cookiesList .row{
+	padding-top:5px;
+	padding-bottom:5px;
 }
 

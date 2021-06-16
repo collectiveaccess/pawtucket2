@@ -71,6 +71,23 @@
 
 	
 	<?php print MetaTagManager::getHTML(); ?>
+	
+<?php
+	if((bool)CookieOptionsManager::allow("analytics")){
+?>	
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src=https://www.googletagmanager.com/gtag/js?id=G-92BXQLXRHN></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+ 
+	  gtag('config', 'G-92BXQLXRHN');
+	</script>
+<?php
+	}
+?>	
+	
     <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
