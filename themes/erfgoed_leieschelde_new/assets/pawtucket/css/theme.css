@@ -272,7 +272,7 @@ a:hover{
 	color: #000;
 	padding-top:25px;
 	padding-bottom:25px;
-	height:175px;
+	height:200px;
 	border-top:0px;
 	text-align:center;
 	margin-top:0px;
@@ -281,23 +281,23 @@ a:hover{
 	font-weight:400;
 }
 body{
-	margin-bottom:200px;
+	margin-bottom:225px;
 	color:#000
 }
 @media(max-width:1306px){
 	#footer{
-		height:250px;
+		height:275px;
 	}
 	body{
-		margin-bottom:275px;
+		margin-bottom:300px;
 	}
 }
 @media(max-width:700px){
 	#footer{
-		height:370px;
+		height:395px;
 	}
 	body{
-		margin-bottom:400px;
+		margin-bottom:425px;
 	}
 }
 #footer{
@@ -335,6 +335,9 @@ body{
 }
 #footer .footerLinks a:hover{
 	color:#e7375a;
+}
+#footer a.small{
+	font-size: 1.1em;
 }
 #footer .funder{
 	margin-top:0px;
