@@ -83,7 +83,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						list($browse_info, $browse) = self::browseParams($args);
 						$facet = $args['facet'];
 						
-						$facet_values = $browse->getFacet($facet);
+						$facet_values = $browse->getFacet($facet, ['checkAccess' => [1]]);
 						
 						if(!is_array($facet_values)) {
 							throw new \ServiceException(_t('Facets %1 is not defined for table %2', $facet, $browse_info['table']));
@@ -141,10 +141,10 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 					],
 					'resolve' => function ($rootValue, $args) {
 						list($browse_info, $browse) = self::browseParams($args);
-						$facets = $browse->getInfoForAvailableFacets();
+						$facets = $browse->getInfoForAvailableFacets(['checkAccess' => [1]]);
 						
 						$ret = array_map(function($f, $n) use ($browse) { 
-							$facet_values = $browse->getFacet($n);
+							$facet_values = $browse->getFacet($n, ['checkAccess' => [1]]);
 						
 							$ret = array_map(function($v) {
 								return [
@@ -278,7 +278,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						$values = $args['values'] ?? null;
 						
 						$browse->addCriteria($facet, is_array($values) ? $values : [$value]);
-						$browse->execute();	
+						$browse->execute(['checkAccess' => [1]]);	
 						
 						return self::getMutationResponse($browse, $browse_info, $args);
 					}
@@ -329,7 +329,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 							throw new \ServiceException(_t('No values passed'));
 						}
 						$browse->removeCriteria($facet, $values);
-						$browse->execute();	
+						$browse->execute(['checkAccess' => [1]]);	
 						
 						return self::getMutationResponse($browse, $browse_info, $args);
 					}
@@ -358,7 +358,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						list($browse_info, $browse) = self::browseParams($args);
 						
 						$browse->removeAllCriteria();
-						$browse->execute();	
+						$browse->execute(['checkAccess' => [1]]);	
 						
 						return self::getMutationResponse($browse, $browse_info, $args);
 					}
@@ -390,7 +390,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 		}
 		$restrict_to_types = caGetOption('restrictToTypes', $browse_info, null);
 		if (is_array($restrict_to_types) && sizeof($restrict_to_types)) { $browse->setTypeRestrictions($restrict_to_types); }
-		if (caGetOption('execute', $options, true)) { $browse->execute(); }
+		if (caGetOption('execute', $options, true)) { $browse->execute(['checkAccess' => [1]]); }
 		
 		return [
 			$browse_info, $browse
