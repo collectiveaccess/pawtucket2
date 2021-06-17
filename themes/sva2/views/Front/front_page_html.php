@@ -24,19 +24,30 @@
  *
  * ----------------------------------------------------------------------
  */
+
+ $image = "/themes/sva2/views/Front/home-image.jpg";
+
+// echo __DIR__;
+ 
 ?>
 
-	<div class="container-fluid front-page-container">
 
+	<div class="container-fluid front-page-container">
 		<div class="hero-image-container">
-			<img class="hero-image">
-			<h1 class="hero-image-caption">SVA Exhibitions Archive</h1>
+			<img class="hero-image" src=<?php echo $image ?> alt="SVA Photo Banner">
+			<div class="hero-image-caption">SVA Exhibitions Archive</div>
+			<a href="#main-content" class="btn btn-default go-down"><span class="material-icons down-icon">keyboard_arrow_down</span></a>
+			<p class="skip-btn">SKIP TO MAIN CONTENT</p>
 		</div>
 
-		<div class="featured-exhibitions-heading">
+		<div id="main-content" class="featured-exhibitions-heading">
 			<h1 class="heading">Featured Exhibitions</h1>
 			<div class="line-border"></div>
-			<p class="info">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+			<p class="info">SVA has a rich history of exhibitions, both by professional and student artists. SVA’s early exhibition history is populated by an incredible roster of professional artists, many of whom were faculty at the College. Beginning in the 1970s, student exhibitions were held at SVA-operated galleries in Tribeca and then SoHo; these shows stand today as some of the earliest instances of a college presenting student work within a thriving gallery scene. SVA’s numerous exhibition spaces continued to expand over the years, offering a wide array of professional and student exhibitions venues. 
+				</br></br>
+				This site is continually updated. Discover more about current activity in SVA’s galleries <a href="https://sva.edu/students/life-at-sva/campus-spaces/galleries">here</a>.
+				</br></br>
+			</p>
 		</div>
 
 		<div class="row justify-content-start row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 exhibitions-list">
@@ -44,16 +55,20 @@
 			<?php
 				$qr = $this->getVar('featured_set_items_as_search_result');
 				if($qr && $qr->numHits()){
+					// $index = 1;
 					while($qr->nextHit()){
 						// $media = $qr->getWithTemplate('<l>^ca_object_representations.media.medium</l>', ["checkAccess" => $this->getVar("access_values")]);
 						$media = $qr->getWithTemplate('<unit relativeTo="ca_objects" start="0" length="1"><l>^ca_object_representations.media.medium</l></unit>', ["checkAccess" => $this->getVar("access_values")]);
 						$caption = $qr->getWithTemplate("<unit relativeTo='ca_occurrences' start='0' length='1'><l>^ca_occurrences.preferred_labels.name</l></unit>");	
 			?>
-						<div class="col card exhibition-item">
+					<div class="col">
+						<div class="card exhibition-item" tabindex="0">
 							<div class='featured-exhibits-image'><?= $media; ?></div>
 							<div class='featured-exhibits-caption'><?= $caption; ?></div>
 						</div>
+					</div>
 					<?php
+						// $index = $index + 1;
 					}
 				}?>
 

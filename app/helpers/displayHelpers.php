@@ -4180,8 +4180,9 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		switch($va_identifier['type']) {
 			case 'representation':
 				$t_instance = new ca_object_representations($va_identifier['id']);
-
-				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE')))) {
+				
+				$vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE'));
+				if (!$vs_viewer_name) {
 					throw new ApplicationException(_t('Invalid viewer'));
 				}
 				$va_display_info = caGetMediaDisplayInfo($ps_display_type, $vs_mimetype);
@@ -4212,7 +4213,9 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 				$pt_subject = Datamodel::getInstanceByTableNum($t_attr->get('table_num'), true);
 				$pt_subject->load($t_attr->get('row_id'));
 
-				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('value_blob', 'original', 'MIMETYPE')))) {
+				$vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('value_blob', 'original', 'MIMETYPE'));
+				
+				if (!$vs_viewer_name) {
 					throw new ApplicationException(_t('Invalid viewer'));
 				}
 

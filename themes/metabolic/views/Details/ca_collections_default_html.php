@@ -280,7 +280,7 @@ if($x_show_events){
 ?>
 		<div class="row mt-3">
 			<div class="col-7 mt-5">
-				<H1>Inquiries</H1>
+				<H1>Albums</H1>
 			</div>
 			<div class="col-5 mt-5 text-right">
 				<?php print caNavLink("View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>
@@ -311,7 +311,8 @@ if($x_show_events){
 
 <?php		
 	}
-	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("item"), "restrictToRelationshipTypes" => array("featured"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	//$va_related_item_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("item"), "restrictToRelationshipTypes" => array("featured"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
 	if(sizeof($va_related_item_ids)){	
 		# --- related_items
 		shuffle($va_related_item_ids);

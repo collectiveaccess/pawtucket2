@@ -22,7 +22,7 @@ const ChronologyList = () => {
     setCurrentAction(act);
     setCurrentActionTitle(title)
 
-    addFilterValue(baseUrl, browseType, '', '_search', act, 'ca_occurrences.date', function (data) {
+    addFilterValue(baseUrl, browseType, '', 'project', act, 'ca_occurrences.date', function (data) {
       console.log('addFilterValue', data);
       setKey(data.key);
       setResultItems(data.items);

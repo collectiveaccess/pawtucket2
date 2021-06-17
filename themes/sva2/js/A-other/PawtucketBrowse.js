@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 import React from "react"
 import ReactDOM from "react-dom";
-import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel } from "../../default/js/browse";
+import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel } from "../../../default/js/browse";
 
 const selector = pawtucketUIApps.PawtucketBrowse.selector;
 const appData = pawtucketUIApps.PawtucketBrowse.data;

@@ -38,7 +38,7 @@
 			<ul class="breadcrumb">
 				<li><a href="/index.php/">Featured Exhibitions</a></li>
 				<li><span class="material-icons">keyboard_arrow_right</span></li>
-				{{{<l>^ca_objects.preferred_labels.name</l>}}}
+				<li>{{{<l>^ca_objects.preferred_labels.name</l>}}}</li>
 			</ul>
 	</div>
 

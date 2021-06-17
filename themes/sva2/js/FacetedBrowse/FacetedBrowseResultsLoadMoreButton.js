@@ -12,7 +12,7 @@ const FacetedBrowseResultsLoadMoreButton = () => {
     setResultItemsPerPage(newLimit);
 
     getResult(serviceUrl, browseType, key, 0, newLimit, sort, function (data) {
-      console.log("getResult: ", data);
+      // console.log("getResult: ", data);
       setResultItems(data.items);
       setTotalResultItems(data.item_count);
       setFilters(data.filters)

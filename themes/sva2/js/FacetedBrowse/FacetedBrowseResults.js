@@ -13,7 +13,7 @@ const FacetedBrowseResults = () => {
   
   useEffect(() => {
     addFilterValue(serviceUrl, browseType, '', "_search", search_value, function (data) {
-      console.log("addFilterValue: ", data);
+      // console.log("addFilterValue: ", data);
       setResultItems(data.items);
       setTotalResultItems(data.item_count);
       setFilters(data.filters)
@@ -24,7 +24,7 @@ const FacetedBrowseResults = () => {
   useEffect(() => {
     if(key){
       getResult(serviceUrl, browseType, key, 0, resultItemsPerPage, sort ,function (data) {
-        console.log("getResult: ", data);
+        // console.log("getResult: ", data);
         setResultItems(data.items);
         setTotalResultItems(data.item_count);
         setFilters(data.filters)
@@ -44,7 +44,7 @@ const FacetedBrowseResults = () => {
             // console.log("Browse Item: ", item.media);
             return (
               <div className="col card fb-result-card" key={index}> 
-                {(item.media) ? <a href={item.detailUrl}><img className="fb-result-img" src={item.media[0].url} alt={item.title} /></a> : <a href={item.detailUrl}><img src="http://placehold.jp/24/cccccc/ffffff/150x150.png?text=No Image Available" /></a>}
+                {(item.media) ? <a href={item.detailUrl}><img className="fb-result-img" src={item.media[0].url} alt={item.title} /></a> : <a href={item.detailUrl}><img src="http://placehold.jp/24/cccccc/ffffff/150x150.png?text=No Image Available" alt="No Image Available" /></a>}
                 <div className="card-text fb-result-title"> <a href={item.detailUrl}>{(item.title) ? item.title : item.value}</a> </div>
               </div>
             )

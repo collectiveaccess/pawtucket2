@@ -24,23 +24,32 @@
 		<div class="container-fluid footer-container">
 			<footer id="footer">
 
-				<div class="row footer-title">
-					<div>SVA Exhibitions Archive</div>
+				<div class="row row-cols-1 row-cols-2-lg">
+					<div class="col-md-3 footer-title p-0">SVA Exhibitions Archive</div>
+
+					<div class="col-md-9 p-0">
+						<ul class="list justify-content-end">
+							<li class="list-item"><a href="#">Glaser Archives</a></li>
+							<li class="divi"></li>
+							<li class="list-item"><a href="#">SVA Archives</a></li>
+							<li class="divi"></li>
+							<li class="list-item"><a href="#">About</a></li>
+							<li class="divi"></li>
+							<li class="list-item"><a href="#">Visit</a></li>
+							<li class="divi"></li>
+							<li class="list-item"><a href="#">Accessibility Notice</a></li>
+						</ul>
+					</div>
+
 				</div>
 
-				<div class="row footer-list">
-					<ul class="list">
-						<li class="list-item"><a href="#">Glaser Archives</a></li>
-						<li class="list-item"><a href="#">SVA Archives</a></li>
-						<li class="list-item"><a href="#">About</a></li>
-						<li class="list-item"><a href="#">Visit</a></li>
-						<li class="list-item"><a href="#">Accessibility Notice</a></li>
-					</ul>
-				</div>
-
-				<div class="row footer-text-notice">
-					<p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
-				</div>
+				<!-- <div class="row footer-text-notice">
+					<p>
+						There’s more! Please contact the archives for more information about particular exhibitions.
+ 						</br></br>
+						The images on this site are protected by copyright and/or related rights. Their appearance on this site is merely intended to illustrate certain of the content available for educational purposes in the School of Visual Arts Archives (a division of the Visual Arts Foundation).  For other uses contact the archives for information about obtaining permission from the rights-holder(s).
+					</p>
+				</div> -->
 
 			</footer><!-- end footer -->
 			
