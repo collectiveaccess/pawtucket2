@@ -11,7 +11,7 @@
 		<ul class="breadcrumb">
 			<li><a href="/index.php/">Featured Exhibitions</a></li>
 			<li><span class="material-icons">keyboard_arrow_right</span></li>
-			{{{<l>^ca_entities.preferred_labels.displayname</l>}}}
+			<li>{{{<l>^ca_entities.preferred_labels.displayname</l>}}}</li>
 		</ul>
 	</div>
 
@@ -23,13 +23,15 @@
 	
 		<div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 exhibition-items">
 			{{{
-			<unit relativeTo="ca_occurrences" delimiter="<br/>">					  
-				<div class="col card exhibition-item">
-						<unit relativeTo="ca_objects" delimiter=" " start="0" length="1"><div class="item-image"><l>^ca_object_representations.media.small</div></l></unit>
-						<div class="item-label"><l>^ca_occurrences.preferred_labels.name</l></div>
-						<!-- <unit relativeTo="ca_occurrences.dates" skipWhen="^ca_occurrences.dates.dates_type !~ /Exhibition dates/">
-							<if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"> <br> ^ca_occurrences.dates.dates_value</if>
-						</unit> -->
+			<unit relativeTo="ca_occurrences" delimiter="<br/>">
+				<div class="col">					  
+					<div class="card exhibition-item" tabindex="0">
+							<unit relativeTo="ca_objects" delimiter=" " start="0" length="1"><div class="item-image"><l>^ca_object_representations.media.small</div></l></unit>
+							<div class="item-label"><l>^ca_occurrences.preferred_labels.name</l></div>
+							<!-- <unit relativeTo="ca_occurrences.dates" skipWhen="^ca_occurrences.dates.dates_type !~ /Exhibition dates/">
+								<if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"> <br> ^ca_occurrences.dates.dates_value</if>
+							</unit> -->
+					</div>
 				</div>					 
 			</unit>
 			}}}

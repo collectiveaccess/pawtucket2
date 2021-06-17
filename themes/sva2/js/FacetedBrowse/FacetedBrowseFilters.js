@@ -17,7 +17,7 @@ const FacetedBrowseFilters = () => {
   useEffect(() => {
     if(key){
       getFacets(serviceUrl, browseType, key, function (data) {
-        console.log("getFacets: ", data);
+        // console.log("getFacets: ", data);
         setFacets(data.facets);
         setKey(data.key);
       });
@@ -65,7 +65,7 @@ const FacetedBrowseFilters = () => {
 
   const addFilter = (e) => {
     addFilterValue(serviceUrl, browseType, key, currentFacet, selectedFacets, function (data) {
-      console.log("addFilterValue: ", data);
+      // console.log("addFilterValue: ", data);
       setResultItems(data.items);
       setTotalResultItems(data.item_count);
       setFilters(data.filters)
@@ -85,7 +85,7 @@ const FacetedBrowseFilters = () => {
     setSelectedFacets(tempArr)
 
     removeFilterValue(serviceUrl, browseType, key, facet, String(value), function (data) {
-      console.log("removeFilterValue: ", data);
+      // console.log("removeFilterValue: ", data);
       setResultItems(data.items);
       setTotalResultItems(data.item_count);
       setFilters(data.filters)
@@ -101,7 +101,7 @@ const FacetedBrowseFilters = () => {
   const removeAllFilters = (e) => {
     setSelectedFacets([])
     removeAllFilterValues(serviceUrl, browseType, key, function (data) {
-      console.log("removeAllFilterValues: ", data);
+      // console.log("removeAllFilterValues: ", data);
       setResultItems(data.items);
       setTotalResultItems(data.item_count);
       setFilters(data.filters)
@@ -119,14 +119,6 @@ const FacetedBrowseFilters = () => {
       trigger: 'hover',
     })
   })
-
-  // if(selectedFacets){
-  //   console.log("selectedFacets: ", selectedFacets);
-  // }
-  // if(filters){
-  //   console.log("filters: ", filters);
-
-  // }
 
   if(facets){
     return (
@@ -148,7 +140,7 @@ const FacetedBrowseFilters = () => {
                       <div className="row mb-1 m-0 filter" key={index}>
                         <button type="button" className="btn btn-sm btn-secondary-outline close" key={index} aria-label="Close">
                           <div data-toggle="tooltip" data-placement="top" title={val.value}><p className="filter-value">{val.value}</p></div>
-                          <span className="ml-2" aria-hidden="true" onClick={(e) => removeFilter(e, facet, facet_val_id)}>&times;</span>
+                          <span className="ml-2" aria-hidden="true" onClick={(e) => removeFilter(e, facet, facet_val_id)} tabIndex='0'>&times;</span>
                         </button>
                       </div>
                     )
@@ -167,21 +159,23 @@ const FacetedBrowseFilters = () => {
                 <div className="facet-item" key={index}>
                   {(facet.values.length > 0) ? 
                     <>
-                      <label className="facet-item-label" onClick={e => setFacetResults(e, facet.name)}>
+                      <label className="facet-item-label" onClick={e => setFacetResults(e, facet.name)} tabIndex="0">
                         <p>{(facet.values.length > 1) ? facet.labelPlural : facet.labelSingular}</p>
                       </label>
 
                       <div id={`curr-facet-vals-${facet.name}`} style={{ 'display': (currFacetVals == `curr-facet-vals-${facet.name}`)? 'block' :'none'}}>
                         <div className="container-fluid facet-values-container active" > 
-                          <div className="row row-cols-2 m-0 ">
-                            {facet.values.map((val, index) =>
-                              <div className="col facet-value" key={index}>
-                                <div className="input-checkbox">
-                                  <input type="checkbox" id={`checkbox-${val.id}`} onChange={() => { selectFacet(val.id) }}/>
-                                  <label htmlFor={`checkbox-${val.id}`}>{val.value}</label>
-                                </div>                 
-                              </div>
-                            )}
+                          <div className="row m-0 facet-values-row">
+                            <div className="column-container">
+                              {facet.values.map((val, index) =>
+                                <div className="facet-value" key={index}>
+                                  <div className="input-checkbox">
+                                    <input type="checkbox" id={`checkbox-${val.id}`} onChange={() => { selectFacet(val.id) }} tabIndex='0'/>
+                                    <label htmlFor={`checkbox-${val.id}`}>{val.value}</label>
+                                  </div>                 
+                                </div>
+                              )}
+                            </div>
                           </div>
                         </div>
                         <div className="row justify-content-center m-0 mb-3">

@@ -18,7 +18,7 @@ const ExhibitionsBrowse = () => {
 
   useEffect(() => {
     getBrowseBar(baseUrl, currentBrowse, function (data) {
-      console.log('browseBar data', data);
+      // console.log('browseBar data', data);
       const values = [];
       data.values.map((val) => {
         values.push(val);
@@ -29,7 +29,7 @@ const ExhibitionsBrowse = () => {
     });
 
     getBrowseContent(baseUrl, currentBrowse, "A", function (data) {
-      console.log('browseContent data', data);
+      // console.log('browseContent data', data);
       const values = [];
       data.values.map((val) => {
         values.push(val.display);

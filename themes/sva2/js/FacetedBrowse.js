@@ -10,7 +10,6 @@ const FacetedBrowse = () => {
   const [ isLoading, setIsLoading ] = useState(true);
 
   useEffect(() => {
-    // setTimeout(() => setIsLoading(false), 4000);
     setIsLoading(false);
   }, [])
 
@@ -23,7 +22,7 @@ const FacetedBrowse = () => {
     )
   }else{
     return (
-      <div className="row">
+      <div className="row row-cols-1 row-cols-2-md">
         <FacetedBrowseResults />
         <FacetedBrowseFilters />
       </div>

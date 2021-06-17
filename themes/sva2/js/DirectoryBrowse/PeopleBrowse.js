@@ -4,8 +4,6 @@ import BrowseBar from "./BrowseBar";
 import BrowseContentContainer from './BrowseContentContainer';
 import { getBrowseBar, getBrowseContent } from './DirectoryQueries';
 
-// import people from "./peopledata";
-// import { alphabetical } from "./browsebardata";
 
 const currentBrowse = pawtucketUIApps.DirectoryBrowse.currentBrowse;
 const baseUrl = pawtucketUIApps.DirectoryBrowse.baseUrl;
@@ -16,12 +14,10 @@ const PeopleBrowse = () => {
 
   useEffect(() => {
     getBrowseBar(baseUrl, currentBrowse, function (data) {
-      console.log('browseBar data', data);
+      // console.log('browseBar data', data);
       const values = [ ];
       data.values.map((val) => {
-        console.log(val);
-
-        // values.push(val.display);
+        // console.log(val);
         values.push(val);
       })
       setDisplayTitle(data.displayTitle)
@@ -29,7 +25,7 @@ const PeopleBrowse = () => {
     });
 
     getBrowseContent(baseUrl, currentBrowse, "A", function (data) {
-      console.log('browseContent data', data);
+      // console.log('browseContent data', data);
       const values = [];
       data.values.map((val) => {
         values.push(val.display);

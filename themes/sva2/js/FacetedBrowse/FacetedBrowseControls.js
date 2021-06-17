@@ -12,7 +12,7 @@ const FacetedBrowseControls = () => {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    console.log(name + ' ' + value);
+    // console.log(name + ' ' + value);
     if(name == 'selectedDirection'){
       setSelectedDirection(value);
     }
@@ -27,7 +27,7 @@ const FacetedBrowseControls = () => {
       setSort(selectedField.concat(selectedDirection));
 
       getResult(serviceUrl, browseType, key, 0, resultItemsPerPage, selectedField.concat(selectedDirection), function (data) {
-        console.log("getResult: ", data);
+        // console.log("getResult: ", data);
         setResultItems(data.items);
         setTotalResultItems(data.item_count);
         setFilters(data.filters)
@@ -38,7 +38,7 @@ const FacetedBrowseControls = () => {
   }
 
   if(availableSorts){
-    console.log(availableSorts);
+    // console.log(availableSorts);
   }
 
   if(availableSorts){
@@ -52,9 +52,12 @@ const FacetedBrowseControls = () => {
           <div className="col-6 pl-0 pt-2">
 
             <div className="dropdown show d-inline mr-3" >
-              <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><ion-icon name="funnel"></ion-icon></a>
-              <form className="dropdown-menu form-inline sorting p-2" aria-labelledby="dropdownMenuLink">
-                <select name="selectedField" required value={selectedField} onChange={(e) => handleChange(e)} style={{ 'marginRight': '5px' }}>
+              <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="material-icons">filter_list</span></a>
+
+              <form className="dropdown-menu form-group sorting p-2" aria-labelledby="dropdownMenuLink">
+
+                <label for="selectedField" class="visuallyhidden mr-1">Field: </label>
+                <select name="selectedField" required value={selectedField} onChange={(e) => handleChange(e)} style={{ 'marginRight': '10px' }}>
                   <option value=''>--</option>
                   {availableSorts.map((sort, index) => {
                     return (
@@ -64,20 +67,24 @@ const FacetedBrowseControls = () => {
                   })}
                 </select>
 
-                <select name="selectedDirection" required value={selectedDirection} onChange={(e) => handleChange(e)} style={{ 'marginRight': '5px' }}>
+                <label for="selectedDirection" class="visuallyhidden mr-1">Sort: </label>
+                <select name="selectedDirection" required value={selectedDirection} onChange={(e) => handleChange(e)} style={{ 'marginRight': '10px' }}>
                   <option value=''>--</option>
                   <option value=':ASC'>↑</option>
                   <option value=':DESC'>↓</option>
                 </select>
 
-                <button type="button" className="btn btn-sm" onClick={() => submitSort()} style={{'border': '1px solid black'}}><ion-icon name="arrow-round-forward" style={{ 'color': 'black' }}></ion-icon></button>
+                <button type="button" className="btn btn-sm" onClick={() => submitSort()} style={{ 'border': '1px solid black' }}><span class="material-icons" style={{ 'color': 'black', fontSize: '16px', paddingTop: "2px" }}>arrow_forward</span></button>
+
               </form>
+
             </div>
 
             <div className="dropdown show d-inline">
-              <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><ion-icon name="download"></ion-icon></a>
+              {/* <label for="dropdown" class="visuallyhidden">Export: </label> */}
+              <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="material-icons">download</span></a>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <div className="dropdown-header">Export Results As:</div>
+                <div className="dropdown-header" style={{color: 'black'}}>Export Results As:</div>
                 <div className="dropdown-divider"></div>
                 <a className="dropdown-item" href='#'>Download media</a>
                 <a className="dropdown-item" href='#'>PDF Thumbnails</a>

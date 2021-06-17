@@ -15,6 +15,7 @@ const BrowseBar = (props) => {
     speed: 500,
     slidesToShow: 10,
     slidesToScroll: 2,
+    accessibility: true,
     // initialSlide: 0,
     responsive: [
       {
@@ -85,7 +86,7 @@ const BrowseBar = (props) => {
     setBrowseBarValue(item);
 
     getBrowseContent(baseUrl, currentBrowse, item, function (data) {
-      console.log('browseContent data', data);
+      // console.log('browseContent data', data);
       const values = [];
       data.values.map((val) => {
         values.push(val.display);
@@ -115,14 +116,16 @@ const BrowseBar = (props) => {
       return(
         <>
           <div className="row line-border mb-4"></div>
-          <div className="row b-bar" id="items-cont">
-            <Slider {...settings}>
-              {props.data.map((item, index) => {
-                return (
-                  <a key={index} className={(item.disabled == 0) ? "browse-bar-item" :"browse-bar-item disabled"} href={`#${item.display}`} onClick={(e) => { setValue(e, item.display); getAnchor(item.display); }}>{item.display}</a>
-                )
-              })}
-            </Slider>
+            <div className="row b-bar" id="items-cont">
+              <Slider {...settings}>
+                {props.data.map((item, index) => {
+                  return (
+                    <a key={index} className={(item.disabled == 0) ? "browse-bar-item" : "browse-bar-item disabled"} href={`#${item.display}`} onClick={(e) => { setValue(e, item.display); getAnchor(item.display); }} tabIndex="0">
+                      <a href={`#${item.display}`} className={(item.disabled == 0) ? "browse-bar-item" : "browse-bar-item disabled"} tabIndex="0" onClick={(e) => { setValue(e, item.display); getAnchor(item.display); }}>{item.display}</a>
+                    </a>
+                  )
+                })}
+              </Slider>
             </div>
           <div className="row line-border mt-4"></div>
         </>
@@ -131,14 +134,14 @@ const BrowseBar = (props) => {
       return (
         <>
           <div className="row line-border mb-4"></div>
-          <div className="row b-bar" id="items-cont">
-            <div className="alpha-cont">
-              {props.data.map((item, index) => {
-                return(
-                  <a key={index} className={(item.disabled == 0) ? "browse-bar-item alpha-item" : "browse-bar-item disabled alpha-item"} href={`#${item.display}`} onClick={(e) => {setValue(e, item.display); getAnchor(item.display);}}>{item.display}</a>
-                )
-              })}
-            </div>
+            <div className="row b-bar" id="items-cont">
+              <div className="alpha-cont">
+                {props.data.map((item, index) => {
+                  return(
+                    <a key={index} className={(item.disabled == 0) ? "browse-bar-item alpha-item" : "browse-bar-item disabled alpha-item"} href={`#${item.display}`} onClick={(e) => {setValue(e, item.display); getAnchor(item.display);}}>{item.display}</a>
+                  )
+                })}
+              </div>
             </div>
           <div className="row line-border mt-4"></div>
         </>

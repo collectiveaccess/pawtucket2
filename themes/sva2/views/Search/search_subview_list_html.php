@@ -61,23 +61,27 @@
 			<div class="row justify-content-start row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 multisearch-results col-12 p-0 m-0 {{{block}}}Set">
 				<?php
 					$va_block_info["resultTemplate"];
-					$vs_full_link = caNavLink('<div class="full-results text-center">'._t('Full results').'</div>', '', '', 'Browse', '{{{block}}}', array('search' => str_replace("/", "", $vs_search)));
-	
+					$vs_full_link = caNavLink('<div class="full-results text-center" style="color: black;">'._t('Full results').'</div>', '', '', 'Browse', '{{{block}}}', array('search' => str_replace("/", "", $vs_search)));
+					
+					$index = 1;
 					while($qr_results->nextHit()) {
 						$vn_count++;
 				?>
-						<div class='col card search-item'>
-							<?php
-								print caDetailLink($qr_results->getWithTemplate($va_block_info["resultTemplate"]), "", $va_block_info["table"], $qr_results->getPrimaryKey());
-							?>
-						</div>
+						<!-- <div class="col"> -->
+							<div class='col card search-item' tabindex='0'>
+								<?php
+									print caDetailLink($qr_results->getWithTemplate($va_block_info["resultTemplate"]), "", $va_block_info["table"], $qr_results->getPrimaryKey());
+								?>
+							</div>
+						<!-- <div> -->
 					<?php					
 						if ($vn_count == $vn_hits_per_block) {break;} 
+						$index = $index + 1;
 					}
 					?>
 			</div>
 		<!-- </div> -->
-		<div class='row justify-content-center col-12 p-0 m-0'><?php print $vs_full_link; ?></div>
+		<div class='row justify-content-center col-12 p-0 m-0 full-row'><?php print $vs_full_link; ?></div>
 <?php
 	}
 ?>

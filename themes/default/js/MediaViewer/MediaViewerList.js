@@ -2,8 +2,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Slider from 'react-slick';
-import MdExpand from 'react-ionicons/lib/MdExpand'
-import MdExit from 'react-ionicons/lib/MdExit'
+// import MdExpand from 'react-ionicons/lib/MdExpand'
+// import MdExit from 'react-ionicons/lib/MdExit'
 
 /**
  *
@@ -72,17 +72,15 @@ class MediaViewerList extends React.Component{
 		  slidesToScroll: 1,
 			vertical: true,
 			verticalSwiping: true,
-			beforeChange: function (currentSlide, nextSlide) {
-				// console.log("before change", currentSlide, nextSlide);
-			},
-			afterChange: function (currentSlide) {
-				// console.log("after change", currentSlide);
-			}
 		};
 
 		let mediaList = this.state.media.map((v, i) => {
 			const selected = (this.state.index === i) ? 'slick-selected' : '';
-			return (<a href='#' onClick={this.loadMedia} className={selected} key={i}><img data-index={i} src={v.urls.icon} style={{border: '3px transparent solid'}}/></a>);
+			return (
+				<a href='#' className={selected} key={i} tabIndex="0" onClick={this.loadMedia}>
+					<img data-index={i} src={v.urls.icon} onClick={this.loadMedia} alt="Image Thumbnail" style={{ border: '3px transparent solid' }} tabIndex="0"/>
+				</a>
+			);
 		});
 
 		console.log("Media List: ", mediaList);

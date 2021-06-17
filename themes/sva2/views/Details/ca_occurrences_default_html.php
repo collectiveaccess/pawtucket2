@@ -55,13 +55,13 @@
 
 <div class="container-fluid occurrences-container">
 
-	<!-- <div class="row breadcrumb-nav justify-content-start">
+	<div class="row breadcrumb-nav justify-content-start">
 		<ul class="breadcrumb">
 			<li><a href="/index.php/">Featured Exhibitions</a></li>
 			<li><span class="material-icons">keyboard_arrow_right</span></li>
-			{{{<l>^ca_occurrences.preferred_labels.name</l>}}}
+			<li>{{{<l>^ca_occurrences.preferred_labels.name</l>}}}</li>
 		</ul>
-	</div> -->
+	</div>
 
 	<div class="row hero-image-container justify-content-center">
 		<!-- <?php print $main_representation['large']; ?> -->
@@ -76,16 +76,20 @@
 	<div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 exhibition-items justify-content-start">
 		<?php
 			if($representation_count > 0) {
+				// $index = 1;
 		?>
 			<?php
 				foreach ($representations as $k => $representations_for_classification) {
 					foreach ($representations_for_classification as $rep) {
 			?>
-						<div class="col card exhibition-item">
+					<div class="col"> 
+						<div class="card exhibition-item" tabindex="0">
 							<div class="item-image"><?php print $rep['small']; ?></div>
 							<div class='item-label'><?php print $rep['label']; ?></div>
 						</div>
+					</div>
 			<?php
+					// $index = $index + 1;
 					}
 				}
 			?>

@@ -2,11 +2,13 @@
 import React from "react"
 import ReactDOM from "react-dom";
 
-import MdArrowDropleftCircle from 'react-ionicons/lib/MdArrowDropleftCircle'
-import MdArrowDroprightCircle from 'react-ionicons/lib/MdArrowDroprightCircle'
+// import MdArrowDropleftCircle from 'react-ionicons/lib/MdArrowDropleftCircle'
+// import { MdArrowDropleftCircle } from 'react-ionicons';
+// import { MdArrowDroprightCircle } from 'react-ionicons';
+// import MdArrowDroprightCircle from 'react-ionicons/lib/MdArrowDroprightCircle'
 
-import MdAddCircle from 'react-ionicons/lib/MdAddCircle'
-import MdRemoveCircle from 'react-ionicons/lib/MdRemoveCircle'
+// import { MdAddCircle } from 'react-ionicons';
+// import { MdRemoveCircle } from 'react-ionicons';
 
 import { pdfjs } from 'react-pdf';
 const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
@@ -106,18 +108,18 @@ class PDFViewer extends React.Component{
 			<div className='mediaViewerPDFContainer'>
 				<div className='row'>
 					<div className='col-md-3'>
-						<button type="button" className="btn btn-secondary" onClick={this.previousPage} title='Previous page'><MdArrowDropleftCircle/></button>
+						{/* <button type="button" className="btn btn-secondary" onClick={this.previousPage} title='Previous page'><MdArrowDropleftCircle/></button> */}
 					</div>
 					<div className='col-md-3 text-center'>
 						{pageCounter}
 					</div>
 					<div className='col-md-3 text-center'>
-						<a href='#'  onClick={this.zoomOut}><MdRemoveCircle/></a>
+						{/* <a href='#'  onClick={this.zoomOut}><MdRemoveCircle/></a> */}
 						{this.magnificationLevel() + '%'}
-						<a href='#'  onClick={this.zoomIn}><MdAddCircle/></a>
+						{/* <a href='#'  onClick={this.zoomIn}><MdAddCircle/></a> */}
 					</div>
 					<div className='col-md-3 text-right'>
-						<button type="button" className="btn btn-secondary" onClick={this.nextPage} title='Next page'><MdArrowDroprightCircle/></button>
+						{/* <button type="button" className="btn btn-secondary" onClick={this.nextPage} title='Next page'><MdArrowDroprightCircle/></button> */}
 					</div>
 				</div>
 				<div className='row'>
