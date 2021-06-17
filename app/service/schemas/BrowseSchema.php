@@ -44,6 +44,20 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 			//
 			// Facets and filters
 			//
+			$browseFacetDisplayDataItemType = new ObjectType([
+				'name' => 'BrowseFacetDisplayDataItem',
+				'description' => 'Browse facet display data',
+				'fields' => [
+					'name' => [
+						'type' => Type::string(),
+						'description' => 'Name'
+					],
+					'value' => [
+						'type' => Type::string(),
+						'description' => 'Value'
+					]
+				]
+			]),
 			$browseFacetValueType = new ObjectType([
 				'name' => 'BrowseFacetValue',
 				'description' => 'Browse facet value',
@@ -67,7 +81,11 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 					'childCount' => [
 						'type' => Type::int(),
 						'description' => 'Number of facet values contained within this value (for hierarchical facets)'
-					]
+					],
+					'displayData' => [
+						'type' => Type::listOf($browseFacetDisplayDataItemType),
+						'description' => 'Additional data for display for facet item'
+					],
 				]
 			]),
 			$browseFacetType = new ObjectType([

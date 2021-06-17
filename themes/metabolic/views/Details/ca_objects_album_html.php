@@ -137,7 +137,7 @@
 	pawtucketUIApps['MediaViewer'] = {
         'selector': '#mediaDisplay',
         'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true]); ?>,
-        'width': '100%',
+        'width': '900px',
         'height': '500px',
         'controlHeight': '72px',
         'data': {
@@ -215,7 +215,7 @@
 					</div>
 					<div class="col-12 col-md-6">
 						
-<!--						
+						
 						{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1">
 							<div class="mb-3">
 								<div class="label">Exhibitions</div>
@@ -224,7 +224,7 @@
 								</unit>
 							</div>
 						</ifcount>}}}
--->
+
 						
 						{{{<ifcount code="ca_collections" min="1">
 							<div class="mb-3">
@@ -462,6 +462,29 @@
         gridTable: 'ca_objects', 
         fetch: 'children'
     };
+</script>
+<script type="text/javascript">	
+	function copyUrl() {
+		if (!window.getSelection) {
+		alert('Please copy the URL from the location bar.');
+		return;
+		}
+		const dummy = document.createElement('p');
+		dummy.textContent = window.location.href;
+		document.body.appendChild(dummy);
+
+		const range = document.createRange();
+		range.setStartBefore(dummy);
+		range.setEndAfter(dummy);
+
+		const selection = window.getSelection();
+		// First clear, in case the user already selected some other text
+		selection.removeAllRanges();
+		selection.addRange(range);
+
+		document.execCommand('copy');
+		document.body.removeChild(dummy);
+	}
 </script>
 <script type="text/javascript">	
 	function copyUrl() {

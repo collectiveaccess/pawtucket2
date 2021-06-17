@@ -171,7 +171,9 @@ function appendItemsToLightbox(uri, tokens, id, items, callback) {
 	  })
 	  .then(function(result) {
 	  		callback(result.data['appendItems']);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to append items to lightbox ", error);
+		});
 }
 
 function appendItemstoNewLightbox(uri, tokens, name, items, callback){

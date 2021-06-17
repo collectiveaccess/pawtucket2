@@ -261,7 +261,7 @@
 					$this->view->setVar("representation_id", $t_representation->get("representation_id"));
 					
 					if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("detail", $vs_mimetype = $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) {
-						throw new ApplicationException(_t('Invalid viewer'));
+						throw new ApplicationException(_t('Invalid viewer %1 for %2', $vs_viewer_name, $vs_mimetype));
 					}
 					if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
 
@@ -611,13 +611,12 @@
 				$table = 'ca_objects';
 				$t_instance = Datamodel::getInstance($table, true);
 			}
-			$ids = preg_split('![;,\| ]+!', $this->request->getParameter('ids', pString));
+			$ids = array_filter(preg_split('![;,\| ]+!', $this->request->getParameter('ids', pString)), 'strlen');
 			
 			// Support old object_id calls
 			if (!is_array($ids) || !sizeof($ids)) {
 				$ids =  [$this->request->getParameter('object_id', pInteger)];
 			}
-			
 			$download_type = $this->request->getParameter('download_type', pString);
 			
 			$version = $this->request->getParameter('version', pString);

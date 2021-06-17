@@ -522,7 +522,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					$type = ['type' => 'number', 'format' => 'string'];
 					break;	
 				case __CA_ATTRIBUTE_VALUE_LIST__:
-					$type = ['type' => 'string', 'format' => 'string'];
+					$type = ['type' => 'number', 'format' => 'number'];
 					$list_id = $dt->get('list_id');
 					$t_list = new ca_lists();
 					$item_count = $t_list->numItemsInList($list_id);

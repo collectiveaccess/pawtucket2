@@ -1,10 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/views/objects/object_download_media_binary.php : 
+ * app/controllers/ChronologyController.php : 
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2012-2016 Whirl-i-Gig
+ * Copyright 2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -22,28 +25,21 @@
  *
  * ----------------------------------------------------------------------
  */
-	
-	if(!headers_sent()) {
-		header("Content-type: application/octet-stream");
-		header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-		header("Cache-Control: no-store, no-cache, must-revalidate, private, post-check=0, pre-check=0");
-		header("Pragma: no-cache");
-	
-		header("Content-Disposition: attachment; filename=".$this->getVar('archive_name'));
+
+class ChronologyController extends ActionController {
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+		parent::__construct($po_request, $po_response, $pa_view_paths);
 	}
-	
-	set_time_limit(0);
-	
-	if($vs_file_path = $this->getVar('archive_path')) {
-		$o_fp = @fopen($vs_file_path,"rb");
-		while(is_resource($o_fp) && !feof($o_fp)) {
-			print(@fread($o_fp, 1024*8));
-			ob_flush();
-		}
-		exit;
-	} elseif($zip = $this->getVar('archive')) {
-		$zip->stream();
-		exit;
-	} else {
-		die("Nothing to download");
+	# -------------------------------------------------------
+	/**
+	 *
+	 */ 
+	public function View() {
+		$this->render('Chronology/index_html.php');
 	}
+	# -------------------------------------------------------
+}

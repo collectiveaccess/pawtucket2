@@ -24,6 +24,8 @@
  */
  
 	$t_object = 			$this->getVar("item");
+	$t_parent = new ca_objects($t_object->get('parent_id'));
+	
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -37,9 +39,8 @@
 	$vn_representation_id = $this->getVar("representation_id");
 	$va_representation_tags = $this->getVar("representation_tags");
 	$va_config_options = 	$this->getVar("config_options");
-#	foreach($va_representation_tags as $vs_representation_tag){
-#		print $vs_representation_tag;
-#	}
+
+
 	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl("*", "*", "*"));
 	MetaTagManager::addMetaProperty("og:title", ($va_config_options["og_title"]) ? $t_object->getWithTemplate($va_config_options["og_title"]) : $t_object->get("ca_objects.preferred_labels.name"));
 	MetaTagManager::addMetaProperty("og:type", ($va_config_options["og_type"]) ? $va_config_options["og_type"] : "website");
@@ -133,7 +134,6 @@
 				}				
 
 ?>
-
 				<div id="mediaDisplay" class="detailPrimaryMedia mt-3">
 					<!-- MediaViewer.js React app goes here -->
 				</div>
@@ -148,13 +148,18 @@
 					<div class="col-12 col-md-6">
 						{{{<ifdef code="ca_objects.parent_id">
 							<div class="mb-3">
-								<div class="label">Part of Inquiry</div>
+								<div class="label">Part of Album</div>
 								<unit relativeTo="ca_objects.parent"><l>^ca_objects.preferred_labels.name</l></unit>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.date">
 							<div class="mb-3">
 								^ca_objects.date%delimiter=,_
+							</div>
+						</ifdef>}}}
+						{{{<ifdef code="ca_objects.parent.date">
+							<div class="mb-3">
+								^ca_objects.parent.date%delimiter=,_
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.description">
@@ -178,18 +183,17 @@
 -->
 					</div>
 					<div class="col-12 col-md-6">
-						
-<!--						
-						{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1">
+											
+<!--						{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1">
 							<div class="mb-3">
 								<div class="label">Exhibitions</div>
 								<unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter="<br/><br/>">
 									<l>^ca_occurrences.preferred_labels.name</l><case><ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1"><br/></ifcount><ifdef code="ca_occurrences.date"><br/></ifdef></case><ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1"><unit relativeTo="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" delimiter=", ">^ca_entities.preferred_labels</unit><ifdef code="ca_occurrences.date">, </ifdef></ifcount><ifdef code="ca_occurrences.date">^ca_occurrences.date</ifdef>
 								</unit>
 							</div>
-						</ifcount>}}}
--->
-						{{{<ifcount code="ca_collections" min="1">
+						</ifcount>}}}-->
+
+<!--						{{{<ifcount code="ca_collections" min="1">
 							<div class="mb-3">
 								<div class="label">Action<ifcount code="ca_collections" min="2">s</ifcount></div>
 								<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
@@ -203,8 +207,58 @@
 						</ifcount>}}}
 -->
 <?php
+						$colls = $t_object->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_collections.name"));
+						
+						if($t_parent->isLoaded()) { 
+							$colls += $t_parent->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_collection_labels.name"));
+						}
+						
+						$coll_links = [];
+						if(is_array($colls) && sizeof($colls)){
+							foreach($colls as $coll){
+								$coll_links[] = caDetailLink($coll['name'], '', 'ca_collections', $coll['collection_id']);
+							}
+						}
+						if(sizeof($coll_links)) {
+?>
+							<div class="mb-3">
+								<div class="label">Actions</div>
+								<?= join($coll_links, ", "); ?>
+							</div>
+<?php
+						}
+
+
+						foreach(['action' => 'Events', 'exhibition' => 'Exhibitions', 'lecture_presentation' => 'Lectures/Presentations', 'publication' => 'Publications'] as $occ_type => $occ_typename) {
+							$occs = $t_object->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_occurrences.name"));
+						
+							if($t_parent->isLoaded()) { 
+								$occs += $t_parent->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_occurrence_labels.name"));
+							}
+						
+							$occ_links = [];
+							if(is_array($occs) && sizeof($occs)){
+								foreach($occs as $occ){
+									$occ_links[] = caDetailLink($occ['name'], '', 'ca_occurrences', $occ['occurrence_id']);
+								}
+							}
+							if(sizeof($occ_links)) {
+	?>
+								<div class="mb-3">
+									<div class="label"><?= $occ_typename; ?></div>
+									<?= join($occ_links, ", "); ?>
+								</div>
+	<?php
+							}
+						}
+
+
 						# --- rel entities by role
 						$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_entity_labels.surname"));
+						
+						if($t_parent->isLoaded()) { 
+							$va_entities += $t_parent->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_entity_labels.surname"));
+						}
 						if(is_array($va_entities) && sizeof($va_entities)){
 							$va_entities_by_role = array();
 							$va_visionary = array();
@@ -242,6 +296,10 @@
 						# --- bio-regions
 						$t_list_item = new ca_list_items();
 						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
+						if($t_parent->isLoaded()) { 
+							$va_bio_regions += $t_parent->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
+						}
+						
 						if(is_array($va_bio_regions) && sizeof($va_bio_regions)){
 ?>
 							<div class="mb-3">
@@ -265,6 +323,9 @@
 						# --- subjects
 						$t_list_item = new ca_list_items();
 						$va_subjects = $t_object->get("ca_objects.subject", array("returnAsArray" => true));
+						if($t_parent->isLoaded()) { 
+							$va_subjects += $t_parent->get("ca_objects.subject", array("returnAsArray" => true));
+						}
 						if(is_array($va_subjects) && sizeof($va_subjects)){
 ?>
 							<div class="mb-3">
@@ -280,8 +341,34 @@
 								print join($va_subject_links, ", ");
 ?>
 							</div>
-<?php								
+<?php
+							$related_links = array();
+							$related = $t_object->getRelatedItems('ca_objects', ['returnAs' => 'ids', 'checkAccess' => $va_access_values]);
 							
+							if($t_parent->isLoaded()) { 
+								$related += $t_parent->getRelatedItems('ca_objects', ['returnAs' => 'ids', 'checkAccess' => $va_access_values]);
+							}
+							
+							
+							if(is_array($related) && sizeof($related)) {
+								$qr_rel = caMakeSearchResult('ca_objects', $related);
+								if($qr_rel && $qr_rel->numHits()) {
+?>
+							<div class="mb-3">
+								<div class="label">Related</H1></div>
+<?php
+								
+								
+								while($qr_rel->nextHit()) {
+									$related_links[] =  caDetailLink($qr_rel->get('ca_objects.idno'), '', 'ca_objects', $qr_rel->getPrimaryKey()); 
+								}
+								
+								print join($related_links, ", ");
+?>
+							</div>
+<?php								
+							}	
+								}			
 
 						}
 ?>
@@ -313,7 +400,79 @@
 ?>
 	</div><!-- end col -->
 </div><!-- end row -->
-
+<?php
+	$vs_related_title = "";
+	# --- related_items - if item is part of an album, show the other siblings otherwise show some other items from the current object's action(ca_collection)
+	$va_related_item_ids = array();
+	if($vn_parent_id = $t_object->get("ca_objects.parent_id")){
+		$t_parent = new ca_objects($vn_parent_id);
+		$va_related_item_ids = $t_parent->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+		$vs_related_title = $t_parent->get("ca_objects.preferred_labels.name");
+	}else{
+		if($va_projects = $t_object->get("ca_collections.collection_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values))){
+			$q_projects = caMakeSearchResult("ca_collections", $va_projects);
+			if($q_projects->numHits()){
+				while($q_projects->nextHit()){
+					$va_related_item_ids = $va_related_item_ids + $q_projects->get("ca_objects.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+				}
+			}
+			$vs_related_title = "Other items from this action";
+		}
+	
+	}
+	# --- remove current item
+	if(in_array($vn_id, $va_related_item_ids)){
+		$vn_key = array_search($vn_id, $va_related_item_ids);
+		unset($va_related_item_ids[$vn_key]);
+	}
+	$va_related_items = array();
+	if(sizeof($va_related_item_ids)){
+		shuffle($va_related_item_ids);
+		$q_objects = caMakeSearchResult("ca_objects", $va_related_item_ids);
+?>
+		<div class="row mt-3">
+			<div class="col-7 mt-5">
+				<H1><?php print $vs_related_title; ?></H1>
+			</div>
+			<div class="col-5 mt-5 text-right">
+<?php
+				if($t_object->get("ca_objects.parent_id")){
+					print caDetailLink("View Album", "btn btn-primary", "ca_objects", $t_object->get("ca_objects.parent_id"));			
+				}
+?>
+			</div>
+		</div>
+		<div class="row mb-5">
+<?php
+			$va_tmp_ids = array();
+			$i = 0;
+			while($q_objects->nextHit()){
+				if($q_objects->get("ca_object_representations.media.widepreview")){
+					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
+					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
+					print "<div class='pt-2'>".$q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'>Album: </if>").substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
+					
+					if($alt_id = $q_objects->get('ca_objects.altID')) {
+						print " (".substr(strip_tags($alt_id), 0, 30).")";
+					}
+					if($album_title = $q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'><br/><l>^ca_objects.preferred_labels.name</l></if>")){
+						print $album_title;
+					}
+					
+					print "</div>";
+					
+					
+					print "</div>";
+					$i++;
+					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
+				}
+				if($i == 12){
+					break;
+				}
+			}
+		}
+?>
+		</div>
 
 <?php
 	if($this->request->isLoggedIn()) {
@@ -322,11 +481,12 @@
 <script type="text/javascript">
     pawtucketUIApps['LightboxManagement'] = {
         'selector': '#lightboxManagement',
+				'key': '<?= $this->getVar('key'); ?>', 
         'data': {
-            baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
-			lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
-			table: 'ca_objects',
-			id: <?php print (int)$vn_id; ?>,
+          baseUrl: "<?php print __CA_URL_ROOT__."/service.php"; ?>",
+					lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
+					table: 'ca_objects',
+					id: <?php print (int)$vn_id; ?>,
         	lightboxTerminology: <?php print json_encode(caGetLightboxDisplayName()); ?>
         }
     };
@@ -352,7 +512,7 @@
     };
     pawtucketUIApps['MediaViewer'] = {
         'selector': '#mediaDisplay',
-        'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true]); ?>,
+        'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => $va_access_values]); ?>,
         'width': '100%',
         'height': '500px',
         'controlHeight': '72px',
@@ -361,6 +521,29 @@
         }
     };
     
+</script>
+<script type="text/javascript">	
+	function copyUrl() {
+		if (!window.getSelection) {
+		alert('Please copy the URL from the location bar.');
+		return;
+		}
+		const dummy = document.createElement('p');
+		dummy.textContent = window.location.href;
+		document.body.appendChild(dummy);
+
+		const range = document.createRange();
+		range.setStartBefore(dummy);
+		range.setEndAfter(dummy);
+
+		const selection = window.getSelection();
+		// First clear, in case the user already selected some other text
+		selection.removeAllRanges();
+		selection.addRange(range);
+
+		document.execCommand('copy');
+		document.body.removeChild(dummy);
+	}
 </script>
 <script type="text/javascript">	
 	function copyUrl() {
