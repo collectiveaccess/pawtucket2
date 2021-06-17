@@ -33,7 +33,7 @@ const ChronologyYearBar = (props) => {
                   )
                 }
               })} 
-            </Scrollspy>
+          </Scrollspy>
         </div>
       </div>
     )

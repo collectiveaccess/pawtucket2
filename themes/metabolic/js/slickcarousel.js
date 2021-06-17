@@ -23,35 +23,35 @@ class SlickCarousel  extends React.Component {
 		this.state = {
 			images: props.images,
 			settings: {
-                className: className,
-                dots: dots,
-                infinite: infinite,
-                speed: speed,
-                slidesToShow: slidesToShow,
-                slidesToScroll: slidesToScroll,
-                variableWidth: variableWidth,
-                autoplay: autoplay,
-                returnImgAsLink: returnImgAsLink,
-			    ...props
-            }
+				className: className,
+				dots: dots,
+				infinite: infinite,
+				speed: speed,
+				slidesToShow: slidesToShow,
+				slidesToScroll: slidesToScroll,
+				variableWidth: variableWidth,
+				autoplay: autoplay,
+				returnImgAsLink: returnImgAsLink,
+			  ...props
+      }
 		}
 	}
     render() {
-        return (
-            <Slider {...this.state.settings}>
-			{this.state.images.map(function(image, i) { 
-				var imageTag;
-				if (returnImgAsLink) {
-				  imageTag = image.media_tag_link;
-				} else {
-				  imageTag = image.media_tag;
-				}
-				return <div key={i}>
-				<div dangerouslySetInnerHTML={{ __html : imageTag }} />
-				<p className="legend" dangerouslySetInnerHTML={{ __html : image.caption }} />
-			</div>})}
-            </Slider>
-        );
+			return (
+				<Slider {...this.state.settings}>
+					{this.state.images.map(function(image, i) { 
+						var imageTag;
+						if (returnImgAsLink) {
+							imageTag = image.media_tag_link;
+						} else {
+							imageTag = image.media_tag;
+						}
+						return <div key={i}>
+						<div dangerouslySetInnerHTML={{ __html : imageTag }} />
+						<p className="legend" dangerouslySetInnerHTML={{ __html : image.caption }} />
+					</div>})}
+				</Slider>
+			);
     }
 };
 

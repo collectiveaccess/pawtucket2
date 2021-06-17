@@ -18,8 +18,8 @@ const ChronologyView = (props) => {
   if(resultItems){
     return (
       <ScrollSync>
-        <div className='container-fluid mt-4 mb-4 metabolic-chronology'>
-          <div className='row mb-4'>
+        <div className='container-fluid metabolic-chronology'>
+          <div className='row chronology-title'>
             <div className="col-3 text-left">
               <button className='text-left' type="button" className="btn btn-secondary" onClick={(e) => backToList(e)}>Back</button>
             </div>

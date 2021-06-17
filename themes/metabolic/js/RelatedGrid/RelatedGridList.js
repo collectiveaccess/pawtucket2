@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import { GridContext } from './GridContext';
 import { ApolloClient, InMemoryCache, createHttpLink, gql } from '@apollo/client';
 import RelatedGridRow from './RelatedGridRow';
@@ -20,6 +20,8 @@ function getGraphQLClient(uri, options=null) {
 const RelatedGridList = (props) => {
 
 	const { data, setData, start, itemsPerPage, setTotalItems, currentlySelectedRow, currentlySelectedItem, setRawData, setItemIds, showSelectButtons } = useContext(GridContext)
+
+	const panel = useRef(null);
 
 	useEffect(() => {
 		const client = getGraphQLClient(props.baseUrl);
@@ -58,6 +60,20 @@ const RelatedGridList = (props) => {
 			});
 	}, [itemsPerPage]);
 
+	useEffect(() => {
+		// if(currentlySelectedRow != null){
+		// 	panel.current.scrollIntoView(true, {inline: "center"});
+		// }	
+
+		if (panel.current) {
+			// window.scrollTo({
+			// 	behavior: "smooth",
+			// 	top: panel.current.offsetTop + 100
+			// });
+			panel.current.scrollIntoView(true, { inline: "center" });
+		}
+	}, [currentlySelectedRow])
+
   return (
 		<div className='container-fluid related-grid-results'>
 			<RelatedGridControls />
@@ -66,8 +82,8 @@ const RelatedGridList = (props) => {
 				if(index === currentlySelectedRow && showSelectButtons === false){
 					return(
 						<div key={index}>
-							<RelatedGridRow key={index} rowItems={row} rowIndex={index}/>
-							<div className='panel active container-fluid mb-3' id={props.rowIndex} >
+							<RelatedGridRow key={index} rowItems={row} rowIndex={index} />
+							<div className='panel active container-fluid mb-3' id={props.rowIndex} ref={panel}>
 								<DetailPanel item={currentlySelectedItem}/>
 							</div>
 						</div>
@@ -76,8 +92,7 @@ const RelatedGridList = (props) => {
 					return(
 						<div key={index}>
 							<RelatedGridRow key={index} rowItems={row} rowIndex={index}/>
-							<div className='panel container-fluid mb-3' id={props.rowIndex} >
-							</div>
+							<div className='panel container-fluid mb-3' id={props.rowIndex}></div>
 						</div>
 					)
 				}

@@ -33,15 +33,19 @@
 			<div id="frontSlider"></div>
 		</div><!--end col -->	
 	</div><!-- end row -->
+
 	<div class="row">
 		<div class="col-sm-12">
 			<form class="hpSearch form-inline" action="<?php print caNavUrl('', 'MultiSearch', 'Index'); ?>">
 				<div class="text-center mx-auto">
-					<span class="pt-2">Search the Archive</span><input type="text" class="form-control mx-2" id="hpSearchInput" placeholder="" name="search" autocomplete="off" placeholder="Search" aria-label="Search" /><button class="btn" type="submit">GO</button>
+					<span class="">Search the Archive</span>
+					<input type="text" class="form-control " id="hpSearchInput" placeholder="" name="search" autocomplete="off" placeholder="Search" aria-label="Search" />
+					<button class="btn" type="submit">GO</button>
 				</div>
 			</form>
 		</div>
 	</div>
+
 <?php
 # --- hide tags from home page
 if($showTags){
@@ -133,19 +137,26 @@ if($showTags){
 ?>
 
 <script type="text/javascript">	
-	pawtucketUIApps['slickcarousel'] = {
-        'selector': '#frontSlider',
-        'data': {
-            'images': <?php print ca_sets::setContentsAsJSON($o_front_config->get("front_page_set_code"), ['template' => ($vs_tmp = $o_front_config->get("front_page_set_item_caption_template")) ? $vs_tmp : '<l>^ca_objects.preferred_labels.name (^ca_objects.idno)</l>']); ?>,
-            'showThumbnails': false,
-            'infiniteLoop': true,
-            'dots': true,
-            'infinite': true,
-            'speed': 500,
-            'slidesToShow': 1,
-            'slidesToScroll': 1,
-            'variableWidth':true,
-            'returnImgAsLink':1
-        }
-    };
+	pawtucketUIApps['FrontPage'] = {
+		'selector': '#frontSlider',
+		'data': {
+			'images': <?php print ca_sets::setContentsAsJSON($o_front_config->get("front_page_set_code"), ['template' => ($vs_tmp = $o_front_config->get("front_page_set_item_caption_template")) ? $vs_tmp : '<l>^ca_objects.preferred_labels.name (^ca_objects.idno)</l>']); ?>,
+		}
+	};
+
+	// pawtucketUIApps['slickcarousel'] = {
+  //       'selector': '#frontSlider',
+	//     'data': {
+	//         'images': <?php print ca_sets::setContentsAsJSON($o_front_config->get("front_page_set_code"), ['template' => ($vs_tmp = $o_front_config->get("front_page_set_item_caption_template")) ? $vs_tmp : '<l>^ca_objects.preferred_labels.name (^ca_objects.idno)</l>']); ?>,
+	//         'showThumbnails': false,
+	//         'infiniteLoop': true,
+	//         'dots': true,
+	//         'infinite': true,
+	//         'speed': 500,
+	//         'slidesToShow': 1,
+	//         'slidesToScroll': 1,
+	//         'variableWidth':true,
+	//         'returnImgAsLink':1
+	//     }
+	// };
 </script>
