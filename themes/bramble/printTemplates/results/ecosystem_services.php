@@ -110,7 +110,7 @@
 					$vs_label = trim($vo_result->get("ca_objects.genus")." ".$vo_result->get("ca_objects.species"));
 					$vs_variety = trim(str_replace("'", "", $vo_result->get("ca_objects.variety")));
 					$vs_common_name = $vo_result->getWithTemplate("^ca_objects.preferred_labels.name<ifdef code='ca_objects.nonpreferred_labels.name'>(^ca_objects.nonpreferred_labels.name%delimiter=,_)</ifdef>");
-					print "<div class='summaryBotanicalName'>".$vs_label.(($vs_variety) ? " '".$vs_variety."' " : "").(($vs_common_name) ? "<br/>".$vs_common_name : "" )"</div>";
+					print "<div class='summaryBotanicalName'>".$vs_label.(($vs_variety) ? " '".$vs_variety."' " : "").(($vs_common_name) ? "<br/>".$vs_common_name : "" )."</div>";
 					
 					foreach($va_fields as $vs_template => $vs_label){
 						$vs_tmp = $vo_result->getWithTemplate($vs_template, array("delimiter" => ", "));
