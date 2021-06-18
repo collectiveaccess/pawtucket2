@@ -118,7 +118,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 		</form>
 <?php
 	}elseif(in_array(strToLower($this->request->getAction()), array("ornaments"))){
-		print "<div>".caNavLink($this->request, '< Back', 'btn btn-default btn-small', '', 'Ornaments', 'intro')."</div>";	
+		print "<div>".caNavLink($this->request, '< Back', 'btn btn-default btn-small', '', 'Pictorials', 'Ornaments')."</div>";	
 	}
 
 		if ($vs_table != "ca_collections") {		
