@@ -1106,6 +1106,10 @@ div.caMediaOverlayControls{
     left: 10%;
 }
 
+.cookies .notificationMessage{
+	position:relative;
+	top:0px;
+}
 
 #caMediaPanel {
     background-color: rgba(0, 0, 0, 0.5);
