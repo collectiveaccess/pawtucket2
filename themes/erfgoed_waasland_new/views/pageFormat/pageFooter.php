@@ -54,7 +54,7 @@
 							<div class="funder">
 								<a href="http://www.vlaanderen.be"><?php print caGetThemeGraphic($this->request, 'Vlaanderen-verbeelding-werkt_vol.png'); ?></a>
 							</div>
-							<br/><?php print caNavLink($this->request, "Disclaimer", "", "", "About", "disclaimer")."<br/>".((CookieOptionsManager::cookieManagerEnabled()) ? caNavLink($this->request, _t("Manage Cookies"), "", "", "Cookies", "manage") : ""); ?>
+							<br/><a href="https://www.interwaas.be/privacy" target="_blank">Disclaimer</a>."<br/>".((CookieOptionsManager::cookieManagerEnabled()) ? caNavLink($this->request, _t("Manage Cookies"), "", "", "Cookies", "manage") : ""); ?>
 						</div>
 					</div>
 				</div>

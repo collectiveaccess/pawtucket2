@@ -3,7 +3,7 @@
 	if(CookieOptionsManager::showBanner()) {
 		$config = caGetCookiesConfig();
 		$text = "";
-		if(!($config->get("cookiesBannerGlobalValue") && $txt = $this->getVar($config->get("cookiesBannerGlobalValue")))){
+		if(!($config->get("cookiesBannerGlobalValue") && $text = $this->getVar($config->get("cookiesBannerGlobalValue")))){
 			$text = $config->get("cookiesBannerText");
 		}
 ?>
