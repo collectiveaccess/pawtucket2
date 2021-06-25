@@ -276,7 +276,9 @@ if($vs_mode == "map"){
 										<div class='unit'><h6>Electronic Location and Access</h6>
 											<unit relativeTo="ca_objects.electronic_location" delimiter="<br/>"><a href="^ca_objects.electronic_location.electronic_location_url" target="_blank">^ca_objects.electronic_location.electronic_location_materials <span class="glyphicon glyphicon-new-window"></span></a></unit>
 										</div></ifdef>}}}
-									
+									{{{<ifdef code="ca_objects.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_objects.govAccess</div></ifdef>}}}
+									{{{<ifdef code="ca_objects.rights_new"><div class='unit'><h6>Terms Governing Use and Reproduction</h6>^ca_objects.rights_new</div></ifdef>}}}
+									{{{<ifdef code="ca_objects.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_objects.RAD_local_rights</div></ifdef>}}}								
 <?php
 									print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."</textarea></div>";					
 ?>						
