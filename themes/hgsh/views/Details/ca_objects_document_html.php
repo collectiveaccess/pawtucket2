@@ -7,19 +7,79 @@
 	if(is_array($va_rep_ids) && (sizeof($va_rep_ids) > 1)){
 		$vb_multiple_reps = true;
 	}
-	$t_item->get("ca_collections.collection_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("featured"), "checkAccess" => $va_access_values));
-	$va_detail_collections = $t_item->get("ca_collections.collection_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("history"), "checkAccess" => $va_access_values));
 	$t_rep = $this->getVar("t_representation");
 	if($t_rep){
 		$vn_rep_id = $t_rep->get("ca_object_representations.representation_id");
 		$va_media_info = $t_rep->getMediaInfo("ca_object_representations.media");
 	}
+	# --- make an array of all the pages in this issue (parent and siblings from object hierarchy)
+	$va_issue_ids = array();
+	if($t_item->get("ca_objects.parent_id")){
+		$t_parent = new ca_objects($t_item->get("ca_objects.parent_id"));
+		$va_issue_ids[] = $t_parent->get("ca_objects.object_id");
+		$va_children = $t_parent->get("ca_objects.children.object_id", array("returnAsArray" => true, "sort" => "ca_objects.idno"));
+	}else{
+		$va_issue_ids[] = $t_item->get("ca_objects.object_id");
+		$va_children = $t_item->get("ca_objects.children.object_id", array("returnAsArray" => true, "sort" => "ca_objects.idno"));
+	}
+	if(is_array($va_children) && sizeof($va_children)){
+		foreach($va_children as $va_child_id){
+			$va_issue_ids[] = $va_child_id;
+		}
+	}
+	$vn_previous_issue_page_id = $vn_next_issue_page_id;
+	if(in_array($t_item->get("ca_objects.object_id"), $va_issue_ids)){
+		$vn_this_page_key = array_search($t_item->get("ca_objects.object_id"), $va_issue_ids);
+		if($vn_this_page_key > 0){
+			$vn_previous_issue_page_id = $va_issue_ids[$vn_this_page_key - 1];
+		}
+		if($vn_this_page_key < (sizeof($va_issue_ids) - 2)){
+			$vn_next_issue_page_id = $va_issue_ids[$vn_this_page_key + 1];
+		}
+	}
+	$va_detail_collections = $t_item->get("ca_collections.collection_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("history"), "checkAccess" => $va_access_values));
+	if(!$va_detail_collections && $t_parent){
+		$va_detail_collections = $t_parent->get("ca_collections.collection_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("history"), "checkAccess" => $va_access_values));
+	}
+	$va_featured_collections = $t_item->get("ca_collections.collection_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("featured"), "checkAccess" => $va_access_values));
+	if(!$va_featured_collections && $t_parent){
+		$va_featured_collections = $t_parent->get("ca_collections.collection_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("featured"), "checkAccess" => $va_access_values));
+	}
+	
+	
 ?>
 <div class="row">
 	<div class='col-xs-12'>
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 	</div>
 </div><!-- end row -->
+<div class="row">
+	<div class="col-sm-12 col-md-4">
+<?php
+	if($vn_previous_issue_page_id){
+		print caDetailLink($this->request, "< Previous Page", "btn btn-blue btn-small", "ca_objects", $vn_previous_issue_page_id);
+	}
+?>
+	</div>
+	<div class="col-sm-12 col-md-4 text-center">
+<?php
+		$vn_collection_id = $t_item->get("ca_collections.collection_id");
+		if(!$vn_collection_id && $t_parent){
+			$vn_collection_id = $t_parent->get("ca_collections.collection_id");
+		}
+		if($vn_collection_id){
+			print caDetailLink($this->request, "<< All Issues", "btn btn-blue btn-small", "ca_collections", $vn_collection_id);
+		}
+?>
+	</div>
+	<div class="col-sm-12 col-md-4 text-right">
+<?php
+	if($vn_next_issue_page_id){
+		print caDetailLink($this->request, "Next Page >", "btn btn-blue btn-small", "ca_objects", $vn_next_issue_page_id);
+	}
+?>
+	</div>
+</div>
 <div class="row">
 	<div class="col-sm-12">
 		<div class="detailTitle short">{{{ca_objects.preferred_labels.name}}}</div>
@@ -59,6 +119,31 @@
 				<p id='additional_info' style='display:none;'>^ca_objects.additional_info<br/><a href="#" onClick="jQuery('#additional_info').toggle(); jQuery('#additional_info_link').toggle(); return false;" class="detailMoreInfo">Hide <span class="glyphicon glyphicon-arrow-up"></span></a></p>
 		</ifdef>}}}
 		<div class='detailBlueText'>{{{^ca_objects.type_id, }}}{{{^ca_objects.idno}}}</div>
+		
+		{{{<ifdef code="ca_objects.parent_id">
+			<div class="row">
+				<div class="col-sm-12"><div class='btn btn-default text-left'>More from this issue</div></div>
+			</div>
+			<div class="row detailRelatedThumb detailIssuePages">
+				<unit relativeTo="ca_objects.parent">
+					<div class="col-xs-6 col-sm-2"><l>^ca_object_representations.media.iconlarge<br/>^ca_objects.preferred_labels.name</l></div>
+					<unit relativeTo="ca_objects.children" delimiter=" " sort="ca_objects.idno">
+						<div class="col-xs-6 col-sm-2"><l>^ca_object_representations.media.iconlarge<br/>^ca_objects.preferred_labels.name</l></div>
+					</unit>
+				</unit>
+		</div></ifdef>}}}
+		{{{<ifdef code="ca_objects.children.object_id">
+			<div class="row">
+				<div class="col-sm-12"><div class='btn btn-default text-left'>More from this issue</div></div>
+			</div>
+			<div class="row detailRelatedThumb detailIssuePages">
+				
+				<div class="col-xs-6 col-sm-2"><l>^ca_object_representations.media.iconlarge<br/>^ca_objects.preferred_labels.name</l></div>
+				<unit relativeTo="ca_objects.children" delimiter=" " sort="ca_objects.idno">
+					<div class="col-xs-6 col-sm-2"><l>^ca_object_representations.media.iconlarge<br/>^ca_objects.preferred_labels.name</l></div>
+				</unit>
+		</div></ifdef>}}}
+
 	</div><!-- end col -->
 </div><!-- end row -->
 <div class="row">
@@ -162,6 +247,9 @@
 	$t_object_thumb = new ca_objects();
 	# Related Collections
 	$va_collections = $t_item->get("ca_collections", array("returnWithStructure" => true, 'excludeRelationshipTypes' => array('featured', 'history'),"checkAccess" => $va_access_values));
+	if(!$va_collections && $t_parent){
+		$va_collections = $t_parent->get("ca_collections", array("returnWithStructure" => true, 'excludeRelationshipTypes' => array('featured', 'history'), "checkAccess" => $va_access_values));
+	}
 	if(sizeof($va_collections)){
 		print "<div class='btn btn-default text-left'>Related Collection".((sizeof($va_collections) > 1) ? "s" : "")."</div>";
 		$t_rel_collection = new ca_collections();

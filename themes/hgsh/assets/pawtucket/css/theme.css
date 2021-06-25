@@ -103,6 +103,11 @@ div.btn-default{
     line-height:1em;
     margin:-5px 10px 15px 0px;
 }
+.btn-small {
+    font-size: 15px;
+    padding:2px 7px;
+    margin:-5px 10px 15px 0px;
+}
 /* header */
 .headerContainer{
 	background-color:#FFF;
@@ -625,6 +630,20 @@ div.detailRelatedTitle{
 .pdfRepNav a{
 	font-size:13px;
 }
+.detail .detailIssuePages a, .detail .detailIssuePages a:hover {
+    color: #006E9D;
+}
+.detailIssuePages div{
+	height:200px;
+	overflow:hidden;
+}
+@media(max-width:767px){
+	.detailIssuePages div{
+		height:250px;
+		overflow:hidden;
+	}
+}
+
 /* multisearch */
 .multisearch H3{
 	color:#006E9D;
