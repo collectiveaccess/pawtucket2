@@ -188,7 +188,7 @@
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Expo's", "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print ($this->request->getController() == "Overons") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Over ons", "", "", "Overons", ""); ?></li>
+					<li <?php print ($this->request->getController() == "Overons") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Over ons", "", "", "About", "Overons"); ?></li>
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Contact", "", "", "Contact", "form"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
