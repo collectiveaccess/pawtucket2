@@ -1251,7 +1251,7 @@
                     $.ajax({
                         url: '{$va_json_lookup_info['search']}',
                         dataType: \"json\",
-                        data: { term: ".(caGetOption('restrictToField', $pa_options, true) ? "'{$ps_field}:'" : "''")." + request.term },
+                        data: { term: ".(caGetOption('restrictToField', $pa_options, false) ? "'{$ps_field}:'" : "''")." + request.term },
                         success: function( data ) {
                             response(data);
                         }
@@ -1265,7 +1265,7 @@
                 select: function( event, ui ) {
                     if(!parseInt(ui.item.id) || (ui.item.id <= 0)) {
                         jQuery('#{$vs_field_proc}_autocomplete{$index}').val('');  // no matches so clear text input
-                        jQuery('#{$vs_field_proc}{$index}').val('xx');
+                        jQuery('#{$vs_field_proc}{$index}').val('');
                         event.preventDefault();
                         return;
                     }
