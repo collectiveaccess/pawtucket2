@@ -35,6 +35,7 @@
  	$va_type_info = $this->getVar('typeInfo');
  	$va_listing_info = $this->getVar('listingInfo');
  	$vs_action = $this->request->getAction();
+ 	$va_access_values = caGetUserAccessValues($this->request);
  	global $g_ui_locale;
 ?>
 	<nav class="navbar navbar-fixed-top" id="bibHeading">
@@ -85,7 +86,20 @@
 			$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			if(!$va_links_array[$vs_first_letter][$vs_sort]){
-				$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol listEntryIndentSecondLine'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</div>\n";	
+				$va_cross_refs = $qr_list->get("ca_occurrences.related", array("restrictToRelationshipTypes" => array("related"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
+				$vb_cross_ref = false;
+				if(is_array($va_cross_refs) && sizeof($va_cross_refs)){
+					foreach($va_cross_refs as $va_cross_ref){
+						if($va_cross_ref["direction"] == "ltor"){
+							$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels <i>see</i> <unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.preferred_labels</l></unit>')."</div>\n";	
+							$vb_cross_ref = true;
+							break;
+						}
+					}
+				}
+				if(!$vb_cross_ref){
+					$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</div>\n";	
+				}
 			}
 		}
 		ksort($va_links_array);

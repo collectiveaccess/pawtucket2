@@ -98,7 +98,7 @@
 					} else {
 						$vs_label_detail_link 	= caDetailLink($this->request, '[Short title]', '', $vs_table, $vn_id);
 					}
-				}elseif(($vs_table === 'ca_occurrences') && (strToLower($this->request->getAction()) == "glossary")){
+				}elseif(($vs_table === 'ca_occurrences') && (in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies")))){
 # --- glossary result format
 					$va_cross_refs = $qr_res->get("ca_occurrences.related", array("restrictToRelationshipTypes" => array("related"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
 					$vb_cross_ref = false;
