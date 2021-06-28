@@ -1,4 +1,4 @@
-<?php
+ <?php
 /* ----------------------------------------------------------------------
  * views/Browse/browse_results_html.php : 
  * ----------------------------------------------------------------------
@@ -157,11 +157,12 @@ if (!$vb_ajax) {	// !ajax
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
-				print "<strong>".$va_criterion['facet'].':</strong>';
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					print "<strong>".$va_criterion['facet'].':</strong>'.caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
-					print ' '.$va_criterion['value'];
+					if($va_criterion['value']){
+						print "<strong>".$va_criterion['facet'].':</strong> '.$va_criterion['value'];
+					}
 					$vs_search = $va_criterion['value'];
 				}
 				$i++;
