@@ -33,7 +33,7 @@
 		if($vn_this_page_key > 0){
 			$vn_previous_issue_page_id = $va_issue_ids[$vn_this_page_key - 1];
 		}
-		if($vn_this_page_key < (sizeof($va_issue_ids) - 2)){
+		if($vn_this_page_key < (sizeof($va_issue_ids) - 1)){
 			$vn_next_issue_page_id = $va_issue_ids[$vn_this_page_key + 1];
 		}
 	}
