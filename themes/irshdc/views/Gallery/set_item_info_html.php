@@ -30,32 +30,43 @@
 	if($vs_set_item_description){
 		print "<div class='unit'>".$vs_set_item_description."</div>";
 	}else{
-		$vs_item_description = $t_object->getWithTemplate('<case><if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Library/">
-				<ifdef code="ca_objects.description_new.description_new_txt">
-					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.description_new.description_new_source">
-						<div class="trimText">^ca_objects.description_new.description_new_txt</div>
-					</div>
-				</ifdef>
-			</if>
-			<if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /RG10/">
-				<ifdef code="ca_objects.record_group_id|ca_objects.file_series">^ca_objects.record_group_id: ^ca_objects.file_series</ifdef>
-			</if>
-			<if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Archival/">
-				<ifdef code="ca_objects.scope_new.scope_new_text">
-					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.scope_new.scope_new_source">
-						<div class="trimText">^ca_objects.scope_new.scope_new_text</div>
-					</div>
-				</ifdef>
-			</if>
-			<if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Museum/">
-				<ifdef code="ca_objects.curatorial_description.curatorial_desc_value">
+		switch(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)))){
+			case "archival item":
+			 	$vs_item_description = $t_object->getWithTemplate('<ifdef code="ca_objects.scope_new.scope_new_text">
+						<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.scope_new.scope_new_source">
+							<div class="trimText">^ca_objects.scope_new.scope_new_text</div>
+						</div>
+					</ifdef>');
+			break;
+			# ---------------------
+			case "library item":
+				$vs_item_description = $t_object->getWithTemplate('<ifdef code="ca_objects.description_new.description_new_txt">
+						<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.description_new.description_new_source">
+							<div class="trimText">^ca_objects.description_new.description_new_txt</div>
+						</div>
+					</ifdef>');			
+			break;
+			# ---------------------
+			case "rg10 file":
+				$vs_item_description = $t_object->getWithTemplate('<if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /RG10/">
+						<ifdef code="ca_objects.record_group_id|ca_objects.file_series">^ca_objects.record_group_id: ^ca_objects.file_series</ifdef>
+					</if>');
+			break;
+			# ---------------------
+			case "museum work":
+				$vs_item_description = $t_object->getWithTemplate('<ifdef code="ca_objects.curatorial_description.curatorial_desc_value">
 					<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curatorial_description.curatorial_desc_source">
 						<div class="trimText">^ca_objects.curatorial_description.curatorial_desc_value</div>
 					</div>
-				</ifdef>
-			</if>
-			<if rule="^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Resource/"><ifdef code="ca_objects.description"><div class="unit">^ca_objects.description</div></ifdef></if>
-		</case>');
+				</ifdef>');
+			break;
+			# ---------------------
+			case "resource":
+				$vs_item_description = $t_object->getWithTemplate('<ifdef code="ca_objects.description"><div class="unit">^ca_objects.description</div></ifdef>');
+			break;
+			# ---------------------
+		}
+		
 		if(trim($vs_item_description)){
 			print $vs_item_description;
 		}else{
