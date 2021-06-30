@@ -17,13 +17,13 @@
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Enkel zoeken op titel.">Titel</span>
-			{{{ca_objects.preferred_labels.name%width=220px&autocomplete=1}}}
+			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek doorheen plaatsen.">Plaats</span>
-			{{{ca_places.preferred_labels.name%width=210px&autocomplete=1}}}
+			{{{ca_places.place_id%width=210px&autocomplete=1}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek doorheen de collectie.">Collectie</span>
