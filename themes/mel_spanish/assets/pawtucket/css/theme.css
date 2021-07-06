@@ -95,7 +95,7 @@ H1, h1 {
 .navbar-default .navbar-brand, .navbar-default a.navbar-brand:hover, .navbar-default a.navbar-brand:focus {
     font-family:brandon-grot-w01-light, sans-serif;
     font-size:20px;
-    width:375px;
+    width:475px;
     color:#FFFFFF;
     line-height:32px;
 }
@@ -119,6 +119,7 @@ H1, h1 {
 	.navbar-default .navbar-brand, .navbar-default a.navbar-brand:hover, .navbar-default a.navbar-brand:focus {
 		font-size:17px;
 		width:300px;
+		line-height: 1.3em;
 	}
 	.navbar-default .navbar-brand b{
 		font-size:18px;
