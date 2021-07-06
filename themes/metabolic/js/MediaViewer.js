@@ -103,7 +103,6 @@ class MediaViewer extends React.Component{
 			viewerHeight =  (this.state.windowHeight - ncontrolHeight - 8) + 'px';
 		}
 		
-		
 		const viewerRef = this.viewerRef.current;
 		
 		let nWidth;
@@ -155,28 +154,30 @@ class MediaViewer extends React.Component{
 		}
 		
 		const fs = document.getElementById('mediaDisplayFullscreen');
-		if(!fullscreen) {
-			fs.style.display = 'none';
-			return(
-				<div className='mediaViewer' style={{width: width, height: height}} ref={this.viewerRef}>
-					{viewer}
-					<MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen}
-						width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen}/>
-				</div>
-			);
-		} else {
-			fs.style.display = 'block';
-			if (!fs) return null;
-			return ReactDOM.createPortal(
-				(<div className='mediaViewer' style={{width: width, height: height}} ref={this.viewerRef}>
-					<div style={{height: viewerHeight}}>{viewer}</div>
-					<MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen}
-						width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen}/>
-				</div>),
-				fs
-			);
-		}
-	}
+	
+			if (!fullscreen) {
+				fs.style.display = 'none';
+				return (
+					<div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>
+						{viewer}
+						<MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen}
+							width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen} />
+					</div>
+				);
+			} else {
+				fs.style.display = 'block';
+				if (!fs) return null;
+				return ReactDOM.createPortal(
+					(<div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>
+						<div style={{ height: viewerHeight }}>{viewer}</div>
+						<MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen}
+							width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen} />
+					</div>),
+					fs
+				);
+			}
+	
+	} //render
 }
 
 
@@ -187,7 +188,6 @@ class MediaViewer extends React.Component{
 export default function _init() {
 	ReactDOM.render(
 		<MediaViewer media={pawtucketUIApps.MediaViewer.media} 
-			width={pawtucketUIApps.MediaViewer.width} 
 			height={pawtucketUIApps.MediaViewer.height}
 			controlHeight={pawtucketUIApps.MediaViewer.controlHeight}/>, document.querySelector(selector));
 }

@@ -433,6 +433,9 @@
 		if (!($t_instance = Datamodel::getInstanceByTableName($pm_table, true))) { return null; }
 		if (method_exists($t_instance, "isRelationship") && $t_instance->isRelationship()) { return array(); }
 		
+		$config = Configuration::load();
+		$base_url = $config->get('ca_url_root');
+		
 		$ps_return = caGetOption('return', $pa_options, 'tags');
 		$version = caGetOption('version', $pa_options, 'icon');
 		$versions = caGetOption("versions", $pa_options, null);
@@ -480,13 +483,15 @@
 					case 'data':
 						if($versions_set) {
 							foreach($versions as $v) {
-								$va_media_by_id[$vn_id][$v]['paths'] = $va_media_info['paths'][$v];
-								$va_media_by_id[$vn_id][$v]['urls'] = $va_media_info['urls'][$v];
-								$va_media_by_id[$vn_id][$v]['tags'] = $va_media_info['tags'][$v];
+								$va_media_by_id[$vn_id][$v]['path'] = $va_media_info['paths'][$v];
+								$va_media_by_id[$vn_id][$v]['url'] = $va_media_info['urls'][$v];
+								$va_media_by_id[$vn_id][$v]['tag'] = $va_media_info['tags'][$v];
 								$va_media_by_id[$vn_id][$v]['width'] = $va_media_info['info'][$v]['WIDTH'];
 								$va_media_by_id[$vn_id][$v]['height'] = $va_media_info['info'][$v]['HEIGHT'];
 								$va_media_by_id[$vn_id][$v]['mimetype'] = $va_media_info['info'][$v]['MIMETYPE'];
 							}
+							
+		        			$va_media_by_id[$vn_id]['iiif']['url'] = "{$base_url}/service.php/IIIF/".$va_media_info['representation_id']."/info.json";
 						} else {
 							$va_media_by_id[$vn_id] = $va_media_info['paths'][$version];
 						}
@@ -505,53 +510,77 @@
 		if($pa_options['checkAccess']){
 			$vs_access_wheres = " AND ca_objects.access IN (".join(",", $pa_access_values).") AND ca_object_representations.access IN (".join(",", $pa_access_values).")";
 		}
-		$va_path = array_keys(Datamodel::getPath($vs_table = $t_instance->tableName(), "ca_objects"));
-		$vs_pk = $t_instance->primaryKey();
-
-		$va_params = array();
-
-		$vs_linking_table = $va_path[1];
-
-
-		$vs_rel_type_where = '';
-		if (is_array($va_rel_types = caGetOption('relationshipTypes', $pa_options, null)) && sizeof($va_rel_types)) {
-			$va_rel_types = caMakeRelationshipTypeIDList($vs_linking_table, $va_rel_types);
-			if (is_array($va_rel_types) && sizeof($va_rel_types)) {
-				$vs_rel_type_where = " AND ({$vs_linking_table}.type_id IN (?))";
-				$va_params[] = $va_rel_types;
-			}
-		}
+		$vs_table = $t_instance->tableName();
 		
-		$vs_type_where = '';
-		if (is_array($va_object_types = caGetOption('objectTypes', $pa_options, null)) && sizeof($va_object_types)) {
-			$va_object_types = caMakeTypeIDList('ca_objects', $va_object_types);
-			if (is_array($va_object_types) && sizeof($va_object_types)) {
-				$vs_type_where = " AND (ca_objects.type_id IN (?))";
-				$va_params[] = $va_object_types;
+		$va_params = array();
+		if ($vs_table === 'ca_objects') {
+			$vs_type_where = '';
+			if (is_array($va_object_types = caGetOption('objectTypes', $pa_options, null)) && sizeof($va_object_types)) {
+				$va_object_types = caMakeTypeIDList('ca_objects', $va_object_types);
+				if (is_array($va_object_types) && sizeof($va_object_types)) {
+					$vs_type_where = " AND (ca_objects.type_id IN (?))";
+					$va_params[] = $va_object_types;
+				}
 			}
+			
+			if(is_array($pa_ids) && sizeof($pa_ids)) {
+				$vs_id_sql = "AND {$vs_table}.{$vs_pk} IN (?)";
+				$va_params[] = $pa_ids;
+			}
+
+			$vs_sql = "SELECT DISTINCT ca_object_representations.media, ca_objects.object_id
+				FROM ca_objects
+				INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
+				INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
+				WHERE
+					ca_objects_x_object_representations.is_primary = 1 {$vs_access_wheres} {$vs_type_where} {$vs_id_sql}
+			";
+		} else {
+			$va_path = array_keys(Datamodel::getPath($vs_table, "ca_objects"));
+			$vs_pk = $t_instance->primaryKey();
+
+			$vs_linking_table = $va_path[1];
+
+
+			$vs_rel_type_where = '';
+			if (is_array($va_rel_types = caGetOption('relationshipTypes', $pa_options, null)) && sizeof($va_rel_types)) {
+				$va_rel_types = caMakeRelationshipTypeIDList($vs_linking_table, $va_rel_types);
+				if (is_array($va_rel_types) && sizeof($va_rel_types)) {
+					$vs_rel_type_where = " AND ({$vs_linking_table}.type_id IN (?))";
+					$va_params[] = $va_rel_types;
+				}
+			}
+		
+			$vs_type_where = '';
+			if (is_array($va_object_types = caGetOption('objectTypes', $pa_options, null)) && sizeof($va_object_types)) {
+				$va_object_types = caMakeTypeIDList('ca_objects', $va_object_types);
+				if (is_array($va_object_types) && sizeof($va_object_types)) {
+					$vs_type_where = " AND (ca_objects.type_id IN (?))";
+					$va_params[] = $va_object_types;
+				}
+			}
+
+			if(is_array($pa_ids) && sizeof($pa_ids)) {
+				$vs_id_sql = "AND {$vs_table}.{$vs_pk} IN (?)";
+				$va_params[] = $pa_ids;
+			}
+
+			$vs_sql = "SELECT DISTINCT ca_object_representations.media, {$vs_table}.{$vs_pk}
+				FROM {$vs_table}
+				INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} = {$vs_table}.{$vs_pk}
+				INNER JOIN ca_objects ON ca_objects.object_id = {$vs_linking_table}.object_id
+				INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
+				INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
+				WHERE
+					ca_objects_x_object_representations.is_primary = 1 {$vs_access_wheres} {$vs_rel_type_where} {$vs_type_where} {$vs_id_sql}
+			";
 		}
-
-		if(is_array($pa_ids) && sizeof($pa_ids)) {
-			$vs_id_sql = "AND {$vs_table}.{$vs_pk} IN (?)";
-			$va_params[] = $pa_ids;
-		}
-
-		$vs_sql = "SELECT DISTINCT ca_object_representations.media, {$vs_table}.{$vs_pk}
-			FROM {$vs_table}
-			INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} = {$vs_table}.{$vs_pk}
-			INNER JOIN ca_objects ON ca_objects.object_id = {$vs_linking_table}.object_id
-			INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
-			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
-			WHERE
-				ca_objects_x_object_representations.is_primary = 1 {$vs_access_wheres} {$vs_rel_type_where} {$vs_type_where} {$vs_id_sql}
-		";
-
 		$o_db = $t_instance->getDb();
 
 		$qr_res = $o_db->query($vs_sql, $va_params);
 		$va_res = array();
 		
-		$alt_text_template = Configuration::load()->get("{$vs_table}_alt_text_template");
+		$alt_text_template = $config->get("{$vs_table}_alt_text_template");
 		
 		while($qr_res->nextRow()) {
 			$id = $qr_res->get($vs_pk);
@@ -570,6 +599,8 @@
 		        			$va_res[$id][$v]['height'] = $version_info['HEIGHT'];
 		        			$va_res[$id][$v]['mimetype'] = $version_info['MIMETYPE'];
 		        		}
+		        		
+		        		$va_res[$id]['iiif']['url'] = "{$base_url}/service.php/IIIF/".$qr_res->get('ca_object_representations.representation_id')."/info.json";
 		        	} else {
 			        	$va_res[$id] = $qr_res->getMediaTag("media", $version, ['alt' => $alt_text]);
 			        }

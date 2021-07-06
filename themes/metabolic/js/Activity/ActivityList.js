@@ -10,7 +10,7 @@ const ActivityList = () => {
   }, [])
 
   const setProject = (e) => {
-    console.log('set project');
+    // console.log('set project');
     setCurrProject('bending');
     e.preventDefault();
   }
@@ -20,7 +20,7 @@ const ActivityList = () => {
     <div className="container-fluid activity-landing-page">
 
       <div className="row justify-content-start">
-        <h1 className='projects-title'>Projects</h1>
+        <h1 className='projects-title'>Actions</h1>
       </div>
 
       <div className="row row-cols-1 row-cols-sm-1 row-cols-md-3">

@@ -460,14 +460,18 @@ address {
 	a{
 		text-decoration:none;
 	}
+
 	.hpSearch{
 		margin-top:150px;
 		margin-bottom:150px;
 		font-size:1.75rem;
 		font-family:$headings-font;
 		line-height:1.75rem;
+		span{
+			margin: 2px 5px 2px 5px;
+		}
 		input, .btn{
-			margin-top:-.5rem;
+			// margin-top:-.5rem;
 		}
 		.form-control, .form-control:focus{
 			background-color: $gray-2;
@@ -484,6 +488,7 @@ address {
 			font-family:$headings-font;
 		}
 	}
+
 	#frontSlider{
 		margin-left:-15px;
 		margin-right:-15px;
@@ -494,6 +499,9 @@ address {
 		.legend{
 			display:none;
 		}
+		.slick-cloned{
+			display: none;
+		}
 		.slick-prev{
 			left:10px;
 			z-index:100;
@@ -503,6 +511,7 @@ address {
 			z-index:100;
 		}
 	}
+
 	.hpTags{
 		a:hover .bg-2{
 			background-color:$gray-3;
@@ -964,7 +973,7 @@ p.legend a {
 
 	.card.selected{
 		img{
-			border:1px solid $selected-indicator;
+			border: 2px solid $selected-indicator;
 		}
 	}
 
@@ -1453,6 +1462,12 @@ h1{
 
 .metabolic-chronology{
 
+	margin: 30px 0px 30px 0px;
+
+	.chronology-title{
+		margin-bottom: 40px;
+	}
+
 	#media-div, #info-div {
 		overflow: auto;
 		// padding-left: 10px;
@@ -1531,5 +1546,227 @@ h1{
 			}
 		}
 	}
+
+}
+
+@media only screen and (max-width: 767px) {
+
+  .metabolic-chronology{
+		margin: 15px 0px 15px 0px;
+		.chronology-title{
+			margin-bottom: 10px;
+		}
+	}
+
+	@media (orientation: landscape) {
+		.metabolic-chronology{
+			#year-bar {
+				display: none;
+			}
+		}
+	}
+	
+	@media (orientation: portrait) {
+		.metabolic-chronology{
+			.portrait{
+        width: 100%;
+			}
+			#media-div, #year-bar {
+				display: none;
+			}
+		}
+	}
+
+}
+
+/*------------------------------------
+ Styles for Metabolic Activity
+------------------------------------*/
+
+.activity-landing-page{
+	padding-left: 10%;
+	padding-right: 10%;
+	padding-bottom: 5%;
+
+	.projects-title{
+		margin: 75px 0px 75px 0px;
+	}
+
+	.list-img{
+		max-height: 250px;
+		width: 100%;
+		object-fit: cover;
+	}
+
+}
+
+.metabolic-activity{
+
+	margin: 0;
+	padding: 30px 50px 30px 50px;
+
+	.activity-title{
+		margin-bottom: 40px;
+	}
+
+	.dropdown-toggle::after{
+		display: none;
+	}
+
+	.dropdown-menu.show{
+		background-color: #ededed;
+	}
+
+	.dropdown-menu{
+		label{
+			margin-left: 4px;
+		}
+	}
+
+	.css-1lo3585{
+		width: auto;
+	}
+	.react-player{
+		width: auto;
+	}
+
+
+.activity-media{
+
+	.img-container {
+		position: relative;
+		// width: 50%;
+	}
+	
+	// .image {
+	//   display: block;
+	//   width: 100%;
+	//   height: auto;
+	// }
+	
+	.list-img{
+		max-height: 250px;
+		width: 100%;
+		object-fit: cover;
+	}
+	
+	.overlay {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 50;
+		right: 0;
+		height: 100%;
+		width: 100%;
+		opacity: 0;
+		transition: .5s ease;
+		background-color: rgba(0, 0, 0, 0.6);
+
+		.title{
+			font-weight: bold;
+			text-decoration: underline;
+		}
+
+		.title, .caption, .date, .view, a{
+			color: white;
+			font-size: 14px;
+			text-align: center;
+			padding-bottom: 3px;
+		}
+		ul{
+			list-style: none;
+			a{
+				text-decoration: none;
+			}
+		}
+		.material-icons{
+			color: white;
+		}
+	}
+
+	@media screen and (max-width: 575px) {
+		.overlay{
+			.title, .caption, .date, .view, a{
+				font-size: 16px;
+			}
+		}
+	}
+	@media screen and (max-width: 767px) {
+		.overlay{
+			.title, .caption, .date, .view, a{
+				font-size: 12px;
+			}
+		}
+	}
+	@media screen and (max-width: 880px) {
+		.overlay{
+			.title, .caption, .date, .view, a{
+				font-size: 11px;
+			}
+		}
+	}
+	@media screen and (max-width: 1000px) {
+		.overlay{
+			.title, .caption, .date, .view, a{
+				font-size: 10px;
+			}
+		}
+	}
+	@media screen and (min-width: 1200px) {
+		.overlay{
+			.title, .caption, .date, .view, a{
+				font-size: 12px;
+			}
+		}
+	}
+
+	// @media screen and (max-width: 320px) {
+	// 	.overlay{
+	// 		.title, .caption, .date, .view, a{
+	// 			font-size: calc(10px + 6 * ((100vw - 320px) / 680));
+	// 		}
+	// 	}
+	// }
+
+	// @media screen and (max-width: 769px) {
+	// 	.overlay{
+	// 		.title, .caption, .date, .view, a{
+	// 			font-size: calc(11px + 6 * ((100vw - 769px) / 680));
+	// 		}
+	// 	}
+	// }
+	// // @media screen and (max-width: 769px) {
+	// // 	.overlay{
+	// // 		.title, .caption, .date, .view, a{
+	// // 			font-size: calc(12px + 6 * ((100vw - 769px) / 680));
+	// // 		}
+	// // 	}
+	// // }
+	// @media screen and (max-width: 1376px) {
+	// 	.overlay{
+	// 		.title, .caption, .date, .view, a{
+	// 			font-size: calc(13px + 6 * ((100vw - 1376px) / 680));
+	// 		}
+	// 	}
+	// }
+	
+	.img-container:hover .overlay {
+		opacity: 1;
+	}
+	
+	.text {
+		color: white;
+		font-size: 12px;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		-webkit-transform: translate(-50%, -50%);
+		-ms-transform: translate(-50%, -50%);
+		transform: translate(-50%, -50%);
+		text-align: center;
+	}
+	
+}
+
 
 }
