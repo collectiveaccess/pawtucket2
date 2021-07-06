@@ -104,7 +104,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ship.jpg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."Mel Fisher Maritime Museum<b><br/>Spanish Collections</b>", "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ship.jpg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."Mel Fisher Maritime Museum<b><br/>Spanish Colonial Collections</b>", "navbar-brand", "", "","");
 ?>
 			</div>
 
