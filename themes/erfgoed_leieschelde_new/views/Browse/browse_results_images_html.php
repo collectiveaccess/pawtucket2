@@ -124,6 +124,7 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
+					$vs_audio = "";
 					if ($vs_table == 'ca_objects') {
 						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 							$t_list_item->load($qr_res->get("type_id"));
@@ -135,7 +136,10 @@
 							}
 						}
 						$vs_info = null;
-						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
+						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
+						if(strToLower($qr_res->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))) == "geluidsfragment"){
+							$vs_audio = "<div class='resultAudioIcon'><i class='fa fa-volume-up' aria-hidden='true'></i></div>";
+						}			
 					} else {
 						if($va_images[$vn_id]){
 							$vs_thumbnail = $va_images[$vn_id];
@@ -156,7 +160,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_collection}
+						{$vs_audio}<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_collection}
 					</div><!-- end bResultItemText -->
 				</div><!-- end bResultItemContent -->
 				<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>

@@ -260,6 +260,15 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific cookies configuration
+	 *
+	 * @return Configuration
+	 */
+	function caGetCookiesConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/cookies.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Returns associative array, keyed by primary key value with values being
 	 * the preferred label of the row from a suitable locale, ready for display
 	 *
@@ -434,6 +443,7 @@
 		if ($show_only_media_types_when_present) {
 			$mimetypes_present = array_reduce($va_reps, function($c, $i) { $c[$i['mimetype']] = true; return $c; }, []);
 			
+			$show_only_media_types_when_present_reduced = [];
 			foreach($show_only_media_types_when_present as $t) {
 				if (caMimetypeIsValid($t, array_keys($mimetypes_present))) {
 					$show_only_media_types_when_present_reduced[] = $t;
@@ -1241,7 +1251,7 @@
                     $.ajax({
                         url: '{$va_json_lookup_info['search']}',
                         dataType: \"json\",
-                        data: { term: ".(caGetOption('restrictToField', $pa_options, true) ? "'{$ps_field}:'" : "''")." + request.term },
+                        data: { term: ".(caGetOption('restrictToField', $pa_options, false) ? "'{$ps_field}:'" : "''")." + request.term },
                         success: function( data ) {
                             response(data);
                         }
@@ -1255,7 +1265,7 @@
                 select: function( event, ui ) {
                     if(!parseInt(ui.item.id) || (ui.item.id <= 0)) {
                         jQuery('#{$vs_field_proc}_autocomplete{$index}').val('');  // no matches so clear text input
-                        jQuery('#{$vs_field_proc}{$index}').val('xx');
+                        jQuery('#{$vs_field_proc}{$index}').val('');
                         event.preventDefault();
                         return;
                     }

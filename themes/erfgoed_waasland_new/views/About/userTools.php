@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * controllers/ContactController.php
+ * themes/default/views/LoginReg/form_login_html.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,20 +26,20 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/ApplicationError.php");
-	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
- 
- 	class CookieController extends BasePawtucketController {
- 		# -------------------------------------------------------
- 		 
- 		# -------------------------------------------------------
- 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			parent::__construct($po_request, $po_response, $pa_view_paths);
- 		}
- 		# -------------------------------------------------------
- 		public function Accept() {
-			Session::setVar('cookieAccepted', 'accepted');
-			$this->render("Cookie/success_html.php");   
- 		}
- 		# ------------------------------------------------------
- 	}
+	$vn_label_col = 2;
+	if($this->request->isAjax()){
+		$vn_label_col = 4;
+?>
+		<div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+<?php
+	}
+?>
+			<H1><?php print _t("Hoe werkt dit?"); ?></H1>
+			{{{user_tools_text}}}
+<?php
+	if($this->request->isAjax()){
+?>
+		</div><!-- end caFormOverlay -->
+<?php
+	}
+?>

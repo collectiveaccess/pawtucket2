@@ -39,7 +39,7 @@
 	if($this->request->config->get('summary_footer_enabled')) {
 		switch($this->getVar('PDFRenderer')) {
 			case 'wkhtmltopdf':
-				$vs_footer = "<div class='pagingText' id='pagingText'>"._t('Page')." <span class='page'></span> "._t('of')." <span class='topage'></span></div>";
+				$vs_footer = "<div class='pagingText' id='pagingText'>"._t('Page')." <span class='page'></span> / <span class='topage'></span></div>";
 			break;
 			default:
 				$vs_footer = "<div class='pagingText' id='pagingText'>"._t('Page')." </div>";

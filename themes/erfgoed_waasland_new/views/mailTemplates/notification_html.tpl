@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * controllers/ContactController.php
+ * default/views/mailTemplates/notification_html.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2017 Whirl-i-Gig
+ * Copyright 2009-2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,21 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	require_once(__CA_LIB_DIR__."/ApplicationError.php");
-	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
- 
- 	class CookieController extends BasePawtucketController {
- 		# -------------------------------------------------------
- 		 
- 		# -------------------------------------------------------
- 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			parent::__construct($po_request, $po_response, $pa_view_paths);
- 		}
- 		# -------------------------------------------------------
- 		public function Accept() {
-			Session::setVar('cookieAccepted', 'accepted');
-			$this->render("Cookie/success_html.php");   
- 		}
- 		# ------------------------------------------------------
- 	}
+?>
+<p>Uw Waasland paswoord werd gewijzigd op <?php print date("F j, Y")." at ".date("G:i"); ?>. Wanneer u uw paswoord niet gewijzigd zou willen hebben, contacteer ons dan op <?php print $this->request->config->get("ca_admin_email"); ?>.</p>
+
+<p>Met vriendelijke groet,</p>
+<p>Het Erfgoedcel-team</p>
+<?php
+	print $this->request->config->get("site_host");
+?>

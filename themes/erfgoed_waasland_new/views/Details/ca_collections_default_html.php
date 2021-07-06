@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -36,7 +37,7 @@
 ?>					
 					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
 					<div class="unit"><label>{{{^ca_collections.type_id}}}</label></div>
-					{{{<ifdef code="ca_collections.parent.parent_id"><label>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></label></ifdef>}}}
+					{{{<ifdef code="ca_collections.parent_id"><label>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></label></ifdef>}}}
 <?php					
 					if ($vn_pdf_enabled) {
 						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, _t("Download as PDF"), "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
@@ -51,13 +52,13 @@
 					
 					
 					
-					{{{<ifcount code="ca_collections.related" min="1" max="1"><label>Collectie</label></ifcount>}}}
-					{{{<ifcount code="ca_collections.related" min="2"><label>Collecties</label></ifcount>}}}
-					{{{<unit relativeTo="ca_collections_x_collections"><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.related.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
-					
+					{{{<ifcount code="ca_collections.related" min="1">
+							<ifcount code="ca_collections.related" min="1" max="1"><label>Collectie</label></ifcount>
+							<ifcount code="ca_collections.related" min="2"><label>Collecties</label></ifcount>
+							<unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>
+					</ifcount>}}}					
 <?php
 				print '<div id="detailTools">';
-				print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, _t("Inquire About This Collection"), "", "", "Contact",  "form", array('table' => 'ca_collections', 'id' => $t_item->get("ca_collections.collection_id")))."</div>";
 					
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
@@ -112,7 +113,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => 'ca_collections.parent_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsCollectionContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -127,7 +128,10 @@
 		</ifdef>
 }}}
 {{{
-		<ifcount code="ca_objects" min="1">
+		
+			<div class="row">
+				<div class="col-sm-12"><H2>Objecten</H2></div>
+			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -135,7 +139,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_objects.object_collection:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_field_facet', 'id' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -147,7 +151,6 @@
 					
 				});
 			</script>
-		</ifcount>
 }}}
 		</div><!-- end container -->
 	</div><!-- end col -->

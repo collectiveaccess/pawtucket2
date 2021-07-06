@@ -128,13 +128,25 @@
 </div></div>
 <div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>
 <?php
-if (Session::getVar('visited') != 'has_visited') {
+if(!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 14400))){
+	# --- display lightbox alert
+	if(!CookieOptionsManager::showBanner()){
+		Session::setVar('visited_time', time());
+	}
+
 ?>
 	<div class="lightboxAlert">
 		<div class="pull-right pointer ligthboxAlertClose" onclick="$('.lightboxAlert').hide(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
 		{{{lightbox_alert}}}
 		<div><?php print "<a href='#' onclick='$(\".lightboxAlert\").hide(); caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'About', 'userTools', array())."\"); return false;' class='btn-default'><span class='glyphicon glyphicon-user'></span> "._t("Hoe werkt dit?")."</a>"; ?></div>	
 	</div>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$(window).scroll(function(){
+					$(".lightboxAlert").fadeIn();
+				});
+			});
+		</script>
 <?php
 }
 ?>
@@ -143,14 +155,5 @@ if (Session::getVar('visited') != 'has_visited') {
 				$(window).scroll(function(){
 					$("#hpScrollBar").fadeOut();
 				});
-<?php
-		if (Session::getVar('visited') != 'has_visited') {
-?>
-			$(window).scroll(function(){
-				$(".lightboxAlert").fadeIn();
-			});
-<?php
-		}
-?>
 			});
 		</script>

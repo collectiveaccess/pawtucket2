@@ -60,7 +60,8 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
-
+	$coll = Datamodel::getInstance('ca_collections', true);	
+	
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
@@ -114,10 +115,14 @@
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					$vs_collection = "";
+					$vs_audio = "";
 					if ($vs_table == 'ca_objects') {
 						$vs_collection = $qr_res->get("ca_objects.object_collection.preferred_labels.name");
 						if($vs_collection){
 							$vs_collection = "<br/>".$vs_collection;
+						}
+						if(strToLower($qr_res->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))) == "geluidsfragment"){
+							$vs_audio = "<div class='resultAudioIcon'><i class='fa fa-volume-up' aria-hidden='true'></i></div>";
 						}
 					}
 					$vs_thumbnail = "";
@@ -127,7 +132,25 @@
 				
 					$vs_image = $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values));
 					if(!$vs_image && ($vs_table != 'ca_objects')){
-						$vs_image = $va_images[$vn_id];
+						if($vs_table == 'ca_collections'){
+							$collection_ids = array_merge([$qr_res->getPrimaryKey()], $qr_res->get("ca_collections.children.collection_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "sort" => "ca_collection_labels.name")));
+				
+							foreach($collection_ids as $collection_id) {
+								$refs = $coll->getAuthorityElementReferences(['row_id' => $collection_id]);
+								if(isset($refs['57']) && sizeof($refs['57'])) { // 57 = ca_objects
+									$qr_objects = caMakeSearchResult('ca_objects', array_keys($refs['57']), array("checkAccess" => $va_access_values, "sort" => 'ca_objects.idno'));
+									while($qr_objects->nextHit()) {
+										if(in_array($qr_objects->get("ca_objects.access"), $va_access_values)){
+											if($vs_image = $qr_objects->get('ca_object_representations.media.small')) {
+												break(2);
+											}
+										}
+									}
+								}
+							}
+						}else{
+							$vs_image = $va_images[$vn_id];
+						}
 					}
 				
 					if(!$vs_image){
@@ -158,7 +181,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultListItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_collection}
+						{$vs_audio}<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_collection}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
 				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
