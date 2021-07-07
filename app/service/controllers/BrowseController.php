@@ -575,7 +575,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 				'viewerClass' => $viewer_class,
 				'identifier' => $qr->get("{$table}.idno", ['checkAccess' => $user_access_values]),
 				'rank' => $i,
-				'media' => array_values($m[$id]),
+				'media' => is_array($m[$id]) ? array_values($m[$id]) : null,
 				'data' => $data
 			];
 			$i++;
