@@ -49,12 +49,8 @@
 	</div><!-- end detailTop -->
 </div>
 			<div class="row">
-				<div class='col-sm-12 col-md-8'>
-					<div class="stoneBg">	
+				<div class='col-sm-12 col-md-9'>	
 						<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
-						<H6>{{{^ca_collections.type_id}}}</H6>
-						{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.parent"><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
-						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						{{{<ifdef code="ca_collections.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_collections.description_new.description_new_source"><h6>Description</h6>
 								<div class="trimText">^ca_collections.description_new.description_new_txt</div>
@@ -62,12 +58,8 @@
 						</ifdef>}}}
 						{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H6>Contains</H6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 						
-					</div><!-- end stoneBg -->
-<?php
-					include("themes_html.php");
-?>
 				</div>
-				<div class='col-sm-12 col-md-4'>
+				<div class='col-sm-12 col-md-3'>
 	<?php
 					# Comment and Share Tools
 						
@@ -109,11 +101,6 @@
 						</div>
 <?php				
 					}
-					if($vs_map = $this->getVar("map")){
-						if($t_item->get("ca_collections.georeference", array("checkAccess" => $va_access_values))){
-							include("map_html.php");
-						}
-					}
 ?>
 				</div>
 			</div>
@@ -136,7 +123,7 @@
 			<div class="row" style="margin-top:30px;">
 				<div class="col-sm-12">		
 <?php
-		include("related_tabbed_html.php");
+		#include("related_tabbed_html.php");
 ?>
 					{{{<ifcount code="ca_objects" min="1">
 								<div class="relatedBlock">
