@@ -132,7 +132,7 @@ class MediaViewer extends React.Component {
 			switch (this.props.class) {
 				case 'image':
 					viewer = (
-						<div className={classes.join(' ')}>
+						<div className={classes.join(' ')} style={{height: '100%'}}>
 							<ImageViewer url={mediaInfo} {...standardProps} />
 						</div>
 					)

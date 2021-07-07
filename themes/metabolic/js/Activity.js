@@ -10,9 +10,9 @@ const selector = pawtucketUIApps.Activity.selector;
 
 const Activity = () => {
 
-  const { currProject } = useContext(ActivityContext)
+  const { facetValue } = useContext(ActivityContext)
 
-  if(currProject){
+  if (facetValue){
     return (
       <ActivityView />
     )

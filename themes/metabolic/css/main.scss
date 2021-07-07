@@ -1592,10 +1592,28 @@ h1{
 		margin: 75px 0px 75px 0px;
 	}
 
+	@media (max-width: 576px){
+		.projects-title{
+			margin: 25px 0px 25px 0px;
+		}
+	}
+
+	@media (orientation: 'landscape'){
+		.projects-title{
+			margin: 25px 0px 25px 0px;
+		}
+	}
+
 	.list-img{
-		max-height: 250px;
+		height: auto;
 		width: 100%;
 		object-fit: cover;
+	}
+	.card-title{
+		font-size: 18px;
+    font-family: "Raleway", sans-serif;
+    text-decoration: none;
+    line-height: 2em;
 	}
 
 }
@@ -1605,8 +1623,12 @@ h1{
 	margin: 0;
 	padding: 30px 50px 30px 50px;
 
+	@media (max-width: 575px){
+		padding: 15px 20px 15px 20px;
+	}
+
 	.activity-title{
-		margin-bottom: 40px;
+		margin-bottom: 15px;
 	}
 
 	.dropdown-toggle::after{
@@ -1630,23 +1652,97 @@ h1{
 		}
 	}
 
+	@media (max-width: 575px){
+		.activity-title{
+			h1{
+				font-size: 25px;
+			}
+		}
+		.modal-title {
+			font-size: 16px;
+		}
+	}
+
+
+	@media (orientation: 'portrait'){
+		@media (max-width: 575px){
+			.modal-dialog {
+				width: auto;
+				.modal-content{
+					height: 90vh;
+				}
+			}
+		}
+	}
+	@media (orientation: 'landscape'){
+		@media (max-width: 575px){
+			.modal-dialog {
+				width: auto;
+				height: 100vh;
+			}
+		}
+	}
+
+	.for-video{
+		height: 85vh;
+		padding: 0;
+		width: 100%;
+		margin: auto; 
+		display: flex;
+		align-items: center;
+		.row{
+			width: 100%;
+			margin: auto;
+			.mediaDisplay{
+				.mediaViewer{
+					height: 100%;
+					div.mediaViewerContainer{
+						height: 100%;
+						width: 100%;
+						margin: auto;
+						div{
+							height: 100%;
+							width: 100%;
+							div.react-player{
+								width: 100%;
+								height: 100%;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.for-image{
+		height: 85vh;
+			div{
+				height: 100%;
+				div.react-iiif-viewer.css-1bwnbwv{
+					width: 100%;
+					height: 100%;
+				}
+			}
+	}
+
 	.css-1lo3585{
 		width: 100%;
+		height: 100%;
 	}
 	.react-player{
 		width: 100%;
 	}
+}
 
 
 .activity-media{
 
 	.img-container {
 		position: relative;
-		// width: 50%;
 	}	
 	
 	.list-img{
-		// max-height: 250px;
+		// min-height: 200px;
 		height: auto;
 		width: 100%;
 		object-fit: cover;
@@ -1684,7 +1780,7 @@ h1{
 
 		.title, .caption, .date, a{
 			color: white;
-			font-size: 14px;
+			font-size: 13px;
 			text-align: center;
 			padding-bottom: 3px;
 		}
@@ -1699,59 +1795,16 @@ h1{
 		}
 	}
 
-	@media screen and (max-width: 575px) {
-		.overlay{
-			.title, .caption, .date, .view, a{
-				font-size: 16px;
-			}
-		}
-	}
-	@media screen and (max-width: 767px) {
+	@media screen and (max-width: 350px) {
 		.overlay{
 			.title, .caption, .date, .view, a{
 				font-size: 12px;
 			}
 		}
 	}
-	@media screen and (max-width: 880px) {
-		.overlay{
-			.title, .caption, .date, .view, a{
-				font-size: 11px;
-			}
-		}
-	}
-	@media screen and (max-width: 1000px) {
-		.overlay{
-			.title, .caption, .date, .view, a{
-				font-size: 10px;
-			}
-		}
-	}
-	@media screen and (min-width: 1200px) {
-		.overlay{
-			.title, .caption, .date, .view, a{
-				font-size: 12px;
-			}
-		}
-	}
-	
+
 	.img-container:hover .overlay {
 		opacity: 1;
 	}
 	
-	.text {
-		color: white;
-		font-size: 12px;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		-webkit-transform: translate(-50%, -50%);
-		-ms-transform: translate(-50%, -50%);
-		transform: translate(-50%, -50%);
-		text-align: center;
-	}
-	
-}
-
-
 }

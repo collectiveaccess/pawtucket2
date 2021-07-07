@@ -27,4 +27,24 @@ const getActivity = (url, browseType, facet, values, callback) => {
     });
 }
 
-export { getGraphQLClient, getActivity };
+const getActivityList = (url, browseType, facet, callback) => {
+  const client = getGraphQLClient(url, {});
+  client
+    .query({
+      query: gql`
+        query ($browseType: String, $facet: String) 
+        { activityFacet (browseType: $browseType, facet: $facet) { name, type, values {
+          id, value, displayData {
+            name, value
+          }
+        } } } `
+      , variables: { 'browseType': browseType, 'facet': facet }
+    })
+    .then(function (result) {
+      callback(result.data['activityFacet']);
+    }).catch(function (error) {
+      console.log("Error while attempting to fetch activity list: ", error);
+    });
+}
+
+export { getGraphQLClient, getActivity, getActivityList };

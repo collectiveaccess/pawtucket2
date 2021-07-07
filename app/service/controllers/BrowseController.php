@@ -300,7 +300,76 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						return self::getMutationResponse($browse, $browse_info, $args);
 					}
 				],
-			],
+				// -----------------
+				'activityFacet' => [
+					'type' => BrowseSchema::get('BrowseFacet'),
+					'description' => _t('Information about specific facet'),
+					'args' => [
+						[
+							'name' => 'browseType',
+							'type' => Type::string(),
+							'description' => _t('Browse type')
+						],
+						[
+							'name' => 'key',
+							'type' => Type::string(),
+							'description' => _t('Browse key')
+						],
+						[
+							'name' => 'facet',
+							'type' => Type::string(),
+							'description' => _t('Name of facet')
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+						list($browse_info, $browse) = self::browseParams($args, ['baseCriteria' => ['modified:"after '.date('Y-m-d').'"']]);
+						$facet = $args['facet'];
+						
+						
+						
+						$user_access_values = caGetUserAccessValues();
+						$facet_values = $browse->getFacet($facet, ['checkAccess' => $user_access_values]);
+						
+						if(!is_array($facet_values)) {
+							throw new \ServiceException(_t('Facets %1 is not defined for table %2', $facet, $browse_info['table']));
+						}
+						
+						$facet_info = $browse->getInfoForFacet($facet, ['checkAccess' => $user_access_values]);
+						$data_spec = caGetOption('data', $facet_info, null);
+						$facet_table = caGetOption('table', $facet_info, null);
+						$instance = Datamodel::getInstance($facet_table, true);
+						$ret = array_map(function($v) use ($data_spec, $instance, $user_access_values) {
+							$display_data = [];
+							if(is_array($data_spec) && sizeof($data_spec) && $instance && $instance->load($v['id'])) {
+								foreach($data_spec as $n => $t) {
+									$display_data[] = [
+										'name' => $n,
+										'value' => $instance->getWithTemplate($t, ['checkAccess' => $user_access_values])
+									];
+								}
+							}
+							return [
+								'id' => $v['id'],
+								'value' => $v['label'],
+								'sortableValue' => $v['label_sort_'],
+								'contentCount' => $v['content_count'],
+								'childCount' => $v['child_count'],
+								'displayData' => $display_data
+							];
+						}, $facet_values);
+						
+						if(!($facet_info = self::facetInfo($browse_info['table'], $facet))) {
+							throw new \ServiceException(_t('No facets defined for table '.$browse_info['table']));
+						}
+						return [
+							'name' => $facet,
+							'type' => caGetOption('type', $facet_info, null),
+							'description' => caGetOption('description', $facet_info, null),
+							'values' => $ret
+						];
+					}
+				],
+			]
 		]);
 		
 		$mt = new ObjectType([
@@ -451,7 +520,8 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 	 *
 	 * @param array $args Request aruguments
 	 * @param array $options Options include:
-	 *		dontExecute = Call execute() on browse instance before returning. [Default is true]
+	 *		execute = Call execute() on browse instance before returning. [Default is true]
+	 *		baseCriteria = 
 	 */
 	private static function browseParams(array $args, array $options=null) {
 		$browse_type = trim($args['browseType']);
@@ -468,6 +538,11 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 		$restrict_to_types = caGetOption('restrictToTypes', $browse_info, null);
 		if (is_array($restrict_to_types) && sizeof($restrict_to_types)) { $browse->setTypeRestrictions($restrict_to_types); }
 		
+		if($criteria = caGetOption('baseCriteria', $options, null)) {
+			foreach($criteria as $k => $c) {
+				$browse->addCriteria($k, is_array($c) ? $c : [$c]);
+			}
+		}	
 		$user_access_values = caGetUserAccessValues();
 		if (caGetOption('execute', $options, true)) { $browse->execute(['checkAccess' => $user_access_values]); }
 		

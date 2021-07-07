@@ -9,8 +9,9 @@ const ActivityContextProvider = (props) => {
   const [ modalClass, setModalClass ] = useState();
   const [ modalTitle, setModalTitle ] = useState();
   const [ detailUrl, setDetailUrl ] = useState();
+  const [ activityListItems, setActivityListItems ] = useState();
+  const [ facetValue, setFacetValue ] = useState();
 
- 
   return (
     <ActivityContext.Provider
       value={{
@@ -19,7 +20,9 @@ const ActivityContextProvider = (props) => {
         modalUrl, setModalUrl,
         modalClass, setModalClass,
         modalTitle, setModalTitle,
-        detailUrl, setDetailUrl
+        detailUrl, setDetailUrl,
+        activityListItems, setActivityListItems,
+        facetValue, setFacetValue,
       }}
     >
       {props.children}

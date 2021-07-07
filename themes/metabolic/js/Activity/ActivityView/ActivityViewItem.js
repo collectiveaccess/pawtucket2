@@ -4,7 +4,7 @@ import { ActivityContext } from '../ActivityContext';
 
 const ActivityViewItem = ({item}) => {
 
-  const { setModalUrl, setModalClass, setModalTitle, setDetailUrl} = useContext(ActivityContext)
+  const { setModalUrl, setModalClass, setModalTitle, setDetailUrl } = useContext(ActivityContext)
 
   const setModalImage = (e, viewerUrl, viewerClass, viewerTitle, detailUrl) => {
     console.log("set modal media", viewerUrl, viewerClass, viewerTitle);
@@ -16,6 +16,22 @@ const ActivityViewItem = ({item}) => {
     e.preventDefault();
   }
 
+  const text_truncate = (str, length, ending) => {
+    if (length == null) {
+      length = 100;
+    }
+    if (ending == null) {
+      ending = '...';
+    }
+    if (str.length > length) {
+      return str.substring(0, length - ending.length) + ending;
+    } else {
+      return str;
+    }
+  };
+
+  console.log();
+
   return (
     <div className='col'>
       <div className="card img-container mb-4 border-0" style={{ cursor: 'pointer' }}>        
@@ -26,8 +42,8 @@ const ActivityViewItem = ({item}) => {
             <div className="col-9 overlay-info" data-toggle="modal" data-target="#exampleModal"
               onClick={(e) => setModalImage(e, item.viewerUrl, item.viewerClass, item.title, item.detailUrl)}>
               <div className="info-div">
-                <div className="title">{item.title}</div>
-                <div className="caption">{item.data[1].value}</div>
+                <div className="title">{text_truncate(item.title, 50)}</div>
+                <div className="caption">{text_truncate(item.data[1].value, 50)}</div>
                 <div className="date">{item.data[0].value}</div>
               </div>
             </div>
