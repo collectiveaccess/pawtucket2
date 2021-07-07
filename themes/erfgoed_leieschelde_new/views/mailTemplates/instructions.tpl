@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf_html.tpl
+ * default/views/mailTemplates/instructions_html.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2009-2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,17 +25,18 @@
  *
  * ----------------------------------------------------------------------
  */
-if($this->request->config->get("dont_approve_logins_on_registration")){
-	$vs_active_message = _t("<p>Your account will be activated after review.</p>");
-}
 
-print "<p>Bedankt om te registreren op de \"Erfgoedbank Leie Schelde\". ".$vs_active_message."</p>
+print _t("Om jouw paswoord te wijzigen, kopieer en plak de volgende URL in de webbrowser");
 
-<p>Als lid van de Erfgoedbank Leie Schelde kan je reacties achterlaten bij foto’s, luister- en filmfragmenten. Je kan ook een eigen album met audiovisueel materiaal samenstellen.</p>
-";
+print $this->getVar("password_reset_url");
 
-	print "<p>".$this->request->config->get("site_host")."</p>";
+print _t("Je wordt gevraagd een nieuw wachtwoord aan te maken. Als je nog steeds problemen ondervindt, of wanneer je geen mail hebt ontvangen, gelieve %1 te contacteren.
+
+Met vriendelijke groet,
+
+Cultuurregio Leie Schelde
+", $this->request->config->get("ca_admin_email"));
+
+
+	print $this->request->config->get("site_host");
 ?>
-
-
- 
