@@ -1,13 +1,13 @@
 ﻿<?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/notification.tpl
+ * default/views/mailTemplates/notification_html.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2009-2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,17 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-print _t("Your %1 password was reset on %2 at %3. If you did 
-not reset your password, please contact us at %4.
+?>
+Uw Waasland paswoord werd gewijzigd op <?php print date("F j, Y")." at ".date("G:i"); ?>. Wanneer u uw paswoord niet gewijzigd zou willen hebben, contacteer ons dan op <?php print $this->request->config->get("ca_admin_email"); ?>.
 
-
-Regards,
-
-The staff
-
-", $this->request->config->get("app_display_name"), date("F j, Y"), date("G:i"), $this->request->config->get("ca_admin_email"));
-
-
+Met vriendelijke groet,
+Het Erfgoedcel-team
+<?php
 	print $this->request->config->get("site_host");
 ?>
