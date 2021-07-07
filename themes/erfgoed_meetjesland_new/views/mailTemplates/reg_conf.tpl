@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf_html.tpl
+ * default/views/mailTemplates/reg_conf.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -25,17 +25,18 @@
  *
  * ----------------------------------------------------------------------
  */
+ 
 if($this->request->config->get("dont_approve_logins_on_registration")){
-	$vs_active_message = _t("<p>Your account will be activated after review.</p>");
+	$vs_active_message = _t("Your account will be activated after review.");
 }
 
-print "<p>Bedankt om te registreren op de \"Erfgoedbank Meetjesland\". ".$vs_active_message."</p>
+print "Bedankt om te registreren op de \"Erfgoedbank Meetjesland\". ".$vs_active_message."
 
-<p>Als lid van de Erfgoedbank Meetjesland kan je reacties achterlaten bij foto’s, luister- en filmfragmenten. Je kan ook een eigen album met audiovisueel materiaal samenstellen.</p>
+Als lid van de Erfgoedbank Meetjesland kan je reacties achterlaten bij foto’s, luister- en filmfragmenten. Je kan ook een eigen album met audiovisueel materiaal samenstellen.
 ";
 
-	print "<p>".$this->request->config->get("site_host")."</p>";
+	print $this->request->config->get("site_host");
+
+
+
 ?>
-
-
- 
