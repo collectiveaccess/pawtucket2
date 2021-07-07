@@ -8,6 +8,8 @@ const ActivityContextProvider = (props) => {
   const [ modalUrl, setModalUrl ] = useState();
   const [ modalClass, setModalClass ] = useState();
   const [ modalTitle, setModalTitle ] = useState();
+  const [ detailUrl, setDetailUrl ] = useState();
+
  
   return (
     <ActivityContext.Provider
@@ -17,6 +19,7 @@ const ActivityContextProvider = (props) => {
         modalUrl, setModalUrl,
         modalClass, setModalClass,
         modalTitle, setModalTitle,
+        detailUrl, setDetailUrl
       }}
     >
       {props.children}

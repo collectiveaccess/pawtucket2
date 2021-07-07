@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import { ActivityContext } from './Activity/ActivityContext';
 import ActivityContextProvider from './Activity/ActivityContext';
 import ActivityList from './Activity/ActivityList';
@@ -10,7 +10,7 @@ const selector = pawtucketUIApps.Activity.selector;
 
 const Activity = () => {
 
-  const { currProject, setCurrProject } = useContext(ActivityContext)
+  const { currProject } = useContext(ActivityContext)
 
   if(currProject){
     return (

@@ -126,7 +126,7 @@ class MediaViewer extends React.Component {
 		let classes = ['mediaViewerContainer'];
 
 		if (typeof mediaInfo !== 'object') {
-			console.log("is string", this.props.class, mediaInfo);
+			// console.log("is string", this.props.class, mediaInfo);
 			// mediaInfo = this.props.media;
 
 			switch (this.props.class) {
@@ -159,7 +159,7 @@ class MediaViewer extends React.Component {
 					break;
 			}
 		} else {
-			console.log("is object", mediaInfo);
+			// console.log("is object", mediaInfo);
 			mediaInfo = this.state.media[this.state.index];
 
 			switch (mediaInfo.class) {

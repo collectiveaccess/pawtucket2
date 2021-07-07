@@ -4,24 +4,22 @@ import ActivityModal from './ActivityView/ActivityModal';
 import ActivityViewItem from './ActivityView/ActivityViewItem';
 import { getActivity } from './ActivityQueries';
 
+const serviceUrl = pawtucketUIApps.Activity.serviceUrl;
+const browseType = pawtucketUIApps.Activity.browseType;
+const facet = pawtucketUIApps.Activity.facet;
+const values = pawtucketUIApps.Activity.values;
+
 const ActivityView = () => {
 
-  const { currProject, setCurrProject, activityItems, setActivityItems, modalUrl, setModalUrl, modalClass, setModalClass, modalTitle, setModalTitle } = useContext(ActivityContext)
+  const { setCurrProject, activityItems, setActivityItems } = useContext(ActivityContext)
 
   useEffect(() => {
-    getActivity("http://metabolic3.whirl-i-gig.com:8085/service.php/Browse", "objects", "project", "56", (data) =>{
-      console.log('getActivity: ', data);
+    getActivity(serviceUrl, browseType, facet, values, (data) =>{
+      // console.log('getActivity: ', data);
       setActivityItems(data.items)
     })
   }, [])
 
-  let actModal;
-
- // if(modalUrl && modalClass, modalTitle){	// SETH CHANGE: We need the model include always, otherwise it'll take two clicks to show it, the first to initialize it and the next to actually show it.
-    // actModal = (<ActivityModal />)
-//  }
-
- 
   const backToList = (e) => {
     setCurrProject();
     e.preventDefault();
@@ -35,17 +33,10 @@ const ActivityView = () => {
     <div className='container-fluid metabolic-activity'>
 
       <ActivityModal />
-      {/* {actModal} */}
-
-      {/* <div className='row activity-title'>
-        <div className="col-3 text-left">
-          <button className='text-left' type="button" className="btn btn-secondary" onClick={(e) => backToList(e)}>Back</button>
-        </div>
-      </div> */}
-
+     
       <div className='row activity-title align-items-center'>
 
-        <div className="col-2 mb-4" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center' }}>
+        <div className="col col-md-2 mb-4" style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center' }}>
 
           <button className='btn btn-secondary text-left h-100 mr-2' type="button" onClick={(e) => backToList(e)}>Back</button>
 
@@ -70,7 +61,7 @@ const ActivityView = () => {
 
         </div>
 
-        <div className="col-8 mb-4 justify-self-center">
+        <div className="col col-md-8 mb-4 justify-self-center">
           <h1 className='text-center'>Bending the River</h1>
         </div>
       </div>

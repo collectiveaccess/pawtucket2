@@ -1623,11 +1623,18 @@ h1{
 		}
 	}
 
+	@media (min-width: 576px){
+		// 992px
+		.modal-lg, .modal-xl {
+			max-width: 80%;
+		}
+	}
+
 	.css-1lo3585{
-		width: auto;
+		width: 100%;
 	}
 	.react-player{
-		width: auto;
+		width: 100%;
 	}
 
 
@@ -1636,16 +1643,11 @@ h1{
 	.img-container {
 		position: relative;
 		// width: 50%;
-	}
-	
-	// .image {
-	//   display: block;
-	//   width: 100%;
-	//   height: auto;
-	// }
+	}	
 	
 	.list-img{
-		max-height: 250px;
+		// max-height: 250px;
+		height: auto;
 		width: 100%;
 		object-fit: cover;
 	}
@@ -1654,20 +1656,33 @@ h1{
 		position: absolute;
 		top: 0;
 		bottom: 0;
-		left: 50;
+		// left: 50;
 		right: 0;
-		height: 100%;
+		height: auto;
 		width: 100%;
 		opacity: 0;
 		transition: .5s ease;
 		background-color: rgba(0, 0, 0, 0.6);
+
+		.row{
+			height: 100%;
+			align-self: center;
+			justify-content: center;
+		}
+		.overlay-info{
+			display:flex;
+			height: 100%;
+			.info-div{
+				align-self: center;
+			}
+		}
 
 		.title{
 			font-weight: bold;
 			text-decoration: underline;
 		}
 
-		.title, .caption, .date, .view, a{
+		.title, .caption, .date, a{
 			color: white;
 			font-size: 14px;
 			text-align: center;
@@ -1719,36 +1734,6 @@ h1{
 			}
 		}
 	}
-
-	// @media screen and (max-width: 320px) {
-	// 	.overlay{
-	// 		.title, .caption, .date, .view, a{
-	// 			font-size: calc(10px + 6 * ((100vw - 320px) / 680));
-	// 		}
-	// 	}
-	// }
-
-	// @media screen and (max-width: 769px) {
-	// 	.overlay{
-	// 		.title, .caption, .date, .view, a{
-	// 			font-size: calc(11px + 6 * ((100vw - 769px) / 680));
-	// 		}
-	// 	}
-	// }
-	// // @media screen and (max-width: 769px) {
-	// // 	.overlay{
-	// // 		.title, .caption, .date, .view, a{
-	// // 			font-size: calc(12px + 6 * ((100vw - 769px) / 680));
-	// // 		}
-	// // 	}
-	// // }
-	// @media screen and (max-width: 1376px) {
-	// 	.overlay{
-	// 		.title, .caption, .date, .view, a{
-	// 			font-size: calc(13px + 6 * ((100vw - 1376px) / 680));
-	// 		}
-	// 	}
-	// }
 	
 	.img-container:hover .overlay {
 		opacity: 1;

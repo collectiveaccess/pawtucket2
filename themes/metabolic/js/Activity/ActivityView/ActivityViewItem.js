@@ -1,40 +1,39 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useContext } from 'react';
 
 import { ActivityContext } from '../ActivityContext';
 
 const ActivityViewItem = ({item}) => {
 
-  const { modalUrl, setModalUrl, modalClass, setModalClass, modalTitle, setModalTitle, } = useContext(ActivityContext)
+  const { setModalUrl, setModalClass, setModalTitle, setDetailUrl} = useContext(ActivityContext)
 
-  const setModalImage = (e, viewerUrl, viewerClass, viewerTitle) => {
+  const setModalImage = (e, viewerUrl, viewerClass, viewerTitle, detailUrl) => {
     console.log("set modal media", viewerUrl, viewerClass, viewerTitle);
     setModalUrl(viewerUrl);
     setModalClass(viewerClass);
     setModalTitle(viewerTitle);
+    setDetailUrl(detailUrl)
 
     e.preventDefault();
   }
 
   return (
     <div className='col'>
-      <div className="card img-container mb-4 border-0" style={{ cursor: 'pointer' }}>
-        
-      {/* <img className="list-img" src="https://picsum.photos/300/200" alt="card image cap"/> */}
+      <div className="card img-container mb-4 border-0" style={{ cursor: 'pointer' }}>        
         <img className="list-img" src={item.media[1].url} alt="card image cap"/>
         <div className="overlay container-fluid">
-          <div className="row h-100">
+          <div className="row row-cols-2 align-self-center">
 
-            <div className="col-9 align-self-center">
-              <div className="title">{item.title}</div>
-              <div className="caption">{item.data[1].value}</div>
-              <div className="date">{item.data[0].value}</div>
-              <div className="view pt-2" data-toggle="modal" data-target="#exampleModal" 
-              onClick={(e) => setModalImage(e, item.viewerUrl, item.viewerClass, item.title)}
-              ><a className="pt-2" href="#">View</a></div>
+            <div className="col-9 overlay-info" data-toggle="modal" data-target="#exampleModal"
+              onClick={(e) => setModalImage(e, item.viewerUrl, item.viewerClass, item.title, item.detailUrl)}>
+              <div className="info-div">
+                <div className="title">{item.title}</div>
+                <div className="caption">{item.data[1].value}</div>
+                <div className="date">{item.data[0].value}</div>
+              </div>
             </div>
 
-            <div className="col-3 align-self-center">
-              <ul className="p-0 m-0">
+            <div className="col-3 d-flex justify-content-end">
+              <ul className="p-0 m-0 align-self-center">
                 <li className='text-right mb-2'>
                   <a href={item.detailUrl} data-toggle="tooltip" title="See Details">
                     <span className="material-icons">info</span>
