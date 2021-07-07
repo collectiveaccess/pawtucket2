@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf_html.tpl
+ * default/views/mailTemplates/reg_admin_notification_html.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -25,16 +25,12 @@
  *
  * ----------------------------------------------------------------------
  */
-if($this->request->config->get("dont_approve_logins_on_registration")){
-	$vs_active_message = _t("<p>Your account will be activated after review.</p>");
-}
+ 	$t_user = $this->getVar("t_user");
+	print _t("<p>Een nieuwe gebruiker, %1, heeft zich geregistreerd op de %2 met %3. </p>", trim($t_user->get("fname")." ".$t_user->get("lname")), $this->request->config->get("app_display_name"), $t_user->get("email"));
+	if($this->request->config->get("dont_approve_logins_on_registration")){
+		print _t("<p>Please login and navigate to Manage > Access Control to approve the registration.</p>");
+	}
+	print _t("<p>Met vriendelijke groet,<br/>Het Ergoedcel-team</p>");
 
-print "<p>Bedankt om u te registreren op de Erfgoedbank Waasland. ".$vs_active_message."</p>
-
-<p>Als lid van de Erfgoedbank Waasland kan u reageren op foto's, audio- en filmfragmenten. U kan ook een eigen album samenstellen met zelf gekozen (audio)visueel materiaal.</p>
-";
-
-	print "<p>met vriendelijke groet, 
-			<br/>Het Erfgoedcel-team
-			<br/>waaserfgoed.be</p>";
+	print "<p>".$this->request->config->get("site_host")."</p>";
 ?>

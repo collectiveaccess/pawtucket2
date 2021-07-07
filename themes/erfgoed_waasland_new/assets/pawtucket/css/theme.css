@@ -751,6 +751,11 @@ H2.frontExpoTitle{
 	color:#000;
 	text-decoration:none;
 }
+.front .notificationMessage{
+	top: 100px;
+	position: relative;
+	z-index: 1000;
+}
 /* browse */
 #bRefine{
 	background-color: #f2f1ec;
