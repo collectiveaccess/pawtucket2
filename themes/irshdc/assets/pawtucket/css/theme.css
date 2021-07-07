@@ -1294,7 +1294,7 @@ h3.popover-title{
 	background-color:#FFF;
 	position:absolute;
 	z-index:1;
-	overflow-y:scroll;
+	overflow-y:auto;
 	overflow-x:hidden;
 }
 #exploreSchoolListContainer{
@@ -1709,7 +1709,7 @@ div.caMediaOverlayControls {
 		top:87px;
 		z-index:100;
 		width:100%;
-		overflow-y: scroll;
+		overflow-y: auto;
 	}
 }
 .detail .digExh #detailTools {
@@ -1923,7 +1923,7 @@ a.digExhAnchors.offset{
 }
 .tl-text-content{
 	max-height:240px;
-	overflow-y:scroll;
+	overflow-y:auto;
 }
 .sectionNavigationLinks .btn-default{
 	margin-bottom:10px;
