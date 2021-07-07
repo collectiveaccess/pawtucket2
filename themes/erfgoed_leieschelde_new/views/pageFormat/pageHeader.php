@@ -70,6 +70,21 @@
 	}
 ?>	
 	<?php print MetaTagManager::getHTML(); ?>
+<?php
+	if((bool)CookieOptionsManager::allow("analytics")){
+?>	
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src=https://www.googletagmanager.com/gtag/js?id=G-J6FX7VLB83></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+ 
+	  gtag('config', 'G-J6FX7VLB83');
+	</script>
+<?php
+	}
+?>
     <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -111,6 +126,7 @@
 		# -------------------------------------------
 	}
 ?>
+</head>
 <body class='<?php print $vs_body_class; ?>'>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
 	<nav class="navbar navbar-default yamm" role="navigation">

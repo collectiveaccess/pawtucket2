@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf_html.tpl
+ * default/views/mailTemplates/instructions_html.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2009-2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,16 +25,18 @@
  *
  * ----------------------------------------------------------------------
  */
-if($this->request->config->get("dont_approve_logins_on_registration")){
-	$vs_active_message = _t("<p>Your account will be activated after review.</p>");
-}
 
-print "<p>Bedankt om u te registreren op de Erfgoedbank Waasland. ".$vs_active_message."</p>
+print _t("<p>Om jouw paswoord te wijzigen, kopieer en plak de volgende URL in de webbrowser</p>");
 
-<p>Als lid van de Erfgoedbank Waasland kan u reageren op foto's, audio- en filmfragmenten. U kan ook een eigen album samenstellen met zelf gekozen (audio)visueel materiaal.</p>
-";
+print "<p>".$this->getVar("password_reset_url")."</p>";
 
-	print "<p>met vriendelijke groet, 
-			<br/>Het Erfgoedcel-team
-			<br/>waaserfgoed.be</p>";
+print _t("<p>Je wordt gevraagd een nieuw wachtwoord aan te maken. Als je nog steeds problemen ondervindt, of wanneer je geen mail hebt ontvangen, gelieve %1 te contacteren.</p>
+
+<p>Met vriendelijke groet,<br/>
+
+Erfgoedcel Meetjesland - COMEET</p>
+", $this->request->config->get("ca_admin_email"));
+
+
+	print $this->request->config->get("site_host");
 ?>

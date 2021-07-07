@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf_html.tpl
+ * default/views/mailTemplates/contact_html.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -25,16 +25,13 @@
  *
  * ----------------------------------------------------------------------
  */
-if($this->request->config->get("dont_approve_logins_on_registration")){
-	$vs_active_message = _t("<p>Your account will be activated after review.</p>");
+
+print "<p>U kreeg een e-mail via waaserfgoed.be</p>"; 
+$va_fields = $this->getVar("contact_form_elements");
+foreach($va_fields as $vs_element => $va_options){
+	if($this->request->getParameter($vs_element, pString)){
+		print "<p><b>".$va_options["label"].":</b> ".$this->request->getParameter($vs_element, pString)."</p>";
+	}
 }
 
-print "<p>Bedankt om u te registreren op de Erfgoedbank Waasland. ".$vs_active_message."</p>
-
-<p>Als lid van de Erfgoedbank Waasland kan u reageren op foto's, audio- en filmfragmenten. U kan ook een eigen album samenstellen met zelf gekozen (audio)visueel materiaal.</p>
-";
-
-	print "<p>met vriendelijke groet, 
-			<br/>Het Erfgoedcel-team
-			<br/>waaserfgoed.be</p>";
 ?>
