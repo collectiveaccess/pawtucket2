@@ -30,7 +30,11 @@
 	$va_comments = 			$this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
-
+	$va_access_values = caGetUserAccessValues($this->request);
+	$vs_representation_viewer = trim($this->getVar("representationViewer"));
+	
+	#$t_representation = new ca_object_representations($t_object->get("ca_object_representations.representation_id"));
+	#print_r($t_representation->getMediaInfo("media"));
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -43,15 +47,28 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
-				{{{representationViewer}}}
-				
-				
-				<div id="detailAnnotations"></div>
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
+				if($vs_representation_viewer){
+					print $vs_representation_viewer;
+?>			
+					<div id="detailAnnotations"></div>
+<?php
+					print $this->getVar('representationViewerThumbnailBar');
+				}else{
+					# --- media placeholder
+					if($t_object->get("instantiationMediaType")){
+						$t_list_item = new ca_list_items();
+						$t_list_item->load($t_object->get("instantiationMediaType"));
+						$vs_typecode = $t_list_item->get("idno");
+						$vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_large_media_icon");
+						$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+					}
+					if(!$vs_type_placeholder){
+						$vs_type_placeholder = "<i class='fa fa-picture-o fa-5x'></i>";
+					}
+					print "<div class='detailImgPlaceholder'>".$vs_type_placeholder."</div>";				
+				}
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
 						
@@ -70,34 +87,115 @@
 ?>
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>
-				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><!-- <ifcount min="1" code="ca_collections"> ➔ </ifcount> -->}}}
+			<div class='col-sm-6 col-md-6 col-lg-6'>
+				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 				<HR>
-				<H2>{{{ca_objects.preferred_labels.name}}}</H6>
-				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				{{{<ifdef code="ca_objects.measurementSet.measurements">^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)</ifdef><ifdef code="ca_objects.measurementSet.measurements,ca_objects.measurementSet.measurements"> x </ifdef><ifdef code="ca_objects.measurementSet.measurements2">^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)</ifdef>}}}
 				
 				
-				{{{<ifdef code="ca_objects.idno"><H6>Identifer:</H6>^ca_objects.idno<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.containerID"><H6>Box/series:</H6>^ca_objects.containerID<br/></ifdef>}}}				
+				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifer:</label>^ca_objects.idno</div></ifdef>}}}
+				{{{<ifcount code="ca_collections" min="1"><div class="unit"><unit relativeTo="ca_collections" delimiter="<br/>"><label>Collection Name:</label><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 				
-				{{{<ifdef code="ca_objects.instantiationMediaType"><H6>Media Type:</H6>^ca_objects.instantiationMediaType<br/></ifdef>}}}
-                                {{{<ifdef code="ca_objects.instantiationPhysical"><H6>Format:</H6>^ca_objects.instantiationPhysical<br/></ifdef>}}}
-                                {{{<ifdef code="ca_objects.instantiationDate.instantiationDateText"><H6>Date:</H6>^ca_objects.instantiationDate.instantiationDateType: ^ca_objects.instantiationDate.instantiationDateText<br/></ifdef>}}}
-                                {{{<ifdef code="ca_objects.instantiationTimeStart"><H6>Time Start:</H6>^ca_objects.instantiationTimeStart<br/></ifdef>}}}
-                                {{{<ifdef code="ca_objects.instantiationDuration"><H6>Duration:</H6>^ca_objects.instantiationDuration<br/></ifdef>}}}
-                                {{{<ifdef code="ca_objects.instantiationColors"><H6>Colors:</H6>^ca_objects.instantiationColors<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.instantiationAnnotation"><H6>Annotation</H6> ^ca_objects.instantiationAnnotation<br/></ifdef>}}}
-				{{{<h6>Object Citation <i>(Beta)</i>: </H6><unit relativeTo="ca_occurrences">^ca_occurrences.preferred_labels.</unit> <ifdef code="ca_objects.instantiationDateText">^ca_objects.instantiationDateText.</ifdef> ^ca_collections.preferred_labels<ifdef code="ca_collections.collectionDate">, ^ca_collections.collectionDate</ifdef>. Walter J. Brown Media Archives and Peabody Awards Collection, The University of Georgia Libraries.}}} 
+				{{{<ifdef code="ca_objects.containerID"><label>Box/series:</label>^ca_objects.containerID%delimiter=,_</div></ifdef>}}}				
+				
+				{{{<ifdef code="ca_objects.instantiationMediaType"><div class="unit"><label>Media Type:</label>^ca_objects.instantiationMediaType</div></ifdef>}}}
+                {{{<ifdef code="ca_objects.instantiationPhysical"><div class="unit"><label>Physical Format:</label>^ca_objects.instantiationPhysical</div></ifdef>}}}
+                {{{<ifdef code="ca_objects.instantiationDate.instantiationDateText"><div class="unit"><label>Date:</label><unit relativeTo="ca_objects.instantiationDate.instantiationDateText" delimiter="; "><ifdef code="ca_objects.instantiationDate.instantiationDateType">^ca_objects.instantiationDate.instantiationDateType: </ifdef>^ca_objects.instantiationDate.instantiationDateText</unit></div></ifdef>}}}
+                                {{{<ifdef code="ca_objects.instantiationTimeStart"><div class="unit"><label>Time Start:</label>^ca_objects.instantiationTimeStart%delimiter=,_</div></ifdef>}}}
+                                {{{<ifdef code="ca_objects.instantiationColors"><div class="unit"><label>Colors:</label>^ca_objects.instantiationColors%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.instantiationAnnotation"><div class="unit"><label>Annotation</label> ^ca_objects.instantiationAnnotation%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.description">
-					<span class="trimText">^ca_objects.description</span>
+					<div class="unit"><span class="trimText">^ca_objects.description</span></div>
 				</ifdef>}}}
 				
 				
-				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
+				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><div class="unit"><label>Date:</label>^ca_objects.dateSet.setDisplayValue%delimiter=,_</div></ifdev>}}}
 <?php
-				if ($va_works = $t_object->getWithTemplate('<unit relativeTo="ca_occurrences"><l>^ca_occurrences.preferred_labels</l><br/><br/><unit relativeTo="ca_occurrences.pbcoreAssetDate" delimiter="<br/>">^ca_occurrences.pbcoreAssetDate.pbcoreAssetDateText (^ca_occurrences.pbcoreAssetDate.pbcoreWorkDateType)</unit><br/><br/>^ca_occurrences.pbcoreDescription</unit>')){
-					print "<h6>Related Work</h6>".$va_works;
+				$va_work_ids = $t_object->get("ca_occurrences.occurrence_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+				if(is_array($va_work_ids) && sizeof($va_work_ids)){
+					print "<div class='unit'><H2>Content</H2>";
+					foreach($va_work_ids as $vn_work_id){
+						$t_work = new ca_occurrences($vn_work_id);
+						print "<div class='unit'>";
+						print "<b>".$t_work->get("ca_occurrences.preferred_labels")."</b>";
+						if($vs_tmp = trim($t_work->get("ca_occurrences.pbcoreDescription.pbcoreDescriptionText"))){
+							print "<br/>".$vs_tmp;
+						}
+						$va_names = array();
+						$va_tmp = $t_work->get("ca_occurrences.locname", array("returnAsArray" => true));
+						if(is_array($va_tmp)){
+							foreach($va_tmp as $vs_tmp){
+								$vs_processed = $vs_tmp;
+								if($vs_tmp && (strpos($vs_tmp, " [") !== false)){
+									$vs_processed = mb_substr($vs_tmp, 0, strpos($vs_tmp, " ["));
+								}
+								$va_names[$vs_processed] = caNavLink($this->request, $vs_processed, "", "", "Search", "objects", array("search" => $vs_processed));						
+							}
+						}
+						$va_tmp = $t_work->get("ca_entities.preferred_labels.displayname", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+						if(is_array($va_tmp)){
+							foreach($va_tmp as $vs_tmp){
+								$va_names[$vs_tmp] = caNavLink($this->request, $vs_tmp, "", "", "Search", "objects", array("search" => $vs_tmp));
+							}
+						}
+						if(is_array($va_names) && sizeof($va_names)){
+							ksort($va_names);
+							print "<div class='unit'><label>Names</label><span class='trimText'>".join(", ", $va_names)."</span></div>";
+						}
+						$va_tmp = $t_work->get("ca_occurrences.pbcoreSpatialCoverage", array("returnAsArray" => true));
+						$va_places = array();
+						if(is_array($va_tmp)){
+							foreach($va_tmp as $vs_tmp){
+								$vs_processed = $vs_tmp;
+								if($vs_tmp && (strpos($vs_tmp, " [") !== false)){
+									$vs_processed = mb_substr($vs_tmp, 0, strpos($vs_tmp, " ["));
+								}
+								$va_places[$vs_processed] = caNavLink($this->request, $vs_processed, "", "", "Search", "objects", array("search" => $vs_processed));						
+
+						
+						
+						
+								print "<div class='unit'><label>Locations</label><span class='trimText'>".join(", ", $va_places)."</span></div>";
+							}
+						}						
+						$va_subjects = array();
+						$va_tmp = $t_work->get("ca_occurrences.pbcoreSubjectContainer.pbcoreSubjectNEW", array("returnAsArray" => true));
+						if(is_array($va_tmp)){
+							foreach($va_tmp as $vs_tmp){
+								$vs_processed = $vs_tmp;
+								if($vs_tmp && (strpos($vs_tmp, " [") !== false)){
+									$vs_processed = mb_substr($vs_tmp, 0, strpos($vs_tmp, " ["));
+								}
+								$va_subjects[$vs_processed] = caNavLink($this->request, $vs_processed, "", "", "Search", "objects", array("search" => $vs_processed));
+							}
+						}
+						$va_tmp = $t_work->get("ca_occurrences.pbcoreSubject", array("returnAsArray" => true));
+						if(is_array($va_tmp)){
+							foreach($va_tmp as $vs_tmp){
+								if($vs_tmp){
+									$va_subjects[$vs_tmp] = caNavLink($this->request, $vs_tmp, "", "", "Search", "objects", array("search" => $vs_tmp));
+								}
+							}
+						}
+						if(is_array($va_subjects) && sizeof($va_subjects)){
+							ksort($va_subjects);
+							print "<div class='unit'><label>Topics</label><span class='trimText'>".join(", ", $va_subjects)."</span></div>";
+						}
+									
+						
+#Names [section header]: LC Name Authorities, Non-LOCNA Names, [both of these listed together in alphabetical order with no distinction between the types]
+#locname
+#ca_entities
+
+#Locations [section header]: Work Spatial Coverage
+#pbcoreSpatialCoverage
+
+#Topics
+#Library of Congress Subject Headings, Subject Headings
+#pbcoreSubjectContainer.pbcoreSubjectNEW, pbcoreSubject
+						print "</div>";
+					}
+					print "</div>";
 				}
 ?>				
 				
@@ -105,15 +203,17 @@
 				
 				<button id="aeon_submit">Request Item</button>
 				
-				<form id="aeon_request" name="EADRequest" action="https://uga.aeon.atlas-sys.com/aeon/aeon.dll" method="post">
+				<form id="aeon_request" name="EADRequest" action="https://uga.aeon.atlas-sys.com/logon/" method="post">
   <input type="hidden" name="AeonForm"     value="EADRequest"/>
   <input type="hidden" name="RequestType"  value="Loan"/>
-  <input type="hidden" name="Location"     value="Media Brown"/>
+  <input type="hidden" name="Location"     value="Brown Media Archives"/>
   <input type="hidden" name="DocumentType" value="media"/>
-  <input type="hidden" name="Site"         value="Media Archives"/>
-<input type="checkbox" name="Request" value="1" checked style="display:none"/><input type="hidden" name="ItemTitle_1" value="{{{ca_objects.preferred_labels.name}}}"/><input type="hidden" name="CallNumber_1" value="{{{ca_objects.idno}}}"/><input type="hidden" name="ItemSubtitle_1" value="{{{ca_collections.preferred_labels.name}}}"/></form>
-				<script src="/pawtucket2/assets/aeon/aeonRequestsDialog.min.js"></script>
-				<script src="/pawtucket2/assets/jqote2/jquery.jqote2.min.js"></script>
+  <input type="hidden" name="Site"         value="Brown Media Archives"/>
+<input type="checkbox" name="Request" value="1" checked style="display:none"/><input type="hidden" name="ItemTitle_1" value="{{{ca_objects.preferred_labels.name}}}"/><input type="hidden" name="ItemSubtitle_1" value="{{{ca_objects.idno}}}"/><input type="hidden" name="ReferenceNumber_1" value="{{{ca_collections.preferred_labels.name}}}"/><input type="hidden" name="ItemNumber_1" value="{{{ca_objects.locationContainer.instantiationLocation}}}"/>
+{{{<ifdef code="ca_objects.instantiationPhysical"><input type="hidden" name ="ItemInfo2_1" value="^ca_objects.instantiationPhysical"/></ifdef>}}}<input type="hidden" name="SubLocation_1" value="https://bmac.libs.uga.edu/index.php/editor/objects/ObjectEditor/Summary/object_id/{{{ca_objects.object_id}}}"/>
+</form>
+				<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/aeon/aeonRequestsDialog.min.js"></script>
+				<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/jqote2/jquery.jqote2.min.js"></script>
 				<style>
 					.ui-dialog { z-index: 10000 !important ;}
 					.requestDesc .label, .scheduled_date .label {
@@ -125,7 +225,7 @@
 				 <script>
   var settings = {
               title:'Confirm your viewing request',
-              url: 'https://uga.aeon.atlas-sys.com/aeon/aeon.dll',
+              url: 'https://uga.aeon.atlas-sys.com/logon/',
               submitButtonSelector:'#aeon_submit',
               itemFields: [
                 {
@@ -133,13 +233,25 @@
                   label: 'Object title'
                 },
                 {
-                  name: 'CallNumber',
-                  label: 'Identifier'
+                  name: 'ReferenceNumber',
+                  label: 'Collection'
                 },
 								{
 									name: 'ItemSubtitle',
-									label: 'Collection'
-								}
+									label: 'Identifier'
+								},
+               {
+                 name: 'ItemNumber',
+                 label: 'Barcode'
+               },
+	       {
+                 name: 'SubLocation'
+	       }
+{{{<ifdef code="ca_objects.instantiationPhysical">
+               ,{
+                 name: 'ItemInfo2',
+                 label: 'Physical format' 
+               } </ifdef>}}}
               ],
               globalFields: [
                 { name: 'Location' },
@@ -160,28 +272,18 @@
 				 </script>
 
 				
-				<hr></hr>
 					<div class="row">
-						<div class="col-sm-6">		
-							{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+						<div class="col-sm-12">		
+							{{{<ifcount code="ca_entities" min="1"><div class="unit"><ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount><ifcount code="ca_entities" min="2"><label>Related people</label></ifcount><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 							
 							
-							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
+							{{{<ifcount code="ca_places" min="1" max="1"><div class="unit"><label>Related place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit></div></ifcount>}}}
 							
-							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
-							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit>}}}
+							{{{<ifcount code="ca_list_items" min="1" max="1"><div class="unit"><label>Related Term<ifcount code="ca_list_items" min="2">s</ifcount></label><unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit></div></ifcount>}}}
 							
-							{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
-							{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
-						</div><!-- end col -->				
-						<div class="col-sm-6 colBorderLeft">
 							
-						</div>
+							{{{<ifcount code="ca_objects.LcshNames" min="1"><div class="unit"><label>LC Terms</label><unit delimiter="<br/>">^ca_objects.LcshNames</unit></div></ifcount>}}}
+						</div><!-- end col -->
 					</div><!-- end row -->
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->

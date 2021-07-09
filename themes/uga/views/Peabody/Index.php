@@ -3,7 +3,7 @@
 ?>
 <H1><?php print _t("PEABODY AWARDS COLLECTION"); ?></H1>
 <div class="row">
-	<div class="col-sm-8">
+	<div class="col-lg-8 col-md-7">
 	<p>1940-present</p>
 	<p>The Peabody Awards Collection consists of over 90,000 titles, with radio programs dating from 1940 and television from 1948. The collection consists of almost all the entries to the awards program since its beginning in 1941. It contains American, local, and more currently, international, electronic media programs, with content from news, documentary, entertainment, educational, children's, and public service programming. There are radio transcription discs, audiotape, audiocassettes, 16mm kinescopes and prints, 2" videoreels, videocassettes, websites, and objects associated with the collection. Many of the programs in the collection may be only surviving copies of the work, especially in the case of local radio and television broadcasting. These are all original archival materials. Reference, or "user" copies, are available for much of the collection for use in the University of Georgia Libraries Media Department or at the <a href="http://libs.uga.edu/scl" target="_blank">Special Collections Library</a>. <br>
 	  <br>
@@ -13,15 +13,15 @@
 	<H3>FINDING AIDS</H3>
 	<p>
 			<ul>
-			<li><a href="http://gilfind.uga.edu/vufind/Record/3761721">GIL Catalog Record</a></li>
+			<li><a href="https://galileo-usg-uga-primo.hosted.exlibrisgroup.com/permalink/f/v7b6bh/01GALI_USG_ALMA71127462620002931">GIL Catalog Record</a></li>
 			</ul>
 	</p>
 
 	<H3>RESEARCHING THE COLLECTION</H3>
 	<p>There is a separate database that indexes this collection. Please see the search form on the right.</p>	
 	<div id="aeon">
-		<div id="aeoncaption"><a href="https://uga.aeon.atlas-sys.com/aeon/">Special Collections <br />Research Account</a></div>
-		<a href="https://uga.aeon.atlas-sys.com/aeon/">
+		<div id="aeoncaption"><a href="https://uga.aeon.atlas-sys.com/logon/">Special Collections <br />Research Account</a></div>
+		<a href="https://uga.aeon.atlas-sys.com/logon/">
 		<img src="../../themes/uga/assets/pawtucket/graphics/aeonra3.jpg" /></a>
 		<p>All patrons are asked to register with the Special Collections Libraries, helping us provide better and faster service.
 		To register and create a research account, click on the link to the right:</p>
@@ -42,7 +42,7 @@
 		</ul> 
 	</p>
 	</div>
-	<div class="col-sm-3">
+	<div class="col-lg-4 col-md-5">
 		<h1>Search Peabody Collection</h1>
 		<div>
 			<form method="post" action="http://dbs.galib.uga.edu/cgi-bin/parc.cgi">
@@ -51,6 +51,8 @@
 						<input type="hidden" name="action" value="query"> 
 						<input class="form-control query width100" name="term_a" placeholder="Enter Keywords" type="text">
 						<div style="height:10px"></div>
+						<div class="search-in">
+							<h5>Search In: </h5>
 						<select name="index_a">
 						 <option value="kw" selected>Keyword Anywhere</option>
 						
@@ -86,12 +88,13 @@
 						<option value="uc">User Copy Available</option>
 						<option value="ar">Collection Has Archival Master</option>
 						</select>
+						</div>
 						<div style="height:10px"></div>
 						
 						<button class="btn btn-primary space-above" id="searchButton" name="rows" type="submit" value="20">Search</button>
 			</form>
 			<div style="height:10px"></div>
-			<p>See: <a href="http://www.libs.uga.edu/media/collections/peabody/pbdatabase/index.html"><strong>More Search Options</strong></a>
+			<p>See: <a href="http://dbs.galib.uga.edu/cgi-bin/ultimate.cgi?dbs=parc&userid=galileo&action=search&_cc=1"><strong>More Search Options in Peabody Database</strong></a>
 			</p>
 		</div>		
 	</div>
