@@ -54,7 +54,7 @@
 					{{{<ifdef code="ca_entities.biography.biography_text"><div class='unit'><label>Biography</label>^ca_entities.biography.biography_text%convertLineBreaks=1<ifdef code="ca_entities.biography.biography_source"><br/><br/>^ca_entities.biography.biography_source</ifdef></div></ifdef>}}}
 					
 					{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifcount code="ca_entities.related" min="1"><div class="unit"><label>Related <ifcount code="ca_entities.related" min="1">Person/Organization</ifcount><ifcount code="ca_entities.related" min="2">People & Organizations</ifcount></label><unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.related.preferred_labels.displayname</l></unit></div></ifcount>}}}
+					{{{<ifcount code="ca_entities.related" min="1"><div class="unit"><label>Related <ifcount code="ca_entities.related" min="1">Person/Organization</ifcount><ifcount code="ca_entities.related" min="2">People & Organizations</ifcount></label><unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Related Collection<ifcount code="ca_collections" min="2">s</ifcount></label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					
 				</div><!-- end col -->

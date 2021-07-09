@@ -36,6 +36,7 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 
 	MetaTagManager::addMetaProperty("og:title", $t_object->get("ca_objects.preferred_labels.name"));
+
 	if($vs_tmp = $t_object->getWithTemplate("^ca_objects.content_description")){
 		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
 	}

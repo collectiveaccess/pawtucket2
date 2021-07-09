@@ -47,6 +47,8 @@
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
+			if($x){
+				# --- hide the sort and full results links for collection results
 ?>
 			<small class="pull-right">
 <?php
@@ -60,6 +62,7 @@
 				{{{sortDirectionControl}}}
 			</small>
 <?php
+			}
 			if(in_array($vs_block, $va_browse_types)){
 ?>
 				<?php print '<H3>'.caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H3>'; ?>
@@ -84,7 +87,8 @@
 		$qr_results->seek($vn_start);
 		
 		$va_images = caGetDisplayImagesForAuthorityItems('ca_collections', $va_collection_ids, array('version' => 'widepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
-			
+		$va_images_from_rel_objects = caGetDisplayImagesForAuthorityItems('ca_collections', $va_collection_ids, array('version' => 'widepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
+				
 		$vn_count = 0;
 		while($qr_results->nextHit()) {
 ?>
@@ -98,7 +102,12 @@
 				} 
 			}
 			if(!$vs_image_tag){
-				$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_placeholder_tag}</l>");
+				if($va_images_from_rel_objects[$qr_results->get('ca_collections.collection_id')]){
+					$vs_thumbnail = $va_images_from_rel_objects[$qr_results->get('ca_collections.collection_id')];
+				}else{
+					$vs_thumbnail = $vs_placeholder_tag;
+				}
+				$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_thumbnail}</l>");
 			}
 			print $vs_image_tag;
 ?>

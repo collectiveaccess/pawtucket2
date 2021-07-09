@@ -34,7 +34,6 @@
  	$va_type_info = $this->getVar('typeInfo');
  	$va_listing_info = $this->getVar('listingInfo');
  	$va_access_values = $this->getVar("access_values");
- 	AssetLoadManager::register("soundcite");
 ?>
 
 	<div class="row tanBg exploreRow exploreRow exploreEduResRow">
