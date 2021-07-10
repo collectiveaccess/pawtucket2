@@ -53,7 +53,7 @@
 					
 					{{{<ifcount code="ca_entities.related" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 					{{{<ifcount code="ca_entities.related" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.related.preferred_labels.displayname</l></unit> (^relationship_typename)</unit>}}}
+					{{{<unit relativeTo="ca_entities_x_entities" delimiter="<br/>"><l>^ca_entities.related.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
 					
 					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
