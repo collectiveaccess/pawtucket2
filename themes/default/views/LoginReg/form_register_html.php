@@ -85,7 +85,7 @@
 			print $t_user->htmlFormElement($vs_field,"<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'><label for='".$vs_field."' class='col-sm-4 control-label'>^LABEL</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
 		}
 		$va_profile_settings = $this->getVar("profile_settings");
-		if(is_array($va_profile_settings) and sizeof($va_profile_settings)){
+		if(is_array($va_profile_settings) && sizeof($va_profile_settings)){
 			foreach($va_profile_settings as $vs_field => $va_profile_element){
 				if($va_errors[$vs_field]){
 					print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
