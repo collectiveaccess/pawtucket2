@@ -29,6 +29,7 @@ Version 1.7.12 is a maintenance release with these bug fixes and minor improveme
 * Improve path handling of TilePic (zooming image) server for certain system configurations
 * Update configuration, replacing no-longer-available Wikimedia map tile server with OpenStreetMap server
 * Fix for issue preventing display of authority element values in some cases
+* Fix confusing navigation when creating a new lightbox while viewing details of an existing one
 * Update selected vendor libraries
 
 Note that this version supports 7.3 and 7.4. It is not yet compatible with PHP 8.
