@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -351,43 +351,39 @@
 			}
 			$co_security = $this->request->config->get('registration_security');
 			if($co_security == 'captcha'){
-         			if(strlen($this->request->config->get('google_recaptcha_sitekey')) != 40 || strlen($this->request->config->get('google_recaptcha_secretkey')) != 40){
-					//Then the captcha will not work and should not be implemenented.
-                    			$co_security = 'equation_sum';
-                		}
-        		}
+				if(strlen($this->request->config->get('google_recaptcha_sitekey')) != 40 || strlen($this->request->config->get('google_recaptcha_secretkey')) != 40){
+					// Then the captcha will not work and should not be implemenented.
+					$co_security = 'equation_sum';
+				}
+			}
 			if($co_security == 'captcha'){
 				if(!$ps_captcha){
-						$va_errors["recaptcha"] = _t("Please complete the captcha");
+					$va_errors["recaptcha"] = _t("Please complete the captcha");
 				} else {
-						$va_request = curl_init();
-						curl_setopt($va_request, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
-						curl_setopt($va_request, CURLOPT_HEADER, 0);
-						curl_setopt($va_request, CURLOPT_RETURNTRANSFER, 1);
-						curl_setopt($va_request, CURLOPT_POST, 1);
-						$va_request_params = ['secret'=>$this->request->config->get('google_recaptcha_secretkey'), 'response'=>$ps_captcha];
-						curl_setopt($va_request, CURLOPT_POSTFIELDS, $va_request_params);
-						$va_captcha_resp = curl_exec($va_request);
-						$captcha_json = json_decode($va_captcha_resp, true);
-						if(!$captcha_json['success']){
-								$va_errors["recaptcha"] = _t("Your Captcha was rejected, please try again");
-						}
-				}
-			} else {
-				if ((!$ps_security)) {
-					$va_errors["security"] = _t("Please answer the security question.");
-				}else{
-					if($ps_security != $_REQUEST["sum"]){
-						$va_errors["security"] = _t("Your answer was incorrect, please try again");
+					$va_request = curl_init();
+					curl_setopt($va_request, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
+					curl_setopt($va_request, CURLOPT_HEADER, 0);
+					curl_setopt($va_request, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($va_request, CURLOPT_POST, 1);
+					$va_request_params = ['secret'=>$this->request->config->get('google_recaptcha_secretkey'), 'response'=>$ps_captcha];
+					curl_setopt($va_request, CURLOPT_POSTFIELDS, $va_request_params);
+					$va_captcha_resp = curl_exec($va_request);
+					$captcha_json = json_decode($va_captcha_resp, true);
+					if(!$captcha_json['success']){
+							$va_errors["recaptcha"] = _t("Your Captcha was rejected, please try again");
 					}
 				}
+			} elseif (!$ps_security) {
+				$va_errors["security"] = _t("Please answer the security question.");
+			} elseif($ps_security != $_REQUEST["sum"]){
+				$va_errors["security"] = _t("Your answer was incorrect, please try again");
 			}
 			// Check user profile responses
 			$va_profile_prefs = $t_user->getValidPreferences('profile');
 			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
 				foreach($va_profile_prefs as $vs_pref) {
 					$vs_pref_value = $this->request->getParameter('pref_'.$vs_pref, pString);
-					if (!$t_user->isValidPreferenceValue($vs_pref, $vs_pref_value)) {
+					if (!$t_user->isValidPreferenceValue($vs_pref, $vs_pref_value) && ($t_user->numErrors() > 0)) {
 						$va_errors[$vs_pref] = join("; ", $t_user->getErrors());
 
 						$t_user->clearErrors();
@@ -452,7 +448,7 @@
 					# -------------
 				}
 			}
-			$t_user->set("registered_on","now");
+			$t_user->set("registered_on",_t("now"));
 
 			// Save user profile responses
 			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
