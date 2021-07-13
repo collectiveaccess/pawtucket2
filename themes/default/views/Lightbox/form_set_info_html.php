@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -73,16 +73,19 @@
 					jQuery("#lbSetName" + data.set_id).html(data.name);
 					jQuery("#lbSetDescription" + data.set_id).html(data.description);
 					jQuery("#caMediaPanel").data('panel').hidePanel();
-					
 					if(data.is_insert) { 
-						// add new set to list
-						var h = "<div class='col-xs-6 col-sm-6 col-md-6 lbSetListItemCol'>" + data.block + "</div>";
-						var l = jQuery('.lbSetListItemRow').last().find('.lbSetListItemCol').length;
+						if(jQuery('.lbSetListItemRow').length > 0) {
+							// add new set to list
+							var h = "<div class='col-xs-6 col-sm-6 col-md-6 lbSetListItemCol'>" + data.block + "</div>";
+							var l = jQuery('.lbSetListItemRow').last().find('.lbSetListItemCol').length;
 				
-						if (l >= 2) {	// add row
-							jQuery('.lbSetListItemRow').last().parent().append('<div class="row lbSetListItemRow">' + h + "</div>");
+							if (l >= 2) {	// add row
+								jQuery('.lbSetListItemRow').last().parent().append('<div class="row lbSetListItemRow">' + h + "</div>");
+							} else {
+								jQuery('.lbSetListItemRow').last().append(h);
+							}
 						} else {
-							jQuery('.lbSetListItemRow').last().append(h);
+							window.location = <?= json_encode(caNavUrl($this->request, '*', '*', 'Index')); ?>;
 						}
 					}
 				}
