@@ -23,7 +23,7 @@ class ComposerAutoloaderInitd0a456687b3dab21148a043296334846
         }
 
         spl_autoload_register(array('ComposerAutoloaderInitd0a456687b3dab21148a043296334846', 'loadClassLoader'), true, true);
-        self::$loader = $loader = new \Composer\Autoload\ClassLoader();
+        self::$loader = $loader = new \Composer\Autoload\ClassLoader(\dirname(\dirname(__FILE__)));
         spl_autoload_unregister(array('ComposerAutoloaderInitd0a456687b3dab21148a043296334846', 'loadClassLoader'));
 
         $includePaths = require __DIR__ . '/include_paths.php';
