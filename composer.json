@@ -1,5 +1,5 @@
 {
-  "require-dev": {
+  "require": {
     "phpunit/phpunit": "5.7",
     "maximebf/debugbar": ">=1.0.0",
     "elasticsearch/elasticsearch": "~5.0",
