@@ -57,7 +57,7 @@
 		<div class="col-sm-4 col-sm-offset-1">
 			<?php print caNavLink($this->request, "<div class='hpFindBox'>"._t("Find<br/>Institutions")."</div>", "", "", "browse", "institutions"); ?>
 		</div>
-		<div class="col-sm-4 col-sm-offset-1">
+		<div class="col-sm-4 col-sm-offset-2">
 			<?php print caNavLink($this->request, "<div class='hpFindBox'>"._t("Find<br/>Objects")."</div>", "", "", "browse", "amutatObjects"); ?>
 		</div>		
 	</div>

@@ -47,7 +47,13 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1 text-center'>
-					<H1>{{{^ca_objects.preferred_labels.name}}}{{{<ifdef code="ca_objects.alutiiq_title"> - ^ca_objects.alutiiq_title</ifdef>}}}</H1>
+					<H1>{{{^ca_objects.preferred_labels.name}}}{{{<ifdef code="ca_objects.alutiiq_title"> - ^ca_objects.alutiiq_title</ifdef>}}}{{{<ifdef code="ca_objects.pronunciation_audio_clip"> <i id="playPronunciation" class="fa fa-volume-up" aria-hidden="true"></i></ifdef>}}}</H1>
+					
+					
+	
+    				
+					
+					
 					{{{<ifcount code="ca_collections" min="1"><H2><unit relativeTo="ca_collections" delimiter="<br/>"><ifcount code="ca_entities" min="1"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels.displayname</l> > </unit></ifcount>^ca_collections.preferred_labels.name</unit></H2></ifcount>}}}
 					<HR>
 				
@@ -148,4 +154,16 @@
 		  maxHeight: 120
 		});
 	});
+{{{<ifdef code="ca_objects.pronunciation_audio_clip">	
+	$(document).ready(function() {
+    var audioElement = document.createElement('audio');
+    audioElement.setAttribute('src', '^ca_objects.pronunciation_audio_clip.original.url');
+    
+    
+    
+    $('#playPronunciation').click(function() {
+        return audioElement.paused ? audioElement.play() : audioElement.pause();
+    });
+</ifdef>}}}
+});
 </script>

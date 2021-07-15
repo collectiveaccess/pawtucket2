@@ -51,6 +51,7 @@ h1, .front h1{
 	line-height: 30px;
 	font-weight: 700;
 	text-transform: uppercase;
+	padding-top:0px;
 }
 .front .content-area, .browse.institutions .content-area, .browse.ca_objects, .search.ca_objects, .content-area .subNav {
 	max-width: 1000px;
@@ -65,6 +66,9 @@ h1, .front h1{
 }
 #pageArea{
 	padding-bottom:75px;
+}
+.subNav{
+	padding-top:12px;
 }
 .subNavJumpTo{
 	margin-bottom:20px;
@@ -238,4 +242,19 @@ a:hover .hpFindBox{
 }
 #bRefine.fixed {
     padding-top: 150px;
+}
+.navLeftRight{
+	margin-top:20px;
+}
+@media(min-width:1125px){
+	.navLeftRight{
+		margin-top:-55px;
+		padding-bottom:60px;
+	}
+}
+#playPronunciation{
+	color: #000;
+	cursor: pointer;
+	font-size: 18px;
+	margin-left: 5px;
 }
