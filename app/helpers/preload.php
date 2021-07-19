@@ -108,3 +108,39 @@ if(file_exists($vs_theme_helpers_dir)){
 
 PHPExcel_Shared_Font::setTrueTypeFontPath(__CA_APP_DIR__.'/fonts/');
 PHPExcel_Shared_Font::setAutoSizeMethod(PHPExcel_Shared_Font::AUTOSIZE_METHOD_EXACT);
+
+spl_autoload_register(function ($class) {
+    // Anything prefixed with "ca_" is a model
+    if (substr($class, 0, 3) === 'ca_') {
+        if(require(__CA_MODELS_DIR__."/{$class}.php")) { return true; }
+    }
+    
+    // strip namespaces if present
+    if(strpos($class, '\\') !== false) {
+    	$class = array_pop(explode('\\', $class));
+    }
+    
+    // search common locations for class
+    $paths = [__CA_LIB_DIR__, __CA_LIB_DIR__.'/Utils', __CA_LIB_DIR__.'/Parsers', __CA_LIB_DIR__.'/Media', __CA_LIB_DIR__.'/Exceptions', __CA_LIB_DIR__.'/Search', __CA_LIB_DIR__.'/Browse'];
+    foreach($paths as $path) {
+        if(file_exists("{$path}/{$class}.php")) {
+            if(require("{$path}/{$class}.php")) { return true; }   
+        }
+    }
+    
+    //
+    return false;
+  });
+
+/** 
+ * Global list of temporary file paths to delete at request end
+ */
+$file_cleanup_list = [];
+register_shutdown_function(function() {
+	global $file_cleanup_list;
+	if(is_array($file_cleanup_list)) {
+		foreach($file_cleanup_list as $f) {
+			@unlink($f);
+		}
+	}
+  });
