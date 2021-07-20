@@ -29,6 +29,11 @@
  *
  * ----------------------------------------------------------------------
  */
+ 
+ 	# --- navigation --- idno => Title
+	$va_paratext_intro_sections = $this->request->config->get("paratext_intro_sections");
+	$va_paratext_exhibition_sections = $this->request->config->get("paratext_exhibition_sections");
+	
 ?>
 <div class="home_width">
 
@@ -131,26 +136,27 @@
                 <div class="agradecimientos"><a href="about.php#agradecimientos">Agradecimientos</a></div>
             </div>
             <ul class="home_menu">
-                <li class="menu_item">
-                    <div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
-                        <a href="">Foreword</a>
-                    <div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
-                </li>
-                <li class="menu_item">
-                    <div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
-                        <a href="preface.php">Preface</a>
-                    <div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
-                </li>
-                <li class="menu_item">
-                    <div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
-                        <a href="">Introduction</a>
-                    <div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
-                </li>
-                <li class="menu_item">
-                    <div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
-                        <a href="creative-captions.php">Exhibition</a>
-                    <div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
-                </li>
+<?php
+				foreach($va_paratext_intro_sections as $vs_idno => $vs_section_title){
+?>
+					<li class="menu_item">
+                    	<div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
+                       	<?php print caNavLink($this->request, $vs_section_title, '', '', 'Section', $vs_idno); ?>
+                   		<div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
+                	</li>
+<?php
+				}
+				foreach($va_paratext_exhibition_sections as $vs_idno => $vs_section_title){
+?>
+					<li class="menu_item">
+                    	<div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
+                       	<?php print caNavLink($this->request, "Exhibition", '', '', 'Section', $vs_idno); ?>
+                   		<div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
+                	</li>
+<?php
+					break;
+				}
+?>
                 <li class="menu_item">
                     <div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
                         <?php print caNavLink($this->request, _t("Printers' addresses"), "", "", "Printers", "Index"); ?>

@@ -7,7 +7,7 @@
 	$vn_illustration_id = $this->request->getParameter("illustration", pInteger);
 ?>
 <div class="page_title">
-    <h1>Creative Captions</h1>
+    <h1><?php print $vs_title; ?>s</h1>
     <ul class="exhibition-sub-menu">
 <?php
 	$va_paratext_exhibition_sections = $this->request->config->get("paratext_exhibition_sections");

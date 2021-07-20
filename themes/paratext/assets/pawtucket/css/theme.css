@@ -1094,6 +1094,8 @@ ul.home_menu li a:hover {
   line-height: 1.5em;
   margin-top: 20px;
   opacity: 0.7;
+  padding-left: 45px; /* Whirl added */
+  padding-right: 45px; /* Whirl added */
 }
 .text_content .columns .column.image_gallery .slider .swiper-slide .caption a{
 	color:#000;
@@ -1142,7 +1144,7 @@ ul.home_menu li a:hover {
   width: 100%;
 }
 .text_content .columns .column.image_gallery .thumbnails .thumbnail {
-  width: calc(33.333% - 5px);
+  width: calc(33.333% - 10px);
   height: 0px;
   padding-top: calc(33.333% - 5px);
   background-color: grey;
