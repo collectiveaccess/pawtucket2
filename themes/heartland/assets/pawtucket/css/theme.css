@@ -260,6 +260,22 @@ a.readmore-js-toggle::after {
 	font-size:13px;
 	margin-top: 4px;
 }
+ul#detailRepresentationThumbnails img{
+	display:none;
+}
+ul#detailRepresentationThumbnails{
+	font-size:10px;
+}
+ul#detailRepresentationThumbnails{
+	padding-left:15px;
+}
+ul#detailRepresentationThumbnails li a{
+	font-size:16px;
+	color:#1a2e51;
+}
+ul#detailRepresentationThumbnails li a.active{
+	text-decoration:underline;
+}
 /* browse */
 #bRefine{
     z-index:5;
@@ -328,7 +344,18 @@ a.readmore-js-toggle::after {
 .caption {
     font-size: 13px;
 }
-
+.gallery .leaflet-popup-content-wrapper{
+	font-family: brandon-grotesque;
+	font-size:14px;
+}
+.gallery .leaflet-popup-content-wrapper a{
+	font-family: granville;
+	font-size:14px;
+	color: #1a2e51;
+}
+.gallery {
+    font-size: 16px;
+}
 /* front */
 .frontHero img{
 	width:100%;

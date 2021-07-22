@@ -81,7 +81,11 @@
 					var h = $('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height();
 					if (h > 0) $('.jcarousel').height(h);
 				}
-			}
+				if (jQuery('#detailAnnotations').length) {
+					jQuery('#detailAnnotations').html('<?php print addslashes(caBusyIndicatorIcon($this->request)." Loading..."); ?>');
+					jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + current_rep_id);
+				}
+			}else{
 <?php
 	if ($vs_show_annotations_mode == 'div') {
 ?>
@@ -90,6 +94,7 @@
 <?php
 	}
 ?>
+			}
 		}).jcarousel({
 			animation: {
 				duration: 0 // make changing image immediate

@@ -140,7 +140,9 @@
             <div class="header-nav-folder-item">
               <a href="https://chesapeakeheartland.org/staffandpartners" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Staff &amp; Partners</a>
             </div>
-          
+          	<div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Internships &amp; Fellowships</a>
+            </div>
             <div class="header-nav-folder-item">
               <a href="https://chesapeakeheartland.org/blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Blog</a>
             </div>
@@ -188,18 +190,20 @@
     </div>
   
     <div class="header-nav-item header-nav-item--folder">
-      <a class="header-nav-folder-title preFade" href="#" onClick="return false;" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0421053s;">Internships &amp; Fellowships</a>
-      <div class="header-nav-folder-content">        
+      <a class="header-nav-folder-title preFade" href="https://chesapeakeheartland.org/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0454545s;">Projects</a>
+      <div class="header-nav-folder-content">
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0526316s;">About Internships &amp; Fellowships</a>
+              <a href="https://chesapeakeheartland.org/exhibit-main" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">Jason Patterson Exhibit</a>
+            </div>
+          	<div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">Ebony &amp; Ivory Towers</a>
             </div>
       </div>
     </div>
     
     <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/exhibit-main" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.147368s;">
-        
-        Jason Patterson Exhibit
+      <a href="https://chesapeakeheartland.org/commodore-collection" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.147368s;">
+         The Commodore Collection
       </a>
     </div>
   
@@ -347,11 +351,12 @@
           	<div class="header-nav-folder-item">
               <a href="https://chesapeakeheartland.org/staffandpartners" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.231579s;">Staff &amp; Partners</a>
             </div>
-          
+          	<div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Internships &amp; Fellowships</a>
+            </div>
             <div class="header-nav-folder-item">
               <a href="https://chesapeakeheartland.org/blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Blog</a>
             </div>
-          
             <div class="header-nav-folder-item">
               <a href="https://chesapeakeheartland.org/events" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Events</a>
             </div>
@@ -400,18 +405,21 @@
       </a>
     </div>
 
-    <div class="header-nav-item header-nav-item--folder">
-      <a class="header-nav-folder-title preFade" href="#" onClick="return false;" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0421053s;">Internships &amp; Fellowships</a>
-      <div class="header-nav-folder-content">        
+     <div class="header-nav-item header-nav-item--folder">
+      <a class="header-nav-folder-title preFade" href="https://chesapeakeheartland.org/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0454545s;">Projects</a>
+      <div class="header-nav-folder-content">
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0526316s;">About Internships &amp; Fellowships</a>
+              <a href="https://chesapeakeheartland.org/exhibit-main" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">Jason Patterson Exhibit</a>
+            </div>
+          	<div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">Ebony &amp; Ivory Towers</a>
             </div>
       </div>
     </div>
   
     <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/exhibit-main" data-animation-role="header-element" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.315789s;">
-        Jason Patterson Exhibit
+      <a href="https://chesapeakeheartland.org/commodore-collection" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.147368s;">
+         The Commodore Collection
       </a>
     </div>
   
@@ -553,21 +561,19 @@
   </div>
   
   <div class="container header-menu-nav-item">
-    <a data-folder-id="/internships-fellowships" href="/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.368421s;">
+    <a data-folder-id="/projects" href="/projects">
       <div class="header-menu-nav-item-content">
         <span class="visually-hidden">Folder:</span>
-        <span>Internships &amp; Fellowships</span>
+        <span>Projects</span>
         <span class="chevron chevron--right"></span>
       </div>
     </a>
   </div>
-
   <div class="container header-menu-nav-item header-menu-nav-item--collection">
-    <a href="https://chesapeakeheartland.org/exhibit-main" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.389474s;">
-      
-      Jason Patterson Exhibit
-    </a>
-  </div>
+	  <a href="https://chesapeakeheartland.org/commodore-collection" class="preFade" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.147368s;">
+		 The Commodore Collection
+	  </a>
+	</div>
 
 
 </div>
@@ -611,7 +617,10 @@
         Staff &amp; Partners
       </a>
     </div>
-    
+    <div class="container header-menu-nav-item">
+	  <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;" tabindex="-1">Internships &amp; Fellowships</a>
+	</div>
+            
     <div class="container header-menu-nav-item">
       <a href="https://chesapeakeheartland.org/blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.463158s;" tabindex="-1">
         
@@ -652,20 +661,32 @@
   </div>
   
 
-  <div data-folder="/internships-fellowships" class="header-menu-nav-folder">
+<div data-folder="/projects" class="header-menu-nav-folder">
     <div class="header-menu-nav-folder-content">
     <div class="header-menu-controls container header-menu-nav-item">
-      <a class="header-menu-controls-control header-menu-controls-control--active preFade " data-action="back" href="/" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.473684s;" tabindex="-1">
+      <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
         <span class="chevron chevron--left"></span><span>Back</span>
       </a>
     </div>
     
-    <div class="container header-menu-nav-item header-menu-nav-item--external">
-      <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.484211s;" tabindex="-1">About Internships &amp; Fellowships</a>
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/exhibit-main" tabindex="-1">
+        
+        Jason Patterson Exhibit
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers" tabindex="-1">
+        
+        Ebony &amp; Ivory Towers
+      </a>
     </div>
     
     </div>
-  </div></nav>
+  </div>
+  
+  </nav>
     </div>
   </div>
 </header>

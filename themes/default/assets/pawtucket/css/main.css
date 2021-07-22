@@ -2832,6 +2832,14 @@ a.browseRemoveFacet .glyphicon {
 	padding-bottom:10px; 
 	margin-bottom:15px;
 }	
+.gallery .leaflet-popup-content-wrapper{
+	min-width:250px;
+	min-height: 102px;
+}
+.gallery .leaflet-popup-content-wrapper a{
+	color:#000;
+	font-weight:bold;
+}
  /* Universal viewer */
 .detail .repViewerCont .uv{
 	min-height:500px;
