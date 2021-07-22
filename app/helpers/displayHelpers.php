@@ -4286,7 +4286,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 					$vs_viewer = "<div class='repViewerContCont'><div id='cont{$pn_representation_id}' class='repViewerCont'>{$vs_viewer}{$vs_tool_bar}{$vs_caption}</div></div>";
 				}
 
-				if (($ps_display_annotations) && (is_array($va_annotation_list = caGetMediaAnnotationList($t_instance, $pa_options)))) {
+				if ((strtolower($ps_display_annotations) === 'viewer') && (is_array($va_annotation_list = caGetMediaAnnotationList($t_instance, $pa_options)))) {
 					$vs_viewer .= join("<br/>\n", $va_annotation_list);
 				}
 				return $vs_viewer;
