@@ -20,7 +20,7 @@
 			$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
 			if($q_objects->numHits()){
 				while($q_objects->nextHit()){
-					$va_images[$q_objects->get("ca_entity_labels.surname", array("restrictToRelationshipTypes" => array("creator", "creator_website")))." ".$q_objects->get("ca_objects.preferred_labels.name")." ".$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.large"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
+					$va_images[$q_objects->get("ca_entity_labels.surname", array("restrictToRelationshipTypes" => array("creator", "creator_website")))." ".$q_objects->get("ca_objects.preferred_labels.name")." ".$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.page"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
 				}
 			}
 		}
@@ -31,7 +31,7 @@
 	if(in_array($ps_view, array("installations", "installationThumbnails"))){
 		if(is_object($o_representations) && $o_representations->numHits()){
 			while($o_representations->nextHit()){
-				$va_images[] = array("image" => $o_representations->get("ca_object_representations.media.large", array("alt" => "Installation View of ".$t_item->get("ca_occurrences.preferred_labels.name"))), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
+				$va_images[] = array("image" => $o_representations->get("ca_object_representations.media.page", array("alt" => "Installation View of ".$t_item->get("ca_occurrences.preferred_labels.name"))), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
 			}
 		}
 	}
@@ -111,7 +111,7 @@
 				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("used_website"), "excludeTypes" => array("installation_shot", "catalog"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
 				foreach($va_objects as $va_object){
 					$t_object = new ca_objects($va_object["object_id"]);
-					print $t_object->get("ca_object_representations.media.large");
+					print $t_object->get("ca_object_representations.media.page");
 ?>
 					<div class="caption"><?php print sefaFormatCaption($this->request, $t_object); ?></div>
 <?php
