@@ -1259,6 +1259,10 @@ h3.popover-title{
 .gallery .galleryPrevious, .gallery .galleryNext{
 	margin-bottom:45px;
 }
+.gallery #gallerySetInfo .gallerySetInfoDesc a{
+	text-decoration:underline;
+	text-transform:none;
+}
 .schoolBottom{
 	margin-bottom:100px;
 }
