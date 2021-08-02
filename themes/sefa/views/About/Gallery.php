@@ -32,7 +32,10 @@
 				<H1>Accessibility Statement</H1>
 				{{{accessibility_text}}}
 				<div class="row" style="margin-top:50px;">
-					<div class="col-xs-3"></div>
+					<div class="col-xs-2"></div>
+					<div class="col-xs-2 fullWidthImg" style="padding-top:30px;">
+						<a href="https://www.hudsongallerycrawl.com" target="_blank"><?php print caGetThemeGraphic($this->request, '2econdSaturday.png', array('alt' => '2econd Saturday Hudson Gallery Crawl')); ?></a>
+					</div>
 					<div class="col-xs-2 fullWidthImg" style="padding-top:30px;">
 						<a href="https://www.arttable.org/" target="_blank"><?php print caGetThemeGraphic($this->request, 'arttable-logo.png', array('alt' => 'Art Table')); ?></a>
 					</div>
