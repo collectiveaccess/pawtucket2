@@ -116,7 +116,7 @@
 			<div class='col-sm-6 col-md-6 col-lg-5'>				
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.material"><div class="unit"><label>Material</label>^ca_objects.material</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.dimensions"><div class="unit"><label>Dimensions</label>
+				{{{<ifdef code="ca_objects.dimensions.measurement_type|ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth|ca_objects.dimensions.dimensions_length|ca_objects.dimensions.dimensions_weight|ca_objects.dimensions.dimensions_diameter|ca_objects.dimensions.dimensions_circumference|ca_objects.dimensions.dimensions_thickness|ca_objects.dimensions.measurement_notes"><div class="unit"><label>Dimensions</label>
 					<unit relativeTo="ca_objects.dimensions" delimiter="<br/><br/>">
 						<ifdef code="ca_objects.dimensions.measurement_type"><b>^ca_objects.dimensions.measurement_type: </b></ifdef>
 						<ifdef code="ca_objects.dimensions.dimensions_height">Height: ^ca_objects.dimensions.dimensions_height </ifdef>
