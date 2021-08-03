@@ -72,7 +72,7 @@
 ?>
 			</div><!-- end row -->
 			
-{{{<unit relativeTo="ca_collections"><ifcount code="ca_objects" min="1">
+{{{<unit relativeTo="ca_collections" length="1"><ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class="col-sm-12">
 					<HR/><H2>Object<ifcount code="ca_objects" min="2">s</ifcount></H2>
