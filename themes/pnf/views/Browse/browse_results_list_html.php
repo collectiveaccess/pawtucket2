@@ -92,7 +92,6 @@
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_uniform = null;
 				if (($vs_table === 'ca_objects') && (strToLower($this->request->getAction()) == "objects")) {
-					print "here";
 					if ($vs_uniform = $qr_res->get('ca_objects.CCSSUSA_Uniform')) {
 						$vs_label_detail_link 	= caDetailLink($this->request, $vs_uniform, '', $vs_table, $vn_id);
 					} else {
