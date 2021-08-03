@@ -14,7 +14,14 @@
 </div>
 
 <div class="text_content">
-
+<?php
+	if($vs_intro = $this->getVar("paratext_printers_intro")){
+		print "<p>".$vs_intro."</p>";
+?>
+		<p style="clear:both"></p>
+<?php
+	}
+?>
     <table id="sortable_table">
 
         <thead>

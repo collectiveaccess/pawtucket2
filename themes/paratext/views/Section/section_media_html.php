@@ -2,12 +2,13 @@
 	$t_section = $this->getVar("section");
 	$vs_title = $this->getVar("section_title");
 	$vs_text = $this->getVar("section_text");
+	$vs_current_section = $this->getVar("current_section");
 	$r_illustrations = $this->getVar("illustrations_as_search_result");
 	
 	$vn_illustration_id = $this->request->getParameter("illustration", pInteger);
 ?>
 <div class="page_title">
-    <h1><?php print $vs_title; ?>s</h1>
+    <h1><?php print $vs_title; ?></h1>
     <ul class="exhibition-sub-menu">
 <?php
 	$va_paratext_exhibition_sections = $this->request->config->get("paratext_exhibition_sections");
@@ -30,7 +31,11 @@
         </div>
 
         <div class="column right image_gallery">
-
+        	<div class="image_nav">
+<?php
+			print caNavLink($this->request, 'View Grid', '', '', 'Section', $vs_current_section, array("view" => "grid"));
+?>
+            </div>
             <div class="sidebar__inner">
 
                 <div class="slider">
