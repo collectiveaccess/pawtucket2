@@ -32,7 +32,7 @@ var intervalId = window.setInterval(function(){
     //console.log(len + ' - ' + random);
     $(".map_pin:not(.visible)").eq(random).addClass("visible");
 
-}, 2000);
+}, 1500);
 
 
 

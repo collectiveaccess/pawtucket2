@@ -164,9 +164,10 @@ header ul li ul.sub_menu li {
   display: block;
   text-align: left;
   padding: 6px 0;
+  max-width:165px;
 }
 header ul li ul.sub_menu li a {
-  white-space: nowrap;
+ /* white-space: nowrap; */
 }
 header ul li ul.sub_menu li:before {
   display: none;
@@ -1079,6 +1080,48 @@ ul.home_menu li a:hover {
   margin-left: 60px;
   margin-top: 20px;
 }
+/* added for grid view */
+.image_nav{
+	text-align:center;
+	width:100%;
+}
+.image_nav a{
+  font-family: 'constantia', serif;
+  color: #804639;
+  text-decoration: none;
+  font-size: 16px;
+}
+.image_nav a:hover{
+	text-decoration:underline;
+}
+.grid_content{  
+  background-color: rgba(255, 255, 255, 0.25);
+  padding: 60px 60px;
+  width: 870px;
+  margin: 50px auto 0 auto;
+}
+.grid_content .columns .grid_column {
+  margin-left:0px;
+  width: calc(33.333% - 20px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 10px;
+}
+.grid_content .columns .grid_column img{
+  width:100%;
+  height: auto;
+  border:0px;
+}
+.grid_content .columns .grid_column .caption{
+	padding-top:20px;
+	font-family: 'Constantia', sans-serif;
+	font-size: 15px;
+	font-style: italic;
+	line-height: 1.5em;
+	margin-top: 5px;
+	opacity: 0.7;
+}
 .text_content .columns .column.image_gallery .slider {
   margin: 45px 0 20px 0;
 }
@@ -1395,6 +1438,19 @@ footer .szilvia a {
 footer .szilvia a:hover {
   text-decoration: underline;
 }
+footer .acknowledgments {
+  font-family: 'constantia', serif;
+  font-size: 15px;
+  letter-spacing: 0.07em;
+  margin-bottom: 10px;
+}
+footer .acknowledgments a {
+  color: #804639;
+  text-decoration: none;
+}
+footer .acknowledgments a:hover {
+  text-decoration: underline;
+}
 footer .ornament {
   margin: 29px 0 19px 0;
 }
@@ -1404,6 +1460,7 @@ footer .ornament img {
 footer .year {
   text-transform: initial;
   font-size: 23px;
+  margin-bottom: 21px;
 }
 @media only screen and (max-width: 700px) {
   footer {
