@@ -40,7 +40,9 @@
 						print "<br/><br/>";
 					}
 					foreach($va_youTube_ids as $vs_youTube_id){
-						print '<iframe width="100%" height="400" src="https://www.youtube.com/embed/'.$vs_youTube_id.'" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br/><br/>';
+						if(trim($vs_youTube_id)){
+							print '<iframe width="100%" height="400" src="https://www.youtube.com/embed/'.$vs_youTube_id.'" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe><br/><br/>';
+						}
 					}
 				}
 ?>					
