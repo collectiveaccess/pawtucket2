@@ -79,7 +79,7 @@
 ?>
 			</div><div class="col-md-6 fullWidthImg">
 <?php
-				print "<a href='".caGetThemeGraphicUrl($this->request, 'Anatomy_State_3.jpg')."' target='_blank'>".caGetThemeGraphic($this->request, 'Anatomy_State_3.jpg')."</a>";
+				print "<a href='".caGetThemeGraphicUrl($this->request, 'Anatomy_State_3.jpg')."' target='_blank'>".caGetThemeGraphic($this->request, 'Anatomy_State_3.jpg')."</a><div style='text-align:center'>CLICK TO ENLARGE</div>";
 ?>
 			</div></div>
 			</div>
