@@ -29,8 +29,9 @@
  *
  * ----------------------------------------------------------------------
  */
+	$va_access_values = $this->getVar('access_values');
 	$t_set = $this->getVar('set');
-	$va_items = caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('small', 'medium'))));
+	$va_items = caExtractValuesByUserLocale($t_set->getItems(array('thumbnailVersions' => array('small', 'medium'), 'checkAccess' => $va_access_values)));
 	$vs_lightbox_displayname = $this->getVar("display_name");
 	$vs_lightbox_displayname = $this->getVar("display_name_plural");
 ?>

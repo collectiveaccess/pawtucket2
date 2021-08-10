@@ -455,6 +455,11 @@
 					return caMimetypeIsValid($v['mimetype'], array_values($show_only_media_types_when_present_reduced));
 				});	
 			}
+			if(!array_search($pn_representation_id, array_column($va_reps, 'representation_id'))){
+				$tmp = $va_reps;
+				$va_first_rep = array_shift($tmp);
+				$pn_representation_id = $va_first_rep['representation_id'];
+			}
 		}
 		
 		if(sizeof($va_reps) < 2){

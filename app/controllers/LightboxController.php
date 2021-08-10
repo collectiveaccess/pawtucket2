@@ -928,6 +928,7 @@
                 throw new ApplicationException(_t("Item does not exist"));
             }
  			
+ 			$this->view->setVar("access_values", $this->opa_access_values);
  			$this->view->setVar("set", $t_set);
  			$this->view->setVar("tablename", $ps_tablename);
  			$this->view->setVar("item_id", $pn_item_id);
