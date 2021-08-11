@@ -1,36 +1,39 @@
 <?php
-/** ---------------------------------------------------------------------
- * app/lib/Search/Common/Parsers/LuceneSyntaxLexer.php
- * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
+/**
+ * Zend Framework
  *
- * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2021 Whirl-i-Gig
+ * LICENSE
  *
- * For more information visit http://www.CollectiveAccess.org
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://framework.zend.com/license/new-bsd
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@zend.com so we can send you a copy immediately.
  *
- * This program is free software; you may redistribute it and/or modify it under
- * the terms of the provided license as published by Whirl-i-Gig
- *
- * CollectiveAccess is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * This source code is free and modifiable under the terms of
- * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
- * the "license.txt" file for details, or visit the CollectiveAccess web site at
- * http://www.CollectiveAccess.org
- *
- * @package CollectiveAccess
+ * @category   Zend
+ * @package    Zend_Search_Lucene
  * @subpackage Search
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
- *
- * ----------------------------------------------------------------------
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id$
  */
 
-class LuceneSyntaxLexer extends Zend_Search_Lucene_FSM
+/** Zend_Search_Lucene_FSM */
+#require_once 'Zend/Search/Lucene/FSM.php';
+
+/** Zend_Search_Lucene_Search_QueryParser */
+#require_once 'Zend/Search/Lucene/Search/QueryToken.php';
+
+/**
+ * @category   Zend
+ * @package    Zend_Search_Lucene
+ * @subpackage Search
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ */
+class Zend_Search_Lucene_Search_QueryLexer extends Zend_Search_Lucene_FSM
 {
     /** State Machine states */
     const ST_WHITE_SPACE     = 0;
@@ -354,6 +357,7 @@ class LuceneSyntaxLexer extends Zend_Search_Lucene_FSM
         $this->process(self::IN_WHITE_SPACE);
 
         if ($this->getState() != self::ST_WHITE_SPACE) {
+            #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
             throw new Zend_Search_Lucene_Search_QueryParserException('Unexpected end of query');
         }
 
@@ -387,6 +391,7 @@ class LuceneSyntaxLexer extends Zend_Search_Lucene_FSM
             // check,
             if ($this->_queryStringPosition == count($this->_queryString)  ||
                 $this->_queryString[$this->_queryStringPosition] != $lexeme) {
+                    #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
                     throw new Zend_Search_Lucene_Search_QueryParserException('Two chars lexeme expected. ' . $this->_positionMsg());
                 }
 
@@ -403,6 +408,7 @@ class LuceneSyntaxLexer extends Zend_Search_Lucene_FSM
         if ($token->type == Zend_Search_Lucene_Search_QueryToken::TT_FIELD_INDICATOR) {
             $token = array_pop($this->_lexemes);
             if ($token === null  ||  $token->type != Zend_Search_Lucene_Search_QueryToken::TT_WORD) {
+                #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
                 throw new Zend_Search_Lucene_Search_QueryParserException('Field mark \':\' must follow field name. ' . $this->_positionMsg());
             }
 
@@ -487,14 +493,17 @@ class LuceneSyntaxLexer extends Zend_Search_Lucene_FSM
      *********************************************************************/
     public function lexModifierErrException()
     {
+        #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
         throw new Zend_Search_Lucene_Search_QueryParserException('Lexeme modifier character can be followed only by number, white space or query syntax element. ' . $this->_positionMsg());
     }
     public function quoteWithinLexemeErrException()
     {
+        #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
         throw new Zend_Search_Lucene_Search_QueryParserException('Quote within lexeme must be escaped by \'\\\' char. ' . $this->_positionMsg());
     }
     public function wrongNumberErrException()
     {
+        #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
         throw new Zend_Search_Lucene_Search_QueryParserException('Wrong number syntax.' . $this->_positionMsg());
     }
 }

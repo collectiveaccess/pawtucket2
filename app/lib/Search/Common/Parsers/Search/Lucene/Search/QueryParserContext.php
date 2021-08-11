@@ -1,36 +1,38 @@
 <?php
-/** ---------------------------------------------------------------------
- * app/lib/Search/Common/Parsers/LuceneSyntaxParserContext.php
- * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
+/**
+ * Zend Framework
  *
- * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2021 Whirl-i-Gig
+ * LICENSE
  *
- * For more information visit http://www.CollectiveAccess.org
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://framework.zend.com/license/new-bsd
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@zend.com so we can send you a copy immediately.
  *
- * This program is free software; you may redistribute it and/or modify it under
- * the terms of the provided license as published by Whirl-i-Gig
- *
- * CollectiveAccess is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
- * This source code is free and modifiable under the terms of
- * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
- * the "license.txt" file for details, or visit the CollectiveAccess web site at
- * http://www.CollectiveAccess.org
- *
- * @package CollectiveAccess
+ * @category   Zend
+ * @package    Zend_Search_Lucene
  * @subpackage Search
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
- *
- * ----------------------------------------------------------------------
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id$
  */
 
-class LuceneSyntaxParserContext {
+/** Zend_Search_Lucene_Search_QueryToken */
+#require_once 'Zend/Search/Lucene/Search/QueryToken.php';
+
+
+/**
+ * @category   Zend
+ * @package    Zend_Search_Lucene
+ * @subpackage Search
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ */
+class Zend_Search_Lucene_Search_QueryParserContext
+{
     /**
      * Default field for the context.
      *
@@ -94,9 +96,6 @@ class LuceneSyntaxParserContext {
      * @var string
      */
     private $_encoding;
-    
-    
-	private $opn_default_operator = LuceneSyntaxParser::B_AND;
 
 
     /**
@@ -142,6 +141,7 @@ class LuceneSyntaxParserContext {
     public function setNextEntrySign($sign)
     {
         if ($this->_mode === self::GM_BOOLEAN) {
+            #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
             throw new Zend_Search_Lucene_Search_QueryParserException('It\'s not allowed to mix boolean and signs styles in the same subquery.');
         }
 
@@ -152,6 +152,7 @@ class LuceneSyntaxParserContext {
         } else if ($sign == Zend_Search_Lucene_Search_QueryToken::TT_PROHIBITED) {
             $this->_nextEntrySign = false;
         } else {
+            #require_once 'Zend/Search/Lucene/Exception.php';
             throw new Zend_Search_Lucene_Exception('Unrecognized sign type.');
         }
     }
@@ -184,6 +185,7 @@ class LuceneSyntaxParserContext {
     {
         // Check, that modifier has came just after word or phrase
         if ($this->_nextEntryField !== null  ||  $this->_nextEntrySign !== null) {
+            #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
             throw new Zend_Search_Lucene_Search_QueryParserException('\'~\' modifier must follow word or phrase.');
         }
 
@@ -191,6 +193,7 @@ class LuceneSyntaxParserContext {
 
         if (!$lastEntry instanceof Zend_Search_Lucene_Search_QueryEntry) {
             // there are no entries or last entry is boolean operator
+            #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
             throw new Zend_Search_Lucene_Search_QueryParserException('\'~\' modifier must follow word or phrase.');
         }
 
@@ -208,6 +211,7 @@ class LuceneSyntaxParserContext {
     {
         // Check, that modifier has came just after word or phrase
         if ($this->_nextEntryField !== null  ||  $this->_nextEntrySign !== null) {
+            #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
             throw new Zend_Search_Lucene_Search_QueryParserException('\'^\' modifier must follow word, phrase or subquery.');
         }
 
@@ -215,6 +219,7 @@ class LuceneSyntaxParserContext {
 
         if (!$lastEntry instanceof Zend_Search_Lucene_Search_QueryEntry) {
             // there are no entries or last entry is boolean operator
+            #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
             throw new Zend_Search_Lucene_Search_QueryParserException('\'^\' modifier must follow word, phrase or subquery.');
         }
 
@@ -231,6 +236,7 @@ class LuceneSyntaxParserContext {
     public function addLogicalOperator($operator)
     {
         if ($this->_mode === self::GM_SIGNS) {
+            #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
             throw new Zend_Search_Lucene_Search_QueryParserException('It\'s not allowed to mix boolean and signs styles in the same subquery.');
         }
 
@@ -248,10 +254,11 @@ class LuceneSyntaxParserContext {
      */
     public function _signStyleExpressionQuery()
     {
+        #require_once 'Zend/Search/Lucene/Search/Query/Boolean.php';
         $query = new Zend_Search_Lucene_Search_Query_Boolean();
 
-       // if (Zend_Search_Lucene_Search_QueryParser::getDefaultOperator() == Zend_Search_Lucene_Search_QueryParser::B_AND) {
-        if ($this->getDefaultOperator() == LuceneSyntaxParser::B_AND) {
+        #require_once 'Zend/Search/Lucene/Search/QueryParser.php';
+        if (Zend_Search_Lucene_Search_QueryParser::getDefaultOperator() == Zend_Search_Lucene_Search_QueryParser::B_AND) {
             $defaultSign = true; // required
         } else {
             // Zend_Search_Lucene_Search_QueryParser::B_OR
@@ -286,8 +293,10 @@ class LuceneSyntaxParserContext {
          * one or more query entries
          */
 
+        #require_once 'Zend/Search/Lucene/Search/BooleanExpressionRecognizer.php';
         $expressionRecognizer = new Zend_Search_Lucene_Search_BooleanExpressionRecognizer();
 
+        #require_once 'Zend/Search/Lucene/Exception.php';
         try {
             foreach ($this->_entries as $entry) {
                 if ($entry instanceof Zend_Search_Lucene_Search_QueryEntry) {
@@ -307,7 +316,7 @@ class LuceneSyntaxParserContext {
                             break;
 
                         default:
-                            throw new Zend_Search_Lucene_Search_QueryParserException('Boolean expression error. Unknown operator type.');
+                            throw new Zend_Search_Lucene('Boolean expression error. Unknown operator type.');
                     }
                 }
             }
@@ -317,7 +326,8 @@ class LuceneSyntaxParserContext {
             // throw new Zend_Search_Lucene_Search_QueryParserException('Boolean expression error. Error message: \'' .
             //                                                          $e->getMessage() . '\'.' );
             // It's query syntax error message and it should be user friendly. So FSM message is omitted
-            throw new Zend_Search_Lucene_Search_QueryParserException('Boolean expression error.');
+            #require_once 'Zend/Search/Lucene/Search/QueryParserException.php';
+            throw new Zend_Search_Lucene_Search_QueryParserException('Boolean expression error.', 0, $e);
         }
 
         // Remove 'only negative' conjunctions
@@ -343,6 +353,7 @@ class LuceneSyntaxParserContext {
             if (count($conjuction) == 1) {
                 $subqueries[] = $conjuction[0][0]->getQuery($this->_encoding);
             } else {
+                #require_once 'Zend/Search/Lucene/Search/Query/Boolean.php';
                 $subquery = new Zend_Search_Lucene_Search_Query_Boolean();
 
                 foreach ($conjuction as $conjuctionEntry) {
@@ -354,6 +365,7 @@ class LuceneSyntaxParserContext {
         }
 
         if (count($subqueries) == 0) {
+            #require_once 'Zend/Search/Lucene/Search/Query/Insignificant.php';
             return new Zend_Search_Lucene_Search_Query_Insignificant();
         }
 
@@ -362,10 +374,11 @@ class LuceneSyntaxParserContext {
         }
 
 
+        #require_once 'Zend/Search/Lucene/Search/Query/Boolean.php';
         $query = new Zend_Search_Lucene_Search_Query_Boolean();
 
         foreach ($subqueries as $subquery) {
-            // Non-required entry/subquery
+            // Non-requirered entry/subquery
             $query->addSubquery($subquery);
         }
 
@@ -385,22 +398,4 @@ class LuceneSyntaxParserContext {
             return $this->_signStyleExpressionQuery();
         }
     }
-    
-    /**
-	 * Set default boolean operator
-	 *
-	 * @param integer $operator
-	 */
-	public function setDefaultOperator($operator) {
-		$this->opn_default_operator = $operator;
-	}
-
-	/**
-	 * Get default boolean operator
-	 *
-	 * @return integer
-	 */
-	public function getDefaultOperator() {
-		return $this->opn_default_operator;
-	}
 }
