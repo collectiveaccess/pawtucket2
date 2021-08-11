@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/Plugins/TaskQueueHandlers/batchEditor.php :
+ * app/lib/Plugins/TaskQueueHandlers/metadataImport.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2012-2021 Whirl-i-Gig
+ * Copyright 2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -39,7 +39,7 @@ require_once(__CA_LIB_DIR__."/Plugins/WLPlug.php");
 require_once(__CA_LIB_DIR__."/Plugins/IWLPlugTaskQueueHandler.php");
 require_once(__CA_LIB_DIR__."/Logging/Eventlog.php");
 	
-class WLPlugTaskQueueHandlerbatchEditor Extends WLPlug Implements IWLPlugTaskQueueHandler {
+class WLPlugTaskQueueHandlermetadataImport Extends WLPlug Implements IWLPlugTaskQueueHandler {
 	# --------------------------------------------------------------------------------
 	public $error;
 	public $debug = 0;
@@ -53,63 +53,60 @@ class WLPlugTaskQueueHandlerbatchEditor Extends WLPlug Implements IWLPlugTaskQue
 	}
 	# --------------------------------------------------------------------------------
 	public function getHandlerName() {
-		return _t("Batch editor background processor");
+		return _t("Metadata import background processor");
 	}
 	# --------------------------------------------------------------------------------
 	public function getParametersForDisplay($rec) {
 		$parameters = caUnserializeForDatabase($rec["parameters"]);
 		
-		$params = [];
+		$o_config = Configuration::load();
+		$vs_batch_media_import_root_directory = $o_config->get('batch_media_import_root_directory');
+		$vs_relative_directory = preg_replace("!{$vs_batch_media_import_root_directory}[/]*!", "", $va_parameters["importFromDirectory"]); 
 		
-		$t_set = new ca_sets($parameters['set_id']);
-		$params['importing_from'] = array(
-			'label' => _t("Applying batch edits to set"),
-			'value' => $t_set->getLabelForDisplay()
-		);
-		$params['number_of_records'] = array(
-			'label' => _t("Records to edit"),
-			'value' => (int)$t_set->getItemCount(array('user_id' => $parameters['user_id']))
-		);
-		
-		$t_ui = new ca_editor_uis($parameters['ui_id']);
-		
-		$t_screen = new ca_editor_ui_screens();
-		if ($t_screen->load(array('ui_id' => $t_ui->getPrimaryKey(), 'screen_id' => str_ireplace("screen", "", $parameters['screen'])))) {
-			$params['ui'] = array(
-				'label' => _t("Using interface"),
-				'value' => $t_ui->getLabelForDisplay()." ➜ ".$t_screen->getLabelForDisplay()
-			);
-		}
-		
-		return $params;
+		$display_parameters = [
+			'source' => [
+				'label' => 'Importing from',
+				'value' => $parameters['sourceFile']
+			]
+		];
+		return $display_parameters;
 	}
 	# --------------------------------------------------------------------------------
 	# Task processor function - all task queue handlers must implement this
 	# 
 	# Returns 1 on success, 0 on error
 	public function process($parameters) {
-		$o_response = new ResponseHTTP();
-		$o_request = new RequestHTTP($o_response, array('simulateWith' => $x=array(
+		
+		$resp = new ResponseHTTP();
+		$req = new RequestHTTP($o_response, array('simulateWith' => array(
 				'POST' => $parameters['values'],
-				'SCRIPT_NAME' => join('/', [__CA_URL_ROOT__, 'index.php']), 'REQUEST_METHOD' => 'POST',
-				'REQUEST_URI' => join('/', [__CA_URL_ROOT__, 'index.php', 'batch', 'Editor', 'Save', $parameters['screen'], 'set_id', $parameters['set_id']]), 
-				'PATH_INFO' => '/'.join('/', ['batch', 'Editor', 'Save', $parameters['screen'], 'set_id', $parameters['set_id']]),
+				'SCRIPT_NAME' => join('/', array(__CA_URL_ROOT__, 'index.php')), 'REQUEST_METHOD' => 'POST',
+				'REQUEST_URI' => join('/', array(__CA_URL_ROOT__, 'index.php', 'batch', 'MetadataImport', 'Run')), 
+				'PATH_INFO' => '/'.join('/', array('batch', 'MetadataImport', 'Run')),
 				'REMOTE_ADDR' => $parameters['ip_address'],
-				'HTTP_USER_AGENT' => 'batchEditor',
+				'HTTP_USER_AGENT' => 'metadataImport',
 				'user_id' => $parameters['user_id']
 			)
 		));
 		
-		$o_app = AppController::getInstance($o_request, $o_response);
-	
-		$rs = RecordSelection::restore($parameters['record_selection'], ['request' => $o_request]);
-		if (!($t_subject = Datamodel::getInstance($rs->tableName()))) { return false; }
+		$o_app = AppController::getInstance($req, $rep);
 		
-		if (isset($parameters['isBatchTypeChange']) && $parameters['isBatchTypeChange']) {
-			$report = BatchProcessor::changeTypeBatch($o_request, $parameters['new_type_id'], $rs, $t_subject, ['sendMail' => (bool)$parameters['sendMail'], 'sendSMS' => (bool)$parameters['sendSMS']]);
-		} else {
-			$report = BatchProcessor::saveBatchEditorForm($o_request, $rs, $t_subject, ['sendMail' => (bool)$parameters['sendMail'], 'sendSMS' => (bool)$parameters['sendSMS']]);
-		}
+		set_time_limit(3600*72); // if it takes more than 72 hours we're in trouble
+	
+		define('__CA_DONT_QUEUE_SEARCH_INDEXING__', true);
+		$report = BatchProcessor::importMetadata(
+			$req, 
+			$parameters['sourceFile'],
+			$parameters['importer_id'],
+			$parameters['inputFormat'],
+			array_merge($parameters, ['originalFilename' => $parameters['sourceFileName'], 'progressCallback' => 
+				function($request, $file_number, $number_of_files, $file_path, $rows_complete, $total_rows, $message, $elapsed_time, $memory_used, $num_processed, $num_error) {
+				// TODO: call back to update stats
+				//print "PROCESSING ROW $file_number/$rows_complete/$message/$num_processed/$total_rows/$num_error\n";
+			}])
+		);
+		// Clean up data file
+		if(file_exists($options['sourceFile'])) { @unlink($options['sourceFile']); }
 		
 		return $report;
 	}
@@ -118,7 +115,7 @@ class WLPlugTaskQueueHandlerbatchEditor Extends WLPlug Implements IWLPlugTaskQue
 	# all task queue handlers must implement this
 	#
 	# Returns 1 on success, 0 on error
-	public function cancel($task_id, $parameters) {
+	public function cancel($pn_task_id, $parameters) {
 		return true;
 	}
 	# --------------------------------------------------------------------------------

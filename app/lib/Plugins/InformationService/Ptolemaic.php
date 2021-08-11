@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/Plugins/InformationService/EOL.php :
+ * app/lib/Plugins/InformationService/Ptolemaic.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018-2020 Whirl-i-Gig
+ * Copyright 2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -38,19 +38,10 @@
 require_once(__CA_LIB_DIR__."/Plugins/IWLPlugInformationService.php");
 require_once(__CA_LIB_DIR__."/Plugins/InformationService/BaseInformationServicePlugin.php");
 
-global $g_information_service_settings_EOL;
-$g_information_service_settings_EOL= array(
-	'keyCode' => array(
-		'formatType' => FT_TEXT,
-		'displayType' => DT_FIELD,
-		'default' => '',
-		'width' => 90, 'height' => 1,
-		'label' => _t('API Key'),
-		'description' => _t('EOLkey code. See http://www.ubio.org/index.php?pagename=xml_services for details. Default is the ubio_keycode setting in app.conf')
-	)
-);
+global $g_information_service_settings_ptolemaic;
+$g_information_service_settings_ptolemaic = [];
 
-class WLPlugInformationServiceEOL extends BaseInformationServicePlugin Implements IWLPlugInformationService {
+class WLPlugInformationServicePtolemaic extends BaseInformationServicePlugin Implements IWLPlugInformationService {
 	# ------------------------------------------------
 	static $s_settings;
 	# ------------------------------------------------
@@ -58,13 +49,13 @@ class WLPlugInformationServiceEOL extends BaseInformationServicePlugin Implement
 	 *
 	 */
 	public function __construct() {
-		global $g_information_service_settings_EOL;
+		global $g_information_service_settings_ptolemaic;
 
-		WLPlugInformationServiceEOL::$s_settings = $g_information_service_settings_EOL;
+		WLPlugInformationServicePtolemaic::$s_settings = $g_information_service_settings_ptolemaic;
 		parent::__construct();
-		$this->info['NAME'] = 'Encyclopedia of Life (EOL)';
+		$this->info['NAME'] = 'Ptolemaic Coins Online';
 		
-		$this->description = _t('Provides access to Encyclopedia of Life (EOL) service');
+		$this->description = _t('Provides access to Ptolemaic Coins Online numismatic data service (http://numismatics.org/pco/)');
 	}
 	# ------------------------------------------------
 	/** 
@@ -73,13 +64,13 @@ class WLPlugInformationServiceEOL extends BaseInformationServicePlugin Implement
 	 * @return array
 	 */
 	public function getAvailableSettings() {
-		return WLPlugInformationServiceEOL::$s_settings;
+		return WLPlugInformationServicePtolemaic::$s_settings;
 	}
 	# ------------------------------------------------
 	# Data
 	# ------------------------------------------------
 	/** 
-	 * Perform lookup on EOL-based data service
+	 * Perform lookup on PCO-based data service
 	 *
 	 * @param array $pa_settings Plugin settings values
 	 * @param string $ps_search The expression with which to query the remote data service
@@ -88,26 +79,35 @@ class WLPlugInformationServiceEOL extends BaseInformationServicePlugin Implement
 	 * @return array
 	 */
 	public function lookup($pa_settings, $ps_search, $pa_options=null) {
-		if (!($vs_eol_keycode = caGetOption('keyCode', $pa_settings, null))) {
-			$o_config = Configuration::load();
-			$vs_eol_keycode = $o_config->get('eol_keycode');
-		}
 		$ps_search = urlencode($ps_search);
 		
 		$p = 1;
 		$maxcount = caGetOption('count', $pa_options, 30);
 		$count = 0;
 		$va_items = [];
+		
+		$s = urldecode($ps_search);
+		if (isURL($s) && preg_match("!^http://numismatics.org/pco/id/([A-Za-z0-9\.\-]+)$!", $s, $m)) {
+			$ps_search = $m[1];
+		}
+		
 		while($count <= $maxcount) {
-			$vs_data = caQueryExternalWebservice("http://eol.org/api/search/1.0.json?q={$ps_search}&page={$p}".($vs_eol_keycode ? "&key={$vs_eol_keycode}" : ""));
+			$vs_data = caQueryExternalWebservice('http://numismatics.org/pco/apis/search?format=rss&q='.urlencode($ps_search));
 
-			if ($va_data = json_decode($vs_data, true)){
-				if (is_array($va_data['results']) && (sizeof($va_data['results']) > 0)) {
-					foreach($va_data['results'] as $va_entry) {
-						$va_items[(string)$va_entry['title']] = array('label' => (string)$va_entry['title'], 'idno' => (string)$va_entry['id'], 'url' => $va_entry['link']);
-						$count++;
+			if ($vs_data) {
+				$o_xml = @simplexml_load_string($vs_data);
+
+				if ($o_xml) {
+					$o_entries = $o_xml->{'channel'}->{'item'};
+					if ($o_entries && sizeof($o_entries)) {
+						foreach($o_entries as $o_entry) {
+							$o_links = $o_entry->{'link'};
+							$va_attr = $o_links[0]->attributes();
+							$vs_url = (string)$va_attr->{'href'};
+							$va_items[(string)$o_entry->{'title'}] = array('label' => (string)$o_entry->{'title'}, 'idno' => str_replace("http://numismatics.org/pco/id/", "", (string)$o_entry->{'link'}), 'url' => (string)$o_entry->{'link'});
+							$count++;
+						}
 					}
-					$p++;
 				}
 			}
 			break;
@@ -125,40 +125,46 @@ class WLPlugInformationServiceEOL extends BaseInformationServicePlugin Implement
 	 * @return array An array of data from the data server defining the item.
 	 */
 	public function getExtendedInformation($pa_settings, $ps_url) {
-		if (!($vs_eol_keycode = caGetOption('keyCode', $pa_settings, null))) {
-			$o_config = Configuration::load();
-			$vs_eol_keycode = $o_config->get('eol_keycode');
-		}
+		if (!preg_match("!http://numismatics.org/pco/id/([A-Za-z0-9\.\-_]+)!", $ps_url, $matches)) { return []; }
+		$id = $matches[1];
+		$vs_result = caQueryExternalWebservice("http://numismatics.org/pco/id/{$id}.jsonld");
 		
-		if (!preg_match("!^http[s]{0,1}://eol.org/[a-z\/]*([\d]+)!i", $ps_url, $matches)) { 
-			throw new ApplicationException(_t('Invalid EOL URL'));
-		}
-		$n = (int)$matches[1];
-		$vs_result = caQueryExternalWebservice("http://eol.org/api/pages/1.0.json?id={$n}&batch=false".($vs_eol_keycode ? "&key={$vs_eol_keycode}" : ""));
-		if(!$vs_result) { return array(); }
+		if(!$vs_result) { return []; }
+		if(!is_array($va_data = json_decode($vs_result, true))) { return []; }
 
-		$va_data = json_decode($vs_result, true);
-
-		$va_info_fields = [];
+		$va_display = ["<strong>"._t('Link')."</strong>: <a href='{$ps_url}' target='_blank'>{$ps_url}</a><br/>"];
 		
-		$vs_display = "<b>"._t('Link')."</b>: <a href='{$ps_url}' target='_blank'>{$ps_url}</a><br/>\n";
-		
-		if(isset($va_data['identifier'])) { $va_info_fields[_t('EOL Identifier')] = $va_data['identifier']; }
-		
-		$tconcepts = [];
-		if (is_array($va_data['taxonConcepts'])) {
-			foreach($va_data['taxonConcepts'] as $tconcept) {
-				$tconcepts[] = _t("%1 [%3] (source: %2)", htmlentities($tconcept['scientificName']), htmlentities($tconcept['nameAccordingTo']), htmlentities($tconcept['taxonRank']));
+		if (isset($va_data['@graph']) && is_array($va_data['@graph'])) {
+			foreach($va_data['@graph'] as $g) {
+				if(!is_array($g)) { continue; }
+				foreach($g as $k => $v) {
+					switch($k) {
+						case '@id':
+							$va_display[] = "<div><strong>ID</strong>: {$v}</div>";
+							break;
+						default:
+							$k = str_replace("@", "", $k);
+							if (strpos($k, ':') === false) { $k = caUcFirstUTF8Safe($k); }
+							if (!is_array($v)) { $v = [$v]; }
+					
+							foreach($v as $vi) {
+								if (is_array($vi)) {
+									$d = [];
+									foreach($vi as $kii => $vii) {
+										$kii = caUcFirstUTF8Safe(str_replace("@", "", $kii));
+										$d[] = "<em>{$kii}</em>: {$vii}";
+									}
+									$va_display[] = "<div style='margin-left: 10px;'><strong>{$k}</strong>: ".join("; ", $d)."</div>";
+								} else {
+									$va_display[] = "<div style='margin-left: 10px;'><strong>{$k}</strong>: {$vi}</div>";
+								}
+							}
+							break;
+					}
+				}
 			}
 		}
-		
-		foreach($va_info_fields as $vs_fld => $vs_val) {
-			$vs_display .= "<b>{$vs_fld}</b>: ".htmlentities($vs_val). "<br/>\n";
-		}
-		
-			$vs_display .= "<b>"._t('Taxonomy')."</b>: <ol>".join("\n", array_map(function($v) { return "<li>{$v}</li>"; }, $tconcepts))."</ol><br/>\n";
-
-		return array('display' => $vs_display);
+		return array('display' => join("<br/>\n", $va_display));
 	}
 	# ------------------------------------------------
 }
