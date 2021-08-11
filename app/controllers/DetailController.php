@@ -1474,6 +1474,15 @@
             $this->response->addContent(caSearchMediaData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
         }
         # -------------------------------------------------------
+		/**
+		 * Access to sidecar data (primarily used by 3d viewer)
+		 * Will only return sidecars that are images (for 3d textures), MTL files (for 3d OBJ-format files) or 
+		 * binary (for GLTF .bin buffer data)
+		 */
+		public function GetMediaSidecarData() {
+			caReturnMediaSidecarData($this->request->getParameter('sidecar_id', pInteger), $this->request->user);
+		}
+        # -------------------------------------------------------
         /**
          * Provide in-viewer search for those that support it (Eg. UniversalViewer)
          */
