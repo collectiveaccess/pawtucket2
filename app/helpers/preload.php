@@ -87,26 +87,6 @@ Datamodel::load();
 // initialize Tooltip manager
 TooltipManager::init();
 
-# --- include theme specific helpers
-$vs_theme_helpers_dir = __CA_THEME_DIR__."/helpers";
-if(file_exists($vs_theme_helpers_dir)){
-    $va_dir_content = scandir($vs_theme_helpers_dir);
-    if(is_array($va_dir_content) && sizeof($va_dir_content)){
-        foreach($va_dir_content as $vs_file){
-            if(in_array($vs_file, array(".", ".."))){
-                continue;
-            }
-            $vs_file_path = $vs_theme_helpers_dir."/".$vs_file; 
-            if(file_exists($vs_file_path) && !is_dir($vs_file_path)){
-                require_once($vs_file_path);
-            }
-        }
-    }
-}
-
-PHPExcel_Shared_Font::setTrueTypeFontPath(__CA_APP_DIR__.'/fonts/');
-PHPExcel_Shared_Font::setAutoSizeMethod(PHPExcel_Shared_Font::AUTOSIZE_METHOD_EXACT);
-
 spl_autoload_register(function ($class) {
     // Anything prefixed with "ca_" is a model
     if (substr($class, 0, 3) === 'ca_') {
@@ -126,9 +106,35 @@ spl_autoload_register(function ($class) {
         }
     }
     
+    // Zend?
+    if(preg_match("!^Zend_Search_(.*)$!", $class, $m)) {
+    	$path_to_zend_lib = __CA_LIB_DIR__."/Search/Common/Parsers/Search/".str_replace("_", "/", $m[1]).".php";
+    	if(require($path_to_zend_lib)) { return true; }  
+    }
+    
     //
     return false;
   });
+
+# --- include theme specific helpers
+$vs_theme_helpers_dir = __CA_THEME_DIR__."/helpers";
+if(file_exists($vs_theme_helpers_dir)){
+    $va_dir_content = scandir($vs_theme_helpers_dir);
+    if(is_array($va_dir_content) && sizeof($va_dir_content)){
+        foreach($va_dir_content as $vs_file){
+            if(in_array($vs_file, array(".", ".."))){
+                continue;
+            }
+            $vs_file_path = $vs_theme_helpers_dir."/".$vs_file; 
+            if(file_exists($vs_file_path) && !is_dir($vs_file_path)){
+                require_once($vs_file_path);
+            }
+        }
+    }
+}
+
+PHPExcel_Shared_Font::setTrueTypeFontPath(__CA_APP_DIR__.'/fonts/');
+PHPExcel_Shared_Font::setAutoSizeMethod(PHPExcel_Shared_Font::AUTOSIZE_METHOD_EXACT);
 
 /** 
  * Global list of temporary file paths to delete at request end
