@@ -37,9 +37,6 @@
  	require_once(__CA_LIB_DIR__.'/Configuration.php');
  	require_once(__CA_LIB_DIR__.'/View.php');
  	require_once(__CA_LIB_DIR__.'/Logging/Eventlog.php');
- 	require_once(__CA_LIB_DIR__.'/Zend/Mail.php');
- 	require_once(__CA_LIB_DIR__.'/Zend/Mail/Transport/Smtp.php');
-	require_once(__CA_LIB_DIR__.'/Zend/Mail/Transport/Sendmail.php');
  	
  	# ------------------------------------------------------------------------------------------------
  	/**
