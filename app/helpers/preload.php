@@ -33,6 +33,35 @@
   /**
    *
    */
+spl_autoload_register(function ($class) {
+    // Anything prefixed with "ca_" is a model
+    if (substr($class, 0, 3) === 'ca_') {
+        if(require(__CA_MODELS_DIR__."/{$class}.php")) { return true; }
+    }
+    
+    // strip namespaces if present
+    if(strpos($class, '\\') !== false) {
+    	$class = array_pop(explode('\\', $class));
+    }
+    
+    // search common locations for class
+    $paths = [__CA_LIB_DIR__, __CA_LIB_DIR__.'/Utils', __CA_LIB_DIR__.'/Parsers', __CA_LIB_DIR__.'/Media', __CA_LIB_DIR__.'/Exceptions', __CA_LIB_DIR__.'/Search', __CA_LIB_DIR__.'/Browse'];
+    foreach($paths as $path) {
+        if(file_exists("{$path}/{$class}.php")) {
+            if(require("{$path}/{$class}.php")) { return true; }   
+        }
+    }
+    
+    // Zend?
+    if(preg_match("!^Zend_Search_(.*)$!", $class, $m)) {
+    	$path_to_zend_lib = __CA_LIB_DIR__."/Search/Common/Parsers/Search/".str_replace("_", "/", $m[1]).".php";
+    	if(require($path_to_zend_lib)) { return true; }  
+    }
+    
+    //
+    return false;
+  });   
+
 require_once(__CA_APP_DIR__."/helpers/errorHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/systemHelpers.php");
 require_once(__CA_BASE_DIR__.'/vendor/autoload.php');	// composer
@@ -86,35 +115,6 @@ Datamodel::load();
 
 // initialize Tooltip manager
 TooltipManager::init();
-
-spl_autoload_register(function ($class) {
-    // Anything prefixed with "ca_" is a model
-    if (substr($class, 0, 3) === 'ca_') {
-        if(require(__CA_MODELS_DIR__."/{$class}.php")) { return true; }
-    }
-    
-    // strip namespaces if present
-    if(strpos($class, '\\') !== false) {
-    	$class = array_pop(explode('\\', $class));
-    }
-    
-    // search common locations for class
-    $paths = [__CA_LIB_DIR__, __CA_LIB_DIR__.'/Utils', __CA_LIB_DIR__.'/Parsers', __CA_LIB_DIR__.'/Media', __CA_LIB_DIR__.'/Exceptions', __CA_LIB_DIR__.'/Search', __CA_LIB_DIR__.'/Browse'];
-    foreach($paths as $path) {
-        if(file_exists("{$path}/{$class}.php")) {
-            if(require("{$path}/{$class}.php")) { return true; }   
-        }
-    }
-    
-    // Zend?
-    if(preg_match("!^Zend_Search_(.*)$!", $class, $m)) {
-    	$path_to_zend_lib = __CA_LIB_DIR__."/Search/Common/Parsers/Search/".str_replace("_", "/", $m[1]).".php";
-    	if(require($path_to_zend_lib)) { return true; }  
-    }
-    
-    //
-    return false;
-  });
 
 # --- include theme specific helpers
 $vs_theme_helpers_dir = __CA_THEME_DIR__."/helpers";
