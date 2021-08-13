@@ -64,7 +64,8 @@
 ?>
 <div class="row borderBottom">
 	<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
-		{{{<ifdef code="ca_objects.preferred_labels.name"><H1>^ca_objects.preferred_labels.name</H1></ifdef>}}}
+		{{{<ifdef code="ca_objects.preferred_labels.name"><H1>^ca_objects.preferred_labels.name </H1></ifdef>}}}
+		{{{<h3>^ca_objects.date%delimiter=,_</h3>}}}
 	</div>
 </div>
 <div class="row">
@@ -188,11 +189,11 @@
 				</div>
 				<div class="row">
 					<div class="col-12 col-md-6">
-						{{{<ifdef code="ca_objects.date">
+						<!--{{{<ifdef code="ca_objects.date">
 							<div class="mb-3">
 								^ca_objects.date%delimiter=,_
 							</div>
-						</ifdef>}}}
+						</ifdef>}}}-->
 						{{{<ifdef code="ca_objects.description">
 							<div class="mb-3">
 								^ca_objects.description
