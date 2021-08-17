@@ -420,7 +420,13 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						
 						if(is_array($formdata = @json_decode($args['formData'], true)) && sizeof($formdata)) {
 							// TODO: validate data
-							$s->set('metadata', $formdata);
+							
+							$form_config = self::$config->getAssoc('importerForms');
+							$code = str_replace('FORM:', '', $s->get('source'));
+							if(!isset($form_config[$code])) {
+								throw new \ServiceException(_t('Invalid source'));
+							}
+							$s->set('metadata', ['data' => $formdata, 'configuration' => $form_config[$code]]);
 							$s->set('status', 'SUBMITTED');
 							$s->set('submitted_on', _t('now'));
 							if ($s->update()) {
