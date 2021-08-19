@@ -34,7 +34,7 @@ class LightboxExportOptions extends React.Component {
 				exportOptions.push(
           <a
             className="dropdown-item"
-            href={appData.siteBaseUrl + '/getContent/getResult/1/download/1/view/' + r.type + '/export_format/' + r.code + '/key/' + this.context.state.key + '/record_ids/' + ((this.context.state.selectedItems.length > 0) ? this.context.state.selectedItems.join(';') : "")}
+            href={appData.siteBaseUrl + '/objects/getContent/getResult/1/download/1/view/' + r.type + '/export_format/' + r.code + '/key/' + this.context.state.key + '/facets/_search:ca_sets.set_id:' + this.context.state.id + '/record_ids/' + ((this.context.state.selectedItems.length > 0) ? this.context.state.selectedItems.join(';') : "")}
             key={i}>{r.name}</a>
         );
 			}

@@ -49,7 +49,7 @@
 				_t('Find') => ['controller' => 'Browse', 'action' => 'Objects'],
 				_t('Actions') => ['controller' => 'Listing', 'action' => 'Actions'],
 				_t('Chronology') => ['controller' => 'Chronology', 'action' => 'View'],
-				_t('Activity') => ['controller' => 'Activity', 'action' => 'View'],
+				//_t('Activity') => ['controller' => 'Activity', 'action' => 'View'],
 				#_t('Collections') => ['controller' => 'Gallery', 'action' => 'Index'],
 				#_t('About') => ['controller' => 'About', 'action' => 'Studio']
 			  ])); ?>

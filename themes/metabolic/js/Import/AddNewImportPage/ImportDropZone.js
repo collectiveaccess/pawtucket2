@@ -52,7 +52,8 @@ const ImportDropZone = (props) => {
     while(queue.length > 0 && sessionKey !== null){
       // setUploadStatus('in_progress');
       queue.forEach((file) => {
-        file == queue.shift();
+        file = queue.shift();
+        console.log("processing file", file, queue);
 
         tempFilesSelected.push(file);
         setFilesSelected([...tempFilesSelected]);
@@ -64,7 +65,7 @@ const ImportDropZone = (props) => {
         var upload = new tus.Upload(file, {
           endpoint: tusEndpoint,
           retryDelays: [0, 1000, 3000, 5000],
-          chunkSize: 1024 * 512,      // TODO: make configurable
+          chunkSize: 52428800,      // TODO: make configurable
           metadata: {
             filename: file.name,
             filetype: file.type,

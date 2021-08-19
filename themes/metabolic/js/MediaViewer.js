@@ -188,6 +188,7 @@ class MediaViewer extends React.Component{
 export default function _init() {
 	ReactDOM.render(
 		<MediaViewer media={pawtucketUIApps.MediaViewer.media} 
+			width={pawtucketUIApps.MediaViewer.width}
 			height={pawtucketUIApps.MediaViewer.height}
 			controlHeight={pawtucketUIApps.MediaViewer.controlHeight}/>, document.querySelector(selector));
 }

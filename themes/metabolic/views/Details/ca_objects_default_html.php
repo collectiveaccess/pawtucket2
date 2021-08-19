@@ -172,15 +172,14 @@
 								<unit relativeTo="ca_objects.url" delimiter="<br/>"><a href="^ca_objects.url" target="_blank">^ca_objects.url</a> <ion-icon name="open"></ion-icon></unit>
 							</div>
 						</ifcount>}}}
-<!--
 
-						{{{<ifdef code="ca_objects.dim_width|ca_objects.dim_height|ca_objects.dim_depth|ca_objects.note">
+
+						{{{<ifdef code="ca_objects.dimensions.dim_width|ca_objects.dimensions.dim_height|ca_objects.dimensions.dim_depth">
 							<div class="mb-3">
 								<div class="label">Dimensions</div>
 								<unit relativeTo="ca_objects.dimensions" delimiter="; ">^dim_width x ^dim_height<ifdef code='dim_depth'> x ^dim_depth</ifdef><ifdef code='note'>(^note)</ifdef></unit>
 							</div>
 						</ifdef>}}}
--->
 					</div>
 					<div class="col-12 col-md-6">
 											
@@ -207,10 +206,10 @@
 						</ifcount>}}}
 -->
 <?php
-						$colls = $t_object->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_collections.name"));
+						$colls = $t_object->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.name"));
 						
 						if($t_parent->isLoaded()) { 
-							$colls += $t_parent->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_collection_labels.name"));
+							$colls += $t_parent->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_collection_labels.name"));
 						}
 						
 						$coll_links = [];
@@ -230,23 +229,23 @@
 
 
 						foreach(['action' => 'Events', 'exhibition' => 'Exhibitions', 'lecture_presentation' => 'Lectures/Presentations', 'publication' => 'Publications'] as $occ_type => $occ_typename) {
-							$occs = $t_object->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_occurrences.name"));
+							$occs = $t_object->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_occurrences.name"));
 						
 							if($t_parent->isLoaded()) { 
-								$occs += $t_parent->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_occurrence_labels.name"));
+								$occs += $t_parent->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_occurrence_labels.name"));
 							}
 						
 							$occ_links = [];
 							if(is_array($occs) && sizeof($occs)){
 								foreach($occs as $occ){
-									$occ_links[] = caDetailLink($occ['name'], '', 'ca_occurrences', $occ['occurrence_id']);
+									$occ_links[] = "<p>".caDetailLink($occ['name'], '', 'ca_occurrences', $occ['occurrence_id'])."</p>";
 								}
 							}
 							if(sizeof($occ_links)) {
 	?>
 								<div class="mb-3">
 									<div class="label"><?= $occ_typename; ?></div>
-									<?= join($occ_links, ", "); ?>
+									<?= join($occ_links, ""); ?>
 								</div>
 	<?php
 							}
@@ -254,10 +253,10 @@
 
 
 						# --- rel entities by role
-						$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_entity_labels.surname"));
+						$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_entity_labels.surname"));
 						
 						if($t_parent->isLoaded()) { 
-							$va_entities += $t_parent->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_entity_labels.surname"));
+							$va_entities += $t_parent->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_entity_labels.surname"));
 						}
 						if(is_array($va_entities) && sizeof($va_entities)){
 							$va_entities_by_role = array();
@@ -295,9 +294,9 @@
 						
 						# --- bio-regions
 						$t_list_item = new ca_list_items();
-						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
+						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_values));
 						if($t_parent->isLoaded()) { 
-							$va_bio_regions += $t_parent->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
+							$va_bio_regions += $t_parent->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_values));
 						}
 						
 						if(is_array($va_bio_regions) && sizeof($va_bio_regions)){
@@ -513,7 +512,7 @@
     pawtucketUIApps['MediaViewer'] = {
         'selector': '#mediaDisplay',
         'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => $va_access_values]); ?>,
-        'width': '100%',
+        'width': '800px',
         'height': '500px',
         'controlHeight': '72px',
         'data': {

@@ -375,8 +375,9 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 							throw new \ServiceException(_t('Invalid form data'));
 						}
 						// TODO: validate data
-						
-						$s->set('metadata', $formdata);
+						$form_config = self::$config->getAssoc('importerForms');
+						$code = str_replace('FORM:', '', $s->get('source'));
+						$s->set('metadata', ['data' => $formdata, 'configuration' => $form_config[$code]]);
 						if ($s->update()) {
 							return ['updated' => 1];
 						} else {
