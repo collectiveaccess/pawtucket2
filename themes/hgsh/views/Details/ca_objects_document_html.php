@@ -67,7 +67,7 @@
 		if(!$vn_collection_id && $t_parent){
 			$vn_collection_id = $t_parent->get("ca_collections.collection_id");
 		}
-		if($vn_collection_id){
+		if($vn_collection_id && ($vn_previous_issue_page_id || $vn_next_issue_page_id)){
 			print caDetailLink($this->request, "<< All Issues", "btn btn-blue btn-small", "ca_collections", $vn_collection_id);
 		}
 ?>

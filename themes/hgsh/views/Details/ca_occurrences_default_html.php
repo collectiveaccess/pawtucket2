@@ -5,7 +5,8 @@
 	$va_featured_items = $t_item->get("ca_objects.object_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("featured", "depicts", "describes", "used"), "checkAccess" => $va_access_values));
 	$va_featured_collections = $t_item->get("ca_collections.collection_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("featured"), "checkAccess" => $va_access_values));
 	$va_detail_collections = $t_item->get("ca_collections.collection_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("history"), "checkAccess" => $va_access_values));
-
+	$va_access_values = $this->getVar("access_values");
+	
 ?>
 <div class="row">
 	<div class='col-xs-12'>

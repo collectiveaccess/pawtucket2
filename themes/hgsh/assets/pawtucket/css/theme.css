@@ -620,6 +620,13 @@ div.detailRelatedTitle{
 .placeDetailImage p{
 	padding-top: 10px;
 }
+.placeDetailMapImage{
+	margin-top:10px;
+}
+.placeDetailMapImage img{
+	width: 100%;
+	height: auto;
+}
 .btn.btn-default.text-left{
 	text-align:left;
 }
@@ -706,4 +713,147 @@ div.detailRelatedTitle{
 .multisearchResultText a{
 	color:#FFFFFF !important;
 	font-family: 'Gudea', sans-serif !important;
+}
+/* timeline */
+.tl-medium .tl-text h2.tl-headline-title, .tl-medium .tl-text h2.tl-headline {
+    font-size: 24px !important;
+    line-height: 1.2em !important;
+}
+/* map */
+.detail .leaflet-popup-content {
+	width:200px !important;
+	min-height:72px !important;
+}
+.detail .leaflet-popup-content p{
+	font-size:14px !important;
+	line-height:1.1em !important;
+	margin: 5px 0;
+}
+.detail .leaflet-popup-content a {
+	font-family: 'Gudea', sans-serif !important;
+	font-size: 12px !important;
+	font-weight: 700;
+	color: #006E9D !important;
+	margin: 0px;
+	line-height: 1.1em;
+}
+/* browse */
+.browse .dropdown-menu, .browse .dropdown-menu > li > a {
+    background-color: #fff !important;
+}
+.browse .dropdown-menu > li > a{
+	font-weight:bold;
+	color: #006E9D !important;
+}
+.browse .dropdown-menu > li > a:hover{
+	font-weight:bold;
+	color: #006E9D !important;
+	text-decoration:underline;
+	margin: 0px;
+}
+.browse .btn-group .btn, .browse a .btn.btn-default {
+	text-transform:none;
+	font-weight:700;
+	padding: 5px !important;
+	font-size: 15px;
+	margin-bottom: 0px;
+}
+.browse .btn-group .btn i{
+	color:#fff !Important;
+}
+.browse .eventTitle{
+	font-family: 'Gudea', sans-serif !important;
+	font-size: 30px;
+	line-height: 1.4em;
+	text-transform: uppercase;
+	color: #006E9D !important;
+}
+.browse .browseRefineMenu{
+	right: 0px;
+	left: auto;
+}
+
+/* splash page */
+.front .hpButton{
+	background-color:#006E9D;
+	padding:20px 0px 20px 0px;
+	text-align:center;
+	margin-bottom:30px;
+}
+.front .hpButton a{
+	font-weight: 700;
+	font-size: 18px;
+	color: #FFF;
+	text-transform: uppercase;
+	letter-spacing: 1.5px;
+}
+.hpHero{
+	margin-bottom:30px;
+	position:relative;
+	text-align:center;
+}
+.hpHero img{
+	width:100%;
+	height:auto;
+}
+.hpHero:after {
+    content: '\A';
+    position: absolute;
+    width: 100%; height:100%;
+    top:0; left:0;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index:1;
+}
+.hpSearch{
+	position:absolute;
+	top: 20%;
+	width: 100%;
+	text-align:center;
+	z-index:2;
+}
+@media(max-width:767px){
+	.hpSearch{
+		top:5px
+	}
+}
+.hpSearch .formOutline{
+	background-color:#FFF;
+	width:200px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.hpSearch .form-group{
+	width:170px;
+	display: inline-block;
+	margin-bottom: 0;
+	vertical-align: middle;
+}
+.hpSearch .form-group .form-control{
+	border:0px;
+}
+.hpSearch .hpSearchbtn-search {
+    display: inline-block;
+    padding: 6px;
+    margin-bottom: 0;
+    font-size: 14px;
+    vertical-align: middle;
+    cursor: pointer;
+    background-image: none;
+    outline: 0;
+    background-color: #FFF;
+    border: 0px;
+    border-radius: 10px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    color: #9E8E89;
+}
+.front H1{
+	text-align:center;
+	font-weight:bold;
+	color:#FFF;
+	font-family: 'Gudea', sans-serif !important;
+	text-shadow: #000 1px 0 6px;
 }
