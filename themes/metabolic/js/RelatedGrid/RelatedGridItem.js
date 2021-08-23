@@ -45,7 +45,7 @@ const RelatedGridItem = (props) => {
 		}
 	}
 	
-	if(altids && (altids.length > 0)) { altids = "<br/>(" + altids + ")"; }
+	if(altids && (altids.length > 0)) { altids = "(" + altids + ")"; }
 	
 	if(currentlySelectedItem){
     if(showSelectButtons){
@@ -54,7 +54,7 @@ const RelatedGridItem = (props) => {
           <div className={"card" + ((selectedGridItems.includes(props.item.id)) ? ' selected' : '')}>
             <img className='mw-100 mh-100 d-block' src={ props.item.media[1].url } alt=""/>
             <div className='card-body'>
-              <div className="card-title text-break">{ props.item.identifier } { altids }</div>
+              <div className="card-title text-break">{ props.item.identifier }<br/>{ altids }</div>
               <div className="float-left">
                 <a className={"selectItem" + ((selectedGridItems.includes(props.item.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'><ion-icon name='checkmark-circle'></ion-icon></a>
               </div>
@@ -68,7 +68,7 @@ const RelatedGridItem = (props) => {
           <div className={"card" + ((currentlySelectedItem === (props.item.id)) ? ' selected' : '')} onClick={(e) => selectItem(e)}>
             <img className='mw-100 mh-100 d-block' src={ props.item.media[1].url } alt=""/>
             <div className='card-body'>
-              <div className="card-title text-break">{ props.item.identifier } { altids }</div>
+              <div className="card-title text-break">{ props.item.identifier }<br/>{ altids }</div>
             </div>
           </div>
         </div>
@@ -81,7 +81,7 @@ const RelatedGridItem = (props) => {
           <div className={"card" + ((selectedGridItems.includes(props.item.id)) ? ' selected' : '')}>
             <img className='mw-100 mh-100 d-block' src={ props.item.media[1].url } alt=""/>
             <div className='card-body'>
-              <div className="card-title text-break">{ props.item.identifier } { altids }</div>
+              <div className="card-title text-break">{ props.item.identifier }<br/>{ altids }</div>
               <div className="float-left">
                 <a className={"selectItem" + ((selectedGridItems.includes(props.item.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'><ion-icon name='checkmark-circle'></ion-icon></a>
               </div>
@@ -95,7 +95,7 @@ const RelatedGridItem = (props) => {
           <div className="card" onClick={(e) => selectItem(e)}>
             <img className="mw-100 mh-100 d-block" src={ props.item.media[1].url } alt=""/>
             <div className='card-body'>
-              <div className="card-title text-break">{ props.item.identifier } { altids }</div>
+              <div className="card-title text-break">{ props.item.identifier }<br/>{ altids }</div>
             </div>
           </div>
         </div>
