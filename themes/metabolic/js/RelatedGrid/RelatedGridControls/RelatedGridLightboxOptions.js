@@ -40,7 +40,7 @@ const RelatedGridLightboxOptions = (props) => {
 				access_token: data.data.refresh.jwt,
 			});
 		});
-  }, [tokens]);
+  }, []);	// [] = run once on startuo
 
   const addSelectedItemsToNewLightbox = (e) => {
 		let ids = String(selectedGridItems.join(','));
@@ -60,13 +60,13 @@ const RelatedGridLightboxOptions = (props) => {
 
 
   return (
-    <div id="bSelectOptions">
+    <div id="bLightboxOptions">
       <div className="dropdown show">
-        <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a href="#" role="button" id="lightboxOptionIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <ion-icon name="folder"></ion-icon>
         </a>
 
-        <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+        <div className="dropdown-menu dropdown-menu-right" aria-labelledby="lightboxOptionIcon">
           <a className="dropdown-item" onClick={(selectedGridItems.length > 0) ? (e) => addSelectedItemsToNewLightbox(e) : (e) => addResultsToNewLightbox(e)}>
           <ion-icon name="add"></ion-icon> Create new lightbox from {(selectedGridItems.length > 0) ? "selected items" : "results"}</a>
         </div>

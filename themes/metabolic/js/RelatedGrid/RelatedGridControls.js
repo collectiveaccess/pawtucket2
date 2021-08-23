@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { GridContext } from './GridContext';
 import RelatedGridSelectItems from './RelatedGridControls/RelatedGridSelectItems';
 import RelatedGridExportOptions from './RelatedGridControls/RelatedGridExportOptions';
+import RelatedGridSortOptions from './RelatedGridControls/RelatedGridSortOptions';
 import RelatedGridLightboxOptions from './RelatedGridControls/RelatedGridLightboxOptions';
 
 const RelatedGridControls = (props) => {
@@ -21,8 +22,9 @@ const RelatedGridControls = (props) => {
       <div className='col-6'>
         <div className="row justify-content-end mr-2">
           <RelatedGridSelectItems />
-          <RelatedGridExportOptions />
           <RelatedGridLightboxOptions />
+          <RelatedGridSortOptions />
+          <RelatedGridExportOptions />
         </div>
         {(lightboxCreated) ?
           <div className="row justify-content-end mr-2">

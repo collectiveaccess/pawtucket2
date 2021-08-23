@@ -39,7 +39,6 @@ class RelatedGridController extends \GraphQLServices\GraphQLServiceController {
 	# -------------------------------------------------------
 	use BrowseServiceTrait;
 	# -------------------------------------------------------
-	# -------------------------------------------------------
 	/**
 	 *
 	 */
@@ -98,6 +97,18 @@ class RelatedGridController extends \GraphQLServices\GraphQLServiceController {
 							'defaultValue' => null
 						],
 						[
+							'name' => 'sort',
+							'type' => Type::string(),
+							'description' => _t('Field to sort on. If not set the identifier will be used.'),
+							'defaultValue' => null
+						],
+						[
+							'name' => 'sortDirection',
+							'type' => Type::string(),
+							'description' => _t('Direction of sort. Allowed values as ASC and DESC.'),
+							'defaultValue' => 'ASC'
+						],
+						[
 							'name' => 'jwt',
 							'type' => Type::string(),
 							'description' => _t('JWT'),
@@ -121,6 +132,8 @@ class RelatedGridController extends \GraphQLServices\GraphQLServiceController {
 						
 						$start = (int)$args['start'];
 						$limit = (int)$args['limit'];
+						$sort = (string)$args['sort'];
+						$sort_direction = (string)$args['sortDirection'];
 						
 						if (!is_array($media_versions = $args['mediaVersions']) || !sizeof($media_versions)) {
 							$media_versions = ['small'];
@@ -139,10 +152,10 @@ class RelatedGridController extends \GraphQLServices\GraphQLServiceController {
 						
 						switch($mode) {
 							case 'children':
-								$qr_items = $t_subject->get("{$grid_table}.children.".$t_rel->primaryKey(), ['returnAsSearchResult' => true]);
+								$qr_items = $t_subject->get("{$grid_table}.children.".$t_rel->primaryKey(), ['sort' => $sort ? explode(';', $sort) : null, 'sortDirection' => $sort_direction? explode(';', $sort_direction) : null, 'returnAsSearchResult' => true]);
 								break;
 							case 'related':
-								$qr_items = $t_subject->get("{$grid_table}.related.".$t_rel->primaryKey(), ['returnAsSearchResult' => true]);
+								$qr_items = $t_subject->get("{$grid_table}.related.".$t_rel->primaryKey(), ['sort' => $sort ? explode(';', $sort) : null, 'sortDirection' => $sort_direction? explode(';', $sort_direction) : null, 'returnAsSearchResult' => true]);
 							default:
 								break;
 						}

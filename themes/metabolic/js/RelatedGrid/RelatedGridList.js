@@ -19,7 +19,7 @@ function getGraphQLClient(uri, options=null) {
 
 const RelatedGridList = (props) => {
 
-	const { data, setData, start, itemsPerPage, setTotalItems, currentlySelectedRow, currentlySelectedItem, setRawData, setItemIds, showSelectButtons } = useContext(GridContext)
+	const { data, setData, start, itemsPerPage, setTotalItems, currentlySelectedRow, currentlySelectedItem, setRawData, setItemIds, showSelectButtons, sort, sortDirection } = useContext(GridContext)
 
 	const panel = useRef(null);
 
@@ -32,10 +32,10 @@ const RelatedGridList = (props) => {
 
 		client.query({
 			query: gql`
-				query ($id: Int!, $table: String!, $gridTable: String!, $fetch: String!, $start: Int!, $limit: Int!)
-				{ content(id: $id, table: $table, gridTable: $gridTable, fetch: $fetch, mediaVersions: ["small", "medium"], start: $start, limit: $limit)
+				query ($id: Int!, $table: String!, $gridTable: String!, $fetch: String!, $start: Int!, $limit: Int!, $sort: String, $sortDirection: String)
+				{ content(id: $id, table: $table, gridTable: $gridTable, fetch: $fetch, mediaVersions: ["small", "medium"], start: $start, limit: $limit, sort: $sort, sortDirection: $sortDirection)
 				{ created, item_count, items { id, label, identifier, detailPageUrl, media { version, url, tag, width, height, mimetype} } }}
-				`, variables: { 'id': id, 'table': table, 'gridTable': gridTable, 'fetch': fetch, 'start': start, 'limit': itemsPerPage }})
+				`, variables: { 'id': id, 'table': table, 'gridTable': gridTable, 'fetch': fetch, 'start': start, 'limit': itemsPerPage, 'sort': sort, 'sortDirection': sortDirection }})
 			.then(function(result) {
 				// console.log("Data was received:", result);
 
@@ -58,7 +58,7 @@ const RelatedGridList = (props) => {
 				}
 				setItemIds(itemIds);
 			});
-	}, [itemsPerPage]);
+	}, [itemsPerPage, sort, sortDirection]);
 
 	useEffect(() => {
 		// if(currentlySelectedRow != null){

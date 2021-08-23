@@ -1100,18 +1100,22 @@ p.legend a {
 	height: $browse-toolbar-height;
 	background-color: $body-bg-color;
 
-	#bExportOptions, #bSelectOptions{
+	#bExportOptions, #bSelectOptions, #bSortOptions, #bLightboxOptions {
 		font-size:1.5em;
 		line-height: 3.5em;
 		float:right;
 		margin-left:20px;
 	}
 
-	#bExportOptions, #bSelectOptions{
+	#bExportOptions, #bSelectOptions, #bSortOptions, #bLightboxOptions {
 		.dropdown-menu{
 			font-size:.5em;
 			line-height:1.2em;
 		}
+	}
+	
+	#bSortOptions div a.active {
+		color: #fff;
 	}
 }
 
