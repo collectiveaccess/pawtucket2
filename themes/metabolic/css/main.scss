@@ -1352,7 +1352,7 @@ h1{
 }
 
 .mediaDisplayFullscreen {
-	position: absolute;
+	position: fixed;
 	top: 0px;
 	left: 0px;
 	width: 100%;
@@ -1390,6 +1390,11 @@ h1{
 
 .mediaViewerPDFViewer .react-pdf__Page__canvas {
 	margin: 0 auto;
+}
+
+input.currentPage {
+	text-align:right;
+	width: 30px;
 }
 
 // metabolic ImportUploader
