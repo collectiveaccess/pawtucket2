@@ -45,7 +45,7 @@ const RelatedGridItem = (props) => {
 		}
 	}
 	
-	if(altids && (altids.length > 0)) { altids = "(" + altids + ")"; }
+	if(altids && (altids.length > 0)) { altids = "<br/>(" + altids + ")"; }
 	
 	if(currentlySelectedItem){
     if(showSelectButtons){
