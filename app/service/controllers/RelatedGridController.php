@@ -109,6 +109,11 @@ class RelatedGridController extends \GraphQLServices\GraphQLServiceController {
 							'defaultValue' => 'ASC'
 						],
 						[
+							'name' => 'data',
+							'type' => Type::listOf(Type::string()),
+							'description' => _t('List of bundles to return'),
+						],
+						[
 							'name' => 'jwt',
 							'type' => Type::string(),
 							'description' => _t('JWT'),
@@ -200,6 +205,21 @@ class RelatedGridController extends \GraphQLServices\GraphQLServiceController {
 								'media' => $media_list,
 								'detailPageUrl' => $detailPageUrl
 							];
+							
+							$data = [];
+							if(is_array($args['data'])) {
+								foreach($args['data'] as $bundle) {
+									$data[] = [
+										'code' => $bundle,
+										'values' => [[
+											'code' => $bundle,
+											'value' => $qr_items->get($bundle)
+										]]
+									];
+								}
+							}
+					
+							$item['data'] = $data;
 							$grid['items'][] = $item;
 							
 							if(($limit > 0) && (sizeof($grid['items']) >= $limit)) { break; }
@@ -292,6 +312,7 @@ class RelatedGridController extends \GraphQLServices\GraphQLServiceController {
 							'id' => $rel_id,
 							'label' => $t_subject->get("{$table}.preferred_labels"),
 							'identifier' => $t_subject->get("{$table}.{$idno_fld}"),
+							'altIdentifier' => $t_subject->get("{$table}.{$idno_fld}"),
 							'media' => $media_list,
 							'detailPageUrl' => $detailPageUrl
 						];

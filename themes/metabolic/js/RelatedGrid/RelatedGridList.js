@@ -32,10 +32,10 @@ const RelatedGridList = (props) => {
 
 		client.query({
 			query: gql`
-				query ($id: Int!, $table: String!, $gridTable: String!, $fetch: String!, $start: Int!, $limit: Int!, $sort: String, $sortDirection: String)
-				{ content(id: $id, table: $table, gridTable: $gridTable, fetch: $fetch, mediaVersions: ["small", "medium"], start: $start, limit: $limit, sort: $sort, sortDirection: $sortDirection)
-				{ created, item_count, items { id, label, identifier, detailPageUrl, media { version, url, tag, width, height, mimetype} } }}
-				`, variables: { 'id': id, 'table': table, 'gridTable': gridTable, 'fetch': fetch, 'start': start, 'limit': itemsPerPage, 'sort': sort, 'sortDirection': sortDirection }})
+				query ($id: Int!, $table: String!, $gridTable: String!, $fetch: String!, $start: Int!, $limit: Int!, $sort: String, $sortDirection: String, $d: [String])
+				{ content(id: $id, table: $table, gridTable: $gridTable, fetch: $fetch, mediaVersions: ["small", "medium"], start: $start, limit: $limit, sort: $sort, sortDirection: $sortDirection, data: $d)
+				{ created, item_count, items { id, label, identifier, detailPageUrl, data {code, values { code, value }}, media { version, url, tag, width, height, mimetype} } }}
+				`, variables: { 'id': id, 'table': table, 'gridTable': gridTable, 'fetch': fetch, 'start': start, 'limit': itemsPerPage, 'sort': sort, 'sortDirection': sortDirection, 'd': ['ca_objects.altid'] }})
 			.then(function(result) {
 				// Code to convert feed to data format used by grid goes here
 				var items = result.data.content.items;
