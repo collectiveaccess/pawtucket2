@@ -23,10 +23,9 @@ function createLightbox(uri, tokens , name, ids, callback) {
 }
 
 const RelatedGridLightboxOptions = (props) => {
-
   const { selectedGridItems, itemIds, setLightboxCreated } = useContext(GridContext);
 
-	//Auth Tokens in Local State
+	// Auth Tokens in Local State
 	const [tokens, setTokens] = useState({
 		refresh_token: refreshToken,
 		access_token: null
@@ -52,7 +51,8 @@ const RelatedGridLightboxOptions = (props) => {
 
   const addResultsToNewLightbox = (e) => {
 		let ids = String(itemIds.join(','));
-		createLightbox(lightboxBaseUrl, tokens, 'New Lightbox', ids, function(data){
+		createLightbox(lightboxBaseUrl, tokens, 'New Lightbox', ids, function(data) {
+			// noop
 		});
 		setLightboxCreated(true);
 		e.preventDefault();

@@ -37,8 +37,6 @@ const RelatedGridList = (props) => {
 				{ created, item_count, items { id, label, identifier, detailPageUrl, media { version, url, tag, width, height, mimetype} } }}
 				`, variables: { 'id': id, 'table': table, 'gridTable': gridTable, 'fetch': fetch, 'start': start, 'limit': itemsPerPage, 'sort': sort, 'sortDirection': sortDirection }})
 			.then(function(result) {
-				// console.log("Data was received:", result);
-
 				// Code to convert feed to data format used by grid goes here
 				var items = result.data.content.items;
 				setRawData(items);
@@ -51,7 +49,7 @@ const RelatedGridList = (props) => {
 
 				setTotalItems(result.data.content.item_count);
 
-				//an array of only the ids of the items
+				// An array of only the ids of the items
 				let itemIds = [];
 				for (var j = 0; j < items.length; j++) {
 					itemIds.push(items[j].id);

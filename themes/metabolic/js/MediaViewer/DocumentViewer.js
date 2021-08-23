@@ -18,12 +18,14 @@ import { Document, Page } from 'react-pdf';
 /**
  *
  */
-class PDFViewer extends React.Component{
+class DocumentViewer extends React.Component{
+	
 	constructor(props) {
 		super(props);
 		
 		this.state = {
 			page: 1,
+			enteredPage: 1,
 			numPages: 0,
 			
 			magnificationLevel: 100
@@ -36,6 +38,7 @@ class PDFViewer extends React.Component{
 		this.magnificationLevel = this.magnificationLevel.bind(this);
 		this.zoomIn = this.zoomIn.bind(this);
 		this.zoomOut = this.zoomOut.bind(this);
+		this.updatePage = this.updatePage.bind(this);
 	}
 	
 	onDocumentLoadSuccess({ numPages }) {
@@ -46,14 +49,14 @@ class PDFViewer extends React.Component{
 	nextPage() {
 		const p = this.state.page + 1;
 		if (p <= this.numPages()) {
-			this.setState({page: p});
+			this.setState({page: p, enteredPage: p + ''});
 		}
 	}
 
 	previousPage() {
 		const p = this.state.page - 1;
 		if (p > 0) {
-			this.setState({page: p});
+			this.setState({page: p, enteredPage: p + ''});
 		}
 	}
 	
@@ -78,6 +81,16 @@ class PDFViewer extends React.Component{
 	zoomOut() {
 		this.magnificationLevel(this.magnificationLevel() - 10);
 	}
+	
+	updatePage(e) {
+		let p = parseInt(e.target.value);
+		
+		if ((p > 0) && (p <= this.state.numPages)) {
+			this.setState({page: p, enteredPage: e.target.value });
+		} else {
+			this.setState({enteredPage: e.target.value });
+		}
+	}
 
 	render() {
 		const width = parseInt(this.props.width);
@@ -99,17 +112,17 @@ class PDFViewer extends React.Component{
 		
 		let pageCounter = null
 		if (this.numPages() > 0) {
-			pageCounter = this.state.page + '/' + this.numPages();
+			pageCounter = this.numPages();
 		}
 		
 		return(
-			<div className='mediaViewerPDFContainer'>
+			<div className='mediaViewerPDFContainer'>'
 				<div className='row'>
 					<div className='col-md-3'>
 						<button type="button" className="btn btn-secondary" onClick={this.previousPage} title='Previous page'><MdArrowDropleftCircle/></button>
 					</div>
 					<div className='col-md-3 text-center'>
-						{pageCounter}
+						<input type='text' value={this.state.enteredPage} onChange={this.updatePage} class="currentPage"/> of {pageCounter}
 					</div>
 					<div className='col-md-3 text-center'>
 						<a href='#'  onClick={this.zoomOut}><MdRemoveCircle/></a>
@@ -135,4 +148,4 @@ class PDFViewer extends React.Component{
 	}
 }
 
-export { PDFViewer };
+export { DocumentViewer };
