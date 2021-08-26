@@ -5,12 +5,17 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$qr_res = ca_places::find(['parent_id' => $t_item->get('ca_places.place_id'), 'access' => 1], ['returnAs' => 'searchResult']);
-
+	while($qr_res->nextHit()){
+			$vn_ids[] = $qr_res->get('ca_places.place_id');
+			
+	}
 	$vn_place_id = $t_item->get('ca_places.place_id');
 	$vn_place_parent_id = $t_item->get('ca_places.parent.place_id');
+	$vn_ids[] = $vn_place_id;
+	$va_images = caGetDisplayImagesForAuthorityItems('ca_places', $vn_ids, array('version' => 'resultcrop', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 	$va_detail_image = caGetDisplayImagesForAuthorityItems('ca_places', [$vn_place_id], array('version' => 'large', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 	$va_parent_detail_image = caGetDisplayImagesForAuthorityItems('ca_places', [$vn_place_parent_id], array('version' => 'thumbnail', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
-	
+
 	# related items
 	$va_related_objects = $t_item->get("ca_objects.object_id", array("returnWithStructure" => true, "excludeRelationshipTypes" => array("cover"), "checkAccess" => $va_access_values));
 	$va_featured_collections = $t_item->get("ca_collections.collection_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("featured"), "checkAccess" => $va_access_values));
@@ -26,7 +31,7 @@
 <div class='col-sm-8'>
 	<div class="row">
 		<div class="col-sm-12">
-			<div id="browsePlaceResultsContainer">
+			<div id="placeMapContainer">
 <?php
 			if($qr_res->numHits()){
 				$qr_res->seek(0);
@@ -50,9 +55,83 @@
 			</div><!-- end browseResultsContainer -->
 		</div>
 	</div>
+	<div class="row">
+		<div id="browsePlaceResultsContainer">
+<?php
+		$qr_res->seek(0);
+		$vn_ids = [];
+		while($qr_res->nextHit()){
+			$vn_ids[] = $qr_res->get('ca_places.place_id');
+		}
+		$qr_res->seek(0);
+		while($qr_res->nextHit()){
+			$vn_id = $qr_res->get('ca_places.place_id');
+			
+			if($va_images[$vn_id]){
+				$vs_rep_detail_link = caDetailLink($this->request, $va_images[$vn_id], '', 'ca_places', $vn_id);		
+			} else {
+				$vs_rep_detail_link = caDetailLink($this->request, $vs_default_placeholder, '', 'ca_places', $vn_id);
+			}
+			$vs_label_detail_link = caDetailLink($this->request, $qr_res->get('ca_places.preferred_labels'), '', 'ca_places', $vn_id);
+			print "<div class='bResultItemCol col-xs-6 col-sm-4 col-md-4'>
+				<div class='bResult'>
+					{$vs_rep_detail_link}
+					<div class='bResultText'>
+						{$vs_label_detail_link}
+					</div>
+				</div>
+			</div>";
+		}
+?>
+		</div><!-- end browseResultsContainer -->
+	</div>
+	<?php
+	# related objects
+	$t_object_thumb = new ca_objects();
+	# related items
+	$va_related_objects = $t_item->get("ca_objects.object_id", array("returnWithStructure" => true, "excludeRelationshipTypes" => array("cover"), "checkAccess" => $va_access_values));
+	
+	if(is_array($va_related_objects) && sizeof($va_related_objects)){
+			$q_related_objects = caMakeSearchResult('ca_objects', $va_related_objects);
+			if($q_related_objects->numHits()){
+				print "<div class='row'><div class='col-sm-12'><div class='btn btn-default'>"._t("Objects")."</div></div></div><!-- end row -->\n";
+				$i = 0;
+				while($q_related_objects->nextHit()){
+					if($i == 0){
+						print "<div class='row'>";
+					}
+					if($q_related_objects->get("ca_object_representations.media.resultcrop", array("checkAccess" => $va_access_values))){
+						$vs_media = $q_related_objects->getWithTemplate("<l>^ca_object_representations.media.resultcrop</l>", array("checkAccess" => $va_access_values));
+					} else {
+						$vs_media = caNavLink($this->request, caGetThemeGraphic($this->request, 'placeholder.jpg'), '', 'Detail', 'objects', $q_related_objects->get("ca_objects.idno"));
+					}
+					$vs_caption = $q_related_objects->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>');
+					if($vs_caption){
+						$vs_caption = "<div class='bResultText'>".$vs_caption."</div>";
+					}
+					
+					print "<div class='bResultItemCol col-xs-6 col-sm-4 col-md-4'>
+						<div class='bResult'>
+							{$vs_media}
+							{$vs_caption}
+						</div>
+					</div><!-- end col -->";
+					$i++;
+					if($i == 3){
+						print "</div><!-- end row -->";
+						$i = 0;
+					}
+				}
+				if($i > 0){
+					print "</div><!-- end row -->";
+				}
+			}
+		}
+?>
 </div><!-- end col -->
 <div class='col-sm-4'>
 	<div class="detailTitle short">{{{^ca_places.preferred_labels}}}</div>
+	<p>{{{<ifdef code="ca_places.description">^ca_places.description</ifdef>}}}</p>
 <?php
 
 	if($qr_place_groups->numHits() > 0){

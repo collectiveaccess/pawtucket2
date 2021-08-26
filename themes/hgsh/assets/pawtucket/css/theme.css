@@ -627,6 +627,9 @@ div.detailRelatedTitle{
 	width: 100%;
 	height: auto;
 }
+#placeMapContainer{
+	margin-bottom:30px;
+}
 .btn.btn-default.text-left{
 	text-align:left;
 }
