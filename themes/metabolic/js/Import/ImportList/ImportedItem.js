@@ -57,9 +57,9 @@ const ImportedItem = (props) => {
 
   let percentageDone;
   if(props.data.files >= 1){
-    let total = props.data.totalBytes/1000;
-    let received = props.data.receivedBytes/1000;
-    percentageDone = (total/received) * 100
+    let total = props.data.totalBytes/1024;
+    let received = props.data.receivedBytes/1024;
+    percentageDone = (received/total) * 100
   }else { percentageDone = 0 }
 
   return (

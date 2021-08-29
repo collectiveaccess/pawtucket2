@@ -194,11 +194,11 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'Number of files uploaded'
 					],
 					'totalBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Total quantity of data for upload, in bytes'
 					],
 					'receivedBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Quantity of data received, in bytes'
 					],
 					'totalSize' => [
@@ -224,11 +224,11 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'File name'
 					],
 					'totalBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Total quantity of data in file, in bytes'
 					],
 					'receivedBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Quantity of data received, in bytes'
 					],
 					'totalSize' => [
@@ -306,11 +306,11 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'Data about uploaded files'
 					],
 					'totalBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Total quantity of data for upload, in bytes'
 					],
 					'receivedBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Quantity of data received, in bytes'
 					],
 					'totalSize' => [
