@@ -1,33 +1,15 @@
 import React, { useContext, useEffect } from 'react';
 import { ImportContext } from '../ImportContext';
-import ProgressBar from "react-bootstrap/ProgressBar";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+
+import EasyEdit from 'react-easy-edit';
 
 import { getSessionList, deleteImport } from '../ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
 
 const ImportedItem = (props) => {
-  const {setSessionKey, sessionKey, setSessionList, setViewMode } = useContext(ImportContext);
-
-  // let progressBar = null;
-  // let progressPercentage = (props.data.progress_in_bytes / 1000) / (props.data.total_bytes / 1000) * 100;
-  // if (props.data.upload_status !== 'complete') {
-  //   progressBar = (
-  //     <tr>
-  //       <td colSpan="6" className="mb-2">
-  //         {(props.data.progress_in_bytes == 0) ? 
-  //           <ProgressBar now={0} label={`0%`} />
-  //         :
-  //           <ProgressBar
-  //             now={parseInt(progressPercentage)}
-  //             label={`${Math.ceil(parseInt(progressPercentage))}%`}
-  //           />
-  //         }
-  //       </td>
-  //     </tr>
-  //   );
-  // }
+  const {setSessionKey, sessionKey, setSessionList, setViewMode, setFormCode } = useContext(ImportContext);
 
   const deleteImportConfirm = () => {
     deleteImport(baseUrl, props.data.sessionKey, function(data){
@@ -63,6 +45,13 @@ const ImportedItem = (props) => {
   const editImport = (e) => {
     setViewMode("edit_import_page");
     setSessionKey(props.data.sessionKey);
+
+    var str = "FORM:";
+    let tempFormCode = props.data.source
+    tempFormCode = tempFormCode.replace(new RegExp("^" + str), '')
+    
+    // console.log("tempFormCode: ", tempFormCode);
+    setFormCode(tempFormCode)
     e.preventDefault();
   }
 
@@ -76,8 +65,19 @@ const ImportedItem = (props) => {
   return (
     <>
       <tr style={{ borderTop: '1px solid lightgrey' }}>
-        <th scope="row">{props.data.label}</th>
-        <td>{props.data.sessionKey}</td>
+        <th scope="row">
+          {/* {props.data.label} */}
+          {/* <EasyEdit
+            type="text"
+            onSave={this.saveLightboxEdit}
+            saveButtonLabel="Save"
+            saveButtonStyle="btn btn-primary btn-sm"
+            cancelButtonLabel="Cancel"
+            cancelButtonStyle="btn btn-primary btn-sm"
+            attributes={{ name: "name", id: "lightbox_name" + this.props.data.id }}
+            value={label}
+          /> */}
+        </th>
         <td>{props.data.lastActivityOn}</td>
         <td>{props.data.statusDisplay}</td>
         <td>{props.data.files}</td>
@@ -92,7 +92,7 @@ const ImportedItem = (props) => {
         {(props.data.status !== 'IN_PROGRESS') ?
         <>
           <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => viewImport(e)}>View</a></td>
-          <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td>
+          {/* <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td> */}
         </>
           : null}
       </tr>

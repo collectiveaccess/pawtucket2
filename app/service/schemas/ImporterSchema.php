@@ -185,6 +185,10 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::string(),
 						'description' => 'Display label for session'
 					],
+					'source' => [
+						'type' => Type::string(),
+						'description' => 'Source of session data'
+					],
 					'files' => [
 						'type' => Type::int(),
 						'description' => 'Number of files uploaded'

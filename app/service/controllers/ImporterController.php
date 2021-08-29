@@ -300,7 +300,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						$fields = [
 							'label' => 'label', 'session_key' => 'sessionKey', 'user_id' => 'user_id',
 							'metadata' => 'formData', 'num_files' => 'files', 'total_bytes' => 'totalBytes',
-							'progress' => 'filesUploaded',
+							'progress' => 'filesUploaded', 'source' => 'source',
 							'received_bytes' => 'receivedBytes', 'total_display' => 'totalSize', 'received_display' => 'receivedSize'
 						];
 						

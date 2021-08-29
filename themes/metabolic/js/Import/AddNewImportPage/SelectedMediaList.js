@@ -33,13 +33,13 @@ const SelectedMediaList = (props) => {
 
           <h2 className="mt-3 mb-3">Uploaded ({files.length}) of {numFilesOnDrop} files</h2>
 
-          <div className="mb-3">
+          {/* <div className="mb-3">
             {(uploadStatus == "in_progress") ?  
               <ProgressBar
                 now={parseInt(uploadProgress)}
                 label={`${Math.ceil(parseInt(uploadProgress))}%`}/>
             : null}
-          </div>
+          </div> */}
 
           <div>
             {(filesSelected.length > 10) ? <>{files.slice(0, 10)} <strong> and {files.length - 10} more</strong></> : <>{files}</>}
@@ -53,12 +53,20 @@ const SelectedMediaList = (props) => {
 }
 
 const UploadItem = (props) => {
+  const { uploadProgress, uploadStatus } = useContext(ImportContext);
   return (
     <div className='row'>
       <div className='col'>
         <p>
           {props.file.name}
         </p>
+        <div className="mb-3">
+          {(uploadStatus == "in_progress") ?
+            <ProgressBar
+              now={parseInt(uploadProgress)}
+              label={`${Math.ceil(parseInt(uploadProgress))}%`} />
+            : null}
+        </div>
       </div>
     </div>
   )

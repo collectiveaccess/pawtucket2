@@ -7,7 +7,7 @@ import { getSession } from '../ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
 
 const EditImportPage = (props) => {
-  const { sessionKey, setFormData } = useContext(ImportContext);
+  const { sessionKey, setFormData, formData } = useContext(ImportContext);
 
   const { setUploadStatus, setPreviousFilesUploaded } = useContext(ImportContext);
 
@@ -15,10 +15,10 @@ const EditImportPage = (props) => {
     if (sessionKey !== null) {
       getSession(baseUrl, sessionKey, function(data){
         console.log("getSession: ", data);
-        if (data.formData !== "null") {
+        if (data.formData) {
           let prevFormData = JSON.parse(data.formData);
-          // console.log('prev formData: ', prevFormData);
-          setFormData(prevFormData);
+          console.log('prev formData: ', prevFormData);
+          setFormData(prevFormData.data);
           
           // Set list of previously uploaded files (not all are necessarily complete, and user may need to restart uploads)
           setPreviousFilesUploaded(data.filesUploaded);
@@ -38,7 +38,7 @@ const EditImportPage = (props) => {
     <div className='container-fluid' style={{ maxWidth: '60%' }}>
       <button type='button' className='btn btn-secondary mb-5' onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
       <ImportDropZone />
-      <ImportMetadataForm setInitialState={props.setInitialState} />
+      <ImportMetadataForm setInitialState={props.setInitialState}/>
     </div>
   )
 }

@@ -18,7 +18,7 @@ const ViewImportPage = (props) => {
   useEffect(() => {
     if (formCode !== null) {
       getForm(baseUrl, formCode, function (data) {
-        // console.log("form: ", data);
+        console.log("form: ", data);
         let form = { ...data }
         let jsonProperties = JSON.parse(data.properties);
         form.properties = jsonProperties;
@@ -43,8 +43,21 @@ const ViewImportPage = (props) => {
         console.log("getSession: ", data);
         if (data.formData !== "null") {
           let prevFormData = JSON.parse(data.formData);
-          // console.log('prev formData: ', prevFormData);
-          setFormData(Object.entries(prevFormData));
+          // console.log('prev formData: ', prevFormData.data);
+          // setFormData(Object.entries(prevFormData));
+
+          let tempFormData = []
+
+          for (const [key, value] of Object.entries(prevFormData.data)) {
+            console.log(`${key}: ${value}`);
+            if (typeof value !== 'object' && value !== null && value !== undefined){
+              tempFormData.push(([key, value]))
+            }
+          }
+
+          console.log("tempFormData: ", tempFormData);
+
+          setFormData(tempFormData);
 
           // Set list of previously uploaded files (not all are necessarily complete, and user may need to restart uploads)
           setPreviousFilesUploaded(data.filesUploaded);
@@ -79,6 +92,7 @@ const ViewImportPage = (props) => {
         <table className="table mb-5">
           <tbody>
             {formData.map((field, index) => {
+              console.log("field", field);
               let label = field[0];
               return(
                 <tr key={index}>

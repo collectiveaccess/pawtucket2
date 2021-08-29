@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/models/ca_ip_bans.php
+ * app/models/ca_media_upload_session_files.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2019 Whirl-i-Gig
+ * Copyright 2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -34,50 +34,77 @@
    *
    */
 
-BaseModel::$s_ca_models_definitions['ca_ip_bans'] = array(
- 	'NAME_SINGULAR' 	=> _t('IP-based authentication block'),
- 	'NAME_PLURAL' 		=> _t('IP-based authentication blocks'),
+BaseModel::$s_ca_models_definitions['ca_media_upload_session_files'] = array(
+ 	'NAME_SINGULAR' 	=> _t('Media upload file'),
+ 	'NAME_PLURAL' 		=> _t('Media upload files'),
  	'FIELDS' 			=> array(
- 		'ban_id' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_HIDDEN, 
-				'IDENTITY' => true, 'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => false, 
-				'DEFAULT' => '','LABEL' => _t('CollectiveAccess id'), 'DESCRIPTION' => _t('Unique numeric identifier used by CollectiveAccess internally to identify this IP address block')
+ 		'file_id' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_HIDDEN, 
+			'IDENTITY' => true, 'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => false, 
+			'DEFAULT' => '','LABEL' => _t('File id'), 'DESCRIPTION' => _t('Unique numeric identifier used by CollectiveAccess internally to identify this uploaded file')
 		),
-		'ip_addr' => array(
-				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => false, 
-				'DEFAULT' => '',
-				'LABEL' => _t('IP address of commenter'), 'DESCRIPTION' => _t('The IP address of the commenter.'),
-				'BOUNDS_LENGTH' => array(0,39)
-		),
-		'reason' => array(
-				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
-				'IS_NULL' => false, 
-				'DEFAULT' => '',
-				'LABEL' => _t('Reason'), 'DESCRIPTION' => _t('Reason for ban'),
-				'BOUNDS_LENGTH' => array(0,255)
+		'session_id' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT,
+			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => false, 
+			'DEFAULT' => null,
+			'DONT_ALLOW_IN_UI' => true,
+			'LABEL' => _t('Session id'), 'DESCRIPTION' => _t('Session to which this upload belongs.')
 		),
 		'created_on' => array(
-				'FIELD_TYPE' => FT_TIMESTAMP, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 20, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => false, 
-				'DEFAULT' => '',
-				'LABEL' => _t('Ban creation date'), 'DESCRIPTION' => _t('The date and time the ban was created.')
+			'FIELD_TYPE' => FT_TIMESTAMP, 'DISPLAY_TYPE' => DT_FIELD, 
+			'DISPLAY_WIDTH' => 20, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => false, 
+			'DEFAULT' => null,
+			'LABEL' => _t('Creation date'), 'DESCRIPTION' => _t('The date and time the upload was started on.')
 		),
-		'expires_on' => array(
-				'FIELD_TYPE' => FT_DATETIME, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 20, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => true, 
-				'DEFAULT' => '',
-				'LABEL' => _t('Ban expiration date'), 'DESCRIPTION' => _t('The date and time the ban expires on. An empty value indicates an indefinite ban.')
+		'completed_on' => array(
+			'FIELD_TYPE' => FT_DATETIME, 'DISPLAY_TYPE' => DT_FIELD, 
+			'DISPLAY_WIDTH' => 20, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => true, 
+			'DEFAULT' => null,
+			'LABEL' => _t('Upload completion date'), 'DESCRIPTION' => _t('The date and time the upload was completed on. An empty value indicates an incomplete upload.')
 		),
+		'last_activity_on' => array(
+			'FIELD_TYPE' => FT_DATETIME, 'DISPLAY_TYPE' => DT_FIELD, 
+			'DISPLAY_WIDTH' => 20, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => true, 
+			'DEFAULT' => null,
+			'LABEL' => _t('Date of last upload activity'), 'DESCRIPTION' => _t('The date and time activity was last recorded on the upload.')
+		),
+		'filename' => array(
+			'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
+			'DISPLAY_WIDTH' => 80, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => false, 
+			'DEFAULT' => '',
+			'LABEL' => _t('File name'), 'DESCRIPTION' => _t('Original name of uploaded file.')
+		),
+		'bytes_received' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
+			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => false, 
+			'DEFAULT' => 0,
+			'LABEL' => _t('Size of data received'), 'DESCRIPTION' => _t('The size of data received, in bytes.')
+		),
+		'total_bytes' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
+			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => false, 
+			'DEFAULT' => 0,
+			'LABEL' => _t('Total upload size'), 'DESCRIPTION' => _t('The total size of the uploaded file, in bytes.')
+		),
+		'error_code' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
+			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => false, 
+			'DEFAULT' => 0,
+			'LABEL' => _t('Error code'), 'DESCRIPTION' => _t('Error code. Zero if no error.')
+		)
  	)
 );
 
-class ca_ip_bans extends BaseModel {
+class ca_media_upload_session_files extends BaseModel {
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -89,10 +116,10 @@ class ca_ip_bans extends BaseModel {
 	# --- Basic object parameters
 	# ------------------------------------------------------
 	# what table does this class represent?
-	protected $TABLE = 'ca_ip_bans';
+	protected $TABLE = 'ca_media_upload_session_files';
 	      
 	# what is the primary key of the table?
-	protected $PRIMARY_KEY = 'ban_id';
+	protected $PRIMARY_KEY = 'file_id';
 
 	# ------------------------------------------------------
 	# --- Properties used by standard editing scripts
@@ -103,7 +130,7 @@ class ca_ip_bans extends BaseModel {
 	# ------------------------------------------------------
 
 	# Array of fields to display in a listing of records from this table
-	protected $LIST_FIELDS = array('ip_addr');
+	protected $LIST_FIELDS = array('session_id');
 
 	# When the list of "list fields" above contains more than one field,
 	# the LIST_DELIMITER text is displayed between fields as a delimiter.
@@ -119,7 +146,7 @@ class ca_ip_bans extends BaseModel {
 
 	# List of fields to sort listing of records by; you can use 
 	# SQL 'ASC' and 'DESC' here if you like.
-	protected $ORDER_BY = array('ip_addr');
+	protected $ORDER_BY = array('created_on');
 
 	# Maximum number of record to display per page in a listing
 	protected $MAX_RECORDS_PER_PAGE = 20; 
@@ -133,10 +160,6 @@ class ca_ip_bans extends BaseModel {
 	# its name here. The generic list scripts can then use it to order table records.
 	protected $RANK = '';
 	
-	/**
-	 *
-	 */
-	private static $config;
 	
 	# ------------------------------------------------------
 	# Hierarchical table properties
@@ -180,74 +203,24 @@ class ca_ip_bans extends BaseModel {
 	}
 	# ------------------------------------------------------
 	/**
+	 * Check if currently loaded upload is marked as complete
 	 *
+	 * @return int Unix timestamp for date/time completed, null if no upload is loaded, or false if the uploaf is not complete.
 	 */
-	static public function init() {
-		if(!self::$config) { self::$config = Configuration::load("ban_hammer.conf"); }
+	public function isComplete() {
+		if(!$this->isLoaded()) { return null; }
+		$completed_on = $this->get('completed_on', ['getDirectDate' => true]);
+		return ($completed_on > 0) ? $completed_on : false;
 	}
 	# ------------------------------------------------------
 	/**
+	 * Check if currently loaded upload is marked as errored
 	 *
+	 * @return int Error code, or false if no error
 	 */
-	static public function ban($request, $ttl=null, $reason=null) {
-		self::init();
-		if (!($ip = RequestHTTP::ip())) { return false; }
-		if (self::isWhitelisted()) { return false; } 
-		
-		if (self::isBanned($request)) { return true; }
-		$ban = new ca_ip_bans();
-		$ban->setMode(ACCESS_WRITE);
-		$ban->set('ip_addr', $ip);
-		$ban->set('reason', $reason);
-		$ban->set('expires_on', $ttl ? date('c', time() + $ttl) : null);
-		return $ban->insert();
-	}
-	# ------------------------------------------------------
-	/**
-	 *
-	 */
-	static public function isBanned($request) {
-		self::init();
-		$ip = RequestHTTP::ip();
-		if(!($entries = self::find(['ip_addr' => $ip, 'expires_on' => null], ['returnAs' => 'count']))) {
-			$entries = self::find(['ip_addr' => $ip, 'expires_on' => ['>', time()]], ['returnAs' => 'count']);
-		}
-		if($entries > 0) {
-			return true;
-		}
-		return false;
-	}
-	# ------------------------------------------------------
-	/**
-	 *
-	 */
-	static public function clean($options=null) {
-		self::init();
-		$db = new Db();
-		if (caGetOption('all', $options, false)) {
-			return $db->query("TRUNCATE TABLE ca_ip_bans");
-		}
-		return $db->query("DELETE FROM ca_ip_bans WHERE expired_on <= ?", [time()]);
-	}
-	# ------------------------------------------------------
-	/**
-	 *
-	 */
-	static public function isWhitelisted($options=null) {
-		self::init();
-		if (!is_array($whitelist = self::$config->get('ip_whitelist')) || !sizeof($whitelist)) { return false; }
-		
-		$request_ip = RequestHTTP::ip();
-		$request_ip_long = ip2long($request_ip);
-		
-		foreach($whitelist as $ip) {
-			$ip_s = ip2long(str_replace("*", "0", $ip));
-			$ip_e = ip2long(str_replace("*", "255", $ip));
-			if (($request_ip_long >= $ip_s) && ($request_ip_long <= $ip_e)) {
-				return true;
-			}
-		}
-		return false;
+	public function hasError() {
+		if(!$this->isLoaded()) { return null; }
+		return ($error_code = (int)$this->get('error_code')) ? $error_code : false;
 	}
 	# ------------------------------------------------------
 }

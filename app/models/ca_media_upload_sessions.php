@@ -134,13 +134,6 @@ BaseModel::$s_ca_models_definitions['ca_media_upload_sessions'] = array(
 			'DEFAULT' => 0,
 			'LABEL' => _t('Error code'), 'DESCRIPTION' => _t('Error code. Zero if no error.')
 		),
-		'progress' => array(
-			'FIELD_TYPE' => FT_VARS, 'DISPLAY_TYPE' => DT_OMIT, 
-			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
-			'IS_NULL' => false, 
-			'DEFAULT' => 0,
-			'LABEL' => _t('Upload progress'), 'DESCRIPTION' => _t('Data regarding upload process of individual files.')
-		),
 		'metadata' => array(
 			'FIELD_TYPE' => FT_VARS, 'DISPLAY_TYPE' => DT_OMIT, 
 			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
@@ -250,6 +243,25 @@ class ca_media_upload_sessions extends BaseModel {
 	}
 	# ------------------------------------------------------
 	/**
+	 *
+	 */
+	public function updateStats() {
+		if(!$this->isLoaded()) { return null; }
+		$files = $this->getFileList();
+		
+		$this->set('num_files', sizeof($files));
+		
+		$total_bytes = 0;
+		foreach($files as $f) {
+			$total_bytes += $f['total_bytes'];
+		}	
+	
+		$this->set('total_bytes', $total_bytes);	
+		
+		return $this->update();
+	}
+	# ------------------------------------------------------
+	/**
 	 * Check if currently loaded upload is marked as complete
 	 *
 	 * @return int Unix timestamp for date/time completed, null if no upload is loaded, or false if the uploaf is not complete.
@@ -268,6 +280,67 @@ class ca_media_upload_sessions extends BaseModel {
 	public function hasError() {
 		if(!$this->isLoaded()) { return null; }
 		return ($error_code = (int)$this->get('error_code')) ? $error_code : false;
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array
+	 */
+	public function getFileList() : ?array {
+		if(!$this->isLoaded()) { return null; }
+		
+		$db = $this->getDb();
+		
+		$qr = $db->query("SELECT * FROM ca_media_upload_session_files WHERE session_id = ?", [$this->getPrimaryKey()]);
+		
+		$files = [];
+		while($qr->nextRow()) {
+			$row = $qr->getRow();
+			$files[$row['filename']] = $row;
+		}
+		
+		return $files;
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @return 
+	 */
+	public function getFile(string $filename) : ?ca_media_upload_session_files {
+		if(!$this->isLoaded()) { return null; }
+		
+		return ca_media_upload_session_files::find(
+			['session_id' => $this->getPrimaryKey(), 'filename' => $filename], 
+			['returnAs' => 'firstModelInstance']
+		);
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @return bool
+	 */
+	public function setFile(string $filename, array $data, ?array $options=null) : ?ca_media_upload_session_files {
+		if(!$this->isLoaded()) { return false; }
+		
+		if(!($t_file = $this->getFile($filename))) {
+			$t_file = new ca_media_upload_session_files();
+			$t_file->set('filename', $filename);
+			$t_file->set('session_id', $this->getPrimaryKey());
+		}
+		
+		foreach(['completed_on', 'last_activity_on', 'bytes_received', 'total_bytes', 'error_code'] as $f) {
+			if(isset($data[$f])) {
+				$t_file->set($f, $data[$f]);
+			}
+		}
+		if($t_file->getPrimaryKey() ? $t_file->update() : $t_file->insert()) {
+			return $t_file;
+		}
+		$this->errors = $t_file->errors;
+		return null;
 	}
 	# ------------------------------------------------------
 }

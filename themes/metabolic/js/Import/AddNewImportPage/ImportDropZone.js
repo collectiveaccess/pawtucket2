@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ImportContext } from '../ImportContext';
 import Dropzone from "react-dropzone";
 import SelectedMediaList from './SelectedMediaList';
@@ -11,7 +11,26 @@ const siteBaseUrl = pawtucketUIApps.Import.data.siteBaseUrl;
 const ImportDropZone = (props) => {
 
   const { queue, setQueue, setUploadProgress, filesUploaded, setFilesUploaded, setUploadStatus, initialQueueLength, setInitialQueueLength, numFilesOnDrop, setNumFilesOnDrop, sessionKey, setSessionKey, filesSelected, setFilesSelected } = useContext(ImportContext);
+
+  const [connections, setConnections] = useState([]) /* List of open tus upload connections */
+  const [connectionIndex, setConnectionIndex] = useState(0) /* Index/key for next connection; changes for each allocated connection */
+  const [maxConnections, setMaxConnections] = useState(2)
+
+  // const [totalBytes, setTotalBytes] = useState(0)
   
+  useEffect(() => {
+    if (sessionKey == null && queue.length > 0) { //if there is no session key AND there are files in queue, create a new session
+      initNewSession()
+    }
+  }, [sessionKey, queue])
+
+  const initNewSession = () => {
+    getNewSession(baseUrl, function (data) {
+      console.log('newSession: ', data);
+      setSessionKey(data.sessionKey)
+    })
+  }
+
   useEffect(() => {
     processQueue();
   }),[queue];
@@ -19,92 +38,155 @@ const ImportDropZone = (props) => {
   const selectFiles = (e) => {
     let q = [];
     if (e.target) {  // From <input type="file" ... />
-    q.push(...e.target.files);
+      q.push(...e.target.files);
+      console.log("q target: ", q);
     }else {  // From dropzone
       q.push(...e);
+      // console.log("q: ", q);
     }
+    
     q = q.filter(f => f.size > 0);
+
+    // let tempTotalBytes = 0
+    // q.forEach(file => {
+    //   tempTotalBytes += file.size;
+    //   // console.log("tempTotalBytes: ", tempTotalBytes);
+    // });
+    // setTotalBytes(tempTotalBytes);
     
     let tempnumfiles = numFilesOnDrop;
     setNumFilesOnDrop(tempnumfiles + q.length);
-    
-    setQueue(q);
+
+      // setNumFilesOnDrop(q.length);
+      setQueue([...q]);
+      // setInitialQueueLength(q.length);
+
     let queueLength = initialQueueLength;
     setInitialQueueLength((q.length) + (queueLength));
   }
-
-  const initNewSession = () => {
-    getNewSession(baseUrl, function(data){
-      console.log('newSession: ', data);
-      setSessionKey(data.sessionKey)
-    })
-  } 
-
-  useEffect(() => {
-    if (sessionKey == null && queue.length > 0) { //if there is no session key AND there are files in queue, create a new session
-      initNewSession()
-    }
-  }, [sessionKey, queue])
+  // console.log("queue: ", queue);
+  // console.log("num files on drop: ", numFilesOnDrop);
+  // console.log("initialQueueLength: ", initialQueueLength);
 
   const processQueue = () => {
     let tempFilesUploaded = [...filesUploaded];
     let tempFilesSelected = [...filesSelected];
+
+    let tempConnectionIndex = connectionIndex;
+    let tempConnections = [...connections];
+
+    // let tempBytesUploaded = 0;
+
+    //maximum number of uploads happening at one time
+    // const maxConnections = 4
+    if (connections.length >= maxConnections) {
+    	console.log("max connections. skiping for now");
+      return;
+    }
+
     while(queue.length > 0 && sessionKey !== null){
-      // setUploadStatus('in_progress');
-      queue.forEach((file) => {
-        file = queue.shift();
-        console.log("processing file", file, queue);
+      if(connections.length >= maxConnections){
+        return;
+      }else{
+        // setUploadStatus('in_progress');
 
-        tempFilesSelected.push(file);
-        setFilesSelected([...tempFilesSelected]);
+        queue.forEach((file) => {
+          file = queue.shift();
+          if (!file) { return; }
 
-        //https://master.tus.io/files/
-        let tusEndpoint = siteBaseUrl + '/tus';
-        console.log("Upload to", tusEndpoint, sessionKey);
+          // console.log("processing file", file, queue);
+  
+          tempFilesSelected.push(file);
+          setFilesSelected([...tempFilesSelected]);
+  
+          //https://master.tus.io/files/
+          let tusEndpoint = siteBaseUrl + '/tus';
+           console.log("Upload to", tusEndpoint, sessionKey);
+          
+          var upload = new tus.Upload(file, {
+            endpoint: tusEndpoint,
+            retryDelays: [0, 1000, 3000, 5000],
+            chunkSize: 52428800,      // TODO: make configurable
+            metadata: {
+              filename: file.name,
+              filetype: file.type,
+              sessionKey: sessionKey,
+            },
+            onBeforeRequest: function (req) {
+              var xhr = req.getUnderlyingObject();
+              // console.log("set x-session-key to", sessionKey);
+              xhr.setRequestHeader('x-session-key', sessionKey);
+            },
+            onError: (error) => {
+              console.log("Failed because: " + error)
+            },
+            onProgress: (bytesUploaded, bytesTotal) => {
+              setUploadStatus('in_progress');
+              
+              // tempBytesUploaded += bytesUploaded
+              // tempBytesTotal += bytesTotal
+  
+              // var percentage = (tempBytesUploaded / totalBytes * 100).toFixed(2);
+              // setUploadProgress(percentage);
+              
+              var percentage = (bytesUploaded / bytesTotal * 100).toFixed(2);
+              setUploadProgress(percentage);
 
-        var upload = new tus.Upload(file, {
-          endpoint: tusEndpoint,
-          retryDelays: [0, 1000, 3000, 5000],
-          chunkSize: 52428800,      // TODO: make configurable
-          metadata: {
-            filename: file.name,
-            filetype: file.type,
-            sessionKey: sessionKey,
-          },
-          onBeforeRequest: function (req) {
-            var xhr = req.getUnderlyingObject();
-            // console.log("set x-session-key to", sessionKey);
-            xhr.setRequestHeader('x-session-key', sessionKey);
-          },
-          onError: (error) => {
-            console.log("Failed because: " + error)
-          },
-          onProgress: (bytesUploaded, bytesTotal) => {
-            setUploadStatus('in_progress');
+              console.log(file.name, bytesUploaded, bytesTotal, "Percentage: " + percentage + "%")
+            },
+            onSuccess: () => {
 
-            var percentage = (bytesUploaded / bytesTotal * 100).toFixed(2);
-            setUploadProgress(percentage);
-            // console.log(bytesUploaded, bytesTotal, "Percentage: " + percentage + "%")
-          },
-          onSuccess: () => {
-            tempFilesUploaded.push(file);
-            setFilesUploaded([...tempFilesUploaded]);
-            // console.log("Download %s from %s", upload.file.name, upload.url)
-          },
-        })
-        upload.start();
+              tempFilesUploaded.push(file);
+              setFilesUploaded([...tempFilesUploaded]);
+              console.log("Sucess: ", file.name)
+              console.log("Current Files Uploaded: ", filesUploaded)
 
-      }); //foreach
+              //delete connection from connection index on success
+              tempConnections.splice(tempConnectionIndex, 1)
+              tempConnectionIndex--
+  
+              //set to state
+              setConnections([...tempConnections])
+              setConnectionIndex(tempConnectionIndex)
+
+              if(sessionKey !== null){
+                processQueue();
+              }
+
+            },
+          })
+  
+          //this is a connection object to add to the connections array
+          let tempConnection;
+          tempConnection = {
+            upload: upload,
+            name: file.name
+          }
+  
+          //add connection object to array at specified index
+          tempConnections.splice(tempConnectionIndex, 0, tempConnection);
+  
+          //iterate connection index
+          tempConnectionIndex++
+  
+          //set them to state
+          setConnections([...tempConnections]);
+          setConnectionIndex(tempConnectionIndex)
+  
+          upload.start();
+        }); //foreach
+        
+      } //end of else
 
     } //while
     if ((initialQueueLength == filesUploaded.length) && (filesUploaded.length > 0)){
       setUploadStatus('complete');
     }
+    
   }
-
+  
+  // console.log("files Uploaded: ", filesUploaded);
   // console.log('====================================');
-  // console.log("uploadStatus : ", uploadStatus);
-
   return (
     <div>
       <div className="mb-3" style={{ backgroundColor: '#D8D7CE', paddingLeft: '5px' }}>Import Files</div>

@@ -16,7 +16,7 @@ let debounce_saveFormDataForSession;
 
 const ImportMetadataForm = (props) => {
 
-  const { uploadStatus, setIsSubmitted, formData, setFormData, setViewMode, schema, setSchema, formCode, setFormCode, sessionKey, setSessionKey } = useContext(ImportContext);
+  const { uploadStatus, setIsSubmitted, formData, setFormData, setViewMode, schema, setSchema, formCode, setFormCode, sessionKey, setSessionKey, viewMode } = useContext(ImportContext);
 
   const [uiSchema, setUiSchema] = useState({
     "ca_objects.description": {
@@ -32,17 +32,21 @@ const ImportMetadataForm = (props) => {
     }
   })
   
-  useEffect(() => {
-    getFormList(baseUrl, function(data){
-      // console.log("formList: ", data);
-      setFormCode(data.forms[0].code)
-    })
-  }, [])
-  
+  // useEffect(() => {
+  //   getFormList(baseUrl, function(data){
+  //     // console.log("formList: ", data);
+  //     setFormCode(data.forms[0].code)
+  //   })
+  // }, [])
+
+  // useEffect(() => {
+  //   saveFormData(formData)
+  // }, [viewMode])
+
 	useEffect(() => {
     if(formCode !== null){
       getForm(baseUrl, formCode, function(data){
-        // console.log("form: ", data);
+        console.log("form: ", data);
         let form = { ...data }
         let jsonProperties = JSON.parse(data.properties);
         form.properties = jsonProperties;
@@ -53,7 +57,7 @@ const ImportMetadataForm = (props) => {
 
   const initNewSession = (callback) => {
     getNewSession(baseUrl, function (data) {
-      console.log('newSession: ', data, data.sessionKey);
+      // console.log('newSession: ', data, data.sessionKey);
       setSessionKey(data.sessionKey);
       callback(data.sessionKey);
     });
@@ -62,7 +66,7 @@ const ImportMetadataForm = (props) => {
   const submitForm = () => {    
     // submit form
     submitSession(baseUrl, sessionKey, formData, function (data) {	// write any data to session and mark as submitted
-      console.log('submitSession: ', data);
+      // console.log('submitSession: ', data);
 	  });
     
     confirmAlert({
@@ -113,7 +117,7 @@ const ImportMetadataForm = (props) => {
     debounce_saveFormDataForSession(sessionKey, formData); // write data to session
   }
   
-  // console.log("formData: ", formData);
+  console.log("formData: ", formData);
   // console.log("schema: ", schema);
   return (
     <div>
