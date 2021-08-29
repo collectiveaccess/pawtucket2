@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import ReactDOM from "react-dom";
 import { MediaViewerList } from '../MediaViewer/MediaViewerList';
 import { VideoViewer } from '../MediaViewer/VideoViewer';
-import { PDFViewer } from '../MediaViewer/PDFViewer';
+import { DocumentViewer } from '../MediaViewer/DocumentViewer';
 import { ImageViewer } from '../MediaViewer/ImageViewer';
 
 const axios = require('axios');
@@ -148,7 +148,7 @@ class MediaViewer extends React.Component {
 				case 'document':
 					viewer = (
 						<div className={classes.join(' ')}>
-							<PDFViewer url={mediaInfo} {...standardProps} />
+							<DocumentViewer url={mediaInfo} {...standardProps} />
 						</div>
 					);
 					break;
@@ -181,7 +181,7 @@ class MediaViewer extends React.Component {
 				case 'document':
 					viewer = (
 						<div className={classes.join(' ')}>
-							<PDFViewer url={mediaInfo.url} {...standardProps} />
+							<DocumentViewer url={mediaInfo.url} {...standardProps} />
 						</div>
 					);
 					break;
@@ -214,7 +214,7 @@ class MediaViewer extends React.Component {
 		// 	case 'document':
 		// 		viewer = (
 		// 			<div className={classes.join(' ')}>
-		// 				<PDFViewer url={mediaInfo.url} {...standardProps} />
+		// 				<DocumentViewer url={mediaInfo.url} {...standardProps} />
 		// 			</div>
 		// 		);
 		// 		break;

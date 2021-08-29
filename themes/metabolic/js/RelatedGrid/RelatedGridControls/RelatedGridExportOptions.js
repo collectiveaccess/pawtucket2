@@ -56,10 +56,10 @@ const RelatedGridExportOptions = (props) => {
   return (
     <div id="bExportOptions">
       <div className="dropdown show">
-        <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a href="#" role="button" id="exportOptionsIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <ion-icon name="download"></ion-icon>
         </a>
-        <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+        <div className="dropdown-menu dropdown-menu-right" aria-labelledby="exportOptionsIcon">
           {(selectedGridItems.length >= 1) ?
             <a class="dropdown-item" onClick={(e)=>downloadSelectedItems(e)}>Download Selected Items</a>
             :

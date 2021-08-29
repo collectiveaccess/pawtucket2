@@ -24,11 +24,16 @@ const GridContextProvider = (props) => {
   const [start, setStart] = useState(0); //start variable for loading initial number of grid items
 
   const [totalItems, setTotalItems] = useState(0); // Total number of items in a related grid
+  
+  const [sort, setSort] = useState(null); // Sort criteria
+  
+  const [sortDirection, setSortDirection] = useState('ASC'); // Sort direction
 
   return (
     <GridContext.Provider
     value={{currentlySelectedItem, setCurrentlySelectedItem, data, setData, rawData, setRawData, start, setStart,
-        itemsPerPage, setItemsPerPage, totalItems, setTotalItems, currentlySelectedRow, setCurrentlySelectedRow, itemIds, setItemIds, showSelectButtons, setShowSelectButtons, selectedGridItems, setSelectedGridItems, lightboxCreated, setLightboxCreated}}>
+        itemsPerPage, setItemsPerPage, totalItems, setTotalItems, currentlySelectedRow, setCurrentlySelectedRow, itemIds, setItemIds, showSelectButtons, setShowSelectButtons, 
+        selectedGridItems, setSelectedGridItems, lightboxCreated, setLightboxCreated, sort, setSort, sortDirection, setSortDirection}}>
         {props.children}
     </GridContext.Provider>
   )

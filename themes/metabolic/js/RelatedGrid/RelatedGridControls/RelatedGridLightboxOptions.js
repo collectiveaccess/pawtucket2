@@ -23,10 +23,9 @@ function createLightbox(uri, tokens , name, ids, callback) {
 }
 
 const RelatedGridLightboxOptions = (props) => {
-
   const { selectedGridItems, itemIds, setLightboxCreated } = useContext(GridContext);
 
-	//Auth Tokens in Local State
+	// Auth Tokens in Local State
 	const [tokens, setTokens] = useState({
 		refresh_token: refreshToken,
 		access_token: null
@@ -40,7 +39,7 @@ const RelatedGridLightboxOptions = (props) => {
 				access_token: data.data.refresh.jwt,
 			});
 		});
-  }, [tokens]);
+  }, []);	// [] = run once on startuo
 
   const addSelectedItemsToNewLightbox = (e) => {
 		let ids = String(selectedGridItems.join(','));
@@ -52,7 +51,8 @@ const RelatedGridLightboxOptions = (props) => {
 
   const addResultsToNewLightbox = (e) => {
 		let ids = String(itemIds.join(','));
-		createLightbox(lightboxBaseUrl, tokens, 'New Lightbox', ids, function(data){
+		createLightbox(lightboxBaseUrl, tokens, 'New Lightbox', ids, function(data) {
+			// noop
 		});
 		setLightboxCreated(true);
 		e.preventDefault();
@@ -60,13 +60,13 @@ const RelatedGridLightboxOptions = (props) => {
 
 
   return (
-    <div id="bSelectOptions">
+    <div id="bLightboxOptions">
       <div className="dropdown show">
-        <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a href="#" role="button" id="lightboxOptionIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <ion-icon name="folder"></ion-icon>
         </a>
 
-        <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+        <div className="dropdown-menu dropdown-menu-right" aria-labelledby="lightboxOptionIcon">
           <a className="dropdown-item" onClick={(selectedGridItems.length > 0) ? (e) => addSelectedItemsToNewLightbox(e) : (e) => addResultsToNewLightbox(e)}>
           <ion-icon name="add"></ion-icon> Create new lightbox from {(selectedGridItems.length > 0) ? "selected items" : "results"}</a>
         </div>
