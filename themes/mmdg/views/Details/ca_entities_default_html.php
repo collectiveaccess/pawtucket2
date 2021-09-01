@@ -20,7 +20,6 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 			<div class="row">
 				<div class='col-md-12 col-lg-12 text-center'>
-					<H1>{{{^ca_entities.type_id}}}</H1>
 					<H2>{{{^ca_entities.preferred_labels.displayname}}}</H2>
 					<hr/>
 				</div><!-- end col -->
@@ -68,7 +67,7 @@
 							print "<div class='unit detailLinksGrid'><label>".ucfirst($vs_role)."</label>";
 							$i = 0;
 							$c = 0;
-							if(sizeof($va_links) > 12){
+							if(sizeof($va_links) > 18){
 								$vb_show_view_all = true;
 							}
 							foreach($va_links as $vs_link){
@@ -82,7 +81,7 @@
 									print "</div>";
 									$i = 0;
 								}
-								if($c == 12){
+								if($c == 18){
 									break;
 								}
 							}
@@ -108,7 +107,7 @@
 							print "<div class='unit detailLinksGrid'><label>".ucfirst($vs_role)."</label>";
 							$i = 0;
 							$c = 0;
-							if(sizeof($va_links) > 12){
+							if(sizeof($va_links) > 18){
 								$vb_show_view_all = true;
 							}
 							foreach($va_links as $vs_link){
@@ -122,7 +121,7 @@
 									print "</div>";
 									$i = 0;
 								}
-								if($c == 12){
+								if($c == 18){
 									break;
 								}
 							}
@@ -143,9 +142,9 @@
 			</div><!-- end row -->
 			
 {{{<ifcount code="ca_objects" min="1">
-			<div class="unit"><H3>Related Object<ifcount code="ca_objects" min="2">s</ifcount></H3>
+			<div class="unit"><H3>Media</H3>
 				<div id="browseResultsContainer">
-					<unit relativeTo="ca_objects" length="12" delimiter=" ">
+					<unit relativeTo="ca_objects" length="21" delimiter=" ">
 						<div class="bResultItemCol col-xs-12 col-sm-4">
 							<div class="bResultItem" id="row^ca_objects.object_id">
 								<div class="bResultItemContent"><div class="text-center bResultItemImg"><case><ifcount code="ca_object_representations.media.medium" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" min="0" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></case></div>
@@ -159,9 +158,9 @@
 					</unit>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end unit -->
-			<ifcount code="ca_objects" min="12">
+			<ifcount code="ca_objects" min="21">
 				<div class="unit text-center">
-					<?php print caNavLink($this->request, "View All Objects", "btn btn-default", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $t_item->get("ca_entities.entity_id"))); ?>
+					<?php print caNavLink($this->request, "View All Media", "btn btn-default", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $t_item->get("ca_entities.entity_id"))); ?>
 				</div>
 			</ifcount>
 </ifcount>}}}
