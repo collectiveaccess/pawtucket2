@@ -115,6 +115,9 @@
 </div>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
+		
+		$('a').tooltip();
+		$('.btn-group span').tooltip();
 		jQuery('#confirm-delete').on('show.bs.modal', function(e) {
 			var set_id = jQuery(e.relatedTarget).data('set_id');
 			var set_name = jQuery(e.relatedTarget).data('set_name');

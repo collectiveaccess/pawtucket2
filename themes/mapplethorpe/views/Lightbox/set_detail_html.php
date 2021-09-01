@@ -305,7 +305,8 @@ if (!$vb_ajax) {    // !ajax
         <div
             class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 <?php
-			print "<div class='lightboxAsk'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About This ".$vs_lightbox_displayname, "", "", "contact", "form", array('id' => $vn_set_id, 'table' => 'ca_sets'))."</div><hr/>";
+			print "<div class='lightboxShareLink'><span class='glyphicon glyphicon-envelope'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'shareSetForm', array())."\"); return false;' >"._t("Share %1", ucfirst($vs_lightbox_displayname))."</a></div><hr/>";
+			#print "<div class='lightboxAsk'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About This ".$vs_lightbox_displayname, "", "", "contact", "form", array('id' => $vn_set_id, 'table' => 'ca_sets'))."</div><hr/>";
 			
             if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
@@ -397,7 +398,9 @@ if (!$vb_ajax) {    // !ajax
     });
 
     jQuery(document).ready(function() {
-        $("#lbSetResultLoadContainer").sortable({
+        $('a').tooltip();
+		$('.btn-group span').tooltip();
+		$("#lbSetResultLoadContainer").sortable({
             cursor: "move",
             opacity: 0.8,
             helper: 'clone',

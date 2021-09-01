@@ -46,7 +46,7 @@ src:url("/dv2/2/2a2facd1-dbbe-4356-8958-4553d1d8a8a6.eot?d44f19a684109620e484167
 
 
 body{
-    font-family: 'Palatino LT W01 Roman'; font-size:14px;
+    font-family: 'Palatino LT W01 Roman', serif; font-size:14px;
     font: 14px 'Palatino LT W01 Roman', serif; /*re-declare fix*/
     line-height:normal; /*keep normal*/
 	background: linear-gradient(180deg, rgba(247,247,247,1) 0%, rgba(252,252,252,1) 100%);
@@ -82,17 +82,35 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6 {
 	box-shadow:none;
 }
 
-a, a:hover{
+a, a:hover, a:focus{
 	color:#89000d;
 }
 label{
-	font-family: 'Palatino LT W01 Roman';
+	font-family: 'Palatino LT W01 Roman', serif;
 }
 .btn-default, .browse .btn, .sets .btn{
 	background-color:#89000d;
 }
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
 	background-color:#5c0009;
+}
+.btn-light{
+	background-color:#FFF;
+	color:#89000d !important;
+	-webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.3);
+	box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.3);
+	letter-spacing: 1px;
+	font-family: Lato;
+	text-transform:uppercase;
+}
+.btn-light:hover, .btn-light:focus, .btn-light:active, .btn-light.active, .open .dropdown-toggle.btn-light{
+	background-color:#FFF;
+	color:#89000d !important;
+	-webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.5);
+	box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.5);
+	text-decoration:none !important;
 }
 .form-control:focus {
     border-color: #000;
@@ -155,18 +173,24 @@ label{
 #pageArea.front, #pageArea.loginreg{
 	opacity:0;
 }
-#pageArea.front .notificationMessage, #pageArea.loginreg .notificationMessage{
+#pageArea.front .notificationMessage, #pageArea.loginreg .notificationMessage, #pageArea.detail .notificationMessage{
 	position:absolute;
 	top:100px;
 	width:100%;
 	z-index:10;
+	font-family: lato;
+}
+#pageArea.detail .notificationMessage{
+	width: 50%;
+	left: 25%;
+	top:50px;
 }
 .hpImage img, .loginImage img{
 	width:100%;
 	height:auto;
 }
 .hpIntro H1, .loginIntro H1{
-	font-family: 'Palatino LT W01 Roman';
+	font-family: 'Palatino LT W01 Roman', serif;
 	font-size: 20px !important;
 	color: #000000;
 	line-height: 1.5 !important;
@@ -186,6 +210,15 @@ label{
 .hpIntro .btn{
 	color:#FFF;
 	text-decoration:none;
+	margin-top:15px;
+}
+.hpTerms{
+	display:none;
+	margin-top:10px;
+}
+.hpTermsText{
+	overflow:scroll;
+	max-height:300px;
 }
 /*
 @media (min-width: 768px) {
@@ -261,6 +294,14 @@ a.browseRemoveFacet .glyphicon {
 #bRefine H2{
 	color:#333;
 	font-size:20px;
+}
+#bRefine.fixed H2{
+	margin-top:125px;
+}
+@media (min-width: 1010px) {
+	#bRefine.fixed H2{
+		margin-top:75px;
+	}
 }
 #bRefine H3[type="button"]{
 	cursor: pointer;
@@ -354,6 +395,19 @@ a.facetApply {
     position:absolute;
     bottom:0px;
     left:0px;
+}
+.browseTop{
+	position: fixed;
+	z-index: 2000;
+	bottom: 0px;
+	right: 10px;
+	display:none;
+}
+.results a.btn.browseTop .glyphicon{
+	color:#fff !important;
+}
+.results a.btn.browseTop {
+	background-color:#757575;
 }
 /* search within */
 @media(max-width:768px){
@@ -459,6 +513,14 @@ a.facetApply {
 .resultTextImg small, .resultTextList small {
     color: #777;
 }
+.multiReps{
+	position:absolute;
+	top:15px;
+	right:25px;
+	font-size:20px;
+	padding: 5px 5px 3px 5px;
+	background-color: #FFF;
+}
 #bRefine {
     background-color: transparent;
 }
@@ -497,14 +559,18 @@ a.facetApply {
 .detail .detailTool span, .detail .detailTool i{
 	color: #000;
 }
-.detail .detailTool a, .lightboxAsk span.glyphicon, .lightboxAsk a{
+.detail .detailTool a, .lightboxAsk span.glyphicon, .lightboxAsk a, .lightboxShareLink span.glyphicon, .lightboxShareLink a{
 	color: #000000;
 	/*font-family: 'Palatino LT W01 Roman';*/
 }
-.lightboxAsk span.glyphicon{
+.detail a.btn-default, .detail a.btn-default:hover{
+	color:#FFFFFF;
+	text-decoration:none;
+}
+.lightboxAsk span.glyphicon, .lightboxShareLink span.glyphicon{
 	margin-right: 5px;
 }
-.lightboxAsk{
+.lightboxAsk, .lightboxShareLink{
 	font-size:12px;
 	text-transform:uppercase;
 	font-family: lato;
@@ -512,6 +578,10 @@ a.facetApply {
 }
 .detailMediaToolbar, .detail .repViewerCont:hover .detailMediaToolbar{
 	display:none;
+}
+.repViewerCont .caption{
+	font-size:15px;
+	padding-top:5px;
 }
 .detail .detailBg{
 	background-color:#FFF;

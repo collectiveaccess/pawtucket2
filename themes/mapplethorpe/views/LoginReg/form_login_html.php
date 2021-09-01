@@ -65,7 +65,7 @@
 							<input type="checkbox" id="login_terms" name="login_terms" value="accept">
 						</div>
 						<div class="col-sm-10">
-							I agree to the <?php print caNavLink($this->request, _t("Terms & Conditions"), "", "", "About", "TermsConditions"); ?>
+							I agree to the <a href="#" onClick="$('.hpTerms').slideToggle(); return false">Terms & Conditions</a>
 						</div><!-- end col-sm-10 -->
 					</div><!-- end form-group -->
 					<div class="form-group">
@@ -87,6 +87,13 @@
 						</div>
 					</div><!-- end form-group -->
 				</form>
+				<div class="hpTerms">
+					<div class="hpTermsText">
+						<b>Terms & Conditions</b><br/>
+						{{{terms_conditions}}}
+					</div>
+					<br/><p class="text-center"><a href="#" onClick="$('.hpTerms').slideToggle(); return false" class="btn btn-small btn-default"><span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span> Close</a></p>
+				</div>
 			</div><!-- end loginIntro -->
 		</div><!-- end col -->
 		<div class="col-sm-6 col-md-7">
