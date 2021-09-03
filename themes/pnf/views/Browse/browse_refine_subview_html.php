@@ -33,6 +33,7 @@
 	$vs_view			= $this->getVar('view');
 	$vs_browse_type		= $this->getVar('browse_type');
 	$o_browse			= $this->getVar('browse');
+	$va_browse_info 	= $this->getVar("browseInfo");
 	
 	$vn_facet_display_length_initial = 4;
 	$vn_facet_display_length_maximum = 60;
@@ -40,11 +41,13 @@
 	if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
+		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 		print "<H3>"._t("Filter by")."</H3>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
+			$va_multiple_selection_facet_list[$vs_facet_name] = caGetOption('multiple', $va_facet_info, false, ['castTo' => 'boolean']);
 			
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-				print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+				print "<H5>".$va_facet_info['label_singular']."</H5>";
 ?>
 					<script type="text/javascript">
 						jQuery(document).ready(function() {
@@ -55,7 +58,7 @@
 <?php
 			} else {				
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-				print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+				print "<h5>".$va_facet_info['label_singular']."</h5><div class='facetContainer' id='{$vs_facet_name}_facet_container'>"; 
 				switch($va_facet_info["group_mode"]){
 					case "alphabetical":
 					case "list":
@@ -63,11 +66,16 @@
 						$vn_facet_size = sizeof($va_facet_info['content']);
 						$vn_c = 0;
 						foreach($va_facet_info['content'] as $va_item) {
-							print "<div>".caNavLink($this->request, $va_item['label'], '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+							if ($va_multiple_selection_facet_list[$vs_facet_name]) {
+								print "<div class='facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>";
+							}else{
+								print "<div>";
+							}
+							print caNavLink($this->request, $va_item['label'], '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 							$vn_c++;
 						
 							if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
-								print "<div id='{$vs_facet_name}_more' style='display: none;'>";
+								print "<span id='{$vs_facet_name}_more' style='display: none;'>";
 							} else {
 								if(($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
 									break;
@@ -75,7 +83,7 @@
 							}
 						}
 						if (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
-							print "</div>\n";
+							print "</span>\n";
 						
 							$vs_link_open_text = _t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial);
 							$vs_link_close_text = _t("close", $vn_facet_size - $vn_facet_display_length_initial);
@@ -86,19 +94,42 @@
 					break;
 					# ---------------------------------------------
 				}
+				if ($va_multiple_selection_facet_list[$vs_facet_name]) {
+?>
+<a href="#" id="<?php print $vs_facet_name; ?>_facet_apply" data-facet="<?php print $vs_facet_name; ?>" class="facetApply">Apply</a>
+<?php
+				}
+				print "</div>";
+
 			}
 		}
 		print "</div><!-- end bRefine -->\n";
 ?>
 	<script type="text/javascript">
+		function selectFacetMultiple(e){
+			if (e.attr('facet_item_selected') == '1') {
+				e.attr('facet_item_selected', '');
+			} else {
+				e.attr('facet_item_selected', '1');
+			}
+		
+			if (jQuery("div.facetItem[facet_item_selected='1']").length > 0) {
+				jQuery("#" + e.data('facet') + "_facet_apply").show();
+			} else {
+				jQuery("#" + e.data('facet') + "_facet_apply").hide();
+			}
+		
+			return false;
+	
+		}
 		jQuery(document).ready(function() {
             if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
-				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
+				var offset = jQuery('#bRefine').height(jQuery(window).height() - 190).offset();   // 0px top + (2 * 15px padding) = 30px
 				var panelWidth = jQuery('#bRefine').width();
 				jQuery(window).scroll(function () {
 					var scrollTop = $(window).scrollTop();
 					// check the visible top of the browser
-					if (offset.top<scrollTop) {
+					if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height()) > scrollTop)) {
 						jQuery('#bRefine').addClass('fixed');
 						jQuery('#bRefine').width(panelWidth);
 					} else {
@@ -106,6 +137,41 @@
 					}
 				});
             }
+            
+            var multiple_selection_facet_list = <?php print json_encode($va_multiple_selection_facet_list); ?>;
+            
+            jQuery(".facetApply").hide();
+            
+            jQuery(".facetItem").on('click', function(e) { 
+            	if (!multiple_selection_facet_list[jQuery(this).data('facet')]) { return; }
+            	if (jQuery(this).attr('facet_item_selected') == '1') {
+            		jQuery(this).attr('facet_item_selected', '');
+            	} else {
+            		jQuery(this).attr('facet_item_selected', '1');
+            	}
+            	
+            	if (jQuery("div.facetItem[facet_item_selected='1']").length > 0) {
+            		jQuery("#" + jQuery(this).data('facet') + "_facet_apply").show();
+            	} else {
+            		jQuery("#" + jQuery(this).data('facet') + "_facet_apply").hide();
+            	}
+            	
+            	e.preventDefault();
+            	return false;
+            });
+            
+            jQuery(".facetApply").on('click', function(e) { 
+            	var facet = jQuery(this).data('facet');
+            	
+            	var ids = [];
+            	jQuery.each(jQuery("#" + facet + "_facet_container").find("[facet_item_selected=1]"), function(k,v) {
+            		ids.push(jQuery(v).data('facet_item_id'));
+            	});
+            	
+            	window.location = '<?php print caNavUrl($this->request, '*', '*','*', array('key' => $vs_key, 'view' => $vs_view)); ?>/facet/' + facet + '/id/' + ids.join('|');
+            	
+            	e.preventDefault();
+            });
 		});
 	</script>
 <?php	

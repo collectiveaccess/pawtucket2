@@ -45,6 +45,7 @@
 	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
+
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
@@ -90,16 +91,42 @@
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_uniform = null;
-				if ($vs_uniform = $qr_res->get('ca_objects.CCSSUSA_Uniform')) {
-					$vs_label_detail_link 	= caDetailLink($this->request, $vs_uniform, '', $vs_table, $vn_id);
-				} else {
-					$vs_label_detail_link 	= caDetailLink($this->request, '[Short title]', '', $vs_table, $vn_id);
+				if (($vs_table === 'ca_objects') && (strToLower($this->request->getAction()) == "objects")) {
+					if ($vs_uniform = $qr_res->get('ca_objects.CCSSUSA_Uniform')) {
+						$vs_label_detail_link 	= caDetailLink($this->request, $vs_uniform, '', $vs_table, $vn_id);
+					} else {
+						$vs_label_detail_link 	= caDetailLink($this->request, '[Short title]', '', $vs_table, $vn_id);
+					}
+				}elseif(($vs_table === 'ca_occurrences') && (in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies")))){
+# --- glossary result format
+					$va_cross_refs = $qr_res->get("ca_occurrences.related", array("restrictToRelationshipTypes" => array("related"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
+					$vb_cross_ref = false;
+					if(is_array($va_cross_refs) && sizeof($va_cross_refs)){
+						foreach($va_cross_refs as $va_cross_ref){
+							if($va_cross_ref["direction"] == "ltor"){
+								$vs_label_detail_link = $qr_res->getWithTemplate('^ca_occurrences.preferred_labels <i>see</i> <unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.preferred_labels</l></unit>');	
+								$vb_cross_ref = true;
+								break;
+							}
+						}
+					}
+					if(!$vb_cross_ref){
+						$vs_label_detail_link = $qr_res->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>');	
+					}				
+				}else{
+					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					#if ($vs_table === 'ca_collections') {
+						#if($qr_res->get("ca_collections.preferred_labels") != $qr_res->get("ca_collections.institution", array("convertCodesToDisplayText" => true))){
+							#$vs_label_detail_link .= "<br/>".$qr_res->get("ca_collections.institution", array("convertCodesToDisplayText" => true));
+						#}
+					#}
 				}
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
 				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
-				
+				$vs_author = "";
+				$vs_collection = "";
 				if(!$vs_image){
 					if ($vs_table == 'ca_objects') {
 						$t_list_item->load($qr_res->get("type_id"));
@@ -114,6 +141,10 @@
 					}
 				}
 				if ($vs_table === 'ca_objects') {
+					$vs_author = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '));
+					if($vs_author){
+						$vs_author = "<b>".$vs_author."</b><br/>";
+					}
 					if ($va_date = $qr_res->get('ca_objects.260_date', array('delimiter' => ', '))) {
 
 					} else {
@@ -122,30 +153,38 @@
 					if ($va_pub_info = $qr_res->get('ca_objects.publication_description')) {
 					
 					} else {$va_pub_info = null; }
-					$vs_info = "<p>".$va_date."<br/>".$va_pub_info."</p>";
+					if($vs_collection = $qr_res->getWithTemplate('<unit relativeTo="ca_collections"><ifdef code="ca_collections.parent.preferred_labels.name">^ca_collections.parent.preferred_labels.name: </ifdef>^ca_collections.preferred_labels.name</unit>')){
+						$vs_collection = "<br/><small>".$vs_collection."</small>";
+					}
+					$vs_info = "<p>".$va_date."<br/>".$va_pub_info.$vs_collection."</p>";
 				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
-				
+				if($vs_table === 'ca_collections'){
+					$vs_rep_detail_link = "";
+				}
 				$vs_add_to_set_link = "";
 				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 				}
 				
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
-
+if(in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies"))){
+				print "<div class='bResultListItemCol col-xs-12 col-sm-12 col-md-4'><div class='bResultListSimpleResult'>{$vs_label_detail_link}</div></div>";
+}else{
 				print "
 	<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-			<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+			<div class='bResultListItemContent'>".(($vs_table != 'ca_collections') ? "<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>" : "")."
 				<div class='bResultListItemText'>
-					{$vs_label_detail_link}{$vs_info}
+					{$vs_author}{$vs_label_detail_link}{$vs_info}
 				</div><!-- end bResultListItemText -->
 			</div><!-- end bResultListItemContent -->
 		</div><!-- end bResultListItem -->
 	</div><!-- end col -->";
 				
 				$vn_c++;
+}
 			}
 			
 			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));

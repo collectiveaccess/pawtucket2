@@ -79,14 +79,17 @@
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
 			
-			if ($vs_table != 'ca_objects') {
+			# --- institutions don't have objects linked to them - they are linked to the collections so this won't work
+			if (!in_array($vs_table, array('ca_objects', 'ca_entities'))) {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
 				}
 			
 				$qr_res->seek($vn_start);
+				
 				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				
 			} else {
 				$va_images = null;
 			}
@@ -116,7 +119,20 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					switch($vs_table){
+						case "ca_objects":
+							$vs_image = $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values));
+						break;
+						# ----------
+						case "ca_entities":
+							$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_collections' length='1'><unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.small</unit></unit>");
+						break;
+						# ----------
+						default:
+							$vs_image = $va_images[$vn_id];
+						break;
+						# ----------
+					}
 				
 					if(!$vs_image){
 						if ($vs_table == 'ca_objects') {
