@@ -219,6 +219,7 @@ class MediaUploadManager {
 					if(isset($importer_forms[$m[1]]) && is_array($form_info = $importer_forms[$m[1]]) && is_array($form_info['content'])) {
 						$disp_template = $form_info['display'];
 						$form_data = caUnSerializeForDatabase($s['metadata']);
+						if(isset($form_data['data'])) { $form_data = $form_data['data']; }
 						unset($s['metadata']);
 						if(is_array($form_data) && is_array($form_info['content'])) {
 							foreach($form_info['content'] as $k => $v) {
@@ -227,7 +228,8 @@ class MediaUploadManager {
 								}
 							}
 							$s['label'] = caProcessTemplate($disp_template, $form_data);
-						} else {
+						} 
+						if(!trim($s['label'])) {
 							$s['label'] = _t('[EMPTY]');
 						}
 					}

@@ -287,12 +287,15 @@ class ca_media_upload_sessions extends BaseModel {
 	 *
 	 * @return array
 	 */
-	public function getFileList() : ?array {
-		if(!$this->isLoaded()) { return null; }
+	public function getFileList(?array $options=null) : ?array {
+		if(!($session_id = caGetOption('session_id', $options, null))){
+			$session_id = $this->getPrimaryKey();
+		} 
+		if(!$session_id) { return null; }
 		
 		$db = $this->getDb();
 		
-		$qr = $db->query("SELECT * FROM ca_media_upload_session_files WHERE session_id = ?", [$this->getPrimaryKey()]);
+		$qr = $db->query("SELECT * FROM ca_media_upload_session_files WHERE session_id = ?", [$session_id]);
 		
 		$files = [];
 		while($qr->nextRow()) {
@@ -301,6 +304,16 @@ class ca_media_upload_sessions extends BaseModel {
 		}
 		
 		return $files;
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array
+	 */
+	public static function getFileListForSession(int $session_id) : ?array {
+		$t = new ca_media_upload_sessions();
+		return $t->getFileList(['session_id' => $session_id]);
 	}
 	# ------------------------------------------------------
 	/**

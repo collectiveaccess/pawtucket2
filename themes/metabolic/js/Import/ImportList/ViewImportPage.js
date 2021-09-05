@@ -55,7 +55,7 @@ const ViewImportPage = (props) => {
             }
           }
 
-          console.log("tempFormData: ", tempFormData);
+          // console.log("tempFormData: ", tempFormData);
 
           setFormData(tempFormData);
 
@@ -76,12 +76,32 @@ const ViewImportPage = (props) => {
   if(formData !== null && schemaProperties){
     return (
       <div className='container-fluid' style={{ maxWidth: '60%' }}>
-        <button type='button' className='btn btn-secondary mb-5' onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
+        <button type='button' className='btn btn-secondary mb-4' onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
 
         <h2 className="mb-2">Files Uploaded:</h2>
-        {(previousFilesUploaded.length > 10) ? 
+        {(previousFilesUploaded.length > 100) ?
+          <div className="mt-3 overflow-auto" style={{ width: "100%", maxHeight: "200px", boxShadow: "2px 2px 2px 2px #D8D7CE" }}>
+            {/* <h2 className="p-1"><strong>Previously Uploaded Files: </strong></h2> */}
+            <ul className="mb-0">
+              {prevFiles.slice(0, 100).map((file, index) => {
+                return <li className="mb-0" key={index}>{file}</li>
+              })}
+            </ul>
+            <p className="p-1"><strong>and {prevFiles.length - 100} more</strong></p>
+          </div>
+          :
+          <div className="mt-3 overflow-auto" style={{ width: "100%", maxHeight: "200px", boxShadow: "2px 2px 2px 2px #D8D7CE" }}>
+            {/* <h2 className="p-1"><strong>Previously Uploaded Files: </strong></h2> */}
+            <ul className="mb-0">
+              {prevFiles.map((file, index) => {
+                return <li className="mb-0" key={index}>{file}</li>
+              })}
+            </ul>
+          </div>
+        }
+        {/* {(previousFilesUploaded.length > 10) ? 
           <p>{prevFiles.slice(0, 10).join(", ")} <strong> and {prevFiles.length - 10} more</strong></p>
-        : <p>{prevFiles.join(", ")}</p>}
+        : <p>{prevFiles.join(", ")}</p>} */}
 
         <div className='row mt-5 mb-2'>
           <div className='col text-left'>
@@ -92,7 +112,7 @@ const ViewImportPage = (props) => {
         <table className="table mb-5">
           <tbody>
             {formData.map((field, index) => {
-              console.log("field", field);
+              // console.log("field", field);
               let label = field[0];
               return(
                 <tr key={index}>

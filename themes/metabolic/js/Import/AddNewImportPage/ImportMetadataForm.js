@@ -18,48 +18,37 @@ const ImportMetadataForm = (props) => {
 
   const { uploadStatus, setIsSubmitted, formData, setFormData, setViewMode, schema, setSchema, formCode, setFormCode, sessionKey, setSessionKey, viewMode } = useContext(ImportContext);
 
-  const [uiSchema, setUiSchema] = useState({
-    "ca_objects.description": {
-      "ui:widget": "textarea"
-    },
-    "ca_entities" : {
-      "ui:field": "typeahead",
-      "typeahead": {
-        "id": "entities",
-        "minLength": 0,
-        "options": ["Selina", "Seth", "Maria", "Red", "Lauren"],
-      }
-    }
-  })
+  const [uiSchema, setUiSchema] = useState({})
   
-  // useEffect(() => {
-  //   getFormList(baseUrl, function(data){
-  //     // console.log("formList: ", data);
-  //     setFormCode(data.forms[0].code)
-  //   })
-  // }, [])
-
-  // useEffect(() => {
-  //   saveFormData(formData)
-  // }, [viewMode])
-
-	useEffect(() => {
+  useEffect(() => {
     if(formCode !== null){
-      getForm(baseUrl, formCode, function(data){
-        console.log("form: ", data);
+      loadForm();
+    }
+  }, [formCode]);
+  
+  const loadForm = () => {
+  	getForm(baseUrl, formCode, function(data){
+        console.log("getform: ", data);
         let form = { ...data }
         let jsonProperties = JSON.parse(data.properties);
         form.properties = jsonProperties;
         setSchema(form);
-      })
-    }
-  }, [formCode]);
+        
+        if(data.uiSchema) {
+			let uiSchemaData = JSON.parse(data.uiSchema);
+			console.log("set ui schema", uiSchemaData);
+			setUiSchema(uiSchemaData);
+		}
+      });
+  };
 
   const initNewSession = (callback) => {
-    getNewSession(baseUrl, function (data) {
-      // console.log('newSession: ', data, data.sessionKey);
+  	console.log("init new session for ", formCode);
+  	
+    getNewSession(baseUrl, formCode, function (data) {
+      console.log('newSession: ', data, data.sessionKey);
       setSessionKey(data.sessionKey);
-      callback(data.sessionKey);
+      if(callback) { callback(data.sessionKey); }
     });
   } 
   
@@ -74,7 +63,9 @@ const ImportMetadataForm = (props) => {
         return (
           <div className='col info text-gray'>
             <p>Your import has been submitted. Would you like to start a new import?</p>
-            <div className='button' style={{ cursor: "pointer" }} onClick={(e) => { props.setInitialState(e); setViewMode("add_new_import_page"); initNewSession(); onClose(); }}>Yes</div>
+            <div className='button' style={{ cursor: "pointer" }} 
+            onClick={(e) => { props.setInitialState(e); setViewMode("add_new_import_page"); initNewSession(); loadForm(); onClose(); }}>
+              Yes</div>
 						&nbsp;
             <div className='button' style={{ cursor: "pointer" }} onClick={(e) => { props.setInitialState(e); setIsSubmitted('true'); onClose();}}>No</div>
           </div>
@@ -118,14 +109,14 @@ const ImportMetadataForm = (props) => {
   }
   
   console.log("formData: ", formData);
-  // console.log("schema: ", schema);
+  console.log("schema: ", schema, uiSchema);
   return (
     <div>
-      <div className="mb-3" style={{ backgroundColor: '#D8D7CE', paddingLeft: '5px' }}>
-        Metadata Form
+      <div className="mb-1" style={{ backgroundColor: '#D8D7CE', padding: '5px' }}>
+    	Details
       </div>
       
-      <div className='form-container mt-5 mb-5'>
+      <div className='form-container mt-3 mb-3'>
         {(schema) ? 
           <Form 
           schema={schema}

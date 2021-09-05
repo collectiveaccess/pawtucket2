@@ -10,13 +10,11 @@ const siteBaseUrl = pawtucketUIApps.Import.data.siteBaseUrl;
 
 const ImportDropZone = (props) => {
 
-  const { queue, setQueue, setUploadProgress, filesUploaded, setFilesUploaded, setUploadStatus, initialQueueLength, setInitialQueueLength, numFilesOnDrop, setNumFilesOnDrop, sessionKey, setSessionKey, filesSelected, setFilesSelected } = useContext(ImportContext);
+  const { queue, setQueue, setUploadProgress, filesUploaded, setFilesUploaded, setUploadStatus, initialQueueLength, setInitialQueueLength, numFilesOnDrop, setNumFilesOnDrop, sessionKey, setSessionKey, filesSelected, setFilesSelected, formCode, setFormCode } = useContext(ImportContext);
 
   const [connections, setConnections] = useState([]) /* List of open tus upload connections */
   const [connectionIndex, setConnectionIndex] = useState(0) /* Index/key for next connection; changes for each allocated connection */
   const [maxConnections, setMaxConnections] = useState(2)
-
-  // const [totalBytes, setTotalBytes] = useState(0)
   
   useEffect(() => {
     if (sessionKey == null && queue.length > 0) { //if there is no session key AND there are files in queue, create a new session
@@ -25,7 +23,7 @@ const ImportDropZone = (props) => {
   }, [sessionKey, queue])
 
   const initNewSession = () => {
-    getNewSession(baseUrl, function (data) {
+    getNewSession(baseUrl, formCode, function (data) {
       console.log('newSession: ', data);
       setSessionKey(data.sessionKey)
     })
@@ -46,27 +44,15 @@ const ImportDropZone = (props) => {
     }
     
     q = q.filter(f => f.size > 0);
-
-    // let tempTotalBytes = 0
-    // q.forEach(file => {
-    //   tempTotalBytes += file.size;
-    //   // console.log("tempTotalBytes: ", tempTotalBytes);
-    // });
-    // setTotalBytes(tempTotalBytes);
     
     let tempnumfiles = numFilesOnDrop;
     setNumFilesOnDrop(tempnumfiles + q.length);
 
-      // setNumFilesOnDrop(q.length);
-      setQueue([...q]);
-      // setInitialQueueLength(q.length);
+    setQueue([...q]);
 
     let queueLength = initialQueueLength;
     setInitialQueueLength((q.length) + (queueLength));
   }
-  // console.log("queue: ", queue);
-  // console.log("num files on drop: ", numFilesOnDrop);
-  // console.log("initialQueueLength: ", initialQueueLength);
 
   const processQueue = () => {
     let tempFilesUploaded = [...filesUploaded];
@@ -75,12 +61,10 @@ const ImportDropZone = (props) => {
     let tempConnectionIndex = connectionIndex;
     let tempConnections = [...connections];
 
-    // let tempBytesUploaded = 0;
-
     //maximum number of uploads happening at one time
     // const maxConnections = 4
     if (connections.length >= maxConnections) {
-    	console.log("max connections. skiping for now");
+    	// console.log("max connections. skiping for now");
       return;
     }
 
@@ -101,7 +85,7 @@ const ImportDropZone = (props) => {
   
           //https://master.tus.io/files/
           let tusEndpoint = siteBaseUrl + '/tus';
-           console.log("Upload to", tusEndpoint, sessionKey);
+          // console.log("Upload to", tusEndpoint, sessionKey);
           
           var upload = new tus.Upload(file, {
             endpoint: tusEndpoint,
@@ -123,9 +107,6 @@ const ImportDropZone = (props) => {
             onProgress: (bytesUploaded, bytesTotal) => {
               setUploadStatus('in_progress');
               
-              // tempBytesUploaded += bytesUploaded
-              // tempBytesTotal += bytesTotal
-  
               // var percentage = (tempBytesUploaded / totalBytes * 100).toFixed(2);
               // setUploadProgress(percentage);
               
@@ -138,8 +119,8 @@ const ImportDropZone = (props) => {
 
               tempFilesUploaded.push(file);
               setFilesUploaded([...tempFilesUploaded]);
-              console.log("Sucess: ", file.name)
-              console.log("Current Files Uploaded: ", filesUploaded)
+              // console.log("Sucess: ", file.name)
+              // console.log("Current Files Uploaded: ", filesUploaded)
 
               //delete connection from connection index on success
               tempConnections.splice(tempConnectionIndex, 1)
@@ -189,9 +170,9 @@ const ImportDropZone = (props) => {
   // console.log('====================================');
   return (
     <div>
-      <div className="mb-3" style={{ backgroundColor: '#D8D7CE', paddingLeft: '5px' }}>Import Files</div>
+      <div className="mb-1" style={{ backgroundColor: '#D8D7CE', padding: '5px' }}>Import Media</div>
 
-      <div className="row justify-content-center mt-5 mb-5 importUploaderDropZone">
+      <div className="row justify-content-center mt-3 mb-3 importUploaderDropZone">
         <Dropzone onDrop={acceptedFiles => { selectFiles(acceptedFiles);}}>
           {({ getRootProps, getInputProps }) => (
             <div {...getRootProps()} className='row importUploaderDropZoneInput'>

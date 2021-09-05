@@ -100,6 +100,10 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::string(),
 						'description' => 'Information about each field in the form, serialized as JSON'
 					],
+					'uiSchema' => [
+						'type' => Type::string(),
+						'description' => 'UI display configuration about each field in the form, serialized as JSON'
+					],
 				]
 			]),
 			$importerFormSummaryType = new ObjectType([

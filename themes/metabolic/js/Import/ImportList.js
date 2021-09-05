@@ -16,11 +16,11 @@ const ImportList = (props) => {
 
   useEffect(() => {
     getSessionList(baseUrl, function(data){
-      console.log('sessionList data', data);
+      // console.log('sessionList data', data);
       setSessionList(data.sessions);
     });
     getFormList(baseUrl, function(data){
-      console.log('Form List data', data);
+       console.log('Form List data', data);
       setFormsList(data.forms);
     });
 
@@ -56,7 +56,18 @@ const ImportList = (props) => {
             <h1>Your Imports</h1>
           </div>
           <div className='col text-right'>
-            <a href='#' className='btn btn-primary' onClick={(e) => openNewImportPage(e)}>+ New Import</a>
+           <div className="dropdown">
+              <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                + New Import
+              </button>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {formsList.map((form, index) => {
+                  return (
+                    <a className="dropdown-item" key={index} href="#" onClick={(e) => openNewImportPage(e, form.code)}>{form.title}</a>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </div>
 

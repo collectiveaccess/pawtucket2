@@ -3,8 +3,6 @@ import { ImportContext } from '../ImportContext';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
-import EasyEdit from 'react-easy-edit';
-
 import { getSessionList, deleteImport } from '../ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
 
@@ -65,19 +63,7 @@ const ImportedItem = (props) => {
   return (
     <>
       <tr style={{ borderTop: '1px solid lightgrey' }}>
-        <th scope="row">
-          {/* {props.data.label} */}
-          {/* <EasyEdit
-            type="text"
-            onSave={this.saveLightboxEdit}
-            saveButtonLabel="Save"
-            saveButtonStyle="btn btn-primary btn-sm"
-            cancelButtonLabel="Cancel"
-            cancelButtonStyle="btn btn-primary btn-sm"
-            attributes={{ name: "name", id: "lightbox_name" + this.props.data.id }}
-            value={label}
-          /> */}
-        </th>
+        <th scope="row">{props.data.label}</th>
         <td>{props.data.lastActivityOn}</td>
         <td>{props.data.statusDisplay}</td>
         <td>{props.data.files}</td>
@@ -92,7 +78,7 @@ const ImportedItem = (props) => {
         {(props.data.status !== 'IN_PROGRESS') ?
         <>
           <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => viewImport(e)}>View</a></td>
-          {/* <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td> */}
+          <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td>
         </>
           : null}
       </tr>
