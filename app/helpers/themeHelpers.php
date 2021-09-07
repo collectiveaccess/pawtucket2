@@ -275,7 +275,7 @@
 				if($va_comment["comment"]){
 					$vs_tmp .= $va_comment["comment"];
 				}
-				$vs_tmp .= "<small>".$va_comment["author"].", ".$va_comment["date"]."</small></blockquote>";
+				$vs_tmp .= " – <small>".$va_comment["author"].", ".$va_comment["date"]."</small></blockquote>";
 			}
 		}
 		if(is_array($va_tags) && sizeof($va_tags) > 0){
@@ -286,11 +286,11 @@
 			$vs_tmp .= "<h2>"._t("Tags")."</h2>\n
 				<div id='tags'>".implode($va_tag_links, ", ")."</div>";
 		}
-		if($g_request->isLoggedIn()){
-			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'Detail', 'CommentForm', array("tablename" => $t_item->tableName(), "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
-		}else{
-			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment on this object")."</button>";
-		}
+		// if($g_request->isLoggedIn()){
+// 			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'Detail', 'CommentForm', array("tablename" => $t_item->tableName(), "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
+// 		}else{
+// 			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment on this object")."</button>";
+// 		}
 		return $vs_tmp;
 	}
 	# ---------------------------------------
