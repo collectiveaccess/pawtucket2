@@ -162,8 +162,8 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 								<div className="form-group">{(this.props.tagFieldTitle) ? <label for='tags'>{this.props.tagFieldTitle}</label> : null}<input className={`form-control form-control-sm${(this.state.errors.tags) ? ' is-invalid' : ''}`} id='tags' name='tags' value={this.state.values.tags} onChange={this.handleForm} type='text' placeholder='Tags separated by commas' />{(this.state.errors.tags) ? <div className='invalid-feedback'>{this.state.errors.tags}</div> : null}</div>
 							}
 
-							<div className="form-group">{(this.props.commentFieldTitle) ? <label for='comment'>{this.props.commentFieldTitle}</label> : null}
-								<textarea className={`form-control form-control-sm${(this.state.errors.comment) ? ' is-invalid' : ''}`} id='comment' name='comment' value={this.state.values.comment} onChange={this.handleForm} placeholder='Enter your comment' />
+							<div className="form-group">{/* (this.props.commentFieldTitle) ? <label for='comment'>{this.props.commentFieldTitle}</label> : null */}
+								<textarea className={`form-control form-control-sm${(this.state.errors.comment) ? ' is-invalid' : ''}`} id='comment' name='comment' value={this.state.values.comment} onChange={this.handleForm} placeholder='Your comment here' />
 
 								{(this.state.errors.comment) ? <div className='invalid-feedback'>{this.state.errors.comment}</div> : null}
 							</div>

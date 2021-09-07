@@ -4,7 +4,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2019 Whirl-i-Gig
+ * Copyright 2013-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -89,7 +89,7 @@
 ?>
 		<div id='detailShareButtons' class="mt-2">
 			<div class='detailShareButton'>
-				<div class="fb-share-button" data-href="<?php print $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" data-layout="button" data-size="small"><a target="_blank" href="<?php print $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" class="fb-xfbml-parse-ignore">Share</a></div>
+				<div class="fb-share-button" data-href="<?= $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" data-layout="button" data-size="small"><a target="_blank" href="<?= $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" class="fb-xfbml-parse-ignore">Share</a></div>
 			</div>
 		</div>
 <?php
@@ -100,8 +100,9 @@
 					print '<div id="detailTools" class="mt-2">';
 					if ($vn_comments_enabled) {
 ?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><ion-icon name="chatboxes"></ion-icon> <span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</span></a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
+						<div class="detailTool"><ion-icon name="chatboxes"></ion-icon> <span>Comments and Tags (<?= sizeof($va_comments) + sizeof($va_tags); ?>)</span></div><!-- end detailTool -->
+						<div id='detailComments'><?= $this->getVar("itemComments");?></div><!-- end itemComments -->
+						<div id='commentForm'> </div>
 <?php				
 					}
 					if ($vn_pdf_enabled || $vn_download_all_enabled) {
@@ -283,7 +284,7 @@
 							foreach($va_entities_by_role as $vs_role => $va_names){
 ?>
 								<div class="mb-3">
-									<div class="label"><?php print $vs_role; ?></div>
+									<div class="label"><?= $vs_role; ?></div>
 <?php
 									print join($va_names, ", ");
 ?>
@@ -431,7 +432,7 @@
 ?>
 		<div class="row mt-3">
 			<div class="col-7 mt-5">
-				<H1><?php print $vs_related_title; ?></H1>
+				<H1><?= $vs_related_title; ?></H1>
 			</div>
 			<div class="col-5 mt-5 text-right">
 <?php
@@ -482,11 +483,11 @@
         'selector': '#lightboxManagement',
 				'key': '<?= $this->getVar('key'); ?>', 
         'data': {
-          baseUrl: "<?php print __CA_URL_ROOT__."/service.php"; ?>",
-					lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
+          baseUrl: "<?= __CA_URL_ROOT__."/service.php"; ?>",
+					lightboxes: <?= json_encode($this->getVar('lightboxes')); ?>,
 					table: 'ca_objects',
-					id: <?php print (int)$vn_id; ?>,
-        	lightboxTerminology: <?php print json_encode(caGetLightboxDisplayName()); ?>
+					id: <?= (int)$vn_id; ?>,
+        	lightboxTerminology: <?= json_encode(caGetLightboxDisplayName()); ?>
         }
     };
 </script>
@@ -497,16 +498,16 @@
 	pawtucketUIApps['PawtucketComment'] = {
         'selector': '#commentForm',
         'data': {
-            item_id: <?php print $vn_id; ?>,
+            item_id: <?= $vn_id; ?>,
             tablename: 'ca_objects',
-            form_title: '<h1>Add Your Comment</h1>',
-            list_title: '<h1 class="mt-5">Comments</h1>',
+            form_title: '<span>Add Your Comment</span>',
+            list_title: '<span class="mt-5">Comments</span>',
             tag_field_title: 'Tags',
             comment_field_title: 'Comment',
             login_button_text: 'Login to Add Your Comment',
-            comment_button_text: 'Send',
+            comment_button_text: 'Submit',
             no_tags: true,
-            show_form: <?php print ($this->request->isLoggedIn()) ? "true" : "false"; ?>
+            show_form: <?= ($this->request->isLoggedIn()) ? "true" : "false"; ?>
         }
     };
     pawtucketUIApps['MediaViewer'] = {
@@ -521,34 +522,12 @@
     };
     
 </script>
+
 <script type="text/javascript">	
 	function copyUrl() {
 		if (!window.getSelection) {
-		alert('Please copy the URL from the location bar.');
-		return;
-		}
-		const dummy = document.createElement('p');
-		dummy.textContent = window.location.href;
-		document.body.appendChild(dummy);
-
-		const range = document.createRange();
-		range.setStartBefore(dummy);
-		range.setEndAfter(dummy);
-
-		const selection = window.getSelection();
-		// First clear, in case the user already selected some other text
-		selection.removeAllRanges();
-		selection.addRange(range);
-
-		document.execCommand('copy');
-		document.body.removeChild(dummy);
-	}
-</script>
-<script type="text/javascript">	
-	function copyUrl() {
-		if (!window.getSelection) {
-		alert('Please copy the URL from the location bar.');
-		return;
+			alert('Please copy the URL from the location bar.');
+			return;
 		}
 		const dummy = document.createElement('p');
 		dummy.textContent = window.location.href;
