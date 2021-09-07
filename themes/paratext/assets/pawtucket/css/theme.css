@@ -1063,6 +1063,9 @@ ul.home_menu li a:hover {
   width: 810px;
   margin: 50px auto 0 auto;
 }
+.text_content > p {
+  padding: 0px 10px 0px 15px;
+}
 .text_content .columns {
   display: flex;
   flex-direction: row;

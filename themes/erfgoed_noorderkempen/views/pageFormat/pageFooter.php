@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2021 Whirl-i-Gig
+ * Copyright 2015-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,35 +26,19 @@
  * ----------------------------------------------------------------------
  */
 ?>
-</body>
-
-<footer>
-
-    <div class="fin">FIN</div>
-
-    <div class="an_online_exhitibion">an online exhibition</div>
-
-    <div class="szilvia"><?php print caNavLink($this->request, 'Szilvia Szmuk-Tanenbaum', '', '', 'About', 'Index'); ?></div>
-
-    <div class="ornament">
-        <?php
-        $ornaments = array(
-            'foot_ornament-13.svg',
-            'foot_ornament-14.svg',
-            'foot_ornament-15.svg',
-        );
-        $rand_ornament = array_rand($ornaments, 1);
-        ?>
-        <img class="footer_ornament" src="<?php print caGetThemeGraphicUrl($this->request, $ornaments[$rand_ornament]); ?>" alt="Footer Ornament">
-    </div>
-
-    <div class="year">Nueva York. Año MMXXI</div>
-    <div class="acknowledgments"><?php print caNavLink($this->request, 'Acknowledgments', '', '', 'Section', 'Acknowledgments'); ?></div>
-	<div class="acknowledgments"><a href="mailto:contact@comediassueltasusa.org">Contact</a></div>
-
-</footer>
-
-</html>
+		<div style="clear:both; height:1px;"><!-- empty --></div>
+		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+		<footer id="footer">
+			<ul class="list-inline footerLinks">
+				<li><a href="http://www.erfgoednoorderkempen.be" target="_blank">www.erfgoednoorderkempen.be</a></li>
+				<li><a href="http://www.erfgoednoorderkempen.be/erfgoedbank/" target="_blank">Disclaimer</a></li>
+			</ul>
+			<div class="funder">
+				Met steun van<br/>
+				<a href="http://www.vlaanderen.be"><?php print caGetThemeGraphic($this->request, 'Vlaanderen-verbeelding-werkt_vol.png'); ?></a>
+			</div>
+		
+		</footer><!-- end footer -->
 <?php
 	//
 	// Output HTML for debug bar
@@ -65,7 +49,7 @@
 ?>
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
-		<div id="caMediaPanel" role="complementary"> 
+		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">
 			
 			</div>
@@ -81,11 +65,6 @@
 					caMediaPanel = caUI.initPanel({ 
 						panelID: 'caMediaPanel',										/* DOM ID of the <div> enclosing the panel */
 						panelContentID: 'caMediaPanelContentArea',		/* DOM ID of the content area <div> in the panel */
-						onCloseCallback: function(data) {
-							if(data && data.url) {
-								window.location = data.url;
-							}
-						},
 						exposeBackgroundColor: '#FFFFFF',						/* color (in hex notation) of background masking out page content; include the leading '#' in the color spec */
 						exposeBackgroundOpacity: 0.7,							/* opacity of background color masking out page content; 1.0 is opaque */
 						panelTransitionSpeed: 400, 									/* time it takes the panel to fade in/out in milliseconds */
@@ -96,9 +75,44 @@
 				}
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
+		
+			$(document).ready(function() {
+				$(document).bind("contextmenu",function(e){
+				   return false;
+				 });
+			}); 
 		</script>
 <?php
-	print $this->render("Cookies/banner_html.php");	
+	if (Session::getVar('cookieAccepted') != 'accepted') {		
+?>	
+		<div id="cookieNotice">
+			{{{cookie_statement}}}
+		</div>	<!--end homePanel-->
+		
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('.acceptCookie').click(function(e){
+				  e.preventDefault();
+				  $.ajax({
+					   url: "<?php print caNavUrl($this->request, "", "Cookie", "accept"); ?>",
+					   type: "GET",
+					   success: function (data) {
+						 if(data == 'success'){
+						 	$('#cookieNotice').hide();
+						 }
+					   },
+					   error: function(xhr, ajaxOptions, thrownError){
+						  alert("There was an error, please try again later.");
+					   }
+				  });
+
+				});
+			});
+		</script>
+
+<?php
+	}
 ?>
 	</body>
 </html>
