@@ -162,7 +162,7 @@ class MediaViewer extends React.Component{
 	
 			const icon = this.props.fullscreen === false ? (<MdExpand fontSize='24px'/>) : (<MdExit fontSize='24px'/>);
 			const iconTitle = this.props.fullscreen === false ? 'Expand fullscreen' : 'Exit';
-			let viewerMediaList = (this.state.media > 1) ?<MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen}
+			let viewerMediaList = (this.state.media.length > 1) ?<MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen}
 							width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen} /> 
 							: 
 							<div className='float-right'><a href='#' onClick={this.toggleFullscreen} title={iconTitle}>{icon}</a></div>;
