@@ -781,7 +781,7 @@
 	
 	 	$va_query_elements = $va_query_booleans = array();
 	 	
-	 	$vb_match_on_stem = caGetOption('matchOnStem', $pa_options, false);
+	 	$vb_match_on_stem = caGetOption(['matchOnStem', 'match_on_stem'], $pa_options, false);
 	 	
 	 	if (is_array($va_values) && sizeof($va_values)) {
 			foreach($va_values as $vs_element => $va_value_list) {
@@ -793,7 +793,7 @@
 						$vs_query_element = $vs_value;
 					}
 					
-					$vs_query_element .= ($vb_match_on_stem && !preg_match('!\*$!', $vs_query_element) && preg_match('!^[\w]+$!', $vs_query_element) && !preg_match('!^[0-9]+$!', $vs_query_element)) ? '*' : '';
+					$vs_query_element .= ($vb_match_on_stem && caIsSearchStem($vs_query_element)) ? '*' : '';
 					
 					$va_query_booleans[$vs_element][] = (isset($va_booleans["{$vs_element}:boolean"][$vn_i]) && $va_booleans["{$vs_element}:boolean"][$vn_i]) ? $va_booleans["{$vs_element}:boolean"][$vn_i] : 'AND';
 					switch($vs_element){
@@ -2203,5 +2203,16 @@
 			}
 		}
 		return $term;
+	}
+	# ---------------------------------------
+	/**
+	 * Check is string suitable for use as a wildcard-suffixed search stem
+	 *
+	 * @param string $value 
+	 *
+	 * @return bool
+	 */
+	function caIsSearchStem(string $value) : bool {
+		return (!preg_match('![\d]+$!', $value) && !preg_match('!\*$!', $value) && preg_match('![\w]+$!', $value));
 	}
 	# ---------------------------------------

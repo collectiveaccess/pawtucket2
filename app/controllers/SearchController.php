@@ -138,7 +138,7 @@
  			//
  			if($vb_is_advanced) { 
  				$this->opo_result_context->setSearchExpression(
- 					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))
+ 					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])])
  				); 
  				if ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context)) {
  					$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
@@ -246,10 +246,10 @@
 			//
 			
 			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
-				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('![\d]+$!', $vs_search_expression) && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')), array($vs_search_expression_for_display));
+				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get(['matchOnStem', 'match_on_stem']) && caIsSearchStem($vs_search_expression)) ? '*' : '')), array($vs_search_expression_for_display));
 			}
 			if ($vs_search_refine = $this->request->getParameter('search_refine', pString, ['forcePurify' => true])) {
-				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get('matchOnStem') && !preg_match('![\d]+$!', $vs_search_refine) && !preg_match('!\*$!', $vs_search_refine) && preg_match('![\w]+$!', $vs_search_refine)) ? '*' : '')), array($vs_search_refine));
+				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get(['matchOnStem', 'match_on_stem']) && caIsSearchStem($vs_search_refine)) ? '*' : '')), array($vs_search_refine));
 			} elseif ($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString, ['forcePurify' => true])));
 			} elseif (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
