@@ -150,6 +150,7 @@ if(true) {
 							$stat_bib_checkout_distribution[$bib_id][(int)$date_out['start']]++;
 							$stat_overall_checkout_distribution[(int)$date_out['start']]++;
 							$stat_overall_checkout_distribution_books_by_year[(int)$date_out['start']][$bib_id] = true;
+
 						
 							if (($vn_interval >= $day) && ($vn_interval <= 7*$day)) {
 								$stat_bib_checkout_durations[$bib_id]['1-7 days']++;
@@ -241,6 +242,7 @@ if(true) {
 			PersistentCache::save('stat_overall_bib_checkout_durations', $stat_overall_bib_checkout_durations, 'vizData');
 			PersistentCache::save('stat_bib_checkout_distribution', $stat_bib_checkout_distribution, 'vizData');
 			PersistentCache::save('stat_overall_checkout_distribution', $stat_overall_checkout_distribution, 'vizData');
+
 }
 		}
 		# -------------------------------------------------------
@@ -327,6 +329,7 @@ if (true) {
 			
 			PersistentCache::save('stat_bib_books_by_subject_area', $stat_bib_books_by_subject_area, 'vizData');
 			PersistentCache::save('stat_bib_subject_area_ids', $stat_subject_ids, 'vizData');
+
 }
 
 if(true) {			
@@ -365,6 +368,7 @@ if(true) {
 						$stat_overall_checkout_distribution[(int)$date_out['start']]++;
 						$stat_entity_checkout_distribution[$entity_id][(int)$date_out['start']]++;
 						$stat_overall_entity_checkout_distribution_books_by_year[(int)$date_out['start']][$entity_id] = true;
+
 						
 						if (($vn_interval >= $day) && ($vn_interval <= 7*$day)) {
 							$stat_entity_checkout_durations[$entity_id]['1-7 days']++;
