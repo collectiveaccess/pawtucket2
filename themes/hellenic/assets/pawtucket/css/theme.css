@@ -819,6 +819,11 @@ h1#bScrollListLabel {
 	margin:0px;
 	padding:0px;
 }
+.gallery .galleryItemImg img{
+	width: 100%;
+	height: auto;
+	max-width: 250px;
+}
 
 /* About */
 
