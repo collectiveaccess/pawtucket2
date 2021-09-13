@@ -86,9 +86,11 @@ jQuery ( document ).ready ( function($) {
 ******************* BURGER MENU *********************
 ****************************************************/
 // Hide / Show menu
-$( ".burger" ).click(function() {
-    $("ul.main_menu").toggleClass('show');
-    $(".burger").toggleClass('open');
+jQuery ( document ).ready ( function($) {
+	$( ".burger" ).click(function() {
+		$("ul.main_menu").toggleClass('show');
+		$(".burger").toggleClass('open');
+	});
 });
 
 
