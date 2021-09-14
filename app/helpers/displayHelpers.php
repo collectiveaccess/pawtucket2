@@ -4416,7 +4416,9 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 					$po_request, 
 					"representation:{$pn_representation_id}", 
 					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
-					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 'resultList' => caGetOption('resultList', $pa_options, null)]
+					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 
+					'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 
+					'resultList' => caGetOption('resultList', $pa_options, null), 'showRepresentationViewerNextPreviousLinks' => (bool)caGetOption('showRepresentationViewerNextPreviousLinks', $pa_options, false)]
 				);
 
 				if ($pb_inline) {	
