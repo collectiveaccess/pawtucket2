@@ -47,7 +47,7 @@ if($vs_table == "ca_entities"){
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 		# --- list all factes without a label together - merging role facets made from 2 facet configurations
 			if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-			print "<h3>".$va_facet_info['label_singular']."</h3>"; 
+			#print "<h3>".$va_facet_info['label_singular']."</h3>"; 
 			switch($va_facet_info["group_mode"]){
 				case "alphabetical":
 				case "list":

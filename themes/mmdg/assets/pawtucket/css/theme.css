@@ -158,6 +158,9 @@ H3, h3{
 	top: 5px;
 	margin-left: 15px;
 }
+.navbar .form-group label{
+	display:none;
+}
 @media(max-width:768px){
 	.navbar-collapse {
     	max-height: 380px;
@@ -246,13 +249,16 @@ H3, h3{
 }
 .navbar-default .navbar-nav > li > a:hover{
 	color: #c51042;
+	/* color: #c51042; removed for accessibility */
+	color:#E7134F;
 }
 .navbar-default .navbar-nav > li > a:focus{
 	color:#fff;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
 	background-color:#000;
-	color: #c51042;
+	/* color: #c51042; removed for accessibility */
+	color:#E7134F;
 }
 
 .navbar .formOutline {
@@ -326,7 +332,17 @@ H3, h3{
 	padding-top:30px;
 	padding-bottom:30px;
 }
-
+.front a.jcarousel-control-prev, .front a.jcarousel-control-next{
+	background-color: #000;
+	height: auto;
+	width:auto;
+}
+.front a.jcarousel-control-prev{
+	padding: 0px 10px 5px 5px;
+}
+.front a.jcarousel-control-next{
+	padding: 0px 5px 5px 10px;
+}
 /* detail */
 .detail, .detail.unit, .gallery, .gallery.unit{
 	color:#333;
@@ -428,7 +444,7 @@ a.readmore-js-toggle{
     z-index:1500;
 }
 .detail .detailMediaToolbar a{
-	color: #858585;
+	color: #595959;
 }
 .detail #detailRepNav {
     padding: 0px 0px 7px 0px;
@@ -469,6 +485,9 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover, div.caMediaOverlay
 #bRefine H3, #bRefine H2, #bRefine a{
 	color:#000;
 }
+#bRefine a.more {
+    color: #595959;
+}
 .browse.entities #bRefine a{
 	text-transform:capitalize;
 }
@@ -477,6 +496,10 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover, div.caMediaOverlay
 }
 .bResultItem .bResultItemText a.resultTitleLink{
 	font-size:15px;
+	background-color:#FFF;
+}
+.bResultItem .bResultItemText small, .bResultItem .bResultItemText small a {
+    color: #595959;
 }
 .multisearch H1{
 	font-weight: 700;
@@ -507,6 +530,7 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover, div.caMediaOverlay
 }
 .gallery .unit {
     margin-bottom: 12px;
+    background-color:#FFF;
 }
 .gallery .video-js {
 	min-height: 300px;
@@ -522,6 +546,9 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover, div.caMediaOverlay
     line-height: 1.8em;
 }
 
+.bResultItem .bResultItemText a, .bResultItem .bResultItemText div, .bResultItem .bResultItemText small{
+	background-color:#FFF;
+}
 .bResultItem .bResultItemText a {
     color: #333;
     line-height: 1.1em;
@@ -594,7 +621,8 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover, div.caMediaOverlay
     -webkit-transition: color .25s ease-in-out;
     -o-transition: color .25s ease-in-out;
     transition: color .25s ease-in-out;
-    color: #999;
+    /* color: #999; removed for accessibility */
+    color:#595959;
 }
 #footer .footer__nav-item a {
     font-size: 10px;
@@ -602,7 +630,8 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover, div.caMediaOverlay
     font-weight: 500;
     letter-spacing: .6px;
     text-transform: uppercase;
-    color:#999;
+    /* color: #999; removed for accessibility */
+    color:#595959;
     font-family: HelveticaNeue, Arial, sans-serif;
 }
 .social-icons__list {

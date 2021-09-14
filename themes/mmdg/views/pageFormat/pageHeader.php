@@ -84,7 +84,7 @@
 </head>
 <body>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
-	<nav class="navbar navbar-default yamm" role="navigation">
+	<nav class="navbar navbar-default yamm" role="navigation" aria-label="main navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -138,9 +138,10 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
+							<label for="headerSearchInput">Search</label>
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
 						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
+						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" role="button" aria-label="<?php print _t("Submit"); ?>"></span></button>
 					</div>
 				</form>
 				<script type="text/javascript">

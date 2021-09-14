@@ -23,7 +23,7 @@
 		//
 		foreach($this->getVar('blockNames') as $vs_block) {
 ?>
-			<a name='<?php print $vs_block; ?>'></a>
+			<a href='#' name='<?php print $vs_block; ?>' aria-label='<?php print $vs_block; ?>'></a>
 			<div id="<?php print $vs_block; ?>Block" class='resultBlock'>
 				<?php print $va_results[$vs_block]['html']; ?>
 			</div>
