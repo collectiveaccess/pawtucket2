@@ -800,6 +800,14 @@ body.home .home_slider .swiper-container .swiper-pagination .swiper-pagination-b
   /* Handle */
   /* Handle on hover */
 }
+.gallery_main .swiper-wrapper.main .swiper-slide .columns .right H1{
+	font-family: 'constantia', serif;
+	color: #804639;
+	text-decoration: none;
+	font-size: 30px;
+	margin-bottom: 0px;
+	margin-top: 0px;
+}
 .gallery_main .swiper-wrapper.main .swiper-slide .columns .right .caption::-webkit-scrollbar {
   width: 5px;
 }
