@@ -1924,10 +1924,12 @@ a.digExhAnchors.offset{
 .tl-text-content-container{
 	margin-right:-100px;
 }
-.tl-slide-content{
-	align-items: center;
-	display: flex !important;
-	justify-content: center;
+@media(min-width:890px){
+	.tl-slide-content{
+		align-items: center;
+		display: flex !important;
+		justify-content: center;
+	}
 }
 @media(min-width:680px){
 	.tl-text-content-container{
