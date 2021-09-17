@@ -1,4 +1,4 @@
-# README: Pawtucket2 version 1.7.12
+# README: Pawtucket2 version 1.7.13
 
 ### About CollectiveAccess
 
