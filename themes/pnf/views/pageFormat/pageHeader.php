@@ -32,21 +32,21 @@
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
-	if($this->request->isLoggedIn()){
-		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
-		$va_user_links[] = '<li class="divider nav-divider"></li>';
-		if(caDisplayLightbox($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
-		}
-		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-		}
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
-	} else {	
-		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
-	}
+#	if($this->request->isLoggedIn()){
+#		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
+#		$va_user_links[] = '<li class="divider nav-divider"></li>';
+#		if(caDisplayLightbox($this->request)){
+#			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
+#		}
+#		if(caDisplayClassroom($this->request)){
+#			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
+#		}
+#		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
+#		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
+#	} else {	
+#		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+#		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+#	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
 ?><!DOCTYPE html>
@@ -75,6 +75,15 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4CLSP0B9W0"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+ 
+  gtag('config', 'G-4CLSP0B9W0');
+</script>
 </head>
 <body>
 	<div id="page" class="hfeed">
@@ -129,20 +138,58 @@ $( document ).ready(function() {
 					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#"><?php print _t('Resources');?></a>
 						<ul class="sub-menu">
 							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-410"><a href="/lists/about-these-lists/"><?php print _t('About these resources');?></a></li>
-							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><a href="/lists/playwrights/"><?php print _t('Playwrights, translators, and adaptors');?></a></li>
-							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><a href="/lists/printers/"><?php print _t('Printers, publishers, booksellers, and bookstores');?></a></li>
-							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-444"><a href="/comp-sources/"><?php print caNavLink($this->request, _t('Comprehensive sources of comedias sueltas'), '', '', 'Listing', 'sources');?></a></li>
-							<li id="menu-item-443" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-443"><a href="/studies/"><?php print caNavLink($this->request, _t('Studies related specifically to comedias sueltas'), '', '', 'Listing', 'studies');?></a></li>
-							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/"><?php print _t('US Catalogs of Spanish Drama/Comedias Sueltas Collections');?></a></li>						
-							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, _t('Institutions'), '', '', 'Search', 'collections/search/*');?></li>													
+							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><?php print caNavLink($this->request, _t('Authority File: Playwrights, translators, adaptors'), '', '', 'Listing', 'playwrights'); ?></a></li>
+							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><?php print caNavLink($this->request, _t('Authority File: Printers, publishers, booksellers, bookstores'), '', '', 'Listing', 'printers');?></a></li>
+							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Bibliography'), '', '', 'Listing', 'bibliography');?></li>
+							<?php
+if($this->request->isLoggedIn()){
+?>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Glossary'), '', '', 'Listing', 'glossary');?></li>		
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Illustrations"), '', '', 'Pictorials', 'Illustrations');?></li>
+<?php
+}
+?>
+							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, _t('Institutions'), '', '', 'Browse', 'collections');?></li>													
+							<?php
+if($this->request->isLoggedIn()){
+?>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Miscellanies'), '', '', 'Listing', 'miscellanies');?></li>							
+<?php
+}
+?>
+							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Modernized editions of plays'), '', '', 'Listing', 'modern_editions');?></li>
+							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/"><?php print _t('Printed catalogs of Spanish drama & comedias sueltas');?></a></li>						
+<?php
+if($this->request->isLoggedIn()){
+?>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Printer's Marks & Devices"), '', '', 'Pictorials', 'PrintersDevices');?></li>	
+
+<?php
+}
+?>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Titles modernized'), '', '', 'Listing', 'ccssusa');?></li>						
+<?php
+if($this->request->isLoggedIn()){
+?>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Ornaments'), '', '', 'Pictorials', 'ornaments');?></li>
+<?php
+}
+?>
 						</ul>
 					</li>
 					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/"><?php print _t('Essays');?></a></li>
-					<li id="menu-item-207" class="menu-item menu-item-type-post_type_archive menu-item-object-news menu-item-207"><a href="/news/"><?php print _t('Zarzuela');?></a></li>
+					<li id="menu-item-911" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children current-menu-parent current-menu-ancestor menu-item-911"><a href="#">Zarzuela</a>
+						<ul class="sub-menu">
+							<li id="menu-item-207" class="menu-item menu-item-type-post_type_archive menu-item-object-news current-menu-item menu-item-207"><a href="/news/">News &amp; Updates</a></li>
+							<li id="menu-item-ca1" class="menu-item menu-item-type-post_type menu-item-object-news menu-item-ca1"><?php print caNavLink($this->request, _t('Statistical Table'), '', '', 'About', 'Statistics');?></a></li>
+							
+						</ul>
+					</li>
+					
 					<li id="menu-item-523" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-523 aboutMenu"><a href="#"><?php print _t('About');?></a>
 						<ul class="sub-menu">
 							<li id="menu-item-441" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-441"><a href="/about-2/"><?php print _t('About this website');?></a></li> 
-							<li id="menu-item-442" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-442"><a href="/participating-institutions/"><?php print _t('Participating Institutions');?></a></li>
+							<li id="menu-item-442" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-442"><?php print caNavLink($this->request, _t('Participating Institutions'), '', '', 'Browse', 'collections');?></li>
 							<li id="menu-item-445" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-445"><a href="/contributors-and-team/"><?php print _t('Contributors and team');?></a></li>
 							<li id="menu-item-445" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-445"><a href="/contact/"><?php print _t('Contact');?></a></li>					
 						</ul>
@@ -229,7 +276,9 @@ $( document ).ready(function() {
 				</form>
 				<ul class="navbar-left navTitle"><li><?php print _t('Search The Database');?></li></ul>
 				<ul class="nav navbar-nav navbar-right">
+					<li class="mobileNavLink"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "institutions")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Institutions"), "", "", "Browse", "collections"); ?></li>
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->

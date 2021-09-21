@@ -50,6 +50,7 @@
 
     <div class="year">Nueva York. Año MMXXI</div>
     <div class="acknowledgments"><?php print caNavLink($this->request, 'Acknowledgments', '', '', 'Section', 'Acknowledgments'); ?></div>
+	<div class="acknowledgments"><a href="mailto:contact@comediassueltasusa.org">Contact</a></div>
 
 </footer>
 

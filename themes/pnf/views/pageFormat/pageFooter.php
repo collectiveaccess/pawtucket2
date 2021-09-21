@@ -41,7 +41,18 @@
 		<div class="site-info">
 			Copyright © Pine Needles Foundation
 			<br>
-			<span class="mv_credit"><a href="http://merryvalenzuela.com" target="_blank">Designed by M+V</a></span>
+			<span class="mv_credit"><a href="http://merryvalenzuela.com" target="_blank">Designed by M+V</a></span><br/>
+<?php
+			if($this->request->isLoggedIn()){
+?>
+				<span class="mv_credit"><?php print caNavLink($this->request, _t("Logout"), "", "", "LoginReg", "Logout"); ?></span>
+<?php
+			}else{
+?>
+				<span class="mv_credit"><?php print caNavLink($this->request, _t("Login"), "", "", "LoginReg", "LoginForm"); ?></span>
+<?php
+			}
+?>
 		</div><!-- .site-info -->
 	</footer>		
 		<?php print TooltipManager::getLoadHTML(); ?>

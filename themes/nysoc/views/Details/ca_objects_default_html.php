@@ -472,9 +472,9 @@
 						<div class="row">
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<!-- open/close -->
-								<div class="overlay overlay-corner">
+								<div class="overlay2 overlay2-corner">
 									<div >
-										<button type="button" class="overlay-close"><i class="fa fa-times"></i></button>
+										<button type="button" class="overlay2-close"><i class="fa fa-times"></i></button>
 									</div>
 									
 									<div style="width:60%; height:400px; float:left; padding-right:10px;">
@@ -507,10 +507,10 @@
 											<div id="stat_bib_checkout_durations2" class="ct-chart ct-golden-section"></div>
 										</div>	
 									</div>																				
-								</div><!-- end overlay-->
+								</div><!-- end overlay2-->
 							</div><!-- end col-->
 						</div><!-- end row-->	
-						<div class="row" id="trigger-overlay">
+						<div class="row" id="trigger-overlay2">
 							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 								<div class="vizTitle" >Check out distribution <button  type="button"><i class="fa fa-external-link"></i></button></div>
 								<div class='col-sm-4 col-md-4 col-lg-4'>

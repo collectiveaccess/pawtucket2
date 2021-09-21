@@ -83,21 +83,21 @@
             <ul class="main_menu">
 <?php
 				foreach($va_paratext_intro_sections as $vs_idno => $vs_section_title){
-					print "<li class='menu_item'>".caNavLink($this->request, $vs_section_title, '', '', 'Section', $vs_idno)."</li>";
+					print "<li class='menu_item'>".caNavLink($this->request, $vs_section_title, '', '', 'Section', $vs_idno)."</li> ";
 				}
 ?>               
-                <li class="menu_item">
+                <li class="menu_item wide_submenu">
                     <a href="" class="no-click">Exhibition</a>
                     <ul class="sub_menu">
 <?php
 				foreach($va_paratext_exhibition_sections as $vs_idno => $vs_section_title){
-					print "<li>".caNavLink($this->request, $vs_section_title, '', '', 'Section', $vs_idno)."</li>";
+					print "<li>".caNavLink($this->request, $vs_section_title, '', '', 'Section', $vs_idno)."</li> ";
 				}
 ?>
                     </ul>
                 </li>
-                <li class="menu_item"><?php print caNavLink($this->request, _t("Printers' addresses"), "", "", "Printers", "Index"); ?></li>
-                <li class="menu_item"><?php print caNavLink($this->request, _t("Gallery"), "", "", "ImageGallery", "Index"); ?></li>
+                <li class="menu_item"><?php print caNavLink($this->request, _t("Printers' addresses"), "", "", "Printers", "Index"); ?></li> 
+                <li class="menu_item"><?php print caNavLink($this->request, _t("Gallery"), "", "", "ImageGallery", "Index"); ?></li> 
             </ul>
         </div>
 

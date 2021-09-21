@@ -66,7 +66,7 @@
 			
 				<?php
 					$va_references = $t_object->getAuthorityElementReferences();
-					if (is_array($va_object_entity_rels = $va_references[$t_object->getAppDatamodel()->getTableNum('ca_objects_x_entities')])) {
+					if (is_array($va_object_entity_rels = $va_references[Datamodel::getTableNum('ca_objects_x_entities')])) {
 						$va_rel_ids = array_keys($va_object_entity_rels);
 						if(is_array($va_rel_ids) && (sizeof($va_rel_ids)) > 0) {
 						
