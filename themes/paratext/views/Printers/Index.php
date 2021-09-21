@@ -1,5 +1,5 @@
 <div class="page_title">
-    <h1>Index of printers’ addresses</h1>
+    <h1>Printers’ addresses</h1>
     <div class="ornament">
 <?php
         $ornaments = array(

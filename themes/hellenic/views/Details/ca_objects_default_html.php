@@ -188,6 +188,22 @@
 					print "</div></div>";
 				}
 				
+				$va_lc_names = $t_object->get('ca_objects.lc_names', array('returnAsArray' => true));
+				if (sizeof($va_lc_names)) {
+					$va_lc_names_sorted = array();
+					foreach($va_lc_names as $lc_name){
+						$lc_name = trim(preg_replace("/\[[^\]]*\]/", "", $lc_name));
+						if($lc_name){
+							$va_lc_names_sorted[$lc_name] = caNavLink($this->request, $lc_name, "", "", "MultiSearch",  "Index", array('search' => $lc_name));
+						}
+					}
+					ksort($va_lc_names_sorted, SORT_NATURAL | SORT_FLAG_CASE);
+					print "<div class='unit'><h6>Names</h6><div class='data'>";
+					print join("<br/>", $va_lc_names_sorted);
+					print "</div></div>";
+				}
+				
+				
 				#if ($vs_subjects = $t_object->get('ca_list_items.preferred_labels', array('delimiter' => '; '))) {
 				#	print "<div class='unit'><h6>Access Points</h6><div class='data'>".$vs_subjects."</div></div>";
 				#}
@@ -205,8 +221,8 @@
 				}																																																					
 ?>
 				
-				<div class='unit text'><a href="#" onclick="$('#rightsRepro').slideToggle(); return false;"><H6>Rights and Reproduction <i class="fa fa-chevron-down" aria-hidden="true"></i></H6></a>
-					<div style="display:none;" id="rightsRepro">{{{rightsrepro}}}</div>
+				<div class='unit text'><H6>Rights and Reproduction</H6>
+					<div>{{{rightsrepro}}}</div>
 				</div>
 				<div class='unit'><h6>Citation</h6><div>
 <?php

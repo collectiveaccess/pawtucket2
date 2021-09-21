@@ -146,6 +146,9 @@ header ul li a {
 header ul li a:hover {
   border-color: #804639;
 }
+header ul li.wide_submenu {
+  max-width: 160px;
+}
 header ul li ul.sub_menu {
   border-left: 1px solid #804639;
   padding: 0 0 0 20px;
@@ -164,16 +167,16 @@ header ul li ul.sub_menu li {
   display: block;
   text-align: left;
   padding: 6px 0;
-  max-width:165px;
 }
 header ul li ul.sub_menu li a {
- /* white-space: nowrap; */
+  white-space: nowrap;
 }
 header ul li ul.sub_menu li:before {
   display: none;
 }
 header ul li:hover ul.sub_menu {
   max-height: 400px;
+  overflow: visible;
   padding: 10px 0 10px 20px;
 }
 header ul li:before {
@@ -447,8 +450,22 @@ body.fixed header .burger.open span:nth-child(4) {
     margin: 0 0 0 30px;
   }
   body.fixed header .width ul {
-    width: calc(100% - 90px);
+    padding: 60px 40px 60px 30px;
+    width: calc(100% - 50px);
     right: -110vw;
+    overflow-y: auto;
+  }
+  body.fixed header .width ul li.wide_submenu {
+    max-width: none;
+  }
+  body.fixed header .width ul li ul.sub_menu {
+    width: calc(100% - 50px);
+    height: auto;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  body.fixed header .width ul li ul.sub_menu a {
+    white-space: normal;
   }
 }
 /***********************************************
@@ -783,6 +800,14 @@ body.home .home_slider .swiper-container .swiper-pagination .swiper-pagination-b
   /* Handle */
   /* Handle on hover */
 }
+.gallery_main .swiper-wrapper.main .swiper-slide .columns .right H1{
+	font-family: 'constantia', serif;
+	color: #804639;
+	text-decoration: none;
+	font-size: 30px;
+	margin-bottom: 0px;
+	margin-top: 0px;
+}
 .gallery_main .swiper-wrapper.main .swiper-slide .columns .right .caption::-webkit-scrollbar {
   width: 5px;
 }
@@ -858,6 +883,55 @@ body.home .home_slider .swiper-container .swiper-pagination .swiper-pagination-b
     padding-right: 30px;
   }
 }
+@media only screen and (max-width: 700px) {
+  .gallery_main {
+    height: auto;
+    margin-top: 50px!important;
+  }
+  .gallery_main .swiper-wrapper.main .swiper-slide .columns {
+    width: calc(100% - 110px);
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+  }
+  .gallery_main .swiper-wrapper.main .swiper-slide .columns .left,
+  .gallery_main .swiper-wrapper.main .swiper-slide .columns .right {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: auto;
+    justify-content: center;
+  }
+  .gallery_main .swiper-wrapper.main .swiper-slide .columns .left img {
+    margin: 0 auto;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+  }
+  .gallery_main .swiper-wrapper.main .swiper-slide .columns .right {
+    height: 100%);
+    padding: 20px 0 20px 0;
+  }
+  .gallery_main .swiper-wrapper.main .swiper-slide .columns .right .caption {
+    padding-right: 0;
+    overflow-y: hidden;
+    width: 100%;
+  }
+  .gallery_main .swiper-button-next,
+  .gallery_main .swiper-button-prev {
+    top: 40vh;
+  }
+  .gallery_main .swiper-button-prev {
+    transform: rotate(180deg);
+  }
+  .gallery_thumbnails {
+    display: none;
+  }
+}
 /***********************************************
 *************   EXHIBITION COVER   *************
 ***********************************************/
@@ -885,10 +959,10 @@ body.home .home_slider .swiper-container .swiper-pagination .swiper-pagination-b
   margin-bottom: 6px;
 }
 .exhibition_cover .and_the .and {
-  display: block;
+  display: inline-block;
 }
 .exhibition_cover .and_the .the {
-  display: block;
+  display: inline-block;
 }
 .exhibition_cover .commerce_of_printing {
   font-family: 'constantia', serif;
@@ -903,6 +977,7 @@ body.home .home_slider .swiper-container .swiper-pagination .swiper-pagination-b
 .exhibition_cover .szilvia {
   font-family: 'constantia', serif;
   font-size: 14px;
+  letter-spacing: 0.1em;
   font-style: italic;
   margin-bottom: 10px;
 }
@@ -913,9 +988,17 @@ body.home .home_slider .swiper-container .swiper-pagination .swiper-pagination-b
 .exhibition_cover .szilvia a:hover {
   text-decoration: underline;
 }
+.exhibition_cover .cruickshank {
+  font-family: 'constantia', serif;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  font-style: italic;
+  margin-bottom: 10px;
+}
 .exhibition_cover .agradecimientos {
   font-family: 'constantia', serif;
   font-size: 14px;
+  letter-spacing: 0.1em;
   font-style: italic;
   margin-bottom: 10px;
 }
@@ -1062,9 +1145,6 @@ ul.home_menu li a:hover {
   padding: 60px 90px;
   width: 810px;
   margin: 50px auto 0 auto;
-}
-.text_content > p {
-  padding: 0px 10px 0px 15px;
 }
 .text_content .columns {
   display: flex;
@@ -1490,9 +1570,6 @@ footer .year {
   footer .year {
     font-size: 19px;
   }
-}
-::selection {
-    background: rgba(0, 0, 0, 0.3);
 }
 
 
