@@ -40,6 +40,10 @@
 						foreach($va_browse_types as $vs_browse_name => $va_browse_type){
 							if($vs_browse_name != 'articles'){
 								print "<li class='{$vs_browse_name}'>".caNavLink($this->request, "<span class='glyphicon glyphicon-play'></span>".caUcFirstUTF8Safe($va_browse_type['displayName']), '', '', 'Browse', $vs_browse_name, '')."</li>";
+								if($vs_browse_name == "places"){
+									# --- put news link after places
+									print "<li class='news'>".caNavLink($this->request, "<span class='glyphicon glyphicon-play'></span>News", '', '', 'News', 'Index', '')."</li>";
+								}
 							}
 						}
 ?>
