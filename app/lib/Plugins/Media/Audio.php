@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2018 Whirl-i-Gig
+ * Copyright 2006-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -784,30 +784,19 @@ class WLPlugMediaAudio Extends BaseMediaPlugin Implements IWLPlugMedia {
 				$vn_height = ($pa_options["viewer_height"] > 0) ? $pa_options["viewer_height"] : 95;
 				ob_start();
 ?>
-			<div class="<?php print (isset($pa_options["class"])) ? $pa_options["class"] : "caAudioPlayer"; ?>">
-				<audio id="<?php print $vs_id; ?>" src="<?php print $ps_url; ?>" <?php print ($vs_poster_url = caGetOption('posterURL', $pa_options, null)) ? "poster='{$vs_poster_url}'" : ''; ?> type="audio/mp3" controls="controls"></audio>
+			<div class="<?= (isset($pa_options["class"])) ? $pa_options["class"] : "caAudioPlayer"; ?>">
+				<audio crossorigin playsinline id="<?= $vs_id; ?>" <?= ($vs_poster_url = caGetOption('posterURL', $pa_options, null)) ? "poster='{$vs_poster_url}'" : ''; ?>>
+					<source src="<?= $ps_url; ?>" type="audio/mp3">
+				</audio>
 			</div>	
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					var m = jQuery('#<?php print $vs_id; ?>').mediaelementplayer({
-						showTimecodeFrameCount: true, framesPerSecond: 100, 
-						audioWidth: '<?php print $vn_width; ?>', audioHeight: '<?php print $vn_height; ?>',
-						success:  function (mediaElement, domObject) {
-							var m = mediaElement; 
-							m.addEventListener("play", function(e){ 
-								// Force poster image to remain visible during playback
-								var $thisMediaElement = (mediaElement.id) ? jQuery("#"+mediaElement.id) : jQuery(mediaElement);
-								$thisMediaElement.parents(".mejs-inner").find(".mejs-poster").show();
-							});
-							m.addEventListener("canplay", function(e){ 
-								var $thisMediaElement = (mediaElement.id) ? jQuery("#"+mediaElement.id) : jQuery(mediaElement);
-								$thisMediaElement.parents(".mejs-inner").find(".mejs-poster").on('click', function() {
-									caUI.mediaPlayerManager.isPlaying("<?php print $vs_id; ?>") ? caUI.mediaPlayerManager.stop("<?php print $vs_id; ?>") : caUI.mediaPlayerManager.play("<?php print $vs_id; ?>");
-								});
-							});
-						}
-					});
-					if (caUI.mediaPlayerManager) { caUI.mediaPlayerManager.register("<?php print $vs_id; ?>", m, 'MediaElement'); }
+					options = {
+				                    debug: true,
+				                    iconUrl: '/themes/noguchi/img/plyr/plyr.svg',
+				                    controls: ['play', 'progress', 'current-time', 'mute', 'volume' ],
+				                };
+					const player = new Plyr('#<?= $vs_id; ?>', options);
 				});
 			</script>
 <?php
@@ -829,8 +818,8 @@ class WLPlugMediaAudio Extends BaseMediaPlugin Implements IWLPlugMedia {
 					<table>
 						<tr>
 							<td>
-								<embed width="<?php print $pa_properties["width"]; ?>" height="<?php print $pa_properties["height"] + 16; ?>"
-									src="<?php print $ps_url; ?>" type="audio/x-wav">
+								<embed width="<?= $pa_properties["width"]; ?>" height="<?= $pa_properties["height"] + 16; ?>"
+									src="<?= $ps_url; ?>" type="audio/x-wav">
 							</td>
 						</tr>
 					</table>

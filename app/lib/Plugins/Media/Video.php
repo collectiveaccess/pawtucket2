@@ -1101,36 +1101,30 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				
 				ob_start();
 	
-			$vs_config = 'config={"playlist":[{"url":"'.$vs_poster_frame_url.'", "scaling": "fit"}, {"url": "'.$ps_url.'","autoPlay":false,"autoBuffering":true, "scaling": "fit"}]};';
+			//$vs_config = 'config={"playlist":[{"url":"'.$vs_poster_frame_url.'", "scaling": "fit"}, {"url": "'.$ps_url.'","autoPlay":false,"autoBuffering":true, "scaling": "fit"}]};';
 ?>
-			<!-- Begin VideoJS -->
-			 <video id="<?php print $vs_id; ?>" class="video-js vjs-default-skin"  
-				  controls preload="auto" width="<?php print $vn_width; ?>" height="<?php print $vn_height; ?>"  
-				  poster="<?php print $vs_poster_frame_url; ?>"  
-				  data-setup='{}'>  
-				 <source src="<?php print $ps_url; ?>" type="video/mp4" />
+
+
+			<video id="<?= $vs_id; ?>" playsinline controls data-poster="<?= $vs_poster_frame_url; ?>" width="<?= $vn_width; ?>" height="<?= $vn_height; ?>" >
+			  <source src="<?= $ps_url; ?>" type="video/mp4" />
 <?php
 					if(is_array($va_captions)) {
 						foreach($va_captions as $vn_locale_id => $va_caption_track) {
-							print "<track kind=\"captions\" src=\"".$va_caption_track['url']."\" srclang=\"".$va_caption_track["locale_code"]."\" label=\"".$va_caption_track['locale']."\">\n";	
+							print "<track kind=\"captions\" src=\"".$va_caption_track['url']."\" srclang=\"".$va_caption_track["locale_code"]."\" label=\"".$va_caption_track['locale']."\" default>\n";	
 						}
 					}
 ?>
-				</video>
+			</video>
 			<script type="text/javascript">
-				_V_.players["<?php print $vs_id; ?>"] = undefined;	// make sure VideoJS doesn't think it has already loaded the viewer
-				
-				w = jQuery('#<?php print $vs_id; ?>:parent').width();
-				if ((h = jQuery('#<?php print $vs_id; ?>:parent').height()) < 100) {
-					h = Math.ceil(w * .7);
-				}
-				jQuery("#<?php print $vs_id; ?>").attr('width', w).attr('height', h);
-				//jQuery("#<?php print $vs_id; ?>").attr('style', 'width:' + w + 'px; height: ' + h + 'px;');
-				_V_("<?php print $vs_id; ?>", {}, function() {});
-				
-				if (caUI.mediaPlayerManager) { caUI.mediaPlayerManager.register("<?php print $vs_id; ?>", _V_.players["<?php print $vs_id; ?>"], 'VideoJS'); }
+				jQuery(document).ready(function() {
+					options = {
+				                    debug: true,
+				                    iconUrl: '/themes/noguchi/img/plyr/plyr.svg',
+				                    controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen'],
+				                };
+					const player = new Plyr('#<?= $vs_id; ?>', options);
+				});
 			</script>
-			<!-- End VideoJS -->
 <?php
 				return ob_get_clean();
 				break;
