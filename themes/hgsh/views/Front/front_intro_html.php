@@ -90,7 +90,7 @@
 -->		
 		<div class="col-xs-6 col-sm-3">
 			<div class="hpBrowseImage">
-				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/suburb_news.png')."<div class='hpBrowseTitle'>Suburb News</div>", "", "", "Browse", "newspapers"); ?>
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/suburb_news.png')."<div class='hpBrowseTitle'>Suburb News</div>", "", "", "News", "Index"); ?>
 			</div>
 		</div>
 		<div class="col-xs-6 col-sm-3">
