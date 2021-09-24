@@ -33,7 +33,7 @@
 				<div class="col-sm-12 col-md-4">
 					<b>NEW YORK CITY</b>
 					<br/>46 WEST 90TH STREET, 2ND FLOOR<br/>NEW YORK, NY 10024
-					<br/>TUESDAY, THURSDAY AND FRIDAY, 11AM-5PM AND BY APPOINTMENT
+					<br/>TUESDAY-FRIDAY, 11AM-5PM AND BY APPOINTMENT
 					<br/><br/>
 				</div>
 				<div class="col-sm-12 col-md-4 offset-md-1">
