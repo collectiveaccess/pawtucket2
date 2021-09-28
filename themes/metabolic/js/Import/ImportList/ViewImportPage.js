@@ -18,7 +18,7 @@ const ViewImportPage = (props) => {
   useEffect(() => {
     if (formCode !== null) {
       getForm(baseUrl, formCode, function (data) {
-        console.log("form: ", data);
+        // console.log("form: ", data);
         let form = { ...data }
         let jsonProperties = JSON.parse(data.properties);
         form.properties = jsonProperties;
@@ -40,16 +40,17 @@ const ViewImportPage = (props) => {
   useEffect(() => {
     if (sessionKey !== null) {
       getSession(baseUrl, sessionKey, function (data) {
-        console.log("getSession: ", data);
+        // console.log("getSession: ", data);
         if (data.formData !== "null") {
           let prevFormData = JSON.parse(data.formData);
+          
           // console.log('prev formData: ', prevFormData.data);
           // setFormData(Object.entries(prevFormData));
 
           let tempFormData = []
 
           for (const [key, value] of Object.entries(prevFormData.data)) {
-            console.log(`${key}: ${value}`);
+            // console.log(`${key}: ${value}`);
             if (typeof value !== 'object' && value !== null && value !== undefined){
               tempFormData.push(([key, value]))
             }

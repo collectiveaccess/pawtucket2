@@ -14,7 +14,7 @@ const EditImportPage = (props) => {
   useEffect(() => {
     if (sessionKey !== null) {
       getSession(baseUrl, sessionKey, function(data){
-        console.log("getSession: ", data);
+        // console.log("getSession: ", data);
         if (data.formData) {
           let prevFormData = JSON.parse(data.formData);
           // console.log('prev formData: ', prevFormData);
