@@ -20,22 +20,22 @@ const TagSection = () => {
 
   const typeaheadRef = useRef(null)
 
-  console.log('tagOptions: ', tagOptions);
+  // console.log('tagOptions: ', tagOptions);
 
-  const fetchOptions = (value) => {
-    suggestTags(baseUrl, value, (data) => {
-      console.log("suggestTags", data);
-      setTagOptions(data.tags)
-      setIsLoading(false)
-    })
-  }
+  // const fetchOptions = (value) => {
+  //   suggestTags(baseUrl, value, (data) => {
+  //     console.log("suggestTags", data);
+  //     setTagOptions(data.tags)
+  //     setIsLoading(false)
+  //   })
+  // }
 
   const handleChange = (value) => {
-    console.log("handleChange value", value);
+    // console.log("handleChange value", value);
     
     if(value){
-      suggestTags(baseUrl, value, (data) => {
-        console.log("suggestTags", data);
+      suggestTags(baseUrl, tablename, itemID, value, (data) => {
+        // console.log("suggestTags", data);
         setTagOptions(data.tags)
       })
     }
@@ -46,14 +46,16 @@ const TagSection = () => {
   const handleInputChange = (text, event) => {
     setTagValue(text)
 
+    // console.log("input change event: ", event);
+
     if(text){
-      suggestTags(baseUrl, text, (data) => {
-        console.log("suggestTags", data);
+      suggestTags(baseUrl, tablename, itemID, text, (data) => {
+        // console.log("suggestTags", data);
         setTagOptions(data.tags)
       })
     }
 
-    console.log("Handle input change text", text)
+    // console.log("Handle input change text", text)
   }
 
   const submitForm = (e) => {
@@ -67,7 +69,7 @@ const TagSection = () => {
       }, 3000);
     }else{
       addTag(baseUrl, tablename, itemID, tagValue, function (data) {
-        console.log('addTag', data);
+        // console.log('addTag', data);
       
         setTagValue() //Clear form elements
   
@@ -83,6 +85,13 @@ const TagSection = () => {
     e.preventDefault();
   }
 
+  const onReturn = (e) => {
+    // console.log("event key: ", e.key);
+    if(e.key == "Enter" && tagValue == e.target.value){
+      submitForm(e)
+    }
+  }
+
   if(tags){
     return( 
       <>
@@ -91,7 +100,7 @@ const TagSection = () => {
           {tags ? 
             tags.map((tag, index) => {
               return(
-                <a href={searchUrl + `${tag.tag}`} className="btn btn-outline-secondary btn-sm" key={index} style={{margin: "5px"}}>{tag.tag}</a>
+                <a href={searchUrl + "tag: " + `${tag.tag}`} className="btn btn-outline-secondary btn-sm" key={index} style={{margin: "5px"}}>{tag.tag}</a>
               )
             })
           : null}
@@ -102,13 +111,13 @@ const TagSection = () => {
             <div className="d-inline-block">
               <div className="d-inline-block">
                 <Typeahead
-                  id="tag-typeahead"
+                  id="tag-typeahead-input"
                   onInputChange={(text, event) => handleInputChange(text, event)}
                   onChange={(value) => handleChange(value)}
                   options={tagOptions}
-                  placeholder="Add tag here"
+                  placeholder="Enter your tags"
                   ref={typeaheadRef}
-                  onKeyPress={console.log("keydown")}
+                  onKeyDown={(e) => onReturn(e)}
                 />
               </div>
               <div className="d-inline-block">

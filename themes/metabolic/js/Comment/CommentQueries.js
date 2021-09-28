@@ -40,34 +40,16 @@ const getContent = (url, table, id, callback) => {
     });
 }
 
-const suggestTags = (url, text, callback) => {
-  const client = getGraphQLClient(url, {});
-  client
-    .query({
-      query: gql`
-        query ($text: String) { 
-          suggestTags(text: $text) { 
-            tags
-        } }`
-
-      , variables: { 'text': text }
-    })
-    .then(function (result) {
-      callback(result.data['suggestTags']);
-    }).catch(function (error) {
-      console.log("Error while attempting to suggestTags: ", error);
-    });
-}
 
 function addComment(uri, table, id, comment, callback) {
   const client = getGraphQLClient(uri, {});
   client
-    .mutate({
-      mutation: gql`
-        mutation ($table: String, $id: Int, $comment: String) { 
-          addComment(table: $table, id: $id, comment: $comment) {
-            message, error, commentsAdded, tagsAdded, emailSent
-        } }`
+  .mutate({
+    mutation: gql`
+    mutation ($table: String, $id: Int, $comment: String) { 
+      addComment(table: $table, id: $id, comment: $comment) {
+        message, error, commentsAdded, tagsAdded, emailSent
+      } }`
       , variables: { 'table': table, 'id': id, 'comment': comment}
     })
     .then(function (result) {
@@ -76,16 +58,16 @@ function addComment(uri, table, id, comment, callback) {
       console.log("Error while attempting to addComment: ", error);
     });
 }
-
+  
 function addTag(uri, table, id, tags, callback) {
   const client = getGraphQLClient(uri, {});
   client
-    .mutate({
-      mutation: gql`
-        mutation ($table: String, $id: Int, $tags: [String]) { 
-          addTags(table: $table, id: $id, tags: $tags) {
-            message, error, commentsAdded, tagsAdded, emailSent
-        } }`
+  .mutate({
+    mutation: gql`
+    mutation ($table: String, $id: Int, $tags: [String]) { 
+      addTags(table: $table, id: $id, tags: $tags) {
+        message, error, commentsAdded, tagsAdded, emailSent
+      } }`
       , variables: { 'table': table, 'id': id, 'tags': tags }
     })
     .then(function (result) {
@@ -94,5 +76,24 @@ function addTag(uri, table, id, tags, callback) {
       console.log("Error while attempting to addTag: ", error);
     });
 }
+    
+const suggestTags = (url, table, id, text, callback) => {
+  const client = getGraphQLClient(url, {});
+  client
+    .query({
+      query: gql`
+        query ($table: String, $id: Int, $text: String) { 
+          suggestTags(table: $table, id: $id, text: $text) { 
+            tags
+        } }`
 
-export { getGraphQLClient, getContent, addComment, addTag, suggestTags };
+      , variables: {'table': table, 'id': id, 'text': text }
+    })
+    .then(function (result) {
+      callback(result.data['suggestTags']);
+    }).catch(function (error) {
+      console.log("Error while attempting to suggestTags: ", error);
+    });
+}
+
+  export { getGraphQLClient, getContent, addComment, addTag, suggestTags };
