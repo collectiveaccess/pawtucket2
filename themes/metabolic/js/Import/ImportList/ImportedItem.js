@@ -12,7 +12,7 @@ const ImportedItem = (props) => {
   const deleteImportConfirm = () => {
     deleteImport(baseUrl, props.data.sessionKey, function(data){
       getSessionList(baseUrl, function (data) {
-        console.log('sessionList data', data);
+        // console.log('sessionList data', data);
         setSessionList(data.sessions);
       });
     })
@@ -78,7 +78,7 @@ const ImportedItem = (props) => {
         {(props.data.status !== 'IN_PROGRESS') ?
         <>
           <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => viewImport(e)}>View</a></td>
-          <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td>
+          {/* <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td> */}
         </>
           : null}
       </tr>

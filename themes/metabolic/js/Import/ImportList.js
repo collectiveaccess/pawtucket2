@@ -20,7 +20,7 @@ const ImportList = (props) => {
       setSessionList(data.sessions);
     });
     getFormList(baseUrl, function(data){
-       console.log('Form List data', data);
+      //  console.log('Form List data', data);
       setFormsList(data.forms);
     });
 

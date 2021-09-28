@@ -9,7 +9,7 @@ import '../css/main.scss';
 
 const selector = pawtucketUIApps.Import.selector;
 const pUIImport = pawtucketUIApps.Import;
-console.log('pUIImport', pUIImport);
+// console.log('pUIImport', pUIImport);
 
 const Import = () => {
   const { viewMode } = useContext(ImportContext);

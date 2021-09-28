@@ -94,45 +94,39 @@
 		</div>
 <?php
 	}
-				# Comment/inquire/download pdf/lightbox
-				if ($vn_comments_enabled || $vn_pdf_enabled || $vn_inquire_enabled || $vn_download_all_enabled || caDisplayLightbox($this->requests)) {
-						
-					print '<div id="detailTools" class="mt-2">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><ion-icon name="chatboxes"></ion-icon> <span>Comments and Tags (<?= sizeof($va_comments) + sizeof($va_tags); ?>)</span></div><!-- end detailTool -->
-						<div id='detailComments'><?= $this->getVar("itemComments");?></div><!-- end itemComments -->
-						<div id='commentForm'> </div>
-<?php				
+			# Comment/inquire/download pdf/lightbox
+			if ($vn_pdf_enabled || $vn_inquire_enabled || $vn_download_all_enabled || caDisplayLightbox($this->requests)) {
+					
+				print '<div id="detailTools" class="mt-2">';
+				if ($vn_pdf_enabled || $vn_download_all_enabled) {
+					print "<div class='detailTool'><div class='dropdown'><a class='dropdown-toggle' role='button' id='DownloadButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><ion-icon name='download'></ion-icon> Download</a>";
+					print "<div class='dropdown-menu' aria-labelledby='DropdownButton'>";
+					if($vn_pdf_enabled){
+						print caDetailLink("Download PDF Summary", "dropdown-item", "ca_objects",  $vn_id, array("view" => "pdf", "export_format" => "_pdf_ca_objects_summary"));
 					}
-					if ($vn_pdf_enabled || $vn_download_all_enabled) {
-						print "<div class='detailTool'><div class='dropdown'><a class='dropdown-toggle' role='button' id='DownloadButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><ion-icon name='download'></ion-icon> Download</a>";
-						print "<div class='dropdown-menu' aria-labelledby='DropdownButton'>";
-						if($vn_pdf_enabled){
-							print caDetailLink("Download PDF Summary", "dropdown-item", "ca_objects",  $vn_id, array("view" => "pdf", "export_format" => "_pdf_ca_objects_summary"));
-						}
-						if($vn_download_all_enabled){
-							if(is_array($va_download_all_types) && sizeof($va_download_all_types)){
-								foreach($va_download_all_types as $vs_dl_name => $vs_dl_type){
-									print caNavLink("Download ".$vs_dl_name, "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "download_type" => $vs_dl_type, "download" => 1, "exclude_ancestors" => 1));
-								}
+					if($vn_download_all_enabled){
+						if(is_array($va_download_all_types) && sizeof($va_download_all_types)){
+							foreach($va_download_all_types as $vs_dl_name => $vs_dl_type){
+								print caNavLink("Download ".$vs_dl_name, "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "download_type" => $vs_dl_type, "download" => 1, "exclude_ancestors" => 1));
 							}
-							#print caNavLink("Download Original", "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "version" => "original", "download" => 1));
 						}
-						print "</div></div></div>";
+						#print caNavLink("Download Original", "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "version" => "original", "download" => 1));
 					}
-					if ($vn_inquire_enabled) {
-						print "<div class='detailTool'>".caNavLink("<ion-icon name='ios-mail'></ion-icon> <span>Inquire</span>", "", "", "Contact", "form", array("table" => "ca_objects", "id" => $vn_id))."</div>";
-					}
-					if(caDisplayLightbox($this->requests) && $this->request->isLoggedIn()){
-						print "<div class='detailTool'><div id='lightboxManagement'></div></div>";
-					}
-					$vs_email_subject = rawurlencode("Share from: aliceb.metabolicstudio.org");
-					$vs_email_body = rawurlencode($t_object->getWithTemplate("<ifdef code='ca_objects.preferred_labels.name'>^ca_objects.preferred_labels.name\n</ifdef><ifdef code='ca_objects.idno'>^ca_objects.idno\n\n</ifdef>").$this->request->config->get("site_host").caNavUrl("*", "*", "*"));
-					print "<div class='detailTool'><a title='Share via e-mail' href='mailto:?body=".$vs_email_body."&subject=".$vs_email_subject."'><ion-icon name='ios-mail'></ion-icon> <span>E-mail</span></a></div>";
-					print "<div class='detailTool'><a title='Copy URL' href='#' onClick='copyUrl(); return false;' class='detailCopy'><ion-icon name='ios-link'></ion-icon> <span>Copy URL</span></a></div>";
-					print '</div><!-- end detailTools -->';
-				}				
+					print "</div></div></div>";
+				}
+				if ($vn_inquire_enabled) {
+					print "<div class='detailTool'>".caNavLink("<ion-icon name='ios-mail'></ion-icon> <span>Inquire</span>", "", "", "Contact", "form", array("table" => "ca_objects", "id" => $vn_id))."</div>";
+				}
+				if(caDisplayLightbox($this->requests) && $this->request->isLoggedIn()){
+					print "<div class='detailTool'><div id='lightboxManagement'></div></div>";
+				}
+				$vs_email_subject = rawurlencode("Share from: aliceb.metabolicstudio.org");
+				$vs_email_body = rawurlencode($t_object->getWithTemplate("<ifdef code='ca_objects.preferred_labels.name'>^ca_objects.preferred_labels.name\n</ifdef><ifdef code='ca_objects.idno'>^ca_objects.idno\n\n</ifdef>").$this->request->config->get("site_host").caNavUrl("*", "*", "*"));
+				print "<div class='detailTool'><a title='Share via e-mail' href='mailto:?body=".$vs_email_body."&subject=".$vs_email_subject."'><ion-icon name='ios-mail'></ion-icon> <span>E-mail</span></a></div>";
+				print "<div class='detailTool'><a title='Copy URL' href='#' onClick='copyUrl(); return false;' class='detailCopy'><ion-icon name='ios-link'></ion-icon> <span>Copy URL</span></a></div>";
+				print '</div><!-- end detailTools -->';
+
+			}				
 
 ?>
 				<div id="mediaDisplay" class="detailPrimaryMedia mt-3">
@@ -199,7 +193,8 @@
 								<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
-<!--						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
+
+						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
 							<div class="mb-3">
 								<div class="label">Event<ifcount code="ca_occurrences" restrictToTypes="action" min="2">s</ifcount></div>
 								<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></unit>
@@ -386,7 +381,31 @@
 						
 					</div>
 				</div>
-						
+
+
+<!------------------------------------>
+
+	<?php
+		# Comment
+		if ($vn_comments_enabled) {
+?>				
+			<div id='commentForm'> </div>
+
+			<!-- <div class="detailTool mb-2"> -->
+				<!-- <h2><b><?= sizeof($va_comments); ?> Comments</b></h2> -->
+				<!-- <ion-icon name="chatboxes"></ion-icon> 
+				<span>Comments and Tags (<?= sizeof($va_comments) + sizeof($va_tags); ?>)</span> -->
+			<!-- </div> -->
+			<!-- <div id='detailComments' class='px-2 py-2' style=" width: 100%; max-height: 300px; box-shadow: 2px 2px 2px 2px #D8D7CE; overflow: auto"> -->
+				<!-- <?= $this->getVar("itemComments");?> -->
+			<!-- </div> -->
+<?php				
+		}
+?>
+
+<!------------------------------------>
+
+
 	</div><!-- end col -->
 	<div class='navLeftRight text-right col-sm-1 col-lg-2'>
 <?php
@@ -494,32 +513,40 @@
 <?php
 	}
 ?>
+
 <script type="text/javascript">	
-	pawtucketUIApps['PawtucketComment'] = {
-        'selector': '#commentForm',
-        'data': {
-            item_id: <?= $vn_id; ?>,
-            tablename: 'ca_objects',
-            form_title: '<span>Add Your Comment</span>',
-            list_title: '<span class="mt-5">Comments</span>',
-            tag_field_title: 'Tags',
-            comment_field_title: 'Comment',
-            login_button_text: 'Login to Add Your Comment',
-            comment_button_text: 'Submit',
-            no_tags: true,
-            show_form: <?= ($this->request->isLoggedIn()) ? "true" : "false"; ?>
-        }
-    };
-    pawtucketUIApps['MediaViewer'] = {
-        'selector': '#mediaDisplay',
-        'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => $va_access_values]); ?>,
-        'width': '800px',
-        'height': '500px',
-        'controlHeight': '72px',
-        'data': {
-        
-        }
-    };
+	// pawtucketUIApps['PawtucketComment'] = {
+
+	pawtucketUIApps['Comment'] = {
+			'selector': '#commentForm',
+			'key': '<?= $this->getVar('key'); ?>',
+			'baseUrl': 'http://metabolic3.whirl-i-gig.com:8085/service.php/UserGeneratedContent',
+			'searchUrl': 'http://metabolic3.whirl-i-gig.com:8085/index.php/MultiSearch/Index/search/',
+			'data': {
+					item_id: <?= $vn_id; ?>,
+					tablename: 'ca_objects',
+					show_form: <?= ($this->request->isLoggedIn()) ? "true" : "false"; ?>,
+					login_button_text: 'Login to Add Your Comment',
+					comment_button_text: 'Comment',
+
+					form_title: '<span>Add Your Comment</span>',
+					list_title: '<span class="mt-5">Comments</span>',
+					tag_field_title: 'Tags',
+					comment_field_title: 'Comment',
+					no_tags: true,
+			},
+  };
+
+	pawtucketUIApps['MediaViewer'] = {
+			'selector': '#mediaDisplay',
+			'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => $va_access_values]); ?>,
+			'width': '800px',
+			'height': '500px',
+			'controlHeight': '72px',
+			'data': {
+			
+			}
+	};
     
 </script>
 

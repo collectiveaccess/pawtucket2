@@ -24,7 +24,7 @@ const ImportDropZone = (props) => {
 
   const initNewSession = () => {
     getNewSession(baseUrl, formCode, function (data) {
-      console.log('newSession: ', data);
+      // console.log('newSession: ', data);
       setSessionKey(data.sessionKey)
     })
   }
@@ -37,7 +37,7 @@ const ImportDropZone = (props) => {
     let q = [];
     if (e.target) {  // From <input type="file" ... />
       q.push(...e.target.files);
-      console.log("q target: ", q);
+      // console.log("q target: ", q);
     }else {  // From dropzone
       q.push(...e);
       // console.log("q: ", q);
@@ -113,7 +113,7 @@ const ImportDropZone = (props) => {
               var percentage = (bytesUploaded / bytesTotal * 100).toFixed(2);
               setUploadProgress(percentage);
 
-              console.log(file.name, bytesUploaded, bytesTotal, "Percentage: " + percentage + "%")
+              // console.log(file.name, bytesUploaded, bytesTotal, "Percentage: " + percentage + "%")
             },
             onSuccess: () => {
 

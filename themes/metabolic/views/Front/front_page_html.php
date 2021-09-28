@@ -140,23 +140,7 @@ if($showTags){
 	pawtucketUIApps['FrontPage'] = {
 		'selector': '#frontSlider',
 		'data': {
-			'images': <?php print ca_sets::setContentsAsJSON($o_front_config->get("front_page_set_code"), ['template' => ($vs_tmp = $o_front_config->get("front_page_set_item_caption_template")) ? $vs_tmp : '<l>^ca_objects.preferred_labels.name (^ca_objects.idno)</l>']); ?>,
+			'images': <?php print ca_sets::setContentsAsJSON($o_front_config->get("front_page_set_code"), ['checkAccess' => $va_access_values, 'template' => ($vs_tmp = $o_front_config->get("front_page_set_item_caption_template")) ? $vs_tmp : '<l>^ca_objects.preferred_labels.name (^ca_objects.idno)</l>']); ?>,
 		}
 	};
-
-	// pawtucketUIApps['slickcarousel'] = {
-  //       'selector': '#frontSlider',
-	//     'data': {
-	//         'images': <?php print ca_sets::setContentsAsJSON($o_front_config->get("front_page_set_code"), ['template' => ($vs_tmp = $o_front_config->get("front_page_set_item_caption_template")) ? $vs_tmp : '<l>^ca_objects.preferred_labels.name (^ca_objects.idno)</l>']); ?>,
-	//         'showThumbnails': false,
-	//         'infiniteLoop': true,
-	//         'dots': true,
-	//         'infinite': true,
-	//         'speed': 500,
-	//         'slidesToShow': 1,
-	//         'slidesToScroll': 1,
-	//         'variableWidth':true,
-	//         'returnImgAsLink':1
-	//     }
-	// };
 </script>

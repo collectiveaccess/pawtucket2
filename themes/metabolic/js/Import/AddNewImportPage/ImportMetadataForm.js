@@ -28,7 +28,7 @@ const ImportMetadataForm = (props) => {
   
   const loadForm = () => {
   	getForm(baseUrl, formCode, function(data){
-        console.log("getform: ", data);
+        // console.log("getform: ", data);
         let form = { ...data }
         let jsonProperties = JSON.parse(data.properties);
         form.properties = jsonProperties;
@@ -36,17 +36,17 @@ const ImportMetadataForm = (props) => {
         
         if(data.uiSchema) {
 			let uiSchemaData = JSON.parse(data.uiSchema);
-			console.log("set ui schema", uiSchemaData);
+			// console.log("set ui schema", uiSchemaData);
 			setUiSchema(uiSchemaData);
 		}
       });
   };
 
   const initNewSession = (callback) => {
-  	console.log("init new session for ", formCode);
+  	// console.log("init new session for ", formCode);
   	
     getNewSession(baseUrl, formCode, function (data) {
-      console.log('newSession: ', data, data.sessionKey);
+      // console.log('newSession: ', data, data.sessionKey);
       setSessionKey(data.sessionKey);
       if(callback) { callback(data.sessionKey); }
     });
@@ -76,9 +76,9 @@ const ImportMetadataForm = (props) => {
   
   // NOTE: session_key has to be passed in here, otherwise it'll be a closure and stuck on the value set when this component is first loaded.
   const checkSessionKey = (sessionKey, formData, callback) => {
-    console.log("save session is", sessionKey, formData);
+    // console.log("save session is", sessionKey, formData);
     if (sessionKey == null && (formData !== null && formData !== { })) {  //if there is no sessionkey but there is formdata, create new session
-      console.log("initNewSession");
+      // console.log("initNewSession");
       initNewSession(callback);
     } else {							// Callback with existing session
     	callback(sessionKey);
@@ -87,11 +87,11 @@ const ImportMetadataForm = (props) => {
   
   // NOTE: session_key has to be passed in here, otherwise it'll be a closure and stuck on the value set when this component is first loaded.
   const saveFormDataForSession = (sessionKey, formData) => {
-    console.log("saveFormDataForSession", sessionKey, formData);
+    // console.log("saveFormDataForSession", sessionKey, formData);
   	checkSessionKey(sessionKey, formData, () => {	// wait until session key has been resolved
       if (sessionKey !== null && (formData !== null && formData !== { })){ //with sessionkey, updateform on changes
         updateSession(baseUrl, sessionKey, formData, function (data) {	// write new data to session
-          console.log('updateSession: ', data);
+          // console.log('updateSession: ', data);
         })
       }
     });
@@ -108,8 +108,8 @@ const ImportMetadataForm = (props) => {
     debounce_saveFormDataForSession(sessionKey, formData); // write data to session
   }
   
-  console.log("formData: ", formData);
-  console.log("schema: ", schema, uiSchema);
+  // console.log("formData: ", formData);
+  // console.log("schema: ", schema, uiSchema);
   return (
     <div>
       <div className="mb-1" style={{ backgroundColor: '#D8D7CE', padding: '5px' }}>

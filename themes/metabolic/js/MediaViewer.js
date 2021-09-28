@@ -96,7 +96,7 @@ class MediaViewer extends React.Component{
 		
 		let nHeight = parseInt(height.replace(/[^\d]+/g, ''));
 		let ncontrolHeight = parseInt(controlHeight.replace(/[^\d]+/g, ''));
-		if(this.state.media > 1) {
+		if(this.props.media.length > 1) {
 			nHeight -= ncontrolHeight;
 		}
 		let viewerHeight = nHeight + 'px';	// adjusted to provide space for controls
