@@ -178,7 +178,7 @@
 						{{{<ifdef code="ca_objects.dimensions.dim_width|ca_objects.dimensions.dim_height|ca_objects.dimensions.dim_depth">
 							<div class="mb-3">
 								<div class="label">Dimensions</div>
-								<unit relativeTo="ca_objects.dimensions" delimiter="; ">^dim_width x ^dim_height<ifdef code='dim_depth'> x ^dim_depth</ifdef><ifdef code='note'>(^note)</ifdef></unit>
+								<unit relativeTo="ca_objects.dimensions" delimiter="; ">^dim_width<ifdef code='ca_objects.dimensions.dim_width,ca_objects.dimensions.dim_height'> x </ifdef>^dim_height<ifdef code='ca_objects.dimensions.dim_depth'> x ^dim_depth</ifdef><ifdef code='ca_objects.dimensions.note'> (^note)</ifdef></unit>
 							</div>
 						</ifdef>}}}
 					</div>
@@ -235,6 +235,17 @@
 							if($t_parent->isLoaded()) { 
 								$occs += $t_parent->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_occurrence_labels.name"));
 							}
+						
+							$occs = array_reduce($occs, function($c, $i) {
+								$occ_id = $i['occurrence_id'];
+								if(sizeof(array_filter($c, function($v) use ($occ_id) {
+									return ($v['occurrence_id'] == $occ_id);
+								})) > 0) {
+									return $c;
+								}
+								$c[] = $i;
+								return $c;
+							}, []);
 						
 							$occ_links = [];
 							if(is_array($occs) && sizeof($occs)){
