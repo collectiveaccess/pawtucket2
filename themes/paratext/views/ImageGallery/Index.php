@@ -15,7 +15,7 @@ $images = array(
         'image'         => 'Comedias Sueltas Gallery 8.jpg',
         'thumbnail'     => 'Comedias Sueltas Gallery 8_S.jpg',
         'title'			=> 'Librería Bardón—interior',
-        'caption'       => '<p>This storied librería, known by Hispanists all over the world, operated by the third generation of book-loving family, is in a 19th-century house on the Plaza de San Martín.  It is where bibliophiles find treasures, including comedias sueltas.</p>
+        'caption'       => '<p>The storied Librería Bardón, known by Hispanists all over the world, operated by the third generation of book-loving family, is in a 19th-century house on the Plaza de San Martín.  It is where bibliophiles find treasures, including comedias sueltas.</p>
         <p>The interior is the perfect statement for an antiquarian bookstore, not only the shelves of books, but even the archways of the door.</p>',
 
     ),
@@ -23,7 +23,7 @@ $images = array(
         'image'         => 'Comedias Sueltas Gallery 14.jpg',
         'thumbnail'     => 'Comedias Sueltas Gallery 14_S.jpg',
         'title'			=> 'Librería Bardón—exterior',
-        'caption'       => '<p>This storied librería, known by Hispanists all over the world, operated by the third generation of book-loving family, is in a 19th-century house on the Plaza de San Martín.  It is where bibliophiles find treasures, including comedias sueltas.</p>',
+        'caption'       => '<p>The storied Librería Bardón, known by Hispanists all over the world, operated by the third generation of book-loving family, is in a 19th-century house on the Plaza de San Martín.  It is where bibliophiles find treasures, including comedias sueltas.</p>',
     ),
     array(
         'image'         => 'Home Image 1 duotone.png',
@@ -101,8 +101,7 @@ $images = array(
         'thumbnail'     => 'don-quijote-visit-print-shop_S.jpg',
         'title'			=> 'Don Quijote Visits a Print Shop in Barcelona Part II chapter LXII',
         'caption'       => '<p>According to Martín de Riquer, whose scholarly notes accompanied the 1965 Juventud edition of <i>Don Quijote</i>, claimed that in chapter LXII Cervantes was describing the printing house of Sebastiàn de Cormellas, on Calle del Call, which brought out a good number of classic works of the Spanish Golden Age. It is obvious that our image strays from the general theme of <i>sueltas</i> and 18th-century bookstores. However, the connections here are too tempting to resist: we meet Cervantes’s 17th-century hero in the 18th-century print shop that published the novel.</p>
-        <p>It is obvious that this image in the Gallery strays from the general theme of sueltas and 18th-century bookstores. But there are connections here that are too tempting to resist, and so we meet Cervantes’s 17th-century creation in a print shop.
-        This engraving of Don Quixote visiting a print shop in Barcelona comes from Sancha’s 1797 edition of Part II of Cervantes’ novel. The scene, like the novel is full of self-references to characters in real life along with the fictional ones. The image is rich in details that has to do with printing: a man in the background on the right is setting type (composing stick in his left hand, picking type from the case with his raised right hand); in the background on the left, a printer is lifting off a sheet from the bed of the press. The gentleman in the back on the left wearing a turban, is Antonio de Sancha recognizable by his often-reproduced portrait. The younger bewigged man directly in front of him is most likely his son Gabriel who carried on the business. The event, which in the novel takes place in Barcelona, has been transposed to Madrid identifiable by the sign over the door which reads Imprenta de Sancha.</p>
+        <p>This engraving of Don Quixote visiting a print shop in Barcelona comes from Sancha’s 1797 edition of Part II. The scene, like the novel is full of self-references to characters in real life along with the fictional ones. The image is rich in details that has to do with printing: a man in the background on the right is setting type (composing stick in his left hand, picking type from the case with his raised right hand); in the background on the left, a printer is lifting off a sheet from the bed of the press. The gentleman in the back on the left wearing a turban, is Antonio de Sancha recognizable by his often-reproduced portrait. The younger bewigged man directly in front of him is most likely his son Gabriel who carried on the business. The event, which in the novel takes place in Barcelona, has been transposed to Madrid identifiable by the sign over the door which reads Imprenta de Sancha.</p>
         <p>It is an engraving by Juan Moreno Tejada (1738–1805) after a composition designed by Luis Paret y Alcázar (1746–1799). The original drawing in this case survives in the Biblioteca Nacional (BNE DIB/15/54/13).</p>
         <p>[Courtesy of Patrick Lenaghan, Head Curator of Prints, Photographs and Sculpture, Hispanic Society Museum & Library]</p>
         <p>Paret’s composition was engraved by <a target="_blank" href="http://bdh.bne.es/bnesearch/CompleteSearch.do?showYearItems=&field=todos&advanced=false&exact=on&textH=&completeText=&text=paret+y+alcazar&pageSize=1&pageSizeAbrv=30&pageNumber=67">Juan Moreno Tejada (1738–1805) for the book.</a></p>',

@@ -180,7 +180,7 @@
             <div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/Home Image 1 duotone.png', array("alt" => "Home Image 1 duotone")); ?></div>
             <div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/La librera de Goya_S.jpg', array("alt" => "La librera de Goya")); ?></div>
             <div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/Home Image 2 duotone.jpg', array("alt" => "Home Image 2 duotone")); ?></div>
-            <div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/Home Image 3 duotone.jpg', array("alt" => "Home Image 3 duotone")); ?></div>
+            <!--<div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/Home Image 3 duotone.jpg', array("alt" => "Home Image 3 duotone")); ?></div>-->
             <div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/Home Image 5 duotone_S.jpg', array("alt" => "Home Image 5 duotone_S")); ?></div>
             <div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/Antonio de Sacha_S.jpg', array("alt" => "Antonio de Sacha")); ?></div>
         </div>
