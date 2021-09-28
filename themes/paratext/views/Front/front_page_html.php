@@ -147,7 +147,7 @@
                 	</li>
 <?php
 				}
-				foreach($va_paratext_exhibition_sections as $vs_idno => $vs_section_title){
+				foreach($va_paratext_exhibition_sections as $vs_idno){
 ?>
 					<li class="menu_item">
                     	<div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>

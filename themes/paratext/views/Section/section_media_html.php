@@ -9,17 +9,6 @@
 ?>
 <div class="page_title">
     <h1><?php print $vs_title; ?></h1>
-    <ul class="exhibition-sub-menu">
-<?php
-	$va_paratext_exhibition_sections = $this->request->config->get("paratext_exhibition_sections");
-	
-	foreach($va_paratext_exhibition_sections as $vs_idno => $vs_section_title){
-		if(strToLower($vs_idno) != $t_section->get("ca_occurrences.idno")){
-			print "<li>".caNavLink($this->request, $vs_section_title, '', '', 'Section', $vs_idno)."</li>";
-		}		
-	}
-?>
-    </ul>
 </div>
 
 <div class="text_content">
