@@ -155,7 +155,7 @@
 					if($va_user_group["description"]){
 						print "<dt>"._t("Description")."</dt><dd>".$va_user_group["description"]."</dd>";
 					}
-					print "<dt>"._t("Url to join group")."</dt><dd><textarea class='form-control'>".$this->request->config->get('site_hostname').caNavUrl($this->request, "", "LoginReg", "joinGroup", array("group_id" => $va_user_group["group_id"], "section" => "classroom"))."</textarea></dd>";
+					print "<dt>"._t("Url to join group")."</dt><dd><textarea class='form-control'>".$this->request->config->get('site_hostname').caNavUrl($this->request, "", "LoginReg", "joinGroup", array("group_code" => $va_user_group["code"], "section" => "classroom"))."</textarea></dd>";
 					print "<dt>"._t("Members")."</dt><dd>";
 					if(is_array($va_user_group["members"]) && sizeof($va_user_group["members"])){
 						print "<ul>";
