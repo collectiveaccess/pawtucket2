@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2019 Whirl-i-Gig
+ * Copyright 2013-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -191,7 +191,7 @@
                 }
                 
                 $t_group_to_join = null;
-				if (($ps_group_code) && (!($t_group_to_join = ca_user_groups::find(['code' => $ps_group_code, 'for_public_use' => 1], ['returnAs' => 'firstModelInstance'])))) {
+				if (strlen($ps_group_code) && !($t_group_to_join = $this->_validateGroup($ps_group_code))){
 					$va_errors["group_code"] = _t("Group code %1 is not valid", $ps_group_code);
 				}
                 
@@ -259,14 +259,13 @@
 				$this->loginForm();
 			} else {
 				# --- user is joining a user group from a supplied link
-				if(Session::getVar("join_user_group_id")){
+				if(Session::getVar("join_user_group_id") && $this->_validateGroup(Session::getVar("join_user_group_id"))){
 					if(!$this->request->user->inGroup(Session::getVar("join_user_group_id"))){
 						$this->request->user->addToGroups(Session::getVar("join_user_group_id"));
-						Session::setVar("join_user_group_id", "");
+						Session::setVar('join_user_group_id', '');
 						$vs_group_message = _t(" and added to the group");
 					}else{
-						Session::setVar("join_user_group_id", "");
-						//$vs_group_message = _t(" you are already a member of the group");
+						Session::setVar('join_user_group_id', '');
 					}
 				}
 				if($this->request->isAjax()){
@@ -406,7 +405,7 @@
 			
 			// check that group code exists if specified
 			$t_group_to_join = null;
-			if (($ps_group_code) && (!($t_group_to_join = ca_user_groups::find(['code' => $ps_group_code, 'for_public_use' => 1], ['returnAs' => 'firstModelInstance'])))) {
+			if (strlen($ps_group_code) && !($t_group_to_join = $this->_validateGroup($ps_group_code))) {
 				$va_errors["group_code"] = _t("Group code %1 is not valid", $ps_group_code);
 			}
 			
@@ -507,13 +506,13 @@
 						$t_user->addRoles($va_default_roles);
 					}
 					# --- user is joining a user group from a supplied link
-					if(Session::getVar("join_user_group_id")){
+					if(Session::getVar("join_user_group_id") && $this->_validateGroup(Session::getVar("join_user_group_id"))) {
 						if(!$t_user->inGroup(Session::getVar("join_user_group_id"))){
 							$t_user->addToGroups(Session::getVar("join_user_group_id"));
-							Session::setVar("join_user_group_id", "");
+							Session::setVar('join_user_group_id', '');
 							$vs_group_message = _t(" You were added to the group");
 						}else{
-							Session::setVar("join_user_group_id", "");
+							Session::setVar('join_user_group_id', '');
 							$vs_group_message = _t(" You are already a member of the group");
 						}
 					}
@@ -603,26 +602,30 @@
 		}
 		# -------------------------------------------------------
 		function joinGroup() {
-			$t_user_group = new ca_user_groups();
-			$pn_group_id = $this->request->getParameter("group_id", pInteger);
-			if($pn_group_id){
+			$t_user_group = $this->_validateGroup($group_code = $this->request->getParameter("group_code", pString));
+		
+			if (!$t_user_group) {
+				$this->view->setVar("message", _t("Group code %1 is not valid", $group_code));
+				return;
+			}
+			if($t_user_group){
+				$group_id = $t_user_group->getPrimaryKey();
+				
 				if($this->request->isLoggedIn()){
-					if(!$this->request->user->inGroup($pn_group_id)){
-						$this->request->user->addToGroups($pn_group_id);
-						Session::setVar("join_user_group_id", "");
-						$vs_group_message = _t("You were added to the group");
+					if(!$this->request->user->inGroup($group_id)){
+						$this->request->user->addToGroups($group_id);
+						$group_message = _t("You were added to the group");
 					}else{
-						Session::setVar("join_user_group_id", "");
-						$vs_group_message = _t("You are already a member of the group");
+						$group_message = _t("You are already a member of the group");
 					}
-					$this->notification->addNotification($vs_group_message, __NOTIFICATION_TYPE_INFO__);
-					if(!$vs_controller = $this->request->getParameter("section", pString)){
-						$vs_controller = "Lightbox";
+					Session::setVar('join_user_group_id', '');
+					$this->notification->addNotification($group_message, __NOTIFICATION_TYPE_INFO__);
+					if(!$controller = $this->request->getParameter("section", pString)){
+						$controller = "Lightbox";
 					}
-					$this->response->setRedirect(caNavUrl($this->request, "", $vs_controller, "Index"));
-				}else{
-					$t_user_group->load($pn_group_id);
-					Session::setVar("join_user_group_id", $pn_group_id);
+					$this->response->setRedirect(caNavUrl($this->request, "", $controller, "Index"));
+				} else {
+					Session::setVar('join_user_group_id', $group_id);
 					$this->view->setVar("message", _t("Login/Register to join \"%1\"", $t_user_group->get("name")));
 					$this->loginForm();
 				}
@@ -760,6 +763,27 @@
 				$this->view->setVar("action", $ps_action);
 				$this->render('LoginReg/form_reset_html.php');
 			}
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		private function _validateGroup(string $group) {
+			if(!strlen($group)) {
+				$this->view->setVar("message", _t("Group code is empty"));
+				return false;
+			}
+			$t_user_group = null;
+			if(is_numeric($group)) {
+				$t_user_group = ca_user_groups::find(['group_id' => (int)$group, 'for_public_use' => 1], ['returnAs' => 'firstModelInstance']);
+			} else {
+				$t_user_group = ca_user_groups::find(['code' => (string)$group, 'for_public_use' => 1], ['returnAs' => 'firstModelInstance']);
+			}
+			if (!$t_user_group) {
+				$this->view->setVar("message", _t("Group %1 is not valid", $group));
+				return false;
+			}
+			return $t_user_group;
 		}
 		# -------------------------------------------------------
 	}
