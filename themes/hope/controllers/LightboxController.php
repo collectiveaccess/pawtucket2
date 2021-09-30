@@ -132,7 +132,7 @@
 			$this->ovb_kam_curator = $this->request->hasRole($this->opo_config->get("kam_curated_role"));
 			$this->view->setVar('kam_curator', $this->ovb_kam_curator);
 			
-			$this->purifier = new HTMLPurifier();
+			$this->purifier = caGetHTMLPurifier();
 			
 			AssetLoadManager::register("readmore");
 			AssetLoadManager::register("ckeditor");

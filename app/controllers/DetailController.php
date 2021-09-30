@@ -964,7 +964,7 @@
  				$this->render("Form/reload_html.php");
  				return;
  			}
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
     		$ps_to_email = $o_purifier->purify($this->request->getParameter('to_email', pString));
  			$ps_from_email = $o_purifier->purify($this->request->getParameter('from_email', pString));
  			$ps_from_name = $o_purifier->purify($this->request->getParameter('from_name', pString));
