@@ -77,13 +77,13 @@ class Eventlog extends BaseLogger {
 			if (!$pa_entry["MESSAGE"]) {
 				return false;
 			}
-			$purifier = new HTMLPurifier();
+			$o_purifier = caGetHTMLPurifier();
 			$this->o_db->query("
 				INSERT INTO ca_eventlog 
 				(date_time, code, message, source)
 				VALUES
 				(unix_timestamp(), ?, ?, ?)
-			", $pa_entry["CODE"], $purifier->purify($pa_entry["MESSAGE"]), $pa_entry["SOURCE"]);
+			", $pa_entry["CODE"], $o_purifier->purify($pa_entry["MESSAGE"]), $pa_entry["SOURCE"]);
 			
 			return true;
 		}
@@ -126,9 +126,9 @@ class Eventlog extends BaseLogger {
 					");
 				}
 				$entries = $qr_log->getAllRows();
-				$purifier = new HTMLPurifier();
-				return array_map(function($e) use ($purifier) { 
-					$e['message'] = $purifier->purify($e['message']);
+				$o_purifier = caGetHTMLPurifier();
+				return array_map(function($e) use ($o_purifier) { 
+					$e['message'] = $o_purifier->purify($e['message']);
 					return $e;
 				}, $entries);
 			}
@@ -137,4 +137,3 @@ class Eventlog extends BaseLogger {
 	}
 	# ----------------------------------------
 }
-?>

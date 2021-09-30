@@ -64,7 +64,7 @@
  			// Make application plugin manager available to superclasses
  			$this->opo_app_plugin_manager = new ApplicationPluginManager();
  			
-			$this->purifier = new HTMLPurifier();
+			$this->purifier = caGetHTMLPurifier();
  			
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  		}

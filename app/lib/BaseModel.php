@@ -551,7 +551,9 @@ class BaseModel extends BaseObject {
 	 * @return HTMLPurifier Returns instance
 	 */
 	static public function getPurifier() {
-		if (!BaseModel::$html_purifier) { BaseModel::$html_purifier = new HTMLPurifier(); }
+		if (!BaseModel::$html_purifier) { 
+			BaseModel::$html_purifier = caGetHTMLPurifier();
+		}
 		return BaseModel::$html_purifier;
 	}
 	# --------------------------------------------------------------------------------
