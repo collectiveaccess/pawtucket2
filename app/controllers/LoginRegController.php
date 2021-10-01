@@ -606,6 +606,8 @@
 		
 			if (!$t_user_group) {
 				$this->view->setVar("message", _t("Group code %1 is not valid", $group_code));
+				$this->notification->addNotification($this->view->getVar('message'), __NOTIFICATION_TYPE_ERROR__);
+				$this->response->setRedirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
 			}
 			if($t_user_group){
@@ -624,14 +626,19 @@
 						$controller = "Lightbox";
 					}
 					$this->response->setRedirect(caNavUrl($this->request, "", $controller, "Index"));
+					return;
 				} else {
 					Session::setVar('join_user_group_id', $group_id);
 					$this->view->setVar("message", _t("Login/Register to join \"%1\"", $t_user_group->get("name")));
 					$this->loginForm();
+					return;
 				}
 			}else{
 				$this->view->setVar("message", _t("Invalid user group"));
 			}
+			$this->notification->addNotification($this->view->getVar('message'), __NOTIFICATION_TYPE_ERROR__);
+			$this->response->setRedirect(caNavUrl($this->request, '', 'Front', 'Index'));
+			return;
 		}
 		# -------------------------------------------------------
 		function resetSend(){
@@ -769,6 +776,7 @@
 		 *
 		 */
 		private function _validateGroup(string $group) {
+			$group = preg_replace('![^A-Za-z0-9_]+!u', '', $group);
 			if(!strlen($group)) {
 				$this->view->setVar("message", _t("Group code is empty"));
 				return false;
