@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2019 Whirl-i-Gig
+ * Copyright 2013-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -882,6 +882,7 @@
 				}else{
 					$t_user_group->set('user_id', $this->request->getUserID());
 					$t_user_group->set('code', 'lb_'.$this->request->getUserID().'_'.time());
+					$t_user_group->set('for_public_use', 1);
 					$t_user_group->insert();
 					if($t_user_group->get("group_id")){
 						$t_user_group->addUsers($this->request->getUserID());
