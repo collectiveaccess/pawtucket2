@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2019 Whirl-i-Gig
+ * Copyright 2013-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -129,8 +129,8 @@
 
             # Get sets for display
             $t_sets = new ca_sets();
- 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(),"access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
- 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "parents_only" => true));
+ 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
+ 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
 
  			# Remove write sets from the read array
  			$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
@@ -882,6 +882,7 @@
 				}else{
 					$t_user_group->set('user_id', $this->request->getUserID());
 					$t_user_group->set('code', 'lb_'.$this->request->getUserID().'_'.time());
+					$t_user_group->set('for_public_use', 1);
 					$t_user_group->insert();
 					if($t_user_group->get("group_id")){
 						$t_user_group->addUsers($this->request->getUserID());
@@ -928,6 +929,7 @@
                 throw new ApplicationException(_t("Item does not exist"));
             }
  			
+ 			$this->view->setVar("access_values", $this->opa_access_values);
  			$this->view->setVar("set", $t_set);
  			$this->view->setVar("tablename", $ps_tablename);
  			$this->view->setVar("item_id", $pn_item_id);
