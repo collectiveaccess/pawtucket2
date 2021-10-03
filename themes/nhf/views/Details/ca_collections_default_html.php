@@ -321,7 +321,7 @@
 	?>
 				<div id="objUserDataFormTitle"><?php print _t("Post new comment"); ?></div><!-- end title -->
 				<div id="objUserDataForm">
-					<form method="post" action="<?php print caNavUrl($this->request, '', 'Detail', 'saveCommentTagging'); ?>" name="comment">
+					<form method="post" action="<?php print caNavUrl($this->request, '', 'Detail', 'saveCommentTagging', ['csrfToken' => caGenerateCSRFToken($this->request)]); ?>" name="comment">
 						<div class="formLabel"><?php print _t("Your name"); ?></div>
 						<input type="text" name="name" value="<?php print $this->getVar("form_name"); ?>">
 						<div class="formLabel"><?php print _t("E-mail"); ?></div>

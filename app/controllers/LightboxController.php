@@ -943,6 +943,9 @@
          */
  		function ajaxAddComment() {
             if($this->opb_is_login_redirect) { return; }
+            if (!caValidateCSRFToken($this->request)) {
+				throw new ApplicationException(_t("Invalid CSRF token"));
+			}
 
  			// when close is set to true, will make the form view disappear after saving form
 
@@ -1000,7 +1003,9 @@
          */
  		function ajaxDeleteComment() {
             if($this->opb_is_login_redirect) { return; }
-
+			if (!caValidateCSRFToken($this->request)) {
+				throw new ApplicationException(_t("Invalid CSRF token"));
+			}
             $va_errors = array();
             $vs_message = null;
             $vn_count = null;
@@ -1018,7 +1023,6 @@
                     if (($this->request->getUserID() != $t_comment->get("user_id")) && !$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
                         $va_errors[] = _t('You do not have access to this comment');
                     } else {
-                        $t_comment->setMode(ACCESS_WRITE);
                         $t_comment->delete(true);
                         if ($t_comment->numErrors()) {
                             $va_errors = $t_comment->getErrors();
@@ -1045,7 +1049,9 @@
          */
  		public function deleteLightbox() {
             if($this->opb_is_login_redirect) { return; }
-
+			if (!caValidateCSRFToken($this->request)) {
+				throw new ApplicationException(_t("Invalid CSRF token"));
+			}
 			$va_errors = array();
 			$vs_message = $vn_set_id = $vs_set_name = null;
 			
@@ -1100,6 +1106,9 @@
          */
  		public function ajaxDeleteItem() {
             if($this->opb_is_login_redirect) { return; }
+            if (!caValidateCSRFToken($this->request)) {
+				throw new ApplicationException(_t("Invalid CSRF token"));
+			}
 
             if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
 				
@@ -1125,6 +1134,9 @@
          */
  		public function ajaxAddItem($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
+            if (!caValidateCSRFToken($this->request)) {
+				throw new ApplicationException(_t("Invalid CSRF token"));
+			}
 
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();

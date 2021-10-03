@@ -58,6 +58,7 @@
 	    <div>
         <form action="#" id="addComment<?php print $vn_item_id; ?>">
 <?php
+		print caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request)));
 		if($vs_error){
 			print "<div>".$vs_error."</div>";
 		}
@@ -96,7 +97,7 @@
             jQuery("#lbSetComments{{{item_id}}}").on('click', '.lbCommentRemove', function(e) {
                 var comment_id = jQuery(this).data("comment_id");
                 if(comment_id) {
-                    jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {
+                    jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> }, function(data) {
                         if(data.status == 'ok') {
                             jQuery("#lbSetCommentErrors{{{item_id}}}").hide();
                             jQuery("#lbComments" + data.comment_id).remove();
