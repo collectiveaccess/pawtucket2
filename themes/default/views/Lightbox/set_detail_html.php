@@ -407,7 +407,7 @@ if (!$vb_ajax) {    // !ajax
                 var data = $(this).sortable('serialize');
                 jQuery.ajax({
                     type: 'POST',
-                    url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems"); ?>/row_ids/' + data
+                    url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems", ['csrfToken' => caGenerateCSRFToken($this->request)]); ?>/row_ids/' + data
                 });
             }
         });

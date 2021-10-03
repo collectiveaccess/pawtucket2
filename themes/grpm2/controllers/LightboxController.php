@@ -1083,6 +1083,10 @@
          */
  		public function ajaxReorderItems() {
             if($this->opb_is_login_redirect) { return; }
+        	if (!caValidateCSRFToken($this->request)) {
+				throw new ApplicationException(_t("Invalid CSRF token"));
+			}
+
 
             if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
 				
