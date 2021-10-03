@@ -433,7 +433,7 @@ if (!$vb_ajax) {    // !ajax
 			jQuery('#confirm-delete .btn-delete').data('set_id', set_id);
 		}).find('.btn-delete').on('click', function(e) {
 			var set_id = jQuery(this).data('set_id');
-			jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id }, function(data) {
+			jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> }, function(data) {
 				if(data.status == 'ok') {
 					jQuery("#crSetContainer" + set_id).remove();
 					jQuery("#crUserResponse").html(' ');
@@ -499,7 +499,7 @@ if (!$vb_ajax) {    // !ajax
                 var data = $(this).sortable('serialize');
                 jQuery.ajax({
                     type: 'POST',
-                    url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems"); ?>/row_ids/' + data
+                    url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems", ['csrfToken' => caGenerateCSRFToken($this->request)]); ?>/row_ids/' + data
                 });
             }
         });
@@ -507,7 +507,7 @@ if (!$vb_ajax) {    // !ajax
         jQuery("#lbSetResultLoadContainer").on('click', ".lbItemDeleteButton", function(e) {
                 var id = jQuery(this).data("item_id");
 
-                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id} , function(data) {
+                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?>} , function(data) {
                     if(data.status == 'ok') {
                         jQuery('.lbItem' + data.item_id).fadeOut(500, function() { jQuery('.lbItem' + data.item_id).remove(); });
                         jQuery('.lbSetCountInt').html(data.count);  // update count
@@ -522,7 +522,7 @@ if (!$vb_ajax) {    // !ajax
         );
 
         jQuery("#addComment").on('submit', function(e) {
-            jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val() } , function(data) {
+            jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val(), 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> } , function(data) {
                 if(data.status == 'ok') {
                     jQuery("#lbSetCommentErrors").hide()
                     jQuery("#addCommentTextArea").val('');
@@ -541,7 +541,7 @@ if (!$vb_ajax) {    // !ajax
         jQuery("div.lbComments").on('click', '.lbComment', function(e) {
             var comment_id = jQuery(this).data("comment_id");
             if(comment_id) {
-                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {
+                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> }, function(data) {
                     if(data.status == 'ok') {
                         jQuery("#lbSetCommentErrors").hide()
                         jQuery("#lbComments" + data.comment_id).remove();
