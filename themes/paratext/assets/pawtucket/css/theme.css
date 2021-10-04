@@ -1109,6 +1109,7 @@ ul.home_menu li a:hover {
 .page_title .page_title_ornament {
   max-height: 110px;
 }
+/*
 .page_title .exhibition-sub-menu {
   list-style: none;
   padding: 0;
@@ -1140,6 +1141,7 @@ ul.home_menu li a:hover {
 .page_title .exhibition-sub-menu li:first-child:before {
   display: none;
 }
+*/
 .text_content {
   background-color: rgba(255, 255, 255, 0.25);
   padding: 60px 90px;
@@ -1286,6 +1288,59 @@ ul.home_menu li a:hover {
 .text_content .columns .column.image_gallery .thumbnails .thumbnail:hover {
   opacity: 1;
 }
+.text_content.with_vertical_ornaments {
+  display: flex;
+  flex-direction: row;
+  padding: 60px 90px 60px 60px;
+}
+.text_content.with_vertical_ornaments .vertical_ornaments {
+  width: 140px;
+  display: flex;
+}
+.text_content.with_vertical_ornaments .vertical_ornaments .vertical_ornament_one {
+  width: 40px;
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 25px;
+  background-image: url("../graphics/vertical_ornament_2-01.svg");
+  background-repeat: repeat;
+  background-size: contain;
+}
+.text_content.with_vertical_ornaments .vertical_ornaments .vertical_ornament_two {
+  width: 15px;
+  height: 100%;
+  display: inline-block;
+  vertical-align: top;
+  background-image: url("../graphics/vertical_ornament_3-01-02.svg");
+  background-repeat: repeat;
+  background-size: contain;
+}
+.text_content.with_vertical_ornaments .text {
+  width: calc(100% - 140px);
+  display: flex;
+  flex-direction: column;
+}
+.text_content.with_images_column {
+  display: flex;
+  flex-direction: row;
+}
+.text_content.with_images_column .text {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+}
+.text_content.with_images_column .images {
+  display: flex;
+  flex-direction: column;
+  width: calc(40% - 40px);
+  margin-left: 40px;
+}
+.text_content.with_images_column .images img {
+  max-width: 100%;
+  height: auto;
+  margin: 10px 0;
+}
 .text_content img {
   border: 4px solid #804639;
   max-width: 100%;
@@ -1356,6 +1411,26 @@ ul.home_menu li a:hover {
   .text_content .columns .column.image_gallery {
     margin-left: 0;
     margin-top: 30px;
+  }
+  .text_content.with_vertical_ornaments {
+    flex-direction: column;
+    padding: 40px 50px;
+  }
+  .text_content.with_vertical_ornaments .vertical_ornaments {
+    display: none;
+  }
+  .text_content.with_vertical_ornaments .text {
+    width: 100%;
+  }
+  .text_content.with_images_column {
+    flex-direction: column;
+  }
+  .text_content.with_images_column .text {
+    width: 100%;
+  }
+  .text_content.with_images_column .images {
+    width: 100%;
+    margin-left: 0;
   }
 }
 @media only screen and (max-width: 700px) {
