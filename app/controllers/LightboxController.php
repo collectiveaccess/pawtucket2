@@ -109,7 +109,7 @@ class LightboxController extends FindController {
 		
 		$this->ops_lightbox_display_name = $va_lightboxDisplayName["singular"];
 		$this->ops_lightbox_display_name_plural = $va_lightboxDisplayName["plural"];
-		$this->ops_description_attribute = ($this->opo_config->get("lightbox_set_description_element_code") ? $this->opo_config->get("lightbox_set_description_element_code") : "set_description");
+		$this->ops_description_attribute = ($this->opo_config->get("lightbox_set_description_element_code") ? $this->opo_config->get("lightbox_set_description_element_code") : "description");
 		$this->view->setVar('description_attribute', $this->ops_description_attribute);
 		
 		
