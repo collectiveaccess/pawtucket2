@@ -132,8 +132,8 @@
                 </div>
                 <div class="commerce_of_printing">commerce of printing</div>
                 <div class="an_online_exhitibion">an online exhibition</div>
-                <div class="szilvia">by <?php print caNavLink($this->request, 'Szilvia Szmuk-Tanenbaum', '', '', 'About', 'Index'); ?></div>
-                <div class="agradecimientos"><?php print caNavLink($this->request, 'Agradecimientos', '', '', 'About', 'Index#agradecimientos'); ?></div>
+                <div class="szilvia">by <?php print caNavLink($this->request, 'Szilvia Szmuk-Tanenbaum', '', '', 'Section', 'About'); ?></div>
+                <div class="agradecimientos"><?php print caNavLink($this->request, 'Agradecimientos', '', '', 'Section', 'Acknowledgments'); ?></div>
                 <div class="cruickshank">Dedicated to D W Cruickshank</div>
             </div>
             <ul class="home_menu">

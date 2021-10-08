@@ -34,7 +34,7 @@
 
     <div class="an_online_exhitibion">an online exhibition</div>
 
-    <div class="szilvia"><?php print caNavLink($this->request, 'Szilvia Szmuk-Tanenbaum', '', '', 'About', 'Index'); ?></div>
+    <div class="szilvia"><?php print caNavLink($this->request, 'Szilvia Szmuk-Tanenbaum', '', '', 'Section', 'About'); ?></div>
 
     <div class="ornament">
         <?php

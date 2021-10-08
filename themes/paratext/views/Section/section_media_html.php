@@ -42,6 +42,58 @@
    			</div>
    		</div>
 <?php	
+	}elseif($vs_image_display == "Grid"){
+?>
+		<div class="page_title">
+			<h1><?php print $vs_title; ?></h1>
+			<div class="ornament">
+<?php
+				$ornaments = array(
+					'head_ornament-10.svg',
+					'head_ornament-11.svg',
+					'head_ornament-12.svg',
+				);
+				$rand_ornament = array_rand($ornaments, 1);
+				print caGetThemeGraphic($this->request, $ornaments[$rand_ornament], array("class" => "page_title_ornament", "alt" => "Header Ornament"));
+?>
+			</div>
+
+		</div>
+
+		<div class="text_content">
+			<div class="text_2_col">
+				<div class="text">
+					<p><?php print $vs_text; ?></p>
+				</div>
+			</div>
+   		
+			
+<?php
+			$r_illustrations->filterNonPrimaryRepresentations(false);
+			if($r_illustrations->numHits()){
+				while($r_illustrations->nextHit()){
+					print "<div class='columns'><a name='Row".$r_illustrations->get("ca_objects.object_id")."'></a>";
+					#print "<div class='grid_column_4'>".$r_illustrations->get("ca_object_representations.media.large")."</div>";
+					$va_rep_ids = $r_illustrations->get("ca_object_representations.representation_id", array("filterNonPrimaryRepresentations" => 0, "returnAsArray" => true));
+					if(is_array($va_rep_ids)){
+						foreach($va_rep_ids as $vn_rep_id){
+							$t_rep = new ca_object_representations($vn_rep_id);
+							$vs_rep = $t_rep->get("ca_object_representations.media.large");
+							print "<div class='grid_column_4'><a href='#Row".$r_illustrations->get("ca_objects.object_id")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $r_illustrations->get("ca_objects.object_id"), 'representation_id' => $vn_rep_id, 'item_id' => $r_illustrations->get("ca_objects.object_id"), 'overlay' => 1))."\"); return false;' >".$vs_rep."</a></div>";
+						}
+					}
+					#<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;' ></a>
+					#print $r_illustrations->getWithTemplate("<unit relativeTo='ca_object_representations' delimiter=' ' filterNonPrimaryRepresentations='0'><div class='grid_column_4'>^ca_object_representations.media.large</div></unit>");
+					print "</div>";
+					print "<div class='caption_col_4'>".$r_illustrations->get("ca_objects.preferred_labels.name")."</div>";
+					print "<div style='clear:both;'></div>";
+				}
+				
+			}
+?>
+			</div>
+   		</div>
+<?php	
 	}else{
 ?>
 		<div class="page_title">
