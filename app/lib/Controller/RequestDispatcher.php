@@ -141,7 +141,7 @@ class RequestDispatcher extends BaseObject {
 		$this->ops_controller = ucfirst(preg_replace("![^A-Za-z0-9_:\.\*]+!", "", array_shift($va_tmp)));
 		$this->ops_action = preg_replace("![^A-Za-z0-9_:\.\*]+!", "", array_shift($va_tmp));
 		if ((sizeof($va_tmp) % 2) != 0) {
-			$this->ops_action_extra = preg_replace("![^A-Za-z0-9_:\.\*]+!", "", array_shift($va_tmp));
+			$this->ops_action_extra = preg_replace("![^A-Za-z0-9_:\.\*%\-]+!", "", array_shift($va_tmp));
 		} else {
 			$this->ops_action_extra = '';
 		}
