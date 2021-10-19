@@ -245,6 +245,7 @@ if($vs_mode == "map"){
 							{{{<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Repository Object Identifier</h6>^ca_objects.source_identifer</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.NCTR_id"><div class='unit'><h6>Commission Object Identifier</h6>^ca_objects.NCTR_id</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.RAD_extent"><div class='unit'><h6>Extent and Medium</h6>^ca_objects.RAD_extent</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.RAD_custodial"><div class='unit'><h6>Archival History</h6>^ca_objects.RAD_custodial</div></ifdef>}}}
 							<!--{{{<ifdef code="ca_objects.related_collection_list"><div class='unit'><H6>Collection Hierarchy List</H6><unit relativeTo="ca_objects" delimiter="<br/>"><l>^ca_objects.related_collection_list</l></unit></div></ifdef>}}}-->
 							{{{<ifdef code="ca_objects.ownership_credit"><div class='unit'><h6>Credit/Citation</h6>^ca_objects.ownership_credit</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Notes</h6>^ca_objects.MARC_generalNote</div></ifdef>}}}
