@@ -72,6 +72,10 @@
 ?>
 							{{{<div class='unit'><ifdef code='ca_objects.idno'><?php print $vs_idno_label; ?>^ca_objects.idno<br/></ifdef><ifdef code='ca_objects.dimensions'>^ca_objects.dimensions<br/></ifdef><ifdef code='ca_objects.medium'>^ca_objects.medium</ifdef></div>}}}
 <?php
+							# copyright statement is set as global value
+							if($vs_copyright = $this->getVar("copyright_notice")){
+								print "<div class='unit small'>".$vs_copyright."</div>";
+							}
 							$t_list_item = new ca_list_items;
 							if($va_keywords = $t_object->get("ca_objects.keywords", array("returnAsArray" => true))){
 								print "<div class='unit'><label>Keywords</label>";

@@ -549,6 +549,9 @@ a.facetApply {
 .detail .unit {
     margin-bottom: 25px;
 }
+.detail .unit.small{
+    font-size: .85em;
+}
 .detail .detailNavBgLeft, .detail .detailNavBgRight {
     margin-top: -50px;
 }
