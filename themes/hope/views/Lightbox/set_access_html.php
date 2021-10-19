@@ -48,9 +48,9 @@
 		print "<H3>"._t("User Groups")."</H3>";
 		print "<ul>";
 		foreach($va_user_groups as $va_user_group){
-			print "<li><div class='pull-right'><a href='#' onclick='jQuery(\"#editGroupAccess".$va_user_group["group_id"]."\").toggle(); return false;'><span class='glyphicon glyphicon-edit' title='"._t("change access")."'></span></a>&nbsp;&nbsp;&nbsp;<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "removeGroupAccess", array("group_id" => $va_user_group["group_id"]))."\"); return false;'><i class='fa fa-times' title='"._t("remove access")."'></i></a></div>";
+			print "<li><div class='pull-right'><a href='#' onclick='jQuery(\"#editGroupAccess".$va_user_group["group_id"]."\").toggle(); return false;'><span class='glyphicon glyphicon-edit' title='"._t("change access")."'></span></a>&nbsp;&nbsp;&nbsp;<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "removeGroupAccess", array("group_id" => $va_user_group["group_id"], 'csrfToken' => caGenerateCSRFToken($this->request)))."\"); return false;'><i class='fa fa-times' title='"._t("remove access")."'></i></a></div>";
 			print $va_user_group["name"].", ".(($va_user_group["access"] == 2) ? _t("write access") : _t("read access"));
-			print "<p id='editGroupAccess".$va_user_group["group_id"]."' style='display:none;'><a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "editGroupAccess", array("access" => (($va_user_group["access"] == 2) ? 1 : 2), "group_id" => $va_user_group["group_id"]))."\"); return false;'><button type='button' class='btn btn-default btn-xs'>".(($va_user_group["access"] == 2) ? _t("Change to read access") : _t("Change to write access"))."</button></a></p>";
+			print "<p id='editGroupAccess".$va_user_group["group_id"]."' style='display:none;'><a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "editGroupAccess", array("access" => (($va_user_group["access"] == 2) ? 1 : 2), "group_id" => $va_user_group["group_id"], 'csrfToken' => caGenerateCSRFToken($this->request)))."\"); return false;'><button type='button' class='btn btn-default btn-xs'>".(($va_user_group["access"] == 2) ? _t("Change to read access") : _t("Change to write access"))."</button></a></p>";
 			print "</li>";
 		}
 		print "</ul>";
@@ -61,10 +61,10 @@
 		foreach($va_users as $va_user){
 			print "<li>";
 			if(!$va_user["owner"]){
-				print "<div class='pull-right'><a href='#' onclick='jQuery(\"#editUserAccess".$va_user["user_id"]."\").toggle(); return false;'><span class='glyphicon glyphicon-edit' title='"._t("change access")."'></span></a>&nbsp;&nbsp;&nbsp;<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "removeUserAccess", array("user_id" => $va_user["user_id"]))."\"); return false;'><i class='fa fa-times' title='"._t("remove access")."'></i></a></div>";
+				print "<div class='pull-right'><a href='#' onclick='jQuery(\"#editUserAccess".$va_user["user_id"]."\").toggle(); return false;'><span class='glyphicon glyphicon-edit' title='"._t("change access")."'></span></a>&nbsp;&nbsp;&nbsp;<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "removeUserAccess", array("user_id" => $va_user["user_id"], 'csrfToken' => caGenerateCSRFToken($this->request)))."\"); return false;'><i class='fa fa-times' title='"._t("remove access")."'></i></a></div>";
 			}
 			print $va_user["name"]." (".$va_user["email"]."), ".(($va_user["access"] == 2) ? _t("write access") : _t("read access")).(($va_user["owner"]) ? ", <b>"._t("Owner")."</b>" : "");
-			print "<p id='editUserAccess".$va_user["user_id"]."' style='display:none;'><a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "editUserAccess", array("access" => (($va_user["access"] == 2) ? 1 : 2), "user_id" => $va_user["user_id"]))."\"); return false;'><button type='button' class='btn btn-default btn-xs'>".(($va_user["access"] == 2) ? _t("Change to read access") : _t("Change to write access"))."</button></a></p>";
+			print "<p id='editUserAccess".$va_user["user_id"]."' style='display:none;'><a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "editUserAccess", array("access" => (($va_user["access"] == 2) ? 1 : 2), "user_id" => $va_user["user_id"], 'csrfToken' => caGenerateCSRFToken($this->request)))."\"); return false;'><button type='button' class='btn btn-default btn-xs'>".(($va_user["access"] == 2) ? _t("Change to read access") : _t("Change to write access"))."</button></a></p>";
 			print "</li>";
 		}
 		print "</ul>";

@@ -782,6 +782,10 @@
  		 *
  		 */
  		public function SaveCommentTagging() {
+ 			if (!caValidateCSRFToken($this->request)) {
+				throw new ApplicationException(_t("Invalid CSRF token"));
+			}
+			
  			# --- inline is passed to indicate form appears embedded in detail page, not in overlay
 			$vn_inline_form = $this->request->getParameter("inline", pInteger);
 			if(!$t_item = Datamodel::getInstance($this->request->getParameter("tablename", pString), true)) {
@@ -964,7 +968,7 @@
  				$this->render("Form/reload_html.php");
  				return;
  			}
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
     		$ps_to_email = $o_purifier->purify($this->request->getParameter('to_email', pString));
  			$ps_from_email = $o_purifier->purify($this->request->getParameter('from_email', pString));
  			$ps_from_name = $o_purifier->purify($this->request->getParameter('from_name', pString));

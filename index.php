@@ -112,7 +112,7 @@
 		if (caDeviceIsMobile()) { AssetLoadManager::register('mobile'); }
 	
 		// Prevent caching
-		$resp->addHeader("Cache-Control", "no-cache, must-revalidate");
+		$resp->addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		$resp->addHeader("Expires", "Mon, 26 Jul 1997 05:00:00 GMT");
 		
 		//
