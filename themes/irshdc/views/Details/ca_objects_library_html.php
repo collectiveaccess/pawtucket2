@@ -106,8 +106,8 @@ if($vs_mode == "map"){
 						if(is_array($va_full_text_rep_ids) && sizeof($va_full_text_rep_ids)){
 							foreach($va_full_text_rep_ids as $vn_full_text_rep_id){
 								$t_rep = new ca_object_representations($vn_transcript_rep_id);
-								print "<a href='#' class='btn btn-default btn-small' title='"._t("Read Online")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_id, 'representation_id' => $vn_transcript_rep_id, 'item_id' => $vn_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span> Read Online</a>\n";
-								$vs_read_online_btn .= "<div class='detailTool'><a href='#' title='"._t("Read Online")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_id, 'representation_id' => $vn_transcript_rep_id, 'item_id' => $vn_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span> Read Online</a></div>\n";
+								print "<a href='#' class='btn btn-default btn-small' title='"._t("Read Online")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_id, 'representation_id' => $vn_full_text_rep_id, 'item_id' => $vn_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span> Read Online</a>\n";
+								$vs_read_online_btn .= "<div class='detailTool'><a href='#' title='"._t("Read Online")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_id, 'representation_id' => $vn_full_text_rep_id, 'item_id' => $vn_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span> Read Online</a></div>\n";
 							}
 						}
 						print "</div>";
