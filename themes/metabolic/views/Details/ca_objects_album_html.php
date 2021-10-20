@@ -98,13 +98,6 @@
 				if ($vn_comments_enabled || $vn_pdf_enabled || $vn_inquire_enabled || $vn_download_all_enabled || caDisplayLightbox($this->requests)) {
 						
 					print '<div id="detailTools" class="mt-2">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><ion-icon name="chatboxes"></ion-icon> <span>Comments and Tags (<?= sizeof($va_comments) + sizeof($va_tags); ?>)</span></div><!-- end detailTool -->
-						<div id='detailComments'><?= $this->getVar("itemComments");?></div><!-- end itemComments -->
-						<div id='commentForm'> </div>
-<?php				
-					}
 					if ($vn_pdf_enabled || $vn_download_all_enabled) {
 						print "<div class='detailTool'><div class='dropdown'><a class='dropdown-toggle' role='button' id='DownloadButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><ion-icon name='download'></ion-icon> Download</a>";
 						print "<div class='dropdown-menu' aria-labelledby='DropdownButton'>";
@@ -335,7 +328,15 @@
 						</ifdef>}}}
 					</div>
 				</div>
-						
+				
+<?php
+		# Comment
+		if ($vn_comments_enabled) {
+?>				
+			<div id='commentForm'> </div>
+<?php				
+		}
+?>		
 	</div><!-- end col -->
 	<div class='navLeftRight text-right col-sm-1 col-lg-2'>
 <?php
@@ -362,37 +363,37 @@
 			<div class="col-4 mt-5 text-right">
 
 <?php
-// 				if($q_objects->numHits() > 100){
-// 					print caNavLink("View All", "btn btn-primary", "", "Browse", "children", array("search" => "ca_objects.parent_id:".$t_object->get("ca_objects.object_id")));		
-// 				}
+				if($q_objects->numHits() > 100){
+					print caNavLink("View All", "btn btn-primary", "", "Browse", "children", array("search" => "ca_objects.parent_id:".$t_object->get("ca_objects.object_id")));		
+				}
 ?>
 			</div>
 		</div>
 		<div class="row mb-5">
 <?php
-// 			$va_tmp_ids = array();
-// 			$i = 0;
-// 			while($q_objects->nextHit()){
-// 				if($q_objects->get("ca_object_representations.media.widepreview")){
-// 					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
-// 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
-// 					print "<div class='pt-2'>".substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
-// 					
-// 					if($alt_id = $q_objects->get('ca_objects.altID')) {
-// 						print " (".substr(strip_tags($alt_id), 0, 30).")";
-// 					}
-// 					
-// 					print "</div>";
-// 					
-// 					
-// 					print "</div>";
-// 					$i++;
-// 					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
-// 				}
-// 				if($i == 100){
-// 					break;
-// 				}
-// 			}
+			$va_tmp_ids = array();
+			$i = 0;
+			while($q_objects->nextHit()){
+				if($q_objects->get("ca_object_representations.media.widepreview")){
+					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
+					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
+					print "<div class='pt-2'>".substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
+					
+					if($alt_id = $q_objects->get('ca_objects.altID')) {
+						print " (".substr(strip_tags($alt_id), 0, 30).")";
+					}
+					
+					print "</div>";
+					
+					
+					print "</div>";
+					$i++;
+					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
+				}
+				if($i == 100){
+					break;
+				}
+			}
 ?>
 			<div id="relatedGrid" class="detailPrimaryMedia mt-3">
 				<!-- RelatedGrid.js React app goes here -->
@@ -435,35 +436,36 @@
 	}
 ?>
 <script type="text/javascript">	
-	pawtucketUIApps['PawtucketComment'] = {
-        'selector': '#commentForm',
-        'data': {
-            item_id: <?= $vn_id; ?>,
-            tablename: 'ca_objects',
-            form_title: '<span>Add Your Comment</span>',
-            list_title: '<span class="mt-5">Comments</span>',
-            tag_field_title: 'Tags',
-            comment_field_title: 'Comment',
-            login_button_text: 'Login to Add Your Comment',
-            comment_button_text: 'Submit',
-            no_tags: true,
-            show_form: <?= ($this->request->isLoggedIn()) ? "true" : "false"; ?>
-        }
-    };
-    
-    pawtucketUIApps['RelatedGrid'] = {
-    	baseUrl: "<?= __CA_URL_ROOT__."/service.php/RelatedGrid"; ?>",
-    	lightboxBaseUrl: "<?= __CA_URL_ROOT__."/service.php/Lightbox"; ?>",
-        downloadUrl: "<?= caNavUrl('*', '*', 'DownloadMedia'); ?>",
-    	key: '<?= $this->getVar('key'); ?>', 
-        selector: '#relatedGrid',
-        width: '100%',
-        height: '500px',
-        id: <?= (int)$vn_id; ?>,
-        table: 'ca_objects',
-        gridTable: 'ca_objects', 
-        fetch: 'children'
-    };
+	pawtucketUIApps['Comment'] = {
+			'selector': '#commentForm',
+			'key': '<?= $this->getVar('key'); ?>',
+			'baseUrl': '/service.php/UserGeneratedContent',
+			'searchUrl': '/index.php/MultiSearch/Index/search/',
+			'data': {
+					item_id: <?= $vn_id; ?>,
+					tablename: 'ca_objects',
+					show_form: <?= ($this->request->isLoggedIn()) ? "true" : "false"; ?>,
+					login_button_text: 'Login to Add Your Comment',
+					comment_button_text: 'Comment',
+
+					form_title: '<span>Add Your Comment</span>',
+					list_title: '<span class="mt-5">Comments</span>',
+					tag_field_title: 'Tags',
+					comment_field_title: 'Comment',
+					no_tags: true,
+			},
+  };
+
+	pawtucketUIApps['MediaViewer'] = {
+			'selector': '#mediaDisplay',
+			'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => $va_access_values]); ?>,
+			'width': '800px',
+			'height': '500px',
+			'controlHeight': '72px',
+			'data': {
+			
+			}
+	};
 </script>
 <script type="text/javascript">	
 	function copyUrl() {

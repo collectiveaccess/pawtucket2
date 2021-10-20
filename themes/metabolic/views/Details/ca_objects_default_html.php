@@ -526,13 +526,11 @@
 ?>
 
 <script type="text/javascript">	
-	// pawtucketUIApps['PawtucketComment'] = {
-
 	pawtucketUIApps['Comment'] = {
 			'selector': '#commentForm',
 			'key': '<?= $this->getVar('key'); ?>',
-			'baseUrl': 'http://metabolic3.whirl-i-gig.com:8085/service.php/UserGeneratedContent',
-			'searchUrl': 'http://metabolic3.whirl-i-gig.com:8085/index.php/MultiSearch/Index/search/',
+			'baseUrl': '/service.php/UserGeneratedContent',
+			'searchUrl': '/index.php/MultiSearch/Index/search/',
 			'data': {
 					item_id: <?= $vn_id; ?>,
 					tablename: 'ca_objects',
