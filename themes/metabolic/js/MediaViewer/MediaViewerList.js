@@ -2,8 +2,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Slider from 'react-slick';
-import MdExpand from 'react-ionicons/lib/MdExpand'
-import MdExit from 'react-ionicons/lib/MdExit'
+
+// import MdExpand from 'react-ionicons/lib/MdExpand'
+// import MdExit from 'react-ionicons/lib/MdExit'
 
 /**
  *
@@ -62,13 +63,13 @@ class MediaViewerList extends React.Component{
 			return (<a href='#' onClick={this.loadMedia} className={selected} key={i}><img data-index={i} src={v.urls.icon} style={{border: '3px transparent solid'}}/></a>);
 		});
 		
-		const icon = this.props.fullscreen === false ? (<MdExpand fontSize='24px'/>) : (<MdExit fontSize='24px'/>);
-		const iconTitle = this.props.fullscreen === false ? 'Expand fullscreen' : 'Exit';
+		// const icon = this.props.fullscreen === false ? (<MdExpand fontSize='24px'/>) : (<MdExit fontSize='24px'/>);
+		// const iconTitle = this.props.fullscreen === false ? 'Expand fullscreen' : 'Exit';
 				
 		return(
 			<div className='mediaViewerControls'>
 				<div className='float-right'>
-					<a href='#' onClick={this.props.toggleFullscreen} title={iconTitle}>{icon}</a>
+					{/* <a href='#' onClick={this.props.toggleFullscreen} title={iconTitle}>{icon}</a> */}
 				</div>
 				<div style={{width: adjustedWidth, height: adjustedHeight, marginLeft: offset + 'px'}}>
 					<Slider {...settings} className='mediaViewerList'>{mediaList}</Slider>	

@@ -3,16 +3,24 @@ import React, {useCallback} from 'react';
 import ReactDOM from "react-dom";
 import { MediaViewerList } from './MediaViewer/MediaViewerList';
 import { VideoViewer } from './MediaViewer/VideoViewer';
-import { DocumentViewer } from './MediaViewer/DocumentViewer';
+
+import DocumentViewer from './MediaViewer/DocumentViewer';
+import DocumentContextProvider from './MediaViewer/DocumentViewer/DocumentContext';
+
+
+// import { DocumentViewer } from './MediaViewer/DocumentViewer';
 import { ImageViewer } from './MediaViewer/ImageViewer';
-import MdExpand from 'react-ionicons/lib/MdExpand'
-import MdExit from 'react-ionicons/lib/MdExit'
+
+// import MdExpand from 'react-ionicons/lib/MdExpand'
+// import MdExit from 'react-ionicons/lib/MdExit'
 
 const axios = require('axios');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 const selector = pawtucketUIApps.MediaViewer.selector;
 const appData = pawtucketUIApps.MediaViewer.data;
+
+console.log("appData: ", appData);
 
 /**
  * Component context making Lightbox internals accessible to all subcomponents
@@ -126,6 +134,7 @@ class MediaViewer extends React.Component{
 			height: viewerHeight, 
 			fullscreen: fullscreen
 		};
+
 		let classes = ['mediaViewerContainer'];
 		switch(mediaInfo.class) {
 			case 'image':
@@ -146,7 +155,7 @@ class MediaViewer extends React.Component{
 			case 'document':
 				viewer =  (
 					<div className={classes.join(' ')}>
-						<DocumentViewer url={mediaInfo.url} {...standardProps}/>
+						<DocumentContextProvider> <DocumentViewer url={mediaInfo.url} {...standardProps}/> </DocumentContextProvider>
 					</div>
 				);
 				break;
@@ -159,32 +168,55 @@ class MediaViewer extends React.Component{
 		
 		const fs = document.getElementById('mediaDisplayFullscreen');
 	
-	
-			const icon = this.props.fullscreen === false ? (<MdExpand fontSize='24px'/>) : (<MdExit fontSize='24px'/>);
-			const iconTitle = this.props.fullscreen === false ? 'Expand fullscreen' : 'Exit';
-			let viewerMediaList = (this.state.media.length > 1) ?<MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen}
-							width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen} /> 
-							: 
-							<div className='float-right'><a href='#' onClick={this.toggleFullscreen} title={iconTitle}>{icon}</a></div>;
-			if (!fullscreen) {
-				fs.style.display = 'none';
-				return (
-					<div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>
-						{viewer}
-						{viewerMediaList}
-					</div>
-				);
-			} else {
-				fs.style.display = 'block';
-				if (!fs) return null;
-				return ReactDOM.createPortal(
-					(<div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>
-						<div style={{ height: viewerHeight }}>{viewer}</div>
-						{viewerMediaList}
-					</div>),
-					fs
-				);
-			}
+		// const icon = this.props.fullscreen === false ? (<MdExpand fontSize='24px'/>) : (<MdExit fontSize='24px'/>);
+
+		// const iconTitle = this.props.fullscreen === false ? 'Expand fullscreen' : 'Exit';
+
+		// let viewerMediaList = (this.state.media.length > 1) ? <MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen} width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen} /> 
+		// 	: <div className='float-right'><a href='#' onClick={this.toggleFullscreen} title={iconTitle}>{icon}</a></div>;
+
+		let viewerMediaList = (this.state.media.length > 1) ? <MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen} width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen} /> 
+			: null;
+				
+		let mediaViewer = null
+		if(mediaInfo.class == "document"){
+			mediaViewer = (
+				<div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>		
+					{viewer}
+					{viewerMediaList}
+				</div>
+			)
+		}else{
+			mediaViewer = (
+				<div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>		
+					{viewer}
+					{viewerMediaList}
+				</div>
+			)
+		}
+
+		if (!fullscreen) {
+			fs.style.display = 'none';
+			return (
+				<div>
+					{mediaViewer}
+				</div>
+				// <div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>		
+				// 	{viewer}
+				// 	{viewerMediaList}
+				// </div>
+			);
+		} else {
+			fs.style.display = 'block';
+			if (!fs) return null;
+			return ReactDOM.createPortal(
+				(<div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>
+					<div style={{ height: viewerHeight }}>{viewer}</div>
+					{viewerMediaList}
+				</div>),
+				fs
+			);
+		}
 	
 	} //render
 }
