@@ -129,11 +129,12 @@
 			}				
 
 ?>
-				<div id="mediaDisplay" class="detailPrimaryMedia mt-3">
+				<div id="mediaDisplay" class="detailPrimaryMedia my-4">
 					<!-- MediaViewer.js React app goes here -->
 				</div>
 				
-				<HR></HR>
+				<!-- <HR></HR> -->
+
 				<div class="row">
 					<div class="col-12 col-md-12 text-center metapoetics">
 					<?= strip_tags($t_object->get('ca_objects.metapoetics.metapoetics_text'), '<b><em><i><strong><ul><ol><li><blockquote><u><s><sup><sub>'); ?>
@@ -400,7 +401,7 @@
 		# Comment
 		if ($vn_comments_enabled) {
 ?>				
-			<div id='commentForm'> </div>
+			<div id='commentForm' class="my-3"> </div>
 
 			<!-- <div class="detailTool mb-2"> -->
 				<!-- <h2><b><?= sizeof($va_comments); ?> Comments</b></h2> -->
@@ -552,8 +553,17 @@
 			'width': '800px',
 			'height': '500px',
 			'controlHeight': '72px',
-			'data': {
-			
+			'options': {
+				'pdfViewer': {
+					'showThumbnails': true,
+					'showSearch': true,
+					'showZoom': true,
+					'showPaging': true,
+					'showRotate': true,
+					'showTwoPageSpread': true,
+					'showFullpage': true,
+					'showToolBar': true
+				}
 			}
 	};
     

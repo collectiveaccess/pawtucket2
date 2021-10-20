@@ -59,7 +59,7 @@
 			  <form class="d-flex" action="http://sva.whirl-i-gig.com:8085/index.php/MultiSearch/Index" method="get">
 					<input class="form-control search-input rounded-0" type="search" name="search" placeholder="Enter Your Query" aria-label="Search" >
 					<button class="btn btn-sm rounded-0 d-flex search-button " type="submit">
-						<p class='mb-1 pt-1 ml-1 desktop-menu'>Search</p>
+						<p class='mb-1 pt-1 ml-1 desktop-menu'>SEARCH</p>
 						<span class="material-icons search-icon ml-1 mb-1 pt-1 ">search</span>
 					</button>
 			  </form>
@@ -86,9 +86,9 @@
 			  </button>
 
 			  <div class="collapse navbar-collapse justify-content-end" id='navbarSupportedContent'>
-					<p class='mb-0 mr-1 desktop-menu'>Browse All By</p>
+					<p class='mb-0 mr-1 desktop-menu'>BROWSE ALL BY</p>
 
-					<ul class="navbar-nav browse-dropdown desktop-menu">
+					<ul class="navbar-nav browse-dropdown desktop-menu mr-3">
 						<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle p-1" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							Select an Option
@@ -106,7 +106,7 @@
 					<form class="form-inline d-flex desktop-menu" action="http://sva.whirl-i-gig.com:8085/index.php/MultiSearch/Index" method="get">
 						<input class="form-control search-input rounded-0 desktop-menu" type="search" name="search" placeholder="Enter Your Query" aria-label="Search">
 						<button class="btn btn-sm rounded-0 d-flex search-button desktop-menu" type="submit">
-							<p class='mb-1 pt-1 ml-1 desktop-menu'>Search</p>
+							<p class='mb-1 pt-1 ml-1 desktop-menu'>SEARCH</p>
 							<span class="material-icons search-icon ml-1 mb-1 pt-1 desktop-menu">search</span>
 						</button>
 					</form>

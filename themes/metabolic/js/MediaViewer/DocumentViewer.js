@@ -1,67 +1,152 @@
 /*jshint esversion: 6 */
-import React, { useContext } from "react"
+import React, { useEffect, useContext } from "react"
 
 import { pdfjs } from 'react-pdf';
 const pdfjsWorker = require('pdfjs-dist/build/pdf.worker.entry');
 pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 import { Document, Page } from 'react-pdf';
 
-import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import VisibilitySensor from "react-visibility-sensor";
 
 import { DocumentContext } from "./DocumentViewer/DocumentContext"
+import DocumentFullscreenViewer from "./DocumentViewer/DocumentFullscreenViewer";
 import DocumentThumbnailBar from "./DocumentViewer/DocumentThumbnailBar";
 import DocumentToolBar from "./DocumentViewer/DocumentToolBar";
 
 const DocumentViewer = (props) => {
 
-	const { numPages, setNumPages, page, setPage, enteredPage, setEnteredPage, magLevel, setMagLevel, showThumbnails, setShowThumbnails, rotationValue, setRotationValue, fullscreen, setFullscreen } = useContext(DocumentContext)
-	
+	const { numPages, setNumPages, page, setPage, enteredPage, setEnteredPage, magLevel, setMagLevel, showThumbnails, setShowThumbnails, rotationValue, setRotationValue, fullscreen, setFullscreen, twoPageSpread, setTwoPageSpread, showToolBar, setShowToolBar } = useContext(DocumentContext)
+
+	useEffect(() => {
+		setNumPages(props.pages)
+		setShowToolBar(props.options.showToolBar)
+	}, [])
+
+	let state_num = numPages;
 	const onDocumentLoadSuccess = ( {numPages} ) => {
-		setNumPages(numPages)
+		let doc_num = numPages
+		if(doc_num !== state_num ){
+			setNumPages(doc_num)
+		}
 	}
 	
 	const width = parseInt(props.width);
 	const height = parseInt(props.height) - 40;	// 40px high tool bar
+
+	let defaultPage = (<div className="default-page" style={{margin:'auto', width: "355px", height: `${ fullscreen? "1000px": `${height}px` }`, backgroundColor: '#fff' }}></div>)
 	
-	let pageComponent = null;
-		
-	if (height <= width) {
-		pageComponent = (<Page pageNumber={page} height={height} scale={magLevel/100}/>);
-	} else {
-		pageComponent = (<Page pageNumber={page} width={width} scale={magLevel/100}/>);
+	let pdfPages = [];
+	for (let i = 1; i <= numPages; i++) {
+		pdfPages.push(
+			{
+				"page_num": i,
+				"doc": (
+					<Document file={props.url} rotate={rotationValue} loading={defaultPage} onLoadSuccess={ i == 1 ? (e) => onDocumentLoadSuccess(e) : null}>
+						<Page pageNumber={i} height={fullscreen? 1000 : height } scale={magLevel / 100} />
+					</Document>)
+			}
+		)
 	}
-	
+
+	let pdfPagesTwoSpread = [];
+	for (let i = 2; i <= numPages; i++) {
+		pdfPagesTwoSpread.push(
+			[
+				{
+					"page_num": i, 
+					"doc": (<Document file={props.url} rotate={rotationValue} loading={defaultPage}>
+						<Page pageNumber={i} height={fullscreen ? 1000 : height} scale={magLevel / 100} />
+					</Document>)
+				},
+				{
+					"page_num": i+1 ,
+					"doc": (<Document file={props.url} rotate={rotationValue} loading={defaultPage}>
+						<Page pageNumber={i+1} height={fullscreen ? 1000 : height} scale={magLevel / 100} />
+					</Document>)
+				}
+			]
+		)
+		i++;
+	}
+
+	const visibilityChange = (isVisible, page_num) => {
+		if(isVisible){
+			setPage(page_num)
+			setEnteredPage(page_num)
+		}
+	}
+
+	// console.log("page: ", page);
+	// console.log("pdfPagesTwoSpread: ", pdfPagesTwoSpread);
+	// console.log("defaultPage: ", defaultPage);
+
 	if(props.url) {
 		return(
 			<div className='mediaViewerPDFContainer' style={{border: '1px solid darkgrey', marginBottom: "20px"}}>
-				<div  id="pdf-viewer">
+
+				<div id="pdf-viewer">
 					{fullscreen?
-					
-						<div className='fullscreen-container container' style={{width: "1600px"}}>
-							<div className="row justify-content-center mb-3">
-								<div className="col-8" style={{backgroundColor: '#fff'}}>
-									<DocumentToolBar />
-								</div>
-							</div>
-					
-							<div className='row justify-content-center'>
-								{/* <DocumentThumbnailBar url={props.url} height={"800px"} /> */}
-								<div className="text-center mediaViewerPDFViewer ">
-									<Document file={props.url} onLoadSuccess={(e) => onDocumentLoadSuccess(e)} rotate={rotationValue}>
-										<Page pageNumber={page} height={1000} scale={magLevel/100}/>
-									</Document>
-								</div>
-							</div>
-						</div>
+						<DocumentFullscreenViewer url={props.url} pdfPages={pdfPages} pdfPagesTwoSpread={pdfPagesTwoSpread} visibilityChange={visibilityChange} defaultPage={defaultPage} onDocumentLoadSuccess={onDocumentLoadSuccess}/>
 					: 
 						<>
 							<DocumentToolBar />
 							<div className='row justify-content-center'>
 								<DocumentThumbnailBar url={props.url} height={"450px"} />
-								<div className={"text-center mediaViewerPDFViewer " + `${ showThumbnails? 'col-8' : 'col-12' }`} style={{width: width, height: height}}>
-									<Document file={props.url} onLoadSuccess={(e) => onDocumentLoadSuccess(e)} rotate={rotationValue}>
-										{pageComponent}
-									</Document>
+
+								<div className={"text-center mediaViewerPDFViewer " + `${showThumbnails ? 'col-8' : 'col-12'}`} style={{ width: width, height: height, overflow: "scroll", backgroundColor: '#F2F2F0', padding: "5px"}}>
+
+									{pdfPages && twoPageSpread? 
+										<>
+											<div className="text-center">
+												<div id={'page-' + `${1}`} className="m-1">
+													<VisibilitySensor partialVisibility={true} onChange={(isVisible) => visibilityChange(isVisible, 1)}>
+														{({ isVisible }) => <div>{isVisible ? 
+															<Document file={props.url} rotate={rotationValue} loading={defaultPage} onLoadSuccess={(e) => onDocumentLoadSuccess(e)}>
+																<Page pageNumber={1} height={fullscreen ? 1000 : height} scale={magLevel / 100} />
+															</Document>
+														: defaultPage}</div>}
+													</VisibilitySensor>
+												</div>
+											</div>
+											{pdfPagesTwoSpread.map((spread, index) => {
+												// console.log(spread);
+												return(
+													<div className="d-flex" key={index}>
+														<div className="d-inline">
+															<div id={'page-' + `${spread[0].page_num}`} className="m-1">
+																<VisibilitySensor partialVisibility={true} onChange={(isVisible) => visibilityChange(isVisible, spread[0].page_num)}>
+																	{({ isVisible }) =>	<div>{isVisible ? spread[0].doc : defaultPage}</div>}
+																	{/* {spread[0].doc} */}
+																</VisibilitySensor>
+															</div>
+														</div>
+														<div className="d-inline">
+															<div id={'page-' + `${spread[1].page_num}`} className="m-1">
+																<VisibilitySensor partialVisibility={true} onChange={(isVisible) => visibilityChange(isVisible, spread[1].page_num)}>
+																	{({ isVisible }) => <div>{isVisible ? spread[1].doc : defaultPage}</div>}
+																	{/* {spread[1].doc} */}
+																</VisibilitySensor>
+															</div>
+														</div>
+													</div>
+												)
+											})}
+										</>
+									: null}
+
+									{pdfPages && !twoPageSpread? 
+										pdfPages.map((pfd_page, index) => {
+											return(
+												<div key={index} id={'page-' + `${pfd_page.page_num}`} className="m-1">
+													<VisibilitySensor partialVisibility={true} offset={{ bottom: 20 }} key={index} onChange={(isVisible) => visibilityChange(isVisible, pfd_page.page_num)}>
+														{({ isVisible }) => <div>{isVisible ? pfd_page.doc: defaultPage}</div>}
+														{/* {pfd_page.doc} */}
+													</VisibilitySensor>
+												</div>
+											)
+										}) 
+									: null}
+
 								</div>
 							</div>
 						</>
@@ -78,6 +163,29 @@ const DocumentViewer = (props) => {
 }
 
 export default DocumentViewer;
+
+// let pageComponent = null;
+
+// if (height <= width) {
+// 	pageComponent = (<Page pageNumber={page} height={height} scale={magLevel/100}/>);
+// } else {
+// 	pageComponent = (<Page pageNumber={page} width={width} scale={magLevel/100}/>);
+// }
+
+{/* <VisibilitySensor onChange={(isVisible) => changePage(isVisible, 1)}>
+			<div style={{ backgroundColor: '#F2F2F0', padding: "5px"}}>
+				<Document file={props.url} onLoadSuccess={(e) => onDocumentLoadSuccess(e)} rotate={rotationValue} loading={defaultPage}>
+					<Page pageNumber={1} height={height} scale={magLevel / 100} />
+				</Document>
+			</div>
+		</VisibilitySensor> */}
+
+// <VisibilitySensor>
+// 	{({ isVisible }) =>
+// 		<div>{isVisible ? <div key={index}>{page}</div> : defaultPage}</div>
+// 	}
+// </VisibilitySensor>
+
 
 // import React from "react"
 // import ReactDOM from "react-dom";
@@ -199,26 +307,6 @@ export default DocumentViewer;
 		
 // 		return(
 // 			<div className='mediaViewerPDFContainer'>'
-
-// 				{/* <DocumentToolBar page={this.state.page} numPages={this.state.numPages} enteredPage={this.state.enteredPage} magLevel={this.state.magnificationLevel} /> */}
-			
-// 				<div className='row'>
-// 					<div className='col-md-3'>
-// 						<button type="button" className="btn btn-secondary" onClick={this.previousPage} title='Previous page'><MdArrowDropleftCircle/></button>
-// 					</div>
-// 					<div className='col-md-3 text-center'>
-// 						<input type='text' value={this.state.enteredPage} onChange={this.updatePage} class="currentPage"/> of {pageCounter}
-// 					</div>
-// 					<div className='col-md-3 text-center'>
-// 						<a href='#'  onClick={this.zoomOut}><MdRemoveCircle/></a>
-// 						{this.magnificationLevel() + '%'}
-// 						<a href='#'  onClick={this.zoomIn}><MdAddCircle/></a>
-// 					</div>
-// 					<div className='col-md-3 text-right'>
-// 						<button type="button" className="btn btn-secondary" onClick={this.nextPage} title='Next page'><MdArrowDroprightCircle/></button>
-// 					</div>
-// 				</div>
-
 // 				<div className='row'>
 // 					<div className='col-md-12 text-center mediaViewerPDFViewer' style={{width: width, height: height}}>
 // 						<Document
@@ -235,94 +323,57 @@ export default DocumentViewer;
 // 	}
 // }
 
-{/* <div className='row'>
+// <div className='fullscreen-container container' style={{width: "1600px"}}>
+// 	<div className="row justify-content-center mb-3 sticky-top">
+// 		<div className="col-8">
+// 			<DocumentToolBar />
+// 		</div>
+// 	</div>
 
-		<div className='col-md-3'>
-			<button type="button" className="btn btn-secondary" onClick={() => previousPage()} title='Previous page'>
-				<span className="material-icons">arrow_back_ios</span>
-			</button>
-		</div>
+// 	<div className='row justify-content-center'>
+// 		<div className="text-center mediaViewerPDFViewer">
 
-		<div className='col-md-3 text-center'>
-			<input type='text' value={enteredPage} onChange={(e) => updatePage(e)} className="currentPage"/> of {pageCounter}
-		</div>
+// 			{pdfPages && twoPageSpread ?
+// 				<>
+// 					<div className="text-center">
+// 						<VisibilitySensor onChange={(isVisible) => visibilityChange(isVisible, 1)}>
+// 							<div id={'page-' + `${1}`} style={{ backgroundColor: '#F2F2F0', padding: "5px" }}>
+// 								<Document file={props.url} rotate={rotationValue} loading={defaultPage} onLoadSuccess={(e) => onDocumentLoadSuccess(e)}>
+// 									<Page pageNumber={1} height={fullscreen ? 1000 : height} scale={magLevel / 100} />
+// 								</Document>
+// 							</div>
+// 						</VisibilitySensor>
+// 					</div>
+// 					{pdfPagesTwoSpread.map((spread, index) => {
+// 						// console.log(spread);
+// 						return (
+// 							<div className="d-flex" key={index}>
+// 								<div className="d-inline">
+// 									<VisibilitySensor onChange={(isVisible) => visibilityChange(isVisible, spread[0].page_num)}>
+// 										<div id={'page-' + `${spread[0].page_num}`} style={{ backgroundColor: '#F2F2F0', padding: "5px" }}>{spread[0].doc}</div>
+// 									</VisibilitySensor>
+// 								</div>
+// 								<div className="d-inline">
+// 									<VisibilitySensor onChange={(isVisible) => visibilityChange(isVisible, spread[1].page_num)}>
+// 										<div id={'page-' + `${spread[1].page_num}`} style={{ backgroundColor: '#F2F2F0', padding: "5px" }}>{spread[1].doc}</div>
+// 									</VisibilitySensor>
+// 								</div>
+// 							</div>
+// 						)
+// 					})}
+// 				</>
+// 			: null}
 
-		<div className='col-md-3 text-center'>
-			<a href='#'  onClick={() => zoomOut()}><MdRemoveCircle/></a>
-			{magLevel + '%'}
-			<a href='#'  onClick={() => zoomIn()}><MdAddCircle/></a>
-		</div>
+// 			{pdfPages && !twoPageSpread ?
+// 				pdfPages.map((page, index) => {
+// 					return (
+// 						<VisibilitySensor key={index} onChange={(isVisible) => visibilityChange(isVisible, page.page_num)}>
+// 							<div id={'page-' + `${page.page_num}`} style={{ backgroundColor: '#F2F2F0', padding: "5px" }}>{page.doc}</div>
+// 						</VisibilitySensor>
+// 					)
+// 				})
+// 			: null}
 
-		<div className='col-md-3 text-right'>
-			<button type="button" className="btn btn-secondary" onClick={() => nextPage()} title='Next page'>
-				<span className="material-icons">arrow_forward_ios</span>
-			</button>
-		</div>
-
-	</div> */}
-
-// const nextPage = () => {
-	// 	const p = page + 1;
-	// 	if (p <= numPages) {
-	// 		setPage(p)
-	// 		setEnteredPage(p + '')
-	// 	}
-	// }
-
-	// const previousPage = () => {
-	// 	const p = page - 1;
-	// 	if (p > 0) {
-	// 		setPage(p)
-	// 		setEnteredPage(p + '')
-	// 	}
-	// }
-		
-	// const magnificationLevel = (m=null) => {
-	// 	if (m !== null) {
-	// 		m = parseInt(m);
-	// 		if ((m > 0) && (m <= 1000)) {
-	// 			setMagLevel(m)
-	// 		}
-	// 	}
-	// 	return magLevel;
-	// }
-	
-	// const zoomIn = () => {
-	// 	magnificationLevel(magLevel + 10);
-	// }
-	
-	// const zoomOut = () => {
-	// 	magnificationLevel(magLevel - 10);
-	// }
-	
-	// const updatePage = (e) => {
-	// 	let p = parseInt(e.target.value);
-		
-	// 	if ((p > 0) && (p <= numPages)) {
-	// 		setPage(p)
-	// 		setEnteredPage(e.target.value)
-	// 	} else {
-	// 		setEnteredPage(e.target.value);
-	// 	}
-	// }
-
-	// let pageCounter = null
-	// if (numPages > 0) {
-	// 	pageCounter = numPages;
-	// }
-
-	// let thumbnails = [];
-	// for (let i = 1; i <= numPages; i++) {
-	// 	// console.log("i: ", i);
-	// 	thumbnails.push(
-	// 		<Document file={props.url}>
-	// 			<Page pageNumber={i} height={200}/>
-	// 		</Document>
-	// 	)
-	// }
-
-	// const changePage = (e, page) => {
-	// 	setPage(page);
-	// 	setEnteredPage(page);
-	// 	e.preventDefault();
-	// }
+// 		</div>
+// 	</div>
+// </div>

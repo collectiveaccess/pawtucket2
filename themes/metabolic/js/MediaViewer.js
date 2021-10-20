@@ -18,9 +18,8 @@ const axios = require('axios');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 const selector = pawtucketUIApps.MediaViewer.selector;
-const appData = pawtucketUIApps.MediaViewer.data;
-
-console.log("appData: ", appData);
+const viewerOptions = pawtucketUIApps.MediaViewer.options;
+if(!viewerOptions) { viewerOptions = {}; }
 
 /**
  * Component context making Lightbox internals accessible to all subcomponents
@@ -136,6 +135,7 @@ class MediaViewer extends React.Component{
 		};
 
 		let classes = ['mediaViewerContainer'];
+		// console.log("media info: ", mediaInfo);
 		switch(mediaInfo.class) {
 			case 'image':
 				viewer = (
@@ -155,7 +155,7 @@ class MediaViewer extends React.Component{
 			case 'document':
 				viewer =  (
 					<div className={classes.join(' ')}>
-						<DocumentContextProvider> <DocumentViewer url={mediaInfo.url} {...standardProps}/> </DocumentContextProvider>
+						<DocumentContextProvider> <DocumentViewer url={mediaInfo.url} {...standardProps} pages={mediaInfo.pages} options={viewerOptions.pdfViewer}/> </DocumentContextProvider>
 					</div>
 				);
 				break;
