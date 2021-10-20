@@ -16,11 +16,9 @@ const ImportList = (props) => {
 
   useEffect(() => {
     getSessionList(baseUrl, function(data){
-      // console.log('sessionList data', data);
       setSessionList(data.sessions);
     });
     getFormList(baseUrl, function(data){
-      //  console.log('Form List data', data);
       setFormsList(data.forms);
     });
 

@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-import ImportContextProvider from './Import/ImportContext';
-import { ImportContext } from './Import/ImportContext';
+import { ImportContext, ImportContextProvider } from './Import/ImportContext';
 import ImportList from './Import/ImportList';
 import AddNewImportPage from './Import/AddNewImportPage';
 import ViewImportPage from './Import/ImportList/ViewImportPage';
@@ -28,7 +27,7 @@ const Import = () => {
     setSchema();
     setSessionKey(null);
     setSessionList([]);
-    setUploadProgress(0);
+    setUploadProgress({});
     setUploadStatus("not_started");
     setViewMode("import_list");
     e.preventDefault();

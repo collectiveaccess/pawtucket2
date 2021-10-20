@@ -12,7 +12,6 @@ const ImportedItem = (props) => {
   const deleteImportConfirm = () => {
     deleteImport(baseUrl, props.data.sessionKey, function(data){
       getSessionList(baseUrl, function (data) {
-        // console.log('sessionList data', data);
         setSessionList(data.sessions);
       });
     })
@@ -47,8 +46,6 @@ const ImportedItem = (props) => {
     var str = "FORM:";
     let tempFormCode = props.data.source
     tempFormCode = tempFormCode.replace(new RegExp("^" + str), '')
-    
-    // console.log("tempFormCode: ", tempFormCode);
     setFormCode(tempFormCode)
     e.preventDefault();
   }

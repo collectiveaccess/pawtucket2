@@ -18,19 +18,6 @@ const SelectedMediaList = (props) => {
     }
   }
 
-  // <>
-  //   {(previousFilesUploaded.length > 10) ? (<p><strong>Previously Uploaded Files: </strong>{prevFiles.slice(0, 10).join(", ")} <strong> and {prevFiles.length - 10} more</strong></p>)
-  //     : <p><strong>Previously Uploaded Files: </strong>{prevFiles.join(", ")}</p>}
-  // </>
-
-  {/* <div className="mb-3">
-            {(uploadStatus == "in_progress") ?  
-              <ProgressBar
-                now={parseInt(uploadProgress)}
-                label={`${Math.ceil(parseInt(uploadProgress))}%`}/>
-            : null}
-          </div> */}
- 
   let counter = <h2 className="mb-3">Uploaded ({files.length}) of {numFilesOnDrop} files</h2>;
   return (
     <div>
@@ -86,17 +73,19 @@ const SelectedMediaList = (props) => {
 
 const UploadItem = (props) => {
   const { uploadProgress, uploadStatus } = useContext(ImportContext);
+  let progress = parseInt(props.file ? uploadProgress[props.file] : 0);
+  if(!progress) { progress = 0; }
   return (
     <div className='row'>
       <div className='col'>
         <p className="mb-0">
-          {props.file.name}
+          {props.file}
         </p>
         {(uploadStatus == "in_progress") ?
           <div className="mb-3">
             <ProgressBar
-              now={parseInt(uploadProgress)}
-              label={`${Math.ceil(parseInt(uploadProgress))}%`} />
+              now={progress}
+              label={`${Math.ceil(progress)}%`} />
           </div>
         : null}
       </div>

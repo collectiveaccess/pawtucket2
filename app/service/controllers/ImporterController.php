@@ -143,14 +143,8 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 							throw new \ServiceException(_t('Invalid form table: %1', $fi['table']));
 						}
 						
-						$form = [
-							'title' => $fi['formTitle'],
-							'type' => 'object',
-							'description' => $fi['formDescription'],
-							'required' => [],
-							'properties' => null
-						];
-						$properties = $ui_schema = [];
+						
+						$properties = $ui_schema = $required_fields = [];
 						foreach($fi['content'] as $code => $info) {
 							
 							if(!($label = $info['label'])) {
@@ -179,11 +173,22 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 								}
 							}
 							
+							if(caGetOption('required', $info, false)) {
+								$required_fields[] = $info['bundle'];
+							}
+							
 							$properties[$info['bundle']] = $field;					
 						}
 						
-						$form['properties'] = json_encode($properties);
-						$form['uiSchema'] = json_encode($ui_schema);
+						$form = [
+							'title' => $fi['formTitle'],
+							'type' => 'object',
+							'description' => $fi['formDescription'],
+							'required' => $required_fields,
+							'properties' => json_encode($properties),
+							'uiSchema' => json_encode($ui_schema)
+						];
+						
 						return $form;
 					}
 				],
@@ -261,11 +266,24 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						
 						$code = $args['code'];
 						
-						// TODO: verify form is defined
+						$forms = self::$config->getAssoc('importerForms');
+						if(!is_array($forms[$code])) { 
+							throw new \ServiceException(_t('Invalid form code: %1', $code));
+						}
+						$fi = $forms[$code];
+						
+						$content_config = $fi['content'];
+						
+						$defaults = [];
+						foreach($content_config as $c => $ci) {
+							if(!is_null($default = caGetOption('default', $ci, null))) {
+								$defaults[$ci['bundle']] = $default;
+							}
+						}
+						
 						$session = MediaUploadManager::newSession($user_id, 0, 0, 'FORM:'.$code);
 						
-						
-						return ['sessionKey' => $session->get('session_key')];
+						return ['sessionKey' => $session->get('session_key'), 'defaults' => json_encode($defaults, true)];
 					}
 				],
 				//
@@ -656,6 +674,14 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					]
 				];
 				$type = ['type' => 'string', 'format' => 'string'];
+				if($height > 1) {
+					$type['uiSchema'] = [
+						"ui:widget" => "textarea",
+						"ui:options" => [
+							"rows" => $height
+						]
+					];
+				}
 			}
 		} else {
 			$type = ['type' => 'string', 'format' => 'string'];

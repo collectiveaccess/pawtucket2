@@ -28,7 +28,6 @@ const ImportMetadataForm = (props) => {
   
   const loadForm = () => {
   	getForm(baseUrl, formCode, function(data){
-        // console.log("getform: ", data);
         let form = { ...data }
         let jsonProperties = JSON.parse(data.properties);
         form.properties = jsonProperties;
@@ -36,18 +35,15 @@ const ImportMetadataForm = (props) => {
         
         if(data.uiSchema) {
 			let uiSchemaData = JSON.parse(data.uiSchema);
-			// console.log("set ui schema", uiSchemaData);
 			setUiSchema(uiSchemaData);
 		}
       });
   };
 
   const initNewSession = (callback) => {
-  	// console.log("init new session for ", formCode);
-  	
     getNewSession(baseUrl, formCode, function (data) {
-      // console.log('newSession: ', data, data.sessionKey);
       setSessionKey(data.sessionKey);
+      setFormData(JSON.parse(data.defaults));
       if(callback) { callback(data.sessionKey); }
     });
   } 
@@ -55,7 +51,6 @@ const ImportMetadataForm = (props) => {
   const submitForm = () => {    
     // submit form
     submitSession(baseUrl, sessionKey, formData, function (data) {	// write any data to session and mark as submitted
-      // console.log('submitSession: ', data);
 	  });
     
     confirmAlert({
@@ -87,11 +82,9 @@ const ImportMetadataForm = (props) => {
   
   // NOTE: session_key has to be passed in here, otherwise it'll be a closure and stuck on the value set when this component is first loaded.
   const saveFormDataForSession = (sessionKey, formData) => {
-    // console.log("saveFormDataForSession", sessionKey, formData);
   	checkSessionKey(sessionKey, formData, () => {	// wait until session key has been resolved
       if (sessionKey !== null && (formData !== null && formData !== { })){ //with sessionkey, updateform on changes
         updateSession(baseUrl, sessionKey, formData, function (data) {	// write new data to session
-          // console.log('updateSession: ', data);
         })
       }
     });
@@ -110,6 +103,22 @@ const ImportMetadataForm = (props) => {
   
   // console.log("formData: ", formData);
   // console.log("schema: ", schema, uiSchema);
+  
+  const transformErrors = function(errors) {
+  	//console.log("errors!", errors, schema);
+  	return errors.map(error => {
+  		
+		if (error.name === "required") {	
+  		  let fieldInfo = schema.properties[error.params.missingProperty];
+  		  let fieldName = fieldInfo ? fieldInfo['title'] : '???';
+  		  
+		  error.message = fieldName + ' is required';
+		  error.stack =  fieldName + ' is required';
+		}
+		return error;
+	});
+  };
+  
   return (
     <div>
       <div className="mb-1" style={{ backgroundColor: '#D8D7CE', padding: '5px' }}>
@@ -118,7 +127,7 @@ const ImportMetadataForm = (props) => {
       
       <div className='form-container mt-3 mb-3'>
         {(schema) ? 
-          <Form 
+          <Form liveValidate
           schema={schema}
           formData={formData}
           uiSchema={uiSchema}
@@ -126,7 +135,7 @@ const ImportMetadataForm = (props) => {
           autoComplete="on"
           onSubmit={submitForm}
           onError={log("errors")}
-          fields={{ typeahead: TypeaheadField }}
+          transformErrors={transformErrors}
           >
             <div>
               {/* TODO: User should only submit if there is at least 1 file uploaded and the required form metadata is filled out */}
@@ -146,39 +155,3 @@ const ImportMetadataForm = (props) => {
 }
 
 export default ImportMetadataForm;
-
-
-// const [ entities, setEntities ] = useState(['Selina', 'Seth', 'Maria', 'Red']);
-// const [ suggestions , setSuggestions ] = useState([]);
-// const [ text, setText ] = useState('');
-
-// const onTextChanged = (e) => {
-  //   const value = e.target.value;
-  //   let sugg = [];
-  //   if (value.length > 0){
-    //     const regex = new RegExp(`^${value}`, 'i');
-    //     sugg = entities.sort().filter( v => regex.test(v));
-    //   }
-    //   setSuggestions(sugg);
-    //   setText(value);
-    // }
-    
-    // const suggestionSelected = (value) => {
-      //   setText(value);
-      //   setSuggestions([]);
-      // }
-      
-      // const renderSuggestions = () => {
-        //   if(suggestions.length === 0){
-          //     return null;
-          //   }
-          //   return(
-            //     <ul>
-            //       {suggestions.map(entity => <li onClick={() => suggestionSelected(entity)}>{entity}</li>)}
-            //     </ul>
-            //   )
-            // }
-            
-            /* <label>Photographer (Autocomplete)</label>
-            <input value={text} onChange={onTextChanged} type='text' />
-            {renderSuggestions()} */

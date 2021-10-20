@@ -458,7 +458,6 @@ class UserGeneratedContentController extends \GraphQLServices\GraphQLServiceCont
 						}
 						
 						$user_id = $u ? $u->getPrimaryKey() : null;
-						$user_ip = $_SERVER['REMOTE_ADDR'];
 						
 						$dont_moderate = Configuration::load()->get("dont_moderate_tags");
 						
@@ -468,7 +467,6 @@ class UserGeneratedContentController extends \GraphQLServices\GraphQLServiceCont
 						if (!$t_subject->isReadable($u)) {
 							throw new ServiceException(_t('Access denied'));
 						}
-						
 						
 						$message = null;
 						$errors = [];

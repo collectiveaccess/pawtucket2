@@ -356,4 +356,241 @@ class ca_media_upload_sessions extends BaseModel {
 		return null;
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function processSessions(?array $options=null) : int {
+		$limit = caGetOption('limit', $options, 10);
+		$session_ids = ca_media_upload_sessions::find(['submitted_on' => ['>', 0], 'completed_on' => null], ['returnAs' => 'ids']);
+			
+		$log = caGetImportLogger();
+		
+		$c = 0;
+		
+		$errors = [];
+		while($session_id = array_shift($session_ids)) {
+			$session = new ca_media_upload_sessions($session_id);
+			
+			$d = $session->get('metadata');
+			$data = $d['data'];
+			$config = $d['configuration'];
+			$mode = strtolower(caGetOption('importMode', $config['options'], 'media'));
+			
+			$user_id = $session->get('user_id');
+			
+			$form = preg_replace('!^FORM:!', 'IMPORTER:', $session->get('source'));
+			
+			$log->logInfo("Processing session for form ".$config['formTitle']);
+			
+			$table = $config['table'];
+			$type = $config['type'];
+			$idno = $config['idno'];
+			$status = $config['status'];
+			$access = $config['access'];
+			
+			$rep_type = $config['representation_type'];
+			$rep_status = $config['representation_status'];
+			$rep_access = $config['representation_access'];
+			
+			$submission_status = $config['submission_status'];
+			
+			$locale_id = ca_locales::codeToID(caGetOption('alwaysUseLocale', $config, ca_locales::getDefaultCataloguingLocaleID()));
+			
+			$form_values = [];
+			foreach($config['content'] as $k => $info) {
+				$v = $data[$info['bundle']];
+				$form_values[$k] = $v;
+			}
+			$label = caProcessTemplate($config['display'], $form_values);
+			
+			$media = array_filter($session->getFileList(), function($v) {
+				return ($v['completed_on'] > 0);
+			});
+			foreach($media as $path => $info) {
+				if(ca_object_representations::mediaExists($path)) {
+					unset($media[$path]);
+				}
+			}
+			
+			if(($mode === 'hierarchy') && (sizeof($media) === 1)) {	// don't create hierarchies with only one media item
+				$mode = 'media';
+			}
+			if(sizeof($media) === 0) {
+				// all media filtered - send warning notification and bail
+				
+			}
+			
+			$dont_moderate = Configuration::load()->get("dont_moderate_tags");
+			
+			$album_rep = null;	// rep used on hierarchy "album"
+			switch($mode) {
+				case 'hierarchy':
+					// create top-level record
+					$t = Datamodel::getInstance($table);
+					$t->set('type_id', $type);
+					$t->set('status', $status);
+					$t->set('access', $access);
+					$t->setIdnoWithTemplate($idno);
+					$t->insert();
+					
+					$t->addLabel(['name' => $label], $locale_id, null, true);
+					
+					$t->set('submission_user_id', $user_id);
+					$t->set('submission_group_id', null);
+					$t->set('submission_status_id', $submission_status);
+					$t->set('submission_via_form', $form);
+					$t->update();
+					
+					$errors = $this->_processContent($t, $config['content'], $data);
+							
+					//$ps_media_path, $pn_type_id, $pn_locale_id, $pn_status, $pn_access, $pb_is_primary, $pa_values=null, $pa_options=null		
+					$album_rep = $t->addRepresentation(
+						array_shift(array_keys($media)), $rep_type, $locale_id, $rep_status, $rep_access, $is_primary, [], ['returnRepresentation' => true]
+					);
+				
+					$t_pk = $t->getPrimaryKey();
+					
+					// Add media
+					$index = 1;
+					$is_primary = true;
+					foreach($media as $path => $info) {
+						$r = Datamodel::getInstance($table);
+						$r->set('parent_id', $t_pk);
+						$r->set('status', $status);
+						$r->set('access', $access);
+						$r->set('type_id', 'item');			// TODO: make configurable for sub-item
+						$r->setIdnoWithTemplate($idno);		// TODO: make configurable for sub-item
+						
+						$r->insert();
+					
+						$r->addLabel(['name' => $label." [{$index}]"], $locale_id, null, true);
+						
+						
+						$r->set('submission_user_id', $user_id);
+						$r->set('submission_group_id', null);
+						$r->set('submission_status_id', $submission_status);
+						$r->set('submission_via_form', $form);
+						
+						$r->update();
+						//
+						if ($is_primary && $album_rep) {
+							$r->addRelationship('ca_object_representations', $album_rep->getPrimaryKey());
+						} else { 
+							$r->addRepresentation(
+								$path, $rep_type, $locale_id, $rep_status, $rep_access, true,
+							);
+						}
+						$index++;
+						$is_primary = false;
+					}
+					ca_metadata_alert_triggers::fireApplicableTriggers($t, __CA_MD_ALERT_CHECK_TYPE_SUBMISSION__);
+					break;
+				case 'allinone':
+				
+					break;
+				case 'media':
+				default:
+					foreach($media as $path => $info) {
+						$r = Datamodel::getInstance($table);
+						$r->set('parent_id', null);
+						$r->set('status', $status);
+						$r->set('access', $access);
+						$r->set('type_id', 'item');			// TODO: make configurable for sub-item
+						$r->setIdnoWithTemplate($idno);		// TODO: make configurable for sub-item
+						
+						$r->insert();
+					
+						$r->addLabel(['name' => $label." [{$index}]"], $locale_id, null, true);
+						
+						
+						$r->set('submission_user_id', $user_id);
+						$r->set('submission_group_id', null);
+						$r->set('submission_status_id', $submission_status);
+						$r->set('submission_via_form', $form);
+						
+						$r->update();
+						//
+						
+						$r->addRepresentation(
+							$path, $rep_type, $locale_id, $rep_status, $rep_access, true,
+						);
+						$index++;
+					}
+					ca_metadata_alert_triggers::fireApplicableTriggers($t, __CA_MD_ALERT_CHECK_TYPE_SUBMISSION__);
+					break;
+			}
+			
+			$session->set('completed_on', _t('now'));
+			$session->set('status', 'PROCESSED');
+			$session->update();
+			
+			$c++;
+			if ($c > $limit) { break; }
+		}
+		
+		return $c;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	private function _processContent(BaseModel $t_instance, array $config, array $data) : array {
+		$table = $t_instance->tableName();
+		$tags_added = 0;
+		
+		$errors = [];
+		foreach($config['content'] as $k => $info) {
+			$bundle_bits = explode('.', $info['bundle']);
+		
+			if($bundle_bits[0] === $table) {
+				switch(sizeof($bundle_bits)) {
+					case 3:	// container
+						// TODO: implement
+						break;
+					case 2:	// attribute or intrinsic
+						if(!is_array($data[$info['bundle']])) { $data[$info['bundle']] = [$data[$info['bundle']]]; }
+						
+						foreach($data[$info['bundle']] as $i => $d) {
+							if($t_instance->hasField($bundle_bits[1])) {
+								$t_instance->set($bundle_bits[1], $data[$info['bundle']]);
+							} else {
+								$t_instance->addAttribute([
+									$bundle_bits[1] => $d
+								], $bundle_bits[1]);
+							}
+						}
+						$t_instance->update();
+						
+						break;
+				}
+			} else {
+				if($bundle_bits[0] === 'ca_item_tags') {
+					if(!is_array($data[$info['bundle']])) { $data[$info['bundle']] = [$data[$info['bundle']]]; }
+					foreach($data[$info['bundle']] as $i => $d) {
+						// is tags
+						$tags = $d ? preg_split("![ ]*[,;]+[ ]*!", $d) : [];
+						foreach($tags as $tag) {
+							if($t_instance->addTag(
+								$tag, $user_id, ca_locales::getDefaultCataloguingLocaleID(), 
+								((in_array($table, ["ca_sets", "ca_set_items"])) || $dont_moderate) ? 1 : 0, null
+							)) {
+								$tags_added++;
+							} else {
+								$errors[] = join('; ', $t_instance->getErrors());
+							}
+						}	
+					}
+				} else {
+					// is relationship
+					if(!is_array($data[$info['bundle']])) { $data[$info['bundle']] = [$data[$info['bundle']]]; }
+					foreach($data[$info['bundle']] as $i => $d) {
+						$reltype = $info['relationshipType'];
+						$t_instance->addRelationship($bundle_bits[0], $d, $reltype, null, null, null, null, ['idnoOnly' => true]);
+					}
+				}
+			}
+		}	
+		return $errors;
+	}
+	# ------------------------------------------------------
 }

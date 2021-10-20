@@ -60,7 +60,7 @@ const getNewSession = (url, formCode, callback) => {
   client
     .query({
       query: gql`
-        query ($code: String!){ newSession (code: $code){ sessionKey }}`, variables: {'code': formCode }
+        query ($code: String!){ newSession (code: $code){ sessionKey, defaults }}`, variables: {'code': formCode }
     })
     .then(function (result) { 
       if(callback) { callback(result.data['newSession']); }

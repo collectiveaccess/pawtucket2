@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
-export const ImportContext = createContext();
-
+ 
+const ImportContext = createContext();
 const ImportContextProvider = (props) => {
 
   const [ filesSelected, setFilesSelected ] = useState([]);//files selected before they have been uploaded
@@ -27,9 +27,9 @@ const ImportContextProvider = (props) => {
   
   const [ sessionList, setSessionList ] = useState([]); //List of all imports
   
-  const [ uploadProgress, setUploadProgress ] = useState(0); // progress percentage per each individual upload.
+  const [ uploadProgress, setUploadProgress ] = useState({}); // progress percentage per each individual upload.
   
-  const [ uploadStatus, setUploadStatus ] = useState("not_started");  //status of an upload, default "not_started", other values are "in_progress" and "complete"
+  const [ uploadStatus, setUploadStatus ] = useState('not_started');  //status of an upload, default "not_started", other values are "in_progress" and "complete"
   
   const [ viewMode, setViewMode ] = useState('import_list') // values are "import_list", "edit_import_page", "view_import_page" and "add_new_import_page". Used to render various components or "views".
 
@@ -57,4 +57,4 @@ const ImportContextProvider = (props) => {
   )
 }
 
-export default ImportContextProvider;
+export { ImportContextProvider, ImportContext }
