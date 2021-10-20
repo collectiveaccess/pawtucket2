@@ -9,9 +9,13 @@ const ToolBarFullScreen = () => {
 		var elem = document.getElementById("pdf-viewer");
 		if(fullscreen){
 			document.exitFullscreen();
+			document.webkitExitFullscreen();
 		}else{
 			if (elem.requestFullscreen) {
 				elem.requestFullscreen();
+			}
+			if (elem.webkitRequestFullscreen()) {
+				elem.webkitRequestFullscreen();
 			}
 		}
 		e.preventDefault();
@@ -24,6 +28,14 @@ const ToolBarFullScreen = () => {
 			setFullscreen(false)
 		}
 	};
+
+	document.onwebkitfullscreenchange = function (event) {
+		if (!fullscreen) {
+			setFullscreen(true)
+		} else {
+			setFullscreen(false)
+		}
+	}
   
   return (
     <button className="btn btn-outline-secondary btn-sm" onClick={(e) => toggleFullScreen(e)}>

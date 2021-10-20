@@ -345,6 +345,10 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 					'sessionKey' => [
 						'type' => Type::string(),
 						'description' => 'Session key'
+					],
+					'defaults' => [
+						'type' => Type::string(),
+						'description' => 'Serialized form default values'
 					]
 				]
 			]),

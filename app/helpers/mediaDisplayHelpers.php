@@ -64,6 +64,7 @@
 		$replist = $instance->getRepresentations($versions, null, $options);
 	
 		$replist = array_values(array_map(function($v) use ($context, $base_url, $display_config_for_context) {
+			$pages = $v['info']['original']['PROPERTIES']['pages'] ?? 1;
 			unset($v['media']);
 			unset($v['media_metadata']);
 			unset($v['media_content']);
@@ -83,6 +84,7 @@
 				$v['urls']['tilepic'] = "{$base_url}/service.php/IIIF/".$v['representation_id']."/info.json";
 			}
 			$v['url'] = $v['urls'][$version];
+			$v['pages'] = $pages;
 			
 			unset($v['tags']);
 			//unset($v['urls']);

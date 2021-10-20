@@ -10,6 +10,8 @@ const DocumentContextProvider = (props) => {
   const [ showThumbnails, setShowThumbnails ] = useState(true)
   const [ rotationValue, setRotationValue ] = useState(0)
   const [ fullscreen, setFullscreen ] = useState(false)
+  const [ twoPageSpread, setTwoPageSpread ] = useState(false)
+  const [ showToolBar, setShowToolBar ] = useState(false)
 
   return (
     <DocumentContext.Provider
@@ -20,7 +22,9 @@ const DocumentContextProvider = (props) => {
         magLevel, setMagLevel,
         showThumbnails, setShowThumbnails,
         rotationValue, setRotationValue,
-        fullscreen, setFullscreen
+        fullscreen, setFullscreen,
+        twoPageSpread, setTwoPageSpread,
+        showToolBar, setShowToolBar,
       }}>
       {props.children}
     </DocumentContext.Provider>

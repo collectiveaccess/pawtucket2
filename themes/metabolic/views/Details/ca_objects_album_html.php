@@ -98,13 +98,6 @@
 				if ($vn_comments_enabled || $vn_pdf_enabled || $vn_inquire_enabled || $vn_download_all_enabled || caDisplayLightbox($this->requests)) {
 						
 					print '<div id="detailTools" class="mt-2">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><ion-icon name="chatboxes"></ion-icon> <span>Comments and Tags (<?= sizeof($va_comments) + sizeof($va_tags); ?>)</span></div><!-- end detailTool -->
-						<div id='detailComments'><?= $this->getVar("itemComments");?></div><!-- end itemComments -->
-						<div id='commentForm'> </div>
-<?php				
-					}
 					if ($vn_pdf_enabled || $vn_download_all_enabled) {
 						print "<div class='detailTool'><div class='dropdown'><a class='dropdown-toggle' role='button' id='DownloadButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><ion-icon name='download'></ion-icon> Download</a>";
 						print "<div class='dropdown-menu' aria-labelledby='DropdownButton'>";
@@ -335,7 +328,24 @@
 						</ifdef>}}}
 					</div>
 				</div>
-						
+				
+<?php
+		# Comment
+		if ($vn_comments_enabled) {
+?>				
+			<div id='commentForm'> </div>
+
+			<!-- <div class="detailTool mb-2"> -->
+				<!-- <h2><b><?= sizeof($va_comments); ?> Comments</b></h2> -->
+				<!-- <ion-icon name="chatboxes"></ion-icon> 
+				<span>Comments and Tags (<?= sizeof($va_comments) + sizeof($va_tags); ?>)</span> -->
+			<!-- </div> -->
+			<!-- <div id='detailComments' class='px-2 py-2' style=" width: 100%; max-height: 300px; box-shadow: 2px 2px 2px 2px #D8D7CE; overflow: auto"> -->
+				<!-- <?= $this->getVar("itemComments");?> -->
+			<!-- </div> -->
+<?php				
+		}
+?>		
 	</div><!-- end col -->
 	<div class='navLeftRight text-right col-sm-1 col-lg-2'>
 <?php
@@ -435,35 +445,36 @@
 	}
 ?>
 <script type="text/javascript">	
-	pawtucketUIApps['PawtucketComment'] = {
-        'selector': '#commentForm',
-        'data': {
-            item_id: <?= $vn_id; ?>,
-            tablename: 'ca_objects',
-            form_title: '<span>Add Your Comment</span>',
-            list_title: '<span class="mt-5">Comments</span>',
-            tag_field_title: 'Tags',
-            comment_field_title: 'Comment',
-            login_button_text: 'Login to Add Your Comment',
-            comment_button_text: 'Submit',
-            no_tags: true,
-            show_form: <?= ($this->request->isLoggedIn()) ? "true" : "false"; ?>
-        }
-    };
-    
-    pawtucketUIApps['RelatedGrid'] = {
-    	baseUrl: "<?= __CA_URL_ROOT__."/service.php/RelatedGrid"; ?>",
-    	lightboxBaseUrl: "<?= __CA_URL_ROOT__."/service.php/Lightbox"; ?>",
-        downloadUrl: "<?= caNavUrl('*', '*', 'DownloadMedia'); ?>",
-    	key: '<?= $this->getVar('key'); ?>', 
-        selector: '#relatedGrid',
-        width: '100%',
-        height: '500px',
-        id: <?= (int)$vn_id; ?>,
-        table: 'ca_objects',
-        gridTable: 'ca_objects', 
-        fetch: 'children'
-    };
+	pawtucketUIApps['Comment'] = {
+			'selector': '#commentForm',
+			'key': '<?= $this->getVar('key'); ?>',
+			'baseUrl': '/service.php/UserGeneratedContent',
+			'searchUrl': '/index.php/MultiSearch/Index/search/',
+			'data': {
+					item_id: <?= $vn_id; ?>,
+					tablename: 'ca_objects',
+					show_form: <?= ($this->request->isLoggedIn()) ? "true" : "false"; ?>,
+					login_button_text: 'Login to Add Your Comment',
+					comment_button_text: 'Comment',
+
+					form_title: '<span>Add Your Comment</span>',
+					list_title: '<span class="mt-5">Comments</span>',
+					tag_field_title: 'Tags',
+					comment_field_title: 'Comment',
+					no_tags: true,
+			},
+  };
+
+	pawtucketUIApps['MediaViewer'] = {
+			'selector': '#mediaDisplay',
+			'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => $va_access_values]); ?>,
+			'width': '800px',
+			'height': '500px',
+			'controlHeight': '72px',
+			'data': {
+			
+			}
+	};
 </script>
 <script type="text/javascript">	
 	function copyUrl() {

@@ -129,11 +129,12 @@
 			}				
 
 ?>
-				<div id="mediaDisplay" class="detailPrimaryMedia mt-3">
+				<div id="mediaDisplay" class="detailPrimaryMedia my-4">
 					<!-- MediaViewer.js React app goes here -->
 				</div>
 				
-				<HR></HR>
+				<!-- <HR></HR> -->
+
 				<div class="row">
 					<div class="col-12 col-md-12 text-center metapoetics">
 					<?= strip_tags($t_object->get('ca_objects.metapoetics.metapoetics_text'), '<b><em><i><strong><ul><ol><li><blockquote><u><s><sup><sub>'); ?>
@@ -172,7 +173,7 @@
 						{{{<ifdef code="ca_objects.dimensions.dim_width|ca_objects.dimensions.dim_height|ca_objects.dimensions.dim_depth">
 							<div class="mb-3">
 								<div class="label">Dimensions</div>
-								<unit relativeTo="ca_objects.dimensions" delimiter="; ">^dim_width x ^dim_height<ifdef code='dim_depth'> x ^dim_depth</ifdef><ifdef code='note'>(^note)</ifdef></unit>
+								<unit relativeTo="ca_objects.dimensions" delimiter="; ">^dim_width<ifdef code='ca_objects.dimensions.dim_width,ca_objects.dimensions.dim_height'> x </ifdef>^dim_height<ifdef code='ca_objects.dimensions.dim_depth'> x ^dim_depth</ifdef><ifdef code='ca_objects.dimensions.note'> (^note)</ifdef></unit>
 							</div>
 						</ifdef>}}}
 					</div>
@@ -230,6 +231,17 @@
 							if($t_parent->isLoaded()) { 
 								$occs += $t_parent->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_occurrence_labels.name"));
 							}
+						
+							$occs = array_reduce($occs, function($c, $i) {
+								$occ_id = $i['occurrence_id'];
+								if(sizeof(array_filter($c, function($v) use ($occ_id) {
+									return ($v['occurrence_id'] == $occ_id);
+								})) > 0) {
+									return $c;
+								}
+								$c[] = $i;
+								return $c;
+							}, []);
 						
 							$occ_links = [];
 							if(is_array($occs) && sizeof($occs)){
@@ -389,7 +401,7 @@
 		# Comment
 		if ($vn_comments_enabled) {
 ?>				
-			<div id='commentForm'> </div>
+			<div id='commentForm' class="my-3"> </div>
 
 			<!-- <div class="detailTool mb-2"> -->
 				<!-- <h2><b><?= sizeof($va_comments); ?> Comments</b></h2> -->
@@ -515,13 +527,11 @@
 ?>
 
 <script type="text/javascript">	
-	// pawtucketUIApps['PawtucketComment'] = {
-
 	pawtucketUIApps['Comment'] = {
 			'selector': '#commentForm',
 			'key': '<?= $this->getVar('key'); ?>',
-			'baseUrl': 'http://metabolic3.whirl-i-gig.com:8085/service.php/UserGeneratedContent',
-			'searchUrl': 'http://metabolic3.whirl-i-gig.com:8085/index.php/MultiSearch/Index/search/',
+			'baseUrl': '/service.php/UserGeneratedContent',
+			'searchUrl': '/index.php/MultiSearch/Index/search/',
 			'data': {
 					item_id: <?= $vn_id; ?>,
 					tablename: 'ca_objects',
@@ -543,8 +553,17 @@
 			'width': '800px',
 			'height': '500px',
 			'controlHeight': '72px',
-			'data': {
-			
+			'options': {
+				'pdfViewer': {
+					'showThumbnails': true,
+					'showSearch': true,
+					'showZoom': true,
+					'showPaging': true,
+					'showRotate': true,
+					'showTwoPageSpread': true,
+					'showFullpage': true,
+					'showToolBar': true
+				}
 			}
 	};
     
