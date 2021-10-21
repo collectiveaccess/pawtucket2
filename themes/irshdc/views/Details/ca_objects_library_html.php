@@ -189,19 +189,19 @@ if($vs_mode == "map"){
 							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
 						</H6>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" excludeRelationshipTypes="subject" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" excludeRelationshipTypes="subject" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" excludeRelationshipTypes="subject" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
-						{{{<case>
-							<ifcount code="ca_entities.related" restrictToRelationshipTypes="creator" min="1">
-								<div class="unit"><H6>Creators</H6><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div>
-							</ifcount>
-							<ifdef code="ca_objects.creators"><div class="unit"><H6>Creators</H6><div class="trimTextShort"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.creators</unit></div></div></ifdef>
-						</case>}}}
-						{{{<case>
-							<ifcount code="ca_entities.related" restrictToRelationshipTypes="contributor" min="1">
-								<div class="unit"><H6>Contributors</H6><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div>
-							</ifcount>
-							<ifdef code="ca_objects.contributors"><div class="unit"><H6>Contributors</H6><div class="trimTextShort"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.contributors</unit></div></div></ifdef>
-						</case>}}}
+<?php
+						$vs_creators_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>');
+						$vs_creators_text = $t_object->getWithTemplate('<unit relativeTo="ca_objects" delimiter=", ">^ca_objects.creators</unit>');
+						if($vs_creators_entities || $vs_creators_text){
+							print '<div class="unit"><H6>Creators</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? ", " : "").$vs_creators_text.'</div></div>';
+						}
 						
+						$vs_contributors_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>');
+						$vs_contributors_text = $t_object->getWithTemplate('<unit relativeTo="ca_objects" delimiter=", ">^ca_objects.contributors</unit>');
+						if($vs_contributors_entities || $vs_contributors_text){
+							print '<div class="unit"><H6>Contributors</H6>'.$vs_contributors_entities.(($vs_contributors_entities && $vs_contributors_text) ? ", " : "").$vs_contributors_text.'</div>';
+						}
+?>
 						{{{<ifdef code="ca_objects.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.description_new.description_new_source"><h6>Description</h6>
 								<div class="trimText">^ca_objects.description_new.description_new_txt</div>
