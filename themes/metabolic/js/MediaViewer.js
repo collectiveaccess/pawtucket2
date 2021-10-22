@@ -7,7 +7,6 @@ import { VideoViewer } from './MediaViewer/VideoViewer';
 import DocumentViewer from './MediaViewer/DocumentViewer';
 import DocumentContextProvider from './MediaViewer/DocumentViewer/DocumentContext';
 
-
 // import { DocumentViewer } from './MediaViewer/DocumentViewer';
 import { ImageViewer } from './MediaViewer/ImageViewer';
 
