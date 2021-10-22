@@ -2,13 +2,11 @@ import React, { useState, useContext } from 'react'
 import { DocumentContext } from "./DocumentContext"
 import { Document, Page } from 'react-pdf';
 
-// import DocumentThumbnail from './DocumentThumbnail';
-
 import VisibilitySensor from "react-visibility-sensor";
 
 const DocumentThumbnailBar = (props) => {
 
-  const { numPages, setNumPages, page, setPage, enteredPage, setEnteredPage, magLevel, setMagLevel, showThumbnails, setShowThumbnails } = useContext(DocumentContext)
+  const { numPages, setNumPages, page, setPage, enteredPage, setEnteredPage, magLevel, setMagLevel, showThumbnails, setShowThumbnails, toggleThumbnails, setToggleThumbnails  } = useContext(DocumentContext)
 
   let defaultPage = (<div div className="default-page" style={{ width: '100%', height: '200px', backgroundColor: '#fff' }}></div>)
 
@@ -38,24 +36,20 @@ const DocumentThumbnailBar = (props) => {
 		e.preventDefault();
 	}
 
-  if(showThumbnails){
+  if(showThumbnails && toggleThumbnails){
     return (
-      <div className="col-3 mr-1" style={{ height: props.height, overflow: "scroll" }}>	
+      <div className="col-3 m-0" style={{ height: props.height, overflow: "scroll" }}>	
         <div className='thumbnails-container' style={{ backgroundColor: "#F2F2F0", padding: "10px" }}>
           {thumbnails? 
             thumbnails.map((thumbnail, index) => {
               return (
                 <div id={'thumbnail-' + `${thumbnail.page_num}`} className="my-1" key={index} >
                   <div className={"text-center " + `${page == thumbnail.page_num ? "border border-secondary" : "border border-light"}`} onClick={(e) => changePage(e, thumbnail.page_num)} style={{ cursor: "pointer" }}>
-
                     <VisibilitySensor>
                       {({ isVisible }) =>
                         <div>{isVisible ? thumbnail.doc : defaultPage }</div>
                       }
-                      {/* {thumbnail} */}
                     </VisibilitySensor>
-
-                    {/* {thumbnail} */}
                   </div>
                   <p className="mb-1">Page {thumbnail.page_num}</p>
                 </div>

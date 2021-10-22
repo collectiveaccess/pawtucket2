@@ -556,12 +556,12 @@
 			'options': {
 				'pdfViewer': {
 					'showThumbnails': true,
-					'showSearch': true,
+					'showSearch': false,
 					'showZoom': true,
 					'showPaging': true,
 					'showRotate': true,
 					'showTwoPageSpread': true,
-					'showFullpage': true,
+					'showFullScreen': true,
 					'showToolBar': true
 				}
 			}

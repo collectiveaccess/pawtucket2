@@ -5,8 +5,10 @@ import VisibilitySensor from "react-visibility-sensor";
 import { DocumentContext } from "./DocumentContext"
 import DocumentToolBar from "./DocumentToolBar";
 
-const DocumentFullscreenViewer = ({ url, pdfPages, pdfPagesTwoSpread, visibilityChange, defaultPage, onDocumentLoadSuccess }) => {
-  const { numPages, setNumPages, page, setPage, enteredPage, setEnteredPage, magLevel, setMagLevel, showThumbnails, setShowThumbnails, rotationValue, setRotationValue, fullscreen, setFullscreen, twoPageSpread, setTwoPageSpread } = useContext(DocumentContext)
+const DocumentFullscreenViewer = ({ url, pdfPages, pdfPagesTwoSpread, visibilityChange, onDocumentLoadSuccess }) => {
+  const { numPages, magLevel, rotationValue, fullscreen, twoPageSpread } = useContext(DocumentContext)
+
+  let defaultPage = (<div className="default-page" style={{ margin: 'auto', width: `${772}px`, height: `${fullscreen ? "1000px" : `${currentPageHeight}px`}`, backgroundColor: '#fff' }}></div>)
 
   return (
     <div className='fullscreen-container container' style={{ width: "1600px" }}>
@@ -17,33 +19,49 @@ const DocumentFullscreenViewer = ({ url, pdfPages, pdfPagesTwoSpread, visibility
       </div>
 
       <div className='row justify-content-center'>
-        <div className="text-center mediaViewerPDFViewer">
+        <div className="text-center mediaViewerPDFViewer" style={{ backgroundColor: '#F2F2F0', padding: "5px" }}>
 
           {pdfPages && twoPageSpread ?
             <>
               <div className="text-center">
-                <VisibilitySensor onChange={(isVisible) => visibilityChange(isVisible, 1)}>
-                  <div id={'page-' + `${1}`} style={{ backgroundColor: '#F2F2F0', padding: "5px" }}>
+                <VisibilitySensor
+                  partialVisibility={true}
+                  onChange={(isVisible) => visibilityChange(isVisible, 1)}
+                >
+                  {({ isVisible }) =>
+                    <div id={'page-' + `${1}`}> {isVisible ?
                     <Document file={url} rotate={rotationValue} loading={defaultPage} onLoadSuccess={(e) => onDocumentLoadSuccess(e)}>
                       <Page pageNumber={1} height={fullscreen ? 1000 : height} scale={magLevel / 100} />
                     </Document>
-                  </div>
+                  : defaultPage}</div>}
                 </VisibilitySensor>
               </div>
+
               {pdfPagesTwoSpread.map((spread, index) => {
-                // console.log(spread);
                 return (
                   <div className="d-flex" key={index}>
                     <div className="d-inline">
-                      <VisibilitySensor onChange={(isVisible) => visibilityChange(isVisible, spread[0].page_num)}>
-                        <div id={'page-' + `${spread[0].page_num}`} style={{ backgroundColor: '#F2F2F0', padding: "5px" }}>{spread[0].doc}</div>
+                      <VisibilitySensor
+                        partialVisibility={true}
+                        offset={{ top: 260, bottom: 260 }}
+                        onChange={(isVisible) => visibilityChange(isVisible, spread[0].page_num)}
+                      >
+                        {({ isVisible }) =>
+                          <div id={'page-' + `${spread[0].page_num}`}>{isVisible ? spread[0].doc : defaultPage}</div>}
                       </VisibilitySensor>
                     </div>
-                    <div className="d-inline">
-                      <VisibilitySensor onChange={(isVisible) => visibilityChange(isVisible, spread[1].page_num)}>
-                        <div id={'page-' + `${spread[1].page_num}`} style={{ backgroundColor: '#F2F2F0', padding: "5px" }}>{spread[1].doc}</div>
-                      </VisibilitySensor>
-                    </div>
+
+                    {spread[1].page_num > numPages ? <div></div> :
+                      <div className="d-inline">
+                        <VisibilitySensor
+                          partialVisibility={true}
+                          offset={{ top: 260, bottom: 260 }}
+                          onChange={(isVisible) => visibilityChange(isVisible, spread[1].page_num)}
+                        >
+                          {({ isVisible }) => <div id={'page-' + `${spread[1].page_num}`} className="m-1">{isVisible ? spread[1].doc : defaultPage}</div>}
+                        </VisibilitySensor>
+                      </div>
+                    }
                   </div>
                 )
               })}
@@ -53,8 +71,12 @@ const DocumentFullscreenViewer = ({ url, pdfPages, pdfPagesTwoSpread, visibility
           {pdfPages && !twoPageSpread ?
             pdfPages.map((page, index) => {
               return (
-                <VisibilitySensor key={index} onChange={(isVisible) => visibilityChange(isVisible, page.page_num)}>
-                  <div id={'page-' + `${page.page_num}`} style={{ backgroundColor: '#F2F2F0', padding: "5px" }}>{page.doc}</div>
+                <VisibilitySensor key={index}
+                  partialVisibility={true}
+                  offset={{ top: 260, bottom: 260 }}
+                  onChange={(isVisible) => visibilityChange(isVisible, page.page_num)}
+                >
+                  {({ isVisible }) => <div id={'page-' + `${page.page_num}`}>{isVisible ? page.doc : defaultPage}</div>}
                 </VisibilitySensor>
               )
             })

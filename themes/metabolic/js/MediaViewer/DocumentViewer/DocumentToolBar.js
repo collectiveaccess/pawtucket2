@@ -6,7 +6,15 @@ import ToolBarZoom from './DocumentToolBar/ToolBarZoom'
 
 const DocumentToolBar = () => {
 
-	const { numPages, setNumPages, page, setPage, enteredPage, setEnteredPage, magLevel, setMagLevel, showThumbnails, setShowThumbnails, rotationValue, setRotationValue, fullscreen, setFullscreen, twoPageSpread, setTwoPageSpread, showToolBar, setShowToolBar } = useContext(DocumentContext)
+	const { numPages, setNumPages, page, setPage, enteredPage, setEnteredPage, magLevel, setMagLevel, showThumbnails, setShowThumbnails, rotationValue, setRotationValue, fullscreen, setFullscreen, twoPageSpread, setTwoPageSpread, showToolBar, setShowToolBar, 
+		showSearch, setShowSearch,
+		showZoom, setShowZoom,
+		showPaging, setShowPaging,
+		showRotate, setShowRotate,
+		showTwoPageSpread, setShowTwoPageSpread,
+		showFullScreen, setShowFullScreen,
+		toggleThumbnails, setToggleThumbnails
+ } = useContext(DocumentContext)
 
   const [ searchValue, setSearchValue ] = useState("")
 
@@ -24,11 +32,16 @@ const DocumentToolBar = () => {
 		e.preventDefault();
 	}
 
-	const toggleThumnails = (e) => {
-		if(showThumbnails){
-			setShowThumbnails(false);
+	const toggleThumbnailBar = (e) => {
+		// if(showThumbnails){
+		// 	setShowThumbnails(false);
+		// }else{
+		// 	setShowThumbnails(true);
+		// }
+		if(toggleThumbnails){
+			setToggleThumbnails(false);
 		}else{
-			setShowThumbnails(true);
+			setToggleThumbnails(true);
 		}
 		e.preventDefault();
 	}
@@ -57,47 +70,61 @@ const DocumentToolBar = () => {
 			<div className="document-toolbar-container container mb-3">
 				<div className='row justify-content-center' style={{ backgroundColor: "#F2F2F0", padding: "10px" }}>
 
-					<div className="col-1">
-						<button className="btn btn-outline-secondary btn-sm" onClick={(e) => toggleToolBar(e)}>
-							<span className="material-icons">expand_less</span>
-						</button>
-					</div>
-	
-					{!fullscreen? 
+					{showToolBar? 
 						<div className="col-1">
-							<button className="btn btn-outline-secondary btn-sm" onClick={(e) => toggleThumnails(e)}>
+							<button className="btn btn-outline-secondary btn-sm" onClick={(e) => toggleToolBar(e)}>
+								<span className="material-icons">expand_less</span>
+							</button>
+						</div>
+					: null}
+	
+					{!fullscreen && showThumbnails? 
+						<div className="col-1">
+							<button className="btn btn-outline-secondary btn-sm" onClick={(e) => toggleThumbnailBar(e)}>
 								<span className="material-icons">view_sidebar</span>
 							</button>
 						</div>
 					: null}
 	
-					<div className="col-1">
-						<ToolBarZoom />
-					</div>
+					{showZoom? 
+						<div className="col-1">
+							<ToolBarZoom />
+						</div>
+					: null}
 	
-					<div className="col-2">
-						<input type="text" className='doc-search-input' value={searchValue} onChange={(e) => handleForm(e)} placeholder="Search" style={{ width: '140px' }}/>
-					</div>
+					{showSearch? 
+						<div className="col-2">
+							<input type="text" className='doc-search-input' value={searchValue} onChange={(e) => handleForm(e)} placeholder="Search" style={{ width: '140px' }}/>
+						</div>
+					: null}
 	
-					<div className='col-3 text-right'>
-						<ToolBarPaging />
-					</div>
+					{showPaging? 
+						<div className={'col-3' + `${showSearch? 'text-right' : 'text-center'}`}>
+							<ToolBarPaging />
+						</div>
+					: null}
 	
-					<div className="col-1">
-						<button className="btn btn-outline-secondary btn-sm" onClick={(e) => rotatePDF(e)}>
-							<span className="material-icons">rotate_right</span>
-						</button>
-					</div>
+					{showRotate? 
+						<div className="col-1">
+							<button className="btn btn-outline-secondary btn-sm" onClick={(e) => rotatePDF(e)}>
+								<span className="material-icons">rotate_right</span>
+							</button>
+						</div>
+					: null}
 	
-					<div className="col-1">
-						<button className="btn btn-outline-secondary btn-sm" onClick={(e) => twoPage(e)}>
-							<span className="material-icons">auto_stories</span>
-						</button>
-					</div>
+					{showTwoPageSpread?	
+						<div className="col-1">
+							<button className="btn btn-outline-secondary btn-sm" onClick={(e) => twoPage(e)}>
+								<span className="material-icons">auto_stories</span>
+							</button>
+						</div>
+					: null}
 	
-					<div className="col-1">
-						<ToolBarFullScreen />
-					</div>
+					{showFullScreen? 
+						<div className="col-1">
+							<ToolBarFullScreen />
+						</div>
+					: null}
 	
 				</div>
 			</div>
