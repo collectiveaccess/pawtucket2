@@ -134,8 +134,8 @@
                 <div class="an_online_exhitibion">an online exhibition</div>
                 <div class="szilvia">by <?php print caNavLink($this->request, 'Szilvia Szmuk-Tanenbaum', '', '', 'Section', 'About'); ?></div>
                 <?php print caGetThemeGraphic($this->request, 'horizontal_ornament_home-03.svg', array("class" => "horizontal_ornament", "alt" => "ornament")); ?>
-                <div class="agradecimientos"><?php print caNavLink($this->request, 'Agradecimientos', '', '', 'Section', 'Acknowledgments'); ?></div>
-                <div class="cruickshank">Dedicated to D W Cruickshank</div>
+                <div class="cruickshank"><?php print caNavLink($this->request, 'Dedicated to D W Cruickshank', '', '', 'Section', 'Acknowledgments'); ?></div>
+                <div class="agradecimientos"><?php print caNavLink($this->request, 'Acknowledgments', '', '', 'Section', 'Acknowledgments'); ?></div>
             </div>
             <ul class="home_menu">
 <?php

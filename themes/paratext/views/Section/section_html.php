@@ -19,12 +19,38 @@
 </div>
 
 <div class="text_content with_vertical_ornaments">
-
+<?php
+	switch($t_section->get("ca_occurrences.idno")){
+		case "foreword":
+?>
     <div class="vertical_ornaments">
         <div class="vertical_ornament_one"></div>
+    </div>
+<?php		
+		break;
+		# -----------------------------------------
+		case "acknowledgments":
+?>
+    <div class="vertical_ornaments">
+        <div class="vertical_ornament_two"></div>
+        <div class="vertical_ornament_two"></div>
         <div class="vertical_ornament_two"></div>
     </div>
-
+<?php		
+		
+		break;
+		# -----------------------------------------
+		default:
+?>
+    <div class="vertical_ornaments">
+        <div class="vertical_ornament_one"></div>
+    </div>
+<?php		
+		
+		break;
+		# -----------------------------------------
+	}
+?>
     <div class="text">
     	<p><?php print $vs_text; ?></p>
     

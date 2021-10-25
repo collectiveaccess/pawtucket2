@@ -988,12 +988,17 @@ body.home .home_slider .swiper-container .swiper-pagination .swiper-pagination-b
 .exhibition_cover .szilvia a:hover {
   text-decoration: underline;
 }
-.exhibition_cover .cruickshank {
+.exhibition_cover .cruickshank, .exhibition_cover .cruickshank a {
   font-family: 'constantia', serif;
   font-size: 14px;
   letter-spacing: 0.1em;
   font-style: italic;
   margin-bottom: 10px;
+  text-decoration:none;
+  color: #804639;
+}
+.exhibition_cover .cruickshank a:hover {
+	text-decoration: underline;
 }
 .exhibition_cover .horizontal_ornament {
   height: 15px;
@@ -1316,7 +1321,7 @@ ul.home_menu li a:hover {
   padding: 60px 90px 60px 60px;
 }
 .text_content.with_vertical_ornaments .vertical_ornaments {
-  width: 140px;
+  width: 100px;
   display: flex;
 }
 .text_content.with_vertical_ornaments .vertical_ornaments .vertical_ornament_one {
@@ -1339,7 +1344,7 @@ ul.home_menu li a:hover {
   background-size: contain;
 }
 .text_content.with_vertical_ornaments .text {
-  width: calc(100% - 140px);
+  width: calc(100% - 100px);
   display: flex;
   flex-direction: column;
 }
