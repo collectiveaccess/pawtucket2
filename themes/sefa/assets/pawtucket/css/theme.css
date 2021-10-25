@@ -1,3 +1,4 @@
+/* Accessibility changes: green 76AA5B replaced by 5A8042 */
 /* @import must be at top of file, otherwise CSS will not work */
 @import url("//hello.myfonts.net/count/2afa10");
 
@@ -39,15 +40,27 @@ body {
 		padding-top:0px;
 	}
 }
+#skipNavigation a{
+	position: absolute;
+	margin-left: -3000px;
+	width: 1;
+	height: 1;
+	overflow: hidden;
+}
+#skipNavigation a:focus, #skipNavigation a:active {
+	margin-left: 0px;
+	width: auto;
+	height: auto;
+}
 a:link, a:visited {
-	color:#76AA5B;
+	color:#5A8042;
 	text-decoration: none;
 }
 a:hover {
 	text-decoration: underline;	/*border-bottom: 1px dotted #999;*/
 }
 a:active {
-	color:#76AA5B;
+	color:#5A8042;
 }
 h1, .front H1, .front h1 a {
 	font-family: GillSansMTStd-Light, Helvetica, Arial, sans-serif;
@@ -90,11 +103,11 @@ strong, b {
 	font-family: GillSansMTStd-Medium;
 	font-weight:normal;
 }	
-@media (min-width: 768px) {
+/*@media (min-width: 768px) {
   .container {
     width: 750px;
   }
-}
+}*/
 @media (min-width: 992px) {
   .container {
     width: 970px;
@@ -132,7 +145,7 @@ strong, b {
 }
 .caption, .thumbnail .caption {
 	font-size:11px; 
-	color:#808080; 
+	color:#757575; 
 	text-transform:uppercase;
 	border:0;
 	padding-top:5px;
@@ -149,6 +162,15 @@ div.captionSlideshow{
 	color: red;
 	font-size:6px;
 	padding-left:5px;
+	top: -2px;
+	position: relative;
+}
+.captionNoLongerAvailable{
+	color: orange;
+	font-size:6px;
+	padding-left:5px;
+	top: -2px;
+	position: relative;
 }
 .fullWidthImg img{
 	height:auto;
@@ -157,6 +179,7 @@ div.captionSlideshow{
 /* ------Nav Styles------------ */
 .navbar-brand {
 	padding:15px 0 0 0;
+	width:120px;
 }
 .navbar-brand img{
 	max-height:69px;  /* this is the size for the regular logo */
@@ -176,12 +199,12 @@ div.captionSlideshow{
     padding-bottom: 0px;
     font-family: GillSansMTStd-Book;
     font-size:15px;
-    color:#808080;
+    color:#757575;
 }
 .navbar-default .navbar-nav > li > a {
 	padding-left:5px;
 	padding-right:5px;
-	color:#808080;
+	color:#757575;
 	font-family: GillSansMTStd-Book;
 	font-size:15px;
 }
@@ -203,7 +226,7 @@ div.captionSlideshow{
 }
 .nav > li > a:hover, .nav > li > a:focus{	
 	background:none;
-	color:#e3e3e3;
+	color:#bbbbbb;
 }
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     background: none;
@@ -234,7 +257,7 @@ div.captionSlideshow{
 	padding-left:0px;
 	/*padding-top:10px;*/
 	padding-bottom:0px;
-	color:#808080;
+	color:#757575;
 }	
 .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
 	background:none;
@@ -277,14 +300,14 @@ div.captionSlideshow{
 	padding:0 0 10px 0;
 }	
 .subnav a:link, .subnav a:visited {
-	color:#666;
+	color:#757575;
 	text-decoration: none;
 }
 .subnav a:hover {
 	color:#000; 	/*border-bottom: 1px dotted #999;*/
 }
 .subnav a:active {
-	color:#76AA5B;
+	color:#5A8042;
 }
 .subnav ul li.active a{
 	color:#000;
@@ -295,9 +318,11 @@ div.captionSlideshow{
 .subnavOffset{
 	margin-top:28px;
 }
-.subnav H5{
+.subnav H5, .subnav H1{
 	font-size:22px;
 	margin:0px 0px 15px 0px;
+	font-family: GillSansMTStd-Book, Helvetica, Arial, sans-serif;
+	font-weight:normal;
 }
 
 
@@ -306,6 +331,7 @@ div.captionSlideshow{
 	margin:0;
 	padding:15px 0 0 15px;
 	border-top:1px solid #000;
+	font-size:15px;
 }
 
 .btmsubnav ul li{list-style-type:none;
@@ -320,7 +346,7 @@ div.captionSlideshow{
 	color:#000; 	
 }
 .btmsubnav a:active {
-	color:#76AA5B;
+	color:#5A8042;
 }	
 
 .btmsubnav {
@@ -345,8 +371,20 @@ div.captionSlideshow{
 
 
 
-
-
+/* date on home page and exhibitions */
+.date{
+	font-family: GillSansMTStd-Medium, Helvetica, Arial, sans-serif; 
+	color:#000;
+	margin-bottom:5px;
+	font-size:16px;
+	font-weight:normal;
+	line-height: 135%;
+	text-transform: none;
+	margin-top:10px;
+}
+.exhibition .date{
+	margin-bottom: 30px;
+}
 
 /* ------ Front page ----------- */
 .front h1{
@@ -355,6 +393,7 @@ div.captionSlideshow{
 .front h2{
 	font-size:30px;
 }
+
 .frontSlide img{
 	height:auto;
 	width:100%;
@@ -384,7 +423,9 @@ div.captionSlideshow{
 .front .hpEvent .col-xs-12{
 	margin-bottom:40px;
 }
-
+.front .hpSpace{
+	height:80px;
+}
 /* ------ Details -------------- */
 .jcarousel-control-prev{
 	left:0px !important;
@@ -399,7 +440,7 @@ div.captionSlideshow{
 .jcarousel-control-prev, .jcarousel-control-next{
 	background-color:#FFF;
 	border:0px;
-	color: #808080;
+	color: #757575;
 	border-radius: 0px;
 	box-shadow: none;
 	text-shadow: none;
@@ -416,11 +457,11 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	padding-top:5px;
 	text-align:right;
 	font-weight: normal;
-	color: #808080;
+	color: #757575;
 	margin-top:-10px;
 }
 #imageNav a{
-	color: #808080;
+	color: #757575;
 	text-decoration:none;
 	font-size:13px;
 	font-weight: normal;
@@ -442,6 +483,15 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	font-size:24px;
 	font-family: GillSansMTStd-Book;
 }
+#pageArea.artist h3{
+	font-size:20px;
+	font-family: GillSansMTStd-Light, Helvetica, Arial, sans-serif;
+	font-weight: normal;
+	color: #666;
+	padding: 0px;
+	margin: 0px;
+	text-transform:none;
+}
 #pageArea.catalog h2{
 	font-size:16px;
 }
@@ -454,30 +504,49 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 }
 /* ------ Artist, fair, pub list ---------- */
 @media (min-width: 992px) {
-	.artistList .row, .fairList .row, .pubList .row {
+	.artistList .row, .fairList .row, .pubList .row, .insituList .row {
 	  margin-right: -30px;
 	  margin-left: -30px;
 	}
-	.artistList .col-sm-4, .fairList .col-sm-3, .pubList .col-sm-3 {
+	.artistList .col-sm-4, .fairList .col-sm-3, .pubList .col-sm-3, .insituList .col-sm-4{
 	  padding-right: 30px;
 	  padding-left: 30px;
 	}
 }
-.artistListing h2 a:link, .artistListing h2 a:visited{
+.artistListing h1 a:link, .artistListing h1 a:visited, .artistListing h2 a:link, .artistListing h2 a:visited{
 	color:#000;
 	font-size:20px;
 }
-.pubListing h2, .pubListing h2 a:link, .pubListing h2 a:visited, .fairListing h2, .fairListing h2 a:link, .fairListing h2 a:visited{
+.pubListing h1, .pubListing h1 a:link, .pubListing h1 a:visited, .fairListing h2, .fairListing h2 a:link, .fairListing h2 a:visited{
 	color:#4d4d4d;
 	font-size:13px;
 	line-height:1.2em;
 	margin-top:5px;
+	height: 3.6em;
+}
+.insituList {
+	margin-top:10px;
+}
+.insituListing h2, .insituListing h2 a:link, .insituListing h2 a:visited{
+	color:#000000;
+	font-size:16px;
+	line-height:1.2em;
+	margin-top:5px;
+	height: 3.6em;
 }
 .pubListing .pubListingImg img{
 	border:1px solid #ededed;
 	padding:3px;
 	width:100%;
 	height:auto;
+}
+.catalog h1{
+	font-size: 14px;
+	font-family: GillSansMTStd-Medium, Helvetica, Arial, sans-serif;
+	color: #000;
+	margin: 0px;
+	padding:0px;
+	font-weight: normal;
 }
 .fairListing .fairListingImg img{
 	padding:3px;
@@ -498,12 +567,12 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 		height:250px;
 	}
 }
-.artistListing img{
+.artistListing img, .insituListing img{
 	width:100%;
 	max-width:300px;
 	height:auto;
 }
-.artistListing, .fairListing, .pubListing{
+.artistListing, .fairListing, .pubListing, .insituListing{
 	margin:10px 0px 40px 0px;
 }
 .fairListing {
@@ -528,29 +597,37 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 .exhibitionListing{
 	margin-bottom:20px;
 }
-.exhibitionListing h2 a:link, .exhibitionListing h2 a:visited{
+.exhibitionListing H1 a:link, .exhibitionListing H1 a:visited{
 	color:#000;
 }
-.exhibitionListing h2{
+.exhibitionListing H1{
 	font-size:16px;
 }
-.exhibitionListing h2 strong{
+.exhibitionListing H1 strong{
 	font-size:20px;
 }
 .yearTab{
 	display:none;
+}
+.exhibitArtists{
+	font-weight:bold;
 }
 
 /* ------About pages ---------- */
 .aboutPages{
 	margin-top:30px;
 }
-.aboutPages h5{
+.aboutPages h1{
 	font-size:22px;
 	line-height:1em;
 	margin:0px 0px 15px 0px;
+	font-family: GillSansMTStd-Book, Helvetica, Arial, sans-serif;
+	color: #000;
+	text-transform: none;
 }
-
+.aboutPages .thumbnail{
+	padding-top:40px;
+}
 /* ------Footer Styles -------- */
 .footer {
 	font-size:12px;
@@ -560,7 +637,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	padding-top:60px;
 	padding-bottom:30px;
 }
-.footernav{
+.footernav, .footerSocialNav{
 	display:none;
 	line-height:2em;
 }
@@ -574,6 +651,9 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	.footernav{
 		display:inline;
 	}
+	.footerSocialNav{
+		display:block;
+	}
 }	
 .socialicon, .socialiconDibs{
 	padding-left:2px;
@@ -586,17 +666,17 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	padding-top:10px;
 }
 .socialicon img{
-	opacity:0.5;
-	filter:alpha(opacity=50); /* For IE8 and earlier */
+	opacity:0.8;
+	filter:alpha(opacity=80); /* For IE8 and earlier */
 }
 .socialicon.darker img{
-	opacity:0.7;
-	filter:alpha(opacity=70); /* For IE8 and earlier */
+	opacity:1;
+	filter:alpha(opacity=1); /* For IE8 and earlier */
 }
 a.footerButton{
-	background-color:#ababab;
+	background-color:#757575;
 	color:#FFF !important;
-	padding:4px 7px 4px 7px;
+	padding:4px 6px 4px 6px;
 	font-weight:bold;
 }
 a.footerButton:hover{
@@ -605,15 +685,18 @@ a.footerButton:hover{
 }
 @media (max-width: 992px) {
 	.socialicon img, .socialiconDibs img{
-		width:28px;
-		height:28px;
-		margin-right:5px;
+		width:22px;
+		height:22px;
+		margin-right:8px;
 	}
 }
 @media (min-width: 993px) {
 	.socialicon img, .socialiconDibs img{
-		width:17px;
-		height:17px;
+		width:18px;
+		height:18px;
+
+		position: relative;
+		top: -1px;
 	}
 }
 /* Newsletter signup */
@@ -715,3 +798,13 @@ fieldset[disabled] .btn-default.active {
 }
 
 .pubListing h2 { height:3.6em; overflow:hidden }
+
+.artinsitu h1{
+	font-size:24px
+}
+.artinsitu h2{
+	font-size:16px
+}
+.artinsitu h2 a{
+	font-size:18px
+}

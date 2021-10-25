@@ -3,7 +3,7 @@
 	$t_item = $this->getVar("item");
 	$ps_view = $this->request->getParameter("view", pString);	#works, exhibitions, bio
 	if(!$ps_view){
-		$ps_view = "works";
+		$ps_view = "thumbnails";
 	}
 	# --- object id of related image to cue slideshow to
 	$pn_object_id = $this->request->getParameter("id", pInteger);
@@ -20,7 +20,7 @@
 	<div class="row contentbody_sub">
 
 		<div class="col-sm-3 subnav">
-			<H5><?php print $t_item->get("ca_entities.preferred_labels.displayname"); ?></H5>	
+			<H1><?php print $t_item->get("ca_entities.preferred_labels.displayname"); ?></H1>	
 			<ul>
 				<li<?php print ($ps_view == "works") ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Selected Works"), '', 'ca_entities', $t_item->get("entity_id"), null, null, array("type_id" => $t_item->get("type_id"))); ?></li>
 				<li<?php print ($ps_view == "exhibitions") ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Exhibitions"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "exhibitions"), null, array("type_id" => $t_item->get("type_id"))); ?></li>
@@ -68,8 +68,10 @@
 					foreach($va_exhibitions as $va_exhibition){
 						$t_occurrence->load($va_exhibition["occurrence_id"]);
 						print "<h2>".caDetailLink($this->request, $t_occurrence->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $va_exhibition["occurrence_id"], null, null, array("type_id" => $t_occurrence->get("ca_occurrences.type_id")))."</h2>";
-						print "<h2>".$t_occurrence->get("ca_occurrences.exhibition_subtitle")."</h2>";
-						print "<h4>".$t_occurrence->get("ca_occurrences.opening_closing")."</h4>";
+						if($t_occurrence->get("ca_occurrences.exhibition_subtitle")){
+							print "<h3>".$t_occurrence->get("ca_occurrences.exhibition_subtitle")."</h3>";
+						}
+						print "<div class='date'>".$t_occurrence->get("ca_occurrences.opening_closing")."</div>";
 						print "<br/>";
 					}
 				}else{
@@ -95,7 +97,6 @@
 			break;
 			# ----------------------------------------------
 			case "works":
-			default:
 				$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
 				if($q_objects->numHits()){
 					$va_images = array();
@@ -103,9 +104,10 @@
 						$vs_image = "";
 						$vs_image = $q_objects->get("ca_object_representations.media.mediumlarge", array("checkAccess" => $va_access_values));
 						if($vs_image){
-							$va_images[$q_objects->get("ca_objects.object_id")] = array("image" => $vs_image, "caption" => sefaFormatCaption($this->request, $q_objects));
+							$va_images[$q_objects->get("ca_objects.date_created").".".$q_objects->get("ca_objects.object_id")] = array("object_id" => $q_objects->get("ca_objects.object_id"), "image" => $vs_image, "caption" => sefaFormatCaption($this->request, $q_objects));
 						}
 					}
+					krsort($va_images);
 ?>
 					<div class="jcarousel-wrapper">
 						<!-- Carousel -->
@@ -113,9 +115,9 @@
 							<ul>
 <?php
 							$vn_i = 1;
-							foreach($va_images as $vn_image_object_id => $va_image){
+							foreach($va_images as $key => $va_image){
 ?>
-								<li id="slide<?php print $vn_image_object_id; ?>">
+								<li id="slide<?php print $va_image["object_id"]; ?>">
 									<div class="thumbnail">
 										<?php print $va_image["image"]; ?>
 										<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["caption"]; ?></div>
@@ -130,8 +132,8 @@
 <?php
 					if($q_objects->numHits() > 1){
 ?>
-						<a href="#" class="jcarousel-control-prev"><i class="fa fa-long-arrow-left"></i></a>
-						<a href="#" class="jcarousel-control-next"><i class="fa fa-long-arrow-right"></i></a>
+						<a href="#" class="jcarousel-control-prev"><i class="fa fa-long-arrow-left" aria-label="previous"></i></a>
+						<a href="#" class="jcarousel-control-next"><i class="fa fa-long-arrow-right" aria-label="next"></i></a>
 <?php
 					}
 ?>
@@ -204,6 +206,7 @@
 			break;
 			# -------------------------------------------------------------------------------
 			case "thumbnails":
+			default:
 ?>
 				<div class="row">
 <?php
@@ -211,9 +214,11 @@
 				if($q_objects->numHits()){
 					while($q_objects->nextHit()){
 						if($q_objects->get("ca_object_representations.media.thumbnail300square")){
-							print "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $q_objects->get("ca_object_representations.media.thumbnail300square"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "works", "id" => $q_objects->get("object_id")), null, array("type_id" => $t_item->get("type_id")))."</div>";
+							$va_images[$q_objects->get("ca_objects.date_created").".".$q_objects->get("ca_objects.object_id")] = "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $q_objects->get("ca_object_representations.media.thumbnail300square"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "works", "id" => $q_objects->get("object_id")), null, array("type_id" => $t_item->get("type_id")))."</div>";
 						}
 					}
+					krsort($va_images);
+					print join(" ", $va_images);
 				}
 ?>
 				</div><!-- end row -->
