@@ -995,6 +995,10 @@ body.home .home_slider .swiper-container .swiper-pagination .swiper-pagination-b
   font-style: italic;
   margin-bottom: 10px;
 }
+.exhibition_cover .horizontal_ornament {
+  height: 15px;
+  margin: 10px 0;
+}
 .exhibition_cover .agradecimientos {
   font-family: 'constantia', serif;
   font-size: 14px;
@@ -1643,6 +1647,21 @@ footer .year {
   text-transform: initial;
   font-size: 23px;
   margin-bottom: 21px;
+}
+footer .agradecimientos {
+  font-family: 'constantia', serif;
+  font-size: 15px;
+  letter-spacing: 0.07em;
+  font-style: italic;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+footer .agradecimientos a {
+  color: #804639;
+  text-decoration: none;
+}
+footer .agradecimientos a:hover {
+  text-decoration: underline;
 }
 @media only screen and (max-width: 700px) {
   footer {

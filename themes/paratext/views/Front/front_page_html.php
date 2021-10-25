@@ -133,6 +133,7 @@
                 <div class="commerce_of_printing">commerce of printing</div>
                 <div class="an_online_exhitibion">an online exhibition</div>
                 <div class="szilvia">by <?php print caNavLink($this->request, 'Szilvia Szmuk-Tanenbaum', '', '', 'Section', 'About'); ?></div>
+                <?php print caGetThemeGraphic($this->request, 'horizontal_ornament_home-03.svg', array("class" => "horizontal_ornament", "alt" => "ornament")); ?>
                 <div class="agradecimientos"><?php print caNavLink($this->request, 'Agradecimientos', '', '', 'Section', 'Acknowledgments'); ?></div>
                 <div class="cruickshank">Dedicated to D W Cruickshank</div>
             </div>
@@ -177,12 +178,26 @@
 
     <div class="swiper-container home_galleries">
         <div class="swiper-wrapper">
-            <div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/Home Image 1 duotone.png', array("alt" => "Home Image 1 duotone")); ?></div>
-            <div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/La librera de Goya_S.jpg', array("alt" => "La librera de Goya")); ?></div>
-            <div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/Home Image 2 duotone.jpg', array("alt" => "Home Image 2 duotone")); ?></div>
-            <!--<div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/Home Image 3 duotone.jpg', array("alt" => "Home Image 3 duotone")); ?></div>-->
-            <div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/Home Image 5 duotone_S.jpg', array("alt" => "Home Image 5 duotone_S")); ?></div>
-            <div class="swiper-slide"><?php print caGetThemeGraphic($this->request, 'img/Antonio de Sacha_S.jpg', array("alt" => "Antonio de Sacha")); ?></div>
+<?php
+	$va_images = array(
+		"img/71065583_M.jpg",
+		"img/Libreria_Bardon_M.png",
+		"img/Home Image 1 duotone_M.png",
+		"img/Antonio de Sacha_M.jpg",
+		"img/Home Image 5 duotone_M.jpg",
+		"img/baixada de la canonja_M.jpg",
+		"img/rehersal_M.jpg",
+		"img/papirvm_M.png",
+		"img/Lonja de la seda Valencia_M.jpg",
+		"img/Miguelete Valencia_M.jpg",
+		"img/don-quijote-visit-print-shop_M.jpg"
+	);
+	$i = 1;
+	foreach($va_images as $vs_image){
+		print "<div class='swiper-slide'>".caGetThemeGraphic($this->request, $vs_image, array("alt" => "Home Image ".$i))."</div>";
+		$i++;
+	}
+?>
         </div>
         <div class="swiper-pagination"></div>
     </div>
