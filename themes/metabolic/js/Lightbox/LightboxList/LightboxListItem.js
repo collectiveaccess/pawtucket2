@@ -52,6 +52,9 @@ class LightboxListItem extends React.Component {
 
 		state.selectedItems = [];
 		state.showSelectButtons = false;
+		state.paginatedPageNumber = this.props.currentPage;
+		state.lightboxSearchValue = this.props.searchValue;
+		
 		this.context.setState(state);
 		this.context.loadLightbox(id);
 
@@ -154,7 +157,8 @@ class LightboxListItem extends React.Component {
 
 			return(
         <li className="list-group-item">
-          <div className="row my-4">
+          <div className="row my-2">
+
     				<div className="col-sm-12 col-md-6 label">
     					{(this.state.userAccess == 2) ?
                 <EasyEdit
@@ -169,21 +173,24 @@ class LightboxListItem extends React.Component {
     					  />
               : this.props.data.title}
     				</div>
+
   				  <div className="col-sm-6 col-md-3 infoNarrow">{count_text}</div>
+
   				  <div className="col-sm-6 col-md-3 info text-right">
     					<a href='#' data-id={this.props.data.id} className='btn btn-secondary btn-sm' onClick={this.openLightbox}>View</a>
     					&nbsp;
     					{(this.state.userAccess == 2) ?
                 <a href='#' data-id={this.props.data.id} className='btn btn-secondary btn-sm' onClick={this.deleteLightboxConfirm}>Delete</a>
-               : null}
+              : null}
   				  </div>
+						
   			  </div> {/* row-end */}
         </li>
       );
 		}else{
 			return(
         <li className="list-group-item">
-          <div className="row my-4">
+          <div className="row my-2">
   					<div className="col-sm-12 col-md-8 label">
     						<EasyEdit
 									ref={this.props.newLightboxRef}

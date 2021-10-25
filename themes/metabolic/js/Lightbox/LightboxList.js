@@ -20,6 +20,7 @@ import { LightboxContext } from '../Lightbox'
 import { deleteLightbox } from "../../../default/js/lightbox";
 import LightboxListItem from './LightboxList/LightboxListItem';
 import LightboxListPagination from './LightboxList/LightboxListPagination';
+import LightboxListSort from './LightboxList/LightboxListSort';
 
 const appData = pawtucketUIApps.Lightbox.data;
 const lightboxTerminology = appData.lightboxTerminology;
@@ -29,14 +30,15 @@ class LightboxList extends React.Component {
 	constructor(props) {
 		super(props);
 
-    	LightboxList.contextType = LightboxContext;
+    LightboxList.contextType = LightboxContext;
 
 		this.state = {
 		  sort: 'date',
 		  sortDirection: 'asc',
-		  currentPage: 1,
-		  lightboxesPerPage: 10,
+		  currentPage: this.props.paginatedPageNumber,
+		  lightboxesPerPage: 12,
 			lightboxes: [],
+			searchValue: this.props.searchValue,
 		};
 
 		this.newLightboxRef = React.createRef();
@@ -57,12 +59,15 @@ class LightboxList extends React.Component {
 		this.submitSort = this.submitSort.bind(this);
 		this.setLightboxListInState = this.setLightboxListInState.bind(this);
 
+		this.handleSearch = this.handleSearch.bind(this);
+
 	}
 
 	componentDidUpdate(prevProps, prevState, snapshot) {
 		if (this.newLightboxRef && this.newLightboxRef.current) {
 			this.newLightboxRef.current.onClick();
 		}
+		// this.setState({lightboxes: this.props.lightboxes})
 	};
 
 	// Change sort options handler
@@ -83,7 +88,7 @@ class LightboxList extends React.Component {
 		// console.log(this.state.lightboxes);
 	}
 
-	//sort lightboxes by the date created
+	// sort lightboxes by the date created
 	sortByDate(arr){
 		if (this.state.sortDirection == 'desc') { //oldest first
 			 arr.sort((a, b) => a.props.data.created.localeCompare(b.props.data.created));
@@ -169,7 +174,7 @@ class LightboxList extends React.Component {
 		callback(); // calls newLightbox function located in the context
 	};
 
-	//sorts the list of lightboxes
+	// sorts the list of lightboxes
   submitSort = (arr) => {
 		this.changePageHandler(parseFloat(1));
 
@@ -191,6 +196,14 @@ class LightboxList extends React.Component {
 		this.setState({ lightboxes:lightboxes })
 	}
 
+	handleSearch(e, numberOfPages){
+		// console.log("e.target.value", e.target.value);
+		if (parseInt(this.state.currentPage) > parseInt(numberOfPages)){
+			this.setState({ currentPage: 1 })
+		}
+		this.setState({ searchValue: e.target.value })
+	}
+
 	render(){
 		// console.log('Context: ', this.context);
 		// console.log('sortMode & descending: ', this.state.sort + ' ' + this.state.sortDirection);
@@ -200,7 +213,7 @@ class LightboxList extends React.Component {
 		if (this.props.lightboxes && this.props.lightboxes) {
 			for(let k in this.props.lightboxes) {
 				let l = this.props.lightboxes[k];
-				lightboxes.unshift(<LightboxListItem key={k} data={l} count={l.count} baseUrl={baseUrl} tokens={this.context.state.tokens} deleteCallback={this.context.deleteLightbox} newLightboxRef={this.newLightboxRef}/>);
+				lightboxes.unshift(<LightboxListItem key={k} data={l} count={l.count} baseUrl={baseUrl} tokens={this.context.state.tokens} deleteCallback={this.context.deleteLightbox} newLightboxRef={this.newLightboxRef} currentPage={this.state.currentPage} searchValue={this.state.searchValue}/>);
 			}
 		}
 		if(lightboxes.length == 0){
@@ -213,7 +226,7 @@ class LightboxList extends React.Component {
       )
 		}
 
-		//This allows the lightboxes to be sorted
+		// This allows the lightboxes to be sorted
 		if(this.state.lightboxes.length > 0){
 			lightboxes = this.state.lightboxes;
 		}
@@ -226,25 +239,46 @@ class LightboxList extends React.Component {
 			paginatedLightboxes = lightboxes.slice(indexOfFirstLightbox, indexOfLastLightbox);
 		}
 
+		//the lightboxes based on the search value filter
+		let filteredLightboxes
+		if (lightboxes.length > 0) {
+			filteredLightboxes = lightboxes.filter(lightbox => (lightbox.props.data.title).toLowerCase().includes(this.state.searchValue.toLowerCase()))
+		}
+
+		if(this.state.searchValue.length > 0){
+			let indexOfLastFilteredLightbox = this.state.currentPage * this.state.lightboxesPerPage;
+			let indexOfFirstFilteredLightbox = indexOfLastFilteredLightbox - this.state.lightboxesPerPage;
+			paginatedLightboxes = filteredLightboxes.slice(indexOfFirstFilteredLightbox, indexOfLastFilteredLightbox);
+		}
+
+		let numberOfPages = this.state.searchValue.length > 0 ? Math.ceil(filteredLightboxes.length / this.state.lightboxesPerPage) : Math.ceil(lightboxes.length / this.state.lightboxesPerPage)
+
+		console.log('====================================');
+		console.log("number of pages: ", numberOfPages);
+		console.log("current page: ", this.state.currentPage);
+		console.log('====================================');
+
+		// console.log('Lightboxes: ', lightboxes);
+		// console.log('filtered lightboxes: ', filteredLightboxes);
+
 		return(
 			<div className='row'>
-
 				<div className='col-sm-12 mt-3 mb-2'>
 
-					<div className='row' style={{marginBottom: "15px"}}>
-						{/* className='col-sm-12 col-md-5 offset-md-1 col-lg-4 offset-lg-2 col-xl-3 offset-xl-3' */}
-						<div className='col-sm-12 col-md-5 offset-md-1 col-lg-4 offset-lg-2 col-xl-3 offset-xl-3'>
-							<h1>My {lightboxTerminology.plural}</h1>
-						</div>
-						{/* className='col-sm-12 col-md-5 col-lg-4 col-xl-3 text-right' */}
-						<div className='col-sm-12 col-md-5 col-lg-4 col-xl-3 text-right'>
-							<a href='#' className='btn btn-primary' onClick={() => {this.createNewLightbox(this.context.newLightbox)}}>New +</a>
+					<div className='row justify-content-center' style={{marginBottom: "15px"}}>
+						<div className="col-sm-8 col-lg-6 d-flex">
+							<div className=''>
+								<h1>My {lightboxTerminology.plural}</h1>
+							</div>
+							<div className='ml-auto'>
+								<a href='#' className='btn btn-primary' onClick={() => { this.createNewLightbox(this.context.newLightbox) }}>New +</a>
+							</div>
 						</div>
 					</div>
 
-					<div className='row mb-2'>
-						{/* className='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3' */}
-						<div className='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>
+					<div className='row mb-2 justify-content-center'>
+						<div className='col-sm-8 col-lg-6 d-flex'>
+							{/* <LightboxListSort lightboxes={lightboxes}/> */}
 
 							<div className="dropdown show" onClick={() => {this.setLightboxListInState(lightboxes)}}>
 								<a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><ion-icon name="funnel"></ion-icon></a>
@@ -272,23 +306,26 @@ class LightboxList extends React.Component {
 
 												<div>
 													<button type="button" className="btn" onClick={() => {this.submitSort(this.state.lightboxes)}}>
-														<span class="material-icons">arrow_forward</span>
+														<span className="material-icons">arrow_forward</span>
 													</button>
 												</div>
 
 											</form>
 										</div>
-									</div>{/*container end */}
+									</div>
 
 								</div>
+							</div>
+
+							<div className="ml-3">
+								<input type="text" defaultValue={this.state.searchValue} onChange={(e) => this.handleSearch(e, numberOfPages)} placeholder="Search Lightboxes" style={{ width: '150px' }} />
 							</div>
 
 						</div>
 					</div>
 
 					<div className="row justify-content-center">
-						{/* className='col-sm-12 col-md-10 offset-md-5 col-lg-8 offset-lg-4 col-xl-6 offset-xl-3' */}
-						<div className='col-sm-12 col-md-10 offset-md-5 col-lg-8 offset-lg-4 col-xl-6 offset-xl-3'>
+						<div className='col-6'>
 							{lightboxes.length > 0 ?
 								<LightboxListPagination
 								lightboxesPerPage={this.state.lightboxesPerPage}
@@ -297,15 +334,15 @@ class LightboxList extends React.Component {
 								prevPageHandler={this.prevPageHandler}
 								nextPageHandler={this.nextPageHandler}
 								currentPage={this.state.currentPage}
-								numberOfPages={Math.ceil(lightboxes.length / this.state.lightboxesPerPage)}
+								numberOfPages={this.state.searchValue.length > 0 ? Math.ceil(filteredLightboxes.length / this.state.lightboxesPerPage) : Math.ceil(lightboxes.length / this.state.lightboxesPerPage)}
 								/>
 								: ''
 							}
 						</div>
 					</div>
 
-					<div className='row'>
-						<div className='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>
+					<div className='row justify-content-center my-1'>
+						<div className='col-sm-8 col-lg-6'>
 							<ul className="list-group list-group-flush">
 								{paginatedLightboxes}
 							</ul>
@@ -313,7 +350,7 @@ class LightboxList extends React.Component {
 					</div>
 
 					<div className="row justify-content-center">
-						<div className='col-sm-12 col-md-10 offset-md-5 col-lg-8 offset-lg-4 col-xl-6 offset-xl-3'>
+						<div className='col-6'>
 						{lightboxes.length > 0 ?
 							<LightboxListPagination
 							lightboxesPerPage={this.state.lightboxesPerPage}
@@ -322,7 +359,7 @@ class LightboxList extends React.Component {
 							prevPageHandler={this.prevPageHandler}
 							nextPageHandler={this.nextPageHandler}
 							currentPage={this.state.currentPage}
-							numberOfPages={Math.ceil(lightboxes.length / this.state.lightboxesPerPage)}
+							numberOfPages={this.state.searchValue.length > 0 ? Math.ceil(filteredLightboxes.length / this.state.lightboxesPerPage) : Math.ceil(lightboxes.length / this.state.lightboxesPerPage)}
 							/>
 							: ''
 						}
