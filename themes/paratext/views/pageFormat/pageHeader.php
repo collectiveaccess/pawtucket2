@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+ require_once(__CA_MODELS_DIR__."/ca_occurrences.php");
  #caGetThemeGraphic($this->request, 'ca_nav_logo300.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))
  
 	# --- navigation --- idno => Title
@@ -90,8 +90,12 @@
                     <a href="" class="no-click">Exhibition</a>
                     <ul class="sub_menu">
 <?php
-				foreach($va_paratext_exhibition_sections as $vs_idno => $vs_section_title){
-					print "<li>".caNavLink($this->request, $vs_section_title, '', '', 'Section', $vs_idno)."</li> ";
+				$c = 1;
+				$t_nav_section = new ca_occurrences();
+				foreach($va_paratext_exhibition_sections as $vs_idno){
+					$t_nav_section->load(array("idno" => $vs_idno));
+					print "<li>".caNavLink($this->request, "Exhibit Case ".$c.": ".$t_nav_section->get("ca_occurrences.preferred_labels.name"), '', '', 'Section', $vs_idno)."</li> ";
+					$c++;
 				}
 ?>
                     </ul>

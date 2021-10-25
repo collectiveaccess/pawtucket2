@@ -10,7 +10,7 @@
 	# --- array of images to display
 	$va_images = array();
 	# --- get related object_ids in array
-	$va_objects = $t_item->get("ca_objects", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("used_website", "used")));
+	$va_objects = $t_item->get("ca_objects", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "excludeTypes" => array("installation_shot", "catalog"), "restrictToRelationshipTypes" => array("used_website", "used")));
 	$va_object_ids = array();
 	if(is_array($va_objects) && sizeof($va_objects)){
 		foreach($va_objects as $va_object){
@@ -20,27 +20,54 @@
 			$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
 			if($q_objects->numHits()){
 				while($q_objects->nextHit()){
-					$va_images[$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
+					$va_images[$q_objects->get("ca_entity_labels.surname", array("restrictToRelationshipTypes" => array("creator", "creator_website")))." ".$q_objects->get("ca_objects.preferred_labels.name")." ".$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.large"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
 				}
 			}
 		}
 	}
+	ksort($va_images);
 	# --- representations are installation shots
 	$o_representations = $t_item->getRepresentationsAsSearchResult(array("checkAccess" => $va_access_values));
 	if(in_array($ps_view, array("installations", "installationThumbnails"))){
 		if(is_object($o_representations) && $o_representations->numHits()){
 			while($o_representations->nextHit()){
-				$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
+				$va_images[] = array("image" => $o_representations->get("ca_object_representations.media.large", array("alt" => "Installation View of ".$t_item->get("ca_occurrences.preferred_labels.name"))), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
 			}
 		}
 	}
 	# --- get related object_id of catalog
 	$vn_catalog_id = $t_item->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("related"), "restrictToTypes" => array("catalog"), "limit" => 1));
+	$vs_section_title = "";
+	switch($ps_view){	
+		case "info":
+		default:
+			$vs_section_title = "Exhibition Information";
+		break;
+		# -------------------------
+		case "images":
+			$vs_section_title = "Exhibition Images";
+		break;
+		# -------------------------
+		case "installations":
+			$vs_section_title = "Exhibition Installation Images";
+		break;
+		# -------------------------
+		case "thumbnails":
+			$vs_section_title = "Exhibition Thumbnails";
+		break;
+		# -------------------------
+		case "installationThumbnails":
+			$vs_section_title = "Exhibition Installation Thumbnails";
+		break;
+		# -------------------------
+	}
+	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Exhibition: ".$t_item->get("ca_occurrences.preferred_labels.name").": ".$vs_section_title);
+
 
 ?>	
 	<div class="row contentbody_sub">
 
-		<div class="col-sm-3 subnav">
+		<div class="col-sm-3 subnav" role="navigation" aria-label="Secondary navigation">
 <?php 
 			print $this->render("SubNav/exhibitions_html.inc");
 ?>
@@ -48,15 +75,15 @@
 			
 		<div class="col-sm-9">			
 			<div class="row">
-				<div class="col-sm-12">
+				<div class="col-sm-12" role="navigation" aria-label="Exhibit navigation">
 					<ul class="nav nav-pills">
 <?php
 						print "<li".(($ps_view == "info") ? " class='active'" : "").">".caDetailLink($this->request, _t("exhibition main"), '', 'ca_occurrences', $t_item->get("occurrence_id"), null, null, array("type_id" => $t_item->get("type_id")))."</li>";
 						if(sizeof($va_object_ids) > 1){
-							print "<li".((in_array($ps_view, array("images", "thumbnails"))) ? " class='active'" : "").">".caDetailLink($this->request, _t("works"), '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" => "images"), null, array("type_id" => $t_item->get("type_id")))."</li>";
+							print "<li".((in_array($ps_view, array("images", "thumbnails"))) ? " class='active'" : "").">".caDetailLink($this->request, _t("works"), '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" => "thumbnails"), null, array("type_id" => $t_item->get("type_id")))."</li>";
 						}
 						if(is_object($o_representations) && $o_representations->numHits()){
-							print "<li".((in_array($ps_view, array("installations", "installationThumbnails"))) ? " class='active'" : "").">".caDetailLink($this->request, _t("installation views"), '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" => "installations"), null, array("type_id" => $t_item->get("type_id")))."</li>";
+							print "<li".((in_array($ps_view, array("installations", "installationThumbnails"))) ? " class='active'" : "").">".caDetailLink($this->request, _t("installation views"), '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" => "installationThumbnails"), null, array("type_id" => $t_item->get("type_id")))."</li>";
 						}
 						if($vs_pr_link = $t_item->get("ca_occurrences.press_release.original.url")){
 ?>
@@ -81,10 +108,10 @@
 			
 			<div class="thumbnail thumbnailImgLeft">
 <?php
-				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("used_website"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
+				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("used_website"), "excludeTypes" => array("installation_shot", "catalog"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
 				foreach($va_objects as $va_object){
 					$t_object = new ca_objects($va_object["object_id"]);
-					print $t_object->get("ca_object_representations.media.mediumlarge");
+					print $t_object->get("ca_object_representations.media.large");
 ?>
 					<div class="caption"><?php print sefaFormatCaption($this->request, $t_object); ?></div>
 <?php
@@ -96,20 +123,17 @@
 					{{{<ifdef code="ca_occurrences.exhibition_subtitle">
 						<h2>^ca_occurrences.exhibition_subtitle</h2>
 					</ifdef>}}}
-					<h4>{{{^ca_occurrences.opening_closing}}}{{{<ifdef code="ca_occurrences.opening_reception"> | Opening Reception: ^ca_occurrences.opening_reception</ifdef>}}}</h4>
+					<div class='date'>{{{^ca_occurrences.opening_closing}}}{{{<ifdef code="ca_occurrences.opening_reception"> | Opening Reception: ^ca_occurrences.opening_reception</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.location"><br/>^ca_occurrences.location</ifdef>}}}{{{<ifnotdef code="ca_occurrences.location"><ifdef code="ca_occurrences.outside_location"><br/>^ca_occurrences.outside_location</ifdef></ifnotdef>}}}{{{<ifnotdef code="ca_occurrences.outside_location,ca_occurrences.location"><br/>NYC</ifnotdef>}}}
+					</div>
 					{{{^ca_occurrences.description}}}
 				</p>
-				<br/><strong>
-				{{{<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="exhibited">
-					Artists: 
-				</ifcount>}}}
-				{{{<ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="exhibited">
-					Artist: 
-				</ifcount>}}}
+				<br/>
+				<div class="exhibitArtists">{{{<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="exhibited">Artists: </ifcount>}}}
+				{{{<ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="exhibited">Artist: </ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="exhibited">
 					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="exhibited"><l>^ca_entities.preferred_labels.displayname</l></unit>
-				</ifcount>}}}
-				</strong>
+				</ifcount>}}}</div>
 <?php
 			break;
 			# ----------------------------------------------
@@ -124,15 +148,17 @@
 							<ul>
 <?php
 							foreach($va_images as $va_image){
+								if($va_image["image"]){
 ?>
-								<li id="slide<?php print $va_image["id"]; ?>">
-									<div class="thumbnail">
-										<?php print $va_image["image"]; ?>
-										<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["label"]; ?></div>
-									</div><!-- end thumbnail -->
-								</li>
+									<li id="slide<?php print $va_image["id"]; ?>">
+										<div class="thumbnail">
+											<?php print $va_image["image"]; ?>
+											<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["label"]; ?></div>
+										</div><!-- end thumbnail -->
+									</li>
 <?php
-								$vn_i++;
+									$vn_i++;
+								}
 							}
 ?>
 							</ul>
@@ -140,8 +166,8 @@
 <?php
 					if(sizeof($va_images) > 1){
 ?>
-						<a href="#" class="jcarousel-control-prev"><i class="fa fa-long-arrow-left"></i></a>
-						<a href="#" class="jcarousel-control-next"><i class="fa fa-long-arrow-right"></i></a>
+						<a href="#" class="jcarousel-control-prev"><i class="fa fa-long-arrow-left" aria-label="previous"></i></a>
+						<a href="#" class="jcarousel-control-next"><i class="fa fa-long-arrow-right" aria-label="next"></i></a>
 <?php
 					}
 ?>
@@ -220,7 +246,9 @@
 <?php
 				if(sizeof($va_images)){
 					foreach($va_images as $va_image){
-						print "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $va_image["thumbnail"], '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" =>(($ps_view == "thumbnails") ? "images" : "installations"), "id" => $va_image["id"]), null, array("type_id" => $t_item->get("type_id")))."</div>";
+						if($va_image["thumbnail"]){
+							print "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $va_image["thumbnail"], '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" =>(($ps_view == "thumbnails") ? "images" : "installations"), "id" => $va_image["id"]), null, array("type_id" => $t_item->get("type_id")))."</div>";
+						}
 					}
 				}
 ?>
@@ -250,13 +278,13 @@
 ?>
 				</div><!--end col-sm-12-->
 			</div><!--end row-->
-		</div><!--end col-sm-9-->
-		<div class="row">
-			<div class="col-sm-3 btmsubnav">
-<?php 
-			print $this->render("SubNav/exhibitions_html.inc");
-?>			
-			</div><!-- end col -->
-		</div><!-- end row -->				
+		</div><!--end col-sm-9-->				
 	</div><!--end row contentbody-->
+	<div class="row">
+		<div class="col-sm-3 btmsubnav">
+<?php 
+		print $this->render("SubNav/exhibitions_html.inc");
+?>			
+		</div><!-- end col -->
+	</div><!-- end row -->
 	
