@@ -10,7 +10,7 @@
 	# --- array of images to display
 	$va_images = array();
 	# --- get related object_ids in array
-	$va_objects = $t_item->get("ca_objects", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+	$va_objects = $t_item->get("ca_objects", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "excludeTypes" => array("installation_shot", "catalog")));
 	$va_object_ids = array();
 	if(is_array($va_objects) && sizeof($va_objects)){
 		foreach($va_objects as $va_object){
@@ -43,7 +43,7 @@
 	<div class="row contentbody_sub">
 
 		<div class="col-sm-3 subnav">
-			<H5>{{{^ca_occurrences.preferred_labels.name}}}</H5>	
+			<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>	
 			<ul>
 				<li<?php print ($ps_view == "info") ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Information"), '', 'ca_occurrences', $t_item->get("occurrence_id"), null, null, array("type_id" => $t_item->get("type_id"))); ?></li>
 <?php
@@ -87,7 +87,7 @@
 						print caConvertLineBreaks($t_item->get("ca_occurrences.art_fair_location"));
 					}
 ?>
-					<h4>{{{^ca_occurrences.opening_closing}}}</h4>
+					<div class='date'>{{{^ca_occurrences.opening_closing}}}</div>
 					{{{^ca_occurrences.description}}}
 				</p>
 <?php
@@ -136,8 +136,8 @@
 <?php
 					if(sizeof($va_images) > 1){
 ?>
-						<a href="#" class="jcarousel-control-prev"><i class="fa fa-long-arrow-left"></i></a>
-						<a href="#" class="jcarousel-control-next"><i class="fa fa-long-arrow-right"></i></a>
+						<a href="#" class="jcarousel-control-prev"><i class="fa fa-long-arrow-left" aria-label="previous"></i></a>
+						<a href="#" class="jcarousel-control-next"><i class="fa fa-long-arrow-right" aria-label="next"></i></a>
 <?php
 					}
 ?>
