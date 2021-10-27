@@ -106,12 +106,12 @@ H1, h1, H2, h2 {
 }
 body{
 	margin-top:72px;
-	margin-bottom:500px;
+	margin-bottom:550px;
 }
 @media (min-width: 768px) {
 	body{
 		margin-top:117px;
-		margin-bottom:350px;
+		margin-bottom:400px;
 	}
 }
 @media (min-width: 1244px) {
