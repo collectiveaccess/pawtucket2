@@ -39,10 +39,13 @@
 	$vn_representation_id = $this->getVar("representation_id");
 	$va_representation_tags = $this->getVar("representation_tags");
 	$va_config_options = 	$this->getVar("config_options");
-
+	
+	
+	$title = $t_object->getWithTemplate('<H1><unit relativeTo="ca_objects.parent"><ifdef code="ca_objects.preferred_labels.name"><l>^ca_objects.preferred_labels.name</l> → </ifdef></unit><ifdef code="ca_objects.preferred_labels.name">^ca_objects.preferred_labels.name</ifdef></H1>');
+	MetaTagManager::setWindowTitle(__CA_APP_DISPLAY_NAME__.": ".strip_tags($title));
 
 	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl("*", "*", "*"));
-	MetaTagManager::addMetaProperty("og:title", ($va_config_options["og_title"]) ? $t_object->getWithTemplate($va_config_options["og_title"]) : $t_object->get("ca_objects.preferred_labels.name"));
+	MetaTagManager::addMetaProperty("og:title", ($va_config_options["og_title"]) ? $t_object->getWithTemplate($va_config_options["og_title"]) : $title);
 	MetaTagManager::addMetaProperty("og:type", ($va_config_options["og_type"]) ? $va_config_options["og_type"] : "website");
 	if($va_config_options["og_description"] && ($vs_tmp = $t_object->getWithTemplate($va_config_options["og_description"]))){
 		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
@@ -65,7 +68,12 @@
 ?>
 <div class="row borderBottom">
 	<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
-		{{{<ifdef code="ca_objects.preferred_labels.name"><H1>^ca_objects.preferred_labels.name</H1></ifdef>}}}
+		<?= $title; ?>
+		
+		{{{<h3><case>
+<ifdef code="ca_objects.date">^ca_objects.date%delimiter=,_</ifdef>
+<ifdef code="ca_objects.date">^ca_objects.parent.date%delimiter=,_</ifdef>
+</case></h3>}}}
 	</div>
 </div>
 <div class="row">
@@ -127,7 +135,6 @@
 				print '</div><!-- end detailTools -->';
 
 			}				
-
 ?>
 				<div id="mediaDisplay" class="detailPrimaryMedia my-4">
 					<!-- MediaViewer.js React app goes here -->
@@ -148,16 +155,18 @@
 								<unit relativeTo="ca_objects.parent"><l>^ca_objects.preferred_labels.name</l></unit>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_objects.date">
-							<div class="mb-3">
-								^ca_objects.date%delimiter=,_
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_objects.parent.date">
-							<div class="mb-3">
-								^ca_objects.parent.date%delimiter=,_
-							</div>
-						</ifdef>}}}
+						
+<?php
+						$dates = [];
+						foreach(['ca_objects.date', 'ca_objects.parent.date'] as $d) {
+							if(is_array($dt = $t_object->get($d, ['returnAsArray' => true]))) {
+								$dates = array_merge($dates, $dt);
+							}
+						}
+						if(sizeof($dates) > 0) {
+							print '<div class="mb-3">'.join(", ", array_unique($dates))."</div>\n";
+						}
+?>
 						{{{<ifdef code="ca_objects.description">
 							<div class="mb-3">
 								^ca_objects.description
@@ -178,30 +187,6 @@
 						</ifdef>}}}
 					</div>
 					<div class="col-12 col-md-6">
-											
-<!--						{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1">
-							<div class="mb-3">
-								<div class="label">Exhibitions</div>
-								<unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter="<br/><br/>">
-									<l>^ca_occurrences.preferred_labels.name</l><case><ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1"><br/></ifcount><ifdef code="ca_occurrences.date"><br/></ifdef></case><ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1"><unit relativeTo="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" delimiter=", ">^ca_entities.preferred_labels</unit><ifdef code="ca_occurrences.date">, </ifdef></ifcount><ifdef code="ca_occurrences.date">^ca_occurrences.date</ifdef>
-								</unit>
-							</div>
-						</ifcount>}}}-->
-
-<!--						{{{<ifcount code="ca_collections" min="1">
-							<div class="mb-3">
-								<div class="label">Action<ifcount code="ca_collections" min="2">s</ifcount></div>
-								<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
-							</div>
-						</ifcount>}}}
-
-						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
-							<div class="mb-3">
-								<div class="label">Event<ifcount code="ca_occurrences" restrictToTypes="action" min="2">s</ifcount></div>
-								<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></unit>
-							</div>
-						</ifcount>}}}
--->
 <?php
 						$colls = $t_object->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.name"));
 						
@@ -219,7 +204,7 @@
 ?>
 							<div class="mb-3">
 								<div class="label">Actions</div>
-								<?= join($coll_links, ", "); ?>
+								<?= join(array_unique($coll_links), ", "); ?>
 							</div>
 <?php
 						}
@@ -249,6 +234,7 @@
 									$occ_links[] = "<p>".caDetailLink($occ['name'], '', 'ca_occurrences', $occ['occurrence_id'])."</p>";
 								}
 							}
+							$occ_links = array_unique($occ_links);
 							if(sizeof($occ_links)) {
 	?>
 								<div class="mb-3">
@@ -281,7 +267,7 @@
 								<div class="mb-3">
 									<div class="label">Visionary</div>
 <?php
-									print join($va_visionary, ", ");
+									print join(array_unique($va_visionary), ", ");
 ?>
 								</div>
 <?php
@@ -293,7 +279,7 @@
 								<div class="mb-3">
 									<div class="label"><?= $vs_role; ?></div>
 <?php
-									print join($va_names, ", ");
+									print join(array_unique($va_names), ", ");
 ?>
 								</div>
 <?php
@@ -320,7 +306,7 @@
 									$t_list_item->load($vn_bio_region_id);
 									$va_bio_region_links[] = caNavLink($t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "bio_regions_facet", "id" => $vn_bio_region_id));
 								}
-								print join($va_bio_region_links, ", ");
+								print join(array_unique($va_bio_region_links), ", ");
 ?>
 							</div>
 <?php								
@@ -345,7 +331,7 @@
 										$va_subject_links[] = caNavLink($t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id));
 									}
 								}
-								print join($va_subject_links, ", ");
+								print join(array_unique($va_subject_links), ", ");
 ?>
 							</div>
 <?php
@@ -402,15 +388,6 @@
 		if ($vn_comments_enabled) {
 ?>				
 			<div id='commentForm' class="my-3"> </div>
-
-			<!-- <div class="detailTool mb-2"> -->
-				<!-- <h2><b><?= sizeof($va_comments); ?> Comments</b></h2> -->
-				<!-- <ion-icon name="chatboxes"></ion-icon> 
-				<span>Comments and Tags (<?= sizeof($va_comments) + sizeof($va_tags); ?>)</span> -->
-			<!-- </div> -->
-			<!-- <div id='detailComments' class='px-2 py-2' style=" width: 100%; max-height: 300px; box-shadow: 2px 2px 2px 2px #D8D7CE; overflow: auto"> -->
-				<!-- <?= $this->getVar("itemComments");?> -->
-			<!-- </div> -->
 <?php				
 		}
 ?>

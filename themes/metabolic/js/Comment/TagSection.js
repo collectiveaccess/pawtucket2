@@ -20,22 +20,10 @@ const TagSection = () => {
 
   const typeaheadRef = useRef(null)
 
-  // console.log('tagOptions: ', tagOptions);
-
-  // const fetchOptions = (value) => {
-  //   suggestTags(baseUrl, value, (data) => {
-  //     console.log("suggestTags", data);
-  //     setTagOptions(data.tags)
-  //     setIsLoading(false)
-  //   })
-  // }
-
   const handleChange = (value) => {
-    // console.log("handleChange value", value);
     
     if(value){
       suggestTags(baseUrl, tablename, itemID, value, (data) => {
-        // console.log("suggestTags", data);
         setTagOptions(data.tags)
       })
     }
@@ -46,16 +34,11 @@ const TagSection = () => {
   const handleInputChange = (text, event) => {
     setTagValue(text)
 
-    // console.log("input change event: ", event);
-
     if(text){
       suggestTags(baseUrl, tablename, itemID, text, (data) => {
-        // console.log("suggestTags", data);
         setTagOptions(data.tags)
       })
     }
-
-    // console.log("Handle input change text", text)
   }
 
   const submitForm = (e) => {
@@ -69,12 +52,10 @@ const TagSection = () => {
       }, 3000);
     }else{
       addTag(baseUrl, tablename, itemID, tagValue, function (data) {
-        // console.log('addTag', data);
       
         setTagValue() //Clear form elements
   
         getContent(baseUrl, tablename, itemID, function (data) {
-          // console.log('getContent', data);
           setTags(data.tags)
         })
   
@@ -86,7 +67,6 @@ const TagSection = () => {
   }
 
   const onReturn = (e) => {
-    // console.log("event key: ", e.key);
     if(e.key == "Enter" && tagValue == e.target.value){
       submitForm(e)
     }
@@ -95,7 +75,12 @@ const TagSection = () => {
   if(tags){
     return( 
       <>
-        <h2 className="mt-4"><b>Tags</b></h2>
+        {
+        	((tags && (tags.length >= 1)) || isLoggedIn) ? 
+        		<h2 className="mt-4"><b>Tags</b></h2>
+        		:
+        		""
+        }
         <div className="tag-section" style={{width: "100%"}}>
           {tags ? 
             tags.map((tag, index) => {

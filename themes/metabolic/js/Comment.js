@@ -14,25 +14,22 @@ const Comment = () => {
 
 	const { setComments, setTags, setTablename, setItemID, setIsLoggedIn, isLoggedIn } = useContext(CommentContext)
 
-  // console.log('isLoggedIn: ', isLoggedIn);
 	useEffect(() => {
+		setTablename(appData.tablename)
+		setItemID(appData.item_id)
+		setIsLoggedIn(appData.show_form)
 
-    setTablename(appData.tablename)
-    setItemID(appData.item_id)
-    setIsLoggedIn(appData.show_form)
-
-    getContent(baseUrl, appData.tablename, appData.item_id, function (data) {
-      // console.log('getContent', data);
-      setComments(data.comments);
-      setTags(data.tags);
-    })
-  }, [])
+		getContent(baseUrl, appData.tablename, appData.item_id, function (data) {
+			setComments(data.comments);
+			setTags(data.tags);
+		})
+	}, [])
 
   return (
     <div>
-			<CommentSection loginButtonText={appData.login_button_text} commentButtonText={appData.comment_button_text} />
-      <TagSection />
-		</div>
+		<CommentSection loginButtonText={appData.login_button_text} commentButtonText={appData.comment_button_text} />
+      	<TagSection />
+	</div>
   );
 }
 

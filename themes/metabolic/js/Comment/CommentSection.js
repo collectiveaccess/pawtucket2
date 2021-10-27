@@ -60,7 +60,7 @@ const CommentSection = (props) => {
         <>
           {comments.length >= 1 ?
             <h2 className="mb-3"><b>{comments.length} {comments.length > 1 ? "Comments" : "Comment"}</b></h2>
-          : <h2 className="mb-3"><b>Comments</b></h2>}
+          : (isLoggedIn ? <h2 className="mb-3"><b>Comments</b></h2> : '')}
         </>
 
       :  null}
@@ -87,7 +87,6 @@ const CommentSection = (props) => {
 
         {comments ? 
           comments.map((comment, index) => {
-            // console.log("comment: ", comment);
             return(
               <div key={index}>
                 <div className="d-flex"> <strong>{comment.author}</strong> <p style={{marginLeft: "20px"}}>{comment.date}</p> </div>

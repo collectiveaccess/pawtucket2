@@ -167,7 +167,8 @@ BaseModel::$s_ca_models_definitions['ca_sets'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => 0,
 				'LABEL' => _t('Is deleted?'), 'DESCRIPTION' => _t('Indicates if the set is deleted or not.'),
-				'BOUNDS_VALUE' => array(0,1)
+				'BOUNDS_VALUE' => array(0,1),
+				'DONT_INCLUDE_IN_SEARCH_FORM' => true
 		),
 		'rank' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
@@ -328,6 +329,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$this->BUNDLES['ca_users'] = array('type' => 'special', 'repeating' => true, 'label' => _t('User access'));
 		$this->BUNDLES['ca_user_groups'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Group access'));
 		$this->BUNDLES['ca_set_items'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Set items'));
+		
+		$this->BUNDLES['hierarchy_navigation'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Hierarchy navigation'));
+		$this->BUNDLES['hierarchy_location'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Location in hierarchy'));
 	}
 	# ------------------------------------------------------
 	/**
@@ -1218,7 +1222,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			if(!$g_ui_locale_id) { $g_ui_locale_id = 1; }
 
 			$t_item->addLabel(array(
-				'caption' => '['.caGetBlankLabelText().']',
+				'caption' => '['.caGetBlankLabelText('ca_set_items').']',
 			), $g_ui_locale_id);
 			
 			if ($t_item->numErrors()) {
@@ -1611,6 +1615,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$vn_rank_acc = end(array_values($va_row_ranks));
 		
 		$va_rank_updates = array();
+		
+		$rows_in_set = $this->getItemRowIDs();
+		$allow_dupes_in_set = (bool)$this->getAppConfig()->get('allow_duplicate_items_in_sets');
 		foreach($pa_row_ids as $vn_rank => $vn_row_id) {
 			if (isset($va_existing_ranks[$vn_rank])) {
 				$vn_rank_inc = $va_existing_ranks[$vn_rank];
@@ -1629,8 +1636,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 						$va_errors[$vn_row_id] = _t('Could not reorder item %1: %2', $vn_row_id, join('; ', $t_set_item->getErrors()));
 					}
 				}
-			} else {
-				// add item to set
+			} elseif($allow_dupes_in_set || (!$rows_in_set[(int)($vb_treat_row_ids_as_rids ? $va_tmp[0] : $vn_row_id)])) {
 				$this->addItem($vb_treat_row_ids_as_rids ? $va_tmp[0] : $vn_row_id, null, $pn_user_id, $vn_rank_inc);
 			}
 		}
@@ -2616,17 +2622,43 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			if (sizeof($set_ids) > 0) {
                 $labels = $this->getPreferredDisplayLabelsForIDs($set_ids);
 
-                $qr_counts = $o_db->query("
-                    SELECT COUNT(*) c, cs.set_id
-                    FROM ca_sets cs
-                    INNER JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
-                    WHERE cs.set_id IN (?) 
-                    GROUP BY cs.set_id
-                ",[$set_ids]);
+				// get set item counts
+				$qr_table_nums = $o_db->query("
+					SELECT DISTINCT table_num 
+					FROM ca_sets 
+					WHERE 
+						set_id IN (?)
+				", [$set_ids]);
+			
                 $counts = [];
-                while($qr_counts->nextRow()) {
-                    $counts[$qr_counts->get('set_id')] = (int)$qr_counts->get('c');
-                }
+				while($qr_table_nums->nextRow()) {
+					$t_instance = Datamodel::getInstanceByTableNum($vn_table_num = (int)$qr_table_nums->get('table_num'), true);
+					if (!$t_instance) { continue; }
+				
+					$va_item_wheres[] = "(cs.table_num = {$vn_table_num})";
+					if ($t_instance->hasField('deleted')) {
+						$va_item_wheres[] = "(t.deleted = 0)";
+					}
+					if (!is_null($pa_public_access) && is_array($pa_public_access) && sizeof($pa_public_access)) {
+						$va_item_wheres[] = "(t.access IN (?))";
+						$va_item_sql_params[] = $pa_public_access;
+					}
+					
+					$deleted_sql = $t_instance->hasField('deleted') ? " AND t.deleted = 0" : '';
+				
+					$qr_c = $o_db->query("
+						SELECT cs.set_id, count(distinct row_id) item_count
+						FROM ca_sets cs
+						INNER JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
+						INNER JOIN ".$t_instance->tableName()." AS t ON t.".$t_instance->primaryKey()." = csi.row_id
+						WHERE
+							cs.set_id IN (?) AND cs.table_num = ? {$deleted_sql}
+						GROUP BY cs.set_id
+					", [$set_ids, $vn_table_num]);
+					while($qr_c->nextRow()) {
+						$counts[(int)$qr_c->get('set_id')] = (int)$qr_c->get('item_count');
+					}
+				}
             } else {
                 $labels = $counts = [];
             }

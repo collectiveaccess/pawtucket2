@@ -72,7 +72,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						$t_sets = new ca_sets();
 						
 						// TODO: check access for user
-						$lightboxes = $t_sets->getSetsForUser(["table_num" => 57, "user_id" => $u->getPrimaryKey(), "checkAccess" => [0,1], "parents_only" => true]);
+						$lightboxes = $t_sets->getSetsForUser(["table" => 'ca_objects', "user_id" => $u->getPrimaryKey(), "checkAccess" => [0,1], "parents_only" => true]);
 						
 						return array_map(function($v) {
 							return [
@@ -150,6 +150,9 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						$browse_conf = $conf->get('lightboxBrowse');
 						$sorts = caGetOption('sortBy', $browse_conf, [], ['castTo' => 'array']);
 						
+						$views = caGetOption('views', $browse_conf, [], ['castTo' => 'array']);
+						
+						
 						$sort_opts = [];
 						foreach($sorts as $label => $sort) {
 							$sort_opts[] = [
@@ -185,15 +188,26 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							'comments' => $comments
 						];
 						
+						
+						$table_num = $t_set->get('table_num');
+						$table = Datamodel::getTableName($table_num);
 						$items = caExtractValuesByUserLocale($t_set->getItems([
 							'thumbnailVersions' => $args['mediaVersions'], 
 							'start' => $args['start'], 
 							'limit' => $args['limit'],
 							'sort' => $args['sort'],
+							'template' => $views['images']['caption'] ?? null,
 							'sortDirection' => $args['sortDirection']
 						]));
-				
-						$table_num = $t_set->get('table_num');
+						
+						// set current context to allow "back" navigation to specific lightbox
+						global $g_request;
+						$rc = new ResultContext($g_request, $table, 'lightbox');
+						$rc->setResultList(array_unique(array_map(function($v) { return $v['row_id']; }, $items)));
+						$rc->setParameter('set_id', $t_set->getPrimaryKey());
+						$rc->setAsLastFind(false);
+ 						$rc->saveContext();
+						
 						$lightbox['items'] = array_map(
 							function($i) use ($table_num) {
 								$media_versions = [];
@@ -213,7 +227,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 								$detailPageUrl = str_replace('service.php', 'index.php', caDetailUrl($table_num, $i['row_id'], false, [], []));
 								return [
 									'item_id' => $i['item_id'],
-									'title' => $i['set_item_label'],
+									'title' => $i['displayTemplate'] ?? $i['set_item_label'],
 									'caption' => $i['caption'],
 									'id' => $i['row_id'],
 									'rank' => $i['rank'],

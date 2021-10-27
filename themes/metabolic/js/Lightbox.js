@@ -133,6 +133,10 @@ class Lightbox extends React.Component{
 		newJWTToken(this.props.baseUrl, state.tokens, function(data) {
 			state.tokens.access_token = data.data.refresh.jwt;
 			that.setState(state);
+			
+			if(parseInt(that.props.showLastLightboxOnLoad)) {
+				that.loadLightbox(parseInt(that.props.showLastLightboxOnLoad));
+			}
 			fetchLightboxList(that.props.baseUrl, state.tokens, function(data) {
 				state.lightboxList = data ? data : {};
 				that.setState(state);
