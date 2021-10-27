@@ -35,8 +35,8 @@
 		<footer id="footer">
 			<div class="darkRedBg text-center">
 				<div>
-					<strong>A National Residential School Crisis Line has been set up to provide support to former students.</strong><br/>This 24-Hour Crisis Line can be accessed at: 1-866-925-4419.
-					
+					<strong>Need support? The Indian Residential School Survivor Support Society (IRSSS)<br/>has established a 24-hour Crisis Line for former students and their families. Call: 1-866-925-4419</strong><br/>
+					Find additional wellness <a href="https://irshdc.ubc.ca/for-survivors/healing-and-wellness-resources/" target="_blank">resources and supports</a>.
 				</div>
 			</div>
 			<div class="footerBottom">
