@@ -53,7 +53,7 @@ h1, .front h1{
 	text-transform: uppercase;
 	padding-top:0px;
 }
-.front .content-area, .browse.institutions .content-area, .browse.ca_objects, .search.ca_objects, .content-area .subNav {
+.front .content-area, .browse.institutions .content-area, .browse.words .content-area, .browse.ca_objects, .search.ca_objects, .content-area .subNav, .staticPage .content-area, .search .content-area {
 	max-width: 1000px;
 	margin-left: auto;
 	margin-right: auto;
@@ -98,6 +98,13 @@ h1, .front h1{
 	font-size:16px;
 	margin-bottom:20px;
 	
+}
+.hpIntroTopDesc a{
+	color:#000;
+	text-decoration:underline;
+}
+.hpIntroTopDesc .btn{
+	margin-top:25px;
 }
 .hpCallOut{
 	font-size: 18px;
@@ -257,4 +264,98 @@ a:hover .hpFindBox{
 	cursor: pointer;
 	font-size: 18px;
 	margin-left: 5px;
+}
+/* word */
+.word .btn-default{
+	background-color:#990000;
+	text-decoration:none;
+	color:#FFF;
+	padding: 13px;
+	border-radius: 10px;
+	font-size: 15px;
+}
+.word .btn-default:hover{
+	background-color:#000;
+	text-decoration:none;
+	color:#FFF;
+}
+.btn-default.btn-gray{
+	background-color:#BDBDBD;
+	color:#000;
+}
+.wordFindBox{
+	background-color:#6C869E;
+	color:#fff;
+	text-align: center;
+	padding:25px;
+	margin-top:40px;
+	margin-bottom:60px;
+}
+a .wordFindBox{
+	color:#fff;
+	font-size: 20px;
+	font-weight: bold;
+	letter-spacing: 0px;
+	line-height: 24px;
+	text-transform:uppercase;
+	display:inline-block
+}
+a:hover .wordFindBox{
+	background-color:#000;
+}
+.wordResources a .wordFindBox{
+	display:block;
+	margin-top:10px;
+}
+.wordCallout{
+	font-size:20px;
+	line-height: 1.4em;
+}
+.wordFeaturedLesson{
+	background-color:#f2f2f2;
+	padding:20px;
+}
+.wordFeaturedLessonTitle a{
+	letter-spacing: 0px;
+	font-family: 'Ubuntu', sans-serif;
+	font-weight: 700;
+	font-size: 24px;
+	line-height: 30px;
+	color:#000;
+}
+.word.front .unit{
+	margin-top:10px;
+}
+.front.word H2, .front.word H3, .front.word H4{
+	margin-top:60px;
+	font-size: 22px;
+}
+
+.words #bLetterBar a{
+	background-color:#000;
+	color:#FFF;
+	font-weight:bold;
+}
+.words #bLetterBar a:hover, .words #bLetterBar a.selectedLetter{
+	background-color:#990000;
+	color:#FFF;
+	font-weight:bold;
+}
+.words .bCriteria{
+	margin-bottom:10px;
+}
+.a2a_kit{
+	margin-top:40px;
+}
+.detail .detailTool, .detail .detailTool a, .detail .detailTool span, .detail .detailTool i {
+    color: #000;
+    font-size: 14px;
+}
+@media(min-width:1024px){
+	.detailTools, .detailTool{
+		text-align:right;
+	}
+}
+.small{
+	font-size:.8em; 
 }
