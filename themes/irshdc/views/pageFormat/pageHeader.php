@@ -174,6 +174,7 @@
 						<ul class="dropdown-menu">
 							<li><a href='/AboutTheProject'><span><?php print _t("About the Project"); ?></span></a></li>
 							<li><a href='/Acknowledgements'><span><?php print _t("Acknowledgements"); ?></span></a></li>
+							<li><a href='/UserGuide'><span><?php print _t("User Guide"); ?></span></a></li>
 						</ul>
 					</li>
 					
