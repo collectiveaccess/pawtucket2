@@ -1,5 +1,4 @@
 /**
- *
  * Sub-components are:
  *      <NONE>
  *
@@ -12,34 +11,28 @@
  * Uses context: LightboxContext
  */
 
-import React from "react"
-import ReactDOM from "react-dom";
-import { LightboxContext } from '../Lightbox'
+import React, { useContext } from 'react'
+import { LightboxContext } from './LightboxContext'
 
-class LightboxNavigation extends React.Component{
-	constructor(props) {
-		super(props);
+const LightboxNavigation = () => {
+	
+	const { id, setId, tokens, setTokens, userAccess, setUserAccess, lightboxTitle, setLightboxTitle, totalSize, setTotalSize, sortOptions, setSortOptions, comments, setComments, itemsPerPage, setItemsPerPage, lightboxList, setLightboxList, key, setKey, view, setView, lightboxListPageNum, setLightboxListPageNum, lightboxSearchValue, setLightboxSearchValue, lightboxes, setLightboxes, resultList, setResultList, selectedItems, setSelectedItems, showSelectButtons, setShowSelectButtons, filters, setFilters } = useContext(LightboxContext)
 
-		LightboxNavigation.contextType = LightboxContext
-
-		this.backToList = this.backToList.bind(this);
+	const backToList = () => {
+		setId(null)
+		setFilters(null)
+		setLightboxTitle(null)
 	}
-
-	backToList(e) {
-		let state = this.context.state;
-
-		state.id = null; // clear set
-		state.filters = null; // clear filters
-		state.lightboxTitle = null;
-
-		this.context.setState(state);
-	}
-	render() {
-		return(
-			<a href='#' className='btn btn-secondary' onClick={this.backToList}>
-				<ion-icon name='ios-arrow-back'></ion-icon>
-			</a>
-		);
-	}
+	
+	return(
+		<button className='btn btn-secondary btn-sm' onClick={backToList}>
+			<span className="material-icons">arrow_back_ios</span>
+		</button>
+	);
+	
 }
 export default LightboxNavigation;
+
+// <a href='#' className='btn btn-secondary' onClick={backToList}>
+// 	<ion-icon name='ios-arrow-back'></ion-icon>
+// </a>

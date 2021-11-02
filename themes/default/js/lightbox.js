@@ -25,7 +25,9 @@ function newJWTToken(uri, tokens, callback) {
 	  })
 	  .then(function(result) {
 	  	callback(result);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to get token: ", error);
+		});
 }
 
 /**
@@ -47,7 +49,9 @@ function loadLightbox(uri, tokens, id, callback, options=null) {
 		`, variables: { 'id': id, 'start': start, 'limit': limit, 'sort': sort, 'sortDirection': sortDirection }})
 	  .then(function(result) {
 		callback(result.data['content']);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to loadLightbox: ", error);
+		});
 }
 
 /**
@@ -72,7 +76,9 @@ function fetchLightboxList(uri, tokens, callback) {
 	  		lightboxList[result.data['list'][i].id] = result.data['list'][i];
 	  	}
 	  	callback(lightboxList);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to fetchLightboxList: ", error);
+		});
 }
 
 /**
@@ -92,7 +98,9 @@ function createLightbox(uri, tokens, name, callback) {
 	  })
 	  .then(function(result) {
 	  		callback(result.data['create']);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to createLightbox: ", error);
+		});
 }
 
 /**
@@ -114,7 +122,9 @@ function editLightbox(uri, tokens, id, name, callback) {
 	  })
 	  .then(function(result) {
 	  		callback(result.data['edit']);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to editLightbox: ", error);
+		});
 }
 
 /**
@@ -136,7 +146,9 @@ function deleteLightbox(uri, tokens, id, callback) {
 	  })
 	  .then(function(result) {
 	  		callback(result.data['delete']);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to deleteLightbox: ", error);
+		});
 }
 
 /**
@@ -158,7 +170,9 @@ function reorderLightboxItems(uri, tokens, id, sorted_ids, name, callback) {
 	  })
 	  .then(function(result) {
 	  		callback(result.data['reorder']);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to reorderLightboxItems: ", error);
+		});
 }
 
 function appendItemsToLightbox(uri, tokens, id, items, callback) {
@@ -186,7 +200,9 @@ function appendItemstoNewLightbox(uri, tokens, name, items, callback){
 	  })
 	  .then(function(result) {
 	  		callback(result.data['appendItems']);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to append items to new lightbox: ", error);
+		});
 }
 
 function removeItemsFromLightbox(uri, tokens, id, items, callback){
@@ -201,7 +217,9 @@ function removeItemsFromLightbox(uri, tokens, id, items, callback){
 	  })
 	  .then(function(result) {
 	  		callback(result.data['removeItems']);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to removeItemsFromLightbox: ", error);
+		});
 }
 
 function transferItemsToLightbox(uri, tokens, id, toId, items, callback){
@@ -217,7 +235,9 @@ function transferItemsToLightbox(uri, tokens, id, toId, items, callback){
 	  })
 	  .then(function(result) {
 	  		callback(result.data['transferItems']);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to transferItemsToLightbox: ", error);
+		});
 }
 
 function createLightboxComments(uri, tokens, id, content, callback){
@@ -256,7 +276,9 @@ function getLightboxAccessForCurrentUser(uri, id, tokens, callback) {
 	  .then(function(result) {
 	  	let access = { access: result.data.access.access};
 	  	callback(access);
-	  });
+		}).catch(function (error) {
+			console.log("Error while attempting to getLightboxAccessForCurrentUser: ", error);
+		});
 }
 
 export {

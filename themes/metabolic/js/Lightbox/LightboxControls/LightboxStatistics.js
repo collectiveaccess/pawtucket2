@@ -11,27 +11,46 @@
  * Uses context: LightboxContext
  */
 
-import React from "react";
-import ReactDOM from "react-dom";
-import { LightboxContext } from '../../Lightbox';
+import React, { useContext } from 'react'
+import { LightboxContext } from '../LightboxContext'
 
-class LightboxStatistics extends React.Component {
-	constructor(props) {
-		super(props);
-    	LightboxStatistics.contextType = LightboxContext;
-	}
+const LightboxStatistics = () => {
 
-	render() {
-		let resultSize = this.context.state.totalSize ? this.context.state.totalSize : 0;
-		if (resultSize === 0) {
-			return(<h2 className="my-2">No Items</h2>);
-		}else{
-			return(
-				<h2 className="my-2">{(resultSize !== null) ? ((resultSize == 1) ?
-					"1 Item" : resultSize + " Items") : <div className="text-center">Loading...</div>}</h2>
-			);
-		}
+	const { totalSize, setTotalSize } = useContext(LightboxContext)
+	
+	if (totalSize === 0) {
+		return (<h2 className="my-2">No Items</h2>);
+	} else {
+		return (
+			<h2 className="my-2">{(totalSize !== null) ? ((totalSize == 1) ?
+				"1 Item" : totalSize + " Items") : <div className="text-center">Loading...</div>}</h2>
+		);
 	}
 }
 
-export default LightboxStatistics;
+export default LightboxStatistics
+
+// import React from "react";
+// import ReactDOM from "react-dom";
+// import { LightboxContext } from '../../Lightbox';
+
+// class LightboxStatistics extends React.Component {
+// 	constructor(props) {
+// 		super(props);
+//     	LightboxStatistics.contextType = LightboxContext;
+// 	}
+
+// 	render() {
+// 		let resultSize = this.context.state.totalSize ? this.context.state.totalSize : 0;
+// 		if (resultSize === 0) {
+// 			return(<h2 className="my-2">No Items</h2>);
+// 		}else{
+// 			return(
+// 				<h2 className="my-2">{(resultSize !== null) ? ((resultSize == 1) ?
+// 					"1 Item" : resultSize + " Items") : <div className="text-center">Loading...</div>}</h2>
+// 			);
+// 		}
+// 	}
+// }
+
+// export default LightboxStatistics;

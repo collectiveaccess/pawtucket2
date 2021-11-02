@@ -17,39 +17,91 @@
 *  	LightboxList
 */
 
-import React from "react"
-import ReactDOM from "react-dom";
-import { LightboxContext } from '../../Lightbox'
+import React, { useContext } from 'react'
+import { LightboxContext } from '../LightboxContext'
 
-class LightboxListPagination extends React.Component {
-  constructor(props) {
-    super(props);
+const LightboxListPagination = (props) => {
 
-    LightboxListPagination.contextType = LightboxContext
-  }
+  const { lightboxListPageNum, setLightboxListPageNum, lightboxSearchValue, setLightboxSearchValue, lightboxes, setLightboxes } = useContext(LightboxContext)
 
-  render() {
-    return (
-      <div className="text-center">
-        {this.props.totalLightboxes >= 1 ? 
-          <button className="btn btn-sm p-0 mr-1" style={{ backgroundColor: 'transparent' }} onClick={() => this.props.prevPageHandler(parseFloat(this.props.currentPage))}>
-            <span className="material-icons">arrow_back</span>
-          </button>
-        : null }
+  //Change Page Handler for Pagination
+  const changePageHandler = (page) => {
+    // setCurrentPage(page)
+    setLightboxListPageNum(page)
+  };
 
-        <input type='number' min={1} max={parseFloat(this.props.numberOfPages)} value={parseFloat(this.props.currentPage)} onChange={(e) => this.props.paginate(parseFloat(e.target.value))}/> of {this.props.numberOfPages}
+  //Previous page handler for pagination
+  const prevPageHandler = (page) => {
+    if (page > 1) {
+      // setCurrentPage(currentPage - parseFloat(1))
+      setLightboxListPageNum(page - parseFloat(1))
+    }
+  };
 
-        {this.props.totalLightboxes >= 1 ?
-          <button className="btn btn-sm p-0 ml-1" style={{ backgroundColor: 'transparent' }} onClick={() => this.props.nextPageHandler(parseFloat(this.props.currentPage), parseFloat(this.props.numberOfPages))}>
-            <span className="material-icons">arrow_forward</span>
-          </button>
-        : null }
-      </div>
-    );
-  }
+  //Next page handler for pagination
+  const nextPageHandler = (page, numberOfPages) => {
+    if (page !== numberOfPages) {
+      // setCurrentPage(currentPage + parseFloat(1))
+      setLightboxListPageNum(page + parseFloat(1))
+    }
+  };
+
+  return (
+    <div className="text-center">
+      {lightboxes.length >= 1 ?
+        <button className="btn btn-sm p-0 mr-1" style={{ backgroundColor: 'transparent' }} onClick={() => prevPageHandler(parseFloat(lightboxListPageNum))}>
+          <span className="material-icons">arrow_back</span>
+        </button>
+        : null}
+
+      <input type='number' min={1} max={parseFloat(props.numberOfPages)} value={parseFloat(lightboxListPageNum)} onChange={(e) => changePageHandler(parseFloat(e.target.value))} /> of {props.numberOfPages}
+
+      {lightboxes.length >= 1 ?
+        <button className="btn btn-sm p-0 ml-1" style={{ backgroundColor: 'transparent' }} onClick={() => nextPageHandler(parseFloat(lightboxListPageNum), parseFloat(props.numberOfPages))}>
+          <span className="material-icons">arrow_forward</span>
+        </button>
+        : null}
+    </div>
+  )
 }
 
-export default LightboxListPagination;
+export default LightboxListPagination
+
+
+
+// import React from "react"
+// import ReactDOM from "react-dom";
+// import { LightboxContext } from '../../Lightbox'
+
+// class LightboxListPagination extends React.Component {
+//   constructor(props) {
+//     super(props);
+
+//     LightboxListPagination.contextType = LightboxContext
+//   }
+
+//   render() {
+//     return (
+//       <div className="text-center">
+//         {this.props.totalLightboxes >= 1 ? 
+//           <button className="btn btn-sm p-0 mr-1" style={{ backgroundColor: 'transparent' }} onClick={() => this.props.prevPageHandler(parseFloat(this.props.currentPage))}>
+//             <span className="material-icons">arrow_back</span>
+//           </button>
+//         : null }
+
+//         <input type='number' min={1} max={parseFloat(this.props.numberOfPages)} value={parseFloat(this.props.currentPage)} onChange={(e) => this.props.paginate(parseFloat(e.target.value))}/> of {this.props.numberOfPages}
+
+//         {this.props.totalLightboxes >= 1 ?
+//           <button className="btn btn-sm p-0 ml-1" style={{ backgroundColor: 'transparent' }} onClick={() => this.props.nextPageHandler(parseFloat(this.props.currentPage), parseFloat(this.props.numberOfPages))}>
+//             <span className="material-icons">arrow_forward</span>
+//           </button>
+//         : null }
+//       </div>
+//     );
+//   }
+// }
+
+// export default LightboxListPagination;
 
 
 // <div className="text-center">
