@@ -164,6 +164,6 @@
     $('#playPronunciation').click(function() {
         return audioElement.paused ? audioElement.play() : audioElement.pause();
     });
-</ifdef>}}}
 });
+</ifdef>}}}
 </script>

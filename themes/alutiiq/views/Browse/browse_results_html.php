@@ -74,6 +74,16 @@ if (!$vb_ajax) {	// !ajax
 			</div>
 <?php
 		}
+		if($vs_table == "ca_occurrences"){
+?>
+			<div class="row" style="clear:both;">
+				<div class='col-sm-12'>
+					<H1>Word of the Week Archive</H1>
+					<p>{{{word_archive}}}</p>
+				</div>
+			</div>
+<?php
+		}
 ?>
 <div class="row" style="clear:both;">
 	<div class='col-sm-8 col-md-9 col-lg-9'>
@@ -102,7 +112,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		print _t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? $va_browse_info["labelSingular"] : $va_browse_info["labelPlural"]);
 		
-		if($vs_table != "ca_entities"){
+		if(!in_array($vs_table, array("ca_entities", "ca_occurrences"))){
 ?>
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
@@ -220,7 +230,7 @@ if (!$vb_ajax) {	// !ajax
 		}
 ?>
 <?php
-		if($vs_table == "ca_objects"){
+		if(in_array($vs_table, array("ca_objects", "ca_occurrences"))){
 ?>
 			<div>
 				<div class="bSearchWithinContainer">
@@ -231,6 +241,11 @@ if (!$vb_ajax) {	// !ajax
 					</form>
 					<div style="clear:both"></div>
 				</div>
+<?php
+					if($vs_table == "ca_occurrences"){
+						print "<div class='text-center'>".caNavLink($this->request, _t("Notes About the Archive"), "btn btn-default btn-gray", "", "About", "")."</div>";
+					}
+?>
 			</div>
 <?php
 		}
