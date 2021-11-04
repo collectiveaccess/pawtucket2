@@ -114,8 +114,13 @@
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
 				
-					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					if($vs_table == "ca_occurrences"){
+						$vs_idno_detail_link 	= caDetailLink($this->request, "Lesson ".$qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
+						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("ca_occurrences.preferred_labels")." &mdash; ".$qr_res->get("ca_occurrences.alutiiq_word"), '', $vs_table, $vn_id);
+					}else{
+						$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
+						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					}
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";

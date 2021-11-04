@@ -842,6 +842,17 @@ div.caMediaOverlayControls {
 	font-size:14px;
 	margin-right:50px;
 }
+.glossary_illustration{
+	position:relative;
+}
+.glossary_illustration a{
+	text-decoration:none;
+	/*background-color:red;*/
+}
+.glossary_illustration a:hover{
+	text-decoration:none;
+	/*border-bottom:2px solid #dedede;*/
+}
 .listingLetterIntro{
 	margin-top:25px;
 	margin-bottom:25px;
@@ -1091,4 +1102,10 @@ a.readmore-js-toggle{
     font-size: 20px;
     color: #7f4539;
     font-family: 'Lusitana', serif;
+}
+.close{
+	position:absolute;
+	top:10px;
+	right:10px;
+	opacity:1;
 }

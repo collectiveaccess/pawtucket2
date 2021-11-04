@@ -39,6 +39,9 @@
  			$this->config = caGetDetailConfig();
  			caSetPageCSSClasses(array("section"));
  			
+ 			AssetLoadManager::register("panel");
+ 			AssetLoadManager::register("mediaViewer");
+ 			
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name"));
  		}
  		# -------------------------------------------------------

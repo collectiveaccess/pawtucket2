@@ -33,17 +33,21 @@
 			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
 		<div class="col-sm-6 field">
-			<?php print _t("Printer"); ?><br/>
-			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=printer}}}
+			<?php print _t("CCSSUSA Uniform Title"); ?><br/>
+			{{{ca_objects.CCSSUSA_Uniform}}}
 		</div>			
 			
 	</div>
 	<div class='row'>
-		<div class="col-sm-6 field">
+		<div class="col-sm-4 field">
+			<?php print _t("Printer"); ?><br/>
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=printer}}}
+		</div>			
+		<div class="col-sm-4 field">
 			<?php print _t("Translator"); ?><br/>
 			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=translator}}}
 		</div>
-		<div class="col-sm-6 field">
+		<div class="col-sm-4 field">
 			<?php print _t("Publisher"); ?><br/>
 			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=publisher}}}
 		</div>					

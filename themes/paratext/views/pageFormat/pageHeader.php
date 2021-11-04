@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+ require_once(__CA_MODELS_DIR__."/ca_occurrences.php");
  #caGetThemeGraphic($this->request, 'ca_nav_logo300.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))
  
 	# --- navigation --- idno => Title
@@ -83,21 +83,25 @@
             <ul class="main_menu">
 <?php
 				foreach($va_paratext_intro_sections as $vs_idno => $vs_section_title){
-					print "<li class='menu_item'>".caNavLink($this->request, $vs_section_title, '', '', 'Section', $vs_idno)."</li>";
+					print "<li class='menu_item'>".caNavLink($this->request, $vs_section_title, '', '', 'Section', $vs_idno)."</li> ";
 				}
 ?>               
-                <li class="menu_item">
+                <li class="menu_item wide_submenu">
                     <a href="" class="no-click">Exhibition</a>
                     <ul class="sub_menu">
 <?php
-				foreach($va_paratext_exhibition_sections as $vs_idno => $vs_section_title){
-					print "<li>".caNavLink($this->request, $vs_section_title, '', '', 'Section', $vs_idno)."</li>";
+				$c = 1;
+				$t_nav_section = new ca_occurrences();
+				foreach($va_paratext_exhibition_sections as $vs_idno){
+					$t_nav_section->load(array("idno" => $vs_idno));
+					print "<li>".caNavLink($this->request, "Exhibit Case ".$c.": ".$t_nav_section->get("ca_occurrences.preferred_labels.name"), '', '', 'Section', $vs_idno)."</li> ";
+					$c++;
 				}
 ?>
                     </ul>
                 </li>
-                <li class="menu_item"><?php print caNavLink($this->request, _t("Printers' addresses"), "", "", "Printers", "Index"); ?></li>
-                <li class="menu_item"><?php print caNavLink($this->request, _t("Gallery"), "", "", "ImageGallery", "Index"); ?></li>
+                <li class="menu_item"><?php print caNavLink($this->request, _t("Printers' addresses"), "", "", "Printers", "Index"); ?></li> 
+                <li class="menu_item"><?php print caNavLink($this->request, _t("Gallery"), "", "", "ImageGallery", "Index"); ?></li> 
             </ul>
         </div>
 

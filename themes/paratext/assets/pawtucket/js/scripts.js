@@ -86,28 +86,33 @@ jQuery ( document ).ready ( function($) {
 ******************* BURGER MENU *********************
 ****************************************************/
 // Hide / Show menu
-$( ".burger" ).click(function() {
-    $("ul.main_menu").toggleClass('show');
-    $(".burger").toggleClass('open');
+jQuery ( document ).ready ( function($) {
+	$( ".burger" ).click(function() {
+		$("ul.main_menu").toggleClass('show');
+		$(".burger").toggleClass('open');
+	});
 });
 
 
 /****************************************************
 ***************** ANCHOR TRANSITIONS ****************
 ****************************************************/
+
+// commented out cause was messing with the link to open media panel in section_media_html.php
+
 // if a link with an anchor is clicked
-jQuery ( document ).ready ( function($) {
-    $('a[href*=\\#]').on('click', function (e) {
-        if(this.pathname === window.location.pathname){
-            e.preventDefault(); 
-            var dest = $(this).attr('href'); 
-            var menuHeight = $('header').outerHeight(); 
-            $('html,body').animate({ 
-                scrollTop: $(dest).offset().top - menuHeight
-            }, 3500); 
-        }
-    });
-});
+//jQuery ( document ).ready ( function($) {
+//    $('a[href*=\\#]').on('click', function (e) {
+//        if(this.pathname === window.location.pathname){
+//            e.preventDefault(); 
+//            var dest = $(this).attr('href'); 
+//            var menuHeight = $('header').outerHeight(); 
+//            $('html,body').animate({ 
+//                scrollTop: $(dest).offset().top - menuHeight
+//            }, 3500); 
+//        }
+//    });
+//});
 
 
 
