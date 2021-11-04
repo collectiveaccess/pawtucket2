@@ -88,7 +88,7 @@
 				if ($vs_abstract = $t_object->get('ca_objects.abstract')) {
 					print "<div class='unit'><h6><b>Abstract</b></h6>".$vs_abstract."</div>";
 				}
-				if ($vs_name = $t_object->getWithTemplate('<unit><ifdef code="ca_objects.name.namePartname">Name: ^ca_objects.name.namePartname<br/></ifdef><ifdef code="ca_objects.name.role">Role: ^ca_objects.name.role<br/></ifdef><ifdef code="ca_objects.name.affiliation">Institutional Affiliation: ^ca_objects.name.affiliation<br/></ifdef><ifdef code="ca_objects.name.description">Description: ^ca_objects.name.description<br/></ifdef><ifdef code="ca_objects.name.displayForm">Display Form: ^ca_objects.name.displayForm<br/></ifdef><ifdef code="ca_objects.name.nameIdentifier">Name Identifier: ^ca_objects.name.nameIdentifier</ifdef></unit>')) {
+				if ($vs_name = $t_object->getWithTemplate('<unit delimiter="<br/>"><ifdef code="ca_objects.name.namePartname">Name: '.caNavLink($this->request, '^ca_objects.name.namePartname', '', '', 'Search', 'objects', ['search' => '^ca_objects.name.namePartname'], [], ['dontURLEncodeParameters' => true]).'<br/></ifdef><ifdef code="ca_objects.name.role">Role: ^ca_objects.name.role<br/></ifdef><ifdef code="ca_objects.name.affiliation">Institutional Affiliation: ^ca_objects.name.affiliation<br/></ifdef><ifdef code="ca_objects.name.description">Description: ^ca_objects.name.description<br/></ifdef><ifdef code="ca_objects.name.displayForm">Display Form: ^ca_objects.name.displayForm<br/></ifdef><ifdef code="ca_objects.name.nameIdentifier">Name Identifier: ^ca_objects.name.nameIdentifier</ifdef></unit>')) {
 					print "<div class='unit'><h6><b>Name</b></h6>".$vs_name."</div>";
 				}
 				if ($vs_type = $t_object->get('ca_objects.typeOfResource', array('convertCodesToDisplayText' => true))) {
@@ -126,8 +126,10 @@
 					foreach ($va_subjects as $va_key => $va_subject){
 						foreach ($va_subject as $va_thing => $va_subject_text) {
 							foreach ($va_subject_text as $va_one => $va_two) {
+							    $va_two = preg_replace("!\[.*$!", "", $va_two);    
 								if ($va_two) {
-									$vs_subjects.= "  ".$va_two."<br/>";
+									#$vs_subjects.= "  ".$va_two."<br/>";
+									$vs_subjects .= caNavLink($this->request, $va_two, '', '', 'Search', 'objects', ['search' => $va_two]);
 								}
 							}
 							$vs_subjects.=  "<br/>";
