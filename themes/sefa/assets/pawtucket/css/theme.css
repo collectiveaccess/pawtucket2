@@ -133,7 +133,7 @@ strong, b {
 	padding-top:35px;
 	font-size:15px;
 }
-.detail .thumbnail:not([data-loaded]){
+.detail .thumbnail:not([data-loaded]), .contact .thumbnail:not([data-loaded]){
 	margin:auto;
 	border:0px;
 }
