@@ -585,8 +585,6 @@
 		
 						<hr/>
 	
-							<form id="contactFormOfficeTour" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post" enctype="multipart/form-data">
-								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 		
 									<div class="row">
 										<div class="col-sm-12">
@@ -594,6 +592,13 @@
 											<p>{{{contact_office_tours_intro}}}</p>
 										</div>
 									</div>
+<?php
+	# --- hide the form for this, but keep code in case they want it back
+	if($vs_show_form){
+?>
+							<form id="contactFormOfficeTour" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post" enctype="multipart/form-data">
+								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
+
 									<div class="row">
 										<div class="col-sm-6">
 											<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
@@ -701,6 +706,9 @@
 								<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 
 							</form>	
+<?php
+	}
+?>
 						</div>
 						<div role="tabpanel" class="tab-pane" id="research">		
 	
