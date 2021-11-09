@@ -60,7 +60,7 @@
 				$this->response->setRedirect(caNavUrl($this->request, "", "", ""));
 				return;
  			}
- 			$this->purifier = new HTMLPurifier();
+ 			$this->purifier = caGetHTMLPurifier();
  		}
  		# -------------------------------------------------------
  		/**

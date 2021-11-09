@@ -82,7 +82,7 @@
 			  speed: 75,
 			  maxHeight: 115,
 			  moreLink: '<a href="#">Lees meer</a>',
-			  lessLink: '<a href="#">Dichtbij</a>'
+			  lessLink: '<a href="#">Lees Minder</a>'
 			});
 		});
 </script>

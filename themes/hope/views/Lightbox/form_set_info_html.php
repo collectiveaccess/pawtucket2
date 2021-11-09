@@ -59,6 +59,7 @@
 	<div class='row'>
 		<div class='col-sm-12'>
 <?php
+		print caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request)));
 		if(($vs_mode != "parent")){
 			print "<div class='form-group'><label class='control-label'>Part of</label><div>";
 			if($vn_parent_id){

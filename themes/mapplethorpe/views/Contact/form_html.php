@@ -5,6 +5,7 @@
 	$vn_num2 = rand(1,10);
 	$vn_sum = $vn_num1 + $vn_num2;
 	$vs_page_title = ($o_config->get("contact_page_title")) ? $o_config->get("contact_page_title") : _t("Contact");
+	$va_contact_emails = $o_config->get("contact_emails");
 	
 	# --- if a table has been passed this is coming from the Item Inquiry/Ask An Archivist contact form on detail pages
 	$pn_id = $this->request->getParameter("id", pInteger);
@@ -15,17 +16,17 @@
 		if($t_item){
 			$t_item->load($pn_id);
 			switch($ps_table){
-				case "ca_sets":
+				#case "ca_sets":
 				
-					$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Lightbox", "setDetail", $pn_id);
-					$vs_admin_url = $o_config->get("admin_url")."/index.php/manage/sets/SetEditor/Edit/set_id/".$pn_id;
-					$vs_name = $t_item->getLabelForDisplay();
-					$vs_page_title = "Inquiry";
-				break;
+				#	$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Lightbox", "setDetail", $pn_id);
+				#	$vs_admin_url = $o_config->get("admin_url")."/index.php/manage/sets/SetEditor/Edit/set_id/".$pn_id;
+				#	$vs_name = $t_item->getLabelForDisplay();
+				#	$vs_page_title = "Inquiry";
+				#break;
 				# -------------------------------
 				default:
 					$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
-					$vs_name = $t_item->get($ps_table.".preferred_labels.name");
+					$vs_name = $t_item->get($ps_table.".preferred_labels.name").(($t_item->get($ps_table.".date")) ? ", ".$t_item->get($ps_table.".date") : "");
 					$vs_idno = $t_item->get($ps_table.".idno");
 					$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
 				break;
@@ -71,6 +72,7 @@
 				<input type="hidden" name="adminURL" value="<?php print $vs_admin_url; ?>">
 				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
+				<input type="hidden" name="imageTag" value="<?php print $vs_img; ?>">
 				<hr/>
 	
 			</div>
@@ -104,8 +106,13 @@
 							<label for="sendTo">Send To</label>
 							<select class="form-control input-sm" id="sendTo" name="sendTo">
 								<option value="">Choose one</option>
-								<option value="joree@mapplethorpe.org" <?php print ($this->getVar("sendTo") == "joree@mapplethorpe.org") ? "selected" : ""; ?>>Joree Adilman</option>
-								<option value="kelly@mapplethorpe.org" <?php print ($this->getVar("sendTo") == "kelly@mapplethorpe.org") ? "selected" : ""; ?>>Kelly Jones</option>
+<?php
+								if(is_array($va_contact_emails) && sizeof($va_contact_emails)){
+									foreach($va_contact_emails as $vs_contact_name => $vs_contact_email){
+										print "<option value='".$vs_contact_email."'>".$vs_contact_name."</option>\n";
+									}
+								}
+?>								
 							</select>
 						</div>
 					</div><!-- end col -->

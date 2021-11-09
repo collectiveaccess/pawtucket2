@@ -151,14 +151,14 @@
 								array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))),
 								['checkAccess' => $this->opa_access_values]
 							);
-
+							$va_map_display = caGetOption("display", $views_info, array());
 							$opts = array(
-								'renderLabelAsLink' => false, 
+								'renderLabelAsLink' => true, 
 								'request' => $this->request, 
 								'color' => '#cc0000', 
-								'label' => 'ca_places.preferred_labels.name', 
-								'content' => 'ca_places.preferred_labels.name',
-								'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', ['set_id' => $set_id])
+								'labelTemplate' => caGetOption("labelTemplate", $va_map_display, 'ca_places.preferred_labels.name'), 
+								'contentTemplate' => caGetOption("contentTemplate", $va_map_display, 'ca_places.preferred_labels.name'),
+								//'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', ['set_id' => $set_id])
 							);
 			
 							$o_map = new GeographicMap(caGetOption("width", $views_info, "100%"), caGetOption("height", $views_info, "600px"));
@@ -256,7 +256,7 @@
             $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
             $views_info = $this->config->get('views');
             $view_info = $views_info["map"][$table];
-            $content_template = $view_info['display']['icon'].$view_info['display']['title_template'].$view_info['display']['description_template'];
+            $content_template = $view_info['display']['labelTemplate'].$view_info['display']['contentTemplate'];
 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($content_template, $table, $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
 			
 			$this->view->setVar('heading', trim($view_info['display']['heading']) ? caProcessTemplateForIDs($view_info['display']['heading'], $table, [$pa_ids[0]], array('checkAccess' => $this->opa_access_values)) : "");

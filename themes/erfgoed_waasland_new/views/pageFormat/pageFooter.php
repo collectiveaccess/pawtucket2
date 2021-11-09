@@ -34,7 +34,7 @@
 					<div class="footerHeading">&copy; Erfgoedbank Waasland</div>
 					<div class="row">
 						<div class="col-sm-4 footerContact">
-							<b>Contacts</b><br/>
+							<b>Contact</b><br/>
 							Erfgoedcel Waasland<br/>
 							Lamstraat 113<br/>
 							9100 Sint-Niklaas<br/><br/>
@@ -48,11 +48,13 @@
 								<li><a href="https://www.instagram.com/erfgoedcel_waasland/" target="_blank"><i class="fa fa-instagram" aria-label="Instragram"></i></a></li>
 							</ul>
 							<div class="homeLogo"><a href="http://www.erfgoedcelwaasland.be" target="_blank"><?php print caGetThemeGraphic($this->request, 'erfgoedCelLogoTransparent.png'); ?></a></div>
+							
 						</div>
 						<div class="col-sm-4">
 							<div class="funder">
 								<a href="http://www.vlaanderen.be"><?php print caGetThemeGraphic($this->request, 'Vlaanderen-verbeelding-werkt_vol.png'); ?></a>
 							</div>
+							<br/><?php print caNavLink($this->request, "Disclaimer", "", "", "About", "disclaimer"); ?><br/><?php print ((CookieOptionsManager::cookieManagerEnabled()) ? caNavLink($this->request, _t("Manage Cookies"), "", "", "Cookies", "manage") : ""); ?>
 						</div>
 					</div>
 				</div>
@@ -93,67 +95,11 @@
 					});
 				}
 			});
-			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
-		
-//			$(document).ready(function() {
-//				$(document).bind("contextmenu",function(e){
-//				   return false;
-//				 });
-//			}); 
-			$(document).ready(function(){
-				$(window).scroll(function(){
-					$("#hpScrollBar").fadeOut();
-				});
-				
-				$(function() {
-					//caches a jQuery object containing the header element
-					var html = $("html");
-					
-						$(window).scroll(function() {
-							var scroll = $(window).scrollTop();
 
-							if (scroll >= 125) {
-								html.removeClass('initial');
-							} else {
-								html.addClass('initial');
-							}
-							
-						});
-					
-				});
-			});
 		</script>
 <?php
-	if (Session::getVar('cookieAccepted') != 'accepted') {		
-?>	
-		<!--<div id="cookieNotice">
-			{{{cookie_statement}}}
-		</div>-->	<!--end homePanel-->
-		
-		
-		<script type="text/javascript">
-			$(document).ready(function() {
-				$('.acceptCookie').click(function(e){
-				  e.preventDefault();
-				  $.ajax({
-					   url: "<?php print caNavUrl($this->request, "", "Cookie", "accept"); ?>",
-					   type: "GET",
-					   success: function (data) {
-						 if(data == 'success'){
-						 	$('#cookieNotice').hide();
-						 }
-					   },
-					   error: function(xhr, ajaxOptions, thrownError){
-						  alert("There was an error, please try again later.");
-					   }
-				  });
-
-				});
-			});
-		</script>
-
-<?php
-	}
+	print $this->render("Cookies/banner_html.php");	
 ?>
+
 	</body>
 </html>

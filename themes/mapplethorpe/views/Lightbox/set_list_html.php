@@ -115,6 +115,9 @@
 </div>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
+		
+		$('a').tooltip();
+		$('.btn-group span').tooltip();
 		jQuery('#confirm-delete').on('show.bs.modal', function(e) {
 			var set_id = jQuery(e.relatedTarget).data('set_id');
 			var set_name = jQuery(e.relatedTarget).data('set_name');
@@ -124,7 +127,7 @@
 			jQuery('#confirm-delete .btn-delete').data('set_id', set_id);
 		}).find('.btn-delete').on('click', function(e) {
 			var set_id = jQuery(this).data('set_id');
-			jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id }, function(data) {
+			jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> }, function(data) {
 				if(data.status == 'ok') {
 					jQuery("#lbSetContainer" + set_id).parent().remove();
 					if (jQuery('.lbSetContainer').length == 0) { jQuery('#lbSetListPlaceholder').show(); } else { jQuery('#lbSetListPlaceholder').hide(); }

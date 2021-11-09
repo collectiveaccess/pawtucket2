@@ -33,6 +33,10 @@
 	# --- this overrides what is passed from DetailController so the timecode can be formatted how client wants
 	if($vn_representation_id){
  		$t_rep = new ca_object_representations($vn_representation_id);
+ 		$vs_current_rep_title = "";
+ 		if($t_rep->get("ca_object_representations.preferred_labels.name") != "[BLANK]"){
+ 			$vs_current_rep_title = $t_rep->get("ca_object_representations.preferred_labels.name");
+ 		}
  		$vn_object_id = $t_rep->get("ca_objects.object_id");
  		if (!($vs_template = $va_detail_options['displayAnnotationTemplate'])) { $vs_template = '^ca_representation_annotations.preferred_labels.name'; }
  			
@@ -64,7 +68,7 @@
 <?php
 	print "<div class='downloadIndex'>".caDetailLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download")."'></span> Download Index", "", "ca_objects",  $vn_object_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary', 'representation_id' => $vn_representation_id))."</div>";
 ?>
-	<label><?php print _t('Index (%1)', sizeof($va_annotation_list)); ?></label>
+	<label><?php print 'Index'.(($vs_current_rep_title) ? ' for <i>'.$vs_current_rep_title.'</i>' : '').' ('.sizeof($va_annotation_list).')'; ?></label>
 <div class='detailAnnotationList'>
 	<ul class='detailAnnotation'>
 <?php

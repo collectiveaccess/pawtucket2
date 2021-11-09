@@ -35,7 +35,7 @@
 	$o_browse			= $this->getVar('browse');
 	$vs_table			= $this->getVar('table');	
 	$vn_facet_display_length_initial = 10;
-	$vn_facet_display_length_maximum = 60;
+	$vn_facet_display_length_maximum = 30;
 
 	if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
@@ -45,9 +45,9 @@
 if($vs_table == "ca_entities"){
 		$va_output = array();
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
-		# --- list all factes without a lable together - merging role facets made from 2 facet configurations
+		# --- list all factes without a label together - merging role facets made from 2 facet configurations
 			if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-			print "<h3>".$va_facet_info['label_singular']."</h3>"; 
+			#print "<h3>".$va_facet_info['label_singular']."</h3>"; 
 			switch($va_facet_info["group_mode"]){
 				case "alphabetical":
 				case "list":
@@ -84,6 +84,20 @@ if($vs_table == "ca_entities"){
 <?php
 			} else {				
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
+				
+				# skip the work facet if in an object browse and entity has been selected
+				$vb_skip_work_facet = false;
+				if(($vs_table == "ca_objects") && ($vs_facet_name == "work_facet")){
+					foreach($va_criteria as $va_each_criteria){
+						if($va_each_criteria["facet_name"] == "entity_facet"){
+							$vb_skip_work_facet = true;
+						}
+					}
+					if($vb_skip_work_facet){
+						continue;
+					}
+				}
+				
 				print "<h3>".$va_facet_info['label_singular']."</h3>"; 
 				switch($va_facet_info["group_mode"]){
 					case "alphabetical":

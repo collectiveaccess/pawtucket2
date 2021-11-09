@@ -114,7 +114,7 @@ body{
 		margin-bottom:350px;
 	}
 }
-@media (min-width: 1010px) {
+@media (min-width: 1244px) {
 	body{
 		margin-top:100px;
 	}
@@ -146,13 +146,13 @@ body{
 		padding-top:13px;
 	}
 }
-@media (min-width: 1011px) {
+@media (min-width: 1245px){
 	.navbar-default .navbar-brand{
 		font-size:22px;
 		width: 360px;
 	}
 }
-@media (min-width: 1011px) {
+@media (min-width: 1245px){
 	.nav > li > a {
 		padding-top: 28px !important;
 		padding-bottom: 28px !important;
@@ -169,6 +169,12 @@ body{
 .navbar-default .navbar-nav > li > a:hover span, .navbar-default .navbar-nav > li > a:focus span {
     border-bottom: 2px solid #d20000;
 }
+@media (min-width: 1245px){
+	.navbar-default .navbar-nav > li.navLinkBorder > a > span{
+		border: 2px solid #d20000;
+		padding:10px;
+	}
+}
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     background-color: #ffffff;
 }
@@ -179,11 +185,13 @@ body{
 	.nav > li.dropdown > a.icon {
 		font-size:18px;
 	}
+}
+@media (min-width: 1245px) {
 	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus{
 		font-size:16px;
 	}
 }
-@media (min-width: 1010px) {
+@media (min-width: 1245px) {
 	.navbar-default .navbar-form {
 		margin-top: 22px;
 	}
@@ -200,14 +208,33 @@ body{
 		margin:0px;
 	}
 }
-@media (min-width: 1011px) and (max-width: 1050px) {
+/*@media (min-width: 1011px) and (max-width: 1050px) {
 	.navbar-form .form-group {
 		width: 105px;
 	}
-}
+}*/
 .menuBar .dropdown-menu > li > a {
     color: #000000;
     font-family: lato;
+}
+@media (min-width: 768px) and (max-width: 1244px) {
+	ul.menuItems {
+		width:100%;
+		border-top:solid 1px #ddd;
+	}
+	.menuItems.navbar-nav > li > a {
+		padding-top:5px;
+		padding-bottom:5px;
+	}
+	.navbar-collapse .navbar-nav.navbar-right:last-child {
+		margin-right:0px;
+	}
+	.container.menuBar {
+		padding:0px;
+	}
+	.navbar > .container .navbar-brand {
+		margin-left:0px;
+	}
 }
 .dropdown-menu {
     font-size: 14px;
@@ -1310,7 +1337,7 @@ a.readmore-js-toggle {
 }
 
 /* listing */
-.exploreResourcesRow{
+.exploreResourcesRow, .exploreRow{
 	background:
 		linear-gradient(
 		  rgba(224, 215, 186, .95), 
@@ -1330,10 +1357,13 @@ a.readmore-js-toggle {
 	max-height:400px;
 	overflow:hidden;
 }
-.listingContainerExhibitions .listingContainerImgContainer img{
+.listingContainerExhibitions .listingContainerImgContainer img, .listingContainerEduRes .listingContainerImgContainer img{
 	width:100%;
 	height: 250px;
 	object-fit: cover;
+}
+.listingContainerResources{
+	margin-bottom:45px;
 }
 .listingContainerResources .listingContainerImgContainer img{
 	width:100%;
@@ -1375,31 +1405,38 @@ a.readmore-js-toggle {
 
 
 
-.listingContainerExhibitions.coverImg{
+.listingContainerExhibitions.coverImg, .listingContainerEduRes.coverImg{
 	background-position: center;
   	background-repeat: no-repeat;
   	background-size: cover;
   	min-height: 275px;
 }
-.listingContainerExhibitions.coverImg H2{
+.listingContainerExhibitions.coverImg H2, .listingContainerEduRes.coverImg H2{
 	margin-bottom: 20px;
 	font-size: 24px;
 	line-height:1.3em;
+	width:100%;
 }
-.listingContainerExhibitions.coverImg b{
+.listingContainerExhibitions.coverImg b, .listingContainerEduRes.coverImg b{
 	font-family: latolight;
 	text-transform: uppercase;
 	font-size: 16px;
 	font-weight: 600;
 }	
-.listingContainerExhibitions.coverImg .listingContainerDesc{
+.listingContainerExhibitions.coverImg .listingContainerDesc, .listingContainerEduRes.coverImg .listingContainerDesc{
 	background-color:transparent;
 	background: linear-gradient(rgba(0,0,0,.2), rgba(0,0,0,.4), rgba(0,0,0,.4), rgba(0,0,0,0));
 	text-shadow: 2px 2px 4px #000000;
 	padding:40px;
   	min-height: 275px;
 }
-.listingContainerExhibitions.coverImg .listingContainerDesc:hover{
+.listingContainerEduRes.coverImg .listingContainerDesc{
+	display: flex;
+	align-items: center;
+	text-align:center;
+	width:100%
+}
+.listingContainerExhibitions.coverImg .listingContainerDesc:hover, .listingContainerEduRes.coverImg .listingContainerDesc:hover{
 	background: rgba(0,0,0,.5);
 }
 h2.exhibitionSection{
@@ -1408,13 +1445,13 @@ h2.exhibitionSection{
 	font-family:Lato;
 	color:#D20000;
 }
-.listingExhibitionsImageLink:hover{
+.listingExhibitionsImageLink:hover, .listingEduResImageLink:hover{
 	text-decoration:none;
 }
-.currentExhibition .listingContainerExhibitions.coverImg .listingContainerDesc{
+.currentExhibition .listingContainerExhibitions.coverImg .listingContainerDesc, .currentExhibition .listingContainerEduRes.coverImg .listingContainerDesc{
 	padding: 70px 60px 60px 60px;
 }
-.currentExhibition .listingContainerExhibitions.coverImg H2{
+.currentExhibition .listingContainerExhibitions.coverImg H2, .currentExhibition .listingContainerEduRes.coverImg H2{
 	font-size: 28px;
 }
 
@@ -1435,7 +1472,7 @@ h2.exhibitionSection{
 .listingContainer{
 	height:100%;
 }
-.listingExhibitionsImageLink{
+.listingExhibitionsImageLink, .listingEduResImageLink{
 	display:block;
 	height:100%;
 }
@@ -1501,7 +1538,7 @@ h2.exhibitionSection{
 }
 .userGuideBody img{
 	height:auto;
-	max-width:100%;
+	max-width:80%;
 }
 @media(min-width:768px){
 	.userGuideSideNav{
@@ -1528,6 +1565,10 @@ h2.exhibitionSection{
 .userGuideAnchor{
 	position: relative;
 	top: -95px;
+}
+.userGuideBody .video-js{
+	width:100% !important;
+	height:500px !important;
 }
 /* contact form */
 .form-control-static.securityQuestion{
@@ -1595,7 +1636,7 @@ div.caMediaOverlayControls {
 		padding-bottom:800px;
 	}
 }
-.exploreDigitalExhibitionsRow{
+.exploreDigitalExhibitionsRow, .exploreEduResRow{
 	background:
 		linear-gradient(
 		  rgba(224, 215, 186, .95), 

@@ -68,8 +68,9 @@
 			$t_subject = isset($pa_data['t_subject']) ? $pa_data['t_subject'] : null;
 			$t_media = isset($pa_data['t_media']) ? $pa_data['t_media'] : $t_subject;
 			$pa_check_access = caGetOption('checkAccess', $pa_options, null);
-			
 			$display_version = caGetOption('display_version', $pa_data['display'], null);
+		
+			$subject_table = $t_subject->tableName();
 			
 			// Controls
 			$vs_controls = '';
@@ -80,7 +81,7 @@
 				    $vs_media_overlay_titlebar_text = caProcessTemplateForIDs($vs_media_overlay_titlebar_template, $t_instance->tableName(), [$t_instance->getPrimaryKey()], $pa_options);
 				} elseif(is_a($t_instance, 'BundlableLabelableBaseModelWithAttributes')) {
 				    // for everything except ca_site_page_media
-				    $vs_media_overlay_titlebar_text = caTruncateStringWithEllipsis($t_subject->get($t_instance->tableName().'.preferred_labels'), 80)." (".$t_instance->get($t_subject->tableName().'.'.$t_subject->getProperty('ID_NUMBERING_ID_FIELD')).")";
+				    $vs_media_overlay_titlebar_text = caTruncateStringWithEllipsis($t_subject->get($t_instance->tableName().'.preferred_labels'), 80)." (".$t_instance->get($subject_table.'.'.$t_subject->getProperty('ID_NUMBERING_ID_FIELD')).")";
 			    } else {
 			        // for ca_site_page_media 
 			        $vs_media_overlay_titlebar_text = caTruncateStringWithEllipsis($t_instance->get($t_instance->tableName().'.'.array_shift($t_instance->getProperty('LIST_FIELDS'))), 80)." (".$t_instance->get($t_instance->tableName().'.'.$t_instance->getProperty('ID_NUMBERING_ID_FIELD')).")";
@@ -88,13 +89,13 @@
 				$vs_controls .= "<div class='objectInfo'>{$vs_media_overlay_titlebar_text}</div>";
 			}
 			if ($t_subject && $t_instance && is_a($t_instance, 'ca_object_representations')) {
+				$vs_context = $po_request->getParameter('context', pString);
 				if (($vn_num_media = $t_media->getRepresentationCount(['checkAccess' => $pa_check_access])) > 1) {
 					$vs_controls .= "<div class='repNav'>";
 				
 					$va_ids = array_keys($t_media->getRepresentationIDs(['checkAccess' => $pa_check_access]));
 					$vn_rep_index = array_search($t_instance->getPrimaryKey(), $va_ids);
 				
-					$vs_context = $po_request->getParameter('context', pString);
 					if ($vn_rep_index > 0) { 
 						$vs_controls .=  "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($po_request, '*', '*', $po_request->getAction(), array('representation_id' => (int)$va_ids[$vn_rep_index - 1], $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'context' => $vs_context))."\");'>←</a>";
 					}
@@ -104,10 +105,42 @@
 					if ($vn_rep_index < ($vn_num_media - 1)) {
 						$vs_controls .=  "<a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($po_request, '*', '*', $po_request->getAction(), array('representation_id' => (int)$va_ids[$vn_rep_index + 1], $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'context' => $vs_context))."\");'>→</a>";
 					}
+					
 					$vs_controls .= "</div>";	
 					
 					$o_view->setVar('page', $vn_rep_index);		
 				}
+				
+					$show_next_prev_links = caGetOption('showRepresentationViewerNextPreviousLinks', $pa_options, false);
+					if ($show_next_prev_links && ($o_context = $t_subject ? ResultContext::getResultContextForLastFind($po_request, $subject_table) : null)) {
+						$vs_controls .= "<div class='nextPreviousLinks'>";
+						$ids = [];
+						if($previous_id = $o_context->getPreviousID($t_subject->getPrimaryKey())) { $ids[] = $previous_id; }
+						if($next_id = $o_context->getNextID($t_subject->getPrimaryKey())) { $ids[] = $next_id; }
+
+						$qr = sizeof($ids) ? caMakeSearchResult($subject_table, $ids) : null;
+						
+						if($previous_id) {
+							$nav_previous_template = caGetOption('representationViewerPreviousLink', $pa_options, "← ^{$subject_table}.preferred_labels%truncate=20&ellipsis=1 <ifdef code='{$subject_table}.idno'>(^{$subject_table}.idno)</ifdef>");
+							$qr->nextHit();
+							$rep_ids = $qr->get('ca_object_representations.representation_id', ['returnAsArray' => true]);
+							if(is_array($rep_ids) && sizeof($rep_ids)) {
+								$vs_controls .=  "<a href='#' onClick='caMediaPanel.callbackData={url:".json_encode(caDetailUrl($po_request, $subject_table, $previous_id))."};jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($po_request, '*', '*', $po_request->getAction(), array('representation_id' => array_shift($rep_ids), $t_subject->primaryKey() => $previous_id, 'context' => $vs_context))."\");'>".$qr->getWithTemplate($nav_previous_template)."</a>";
+							} else {
+								$previous_id = null;
+							}
+						}
+						if($next_id) {
+							$nav_next_template = caGetOption('representationViewerNextLink', $pa_options, "^{$subject_table}.preferred_labels%truncate=20&ellipsis=1 <ifdef code='{$subject_table}.idno'>(^{$subject_table}.idno)</ifdef> →");
+							
+							$qr->nextHit();
+							$rep_ids = $qr->get('ca_object_representations.representation_id', ['returnAsArray' => true]);
+							if(is_array($rep_ids) && sizeof($rep_ids)) {
+								$vs_controls .=  ($previous_id ? " | " : "")."<a href='#' onClick='caMediaPanel.callbackData={url:".json_encode(caDetailUrl($po_request, $subject_table, $next_id))."};jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($po_request, '*', '*', $po_request->getAction(), array('representation_id' => array_shift($rep_ids), $t_subject->primaryKey() => $next_id, 'context' => $vs_context))."\");'>".$qr->getWithTemplate($nav_next_template)."</a>";			}
+						}
+						$vs_controls .= "</div>\n";
+					}
+					
 				$o_view->setVar('original_media_url', $original_media_url = $t_instance->getMediaUrl('media', 'original', []));
 				$o_view->setVar('display_media_url', $display_version ? $t_instance->getMediaUrl('media', $display_version, []) : $original_media_url);
 			} elseif(is_a($t_instance, 'ca_attribute_values')) {
@@ -135,7 +168,7 @@
 						$vs_controls .= "</form>\n";
 						
 						if (is_array($va_ids) && (sizeof($va_ids) > 1)) {
-							$vs_controls .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".caNavLink($po_request, _t('Download all')." ".caNavIcon(__CA_NAV_ICON_DOWNLOAD__, 1, [], ['color' => 'white']), 'xxx', '*', '*', 'DownloadMedia', [$t_subject->primaryKey() => $t_subject->getPrimaryKey()]);
+							$vs_controls .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".caNavLink($po_request, _t('Download all')." ".caNavIcon(__CA_NAV_ICON_DOWNLOAD__, 1, [], ['color' => 'white']), '', '*', '*', 'DownloadMedia', [$t_subject->primaryKey() => $t_subject->getPrimaryKey()]);
 						}
 						
 						$vs_controls .= "</div>\n";

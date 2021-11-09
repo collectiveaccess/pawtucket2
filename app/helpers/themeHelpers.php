@@ -260,6 +260,15 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific cookies configuration
+	 *
+	 * @return Configuration
+	 */
+	function caGetCookiesConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/cookies.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Returns associative array, keyed by primary key value with values being
 	 * the preferred label of the row from a suitable locale, ready for display
 	 *
@@ -425,8 +434,34 @@
 		
 		if(!$pa_options["currentRepClass"]){ $pa_options["currentRepClass"] = "active"; }
 		
+		$show_only_media_types_when_present = caGetOption('representationViewerShowOnlyMediaTypesWhenPresent', $pa_options, null);
+ 		if(($show_only_media_types_when_present) && !is_array($show_only_media_types_when_present)) { $show_only_media_types_when_present = [$show_only_media_types_when_present]; }
+		
 		# --- get reps as thumbnails
 		$va_reps = $pt_object->findRepresentations(['version' => $ps_version, "class" => caGetOption('class', $pa_options, null), "checkAccess" => caGetUserAccessValues($po_request), 'primaryOnly' => $pb_primary_only]);
+		
+		if ($show_only_media_types_when_present) {
+			$mimetypes_present = array_reduce($va_reps, function($c, $i) { $c[$i['mimetype']] = true; return $c; }, []);
+			
+			$show_only_media_types_when_present_reduced = [];
+			foreach($show_only_media_types_when_present as $t) {
+				if (caMimetypeIsValid($t, array_keys($mimetypes_present))) {
+					$show_only_media_types_when_present_reduced[] = $t;
+				}
+			}
+			
+			if(sizeof($show_only_media_types_when_present_reduced) > 0) {
+				$va_reps = array_filter($va_reps, function($v) use ($show_only_media_types_when_present_reduced) {
+					return caMimetypeIsValid($v['mimetype'], array_values($show_only_media_types_when_present_reduced));
+				});	
+			}
+			if(!array_search($pn_representation_id, array_column($va_reps, 'representation_id'))){
+				$tmp = $va_reps;
+				$va_first_rep = array_shift($tmp);
+				$pn_representation_id = $va_first_rep['representation_id'];
+			}
+		}
+		
 		if(sizeof($va_reps) < 2){
 			return null;
 		}
@@ -445,19 +480,24 @@
 				$vs_class = $ps_current_rep_class;
 			}
 			$vs_thumb = $va_rep["tags"][$ps_version];
+			$vs_rep_label = "";
+			if($ps_return_as == "list"){
+				# --- include label of rep for list
+				$vs_rep_label = $va_rep["label"];
+			}
 			switch($ps_link_to){
 				# -------------------------------
 				case "viewer":
-					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array($pt_object->primaryKey() => $pt_object->getPrimaryKey(), 'representation_id' => $vn_rep_id, 'overlay' => 1, 'context' => $po_request->getAction()))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array($pt_object->primaryKey() => $pt_object->getPrimaryKey(), 'representation_id' => $vn_rep_id, 'overlay' => 1, 'context' => $po_request->getAction()))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb.$vs_rep_label."</a>\n";
 					break;
 				# -------------------------------
 				case "carousel":
-					$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".{$ps_current_rep_class}\").removeClass(\"{$ps_current_rep_class}\"); $(this).parent().addClass(\"{$ps_current_rep_class}\"); $(this).addClass(\"{$ps_current_rep_class}\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+					$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".{$ps_current_rep_class}\").removeClass(\"{$ps_current_rep_class}\"); $(this).parent().addClass(\"{$ps_current_rep_class}\"); $(this).addClass(\"{$ps_current_rep_class}\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb.$vs_rep_label."</a>\n";
 					break;
 				# -------------------------------
 				default:
 				case "detail":
-					$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), array("representation_id" => $vn_rep_id));
+					$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb.$vs_rep_label, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), array("representation_id" => $vn_rep_id));
 					break;
 				# -------------------------------
 			}
@@ -1221,7 +1261,7 @@
                     $.ajax({
                         url: '{$va_json_lookup_info['search']}',
                         dataType: \"json\",
-                        data: { term: '{$ps_field}:' + request.term },
+                        data: { term: ".(caGetOption('restrictToField', $pa_options, false) ? "'{$ps_field}:'" : "''")." + request.term },
                         success: function( data ) {
                             response(data);
                         }
@@ -1235,7 +1275,7 @@
                 select: function( event, ui ) {
                     if(!parseInt(ui.item.id) || (ui.item.id <= 0)) {
                         jQuery('#{$vs_field_proc}_autocomplete{$index}').val('');  // no matches so clear text input
-                        jQuery('#{$vs_field_proc}{$index}').val('xx');
+                        jQuery('#{$vs_field_proc}{$index}').val('');
                         event.preventDefault();
                         return;
                     }

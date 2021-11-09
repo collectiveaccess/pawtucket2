@@ -284,7 +284,7 @@
 				}
 				if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
 				
-				$this->view->setVar('representationViewerPrimaryOnly', caGetOption('representationViewerPrimaryOnly', $va_options, false));
+				$this->view->setVar('representationViewerPrimaryOnly', $rep_viewer_primary_only = caGetOption('representationViewerPrimaryOnly', $va_options, false));
 				$this->view->setVar('representationViewer', 
 					caRepresentationViewer(
 						$this->request, 
@@ -301,6 +301,9 @@
 							]
 						)
 					)
+				);
+				$this->view->setVar('representationViewerThumbnailBar', 
+					caObjectRepresentationThumbnails($this->request, $this->view->getVar("representation_id"), $t_subject, array_merge($va_options, ["returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $rep_viewer_primary_only ? 1 : 0]))
 				);
 			}
 			
@@ -779,6 +782,10 @@
  		 *
  		 */
  		public function SaveCommentTagging() {
+ 			if (!caValidateCSRFToken($this->request)) {
+				throw new ApplicationException(_t("Invalid CSRF token"));
+			}
+			
  			# --- inline is passed to indicate form appears embedded in detail page, not in overlay
 			$vn_inline_form = $this->request->getParameter("inline", pInteger);
 			if(!$t_item = Datamodel::getInstance($this->request->getParameter("tablename", pString), true)) {
@@ -961,7 +968,7 @@
  				$this->render("Form/reload_html.php");
  				return;
  			}
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
     		$ps_to_email = $o_purifier->purify($this->request->getParameter('to_email', pString));
  			$ps_from_email = $o_purifier->purify($this->request->getParameter('from_email', pString));
  			$ps_from_name = $o_purifier->purify($this->request->getParameter('from_name', pString));
@@ -1470,6 +1477,15 @@
     
             $this->response->addContent(caSearchMediaData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
         }
+        # -------------------------------------------------------
+		/**
+		 * Access to sidecar data (primarily used by 3d viewer)
+		 * Will only return sidecars that are images (for 3d textures), MTL files (for 3d OBJ-format files) or 
+		 * binary (for GLTF .bin buffer data)
+		 */
+		public function GetMediaSidecarData() {
+			caReturnMediaSidecarData($this->request->getParameter('sidecar_id', pInteger), $this->request->user);
+		}
         # -------------------------------------------------------
         /**
          * Provide in-viewer search for those that support it (Eg. UniversalViewer)

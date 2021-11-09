@@ -421,7 +421,7 @@
 			$vs_buf .= caHTMLHiddenInput('form_timestamp', array('value' => time()));
 		}
 		if (!caGetOption('noCSRFToken', $pa_options, false)) {
-			$vs_buf .= caHTMLHiddenInput('crsfToken', array('value' => caGenerateCSRFToken($po_request)));
+			$vs_buf .= caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($po_request)));
 		}
 		
 		if (!caGetOption('disableUnsavedChangesWarning', $pa_options, false)) { 
@@ -1371,4 +1371,29 @@
 		if (is_bool($g_use_clean_urls)) { return $g_use_clean_urls; }
 		return $g_use_clean_urls = (defined('__CA_USE_CLEAN_URLS__') && (__CA_USE_CLEAN_URLS__) && caModRewriteIsAvailable());
 	}
+	# ------------------------------------------------------------------------------------------------
+    /**
+     * @param $vs_controller
+     * @param $vs_action
+     *
+     * @return bool
+     */
+    function caIsGzipDisabled($vs_controller, $vs_action){
+        $conf = Configuration::load();
+        $va_disable_gzip = $conf->getAssoc('disable_gzip_on_controllers');
+        if (($va_acl = caGetOption($vs_controller, $va_disable_gzip, null)) !== null){
+            $va_actions = caGetOption('action', $va_acl, array());
+            if (!is_array($va_actions)){
+                $va_actions = array($va_actions);
+            }
+            if (in_array($vs_action, $va_actions)){
+                return true;
+            } else {
+                return sizeof(array_keys($va_acl))==0;
+            }
+        }
+        return false;
+    }
+    # ------------------------------------------------------------------------------------------------
+
 	# ------------------------------------------------------------------------------------------------

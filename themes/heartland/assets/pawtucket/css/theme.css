@@ -239,6 +239,12 @@ a.readmore-js-toggle{
 a.readmore-js-toggle::after {
     content: " >";
 }
+.detail #detailAnnotations li.active {
+    font-weight: bold;
+    font-style: italic;
+    background-color: #1a2e51;
+    color: #FFF;
+}
 .detail #detailAnnotations ul li:hover {
     background-color: #1a2e51;
     color:#FFF;
@@ -259,6 +265,41 @@ a.readmore-js-toggle::after {
 	float:right;
 	font-size:13px;
 	margin-top: 4px;
+}
+ul#detailRepresentationThumbnails img{
+	display:none;
+}
+ul#detailRepresentationThumbnails{
+	font-size:10px;
+}
+ul#detailRepresentationThumbnails{
+	padding-left:15px;
+}
+.detail ul#detailRepresentationThumbnails {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    list-style-position: inside;
+    border-top: 1px #ccc solid;
+    border-left: 1px #ccc solid;
+    border-right: 1px #ccc solid;
+}
+.detail ul#detailRepresentationThumbnails li {
+    margin: 0;
+	padding: 5px;
+	border-bottom: 1px #ccc solid;
+	background-color: #F5F5F5;
+}
+ul#detailRepresentationThumbnails li a{
+	font-size:16px;
+	color:#000;
+	font-weight: bold;
+}
+.detail ul#detailRepresentationThumbnails li.active, .detail ul#detailRepresentationThumbnails li.active a {
+    font-weight: bold;
+    font-style: italic;
+    background-color: #1a2e51;
+    color: #FFF;
 }
 /* browse */
 #bRefine{
@@ -328,7 +369,18 @@ a.readmore-js-toggle::after {
 .caption {
     font-size: 13px;
 }
-
+.gallery .leaflet-popup-content-wrapper{
+	font-family: brandon-grotesque;
+	font-size:14px;
+}
+.gallery .leaflet-popup-content-wrapper a{
+	font-family: granville;
+	font-size:14px;
+	color: #1a2e51;
+}
+.gallery {
+    font-size: 16px;
+}
 /* front */
 .frontHero img{
 	width:100%;
@@ -420,4 +472,109 @@ a.exploreBrowseTitle{
 .caAudioPlayer { 
 	padding: 0px !important;
 	margin: 0px !important;
-}	
+}
+
+/* lightbox presentation */
+body.revealBody{
+	margin-top:0px;
+	background-color:#1a2e51;
+	font-family: brandon-grotesque;
+	font-size:16px;
+}
+.reveal .slide-background{
+	background-color:#1a2e51;
+}
+.reveal{
+	font-family: brandon-grotesque;
+	font-size:16px;
+	font-size:100%;
+	background-color:#1a2e51;
+	font-optical-sizing:none;
+}
+.reveal label{
+	font-family: Lato;
+	text-transform: uppercase;
+	color: #000;
+	font-size: 12px;
+	display: block;
+	margin-bottom: 0px;
+	font-weight: normal;
+}
+.reveal a:not(.image) {
+    color: #000;
+}
+.reveal a.btn-default{
+	background-color:#1a2e51;
+	color:#fff;
+	position: relative;
+	display: inline-block;
+	line-height: normal;
+	padding: .96em 1.6032em;
+}
+.reveal a.btn-default:hover, .reveal a.btn-default:active, .reveal a.btn-default:focus{
+	background-color:#c90;
+	color:#FFF;
+}
+.reveal .slides > section.present{
+	background-color:#fff;
+	color:#000;
+	font-family: brandon-grotesque;
+	font-size:16px;
+	width:120%;
+	margin-left:-10%;
+	padding:40px;
+	line-height: 1.8em;
+	font-optical-sizing: none;
+	font-stretch:none;
+}
+/*.reveal .slides{
+	transform:none !important;
+}*/
+.reveal .revealCol{
+	padding-right: 15px;
+	padding-left: 15px;
+}
+.reveal .revealRow{
+	margin-right: -15px;
+	margin-left: -15px;
+	display: flex;
+    align-items: center;
+}
+@media (max-width: 767px) {
+    .reveal .revealRow {
+        display: block; /* Turn off the flexible box layout */
+    }
+}
+.reveal .controls div.navigate-right, .reveal .controls div.navigate-right.enabled,
+.reveal .controls div.navigate-right.enabled:hover {
+    border-left-color: #fff;
+}
+.reveal .controls div.navigate-left, .reveal .controls div.navigate-left.enabled,
+.reveal .controls div.navigate-left.enabled:hover {
+    border-right-color: #fff;
+}
+.reveal .controls div.navigate-down, .reveal .controls div.navigate-down.enabled,
+.reveal .controls div.navigate-down.enabled:hover{
+	border-top-color: #fff;
+}
+.reveal .controls div.navigate-up, .reveal .controls div.navigate-up.enabled,
+.reveal .controls div.navigate-up.enabled:hover
+{
+	border-bottom-color: #fff;
+}
+.reveal H2{
+	font-family: "proxima-nova","Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-weight: 600;
+	line-height: 1.2em;
+	font-family: granville;
+	font-weight:300;
+	margin: 0px 0px 20px 0px;
+	text-transform: uppercase;
+	color: #000;
+	font-size: 18px !important;
+	letter-spacing: auto;
+	text-shadow: none;
+}
+.reveal small{
+	font-size:80%;
+}
