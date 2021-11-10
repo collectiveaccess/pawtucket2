@@ -20,7 +20,7 @@ import { Document, Page } from 'react-pdf';
 /**
  *
  */
-class PDFViewer extends React.Component{
+class DocumentViewer extends React.Component{
 	constructor(props) {
 		super(props);
 		
@@ -137,4 +137,4 @@ class PDFViewer extends React.Component{
 	}
 }
 
-export { PDFViewer };
+export { DocumentViewer };

@@ -3,14 +3,23 @@ import React, {useCallback} from 'react';
 import ReactDOM from "react-dom";
 import { MediaViewerList } from './MediaViewer/MediaViewerList';
 import { VideoViewer } from './MediaViewer/VideoViewer';
-import { PDFViewer } from './MediaViewer/PDFViewer';
+
+import DocumentViewer from './MediaViewer/DocumentViewer';
+import DocumentContextProvider from './MediaViewer/DocumentViewer/DocumentContext';
+
+// import { DocumentViewer } from './MediaViewer/DocumentViewer';
 import { ImageViewer } from './MediaViewer/ImageViewer';
+
+// import MdExpand from 'react-ionicons/lib/MdExpand'
+// import MdExit from 'react-ionicons/lib/MdExit'
+
 
 const axios = require('axios');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 const selector = pawtucketUIApps.MediaViewer.selector;
-const appData = pawtucketUIApps.MediaViewer.data;
+const viewerOptions = pawtucketUIApps.MediaViewer.options;
+if(!viewerOptions) { viewerOptions = {}; }
 
 /**
  * Component context making Lightbox internals accessible to all subcomponents
@@ -94,15 +103,16 @@ class MediaViewer extends React.Component{
 		
 		let nHeight = parseInt(height.replace(/[^\d]+/g, ''));
 		let ncontrolHeight = parseInt(controlHeight.replace(/[^\d]+/g, ''));
-		nHeight -= ncontrolHeight;
+		if(this.props.media.length > 1) {
+			nHeight -= ncontrolHeight;
+		}
 		let viewerHeight = nHeight + 'px';	// adjusted to provide space for controls
 		
 		if (fullscreen) {
 			width =  this.state.windowWidth + 'px';
 			height =  this.state.windowHeight + 'px';
-			viewerHeight =  (this.state.windowHeight - ncontrolHeight - 8) + 'px';
+			viewerHeight =  (this.state.media > 1) ? (this.state.windowHeight - ncontrolHeight - 8) + 'px' : (this.state.windowHeight - 32) + 'px';
 		}
-		
 		
 		const viewerRef = this.viewerRef.current;
 		
@@ -123,7 +133,9 @@ class MediaViewer extends React.Component{
 			height: viewerHeight, 
 			fullscreen: fullscreen
 		};
+
 		let classes = ['mediaViewerContainer'];
+		// console.log("media info: ", mediaInfo);
 		switch(mediaInfo.class) {
 			case 'image':
 				viewer = (
@@ -143,7 +155,7 @@ class MediaViewer extends React.Component{
 			case 'document':
 				viewer =  (
 					<div className={classes.join(' ')}>
-						<PDFViewer url={mediaInfo.url} {...standardProps}/>
+						<DocumentContextProvider> <DocumentViewer url={mediaInfo.url} {...standardProps} pages={mediaInfo.pages} options={viewerOptions.pdfViewer}/> </DocumentContextProvider>
 					</div>
 				);
 				break;
@@ -155,28 +167,58 @@ class MediaViewer extends React.Component{
 		}
 		
 		const fs = document.getElementById('mediaDisplayFullscreen');
-		if(!fullscreen) {
-			fs.style.display = 'none';
-			return(
-				<div className='mediaViewer' style={{width: width, height: height}} ref={this.viewerRef}>
+	
+		// const icon = this.props.fullscreen === false ? (<MdExpand fontSize='24px'/>) : (<MdExit fontSize='24px'/>);
+
+		// const iconTitle = this.props.fullscreen === false ? 'Expand fullscreen' : 'Exit';
+
+		// let viewerMediaList = (this.state.media.length > 1) ? <MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen} width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen} /> 
+		// 	: <div className='float-right'><a href='#' onClick={this.toggleFullscreen} title={iconTitle}>{icon}</a></div>;
+
+		let viewerMediaList = (this.state.media.length > 1) ? <MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen} width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen} /> 
+			: null;
+				
+		let mediaViewer = null
+		if(mediaInfo.class == "document"){
+			mediaViewer = (
+				<div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>		
 					{viewer}
-					<MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen}
-						width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen}/>
+					{viewerMediaList}
 				</div>
+			)
+		}else{
+			mediaViewer = (
+				<div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>		
+					{viewer}
+					{viewerMediaList}
+				</div>
+			)
+		}
+
+		if (!fullscreen) {
+			fs.style.display = 'none';
+			return (
+				<div>
+					{mediaViewer}
+				</div>
+				// <div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>		
+				// 	{viewer}
+				// 	{viewerMediaList}
+				// </div>
 			);
 		} else {
 			fs.style.display = 'block';
 			if (!fs) return null;
 			return ReactDOM.createPortal(
-				(<div className='mediaViewer' style={{width: width, height: height}} ref={this.viewerRef}>
-					<div style={{height: viewerHeight}}>{viewer}</div>
-					<MediaViewerList media={this.state.media} index={this.state.index} setMedia={this.setIndex} fullscreen={fullscreen}
-						width={controlWidth} height={controlHeight} toggleFullscreen={this.toggleFullscreen}/>
+				(<div className='mediaViewer' style={{ width: width, height: height }} ref={this.viewerRef}>
+					<div style={{ height: viewerHeight }}>{viewer}</div>
+					{viewerMediaList}
 				</div>),
 				fs
 			);
 		}
-	}
+	
+	} //render
 }
 
 
@@ -187,7 +229,7 @@ class MediaViewer extends React.Component{
 export default function _init() {
 	ReactDOM.render(
 		<MediaViewer media={pawtucketUIApps.MediaViewer.media} 
-			width={pawtucketUIApps.MediaViewer.width} 
+			width={pawtucketUIApps.MediaViewer.width}
 			height={pawtucketUIApps.MediaViewer.height}
 			controlHeight={pawtucketUIApps.MediaViewer.controlHeight}/>, document.querySelector(selector));
 }

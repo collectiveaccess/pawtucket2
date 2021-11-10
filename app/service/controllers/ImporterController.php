@@ -143,40 +143,52 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 							throw new \ServiceException(_t('Invalid form table: %1', $fi['table']));
 						}
 						
-						$form = [
-							'title' => $fi['formTitle'],
-							'type' => 'object',
-							'description' => $fi['formDescription'],
-							'required' => [],
-							'properties' => null
-						];
-						$properties = [];
+						
+						$properties = $ui_schema = $required_fields = [];
 						foreach($fi['content'] as $code => $info) {
 							
 							if(!($label = $info['label'])) {
 								$label = $t_instance->getDisplayLabel($info['bundle']);
 							} 
 							if(!($description = $info['description'])) {
-								$description = $t_instance->getDisplayDescription($info['bundle']);
+								$description = ''; //$t_instance->getDisplayDescription($info['bundle']);
 							} 
 							
-							$types = $this->_fieldTypeToJsonFormTypes($t_instance, $info['bundle']);
+							$types = $this->_fieldTypeToJsonFormTypes($t_instance, $info, $fi);
 						
 							$field = [
 								'title' => $label,
 								'description' => $description,
 								'type' => $types['type'],
 								'format' => $types['format'],
+								'uniqueItems' => $types['uniqueItems'] ?? false
 							]; 		
+							if($types['items']) { $field['items'] = $types['items']; }
+							if($types['uiSchema']) { 
+								$ui_schema[$info['bundle']] = $types['uiSchema'];
+							}
 							foreach(['minLength', 'maxLength', 'enum', 'enumNames', 'minimum', 'maximum'] as $k) {
 								if (isset($types[$k])) {
 									$field[$k] = $types[$k];
 								}
 							}
 							
+							if(caGetOption('required', $info, false)) {
+								$required_fields[] = $info['bundle'];
+							}
+							
 							$properties[$info['bundle']] = $field;					
 						}
-						$form['properties'] = json_encode($properties);
+						
+						$form = [
+							'title' => $fi['formTitle'],
+							'type' => 'object',
+							'description' => $fi['formDescription'],
+							'required' => $required_fields,
+							'properties' => json_encode($properties),
+							'uiSchema' => json_encode($ui_schema)
+						];
+						
 						return $form;
 					}
 				],
@@ -234,7 +246,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					'description' => _t('Create new import session'),
 					'args' => [
 						[
-							'name' => 'form',
+							'name' => 'code',
 							'type' => Type::string(),
 							'description' => _t('Form to create session for')
 						],
@@ -252,14 +264,26 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						$u = self::authenticate($args['jwt']);
 						$user_id = $u->getPrimaryKey();
 						
-						$form = $args['form'];
+						$code = $args['code'];
 						
-						// TODO: verify form is defined
+						$forms = self::$config->getAssoc('importerForms');
+						if(!is_array($forms[$code])) { 
+							throw new \ServiceException(_t('Invalid form code: %1', $code));
+						}
+						$fi = $forms[$code];
 						
-						$session = MediaUploadManager::newSession($user_id, 0, 0, 'FORM:'.$form);
+						$content_config = $fi['content'];
 						
+						$defaults = [];
+						foreach($content_config as $c => $ci) {
+							if(!is_null($default = caGetOption('default', $ci, null))) {
+								$defaults[$ci['bundle']] = $default;
+							}
+						}
 						
-						return ['sessionKey' => $session->get('session_key')];
+						$session = MediaUploadManager::newSession($user_id, 0, 0, 'FORM:'.$code);
+						
+						return ['sessionKey' => $session->get('session_key'), 'defaults' => json_encode($defaults, true)];
 					}
 				],
 				//
@@ -300,7 +324,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						$fields = [
 							'label' => 'label', 'session_key' => 'sessionKey', 'user_id' => 'user_id',
 							'metadata' => 'formData', 'num_files' => 'files', 'total_bytes' => 'totalBytes',
-							'progress' => 'filesUploaded',
+							'filesUploaded' => 'filesUploaded', 'source' => 'source',
 							'received_bytes' => 'receivedBytes', 'total_display' => 'totalSize', 'received_display' => 'receivedSize'
 						];
 						
@@ -315,16 +339,17 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 								case 'filesUploaded':
 									$file_list = [];
 									
-									if(is_array($files = caUnserializeForDatabase($v))) {
+									$files = $s->getFileList();
+									if(is_array($files)) {
 										foreach($files as $path => $file_info) {
 											$file_list[] = [
 												'path' => $path,
 												'name' => pathInfo($path, PATHINFO_FILENAME),
-												'complete' => (bool)$file_info['complete'],
-												'totalBytes' => $file_info['totalSizeInBytes'],
-												'receivedBytes' => $file_info['progressInBytes'],
-												'totalSize' => caHumanFilesize($file_info['totalSizeInBytes']),
-												'receivedSize' => caHumanFilesize($file_info['progressInBytes'])
+												'complete' => (bool)$file_info['completed_on'],
+												'totalBytes' => $file_info['total_bytes'],
+												'receivedBytes' => $file_info['bytes_received'],
+												'totalSize' => caHumanFilesize($file_info['total_bytes']),
+												'receivedSize' => caHumanFilesize($file_info['bytes_received'])
 											];
 										}
 									}
@@ -370,13 +395,18 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						
 						$s = $this->_getSession($user_id, $session_key);
 						
-						$formdata = @json_decode($args['formData'], true);
-						if(!is_array($formdata)) {
+						$form_data = @json_decode($args['formData'], true);
+						if(!is_array($form_data)) {
 							throw new \ServiceException(_t('Invalid form data'));
 						}
 						// TODO: validate data
+						if(!sizeof($form_data)) {
+							return ['updated' => 0];
+						}
 						
-						$s->set('metadata', $formdata);
+						$form_config = self::$config->getAssoc('importerForms');
+						$code = str_replace('FORM:', '', $s->get('source'));
+						$s->set('metadata', ['data' => $form_data, 'configuration' => $form_config[$code]]);
 						if ($s->update()) {
 							return ['updated' => 1];
 						} else {
@@ -420,7 +450,13 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						
 						if(is_array($formdata = @json_decode($args['formData'], true)) && sizeof($formdata)) {
 							// TODO: validate data
-							$s->set('metadata', $formdata);
+							
+							$form_config = self::$config->getAssoc('importerForms');
+							$code = str_replace('FORM:', '', $s->get('source'));
+							if(!isset($form_config[$code])) {
+								throw new \ServiceException(_t('Invalid source'));
+							}
+							$s->set('metadata', ['data' => $formdata, 'configuration' => $form_config[$code]]);
 							$s->set('status', 'SUBMITTED');
 							$s->set('submitted_on', _t('now'));
 							if ($s->update()) {
@@ -507,13 +543,18 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 	/**
 	 *
 	 */
-	protected function _fieldTypeToJsonFormTypes($t_instance, $bundle) {
+	protected function _fieldTypeToJsonFormTypes($t_instance, $info, $form_info) {
+		$bundle = caGetOption('bundle', $info);
+		$height = caGetOption('height', $info, null);
+		$dont_repeat = caGetOption('dontRepeat', $info, false);
+		$render = caGetOption('render', $info, false);
+		
 		$element_code = array_pop(explode('.', $bundle));
 		if ($t_instance->hasElement($element_code)) {
 			$dt = ca_metadata_elements::getInstance($element_code);			
 			switch($dt->get('datatype')) {
 				case __CA_ATTRIBUTE_VALUE_DATERANGE__:
-					$type = ['type' => 'string', 'format' => 'date'];
+					$type = ['type' => 'string', 'format' => caGetOption('useDatePicker', $info, false) ? 'date' : 'string'];
 					break;	
 				case __CA_ATTRIBUTE_VALUE_INTEGER__:
 					$type = ['type' => 'integer', 'format' => 'string'];
@@ -522,19 +563,27 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					$type = ['type' => 'number', 'format' => 'string'];
 					break;	
 				case __CA_ATTRIBUTE_VALUE_LIST__:
-					$type = ['type' => 'number', 'format' => 'number'];
+					$type = ['type' => 'string', 'format' => 'string'];
 					$list_id = $dt->get('list_id');
 					$t_list = new ca_lists();
 					$item_count = $t_list->numItemsInList($list_id);
 					
 					if ($item_count <= 500) {
 						$items = array_map(function($v) { return $v['name_plural']; }, caExtractValuesByUserLocale($t_list->getItemsForList($list_id)));
-						$type['enum'] = array_keys($items);
+						$type['enum'] = array_map(function($v) { return (string)$v; }, array_keys($items));
 						$type['enumNames'] = array_values($items);
 					}
 					break;	
 				default:
-					$type = ['type' => 'string', 'format' => 'string'];			
+					$type = ['type' => 'string', 'format' => 'string'];	
+					if($height > 1) {
+						$type['uiSchema'] = [
+							"ui:widget" => "textarea",
+							"ui:options" => [
+								"rows" => $height
+							]
+						];
+					}	
 					break;
 			}
 		
@@ -544,7 +593,34 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 			if(($max_length = $dt->getSetting('maxChars')) > 0) {
 				$type['maxLength'] = (int)$max_length;
 			}
-		} elseif($t_instance->hasField($element_code)) {
+			
+			if(is_array($res = $dt->getTypeRestrictions(Datamodel::getTableNum($form_info['table']), array_shift(caMakeTypeIDList($form_info['table'], $form_info['type']))))) {
+				foreach($res as $r) {
+					$settings = caUnserializeForDatabase($r['settings']);
+					if(($settings['maxAttributesPerRow'] > 1) && !$dont_repeat) {
+						$type = [
+							'type' => 'array',
+							'format' => 'string',
+							'items' => $type,
+							'minItems' => (int)$settings['minAttributesPerRow'],
+							'maxItems' => (int)$settings['maxAttributesPerRow'],
+							'uniqueItems' => true
+						];
+						
+						if($render === 'checkboxes') {
+							$type['uiSchema'] = [
+								"ui:widget" => "checkboxes",
+								"ui:options" => [
+									"inline" => true
+								]
+							];
+						}
+						break;
+					} 
+				}
+			}
+			
+		} elseif($t_instance->hasField($element_code)) {	// is intrinsic
 			$fi = $t_instance->getFieldInfo($element_code);
 			switch($fi['FIELD_TYPE']) {
 				case FT_NUMBER:
@@ -570,8 +646,54 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 					$type['maxLength'] = (int)$max_length;
 				}
 			}
+		} elseif($t = \Datamodel::getInstance($element_code, true)) { // is related
+			if(is_array($options = caGetOption('options', $info, null)) && sizeof($options)) {
+				$type = [
+					'type' => 'array', 'format' => 'string',
+					'items' => [
+						'type' => 'string', 'format' => 'string', 
+						'enum' => array_values($options), 'enumNames' => array_keys($options)
+					],
+					'uniqueItems' => true
+				];
+				
+				if($render === 'checkboxes') {
+					$type['uiSchema'] = [
+						"ui:widget" => "checkboxes",
+						"ui:options" => [
+							"inline" => true
+						]
+					];
+				}
+			} else {
+				// TODO: autocomplete goes here
+				$type = [
+					'type' => 'array', 
+					'items' => [
+						'type' => 'string', 'format' => 'string', 
+					]
+				];
+				$type = ['type' => 'string', 'format' => 'string'];
+				if($height > 1) {
+					$type['uiSchema'] = [
+						"ui:widget" => "textarea",
+						"ui:options" => [
+							"rows" => $height
+						]
+					];
+				}
+			}
 		} else {
-			$type = ['type' => 'string', 'format' => 'string'];;
+			$type = ['type' => 'string', 'format' => 'string'];
+			
+			if($height > 1) {
+				$type['uiSchema'] = [
+					"ui:widget" => "textarea",
+					"ui:options" => [
+						"rows" => $height
+					]
+				];
+			}
 		}
 		return $type;
 	}

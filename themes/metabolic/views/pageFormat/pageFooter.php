@@ -41,6 +41,6 @@
 			</div>
 		</footer><!-- end footer -->
 		<script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>
-    	<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
+    	<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js?t=456464"></script>
 	</body>
 </html>

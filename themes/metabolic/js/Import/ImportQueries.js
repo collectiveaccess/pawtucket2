@@ -21,6 +21,7 @@ function getGraphQLClient(uri, options = null) {
   return client;
 }
 
+/* Returns the list of sessions, both in_progress and submitted  */
 const getSessionList = (url, callback) => {
   const client = getGraphQLClient(url + '/Importer', {});
   client
@@ -36,6 +37,7 @@ const getSessionList = (url, callback) => {
     });
 }
 
+/* Delete an import session */
 const deleteImport = (url, sessKey, callback) => {
   const client = getGraphQLClient(url + '/Importer', {});
   // let sessKey = props.data.sessionKey;
@@ -52,22 +54,22 @@ const deleteImport = (url, sessKey, callback) => {
     });
 }
 
-const getNewSession = (url, callback) => {
+/* Create a new import session */
+const getNewSession = (url, formCode, callback) => {
   const client = getGraphQLClient(url + '/Importer', {});
-  //TODO: Do not hardcode form, add a variable that gets passed to function
   client
     .query({
       query: gql`
-        query { newSession (form: "crisisarchive"){ sessionKey }}`
+        query ($code: String!){ newSession (code: $code){ sessionKey, defaults }}`, variables: {'code': formCode }
     })
-    .then(function (result) {
-      // console.log('newSession result: ', result.data.newSession.sessionKey);
-      callback(result.data['newSession']);
+    .then(function (result) { 
+      if(callback) { callback(result.data['newSession']); }
     }).catch(function (error) {
       console.log("Error while attempting to create newSession: ", error);
     });
 }
 
+/* Return list of forms */
 const getFormList = (url, callback) => {
   const client = getGraphQLClient(url + '/Importer', {});
   client
@@ -87,7 +89,7 @@ const getForm = (url, formCode, callback) => {
   
     client
       .query({
-        query: gql` query ($code: String!) { form (code: $code) { title, type, description, properties, required } } `, variables: { 'code': formCode }
+        query: gql` query ($code: String!) { form (code: $code) { title, type, description, properties, uiSchema, required } } `, variables: { 'code': formCode }
       })
       .then(function (result) {
         // console.log('form result: ', result.data.form);

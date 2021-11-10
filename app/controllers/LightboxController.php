@@ -392,7 +392,7 @@
 				'module_path' => '',
 				'controller' => 'Lightbox',
 				'action' => 'Index',
-				'params' => []
+				'params' => ['set_id']
 			];
  		}
  		# -------------------------------------------------------

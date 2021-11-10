@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-import ImportContextProvider from './Import/ImportContext';
-import { ImportContext } from './Import/ImportContext';
+import { ImportContext, ImportContextProvider } from './Import/ImportContext';
 import ImportList from './Import/ImportList';
 import AddNewImportPage from './Import/AddNewImportPage';
 import ViewImportPage from './Import/ImportList/ViewImportPage';
@@ -9,7 +8,7 @@ import '../css/main.scss';
 
 const selector = pawtucketUIApps.Import.selector;
 const pUIImport = pawtucketUIApps.Import;
-console.log('pUIImport', pUIImport);
+// console.log('pUIImport', pUIImport);
 
 const Import = () => {
   const { viewMode } = useContext(ImportContext);
@@ -28,7 +27,7 @@ const Import = () => {
     setSchema();
     setSessionKey(null);
     setSessionList([]);
-    setUploadProgress(0);
+    setUploadProgress({});
     setUploadStatus("not_started");
     setViewMode("import_list");
     e.preventDefault();

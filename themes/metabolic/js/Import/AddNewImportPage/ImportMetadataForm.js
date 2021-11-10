@@ -16,53 +16,41 @@ let debounce_saveFormDataForSession;
 
 const ImportMetadataForm = (props) => {
 
-  const { uploadStatus, setIsSubmitted, formData, setFormData, setViewMode, schema, setSchema, formCode, setFormCode, sessionKey, setSessionKey } = useContext(ImportContext);
+  const { uploadStatus, setIsSubmitted, formData, setFormData, setViewMode, schema, setSchema, formCode, setFormCode, sessionKey, setSessionKey, viewMode } = useContext(ImportContext);
 
-  const [uiSchema, setUiSchema] = useState({
-    "ca_objects.description": {
-      "ui:widget": "textarea"
-    },
-    "ca_entities" : {
-      "ui:field": "typeahead",
-      "typeahead": {
-        "id": "entities",
-        "minLength": 0,
-        "options": ["Selina", "Seth", "Maria", "Red", "Lauren"],
-      }
-    }
-  })
+  const [uiSchema, setUiSchema] = useState({})
   
   useEffect(() => {
-    getFormList(baseUrl, function(data){
-      // console.log("formList: ", data);
-      setFormCode(data.forms[0].code)
-    })
-  }, [])
-  
-	useEffect(() => {
     if(formCode !== null){
-      getForm(baseUrl, formCode, function(data){
-        // console.log("form: ", data);
+      loadForm();
+    }
+  }, [formCode]);
+  
+  const loadForm = () => {
+  	getForm(baseUrl, formCode, function(data){
         let form = { ...data }
         let jsonProperties = JSON.parse(data.properties);
         form.properties = jsonProperties;
         setSchema(form);
-      })
-    }
-  }, [formCode]);
+        
+        if(data.uiSchema) {
+			let uiSchemaData = JSON.parse(data.uiSchema);
+			setUiSchema(uiSchemaData);
+		}
+      });
+  };
 
   const initNewSession = (callback) => {
-    getNewSession(baseUrl, function (data) {
-      console.log('newSession: ', data, data.sessionKey);
+    getNewSession(baseUrl, formCode, function (data) {
       setSessionKey(data.sessionKey);
-      callback(data.sessionKey);
+      setFormData(JSON.parse(data.defaults));
+      if(callback) { callback(data.sessionKey); }
     });
   } 
   
   const submitForm = () => {    
     // submit form
     submitSession(baseUrl, sessionKey, formData, function (data) {	// write any data to session and mark as submitted
-      console.log('submitSession: ', data);
 	  });
     
     confirmAlert({
@@ -70,7 +58,9 @@ const ImportMetadataForm = (props) => {
         return (
           <div className='col info text-gray'>
             <p>Your import has been submitted. Would you like to start a new import?</p>
-            <div className='button' style={{ cursor: "pointer" }} onClick={(e) => { props.setInitialState(e); setViewMode("add_new_import_page"); initNewSession(); onClose(); }}>Yes</div>
+            <div className='button' style={{ cursor: "pointer" }} 
+            onClick={(e) => { props.setInitialState(e); setViewMode("add_new_import_page"); initNewSession(); loadForm(); onClose(); }}>
+              Yes</div>
 						&nbsp;
             <div className='button' style={{ cursor: "pointer" }} onClick={(e) => { props.setInitialState(e); setIsSubmitted('true'); onClose();}}>No</div>
           </div>
@@ -81,9 +71,9 @@ const ImportMetadataForm = (props) => {
   
   // NOTE: session_key has to be passed in here, otherwise it'll be a closure and stuck on the value set when this component is first loaded.
   const checkSessionKey = (sessionKey, formData, callback) => {
-    console.log("save session is", sessionKey, formData);
+    // console.log("save session is", sessionKey, formData);
     if (sessionKey == null && (formData !== null && formData !== { })) {  //if there is no sessionkey but there is formdata, create new session
-      console.log("initNewSession");
+      // console.log("initNewSession");
       initNewSession(callback);
     } else {							// Callback with existing session
     	callback(sessionKey);
@@ -92,11 +82,9 @@ const ImportMetadataForm = (props) => {
   
   // NOTE: session_key has to be passed in here, otherwise it'll be a closure and stuck on the value set when this component is first loaded.
   const saveFormDataForSession = (sessionKey, formData) => {
-    console.log("saveFormDataForSession", sessionKey, formData);
   	checkSessionKey(sessionKey, formData, () => {	// wait until session key has been resolved
       if (sessionKey !== null && (formData !== null && formData !== { })){ //with sessionkey, updateform on changes
         updateSession(baseUrl, sessionKey, formData, function (data) {	// write new data to session
-          console.log('updateSession: ', data);
         })
       }
     });
@@ -114,16 +102,32 @@ const ImportMetadataForm = (props) => {
   }
   
   // console.log("formData: ", formData);
-  // console.log("schema: ", schema);
+  // console.log("schema: ", schema, uiSchema);
+  
+  const transformErrors = function(errors) {
+  	//console.log("errors!", errors, schema);
+  	return errors.map(error => {
+  		
+		if (error.name === "required") {	
+  		  let fieldInfo = schema.properties[error.params.missingProperty];
+  		  let fieldName = fieldInfo ? fieldInfo['title'] : '???';
+  		  
+		  error.message = fieldName + ' is required';
+		  error.stack =  fieldName + ' is required';
+		}
+		return error;
+	});
+  };
+  
   return (
     <div>
-      <div className="mb-3" style={{ backgroundColor: '#D8D7CE', paddingLeft: '5px' }}>
-        Metadata Form
+      <div className="mb-1" style={{ backgroundColor: '#D8D7CE', padding: '5px' }}>
+    	Details
       </div>
       
-      <div className='form-container mt-5 mb-5'>
+      <div className='form-container mt-3 mb-3'>
         {(schema) ? 
-          <Form 
+          <Form liveValidate
           schema={schema}
           formData={formData}
           uiSchema={uiSchema}
@@ -131,7 +135,7 @@ const ImportMetadataForm = (props) => {
           autoComplete="on"
           onSubmit={submitForm}
           onError={log("errors")}
-          fields={{ typeahead: TypeaheadField }}
+          transformErrors={transformErrors}
           >
             <div>
               {/* TODO: User should only submit if there is at least 1 file uploaded and the required form metadata is filled out */}
@@ -151,39 +155,3 @@ const ImportMetadataForm = (props) => {
 }
 
 export default ImportMetadataForm;
-
-
-// const [ entities, setEntities ] = useState(['Selina', 'Seth', 'Maria', 'Red']);
-// const [ suggestions , setSuggestions ] = useState([]);
-// const [ text, setText ] = useState('');
-
-// const onTextChanged = (e) => {
-  //   const value = e.target.value;
-  //   let sugg = [];
-  //   if (value.length > 0){
-    //     const regex = new RegExp(`^${value}`, 'i');
-    //     sugg = entities.sort().filter( v => regex.test(v));
-    //   }
-    //   setSuggestions(sugg);
-    //   setText(value);
-    // }
-    
-    // const suggestionSelected = (value) => {
-      //   setText(value);
-      //   setSuggestions([]);
-      // }
-      
-      // const renderSuggestions = () => {
-        //   if(suggestions.length === 0){
-          //     return null;
-          //   }
-          //   return(
-            //     <ul>
-            //       {suggestions.map(entity => <li onClick={() => suggestionSelected(entity)}>{entity}</li>)}
-            //     </ul>
-            //   )
-            // }
-            
-            /* <label>Photographer (Autocomplete)</label>
-            <input value={text} onChange={onTextChanged} type='text' />
-            {renderSuggestions()} */

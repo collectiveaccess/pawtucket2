@@ -231,7 +231,145 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						];
 					}
 				],
-			],
+				
+				// -----------------
+				'activity' => [
+					'type' => BrowseSchema::get('BrowseResult'),
+					'description' => _t('Return browse result with recent activity'),
+					'args' => [
+						[
+							'name' => 'browseType',
+							'type' => Type::string(),
+							'description' => _t('Browse type')
+						],
+						[
+							'name' => 'key',
+							'type' => Type::string(),
+							'description' => _t('Browse key')
+						],
+						[
+							'name' => 'start',
+							'type' => Type::int(),
+							'defaultValue' => 0,
+							'description' => _t('Return records starting at index')
+						],
+						[
+							'name' => 'limit',
+							'type' => Type::int(),
+							'defaultValue' => 10,
+							'description' => _t('Maximum number of records to return')
+						],
+						[
+							'name' => 'facet',
+							'type' => Type::string(),
+							'description' => _t('Facet name')
+						],
+						[
+							'name' => 'value',
+							'type' => Type::string(),
+							'description' => _t('Filter value')
+						],
+						[
+							'name' => 'values',
+							'type' => Type::listOf(Type::string()),
+							'description' => _t('Filter values')
+						],
+					],
+					'resolve' => function ($rootValue, $args) {
+						list($browse_info, $browse) = self::browseParams($args);
+						
+						$t = Datamodel::getInstance($browse_info['table'], true);
+						$args['sort'] = $t->primaryKey(true).':desc'; // always sort descending
+						
+						
+						if(isset($args['facet'])) {						
+							$facet = $args['facet'];
+							$value = $args['value'] ?? null;
+							$values = $args['values'] ?? null;
+							$browse->addCriteria($facet, is_array($values) ? $values : [$value]);
+						} elseif(isset($args['baseCriteria'])) {
+							foreach($args['baseCriteria'] as $facet => $values) {
+								$browse->addCriteria($facet, is_array($values) ? $values : [$value]);
+							}
+						} else {
+							throw new \ServiceException(_t('No criteria specified'));
+						}
+						
+						$browse->execute(['checkAccess' => caGetUserAccessValues()]);	
+						
+						return self::getMutationResponse($browse, $browse_info, $args);
+					}
+				],
+				// -----------------
+				'activityFacet' => [
+					'type' => BrowseSchema::get('BrowseFacet'),
+					'description' => _t('Information about specific facet'),
+					'args' => [
+						[
+							'name' => 'browseType',
+							'type' => Type::string(),
+							'description' => _t('Browse type')
+						],
+						[
+							'name' => 'key',
+							'type' => Type::string(),
+							'description' => _t('Browse key')
+						],
+						[
+							'name' => 'facet',
+							'type' => Type::string(),
+							'description' => _t('Name of facet')
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+						list($browse_info, $browse) = self::browseParams($args, ['baseCriteria' => ['modified:"after '.date('Y-m-d').'"']]);
+						$facet = $args['facet'];
+						
+						
+						
+						$user_access_values = caGetUserAccessValues();
+						$facet_values = $browse->getFacet($facet, ['checkAccess' => $user_access_values]);
+						
+						if(!is_array($facet_values)) {
+							throw new \ServiceException(_t('Facets %1 is not defined for table %2', $facet, $browse_info['table']));
+						}
+						
+						$facet_info = $browse->getInfoForFacet($facet, ['checkAccess' => $user_access_values]);
+						$data_spec = caGetOption('data', $facet_info, null);
+						$facet_table = caGetOption('table', $facet_info, null);
+						$instance = Datamodel::getInstance($facet_table, true);
+						$ret = array_map(function($v) use ($data_spec, $instance, $user_access_values) {
+							$display_data = [];
+							if(is_array($data_spec) && sizeof($data_spec) && $instance && $instance->load($v['id'])) {
+								foreach($data_spec as $n => $t) {
+									$display_data[] = [
+										'name' => $n,
+										'value' => $instance->getWithTemplate($t, ['checkAccess' => $user_access_values])
+									];
+								}
+							}
+							return [
+								'id' => $v['id'],
+								'value' => $v['label'],
+								'sortableValue' => $v['label_sort_'],
+								'contentCount' => $v['content_count'],
+								'childCount' => $v['child_count'],
+								'displayData' => $display_data
+							];
+						}, $facet_values);
+						
+						if(!($facet_info = self::facetInfo($browse_info['table'], $facet))) {
+							throw new \ServiceException(_t('No facets defined for table '.$browse_info['table']));
+						}
+						return [
+							'name' => $facet,
+							'type' => caGetOption('type', $facet_info, null),
+							'description' => caGetOption('description', $facet_info, null),
+							'values' => $ret
+						];
+					}
+				],
+			]
 		]);
 		
 		$mt = new ObjectType([
@@ -382,7 +520,8 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 	 *
 	 * @param array $args Request aruguments
 	 * @param array $options Options include:
-	 *		dontExecute = Call execute() on browse instance before returning. [Default is true]
+	 *		execute = Call execute() on browse instance before returning. [Default is true]
+	 *		baseCriteria = 
 	 */
 	private static function browseParams(array $args, array $options=null) {
 		$browse_type = trim($args['browseType']);
@@ -399,6 +538,11 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 		$restrict_to_types = caGetOption('restrictToTypes', $browse_info, null);
 		if (is_array($restrict_to_types) && sizeof($restrict_to_types)) { $browse->setTypeRestrictions($restrict_to_types); }
 		
+		if($criteria = caGetOption('baseCriteria', $options, null)) {
+			foreach($criteria as $k => $c) {
+				$browse->addCriteria($k, is_array($c) ? $c : [$c]);
+			}
+		}	
 		$user_access_values = caGetUserAccessValues();
 		if (caGetOption('execute', $options, true)) { $browse->execute(['checkAccess' => $user_access_values]); }
 		
@@ -441,12 +585,13 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 		
 		// TODO: make caGetDisplayImagesForAuthorityItems() more efficient
 		$qr->seek($start);
-		$m = caGetDisplayImagesForAuthorityItems($table, $qr->getAllFieldValues($qr->primaryKey()), ['return' => 'data', 'versions' => ['small', 'medium', 'large'], 'useRelatedObjectRepresentations' => ($table !== 'ca_objects')]);
-		
+		$m = caGetDisplayImagesForAuthorityItems($table, $qr->getAllFieldValues($qr->primaryKey()), ['return' => 'data', 'versions' => ['small', 'medium', 'large', 'iiif', 'original', 'h264_hi', 'mp3', 'compressed'], 'useRelatedObjectRepresentations' => ($table !== 'ca_objects')]);
+
 		$m = array_map(function($versions) {
 		    $acc = [];
 			foreach ($versions as $v => $info) {
-				$acc[] = [
+				if(!strlen($info['url'])) { continue; }
+				$acc[$v] = [
 					'version' => $v,
 					'url' => $info['url'],
 					'tag' => $info['tag'],
@@ -463,7 +608,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 			
 			$data = [];
 			
-			// TODO: only execute this is 'data' is in the query
+			// TODO: only execute this if 'data' is in the query
 			if(is_array($browse_info['additionalData'])) {
 				foreach($browse_info['additionalData'] as $k => $f) {
 					if (strpos($f, '^') !== false) {
@@ -476,13 +621,36 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 				}
 			}
 			
+			
+			$viewer_class = caGetMediaClass($m[$id]['original']['mimetype']);
+			
+			switch($viewer_class) {
+				case 'image':
+					$viewer_url = $m[$id]['iiif']['url'];
+					break;
+				case 'video':
+					$viewer_url = isset($m[$id]['h264_hi']) ? $m[$id]['h264_hi']['url'] : $m[$id]['original']['url'];
+					break;
+				case 'audio':
+					$viewer_url = isset($m[$id]['mp3']) ? $m[$id]['mp3']['url'] : $m[$id]['original']['url'];
+					break;
+				case 'document':
+					$viewer_url = isset($m[$id]['compressed']) ? $m[$id]['compressed']['url'] : $m[$id]['original']['url'];
+					break;
+				default:
+					$viewer_url = $m[$id]['original']['url'];
+					break;
+			}
+			unset($m[$id]['iiif']);
 			$ret[] = [
 				'id' => $id,
 				'title' => $qr->get("{$table}.preferred_labels", ['checkAccess' => $user_access_values]),
 				'detailUrl' => caDetailUrl($table, $id),
+				'viewerUrl' => $viewer_url,
+				'viewerClass' => $viewer_class,
 				'identifier' => $qr->get("{$table}.idno", ['checkAccess' => $user_access_values]),
 				'rank' => $i,
-				'media' => $m[$id],
+				'media' => is_array($m[$id]) ? array_values($m[$id]) : null,
 				'data' => $data
 			];
 			$i++;

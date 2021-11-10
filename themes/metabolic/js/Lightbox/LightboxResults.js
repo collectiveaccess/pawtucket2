@@ -184,7 +184,7 @@ class LightboxResults extends React.Component {
 			default:
 				return (
 					<div className="row"  id="browseResultsContainer" style={{scrollBehavior: 'smooth'}}>
-						<div className="col-md-8 bResultList">
+						<div className="col-md-8 bResultList" style={{'margin-top': '125px'}}>
 
             {/* TODO: put save sort button in lightbox controls, needs to have access to the order of the item Id's first */}
               {this.context.state.showSortSaveButton == true ?
@@ -223,7 +223,7 @@ class LightboxResults extends React.Component {
 							<div className="bRightCol position-fixed vh-100 mr-3">
 								<div id="accordion">
 
-									<div className="card">
+									{/*<div className="card">
 										<div className="card-header">
 											<a data-toggle="collapse" href="#bRefine" role="button" aria-expanded="false" aria-controls="collapseFilter">Filter By</a>
 										</div>
@@ -231,7 +231,7 @@ class LightboxResults extends React.Component {
 											<LightboxCurrentFilterList/>
 											<LightboxFacetList facetLoadUrl={this.props.facetLoadUrl}/>
 										</div>
-									</div>
+									</div>*/}
 
 									{/*
 									<div className="card">
@@ -254,14 +254,14 @@ class LightboxResults extends React.Component {
 										</div>
 									</div>
 
-									<div className="card">
+									{/*<div className="card">
 										<div className="card-header">
 											<a data-toggle="collapse" href="#setShare" role="button" aria-expanded="false" aria-controls="collapseShare">Share</a>
 										</div>
 										<div id="setShare" className="card-body collapse" data-parent="#accordion">
 											<ShareBlock setID={this.context.state.id} />
 										</div>
-									</div>
+									</div>*/}
 
 									</div>
 									<div className="forceWidth">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</div>

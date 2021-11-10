@@ -40,7 +40,7 @@
     
 	<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
 		<?php print caNavLink(caGetThemeGraphic("metabolic/metabolicStudioLogo.png", array("alt" => "Metabolic Studio")), "navbar-brand", "", "Front", "Index"); ?>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+		<button class="navbar-toggler p-2" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
@@ -49,6 +49,7 @@
 				_t('Find') => ['controller' => 'Browse', 'action' => 'Objects'],
 				_t('Actions') => ['controller' => 'Listing', 'action' => 'Actions'],
 				_t('Chronology') => ['controller' => 'Chronology', 'action' => 'View'],
+				//_t('Activity') => ['controller' => 'Activity', 'action' => 'View'],
 				#_t('Collections') => ['controller' => 'Gallery', 'action' => 'Index'],
 				#_t('About') => ['controller' => 'About', 'action' => 'Studio']
 			  ])); ?>

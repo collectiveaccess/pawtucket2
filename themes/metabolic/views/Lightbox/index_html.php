@@ -24,6 +24,8 @@
  */
 	$export_formats = $this->getVar('export_formats');
 	$config = $this->getVar('config');
+	
+	if(!($set_id = $this->request->getParameter('set_id', pInteger))) { $set_id = null; }
 ?>
 
 <div id="lightbox"></div>
@@ -36,7 +38,7 @@
 			baseUrl: "<?= __CA_URL_ROOT__."/service.php"; ?>",
 			siteBaseUrl: "<?= __CA_URL_ROOT__."/index.php"; ?>/Lightbox",
 			
-            showLastLightboxOnLoad: <?= ((bool)$this->request->getParameter('showList', pInteger)) ? 'false' : 'true'; ?>,
+            <?= $set_id ? "showLastLightboxOnLoad: {$set_id}," : ""; ?>
 			view: "thumbnails",
 			browseConfig: <?= json_encode($config->get("lightboxBrowse")); ?>,
 			exportFormats: <?= json_encode($export_formats); ?>,

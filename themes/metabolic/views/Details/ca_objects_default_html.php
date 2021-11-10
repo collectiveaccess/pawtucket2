@@ -4,7 +4,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2019 Whirl-i-Gig
+ * Copyright 2013-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -39,10 +39,13 @@
 	$vn_representation_id = $this->getVar("representation_id");
 	$va_representation_tags = $this->getVar("representation_tags");
 	$va_config_options = 	$this->getVar("config_options");
-
+	
+	
+	$title = $t_object->getWithTemplate('<H1><unit relativeTo="ca_objects.parent"><ifdef code="ca_objects.preferred_labels.name"><l>^ca_objects.preferred_labels.name</l> → </ifdef></unit><ifdef code="ca_objects.preferred_labels.name">^ca_objects.preferred_labels.name</ifdef></H1>');
+	MetaTagManager::setWindowTitle(__CA_APP_DISPLAY_NAME__.": ".strip_tags($title));
 
 	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl("*", "*", "*"));
-	MetaTagManager::addMetaProperty("og:title", ($va_config_options["og_title"]) ? $t_object->getWithTemplate($va_config_options["og_title"]) : $t_object->get("ca_objects.preferred_labels.name"));
+	MetaTagManager::addMetaProperty("og:title", ($va_config_options["og_title"]) ? $t_object->getWithTemplate($va_config_options["og_title"]) : $title);
 	MetaTagManager::addMetaProperty("og:type", ($va_config_options["og_type"]) ? $va_config_options["og_type"] : "website");
 	if($va_config_options["og_description"] && ($vs_tmp = $t_object->getWithTemplate($va_config_options["og_description"]))){
 		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
@@ -65,7 +68,12 @@
 ?>
 <div class="row borderBottom">
 	<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
-		{{{<ifdef code="ca_objects.preferred_labels.name"><H1>^ca_objects.preferred_labels.name</H1></ifdef>}}}
+		<?= $title; ?>
+		
+		{{{<h3><case>
+<ifdef code="ca_objects.date">^ca_objects.date%delimiter=,_</ifdef>
+<ifdef code="ca_objects.date">^ca_objects.parent.date%delimiter=,_</ifdef>
+</case></h3>}}}
 	</div>
 </div>
 <div class="row">
@@ -89,56 +97,51 @@
 ?>
 		<div id='detailShareButtons' class="mt-2">
 			<div class='detailShareButton'>
-				<div class="fb-share-button" data-href="<?php print $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" data-layout="button" data-size="small"><a target="_blank" href="<?php print $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" class="fb-xfbml-parse-ignore">Share</a></div>
+				<div class="fb-share-button" data-href="<?= $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" data-layout="button" data-size="small"><a target="_blank" href="<?= $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" class="fb-xfbml-parse-ignore">Share</a></div>
 			</div>
 		</div>
 <?php
 	}
-				# Comment/inquire/download pdf/lightbox
-				if ($vn_comments_enabled || $vn_pdf_enabled || $vn_inquire_enabled || $vn_download_all_enabled || caDisplayLightbox($this->requests)) {
-						
-					print '<div id="detailTools" class="mt-2">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><ion-icon name="chatboxes"></ion-icon> <span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</span></a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
+			# Comment/inquire/download pdf/lightbox
+			if ($vn_pdf_enabled || $vn_inquire_enabled || $vn_download_all_enabled || caDisplayLightbox($this->requests)) {
+					
+				print '<div id="detailTools" class="mt-2">';
+				if ($vn_pdf_enabled || $vn_download_all_enabled) {
+					print "<div class='detailTool'><div class='dropdown'><a class='dropdown-toggle' role='button' id='DownloadButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><ion-icon name='download'></ion-icon> Download</a>";
+					print "<div class='dropdown-menu' aria-labelledby='DropdownButton'>";
+					if($vn_pdf_enabled){
+						print caDetailLink("Download PDF Summary", "dropdown-item", "ca_objects",  $vn_id, array("view" => "pdf", "export_format" => "_pdf_ca_objects_summary"));
 					}
-					if ($vn_pdf_enabled || $vn_download_all_enabled) {
-						print "<div class='detailTool'><div class='dropdown'><a class='dropdown-toggle' role='button' id='DownloadButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><ion-icon name='download'></ion-icon> Download</a>";
-						print "<div class='dropdown-menu' aria-labelledby='DropdownButton'>";
-						if($vn_pdf_enabled){
-							print caDetailLink("Download PDF Summary", "dropdown-item", "ca_objects",  $vn_id, array("view" => "pdf", "export_format" => "_pdf_ca_objects_summary"));
-						}
-						if($vn_download_all_enabled){
-							if(is_array($va_download_all_types) && sizeof($va_download_all_types)){
-								foreach($va_download_all_types as $vs_dl_name => $vs_dl_type){
-									print caNavLink("Download ".$vs_dl_name, "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "download_type" => $vs_dl_type, "download" => 1, "exclude_ancestors" => 1));
-								}
+					if($vn_download_all_enabled){
+						if(is_array($va_download_all_types) && sizeof($va_download_all_types)){
+							foreach($va_download_all_types as $vs_dl_name => $vs_dl_type){
+								print caNavLink("Download ".$vs_dl_name, "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "download_type" => $vs_dl_type, "download" => 1, "exclude_ancestors" => 1));
 							}
-							#print caNavLink("Download Original", "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "version" => "original", "download" => 1));
 						}
-						print "</div></div></div>";
+						#print caNavLink("Download Original", "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "version" => "original", "download" => 1));
 					}
-					if ($vn_inquire_enabled) {
-						print "<div class='detailTool'>".caNavLink("<ion-icon name='ios-mail'></ion-icon> <span>Inquire</span>", "", "", "Contact", "form", array("table" => "ca_objects", "id" => $vn_id))."</div>";
-					}
-					if(caDisplayLightbox($this->requests) && $this->request->isLoggedIn()){
-						print "<div class='detailTool'><div id='lightboxManagement'></div></div>";
-					}
-					$vs_email_subject = rawurlencode("Share from: aliceb.metabolicstudio.org");
-					$vs_email_body = rawurlencode($t_object->getWithTemplate("<ifdef code='ca_objects.preferred_labels.name'>^ca_objects.preferred_labels.name\n</ifdef><ifdef code='ca_objects.idno'>^ca_objects.idno\n\n</ifdef>").$this->request->config->get("site_host").caNavUrl("*", "*", "*"));
-					print "<div class='detailTool'><a title='Share via e-mail' href='mailto:?body=".$vs_email_body."&subject=".$vs_email_subject."'><ion-icon name='ios-mail'></ion-icon> <span>E-mail</span></a></div>";
-					print "<div class='detailTool'><a title='Copy URL' href='#' onClick='copyUrl(); return false;' class='detailCopy'><ion-icon name='ios-link'></ion-icon> <span>Copy URL</span></a></div>";
-					print '</div><!-- end detailTools -->';
-				}				
+					print "</div></div></div>";
+				}
+				if ($vn_inquire_enabled) {
+					print "<div class='detailTool'>".caNavLink("<ion-icon name='ios-mail'></ion-icon> <span>Inquire</span>", "", "", "Contact", "form", array("table" => "ca_objects", "id" => $vn_id))."</div>";
+				}
+				if(caDisplayLightbox($this->requests) && $this->request->isLoggedIn()){
+					print "<div class='detailTool'><div id='lightboxManagement'></div></div>";
+				}
+				$vs_email_subject = rawurlencode("Share from: aliceb.metabolicstudio.org");
+				$vs_email_body = rawurlencode($t_object->getWithTemplate("<ifdef code='ca_objects.preferred_labels.name'>^ca_objects.preferred_labels.name\n</ifdef><ifdef code='ca_objects.idno'>^ca_objects.idno\n\n</ifdef>").$this->request->config->get("site_host").caNavUrl("*", "*", "*"));
+				print "<div class='detailTool'><a title='Share via e-mail' href='mailto:?body=".$vs_email_body."&subject=".$vs_email_subject."'><ion-icon name='ios-mail'></ion-icon> <span>E-mail</span></a></div>";
+				print "<div class='detailTool'><a title='Copy URL' href='#' onClick='copyUrl(); return false;' class='detailCopy'><ion-icon name='ios-link'></ion-icon> <span>Copy URL</span></a></div>";
+				print '</div><!-- end detailTools -->';
 
+			}				
 ?>
-				<div id="mediaDisplay" class="detailPrimaryMedia mt-3">
+				<div id="mediaDisplay" class="detailPrimaryMedia my-4">
 					<!-- MediaViewer.js React app goes here -->
 				</div>
 				
-				<HR></HR>
+				<!-- <HR></HR> -->
+
 				<div class="row">
 					<div class="col-12 col-md-12 text-center metapoetics">
 					<?= strip_tags($t_object->get('ca_objects.metapoetics.metapoetics_text'), '<b><em><i><strong><ul><ol><li><blockquote><u><s><sup><sub>'); ?>
@@ -152,16 +155,18 @@
 								<unit relativeTo="ca_objects.parent"><l>^ca_objects.preferred_labels.name</l></unit>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_objects.date">
-							<div class="mb-3">
-								^ca_objects.date%delimiter=,_
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_objects.parent.date">
-							<div class="mb-3">
-								^ca_objects.parent.date%delimiter=,_
-							</div>
-						</ifdef>}}}
+						
+<?php
+						$dates = [];
+						foreach(['ca_objects.date', 'ca_objects.parent.date'] as $d) {
+							if(is_array($dt = $t_object->get($d, ['returnAsArray' => true]))) {
+								$dates = array_merge($dates, $dt);
+							}
+						}
+						if(sizeof($dates) > 0) {
+							print '<div class="mb-3">'.join(", ", array_unique($dates))."</div>\n";
+						}
+?>
 						{{{<ifdef code="ca_objects.description">
 							<div class="mb-3">
 								^ca_objects.description
@@ -172,45 +177,21 @@
 								<unit relativeTo="ca_objects.url" delimiter="<br/>"><a href="^ca_objects.url" target="_blank">^ca_objects.url</a> <ion-icon name="open"></ion-icon></unit>
 							</div>
 						</ifcount>}}}
-<!--
 
-						{{{<ifdef code="ca_objects.dim_width|ca_objects.dim_height|ca_objects.dim_depth|ca_objects.note">
+
+						{{{<ifdef code="ca_objects.dimensions.dim_width|ca_objects.dimensions.dim_height|ca_objects.dimensions.dim_depth">
 							<div class="mb-3">
 								<div class="label">Dimensions</div>
-								<unit relativeTo="ca_objects.dimensions" delimiter="; ">^dim_width x ^dim_height<ifdef code='dim_depth'> x ^dim_depth</ifdef><ifdef code='note'>(^note)</ifdef></unit>
+								<unit relativeTo="ca_objects.dimensions" delimiter="; ">^dim_width<ifdef code='ca_objects.dimensions.dim_width,ca_objects.dimensions.dim_height'> x </ifdef>^dim_height<ifdef code='ca_objects.dimensions.dim_depth'> x ^dim_depth</ifdef><ifdef code='ca_objects.dimensions.note'> (^note)</ifdef></unit>
 							</div>
 						</ifdef>}}}
--->
 					</div>
 					<div class="col-12 col-md-6">
-											
-<!--						{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1">
-							<div class="mb-3">
-								<div class="label">Exhibitions</div>
-								<unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter="<br/><br/>">
-									<l>^ca_occurrences.preferred_labels.name</l><case><ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1"><br/></ifcount><ifdef code="ca_occurrences.date"><br/></ifdef></case><ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1"><unit relativeTo="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" delimiter=", ">^ca_entities.preferred_labels</unit><ifdef code="ca_occurrences.date">, </ifdef></ifcount><ifdef code="ca_occurrences.date">^ca_occurrences.date</ifdef>
-								</unit>
-							</div>
-						</ifcount>}}}-->
-
-<!--						{{{<ifcount code="ca_collections" min="1">
-							<div class="mb-3">
-								<div class="label">Action<ifcount code="ca_collections" min="2">s</ifcount></div>
-								<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
-							</div>
-						</ifcount>}}}
-<!--						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
-							<div class="mb-3">
-								<div class="label">Event<ifcount code="ca_occurrences" restrictToTypes="action" min="2">s</ifcount></div>
-								<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></unit>
-							</div>
-						</ifcount>}}}
--->
 <?php
-						$colls = $t_object->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_collections.name"));
+						$colls = $t_object->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.name"));
 						
 						if($t_parent->isLoaded()) { 
-							$colls += $t_parent->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_collection_labels.name"));
+							$colls += $t_parent->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_collection_labels.name"));
 						}
 						
 						$coll_links = [];
@@ -223,30 +204,42 @@
 ?>
 							<div class="mb-3">
 								<div class="label">Actions</div>
-								<?= join($coll_links, ", "); ?>
+								<?= join(array_unique($coll_links), ", "); ?>
 							</div>
 <?php
 						}
 
 
 						foreach(['action' => 'Events', 'exhibition' => 'Exhibitions', 'lecture_presentation' => 'Lectures/Presentations', 'publication' => 'Publications'] as $occ_type => $occ_typename) {
-							$occs = $t_object->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_occurrences.name"));
+							$occs = $t_object->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_occurrences.name"));
 						
 							if($t_parent->isLoaded()) { 
-								$occs += $t_parent->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_occurrence_labels.name"));
+								$occs += $t_parent->get("ca_occurrences", array("restrictToTypes" => [$occ_type], "returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_occurrence_labels.name"));
 							}
+						
+							$occs = array_reduce($occs, function($c, $i) {
+								$occ_id = $i['occurrence_id'];
+								if(sizeof(array_filter($c, function($v) use ($occ_id) {
+									return ($v['occurrence_id'] == $occ_id);
+								})) > 0) {
+									return $c;
+								}
+								$c[] = $i;
+								return $c;
+							}, []);
 						
 							$occ_links = [];
 							if(is_array($occs) && sizeof($occs)){
 								foreach($occs as $occ){
-									$occ_links[] = caDetailLink($occ['name'], '', 'ca_occurrences', $occ['occurrence_id']);
+									$occ_links[] = "<p>".caDetailLink($occ['name'], '', 'ca_occurrences', $occ['occurrence_id'])."</p>";
 								}
 							}
+							$occ_links = array_unique($occ_links);
 							if(sizeof($occ_links)) {
 	?>
 								<div class="mb-3">
 									<div class="label"><?= $occ_typename; ?></div>
-									<?= join($occ_links, ", "); ?>
+									<?= join($occ_links, ""); ?>
 								</div>
 	<?php
 							}
@@ -254,10 +247,10 @@
 
 
 						# --- rel entities by role
-						$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_entity_labels.surname"));
+						$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_entity_labels.surname"));
 						
 						if($t_parent->isLoaded()) { 
-							$va_entities += $t_parent->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_value, "sort" => "ca_entity_labels.surname"));
+							$va_entities += $t_parent->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "sort" => "ca_entity_labels.surname"));
 						}
 						if(is_array($va_entities) && sizeof($va_entities)){
 							$va_entities_by_role = array();
@@ -274,7 +267,7 @@
 								<div class="mb-3">
 									<div class="label">Visionary</div>
 <?php
-									print join($va_visionary, ", ");
+									print join(array_unique($va_visionary), ", ");
 ?>
 								</div>
 <?php
@@ -284,9 +277,9 @@
 							foreach($va_entities_by_role as $vs_role => $va_names){
 ?>
 								<div class="mb-3">
-									<div class="label"><?php print $vs_role; ?></div>
+									<div class="label"><?= $vs_role; ?></div>
 <?php
-									print join($va_names, ", ");
+									print join(array_unique($va_names), ", ");
 ?>
 								</div>
 <?php
@@ -295,9 +288,9 @@
 						
 						# --- bio-regions
 						$t_list_item = new ca_list_items();
-						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
+						$va_bio_regions = $t_object->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_values));
 						if($t_parent->isLoaded()) { 
-							$va_bio_regions += $t_parent->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_value));
+							$va_bio_regions += $t_parent->get("ca_objects.bio_regions", array("returnAsArray" => true, "checkAccess" => $va_access_values));
 						}
 						
 						if(is_array($va_bio_regions) && sizeof($va_bio_regions)){
@@ -313,7 +306,7 @@
 									$t_list_item->load($vn_bio_region_id);
 									$va_bio_region_links[] = caNavLink($t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "bio_regions_facet", "id" => $vn_bio_region_id));
 								}
-								print join($va_bio_region_links, ", ");
+								print join(array_unique($va_bio_region_links), ", ");
 ?>
 							</div>
 <?php								
@@ -338,7 +331,7 @@
 										$va_subject_links[] = caNavLink($t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id));
 									}
 								}
-								print join($va_subject_links, ", ");
+								print join(array_unique($va_subject_links), ", ");
 ?>
 							</div>
 <?php
@@ -386,7 +379,22 @@
 						
 					</div>
 				</div>
-						
+
+
+<!------------------------------------>
+
+	<?php
+		# Comment
+		if ($vn_comments_enabled) {
+?>				
+			<div id='commentForm' class="my-3"> </div>
+<?php				
+		}
+?>
+
+<!------------------------------------>
+
+
 	</div><!-- end col -->
 	<div class='navLeftRight text-right col-sm-1 col-lg-2'>
 <?php
@@ -432,7 +440,7 @@
 ?>
 		<div class="row mt-3">
 			<div class="col-7 mt-5">
-				<H1><?php print $vs_related_title; ?></H1>
+				<H1><?= $vs_related_title; ?></H1>
 			</div>
 			<div class="col-5 mt-5 text-right">
 <?php
@@ -483,73 +491,66 @@
         'selector': '#lightboxManagement',
 				'key': '<?= $this->getVar('key'); ?>', 
         'data': {
-          baseUrl: "<?php print __CA_URL_ROOT__."/service.php"; ?>",
-					lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
+          baseUrl: "<?= __CA_URL_ROOT__."/service.php"; ?>",
+					lightboxes: <?= json_encode($this->getVar('lightboxes')); ?>,
 					table: 'ca_objects',
-					id: <?php print (int)$vn_id; ?>,
-        	lightboxTerminology: <?php print json_encode(caGetLightboxDisplayName()); ?>
+					id: <?= (int)$vn_id; ?>,
+        	lightboxTerminology: <?= json_encode(caGetLightboxDisplayName()); ?>
         }
     };
 </script>
 <?php
 	}
 ?>
+
 <script type="text/javascript">	
-	pawtucketUIApps['PawtucketComment'] = {
-        'selector': '#commentForm',
-        'data': {
-            item_id: <?php print $vn_id; ?>,
-            tablename: 'ca_objects',
-            form_title: '<h1>Add Your Comment</h1>',
-            list_title: '<h1 class="mt-5">Comments</h1>',
-            tag_field_title: 'Tags',
-            comment_field_title: 'Comment',
-            login_button_text: 'Login to Add Your Comment',
-            comment_button_text: 'Send',
-            no_tags: true,
-            show_form: <?php print ($this->request->isLoggedIn()) ? "true" : "false"; ?>
-        }
-    };
-    pawtucketUIApps['MediaViewer'] = {
-        'selector': '#mediaDisplay',
-        'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => $va_access_values]); ?>,
-        'width': '100%',
-        'height': '500px',
-        'controlHeight': '72px',
-        'data': {
-        
-        }
-    };
+	pawtucketUIApps['Comment'] = {
+			'selector': '#commentForm',
+			'key': '<?= $this->getVar('key'); ?>',
+			'baseUrl': '/service.php/UserGeneratedContent',
+			'searchUrl': '/index.php/MultiSearch/Index/search/',
+			'data': {
+					item_id: <?= $vn_id; ?>,
+					tablename: 'ca_objects',
+					show_form: <?= ($this->request->isLoggedIn()) ? "true" : "false"; ?>,
+					login_button_text: 'Login to Add Your Comment',
+					comment_button_text: 'Comment',
+
+					form_title: '<span>Add Your Comment</span>',
+					list_title: '<span class="mt-5">Comments</span>',
+					tag_field_title: 'Tags',
+					comment_field_title: 'Comment',
+					no_tags: true,
+			},
+  };
+
+	pawtucketUIApps['MediaViewer'] = {
+			'selector': '#mediaDisplay',
+			'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => $va_access_values]); ?>,
+			'width': '800px',
+			'height': '500px',
+			'controlHeight': '72px',
+			'options': {
+				'pdfViewer': {
+					'showThumbnails': true,
+					'showSearch': false,
+					'showZoom': true,
+					'showPaging': true,
+					'showRotate': true,
+					'showTwoPageSpread': true,
+					'showFullScreen': true,
+					'showToolBar': true
+				}
+			}
+	};
     
 </script>
+
 <script type="text/javascript">	
 	function copyUrl() {
 		if (!window.getSelection) {
-		alert('Please copy the URL from the location bar.');
-		return;
-		}
-		const dummy = document.createElement('p');
-		dummy.textContent = window.location.href;
-		document.body.appendChild(dummy);
-
-		const range = document.createRange();
-		range.setStartBefore(dummy);
-		range.setEndAfter(dummy);
-
-		const selection = window.getSelection();
-		// First clear, in case the user already selected some other text
-		selection.removeAllRanges();
-		selection.addRange(range);
-
-		document.execCommand('copy');
-		document.body.removeChild(dummy);
-	}
-</script>
-<script type="text/javascript">	
-	function copyUrl() {
-		if (!window.getSelection) {
-		alert('Please copy the URL from the location bar.');
-		return;
+			alert('Please copy the URL from the location bar.');
+			return;
 		}
 		const dummy = document.createElement('p');
 		dummy.textContent = window.location.href;

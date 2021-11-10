@@ -40,11 +40,25 @@ const ViewImportPage = (props) => {
   useEffect(() => {
     if (sessionKey !== null) {
       getSession(baseUrl, sessionKey, function (data) {
-        console.log("getSession: ", data);
+        // console.log("getSession: ", data);
         if (data.formData !== "null") {
           let prevFormData = JSON.parse(data.formData);
-          // console.log('prev formData: ', prevFormData);
-          setFormData(Object.entries(prevFormData));
+          
+          // console.log('prev formData: ', prevFormData.data);
+          // setFormData(Object.entries(prevFormData));
+
+          let tempFormData = []
+
+          for (const [key, value] of Object.entries(prevFormData.data)) {
+            // console.log(`${key}: ${value}`);
+            if (typeof value !== 'object' && value !== null && value !== undefined){
+              tempFormData.push(([key, value]))
+            }
+          }
+
+          // console.log("tempFormData: ", tempFormData);
+
+          setFormData(tempFormData);
 
           // Set list of previously uploaded files (not all are necessarily complete, and user may need to restart uploads)
           setPreviousFilesUploaded(data.filesUploaded);
@@ -63,12 +77,32 @@ const ViewImportPage = (props) => {
   if(formData !== null && schemaProperties){
     return (
       <div className='container-fluid' style={{ maxWidth: '60%' }}>
-        <button type='button' className='btn btn-secondary mb-5' onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
+        <button type='button' className='btn btn-secondary mb-4' onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
 
         <h2 className="mb-2">Files Uploaded:</h2>
-        {(previousFilesUploaded.length > 10) ? 
+        {(previousFilesUploaded.length > 100) ?
+          <div className="mt-3 overflow-auto" style={{ width: "100%", maxHeight: "200px", boxShadow: "2px 2px 2px 2px #D8D7CE" }}>
+            {/* <h2 className="p-1"><strong>Previously Uploaded Files: </strong></h2> */}
+            <ul className="mb-0">
+              {prevFiles.slice(0, 100).map((file, index) => {
+                return <li className="mb-0" key={index}>{file}</li>
+              })}
+            </ul>
+            <p className="p-1"><strong>and {prevFiles.length - 100} more</strong></p>
+          </div>
+          :
+          <div className="mt-3 overflow-auto" style={{ width: "100%", maxHeight: "200px", boxShadow: "2px 2px 2px 2px #D8D7CE" }}>
+            {/* <h2 className="p-1"><strong>Previously Uploaded Files: </strong></h2> */}
+            <ul className="mb-0">
+              {prevFiles.map((file, index) => {
+                return <li className="mb-0" key={index}>{file}</li>
+              })}
+            </ul>
+          </div>
+        }
+        {/* {(previousFilesUploaded.length > 10) ? 
           <p>{prevFiles.slice(0, 10).join(", ")} <strong> and {prevFiles.length - 10} more</strong></p>
-        : <p>{prevFiles.join(", ")}</p>}
+        : <p>{prevFiles.join(", ")}</p>} */}
 
         <div className='row mt-5 mb-2'>
           <div className='col text-left'>
@@ -79,6 +113,7 @@ const ViewImportPage = (props) => {
         <table className="table mb-5">
           <tbody>
             {formData.map((field, index) => {
+              // console.log("field", field);
               let label = field[0];
               return(
                 <tr key={index}>

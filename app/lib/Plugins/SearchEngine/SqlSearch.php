@@ -486,6 +486,15 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		$va_rel_type_ids = ($va_tmp[1] && $vs_rel_table) ? caMakeRelationshipTypeIDList($vs_rel_table, preg_split("![,;]+!", $va_tmp[1])) : null;
 		
 		if (!($t_table = Datamodel::getInstanceByTableName($vs_table, true))) { 
+			
+			$o_search_indexing_config = Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');	
+			$va_config = $o_search_indexing_config->getAssoc(Datamodel::getTableName($pn_subject_tablenum));
+			
+			if(isset($va_config['_access_points'][$va_tmp[0]])) {
+				$fld = $va_config['_access_points'][$va_tmp[0]]['fields'][0];
+		
+				return $this->_getElementIDForAccessPoint($pn_subject_tablenum, $fld);
+			}
 			return array('access_point' => $va_tmp[0]);
 		}
 		$vs_table_num = $t_table->tableNum();

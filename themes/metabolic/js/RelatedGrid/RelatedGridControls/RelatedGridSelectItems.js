@@ -22,10 +22,10 @@ const RelatedGridSelectItems = (props) => {
   return (
     <div id="bSelectOptions">
 			<div className="dropdown show">
-				<a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<a href="#" role="button" id="selectItemsIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<ion-icon name="checkmark-circle-outline" color={(showSelectButtons) ? 'danger' : ''}></ion-icon>
 				</a>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="selectItemsIcon">
           {showSelectButtons ?
             <a class="dropdown-item" onClick={(e)=>clearSelectedItems(e)}>{(selectedGridItems.length >= 1) ? "Clear selection" : 'Cancel selection'}</a>
             :

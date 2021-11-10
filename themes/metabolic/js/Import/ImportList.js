@@ -2,22 +2,26 @@ import React, { useContext, useState, useEffect } from 'react';
 import { ImportContext } from './ImportContext';
 import ImportedItem from './ImportList/ImportedItem';
 
-import { getSessionList } from './ImportQueries';
+import { getSessionList, getFormList } from './ImportQueries';
 const baseUrl = pawtucketUIApps.Import.data.baseUrl;
 
 const ImportList = (props) => {
 
-  const { isSubmitted, setIsSubmitted, sessionList, setSessionList } = useContext(ImportContext);
+  const { isSubmitted, setIsSubmitted, sessionList, setSessionList, setFormCode } = useContext(ImportContext);
   const { setViewMode } = useContext(ImportContext);
 
   const [ submittedImports, setSubmittedImports ] = useState([]);  
   const [ unsubmittedImports, setUnsubmittedImports ] = useState([]);
+  const [ formsList, setFormsList ] = useState([]);
 
   useEffect(() => {
     getSessionList(baseUrl, function(data){
-      console.log('sessionList data', data);
       setSessionList(data.sessions);
     });
+    getFormList(baseUrl, function(data){
+      setFormsList(data.forms);
+    });
+
   }, [setSessionList])
 
   useEffect(() => {
@@ -31,8 +35,9 @@ const ImportList = (props) => {
 
   }, [sessionList])
 
-  const openNewImportPage = (e) => {
+  const openNewImportPage = (e, form_code) => {
     setViewMode('add_new_import_page');
+    setFormCode(form_code);
     e.preventDefault();
   }
 
@@ -49,7 +54,18 @@ const ImportList = (props) => {
             <h1>Your Imports</h1>
           </div>
           <div className='col text-right'>
-            <a href='#' className='btn btn-primary' onClick={(e) => openNewImportPage(e)}>+ New Import</a>
+           <div className="dropdown">
+              <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                + New Import
+              </button>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {formsList.map((form, index) => {
+                  return (
+                    <a className="dropdown-item" key={index} href="#" onClick={(e) => openNewImportPage(e, form.code)}>{form.title}</a>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -65,7 +81,19 @@ const ImportList = (props) => {
             <h1>Your Imports</h1>
           </div>
           <div className='col text-right'>
-            <a href='#' className='btn btn-primary' onClick={(e) => openNewImportPage(e)}>+ New Import</a>
+            {/* <a href='#' className='btn btn-primary' onClick={(e) => openNewImportPage(e)}>+ New Import</a> */}
+            <div className="dropdown">
+              <button className="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                + New Import
+              </button>
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {formsList.map((form, index) => {
+                  return (
+                    <a className="dropdown-item" key={index} href="#" onClick={(e) => openNewImportPage(e, form.code)}>{form.title}</a>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -73,7 +101,8 @@ const ImportList = (props) => {
           <>
             <div className='row mb-1'>
               <div className='col text-left'>
-                <h2>Current Imports</h2>
+                {/* <h2>Current Imports</h2> */}
+                <h2>Imports In Progress</h2>
               </div>
             </div>
 
@@ -81,7 +110,7 @@ const ImportList = (props) => {
               <thead>
                 <tr>
                   <th scope="col">Label</th>
-                  <th scope="col">Session Key</th>
+                  {/* <th scope="col">Session Key</th> */}
                   <th scope="col">Last Activity On</th>
                   <th scope="col">Status</th>
                   <th scope="col">Number Of Files</th>
@@ -115,7 +144,7 @@ const ImportList = (props) => {
           <>
             <div className='row mb-1'>
               <div className='col text-left'>
-                <h2>Submitted Imports</h2>
+                <h2>Recently Submitted Imports</h2>
               </div>
             </div> 
             
@@ -123,7 +152,7 @@ const ImportList = (props) => {
               <thead>
                 <tr>
                   <th scope="col">Label</th>
-                  <th scope="col">Session Key</th>
+                  {/* <th scope="col">Session Key</th> */}
                   <th scope="col">Last Activity On</th>
                   <th scope="col">Status</th>
                   <th scope="col">Number Of Files</th>

@@ -80,10 +80,13 @@ class Lightbox extends React.Component{
 			labelSingular: null,
 			labelPlural: null,
 
+			paginatedPageNumber: 1, //the current page of the list of lightboxes
+			lightboxSearchValue: '', //the search value for the list of lightboxes
+
 			selectedItems: [],     // id numbers of the selected objects within a lightbox
 
-     		showSelectButtons: false, //checkmark buttons to select a lightbox item
-      		showSortSaveButton: false, // button appears when the user selected a sort option for the lightbox so they can choose to save that order
+     	showSelectButtons: false, //checkmark buttons to select a lightbox item
+      showSortSaveButton: false, // button appears when the user selected a sort option for the lightbox so they can choose to save that order
 			dragDropMode: false,   // is the user currently in drag and drop mode for a lightbox
 			userSort: false,       // true if user is customizing their sort, false if using a sort option
 
@@ -130,6 +133,10 @@ class Lightbox extends React.Component{
 		newJWTToken(this.props.baseUrl, state.tokens, function(data) {
 			state.tokens.access_token = data.data.refresh.jwt;
 			that.setState(state);
+			
+			if(parseInt(that.props.showLastLightboxOnLoad)) {
+				that.loadLightbox(parseInt(that.props.showLastLightboxOnLoad));
+			}
 			fetchLightboxList(that.props.baseUrl, state.tokens, function(data) {
 				state.lightboxList = data ? data : {};
 				that.setState(state);
@@ -177,7 +184,7 @@ class Lightbox extends React.Component{
 			</div>)
 			:
 			 (<div className="row">
-         		<div className="col-sm-12"><LightboxList lightboxes={this.state.lightboxList}/></div>
+         		<div className="col-sm-12"><LightboxList lightboxes={this.state.lightboxList} paginatedPageNumber={this.state.paginatedPageNumber} searchValue={this.state.lightboxSearchValue}/></div>
         </div>);
 
 		return(

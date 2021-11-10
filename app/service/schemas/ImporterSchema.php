@@ -100,6 +100,10 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::string(),
 						'description' => 'Information about each field in the form, serialized as JSON'
 					],
+					'uiSchema' => [
+						'type' => Type::string(),
+						'description' => 'UI display configuration about each field in the form, serialized as JSON'
+					],
 				]
 			]),
 			$importerFormSummaryType = new ObjectType([
@@ -185,16 +189,20 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::string(),
 						'description' => 'Display label for session'
 					],
+					'source' => [
+						'type' => Type::string(),
+						'description' => 'Source of session data'
+					],
 					'files' => [
 						'type' => Type::int(),
 						'description' => 'Number of files uploaded'
 					],
 					'totalBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Total quantity of data for upload, in bytes'
 					],
 					'receivedBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Quantity of data received, in bytes'
 					],
 					'totalSize' => [
@@ -220,11 +228,11 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'File name'
 					],
 					'totalBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Total quantity of data in file, in bytes'
 					],
 					'receivedBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Quantity of data received, in bytes'
 					],
 					'totalSize' => [
@@ -302,11 +310,11 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'Data about uploaded files'
 					],
 					'totalBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Total quantity of data for upload, in bytes'
 					],
 					'receivedBytes' => [
-						'type' => Type::int(),
+						'type' => Type::float(),
 						'description' => 'Quantity of data received, in bytes'
 					],
 					'totalSize' => [
@@ -337,6 +345,10 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 					'sessionKey' => [
 						'type' => Type::string(),
 						'description' => 'Session key'
+					],
+					'defaults' => [
+						'type' => Type::string(),
+						'description' => 'Serialized form default values'
 					]
 				]
 			]),

@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import { GridContext } from './GridContext';
 import { ApolloClient, InMemoryCache, createHttpLink, gql } from '@apollo/client';
 import RelatedGridRow from './RelatedGridRow';
@@ -19,7 +19,9 @@ function getGraphQLClient(uri, options=null) {
 
 const RelatedGridList = (props) => {
 
-	const { data, setData, start, itemsPerPage, setTotalItems, currentlySelectedRow, currentlySelectedItem, setRawData, setItemIds, showSelectButtons } = useContext(GridContext)
+	const { data, setData, start, itemsPerPage, setTotalItems, currentlySelectedRow, currentlySelectedItem, setRawData, setItemIds, showSelectButtons, sort, sortDirection } = useContext(GridContext)
+
+	const panel = useRef(null);
 
 	useEffect(() => {
 		const client = getGraphQLClient(props.baseUrl);
@@ -30,13 +32,11 @@ const RelatedGridList = (props) => {
 
 		client.query({
 			query: gql`
-				query ($id: Int!, $table: String!, $gridTable: String!, $fetch: String!, $start: Int!, $limit: Int!)
-				{ content(id: $id, table: $table, gridTable: $gridTable, fetch: $fetch, mediaVersions: ["small", "medium"], start: $start, limit: $limit)
-				{ created, item_count, items { id, label, identifier, detailPageUrl, media { version, url, tag, width, height, mimetype} } }}
-				`, variables: { 'id': id, 'table': table, 'gridTable': gridTable, 'fetch': fetch, 'start': start, 'limit': itemsPerPage }})
+				query ($id: Int!, $table: String!, $gridTable: String!, $fetch: String!, $start: Int!, $limit: Int!, $sort: String, $sortDirection: String, $d: [String])
+				{ content(id: $id, table: $table, gridTable: $gridTable, fetch: $fetch, mediaVersions: ["small", "medium"], start: $start, limit: $limit, sort: $sort, sortDirection: $sortDirection, data: $d)
+				{ created, item_count, items { id, label, identifier, detailPageUrl, data {code, values { code, value }}, media { version, url, tag, width, height, mimetype} } }}
+				`, variables: { 'id': id, 'table': table, 'gridTable': gridTable, 'fetch': fetch, 'start': start, 'limit': itemsPerPage, 'sort': sort, 'sortDirection': sortDirection, 'd': ['ca_objects.altid'] }})
 			.then(function(result) {
-				// console.log("Data was received:", result);
-
 				// Code to convert feed to data format used by grid goes here
 				var items = result.data.content.items;
 				setRawData(items);
@@ -49,14 +49,28 @@ const RelatedGridList = (props) => {
 
 				setTotalItems(result.data.content.item_count);
 
-				//an array of only the ids of the items
+				// An array of only the ids of the items
 				let itemIds = [];
 				for (var j = 0; j < items.length; j++) {
 					itemIds.push(items[j].id);
 				}
 				setItemIds(itemIds);
 			});
-	}, [itemsPerPage]);
+	}, [itemsPerPage, sort, sortDirection]);
+
+	useEffect(() => {
+		// if(currentlySelectedRow != null){
+		// 	panel.current.scrollIntoView(true, {inline: "center"});
+		// }	
+
+		if (panel.current) {
+			// window.scrollTo({
+			// 	behavior: "smooth",
+			// 	top: panel.current.offsetTop + 100
+			// });
+			panel.current.scrollIntoView(true, { inline: "center" });
+		}
+	}, [currentlySelectedRow])
 
   return (
 		<div className='container-fluid related-grid-results'>
@@ -66,8 +80,8 @@ const RelatedGridList = (props) => {
 				if(index === currentlySelectedRow && showSelectButtons === false){
 					return(
 						<div key={index}>
-							<RelatedGridRow key={index} rowItems={row} rowIndex={index}/>
-							<div className='panel active container-fluid mb-3' id={props.rowIndex} >
+							<RelatedGridRow key={index} rowItems={row} rowIndex={index} />
+							<div className='panel active container-fluid mb-3' id={props.rowIndex} ref={panel}>
 								<DetailPanel item={currentlySelectedItem}/>
 							</div>
 						</div>
@@ -76,8 +90,7 @@ const RelatedGridList = (props) => {
 					return(
 						<div key={index}>
 							<RelatedGridRow key={index} rowItems={row} rowIndex={index}/>
-							<div className='panel container-fluid mb-3' id={props.rowIndex} >
-							</div>
+							<div className='panel container-fluid mb-3' id={props.rowIndex}></div>
 						</div>
 					)
 				}

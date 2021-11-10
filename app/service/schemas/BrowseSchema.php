@@ -247,6 +247,14 @@ class BrowseSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::string(),
 						'description' => 'Url to detail for item'
 					],
+					'viewerUrl' => [
+						'type' => Type::string(),
+						'description' => 'Url to view item in media viewer'
+					],
+					'viewerClass' => [
+						'type' => Type::string(),
+						'description' => 'Class of media for media viewer'
+					],
 					'identifier' => [
 						'type' => Type::string(),
 						'description' => 'Item identifier'

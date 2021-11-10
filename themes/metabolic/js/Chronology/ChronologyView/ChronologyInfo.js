@@ -14,7 +14,7 @@ const ChronologyInfo = () => {
     let yearValues = [];
     return (
       <ScrollSyncNode group="a">
-        <div className="col-5 disable-scrollbars " id='info-div'>
+        <div className="col col-md-5 disable-scrollbars portrait" id='info-div'>
           <div style={{ height: '1000px', paddingTop: "5%", paddingBottom: "5%" }}>
             {resultItems.map((item, index) => {
               return (

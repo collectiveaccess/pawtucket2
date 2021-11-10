@@ -105,8 +105,8 @@ $label-font-size: 14px;
 $label-font-weight:bold;
 $label-text-transform:uppercase;
 
-$browse-toolbar-height: 6rem;
-$browse-toolbar-height-tall: 8rem;
+$browse-toolbar-height: auto;
+$browse-toolbar-height-tall: auto;
 
 $main-notification-margins: 25px 0px 25px 0px;
 
@@ -460,14 +460,18 @@ address {
 	a{
 		text-decoration:none;
 	}
+
 	.hpSearch{
 		margin-top:150px;
 		margin-bottom:150px;
 		font-size:1.75rem;
 		font-family:$headings-font;
 		line-height:1.75rem;
+		span{
+			margin: 2px 5px 2px 5px;
+		}
 		input, .btn{
-			margin-top:-.5rem;
+			// margin-top:-.5rem;
 		}
 		.form-control, .form-control:focus{
 			background-color: $gray-2;
@@ -484,6 +488,7 @@ address {
 			font-family:$headings-font;
 		}
 	}
+
 	#frontSlider{
 		margin-left:-15px;
 		margin-right:-15px;
@@ -494,6 +499,9 @@ address {
 		.legend{
 			display:none;
 		}
+		.slick-cloned{
+			display: none;
+		}
 		.slick-prev{
 			left:10px;
 			z-index:100;
@@ -503,6 +511,7 @@ address {
 			z-index:100;
 		}
 	}
+
 	.hpTags{
 		a:hover .bg-2{
 			background-color:$gray-3;
@@ -964,7 +973,7 @@ p.legend a {
 
 	.card.selected{
 		img{
-			border:1px solid $selected-indicator;
+			border: 2px solid $selected-indicator;
 		}
 	}
 
@@ -1091,18 +1100,22 @@ p.legend a {
 	height: $browse-toolbar-height;
 	background-color: $body-bg-color;
 
-	#bExportOptions, #bSelectOptions{
+	#bExportOptions, #bSelectOptions, #bSortOptions, #bLightboxOptions {
 		font-size:1.5em;
 		line-height: 3.5em;
 		float:right;
 		margin-left:20px;
 	}
 
-	#bExportOptions, #bSelectOptions{
+	#bExportOptions, #bSelectOptions, #bSortOptions, #bLightboxOptions {
 		.dropdown-menu{
 			font-size:.5em;
 			line-height:1.2em;
 		}
+	}
+	
+	#bSortOptions div a.active {
+		color: #fff;
 	}
 }
 
@@ -1339,7 +1352,7 @@ h1{
 }
 
 .mediaDisplayFullscreen {
-	position: absolute;
+	position: fixed;
 	top: 0px;
 	left: 0px;
 	width: 100%;
@@ -1371,6 +1384,19 @@ h1{
 	height: 100%;
 }
 
+#pdf-viewer{
+	width: 100%;
+	height: 100%;
+}
+:fullscreen{
+	overflow: scroll !important;
+}
+
+#pdf-viewer:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+}
+
 .mediaViewerPDFViewer {
 	overflow: scroll;
 }
@@ -1379,9 +1405,18 @@ h1{
 	margin: 0 auto;
 }
 
+.react-pdf__Page__canvas{
+	margin-left: 0;
+}
+
+input.currentPage {
+	text-align:right;
+	width: 30px;
+}
+
 // metabolic ImportUploader
 .importUploaderDropZone {
-  height: 250px;
+  height: 150px;
   border: 2px dashed #ccc;
   border-radius: 10px;
   padding: 15px;
@@ -1452,6 +1487,12 @@ h1{
 }
 
 .metabolic-chronology{
+
+	margin: 30px 0px 30px 0px;
+
+	.chronology-title{
+		margin-bottom: 40px;
+	}
 
 	#media-div, #info-div {
 		overflow: auto;
@@ -1532,4 +1573,264 @@ h1{
 		}
 	}
 
+}
+
+@media only screen and (max-width: 767px) {
+
+  .metabolic-chronology{
+		margin: 15px 0px 15px 0px;
+		.chronology-title{
+			margin-bottom: 10px;
+		}
+	}
+
+	@media (orientation: landscape) {
+		.metabolic-chronology{
+			#year-bar {
+				display: none;
+			}
+		}
+	}
+	
+	@media (orientation: portrait) {
+		.metabolic-chronology{
+			.portrait{
+        width: 100%;
+			}
+			#media-div, #year-bar {
+				display: none;
+			}
+		}
+	}
+
+}
+
+/*------------------------------------
+ Styles for Metabolic Activity
+------------------------------------*/
+
+.activity-landing-page{
+	padding-left: 10%;
+	padding-right: 10%;
+	padding-bottom: 5%;
+
+	.projects-title{
+		margin: 75px 0px 75px 0px;
+	}
+
+	@media (max-width: 576px){
+		.projects-title{
+			margin: 25px 0px 25px 0px;
+		}
+	}
+
+	@media (orientation: 'landscape'){
+		.projects-title{
+			margin: 25px 0px 25px 0px;
+		}
+	}
+
+	.list-img{
+		height: auto;
+		width: 100%;
+		object-fit: cover;
+	}
+	.card-title{
+		font-size: 18px;
+    font-family: "Raleway", sans-serif;
+    text-decoration: none;
+    line-height: 2em;
+	}
+
+}
+
+.metabolic-activity{
+
+	margin: 0;
+	padding: 30px 50px 30px 50px;
+
+	@media (max-width: 575px){
+		padding: 15px 20px 15px 20px;
+	}
+
+	.activity-title{
+		margin-bottom: 15px;
+	}
+
+	.dropdown-toggle::after{
+		display: none;
+	}
+
+	.dropdown-menu.show{
+		background-color: #ededed;
+	}
+
+	.dropdown-menu{
+		label{
+			margin-left: 4px;
+		}
+	}
+
+	@media (min-width: 576px){
+		// 992px
+		.modal-lg, .modal-xl {
+			max-width: 80%;
+		}
+	}
+
+	@media (max-width: 575px){
+		.activity-title{
+			h1{
+				font-size: 25px;
+			}
+		}
+		.modal-title {
+			font-size: 16px;
+		}
+	}
+
+
+	@media (orientation: 'portrait'){
+		@media (max-width: 575px){
+			.modal-dialog {
+				width: auto;
+				.modal-content{
+					height: 90vh;
+				}
+			}
+		}
+	}
+	@media (orientation: 'landscape'){
+		@media (max-width: 575px){
+			.modal-dialog {
+				width: auto;
+				height: 100vh;
+			}
+		}
+	}
+
+	.for-video{
+		height: 85vh;
+		padding: 0;
+		width: 100%;
+		margin: auto; 
+		display: flex;
+		align-items: center;
+		.row{
+			width: 100%;
+			margin: auto;
+			.mediaDisplay{
+				.mediaViewer{
+					height: 100%;
+					div.mediaViewerContainer{
+						height: 100%;
+						width: 100%;
+						margin: auto;
+						div{
+							height: 100%;
+							width: 100%;
+							div.react-player{
+								width: 100%;
+								height: 100%;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	.for-image{
+		height: 85vh;
+			div{
+				height: 100%;
+				div.react-iiif-viewer.css-1bwnbwv{
+					width: 100%;
+					height: 100%;
+				}
+			}
+	}
+
+	.css-1lo3585{
+		width: 100%;
+		height: 100%;
+	}
+	.react-player{
+		width: 100%;
+	}
+}
+
+
+.activity-media{
+
+	.img-container {
+		position: relative;
+	}	
+	
+	.list-img{
+		// min-height: 200px;
+		height: auto;
+		width: 100%;
+		object-fit: cover;
+	}
+	
+	.overlay {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		// left: 50;
+		right: 0;
+		height: auto;
+		width: 100%;
+		opacity: 0;
+		transition: .5s ease;
+		background-color: rgba(0, 0, 0, 0.6);
+
+		.row{
+			height: 100%;
+			align-self: center;
+			justify-content: center;
+		}
+		.overlay-info{
+			display:flex;
+			height: 100%;
+			.info-div{
+				align-self: center;
+			}
+		}
+
+		.title{
+			font-weight: bold;
+			text-decoration: underline;
+		}
+
+		.title, .caption, .date, a{
+			color: white;
+			font-size: 13px;
+			text-align: center;
+			padding-bottom: 3px;
+		}
+		ul{
+			list-style: none;
+			a{
+				text-decoration: none;
+			}
+		}
+		.material-icons{
+			color: white;
+		}
+	}
+
+	@media screen and (max-width: 350px) {
+		.overlay{
+			.title, .caption, .date, .view, a{
+				font-size: 12px;
+			}
+		}
+	}
+
+	.img-container:hover .overlay {
+		opacity: 1;
+	}
+	
 }
