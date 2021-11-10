@@ -78,6 +78,9 @@
 						{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H6>Contains</H6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 						
 					</div><!-- end stoneBg -->
+<?php
+					include("themes_html.php");
+?>
 					<div class="collapseBlock">
 						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 						<div class="collapseContent">
@@ -137,7 +140,7 @@
 <?php				
 					}
 					if($vs_map = $this->getVar("map")){
-						if($t_item->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
+						if($t_item->get("ca_collections.georeference")){
 							include("map_html.php");
 						}
 					}
