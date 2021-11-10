@@ -58,8 +58,8 @@
 					// $index = 1;
 					while($qr->nextHit()){
 						// $media = $qr->getWithTemplate('<l>^ca_object_representations.media.medium</l>', ["checkAccess" => $this->getVar("access_values")]);
-						$media = $qr->getWithTemplate('<unit relativeTo="ca_objects" start="0" length="1"><l>^ca_object_representations.media.medium</l></unit>', ["checkAccess" => $this->getVar("access_values")]);
-						$caption = $qr->getWithTemplate("<unit relativeTo='ca_occurrences' start='0' length='1'><l>^ca_occurrences.preferred_labels.name</l></unit>");	
+						$media = $qr->getWithTemplate('<l><unit relativeTo="ca_objects" start="0" length="1">^ca_object_representations.media.large</unit></l>', ["checkAccess" => $this->getVar("access_values")]);
+						$caption = $qr->getWithTemplate("<l>^ca_occurrences.preferred_labels.name</l>");	
 			?>
 					<div class="col">
 						<div class="card exhibition-item" tabindex="0">

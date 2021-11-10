@@ -48,6 +48,8 @@ class DirectoryBrowseController extends BasePawtucketController {
 	 *
 	 */
 	function People($options = null) {
+		$o_result_context = new ResultContext($this->request, 'ca_entities', 'people');
+		$o_result_context->setAsLastFind();
 		$this->render("DirectoryBrowse/people_html.php");
 	}
 	# -------------------------------------------------------
@@ -55,6 +57,8 @@ class DirectoryBrowseController extends BasePawtucketController {
 	 *
 	 */
 	function Exhibitions($options = null) {
+		$o_result_context = new ResultContext($this->request, 'ca_occurrences', 'exhibitions');
+		$o_result_context->setAsLastFind();
 		$this->render("DirectoryBrowse/exhibitions_html.php");
 	}
 	# -------------------------------------------------------
@@ -62,7 +66,45 @@ class DirectoryBrowseController extends BasePawtucketController {
 	 *
 	 */
 	function Dates($options = null) {
+		$o_result_context = new ResultContext($this->request, 'ca_occurrences', 'dates');
+		$o_result_context->setAsLastFind();
 		$this->render("DirectoryBrowse/dates_html.php");
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	function PeopleReturnUrl() {
+		return [
+			'module_path' => '',
+			'controller' => 'DirectoryBrowse',
+			'action' => 'People',
+			'label' => 'People'
+		];
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	function ExhibitionsReturnUrl() {
+		return [
+			'module_path' => '',
+			'controller' => 'DirectoryBrowse',
+			'action' => 'Exhibitions',
+			'label' => 'Exhibitions'
+		];
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	function ExhibitionDateReturnUrl() {
+		return [
+			'module_path' => '',
+			'controller' => 'DirectoryBrowse',
+			'action' => 'ExhibitionDates',
+			'label' => 'Exhibition Dates'
+		];
 	}
 	# -------------------------------------------------------
 }

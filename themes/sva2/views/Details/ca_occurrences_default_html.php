@@ -27,37 +27,22 @@
 			}
 		}
 	}
-	// print_R($representations);
-
-	// Main image default to poster, then announcement, exhibition catalogue, then installation photo/slide, then press release
-
-	// $main_representation = null;
-	// foreach(['Posters', 'announcements', 'exhibition_catalogue', 'photographic materials', 'press release'] as $k) {
-	// 	if(isset($representations[$k])) {
-	// 		// print_R($representations);
-	// 		$main_representation = array_shift($representations[$k]);
-	// 		$representation_count--;
-	// 		break;
-	// 	}
-	// }
-
-	// print_R($main_representation);
-
-	// If no preferred classification take the first representation found
-	// if(!$main_representation) {
-	// 	foreach($representations as $k => $reps) {
-	// 		$main_representation = array_shift($representations[$k]);
-	// 		$representation_count--;
-	// 	}
-	// 	// print_R($main_representation);
-	// }
 ?>
 
 <div class="container-fluid occurrences-container">
 
 	<div class="row breadcrumb-nav justify-content-start">
 		<ul class="breadcrumb">
-			<li><a href="/index.php/">Featured Exhibitions</a></li>
+			<li>
+				<?php
+					if($l = ResultContext::getResultsLinkForLastFind($this->request, 'ca_occurrences', 'Exhibitions')) {
+						print $l;	
+					} else {
+						print "Exhibitions";
+					}
+					
+				?>
+			</li>
 			<li><span class="material-icons">keyboard_arrow_right</span></li>
 			<li>{{{<l>^ca_occurrences.preferred_labels.name</l>}}}</li>
 		</ul>
@@ -194,13 +179,3 @@
 
 </div> <!--container-fluid end -->
 
-
-<!-- 
-<script type='text/javascript'>
-	jQuery(document).ready(function() {
-		$('.trimText').readmore({
-		  speed: 75,
-		  maxHeight: 120
-		});
-	});
-</script> -->

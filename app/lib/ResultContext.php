@@ -775,7 +775,7 @@
 		 * @param $pa_attributes - (optional) associative array of values to use as attributes in the key (keys are attribute names and values are attribute values)
 		 * @return string - an HTML link that will link back to the results for the last find operation
 		 */ 
-		static public function getResultsLinkForLastFind($po_request, $pm_table_name_or_num, $ps_content, $ps_class=null, $pa_params=null, $pa_attributes=null) {
+		static public function getResultsLinkForLastFind($po_request, $pm_table_name_or_num, $ps_content=null, $ps_class=null, $pa_params=null, $pa_attributes=null) {
 			if (!($vs_table_name = Datamodel::getTableName($pm_table_name_or_num))) { return null; }
 			if (!ResultContextStorage::$storageLoaded) { ResultContextStorage::init($po_request); }
 			
@@ -786,6 +786,10 @@
 			$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
 			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }
+			
+			if(!$ps_content && isset($va_nav['label'])) {
+				$ps_content = $va_nav['label'];
+			}
 			
 			if (__CA_APP_TYPE__ == 'PAWTUCKET') {
 				// Pawtucket-specific navigation rewriting

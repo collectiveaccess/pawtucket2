@@ -33,10 +33,11 @@
 ?>
 
 <div class="container-fluid exhibition-detail-container">
-
 	<div class="row breadcrumb-nav justify-content-start">
 			<ul class="breadcrumb">
-				<li><a href="/index.php/">Featured Exhibitions</a></li>
+			<li>
+				<?= $t_object->getWithTemplate('<unit relativeTo="ca_occurrences" restrictToTypes="exhibition"><l>^ca_occurrences.preferred_labels.name</l></unit>'); ?>
+			</li>
 				<li><span class="material-icons">keyboard_arrow_right</span></li>
 				<li>{{{<l>^ca_objects.preferred_labels.name</l>}}}</li>
 			</ul>

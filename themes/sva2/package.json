@@ -59,7 +59,7 @@
     "react-dropzone": "^11.2.4",
     "react-easy-edit": "^1.4.2",
     "react-full-screen": "^0.3.1",
-    "react-iiif-viewer": "^1.0.2",
+    "react-iiif-viewer": "collectiveaccess/react-iiif-viewer#master",
     "react-ionicons": "^3.1.4",
     "react-jsonschema-form": "^1.8.1",
     "react-jsonschema-form-extras": "^0.9.65",

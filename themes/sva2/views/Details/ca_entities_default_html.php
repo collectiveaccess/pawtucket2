@@ -9,7 +9,15 @@
 
 	<div class="row breadcrumb-nav justify-content-start">
 		<ul class="breadcrumb">
-			<li><a href="/index.php/">Featured Exhibitions</a></li>
+			<li>
+				<?php
+					if($l = ResultContext::getResultsLinkForLastFind($this->request, 'ca_entities')) {
+						print $l;
+					} else {
+						print $t_item->getWithTemplate('<unit relativeTo="ca_occurrences" restrictToTypes="exchibition" delimiter=" / "><l>^ca_occurrences.preferred_labels.name</l></unit>');
+					}
+				?>
+			</li>
 			<li><span class="material-icons">keyboard_arrow_right</span></li>
 			<li>{{{<l>^ca_entities.preferred_labels.displayname</l>}}}</li>
 		</ul>

@@ -62,20 +62,23 @@
  			# --- if there is a set configured to show on the front page, load it now
  			#
  			$va_featured_ids = array();
+ 			$set_table = null;
  			if($vs_set_code = $this->config->get("front_page_set_code")){
  				$t_set = new ca_sets();
- 				$t_set->load(['set_code' => $vs_set_code]);
- 				$vn_shuffle = 0;
- 				if($this->config->get("front_page_set_random")){
- 					$vn_shuffle = 1;
- 				}
-				# Enforce access control on set
-				if(!is_array($va_access_values) || (sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
-					$this->view->setVar('featured_set_id', $t_set->get("set_id"));
-					$this->view->setVar('featured_set', $t_set);
-					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
-					$this->view->setVar('featured_set_item_ids', $va_featured_ids);
-					$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
+ 				if ($t_set->load(['set_code' => $vs_set_code])) {
+					$set_table = $t_set->getItemType();
+					$vn_shuffle = 0;
+					if($this->config->get("front_page_set_random")){
+						$vn_shuffle = 1;
+					}
+					# Enforce access control on set
+					if(!is_array($va_access_values) || (sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+						$this->view->setVar('featured_set_id', $t_set->get("set_id"));
+						$this->view->setVar('featured_set', $t_set);
+						$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
+						$this->view->setVar('featured_set_item_ids', $va_featured_ids);
+						$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult($set_table, $va_featured_ids));
+					}
 				}
  			}
  			#
@@ -83,6 +86,7 @@
  			#
  			if(sizeof($va_featured_ids) == 0){
  				$t_object = new ca_objects();
+ 				$set_table = 'ca_objects'; 
  				if($va_intrinsic_values = $this->config->get("front_page_intrinsic_filter")){
  					foreach($va_intrinsic_values as $vs_instrinsic_field => $vs_intrinsic_value){
  						$va_intrinsic_restrictions[$vs_instrinsic_field] = $vs_intrinsic_value;
@@ -90,12 +94,12 @@
  				}
  				$va_featured_ids = array_keys($t_object->getRandomItems(10, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1, 'restrictByIntrinsic' => $va_intrinsic_restrictions)));
  				$this->view->setVar('featured_set_item_ids', $va_featured_ids);
-				$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
+				$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult($set_table, $va_featured_ids));
  			}
  			
  			$this->view->setVar('config', $this->config);
  			
- 			$o_result_context = new ResultContext($this->request, 'ca_objects', 'front');
+ 			$o_result_context = new ResultContext($this->request, $set_table, 'front');
  			$this->view->setVar('result_context', $o_result_context);
  			$o_result_context->setAsLastFind();
  			
