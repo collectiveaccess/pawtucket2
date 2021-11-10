@@ -88,7 +88,7 @@
 						
 							{{{<ifdef code="ca_collections.RAD_generalNote"><div class='unit'><h6>Notes</h6>^ca_collections.RAD_generalNote</div></ifdef>}}}
 <?php
-							print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."</textarea></div>";					
+							print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'collections/'.$t_item->get("object_id"))."</textarea></div>";					
 ?>
 						</div>
 					</div>
