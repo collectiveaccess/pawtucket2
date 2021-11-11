@@ -406,6 +406,7 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 				{ name: "Business and Legal Collection", id: 437 },
 				{ name: "Noguchi Fountain and Plaza", id: 438 },
 				{ name: "Publication and Press Collection", id: 442 },
+				{ name: "Multimedia Collection", id: 441 },
 			]
 		}
 		this.loadCollection = this.loadCollection.bind(this);
@@ -609,16 +610,24 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 		let styles = {
 			"backgroundImage": "url(" + data.representation + ")"
 		};
+		if (data.type == "Video") {
+			data.imgResult = "<div class='video-thumbnail'><div class='img-wrapper archive_thumb block-quarter'><div class='bg-image' style='background-image: url(\"" + data.representation + "\");'></div><div class='overlay'><div class='icon'></div></div></div></div>";
+			
+		} else if (data.type == "Audio") {
+			data.imgResult = "<div class='audio-thumbnail'><div class='audio-thumbnail'><div class='img-wrapper archive_thumb block-quarter'><div class='overlay'><div class='icon'></div></div></div></div>";
+		} else {
+			data.imgResult = "<div class='img-wrapper archive_thumb block-quarter'><div class='bg-image' style='background-image: url(\"" + data.representation + "\");'></div></div>";
+			
+		}
+				
 
 		switch(this.props.view) {
 			default:
 				return(
 						<div className="item-grid" ref={this.props.scrollToRef}>
 							<a href={data.detailUrl}>
-								<div className="img-wrapper archive_thumb block-quarter">
-									<div className="bg-image"
-										 style={styles}></div>
-								</div>
+								<div dangerouslySetInnerHTML={{__html: data.imgResult}}></div>
+								
 								<div className="text">
 									<div className="text_position">
 										<div className="ca-identifier text-gray">{data.idno}</div>

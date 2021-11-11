@@ -48,24 +48,12 @@
 		$vn_i = 0;
 		foreach($va_collection_hierarchy as $vn_collection_heirarchy_level_id){
 			$t_collections = new ca_collections($vn_collection_heirarchy_level_id);
-			switch(strToLower($t_collections->get("type_id", array("convertCodesToDisplayText" => true)))){
-				case "series":
-					switch(strToLower($t_collections->get("ca_collections.preferred_labels.name"))){
-						case "photography collection":
-							$vb_photo_collection = true;
-						break;
-						case "manuscript collection":
-							$vb_manuscript_collection = true;
-						break;
-					}
-				break;
-			}
 			if($vn_i > 0){
 				$va_collection_path[] = caNavLink($t_collections->get("ca_collections.preferred_labels.name"), "", "", "Browse", "Archive", array("facet" => "collection_facet", "id" => $vn_collection_heirarchy_level_id));
 			}
 			$vn_i++;
-			if($vn_i == 3){
-				# only show 2 levels after top we get rid of
+			if($vn_i == 4){
+				# only show 3 levels after top we get rid of
 				break;
 			}
 		}
@@ -116,10 +104,15 @@
             </div>
 <?php
  			}
-?>  
-            <div class="container-image-detail block">
-                <div class="img-container dark">
-<?php
+				if($t_object->getWithTemplate("^ca_objects.type_id") == "Video"){
+?>
+					<div class="container-video-detail block"><div class="plyr-container plyr-container-video">
+<?php				
+				}else{
+?>
+					<div class="container-audio-detail block"><div class="plyr-container plyr-container-audio">
+<?php				
+				}
 				if($this->request->isLoggedIn()) {
 ?>
 					<div id="lightboxManagement" class="lightbox_management"></div>
@@ -185,15 +178,11 @@
 							
 				}else{
 ?>
-                    
-                    <div class="<?php print ($vs_mimetype != "application/pdf") ? "img-wrapper " : "img-wrapperPDF "; ?>archive_detail">
-                      <?php print $this->getVar('mediaViewer'); ?>
-                    </div>
+                    <?php print $this->getVar('mediaViewer'); ?>
 <?php
 				}
 ?>
-                </div>
-            </div>
+                </div></div>
 
             <div class="wrap text-align-center">
                 <div class="wrap-max-content">
@@ -211,115 +200,75 @@
 							<div class="subheadline text-gray">^ca_objects.date.parsed_date%delimiter=,_</div>
 						</div>
                     </ifdef></ifnotdef>}}}
-<?php
-					if($vb_manuscript_collection){
-						$va_entities = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("author"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
-						if(is_array($va_entities) && sizeof($va_entities)){
-?>
-								<div class="block-quarter">
-									<div class="eyebrow text-gray">Author</div>
-
-<?php
-
-							foreach($va_entities as $va_entity){
-									print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Archive", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
-							}
-?>
-								</div>
-<?php
-
-						}
-					}
-?>
+                    {{{<ifdef code="ca_objects.transcript">
+						<div class="block-quarter">
+							<a class="download-pdf" href="^ca_objects.transcript.original.url">
+							<span class="icon"><svg height="22" viewBox="0 0 22 22" width="22" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd" stroke="#999"><circle cx="11" cy="11" r="10"></circle><g stroke-linecap="square" transform="translate(6 8)"><path d="m.5.5h8.88476562"></path><path d="m.5 2.5h8.88476562"></path><path d="m.5 4.5h8.88476563"></path><path d="m.5 6.5h6.45556641"></path></g></g></svg></span>
+							 <span class="t ca-data text-gray">Transcript</span></a>
+							
+						</div>
+					</ifdef>}}}
                     {{{<ifdef code="ca_objects.idno">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Identifier</div>
 							<div class="ca-data">^ca_objects.idno</div>
 						</div>
 					</ifdef>}}}
-<?php
-					if($vb_photo_collection){
-?>
+                    {{{<ifdef code="ca_objects.duration">
 						<div class="block-quarter">
-							<div class="eyebrow text-gray">Object Type</div>
-							<div class="ca-data">{{{^ca_objects.type_id}}}</div>
+							<div class="eyebrow text-gray">Duration</div>
+							<div class="ca-data">^ca_objects.duration</div>
 						</div>
-						{{{<ifdef code="ca_objects.archive_category">
-							<div class="block-quarter">
-								<div class="eyebrow text-gray">Archive Category</div>
-								<div class="ca-data">^ca_objects.archive_category%delimiter=,_</div>
-							</div>
-						</ifdef>}}}
-<?php
-					}
-?>
-					{{{<ifdef code="ca_objects.studyCollectionCategory">
-							<div class="block-quarter">
-								<div class="eyebrow text-gray">Study Collection Category</div>
-								<div class="ca-data">^ca_objects.studyCollectionCategory%delimiter=,_</div>
-							</div>
-						</ifdef>}}}
+					</ifdef>}}}
+                    {{{<ifdef code="ca_objects.description">
+						<div class="block-quarter">
+							<div class="eyebrow text-gray">Description</div>
+							<div class="ca-data">^ca_objects.description</div>
+						</div>
+					</ifdef>}}}
 <?php
 
-					$va_entities = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("photographer"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
+					$va_entities = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("artist", "documentarian", "director", "editor"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
 					if(is_array($va_entities) && sizeof($va_entities)){
 ?>
 							<div class="block-quarter">
-								<div class="eyebrow text-gray">Photographer</div>
+								<div class="eyebrow text-gray">Creator</div>
 
 <?php
-
-						foreach($va_entities as $va_entity){
-								print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Archive", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
-						}
+								foreach($va_entities as $va_entity){
+										print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Archive", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
+								}
 ?>
 							</div>
 <?php
 
 					}
-					if($vb_photo_collection){	
-?>
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Collection</div>
-							<div class="ca-data">Photography Collection</div>
-						</div>
-<?php
-					}else{
-						if($vs_display_collection){
+
+					if($vs_display_collection){
 ?>
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Collection</div>
 							<div class="ca-data"><?php print $vs_display_collection; ?></div>
 						</div>
 <?php
-						}
 					}
-					$va_exclude_rel_types = array("photographer");
-					if($vb_manuscript_collection){
-						$va_exclude_rel_types[] = "author";
-					}
-					$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => $va_exclude_rel_types, "checkAccess" => $va_access_values, "returnWithStructure" => true));
+					$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("artist", "documentarian", "director", "editor"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
 					if(is_array($va_entities) && sizeof($va_entities)){
 ?>
 							<div class="block-quarter">
 								<div class="eyebrow text-gray">Related Entities</div>
 
 <?php
-
-						foreach($va_entities as $va_entity){
-								print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Archive", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
-						}
+								foreach($va_entities as $va_entity){
+										print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Archive", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
+								}
 ?>
 							</div>
 <?php
 
 					}
 ?>
-
-
                 </div>
-
-
             </div>
         </section>
 <?php
@@ -396,11 +345,12 @@
 								<l>
 									<if rule="^ca_objects.type_id =~ /Video/">
 										<div class="video-thumbnail"><div class="img-wrapper archive_thumb block-quarter">
-											<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url"  alt="^ca_objects.preferred_labels.name"/></ifdef>
+											<span style='relative;'><ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url"  alt="^ca_objects.preferred_labels.name"/></ifdef>
 											<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 											<div class="overlay">
 												<div class="icon"></div>
 											</div>
+											</span>
 										</div></div>
 									</if>
 									<if rule="^ca_objects.type_id =~ /Audio/">

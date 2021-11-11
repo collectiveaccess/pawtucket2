@@ -23,6 +23,8 @@
 ?><!DOCTYPE html>
 <html lang="en-US" class="collective-access" id="cahtmlWrapper"> 
     <head>
+		<script async type='text/javascript' src="<?php print $this->request->getAssetsUrlPath(); ?>/plyr/plyr.js?"/>
+
 		<!-- Global site tag (gtag.js) - Google Analytics -->
 		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-20756733-3"></script>
 		<script>
@@ -45,9 +47,12 @@
 		<meta name="twitter:creator" content="@NoguchiMuseum" />
 
         <!-- <link rel='stylesheet' id='style-all-0-css'  href='assets/css/style.css?ver=<?= rand(); ?>' type='text/css' media='all' />-->
+        
+<link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/plyr/plyr.css"/>
         <script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/jquery-3.4.0.min.js?ver=<?= rand(); ?>'></script>
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/libs-head-min.js?ver=<?= rand(); ?>'></script>
+        
         
 <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/diva/diva.css"/>	
 <script type="text/javascript" src="<?php print $this->request->getAssetsUrlPath(); ?>/diva/diva.js"></script>
@@ -151,6 +156,7 @@
 									case "archival":
 									case "library":
 									case "bibliography":
+									case "av":
 										print caNavLink("The Isamu Noguchi Archive", "", "", "Archive", "Index");
 									break;
 									# ---------------------------------------

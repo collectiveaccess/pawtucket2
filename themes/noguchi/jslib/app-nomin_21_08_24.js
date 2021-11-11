@@ -44,12 +44,12 @@ var PAJX;
                 if (!Barba.Pjax.originalPreventCheck(evt, element)) {
                     return false;
                 }
-                // Don't cache PHP file links 
-                // if ( $(element).attr( 'href' ).indexOf( 'index.php' ) >= 0 ){
-                //     return false;
-                // } 
-                // Don't Collective Access links
-                if ((window.location.hostname == 'noguchi.whirl-i-gig.com') || (window.location.hostname == 'archive.noguchi.org')){
+                // Don't cache CollectiveAccess Lighbox links
+				if ( $(element).attr( 'href' ).indexOf( 'Lightbox' ) >= 0 ){
+					return false;
+				}
+                // Don't cache CollectiveAccess links
+                if ((window.location.hostname == 'noguchi.whirl-i-gig.com') || (window.location.hostname == 'archive.noguchi.org') || (window.location.hostname == 'noguchi')){
                     return false;
                 }
                 // Don't cache PDF links
@@ -348,10 +348,6 @@ var EFFX;
             	else{
 	            	EFFX.initLayoutTwoColumnsFixedLeft();            		
             	}
-            }
-
-            if ( $body.hasClass( 'single-feature' ) ){
-            	EFFX.initDigitalFeature();
             }
 
             // browse pages
@@ -758,21 +754,6 @@ var EFFX;
 
         },
 
-
-        initDigitalFeature: function(){
-        	$el = $('.trigger-next');
-        	var $next = $('.next-digital-feature');
-        	if ( $el.length > 0 && $next.length > 0 ){
-                s = new ScrollMagic.Scene({
-                  triggerHook: "onEnter",
-                  triggerElement: $el,
-                });
-                s.setClassToggle( '.next-digital-feature' , 'show' );
-                //s.addIndicators();
-                s.addTo( pageController );
-        	}
-        },
-
 		//----------------------------------- UTILS -----------------------------------------//
 		initTriggerInView: function(){
 	      $els = $('.trigger-in-view');
@@ -955,278 +936,6 @@ var EFFX;
         // public methods //////////////////////////////////////////////////////////////////////////
 
         destroy: function(){
-            $.data(this, 'plugin_' + pluginName, null);
-        }
-
-    };
-
-    $.fn[pluginName] = function ( options ) {
-      var args = arguments;
-      if (options === undefined || typeof options === 'object') {
-          return this.each(function () {
-              if (!$.data(this, 'plugin_' + pluginName)) {
-                  $.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
-              }
-          });
-      } else if (typeof options === 'string' && options[0] !== '_' && options !== 'init') {
-          var returns;
-          this.each(function () {
-              var instance = $.data(this, 'plugin_' + pluginName);
-              if (instance instanceof Plugin && typeof instance[options] === 'function') {
-                  returns = instance[options].apply( instance, Array.prototype.slice.call( args, 1 ) );
-              }
-              if (options === 'destroy') {
-                $.data(this, 'plugin_' + pluginName, null);
-              }
-          });
-          return returns !== undefined ? returns : this;
-      }
-    };
-
-})(jQuery, window, document);
-
-
-
-// //****************** RESPONSIVE IFRAME *****************************************************************
-;(function ($, window, document, undefined) {
-    'use strict';
-
-    var pluginName = "responsive_iframe";
-
-    function Plugin(element, options) {
-        this._name = pluginName;
-        this.element = element;
-        this.ratio = 1;
-        this._init();
-    }
-    Plugin.prototype = {
-
-        // private methods //////////////////////////////////////////////////////////////////////////
-        _init: function (){
-
-            this.$el        = $(this.element);
-            this.$win       = $(window);
-
-
-            var w           = this.$el.attr('width');
-            var h           = this.$el.attr('height');
-
-            this.ratio      = (h / w);
-            this.$el.removeAttr('width').removeAttr('height');
-
-console.log(this.ratio, 'ratio');
-
-            this._onResize();
-
-            this._addEvents(true);
-
-        },
-
-        _onResize: function() {
-
-            // console.log('responsive_iframe : _onResize');
-            // return;
-
-            var parent_width    = this.$el.parent().width();
-            // var parent_height   = this.$el.parent().height();
-
-            var width       = parent_width;
-
-            var height      = Math.floor(width * this.ratio) - 1;
-
-console.log(parent_width, 'parent_width');
-console.log(width, 'width');
-console.log(height, 'height');
-
-            
-            this.$el.width(width).height(height);
-
-
-        },
-
-        _addEvents: function(b){
-
-            var _this = this;
-
-            if (b) {
-
-                this.r_debounce = _.debounce( function(){ _this._onResize() }, 200 );
-                this.$win.on( 'resize', this.r_debounce );
-
-            } else {
-
-                if ( this.r_debounce ){
-                    this.r_debounce.cancel();
-                    this.$win.off( 'resize', this.r_debounce );
-                }
-
-            }
-
-        },
-
-        // public methods //////////////////////////////////////////////////////////////////////////
-
-        destroy: function(){
-            this._addEvents(false);
-            $.data(this, 'plugin_' + pluginName, null);
-        }
-
-    };
-
-    $.fn[pluginName] = function ( options ) {
-      var args = arguments;
-      if (options === undefined || typeof options === 'object') {
-          return this.each(function () {
-              if (!$.data(this, 'plugin_' + pluginName)) {
-                  $.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
-              }
-          });
-      } else if (typeof options === 'string' && options[0] !== '_' && options !== 'init') {
-          var returns;
-          this.each(function () {
-              var instance = $.data(this, 'plugin_' + pluginName);
-              if (instance instanceof Plugin && typeof instance[options] === 'function') {
-                  returns = instance[options].apply( instance, Array.prototype.slice.call( args, 1 ) );
-              }
-              if (options === 'destroy') {
-                $.data(this, 'plugin_' + pluginName, null);
-              }
-          });
-          return returns !== undefined ? returns : this;
-      }
-    };
-
-})(jQuery, window, document);
-
-
-
-
-// //****************** RESPONSIVE IFRAME *****************************************************************
-;(function ($, window, document, undefined) {
-    'use strict';
-
-    var pluginName      = "countdown_timer";
-
-    function Plugin(element, options) {
-        this._name      = pluginName;
-        this.element    = element;
-        this.$el        = $(element);
-
-        this.timer      = false;
-        this.timer_end;
-
-        this._init();
-    }
-    Plugin.prototype = {
-
-        // private methods //////////////////////////////////////////////////////////////////////////
-        _init: function (){
-
-            console.log('[countdown_timer]' ,'_init');
-
-            this.initial_el         = this.$el.find('.countdown-initial');
-            this.timer_el           = this.$el.find('.countdown-timer');
-            this.timer_d_el         = this.timer_el.find('.countdown-timer-days');
-            this.timer_h_el         = this.timer_el.find('.countdown-timer-hours');
-            this.timer_m_el         = this.timer_el.find('.countdown-timer-minutes');
-            this.timer_s_el         = this.timer_el.find('.countdown-timer-seconds');
-            this.additional_el      = this.$el.find('.countdown-additional');
-
-            this.$el.find('.spinner-wrapper').hide();
-            this._doTick();
-
-            this._addEvents(true);
-
-        },
-
-        _doEnding: function() {
-
-            this._addEvents(false);
-
-            var action = this.$el.data('action');
-
-            this.timer_el.hide();
-
-            if (action == 'hide') {
-                this.$el.hide();
-            } else if (action == 'replace') {
-                this.initial_el.hide();
-                this.additional_el.show();
-            } else {
-                this.initial_el.show();
-                this.additional_el.show();                
-            }
-
-        },
-
-
-        _doTick: function() {
-
-            /*
-            SAVE:  This works, but not across all timezones.
-            var end         = new Date( this.$el.data('date') );  
-            end             = (Date.parse(end) / 1000);
-            var now         = new Date();
-            now             = (Date.parse(now) / 1000);
-            */
-
-            var end         = new Date( this.$el.data('date') );  
-            end             = (Date.parse(end) / 1000);
-
-            // Offset end time to UTC (5 hours ahead of New York).
-            end             = end + (5 * 3600);
-
-            // Use UTC time so it works across timezones.
-            var now         = new Date();
-            var utc         = now.getTime() + (now.getTimezoneOffset() * 60000);
-            now             = utc / 1000;
-
-            var time_left   = end - now;
-
-            if (now > end) {
-                this._doEnding();
-                return;
-            }
-
-            var days        = Math.floor(time_left / 86400); 
-            var hours       = Math.floor((time_left - (days * 86400)) / 3600);
-            var minutes     = Math.floor((time_left - (days * 86400) - (hours * 3600 )) / 60);
-            var seconds     = Math.floor((time_left - (days * 86400) - (hours * 3600) - (minutes * 60)));
-  
-            if (hours < "10") { hours = "0" + hours; }
-            if (minutes < "10") { minutes = "0" + minutes; }
-            if (seconds < "10") { seconds = "0" + seconds; }
-
-            this.timer_d_el.html(days);
-            this.timer_h_el.html(hours);
-            this.timer_m_el.html(minutes);
-            this.timer_s_el.html(seconds);
-            this.timer_el.show();
-
-            this.initial_el.show();
-
-        },
-
-        _addEvents: function(b){
-
-            var _this = this;
-
-            if (b) {
-
-                this.timer = setInterval(function() { _this._doTick(); }, 1000);
-
-            } else {
-
-                if (this.timer) clearInterval(this.timer);
-
-            }
-
-        },
-
-        // public methods //////////////////////////////////////////////////////////////////////////
-
-        destroy: function(){
-            this._addEvents(false);
             $.data(this, 'plugin_' + pluginName, null);
         }
 
@@ -1561,10 +1270,8 @@ console.log(height, 'height');
                   'visibility': 'visible'
                 })
             }
-
             _this.$el.addClass( 'slideshow-ctrl-init' );
 
-            _this._correctSlickDotsOpacity( 0 );
             /*
             if ( _this.$el.hasClass( 'autosize-available-viewport' ) ){
               _this._onResize();
@@ -1800,15 +1507,12 @@ console.log(height, 'height');
       }
     },
     _onSlideBeforeChange: function( current, next ){
-        var s = this.slides[ current ], $v, $s, $d;
+        var s = this.slides[ current ], $v;
         // pause current video
         if ( s.mode === 'video' ){
           $v = s.$v;
           $v.video_ctrl( 'play', false );
         }
-
-        //------------------- CORRECT SLICK DOTS WHEN OVER BLACK SLIDE -------------------------//
-        this._correctSlickDotsOpacity( next );        
     },  
     _onSlideAfterChange: function( current ){
         var s = this.slides[ current ], $v;
@@ -1816,16 +1520,6 @@ console.log(height, 'height');
         if ( s.mode === 'video' ){
           $v = s.$v;
           $v.video_ctrl( 'play', true );
-        }
-    },
-
-    _correctSlickDotsOpacity: function( next ){
-        var $s = this.slides[ next ].$el, $d;
-        if ( $s.find( '.frame' ).length > 0 ){
-            $d = this.$el.find( '.slick-dots' );
-            if ( $d.length > 0 ){
-                TweenMax.to( $d, 0.3, { opacity: $s.find( '.bg-black' ).length > 0 ? 0.5 : 1 } );
-            }
         }
     },
 
@@ -2504,9 +2198,9 @@ console.log(height, 'height');
 
         _doFilter: function(match){
 
-// console.log('_doFilter: ');
-// console.log(match);
-// console.log('Results: ' + match.length);
+console.log('_doFilter: ');
+console.log(match);
+console.log('Results: ' + match.length);
 
             if (!match.length) return this._doReset();
 
@@ -3468,126 +3162,6 @@ load more
 })(jQuery, window, document);
 
 
-//****************** VIDEO GRID EMBED *****************************************************************//
-;(function ($, window, document, undefined) {
-  'use strict';
-  
-  var pluginName = "video_grid"; 
-  
-  function Plugin(element, options) {
-        this.element = element;
-        this._name = pluginName;
-        // init!!!!
-        this._init();
-  }
-  Plugin.prototype = {
-    // private methods //////////////////////////////////////////////////////////////////////////
-    _init: function (){
-
-        var _this      = $(this);
-
-        this.$el       = $(this.element);
-        this.wrappers  = this.$el.find('.video-embed');
-        // this.current   = false;
-        // this.players   = [];
-
-        this.wrappers.each(function() {
-
-            var _view   = $(this).find('.embed-content');
-            var _player = new Vimeo.Player(_view, {
-                url: $(this).data('url'),
-                width: '100%',
-                autopause: true,
-                autoplay: false,
-                controls: true,
-                // quality: '4K',
-                loop: false,
-            });
-
-            $(this).data('player', _player);
-
-        });
-
-        this._addEvents( true );
-
-    },
-    _addEvents: function( b ){
-        var _this = this;
-        if ( b ){
-            _this.wrappers.find('.cta').click(_this.playVideo);
-            _this.wrappers.each(function() {
-                var _w = $(this);
-                var _p = _w.data('player');
-                _p.on('fullscreenchange', function(data) {
-                    if (data.fullscreen === false) {
-                        _p.pause();
-                        // _w.removeClass('is-fullscreen');
-                    } else {
-                        // _w.addClass('is-fullscreen');                        
-                    }
-                });
-            });
-        } else {
-            _this.wrappers.find('.cta').off('click');
-            _this.wrappers.each(function() {
-                var _p = $(this).data('player');
-                _p.off('fullscreenchange');
-            });
-      }
-    },
-    playVideo: function() {
-
-        var _this   = $(this);
-        var _embed  = _this.closest('.video-embed');
-        var _player = _embed.data('player');
-
-        // _embed.addClass('is-fullscreen');   
-
-        _player.requestFullscreen().then(function() {
-            // the player entered fullscreen
-            console.log('ENTER fullscreen');
-            _player.play();
-            _player.setVolume(1);  
-        }).catch(function(error) {
-            // an error occurred
-            console.log(error);
-        });
-
-    },
-    // public methods //////////////////////////////////////////////////////////////////////////
-    destroy: function(){
-        this._addEvents( false );
-        this.$el.removeData();
-        $.data(this, 'plugin_' + pluginName, null);
-    }
-  };
-
-  $.fn[pluginName] = function ( options ) {
-      var args = arguments;
-      if (options === undefined || typeof options === 'object') {
-          return this.each(function () {
-              if (!$.data(this, 'plugin_' + pluginName)) {
-                  $.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
-              }
-          });
-      } else if (typeof options === 'string' && options[0] !== '_' && options !== 'init') {
-          var returns;
-          this.each(function () {
-              var instance = $.data(this, 'plugin_' + pluginName);
-              if (instance instanceof Plugin && typeof instance[options] === 'function') {
-                  returns = instance[options].apply( instance, Array.prototype.slice.call( args, 1 ) );
-              }
-              if (options === 'destroy') {
-                $.data(this, 'plugin_' + pluginName, null);
-              }
-          });
-          return returns !== undefined ? returns : this;
-      }
-  };
-})(jQuery, window, document);
-
-
-
 //****************** VIDEO CTRL EMBED *****************************************************************//
 ;(function ($, window, document, undefined) {
   'use strict';
@@ -3802,9 +3376,6 @@ load more
           $img = images[j];
           this.$el.find( '.slick-slider' ).append( '<div class="slick-slide"><div class="img-wrapper contain">'  +  $img.prop('outerHTML') + '</div></div>' );
           $cp = $img.parents('.enlarge-gallery-wrap').find( '.data-caption' );
-
-          
-          
           this.$el.find( '.captions' ).append( '<li>' +  ($cp.length > 0?$cp.html():'') + '</li>' );
         }
 
@@ -3849,8 +3420,7 @@ load more
     _openOnIndex: function( $img ){
       var index = 0, j = this.images.length;
       while(j--){
-        if ( this.images[j].attr('data-srcset') === $img.attr('data-srcset') ){
-        //if ( this.images[j].attr('srcset') === $img.attr('srcset') ){
+        if ( this.images[j].attr('srcset') === $img.attr('srcset') ){
           index = j;
         }
       }      
@@ -4504,7 +4074,7 @@ load more
     },
 
     _doSubmit: function() {
-        // c('_doSubmit');
+        c('_doSubmit');
         return false;
     },
 
@@ -4524,84 +4094,56 @@ load more
 
             // Format search results display.
 
-            var append          = '';
-            var column_count    = 2; // This should change when only displaying CA stuff
-            var columns         = {'one' : [], 'two' : []};
-
-            // First loop over the content groups to set which go in each column
-
-console.log(query.suggests, 'query.suggests');
-
-            for (let name in query.suggests) {
-
-                if (column_count == 2 && name == 'Archive & Catalogue Raisonné') {
-                    columns['two'][name] = query.suggests[name];
-                } else {
-                    columns['one'][name] = query.suggests[name];                    
-                }
-
-            }
+            var append = '';
 
             // "Term" returned x results.
             append += _this._template('search-template__top', { 'term' : query.query, 'count' : query.totalResults, });
     
             // Open Column Wrapper.
-            if (column_count == 2) {
-                append += '<div class="columns">';
-            }
+            append += '<div class="columns"><div class="col half">';
 
-            // Loop over each column of results.
-            for (let col in columns) {
+            for (let name in query.suggests) {
 
-                // Add column wrapper.
-                if (column_count == 2) append += '<div class="col half">';
+                var _results        = '';
+                var _limit          = (name  == 'News') ? 10 : 99;
 
-                for (let name in columns[col]) {
+                // Loop over all the rows and built this group's results.
+                for (let i in query.suggests[name]) {
 
-                    var _results        = '';
-                    var _limit          = 99;
+                    if (i < _limit) {
 
-                    if (name  == 'News') {
-                        _limit          = 10;
-                    } else if (name == 'Shop') {
-                        _limit          = 21;
-                    }
+                        var _row        = query.suggests[name][i];
+                        var _subtitle   = _this._rowSubTitle(_row);
 
-                    // Loop over all the rows and built this group's results.
-                    for (let i in query.suggests[name]) {
-
-                        if (i < _limit) {
-
-                            var _row        = query.suggests[name][i];
-                            var _subtitle   = _this._rowSubTitle(_row);
-
-                            // Row Template
-                            _results += _this._template(_this._templateName(name)[1], {
-                                'link' : _row.link,
-                                'image': _this._rowImage(_row.image),
-                                'image_ratio': _this._rowImageRatio(name, _row),
-                                'title': _this._rowFormatTitle(_row.name),
-                                'subtitle': _this._rowSubTitle(_row),
-                                'text': _this._rowContent(_row)
-                            });
-
-                        }
+                        // Row Template
+                        _results += _this._template(_this._templateName(name)[1], {
+                            'link' : _row.link,
+                            'image': _this._rowImage(_row.image),
+                            'title': _this._rowFormatTitle(_row.name),
+                            'subtitle': _this._rowSubTitle(_row),
+                            'text': _this._rowContent(_row)
+                        });
 
                     }
-
-                    // Group Template
-                    append += _this._template(_this._templateName(name)[0], {
-                        'class' : _this._templateName(name)[2] + ' ' + _.hypen( ((name == '_') ? 'Other Results' : name) ) , // add class name to each block
-                        'headline' : ((name == '_') ? 'Other Results' : name),
-                        'results' : _results,
-                    });
 
                 }
 
-                // Close column wrapper.
-                if (column_count == 2) append += '</div>';
+                // "Other Results" group is always in the second column.
+                if (name == '_') {
+                    append += '</div><div class="col half">';                }
 
-            }
+
+                // Group Template
+                append += _this._template(_this._templateName(name)[0], {
+                    'class' : _this._templateName(name)[2] + ' ' + _.hypen( ((name == '_') ? 'Other Results' : name) ) , // add class name to each block
+                    'headline' : ((name == '_') ? 'Other Results' : name),
+                    'results' : _results,
+                });
+
+            };
+
+            // Close Column Wrapper.
+            append += '</div></div>';
 
             _this._output(append);
 
@@ -4615,57 +4157,68 @@ console.log(query.suggests, 'query.suggests');
         this._doLoading(this, false);
 
         this.$search_content.css({opacity:0}).html( '<div class="wrapper-gutter-sizer"> </div>' + html );
-
-        MAIN.initClamps(true);
-
-        this._addSeeMore();
-
-        MAIN.initGridPackery(true, $('.grid-packery').not('.manual-init'), false, false);
-
         TweenMax.to( this.$search_content, 0.4, {opacity:1, ease: 'Circle.easeOut' });
+
+        // add see more to clamp the blocks
+        // this._addSeeMore();
+
+        // special pre-arrange function for layouts
+        // this._reorderLayoutBlocks();
+
+        // container grid
+        // MAIN.initGridPackery( false, this.$search_content );
+        // MAIN.initGridPackery( true, this.$search_content, { itemSelector: '.wrapper-item-grid', gutter: '.wrapper-gutter-sizer' }, false );
+        // gird block contained
+        // this.$search_content.find( '.grid-packery' ).each( function(){
+        //   MAIN.initGridPackery( false, $(this), false , false );
+        //   MAIN.initGridPackery( true, $(this), false , false );
+        // });
 
     },
 
+    // _reorderLayoutBlocks: function(){
+    //     /*
+    //     We might want manually change the order of the layout (items ) before init Grid packery.
+    //     e.g : For desktop we cue the project grid so we let the grid fill with the other items and stack the 2 large items
+    //     */
+
+    //     // move second large at the end ...
+    //     /*
+    //     if ( this.$search_content.find( '.large' ).length > 1 && this.$win.width() > 1024 ){
+    //         var $item = this.$search_content.find( '.large:eq(1)' );
+    //         if ( $item.length > 0 ){
+    //           this.$search_content.append( $item );
+    //         }
+    //     }
+    //     */
+
+    //     // if we have project stories and projects, append projects to project stories so they stay in the same column ...
+    //     var $s = this.$search_content.find( '.large.project-stories' ), $p = this.$search_content.find( '.large.projects' );
+    //     if ( $s.length > 0  && $p.length > 0 ){
+    //         $p.removeClass( 'wrapper-item-grid large' ).addClass( 'block-half' ).css({
+    //             'margin-top': this.$search_content.find('.wrapper-gutter-sizer').width()
+    //         });
+    //         $s.find( '.results' ).append( $p );
+    //     }
+    //     // add hover effects
+    //     MAIN.addImgDarkHover( true, this.$search_content );
+    // },
+
     _addSeeMore: function(){
-      var _this = this, $it, n, max, max_default = 3, $el, id, $els, $grid, $gridmore;
+      var _this = this, $it, n, max, max_default = 5, $el, id, $els;
       this.$search_content.find( '.wrapper-item-grid' ).each(function(){
         $it = $(this);
-        if ( $it.hasClass( 'shop' ) ){
-
-            $els    = $it.find('.item-grid');
-            max     = 5;
-
-            if ( $els.length > max ){
-
-                // add read more
-                $el = $it.find('.item-grid:eq(' + max + ')');
-                // generate an unique id
-                id = _.uniqueId( 'more_' );
-                // elements to wrap
-                $els = $el.nextAll().remove();
-                // grid item
-                $grid = $el.parent();
-                // wrap
-                $grid.after('<div id="' + id + '" class="wrap-more-wrapper"><div id="' + id + '_grid" class="' + $grid.attr('class')  + '"></div></div>');
-                $it.find('#'+id+'_grid').append($els);
-                // add seee more
-                $it.find('#'+id).after( '<div class="text-align-center block-half-top wrapper-button-see-more"><a href="#" class="button small see-more wrap-more" data-id="' + id + '" data-text="see less -">see more +</a></div>' );
-                // init widget
-                MAIN.initWrapMore( true, $it.find('.wrap-more') );
-
-            }
-
-        } else if ( $it.hasClass( 'exhibitions' ) || $it.hasClass( 'digital-features' ) || $it.hasClass( 'other-results' )  ){
+        if ( $it.hasClass( 'news' ) || $it.hasClass( 'market--discipline' ) || $it.hasClass( 'studios' )  || $it.hasClass( 'people' ) || $it.hasClass( 'other-results' )  ){
           
-          n = $it.find('.block').length;
+          n = $it.find('.block-half').length;
           max = max_default;
-          if ( $it.hasClass( 'other-results' ) ){
-            max = 7;
+          if ( $it.hasClass( 'people' ) ){
+            max = 3;
           }
 
           if ( n > max ){
             // add read more
-            $el = $it.find('.block:eq(' + max + ')');
+            $el = $it.find('.block-half:eq(' + max + ')');
             // generate an unique id
             id = _.uniqueId( 'more_' );
             // elements to wrap
@@ -4673,7 +4226,7 @@ console.log(query.suggests, 'query.suggests');
             // wrap
             $els.wrapAll( '<div id="' + id + '" class="wrap-more-wrapper"></div>' );
             // add seee more
-            $it.find('#'+id).after( '<div class="text-align-center wrapper-button-see-more"><a href="#" class="button small see-more wrap-more" data-id="' + id + '" data-text="see less -">see more +</a></div>' );
+            $it.find('#'+id).after( '<a href="#" class="see-more text-align-right wrap-more" data-id="' + id + '" data-text="see less -">see more +</a>' );
             // init widget
             MAIN.initWrapMore( true, $it.find('.wrap-more') );
 
@@ -4709,10 +4262,9 @@ console.log(query.suggests, 'query.suggests');
     _templateName: function(group) {
         var fallback    = ['search-template__group-list', 'search-template__item-other', ''];
         var map         = {
-            'Shop'                          : ['search-template__group-grid', 'search-template__item-product', ''],
             'Digital Features'              : ['search-template__group-list', 'search-template__item-grid', ''],
             'Exhibitions'                   : ['search-template__group-list', 'search-template__item-grid', ''],
-            'Archive & Catalogue Raisonné'  : ['search-template__group-packery', 'search-template__item-ca', ''],
+            'Archive & Catalogue Raisonné'  : ['search-template__group-grid', 'search-template__item-ca', ''],
         };
         return ((map[group] != undefined) ? map[group] : fallback);
     },
@@ -4750,37 +4302,9 @@ console.log(query.suggests, 'query.suggests');
         return item.content;
     },
     _rowImage: function(image) {
-        if (image == null) {
-            image = this.$body.data('theme-url') + '/assets/img/placeholder.png';
-        } else {
-            image = image.replace("http:", "https:");
-        }
+        if (image == null) return '';
+        image = image.replace("http:", "https:");
         return '<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="'+ image +'" class="lazyload" data-pin-nopin="true" />';
-    },
-    _rowImageRatio: function(group, item) {
-
-        if (group != 'Archive & Catalogue Raisonné') return false;
-
-        var thumbnail_w = false;
-        var thumbnail_h = false;
-
-        if (item.dataPoints.length) {
-            for (let i in item.dataPoints) {
-                if (item.dataPoints[i]['key'] == 'thumbnail_w') {   
-                    thumbnail_w = item.dataPoints[i]['value'];
-                }
-                if (item.dataPoints[i]['key'] == 'thumbnail_h') {
-                    thumbnail_h = item.dataPoints[i]['value'];
-                }
-            }
-        }
-
-        if (thumbnail_w && thumbnail_h) {
-            return ((thumbnail_h / thumbnail_w) * 100) + '%';
-        }
-
-        return false;
-
     },
 
     // public methods //////////////////////////////////////////////////////////////////////////
@@ -4885,11 +4409,9 @@ var MAIN, PAJX = window.PAJX, DV = window.DV, c = console.log;
 						$li_img = $ul.find('> li:eq(0)');
 						$li_txt = $ul.find('> li:eq(1)');
 
-                        var offset = ($html.hasClass('notice-alert')) ? 50 : 0;
-
 						$li_txt.css({'height':'auto'});
 
-						$li_txt.height( $li_txt.find('.text-int').outerHeight() + offset );
+						$li_txt.height( $li_txt.find('.text-int').outerHeight() );
 						$li_img.height( $ul.height() - $li_txt.height() );
 
 					});
@@ -5428,8 +4950,6 @@ return;
 
             this.initAccordian(b);
 
-            this.initWrapMore(b);
-
             this.initSelects(b);
 
             this.initVideos(b);
@@ -5454,30 +4974,6 @@ return;
                 }
             }
 
-            // Countdown Timer
-            if (( $el = $('.widget-countdown-timer') )) {
-                if ( b ){
-                    $el.each(function(){
-                        $(this).countdown_timer();
-                    });
-                } else {
-                    $el.countdown_timer('destroy');
-                }
-            }
-
-
-            // Responsive IFRAME.
-            if (( $el = $('.widget-responsive-iframe IFRAME') )) {
-                if ( b ){
-                    $el.each(function(){
-                        $(this).responsive_iframe();
-                    });
-                } else {
-                    $el.responsive_iframe('destroy');
-                }
-            }
-
-
             // Google Map Widget (Visit Page)
             if (( $el = $('.module_map_embed') )) {
                 if ( b ){
@@ -5488,18 +4984,7 @@ return;
                     $el.map_embed('destroy');
                 }
             }
-
-            // Video Grid Content Module
-            if (( $el = $('.module-video-grid') )) {
-                if ( b ){
-                    $el.each(function(){
-                        $(this).video_grid();
-                    });
-                } else {
-                    $el.video_grid('destroy');
-                }
-            }
-
+            
             // skin select mobile (just to look beautiful on desktop )
             if ( b ){
             	if ( $( '.sumo-select-skinned' ).length > 0 ){
@@ -5540,11 +5025,7 @@ return;
             // Line clamping
             this.initClamps(b);
 
-            this.initWidowsAndOrphans(b);
 
-            this.setImgMaxSrc();
-
-           // this.initPlyr(b);
 	    },
 
 
@@ -6014,8 +5495,8 @@ return;
 
 	                    if ( $s.hasClass('slideshow-carousel') ){
 	                    	var args = {
-                                dots: !$s.hasClass( 'no_dots' ),
-                                arrows: $s.hasClass( 'arrows' ),
+								dots: true,
+								arrows: false,
 								infinite: true,
 								slidesToScroll: 1,
 	  							centerMode: true,
@@ -6428,175 +5909,6 @@ return;
 				}
 			}       
 	    },
-
-	    //-------------------- WIDOWS & ORPHANS -------------------------------------------//
-	    initWidowsAndOrphans: function(b){
-	    	if ( b ){
-	    		let where = [ 
-	    			// selectors to look for widows ...
-	    			'.grid-events h3.subheadline a',
-	    			'.grid-past-exhibitions .title',
-
-
-	    			'.widow' // genereal class if implemented on the html to look for
-	    		],
-
-	    		i = where.length, 
-	    		$selector = undefined,
-	    		$s = undefined, 
-	    		string = '';
-
-	    		if ( i > 0 ){
-	    			while ( i-- ){
-	    				$selector = $( where[i] );
-	    				if ( $selector.length > 0 ){
-				    		$selector.each(function(){
-				    			$s = $(this);
-
-				    			string = $s.html();
-
-				    			// if words > 3
-				    			if ( string.split(' ').length <= 3 ){
-				    				string = false;
-				    			}
-
-				    			// Are there other conditions to check for???
-
-				    			if ( string ){
-				    				// replace last spave with a no bracking space
-								    string = string.replace(/ ([^ ]*)$/,'&nbsp;$1');
-								    
-								    // reset the transformed string
-								    $s.html(string);
-
-								    // debug
-								    $s.addClass( 'widows-debug' );
-							   	}
-	
-			  				});
-	    				}
-	    			}
-	    		}
-
-	    	}
-	    },
-
-        // ------------------ Wrap More (See more) ----------------//
-        initWrapMore: function(b, $els ){
-            var $el = $els ? $els : $('.wrap-more'), $p, $s;
-             if ( $el.length > 0 ){
-            	if ( b ){
-            		$el.each( function(){
-            			$s = $(this);
-            			$p = $('#'+$s.attr( 'data-id' ));
-            			if ( $p.length > 0 ){
-            				$s.attr( 'data-height', $p.height() );
-            				$p.slideUp(0);
-            			}
-            			$s.data( 'open', false );
-            			$s.attr( 'data-text-or', $s.text() );
-            		});
-            		$el.on( 'click', function(e){
-            			e.preventDefault();
-            			$s = $(this);
-            			$p = $('#'+$s.attr( 'data-id' ));
-            			if ( $p.length > 0 ){
-            				$p.slideToggle(217,function(){
-            					$s.trigger( $s.data( 'open') ? 'wrap-more::open' : 'wrap-more::close' );
-            					$s.trigger( 'wrap-more::complete' );
-            				});
-            				$s.data( 'open', !$s.data( 'open') );
-            				if ( $s.data( 'open') ){
-            					$s.text( $s.attr( 'data-text' ) );
-            				}
-            				else{
-            					$s.text( $s.attr( 'data-text-or' ) );
-            				}
-            				
-            				$s.trigger( 'wrap-more::change' );
-            			}
-            		});
-            	}
-            	else{
-            		$el.off( 'click' );
-            	}
-            }
-        },
-
-        setImgMaxSrc: function(){
-        	var $el = $('img.set-max-src'), srcset, src
-        	if ( $el.length > 0 ){
-        		srcset = $el.attr( 'data-srcset' );
-        		if ( srcset ){
-        			srcset = srcset.split( ', ' );
-        			src = srcset[0].split( ' ' )[0];
-        			if ( src ){
-        				$el.attr( 'src', src ).removeClass( 'lazyload').removeClass( 'lazyloading' ).removeClass( 'lazyload-persist' ).attr( 'srcset', '' ).attr( 'data-srcset', '' );
-        			}
-        		}
-        	}
-        },
-
-// # the options and iconUrl are passed on app/lib/Plugins/Media/Audio.php and Video.php
-//         initPlyr: function(b){
-// 
-//             // custom build Plyr
-//             var options,
-//                 player, 
-//                 audio_player, 
-//                 $el, $p;
-// 
-//             
-//             console.log( 'initPlyr, b = ' + b  );
-//                 
-//             if ( b ){
-// 
-// 	            $el = $( '.plyr-container' );
-// 
-// 	            if ( $el.length > 0 ){
-// 
-// 
-// 	            	$el.each( function(i,el){
-// 
-// 	            		$p = $(el);
-// 	            		if ( $p.hasClass( 'plyr-container-video' ) ){
-// 	            			$p = $p.find( 'video' );
-// 	            			if ( $p.length > 0 ){
-// 
-// 				                options = {
-// 				                    debug: true,
-// 				                    iconUrl: '/themes/noguchi/img/plyr/plyr.svg',
-// 				                    //controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen'],
-// 				                    controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'fullscreen'],
-// 				                };
-// 
-// 				                player = new Plyr( $p[0], options );
-// 
-// 	            			}
-// 	            		}
-// 	            		else if ( $p.hasClass( 'plyr-container-audio' ) ){
-// 	            			$p = $p.find( 'audio' );
-// 	            			if ( $p.length > 0 ){
-// 
-// 				                options = {
-// 				                    debug: true,
-// 				                    iconUrl: '/themes/noguchi/img/plyr/plyr.svg',
-// 				                    controls: ['play', 'progress', 'current-time', 'mute', 'volume' ],
-// 				                };
-// 
-// 				                audio_player = new Plyr( $p[0], options );
-// 
-// 	            			}
-// 	            		}
-// 
-// 	            	});
-// 
-// 	            }
-// 
-//         	}
-// 
-//         },
-
 
 	    //-------------------- UNDERSCORE MIXIN FUNCTIONS ---------------------------------//
 	    _extendUnderscore: function(){

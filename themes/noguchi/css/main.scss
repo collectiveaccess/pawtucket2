@@ -329,3 +329,7 @@ BODY.collective-access div.lightbox_management .utility-container .utility.utili
     position: absolute;
     width: 1px;
 }
+.plyr.plyr--audio.plyr--full-ui input{
+	height:5px;
+	overflow:hidden;
+}
