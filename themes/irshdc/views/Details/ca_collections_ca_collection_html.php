@@ -41,7 +41,8 @@
 	}
 	# --- get the collection hierarchy parent to use for exporting finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true, "checkAccess" => $va_access_values)));
-
+	$va_access_values = $this->getVar("access_values");
+	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -49,35 +50,39 @@
 	</div><!-- end detailTop -->
 </div>
 			<div class="row">
-				<div class='col-sm-12 col-md-9'>	
-					<div class="stoneBg">
-						<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
-						{{{<ifdef code="ca_collections.displayDate"><div class="unit">^ca_collections.displayDate</div></ifdef>}}}
-				
-						<H6>
-							{{{<ifdef code="ca_collections.resource_type">^ca_collections.resource_type%useSingular=1</ifdef></ifdef>}}}
-						</H6>
-						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+				<div class='col-sm-12 col-md-9'>					
 <?php
-						$vs_creators_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>');
-						$vs_creators_text = $t_item->getWithTemplate('<unit relativeTo="ca_collections" delimiter=", ">^ca_collections.creators</unit>');
-						if($vs_creators_entities || $vs_creators_text){
-							print '<div class="unit"><H6>Creators</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? ", " : "").$vs_creators_text.'</div></div>';
-						}
-						$vs_contributors_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>');
-						$vs_contributors_text = $t_item->getWithTemplate('<unit relativeTo="ca_collections" delimiter=", ">^ca_collections.contributors</unit>');
-						if($vs_contributors_entities || $vs_contributors_text){
-							print '<div class="unit"><H6>Contributors</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? ", " : "").$vs_creators_text.'</div></div>';
-						}
+					$vs_source = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>', array("checkAccess" => $va_access_values));						
+					$vs_source_link = $t_item->get("ca_collections.link");
+					if($vs_source_link){
+						$vs_source_link = '<br/><a href="'.$vs_source_link.'" class="redLink" target="_blank">'.(($vs_source) ? $vs_source : 'Source Record').' <span class="glyphicon glyphicon-new-window"></span></a>';
+					}						
 ?>
-						{{{<ifdef code="ca_collections.description_new.description_new_txt">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_collections.description_new.description_new_source"><h6>Description</h6>
-								<div class="trimText">^ca_collections.description_new.description_new_txt</div>
-							</div>
-						</ifdef>}}}
-						{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H6>Contains</H6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-						
-					</div><!-- end stoneBg -->
+					<H4>{{{^ca_collections.preferred_labels.name}}}<?php print $vs_source_link; ?></H4>
+					{{{<ifdef code="ca_collections.displayDate"><div class="unit">^ca_collections.displayDate</div></ifdef>}}}
+			
+					<H6>
+						{{{<ifdef code="ca_collections.resource_type">^ca_collections.resource_type%useSingular=1</ifdef></ifdef>}}}
+					</H6>
+					{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+<?php
+					$vs_creators_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>');
+					$vs_creators_text = $t_item->getWithTemplate('<unit relativeTo="ca_collections" delimiter=", ">^ca_collections.creators</unit>');
+					if($vs_creators_entities || $vs_creators_text){
+						print '<div class="unit"><H6>Creators</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? ", " : "").$vs_creators_text.'</div></div>';
+					}
+					$vs_contributors_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>');
+					$vs_contributors_text = $t_item->getWithTemplate('<unit relativeTo="ca_collections" delimiter=", ">^ca_collections.contributors</unit>');
+					if($vs_contributors_entities || $vs_contributors_text){
+						print '<div class="unit"><H6>Contributors</H6><div class="trimTextShort">'.$vs_contributors_entities.(($vs_contributors_entities && $vs_contributors_text) ? ", " : "").$vs_contributors_text.'</div></div>';
+					}
+?>
+					{{{<ifdef code="ca_collections.description_new.description_new_txt">
+						<div class="unit" data-toggle="popover" title="Source" data-content="^ca_collections.description_new.description_new_source"><h6>Description</h6>
+							<div class="trimText">^ca_collections.description_new.description_new_txt</div>
+						</div>
+					</ifdef>}}}
+					{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H6>Contains</H6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}					
 <?php
 					include("themes_html.php");
 ?>
@@ -86,9 +91,7 @@
 						<div class="collapseContent">
 							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Holding Repository</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
 							{{{<ifdef code="ca_collections.source_identifer"><div class='unit'><h6>Holding Repository Object Identifier</h6>^ca_collections.source_identifer</div></ifdef>}}}
-							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="source" min="1"><div class="unit"><H6>Record Source</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
-							{{{<ifdef code="ca_collections.link"><div class="unit"><a href="^ca_collections.link" class="redLink" target="_blank"><H6>Holding Repository URL</H6>^ca_collections.link <span class="glyphicon glyphicon-new-window"></span></a></div></ifdef>}}}
-						
+							
 							{{{<ifdef code="ca_collections.RAD_generalNote"><div class='unit'><h6>Notes</h6>^ca_collections.RAD_generalNote</div></ifdef>}}}
 <?php
 							print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'collections/'.$t_item->get("object_id"))."</textarea></div>";					
