@@ -43,6 +43,15 @@
 			<p>
 				If you are a member of the Hope College community, you may login in to create your own Gallery exhibit. Unsure how to do this? Please click on the link and follow these <a href="<?php print $vs_instructions_link; ?>">instructions</a>.
 			</p>
+		<div class="searchBar">
+			<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', 'objects'); ?>" >
+				<label for="search_refine">SEARCH THE COLLECTION</label>
+				<div class="searchFormBrowse">
+					<button id="browseSearchButton" type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+					<input type="text" class="form-control" placeholder="" name="search" >
+				</div>
+			</form>
+		</div>
 			<H2>Statement On Use</H2>
 			{{{home_use_statement}}}
 		</div><!--end col-sm-8-->
