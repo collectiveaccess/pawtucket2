@@ -1016,10 +1016,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			return ca_sets::$s_have_access_to_set_cache[$vn_set_id.'/'.$pn_user_id.'/'.$pn_access] = true;
 		}
 		
-		if (($t_set->get('access') > 0) && ($pn_access == __CA_SET_READ_ACCESS__)) {	 // public sets are readable by all
-			return ca_sets::$s_have_access_to_set_cache[$vn_set_id.'/'.$pn_user_id.'/'.$pn_access] = true; 
-		}
-		
 		//
 		// If user is admin or has set admin privs allow them access to the set
 		//

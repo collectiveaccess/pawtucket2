@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2018 Whirl-i-Gig
+ * Copyright 2008-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -51,10 +51,10 @@ require_once(__CA_LIB_DIR__.'/Attributes/Values/LCSHAttributeValue.php');
 require_once(__CA_LIB_DIR__.'/Attributes/Values/GeoNamesAttributeValue.php');
 require_once(__CA_LIB_DIR__.'/Attributes/Values/FileAttributeValue.php');
 require_once(__CA_LIB_DIR__.'/Attributes/Values/MediaAttributeValue.php');
-require_once(__CA_LIB_DIR__.'/Attributes/Values/TaxonomyAttributeValue.php');
 require_once(__CA_LIB_DIR__.'/Attributes/Values/InformationServiceAttributeValue.php');
 require_once(__CA_LIB_DIR__.'/Attributes/Values/FloorplanAttributeValue.php');
 require_once(__CA_LIB_DIR__.'/Attributes/Values/ColorAttributeValue.php');
+require_once(__CA_LIB_DIR__.'/Attributes/Values/FilesizeAttributeValue.php');
  
 define("__CA_ATTRIBUTE_VALUE_OBJECTREPRESENTATIONS__", 21);
 define("__CA_ATTRIBUTE_VALUE_ENTITIES__", 22);

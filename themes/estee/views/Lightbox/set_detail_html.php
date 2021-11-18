@@ -62,6 +62,7 @@
 	$qr_comments 					= $this->getVar("comments");
 	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
 	$vs_description_attribute 		= $this->getVar("description_attribute");
+	$vn_download_access				= ($o_lightbox_config->get("lightbox_download_access")) ? $o_lightbox_config->get("lightbox_download_access") : 2;
 
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -143,12 +144,18 @@ if (!$vb_ajax) {	// !ajax
 ?>
 						<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Lightbox", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
 <?php
-						if(is_array($va_export_formats) && sizeof($va_export_formats)){
+						if($qr_set_items->numHits() && ((is_array($va_export_formats) && sizeof($va_export_formats)) || ($t_set->get("ca_sets.access") == $vn_download_access))){
 							// Export as PDF links
 							print "<li class='divider'></li>\n";
-							print "<li class='dropdown-header'>"._t("Download as:")."</li>\n";
-							foreach($va_export_formats as $va_export_format){
-								print "<li>".caNavLink($this->request, $va_export_format["name"]." [".$va_export_format["type"]."]", "", "", "Lightbox", "setDetail", array("view" => $va_export_format['type'], "download" => true, "export_format" => $va_export_format["code"]))."</li>";
+							print "<li class='dropdown-header'>"._t("Download:")."</li>\n";
+						
+							if($t_set->get("ca_sets.access") == $vn_download_access){
+								print "<li>".caNavLink($this->request, "<b>Digital Assets</b>", "", "", "Lightbox", "getLightboxMedia", array("set_id" => $t_set->get("set_id"), "download" => true))."</li>";
+							}
+							if(is_array($va_export_formats) && sizeof($va_export_formats)){
+								foreach($va_export_formats as $va_export_format){
+									print "<li>".caNavLink($this->request, $va_export_format["name"]." [".$va_export_format["type"]."]", "", "", "Lightbox", "setDetail", array("view" => $va_export_format['type'], "download" => true, "export_format" => $va_export_format["code"]))."</li>";
+								}
 							}
 						}
 ?>
@@ -320,6 +327,9 @@ if (!$vb_ajax) {    // !ajax
                 print "<span id='lbSetDescription".$t_set->get("set_id")."'>{$vs_description}</span><hr/>";
             }
             print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About This Project", "", "", "contact", "form", array('set_id' => $vn_set_id, 'contactType' => 'projectInquiry'))."</div>";
+			if($t_set->get("ca_sets.access") == $vn_download_access){
+				print "<div class='detailTool'><span class='glyphicon glyphicon-download'></span>".caNavLink($this->request, "Download Digital Assets", "", "", "Lightbox", "getLightboxMedia", array("set_id" => $t_set->get("set_id"), "download" => true))."</div>";
+			}
 ?>
             <div>
                 <div id="lbSetCommentErrors" style="display: none;" class='alert alert-danger'></div>
@@ -421,7 +431,7 @@ if (!$vb_ajax) {    // !ajax
         jQuery("#lbSetResultLoadContainer").on('click', ".lbItemDeleteButton", function(e) {
                 var id = jQuery(this).data("item_id");
 
-                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id} , function(data) {
+                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?>} , function(data) {
                     if(data.status == 'ok') {
                         jQuery('.lbItem' + data.item_id).fadeOut(500, function() { jQuery('.lbItem' + data.item_id).remove(); });
                         jQuery('.lbSetCountInt').html(data.count);  // update count
@@ -436,7 +446,7 @@ if (!$vb_ajax) {    // !ajax
         );
 
         jQuery("#addComment").on('submit', function(e) {
-            jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val() } , function(data) {
+            jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val(), 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> } , function(data) {
                 if(data.status == 'ok') {
                     jQuery("#lbSetCommentErrors").hide()
                     jQuery("#addCommentTextArea").val('');
@@ -455,7 +465,7 @@ if (!$vb_ajax) {    // !ajax
         jQuery("div.lbComments").on('click', '.lbComment', function(e) {
             var comment_id = jQuery(this).data("comment_id");
             if(comment_id) {
-                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {
+                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> }, function(data) {
                     if(data.status == 'ok') {
                         jQuery("#lbSetCommentErrors").hide()
                         jQuery("#lbComments" + data.comment_id).remove();

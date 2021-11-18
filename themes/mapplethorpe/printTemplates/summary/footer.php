@@ -33,7 +33,10 @@
  */
  	
  	$t_item = $this->getVar('t_subject');
-	
+ 	
+	$o_appvars = new ApplicationVars();
+	$vs_copyright_notice = $o_appvars->getVar("pawtucket_global_copyright_notice");
+
 	if($this->request->config->get('summary_header_enabled')) {
 		$vs_footer = '<table class="footerText" style="width: 100%;"><tr>';
 		if($this->request->config->get('summary_show_identifier')) {
@@ -43,6 +46,7 @@
 		if($this->request->config->get('summary_show_timestamp')) {
 			$vs_footer .= "<td class='footerText'  style='font-family: \"Sans Light\"; font-size: 12px; text-align: center;'>".caGetLocalizedDate(null, array('dateFormat' => 'delimited'))."</td>";
 		}
+		$vs_footer .= "<td class='footerText'>".$vs_copyright_notice."</td>";
 		$vs_footer .= "</tr></table>";
 		
 		

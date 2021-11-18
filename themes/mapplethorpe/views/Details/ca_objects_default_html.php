@@ -64,8 +64,18 @@
 						</div><!-- end col -->			
 						<div class='col-sm-12 col-md-3'>
 							{{{<ifdef code='ca_objects.preferred_labels|ca_objects.date'><H1><ifdef code='ca_objects.preferred_labels'><i>^ca_objects.preferred_labels</i>, </ifdef>^ca_objects.date</H1></ifdef>}}}
-							{{{<div class='unit'><ifdef code='ca_objects.idno'>MAP # ^ca_objects.idno<br/></ifdef><ifdef code='ca_objects.dimensions'>^ca_objects.dimensions<br/></ifdef><ifdef code='ca_objects.medium'>^ca_objects.medium</ifdef></div>}}}
-	<?php
+<?php
+							$vs_idno_label = "";
+							if (!preg_match("/[a-z]/i", strToLower($t_object->get("ca_objects.idno")))) {
+								$vs_idno_label = "MAP # ";
+							}
+?>
+							{{{<div class='unit'><ifdef code='ca_objects.idno'><?php print $vs_idno_label; ?>^ca_objects.idno<br/></ifdef><ifdef code='ca_objects.dimensions'>^ca_objects.dimensions<br/></ifdef><ifdef code='ca_objects.medium'>^ca_objects.medium</ifdef></div>}}}
+<?php
+							# copyright statement is set as global value
+							if($vs_copyright = $this->getVar("copyright_notice")){
+								print "<div class='unit small'>".$vs_copyright."</div>";
+							}
 							$t_list_item = new ca_list_items;
 							if($va_keywords = $t_object->get("ca_objects.keywords", array("returnAsArray" => true))){
 								print "<div class='unit'><label>Keywords</label>";
@@ -74,6 +84,9 @@
 									print caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "artwork", array("facet" => "keyword_facet", "id" => $vn_kw_id))."<br/>";
 								}
 								print "</div>";
+							}
+							if($t_object->get("ca_objects.related")){
+								print "<div class='unit text-center'>".caNavLink($this->request, "Related Artwork", "btn btn-light btn-sm", "", "Browse",  "artwork", array('facet' => 'related_object_facet', 'id' => $t_object->get("ca_objects.object_id")))."</div>";
 							}
 	?>						
 						</div><!-- end col -->
@@ -108,6 +121,9 @@
 		$('.trimText').readmore({
 		  speed: 75,
 		  maxHeight: 120
+		});
+		$(window).load(function() {
+			$(".notificationMessage").fadeOut(4000);
 		});
 	});
 </script>

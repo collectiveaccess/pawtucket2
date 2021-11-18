@@ -148,7 +148,7 @@
 ?>	
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + "{{{representation_id}}}"); }
+			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => $va_representation_ids[0])); ?>'); }
 	});
 </script>
 <?php
