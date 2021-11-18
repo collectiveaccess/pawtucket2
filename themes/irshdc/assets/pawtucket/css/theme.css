@@ -614,6 +614,11 @@ div.browseFacetItem a:hover {
 .addTo a .fa{
 	color:#8a0000;
 }
+.multisearch H3 a, .multisearch H3 a:hover, .multisearch H2 a, .multisearch H2 a:hover {
+    text-decoration: none;
+    color: #d20000;
+    font-size:18px;
+}
 /* details */
 .detail{
 	padding-bottom:40px;
