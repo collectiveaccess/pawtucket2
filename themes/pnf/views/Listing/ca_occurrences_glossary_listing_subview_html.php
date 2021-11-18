@@ -91,7 +91,7 @@
 ?>
 				<div class='glossary_illustration'>
 <?php
-				print caGetThemeGraphic($this->request, 'Anatomy_Numbered.jpg');
+				print caGetThemeGraphic($this->request, 'Anatomy_Numbered_v2.jpg');
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 590, null, array('style' => 'z-index:100; position:absolute; top:3%; left:32%; width:18%; height:3%;'));
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:7%; left:32%; width:18%; height:3%;'));
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 477, null, array('style' => 'z-index:100; position:absolute; top:11%; left:32%; width:18%; height:3%;'));
