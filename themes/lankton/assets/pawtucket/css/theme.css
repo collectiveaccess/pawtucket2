@@ -1,0 +1,407 @@
+/* red #e4002b; */
+
+/* Webfont: Roboto */@font-face {
+    font-family: 'Roboto';
+    src: url('Roboto/Roboto-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+/* Webfont: RobotoBold */@font-face {
+    font-family: 'RobotoBold';
+    src: url('Roboto/Roboto-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+/* Webfont: RobotoBold Italic */@font-face {
+    font-family: 'RobotoBold';
+    src: url('Roboto/Roboto-BoldItalic.ttf') format('truetype');
+    font-style: italic;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+/* Webfont: RobotoLight */@font-face {
+    font-family: 'RobotoLight';
+    src: url('Roboto/Roboto-Light.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+/* Webfont: RobotokLight Italic */@font-face {
+    font-family: 'RobotoLight';
+    src: url('Roboto/Roboto-LightItalic.ttf') format('truetype');
+    font-style: italic;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+body {
+	color:#000;
+	margin-bottom:210px;
+}
+body, .staticPage, .staticPage p{
+	font-family:RobotoLight;
+	font-size:16px;
+	line-height:1.5em;
+}
+#pageArea{
+	padding-bottom:50px;
+}
+b, strong, H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
+	font-family: RobotoBold;
+	text-transform:none;
+}
+a, a:hover {
+    color: #000;
+}
+H1{
+	font-size: 36px;
+	color: #e4002b;
+	margin-bottom:25px;
+	margin-top:15px; 
+}
+H2{
+	font-size: 30px;
+	color: #000000;
+	margin-bottom:25px; 
+}
+H3{
+	font-size: 24px;
+	color: #000000;
+	margin-bottom:50px; 
+}
+label{	
+	font-size: 14px;
+	font-family: RobotoBold;
+	color: #000;
+	margin-bottom: 0px;
+	margin-top: 15px;
+}
+.caption{
+	font-size: 11px;
+	font-family: RobotoBold;
+}
+.unit{
+	font-family:Roboto;
+	font-size:14px;
+	line-height:1.5em;
+	color:#000;
+}
+
+.btn-default{
+	background-color:#FFF;
+	color: #e4002b;
+    font-family: Roboto;
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0px;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+    background-color: #fff;
+    color: #000;
+    font-family: Roboto;
+	font-weight: bold;
+	font-size: 16px;
+	padding: 0px;
+}
+.navbar-brand {
+    width: auto;
+    height:auto;
+    padding-left:0px;
+    margin-bottom: 12px;
+}
+.navbar-brand > img {
+    width: auto;
+    height:40px;
+}
+.siteWrapper{
+	width: calc(100vw * 10 / 12);
+	margin-left: auto;
+	margin-right: auto;
+}
+.navbar{
+	box-shadow:none;
+}
+nav.navbar-default{
+	margin-top:32px;
+}
+.nav > li{
+	padding-top: 28px;
+}
+.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+	font-family: RobotoBold;
+	text-transform: uppercase;
+	padding-top: 0px;
+	padding-bottom: 0px;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a:focus {
+	transform: rotate(180deg);
+	color: rgb(228, 0, 43);
+	transition: ease color .1s;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    background-color: transparent;
+}
+.subHeader{
+	/* background-color: rgb(228, 0, 43); */
+	background-color: #000;
+	font-size: 22px;
+	font-weight: 700;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.13;
+	letter-spacing: normal;
+	text-align: center;
+	color: #fff;
+	font-family: RobotoBold;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	text-align: left;
+}
+.subHeader a, .subHeader a:hover{
+	font-size: 22px;
+	font-weight: 700;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.13;
+	letter-spacing: normal;
+	text-align: center;
+	color: #fff;
+	font-family: RobotoBold;
+	text-decoration:none;
+}
+.subHeader a:hover{
+	color:#e4002b;
+}
+
+#footer{
+	background-color:#000;
+	color:#FFF;
+	font-size: 18px;
+	line-height: 1.28;
+	letter-spacing: 1.11px;
+	color: #fff;
+	height: 210px;
+	padding: 40px 15px 0px 15px;
+}
+#footer H3, #footer H3 a{
+	color:#FFF;
+	font-size: 20px;
+	line-height: 1.28;
+	letter-spacing: 1.11px;
+	margin-bottom:0px;
+}
+
+/* front */
+.parallax {
+	position:relative;
+    background-image: url("../graphics/LanktonInstallation.jpg");
+
+    /* Full height */
+    /*height: 100% - header: 148px - space at bottom: 65px ;*/
+    height: calc(100vh - 213px);
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    margin-left: -15px;
+	margin-right: -15px;
+	top:-20px;
+	margin-bottom:100px;
+}
+.bottom-left-box{
+	position: absolute;
+	width: 301px;
+	max-width: 90%;
+	bottom: 0;
+	left: 0;
+	background-color: #fff;
+}
+.blurb{
+	padding-right: 45px;
+	padding-top: 25px;
+	margin-bottom: 15px;
+	font-size: 20px;
+	font-weight: RobotoLight;
+	font-stretch: normal;
+	font-style: normal;
+	line-height: 1.45;
+	letter-spacing: 0.18px;
+	color: #231f20;
+}
+/* about page */
+.staticPage {
+	margin-top:50px;;
+}
+.staticPage img{
+	width:100%;
+	height:auto;
+}
+/* collections */
+.collectionTile {
+	box-shadow: none;
+	padding:50px 40px 0px 40px;
+}
+.collectionTile img{
+	width:100%;
+	height:auto;
+}
+.collectionTile .title{
+	margin-top:20px;
+}
+.collectionsList a{
+	text-decoration:none;
+}
+.collectionTile .title, a .collectionTile .title{
+	font-size: 24px;
+	color: #000000;
+	font-family: RobotoBold;
+	line-height:1.3em;
+	text-decoration:none;
+}
+a:hover .collectionTile .title{
+	color:#e4002b;
+	text-decoration:none;
+}
+
+.results H2 {
+    font-size: 24px;
+    color: #000000;
+    margin-bottom: 0px;
+}
+#bRefine{
+	background-color:#fff;
+}
+#bRefine H3{
+	font-size: 16px;
+	color:#000;
+	text-transform:capitalize;
+}
+#bRefine H2, #bRefine a{
+	color:#000;
+}
+.results .bSearchWithinContainer{
+	clear:both;
+	margin-top:15px;
+	margin-bottom:10px;
+}
+.results .btn-search-refine{	
+	float: right;
+	font-size: 18px;
+	padding-top: 0px 0px 0px 0px;
+	width: 26px;
+	text-align: left;
+	background-color: transparent;
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	outline: 0;
+	border: 0px;
+}
+.results .btn-search-refine .glyphicon{
+	margin-top:5px;
+}
+.bSearchWithin, .bSearchWithin:focus {
+    float: left;
+    width: 80%;
+    box-shadow: none;
+    border: 0px !Important;
+    border-bottom: 1px solid #989697 !important;
+    border-radius: 0px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    padding-left: 5px;
+    height: 30px;
+    font-size: 14px;
+    line-height: 26px;
+    background-color: transparent;
+    margin: 0px 0px 0px 10px;
+}
+a.browseRemoveFacet .glyphicon {
+    color: #e4002b !important;
+}
+a.browseRemoveFacet:hover, a.browseRemoveFacet:hover .glyphicon{
+	color:#000 !important;
+}
+.bResultListItem .bResultListItemText{
+	font-size:14px;
+}
+.bResultListItem .bResultListItemText a {
+    line-height: 1.2em;
+    color: #000;
+    font-family:roboto;
+    font-size:14px;
+}
+.bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemText small a{
+	color:#000;
+}
+.multisearch H3 a, .multisearch H3 a:hover, .multisearch H2 a, .multisearch H2 a:hover {
+    text-decoration: none;
+    color: #000;
+}
+.multisearch a, .multisearch a:hover {
+    color: #000;
+}
+.multisearch .authoritySet a {
+    font-size: 12px;
+    color: #000;
+}
+.bResultItem .bResultItemText a {
+    color: #000;
+    line-height: 1.2em;
+    font-size:14px;
+    text-decoration:none;
+}
+/* detail */
+.detail .detailNavBgLeft, .detail .detailNavBgRight {
+    background-color: #FFF;
+}
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a {
+    color: #000;
+}
+.detail a {
+    color: #000;
+    text-decoration: underline;
+}
+.detail h1 {
+    font-size: 30px;
+    color: #000;
+}
+.detail h2 {
+	font-size: 24px;
+	color: #000000;
+	margin-bottom:0px;
+	text-transform:none;
+}
+.detail.collections .detailButton, .results .detailButton, .landing .detailButton{
+	float:right;
+	margin-left:15px;
+}
+.detailButton{
+	margin-top: 15px;
+}
+.detailButton a{
+	color:#e4002b !important;
+	font-family:roboto;
+    font-size:14px;
+    font-weight:bold;
+    text-decoration:none;
+}
+.detailButton .fa, .detailButton .glyphicon, .detailButton a {
+    color:#e4002b !important;
+    font-size: 14px;
+}
+.detailButton .fa, .detailButton .glyphicon{
+	padding-right:5px;
+}
+.detail label{
+	color:#000;
+	margin-bottom:0px;
+	margin-top:15px;
+}
