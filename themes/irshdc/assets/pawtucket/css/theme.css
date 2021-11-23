@@ -879,10 +879,17 @@ a.readmore-js-toggle {
     background-color: transparent;
     margin-left:auto;
     margin-right:auto;
-    width:75px;
+    width:150px;
 }
 .detail #detailRepNav {
     margin-top: -40px;
+}
+.detail .detailMediaToolbar .readOnline{
+	text-transform:uppercase;
+	font-size:11px;
+	left: -5px;
+	padding-right: 0px;
+	position: relative;
 }
 .detail .detailPlaceholderContainer{
 	background-color: #F5F5F5;

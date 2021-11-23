@@ -79,7 +79,6 @@ if($vs_mode == "map"){
 			<div class="row">
 <?php
 				$va_transcript_rep_ids = $va_full_text_rep_ids = array();
-				$vs_read_online_btn = "";
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 				if($vs_representationViewer){
 ?>
@@ -94,20 +93,13 @@ if($vs_mode == "map"){
 					$va_type = $t_list->getItemFromList("object_representation_types", "full_text");
 					$va_full_text_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
 					
-					if((is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)) || (is_array($va_full_text_rep_ids) && sizeof($va_full_text_rep_ids))){
+					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
 						print "<div id='transcriptLink' class='text-center'>";
 						if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
 							foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
 								$t_rep = new ca_object_representations($vn_transcript_rep_id);
 							
 								print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
-							}
-						}
-						if(is_array($va_full_text_rep_ids) && sizeof($va_full_text_rep_ids)){
-							foreach($va_full_text_rep_ids as $vn_full_text_rep_id){
-								$t_rep = new ca_object_representations($vn_transcript_rep_id);
-								print "<a href='#' class='btn btn-default btn-small' title='"._t("Read Online")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_id, 'representation_id' => $vn_full_text_rep_id, 'item_id' => $vn_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span> Read Online</a>\n";
-								$vs_read_online_btn .= "<div class='detailTool'><a href='#' title='"._t("Read Online")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_id, 'representation_id' => $vn_full_text_rep_id, 'item_id' => $vn_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span> Read Online</a></div>\n";
 							}
 						}
 						print "</div>";
@@ -335,8 +327,13 @@ if($vs_mode == "map"){
 					if($vb_show_download_all_link){
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caNavLink($this->request, "Download", "faDownload", "", "Detail",  "DownloadMedia", array('object_id' => $vn_id, "download" => 1))."</div>";
 					}
-					if($vs_read_online_btn){
-						print $vs_read_online_btn;
+					if(is_array($va_full_text_rep_ids) && sizeof($va_full_text_rep_ids)){
+						foreach($va_full_text_rep_ids as $vn_full_text_rep_id){
+							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+							print "<div class='detailTool'><a href='#' title='"._t("Read Online")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_id, 'representation_id' => $vn_full_text_rep_id, 'item_id' => $vn_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span> Read Online</a></div>\n";
+							# --- online print one button to the first rep with read online
+							break;
+						}
 					}
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
 					if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
@@ -465,6 +462,19 @@ if($vs_mode == "map"){
 					}
 				});
 			}
+<?php		
+		if(is_array($va_full_text_rep_ids) && sizeof($va_full_text_rep_ids)){
+			foreach($va_full_text_rep_ids as $vn_full_text_rep_id){
+?>
+				if(!$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").hasClass("readOnlineLoaded")){
+					$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").append("<span class='readOnline'>Read Online</span>");
+					$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").addClass("readOnlineLoaded");
+				}
+<?php			
+			}
+		}
+?>
+
 		});
 	});
 </script>
