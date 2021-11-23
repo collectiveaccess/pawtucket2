@@ -29,30 +29,14 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
-		require_once(__CA_MODELS_DIR__."/ca_site_pages.php");
-		$t_site_page = new ca_site_pages(array("path" => "/gallery_instructions"));
-		if($t_site_page->get("ca_site_pages.page_id")){
-			$vs_instructions_link = $t_site_page->getWithTemplate("^ca_site_page_media.media.original.url");
-		}
-?>
-	<div class="row">
-		<div class="col-sm-12 col-md-8 col-md-offset-2 frontIntro">
-			<H1>Welcome</H1>
-			{{{home_page_welcome_text}}}
-			<p>
-				If you are a member of the Hope College community, you may login in to create your own Gallery exhibit. Unsure how to do this? Please click on the link and follow these <a href="<?php print $vs_instructions_link; ?>">instructions</a>.
-			</p>
-		<div class="searchBar">
-			<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', 'objects'); ?>" >
-				<label for="search_refine">SEARCH THE COLLECTION</label>
-				<div class="searchFormBrowse">
-					<button id="browseSearchButton" type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
-					<input type="text" class="form-control" placeholder="" name="search" >
+ ?>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="parallax">
+					<div class="bottom-left-box"><div class="blurb"><b>Welcome to the Greer Lankton Collection</b><br/>Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br/><br/><?php print caNavLink($this->request, _t("> Explore the Collection"), "btn btn-default", "", "Collections", "index"); ?></div></div>
 				</div>
-			</form>
+			</div>
 		</div>
-			<H2>Statement On Use</H2>
-			{{{home_use_statement}}}
-		</div><!--end col-sm-8-->
-	</div><!-- end row -->
+	</div>

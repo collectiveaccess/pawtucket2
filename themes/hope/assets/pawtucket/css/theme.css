@@ -227,20 +227,28 @@ H1 .btn-group > a:hover{
 	padding-top: 15px;
 	padding-bottom: 25px;
 }
+.front .searchBar {
+	padding-top: 40px;
+	padding-bottom: 10px;
+}
+.front .searchBar label{
+	font-size: 20px;
+	color: #000000;	
+}
 .results .searchBar label{
 	font-size: 20px;
 	color: #494949;	
 }
-.results .searchBar .searchFormBrowse{
+.results .searchBar .searchFormBrowse, .front .searchBar .searchFormBrowse{
 	position:relative;
 }
-.results .searchBar input{
+.results .searchBar input, .front .searchBar input{
 	border:2px solid #777777;
 	border-radius:0px;
 	font-size:20px;
 	padding: 20px 20px 20px 50px;
 }
-.results .searchBar button{
+.results .searchBar button, .front .searchBar button{
 	font-size:25px;
 	position:absolute;
 	left: 5px;
