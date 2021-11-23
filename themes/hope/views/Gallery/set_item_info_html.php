@@ -5,6 +5,7 @@
 	$vs_medium 	= $t_object->get("ca_objects.medium_container.display_medium_support");
 	$vs_entity 	= $t_object->get("ca_entities.preferred_labels.displayname", array('restrictToRelationshipTypes' => array('artist', 'painter', 'school', 'attributed'), 'delimiter' => ', '));
 	$vs_date = $t_object->get('ca_objects.creation_date_display');
+	$vs_idno = $t_object->get('ca_objects.idno');
 	$va_caption = array();
 	if($vs_entity){
 		$va_caption[] = $vs_entity;
@@ -22,7 +23,9 @@
 	print "<div class='unit text-center'>(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")</div>";
 	print "<div class='tombstone'>".caDetailLink($this->request, "<H2>".$this->getVar("label")."</H2>".join(", ", $va_caption), '', $this->getVar("table"),  $this->getVar("row_id"));
 	if ($vs_credit = $t_object->get('ca_objects.credit_line.credit_text', array('delimiter' => '<br/>'))) {
-		print "<br/>".$vs_credit;
+		print "<br/>".$vs_credit.", ".$vs_idno;
+	}else{
+		print "<br>".$vs_idno;
 	}
 	print "</div>";
 	print "<div class='trimTextItemInfo'>";		
