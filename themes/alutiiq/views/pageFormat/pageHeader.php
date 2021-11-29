@@ -92,111 +92,64 @@
     <div class="navbar-container">
     <div class="uk-flex uk-flex-middle uk-flex-center uk-flex-space-between">
 
-                <a class="tm-logo uk-hidden-small" href="https://alutiiqmuseum.org"><?php print caGetThemeGraphic($this->request, 'AlutiiqMuseum_Logo.png', array("alt" => "Alutiiq Museum", "role" => "banner")); ?></a>
+        <a class="tm-logo uk-hidden-small" href="https://alutiiqmuseum.org"><?php print caGetThemeGraphic($this->request, 'AlutiiqMuseum_Logo.png', array("alt" => "Alutiiq Museum", "role" => "banner")); ?></a>
         
-                <div class="tm-nav uk-hidden-small">
-        <ul class="uk-navbar-nav uk-hidden-small">
-			<li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">VISIT</a>
-				<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center"><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1"><ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/visit/our-mission">Our Mission</a></li><li><a href="https://alutiiqmuseum.org/visit/location-hours-admission">Location, Hours, Admission</a></li><li><a href="https://forms.zohopublic.com/alutiiqm/form/TourReservationForm/formperma/G0EFrVHK1saQg_eNFd2tktuSFjZtoB5V3qwwU599gbs">Schedule a Tour</a></li><li><a href="https://alutiiqmuseum.org/visit/on-exhibit">Exhibits</a></li><li><a href="https://alutiiqmuseum.org/visit/upcoming-events">Events</a></li><li><a href="http://ancestorsmemorial.org/" target="_blank" rel="noopener noreferrer">Ancestors' Memorial</a></li></ul></div></div></div></li><li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">LEARN</a>
-				<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center"><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1"><ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people">Alutiiq / Sugpiaq People</a></li><li><a href="https://alutiiqmuseum.org/learn/plant-gallery">Plant Gallery</a></li><li><a href="https://alutiiqmuseum.org/learn/contest">Coloring Alutiiq</a></li>
-				<li><a href="https://alutiiqmuseum.org/learn/alutiiq-word-of-the-week">Alutiiq Word of the Week</a></li>
-				<li><a href="https://alutiiqmuseum.org/learn/word-of-the-week-archive">Word of the Week Archive</a></li>
-				<!--<li><?php print caNavLink($this->request, "Alutiiq Word of the Week", "", "", "Word", "Index"); ?></li>-->
-				<li><a href="https://alutiiqmuseum.org/teachers">For Teachers</a></li><li><a href="https://alutiiqmuseum.org/learn/history-of-the-alutiiq-museum">Museum History</a></li><li><a href="https://alutiiqmuseum.org/learn/ask-a-question">Ask A Question</a></li></ul></div></div></div></li><li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">EXPLORE</a>
-				<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center"><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1"><ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/explore/collections">Collections</a></li><li><a href="https://alutiiqmuseum.org/explore/past-exhibits">Past Exhibits</a></li><li><a href="https://alutiiqmuseum.org/explore/crafts">Crafts</a></li><li><a href="https://alutiiqmuseum.org/explore/uswitusqaq-s-dream">Uswitusqaq's Dream</a></li><li><a href="https://alutiiqmuseum.org/explore/lecture-videos">Videos</a></li><li><a href="https://alutiiqmuseum.org/explore/virtual-tour">Virtual Tour</a></li><li><a href="https://alutiiqmuseum.org/explore/cultural-experiences">Cultural Experiences</a></li></ul></div></div></div></li><li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">RESEARCH</a>
-				<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center uk-dropdown-bottom" aria-hidden="true" style="top: 30px; left: -43px;" tabindex=""><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1"><ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/research/archeology">Archaeology</a></li><li><a href="http://languagearchive.alutiiqmuseum.org/home" target="_blank" rel="noopener noreferrer">Language Collections</a></li><li><a href="https://alutiiqmuseum.org/research/language-collections">Language Studies</a></li><li><a href="https://alutiiqmuseum.org/research/library">Library</a></li><li><a href="https://alutiiqmuseum.org/research/photos">Share Photos</a></li><li><?php print caNavLink($this->request, "Amutat Database", "", "", "", ""); ?></li></ul></div></div></div></li><li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">SHOP</a>
-				<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center"><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1"><ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseumstore.org" target="_blank" rel="noopener noreferrer">Museum Store</a></li><li><a href="https://alutiiqmuseum.org/shop/artist-bios">Artists</a></li><li><a href="https://alutiiqmuseum.org/shop/the-alutiiq-seal">The Alutiiq Seal</a></li><li><a href="https://alutiiqmuseum.org/shop/arts-advocacy">Arts Advocacy</a></li><li><a href="https://alutiiqmuseum.org/shop/info-for-artists">Sell &amp; Consign</a></li></ul></div></div></div></li><li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="https://alutiiqmuseum.org/give">GIVE</a><div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center"><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1"><ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/give/donations">Donations</a></li><li><a href="https://alutiiqmuseum.org/give">Membership</a></li><li><a href="https://alutiiqmuseum.org/give/sponsor">Sponsor</a></li><li><a href="https://alutiiqmuseum.org/give/serve">Serve</a></li><li><a href="https://alutiiqmuseum.org/give/volunteers">Volunteer</a></li></ul></div></div></div></li></ul>        </div>
+		<div class="tm-nav uk-hidden-small">
+			<ul class="uk-navbar-nav uk-hidden-small">
+				<li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">VISIT</a>
+					<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center"><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1">
+						<ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/visit/our-mission">Our Mission</a></li><li><a href="https://alutiiqmuseum.org/visit/location-hours-admission">Location, Hours, Admission</a></li><li><a href="https://forms.zohopublic.com/alutiiqm/form/TourReservationForm/formperma/G0EFrVHK1saQg_eNFd2tktuSFjZtoB5V3qwwU599gbs">Schedule a Tour</a></li><li><a href="https://alutiiqmuseum.org/visit/on-exhibit">Exhibits</a></li><li><a href="https://alutiiqmuseum.org/visit/upcoming-events">Events</a></li><li><a href="http://ancestorsmemorial.org/" target="_blank" rel="noopener noreferrer">Ancestors' Memorial</a></li></ul>
+					</div></div></div>
+				</li>
+				<li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">LEARN</a>
+					<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center"><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1">
+						<ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people">Alutiiq / Sugpiaq People</a></li><li><a href="https://alutiiqmuseum.org/learn/plant-gallery">Plant Gallery</a></li><li><a href="https://alutiiqmuseum.org/learn/contest">Coloring Alutiiq</a></li>
+							<li><a href="https://alutiiqmuseum.org/learn/alutiiq-word-of-the-week">Alutiiq Word of the Week</a></li>
+							<li><a href="https://alutiiqmuseum.org/learn/word-of-the-week-archive">Word of the Week Archive</a></li>
+							<!--<li><?php print caNavLink($this->request, "Alutiiq Word of the Week", "", "", "Word", "Index"); ?></li>-->
+							<li><a href="https://alutiiqmuseum.org/teachers">For Teachers</a></li><li><a href="https://alutiiqmuseum.org/learn/history-of-the-alutiiq-museum">Museum History</a></li><li><a href="https://alutiiqmuseum.org/learn/ask-a-question">Ask A Question</a></li>
+						</ul>
+					</div></div></div>
+				</li>
+				<li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">EXPLORE</a>
+					<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center">
+						<div class="uk-grid uk-dropdown-grid">
+							<div class="uk-width-1-1">
+								<ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/explore/collections">Collections</a></li><li><a href="https://alutiiqmuseum.org/explore/past-exhibits">Past Exhibits</a></li><li><a href="https://alutiiqmuseum.org/explore/crafts">Crafts</a></li><li><a href="https://alutiiqmuseum.org/explore/uswitusqaq-s-dream">Uswitusqaq's Dream</a></li><li><a href="https://alutiiqmuseum.org/explore/lecture-videos">Videos</a></li><li><a href="https://alutiiqmuseum.org/explore/virtual-tour">Virtual Tour</a></li><li><a href="https://alutiiqmuseum.org/explore/cultural-experiences">Cultural Experiences</a></li></ul>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">RESEARCH</a>
+					<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center uk-dropdown-bottom" aria-hidden="true" style="top: 30px; left: -43px;" tabindex=""><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1">
+						<ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/research/archeology">Archaeology</a></li><li><a href="http://languagearchive.alutiiqmuseum.org/home" target="_blank" rel="noopener noreferrer">Language Collections</a></li><li><a href="https://alutiiqmuseum.org/research/language-collections">Language Studies</a></li><li><a href="https://alutiiqmuseum.org/research/library">Library</a></li><li><a href="https://alutiiqmuseum.org/research/photos">Share Photos</a></li><li><?php print caNavLink($this->request, "Amutat Database", "", "", "", ""); ?></li></ul>
+					</div></div></div>
+				</li>
+				<li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">SHOP</a>
+					<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center"><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1">
+						<ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseumstore.org" target="_blank" rel="noopener noreferrer">Museum Store</a></li><li><a href="https://alutiiqmuseum.org/shop/artist-bios">Artists</a></li><li><a href="https://alutiiqmuseum.org/shop/the-alutiiq-seal">The Alutiiq Seal</a></li><li><a href="https://alutiiqmuseum.org/shop/arts-advocacy">Arts Advocacy</a></li><li><a href="https://alutiiqmuseum.org/shop/info-for-artists">Sell &amp; Consign</a></li></ul>
+					</div></div></div>
+				</li>
+				<li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="https://alutiiqmuseum.org/give">GIVE</a>
+					<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center"><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1">
+						<ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/give/donations">Donations</a></li><li><a href="https://alutiiqmuseum.org/give">Membership</a></li><li><a href="https://alutiiqmuseum.org/give/sponsor">Sponsor</a></li><li><a href="https://alutiiqmuseum.org/give/serve">Serve</a></li><li><a href="https://alutiiqmuseum.org/give/volunteers">Volunteer</a></li></ul>
+					</div></div></div>
+				</li>
+			</ul>        
+		</div>
         
                 <a href="#offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas=""></a>
         
         
-                <div class="uk-navbar-content uk-navbar-center uk-visible-small"><a class="tm-logo-small" href="https://alutiiqmuseum.org"><?php print caGetThemeGraphic($this->request, 'AlutiiqMuseum_Logo.png', array("alt" => "Alutiiq Museum", "role" => "banner")); ?></div>
-            	</div>
+                <div class="uk-navbar-content uk-navbar-center uk-visible-small"><a class="tm-logo-small" href="https://alutiiqmuseum.org"><?php print caGetThemeGraphic($this->request, 'AlutiiqMuseum_Logo.png', array("alt" => "Alutiiq Museum", "role" => "banner")); ?></a></div>
+    </div>
     </div>    
     </div>
     
     </nav>
 	
 	
-	<nav class="navbar navbar-default yamm" role="navigation" style="display:none;">
-		<div class="container menuBar">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-<?php
-	if ($vb_has_user_links) {
-?>
-				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
-					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
-				</button>
-<?php
-	}
-?>
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-<?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ca_nav_logo300.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");
-?>
-			</div>
-
-		<!-- Collect the nav links, forms, and other content for toggling -->
-			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
-<?php
-	if ($vb_has_user_links) {
-?>
-			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav" role="list" aria-label="<?php print _t("Mobile User Navigation"); ?>">
-					<?php print join("\n", $va_user_links); ?>
-				</ul>
-			</div>
-<?php
-	}
-?>
-			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
-<?php
-	if ($vb_has_user_links) {
-?>
-				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
-					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span></a>
-						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
-					</li>
-				</ul>
-<?php
-	}
-?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
-					<div class="formOutline">
-						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
-						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
-					</div>
-				</form>
-				<script type="text/javascript">
-					$(document).ready(function(){
-						$('#headerSearchButton').prop('disabled',true);
-						$('#headerSearchInput').on('keyup', function(){
-							$('#headerSearchButton').prop('disabled', this.value == "" ? true : false);     
-						})
-					});
-				</script>
-				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-				</ul>
-			</div><!-- /.navbar-collapse -->
-		</div><!-- end container -->
-	</nav>
-	<div class="container"><div class="row"><div class="col-xs-12">
+	<div class="container" style="clear:both;"><div class="row"><div class="col-xs-12">
 		<div role="main" id="main"><div id="pageArea" <?php print caGetPageCSSClasses(); ?>><div class="content-area">
 <?php
 	if(in_array(strToLower($this->request->getController()), array("word", "about")) || in_array(strToLower($this->request->getAction()), array("words", "word"))){
