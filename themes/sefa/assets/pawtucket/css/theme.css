@@ -62,7 +62,7 @@ a:hover {
 a:active {
 	color:#5A8042;
 }
-h1, .front H1, .front h1 a {
+h1, .front H1, .front h1 a, .detail h1 {
 	font-family: GillSansMTStd-Light, Helvetica, Arial, sans-serif;
 	font-weight:normal;
 	font-size: 42px;
@@ -71,13 +71,20 @@ h1, .front H1, .front h1 a {
 	margin:0px;
 	text-transform:none;
 }
-h2, .front h2 a {
+.detail h1{
+	line-height:1.1em;
+}
+h2, .front h2 a, .detail h2 {
 	font-family: GillSansMTStd-Light, Helvetica, Arial, sans-serif;
 	font-weight:normal; 
 	color:#666;
 	padding:0px;
 	margin:0px;
 	font-size: 30px;
+}
+.detail h2 {
+	text-transform: none !important;
+	margin: 0px;
 }
 h3 {
 	font-family: GillSansMTStd-Light, Helvetica, Arial, sans-serif;
@@ -126,13 +133,17 @@ strong, b {
 	padding-top:35px;
 	font-size:15px;
 }
+.detail .thumbnail:not([data-loaded]), .contact .thumbnail:not([data-loaded]){
+	margin:auto;
+	border:0px;
+}
 .thumbnail {
     background-color: #FFFFFF;
     border: 0px;
     border-radius: 0px;
     display: block;
     line-height: 1.42857;
-    margin-bottom: 20px;
+    margin-bottom: 20px !important;
     padding: 0px;
     transition: all 0.2s ease-in-out 0s;
 }
@@ -323,6 +334,7 @@ div.captionSlideshow{
 	margin:0px 0px 15px 0px;
 	font-family: GillSansMTStd-Book, Helvetica, Arial, sans-serif;
 	font-weight:normal;
+	line-height: 1.1em;
 }
 
 
@@ -478,6 +490,8 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 }
 #pageArea.artist h2{
 	font-size:20px;
+	text-transform: none;
+	margin: 0px;
 }
 #pageArea.artist h2 a{
 	font-size:24px;
@@ -494,6 +508,8 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 }
 #pageArea.catalog h2{
 	font-size:16px;
+	text-transform: none;
+	margin: 0px;
 }
 #pageArea.catalog h2 a{
 	font-size:18px;
@@ -547,6 +563,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	margin: 0px;
 	padding:0px;
 	font-weight: normal;
+	line-height: 1.1em;
 }
 .fairListing .fairListingImg img{
 	padding:3px;

@@ -91,16 +91,11 @@
 ?>
 				<div class='glossary_illustration'>
 <?php
-				print caGetThemeGraphic($this->request, 'Anatomy_Numbered.jpg');
-				if($vs_mode != "enlarge_image"){
-					print "<div style='text-align:center'>".caNavLink($this->request, "<span class='glyphicon glyphicon-search'></span> ENLARGE", '', '', 'Listing', 'glossary', array("mode" => "enlarge_image"))."</div>";
-				}else{
-					print "<div style='text-align:center'>".caNavLink($this->request, "BACK", '', '', 'Listing', 'glossary')."</div>";
-				}
+				print caGetThemeGraphic($this->request, 'Anatomy_Numbered_v2.jpg');
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 590, null, array('style' => 'z-index:100; position:absolute; top:3%; left:32%; width:18%; height:3%;'));
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:7%; left:32%; width:18%; height:3%;'));
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 477, null, array('style' => 'z-index:100; position:absolute; top:11%; left:32%; width:18%; height:3%;'));
-				#print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 477, null, array('style' => 'z-index:100; position:absolute; top:15%; left:32%; width:18%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 642, null, array('style' => 'z-index:100; position:absolute; top:15%; left:32%; width:18%; height:3%;'));
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:19%; left:32%; width:18%; height:3%;'));
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 523, null, array('style' => 'z-index:100; position:absolute; top:23%; left:32%; width:18%; height:3%;'));
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 479, null, array('style' => 'z-index:100; position:absolute; top:27%; left:32%; width:18%; height:3%;'));
@@ -110,19 +105,27 @@
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 580, null, array('style' => 'z-index:100; position:absolute; top:16%; left:51%; width:15%; height:6%;'));
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 585, null, array('style' => 'z-index:100; position:absolute; top:23%; left:51%; width:15%; height:4%;'));
 				
-				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 524, null, array('style' => 'z-index:100; position:absolute; top:44%; left:4%; width:22%; height:7%;'));
-				#print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 524, null, array('style' => 'z-index:100; position:absolute; top:44%; left:75%; width:22%; height:12%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 524, null, array('style' => 'z-index:100; position:absolute; top:44%; left:4%; width:22%; height:8%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:44%; left:75%; width:22%; height:13%;'));
 				
-				#print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 590, null, array('style' => 'z-index:100; position:absolute; top:66%; left:35%; width:28%; height:4%;'));
-				#print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 590, null, array('style' => 'z-index:100; position:absolute; top:71%; left:35%; width:28%; height:4%;'));
-				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 485, null, array('style' => 'z-index:100; position:absolute; top:75%; left:35%; width:28%; height:4%;'));
-				#print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 485, null, array('style' => 'z-index:100; position:absolute; top:79%; left:35%; width:28%; height:4%;'));
-				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:83%; left:35%; width:28%; height:4%;'));
-				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 479, null, array('style' => 'z-index:100; position:absolute; top:87%; left:35%; width:28%; height:4%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:69%; left:35%; width:28%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:73%; left:35%; width:28%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 485, null, array('style' => 'z-index:100; position:absolute; top:77%; left:35%; width:28%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 569, null, array('style' => 'z-index:100; position:absolute; top:81%; left:35%; width:28%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:85%; left:35%; width:28%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 479, null, array('style' => 'z-index:100; position:absolute; top:89%; left:35%; width:28%; height:3%;'));
 				
 ?>
 				
-			</div></div></div>
+			</div>
+<?php
+				if($vs_mode != "enlarge_image"){
+					print "<div style='text-align:center'>".caNavLink($this->request, "<span class='glyphicon glyphicon-search'></span> ENLARGE", '', '', 'Listing', 'glossary', array("mode" => "enlarge_image"))."</div>";
+				}else{
+					print "<div style='text-align:center'>".caNavLink($this->request, "BACK", '', '', 'Listing', 'glossary')."</div>";
+				}
+?>
+			</div></div>
 			</div>
 
 <?php
