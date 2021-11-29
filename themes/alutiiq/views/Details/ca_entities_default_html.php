@@ -18,7 +18,10 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
-					{{{<ifdef code="ca_entities.website"><H2><a href="^ca_entities.website" target="_blank">^ca_entities.website <i class="fa fa-external-link" aria-hidden="true"></i></a></H2></ifdef>}}}
+					{{{<ifdef code="ca_entities.description">
+						<div class='unit'>^ca_entities.description</div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_entities.website|ca_entities.online_collection"><H2><a href="^ca_entities.website" target="_blank">^ca_entities.website <i class="fa fa-external-link" aria-hidden="true"></i></a><ifdef code="ca_entities.website,ca_entities.online_collection"><br/></ifdef><a href="^ca_entities.online_collection" target="_blank">Online Collection <i class="fa fa-external-link" aria-hidden="true"></i></a></H2></ifdef>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
@@ -40,7 +43,7 @@
 					{{{<ifcount code="ca_collections" min="1">
 						<ifcount code="ca_collections" min="1" max="1"><label>Collection</label></ifcount>
 						<ifcount code="ca_collections" min="2"><label>collections</label></ifcount>
-						<unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.preferred_labels.name</unit>
+						<span class="trimText"><unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.preferred_labels.name</unit></span>
 					</ifcount>}}}					
 <?php
 				# Comment and Share Tools

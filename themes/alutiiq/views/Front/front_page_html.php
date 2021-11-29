@@ -63,7 +63,7 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-12 text-center">
-			<h2>Participating Institutions</h2>
+			<h2>Alutiiq Collections Around the World</h2>
 <?php
 			$t_list_item = new ca_list_items();
 			$t_list_item->load(array("idno" => "institution"));

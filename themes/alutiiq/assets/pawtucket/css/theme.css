@@ -18,6 +18,13 @@
 		box-shadow:none !important;
 	}
 }
+.tm-nav.uk-hidden-small{
+	text-align: right;
+	width: 100%;
+}
+.uk-navbar-nav.uk-hidden-small{
+	float:right;
+}
 .tm-logo-small img{
 	width:92px;
 	height:auto;
@@ -82,6 +89,9 @@ h1, .front h1{
 	.subNavJumpTo{
 		text-align:right;
 	}
+}
+.subNavJumpTo a, .uk-breadcrumb a{
+	color: #ad655f;
 }
 /* home page */
 .hpIntroTop{
@@ -358,4 +368,24 @@ a:hover .wordFindBox{
 }
 .small{
 	font-size:.8em; 
+}
+.bResultListItemInstitution{
+	background-color:#BDBDBD;
+	height:72px;
+	margin-bottom:20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+a .bResultListItemInstitution{
+	color:#000000;
+	font-size: 17px;
+	font-weight: 400;
+}
+a:hover .bResultListItemInstitution{
+	color:#FFF;
+	background-color:#6C869E;
+}
+.leaflet-container a {
+    color: #AC143A;
 }

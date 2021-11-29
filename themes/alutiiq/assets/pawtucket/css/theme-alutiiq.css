@@ -4061,12 +4061,14 @@ select.uk-form-width-mini {
 /* ========================================================================
    Component: Icon
  ========================================================================== */
+/*
 @font-face {
   font-family: 'FontAwesome';
   src: url("../warp/vendor/uikit/fonts/fontawesome-webfont.woff2") format('woff2'), url("../warp/vendor/uikit/fonts/fontawesome-webfont.woff") format("woff"), url("../warp/vendor/uikit/fonts/fontawesome-webfont.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
+*/
 /*
  * 1. Allow margin
  * 2. Prevent inherit font style
