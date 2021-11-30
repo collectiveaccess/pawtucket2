@@ -2024,7 +2024,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 						
 							if (isset($va_item['settings']['skipIfExpression']) && strlen(trim($va_item['settings']['skipIfExpression']))) {
 								try {
-									if($vm_ret = ExpressionParser::evaluate($va_item['settings']['skipIfExpression'], $va_row_with_replacements)) {
+								    if($vm_ret = ExpressionParser::evaluate($va_item['settings']['skipIfExpression'], $va_row_with_replacements)) {
 										$o_log->logInfo(_t('[%1] Skipped mapping because skipIfExpression %2 is true', $vs_idno, $va_item['settings']['skipIfExpression']));
 										continue(2);
 									}
@@ -2033,14 +2033,15 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 								}
 							}
 						
-							if (($vn_type_id_mapping_item_id && ($vn_item_id == $vn_type_id_mapping_item_id))) {
-								continue; 
-							}
+							//if (($vn_type_id_mapping_item_id && ($vn_item_id == $vn_type_id_mapping_item_id))) {
+							//	continue; 
+							//}
 					
 							if($vn_idno_mapping_item_id && ($vn_item_id == $vn_idno_mapping_item_id)) { 
 								continue; 
 							}
 							if (is_null($vm_val)) { continue; }
+							
 					
 							// Get mapping error policy
 							$vb_item_error_policy_is_default = false;
@@ -2181,14 +2182,17 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 								$vm_val = mb_substr($vm_val, 0, $vn_max_length);
 							}
 						
-						
 							if (in_array('preferred_labels', $va_item_dest) || in_array('nonpreferred_labels', $va_item_dest)) {	
 								if (isset($va_item['settings']['truncateLongLabels']) && $va_item['settings']['truncateLongLabels']) {
 									$va_group_buf[$vn_c]['_truncateLongLabels'] = true;
 								}
 							}
-							
 							switch($vs_item_terminal) {
+							    case 'type_id':
+							        if(($vs_target_table == $vs_subject_table_name) && (sizeof($va_item_dest) == 2)) {
+                                        $vs_type = $vm_val;
+                                    }
+							        break; 
 								case 'preferred_labels':
 								case 'nonpreferred_labels':
 									if ($t_instance = Datamodel::getInstance($vs_target_table, true)) {
@@ -2875,7 +2879,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 										break;
 									case 'ca_object_representations':
 										if ($vn_rel_id = DataMigrationUtils::getObjectRepresentationID($vs_name, $va_element_data['_type'], $vn_locale_id, $va_data_for_rel_table, array('forceUpdate' => true, 'dontCreate' => $vb_dont_create, 'matchOn' => $va_match_on, 'log' => $o_log, 'transaction' => $o_trans, 'importEvent' => $o_event, 'importEventSource' => $vn_row, 'nonPreferredLabels' => $va_nonpreferred_labels, 'matchMediaFilesWithoutExtension' => true))) {
-											$t_subject->linkRepresentation($vn_rel_id, null, null, null, null, array('type_id' => trim($va_element_data['_relationship_type']), 'is_primary' => true));
+											$t_subject->linkRepresentation($vn_rel_id, null, ['type_id' => trim($va_element_data['_relationship_type'])]);
 										
 											if ($vs_error = DataMigrationUtils::postError($t_subject, _t("[%1] Could not add related object representation with:", $vs_idno), __CA_DATA_IMPORT_ERROR__, array('dontOutputLevel' => true, 'dontPrint' => true))) {
 												ca_data_importers::logImportError($vs_error, $va_log_import_error_opts);

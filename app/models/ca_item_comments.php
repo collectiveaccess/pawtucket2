@@ -331,7 +331,7 @@ class ca_item_comments extends BaseModel {
 	}
 	# ------------------------------------------------------
 	public function insert($pa_options=null) {
-		$this->set('ip_addr', RequestHTTP::ip());
+		$this->set('ip_addr', $_SERVER['REMOTE_ADDR']);
 		return parent::insert($pa_options);
 	}
 	# ------------------------------------------------------

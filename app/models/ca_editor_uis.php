@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2019 Whirl-i-Gig
+ * Copyright 2008-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -104,8 +104,7 @@ BaseModel::$s_ca_models_definitions['ca_editor_uis'] = array(
 					_t('site pages') => 235,
 					_t('user interfaces') => 101,
 					_t('user interface screens') => 100,
-					_t('metadata alert rules') => 238,
-					_t('data dictionary entries') => 214
+					_t('metadata alert rules') => 238
 				)
 		),
 		'color' => array(
@@ -360,8 +359,8 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		}
 		if (!$vn_type_id || !($vn_rc = $t_ui->load($va_uis_by_type[$vn_type_id]))) {
 			$va_ui_ids = ca_editor_uis::getAvailableUIs($vn_table_num, $po_request, $vn_type_id, true);
-			
-			if (!is_array($va_ui_ids) || (sizeof($va_ui_ids) == 0)) { return ca_editor_uis::$s_default_ui_cache[$pm_table_name_or_num.'/'.$pn_type_id] = false; }
+
+			if (sizeof($va_ui_ids) == 0) { return ca_editor_uis::$s_default_ui_cache[$pm_table_name_or_num.'/'.$pn_type_id] = false; }
 			$va_tmp = array_keys($va_ui_ids);
 			if ($t_ui->load($va_tmp[0])) {
 				return ca_editor_uis::$s_default_ui_cache[$pm_table_name_or_num.'/'.$pn_type_id] = $t_ui;
@@ -472,7 +471,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 			WHERE
 				 ".join(" AND ", $va_wheres)."
 			ORDER BY 
-				ceus.rank, ceus.screen_id
+				ceus.`rank`, ceus.screen_id
 		", $va_params);
 		
 		$va_screens = [];
@@ -744,6 +743,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		    }
 		}
 		
+		
 		$va_bundles = [];
 		$qr_res = $o_db->query("
 			SELECT *
@@ -752,11 +752,10 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 			WHERE
 				(ceus.ui_id = ?) AND (ceuibp.screen_id = ?) {$vs_bundle_list_sql}
 			ORDER BY 
-				ceuibp.rank
+				ceuibp.`rank`
 		", $va_params);
 		
 		$va_placements = [];
-		$screen_ids = [];
 		while ($qr_res->nextRow()) {
 			$va_tmp = $qr_res->getRow();
 			$va_tmp['settings'] = $qr_res->getVars('settings');
@@ -774,14 +773,10 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 				$pn_type_id && is_array($va_types) && sizeof($va_types) &&
 				!in_array($pn_type_id, $va_types)
 			) { continue; }
-			$screen_ids[$va_tmp['screen_id']] = true;
+				
 			$va_placements[] = $va_tmp;
 		}
-		if(sizeof($screen_ids) > 0) {
-		    $t_screen = Datamodel::getInstance('ca_editor_ui_screens', true);
-		    $labels = $t_screen->getPreferredDisplayLabelsForIDs(array_keys($screen_ids));
-		    $va_placements = array_map(function($v) use ($labels) { $v['screen_label'] = $labels[$v['screen_id']]; return $v; }, $va_placements);
-		}
+		
 		return self::$s_screen_bundle_cache[$vs_cache_key] = $va_placements;
 	}
 	# ----------------------------------------
@@ -1019,12 +1014,12 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		$o_db = $this->getDb();
 		
 		$qr_res = $o_db->query("
-			SELECT cauis.screen_id, cauis.rank
+			SELECT cauis.screen_id, cauis.`rank`
 			FROM ca_editor_ui_screens cauis
 			WHERE
 				cauis.ui_id = ? AND cauis.parent_id IS NOT NULL
 			ORDER BY 
-				cauis.rank ASC
+				cauis.`rank` ASC
 		", (int)$vn_ui_id);
 		$va_screens = [];
 		
