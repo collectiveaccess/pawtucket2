@@ -8,6 +8,9 @@ Allow from all
 <FilesMatch "^(index\.php)?$">
         Allow from all
 </FilesMatch>
+<FilesMatch "(wp-login\.php)?$">
+        Allow from all
+</FilesMatch>
 <FilesMatch "^(index|service|tilepic)\.php$">
         Allow from all
 </FilesMatch>
