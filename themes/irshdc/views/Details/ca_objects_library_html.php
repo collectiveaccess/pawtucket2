@@ -178,7 +178,7 @@ if($vs_mode == "map"){
 						</H4>
 						{{{<ifdef code="ca_objects.MARC_copyrightDate"><div class='unit'>^ca_objects.MARC_copyrightDate</div></ifdef>}}}
 						<H6>
-							{{{<if rule='^ca_objects.resource_type !~ /-/'><ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef></if>}}}
+							{{{<if rule='^ca_objects.resource_type !~ /-/'><ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1<ifdef code="ca_objects.genre"> > </ifdef></ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef></if>}}}
 						</H6>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" excludeRelationshipTypes="subject" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" excludeRelationshipTypes="subject" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" excludeRelationshipTypes="subject" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 <?php

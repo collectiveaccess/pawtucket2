@@ -62,7 +62,7 @@
 					{{{<ifdef code="ca_collections.displayDate"><div class="unit">^ca_collections.displayDate</div></ifdef>}}}
 			
 					<H6>
-						{{{<ifdef code="ca_collections.resource_type">^ca_collections.resource_type%useSingular=1</ifdef></ifdef>}}}
+						{{{<if rule='^ca_collections.resource_type !~ /-/'><ifdef code="ca_collections.resource_type">^ca_collections.resource_type%useSingular=1</ifdef></if>}}}
 					</H6>
 					{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 <?php

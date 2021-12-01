@@ -1,4 +1,5 @@
 /* red text: #D20000; red bg and icons (darker):#8a0000; tan: #e0d7ba; charcoal: #605b4b; stone:#f0ede4; */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@900&display=swap');
 body{
 	color: #454545;
 	size:14px;
@@ -133,6 +134,13 @@ body{
 	line-height:1.3em;
 	text-transform:uppercase;
 }
+/*.navbar-default .navbar-brand b{
+	font-weight:900;
+}
+.navbar-default .navbar-brand{
+	font-weight:bold;
+	text-transform:none;
+}*/
 @media (max-width: 767px){
 	.navbar-default .navbar-brand{
 		font-size:12px;
@@ -149,6 +157,7 @@ body{
 @media (min-width: 1245px){
 	.navbar-default .navbar-brand{
 		font-size:22px;
+		/*font-size:16px;*/
 		width: 360px;
 	}
 }
@@ -618,6 +627,9 @@ div.browseFacetItem a:hover {
     text-decoration: none;
     color: #d20000;
     font-size:18px;
+}
+.multisearch .collectionsResult.authorityResult{
+	height:145px;
 }
 /* details */
 .detail{
