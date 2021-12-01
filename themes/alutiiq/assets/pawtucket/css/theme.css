@@ -389,3 +389,6 @@ a:hover .bResultListItemInstitution{
 .leaflet-container a {
     color: #AC143A;
 }
+a.readmore-js-toggle {
+    color: #AC143A;
+}

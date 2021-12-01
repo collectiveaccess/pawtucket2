@@ -21,7 +21,7 @@
 					{{{<ifdef code="ca_entities.description">
 						<div class='unit'>^ca_entities.description</div>
 					</ifdef>}}}
-					{{{<ifdef code="ca_entities.website|ca_entities.online_collection"><H2><a href="^ca_entities.website" target="_blank">^ca_entities.website <i class="fa fa-external-link" aria-hidden="true"></i></a><ifdef code="ca_entities.website,ca_entities.online_collection"><br/></ifdef><a href="^ca_entities.online_collection" target="_blank">Online Collection <i class="fa fa-external-link" aria-hidden="true"></i></a></H2></ifdef>}}}
+					{{{<ifdef code="ca_entities.website|ca_entities.online_collection"><H2><ifdef code="ca_entities.website"><a href="^ca_entities.website" target="_blank">^ca_entities.website <i class="fa fa-external-link" aria-hidden="true"></i></a></ifdef><ifdef code="ca_entities.website,ca_entities.online_collection"><br/></ifdef><ifdef code="ca_entities.online_collection"><a href="^ca_entities.online_collection" target="_blank">Online Collection <i class="fa fa-external-link" aria-hidden="true"></i></a></ifdef></H2></ifdef>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
