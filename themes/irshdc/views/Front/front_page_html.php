@@ -279,6 +279,17 @@
 						embed_id:   'timeline-embed',
 						initial_zoom: '5'
 					});
+					
+				});
+				//add target = _blank to links in descriptions
+				jQuery( window ).load(function() {
+					var checkExist = setInterval(function() {
+					   if ($('.tl-text-content').length) {
+						  console.log("Exists!");
+						  $('.tl-text-content a').attr('target','_blank');
+						  clearInterval(checkExist);
+					   }
+					}, 100);
 				});
 			</script>
 		</div>
