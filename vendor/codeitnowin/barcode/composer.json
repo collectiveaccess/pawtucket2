@@ -1,0 +1,22 @@
+{
+    "name": "codeitnowin/barcode",
+    "description": "Barcode & Qr Code generator library by http://www.codeitnow.in. You can use it with Custom PHP application or any PHP Framework such as Laravel, Cakephp, Yii, Codeigneter etc.",
+    "keywords": ["barcode", "generator", "symfony", "symfony2", "Laravel", "Cakephp", "QrCode", "Qr", "Code"],
+    "homepage": "http://www.codeitnow.in",
+    "license": "MIT",
+    "authors": [
+        {"name": "Akhtar Khan", "email": "er.akhtarkhan@gmail.com"}
+    ],
+    "minimum-stability": "stable",
+    "version" : "3.0.6",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=5.3.2",
+	"ext-gd": "*"
+    },
+    "autoload": {
+        "psr-4": { 
+            "CodeItNow\\": "CodeItNow/" 
+        }
+    }
+}

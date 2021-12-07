@@ -43,11 +43,12 @@ class Table extends AbstractStyle
         //$xmlWriter->writeAttribute('style:width', 'table');
         $xmlWriter->writeAttribute('style:rel-width', 100);
         $xmlWriter->writeAttribute('table:align', 'center');
+        $xmlWriter->writeAttributeIf($style->isBidiVisual(), 'style:writing-mode', 'rl-tb');
         $xmlWriter->endElement(); // style:table-properties
         $xmlWriter->endElement(); // style:style
 
         $cellWidths = $style->getColumnWidths();
-        $countCellWidths = count($cellWidths);
+        $countCellWidths = $cellWidths === null ? 0 : count($cellWidths);
 
         for ($i = 0; $i < $countCellWidths; $i++) {
             $width = $cellWidths[$i];

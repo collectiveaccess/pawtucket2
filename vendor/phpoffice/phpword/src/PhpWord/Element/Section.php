@@ -59,14 +59,16 @@ class Section extends AbstractContainer
      * Create new instance
      *
      * @param int $sectionCount
-     * @param array $style
+     * @param null|array|\PhpOffice\PhpWord\Style $style
      */
     public function __construct($sectionCount, $style = null)
     {
         $this->sectionId = $sectionCount;
         $this->setDocPart($this->container, $this->sectionId);
-        $this->style = new SectionStyle();
-        $this->setStyle($style);
+        if (null === $style) {
+            $style = new SectionStyle();
+        }
+        $this->style = $this->setNewStyle(new SectionStyle(), $style);
     }
 
     /**
@@ -143,6 +145,20 @@ class Section extends AbstractContainer
      * Get the footnote properties
      *
      * @return FootnoteProperties
+     */
+    public function getFootnoteProperties()
+    {
+        return $this->footnoteProperties;
+    }
+
+    /**
+     * Get the footnote properties
+     *
+     * @deprecated Use the `getFootnoteProperties` method instead
+     *
+     * @return FootnoteProperties
+     *
+     * @codeCoverageIgnore
      */
     public function getFootnotePropoperties()
     {

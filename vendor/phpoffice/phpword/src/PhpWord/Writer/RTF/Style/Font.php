@@ -49,11 +49,12 @@ class Font extends AbstractStyle
         }
 
         $content = '';
+        $content .= $this->getValueIf($style->isRTL(), '\rtlch');
         $content .= '\cf' . $this->colorIndex;
         $content .= '\f' . $this->nameIndex;
 
         $size = $style->getSize();
-        $content .= $this->getValueIf(is_numeric($size), '\fs' . ($size * 2));
+        $content .= $this->getValueIf(is_numeric($size), '\fs' . round($size * 2));
 
         $content .= $this->getValueIf($style->isBold(), '\b');
         $content .= $this->getValueIf($style->isItalic(), '\i');

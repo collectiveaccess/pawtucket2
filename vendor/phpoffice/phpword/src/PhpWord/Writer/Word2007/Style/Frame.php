@@ -17,7 +17,7 @@
 
 namespace PhpOffice\PhpWord\Writer\Word2007\Style;
 
-use PhpOffice\Common\XMLWriter;
+use PhpOffice\PhpWord\Shared\XMLWriter;
 use PhpOffice\PhpWord\Style\Frame as FrameStyle;
 use PhpOffice\PhpWord\Writer\Word2007\Element\ParagraphAlignment;
 
@@ -61,6 +61,7 @@ class Frame extends AbstractStyle
             'hPos'      => 'mso-position-horizontal',
             'vPos'      => 'mso-position-vertical',
             'hPosRelTo' => 'mso-position-horizontal-relative',
+            'vPosRelTo' => 'mso-position-vertical-relative',
         );
         $posStyles = $this->getStyles($style, $properties);
 
@@ -107,7 +108,7 @@ class Frame extends AbstractStyle
     /**
      * Write wrap.
      *
-     * @param \PhpOffice\Common\XMLWriter $xmlWriter
+     * @param \PhpOffice\PhpWord\Shared\XMLWriter $xmlWriter
      * @param \PhpOffice\PhpWord\Style\Frame $style
      * @param string $wrap
      */

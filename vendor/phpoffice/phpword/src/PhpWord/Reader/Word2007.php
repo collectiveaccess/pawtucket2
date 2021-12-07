@@ -17,8 +17,8 @@
 
 namespace PhpOffice\PhpWord\Reader;
 
-use PhpOffice\Common\XMLReader;
 use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Shared\XMLReader;
 use PhpOffice\PhpWord\Shared\ZipArchive;
 
 /**
@@ -62,6 +62,9 @@ class Word2007 extends AbstractReader implements ReaderInterface
         foreach ($steps as $step) {
             $stepPart = $step['stepPart'];
             $stepItems = $step['stepItems'];
+            if (!isset($relationships[$stepPart])) {
+                continue;
+            }
             foreach ($relationships[$stepPart] as $relItem) {
                 $relType = $relItem['type'];
                 if (isset($stepItems[$relType])) {

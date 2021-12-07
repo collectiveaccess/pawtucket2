@@ -53,6 +53,28 @@ class Chart extends AbstractStyle
     private $colors = array();
 
     /**
+     * Chart title
+     *
+     * @var string
+     */
+    private $title = null;
+
+    /**
+     * Chart legend visibility
+     *
+     * @var bool
+     */
+    private $showLegend = false;
+
+    /**
+     * Chart legend Position.
+     * Possible values are 'r', 't', 'b', 'l', 'tr'
+     *
+     * @var string
+     */
+    private $legendPosition = 'r';
+
+    /**
      * A list of display options for data labels
      *
      * @var array
@@ -97,9 +119,15 @@ class Chart extends AbstractStyle
      */
     private $valueAxisTitle;
 
+    /**
+     * The position for major tick marks
+     * Possible values are 'in', 'out', 'cross', 'none'
+     *
+     * @var string
+     */
     private $majorTickMarkPos = 'none';
 
-    /*
+    /**
      * Show labels for axis
      *
      * @var bool
@@ -213,10 +241,88 @@ class Chart extends AbstractStyle
      * Set the colors to use in a chart.
      *
      * @param array $value a list of colors to use in the chart
+     * @return self
      */
     public function setColors($value = array())
     {
         $this->colors = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get the chart title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set the chart title
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setTitle($value = null)
+    {
+        $this->title = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get chart legend visibility
+     *
+     * @return bool
+     */
+    public function isShowLegend()
+    {
+        return $this->showLegend;
+    }
+
+    /**
+     * Set chart legend visibility
+     *
+     * @param bool $value
+     * @return self
+     */
+    public function setShowLegend($value = false)
+    {
+        $this->showLegend = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get chart legend position
+     *
+     * @return string
+     */
+    public function getLegendPosition()
+    {
+        return $this->legendPosition;
+    }
+
+    /**
+     * Set chart legend position. choices:
+     * "r" - right of chart
+     * "b" - bottom of chart
+     * "t" - top of chart
+     * "l" - left of chart
+     * "tr" - top right of chart
+     *
+     * default: right
+     *
+     * @param string $legendPosition
+     * @return self
+     */
+    public function setLegendPosition($legendPosition = 'r')
+    {
+        $enum = array('r', 'b', 't', 'l', 'tr');
+        $this->legendPosition = $this->setEnumVal($legendPosition, $enum, $this->legendPosition);
 
         return $this;
     }
@@ -264,7 +370,10 @@ class Chart extends AbstractStyle
     {
         foreach (array_keys($this->dataLabelOptions) as $option) {
             if (isset($values[$option])) {
-                $this->dataLabelOptions[$option] = $this->setBoolVal($values[$option], $this->dataLabelOptions[$option]);
+                $this->dataLabelOptions[$option] = $this->setBoolVal(
+                    $values[$option],
+                    $this->dataLabelOptions[$option]
+                );
             }
         }
     }
@@ -394,8 +503,8 @@ class Chart extends AbstractStyle
     }
 
     /**
-     * set the position for major tick marks
-     * @param string $position [description]
+     * Set the position for major tick marks
+     * @param string $position
      */
     public function setMajorTickPosition($position)
     {
@@ -403,7 +512,7 @@ class Chart extends AbstractStyle
         $this->majorTickMarkPos = $this->setEnumVal($position, $enum, $this->majorTickMarkPos);
     }
 
-    /*
+    /**
      * Show Gridlines for X-Axis
      *
      * @return bool

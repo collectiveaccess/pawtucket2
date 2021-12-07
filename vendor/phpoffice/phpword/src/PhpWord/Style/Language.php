@@ -65,6 +65,15 @@ final class Language extends AbstractStyle
     const PT_BR = 'pt-BR';
     const PT_BR_ID = 1046;
 
+    const NL_NL = 'nl-NL';
+    const NL_NL_ID = 1043;
+
+    const UK_UA = 'uk-UA';
+    const UK_UA_ID = 1058;
+
+    const RU_RU = 'ru-RU';
+    const RU_RU_ID = 1049;
+
     /**
      * Language ID, used for RTF document generation
      *
@@ -219,11 +228,15 @@ final class Language extends AbstractStyle
      */
     private function validateLocale($locale)
     {
+        if ($locale !== null) {
+            $locale = str_replace('_', '-', $locale);
+        }
+
         if (strlen($locale) === 2) {
             return strtolower($locale) . '-' . strtoupper($locale);
         }
 
-        if ($locale !== null && strstr($locale, '-') === false) {
+        if ($locale !== null && $locale !== 'zxx' && strstr($locale, '-') === false) {
             throw new \InvalidArgumentException($locale . ' is not a valid language code');
         }
 

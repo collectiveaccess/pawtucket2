@@ -17,8 +17,8 @@
 
 namespace PhpOffice\PhpWord\Reader;
 
-use PhpOffice\Common\Drawing;
 use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\Shared\Drawing;
 use PhpOffice\PhpWord\Shared\OLERead;
 use PhpOffice\PhpWord\Style;
 
@@ -1581,7 +1581,7 @@ class MsDoc extends AbstractReader implements ReaderInterface
         // Variables
         $sprmCPicLocation = null;
         $sprmCFData = null;
-        $sprmCFSpec = null;
+        //$sprmCFSpec = null;
 
         do {
             // Variables
@@ -1619,7 +1619,7 @@ class MsDoc extends AbstractReader implements ReaderInterface
                             break;
                         // sprmCFData
                         case 0x06:
-                            $sprmCFData = dechex($operand) == 0x00 ? false : true;
+                            $sprmCFData = dechex($operand) != 0x00;
                             break;
                         // sprmCFItalic
                         case 0x36:
@@ -1830,7 +1830,7 @@ class MsDoc extends AbstractReader implements ReaderInterface
                             break;
                         // sprmCFSpec
                         case 0x55:
-                            $sprmCFSpec = $operand;
+                            //$sprmCFSpec = $operand;
                             break;
                         // sprmCFtcBi
                         case 0x5E:
@@ -2094,11 +2094,11 @@ class MsDoc extends AbstractReader implements ReaderInterface
                     $sprmCPicLocation += 1;
 
                     // stPicName
-                    $stPicName = '';
+                    //$stPicName = '';
                     for ($inc = 0; $inc <= $cchPicName; $inc++) {
-                        $chr = self::getInt1d($this->dataData, $sprmCPicLocation);
+                        //$chr = self::getInt1d($this->dataData, $sprmCPicLocation);
                         $sprmCPicLocation += 1;
-                        $stPicName .= chr($chr);
+                        //$stPicName .= chr($chr);
                     }
                 }
 
@@ -2143,11 +2143,11 @@ class MsDoc extends AbstractReader implements ReaderInterface
                             $sprmCPicLocation += 1;
                             // nameData
                             if ($cbName > 0) {
-                                $nameData = '';
+                                //$nameData = '';
                                 for ($inc = 0; $inc <= ($cbName / 2); $inc++) {
-                                    $chr = self::getInt2d($this->dataData, $sprmCPicLocation);
+                                    //$chr = self::getInt2d($this->dataData, $sprmCPicLocation);
                                     $sprmCPicLocation += 2;
-                                    $nameData .= chr($chr);
+                                    //$nameData .= chr($chr);
                                 }
                             }
                             // embeddedBlip
@@ -2184,6 +2184,8 @@ class MsDoc extends AbstractReader implements ReaderInterface
                                     $oStylePrl->image['height'] = Drawing::twipsToPixels($iCropHeight * $picmidMy / 1000);
 
                                     $sprmCPicLocation += $embeddedBlipRH['recLen'];
+                                    break;
+                                case self::OFFICEARTBLIPPNG:
                                     break;
                                 default:
                                     // print_r(dechex($embeddedBlipRH['recType']));

@@ -1,0 +1,57 @@
+{
+    "name": "cache/predis-adapter",
+    "type": "library",
+    "description": "A PSR-6 cache implementation using Redis (Predis). This implementation supports tags",
+    "keywords": [
+        "cache",
+        "psr-6",
+        "redis",
+        "predis",
+        "tag"
+    ],
+    "homepage": "http://www.php-cache.com/en/latest/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Aaron Scherer",
+            "email": "aequasi@gmail.com",
+            "homepage": "https://github.com/aequasi"
+        },
+        {
+            "name": "Tobias Nyholm",
+            "email": "tobias.nyholm@gmail.com",
+            "homepage": "https://github.com/nyholm"
+        }
+    ],
+    "require": {
+        "php": "^5.6 || ^7.0 || ^8.0",
+        "cache/adapter-common": "^1.0",
+        "cache/hierarchical-cache": "^1.0",
+        "predis/predis": "^1.1",
+        "psr/cache": "^1.0",
+        "psr/simple-cache": "^1.0"
+    },
+    "provide": {
+        "psr/cache-implementation": "^1.0",
+        "psr/simple-cache-implementation": "^1.0"
+    },
+    "require-dev": {
+        "cache/integration-tests": "^0.16",
+        "phpunit/phpunit": "^5.7.21"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Cache\\Adapter\\Predis\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
