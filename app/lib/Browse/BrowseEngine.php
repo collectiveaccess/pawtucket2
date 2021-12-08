@@ -552,6 +552,13 @@
 
 			switch($va_facet_info['type']) {
 				# -----------------------------------------------------
+				case 'hierarchy':
+					if (!($t_table = Datamodel::getInstanceByTableName($this->ops_browse_table_name, true))) { break; }
+					if (!$t_table->load($pn_row_id)) { return '???'; }
+					
+					return $t_table->getLabelForDisplay();
+					break;
+				# -----------------------------------------------------
 				case 'has':
 					$vs_yes_text = (isset($va_facet_info['label_yes']) && $va_facet_info['label_yes']) ? $va_facet_info['label_yes'] : _t('Yes');
 					$vs_no_text = (isset($va_facet_info['label_no']) && $va_facet_info['label_no']) ? $va_facet_info['label_no'] : _t('No');
@@ -1168,6 +1175,12 @@
                         $va_sql_params = [];
 							$vs_relative_to_join = '';
 							switch($va_facet_info['type']) {
+								# -----------------------------------------------------
+								case 'hierarchy':
+									$children = $vs_target_browse_table_name::getHierarchyChildrenForIDs($va_row_ids);
+									$va_acc[$vn_i] = $children;
+									$vn_i++;
+									break;
 								# -----------------------------------------------------
 								case 'has':
 									$vs_rel_table_name = $va_facet_info['table'];

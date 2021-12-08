@@ -262,8 +262,7 @@
 			//
 			// Add additional base criteria if necessary
 			//
-			if($va_base_criteria = $o_search_config->get('baseCriteria')){
-				$va_table_criteria = $va_base_criteria[$va_browse_info['table']];
+			if(($va_base_criteria = $o_search_config->get('baseCriteria') && ($va_table_criteria = $va_base_criteria[$va_browse_info['table']])) || ($va_table_criteria = $va_browse_info['baseCriteria'])){;
 				foreach($va_table_criteria as $vs_facet => $vs_value){
 					$o_browse->addCriteria($vs_facet, $vs_value);
 				}
@@ -329,7 +328,7 @@
 			
 			
 			if (caGetOption('dontShowChildren', $va_browse_info, false)) {
-				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
+				$o_browse->addResultFilter($va_browse_info['table'].'.parent_id', 'is', 'null');	
 			}
 			
 			$vb_root_records_only = caGetOption('omitChildRecords', $va_browse_info, array(), array('castTo' => 'bool'));
