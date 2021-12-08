@@ -155,9 +155,9 @@ if (!$vb_ajax) {	// !ajax
 <?php
 						}
 					}
-					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
-						print "<li role='menuitem'>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-					}
+					#if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
+					#	print "<li role='menuitem'>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+					#}
 					if(is_array($va_export_formats) && sizeof($va_export_formats)){
 						// Export as PDF links
 						print "<li class='divider' role='menuitem'></li>\n";
@@ -185,18 +185,16 @@ if (!$vb_ajax) {	// !ajax
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
-				#if ($va_criterion['facet_name'] != '_search') {
-				if(strpos($va_criterion['value'], "parent_id") === false){
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter" role="button"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+				if ((strpos($va_criterion['facet_name'], "collection_facet") === false) && (strpos($va_criterion['value'], "parent_id") === false)) {
+					if(strpos($va_criterion['value'], "parent_id") === false){
+						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter" role="button"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+						$i++;
+						if($i < sizeof($va_criteria)){
+							print " ";
+						}
+					}
 				}
-				#}else{
-				#	print ' '.$va_criterion['value'];
-				#	$vs_search = $va_criterion['value'];
-				#}
-				$i++;
-				if($i < sizeof($va_criteria)){
-					print " ";
-				}
+				
 				$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
 				if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
 					$t_authority_table = new $va_current_facet["table"];

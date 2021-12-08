@@ -76,8 +76,25 @@
  			$this->view->setVar("config", $this->opo_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
- 			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos(ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
+ 			
+ 			// Try to load browse info assuming advanced, then basic search to get the current table.
+ 			if(!($va_browse_info = caGetInfoForAdvancedSearchType($ps_function))) {
+ 				if(!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
+ 					throw new ApplicationException("Invalid browse type $ps_function");
+ 				}
+ 			}
+ 			// Once we have the current table we can figure out if we're really advanced or not
+ 			$vs_class = $this->ops_tablename = $va_browse_info['table'];
+ 			
+ 			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos($z=ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
  			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
+ 			
+ 			// Reload browse info once we're sure we're advanced or not
+ 			if($vb_is_advanced) {
+ 				$va_browse_info = caGetInfoForAdvancedSearchType($ps_function);
+ 			} else {
+ 				$va_browse_info = caGetInfoForBrowseType($ps_function);
+ 			}
  			
  			$this->view->setVar('is_advanced', $vb_is_advanced);
  			$this->view->setVar("browse_type", $ps_function);
@@ -91,7 +108,6 @@
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type $ps_function");
  			}
- 			$vs_class = $this->ops_tablename = $va_browse_info['table'];
  			
  			// Now that table name is known we can set standard view vars
  			parent::setTableSpecificViewVars();
@@ -262,8 +278,7 @@
 			//
 			// Add additional base criteria if necessary
 			//
-			if($va_base_criteria = $o_search_config->get('baseCriteria')){
-				$va_table_criteria = $va_base_criteria[$va_browse_info['table']];
+			if(($va_base_criteria = $o_search_config->get('baseCriteria') && ($va_table_criteria = $va_base_criteria[$va_browse_info['table']])) || ($va_table_criteria = $va_browse_info['baseCriteria'])){;
 				foreach($va_table_criteria as $vs_facet => $vs_value){
 					$o_browse->addCriteria($vs_facet, $vs_value);
 				}
@@ -329,7 +344,7 @@
 			
 			
 			if (caGetOption('dontShowChildren', $va_browse_info, false)) {
-				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
+				$o_browse->addResultFilter($va_browse_info['table'].'.parent_id', 'is', 'null');	
 			}
 			
 			$vb_root_records_only = caGetOption('omitChildRecords', $va_browse_info, array(), array('castTo' => 'bool'));
