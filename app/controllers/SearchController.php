@@ -76,8 +76,25 @@
  			$this->view->setVar("config", $this->opo_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
- 			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos(ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
+ 			
+ 			// Try to load browse info assuming advanced, then basic search to get the current table.
+ 			if(!($va_browse_info = caGetInfoForAdvancedSearchType($ps_function))) {
+ 				if(!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
+ 					throw new ApplicationException("Invalid browse type $ps_function");
+ 				}
+ 			}
+ 			// Once we have the current table we can figure out if we're really advanced or not
+ 			$vs_class = $this->ops_tablename = $va_browse_info['table'];
+ 			
+ 			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos($z=ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
  			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
+ 			
+ 			// Reload browse info once we're sure we're advanced or not
+ 			if($vb_is_advanced) {
+ 				$va_browse_info = caGetInfoForAdvancedSearchType($ps_function);
+ 			} else {
+ 				$va_browse_info = caGetInfoForBrowseType($ps_function);
+ 			}
  			
  			$this->view->setVar('is_advanced', $vb_is_advanced);
  			$this->view->setVar("browse_type", $ps_function);
@@ -91,7 +108,6 @@
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type $ps_function");
  			}
- 			$vs_class = $this->ops_tablename = $va_browse_info['table'];
  			
  			// Now that table name is known we can set standard view vars
  			parent::setTableSpecificViewVars();
