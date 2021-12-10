@@ -32,6 +32,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$t_representation = 	$this->getVar("t_representation");
 	
 	$va_access_values = caGetUserAccessValues($this->request);
 	$va_bulk_items = $t_object->get("ca_objects.related.object_id", array("checkAccess" => $va_access_values, "restrictToTypes" => array("bulk"), "returnAsArray" => true));
@@ -90,12 +91,31 @@
 					print "<div class='detailTool'><i class='material-icons inline'>bookmark</i><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
+						$vs_mimetype = $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE');
 						$vs_use_statement = trim($t_object->get("ca_objects.use_statement"));
 						if(!$vs_use_statement){
 							$vs_use_statement = $this->getVar("use_statement");
 						}
 						print "<H6 class='detailUseStatement text-center'>".$vs_use_statement."</H6>";
 						print $vs_rep_viewer;
+						if($vs_mimetype == "application/pdf"){
+							$va_media_info = $t_representation->getMediaInfo('media');
+							$vn_num_pages = $va_media_info["original"]["PROPERTIES"]['pages'];
+							if($vn_num_pages > 1){
+?>
+								<script type="text/javascript">
+									jQuery(document).ready(function() {
+										if(!$("#cont<?php print $t_representation->get("ca_object_representations.representation_id"); ?> .detailMediaToolbar").hasClass("multiPageAdded")){
+											//$("#cont<?php print $t_representation->get("ca_object_representations.representation_id"); ?> .detailMediaToolbar a.zoomButton").append("<span class='multiPage'><?php print $vn_num_pages; ?> Pages</span>");
+											$("#cont<?php print $t_representation->get("ca_object_representations.representation_id"); ?> .detailMediaToolbar").append("<br/><span class='multiPage'><?php print $vn_num_pages; ?> Pages</span>");
+											$("#cont<?php print $t_representation->get("ca_object_representations.representation_id"); ?> .detailMediaToolbar").addClass("multiPageAdded");
+											$("#cont<?php print $t_representation->get("ca_object_representations.representation_id"); ?>.repViewerCont div:first").append("<div class='multiPageIcon'><span class='glyphicon glyphicon-book' aria-hidden='true'></span></div>");
+										}
+									});
+								</script>								
+<?php
+							}
+						}
 ?>
 						<script type="text/javascript">
 							jQuery(document).ready(function() {
@@ -195,7 +215,12 @@
 						foreach($va_notes as $va_note){
 							$va_note["general_notes_text"] = trim($va_note["general_notes_text"]);
 							if($va_note["general_notes_text"] && strToLower($va_note["internal_external"]) == "unrestricted"){
-								$va_notes_filtered[] = ucfirst(mb_strtolower($va_note["general_notes_text"]));
+								if(preg_match('/[a-z]/', $va_note["general_notes_text"])){
+ 									// There is at least one lowercase so don't need to fix all caps notes
+ 									$va_notes_filtered[] = $va_note["general_notes_text"];
+								}else{
+									$va_notes_filtered[] = ucfirst(mb_strtolower($va_note["general_notes_text"]));
+								}
 							}
 						}
 						if(sizeof($va_notes_filtered)){
