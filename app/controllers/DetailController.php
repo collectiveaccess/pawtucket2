@@ -388,7 +388,8 @@
 				$o_rel_context->setAsLastFind(true);
 				
 				$qr_rel_res = $o_browse->getResults();
-				$o_rel_context->setResultList($qr_rel_res->getAllFieldValues('ca_objects.object_id'));
+				#$o_rel_context->setResultList($qr_rel_res->getAllFieldValues('ca_objects.object_id'));
+				$o_rel_context->setResultList($qr_rel_res->getPrimaryKeyValues(1000));
 				
 				$o_rel_context->saveContext();
 			}

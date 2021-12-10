@@ -1515,6 +1515,30 @@ h1.primaryLandingBannerTitle {
     z-index: 1000;
     top: -33px;
 }
+.detailMediaToolbar .multiPage{
+	font-size:13px;
+	text-decoration:none !important;
+	color:#858585;
+}
+.detailMediaToolbar.multiPageAdded{
+	bottom: -63px;
+}
+.repViewerCont .multiPageIcon{
+	position: absolute;
+	top: 10px;
+	right: 10%;
+	color: #858585;
+	z-index: 1000;
+	font-size: 20px;
+	box-shadow: 0px 2px 3px #858585;
+	background-color:#fff;
+	padding:4px 5px 2px 5px;
+	border-radius:5px;
+	line-height:1em;
+}
+.repViewerCont img{
+	position:relative;
+}
 .collectionsList{
 	margin-top:30px;
 }
