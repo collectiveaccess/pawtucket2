@@ -106,7 +106,7 @@ if($vs_mode == "map"){
 						
 							{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><l><unit relativeTo="ca_entities.related">^ca_entities.preferred_labels.displayname</unit></l> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</unit></div></ifcount>}}}
 						
-<!-- individuals/family -->	{{{<ifdef code="ca_entities.biography"><div class="unit"><H6>Description</H6><unit relativeTo="ca_entities">^ca_entities.biography</unit></div></ifdef>}}}					
+<!-- individuals/family -->	{{{<ifdef code="ca_entities.biography"><div class="unit"><H6>Description</H6><div class="trimText"><unit relativeTo="ca_entities">^ca_entities.biography</unit></div></div></ifdef>}}}					
 <!-- community desc -->		{{{<ifdef code="ca_entities.description_new.description_new_txt">
 								<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
 									<div class="trimText">^ca_entities.description_new.description_new_txt</div>
