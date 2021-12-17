@@ -404,7 +404,7 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 60
+		  maxHeight: 100
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,

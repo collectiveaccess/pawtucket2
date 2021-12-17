@@ -56,10 +56,12 @@ a.black{
 	border:2px solid #D20000;
 	color: #D20000;
 	text-shadow:none;
+	text-decoration:none;
 }
 .btn-default.outline:hover{
 	background-color:#D20000;
 	color:#000;
+	text-decoration:none;
 }
 .btn-lg {
     padding: 15px 27px !important;
@@ -407,6 +409,17 @@ a:hover .frontIconButton{
 	.front .hpFeaturesText{
 		padding:0px 30px 0px 30px;
 	}
+}
+.hpFeaturesText a{
+	color:#FFF;
+	text-decoration:underline;
+}
+.hpFeaturesText H2 a{
+	text-decoration:none;
+}
+.hpFeaturesText a:hover{
+	color:#FFF;
+	text-decoration:underline;
 }
 .front #frontTimelineContainer {
     height: 500px;
@@ -1960,7 +1973,7 @@ a.digExhAnchors.offset{
 		margin-right:-160px;
 	}
 }
-/* end vertical center image adjustments *?
+/* end vertical center image adjustments */
 @media(min-width:1450px){
 	.tl-text-content, .tl-timeline p, .tl-text p{
 		font-size:16px !important;
