@@ -14,10 +14,10 @@
 					#$va_type = $t_list->getItemFromListByItemID("object_types", $t_object->get("type_id"));
 					#$va_type["idno"]
 					# --- heading is for both objects and tabbed related things
-					if($vs_rel_objects || $vs_rel_schools || $vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions){
+					if($vs_rel_objects || $vs_rel_schools || $vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions || $vs_rel_collections){
 						print "<H1>Related</H1>";
 					}
-					if($vs_rel_schools || $vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions){
+					if($vs_rel_schools || $vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions || $vs_rel_collections){
 ?>				
 						<div class="relatedBlock relatedBlockTabs">
 							<h3>
