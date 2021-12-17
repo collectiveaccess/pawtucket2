@@ -38,6 +38,7 @@
 					
 					$vs_rel_events = $t_item->getWithTemplate('<ifcount code="ca_occurrences.related" restrictToTypes="institutional" min="1"><div class="row relTab" id="relEvents"><unit relativeTo="ca_occurrences" restrictToTypes="institutional" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_occurrences.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
 					$vs_rel_exhibitions = $t_item->getWithTemplate('<ifcount code="ca_occurrences.related" restrictToTypes="exhibitions" min="1"><div class="row relTab" id="relExhibitions"><unit relativeTo="ca_occurrences" restrictToTypes="exhibitions" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_occurrences.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
+					$vs_rel_collections = $t_item->getWithTemplate('<ifcount code="ca_collections.related" restrictToTypes="ca_collection" min="1"><div class="row relTab" id="relCollections"><unit relativeTo="ca_collections.related" restrictToTypes="ca_collection" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_collections.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
 					# --- rel_object is just for outputting label properly
 					$vs_rel_objects = $t_item->get('ca_objects.related', array("limit" => 1,"checkAccess" => $va_access_values, "restrictToTypes" => array("archival", "library", "work", "resource", "file", "survivor")));
 					
@@ -80,11 +81,17 @@
 										$vs_firstTab = "relExhibitions";
 									}
 								}
+								if($vs_rel_collections){
+									print "<div id='relCollectionsButton' class='relTabButton' onClick='toggleTag(\"relCollections\");'>Collections</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relCollections";
+									}
+								}
 ?>
 							</h3>
 							<div class="relatedBlockContent">							
 <?php
-								print $vs_rel_places.$vs_rel_entities.$vs_rel_communities.$vs_rel_events.$vs_rel_exhibitions;
+								print $vs_rel_places.$vs_rel_entities.$vs_rel_communities.$vs_rel_events.$vs_rel_exhibitions.$vs_rel_collections;
 ?>
 							</div>
 						</div>
