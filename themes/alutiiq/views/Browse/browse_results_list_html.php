@@ -161,17 +161,24 @@
 				
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
-					$vs_result_output = "
-		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-			<div class='bResultListItem' id='row{$vn_id}'>
-				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
-					<div class='bResultListItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
-					</div><!-- end bResultListItemText -->
-				</div><!-- end bResultListItemContent -->
-			</div><!-- end bResultListItem -->
-		</div><!-- end col -->";
+					if($vs_table != "ca_entities"){
+						$vs_result_output = "
+							<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+								<div class='bResultListItem' id='row{$vn_id}'>
+									<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
+									<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+										<div class='bResultListItemText'>
+											<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+										</div><!-- end bResultListItemText -->
+									</div><!-- end bResultListItemContent -->
+								</div><!-- end bResultListItem -->
+							</div><!-- end col -->";
+					}else{
+						$vs_result_output = "
+							<div class='bResultListItemColInstitution col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+								".caDetailLink($this->request, "<div class='bResultListItemInstitution' id='row{$vn_id}'>".$qr_res->get("ca_entities.preferred_labels")."</div><!-- end bResultListItemInstitution -->", '', 'ca_entities', $vn_id)."
+							</div><!-- end col -->";
+					}
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				

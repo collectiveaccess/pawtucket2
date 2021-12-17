@@ -222,9 +222,10 @@
 					<?php if(caDisplayLightbox($this->request)){ ?>
 					<li><?php print caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index') ?></li>   
 					<?php } ?>      
-	                <li><a href="https://donatenow.networkforgood.org/appalshop"><span class="donateButton">Donate</span></a></li>	
-				    <li><a href="https://www.facebook.com/Appalshop"><span class="fa fa-facebook"></span></a></li>
-                	<li><a href="https://twitter.com/AppalArchive"><span class="fa fa-twitter"></span></a></li>	
+	                <li><a href="https://appalshop.networkforgood.com/projects/120995-neh-challenge-grant-safeguarding-appalachian-history" target="_blank"><span class="donateButton">Donate</span></a></li>	
+				    <li><a href="https://www.facebook.com/appalarchive" target="_blank"><span class="fa fa-facebook"></span></a></li>
+                	<li><a href="https://www.instagram.com/appalshop_archive/" target="_blank"><span class="fa fa-instagram"></span></a></li>	
+                	<li><a href="https://www.youtube.com/channel/UCP6iF9cBLAfhP5ilDk8jH8g" target="_blank"><span class="fa fa-youtube"></span></a></li>	
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
