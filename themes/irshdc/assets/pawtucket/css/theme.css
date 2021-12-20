@@ -138,11 +138,11 @@ body{
 }
 /*.navbar-default .navbar-brand b{
 	font-weight:900;
-}
-.navbar-default .navbar-brand{
-	font-weight:bold;
-	text-transform:none;
 }*/
+.navbar-default .navbar-brand{
+	/*font-weight:bold;*/
+	text-transform:uppercase;
+}
 @media (max-width: 767px){
 	.navbar-default .navbar-brand{
 		font-size:12px;
@@ -159,7 +159,7 @@ body{
 @media (min-width: 1245px){
 	.navbar-default .navbar-brand{
 		font-size:22px;
-		/*font-size:16px;*/
+		font-size:16px;
 		width: 360px;
 	}
 }

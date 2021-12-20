@@ -108,7 +108,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, "Indian Residential School History & Dialogue Centre", "navbar-brand", "", "","");
+				print caNavLink($this->request, "Indian Residential School<br/>History & Dialogue Centre<br/><b>COLLECTIONS</b>", "navbar-brand", "", "","");
 ?>
 			</div>
 
