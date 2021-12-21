@@ -102,7 +102,7 @@
 				</div>
 				<div class="col-sm-12 col-md-4">
 					<div class="collapse navbar-collapse bs-main-navbar-collapse-2 navbar-search">
-						<form class="navbar-form" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects'); ?>">
+						<form class="navbar-form" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 							<div class="formOutline">
 								<div class="form-group">
 									<input type="text" class="form-control" id="headerSearchInput" placeholder="Search Archives" name="search" autocomplete="off" />
