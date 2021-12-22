@@ -45,8 +45,8 @@
                 <div class="map_pin barcelona bottom-right-arrow visible"><div class="printer_name">Imprenta de Pedro Escudèr</div><div class="printer_subtitle">en la calle Condál</div></div>
                 <div class="map_pin barcelona bottom-right-arrow"><div class="printer_name">Oficina de Pablo Nadal</div><div class="printer_subtitle">Torrente de Junqueras</div></div>
                 <div class="map_pin barcelona bottom-right-arrow"><div class="printer_name">Imprenta de Francisco Suriá</div><div class="printer_subtitle">Vendese en su Casa!</div></div>
-                <div class="map_pin barcelona bottom-right-arrow"><div class="printer_name">Imprenta de Carlos Sampera</div><div class="printer_subtitle">calle de la Librería</div></div>
-                <div class="map_pin barcelona bottom-right-arrow"><div class="printer_name">Oficina de Pablo Campins</div><div class="printer_subtitle">¡Atrévase!</div></div>
+                <div class="map_pin barcelona bottom-right-arrow"><div class="printer_name">Imprenta de Carlos Sampera</div><div class="printer_subtitle">Calle de la Librería</div></div>
+                <div class="map_pin barcelona bottom-right-arrow"><div class="printer_name">Oficina de Pablo Campins</div><div class="printer_subtitle">Calle de Amargós</div></div>
                 <div class="map_pin barcelona bottom-right-arrow"><div class="printer_name">Imprenta de Carlos Gibert y Tutó</div><div class="printer_subtitle">en la Libretería</div></div>
                 <div class="map_pin barcelona bottom-right-arrow"><div class="printer_name">Juan Francisco Piferrer</div><div class="printer_subtitle">Plaza del Angel núm. 4</div></div>
                 <div class="map_pin barcelona bottom-right-arrow"><div class="printer_name">Oficina de Francisco Genéras</div><div class="printer_subtitle">bajada de la Carcel</div></div>
@@ -55,26 +55,26 @@
                 <div class="map_pin barcelona bottom-right-arrow"><div class="printer_name">Herederos de la Viuda Plan</div><div class="printer_subtitle">c/ de los Algodoneros</div></div>
 
                 <!-- cadiz -->
-                <div class="map_pin cadiz bottom-right-arrow"><div class="printer_name">Oficina de Francisco Periu</div></div>
-                <div class="map_pin cadiz bottom-right-arrow"><div class="printer_name">Oficina de la viuda de Comes</div></div>
+                <div class="map_pin cadiz bottom-right-arrow"><div class="printer_name">Oficina de Francisco Periu</div><div class="printer_subtitle">Isla de León</div></div>
+                <div class="map_pin cadiz bottom-right-arrow"><div class="printer_name">Oficina de la viuda de Comes</div><div class="printer_subtitle">Cádiz</div></div>
 
                 <!-- madrid -->
                 <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Antonio Sanz</div><div class="printer_subtitle">Plazuela de la calle de la Paz</div></div>
-                <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Libreria de los Herederos de Gabriel de Leon</div></div>
+                <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Lib. de los Hros. de Gabriel de Leon</div><div class="printer_subtitle">Puerta del Sol</div></div>
                 <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Teresa de Guzmán</div><div class="printer_subtitle">Puerta del Sol</div></div>
                 <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Librería de Quiroga</div><div class="printer_subtitle">junto à Barrio Nuevo</div></div>
                 <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Oficina del Diario</div><div class="printer_subtitle">frente al Coliseo</div></div>
                 <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Imprenta de Joseph Gonzalez</div><div class="printer_subtitle">en la calle del Arenal</div></div>
-                <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Libreria de Juan Pablo Gonzalez</div><div class="printer_subtitle">calle de Atocha</div></div>
-                <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Librería de Gonzalez</div><div class="printer_subtitle">frente los Cinco Gremios</div></div>
+                <div class="map_pin madrid bottom-right-arrow visible"><div class="printer_name">Libreria de Juan Pablo Gonzalez</div><div class="printer_subtitle">calle de Atocha</div></div>
+                <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Lib. de Gonzalez</div><div class="printer_subtitle">frente los Cinco Gremios</div></div>
                 <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Librería de cerro</div><div class="printer_subtitle">calle de Cedaceros</div></div>
                 <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Librería de Castillo</div><div class="printer_subtitle">frente á las gradas de San Felipe el Real</div></div>
                 <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Librería de Don Isidro Lopez</div><div class="printer_subtitle">frente de la Nevería</div></div>
-                <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Imprenta, y Librerìa de Manuel Fernandez</div></div>
+                <div class="map_pin madrid bottom-right-arrow"><div class="printer_name">Imp., y Lib. de Manuel Fernandez</div><div class="printer_subtitle">Caba Baxa</div></div>
 
                 <!-- malaga -->
-                <div class="map_pin malaga"><div class="printer_name">Oficina de don Antonio Fernandez de Quincozes</div></div>
-                <div class="map_pin malaga"><div class="printer_name">Imprenta de Casas y Vidondo</div></div>
+                <div class="map_pin malaga"><div class="printer_name">Ofic. de don Antonio Fdez. de Quincozes</div><div class="printer_subtitle">Málaga</div></div>
+                <div class="map_pin malaga"><div class="printer_name">Imprenta de Casas y Vidondo</div><div class="printer_subtitle">Málaga</div></div>
 
                 <!-- sevilla -->
                 <div class="map_pin sevilla visible"><div class="printer_name">Viuda de Francisco de Leefdael</div><div class="printer_subtitle">Casa de el Correo Viejo</div></div>
@@ -83,37 +83,37 @@
                 <div class="map_pin sevilla"><div class="printer_name">Francisco de leefdael</div><div class="printer_subtitle">junto à la Casa Professa</div></div>
                 <div class="map_pin sevilla"><div class="printer_name">Francisco de leefdael</div><div class="printer_subtitle">Casa de Correo Viejo</div></div>
                 <div class="map_pin sevilla"><div class="printer_name">Imprenta Real</div><div class="printer_subtitle">Casa de Correo Viejo</div></div>
-                <div class="map_pin sevilla"><div class="printer_name">Imprenta de Joseph Padrino</div><div class="printer_subtitle">calle de Genova</div></div>
-                <div class="map_pin sevilla"><div class="printer_name">Imprenta de los Herederos de Tomàs Lopez de Haro</div><</div>
-                <div class="map_pin sevilla"><div class="printer_name">Imprenta de Joseph Antonio de Hermosilla</div></div>
+                <div class="map_pin sevilla"><div class="printer_name">Impr. de Joseph Padrino</div><div class="printer_subtitle">calle de Genova</div></div>
+                <div class="map_pin sevilla"><div class="printer_name">Impr. de los Hros. de Tomàs Lopez de Haro</div><div class="printer_subtitle">calle de Genova</div></div>
+                <div class="map_pin sevilla"><div class="printer_name">Impr. de Joseph Antonio de Hermosilla</div><div class="printer_subtitle">calle de Genova</div></div>
                 <div class="map_pin sevilla"><div class="printer_name">Manuèl Nicolàs Vazquez</div><div class="printer_subtitle">calle de Genova</div></div>
 
                 <!-- salamanca -->
-                <div class="map_pin salamanca bottom-right-arrow"><div class="printer_name">Imprenta de Francisco Garcia Onorato y San Miguel</div></div>
+                <div class="map_pin salamanca bottom-right-arrow"><div class="printer_name">Impr. de Fco. Garcia Onorato y San Miguel</div><div class="printer_subtitle">calle de Libreros</div></div>
                 <div class="map_pin salamanca bottom-right-arrow"><div class="printer_name">Imprenta de D. Francisco de Tóxar</div><div class="printer_subtitle">calle de la Rua</div></div>
                 <div class="map_pin salamanca bottom-right-arrow"><div class="printer_name">Imprenta de la Santa Cruz</div><div class="printer_subtitle">calle de la Rua</div></div>
-                <div class="map_pin salamanca bottom-right-arrow"><div class="printer_name">Librería de la Viuda é Hijo de Quiroga</div></div>
+                <div class="map_pin salamanca bottom-right-arrow"><div class="printer_name">Librería de la Viuda é Hijo de Quiroga</div><div class="printer_subtitle">C/ Concepcion Gerónima</div></div>
 
                 <!-- valencia -->
-                <div class="map_pin valencia"><div class="printer_name">Oficina del Diario</div></div>
-                <div class="map_pin valencia"><div class="printer_name">Imprenta y Librería de Miguel Domingo</div></div>
-                <div class="map_pin valencia"><div class="printer_name">Imprenta de Domingo y Mompié</div></div>
+                <div class="map_pin valencia"><div class="printer_name">Oficina del Diario</div><div class="printer_subtitle">Calle del Príncipe</div></div>
+                <div class="map_pin valencia"><div class="printer_name">Imprenta y Librería de Miguel Domingo</div><div class="printer_subtitle">Calle de Caballeros</div></div>
+                <div class="map_pin valencia"><div class="printer_name">Imprenta de Domingo y Mompié</div><div class="printer_subtitle">Calle de Caballeros</div></div>
                 <div class="map_pin valencia visible"><div class="printer_name">Imprenta de Estevan</div><div class="printer_subtitle">frente al horno de Salicofres</div></div>
-                <div class="map_pin valencia"><div class="printer_name">Imprenta de Joseph, y Thomàs de Orga</div></div>
-                <div class="map_pin valencia"><div class="printer_name">Viuda de Joseph de Orga</div></div>
-                <div class="map_pin valencia"><div class="printer_name">lldefonso Mompié</div><div class="printer_subtitle">¡Juto al mercado!</div></div>
+                <div class="map_pin valencia"><div class="printer_name">Imprenta de Joseph, y Thomàs de Orga</div><div class="printer_subtitle">C/ de la Cruz Nueva</div></div>
+                <div class="map_pin valencia"><div class="printer_name">Viuda de Joseph de Orga</div><div class="printer_subtitle">C/ de la Cruz Nueva</div></div>
+                <div class="map_pin valencia"><div class="printer_name">lldefonso Mompié</div><div class="printer_subtitle">C/ San Fernando</div></div>
                 <div class="map_pin valencia"><div class="printer_name">Imprenta de José Gimeno</div><div class="printer_subtitle">frente al Miguelete</div></div>
                 <div class="map_pin valencia"><div class="printer_name">Librería de José Carlos Navarro</div><div class="printer_subtitle">Lonja de la Seda</div></div>
-                <div class="map_pin valencia"><div class="printer_name">Imprenta de D. Benito Monfort</div></div>
-                <div class="map_pin valencia"><div class="printer_name">Imprenta de Francisco Mestre</div><div class="printer_subtitle">¡Juto al molino!</div></div>
+                <div class="map_pin valencia"><div class="printer_name">Imprenta de D. Benito Monfort</div><div class="printer_subtitle">Valencia</div></div>
+                <div class="map_pin valencia"><div class="printer_name">Imprenta de Francisco Mestre</div><div class="printer_subtitle">Juto al molino</div></div>
 
                 <!-- valladolid -->
                 <div class="map_pin valladolid"><div class="printer_name">Imprenta de Alonso del Riego</div><div class="printer_subtitle">frente de la Universidad</div></div>
-                <div class="map_pin valladolid"><div class="printer_name">Imprenta de Santaren</div></div>
+                <div class="map_pin valladolid"><div class="printer_name">Imprenta de Santaren</div><<div class="printer_subtitle">Valladolid</div></div>
                 
                 <!-- zaragoza -->
-                <div class="map_pin zaragoza bottom-right-arrow"><div class="printer_name">Herederos de D. Dormer</div><div class="printer_subtitle">¡No se la pierda!</div></div>
-                <div class="map_pin zaragoza bottom-right-arrow"><div class="printer_name">Imprenta de Roque Gallifa</div><div class="printer_subtitle">¡No se la pierda!</div></div>
+                <div class="map_pin zaragoza bottom-right-arrow"><div class="printer_name">Herederos de D. Dormer</div><div class="printer_subtitle">Zaragoça</div></div>
+                <div class="map_pin zaragoza bottom-right-arrow"><div class="printer_name">Imprenta de Roque Gallifa</div><div class="printer_subtitle">Zaragoza</div></div>
                 <!-- <div class="map_pin zaragoza bottom-right-arrow"><div class="printer_name">Imprenta que està en la Plaza del Carbon sobre el Peso Real</div></div> --><!-- Name is too long -->
 
             <!-- map image -->
