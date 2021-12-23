@@ -41,7 +41,7 @@
 			</div>
 			<br/>
 			<div>
-				Dr. Adam T. Bentz<br/>
+				Bruce D. Bomberger, Ph.D.<br/>
 				Archivist & Librarian<br/>
 				717-272-1473<br/>
 				<a href='mailto:archive@lchsociety.org'>archive@lchsociety.org</a> (preferred)
