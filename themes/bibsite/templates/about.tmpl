@@ -1,0 +1,72 @@
+<?php
+	$vn_num_media = 0;
+	if ($t_page = $this->getVar("page")) {
+		$va_media = $t_page->getPageMedia(array("large", "medium"));
+		if(is_array($va_media) && sizeof($va_media)){
+			$vn_num_media = sizeof($va_media);
+		}
+	}
+?>
+<div class="row">
+	<div class="col-md-12 col-lg-10 col-lg-offset-1">
+		<H1>→ {{{title}}}</H1>
+		<p>{{{topText}}}</p>
+	</div>
+</div>
+<?php
+	if($vn_num_media){
+?>
+<div class="row staticPageSpacing">
+<?php
+		switch($vn_num_media){
+			case 1:
+?>
+	<div class="col-sm-12 col-md-6 col-md-offset-3 fullWidthImg">
+		<p>{{{media:1:original}}}</p>
+		<div class="caption">{{{media:1:caption}}}</div>
+	</div>
+	
+<?php			
+			break;
+			# ---------------------
+			case 2:
+?>
+	<div class="col-sm-12 col-md-6 full fullWidthImg">
+		<p>{{{media:1:original}}}</p>
+		<div class="caption">{{{media:1:caption}}}</div>
+	</div>
+	<div class="col-sm-12 col-md-6 fullWidthImg">
+		<p>{{{media:2:original}}}</p>
+		<div class="caption">{{{media:2:caption}}}</div>
+	</div>
+	
+<?php						
+			break;
+			# ---------------------
+		}
+?>
+</div>
+<?php
+	}
+?>
+<div class="row staticPageSpacing">
+	<div class="col-md-12 col-lg-10 col-lg-offset-1">
+		<p>{{{bottomText}}}</p>
+		<p></p>
+		
+		<div class="row staticPageSpacing">
+			<div class="col-sm-6">
+				→ Team<br/><br/>
+				Erin McGuirl Executive Director<br/>
+				Scott Ellwood
+			</div>
+			<div class="col-sm-6 col-md-4 fullWidthImg">
+			→ With Generous Support from the Delmas Foundation<br/><br/>
+			<img src="/themes/bibsite/assets/pawtucket/graphics/delmas2.png">
+			</br><br/><br/>
+			→ Additional Credits<br/><br/>
+			Web Design and Development<br/>Julia Novitch and Ghazaal Vojdani
+			</div>
+		</div>
+	</div>
+</div>
