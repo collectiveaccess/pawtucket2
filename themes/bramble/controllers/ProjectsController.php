@@ -62,7 +62,7 @@
 			$this->opo_project_type_id = $t_list->getItemIDFromList("occurrence_types", $this->ops_project_type, array("dontIncludeSubItems" => true));
 			
 			
-			$this->purifier = new HTMLPurifier();
+			$this->purifier = caGetHTMLPurifier();
  			
  			caSetPageCSSClasses(array("projects"));
  		}
