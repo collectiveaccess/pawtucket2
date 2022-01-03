@@ -5,24 +5,52 @@
 	$vn_sum = $vn_num1 + $vn_num2;
 	
 	$config = caGetContactConfig();
+	
+	# --- if a table has been passed this is coming from the Item Inquiry/Ask An Archivist contact form on detail pages
+	$pn_id = $this->request->getParameter("id", pInteger);
+	$ps_table = $this->request->getParameter("table", pString);
+	
+	if($pn_id && $ps_table){
+		$t_item = Datamodel::getInstanceByTableName($ps_table);
+		if($t_item){
+			$t_item->load($pn_id);
+			$vs_name = sefaFormatCaption($this->request, $t_item);
+			$vs_page_title = ($config->get("item_inquiry_page_title")) ? $config->get("item_inquiry_page_title") : _t("Item Inquiry");
+		}
+	}
+
 ?>
 <div class="row contentbody_sub aboutPages">
 	<div class="col-sm-8">
-		<h1><?php print _t("Contact"); ?></h1>
-		
-		
-		{{{contact_text}}}
-
-		
-		
-		<br/><br/>
+		<h1><?php print $vs_page_title; ?></h1>
+		<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+<?php
+	if($pn_id && $t_item->getPrimaryKey()){
+?>
+		{{{inquire_text}}}<br/><br/>
+		<div class="row">
+			<div class="col-sm-12 col-md-12 col-lg-8 col-lg-offset-2 text-center">
+				<?php print $t_item->get("ca_object_representations.media.small"); ?>
+				<p class="caption text-center"><?php print $vs_name; ?></p>
+				<input type="hidden" name="itemTitle" value="<?php print $vs_name; ?>">
+				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
+				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
+			</div>
+		</div>
+<?php
+	}else{
+?>
+		{{{contact_text}}}		
+<?php	
+	}
+?>
+	<br/><br/>
 <?php
 	if(is_array($va_errors) && is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>
-		<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
-
+		
 			<div class="row">
 				<div class="col-sm-6">
 					<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
