@@ -52,14 +52,18 @@
 				{{{representationViewer}}}
 				
 				
-				<div id="detailAnnotations"></div>
-				
 <?php
 				if($vn_rep_count < 10){
 					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
 
+				}else{
+?>
+					<div class="text-center"><a href="#" onclick="caMediaPanel.showPanel('<?php print caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $vn_id, "representation_id" => $this->getVar("representation_id"), "overlay" => 1)); ?>'); return false;">View all images</a></div>
+<?php
 				}
-
+?>
+				<div id="detailAnnotations"></div>
+<?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						

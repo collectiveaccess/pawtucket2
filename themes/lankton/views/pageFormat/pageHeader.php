@@ -154,7 +154,8 @@
 					<?php #print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collection Guide"), "", "", "Collections", "index"); ?></li>					
 					<!--<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>-->
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "Collection"); ?></li>
+					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Collection")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "Collection"); ?></li>
+					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "GreerLankton")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Greer Lankton"), "", "", "About", "GreerLankton"); ?></li>
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 					<li><a href="https://www.mattress.org">Museum Home</a></li>
 				</ul>
