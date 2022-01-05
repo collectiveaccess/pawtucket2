@@ -109,6 +109,9 @@ if (!$vb_ajax) {	// !ajax
 					if($vs_date = $t_parent_collection->get("ca_collections.institutional_date.inclusive_date")){
 						print "<div><b>".$vs_date."</b></div>";
 					}
+					if($t_parent_collection->get("ca_collections.extent.extent_value")){
+						print "<p>".$t_parent_collection->get("ca_collections.extent.extent_value")." ".$t_parent_collection->get("ca_collections.extent.extent_units")."</p>";
+					}
 					if($vs_desc = $t_parent_collection->get("ca_collections.scope_contents")){
 						print "<p>".$vs_desc."</p>";
 					}
