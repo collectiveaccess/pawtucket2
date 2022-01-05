@@ -68,6 +68,8 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
+	<script src="/themes/bibsite/assets/pawtucket/js/imagesloaded.min.js"></script>
+	<script src="/themes/bibsite/assets/pawtucket/js/masonry.min.js"></script>
 <?php
 	if(Debug::isEnabled()) {		
 		//

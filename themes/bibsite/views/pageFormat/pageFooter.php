@@ -95,5 +95,16 @@
 <?php
 	print $this->render("Cookies/banner_html.php");	
 ?>
+		
+		<script>
+			$(document).ready( function() {
+				$('.jscroll-inner').imagesLoaded( function() {
+				  	$('.jscroll-inner').masonry({
+					  	itemSelector: '.bResultItemCol',
+					});
+				});
+			}); 
+				
+		</script>
 	</body>
 </html>

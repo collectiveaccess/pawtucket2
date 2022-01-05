@@ -71,18 +71,18 @@ input[type="checkbox"]:checked:before {
 	width:100%;
 	height:auto
 }
-.staticPage H1{
+/*.staticPage H1{
 	text-transform:none;
 	font-family: "Gerstner Programm", Helvetica, Arial, sans-serif;
     font-size:18px;
     font-weight:normal;
-}
+}*/
 .staticPageSpacing{
 	margin-top:60px;
 }
-.staticPage .caption{
+/*.staticPage .caption{
 	font-size:85%;
-}
+}*/
 /* detail */
 .detail .detailNavBgLeft, .detail .detailNavBgRight {
     background-color: lightgray;

@@ -140,7 +140,7 @@
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 					$vs_result_output = "
-		<div class='bResultItemCol col-xs-6 col-sm-6 col-md-4'>
+		<div class='bResultItemCol col-xs-3 col-sm-3 col-md-4'>
 			<div class='bResultItem' id='row{$vn_id}'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'>
