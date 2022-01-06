@@ -267,27 +267,31 @@ figure .caption {
     flex-wrap: nowrap;*/
 }
 
-.jcarousel li a:hover {
+.jcarousel li a:hover, .imageResult a:hover {
 	text-decoration: none;
 }
-
-.jcarousel .frontSlideEntity {
+.imageResult{
+	padding: 18px 20px;
+	background-color: white;
+	margin-bottom:30px;
+}
+.jcarousel .frontSlideEntity, .imageResult .imageResultEntity{
 	margin: 0px 0 14px 0;
 }
 
-.jcarousel .frontSlideMedia {
+.jcarousel .frontSlideMedia, .imageResult .imageResultMedia {
 	background-color: black;
 	padding: 20px;
 	flex-shrink: 3;
 }
 
-.jcarousel .frontSlideMedia a {
+.jcarousel .frontSlideMedia a, .imageResult .imageResultMedia a {
 /*	display: block;
 	width: 100%;
 	height: 100%;*/
 }
 
-.jcarousel .frontSlideMedia a img {
+.jcarousel .frontSlideMedia a img, .imageResult .imageResultMedia a img {
 	object-fit: contain;
 	width: 100%;
 	height: 100%;
@@ -296,11 +300,11 @@ figure .caption {
 	transition: filter 300ms;
 }
 
-.jcarousel li:hover .frontSlideMedia a img {
+.jcarousel li:hover .frontSlideMedia a img, .imageResult:hover .imageResultMedia a img {
 	filter: grayscale(0);
 }
 
-.jcarousel .frontSlideSubject {
+.jcarousel .frontSlideSubject, .imageResult .imageResultSubject {
 	text-transform: lowercase;
 	margin-top: 12px;
 	color: rgba(0,0,0,0.5);
