@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
-
+MetaTagManager::setWindowTitle($this->request->config->get("app_display_name")." | Search");
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria

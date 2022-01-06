@@ -67,8 +67,8 @@ a.navbar-brand img {
 	left: 0;
 	width: 100%;
 	box-shadow: none !important;
-	padding-left: calc(8vh + 2vw);
-	padding-right: calc(8vh + 2vw);
+	padding-left: calc(7vh + 3vw);
+	padding-right: calc(3vw);
 	padding-top: 12px;
 	padding-bottom: 14px;
 	background-color: lightgray !important;
@@ -161,6 +161,13 @@ body > .container {
 	color: black;
 }
 
+input:focus::-webkit-input-placeholder {
+    color: transparent;
+}
+input:focus::input-placeholder {
+	color: transparent;
+}
+
 .form-control, .home-search .btn-search  {
 	padding: 4px 16px 6px 16px;
 }
@@ -218,11 +225,17 @@ figure .caption {
 .news {
 	display: flex;
 	gap: 30px;
-	margin: 60px 0;
+}
+
+.section-start, .news {
+	margin-top: 60px;
+}
+
+.news {
+	margin-bottom: 60px;
 }
 
 .news-entry {
-
 	width: 50%;
 }
 
@@ -276,13 +289,19 @@ figure .caption {
 	margin-bottom:30px;
 }
 .jcarousel .frontSlideEntity, .imageResult .imageResultEntity{
-	margin: 0px 0 14px 0;
+	margin: 0 0 1em 0;
+}
+
+.jcarousel .frontSlideTitle p.bibtype.medium, .jcarousel .imageResult p.bibtype.medium {
+	margin: 0 0 0.6em 0;
 }
 
 .jcarousel .frontSlideMedia, .imageResult .imageResultMedia {
 	background-color: black;
 	padding: 20px;
 	flex-shrink: 3;
+	min-height: 50vh;
+	position: relative;
 }
 
 .jcarousel .frontSlideMedia a, .imageResult .imageResultMedia a {
@@ -295,9 +314,14 @@ figure .caption {
 	object-fit: contain;
 	width: 100%;
 	height: 100%;
-	max-height: calc(30vh);
+	max-height: calc(50vh);
 	filter: grayscale(1);
 	transition: filter 300ms;
+	position: absolute;
+	transform: translateY(-50%);
+	top: 50%;
+	left: 0;
+	padding: 20px;
 }
 
 .jcarousel li:hover .frontSlideMedia a img, .imageResult:hover .imageResultMedia a img {
@@ -428,7 +452,11 @@ footer .newsletter .btn-search:hover {
 }
 
 .page-title {
-	margin-bottom: 40px;
+	margin-bottom: 60px;
+}
+
+.fullWidthImg {
+	margin-bottom: 60px;
 }
 
 .arrow-indent {
@@ -437,15 +465,17 @@ footer .newsletter .btn-search:hover {
 }
 
 .row.staticPageSpacing {
-	margin-left: 0;
-	margin-right: 0;
+	margin-left: -15px;
+	margin-right: -15px;
 }
 
+/*
+this breaks bootsrap column formatting on detail pages
 .col-sm-6 {
 	position: relative;
 	left: -15px;
 	width: calc(50% - 30px);
-}
+}*/
 
 
 ul.two-col {
