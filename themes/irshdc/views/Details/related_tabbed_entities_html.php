@@ -51,10 +51,10 @@
 							<H3>
 <?php
 								$vs_firstTab = "";
-								if($vs_rel_places){
-									print "<div id='relPlacesButton' class='relTabButton' onClick='toggleTag(\"relPlaces\");'>Places</div>";
+								if($vs_rel_collections){
+									print "<div id='relCollectionsButton' class='relTabButton' onClick='toggleTag(\"relCollections\");'>Collections</div>";
 									if(!$vs_firstTab){
-										$vs_firstTab = "relPlaces";
+										$vs_firstTab = "relCollections";
 									}
 								}
 								if($vs_rel_entities){
@@ -63,16 +63,22 @@
 										$vs_firstTab = "relEntities";
 									}
 								}
-								if($vs_rel_communities){
-									print "<div id='relCommunitiesButton' class='relTabButton' onClick='toggleTag(\"relCommunities\");'>Communities</div>";
-									if(!$vs_firstTab){
-										$vs_firstTab = "relCommunities";
-									}
-								}
 								if($vs_rel_events){
 									print "<div id='relEventsButton' class='relTabButton' onClick='toggleTag(\"relEvents\");'>Events</div>";
 									if(!$vs_firstTab){
 										$vs_firstTab = "relEvents";
+									}
+								}
+								if($vs_rel_places){
+									print "<div id='relPlacesButton' class='relTabButton' onClick='toggleTag(\"relPlaces\");'>Places</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relPlaces";
+									}
+								}
+								if($vs_rel_communities){
+									print "<div id='relCommunitiesButton' class='relTabButton' onClick='toggleTag(\"relCommunities\");'>Communities</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relCommunities";
 									}
 								}
 								if($vs_rel_exhibitions){
@@ -81,12 +87,7 @@
 										$vs_firstTab = "relExhibitions";
 									}
 								}
-								if($vs_rel_collections){
-									print "<div id='relCollectionsButton' class='relTabButton' onClick='toggleTag(\"relCollections\");'>Collections</div>";
-									if(!$vs_firstTab){
-										$vs_firstTab = "relCollections";
-									}
-								}
+								
 ?>
 							</h3>
 							<div class="relatedBlockContent">							

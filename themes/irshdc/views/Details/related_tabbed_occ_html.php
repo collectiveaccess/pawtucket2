@@ -44,10 +44,10 @@
 							<h3>
 <?php
 								$vs_firstTab = "";
-								if($vs_rel_places){
-									print "<div id='relPlacesButton' class='relTabButton' onClick='toggleTag(\"relPlaces\");'>Places</div>";
+								if($vs_rel_collections){
+									print "<div id='relCollectionsButton' class='relTabButton' onClick='toggleTag(\"relCollections\");'>Collections</div>";
 									if(!$vs_firstTab){
-										$vs_firstTab = "relPlaces";
+										$vs_firstTab = "relCollections";
 									}
 								}
 								if($vs_rel_entities){
@@ -62,16 +62,16 @@
 										$vs_firstTab = "relEvents";
 									}
 								}
+								if($vs_rel_places){
+									print "<div id='relPlacesButton' class='relTabButton' onClick='toggleTag(\"relPlaces\");'>Places</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relPlaces";
+									}
+								}
 								if($vs_rel_exhibitions){
 									print "<div id='relExhibitionsButton' class='relTabButton' onClick='toggleTag(\"relExhibitions\");'>Exhibitions</div>";
 									if(!$vs_firstTab){
 										$vs_firstTab = "relExhibitions";
-									}
-								}
-								if($vs_rel_collections){
-									print "<div id='relCollectionsButton' class='relTabButton' onClick='toggleTag(\"relCollections\");'>Collections</div>";
-									if(!$vs_firstTab){
-										$vs_firstTab = "relCollections";
 									}
 								}
 								if($vs_rel_sets){
