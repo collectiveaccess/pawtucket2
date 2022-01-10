@@ -144,7 +144,7 @@
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 					$vs_result_output = "
-						<div class='resultItemColImg col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+						<div class='resultItemColImg col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}' id='row".$vn_id."'>
 							<div class='resultContentImg'>
 								<div class='resultImageImg'>".$vs_rep_detail_link."</div>
 								<div class='resultTextImg'>".$qr_res->getWithTemplate("<l>".$vs_result_text_template."</l>")."</div>
