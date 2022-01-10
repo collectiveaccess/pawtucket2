@@ -45,7 +45,7 @@ function loadLightbox(uri, tokens, id, callback, options=null) {
 	client
 	  .query({
 		query: gql`
-		  query ($id: Int!, $start: Int!, $limit: Int!, $sort: String, $sortDirection: String){ content(id: $id, mediaVersions: ["small"], start: $start, limit: $limit, sort: $sort, sortDirection: $sortDirection) { id, title, type, item_count, comments { content, email, fname, lname, created, user_id }, sortOptions { label, sort }, items { id, title, detailPageUrl, caption, identifier, rank, media { version, url, tag, width, height} } } }
+		  query ($id: Int!, $start: Int!, $limit: Int!, $sort: String, $sortDirection: String){ content(id: $id, mediaVersions: ["small"], start: $start, limit: $limit, sort: $sort, sortDirection: $sortDirection) { id, title, type, item_count, anonymousAccessToken, anonymousAccessUrl, comments { content, email, fname, lname, created, user_id }, sortOptions { label, sort }, items { id, title, detailPageUrl, caption, identifier, rank, media { version, url, tag, width, height} } } }
 		`, variables: { 'id': id, 'start': start, 'limit': limit, 'sort': sort, 'sortDirection': sortDirection }})
 	  .then(function(result) {
 		callback(result.data['content']);
