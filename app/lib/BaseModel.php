@@ -1151,6 +1151,7 @@ class BaseModel extends BaseObject {
 		}
 	}
 	# --------------------------------------------------------------------------------
+	# --------------------------------------------------------------------------------
 	/**
 	 * Fetches intrinsic field values from specified fields and rows. If field list is omitted
 	 * an array with all intrinsic fields is returned. Note that this method returns only those
@@ -1208,7 +1209,7 @@ class BaseModel extends BaseObject {
 			}
 			$va_fld_list = array_keys($va_fld_list);
 		}
-		$vs_fld_list = (sizeof($va_fld_list)) ? join(", ", $va_fld_list) : "*";
+		$vs_fld_list = (sizeof($va_fld_list)) ? join(", ", array_map(function($v) { return (substr($v, 0, 1) !== '`') ? "`{$v}`" : $v; }, $va_fld_list)) : "*";
 		
 		$o_db = $this->getDb();
 		
@@ -1222,7 +1223,7 @@ class BaseModel extends BaseObject {
 		", array($va_ids));
 		
 		$va_vals = array();
-		$vs_single_fld = (sizeof($va_fld_list) == 1) ? $va_fld_list[0] : null;
+		$vs_single_fld = (sizeof($va_fld_list) == 1) ? str_replace('`', '', $va_fld_list[0]) : null;
 		while($qr_res->nextRow()) {
 			if ($vs_single_fld) {
 				$va_vals[(int)$qr_res->get($vs_pk)] = $qr_res->get($vs_single_fld);
