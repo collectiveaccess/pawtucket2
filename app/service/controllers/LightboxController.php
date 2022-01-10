@@ -65,15 +65,37 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						if (!($u = self::authenticate($args['jwt']))) {
+						if (!($u = self::authenticate($args['jwt'], ['allowAnonymous' => true]))) {
 							throw new ServiceException(_t('Invalid JWT'));
 						}
-					
 						$t_sets = new ca_sets();
 						
-						// TODO: check access for user
-						$lightboxes = $t_sets->getSetsForUser(["table_num" => 57, "user_id" => $u->getPrimaryKey(), "checkAccess" => [0,1], "parents_only" => true]);
-						
+						if(is_array($u) && array_key_exists('anonymous', $u)) {
+							// Anonymous user
+							$lightboxes = [];
+							$t_set = ca_sets::getInstanceByGUID($u['anonymous']);
+							$table_num = $t_set->get('ca_sets.table_num');
+							$author = new ca_users($t_set->get('ca_sets.user_id'));
+							$lightboxes = [
+								[
+									'set_id' => $t_set->getPrimaryKey(),
+									'label' => $t_set->get('ca_sets.preferred_labels.name'),
+									'count' => $t_set->getItemCount(),
+									'fname' => $author->get('fname'),
+									'lname' => $author->get('lname'),
+									'email' => $author->get('email'),
+									'set_type' => $t_set->getTypeCode(),
+									'created' => $t_set->get('created_on'),
+									'table_num' => $table_num
+								]
+							];
+						} elseif(is_a($u, 'ca_users')) {
+							// Authenticated user
+							// TODO: check access for user
+							$lightboxes = $t_sets->getSetsForUser(["table_num" => 57, "user_id" => $u->getPrimaryKey(), "checkAccess" => [0,1], "parents_only" => true]);
+						} else {
+							throw new ServiceException(_t('Invalid authenicator'));
+						}
 						return array_map(function($v) {
 							return [
 								'id' => $v['set_id'],
@@ -135,15 +157,17 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						try {
-							if (!($u = self::authenticate($args['jwt']))) {
-								throw new \ServiceException(_t('Invalid JWT'));
-							}
-						} catch(Exception $e) {
-						
+						if (!($u = self::authenticate($args['jwt'], ['allowAnonymous' => true]))) {
+							throw new \ServiceException(_t('Invalid JWT'));
 						}
-						$t_set = new \ca_sets($args['id']);
 						
+						if(is_array($u) && array_key_exists('anonymous', $u)) {
+							// Anonymous access
+							$t_set = ca_sets::getInstanceByGUID($u['anonymous']);
+						} else {
+							// Authenticated access
+							$t_set = new \ca_sets($args['id']);
+						}
 						
 						// Get configured sorts
 						$conf = Configuration::load(__CA_CONF_DIR__.'/lightbox.conf');
@@ -172,6 +196,9 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							}, $raw_comments));
 						}
 						
+						$anonymous_access_token = $t_set->getGUID();
+						$anonymous_access_url = caNavUrl('', 'Lightbox', 'view/'.$t_set->getGUID(), [], ['absolute' => true]);
+						
 						// TODO: check access
 						$lightbox = [
 							'id' => $t_set->get('ca_sets.set_id'),
@@ -182,7 +209,9 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							'item_count' => $t_set->getItemCount(),
 							'items' => [],
 							'sortOptions'=> $sort_opts,
-							'comments' => $comments
+							'comments' => $comments,
+							'anonymousAccessToken' => $anonymous_access_token,
+							'anonymousAccessUrl' => $anonymous_access_url
 						];
 						
 						$items = caExtractValuesByUserLocale($t_set->getItems([
@@ -210,7 +239,8 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 										];
 									}
 								}
-								$detailPageUrl = str_replace('service.php', 'index.php', caDetailUrl($table_num, $i['row_id'], false, [], []));
+								$detail_page_url = str_replace('service.php', 'index.php', caDetailUrl($table_num, $i['row_id'], false, [], []));
+								
 								return [
 									'item_id' => $i['item_id'],
 									'title' => $i['set_item_label'],
@@ -219,7 +249,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 									'rank' => $i['rank'],
 									'identifier' => $i['idno'],
 									'media' => $media_versions,
-									'detailPageUrl' => $detailPageUrl
+									'detailPageUrl' => $detail_page_url
 								];
 							},
 							$items
@@ -241,13 +271,21 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
+						if (!($u = self::authenticate($args['jwt'], ['allowAnonymous' => true]))) {
+							throw new \ServiceException(_t('Invalid JWT'));
+						}
 						$set_id = $this->request->getParameter('set_id', pInteger);
 						
-						$jwt_data = self::decodeJWT($args['jwt']);
-						if (!($user_id = $jwt_data->id)) {
-							throw new \ServiceException(_t('Invalid user'));
-						}
+						
+						if(is_array($u) && array_key_exists('anonymous', $u)) {
+							// Anonymous access
+							if($t_set = ca_sets::getInstanceByGUID($u['anonymous'])) {
+								return ['access' => __CA_SET_READ_ACCESS__];
+							}
+							return ['access' => null];
+						} 
 
+						$user_id = $u->getPrimaryKey();
 						if (($t_set = ca_sets::find(['set_id' => $args['id']], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($user_id, __CA_SET_READ_ACCESS__)) {
 							$access = (($t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__)) ? 2 : 1);
 							return ['access' => $access];
@@ -595,54 +633,6 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
  						return ['id' => $args['id'], 'name' => $t_set->get('ca_sets.preferred_labels.name'), 'count' => $t_set->getItemCount()];
 					}
 				],
-				'transferItems' => [
-					'type' => LightboxSchema::get('LightboxMutationStatus'),
-					'description' => _t('Transfer items from lightbox to lightbox'),
-					'args' => [
-						[
-							'name' => 'id',
-							'type' => Type::int(),
-							'description' => _t('ID of lightbox to transfer items from'),
-							'defaultValue' => null
-						],
-						[
-							'name' => 'toId',
-							'type' => Type::int(),
-							'description' => _t('ID of lightbox to transfer items to'),
-							'defaultValue' => null
-						],
-						[
-							'name' => 'items',
-							'type' => LightboxSchema::get('LightboxItemListInputType'),
-							'description' => _t('Items ids to transfer, separated by ampersands, commas or semicolons')
-						],
-						[
-							'name' => 'jwt',
-							'type' => Type::string(),
-							'description' => _t('JWT'),
-							'defaultValue' => self::getBearerToken()
-						]
-					],
-					'resolve' => function ($rootValue, $args) {
-						if (!($u = self::authenticate($args['jwt']))) {
-							throw new ServiceException(_t('Invalid JWT'));
-						}
-						
-						if (!is_array($item_ids = preg_split('![&,;]+!', $args['items']['ids'])) || !sizeof($item_ids)) {
-							throw new ServiceException(_t('No item ids set'));
-						}
-					
-						// TOOD: check access
-						$t_set = new ca_sets($args['id']);
-						if(!$t_set->isLoaded()) {
-							throw new ServiceException(_t('Could not load lightbox: %1', join($t_set->getErrors())));
-						}
-						
-						$t_set->transferItemsTo($args['toId'], $item_ids, $u->getPrimaryKey());
-						
- 						return ['id' => $args['id'], 'name' => $t_set->get('ca_sets.preferred_labels.name'), 'count' => $t_set->getItemCount()];
-					}
-				],
 				'share' => [
 					'type' => LightboxSchema::get('LightboxMutationStatus'),
 					'description' => _t('Share lightbox'),
@@ -671,14 +661,13 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						}
 						
 						// TOOD: check access
-						$t_set = new ca_sets($args['id']);
-						if(!$t_set->isLoaded()) {
+						if(!($t_set = ca_sets::find(['set_id' => $args['id']], ['returnAs' => 'firstModelInstance']))) {
 							throw new ServiceException(_t('Could not load lightbox: %1', join($t_set->getErrors())));
 						}
 						
 						// TODO:
 						
- 						return ['id' => $args['id'], 'name' => $t_set->get('ca_sets.preferred_labels.name'), 'count' => $t_set->getItemCount()];
+ 						return ['id' => $args['id'], 'name' => $t_set->get('ca_sets.preferred_labels.name'), 'count' => 10];
 					}
 				],
 				'comment' => [

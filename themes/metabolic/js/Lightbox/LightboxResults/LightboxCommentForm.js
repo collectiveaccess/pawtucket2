@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { LightboxContext } from '../LightboxContext';
+import { createLightboxComments } from "../../../../default/js/lightbox";
 
 // import { CommentForm, CommentFormMessage, CommentsTagsList } from ".././comment";
 
@@ -8,65 +9,57 @@ const baseUrl = appData.baseUrl;
 
 const LightboxCommentForm = (props) => {
 
-  const { id, setId, tokens, setTokens, userAccess, setUserAccess, lightboxTitle, setLightboxTitle, totalSize, setTotalSize, sortOptions, setSortOptions, comments, setComments, itemsPerPage, setItemsPerPage, lightboxList, setLightboxList, key, setKey, view, setView, lightboxListPageNum, setLightboxListPageNum, lightboxSearchValue, setLightboxSearchValue, lightboxes, setLightboxes, resultList, setResultList, selectedItems, setSelectedItems, showSelectButtons, setShowSelectButtons, showSortSaveButton, setShowSortSaveButton, start, setStart, dragDropMode, setDragDropMode, orderedIds, setOrderedIds } = useContext(LightboxContext)
+  const { id, setId, tokens, setTokens, comments, setComments } = useContext(LightboxContext)
   
-  const [commentContent, setCommentContent] = useState()
+  const [ commentContent, setCommentContent ] = useState('')
+  const [ commentItems, setCommentItems ] = useState()
 
-  //Clears the input searchbox for lightboxes being searched for.
-  const clearInput = () => {
-    document.getElementById('comment-text').value = '';
-    setCommentContent('')
-  }
+  useEffect(() => {
+    let tempComments = []
+    if (comments && comments.length >=1) {
+      comments.map((comment, index) => tempComments.unshift(
+        <div key={index} style={{ padding: "2px", margin: "5px", boxShadow: "0 2px 8px 0 rgba(0,0,0,0.2)"}}>
+          <p style={{ fontSize: '12px', marginBottom: '0px' }}><strong>{comment.fname} {comment.lname}</strong> {(comment.created).substring(0, 10)}</p>
+          <p style={{ fontSize: '14px', marginBottom: '5px' }}>{comment.content}</p>
+        </div>
+      ));
+    }
+    setCommentItems(tempComments)
+  }, [comments])
 
   const handleForm = (e) => {
-    const { value } = e.target;
-    setCommentContent(value)
+    setCommentContent(e.target.value)
   }
 
-  const createNewComment = (e) => {
+  const submitComment = (e) => {
     createLightboxComments(baseUrl, tokens, id, commentContent, (data) => {
-      console.log('createLightboxComments: ', data);
-
-      let commentsList = [comments];
+      // console.log('createLightboxComments: ', data);
+      let commentsList = [...comments];
       commentsList.push(data.comment);
       setComments(commentsList)
     });
-    clearInput();
+    setCommentContent('')
     e.preventDefault();
   }
 
-  let currentComments = [];
-
-  if (comments != null) {
-    comments.map(comment => currentComments.unshift(
-      <div key={comment.created}>
-        <li style={{ borderBottom: '1px solid lightgrey' }}>
-          <p style={{ fontSize: '12px', margin: '0' }}>{comment.fname} {comment.lname} commented on {(comment.created).substring(0, 10)}</p>
-          <p style={{ marginBottom: '5px' }}>{comment.content}</p>
-        </li>
-      </div>
-    )
-    );
-  }
+  // console.log("comments: ", comments);
 
   return (
     <div>
-
-      {(currentComments.length >= 1) ?
-        <div className='comments-container' style={{ overflow: 'auto', height: '200px', marginBottom: '15px', border: '1px solid lightgrey' }}>
-          <ul style={{ listStyle: 'none', margin: '0', padding: '5px' }}>
-            {currentComments}
-          </ul>
+      <form className={'my-2'}>
+        <div className="form-group mb-0 d-flex align-items-center" style={{marginLeft: "5px"}}>
+          <textarea id='comment' value={commentContent} onChange={handleForm} placeholder='Enter your comment' style={{ width: "190px" }} />
+        <button className='btn btn-primary btn-sm ml-1' onClick={submitComment}>
+          <span className="material-icons" style={{ fontSize: '18px' }}>arrow_forward</span>
+        </button>
         </div>
-        : ' '}
-
-      <form className='comment-form'>
-        <div className="form-group">
-          <textarea className={`form-control form-control-sm`} id='comment-text' name='comment' value={commentContent} name='commentContent' onChange={handleForm} placeholder='Enter your comment' />
-        </div>
-        <div className="form-group"><input type='submit' className='btn btn-primary btn-sm' onClick={createNewComment} /></div>
       </form>
 
+      {comments && comments.length > 0 ?
+        <div className='comments-container w-100' style={{ overflow: 'auto', height: '200px'}}>
+          {commentItems}
+        </div>
+      : null}
     </div>
   );
 }

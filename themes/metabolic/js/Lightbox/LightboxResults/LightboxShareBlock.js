@@ -16,211 +16,87 @@
 
 import React, { useState, useContext, useEffect } from 'react'
 import { LightboxContext } from '../LightboxContext';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 const LightboxShareBlock = (props) => {
 
-  const { id, setId, tokens, setTokens, userAccess, setUserAccess, lightboxTitle, setLightboxTitle, totalSize, setTotalSize, sortOptions, setSortOptions, comments, setComments, itemsPerPage, setItemsPerPage, lightboxList, setLightboxList, key, setKey, view, setView, lightboxListPageNum, setLightboxListPageNum, lightboxSearchValue, setLightboxSearchValue, lightboxes, setLightboxes, resultList, setResultList, selectedItems, setSelectedItems, showSelectButtons, setShowSelectButtons, showSortSaveButton, setShowSortSaveButton, start, setStart, dragDropMode, setDragDropMode, orderedIds, setOrderedIds } = useContext(LightboxContext)
+  const { id, setId, tokens, setTokens, anonymousAccessUrl, setAnonymousAccessUrl } = useContext(LightboxContext)
 
-  const initializeValues = () => {
-    return {
-      users: '',
-      access: '',
-      id: props.setID
-    };
-  }
 
   const [users, setUsers] = useState([])
-  const [owner, setOwner] = useState([])
-  const [statusMessage, setStatusMessage] = useState('')
-  const [statusMessageUserList, setStatusMessageUserList] = useState('')
-  const [values, setValues] = useState(initializeValues())
-  const [errors, setErrors] = useState(initializeValues())
-  // const [ settings, setSettings ] = useState(...props)
-  const [set_users, set_set_users] = useState({ users, owner })
-
-
-  // useEffect(() => {
-  // 	initializeList()
-  // }, [])
-
-
-  const initializeList = () => {
-    // let state = this.state;
-    // let that = this;
-    // axios.get(baseUrl + "/getUsers/set_id/" + this.props.setID)
-    // 			.then(function (resp) {
-    // 				console.log('response: ', resp);
-    //
-    // 				let data = resp.data;
-    // 				if (data.status == 'ok') {
-    // 					state.setUsers.users = [];
-    // 					state.setUsers.owner = [];
-    // 					if (data.users) {
-    // 						for(let k in data.users) {
-    // 							let c = data.users[k];
-    // 							if(c.name.length){
-    // 								if(c.owner){
-    // 									state.setUsers.owner.push(<li className='list-group-item' key={k}>{c.name} ({c.email}) <b>Owner</b></li>);
-    // 								}else{
-    // 									state.setUsers.users.push(<li className='list-group-item' key={k}><a href='#' className='float-right' onClick={that.removeUser} data-user-id={c.user_id} data-set-id={that.props.setID}><ion-icon name='close-circle' data-user-id={c.user_id} data-set-id={that.props.setID}></ion-icon></a>{c.name} ({c.email})<br/><i>Can {(c.access == 2) ? "edit" : "read"}</i></li>);
-    // 								}
-    // 							}
-    // 						}
-    // 					}
-    // 				}
-    // 				// TODO: For some reason it gives type error when using this.setState
-    // 				that.setState(state);
-    // 			})
-    // 			.catch(function (error) {
-    // 				console.log("Error while getting set users: ", error);
-    // 			});
+  const [accessValue, setAccessValue] = useState("edit")
+  const [isCopied, setIsCopied] = useState(false)
+  
+  const handleText = (e) => {
+    setUsers(e.target.value)
   }
 
-  const updateList = () => {
-    setUsers(initializeList())
+  const handleSelect = (e) => {
+    setAccessValue(e.target.value)
   }
 
-  const handleForm = (e) => {
-    let n = e.target.name;
-    let v = e.target.value;
-
-    tempvals = values[n]
-    tempvals = v
-    setValues(tempvals)
+  const submitForm = () => {
+    console.log("submit share form");
   }
 
-  const submitForm = (e) => {
-
-    // TODO: For some reason it gives type error when using this.state
-    setStatusMessage("Submitting...")
-    // setStatusMessageType = "success";
-
-    let formData = new FormData();
-    for (let k in values) {
-      formData.append(k, values[k]);
-    }
-    // axios.post(baseUrl + "/shareSet", formData)
-    // 			.then(function (resp) {
-    // 				let data = resp.data;
-    //
-    // 				if (data.status !== 'ok') {
-    // 					// error
-    // 					state.statusMessage = data.error;
-    // 					state.statusMessageType = "error";
-    // 					state.errors = that.initializeValues();
-    // 					// TODO: For some reason it gives type error when using this.initializeValues()
-    //
-    // 					if(data.fieldErrors) {
-    // 						for(let k in data.fieldErrors) {
-    // 							if((state.errors[k] !== undefined)) {
-    // 								state.errors[k] = data.fieldErrors[k];
-    // 							}
-    // 						}
-    // 					}
-    // 					that.setState(state);
-    // 					// TODO: For some reason it gives type error when using this.setState
-    //
-    // 				} else {
-    // 					// success
-    // 					if(data.message){
-    // 						state.statusMessage = data.message;
-    // 					}
-    // 					if(data.error){
-    // 						if(data.message){
-    // 							state.statusMessage = state.statusMessage + '; ';
-    // 						}
-    // 						state.statusMessage = state.statusMessage + data.error;
-    // 					}
-    // 					state.statusMessageType = "success";
-    // 					state.values = that.initializeValues();	// Clear form elements
-    // 					state.errors = that.initializeValues();	// Clear form errors
-    // 					that.setState(state);
-    // 					that.initializeList();
-    // 					if(!data.error){
-    // 						setTimeout(function() {
-    // 							state.statusMessage = '';
-    // 							that.setState(state);
-    // 						}, 3000);
-    // 					}
-    // 				}
-    //
-    // 			})
-    // 			.catch(function (error) {
-    // 				console.log("Error while attempting to invite users: ", error);
-    // 			});
-
-    e.preventDefault();
+  const copyShareLink = () => {
+    setIsCopied(true)
+    // console.log("copyShareLink");
   }
 
-  const removeUser = (e) => {
-
-    let userID = e.target.attributes.getNamedItem('data-user-id').value;
-    let setID = e.target.attributes.getNamedItem('data-set-id').value;
-    statusMessageUserList("Removing User...")
-    // statusMessageTypeUserList = "error";
-    // this.setState(state);
-    // axios.get(baseUrl + "/removeUserAccess/set_id/" + setID + "/user_id/" + userID)
-    // 			.then(function (resp) {
-    // 				let data = resp.data;
-    // 				if (data.status !== 'ok') {
-    // 					// error
-    // 					state.statusMessageUserList = data.error;
-    // 					state.statusMessageTypeUserList = "error";
-    // 					that.setState(state);
-    // 				} else {
-    // 					// success
-    // 					state.statusMessageTypeUserList = "success";
-    // 					state.statusMessageUserList = data.message;
-    // 					that.setState(state);
-    // 					that.initializeList();
-    // 					setTimeout(function() {
-    // 						state.statusMessageUserList = '';
-    // 						that.setState(state);
-    // 					}, 3000);
-    // 				}
-    // 				that.setState(state);
-    // 			})
-    // 			.catch(function (error) {
-    // 				console.log("Error while getting set users: ", error);
-    // 			});
+  const closeAlert = () => {
+    setIsCopied(false)
+    // console.log("closeAlert");
   }
+
+  // console.log("isCopied: ", isCopied);
 
   return (
-    <div>
-      {/* <SetUserListMessage message={statusMessageUserList} messageType={statusMessageTypeUserList}/> */}
-      {(messageType) ?
-        <div className={`alert alert-${(messageType == 'error') ? 'danger' : 'success'}`}>{statusMessageUserList}</div>
-      : null}
+    <form>
+      <div className="form-group m-0">
+        <p className="m-0" style={{ fontSize: '14px' }}><strong>Invite Users</strong></p>
+        <textarea id='users' onChange={(e) => handleText(e)} placeholder='Enter user email address separated by comma' style={{ width: '200px' }}/>
+      </div>
 
+      <div className="form-group m-0">
+        <p className="m-0" style={{ fontSize: '14px' }}><strong>Select an access level</strong></p>
+        <select id='access' value={accessValue} onChange={(e)=>handleSelect(e)}>
+          <option value='read_only'>Read only</option>
+          <option value='edit'>Edit</option>
+        </select>
+      </div>
 
-      {/* <SetUserList setUsers={set_users} /> */}
-      {(set_users.owner.length || set_users.users.length) ?
-        <div><ul className='list-group list-group-flush mb-4'>{set_users.owner}{set_users.users}</ul></div>
-      : null}
+      <div className="form-group m-0">       
+        <button className='btn btn-primary btn-sm my-1' onClick={submitForm}>Add</button>
+      </div>
 
+      <div className="border-top border-secondary my-2"></div>
+      
+      {/* <div className="form-group form-inline">
+        <p className="m-0" style={{ fontSize: '14px' }}><strong>Generate A Share Link</strong></p>
+        <button className='btn btn-outline-secondary btn-sm ml-1 p-0' onClick={getShareLink}>
+          <span className="material-icons" style={{ fontSize: '18px' }}>autorenew</span>
+        </button>
+      </div> */}
 
-      {/* <ShareFormMessage message={statusMessage} messageType={statusMessageType} /> */}
-      {(statusMessage) ?
-        <div className={`alert alert-${(statusMessageType == 'error') ? 'danger' : 'success'}`}>{statusMessage}</div>
-      : null}
+      <div className="form-group">
+        <p className="m-0" style={{ fontSize: '14px' }}><strong>Share Link</strong></p>
+        <input type="text" id={'accessUrl'} style={{ width: '100%', marginBottom: "5px" }} defaultValue={anonymousAccessUrl} />
+        <CopyToClipboard text={anonymousAccessUrl} onCopy={copyShareLink}>
+          <button className='btn btn-primary btn-sm'>Copy</button>
+        </CopyToClipboard>
+      </div>
 
-
-      <b>Invite Users</b>
-      <form className='ca-form'>
-        <div className="form-group">
-          <textarea className={`form-control  form-control-sm${(errors.users) ? ' is-invalid' : ''}`} id='users' name='users' value={values.users} onChange={handleForm} placeholder='Enter user email address separated by comma' title='Enter user email address separated by comma' />{(errors.users) ? <div className='invalid-feedback'>{errors.users}</div> : null}
+      {isCopied?  
+        <div className="alert alert-success alert-dismissible fade show" role="alert">
+          Copied to clipboard.
+          <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={closeAlert}>
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
+      :null}
 
-        <div className="form-group">
-          <select name='access' id='access' title='Select an access level' className={`form-control  form-control-sm${(errors.access) ? ' is-invalid' : ''}`} onChange={handleForm}>
-            <option value=''>Select an Access Level</option>
-            <option value='1'>Read only</option>
-            <option value='2'>Edit</option>
-          </select>{(errors.access) ? <div className='invalid-feedback'>{errors.access}</div> : null}
-        </div>
-        <div className="form-group"><input type='submit' className='btn btn-primary btn-sm' value='Add' onClick={submitForm} /></div>
-      </form>
-    </div>
+    </form>
   );
 }
 

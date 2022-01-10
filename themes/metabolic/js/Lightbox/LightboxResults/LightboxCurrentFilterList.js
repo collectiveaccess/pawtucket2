@@ -20,7 +20,7 @@ import { initBrowseCurrentFilterList } from "../../../../default/js/browse";
 
 const LightboxCurrentFilterList = () => {
 
-	const { id, setId, tokens, setTokens, userAccess, setUserAccess, lightboxTitle, setLightboxTitle, totalSize, setTotalSize, sortOptions, setSortOptions, comments, setComments, itemsPerPage, setItemsPerPage, lightboxList, setLightboxList, key, setKey, view, setView, lightboxListPageNum, setLightboxListPageNum, lightboxSearchValue, setLightboxSearchValue, lightboxes, setLightboxes, resultList, setResultList, selectedItems, setSelectedItems, showSelectButtons, setShowSelectButtons, showSortSaveButton, setShowSortSaveButton, start, setStart, dragDropMode, setDragDropMode, isLoading, setIsLoading, filters, setFilters } = useContext(LightboxContext)
+	const { filters, setFilters } = useContext(LightboxContext)
 
 	let filterList = [];
 	useEffect(() => {

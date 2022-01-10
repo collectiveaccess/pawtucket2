@@ -772,7 +772,7 @@ if (!$for_current_value_reindex) {
 								$t_item = new ca_list_items((int)$pa_field_data[$vs_field]);
 							} else {
 								// Is list item value
-								$t_item = ca_list_items::findAsInstance(['list_id' => caGetListID($va_field_list[$vs_field]['LIST']), 'item_value' => $pa_field_data[$vs_field]]);
+								$t_item = ca_list_items::find(['list_id' => caGetListID($va_field_list[$vs_field]['LIST']), 'item_value' => $pa_field_data[$vs_field]], ['returnAs' => 'firstModelInstance']);
 							}
 							if(!$t_item) { continue; }		// list item doesn't exist (can happen for access and status values)
 							

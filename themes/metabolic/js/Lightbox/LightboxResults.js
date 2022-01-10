@@ -4,7 +4,6 @@
 *
 * Sub-components are:
 * 		LightboxResultItem
-* 		LightboxResultLoadMoreButton
 * 		LightboxFacetList
 * 		LightboxCurrentFilterList
 * 		LightboxCommentForm
@@ -27,6 +26,7 @@
 
 import React, { useState, useContext, useEffect } from 'react'
 import { LightboxContext } from './LightboxContext';
+import { loadLightbox } from "../../../default/js/lightbox";
 
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import arrayMove from 'array-move'; //used for the react-sortable-hoc
@@ -34,9 +34,11 @@ import arrayMove from 'array-move'; //used for the react-sortable-hoc
 import LightboxCurrentFilterList from './LightboxResults/LightboxCurrentFilterList'
 import LightboxFacetList from './LightboxResults/LightboxFacetList'
 import LightboxResultItem from './LightboxResults/LightboxResultItem'
-import LightboxResultLoadMoreButton from './LightboxResults/LightboxResultLoadMoreButton'
 import LightboxCommentForm from './LightboxResults/LightboxCommentForm'
 import LightboxShareBlock from './LightboxResults/LightboxShareBlock'
+
+const appData = pawtucketUIApps.Lightbox.data;
+const baseUrl = appData.baseUrl;
 
 const DragHandle = SortableHandle(() => {
 	return (<div style={{ outline: '1px solid darkgrey' }}>
@@ -63,7 +65,7 @@ const ItemList = SortableContainer(({ items }) => {
 
 const LightboxResults = (props) => {
 
-	const { id, setId, tokens, setTokens, userAccess, setUserAccess, lightboxTitle, setLightboxTitle, totalSize, setTotalSize, sortOptions, setSortOptions, comments, setComments, itemsPerPage, setItemsPerPage, lightboxList, setLightboxList, key, setKey, view, setView, lightboxListPageNum, setLightboxListPageNum, lightboxSearchValue, setLightboxSearchValue, lightboxes, setLightboxes, resultList, setResultList, selectedItems, setSelectedItems, showSelectButtons, setShowSelectButtons, showSortSaveButton, setShowSortSaveButton, start, setStart, dragDropMode, setDragDropMode, orderedIds, setOrderedIds } = useContext(LightboxContext)
+	const { id, setId, tokens, setTokens, userAccess, setUserAccess, shareAccess, setShareAccess, comments, setComments, totalSize, setTotalSize, itemsPerPage, setItemsPerPage, resultList, setResultList, isLoading, setIsLoading, dragDropMode, setDragDropMode, orderedIds, setOrderedIds } = useContext(LightboxContext)
 
 	const [ resultItems, setResultItems ] = useState([])
 
@@ -93,6 +95,20 @@ const LightboxResults = (props) => {
 		setResultItems(arrayMove(resultItems, oldIndex, newIndex))
 	};
 
+	const loadMoreLightboxes = (e) => {
+		setIsLoading(true);
+		let newLimit = itemsPerPage + 24;
+		setItemsPerPage(newLimit)
+
+		loadLightbox(baseUrl, tokens, id, (data) => {
+			// console.log("loadLightbox: ", data);
+			setResultList(data.items)
+		}, { start: 0, limit: newLimit });
+
+		setIsLoading(false)
+		e.preventDefault();
+	}
+
 	return (
 		<div className="row" id="browseResultsContainer" style={{ scrollBehavior: 'smooth' }}>
 			<div className="col-md-8 bResultList">
@@ -107,43 +123,55 @@ const LightboxResults = (props) => {
 					</div>
 				}
 			
-				<LightboxResultLoadMoreButton	/>
+				{resultList && resultList.length < totalSize? 
+					<div className="row bLoadMore">
+						<div className="col-sm-12 text-center my-3">
+							<a className="button btn btn-primary" href="#" onClick={loadMoreLightboxes} >{(isLoading) ? "LOADING" : "Load More"}</a>
+						</div>
+					</div>
+				: null}
 
 			</div>
 
 			<div className="col-md-4 col-lg-3 offset-lg-1">
-				<div className="bRightCol position-fixed vh-100 w-100">
+				{/* className="bRightCol position-fixed vh-100 w-100" */}
+				<div className="bRightCol position-fixed vh-100 mr-3">
 					<div id="accordion">
 
 						<div className="card">
-							<div className="card-header">
+							<div className="card-header" style={{ padding: "15px 10px 15px 10px" }} >
 								<a data-toggle="collapse" href="#bRefine" role="button" aria-expanded="false" aria-controls="collapseFilter">Filter By</a>
 							</div>
-							<div id="bRefine" className="card-body collapse" data-parent="#accordion">
+							<div id="bRefine" className="card-body collapse" style={{ padding: "0 10px 5px 10px" }}  data-parent="#accordion">
 								<LightboxCurrentFilterList />
 								<LightboxFacetList facetLoadUrl={props.facetLoadUrl} />
 							</div>
 						</div>
 
-						<div className="card">
-							<div className="card-header">
-								<a data-toggle="collapse" href="#setComments" role="button" aria-expanded="false" aria-controls="collapseComments">Comments</a>
+						<div className="card pr-1">
+							<div className="card-header" style={{ padding: "15px 10px 15px 10px" }} >
+								<a data-toggle="collapse" href="#setComments" role="button" aria-expanded="false" aria-controls="collapseComments">
+									Comments {comments && comments.length > 0? <span>({comments.length})</span> : null}
+								</a>
 							</div>
-							<div id="setComments" className="card-body collapse" data-parent="#accordion">
-								{/* <LightboxCommentForm tableName="ca_sets" itemID={id} formTitle="" listTitle="" commentFieldTitle="" tagFieldTitle="" loginButtonText="login" commentButtonText="Add" noTags="1" showForm="1" /> */}
+							<div id="setComments" className="card-body collapse" style={{ padding: "0 10px 5px 10px"}} data-parent="#accordion">
+								<LightboxCommentForm />
 							</div>
 						</div>
 
-						<div className="card">
-							<div className="card-header">
-								<a data-toggle="collapse" href="#setShare" role="button" aria-expanded="false" aria-controls="collapseShare">Share</a>
+						{shareAccess == "edit" && userAccess == 2?  
+							<div className="card">
+								<div className="card-header" style={{ padding: "15px 10px 15px 10px" }} >
+									<a data-toggle="collapse" href="#setShare" role="button" aria-expanded="false" aria-controls="collapseShare">Share</a>
+								</div>
+								<div id="setShare" className="card-body collapse" style={{ padding: "0 10px 5px 10px"}}  data-parent="#accordion">
+									<LightboxShareBlock />
+								</div>
 							</div>
-							<div id="setShare" className="card-body collapse" data-parent="#accordion">
-								{/* <LightboxShareBlock setID={id} /> */}
-							</div>
-						</div>
+						:null}
 
 					</div>
+					<div className="forceWidth">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</div>
 				</div>
 			</div>
 

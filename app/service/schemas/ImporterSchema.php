@@ -42,6 +42,48 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 	 */
 	protected static function load() {
 		return [
+			$importerFileProcessingWarningType = new ObjectType([
+				'name' => 'ImporterFileProcessingWarning',
+				'description' => 'Report for warning while processing file',
+				'fields' => [
+					'filename' => [
+						'type' => Type::string(),
+						'description' => 'File name'
+					],
+					'message' => [
+						'type' => Type::string(),
+						'description' => 'Warning message'
+					]
+				]
+			]),
+			$importerFileProcessingErrorType = new ObjectType([
+				'name' => 'ImporterFileProcessingError',
+				'description' => 'Report for error while processing file',
+				'fields' => [
+					'filename' => [
+						'type' => Type::string(),
+						'description' => 'File name'
+					],
+					'message' => [
+						'type' => Type::string(),
+						'description' => 'Error message'
+					]
+				]
+			]),
+			$importerFileLinkType = new ObjectType([
+				'name' => 'ImporterFileLink',
+				'description' => 'Link to imported file',
+				'fields' => [
+					'filename' => [
+						'type' => Type::string(),
+						'description' => 'File name'
+					],
+					'url' => [
+						'type' => Type::string(),
+						'description' => 'URL'
+					]
+				]
+			]),
 			$importerFormFieldInfoType = new ObjectType([
 				'name' => 'ImporterFormFieldInfo',
 				'description' => 'Description of form field',
@@ -60,7 +102,7 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 					],
 					'description' => [
 						'type' => Type::string(),
-						'description' => 'Title of form field for display'
+						'description' => 'Description of form field for display'
 					],
 					'minimum' => [
 						'type' => Type::float(),
@@ -197,6 +239,10 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::int(),
 						'description' => 'Number of files uploaded'
 					],
+					'filesImported' => [
+						'type' => Type::int(),
+						'description' => 'Number of files actually imported (duplicates and errors may reduce the number of imported files)'
+					],
 					'totalBytes' => [
 						'type' => Type::float(),
 						'description' => 'Total quantity of data for upload, in bytes'
@@ -212,6 +258,14 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 					'receivedSize' => [
 						'type' => Type::string(),
 						'description' => 'Quantity of data received, formatted for display'
+					],
+					'warnings' => [
+						'type' => Type::listOf($importerFileProcessingWarningType),
+						'description' => 'List of warnings while processing'
+					],
+					'errors' => [
+						'type' => Type::listOf($importerFileProcessingErrorType),
+						'description' => 'List of errors while processing'
 					]
 				]
 			]),
@@ -305,6 +359,10 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::int(),
 						'description' => 'Number of files uploaded'
 					],
+					'filesImported' => [
+						'type' => Type::int(),
+						'description' => 'Number of files actually imported (duplicates and errors may reduce the number of imported files)'
+					],
 					'filesUploaded' => [
 						'type' => Type::listOf($importerSessionUploadFileType),
 						'description' => 'Data about uploaded files'
@@ -324,7 +382,19 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 					'receivedSize' => [
 						'type' => Type::string(),
 						'description' => 'Quantity of data received, formatted for display'
-					]
+					],
+					'warnings' => [
+						'type' => Type::listOf($importerFileProcessingWarningType),
+						'description' => 'List of warnings while processing'
+					],
+					'errors' => [
+						'type' => Type::listOf($importerFileProcessingErrorType),
+						'description' => 'List of errors while processing'
+					],
+					'urls' => [
+						'type' => Type::listOf($importerFileLinkType),
+						'description' => 'List URLs for imported files'
+					],
 					
 				]
 			]),

@@ -3,7 +3,6 @@ import { fetchLightboxList, newJWTToken } from "../../default/js/lightbox";
 import LightboxContextProvider from './Lightbox/LightboxContext';
 import { LightboxContext } from './Lightbox/LightboxContext';
 
-import LightboxNavigation from './Lightbox/LightboxNavigation';
 import LightboxIntro from './Lightbox/LightboxIntro';
 import LightboxControls from './Lightbox/LightboxControls';
 import LightboxResults from './Lightbox/LightboxResults';
@@ -13,9 +12,9 @@ const selector = pawtucketUIApps.Lightbox.selector;
 const appData = pawtucketUIApps.Lightbox.data;
 const refreshToken = pawtucketUIApps.Lightbox.key;
 
-const Lightbox = ({ baseUrl, endpoint, initialFilters, propView, showLastLightboxOnLoad, browseKey}) => {
+const Lightbox = ({ baseUrl, endpoint, initialFilters, propView, showLastLightboxOnLoad, browseKey }) => {
 
-	const { id, setId, tokens, setTokens, lightboxList, setLightboxList, key, setKey } = useContext(LightboxContext)
+	const { id, setId, tokens, setTokens, lightboxList, setLightboxList, key, setKey, userAccess, setUserAccess, shareAccess, setShareAccess } = useContext(LightboxContext)
 
 	useEffect(() => {
 		// load auth tokens
@@ -27,6 +26,7 @@ const Lightbox = ({ baseUrl, endpoint, initialFilters, propView, showLastLightbo
 				setLightboxList(data);
 			});
 		});
+		setShareAccess(appData.shareAccess)
 	}, [])
 
 	let facetLoadUrl = baseUrl + '/lightbox' + (key ? '?key=' + key : '');
@@ -36,8 +36,7 @@ const Lightbox = ({ baseUrl, endpoint, initialFilters, propView, showLastLightbo
 			<div>
 				<div className="row">
 					<div className="col-sm-8 bToolBar pt-4">
-						<div className="float-left mr-2"><LightboxNavigation/></div>
-						<LightboxIntro/>
+						<LightboxIntro />
 						<LightboxControls facetLoadUrl={facetLoadUrl} />
 					</div>
 				</div>

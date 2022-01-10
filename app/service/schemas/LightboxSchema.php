@@ -240,6 +240,14 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 					'comments' => [
 						'type' => Type::listOf($lightboxCommentType),
 						'description' => 'Lightbox comments'
+					],
+					'anonymousAccessToken' => [
+						'type' => Type::string(),
+						'description' => 'Token allowing read-only anonymous access to the lightbox'
+					],
+					'anonymousAccessUrl' => [
+						'type' => Type::string(),
+						'description' => 'Url allowing read-only anonymous access to the lightbox'
 					]
 				]
 			]),

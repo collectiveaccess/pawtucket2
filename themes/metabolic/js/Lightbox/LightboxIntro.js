@@ -28,6 +28,10 @@ const LightboxIntro = (props) => {
 	
 	const { id, setId, tokens, setTokens, lightboxTitle, setLightboxTitle, lightboxList, setLightboxList } = useContext(LightboxContext)
 
+	const backToList = () => {
+		setId(null)
+	}
+
 	const saveLightboxEdit = (name) => {
 		editLightbox(baseUrl, tokens, id, name, (data) => {
 			console.log("editLightbox", data);
@@ -39,19 +43,36 @@ const LightboxIntro = (props) => {
 		});
 	}
 
+	// width: 50px;
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip()
+	})
+
 	return (
-		<h1>
-			<EasyEdit
-				type="text"
-				onSave={saveLightboxEdit}
-				saveButtonLabel="Save"
-				saveButtonStyle="btn btn-primary btn-sm"
-				cancelButtonLabel="Cancel"
-				cancelButtonStyle="btn btn-primary btn-sm"
-				attributes={{name: "name", id: "lightbox_name" + id}}
-				value={lightboxTitle}
-			/>
-		</h1>
+		<>
+			<div className="float-left mr-2">
+				<button className='btn btn-secondary btn-sm pr-0 mr-2' onClick={backToList}>
+					<span className="material-icons">arrow_back_ios</span>
+				</button>
+			</div>
+			<h1 
+				style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', margin: "0" }}
+				data-toggle="tooltip"
+				data-placement="auto"
+				title={lightboxTitle}
+			>
+				<EasyEdit
+					type="text"
+					onSave={saveLightboxEdit}
+					saveButtonLabel="Save"
+					saveButtonStyle="btn btn-primary btn-sm"
+					cancelButtonLabel="Cancel"
+					cancelButtonStyle="btn btn-primary btn-sm"
+					attributes={{name: "name", id: "lightbox_name" + id}}
+					value={lightboxTitle}
+				/>
+			</h1>
+		</>
 	);
 }
 

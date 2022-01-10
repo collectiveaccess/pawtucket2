@@ -3,7 +3,7 @@ import { LightboxContext } from '../LightboxContext'
 
 const LightboxListSort = () => {
 
-  const { id, setId, tokens, setTokens, userAccess, setUserAccess, lightboxTitle, setLightboxTitle, resultList, setResultList, totalSize, setTotalSize, sortOptions, setSortOptions, comments, setComments, itemsPerPage, setItemsPerPage, lightboxList, setLightboxList, key, setKey, view, setView, lightboxListPageNum, setLightboxListPageNum, lightboxSearchValue, setLightboxSearchValue, lightboxes, setLightboxes } = useContext(LightboxContext)
+  const { lightboxes, setLightboxes } = useContext(LightboxContext)
 
   const [sort, setSort] = useState('date')
   const [sortDirection, setSortDirection] = useState('asc')

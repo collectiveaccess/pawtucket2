@@ -27,7 +27,7 @@ const getSessionList = (url, callback) => {
   client
     .query({
       query: gql`
-        query { sessionList { sessions { label, sessionKey, user_id, username, email, status, statusDisplay, createdOn, lastActivityOn, source, files, totalSize, totalBytes, receivedSize, receivedBytes }}}`
+        query { sessionList { sessions { label, sessionKey, user_id, username, email, status, statusDisplay, createdOn, lastActivityOn, source, files, filesImported, totalSize, totalBytes, receivedSize, receivedBytes, errors { filename, message}, warnings { filename, message } }}}`
     })
     .then(function (result) {
       // console.log('sessionList result: ', result.data.sessionList.sessions);
@@ -104,7 +104,7 @@ const getSession = (url, sessionKey, callback) => {
   client
     .query({
       query: gql`
-        query($sessionKey: String) { getSession (sessionKey: $sessionKey) { sessionKey, user_id, formData, files, totalSize, label, filesUploaded { name, path, complete, totalSize, receivedSize, totalBytes, receivedBytes} }}`, variables: { 'sessionKey': sessionKey }
+        query($sessionKey: String) { getSession (sessionKey: $sessionKey) { sessionKey, user_id, formData, files,  filesImported, totalSize, label, filesUploaded { name, path, complete, totalSize, receivedSize, totalBytes, receivedBytes }, errors { filename, message }, warnings { filename, message }, urls { filename, url } }}`, variables: { 'sessionKey': sessionKey }
     })
     .then(function (result) {
       // console.log('getSession result: ', result.data);

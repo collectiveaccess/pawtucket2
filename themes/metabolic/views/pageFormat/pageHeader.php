@@ -20,29 +20,31 @@
  *
  * ----------------------------------------------------------------------
  */
-?><!DOCTYPE html>
+?>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
-	<link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
-    <script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
-    
-	<?php print MetaTagManager::getHTML(); ?>
-	
-	<title><?php print MetaTagManager::getWindowTitle(); ?></title>
-</head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+		<link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+		<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
+		<?php print MetaTagManager::getHTML(); ?>
+		<title><?php print MetaTagManager::getWindowTitle(); ?></title>
+	</head>
+
 <body id="pawtucketApp">
 
-    <script type="text/javascript">
-        let pawtucketUIApps = {};
-    </script>
+	<script type="text/javascript">
+			let pawtucketUIApps = {};
+	</script>
     
 	<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
 		<?php print caNavLink(caGetThemeGraphic("metabolic/metabolicStudioLogo.png", array("alt" => "Metabolic Studio")), "navbar-brand", "", "Front", "Index"); ?>
+
 		<button class="navbar-toggler p-2" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
+
 		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
 			<ul class="navbar-nav ml-auto mr-3">
 			  <?php print join("\n", caGetNavItemsForBootstrap([
@@ -60,13 +62,13 @@
 			  <input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" placeholder="Search" aria-label="Search" />
 			  <button class="btn" type="submit"><i class="material-icons">search</i></button>
 			</form>
-      </div>
+    </div>
 	</nav>
 	
-<div role="main" id="main">
-	<div id="mediaDisplayFullscreen" class="mediaDisplayFullscreen">
-		<!-- Used by MediaViewer.js React app -->
-	</div>
-	<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
-		<div class="container-fluid"><div class="row"><div class="col-sm-12">
+	<div role="main" id="main">
+		<div id="mediaDisplayFullscreen" class="mediaDisplayFullscreen">
+			<!-- Used by MediaViewer.js React app -->
+		</div>
+		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+			<div class="container-fluid"><div class="row"><div class="col-sm-12">
 		

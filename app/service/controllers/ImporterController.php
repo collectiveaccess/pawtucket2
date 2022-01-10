@@ -216,7 +216,21 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						$log_entries = MediaUploadManager::getLog(['source' => 'FORM', 'user' => $user_id]);
 						
 						$processed_log = [];
+						
 						foreach($log_entries as $l) {
+							$warnings = array_map(function($filename, $warnings) {
+								return [
+									'filename' => $filename,
+									'message' => join("; ", $warnings)
+								];
+							}, array_keys($l['warnings']), $l['warnings']);
+						
+							$errors = array_map(function($filename, $errors) {
+								return [
+									'filename' => $filename,
+									'message' => join("; ", $errors)
+								];
+							}, array_keys($l['errors']), $l['errors']);
 							$processed_log[] = [
 								'label' => $l['label'],
 								'sessionKey' => $l['session_key'],
@@ -234,6 +248,10 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 								'receivedBytes' => $l['received_bytes'],
 								'totalSize' => $l['total_display'],
 								'receivedSize' => $l['received_display'],
+								'warnings' => $warnings,
+								'errors' => $errors,
+								'filesImported' => $l['files_imported'],
+								'file_map' => $l['file_map']
 							];
 						}
 						return ['sessions' => $processed_log];
@@ -323,12 +341,15 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						
 						$fields = [
 							'label' => 'label', 'session_key' => 'sessionKey', 'user_id' => 'user_id',
-							'metadata' => 'formData', 'num_files' => 'files', 'total_bytes' => 'totalBytes',
+							'metadata' => 'formData', 'num_files' => 'files', 'files_imported' => 'filesImported', 'total_bytes' => 'totalBytes',
 							'filesUploaded' => 'filesUploaded', 'source' => 'source',
-							'received_bytes' => 'receivedBytes', 'total_display' => 'totalSize', 'received_display' => 'receivedSize'
+							'received_bytes' => 'receivedBytes', 'total_display' => 'totalSize', 'received_display' => 'receivedSize',
+							'warnings' => 'warnings', 'errors' => 'errors', 'file_map' => 'urls'
 						];
 						
 						$data = array_shift($log_entries);
+						$table = $data['table'];
+						
 						foreach($fields as $f => $k) {
 							$v = isset($data[$f]) ? $data[$f] : $s->get($f);
 							unset($data[$f]);
@@ -354,6 +375,39 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 										}
 									}
 									$data[$k] = $file_list;
+									continue(2);
+								case 'warnings':
+								case 'errors':
+									if(!is_array($data[$k])) { $data[$k] = []; }
+									if(is_array($v)) {
+										foreach($v as $f => $e) {
+											$data[$k][] = [
+												'filename' => $f,
+												'message' => join("; ", $e)
+											];
+										}
+									}
+									continue(2);
+								case 'urls':
+									if(!is_array($data[$k])) { $data[$k] = []; }
+									if(is_array($v)) {
+										// Enforce access checks
+										if (!($t_instance = \Datamodel::getInstance($table, true))) { continue(2); }
+										$all_ids = array_reduce($v, function($c, $i) { 
+											return array_merge($c, $i);
+										}, []);
+										$access = $t_instance->getFieldValuesForIDs($all_ids, ['access']);
+										$user_access_values = caGetUserAccessValues();
+										foreach($v as $filename => $ids) {
+											foreach($ids as $id) {
+												if(!isset($access[$id]) || !in_array($access[$id], $user_access_values)) { continue; }
+												$data[$k][] = [
+													'filename' => $filename,
+													'url' => caDetailUrl($table, $id, false, null, ['absolute' => true])
+												];	
+											}
+										}
+									}
 									continue(2);
 							}
 							$data[$k] = $v;
@@ -406,7 +460,15 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						
 						$form_config = self::$config->getAssoc('importerForms');
 						$code = str_replace('FORM:', '', $s->get('source'));
-						$s->set('metadata', ['data' => $form_data, 'configuration' => $form_config[$code]]);
+						
+						$label = caProcessTemplate($form_config[$code]['display'], $form_data['data']);
+						
+						$s->set('metadata', [
+							'label' => $label, 'data' => $form_data, 
+							'configuration' => $form_config[$code], 
+							'warnings' => [], 'errors' => [], 
+							'file_map' => [], 'files_imported' => 0
+						]);
 						if ($s->update()) {
 							return ['updated' => 1];
 						} else {
@@ -610,6 +672,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						if($render === 'checkboxes') {
 							$type['uiSchema'] = [
 								"ui:widget" => "checkboxes",
+								"classNames" => "importCheckboxList",
 								"ui:options" => [
 									"inline" => true
 								]
@@ -660,6 +723,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 				if($render === 'checkboxes') {
 					$type['uiSchema'] = [
 						"ui:widget" => "checkboxes",
+								"classNames" => "importCheckboxList",
 						"ui:options" => [
 							"inline" => true
 						]

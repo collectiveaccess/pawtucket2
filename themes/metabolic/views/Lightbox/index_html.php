@@ -30,17 +30,18 @@
 
 <script type="text/javascript">
 	pawtucketUIApps['Lightbox'] = {
-        'selector': '#lightbox',
+    'selector': '#lightbox',
 		'key': '<?= $this->getVar('key'); ?>', 
-        'data': {
-			baseUrl: "<?= __CA_URL_ROOT__."/service.php"; ?>",
-			siteBaseUrl: "<?= __CA_URL_ROOT__."/index.php"; ?>/Lightbox",
-			
-            showLastLightboxOnLoad: <?= ((bool)$this->request->getParameter('showList', pInteger)) ? 'false' : 'true'; ?>,
-			view: "thumbnails",
-			browseConfig: <?= json_encode($config->get("lightboxBrowse")); ?>,
-			exportFormats: <?= json_encode($export_formats); ?>,
-			lightboxTerminology: <?= json_encode(caGetLightboxDisplayName()); ?>
-        }
-    };
+		'data': {
+				baseUrl: "<?= __CA_URL_ROOT__."/service.php"; ?>",
+				siteBaseUrl: "<?= __CA_URL_ROOT__."/index.php"; ?>/Lightbox",
+				showLastLightboxOnLoad: <?= ((bool)$this->request->getParameter('showList', pInteger)) ? 'false' : 'true'; ?>,
+				view: "thumbnails",
+				browseConfig: <?= json_encode($config->get("lightboxBrowse")); ?>,
+				exportFormats: <?= json_encode($export_formats); ?>,
+				lightboxTerminology: <?= json_encode(caGetLightboxDisplayName()); ?>,
+				shareAccess: "edit",
+		}
+  };
 </script>
+				<!-- anonymousLightboxID: <?= $this->getVar('anonymous_lightbox_id'); ?> -->

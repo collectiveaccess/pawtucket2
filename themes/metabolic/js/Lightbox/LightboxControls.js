@@ -30,7 +30,7 @@ import LightboxSelection from './LightboxControls/LightboxSelection';
 
 const LightboxControls = () => {
 	
-	const { id, setId, tokens, setTokens, userAccess, setUserAccess } = useContext(LightboxContext)
+	const { userAccess, setUserAccess, shareAccess, setShareAccess } = useContext(LightboxContext)
 
 	return (
 		<div className="row mb-3">
@@ -40,8 +40,12 @@ const LightboxControls = () => {
 
 			<div className="col-8 ">
 				<div className='row d-flex align-items-center justify-content-end'>
-					<LightboxDragAndDrop />
-					<LightboxSelection />
+					{shareAccess == "edit" && userAccess == 2? 
+						<>
+							<LightboxDragAndDrop />
+							<LightboxSelection />
+						</>
+					: null}
 					<LightboxSortOptions />
 					<LightboxExportOptions />
 				</div>
@@ -51,71 +55,3 @@ const LightboxControls = () => {
 }
 
 export default LightboxControls
-
-
-
-// import React from "react";
-// import ReactDOM from "react-dom";
-// import { LightboxContext } from '../Lightbox';
-
-// import LightboxViewList from './LightboxControls/LightboxViewList';
-// import LightboxExportOptions from './LightboxControls/LightboxExportOptions';
-// import LightboxSortOptions from './LightboxControls/LightboxSortOptions';
-// import LightboxStatistics from './LightboxControls/LightboxStatistics';
-// import LightboxDragAndDrop from './LightboxControls/LightboxDragAndDrop';
-// import LightboxSelection from './LightboxControls/LightboxSelection';
-
-
-// class LightboxControls extends React.Component {
-
-// 	constructor(props) {
-// 		super(props);
-
-//     	LightboxControls.contextType = LightboxContext;
-
-// 	}
-
-// 	render() {
-// 		let c  = (this.context.state.resultSize === null);
-// 		// console.log('Context', this.context);
-// 		return(
-// 			<div className="row">
-// 				<div className="col-md-6">
-// 					<LightboxStatistics/>
-// 				</div>
-
-// 				<div className="col-md-6">
-// 					<div className='row'>
-// 						<LightboxDragAndDrop/>
-// 						<LightboxSelection/>
-// 						{/*<LightboxSelectItemsOptions/>*/}
-// 						<LightboxSortOptions/>
-// 						<LightboxExportOptions/>
-// 					</div>
-
-// 					{/* view doesn't work yet
-// 					<LightboxViewList/>
-// 					*/}
-
-
-//           {/*
-
-//             // TODO: Get the button functionality for saving a sort by field working in this component.
-
-//           {this.context.state.showSaveButton == true ?
-//             <div>
-//               <button type="button" className="btn btn-secondary" onClick={() => this.saveFromSortOptions(resultList)} style={{marginLeft: '6px'}}> Save Sort Permanently</button>
-//               <button type="button" className="btn btn-danger" onClick={() => this.cancelSaveFromSortOptions} style={{marginLeft: '6px'}}>Cancel</button>
-//             </div>
-//             :
-//             ' '
-//           }
-//           */}
-
-// 				</div>
-// 			</div>
-// 		);
-// 	}
-// }
-
-// export default LightboxControls;

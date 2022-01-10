@@ -1,10 +1,11 @@
 /*jshint esversion: 6 */
 import React, { useState, useEffect, useContext } from 'react';
 import { ImportContext } from '../ImportContext';
-import Form from '@rjsf/bootstrap-4';
+//import Form from '@rjsf/bootstrap-4';
+import Form from "@rjsf/core";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { TypeaheadField } from "react-jsonschema-form-extras/lib/TypeaheadField";
+//import { TypeaheadField } from "react-jsonschema-form-extras/lib/TypeaheadField";
 var _ = require('lodash');
 
 import { getNewSession, getFormList, getForm, updateSession, submitSession } from '../ImportQueries';
@@ -28,6 +29,7 @@ const ImportMetadataForm = (props) => {
   
   const loadForm = () => {
   	getForm(baseUrl, formCode, function(data){
+        console.log("getForm", data.uiSchema)
         let form = { ...data }
         let jsonProperties = JSON.parse(data.properties);
         form.properties = jsonProperties;
@@ -48,6 +50,23 @@ const ImportMetadataForm = (props) => {
     });
   } 
   
+  const confirmSubmitForm = () => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className='col info text-gray'>
+            <p>Would you like to submit this import? It <strong>CANNOT</strong> be undone and may take a while.</p>
+            <div className='button' style={{ cursor: "pointer" }}
+              onClick={(e) => { submitForm(); }}>
+              <strong>Yes, Submit Import</strong></div>
+            &nbsp;
+            <div className='button' style={{ cursor: "pointer" }} onClick={(e) => { onClose(); }}>No</div>
+          </div>
+        );
+      }
+    });
+  }
+
   const submitForm = () => {    
     // submit form
     submitSession(baseUrl, sessionKey, formData, function (data) {	// write any data to session and mark as submitted
@@ -57,7 +76,7 @@ const ImportMetadataForm = (props) => {
       customUI: ({ onClose }) => {
         return (
           <div className='col info text-gray'>
-            <p>Your import has been submitted. Would you like to start a new import?</p>
+            <p>Import submitted. Would you like to start a new import?</p>
             <div className='button' style={{ cursor: "pointer" }} 
             onClick={(e) => { props.setInitialState(e); setViewMode("add_new_import_page"); initNewSession(); loadForm(); onClose(); }}>
               Yes</div>
@@ -133,7 +152,7 @@ const ImportMetadataForm = (props) => {
           uiSchema={uiSchema}
           onChange={(e) => {saveFormData(e.formData)}}
           autoComplete="on"
-          onSubmit={submitForm}
+          onSubmit={confirmSubmitForm}
           onError={log("errors")}
           transformErrors={transformErrors}
           >

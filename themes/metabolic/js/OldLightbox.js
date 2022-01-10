@@ -3,7 +3,7 @@ import React from "react"
 import ReactDOM from "react-dom";
 import { fetchLightboxList, loadLightbox, createLightbox, deleteLightbox, newJWTToken, getLightboxAccessForCurrentUser } from "../../default/js/lightbox";
 
-import LightboxNavigation from './Lightbox/LightboxNavigation';
+// import LightboxNavigation from './Lightbox/LightboxNavigation';
 import LightboxIntro from './Lightbox/LightboxIntro';
 import LightboxControls from './Lightbox/LightboxControls';
 import LightboxResults from './Lightbox/LightboxResults';
@@ -171,7 +171,7 @@ class Lightbox extends React.Component {
       <div>
         <div className="row">
           <div className="col-sm-8 bToolBar pt-4">
-            <div className="float-left mr-2"><LightboxNavigation /></div>
+            {/* <div className="float-left mr-2"><LightboxNavigation /></div> */}
             <LightboxIntro lightboxTitle={this.state.lightboxTitle} />
             <LightboxControls facetLoadUrl={facetLoadUrl} />
           </div>

@@ -60,7 +60,7 @@ const LightboxListPagination = (props) => {
         <button className="btn btn-sm p-0 ml-1" style={{ backgroundColor: 'transparent' }} onClick={() => nextPageHandler(parseFloat(lightboxListPageNum), parseFloat(props.numberOfPages))}>
           <span className="material-icons">arrow_forward</span>
         </button>
-        : null}
+      : null}
     </div>
   )
 }

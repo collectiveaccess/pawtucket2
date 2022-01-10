@@ -854,6 +854,7 @@ p.legend a {
 }
 
 /* search/browse full results */
+// .lightbox.results
 .search.results, .browse.results, .multiSearchObjectsCascading, .search.results, .browse.results, .multiSearchObjects, .lightbox.results, .related-grid-results{
 
 	.bToolBar{
@@ -980,11 +981,13 @@ p.legend a {
 	.bRightCol{
 		background-color:$gray-2;
 		overflow-y:scroll;
+
 		.forceWidth{
 			color:$gray-2;
 			height:1px;
 			overflow:hidden;
 		}
+		
 		.card{
 			text-align:left;
 			background-color:transparent;
@@ -1014,6 +1017,7 @@ p.legend a {
 			}
 		}
 	}
+
 	.bSearchWithinContainer{
 		input.bSearchWithin{
 			width:100%;
@@ -1159,8 +1163,17 @@ div.panel.active {
 .lightbox.results{
 	.bToolBar{
 		height: $browse-toolbar-height-tall;
+		// height: 9rem;
 		#bViewButtons, #bSortOptions, #bExportOptions, #bSelectOptions, #bLightboxOptions{
 			line-height: 2em;
+		}
+
+		// .easy-edit-wrapper{
+		// 	overflow: scroll;
+		// 	white-space: nowrap;
+		// }
+		.lightbox-intro{
+			
 		}
 	}
 	.bResultList{
@@ -1414,7 +1427,10 @@ input.currentPage {
 	width: 30px;
 }
 
-// metabolic ImportUploader
+
+/*------------------------------------
+ Styles for Metabolic Import Uploader
+------------------------------------*/
 .importUploaderDropZone {
   height: 150px;
   border: 2px dashed #ccc;
@@ -1437,6 +1453,50 @@ input.currentPage {
 
 .importUploaderDropZoneInput:focus {
   outline: none !important;
+}
+
+.importCheckboxList div.checkboxes {
+	column-count: 3;
+}
+
+.importCheckboxList div.checkboxes label {
+	display: block;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.importCheckboxList div.checkboxes label input {
+	margin-right: 5px;
+}
+
+#root__title{
+	font-weight: bold;
+}
+
+#root__description{
+	margin-bottom: 2.5rem;
+}
+
+.control-label{
+	font-weight: bold;
+}
+
+.form-group.field{
+	margin-bottom: 2.5rem;
+}
+
+.field-description {
+	font-style: italic;
+	font-size: 12px;
+	line-height: 14px;
+}
+
+.error-detail {
+	list-style-type: none;
+	margin: 5px 0 0 0;
+	padding: 0px;
+	font-weight: bold;
 }
 
 

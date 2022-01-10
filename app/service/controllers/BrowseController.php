@@ -147,7 +147,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						
 						$ret = array_map(function($f, $n) use ($browse) { 
 							$facet_values = $browse->getFacet($n, ['checkAccess' => $user_access_values]);
-						
+							if(!is_array($facet_values)) { $facet_values = []; }
 							$ret = array_map(function($v) {
 								return [
 									'id' => $v['id'],

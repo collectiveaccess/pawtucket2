@@ -59,6 +59,8 @@ class GraphQLServiceController extends \BaseServiceController {
 			http_response_code(200);
 			return;	
 		}
+		$config = \Configuration::load();
+		
 		$schema = new Schema([
 			'query' => $queryType, 'mutation' => $mutationType
 		]);
@@ -68,12 +70,14 @@ class GraphQLServiceController extends \BaseServiceController {
 		$query = $input['query'];
 		$variableValues = isset($input['variables']) ? $input['variables'] : null;
 
+		$ok = true;
 		try {
 			$rootValue = ['prefix' => ''];
 			
-			// TODO: make debug mode configurable
-			$debug = DebugFlag::INCLUDE_DEBUG_MESSAGE | DebugFlag::INCLUDE_TRACE;
-			
+			$debug = 0;
+			if((bool)$config->get('graphql_services_debug') || (defined('__CA_ENABLE_DEBUG_OUTPUT__') && __CA_ENABLE_DEBUG_OUTPUT__)) {
+				$debug = DebugFlag::INCLUDE_DEBUG_MESSAGE | DebugFlag::INCLUDE_TRACE;
+			}
 			$errorFormatter = function(\GraphQL\Error\Error $error) {
 				$formattedError =  FormattedError::createFromException($error);
 				if($error->getMessage() === 'Expired token') {
@@ -92,15 +96,17 @@ class GraphQLServiceController extends \BaseServiceController {
 					]
 				]
 			];
+			$ok = false;
 			http_response_code(500);
 		} catch (\TypeError $e) {
 			$output = [
 				'errors' => [
 					[
-						'message' => _t('An invalid parameter type error occurred. Are your arguments correct?')
+						'message' => _t('An invalid parameter type error occurred. Are your arguments correct? [%1]', $e->getMessage())
 					]
 				]
 			];
+			$ok = false;
 			http_response_code(500);
 		}
 		if($result->errors) {
@@ -109,6 +115,7 @@ class GraphQLServiceController extends \BaseServiceController {
 			} else {
 				http_response_code(500);
 			}
+			$ok = false;
 		}
 		
 		if(intval($this->request->getParameter("pretty",pInteger))>0){
@@ -116,7 +123,7 @@ class GraphQLServiceController extends \BaseServiceController {
 		}
 					
 		$this->view->setVar('content', $output);
-		$this->view->setVar('raw', true);	// don't set 'ok' parameter
+		$this->view->setVar('ok', $ok);	// don't set 'ok' parameter
 		$this->render("json.php");
 	}
 	# ------------------------------------------------------
@@ -146,32 +153,73 @@ class GraphQLServiceController extends \BaseServiceController {
 	}
 	# -------------------------------------------------------
 	/**
+	 * Decode JWT and return contents
 	 *
+	 * @param string $jwt
+	 *
+	 * @return array
 	 */
-	public static function decodeJWT(string $jwt) {
+	public static function decodeJWT(?string $jwt) {
+		if(!$jwt) { return false; }
 		$key = \Configuration::load()->get('graphql_services_jwt_token_key');
 		
 		return \Session::decodeJWT($jwt, $key);
 	}
 	# -------------------------------------------------------
 	/**
+	 * Authenticate user using JWT. User must have can_use_graphql_services user action privilege to authenticate.
 	 *
+	 * @param string $jwt 
+	 * @param array $options Options include:
+	 *		returnAs = Format of return value. If set to 'array' an array with user information will be returned on success. Default is boolean signalling successful authentication. 
+	 *		actions = List of actions user must have to authenticate. [Default is null]
+	 *		requireActions = Determine whether user requires all specified actions (set to 'all') or any action (set to 'any') to authenticate. Only used is the 'actions' option is set. [Default is 'all']
+	 *		throw = Throw exception on authentication failure. [Default is true]
+	 *
+	 * @return mixed Boolean unless returnAs option is set to 'array'
+	 *
+	 * @throws ServiceException
 	 */
-	public static function authenticate(string $jwt, array $options=null) {
+	public static function authenticate(?string $jwt, array $options=null) {
 		if ($d = self::decodeJWT($jwt)) {
-			if ($u = \ca_users::find(['user_id' => (int)$d->id, 'active' => 1, 'userclass' => ['<>', 255]], ['returnAs' => 'firstModelInstance'])) {
-				if (caGetOption('returnAs', $options, null) === 'array') {
-					return [
-						'id' => $u->getPrimaryKey(),
-						'username' => $u->get('ca_users.user_name'),
-						'email' => $u->get('ca_users.email'),
-						'fname' => $u->get('ca_users.fname'),
-						'lname' => $u->get('ca_users.lname'),
-						'userclass' => $u->get('ca_users.userclass')
-					];
+			if(caGetOption('allowAnonymous', $options, false) && array_key_exists('anonymous', $d)) {
+				return (array)$d;
+			} elseif ($u = \ca_users::find(['user_id' => (int)$d->id, 'active' => 1, 'userclass' => ['<>', 255]], ['returnAs' => 'firstModelInstance'])) {
+				// User must have can_use_graphql_services permission to authenticate
+				
+				if($u->canDoAction('can_use_graphql_services') || (defined('__CA_APP_TYPE__') && (__CA_APP_TYPE__ === 'PAWTUCKET'))) {
+					if(is_array($actions = caGetOption('actions', $options, null)) && (sizeof($actions) > 0)) {
+						$require = strtolower(caGetOption('requireActions', $options, 'all'));
+						$success = false;
+						foreach($actions as $a) {
+							if ($u->canDoAction($a)) {
+								if($require === 'any') { $success = true; break; }
+							} else {
+								if($require !== 'any') { return false; }
+							}
+						}
+					
+						if(!$success && ($require === 'any')) {	// if we're here when require = any then we've failed
+							return false;
+						}
+					}
+			
+					if (caGetOption('returnAs', $options, null) === 'array') {
+						return [
+							'id' => $u->getPrimaryKey(),
+							'username' => $u->get('ca_users.user_name'),
+							'email' => $u->get('ca_users.email'),
+							'fname' => $u->get('ca_users.fname'),
+							'lname' => $u->get('ca_users.lname'),
+							'userclass' => $u->get('ca_users.userclass')
+						];
+					}
+					return $u;
 				}
-				return $u;
 			}
+		}
+		if(caGetOption('throw', $options, true)) {
+			throw new \ServiceException(_t('Authentication failed'));
 		}
 		return false;
 	}
@@ -209,6 +257,100 @@ class GraphQLServiceController extends \BaseServiceController {
 			}
 		}
 		return null;
+	}
+	# -------------------------------------------------------
+	/**
+	 * Return instance of record with specified identifier, where identifier is either an integer primary key
+	 * value or an alphanumeric idno value. 
+	 *
+	 * Integer string values are always tested as primary key values first, then as idno values. In cases where idno 
+	 * values are integer strings, this can result in incorrect resolution. Pass  the 'idnoOnly' option to force 
+	 * resolution against idno values only. Pass the 'primaryKeyOnly' option to force resolution again primary
+	 * key values only.
+	 *
+	 * @param string $table
+	 * @param string $identifer
+	 * @param string|integer $type A type code or type_id to constrain idno-based resolution to. If null, type is ignored in resolution. [Default is null]
+	 * @param array $options Options include:
+	 *		idnoOnly = Only resolve $identifier parameter against idno values. [Default is false]
+	 *		primaryKeyOnly = Only resolve $identifier parameter against primary key values. [Default is false]
+	 *		list = 
+	 *
+	 * @return BaseModel
+	 */
+	protected static function resolveIdentifier(string $table, string $identifier, $type=null, array $options=null)  {
+		if(!is_array($options)) { $options = []; }
+		if(!($t_instance = \Datamodel::getInstance($table, true))) {
+			throw new \ServiceException(_t('Invalid table %1', $table));
+		}
+		
+		$idno_only = caGetOption('idnoOnly', $options, false);
+		$primary_key_only = caGetOption('primaryKeyOnly', $options, false);
+		
+		$rec = null;
+		if(ctype_digit($identifier) && ((int)$identifier > 0) && !$idno_only) {
+			$rec = $table::findAsInstance((int)$identifier);
+		} 
+		
+		if(!$primary_key_only) {
+			$idno_fld = \Datamodel::getTableProperty($table, 'ID_NUMBERING_ID_FIELD');
+			if(is_null($rec) && $idno_fld) {
+				$criteria = [$idno_fld => $identifier];
+				if($type) { $criteria['type_id'] = $type; }
+				if($list = caGetOption('list', $options, null)) {
+					if($list_id = caGetListID($list)) { 
+						$criteria['list_id'] = $list_id;
+					} else {
+						throw new \ServiceException(_t('Invalid list code %1', $list));
+					}
+				}
+				$rec = $table::findAsInstance($criteria);
+			}
+		}
+		if(is_null($rec)) {
+			throw new \ServiceException(_t('Invalid identifier %1 for table %2', $identifier, $table));
+		}
+		
+		return $rec;
+	}
+	# -------------------------------------------------------
+	/**
+	 * Return instance of record with specified label, where label is either a string display value or array of label sub-values.
+	 *
+	 * @param string $table
+	 * @param string|array $label
+	 * @param string|integer $type A type code or type_id to constrain idno-based resolution to. If null, type is ignored in resolution. [Default is null]
+	 * @param array $options Options include:
+	 *		list = 
+	 *
+	 * @return BaseModel
+	 */
+	protected static function resolveLabel(string $table, $label, $type=null, array $options=null)  {
+		if(!is_array($options)) { $options = []; }
+		if(!($instance = \Datamodel::getInstance($table, true))) {
+			throw new \ServiceException(_t('Invalid table %1', $table));
+		}
+		
+		$label_display_field = $instance->getLabelTableInstance()->getDisplayField();
+		
+		$rec = null;
+		
+		$criteria = is_array($label) ? ['preferred_labels' => $label] : ['preferred_labels' => [$label_display_field => $label]];
+		if($type) { $criteria['type_id'] = $type; }
+		if($list = caGetOption('list', $options, null)) {
+			if($list_id = caGetListID($list)) { 
+				$criteria['list_id'] = $list_id;
+			} else {
+				throw new \ServiceException(_t('Invalid list code %1', $list));
+			}
+		}
+		$rec = $table::findAsInstance($criteria);
+
+		if(is_null($rec)) {
+			throw new \ServiceException(_t('Invalid label %1 for table %2', $identifier, $table));
+		}
+		
+		return $rec;
 	}
 	# -------------------------------------------------------
 }

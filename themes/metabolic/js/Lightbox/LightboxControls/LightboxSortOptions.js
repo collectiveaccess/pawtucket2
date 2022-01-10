@@ -19,7 +19,7 @@ const baseUrl = appData.baseUrl;
 
 const LightboxSortOptions = (props) => {
 
-  const { id, setId, tokens, setTokens, userAccess, setUserAccess, lightboxTitle, setLightboxTitle, totalSize, setTotalSize, sortOptions, setSortOptions, comments, setComments, itemsPerPage, setItemsPerPage, lightboxList, setLightboxList, key, setKey, view, setView, lightboxListPageNum, setLightboxListPageNum, lightboxSearchValue, setLightboxSearchValue, lightboxes, setLightboxes, resultList, setResultList, selectedItems, setSelectedItems, showSelectButtons, setShowSelectButtons, dragDropMode, setDragDropMode, sort, setSort, sortDirection, setSortDirection, userSort, setUserSort, showSortSaveButton, setShowSortSaveButton } = useContext(LightboxContext)
+  const { id, setId, tokens, setTokens, userAccess, setUserAccess, shareAccess, setShareAccess, totalSize, setTotalSize, sortOptions, setSortOptions, itemsPerPage, setItemsPerPage, lightboxList, setLightboxList, resultList, setResultList, sort, setSort, sortDirection, setSortDirection, userSort, setUserSort, showSortSaveButton, setShowSortSaveButton } = useContext(LightboxContext)
 
   const [selectedField, setSelectedField] = useState('ca_object_labels.name')
   const [selectedSortDirection, setSelectedSortDirection] = useState('ASC')
@@ -35,10 +35,13 @@ const LightboxSortOptions = (props) => {
   }
 
   const submitSort = (e) => {
-    setSort(selectedField)
-    setSortDirection(selectedSortDirection)
-    setUserSort(false)
-    setShowSortSaveButton(true)
+    // setSort(selectedField)
+    // setSortDirection(selectedSortDirection)
+    // setUserSort(false)
+
+    if(userAccess == "2" && shareAccess == "edit"){
+      setShowSortSaveButton(true)
+    }
     // TODO: is userSort being used?
 
     loadLightbox(baseUrl, tokens, id, (data) => {

@@ -12,7 +12,7 @@
  *		arrowPosition : Horizontal coordinate to position facet arrow at. This will generally be at the point where the facet was clicked.
  *
  * Sub-components are:
- * 		LightboxFacetPanelItem
+ * 		<NONE>
  *
  * Used by:
  *  	LightboxFacetList
@@ -26,7 +26,6 @@ import { LightboxContext } from '../../../Lightbox';
 
 import { initBrowseFacetPanel } from "../../../../../default/js/browse";
 
-import LightboxFacetPanelItem from './LightboxFacetPanelItem';
 
 class LightboxFacetPanel extends React.Component {
 	constructor(props) {
@@ -49,7 +48,12 @@ class LightboxFacetPanel extends React.Component {
 				options.push(
           (
 					<div className="col-sm-12 col-md-4 bRefineFacetItem py-2" key={'facetItem' + i}>
-						<LightboxFacetPanelItem id={'facetItem' + i} data={item} callback={this.clickFilterItem} selected={this.state.selectedFacetItems[item.id]}/>
+							<input id={'facetItem' + i} value={item.id} data-label={item.label} type="checkbox" name="facets[]" checked={this.state.selectedFacetItems[item.id]} onChange={this.clickFilterItem} />
+							<label htmlFor={'facetItem' + i}>
+								{item.label} &nbsp;
+								<span className="number">{(item.content_count > 0) ? '(' + item.content_count + ')' : ''  }</span>
+								</label>
+						
 					</div>
 				  )
         );
