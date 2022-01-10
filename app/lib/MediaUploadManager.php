@@ -99,6 +99,7 @@ class MediaUploadManager {
 		$s = MediaUploadManager::findSession($key, $user_id);
 		
 		$s->set('completed_on', _t('now'));
+		$s->set('status', 'COMPLETED');
 		$s->update();
 		if ($s->numErrors() > 0) {
 			throw new MediaUploadManageSessionException(_t('Could not complete media upload session: '.join('; ', $s->getErrors())));
@@ -113,6 +114,7 @@ class MediaUploadManager {
 		$s = MediaUploadManager::findSession($key, $user_id);
 		$s->set('completed_on', _t('now'));
 		$s->set('cancelled', 1);
+		$s->set('status', 'CANCELLED');
 		$s->update();
 		if ($s->numErrors() > 0) {
 			throw new MediaUploadManageSessionException(_t('Could not cancel media upload session: '.join('; ', $s->getErrors())));
@@ -177,9 +179,6 @@ class MediaUploadManager {
 				$sessions = array_slice($sessions, 0, $limit);
 			}
 			
-			$importer_config = Configuration::load(__CA_CONF_DIR__.'/importer.conf');
-			$importer_forms = $importer_config->get('importerForms');
-			
 			$sessions = array_map(function($s) use ($user_dir_path, $importer_forms, $t_session) {
 				$session = ca_media_upload_sessions::find($s['session_id']);
 				$files = $session->getFileList();
@@ -196,7 +195,8 @@ class MediaUploadManager {
 				}
 				
 				$s['files'] = $files_proc;
-
+				$s['num_files'] = sizeof($files_proc);
+				
 				foreach(['created_on', 'submitted_on', 'completed_on', 'last_activity_on'] as $f) {
 					$s[$f] = ($s[$f] > 0) ? caGetLocalizedDate($s[$f], ['dateFormat' => 'delimited']) : null;
 				}
@@ -211,18 +211,20 @@ class MediaUploadManager {
 				$s['received_display'] = caHumanFilesize($received_bytes);
 				$s['total_display'] = caHumanFilesize($total_bytes);
 				
+				
 				unset($s['user_id']);
 				
 				// display?				
 				$form = null;
 				if(preg_match("!^FORM:(.*)$!", $s['source'], $m)) {
-					if(isset($importer_forms[$m[1]]) && is_array($form_info = $importer_forms[$m[1]]) && is_array($form_info['content'])) {
-						$disp_template = $form_info['display'];
-						$form_data = caUnSerializeForDatabase($s['metadata']);
-						if(isset($form_data['data'])) { $form_data = $form_data['data']; }
-						unset($s['metadata']);
-						if(is_array($form_data) && is_array($form_info['content'])) {
-							foreach($form_info['content'] as $k => $v) {
+					$form_info = caUnSerializeForDatabase($s['metadata']);
+					//print_r($form_info);die;
+					$form_config = $form_info['configuration'];
+					$form_data = $form_info['data'];
+					if(is_array($form_config['content'])){
+						$disp_template = $form_config['display'];
+						if(is_array($form_data) && is_array($form_config['content'])) {
+							foreach($form_config['content'] as $k => $v) {
 								if ($form_data[$v['bundle']]) {
 									$form_data[$k] = $form_data[$v['bundle']];
 								}
@@ -233,9 +235,16 @@ class MediaUploadManager {
 							$s['label'] = _t('[EMPTY]');
 						}
 					}
+					
+					$s['table'] = $form_config['table'];
+					
+					$s['warnings'] = $form_info['warnings'] ?? [];
+					$s['errors'] = $form_info['errors'] ?? [];
+					$s['files_imported'] = $form_info['files_imported'] ?? 0;
 				}
 				if(!$s['label']) { $s['label'] = _t('[EMPTY]'); }
 
+				$s['file_map'] = $form_info['file_map'] ?? [];
 				return $s;
 			}, $sessions);
 			
