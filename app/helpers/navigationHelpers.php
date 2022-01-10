@@ -1215,7 +1215,7 @@
 		} else {
 			if (!is_array($pa_additional_parameters)) { $pa_additional_parameters = array(); }
 			//$pa_additional_parameters = array_merge(array('id' => $pn_id), $pa_additional_parameters);
-			return caNavUrl($vs_module, $vs_controller, $vs_action, $pa_additional_parameters);
+			return caNavUrl($vs_module, $vs_controller, $vs_action, $pa_additional_parameters, $pa_options);
 		}
 	}
 	# ------------------------------------------------------------------------------------------------
