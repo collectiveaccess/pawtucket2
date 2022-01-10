@@ -120,7 +120,9 @@
 								<li id="slide<?php print $va_image["object_id"]; ?>">
 									<div class="thumbnail">
 										<?php print $va_image["image"]; ?>
-										<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["caption"]; ?></div>
+										<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["caption"]; ?>
+											<br/><br/><?php print caNavLink($this->request, _t("Inquire"), "btn btn-default", "", "Contact", "Form", array("table" => "ca_objects", "id" => $va_image["object_id"])); ?>
+										</div>
 									</div><!-- end thumbnail -->
 								</li>
 <?php

@@ -133,7 +133,7 @@ strong, b {
 	padding-top:35px;
 	font-size:15px;
 }
-.detail .thumbnail:not([data-loaded]){
+.detail .thumbnail:not([data-loaded]), .contact .thumbnail:not([data-loaded]){
 	margin:auto;
 	border:0px;
 }
@@ -143,7 +143,7 @@ strong, b {
     border-radius: 0px;
     display: block;
     line-height: 1.42857;
-    margin-bottom: 20px;
+    margin-bottom: 20px !important;
     padding: 0px;
     transition: all 0.2s ease-in-out 0s;
 }
@@ -441,12 +441,12 @@ div.captionSlideshow{
 /* ------ Details -------------- */
 .jcarousel-control-prev{
 	left:0px !important;
-	bottom:25px !important;
+	bottom:45px !important;
 	top:auto !important;
 }
 .jcarousel-control-next{
 	right:0px !important;
-	bottom:25px !important;
+	bottom:45px !important;
 	top:auto !important;
 }
 .jcarousel-control-prev, .jcarousel-control-next{
@@ -768,7 +768,7 @@ a.footerButton:hover{
           user-select: none;
 }
 
-.btn-default {
+.btn-default, a.btn-default {
     background:none;
     border-color: #CCCCCC;
     color:#666;
@@ -779,6 +779,7 @@ a.footerButton:hover{
     box-shadow: 0 0px 0 rgba(255, 255, 255, 0.15) inset, 0 0px 0px rgba(0, 0, 0, 0.075);
 }
 
+a.btn-default:hover,
 .btn-default:hover,
 .btn-default:focus,
 .btn-default:active,
@@ -787,6 +788,7 @@ a.footerButton:hover{
   color: #333333;
   background-color: #ebebeb;
   border-color: #adadad;
+  text-decoration:none;
 }
 
 .btn-default:active,
