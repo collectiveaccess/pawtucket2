@@ -306,7 +306,9 @@ if (!$vb_ajax) {    // !ajax
             class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 <?php
 			print "<div class='lightboxAsk'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About This ".$vs_lightbox_displayname, "", "", "contact", "form", array('id' => $vn_set_id, 'table' => 'ca_sets'))."</div><hr/>";
-			
+?>
+			<div class="lightboxDetailHelp">{{{LightboxDetailHelp}}}</div>
+<?php			
             if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
             }
