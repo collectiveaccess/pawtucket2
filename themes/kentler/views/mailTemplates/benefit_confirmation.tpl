@@ -29,7 +29,8 @@
 ?>
 Dear Ticket Holder,
 
-Thank you for participating in Kentler's 2020 Virtual "100 Works on Paper" Benefit! We appreciate your support for our 30th year.
+Thank you for participating in Kentler's 2021 100 Works on Paper VIRTUAL Benefit! We so appreciate your support!
+
 You have selected the following artwork:
 
 <?php
@@ -38,7 +39,9 @@ print $this->request->getParameter("artist", pString).", ".$this->request->getPa
 
 <?php print $this->request->getParameter("itemURL", pString)."</p>"; ?>
 
-Artworks will be available for pickup in the gallery on Friday, Oct. 23 and Saturday, Oct. 24 from 12 - 5pm. If you pre-paid for shipping when you purchased your ticket, we will contact you when the package is on its way. To arrange for shipping, visit https://www.eventbrite.com/e/100-works-on-paper-virtual-benefit-tickets-93408987797 and select "SHIPPING Artwork."
+Artworks will be available for pickup in the gallery on Saturday, Oct. 23 and Sunday, Oct. 24 from 12 - 5pm. If you pre-paid for shipping when you purchased your ticket, we will contact you when the package is on its way.
+
+To arrange for shipping, visit https://bit.ly/KentlerBenefit21 and select “SHIPPING FEE.”
 
 Please contact benefit@kentlergallery.org with any questions.
 
