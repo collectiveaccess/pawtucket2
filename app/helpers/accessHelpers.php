@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2018 Whirl-i-Gig
+ * Copyright 2010-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -45,6 +45,7 @@
 	  * are enabled (via the 'dont_enforce_access_settings' configuration directive) and whether the user
 	  * is considered privileged.
 	  *
+	  * @param RequestHTTP|ca_users $po_request The current request or a ca_users instance
 	  * @param array $pa_options Optional options. If omitted settings are taken application configuration file is used. Any array passed to this function should include the following keys: "dont_enforce_access_settings", "public_access_settings", "privileged_access_settings", "privileged_networks"
 	  * @return array An array of integer values that, if present in a record, indicate that the record should be displayed to the current user
 	  */
@@ -54,26 +55,33 @@
 		if(!caGetOption('ignoreProvidence', $pa_options, false)) {
 			if (defined("__CA_APP_TYPE__") && (__CA_APP_TYPE__ == 'PROVIDENCE')) { return null; }
 		}
-		$vb_dont_enforce_access_settings = isset($pa_options['dont_enforce_access_settings']) ? (bool)$pa_options['dont_enforce_access_settings'] : $g_request->config->get('dont_enforce_access_settings');
-		$va_privileged_access_settings = isset($pa_options['privileged_access_settings']) && is_array($pa_options['privileged_access_settings']) ? (bool)$pa_options['privileged_access_settings'] : (array)$g_request->config->getList('privileged_access_settings');
-		$va_public_access_settings = isset($pa_options['public_access_settings']) && is_array($pa_options['public_access_settings']) ? $pa_options['public_access_settings'] : (array)$g_request->config->getList('public_access_settings');
+		
+		$config = Configuration::load();
+		$user = caGetOption('user', $pa_options, null);
+		
+		$vb_dont_enforce_access_settings = isset($pa_options['dont_enforce_access_settings']) ? (bool)$pa_options['dont_enforce_access_settings'] : $config->get('dont_enforce_access_settings');
+		$va_privileged_access_settings = isset($pa_options['privileged_access_settings']) && is_array($pa_options['privileged_access_settings']) ? (bool)$pa_options['privileged_access_settings'] : (array)$config->getList('privileged_access_settings');
+		$va_public_access_settings = isset($pa_options['public_access_settings']) && is_array($pa_options['public_access_settings']) ? $pa_options['public_access_settings'] : (array)$config->getList('public_access_settings');
 	
 		if (!$vb_dont_enforce_access_settings) {
 			$va_access = array();
-			$vb_is_privileged = caUserIsPrivileged($pa_options);
+			$vb_is_privileged = ((is_a($user, 'ca_users') && $user->isLoaded()) || caUserIsPrivileged($pa_options));
 			if($vb_is_privileged) {
 				$va_access = $va_privileged_access_settings;
 			} else {
 				$va_access = $va_public_access_settings;
 			}
+			if(!is_array($va_access)) { $va_access = []; }
 			
-			if ($g_request->isLoggedIn()) {
+			if(is_a($user, 'ca_users')) {
+				$va_user_access = $user->getAccessStatuses(1);
+			} elseif ($g_request->isLoggedIn()) {
 				$va_user_access = $g_request->user->getAccessStatuses(1);
-				if(is_array($va_user_access)) {
-					$va_access = array_unique(array_merge($va_access, $va_user_access));
-				}
 			}
-			return $va_access;
+			if(is_array($va_user_access)) {
+				$va_access = array_unique(array_merge($va_access, $va_user_access));
+			}
+			return array_map('intval', $va_access);
 		}
 		return array();
 	}
