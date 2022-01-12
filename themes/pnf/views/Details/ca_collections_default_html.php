@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);
 	
 ?>
 <div class="row">
@@ -83,10 +84,15 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 <?php
-			if($va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToTypes" => array("book"), "sort" => "ca_entity_labels.surname/author;ca_entity_labels.forename/author;ca_objects.260_date"))){
+			$o_browse = caGetBrowseInstance('ca_objects');
+			$o_browse->addCriteria("collection_facet", $t_item->getPrimaryKey() );
+			$o_browse->execute();
+			$qr_rel_res = $o_browse->getResults(array('sort' => 'ca_entity_labels.surname/author;ca_entity_labels.forename/author;ca_objects.260_date', 'sort_direction' => 'asc'));	
+			
+			if($qr_rel_res->numHits()){
 				$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', 'collections');
 				$o_rel_context->setAsLastFind(true);
-				$o_rel_context->setResultList($va_object_ids);
+				$o_rel_context->setResultList($qr_rel_res->getPrimaryKeyValues(1000));
 				$o_rel_context->saveContext();
 			}
 ?>
@@ -99,7 +105,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'institution_facet', 'id' => '^ca_collections.collection_id', 'showFilterPanel' => 1, 'view' => 'list', 'sort' => 'Author', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'institution_facet', 'id' => '^ca_collections.collection_id', 'showFilterPanel' => 1, 'view' => 'list', 'sort' => 'Author', 'sortDirection' => 'asc', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 						//jQuery('#browseResultsContainer').jscroll({
 						//	autoTrigger: true,
 						//	loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
