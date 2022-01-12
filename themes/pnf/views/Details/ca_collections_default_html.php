@@ -82,6 +82,14 @@
 ?>
 				</div><!-- end col -->
 			</div><!-- end row -->
+<?php
+			if($va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToTypes" => array("book"), "sort" => "ca_entity_labels.surname/author;ca_entity_labels.forename/author;ca_objects.260_date"))){
+				$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', 'collections');
+				$o_rel_context->setAsLastFind(true);
+				$o_rel_context->setResultList($va_object_ids);
+				$o_rel_context->saveContext();
+			}
+?>
 {{{
 			<div class="row">
 				<hr/>
@@ -91,7 +99,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'institution_facet', 'id' => '^ca_collections.collection_id', 'showFilterPanel' => 1, 'view' => 'list', 'sort' => 'Collection'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'institution_facet', 'id' => '^ca_collections.collection_id', 'showFilterPanel' => 1, 'view' => 'list', 'sort' => 'Author', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 						//jQuery('#browseResultsContainer').jscroll({
 						//	autoTrigger: true,
 						//	loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

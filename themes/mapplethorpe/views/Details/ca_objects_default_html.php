@@ -64,7 +64,7 @@
 						</div><!-- end col -->			
 						<div class='col-sm-12 col-md-3'>
 							{{{<ifdef code='ca_objects.preferred_labels|ca_objects.date'><H1><ifdef code='ca_objects.preferred_labels'><i>^ca_objects.preferred_labels</i>, </ifdef>^ca_objects.date</H1></ifdef>}}}
-							{{{<div class='unit'><ifdef code='ca_objects.idno'>MAP # ^ca_objects.idno<br/></ifdef><ifdef code='ca_objects.dimensions'>^ca_objects.dimensions<br/></ifdef><ifdef code='ca_objects.medium'>^ca_objects.medium</ifdef></div>}}}
+							{{{<div class='unit'><ifdef code='ca_objects.idno'>MAP # ^ca_objects.idno<br/></ifdef><ifdef code='ca_objects.dimensions'>^ca_objects.dimensions inches<br/></ifdef><ifdef code='ca_objects.medium'>^ca_objects.medium</ifdef></div>}}}
 	<?php
 							$t_list_item = new ca_list_items;
 							if($va_keywords = $t_object->get("ca_objects.keywords", array("returnAsArray" => true))){

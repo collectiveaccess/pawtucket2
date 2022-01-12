@@ -161,8 +161,6 @@
 				}		
 ?>				
 				{{{<ifdef code="ca_objects.doninf.name"><div class="unit"><H6>Gift of</H6>^ca_objects.doninf.name</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.obn.nos"><div class="unit"><H6>Notes</H6>^ca_objects.obn.nos</div></ifdef>}}}
-				
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
