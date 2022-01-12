@@ -4534,3 +4534,18 @@ function caFileIsIncludable($ps_file) {
 		}
 		return $vs_val;
 	}
+    # ----------------------------------------
+	/**
+	 * Escape/quote regex delimiter, leaving other special characters intact
+	 *
+	 * @param string $regex 
+	 * @param string $delimiter
+	 *
+	 * @return string
+	 */
+	function caQuoteRegexDelimiter(string $regex, string $delimiter) : string {
+		$regex = str_replace($delimiter, "\\{$delimiter}", $regex);
+		
+		return $regex;
+	}
+    # ----------------------------------------
