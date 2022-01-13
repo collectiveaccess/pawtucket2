@@ -71,6 +71,6 @@
 	</div>
 		
 <?php
-	print "<p class='fullpageTombstone'>".$t_item->getWithTemplate("<ifdef code='ca_objects.preferred_labels|ca_objects.date'><b><ifdef code='ca_objects.preferred_labels'><i>^ca_objects.preferred_labels</i>, </ifdef>^ca_objects.date</b><br/></ifdef><ifdef code='ca_objects.idno'>MAP # ^ca_objects.idno<br/></ifdef><ifdef code='ca_objects.dimensions'>^ca_objects.dimensions<br/></ifdef><ifdef code='ca_objects.medium'>^ca_objects.medium</ifdef>")."</p>";
+	print "<p class='fullpageTombstone'>".$t_item->getWithTemplate("<ifdef code='ca_objects.preferred_labels|ca_objects.date'><ifdef code='ca_objects.preferred_labels'><i>^ca_objects.preferred_labels</i>, </ifdef>^ca_objects.date<br/></ifdef><ifdef code='ca_objects.idno'><if rule='^ca_objects.idno !~ /[a-zA-Z]/'>MAP # </if>^ca_objects.idno<br/></ifdef><ifdef code='ca_objects.dimensions'>^ca_objects.dimensions inches<br/></ifdef><ifdef code='ca_objects.medium'>^ca_objects.medium</ifdef>")."</p>";
 	
 	print $this->render("pdfEnd.php");
