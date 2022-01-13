@@ -30,7 +30,7 @@ const AddNewImportPage = (props) => {
         <button type='button' className='btn btn-secondary' style={{ marginBottom: "10px" }} onClick={(e) => props.setInitialState(e)}><ion-icon name="ios-arrow-back"></ion-icon>Your Imports</button>
       }
       <div className="row justify-content-center">
-        <div className="col-5">
+        <div className="col-5" >
           <ImportDropZone />
         </div>
 

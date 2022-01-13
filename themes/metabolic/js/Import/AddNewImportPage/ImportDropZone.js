@@ -155,7 +155,7 @@ const ImportDropZone = (props) => {
   }
   
   return (
-    <div>
+    <div className="sticky-top">
       <div className="mb-1" style={{ backgroundColor: '#D8D7CE', padding: '5px' }}>Import Media</div>
 
       <div className="row justify-content-center mt-3 mb-3 importUploaderDropZone">

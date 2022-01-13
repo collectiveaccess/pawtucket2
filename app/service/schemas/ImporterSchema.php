@@ -266,6 +266,10 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 					'errors' => [
 						'type' => Type::listOf($importerFileProcessingErrorType),
 						'description' => 'List of errors while processing'
+					],
+					'searchUrl' => [
+						'type' => Type::string(),
+						'description' => 'URL for search results containing contents of submission'
 					]
 				]
 			]),
@@ -395,6 +399,10 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::listOf($importerFileLinkType),
 						'description' => 'List URLs for imported files'
 					],
+					'searchUrl' => [
+						'type' => Type::string(),
+						'description' => 'URL for search results containing contents of submission'
+					]
 					
 				]
 			]),

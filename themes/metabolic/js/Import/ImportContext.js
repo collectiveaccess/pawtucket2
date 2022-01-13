@@ -33,6 +33,10 @@ const ImportContextProvider = (props) => {
   
   const [ viewMode, setViewMode ] = useState('import_list') // values are "import_list", "edit_import_page", "view_import_page" and "add_new_import_page". Used to render various components or "views".
 
+  const [importErrors, setImportErrors] = useState()
+
+  const [importWarnings, setImportWarnings] = useState()
+
   return (
     <ImportContext.Provider 
       value={{ 
@@ -51,6 +55,8 @@ const ImportContextProvider = (props) => {
         uploadProgress, setUploadProgress, 
         uploadStatus, setUploadStatus, 
         viewMode, setViewMode,
+        importErrors, setImportErrors,
+        importWarnings, setImportWarnings
     }}>
         {props.children}
     </ImportContext.Provider>

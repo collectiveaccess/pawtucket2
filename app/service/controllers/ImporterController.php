@@ -231,6 +231,8 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 									'message' => join("; ", $errors)
 								];
 							}, array_keys($l['errors']), $l['errors']);
+							
+							$search_url = caSearchUrl($g_request, $l['table'], 'mediaUploadSession:'.$l['session_key'], false, null, ['absolute' => true]);
 							$processed_log[] = [
 								'label' => $l['label'],
 								'sessionKey' => $l['session_key'],
@@ -251,7 +253,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 								'warnings' => $warnings,
 								'errors' => $errors,
 								'filesImported' => $l['files_imported'],
-								'file_map' => $l['file_map']
+								'searchUrl' => $search_url
 							];
 						}
 						return ['sessions' => $processed_log];
@@ -460,8 +462,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						
 						$form_config = self::$config->getAssoc('importerForms');
 						$code = str_replace('FORM:', '', $s->get('source'));
-						
-						$label = caProcessTemplate($form_config[$code]['display'], $form_data['data']);
+						$label = caProcessTemplate($form_config[$code]['display'], $form_data);
 						
 						$s->set('metadata', [
 							'label' => $label, 'data' => $form_data, 

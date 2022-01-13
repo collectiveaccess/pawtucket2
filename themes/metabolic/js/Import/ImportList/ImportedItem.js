@@ -57,13 +57,27 @@ const ImportedItem = (props) => {
     percentageDone = (received/total) * 100
   }else { percentageDone = 0 }
 
+  let num_errors = 0;
+  let num_warnings = 0;
+
+  if(props.data.errors.length > 0 ){
+    num_errors = props.data.errors.length
+  }
+
+  if(props.data.warnings.length > 0 ){
+    num_warnings = props.data.warnings.length
+  }
+
+  let total_errors_warnings = num_errors + num_warnings
+
   return (
     <>
       <tr style={{ borderTop: '1px solid lightgrey' }}>
         <th scope="row">{props.data.label}</th>
         <td>{props.data.lastActivityOn}</td>
         <td>{props.data.statusDisplay}</td>
-        <td>{props.data.files}</td>
+        <td>{props.data.filesImported}/{props.data.files}</td>
+        {props.data.status !== "IN_PROGRESS" ? <td>{total_errors_warnings}</td> : null}
         <td>{props.data.totalSize}</td>
         <td>{Math.ceil(percentageDone)}%</td>
         {(props.data.status == 'IN_PROGRESS') ?
@@ -71,10 +85,11 @@ const ImportedItem = (props) => {
             <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => editImport(e)}>Edit</a></td>
             <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td>
           </>
-          : null}
+        : null}
         {(props.data.status !== 'IN_PROGRESS') ?
         <>
-          <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => viewImport(e)}>View</a></td>
+          <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => viewImport(e)}>Info</a></td>
+          <td><a href={`http://metabolic3.whirl-i-gig.com:8085/index.php/MultiSearch/Index?search=${props.data.sessionKey}`} type='button' className='btn btn-secondary btn-sm'>View</a></td>
           {/* <td><a href='#' type='button' className='btn btn-secondary btn-sm' onClick={(e) => deleteAlert(e, deleteImportConfirm)}>Delete</a></td> */}
         </>
           : null}

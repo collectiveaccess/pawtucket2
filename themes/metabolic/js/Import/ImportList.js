@@ -14,6 +14,10 @@ const ImportList = (props) => {
   const [ unsubmittedImports, setUnsubmittedImports ] = useState([]);
   const [ formsList, setFormsList ] = useState([]);
 
+  console.log('====================================');
+  console.log("submittedImports: ", submittedImports);
+  console.log('====================================');
+  
   useEffect(() => {
     getSessionList(baseUrl, function(data){
       setSessionList(data.sessions);
@@ -45,6 +49,10 @@ const ImportList = (props) => {
     setIsSubmitted('false');
     e.preventDefault();
   }
+
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
 
   if(sessionList && sessionList.length == 0){
     return(
@@ -155,9 +163,10 @@ const ImportList = (props) => {
                   {/* <th scope="col">Session Key</th> */}
                   <th scope="col">Last Activity On</th>
                   <th scope="col">Status</th>
-                  <th scope="col">Number Of Files</th>
+                  <th scope="col" data-toggle="tooltip" data-placement="top" title="Files imported / Files dropped">Number Of Files</th>
+                  <th scope="col" data-toggle="tooltip" data-placement="top" title="Errors and warnings with this import">Errors</th>
                   <th scope="col">Size</th>
-                  <th scope="col">Percentage Done</th>
+                  <th scope="col">Percent Done</th>
                   <th scope="col"> </th>
                 </tr>
               </thead>

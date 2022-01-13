@@ -211,14 +211,12 @@ class MediaUploadManager {
 				$s['received_display'] = caHumanFilesize($received_bytes);
 				$s['total_display'] = caHumanFilesize($total_bytes);
 				
-				
 				unset($s['user_id']);
 				
 				// display?				
 				$form = null;
 				if(preg_match("!^FORM:(.*)$!", $s['source'], $m)) {
 					$form_info = caUnSerializeForDatabase($s['metadata']);
-					//print_r($form_info);die;
 					$form_config = $form_info['configuration'];
 					$form_data = $form_info['data'];
 					if(is_array($form_config['content'])){
