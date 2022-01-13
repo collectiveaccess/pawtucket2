@@ -34,7 +34,7 @@
 				<ul class="list-inline">
 					<li><?php print caNavLink($this->request, _t("Help"), "", "", "About", "Help"); ?></li>
 					<li><?php print caNavLink($this->request, _t("Terms & Conditions"), "", "", "About", "TermsConditions"); ?></li>
-					<li><a href="http://www.mapplethorpe.org/" target="_blank">Mapplethorpe Foundation Home</a></li>
+					<li><a href="http://www.mapplethorpe.org/" target="_blank">Mapplethorpe.org</a></li>
 				</ul>
 					All Mapplethorpe Images &copy; Robert Mapplethorpe Foundation
 				</div>

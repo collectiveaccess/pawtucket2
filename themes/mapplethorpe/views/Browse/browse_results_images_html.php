@@ -139,12 +139,18 @@
 					}
 					$vs_add_to_set_link = "";
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'  data-toggle='tooltip' data-placement='bottom'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
+$vs_multiple_reps = "";
+$qr_res->filterNonPrimaryRepresentations(false);
+$vn_num_reps = sizeof($qr_res->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => false)));
+if($vn_num_reps > 1){
+	$vs_multiple_reps = "<div class='multiReps'><i class='fa fa-files-o' aria-hidden='true' title='".$vn_num_reps." images'></i></div>";
+}
 					$vs_result_output = "
-						<div class='resultItemColImg col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}' id='row".$vn_id."'>
+						<div class='resultItemColImg col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}' id='row".$vn_id."'>".$vs_multiple_reps."
 							<div class='resultContentImg'>
 								<div class='resultImageImg'>".$vs_rep_detail_link."</div>
 								<div class='resultTextImg'>".$qr_res->getWithTemplate("<l>".$vs_result_text_template."</l>")."</div>

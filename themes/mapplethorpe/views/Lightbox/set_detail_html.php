@@ -305,10 +305,11 @@ if (!$vb_ajax) {    // !ajax
         <div
             class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 <?php
-			print "<div class='lightboxAsk'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About This ".$vs_lightbox_displayname, "", "", "contact", "form", array('id' => $vn_set_id, 'table' => 'ca_sets'))."</div><hr/>";
+			print "<div class='lightboxShareLink'><span class='glyphicon glyphicon-envelope'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'shareSetForm', array())."\"); return false;' >"._t("Share %1", ucfirst($vs_lightbox_displayname))."</a></div><hr/>";
+			#print "<div class='lightboxAsk'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About This ".$vs_lightbox_displayname, "", "", "contact", "form", array('id' => $vn_set_id, 'table' => 'ca_sets'))."</div><hr/>";
 ?>
-			<div class="lightboxDetailHelp">{{{LightboxDetailHelp}}}</div>
-<?php			
+			<div class="lightboxDetailHelp">{{{LightboxDetailHelp}}}</div>	
+<?php		
             if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
             }
@@ -399,7 +400,9 @@ if (!$vb_ajax) {    // !ajax
     });
 
     jQuery(document).ready(function() {
-        $("#lbSetResultLoadContainer").sortable({
+        $('a').tooltip();
+		$('.btn-group span').tooltip();
+		$("#lbSetResultLoadContainer").sortable({
             cursor: "move",
             opacity: 0.8,
             helper: 'clone',
@@ -417,7 +420,7 @@ if (!$vb_ajax) {    // !ajax
         jQuery("#lbSetResultLoadContainer").on('click', ".lbItemDeleteButton", function(e) {
                 var id = jQuery(this).data("item_id");
 
-                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id} , function(data) {
+                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?>} , function(data) {
                     if(data.status == 'ok') {
                         jQuery('.lbItem' + data.item_id).fadeOut(500, function() { jQuery('.lbItem' + data.item_id).remove(); });
                         jQuery('.lbSetCountInt').html(data.count);  // update count
@@ -432,7 +435,7 @@ if (!$vb_ajax) {    // !ajax
         );
 
         jQuery("#addComment").on('submit', function(e) {
-            jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val() } , function(data) {
+            jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val(), 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> } , function(data) {
                 if(data.status == 'ok') {
                     jQuery("#lbSetCommentErrors").hide()
                     jQuery("#addCommentTextArea").val('');
@@ -451,7 +454,7 @@ if (!$vb_ajax) {    // !ajax
         jQuery("div.lbComments").on('click', '.lbComment', function(e) {
             var comment_id = jQuery(this).data("comment_id");
             if(comment_id) {
-                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {
+                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> }, function(data) {
                     if(data.status == 'ok') {
                         jQuery("#lbSetCommentErrors").hide()
                         jQuery("#lbComments" + data.comment_id).remove();

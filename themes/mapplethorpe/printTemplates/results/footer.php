@@ -35,7 +35,9 @@
  	
 	$vo_result 				= $this->getVar('result');
 	$vn_num_items			= (int)$vo_result->numHits();
-	
+	$o_appvars = new ApplicationVars();
+	$vs_copyright_notice = $o_appvars->getVar("pawtucket_global_copyright_notice");
+
 	if($this->request->config->get('report_header_enabled')) {
 	
 		$vs_footer = '<table class="footerText" style="width: 100%;"><tr>';
@@ -50,6 +52,7 @@
 		if($this->request->config->get('report_show_timestamp')) {
 			$vs_footer .= "<td class='footerText' style='font-family: \"Sans Light\"; font-size: 12px; text-align: center;'>".caGetLocalizedDate(null, array('dateFormat' => 'delimited'))."</td>";
 		}
+		$vs_footer .= "<td class='footerText'>".$vs_copyright_notice."</td>";
 		$vs_footer .= "</tr></table>";
 	
 		switch($this->getVar('PDFRenderer')) {
