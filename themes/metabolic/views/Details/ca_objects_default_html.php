@@ -440,15 +440,15 @@
 		$va_related_item_ids = $t_parent->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 		$vs_related_title = $t_parent->get("ca_objects.preferred_labels.name");
 	}else{
-		if($va_projects = $t_object->get("ca_collections.collection_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values))){
-			$q_projects = caMakeSearchResult("ca_collections", $va_projects);
-			if($q_projects->numHits()){
-				while($q_projects->nextHit()){
-					$va_related_item_ids = $va_related_item_ids + $q_projects->get("ca_objects.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
-				}
-			}
-			$vs_related_title = "Other items from this action";
-		}
+		// if($va_projects = $t_object->get("ca_collections.collection_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values))){
+// 			$q_projects = caMakeSearchResult("ca_collections", $va_projects);
+// 			if($q_projects->numHits()){
+// 				while($q_projects->nextHit()){
+// 					$va_related_item_ids = $va_related_item_ids + $q_projects->get("ca_objects.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+// 				}
+// 			}
+// 			$vs_related_title = "Other items from this action";
+// 		}
 	
 	}
 	# --- remove current item

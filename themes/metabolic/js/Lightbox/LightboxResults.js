@@ -111,7 +111,7 @@ const LightboxResults = (props) => {
 
 	return (
 		<div className="row" id="browseResultsContainer" style={{ scrollBehavior: 'smooth' }}>
-			<div className="col-md-8 bResultList">
+			<div className="col-md-8 bResultList" style={{'marginTop': '125px'}}>
 
 				{dragDropMode == true ?
 					<div className="row">
@@ -138,7 +138,7 @@ const LightboxResults = (props) => {
 				<div className="bRightCol position-fixed vh-100 mr-3">
 					<div id="accordion">
 
-						<div className="card">
+						{/*<div className="card">
 							<div className="card-header" style={{ padding: "15px 10px 15px 10px" }} >
 								<a data-toggle="collapse" href="#bRefine" role="button" aria-expanded="false" aria-controls="collapseFilter">Filter By</a>
 							</div>
@@ -146,7 +146,7 @@ const LightboxResults = (props) => {
 								<LightboxCurrentFilterList />
 								<LightboxFacetList facetLoadUrl={props.facetLoadUrl} />
 							</div>
-						</div>
+						</div>*/}
 
 						<div className="card pr-1">
 							<div className="card-header" style={{ padding: "15px 10px 15px 10px" }} >

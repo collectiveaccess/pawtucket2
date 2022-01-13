@@ -129,7 +129,7 @@ const LightboxList = (props) => {
 					<div className='col-6'>
 						{paginatedLightboxes && paginatedLightboxes.length >= 1 ?
 							<LightboxListPagination lightboxesPerPage={lightboxesPerPage} numberOfPages={numberOfPages}/>
-						: <div className="text-center">No lightbox with that name</div>}
+						: <div className="text-center"></div>}
 					</div>
 				</div>
 

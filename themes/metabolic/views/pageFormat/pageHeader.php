@@ -48,7 +48,7 @@
 		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
 			<ul class="navbar-nav ml-auto mr-3">
 			  <?php print join("\n", caGetNavItemsForBootstrap([
-				_t('Find') => ['controller' => 'Browse', 'action' => 'Objects'],
+				//_t('Find') => ['controller' => 'Browse', 'action' => 'Objects'],
 				_t('Actions') => ['controller' => 'Listing', 'action' => 'Actions'],
 				_t('Chronology') => ['controller' => 'Chronology', 'action' => 'View'],
 				//_t('Activity') => ['controller' => 'Activity', 'action' => 'View'],

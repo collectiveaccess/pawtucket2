@@ -125,6 +125,8 @@ class LightboxController extends BrowseController {
 		if(method_exists($ret, 'getGUID')) {
 			// Anonymous access
 			$key = GraphQLServices\GraphQLServiceController::encodeJWTRefresh(['anonymous' => $ret->getGUID()]);
+			$this->request->setParameter('set_id', $ret->getPrimaryKey());
+			$this->request->setParameter('token', $this->view->getVar('token'));
 		} else {
 			// Authenticated user access
 			$key = GraphQLServices\GraphQLServiceController::encodeJWTRefresh(['id' => $this->request->user->getPrimaryKey()]);
@@ -250,7 +252,7 @@ class LightboxController extends BrowseController {
 			'module_path' => '',
 			'controller' => 'Lightbox',
 			'action' => 'Index',
-			'params' => []
+			'params' => ['set_id','token']
 		];
 	}
 	# -------------------------------------------------------

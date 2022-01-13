@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react'
+import React, { useEffect, useContext, useState } from 'react'
 import { fetchLightboxList, newJWTToken } from "../../default/js/lightbox";
 import LightboxContextProvider from './Lightbox/LightboxContext';
 import { LightboxContext } from './Lightbox/LightboxContext';
@@ -7,6 +7,7 @@ import LightboxIntro from './Lightbox/LightboxIntro';
 import LightboxControls from './Lightbox/LightboxControls';
 import LightboxResults from './Lightbox/LightboxResults';
 import LightboxList from './Lightbox/LightboxList';
+import { loadLightbox } from "../../default/js/lightbox";
 
 const selector = pawtucketUIApps.Lightbox.selector;
 const appData = pawtucketUIApps.Lightbox.data;
@@ -14,24 +15,51 @@ const refreshToken = pawtucketUIApps.Lightbox.key;
 
 const Lightbox = ({ baseUrl, endpoint, initialFilters, propView, showLastLightboxOnLoad, browseKey }) => {
 
-	const { id, setId, tokens, setTokens, lightboxList, setLightboxList, key, setKey, userAccess, setUserAccess, shareAccess, setShareAccess } = useContext(LightboxContext)
+	const { id, setId, tokens, setTokens, lightboxList, setLightboxList, key, setKey, userAccess, setUserAccess, shareAccess, setShareAccess, itemsPerPage, setItemsPerPage, lightboxTitle, setLightboxTitle, resultList, setResultList, totalSize, setTotalSize, sortOptions, setSortOptions, comments, setComments, setAnonymousAccessUrl, anonymousAccessUrl } = useContext(LightboxContext)
 
+	const [ loadId, setLoadId ] = useState(parseInt(showLastLightboxOnLoad));
+	
 	useEffect(() => {
 		// load auth tokens
 		newJWTToken(baseUrl, tokens, (data) => {
-			// console.log('newJWTToken: ', data);
-			setTokens({ refresh_token: refreshToken, access_token: data.data.refresh.jwt })
+			const newTokens = { refresh_token: refreshToken, access_token: data.data.refresh.jwt };
+			setTokens(newTokens)
+					
 			fetchLightboxList(baseUrl, { refresh_token: refreshToken, access_token: data.data.refresh.jwt }, (data) => {
-				// console.log('fetchLightboxList: ', data);
 				setLightboxList(data);
 			});
+		
 		});
+		
 		setShareAccess(appData.shareAccess)
 	}, [])
-
+	useEffect(() => {
+		if(loadId && tokens.access_token) {
+			loadLightbox(baseUrl, tokens , parseInt(showLastLightboxOnLoad), (data) => {
+				console.log('Load Lightbox Data: ', data);
+				setId(loadId)
+				setLoadId(null) // only load once
+				setLightboxTitle(data.title)
+				setResultList(data.items)
+				setTotalSize(data.item_count)
+				setSortOptions(data.sortOptions)
+				setComments(data.comments)
+				setAnonymousAccessUrl(data.anonymousAccessUrl)
+			}, { start: 0, limit: itemsPerPage });
+		}
+	})
 	let facetLoadUrl = baseUrl + '/lightbox' + (key ? '?key=' + key : '');
-
-	if(id){
+	
+	if (loadId && !id) {
+		return(
+			<div className="row">
+				<div className="col-sm-8 bToolBar pt-4">
+					<div className="col-sm-12"><h2>Loading</h2></div>
+				</div>
+			</div>
+		)
+	
+	} else if(id){
 		return(
 			<div>
 				<div className="row">

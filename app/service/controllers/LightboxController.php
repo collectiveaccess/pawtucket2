@@ -92,7 +92,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						} elseif(is_a($u, 'ca_users')) {
 							// Authenticated user
 							// TODO: check access for user
-							$lightboxes = $t_sets->getSetsForUser(["table_num" => 57, "user_id" => $u->getPrimaryKey(), "checkAccess" => [0,1], "parents_only" => true]);
+							$lightboxes = $t_sets->getSetsForUser(["table" => 'ca_objects', "user_id" => $u->getPrimaryKey(), "checkAccess" => [0,1], "parents_only" => true]);
 						} else {
 							throw new ServiceException(_t('Invalid authenicator'));
 						}
@@ -173,6 +173,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						$conf = Configuration::load(__CA_CONF_DIR__.'/lightbox.conf');
 						$browse_conf = $conf->get('lightboxBrowse');
 						$sorts = caGetOption('sortBy', $browse_conf, [], ['castTo' => 'array']);
+						$views = caGetOption('views', $browse_conf, [], ['castTo' => 'array']);
 						
 						$sort_opts = [];
 						foreach($sorts as $label => $sort) {
@@ -214,14 +215,27 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							'anonymousAccessUrl' => $anonymous_access_url
 						];
 						
+						
+						$table_num = $t_set->get('table_num');
+						$table = Datamodel::getTableName($table_num);
 						$items = caExtractValuesByUserLocale($t_set->getItems([
 							'thumbnailVersions' => $args['mediaVersions'], 
 							'start' => $args['start'], 
 							'limit' => $args['limit'],
 							'sort' => $args['sort'],
+							'template' => $views['images']['caption'] ?? null,
 							'sortDirection' => $args['sortDirection']
 						]));
 				
+						// set current context to allow "back" navigation to specific lightbox
+						global $g_request;
+						$rc = new ResultContext($g_request, $table, 'lightbox');
+						$rc->setResultList(array_unique(array_map(function($v) { return $v['row_id']; }, $items)));
+						$rc->setParameter('set_id', $t_set->getPrimaryKey());
+						$rc->setParameter('token', $t_set->getGUID());
+						$rc->setAsLastFind(false);
+ 						$rc->saveContext();
+ 						
 						$table_num = $t_set->get('table_num');
 						$lightbox['items'] = array_map(
 							function($i) use ($table_num) {
@@ -243,7 +257,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 								
 								return [
 									'item_id' => $i['item_id'],
-									'title' => $i['set_item_label'],
+									'title' => $i['displayTemplate'] ?? $i['set_item_label'],
 									'caption' => $i['caption'],
 									'id' => $i['row_id'],
 									'rank' => $i['rank'],
