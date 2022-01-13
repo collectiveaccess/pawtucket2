@@ -226,11 +226,12 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							'template' => $views['images']['caption'] ?? null,
 							'sortDirection' => $args['sortDirection']
 						]));
-				
+		
 						// set current context to allow "back" navigation to specific lightbox
 						global $g_request;
 						$rc = new ResultContext($g_request, $table, 'lightbox');
-						$rc->setResultList(array_unique(array_map(function($v) { return $v['row_id']; }, $items)));
+						$rc->setResultList(array_values(array_unique(array_map(function($v) { return $v['row_id']; }, $items))));
+					
 						$rc->setParameter('set_id', $t_set->getPrimaryKey());
 						$rc->setParameter('token', $t_set->getGUID());
 						$rc->setAsLastFind(false);
