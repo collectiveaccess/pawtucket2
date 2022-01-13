@@ -454,7 +454,24 @@
  			
  			if(!($ps_name = $this->purifier->purify($this->request->getParameter('name', pString)))){
  				$va_errors[] = _t("Please enter the name of your %1", $vs_display_name);
- 			}
+ 			}else{
+				// set name - check if it's unique for user's sets
+				$va_write_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2));
+				$va_existing_set_names = array();
+				if(is_array($va_write_sets) && sizeof($va_write_sets)){
+					$t_write_set = new ca_sets();
+					foreach($va_write_sets as $va_write_set){
+						if($t_set->get("set_id") != $va_write_set["set_id"]){
+							$t_write_set->load($va_write_set["set_id"]);
+							$va_existing_set_names[] = $t_write_set->getLabelForDisplay();
+						}
+					}
+				}
+				if(in_array($ps_name, $va_existing_set_names)){
+					$va_errors[] = _t("Please enter a unique name");
+				}
+			}
+ 			
  			$this->view->setVar("name", $ps_name);
  			
  			// set description - optional
@@ -1132,8 +1149,17 @@
  			$vs_display_name_plural = caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural);
             $this->view->setVar("display_name_plural", $vs_display_name_plural);
             
+            $this->view->setVar("saveLastResults", $this->request->getParameter('saveLastResults', pString));
+            $this->view->setVar("object_id", $this->request->getParameter('object_id', pInteger));
+            $this->view->setVar("object_ids", $this->request->getParameter('object_ids', pString));
+            $ps_name = $this->purifier->purify($this->request->getParameter('name', pString));
+            $this->view->setVar("set_name", $ps_name);
+            // set description - optional
+			$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));
+			$this->view->setVar("set_description", $ps_description);
+            
  			// set_id is passed through form, otherwise we're saving a new set, and adding the item to it
- 			if($this->request->getParameter('set_id', pInteger)){
+ 			if($this->request->getParameter('set_id', pInteger) && !$ps_name){
  				$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
  				if(!$t_set && $t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
  					$va_errors["general"] = _t("You can not add items to this %1.  You have read only access.", $vs_display_name);
@@ -1146,45 +1172,59 @@
  				$t_set->purify(true);
  				
 				// set name - if not sent, make a decent default
-				$ps_name = $this->purifier->purify($this->request->getParameter('name', pString));
+				$va_write_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2));
+				$va_existing_set_names = array();
+				if(is_array($va_write_sets) && sizeof($va_write_sets)){
+					$t_write_set = new ca_sets();
+					foreach($va_write_sets as $va_write_set){
+						$t_write_set->load($va_write_set["set_id"]);
+						$va_existing_set_names[] = $t_write_set->getLabelForDisplay();
+					}
+				}
 				if(!$ps_name){
 					$ps_name = _t("Your %1", $vs_display_name);
 				}
-				// set description - optional
-				$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));
-	
-				$t_list = new ca_lists();
-				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
-				
-				$t_object = new ca_objects();
-				$t_object->purify(true);
-				
-				$vn_object_table_num = $t_object->tableNum();
-				$t_set->setMode(ACCESS_WRITE);
-				$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
-				$t_set->set('table_num', $vn_object_table_num);
-				$t_set->set('type_id', $vn_set_type_user);
-				$t_set->set('user_id', $this->request->getUserID());
-				$t_set->set('set_code', $this->request->getUserID().'_'.time());
-				// create new attribute
-				if($ps_description){
-					$t_set->addAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
-				}
-				$t_set->insert();
-				if($t_set->numErrors()) {
-					$va_errors["general"] = join("; ", $t_set->getErrors());
+				if(in_array($ps_name, $va_existing_set_names)){
+					$va_errors["general"] = _t("Please give your %1 a unique name", $vs_display_name);
 					$this->view->setVar('errors', $va_errors);
 					$this->addItemForm();
 					return;
 				}else{
-					// save name - add new label
-					$t_set->addLabel(array('name' => $ps_name), $g_ui_locale_id, null, true);
-					// select the current set
-					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
+					
+					$t_list = new ca_lists();
+					$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
+				
+					$t_object = new ca_objects();
+					$t_object->purify(true);
+				
+					$vn_object_table_num = $t_object->tableNum();
+					$t_set->setMode(ACCESS_WRITE);
+					$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
+					$t_set->set('table_num', $vn_object_table_num);
+					$t_set->set('type_id', $vn_set_type_user);
+					$t_set->set('user_id', $this->request->getUserID());
+					$t_set->set('set_code', $this->request->getUserID().'_'.time());
+					// create new attribute
+					if($ps_description){
+						$t_set->addAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
+					}
+					$t_set->insert();
+					if($t_set->numErrors()) {
+						$va_errors["general"] = join("; ", $t_set->getErrors());
+						$this->view->setVar('errors', $va_errors);
+						$this->addItemForm();
+						return;
+					}else{
+						// save name - add new label
+						$t_set->addLabel(array('name' => $ps_name), $g_ui_locale_id, null, true);
+						// select the current set
+						$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
 
+					}
 				}			
 			}
 			if($t_set){
+				Session::setVar('lightbox_last_set_id', $t_set->get("set_id"));
 				$pn_item_id = null;
 				$pn_object_id = $this->request->getParameter('id', pInteger);
 				if($pn_object_id){
@@ -1256,6 +1296,7 @@
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
  			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
  			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
+ 			$this->view->setvar("lightboxLastSetId", Session::getVar('lightbox_last_set_id'));
  			if(($pn_object_id = $this->request->getParameter('object_id', pInteger)) || ($pn_save_last_results = $this->request->getParameter('saveLastResults', pInteger)) || ($pa_object_ids = sizeof(explode(";", $this->request->getParameter('object_ids', pString))))){
  				$this->render("Lightbox/form_add_set_item_html.php");
  			}else{
