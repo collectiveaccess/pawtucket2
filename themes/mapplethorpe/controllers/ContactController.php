@@ -116,7 +116,12 @@
 					$vs_mail_message_html = $o_view->render("mailTemplates/contact_html.tpl");
 					$vs_sendTo = $o_purifier->purify($this->request->getParameter('sendTo', pString, ['forcePurify' => true]));
 					if(caSendmail($vs_sendTo, $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
-						$this->render("Contact/success_html.php");
+						if(($pn_id = $this->request->getParameter('id', pInteger)) && ($ps_table = $this->request->getParameter('table', pString))){
+							$this->notification->addNotification(_t("Thank you for your inquiry."), __NOTIFICATION_TYPE_ERROR__);
+							$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $pn_id));
+						}else{
+							$this->render("Contact/success_html.php");
+						}
 					}else{
 						$va_errors["display_errors"]["send_error"] = _t("Your email could not be sent");
 						$this->view->setVar("errors", $va_errors);
