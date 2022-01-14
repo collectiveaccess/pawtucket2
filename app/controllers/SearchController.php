@@ -267,7 +267,7 @@
 			if ($vs_search_refine = $this->request->getParameter('search_refine', pString, ['forcePurify' => true])) {
 				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get(['matchOnStem', 'match_on_stem']) && caIsSearchStem($vs_search_refine)) ? '*' : '')), array($vs_search_refine));
 			} elseif ($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) {
-				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString, ['forcePurify' => true])));
+				$o_browse->addCriteria($vs_facet, explode("|", $this->request->getParameter('id', pString, ['forcePurify' => true])));
 			} elseif (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			    foreach ($va_facets as $vs_facet_spec) {
 			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
