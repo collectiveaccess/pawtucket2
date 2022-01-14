@@ -50,13 +50,12 @@
 ?>
 	<div class="title">
 		<h1 class="title">{{{^ca_occurrences.preferred_labels.name}}} &mdash; {{{^ca_occurrences.alutiiq_word}}}</h1>
-		{{{<ifdef code="ca_occurrences.idno"><div class='unit'><h6>Lesson ^ca_occurrences.idno</h6></div></ifdef>}}}
 	</div>
 	<div class="tombstone">
 		<HR>
-		{{{<ifdef code="ca_occurrences.sentence"><div class="unit center"><H6>In a sentence</H6>^ca_occurrences.sentence</div></ifdef>}}}
+		{{{<ifdef code="ca_occurrences.sentence"><div class="unit center"><H6>^ca_occurrences.sentence</H6></div></ifdef>}}}
 		<HR>
-		{{{<ifdef code="ca_object_representations.media.medium"><div style="float:left; width:30%; padding-right:20px; padding-bottom:20px;"><div class="unit fullWidthImg">^ca_object_representations.media.large<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if></div></div></ifdef>}}}
+		{{{<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='1' length='1' sort='is_primary' sortDirection='desc' delimiter='<br/>'><ifdef code="ca_object_representations.media.medium"><div style="float:left; width:30%; padding-right:20px; padding-bottom:20px;"><div class="unit fullWidthImg">^ca_object_representations.media.large<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if></div></div></ifdef></unit>}}}
 		{{{<ifdef code="ca_occurrences.description"><div class="unit">^ca_occurrences.description</div></ifdef>}}}
 	</div>				
 
