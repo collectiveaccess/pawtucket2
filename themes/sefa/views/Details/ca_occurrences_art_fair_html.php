@@ -124,7 +124,15 @@
 								<li id="slide<?php print $va_image["id"]; ?>">
 									<div class="thumbnail">
 										<?php print $va_image["image"]; ?>
-										<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["label"]; ?></div>
+										<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["label"]; ?>
+<?php
+											if($ps_view == "images"){
+?>
+											<br/><br/><?php print caNavLink($this->request, _t("Inquire"), "btn btn-default", "", "Contact", "Form", array("table" => "ca_objects", "id" => $va_image["id"])); ?>
+<?php
+											}
+?>
+										</div>
 									</div><!-- end thumbnail -->
 								</li>
 <?php

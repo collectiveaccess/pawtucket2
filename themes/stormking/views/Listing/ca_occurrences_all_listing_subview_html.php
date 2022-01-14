@@ -139,7 +139,7 @@
 	</div><!-- end row -->
 <?php
 	if(!$vb_output){
-		print "<div class='row'><div class='col-sm-12'><H2>There are no upcoming exhibitions scheduled</H2></div></div>";
+		print "<div class='row'><div class='col-sm-12'><H2>Please check back to learn more about upcoming exhibitions.</H2></div></div>";
 	}
 ?>
 
