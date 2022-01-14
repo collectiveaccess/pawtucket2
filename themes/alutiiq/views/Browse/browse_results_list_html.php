@@ -115,7 +115,7 @@
 				}else{
 				
 					if($vs_table == "ca_occurrences"){
-						$vs_idno_detail_link 	= caDetailLink($this->request, "Lesson ".$qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
+						$vs_idno_detail_link 	= "";
 						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("ca_occurrences.preferred_labels")." &mdash; ".$qr_res->get("ca_occurrences.alutiiq_word"), '', $vs_table, $vn_id);
 					}else{
 						$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
@@ -168,7 +168,7 @@
 									<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 									<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 										<div class='bResultListItemText'>
-											<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+											".(($vs_idno_detail_link) ? "<small>".$vs_idno_detail_link."</small><br/>" : "")."{$vs_label_detail_link}
 										</div><!-- end bResultListItemText -->
 									</div><!-- end bResultListItemContent -->
 								</div><!-- end bResultListItem -->

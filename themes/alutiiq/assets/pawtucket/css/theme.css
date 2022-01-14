@@ -188,6 +188,10 @@ a:hover .hpFindBox{
 	margin-top:15px;
 	margin-bottom:10px;
 }
+.btnAboutWord{
+	width:100%;
+	margin:5px 0px 5px 0px !important;
+}
 .results .btn-search-refine{	
 	float: right;
 	font-size: 18px;
@@ -315,11 +319,12 @@ a:hover .wordFindBox{
 }
 .wordResources a .wordFindBox{
 	display:block;
-	margin-top:10px;
+	margin-top:20px;
 }
 .wordCallout{
 	font-size:20px;
 	line-height: 1.4em;
+	text-align:left;
 }
 .wordFeaturedLesson{
 	background-color:#f2f2f2;
@@ -336,9 +341,24 @@ a:hover .wordFindBox{
 .word.front .unit{
 	margin-top:10px;
 }
-.front.word H2, .front.word H3, .front.word H4{
+.front.word H2{
 	margin-top:30px;
 	font-size: 22px;
+}
+.front.word H3, .front.word H4{
+	margin-top:60px;
+	font-size: 22px;
+}
+.front.word .hpIntroTopDescTitle{
+	font-weight:500;
+	font-size:20px;
+	margin-bottom:20px;
+	
+}
+.front.word .funderImg img{
+	width:100%;
+	height:auto;
+	max-width:300px;
 }
 
 .words #bLetterBar a{
@@ -365,6 +385,12 @@ a:hover .wordFindBox{
 	.detailTools, .detailTool{
 		text-align:right;
 	}
+}
+.word.detail h2{
+	font-size:16px;
+}
+.word.detail .caAudioPlayer{
+	padding-top:0px;
 }
 .small{
 	font-size:.8em; 

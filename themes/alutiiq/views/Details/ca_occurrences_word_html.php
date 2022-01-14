@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");	
+	$va_access_values = caGetUserAccessValues($this->request);	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -19,15 +20,32 @@
 			<div class="row">
 				<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1 text-center'>
 					<H1>{{{^ca_occurrences.preferred_labels.name}}} &mdash; {{{^ca_occurrences.alutiiq_word}}}{{{<ifdef code="ca_occurrences.pronunciation_audio_clip"> <i id="playPronunciation" class="fa fa-volume-up" aria-hidden="true"></i></ifdef>}}}</H1>
-					<H2>{{{<ifdef code="ca_occurrences.idno">Lesson ^ca_occurrences.idno</ifdef>}}}</H2>
+
 					<HR>
-					{{{<ifdef code="ca_occurrences.sentence"><div class="unit"><label>In a sentence</label>^ca_occurrences.sentence</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.sentence"><h2>^ca_occurrences.sentence</h2></ifdef>}}}
 					<HR>
+<?php
+					if($va_audio_podcast = $t_item->representationsWithMimeType(array('audio/mpeg', 'audio/x-aiff', 'audio/x-wav, audio/mp4'), array('versions' => array('original'), 'return_with_access' => $va_access_values))){
+						foreach($va_audio_podcast as $vn_rep_id => $va_audio_info){
+							print "<div class='unit'>".$va_audio_info["tags"]["original"]."</div>";
+						}
+					}
+					
+?>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
 				<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
-					{{{<ifdef code="ca_object_representations.media.large"><div class="unit fullWidthImg">^ca_object_representations.media.large<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if></div></ifdef>}}}
+<?php
+					if($va_images = $t_item->representationsWithMimeType(array('image/jpeg', 'image/tiff', 'image/png', 'image/x-dcraw', 'image/x-psd', 'image/x-dpx', 'image/jp2', 'image/x-adobe-dng', 'image/bmp', 'image/x-bmp'), array('versions' => array('large'), 'return_with_access' => $va_access_values))){
+						foreach($va_images as $vn_rep_id => $va_image_info){
+							$t_rep = new ca_object_representations($va_image_info["representation_id"]);
+							print "<div class='unit fullWidthImg'>".$va_image_info["tags"]["large"];
+							print $t_rep->getWithTemplate("<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-left'>^ca_object_representations.preferred_labels.name</div></if>");
+							print "</div>";
+						}
+					}					
+?>
 					<div class="row">
 						<div class="col-md-6">
 							<!-- AddToAny BEGIN -->
@@ -65,7 +83,7 @@
 						</div>
 					</div>
 				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6 text-left'>
+				<div class='col-md-6 col-lg-5 text-left'>
 					{{{<ifdef code="ca_occurrences.description"><div class="unit">^ca_occurrences.description</div></ifdef>}}}
 					
 				</div><!-- end col -->

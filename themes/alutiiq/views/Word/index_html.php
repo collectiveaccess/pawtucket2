@@ -71,11 +71,10 @@
 					</div>
 					<div class='col-sm-7'>
 						<div class='wordFeaturedLessonTitle'><?php print $qr_res->getWithTemplate("<l>^ca_occurrences.preferred_labels.name &mdash; ^ca_occurrences.alutiiq_word</l> <ifdef code='ca_occurrences.pronunciation_audio_clip'> <i id='playPronunciation' class='fa fa-volume-up' aria-hidden='true'></i></ifdef>"); ?></div>
-						<b><?php print $qr_res->getWithTemplate("<ifdef code='ca_occurrences.idno'><div class='unit'><l>Lesson ^ca_occurrences.idno</l></div></ifdef>"); ?></b>
-						<?php print $qr_res->getWithTemplate("<ifdef code='ca_occurrences.sentence'><div class='unit'><b>In a Sentence:</b> ^ca_occurrences.sentence</div></ifdef>"); ?>
+						<?php print $qr_res->getWithTemplate("<ifdef code='ca_occurrences.sentence'><div class='unit'>^ca_occurrences.sentence</div></ifdef>"); ?>
 					
 						<?php print $qr_res->getWithTemplate("<ifdef code='ca_occurrences.description'><div class='unit'>^ca_occurrences.description%length=300&ellipsis=1</div></ifdef>"); ?>
-						<div class="unit text-center"><?php print caDetailLink($this->request, 'View Lesson '.$qr_res->get("ca_occurrences.idno"), 'btn btn-default', 'ca_occurrences', $qr_res->get("ca_occurrences.occurrence_id")); ?></div>
+						<div class="unit text-center"><?php print caDetailLink($this->request, 'View Lesson ', 'btn btn-default', 'ca_occurrences', $qr_res->get("ca_occurrences.occurrence_id")); ?></div>
 					
 					</div><!-- end col -->
 				</div><!-- end row -->
@@ -115,15 +114,17 @@
 			<?php print caNavLink($this->request, "<div class='wordFindBox'>"._t("Search the Archive")."</div>", "", "", "browse", "words"); ?>
 		</div>		
 	</div>
-	<div class="row hpIntroTop flex bg_gray">
-		<div class="col-sm-12 col-md-4 col-lg-4 fullWidthImg">
-			<?php print caGetThemeGraphic($this->request, 'AWOTWlogo.jpg', array("alt" => "Alutiiq Word of the Week")); ?>
-		</div>
-		<div class="col-sm-12 col-md-6 col-lg-6 col-md-offset-1">
+	<div class="container">
+		<div class="row hpIntroTop flex bg_gray">
+			<div class="col-sm-12 col-md-4 col-lg-4 fullWidthImg">
+				<?php print caGetThemeGraphic($this->request, 'AWOTWlogo.jpg', array("alt" => "Alutiiq Word of the Week")); ?>
+			</div>
+			<div class="col-sm-12 col-md-6 col-lg-6 col-md-offset-1">
 			
-			<div class="hpIntroTopDesc">
-				<div class="hpIntroTopDescTitle">{{{word_signup_title}}}</div>{{{word_signup}}}
-				<div class="text-center"><a href="https://publ.maillist-manage.com/ua/Optin?od=11287ecad08ab5&zx=12e31dbf&lD=16b23678355481cf&n=11699f74cec564d&sD=16b236783555c601" target="_blank" class="btn btn-default">Sign Up for Updates!</a></div>
+				<div class="hpIntroTopDesc">
+					<div class="hpIntroTopDescTitle">{{{word_signup_title}}}</div>{{{word_signup}}}
+					<div class="text-center"><a href="https://publ.maillist-manage.com/ua/Optin?od=11287ecad08ab5&zx=12e31dbf&lD=16b23678355481cf&n=11699f74cec564d&sD=16b236783555c601" target="_blank" class="btn btn-default">Subscribe</a></div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -139,7 +140,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-6 col-md-offset-3 text-center hpCallOut">
+		<div class="col-md-12 text-center hpCallOut">
 			<h4>Contact Us</h4>
 			{{{word_contact}}}
 			<p><a href="https://forms.zohopublic.com/alutiiqm/form/CultureQuestionsPortal/formperma/Jiz_tPrg-f9KaE1ngmbZCQ0cVMakqBd6GcVxxY2a4k8" class="btn btn-default">Ap'skikut—Ask Us</a></p>
@@ -150,11 +151,11 @@
 		<div class="col-sm-12 text-center">
 			<b>{{{word_funder}}}</b><br/><br/>
 			<div class="row">
-				<div class="col-sm-2 col-sm-offset-4">
-					<?php print caGetThemeGraphic($this->request, 'Koniag.png', array("alt" => "Koniag Inc")); ?>
+				<div class="col-sm-3 col-sm-offset-3 funderImg">
+					<a href="https://www.koniag.com" target="_blank"><?php print caGetThemeGraphic($this->request, 'Koniag-Logo.jpg', array("alt" => "Koniag Inc")); ?></a>
 				</div>
-				<div class="col-sm-4">
-					<?php print caGetThemeGraphic($this->request, 'IMLS.png', array("alt" => "IMLS")); ?>
+				<div class="col-sm-3 funderImg">
+					<a href="https://www.imls.gov" target="_blank"><?php print caGetThemeGraphic($this->request, 'IMLS.png', array("alt" => "IMLS")); ?></a>
 				</div>
 			</div>
 		</div>
