@@ -303,7 +303,7 @@ a:hover .hpFindBox{
 	text-align: center;
 	padding:25px;
 	margin-top:40px;
-	margin-bottom:60px;
+	margin-bottom:10px;
 }
 a .wordFindBox{
 	color:#fff;
@@ -352,8 +352,10 @@ a:hover .wordFindBox{
 .front.word .hpIntroTopDescTitle{
 	font-weight:500;
 	font-size:20px;
-	margin-bottom:20px;
-	
+	margin-bottom:20px;	
+}
+.front.word .hpIntroTop{
+	margin-top:50px;
 }
 .front.word .funderImg img{
 	width:100%;

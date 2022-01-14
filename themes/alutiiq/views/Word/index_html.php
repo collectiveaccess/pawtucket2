@@ -67,7 +67,7 @@
 			<div class="wordFeaturedLesson">
 				<div class="row flex">
 					<div class="col-sm-5">
-						<?php print $qr_res->getWithTemplate("<ifdef code='ca_object_representations.media.large'><div class='unit fullWidthImg'>^ca_object_representations.media.large<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if></div></ifdef>"); ?>
+						<?php print $qr_res->getWithTemplate("<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='1' length='1' sort='is_primary' sortDirection='desc' delimiter='<br/>'><ifdef code='ca_object_representations.media.large'><div class='unit fullWidthImg'>^ca_object_representations.media.large<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-center'>^ca_object_representations.preferred_labels.name</div></if></div></ifdef><unit>"); ?>
 					</div>
 					<div class='col-sm-7'>
 						<div class='wordFeaturedLessonTitle'><?php print $qr_res->getWithTemplate("<l>^ca_occurrences.preferred_labels.name &mdash; ^ca_occurrences.alutiiq_word</l> <ifdef code='ca_occurrences.pronunciation_audio_clip'> <i id='playPronunciation' class='fa fa-volume-up' aria-hidden='true'></i></ifdef>"); ?></div>
