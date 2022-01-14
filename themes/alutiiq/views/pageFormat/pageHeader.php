@@ -104,9 +104,9 @@
 				<li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">LEARN</a>
 					<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center"><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1">
 						<ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people">Alutiiq / Sugpiaq People</a></li><li><a href="https://alutiiqmuseum.org/learn/plant-gallery">Plant Gallery</a></li><li><a href="https://alutiiqmuseum.org/learn/contest">Coloring Alutiiq</a></li>
-							<li><a href="https://alutiiqmuseum.org/learn/alutiiq-word-of-the-week">Alutiiq Word of the Week</a></li>
-							<li><a href="https://alutiiqmuseum.org/learn/word-of-the-week-archive">Word of the Week Archive</a></li>
-							<!--<li><?php print caNavLink($this->request, "Alutiiq Word of the Week", "", "", "Word", "Index"); ?></li>-->
+							<!--<li><a href="https://alutiiqmuseum.org/learn/alutiiq-word-of-the-week">Alutiiq Word of the Week</a></li>
+							<li><a href="https://alutiiqmuseum.org/learn/word-of-the-week-archive">Word of the Week Archive</a></li>-->
+							<li><?php print caNavLink($this->request, "Alutiiq Word of the Week", "", "", "Word", "Index"); ?></li>
 							<li><a href="https://alutiiqmuseum.org/teachers">For Teachers</a></li><li><a href="https://alutiiqmuseum.org/learn/history-of-the-alutiiq-museum">Museum History</a></li><li><a href="https://alutiiqmuseum.org/learn/ask-a-question">Ask A Question</a></li>
 						</ul>
 					</div></div></div>
@@ -160,7 +160,7 @@
 						<ul class="uk-breadcrumb"><li><a href="https://alutiiqmuseum.org/">Home</a></li><li><span>LEARN</span></li><li class="uk-active"><span><?php print caNavLink($this->request, "Alutiiq Work of the Week", "", "", "Word", "Index"); ?></span></li></ul>
 					</div>
 					<div class="col-xs-12 col-sm-6">
-						<div class="subNavJumpTo">Jump to: <?php print caNavLink($this->request, "Home", "", "", "Word", "Index")." | ".caNavLink($this->request, "Archive", "", "", "browse", "words")." | ".caNavLink($this->request, "About", "", "", "About", ""); ?></div>
+						<div class="subNavJumpTo">Jump to: <?php print caNavLink($this->request, "Lesson", "", "", "Word", "Index")." | ".caNavLink($this->request, "Archive", "", "", "browse", "words")." | ".caNavLink($this->request, "About", "", "", "About", ""); ?></div>
 					</div>
 				</div>
 			</div>
