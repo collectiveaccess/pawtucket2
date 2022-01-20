@@ -45,11 +45,6 @@
 			{{{word_intro}}}
 		</div>
 	</div><!-- end row -->
-	<div class="row">
-		<div class="col-sm-12 text-center">
-			<h2>Featured Lesson</h2>	
-		</div>
-	</div>
 <?php
  			$t_list_item = new ca_list_items();
 			$t_list_item->load(array("idno" => "word"));
@@ -61,6 +56,14 @@
 			$qr_res = $o_search->search("ca_occurrences.type_id:".$t_list_item->get("item_id")." AND ca_occurrences.feature_date:".date("m/d/Y"), array("sort" => "ca_occurrence_labels.name_sort"));
 	
  			if($qr_res->numHits()){
+?>
+			<div class="row">
+				<div class="col-sm-12 text-center">
+					<h2>Featured Lesson</h2>	
+				</div>
+			</div>
+
+<?php
  				while($qr_res->nextHit()){
  ?>
  
