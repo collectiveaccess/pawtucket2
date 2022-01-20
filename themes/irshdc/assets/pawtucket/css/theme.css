@@ -108,12 +108,12 @@ H1, h1, H2, h2 {
 	color:#FFF;
 }
 body{
-	margin-top:72px;
+	margin-top:85px;
 	margin-bottom:550px;
 }
 @media (min-width: 768px) {
 	body{
-		margin-top:117px;
+		margin-top:139px;
 		margin-bottom:400px;
 	}
 }
