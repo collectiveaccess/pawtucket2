@@ -125,6 +125,7 @@ H3, h3{
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
     background-color: #c51042;
     color:#000;
+    text-decoration: none;
 }
 .grayBg{
 	background-color:#eee;
@@ -514,6 +515,7 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover, div.caMediaOverlay
 .bResultItem .bResultItemText a.resultTitleLink{
 	font-size:15px;
 	background-color:#FFF;
+	background-color:transparent;
 }
 .bResultItem .bResultItemText small, .bResultItem .bResultItemText small a {
     color: #595959;
