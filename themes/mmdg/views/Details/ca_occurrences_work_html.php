@@ -147,16 +147,12 @@
 					
 					
 					
-					$va_premiere_events = $t_item->get('ca_occurrences.related', array('sort' => 'ca_occurrences.eventDate', 'sortDirection' => 'desc', 'restrictToTypes' => array('event'), 'restrictToRelationshipTypes' => array('premiered'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
-					$va_non_premiere_events = $t_item->get('ca_occurrences.related', array('sort' => 'ca_occurrences.eventDate', 'sortDirection' => 'desc', 'restrictToTypes' => array('event'), 'excludeRelationshipTypes' => array('premiered'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
-					if (sizeof($va_premiere_events) || sizeof($va_non_premiere_events)) {
+					$va_events = $t_item->get('ca_occurrences.related', array('sort' => 'ca_occurrences.eventDate', 'sortDirection' => 'desc', 'restrictToTypes' => array('event'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					if (sizeof($va_events)) {
 						$va_related_list = array();
 						$vb_show_view_all = false;
-						foreach ($va_premiere_events as $va_premiere_event) {
-							$va_related_list[] = caDetailLink($this->request, $va_premiere_event['name'], '', 'ca_occurrences', $va_premiere_event['occurrence_id']);
-						}
-						foreach ($va_non_premiere_events as $va_non_premiere_event) {
-							$va_related_list[] = caDetailLink($this->request, $va_non_premiere_event['name'], '', 'ca_occurrences', $va_non_premiere_event['occurrence_id']);
+						foreach ($va_events as $va_event) {
+							$va_related_list[] = caDetailLink($this->request, $va_event['name'], '', 'ca_occurrences', $va_event['occurrence_id']);
 						}
 						print "<div class='unit'><H3>Performances & Events</H3><div class='unit detailLinksGrid'>";
 						$i = 0;
