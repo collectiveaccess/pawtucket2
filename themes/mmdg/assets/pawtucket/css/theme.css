@@ -533,7 +533,33 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover, div.caMediaOverlay
 	color:#000;
 	line-height:1em;
 }
-
+.galleryBackButton{
+	background-color: #EBEBEB;
+	padding:5px 5px 10px 5px;
+	text-align:center;
+	text-transform: uppercase;
+	position:absolute;
+	top:-50px;
+}
+@media (min-width: 960px) {
+	.galleryBackButton{
+		left:-30px;
+		top:0px;
+	}
+}
+.galleryBackButton a {
+  color: #8e8985;
+  color: #696969;
+  line-height: .3em;
+  font-size: 18px;
+  text-decoration: none;
+}
+.galleryBackButton a .small{
+	font-size: 8px;
+	color: #ababab;
+	color: #696969;
+	padding-top: 3px;
+}
 .gallery H1{
 	font-size: 30px;
     font-family: HelveticaNeue,Arial,sans-serif;
