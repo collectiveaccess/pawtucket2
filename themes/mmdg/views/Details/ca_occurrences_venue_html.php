@@ -27,7 +27,7 @@
 			<div class="row">
 				<div class='col-sm-12'>
 					{{{<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text"><div class='unit trimText'><label>Description</label>^ca_occurrences.descriptionWithSource.prodesc_text</div></ifdef>}}}
-					
+					{{{<ifcount code="ca_places" min="1"><div class='unit trimText'><label>Location<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.displayname</div></ifcount>}}}
 					
 <?php					
 					if ($va_works = $t_item->get('ca_occurrences.related', array('sort' => 'ca_occurrences.premiereDate', 'restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {

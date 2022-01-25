@@ -6,7 +6,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -41,7 +41,6 @@ var caUI = caUI || {};
 		
 		// Register player
 		that.register = function(playerName, playerInstance, playerType) {
-			//console.log("add", playerName, playerInstance);
 			that.players[playerName] = playerInstance;
 			that.playerTypes[playerName] = playerType;
 		}
@@ -51,6 +50,10 @@ var caUI = caUI || {};
 			if (!that.players[playerName]) return null;
 			switch(that.playerTypes[playerName]) {
 				case 'VideoJS':
+					that.players[playerName].play();
+					that.isPlaying[playerName] = true;
+					break;
+				case 'Plyr':
 					that.players[playerName].play();
 					that.isPlaying[playerName] = true;
 					break;
@@ -73,6 +76,10 @@ var caUI = caUI || {};
 					that.players[playerName].pause();
 					that.isPlaying[playerName] = false;
 					break;
+				case 'Plyr':
+					that.players[playerName].pause();
+					that.isPlaying[playerName] = false;
+					break;
 				case 'MediaElement':
 					that.players[playerName][0].pause();
 					that.isPlaying[playerName] = false;
@@ -90,6 +97,17 @@ var caUI = caUI || {};
 				case 'VideoJS':
 					that.players[playerName].play();
 					that.players[playerName].currentTime(t);
+					that.isPlaying[playerName] = true;
+					break;
+				case 'Plyr':
+					that.players[playerName].play();
+
+					const c = that.players[playerName].currentTime;
+					if (t > c) {
+						that.players[playerName].forward(t - c);
+					} else {
+						that.players[playerName].rewind(c - t);
+					} 
 					that.isPlaying[playerName] = true;
 					break;
 				case 'MediaElement':
@@ -117,6 +135,9 @@ var caUI = caUI || {};
 				case 'VideoJS':
 					return that.players[playerName].currentTime();
 					break;
+				case 'Plyr':
+					return that.players[playerName].currentTime;
+					break;
 				case 'MediaElement':
 					return that.players[playerName][0].currentTime;
 					break;
@@ -126,13 +147,16 @@ var caUI = caUI || {};
 			}
 		};
 		
-		// Register handler for time updae
+		// Register handler for time update
 		that.onTimeUpdate = function(playerName, f) {
 			if (!that.players[playerName]) return null;
 			
 			switch(that.playerTypes[playerName]) {
 				case 'VideoJS':
 					that.players[playerName].addEvent('timeupdate', f);
+					break;
+				case 'Plyr':
+					that.players[playerName].on('timeupdate', f);
 					break;
 				case 'MediaElement':
 					that.players[playerName][0].addEventListener('timeupdate', f);

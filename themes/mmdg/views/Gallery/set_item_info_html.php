@@ -11,10 +11,13 @@
 	if($vs_set_item_description != "[BLANK]"){
 		print "<div class='unit'>".$vs_set_item_description."</div>";
 	}
-	if($vs_tmp = $t_object->getWithTemplate("<ifdef code='ca_objects.sourceDate'><div class='unit'><label>Date</label>^ca_objects.sourceDate</div></ifdef>
+	#Format, Date, Depicts, Photographer, Rights Holder
+	if($vs_tmp = $t_object->getWithTemplate("<div class='unit'>^ca_objects.type_id</div>
+			<ifdef code='ca_objects.sourceDate'><div class='unit'><label>Date</label>^ca_objects.sourceDate</div></ifdef>
 			<ifcount code='ca_entities' restrictToRelationshipTypes='depicts' min='1'><div class='unit'><label>Depicts</label><unit relativeTo='ca_entities' restrictToRelationshipTypes='depicts' delimiter=', '><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>
 			<ifcount code='ca_entities' restrictToRelationshipTypes='photographer' min='1'><div class='unit trimText'><label>Photographer</label><unit relativeTo='ca_entities' restrictToRelationshipTypes='photographer' delimiter=', '><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>
-			<ifcount code='ca_entities' restrictToRelationshipTypes='videographer' min='1'><div class='unit trimText'><label>Videographer</label><unit relativeTo='ca_entities' restrictToRelationshipTypes='videographer' delimiter=', '><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>")){
+			<ifcount code='ca_entities' restrictToRelationshipTypes='videographer' min='1'><div class='unit trimText'><label>Videographer</label><unit relativeTo='ca_entities' restrictToRelationshipTypes='videographer' delimiter=', '><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>
+			<ifcount code='ca_entities' restrictToRelationshipTypes='rights_holder' min='1'><div class='unit trimText'><label>Rights Holder<ifcount code='ca_entities' restrictToRelationshipTypes='rights_holder' min='2'>s</ifcount></label><unit relativeTo='ca_entities' restrictToRelationshipTypes='rights_holder' delimiter=', '><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>")){
 		print $vs_tmp;
 	}		
 ?>
