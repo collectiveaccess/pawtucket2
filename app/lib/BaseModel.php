@@ -101,7 +101,6 @@ define("__CA_MEDIA_QUEUED_ICON__", 'queued');
 require_once(__CA_LIB_DIR__."/BaseObject.php");
 require_once(__CA_LIB_DIR__."/ApplicationError.php");
 require_once(__CA_LIB_DIR__."/Configuration.php");
-require_once(__CA_LIB_DIR__."/Datamodel.php");
 require_once(__CA_LIB_DIR__."/ApplicationChangeLog.php");
 require_once(__CA_LIB_DIR__."/Parsers/TimeExpressionParser.php");
 require_once(__CA_LIB_DIR__."/Parsers/TimecodeParser.php");
@@ -542,7 +541,7 @@ class BaseModel extends BaseObject {
 	 * @return HTMLPurifier Returns instance
 	 */
 	static public function getPurifier() {
-		if (!BaseModel::$html_purifier) { BaseModel::$html_purifier = new HTMLPurifier(); }
+		if (!BaseModel::$html_purifier) { BaseModel::$html_purifier = caGetHTMLPurifier(); }
 		return BaseModel::$html_purifier;
 	}
 	# --------------------------------------------------------------------------------
@@ -1239,7 +1238,7 @@ class BaseModel extends BaseObject {
 		", array($va_ids));
 		
 		$va_vals = array();
-		$vs_single_fld = (sizeof($va_fld_list) == 1) ? $va_fld_list[0] : null;
+		$vs_single_fld = (sizeof($va_fld_list) == 1) ? str_replace('`', '', $va_fld_list[0]) : null;
 		while($qr_res->nextRow()) {
 			if ($vs_single_fld) {
 				$va_vals[(int)$qr_res->get($vs_pk)] = $qr_res->get($vs_single_fld);
@@ -1353,7 +1352,7 @@ class BaseModel extends BaseObject {
 								$vm_value = array_shift($va_ids);
 							}
 						}
-						if (($vm_value !== "") || ($this->getFieldInfo($vs_field, "IS_NULL") && ($vm_value == ""))) {
+						if (($vm_value !== "") || (($this->getFieldInfo($vs_field, "IS_NULL") && ($vm_value == "")))) {
 							if ($vm_value) {
 								if (($vs_list_code = $this->getFieldInfo($vs_field, "LIST_CODE")) && (!is_numeric($vm_value))) {	// translate ca_list_item idno's into item_ids if necessary
 									if ($vn_id = ca_lists::getItemID($vs_list_code, $vm_value)) {
@@ -4278,7 +4277,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			$vs_sql =  "{$ps_field} = ".$this->quote(caSerializeForDatabase($this->_FILES[$ps_field], true)).",";
 		} else {
 			// Don't try to process files when no file is actually set
-			if(isset($this->_SET_FILES[$ps_field]['tmp_name'])) { 
+			if(isset($this->_SET_FILES[$ps_field]['tmp_name']) && (isUrl($this->_SET_FILES[$ps_field]['tmp_name']) || is_readable($this->_SET_FILES[$ps_field]['tmp_name']))) { 
 				$o_tq = new TaskQueue();
 				$o_media_proc_settings = new MediaProcessingSettings($this, $ps_field);
 		
@@ -4642,8 +4641,8 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 								$magic = rand(0,99999);
 								$filepath = $vi["absolutePath"]."/".$dirhash."/".$magic."_".$this->_genMediaName($ps_field)."_".$v.".".$ext;
 							
-								if (!copy($this->_SET_FILES[$ps_field]['tmp_name'], $filepath)) {
-									$this->postError(1600, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
+								if (!is_readable($this->_SET_FILES[$ps_field]['tmp_name']) || !is_writeable(pathinfo($filepath, PATHINFO_DIRNAME)) || !copy($this->_SET_FILES[$ps_field]['tmp_name'], $filepath)) {
+									$this->postError(1670, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 									$m->cleanup();
 									set_time_limit($vn_max_execution_time);
 									if ($vb_is_fetched_file) { @unlink($vs_tmp_file); }
@@ -4767,7 +4766,6 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 							$magic = rand(0,99999);
 							$filepath = $vi["absolutePath"]."/".$dirhash."/".$magic."_".$this->_genMediaName($ps_field)."_".$v;
 
-                            $m->set('colorspace', 'RGB');
 							if (!($vs_output_file = $m->write($filepath, $output_mimetype, $va_media_write_options))) {
 								$this->postError(1600,_t("Couldn't write file: %1", join("; ", $m->getErrors())),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 								$m->cleanup();
@@ -5518,7 +5516,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 				$magic = rand(0,99999);
 
 				$va_pieces = explode("/", $this->_SET_FILES[$field]['original_filename']);
-				$ext = array_pop($va_tmp = explode(".", array_pop($va_pieces)));
+				$ext = strtolower(array_pop($va_tmp = explode(".", array_pop($va_pieces))));
 				if ($properties["dangerous"]) { $ext .= ".bin"; }
 				if (!$ext) $ext = "bin";
 
@@ -5546,8 +5544,8 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 					"FILE_LAST_MODIFIED" => filemtime($this->_SET_FILES[$field]['tmp_name'])
 				);
 
-				if (!@copy($this->_SET_FILES[$field]['tmp_name'], $filepath)) {
-					$this->postError(1600, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processFiles()", $this->tableName().'.'.$field);
+				if (!is_readable($this->_SET_FILES[$field]['tmp_name']) || !is_writeable(pathinfo($filepath, PATHINFO_DIRNAME)) || !copy($this->_SET_FILES[$field]['tmp_name'], $filepath)) {
+					$this->postError(1670, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processFiles()", $this->tableName().'.'.$field);
 					return false;
 				}
 				@touch($filepath, filemtime($this->_SET_FILES[$field]['tmp_name']));
@@ -6349,7 +6347,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			}
 			
 			if ($t = Datamodel::getInstance($t_attr->get('table_num'), true)) {
-				$va_subject_config = $t->getProperty('LOG_CHANGES_USING_AS_SUBJECT');
+				$va_subject_config = null;
 				$vs_subject_tablename = $t->tableName();
 			}
 		} else {
@@ -6381,7 +6379,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 					}
 				}
 				
-				if(is_array($va_subject_config['RELATED_TABLES'])) {
+				if(is_array($va_subject_config['RELATED_TABLES']) && !$vb_is_metadata && !$vb_is_metadata_value) {
 					$o_db = $this->getDb();
 					if (!isset($o_db) || !$o_db) {
 						$o_db = new Db();
@@ -8372,7 +8370,8 @@ $pa_options["display_form_field_tips"] = true;
 									'readonly' => $pa_options['readonly'],
 									'restrictTypeListForTable' => $this->tableName(),
 									'limitToItemsWithID' => $va_limit_list ? $va_limit_list : null,
-									'checkAccess' => $pa_options['checkAccess']
+									'checkAccess' => $pa_options['checkAccess'],
+									'width' => $pa_options['width']
 								)
 							);
 							
@@ -8864,7 +8863,7 @@ $pa_options["display_form_field_tips"] = true;
 					$post_max_size = caFormatFileSize(caReturnValueInBytes(ini_get( 'post_max_size' )));
 					$upload_max_filesize = caFormatFileSize(caReturnValueInBytes(ini_get( 'upload_max_filesize' )));
 
-					$vs_element = '<div class="formLabelUploadSizeNote"><input type="file" name="'.$pa_options["name"].'" id="'.$pa_options["id"].'" '.$vs_js.'/>'._t("Maximum upload size is ${post_max_size}") . '</div>';
+					$vs_element = '<div class="formLabelUploadSizeNote"><input type="file" name="'.$pa_options["name"].'" id="'.$pa_options["id"].'" '.$vs_js.'/>'._t("Maximum upload size is %1", $post_max_size) . '</div>';
 
 					// show current media icon
 					if ($vs_version = (array_key_exists('displayMediaVersion', $pa_options)) ? $pa_options['displayMediaVersion'] : 'icon') {
@@ -9133,6 +9132,10 @@ $pa_options["display_form_field_tips"] = true;
 
 		if ($va_rel_info['related_table_name'] == $this->tableName()) {
 			// is self relation
+			if ($pn_rel_id === $this->getPrimaryKey()) {
+				$this->postError(1100, _t('Cannot relate a record to itself'), 'BaseModel->addRelationship', $va_rel_info['related_table_name']);
+				return false;
+			}	
 			
 			// is self relationship
 			if ($ps_direction == 'rtol') {
@@ -9143,7 +9146,7 @@ $pa_options["display_form_field_tips"] = true;
 				$t_item_rel->set($t_item_rel->getLeftTableFieldName(), $this->getPrimaryKey());
 				$t_item_rel->set($t_item_rel->getRightTableFieldName(), $pn_rel_id);
 			}
-			$t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id);		// TODO: verify type_id based upon type_id's of each end of the relationship
+			if($t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
 			if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 			if(!is_null($ps_source_info)){ $t_item_rel->set("source_info",$ps_source_info); }
 			$t_item_rel->insert();
@@ -9170,7 +9173,7 @@ $pa_options["display_form_field_tips"] = true;
 					}
 					
 					$t_item_rel->set('rank', $pn_rank);	
-					$t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id);		// TODO: verify type_id based upon type_id's of each end of the relationship
+					if($t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
 					if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 					if(!is_null($ps_source_info)){ $t_item_rel->set("source_info",$ps_source_info); }
 					$t_item_rel->insert();
@@ -9195,7 +9198,7 @@ $pa_options["display_form_field_tips"] = true;
 						} else {
 							$t_item_rel->set($t_item_rel->getLeftTableFieldName(), $this->getPrimaryKey());
 							$t_item_rel->set($t_item_rel->getRightTableFieldName(), $pn_rel_id);
-							$t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id);	
+							if($t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }
 							$t_item_rel->insert();
 							
 							if ($t_item_rel->numErrors() > 0) {
@@ -9272,6 +9275,10 @@ $pa_options["display_form_field_tips"] = true;
 		
 		if ($va_rel_info['related_table_name'] == $this->tableName()) {
 			// is self relation
+			if ($pn_rel_id === $this->getPrimaryKey()) {
+				$this->postError(1100, _t('Cannot relate a record to itself'), 'BaseModel->editRelationship', $va_rel_info['related_table_name']);
+				return false;
+			}
 			if ($t_item_rel->load($pn_relation_id)) {
 				
 				if ($ps_direction == 'rtol') {
@@ -9283,7 +9290,8 @@ $pa_options["display_form_field_tips"] = true;
 					$t_item_rel->set($t_item_rel->getRightTableFieldName(), $pn_rel_id);
 				}
 				if (!is_null($pn_rank)) { $t_item_rel->set('rank', $pn_rank);	}
-				if (!is_null($pn_type_id)) { $t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id);}	// TODO: verify type_id based upon type_id's of each end of the relationship
+
+				if (!is_null($pn_type_id) && $t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id);}	// TODO: verify type_id based upon type_id's of each end of the relationship
 				if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 				if(!is_null($pa_source_info)){ $t_item_rel->set("source_info",$pa_source_info); }
 				
@@ -9313,7 +9321,7 @@ $pa_options["display_form_field_tips"] = true;
 						}
 						
 						if (!is_null($pn_rank)) { $t_item_rel->set('rank', $pn_rank);	}
-						if (!is_null($pn_type_id)) { $t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
+						if (!is_null($pn_type_id) && ($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
 						if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 						if(!is_null($pa_source_info)){ $t_item_rel->set("source_info",$pa_source_info); }
 						
@@ -10714,34 +10722,17 @@ $pa_options["display_form_field_tips"] = true;
 		", array($this->tableNum(), $vn_row_id));
 		
 		$pk = $this->primaryKey();
-		$qr_set_comments = $o_db->query("
-			SELECT 
-			    c.comment_id, c.row_id set_item_id, c.user_id, c.locale_id, c.comment, c.media1, c.media2, c.media3, c.media4, 
-			    c.rating, c.email, c.name, c.created_on, c.access, c.ip_addr, c.moderated_on, c.moderated_by_user_id, c.location,
-			    csi.row_id, csi.table_num, csi.set_id, csi.`rank`,
-			    cs.set_code, csl.name set_name,
-			    u.fname, u.lname, u.email user_email
-			FROM ca_item_comments c
-			INNER JOIN ca_set_items AS csi ON csi.item_id = c.row_id AND csi.table_num = ?
-			INNER JOIN ca_sets AS cs ON cs.set_id = csi.set_id
-			INNER JOIN ca_set_labels AS csl ON csl.set_id = cs.set_id 
-			LEFT JOIN ca_users AS u ON c.user_id = u.user_id
-			WHERE
-				(c.table_num = 105) AND (csi.row_id = ?)
-				
-				{$vs_user_sql} {$vs_moderation_sql}
-		", array($this->tableNum(), $vn_row_id));
 		
         switch($vs_return_as) {
             case 'count':
-                return $qr_comments->numRows() + $qr_set_comments->numRows();
+                return $qr_comments->numRows();
                 break;
             case 'ids':
             case 'firstId':
             case 'searchResult':
             case 'modelInstances':
             case 'firstModelInstance':
-                $va_ids = ($qr_comments->getAllFieldValues('comment_id') + $qr_set_comments->getAllFieldValues('comment_id'));
+                $va_ids = $qr_comments->getAllFieldValues('comment_id');
                 if ($vs_return_as === 'ids') { return $va_ids; }
                 if ($vs_return_as === 'firstId') { return array_shift($va_ids); }
                 if (($vs_return_as === 'modelInstances') || ($vs_return_as === 'firstModelInstance')) {
@@ -10781,36 +10772,6 @@ $pa_options["display_form_field_tips"] = true;
 					if ($va_comments[$comment_id]['user_id']) {
 						$va_comments[$comment_id]['name'] = trim($va_comments[$comment_id]['fname'].' '.$va_comments[$comment_id]['lname']);
 						$va_comments[$comment_id]['email'] =  $va_comments[$comment_id]['user_email'];
-					}
-                }
-                 while ($qr_set_comments->nextRow()) {
-                    $comment_id = $qr_set_comments->get("comment_id");
-                    $va_comments[$comment_id] = $qr_set_comments->getRow();
-                    foreach (array("media1", "media2", "media3", "media4") as $vs_media_field) {
-                        $va_media_versions = array();
-                        $va_media_versions = $qr_set_comments->getMediaVersions($vs_media_field);
-                        $va_media = array();
-                        if (is_array($va_media_versions) && (sizeof($va_media_versions) > 0)) {
-                            foreach ($va_media_versions as $vs_version) {
-                                $va_image_info = array();
-                                $va_image_info = $qr_set_comments->getMediaInfo($vs_media_field, $vs_version);
-                                $va_image_info["TAG"] = $qr_set_comments->getMediaTag($vs_media_field, $vs_version);
-                                $va_image_info["URL"] = $qr_set_comments->getMediaUrl($vs_media_field, $vs_version);
-                                $va_media[$vs_version] = $va_image_info;
-                            }
-                            $va_comments[$comment_id][$vs_media_field] = $va_media;
-                        }
-                    }
-                    
-					$va_comments[$comment_id]['created_on_display'] = caGetLocalizedDate($va_comments[$comment_id]['created_on']);
-					
-					if ($va_comments[$comment_id]['user_id']) {
-						$va_comments[$comment_id]['name'] = trim($va_comments[$comment_id]['fname'].' '.$va_comments[$comment_id]['lname']);
-						$va_comments[$comment_id]['email'] =  $va_comments[$comment_id]['user_email'];
-					}
-					
-					if ($o_request) {
-						$va_comments[$comment_id]['set_message'] = _t("Comment made in set %1", caEditorLink($o_request, $qr_set_comments->get('set_name'), '', 'ca_sets', $va_comments[$comment_id]['set_id']));
 					}
                 }
                 break;
@@ -11500,12 +11461,13 @@ $pa_options["display_form_field_tips"] = true;
 	public static function getIdnoForID($pn_id, $pa_options=null) {
 		$o_trans = caGetOption('transaction', $pa_options, null);
 		if (($t_instance = Datamodel::getInstance(static::class, true)) && ($vs_idno_fld = $t_instance->getProperty('ID_NUMBERING_ID_FIELD'))) {
+			$has_access = $t_instance->hasField('access');
 			$o_db = $o_trans ? $o_trans->getDb() : new Db();
-			$qr_res = $o_db->query("SELECT {$vs_idno_fld} FROM ".$t_instance->tableName()." WHERE ".$t_instance->primaryKey()." = ?", [(int)$pn_id]);
+			$qr_res = $o_db->query("SELECT {$vs_idno_fld} ".($has_access ? ', access' : '')." FROM ".$t_instance->tableName()." WHERE ".$t_instance->primaryKey()." = ?", [(int)$pn_id]);
 			
 			$pa_check_access = caGetOption('checkAccess', $pa_options, null);
 			if ($qr_res->nextRow()) {
-			    if ((is_array($pa_check_access) && (sizeof($pa_check_access) > 0) ) && $t_instance->hasField('access') &&  !in_array($qr_res->get('access'), $pa_check_access)) { return false; }
+			    if ($has_access && (is_array($pa_check_access) && (sizeof($pa_check_access) > 0) ) && $t_instance->hasField('access') &&  !in_array($qr_res->get('access'), $pa_check_access)) { return false; }
 				return $qr_res->get($vs_idno_fld);
 			}
 		}
@@ -11807,7 +11769,18 @@ $pa_options["display_form_field_tips"] = true;
 		if ($vs_deleted_sql) { $va_sql[] = $vs_deleted_sql;}
 		$va_sql = array_filter($va_sql, function($v) { return strlen($v) > 0; });
 
-		$vs_sql = "SELECT * FROM {$vs_table} ".((sizeof($va_sql) > 0) ? " WHERE (".join(" AND ", $va_sql).")" : "");
+		$vs_pk = $t_instance->primaryKey();
+		
+		switch($ps_return_as) {
+			case 'queryresult':		
+			case 'arrays':
+				$select_flds = '*';
+				break;
+			default:
+				$select_flds = $vs_pk;
+				break;
+		}
+		$vs_sql = "SELECT {$select_flds} FROM {$vs_table} ".((sizeof($va_sql) > 0) ? " WHERE (".join(" AND ", $va_sql).")" : "");
 
 		$vs_orderby = '';
 		if ($vs_sort = caGetOption('sort', $pa_options, null)) {
@@ -11817,13 +11790,13 @@ $pa_options["display_form_field_tips"] = true;
 				switch($va_tmp[0]) {
 					case $vs_table:
 						if ($t_instance->hasField($va_tmp[1])) {
-							$vs_orderby = " ORDER BY {$vs_sort} {$vs_sort_direction}";
+							$vs_orderby = " ORDER BY `{$va_tmp[1]}` {$vs_sort_direction}";
 						}
 						break;
 					default:
 						if (sizeof($va_tmp) == 1) {
 							if ($t_instance->hasField($va_tmp[0])) {
-								$vs_orderby = " ORDER BY {$vs_sort} {$vs_sort_direction}";
+								$vs_orderby = " ORDER BY `{$vs_sort}` {$vs_sort_direction}";
 							}
 						}
 						break;
@@ -11855,7 +11828,6 @@ $pa_options["display_form_field_tips"] = true;
 		
 		$vn_c = 0;
 	
-		$vs_pk = $t_instance->primaryKey();
 		
 		switch($ps_return_as) {
 			case 'queryresult':

@@ -348,9 +348,14 @@ if($vs_mode == "map"){
   			block.find('.fa').toggleClass("fa-toggle-up");
   			
 		});
+		
 		$( document ).ajaxComplete(function() {
 			if ($('div.caAudioPlayer').length) {
-				$('.caAudioPlayer').prepend('<div class="detailPlaceholderContainer"><i class="fa fa-file-sound-o fa-4x"></i></div>');
+				$('div.caAudioPlayer').each(function(i, obj) {
+					if(!$(this).find(".detailPlaceholderContainer").length) {
+						$(this).prepend('<div class="detailPlaceholderContainer"><i class="fa fa-file-sound-o fa-4x"></i></div>');
+					}
+				});
 			}
 		});
 	});

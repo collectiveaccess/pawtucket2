@@ -54,7 +54,7 @@
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
 ?><!DOCTYPE html>
-<html lang="en">
+<html lang="en" <?php print ((strtoLower($this->request->getController()) == "front")) ? "class='frontContainer'" : ""; ?>>
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
@@ -79,7 +79,7 @@
 	}
 ?>
 </head>
-<body <?php print ($this->request->getController() == "Front") ? "class='bodyFront'" : ""; ?>>
+<body  class='<?php print (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
@@ -101,7 +101,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<?php print caNavLink($this->request, '<div class="logo-con">'.caGetThemeGraphic($this->request, 'trc-logo-mark-color.svg', array("class" => "logo", "alt" => "The Riverside Church Logo", "role" => "banner")).'</div><div class="archiveSubTitle">Digital Archive</div>'.caGetThemeGraphic($this->request, 'trc-logo-title.svg', array("class" => "logo-title", "alt" => "The Riverside Church", "role" => "banner")), "logo-wrap", "", "", ""); ?>
+				<?php print caNavLink($this->request, '<div class="logo-con">'.caGetThemeGraphic($this->request, 'trc-logo-mark-color.svg', array("class" => "logo", "alt" => "The Riverside Church Logo", "role" => "banner")).'</div>'.caGetThemeGraphic($this->request, 'trc-logo-title.svg', array("class" => "logo-title", "alt" => "The Riverside Church", "role" => "banner")), "logo-wrap", "", "", ""); ?>
 				<!--<a href="https://www.trcnyc.org" class="logo-wrap" rel="home"><div class="logo-con"><?php print caGetThemeGraphic($this->request, 'trc-logo-mark-color.svg', array("class" => "logo", "alt" => "The Riverside Church Logo", "role" => "banner")); ?></div><?php
                 	print caGetThemeGraphic($this->request, 'trc-logo-title.svg', array("class" => "logo-title", "alt" => "The Riverside Church", "role" => "banner")); ?></a>-->
 			</div>
@@ -155,7 +155,10 @@
 					<li class="dropdown<?php print (in_array(strToLower($this->request->getController()), array("about", "contact")) ? ' active' : ''); ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?> <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 <?php
-							print "<li>".caNavLink($this->request, _t("About the Collection"), '', '', 'About', 'Collection', '')."</li>";
+							print "<li><a href='https://www.trcnyc.org/history'>"._t("About the Collection")."</a></li>";
+							print "<li>".caNavLink($this->request, _t("Resources"), '', '', 'About', 'Resources', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Rights & Reproduction"), '', '', 'About', 'RightsRepo', '')."</li>";
+							print "<li><a href='https://www.trcnyc.org/give'>"._t("Support Riverside")."</a></li>";
 							print "<li>".caNavLink($this->request, _t("Contact"), '', '', 'Contact', 'Form', '')."</li>";
 ?>
 						</ul>	
@@ -163,6 +166,7 @@
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
+		<div class="archiveSubTitle">Digital Archive</div>
 	</nav>
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div role="main" id="main"><div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

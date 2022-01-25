@@ -169,7 +169,11 @@
  				throw new ApplicationException("Invalid detail type");
  			}
  			
- 			$t_subject = Datamodel::getInstance($vs_table, true);
+ 			if (!($t_subject = Datamodel::getInstance($vs_table, true))) {
+ 				throw new ApplicationException("Invalid detail table");
+ 			}
+ 			$this->ops_tablename = $vs_table;
+ 			
  			$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls($vs_table);
  			if ((($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($vs_use_alt_identifier_in_urls)) && (substr($ps_id, 0, 3) == "id:")) {
  				$va_tmp = explode(":", $ps_id);
@@ -280,22 +284,26 @@
 				}
 				if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
 				
-				$this->view->setVar('representationViewerPrimaryOnly', caGetOption('representationViewerPrimaryOnly', $va_options, false));
+				$this->view->setVar('representationViewerPrimaryOnly', $rep_viewer_primary_only = caGetOption('representationViewerPrimaryOnly', $va_options, false));
 				$this->view->setVar('representationViewer', 
 					caRepresentationViewer(
 						$this->request, 
 						$t_subject, 
 						$t_subject,
 						array_merge($va_options, $va_media_display_info, 
-							array(
+							[
 								'display' => 'detail',
 								'showAnnotations' => true, 
 								'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $va_options, false), 
 								'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), 
-								'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false)
-							)
+								'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false),
+								'checkAccess' => $this->opa_access_values
+							]
 						)
 					)
+				);
+				$this->view->setVar('representationViewerThumbnailBar', 
+					caObjectRepresentationThumbnails($this->request, $this->view->getVar("representation_id"), $t_subject, array_merge($va_options, ["returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $rep_viewer_primary_only ? 1 : 0]))
 				);
 			}
 			
@@ -380,7 +388,8 @@
 				$o_rel_context->setAsLastFind(true);
 				
 				$qr_rel_res = $o_browse->getResults();
-				$o_rel_context->setResultList($qr_rel_res->getAllFieldValues('ca_objects.object_id'));
+				#$o_rel_context->setResultList($qr_rel_res->getAllFieldValues('ca_objects.object_id'));
+				$o_rel_context->setResultList($qr_rel_res->getPrimaryKeyValues(1000));
 				
 				$o_rel_context->saveContext();
 			}
@@ -627,7 +636,7 @@
 				foreach($va_reps as $vn_representation_id => $va_rep) {
 					$va_rep_info = $va_rep['info'][$ps_version];
 					
-					$vs_filename = caGetRepresentationDownloadFileName($this->ops_tablename, ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
+					$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
 					
 					$va_file_names[$vs_filename] = true;
 					$this->view->setVar('version_download_name', $vs_filename);
@@ -744,7 +753,7 @@
 			    $vals[strtolower($k)] = preg_replace('![^A-Za-z0-9_\-]+!', '_', $v);
 			}
 			
-			$vs_filename = caGetRepresentationDownloadFileName($this->ops_tablename, ['idno' => $t_instance->get('idno'), 'index' => null, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_info['ORIGINAL_FILENAME'], 'representation_id' => $pn_representation_id]);
+			$vs_filename = caGetRepresentationDownloadFileName($va_context['table'], ['idno' => $t_instance->get('idno'), 'index' => null, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_info['ORIGINAL_FILENAME'], 'representation_id' => $pn_representation_id]);
 			$this->view->setVar('version_download_name', $vs_filename);
 			
 			
@@ -774,6 +783,10 @@
  		 *
  		 */
  		public function SaveCommentTagging() {
+ 			if (!caValidateCSRFToken($this->request)) {
+				throw new ApplicationException(_t("Invalid CSRF token"));
+			}
+			
  			# --- inline is passed to indicate form appears embedded in detail page, not in overlay
 			$vn_inline_form = $this->request->getParameter("inline", pInteger);
 			if(!$t_item = Datamodel::getInstance($this->request->getParameter("tablename", pString), true)) {
@@ -956,7 +969,7 @@
  				$this->render("Form/reload_html.php");
  				return;
  			}
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
     		$ps_to_email = $o_purifier->purify($this->request->getParameter('to_email', pString));
  			$ps_from_email = $o_purifier->purify($this->request->getParameter('from_email', pString));
  			$ps_from_name = $o_purifier->purify($this->request->getParameter('from_name', pString));
@@ -1206,12 +1219,15 @@
 		 *
 		 */
 		public function GetAnnotations() {
-			if (!$this->request->isLoggedIn()) { throw new ApplicationException(_t('Must be logged in')); }
 			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
 			$t_rep = new ca_object_representations($pn_representation_id);
-			$t_rep->annotationMode('user');
+			
+			$va_annotations_raw = array_map(function($v) { $v['locked'] = 1; return $v; }, $t_rep->getAnnotations());
+			if($this->request->isLoggedIn()) {
+				$t_rep->annotationMode('user');
 
-			$va_annotations_raw = $t_rep->getAnnotations(array('user_id' => $this->request->getUserID(), 'item_id' => $this->request->getParameter('item_id', pInteger)));
+				$va_annotations_raw = array_merge($va_annotations_raw, $t_rep->getAnnotations(array('user_id' => $this->request->getUserID(), 'item_id' => $this->request->getParameter('item_id', pInteger))));
+			}
 			$va_annotations = array();
 
 			if (is_array($va_annotations_raw)) {
@@ -1351,6 +1367,7 @@
 			} elseif (!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
 				throw new ApplicationException(_t('Invalid context'));
 			}
+			$o_context = ResultContext::getResultContextForLastFind($this->request, $va_context['table']);
 			
 			if (!($pt_subject = Datamodel::getInstance($vs_subject = $va_context['table']))) {
 				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
@@ -1375,6 +1392,8 @@
 			if($va_merged_options['inline']){
 				$va_merged_options['noOverlay'] = false;
 			}
+			
+			$va_merged_options['resultList'] = $o_context->getResultList();
 			
 			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, $va_merged_options));
 		}
@@ -1459,6 +1478,15 @@
     
             $this->response->addContent(caSearchMediaData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
         }
+        # -------------------------------------------------------
+		/**
+		 * Access to sidecar data (primarily used by 3d viewer)
+		 * Will only return sidecars that are images (for 3d textures), MTL files (for 3d OBJ-format files) or 
+		 * binary (for GLTF .bin buffer data)
+		 */
+		public function GetMediaSidecarData() {
+			caReturnMediaSidecarData($this->request->getParameter('sidecar_id', pInteger), $this->request->user);
+		}
         # -------------------------------------------------------
         /**
          * Provide in-viewer search for those that support it (Eg. UniversalViewer)

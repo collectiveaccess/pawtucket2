@@ -136,6 +136,21 @@ if($vs_mode == "map"){
 					<div class='col-sm-12 col-md-5'>
 						
 						<?php print "<div class='detailPlaceholderContainer'>".$vs_thumbnail."</div>"; ?>
+<?php
+					# --- is there a transcript media - sometimes there is one even though the primary media in not accessible to the public and a placeholder shows for the audio
+					$t_list = new ca_lists();
+					$va_type = $t_list->getItemFromList("object_representation_types", "transcript");
+					$va_transcript_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
+						print "<div id='transcriptLink' class='text-center'>";
+						foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
+							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+							
+							print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
+						}
+						print "</div>";
+					}
+?>
 					</div>
 <?php
 				}
@@ -177,10 +192,15 @@ if($vs_mode == "map"){
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.curators_comments.comments">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial Comment</h6>
 								<div class="trimText">^ca_objects.curators_comments.comments</div>
 							</div>
 						</ifdef>}}}
+						{{{<if rule="^ca_objects.show_photo_boilerplate =~ /Yes/">
+							<div class="unit" data-toggle="popover" title="Source" data-content="<?php print $this->getVar("photo_boilerplate_source"); ?>"><h6>About Residential School Photographs</h6>
+								<div class="trimText"><?php print $this->getVar("photo_boilerplate"); ?></div>
+							</div>
+						</if>}}}
 						{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
 								<div class="trimText">^ca_objects.community_input_objects.comments_objects</div>
@@ -371,7 +391,11 @@ if($vs_mode == "map"){
 		});
 		$( document ).ajaxComplete(function() {
 			if ($('div.caAudioPlayer').length) {
-				$('.caAudioPlayer').prepend('<div class="detailPlaceholderContainer"><i class="fa fa-file-sound-o fa-4x"></i></div>');
+				$('div.caAudioPlayer').each(function(i, obj) {
+					if(!$(this).find(".detailPlaceholderContainer").length) {
+						$(this).prepend('<div class="detailPlaceholderContainer"><i class="fa fa-file-sound-o fa-4x"></i></div>');
+					}
+				});
 			}
 		});
 	});

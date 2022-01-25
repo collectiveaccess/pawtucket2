@@ -33,7 +33,7 @@
             }
             
  			$this->opa_fields = array("teaching_points");
-			$this->purifier = new HTMLPurifier();
+			$this->purifier = caGetHTMLPurifier();
  		}
  		# ------------------------------------------------------
         /**

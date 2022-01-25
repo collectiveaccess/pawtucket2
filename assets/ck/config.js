@@ -43,6 +43,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.extraPlugins = 'camediacontent,calinks';
 	config.allowedContent = true;
 	config.disableNativeSpellChecker = false;
+	config.forcePasteAsPlainText = true;
 };
 
 CKEDITOR.config.allowedContent = true;

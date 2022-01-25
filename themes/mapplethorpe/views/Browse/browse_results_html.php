@@ -51,7 +51,7 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$vn_result_size 	= $qr_res->numHits();
 	
 	
 	$va_options			= $this->getVar('options');
@@ -66,6 +66,9 @@
 	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+	
+	$result_context = new ResultContext($this->request, $vs_table, 'search', strToLower($this->request->getAction()));
+	$va_search_history = $result_context->getSearchHistory();
 	
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -97,12 +100,25 @@ if (!$vb_ajax) {	// !ajax
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
 			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options" title="Sort/Export Options"></i></a>
+				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options" title="Sort/Export Options" data-toggle="tooltip" data-placement="right"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
 						print "<li role='menuitem'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
 						print "<li role='menuitem'><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
+						print "<li class='divider' role='menuitem'></li>";
+					}
+					if(is_array($va_search_history) && sizeof($va_search_history)){
+						$c = 0;
+						print "<li class='dropdown-header' role='menuitem'>"._t("Recent Searches:")."</li>\n";
+						foreach(array_reverse($va_search_history, true) as $vs_search_history => $va_search_history_info) {
+							$vs_search_history_display = strip_tags($va_search_history_info['display']);
+							print "<li role='menuitem'>".caNavLink($this->request, $vs_search_history_display.' ('.$va_search_history_info['hits'].')', '', '', 'Search', '*', array('search' => $vs_search_history))."</li>\n";
+							$c++;
+							if($c == 5){
+								break;
+							}
+						}
 						print "<li class='divider' role='menuitem'></li>";
 					}
 					if($vs_sort_control_type == 'dropdown'){
@@ -222,7 +238,8 @@ if (!$vb_ajax) {	// !ajax
 		}
 
 		print $this->render("Browse/browse_refine_subview_html.php");
-?>			
+?>
+		<a href="#top" class="btn btn-default browseTop"><span class="glyphicon glyphicon-chevron-up"></span> Top</a>		
 	</div><!-- end col-2 -->
 	
 	
@@ -230,6 +247,10 @@ if (!$vb_ajax) {	// !ajax
 
 <script type="text/javascript">
 	jQuery(document).ready(function() {
+		$(function () {
+			$('[data-toggle="tooltip"]').tooltip()
+		})
+		
 		jQuery('#browseResultsContainer').jscroll({
 			autoTrigger: true,
 			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",

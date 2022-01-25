@@ -131,10 +131,10 @@
 					#		$vs_image = $vs_default_placeholder_tag;
 					#	}
 					#}
-					$vs_rep_detail_link 	= "";
-					if($vs_image){
-						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
-					}
+					#$vs_rep_detail_link 	= "";
+					#if($vs_image){
+					#	$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
+					#}
 					$vs_add_to_set_link = "";
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
@@ -146,7 +146,7 @@
 						<div class='resultItemColList col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>".
 						caDetailLink($this->request, 
 							"<div class='resultContentList'>
-								<div class='resultImageList'>".$vs_rep_detail_link."</div>
+								<div class='resultImageList'>".$vs_image."</div>
 								<div class='resultTextList'>".$qr_res->getWithTemplate($vs_result_text_template)."</div>
 								{$vs_add_to_set_link}<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 								<div style='clear:both;'></div>

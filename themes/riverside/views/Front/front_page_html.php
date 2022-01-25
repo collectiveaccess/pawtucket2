@@ -34,10 +34,10 @@
  	
 	
 ?>
-<div class="hero">
+<div class="parallax hero<?php print rand(1, 3); ?>">
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+			<div class="col-sm-12 col-md-6 col-md-offset-3">
 				
 				<div class="heroSearch">
 					<H1>
@@ -58,7 +58,6 @@
 		</div>
 	</div>
 </div>
-
 <div class="container hpIntro">
 	<div class="row">
 		<div class="col-md-12 col-lg-6 col-lg-offset-3">
@@ -73,33 +72,58 @@
 
 			<div class="blog-index">
 				<div class="posts-con">
-					<a href="#" class="indiv-blog">
+					<div class="indiv-blog">
 						<div class="post-image hpBgImgObjects"></div>
 						<div class="post-details">
-							<h4 class="post-title">Objects</h4>
+							<h4 class="post-title"><?php print caNavLink($this->request, "Objects", "", "", "Browse", "objects"); ?></h4>
 							<p class="post-excerpt">{{{home_object_intro}}}</p>
-							<span class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Browse", "objects"); ?>">Read More</span>
+							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Browse", "objects"); ?>">More</a>
 						</div>
-					</a>
+					</div>
 
-					<a href="#" class="indiv-blog">
+					<div class="indiv-blog">
 						<div class="post-image hpBgImgEvents"></div>
 						<div class="post-details">
-							<h4 class="post-title">Events</h4>
+							<h4 class="post-title"><?php print caNavLink($this->request, "Events & Broadcasts", "", "", "Browse", "events"); ?></h4>
 							<p class="post-excerpt">{{{home_event_intro}}}</p>
-							<span class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Browse", "event"); ?>">Read More</span>
+							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Browse", "events"); ?>">More</a>
 						</div>
-					</a>
-					<a href="#" class="indiv-blog">
+					</div>
+					<div href="#" class="indiv-blog">
 						<div class="post-image hpBgImgPeople"></div>
 						<div class="post-details">
-							<h4 class="post-title">People & Organizations</h4>
+							<h4 class="post-title"><?php print caNavLink($this->request, "People & Organizations", "", "", "Browse", "entities"); ?></h4>
 							<p class="post-excerpt">{{{home_people_org_intro}}}</p>
-							<span class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Browse", "entities"); ?>">Read More</span>	
+							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Browse", "entities"); ?>">More</a>	
 						</div>
-					</a>
+					</div>
+					<div href="#" class="indiv-blog">
+						<div class="post-image hpBgImgCollections"></div>
+						<div class="post-details">
+							<h4 class="post-title"><?php print caNavLink($this->request, "Collections", "", "", "Collections", "index"); ?></h4>
+							<p class="post-excerpt">{{{home_collections_intro}}}</p>
+							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Collections", "index"); ?>">More</a>	
+						</div>
+					</div>
+					<div href="#" class="indiv-blog">
+						<div class="post-image hpBgImgGallery"></div>
+						<div class="post-details">
+							<h4 class="post-title"><?php print caNavLink($this->request, "Gallery", "", "", "Gallery", "index"); ?></h4>
+							<p class="post-excerpt">{{{home_gallery_intro}}}</p>
+							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Gallery", "index"); ?>">More</a>
+						</div>
+					</div>
+					<div href="#" class="indiv-blog">
+						<div class="post-image hpBgImgResources"></div>
+						<div class="post-details">
+							<h4 class="post-title"><?php print caNavLink($this->request, "Resources", "", "", "About", "resources"); ?></h4>
+							<p class="post-excerpt">{{{home_resources_intro}}}</p>
+							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "About", "resources"); ?>">More</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>

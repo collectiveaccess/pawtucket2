@@ -39,7 +39,6 @@ require_once(__CA_APP_DIR__.'/models/ca_user_roles.php');
 include_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
 require_once(__CA_APP_DIR__.'/models/ca_user_groups.php');
 require_once(__CA_APP_DIR__.'/models/ca_locales.php');
-require_once(__CA_LIB_DIR__.'/Zend/Currency.php');
 require_once(__CA_LIB_DIR__ . '/Auth/AuthenticationManager.php');
 require_once(__CA_LIB_DIR__."/SyncableBaseModel.php");
 
@@ -1607,9 +1606,11 @@ class ca_users extends BaseModel {
 					$va_uis = $this->_getUIListByType($vn_table_num);
 					
 					$va_defaults = array();
-					foreach($va_uis as $vn_type_id => $va_editor_info) {
-						foreach($va_editor_info as $vn_ui_id => $va_editor_labels) {
-							$va_defaults[$vn_type_id] = $vn_ui_id;
+					if(is_array($va_uis)) {
+						foreach($va_uis as $vn_type_id => $va_editor_info) {
+							foreach($va_editor_info as $vn_ui_id => $va_editor_labels) {
+								$va_defaults[$vn_type_id] = $vn_ui_id;
+							}
 						}
 					}
 					return $va_defaults;
@@ -1641,7 +1642,7 @@ class ca_users extends BaseModel {
 	public function setPreference($ps_pref, $ps_val) {
 		if ($this->isValidPreference($ps_pref)) {
 			if ($this->purify()) {
-				if (!BaseModel::$html_purifier) { BaseModel::$html_purifier = new HTMLPurifier(); }
+				if (!BaseModel::$html_purifier) { BaseModel::$html_purifier = caGetHTMLPurifier(); }
 				if(!is_array($ps_val)) { $ps_val = BaseModel::$html_purifier->purify($ps_val); }
 			}
 			if ($this->isValidPreferenceValue($ps_pref, $ps_val, 1)) {

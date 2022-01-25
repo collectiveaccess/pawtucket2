@@ -52,6 +52,15 @@
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-67371779-14"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+ 
+  gtag('config', 'UA-67371779-14');
+</script>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<base href="<?= $this->request->config->get('site_host').$this->request->config->get('ca_url_root'); ?>"/>
@@ -93,7 +102,7 @@
 				</div>
 				<div class="col-sm-12 col-md-4">
 					<div class="collapse navbar-collapse bs-main-navbar-collapse-2 navbar-search">
-						<form class="navbar-form" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects'); ?>">
+						<form class="navbar-form" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 							<div class="formOutline">
 								<div class="form-group">
 									<input type="text" class="form-control" id="headerSearchInput" placeholder="Search Archives" name="search" autocomplete="off" />

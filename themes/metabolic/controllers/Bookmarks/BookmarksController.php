@@ -141,7 +141,7 @@
  			
  			$va_errors_edit_folder = array();
  			
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
  			
  			$t_folder = new ca_bookmark_folders();
  			$pn_folder_id = $this->request->getParameter('folder_id', pInteger);
@@ -167,7 +167,7 @@
  			
  			$va_errors_new_folder = array();
  			
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
  			
  			$t_new_folder = new ca_bookmark_folders();
  			$pn_folder_id = $this->request->getParameter('folder_id', pInteger);

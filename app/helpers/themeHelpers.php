@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2018 Whirl-i-Gig
+ * Copyright 2009-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -45,13 +45,15 @@
 	 * @return string
 	 */
 	function caGetThemeGraphic($po_request, $ps_file_path, $pa_attributes=null, $pa_options=null) {
+		if(!is_array($pa_attributes)) { $pa_attributes = []; }
+		if(!is_array($pa_options)) { $pa_options = []; }
 		$vs_base_url_path = $po_request->getThemeUrlPath();
 		$vs_base_path = $po_request->getThemeDirectoryPath();
 		$vs_file_path = "/assets/pawtucket/graphics/{$ps_file_path}";
 
         if (file_exists($vs_base_path.$vs_file_path)) {
             // Graphic is present in currently configured theme
-			return caHTMLImage($vs_base_url_path.$vs_file_path, $pa_attributes, $pa_options);
+			return caHTMLImage($vs_base_url_path.$vs_file_path, array_merge($pa_attributes, $pa_options));
 		}
 
         $o_config = Configuration::load();		
@@ -61,7 +63,7 @@
             while($vs_inherit_from_theme = trim(trim($o_config->get(['inheritFrom', 'inherit_from'])), "/")) {
                 $i++;
                 if (file_exists(__CA_THEMES_DIR__."/{$vs_inherit_from_theme}/{$vs_file_path}")) {
-                    return caHTMLImage(__CA_THEMES_URL__."/{$vs_inherit_from_theme}/{$vs_file_path}", $pa_attributes, $pa_options);
+	                return caHTMLImage(__CA_THEMES_URL__."/{$vs_inherit_from_theme}/{$vs_file_path}", array_merge($pa_attributes, $pa_options));
                 }
                 
                 if(!file_exists(__CA_THEMES_DIR__."/{$vs_inherit_from_theme}/conf/app.conf")) { break; }
@@ -71,7 +73,7 @@
         }
 
         // Fall back to default theme
-		return caHTMLImage($po_request->getDefaultThemeUrlPath().$vs_file_path, $pa_attributes, $pa_options);
+		return caHTMLImage($po_request->getDefaultThemeUrlPath().$vs_file_path, array_merge($pa_attributes, $pa_options));
 	}
 	# ---------------------------------------
 	/**
@@ -258,6 +260,15 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific cookies configuration
+	 *
+	 * @return Configuration
+	 */
+	function caGetCookiesConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/cookies.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Returns associative array, keyed by primary key value with values being
 	 * the preferred label of the row from a suitable locale, ready for display
 	 *
@@ -423,14 +434,41 @@
 		
 		if(!$pa_options["currentRepClass"]){ $pa_options["currentRepClass"] = "active"; }
 		
+		$show_only_media_types_when_present = caGetOption('representationViewerShowOnlyMediaTypesWhenPresent', $pa_options, null);
+ 		if(($show_only_media_types_when_present) && !is_array($show_only_media_types_when_present)) { $show_only_media_types_when_present = [$show_only_media_types_when_present]; }
+		
 		# --- get reps as thumbnails
-		$va_reps = $pt_object->getRepresentations(array($ps_version), null, array("checkAccess" => caGetUserAccessValues($po_request), 'primaryOnly' => $pb_primary_only));
+		$va_reps = $pt_object->findRepresentations(['version' => $ps_version, "class" => caGetOption('class', $pa_options, null), "checkAccess" => caGetUserAccessValues($po_request), 'primaryOnly' => $pb_primary_only]);
+		
+		if ($show_only_media_types_when_present) {
+			$mimetypes_present = array_reduce($va_reps, function($c, $i) { $c[$i['mimetype']] = true; return $c; }, []);
+			
+			$show_only_media_types_when_present_reduced = [];
+			foreach($show_only_media_types_when_present as $t) {
+				if (caMimetypeIsValid($t, array_keys($mimetypes_present))) {
+					$show_only_media_types_when_present_reduced[] = $t;
+				}
+			}
+			
+			if(sizeof($show_only_media_types_when_present_reduced) > 0) {
+				$va_reps = array_filter($va_reps, function($v) use ($show_only_media_types_when_present_reduced) {
+					return caMimetypeIsValid($v['mimetype'], array_values($show_only_media_types_when_present_reduced));
+				});	
+			}
+			if(!array_search($pn_representation_id, array_column($va_reps, 'representation_id'))){
+				$tmp = $va_reps;
+				$va_first_rep = array_shift($tmp);
+				$pn_representation_id = $va_first_rep['representation_id'];
+			}
+		}
+		
 		if(sizeof($va_reps) < 2){
-			return;
+			return null;
 		}
 		$va_links = array();
 		$vn_primary_id = "";
-		foreach($va_reps as $vn_rep_id => $va_rep){
+		foreach($va_reps as $va_rep){
+			$vn_rep_id = $va_rep["representation_id"];
 			$vs_class = "";
 			if($va_rep["is_primary"]){
 				$vn_primary_id = $vn_rep_id;
@@ -442,19 +480,24 @@
 				$vs_class = $ps_current_rep_class;
 			}
 			$vs_thumb = $va_rep["tags"][$ps_version];
+			$vs_rep_label = "";
+			if($ps_return_as == "list"){
+				# --- include label of rep for list
+				$vs_rep_label = $va_rep["label"];
+			}
 			switch($ps_link_to){
 				# -------------------------------
 				case "viewer":
-					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array($pt_object->primaryKey() => $pt_object->getPrimaryKey(), 'representation_id' => $vn_rep_id, 'overlay' => 1, 'context' => $po_request->getAction()))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array($pt_object->primaryKey() => $pt_object->getPrimaryKey(), 'representation_id' => $vn_rep_id, 'overlay' => 1, 'context' => $po_request->getAction()))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb.$vs_rep_label."</a>\n";
 					break;
 				# -------------------------------
 				case "carousel":
-					$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".{$ps_current_rep_class}\").removeClass(\"{$ps_current_rep_class}\"); $(this).parent().addClass(\"{$ps_current_rep_class}\"); $(this).addClass(\"{$ps_current_rep_class}\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+					$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".{$ps_current_rep_class}\").removeClass(\"{$ps_current_rep_class}\"); $(this).parent().addClass(\"{$ps_current_rep_class}\"); $(this).addClass(\"{$ps_current_rep_class}\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb.$vs_rep_label."</a>\n";
 					break;
 				# -------------------------------
 				default:
 				case "detail":
-					$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), array("representation_id" => $vn_rep_id));
+					$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb.$vs_rep_label, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), array("representation_id" => $vn_rep_id));
 					break;
 				# -------------------------------
 			}
@@ -492,6 +535,8 @@
 				break;
 			# ---------------------------------
 		}
+		
+		return null;
 	}
 	# ---------------------------------------
 	/*
@@ -850,8 +895,10 @@
 		            $t_instance->load($qr_res->get($t_instance->primaryKey(true)));
 		            if ($alt_text_template = Configuration::load()->get("{$vs_table}_alt_text_template")) { 
                         $alt_text = $t_instance->getWithTemplate($alt_text_template);
-                    } else {
+                    } elseif(is_a($t_instance, "LabelableBaseModelWithAttributes")) {
                         $alt_text = $t_instance->get("{$vs_table}.preferred_labels");
+                    } else {
+                        $alt_text = null;
                     }
 			        $va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", caGetOption('version', $pa_options, 'icon'), ['alt' => $alt_text]);
 			        break;
@@ -885,13 +932,14 @@
 				$vs_set_list = "<ul".(($vs_class) ? " class='".$vs_class."'" : "").(($vs_role) ? " role='".$vs_role."'" : "").">\n";
 
 				$vn_c = 0;
-				
-				if (sizeof($va_sets) > $vn_limit) { $va_sets = array_slice($va_sets, $vn_limit * -1); }
-				foreach($va_sets as $va_set){
+				foreach($va_sets as $vn_set_id => $va_set){
 					if($vb_omit_front_page_set && $vs_front_page_set_code && ($va_set["set_code"] == $vs_front_page_set_code)){
 						continue;
 					}
-					$vs_set_list .= "<li>".caNavLink($po_request, $va_set["name"], "", "", "Gallery", $va_set['set_id'])."</li>\n";
+					$vs_set_list .= "<li>".caNavLink($po_request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</li>\n";
+					$vn_c++;
+
+					if ($vn_c >= $vn_limit) { break; }
 				}
 				$vs_set_list .= "</ul>\n";
 			}
@@ -1050,7 +1098,8 @@
 		$pa_tags = $po_view->getTagList($ps_view);
 		if (!is_array($pa_tags) || !sizeof($pa_tags)) { return null; }
 		
-		$va_form_elements = array();
+		$va_form_elements = [];
+		$va_default_form_values = [];
 		
 		$vb_submit_or_reset_set = false;
 		foreach($pa_tags as $vs_tag) {
@@ -1060,7 +1109,7 @@
 			$vs_tag_proc = $va_parse['tag'];
 			$va_opts = $va_parse['options'];
 			$va_opts['checkAccess'] = $po_request ? caGetUserAccessValues($po_request) : null;
-			
+
 			if (($vs_default_value = caGetOption('default', $va_opts, null)) || ($vs_default_value = caGetOption($vs_tag_proc, $va_default_form_values, null))) { 
 				$va_default_form_values[$vs_tag_proc] = $vs_default_value;
 				unset($va_opts['default']);
@@ -1090,7 +1139,7 @@
 					break;
 				default:
 					if (preg_match("!^(.*):label$!", $vs_tag_proc, $va_matches)) {
-						$po_view->setVar($vs_tag, $vs_tag_val = $t_subject->getDisplayLabel($va_matches[1]));
+						$po_view->setVar($vs_tag, $vs_tag_val = $pt_subject->getDisplayLabel($va_matches[1]));
 					} elseif (preg_match("!^(.*):boolean$!", $vs_tag_proc, $va_matches)) {
 						$po_view->setVar($vs_tag, caHTMLSelect($vs_tag_proc.'[]', array(_t('AND') => 'AND', _t('OR') => 'OR', 'AND NOT' => 'AND NOT'), array('class' => 'caAdvancedSearchBoolean')));
 					} elseif (preg_match("!^(.*):relationshipTypes$!", $vs_tag_proc, $va_matches)) {
@@ -1212,7 +1261,7 @@
                     $.ajax({
                         url: '{$va_json_lookup_info['search']}',
                         dataType: \"json\",
-                        data: { term: '{$ps_field}:' + request.term },
+                        data: { term: ".(caGetOption('restrictToField', $pa_options, false) ? "'{$ps_field}:'" : "''")." + request.term },
                         success: function( data ) {
                             response(data);
                         }
@@ -1226,7 +1275,7 @@
                 select: function( event, ui ) {
                     if(!parseInt(ui.item.id) || (ui.item.id <= 0)) {
                         jQuery('#{$vs_field_proc}_autocomplete{$index}').val('');  // no matches so clear text input
-                        jQuery('#{$vs_field_proc}{$index}').val('xx');
+                        jQuery('#{$vs_field_proc}{$index}').val('');
                         event.preventDefault();
                         return;
                     }
@@ -1314,7 +1363,7 @@
 		# --- get collections configuration
 		$o_collections_config = caGetCollectionsConfig();
 		if($o_collections_config->get("export_max_levels") && ($vn_level > $o_collections_config->get("export_max_levels"))){
-			return;
+			return null;
 		}
 		$t_list = new ca_lists();
 		$va_exclude_collection_type_ids = array();

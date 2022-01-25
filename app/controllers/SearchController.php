@@ -76,8 +76,25 @@
  			$this->view->setVar("config", $this->opo_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
- 			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos(ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
+ 			
+ 			// Try to load browse info assuming advanced, then basic search to get the current table.
+ 			if(!($va_browse_info = caGetInfoForAdvancedSearchType($ps_function))) {
+ 				if(!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
+ 					throw new ApplicationException("Invalid browse type $ps_function");
+ 				}
+ 			}
+ 			// Once we have the current table we can figure out if we're really advanced or not
+ 			$vs_class = $this->ops_tablename = $va_browse_info['table'];
+ 			
+ 			$vb_is_advanced = ((bool)$this->request->getParameter('_advanced', pInteger) || (strpos($z=ResultContext::getLastFind($this->request, $vs_class), 'advanced') !== false));
  			$vs_find_type = $vb_is_advanced ? $this->ops_find_type.'_advanced' : $this->ops_find_type;
+ 			
+ 			// Reload browse info once we're sure we're advanced or not
+ 			if($vb_is_advanced) {
+ 				$va_browse_info = caGetInfoForAdvancedSearchType($ps_function);
+ 			} else {
+ 				$va_browse_info = caGetInfoForBrowseType($ps_function);
+ 			}
  			
  			$this->view->setVar('is_advanced', $vb_is_advanced);
  			$this->view->setVar("browse_type", $ps_function);
@@ -91,7 +108,6 @@
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type $ps_function");
  			}
- 			$vs_class = $this->ops_tablename = $va_browse_info['table'];
  			
  			// Now that table name is known we can set standard view vars
  			parent::setTableSpecificViewVars();
@@ -138,7 +154,7 @@
  			//
  			if($vb_is_advanced) { 
  				$this->opo_result_context->setSearchExpression(
- 					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))
+ 					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])])
  				); 
  				if ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context)) {
  					$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
@@ -177,8 +193,9 @@
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
  			
 			$t_instance = Datamodel::getInstance($vs_class, true);
-			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
-			
+			if($ps_type){
+				$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
+			}
 			$this->view->setVar('t_instance', $t_instance);
  			$this->view->setVar('table', $va_browse_info['table']);
  			$this->view->setVar('primaryKey', $t_instance->primaryKey());
@@ -245,12 +262,12 @@
 			//
 			
 			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
-				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')), array($vs_search_expression_for_display));
+				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get(['matchOnStem', 'match_on_stem']) && caIsSearchStem($vs_search_expression)) ? '*' : '')), array($vs_search_expression_for_display));
 			}
 			if ($vs_search_refine = $this->request->getParameter('search_refine', pString, ['forcePurify' => true])) {
-				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_refine) && preg_match('![\w]+$!', $vs_search_refine)) ? '*' : '')), array($vs_search_refine));
+				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get(['matchOnStem', 'match_on_stem']) && caIsSearchStem($vs_search_refine)) ? '*' : '')), array($vs_search_refine));
 			} elseif ($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) {
-				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString, ['forcePurify' => true])));
+				$o_browse->addCriteria($vs_facet, explode("|", $this->request->getParameter('id', pString, ['forcePurify' => true])));
 			} elseif (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			    foreach ($va_facets as $vs_facet_spec) {
 			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
@@ -261,8 +278,7 @@
 			//
 			// Add additional base criteria if necessary
 			//
-			if($va_base_criteria = $o_search_config->get('baseCriteria')){
-				$va_table_criteria = $va_base_criteria[$va_browse_info['table']];
+			if(($va_base_criteria = $o_search_config->get('baseCriteria') && ($va_table_criteria = $va_base_criteria[$va_browse_info['table']])) || ($va_table_criteria = $va_browse_info['baseCriteria'])){;
 				foreach($va_table_criteria as $vs_facet => $vs_value){
 					$o_browse->addCriteria($vs_facet, $vs_value);
 				}
@@ -328,13 +344,13 @@
 			
 			
 			if (caGetOption('dontShowChildren', $va_browse_info, false)) {
-				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
+				$o_browse->addResultFilter($va_browse_info['table'].'.parent_id', 'is', 'null');	
 			}
 			
 			$vb_root_records_only = caGetOption('omitChildRecords', $va_browse_info, array(), array('castTo' => 'bool'));
  			
  			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
-			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced, 'rootRecordsOnly' => $vb_root_records_only))); }
+			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced || (bool)$o_search_config->get('use_strict_phrase_searching_for_advanced_searches'), 'rootRecordsOnly' => $vb_root_records_only))); }
 		
 			//
 			// Facets

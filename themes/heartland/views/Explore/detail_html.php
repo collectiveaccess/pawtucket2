@@ -5,6 +5,8 @@
 	$vs_type_name_singular = $this->getVar("type_name_singular");
 	$vn_type_id = $this->getVar("type_id");
 	$qr_type_items = $this->getVar("type_items_as_search_result");
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row"><div class="col-sm-12">
 	<H1 class="text-center">Explore <?php print $vs_type_name_plural; ?></H1>
@@ -16,7 +18,7 @@
 			if($i == 0){
 				print '<div class="row">';
 			}
-			print "<div class='col-sm-2 exploreTypeItem'>".$qr_type_items->getWithTemplate("<l>^ca_object_representations.media.iconlarge<br/>^ca_objects.preferred_labels</l>")."</div>";
+			print "<div class='col-sm-2 exploreTypeItem'>".$qr_type_items->getWithTemplate("<l>^ca_object_representations.media.iconlarge<br/>^ca_objects.preferred_labels</l>", array("checkAccess" => $va_access_values))."</div>";
 			$i++;
 			if($i == 6){
 				print '</div>';

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2019 Whirl-i-Gig
+ * Copyright 2007-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -39,9 +39,20 @@ require_once(__CA_LIB_DIR__.'/Configuration.php');
 require_once(__CA_LIB_DIR__.'/Parsers/ZipFile.php');
 require_once(__CA_LIB_DIR__.'/Logging/Eventlog.php');
 require_once(__CA_LIB_DIR__.'/Utils/Encoding.php');
-require_once(__CA_LIB_DIR__.'/Zend/Measure/Length.php');
 require_once(__CA_LIB_DIR__.'/Parsers/ganon.php');
-use GuzzleHttp\Client;
+
+/**
+ * array_key_first polyfill for PHP < 7.3
+ * @see https://www.php.net/manual/en/function.array-key-first.php
+ */
+if (!function_exists('array_key_first')) {
+    function array_key_first(array $arr) {
+        foreach($arr as $key => $unused) {
+            return $key;
+        }
+        return NULL;
+    }
+}
 
 # ----------------------------------------------------------------------
 # String localization functions (getText)
@@ -63,9 +74,15 @@ $g_translation_cache = [];
 
 function _t($ps_key) {
 	if(!$ps_key) { return ''; }
-	global $_, $g_translation_strings, $g_translation_replacements, $g_translation_cache;
+	global $_, $_locale, $g_translation_strings, $g_translation_replacements, $g_translation_cache;
 	
-	if (isset($g_translation_strings[$ps_key])) { return $g_translation_strings[$ps_key]; }
+	if (
+		isset($g_translation_strings[$ps_key]) && 
+		(
+			is_string($g_translation_strings[$ps_key]) || 
+			(is_array($g_translation_strings[$ps_key]) && isset($g_translation_strings[$ps_key][(string)$_locale]))
+		)
+	) { return is_array($g_translation_strings[$ps_key]) ? $g_translation_strings[$ps_key][(string)$_locale] : $g_translation_strings[$ps_key]; }
 	
 	if(!isset($g_translation_cache[$ps_key])) {
 		if (is_array($_)) {
@@ -178,7 +195,7 @@ function caMakeProperUTF8ForXML($ps_text){
 
 	$vn_length = strlen($ps_text);
 	for ($i=0; $i < $vn_length; $i++) {
-		$vn_current = ord($ps_text{$i});
+		$vn_current = ord($ps_text[$i]);
 		if (($vn_current == 0x9) ||
 			($vn_current == 0xA) ||
 			($vn_current == 0xD) ||
@@ -293,7 +310,7 @@ function caFileIsIncludable($ps_file) {
 		if(substr($dir, -1, 1) == "/"){
 			$dir = substr($dir, 0, strlen($dir) - 1);
 		}
-		if ($handle = opendir($dir)) {
+		if ($handle = @opendir($dir)) {
 			while (false !== ($item = readdir($handle))) {
 				if ($item != "." && $item != "..") {
 					if (is_dir("{$dir}/{$item}")) { caRemoveDirectory("{$dir}/{$item}", true);  }
@@ -321,6 +338,8 @@ function caFileIsIncludable($ps_file) {
 	 * @param bool $pb_include_directories. If set paths to directories are included. Default is false (only files are returned).
 	 * @param array $pa_options Additional options, including:
 	 *		modifiedSince = Only return files and directories modified after a Unix timestamp [Default=null]
+	 *		notModifiedSince = Only return files and directories not modified after a Unix timestamp [Default=null]
+	 *		limit = Maximum number of files to return [Default=null; no limit]
 	 * @return array An array of file paths.
 	 */
 	function &caGetDirectoryContentsAsList($dir, $pb_recursive=true, $pb_include_hidden_files=false, $pb_sort=false, $pb_include_directories=false, $pa_options=null) {
@@ -328,16 +347,27 @@ function caFileIsIncludable($ps_file) {
 		if(substr($dir, -1, 1) == "/"){
 			$dir = substr($dir, 0, strlen($dir) - 1);
 		}
-
-		if($va_paths = scandir($dir, 0)) {
+		$limit = caGetOption('limit', $pa_options, null);
+		
+		if(!file_exists($dir)) { return []; }
+		if($va_paths = @scandir($dir, 0)) {
 			foreach($va_paths as $item) {
-				if ($item != "." && $item != ".." && ($pb_include_hidden_files || (!$pb_include_hidden_files && $item{0} !== '.'))) {
+				if ($item != "." && $item != ".." && ($pb_include_hidden_files || (!$pb_include_hidden_files && $item[0] !== '.'))) {
+					$va_stat = @stat("{$dir}/{$item}");
 					if (
-						(isset($pa_option['modifiedSince']) && ($pa_option['modifiedSince'] > 0))
+						(isset($pa_options['modifiedSince']) && ($pa_options['modifiedSince'] > 0))
 						&&
-						(is_array($va_stat = @stat("{$dir}/{$item}")))
+						is_array($va_stat)
 						&&
-						($va_stat['mtime'] < $pa_option['modifiedSince'])
+						($va_stat['mtime'] < $pa_options['modifiedSince'])
+					) { continue; }
+					
+					if (
+						(isset($pa_options['notModifiedSince']) && ($pa_options['notModifiedSince'] > 0))
+						&&
+						is_array($va_stat)
+						&&
+						($va_stat['mtime'] >= $pa_options['notModifiedSince'])
 					) { continue; }
 
 					$vb_is_dir = is_dir("{$dir}/{$item}");
@@ -352,6 +382,7 @@ function caFileIsIncludable($ps_file) {
 						}
 					}
 				}
+				if (($limit > 0) && (sizeof($va_file_list) >= $limit)) { break; }
 			}
 		}
 
@@ -380,7 +411,7 @@ function caFileIsIncludable($ps_file) {
 		);
 		if ($handle = @opendir($dir)) {
 			while (false !== ($item = readdir($handle))) {
-				if ($item != "." && $item != ".." && ($pb_include_hidden_files || (!$pb_include_hidden_files && $item{0} !== '.'))) {
+				if ($item != "." && $item != ".." && ($pb_include_hidden_files || (!$pb_include_hidden_files && $item[0] !== '.'))) {
 					$vb_is_dir = is_dir("{$dir}/{$item}");
 					if ($vb_is_dir) {
 						$va_counts['directories']++;
@@ -421,7 +452,7 @@ function caFileIsIncludable($ps_file) {
 		$vn_file_count = 0;
 		if ($handle = @opendir($dir)) {
 			while (false !== ($item = readdir($handle))) {
-				if ($item != "." && $item != ".." && ($pb_include_hidden_files || (!$pb_include_hidden_files && $item{0} !== '.'))) {
+				if ($item != "." && $item != ".." && ($pb_include_hidden_files || (!$pb_include_hidden_files && $item[0] !== '.'))) {
 					if (is_dir("{$dir}/{$item}")) {
 						$va_dir_list = array_merge($va_dir_list, caGetSubDirectoryList("{$dir}/{$item}", true, $pb_include_hidden_files));
 					}  else {
@@ -607,6 +638,28 @@ function caFileIsIncludable($ps_file) {
 		// @see http://php.net/manual/en/regexp.reference.unicode.php
 		//return preg_replace("/[^\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{N}\p{P}\p{Zp}\p{Zs}\p{S}]|➔/", '', strip_tags($ps_text));
 	}
+	# ---------------------------------------
+	/**
+	  * Repair common errors in hand-written JSON
+	  *
+	  * @param string $json The JSON-encoded data as a string
+	  * @return mixed Decoded JSON data as data structure (Eg. array)
+	  */
+	function caRepairJson($json) {
+	    json_decode($json, TRUE);
+	    if(json_last_error()){
+            // try encode newlines
+            //$json = preg_replace("![\r\n]!", "\\\\n", $json);	
+            
+            // try to remove training commas
+            $json = preg_replace('/[,]{1}[\n\r\t ]*([\]\}]+)/i', '\1', $json);
+            
+            // try to convert curly quotes
+            $json = preg_replace('/[“”]+/', '"', $json);
+               
+        }
+        return $json;
+	}
 	# ----------------------------------------
 	/**
 	 * Return text with quotes escaped for use in a tab or comma-delimited file
@@ -619,13 +672,42 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
+	 * Return text suitable for a regexp with escaped delimiter
 	 *
+	 * @param string $ps_text
+	 * @return string
 	 */
-	function caGetTempDirPath() {
-		if (function_exists('sys_get_temp_dir')) {
-			return sys_get_temp_dir();
-		}
-
+	function caEscapeForDelimitedRegexp($ps_text, $ps_delimiter='!') {
+	    $vs_regex_delimiter = $ps_delimiter != '#' ? '#': '/';
+		return preg_replace($vs_regex_delimiter.'(?<!\\\\)'.$ps_delimiter.$vs_regex_delimiter, '\\'.$ps_delimiter, $ps_text);
+	}
+	# ----------------------------------------
+	/**
+	 * Return regexp delimited making sure delimiter is escaped on the regexp.
+	 *
+	 * @param string $ps_text
+	 * @return string
+	 */
+	function caMakeDelimitedRegexp($ps_text, $ps_delimiter='!') {
+        if ($ps_delimiter=='#') {
+            $vs_regex_delimiter = '/';
+        } else {
+            $vs_regex_delimiter = '#';
+        }
+		return $ps_delimiter.preg_replace($vs_regex_delimiter.'(?<!\\\\)'.$ps_delimiter.$vs_regex_delimiter, '\\'.$ps_delimiter, $ps_text).$ps_delimiter;
+	}
+	# ----------------------------------------
+	/**
+	 * 
+	 *
+	 * @param array $options Options include:
+	 *		useAppTmpDir = Return application temporary directory rather than system tmp directory in all cases. [Default is false]
+	 *
+	 * @return string
+	 */
+	function caGetTempDirPath($options=null) {
+		if(caGetOption('useAppTmpDir', $options, true)) { return __CA_APP_DIR__."/tmp"; }
+	
 		if (!empty($_ENV['TMP'])) {
 			return realpath($_ENV['TMP']);
 		} else {
@@ -640,6 +722,8 @@ function caFileIsIncludable($ps_file) {
 						$vs_tmp_dir = realpath(dirname($vs_tmp));
 						unlink($vs_tmp);
 						return $vs_tmp_dir;
+					} elseif (function_exists('sys_get_temp_dir')) {
+						return sys_get_temp_dir();
 					} else {
 						return "/tmp";
 					}
@@ -648,8 +732,8 @@ function caFileIsIncludable($ps_file) {
 		}
 	}
 	# ----------------------------------------
-	function caGetTempFileName($ps_prefix, $ps_extension = null) {
-		$vs_tmp = tempnam(caGetTempDirPath(), $ps_prefix);
+	function caGetTempFileName($ps_prefix, $ps_extension = null, $options=null) {
+		$vs_tmp = tempnam(caGetTempDirPath($options), $ps_prefix);
 		@unlink($vs_tmp);
 
 		if($ps_extension && strlen($ps_extension)>0) {
@@ -665,10 +749,94 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
+	 * Return path to user media directory (used to temporary storage of user-uploaded media)
+	 * Will create directory if it doesn't not yet exist, unless dontCreateDirectory option is set.
+	 *
+	 * @param int $user_id
+	 * @param array $options Options include:
+	 *		dontCreateDirectory = don't create user directory if it does not exist. [Default is false]
+	 * @return string 
+	 */
+	function caGetUserMediaDirectoryPath(int $user_id, array $options=null) {
+	    $config = Configuration::load();
+		if (!is_writeable($tmp_directory = $config->get('ajax_media_upload_tmp_directory'))) {
+			$tmp_directory = caGetTempDirPath();
+		}
+		
+		$user_dir =  "{$tmp_directory}/userMedia{$user_id}";
+		if(!caGetOption('dontCreateDirectory', $options, false) && !file_exists($user_dir)) {
+			@mkdir($user_dir);
+		}
+		return $user_dir;
+	}
+	# ----------------------------------------
+	/**
 	 *
 	 */
-	function caMakeGetFilePath($ps_prefix=null, $ps_extension=null) {
- 		$vs_path = caGetTempDirPath();
+	function caCleanUserMediaDirectory(int $user_id) {
+	    // use configured directory to dump media with fallback to standard tmp directory
+	    $config = Configuration::load();
+		if (!is_writeable($tmp_directory = $config->get('ajax_media_upload_tmp_directory'))) {
+			$tmp_directory = caGetTempDirPath();
+		}
+
+		$user_dir = caGetUserMediaDirectoryPath($user_id);
+		
+		if (!($timeout = (int)$config->get('ajax_media_upload_tmp_directory_timeout'))) {
+			$timeout = 24 * 60 * 60;
+		}
+		
+		// Cleanup any old files here
+		$files_to_delete = caGetDirectoryContentsAsList($user_dir, true, false, false, true, ['notModifiedSince' => time() - $timeout]);
+		$count = 0;
+		foreach($files_to_delete as $file_to_delete) {
+			if(@unlink($file_to_delete)) { $count++; }
+		}
+		
+		// Cleanup orphan metadata files
+		$files = array_flip(caGetDirectoryContentsAsList($user_dir));
+	
+		foreach($files as $f => $i) {
+			$b = pathinfo($f, PATHINFO_BASENAME);
+			if (preg_match("!^([^_]+)_metadata!", $b, $m) && !isset($files[$user_dir."/".$m[1]])) {
+				@unlink($f);
+				continue;
+			}
+			if (preg_match("!^md5_(.*)$!", $b, $m)) {
+				$r = @file_get_contents($f);
+				if (!isset($files[$user_dir."/".$r])) { @unlink($f); }
+			}
+		}
+		return $count;
+	}
+	# ----------------------------------------
+	/**
+	 *
+	 */
+	function caCleanUserMediaDirectories() {
+	    // use configured directory to dump media with fallback to standard tmp directory
+	    $config = Configuration::load();
+		if (!is_writeable($tmp_directory = $config->get('ajax_media_upload_tmp_directory'))) {
+			$tmp_directory = caGetTempDirPath();
+		}
+
+		$count = 0;
+		if(is_array($dirs = scandir($tmp_directory))) {
+			foreach($dirs as $dir) {
+				if (preg_match("!^userMedia([\d]+)$!", $dir, $m)) {
+					caCleanUserMediaDirectory($m[1]);
+					$count++;
+				}
+			}
+		}
+		return $count;
+	}
+	# ----------------------------------------
+	/**
+	 *
+	 */
+	function caMakeGetFilePath($ps_prefix=null, $ps_extension=null, $options=null) {
+ 		$vs_path = caGetTempDirPath($options);
 
 		do {
 			$vs_file_path = $vs_path.DIRECTORY_SEPARATOR.$ps_prefix.mt_rand().getmypid().($ps_extension ? ".{$ps_extension}" : "");
@@ -753,7 +921,10 @@ function caFileIsIncludable($ps_file) {
 	function caModRewriteIsAvailable() {
 		global $g_mod_write_is_available;
 		if (is_bool($g_mod_write_is_available)) { return $g_mod_write_is_available; }
-		if (function_exists('apache_get_modules')) {
+		if (strpos($_SERVER['SERVER_SOFTWARE'], 'nginx') !== false) {
+		    $g_mod_write_is_available = true;
+		    return true; // assume you have rules set up in you nginx config to handle index.php rewrite
+		} elseif (function_exists('apache_get_modules')) {
 			return $g_mod_write_is_available = (bool)in_array('mod_rewrite', apache_get_modules());
 		} else {
 			return $g_mod_write_is_available = (bool)((getenv('HTTP_MOD_REWRITE') == 'On') ? true : false);
@@ -836,16 +1007,18 @@ function caFileIsIncludable($ps_file) {
 	 * @param string $ps_url The URL to check
 	 * @param array $pa_options Options include:
 	 *		strict = only consider text a valid url if text contains only the url [Default is false]
-	 * @return boolean true if it appears to be valid URL, false if not
+	 *		schemes = array of url schemes to allow. If omitted defaults to [http, https, ftp, rtmp, rtsp, mysql]
+	 *
+	 * @return array|boolean Return array with protocol and url keys if valid URL, false if invalid.
 	 */
 	function isURL($ps_url, $pa_options=null) {
-
+		$schemes = caGetOption('schemes', $pa_options, ['http', 'https', 'ftp', 'rtmp', 'rtsp', 'mysql']);
 		if (
 			caGetOption('strict', $pa_options, false)
 			?
-				preg_match("!^(http|ftp|https|rtmp|rtsp|mysql):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#]*[\w\-\@?^=%&/~\+#])?$!", $ps_url, $va_matches)
+				preg_match("!^(".join('|', $schemes)."):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#]*[\w\-\@?^=%&/~\+#])?$!", $ps_url, $va_matches)
 				:
-				preg_match("!(http|ftp|https|rtmp|rtsp|mysql):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#]*[\w\-\@?^=%&/~\+#])?!", $ps_url, $va_matches)
+				preg_match("!(".join('|', $schemes)."):\/\/[\w\-_]+(\.[\w\-_]+)*([\w\-\.,@?^=%&;:/~\+#]*[\w\-\@?^=%&/~\+#])?!", $ps_url, $va_matches)
 			) {
 			return array(
 				'protocol' => $va_matches[1],
@@ -1439,6 +1612,42 @@ function caFileIsIncludable($ps_file) {
 		
 		if ($t1[0] !== $t2[0]) { return false; }
 		if (($t1[1] === $t2[1]) || ($t1[1] === '*') || ($t2[1] === '*')) { return true; }
+		
+		return false;
+	}
+	# ---------------------------------------
+	/**
+	  * Determine if a mimetype is valid using a list of specific mimetypes, wildcard mimetypes and/or classes.
+	  * The mimetype to be tested may be a specified mimetype (Ex. image/jpeg), a wildcard mimetype (Ex. image/*) or a class (Ex. image)
+	  *
+	  * @param string $mimetype A specific or wildcard mimetype or a class. Ex. image/jpeg, image/*, audio, image, video
+	  * @param array $valid_mimetypes A list of specific or wildcard mimetypes or classes to compare $mimetype against.
+	  * @return bool True if $mimetype is in $valid_mimetypes
+	  */
+	function caMimetypeIsValid(string $mimetype, array $valid_mimetypes) {
+		if(strpos($mimetype, '/') === false) {
+			$mimetypes = caGetMimetypesForClass($mimetype);
+		} else {
+			$mimetypes = [$mimetype];
+		}
+		
+		$valid_mimetypes_exp = [];
+		foreach($valid_mimetypes as $m) {
+			if(strpos($m, '/') === false) {
+				$valid_mimetypes_exp = array_merge($valid_mimetypes_exp, caGetMimetypesForClass($m));
+			} else {
+				$valid_mimetypes_exp[] = $m;
+			}	
+		}
+		
+		foreach($mimetypes as $m1) {
+			foreach($valid_mimetypes_exp as $m2) {
+				if(caCompareMimetypes($m1, $m2)) {
+					return true;
+				}
+			}
+		}
+		
 		
 		return false;
 	}
@@ -2139,7 +2348,7 @@ function caFileIsIncludable($ps_file) {
 	 * @param array $pa_array The array to sanitize
 	 * @param array $pa_options
 	 *        allowStdClass = stdClass object array values are allowed. This is useful for arrays that are about to be passed to json_encode [Default=false]
-	 *		  removeNonCharacterData = remove non-character data from all array value. This option leaves all character data in-place [Default=false]
+	 *		  removeNonCharacterData = remove non-character data from all array values. This option leaves all character data in-place [Default=false]
 	 * @return array The sanitized array
 	 */
 	function caSanitizeArray($pa_array, $pa_options=null) {
@@ -2155,7 +2364,7 @@ function caFileIsIncludable($ps_file) {
 					continue;
 				}
 
-				if (((strlen($vm_v) < 8192) && (!preg_match("!^\X+$!", $vm_v))) || (!mb_detect_encoding($vm_v))) {
+				if (((!empty($vm_v) && strlen($vm_v) < 8192) && (!preg_match("!^\X+$!", $vm_v))) || (!mb_detect_encoding($vm_v))) {
 					unset($pa_array[$vn_k]);
 					continue;
 				}
@@ -2180,7 +2389,7 @@ function caFileIsIncludable($ps_file) {
 		if (!is_array($pa_array)) { return array(); }
 
 		if (!(($o_purifier = caGetOption('purifier', $pa_options, null)) instanceof HTMLPurifier)) {
-			$o_purifier = new HTMLPurifier();
+			$o_purifier = caGetHTMLPurifier();
 		}
 
 		if (!is_array($pa_array)) { return $o_purifier->purify($pa_array); }
@@ -2530,15 +2739,22 @@ function caFileIsIncludable($ps_file) {
 	 * Get symbol for currency if available. "USD" will return "$", for example, while
 	 * "CAD" will return "CAD"
 	 *
-	 * @param $ps_value string Currency specifier (Ex. USD, EUR, CAD)
+	 * @param $value string Currency specifier (Ex. USD, EUR, CAD)
+	 * @param $element_code_or_id Metadata element code or element_id. If provided currency symbol settings from the element will be used. If omitted only global (app.conf) settingd will be used. [Default is null]
 	 *
 	 * @return string Symbol (Ex. $, £, ¥) or currency specifier if no symbol is available
 	 */
-	function caGetCurrencySymbol($ps_value) {
+	function caGetCurrencySymbol($value, $element_code_or_id=null) {
 		$o_config = Configuration::load();
-		$vs_dollars_are_this = strtolower($o_config->get('default_dollar_currency'));
-		switch(strtolower($ps_value)) {
-			case $vs_dollars_are_this:
+		
+		$dollars_are_this = null;
+		if($element_code_or_id && ($t_element = ca_metadata_elements::getInstance($element_code_or_id))) {
+			$dollars_are_this = strtolower($t_element->getSetting('dollarCurrency'));
+		}
+		if (!$dollars_are_this) { $dollars_are_this = strtolower($o_config->get('default_dollar_currency')); }
+		
+		switch(strtolower($value)) {
+			case $dollars_are_this:
 				return '$';
 			case 'eur':
 				return '€';
@@ -2547,7 +2763,7 @@ function caFileIsIncludable($ps_file) {
 			case 'jpy':
 				return '¥';
 		}
-		return $ps_value;
+		return $value;
 	}
 	# ----------------------------------------
 	/**
@@ -2561,15 +2777,15 @@ function caFileIsIncludable($ps_file) {
 
 		// either
 		if (preg_match("!^([^\d]+)([\d\.\,]+)$!", trim($ps_value), $va_matches)) {
-			$vs_decimal_value = $va_matches[2];
+			$vs_decimal_value = round((float)str_replace(',', '', $va_matches[2]), 2);
 			$vs_currency_specifier = trim($va_matches[1]);
 		// or 1
 		} else if (preg_match("!^([\d\.\,]+)([^\d]+)$!", trim($ps_value), $va_matches)) {
-			$vs_decimal_value = $va_matches[1];
+			$vs_decimal_value = round((float)str_replace(',', '', $va_matches[1]), 2);
 			$vs_currency_specifier = trim($va_matches[2]);
 		// or 2
 		} else if (preg_match("!(^[\d\,\.]+$)!", trim($ps_value), $va_matches)) {
-			$vs_decimal_value = $va_matches[1];
+			$vs_decimal_value = round((float)str_replace(',', '', $va_matches[1]), 2);
 			$vs_currency_specifier = null;
 		}
 
@@ -2612,16 +2828,21 @@ function caFileIsIncludable($ps_file) {
 	 * @return array Array with "width" and "height" keys for scaled dimensions
 	 */
 	function caFitImageDimensions($pn_original_width, $pn_original_height, $pn_target_width, $pn_target_height, $pa_options=null) {
-		$pn_original_width = preg_replace('![^\d]+!', '', $pn_original_width);
-		$pn_original_height = preg_replace('![^\d]+!', '', $pn_original_height);
-		if ($pn_original_width > $pn_original_height) {
+		$pn_original_width = (float)preg_replace('![^\d]+!', '', $pn_original_width);
+		$pn_original_height = (float)preg_replace('![^\d]+!', '', $pn_original_height);
+		
+		if(($pn_original_width === 0.0) || ($pn_original_height === 0.0)) { 
+			return ['width' => (int)$pn_target_width, 'height' => (int)$pn_target_height];
+		}
+		
+		if ($$pn_original_width > $pn_original_height) {
 			$vn_scale_factor = $pn_target_width/$pn_original_width;
 			$pn_target_height = $vn_scale_factor * $pn_original_height;
 		} else {
 			$vn_scale_factor = $pn_target_height/$pn_original_height;
 			$pn_target_width = $vn_scale_factor * $pn_original_width;
 		}
-		return array('width' => (int)$pn_target_width, 'height' => (int)$pn_target_height);
+		return ['width' => (int)$pn_target_width, 'height' => (int)$pn_target_height];
 	}
 	# ----------------------------------------
 	/**
@@ -2706,11 +2927,46 @@ function caFileIsIncludable($ps_file) {
 	/** 
 	 *
 	 */
-	function caHumanFilesize($bytes, $decimals = 2) {
-		$size = array('B','KiB','MiB','GiB','TiB');
-		$factor = floor((strlen($bytes) - 1) / 3);
+	function caHumanFilesize($bytes, $decimals = 2) : string {
+		$size = ['B','KiB','MiB','GiB','TiB'];
+		$factor = intval(floor((strlen((int)$bytes) - 1) / 3), 10);
 
-		return sprintf("%.{$decimals}f", $bytes/pow(1024, $factor)).@$size[$factor];
+		return sprintf("%.{$decimals}f", (int)$bytes/pow(1024, $factor)).@$size[$factor];
+	}
+	# ----------------------------------------
+	/** 
+	 * Parse human-readable filesize into bytes. Note that we always assume that 
+	 * 1 kilobyte = 1024 bytes, not 1000 bytes as Mac OS and some hard drive manufacturers do.
+	 *
+	 * Common and IEC units may be used:
+	 *		Common = 'B', 'KB', 'MB', 'GB', 'TB', 'PB'
+	 *		IEC = 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'
+	 *
+	 * @param string $from File size expression
+	 * @return int File size in bytes, or null if the expression could not be parsed.
+	 */
+	function caParseHumanFilesize(string $from): ?int {
+		$alts = [
+			'KIB' => 'KB', 'MIB' => 'MB', 'GIB' => 'GB', 'TIB' => 'TB', 'PIB' => 'PB'		// iec
+		];
+		$units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+		
+		$suffix = preg_match('![ ]*([KIBMGTP]+)[ ]*$!i', $from, $m) ? strtoupper($m[1]) : null;
+		$number = preg_replace('![^\d\.]!', '', $from);
+		
+		//B or no suffix
+		if(is_numeric($number) && !$suffix) {
+			return $number;
+		}
+		
+		if (isset($alts[$suffix])) { $suffix = $alts[$suffix]; }
+
+		$exponent = array_flip($units)[$suffix] ?? null;
+		if($exponent === null) {
+			return null;
+		}
+
+		return $number * (1024 ** $exponent);
 	}
 	# ----------------------------------------
 	/**
@@ -2858,8 +3114,7 @@ function caFileIsIncludable($ps_file) {
                         $va_response = $o_client->request('GET', '?'.$vs_query.'&sign='.$vs_hash);
                         $vb_success = json_decode($va_response->getBody(), true);
                         if($vb_success){
-                            #$vs_query = 'user='.$va_api['user'].'&function=search_public_collections&param1='.rawurlencode($vs_collection_name).'&param2=name&param3=ASC&param4=0&param5=0';
-                            $vs_query = 'user='.$va_api['user'].'&function=get_user_collections';
+                            $vs_query = 'user='.$ps_user.'&function=get_user_collections';
                             $vs_hash = hash('sha256', $ps_key.$vs_query);
 
                             $va_response = $o_client->request('GET', '?'.$vs_query.'&sign='.$vs_hash);
@@ -2894,6 +3149,16 @@ function caFileIsIncludable($ps_file) {
 	 * @return string
 	 * @throws \Exception
  	 */
+	class WebServiceError extends \Exception
+	{
+		/**
+		 * Wrapper for getMessage() which is declared as final.
+		 */
+		public function toString(): string
+		{
+			return $this->getMessage();
+		}
+	}
 	function caQueryExternalWebservice($ps_url) {
 		if(!isURL($ps_url)) { return false; }
 		$o_conf = Configuration::load();
@@ -2918,9 +3183,8 @@ function caFileIsIncludable($ps_file) {
 		$vs_content = curl_exec($vo_curl);
 
 		if(curl_getinfo($vo_curl, CURLINFO_HTTP_CODE) !== 200) {
-			throw new \Exception(_t('An error occurred while querying an external webservice'));
+			throw new WebServiceError(_t('An error occurred while querying an external webservice'). _t(" at %1", $ps_url). " ". print_r(curl_getinfo($vo_curl), true));
 		}
-
 		curl_close($vo_curl);
 		return $vs_content;
 	}
@@ -3134,6 +3398,8 @@ function caFileIsIncludable($ps_file) {
             case 'g.':
             case 'gram':
             case 'grams':
+            case 'gm':
+            case 'gm.':
                 return $vb_return_short ? 'g' : Zend_Measure_Weight::GRAM;
                 break;
             case 'mg':
@@ -3260,7 +3526,7 @@ function caFileIsIncludable($ps_file) {
 			$va_measurements = explode(strtolower($ps_delimiter), mb_strtolower($ps_expression));
 		} else {
 			$ps_delimiter = '';
-			$va_measurements = array($pm_value);
+			$va_measurements = array($ps_expression);
 		}
 		
 		$va_glyphs = array_keys(caGetFractionalGlyphTable());
@@ -3363,6 +3629,7 @@ function caFileIsIncludable($ps_file) {
 	 * @return bool True if $guid is a valid guid
 	 */
 	function caIsGUID($guid){
+	    if (!is_string($guid)) { return false; }
 		return preg_match("/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i", $guid);
 	}
 	# ----------------------------------------
@@ -3378,8 +3645,6 @@ function caFileIsIncludable($ps_file) {
 	        $vs_token = bin2hex(random_bytes(32));
 	    } elseif (function_exists("openssl_random_pseudo_bytes")) {     // PHP 5.x with OpenSSL
 			$vs_token = bin2hex(openssl_random_pseudo_bytes(32));
-		} elseif (function_exists('mcrypt_create_iv')) {                // PHP 5.x with mcrypt
-            $vs_token = bin2hex(mcrypt_create_iv(32, MCRYPT_DEV_URANDOM));
         } else {
             $vs_token = md5(uniqid(rand(), TRUE));   // this is not very good, and is only used if one of the more secure options above is available (one of them should be in almost all cases)
 	    }
@@ -3389,7 +3654,7 @@ function caFileIsIncludable($ps_file) {
 	        	$va_tokens = array_filter($va_tokens, function($v) { return ($v > (time() - 28800)); });	// delete any token older than eight hours
 	    	}
 	    	if (sizeof($va_tokens) > 600) { 
-	    		$va_tokens = array_slice($va_tokens, 0, 300, true); // delete last half of token buffer if it gets too long
+	    		$va_tokens = array_slice($va_tokens, 0, 200, true); // delete last third of token buffer if it gets too long
 	    	}
 	    
 	        if (!isset($va_tokens[$vs_token])) { $va_tokens[$vs_token] = time(); }
@@ -3403,21 +3668,22 @@ function caFileIsIncludable($ps_file) {
 	 * Validate CSRF token using current session
 	 *
 	 * @param RequestHTTP $po_request Current request
-	 * @param string $ps_token CSRF token to validate. If omitted token in the "crsfToken" parameter is extracted from current request.
+	 * @param string $ps_token CSRF token to validate. If omitted token in the "csrfToken" parameter is extracted from current request.
 	 * @param array $pa_options Options include:
-	 *      remove = remove validated token from active token list. [Default is true]
-	 *      exceptions = throw exception if token is invalid. [Default is true]
+	 *      remove = remove validated token from active token list. [Default is false]
+	 *      exceptions = throw exception if token is invalid. [Default is false]
+	 *      notifications = post notification if token is invalid. [Default is false]
 	 * @return bool
 	 * @throws ApplicationException
 	 */
 	function caValidateCSRFToken($po_request, $ps_token=null, $pa_options=null){
 		$session_id = $po_request ? $po_request->getSessionID() : 'none';
 		
-	    if(!$ps_token) { $ps_token = $po_request->getParameter('crsfToken', pString); }
+	    if(!$ps_token) { $ps_token = $po_request->getParameter('csrfToken', pString); }
 	    if (!is_array($va_tokens = PersistentCache::fetch("csrf_tokens_{$session_id}", "csrf_tokens"))) { $va_tokens = []; }
 	    
 	    if (isset($va_tokens[$ps_token])) { 
-	        if (caGetOption('remove', $pa_options, true)) {
+	        if (caGetOption('remove', $pa_options, false)) {
 	            unset($va_tokens[$ps_token]);
 	        	PersistentCache::save("csrf_tokens_{$session_id}", $va_tokens, "csrf_tokens");
 	        }
@@ -3449,8 +3715,9 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
-	 * Simple helper to figure out if there is a value in the initial values array
+	 * Figure out if there is a value in the initial values array
 	 * (the one that we feed to the initialize bundle javascript)
+	 *
 	 * @param string $ps_id_prefix the id prefix for the field in question, used to figure out what format the array has
 	 * @param array|string $pa_initial_values
 	 * @return bool
@@ -3473,13 +3740,10 @@ function caFileIsIncludable($ps_file) {
 					}
 				}
 			}
-		} elseif (preg_match("/Labels$/", $ps_id_prefix)) { // labels
-			return (is_array($pa_initial_values) && (sizeof($pa_initial_values) > 0));
-		} elseif (preg_match("/\_rel$/", $ps_id_prefix)) {
+		} else {
+			// Any elements means a value
 			return (is_array($pa_initial_values) && (sizeof($pa_initial_values) > 0));
 		}
-
-		return false;
 	}
 	# ----------------------------------------
 	/**
@@ -3717,13 +3981,15 @@ function caFileIsIncludable($ps_file) {
 	 * @param array $pa_options Options include:
 	 *		locale = Locale settings to use. If omitted current default locale is used. [Default is current locale]
 	 *		omitArticle = Omit leading definite and indefinited articles, rather than moving them to the end of the text [Default is true]
+	 *		maxLength = Maximum length of returned value. [Default is 255]
 	 *
-	 * @return string Converted text. If locale cannot be found $ps_text is returned unchanged.
+	 * @return string Converted text. If locale cannot be found $ps_text is returned truncated to "maxLength" value, but otherwise unchanged.
 	 */
 	function caSortableValue($ps_text, $pa_options=null) {
 		global $g_ui_locale;
 		$ps_locale = caGetOption('locale', $pa_options, $g_ui_locale);
-		if (!$ps_locale) { return $ps_text; }
+		$max_length = caGetOption('maxLength', $pa_options, 255, ['castTo' => 'int']);
+		if (!$ps_locale) { return mb_substr($ps_text, 0, $max_length); }
 
 		$pb_omit_article = caGetOption('omitArticle', $pa_options, true);
 
@@ -3732,7 +3998,7 @@ function caFileIsIncludable($ps_file) {
 		$vs_display_value = trim(preg_replace('![^\p{L}0-9 ]+!u', ' ', $ps_text));
 
 		// Move articles to end of string
-		$va_articles = caGetArticlesForLocale($ps_locale);
+		$va_articles = caGetArticlesForLocale($ps_locale) ?: [];
 
 		foreach($va_articles as $vs_article) {
 			if (preg_match('!^('.$vs_article.')[ ]+!i', $vs_display_value, $va_matches)) {
@@ -3748,7 +4014,7 @@ function caFileIsIncludable($ps_file) {
 				$vs_display_value = str_replace($va_matches[$i], $vs_padded, $vs_display_value);
 			}
 		}
-		return $vs_display_value;
+		return mb_substr($vs_display_value, 0, $max_length, 'UTF-8');
 	}
 	# ----------------------------------------
 	/**
@@ -3816,7 +4082,7 @@ function caFileIsIncludable($ps_file) {
 		$o_purifier = null;
 		if($pb_purify = caGetOption('purify', $pa_options, false)) {
 			if (!(($o_purifier = caGetOption('purifier', $pa_options, null)) instanceof HTMLPurifier)) {
-				$o_purifier = new HTMLPurifier();
+				$o_purifier = caGetHTMLPurifier();
 			}
 		}
 
@@ -3838,7 +4104,7 @@ function caFileIsIncludable($ps_file) {
 							if (is_array($vm_list_val[1]) && $o_purifier) {
 								$va_vals_proc = [];
 								foreach($vm_list_val[1] as $vm_sublist_val) {
-									$va_vals_proc[] = !is_null($vm_sublist_val) ? $o_purifier->purify($vm_sublist_val) : $vm_sublist_val;
+									$va_vals_proc[] = !is_null($vm_sublist_val) ? str_replace("&amp;", "&", $o_purifier->purify($vm_sublist_val)) : $vm_sublist_val;
 								}
 
 								if (!is_numeric($vs_key2)) {
@@ -3848,9 +4114,9 @@ function caFileIsIncludable($ps_file) {
 								}
 							} else {
 								if (!is_numeric($vs_key2)) {
-									$va_values_proc[$vs_key][$vs_key2][] = [$vm_list_val[0], $o_purifier && !is_null($vm_list_val[1]) ? $o_purifier->purify($vm_list_val[1]) : $vm_list_val[1]];
+									$va_values_proc[$vs_key][$vs_key2][] = [$vm_list_val[0], $o_purifier && !is_null($vm_list_val[1]) ? str_replace("&amp;", "&", $o_purifier->purify($vm_list_val[1])) : $vm_list_val[1]];
 								} else {
-									$va_values_proc[$vs_key][] = [$vm_list_val[0], $o_purifier && !is_null($vm_list_val[1]) ? $o_purifier->purify($vm_list_val[1]) : $vm_list_val[1]];
+									$va_values_proc[$vs_key][] = [$vm_list_val[0], $o_purifier && !is_null($vm_list_val[1]) ? str_replace("&amp;", "&", $o_purifier->purify($vm_list_val[1])) : $vm_list_val[1]];
 								}
 							}
 						} else {
@@ -3859,7 +4125,7 @@ function caFileIsIncludable($ps_file) {
 					}
 				}
 			} else {
-				$va_values_proc[$vs_key][] = [is_null($vm_val) ? 'IS' : '=', $o_purifier && !is_null($vm_val) ? $o_purifier->purify($vm_val) : $vm_val];
+				$va_values_proc[$vs_key][] = [is_null($vm_val) ? 'IS' : '=', $o_purifier && !is_null($vm_val) ? str_replace("&amp;", "&", $o_purifier->purify($vm_val)) : $vm_val];
 			}
 		}
 		return $va_values_proc;
@@ -3893,9 +4159,10 @@ function caFileIsIncludable($ps_file) {
 				return ($pb_nullable) ? true : false;
 				break;
 			case 'in':
+			case 'not in':
 				return ($pb_is_list) ? true : false;
 				break;
-			case 'not in':
+			case 'between':
 				return ($pb_is_list) ? true : false;
 				break;
 		}
@@ -3921,7 +4188,7 @@ function caFileIsIncludable($ps_file) {
 		for($i=0; $i < mb_strlen($ps_template); $i++) {
 			switch($vs_char = mb_substr($ps_template, $i, 1)) {
 				case '{':
-				    if (!$vb_in_tag && !$vb_in_single_quote && $vb_in_single_quote && (mb_substr($ps_template, $i+1, 1) === '^')) {
+				    if (!$vb_in_tag && !$vb_in_single_quote && (mb_substr($ps_template, $i+1, 1) === '^')) {
 				        continue(2);
 				    }
 				    break;
@@ -3982,7 +4249,12 @@ function caFileIsIncludable($ps_file) {
 						if ((!$vb_is_ca_get_ref) && preg_match("!^ca_[a-z]+\.$!", $vs_tag)) {
 							$vb_is_ca_get_ref = true;
 						}
-						if ($vb_is_ca_get_ref && !$vb_have_seen_param_delimiter && (!preg_match("![A-Za-z0-9_\-\.~:]!", $vs_char))) {
+						
+						if (
+							($vb_is_ca_get_ref && !$vb_have_seen_param_delimiter && (!preg_match("![A-Za-z0-9_\-\.~:]!", $vs_char)))
+							||
+							(($vs_char === ':') && !preg_match("!^[A-Za-z0-9]+!", mb_substr($ps_template, $i + 1)))	// colon not followed by letters of numbers is not part of tag
+						) {
 							if ($vs_tag = trim($vs_tag)) { $va_tags[] = $vs_tag; }
 							$vs_tag = '';
 							$vb_in_tag = $vb_in_single_quote = $vb_in_double_quote = $vb_is_ca_get_ref = false;
@@ -4080,7 +4352,7 @@ function caFileIsIncludable($ps_file) {
 	 * @param array $array1
 	 * @param array $array2
 	 *
-	 * @return array
+	 * @return array|string
 	 */
 	function caCamelToSnake($pm_text) {
 	    if(is_array($pm_text)) {
@@ -4159,5 +4431,189 @@ function caFileIsIncludable($ps_file) {
 		$pw = substr(md5(uniqid(microtime())), rand(0, (31 - $length)), $length);
 		if (caGetOption('uppercase', $options, false)) { $pw = strtoupper($pw); }
 		return $pw;
+	}
+	# ----------------------------------------
+	/**
+	 * Copy file from URL and write to destination in file system.
+	 *
+	 * @param string $url
+	 * @param string $dest File path to write data to. If omitted a temporary file will be created. [Default is null]
+	 * @param array $options Options include:
+	 *		mimetypes = MIME type, or list of MIME types expected in response to URL. If content type of response does ot match the MIME type(s) specified here a UrlFetchException is thrown.
+	 * 
+	 * @throws UrlFetchException
+	 * @return string Path to file
+	 */
+	function caFetchFileFromUrl($url, $dest=null, array $options=null) {
+		$tmp_file = $dest ? $dest : tempnam(__CA_APP_DIR__.'/tmp', 'caUrlCopy');
+		
+		$r_outgoing_fp = @fopen($tmp_file, 'w');
+		if(!$r_outgoing_fp) {
+			throw new UrlFetchException(_t("Cannot open temporary file for media fetched from URL [%1]", $url));
+		}
+		
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_FILE, $r_outgoing_fp);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 240);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_exec($ch);
+ 
+		if(curl_errno($ch)){
+			throw new UrlFetchException(_t('Media fetch from URL [%1] failed: %2', $url, curl_error($ch)));
+		}
+ 
+		$status_code = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+		curl_close($ch);
+		fclose($r_outgoing_fp);
+		
+		if ($status_code !== 200) {
+			@unlink($tmp_file);
+			throw new UrlFetchException(_t("Media fetched from URL [%1] failed with status code %2", $url, $status_code));
+		}
+		
+		$mimetypes = caGetOption('mimetype', $options, null, ['castTo' => 'array']);
+		if (is_array($mimetypes) && sizeof($mimetypes)) {
+			if(!$content_type || !in_array($content_type, $mimetypes, true)) { 
+				@unlink($tmp_file);
+				throw new UrlFetchException(_t("Media fetched from URL [%1] is not in accepted format", $url));
+			}
+		}
+		return $tmp_file;
+	}
+	# ----------------------------------------
+	/**
+	 * Compare two arrays. Returns true if both are arrays that contain the same items in any order.
+	 *
+	 * @param array $a First array
+	 * @param array $b Second array
+	 *
+	 * @return bool
+	 */
+	function caArraysAreEqual($a, $b) {
+		return (
+			 is_array($a) 
+			 && is_array($b) 
+			 && count($a) == count($b) 
+			 && array_diff($a, $b) === array_diff($b, $a)
+		);
+	}
+	# ----------------------------------------
+	/**
+	 * Returns number of times idno is used.
+	 *
+	 * @param string $idno The idno to search for.
+	 * @param string $table Table to look for idno in. If omitted "ca_objects" is assumed. [Default is null]
+	 *
+	 * @return int Number of times idno is used for records in specified table.
+	 */
+	function caIdnoUseCount($idno, $table=null) {
+		if (!$table || !($instance = Datamodel::getInstance($table, true))) {
+			$table = 'ca_objects';
+			$instance = Datamodel::getInstance($table, true);
+		}
+		if (!($idno_fld = $instance->getProperty('ID_NUMBERING_ID_FIELD'))) { return false; }
+		return $table::find($x=[$idno_fld => $idno], ['returnAs' => 'count']);
+	}
+	# ----------------------------------------
+	/**
+	 * Shows a variable in JSON format.
+	 *
+	 * @param $var
+	 *
+	 * @return string
+	 */
+	function caPrettyJson( $var ) {
+		return gettype( $var ) . ' ' . json_encode(
+				$var,
+				JSON_UNESCAPED_SLASHES |
+				JSON_UNESCAPED_UNICODE |
+				JSON_PRETTY_PRINT |
+				JSON_PARTIAL_OUTPUT_ON_ERROR |
+				JSON_INVALID_UTF8_SUBSTITUTE
+			);
+	}
+	# ----------------------------------------
+	/**
+	 *
+	 */
+	function caReturnValueInBytes($vs_val) {
+		$vs_val = trim($vs_val);
+		$vs_last = strtolower($vs_val[strlen($vs_val)-1]);
+		switch($vs_last) {
+			case 't':
+				$vs_val *= 1024;
+			case 'g':
+				$vs_val *= 1024;
+			case 'm':
+				$vs_val *= 1024;
+			case 'k':
+				$vs_val *= 1024;
+		}
+		return $vs_val;
+	}
+	# ----------------------------------------
+	/**
+	 *
+	 */
+	function caChangeArrayKeyCase($array, $case = CASE_LOWER) {
+		foreach ($array as $k => $v) {
+			$ret[mb_convert_case($k, (($case === CASE_LOWER) ? MB_CASE_LOWER : MB_CASE_UPPER), "UTF-8")] = (is_array($v) ? caChangeArrayKeyCase($v, $case) : $v );
+		}
+		return $ret;
+	}
+	# ----------------------------------------
+	/**
+	 * Transform comma separated values in the form "Print, Photo" to a serialized version ("Photo Print")
+	 *
+	 * @param string $value Value to transform
+	 *
+	 * @return string Transformed value
+	 */
+	function caSerializeCommaSeparatedName(string $value) {
+		$tmp = array_map("trim", explode(',', $value));
+		$v = array_shift($tmp);
+		return join(" ", $tmp)." {$v}";
+	}
+    # ----------------------------------------
+	/**
+	 * Convery hex color value to decimal RGB values
+	 *
+	 * @param string $value Hex color value to convert
+	 *
+	 * @return array Array of RGB decimal values
+	 */
+	function caHexColorToRGB(string $value) {
+		if ($value[0] === '#') { $value = substr($value, 1); }
+		if(strlen($value) !== 6) { return null; }
+		
+		return [
+			hexdec(substr($value, 0, 2)),
+			hexdec(substr($value, 2, 2)),
+			hexdec(substr($value, 4, 2))
+		];
+	}
+    # ----------------------------------------
+	/**
+	 * Escape/quote regex delimiter, leaving other special characters intact
+	 *
+	 * @param string $regex 
+	 * @param string $delimiter
+	 *
+	 * @return string
+	 */
+	function caQuoteRegexDelimiter(string $regex, string $delimiter) : string {
+		$regex = str_replace($delimiter, "\\{$delimiter}", $regex);
+		
+		return $regex;
+	}
+    # ----------------------------------------
+	/**
+	 *
+	 */
+	function caGetHTMLPurifier(?array $options=null) : HTMLPurifier {
+		$config = HTMLPurifier_Config::createDefault();
+		$config->set('URI.DisableExternalResources', !Configuration::load()->get('purify_allow_external_references'));
+		return new HTMLPurifier($config); 
 	}
 	# ----------------------------------------

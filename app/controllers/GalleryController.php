@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2020 Whirl-i-Gig
+ * Copyright 2013-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -128,8 +128,8 @@
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
  				
  				$set_item_id = $this->request->getParameter('set_item_id', pInteger);
- 				if(!in_array($set_item_id, array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values))))){
- 					$set_item_id = "";	
+ 				if(!$set_item_id || !in_array($set_item_id, array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values))))){
+ 					$set_item_id = Session::getVar("last_item_for_set_{$set_id}");	
  				}
  				$this->view->setVar("set_item_id", $set_item_id);
  				
@@ -151,14 +151,14 @@
 								array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))),
 								['checkAccess' => $this->opa_access_values]
 							);
-
+							$va_map_display = caGetOption("display", $views_info, array());
 							$opts = array(
-								'renderLabelAsLink' => false, 
+								'renderLabelAsLink' => true, 
 								'request' => $this->request, 
 								'color' => '#cc0000', 
-								'label' => 'ca_places.preferred_labels.name', 
-								'content' => 'ca_places.preferred_labels.name',
-								'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', ['set_id' => $set_id])
+								'labelTemplate' => caGetOption("labelTemplate", $va_map_display, 'ca_places.preferred_labels.name'), 
+								'contentTemplate' => caGetOption("contentTemplate", $va_map_display, 'ca_places.preferred_labels.name'),
+								//'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', ['set_id' => $set_id])
 							);
 			
 							$o_map = new GeographicMap(caGetOption("width", $views_info, "100%"), caGetOption("height", $views_info, "600px"));
@@ -256,7 +256,7 @@
             $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
             $views_info = $this->config->get('views');
             $view_info = $views_info["map"][$table];
-            $content_template = $view_info['display']['icon'].$view_info['display']['title_template'].$view_info['display']['description_template'];
+            $content_template = $view_info['display']['labelTemplate'].$view_info['display']['contentTemplate'];
 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($content_template, $table, $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
 			
 			$this->view->setVar('heading', trim($view_info['display']['heading']) ? caProcessTemplateForIDs($view_info['display']['heading'], $table, [$pa_ids[0]], array('checkAccess' => $this->opa_access_values)) : "");
@@ -287,7 +287,7 @@
 			if(!(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && !in_array($t_rep->get("access"), $this->opa_access_values))){
 				$this->view->setVar("rep_object", $t_rep);
 				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
-				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery']));
+				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery', 'set_id' => $set_id]));
 				$this->view->setVar("representation_id", $set_items[$item_id]["representation_id"]);
 			}
  			$this->view->setVar("object_id", $set_items[$item_id]["row_id"]);
@@ -305,6 +305,11 @@
  			}
  			$this->view->setVar("next_item_id", $next_id);
  			$this->view->setVar("previous_item_id", $previous_id);
+ 			
+ 			$this->view->setVar("next_row_id", $set_items[$next_id]["row_id"]);
+ 			$this->view->setVar("previous_row_id", $set_items[$previous_id]["row_id"]);
+ 			$this->view->setVar("next_representation_id", $set_items[$next_id]["representation_id"]);
+ 			$this->view->setVar("previous_representation_id", $set_items[$previous_id]["representation_id"]);
  			
  			$this->render("Gallery/set_item_rep_html.php");
  		}
@@ -336,6 +341,9 @@
  			$this->view->setVar("label", $t_instance->getLabelForDisplay());
  			$this->view->setVar("table", $table);
  			
+ 			Session::setVar("last_item_for_set_{$set_id}", $item_id);
+ 			Session::save();
+ 			
  			//
  			// Tag substitution
  			//
@@ -350,7 +358,7 @@
  			foreach($va_tag_list as $vs_tag) {
  				if (in_array($vs_tag, $va_defined_vars)) { continue; }
  				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
- 					$this->view->setVar($vs_tag, $t_set_item->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
+ 					$this->view->setVar($vs_tag, $t_instance->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} elseif (strpos($vs_tag, ".") !== false) {
  					if(!strlen($v = $t_set_item->get($vs_tag, array('checkAccess' => $this->opa_access_values)))) {
  						$v = $t_instance->get($vs_tag, array('checkAccess' => $this->opa_access_values));
@@ -372,7 +380,7 @@
  			$va_ret = array(
  				'module_path' => '',
  				'controller' => 'Gallery',
- 				'action' => 'Index',
+ 				'action' => '^set_id',
  				'params' => []
  			);
 			return $va_ret;
@@ -383,7 +391,7 @@
  		 */
  		private function _getSet($set_id) {
  			$t_set = new ca_sets();
- 			if (!$t_set->load($set_id) || (sizeof($this->opa_access_values) && !in_array((string)$t_set->get('access'), $this->opa_access_values, true))) { throw new ApplicationException(_t('Invalid set')); }
+ 			if (!$t_set->load($set_id) || (sizeof($this->opa_access_values) && !in_array((int)$t_set->get('access'), $this->opa_access_values, true))) { throw new ApplicationException(_t('Invalid set')); }
  			return $t_set;
  		}
  		# -------------------------------------------------------

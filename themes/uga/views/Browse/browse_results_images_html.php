@@ -82,6 +82,7 @@
 				}
 				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
+				$va_images_from_rel_objects = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
 			}
@@ -111,7 +112,8 @@
 				$vs_typecode = "";
 				if ($vs_table == 'ca_objects') {
 					if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
-						$t_list_item->load($qr_res->get("type_id"));
+						#$t_list_item->load($qr_res->get("type_id"));
+						$t_list_item->load($qr_res->get("instantiationMediaType"));
 						$vs_typecode = $t_list_item->get("idno");
 						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
@@ -123,6 +125,8 @@
 				} else {
 					if($va_images[$vn_id]){
 						$vs_thumbnail = $va_images[$vn_id];
+					}elseif($va_images_from_rel_objects[$vn_id]){
+						$vs_thumbnail = $va_images_from_rel_objects[$vn_id];
 					}else{
 						$vs_thumbnail = $vs_default_placeholder_tag;
 					}

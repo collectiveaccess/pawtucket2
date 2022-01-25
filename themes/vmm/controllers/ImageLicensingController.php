@@ -56,7 +56,7 @@
  			# --- $o_view is object used for pdf export view
  			$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
 				
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
  			# --- check for errors
  			$va_errors = array();
  			if($this->config->get("check_security")){

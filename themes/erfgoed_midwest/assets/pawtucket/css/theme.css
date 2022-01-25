@@ -369,6 +369,12 @@ a.readmore-js-toggle {
     position: relative;
     z-index: 300;
 }
+.detail #detailComments button{
+	display:none;
+}
+.detail #detailComments button.translatedButton{
+	display:inline;
+}
 /* cookie notice */
 #cookieNotice{
 	position: fixed;
@@ -425,6 +431,15 @@ a.readmore-js-toggle {
 #galleryDetailObjectInfo .infoScroll{
 	max-height:365px;
 	overflow-y:scroll;
+}
+.gallery .readmore-js-toggle{
+	color: #00768e;
+	padding: 5px 13px;
+	text-transform:uppercase;
+	font-weight:bold;
+	font-size:16px;
+	margin-bottom:10px;
+	text-align:center;
 }
 /* collections/list browse */
 .bResultListItemText{

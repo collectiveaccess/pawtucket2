@@ -10,6 +10,7 @@
 ?>
 	<form method="post" id="CommentForm" action="#" class="form-horizontal" role="form" enctype="multipart/form-data">
 <?php
+		print caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request)));
 		print "<div class='form-group'><label for='tags' class='col-sm-4 control-label'>"._t("Tags")."</label><div class='col-sm-7'><input type='text' name='tags' value='' class='form-control' placeholder='"._t("tags separated by commas")."'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		print "<div class='form-group'><label for='comment' class='col-sm-4 control-label'>"._t("Comment")."</label><div class='col-sm-7'><textarea name='comment' class='form-control' rows='3'></textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 ?>

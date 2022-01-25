@@ -348,6 +348,10 @@ h1 i {
 	position:relative;
 	border-radius: 3px;
 }
+.navbar-form{
+	-webkit-box-shadow: none;
+	box-shadow:none;
+}
 .navbar-form .form-group {
 	width:140px;
 }
@@ -1516,7 +1520,6 @@ a.browseRemoveFacet img {
 .front .galleryItems-wrapper .jcarousel-control-prev, .front .galleryItems-wrapper .jcarousel-control-next {
     top: 40%;
 }
-
 /* --------------------------------- */
 /* details */
 /* --------------------------------- */
@@ -2684,6 +2687,25 @@ a.browseRemoveFacet .glyphicon {
 	text-decoration:none;
 	color:#454545;
 }
+.gallery .galleryItem a.btn-default{
+	color:#FFF;
+	font-size:11px;
+	display:none;
+}
+@media(max-width:767px){
+	/* don't show preview for mobile - only the list and show a view gallery button */
+	#gallerySetInfo{
+		display:none;
+	}
+	.galleryItemSetInfoLink{
+		cursor:auto;
+	}
+	.gallery .galleryItem a.btn-default{
+		display:inline;
+	}
+	
+}
+
 .gallery .galleryItem .galleryItemImg{
 	float:left;
 	width:25%;
@@ -2810,6 +2832,14 @@ a.browseRemoveFacet .glyphicon {
 	padding-bottom:10px; 
 	margin-bottom:15px;
 }	
+.gallery .leaflet-popup-content-wrapper{
+	min-width:250px;
+	min-height: 102px;
+}
+.gallery .leaflet-popup-content-wrapper a{
+	color:#000;
+	font-weight:bold;
+}
  /* Universal viewer */
 .detail .repViewerCont .uv{
 	min-height:500px;
@@ -2907,6 +2937,17 @@ div.caMediaOverlayControls .close{
 	font-size: 22px;
 	opacity: 0.9;
 }
+
+div.caMediaOverlayControls .nextPreviousLinks{
+	float:right;
+	margin: 0px 10px 0px 20px;
+	font-size: 22px;
+	opacity: 0.9;
+	
+	color:#FFF;
+	font-size: 11px;
+}
+
 div.caMediaOverlayControls .download{
 	float:right;
 	margin: 2px 0 0 20px;
@@ -3212,8 +3253,15 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline.tl-headline-fadeout::after, .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline p.tl-headline-fadeout::after{
 	background:none !important;
 }
-
-
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline, .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline p{
+	height:100% !important;
+}
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline, .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline p{
+	font-size:12px !important;
+}
+.tl-timeline em{
+	font-family:LatoLight !important;
+}
 
 /* Advanced Search */
 
@@ -3467,3 +3515,68 @@ input[type='text'].ui-autocomplete-loading {
 .mirador-viewer .image-list .fa{
 	color:#000 !important;
 }
+
+/* cookie notice */
+#cookieNotice{
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	text-align: left;
+	color: #000;
+	background-color: #FFF;
+	padding: 30px 0px 30px 0px;
+	font-size: 16px;
+	z-index: 9999;
+	box-shadow: rgba(0,0,0,.5) 0px 5px 50px;
+	padding-left:15px;
+	padding-right:15px;
+}
+#cookieNotice .cookieNoticeHeading{
+	font-weight:bold;
+	font-size:1.25em;
+	font-family: lato;
+}
+#cookieNotice .btn{
+	margin:10px 10px 0px 10px;
+}
+#cookieNotice .btn-inverse{
+	color:#000;
+	background-color:#dfdfdf;
+}
+#cookieNotice .btn-inverse:hover{
+	color:#000;
+	background-color:#f1f1f1;
+}
+.cookieIntro{
+	font-size: 1.2em;
+}
+@media(max-width:768px){
+	.cookies .btn-group{
+		margin-top:20px;
+	}
+}
+.cookies label{
+	font-size:15px;
+}
+.cookieByCategory{
+	cursor: pointer;
+}
+.cookieByCategory .cookieCount{
+	text-decoration:underline;
+	font-size:.9em;
+	padding-bottom:10px;
+}
+.cookieByCategory .cookieCount .fa{
+	color:#777;
+}
+.cookieByCategory .cookiesList{
+	display:none;
+	padding:10px;
+	margin:10px;
+	background-color:#F2F2F2;
+}
+.cookieByCategory .cookiesList .row{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+

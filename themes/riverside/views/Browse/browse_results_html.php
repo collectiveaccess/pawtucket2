@@ -51,7 +51,8 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	#$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$vn_result_size 	= $qr_res->numHits();
 	
 	
 	$va_options			= $this->getVar('options');
@@ -152,6 +153,44 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
+	</div>	
+	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-lg-3"; ?>">
+		<div id="bViewButtons">
+<?php
+		if(is_array($va_views) && (sizeof($va_views) > 1)){
+			foreach($va_views as $vs_view => $va_view_info) {
+				if ($vs_current_view === $vs_view) {
+					print '<a href="#" class="active"><span class="glyphicon  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
+				} else {
+					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+				}
+			}
+		}
+?>
+		</div>
+<?php		
+		#if($vn_result_size > 1){
+?>
+			<div <?php print ($vb_show_filter_panel) ? "class='catchLinks'" : ""; ?>>
+				<div class="bSearchWithinContainer">
+					<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within">
+						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
+					</form>
+					<div style="clear:both"></div>
+				</div>
+			</div>
+<?php
+		#}
+		if($vs_table == "ca_objects"){
+			print "<div class='advancedSearchLink'>".caNavLink($this->request, 'Advanced Search', '', 'Search', 'Advanced', 'objects')."</div>";
+		}
+?>			
+	</div><!-- end col-2 -->
+</div>
+<div class="row">
+	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-9 col-lg-9"; ?>'>
 <?php
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
@@ -192,35 +231,7 @@ if (!$vb_ajax) {	// !ajax
 		</form>
 	</div><!-- end col-8 -->
 	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-lg-3"; ?>">
-		<div id="bViewButtons">
 <?php
-		if(is_array($va_views) && (sizeof($va_views) > 1)){
-			foreach($va_views as $vs_view => $va_view_info) {
-				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
-				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
-				}
-			}
-		}
-?>
-		</div>
-<?php		
-		if($vn_result_size > 1){
-?>
-			<div <?php print ($vb_show_filter_panel) ? "class='catchLinks'" : ""; ?>>
-				<div class="bSearchWithinContainer">
-					<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within">
-						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
-					</form>
-					<div style="clear:both"></div>
-				</div>
-			</div>
-<?php
-		}
-
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2018 Whirl-i-Gig
+ * Copyright 2016-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -47,6 +47,11 @@
  				'url' => $v['urls']['small']
  			];
  		}, $resources);
+ 	} elseif($instance->tableName() === 'ca_attribute_values') {
+ 		$resource_list = [[
+			'id' => $v['value_id'],
+			'url' => $instance->getMediaUrl('value_blob', 'small')
+		]];
  	} else {
  		$resource_list = array_map(function($v) {
  			return [
@@ -55,7 +60,6 @@
  			];
  		}, $resources);
  	}
- 	
  	$va_compare_config      = $this->request->config->get('compare_images');
  	
 	$vs_base_url =  $this->request->getBaseUrlPath();
