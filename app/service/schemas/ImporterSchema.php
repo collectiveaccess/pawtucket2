@@ -355,6 +355,10 @@ class ImporterSchema extends \GraphQLServices\GraphQLSchema {
 						'type' => Type::string(),
 						'description' => 'Session form metadata'
 					],
+					'formInfo' => [
+						'type' => Type::string(),
+						'description' => 'Session form details'
+					],
 					'label' => [
 						'type' => Type::string(),
 						'description' => 'Display label for session'

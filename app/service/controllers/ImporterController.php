@@ -352,12 +352,14 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						$data = array_shift($log_entries);
 						$table = $data['table'];
 						
+						$metadata = null;
 						foreach($fields as $f => $k) {
 							$v = isset($data[$f]) ? $data[$f] : $s->get($f);
 							unset($data[$f]);
 							switch($k) {
 								case 'formData':
-									$v = json_encode(caUnserializeForDatabase($v), true);
+									$metadata = caUnserializeForDatabase($v);
+									$v = json_encode(['data' => $metadata['data']], true);
 									break;
 								case 'filesUploaded':
 									$file_list = [];
@@ -413,6 +415,11 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 									continue(2);
 							}
 							$data[$k] = $v;
+						}
+						
+						// add form info
+						if($metadata) {
+							$data['formInfo'] = json_encode($metadata['configuration'], true) ?? null;
 						}
 						
 						return $data;

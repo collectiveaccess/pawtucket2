@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2020 Whirl-i-Gig
+ * Copyright 2020-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -89,6 +89,10 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 					'content_type_plural' => [
 						'type' => Type::string(),
 						'description' => 'Lightbox content type for display, in plural (Eg. objects)'
+					],
+					'access' => [
+						'type' => Type::int(),
+						'description' => 'Access level'
 					]
 				]
 			]),		
@@ -248,6 +252,10 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 					'anonymousAccessUrl' => [
 						'type' => Type::string(),
 						'description' => 'Url allowing read-only anonymous access to the lightbox'
+					],
+					'access' => [
+						'type' => Type::int(),
+						'description' => 'Access level'
 					]
 				]
 			]),
@@ -278,6 +286,69 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'Number of items in lightbox',
 						'default' => null
 					],
+				]
+			]),
+			$LightboxShareResultType = new ObjectType([
+				'name' => 'LightboxShareResult',
+				'description' => 'Information relating to sharing of a lightbox',
+				'fields' => [
+					'id' => [
+						'type' => Type::int(),
+						'description' => 'Lightbox ID'
+					],
+					'name' => [
+						'type' => Type::string(),
+						'description' => 'Lightbox name'
+					],
+					'users_added' => [
+						'type' => Type::listOf(Type::string()),
+						'description' => 'List of local users added to lightbox',
+						'default' => []
+					],
+					'users_invited' => [
+						'type' => Type::listOf(Type::string()),
+						'description' => 'List of new users invited to lightbox',
+						'default' => []
+					],
+					'users_skipped' => [
+						'type' => Type::listOf(Type::string()),
+						'description' => 'List of users skipped',
+						'default' => []
+					],
+					'messages' => [
+						'type' => Type::listOf(Type::string()),
+						'description' => 'Errors and notices',
+						'default' => []
+					]
+				]
+			]),
+			$lightboxShareDeleteResult = new ObjectType([
+				'name' => 'LightboxShareDeleteResult',
+				'description' => 'Information relating to deletion of shares on a lightbox',
+				'fields' => [
+					'id' => [
+						'type' => Type::int(),
+						'description' => 'Lightbox ID'
+					],
+					'name' => [
+						'type' => Type::string(),
+						'description' => 'Lightbox name'
+					],
+					'users_deleted' => [
+						'type' => Type::listOf(Type::string()),
+						'description' => 'List of users removed from lightbox',
+						'default' => []
+					],
+					'users_skipped' => [
+						'type' => Type::listOf(Type::string()),
+						'description' => 'List of users skipped',
+						'default' => []
+					],
+					'messages' => [
+						'type' => Type::listOf(Type::string()),
+						'description' => 'Errors and notices',
+						'default' => []
+					]
 				]
 			]),
 			$lightboxMutationNewCommentType = new ObjectType([
@@ -365,7 +436,42 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'Comment text.'
 					]
 				]
-			])
+			]),
+			$lightboxShareType = new ObjectType([
+				'name' => 'LightboxShareType',
+				'description' => 'Lightbox share information',
+				'fields' => [
+					'fname' => [
+						'type' => Type::string(),
+						'description' => 'First name of share user'
+					],
+					'lname' => [
+						'type' => Type::string(),
+						'description' => 'Last name of share user'
+					],
+					'email' => [
+						'type' => Type::string(),
+						'description' => 'Email address of share user'
+					],
+					'user_id' => [
+						'type' => Type::Int(),
+						'description' => 'User id of share user'
+					],
+					'access' => [
+						'type' => Type::string(),
+						'description' => 'Access type'
+					]
+				]
+			]),
+			$lightboxShareListType = new ObjectType([
+				'name' => 'LightboxShareListType',
+				'fields' => [
+					'shares' => [
+						'type' => Type::listOf($lightboxShareType),
+						'description' => 'List of users lightbox is shared with'
+					]
+				]
+			]),
 		];
 	}
 	# -------------------------------------------------------

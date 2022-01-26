@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2020 Whirl-i-Gig
+ * Copyright 2020-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -69,8 +69,9 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							throw new ServiceException(_t('Invalid JWT'));
 						}
 						$t_sets = new ca_sets();
+						$is_anonymous = (is_array($u) && array_key_exists('anonymous', $u)) ;
 						
-						if(is_array($u) && array_key_exists('anonymous', $u)) {
+						if($is_anonymous) {
 							// Anonymous user
 							$lightboxes = [];
 							$t_set = ca_sets::getInstanceByGUID($u['anonymous']);
@@ -96,7 +97,10 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						} else {
 							throw new ServiceException(_t('Invalid authenicator'));
 						}
-						return array_map(function($v) {
+						
+						$set_ids = array_map(function($v) { return $v['set_id']; }, $lightboxes);
+						$access_values = $is_anonymous ? [] : $t_sets->haveAccessToSets($u->getPrimaryKey(), __CA_SET_EDIT_ACCESS__, $set_ids);
+						return array_map(function($v) use ($access_values) {
 							return [
 								'id' => $v['set_id'],
 								'title' => $v['label'],
@@ -106,6 +110,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 								'author_email' => $v['email'],
 								'type' => $v['set_type'],
 								'created' => date('c', $v['created']),
+								'access' => $is_anonymous ? 1 : ($access_values[$v['set_id']] ? 2 : 1),
 								'content_type' => Datamodel::getTableName($v['table_num']),
 								'content_type_singular' => Datamodel::getTableProperty($v['table_num'], 'NAME_SINGULAR'),
 								'content_type_plural' => Datamodel::getTableProperty($v['table_num'], 'NAME_PLURAL'),
@@ -161,12 +166,17 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							throw new \ServiceException(_t('Invalid JWT'));
 						}
 						
+						$is_anonymous = false;
 						if(is_array($u) && array_key_exists('anonymous', $u)) {
 							// Anonymous access
 							$t_set = ca_sets::getInstanceByGUID($u['anonymous']);
+							$is_anonymous = true;
 						} else {
 							// Authenticated access
 							$t_set = new \ca_sets($args['id']);
+							if(!$t_set->haveAccessToSet($u->getPrimaryKey(), __CA_SET_READ_ACCESS__, $args['id'])) {
+								throw new \ServiceException(_t('Access denied'));
+							}
 						}
 						
 						// Get configured sorts
@@ -200,6 +210,8 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						$anonymous_access_token = $t_set->getGUID();
 						$anonymous_access_url = caNavUrl('', 'Lightbox', 'view/'.$t_set->getGUID(), [], ['absolute' => true]);
 						
+						$access  = $is_anonymous ? 1 : ($t_set->haveAccessToSet($u->getPrimaryKey(), __CA_SET_EDIT_ACCESS__, $t_set->getPrimaryKey()) ? 2 : 1);
+						
 						// TODO: check access
 						$lightbox = [
 							'id' => $t_set->get('ca_sets.set_id'),
@@ -212,7 +224,8 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							'sortOptions'=> $sort_opts,
 							'comments' => $comments,
 							'anonymousAccessToken' => $anonymous_access_token,
-							'anonymousAccessUrl' => $anonymous_access_url
+							'anonymousAccessUrl' => $anonymous_access_url,
+							'access' => $access
 						];
 						
 						
@@ -232,7 +245,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						$rc = new ResultContext($g_request, $table, 'lightbox');
 						$rc->setResultList(array_unique(array_map(function($v) { return $v['row_id']; }, $items)));
 						$rc->setParameter('set_id', $t_set->getPrimaryKey());
-						$rc->setParameter('token', $t_set->getGUID());
+						$rc->setParameter('token', $is_anonymous ? $t_set->getGUID() : null);
 						$rc->setAsLastFind(false);
  						$rc->saveContext();
  						
@@ -288,7 +301,6 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						if (!($u = self::authenticate($args['jwt'], ['allowAnonymous' => true]))) {
 							throw new \ServiceException(_t('Invalid JWT'));
 						}
-						$set_id = $this->request->getParameter('set_id', pInteger);
 						
 						
 						if(is_array($u) && array_key_exists('anonymous', $u)) {
@@ -300,11 +312,47 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						} 
 
 						$user_id = $u->getPrimaryKey();
-						if (($t_set = ca_sets::find(['set_id' => $args['id']], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($user_id, __CA_SET_READ_ACCESS__)) {
+						$t_set = self::_getSet($args['id'], $user_id, __CA_SET_READ_ACCESS__);
+						if ($t_set) {
 							$access = (($t_set->haveAccessToSet($user_id, __CA_SET_EDIT_ACCESS__)) ? 2 : 1);
 							return ['access' => $access];
 						} else {
 							return ['access' => null];
+						}
+					}
+				],
+				'shareList' => [
+					'type' => LightboxSchema::get('LightboxShareListType'),
+					'description' => _t('List users lightbox is shared with'),
+					'args' => [
+						'id' => Type::int(),
+						[
+							'name' => 'jwt',
+							'type' => Type::string(),
+							'description' => _t('JWT'),
+							'defaultValue' => self::getBearerToken()
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+						if (!($u = self::authenticate($args['jwt'], ['allowAnonymous' => false]))) {
+							throw new \ServiceException(_t('Invalid JWT'));
+						}
+
+						$user_id = $u->getPrimaryKey();
+						$t_set = self::_getSet($args['id'], $user_id, __CA_SET_READ_ACCESS__);
+						if ($t_set) {
+							$share_list = array_map(function($v) { 
+								return [
+									'user_id' => $v['user_id'],
+									'fname' => $v['fname'],
+									'lname' => $v['lname'],
+									'email' => $v['email'],
+									'access' => $v['access'],
+								];
+							}, $t_set->getUsers());
+							return ['shares' => $share_list];
+						} else {
+							return ['shares' => null];
 						}
 					}
 				]
@@ -648,7 +696,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 					}
 				],
 				'share' => [
-					'type' => LightboxSchema::get('LightboxMutationStatus'),
+					'type' => LightboxSchema::get('LightboxShareResult'),
 					'description' => _t('Share lightbox'),
 					'args' => [
 						[
@@ -673,15 +721,137 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						if (!($u = self::authenticate($args['jwt']))) {
 							throw new ServiceException(_t('Invalid JWT'));
 						}
+
+						$t_set = self::_getSet($args['id'], $u->getPrimaryKey(), __CA_SET_EDIT_ACCESS__);
 						
-						// TOOD: check access
-						if(!($t_set = ca_sets::find(['set_id' => $args['id']], ['returnAs' => 'firstModelInstance']))) {
-							throw new ServiceException(_t('Could not load lightbox: %1', join($t_set->getErrors())));
+						$access = $args['share']['access'];
+						$email_list = array_unique(array_map('trim', preg_split('![;,&]+!', $args['share']['users'])));
+						
+						$local_users = $local_email_addresses = $invited_users = $skipped_users = $messages = [];
+						foreach($email_list as $email) {
+							if(!($email = trim($email))) { continue; }
+							
+							if($local = ca_users::find(['email' => $email], ['returnAs' => 'firstModelInstance'])) {
+								if($t_set->haveAccessToSet($user_id = $local->getPrimaryKey(), $access)) {
+									$skipped_users[] = $email;
+									$messages[] = _t('%1 already has access', $email);
+								} else {
+									$local_users[$user_id] = $access;
+									$local_email_addresses[] = $email;
+									$messages[] = _t('%1 was added', $email);
+								}
+							} elseif(caCheckEmailAddressRegex($email)) {
+								$invited_users[$email] = $access;
+								$messages[] = _t('An invitation was sent to %1', $email);
+								
+								// TODO: invite user
+							} else {
+								$skipped_users[] = $email;
+								$messages[] = _t('%1 was not added because the email address is invalid', $email);
+							}
+						}
+						if(sizeof($local_users)) {
+							if(!$t_set->addUsers($local_users)) {
+								$messages[] = _t('Could not add users: %1', join('; ', $t_set->getErrors()));
+							}
 						}
 						
-						// TODO:
+ 						return [
+ 							'id' => $args['id'], 
+ 							'name' => $t_set->get('ca_sets.preferred_labels.name'), 
+ 							'users_added' => $local_email_addresses, 
+ 							'users_invited' => array_keys($invited_users), 
+ 							'users_skipped' => $skipped_users,
+ 							'messages' => $messages
+ 						];
+					}
+				],
+				'deleteShare' => [
+					'type' => LightboxSchema::get('LightboxShareDeleteResult'),
+					'description' => _t('Share lightbox'),
+					'args' => [
+						[
+							'name' => 'id',
+							'type' => Type::int(),
+							'description' => _t('ID of lightbox'),
+							'defaultValue' => null
+						],
+						[
+							'name' => 'users',
+							'type' => Type::string(),
+							'description' => _t('User(s) to remove from lightbox')
+						],
+						[
+							'name' => 'user_ids',
+							'type' => Type::listOf(Type::int()),
+							'description' => _t('User_ids of users to remove from lightbox')
+						],
+						[
+							'name' => 'jwt',
+							'type' => Type::string(),
+							'description' => _t('JWT'),
+							'defaultValue' => self::getBearerToken()
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+						if (!($u = self::authenticate($args['jwt']))) {
+							throw new ServiceException(_t('Invalid JWT'));
+						}
 						
- 						return ['id' => $args['id'], 'name' => $t_set->get('ca_sets.preferred_labels.name'), 'count' => 10];
+						$t_set = self::_getSet($args['id'], $u->getPrimaryKey(), __CA_SET_READ_ACCESS__);
+						
+						$users_to_delete  = $skipped_users = $messages = [];
+						if($args['users']) {
+							$email_list = array_unique(array_map('trim', preg_split('![;,&]+!', $args['users'])));
+						
+							foreach($email_list as $email) {
+								if(!($email = trim($email))) { continue; }
+							
+								if($local = ca_users::find(['email' => $email], ['returnAs' => 'firstModelInstance'])) {
+									if($t_set->haveAccessToSet($user_id = $local->getPrimaryKey(), __CA_SET_READ_ACCESS__, null, ['sharesOnly' => true])) {
+										$users_to_delete[$email] = $user_id;
+										$messages[] = _t('%1 was removed');
+									} else {
+										$skipped_users[] = $email;
+										$messages[] = _t('%1 does not have access', $email);
+									}
+								} else {
+									$skipped_users[] = $email;
+									$messages[] = _t('%1 does not exist', $email);
+								}
+							}
+						} elseif(is_array($args['user_ids']) && sizeof($args['user_ids'])) {
+							foreach($args['user_ids'] as $user_id) {
+								if(!($user_id = (int)$user_id)) { continue; }
+							
+								if($local = ca_users::find($user_id, ['returnAs' => 'firstModelInstance'])) {
+									$email = $local->get('ca_users.email');
+									if($t_set->haveAccessToSet($user_id, __CA_SET_READ_ACCESS__, null, ['sharesOnly' => true])) {
+										$users_to_delete[$email] = $user_id;
+										$messages[] = _t('%1 was removed', $email);
+									} else {
+										$skipped_users[] = $email;
+										$messages[] = _t('%1 does not have access', $email);
+									}
+								}
+							}
+						} else {
+							$messages[] = _t('No users were specified');
+						}
+						
+						if(is_array($users_to_delete) && sizeof($users_to_delete)) {
+							if(!$t_set->removeUsers(array_values($users_to_delete))) {
+								$messages[] = _t('Could not remove users: %1', join('; ', $t_set->getErrors()));
+							}
+						}
+						
+ 						return [
+ 							'id' => $args['id'], 
+ 							'name' => $t_set->get('ca_sets.preferred_labels.name'), 
+ 							'users_deleted' => array_keys($users_to_delete), 
+ 							'users_skipped' => $skipped_users,
+ 							'messages' => $messages
+ 						];
 					}
 				],
 				'comment' => [
@@ -711,11 +881,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							throw new ServiceException(_t('Invalid JWT'));
 						}
 						
-						// TOOD: check access
-						$t_set = new ca_sets($args['id']);
-						if(!$t_set->isLoaded()) {
-							throw new ServiceException(_t('Could not load lightbox: %1', join($t_set->getErrors())));
-						}
+						$t_set = self::_getSet($args['id'], $u->getPrimaryKey(), __CA_SET_READ_ACCESS__);
 						
 						$comment = [];
 						if ($t_comment = $t_set->addComment($args['comment']['content'], null, $u->getPrimaryKey(), null, null, null, 0, null, [])){
@@ -737,6 +903,19 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 		]);
 		
 		return self::resolve($qt, $mt);
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	private static function _getSet(int $id, int $user_id, int $access=__CA_SET_EDIT_ACCESS__) {
+		if(!($t_set = \ca_sets::find(['set_id' => $id], ['returnAs' => 'firstModelInstance']))) {
+			throw new ServiceException(_t('Could not load lightbox'));
+		} elseif(!$t_set->haveAccessToSet($user_id, $access)) {
+			throw new ServiceException(_t('Access denied'));
+		}
+		
+		return $t_set;
 	}
 	# -------------------------------------------------------
 }
