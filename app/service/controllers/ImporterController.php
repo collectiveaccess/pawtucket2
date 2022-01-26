@@ -297,6 +297,11 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						$defaults = [];
 						foreach($content_config as $c => $ci) {
 							if(!is_null($default = caGetOption('default', $ci, null))) {
+								switch(strtolower($default)) {
+									case '__today__':
+										$default = caGetLocalizedDate();
+										break;
+								}
 								$defaults[$ci['bundle']] = $default;
 							}
 						}
