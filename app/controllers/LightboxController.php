@@ -94,7 +94,7 @@ class LightboxController extends BrowseController {
 		$t_set = null;
 		if($token = $this->request->getParameter('token', pString)) {
 			$t_set = ca_sets::getInstanceByGUID($token);
-			if($t_set) { // && in_array((int)$t_set->get('ca_sets.access'), caGetUserAccessValues(), true)) {
+			if($t_set) { 
 				return $t_set;
 			}
 		}
