@@ -1172,10 +1172,30 @@ div.panel.active {
 		// 	overflow: scroll;
 		// 	white-space: nowrap;
 		// }
-		.lightbox-intro{
+
+		/*-----------------------------------------
+					LightboxControl Component Styles
+		------------------------------------------*/
+		.lightbox-controls {
+
+			.transfer-option {
+				cursor: pointer;
+				text-decoration: none;
+			}
 			
+			.transfer-dropdown {
+				display: none;
+			}
+			
+			.dropdown-submenu:hover{
+				.transfer-dropdown {
+					display: block;
+				}
+			}
 		}
+
 	}
+
 	.bResultList{
 		margin-top: $browse-toolbar-height-tall;
 		.card.selected{
