@@ -985,85 +985,108 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	/**
 	 * Determines if user has access to a set at a specified access level.
 	 *
-	 * @param int $pn_user_id user_id of user to check set access for
-	 * @param int $pn_access type of access required. Use __CA_SET_READ_ACCESS__ for read-only access or __CA_SET_EDIT_ACCESS__ for editing (full) access
-	 * @param int $pn_set_id The id of the set to check. If omitted then currently loaded set will be checked.
-	 * @param array $pa_options No options yet
+	 * @param int $user_id user_id of user to check set access for
+	 * @param int $access type of access required. Use __CA_SET_READ_ACCESS__ for read-only access or __CA_SET_EDIT_ACCESS__ for editing (full) access
+	 * @param int $set_id The id of the set to check. If omitted then currently loaded set will be checked.
+	 * @param array $options No options yet
 	 * @return bool True if user has access, false if not
 	 */
-	public function haveAccessToSet($pn_user_id, $pn_access, $pn_set_id=null, $pa_options=null) {
-		if ($this->getAppConfig()->get('dont_enforce_access_control_for_ca_sets')) { return true; }
+	public function haveAccessToSet($user_id, $access, $set_id=null, $options=null) {
+		if(!$set_id) { $set_id = $this->getPrimaryKey(); }
+		return array_shift($this->haveAccessToSets($user_id, $access, [$set_id], $options));
+	}
+	# ------------------------------------------------------
+	/**
+	 * Determines if user has access to a set at a specified access level.
+	 *
+	 * @param int $user_id user_id of user to check set access for
+	 * @param int $access type of access required. Use __CA_SET_READ_ACCESS__ for read-only access or __CA_SET_EDIT_ACCESS__ for editing (full) access
+	 * @param array $set_ids The id of the set to check. If omitted then currently loaded set will be checked.
+	 * @param array $options Options include:
+	 * 		sharesOnly = Only check access for shared users. Access via administrative roles and set ownership is not considered. [Default is false]
+	 *
+	 * @return array Array of access levels, keyed on set_id
+	 */
+	public function haveAccessToSets(int $user_id, int $access, array $set_ids, ?array $options=null) {
+		$ret = array_flip($set_ids);
 		
-		if ($pn_set_id) { 
-			$vn_set_id = $pn_set_id; 
-			$t_set = new ca_sets($vn_set_id);
-			$vn_set_user_id = $t_set->get('user_id');
-		} else {
-			$t_set = $this;
-			$vn_set_user_id = $t_set->get('user_id');
-		}
-		if(!$vn_set_id && !($vn_set_id = $t_set->getPrimaryKey())) { 
-			return true; // new set
-		}
+		$shares_only = caGetOption('sharesOnly', $options, false);
 		
-		if ($t_set->get('deleted') != 0) { return false; } 		// set is deleted
-		
-		if (isset(ca_sets::$s_have_access_to_set_cache[$vn_set_id.'/'.$pn_user_id.'/'.$pn_access])) {
-			return ca_sets::$s_have_access_to_set_cache[$vn_set_id.'/'.$pn_user_id.'/'.$pn_access];
-		}
-		
-		if (($vn_set_user_id == $pn_user_id)) {	// owners have all access
-			return ca_sets::$s_have_access_to_set_cache[$vn_set_id.'/'.$pn_user_id.'/'.$pn_access] = true;
-		}
-		
-		if (($t_set->get('access') > 0) && ($pn_access == __CA_SET_READ_ACCESS__)) {	 // public sets are readable by all
-			return ca_sets::$s_have_access_to_set_cache[$vn_set_id.'/'.$pn_user_id.'/'.$pn_access] = true; 
-		}
-		
-		//
-		// If user is admin or has set admin privs allow them access to the set
-		//
 		$t_user = new ca_users();
-		if ($t_user->load($pn_user_id) && ($t_user->canDoAction('is_administrator') || $t_user->canDoAction('can_administrate_sets'))) {
-			return ca_sets::$s_have_access_to_set_cache[$vn_set_id.'/'.$pn_user_id.'/'.$pn_access] = true;
+		if (
+			!$shares_only && (
+			$this->getAppConfig()->get('dont_enforce_access_control_for_ca_sets')
+			||
+			($t_user->load($user_id) && ($t_user->canDoAction('is_administrator') || $t_user->canDoAction('can_administrate_sets')))	
+		)) { 
+			foreach($set_ids as $set_id) {
+				$ret[$set_id] = true;
+			}
+			return $ret;
+		}
+
+		$o_db =  $this->getDb();
+		
+		if(!$shares_only) {
+			$qr_res = $o_db->query("
+				SELECT s.set_id, s.user_id, s.access
+				FROM ca_sets s 
+				WHERE 
+					s.set_id IN (?) AND s.deleted = 0
+			", [$set_ids]);
+			while($qr_res->nextRow()) {
+				$set_id = $qr_res->get('set_id');
+				if((int)$qr_res->get('user_id') === $user_id) {
+					$ret[$set_id] = true;
+					continue;
+				}
+				if((int)$qr_res->get('access') > 0) {
+					$ret[$set_id] = true;
+					continue;
+				}
+			}
 		}
 		
-		
-		$o_db =  $this->getDb();
-		$qr_res = $o_db->query($vs_sql="
-			SELECT sxg.set_id 
+		$qr_res = $o_db->query("
+			SELECT sxg.set_id, sxg.access
 			FROM ca_sets_x_user_groups sxg 
 			INNER JOIN ca_user_groups AS ug ON sxg.group_id = ug.group_id
 			INNER JOIN ca_users_x_groups AS uxg ON uxg.group_id = ug.group_id
 			WHERE 
-				(sxg.access >= ?) AND (uxg.user_id = ?) AND (sxg.set_id = ?)
+				(sxg.access >= ?) AND (uxg.user_id = ?) AND (sxg.set_id IN (?))
 				AND
 				(
 					(sxg.sdatetime <= ".time()." AND sxg.edatetime >= ".time().")
 					OR
 					(sxg.sdatetime IS NULL and sxg.edatetime IS NULL)
 				)
-		", (int)$pn_access, (int)$pn_user_id, (int)$vn_set_id);
+		", [(int)$access, (int)$user_id, $set_ids]);
 		
-		if ($qr_res->numRows() > 0) { return ca_sets::$s_have_access_to_set_cache[$vn_set_id.'/'.$pn_user_id.'/'.$pn_access] = true; }
+		while($qr_res->nextRow()) {
+			$set_id = $qr_res->get('set_id');
+			$ret[$set_id] = true;
+		}
 		
 		$qr_res = $o_db->query("
-			SELECT sxu.set_id 
+			SELECT sxu.set_id, sxu.access
 			FROM ca_sets_x_users sxu
 			INNER JOIN ca_users AS u ON sxu.user_id = u.user_id
 			WHERE 
-				(sxu.access >= ?) AND (u.user_id = ?) AND (sxu.set_id = ?)
+				(sxu.access >= ?) AND (u.user_id = ?) AND (sxu.set_id IN (?))
 				AND
 				(
 					(sxu.sdatetime <= ".time()." AND sxu.edatetime >= ".time().")
 					OR
 					sxu.sdatetime IS NULL and sxu.edatetime IS NULL
 				)
-		", (int)$pn_access, (int)$pn_user_id, (int)$vn_set_id);
+		", [(int)$access, (int)$user_id, $set_ids]);
 		
-		if ($qr_res->numRows() > 0) { return ca_sets::$s_have_access_to_set_cache[$vn_set_id.'/'.$pn_user_id.'/'.$pn_access] = true; }
+		while($qr_res->nextRow()) {
+			$set_id = $qr_res->get('set_id');
+			$ret[$set_id] = true;
+		}
 		
-		return ca_sets::$s_have_access_to_set_cache[$vn_set_id.'/'.$pn_user_id.'/'.$pn_access] = false;
+		return $ret;
 	}
 	# ------------------------------------------------------
 	/**
