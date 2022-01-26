@@ -31,7 +31,7 @@ if($x){
 <?php
 }
 	$t_object = new ca_objects($pn_row_id);
-	
+	$this->request->setParameter('context', 'objects');
 	print "<div id='galleryDetailImageWrapper'>".caRepresentationViewer(
 				$this->request, 
 				$t_object, 
