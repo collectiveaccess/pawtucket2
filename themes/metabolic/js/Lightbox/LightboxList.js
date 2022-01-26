@@ -145,7 +145,7 @@ const LightboxList = (props) => {
 					<div className='col-6'>
 						{paginatedLightboxes && paginatedLightboxes.length >= 1?
 							<LightboxListPagination lightboxesPerPage={lightboxesPerPage}	numberOfPages={numberOfPages}/>
-							: null}
+						: null}
 					</div>
 				</div>
 

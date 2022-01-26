@@ -40,13 +40,14 @@ const LightboxDragAndDrop = () => {
     return (
       <div id='dragAndDrop'>
         {currentlyDragging == false ? 
-          <button
-            className={`btn btn-secondary btn-sm ${(showSelectButtons) ? 'disabled' : ''}`}
-            onClick={changeDragDrop} style={{ marginLeft: '6px' }}
-          >
-            Drag Sort 
-          </button>
-        : ' '}
+
+          (showSelectButtons == false) ?
+            <button className={`btn btn-secondary btn-sm ${(showSelectButtons) ? 'disabled' : ''}`} onClick={changeDragDrop} style={{ marginLeft: '6px' }}>
+              Drag Sort 
+            </button>
+          : null
+
+        :null}
 
         {dragDropMode == true ?
           <button className='btn btn-outline-success btn-sm' onClick={saveDragDrop} style={{ marginLeft: '6px' }}>Save Sort</button>

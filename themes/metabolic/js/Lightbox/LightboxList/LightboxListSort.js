@@ -13,18 +13,39 @@ const LightboxListSort = () => {
 		const { name, value } = event.target;
     if(name == "sort"){
       setSort(value)
-      console.log("setSort");
+			submitSort(value, sortDirection)
+      // console.log("setSort");
     }else{
       setSortDirection(value)
-      console.log("setSortDirection");
+			submitSort(sort, value)
+      // console.log("setSortDirection");
     }
 		// console.log("name, value", name, value);
 	};
 
+	// sorts the list of lightboxes
+	const submitSort = (sort, direction) => {
+		// changePageHandler(parseFloat(1));
+
+		if (sort == 'title') {
+			sortByTitleAlphabetically(direction)
+		};
+		if (sort == 'count') {
+			sortByCount(direction)
+		};
+		if (sort == 'date') {
+			sortByDate(direction)
+		};
+		if (sort == 'author_lname') {
+			sortByAuthorAlphabetically(direction)
+		};
+		// console.log("submitSort");
+	};
+
 	//sort lightboxes by the count property
-	const sortByCount = () => {
+	const sortByCount = (direction) => {
 		let temp = [...lightboxes]
-		if (sortDirection == 'desc') { // start with largest
+		if (direction == 'desc') { // start with largest
 			temp.sort((a, b) => { return b.props.data.count - a.props.data.count; });
 			setLightboxes(temp);
 		} else { // start with smallest
@@ -34,9 +55,9 @@ const LightboxListSort = () => {
 	}
 
 	// sort lightboxes by the date created
-	const sortByDate = () => {
+	const sortByDate = (direction) => {
 		let temp = [...lightboxes]
-		if (sortDirection == 'desc') { //oldest first
+		if (direction == 'desc') { //oldest first
 			temp.sort((a, b) => a.props.data.created.localeCompare(b.props.data.created));
 			setLightboxes(temp);
 		} else { //newest first
@@ -46,9 +67,9 @@ const LightboxListSort = () => {
 	}
 
 	//sort lightboxes by author alphabetically
-	const sortByAuthorAlphabetically = () => {
+	const sortByAuthorAlphabetically = (direction) => {
 		let temp = [...lightboxes]
-		if (sortDirection == 'desc') {
+		if (direction == 'desc') {
 			temp.sort((a, b) => {
 				let fa = a.props.data.author_lname.toLowerCase(), fb = b.props.data.author_lname.toLowerCase();
 				if (fa > fb) { return -1; }
@@ -68,9 +89,9 @@ const LightboxListSort = () => {
 	}
 
 	// sort lightboxes by label alphabetically
-	const sortByTitleAlphabetically = () => {
+	const sortByTitleAlphabetically = (direction) => {
 		let temp = [...lightboxes]
-		if (sortDirection == 'desc') {
+		if (direction == 'desc') {
 			temp.sort((a, b) => {
 				let fa = a.props.data.title.toLowerCase(), fb = b.props.data.title.toLowerCase();
 				if (fa > fb) { return -1; }
@@ -89,61 +110,29 @@ const LightboxListSort = () => {
 		}
 	}
 
-  // sorts the list of lightboxes
-	const submitSort = () => {
-		// changePageHandler(parseFloat(1));
-
-		if (sort == 'title') {
-			sortByTitleAlphabetically()
-		};
-		if (sort == 'count') {
-			sortByCount()
-		};
-		if (sort == 'date') {
-			sortByDate()
-		};
-		if (sort == 'author_lname') {
-			sortByAuthorAlphabetically()
-		};
-    console.log("submitSort");
-	};
-
-
   return (
     <div className="dropdown show" >
-      <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><ion-icon name="funnel"></ion-icon></a>
-      <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-
-        <div className='container' style={{ width: '200px' }}>
-          <div className='row'>
-            <form className='form-inline' style={{ margin: '10px' }}>
-
-              <div style={{ marginRight: '5px' }}>
-                <select name="sort" required value={sort} onChange={handleChange}>
-                  <option value='title'>Title</option>
-                  <option value='date'>Date</option>
-                  <option value='count'>Objects</option>
-                  <option value='author_lname'>Author</option>
-                </select>
-              </div>
-
-              <div style={{ marginRight: '5px' }}>
-                <select name="sortDirection" required value={sortDirection} onChange={handleChange}>
-                  <option value='asc'>↑</option>
-                  <option value='desc'>↓</option>
-                </select>
-              </div>
-
-              <div>
-                <button type="button" className="btn" onClick={() => submitSort()}>
-                  <span className="material-icons">arrow_forward</span>
-                </button>
-              </div>
-
-            </form>
-          </div>
-        </div>
-
+      <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<ion-icon name="funnel"></ion-icon>
+			</a>
+			
+			<div className="dropdown-menu" aria-labelledby="dropdownMenuLink" style={{ border: '1px solid black' }}>
+				<form className='form-inline' style={{ margin: '10px' }}>
+					<div style={{ marginRight: '5px' }}>
+						<select name="sort" required value={sort} onChange={handleChange}>
+							<option value='title'>Title</option>
+							<option value='date'>Date</option>
+							<option value='count'>Objects</option>
+							<option value='author_lname'>Author</option>
+						</select>
+					</div>
+					<div>
+						<select name="sortDirection" required value={sortDirection} onChange={handleChange}>
+							<option value='asc'>↑</option>
+							<option value='desc'>↓</option>
+						</select>
+					</div>
+				</form>
       </div>
     </div>
   );
@@ -151,3 +140,9 @@ const LightboxListSort = () => {
 }
 
 export default LightboxListSort;
+
+{/* <div>
+	<button type="button" className="btn" onClick={() => submitSort()}>
+		<span className="material-icons">arrow_forward</span>
+	</button>
+</div> */}

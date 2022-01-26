@@ -19,8 +19,9 @@ const LightboxCommentForm = (props) => {
     if (comments && comments.length >=1) {
       comments.map((comment, index) => tempComments.unshift(
         <div key={index} style={{ padding: "2px", margin: "5px", boxShadow: "0 2px 8px 0 rgba(0,0,0,0.2)"}}>
-          <p style={{ fontSize: '12px', marginBottom: '0px' }}><strong>{comment.fname} {comment.lname}</strong> {(comment.created).substring(0, 10)}</p>
-          <p style={{ fontSize: '14px', marginBottom: '5px' }}>{comment.content}</p>
+          <p className='px-1' style={{ fontSize: '12px', marginBottom: '0px' }}><strong>{comment.fname} {comment.lname}</strong></p>
+          <p className='px-1' style={{ fontSize: '12px', marginBottom: '0px' }}>{(comment.created).substring(0, 10)}</p>
+          <p className='px-1' style={{ fontSize: '14px', marginBottom: '5px' }}>{comment.content}</p>
         </div>
       ));
     }
@@ -32,14 +33,16 @@ const LightboxCommentForm = (props) => {
   }
 
   const submitComment = (e) => {
-    createLightboxComments(baseUrl, tokens, id, commentContent, (data) => {
-      // console.log('createLightboxComments: ', data);
-      let commentsList = [...comments];
-      commentsList.push(data.comment);
-      setComments(commentsList)
-    });
-    setCommentContent('')
-    e.preventDefault();
+    if(commentContent.length > 0){
+      createLightboxComments(baseUrl, tokens, id, commentContent, (data) => {
+        // console.log('createLightboxComments: ', data);
+        let commentsList = [...comments];
+        commentsList.push(data.comment);
+        setComments(commentsList)
+      });
+      setCommentContent('')
+      // e.preventDefault();
+    }
   }
 
   // console.log("comments: ", comments);
@@ -47,16 +50,21 @@ const LightboxCommentForm = (props) => {
   return (
     <div>
       <form className={'my-2'}>
-        <div className="form-group mb-0 d-flex align-items-center" style={{marginLeft: "5px"}}>
-          <textarea id='comment' value={commentContent} onChange={handleForm} placeholder='Enter your comment' style={{ width: "190px" }} />
-        <button className='btn btn-primary btn-sm ml-1' onClick={submitComment}>
-          <span className="material-icons" style={{ fontSize: '18px' }}>arrow_forward</span>
-        </button>
+        {/* className="form-group mb-0 d-flex align-items-center" */}
+        <div className="form-group m-0">
+          <p className="m-0" style={{ fontSize: '11px', fontStyle: "italic" }}>Enter your comment</p>
+          <textarea id='comment' value={commentContent} onChange={handleForm} style={{ width: "100%" }} />
+        </div>
+        <div className="form-group m-0">    
+          <button className={commentContent.length > 0 ? 'btn btn-primary btn-sm p-0 px-1':'btn btn-primary btn-sm p-0 px-1 disabled'} onClick={submitComment}>
+            {/* <span className="material-icons" style={{ fontSize: '12px' }}>arrow_forward</span> */}
+            <span style={{ fontSize: '12px' }}>Submit</span>
+          </button>
         </div>
       </form>
 
       {comments && comments.length > 0 ?
-        <div className='comments-container w-100' style={{ overflow: 'auto', height: '200px'}}>
+        <div className='comments-container w-100' style={{ overflow: 'auto', maxHeight: '300px'}}>
           {commentItems}
         </div>
       : null}

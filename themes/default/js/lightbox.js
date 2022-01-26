@@ -45,7 +45,7 @@ function loadLightbox(uri, tokens, id, callback, options=null) {
 	client
 	  .query({
 		query: gql`
-		  query ($id: Int!, $start: Int!, $limit: Int!, $sort: String, $sortDirection: String){ content(id: $id, mediaVersions: ["small"], start: $start, limit: $limit, sort: $sort, sortDirection: $sortDirection) { id, title, type, item_count, anonymousAccessToken, anonymousAccessUrl, comments { content, email, fname, lname, created, user_id }, sortOptions { label, sort }, items { id, title, detailPageUrl, caption, identifier, rank, media { version, url, tag, width, height} } } }
+		  query ($id: Int!, $start: Int!, $limit: Int!, $sort: String, $sortDirection: String){ content(id: $id, mediaVersions: ["small"], start: $start, limit: $limit, sort: $sort, sortDirection: $sortDirection) { id, title, type, item_count, anonymousAccessToken, anonymousAccessUrl, access, comments { content, email, fname, lname, created, user_id }, sortOptions { label, sort }, items { id, title, detailPageUrl, caption, identifier, rank, media { version, url, tag, width, height} } } }
 		`, variables: { 'id': id, 'start': start, 'limit': limit, 'sort': sort, 'sortDirection': sortDirection }})
 	  .then(function(result) {
 		callback(result.data['content']);
@@ -66,7 +66,7 @@ function fetchLightboxList(uri, tokens, callback) {
 	client
 	  .query({
 		query: gql`
-		  query { list { title, id, author_lname, created, content_type, type, count, content_type_singular, content_type_plural } }
+		  query { list { title, id, author_lname, created, content_type, type, count, content_type_singular, content_type_plural, access } }
 		`
 	  })
 	  .then(function(result) {
@@ -259,7 +259,7 @@ function createLightboxComments(uri, tokens, id, content, callback){
 }
 
 /**
- * Get ligthbox access For current users
+ * Get lightbox access For current users
  *
  * @param url URL to send lightbox remove item request to.
  * @param callback Function to call when add item request is completed. The first parameter of the callback will be an object
@@ -281,8 +281,27 @@ function getLightboxAccessForCurrentUser(uri, id, tokens, callback) {
 		});
 }
 
+function shareLightbox(uri, tokens, id, access, users, callback) {
+	id = parseInt(id);
+	const client = getGraphQLClient(uri + '/lightbox', tokens, {});
+	client
+		.mutate({
+
+			mutation: gql`
+				mutation ($id: Int!, $access: Int!, $users: String!){ 
+					share(id: $id, share: { access: $access, users: $users }) { id, name, users_added, users_invited, users_skipped } 
+				}
+			`, variables: { 'id': id, 'access': access, "users": users }
+		})
+		.then(function (result) {
+			callback(result.data['share']);
+		}).catch(function (error) {
+			console.log("Error while attempting to submit share: ", error);
+		});
+}
+
 export {
 	fetchLightboxList, loadLightbox, createLightbox, editLightbox, deleteLightbox,
 	getLightboxAccessForCurrentUser, newJWTToken, reorderLightboxItems,
-	appendItemstoNewLightbox, appendItemsToLightbox, transferItemsToLightbox, removeItemsFromLightbox, createLightboxComments,
+	appendItemstoNewLightbox, appendItemsToLightbox, transferItemsToLightbox, removeItemsFromLightbox, createLightboxComments, shareLightbox,
 };

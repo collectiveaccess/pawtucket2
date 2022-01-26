@@ -28,6 +28,12 @@ const LightboxListItem = (props) => {
 	const [ countText, setCountText ] = useState((props.count == 1) ? props.count + " " + props.data.content_type_singular : props.count + " " + props.data.content_type_plural)
 
 	const { id, setId, tokens, setTokens, userAccess, setUserAccess, lightboxTitle, setLightboxTitle, totalSize, setTotalSize, sortOptions, setSortOptions, comments, setComments, itemsPerPage, setItemsPerPage, lightboxList, setLightboxList, lightboxListPageNum, setLightboxListPageNum, lightboxSearchValue, setLightboxSearchValue, resultList, setResultList, selectedItems, setSelectedItems, showSelectButtons, setShowSelectButtons, anonymousAccessUrl, setAnonymousAccessUrl} = useContext(LightboxContext)
+
+	useEffect(() => {
+		if (!userAccess) {
+			setUserAccess(props.data.access)
+		}
+	}, [])	
 		
 	const openLightbox = (e) => {
 		setResultList(null);
@@ -40,7 +46,7 @@ const LightboxListItem = (props) => {
 		// setLightboxSearchValue(props.searchValue)
 
 		loadLightbox(props.baseUrl, tokens, id, (data) => {
-			// console.log('Load Lightbox Data: ', data);
+			console.log('Load Lightbox: ', data);
 			setId(id)
 			setLightboxTitle(data.title)
 			setResultList(data.items)
@@ -48,17 +54,18 @@ const LightboxListItem = (props) => {
 			setSortOptions(data.sortOptions)
 			setComments(data.comments)
 			setAnonymousAccessUrl(data.anonymousAccessUrl)
+			setUserAccess(data.access)
 		}, { start: 0, limit: itemsPerPage });
 
-		getLightboxAccessForCurrentUser(props.baseUrl, id, tokens, (data) => {
-			console.log('getLightboxAccessForCurrentUser', data);
+		// getLightboxAccessForCurrentUser(props.baseUrl, id, tokens, (data) => {
+		// 	console.log('getLightboxAccessForCurrentUser', data);
 
-			if (data && (data['access'] !== undefined)) {
-				if (data['access']) {
-					setUserAccess(data['access'])
-				}
-			}
-		});
+		// 	if (data && (data['access'] !== undefined)) {
+		// 		if (data['access']) {
+		// 			setUserAccess(data['access'])
+		// 		}
+		// 	}
+		// });
 	}
 
 	const saveNewLightbox = (name) =>{
@@ -140,13 +147,13 @@ const LightboxListItem = (props) => {
 		);
 	} else if(props.data.id > 0) {
 
-		if(!userAccess){
-			getLightboxAccessForCurrentUser(props.baseUrl, props.data.id, tokens, (resp) => {
-				if(resp && (resp['access'] !== undefined)) {
-					setUserAccess(resp['access'])
-				}
-			});
-		}
+		// if(!userAccess){
+		// 	getLightboxAccessForCurrentUser(props.baseUrl, props.data.id, tokens, (resp) => {
+		// 		if(resp && (resp['access'] !== undefined)) {
+		// 			setUserAccess(resp['access'])
+		// 		}
+		// 	});
+		// }
 
 		return(
 		<li className="list-group-item">

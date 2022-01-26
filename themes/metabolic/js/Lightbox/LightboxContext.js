@@ -26,7 +26,7 @@ const LightboxContextProvider = (props) => {
   const [ anonymousAccessUrl, setAnonymousAccessUrl ] = useState(); //the url used to share a lighbox anonymously
   
   const [ lightboxList, setLightboxList ] = useState({}); //list of current lightboxes
-  const [ lightboxes, setLightboxes ] = useState() //array of LightboxListItem components
+  const [ lightboxes, setLightboxes ] = useState([]) //array of LightboxListItem components
   const [lightboxListPageNum, setLightboxListPageNum] = useState(1); //the current page of the list of lightboxes
   const [lightboxSearchValue, setLightboxSearchValue] = useState(""); //the search value for the list of lightboxes
   

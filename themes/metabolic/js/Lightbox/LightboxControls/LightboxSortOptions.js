@@ -19,7 +19,7 @@ const baseUrl = appData.baseUrl;
 
 const LightboxSortOptions = (props) => {
 
-  const { id, setId, tokens, setTokens, userAccess, setUserAccess, shareAccess, setShareAccess, totalSize, setTotalSize, sortOptions, setSortOptions, itemsPerPage, setItemsPerPage, lightboxList, setLightboxList, resultList, setResultList, sort, setSort, sortDirection, setSortDirection, userSort, setUserSort, showSortSaveButton, setShowSortSaveButton } = useContext(LightboxContext)
+  const { id, setId, tokens, setTokens, userAccess, setUserAccess, shareAccess, setShareAccess, totalSize, setTotalSize, sortOptions, setSortOptions, itemsPerPage, setItemsPerPage, lightboxList, setLightboxList, resultList, setResultList, showSortSaveButton, setShowSortSaveButton, dragDropMode, setDragDropMode, showSelectButtons, setShowSelectButtons } = useContext(LightboxContext)
 
   const [selectedField, setSelectedField] = useState('ca_object_labels.name')
   const [selectedSortDirection, setSelectedSortDirection] = useState('ASC')
@@ -29,31 +29,29 @@ const LightboxSortOptions = (props) => {
     const { name, value } = event.target;
     if (name == "selectedSortDirection"){
       setSelectedSortDirection(value)
+      submitSort(event, selectedField, value)
     }else{
       setSelectedField(value)
+      submitSort(event, value, selectedSortDirection)
     }
   }
 
-  const submitSort = (e) => {
-    // setSort(selectedField)
-    // setSortDirection(selectedSortDirection)
-    // setUserSort(false)
-
+  const submitSort = (e, field, direction) => { 
     if(userAccess == "2" && shareAccess == "edit"){
       setShowSortSaveButton(true)
     }
-    // TODO: is userSort being used?
 
     loadLightbox(baseUrl, tokens, id, (data) => {
+      console.log("loadLightbox: ", data);
       setResultList(data.items)
-    }, { start: 0, limit: itemsPerPage, sort: selectedField, sortDirection: selectedSortDirection });
+    }, { start: 0, limit: itemsPerPage, sort: field, sortDirection: direction });
 
     e.preventDefault();
   }
 
   // saves the order of the results from the sort options dropdown
-  const saveOrderFromSortOptions = () => {
-    console.log("func saveOrderFromSortOptions");
+  const saveSortOrder = () => {
+    // console.log("func saveOrderFromSortOptions");
     let tempOrderedIds = []
     resultList.map(item => {
       tempOrderedIds.push(item.id)
@@ -62,70 +60,57 @@ const LightboxSortOptions = (props) => {
     reorderLightboxItems(baseUrl, tokens, id, tempOrderedIds.join('&'), lightboxList[id].title, (data) => {
       console.log('reorderLightboxItems: ', data);
     });
-
     setShowSortSaveButton(false)
   }
 
-  //Cancel saveOrderFromSortOptions
-  const cancelSaveFromSortOptions = () => {
-    console.log("func cancelSaveFromSortOptions");
+  const cancelSortOrder = () => {
+    // console.log("func cancelSaveFromSortOptions");
     setShowSortSaveButton(false)
   }
 
   if (totalSize > 1) {
     return (
       <div id="bSortOptions">
-        <div className="dropdown show">
-          <a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div className="dropdown disabled">
+          <a role="button" className={(dragDropMode || showSelectButtons) ? 'disabled' : ''} id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <ion-icon name="funnel"></ion-icon>
           </a>
 
           <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-
-            <div className='container' style={{ width: '250px' }}>
-              <div className='row'>
-                <form className='form-inline' style={{ margin: '10px' }}>
-
-                  <div style={{ marginRight: '5px' }}>
-                    <select name="selectedField" required value={selectedField} onChange={handleChange}>
-                      {sortOptions ? sortOptions.map((option, index) => {
-                        return(
-                          <option key={index} value={option.sort}>{option.label}</option>
-                        )
-                      }) : null}
-                    </select>
-                  </div>
-
-                  <div style={{ marginRight: '5px' }}>
-                    <select name="selectedSortDirection" required value={selectedSortDirection} onChange={handleChange}>
-                      <option value='ASC'>↑</option>
-                      <option value='DESC'>↓</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <button type="button" className="btn" onClick={submitSort}>
-                      <span className="material-icons">arrow_forward</span>
-                    </button>
-                  </div>
-
-                </form>
+            <form className='form-inline' style={{ margin: '10px', flexWrap: 'nowrap' }}>
+              <div style={{ marginRight: '5px' }}>
+                <select name="selectedField" required value={selectedField} onChange={handleChange}>
+                  {sortOptions ? sortOptions.map((option, index) => {
+                    return(
+                      <option key={index} value={option.sort}>{option.label}</option>
+                    )
+                  }) : null}
+                </select>
               </div>
+              <div>
+                <select name="selectedSortDirection" required value={selectedSortDirection} onChange={handleChange}>
+                  <option value='ASC'>↑</option>
+                  <option value='DESC'>↓</option>
+                </select>
+              </div>
+            </form>
 
-              {showSortSaveButton == true ?
-                <div className={"row"}>
-                  <button type="button" className="btn btn-outline-success btn-sm" onClick={() => saveOrderFromSortOptions()} style={{ marginLeft: '6px' }}> Save Sort Permanently</button>
-                  <button type="button" className="btn btn-outline-danger btn-sm" onClick={() => cancelSaveFromSortOptions()} style={{ marginLeft: '6px' }}>Cancel</button>
+            {showSortSaveButton == true ?
+              <>
+                <div className="dropdown-divider"></div>
+                <div className="m-3">
+                  <p className='p-0 m-0'><strong>Save Sort Order?</strong></p>
+                    <button className="btn btn-outline-success btn-sm" onClick={() => saveSortOrder()} style={{ marginRight: '5px' }}>Yes</button>
+                    <button className="btn btn-outline-danger btn-sm" onClick={() => cancelSortOrder()}>No</button>
                 </div>
-              : null}
-            </div>{/*container end */}
-
+              </>
+            : null}
           </div>
         </div>
       </div>
-    ); //return end
+    );
   } else {
-    return ('');
+    return null;
   }
 }
 

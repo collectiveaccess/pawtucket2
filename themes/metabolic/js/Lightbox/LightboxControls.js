@@ -27,13 +27,14 @@ import LightboxSortOptions from './LightboxControls/LightboxSortOptions';
 import LightboxStatistics from './LightboxControls/LightboxStatistics';
 import LightboxDragAndDrop from './LightboxControls/LightboxDragAndDrop';
 import LightboxSelection from './LightboxControls/LightboxSelection';
+import LightboxSelectItems from './LightboxControls/LightboxSelectItems';
 
 const LightboxControls = () => {
 	
 	const { userAccess, setUserAccess, shareAccess, setShareAccess } = useContext(LightboxContext)
 
 	return (
-		<div className="row mb-3">
+		<div className="lightbox-controls row mb-3">
 			<div className="col-4 ">
 				<LightboxStatistics />
 			</div>
@@ -43,7 +44,8 @@ const LightboxControls = () => {
 					{shareAccess == "edit" && userAccess == 2? 
 						<>
 							<LightboxDragAndDrop />
-							<LightboxSelection />
+							{/* <LightboxSelection /> */}
+							<LightboxSelectItems />
 						</>
 					: null}
 					<LightboxSortOptions />
