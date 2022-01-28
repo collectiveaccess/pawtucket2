@@ -468,7 +468,7 @@
  			if ($subject_type_code = $t_subject->getTypeCode()) {
 				if (is_array($va_type_codes = caMakeTypeList($vs_table, [$subject_type_code]))) {
 					$va_type_codes = array_merge($va_type_codes, caMakeTypeList($vs_table, $t_subject->getTypeInstance()->getHierarchyAncestors($t_subject->getTypeID(), ['idsOnly' => true]), ['dontIncludeSubtypesInTypeRestriction' => true]));
-					foreach(array_reverse($va_type_codes) as $vs_type_code) {   // reverse list to try more specific types first
+					foreach($va_type_codes as $vs_type_code) {   // try more specific types first
 						if ($this->viewExists("Details/{$vs_table}_{$vs_type_code}_html.php")) {
 							$vs_path = "Details/{$vs_table}_{$vs_type_code}_html.php";
 							break;

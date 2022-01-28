@@ -97,25 +97,26 @@
 						</unit>
 					</div>
 				</ifdef>}}}
+				{{{<ifdef code="ca_objects.url"><div class="unit"><label>Url To External Media</label><a href="^ca_objects.url" target="_blank">^ca_objects.url</a></div></ifdef>}}}
+				{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location</label>
+					<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
+				</div></ifcount>}}}
+				{{{<ifdef code="ca_objects.general_notes"><div class="unit"><label>Notes</label>^ca_objects.general_notes%delimiter=<br/></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.accessrestrict"><div class="unit"><label>Conditions Governing Access</label>^ca_objects.accessrestrict%delimiter=<br/></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.physaccessrestrict"><div class="unit"><label>Physical Access</label>^ca_objects.physaccessrestrict%delimiter=<br/></div></ifdef>}}}
 				
 				
 				
 				
 				<hr></hr>
 					
-				{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><label>Related person</label></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2" restrictToTypes="ind"><label>Related people</label></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
-			
-				{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><label>Related organization</label></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2" restrictToTypes="org"><label>Related organizations</label></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
-			
-				{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><label>Related family</label></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2" restrictToTypes="fam"><label>Related families</label></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
-				
 <?php
+
+					# --- entity name should be the loc name when Entity Source is LCNAF
+					print preg_replace('/\[[^)]+\]/', '', $t_object->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="ind"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><label>Related person</label></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="ind"><label>Related people</label></ifcount><unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					print preg_replace('/\[[^)]+\]/', '', $t_object->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="org"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><label>Related organization</label></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="org"><label>Related organizations</label></ifcount><unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					print preg_replace('/\[[^)]+\]/', '', $t_object->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="fam"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><label>Related family</label></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="fam"><label>Related families</label></ifcount><unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					
 					$va_LcshSubjects = $t_object->get("ca_objects.LcshSubjects", array("returnAsArray" => true));
 					$va_LcshSubjects_processed = array();
 					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
@@ -169,10 +170,23 @@
 						}
 						print "</div>";	
 					}
+					$va_LcshNames = $t_object->get("ca_objects.LcshNames", array("returnAsArray" => true));
+					$va_LcshNames_processed = array();
+					if(is_array($va_LcshNames) && sizeof($va_LcshNames)){
+						foreach($va_LcshNames as $vs_LcshNames){
+							if($vs_LcshNames && (strpos($vs_LcshNames, " [") !== false)){
+								$va_LcshNames_processed[] = mb_substr($vs_LcshNames, 0, strpos($vs_LcshNames, " ["));
+							}else{
+								$va_LcshNames_processed[] = $vs_LcshNames;
+							}
+						}
+						$vs_LcshNames = join("<br/>", $va_LcshNames_processed);
+					}
+					if($vs_LcshNames){
+						print "<div class='unit'><label>Library of Congress Names</label>".$vs_LcshNames."</div>";	
+					}
 ?>				
-				{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-				{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>}}}
+				{{{<ifcount code="ca_places" min="1"><div class="unit"><ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount><ifcount code="ca_places" min="2"><label>Related places</label></ifcount><unit relativeTo="ca_places" delimiter="<br/>"><unit relativeTo="ca_places.hierarchy" delimiter=" &gt; "><l>^ca_places.preferred_labels</l></unit></unit></div></ifcount>}}}
 				
 				<br/>{{{map}}}
 						

@@ -61,10 +61,10 @@
 					}
 				}
 				$qr_list->seek(0);
-				$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("used_website"), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
+				$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("used_website"), "objectTypes" => array("artwork", "mixed_media", "painting", "photograph", "print", "sculpture", "works_paper"), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
 			}
-			if(sizeof($va_years) > 1){		
-				#arsort($va_years);
+			if(is_array($va_years) && sizeof($va_years) > 1){		
+				arsort($va_years);
 				foreach($va_years as $vs_year){
 					print "<li class='yearBar yearBar".$vs_year."'><a href='#' onClick='$(\".yearBar\").removeClass(\"active\"); $(this).parent().addClass(\"active\"); $(\".yearTab\").hide(); $(\"#yearTab".$vs_year."\").show(); return false;'>".$vs_year."</a></li>";
 				}
@@ -96,8 +96,18 @@
 					print "<div id='yearTab".$vs_year."' class='yearTab'>";
 				}
 				print "<div class='row'>";
-				print "<div class='col-sm-4 exhibitionListing'>".caDetailLink($this->request, $va_images[$qr_list->get("occurrence_id")], '', 'ca_occurrences', $qr_list->get("occurrence_id"), null, null, array("type_id" => $qr_list->get("type_id")))."</div>\n";
-				print "<div class='col-sm-8 exhibitionListing'><h2><strong>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</strong></h2>".$qr_list->get("ca_occurrences.opening_closing")."</div>";
+				print "<div class='col-sm-4 exhibitionListing'>".(($va_images[$qr_list->get("occurrence_id")]) ? caDetailLink($this->request, $va_images[$qr_list->get("occurrence_id")], '', 'ca_occurrences', $qr_list->get("occurrence_id"), null, null, array("type_id" => $qr_list->get("type_id"))) : "")."</div>\n";
+				print "<div class='col-sm-8 exhibitionListing'><h1><strong>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</strong></h1>".$qr_list->get("ca_occurrences.opening_closing");
+				
+				if($qr_list->get("ca_occurrences.location")){
+					print "<br>".$qr_list->get("ca_occurrences.location", array("convertCodesToDisplayText" => true));
+				}elseif($qr_list->get("ca_occurrences.outside_location")){
+					print "<br>".$qr_list->get("ca_occurrences.outside_location");
+				}else{
+					# --- default to NYC
+					print "<br/>NYC";
+				}
+				print "</div>";
 				print "</div><!-- end row -->\n";
 			}
 			print "</div><!-- end last yearTab -->";
@@ -117,7 +127,7 @@
 	</div><!--end row contentbody-->
 <?php
 	if(is_array($va_years)){
-		$vs_last_year = array_pop($va_years);
+		$vs_last_year = array_shift($va_years);
 ?>
 	<script type='text/javascript'>
 		jQuery(document).ready(function() {		

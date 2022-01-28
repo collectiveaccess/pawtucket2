@@ -106,7 +106,10 @@
 				print "<br/>".$qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true, 'restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '));
 				if ($qr_results->get('ca_objects.display_date', array('delimiter' => ', '))) {
 				print " ".$qr_results->get('ca_objects.display_date', array('delimiter' => ', '));
-				}				
+				}
+				if($vs_collection = $qr_results->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels.name</unit>')){
+					print "<div class='small'>".$vs_collection."</div>";
+				}			
 				print "</div>"; 
 ?>
 			</div><!-- end blockResult -->

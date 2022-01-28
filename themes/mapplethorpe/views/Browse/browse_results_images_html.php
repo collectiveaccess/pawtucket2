@@ -150,7 +150,7 @@ if($vn_num_reps > 1){
 	$vs_multiple_reps = "<div class='multiReps'><i class='fa fa-files-o' aria-hidden='true' title='".$vn_num_reps." images'></i></div>";
 }
 					$vs_result_output = "
-						<div class='resultItemColImg col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>".$vs_multiple_reps."
+						<div class='resultItemColImg col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}' id='row".$vn_id."'>".$vs_multiple_reps."
 							<div class='resultContentImg'>
 								<div class='resultImageImg'>".$vs_rep_detail_link."</div>
 								<div class='resultTextImg'>".$qr_res->getWithTemplate("<l>".$vs_result_text_template."</l>")."</div>
