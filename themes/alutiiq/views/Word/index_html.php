@@ -38,7 +38,7 @@
 		</div>
 	</div>
 	<div class="row flex">
-		<div class="col-sm-3 fullWidthImg unit">
+		<div class="col-sm-3 fullWidthImg maxWidth unit text-center">
 			<?php print caGetThemeGraphic($this->request, 'AWOTWlogo.jpg', array("alt" => "Alutiiq Word of the Week")); ?>
 		</div>
 		<div class="col-sm-9 wordCallout">
@@ -113,13 +113,25 @@
 	<div class="row">
 		<div class="col-sm-12 text-center">
 			<H3>Word of the Week Archive</H3>
+			<div class="row">
+				<div class="col-sm-12 col-md-6 col-md-offset-3 text-center">
+					<form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'words'); ?>">
+						<div class="formOutline">
+							<div class="form-group">
+								<input type="text" class="form-control" id="heroSearchInput" placeholder="Search the Archive" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
+							</div>
+							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
+						</div>
+					</form>
+				</div>
+			</div>
 			<div class="wordCallout">{{{word_archive}}}</div>
-			<?php print caNavLink($this->request, "<div class='wordFindBox'>"._t("Search the Archive")."</div>", "", "", "browse", "words"); ?>
+			<?php print caNavLink($this->request, "<div class='wordFindBox'>"._t("Browse the Archive")."</div>", "", "", "browse", "words"); ?>
 		</div>		
 	</div>
 	<div class="container">
 		<div class="row hpIntroTop flex bg_gray">
-			<div class="col-sm-12 col-md-4 col-lg-4 fullWidthImg">
+			<div class="col-sm-12 col-md-4 col-lg-4 fullWidthImg maxWidth text-center">
 				<?php print caGetThemeGraphic($this->request, 'AWOTWlogo.jpg', array("alt" => "Alutiiq Word of the Week")); ?>
 			</div>
 			<div class="col-sm-12 col-md-6 col-lg-6 col-md-offset-1">

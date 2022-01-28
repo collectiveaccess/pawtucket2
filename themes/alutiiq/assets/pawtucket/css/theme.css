@@ -36,6 +36,10 @@
 	width:100%;
 	height:auto;
 }
+.fullWidthImg.maxWidth img{
+	max-width:400px;
+	height:auto;
+}
 .bg_sand{
 	background-color: #D9D4C2;
 }
@@ -103,6 +107,11 @@ h1, .front h1{
 	padding-right:5px;
 	text-align:left;
 }
+@media(max-width:768px){
+	.hpIntroTopDesc{
+		margin-top:15px;
+	}
+}
 .hpIntroTopDescTitle{
 	font-weight:500;
 	font-size:16px;
@@ -165,7 +174,7 @@ a:hover .hpFindBox{
 .browse .btn, .sets .btn, .search .btn {
     background-color: #000;
 }
-.bResultListItem .bResultListItemText a {
+.bResultListItem .bResultListItemText a, a .bResultListItem .bResultListItemText {
     line-height: 1.2em;
     color: #000;
     font-size: 15px;
@@ -362,7 +371,26 @@ a:hover .wordFindBox{
 	height:auto;
 	max-width:300px;
 }
-
+.front.word .formoutline{
+	border:0px;
+	position:relative;
+}
+.front.word #heroSearchInput{
+	border:1px solid #666;
+	border-radius:0px;
+	padding-right:40px;
+	font-size:16px;
+}
+.front.word #heroSearchInput:focus{
+	border:1px solid #000;
+}
+.front.word #heroSearchButton{
+	position: absolute;
+	right: 20px;
+	top: 1px;
+	font-size: 16px;
+	background-color:transparent;
+}
 .words #bLetterBar a{
 	background-color:#000;
 	color:#FFF;
@@ -419,4 +447,7 @@ a:hover .bResultListItemInstitution{
 }
 a.readmore-js-toggle {
     color: #AC143A;
+}
+.staticPage .btn-default{
+	margin-bottom:25px;
 }
