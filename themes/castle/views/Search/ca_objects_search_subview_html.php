@@ -95,11 +95,12 @@
 				}
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
 ?>
+				<br/><?php print "<small>".$qr_results->get('ca_objects.idno')."</small>";?>
 				<br/><?php print "<p>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</p>"; ?>
 <?php 
-					if ($vs_entities = $qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true))) {
-						print "<p>".$vs_entities."</p>";
-					}
+					#if ($vs_entities = $qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true))) {
+					#	print "<p>".$vs_entities."</p>";
+					#}
 ?>
 			</div><!-- end blockResult -->
 <?php

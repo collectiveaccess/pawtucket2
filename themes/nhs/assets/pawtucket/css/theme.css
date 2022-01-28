@@ -685,6 +685,12 @@ div.browseFacetItem:hover{
 	text-decoration:none;
 	color:#454545;
 }
+@media (max-width: 768px) {
+	.collections.landing .inventoryDownloadLink{
+		display:block;
+		padding-bottom:10px;
+	}
+}
 /* collection detail */
 .collectionsContainer a.openCollection.active {
     color: #fff;

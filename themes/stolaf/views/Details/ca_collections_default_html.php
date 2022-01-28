@@ -49,24 +49,6 @@
 					
 					{{{<ifdef code="ca_collections.repository.repository_country"><div class="unit"><label class="inline">Collection Number: </label>^ca_collections.repository.repository_country</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.parent_id"><label>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></label></ifdef>}}}
-<?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					print '</div><!-- end detailTools -->';
-				}				
-?>
-
 					
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -90,14 +72,41 @@
 							</unit>
 						</div>
 					</ifdef>}}}
-					
-					{{{<if rule="^ca_collections.type_id =~ /Folder/"><ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location</label>
-						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
-					</div></ifcount></if>}}}
-				
 					{{{<ifdef code="ca_collections.material_type"><div class="unit"><label>Material Format</label>^ca_collections.material_type%delimiter=,_</div></ifdef>}}}
 					
+					{{{<ifdef code="ca_collections.accessrestrict"><div class="unit"><label>Restrictions</label>^ca_collections.accessrestrict%delimiter=,_</div></ifdef>}}}
+					
+					{{{<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><label>Physical Access</label>^ca_collections.physaccessrestrict%delimiter=,_</div></ifdef>}}}
+
+					{{{<ifdef code="ca_collections.preferCite"><div class="unit"><label>Preferred Citation</label>^ca_collections.preferCite%delimiter=,_</div></ifdef>}}}
+					
+					{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location</label>
+						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
+					</div></ifcount>}}}
+					
 <?php
+					# --- entity name should be the loc name when Entity Source is LCNAF - LcshNames - /\[[^)]+\]/
+					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="ind"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><label>Related person</label></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="ind"><label>Related people</label></ifcount><unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="org"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><label>Related organization</label></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="org"><label>Related organizations</label></ifcount><unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					print preg_replace('/\[[^)]+\]/', '', $t_item->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToTypes="fam"><div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><label>Related family</label></ifcount><ifcount code="ca_entities" min="2" restrictToTypes="fam"><label>Related families</label></ifcount><unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>"><if rule="^ca_entities.entity_source =~ /LCNAF/">^ca_entities.LcshNames<ifnotdef code="ca_entities.LcshNames">^ca_entities.preferred_labels</ifnofdef></if><if rule="^ca_entities.entity_source !~ /LCNAF/">^ca_entities.preferred_labels</if> (^relationship_typename)</unit></div></ifcount>'));
+					
+					
+					$va_LcshNames = $t_item->get("ca_collections.LcshNames", array("returnAsArray" => true));
+					$va_LcshNames_processed = array();
+					if(is_array($va_LcshNames) && sizeof($va_LcshNames)){
+						foreach($va_LcshNames as $vs_LcshNames){
+							if($vs_LcshNames && (strpos($vs_LcshNames, " [") !== false)){
+								$va_LcshNames_processed[] = mb_substr($vs_LcshNames, 0, strpos($vs_LcshNames, " ["));
+							}else{
+								$va_LcshNames_processed[] = $vs_LcshNames;
+							}
+						}
+						$vs_LcshNames = join("<br/>", $va_LcshNames_processed);
+					}
+					if($vs_LcshNames){
+						print "<div class='unit'><label>Library of Congress Names</label>".$vs_LcshNames."</div>";	
+					}
+
 					$va_LcshSubjects = $t_item->get("ca_collections.LcshSubjects", array("returnAsArray" => true));
 					$va_LcshSubjects_processed = array();
 					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
@@ -113,15 +122,7 @@
 					if($vs_LcshSubjects){
 						print "<div class='unit'><label>Subjects</label>".$vs_LcshSubjects."</div>";	
 					}
-?>
-					
-					{{{<ifdef code="ca_collections.relation"><div class="unit"><label>Related Collections</label>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
-					
-					{{{<ifdef code="ca_collections.accessrestrict"><div class="unit"><label>Restrictions</label>^ca_collections.accessrestrict%delimiter=,_</div></ifdef>}}}
-					
-					{{{<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><label>Physical access</label>^ca_collections.physaccessrestrict%delimiter=,_</div></ifdef>}}}
-					
-<?php
+
 					$va_LcshGenre = $t_item->get("ca_collections.LcshGenre", array("returnAsArray" => true));
 					$va_LcshGenre_processed = array();
 					if(is_array($va_LcshGenre) && sizeof($va_LcshGenre)){
@@ -160,30 +161,37 @@
 						print "</div>";	
 					}
 ?>
-					{{{<ifdef code="ca_collections.preferCite"><div class="unit"><label>Preferred citation</label>^ca_collections.preferCite%delimiter=,_</div></ifdef>}}}
-									
-					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><label>Related person</label></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2" restrictToTypes="ind"><label>Related people</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
-				
-					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><label>Related organization</label></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2" restrictToTypes="org"><label>Related organizations</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
-				
-					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><label>Related family</label></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2" restrictToTypes="fam"><label>Related families</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
 					
-					{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>}}}
+					{{{<ifdef code="ca_collections.relation"><div class="unit"><label>Related Collections</label>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
+
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount><ifcount code="ca_places" min="2"><label>Related places</label></ifcount><unit relativeTo="ca_places" delimiter="<br/>"><unit relativeTo="ca_places.hierarchy" delimiter=" &gt; "><l>^ca_places.preferred_labels</l></unit></unit></div></ifcount>}}}
 				
 					<br/>{{{map}}}
 				
+<?php
+				# Comment and Share Tools
+				if ($vn_comments_enabled | $vn_share_enabled) {
+						
+					print '<div id="detailTools">';
+					if ($vn_comments_enabled) {
+?>				
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
+<?php				
+					}
+					if ($vn_share_enabled) {
+						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+					}
+					print '</div><!-- end detailTools -->';
+				}				
+?>
+
 				</div>
 				
 <?php
-			if ($vb_show_hierarchy_viewer) {	
+			$vs_sponsor_image = $t_item->get("ca_collections.sponsor_img.small");
+			$vs_sponsor = $t_item->get("ca_collections.fa_sponsor");
+			if ($vs_sponsor_image || $vb_show_hierarchy_viewer) {	
 ?>
 				<div class='col-sm-5'>
 					<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
@@ -192,6 +200,14 @@
 							$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
 						})
 					</script>
+<?php
+					if($vs_sponsor_image){
+						print "<br/><div class='unit sponsorImage'>".$vs_sponsor_image."</div>";
+					}
+					if($vs_sponsor){
+						print "<div class='unit sponsorNote'>".$vs_sponsor."</div>";
+					}
+?>
 				</div><!-- end col -->
 <?php				
 			}									
