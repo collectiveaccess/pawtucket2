@@ -63,7 +63,7 @@
 				{{{representationViewer}}}
 <?php
 				$vs_rel_doc = "";
-				if ($va_related_documents = $t_item->get('ca_occurrences.attachment', array('returnWithStructure' => true))) {
+				if ($va_related_documents = $t_item->get('ca_occurrences.attachment.thumbnail', array('returnWithStructure' => true))) {
 					$o_db = new Db();
 					$vn_media_element_id = ca_metadata_elements::getElementID('attachment');
 					foreach ($va_related_documents as $va_key => $va_related_document_t) {
