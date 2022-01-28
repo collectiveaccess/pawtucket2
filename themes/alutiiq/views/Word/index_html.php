@@ -125,7 +125,7 @@
 					</form>
 				</div>
 			</div>
-			<div class="wordCallout">{{{word_archive}}}</div>
+			<div class="wordCallout">{{{word_archive_home}}}</div>
 			<?php print caNavLink($this->request, "<div class='wordFindBox'>"._t("Browse the Archive")."</div>", "", "", "browse", "words"); ?>
 		</div>		
 	</div>
