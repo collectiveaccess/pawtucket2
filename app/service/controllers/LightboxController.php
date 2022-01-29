@@ -733,13 +733,25 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							if(!($email = trim($email))) { continue; }
 							
 							if($local = ca_users::find(['email' => $email], ['returnAs' => 'firstModelInstance'])) {
-								if($t_set->haveAccessToSet($user_id = $local->getPrimaryKey(), $access)) {
+								if($t_set->haveAccessToSet($user_id = $local->getPrimaryKey(), $access, null, ['dontCheckAccessValue' => true])) {
 									$skipped_users[] = $email;
 									$messages[] = _t('%1 already has access', $email);
 								} else {
 									$local_users[$user_id] = $access;
 									$local_email_addresses[] = $email;
 									$messages[] = _t('%1 was added', $email);
+									
+									// Send email notification
+									$ret = caSendMessageUsingView(null, 
+										$email, 
+										__CA_ADMIN_EMAIL__,
+										"[".__CA_APP_DISPLAY_NAME__."] User added to lightbox", 
+										"lightbox_share_add.tpl", 
+										['email' => $email, 'lightboxName' => $t_set->get('ca_sets.preferred_labels')]
+									);
+									if(!$ret) {
+										$messages[] = _t('Could not send email');
+									}
 								}
 							} elseif(caCheckEmailAddressRegex($email)) {
 								$invited_users[$email] = $access;
@@ -843,7 +855,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						if(is_array($users_to_delete) && sizeof($users_to_delete)) {
 							if(!$t_set->removeUsers(array_values($users_to_delete))) {
 								$messages[] = _t('Could not remove users: %1', join('; ', $t_set->getErrors()));
-							}
+							} 
 						}
 						
  						return [
