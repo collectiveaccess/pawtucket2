@@ -286,10 +286,9 @@ function shareLightbox(uri, tokens, id, access, users, callback) {
 	const client = getGraphQLClient(uri + '/lightbox', tokens, {});
 	client
 		.mutate({
-
 			mutation: gql`
 				mutation ($id: Int!, $access: Int!, $users: String!){ 
-					share(id: $id, share: { access: $access, users: $users }) { id, name, users_added, users_invited, users_skipped } 
+					share(id: $id, share: { access: $access, users: $users }) { id, name, users_added, users_invited, users_skipped, messages } 
 				}
 			`, variables: { 'id': id, 'access': access, "users": users }
 		})
@@ -300,8 +299,44 @@ function shareLightbox(uri, tokens, id, access, users, callback) {
 		});
 }
 
+function deleteShare(uri, tokens, id, users, callback) {
+	id = parseInt(id);
+	const client = getGraphQLClient(uri + '/lightbox', tokens, {});
+	client
+		.mutate({
+			mutation: gql`
+				mutation ($id: Int!, $users: String!){ 
+					deleteShare(id: $id, users: $users ) { id, name, users_deleted, users_skipped, messages  } 
+				}
+			`, variables: { 'id': id, "users": users }
+		})
+		.then(function (result) {
+			callback(result.data['deleteShare']);
+		}).catch(function (error) {
+			console.log("Error while attempting to submit deleteShare: ", error);
+		});
+}
+
+function shareList(uri, id, tokens, callback) {
+	id = parseInt(id);
+	const client = getGraphQLClient(uri + '/lightbox', tokens, {});
+	client
+		.query({
+			query: gql`
+		  query($id: Int) { 
+				shareList(id: $id) { shares { user_id, fname, lname, email, access } } 
+			}
+		`	, variables: { id: id }
+		})
+		.then(function (result) {
+			callback(result.data['shareList']);
+		}).catch(function (error) {
+			console.log("Error while attempting to shareList: ", error);
+		});
+}
+
 export {
 	fetchLightboxList, loadLightbox, createLightbox, editLightbox, deleteLightbox,
 	getLightboxAccessForCurrentUser, newJWTToken, reorderLightboxItems,
-	appendItemstoNewLightbox, appendItemsToLightbox, transferItemsToLightbox, removeItemsFromLightbox, createLightboxComments, shareLightbox,
+	appendItemstoNewLightbox, appendItemsToLightbox, transferItemsToLightbox, removeItemsFromLightbox, createLightboxComments, shareLightbox, shareList, deleteShare
 };

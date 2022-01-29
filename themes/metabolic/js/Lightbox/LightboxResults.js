@@ -65,7 +65,7 @@ const ItemList = SortableContainer(({ items }) => {
 
 const LightboxResults = (props) => {
 
-	const { id, setId, tokens, setTokens, userAccess, setUserAccess, shareAccess, setShareAccess, comments, setComments, totalSize, setTotalSize, itemsPerPage, setItemsPerPage, resultList, setResultList, isLoading, setIsLoading, dragDropMode, setDragDropMode, orderedIds, setOrderedIds } = useContext(LightboxContext)
+	const { id, setId, tokens, setTokens, userAccess, setUserAccess, shareAccess, setShareAccess, comments, setComments, totalSize, setTotalSize, itemsPerPage, setItemsPerPage, resultList, setResultList, isLoading, setIsLoading, dragDropMode, setDragDropMode, orderedIds, setOrderedIds, sharedUsers, setSharedUsers } = useContext(LightboxContext)
 
 	const [ resultItems, setResultItems ] = useState([])
 
@@ -148,21 +148,23 @@ const LightboxResults = (props) => {
 							</div>
 						</div>*/}
 
-						<div className="card pr-1">
-							<div className="card-header" style={{ padding: "15px 10px 15px 10px" }} >
-								<a data-toggle="collapse" href="#setComments" role="button" aria-expanded="false" aria-controls="collapseComments">
-									Comments {comments && comments.length > 0? <span>({comments.length})</span> : null}
-								</a>
+						{shareAccess == "edit" && userAccess == 2 ?  
+							<div className="card pr-1">
+								<div className="card-header" style={{ padding: "15px 10px 15px 10px" }} >
+									<a data-toggle="collapse" href="#setComments" role="button" aria-expanded="false" aria-controls="collapseComments">
+										Comments {comments && comments.length > 0? <span>({comments.length})</span> : null}
+									</a>
+								</div>
+								<div id="setComments" className="card-body collapse" style={{ padding: "0 10px 5px 10px"}} data-parent="#accordion">
+									<LightboxCommentForm />
+								</div>
 							</div>
-							<div id="setComments" className="card-body collapse" style={{ padding: "0 10px 5px 10px"}} data-parent="#accordion">
-								<LightboxCommentForm />
-							</div>
-						</div>
+						: null}
 
 						{shareAccess == "edit" && userAccess == 2?  
 							<div className="card">
 								<div className="card-header" style={{ padding: "15px 10px 15px 10px" }} >
-									<a data-toggle="collapse" href="#setShare" role="button" aria-expanded="false" aria-controls="collapseShare">Share</a>
+									<a data-toggle="collapse" href="#setShare" role="button" aria-expanded="false" aria-controls="collapseShare">Share <span>({sharedUsers.length})</span></a>
 								</div>
 								<div id="setShare" className="card-body collapse" style={{ padding: "0 10px 5px 10px"}}  data-parent="#accordion">
 									<LightboxShareBlock />
