@@ -1011,6 +1011,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$ret = array_flip($set_ids);
 		
 		$shares_only = caGetOption('sharesOnly', $options, false);
+		$dont_check_access_value = caGetOption('dontCheckAccessValue', $options, false);
 		
 		$t_user = new ca_users();
 		if (
@@ -1040,9 +1041,12 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 					$ret[$set_id] = true;
 					continue;
 				}
-				if((int)$qr_res->get('access') > 0) {
-					$ret[$set_id] = true;
-					continue;
+				
+				if(!$dont_check_access_value) {
+					if((int)$qr_res->get('access') > 0) {
+						$ret[$set_id] = true;
+						continue;
+					}
 				}
 			}
 		}
