@@ -324,7 +324,7 @@ function shareList(uri, id, tokens, callback) {
 		.query({
 			query: gql`
 		  query($id: Int) { 
-				shareList(id: $id) { shares { user_id, fname, lname, email, access } } 
+				shareList(id: $id) { shares { user_id, fname, lname, email, access }, invitations {  email, access } } 
 			}
 		`	, variables: { id: id }
 		})

@@ -3071,4 +3071,145 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 		return $row_ids;
 	}
 	# ---------------------------------------------------------------
+	# Invitation workflow
+	# ---------------------------------------------------------------
+	/**
+	 * Returns array of users associated with the currently loaded row. The array
+	 * is key'ed on relation_id; each value is an  array containing information about the invitation. Array keys are:
+	 *			activation_key		[unique activation key for invitation]
+	 *			activation_email	[email address for invited user]
+	 *			sdatetime			[start date/time of access]
+	 *			edatetime			[end date/time of access]
+	 *			pending_access		[access level to grant]
+	 *
+	 * @param array $options Options include:
+	 *		set_id = Get invitation list for a specific row rather than the currently loaded one. [Default is null]
+	 *
+	 * @return array List of groups associated with the currently loaded row
+	 */ 
+	public function getUserInvitations(?array $options=null) : array {
+		if (!($id = caGetOption('set_id', $options, null)) && !($id = (int)$this->getPrimaryKey())) { return null; }
+		
+		if (!is_array($options)) { $options = []; }
+		
+		$t_rel = Datamodel::getInstanceByTableName('ca_sets_x_users', true);
+		$o_tep = new TimeExpressionParser();
+		
+		$o_db = $this->getDb();
+		
+		$qr_res = $o_db->query("
+			SELECT r.*
+			FROM ca_sets_x_users r
+			WHERE
+				(r.set_id = ?) AND (r.user_id IS NULL) and (r.activation_key IS NOT NULL)
+		", [$id]);
+		
+		$invitations = [];
+		
+		$o_tep = new TimeExpressionParser();
+		$o_tep->init();
+		while($qr_res->nextRow()) {
+			$row = $qr_res->getRow();
+			$o_tep->setUnixTimestamps($qr_res->get('sdatetime'), $qr_res->get('edatetime'));
+			$row['effective_date'] = $o_tep->getText();
+			unset($row['sdatetime']); unset($row['edatetime']);
+			
+			$invitations[$qr_res->get('relation_id')] = $row;
+		}
+		
+		return $invitations;
+	}
+	# ---------------------------------------------------------------
+	/**
+	 * Add invitations
+	 */ 
+	public function inviteUser(string $email, int $access, ?string $effective_dates=null) : bool {
+		if (!($id = (int)$this->getPrimaryKey())) { return null; }
+		
+		if($t_rel = ca_sets_x_users::find(['activation_email' => $email, 'set_id' => $id], ['returnAs' => 'firstModelInstance'])) {
+			if($t_rel->get('ca_sets_x_users.user_id') > 0) {
+				// invitation already exists with access	
+				$this->postError(901, _t('%1 already has access'), 'ca_sets->inviteUser()');
+				return false;
+			}
+		} else {
+			$t_rel = Datamodel::getInstanceByTableName('ca_sets_x_users', true);
+		}
+		if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
+		$t_rel->set('set_id', $id);
+		$t_rel->set('user_id', null);
+		$t_rel->set('access', __CA_SET_NO_ACCESS__);
+		$t_rel->set('activation_email', $email);
+		$t_rel->set('activation_key', caGenerateGUID());
+		$t_rel->set('pending_access', $access);
+		if ($t_rel->hasField('effective_date')) {
+			$t_rel->set('effective_date', $effective_dates);
+		}
+		
+		if ($t_rel->getPrimaryKey()) {
+			$t_rel->update();
+		} else {
+			$t_rel->insert();
+		}
+		
+		if ($t_rel->numErrors()) {
+			$this->errors = $t_rel->errors;
+			return false;
+		}
+		
+		return true;
+	}
+	# ---------------------------------------------------------------
+	/**
+	 * 
+	 */ 
+	public function removeUserInvitation(string $email) : bool {
+		if (!($id = (int)$this->getPrimaryKey())) { return null; }
+		$t_rel = Datamodel::getInstanceByTableName('ca_sets_x_users');
+		
+		if($t_rel = ca_sets_x_users::find([
+			'set_id' => $id, 
+			'activation_email' => $email, 
+			'user_id' => ['>', 0]
+		], ['returnAs' => 'firstModelInstance'])) {
+			if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
+			$t_rel->delete(true);
+			
+			if ($t_rel->numErrors()) {
+				$this->errors = $t_rel->errors;
+				return false;
+			}
+		} else {
+			$this->postError(900, _t('Invitation does not exist'), 'ca_sets->inviteUser()');
+			return false;
+		}
+		
+		return true;
+	}
+	# ---------------------------------------------------------------
+	/**
+	 * Removes all user invitations from currently loaded row
+	 *
+	 * @return bool True on success, false on failure
+	 */ 
+	public function removeAllUserInvitations() : bool {
+		if (!($id = (int)$this->getPrimaryKey())) { return null; }
+		$t_rel = Datamodel::getInstanceByTableName('ca_sets_x_users', true);
+		if ($this->inTransaction()) { $t_rel->setTransaction($this->getTransaction()); }
+		
+		if(is_array($invitations = $this->getUserInvitations())) {
+			foreach($invitations as $rel_id => $info) {
+				if($t_rel->load($rel_id) && !$t_rel->get('ca_sets_x_users.user_id')) {
+					$t_rel->delete(true);
+					
+					if ($t_rel->numErrors()) {
+						$this->errors = $t_rel->errors;
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	# ---------------------------------------------------------------
 }

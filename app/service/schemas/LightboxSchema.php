@@ -463,12 +463,31 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 					]
 				]
 			]),
-			$lightboxShareListType = new ObjectType([
-				'name' => 'LightboxShareListType',
+			$lightboxInvitationType = new ObjectType([
+				'name' => 'LightboxInvitationType',
+				'description' => 'Lightbox invitation information',
+				'fields' => [
+					'email' => [
+						'type' => Type::string(),
+						'description' => 'Email address of share user'
+					],
+					'access' => [
+						'type' => Type::string(),
+						'description' => 'Access type'
+					]
+				]
+			]),
+			$lightboxAccessListType = new ObjectType([
+				'name' => 'LightboxAccessListType',
+				'description' => 'List of pending lightbox shares and invitations',
 				'fields' => [
 					'shares' => [
 						'type' => Type::listOf($lightboxShareType),
-						'description' => 'List of users lightbox is shared with'
+						'description' => 'List of pending lightbox shares'
+					],
+					'invitations' => [
+						'type' => Type::listOf($lightboxInvitationType),
+						'description' => 'List of pending lightbox invitations'
 					]
 				]
 			]),

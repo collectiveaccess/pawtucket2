@@ -323,7 +323,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 					}
 				],
 				'shareList' => [
-					'type' => LightboxSchema::get('LightboxShareListType'),
+					'type' => LightboxSchema::get('LightboxAccessListType'),
 					'description' => _t('List users lightbox is shared with'),
 					'args' => [
 						'id' => Type::int(),
@@ -348,12 +348,19 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 									'fname' => $v['fname'],
 									'lname' => $v['lname'],
 									'email' => $v['email'],
-									'access' => $v['access'],
+									'access' => $v['access']
 								];
 							}, $t_set->getUsers());
-							return ['shares' => $share_list];
+							
+							$invitation_list = array_map(function($v) { 
+								return [
+									'email' => $v['activation_email'],
+									'access' => $v['pending_access']
+								];
+							}, $t_set->getUserInvitations());
+							return ['shares' => $share_list, 'invitations' => $invitation_list];
 						} else {
-							return ['shares' => null];
+							return ['shares' => null, 'invitations' => null];
 						}
 					}
 				]
@@ -719,6 +726,8 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
+						global $g_last_email_error;
+						
 						if (!($u = self::authenticate($args['jwt']))) {
 							throw new ServiceException(_t('Invalid JWT'));
 						}
@@ -750,14 +759,29 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 										['email' => $email, 'lightboxName' => $t_set->get('ca_sets.preferred_labels')]
 									);
 									if(!$ret) {
-										$messages[] = _t('Could not send email');
+										$messages[] = _t('Could not send email: %1', $g_last_email_error);
 									}
 								}
 							} elseif(caCheckEmailAddressRegex($email)) {
-								$invited_users[$email] = $access;
-								$messages[] = _t('An invitation was sent to %1', $email);
 								
-								// TODO: invite user
+								if($t_set->inviteUser($email, $access)) {
+									$invited_users[$email] = $access;
+									$messages[] = _t('An invitation was sent to %1', $email);
+									
+									$ret = caSendMessageUsingView(null, 
+										$email, 
+										__CA_ADMIN_EMAIL__,
+										"[".__CA_APP_DISPLAY_NAME__."] User invited to lightbox", 
+										"lightbox_share_invite.tpl", 
+										['email' => $email, 'lightboxName' => $t_set->get('ca_sets.preferred_labels')]
+									);
+									if(!$ret) {
+										$messages[] = _t('Could not send invitation email: %1', $g_last_email_error);
+									}
+								} else {
+									$skipped_users[] = $email;
+									$messages[] = join('; '.$t_set->getErrors());
+								}
 							} else {
 								$skipped_users[] = $email;
 								$messages[] = _t('%1 was not added because the email address is invalid', $email);

@@ -253,10 +253,10 @@
  	 * @return string True if send, false if error
 	 */
 	function caSendMessageUsingView($po_request, $pa_to, $pa_from, $ps_subject, $ps_view, $pa_values, $pa_cc=null, $pa_bcc=null, $pa_options=null) {
-		$vs_view_path = (is_object($po_request)) ? $po_request->getViewsDirectoryPath() : __CA_BASE_DIR__.'/themes/'.__CA_THEME__.'/views';
+		$view_paths = (is_object($po_request)) ? [$po_request->getViewsDirectoryPath().'/mailTemplates'] : array_unique([__CA_BASE_DIR__.'/themes/'.__CA_THEME__.'/views/mailTemplates', __CA_BASE_DIR__.'/themes/default/views/mailTemplates']);
 		if(!is_object($po_request)) { $po_request = null; }
 		
-		$o_view = new View($po_request, $vs_view_path."/mailTemplates", 'UTF8', array('includeDefaultThemePath' => false));
+		$o_view = new View($po_request, $view_paths, 'UTF8', array('includeDefaultThemePath' => false));
 		foreach($pa_values as $vs_key => $vm_val) {
 			$o_view->setVar($vs_key, $vm_val);
 		}
