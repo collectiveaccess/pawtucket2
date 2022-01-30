@@ -2846,7 +2846,7 @@
 		}
 		# ------------------------------------------------------------------
 		/**
-		 * Removes all user users from currently loaded row
+		 * Removes all users from currently loaded row
 		 *
 		 * @return bool True on success, false on failure
 		 */ 

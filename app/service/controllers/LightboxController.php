@@ -731,6 +731,8 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						if (!($u = self::authenticate($args['jwt']))) {
 							throw new ServiceException(_t('Invalid JWT'));
 						}
+						
+						$config = Configuration::load();
 
 						$t_set = self::_getSet($args['id'], $u->getPrimaryKey(), __CA_SET_EDIT_ACCESS__);
 						
@@ -764,16 +766,22 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 								}
 							} elseif(caCheckEmailAddressRegex($email)) {
 								
-								if($t_set->inviteUser($email, $access)) {
+								if($t_invite = $t_set->inviteUser($email, $access)) {
 									$invited_users[$email] = $access;
 									$messages[] = _t('An invitation was sent to %1', $email);
-									
+									//$config->get('site_host').$config->get('ca_url_root')/
+
+									$registration_url = caNavUrl('', 'LoginReg', 'registerForm', ['invite' => $t_invite->get('activation_key')], ['absolute' => true]);
 									$ret = caSendMessageUsingView(null, 
 										$email, 
 										__CA_ADMIN_EMAIL__,
 										"[".__CA_APP_DISPLAY_NAME__."] User invited to lightbox", 
 										"lightbox_share_invite.tpl", 
-										['email' => $email, 'lightboxName' => $t_set->get('ca_sets.preferred_labels')]
+										[
+											'email' => $email, 
+											'lightboxName' => $t_set->get('ca_sets.preferred_labels'),
+											'registrationUrl' => $registration_url
+										]
 									);
 									if(!$ret) {
 										$messages[] = _t('Could not send invitation email: %1', $g_last_email_error);

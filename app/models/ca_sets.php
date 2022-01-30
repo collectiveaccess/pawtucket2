@@ -3122,8 +3122,10 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 	# ---------------------------------------------------------------
 	/**
 	 * Add invitations
+	 *
+	 * @return false on error, ca_sets_x_users instance on success
 	 */ 
-	public function inviteUser(string $email, int $access, ?string $effective_dates=null) : bool {
+	public function inviteUser(string $email, int $access, ?string $effective_dates=null) {
 		if (!($id = (int)$this->getPrimaryKey())) { return null; }
 		
 		if($t_rel = ca_sets_x_users::find(['activation_email' => $email, 'set_id' => $id], ['returnAs' => 'firstModelInstance'])) {
@@ -3157,7 +3159,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			return false;
 		}
 		
-		return true;
+		return $t_rel;
 	}
 	# ---------------------------------------------------------------
 	/**
@@ -3210,6 +3212,27 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			}
 		}
 		return true;
+	}
+	# ---------------------------------------------------------------
+	/**
+	 * Activate share
+	 *
+	 */ 
+	public static function activateUser(int $user_id, string $activation_email, string $activation_key ) {
+		if ($t_rel = ca_sets_x_users::find([
+			'activation_email' => $activation_email, 
+			'activation_key' => $activation_key, 
+			'user_id' => null
+		], ['returnAs' => 'firstModelInstance'])) {
+			$t_rel->set('access', $t_rel->get('ca_sets_x_users.pending_access'));
+			$t_rel->set('user_id', $user_id);
+			if (!$t_rel->update()) {
+				return null;
+			}
+			return $t_rel;
+			
+		}
+		return false;
 	}
 	# ---------------------------------------------------------------
 }

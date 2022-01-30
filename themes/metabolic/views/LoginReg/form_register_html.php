@@ -121,6 +121,7 @@
 			<div class="form-group">
 				<button type="submit" class="btn btn-primary"><?php print _t('Register'); ?></button>
 			</div><!-- end form-group -->
+			<input type="hidden" name="invite" value="<?= $this->getVar('invite'); ?>">
 			<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 		</form>
 	</div>

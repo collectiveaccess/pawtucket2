@@ -74,6 +74,11 @@
 
 				$this->view->setVar("profile_settings", $va_elements);
 			}
+			
+			// Set invite activation key in form
+			$invite = $this->request->getParameter('invite', pString);
+			if(preg_match('![^A-Za-z0-9\-]+!', $invite)) { $invite = null; }
+			$this->view->setVar('invite', $invite);
 
 			$this->render("LoginReg/form_register_html.php");
 		}
@@ -339,6 +344,9 @@
 			$ps_security = $this->request->getParameter("security", pString);
 			$ps_captcha = $this->request->getParameter("g-recaptcha-response", pString);
 			$ps_group_code = $this->request->getParameter("group_code", pString);
+			
+			// activation code for lightbox share invitation
+			$invite_code = $this->request->getParameter("invite", pString);
 
 			$va_errors = array();
 
@@ -480,7 +488,7 @@
 					# -------------
 				}
 			}
-			$t_user->set("registered_on","now");
+			$t_user->set("registered_on",_t("now"));
 
 			// Save user profile responses
 			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
@@ -527,6 +535,17 @@
 							$vs_group_message = _t("You are already a member of group <em>%1</em>", $t_group_to_join->get('name'));
 						}
 					}
+					
+					# Lightbox share invitation?
+					if($invite_code) {
+						if($t_rel = ca_sets::activateUser($t_user->getPrimaryKey(), $t_user->get('ca_users.email'), $invite_code)) {
+							$vs_group_message .= _t('You have been added to the lightbox');
+						} elseif(is_null($t_rel)) {
+							$vs_group_message .= _t('An error occurred when attempting to link new account to lightbox');
+						} elseif(!$t_rel) {
+							$vs_group_message .= _t('The lightbox invitation is invalid');
+						}
+					}
 
 					# --- send email confirmation
 					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
@@ -569,6 +588,7 @@
 						# log in the new user
 						$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $ps_email, 'password' => $ps_password));
 	
+						if($vs_group_message) { $vs_group_message = "<br/>{$vs_group_message}";
 						if($this->request->isLoggedIn()){
 							if($this->request->isAjax()){
 								$this->view->setVar("message", _t('Thank you for registering!  You are now logged in.').$vs_group_message);
