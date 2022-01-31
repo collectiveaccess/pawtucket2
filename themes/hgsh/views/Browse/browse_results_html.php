@@ -61,91 +61,276 @@
 	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
 	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	
-if (!$vb_ajax) {	// !ajax
-?>
-<div class="row" style="clear:both;">
-	<div class='col-sm-12 col-md-12 col-lg-12'>
-<?php
-			#print "<H1>"._t('%1 %2 %3', $qr_res->numHits(), ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"))."</H1>";	
-		if($vb_is_search){
-			print "<H5>";
-		}
-		if (sizeof($va_criteria) > 0) {
-			$i = 0;
-			foreach($va_criteria as $va_criterion) {
-				if ($va_criterion['facet_name'] != '_search') {
-					# --- browse refinement is not used in this system
-					# --- instead, detail pages have links to "related" objects browse results
-					# --- there is only ever one criteria, and it should serve as a title including a link back to it's detail page
-					#print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
-					switch($va_criterion['facet_name']){
-						case "entity_org_facet":
-							$vs_table = "ca_entities";
-						break;
-						# --------------------
-						case "place_facet":
-							$vs_table = "ca_places";
-						break;
-						# --------------------
-						case "collection_facet":
-							$vs_table = "ca_collections";
-						break;
-						# --------------------
-						case "event_facet":
-							$vs_table = "ca_occurrences";
-						break;
-						# --------------------
-						
+if(in_array(strToLower($this->request->getAction()), array("events"))){
+	if (!$vb_ajax) {	// !ajax
+	?>
+	<div role="main" id="main">
+	<div class="row" style="clear:both;">
+		<div class='col-sm-8'>
+	<?php 
+				if($vs_sort_control_type == 'list'){
+					if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+						print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
+						$i = 0;
+						foreach($va_sorts as $vs_sort => $vs_sort_flds) {
+							$i++;
+							if ($vs_current_sort === $vs_sort) {
+								print "<li class='selectedSort'>{$vs_sort}</li>\n";
+							} else {
+								print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
+							}
+							if($i < sizeof($va_sorts)){
+								print "<li class='divide'>&nbsp;</li>";
+							}
+						}
+						print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+						print "</ul></H5>\n";
 					}
-					print caDetailLink($this->request, "<div class='btn pull-left'><i class='fa fa-angle-double-left'></i></div><H1>".$va_criterion['value']."</H1>", '', $vs_table, $va_criterion['id']);
-				}else{
-					print "<strong>".$va_criterion['facet'].':</strong>';
-					print ' '.$va_criterion['value'];
 				}
-				$i++;
-				if($i < sizeof($va_criteria)){
-					print " ";
+	?>
+			<H1>
+				<div class="eventTitle">Events</div>
+	<?php
+				#print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+				if(is_array($va_facets) && sizeof($va_facets)){
+	?>
+				<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
+	<?php
 				}
-				$va_current_facet = $va_facets[$va_criterion['facet_name']];
-				if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
-					$t_authority_table = new $va_current_facet["table"];
-					$t_authority_table->load($va_criterion['id']);
-					$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
+				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+					print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
+				}
+	?>
+			</H1>
+		</div><!-- end col -->
+		<div class="col-sm-4 text-right">
+			<div id="bViewButtons">
+	<?php
+			if(is_array($va_views) && (sizeof($va_views) > 1)){
+				foreach($va_views as $vs_view => $va_view_info) {
+					if ($vs_current_view === $vs_view) {
+						print '<a href="#" class="active"><span class="glyphicon"  '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
+					} else {
+						print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+					}
 				}
 			}
-		}
-		if($vb_is_search){
-			print "</H5>";
-		}
-		if($vs_facet_description){
-			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
-		}
-?>
-		<div class="row">
-			<div id="browseResultsContainer">
-<?php
-} // !ajax
+	?>
+			</div>
+			<H5>
+	<?php
+			if (sizeof($va_criteria) > 0) {
+				$i = 0;
+				foreach($va_criteria as $va_criterion) {
+					if ($va_criterion['facet_name'] != '_search') {
+						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					}else{
+						print $va_criterion['value'];
+						$vs_search = $va_criterion['value'];
+					}
+					$i++;
+					if($i < sizeof($va_criteria)){
+						print " ";
+					}
+					$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
+					if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
+						$t_authority_table = new $va_current_facet["table"];
+						$t_authority_table->load($va_criterion['id']);
+						$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
+					}
+				}
+			}
+	?>		
+			</H5>
 
-print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
+	<?php
+			# --- refine only shows for events - only let them choose one institution to refine by - so hide refine menu when one has been selected already
+			if (sizeof($va_criteria) == 0) {
+				print $this->render("Browse/browse_refine_subview_html.php");
+			}
+	?>			
+		</div><!-- end col-2 -->
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
 
-if (!$vb_ajax) {	// !ajax
-?>
-			</div><!-- end browseResultsContainer -->
-		</div><!-- end row -->
-	</div><!-- end col -->
-</div><!-- end row -->	
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('#browseResultsContainer').jscroll({
-			autoTrigger: true,
-			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-			padding: 20,
-			nextSelector: 'a.jscroll-next'
+
+	<?php
+			if($vs_facet_description){
+				print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
+			}
+
+			if($vb_showLetterBar){
+				print "<div id='bLetterBar'>";
+				foreach(array_keys($va_letter_bar) as $vs_l){
+					if(trim($vs_l)){
+						print caNavLink($this->request, $vs_l, ($vs_letter == $vs_l) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))." ";
+					}
+				}
+				print " | ".caNavLink($this->request, _t("All"), (!$vs_letter) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all')); 
+				print "</div>";
+			}
+	?>
+			<form id="setsSelectMultiple">
+				<div id="browseResultsContainer">
+	<?php
+	} // !ajax
+
+	# --- check if this result page has been cached
+	# --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
+	$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);
+	if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
+		print ExternalCache::fetch($vs_cache_key, 'browse_results');
+	}else{
+		$vs_result_page = $this->render("Browse/browse_results_{$vs_current_view}_html.php");
+		ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results');
+		print $vs_result_page;
+	}		
+
+	if (!$vb_ajax) {	// !ajax
+	?>
+				</div><!-- end browseResultsContainer -->
+			</form>
+		</div><!-- end col-12 -->
+		
+		
+		
+		
+
+
+
+
+	
+	
+	</div><!-- end row -->	
+	</div>
+
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery('#browseResultsContainer').jscroll({
+				autoTrigger: true,
+				loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+				padding: 800,
+				nextSelector: 'a.jscroll-next'
+			});
+	<?php
+			if($vn_row_id){
+	?>
+				window.setTimeout(function() {
+					$("window,body,html").scrollTop( $("#row<?php print $vn_row_id; ?>").offset().top);
+				}, 0);
+	<?php
+			}
+			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+	?>
+			jQuery('#setsSelectMultiple').submit(function(e){		
+				objIDs = [];
+				jQuery('#setsSelectMultiple input:checkbox:checked').each(function() {
+				   objIDs.push($(this).val());
+				});
+				objIDsAsString = objIDs.join(';');
+				caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
+				e.preventDefault();
+				return false;
+			});
+	<?php
+			}
+	?>
 		});
-	});
 
-</script>
+	</script>
+	<?php
+			print $this->render('Browse/browse_panel_subview_html.php');
+	} //!ajax
+}else{
 
-<?php
-} //!ajax
+	if (!$vb_ajax) {	// !ajax
+	?>
+	<div class="row" style="clear:both;">
+		<div class='col-sm-12 col-md-12 col-lg-12'>
+	<?php
+				#print "<H1>"._t('%1 %2 %3', $qr_res->numHits(), ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"))."</H1>";	
+			if($vb_is_search){
+				print "<H5>";
+			}
+			if (sizeof($va_criteria) > 0) {
+				$i = 0;
+				foreach($va_criteria as $va_criterion) {
+					if ($va_criterion['facet_name'] != '_search') {
+						# --- browse refinement is not used in this system
+						# --- instead, detail pages have links to "related" objects browse results
+						# --- there is only ever one criteria, and it should serve as a title including a link back to it's detail page
+						#print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+						switch($va_criterion['facet_name']){
+							case "entity_org_facet":
+								$vs_table = "ca_entities";
+							break;
+							# --------------------
+							case "place_facet":
+								$vs_table = "ca_places";
+							break;
+							# --------------------
+							case "collection_facet":
+								$vs_table = "ca_collections";
+							break;
+							# --------------------
+							case "event_facet":
+								$vs_table = "ca_occurrences";
+							break;
+							# --------------------
+						
+						}
+						print caDetailLink($this->request, "<div class='btn pull-left'><i class='fa fa-angle-double-left'></i></div><H1>".$va_criterion['value']."</H1>", '', $vs_table, $va_criterion['id']);
+					}else{
+						print "<strong>".$va_criterion['facet'].':</strong>';
+						print ' '.$va_criterion['value'];
+					}
+					$i++;
+					if($i < sizeof($va_criteria)){
+						print " ";
+					}
+					$va_current_facet = $va_facets[$va_criterion['facet_name']];
+					if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
+						$t_authority_table = new $va_current_facet["table"];
+						$t_authority_table->load($va_criterion['id']);
+						$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
+					}
+				}
+			}
+			if($vb_is_search){
+				print "</H5>";
+			}
+			if($vs_facet_description){
+				print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
+			}
+	?>
+			<div class="row">
+				<div id="browseResultsContainer">
+	<?php
+	} // !ajax
+
+	print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
+
+	if (!$vb_ajax) {	// !ajax
+	?>
+				</div><!-- end browseResultsContainer -->
+			</div><!-- end row -->
+		</div><!-- end col -->
+	</div><!-- end row -->	
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery('#browseResultsContainer').jscroll({
+				autoTrigger: true,
+				loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+				padding: 20,
+				nextSelector: 'a.jscroll-next'
+			});
+		});
+
+	</script>
+
+	<?php
+	} //!ajax
+
+}
 ?>

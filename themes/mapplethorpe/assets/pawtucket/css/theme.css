@@ -127,6 +127,13 @@ label{
 	width:auto;
 	line-height:2.7em;
 }
+@media (max-width: 500px) {
+	.navbar-default .navbar-brand, a.navbar-brand {
+    	font: 14px 'Palatino LT W01 Roman', serif;
+    	display: block;
+		padding-top: 21px;
+    }
+}
 .navbar-default .navbar-brand:hover, a.navbar-brand:hover{
 	color:#707070;
 }
@@ -168,7 +175,12 @@ label{
 	color:#89000d;
 	text-decoration:none;
 }
-
+@media (min-width: 992px) {
+	#footer.footerFixed{
+		position:fixed;
+		z-index: 10;
+	}
+}
 /* FRONT & LOGIN */
 #pageArea.front, #pageArea.loginreg{
 	opacity:0;
@@ -403,6 +415,11 @@ a.facetApply {
 	right: 10px;
 	display:none;
 }
+@media (min-width: 992px) {
+	.browseTop{
+		bottom: 111px;
+	}
+}
 .results a.btn.browseTop .glyphicon{
 	color:#fff !important;
 }
@@ -410,7 +427,7 @@ a.facetApply {
 	background-color:#757575;
 }
 /* search within */
-@media(max-width:768px){
+@media(max-width:767px){
 	.results .bSearchWithinContainer{
 		display:none;
 	}
@@ -453,6 +470,12 @@ a.facetApply {
     background-color: transparent;
     margin: 0px 0px 0px 10px;
     font-size: 15px;
+}
+.results .dropdown-menu em, .lightbox .dropdown-menu em{
+	font-weight:bold;
+}
+.results .dropdown-menu, .lightbox .dropdown-menu {
+    font-size: 14px;
 }
 /* image results */
 .resultItemColImg, .resultItemColList{
@@ -521,8 +544,10 @@ a.facetApply {
 	padding: 5px 5px 3px 5px;
 	background-color: #FFF;
 }
-#bRefine {
-    background-color: transparent;
+@media(min-width:768px){
+	#bRefine {
+		background-color: transparent;
+	}
 }
 /* detail */
 .detail H1, .detail H1 i{
@@ -579,6 +604,12 @@ a.facetApply {
 	font-family: lato;
 	margin-bottom:10px;
 }
+.lightboxDetailHelp ul{
+	padding-left: 15px;
+}
+.lightboxDetailHelp li{
+	padding-bottom: 10px;
+}
 .detailMediaToolbar, .detail .repViewerCont:hover .detailMediaToolbar{
 	display:none;
 }
@@ -593,4 +624,43 @@ a.facetApply {
 .detail .zoomButton{
 	text-align:center;
 	padding:5px;
+}
+
+.form-control::placeholder {
+    font: 14px 'Palatino LT W01 Roman', serif;
+}
+/* force sscrollbars */
+.force-show-scrollbars::-webkit-scrollbar-track:vertical {
+    border-left: 1px solid #E7E7E7;
+    box-shadow: 1px 0 1px 0 #F6F6F6 inset, -1px 0 1px 0 #F6F6F6 inset;
+}
+
+.force-show-scrollbars::-webkit-scrollbar-track:horizontal {
+    border-top: 1px solid #E7E7E7;
+    box-shadow: 0 1px 1px 0 #F6F6F6 inset, 0 -1px 1px 0 #F6F6F6 inset;
+}
+
+.force-show-scrollbars::-webkit-scrollbar {
+    -webkit-appearance: none;
+    background-color: #FAFAFA;
+    width: 16px;
+}
+
+.force-show-scrollbars::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    background-color: #C1C1C1;
+    border-color: transparent;
+    border-radius: 9px 8px 8px 9px;
+    border-style: solid;
+    border-width: 3px 3px 3px 4px; /* Workaround because margins aren't supported */
+    box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+}
+
+/* Unfortunately scrollbars can't use CSS transitions. Also, it's not possible
+   to highlight the thumb when the scrollbar track is hovered without some
+   JavaScript acrobatics; https://jsfiddle.net/QcqBM/6/ is a start, but you
+   also have to check whether the element has a scrollbar and if so how wide
+   it is. */
+.force-show-scrollbars::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.5);
 }

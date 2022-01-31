@@ -1,8 +1,8 @@
 jQuery(document).ready(function() {
-	var triggerBttn = document.getElementById( 'trigger-overlay' ),
-		overlay = document.querySelector( 'div.overlay' );
-		if ($("button.overlay-close")[0]) {
-			closeBttn = overlay.querySelector( 'button.overlay-close' );
+	var triggerBttn = document.getElementById( 'trigger-overlay2' ),
+		overlay = document.querySelector( 'div.overlay2' );
+		if ($("button.overlay2-close")[0]) {
+			closeBttn = overlay.querySelector( 'button.overlay2-close' );
 		} else {
 			closeBttn = null;
 		}

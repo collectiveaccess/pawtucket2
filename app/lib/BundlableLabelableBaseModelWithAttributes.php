@@ -104,7 +104,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		parent::__construct($pn_id);	# call superclass constructor
 		
 		if ($pn_id) {
-			if ($this->_rowAsSearchResult = $this->makeSearchResult($this->tableName(), array($pn_id))) {
+			if ($this->_rowAsSearchResult = $this->makeSearchResult($this->tableName(), array($this->getPrimaryKey()))) {
 				$this->_rowAsSearchResult->nextHit();
 			}
 		}

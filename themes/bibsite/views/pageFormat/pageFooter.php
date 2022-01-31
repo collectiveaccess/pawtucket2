@@ -95,5 +95,54 @@
 <?php
 	print $this->render("Cookies/banner_html.php");	
 ?>
+		
+		<script>
+			$(document).ready( function() {
+				$('.jscroll-inner').imagesLoaded( function() {
+				  	$('.jscroll-inner').masonry({
+					  	itemSelector: '.bResultItemCol',
+					});
+				});
+				var placeholderPreceder = "Try searching for ...";
+				var placeholder = [" frisket sheets"," auction catalogs"," papermaking"," chapbooks"];
+				var i = 0;
+				var speed = 80;
+				var wordCount = 0;
+				var txt = placeholder[wordCount];
+				var pause = '                         ';
+				txt = txt + pause;
+
+				typeWriter();
+
+				function typeWriter() {
+					
+				  if (i <= txt.length * 2) {
+				    if (i <= txt.length) {
+				    	$('.home-search input').attr('placeholder', placeholderPreceder += txt.charAt(i));
+				    }
+				    if ( i > txt.length) {
+				    	var slice = i - txt.length;
+				    	$('.home-search input').attr('placeholder', placeholderPreceder.slice(0,-slice));
+				    }
+				    i++;
+				    if (i == txt.length * 2 + 1) {
+				    	wordCount++;
+				    	if (wordCount == placeholder.length) { 
+				    		wordCount = 0; 
+				    	}
+				    	txt = placeholder[wordCount] + pause;
+				    	i = 0;
+				    	placeholderPreceder = "Try searching for ...";
+				    }
+				    setTimeout(typeWriter, speed);
+				  }
+
+				}
+
+				
+				
+			}); 
+				
+		</script>
 	</body>
 </html>

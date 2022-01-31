@@ -46,16 +46,29 @@
 	<div class="row">
 		<div class='col-md-12'>
 			<h1><?php print $this->getVar("section_name"); ?></h1>
-			<p>{{{collections_intro_text}}}</p>
 <?php
 			#print "<p>Click here for the ".caNavLink($this->request, _t("Manuscript Collections Advanced Search"), "", "Search", "Advanced", "collections").".</p>";
 			if($vs_inventory_text){
 ?>
 				<p><?php print $vs_inventory_text; ?></p>
-				<p class="text-center"><a href="<?php print caGetThemeGraphicUrl($this->request, 'WebInventory2018-07-03.xls'); ?>" class="btn-default">Download Inventory</a></p>
+				<p class="text-center">
+<?php
+				if($vs_xls = $this->getVar("collections_inventory_xls")){
+?>
+					<span class="inventoryDownloadLink">&nbsp;<a href="<?php print $vs_xls; ?>" class="btn-default">Download Inventory (Excel)</a>&nbsp;</span>
+<?php
+				}
+				if($vs_pdf = $this->getVar("collections_inventory_pdf")){
+?>
+					<span class="inventoryDownloadLink">&nbsp;<a href="<?php print $vs_pdf; ?>" class="btn-default">Download Inventory (PDF)</a>&nbsp;</span>
+<?php
+				}
+?>
+				</p>
 <?php
 			}
 ?>
+			<p>{{{collections_intro_text}}}</p>
 		</div>
 	</div>
 	<div class="row">

@@ -124,7 +124,7 @@
 			</div>
 			<div class="row bgOffWhiteLight">
 				<div class='col-sm-12 col-md-4'>					
-					{{{<ifdef code="ca_occurrences.broadcast_details"><div class="unit"><label>Broadcast Details</label>
+					{{{<ifdef code="ca_occurrences.broadcast_details%delimiter="><div class="unit"><label>Broadcast Details</label>
 						<unit relativeTo="ca_occurrences.broadcast_details" delimiter="<br/>">
 							<ifdef code="ca_occurrences.broadcast_details.aapb_asset"><b>Asset Type: </b>^ca_occurrences.broadcast_details.aapb_asset<br/></ifdef>
 							<ifdef code="ca_occurrences.broadcast_details.episode_name"><b>Episode Name: </b>^ca_occurrences.broadcast_details.episode_name<br/></ifdef>

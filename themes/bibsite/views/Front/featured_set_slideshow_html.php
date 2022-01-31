@@ -36,15 +36,30 @@
 	if(!$vs_caption_template){
 		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
 	}
+	
+	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
+	$o_browse = caGetBrowseInstance("ca_objects");
+	$o_browse->execute(array('checkAccess' => $va_access_values));
+	
+	$va_languages = $o_browse->getFacet("language_facet", array('checkAccess' => $va_access_values, 'request' => $this->request));
+	$vs_language_count = sizeof($va_languages);
 
+	$va_subjects = $o_browse->getFacet("lcsh_facet", array('checkAccess' => $va_access_values, 'request' => $this->request));
+	$vs_subjects_count = sizeof($va_subjects);
+
+	$o_db = new Db();
+	$vs_access_sql = "";
+	if(is_array($va_access_values) && sizeof($va_access_values)){
+		 $vs_access_sql = " AND access IN (".join(", ", $va_access_values).")";
+	}
+	$q_contributors = $o_db->query("SELECT distinct entity_id FROM ca_entities where deleted = 0".$vs_access_sql);
+	$vs_contributors_count = $q_contributors->numRows();
+	$q_resources = $o_db->query("SELECT distinct object_id FROM ca_objects where deleted = 0".$vs_access_sql);
+	$vs_resources_count = $q_resources->numRows();
 ?>
 	
 <div class="tagline bibtype large inset">
-	<p>{{{home_page_intro}}}</p>
-	<?php 
-		$this->getVar('counts');
-	?>
-	<?php print $qr_res->get('ca_entities.count'); ?>
+	<p>BibSite is <?php print $vs_resources_count; ?> resources in <?php print $vs_language_count; ?> languages, featuring <?php print $vs_subjects_count; ?> subject groups, with the help of <?php print $vs_contributors_count; ?> contributors.</p>
 </div>
 
 <div class="home-search">
@@ -92,7 +107,7 @@
 							print "</div>";
 						}
 						
-						if($qr_res->get("ca_object_representations.media.large")){
+						if($qr_res->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values))){
 							$vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values));
 							if($vs_media){
 								print "<div class='frontSlideMedia'>".$vs_media."</div>";

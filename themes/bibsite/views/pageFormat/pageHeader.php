@@ -68,6 +68,8 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
+	<script src="/themes/bibsite/assets/pawtucket/js/imagesloaded.min.js"></script>
+	<script src="/themes/bibsite/assets/pawtucket/js/masonry.min.js"></script>
 <?php
 	if(Debug::isEnabled()) {		
 		//
@@ -129,20 +131,12 @@
 <?php
 	}
 ?>
-				<!-- <ul class="nav navbar-nav navbar-left menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-				</ul> -->
 				<ul class="nav navbar-nav navbar-left menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "about", ""); ?></li>
-					<li <?php print (($this->request->getController() == "Browse")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Search"), "", "", "Browse", "objects"); ?></li>	
-					<li <?php print ($this->request->getController() == "How") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("How to Use"), "", "", "how", ""); ?></li>
-					<li <?php print ($this->request->getController() == "Contribute") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contribute"), "", "", "contributions", ""); ?></li>			
+					<li <?php print (($this->request->getController() == "Browse")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Search"), "", "", "browse", "objects"); ?></li>	
+					<li <?php print ($this->request->getController() == "How") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("How to Use"), "", "", "how_to_use", ""); ?></li>
+					<li <?php print ($this->request->getController() == "Contribute") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contribute"), "", "", "how_to_contribute", ""); ?></li>			
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

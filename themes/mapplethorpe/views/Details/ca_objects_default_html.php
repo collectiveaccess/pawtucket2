@@ -70,7 +70,7 @@
 								$vs_idno_label = "MAP # ";
 							}
 ?>
-							{{{<div class='unit'><ifdef code='ca_objects.idno'><?php print $vs_idno_label; ?>^ca_objects.idno<br/></ifdef><ifdef code='ca_objects.dimensions'>^ca_objects.dimensions<br/></ifdef><ifdef code='ca_objects.medium'>^ca_objects.medium</ifdef></div>}}}
+							{{{<div class='unit'><ifdef code='ca_objects.idno'><?php print $vs_idno_label; ?>^ca_objects.idno<br/></ifdef><ifdef code='ca_objects.dimensions'>^ca_objects.dimensions inches<br/></ifdef><ifdef code='ca_objects.medium'>^ca_objects.medium</ifdef></div>}}}
 <?php
 							# copyright statement is set as global value
 							if($vs_copyright = $this->getVar("copyright_notice")){

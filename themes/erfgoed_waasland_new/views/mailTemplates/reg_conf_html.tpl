@@ -29,10 +29,12 @@ if($this->request->config->get("dont_approve_logins_on_registration")){
 	$vs_active_message = _t("<p>Your account will be activated after review.</p>");
 }
 
-print "<p>Bedankt om u te registreren voor \"".$this->request->config->get("app_display_name")."\". ".$vs_active_message."</p>
+print "<p>Bedankt om u te registreren op de Erfgoedbank Waasland. ".$vs_active_message."</p>
 
-<p>Als lid kunt u opmerkingen plaatsen en items op de site taggen. U kunt ook uw eigen sets uit de verzameling maken.</p>
+<p>Als lid van de Erfgoedbank Waasland kan u reageren op foto's, audio- en filmfragmenten. U kan ook een eigen album samenstellen met zelf gekozen (audio)visueel materiaal.</p>
 ";
 
-	print "<p>".$this->request->config->get("site_host")."</p>";
+	print "<p>met vriendelijke groet, 
+			<br/>Het Erfgoedcel-team
+			<br/>waaserfgoed.be</p>";
 ?>

@@ -47,28 +47,27 @@
 <p>Support for the digitization and transcription of the first two charging ledgers and the development of City Readers has been generously provided by:</p>
 <ul>
 	<li>An Anonymous Donor</li>
+	<li>The Butler Foundation</li>
 	<li>The Gladys Krieble Delmas Foundation</li>
 	<li>Newman’s Own Foundation</li>
 	<li>The Peter Jay Sharp Foundation</li>
 </ul>
 
-<p>If you or your organization is interested in supporting this project, please contact Director of Development <a href='mailto:jzimmett@nysoclib.org'>Joan Zimmett</a>.</p>
+<p>If you or your organization is interested in supporting this project, please contact <a href='mailto:development@nysoclib.org'>Development</a>.</p>
 
 <h2 id='staff'>Project Staff</h2>
 <p>Current Project Team</p>
 <ul>
-	<li>Erin Schreiner, Project Manager</li>
-	<li>Matthew Bright, Resource Description Specialist</li>
+	<li>Barbara Bieck, Project Manager</li>
+	<li>Drew Facklam, Bibliographic Metadata Intern</li>
 </ul>
 
 <p>Related Staff</p>
 <ul>
 <li>Carolyn Waters - Head Librarian</li>
-<li>Laura O'Keefe - Staff Coordination</li>
-<li>Diane Srebnick and Joan Zimmett - Development</li>
-<li>Alexanne Brown - Processing Archivist</li>
+<li>Diane Srebnick - Development</li>
 </ul>
-<p>We wish to acknowledge the contributions of Arevig Caprielian, Tim Conley, Matthew Haugen, Marie Honan, Christine Karatnytsky, Caitlin McCarthy, George Muñoz, Peri Pignetti, Ingrid Richter, Derek Stadler, Brynn White, Lawry Yates, Kathryn McNally, Hanan Ohanyon, Sara Partridge, and Laurainne Ojo-Ohikuare.</p>
+<p>We wish to acknowledge the contributions of Matthew Bright, Alexanne Brown, Arevig Caprielian, Tim Conley, Matthew Haugen, Marie Honan, Christine Karatnytsky, Caitlin McCarthy, George Muñoz, Laura O’Keefe, Peri Pignetti, Ingrid Richter, Ashley-Luisa Santangelo, Erin Schreiner, Derek Stadler, Alexa Van Gilder, Jessica Wheeler, Brynn White, Lawry Yates, Kathryn McNally, Hanan Ohanyon, Sara Partridge, Laurainne Ojo-Ohikuare, and Joan Zimmett.</p>
 
 
 						</div>

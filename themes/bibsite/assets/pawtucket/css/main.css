@@ -15,6 +15,10 @@ body {
 	color: #000000;
     background-color: lightgray;
 }
+ 
+p {
+	margin: 0 0 1em 0;
+}
 
 ::selection {
 	background: #ACCEF7 !important;
@@ -63,8 +67,8 @@ a.navbar-brand img {
 	left: 0;
 	width: 100%;
 	box-shadow: none !important;
-	padding-left: calc(8vh + 2vw);
-	padding-right: calc(8vh + 2vw);
+	padding-left: calc(7vh + 3vw);
+	padding-right: calc(3vw);
 	padding-top: 12px;
 	padding-bottom: 14px;
 	background-color: lightgray !important;
@@ -157,6 +161,13 @@ body > .container {
 	color: black;
 }
 
+input:focus::-webkit-input-placeholder {
+    color: transparent;
+}
+input:focus::input-placeholder {
+	color: transparent;
+}
+
 .form-control, .home-search .btn-search  {
 	padding: 4px 16px 6px 16px;
 }
@@ -214,11 +225,17 @@ figure .caption {
 .news {
 	display: flex;
 	gap: 30px;
-	margin: 60px 0;
+}
+
+.section-start, .news {
+	margin-top: 60px;
+}
+
+.news {
+	margin-bottom: 60px;
 }
 
 .news-entry {
-
 	width: 50%;
 }
 
@@ -263,40 +280,55 @@ figure .caption {
     flex-wrap: nowrap;*/
 }
 
-.jcarousel li a:hover {
+.jcarousel li a:hover, .imageResult a:hover {
 	text-decoration: none;
 }
-
-.jcarousel .frontSlideEntity {
-	margin: 0px 0 14px 0;
+.imageResult{
+	padding: 18px 20px;
+	background-color: white;
+	margin-bottom:30px;
+}
+.jcarousel .frontSlideEntity, .imageResult .imageResultEntity{
+	margin: 0 0 1em 0;
 }
 
-.jcarousel .frontSlideMedia {
+.jcarousel .frontSlideTitle p.bibtype.medium, .jcarousel .imageResult p.bibtype.medium {
+	margin: 0 0 0.6em 0;
+}
+
+.jcarousel .frontSlideMedia, .imageResult .imageResultMedia {
 	background-color: black;
 	padding: 20px;
 	flex-shrink: 3;
+	min-height: 50vh;
+	position: relative;
 }
 
-.jcarousel .frontSlideMedia a {
+.jcarousel .frontSlideMedia a, .imageResult .imageResultMedia a {
 /*	display: block;
 	width: 100%;
 	height: 100%;*/
 }
 
-.jcarousel .frontSlideMedia a img {
+.jcarousel .frontSlideMedia a img, .imageResult .imageResultMedia a img {
 	object-fit: contain;
 	width: 100%;
 	height: 100%;
-	max-height: calc(30vh);
+	max-height: calc(50vh);
 	filter: grayscale(1);
 	transition: filter 300ms;
+	position: absolute;
+	transform: translateY(-50%);
+	top: 50%;
+	left: 0;
+	padding: 20px;
 }
 
-.jcarousel li:hover .frontSlideMedia a img {
+.jcarousel li:hover .frontSlideMedia a img, .imageResult:hover .imageResultMedia a img {
 	filter: grayscale(0);
 }
 
-.jcarousel .frontSlideSubject {
+.jcarousel .frontSlideSubject, .imageResult .imageResultSubject {
 	text-transform: lowercase;
 	margin-top: 12px;
 	color: rgba(0,0,0,0.5);
@@ -361,15 +393,16 @@ figure .caption {
 	text-align: right;
 }
 
-a.go-to {
+a.go-to,
+span.gray {
 	color: rgba(0,0,0,0.5);
 }
 
 footer {
 	display: flex;
 	flex-wrap: wrap;
-	padding-left: calc(8vh + 2vw + 10vw);
-	padding-right: calc(8vh + 2vw + 10vw);
+	padding-left: calc(7vh + 3vw + 10vw);
+	padding-right: calc(7vh + 3vw + 10vw);
 	padding-bottom: 10px;
 }
 
@@ -418,10 +451,42 @@ footer .newsletter .btn-search:hover {
     color: black;
 }
 
+.page-title {
+	margin-bottom: 60px;
+}
+
+.fullWidthImg {
+	margin-bottom: 60px;
+}
+
+.arrow-indent {
+	margin: 16px;
+	text-indent: -16px;
+}
+
+.row.staticPageSpacing {
+	margin-left: -15px;
+	margin-right: -15px;
+}
+
+/*
+this breaks bootsrap column formatting on detail pages
+.col-sm-6 {
+	position: relative;
+	left: -15px;
+	width: calc(50% - 30px);
+}*/
 
 
-
-
+ul.two-col {
+	padding: 0 80px;
+	margin: 1em 0 0.5em 0;
+	column-count: 2;
+	column-gap: 60px;
+}
+ul.two-col li {
+	margin-bottom: 1em;
+}
 
 
 
@@ -459,10 +524,13 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 	/*font-style: normal;*/
 }
 H1, h1{
-	font-size: 20px;
+	font-weight: normal;
+	font-family: inherit;
+	margin-top: 0;
+/*	font-size: 20px;
 	color:#000000;
 	text-transform:uppercase;
-	margin-top:0px;
+	margin-top:0px;*/
 }
 H1 .btn-group{
 	text-transform:none;
@@ -784,7 +852,7 @@ h1 i {
 @media (max-width: 1010px) {
 	ul.menuItems {
 		width:100%;
-		border-top:solid 1px #ddd;
+		/*border-top:solid 1px #ddd;*/
 	}
 	.menuItems.navbar-nav > li > a {
 		padding-top:5px;
@@ -816,6 +884,13 @@ h1 i {
 		padding-left:15px;
 		padding-right:15px;
 	}
+
+	.col-sm-6 {
+		width: 100%;
+	}
+
+
+
 }
 
 .btn-search{
@@ -2355,18 +2430,19 @@ a.browseRemoveFacet .glyphicon {
 	position:relative;
 }
 .bResultItemCol{
-	height:290px;
+	/*height:290px;*/
 }
 .bResultItemContent {
-	height:240px;
-	overflow:hidden;
+	/*height:240px;*/
+	/*overflow:hidden;*/
 }
 .bResultItem {
     background-color: #FFFFFF;
-    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    line-height: 1em;
+    /*-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);*/
+	/*box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);*/
+    /*line-height: 1em;*/
     padding: 10px;
+    margin-bottom: 60px;
 }
 .bSetsSelectMultiple{
 	display:none;	
@@ -2382,24 +2458,24 @@ a.browseRemoveFacet .glyphicon {
 	top:20px;
 }
 .bResultItem .bResultItemImg {
-    margin-bottom: 5px;
-    max-height: 180px;
+    /*margin-bottom: 5px;*/
+    /*max-height: 180px;*/
     min-height: 100px;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 .bResultItem img {
     height: auto;
     width: 100%;
 }
 .bResultItem:hover {
-    font-size: 12px;
-    height: auto;
-    margin:-20px -8px 0px -8px;
+    /*font-size: 12px;*/
+    /*height: auto;*/
+    /*margin:-20px -8px 0px -8px;*/
     /*margin: -40px;*/
     /*min-height: 320px;*/
-    min-height:300px;
+    /*min-height:300px;*/
     /*padding: 20px;*/
-    position: relative;
+    /*position: relative;*/
     z-index: 100;
 }
 .bResultItem:hover .bResultItemContent {
@@ -3416,9 +3492,9 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 /* Static Pages */
 /* --------------------------------------------------------- */
 
-.staticPage p {
+/*.staticPage p {
 	line-height:1.8em;
-}
+}*/
 
 /* --------------------------------------------------------- */
 /* DOCUMENT VIEWER */

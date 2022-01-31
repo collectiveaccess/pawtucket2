@@ -136,7 +136,7 @@ if(!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time(
 
 ?>
 	<div class="lightboxAlert">
-		<div class="pull-right pointer ligthboxAlertClose" onclick="$('.lightboxAlert').hide(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+		<div class="pull-right pointer ligthboxAlertClose" onclick="$('.lightboxAlert').remove(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
 		{{{lightbox_alert}}}
 		<div><?php print "<a href='#' onclick='$(\".lightboxAlert\").hide(); caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'About', 'userTools', array())."\"); return false;' class='btn-default'><span class='glyphicon glyphicon-user'></span> "._t("Hoe werkt dit?")."</a>"; ?></div>	
 	</div>
