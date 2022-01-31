@@ -62,6 +62,11 @@ H1{
 	margin-bottom:25px;
 	margin-top:15px; 
 }
+@media(max-width:768px){
+	H1{
+		font-size: 24px;
+	}
+}
 H2{
 	font-size: 30px;
 	color: #000000;
@@ -135,14 +140,54 @@ nav.navbar-default{
 	text-transform: uppercase;
 	padding-top: 0px;
 	padding-bottom: 0px;
+	font-size:14px;
 }
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a:focus {
-	transform: rotate(180deg);
 	color: rgb(228, 0, 43);
-	transition: ease color .1s;
+	/*transform: rotate(180deg);
+	transition: ease color .1s;*/
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     background-color: transparent;
+}
+.container > .navbar-header, .container > .navbar-collapse{
+	margin-right:0px;
+	margin-left:0px;
+}
+@media (min-width: 992px) {
+	.navbar .formOutline {
+	  margin-left: 20px;
+	  margin-right: -20px;
+	}
+}
+@media (max-width: 1200px) {
+	ul.menuItems {
+		width:auto;
+		border-top:none;
+		clear:both;
+		float:left !important;
+	}
+	.menuItems.navbar-nav > li > a {
+		padding-top:5px;
+		padding-bottom:5px;
+	}
+	.navbar-collapse .navbar-nav.navbar-right:last-child {
+		margin-left: -30px;
+	}
+	.container.menuBar {
+		padding:0px;
+	}
+	.navbar > .container .navbar-brand {
+		margin-left:-15px;
+	}
+	.nav > li{
+		padding-top: 0px;
+	}
+}
+@media (min-width: 768px) and (max-width: 820px) {
+	.menuItems.nav > li > a {
+		padding:10px;
+	}
 }
 .subHeader{
 	/* background-color: rgb(228, 0, 43); */
@@ -175,7 +220,12 @@ nav.navbar-default{
 .subHeader a:hover{
 	color:#e4002b;
 }
-
+.navbar-default .navbar-toggle .icon-bar {
+	background-color: #000;
+}
+.navbar-default .navbar-toggle{
+	border-color:#000;
+}
 #footer{
 	background-color:#000;
 	color:#FFF;
@@ -195,23 +245,45 @@ nav.navbar-default{
 }
 
 /* front */
-.parallax {
-	position:relative;
-    background-image: url("../graphics/LanktonInstallation.jpg");
+.parallax1 {
+    background-image: url("../graphics/front_1.jpg");
 
     /* Full height */
     /*height: 100% - header: 148px - space at bottom: 65px ;*/
     height: calc(100vh - 213px);
 
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
+    /* Create the parallax scrolling effect 
+    background-attachment: fixed; */
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
-    
+}
+.parallax2 {
+	position:relative;
+    background-image: url("../graphics/front_2.jpg");
+
+    /* Create the parallax scrolling effect 
+    background-attachment: fixed; */
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.parallax1, .parallax2 {
+	position:relative;
+    /* Full height */
+    /*height: 100% - header: 148px - space at bottom: 65px ;*/
+    height: calc(100vh - 213px);
     margin-left: -15px;
 	margin-right: -15px;
 	top:-20px;
+}
+@media (max-width: 1200px) {
+	.parallax1, .parallax2 {
+		margin-left: -30px;
+		margin-right: -30px;
+	}
+}
+.front .container{
 	margin-bottom:100px;
 }
 .bottom-left-box{
@@ -221,6 +293,23 @@ nav.navbar-default{
 	bottom: 0;
 	left: 0;
 	background-color: #fff;
+}
+@media (max-width: 1200px) {
+	.bottom-left-box {
+		left: -15px;
+	}
+}
+@media (max-width: 768px) {
+	.parallax1, .parallax2 {
+		height: calc(100vh - 400px);
+		background-size: cover;
+	}
+	.bottom-left-box{
+		position: relative;
+		width: 100%;
+		max-width: 100%;
+		background-color: #fff;
+	}
 }
 .blurb{
 	padding-right: 45px;
@@ -235,17 +324,37 @@ nav.navbar-default{
 	color: #231f20;
 }
 /* about page */
-.staticPage {
-	margin-top:50px;;
+@media(min-width:768px){
+	.staticPage {
+		margin-top:50px;;
+	}
 }
 .staticPage img{
 	width:100%;
 	height:auto;
 }
+.staticPageImages{
+	padding-bottom:30px;	
+}
+@media(min-width:969px){
+	.staticPageImages{
+		float:right;
+		width:50%;
+		padding-left:40px;
+	}
+}
 /* collections */
 .collectionTile {
 	box-shadow: none;
 	padding:50px 40px 0px 40px;
+}
+.collectionTile .collectionImg{
+	width: 100%;
+  	padding-top: 75%; /* 1:1 Aspect Ratio */
+  	position: relative;
+  	background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
 .collectionTile img{
 	width:100%;
@@ -263,6 +372,14 @@ nav.navbar-default{
 	font-family: RobotoBold;
 	line-height:1.3em;
 	text-decoration:none;
+}
+.collections.landing .readmore-js-toggle{
+	padding-top:0px;
+	margin-top:-5px;
+	color: #e4002b;
+    font-family: Roboto;
+	font-weight: bold;
+	font-size: 16px;
 }
 a:hover .collectionTile .title{
 	color:#e4002b;
@@ -359,11 +476,12 @@ a.browseRemoveFacet:hover, a.browseRemoveFacet:hover .glyphicon{
     text-decoration:none;
 }
 /* detail */
-.detail .detailNavBgLeft, .detail .detailNavBgRight {
+.detail .detailNavBgLeft, .detail .detailNavBgRight, .detail .navTop a {
     background-color: #FFF;
 }
-.detail .detailNavBgLeft a, .detail .detailNavBgRight a {
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a, .detail .navTop a, .detail .navTop a .small {
     color: #000;
+    text-decoration:none;
 }
 .detail a {
     color: #000;
@@ -379,9 +497,11 @@ a.browseRemoveFacet:hover, a.browseRemoveFacet:hover .glyphicon{
 	margin-bottom:0px;
 	text-transform:none;
 }
-.detail.collections .detailButton, .results .detailButton, .landing .detailButton{
-	float:right;
-	margin-left:15px;
+@media(min-width:768px){
+	.detail.collections .detailButton, .results .detailButton, .landing .detailButton{
+		float:right;
+		margin-left:15px;
+	}
 }
 .detailButton{
 	margin-top: 15px;
