@@ -1979,6 +1979,9 @@ a.digExhAnchors.offset{
 		font-size:16px !important;
 	}
 }
+.tl-text h2.tl-headline{
+	padding-bottom:5px;
+}
 .tl-text-content{
 	max-height:240px;
 	overflow-y:auto;
