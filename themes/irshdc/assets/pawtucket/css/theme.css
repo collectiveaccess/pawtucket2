@@ -1986,6 +1986,9 @@ a.digExhAnchors.offset{
 	max-height:240px;
 	overflow-y:auto;
 }
+.tl-timeline .tl-text-content > p{
+	margin:0px !Important;
+}
 .sectionNavigationLinks .btn-default{
 	margin-bottom:10px;
 	font-size: 16px;
