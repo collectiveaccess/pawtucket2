@@ -44,15 +44,15 @@ if ($is_windows) {
 $filepath = preg_replace("/^http[s]{0,1}:\/\/[^\/]+/i", "", preg_replace("/\.tpc\$/", "", $filepath));
 
 $fp = explode("/", $filepath); array_shift($fp);
-$sp = array_reverse(explode("/", $script_path)); array_pop($sp);
+$sp = explode("/", $script_path); array_shift($sp);
+
 foreach ($sp as $i => $s) {
-    if ($s === $fp[$i]) {
-        unset($sp[$i]);
-        continue;
+    if ($s === $fp[0]) {
+    	$sp = array_slice($sp, 0, $i);
+    	break;
     }
-    break;
 }
-$script_path = $win_disk."/".join("/", array_reverse($sp));
+$script_path = $win_disk."/".join("/", $sp);
 $filepath = preg_replace("/[^A-Za-z0-9_\-\/]/", "", $filepath);
 
 if (file_exists("{$script_path}{$filepath}.tpc")) {
