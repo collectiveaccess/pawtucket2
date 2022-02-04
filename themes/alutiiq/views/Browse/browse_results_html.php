@@ -239,6 +239,7 @@ if (!$vb_ajax) {	// !ajax
 						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within">
 						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
+						<input type="hidden" name="l" value="all">
 					</form>
 					<div style="clear:both"></div>
 				</div>
