@@ -1,0 +1,13 @@
+body {
+	background-color: #000;
+}
+
+.emailTitle {
+	color: red;
+	size: 24px
+}
+
+.inviteMessage {
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	color: #76766B;
+}

@@ -25,12 +25,12 @@
 				</div><!-- end col --></div><!-- end row --></div><!-- end container -->
 			</div><!-- end pageArea -->
 		</div><!-- end main -->
-		<footer id="footer" class="py-5">
+		<footer id="footer" class="py-3">
 			<H1 class="pt-3 pb-1">&copy; Metabolic Studio</H1>
 			<div class="pt-0 pb-3">
 				1745 N. SPRING STREET UNIT 4 LOS ANGELES, CA 90012
 			</div>
-			<div class="py-4">
+			<div class="py-2">
 				<a href="https://www.facebook.com/metabolicstudio" class="px-3" target="_blank"><ion-icon name="logo-facebook" alt="Facebook"></ion-icon></a>
 				<a href="https://www.instagram.com/metabolicstudio/" class="px-3" target="_blank"><ion-icon name="logo-instagram" alt="Instagram"></ion-icon></a>
 				<a href="https://twitter.com/metabolic1745" class="px-3" target="_blank"><ion-icon name="logo-twitter" alt="Twitter"></ion-icon></a>

@@ -46,7 +46,7 @@ const LightboxListItem = (props) => {
 		// setLightboxSearchValue(props.searchValue)
 
 		loadLightbox(props.baseUrl, tokens, id, (data) => {
-			console.log('Load Lightbox: ', data);
+			// console.log('Load Lightbox: ', data);
 			setId(id)
 			setLightboxTitle(data.title)
 			setResultList(data.items)
@@ -70,7 +70,7 @@ const LightboxListItem = (props) => {
 
 	const saveNewLightbox = (name) =>{
 		createLightbox(props.baseUrl, tokens, name, (data) => {
-			console.log("createLightbox", data);
+			// console.log("createLightbox", data);
 			let tempLightboxList = {...lightboxList}
 			delete (tempLightboxList[-1]);
 			tempLightboxList[data.id] = {
@@ -82,7 +82,7 @@ const LightboxListItem = (props) => {
 
 	const saveLightboxEdit = (name) => {
 		editLightbox(props.baseUrl, tokens, props.data.id, name, (data) => {
-			console.log("editLightbox", data);
+			// console.log("editLightbox", data);
 			// Update name is context state
 			let tempLightboxList = {...lightboxList}
 			tempLightboxList[props.data.id]['title'] == name;
@@ -99,7 +99,7 @@ const LightboxListItem = (props) => {
 						<div className='button' onClick={() => {
 							// props.deleteCallback(props.data);
 							deleteLightbox(props.baseUrl, tokens, props.data.id, (data) => {
-								console.log("deleteLightbox ", data);
+								// console.log("deleteLightbox ", data);
 								let tempLightboxList = {...lightboxList}
 								delete (tempLightboxList[props.data.id]);
 								setLightboxList(tempLightboxList)

@@ -32,7 +32,8 @@ const LightboxContextProvider = (props) => {
   
   const [userAccess, setUserAccess] = useState(null);  //null if user has no type of access, 1 if user has read-only access, 2 if user has read-write access
   const [shareAccess, setShareAccess] = useState(null); //when lightbox is shared via email or link, possible values are "read_only" and "edit"
-  const [sharedUsers, setSharedUsers] = useState([]); //list of uses who have a specific lightbox's access
+  const [sharedUsers, setSharedUsers] = useState([]); //list of users who have a specific lightbox's access
+  const [invitedUsers, setInvitedUsers] = useState([]) //list of users who have be invited to access a lightbox
 
   
   //Filters and Facets
@@ -80,6 +81,7 @@ const LightboxContextProvider = (props) => {
         orderedIds, setOrderedIds,
         anonymousAccessUrl, setAnonymousAccessUrl,
         sharedUsers, setSharedUsers,
+        invitedUsers, setInvitedUsers
       }}>
       {props.children}
     </LightboxContext.Provider>

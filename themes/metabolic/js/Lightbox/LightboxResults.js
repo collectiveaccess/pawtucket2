@@ -166,7 +166,7 @@ const LightboxResults = (props) => {
 								<div className="card-header" style={{ padding: "15px 10px 15px 10px" }} >
 									<a data-toggle="collapse" href="#setShare" role="button" aria-expanded="false" aria-controls="collapseShare">Share <span>({sharedUsers.length})</span></a>
 								</div>
-								<div id="setShare" className="card-body collapse" style={{ padding: "0 10px 5px 10px"}}  data-parent="#accordion">
+								<div id="setShare" className="card-body collapse" style={{ padding: "0 10px 5px 10px" }}  data-parent="#accordion">
 									<LightboxShareBlock />
 								</div>
 							</div>

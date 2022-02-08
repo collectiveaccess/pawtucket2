@@ -24,7 +24,7 @@ const Lightbox = ({ baseUrl, endpoint, initialFilters, propView, showLastLightbo
 	useEffect(() => {
 		// load auth tokens
 		newJWTToken(baseUrl, tokens, (data) => {
-			console.log("newJWTToken", data);
+			// console.log("newJWTToken", data);
 			const newTokens = { refresh_token: refreshToken, access_token: data.data.refresh.jwt };
 			setTokens(newTokens)
 					
@@ -40,7 +40,7 @@ const Lightbox = ({ baseUrl, endpoint, initialFilters, propView, showLastLightbo
 	useEffect(() => {
 		if(loadId && tokens.access_token) {
 			loadLightbox(baseUrl, tokens , parseInt(showLastLightboxOnLoad), (data) => {
-				console.log('Load Lightbox Data: ', data);
+				// console.log('Load Lightbox Data: ', data);
 				setId(loadId)
 				setLoadId(null) // only load once
 				setLightboxTitle(data.title)

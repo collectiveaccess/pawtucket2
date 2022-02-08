@@ -1,9 +1,9 @@
-<img src="/themes/metabolic/views/mailTemplates/metabolicStudioLogo.png" alt="Metabolic Studio Logo" width="250" height="150">
+<?php require(__CA_THEME_DIR__."/views/mailTemplates/settings.php"); ?>
 
-<h2>You are invited to view a ligtbox <h2>
+<p style="font-family: <?= $font; ?>; color: <?= $font_color; ?>; font-size: 18px; font-weight: bold; padding-top: 30px">You have been invited to view lightbox <em>"{{{lightboxName}}}"</em> by {{{sharer}}} at the <a href="<?= $home_url; ?>"  style="color: <?= $font_color; ?>">Metabolic Studio</a></p>
 
-... info here about what this means ...
+<p style="font-family: <?= $font; ?>; color: <?= $font_color; ?>; font-size: 15px;">A lightbox,  <em>"{{{lightboxName}}}"</em> has been shared with you. Click on the  <a href="{{{registrationUrl}}}" style="color: <?= $font_color; ?>">registration</a> link to create a login at the <a href="<?= $home_url; ?>" style="color: <?= $font_color; ?>">Metabolic Studio</a> archive and receive access to shared materials and more.</p>
 
-A new user ({{{email}}}) was invited to lightbox {{{lightboxName}}}
+{{{<ifdef code='message'><p style="font-family: helvetica; font-size: 15px; color: <?= $font_color; ?>; "><strong>Invitation note:</strong> ^message</p></ifdef>}}}
 
-Register here: <a href="{{{registrationUrl}}}">REGISTER</a>
+<p style="width: 325px; height: 35px; margin: 26px auto 10px auto; background-color: <?= $font_color; ?>; font-family: <?= $font; ?>; font-size: 22px; font-weight: bold; text-align: center; border-radius: 10px; padding-top: 12px;"><a href="{{{registrationUrl}}}" style="color: #fff; text-decoration: none; margin-top: 15px;">Begin registration</a></p>
