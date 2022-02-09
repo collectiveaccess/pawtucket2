@@ -69,11 +69,13 @@
 						while($qr_child_locations->nextHit()) {
 							if ( $vn_i == 0) { print "<div class='row'>"; } 
 							print "<div class='col-sm-6 col-md-3'><div class='locationTile'><div class='title'>".caDetailLink($this->request, $qr_child_locations->get("ca_storage_locations.preferred_labels"), "", "ca_storage_locations",  $qr_child_locations->get("ca_storage_locations.location_id"))."</div>";	
-							if ($vs_tmp = $qr_child_locations->getWithTemplate("<ifdef code='ca_storage_locations.icon.largeicon'><l>^ca_storage_locations.icon.largeicon</l></ifdef>")) {
+							if (
+								($vs_tmp = $qr_child_locations->getWithTemplate("<ifdef code='ca_storage_locations.icon.small'><l>^ca_storage_locations.icon.small</l></ifdef>"))
+							) {
 								print "<div>".$vs_tmp."</div>";
 							}else{
 								# --- if no image for child, use the image on the parent campus
-								if ($vs_tmp = $qr_child_locations->getWithTemplate("<l><unit relativeTo='ca_storage_locations.parent'>^ca_object_representations.media.iconlarge</unit></l>")) {
+								if ($vs_tmp = $qr_child_locations->getWithTemplate("<l><unit relativeTo='ca_storage_locations.parent'>^ca_object_representations.media.small</unit></l>")) {
 									print "<div>".$vs_tmp."</div>";
 								}
 							}
