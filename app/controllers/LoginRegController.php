@@ -78,7 +78,11 @@
 			// Set invite activation key in form
 			$invite = $this->request->getParameter('invite', pString);
 			if(preg_match('![^A-Za-z0-9\-]+!', $invite)) { $invite = null; }
-			$this->view->setVar('invite', $invite);
+			
+			if(is_array($invite_info = ca_sets::getInvitation($invite))) {
+				$t_user->set('email', $invite_info['activation_email']);	// user's email address should be prepopulated in the form
+				$this->view->setVar('invite', $invite_info['activation_key']);
+			}
 
 			$this->render("LoginReg/form_register_html.php");
 		}
@@ -588,7 +592,7 @@
 						# log in the new user
 						$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $ps_email, 'password' => $ps_password));
 	
-						if($vs_group_message) { $vs_group_message = "<br/>{$vs_group_message}";
+						if($vs_group_message) { $vs_group_message = "<br/>{$vs_group_message}"; }
 						if($this->request->isLoggedIn()){
 							if($this->request->isAjax()){
 								$this->view->setVar("message", _t('Thank you for registering!  You are now logged in.').$vs_group_message);

@@ -281,16 +281,16 @@ function getLightboxAccessForCurrentUser(uri, id, tokens, callback) {
 		});
 }
 
-function shareLightbox(uri, tokens, id, access, users, callback) {
+function shareLightbox(uri, tokens, id, access, users, message, callback) {
 	id = parseInt(id);
 	const client = getGraphQLClient(uri + '/lightbox', tokens, {});
 	client
 		.mutate({
 			mutation: gql`
-				mutation ($id: Int!, $access: Int!, $users: String!){ 
-					share(id: $id, share: { access: $access, users: $users }) { id, name, users_added, users_invited, users_skipped, messages } 
+				mutation ($id: Int!, $access: Int!, $users: String!, $message: String!){ 
+					share(id: $id, share: { access: $access, users: $users, message: $message }) { id, name, users_added, users_invited, users_skipped, warnings, errors, notices } 
 				}
-			`, variables: { 'id': id, 'access': access, "users": users }
+			`, variables: { 'id': id, 'access': access, "users": users, "message": message }
 		})
 		.then(function (result) {
 			callback(result.data['share']);
@@ -306,7 +306,7 @@ function deleteShare(uri, tokens, id, users, callback) {
 		.mutate({
 			mutation: gql`
 				mutation ($id: Int!, $users: String!){ 
-					deleteShare(id: $id, users: $users ) { id, name, users_deleted, users_skipped, messages  } 
+					deleteShare(id: $id, users: $users ) { id, name, users_deleted, users_skipped, warnings, errors, notices  } 
 				}
 			`, variables: { 'id': id, "users": users }
 		})

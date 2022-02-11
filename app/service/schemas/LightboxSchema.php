@@ -315,9 +315,19 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'List of users skipped',
 						'default' => []
 					],
-					'messages' => [
+					'errors' => [
 						'type' => Type::listOf(Type::string()),
-						'description' => 'Errors and notices',
+						'description' => 'Errors',
+						'default' => []
+					],
+					'warnings' => [
+						'type' => Type::listOf(Type::string()),
+						'description' => 'Warnings',
+						'default' => []
+					],
+					'notices' => [
+						'type' => Type::listOf(Type::string()),
+						'description' => 'Notices',
 						'default' => []
 					]
 				]
@@ -344,9 +354,19 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 						'description' => 'List of users skipped',
 						'default' => []
 					],
-					'messages' => [
+					'errors' => [
 						'type' => Type::listOf(Type::string()),
-						'description' => 'Errors and notices',
+						'description' => 'Errors',
+						'default' => []
+					],
+					'warnings' => [
+						'type' => Type::listOf(Type::string()),
+						'description' => 'Warnings',
+						'default' => []
+					],
+					'notices' => [
+						'type' => Type::listOf(Type::string()),
+						'description' => 'Notices',
 						'default' => []
 					]
 				]
@@ -421,6 +441,10 @@ class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 					'users' => [
 						'type' => Type::string(),
 						'description' => 'User emails to share lightbox with, separated by ampersands, commas or semicolons.'
+					],
+					'message' => [
+						'type' => Type::string(),
+						'description' => 'Message to share recipient.'
 					],
 					'access' => [
 						'type' => Type::Int(),

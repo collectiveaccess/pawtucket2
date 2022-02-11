@@ -33,7 +33,27 @@
 	/**
 	*
 	*/
+	# ---------------------------------------
+	/**
+	 * Generate URL tag for asset in current theme; if asset is not available the graphic in the default theme will be returned.
+	 *
+	 * @param string $ps_file_path
+	 * @param array $pa_options
+	 * @return string
+	 */
+	function caGetThemeAssetURL($ps_file_path, $pa_options=null) {
+		global $g_request;
+		$vs_base_path = $g_request->getThemeUrlPath();
+		$vs_file_path = '/assets/pawtucket/'.$ps_file_path;
 
+		if (!file_exists($g_request->getThemeDirectoryPath().$vs_file_path)) {
+			$vs_base_path = $g_request->getDefaultThemeUrlPath();
+		}
+		if(caGetOption('absolute', $pa_options, false)) { 
+			$vs_base_path = $g_request->config->get('site_host').$vs_base_path;
+		}
+		return $vs_base_path.$vs_file_path;
+	}
    	# ---------------------------------------
 	/**
 	 * Generate HTML <img> tag for graphic in current theme; if graphic is not available the graphic in the default theme will be returned.
@@ -47,11 +67,14 @@
 		global $g_request;
 		$vs_base_url_path = $g_request->getThemeUrlPath();
 		$vs_base_path = $g_request->getThemeDirectoryPath();
+		
+		$abs_prefix = ($absolute = caGetOption('absolute', $pa_options, false)) ? $g_request->config->get('site_host') : '';
+		
 		$vs_file_path = "/assets/pawtucket/graphics/{$ps_file_path}";
 
         if (file_exists($vs_base_path.$vs_file_path)) {
             // Graphic is present in currently configured theme
-			return caHTMLImage($vs_base_url_path.$vs_file_path, $pa_attributes, $pa_options);
+			return caHTMLImage($abs_prefix.$vs_base_url_path.$vs_file_path, $pa_attributes, $pa_options);
 		}
 
         $o_config = Configuration::load();		
@@ -61,7 +84,7 @@
             while($vs_inherit_from_theme = trim(trim($o_config->get(['inheritFrom', 'inherit_from'])), "/")) {
                 $i++;
                 if (file_exists(__CA_THEMES_DIR__."/{$vs_inherit_from_theme}/{$vs_file_path}")) {
-                    return caHTMLImage(__CA_THEMES_URL__."/{$vs_inherit_from_theme}/{$vs_file_path}", $pa_attributes, $pa_options);
+                    return caHTMLImage($abs_prefix.__CA_THEMES_URL__."/{$vs_inherit_from_theme}/{$vs_file_path}", $pa_attributes, $pa_options);
                 }
                 
                 if(!file_exists(__CA_THEMES_DIR__."/{$vs_inherit_from_theme}/conf/app.conf")) { break; }
@@ -71,7 +94,7 @@
         }
 
         // Fall back to default theme
-		return caHTMLImage($g_request->getDefaultThemeUrlPath().$vs_file_path, $pa_attributes, $pa_options);
+		return caHTMLImage($abs_prefix.$g_request->getDefaultThemeUrlPath().$vs_file_path, $pa_attributes, $pa_options);
 	}
 	# ---------------------------------------
 	/**
@@ -88,6 +111,9 @@
 
 		if (!file_exists($g_request->getThemeDirectoryPath().$vs_file_path)) {
 			$vs_base_path = $g_request->getDefaultThemeUrlPath();
+		}
+		if(caGetOption('absolute', $pa_options, false)) { 
+			$vs_base_path = $g_request->config->get('site_host').$vs_base_path;
 		}
 		return $vs_base_path.$vs_file_path;
 	}

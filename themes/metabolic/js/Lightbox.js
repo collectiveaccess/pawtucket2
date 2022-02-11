@@ -40,7 +40,7 @@ const Lightbox = ({ baseUrl, endpoint, initialFilters, propView, showLastLightbo
 	useEffect(() => {
 		if(loadId && tokens.access_token) {
 			loadLightbox(baseUrl, tokens , parseInt(showLastLightboxOnLoad), (data) => {
-				// console.log('Load Lightbox Data: ', data);
+				console.log('Load the Lightbox Data : ', data);
 				setId(loadId)
 				setLoadId(null) // only load once
 				setLightboxTitle(data.title)

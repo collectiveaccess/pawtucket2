@@ -1,7 +1,19 @@
-import { ApolloClient, InMemoryCache, createHttpLink, gql } from '@apollo/client';
+import { ApolloClient, InMemoryCache, createHttpLink, gql, from } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { onError } from "@apollo/client/link/error";
+
+
 
 function getGraphQLClient(uri, tokens, options=null) {
+	const errorLink = onError(({ graphQLErrors, networkError }) => {
+	  if (graphQLErrors)
+		graphQLErrors.forEach(({ message, locations, path }) =>
+		  console.log(
+			`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+		  )
+		);
+	  if (networkError) console.log(`[Network error]: ${networkError}`);
+	});
 	const httpLink = createHttpLink({
 	  uri: uri,
 	});
@@ -9,7 +21,7 @@ function getGraphQLClient(uri, tokens, options=null) {
 	if(!options) { options = {}; }
 	
 	let use_token = options['refresh'] ? tokens.refresh_token : tokens.access_token;
-	//console.log("apollo client use token", use_token);
+	console.log("apollo client use token", use_token);
 
 	const authLink = setContext((_, { headers }) => {
 	  // return the headers to the context so httpLink can read them
@@ -21,7 +33,7 @@ function getGraphQLClient(uri, tokens, options=null) {
 	  }
 	});
 	const client = new ApolloClient({
-	  link: authLink.concat(httpLink),
+	  link: from([errorLink, authLink.concat(httpLink)]),
 	  cache: new InMemoryCache()
 	});
 	

@@ -734,41 +734,52 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						
 						$config = Configuration::load();
 
-						$t_set = self::_getSet($args['id'], $u->getPrimaryKey(), __CA_SET_EDIT_ACCESS__);
+						$t_set = self::_getSet($set_id = $args['id'], $u->getPrimaryKey(), __CA_SET_EDIT_ACCESS__);
 						
 						$access = $args['share']['access'];
+						$message = $args['share']['message'];
+						
 						$email_list = array_unique(array_map('trim', preg_split('![;,&]+!', $args['share']['users'])));
 						
-						$local_users = $local_email_addresses = $invited_users = $skipped_users = $messages = [];
+						$local_users = $local_email_addresses = $invited_users = $skipped_users = [];
+						$errors = $warnings = $notices = [];
 						foreach($email_list as $email) {
 							if(!($email = trim($email))) { continue; }
 							
 							if($local = ca_users::find(['email' => $email], ['returnAs' => 'firstModelInstance'])) {
 								if($t_set->haveAccessToSet($user_id = $local->getPrimaryKey(), $access, null, ['dontCheckAccessValue' => true])) {
 									$skipped_users[] = $email;
-									$messages[] = _t('%1 already has access', $email);
+									$warnings[] = _t('%1 already has access', $email);
 								} else {
 									$local_users[$user_id] = $access;
 									$local_email_addresses[] = $email;
-									$messages[] = _t('%1 was added', $email);
+									$notices[] = _t('%1 was added', $email);
 									
 									// Send email notification
+									$lightbox_url = caNavUrl('', 'Lightbox', 'Index', ['set_id' => $t_set->getPrimaryKey()], ['absolute' => true]);
+									
 									$ret = caSendMessageUsingView(null, 
 										$email, 
 										__CA_ADMIN_EMAIL__,
 										"[".__CA_APP_DISPLAY_NAME__."] User added to lightbox", 
 										"lightbox_share_add.tpl", 
-										['email' => $email, 'lightboxName' => $t_set->get('ca_sets.preferred_labels')]
+										[
+											'sharer' => trim($u->get('ca_users.fname').' '.$u->get('ca_users.lname')),
+											'email' => $email, 
+											'message' => $message,
+											'lightboxName' => $t_set->get('ca_sets.preferred_labels'),
+											'lightboxUrl' => $lightbox_url
+										]
 									);
 									if(!$ret) {
-										$messages[] = _t('Could not send email: %1', $g_last_email_error);
+										$errors[] = _t('Could not send email: %1', $g_last_email_error);
 									}
 								}
 							} elseif(caCheckEmailAddressRegex($email)) {
 								
 								if($t_invite = $t_set->inviteUser($email, $access)) {
 									$invited_users[$email] = $access;
-									$messages[] = _t('An invitation was sent to %1', $email);
+									$notices[] = _t('An invitation was sent to %1', $email);
 									//$config->get('site_host').$config->get('ca_url_root')/
 
 									$registration_url = caNavUrl('', 'LoginReg', 'registerForm', ['invite' => $t_invite->get('activation_key')], ['absolute' => true]);
@@ -778,36 +789,40 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 										"[".__CA_APP_DISPLAY_NAME__."] User invited to lightbox", 
 										"lightbox_share_invite.tpl", 
 										[
+											'sharer' => trim($u->get('ca_users.fname').' '.$u->get('ca_users.lname')),
 											'email' => $email, 
+											'message' => $message,
 											'lightboxName' => $t_set->get('ca_sets.preferred_labels'),
 											'registrationUrl' => $registration_url
 										]
 									);
 									if(!$ret) {
-										$messages[] = _t('Could not send invitation email: %1', $g_last_email_error);
+										$errors[] = _t('Could not send invitation email: %1', $g_last_email_error);
 									}
 								} else {
 									$skipped_users[] = $email;
-									$messages[] = join('; '.$t_set->getErrors());
+									$errors[] = join('; '.$t_set->getErrors());
 								}
 							} else {
 								$skipped_users[] = $email;
-								$messages[] = _t('%1 was not added because the email address is invalid', $email);
+								$warnings[] = _t('%1 was not added because the email address is invalid', $email);
 							}
 						}
 						if(sizeof($local_users)) {
 							if(!$t_set->addUsers($local_users)) {
-								$messages[] = _t('Could not add users: %1', join('; ', $t_set->getErrors()));
+								$errors[] = _t('Could not add users: %1', join('; ', $t_set->getErrors()));
 							}
 						}
 						
  						return [
- 							'id' => $args['id'], 
+ 							'id' => $set_id, 
  							'name' => $t_set->get('ca_sets.preferred_labels.name'), 
  							'users_added' => $local_email_addresses, 
  							'users_invited' => array_keys($invited_users), 
  							'users_skipped' => $skipped_users,
- 							'messages' => $messages
+ 							'errors' => $errors,
+ 							'warnings' => $warnings,
+ 							'notices' => $notices,
  						];
 					}
 				],
@@ -843,9 +858,11 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							throw new ServiceException(_t('Invalid JWT'));
 						}
 						
-						$t_set = self::_getSet($args['id'], $u->getPrimaryKey(), __CA_SET_READ_ACCESS__);
+						$t_set = self::_getSet($set_id = $args['id'], $u->getPrimaryKey(), __CA_SET_READ_ACCESS__);
 						
-						$users_to_delete  = $skipped_users = $messages = [];
+						$users_to_delete  = $skipped_users = [];
+						$errors = $warnings = $notices = [];
+						
 						if($args['users']) {
 							$email_list = array_unique(array_map('trim', preg_split('![;,&]+!', $args['users'])));
 						
@@ -855,14 +872,22 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 								if($local = ca_users::find(['email' => $email], ['returnAs' => 'firstModelInstance'])) {
 									if($t_set->haveAccessToSet($user_id = $local->getPrimaryKey(), __CA_SET_READ_ACCESS__, null, ['sharesOnly' => true])) {
 										$users_to_delete[$email] = $user_id;
-										$messages[] = _t('%1 was removed');
+										$notices[] = _t('%1 was removed', $email);
 									} else {
 										$skipped_users[] = $email;
-										$messages[] = _t('%1 does not have access', $email);
+										$warnings[] = _t('%1 does not have access', $email);
 									}
-								} else {
+								} elseif($t_rel = ca_sets_x_users::find(['activation_email' => $email, 'set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) {
+									// try to delete invitation
+									if($t_rel->delete(true)) {
+										$notices[] = _t('Invitation for %1 was removed', $email);
+									} else {
+										$skipped_users[] = $email;
+										$warnings[] = _t('%1 does not exist', $email);
+									}
+								} else {							
 									$skipped_users[] = $email;
-									$messages[] = _t('%1 does not exist', $email);
+									$warnings[] = _t('%1 does not exist', $email);
 								}
 							}
 						} elseif(is_array($args['user_ids']) && sizeof($args['user_ids'])) {
@@ -873,29 +898,31 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 									$email = $local->get('ca_users.email');
 									if($t_set->haveAccessToSet($user_id, __CA_SET_READ_ACCESS__, null, ['sharesOnly' => true])) {
 										$users_to_delete[$email] = $user_id;
-										$messages[] = _t('%1 was removed', $email);
+										$notices[] = _t('%1 was removed', $email);
 									} else {
 										$skipped_users[] = $email;
-										$messages[] = _t('%1 does not have access', $email);
+										$warnings[] = _t('%1 does not have access', $email);
 									}
 								}
 							}
 						} else {
-							$messages[] = _t('No users were specified');
+							$errors[] = _t('No users were specified');
 						}
 						
 						if(is_array($users_to_delete) && sizeof($users_to_delete)) {
 							if(!$t_set->removeUsers(array_values($users_to_delete))) {
-								$messages[] = _t('Could not remove users: %1', join('; ', $t_set->getErrors()));
+								$errors[] = _t('Could not remove users: %1', join('; ', $t_set->getErrors()));
 							} 
 						}
 						
  						return [
- 							'id' => $args['id'], 
+ 							'id' => $set_id, 
  							'name' => $t_set->get('ca_sets.preferred_labels.name'), 
  							'users_deleted' => array_keys($users_to_delete), 
  							'users_skipped' => $skipped_users,
- 							'messages' => $messages
+ 							'errors' => $errors,
+ 							'warnings' => $warnings,
+ 							'notices' => $notices
  						];
 					}
 				],
@@ -926,7 +953,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							throw new ServiceException(_t('Invalid JWT'));
 						}
 						
-						$t_set = self::_getSet($args['id'], $u->getPrimaryKey(), __CA_SET_READ_ACCESS__);
+						$t_set = self::_getSet($set_id = $args['id'], $u->getPrimaryKey(), __CA_SET_READ_ACCESS__);
 						
 						$comment = [];
 						if ($t_comment = $t_set->addComment($args['comment']['content'], null, $u->getPrimaryKey(), null, null, null, 0, null, [])){
@@ -941,7 +968,12 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 								
 							];
 						}
- 						return ['id' => $args['id'], 'name' => $t_set->get('ca_sets.preferred_labels.name'), 'count' => $t_set->getItemCount(), 'comment' => $comment];
+ 						return [
+ 							'id' => $set_id, 
+ 							'name' => $t_set->get('ca_sets.preferred_labels.name'), 
+ 							'count' => $t_set->getItemCount(), 
+ 							'comment' => $comment
+ 						];
 					}
 				]
 			],

@@ -3229,10 +3229,47 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			if (!$t_rel->update()) {
 				return null;
 			}
+			
+			// are there other invitations for this user?
+			if(is_array($invites = ca_sets_x_users::find([
+					'activation_email' => $activation_email, 
+					'user_id' => null
+				], ['returnAs' => 'modelInstances']))) {
+				foreach($invites as $t_invite) {
+					$t_invite->set('access', $t_invite->get('ca_sets_x_users.pending_access'));
+					$t_invite->set('user_id', $user_id);
+					if (!$t_invite->update()) {
+						// TODO: log error
+						continue;
+					}
+				}	
+			}
+			
 			return $t_rel;
 			
 		}
 		return false;
+	}
+	# ---------------------------------------------------------------
+	/**
+	 * Get basic data from pending invitation. Will return null if invitation has been accepted.
+	 *
+	 * @param string $activation_key
+	 *
+	 * @param return array
+	 */ 
+	public static function getInvitation(string $activation_key ) : ?array {
+		if ($t_rel = ca_sets_x_users::find([
+			'activation_key' => $activation_key, 
+			'user_id' => null
+		], ['returnAs' => 'firstModelInstance'])) {
+			return [
+				'set_id' => $t_rel->get('set_id'),
+				'activation_email' => $t_rel->get('activation_email'),
+				'activation_key' => $t_rel->get('activation_key'),
+			];
+		}
+		return null;
 	}
 	# ---------------------------------------------------------------
 }
