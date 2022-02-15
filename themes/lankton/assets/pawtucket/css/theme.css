@@ -268,7 +268,37 @@ nav.navbar-default{
     background-repeat: no-repeat;
     background-size: cover;
 }
-.parallax1, .parallax2 {
+.parallax3 {
+	position:relative;
+    background-image: url("../graphics/front_3.jpg");
+
+    /* Create the parallax scrolling effect 
+    background-attachment: fixed; */
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.parallax4 {
+	position:relative;
+    background-image: url("../graphics/front_4.jpg");
+
+    /* Create the parallax scrolling effect 
+    background-attachment: fixed; */
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.parallax5 {
+	position:relative;
+    background-image: url("../graphics/front_5.jpg");
+
+    /* Create the parallax scrolling effect 
+    background-attachment: fixed; */
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.parallaxBg {
 	position:relative;
     /* Full height */
     /*height: 100% - header: 148px - space at bottom: 65px ;*/
@@ -278,7 +308,7 @@ nav.navbar-default{
 	top:-20px;
 }
 @media (max-width: 1200px) {
-	.parallax1, .parallax2 {
+	.parallaxBg {
 		margin-left: -30px;
 		margin-right: -30px;
 	}
@@ -342,6 +372,12 @@ nav.navbar-default{
 		width:50%;
 		padding-left:40px;
 	}
+}
+.staticPageCaption{
+	padding-top:5px;
+	font-size:12px;
+	font-family: RobotoLight;
+	line-height:1.1em;	
 }
 /* collections */
 .collectionTile {

@@ -34,7 +34,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-12">
-				<div class="parallax<?php print rand(1, 2); ?>"></div>
+				<div class="parallaxBg parallax<?php print rand(1, 5); ?>"></div>
 				<div class="bottom-left-box"><div class="blurb"><b>{{{lankton_landing_title}}}</b><br/>{{{lankton_landing_text}}}<br/><br/><?php print caNavLink($this->request, _t("> Explore the Collection"), "btn btn-default", "", "Collections", "index"); ?></div></div>
 				
 			</div>
