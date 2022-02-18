@@ -138,29 +138,74 @@
               <div class="header-nav">
                 <div class="header-nav-wrapper">
                   <nav class="header-nav-list">
+                    
+
+
   
     <div class="header-nav-item header-nav-item--folder">
-      <a class="header-nav-folder-title preFade" href="#" onClick="return false;" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0421053s;">About</a>
-      <div class="header-nav-folder-content">        
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/about-chesapeake-heartland" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0526316s;">Chesapeake Heartland</a>
-            </div>
+      <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/About" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0387097s;">About</a>
+      <div class="header-nav-folder-content">
+        
           
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/staffandpartners" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Staff &amp; Partners</a>
-            </div>
-          	<div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Internships &amp; Fellowships</a>
-            </div>
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Blog</a>
+              <a href="https://chesapeakeheartland.org/about-chesapeake-heartland">Chesapeake Heartland</a>
             </div>
           
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/events" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Events</a>
+          
+        
+          
+          
+            <div class="header-nav-folder-item header-nav-folder-item--external">
+              <a href="https://chesapeakeheartland.org/s/Digital-Archive-Visual-Sampler-2021.pdf">Digital Archive Visual Sampler</a>
             </div>
+          
+        
+          
+          
+            <div class="header-nav-folder-item header-nav-folder-item--external">
+              <a href="https://chesapeakeheartland.org/s/Program-Activities-Visual-Sampler-2021.pdf">Events &amp; Programming Overview</a>
+            </div>
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/blog">Heartland Blog</a>
+            </div>
+          
+          
+        
       </div>
     </div>
+  
+  
+
+
+  
+    <div class="header-nav-item header-nav-item--folder">
+      <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/heartland-team" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0580645s;">Heartland Team</a>
+      <div class="header-nav-folder-content">
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/staffandpartners">Staff &amp; Partners</a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/internships-fellowships">Internships &amp; Fellowships</a>
+            </div>
+          
+          
+        
+      </div>
+    </div>
+  
+  
+
+
+  
     <div class="header-nav-item header-nav-item--folder header-nav-item--active">
       <a class="header-nav-folder-title preFade "  href="#" onClick="return false;" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0736842s;">Digital Archive</a>
       <div class="header-nav-folder-content">
@@ -191,28 +236,63 @@
   
   
 
+
+  
     <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/african-american-humanities-truck" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.136842s;">
+      <a href="https://chesapeakeheartland.org/african-american-humanities-truck" data-animation-role="header-element" class="preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0967742s;">
         
         Humanities Truck
       </a>
     </div>
   
+  
+  
+
+
+  
     <div class="header-nav-item header-nav-item--folder">
-      <a class="header-nav-folder-title preFade" href="https://chesapeakeheartland.org/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0454545s;">Projects</a>
+      <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.116129s;">Projects</a>
       <div class="header-nav-folder-content">
+        
+          
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/exhibit-main" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">Jason Patterson Exhibit</a>
+              <a href="https://chesapeakeheartland.org/commodore-collection">The Commodore Collection</a>
             </div>
-          	<div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">Ebony &amp; Ivory Towers</a>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/exhibit-main">Jason Patterson Exhibit</a>
             </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/hip-hop-time-capsule">Hip Hop Time Capsule</a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers">Ebony &amp; Ivory Towers</a>
+            </div>
+          
+          
+        
       </div>
     </div>
-    
+  
+  
+
+
+  
     <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/commodore-collection" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.147368s;">
-         The Commodore Collection
+      <a href="https://chesapeakeheartland.org/events" data-animation-role="header-element" class="preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.135484s;">
+        
+        Events
       </a>
     </div>
   
@@ -224,17 +304,12 @@
                   </nav>
                 </div>
               </div>
-            
-            
-          </div>
+           </div>
         
           
           <!-- Actions -->
           <div class="header-actions header-actions--right">
-            
-            
-              
-                <div class="header-actions-action header-actions-action--social">
+            <div class="header-actions-action header-actions-action--social">
                   
                     
                       <a class="icon icon--fill preFade " href="https://www.instagram.com/chesapeakeheartland" target="_blank" aria-label="" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.157895s;">
@@ -251,19 +326,6 @@
                     
                   
                 </div>
-              
-            
-
-          
-          
-
-          
-          
-          
-
-            
-            
-            
               <div class="showOnMobile">
                 
               </div>
@@ -299,33 +361,15 @@
               </div>
             </button>
           </div>
-        
-        
-        
-        
-        
-        
-
       </div>
       
         <div class="header-display-mobile" data-content-field="site-title">
           
             
           <!-- Social -->
-          
-            
-          
-        
-            
           <!-- Title and nav wrapper -->
           <div class="header-title-nav-wrapper">
-            
-
-            
-
-            
-              
-              <!-- Title -->
+            <!-- Title -->
               
                 <div class="header-title preFade" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.189474s;">
                   
@@ -467,19 +511,6 @@
                     
                   
                 </div>
-              
-            
-
-          
-          
-
-          
-          
-          
-
-            
-            
-            
               <div class="showOnMobile">
                 
               </div>
@@ -503,11 +534,7 @@
               <span class="js-header-burger-close-title visually-hidden" hidden="">Close Menu</span>
               <div class="burger-box">
                 <div class="burger-inner
-                   header-menu-icon-doubleLineHamburger
-                  
-                  
-                  
-                ">
+                   header-menu-icon-doubleLineHamburger">
                   <div class="top-bun"></div>
                   <div class="patty"></div>
                   <div class="bottom-bun"></div>
@@ -526,23 +553,19 @@
     </div>
   </div>
   <!-- (Mobile) Menu Navigation -->
-  <div class="header-menu header-menu--folder-list
-    
-    
-    
-    
-    
-    " style="padding-top: 98.35px;">
+  <div class="header-menu header-menu--folder-list" style="padding-top: 98.35px;">
     <div class="header-menu-bg theme-bg--primary"></div>
     <div class="header-menu-nav">
-      <nav class="header-menu-nav-list">
+
+  <!-- new nav -->
+    <nav class="header-menu-nav-list">
         
       <div data-folder="root" class="header-menu-nav-folder header-menu-nav-folder--active">
           <!-- Menu Navigation -->
 <div class="header-menu-nav-folder-content">
 
   <div class="container header-menu-nav-item">
-    <a data-folder-id="/About" href="/About" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.357895s;">
+    <a data-folder-id="/About" href="/About">
       <div class="header-menu-nav-item-content">
         <span class="visually-hidden">Folder:</span>
         <span>About</span>
@@ -553,7 +576,18 @@
   
 
   <div class="container header-menu-nav-item">
-    <a data-folder-id="/digital-archive" href="/digital-archive" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.368421s;">
+    <a data-folder-id="/heartland-team" href="/heartland-team">
+      <div class="header-menu-nav-item-content">
+        <span class="visually-hidden">Folder:</span>
+        <span>Heartland Team</span>
+        <span class="chevron chevron--right"></span>
+      </div>
+    </a>
+  </div>
+  
+
+  <div class="container header-menu-nav-item">
+    <a data-folder-id="/digital-archive" href="/digital-archive">
       <div class="header-menu-nav-item-content">
         <span class="visually-hidden">Folder:</span>
         <span>Digital Archive</span>
@@ -561,14 +595,15 @@
       </div>
     </a>
   </div>
+  
 
   <div class="container header-menu-nav-item header-menu-nav-item--collection">
-    <a href="https://chesapeakeheartland.org/african-american-humanities-truck" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.4s;">
+    <a href="https://chesapeakeheartland.org/african-american-humanities-truck">
       
       Humanities Truck
     </a>
   </div>
-  
+
   <div class="container header-menu-nav-item">
     <a data-folder-id="/projects" href="/projects">
       <div class="header-menu-nav-item-content">
@@ -578,18 +613,21 @@
       </div>
     </a>
   </div>
+  
+
   <div class="container header-menu-nav-item header-menu-nav-item--collection">
-	  <a href="https://chesapeakeheartland.org/commodore-collection" class="preFade" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.147368s;">
-		 The Commodore Collection
-	  </a>
-	</div>
+    <a href="https://chesapeakeheartland.org/events">
+      
+      Events
+    </a>
+  </div>
 
 
 </div>
 
           <div class="header-menu-actions">
             <div class="header-menu-actions-action header-menu-actions-action--social">
-              <a class="icon icon--lg icon--fill preFade" href="https://www.instagram.com/chesapeakeheartland" target="_blank" aria-label="" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.421053s;">
+              <a class="icon icon--lg icon--fill" href="https://www.instagram.com/chesapeakeheartland" target="_blank" aria-label="">
                 <svg viewBox="23 23 64 64">
                   <use xlink:href="#instagram-unauth-icon" width="110" height="110"></use>
                 </svg>
@@ -597,7 +635,7 @@
             </div>
             
             <div class="header-menu-actions-action header-menu-actions-action--social">
-              <a class="icon icon--lg icon--fill preFade" href="https://www.facebook.com/ChesapeakeHeartland" target="_blank" aria-label="Facebook" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.431579s;">
+              <a class="icon icon--lg icon--fill" href="https://www.facebook.com/ChesapeakeHeartland" target="_blank" aria-label="Facebook">
                 <svg viewBox="23 23 64 64">
                   <use xlink:href="#facebook-unauth-icon" width="110" height="110"></use>
                 </svg>
@@ -605,47 +643,63 @@
             </div>
             </div>
           
+          
         </div><div data-folder="/About" class="header-menu-nav-folder">
     <div class="header-menu-nav-folder-content">
     <div class="header-menu-controls container header-menu-nav-item">
-      <a class="header-menu-controls-control header-menu-controls-control--active preFade " data-action="back" href="/" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.442105s;" tabindex="-1">
+      <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
         <span class="chevron chevron--left"></span><span>Back</span>
       </a>
     </div>
     
     <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/about-chesapeake-heartland" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.452632s;" tabindex="-1">
+      <a href="https://chesapeakeheartland.org/about-chesapeake-heartland" tabindex="-1">
         
         Chesapeake Heartland
       </a>
     </div>
     
+    <div class="container header-menu-nav-item header-menu-nav-item--external">
+      <a href="https://chesapeakeheartland.org/s/Digital-Archive-Visual-Sampler-2021.pdf" tabindex="-1">Digital Archive Visual Sampler</a>
+    </div>
+    
+    <div class="container header-menu-nav-item header-menu-nav-item--external">
+      <a href="https://chesapeakeheartland.org/s/Program-Activities-Visual-Sampler-2021.pdf" tabindex="-1">Events &amp; Programming Overview</a>
+    </div>
+    
     <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/staffandpartners" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.463158s;" tabindex="-1">
+      <a href="https://chesapeakeheartland.org/blog" tabindex="-1">
         
-        Staff &amp; Partners
+        Heartland Blog
       </a>
     </div>
-    <div class="container header-menu-nav-item">
-	  <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;" tabindex="-1">Internships &amp; Fellowships</a>
-	</div>
-            
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.463158s;" tabindex="-1">
-        
-        Blog
+    
+    </div>
+  </div><div data-folder="/heartland-team" class="header-menu-nav-folder">
+    <div class="header-menu-nav-folder-content">
+    <div class="header-menu-controls container header-menu-nav-item">
+      <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
+        <span class="chevron chevron--left"></span><span>Back</span>
       </a>
     </div>
     
     <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/events" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.463158s;" tabindex="-1">
+      <a href="https://chesapeakeheartland.org/staffandpartners" tabindex="-1">
         
-        Events
+        Staff &amp; Partners
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/internships-fellowships" tabindex="-1">
+        
+        Internships &amp; Fellowships
       </a>
     </div>
     
     </div>
   </div>
+  
   <div data-folder="/digital-archive" class="header-menu-nav-folder">
     <div class="header-menu-nav-folder-content">
     <div class="header-menu-controls container header-menu-nav-item">
@@ -669,12 +723,19 @@
     </div>
   </div>
   
-
-<div data-folder="/projects" class="header-menu-nav-folder">
+  
+  <div data-folder="/projects" class="header-menu-nav-folder">
     <div class="header-menu-nav-folder-content">
     <div class="header-menu-controls container header-menu-nav-item">
       <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
         <span class="chevron chevron--left"></span><span>Back</span>
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/commodore-collection" tabindex="-1">
+        
+        The Commodore Collection
       </a>
     </div>
     
@@ -686,6 +747,13 @@
     </div>
     
     <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/hip-hop-time-capsule" tabindex="-1">
+        
+        Hip Hop Time Capsule
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
       <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers" tabindex="-1">
         
         Ebony &amp; Ivory Towers
@@ -693,9 +761,8 @@
     </div>
     
     </div>
-  </div>
+  </div></nav>
   
-  </nav>
     </div>
   </div>
 </header>
