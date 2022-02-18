@@ -12,7 +12,7 @@
 		print "<div class='unit'>".$vs_set_item_description."</div>";
 	}
 	#Format, Date, Depicts, Photographer, Rights Holder
-	if($vs_tmp = $t_object->getWithTemplate("<div class='unit'>^ca_objects.type_id</div>
+	if($vs_tmp = $t_object->getWithTemplate("
 			<ifdef code='ca_objects.sourceDate'><div class='unit'><label>Date</label>^ca_objects.sourceDate</div></ifdef>
 			<ifcount code='ca_entities' restrictToRelationshipTypes='depicts' min='1'><div class='unit'><label>Depicts</label><unit relativeTo='ca_entities' restrictToRelationshipTypes='depicts' delimiter=', '><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>
 			<ifcount code='ca_entities' restrictToRelationshipTypes='photographer' min='1'><div class='unit trimText'><label>Photographer</label><unit relativeTo='ca_entities' restrictToRelationshipTypes='photographer' delimiter=', '><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>
