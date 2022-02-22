@@ -22,7 +22,8 @@
 	if($qr_collections && $qr_collections->numHits()) {
 		while($qr_collections->nextHit()) {
 			if($qr_collections->getWithTemplate("<unit relativeTo='ca_collections.parent'>^ca_collections.idno</unit>") == "GL"){
-				$vs_img_url = $qr_collections->get("ca_object_representations.media.large.url", array("checkAccess" => $va_access_values, "limit" => 1));
+				$tmp = explode(";", $qr_collections->get("ca_object_representations.media.large.url", array("checkAccess" => $va_access_values)));
+				$vs_img_url = $tmp[0];
 				if(!$vs_img_url){
 					$vs_img_url = caGetThemeGraphicUrl($this->request, 'front_1.jpg', "", "", "","");
 				}
