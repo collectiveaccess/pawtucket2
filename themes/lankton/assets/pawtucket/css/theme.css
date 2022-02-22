@@ -149,6 +149,26 @@ nav.navbar-default{
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     background-color: transparent;
+    color: rgb(228, 0, 43);
+}
+.nav .dropdown-menu > li > a {
+	font-family: Roboto;
+	text-transform: none;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	font-size:14px;
+}
+.nav .dropdown-menu > li > a:hover{
+	color: rgb(228, 0, 43);
+	background-color: transparent;
+}
+.nav .dropdown-menu {
+	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.176);
+	border: 0px solid #ccc;
+}
+.yamm .nav.navbar-right .dropdown-menu {
+  left: 0;
+  right: auto;
 }
 .container > .navbar-header, .container > .navbar-collapse{
 	margin-right:0px;
@@ -378,6 +398,14 @@ nav.navbar-default{
 	font-size:12px;
 	font-family: RobotoLight;
 	line-height:1.1em;	
+}
+.funder{
+	text-align:center;
+	padding-top:40px;
+}
+.funder img{
+	width:200px;
+	height:auto;
 }
 /* collections */
 .collectionTile {
