@@ -117,7 +117,6 @@
 						print join($va_tmp, ", ");
 						print "</div>";
 					}
-					
 					$va_tmp = array_pop($t_object->get("ca_objects.tgn", array("returnWithStructure" => true)));
 					if(sizeof($va_tmp)){
 						print "<div class='unit'><label>Geographic Area</label>";
@@ -135,6 +134,15 @@
 						foreach($va_tmp as $vn_tmp_id){
 							$t_list_item->load($vn_tmp_id);
 							$va_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_plural"), "", "", "Browse", "objects", array("facet" => "audience_facet", "id" => $vn_tmp_id));
+						}
+						print join($va_links, ", ")."</div>";
+					}
+					$va_tmp = $t_object->get("ca_objects.lcsh_terms.text", array("returnAsArray" => true));
+					if(sizeof($va_tmp)){
+						print "<div class='unit'><label>Subjects</label>";
+						$va_links = array();
+						foreach($va_tmp as $vn_tmp_id => $va_tmp_info){
+							$va_links[] = caNavLink($this->request, $va_tmp_info['lcsh_terms.text'], "", "", "Browse", "objects", array("facet" => "lcsh_facet", "id" => $vn_tmp_id));
 						}
 						print join($va_links, ", ")."</div>";
 					}

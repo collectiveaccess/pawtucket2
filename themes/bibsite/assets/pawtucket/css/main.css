@@ -15,7 +15,29 @@ body {
 	color: #000000;
     background-color: lightgray;
 }
+
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+	font-family: 'Gerstner Programm', Helvetica, Arial, sans-serif;
+	font-size: 18px;
+	line-height: 1.3em;
+	letter-spacing: 0.02em;
+	color: #000000;
+}
+
+h2 {
+}
  
+h3 {
+	text-transform: none !important;
+	font-size: inherit !important;
+	margin-top: 30px;
+	margin-bottom: 1.3em;
+}
+
+b, strong {
+	font-weight: normal;
+}
+
 p {
 	margin: 0 0 1em 0;
 }
@@ -24,17 +46,20 @@ p {
 	background: #ACCEF7 !important;
 }
 
-.bibtype {
+.bibtype,
+.staticPage h1, .staticPage h2 {
 	font-family: 'Self Modern', Times New Roman, Times, serif;
 	letter-spacing: -0.01em;
 }
 
-.large {
+.large,
+.staticPage h1 {
 	font-size: 38px;
 	line-height: 1.15em;
 }
 
-.medium {
+.medium,
+.staticPage h2 {
 	font-size: 24px;
 	line-height: 1.15em;
 }
@@ -288,11 +313,14 @@ figure .caption {
 	background-color: white;
 	margin-bottom:30px;
 }
-.jcarousel .frontSlideEntity, .imageResult .imageResultEntity{
-	margin: 0 0 1em 0;
+.jcarousel .frontSlideEntity, .imageResult .imageResultEntity {
+	margin: 0;
+}
+.imageResultMedia, .frontSlideMedia {
+	margin-top: 1em;
 }
 
-.jcarousel .frontSlideTitle p.bibtype.medium, .jcarousel .imageResult p.bibtype.medium {
+.jcarousel .frontSlideTitle p.bibtype.medium, .imageResult p.bibtype.medium {
 	margin: 0 0 0.6em 0;
 }
 
@@ -451,8 +479,9 @@ footer .newsletter .btn-search:hover {
     color: black;
 }
 
+.staticPage h1, 
 .page-title {
-	margin-bottom: 60px;
+	margin-bottom: 30px;
 }
 
 .fullWidthImg {
@@ -469,6 +498,23 @@ footer .newsletter .btn-search:hover {
 	margin-right: -15px;
 }
 
+.gray {
+	color: rgba(0,0,0,0.5);
+}
+
+hr {
+	border-top: 0;
+	border-bottom: 2px solid black;
+	margin: 35px 0 53px 0;
+}
+
+blockquote {
+	color: rgba(0,0,0,0.5);
+	/*padding: 0 10vw;*/
+	padding: 0;
+	border-left: 0;
+}
+
 /*
 this breaks bootsrap column formatting on detail pages
 .col-sm-6 {
@@ -479,7 +525,7 @@ this breaks bootsrap column formatting on detail pages
 
 
 ul.two-col {
-	padding: 0 80px;
+	padding: 0 10vw;
 	margin: 1em 0 0.5em 0;
 	column-count: 2;
 	column-gap: 60px;
@@ -488,12 +534,60 @@ ul.two-col li {
 	margin-bottom: 1em;
 }
 
+.staticPageSpacing .fullWidthImg {
+
+}
 
 
+.staticPageSpacing .fullWidthImg img {
+	background-color: black;
+	padding: 40px;
+	box-sizing: border-box;
+	filter: grayscale(1);
+	transition: filter 300ms;
+}
+.staticPageSpacing .fullWidthImg img:hover {
+	filter: grayscale(0);
+	cursor: pointer;
+}
+
+.staticPage h2 {
+	font-family: ;
+}
 
 
+input[type="checkbox"] {
+	-webkit-appearance: none;
+	background-color: transparent;
+	border: 2px solid black;
+	box-shadow: none;
+	padding: 5px;
+	border-radius: 24%;
+	display: inline-block;
+	position: relative;
+	top: 1px;
+	margin-right: 3px;
+}
 
+input[type="file"]:focus, input[type="radio"]:focus, input[type="checkbox"]:focus {
+    outline: none;
+}
 
+input[type="checkbox"]:checked {
+	background-color: black;
+}
+
+input[type="checkbox"]:checked:before {
+    content: " " !important;
+}
+
+#bRefine .facetGroupContainer {
+	border-bottom: 2px solid black !important;
+}
+
+#bRefine {
+   	border-top: 2px solid #000 !important;
+}
 
 #skipNavigation a{
 	position: absolute;

@@ -98,9 +98,11 @@
 		
 		<script>
 			$(document).ready( function() {
-				$('.jscroll-inner').imagesLoaded( function() {
-				  	$('.jscroll-inner').masonry({
-					  	itemSelector: '.bResultItemCol',
+				$(window).load( function() {
+					$('.jscroll-inner').imagesLoaded( function() {
+					  	$('.jscroll-inner').masonry({
+						  	itemSelector: '.imageResultCol',
+						});
 					});
 				});
 				var placeholderPreceder = "Try searching for ...";

@@ -94,7 +94,7 @@
 					}
 				}
 				if($vn_col == 0){
-					print "<div class='row'>";
+					// print "<div class='row'>";
 				}
 				$vn_id = $qr_res->get("{$vs_table}.{$vs_pk}");
 				if($vn_id == $vn_row_id){
@@ -115,21 +115,22 @@
 					$vs_typecode = "";
 					$vs_entities = "";
 					if ($vs_table == 'ca_objects') {
-						if($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values))){
-							$vs_rep_detail_link 	= "<div class='imageResultMedia'>".caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id)."</div>";	
-						}
+						// REMOVE IMAGES FROM BROWSE RESULTS
+						// if($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values))){
+						// 	$vs_rep_detail_link 	= "<div class='imageResultMedia'>".caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id)."</div>";	
+						// }
 						$vs_info = null;
 						$vs_entities = 	$qr_res->get('ca_entities.preferred_labels', array("delimiter" => ", ", "checkAccess" => $va_access_values));
 						if($vs_entities){
 							$vs_entities = "<div class='imageResultEntity'>".$vs_entities."</div>";
-						}		
+						} 	
 					} else {
 						if($va_images[$vn_id]){
 							$vs_thumbnail = $va_images[$vn_id];
 						}else{
 							$vs_thumbnail = $vs_default_placeholder_tag;
 						}
-						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
+						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);
 					}
 					$vs_add_to_set_link = "";
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
@@ -138,34 +139,21 @@
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 					$vs_subjects = "";
 					if($vs_tmp = $qr_res->get("ca_objects.lcsh_terms.text", array("delimiter" => ","))){
-						$vs_subjects = "<div class='imageResultSubject'>".$qr_res->get("ca_objects.lcsh_terms.text", array("delimiter" => ","))."</div>";
+						$vs_subjects = "<div class='imageResultSubject'>".$qr_res->get("ca_objects.lcsh_terms.text", array("delimiter" => ", "))."</div>";
 					}
-
-#					$vs_result_output = "
-#		<div class='bResultItemCol col-xs-3 col-sm-3 col-md-4'>
-#			<div class='bResultItem' id='row{$vn_id}'>
-#				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-#				<div class='bResultItemContent'>
-#					<div class='bibtype medium'>
-#						{$vs_label_detail_link}{$vs_entities}
-#					</div><!-- end bResultItemText -->
-#					
-#					<div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
-#				</div><!-- end bResultItemContent -->
-#			</div><!-- end bResultItem -->
-#		</div><!-- end col -->";
 		
 					$vs_result_output = "
-		<div class='col-xs-3 col-sm-3 col-md-4 imageResultCol'>
-			<div class='imageResult' id='row{$vn_id}'>
-					<div class='bibtype medium'>
-						{$vs_label_detail_link}
-					</div>
-					{$vs_entities}
-					
-					{$vs_rep_detail_link}
-					{$vs_subjects}
-			</div><!-- end bResultItem -->
+		<!-- add masonry code -->
+			<div class='col-xs-3 col-sm-3 col-md-4 imageResultCol'>
+				<div class='imageResult' id='row{$vn_id}'>
+						<p class='bibtype medium'>
+							{$vs_label_detail_link}
+						</p>
+						{$vs_entities}
+						
+						{$vs_rep_detail_link}
+						{$vs_subjects}
+				</div><!-- end bResultItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
@@ -174,12 +162,12 @@
 				$vn_results_output++;
 				$vn_col++;
 				if($vn_col == 3){
-					print "</div><!---end row--->";
+					// print "</div><!---end row--->";
 					$vn_col = 0;
 				}
 			}
 			if($vn_col > 0){
-				print "</div><!---end row--->";
+				// print "</div><!---end row--->";
 			}
 			print "<div style='clear:both'>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
