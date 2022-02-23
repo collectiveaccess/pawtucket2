@@ -40,9 +40,9 @@
 							<div class='col-xs-12 col-sm-10'>
 								<div class="paragraph" style="text-align:left;">
 									General contact:<br>
-									Dustin Heckman, Alliance Coordinator<br>
+									Gibson Stanton, Alliance Coordinator<br>
 									612-500-7460<br>
-									<a href="mailto:staff@mnhistoryalliance.org">Contact</a>
+									<a href="mailto:gibson@mnhistoryalliance.org">Contact</a>
 									<br/><a href="http://www.mnhistoryalliance.org">http://www.mnhistoryalliance.org</a>
 								</div>					
 							</div>

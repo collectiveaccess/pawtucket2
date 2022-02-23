@@ -84,11 +84,23 @@
 					{{{<ifdef code="ca_objects.av_camera_angle_type"><div class='unit trimText'><label>Camera Angle</label>^ca_objects.av_camera_angle_type</div></ifdef>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="photographer" min="1"><div class='unit trimText'><label>Photographer<ifcount code="ca_entities" restrictToRelationshipTypes="photographer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="videographer" min="1"><div class='unit trimText'><label>Videographer<ifcount code="ca_entities" restrictToRelationshipTypes="videographer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="videographer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><div class='unit trimText'><label>Creator<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="presenter" min="1"><div class='unit trimText'><label>Presenter<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="presenter" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+<?php
+
+					if(in_array(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => "true"))), array("program", "programs"))){
+						print "<div class='unit trimText'><label>Usage Statement</label>";
+						if($vs_rights = $this->getVar("detail_usage_statement_programs")){
+							print $vs_rights;
+						}
+						print "</div>";
+					}
+?>
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="rights_holder" min="1"><div class='unit trimText'><label>Rights Holder<ifcount code="ca_entities" restrictToRelationshipTypes="rights_holder" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="rights_holder" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 										
 					{{{<ifdef code="ca_objects.idno"><div class='unit trimText'><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 <?php
-					if(in_array(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => "true"))), array("audiovisual", "photograph", "photographs"))){
+					if(in_array(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => "true"))), array("photograph", "photographs"))){
 						print "<div class='unit trimText'><label>Rights Statement</label>";
 						if($vs_rights = $this->getVar("detail_rights_statement")){
 							print $vs_rights;
@@ -98,6 +110,14 @@
 						}
 						print "</div>";
 					}
+					if(in_array(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => "true"))), array("videos"))){
+						if($vs_rights = $this->getVar("detail_rights_statement_videos")){
+							print "<div class='unit trimText'><label>Rights Statement</label>";
+							print $vs_rights;
+							print "</div>";
+						}
+					}
+					
 ?>
 				</div>
 			</div><!-- end row -->
@@ -149,6 +169,38 @@
 								print "<div class='row'>";
 							}
 							print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".caDetailLink($this->request, $va_event['name'], '', 'ca_occurrences', $va_event['occurrence_id'])."</div></div>";
+							$i++;
+							$c++;
+							if($i == 3){
+								print "</div><!-- end row -->";
+								$i = 0;
+							}
+							if($c == 18){
+								break;
+							}
+						}
+						if($i > 0){
+							print "</div>";
+						}
+						print "</div></div><!-- end unit -->";
+						if($vb_show_view_all){
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All Performances & Events", "btn btn-default", "", "Browse", "events", array("facet" => "object_general_facet", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+						}
+					}
+					
+					if ($va_venues = $t_object->get('ca_occurrences', array('sort' => 'ca_occurrences.preferred_labels', 'restrictToTypes' => array('venue'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
+						$vb_show_view_all = false;
+						print "<div class='unit'><H3>Venues</H3><div class='unit detailLinksGrid'>";
+						$i = 0;
+						$c = 0;
+						if(sizeof($va_venues) > 18){
+							$vb_show_view_all = true;
+						}
+						foreach ($va_venues as $va_venue) {
+							if($i == 0){
+								print "<div class='row'>";
+							}
+							print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".caDetailLink($this->request, $va_venue['name'], '', 'ca_occurrences', $va_venue['occurrence_id'])."</div></div>";
 							$i++;
 							$c++;
 							if($i == 3){

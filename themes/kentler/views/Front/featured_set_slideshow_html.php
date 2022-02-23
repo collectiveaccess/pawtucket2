@@ -66,7 +66,7 @@
 			}
 		}
 	}
-	if(is_array($va_current_exhibition_info) && sizeof($va_current_exhibition_info["images"])){
+	if(is_array($va_current_exhibition_info) && $va_current_exhibition_info["images"] && sizeof($va_current_exhibition_info["images"])){
 ?>   
 			<div class="jcarousel-wrapper" style="overflow:hidden;">
 <?php
@@ -116,14 +116,16 @@
 					<ul>
 <?php
 						while($qr_res->nextHit()){
-							if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
-								print "<li><div class='frontSlide'>".$vs_media;
-								$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
-								if($vs_caption){
-									print "<div class='frontSlideCaption'>".$vs_caption."</div>";
+							if($qr_res->getWithTemplate("^ca_objects.type_id") != "audio"){
+								if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
+									print "<li><div class='frontSlide'>".$vs_media;
+									$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
+									if($vs_caption){
+										print "<div class='frontSlideCaption'>".$vs_caption."</div>";
+									}
+									print "</div></li>";
+									$vb_item_output = true;
 								}
-								print "</div></li>";
-								$vb_item_output = true;
 							}
 						}
 ?>

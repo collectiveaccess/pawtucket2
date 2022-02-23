@@ -491,6 +491,7 @@ class LightboxController extends FindController {
 				$t_set->insert();
 				$vb_is_insert = true;
 			}
+			
 			if($t_set->numErrors()) {
 				$va_errors[] = join("; ", $t_set->getErrors());
 				$this->view->setVar('errors', $va_errors);

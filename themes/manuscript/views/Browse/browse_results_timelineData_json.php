@@ -33,7 +33,8 @@
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
 	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
 	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
-	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
+#	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
+	$vn_hits_per_block 	= 250;									// max number of hits display
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 	
 	$va_views			= $this->getVar('views');
@@ -97,7 +98,7 @@
 			];
 
 			$vn_c++;
-			if ($vn_c >= 250) { break; }
+#			if ($vn_c >= 250) { break; }
 		}
 	}
 

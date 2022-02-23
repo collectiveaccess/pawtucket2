@@ -153,8 +153,14 @@
 					
 					<?php #print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collection Guide"), "", "", "Collections", "index"); ?></li>					
-					<!--<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>-->
-					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Collection")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "Collection"); ?></li>
+					<li class="dropdown<?php print ((strToLower($this->request->getController()) == "about") && in_array(strToLower($this->request->getAction()), array("collection", "digitization"))) ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?></a>
+						<ul class="dropdown-menu">
+<?php
+							print "<li>".caNavLink($this->request, _t("About the Collection"), "", "", "About", "Collection")."</li>";
+							print "<li>".caNavLink($this->request, _t("Digitization Project"), "", "", "About", "Digitization")."</li>";
+?>
+						</ul>	
+					</li>
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "GreerLankton")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Greer Lankton"), "", "", "About", "GreerLankton"); ?></li>
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 					<li><a href="https://www.mattress.org">Museum Home</a></li>

@@ -48,6 +48,12 @@
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12 col-md-8">
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by the holding library's call no.">Holding Library Call No.</span>
+				{{{ca_objects.library_location%width=220px}}}
+			</div>
+		</div>
+		<div class='row'>
+			<div class="advancedSearchField col-sm-12 col-md-8">
 				<br style="clear: both;"/>
 				<div class='advancedFormSubmit'>
 					<span class='btn btn-default'>{{{reset%label=Reset}}}</span>

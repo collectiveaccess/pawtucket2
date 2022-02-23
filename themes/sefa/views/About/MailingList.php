@@ -1,6 +1,9 @@
+<?php
+	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Mailing list");
+?>
 <div class="row contentbody_sub aboutPages">
 	<div class="col-sm-8">
-		<H5>Newsletter Sign Up</H5>
+		<H1>Newsletter Sign Up</H1>
 		<p>
 			Sign up to be notified of gallery exhibitions, art fairs and special events.
 		</p>
@@ -48,9 +51,8 @@
 		<!--End mc_embed_signup-->
 	</div>
 	<div class="col-sm-4 col-md-3 col-md-offset-1">
-	 	<H5>&nbsp;</H5>
 	 	<div class="thumbnail">
-	 		<?php print caGetThemeGraphic($this->request, 'about_building.jpg'); ?>
+	 		<?php print caGetThemeGraphic($this->request, 'about_building.jpg', array('alt' => 'Exterior of Susan Eley Fine Art')); ?>
 	 	</div>
 	</div>
 </div><!-- end row -->
