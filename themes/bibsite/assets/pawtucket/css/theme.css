@@ -152,6 +152,10 @@ input[type="checkbox"]:checked:before {
     transition: color 300ms;
 }
 
+.detail .detailNavBgLeft:hover, .detail .detailNavBgRight:hover {
+	color: rgba(0,0,0,0.5) !important;	
+}
+
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a {
 	color: inherit;
 }

@@ -1015,3 +1015,69 @@ Stack trace:
 #6 /home/bibsite/public_html/index.php(132): AppController->dispatch(true)
 #7 {main}
   thrown in /home/bibsite/public_html/themes/bibsite/views/Browse/browse_results_html.php on line 62
+[24-Feb-2022 10:45:56 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 10:45:56 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 10:46:19 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 10:46:19 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 10:52:17 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 10:52:17 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:13:24 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:13:24 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:13:47 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:13:47 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:15:26 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:15:26 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:15:36 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:15:36 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:16:08 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:16:08 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:16:08 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:16:08 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:16:28 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:16:28 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:16:28 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:16:28 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:18:27 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:18:27 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:19:12 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:19:12 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:19:12 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:19:12 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:19:12 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:19:12 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:19:12 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 11:19:12 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 12:10:41 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 12:10:41 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:24:21 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:24:21 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:24:21 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:24:21 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:24:21 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:24:21 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:24:21 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:24:21 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:17 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:17 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:31 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:31 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:39 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:39 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:39 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:39 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:39 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:39 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:39 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:35:39 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:37:45 America/New_York] PHP Warning:  "continue" targeting switch is equivalent to "break". Did you mean to use "continue 2"? in /home/bibsite/public_html/app/lib/Import/DataReaders/MARCDataReader.php on line 143
+[24-Feb-2022 13:37:45 America/New_York] PHP Warning:  "continue" targeting switch is equivalent to "break". Did you mean to use "continue 2"? in /home/bibsite/public_html/app/lib/Import/DataReaders/MARCDataReader.php on line 146
+[24-Feb-2022 13:37:45 America/New_York] PHP Warning:  "continue" targeting switch is equivalent to "break". Did you mean to use "continue 2"? in /home/bibsite/public_html/app/lib/Import/DataReaders/MARCDataReader.php on line 147
+[24-Feb-2022 13:37:45 America/New_York] PHP Warning:  "continue" targeting switch is equivalent to "break". Did you mean to use "continue 2"? in /home/bibsite/public_html/app/lib/Import/DataReaders/MARCDataReader.php on line 174
+[24-Feb-2022 13:37:46 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:37:46 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:37:46 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:37:46 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:37:46 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:37:46 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:37:46 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163
+[24-Feb-2022 13:37:46 America/New_York] PHP Warning:  Illegal string offset 'lcsh_terms.text' in /home/bibsite/public_html/themes/bibsite/views/Details/ca_objects_default_html.php on line 163

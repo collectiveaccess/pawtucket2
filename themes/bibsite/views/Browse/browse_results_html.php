@@ -117,7 +117,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 			print _t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? $va_browse_info["labelSingular"] : $va_browse_info["labelPlural"]);	
 ?>
-			<p><?php print $vs_resources_count; ?> resources in <?php print $vs_language_count; ?> languages, featuring <?php print $vs_subjects_count; ?> subject groups, with the help of <?php print $vs_contributors_count; ?> contributors.</p>
+			<!-- <p><?php print $vs_resources_count; ?> resources in <?php print $vs_language_count; ?> languages, featuring <?php print $vs_subjects_count; ?> subject groups, with the help of <?php print $vs_contributors_count; ?> contributors.</p> -->
 <?php 		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
 			}
@@ -135,7 +135,7 @@ if (!$vb_ajax) {	// !ajax
 				}
 				print "<br/>";
 			}
-			print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">→ Start Over</button>', 'browseRemoveFacet', '', 'Browse', 'objects');
+			print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">× Clear all</button>', 'browseRemoveFacet', '', 'Browse', 'objects');
 		}
 ?>		
 		</div>
