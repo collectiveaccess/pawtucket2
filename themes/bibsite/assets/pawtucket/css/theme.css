@@ -19,6 +19,8 @@ input[type="checkbox"]:checked:before {
     color: #000;
     font-family: "Gerstner Programm", Helvetica, Arial, sans-serif;
     font-size:18px;
+    line-height: 1.3em;
+	letter-spacing: 0.02em;
     font-weight:normal;
     text-shadow: none;
 	opacity: 1;
@@ -84,27 +86,30 @@ input[type="checkbox"]:checked:before {
 	font-size:85%;
 }*/
 /* detail */
-.detail .detailNavBgLeft, .detail .detailNavBgRight {
+/*.detail .detailNavBgLeft, .detail .detailNavBgRight {
     background-color: lightgray;
 }
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a, .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small, .detail a {
     color: #000;
-}
+}*/
 .detail h1{
 	font-size: 38px;
 	line-height: 1.15em;
 	font-family: 'Self Modern', Times New Roman, Times, serif;
 	letter-spacing: -0.01em;
 }
-.detail .unit, .detail .unit a, .detail label {
-    color: #000;
+.detail .unit, .detail .unit a, .detail label,
+.fa {
+    /*color: #000;*/
     font-family: "Gerstner Programm", Helvetica, Arial, sans-serif;
     font-size:18px;
+    line-height: 1.3em;
+	letter-spacing: 0.02em;
     text-transform:none;
     font-weight:normal;
 }
 .detail label {
-    color: #666;
+    /*color: #666;*/
 }
 .repViewerCont{
 	background-color:#000;
@@ -113,3 +118,57 @@ input[type="checkbox"]:checked:before {
 .detail .unit{
 	margin-bottom:30px;
 }
+.detailNavBgLeft div, .detailNavBgRight div {
+	padding: 0 0.35em;
+	display: inline-block;
+}
+.fa-angle-left:before,
+.fa-angle-double-left:before  {
+	font-size: 18px;
+	line-height: 1.3em;
+	letter-spacing: 0.02em;
+    content: "←";
+}
+
+.fa-angle-right:before {
+	font-size: 18px;
+	line-height: 1.3em;
+	letter-spacing: 0.02em;
+    content: "→";
+}
+
+.detail .detailNavBgLeft, .detail .detailNavBgRight {
+    margin-top: 0;
+    background-color: transparent;
+    width: auto;
+    height: auto;
+    text-transform: none;
+    padding-top: 0.35em;
+    padding-bottom: 0;
+    text-align: left;
+    position: static;
+    white-space: nowrap;
+    /*color: rgba(0,0,0,0.5) !important;*/
+    transition: color 300ms;
+}
+
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a {
+	color: inherit;
+}
+
+.unit label {
+    color: rgba(0,0,0,0.5) !important;	
+}
+
+.navLeftRight {
+	display: inline-block;
+	margin-right: 1.5em;
+}
+
+.media-viewer {
+	margin-top: 10px;
+}
+
+
+
+

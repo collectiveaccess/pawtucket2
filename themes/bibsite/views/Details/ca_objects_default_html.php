@@ -42,18 +42,33 @@
 	</div><!-- end detailTop -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
+			{{{resultsLink}}}
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-sm-7 col-md-7 col-lg-6 col-lg-offset-1'>
+				<div class='col-sm-8 col-md-8 col-lg-7 col-lg-offset-1'>
 					<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 				</div>
+				<div class='col-sm-4 col-md-4 col-lg-3'>
+
+					<div class='navLeftRight'>
+						<div class="detailNavBgLeft">
+							{{{previousLink}}}
+						</div><!-- end detailNavBgLeft -->
+					</div><!-- end col -->
+
+					<div class='navLeftRight'>
+						<div class="detailNavBgRight">
+							{{{nextLink}}}
+						</div><!-- end detailNavBgLeft -->
+					</div><!-- end col -->
+
+				</div><!-- end col -->
 			</div>
 			<div class="row">
-				<div class='col-sm-7 col-md-7 col-lg-6 col-lg-offset-1'>
+				<div class='col-sm-8 col-md-8 col-lg-7 col-lg-offset-1 media-viewer'>
 					{{{representationViewer}}}
 				
 				
@@ -63,8 +78,11 @@
 				
 
 				</div><!-- end col -->
-			
-				<div class='col-sm-5 col-md-5 col-lg-4'>
+
+
+				<div class='col-sm-4 col-md-4 col-lg-3'>
+
+
 					{{{<ifdef code="ca_objects.date"><unit relativeTo="ca_objects.date" delimiter=" "><div class="unit"><label>^ca_objects.date.dc_dates_types</label>^ca_objects.date.dates_value</div></unit></ifdef>}}}
 	<?php
 					$va_languages = $t_object->get("ca_objects.language", array("returnAsArray" => true));
@@ -184,11 +202,11 @@
 </ifcount>}}}
 		</div><!-- end container -->
 	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
+	<!-- <div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'> -->
+		<!-- <div class="detailNavBgRight"> -->
+			<!-- {{{nextLink}}} -->
+		<!--</div>--><!-- end detailNavBgLeft -->
+	<!--</div>--><!-- end col -->
 </div><!-- end row -->
 
 <script type='text/javascript'>

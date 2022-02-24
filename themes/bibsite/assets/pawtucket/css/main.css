@@ -2085,21 +2085,21 @@ a.browseRemoveFacet img {
 /* details */
 /* --------------------------------- */
 .detail HR{
-	color:#ededed;
+	/*color:#ededed;*/
 	padding:0px;
 	margin:10px 0px 10px 0px;
 }
 .detail {
-	color:#454545;
+	/*color:#454545;*/
 	font-size:12px;
 }
 .detail a {
-	color:#757575;
+	/*color:#757575;*/
 	text-decoration:none;
 }
 
 .detail a:hover{
-	color:#737373;
+	/*color:#737373;*/
 	text-decoration:underline;
 }
 	
@@ -2155,7 +2155,7 @@ a.browseRemoveFacet img {
 }
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a{
 	/*color:#8e8985;*/
-	color:#696969;
+	/*color:#696969;*/
 	line-height:.3em;
 	font-size:18px;
 	text-decoration:none;
@@ -2163,7 +2163,7 @@ a.browseRemoveFacet img {
 .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small{
 	font-size:8px;
 	/*color:#ababab;*/
-	color:#696969;
+	/*color:#696969;*/
 	padding-bottom:20px;
 	padding-top:3px;
 }

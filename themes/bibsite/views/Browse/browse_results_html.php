@@ -53,6 +53,29 @@ MetaTagManager::setWindowTitle($this->request->config->get("app_display_name")."
 
 	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
 	
+
+
+	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
+	$o_browse = caGetBrowseInstance("ca_objects");
+	$o_browse->execute(array('checkAccess' => $va_access_values));
+
+	$va_languages = $o_browse->getFacet("language_facet", array('checkAccess' => $va_access_values, 'request' => $this->request));
+	$vs_language_count = sizeof($va_languages);
+
+	$va_subjects = $o_browse->getFacet("lcsh_facet", array('checkAccess' => $va_access_values, 'request' => $this->request));
+	$vs_subjects_count = sizeof($va_subjects);
+
+	$o_db = new Db();
+	$vs_access_sql = "";
+	if(is_array($va_access_values) && sizeof($va_access_values)){
+		 $vs_access_sql = " AND access IN (".join(", ", $va_access_values).")";
+	}
+	$q_contributors = $o_db->query("SELECT distinct entity_id FROM ca_entities where deleted = 0".$vs_access_sql);
+	$vs_contributors_count = $q_contributors->numRows();
+	$q_resources = $o_db->query("SELECT distinct object_id FROM ca_objects where deleted = 0".$vs_access_sql);
+	$vs_resources_count = $q_resources->numRows();
+
+
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
@@ -90,10 +113,12 @@ if (!$vb_ajax) {	// !ajax
 			</script>
 		</div>		
 		<H1>
-			<a href='#' class='pull-right' id='bRefineToggle' onclick='jQuery("#bRefine").slideToggle("fast"); jQuery("#bRefineToggle .filter").toggle(); jQuery("#bRefineToggle .close").toggle(); return false;'><span class='filter'><span class='arrow'>→</span> Filter</span><span class='close'>× Close</span></a>
+			<a href='#' class='pull-right' id='bRefineToggle' onclick='jQuery("#bRefine").slideToggle("fast"); jQuery("#bRefineToggle .filter").toggle(); jQuery("#bRefineToggle .close").toggle(); return false;'><span class='filter'><span class='arrow'>→</span> Advanced Search</span><span class='close'>× Close</span></a>
 <?php
 			print _t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? $va_browse_info["labelSingular"] : $va_browse_info["labelPlural"]);	
-			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+?>
+			<p><?php print $vs_resources_count; ?> resources in <?php print $vs_language_count; ?> languages, featuring <?php print $vs_subjects_count; ?> subject groups, with the help of <?php print $vs_contributors_count; ?> contributors.</p>
+<?php 		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
 			}
 ?>
