@@ -1,7 +1,8 @@
 FROM ubuntu:20.04
 
-ARG APACHE_VERSION=2.4.48
-ARG PHP_VERSION=7.4.14
+ARG LOCAL_UID=1000
+ARG APACHE_VERSION=2.4.52
+ARG PHP_VERSION=7.4.27
 ENV DEBIAN_FRONTEND=noninteractive
 
 #Apache
@@ -27,11 +28,14 @@ RUN curl --output /usr/local/bin/composer https://getcomposer.org/composer.phar 
 RUN echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
 
 #GitLab runner
-RUN adduser --uid 997 --gecos 'gitlab-runner user' --disabled-password gitlab-runner
+RUN adduser --uid $LOCAL_UID --gecos 'gitlab-runner user' --disabled-password gitlab-runner
 
 #Prepare docroot
 RUN rm -rf /app/apache2/htdocs
 
-#USER gitlab-runner
+#Copy startup script, setup file, and permissions script
+COPY ./startup.sh /
 
-CMD ["/bin/bash"]
+USER gitlab-runner
+
+CMD ["./startup.sh"]
