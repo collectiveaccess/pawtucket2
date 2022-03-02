@@ -18,9 +18,20 @@
 		}
 		if(in_array($ps_view, array("images", "thumbnails"))){
 			$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
+			$vs_web_image_order = $t_item->get("ca_occurrences.web_image_order", array("convertCodesToDisplayText" => true));
 			if($q_objects->numHits()){
 				while($q_objects->nextHit()){
-					$va_images[$q_objects->get("ca_entity_labels.surname", array("restrictToRelationshipTypes" => array("creator", "creator_website")))." ".$q_objects->get("ca_objects.preferred_labels.name")." ".$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.large"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
+					switch($vs_web_image_order){
+						case "exhibition":
+							$va_images[] = array("image" => $q_objects->get("ca_object_representations.media.large"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
+						break;
+						# ----------------------------------
+						case "artist":
+						default:
+							$va_images[$q_objects->get("ca_entity_labels.surname", array("restrictToRelationshipTypes" => array("creator", "creator_website")))." ".$q_objects->get("ca_objects.preferred_labels.name")." ".$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.large"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
+						break;
+						# ----------------------------------
+					}
 				}
 			}
 		}

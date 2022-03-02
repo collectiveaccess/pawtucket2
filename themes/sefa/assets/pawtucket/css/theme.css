@@ -449,6 +449,25 @@ div.captionSlideshow{
 	bottom:45px !important;
 	top:auto !important;
 }
+.detail.ca_occurrences .jcarousel-wrapper, .detail.ca_entities .jcarousel-wrapper{
+	margin-top: 30px;
+}
+.detail.ca_occurrences .jcarousel-control-prev, .detail.ca_entities .jcarousel-control-prev{
+	left:0px !important;
+	top:-30px !important;
+	bottom:auto !important;
+}
+.detail.ca_occurrences .jcarousel-control-next, .detail.ca_entities .jcarousel-control-next{
+	right:0px !important;
+	top:-30px !important;
+	bottom:auto !important;
+}
+
+.jcarousel-control-next{
+	right:0px !important;
+	bottom:45px !important;
+	top:auto !important;
+}
 .jcarousel-control-prev, .jcarousel-control-next{
 	background-color:#FFF;
 	border:0px;
