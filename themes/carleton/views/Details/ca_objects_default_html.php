@@ -33,13 +33,6 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
-	$va_access_values = caGetUserAccessValues($this->request);
-	
-	$vn_rep_count = "";
-	$va_reps = $t_object->get("ca_object_representations.representation_id", array("filterNonPrimaryRepresentations" => false, "returnAsArray" => true, "checkAccess" => $va_access_values));
-	if(is_array($va_reps)){
-		$vn_rep_count = sizeof($va_reps);
-	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -56,17 +49,10 @@
 				{{{representationViewer}}}
 				
 				
-<?php
-				if($vn_rep_count < 10){
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
-
-				}else{
-?>
-					<div class="text-center"><a href="#" onclick="caMediaPanel.showPanel('<?php print caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $vn_id, "representation_id" => $this->getVar("representation_id"), "overlay" => 1)); ?>'); return false;">View all images</a></div>
-<?php
-				}
-?>
 				<div id="detailAnnotations"></div>
+				
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+				
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
@@ -92,25 +78,70 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
-				<H1>{{{<unit>^ca_objects.type_id</unit>}}}</H1>
-				{{{<if rule='^ca_objects.preferred_labels.name !~ /BLANK/'><H2>^ca_objects.preferred_labels.name</H2></if>}}}
-				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
-				{{{<ifcount code="ca_collections" min="1"><unit relativeTo="ca_collections"><div class="unit"><label>Part of</label><l><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></l></div></unit></ifcount>}}}
-				<!--{{{<ifnotdef code="ca_objects.description"><unit relativeTo="ca_collections"><ifdef code="ca_collections.scope_contents"><div class="unit">^ca_collections.scope_contents</div></ifdef></unit></ifnotdef>}}}-->
-				{{{<ifdef code="ca_objects.date.dates_value"><div class="unit"><label>Date</label>^ca_objects.date.dates_value</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.format"><div class="unit"><label>Format</label>^ca_objects.format</div></ifdef>}}}				
+				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
+				<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
+				<HR>
 				
-				{{{<ifdef code="ca_objects.description.description_text">
+				{{{<ifcount code='ca_collections' min='1'><div class='unit'><label>Collection</label><unit relativeTo='ca_collections'><unit relativeTo='ca_collections.hierarchy' delimiter=' > '><l>^ca_collections.type_id ^ca_collections.idno ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates</ifdef></l></unit></unit></div></ifcount>}}}
+				
+				{{{<ifdef code="ca_objects.idno"><label>Identifier:</label>^ca_objects.idno<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.containerID"><label>Box/series:</label>^ca_objects.containerID<br/></ifdef>}}}				
+				
+				{{{<ifdef code="ca_objects.inclusive_dates">
+					<div class='unit'><label>Inclusive Dates</label>^ca_objects.inclusive_dates%delimiter=,_
+					</div>
+				</ifdef>}}}
+				{{{<ifdef code="ca_objects.display_date">
+					<div class='unit'><label>Display Date</label>^ca_objects.display_date%delimiter=,_
+					</div>
+				</ifdef>}}}
+				{{{<ifdef code="ca_objects.language">
+					<div class='unit'><label>Language</label>^ca_objects.language%delimiter=,_
+					</div>
+				</ifdef>}}}
+				{{{<ifdef code="ca_objects.event_type">
+					<div class='unit'><label>Event Type</label>^ca_objects.event_type%delimiter=,_
+					</div>
+				</ifdef>}}}
+				{{{<ifdef code="ca_objects.material">
+					<div class='unit'><label>Material</label>^ca_objects.materials%delimiter=,_
+					</div>
+				</ifdef>}}}
+				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><label>Description</label>
-						<span class="trimText">^ca_objects.description.description_text</span>
+						<span class="trimText">^ca_objects.description</span>
+					</div>
+				</ifdef>}}}
+				{{{<ifdef code="ca_objects.people_depicted">
+					<div class='unit'><label>People Depicted</label>
+						<span class="trimText">^ca_objects.people_depicted</span>
+					</div>
+				</ifdef>}}}
+				{{{<ifdef code="ca_objects.related_publications">
+					<div class='unit'><label>Related Publications</label>^ca_objects.related_publications
+					</div>
+				</ifdef>}}}
+				{{{<ifdef code="ca_objects.related_materials">
+					<div class='unit'><label>Related Materials</label>^ca_objects.related_materials%delimiter=,_
 					</div>
 				</ifdef>}}}
 				
-				{{{<ifcount code="ca_list_items" min="1"><div class='unit'><label>Subjects</label><unit relativeTo="ca_list_items" delimiter="; " sort="ca_list_item_labels.name_singular">^ca_list_item_labels.name_singular</unit></div></ifcount>}}}				
-<?php
+				
+				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><label>Date:</label>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
+			
+				{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
+				{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
+				
+				
+				{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
+				{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
+				{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
+				
+				{{{<ifcount code="ca_list_items" min="1" max="1"><label>Related Term</label></ifcount>}}}
+				{{{<ifcount code="ca_list_items" min="2"><label>Related Terms</label></ifcount>}}}
+				{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter="<br/>"><unit relativeTo="ca_list_items"><l>^ca_list_items.preferred_labels.name_plural</l></unit> (^relationship_typename)</unit>}}}
 
-				print "<div class='detailButton'><span class='glyphicon glyphicon-envelope'></span> ".caNavLink($this->request, "Inquire", "", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("object_id")))."</div>";
-?>
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
