@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2016 Whirl-i-Gig
+ * Copyright 2014-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -95,11 +95,14 @@
 			foreach($va_export_options as $vn_i => $va_format_info) {
 				$va_options[$va_format_info['name']] = $va_format_info['code'];
 			}
-			// Get current display list
-			$t_display = new ca_bundle_displays();
- 			foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $va_display) {
- 				$va_options[$va_display['name']] = "_display_".$va_display['display_id'];
- 			}
+			
+			if(!$this->request->config->get('disable_display_based_exports')) {
+				// Get current display list
+				$t_display = new ca_bundle_displays();
+				foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $va_display) {
+					$va_options[$va_display['name']] = "_display_".$va_display['display_id'];
+				}
+			}
  			ksort($va_options);
  			
  			// Set comparison list view vars
