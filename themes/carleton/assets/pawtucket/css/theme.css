@@ -118,6 +118,15 @@ h1.page_title, .pageTitle--Main{
 	height:152px;
 	overflow:hidden;
 }
+
+.accessions .bResultListItemCol, .accessions .bResultListItem:hover{
+	height:122px;
+}
+.bResultListItemContent {
+	height:72px;
+	overflow:hidden;
+}
+
 .bResultListItem .bResultListItemText a{
 	color:#000;
 }
@@ -125,7 +134,7 @@ h1.page_title, .pageTitle--Main{
 	font-weight:bold;
 	font-size:16px;
 }
-.collectionID{
+.collectionID, .collectionPath{
 	font-weight:normal;
 	font-size:12px;
 }
@@ -252,12 +261,22 @@ h1.page_title, .pageTitle--Main{
 }
 .front H1, .front H2{
 	color:#000;
-	font-size: 18px;
+	font-size: 22px;
 	font-family: Gotham SSm A, Gotham SSm B, Helvetica Neue, Helvetica, Arial, sans-serif;
 	padding-top: 15px;
-	font-weight:normal;
+	font-weight:bold;
 	line-height:1.3em;
 	text-align:center;
+}
+.frontIntro{
+	color: #000;
+	font-size: 18px;
+	font-family: Gotham SSm A, Gotham SSm B, Helvetica Neue, Helvetica, Arial, sans-serif;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	font-weight: normal;
+	line-height: 1.3em;
+	text-align: center;
 }
 
 .detail .detailNavBgRight{
@@ -291,4 +310,31 @@ h1.page_title, .pageTitle--Main{
 	font-family:Surveyor Display A,Surveyor Display B,Georgia,Times New Roman,serif;
 	padding-top:20px;
 	font-size:24px;
+}
+.frontClassificationCol a, .frontClassificationCol a:hover{
+	text-decoration:none;
+}
+.frontClassification{
+	text-align:center;
+	padding:10px;
+	background-color:#f3b61d;
+	color: #000;
+	margin-bottom:10px;
+	text-decoration:none;
+}
+a:hover .frontClassification{
+	background-color:#f9db8e;
+}
+a .frontClassification, a:hover .frontClassification{
+	text-decoration:none;
+	text-decoration-color:none;
+}
+
+.multisearch H1{
+	font-size:30px;
+}
+.multisearch H3 a, .multisearch H3 a:hover, .multisearch H2 a, .multisearch H2 a:hover {
+  text-decoration: none;
+  color: #000;
+  font-size: 24px;
 }

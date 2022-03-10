@@ -29,15 +29,45 @@
  *
  * ----------------------------------------------------------------------
  */
+		$va_access_values = $this->getVar("access_values");
+		
 		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2">
-			<h2>The primary purpose of the Carleton College Archives is to gather, preserve, and make available for institutional reference and public research use documentation and information pertaining to the work, history, and development of Carleton College, or about programs, policies, activities, events, persons, or groups associated with the College.</h2>
+			<div class='frontIntro'>The primary purpose of the Carleton College Archives is to gather, preserve, and make available for institutional reference and public research use documentation and information pertaining to the work, history, and development of Carleton College, or about programs, policies, activities, events, persons, or groups associated with the College.</div>
 		</div><!--end col-sm-8-->	
 	</div><!-- end row -->
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2">
-			<h2>The primary purpose of the Carleton College Archives is to gather, preserve, and make available for institutional reference and public research use documentation and information pertaining to the work, history, and development of Carleton College, or about programs, policies, activities, events, persons, or groups associated with the College.</h2>
+<?php
+# --- get the top level classifications to browse by
+	$t_list = new ca_lists();
+	$va_classifications = $t_list->getItemsForList("col_classification", array("directChildrenOnly" => 1, "extractValuesByUserLocale" => true, "checkAccess" => $va_access_values));
+
+?>	
+	<div class="row tanBg">
+		<div class="col-md-12 col-lg-10 col-lg-offset-1">
+			<H2>Explore the Collection</H2>
+			<div class="row">
+<?php
+	if(is_array($va_classifications) && sizeof($va_classifications)){
+		foreach($va_classifications as $vn_item_id => $va_classification){
+			#print "<pre>";
+			#print_r($va_classification);
+			#print "</pre>";
+			if(strToLower($va_classification["name_singular"]) == "default"){
+				continue;
+			}
+			print "<div class='col-sm-12 col-md-6 frontClassificationCol'>";
+			print caNavLink($this->request, "<div class='frontClassification'>".$va_classification["name_singular"]."</div>", "", "", "Browse", "collections", array("facet" => "classification_facet", "id" => $vn_item_id));
+			print "</div>";
+		}
+	}
+?>
+			</div>
+		</div>
+	</div>
+
 		</div><!--end col-sm-8-->	
 	</div><!-- end row -->
