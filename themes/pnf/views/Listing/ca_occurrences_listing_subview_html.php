@@ -143,7 +143,7 @@
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			# --- if title has quotes, do not italicize
 			$vs_title_class = "listTitleItalic";
-			if((strpos($qr_list->get('ca_occurrences.preferred_labels'), '"' ) !== false) || (strpos($qr_list->get('ca_occurrences.preferred_labels'), '“' ) !== false)  || (strpos($qr_list->get('ca_occurrences.preferred_labels'), '&quot;'))){
+			if((strpos($qr_list->get('ca_occurrences.preferred_labels'), '"' ) !== false) || (strpos($qr_list->get('ca_occurrences.preferred_labels'), '“' ) !== false)  || (strpos($qr_list->get('ca_occurrences.preferred_labels'), '&quot;') !== false)){
 				$vs_title_class = "listTitleNoItalic";
 			}
 			$vs_tmp_title = "<div class='listLink listEntry listEntryIndentSecondLine'>".(($qr_list->get('ca_occurrences.author')) ? "<span class='listAuthor'>".$qr_list->get('ca_occurrences.author')."</span> " : "")."<span class='".$vs_title_class."'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</span><span class='listPub'>&nbsp;".$qr_list->get('ca_occurrences.publication_info')."</span>".(($qr_list->get('ca_occurrences.internal_notes')) ? " ".$qr_list->get('ca_occurrences.internal_notes') : "")."</div>\n";
