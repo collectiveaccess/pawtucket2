@@ -100,8 +100,8 @@
 						<div class="col-sm-12">
 <?php
 							# --- themes AKA "Local" subjects
-							$vs_themes = $t_object->getWithTemplate('<ifdef code="ca_objects.themes"><div class="unit"><h6>Local</h6><div class="trimTextSubjects"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.themes</unit></div></div></ifdef>');
-							$vs_keywords = $t_object->getWithTemplate('<ifdef code="ca_objects.keywords"><div class="unit"><h6>Keywords</h6><div class="trimTextSubjects"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.keywords</unit></div></div></ifdef>');
+							$vs_themes = $t_object->getWithTemplate('<ifdef code="ca_objects.themes"><div class="unit"><h6>Local</h6><div class="trimTextSubjects"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.themes</unit></div></div></ifdef>', array("checkAccess" => $va_access_values));
+							$vs_keywords = $t_object->getWithTemplate('<ifdef code="ca_objects.keywords"><div class="unit"><h6>Keywords</h6><div class="trimTextSubjects"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.keywords</unit></div></div></ifdef>', array("checkAccess" => $va_access_values));
 							
 							if($vs_themes|$vs_keywords){
 ?>							

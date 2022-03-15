@@ -66,13 +66,13 @@
 					</H6>
 					{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 <?php
-					$vs_creators_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>');
-					$vs_creators_text = $t_item->getWithTemplate('<unit relativeTo="ca_collections" delimiter=", ">^ca_collections.creators</unit>');
+					$vs_creators_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
+					$vs_creators_text = $t_item->getWithTemplate('<unit relativeTo="ca_collections" delimiter=", ">^ca_collections.creators</unit>', array("checkAccess" => $va_access_values));
 					if($vs_creators_entities || $vs_creators_text){
 						print '<div class="unit"><H6>Creators</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? ", " : "").$vs_creators_text.'</div></div>';
 					}
-					$vs_contributors_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>');
-					$vs_contributors_text = $t_item->getWithTemplate('<unit relativeTo="ca_collections" delimiter=", ">^ca_collections.contributors</unit>');
+					$vs_contributors_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
+					$vs_contributors_text = $t_item->getWithTemplate('<unit relativeTo="ca_collections" delimiter=", ">^ca_collections.contributors</unit>', array("checkAccess" => $va_access_values));
 					if($vs_contributors_entities || $vs_contributors_text){
 						print '<div class="unit"><H6>Contributors</H6><div class="trimTextShort">'.$vs_contributors_entities.(($vs_contributors_entities && $vs_contributors_text) ? ", " : "").$vs_contributors_text.'</div></div>';
 					}
