@@ -192,8 +192,8 @@ if($vs_mode == "map"){
 						</H6>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 <?php
-						$vs_creators_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>');
-						$vs_creators_text = $t_object->getWithTemplate('<unit relativeTo="ca_objects" delimiter=", ">^ca_objects.creators</unit>');
+						$vs_creators_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>', array("checkAccess" => $va_access_values));
+						$vs_creators_text = $t_object->getWithTemplate('<unit relativeTo="ca_objects" delimiter=", ">^ca_objects.creators</unit>', array("checkAccess" => $va_access_values));
 						if($vs_creators_entities || $vs_creators_text){
 							print '<div class="unit"><H6>Creators and Contributors</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? ", " : "").$vs_creators_text.'</div></div>';
 						}
