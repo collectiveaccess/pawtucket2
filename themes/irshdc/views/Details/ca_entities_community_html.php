@@ -95,8 +95,8 @@ if($vs_mode == "map"){
 ?>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
 					<div class="stoneBg">	
-						<H4>{{{<ifdef code="ca_entities.preferred_labels.source"><span data-toggle="popover" title="Source" data-content="^ca_entities.preferred_labels.source">^ca_entities.preferred_labels.displayname</span></ifdef>}}}
-							{{{<ifnotdef code="ca_entities.preferred_labels.source">^ca_entities.preferred_labels.displayname</ifnotdef>}}}
+						<H4>{{{<ifdef code="ca_entities.preferred_labels.source_info"><span data-toggle="popover" title="Source" data-content="^ca_entities.preferred_labels.source_info">^ca_entities.preferred_labels.displayname</span></ifdef>}}}
+							{{{<ifnotdef code="ca_entities.preferred_labels.source_info">^ca_entities.preferred_labels.displayname</ifnotdef>}}}
 							{{{<ifdef code="ca_entities.website.website_url"><br/><unit delimiter="<br/>"><a href="^ca_entities.website.website_url" class="redLink" target="_blank"><ifdef code="ca_entities.website.link_text">^ca_entities.website.link_text</ifdef><ifnotdef code="ca_entities.website.link_text">^ca_entities.website.website_url</ifnotdef> <span class="glyphicon glyphicon-new-window"></span></a></unit></ifdef>}}}
 						</H4>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities.related" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
@@ -105,8 +105,12 @@ if($vs_mode == "map"){
 								<div class="trimText">^ca_entities.description_new.description_new_txt</div>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_entities.community_history"><div class="unit"><h6>History of Community</h6>^ca_entities.community_history</div></ifdef>}}}
-						{{{<ifdef code="ca_entities.content_notice"><div class="unit"><h6>Content Notice</h6>^ca_entities.content_notice</div></ifdef>}}}
+						{{{<ifdef code="ca_entities.community_history.community_history_text">
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.community_history.community_history_source"><h6>History of Community</h6>^ca_entities.community_history.community_history_text</div>
+						</ifdef>}}}
+						{{{<ifdef code="ca_entities.content_notice.content_notice_value">
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.content_notice.content_notice_source"><h6>Content Notice</h6>^ca_entities.content_notice_value</div>
+						</ifdef>}}}
 						
 						
 						
@@ -119,8 +123,8 @@ if($vs_mode == "map"){
 									<div class='unit'>
 										<H6>Alternate Name(s)</H6>
 										<unit relativeTo="ca_entities" delimiter="<br/>">
-											<ifdef code="ca_entities.nonpreferred_labels.source"><span data-toggle="popover" title="Source" data-content="^ca_entities.nonpreferred_labels.source">^ca_entities.nonpreferred_labels.displayname</ifdef>
-											<ifnotdef code="ca_entities.nonpreferred_labels.source">^ca_entities.nonpreferred_labels.displayname</ifnotdef>
+											<ifdef code="ca_entities.nonpreferred_labels.source_info"><span data-toggle="popover" title="Source" data-content="^ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifdef>
+											<ifnotdef code="ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifnotdef>
 										</unit>
 									</div>
 								</ifdef>
