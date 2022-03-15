@@ -109,7 +109,7 @@ if($vs_mode == "map"){
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.community_history.community_history_source"><h6>History of Community</h6>^ca_entities.community_history.community_history_text</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.content_notice.content_notice_value">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.content_notice.content_notice_source"><h6>Content Notice</h6>^ca_entities.content_notice_value</div>
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.content_notice.content_notice_source"><h6>Content Notice</h6>^ca_entities.content_notice.content_notice_value</div>
 						</ifdef>}}}
 						
 						
