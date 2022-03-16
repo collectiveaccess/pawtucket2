@@ -235,19 +235,41 @@
     </div>
   
   
-
-
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/african-american-humanities-truck" data-animation-role="header-element" class="preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0967742s;">
+	<div class="header-nav-item header-nav-item--folder">
+      <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/apply" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0857143s;">*Apply</a>
+      <div class="header-nav-folder-content">
         
-        Humanities Truck
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/hip-hop-time-capsule-app">Hip Hop Time Capsule Application</a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/community-curation-fellowship-app">Community Curation Fellowship Application</a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/staff-faculty-fellowship-app">Staff &amp; Faculty Fellowship Application</a>
+            </div>
+          
+          
+        
+      </div>
+    </div>
+
+
+	<div class="header-nav-item header-nav-item--collection">
+      <a href="https://chesapeakeheartland.org/kca-ch-artist-fellowship" data-animation-role="header-element" class="preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.102857s;">
+        
+        KCA/CH Artist Fellowship
       </a>
     </div>
-  
-  
-  
-
 
   
     <div class="header-nav-item header-nav-item--folder">
@@ -288,6 +310,18 @@
   
 
 
+    <div class="header-nav-item header-nav-item--collection">
+      <a href="https://chesapeakeheartland.org/african-american-humanities-truck" data-animation-role="header-element" class="preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0967742s;">
+        
+        Humanities Truck
+      </a>
+    </div>
+  
+  
+  
+
+
+  
   
     <div class="header-nav-item header-nav-item--collection">
       <a href="https://chesapeakeheartland.org/events" data-animation-role="header-element" class="preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.135484s;">
@@ -450,15 +484,8 @@
         
       </div>
     </div>
-  
-    <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/african-american-humanities-truck" data-animation-role="header-element" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.305263s;">
-        
-        Humanities Truck
-      </a>
-    </div>
 
-     <div class="header-nav-item header-nav-item--folder">
+	<div class="header-nav-item header-nav-item--folder">
       <a class="header-nav-folder-title preFade" href="https://chesapeakeheartland.org/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0454545s;">Projects</a>
       <div class="header-nav-folder-content">
             <div class="header-nav-folder-item">
@@ -468,6 +495,13 @@
               <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">Ebony &amp; Ivory Towers</a>
             </div>
       </div>
+    </div>
+  
+    <div class="header-nav-item header-nav-item--collection">
+      <a href="https://chesapeakeheartland.org/african-american-humanities-truck" data-animation-role="header-element" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.305263s;">
+        
+        Humanities Truck
+      </a>
     </div>
   
     <div class="header-nav-item header-nav-item--collection">
@@ -595,7 +629,30 @@
       </div>
     </a>
   </div>
-  
+ <div class="container header-menu-nav-item">
+    <a data-folder-id="/apply" href="/apply">
+      <div class="header-menu-nav-item-content">
+        <span class="visually-hidden">Folder:</span>
+        <span>*Apply</span>
+        <span class="chevron chevron--right"></span>
+      </div>
+    </a>
+  </div>
+  <div class="container header-menu-nav-item header-menu-nav-item--collection">
+    <a href="https://chesapeakeheartland.org/kca-ch-artist-fellowship">
+      
+      KCA/CH Artist Fellowship
+    </a>
+  </div>
+ <div class="container header-menu-nav-item">
+    <a data-folder-id="/projects" href="/projects">
+      <div class="header-menu-nav-item-content">
+        <span class="visually-hidden">Folder:</span>
+        <span>Projects</span>
+        <span class="chevron chevron--right"></span>
+      </div>
+    </a>
+  </div> 
 
   <div class="container header-menu-nav-item header-menu-nav-item--collection">
     <a href="https://chesapeakeheartland.org/african-american-humanities-truck">
@@ -604,15 +661,7 @@
     </a>
   </div>
 
-  <div class="container header-menu-nav-item">
-    <a data-folder-id="/projects" href="/projects">
-      <div class="header-menu-nav-item-content">
-        <span class="visually-hidden">Folder:</span>
-        <span>Projects</span>
-        <span class="chevron chevron--right"></span>
-      </div>
-    </a>
-  </div>
+  
   
 
   <div class="container header-menu-nav-item header-menu-nav-item--collection">
@@ -718,6 +767,37 @@
     
     <div class="container header-menu-nav-item">
       <a href="https://chesapeakeheartland.org/history-now" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.505263s;" tabindex="-1">History Now</a>
+    </div>
+    
+    </div>
+  </div>
+  <div data-folder="/apply" class="header-menu-nav-folder">
+    <div class="header-menu-nav-folder-content">
+    <div class="header-menu-controls container header-menu-nav-item">
+      <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
+        <span class="chevron chevron--left"></span><span>Back</span>
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="/hip-hop-time-capsule-app" tabindex="-1">
+        
+        Hip Hop Time Capsule Application
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="/community-curation-fellowship-app" tabindex="-1">
+        
+        Community Curation Fellowship Application
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="/staff-faculty-fellowship-app" tabindex="-1">
+        
+        Staff &amp; Faculty Fellowship Application
+      </a>
     </div>
     
     </div>
