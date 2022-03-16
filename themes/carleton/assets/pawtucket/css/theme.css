@@ -122,7 +122,7 @@ h1.page_title, .pageTitle--Main{
 .accessions .bResultListItemCol, .accessions .bResultListItem:hover{
 	height:122px;
 }
-.bResultListItemContent {
+.accessions .bResultListItemContent {
 	height:72px;
 	overflow:hidden;
 }
