@@ -241,21 +241,21 @@
         
           
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org//hip-hop-time-capsule-app">Hip Hop Time Capsule Application</a>
+              <a href="https://chesapeakeheartland.org/hip-hop-time-capsule-app">Hip Hop Time Capsule Application</a>
             </div>
           
           
         
           
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org//community-curation-fellowship-app">Community Curation Fellowship Application</a>
+              <a href="https://chesapeakeheartland.org/community-curation-fellowship-app">Community Curation Fellowship Application</a>
             </div>
           
           
         
           
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org//staff-faculty-fellowship-app">Staff &amp; Faculty Fellowship Application</a>
+              <a href="https://chesapeakeheartland.org/staff-faculty-fellowship-app">Staff &amp; Faculty Fellowship Application</a>
             </div>
           
           
