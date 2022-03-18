@@ -652,3 +652,7 @@ div.caMediaOverlayControlsMinimal .close{
 	text-shadow: none;
 	opacity: 1;
 }
+
+.form-control:focus {
+  border-color: #000;
+}
