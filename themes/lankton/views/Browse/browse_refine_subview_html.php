@@ -61,6 +61,9 @@
 				if(($vs_facet_name == "object_decade_facet") && $vb_archive_decade_facet_output){ continue; }
 				if(($vs_facet_name == "archive_decade_facet") || ($vs_facet_name == "archive_year_facet")){ $vb_archive_decade_facet_output = true; }
 				
+				if(($vs_facet_name == "item_term_facet") && $vb_term_facet_output){ continue; }
+				if(($vs_facet_name == "term_facet")){ $vb_term_facet_output = true; }
+				
 				print "<h3>".$va_facet_info['label_singular']."</h3>"; 
 				switch($va_facet_info["group_mode"]){
 					case "alphabetical":
