@@ -101,6 +101,11 @@
 							<li><a href="<?php print $vs_pr_link; ?>">press release</a></li>	
 <?php
 						}
+						if($vs_press_link = $t_item->get("ca_occurrences.featured_press.original.url")){
+?>
+							<li><a href="<?php print $vs_press_link; ?>">featured press</a></li>	
+<?php
+						}
 						if($vn_catalog_id){
 							print "<li>".caDetailLink($this->request, _t("catalog"), '', 'ca_objects', $vn_catalog_id, null, null)."</li>";
 						}
