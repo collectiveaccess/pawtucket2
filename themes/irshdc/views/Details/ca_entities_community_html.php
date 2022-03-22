@@ -117,8 +117,8 @@ if($vs_mode == "map"){
 								</unit></div>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_entities.alt_name_notes">
-							<div class='unit'><h6>Note on Alternate Names</h6>^ca_entities.alt_name_notes%delimiter=<br/></div>
+						{{{<ifdef code="ca_entities.alt_name_note">
+							<div class='unit'><h6>Note on Alternate Names</h6>^ca_entities.alt_name_note%delimiter=<br/></div>
 						</ifdef>}}}
 								
 						
