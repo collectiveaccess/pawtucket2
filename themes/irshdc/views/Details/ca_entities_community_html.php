@@ -106,29 +106,29 @@ if($vs_mode == "map"){
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.community_history.community_history_text">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.community_history.community_history_source"><h6>History of Community</h6>^ca_entities.community_history.community_history_text</div>
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.community_history.community_history_source"><h6>History of Community Name</h6>^ca_entities.community_history.community_history_text</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_entities.content_notice.content_notice_value">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.content_notice.content_notice_source"><h6>Content Notice</h6>^ca_entities.content_notice.content_notice_value</div>
+						{{{<ifdef code="ca_entities.nonpreferred_labels.displayname">
+							<div class='unit'>
+								<H6>Alternate Name(s)</H6>
+								<div class="trimTextAltNames"><unit relativeTo="ca_entities.nonpreferred_labels" delimiter="<br/>">
+									<ifdef code="ca_entities.nonpreferred_labels.source_info"><span data-toggle="popover" title="Source" data-content="^ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifdef>
+									<ifnotdef code="ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifnotdef>
+								</unit></div>
+							</div>
 						</ifdef>}}}
-						
+						{{{<ifdef code="ca_entities.ca_entities.alt_name_notes">
+							<div class='unit'><h6>Note on Alternate Names</h6>^ca_entities.alt_name_notes%delimiter=<br/></div>
+						</ifdef>}}}
+								
 						
 						
 					</div><!-- end stoneBg -->
-					{{{<ifdef code="ca_entities.alt_name_notes|ca_entities.nonpreferred_labels.displayname|ca_entities.alt_name_notes">
+					{{{<ifdef code="ca_entities.public_notes">
 						<div class="collapseBlock">
 							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 							<div class="collapseContent">
-								<ifdef code="ca_entities.nonpreferred_labels.displayname">
-									<div class='unit'>
-										<H6>Alternate Name(s)</H6>
-										<unit relativeTo="ca_entities" delimiter="<br/>">
-											<ifdef code="ca_entities.nonpreferred_labels.source_info"><span data-toggle="popover" title="Source" data-content="^ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifdef>
-											<ifnotdef code="ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifnotdef>
-										</unit>
-									</div>
-								</ifdef>
-								<ifdef code="ca_entities.ca_entities.alt_name_notes"><div class='unit'><h6>Note on Alternate Names</h6>^ca_entities.alt_name_notes%delimiter=<br/></div></ifdef>
+								
 								<ifdef code="ca_entities.public_notes"><div class='unit'><h6>Notes</h6>^ca_entities.public_notes%delimiter=<br/></div></ifdef>
 								
 							</div>
@@ -249,6 +249,12 @@ if($vs_mode == "map"){
 		  speed: 75,
 		  maxHeight: 80,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
+		  lessLink: '<a href="#" class="moreLess">Less</a>'
+		});
+		$('.trimTextAltNames').readmore({
+		  speed: 75,
+		  maxHeight: 58,
+		  moreLink: '<a href="#" class="moreLess">Read More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});
 		
