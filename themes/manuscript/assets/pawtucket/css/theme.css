@@ -59,6 +59,12 @@ body {
 		padding: 17px 0 7px 0;
 	}
 }
+@media(min-width: 1200px){
+	#imgHeader, .navbar-collapse, .mainContainer{
+		width: 1160px;
+		margin: 0 auto !important;
+	}
+}
 .scaleImg img, .scaleImg{
 	width:100%;
 	height:auto;
