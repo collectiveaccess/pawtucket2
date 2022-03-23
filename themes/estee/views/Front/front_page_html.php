@@ -70,7 +70,7 @@
 	</div>
 	<div class="row bgWhite">
 		<div class="col-xs-12 col-sm-4 col-sm-offset-4 text-center">
-			<?php print caNavLink($this->request, "Browse All", "btn btn-default btn-large", "", "Browse", "objects"); ?>
+			<?php print caNavLink($this->request, "Browse", "btn btn-default btn-large", "", "Browse", "objects"); ?>
 			
 		</div><!--end col-sm-8-->		
 	</div><!-- end row -->
