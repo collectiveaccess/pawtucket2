@@ -1,21 +1,36 @@
-/* Fonts
-@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/620f98/0000000000000000000178a5/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/620f98/0000000000000000000178a5/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
-	format("woff"),url(https://use.typekit.net/af/620f98/0000000000000000000178a5/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
-	format("opentype");font-weight:300;font-style:normal;}
-@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/26c758/0000000000000000000178a6/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/26c758/0000000000000000000178a6/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
-	format("woff"),url(https://use.typekit.net/af/26c758/0000000000000000000178a6/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
-	format("opentype");font-weight:400;font-style:normal;}
-@font-face{font-family:tk-neuzeit-grotesk-n7;src:url(https://use.typekit.net/af/9aeec1/0000000000000000000178a7/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/9aeec1/0000000000000000000178a7/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
-	format("woff"),url(https://use.typekit.net/af/9aeec1/0000000000000000000178a7/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
-	format("opentype");font-weight:700;font-style:normal;}
-@font-face{font-family:tk-neuzeit-grotesk-n9;src:url(https://use.typekit.net/af/3d5194/0000000000000000000178a8/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/3d5194/0000000000000000000178a8/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
-	format("woff"),url(https://use.typekit.net/af/3d5194/0000000000000000000178a8/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
-	format("opentype");font-weight:900;font-style:normal;}
- */	
+/* Fonts */
+@font-face {
+ font-family:neuzeit-grotesk;
+ src:url(https://use.typekit.net/af/8f7727/0000000000000000000178a5/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),
+ url(https://use.typekit.net/af/8f7727/0000000000000000000178a5/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),
+ url(https://use.typekit.net/af/8f7727/0000000000000000000178a5/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");
+ font-weight:300;
+ font-style:normal;
+}
+@font-face {
+ font-family:neuzeit-grotesk;
+ src:url(https://use.typekit.net/af/cde90e/0000000000000000000178a6/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),
+ url(https://use.typekit.net/af/cde90e/0000000000000000000178a6/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),
+ url(https://use.typekit.net/af/cde90e/0000000000000000000178a6/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");
+ font-weight:400;
+ font-style:normal;
+}
+@font-face {
+ font-family:neuzeit-grotesk;
+ src:url(https://use.typekit.net/af/d7bb7b/0000000000000000000178a7/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),
+ url(https://use.typekit.net/af/d7bb7b/0000000000000000000178a7/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),
+ url(https://use.typekit.net/af/d7bb7b/0000000000000000000178a7/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");
+ font-weight:700;
+ font-style:normal;
+}
+@font-face {
+ font-family:neuzeit-grotesk;
+ src:url(https://use.typekit.net/af/7d4af5/0000000000000000000178a8/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) format("woff2"),
+ url(https://use.typekit.net/af/7d4af5/0000000000000000000178a8/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) format("woff"),
+ url(https://use.typekit.net/af/7d4af5/0000000000000000000178a8/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) format("opentype");
+ font-weight:900;
+ font-style:normal;
+} 
 	
 @font-face{
 	font-family:neuzeit;
@@ -92,11 +107,14 @@ body {
     line-height: 22px;
     letter-spacing: 0.7px;
     position: relative;
-    font-family:neuzeit;
+    font-family:neuzeit-grotesk;
     margin-bottom:0px;
 }
 a, a:hover, a:active, a:focus{
 	color:#000;
+}
+b, strong {
+	font-family: neuzeit-grotesk;
 }
 #pageArea {
 	padding-top:30px;
@@ -127,6 +145,10 @@ h1 {
 	color:inherit;
 	line-height:inherit;
 	text-transform:inherit;
+}
+h2{
+	color:#000;
+	font-family: neuzeit-grotesk;
 }
 h4 {
 	color:#000;
@@ -190,10 +212,10 @@ p, .collectionsList p {
 .nav > li > a, .nav > li > a:hover {
 	padding:0px;
 	border-bottom: 2px solid transparent;
-	font-size: 17px;
-    line-height: 17px; 
+	font-size: 19px;
+    line-height: 19px; 
     display:inline;
-    font-family:neuzeit;
+    font-family:neuzeit-grotesk;
     font-weight:regular;
 }
 .nav > li > a:hover, .nav > li > a:focus {
@@ -203,10 +225,21 @@ p, .collectionsList p {
     display:inline;
 }
 @media screen and (max-height: 900px) {
-	.navbar-nav > li a{
+	.nav > li > a, .nav > li > a:hover{
 		font-size: 17px;
 		line-height: 17px;
 	}
+}
+@media screen and ( max-height: 700px ) {
+	.nav > li > a, .nav > li > a:hover{
+		font-size: 15px;
+		line-height: 15px;
+	}
+    .nav > li {
+        margin-bottom: 5px;
+        line-height: 20px;
+    }
+
 }
 @media (max-width: 1010px) {
 	ul.menuItems {
@@ -234,8 +267,8 @@ p, .collectionsList p {
 }
 .sidebar .subMenu li a {
 	color:#000;
-	font-size: 16px;
-	line-height: 16px;
+	font-size: 19px;
+	line-height: 19px;
 }
 .sidebar .subMenu li a:hover {
 	text-decoration:none;
@@ -248,6 +281,20 @@ p, .collectionsList p {
 /*.sidebar .subMenu li.active a:hover {
 	border-bottom:0px;
 }*/
+
+@media screen and (max-height: 900px) {
+	.sidebar .subMenu li a{
+		font-size: 17px;
+		line-height: 17px;
+	}
+}
+@media screen and ( max-height: 700px ) {
+	.sidebar .subMenu li a{
+		font-size: 15px;
+		line-height: 14px;
+	}
+
+}
 .sidebar nav {
 	display:block;
 }
@@ -516,6 +563,15 @@ p, .collectionsList p {
 .detail .viewAll a {
 	text-decoration:none;
 }
+#featuredShowMoreLink, #featuredShowLessLink{
+	text-align:left;
+}
+#featuredShowMoreLink{
+	padding-top:30px;
+}
+#featuredShowMore{
+	padding-top:10px;
+}
 .exhibitionRep {
 	text-align:center;
 }
@@ -525,14 +581,79 @@ p, .collectionsList p {
     max-height: 500px;
     object-fit: contain;
 }
+.exhibitionRep span{
+	display:inline-block;
+}
+.exhibitionRepPhotoCredit{
+	width:100%;
+	text-align:left;
+}
+.exhibitionInstallationSlideshow .jcarousel-control-prev, .exhibitionInstallationSlideshow .jcarousel-control-next{
+	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	color: #fff;
+}
+.exhibitionInstallationSlideshow .jcarousel-control-prev:hover, .exhibitionInstallationSlideshow .jcarousel-control-next:hover{
+	opacity:.7;
+	color: #fff;
+}
+.exhibitionInstallationSlideshow .jcarousel-control-prev{
+	left:0px;
+}
+.exhibitionInstallationSlideshow .jcarousel-control-next{
+	right:0px;
+}
+@media (min-width:992px){
+	.colBorder{
+		border-right: #989697 solid 1px;
+	}
+}
+.exhibitionVimeoCaption{
+	font-size:10px;
+	text-align:center;
+	margin-bottom:15px;
+	line-height:1em;
+}
+.exhibitionIframe{
+	width:100%;
+	height:250px;
+}
+@media (min-width:992px) and (max-width:1152px){
+	.exhibitionIframe{
+		height:200px;
+	}
+}
+@media (min-width:600px) and (max-width:992px){
+	.exhibitionIframe{
+		height:300px;
+	}
+}
+@media (max-width:485px){
+	.exhibitionIframe{
+		height:160px;
+	}
+}
+.exhibitionInfoCol .readmore-js-toggle{
+	margin-top:-10px;
+	margin-bottom:20px;
+	padding-top:0px;
+}
+.eventLinkDate{
+	font-weight:normal;
+	text-transform:none;
+}
 /* oral history video */
 @media (max-width: 767px) {
-	.detail iframe{
+	.detail .ohIframe iframe{
 		height:300px;
 	}
 }
 @media (max-width: 400px) {
-	.detail iframe{
+	.detail .ohIframe iframe{
 		height:200px;
 	}
 }
@@ -1166,7 +1287,7 @@ p, .collectionsList p {
     height: 40px;
     font-size: 0;
 }
-#header-mobile .logo svg {
+#header-mobile .logo img {
     width: 158px;
     height: 40px;
     transition: all 300ms ease;
@@ -1344,7 +1465,7 @@ p, .collectionsList p {
 		width: auto;
 	}
 }
-.detail .repViewerCont div, .detail .exhibitionRep {
+.detail .repViewerCont > div, .detail .exhibitionRep {
 	display:table;
 	width:100%;
 	max-height: 500px;
@@ -1360,4 +1481,57 @@ p, .collectionsList p {
 .detail .repViewerCont .detailMediaToolbar, .gallery .repViewerCont .detailMediaToolbar {
 	width:auto;
 	display:none;
+}
+.featuredItem {
+    padding-top: 20px;
+    margin: 0px 20px 0px 20px;
+    font-size: 14px;
+    line-height: 18px;
+}
+.featuredItem img{
+	width:100%;
+	height:auto;
+}
+.featuredItemTitle{
+	text-transform: uppercase;
+	font-size: 16px;
+	line-height: 22px;
+	text-align: center;
+	text-decoration:none;
+	padding: 10px 0px 5px 0px;
+}
+.frontSlide img {
+    height: 330px;
+    width: auto;
+}
+.front .jcarousel-control-next, .front .jcarousel-control-prev{
+	margin-top:-70px;
+}
+.gallery H2{
+	font-size: 16px;
+	line-height: 22px;
+	font-weight: normal;
+	text-transform: uppercase;
+	margin: 0 0 10px 0;
+	color:#000;
+}
+.gallery H3{
+	font-size: 16px;
+	text-transform: none;
+	margin: 0px 0px 20px 0px;
+	color:#000;
+	line-height: 1.4em;
+}
+.gallery #galleryDetailImageArea #galleryDetailImageWrapper:hover .detailMediaToolbar, .gallery #galleryDetailImageArea #galleryDetailImageWrapper .detailMediaToolbar{
+	display:none;
+}
+.gallery .setDescription{
+	font-weight:normal;
+}
+#galleryDetailObjectInfo{
+	color:#000;
+	font-size: 14px;
+}
+.video-js{
+	min-height: 300px;
 }

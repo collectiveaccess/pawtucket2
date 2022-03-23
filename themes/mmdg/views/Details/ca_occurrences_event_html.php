@@ -59,6 +59,7 @@
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="director" min="1"><div class='unit trimText'><label>Director<ifcount code="ca_entities" restrictToRelationshipTypes="director" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="director" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="artistic_director" min="1"><div class='unit trimText'><label>Artistic Director<ifcount code="ca_entities" restrictToRelationshipTypes="artistic_director" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="artistic_director" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="composer" min="1"><div class='unit trimText'><label>Composer<ifcount code="ca_entities" restrictToRelationshipTypes="composer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="composer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="editor" min="1"><div class='unit trimText'><label>Editor<ifcount code="ca_entities" restrictToRelationshipTypes="editor" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="editor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="conductor" min="1"><div class='unit trimText'><label>Conductor<ifcount code="ca_entities" restrictToRelationshipTypes="conductor" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="conductor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="costume_designer" min="1"><div class='unit trimText'><label>Costume Designer<ifcount code="ca_entities" restrictToRelationshipTypes="costume_designer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="costume_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="lighting_designer" min="1"><div class='unit trimText'><label>Lighting Designer<ifcount code="ca_entities" restrictToRelationshipTypes="lighting_designer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="lighting_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
@@ -78,6 +79,7 @@
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="tenor" min="1"><div class='unit trimText'><label>Tenor<ifcount code="ca_entities" restrictToRelationshipTypes="tenor" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="tenor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="countertenor" min="1"><div class='unit trimText'><label>Countertenor<ifcount code="ca_entities" restrictToRelationshipTypes="countertenor" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="countertenor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="reciter" min="1"><div class='unit trimText'><label>Reciter<ifcount code="ca_entities" restrictToRelationshipTypes="reciter" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="reciter" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="company" min="1"><div class='unit trimText'><label><ifcount code="ca_entities" restrictToRelationshipTypes="company" min="1" max="1">Company</ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="company" min="2">Companies</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="company" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="dancer" min="1"><div class='unit trimText'><label>Dancer<ifcount code="ca_entities" restrictToRelationshipTypes="dancer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="dancer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="performer" min="1"><div class='unit trimText'><label>Performer<ifcount code="ca_entities" restrictToRelationshipTypes="performer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="performer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="rehearsal_director" min="1"><div class='unit trimText'><label>Rehearsal Director<ifcount code="ca_entities" restrictToRelationshipTypes="rehearsal_director" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="rehearsal_director" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
@@ -91,6 +93,38 @@
 			<div class="row">
 				<div class='col-sm-12'>
 <?php					
+					if ($va_works = $t_item->get('ca_occurrences.related', array('sort' => 'ca_occurrences.premiereDate', 'restrictToTypes' => array('work'), 'restrictToRelationshipTypes' => array('premiered'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
+						$vb_show_view_all = false;
+						print "<div class='unit'><H3>Works Premiered</H3><div class='unit detailLinksGrid'>";
+						$i = 0;
+						$c = 0;
+						if(sizeof($va_works) > 18){
+							$vb_show_view_all = true;
+						}
+						foreach ($va_works as $va_work) {
+							if($i == 0){
+								print "<div class='row'>";
+							}
+							print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".caDetailLink($this->request, $va_work['name'], '', 'ca_occurrences', $va_work['occurrence_id'])."</div></div>";
+							$i++;
+							$c++;
+							if($i == 3){
+								print "</div><!-- end row -->";
+								$i = 0;
+							}
+							if($c == 18){
+								break;
+							}
+						}
+						if($i > 0){
+							print "</div>";
+						}
+						print "</div></div><!-- end unit -->";
+						if($vb_show_view_all){
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All Works Performed", "btn btn-default", "", "Browse", "works", array("facet" => "event_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
+						}
+					}
+					
 					if ($va_works = $t_item->get('ca_occurrences.related', array('sort' => 'ca_occurrences.premiereDate', 'restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$vb_show_view_all = false;
 						print "<div class='unit'><H3>Works Performed</H3><div class='unit detailLinksGrid'>";
@@ -132,7 +166,7 @@
 {{{<ifcount code="ca_objects" min="1">
 			<div class="unit"><H3>Media</H3>
 				<div id="browseResultsContainer">
-					<unit relativeTo="ca_objects" length="21" delimiter=" " aggregateUnique="1">
+					<unit relativeTo="ca_objects" length="21" delimiter=" " aggregateUnique="1" sort="ca_objects.eventDate" sortDirection="desc">
 						<div class="bResultItemCol col-xs-12 col-sm-4">
 							<div class="bResultItem" id="row^ca_objects.object_id">
 								<div class="bResultItemContent"><div class="text-center bResultItemImg"><case><ifcount code="ca_object_representations.media.medium" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" min="0" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></case></div>

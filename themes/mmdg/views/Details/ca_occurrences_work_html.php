@@ -55,8 +55,12 @@
 					
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="choreographer" min="1"><div class='unit trimText'><label>Choreographer<ifcount code="ca_entities" restrictToRelationshipTypes="choreographer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="choreographer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="composer" min="1"><div class='unit trimText'><label>Composer<ifcount code="ca_entities" restrictToRelationshipTypes="composer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="composer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="playwright" min="1"><div class='unit trimText'><label>Playwright<ifcount code="ca_entities" restrictToRelationshipTypes="playwright" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="playwright" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="director" min="1"><div class='unit trimText'><label>Director<ifcount code="ca_entities" restrictToRelationshipTypes="director" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="director" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="editor" min="1"><div class='unit trimText'><label>Editor<ifcount code="ca_entities" restrictToRelationshipTypes="editor" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="editor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="cinematographer" min="1"><div class='unit trimText'><label>Cinematographer<ifcount code="ca_entities" restrictToRelationshipTypes="cinematographer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="cinematographer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifdef code="ca_occurrences.music.music"><div class='unit trimText'><label>Music</label>^ca_occurrences.music.music</div></ifdef>}}}
+							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="arranger" min="1"><div class='unit trimText'><label>Arranged By</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="arranger" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="lighting_designer" min="1"><div class='unit trimText'><label>Lighting Designer<ifcount code="ca_entities" restrictToRelationshipTypes="lighting_designer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="lighting_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="costume_designer" min="1"><div class='unit trimText'><label>Costume Designer<ifcount code="ca_entities" restrictToRelationshipTypes="costume_designer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="costume_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="set_designer" min="1"><div class='unit trimText'><label>Set Designer<ifcount code="ca_entities" restrictToRelationshipTypes="set_designer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="set_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
@@ -95,6 +99,7 @@
 					}
 ?>					
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="premiere_cast" min="1"><div class='unit trimText'><label>Premiere Cast</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="premiere_cast" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="premiere_musician" min="1"><div class='unit trimText'><label>Premiere Musician<ifcount code="ca_entities" restrictToRelationshipTypes="premiere_musician" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="premiere_musician" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="rehearsal_director" min="1"><div class='unit trimText'><label>Rehearsal Director<ifcount code="ca_entities" restrictToRelationshipTypes="rehearsal_director" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="rehearsal_director" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="rehearsal_assistant" min="1"><div class='unit trimText'><label>Rehearsal Assistant<ifcount code="ca_entities" restrictToRelationshipTypes="rehearsal_assistant" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="rehearsal_assistant" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="assistant_to_mr_morris" min="1"><div class='unit trimText'><label>Assistant<ifcount code="ca_entities" restrictToRelationshipTypes="assistant_to_mr_morris" min="2">s</ifcount> to Mr. Morris</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="assistant_to_mr_morris" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
@@ -142,16 +147,12 @@
 					
 					
 					
-					$va_premiere_events = $t_item->get('ca_occurrences.related', array('sort' => 'ca_occurrences.eventDate', 'restrictToTypes' => array('event'), 'restrictToRelationshipTypes' => array('premiered'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
-					$va_non_premiere_events = $t_item->get('ca_occurrences.related', array('sort' => 'ca_occurrences.eventDate', 'restrictToTypes' => array('event'), 'excludeRelationshipTypes' => array('premiered'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
-					if (sizeof($va_premiere_events) || sizeof($va_non_premiere_events)) {
+					$va_events = $t_item->get('ca_occurrences.related', array('sort' => 'ca_occurrences.eventDate', 'sortDirection' => 'desc', 'restrictToTypes' => array('event'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					if (sizeof($va_events)) {
 						$va_related_list = array();
 						$vb_show_view_all = false;
-						foreach ($va_premiere_events as $va_premiere_event) {
-							$va_related_list[] = caDetailLink($this->request, $va_premiere_event['name'], '', 'ca_occurrences', $va_premiere_event['occurrence_id']);
-						}
-						foreach ($va_non_premiere_events as $va_non_premiere_event) {
-							$va_related_list[] = caDetailLink($this->request, $va_non_premiere_event['name'], '', 'ca_occurrences', $va_non_premiere_event['occurrence_id']);
+						foreach ($va_events as $va_event) {
+							$va_related_list[] = caDetailLink($this->request, $va_event['name'], '', 'ca_occurrences', $va_event['occurrence_id']);
 						}
 						print "<div class='unit'><H3>Performances & Events</H3><div class='unit detailLinksGrid'>";
 						$i = 0;
@@ -190,7 +191,7 @@
 {{{<ifcount code="ca_objects" min="1">
 			<div class="unit"><H3>Media</H3>
 				<div id="browseResultsContainer">
-					<unit relativeTo="ca_objects" length="21" delimiter=" " aggregateUnique="1">
+					<unit relativeTo="ca_objects" length="21" delimiter=" " aggregateUnique="1" sort="ca_objects.eventDate" sortDirection="desc">
 						<div class="bResultItemCol col-xs-12 col-sm-4">
 							<div class="bResultItem" id="row^ca_objects.object_id">
 								<div class="bResultItemContent"><div class="text-center bResultItemImg"><case><ifcount code="ca_object_representations.media.medium" min="1"><l>^ca_object_representations.media.medium</l></ifcount><ifcount code="ca_object_representations" min="0" max="0"><l><?php print "<div class='bResultItemImgPlaceholderLogo'>".caGetThemeGraphic($this->request, 'mmdg_lines.png', array("alt" => "media not available for this item"))."</div>"; ?></l></ifcount></case></div>

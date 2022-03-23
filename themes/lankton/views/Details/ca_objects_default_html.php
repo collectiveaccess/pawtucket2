@@ -35,7 +35,11 @@
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
 	
-	$vn_rep_count = sizeof($t_object->get("ca_object_representations.representation_id", array("filterNonPrimaryRepresentations" => false, "returnAsArray" => true, "checkAccess" => $va_access_values)));
+	$vn_rep_count = "";
+	$va_reps = $t_object->get("ca_object_representations.representation_id", array("filterNonPrimaryRepresentations" => false, "returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(is_array($va_reps)){
+		$vn_rep_count = sizeof($va_reps);
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -52,14 +56,18 @@
 				{{{representationViewer}}}
 				
 				
-				<div id="detailAnnotations"></div>
-				
 <?php
 				if($vn_rep_count < 10){
 					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
 
+				}else{
+?>
+					<div class="text-center"><a href="#" onclick="caMediaPanel.showPanel('<?php print caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $vn_id, "representation_id" => $this->getVar("representation_id"), "overlay" => 1)); ?>'); return false;">View all images</a></div>
+<?php
 				}
-
+?>
+				<div id="detailAnnotations"></div>
+<?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						

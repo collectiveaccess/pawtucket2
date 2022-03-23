@@ -47,6 +47,7 @@
 	
 					
 					{{{<ifdef code="ca_collections.institutional_date.inclusive_date"><div class='unit'><b>^ca_collections.institutional_date.inclusive_date</b></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.extent.extent_value"><div class='unit'><label>Extent</label>^ca_collections.extent.extent_value ^ca_collections.extent.extent_units</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.scope_contents"><div class='unit'>^ca_collections.scope_contents</div></ifdef>}}}
 					{{{<ifcount code="ca_list_items" min="1"><div class='unit'><label>Subjects</label><unit relativeTo="ca_list_items" delimiter="; " sort="ca_list_item_labels.name_singular">^ca_list_item_labels.name_singular</unit></div></ifcount>}}}				
 				

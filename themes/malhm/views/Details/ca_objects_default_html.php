@@ -108,6 +108,7 @@ ini_set("display_errors", "on");
 						foreach ($va_dimensions_t as $va_key => $va_dimension) {
 							foreach($va_dimension_fields_1 as $vs_unit => $vs_dim_field){
 								$vs_tmp = $vs_val = trim($va_dimension[$vs_dim_field]);
+								
 								if($vs_val){
 									$vs_tmp = str_replace("cm.", "", $vs_tmp);
 									$vs_tmp = trim(str_replace("cm", "", $vs_tmp));
@@ -135,6 +136,8 @@ ini_set("display_errors", "on");
 									$vs_dims.= $va_dimension['measurement_type'];
 								}
 								print "</p>";
+								$va_dims = array();
+					
 							}
 							foreach($va_dimension_fields_2 as $vs_unit => $vs_dim_field){
 								$vs_tmp = $vs_val = trim($va_dimension[$vs_dim_field]);

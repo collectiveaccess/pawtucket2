@@ -307,7 +307,9 @@ if (!$vb_ajax) {    // !ajax
 <?php
 			print "<div class='lightboxShareLink'><span class='glyphicon glyphicon-envelope'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'shareSetForm', array())."\"); return false;' >"._t("Share %1", ucfirst($vs_lightbox_displayname))."</a></div><hr/>";
 			#print "<div class='lightboxAsk'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About This ".$vs_lightbox_displayname, "", "", "contact", "form", array('id' => $vn_set_id, 'table' => 'ca_sets'))."</div><hr/>";
-			
+?>
+			<div class="lightboxDetailHelp">{{{LightboxDetailHelp}}}</div>	
+<?php		
             if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
             }

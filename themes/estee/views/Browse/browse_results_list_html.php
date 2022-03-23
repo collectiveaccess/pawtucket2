@@ -132,7 +132,7 @@
 									$vs_image = $vs_default_placeholder_tag;
 								}
 							}else{
-								$vs_image = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("id" => $qr_res->get("object_id"), "context" => "archival", "representation_id" => $qr_res->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values, "limit" => 1)), "overlay" => 1))."\"); return false;'>".$vs_image."</a>";
+								$vs_image = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("id" => $qr_res->get("object_id"), "context" => "archival", "representation_id" => $qr_res->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), "overlay" => 1))."\"); return false;'>".$vs_image."</a>";
 							}
 ?>
 							<div class="row bBulkMediaResult">

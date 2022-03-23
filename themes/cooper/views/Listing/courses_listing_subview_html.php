@@ -40,7 +40,7 @@
 		
 		print "<div class='row'><div class='col-sm-12'><h2>{$va_listing_info['displayName']} <span class='resultCount'>/ ".$qr_list->numHits()." courses</span></h2></div></div>\n";
 ?>
-		<div class='row display-flex'>
+		<div class='row'>
 <?php		
 		while($qr_list->nextHit()) {
 			print "<div class='col-md-6 col-lg-4'><div class='listingResult'><div class='row'>";
@@ -52,7 +52,7 @@
 			if(!$vs_icon){
 				$vs_icon = caGetThemeGraphic($this->request, 'courseIcon.jpg');
 			}
-			print "<div class='col-xs-4'><div class='listingIcon'>".$vs_icon."</div></div>";
+			print "<div class='col-xs-4'><div class='listingIcon'>".caDetailLink($this->request, $vs_icon, "", "ca_occurrences", $qr_list->get('ca_occurrences.occurrence_id'))."</div></div>";
 			print "<div class='col-xs-8'><div class='listingTitle'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</div><div class='listingSubtitle'>".$qr_list->getWithTemplate('<l>^ca_occurrences.idno</l>')."</div>";
 			$vs_desc_len = mb_strlen($qr_list->get('ca_occurrences.course_description'));
 			print "<div class='listingDesc'>";
