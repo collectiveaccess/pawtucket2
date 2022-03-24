@@ -2138,6 +2138,21 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 		return $o_view->render('ca_sets_checklist.php');
 	}
 	# ------------------------------------------------------
+	/**
+	 * Returns the first item from each set listed in $pa_set_ids.
+	 *
+	 * @param array $pa_set_ids The set_ids (*not* set codes) for which the first item should be fetched
+	 * @param array $pa_options And optional array of options. Supported values include:
+	 *			version = the media version to include with returned set items, when media is available
+	 *
+	 * @return array A list of items; the keys of the array are set_ids while the values are associative arrays containing the latest information.
+	 */
+	public static function getFirstItemFromSet($pn_set_id, $pa_options=null) {
+		$items_by_set = ca_sets::getFirstItemsFromSets([$pn_set_id], $pa_options);
+		
+		return array_shift(array_shift($items_by_set));
+	}
+	# ------------------------------------------------------
 	# Utilities
 	# ------------------------------------------------------
 	/**
@@ -2183,8 +2198,19 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 		$t_set = new ca_sets();
 		$va_items = array();
 		foreach($pa_set_ids as $vn_set_id) {
-			if ($t_set->load($vn_set_id)) {
+		    $t_set = null;
+		    if (is_numeric($vn_set_id)) { 
+		        $t_set = ca_sets::find(['set_id' => $vn_set_id], ['returnAs' => 'firstModelInstance']);
+		    }
+		    if (!$t_set) {
+		        $t_set = ca_sets::find(['set_code' => $vn_set_id], ['returnAs' => 'firstModelInstance']);
+		    }
+			if ($t_set) {
 				$va_item_list = caExtractValuesByUserLocale($t_set->getItems($pa_options));
+				foreach($va_item_list as $x => $y) {
+                    $va_item_list[$x]['set_code'] = $t_set->get('ca_sets.set_code');
+                    $va_item_list[$x]['set_name'] = $t_set->get('ca_sets.preferred_labels.name');
+                }
 				$va_items[$vn_set_id] = $va_item_list;	
 			}
 		}

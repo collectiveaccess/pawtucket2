@@ -48,34 +48,39 @@
 
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<br/><h1>{{{^ca_objects.object_types}}}{{{ca_objects.preferred_labels.name}}}</h1><br/><br/>
+				{{{<ifdef code="ca_objects.taxonomic_name"><p><b>Taxonomic name: </b>^ca_objects.taxonomic_name</p></ifdef>}}}
 				{{{<ifdef code="ca_objects.idno"><p><b>Identifier: </b>^ca_objects.idno</p></ifdef>}}}
+				{{{<ifdef code="ca_objects.additional_idnos"><p><b>Alternate Identifier: </b>^ca_objects.additional_idnos</p></ifdef>}}}
+				
+				{{{<ifdef code="ca_objects.division"><p><b>Divison: </b>^ca_objects.division</p></ifdef>}}}
+				{{{<ifdef code="ca_objects.access_restrictions"><p><b>Access restrictions: </b>^ca_objects.access_restrictions</p></ifdef>}}}
+				{{{<ifdef code="ca_objects.user_handling_notes"><p><b>User handling guidelines: </b>^ca_objects.user_handling_notes</p></ifdef>}}}
 				{{{<ifdef code="ca_objects.description"><p><b>Description: </b><span class="trimText">^ca_objects.description</span><br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.division"><p><b>Division: </b>^ca_objects.division<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.specimen_category"><p><b>Category: </b>^ca_objects.specimen_category<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.artifact_category"><p><b>Category: </b>^ca_objects.artifact_category<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.location_description"><p><b>Location Description: </b>^ca_objects.location_description<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.dimensions_text"><p><b>Dimensions: </b>^ca_objects.dimensions_text<br/></p></ifdef>}}}		
-				{{{<ifdef code="ca_objects.anthro_culture"><p><b>Culture: </b>^ca_objects.anthro_culture<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.anthro_material"><p><b>Material: </b>^ca_objects.anthro_material<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.anthro_technique"><p><b>Technique: </b>^ca_objects.anthro_technique<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.anthro_period"><p><b>Period: </b>^ca_objects.anthro_period<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.anthro_locale"><p><b>Locale: </b>^ca_objects.anthro_locale<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.specimen_locale"><p><b>Locale: </b>^ca_objects.specimen_locale<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.anthro_state_province"><p><b>State/Province: </b>^ca_objects.anthro_state_province<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.anthro_country"><p><b>Country: </b>^ca_objects.anthro_country<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.administrative_remarks"><p><b>Administrative Remarks: </b>^ca_objects.administrative_remarks<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.admin_condition_criteria"><p><b>Condition Criteria: </b>^ca_objects.admin_condition_criteria<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.current_condition_dropdown"><p><b>Current Condition: </b>^ca_objects.current_condition_dropdown<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.current_condition"><p><b>Condition Notes: </b>^ca_objects.current_condition<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.restrictions"><p><b>Restrictions: </b>^ca_objects.restrictions<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.rights_restrictions"><p><b>Rights & Restrictions: </b>^ca_objects.rights_restrictions<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.use_for_education"><p><b>Use for Education: </b>^ca_objects.use_for_education<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.use_for_programs"><p><b>Use for Programs: </b>^ca_objects.use_for_programs<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.use_for_education_materials"><p><b>Use for Education Materials: </b>^ca_objects.use_for_education_materials<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.use_online"><p><b>Use Online: </b>^ca_objects.use_online<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_objects.use_for_outreach"><p><b>Use for Outreach: </b>^ca_objects.use_for_outreach<br/></p></ifdef>}}}				
-				{{{<ifdef code="ca_storage_locations.preferred_labels"><p><b>Storage Location: </b>^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➜_%removeFirstItems=1<br/></p></ifdef>}}}				
-			
+				{{{<ifdef code="ca_objects.anthro_locale"><p><b>Locale: </b>^ca_objects.anthro_locale</p></ifdef>}}}
+				
+				{{{<ifdef code="ca_objects.anthro_state_province"><p><b>State/Province: </b>^ca_objects.anthro_state_province<br/></p></ifdef>}}}	
+				{{{<ifdef code="ca_objects.anthro_country"><p><b>Country: </b>^ca_objects.anthro_country<br/></p></ifdef>}}}	
+				
+				{{{<ifdef code="ca_objects.history_tracking_current_value%policy=current_location"><p><b>Storage Location: </b>^ca_objects.history_tracking_current_value%policy=current_location%stripTags=1<br/></p></ifdef>}}}				
+
+<?php
+				print "<p><b>Lending status: </b> ".$t_object->getCheckoutStatus(['returnAsText' => true]);
+				$checkout_info = $t_object->getCheckoutStatus(['returnAsArray' => true]);
+				
+				switch($checkout_status = $t_object->getCheckoutStatus()) {
+					case __CA_OBJECTS_CHECKOUT_STATUS_OUT__:
+					case __CA_OBJECTS_CHECKOUT_STATUS_OUT_WITH_RESERVATIONS__:
+						print " with ".$checkout_info['user_name']."; due on ".$checkout_info['due_date'];
+						break;
+					case __CA_OBJECTS_CHECKOUT_STATUS_RESERVED__:
+						break;
+					default:
+						break;
+				}
+				print "</p>\n";
+				
+				//print_R();
+?>				
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-6">		
@@ -125,8 +130,7 @@
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
 					print '</div><!-- end detailTools -->';
-				}				
-
+				}		
 ?>
 
 			</div><!-- end col -->

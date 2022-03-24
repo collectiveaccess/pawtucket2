@@ -29,7 +29,7 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2019</a></small></div>
+		
 		</footer><!-- end footer -->
 <?php
 	//

@@ -49,9 +49,12 @@
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 	
-	$can_do_library_checkin = $this->request->user->canDoAction('can_do_library_checkin');
-	$can_do_library_checkout = $this->request->user->canDoAction('can_do_library_checkout');
-	$library_services_enabled = $this->request->config->get('enable_library_services');
+	$can_do_library_checkin = $can_do_library_checkout = $library_services_enabled = false;
+	if($this->request->isLoggedIn()) {
+		$can_do_library_checkin = $this->request->user->canDoAction('can_do_library_checkin');
+		$can_do_library_checkout = $this->request->user->canDoAction('can_do_library_checkout');
+		$library_services_enabled = $this->request->config->get('enable_library_services');
+	}
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -131,7 +134,7 @@
 <?php
 	}
 ?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
 							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" />
@@ -150,7 +153,7 @@
 <?php
 	if($library_services_enabled && ($can_do_library_checkin || $can_do_library_checkout)) {
 ?>
-				<ul class="nav navbar-nav navbar-left menuItems">
+				<ul class="nav navbar-nav navbar-left menuItems" style="margin-left: 10px;">
 					<?php if($can_do_library_checkout) { ?><li <?php print ($this->request->getController() == "CheckOut") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Borrow"), "", "Library", "CheckOut", "Index"); ?></li><?php } ?>
 					<?php if($can_do_library_checkin) { ?><li <?php print ($this->request->getController() == "CheckIn") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Return"), "", "Library", "CheckIn", "Index"); ?></li><?php } ?>
 				</ul>

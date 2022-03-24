@@ -42,31 +42,7 @@
 ?>
 <div class="container">
 	<div class="row">
-		<div class="col-sm-4">
-		<div class="front-browse">
-			<H2>Natural History</H2><br/><br/>
-			<ul>
-<?php
-    foreach($specimen_categories as $sc) {
-        print "<li>".caNavLink($this->request, $sc['label'], '', '', 'Browse', 'objects', ['facet' => 'specimen_category_facet', 'id' => $sc['id']])."</li>\n";
-    }
-?>
-			</ul>
-		</div>	
-		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
-		<div class="front-browse">
-			<h2>Cultural History</h2><br/><br/>
-			<ul>
-<?php
-    foreach($cultural_history as $ch) {
-        print "<li>".caNavLink($this->request, $ch['label'], '', '', 'Browse', 'objects', ['facet' => 'artifact_category_facet', 'id' => $ch['id']])."</li>\n";
-    }
-?>
-            </ul>
-		</div>
-		</div>
-		<div class="col-sm-4">
+		<div class="col-sm-12">
 			<h2>About</h2>
 			{{{homepage}}}
 		</div>
@@ -75,11 +51,11 @@
 		<div class="col-sm-12">
 		<br/>
 		<hr>
-			<h2>Exhibits</h2>
+			<h2>Galleries</h2>
 		</div>
 		<div class="col-sm-4">
 <?php
-#$setitem = ca_sets::getFirstItemFromSet('temp_exhibit', ['version' => 'small']);
+	$setitem = ca_sets::getFirstItemFromSet('temp_exhibit', ['version' => 'small']);
 	print "<div class='front-exhibit'>".caNavLink($this->request, $setitem["representation_tag"], '', '', 'Gallery', $setitem["set_id"])."<h3>".$setitem["set_name"]."</h3>"."</div><br/>";
 
 ?>		
@@ -87,14 +63,14 @@
 
 		<div class="col-sm-4">
 <?php
-#$setitem = ca_sets::getFirstItemFromSet('perm_exhibit', ['version' => 'small']);
+	$setitem = ca_sets::getFirstItemFromSet('perm_exhibit', ['version' => 'small']);
 	print "<div class='front-exhibit'>".caNavLink($this->request, $setitem["representation_tag"], '', '', 'Gallery', $setitem["set_id"])."<h3>".$setitem["set_name"]."</h3>"."</div><br/>";
 
 ?>	
 		</div> 
 		<div class="col-sm-4">
 <?php
-#$setitem = ca_sets::getFirstItemFromSet('upcoming_exhibit', ['version' => 'small']);
+	$setitem = ca_sets::getFirstItemFromSet('upcoming_exhibit', ['version' => 'small']);
 	print "<div class='front-exhibit'>".caNavLink($this->request, $setitem["representation_tag"], '', '', 'Gallery', $setitem["set_id"])."<h3>".$setitem["set_name"]."</h3>"."</div><br/>";
 
 ?>	
@@ -110,7 +86,7 @@
 			<h3>Recently Viewed</h3>
 <?php
 		    while($qr_recently_viewed->nextHit()) {
-		        print $qr_recently_viewed->getWithTemplate('<div class="col-sm-5"><div class="recently"<l>^ca_object_representations.media.icon</l> <br/><br/> <l>^ca_objects.preferred_labels.name</l></div><br/></div>');
+		        print $qr_recently_viewed->getWithTemplate('<div class="col-sm-5"><div class="recently"><l>^ca_object_representations.media.icon</l> <br/><br/> <l>^ca_objects.preferred_labels.name</l></div><br/></div>');
 		    }
 ?>
 		</div> 
