@@ -37,6 +37,7 @@ if($vs_mode == "map"){
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	$vn_id =				$t_item->get('ca_entities.entity_id');
+	$va_options = 			$this->getVar("config_options");
 	
 	$va_access_values = $this->getVar("access_values");
 	$va_breadcrumb_trail = array(caNavLink($this->request, "Home", '', '', '', ''));
@@ -177,7 +178,7 @@ if($vs_mode == "map"){
 						</div>
 <?php				
 					}
-					if($t_item->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
+					if($t_item->get("ca_entities.georeference")){
 						include("map_html.php");
 					}
 ?>
