@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -38,8 +38,9 @@ class ObjectCheckoutController extends BaseLookupController {
 	 *
 	 */
 	public function Get($additional_query_params=null, $options=null) {
-		$options['filters'][] = array("ca_object_checkouts.checkout_date", "IS NOT", "NULL");
-		$options['filters'][] = array("ca_object_checkouts.return_date", "IS", "NULL");
+		$options['filters'][] = ["ca_object_checkouts.checkout_date", "IS NOT", "NULL"];
+		$options['filters'][] = ["ca_object_checkouts.return_date", "IS", "NULL"];
+		$options['filters'][] = ["ca_object_checkouts.user_id", "=", $this->request->getUserID()];
 		return parent::Get($additional_query_params, $options);
 	}
 	# -------------------------------------------------------

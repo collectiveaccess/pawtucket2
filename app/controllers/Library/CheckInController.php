@@ -35,8 +35,8 @@ class CheckInController extends ActionController {
 	# -------------------------------------------------------
 	#
 	# -------------------------------------------------------
-	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
-		parent::__construct($po_request, $po_response, $pa_view_paths);
+	public function __construct(&$request, &$response, $view_paths=null) {
+		parent::__construct($request, $response, $view_paths);
 		
 		if (!$this->request->isLoggedIn() || !$this->request->user->canDoAction('can_do_library_checkin') || !$this->request->config->get('enable_library_services')  || !$this->request->config->get('enable_object_checkout')) { 
 			$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2320?r='.urlencode($this->request->getFullUrlPath()));
@@ -59,15 +59,23 @@ class CheckInController extends ActionController {
 	 * Return info via ajax on selected object
 	 */
 	public function GetObjectInfo() {
-		$pn_checkout_id = $this->request->getParameter('checkout_id', pInteger);
+		$checkout_id = $this->request->getParameter('checkout_id', pInteger);
+
+		if (!($t_checkout = ca_object_checkouts::find(['checkout_id' => $checkout_id], ['returnAs' => 'firstModelInstance']))) {
+			throw new ApplicationException(_t('Invalid checkout'));
+		}
+		$user_id = $t_checkout->get('user_id');
+		if($user_id != $this->request->getUserID()) {
+			throw new ApplicationException(_t('Checkout is not by current user'));
+		}
+		if(!($t_object = ca_objects::find(['object_id' => $t_checkout->get('object_id')], ['returnAs' => 'firstModelInstance']))) {
+			throw new ApplicationException(_t('Checkout object does not exist'));
+		}
+		$t_user = $this->request->getUser();
+		$status = $t_object->getCheckoutStatus();
+		$checkout_config = ca_object_checkouts::getObjectCheckoutConfigForType($t_object->getTypeCode());
 		
-		$t_checkout = new ca_object_checkouts($pn_checkout_id);
-		$t_user = new ca_users($t_checkout->get('user_id'));
-		$t_object = new ca_objects($t_checkout->get('object_id'));
-		$va_status = $t_object->getCheckoutStatus();
-		$va_checkout_config = ca_object_checkouts::getObjectCheckoutConfigForType($t_object->getTypeCode());
-		
-		$va_info = array(
+		$info = array(
 			'object_id' => $t_object->getPrimaryKey(),
 			'idno' => $t_object->get('idno'),
 			'name' => $t_object->get('ca_objects.preferred_labels.name'),
@@ -76,11 +84,11 @@ class CheckInController extends ActionController {
 			'status_display' => $t_object->getCheckoutStatus(array('returnAsText' => true)),
 			'checkout_date' => $t_checkout->get('ca_object_checkouts.checkout_date', array('timeOmit' => true)),
 			'user_name' => $t_user->get('ca_users.fname').' '.$t_user->get('ca_users.lname'),
-			'config' => $va_checkout_config
+			'config' => $checkout_config
 		);
-		$va_info['title'] = $va_info['name'].' ('.$va_info['idno'].')';
-		$va_info['borrower'] = _t('Borrowed by %1 on %2', $va_info['user_name'], $va_info['checkout_date']);
-		$this->view->setVar('data', $va_info);
+		$info['title'] = $info['name'].' ('.$info['idno'].')';
+		$info['borrower'] = _t('Borrowed by %1 on %2', $info['user_name'], $info['checkout_date']);
+		$this->view->setVar('data', $info);
 		$this->render('checkin/ajax_data_json.php');
 	}
 	# -------------------------------------------------------
@@ -88,41 +96,41 @@ class CheckInController extends ActionController {
 	 * 
 	 */
 	public function SaveTransaction() {
-		$ps_item_list = $this->request->getParameter('item_list', pString);
-		$pa_item_list = json_decode(stripslashes($ps_item_list), true);
+		$item_list = $this->request->getParameter('item_list', pString);
+		$item_list = json_decode(stripslashes($item_list), true);
 		
-		if (is_array($pa_item_list)) {
+		if (is_array($item_list)) {
 			$t_checkout = new ca_object_checkouts();
 		
-			$va_ret = array('status' => 'OK', 'errors' => array(), 'checkins' => array());
-			foreach($pa_item_list as $vn_i => $va_item) {
-				if ($t_checkout->load($va_item['checkout_id'])) {
-					$vn_object_id = $t_checkout->get('object_id');
-					$t_object = new ca_objects($vn_object_id);
+			$ret = array('status' => 'OK', 'errors' => array(), 'checkins' => array());
+			foreach($item_list as $i => $item) {
+				if ($t_checkout->load($item['checkout_id'])) {
+					$object_id = $t_checkout->get('object_id');
+					$t_object = new ca_objects($object_id);
 					if ($t_checkout->isOut()) { 
 						try {
-							$t_checkout->checkin($vn_object_id, $va_item['note'], array('request' => $this->request));
+							$t_checkout->checkin($object_id, $item['note'], array('request' => $this->request));
 						
 							$t_user = new ca_users($t_checkout->get('user_id'));
-							$vs_user_name = $t_user->get('ca_users.fname').' '.$t_user->get('ca_users.lname');
-							$vs_borrow_date = $t_checkout->get('ca_object_checkouts.checkout_date', array('timeOmit' => true));
+							$user_name = $t_user->get('ca_users.fname').' '.$t_user->get('ca_users.lname');
+							$borrow_date = $t_checkout->get('ca_object_checkouts.checkout_date', array('timeOmit' => true));
 					
 							if ($t_checkout->numErrors() == 0) {
-								$va_ret['checkins'][] = _t('Returned <em>%1</em> (%2) borrowed by %3 on %4', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), $vs_user_name, $vs_borrow_date);
+								$ret['checkins'][] = _t('Returned <em>%1</em> (%2) borrowed by %3 on %4', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), $user_name, $borrow_date);
 							} else {
-								$va_ret['errors'][] = _t('Could not check in <em>%1</em> (%2): %3', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), join("; ", $t_checkout->getErrors()));
+								$ret['errors'][] = _t('Could not check in <em>%1</em> (%2): %3', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), join("; ", $t_checkout->getErrors()));
 							}
 						} catch (Exception $e) {
-							$va_ret['errors'][] = _t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'));
+							$ret['errors'][] = _t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'));
 						}
 					} else {
-						$va_ret['errors'][] = _t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'));
+						$ret['errors'][] = _t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'));
 					}
 				}
 			}
 		}
 		
-		$this->view->setVar('data', $va_ret);
+		$this->view->setVar('data', $ret);
 		$this->render('checkin/ajax_data_json.php');
 	}
 	# -------------------------------------------------------
