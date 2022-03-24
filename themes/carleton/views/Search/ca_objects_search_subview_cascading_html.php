@@ -57,10 +57,14 @@
 				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" role="button" aria-label="list icon"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> 
 <?php
 				}
+				if($x){
 ?>
 				
-				<!--<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
-				{{{sortDirectionControl}}}-->
+				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
+				{{{sortDirectionControl}}}
+<?php
+				}
+?>
 			</small>
 			<H2><?php print caNavLink($this->request, $va_block_info['displayName']."&nbsp;&nbsp;<span class='highlight'>(".$qr_results->numHits().")</span>", '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></H2>
 			<div id='browseResultsContainer'>
@@ -109,7 +113,7 @@
 		<div class='bResultItem'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					<div class='objectTitle'>{$vs_label_detail_link}</div>".$qr_results->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections'><unit relativeTo='ca_collections.hierarchy' delimiter=' > '>^ca_collections.type_id ^ca_collections.idno ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates</ifdef></unit></unit></ifcount>")."
+					<div class='objectTitle'>{$vs_label_detail_link}</div>".$qr_results->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections'><unit relativeTo='ca_collections.hierarchy' delimiter=' > '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates</ifdef></unit></unit></ifcount>")."
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 		</div><!-- end bResultItem -->

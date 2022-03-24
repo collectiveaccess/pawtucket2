@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -14,6 +15,45 @@
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 
+	$va_fields = array(
+		"Classification" => "^ca_collections.col_classification%delimiter=,_",
+		#"Unit ID" => "^ca_collections.unit_id%delimiter=,_",
+		"Container ID" => "^ca_collections.container_id",
+		"Dates" => "<ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef><ifnotdef code='ca_collections.inclusive_dates'>^ca_collections.display_date%delimiter=,_</ifnotdef>",
+		"Additional Date Information" => "^ca_collections.date_info",
+		"Material Type" => "^ca_collections.material_type%delimiter=,_",
+		"Format" => "^ca_collections.format%delimiter=,_",
+		"Contains Object Type" => "^ca_collections.contains_object_type%delimiter=,_",
+		"Extent" => "<ifdef code='ca_collections.item_extent.extent_value'>^ca_collections.item_extent.extent_value </ifdef>^ca_collections.item_extent.extent_unit<ifdef code='ca_collections.item_extent.extent_value|ca_collections.item_extent.extent_unit'><br/></ifdef>^ca_collections.item_extent.extent_note",
+		"Finding Aid Author" => "^ca_collections.finding_aid_author",
+		"Related Creators" => "<ifcount code='ca_entities' restrictToRelationshipTypes='creator,primary_creator'><unit relativeTo='ca_entities' restrictToRelationshipTypes='creator,primary_creator' delimiter='<br/>'>^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>",
+		"Related People and Organizations" => "<ifcount code='ca_entities' restrictToRelationshipTypes='photographers,related,contributor'><unit relativeTo='ca_entities' restrictToRelationshipTypes='photographers,related,contributor' delimiter='<br/>'>^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>",
+		"Related Collections" => "<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections.related' delimiter='<br/>'>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates</ifdef></unit></ifcount>",
+		"URL" => "<unit relativeTo='ca_collections.url' delimiter='<br/>'><a href='^ca_collections.url.link_url' target='_blank'><ifdef code='ca_collections.url.link_text'>^ca_collections.url.link_text</ifdef><ifnotdef code='ca_collections.url.link_text'>^ca_collections.url.link_url</ifnotdef></a></unit>",
+		"Notes" => "^ca_collections.notes%delimiter=,_",
+		"Scope and Content" => "<ifdef code='ca_collections.scope_content'><span class='trimText'>^ca_collections.scope_content</span></ifdef>",
+		"System of Arrangement" => "^ca_collections.arrangement",
+		"Biographical/Historical Note" => "^ca_collections.admin_bio_hist",
+		"Biographical/Historical Note Author" => "^ca_collections.admin_bio_hist_auth",
+		"Language" => "^ca_collections.language%delimiter=,_",
+		"Event Type" => "^ca_collections.event_type%delimiter=,_",
+		"Physical Description" => "^ca_collections.physical_description",
+		"Conditions Governing Access" => "^ca_collections.accessrestrict",
+		"Conditions Governing Reproduction and Use" => "^ca_collections.reproduction_conditions",
+		"Physical Access" => "^ca_collections.physaccessrestrict",
+		"Technical Access" => "^ca_collections.techaccessrestrict",
+		"Related Materials" => "<ifdef code='ca_collections.related_materials'><span class='trimText'>^ca_collections.related_materials</span></ifdef>",
+		"Related Materials URL" => "^ca_collections.related_materials_url",
+		"Related Publications" => "^ca_collections.related_publications",
+		"Separated Materials" => "^ca_collections.separated_materials",
+		"Existence and Location of Originals/Copies" => "^ca_collections.copies_originals",
+		"Originals/Copies URL" => "^ca_collections.copies_originals_url",
+		"Preferred Citation" => "^ca_collections.citation",
+		"Library of Congress Subject Headings" => "^ca_collections.lcsh_terms%delimiter=,_",
+		"Key Terms" => "^ca_collections.key_terms",
+		"Subjects" => "^ca_collections.local_subjects%delimiter=,_",
+		"People Depicted" => "^ca_collections.people_depicted"
+	);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -28,34 +68,15 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H1>{{{^ca_collections.type_id ^ca_collections.idno ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef>}}}</H1>
-					{{{<ifdef code="ca_collections.parent_id"><div class="unit">Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.type_id ^ca_collections.idno ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></l></unit></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.col_classification">
-						<div class='unit'><label>Classification</label>^ca_collections.col_classification%delimiter=,_
-						</div>
-					</ifdef>}}}
-					{{{<ifdef code="ca_collections.inclusive_dates">
-						<div class='unit'><label>Inclusive Dates</label>^ca_collections.inclusive_dates%delimiter=,_
-						</div>
-					</ifdef>}}}
-					{{{<ifdef code="ca_collections.material_type">
-						<div class='unit'><label>Material Type</label>^ca_collections.material_type%delimiter=,_
-						</div>
-					</ifdef>}}}
-					{{{<ifdef code="ca_collections.scope_content">
-						<div class='unit'>
-							<label>Scope and content</label>
-							<span class="trimText">^ca_collections.scope_content%convertLineBreaks=1</span>
-						</div>
-					</ifdef>}}}
-					{{{<ifdef code="ca_collections.related_materials">
-						<div class='unit'>
-							<label>Related Materials</label>
-							<span class="trimText">^ca_collections.related_materials%convertLineBreaks=1</span>
-						</div>
-					</ifdef>}}}
+					<H1>{{{^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef>}}}</H1>
+					{{{<ifdef code="ca_collections.parent_id"><div class="unit">Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></l></unit></div></ifdef>}}}
+<?php
+					foreach($va_fields as $vs_label => $vs_template){
+						if($vs_tmp = $t_item->getWithTemplate($vs_template, array("checkAccess" => $va_access_values))){
+							print "<div class='unit'><label>".$vs_label."</label>".caConvertLineBreaks($vs_tmp)."</div>";
+						}
+					}
 					
-<?php					
 					if ($vn_pdf_enabled) {
 						print "<div class='exportCollection'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 					}
@@ -80,21 +101,6 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-12 col-lg-12'>
-					{{{<ifcount code="ca_collections.related" min="1" max="1"><label>Related collection</label></ifcount>}}}
-					{{{<ifcount code="ca_collections.related" min="2"><label>Related collections</label></ifcount>}}}
-					{{{<unit relativeTo="ca_collections_x_collections"><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.related.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_collections"><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_occurrences" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="2"><label>Related occurrences</label></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences_x_collections"><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-					{{{<unit relativeTo="ca_places_x_collections"><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}					
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
@@ -147,7 +153,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 188
 		});
 	});
 </script>

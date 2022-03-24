@@ -33,6 +33,8 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object_lot->get('ca_object_lots.lot_id');
+	$va_access_values = caGetUserAccessValues($this->request);
+	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -60,19 +62,22 @@
 					<div class='unit'><label>Material</label>^ca_object_lots.materials%delimiter=,_
 					</div>
 				</ifdef>}}}
-				{{{<ifdef code="ca_object_lots.description">
-					<div class='unit'><label>Physical Description</label>
-						<span class="trimText">^ca_object_lots.description</span>
+				{{{<ifdef code="unprocessed_extent.unprocessed_extent_value|unprocessed_extent.unprocessed_extent_unit|unprocessed_extent.unprocessed_extent_unit">
+					<div class='unit'><label>Unprocessed Extent</label>
+						<ifdef code="unprocessed_extent.unprocessed_extent_value">^unprocessed_extent.unprocessed_extent_value </ifdef><ifdef code="unprocessed_extent.unprocessed_extent_unit">^unprocessed_extent.unprocessed_extent_unit</ifdef>
+						<ifdef code="unprocessed_extent.unprocessed_extent_value|unprocessed_extent.unprocessed_extent_unit"><br/></ifdef>
+						<ifdef code="unprocessed_extent.unprocessed_extent_note">^unprocessed_extent.unprocessed_extent_note</ifdef>
+				</ifdef>}}}
+				{{{<ifdef code="ca_object_lots.material">
+					<div class='unit'><label>Accession Terms and Restrictions</label>^ca_object_lots.accession_terms%delimiter=,_
 					</div>
 				</ifdef>}}}
-				{{{<ifdef code="ca_object_lots.notes">
-					<div class='unit'><label>Notes</label>
-						<span class="trimText">^ca_object_lots.notes</span>
+				
+				{{{<ifdef code="ca_object_lots.scope_content">
+					<div class='unit'><label>Scope and Content</label>
+						<span class="trimText">^ca_object_lots.scope_content</span>
 					</div>
 				</ifdef>}}}
-				{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-				{{{<unit relativeTo="ca_object_lots_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
 				
 				
 						
