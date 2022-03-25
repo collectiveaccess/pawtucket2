@@ -255,7 +255,7 @@
 								print "<div class='unit'><label>Subjects/Keywords</label>".$vs_subjects."</div>";	
 							}
 ?>
-							{{{<ifdef code="rights.copyrightStatement"><div class="unit"><label>Copyright Statement</label>^rights.copyrightStatement</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.rights.copyrightStatement"><div class="unit"><label>Copyright Statement</label>^ca_objects.rights.copyrightStatement</div></ifdef>}}}
 <?php
 							if($vs_rep_viewer){
 ?>
