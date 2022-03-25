@@ -60,7 +60,7 @@
 			</div>
 			<div class='row'>
 				<div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
-					<?php print caNavLink($this->request, "Browse All", "btn btn-default btn-large", "", "Browse", "objects"); ?>
+					<?php print caNavLink($this->request, "Browse", "btn btn-default btn-large", "", "Browse", "objects"); ?>
 				</div>
 			</div>
 		</div>

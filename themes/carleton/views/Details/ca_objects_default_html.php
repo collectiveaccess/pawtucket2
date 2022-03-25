@@ -33,6 +33,54 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$va_access_values = caGetUserAccessValues($this->request);
+	
+	$va_fields = array(
+		#"Unit ID" => "^ca_objects.unit_id%delimiter=,_",
+		"Alternate Name" => "^ca_objects.nonpreferred_labels%delimiter=,_",
+		"Container ID" => "^ca_objects.container_id",
+		"AV Subtype" => "^ca_objects.av_subtype",
+		"Dates" => "<ifdef code='ca_objects.inclusive_dates'>^ca_objects.inclusive_dates%delimiter=,_</ifdef><ifnotdef code='ca_objects.inclusive_dates'>^ca_objects.display_date%delimiter=,_</ifnotdef>",
+		"Description" => "^ca_objects.description",
+		"Language" => "^ca_objects.language%delimiter=,_",
+		"Related Creators" => "<ifcount code='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject'><unit relativeTo='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject' delimiter='<br/>'>^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>",
+		"Event Type" => "^ca_objects.event_type%delimiter=,_",
+		"Related Publications" => "^ca_objects.related_publications",
+		"Related Materials" => "<ifdef code='ca_objects.related_materials'><span class='trimText'>^ca_objects.related_materials</span></ifdef>",
+		"Transcript Availability" => "^ca_objects.transcript_availability",
+		"Transcript Notes" => "^ca_objects.transcript_notes",
+		"URL" => "<unit relativeTo='ca_objects.url' delimiter='<br/>'><a href='^ca_objects.url.link_url' target='_blank'><ifdef code='ca_objects.url.link_text'>^ca_objects.url.link_text</ifdef><ifnotdef code='ca_objects.url.link_text'>^ca_objects.url.link_url</ifnotdef></a></unit>",
+		"Notes" => "^ca_objects.notes%delimiter=,_",
+		"Physical Description" => "^ca_objects.physical_description",
+		"Material" => "^ca_objects.material",
+		"Materials and Techniques" => "^ca_objects.material_techniques",
+		"Format" => "^ca_objects.format",
+		"AV Format " => "^ca_objects.av_format",
+		"Dimensions" => "^ca_objects.dimensions.dimensions_display%delimiter=,_",
+		"Duration" => "<ifdef code='ca_objects.duration'>^ca_objects.duration</ifdef><ifnotdef code='ca_objects.duration'>^ca_objects.duration_text</ifnotdef>",
+		"Extent" => "<ifdef code='ca_objects.item_extent.extent_value'>^ca_objects.item_extent.extent_value </ifdef>^ca_objects.item_extent.extent_unit<ifdef code='ca_objects.item_extent.extent_value|ca_objects.item_extent.extent_unit'><br/></ifdef>^ca_objects.item_extent.extent_note",
+		"Number of Copies" => "^ca_objects.num_copies",
+		"Volume Number" => "^ca_objects.volume_number",
+		"Issue Number" => "^ca_objects.issue_number",
+		"Existence and Location of Originals/Copies " => "^ca_objects.copies_originals",
+		"Photograph Format (AAT)" => "^ca_objects.photograph_format%delimiter=,_",
+		"Object/Work Type (AAT)" => "^ca_objects.object_work_type%delimiter=,_",
+		"Components/Parts" => "^ca_objects.components_parts",
+		"Inscriptions and Markings" => "^ca_objects.inscriptions",
+		"Library of Congress Subject Headings" => "^ca_objects.lcsh_terms%delimiter=,_",
+		"People Depicted" => "^ca_objects.people_depicted",
+		"Related People and Organizations (Library of Congress Name Authority File)" => "^ca_objects.lc_names%delimiter=,_",
+		"Related People and Organizations" => "<ifcount code='ca_entities' restrictToRelationshipTypes='depicted,subject'><unit relativeTo='ca_entities' restrictToRelationshipTypes='depicted,subject' delimiter='<br/>'>^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>",
+		"Key Terms" => "^ca_objects.key_terms",
+		"Subjects" => "^ca_objects.local_subjects%delimiter=,_",
+		"Transcription" => "<ifdef code='ca_objects.transcription.transcription_text'>^ca_objects.transcription.transcription_text</ifdef><ifdef code='ca_objects.transcription.transcription_date'><br/>^ca_objects.transcription.transcription_date</ifdef>",
+		"Media Notes" => "^ca_objects.media_notes%delimiter=,_",
+		"Conditions Governing Access" => "^ca_objects.accessrestrict",
+		"Rights" => "<unit relativeTo='ca_objects.rights' delimiter='<br/><br/>'><ifdef code='ca_objects.rights.rightsText'>^ca_objects.rights.rightsText<br/></ifdef><ifdef code='ca_objects.rights.endRestriction'><b>End of Restriction:</b> ^ca_objects.rights.endRestriction<br/></ifdef><ifdef code='ca_objects.rights.endRestrictionNotes'><b>Restriction Notes:</b> ^ca_objects.rights.endRestrictionNotes<br/></ifdef><ifdef code='ca_objects.rights.rightsHolder'><b>Rights Holder:</b> ^ca_objects.rights.rightsHolder<br/></ifdef><ifdef code='ca_objects.rights.copyrightStatement'><b>Copyright:</b> ^ca_objects.rights.copyrightStatement</ifdef></unit>",
+		"Rights Notes" => "^ca_objects.rights_notes",
+		"Related Exhibitions" => "<ifcount code='ca_occurrences' restrictToTypes='exhibit' min='1'><unit relativeTo='ca_occurrences' restrictToTypes='exhibit' delimiter='<br/>'>^ca_occurrences.preferred_labels.name</unit></ifcount>",
+		"Related Objects" => "<ifcount code='ca_objects.related' min='1'><unit relativeTo='ca_objects' delimiter='<br/>'><l>^ca_objects.preferred_labels.name</l></unit></ifcount>",
+	);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -82,66 +130,16 @@
 				<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 				<HR>
 				
-				{{{<ifcount code='ca_collections' min='1'><div class='unit'><label>Collection</label><unit relativeTo='ca_collections'><unit relativeTo='ca_collections.hierarchy' delimiter=' > '><l>^ca_collections.type_id ^ca_collections.idno ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates</ifdef></l></unit></unit></div></ifcount>}}}
+				{{{<ifcount code='ca_collections' min='1'><div class='unit'><label>Collection</label><unit relativeTo='ca_collections'><unit relativeTo='ca_collections.hierarchy' delimiter=' > '><l>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates</ifdef></l></unit></unit></div></ifcount>}}}
 				
 				{{{<ifdef code="ca_objects.idno"><label>Identifier:</label>^ca_objects.idno<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.containerID"><label>Box/series:</label>^ca_objects.containerID<br/></ifdef>}}}				
-				
-				{{{<ifdef code="ca_objects.inclusive_dates">
-					<div class='unit'><label>Inclusive Dates</label>^ca_objects.inclusive_dates%delimiter=,_
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.display_date">
-					<div class='unit'><label>Display Date</label>^ca_objects.display_date%delimiter=,_
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.language">
-					<div class='unit'><label>Language</label>^ca_objects.language%delimiter=,_
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.event_type">
-					<div class='unit'><label>Event Type</label>^ca_objects.event_type%delimiter=,_
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.material">
-					<div class='unit'><label>Material</label>^ca_objects.materials%delimiter=,_
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.description">
-					<div class='unit'><label>Description</label>
-						<span class="trimText">^ca_objects.description</span>
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.people_depicted">
-					<div class='unit'><label>People Depicted</label>
-						<span class="trimText">^ca_objects.people_depicted</span>
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.related_publications">
-					<div class='unit'><label>Related Publications</label>^ca_objects.related_publications
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.related_materials">
-					<div class='unit'><label>Related Materials</label>^ca_objects.related_materials%delimiter=,_
-					</div>
-				</ifdef>}}}
-				
-				
-				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><label>Date:</label>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
-			
-				{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-				{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-				
-				
-				{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-				{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-				{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-				
-				{{{<ifcount code="ca_list_items" min="1" max="1"><label>Related Term</label></ifcount>}}}
-				{{{<ifcount code="ca_list_items" min="2"><label>Related Terms</label></ifcount>}}}
-				{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter="<br/>"><unit relativeTo="ca_list_items"><l>^ca_list_items.preferred_labels.name_plural</l></unit> (^relationship_typename)</unit>}}}
-
+<?php
+				foreach($va_fields as $vs_label => $vs_template){
+					if($vs_tmp = $t_object->getWithTemplate($vs_template, array("checkAccess" => $va_access_values))){
+						print "<div class='unit'><label>".$vs_label."</label>".caConvertLineBreaks($vs_tmp)."</div>";
+					}
+				}
+?>
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
