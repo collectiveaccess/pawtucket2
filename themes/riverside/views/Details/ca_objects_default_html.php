@@ -63,11 +63,6 @@
 				<div class='col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3'>
 <?php
 				if(strToLower($t_object->get("show_watermarked_image", array("convertCodesToDisplayText" => true))) == "yes"){
-					print strToLower($t_object->get("show_watermarked_image", array("convertCodesToDisplayText" => true)));
-				
-				
-				
-				
 					if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
 						$t_representation = Datamodel::getInstance("ca_object_representations", true);
 						$t_representation->load($pn_representation_id);
