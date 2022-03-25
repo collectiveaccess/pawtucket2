@@ -33,7 +33,7 @@
 	$t_subject							= $this->getVar('t_subject');
 	$vn_subject_id						= $t_subject->getPrimaryKey();
 	$vs_display = "detail";
-	if(strToLower($t_subject->get("show_watermarked_image", array("convertCodesToDisplayText" => true))) == "yes")){
+	if(strToLower($t_subject->get("show_watermarked_image", array("convertCodesToDisplayText" => true)) == "yes")){
 		$vs_display = "detail_watermark";	
 	}
 	if ($vn_representation_count > 1) {
