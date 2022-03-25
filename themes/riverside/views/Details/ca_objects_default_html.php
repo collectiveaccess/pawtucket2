@@ -189,7 +189,7 @@
 							</div></ifdef></if>}}}
 							<!-- end Library fields -->
 							<!-- Format tab: Photo/Artifact/Art_arch -->
-							{{{<ifdef code="ca_objects.dimensions"><div class="unit"><label>Dimensions</label>
+							{{{<ifdef code="ca_objects.dimensions.dimensions_length|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_depth|ca_objects.dimensions.dimensions_weight|ca_objects.dimensions.dimension_notes"><div class="unit"><label>Dimensions</label>
 								<ifdef code="ca_objects.dimensions.dimensions_length">Length: ^ca_objects.dimensions.dimensions_length<br/></div>
 								<ifdef code="ca_objects.dimensions.dimensions_width">Width: ^ca_objects.dimensions.dimensions_width<br/></div>
 								<ifdef code="ca_objects.dimensions.dimensions_height">Height: ^ca_objects.dimensions.dimensions_height<br/></div>
@@ -254,6 +254,9 @@
 								$vs_subjects = join("<br/>", $va_all_subjects);
 								print "<div class='unit'><label>Subjects/Keywords</label>".$vs_subjects."</div>";	
 							}
+?>
+							{{{<ifdef code="rights.copyrightStatement"><div class="unit"><label>Copyright Statement</label>^rights.copyrightStatement</div></ifdef>}}}
+<?php
 							if($vs_rep_viewer){
 ?>
 								<div class="unit"><label>Rights and Restrictions</label>
