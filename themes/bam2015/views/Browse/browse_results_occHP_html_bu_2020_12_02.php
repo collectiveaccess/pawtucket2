@@ -52,10 +52,9 @@
 
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	if(($vs_current_sort != "Date") || (($vs_current_sort == "Date") && !$vn_start)){
-		Session::setVar('lastProYear', "");
+		$this->request->session->setVar('lastProYear', "");
 	}
-	$vn_num_hits = $qr_res->numHits();
-	$vs_last_pro_year = Session::getVar('lastProYear');
+	$vs_last_pro_year = $this->request->session->getVar('lastProYear');
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
 			$qr_res->seek($vn_start);
@@ -149,8 +148,8 @@
 					if(is_array($va_pro_date_raw) && sizeof($va_pro_date_raw)){
 						$va_pro_date_raw = array_shift($va_pro_date_raw[$qr_res->get("ca_occurrences.occurrence_id")]);
 						$vs_start_year = floor($va_pro_date_raw["productionDate"]["start"]);
-						if($vs_start_year && ($vs_start_year != Session::getVar('lastProYear')) && (!Session::getVar('lastProYear') || ((($vs_sort_dir == 'asc') && ($vs_start_year > Session::getVar('lastProYear'))) || (($vs_sort_dir == 'desc') && ($vs_start_year < Session::getVar('lastProYear')))))){
-							Session::setVar('lastProYear', $vs_start_year);
+						if($vs_start_year && ($vs_start_year != $this->request->session->getVar('lastProYear')) && (!$this->request->session->getVar('lastProYear') || ((($vs_sort_dir == 'asc') && ($vs_start_year > $this->request->session->getVar('lastProYear'))) || (($vs_sort_dir == 'desc') && ($vs_start_year < $this->request->session->getVar('lastProYear')))))){
+							$this->request->session->setVar('lastProYear', $vs_start_year);
 							$vb_show_year = true;
 						}
 					}
@@ -172,35 +171,25 @@
 				$vs_cols = "";
 				$vs_cols = 6;
 				#if($vb_show_year){
-				#	print "<div class='col-xs-12' style='clear:left'><br/><H4>".Session::getVar('lastProYear')."</H4></div>";
+				#	print "<div class='col-xs-12' style='clear:left'><br/><H4>".$this->request->session->getVar('lastProYear')."</H4></div>";
 				#}
-				if($vn_num_hits > 15){
-					print "<div class='col-xs-12 col-sm-4'>
-							<div class='row'>
-								<div class='col-xs-12'>
-									<div class='bBAMResultListItemOccHP bBAMResultListItemOccHPNoImage'>
-										".$vs_detail_link."
-									</div>
-								</div>
-							</div>
-							<div class='row'><div class='col-sm-12'><br/><br/></div></div>
-						</div><!-- end col -->";
-				}else{
-					print "<div class='col-xs-12 col-sm-6'>
-							<div class='row'>
-								<div class='col-xs-12 col-sm-4'>
-									<div class='bBAMResultListItemImgOccHP'>{$vs_rep_detail_link}</div>
-								</div>
-								<div class='col-xs-12 col-sm-8'>
-									<div class='bBAMResultListItemOccHP'>
-										".$vs_detail_link."
-									</div>
-								</div>
-							</div>
-							<div class='row'><br/><br/></div></div>
-						</div><!-- end col -->";
-				
-				}
+				print "
+	<div class='col-xs-12 col-sm-6'>
+		<div class='row'><div class='col-sm-12'><H4>".(($vb_show_year) ? $this->request->session->getVar('lastProYear') : "&nbsp;")."</H4></div></div>
+		<div class='row'>
+			<div class='col-xs-12 col-sm-4'>
+				<div class='bBAMResultItemOccCircle OccHPCircleImage'>
+					<div class='bBAMResultItemImgContainerOccCircle'>{$vs_rep_detail_link}</div>
+				</div>
+			</div>
+			<div class='col-xs-12 col-sm-8'>
+				<div class='bBAMResultListItemOccHP'>
+					".$vs_detail_link."
+				</div>
+			</div>
+		</div>
+		</div><!-- end bBAMResultListItem -->
+	</div><!-- end col -->";
 				
 				$vn_c++;
 			}

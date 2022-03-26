@@ -169,10 +169,6 @@
 ?>	
 		</div>
 <?php
-		if($t_set->get("ca_sets.caption")){
-			print "<div class='heroCaption'>".$t_set->get("ca_sets.caption")."</div>";
-		}
-
 		if($t_set->get("hp_template") == $vn_template_over){
 ?>
 			<div class="container hpOverWhite">
@@ -224,54 +220,6 @@
 		</div><!-- end container -->		
 <?php
 	}
-	$vs_rel_entity_set = "";
-	if($t_set->get("relEntitySetCode")){
-		# --- this is the set code of a set containing entities.  We use it to feature entities and objects on the home page at the same time
-		$t_entity_set = new ca_sets(array("set_code" => $t_set->get("relEntitySetCode")));
-		# --- check access/ valid set
-		if($t_entity_set->get("set_id") && ((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_entity_set->get("access"), $va_access_values)))){
-			# --- make sure this is a set of entities and it actually has records in it
-			$vs_set_type = Datamodel::getTableName($t_entity_set->get("table_num"));
-			$va_entity_set_item_ids = array_keys(is_array($va_tmp = $t_entity_set->getItemRowIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
-			if(($vs_set_type = "ca_entities") && (is_array($va_entity_set_item_ids) && sizeof($va_entity_set_item_ids))){
-			
-				$vs_rel_entity_set = '
-					<div class="container">
-						<div class="row">
-							<div class="col-xs-12">
-								<H3>Related People & Organizations</H3>
-							</div>
-						</div>
-						<div class="row">
-			
-							<div id="browseEntityResultsContainer" style="overflow-y:visible;">
-								'.caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')).'
-							</div><!-- end browseEntityResultsContainer -->
-						</div><!-- end row -->
-					</div><!-- end container -->
-					<script type="text/javascript">
-						jQuery(document).ready(function() {
-							jQuery("#browseEntityResultsContainer").load("'.caNavUrl($this->request, '', 'Search', 'entities', array('view' => ((sizeof($va_entity_set_item_ids) > 24) ? 'list' : 'entHP'), 'search' => 'ca_sets.set_id:'.$t_entity_set->get('set_id')), array('dontURLEncodeParameters' => true)).'", function() {
-								jQuery(\'#browseEntityResultsContainer\').jscroll({
-									autoTrigger: true,
-									loadingHtml: "'.caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')).'",
-									padding: 20,
-									nextSelector: "a.jscroll-next",
-									debug: true
-								});
-							});
-				
-				
-						});
-					</script>';
-			}	
-		}
-	}
-	# --- yes no values switched - checkbox to indicate if entities should be on top or productions
-	$vs_rel_entities_first = $t_set->get("hpEntitiesTop", array("convertCodesToDisplayText" => true));
-	if($vs_rel_entity_set && ($t_set->get("hpEntitiesTop", array("convertCodesToDisplayText" => true)) == "no")){
-		print $vs_rel_entity_set;
-	}
 	if($t_set->get("relProductionSetCode")){
 		# --- this is the set code of a set containing occurrences.  We use it to feature productions and object on the home page at the same time
 		$t_occ_set = new ca_sets(array("set_code" => $t_set->get("relProductionSetCode")));
@@ -281,35 +229,6 @@
 			$vs_set_type = Datamodel::getTableName($t_occ_set->get("table_num"));
 			$va_occ_set_item_ids = array_keys(is_array($va_tmp = $t_occ_set->getItemRowIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
 			if(($vs_set_type = "ca_occurrences") && (is_array($va_occ_set_item_ids) && sizeof($va_occ_set_item_ids))){
-				if($t_set->get("ca_sets.relProductionTimeline", array("convertCodesToDisplayText" => true)) == "no"){
-?>
-					<div class="container">
-						<div class="row">
-							<div class="col-xs-12">
-								<H3>Related Productions & Events</H3>
-							</div>
-						</div>
-						<div class="row">
-							<div id="frontTimelineContainer">
-								<div id="timeline-embed"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-							</div>
-						</div><!-- end row -->
-					</div><!-- end container -->	
-					<script type="text/javascript">
-						jQuery(document).ready(function() {
-							createStoryJS({
-								type:       'timeline',
-								width:      '100%',
-								height:     '100%',
-								source:     '<?php print caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'timeline', 'set_id' => $t_occ_set->get('ca_sets.set_id'))); ?>',
-								embed_id:   'timeline-embed',
-								initial_zoom: '5'
-							});
-						});
-					</script>
-<?php
-				
-				}else{
 ?>
 				<div class="container">
 					<div class="row">
@@ -340,13 +259,8 @@
 					});
 				</script>
 <?php
-				}
 			}	
 		}
-	}
-	# --- yes no values switched - checkbox to indicate if entities should be on top or productions
-	if($vs_rel_entity_set && (!$vs_rel_entities_first || ($vs_rel_entities_first == 'yes'))){
-		print $vs_rel_entity_set;
 	}	
 		
 	if(is_array($va_set_item_ids) && sizeof($va_set_item_ids)){
@@ -370,7 +284,7 @@
 				</div><!-- end container -->
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'entities', array('view' => ((sizeof($va_entity_set_item_ids) > 24) ? 'list' : 'entHP'), 'search' => 'ca_sets.set_id:'.$t_set->get('set_id'), 'homePage' => true), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'entities', array('search' => 'ca_sets.set_id:'.$t_set->get('set_id'), 'homePage' => true), array('dontURLEncodeParameters' => true)); ?>", function() {
 							jQuery('#browseResultsContainer').jscroll({
 								autoTrigger: true,
 								loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",

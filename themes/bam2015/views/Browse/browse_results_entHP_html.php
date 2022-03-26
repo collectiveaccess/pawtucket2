@@ -108,53 +108,9 @@
 				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 				}
-				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
-
-				$vs_pro_date = $qr_res->get("ca_occurrences.productionDate");
-				$vn_chop_len = 70;
-				$vs_date_conjunction = ", ";
-				$vs_series_info = "";
-				$va_series = $qr_res->get("ca_occurrences.series", array("convertCodesToDisplayText" => true, "returnAsArray" => true));
-				$va_series_filtered = array();
-				foreach($va_series as $vs_series){
-					if(trim($vs_series)){
-						$va_series_filtered[] = $vs_series;
-					}
-				}
-				if(sizeof($va_series_filtered)){
-					$vs_series_info = "<br/><span class='series'>".join(", ", $va_series_filtered)."</span> ";
-				}elseif($qr_res->get("ca_occurrences.Minor_BAM_Programming", array("convertCodesToDisplayText" => true))){
-					$vs_minor_info = "";
-					$va_minor = $qr_res->get("ca_occurrences.Minor_BAM_Programming", array("convertCodesToDisplayText" => true, "returnAsArray" => true));
-					$va_minor_filtered = array();
-					foreach($va_minor as $vs_minor){
-						if(trim($vs_minor)){
-							$va_minor_filtered[] = $vs_minor;
-						}
-					}
-					$vs_series_info = "<br/><span class='series'>".join(", ", $va_minor_filtered)."</span> ";
-				}
-				$vs_link_text = (($qr_res->get("{$vs_table}.preferred_labels")) ? $qr_res->get("{$vs_table}.preferred_labels") : $qr_res->get("{$vs_table}.idno"));
-				if(mb_strlen($vs_link_text) > $vn_chop_len){
-					$vs_link_text = mb_substr($vs_link_text, 0, $vn_chop_len)."...";
-				}						
-				if($vs_pro_date || $vs_series_info){
-					$vs_link_text = $vs_link_text."<br/><span><span class='date'>".str_replace(" - ", "&mdash;", $qr_res->get("ca_occurrences.productionDate", array("delimiter" => ", ")))."</span>".$vs_series_info."</span>";
-				}
-				# --- if sort is date, get the date as a year so you can display a year heading
-				$vs_start_year = "";
-				$vb_show_year = false;
-				if((!$this->request->getParameter("openResultsInOverlay", pInteger)) && ($vs_current_sort == "Date")){
-					$va_pro_date_raw = $qr_res->get("ca_occurrences.productionDate", array("returnWithStructure" => true, "rawDate" => true));
-					if(is_array($va_pro_date_raw) && sizeof($va_pro_date_raw)){
-						$va_pro_date_raw = array_shift($va_pro_date_raw[$qr_res->get("ca_occurrences.occurrence_id")]);
-						$vs_start_year = floor($va_pro_date_raw["productionDate"]["start"]);
-						if($vs_start_year && ($vs_start_year != Session::getVar('lastProYear')) && (!Session::getVar('lastProYear') || ((($vs_sort_dir == 'asc') && ($vs_start_year > Session::getVar('lastProYear'))) || (($vs_sort_dir == 'desc') && ($vs_start_year < Session::getVar('lastProYear')))))){
-							Session::setVar('lastProYear', $vs_start_year);
-							$vb_show_year = true;
-						}
-					}
-				}					
+				
+				
+									
 				if($va_images[$vn_id] || $va_images_2[$vn_id] || $va_images_1[$vn_id]){
 					if($va_images[$vn_id]){
 						$vs_thumbnail = $va_images[$vn_id];
@@ -174,33 +130,14 @@
 				#if($vb_show_year){
 				#	print "<div class='col-xs-12' style='clear:left'><br/><H4>".Session::getVar('lastProYear')."</H4></div>";
 				#}
-				if($vn_num_hits > 15){
-					print "<div class='col-xs-12 col-sm-4'>
-							<div class='row'>
-								<div class='col-xs-12'>
-									<div class='bBAMResultListItemOccHP bBAMResultListItemOccHPNoImage'>
-										".$vs_detail_link."
-									</div>
+				print "<div class='col-xs-6 col-sm-2'>
+							<div class='bBAMResultEntHP'>{$vs_rep_detail_link}
+								<div class='bBAMResultEntHPLabel'>
+									".$vs_label_detail_link."
 								</div>
 							</div>
-							<div class='row'><div class='col-sm-12'><br/><br/></div></div>
 						</div><!-- end col -->";
-				}else{
-					print "<div class='col-xs-12 col-sm-6'>
-							<div class='row'>
-								<div class='col-xs-12 col-sm-4'>
-									<div class='bBAMResultListItemImgOccHP'>{$vs_rep_detail_link}</div>
-								</div>
-								<div class='col-xs-12 col-sm-8'>
-									<div class='bBAMResultListItemOccHP'>
-										".$vs_detail_link."
-									</div>
-								</div>
-							</div>
-							<div class='row'><br/><br/></div></div>
-						</div><!-- end col -->";
-				
-				}
+						
 				
 				$vn_c++;
 			}

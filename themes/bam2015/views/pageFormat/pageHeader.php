@@ -44,8 +44,8 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
@@ -55,7 +55,8 @@
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
-	<meta name="Description" content="The BAM Hamm Archives is a rich resource documenting more than 150 years of BAM history.  The digital archive is generously funded by the Leon Levy Foundation" />
+	<meta name="Description" content="The BAM Hamm Archives is a rich resource documenting more than 150 years of BAM history.  The digital archive is generously funded by Shelby White & the Leon Levy Foundation" />
+	<meta name="google-site-verification" content="CcHQy53x9290Po8xr15hksTxcMjkyPYQueI7fQyGD6M" />
 	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
 	<link rel="icon" href="<?php print caGetThemeGraphicUrl($this->request, 'favicon.ico'); ?>">
 	<?php print MetaTagManager::getHTML(); ?>
@@ -78,8 +79,19 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+	<!-- Google Tag Manager -->
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-NJB5LF7');</script>
+	<!-- End Google Tag Manager -->
 </head>
 <body>
+	<!-- Google Tag Manager (noscript) -->
+	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NJB5LF7"
+	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+	<!-- End Google Tag Manager (noscript) -->
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -94,7 +106,7 @@
 
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'bam_logo.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'bam_logo.png', array("title" => "Shelby White & Leon Levy BAM Digital Archive")), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -137,7 +149,7 @@
 				<ul class="nav navbar-nav navbar-right">
 <?php
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Browse <span class='caret'></span></a>\n";
-					print "<ul class='dropdown-menu'>\n<li>".caNavLink($this->request, 'People & Organizations', 'first', '', 'Browse', 'entities')."</li>\n"; 
+					print "<ul class='dropdown-menu'>\n<li>".caNavLink($this->request, 'People & Organizations', 'first', '', 'Browse', 'entities', array("view" => "list"))."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Productions & Events', '', '', 'Browse', 'occurrences', array("view" => "list"))."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Programming History', 'last', '', 'ProgramHistory', 'Index')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Archival Collections', '', '', 'Collections', 'Index')."</li>\n";
