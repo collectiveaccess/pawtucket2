@@ -73,11 +73,11 @@
 					</div>
 				</ifdef>}}}
 				
-				{{{<ifdef code="ca_object_lots.scope_content">
-					<div class='unit'><label>Scope and Content</label>
-						<span class="trimText">^ca_object_lots.scope_content</span>
-					</div>
-				</ifdef>}}}
+				<?php
+					if($vs_tmp = $t_object_lot->get("ca_object_lots.scope_content")){
+						print "<div class='unit'><label>Scope and Content</label><span class='trimText'>".caConvertLineBreaks($vs_tmp)."</span></div>";
+					}
+				?>
 				
 				
 						
