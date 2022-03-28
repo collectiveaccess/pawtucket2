@@ -87,3 +87,14 @@ a .frontExplore, a:hover .frontExplore{
 	font-size:14px;
 	color:#000;
 }
+
+/* browse */
+.browse .btn, .sets .btn {
+  background-color: #000;
+}
+
+/* multisearch */
+.multisearch .authorityResult {
+  height: 70px;
+  line-height: .9em;
+}

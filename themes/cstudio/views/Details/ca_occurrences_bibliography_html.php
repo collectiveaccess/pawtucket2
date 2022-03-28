@@ -16,16 +16,32 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
-					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
-					<H2>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef>}}}</H2>
-				</div><!-- end col -->
-			</div><!-- end row -->
-			<div class="row">			
-				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_occurrences.description"><label>About</label>^ca_occurrences.description<br/></ifdef>}}}
-					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
-
+				<div class='col-md-12'>
+					<H1>{{{<ifdef code='ca_occurrences.lit_citation'>^ca_occurrences.lit_citation</ifdef><ifnotdef code='ca_occurrences.lit_citation'>^ca_occurrences.preferred_labels.name</ifnotdef>}}}</H1>
+				</div>
+			</div>
+			<div class="row">
+				<div class='col-md-6 col-lg-6'>
+					{{{<ifdef code="ca_occurrences.pubType"><div class="unit"><label>Type</label>^ca_occurrences.pubType%delimiter=,_</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.idno"><div class="unit"><label>Identifier</label>^ca_occurrences.idno</div></ifdef>}}}
+					
+				</div>
+				<div class='col-md-6 col-lg-6'>
+					{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="author,editor">
+						<ifcount code="ca_entities" min="1" max="1" excludeRelationshipTypes="author,editor"><label>Related person</label></ifcount>
+						<ifcount code="ca_entities" min="2" excludeRelationshipTypes="author,editor"><label>Related people</label></ifcount>
+						<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="author,editor"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
+					</ifcount>}}}
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br/>">^ca_places.preferred_labels.name (^relationship_typename)</unit></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="bibliography"><div class="unit"><label>Bibliography</label><unit relativeTo="ca_occurrences.related" restrictToTypes="bibliography" delimiter="<br/><br/>"><l><ifdef code='ca_occurrences.lit_citation'>^ca_occurrences.lit_citation</ifdef><ifnotdef code='ca_occurrences.lit_citation'>^ca_occurrences.preferred_labels.name</ifnotdef></l></unit></div></ifcount>}}}
+				
+					{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="exhibition_project"><div class="unit"><label>Exhibitions/Projects/Events</label><unit relativeTo="ca_occurrences.related" restrictToTypes="exhibition_project" delimiter="<br/><br/>"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.date">, ^ca_occurrences.date</ifdef></l></unit></div></ifcount>}}}
+				
+				</div>
+			</div>
+			<div class="row">
+				<div class='col-md-12'>	
+					
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
@@ -45,25 +61,13 @@
 ?>
 					
 				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_collections" min="1" max="1"><label>Related collection</label></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><label>Related collections</label></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
-					
-					{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
-					
-					{{{<ifcount code="ca_occurrences.related" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
-					{{{<ifcount code="ca_occurrences.related" min="2"><label>Related occurrences</label></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l></unit>}}}
-					
-					{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}					
-				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1" restrictToTypes="artwork">
+			<div class="row">
+				<div class="col-sm-12">
+					<H2>Artwork</H2>
+				</div>
+			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -71,7 +75,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'artwork', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

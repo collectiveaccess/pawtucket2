@@ -98,17 +98,21 @@
 				{{{<if rule="^ca_objects.type_id !~ /Artwork/"><div class="unit">^ca_objects.type_id</div></if>}}}
 				{{{<ifdef code="ca_objects.art_date_container"><unit relativeTo="ca_objects.art_date_container" delimiter=" "><if rule="^ca_objects.art_date_container.art_date_type !~ /Created/"><ifdef code="ca_objects.art_date_container.art_date"><div class="unit"><label>^ca_objects.art_date_container.art_date_type</label>^ca_objects.art_date_container.art_date</div></ifdef></if></unit></ifdef>}}}
 				{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br/>">^ca_places.preferred_labels.name (^relationship_typename)</unit></div></ifcount>}}}
+				{{{<ifdef code="ca_objects.art_type_list"><div class="unit"><label>Type/Category</label>^ca_objects.art_type_list%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.theme_motif"><div class="unit"><label>Theme/Motif</label>^ca_objects.theme_motif%delimiter=,_</div></ifdef>}}}
+				
 			</div>
 			<div class='col-sm-8 col-md-8 col-lg-7'>	
-				{{{<ifcount code="ca_objects_x_occurrences" min="1" restrictToTypes="bibliography"><div class="unit"><label>Bibliography</label><unit relativeTo="ca_objects_x_occurrences" restrictToTypes="bibliography" delimiter="<br/><br/>"><unit relativeTo="ca_occurrences"><l>^ca_occurrences.lit_citation</l></unit><ifdef code="ca_objects_x_occurrences.page"><br/>Page: ^ca_objects_x_occurrences.page</ifdef></unit></div></ifcount>}}}
+				{{{<ifcount code="ca_objects_x_occurrences" min="1" restrictToTypes="bibliography"><div class="unit"><label>Bibliography</label><unit relativeTo="ca_objects_x_occurrences" restrictToTypes="bibliography" delimiter="<br/><br/>"><unit relativeTo="ca_occurrences"><l><ifdef code='ca_occurrences.lit_citation'>^ca_occurrences.lit_citation</ifdef><ifnotdef code='ca_occurrences.lit_citation'>^ca_occurrences.preferred_labels.name</ifnotdef></l></unit><ifdef code="ca_objects_x_occurrences.page"><br/>Page: ^ca_objects_x_occurrences.page</ifdef></unit></div></ifcount>}}}
 				
-				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition_project"><div class="unit"><label>Exhibitions & Projects</label><unit relativeTo="ca_occurrences" restrictToTypes="exhibition_project" delimiter="<br/><br/>"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.date">, ^ca_occurrences.date</ifdef></l></unit></div></ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition_project"><div class="unit"><label>Exhibitions/Projects/Events</label><unit relativeTo="ca_occurrences" restrictToTypes="exhibition_project" delimiter="<br/><br/>"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.date">, ^ca_occurrences.date</ifdef></l></unit></div></ifcount>}}}
 				
 				
-				{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-				{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-				
+				{{{<ifcount code="ca_entities" min="1">
+					<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>
+					<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>
+					<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
+				</ifcount>}}}
 			
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
