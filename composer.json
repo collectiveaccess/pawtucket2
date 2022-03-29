@@ -32,7 +32,8 @@
     "phpoffice/phpword": "v0.18.*",
     "scholarslab/bagit": "*",
     "srmklive/flysystem-dropbox-v2": ">=1.0.0",
-    "tedivm/stash": "0.15.*"
+    "tedivm/stash": "0.15.*",
+    "voku/stop-words": "^2.0"
   },
   "require": {
     "ext-iconv": "*",
