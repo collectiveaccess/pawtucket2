@@ -1972,6 +1972,9 @@ a.digExhAnchors.offset{
 	.tl-text-content-container{
 		margin-right:-160px;
 	}
+	.digital_exhibition .tl-text-content-container{
+		margin-right:-80px;
+	}
 }
 /* end vertical center image adjustments */
 @media(min-width:1450px){

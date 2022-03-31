@@ -2,6 +2,7 @@
 	<H1><?php print $this->getVar("section_name"); ?></H1>
 <?php
 	$va_sets = $this->getVar("sets");
+	krsort($va_sets);
 	$va_first_items_from_set = $this->getVar("first_items_from_sets");
 	if(is_array($va_sets) && sizeof($va_sets)){
 		# --- main area with info about selected set loaded via Ajax
