@@ -122,7 +122,7 @@
 <?php
 				}
 				if($this->request->user->hasRole("staff")){
-					print '<div class="unit">'.caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> "._t("Download High Resolution Media"), "button", "", "Detail", "DownloadMedia", array("object_id" => $t_object->get("object_id"), "download" => 1, "version" => "original")).'</div>';
+					print '<br/><div class="unit">'.caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> "._t("Download High Resolution Media"), "btn-default", "", "Detail", "DownloadMedia", array("object_id" => $t_object->get("object_id"), "download" => 1, "version" => "original")).'</div>';
 				}		 				
 				
 
