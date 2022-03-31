@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2021 Whirl-i-Gig
+ * Copyright 2007-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -139,7 +139,7 @@ class SearchEngine extends SearchBase {
 		if ($vs_append_to_search = (isset($pa_options['appendToSearch'])) ? ' '.$pa_options['appendToSearch'] : '') {
 			$ps_search .= $vs_append_to_search;
 		}
-		
+		$ps_search = html_entity_decode($ps_search, null, 'UTF-8');
 		$ps_search = preg_replace('/[\|]([A-Za-z0-9_,;]+[:]{1})/', "/$1", $ps_search);	// allow | to be used in lieu of / as the relationship type separator, as "/" is problematic to encode in GET requests
 		// the special [BLANK] search term, which returns records that have *no* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
 		$ps_search = preg_replace('/(?!")\['.caGetBlankLabelText($this->ops_tablename).'\](?!")/i', '"['.caGetBlankLabelText($this->ops_tablename).']"', $ps_search); 
@@ -360,24 +360,26 @@ class SearchEngine extends SearchBase {
 			}
 
 			// log search
-			$o_log = new Searchlog();
+			if(!$this->opo_app_config->get('dont_use_search_log')) {
+				$o_log = new Searchlog();
 			
-			$vn_search_form_id = isset($pa_options['form_id']) ? $pa_options['form_id'] : null;
-			$vs_log_details = isset($pa_options['log_details']) ? $pa_options['log_details'] : '';
-			$vs_search_source = isset($pa_options['search_source']) ? $pa_options['search_source'] : '';
+				$vn_search_form_id = isset($pa_options['form_id']) ? $pa_options['form_id'] : null;
+				$vs_log_details = isset($pa_options['log_details']) ? $pa_options['log_details'] : '';
+				$vs_search_source = isset($pa_options['search_source']) ? $pa_options['search_source'] : '';
 				
-			$vn_execution_time = $t->getTime(4);
-			$o_log->log(array(
-				'user_id' => ($user_id > 0) ? (int)$user_id : null, 
-				'table_num' => $this->opn_tablenum, 
-				'search_expression' => $ps_search, 
-				'num_hits' => sizeof($va_hits),
-				'form_id' => $vn_search_form_id, 
-				'ip_addr' => RequestHTTP::ip(),
-				'details' => $vs_log_details,
-				'search_source' => __CA_APP_TYPE__.($vs_search_source ? ":{$vs_search_source}" : ""),
-				'execution_time' => $vn_execution_time
-			));
+				$vn_execution_time = $t->getTime(4);
+				$o_log->log(array(
+					'user_id' => ($user_id > 0) ? $user_id : null, 
+					'table_num' => $this->opn_tablenum, 
+					'search_expression' => $ps_search, 
+					'num_hits' => sizeof($va_hits),
+					'form_id' => $vn_search_form_id, 
+					'ip_addr' => RequestHTTP::ip(),
+					'details' => $vs_log_details,
+					'search_source' => __CA_APP_TYPE__.($vs_search_source ? ":{$vs_search_source}" : ""),
+					'execution_time' => $vn_execution_time
+				));
+			}
 		}
 
 		if ($po_result) {
