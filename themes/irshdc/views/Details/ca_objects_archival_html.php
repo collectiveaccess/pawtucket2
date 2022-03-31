@@ -213,6 +213,11 @@ if($vs_mode == "map"){
 								<div class="trimText">^ca_objects.content_notice.content_notice_value</div>
 							</div>
 						</ifdef>}}}
+						{{{<ifdef code="ca_objects.about_school_photographs">
+							<div class='unit'><h6>About Residential School Photographs</h6>
+								<div class="trimText">^ca_objects.about_school_photographs</div>
+							</div>
+						</ifdef>}}}
 						{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
 								<div class="trimText">^ca_objects.community_input_objects.comments_objects</div>
