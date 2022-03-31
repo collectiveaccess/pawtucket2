@@ -69,12 +69,6 @@
 		
 		if(trim($vs_item_description)){
 			print $vs_item_description;
-		}else{
-			print $t_object->getWithTemplate('<ifdef code="ca_objects.curators_comments.comments">
-					<div class="unit" data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.curators_comments.comment_reference">
-						<span class="trimText">^ca_objects.curators_comments.comments</span>
-					</div>
-				</ifdef>');
 		}
 	}
 ?>

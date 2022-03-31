@@ -153,12 +153,12 @@
 				<div class="col-sm-12 col-md-10 col-lg-8 col-lg-offset-1">
 					<div class="digExhContent">
 <?php
-					if ($this->getVar("resultsLink")) {
-						# --- breadcrumb trail only makes sense when there is a back button
-						print "<div class='row'><div class='col-sm-12 breadcrumbTrail'><small>";
-						print join(" > ", $va_breadcrumb_trail);
-						print "</small></div></div>";
-					}
+					#if ($this->getVar("resultsLink")) {
+					#	# --- breadcrumb trail only makes sense when there is a back button
+					#	print "<div class='row'><div class='col-sm-12 breadcrumbTrail'><small>";
+					#	print join(" > ", $va_breadcrumb_trail);
+					#	print "</small></div></div>";
+					#}
 
 					if(!$vs_hero){
 ?>
