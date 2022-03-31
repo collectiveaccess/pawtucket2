@@ -38,7 +38,7 @@
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<label for='ca_objects.inclusive_dates[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records of a particular date or date range.') ?>"><?php _p('Date range <i>(e.g. 1970-1979)</i>') ?></label>
-			{{{ca_objects.inclusive_dates%width=200px&height=40px&useDatePicker=0}}}
+			{{{ca_collections.inclusive_dates%width=200px&height=40px&useDatePicker=0}}}
 		</div>
 	</div>
 	<br style="clear: both;"/>

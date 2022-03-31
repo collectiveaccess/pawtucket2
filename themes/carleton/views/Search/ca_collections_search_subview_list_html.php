@@ -85,7 +85,9 @@
 				if($vs_parent_path){
 					$vs_parent_path .= " ><br/>";
 				}
-				print "<div class='collectionsResult authorityResult'>".$qr_results->getWithTemplate("<l>".$vs_parent_path."<b>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></b></l>", array('returnAsLink' => true))."</div>";
+				print "<div class='collectionsResult authorityResult'>";
+				print $qr_results->getWithTemplate("<ifdef code='ca_object_representations.media.icon'><div class='text-center'><l>^ca_object_representations.media.icon</l></div></ifdef>");
+				print $qr_results->getWithTemplate("<l>".$vs_parent_path."<b>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></b></l>", array('returnAsLink' => true))."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i >= $vn_items_per_column) {
