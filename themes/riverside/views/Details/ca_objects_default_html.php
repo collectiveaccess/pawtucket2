@@ -112,7 +112,7 @@
 				if($vs_rep_viewer){			
 					print $vs_rep_viewer;
 					print '<div id="detailAnnotations"></div>';
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-6 col-xs-6", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
 				}
 				if($t_object->get("ca_object_representations.representation_id", array("checkAccess" => array(0)))){
 ?>
@@ -121,6 +121,9 @@
 					</div>
 <?php
 				}
+				if($this->request->user->hasRole("staff")){
+					print '<div class="unit">'.caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> "._t("Download High Resolution Media"), "button", "", "Detail", "DownloadMedia", array("object_id" => $t_object->get("object_id"), "download" => 1, "version" => "original")).'</div>';
+				}		 				
 				
 
 				# Comment and Share Tools
