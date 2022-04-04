@@ -35,7 +35,11 @@
 	$t_item = 				$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+	$vn_comments_enabled = 	$this->getVar("commentsEnabled");	# --- not you can enable / disable the discussion section per exhibition too with include_discussion attribute
+	$vb_include_discussion = false;
+	if($t_item->get("include_discussion") && strToLower($t_item->get("include_discussion", array("convertCodesToDisplayText" => true))) == "yes"){
+		$vb_include_discussion = true;
+	}
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
@@ -123,7 +127,7 @@
 						}
 						$qr_content_blocks->seek(0);
 					}
-					if($vn_comments_enabled){
+					if($vn_comments_enabled && $vb_include_discussion){
 						$vs_nav_img = $t_item->get("ca_occurrences.discussionBG.medium.url");
 						if($vs_nav_img){
 							$vs_link = "<div class='digExhSideNavLinkImg' style='background-image: url(\"".$vs_nav_img."\");'><div class='digExhSideNavLink'>Discussion</div></div>";
@@ -181,7 +185,7 @@
 										}
 									}
 								}
-								if($vn_comments_enabled){
+								if($vn_comments_enabled && $vb_include_discussion){
 									print "<li><a href='#comments'>Discussion</a></li>";
 								}
 								if($vb_related){
@@ -490,7 +494,7 @@
 						print "<p class='text-center sectionNavigationLinks'>".$vs_previous_section_link.(($vs_next_section_link && $vs_previous_section_link) ? "&nbsp;&nbsp;&nbsp;" : "").$vs_next_section_link."</p><br/>";
 					}
 				}
-				if ($vn_comments_enabled) {
+				if ($vn_comments_enabled && $vb_include_discussion) {
 ?>				
 					<div class="digExhContentBlock discussion">
 						<a name="comments" class="digExhAnchors offset"></a>
