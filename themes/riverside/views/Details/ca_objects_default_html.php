@@ -121,7 +121,7 @@
 					</div>
 <?php
 				}
-				if($this->request->user->hasRole("staff")){
+				if($vs_rep_viewer && $this->request->user->hasRole("staff")){
 					print '<br/><div class="unit">'.caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> "._t("Download High Resolution Media"), "btn-default", "", "Detail", "DownloadMedia", array("object_id" => $t_object->get("object_id"), "download" => 1, "version" => "original")).'</div>';
 				}		 				
 				
@@ -148,7 +148,7 @@
 ?>
 				{{{<ifdef code="ca_objects.date"><div class="unit"><unit relativeTo="ca_objects.date" delimiter=", ">^ca_objects.date.date_value <ifdef code="ca_objects.date.date_types">(^ca_objects.date.date_types)</ifdef></unit></div></ifdef>}}}
 				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="Dedicated,Related,Publisher"><div class="unit"><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="Dedicated,Related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.material_techniques"><div class="unit">^ca_objects.material_techniques%,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.material_techniques"><div class="unit">^ca_objects.material_techniques%delimiter=,_</div></ifdef>}}}
 				
 
 				</div>
@@ -200,12 +200,12 @@
 								<ifdef code="ca_objects.dimensions.dimensions_weight">Weight: ^ca_objects.dimensions.dimensions_weight<br/></ifdef>
 								<ifdef code="ca_objects.dimensions.dimension_notes">Notes: ^ca_objects.dimensions.dimension_notes<br/></ifdef>
 							</ifdef>}}}
-							{{{<ifdef code="ca_objects.photograph_format"><div class="unit"><label>Photograph Format (AAT)</label>^ca_objects.photograph_format%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.object_work_type"><div class="unit"><label>Object Work/Type (AAT)</label>^ca_objects.object_work_type%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.components_parts"><div class="unit"><label>Components/Parts</label>^ca_objects.components_parts%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.classification"><div class="unit"><label>Classification (AAT)</label>^ca_objects.classification%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.style"><div class="unit"><label>Style</label>^ca_objects.style%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.inscriptions"><div class="unit"><label>Inscriptions & Markings</label>^ca_objects.inscriptions%,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.photograph_format"><div class="unit"><label>Photograph Format (AAT)</label>^ca_objects.photograph_format%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.object_work_type"><div class="unit"><label>Object Work/Type (AAT)</label>^ca_objects.object_work_type%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.components_parts"><div class="unit"><label>Components/Parts</label>^ca_objects.components_parts%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.classification"><div class="unit"><label>Classification (AAT)</label>^ca_objects.classification%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.style"><div class="unit"><label>Style</label>^ca_objects.style%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.inscriptions"><div class="unit"><label>Inscriptions & Markings</label>^ca_objects.inscriptions%delimiter=,_&convertLineBreaks=1</div></ifdef>}}}
 						</div>
 						<div class='col-sm-12 col-md-6'>
 							{{{<ifdef code="ca_objects.url.link_url"><div class="unit"><label>External Link</label><unit delimiter="<br/>"><a href="^ca_objects.url.link_url" target="_blank"><ifdef code="ca_objects.url.link_text">^ca_objects.url.link_text</ifdef><ifnotdef code="ca_objects.url.link_text">^ca_objects.url.link_url</ifnotdef></a></div></ifdef>}}}
@@ -233,7 +233,7 @@
 								$va_keyword_links = array();
 								foreach($va_keywords as $vn_kw_id){
 									$t_list_item->load($vn_kw_id);
-									$va_all_subjects[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
+									$va_all_subjects[$t_list_item->get("ca_list_item_labels.name_singular")] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
 								}
 								#$vs_keyword_links = join("<br/>", $va_keyword_links);
 							}
@@ -246,12 +246,12 @@
 									if($vs_lc_names && (strpos($vs_lc_names, " [") !== false)){
 										$vs_lc_name = mb_substr($vs_lc_names, 0, strpos($vs_lc_names, " ["));
 									}
-									$va_all_subjects[] = caNavLink($this->request, $vs_lc_name, "", "", "Search", "objects", array("search" => "ca_objects.lc_names: ".$vs_lc_name));
+									$va_all_subjects[$vs_lc_name] = caNavLink($this->request, $vs_lc_name, "", "", "Search", "objects", array("search" => "ca_objects.lc_names: ".$vs_lc_name));
 						
 								}
 								#$vs_lc_names = join("<br/>", $va_lc_names_processed);
 							}
-					
+					ksort($va_all_subjects);
 							if(is_array($va_all_subjects) && sizeof($va_all_subjects)){
 								ksort($va_all_subjects);
 								$vs_subjects = join("<br/>", $va_all_subjects);
