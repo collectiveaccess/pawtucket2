@@ -86,7 +86,6 @@
 				</div>
 				
 				
-				{{{<ifdef code="ca_objects.measurementSet.measurements">^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)</ifdef><ifdef code="ca_objects.measurementSet.measurements,ca_objects.measurementSet.measurements"> x </ifdef><ifdef code="ca_objects.measurementSet.measurements2">^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)</ifdef>}}}
 				
 				
 				
@@ -100,22 +99,48 @@
 				{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br/>">^ca_places.preferred_labels.name (^relationship_typename)</unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.art_type_list"><div class="unit"><label>Type/Category</label>^ca_objects.art_type_list%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.theme_motif"><div class="unit"><label>Theme/Motif</label>^ca_objects.theme_motif%delimiter=,_</div></ifdef>}}}
-				
 			</div>
 			<div class='col-sm-8 col-md-8 col-lg-7'>	
+				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="artist">
+					<div class="unit"><ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="artist"><label>Artist</label></ifcount><ifcount code="ca_entities" min="2" restrictToRelationshipTypes="artist"><label>Artists</label></ifcount>
+						<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist">^ca_entities.preferred_labels</unit>
+					</div>
+				</ifcount>}}}
 				{{{<ifcount code="ca_objects_x_occurrences" min="1" restrictToTypes="bibliography"><div class="unit"><label>Bibliography</label><unit relativeTo="ca_objects_x_occurrences" restrictToTypes="bibliography" delimiter="<br/><br/>"><unit relativeTo="ca_occurrences"><l><ifdef code='ca_occurrences.lit_citation'>^ca_occurrences.lit_citation</ifdef><ifnotdef code='ca_occurrences.lit_citation'>^ca_occurrences.preferred_labels.name</ifnotdef></l></unit><ifdef code="ca_objects_x_occurrences.page"><br/>Page: ^ca_objects_x_occurrences.page</ifdef></unit></div></ifcount>}}}
 				
 				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition_project"><div class="unit"><label>Exhibitions/Projects/Events</label><unit relativeTo="ca_occurrences" restrictToTypes="exhibition_project" delimiter="<br/><br/>"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.date">, ^ca_occurrences.date</ifdef></l></unit></div></ifcount>}}}
 				
 				
-				{{{<ifcount code="ca_entities" min="1">
-					<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>
-					<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>
-					<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
+				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="artist">
+					<div class="unit"><ifcount code="ca_entities" min="1" max="1" excludeRelationshipTypes="artist"><label>Related person</label></ifcount><ifcount code="ca_entities" min="2" excludeRelationshipTypes="artist"><label>Related people</label></ifcount>
+						<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="artist"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
+					</div>
 				</ifcount>}}}
 			
 			</div><!-- end col -->
-		</div><!-- end row --></div><!-- end container -->
+		</div><!-- end row -->
+		{{{<ifcount code="ca_objects.related" min="1">
+			<div class="row">
+				<div class='col-sm-12 col-lg-10 col-lg-offset-1'>
+					<div class="unit"><hr/></div>
+					<H2>Related Artwork</H2>
+					<div class="row">
+						<unit relativeTo="ca_objects.related" delimiter=" ">
+							<div class='col-sm-4 col-md-3'>
+								<div class="unit fullWidth">
+									<ifdef code="ca_object_representations.media.small"><l>^ca_object_representations.media.small</l><br/></ifdef>
+									<l><b><ifdef code="ca_objects.preferred_labels.name"><i>^ca_objects.preferred_labels.name</i></ifdef><ifdef code="ca_objects.art_date_container"><unit relativeTo="ca_objects.art_date_container"><if rule="^ca_objects.art_date_container.art_date_type =~ /Created/"><ifdef code="ca_objects.art_date_container.art_date">, ^ca_objects.art_date_container.art_date</ifdef></if></unit></ifdef></b>
+									<ifdef code="ca_objects.medium">^ca_objects.medium<br/></ifdef>
+									<ifdef code="ca_objects.dim.dim_edition_display">^ca_objects.dim.dim_edition_display</ifdef>
+									<ifnotdef code="ca_objects.dim.dim_edition_display"><ifdef code="ca_objects.dim.dim_edition_note">^ca_objects.dim.dim_edition_note</ifdef></ifnotdef></l>
+								</div>
+							</div>
+						</unit>
+					</div>
+				</div>
+			</div>
+		</ifcount>}}}
+		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">

@@ -152,7 +152,7 @@
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 					<li <?php print (($this->request->getController() == "Browse") && (strToLower($this->request->getAction()) == "artwork")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artwork"), "", "", "Browse", "artwork"); ?></li>
 					<li <?php print (($this->request->getController() == "Browse") && (strToLower($this->request->getAction()) == "bibliography")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Bibliography"), "", "", "Browse", "bibliography"); ?></li>
-					<li <?php print (($this->request->getController() == "Browse") && (strToLower($this->request->getAction()) == "exhibitions")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibitions/Projects/Events"), "", "", "Browse", "exhibitions"); ?></li>
+					<li <?php print (($this->request->getController() == "Browse") && (strToLower($this->request->getAction()) == "exhibitions")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibitions & Projects"), "", "", "Browse", "exhibitions"); ?></li>
 	
 					<!--<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>-->
 					
