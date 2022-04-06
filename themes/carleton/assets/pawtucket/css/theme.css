@@ -338,3 +338,8 @@ a .frontClassification, a:hover .frontClassification{
   color: #000;
   font-size: 24px;
 }
+
+a.readmore-js-toggle {
+  padding-top: 10px;
+  color: #306aa2;
+}

@@ -115,19 +115,19 @@
 					$vs_desc = "";
 					switch($vs_table){
 						case "ca_collections":
-							$vs_parent_path = $qr_res->getWithTemplate("<unit relativeTo='ca_collections.parent'><unit relativeTo='ca_collections.hierarchy' delimiter=' &gt; '>^ca_collections.type_id ^ca_collections.idno ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></unit></unit>");
+							$vs_parent_path = $qr_res->getWithTemplate("<unit relativeTo='ca_collections.parent'><unit relativeTo='ca_collections.hierarchy' delimiter=' &gt; '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></unit></unit>");
 							if($vs_parent_path){
 								$vs_parent_path .= " >";
 							}
-				#print "<div class='collectionsResult authorityResult'>".$qr_results->getWithTemplate("<l>".$vs_parent_path."<b>^ca_collections.type_id ^ca_collections.idno ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></b></l>", array('returnAsLink' => true))."</div>";
+				#print "<div class='collectionsResult authorityResult'>".$qr_results->getWithTemplate("<l>".$vs_parent_path."<b>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></b></l>", array('returnAsLink' => true))."</div>";
 
 							
 							
 							
 							if(strToLower($qr_res->getWithTemplate("^ca_collections.type_id")) == "collection"){
-								$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->getWithTemplate("<div class='collectionID'>^ca_collections.type_id ^ca_collections.idno ^ca_collections.id_number</div>^ca_collections.preferred_labels<ifdef code='ca_collections.inclusive_dates'><br/>^ca_collections.inclusive_dates%delimiter=,_</ifdef>"), '', $vs_table, $vn_id);
+								$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->getWithTemplate("<div class='collectionID'>^ca_collections.type_id ^ca_collections.id_number</div>^ca_collections.preferred_labels<ifdef code='ca_collections.inclusive_dates'><br/>^ca_collections.inclusive_dates%delimiter=,_</ifdef>"), '', $vs_table, $vn_id);
 							}else{
-								$vs_label_detail_link 	= caDetailLink($this->request, "<div class='collectionPath'>".$vs_parent_path."</div>".$qr_res->getWithTemplate("^ca_collections.type_id ^ca_collections.idno ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef>"), '', $vs_table, $vn_id);
+								$vs_label_detail_link 	= caDetailLink($this->request, "<div class='collectionPath'>".$vs_parent_path."</div>".$qr_res->getWithTemplate("^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef>"), '', $vs_table, $vn_id);
 							}
 							$vs_desc = $qr_res->getWithTemplate("^ca_collections.scope_content%convertLineBreaks=1");
 						break;
