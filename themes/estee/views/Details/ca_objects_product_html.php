@@ -200,7 +200,7 @@
 							$vs_sub_brand = ucwords(mb_strtolower($vs_sub_brand));
 						}
 						$vs_sub_brand = "<span class='notransform'>".$vs_sub_brand."</span>";
-						print "<div class='unit'><H6>Sub-brand</H6>".$vs_sub_brand."</div>";
+						print "<div class='unit'><H6>Sub-brand/Collection</H6>".$vs_sub_brand."</div>";
 					}
 					
 					if($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)) != "Component"){
