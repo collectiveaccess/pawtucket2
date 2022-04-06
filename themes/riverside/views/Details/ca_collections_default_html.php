@@ -82,9 +82,9 @@
 						}
 					}
 					
-					if(is_array($va_all_subject) && sizeof($va_all_subject)){
+					if(is_array($va_all_subjects) && sizeof($va_all_subjects)){
 						ksort($va_all_subjects);
-						$vs_keyword_links = join("<br/>", $va_all_subject);
+						$vs_keyword_links = join("<br/>", $va_all_subjects);
 						print "<div class='unit'><label>Subjects/Keywords</label>".$vs_keyword_links."</div>";	
 					}
 
