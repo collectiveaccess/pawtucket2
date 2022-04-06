@@ -81,8 +81,9 @@
 							$va_all_subjects[strToLower($t_list_item->get("ca_list_item_labels.name_singular"))] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Search", "objects", array("search" => $t_list_item->get("ca_list_item_labels.name_singular")));
 						}
 					}
-					ksort($va_all_subject);
+					
 					if(is_array($va_all_subject) && sizeof($va_all_subject)){
+						ksort($va_all_subjects);
 						$vs_keyword_links = join("<br/>", $va_all_subject);
 						print "<div class='unit'><label>Subjects/Keywords</label>".$vs_keyword_links."</div>";	
 					}

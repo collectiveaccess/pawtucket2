@@ -251,7 +251,6 @@
 								}
 								#$vs_lc_names = join("<br/>", $va_lc_names_processed);
 							}
-					ksort($va_all_subjects);
 							if(is_array($va_all_subjects) && sizeof($va_all_subjects)){
 								ksort($va_all_subjects);
 								$vs_subjects = join("<br/>", $va_all_subjects);
