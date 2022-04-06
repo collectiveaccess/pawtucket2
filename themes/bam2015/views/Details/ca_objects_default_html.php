@@ -224,9 +224,9 @@
 				if ($va_idno = $t_object->get('ca_objects.idno')) {
 					$vs_buf_second.= "<div class='unit'><span class='label'>Identifier </span>".$va_idno."</div>";
 				}
-				#if ($va_source_description = $t_object->get('ca_objects.sourceDescription')) {
-				#	$vs_buf "<div class='unit'><span class='label'>Description: </span>".$va_source_description."</div>";
-				#}
+				if ($va_source_description = $t_object->get('ca_objects.description.description_text')) {
+					$vs_buf .= "<div class='unit'><span class='label'>Description: </span>".$va_source_description."</div>";
+				}
 				#if ($va_rights_statement = $t_object->get('ca_objects.rightsStatement.rightsStatement_text', array('delimiter' => '<br/>'))) {
 				#	$vs_buf_second.= "<div class='unit'><span class='label'>Rights Statement </span>".$va_rights_statement."</div>";
 				#}
@@ -242,7 +242,42 @@
 				}
 				if ($va_event_series = $t_object->get('ca_occurrences.preferred_labels', array('restrictToTypes' => array('event_series'), 'returnAsLink' => true, 'delimiter' => ', ', 'checkAccess' => $va_access_values))) {
 					$vs_buf.= "<div class='unit'><span class='label'>Related Event Series </span>".$va_event_series."</div>";
-				}	
+				}
+				if ($va_artist_residency = $t_object->get('ca_occurrences.preferred_labels', array('restrictToTypes' => array('artist_residency'), 'returnAsLink' => true, 'delimiter' => ', ', 'checkAccess' => $va_access_values))) {
+					$vs_buf.= "<div class='unit'><span class='label'>Related Artist Residency </span>".$va_artist_residency."</div>";
+				}
+				if ($va_installation = $t_object->get('ca_occurrences.preferred_labels', array('restrictToTypes' => array('installation'), 'returnAsLink' => true, 'delimiter' => ', ', 'checkAccess' => $va_access_values))) {
+					$vs_buf.= "<div class='unit'><span class='label'>Related Installation </span>".$va_installation."</div>";
+				}
+				if ($va_movie = $t_object->get('ca_occurrences.preferred_labels', array('restrictToTypes' => array('movie'), 'returnAsLink' => true, 'delimiter' => ', ', 'checkAccess' => $va_access_values))) {
+					$vs_buf.= "<div class='unit'><span class='label'>Related Movie </span>".$va_movie."</div>";
+				}
+				$o_gallery_config = caGetGalleryConfig();
+				$vs_gallery_set_type = $o_gallery_config->get('gallery_set_type');
+				$vs_gallery_from_bam_set_type = $o_gallery_config->get('gallery_from_bam_with_love_set_type');
+ 		
+				$t_set = new ca_sets();
+				$va_sets = $t_set->getSetsForItem("ca_objects", $t_object->get("ca_objects.object_id"), array("setType" => $vs_gallery_set_type, "checkAccess" => $va_access_values));
+				$va_sets_from_bam = $t_set->getSetsForItem("ca_objects", $t_object->get("ca_objects.object_id"), array("setType" => $vs_gallery_from_bam_set_type, "checkAccess" => $va_access_values));
+				if((is_array($va_sets) && sizeof($va_sets)) || (is_array($va_sets_from_bam) && sizeof($va_sets_from_bam))){
+					$vs_buf .= "<div class='unit'><span class='label'>Part Of</span>";
+					$va_tmp = array();
+					if(is_array($va_sets) && sizeof($va_sets)){
+						foreach($va_sets as $va_set){
+							$va_set = array_pop($va_set);
+							$va_tmp[] = caNavLink($this->request, $va_set["name"], "", "", "Front", "Index", array("featured_set_id" => $va_set["set_id"]));
+						}
+					}
+					if(is_array($va_sets_from_bam) && sizeof($va_sets_from_bam)){
+						foreach($va_sets_from_bam as $va_set){
+							$va_set = array_pop($va_set);
+							$va_tmp[] = caNavLink($this->request, $va_set["name"], "", "", "Front", "Index", array("featured_set_id" => $va_set["set_id"]));
+						}
+					}
+					$vs_buf .= join(", ", $va_tmp);
+					$vs_buf .= "</div>";
+				}
+
 ?>
 				
 				</div><!-- end detailHead -->
