@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2022 Whirl-i-Gig
+ * Copyright 2007-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -135,15 +135,10 @@ class RequestHTTP extends Request {
 		}
 
 		# figure out script name
-		if(!caIsRunFromCLI()) {
-			$va_tmp = (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME']) ? explode('/', $_SERVER['SCRIPT_NAME']) : array();
-			$this->ops_script_name = '';
-			while((!$this->ops_script_name) && (sizeof($va_tmp) > 0)) {
-				$this->ops_script_name = array_pop($va_tmp);
-			}
-		} else {
-			$va_tmp = [];
-			$this->ops_script_name$
+		$va_tmp = (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME']) ? explode('/', $_SERVER['SCRIPT_NAME']) : array();
+		$this->ops_script_name = '';
+		while((!$this->ops_script_name) && (sizeof($va_tmp) > 0)) {
+			$this->ops_script_name = array_pop($va_tmp);
 		}
 
 		# create session
@@ -245,7 +240,7 @@ class RequestHTTP extends Request {
 	}
 	# -------------------------------------------------------
 	function isAjax() {
-		return ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest"));
+		return ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest") || (isset($_REQUEST['_isFlex']) && $_REQUEST['_isFlex']));
 	}
 	# -------------------------------------------------------
 	function isDownload($pb_set_download=null) {
