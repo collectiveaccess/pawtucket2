@@ -491,21 +491,6 @@ class DetailController extends FindController {
 				}
 			}
 		}
-		
-		// find view
-		//		first look for type-specific view
-		$vs_path = "Details/{$vs_table}_default_html.php";		// If no type specific view use the default
-		if ($subject_type_code = $t_subject->getTypeCode()) {
-			if (is_array($va_type_codes = caMakeTypeList($vs_table, [$subject_type_code]))) {
-				$va_type_codes = array_merge($va_type_codes, caMakeTypeList($vs_table, $t_subject->getTypeInstance()->getHierarchyAncestors($t_subject->getTypeID(), ['idsOnly' => true]), ['dontIncludeSubtypesInTypeRestriction' => true]));
-				foreach($va_type_codes as $vs_type_code) {   // try more specific types first
-					if ($this->viewExists("Details/{$vs_table}_{$vs_type_code}_html.php")) {
-						$vs_path = "Details/{$vs_table}_{$vs_type_code}_html.php";
-						break;
-					}
-				}
-			}
-		}
 
 		$this->view->setVar('pdfEnabled', (bool)$options['enablePDF']);
 		caDoTemplateTagSubstitution($this->view, $t_subject, $vs_path, ['checkAccess' => $this->opa_access_values]);
