@@ -493,8 +493,8 @@ class DetailController extends FindController {
 		}
 
 		$this->view->setVar('pdfEnabled', (bool)$options['enablePDF']);
-		caDoTemplateTagSubstitution($this->view, $t_subject, $vs_path, ['checkAccess' => $this->opa_access_values]);
-		$this->render($vs_path);
+		caDoTemplateTagSubstitution($this->view, $t_subject, $path, ['checkAccess' => $this->opa_access_values]);
+		$this->render($path);
 	}
 	# -------------------------------------------------------
 	/**
