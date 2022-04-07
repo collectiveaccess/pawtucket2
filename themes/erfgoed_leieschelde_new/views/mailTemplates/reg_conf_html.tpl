@@ -29,10 +29,13 @@ if($this->request->config->get("dont_approve_logins_on_registration")){
 	$vs_active_message = _t("<p>Your account will be activated after review.</p>");
 }
 
-print "<p>Bedankt om u te registreren voor \"".$this->request->config->get("app_display_name")."\". ".$vs_active_message."</p>
+print "<p>Bedankt om te registreren op de \"Erfgoedbank Leie Schelde\". ".$vs_active_message."</p>
 
-<p>Als lid kunt u opmerkingen plaatsen en items op de site taggen. U kunt ook uw eigen sets uit de verzameling maken.</p>
+<p>Als lid van de Erfgoedbank Leie Schelde kan je reacties achterlaten bij foto’s, luister- en filmfragmenten. Je kan ook een eigen album met audiovisueel materiaal samenstellen.</p>
 ";
 
 	print "<p>".$this->request->config->get("site_host")."</p>";
 ?>
+
+
+ 

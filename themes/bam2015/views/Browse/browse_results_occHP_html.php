@@ -54,6 +54,7 @@
 	if(($vs_current_sort != "Date") || (($vs_current_sort == "Date") && !$vn_start)){
 		Session::setVar('lastProYear', "");
 	}
+	$vn_num_hits = $qr_res->numHits();
 	$vs_last_pro_year = Session::getVar('lastProYear');
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -173,23 +174,33 @@
 				#if($vb_show_year){
 				#	print "<div class='col-xs-12' style='clear:left'><br/><H4>".Session::getVar('lastProYear')."</H4></div>";
 				#}
-				print "
-	<div class='col-xs-12 col-sm-6'>
-		<div class='row'><div class='col-sm-12'><H4>".(($vb_show_year) ? Session::getVar('lastProYear') : "&nbsp;")."</H4></div></div>
-		<div class='row'>
-			<div class='col-xs-12 col-sm-4'>
-				<div class='bBAMResultItemOccCircle OccHPCircleImage'>
-					<div class='bBAMResultItemImgContainerOccCircle'>{$vs_rep_detail_link}</div>
-				</div>
-			</div>
-			<div class='col-xs-12 col-sm-8'>
-				<div class='bBAMResultListItemOccHP'>
-					".$vs_detail_link."
-				</div>
-			</div>
-		</div>
-		</div><!-- end bBAMResultListItem -->
-	</div><!-- end col -->";
+				if($vn_num_hits > 15){
+					print "<div class='col-xs-12 col-sm-4'>
+							<div class='row'>
+								<div class='col-xs-12'>
+									<div class='bBAMResultListItemOccHP bBAMResultListItemOccHPNoImage'>
+										".$vs_detail_link."
+									</div>
+								</div>
+							</div>
+							<div class='row'><div class='col-sm-12'><br/><br/></div></div>
+						</div><!-- end col -->";
+				}else{
+					print "<div class='col-xs-12 col-sm-6'>
+							<div class='row'>
+								<div class='col-xs-12 col-sm-4'>
+									<div class='bBAMResultListItemImgOccHP'>{$vs_rep_detail_link}</div>
+								</div>
+								<div class='col-xs-12 col-sm-8'>
+									<div class='bBAMResultListItemOccHP'>
+										".$vs_detail_link."
+									</div>
+								</div>
+							</div>
+							<div class='row'><br/><br/></div></div>
+						</div><!-- end col -->";
+				
+				}
 				
 				$vn_c++;
 			}

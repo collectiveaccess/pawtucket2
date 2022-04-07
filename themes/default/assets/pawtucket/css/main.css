@@ -3499,7 +3499,19 @@ input[type='text'].ui-autocomplete-loading {
     object-fit: contain;
     background-color: #000;
 }
-
+/* plyr video */
+.plyr__control--overlaid {
+  background: #8a8a8a;
+  background: var(--plyr-video-control-background-hover,var(--plyr-color-main,var(--plyr-color-main,#8a8a8a)));
+}
+.plyr--video .plyr__control.plyr__tab-focus, .plyr--video .plyr__control:hover, .plyr--video .plyr__control[aria-expanded="true"] {
+  background: #ababab;
+  background: var(--plyr-video-control-background-hover,var(--plyr-color-main,var(--plyr-color-main,#ababab)));
+}
+.plyr--full-ui input[type="range"] {
+  color: #8a8a8a;
+  color: var(--plyr-range-fill-background,var(--plyr-color-main,var(--plyr-color-main,#8a8a8a)));
+}
 /* Fix for StoryMap/Leaflet conflict that results in StoryMap map markers rendered unclickable */
 .leaflet-marker-icon {
 	pointer-events: auto;

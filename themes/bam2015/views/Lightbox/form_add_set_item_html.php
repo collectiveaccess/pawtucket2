@@ -43,7 +43,6 @@
 ?>
 	<form id="AddItemForm" action="#" class="form-horizontal" role="form">
 <?php
-		print caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request)));
 		if(is_array($va_write_sets) && sizeof($va_write_sets)){
 			$t_write_set = new ca_sets();
 			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><select name='set_id' class='form-control'>";

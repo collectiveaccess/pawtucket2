@@ -119,7 +119,10 @@
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
 					if ($vs_table == 'ca_objects') {
-						$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+						$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit>", array("checkAccess" => $va_access_values));
+						if(!$vs_thumbnail){
+							$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' limit='1'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values));
+						}
 						if($vn_p = strpos($vs_thumbnail, ";")){
 							$vs_thumbnail = substr($vs_thumbnail, 0, $vn_p);
 						}
@@ -151,7 +154,7 @@
 					$vs_result_output = "<div class='col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 											<div class='slide'>".caDetailLink($this->request, $vs_thumbnail, "", "ca_objects", $qr_res->get("ca_objects.object_id"))."<div class='slideCaption'>".caDetailLink($this->request, $qr_res->get("ca_objects.preferred_labels.name"), "", "ca_objects", $qr_res->get("ca_objects.object_id"))."</div></div>
 										</div><!-- end col -->";
-					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
+					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				
 				$vn_c++;

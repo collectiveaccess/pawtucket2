@@ -47,7 +47,7 @@
 		<div id="footer">
 			<div class="container">
 				<ul class="list-inline copyright">
-					&#169; 2017 Brooklyn Academy of Music
+					&#169; 2017-2022 Brooklyn Academy of Music
 					<div><a href="http://www.leonlevyfoundation.org/" target="_blank"><?php print caGetThemeGraphic($this->request, 'leonlevylogo.jpg'); ?></a></div>
 				</ul>
 				<div class='footerHeader'>

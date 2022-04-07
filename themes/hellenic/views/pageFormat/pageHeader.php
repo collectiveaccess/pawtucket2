@@ -184,7 +184,7 @@
 								<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "collection"); ?></li>
 								<li><?php print caNavLink($this->request, _t("Schedule a Research Visit"), "", "", "Contact", "form", array("mode" => "research")); ?></li>
 								<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
-								<li><?php print caNavLink($this->request, _t("Helpful Links"), "", "", "About", "links"); ?></li>
+								<li><?php print caNavLink($this->request, _t("Helpful Information"), "", "", "About", "links"); ?></li>
 								<li><?php print caNavLink($this->request, _t("Acknowledgements"), "", "", "About", "acknowledgements"); ?></li>			
 							</ul>
 						</li>

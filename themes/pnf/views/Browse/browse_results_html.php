@@ -62,14 +62,32 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-if (!$vb_ajax) {	// !ajax
+	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
+	if ($vb_show_filter_panel && $vn_start == 0) {
+		$o_context = new ResultContext($this->request, "ca_objects", 'detailrelated');
+		
+		$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+		$qr_res->seek($vn_start);
+		$o_context->saveContext();
+	}
+
+	
+if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
-<div class="row" style="clear:both;">
+<div class="row">
+<?php
+	if(in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies"))){
+?>
+		<div class='col-md-12 col-lg-10 col-lg-offset-1'>
+<?php		
+	}else{
+?>
 	<div class='<?php print ($vs_table == "ca_collections" ? "col-sm-12" : "col-sm-8 col-md-9 col-lg-9"); ?>'>
-<?php 
+<?php
+	}
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
+					print "<H5 id='bSortByList'".(($vb_show_filter_panel) ? " class='catchLinks'" : "")."><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
 					$i = 0;
 					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 						$i++;
@@ -86,44 +104,75 @@ if (!$vb_ajax) {	// !ajax
 					print "</ul></H5>\n";
 				}
 			}
+
+	if(in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies"))){
+		print "<div>".caNavLink($this->request, '< Back to All '.$this->request->getAction(), 'btn btn-default btn-small', '', 'Listing', $this->request->getAction())."</div>";
+
+?>
+		<form style="float:right;" role="search" action="<?php print caNavUrl($this->request, '', 'Search', $this->request->getAction()); ?>">
+			<div id="filterByNameContainer">
+				<div>
+					<input type="text" name="search" placeholder="<?php print _t('search');?>" value="" onfocus="this.value='';"/>  <button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+				</div>
+			</div>
+		</form>
+<?php
+	}elseif(in_array(strToLower($this->request->getAction()), array("ornaments"))){
+		print "<div>".caNavLink($this->request, '< Back', 'btn btn-default btn-small', '', 'Pictorials', 'Ornaments')."</div>";	
+	}
+
 		if ($vs_table != "ca_collections") {		
 
 		print "<h2 style='margin-bottom:5px;'>".$va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span></h2>";	
 
 ?>
-		<H5>
+		<H5 <?php print (($vb_show_filter_panel) ? "class='catchLinks'" : ""); ?>>
 		
 <?php
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
-				print "<strong>".$va_criterion['facet'].':</strong>';
-				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
-				}else{
-					print ' '.$va_criterion['value'];
-					$vs_search = $va_criterion['value'];
-				}
-				$i++;
-				if($i < sizeof($va_criteria)){
-					print " ";
-				}
-				$va_current_facet = $va_facets[$va_criterion['facet_name']];
-				if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
-					$t_authority_table = new $va_current_facet["table"];
-					$t_authority_table->load($va_criterion['id']);
-					$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
+				if (($va_criterion['facet_name'] != '_search') || (($va_criterion['facet_name'] == '_search') && (strpos($va_criterion['value'], "collection_id") === false))) {
+					if(!$vb_show_filter_panel || ($vb_show_filter_panel && $va_criterion['facet_name'] != 'collection_facet')){
+						print "<strong>".$va_criterion['facet'].':</strong>';
+						if ($va_criterion['facet_name'] != '_search') {
+							if ($va_criterion['facet_name'] == 'ornament_category') {
+								$va_parts = explode(" ➜ ", $va_criterion['value']);
+								print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.array_pop($va_parts).' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+							}else{
+								print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+							}
+						}else{
+							print ' '.$va_criterion['value'];
+							$vs_search = $va_criterion['value'];
+						}
+						$i++;
+						if($i < sizeof($va_criteria)){
+							print " ";
+						}
+						$va_current_facet = $va_facets[$va_criterion['facet_name']];
+						if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
+							$t_authority_table = new $va_current_facet["table"];
+							$t_authority_table->load($va_criterion['id']);
+							$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
+						}
+					}
 				}
 			}
 		}
 ?>		
 		</H5>
-		<hr>
+		<hr style="clear:both;">
+<?php
+	# --- Hide sort options for those that don't have more than 1
+	if(!in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies", "ornaments"))){
+?>
+		
 		<div id="searchOptions" >
 			<div class='row'>	
 				<div class='col-sm-6 col-md-6 col-lg-6 btn-group'>
 				<a href='#' data-toggle="dropdown">Sort By: <span class='btn'><?php print $vs_current_sort;?><b class="caret"></b></span></a>
-				<ul class="dropdown-menu" role="menu">
+				<ul class="dropdown-menu <?php print ($vb_show_filter_panel) ? "catchLinks" : ""; ?>" role="menu">
 <?php				
 					if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 						foreach($va_sorts as $vs_sort => $vs_sort_flds) {
@@ -147,7 +196,7 @@ if (!$vb_ajax) {	// !ajax
 					}
 ?>				
 					<a href='#' data-toggle="dropdown">Sort Order: <span class='btn'><?php print ucfirst($vs_sort_label);?><b class="caret"></b></span></a>
-					<ul class="dropdown-menu" role="menu">
+					<ul class="dropdown-menu <?php print ($vb_show_filter_panel) ? "catchLinks" : ""; ?>" role="menu">
 <?php	
 						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc'))."</li>";
@@ -160,6 +209,7 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end searchoptions -->
 
 <?php
+	}
 		}
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
@@ -181,17 +231,8 @@ if (!$vb_ajax) {	// !ajax
 				$qr_res->seek(0);
 				$i = 0;
 				while($qr_res->nextHit()) {
-					print "<div class='institutionUnit'>";
-					print "<a href='#' onclick='$(\"#institutionMore".$qr_res->get('ca_collections.collection_id')."\").toggle(300); google.maps.event.trigger(caMap_map_markers[{$i}], \"click\"); return false;'><i class='fa fa-bank'></i> ".$qr_res->get('ca_collections.preferred_labels')."</a>";
-					print "<div id='institutionMore".$qr_res->get('ca_collections.collection_id')."' class='institutionMore'>"; 
-					print $qr_res->getWithTemplate('<ifcount code="ca_collections.collection_address" min="1"><unit><ifdef code="ca_collections.collection_address.collection_address_data1">^ca_collections.collection_address.collection_address_data1<br/></ifdef><ifdef code="ca_collections.collection_address.collection_address_data2">^ca_collections.collection_address.collection_address_data2<br/></ifdef><ifdef code="ca_collections.collection_address.collection_city">^ca_collections.collection_address.collection_city, </ifdef><ifdef code="ca_collections.collection_address.collection_stateprovince">^ca_collections.collection_address.collection_stateprovince </ifdef><ifdef code="ca_collections.collection_address.collection_postalcode">^ca_collections.collection_address.collection_postalcode </ifdef></unit></ifcount>');
-
-					print $qr_res->getWithTemplate('<ifcount code="ca_collections.collection_website" min="1"><unit><ifdef code="ca_collections.collection_website"><br/><a href="^ca_collections.collection_website" target="_blank">^ca_collections.collection_website</a><br/></ifdef></unit><ifcount>');
-					print "<br/>".caNavLink($this->request, 'Sueltas in this collection', 'institutionLink', '', 'Detail', 'collections/'.$qr_res->get('ca_collections.collection_id'));
-					print "</div>";
-					print "</div>";
+					print "<div class='institutionUnit'>".caNavLink($this->request, "<i class='fa fa-bank'></i> ".$qr_res->get('ca_collections.preferred_labels'), 'institutionLink', '', 'Detail', 'collections/'.$qr_res->get('ca_collections.collection_id'))."</div>";
 					print "<hr>";
-					$i++;
 				}
 				$qr_res->seek(0);
 				print "</div>";
@@ -199,41 +240,31 @@ if (!$vb_ajax) {	// !ajax
 ?>		
 			<div id="browseResultsContainer" <?php print "class='".$vs_class."'";?> >
 <?php
-		if($vb_is_search && !$qr_res->numHits() && $vs_search){
-			# --- try to display did you mean results if available
-			$o_search = caGetSearchInstance($vs_table);
-			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {
-				$va_suggest_links = array();
-				foreach($va_suggestions as $vs_suggestion){
-					$va_suggest_links[] = caNavLink($this->request, $vs_suggestion, '', '*', '*', '*', array('search' => $vs_suggestion, 'sort' => $vs_current_sort, 'view' => $vs_current_view));
-				}
-				
-				if (sizeof($va_suggest_links) > 1) {
-					print "<div class='col-sm-12'>"._t("Did you mean one of these: %1?", join(', ', $va_suggest_links))."</div>";
-				} else {
-					print "<div class='col-sm-12'>"._t("Did you mean %1?", join(', ', $va_suggest_links))."</div>";
-				}
-			}
-		}
 } // !ajax
 
 print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
 
-if (!$vb_ajax) {	// !ajax
+if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
 			</div><!-- end browseResultsContainer -->
 		</div><!-- end row -->
 		</form>
 	</div><!-- end col-8 -->
-	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-lg-3"; ?>">
+<?php
+	if(!in_array(strToLower($this->request->getAction()), array("glossary", "miscellanies"))){
+?>
+
+	<div class="<?php print ($vb_show_filter_panel) ? "catchLinks" : ""; ?> <?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-lg-3"; ?>">
 		<div id="bViewButtons">
 <?php
-		if(is_array($va_views) && (sizeof($va_views) > 1)){
-			foreach($va_views as $vs_view => $va_view_info) {
-				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
-				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+		if(!$vb_show_filter_panel){
+			if(is_array($va_views) && (sizeof($va_views) > 1)){
+				foreach($va_views as $vs_view => $va_view_info) {
+					if ($vs_current_view === $vs_view) {
+						print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
+					} else {
+						print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+					}
 				}
 			}
 		}
@@ -243,9 +274,11 @@ if (!$vb_ajax) {	// !ajax
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->
+<?php
+	}
+?>	
 	
-	
-</div><!-- end row -->	
+</div><!-- end row -->
 
 <script type="text/javascript">
 	jQuery(document).ready(function() {
@@ -272,7 +305,20 @@ if (!$vb_ajax) {	// !ajax
 		}
 ?>
 	});
-
+<?php
+		if($vb_show_filter_panel){
+?>			
+			$(".catchLinks").on("click", "a", function(event){
+				if(!$(this).hasClass('dontCatch') && $(this).attr('href') != "#"){
+					event.preventDefault();
+					var url = $(this).attr('href') + "/showFilterPanel/1";
+					$('#browseResultsDetailContainer').load(url);
+				}
+								
+			});
+<?php
+		}
+?>
 </script>
 <?php
 		print $this->render('Browse/browse_panel_subview_html.php');

@@ -35,7 +35,11 @@
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
 	
-	$vn_rep_count = sizeof($t_object->get("ca_object_representations.representation_id", array("filterNonPrimaryRepresentations" => false, "returnAsArray" => true, "checkAccess" => $va_access_values)));
+	$vn_rep_count = "";
+	$va_reps = $t_object->get("ca_object_representations.representation_id", array("filterNonPrimaryRepresentations" => false, "returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(is_array($va_reps)){
+		$vn_rep_count = sizeof($va_reps);
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
