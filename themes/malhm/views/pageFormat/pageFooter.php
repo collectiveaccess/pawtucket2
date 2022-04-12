@@ -40,9 +40,9 @@
 							<div class='col-xs-12 col-sm-10'>
 								<div class="paragraph" style="text-align:left;">
 									General contact:<br>
-									Dustin Heckman, Alliance Coordinator<br>
+									Gibson Stanton, Alliance Coordinator<br>
 									612-500-7460<br>
-									<a href="mailto:staff@mnhistoryalliance.org">Contact</a>
+									<a href="mailto:gibson@mnhistoryalliance.org">Contact</a>
 									<br/><a href="http://www.mnhistoryalliance.org">http://www.mnhistoryalliance.org</a>
 								</div>					
 							</div>
@@ -55,7 +55,7 @@
 							<span class='socialFooter'><a href='https://www.linkedin.com/company/28123620/' target='_blank'><i class='fa fa-linkedin'></i></a></span>
 							<span class='socialFooter'><a href='mailTo:staff@mnhistoryalliance.org' target='_blank'><i class='fa fa-envelope-o'></i></a></span>
 							<span class='socialFooter'><a href='https://www.instagram.com/mnhistoryalliance/' target='_blank'><i class='fa fa-instagram'></i></a></span>
-							<div class='copy'>© COPYRIGHT 2018. ALL RIGHTS RESERVED.</div>
+							<div class='copy'>© COPYRIGHT <?php print date("Y"); ?>. ALL RIGHTS RESERVED.</div>
 							<div class='clean'>
 								<?php print caGetThemeGraphic($this->request, 'clean.jpg'); ?>
 							</div>

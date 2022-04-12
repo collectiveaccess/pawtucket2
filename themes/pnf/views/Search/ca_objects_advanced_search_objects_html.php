@@ -33,17 +33,21 @@
 			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
 		<div class="col-sm-6 field">
-			<?php print _t("Printer"); ?><br/>
-			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=printer}}}
+			<?php print _t("CCSSUSA Uniform Title"); ?><br/>
+			{{{ca_objects.CCSSUSA_Uniform}}}
 		</div>			
 			
 	</div>
 	<div class='row'>
-		<div class="col-sm-6 field">
+		<div class="col-sm-4 field">
+			<?php print _t("Printer"); ?><br/>
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=printer}}}
+		</div>			
+		<div class="col-sm-4 field">
 			<?php print _t("Translator"); ?><br/>
 			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=translator}}}
 		</div>
-		<div class="col-sm-6 field">
+		<div class="col-sm-4 field">
 			<?php print _t("Publisher"); ?><br/>
 			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=publisher}}}
 		</div>					
@@ -51,7 +55,7 @@
 	<div class='row'>
 		<div class="col-sm-6 field">
 			<?php print _t("Language"); ?><br/>
-			{{{ca_entities.language}}}
+			{{{ca_objects.041_lang}}}
 		</div>	
 		<div class="col-sm-6 field">
 			<?php print _t("Bookseller"); ?><br/>
@@ -91,6 +95,17 @@
 	</div>
 	<div class='row'>
 		<div class="col-sm-6 field">
+			<?php print _t("Printers' Evidence"); ?> <br/>
+			{{{ca_objects.from_printers%inUse=1&render=select}}}
+		</div>
+		<div class="col-sm-6 field">
+			<?php print _t("Item Specific Information"); ?> <br/>
+			{{{ca_objects.item_specific_info%inUse=1&render=select}}}
+		</div>		
+					
+	</div>
+	<div class='row'>
+		<div class="col-sm-6 field">
 			<?php print _t("Local Note(s)"); ?><br/>
 			{{{ca_objects.590_local%width=200px&height=1}}} 
 		</div>	
@@ -107,7 +122,9 @@
 		<div class="col-sm-6 field">
 			<?php print _t("Holding Institution Call Number"); ?><br/>
 			{{{ca_objects.idno%width=210px}}}
-		</div>	
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-sm-12 field">
 			<div style="float: right; margin-top:20px; margin-left: 20px; ">{{{resetTag}}}<?php print _t('Reset');?>{{{/resetTag}}}</div>
 			<div style="float: right; margin-top:20px;">{{{submitTag}}}<?php print _t('Search');?>{{{/submitTag}}}</div>

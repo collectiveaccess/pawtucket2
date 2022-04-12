@@ -26,10 +26,10 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php"); 
-	require_once(__CA_LIB_DIR__."/ca/BasePluginController.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php"); 
+	require_once(__CA_LIB_DIR__."/BasePluginController.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
- 	require_once(__CA_LIB_DIR__.'/ca/Search/CollectionSearch.php');
+ 	require_once(__CA_LIB_DIR__.'/Search/CollectionSearch.php');
  	require_once(__CA_MODELS_DIR__.'/ca_collections.php');
  
  	class CollectionController extends BasePluginController {

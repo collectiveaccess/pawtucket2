@@ -132,7 +132,8 @@
 		if(caUseCleanUrls()) {
 			$vs_url = $po_request->getBaseUrlPath();
 		} else {
-			$vs_url = $po_request->getBaseUrlPath().'/'.$po_request->getScriptName();
+			$s = $po_request->getScriptName();
+			$vs_url = $po_request->getBaseUrlPath().'/'.(($s === 'service.php') ? 'index.php' : $s);
 		}
 		if ($ps_module_path == '*') { $ps_module_path = $po_request->getModulePath(); }
 		if ($ps_controller == '*') { $ps_controller = $po_request->getController(); }
@@ -420,7 +421,7 @@
 			$vs_buf .= caHTMLHiddenInput('form_timestamp', array('value' => time()));
 		}
 		if (!caGetOption('noCSRFToken', $pa_options, false)) {
-			$vs_buf .= caHTMLHiddenInput('crsfToken', array('value' => caGenerateCSRFToken($po_request)));
+			$vs_buf .= caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($po_request)));
 		}
 		
 		if (!caGetOption('disableUnsavedChangesWarning', $pa_options, false)) { 
@@ -553,7 +554,9 @@
 		$pb_no_background = (isset($pa_options['no_background']) && $pa_options['no_background']) ? true : false;
 		$pb_dont_show_content = (isset($pa_options['dont_show_content']) && $pa_options['dont_show_content']) ? true : false;
 		
-		$vs_classname = (!$pb_no_background) ? 'form-button' : '';
+		if($vs_classname = (!$pb_no_background) ? 'form-button' : '') {
+			$pa_attributes['class'] .= " {$vs_classname}";
+		}
 		
 		$va_attr = array();
 		if ($ps_id) { $va_attr[] = "id='{$ps_id}'"; }
@@ -563,7 +566,7 @@
 			}
 		}
 		
-		$vs_button = "<a class='{$vs_classname}' ".join(' ', $va_attr).">";
+		$vs_button = "<a ".join(' ', $va_attr).">";
 		if (!$pb_no_background) { 
 			$vs_button .= "<span class='form-button'>"; 
 			$vn_padding = ($ps_content) ? 10 : 0;
@@ -1175,9 +1178,8 @@
 			if (is_array($va_ids) && ($vn_id_for_idno = array_shift($va_ids))) {
 				$vb_id_exists = true;
 			}
-			$vn_id_for_idno = str_replace("/", "~", $vn_id_for_idno);
-			
-		    $pn_id = (strlen($vn_id_for_idno)) ? $vn_id_for_idno : "id:{$pn_id}";
+
+		    $pn_id = (strlen($vn_id_for_idno) && (strpos($vn_id_for_idno, '/') === false)) ? $vn_id_for_idno : "id:{$pn_id}";
 		}
 		$vs_action .= "/".rawurlencode($pn_id);
 		
@@ -1369,4 +1371,29 @@
 		if (is_bool($g_use_clean_urls)) { return $g_use_clean_urls; }
 		return $g_use_clean_urls = (defined('__CA_USE_CLEAN_URLS__') && (__CA_USE_CLEAN_URLS__) && caModRewriteIsAvailable());
 	}
+	# ------------------------------------------------------------------------------------------------
+    /**
+     * @param $vs_controller
+     * @param $vs_action
+     *
+     * @return bool
+     */
+    function caIsGzipDisabled($vs_controller, $vs_action){
+        $conf = Configuration::load();
+        $va_disable_gzip = $conf->getAssoc('disable_gzip_on_controllers');
+        if (($va_acl = caGetOption($vs_controller, $va_disable_gzip, null)) !== null){
+            $va_actions = caGetOption('action', $va_acl, array());
+            if (!is_array($va_actions)){
+                $va_actions = array($va_actions);
+            }
+            if (in_array($vs_action, $va_actions)){
+                return true;
+            } else {
+                return sizeof(array_keys($va_acl))==0;
+            }
+        }
+        return false;
+    }
+    # ------------------------------------------------------------------------------------------------
+
 	# ------------------------------------------------------------------------------------------------

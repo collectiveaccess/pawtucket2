@@ -172,7 +172,7 @@
 			<div class="commentsarea">
 				<div class="col-sm-6">
 					<p><strong>Leave a Comment</strong></p>
-					<form method="post" id="CommentForm" action="<?php print caNavUrl($this->request, '', 'Detail', 'saveCommentTagging'); ?>" role="form" enctype="multipart/form-data">
+					<form method="post" id="CommentForm" action="<?php print caNavUrl($this->request, '', 'Detail', 'saveCommentTagging', ['csrfToken' => caGenerateCSRFToken($this->request)]); ?>" role="form" enctype="multipart/form-data">
 						<div class="form-group">
 							<label for="Name">Name</label><input type="text" class="form-control" id="name" placeholder="Name" name="name" value="<?php print $this->getVar("form_name"); ?>">
 						</div>

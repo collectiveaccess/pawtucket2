@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2018 Whirl-i-Gig
+ * Copyright 2008-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1131,6 +1131,31 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	}
 	# ------------------------------------------------------
 	/**
+	 * Determine if element is of an authority type
+	 *
+	 * @param string|int $pm_element_code_or_id
+	 * @return bool
+	 * @throws MemoryCacheInvalidParameterException
+	 */
+	static public function isAuthorityDatatype($pm_element_code_or_id) {
+		if($datatype = (int)self::getElementDatatype($pm_element_code_or_id)) {
+			return (in_array($datatype, [
+				__CA_ATTRIBUTE_VALUE_OBJECTREPRESENTATIONS__,
+				__CA_ATTRIBUTE_VALUE_PLACES__,
+				__CA_ATTRIBUTE_VALUE_ENTITIES__,
+				__CA_ATTRIBUTE_VALUE_OCCURRENCES__,
+				__CA_ATTRIBUTE_VALUE_STORAGELOCATIONS__,
+				__CA_ATTRIBUTE_VALUE_COLLECTIONS__,
+				__CA_ATTRIBUTE_VALUE_LOANS__,
+				__CA_ATTRIBUTE_VALUE_MOVEMENTS__,
+				__CA_ATTRIBUTE_VALUE_OBJECTS__,
+				__CA_ATTRIBUTE_VALUE_OBJECTLOTS__
+			], true));
+		}
+		return false;
+	}
+	# ------------------------------------------------------
+	/**
 	 * Get element code for given element_id (or code)
 	 * @param mixed $pm_element_id
 	 * @return string
@@ -1300,6 +1325,33 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		}
 
 		MemoryCache::save($pm_element_id, $vm_return, 'ElementSettings');
+		return $vm_return;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Return element default value, if defined.
+	 *
+	 * @param string|int $pm_element_code_or_id
+	 * @return string
+	 * @throws MemoryCacheInvalidParameterException
+	 */
+	static public function getElementDefaultValue($pm_element_code_or_id) {
+		if(!$pm_element_code_or_id) { return null; }
+		if(is_numeric($pm_element_code_or_id)) { $pm_element_code_or_id = (int) $pm_element_code_or_id; }
+
+		if(MemoryCache::contains($pm_element_code_or_id, 'ElementDefaultValues')) {
+			return MemoryCache::fetch($pm_element_code_or_id, 'ElementDefaultValues');
+		}
+
+		$vm_return = null;
+		if ($t_element = ca_metadata_elements::getInstance($pm_element_code_or_id)) {
+			//$vm_return = (int) $t_element->get('datatype');
+			$default_setting_name = Attribute::getValueDefaultSettingForDatatype(ca_metadata_elements::getDataTypeForElementCode($pm_element_code_or_id));
+		    $settings = ca_metadata_elements::getElementSettingsForId($pm_element_code_or_id);
+		    $vm_return = isset($settings[$default_setting_name]) ? $settings[$default_setting_name] : null;
+		}
+
+		MemoryCache::save($pm_element_code_or_id, $vm_return, 'ElementDefaultValues');
 		return $vm_return;
 	}
 	# ------------------------------------------------------

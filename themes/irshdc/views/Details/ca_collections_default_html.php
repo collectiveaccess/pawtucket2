@@ -132,7 +132,9 @@
 <?php				
 					}
 					if($vs_map = $this->getVar("map")){
-						print "<div class='unit'>".$vs_map."</div>";
+						if($t_item->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
+							include("map_html.php");
+						}
 					}
 ?>
 				</div>
@@ -160,7 +162,7 @@
 ?>
 					{{{<ifcount code="ca_objects" min="1">
 								<div class="relatedBlock">
-								<h3>Objects</H3>
+								<h3>Records</H3>
 									<div class="row">
 										<div id="browseResultsContainer">
 											<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>

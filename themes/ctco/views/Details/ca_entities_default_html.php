@@ -20,12 +20,7 @@
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					<H4>{{{^ca_entities.preferred_labels.displayname}}}</H4>
 <?php
-					if ($vs_nat = $t_item->get('ca_entities.nationalityCreator', array('delimiter' => '<br/>'))) {
-						print "<div class='unit'><h6>Nationality</h6>".$vs_nat."</div>";
-					}
-					if ($vs_birth = $t_item->get('ca_entities.birthplace', array('delimiter' => '<br/>'))) {
-						print "<div class='unit'><h6>Birthplace</h6>".$vs_birth."</div>";
-					}
+
 					if ($vs_life = $t_item->get('ca_entities.life_dates', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><h6>Life Dates</h6>".$vs_life."</div>";
 					}
@@ -41,12 +36,20 @@
 					if ($vs_published = $t_item->get('ca_entities.published', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><h6>Published</h6>".$vs_published."</div>";
 					}
+					if ($vs_bio = $t_item->get('ca_entities.biography')) {
+						print "<div class='unit' style='margin-top:20px;'>".$vs_bio."</div>";
+					}
+						
+				/*	if ($vs_nat = $t_item->get('ca_entities.nationalityCreator', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Nationality</h6>".$vs_nat."</div>";
+					}
+					if ($vs_birth = $t_item->get('ca_entities.birthplace', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Birthplace</h6>".$vs_birth."</div>";
+					}
 					if ($vs_gender = $t_item->get('ca_entities.genderCreator', array('convertCodesToDisplayText' => true))) {
 						print "<div class='unit'><h6>Gender</h6>".$vs_gender."</div>";
 					}
-					if ($vs_bio = $t_item->get('ca_entities.biography')) {
-						print "<div class='unit'><h6>Biography</h6>".$vs_bio."</div>";
-					}																						
+			  */																												
 ?>				
 					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
 					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
@@ -65,28 +68,52 @@
 					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}				
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_objects" min="1" max="1"><unit relativeTo="ca_objects" delimiter=" "><div class='singleImage'><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></div></ifcount>}}}
-<?php			
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled) {
+					{{{representationViewer}}}
+<?php
+					if ($va_website = $t_item->get('ca_entities.website', array('returnAsArray' => true))) {
+						print "<h6>Location</h6>";
+						foreach ($va_website as $va_key => $va_website_link) {
+							print "<div><a href='".$va_website_link."'>".$va_website_link."</a></div>";
+						}
+					}
+					if ($va_addresses = $t_item->get('ca_entities.address', array('returnWithStructure' => true))) {
+						$vs_address = "";
+						$va_city_state = array();
+						foreach ($va_addresses as $va_key => $va_addresses_t) {
+							foreach ($va_addresses_t as $va_key => $va_address) {
+								if ($va_address['address1']) {
+									$vs_address.= $va_address['address1']."<br/>";
+								}
+								if ($va_address['address2']) {
+									$vs_address.= $va_address['address2']."<br/>";
+								}
+								if ($va_address['city']) {
+									$va_city_state[] = $va_address['city'];
+								}
+								if ($va_address['stateprovince']) {
+									$va_city_state[] = $va_address['stateprovince'];
+								}
+								$vs_address.= join(', ', $va_city_state);
+								if ($va_address['postalcode']) {
+									$vs_address.= " ".$va_address['postalcode'];
+								}
+								if ($va_address['country']) {
+									$vs_address.= "<br/>".$va_address['country'];
+								}
+							}
+						}
 						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
+						if ( $vs_address != "") {
+							print "<div class='unit'>".$vs_address."</div>";
+						}
 					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+					if ($vs_work_phone = $t_item->get('ca_entities.telephone_work', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'>".$vs_work_phone."</div>";
 					}
-					print '</div><!-- end detailTools -->';
-				}				
-?>
-					
+?>									
 				</div><!-- end col -->				
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -94,7 +121,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id+or+ca_objects.source_id:^ca_entities.idno'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

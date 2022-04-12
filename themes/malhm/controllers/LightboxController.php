@@ -117,7 +117,7 @@
 			$this->ops_description_attribute = ($this->opo_config->get("lightbox_set_description_element_code") ? $this->opo_config->get("lightbox_set_description_element_code") : "description");
 			$this->view->setVar('description_attribute', $this->ops_description_attribute);
 			
-			$this->purifier = new HTMLPurifier();
+			$this->purifier = caGetHTMLPurifier();
 			
  			parent::setTableSpecificViewVars();
  		}
@@ -1359,7 +1359,7 @@
 					
 					$t_download_log->log(array(
 						"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
-						"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+						"ip_addr" => RequestHTTP::ip(), 
 						"table_num" => $t_instance->TableNum(), 
 						"row_id" => $t_instance->get("ca_objects.object_id"), 
 						"representation_id" => $vn_representation_id, 

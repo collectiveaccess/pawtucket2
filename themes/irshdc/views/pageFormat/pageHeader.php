@@ -45,7 +45,8 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
 		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		#if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $va_user_links[] = "<li>".caNavLink($this->request, _t("Register"), "", "", "LoginReg", "registerForm", array())."</li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
@@ -149,10 +150,22 @@
 					<li class="dropdown <?php print ($this->request->getController() == "Explore") ? ' active"' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>Explore</span></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, "<span>"._t("Narrative Threads")."</span>", "", "", "Explore", "narrativethreads"); ?></li>
+							<!--<li><?php print caNavLink($this->request, "<span>"._t("Narrative Threads")."</span>", "", "", "Explore", "narrativethreads"); ?></li>-->
 							<li><?php print caNavLink($this->request, "<span>"._t("BC Schools")."</span>", "", "", "Explore", "schools"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Featured Collections")."</span>", "", "", "Gallery", "Index"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Resources")."</span>", "", "", "Listing", "Resources"); ?></li>
+<?php
+	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewDigExh")){
+?>
+							<li><?php print caNavLink($this->request, "<span>"._t("Exhibitions")."</span>", "", "", "Listing", "exhibitions"); ?></li>
+<?php
+	}
+	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewEduRes")){
+?>
+							<li><?php print caNavLink($this->request, "<span>"._t("Educational Resources")."</span>", "", "", "Listing", "EducationalResources"); ?></li>
+<?php
+	}
+?>					
 						</ul>
 					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
@@ -161,12 +174,12 @@
 						<ul class="dropdown-menu">
 							<li><a href='/AboutTheProject'><span><?php print _t("About the Project"); ?></span></a></li>
 							<li><a href='/Acknowledgements'><span><?php print _t("Acknowledgements"); ?></span></a></li>
-							<li><a href='/SupportServices'><span><?php print _t("Support Services"); ?></span></a></li>
 						</ul>
 					</li>
 					
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "<span>"._t("Contact")."</span>", "", "", "Contact", "Form"); ?></li>
 					<li><a href="http://irshdc.ubc.ca" target="_blank"><span>Centre Home</span></a></li>
+					<li class='navLinkBorder'><a href="https://irshdc.ubc.ca/for-survivors/healing-and-wellness-resources/" target="_blank"><span>Wellness & Support</span></a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

@@ -215,6 +215,17 @@ body{
 	text-align:center;
 	border:1px solid #ededed;
 }
+.results .btccRow, .lightbox .btccRow{
+	border:0px;
+}
+.results .btccResultLabel, .lightbox .btccResultLabel{
+	height:37px;
+	margin-top:13px;
+	font-weight:bold;
+	border-bottom:1px solid #dedede;
+	line-height:1.1em;
+	font-size:12px;
+}
 .btccCol{
 	height:50px;
 	line-height:50px;
@@ -256,6 +267,10 @@ body{
 .lbListItem img{
 	width:100%;
 	height:auto;
+}
+.lbListItem H2 .caption{
+	font-size:12px;
+	line-height:1.3em;
 }
 .projectItem{
 	background-color:#f6f5f0;
@@ -365,6 +380,40 @@ body{
   width: 25px;
   border-radius: 50%;
   display: inline-block;
+}
+.bResultListItemSimple{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	background-color: #FFFFFF;
+	line-height: 1em;
+	padding: 10px;
+	margin-bottom:25px;
+}
+.bResultListItemSimple .bResultListItemSimpleTitle{
+	font-size:16px;
+	padding-bottom:5px;
+	font-weight:bold;
+}
+.bResultListItemSimple input{
+	float:right;
+}
+.bResultListItemImg {
+    overflow: hidden;
+    margin: 0 0 10px 0;
+}
+.bResultListItemImg img {
+    width: 100%;
+    height: auto;
+}
+.bResultListItemText {
+    line-height: 1.4em;
+    font-size: 14px;
+}
+.bResultListItemText a{
+	color:#000;
+}
+.bResultListItemText a:hover{
+	text-decoration:none;
 }
 /* Filter panel */
 

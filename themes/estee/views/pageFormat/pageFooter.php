@@ -35,8 +35,6 @@ $vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]
 		</div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
 			<ul class="list-inline primary">
-				<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
-				<li><?php print caNavLink($this->request, _t("FAQ"), "", "", "Faq", ""); ?></li>
 <?php
 			if(!$this->request->isLoggedIn()){
 				print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>";
@@ -86,6 +84,9 @@ $vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]
 			$( ".front .notificationMessage" ).delay(1500).fadeOut("slow");
 			$(document).ready(function(){
 				$(document).bind("contextmenu",function(e){
+					return false;
+				});
+				$(document).bind("dragstart", function(e) {
 					return false;
 				});
 			});

@@ -43,6 +43,7 @@
 	
 	$o_dm = Datamodel::load();
 ?>
+<div class="row"><div class="col-sm-12 col-md-10 col-md-offset-1">
 	<h1>
 		<?php print ucfirst($vs_lightbox_section_heading); ?>
 		<div class="btn-group">
@@ -61,11 +62,11 @@
 			</ul>
 		</div><!-- end btn-group -->
 	</h1>
-	
+	<p class="linkUnderline">{{{lightbox_help_text}}}</p><br/><br/>
 	<div id="lbSetListErrors" style="display: none;" class='alert alert-danger'></div>
 	
 	<div class="row">
-		<div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("setListLeftColClass")) ? $vs_left_col_class : "col-sm-10 col-md-9 col-lg-7"; ?>">
+		<div class="col-sm-12">
 <?php
 	if(sizeof($va_set_ids)){
 		$vn_i = 0;
@@ -76,26 +77,25 @@
 			
 			
 				$vb_write_access = $t_set->haveAccessToSet($this->request->getUserID(), 2);
-				print "<div class='col-xs-6 col-sm-6 col-md-6 lbSetListItemCol'>\n";
+				print "<div class='col-sm-4 lbSetListItemCol'>\n";
 				print caLightboxSetListItem($this->request, $t_set, $va_access_values, array("write_access" => $vb_write_access));
 				print "\n</div><!-- end col -->\n";
-				if($vn_i == 2){
+				if($vn_i == 3){
 					$vn_i = 0;
 					print "</div><!-- end row -->";
 				}
 			}
 		}
-		if($vn_i == 1){
+		if($vn_i){
 			print "</div><!-- end row -->";
 		}
 	}
-	print "<div class='row' id='lbSetListPlaceholder'".((sizeof($va_set_ids) > 0) ? " style='display: none;'" : '')."><div class='col-sm-6 col-md-6'>\n".$this->render("Lightbox/set_list_item_placeholder_html.php", true)."\n</div><!-- end col --></div><!-- end row -->\n";
+	print "<div class='row' id='lbSetListPlaceholder'".((sizeof($va_set_ids) > 0) ? " style='display: none;'" : '')."><div class='col-sm-4'>\n".$this->render("Lightbox/set_list_item_placeholder_html.php", true)."\n</div><!-- end col --></div><!-- end row -->\n";
 ?>
 		</div><!-- end col 1-->
-		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setListRightColClass")) ? $vs_right_col_class : "col-sm-2 col-md-3 col-lg-3 col-lg-offset-2"; ?> linkUnderline">
-			{{{lightbox_help_text}}}
-		</div><!-- end col -->
 	</div><!-- end row -->
+</div><!-- end col -->
+</div><!-- end row -->
 <?php
 	//
 	// Delete set confirm dialog
@@ -125,7 +125,7 @@
 			jQuery('#confirm-delete .btn-delete').data('set_id', set_id);
 		}).find('.btn-delete').on('click', function(e) {
 			var set_id = jQuery(this).data('set_id');
-			jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id }, function(data) {
+			jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> }, function(data) {
 				if(data.status == 'ok') {
 					jQuery("#lbSetContainer" + set_id).parent().remove();
 					if (jQuery('.lbSetContainer').length == 0) { jQuery('#lbSetListPlaceholder').show(); } else { jQuery('#lbSetListPlaceholder').hide(); }

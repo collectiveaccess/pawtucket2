@@ -75,10 +75,25 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<HR>
+				<HR/>
+				<h5>From <?php print caDetailLink($this->request, caGetListItemByIDForDisplay($vn_source_id = $t_object->get('source_id')), '', 'ca_entities', ca_entities::getIDForIdno(caGetListItemIdno($vn_source_id))); ?></h5>
+				<HR/>
 <?php
-				if ($va_date = $t_object->getWithTemplate('<ifcount min="1" code="ca_objects.date.date_value"><unit delimiter="<br/>"><ifdef code="ca_objects.date.date_value">^ca_objects.date.date_value (^ca_objects.date.date_types)</ifdef></unit></ifcount>')) {
-					print "<div class='unit'><h6>Date Created</H6>".$va_date."</div>";
+				if ($va_dates = $t_object->get('ca_objects.date', array('returnWithStructure' => true))) {
+
+					$t_list = new ca_lists();
+					$va_date_types = array();
+					$va_date_types[] = $t_list->getItemIDFromList("date_types", "published"); //published date
+					$va_date_types[] = $t_list->getItemIDFromList("date_types", "created"); //creation date
+					$va_date_types[] = $t_list->getItemIDFromList("date_types", "patent_date"); //patented date
+					$va_date_types[] = $t_list->getItemIDFromList("date_types", "patent_date"); //patented date
+
+					foreach ($va_dates as $va_key => $va_dates_t) {
+						foreach ($va_dates_t as $va_key => $va_date) {
+							if ( !in_array($va_date['date_types'], $va_date_types) ) { continue; }
+							print "<div class='unit'><h6>".caGetListItemByIDForDisplay($va_date['date_types'], true)."</h6>".$va_date['date_value']."</div>";
+						}
+					}
 				}
 				if ($va_creator = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>', 'restrictToRelationshipTypes' => array('creator')))) {
 					print "<div class='unit'><h6>Created by</H6>".$va_creator."</div>";
@@ -88,29 +103,74 @@
 				}	
 				if ($va_description = $t_object->get('ca_objects.public_description', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Description</H6>".$va_description."</div>";
-				}
-				if ($va_exhibition_label = $t_object->get('ca_objects.exhibition_label', array('delimiter' => '<br/>'))) {
+				} elseif ($va_exhibition_label = $t_object->get('ca_objects.exhibition_label', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Exhibition Label</H6>".$va_exhibition_label."</div>";
 				}
-				if ($va_aat = $t_object->get('ca_objects.aat', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Getty Art and Architecture Thesaurus</H6>".$va_aat."</div>";
+				if (!$va_exhibition_label && !$va_description && ($vs_curatorial_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>')))) {
+					print "<div class='unit'><h6>Curatorial Description</H6>".$vs_curatorial_description."</div>";
 				}
-				if ($va_ulan = $t_object->get('ca_objects.ulan', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Getty Union List of Artist Names</H6>".$va_ulan."</div>";
+				if ($va_aat = $t_object->get('ca_objects.aat', array('returnAsArray' => true))) {
+					if ($va_aat[0] != "") {
+						print "<div class='unit'><h6>Object Type</H6>";
+						foreach ($va_aat as $va_key => $va_aat_term) {
+							print caNavLink($this->request, $va_aat_term, '', '', 'Search', 'objects', array('search' => 'ca_objects.aat:'.$va_aat_term));
+						}
+						print "</div>";
+					}
 				}
-				if ($va_tgn = $t_object->get('ca_objects.tgn', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Getty Thesaurus of Geographic Names</H6>".$va_tgn."</div>"; 
+				if ($va_ulan = $t_object->get('ca_objects.ulan', array('returnAsArray' => true))) {
+					if ($va_ulan[0] != ""){
+						print "<div class='unit'><h6>Artist Name</H6>";
+						foreach ($va_ulan as $va_key => $va_ulan_term) {
+							$vs_ulan_no_numbers = explode(']', $va_ulan_term);
+							print caNavLink($this->request, $va_ulan_term, '', '', 'Search', 'objects', array('search' => 'ca_objects.ulan:"'.$vs_ulan_no_numbers[1].'"'));
+						}
+						print "</div>";
+					}
 				}
-				if ($va_lcsh = $t_object->get('ca_objects.lcsh_terms', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Library of Congress Subject Headings</H6>".$va_lcsh."</div>"; 
+				if ($va_tgn = $t_object->get('ca_objects.tgn', array('returnAsArray' => true))) {
+					if ($va_tgn[0] != ""){
+						print "<div class='unit'><h6>Places</H6>";
+						foreach ($va_tgn as $va_key => $va_tgn_term) {
+							print caNavLink($this->request, $va_tgn_term, '', '', 'Search', 'objects', array('search' => 'ca_objects.tgn:"'.$va_tgn_term.'"'));
+						}
+						print "</div>";
+					}
+				}								
+				if ($va_lcsh = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {
+					if ($va_lcsh[0] != ""){
+						print "<div class='unit'><h6>Subjects</H6>";
+						foreach ($va_lcsh as $va_key => $va_lcsh_term) {
+							$vn_no_numbers = explode('[' , $va_lcsh_term);
+							print caNavLink($this->request, $va_lcsh_term, '', '', 'Search', 'objects', array('search' => 'ca_objects.lcsh:"'.$vn_no_numbers[0].'"'));
+						}
+						print "</div>";
+					}
+				}
+				if ($va_lc_names = $t_object->get('ca_objects.lc_names', array('returnAsArray' => true))) {
+					if ($va_lc_names[0] != ""){
+						print "<div class='unit'><h6>Names & Organizations</H6>";
+						foreach ($va_lc_names as $va_key => $va_lc_names_term) {
+							$vn_lc_no_numbers = explode('[' , $va_lc_names_term);
+							print caNavLink($this->request, $va_lc_names_term, '', '', 'Search', 'objects', array('search' => 'ca_objects.lc_names:"'.$vn_lc_no_numbers[0].'"'));
+						}
+						print "</div>";
+					}
 				}	
-				if ($va_lc_names = $t_object->get('ca_objects.lc_names', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Library of Congress Name Authority File</H6>".$va_lc_names."</div>"; 
+				if ($va_graphic = $t_object->get('ca_objects.tgm', array('returnAsArray' => true))) {
+					if ($va_graphic[0] != ""){
+						print "<div class='unit'><h6>Format</H6>";
+						foreach ($va_graphic as $va_key => $va_graphic_term) {
+							$vn_graphic_no_numbers = explode('[' , $va_graphic_term);
+							print caNavLink($this->request, $va_graphic_term, '', '', 'Search', 'objects', array('search' => 'ca_objects.tgm:"'.$vn_graphic_no_numbers[0].'"'));
+						}
+						print "</div>";
+					}
 				}
-				if ($va_tgm = $t_object->get('ca_objects.tgm', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Library of Congress Thesaurus of Graphic Materials</H6>".$va_tgm."</div>"; 
-				}																
-				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('creator', 'owner')))) {
+				#if ($va_tgm = $t_object->get('ca_objects.tgm', array('delimiter' => '<br/>'))) {
+				#	print "<div class='unit'><h6>Library of Congress Thesaurus of Graphic Materials</H6>".$va_tgm."</div>"; 
+				#}																
+				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('creator', 'owner', 'donor', 'provider')))) {
 					$va_entities_by_type = array();
 					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
 						$t_rel = new ca_objects_x_entities($va_entity_rel);
@@ -126,6 +186,9 @@
 					}
 					print "</div>";
 				}
+				if ($va_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height H</ifdef><ifdef code="ca_objects.dimensions.dimensions_height,ca_objects.dimensions.dimensions_width"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width W</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_width"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth D</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_length"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_length">^ca_objects.dimensions.dimensions_length L</ifdef><ifdef code="ca_objects.dimensions.dimensions_weight">, ^ca_objects.dimensions.dimensions_weight Weight</ifdef><ifdef code="ca_objects.dimensions.dimensions_diameter">, ^ca_objects.dimensions.dimensions_diameter Diameter</ifdef><ifdef code="ca_objects.dimensions.dimensions_circumference">, ^ca_objects.dimensions.dimensions_circumference Circumference</ifdef><ifdef code="ca_objects.dimensions.measurement_notes"><br/>Measurement Notes: ^ca_objects.dimensions.measurement_notes</ifdef><ifdef code="ca_objects.dimensions.measurement_type"><br/>Measurement Types: ^ca_objects.dimensions.measurement_type</ifdef></unit></ifcount>')) {
+					print "<div class='unit'><h6>Dimensions</H6>".$va_dimensions."</div>"; 
+				}				
 				if ($va_credit_line = $t_object->get('ca_objects.credit_line', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Credit Line</H6>".$va_credit_line."</div>";
 				}				
@@ -140,9 +203,7 @@
 				if ($va_alt_id = $t_object->getWithTemplate('<ifcount min="1" code="ca_objects.other_identifiers"><unit delimiter=", "><ifdef code="ca_objects.other_identifiers.legacy_identifier">^ca_objects.other_identifiers.legacy_identifier (^ca_objects.other_identifiers.other_identifier_type)</ifdef></unit></ifcount>')) { 
 					print "<div class='unit'><h6>Other Identifiers</H6>".$va_alt_id."</div>";
 				}
-				if ($va_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height H</ifdef><ifdef code="ca_objects.dimensions.dimensions_height,ca_objects.dimensions.dimensions_width"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width W</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_width"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth D</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_length"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_length">^ca_objects.dimensions.dimensions_length L</ifdef><ifdef code="ca_objects.dimensions.dimensions_weight">, ^ca_objects.dimensions.dimensions_weight Weight</ifdef><ifdef code="ca_objects.dimensions.dimensions_diameter">, ^ca_objects.dimensions.dimensions_diameter Diameter</ifdef><ifdef code="ca_objects.dimensions.dimensions_circumference">, ^ca_objects.dimensions.dimensions_circumference Circumference</ifdef><ifdef code="ca_objects.dimensions.measurement_notes"><br/>Measurement Notes: ^ca_objects.dimensions.measurement_notes</ifdef><ifdef code="ca_objects.dimensions.measurement_type"><br/>Measurement Types: ^ca_objects.dimensions.measurement_type</ifdef></unit></ifcount>')) {
-					print "<div class='unit'><h6>Dimensions</H6>".$va_dimensions."</div>"; 
-				}
+
 				if ($va_accessory = $t_object->get('ca_objects.accessory', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Accessory</H6>".$va_accessory."</div>";
 				}

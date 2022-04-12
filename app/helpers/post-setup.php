@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018-2019 Whirl-i-Gig
+ * Copyright 2018-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -36,7 +36,7 @@
 # 		For Windows hosts, use a notation similar to "C:/PATH/TO/COLLECTIVEACCESS"; do NOT use backslashes
 #
 if (!defined("__CA_BASE_DIR__")) {
-	define("__CA_BASE_DIR__", pathinfo(preg_replace("!/install|/viewers/apps|/tests|support/bin/!", "", isset($_SERVER['SCRIPT_FILENAME']) ? $_SERVER['SCRIPT_FILENAME'] : __FILE__), PATHINFO_DIRNAME));
+	define("__CA_BASE_DIR__", ($_SERVER['SCRIPT_FILENAME'] && (php_sapi_name() !== 'cli'))  ? preg_replace("!/install$!", "", pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME)) :  join(DIRECTORY_SEPARATOR, array_slice(explode(DIRECTORY_SEPARATOR, __FILE__), 0, -3)));
 }
 
 
@@ -286,6 +286,20 @@ if (!defined('__CA_REDIS_PORT__')) {
 if (!defined('__CA_REDIS_DB__')) { 
 	define('__CA_REDIS_DB__', 0);
 }
+
+
+#
+# Access control constants - declared here to ensure
+# They are accessible when parsing configuration files that reference them
+#
+define('__CA_BUNDLE_ACCESS_NONE__', 0);
+define('__CA_BUNDLE_ACCESS_READONLY__', 1);
+define('__CA_BUNDLE_ACCESS_EDIT__', 2);
+
+define('__CA_ACL_NO_ACCESS__', 0);
+define('__CA_ACL_READONLY_ACCESS__', 1);
+define('__CA_ACL_EDIT_ACCESS__', 2);
+define('__CA_ACL_EDIT_DELETE_ACCESS__', 3);
 
 
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);

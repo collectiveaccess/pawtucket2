@@ -34,8 +34,8 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12">
-			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</H1>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sagittis ex mi, id aliquet purus lobortis vitae. Suspendisse nec risus sollicitudin, elementum quam vitae, volutpat sapien. Sed efficitur laoreet lacus eget vulputate. Donec posuere erat et mi congue, vitae tempus enim tempus. Maecenas tincidunt nisl non arcu commodo luctus. Proin dictum dui in massa tristique, id lobortis purus lacinia. Aliquam pulvinar efficitur vulputate. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur et posuere augue. Fusce euismod sapien at quam finibus, id iaculis lacus maximus. Vivamus dui erat, porttitor id eros sit amet, varius porta enim. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse mollis dui id tortor maximus hendrerit. Duis ac viverra tellus, vel vestibulum turpis. Integer finibus malesuada nisl eu bibendum.</p>
+			<H1>Explore Craigdarroch’s Museum Collection</H1>
+			<p>Welcome to our collection portal. From here you can explore the Castle’s artifacts and the stories they tell.  Most of the collection relates to the Dunsmuir family and the period they lived in Craigdarroch (1890-1908). A small portion of the collection relates to the various institutions that have occupied the Castle from 1919 to the present. You may wish to view our curated galleries related to the Dunsmuir family and highlighting the Castle’s occupancy periods. You can also perform your own basic or advanced searches. To create your own galleries using the lightbox feature or to leave comments about objects you see, create your own account in our system.</p>
 		</div><!--end col-sm-8-->
 	</div><!-- end row -->
 </div> <!--end container-->

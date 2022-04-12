@@ -260,7 +260,7 @@ a:hover {
 
 @media (min-width: 768px) {
 	#footer {
-		margin: 40px 0px 65px 0px;
+		margin: 40px 0px 25px 0px;
 	}
 }
 
@@ -1015,7 +1015,6 @@ p.bookTitle {
 }
 .detail .repViewerCont img {
 	height:auto;
-	width:auto;
 	
 } 
 .detail.archives .repViewerCont img {
@@ -1800,4 +1799,19 @@ div.advancedSearchField {
 }
 .scrollingDivContent {
 	display: inline-block;
+}
+
+.exhibitionList {
+	margin-left: -25px;
+	display: none;
+	width: 300px;
+}
+
+.exhibitionListItem {
+	margin-left: 0px;
+	list-style-type: none;
+}
+
+#detailRelatedObjects .fullResult, #detailRelatedArchives .fullResult, #detailRelatedLibrary .fullResult, #detailRelatedArchive .fullResult {
+	float: right;
 }

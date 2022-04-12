@@ -33,6 +33,7 @@
 						<div class='row'>
 <?php
 						if($qr_schools->numHits()){
+							$va_ids = array();
 							while($qr_schools->nextHit()){
 								# --- only show bc schools - idno = 37
 								$va_place_hier = array_pop($qr_schools->get("ca_places.hierarchy.idno", array("returnWithStructure" => true)));
@@ -50,8 +51,15 @@
 									}
 									print "<div class='schoolLink'>".caDetailLink($this->request, $qr_schools->get('ca_entities.preferred_labels'), '', 'ca_entities', $qr_schools->get("entity_id"))."</div>";
 									print "</div>";
+									$va_ids[] = $qr_schools->get("entity_id");
 								}
 							}
+							# --- do entity context here since we're filtering out non-bc schools
+							$o_entity_context = new ResultContext($this->request, 'ca_entities', 'exploreSchools');
+							$o_entity_context->setAsLastFind();
+							$o_entity_context->setResultList($va_ids);
+							$o_entity_context->saveContext();
+ 			
 						}
 ?>						
 						</div>

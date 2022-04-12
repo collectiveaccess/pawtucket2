@@ -98,7 +98,7 @@
 						$vn_med++;
 					}
 				}
-				if (sizeof($va_media_links) > 0) {
+				if (is_array($va_media_links) && (sizeof($va_media_links) > 0)) {
 					print "<div class='unit row'><div class='{$vn_label_col} label'>Medium</div><div class='$vn_data_col'>".join(', ', $va_media_links)."</div></div>";
 				}
 			}
@@ -108,7 +108,7 @@
 					if ($va_paper_id == 0) {continue;}
 					$va_paper_links[] = caNavLink($this->request, ucfirst(caGetListItemByIDForDisplay($va_paper_id)), '', '', 'Browse', 'artworks/facet/paper_facet/id/'.$va_paper_id);	
 				}
-				if (sizeof($va_paper_links) > 0){
+				if (is_array($va_paper_links) && (sizeof($va_paper_links) > 0)){
 					print "<div class='unit row'><div class='{$vn_label_col} label'>Support</div><div class='$vn_data_col'>".join(', ', $va_paper_links)."</div></div>";
 				}	
 			}				
@@ -121,7 +121,7 @@
 						}
 					}
 				}
-				if (sizeof($va_water_links) > 0) {
+				if (is_array($va_water_links) && (sizeof($va_water_links) > 0)) {
 					print "<div class='unit row'><div class='{$vn_label_col} label'>Watermark</div><div class='$vn_data_col'>".join(', ', $va_water_links)."</div></div>";
 				}
 			}
@@ -132,7 +132,7 @@
 						$va_mount_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_mount_id), '', '', 'Browse', 'artworks/facet/mount_facet/id/'.$va_mount_id);	
 					}
 				}
-				if (sizeof($va_mount_links) > 0) {
+				if (is_array($va_mount_links) && (sizeof($va_mount_links) > 0)) {
 					print "<div class='unit row'><div class='{$vn_label_col} label'>Mount</div><div class='{$vn_data_col} mount'>".join(', ', $va_mount_links)."</div></div>";
 				}
 			}						
@@ -171,36 +171,40 @@
 				while($qr_collections->nextHit()) {
 					if ($qr_collections->get('ca_collections.deleted') === null) { continue; } // you check for null because get() won't return info about deleted items
 				
+					$buf = '';
 					if ($qr_collections->get('ca_objects_x_collections.current_collection') == $current_list_value_id) {
 						$vn_current_collection_id = $qr_collections->get('ca_objects_x_collections.collection_id');
 						$t_collection = new ca_collections($vn_current_collection_id);
+						
 						if ($t_collection->get('ca_collections.public_private', array('convertCodesToDisplayText' => true)) != 'private'){
-							print "<div class='unit row'><div class='{$vn_label_col} label'>Collection</div><div class='$vn_data_col'>".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>');
+							$buf .= "<div class='unit row'><div class='{$vn_label_col} label'>Collection</div><div class='$vn_data_col'>".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>');
 							$vs_verso_collection = $qr_collections->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>');
 						} else {
-							print "<div class='unit row'><div class='{$vn_label_col} label'>Collection</div><div class='$vn_data_col'>".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit>');
+							$buf .= "<div class='unit row'><div class='{$vn_label_col} label'>Collection</div><div class='$vn_data_col'>".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit>');
 							$vs_verso_collection = $qr_collections->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit>');
 						}
 						if ($vs_credit_line = $qr_collections->get('ca_objects_x_collections.collection_line')) {
-							print ", ".$vs_credit_line;
+							$buf .= ", ".$vs_credit_line;
 						}
 						if ($vs_institutional = $t_object->get('ca_objects.institutional_id')) {
-							print ", ".$vs_institutional.".  ";
+							$buf .= ", ".$vs_institutional;
 						}
+						if ($buf) { $buf .= ". "; }
 						if ($va_copyright = $t_parent->get('ca_objects.copyright')) {
-							print $va_copyright;
+							$buf .= $va_copyright;
 						}	
 						if ($qr_collections->get('ca_objects_x_collections.uncertain') == $yes_list_value_id) {
-							print " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
+							$buf .= " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
 						}
-						print "</div><!-- end data --></div><!-- end unit -->";					
-					}			
+						$buf .= "</div><!-- end data --></div><!-- end unit -->";					
+					}	
+					print $buf;		
 				}
 			}	
 
-			#if ($va_institutional_id = $t_object->get('ca_objects.institutional_id')) {
-			#	print "<div class='unit row'><div class='{$vn_label_col} label'>Institutional ID</div><div class='$vn_data_col'>".$va_institutional_id."</div></div>";
-			#}		
+			// if ($va_institutional_id = $t_object->get('ca_objects.institutional_id')) {
+// 				print "<div class='unit row'><div class='{$vn_label_col} label'>Institutional ID</div><div class='$vn_data_col'>".$va_institutional_id."</div></div>";
+// 			}		
 	
 			if ($va_photo_credit = $t_object->get('ca_objects.photography_credit_line')) {
 				print "<div class='unit row'><div class='{$vn_label_col} label'>Photography Credit</div><div class='$vn_data_col'>".$va_photo_credit."</div></div>";
@@ -331,7 +335,7 @@
 	}
 
 	$vs_provenance = "";
-	if ($va_provenance = $t_parent->get('ca_objects_x_collections.relation_id', array('returnWithStructure' => true, 'restrictToTypes' => array('collection', 'other'), 'sort' => 'ca_objects_x_collections.collection_date', 'sortOrder' => 'ASC'))) {
+	if ($va_provenance = $t_parent->get('ca_objects_x_collections.relation_id', array('returnWithStructure' => true, 'restrictToTypes' => array('collection', 'other'), 'sort' => 'ca_objects_x_collections.rank', 'sortOrder' => 'ASC'))) {
 		foreach ($va_provenance as $va_key => $va_relation_id) {
 			$t_prov_rel = new ca_objects_x_collections($va_relation_id);
 			$t_prov = new ca_collections($t_prov_rel->get('ca_collections.collection_id'));
@@ -368,7 +372,7 @@
 					if ($t_prov_rel->get('ca_objects_x_collections.sold_yn') == 163) { 
 						$vs_buf[]= "(not sold)";
 					}	
-					if (sizeof($vs_buf) > 0){
+					if (is_array($vs_buf) && (sizeof($vs_buf) > 0)){
 						$vs_prov_line.= ", ".join(', ', $vs_buf);
 					}
 					#if ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line')) {

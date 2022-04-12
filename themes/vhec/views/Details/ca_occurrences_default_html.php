@@ -14,7 +14,7 @@
 			{{{previousLink}}}{{{resultsLink}}}
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10 marginTop'>
 		<div class="container">
 			<div class="row">
 				<div class='col-sm-6'>
@@ -75,9 +75,9 @@
 				if ($va_venue_description = $t_item->get('ca_occurrences.venue_description')) {
 					print "<div class='unit trimText'><h8>Description</h8>".$va_venue_description."</div>";
 				}				
-				if ($va_catalogue = $t_item->get('ca_objects.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('library')))) {
-					print "<div class='unit'><h8>Catalogue</h8>".$va_catalogue."</div>";
-				}
+				#if ($va_catalogue = $t_item->get('ca_objects.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('library')))) {
+				#	print "<div class='unit'><h8>Catalogue</h8>".$va_catalogue."</div>";
+				#}
 				if ($va_online = $t_item->get('ca_occurrences.online_exhibition')) {
 					print "<div class='unit'><h8>Online Exhibition</h8><a href='".$va_online."' target='_blank'>".$va_online."</a></div>";
 				}
@@ -107,9 +107,9 @@
 				foreach ($va_related_holdings_objects as $va_key => $va_related_holdings_object_id) {				
 					$t_holding = new ca_objects($va_related_holdings_object_id);
 					if ($t_holding->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == $t_item->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))) {
-						$va_my_type[] = "<div class='col-sm-3'><div class='relatedThumb'>".caNavLink($this->request, $t_holding->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'objects/'.$va_related_holdings_object_id)."<div>".caNavLink($this->request, $t_holding->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$va_related_holdings_object_id)."</div></div></div>";	
+						$va_my_type[] = "<div class='col-sm-3'><div class='relatedThumb'>".caNavLink($this->request, $t_holding->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'objects/'.$va_related_holdings_object_id)."<div>".caNavLink($this->request, (strlen($t_holding->get('ca_objects.preferred_labels')) > 70 ? substr($t_holding->get('ca_objects.preferred_labels'), 0, 67)."..." : $t_holding->get('ca_objects.preferred_labels')), '', '', 'Detail', 'objects/'.$va_related_holdings_object_id)."</div></div></div>";	
 					} else {
-						$va_other_type[] = "<div class='col-sm-3'><div class='relatedThumb'>".caNavLink($this->request, $t_holding->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'objects/'.$va_related_holdings_object_id)."<div>".caNavLink($this->request, $t_holding->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$va_related_holdings_object_id)."</div></div></div>";	
+						$va_other_type[] = "<div class='col-sm-3'><div class='relatedThumb'>".caNavLink($this->request, $t_holding->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'objects/'.$va_related_holdings_object_id)."<div>".caNavLink($this->request, (strlen($t_holding->get('ca_objects.preferred_labels')) > 70 ? substr($t_holding->get('ca_objects.preferred_labels'), 0, 67)."..." : $t_holding->get('ca_objects.preferred_labels')), '', '', 'Detail', 'objects/'.$va_related_holdings_object_id)."</div></div></div>";	
 					}
 				}
 				foreach ($va_my_type as $va_key => $va_my_type_object_link) {
@@ -243,7 +243,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 97
+		  maxHeight: 102
 		});
 		$('#relationshipTable').tabs();
 	});

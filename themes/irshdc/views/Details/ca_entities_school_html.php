@@ -25,7 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+$vs_mode = $this->request->getParameter("mode", pString);
+if($vs_mode == "map"){
+	include("map_large_html.php");
+}else{
+	$va_options = $this->getVar("config_options");
 	$t_item = 				$this->getVar("item");
 	$va_comments =			$this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -73,7 +77,7 @@
 ?>
 			<div class="row">
 <?php
-				$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+				$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></if></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 					
 				if($vs_featured_image){
@@ -197,7 +201,9 @@
 						</div>
 <?php				
 					}
-					include("map_html.php");
+					if($t_item->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
+						include("map_html.php");
+					}
 ?>
 				</div>
 			</div>
@@ -227,7 +233,7 @@
 
 					{{{<ifcount code="ca_objects" min="1">
 								<div class="relatedBlock">
-								<h3>Objects</H3>
+								<h3>Records</H3>
 									<div class="row">
 										<div id="browseResultsContainer">
 											<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -235,7 +241,7 @@
 									</div><!-- end row -->
 									<script type="text/javascript">
 										jQuery(document).ready(function() {
-											jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id', 'detailNav' => 'school'), array('dontURLEncodeParameters' => true)); ?>", function() {
+											jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_entity', 'id' => '^ca_entities.entity_id', 'detailNav' => 'school'), array('dontURLEncodeParameters' => true)); ?>", function() {
 												jQuery('#browseResultsContainer').jscroll({
 													autoTrigger: true,
 													loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -307,3 +313,6 @@
 		});
 	});
 </script>
+<?php
+}
+?>

@@ -25,7 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+$vs_mode = $this->request->getParameter("mode", pString);
+if($vs_mode == "map"){
+	include("map_large_html.php");
+}else{
+	$va_options = $this->getVar("config_options"); 
 	$t_item = 				$this->getVar("item");
 	$va_comments =			$this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -75,7 +79,7 @@
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 				if($vs_representationViewer){
 ?>
-				<div class='col-sm-12 col-md-5'>
+				<div class='col-sm-12 col-md-5 noToolBar'>
 					<?php print $vs_representationViewer; ?>
 				
 				
@@ -155,7 +159,9 @@
 						</div>
 <?php				
 					}
-					include("map_html.php");
+					if($t_item->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
+						include("map_html.php");
+					}
 ?>
 				</div>
 			</div>
@@ -184,7 +190,7 @@
 ?>
 					{{{<ifcount code="ca_objects" min="1">
 								<div class="relatedBlock">
-								<h3>Objects</H3>
+								<h3>Records</H3>
 									<div class="row">
 										<div id="browseResultsContainer">
 											<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -192,7 +198,7 @@
 									</div><!-- end row -->
 									<script type="text/javascript">
 										jQuery(document).ready(function() {
-											jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id', 'detailNav' => 'repository'), array('dontURLEncodeParameters' => true)); ?>", function() {
+											jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_entity', 'id' => '^ca_entities.entity_id', 'detailNav' => 'repository'), array('dontURLEncodeParameters' => true)); ?>", function() {
 												jQuery('#browseResultsContainer').jscroll({
 													autoTrigger: true,
 													loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -265,3 +271,6 @@
 		});
 	});
 </script>
+<?php
+}
+?>

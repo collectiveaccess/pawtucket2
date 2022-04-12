@@ -26,15 +26,9 @@
  * ----------------------------------------------------------------------
  */
  
-print _t("Your Residential School History and Dialogue Centre account password was reset on %1 at %2. If you did not reset your password, please contact us at %3.
+print _t("Your Residential School History and Dialogue Centre account password was reset on %1/%2]. You will now be able to login with your new password at https://collections.irshdc.ubc.ca.
+ 
+If you did not reset your password, or if you require further assistance, please contact us at irshdc.reference@ubc.ca. 
 
-
-Sincerely,
-
-The RSHDC Team
-
-", date("F j, Y"), date("G:i"), $this->request->config->get("ca_admin_email"));
-
-
-	print $this->request->config->get("site_host");
+", date("F j, Y"), date("G:i"));
 ?>

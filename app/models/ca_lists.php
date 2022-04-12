@@ -1566,6 +1566,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		
 		
 		if (is_array($pa_options['limitToItemsWithID']) && sizeof($pa_options['limitToItemsWithID'])) {
+		    $pa_options['limitToItemsWithID'] = caMakeItemIDList($pm_list_name_or_id, $pa_options['limitToItemsWithID']);
 			// expand limit list to include parents of items that are included
 			$va_to_add = array();
 			foreach($va_list_items as $vn_item_id => $va_item) {
@@ -1577,6 +1578,9 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 				}
 			}	
 			$pa_options['limitToItemsWithID'] += array_keys($va_to_add);
+		}
+		if (is_array($pa_options['omitItemsWithID']) && sizeof($pa_options['omitItemsWithID'])) {
+		     $pa_options['omitItemsWithID'] = caMakeItemIDList($pm_list_name_or_id, $pa_options['omitItemsWithID']);
 		}
 		
 		$pa_check_access = caGetOption('checkAccess', $pa_options, null); 
@@ -1634,7 +1638,6 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 				}
 			}
 		}
-		
 		if (isset($pa_options['additionalOptions']) && is_array($pa_options['additionalOptions'])) {
 			$va_options = array_merge($va_options, array_flip($pa_options['additionalOptions']));
 		}

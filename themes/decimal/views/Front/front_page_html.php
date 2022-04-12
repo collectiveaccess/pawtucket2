@@ -31,7 +31,7 @@
  */
 		#print $this->render("Front/featured_set_slideshow_html.php");
 		
-		include_once(__CA_LIB_DIR__."/ca/Search/CollectionSearch.php");		
+		include_once(__CA_LIB_DIR__."/Search/CollectionSearch.php");		
 		$va_access_values = $this->getVar("access_values");
 		$qr_res = $this->getVar('featured_set_items_as_search_result');
 	
@@ -42,7 +42,7 @@
 		<div class='col-sm-10 spotlight'>
 			<div class='leaderText'>
 				<h1>Fabric of Digital Life</h1>
-				<p>Fabric of Digital Life is a digital humanities archive that tracks the emergence of human-computer interaction platforms.</p>
+				<p>Fabric of Digital Life is a cultural analytics database that tracks the emergence of embodied computing platforms.</p>
 				<!--<div class="cycle-prev" id="prev"><i class="fa fa-angle-left"></i></div>
 				<div class="cycle-next" id="next"><i class="fa fa-angle-right"></i></div>-->
 			</div>	
@@ -67,29 +67,9 @@
 				</div>
 			<div class="example-pager"></div>		
 		</div>
-		<div class='col-sm-2 platforms'>
-			<h2>HCI Platforms</h2>
 <?php
-			print "<div>".caNavLink($this->request, 'Carryable', 'platformLink', '', 'Search', 'objects/search/ca_objects.use:carryable')."</div>";
-			print "<div>".caNavLink($this->request, 'Wearable', 'platformLink', '', 'Search', 'objects/search/ca_objects.use:wearable')."</div>";
-			print "<div>".caNavLink($this->request, 'Implantable', 'platformLink', '', 'Search', 'objects/search/ca_objects.use:implantable')."</div>";
-			print "<div>".caNavLink($this->request, 'Ingestible', 'platformLink', '', 'Search', 'objects/search/ca_objects.use:ingestible')."</div>";
-			print "<div>".caNavLink($this->request, 'Bionic', 'platformLink', '', 'Search', 'objects/search/ca_objects.use:bionic')."</div>";
-
-			print "<h2>Curated Collections</h2>";
-			$o_collection_search = new CollectionSearch();
-			$qr_collections = ca_collections::find(['display_homepage' => 'yes', 'access' => 1], ['returnAs' => 'searchResult']); //$o_collection_search->search("ca_collections.display_homepage:yes", array("checkAccess" => $va_access_values));
-			$vn_i = 0;
-			while ($qr_collections->nextHit()) {
-				print "<div>".caNavLink($this->request, $qr_collections->get('ca_collections.preferred_labels'), 'platformLink', '', 'Browse', 'objects/facet/collection_facet/id/'.$qr_collections->get('ca_collections.collection_id'))."</div>";
-				$vn_i++;
-				if ($vn_i == 5) {
-					break;
-				}
-			}
+		print $this->render("Front/sidebar.php");
 ?>
-			<div style="clear:both; height:1px;"><!-- empty --></div>
-		</div>
 
 				
 	</div><!--end row-->

@@ -70,6 +70,16 @@
 	
 	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
 	$vb_show_chronology_filters = $this->request->getParameter("showChronologyFilters", pInteger);
+
+	if ($vb_show_filter_panel && $vn_start == 0) {
+		$o_context = new ResultContext($this->request, "ca_objects", 'detailrelated');
+		
+		$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+		#$o_context->setResultList(array_merge($o_context->getResultList(), $qr_res->getPrimaryKeyValues(1000)));
+		$o_context->setParameter('key', $vs_browse_key);
+		$qr_res->seek($vn_start);
+		$o_context->saveContext();
+	}
 	
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
@@ -105,7 +115,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 				<ul class="dropdown-menu <?php print ($vb_show_filter_panel) ? "catchLinks" : ""; ?>" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
-						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
+						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("noRefresh" => 1, "saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
 						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
 						print "<li class='divider'></li>";
 					}
@@ -154,7 +164,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
 			}
-			print caNavLink($this->request, '<span class="glyphicon glyphicon-eye-open"></span> &nbsp;View all available digital media', '', '*', '*','*', array('key' => $vs_browse_key, 'facet' => 'has_media_facet', 'id' => 1, 'view' => $vs_current_view), array("id" => "showMediaEye"));
+			print caNavLink($this->request, '<span class="glyphicon glyphicon-eye-open"></span> &nbsp;View all available digital assets', '', '*', '*','*', array('key' => $vs_browse_key, 'facet' => 'has_media_facet', 'id' => 1, 'view' => $vs_current_view), array("id" => "showMediaEye"));
 
 ?>
 			
@@ -175,7 +185,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 					}
 					if(!$vb_show_filter_panel){
 						$vs_display_value = $va_criterion['value'];
-						if(strpos($va_criterion["value"], "ca_object_representations.mimetype:*") !== false){
+						if(strpos($va_criterion["value"], "ca_object_representations.representation_id:*") !== false){
 							$vs_display_value = "Digital archival media";
 ?>
 							<script type="text/javascript">
@@ -188,7 +198,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 						print "<strong>".$va_criterion['facet'].': </strong>';
 						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_display_value.' <i class="material-icons inline">close</i></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 					}else{
-						if(strpos($va_criterion["value"], "collection_id") === false){
+						if(strpos($va_criterion["value"], "collection_id") === false && strpos(strToLower($va_criterion["facet"]), "brand") === false){
 							print "<strong>".$va_criterion['facet'].': </strong>';
 							print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <i class="material-icons inline">close</i></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 						}
@@ -244,8 +254,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			}
 		}
 }
-if($vb_ajax && $vb_show_chronology_filters){
-	
+if($vb_ajax && $vb_show_chronology_filters){	
 	# --- merge applied and available chronology type facets to display as buttons at top of chronology browse embedded in collection detail page
 	$va_chrono_types_process = array();
 	$t_list = new ca_lists();
@@ -274,6 +283,13 @@ if($vb_ajax && $vb_show_chronology_filters){
 				case "collection_facet":
 					$vn_collection_id = $va_criterion['id'];
 					$vs_collection = $va_criterion['value'];
+					# --- get available factes for the entire collection's chrono events
+					if(sizeof($va_criteria) == 1){
+						ExternalCache::save("facets_for_collection_chron".$vn_collection_id, $va_facets, 'facets_for_collection_chron', $o_config->get("cache_timeout"));
+						$va_facets_for_collection_chron = $va_facets;
+					}else{
+						$va_facets_for_collection_chron =  ExternalCache::fetch("facets_for_collection_chron".$vn_collection_id, 'facets_for_collection_chron');
+					}
 				break;
 				# ------------------------------
 			}
@@ -283,25 +299,29 @@ if($vb_ajax && $vb_show_chronology_filters){
 ?>
 	<div class="bChronologyHeading">
 		<div class="row">
-			<div class="col-md-8">
+			<div class="col-lg-9">
 				<div class='filterChronologyButtons'><H4>Filter By: </H4>
 <?php
 					foreach($va_chrono_types_process as $va_chrono_type){
 						if($va_chrono_type["selected"]){
 							print "<a href='#' class='selected btn btn-default' onClick='removeFacet(".$va_chrono_type["id"]."); return false;'>".$va_chrono_type["label"]."</a>";
 						}else{	
-							print "<a href='#' class='btn btn-default outline' onClick='applyFacet(".$va_chrono_type["id"]."); return false;'>".$va_chrono_type["label"]."</a>";
+							# --- only display the chronology types that are available or have already been applied
+							if(is_array($va_facets_for_collection_chron) && $va_facets_for_collection_chron["chronology_type_facet"] && $va_facets_for_collection_chron["chronology_type_facet"]["content"][$va_chrono_type["id"]]){
+								print "<a href='#' class='btn btn-default outline' onClick='applyFacet(".$va_chrono_type["id"]."); return false;'>".$va_chrono_type["label"]."</a>";
+							}
 						}
 					}
-					print "<a href='#' class='btn btn-default".(($vb_chrono_filtered) ? " outline" : "")."' onClick='jQuery(\"#browseCollectionContainer\").load(\"".caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'key' => $vs_browse_key, 'clear' => 1))."\"); return false;'>All</a>";
+					print "<a href='#' class='btn btn-default".(($vb_chrono_filtered) ? " outline" : "")."' onClick='jQuery(\"#browseCollectionContainer\").load(\"".caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'facet' => 'collection_facet', 'id' => $vn_collection_id))."\"); return false;'>All</a>";
 				
 ?>
+					<div style="clear:both;"></div>
 				</div><!-- end filterChronologyButtons -->
 			</div>
-			<div class="col-md-4 bChronoSearchWithin">
+			<div class="col-lg-3 bChronoSearchWithin">
 				<div class="bSearchWithinContainer">
-					<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-						<input type="text" class="form-control" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine"><button type="submit" class="btn-search-refine"><i class="material-icons">search</i></button>
+					<form role="search" id="searchWithinChrono" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+						<input type="text" class="form-control" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefineChrono"><button type="submit" class="btn-search-refine"><i class="material-icons">search</i></button>
 						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
 					</form>
@@ -309,7 +329,7 @@ if($vb_ajax && $vb_show_chronology_filters){
 			</div>
 		</div>
 		<div class="row">
-			<div class="col-md-8 bChronoSearchCriteria">
+			<div class="col-lg-9 bChronoSearchCriteria">
 <?php
 				if(sizeof($va_search_within_terms)){
 					print "<H5>Search:";
@@ -320,7 +340,7 @@ if($vb_ajax && $vb_show_chronology_filters){
 				}
 ?>
 			</div>
-			<div class="col-md-4 bChronoDownloadCol">
+			<div class="col-lg-3 bChronoDownloadCol">
 				<div class="btn-group" id="bChronoDownloadDD">
 					<a href="#" data-toggle="dropdown" class="bChronoDownloadDDLink"><i class="material-icons inline">save_alt</i> Download</i></a>
 					<ul class="dropdown-menu" role="menu">
@@ -330,6 +350,8 @@ if($vb_ajax && $vb_show_chronology_filters){
 
 ?>		
 					</ul>
+					&nbsp;&nbsp;&nbsp;<a href="#" class="bChronoDownloadDDLink" onClick="changeSort(); return false;"><i class="material-icons inline"><?php print ($vs_sort_dir == 'asc') ? 'expand_less' : 'expand_more'; ?></i> Sort</i></a>
+					
 				</div>
 			</div>
 		</div>
@@ -342,9 +364,12 @@ if($vb_ajax && $vb_show_chronology_filters){
 		function removeFacet(id){
 			jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'key' => $vs_browse_key, 'removeCriterion' => 'chronology_type_facet')); ?>/removeID/" + id);
 		}
-		$("#searchWithin").submit(function( event ) {
+		function changeSort(){
+			jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'key' => $vs_browse_key, 'direction' => ($vs_sort_dir == 'asc') ? 'desc' : 'asc')); ?>");
+		}
+		$("#searchWithinChrono").submit(function( event ) {
 			event.preventDefault();
-			var url = $("#searchWithin").attr('action') + "/showChronologyFilters/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + $('#searchWithinSearchRefine').val();
+			var url = $("#searchWithinChrono").attr('action') + "/showChronologyFilters/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + encodeURIComponent($('#searchWithinSearchRefineChrono').val());
 			$('#browseCollectionContainer').load(url);
 		});
 		jQuery(document).ready(function() {
@@ -412,24 +437,24 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			print "<div class='productCodeHelp'>End product code searches with an asterisk (*)</div>";
 		}
 		# --- objects, archival, products
-		$vs_browse_type = strToLower($this->request->getAction());
-		if(in_array($vs_browse_type, array("objects", "archival", "products"))){
+		#$vs_browse_type = strToLower($this->request->getAction());
+		#if(in_array($vs_browse_type, array("objects", "archival", "products"))){
 			# --- if there is a brand filter, pass it through as you change type
-			$vn_brand_facet_id = "";
-			if (sizeof($va_criteria) > 0) {
-				foreach($va_criteria as $va_criterion) {
-					if($va_criterion["facet_name"] == "brand_facet"){
-						$vn_brand_facet_id = $va_criterion["id"];
-						break;
-					}
-				}
-			}
-			print "<div class='browseTypeButtons'>";
-			print caNavLink($this->request, _t("Products"), "btn btn-default ".(($vs_browse_type == "products") ? "" : " outline"), "", "Browse", "products", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
-			print caNavLink($this->request, _t("Items"), "btn btn-default ".(($vs_browse_type == "archival") ? "" : " outline"), "", "Browse", "archival", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
-			print caNavLink($this->request, _t("All"), "btn btn-default browseTypeButtonAll ".(($vs_browse_type == "objects") ? "" : " outline"), "", "Browse", "objects", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
-			print "<div style='clear:both;'></div></div>";
-		}
+		#	$vn_brand_facet_id = "";
+		#	if (sizeof($va_criteria) > 0) {
+		#		foreach($va_criteria as $va_criterion) {
+		#			if($va_criterion["facet_name"] == "brand_facet"){
+		#				$vn_brand_facet_id = $va_criterion["id"];
+		#				break;
+		#			}
+		#		}
+		#	}
+		#	print "<div class='browseTypeButtons'>";
+		#	print caNavLink($this->request, _t("Products"), "btn btn-default ".(($vs_browse_type == "products") ? "" : " outline"), "", "Browse", "products", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
+		#	print caNavLink($this->request, _t("Items"), "btn btn-default ".(($vs_browse_type == "archival") ? "" : " outline"), "", "Browse", "archival", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
+		#	print caNavLink($this->request, _t("All"), "btn btn-default browseTypeButtonAll ".(($vs_browse_type == "objects") ? "" : " outline"), "", "Browse", "objects", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
+		#	print "<div style='clear:both;'></div></div>";
+		#}
 		#if(in_array(strToLower($this->request->getAction()), array("objects", "archival"))){
 		#	print caNavLink($this->request, _t("Browse All Products"), "btn-default browseProducts", "", "Browse", "products");
 		#}
@@ -467,7 +492,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			   objIDs.push($(this).val());
 			});
 			objIDsAsString = objIDs.join(';');
-			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
+			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveSelectedResults" => 1, "noRefresh" => 1)); ?>/object_ids/' + objIDsAsString);
 			e.preventDefault();
 			return false;
 		});
@@ -478,14 +503,14 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			$(".catchLinks").on("click", "a", function(event){
 				if(!$(this).hasClass('dontCatch') && $(this).attr('href') != "#"){
 					event.preventDefault();
-					var url = $(this).attr('href') + "/showFilterPanel/1";
+					var url = $(this).attr('href') + "/showFilterPanel/1/dontSetFind/1";
 					$('#browseResultsDetailContainer').load(url);
 				}
 								
 			});
 			$("#searchWithin").submit(function( event ) {
   				event.preventDefault();
- 				var url = $("#searchWithin").attr('action') + "/showFilterPanel/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + $('#searchWithinSearchRefine').val();
+ 				var url = $("#searchWithin").attr('action') + "/dontSetFind/1/showFilterPanel/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + encodeURIComponent($('#searchWithinSearchRefine').val());
  				$('#browseResultsDetailContainer').load(url);
 			});
 <?php

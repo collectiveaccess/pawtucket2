@@ -75,17 +75,16 @@
 			$vn_object_id = $vo_result->get('ca_objects.object_id');		
 ?>
 			<div class="row">
-			<table>
-			<tr>
-				<td>
-					<div class="metaBlock">
+			<table style="width:100%">
+				<td style="width:25%;">
+					<div class="metaBlock" style="width:100%;">
 <?php 
 					print "<b>".(($vo_result->get("ca_occurrences.display_date")) ? $vo_result->get("ca_occurrences.display_date") : $vo_result->get("ca_occurrences.manufacture_date")).(($vs_season = $vo_result->get("ca_occurrences.season_list", array("convertCodesToDisplayText" => true))) ? ", ".$vs_season : "")."</b>";
 ?>								
 
 					</div>
-				</td><td>
-					<div class="metaBlock">
+				</td><td style="width:75%;">
+					<div class="metaBlock" style="width:100%;">
 <?php				
 						print $vo_result->get('ca_occurrences.preferred_labels');
 ?>

@@ -879,19 +879,19 @@ a.readmore-js-toggle {
 	fill:#666 !important;
 	font-weight:bold;
 }
-.overlay {
+.overlay2 {
 	padding:20px;
 	min-width:1025px;
 }
-.overlay-corner.open {
+.overlay2-corner.open {
 	overflow-y:auto !important;
 }
-.overlay .circles #stat_bib_books_by_subject_area2 .ct-label, .ct-chart .ct-label.ct-horizontal,  .overlay .circles #stat_entity_checkout_durations2 .ct-label, .ct-chart .ct-label.ct-horizontal, .overlay .circles #stat_entity_checkout_distribution2 .ct-label, .ct-chart .ct-label.ct-horizontal {
+.overlay2 .circles #stat_bib_books_by_subject_area2 .ct-label, .ct-chart .ct-label.ct-horizontal,  .overlay2 .circles #stat_entity_checkout_durations2 .ct-label, .ct-chart .ct-label.ct-horizontal, .overlay2 .circles #stat_entity_checkout_distribution2 .ct-label, .ct-chart .ct-label.ct-horizontal {
 	color:#000 !important;
 	fill:#000 !important;
 	font-size:1.2em !important;
 }
-.overlay .circles #stat_bib_books_by_subject_area2 .ct-label:hover, .overlay .circles #stat_entity_checkout_durations2 .ct-label:hover, .overlay .circles #stat_entity_checkout_distribution2 .ct-label:hover {
+.overlay2 .circles #stat_bib_books_by_subject_area2 .ct-label:hover, .overlay2 .circles #stat_entity_checkout_durations2 .ct-label:hover, .overlay2 .circles #stat_entity_checkout_distribution2 .ct-label:hover {
 	background-color:#ddd;
 	border-radius:4px;
 	padding:5px;
@@ -906,7 +906,7 @@ a.readmore-js-toggle {
 	overflow:visible !important;
 	margin-top:-45px;
 }
-.overlay .ct-chart {
+.overlay2 .ct-chart {
 	overflow:visible !important;
 	margin-top:0px;
 }
@@ -976,7 +976,7 @@ svg:not(:root) {
     font-size: 17px;
     margin-top: -2px;
 }
-.overlay .vizTitle {
+.overlay2 .vizTitle {
 	font-size:28px;
 	padding:10px;
 	text-transform:none;
@@ -987,14 +987,14 @@ svg:not(:root) {
     padding: 10px 0px 30px 0px;
     text-align: center;	
 }
-.overlay .vizName {
+.overlay2 .vizName {
 	text-transform:uppercase;
 	color:#000;
 	font-size:18px;
 	color:#d77421;
 	padding:10px 0px 0px 0px;
 }
-.objects.bib .overlay .vizName { 
+.objects.bib .overlay2 .vizName { 
 	margin-bottom:20px;
 }
 .expand {
@@ -1006,11 +1006,11 @@ svg:not(:root) {
 .ct-chart.ct-golden-section {
 	margin:10px -20px 0px -10px;
 }
-.overlay .ct-chart.ct-golden-section {
+.overlay2 .ct-chart.ct-golden-section {
 	margin:0px;
 
 }
-.overlay .ct-chart-line {
+.overlay2 .ct-chart-line {
 	margin-top:40px;
 }
 .ct-chart .ct-series.ct-series-a .ct-bar, .ct-chart .ct-series.ct-series-a .ct-point, .ct-chart .ct-series.ct-series-a .ct-line, .ct-chart .ct-series.ct-series-a .ct-slice.ct-donut {

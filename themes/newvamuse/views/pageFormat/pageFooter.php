@@ -45,7 +45,7 @@
 				<li><a href="https://www.pinterest.com/novamuse/" target="_blank"><i class="fa fa-pinterest"></i></a></li>
 				<li><a href="mailto:support@ansm.ns.ca" ><i class="fa fa-envelope"></i></a></li>
 			</ul>
-			<div style='padding-left:15px;'>© 2015-2017 ANSM</div>
+			<div style='padding-left:15px;'>© 2015-2020 ANSM</div>
 		<?php
 			if ($this->request->getController() == 'Front') {
 		?>

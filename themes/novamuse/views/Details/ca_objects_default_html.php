@@ -122,7 +122,7 @@
 			if($vn_numRankings = $t_object->getNumRatings(false)){
 				$like_message = "<span class='likebk' style='float:right;'>"._t("%1 %2 liked this object", $vn_numRankings, ($vn_numRankings == 1) ? "person" : "people")."</span>";
 			}
-			print "<div id='likeThis'>".caNavLink($this->request, caGetThemeGraphic($this->request, 'like.gif').$like_message, '', '', 'Detail', 'SaveCommentTagging', array('item_id' => $vn_object_id, 'rank' => 5, 'inline' => 1, 'tablename' => 'ca_objects', 'name' => 'anonymous', 'email' => 'anonymous'))."</div>";
+			print "<div id='likeThis'>".caNavLink($this->request, caGetThemeGraphic($this->request, 'like.gif').$like_message, '', '', 'Detail', 'SaveCommentTagging', array('item_id' => $vn_object_id, 'rank' => 5, 'inline' => 1, 'tablename' => 'ca_objects', 'name' => 'anonymous', 'email' => 'anonymous', 'csrfToken' => caGenerateCSRFToken($this->request)))."</div>";
 ?>
 			<div style='width: 100%; clear:both; height:1px;'></div> 
 			<!-- AddThis Button BEGIN -->
