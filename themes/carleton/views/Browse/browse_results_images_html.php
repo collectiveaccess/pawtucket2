@@ -149,7 +149,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultItemText'>
-						<div class='objectTitle'>{$vs_label_detail_link}</div>".$qr_res->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections'><unit relativeTo='ca_collections.hierarchy' delimiter=' > '>^ca_collections.type_id ^ca_collections.idno ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates</ifdef></unit></unit></ifcount>")."
+						<div class='objectTitle'>{$vs_label_detail_link}</div>".$qr_res->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections'><unit relativeTo='ca_collections.hierarchy' delimiter=' > '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates</ifdef></unit></unit></ifcount>")."
 					</div><!-- end bResultItemText -->
 				</div><!-- end bResultItemContent -->
 				<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>

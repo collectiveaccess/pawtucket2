@@ -49,6 +49,8 @@
 	$vs_pk				= $this->getVar('primaryKey');
 	$o_config = $this->getVar("config");	
 	
+	$va_browse_info = $this->getVar('browseInfo');
+	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
@@ -106,7 +108,7 @@
 				# --- check if this result has been cached
 				# --- key is MD5 of table, id, view, refine(vb_refine)
 				$vs_cache_key = md5($vs_table.$vn_id."list".$vb_refine);
-				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
+				if(!$va_browse_info['noCache'] && ($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
 				
@@ -130,7 +132,7 @@
 									$vs_image = $vs_default_placeholder_tag;
 								}
 							}else{
-								$vs_image = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("id" => $qr_res->get("object_id"), "context" => "archival", "representation_id" => $qr_res->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values, "limit" => 1)), "overlay" => 1))."\"); return false;'>".$vs_image."</a>";
+								$vs_image = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("id" => $qr_res->get("object_id"), "context" => "archival", "representation_id" => $qr_res->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), "overlay" => 1))."\"); return false;'>".$vs_image."</a>";
 							}
 ?>
 							<div class="row bBulkMediaResult">
