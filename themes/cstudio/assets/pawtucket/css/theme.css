@@ -102,3 +102,8 @@ a .frontExplore, a:hover .frontExplore{
   height: 70px;
   line-height: .9em;
 }
+
+/* browse */
+.bResultItem .bResultItemText a {
+  line-height: 1.3em;
+}
