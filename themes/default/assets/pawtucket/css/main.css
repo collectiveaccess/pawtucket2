@@ -3652,7 +3652,7 @@ div.caLibraryTransactionListItemBorrower {
 }
 
 div.caLibraryTransactionListItemNotesContainer {
-	margin: 3px;
+	margin: 0px;
 }
 
 div.caLibraryTransactionListItemNotesLabel {
@@ -3684,7 +3684,7 @@ div.caLibraryTransactionResultsLabel {
 }
 
 div.caLibraryTransactionListItemDueDateContainer {
-	margin: 0 0 0 82px;
+	margin: 0 0 0 0px;
 }
 
 div.caLibraryTransactionListItemDueDateLabel {
@@ -3701,4 +3701,9 @@ table.caLibraryHistory, tr.caLibraryHistory, th.caLibraryHistory, td.caLibraryHi
 	border: 1px solid #000;
 	border-collapse: collapse;
 	padding: 5px;
+}
+
+a.form-button, span.form-button {
+	text-decoration: none;
+	cursor: pointer;	
 }

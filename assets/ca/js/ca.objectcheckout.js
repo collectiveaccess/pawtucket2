@@ -93,7 +93,7 @@ var caUI = caUI || {};
 							{object_id: object_id, user_id: that.user_id}, function(data) {
 								// on success add to transactionList display
 								
-								var _disp = '<div class="caLibraryTransactionListItemContainer"><div class="caLibraryTransactionListItemMedia">' + data.media + '</div><div class="caLibraryTransactionListItemName">' + data.title + "</div>";
+								var _disp = '<div class="row caLibraryTransactionListItemContainer"><div class="col-md-3 caLibraryTransactionListItemMedia">' + data.media + '</div><div class="col-md-9"><div class="caLibraryTransactionListItemName">' + data.title + "</div>";
 								
 								
 								// Status values:
@@ -127,9 +127,8 @@ var caUI = caUI || {};
 									if (((data.status == 0) || (data.status == 3)) && (data.config.allow_override_of_due_dates == 1)) {	// item available so allow setting of due date
 										_disp += '<div class="caLibraryTransactionListItemDueDateContainer"><div class="caLibraryTransactionListItemDueDateLabel">' + data.due_on_display_label + '</div><input type="text" name="due_date" id="dueDate_' + object_id + '" value="' + data.config.default_checkout_date + '" size="10"/></div>';
 									}
-								} else {
-									_disp += '<br style="clear: both;"/>';
 								}
+								_disp += '</div>';
 								
 								// remove button
 								_disp += '<div class="caLibraryTransactionListItemRemoveButton"><a href="#" id="itemRemove_' + object_id + '" data-object_id="' + object_id + '">' + that.removeButtonIcon + '</a></div>';
