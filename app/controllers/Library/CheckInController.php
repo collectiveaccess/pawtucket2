@@ -27,9 +27,6 @@
  */
 
 require_once(__CA_APP_DIR__.'/helpers/libraryServicesHelpers.php');
-require_once(__CA_LIB_DIR__.'/Search/ObjectCheckoutSearch.php');
-require_once(__CA_MODELS_DIR__.'/ca_object_checkouts.php');
-require_once(__CA_LIB_DIR__.'/ResultContext.php');
 
 class CheckInController extends ActionController {
 	# -------------------------------------------------------
@@ -96,12 +93,21 @@ class CheckInController extends ActionController {
 	 * 
 	 */
 	public function SaveTransaction() {
+		$library_config = Configuration::load(__CA_CONF_DIR__."/library_services.conf");
+		$display_template = $library_config->get('checkin_receipt_item_display_template');
+		
 		$item_list = $this->request->getParameter('item_list', pString);
 		$item_list = json_decode(stripslashes($item_list), true);
 		
 		if (is_array($item_list)) {
 			$t_checkout = new ca_object_checkouts();
-		
+			$app_name = Configuration::load()->get('app_display_name');
+			$sender_email = $library_config->get('notification_sender_email');
+			$sender_name = $library_config->get('notification_sender_name');
+			$subject = _t('Receipt for check in');
+			
+			$checked_in_items = [];
+			
 			$ret = array('status' => 'OK', 'errors' => array(), 'checkins' => array());
 			foreach($item_list as $i => $item) {
 				if ($t_checkout->load($item['checkout_id'])) {
@@ -117,6 +123,8 @@ class CheckInController extends ActionController {
 					
 							if ($t_checkout->numErrors() == 0) {
 								$ret['checkins'][] = _t('Returned <em>%1</em> (%2) borrowed by %3 on %4', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), $user_name, $borrow_date);
+								$item['_display'] = $t_checkout->getWithTemplate($display_template);
+								$checked_in_items[] = $item;
 							} else {
 								$ret['errors'][] = _t('Could not check in <em>%1</em> (%2): %3', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), join("; ", $t_checkout->getErrors()));
 							}
@@ -126,6 +134,12 @@ class CheckInController extends ActionController {
 					} else {
 						$ret['errors'][] = _t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'));
 					}
+				}
+			}
+			if($library_config->get('send_item_checkin_receipts') && (sizeof($checked_in_items) > 0) && ($user_email = $this->request->user->get('ca_users.email'))) {
+				if (!caSendMessageUsingView(null, $user_email, $sender_email, "[{$app_name}] {$subject}", "library_checkin_receipt.tpl", ['subject' => $subject, 'from_user_id' => $user_id, 'sender_name' => $sender_name, 'sender_email' => $sender_email, 'sent_on' => time(), 'checkin_date' => caGetLocalizedDate(), 'checkins' => $checked_in_items], null, [], ['source' => 'Library checkin receipt'])) {
+					global $g_last_email_error;
+					$ret['errors'][] = _t('Could send receipt: %1', $g_last_email_error);
 				}
 			}
 		}
