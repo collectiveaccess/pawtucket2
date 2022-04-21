@@ -44,6 +44,7 @@
  	require_once(__CA_LIB_DIR__.'/Utils/CLIUtils/Cron.php');
  	require_once(__CA_LIB_DIR__.'/Utils/CLIUtils/Performance.php');
  	require_once(__CA_LIB_DIR__.'/Utils/CLIUtils/Statistics.php');
+ 	require_once(__CA_LIB_DIR__.'/Utils/CLIUtils/Test.php');
  
 	class CLIUtils extends CLIBaseUtils {
 		use CLIUtilsMaintenance;
@@ -55,4 +56,5 @@
 		use CLIUtilsCron;
 		use CLIUtilsPerformance;
 		use CLIUtilsStatistics;
+		use CLIUtilsTest;
 	}
