@@ -30,6 +30,13 @@
 	$va_classroomDisplayName = caGetClassroomDisplayName();
 	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
+	$can_do_library_checkin = $can_do_library_checkout = $library_services_enabled = false;
+	if($this->request->isLoggedIn()) {
+		$can_do_library_checkin = $this->request->user->canDoAction('can_do_library_checkin');
+		$can_do_library_checkout = $this->request->user->canDoAction('can_do_library_checkout');
+		$library_services_enabled = $this->request->config->get('enable_library_services');
+	}
+	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
 	if($this->request->isLoggedIn()){
@@ -42,6 +49,10 @@
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
 		}
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
+		
+		if($can_do_library_checkout) {
+			$va_user_links[] = "<li>".caNavLink($this->request, _t('My Loans'), '', 'Library', 'CheckOut', 'MyLoans', [])."</li>";
+		}
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
 		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
@@ -49,12 +60,6 @@
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 	
-	$can_do_library_checkin = $can_do_library_checkout = $library_services_enabled = false;
-	if($this->request->isLoggedIn()) {
-		$can_do_library_checkin = $this->request->user->canDoAction('can_do_library_checkin');
-		$can_do_library_checkout = $this->request->user->canDoAction('can_do_library_checkout');
-		$library_services_enabled = $this->request->config->get('enable_library_services');
-	}
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>

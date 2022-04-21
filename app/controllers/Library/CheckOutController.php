@@ -217,4 +217,47 @@ class CheckOutController extends ActionController {
 		$this->render('checkout/ajax_data_json.php');
 	}
 	# -------------------------------------------------------
+	/**
+	 * Return on current user's borrowings
+	 */
+	public function MyLoans() {
+		$checkouts = ca_object_checkouts::getOutstandingCheckoutsForUser($this->request->getUserID(), "<unit relativeTo='ca_objects'><l>^ca_objects.preferred_labels.name</l> (^ca_objects.idno)</unit>");
+		
+		$this->view->setVar('checkouts', $checkouts);
+		$this->render('checkout/my_loans_html.php');
+	}
+	# -------------------------------------------------------
+	/**
+	 * Return on current user's borrowings
+	 */
+	public function Return() {
+		$t_checkout = new ca_object_checkouts();
+		$checkout_id = $this->request->getParameter('checkout_id', pInteger);
+		
+		if ($t_checkout->load($checkout_id)) {
+			$object_id = $t_checkout->get('object_id');
+			$t_object = new ca_objects($object_id);
+			if ($t_checkout->isOut()) { 
+				try {
+					$t_checkout->checkin($object_id, '', array('request' => $this->request));
+				
+					$t_user = new ca_users($t_checkout->get('user_id'));
+					$user_name = $t_user->get('ca_users.fname').' '.$t_user->get('ca_users.lname');
+					$borrow_date = $t_checkout->get('ca_object_checkouts.checkout_date', array('timeOmit' => true));
+			
+					if ($t_checkout->numErrors() == 0) {
+						$this->notification->addNotification(_t('Returned <em>%1</em> (%2) borrowed by %3 on %4', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), $user_name, $borrow_date), "message");
+					} else {
+						$this->notification->addNotification(_t('Could not check in <em>%1</em> (%2): %3', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), join("; ", $t_checkout->getErrors())), "error");
+					}
+				} catch (Exception $e) {
+					$this->notification->addNotification(_t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno')), 'error');
+				}
+			} else {
+				$this->notification->addNotification(_t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno')), 'error');
+			}
+		}
+		$this->MyLoans();
+	}
+	# -------------------------------------------------------
 }
