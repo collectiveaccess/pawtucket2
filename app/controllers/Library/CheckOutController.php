@@ -168,7 +168,8 @@ class CheckOutController extends ActionController {
 	 */
 	public function SaveTransaction() {
 		$library_config = Configuration::load(__CA_CONF_DIR__."/library_services.conf");
-		$display_template = $library_config->get('checkout_receipt_item_display_template');
+		$checkout_template = $library_config->get('checkout_receipt_item_display_template');
+		$reservation_template = $library_config->get('checkout_reservation_receipt_item_display_template');
 		
 		$user_id = $this->request->getParameter('user_id', pInteger);
 		$ps_item_list = $this->request->getParameter('item_list', pString);
@@ -200,7 +201,7 @@ class CheckOutController extends ActionController {
 						$vb_res = $t_checkout->reserve($item['object_id'], $user_id, $item['note'], array('request' => $this->request));
 						if ($vb_res) {
 							$ret['checkouts'][$item['object_id']] = _t('Reserved <em>%1</em>', $name);
-							$item['_display'] = $t_checkout->getWithTemplate($display_template);
+							$item['_display'] = $t_checkout->getWithTemplate($reservation_template);
 							$reserved_items[] = $item;
 						} else {
 							$ret['errors'][$item['object_id']] = _t('Could not reserve <em>%1</em>: %2', $name, join('; ', $t_checkout->getErrors()));
@@ -214,7 +215,7 @@ class CheckOutController extends ActionController {
 			
 						if ($vb_res) {
 							$ret['checkouts'][$item['object_id']] = _t('Checked out <em>%1</em>; due date is %2', $name, $item['due_date']);
-							$item['_display'] = $t_checkout->getWithTemplate($display_template);
+							$item['_display'] = $t_checkout->getWithTemplate($checkout_template);
 							$checked_out_items[] = $item;
 						} else {
 							$ret['errors'][$item['object_id']] = _t('Could not check out <em>%1</em>: %2', $name, join('; ', $t_checkout->getErrors()));
@@ -241,8 +242,10 @@ class CheckOutController extends ActionController {
 	 */
 	public function MyLoans() {
 		$checkouts = ca_object_checkouts::getOutstandingCheckoutsForUser($this->request->getUserID(), "<unit relativeTo='ca_objects'><l>^ca_objects.preferred_labels.name</l> (^ca_objects.idno)</unit>");
+		$reservations = ca_object_checkouts::getOutstandingReservationsForUser($this->request->getUserID(), "<unit relativeTo='ca_objects'><l>^ca_objects.preferred_labels.name</l> (^ca_objects.idno)</unit>");
 		
 		$this->view->setVar('checkouts', $checkouts);
+		$this->view->setVar('reservations', $reservations);
 		$this->render('checkout/my_loans_html.php');
 	}
 	# -------------------------------------------------------
@@ -287,6 +290,9 @@ class CheckOutController extends ActionController {
 				} catch (Exception $e) {
 					$this->notification->addNotification(_t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno')), 'error');
 				}
+			} elseif($t_checkout->isReservation()) {
+				$t_checkout->delete();
+				$this->notification->addNotification(_t('Removed reservation for <em>%1</em>', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno')), 'error');
 			} else {
 				$this->notification->addNotification(_t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno')), 'error');
 			}

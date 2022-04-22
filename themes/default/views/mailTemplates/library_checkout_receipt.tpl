@@ -28,7 +28,6 @@
  
 $checkouts = $this->getVar('checkouts') ?? [];
 $reservations = $this->getVar('reservations') ?? [];
-
 if(sizeof($checkouts)) { 
 ?>
 <p>The following items were borrowed on <?= $this->getVar('checkout_date'); ?> and will be due on the dates specified below: </p>
@@ -42,7 +41,7 @@ if(sizeof($reservations)) {
 ?>
 <p>The following items were reserved on <?= $this->getVar('checkout_date'); ?>: </p>
 
-<ul><?= join("\n", array_map(function($v) { return $v['_display']; }, $checkouts)); ?></ul>
+<ul><?= join("\n", array_map(function($v) { return $v['_display']; }, $reservations)); ?></ul>
 
 You will be notified when these items become available.
 <?php
