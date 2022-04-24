@@ -39,7 +39,6 @@ if (!defined("__CA_BASE_DIR__")) {
 	define("__CA_BASE_DIR__", ($_SERVER['SCRIPT_FILENAME'] && (php_sapi_name() !== 'cli'))  ? preg_replace("!/install$!", "", pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME)) :  join(DIRECTORY_SEPARATOR, array_slice(explode(DIRECTORY_SEPARATOR, __FILE__), 0, -3)));
 }
 
-
 #
 # __CA_URL_ROOT__ = the root-relative URL path to your CollectiveAccess installation
 #
@@ -54,7 +53,7 @@ if (!defined("__CA_BASE_DIR__")) {
 # 		Example: If CollectiveAccess will be accessed via http://www.mysite.org/apps/ca then __CA_URL_ROOT__ would be set to /apps/ca
 #
 if (!defined("__CA_URL_ROOT__")) {
-	define("__CA_URL_ROOT__", str_replace(isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '', '', __CA_BASE_DIR__));
+	define("__CA_URL_ROOT__", str_replace($_SERVER['CONTEXT_DOCUMENT_ROOT'] ?? $_SERVER['DOCUMENT_ROOT'] ?? '', '', __CA_BASE_DIR__));
 }
 
 
@@ -376,4 +375,12 @@ if (!defined('__CA_ALLOW_AUTOMATIC_UPDATE_OF_DATABASE__')) {
 # Flag indicating application type to code libraries
 if (!defined("__CA_APP_TYPE__")) {
 	define("__CA_APP_TYPE__", "PROVIDENCE");
+}
+
+
+# __CA_MEMORY_LIMIT__
+#
+# Override server request memory limit with setup.php defined value
+if (defined("__CA_MEMORY_LIMIT__")) {
+	ini_set('memory_limit', __CA_MEMORY_LIMIT__);
 }
