@@ -89,6 +89,8 @@
 					));
 					return false;
 				}
+			} else {
+				Installer::clearCaches();
 			}
 
 			if (!$vb_quiet) { CLIUtils::addMessage(_t("Processing locales")); }
@@ -179,7 +181,6 @@
 				"admin-email|e=s" => _t('Email address of the system administrator (user@domain.tld).'),
 				"overwrite" => _t('Flag must be set in order to overwrite an existing installation.  Also, the __CA_ALLOW_INSTALLER_TO_OVERWRITE_EXISTING_INSTALLS__ global must be set to a true value.'),
 				"debug|d" => _t('Debug flag for installer.'),
-				"quiet|q" => _t('Suppress progress messages.'),
 				"skip-roles|s" => _t('Skip Roles. Default is false, but if you have many roles and access control enabled then install may take some time')
 			);
 		}
@@ -344,7 +345,7 @@
 				$vs_log_dir = Configuration::load()->get('batch_metadata_import_log_directory');
 			}
 
-			$vn_log_level = CLIUtils::getLogLevel($po_opts);
+			$vn_log_level = $po_opts->getOption('log-level');
 
 			$o_log = (is_writable($vs_log_dir)) ? new KLogger($vs_log_dir, $vn_log_level) : null;
 
