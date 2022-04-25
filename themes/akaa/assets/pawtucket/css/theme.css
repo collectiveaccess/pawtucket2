@@ -12,10 +12,21 @@ a, a:hover {
 .detail a, .staticPage a {
   text-decoration:underline;
 }
-
 .navbar-brand {
 	width: 470px;
 	padding-top:25px;
+}
+@media(max-width:767px){
+	.navbar-brand {
+		width: 350px;
+		padding-top:20px;
+	}
+}
+@media(max-width:400px){
+	.navbar-brand {
+		width: 300px;
+		padding-top:20px;
+	}
 }
 .navbar-nav > li > a {
 	padding-top:25px;
@@ -37,6 +48,12 @@ a, a:hover {
 
 .navbar-nav > li > a:hover, .secondLine.navbar-nav > li > a:hover {
 	text-decoration:underline;
+}
+@media(max-width:768px){
+	.secondLine.navbar-nav > li.browseby{
+		padding-left:15px;
+		padding-top:10px;
+	}
 }
 .btn{
 	text-decoration:none;
@@ -167,6 +184,9 @@ a, a:hover {
 .browse .btn, .sets .btn {
   background-color: #000;
 }
+.bCriteria{
+	margin-bottom:5px;
+}
 .multisearch .multisearchResult a, .multisearch .authoritySet a {
   color: #000;
   font-size: 14px;
@@ -185,6 +205,9 @@ a, a:hover {
   max-height: 180px;
   min-height: 100px;
   overflow: hidden;
+}
+.bResultItemCol {
+  height: 260px;
 }
 a.readmore-js-toggle{
 	color:#000;

@@ -56,7 +56,7 @@
 						<li><a href="https://twitter.com/ahlnewyork" target="_blank"><i class="fa fa-twitter"></i></a></li>
 						<li><a href="http://www.facebook.com/pages/AHL-Foundation-Inc/357695584361967" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
 					</ul>
-					<div>&copy; AHL Foundation</div>
+					<div>{{{copyright}}}</div>
 				</div>
 			</div>
 

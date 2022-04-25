@@ -35,9 +35,6 @@
 					if ($va_statement = $t_item->get('ca_entities.artist_statement')) {
 						print "<div class='unit'><label>Artist Statement</label>".$va_statement."</div>";
 					}
-					if ($va_statement = $t_item->get('ca_entities.artist_statement')) {
-						print "<div class='unit'><label>Artist Statement</label>".$va_statement."</div>";
-					}
 ?>
 					{{{<ifdef code="ca_entities.external_link.url_entry"><div class="unit"><label>Website</label>
 						<unit relativeTo="ca_entities.external_link" delimiter="<br/>">
