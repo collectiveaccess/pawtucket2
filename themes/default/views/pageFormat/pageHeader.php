@@ -97,7 +97,7 @@ $has_user_links = (sizeof($user_links) > 0);
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.svg', ["alt" => $this->request->config->get("app_display_name"), "role" => "banner"]), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetMenuBarLogo(), "navbar-brand", "", "","");
 ?>
 			</div>
 
