@@ -76,7 +76,11 @@
 									}
 								}
 								if($vs_rel_communities){
-									print "<div id='relCommunitiesButton' class='relTabButton' onClick='toggleTag(\"relCommunities\");'>Communities</div>";
+									$vs_hover = '';
+									if($vs_community_hover = $this->getVar("related_community_tab_hover_note")){
+										$vs_hover = ' data-toggle="popover" title="Community note" data-content="'.$vs_community_hover.'"';
+									}
+									print "<div id='relCommunitiesButton' class='relTabButton' onClick='toggleTag(\"relCommunities\");'".$vs_hover.">Communities</div>";
 									if(!$vs_firstTab){
 										$vs_firstTab = "relCommunities";
 									}
