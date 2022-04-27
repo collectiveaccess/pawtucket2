@@ -1036,6 +1036,7 @@ h3.popover-title{
 }
 .popover-content {
     font-size: 12px !important;
+    text-transform:none;
 }
 @media (max-width: 992px) {
 	[data-toggle="popover"] {
