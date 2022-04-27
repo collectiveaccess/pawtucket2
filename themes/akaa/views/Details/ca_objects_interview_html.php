@@ -67,7 +67,7 @@
 		</div>
 		<div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
-				{{{<ifdef code="ca_objects.interview_document.media.original.url"><div class="unit"><label><a href="^ca_objects.interview_document.media.original.url"><span class='glyphicon glyphicon glyphicon-download' aria-hidden='true'></span> Transcript</a></label></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.transcript.media.original.url"><div class="unit"><label><a href="^ca_objects.transcript.media.original.url"><span class='glyphicon glyphicon glyphicon-download' aria-hidden='true'></span> Transcript</a></label></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.interview"><div class='unit trimText'><label>Interview Excerpt</label>^ca_objects.interview</div></ifdef>}}}
 				
 			</div><!-- end col -->			
