@@ -166,17 +166,11 @@
 <?php
 	}
 ?>					
-						</ul>
-					</li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="dropdown <?php print ($this->request->getController() == "About") ? ' active"' : ''; ?>" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>About</span></a>
-						<ul class="dropdown-menu">
-							<li><a href='/AboutTheProject'><span><?php print _t("About the Project"); ?></span></a></li>
-							<li><a href='/Acknowledgements'><span><?php print _t("Acknowledgements"); ?></span></a></li>
 							<li><a href='/UserGuide'><span><?php print _t("User Guide"); ?></span></a></li>
 						</ul>
 					</li>
+					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li><a href='/About' <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><span><?php print _t("About"); ?></span></a></li>
 					
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "<span>"._t("Contact")."</span>", "", "", "Contact", "Form"); ?></li>
 					<li><a href="http://irshdc.ubc.ca" target="_blank"><span>Centre Home</span></a></li>
