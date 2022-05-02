@@ -28,11 +28,8 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		<div id="footer">
-			<ul class="list-inline pull-right">
-				<li><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2017</a></small></li>
-			</ul>
 			<div>
-				©1995–2017 Glenstone.org, all rights reserved.
+				©1995–2022 Glenstone.org, all rights reserved.
 			</div>
 			<div>
 				<a href='/themes/glenstone/assets/pawtucket/graphics/userguide.pdf' target='_blank'>User Guide</a>
