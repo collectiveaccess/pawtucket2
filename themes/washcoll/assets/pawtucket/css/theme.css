@@ -1,0 +1,197 @@
+/* red #7D092D; yellow:#EBAA00; link blue: #0A60B0; Teal: #1A737E; dark teal #173F4D; Navy #0E2B47; light grey: #C1C2C4;  */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Source+Sans+Pro:ital,wght@0,300;0,400;1,600&display=swap');
+.container {
+  max-width: 1500px;
+}
+body{
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight:300;
+	font-size: 18px;
+	color: #000;
+	margin-bottom:320px;
+}
+a, a:hover {
+  color: #0A60B0;
+}
+nav.navbar{
+	background-color:#7D092D;
+  	margin-bottom:100px;
+}
+.navbar-brand {
+  width: 250px;
+  position:relative;
+  padding-top:15px;
+}
+.logoMiller {
+  position: absolute;
+  bottom: -37px;
+  width: 100%;
+  text-align: center;
+  left: 0px;
+}
+.logoMiller img {
+  width:50%;
+}
+nav.navbar{
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+@media (min-width: 768px){
+	.navbar-nav > li > a {
+	  padding-top: 30px;
+	  padding-bottom: 30px;
+	}
+	.nav > li.dropdown > a.icon{
+		padding-top:30px;
+	}
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+  background-color: #7D092D;
+}
+.navbar-default .navbar-nav > li > a{
+	color:#FFF;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight:600;
+	font-size: 16px;
+}
+.navbar .navbar-nav > .active > a{
+	color:#EBAA00;
+  	background-color: transparent;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+	color: #EBAA00;
+	background-color: transparent;
+}
+.navbar .navbar-nav > .active > a:hover {
+	color: #EBAA00;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus{
+	color: #EBAA00;
+}
+@media (min-width: 992px){
+	.navbar .formOutline {
+	  margin-left: 20px;
+	  background-color: #FFF;
+	  border:0px;
+	  margin-top: 15px;
+	}
+	#pageArea{
+		padding-left:5px;
+		padding-right:5px;
+	}
+	
+}
+#headerSearchButton{
+	color:#000;
+}
+#footer {
+	margin: 0px 0px 0px 0px;
+	border-top: none;
+	font-size: 12px;
+	color: #FFF;
+	line-height: 2.2em;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 240px;
+	padding: 30px 15px 0px 15px;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight:300;
+	background: #173F4D;
+	text-align:center;
+}
+#footer HR{
+	margin-top:30px;
+	margin-bottom:30px;
+}
+H1{
+	font-family: 'Playfair Display', serif;
+	font-size:36px;
+	color:#000;
+	text-transform:none;
+}
+#footer ul a {
+	color: #EBAA00;
+	text-decoration: none;
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight:300;
+	font-size:18px;
+}
+#footer ul{
+	margin-top:40px;
+}
+#footer .social a{
+	font-size:20px;
+}
+/*
+.navbar-brand {
+  width: 250px;
+}
+.navbar-default .navbar-nav > li > a{
+	color:#7D092D;
+	font-family:Lato;
+	font-weight: bold;
+	font-size: 16px;
+}
+@media (min-width: 768px){
+	.navbar-nav > li > a {
+	  padding-top: 46px;
+	  padding-bottom: 46px;
+	}
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+  background-color: #7D092D;
+}
+.navbar .navbar-nav > .active > a{
+	color:#000000;
+	text-decoration:underline;
+  	background-color: transparent;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+	color: #EBAA00;
+	background-color: transparent;
+}
+.navbar .navbar-nav > .active > a:hover {
+	color: #EBAA00;
+}
+*/
+.results H1 {
+  font-size: 24px;
+}
+.detail .detailNavBgLeft, .detail .detailNavBgRight{
+	background-color:transparent;
+}
+.detail .detailNavBgLeft a, .detail .detailNavBgRight a {
+  color: #000;
+}
+a.readmore-js-toggle {
+  padding-top: 10px;
+  color: #7D092D;
+}
+.btn-default, .browse .btn, .sets .btn {
+  background-color: #1A737E;
+}
+.results H1{
+	text-transform:capitalize;
+}
+.front H1{
+	color:#000;
+	text-align:center;
+	font-family: 'Playfair Display', serif;
+	margin-top:40px;
+}
+.front H2{
+	color:#000;
+	text-align:center;
+	font-family: 'Playfair Display', serif;
+	margin-top:60px;
+}
+.front .btn-default{
+	width:100%;
+	padding:20px;
+	display:block;
+	text-align:center;
+}
+.detail .btn-default, .detail .btn-default:hover{
+	color:#FFF;
+}
