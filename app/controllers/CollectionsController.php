@@ -116,8 +116,9 @@
  		public function ChildList(){
  			$vn_collection_id = $this->request->getParameter('collection_id', pInteger);
  			if($vn_collection_id){
- 				if(CompositeCache::contains('c'.$vn_collection_id, 'Collections_child_list_html')) {
- 					print CompositeCache::fetch('c'.$vn_collection_id, 'Collections_child_list_html');
+ 				$cache_timeout = $this->opo_config->get('cache_timeout');
+ 				if(($cache_timeout > 0) && CompositeCache::contains('c'.$vn_collection_id, 'Collections_child_list_html', 'collections')) {
+ 					print CompositeCache::fetch('c'.$vn_collection_id, 'Collections_child_list_html', 'collections');
  					return;
  				}
  				$t_item = new ca_collections($vn_collection_id);
@@ -127,7 +128,7 @@
  				throw new ApplicationException("Invalid collection_id");
  			}
 			$content = $this->render("Collections/child_list_html.php", true);
-			CompositeCache::save('c'.$vn_collection_id, $content, 'Collections_child_list_html');
+			CompositeCache::save('c'.$vn_collection_id, $content, 'Collections_child_list_html', 'collections', $cache_timeout);
 			print $content;
  		}
  		# -------------------------------------------------------

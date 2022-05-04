@@ -46,7 +46,7 @@
 						print $va_address['stateprovince'];
 						print " ".$va_address['postalcode'];
 						print " ".$va_address['country'];
-						if ($va_address['address1_type']) {
+						if (trim($va_address['address1_type'])) {
 							print "<br/>(".$va_address['address1_type'].") ";
 						}					
 						print "<br/><br/>";
@@ -59,8 +59,7 @@
 			print "</div><!-- end col -->";
 			print "</div><!-- end row -->";
 			
-			if ($o_results->get('ca_entities.related_names')) {
-				$va_related_names = $o_results->get('ca_entities.related_names', array('returnWithStructure' => true));
+			if (is_array($va_related_names = $o_results->get('ca_entities.related_names', array('returnWithStructure' => true))) && sizeof($va_related_names)) {
 				print "<div class='row'>";
 				print "<div class='col-sm-4'></div>";
 				print "<div class='col-sm-4'><b>Staff</b></div>";

@@ -30,7 +30,7 @@
 					{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="author,editor">
 						<ifcount code="ca_entities" min="1" max="1" excludeRelationshipTypes="author,editor"><label>Related person</label></ifcount>
 						<ifcount code="ca_entities" min="2" excludeRelationshipTypes="author,editor"><label>Related people</label></ifcount>
-						<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="author,editor"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
+						<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="author,editor">^ca_entities.preferred_labels (^relationship_typename)</unit>
 					</ifcount>}}}
 					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br/>">^ca_places.preferred_labels.name (^relationship_typename)</unit></div></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="bibliography"><div class="unit"><label>Bibliography</label><unit relativeTo="ca_occurrences.related" restrictToTypes="bibliography" delimiter="<br/><br/>"><l><ifdef code='ca_occurrences.lit_citation'>^ca_occurrences.lit_citation</ifdef><ifnotdef code='ca_occurrences.lit_citation'>^ca_occurrences.preferred_labels.name</ifnotdef></l></unit></div></ifcount>}}}
