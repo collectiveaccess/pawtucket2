@@ -47,7 +47,7 @@
 	}
 ?>
 	<form id="ProfileForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "profileSave"); ?>" class="form-horizontal" role="form" method="POST">
-        <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+        <input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 <?php
 		foreach(array("fname", "lname", "email") as $vs_field){
 			if($va_errors[$vs_field]){
