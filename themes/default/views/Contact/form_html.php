@@ -1,4 +1,4 @@
- <?php
+<?php
 	$o_config = caGetContactConfig();
 	$va_errors = $this->getVar("errors");
 	$vn_num1 = rand(1,10);
@@ -29,7 +29,7 @@
 	}
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
-	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+	    <input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 <?php
 	if($pn_id && $t_item->getPrimaryKey()){
 ?>
