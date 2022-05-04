@@ -65,7 +65,7 @@
 ?>
 			<div class="representationList representationListFullpage">
 <?php		
-			print $vo_result->get('ca_object_representations.media.page', array('return_with_access' => $va_access_values, 'scaleCSSWidthTo' => '620px', 'scaleCSSHeightTo' => '720px'));
+			print $vo_result->get('ca_object_representations.media.page', array('return_with_access' => $va_access_values, 'scaleCSSWidthTo' => '620px', 'scaleCSSHeightTo' => '480px'));
 ?>
 			</div>
 			<div class='tombstone fullpageTombstone'>

@@ -48,9 +48,9 @@
 			</div>
 			<div class='col-sm-4 col-md-4 col-lg-4'>
 			
-				{{{representationViewer}}}
-				
 <?php
+		print $t_object->get('ca_object_representations.media.medium', ['scaleCSSWidthTo' => '320px', 'scaleCSSHeightTo' => '320px']).'<br/>';
+
 		#print "<div class='repIcons'>".caObjectRepresentationThumbnails($this->request, $pn_rep_id, $t_object, array('dontShowCurrentRep' => false))."</div>";
 		# --- get reps as thumbnails
 		$va_reps = $t_object->getRepresentations(array("icon"), null, array("checkAccess" => caGetUserAccessValues($this->request)));
@@ -138,7 +138,7 @@
 							print "<div class='unit'><span class='metaTitle'>Call Number </span><span class='meta'>".$va_call_number."</span></div>";
 						}
 						if ($va_copy_location = $t_copy->get('ca_storage_locations.hierarchy.preferred_labels', array('delimiter' => ' > '))) {
-							print "<div class='unit'><span class='metaTitle'>Location </span><span class='meta'>".caNavLink($this->request, substr($va_copy_location, 4), '', '', 'Search', 'copy/facet/storage_location/id/'.$t_copy->get('ca_storage_locations.location_id'))."</span></div>";
+							print "<div class='unit'><span class='metaTitle'>Location </span><span class='meta'>".caNavLink($this->request, substr($va_copy_location, 4), '', '', 'Browse', 'copy/facet/current_location/id/'.$t_copy->get('ca_storage_locations.location_id'))."</span></div>";
 						}
 						//if ($va_status = $t_copy->get('ca_objects.purchase_status', array('convertCodesToDisplayText' => true))) {
 						if ($va_status = $t_copy->getCheckoutStatus(['returnAsText' => true])) {
@@ -204,7 +204,7 @@
 		</div><!-- end row -->
 	</div><!-- end container -->
 <?php
-	$va_archives = $t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('audio', 'documents', 'ephemera', 'image', 'moving_image')));
+	$va_archives = $t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('audio', 'document', 'ephemera', 'image', 'moving_image')));
 	if (sizeof($va_archives) > 0) {
 ?>	
 <div class="row" style="clear:both;">
@@ -265,7 +265,7 @@
 </div>	<!-- end row -->
 <?php
 	}
-	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork')))) {
+	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork', 'incoming_artwork_loan')))) {
 ?>	
 <div class="row" style="clear:both;">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
@@ -277,7 +277,7 @@
 				<div id='artworksResults' class='scrollBlock'>
 					<div class='blockResultsScroller'>
 <?php
-			$va_artwork_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('artwork')));
+			$va_artwork_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('artwork', 'incoming_artwork_loan')));
 			foreach ($va_artwork_ids as $obj_key => $va_object_id) {
 				$t_artwork = new ca_objects($va_object_id);
 				print "<div class='artworksResult'>";
