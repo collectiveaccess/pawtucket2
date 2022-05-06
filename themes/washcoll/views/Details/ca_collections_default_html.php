@@ -108,7 +108,6 @@
 					{{{<ifdef code="ca_collections.abstract"><div class="unit"><label>Abstract</label>^ca_collections.abstract</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.accruals"><div class="unit"><label>Accruals</label>^ca_collections.accruals</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/Biographical History</label>^ca_collections.adminbiohist</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.appraisal"><div class="unit"><label>Appraisal, Destruction, and Scheduling Information</label>^ca_collections.appraisal</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.accessrestrict"><div class="unit"><label>Conditions Governing Access Statement</label>^ca_collections.accessrestrict</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.govtuse"><div class="unit"><label>Conditions Governing Reproductions and Use</label>^ca_collections.govtuse</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.custodhist"><div class="unit"><label>Provenance</label>^ca_collections.custodhist</div></ifdef>}}}
