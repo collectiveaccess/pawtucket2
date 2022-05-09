@@ -36,7 +36,6 @@
  
 include_once(__CA_LIB_DIR__."/Controller/Request/RequestHTTP.php");
 include_once(__CA_LIB_DIR__."/Controller/RequestDispatcher.php");
-include_once(__CA_LIB_DIR__."/Controller/ApplicationException.php");
 
 global $g_app_controller;
 $g_app_controller = null;
