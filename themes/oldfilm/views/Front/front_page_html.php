@@ -35,10 +35,10 @@
 
 	<div class="row">
 		<div class="col-sm-10">
-
+<!-- 
 			<p>
 				We care for approximately 800 moving image collections, which would take more than a year to watch. Of these, 300+ are described online at the collection level.
-			</p>
+			</p> -->
 
 			<!-- <nav class="collection-nav" aria-label="Primary" itemtype="https://schema.org/SiteNavigationElement" itemscope="">
 				<ul class="collection-menu">
