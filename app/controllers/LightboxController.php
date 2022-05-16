@@ -141,7 +141,8 @@ class LightboxController extends BrowseController {
 	 * http://mysite.com/Lightbox/view/b7cb7ba3-dcec-43b7-9de0-951491780e2d
 	 */
 	public function view($options = null) {
-		$this->request->setParameter('token', $this->request->getActionExtra());
+		$this->request->setParameter('token', $token = $this->request->getActionExtra());
+		$this->view->setVar('token', $token);
 		return $this->index($options);
 	}
 	# -------------------------------------------------------
@@ -155,6 +156,8 @@ class LightboxController extends BrowseController {
 		$va_errors = [];
 
 		$set_id = $this->request->getParameter('set_id', pInteger);
+		if(!($download_type = $this->request->getParameter('download_type', pString))) { $download_type = 'download'; }
+		
 		$key = $this->request->getParameter('key', pString);
 		if($record_ids = $this->request->getParameter('record_ids', pString)){
 			$record_ids = explode(";", $record_ids);
@@ -167,7 +170,8 @@ class LightboxController extends BrowseController {
 			$record_ids = $qr_res->getPrimaryKeyValues(1000);
 		}
 		
-		if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_READ_ACCESS__)) {			
+		
+		if (is_a($t_set = $this->_checkAccess(), 'ca_sets') || ($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_READ_ACCESS__)) {			
 			$va_set_record_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $this->access_values, 'limit' => 100000)));
 			if(!$record_ids){
 				$record_ids = $va_set_record_ids;	
@@ -192,7 +196,7 @@ class LightboxController extends BrowseController {
 						continue;
 					}
 
-					$va_rep_display_info = caGetMediaDisplayInfo('download', $qr_res->getMediaInfo('ca_object_representations.media', 'INPUT', 'MIMETYPE'));
+					$va_rep_display_info = caGetMediaDisplayInfo($download_type, $qr_res->getMediaInfo('ca_object_representations.media', 'INPUT', 'MIMETYPE'));
 					$vs_media_version = $va_rep_display_info['download_version'];
 					$va_original_paths = $qr_res->getMediaPaths('ca_object_representations.media', $vs_media_version);
 					if(sizeof($va_original_paths)>0) {
