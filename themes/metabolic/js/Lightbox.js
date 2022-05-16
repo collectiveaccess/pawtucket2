@@ -24,12 +24,10 @@ const Lightbox = ({ baseUrl, endpoint, initialFilters, propView, showLastLightbo
 	useEffect(() => {
 		// load auth tokens
 		newJWTToken(baseUrl, tokens, (data) => {
-			// console.log("newJWTToken", data);
 			const newTokens = { refresh_token: refreshToken, access_token: data.data.refresh.jwt };
 			setTokens(newTokens)
 					
 			fetchLightboxList(baseUrl, { refresh_token: refreshToken, access_token: data.data.refresh.jwt }, (data) => {
-				// console.log("fetchLightboxList", data);
 				setLightboxList(data);
 			});
 		

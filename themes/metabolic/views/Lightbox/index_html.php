@@ -34,6 +34,7 @@
     'selector': '#lightbox',
 		'key': '<?= $this->getVar('key'); ?>', 
 		'data': {
+			anonToken: '<?= $this->getVar('token'); ?>', 
 			baseUrl: "<?= __CA_URL_ROOT__."/service.php"; ?>",
 			siteBaseUrl: "<?= __CA_URL_ROOT__."/index.php"; ?>/Lightbox",
 			<?= $set_id ? "showLastLightboxOnLoad: {$set_id}," : ""; ?>
@@ -41,7 +42,8 @@
 			browseConfig: <?= json_encode($config->get("lightboxBrowse")); ?>,
 			exportFormats: <?= json_encode($export_formats); ?>,
 			lightboxTerminology: <?= json_encode(caGetLightboxDisplayName()); ?>,
-			shareAccess: "edit"
+			shareAccess: "edit",
+			downloadType: "download_high"
 		}
   };
 </script>
