@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { GridContext } from '../GridContext';
 import Axios from 'axios';
 const downloadUrl = pawtucketUIApps.RelatedGrid.downloadUrl;
+let downloadType = pawtucketUIApps.RelatedGrid.downloadType;
+if(!downloadType) { downloadType = 'download_original'; }
 
 const RelatedGridExportOptions = (props) => {
 
@@ -12,7 +14,7 @@ const RelatedGridExportOptions = (props) => {
 
     Axios({
       method: 'POST',
-      url: downloadUrl + '/ids/' + String(ids),
+      url: downloadUrl + '/download_type/' + downloadType + '/ids/' + String(ids),
       responseType: "blob",
     })
     .then(function (response) {
@@ -35,7 +37,7 @@ const RelatedGridExportOptions = (props) => {
 
     Axios({
       method: 'POST',
-      url: downloadUrl + '/ids/' + String(ids),
+      url: downloadUrl + '/download_type/' + downloadType + '/ids/' + String(ids),
     	responseType: "blob",
     })
     .then(function (response) {

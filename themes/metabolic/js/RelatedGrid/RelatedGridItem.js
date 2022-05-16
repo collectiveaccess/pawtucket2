@@ -45,6 +45,8 @@ const RelatedGridItem = (props) => {
 		}
 	}
 	
+	let url = props.item.media[1] ? props.item.media[1].url : null;
+	
 	if(altids && (altids.length > 0)) { altids = "(" + altids + ")"; }
 	
 	if(currentlySelectedItem){
@@ -52,7 +54,7 @@ const RelatedGridItem = (props) => {
       return (
         <div className="col" onClick={(e) => selectGridItem(e)}>
           <div className={"card" + ((selectedGridItems.includes(props.item.id)) ? ' selected' : '')}>
-            <img className='mw-100 mh-100 d-block' src={ props.item.media[1].url } alt=""/>
+            <img className='mw-100 mh-100 d-block' src={ url} alt=""/>
             <div className='card-body'>
               <div className="card-title text-break">{ props.item.identifier }<br/>{ altids }</div>
               <div className="float-left">
@@ -66,7 +68,7 @@ const RelatedGridItem = (props) => {
       return (
         <div className="col">
           <div className={"card" + ((currentlySelectedItem === (props.item.id)) ? ' selected' : '')} onClick={(e) => selectItem(e)}>
-            <img className='mw-100 mh-100 d-block' src={ props.item.media[1].url } alt=""/>
+            <img className='mw-100 mh-100 d-block' src={ url } alt=""/>
             <div className='card-body'>
               <div className="card-title text-break">{ props.item.identifier }<br/>{ altids }</div>
             </div>
@@ -79,7 +81,7 @@ const RelatedGridItem = (props) => {
       return (
         <div className="col" onClick={(e) => selectGridItem(e)}>
           <div className={"card" + ((selectedGridItems.includes(props.item.id)) ? ' selected' : '')}>
-            <img className='mw-100 mh-100 d-block' src={ props.item.media[1].url } alt=""/>
+            <img className='mw-100 mh-100 d-block' src={ url } alt=""/>
             <div className='card-body'>
               <div className="card-title text-break">{ props.item.identifier }<br/>{ altids }</div>
               <div className="float-left">
@@ -93,7 +95,7 @@ const RelatedGridItem = (props) => {
       return (
         <div className="col">
           <div className="card" onClick={(e) => selectItem(e)}>
-            <img className="mw-100 mh-100 d-block" src={ props.item.media[1].url } alt=""/>
+            <img className="mw-100 mh-100 d-block" src={ url } alt=""/>
             <div className='card-body'>
               <div className="card-title text-break">{ props.item.identifier }<br/>{ altids }</div>
             </div>
