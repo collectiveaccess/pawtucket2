@@ -214,6 +214,11 @@ class GraphQLServiceController extends \BaseServiceController {
 							'userclass' => $u->get('ca_users.userclass')
 						];
 					}
+					
+					global $g_request;
+					if($g_request) {
+						$g_request->setUser($u);
+					}
 					return $u;
 				}
 			}
@@ -275,6 +280,7 @@ class GraphQLServiceController extends \BaseServiceController {
 	 *		idnoOnly = Only resolve $identifier parameter against idno values. [Default is false]
 	 *		primaryKeyOnly = Only resolve $identifier parameter against primary key values. [Default is false]
 	 *		list = 
+	 *		parent_id = Restrict matching to direct children of specified parent_id. [Default is null]
 	 *
 	 * @return BaseModel
 	 */
@@ -293,10 +299,12 @@ class GraphQLServiceController extends \BaseServiceController {
 		} 
 		
 		if(!$primary_key_only) {
+			$parent_id = caGetOption('parent_id', $options, null);
 			$idno_fld = \Datamodel::getTableProperty($table, 'ID_NUMBERING_ID_FIELD');
 			if(is_null($rec) && $idno_fld) {
 				$criteria = [$idno_fld => $identifier];
 				if($type) { $criteria['type_id'] = $type; }
+				if($parent_id) { $criteria['parent_id'] = $parent_id; }
 				if($list = caGetOption('list', $options, null)) {
 					if($list_id = caGetListID($list)) { 
 						$criteria['list_id'] = $list_id;
@@ -322,6 +330,7 @@ class GraphQLServiceController extends \BaseServiceController {
 	 * @param string|integer $type A type code or type_id to constrain idno-based resolution to. If null, type is ignored in resolution. [Default is null]
 	 * @param array $options Options include:
 	 *		list = 
+	 *		parent_id = Restrict matching to direct children of specified parent_id. [Default is null]
 	 *
 	 * @return BaseModel
 	 */
@@ -335,7 +344,9 @@ class GraphQLServiceController extends \BaseServiceController {
 		
 		$rec = null;
 		
+		$parent_id = caGetOption('parent_id', $options, null);
 		$criteria = is_array($label) ? ['preferred_labels' => $label] : ['preferred_labels' => [$label_display_field => $label]];
+		if($parent_id) { $criteria['parent_id'] = $parent_id; }
 		if($type) { $criteria['type_id'] = $type; }
 		if($list = caGetOption('list', $options, null)) {
 			if($list_id = caGetListID($list)) { 
