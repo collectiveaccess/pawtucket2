@@ -35,6 +35,7 @@ require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
 require_once(__CA_MODELS_DIR__."/ca_objects.php");
 require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
+require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
 
 class DetailController extends FindController {
 	# -------------------------------------------------------
@@ -383,7 +384,7 @@ class DetailController extends FindController {
 			
 			$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', $ps_function);
 			$o_rel_context->setParameter('key', $vs_key);
-			$o_rel_context->setAsLastFind(true);
+			$o_rel_context->setAsLastFind(false);
 			
 			$qr_rel_res = $o_browse->getResults();
 			$o_rel_context->setResultList($qr_rel_res->getAllFieldValues('ca_objects.object_id'));
@@ -620,7 +621,7 @@ class DetailController extends FindController {
 			$download_type = $this->request->getParameter('download_type', pString);
 			
 			$version = $this->request->getParameter('version', pString);
-			if (!$version && !$download_type) { $version = 'large'; }
+			if (!$version && !$download_type) { $version = 'original'; }
 			$this->view->setVar('version', $version);
 			
 			$a = (is_array($this->opa_access_values) && sizeof($this->opa_access_values)) ? $this->opa_access_values : null;
@@ -723,16 +724,17 @@ class DetailController extends FindController {
 				// Generate ZIP for multiple files
 				if (!($limit = ini_get('max_execution_time'))) { $limit = 30; }
 				set_time_limit($limit * 4);
-				$o_zip = new ZipFile();
+				
+				$o_zip = new ZipStream();
 				foreach($file_paths as $path => $name) {
-					$o_zip->addFile($path, $name, null, ['compression' => 0]);	// don't try to compress
+					$o_zip->addFile($path, $name);	
 				}
-				$this->view->setVar('archive_path', $path = $o_zip->output(ZIPFILE_FILEPATH));
+				
+				$this->view->setVar('zip_stream', $o_zip);
 				$tmp = preg_replace('![^A-Za-z0-9\.\-]+!', '_', substr(join('_', array_slice(array_keys($idnos), 0, 10)), 0, 30));
 				$this->view->setVar('archive_name', $z=($tmp ? $tmp : 'MediaDownload').'.zip');
 				
-				$rc = $this->render('Details/object_download_media_binary.php');
-				
+				$rc = $this->render('bundles/download_file_binary.php');
 				if ($path) { unlink($path); }
 			} elseif(sizeof($file_paths) === 1) {
 				// Single file
@@ -741,7 +743,7 @@ class DetailController extends FindController {
 					$this->view->setVar('archive_name', $name);
 					break;
 				}
-				$rc = $this->render('Details/object_download_media_binary.php');
+				$rc = $this->render('bundles/download_file_binary.php');
 			} else {
 				throw new ApplicationException(_t('No files to download'));
 			}
