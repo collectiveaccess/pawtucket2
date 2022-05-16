@@ -69,7 +69,9 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							throw new ServiceException(_t('Invalid JWT'));
 						}
 						$t_sets = new ca_sets();
-						$is_anonymous = (is_array($u) && array_key_exists('anonymous', $u)) ;
+						$is_anonymous = (is_array($u) && array_key_exists('anonymous', $u));
+												
+						$access_values = caGetUserAccessValues();
 						
 						if($is_anonymous) {
 							// Anonymous user
@@ -81,7 +83,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 								[
 									'set_id' => $t_set->getPrimaryKey(),
 									'label' => $t_set->get('ca_sets.preferred_labels.name'),
-									'count' => $t_set->getItemCount(),
+									'count' => $t_set->getItemCount(['checkAccess' => $access_values]),
 									'fname' => $author->get('fname'),
 									'lname' => $author->get('lname'),
 									'email' => $author->get('email'),
@@ -99,8 +101,8 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						}
 						
 						$set_ids = array_map(function($v) { return $v['set_id']; }, $lightboxes);
-						$access_values = $is_anonymous ? [] : $t_sets->haveAccessToSets($u->getPrimaryKey(), __CA_SET_EDIT_ACCESS__, $set_ids);
-						return array_map(function($v) use ($access_values) {
+						$set_access = $is_anonymous ? [] : $t_sets->haveAccessToSets($u->getPrimaryKey(), __CA_SET_EDIT_ACCESS__, $set_ids);
+						return array_map(function($v) use ($set_access) {
 							return [
 								'id' => $v['set_id'],
 								'title' => $v['label'],
@@ -110,7 +112,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 								'author_email' => $v['email'],
 								'type' => $v['set_type'],
 								'created' => date('c', $v['created']),
-								'access' => $is_anonymous ? 1 : ($access_values[$v['set_id']] ? 2 : 1),
+								'access' => $is_anonymous ? 1 : ($set_access[$v['set_id']] ? 2 : 1),
 								'content_type' => Datamodel::getTableName($v['table_num']),
 								'content_type_singular' => Datamodel::getTableProperty($v['table_num'], 'NAME_SINGULAR'),
 								'content_type_plural' => Datamodel::getTableProperty($v['table_num'], 'NAME_PLURAL'),
@@ -185,6 +187,8 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						$sorts = caGetOption('sortBy', $browse_conf, [], ['castTo' => 'array']);
 						$views = caGetOption('views', $browse_conf, [], ['castTo' => 'array']);
 						
+						$access_values = caGetUserAccessValues();
+						
 						$sort_opts = [];
 						foreach($sorts as $label => $sort) {
 							$sort_opts[] = [
@@ -219,7 +223,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							'type' => $t_set->get('ca_sets.type_id', ['convertCodesToIdno' => true]),
 							'created' => date('c', $t_set->get('ca_sets.created.timestamp')),
 							'content_type' => Datamodel::getTableName($t_set->get('ca_sets.table_num')),
-							'item_count' => $t_set->getItemCount(),
+							'item_count' => $t_set->getItemCount(['checkAccess' => $access_values]),
 							'items' => [],
 							'sortOptions'=> $sort_opts,
 							'comments' => $comments,
@@ -236,6 +240,7 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 							'start' => $args['start'], 
 							'limit' => $args['limit'],
 							'sort' => $args['sort'],
+							'checkAccess' => $access_values,
 							'template' => $views['images']['caption'] ?? null,
 							'sortDirection' => $args['sortDirection']
 						]));
