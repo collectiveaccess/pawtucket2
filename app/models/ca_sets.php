@@ -167,7 +167,8 @@ BaseModel::$s_ca_models_definitions['ca_sets'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => 0,
 				'LABEL' => _t('Is deleted?'), 'DESCRIPTION' => _t('Indicates if the set is deleted or not.'),
-				'BOUNDS_VALUE' => array(0,1)
+				'BOUNDS_VALUE' => array(0,1),
+				'DONT_INCLUDE_IN_SEARCH_FORM' => true
 		),
 		'rank' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
@@ -328,6 +329,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$this->BUNDLES['ca_users'] = array('type' => 'special', 'repeating' => true, 'label' => _t('User access'));
 		$this->BUNDLES['ca_user_groups'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Group access'));
 		$this->BUNDLES['ca_set_items'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Set items'));
+		
+		$this->BUNDLES['hierarchy_navigation'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Hierarchy navigation'));
+		$this->BUNDLES['hierarchy_location'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Location in hierarchy'));
 	}
 	# ------------------------------------------------------
 	/**
@@ -1638,6 +1642,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$vn_rank_acc = end(array_values($va_row_ranks));
 		
 		$va_rank_updates = array();
+		
+		$rows_in_set = $this->getItemRowIDs();
+		$allow_dupes_in_set = (bool)$this->getAppConfig()->get('allow_duplicate_items_in_sets');
 		foreach($pa_row_ids as $vn_rank => $vn_row_id) {
 			if (isset($va_existing_ranks[$vn_rank])) {
 				$vn_rank_inc = $va_existing_ranks[$vn_rank];
@@ -1656,8 +1663,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 						$va_errors[$vn_row_id] = _t('Could not reorder item %1: %2', $vn_row_id, join('; ', $t_set_item->getErrors()));
 					}
 				}
-			} else {
-				// add item to set
+			} elseif($allow_dupes_in_set || (!$rows_in_set[(int)($vb_treat_row_ids_as_rids ? $va_tmp[0] : $vn_row_id)])) {
 				$this->addItem($vb_treat_row_ids_as_rids ? $va_tmp[0] : $vn_row_id, null, $pn_user_id, $vn_rank_inc);
 			}
 		}
