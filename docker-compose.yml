@@ -1,0 +1,12 @@
+services:
+  pawtucket:
+    build: .
+    volumes:
+      - $PWD:/app/apache2/htdocs
+      - ${CA_MEDIA_DIR-../collective-access/media}:/app/apache2/htdocs/media
+    ports:
+      - "127.0.0.1:8080:80"
+networks:
+  default:
+    external:
+      name: providence_default
