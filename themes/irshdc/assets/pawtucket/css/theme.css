@@ -313,6 +313,10 @@ body{
 	color:#000;
 	text-align:center;
 }
+.front .welcome{
+	font-size: 16px;
+	text-align: center;
+}
 .front H2, .front h2{
 	font:lato;
 	font-size:24px;
