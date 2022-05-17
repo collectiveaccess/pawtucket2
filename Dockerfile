@@ -35,8 +35,7 @@ RUN rm -rf /app/apache2/htdocs
 
 #Copy startup script, setup file, and permissions script
 COPY docker_templates/gitlab-runner /etc/sudoers.d/
-COPY ./startup.sh /
 
 USER gitlab-runner
 
-CMD ["bash", "-c", "/app/apache2/bin/apachectl -D FOREGROUND"]
+CMD ["bash", "-c", "sudo /app/apache2/bin/apachectl -D FOREGROUND"]
