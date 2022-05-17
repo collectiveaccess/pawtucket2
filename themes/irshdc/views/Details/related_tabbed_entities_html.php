@@ -42,10 +42,10 @@
 					# --- rel_object is just for outputting label properly
 					$vs_rel_objects = $t_item->get('ca_objects.related', array("limit" => 1,"checkAccess" => $va_access_values, "restrictToTypes" => array("archival", "library", "work", "resource", "file", "survivor")));
 					
-					if($vs_rel_object || $vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions || $vs_rel_collections){
+					if($vs_rel_object || $vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions || $vs_rel_collections || $vs_rel_communities){
 						print "<H1>Related</H1>";
 					}
-					if($vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions || $vs_rel_collections){
+					if($vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions || $vs_rel_collections || $vs_rel_communities){
 ?>				
 						<div class="relatedBlock relatedBlockTabs">
 							<H3>
