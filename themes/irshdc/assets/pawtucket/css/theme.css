@@ -1109,6 +1109,85 @@ h3.popover-title{
 	color: #454545;
 	font-family: latoLight;
 }
+/* archival collection browser */
+#collectionsWrapperArchival .collectionsContainer{
+	padding-bottom:20px;
+}
+#collectionsWrapperArchival .collectionsContainer label{
+	font-size: 18px;
+	color: #262626;
+	line-height: 135%;
+	text-transform: none;
+}
+.collectionsContainer a, .collectionsContainer .listItem {
+    width: 100%;
+    display: inline-block;
+    padding: 5px 30px 5px 5px;
+    font-size: 14px;
+}
+#collectionsWrapperArchival .glyphicon{
+	font-size:10px;
+}
+.collectionLoad a{
+	padding-right:5px;
+}
+#collectionsWrapperArchival .collectionsContainer a:hover{
+	background-color: transparent;
+}
+#collectionsWrapperArchival .linkoutRight{
+	position:absolute;
+	right:0px;
+	z-index:100;
+	width:auto;
+	display:inline;
+	background-color: transparent;
+	padding:5px;
+	margin:0px
+}
+#collectionsWrapperArchival a, #collectionsWrapperArchival a:visited {
+    text-decoration: none;
+    color:#000;
+}
+#collectionsWrapperArchival a:active, #collectionsWrapperArchival a:focus, #collectionsWrapperArchival a:hover {
+    text-decoration: underline;
+}
+#collectionsWrapperArchival .collectionsContainer a.openCollection:focus{
+	color:#242121;
+}
+#collectionsWrapperArchival .collectionsContainer a.active, #collectionsWrapperArchival .collectionsContainer a.active:focus, #collectionsWrapperArchival .collectionsContainer a.active:visited, #collectionsWrapperArchival .collectionsContainer a.active:active{
+	text-decoration:none;
+	color:#000;
+	font-weight:bold;
+	background-color: transparent;
+}
+
+#collectionsWrapperArchival a.openCollection:hover, #collectionsWrapperArchival a.openCollection.active:hover{
+	background-color: #f0ede4;
+	text-decoration: none;
+}
+.collectionsContainer a.openCollection.active small {
+  color: #757575;
+}
+#collectionsWrapperArchival .collectionLoad a{
+	display:inline-block;
+}
+#collectionsWrapperArchival .collectionLoad img{
+	width:auto;
+	height:auto;
+}
+#collectionsWrapperArchival .collectionLoad .nonLinkedCollection{
+	color: #242121;
+	font-size:14px;
+}
+
+@media(max-width:767px){
+	#collectionsWrapperArchival{
+		margin-top:20px;
+	}
+}
+#collectionsWrapperArchival .collectionLoad{
+	padding-left:30px;
+}
 /* browse filters on repository and school pages */
 .detailFilter{
 	padding: 0px 15px 20px 15px;
