@@ -173,10 +173,10 @@ if($vs_mode == "map"){
 						</H6>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 <?php
-						$vs_display_creator = $t_object->getWithTemplate("<unit delimiter=', '>^ca_objects.cdwa_display_creator</unit>");
-						$vs_creators_contributors = $t_object->getWithTemplate("<unit relativeTo='ca_entities.related' restrictToRelationshipTypes='artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue' delimiter=', '><l>^ca_entities.preferred_labels.displayname</l></unit>", array("checkAccess" => $va_access_values));
+						$vs_display_creator = $t_object->getWithTemplate("<unit delimiter='; '>^ca_objects.cdwa_display_creator</unit>");
+						$vs_creators_contributors = $t_object->getWithTemplate("<unit relativeTo='ca_entities.related' restrictToRelationshipTypes='artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue' delimiter='; '><l>^ca_entities.preferred_labels.displayname</l></unit>", array("checkAccess" => $va_access_values));
 						if($vs_display_creator || $vs_creators_contributors){
-							print "<div class='unit'><H6>Creators and Contributors</H6><div class='trimTextShort'>".$vs_display_creator.(($vs_display_creator && $vs_creators_contributors) ? ", " : "").$vs_creators_contributors."</div></div>";
+							print "<div class='unit'><H6>Creators and Contributors</H6><div class='trimTextShort'>".$vs_display_creator.(($vs_display_creator && $vs_creators_contributors) ? "; " : "").$vs_creators_contributors."</div></div>";
 						}
 ?>
 						{{{<ifdef code="ca_objects.cultural_context"><div class='unit'><h6>Culture</h6>^ca_objects.cultural_context</div></ifdef>}}}

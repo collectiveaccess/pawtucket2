@@ -192,7 +192,7 @@ if($vs_mode == "map"){
 						<H6>
 							{{{<if rule='^ca_objects.resource_type !~ /-/'><ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1<ifdef code="ca_objects.genre"> > </ifdef></ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef></if>}}}
 						</H6>
-						{{{<ifdef code="ca_objects.creators"><div class="unit"><H6>Creators and Contributors</H6>^ca_objects.creators%delimiter=,_</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.creators"><div class="unit"><H6>Creators and Contributors</H6>^ca_objects.creators%delimiter=;_</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.description_new.description_new_source"><h6>Description</h6>
 								<div class="trimText">^ca_objects.description_new.description_new_txt</div>
