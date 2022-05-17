@@ -37,9 +37,9 @@
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
-	$vb_show_hierarchy_viewer = true;
-	if($o_collections_config->get("do_not_display_collection_browser")){
-		$vb_show_hierarchy_viewer = false;	
+	$vb_show_hierarchy_viewer = false;
+	if($t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values)) || $t_item->get('ca_objects.object_id', array('restrictToTypes' => array('archival_file'), "restrictToRelationshipTypes" => array('archival_part'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))){
+		$vb_show_hierarchy_viewer = true;	
 	}
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true, "checkAccess" => $va_access_values)));
@@ -74,11 +74,11 @@
 						$vs_source = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>', array("checkAccess" => $va_access_values));						
 						$vs_source_link = $t_item->get("ca_collections.link");
 						if($vs_source_link){
-							$vs_source_link = '<br/><a href="'.$vs_source_link.'" class="redLink" target="_blank">'.(($vs_source) ? $vs_source : 'Source Record').' <span class="glyphicon glyphicon-new-window"></span></a>';
+							$vs_source_link = '<div><a href="'.$vs_source_link.'" class="redLink" target="_blank">'.(($vs_source) ? $vs_source : 'Source Record').' <span class="glyphicon glyphicon-new-window"></span></a></div>';
 						}						
 
-						$vs_title_hover = $t_item->getWithTemplate("<ifdef code='ca_collections.ISADG_titleNote'>^ca_collections.ISADG_titleNote%delimiter=<br/><br/></ifdef>");
-						$vs_title = $t_object->get("ca_objects.preferred_labels.name");
+						$vs_title_hover = $t_item->getWithTemplate("<ifdef code='ca_collections.ISADG_titleNote'>^ca_collections.ISADG_titleNote%delimiter=;_</ifdef>");
+						$vs_title = $t_item->get("ca_collections.preferred_labels.name");
 						
 						print "<H4>";
 						if($vs_title_hover){
@@ -86,18 +86,22 @@
 						}else{
 							print $vs_title;
 						}
-						print $vs_source_link."</H4>";
+						print "</H4>";
 ?>
-						<H6>{{{^ca_collections.type_id}}}</H6>
+						<div class="unit">{{{^ca_collections.type_id}}}
 						
 						{{{<ifdef code="ca_collections.displayDate">
-							<ifdef code="ca_collections.ISADG_dateNote"><div class="unit" data-toggle="popover" title="Note" data-content="^ca_collections.ISADG_dateNote">
+							<ifdef code="ca_collections.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_collections.ISADG_dateNote">
 								^ca_collections.displayDate
 							</div></ifdef>
 							<ifnotdef code="ca_collections.ISADG_dateNote">
-								<div class="unit">^ca_collections.displayDate</div>
+								<div>^ca_collections.displayDate</div>
 							</ifnotdef>
 						</ifdef>}}}
+<?php
+						print $vs_source_link;
+?>
+						</div>
 						{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
 						
 <?php
@@ -107,7 +111,6 @@
 							print '<div class="unit"><H6>Creators and Contributors</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? ", " : "").$vs_creators_text.'</div></div>';
 						}
 ?>						
-						{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator,contributor" min="1"><div class="unit"><H6>Creators and Contributors</H6><div class="trimTextShort"><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
 						{{{<ifdef code="ca_collections.RAD_admin_hist">
 							<div class="unit"><h6>Administrative/Biographical History</h6>
 								<div class="trimText">^ca_collections.RAD_admin_hist</div>
@@ -127,16 +130,34 @@
 						</ifdef>}}}
 						{{{<ifdef code="ca_collections.language">
 							<ifdef code="ca_collections.language_note">
-								<div class="unit" data-toggle="popover" title="Note" data-content="^ca_collections.language_note"><h6>Language</h6>^ca_collections.language</div>
+								<div class="unit" data-toggle="popover" title="Note" data-content="^ca_collections.language_note%delimiter=;_"><h6>Language</h6>^ca_collections.language%delimiter=,_</div>
 							</ifdef>
 							<ifnotdef code="ca_collections.language_note">
-								<div class="unit"><h6>Language</h6>^ca_collections.language</div>
+								<div class="unit"><h6>Language</h6>^ca_collections.language%delimiter=,_</div>
 							</ifnotdef>
 						</ifdef>}}}
 								
 						
 					</div><!-- end stoneBg -->
-						
+<?php
+			if ($vb_show_hierarchy_viewer) {	
+?>
+				<div class="row" id="collectionsWrapperArchival">
+					<div class='col-sm-12'>
+						<div class='collectionsContainer'><div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
+							<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+						</div><!-- end findingAidContainer -->
+					</div><!-- end col -->
+				</div><!-- end row -->						
+
+				<script>
+					$(document).ready(function(){
+						$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchyArchival', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
+					})
+				</script>
+<?php				
+			}									
+?>						
 					{{{<ifdef code="ca_collections.nonpreferred_labels|ca_collections.RAD_extent|ca_collections.RAD_custodial|ca_collections.source_identifer|ca_collections.ISADG_archNote|ca_collections.ISADG_rules">
 						<div class="collapseBlock">
 							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
@@ -153,6 +174,7 @@
 							</div>
 						</div>
 					</ifdef>}}}
+
 				</div>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>
 	<?php
@@ -204,22 +226,6 @@
 ?>
 				</div>
 			</div>
-			<div class="row">
-				<div class='col-sm-12'>
-<?php
-			if ($vb_show_hierarchy_viewer) {	
-?>
-				<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-				<script>
-					$(document).ready(function(){
-						$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
-					})
-				</script>
-<?php				
-			}									
-?>				
-				</div><!-- end col -->
-			</div><!-- end row -->
 			<div class="row" style="margin-top:30px;">
 				<div class="col-sm-12">		
 <?php
