@@ -5226,7 +5226,8 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				break;
 		} 
 
-		return preg_replace("![^A-Za-z0-9_\-\.]+!", "_", $filename);
+		$filename = html_entity_decode($filename);
+		return preg_replace("![^A-Za-z0-9_\-\.&]+!", "_", $filename);
 	}
 	# ------------------------------------------------------------------
 	/**
