@@ -282,7 +282,8 @@ if($x){
 							<!--{{{<ifdef code="ca_objects.related_collection_list"><div class='unit'><H6>Collection Hierarchy List</H6><unit relativeTo="ca_objects" delimiter="<br/>"><l>^ca_objects.related_collection_list</l></unit></div></ifdef>}}}-->
 							{{{<ifdef code="ca_objects.ownership_credit"><div class='unit'><h6>Credit/Citation</h6>^ca_objects.ownership_credit</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Notes</h6>^ca_objects.MARC_generalNote</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Note on Description</h6>^ca_objects.ISADG_archNote</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Archivist Notes</h6>^ca_objects.ISADG_archNote</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_objects.ISADG_rules</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_objects.govAccess</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.rights_new"><div class='unit'><h6>Terms Governing Use and Reproduction</h6>^ca_objects.rights_new</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_objects.RAD_local_rights</div></ifdef>}}}

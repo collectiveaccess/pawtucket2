@@ -102,6 +102,10 @@
 ?>
 						</div>
 						{{{<ifdef code="ca_collections.parent_id"><H6>Location in Collection: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
+						<H6>
+							{{{<if rule='^ca_collections.resource_type !~ /-/'><ifdef code="ca_collections.resource_type">^ca_collections.resource_type%useSingular=1<ifdef code="ca_collections.genre"> > </ifdef></ifdef><ifdef code="ca_collections.genre">^ca_collections.genre%delimiter=,_</unit></ifdef></if>}}}
+						</H6>
+						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						
 <?php
 						$vs_creators_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor,creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
@@ -126,6 +130,26 @@
 									<div class="trimText">^ca_collections.scope_new.scope_new_text</div>
 								</div>
 							</ifnotdef>
+						</ifdef>}}}
+						{{{<ifdef code="ca_collections.curators_comments.comments">
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_collections.curators_comments.comment_reference"><h6>Curatorial Comment</h6>
+								<div class="trimText">^ca_collections.curators_comments.comments</div>
+							</div>
+						</ifdef>}}}
+						{{{<ifdef code="ca_collections.content_notice.content_notice_value">
+							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_collections.content_notice.content_notice_source"><h6>Content Notice</h6>
+								<div class="trimText">^ca_collections.content_notice.content_notice_value</div>
+							</div>
+						</ifdef>}}}
+						{{{<ifdef code="ca_collections.about_school_photographs.about_school_photos_text">
+							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_collections.about_school_photographs.about_school_photos_source"><h6>About Residential School Photographs</h6>
+								<div class="trimText">^ca_collections.about_school_photographs.about_school_photos_text</div>
+							</div>
+						</ifdef>}}}
+						{{{<ifdef code="ca_collections.community_input_objects.comments_objects">
+							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_collections.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
+								<div class="trimText">^ca_collections.community_input_objects.comments_objects</div>
+							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_collections.language">
 							<ifdef code="ca_collections.language_note">
@@ -157,7 +181,7 @@
 <?php				
 			}									
 ?>						
-					{{{<ifdef code="ca_collections.nonpreferred_labels|ca_collections.RAD_extent|ca_collections.RAD_custodial|ca_collections.source_identifer|ca_collections.ISADG_archNote|ca_collections.ISADG_rules|ca_collections.RAD_generalNote">
+					{{{<ifdef code="ca_collections.nonpreferred_labels|ca_collections.RAD_extent|ca_collections.RAD_custodial|ca_collections.source_identifer|ca_collections.ISADG_archNote|ca_collections.ISADG_rules|ca_collections.RAD_generalNote|ca_collections.govAccess|ca_collections.RAD_usePub|ca_collections.RAD_local_rights">
 						<div class="collapseBlock">
 							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 							<div class="collapseContent">
@@ -172,6 +196,10 @@
 								<ifdef code="ca_collections.RAD_generalNote"><div class='unit'><h6>Notes</h6>^ca_collections.RAD_generalNote</div></ifdef>
 								<ifdef code="ca_collections.ISADG_archNote"><div class='unit'><h6>Archivist Notes</h6>^ca_collections.ISADG_archNote</div></ifdef>
 								<ifdef code="ca_collections.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_collections.ISADG_rules</div></ifdef>
+								<ifdef code="ca_collections.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_collections.govAccess</div></ifdef>
+								<ifdef code="ca_collections.RAD_usePub"><div class='unit'><h6>Terms Governing Reproduction</h6>^ca_collections.RAD_usePub</div></ifdef>
+								<ifdef code="ca_collections.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_collections.RAD_local_rights</div></ifdef>
+								
 							</div>
 						</div>
 					</ifdef>}}}

@@ -92,6 +92,10 @@
 ?>
 						</div>
 						{{{<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="archival_part"><H6>Location in Collection: <ifcount code="ca_collections" min="2" restrictToRelationshipTypes="archival_part"><br/></ifcount><unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef></unit></H6></ifcount>}}}
+						<H6>
+							{{{<if rule='^ca_objects.resource_type !~ /-/'><ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1<ifdef code="ca_objects.genre"> > </ifdef></ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef></if>}}}
+						</H6>
+						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						
 <?php
 						$vs_creators_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor,creator" delimiter="; "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
@@ -117,6 +121,26 @@
 								</div>
 							</ifnotdef>
 						</ifdef>}}}
+						{{{<ifdef code="ca_objects.curators_comments.comments">
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial Comment</h6>
+								<div class="trimText">^ca_objects.curators_comments.comments</div>
+							</div>
+						</ifdef>}}}
+						{{{<ifdef code="ca_objects.content_notice.content_notice_value">
+							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.content_notice.content_notice_source"><h6>Content Notice</h6>
+								<div class="trimText">^ca_objects.content_notice.content_notice_value</div>
+							</div>
+						</ifdef>}}}
+						{{{<ifdef code="ca_objects.about_school_photographs.about_school_photos_text">
+							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.about_school_photographs.about_school_photos_source"><h6>About Residential School Photographs</h6>
+								<div class="trimText">^ca_objects.about_school_photographs.about_school_photos_text</div>
+							</div>
+						</ifdef>}}}
+						{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
+							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
+								<div class="trimText">^ca_objects.community_input_objects.comments_objects</div>
+							</div>
+						</ifdef>}}}
 						{{{<ifdef code="ca_objects.language">
 							<ifdef code="ca_objects.language_note">
 								<div class="unit" data-toggle="popover" title="Note" data-content="^ca_objects.language_note%delimiter=;_"><h6>Language</h6>^ca_objects.language%delimiter=,_</div>
@@ -129,20 +153,22 @@
 						
 					</div><!-- end stoneBg -->
 						
-					{{{<ifdef code="ca_objects.nonpreferred_labels|ca_objects.RAD_extent|ca_objects.RAD_custodial|ca_objects.source_identifer|ca_objects.ISADG_archNote|ca_objects.ISADG_rules|ca_objects.RAD_generalNote">
+					{{{<ifdef code="ca_objects.nonpreferred_labels|ca_objects.RAD_extent|ca_objects.RAD_custodial|ca_objects.source_identifer|ca_objects.ISADG_archNote|ca_objects.ISADG_rules|ca_objects.RAD_generalNote|ca_objects.govAccess|ca_objects.rights_new|ca_objects.RAD_local_rights">
 						<div class="collapseBlock">
 							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 							<div class="collapseContent">
 								<ifdef code="ca_objects.nonpreferred_labels"><div class="unit"><H6>Alternate Title(s)</H6>^ca_objects.nonpreferred_labels%delimiter=<br/></div></ifdef>
 								<ifdef code="ca_objects.RAD_extent"><div class="unit"><H6>Extent and Medium</H6>^ca_objects.RAD_extent%delimiter=<br/></div></ifdef>
 								<ifdef code="ca_objects.RAD_custodial"><div class="unit"><h6>Archival History</h6>^ca_objects.RAD_custodial</div></ifdef>
-								<ifdef code="ca_objects.RAD_accruals"><div class="unit"><h6>Accruals</h6>^ca_objects.RAD_accruals</div></ifdef>
 								<ifdef code="ca_objects.RAD_arrangement"><div class="unit"><h6>System of Arrangement</h6>^ca_objects.RAD_arrangement</div></ifdef>
 								<ifcount code="ca_entities" restrictToRelationshipTypes="repository" min="1"><div class="unit"><h6>Holding Repository</h6><unit relativeTo="ca_entities" restrictToRelationshipTypes="repository" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>
 								<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Holding Repository Identifier</h6>^ca_objects.source_identifer</div></ifdef>
 								<ifdef code="ca_objects.RAD_generalNote"><div class='unit'><h6>Notes</h6>^ca_objects.RAD_generalNote</div></ifdef>
 								<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Archivist Notes</h6>^ca_objects.ISADG_archNote</div></ifdef>
 								<ifdef code="ca_objects.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_objects.ISADG_rules</div></ifdef>
+								<ifdef code="ca_objects.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_objects.govAccess</div></ifdef>
+								<ifdef code="ca_objects.rights_new"><div class='unit'><h6>Terms Governing Use and Reproduction</h6>^ca_objects.rights_new</div></ifdef>
+								<ifdef code="ca_objects.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_objects.RAD_local_rights</div></ifdef>
 							</div>
 						</div>
 					</ifdef>}}}
