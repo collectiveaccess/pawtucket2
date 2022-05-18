@@ -78,7 +78,7 @@ if($vs_mode == "map"){
 ?>
 			<div class="row">
 <?php
-				$va_transcript_rep_ids = $va_full_text_rep_ids = array();
+				$va_transcript_rep_ids = $va_full_text_rep_ids = $va_book_cover_rep_ids = array();
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 				if($vs_representationViewer){
 ?>
@@ -92,6 +92,9 @@ if($vs_mode == "map"){
 					
 					$va_type = $t_list->getItemFromList("object_representation_types", "full_text");
 					$va_full_text_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					
+					$va_type = $t_list->getItemFromList("object_representation_types", "book_cover");
+					$va_book_cover_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
 					
 					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
 						print "<div id='transcriptLink' class='text-center'>";
@@ -471,6 +474,13 @@ if($vs_mode == "map"){
 					$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").append("<span class='readOnline'>Read Online</span>");
 					$("#cont<?php print $vn_full_text_rep_id; ?> .detailMediaToolbar a.zoomButton").addClass("readOnlineLoaded");
 				}
+<?php			
+			}
+		}
+		if(is_array($va_book_cover_rep_ids) && sizeof($va_book_cover_rep_ids)){
+			foreach($va_book_cover_rep_ids as $vn_book_cover_rep_id){
+?>
+				$("#cont<?php print $vn_book_cover_rep_id; ?> .detailMediaToolbar a.dlButton").hide();
 <?php			
 			}
 		}
