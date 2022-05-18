@@ -4747,6 +4747,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 				break;
 		} 
 
-		return preg_replace("![^A-Za-z0-9_\-\.]+!", "_", $filename);
+		$filename = html_entity_decode($filename);
+		return preg_replace("![^A-Za-z0-9_\-\.&]+!", "_", $filename);
 	}
 	# ------------------------------------------------------------------
