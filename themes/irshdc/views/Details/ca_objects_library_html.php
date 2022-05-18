@@ -188,10 +188,10 @@ if($vs_mode == "map"){
 							print '<div class="unit"><H6>Creators</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? "; " : "").$vs_creators_text.'</div></div>';
 						}
 						
-						$vs_contributors_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
-						$vs_contributors_text = $t_object->getWithTemplate('<unit relativeTo="ca_objects" delimiter=", ">^ca_objects.contributors</unit>', array("checkAccess" => $va_access_values));
+						$vs_contributors_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor" delimiter="; "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
+						$vs_contributors_text = $t_object->getWithTemplate('<unit relativeTo="ca_objects" delimiter="; ">^ca_objects.contributors</unit>', array("checkAccess" => $va_access_values));
 						if($vs_contributors_entities || $vs_contributors_text){
-							print '<div class="unit"><H6>Contributors</H6>'.$vs_contributors_entities.(($vs_contributors_entities && $vs_contributors_text) ? ", " : "").$vs_contributors_text.'</div>';
+							print '<div class="unit"><H6>Contributors</H6>'.$vs_contributors_entities.(($vs_contributors_entities && $vs_contributors_text) ? "; " : "").$vs_contributors_text.'</div>';
 						}
 ?>
 						{{{<ifdef code="ca_objects.description_new.description_new_txt">
