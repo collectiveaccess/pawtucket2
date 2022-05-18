@@ -179,14 +179,38 @@ if($vs_mode == "map"){
 						}else{
 							print $vs_title;
 						}
-						print $vs_source_link."</H4>";
+						print "</H4>";
 ?>
+						<div class="unit">{{{^ca_objects.type_id}}}
+						
 						{{{<ifdef code="ca_objects.displayDate">
-							<div class="unit" data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
+							<ifdef code="ca_objects.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
 								^ca_objects.displayDate
-							</div>
+							</div></ifdef>
+							<ifnotdef code="ca_objects.ISADG_dateNote">
+								<div>^ca_objects.displayDate</div>
+							</ifnotdef>
 						</ifdef>}}}
-				
+<?php
+						print $vs_source_link;
+?>
+						</div>
+<?php
+						# --- the collections the item is a direct part of
+						$vs_rel_collections = $t_object->getWithTemplate('<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="archival_part"><unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef></unit></ifcount>', array("checkAccess" => $va_access_values));
+						# --- the fiels the item is a direct part of
+						$vs_rel_files = $t_object->getWithTemplate('<ifcount code="ca_objects.related" min="1" restrictToRelationshipTypes="archival_part">
+																		<unit relativeTo="ca_objects.related" restrictToRelationshipTypes="archival_part" delimiter="<br/>">
+																			<unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter=" // "><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef></unit>
+																			> <l>^ca_objects.preferred_labels.name</l>
+																		</unit>
+																	</ifcount>', array("checkAccess" => $va_access_values));
+						
+						if($vs_rel_collections || $vs_rel_files){
+							print "<H6>Location in Collection:<br/>".$vs_rel_collections.(($vs_rel_collections && $vs_rel_files) ? "<br/>" : "").$vs_rel_files."</H6>";
+						}											
+						
+?>
 						<H6>
 							{{{<if rule='^ca_objects.resource_type !~ /-/'><ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1<ifdef code="ca_objects.genre"> > </ifdef></ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef></if>}}}
 						</H6>
@@ -231,6 +255,7 @@ if($vs_mode == "map"){
 					</div><!-- end stoneBg -->
 <?php
 					include("themes_html.php");
+if($x){
 ?>
 					{{{<ifdef code="ca_objects.alternate_text.alternate_desc_upload.url">
 						<div class="collapseBlock">
@@ -240,6 +265,9 @@ if($vs_mode == "map"){
 							</div>
 						</div>
 					</ifdef>}}}
+<?php
+}
+?>
 					<div class="collapseBlock">
 						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 						<div class="collapseContent">
@@ -248,6 +276,8 @@ if($vs_mode == "map"){
 							{{{<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Repository Object Identifier</h6>^ca_objects.source_identifer</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.NCTR_id"><div class='unit'><h6>Commission Object Identifier</h6>^ca_objects.NCTR_id</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.RAD_extent"><div class='unit'><h6>Extent and Medium</h6>^ca_objects.RAD_extent</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.digital_file_duration"><div class='unit'><h6>Duration</h6>^ca_objects.digital_file_duration</div></ifdef>}}}
+							
 							{{{<ifdef code="ca_objects.RAD_custodial"><div class='unit'><h6>Archival History</h6>^ca_objects.RAD_custodial</div></ifdef>}}}
 							<!--{{{<ifdef code="ca_objects.related_collection_list"><div class='unit'><H6>Collection Hierarchy List</H6><unit relativeTo="ca_objects" delimiter="<br/>"><l>^ca_objects.related_collection_list</l></unit></div></ifdef>}}}-->
 							{{{<ifdef code="ca_objects.ownership_credit"><div class='unit'><h6>Credit/Citation</h6>^ca_objects.ownership_credit</div></ifdef>}}}

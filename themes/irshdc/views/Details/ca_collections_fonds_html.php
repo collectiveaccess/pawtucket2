@@ -32,7 +32,6 @@
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
-	$vn_id =				$t_item->get('ca_entities.entity_id');
 	$va_access_values = 	$this->getVar("access_values");
 	
 	# --- get collections configuration
@@ -102,7 +101,7 @@
 						print $vs_source_link;
 ?>
 						</div>
-						{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
+						{{{<ifdef code="ca_collections.parent_id"><H6>Location in Collection: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
 						
 <?php
 						$vs_creators_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor,creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
@@ -158,7 +157,7 @@
 <?php				
 			}									
 ?>						
-					{{{<ifdef code="ca_collections.nonpreferred_labels|ca_collections.RAD_extent|ca_collections.RAD_custodial|ca_collections.source_identifer|ca_collections.ISADG_archNote|ca_collections.ISADG_rules">
+					{{{<ifdef code="ca_collections.nonpreferred_labels|ca_collections.RAD_extent|ca_collections.RAD_custodial|ca_collections.source_identifer|ca_collections.ISADG_archNote|ca_collections.ISADG_rules|ca_collections.RAD_generalNote">
 						<div class="collapseBlock">
 							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 							<div class="collapseContent">
@@ -169,6 +168,8 @@
 								<ifdef code="ca_collections.RAD_arrangement"><div class="unit"><h6>System of Arrangement</h6>^ca_collections.RAD_arrangement</div></ifdef>
 								<ifcount code="ca_entities" restrictToRelationshipTypes="repository" min="1"><div class="unit"><h6>Holding Repository</h6><unit relativeTo="ca_entities" restrictToRelationshipTypes="repository" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>
 								<ifdef code="ca_collections.source_identifer"><div class='unit'><h6>Holding Repository Identifier</h6>^ca_collections.source_identifer</div></ifdef>
+								
+								<ifdef code="ca_collections.RAD_generalNote"><div class='unit'><h6>Notes</h6>^ca_collections.RAD_generalNote</div></ifdef>
 								<ifdef code="ca_collections.ISADG_archNote"><div class='unit'><h6>Archivist Notes</h6>^ca_collections.ISADG_archNote</div></ifdef>
 								<ifdef code="ca_collections.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_collections.ISADG_rules</div></ifdef>
 							</div>

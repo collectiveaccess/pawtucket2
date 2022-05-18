@@ -27,23 +27,13 @@
  * ----------------------------------------------------------------------
  */
  
-	$t_item = 				$this->getVar("item");
+	$t_object = $this->getVar("item");
 	$va_comments =			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
-	$vn_id =				$t_item->get('ca_entities.entity_id');
 	$va_access_values = 	$this->getVar("access_values");
 	
-	# --- get collections configuration
-	$o_collections_config = caGetCollectionsConfig();
-	$vb_show_hierarchy_viewer = false;
-	if($t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values)) || $t_item->get('ca_objects.object_id', array('restrictToTypes' => array('archival_file'), "restrictToRelationshipTypes" => array('archival_part'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))){
-		$vb_show_hierarchy_viewer = true;	
-	}
-	# --- get the collection hierarchy parent to use for exportin finding aid
-	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true, "checkAccess" => $va_access_values)));
-
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -61,7 +51,7 @@
 				
 					<div id="detailAnnotations"></div>
 <?php				
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
 ?>
 
 				</div><!-- end col -->
@@ -71,14 +61,13 @@
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
 					<div class="stoneBg">	
 <?php
-						$vs_source = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>', array("checkAccess" => $va_access_values));						
-						$vs_source_link = $t_item->get("ca_collections.link");
+						$vs_source = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>', array("checkAccess" => $va_access_values));						
+						$vs_source_link = $t_object->get("ca_objects.link");
 						if($vs_source_link){
-							$vs_source_link = '<div><a href="'.$vs_source_link.'" class="redLink" target="_blank">'.(($vs_source) ? $vs_source : 'Source Record').' <span class="glyphicon glyphicon-new-window"></span></a></div>';
-						}						
-
-						$vs_title_hover = $t_item->getWithTemplate("<ifdef code='ca_collections.ISADG_titleNote'>^ca_collections.ISADG_titleNote%delimiter=;_</ifdef>");
-						$vs_title = $t_item->get("ca_collections.preferred_labels.name");
+							$vs_source_link = '<br/><a href="'.$vs_source_link.'" class="redLink" target="_blank">'.(($vs_source) ? $vs_source : 'Source Record').' <span class="glyphicon glyphicon-new-window"></span></a>';
+						}
+						$vs_title_hover = $t_object->getWithTemplate("<unit relativeTo='ca_objects' delimiter='<br/><br/>'>^ca_objects.ISADG_titleNote</unit>");
+						$vs_title = $t_object->get("ca_objects.preferred_labels.name");
 						
 						print "<H4>";
 						if($vs_title_hover){
@@ -88,89 +77,72 @@
 						}
 						print "</H4>";
 ?>
-						<div class="unit">{{{^ca_collections.type_id}}}
+						<div class="unit">{{{^ca_objects.type_id}}}
 						
-						{{{<ifdef code="ca_collections.displayDate">
-							<ifdef code="ca_collections.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_collections.ISADG_dateNote">
-								^ca_collections.displayDate
+						{{{<ifdef code="ca_objects.displayDate">
+							<ifdef code="ca_objects.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
+								^ca_objects.displayDate
 							</div></ifdef>
-							<ifnotdef code="ca_collections.ISADG_dateNote">
-								<div>^ca_collections.displayDate</div>
+							<ifnotdef code="ca_objects.ISADG_dateNote">
+								<div>^ca_objects.displayDate</div>
 							</ifnotdef>
 						</ifdef>}}}
 <?php
 						print $vs_source_link;
 ?>
 						</div>
-						{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
+						{{{<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="archival_part"><H6>Location in Collection: <ifcount code="ca_collections" min="2" restrictToRelationshipTypes="archival_part"><br/></ifcount><unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef></unit></H6></ifcount>}}}
 						
 <?php
-						$vs_creators_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor,creator" delimiter="; "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
-						$vs_creators_text = $t_item->get('ca_collections.creator_contributor');
+						$vs_creators_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor,creator" delimiter="; "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
+						$vs_creators_text = $t_object->get('ca_objects.creator_contributor');
 						if($vs_creators_entities || $vs_creators_text){
 							print '<div class="unit"><H6>Creators and Contributors</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? "; " : "").$vs_creators_text.'</div></div>';
 						}
 ?>						
-						{{{<ifdef code="ca_collections.RAD_admin_hist">
+						{{{<ifdef code="ca_objects.RAD_admin_hist">
 							<div class="unit"><h6>Administrative/Biographical History</h6>
-								<div class="trimText">^ca_collections.RAD_admin_hist</div>
+								<div class="trimText">^ca_objects.RAD_admin_hist</div>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_collections.scope_new.scope_new_text">
-							<ifdef code="ca_collections.scope_new.scope_new_source">
-								<div class="unit" data-toggle="popover" title="Source" data-content="^ca_collections.scope_new.scope_new_source"><h6>Scope and Content</h6>
-									<div class="trimText">^ca_collections.scope_new.scope_new_text</div>
+						{{{<ifdef code="ca_objects.scope_new.scope_new_text">
+							<ifdef code="ca_objects.scope_new.scope_new_source">
+								<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.scope_new.scope_new_source"><h6>Scope and Content</h6>
+									<div class="trimText">^ca_objects.scope_new.scope_new_text</div>
 								</div>
 							</ifdef>
-							<ifnotdef code="ca_collections.scope_new.scope_new_source">
+							<ifnotdef code="ca_objects.scope_new.scope_new_source">
 								<div class="unit"><h6>Scope and Content</h6>
-									<div class="trimText">^ca_collections.scope_new.scope_new_text</div>
+									<div class="trimText">^ca_objects.scope_new.scope_new_text</div>
 								</div>
 							</ifnotdef>
 						</ifdef>}}}
-						{{{<ifdef code="ca_collections.language">
-							<ifdef code="ca_collections.language_note">
-								<div class="unit" data-toggle="popover" title="Note" data-content="^ca_collections.language_note%delimiter=;_"><h6>Language</h6>^ca_collections.language%delimiter=,_</div>
+						{{{<ifdef code="ca_objects.language">
+							<ifdef code="ca_objects.language_note">
+								<div class="unit" data-toggle="popover" title="Note" data-content="^ca_objects.language_note%delimiter=;_"><h6>Language</h6>^ca_objects.language%delimiter=,_</div>
 							</ifdef>
-							<ifnotdef code="ca_collections.language_note">
-								<div class="unit"><h6>Language</h6>^ca_collections.language%delimiter=,_</div>
+							<ifnotdef code="ca_objects.language_note">
+								<div class="unit"><h6>Language</h6>^ca_objects.language%delimiter=,_</div>
 							</ifnotdef>
 						</ifdef>}}}
 								
 						
 					</div><!-- end stoneBg -->
-<?php
-			if ($vb_show_hierarchy_viewer) {	
-?>
-				<div class="row" id="collectionsWrapperArchival">
-					<div class='col-sm-12'>
-						<div class='collectionsContainer'><div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
-							<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-						</div><!-- end findingAidContainer -->
-					</div><!-- end col -->
-				</div><!-- end row -->						
-
-				<script>
-					$(document).ready(function(){
-						$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchyArchival', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
-					})
-				</script>
-<?php				
-			}									
-?>						
-					{{{<ifdef code="ca_collections.nonpreferred_labels|ca_collections.RAD_extent|ca_collections.RAD_custodial|ca_collections.source_identifer|ca_collections.ISADG_archNote|ca_collections.ISADG_rules">
+						
+					{{{<ifdef code="ca_objects.nonpreferred_labels|ca_objects.RAD_extent|ca_objects.RAD_custodial|ca_objects.source_identifer|ca_objects.ISADG_archNote|ca_objects.ISADG_rules|ca_objects.RAD_generalNote">
 						<div class="collapseBlock">
 							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 							<div class="collapseContent">
-								<ifdef code="ca_collections.nonpreferred_labels"><div class="unit"><H6>Alternate Title(s)</H6>^ca_collections.nonpreferred_labels%delimiter=<br/></div></ifdef>
-								<ifdef code="ca_collections.RAD_extent"><div class="unit"><H6>Extent and Medium</H6>^ca_collections.RAD_extent%delimiter=<br/></div></ifdef>
-								<ifdef code="ca_collections.RAD_custodial"><div class="unit"><h6>Archival History</h6>^ca_collections.RAD_custodial</div></ifdef>
-								<ifdef code="ca_collections.RAD_accruals"><div class="unit"><h6>Accruals</h6>^ca_collections.RAD_accruals</div></ifdef>
-								<ifdef code="ca_collections.RAD_arrangement"><div class="unit"><h6>System of Arrangement</h6>^ca_collections.RAD_arrangement</div></ifdef>
+								<ifdef code="ca_objects.nonpreferred_labels"><div class="unit"><H6>Alternate Title(s)</H6>^ca_objects.nonpreferred_labels%delimiter=<br/></div></ifdef>
+								<ifdef code="ca_objects.RAD_extent"><div class="unit"><H6>Extent and Medium</H6>^ca_objects.RAD_extent%delimiter=<br/></div></ifdef>
+								<ifdef code="ca_objects.RAD_custodial"><div class="unit"><h6>Archival History</h6>^ca_objects.RAD_custodial</div></ifdef>
+								<ifdef code="ca_objects.RAD_accruals"><div class="unit"><h6>Accruals</h6>^ca_objects.RAD_accruals</div></ifdef>
+								<ifdef code="ca_objects.RAD_arrangement"><div class="unit"><h6>System of Arrangement</h6>^ca_objects.RAD_arrangement</div></ifdef>
 								<ifcount code="ca_entities" restrictToRelationshipTypes="repository" min="1"><div class="unit"><h6>Holding Repository</h6><unit relativeTo="ca_entities" restrictToRelationshipTypes="repository" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>
-								<ifdef code="ca_collections.source_identifer"><div class='unit'><h6>Holding Repository Identifier</h6>^ca_collections.source_identifer</div></ifdef>
-								<ifdef code="ca_collections.ISADG_archNote"><div class='unit'><h6>Archivist Notes</h6>^ca_collections.ISADG_archNote</div></ifdef>
-								<ifdef code="ca_collections.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_collections.ISADG_rules</div></ifdef>
+								<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Holding Repository Identifier</h6>^ca_objects.source_identifer</div></ifdef>
+								<ifdef code="ca_objects.RAD_generalNote"><div class='unit'><h6>Notes</h6>^ca_objects.RAD_generalNote</div></ifdef>
+								<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Archivist Notes</h6>^ca_objects.ISADG_archNote</div></ifdef>
+								<ifdef code="ca_objects.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_objects.ISADG_rules</div></ifdef>
 							</div>
 						</div>
 					</ifdef>}}}
@@ -191,35 +163,35 @@
 						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("nextLink").'</div><!-- end detailTool -->';
 					}
 
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "collection_id" => $t_item->get("collection_id")))."</div>";
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "collection_id" => $t_object->get("collection_id")))."</div>";
 					print '</div><!-- end detailTools -->';			
 
 					if ($vn_comments_enabled) {
-						$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
+							$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
 ?>				
-						<div class="collapseBlock last discussion">
-							<h3>Discussion</H3>
-							<div class="collapseContent open">
-								<div id='detailDiscussion'>
-									Do you have a story or comment to contribute?<br/>
+							<div class="collapseBlock last discussion">
+								<h3>Discussion</H3>
+								<div class="collapseContent open">
+									<div id='detailDiscussion'>
+										Do you have a story to contribute related to these records or a comment about this item?<br/>
 <?php
-									
-									if($this->request->isLoggedIn()){
-										print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_collections", "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
-									}else{
-										print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
-									}
-									if($vn_num_comments){
-										print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
-									}
+										
+										if($this->request->isLoggedIn()){
+											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_objects", "item_id" => $t_object->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
+										}else{
+											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
+										}
+										if($vn_num_comments){
+											print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
+										}
 ?>
-								</div><!-- end itemComments -->
+									</div><!-- end itemComments -->
+								</div>
 							</div>
-						</div>
 <?php				
-					}
+						}
 					if($vs_map = $this->getVar("map")){
-						if($t_item->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
+						if($t_object->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
 							include("map_html.php");
 						}
 					}
@@ -230,6 +202,7 @@
 				<div class="col-sm-12">		
 <?php
 		include("related_tabbed_html.php");
+		include("related_objects_html.php");
 ?>
 					{{{<ifcount code="ca_objects" min="1">
 								<div class="relatedBlock">
