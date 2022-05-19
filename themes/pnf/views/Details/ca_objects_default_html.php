@@ -180,6 +180,9 @@
 				if ($vs_notes = $t_object->get('ca_objects.505_content_notes', array("delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>Content Notes</h6>".$vs_notes."</div>";
 				}
+				if ($vs_740_analytical_title = $t_object->get('ca_objects.740_analytical_title', array("delimiter" => "<br/>"))) {
+					print "<div class='unit'><h6>Added Contents Titles</h6>".$vs_740_analytical_title."</div>";
+				}
 				if ($vs_citation = $t_object->get('ca_objects.510_citation_reference', array("delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>Citation Reference</h6>".$vs_citation."</div>";
 				}
