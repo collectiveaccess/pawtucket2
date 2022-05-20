@@ -24,7 +24,6 @@
 	}
 	if($vb_has_children){
 ?>					
-			<div class='text-right'><a href='#' onclick='$("#collectionsWrapper").toggle(300);return false;' class='showHide'>Show/Hide Collection Browser</a></div>
 				<div class="row" id="collectionsWrapper" <?php print ($o_collections_config->get("browser_closed")) ? "style='display:none;'" : ""; ?>>			
 					<div class='col-sm-12'>
 					
@@ -51,11 +50,11 @@
 							if(sizeof($va_grand_children_type_ids)){
 								$vb_link_sublist = true;
 							}
-							$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values)));
+							$vn_rel_item_count = sizeof($qr_collection_children->get("ca_collections.children.collection_id", array("restrictToTypes" => array("item"), "returnAsArray" => true, 'checkAccess' => $va_access_values)));
 							$vs_record_count = "";
-							if($vn_rel_object_count){
-								$vs_record_count = "<br/><small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
-							}
+							#if($vn_rel_item_count){
+							#	$vs_record_count = "<br/><small>(".$vn_rel_item_count." item".(($vn_rel_item_count == 1) ? "" : "s").")</small>";
+							#}
 							if($vb_link_sublist){
 								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->getWithTemplate($vs_label_template).$vs_record_count."</a>";
 							}else{
@@ -65,7 +64,7 @@
 									$vb_link_to_detail = false;
 								}
 								if(!$o_collections_config->get("always_link_to_detail")){
-									if(!sizeof($va_grand_children_type_ids) && !$vn_rel_object_count){
+									if(!sizeof($va_grand_children_type_ids) && !$vn_rel_item_count){
 										$vb_link_to_detail = false;
 									}
 								}

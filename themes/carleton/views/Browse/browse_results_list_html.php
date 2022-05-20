@@ -132,6 +132,11 @@
 							$vs_desc = $qr_res->getWithTemplate("^ca_collections.scope_content%convertLineBreaks=1");
 						break;
 						# ---------
+						case "ca_object_lots":
+							$vs_date = $qr_res->get("ca_object_lots.inclusive_dates", array("delimiter" => ", "));
+							$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels").(($vs_date) ? ", ".$vs_date : ""), '', $vs_table, $vn_id);
+						break;
+						# ---------
 						default:
 							$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 						break;
