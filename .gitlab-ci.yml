@@ -10,15 +10,15 @@ deploy_prod:
   only:
     - bmac
   before_script:
-    - cd /app/pawtucket && cp $PROD_ENV_FILE .env
+    - cd /app/pawtucket2 && cp $PROD_ENV_FILE .env
   script:
-    - cd /app/pawtucket
+    - cd /app/pawtucket2
     - git pull
     - source .env
     - docker-compose build --build-arg LOCAL_UID=$LOCAL_UID --build-arg SERVERNAME=$SERVERNAME  
     - docker-compose up -d
   after_script:
-    - cd /app/pawtucket && rm .env
+    - cd /app/pawtucket2 && rm .env
   environment:
     name: prod
     url: https://pawtucket.galib.uga.edu
