@@ -159,8 +159,8 @@
 						
 						<li <?php print ($this->request->getController() == "Browse All") ? 'class="active"' : ''; ?>>
 						<?php print caNavLink($this->request, _t("Browse All"), "", "", "FindingAids", "Collections"); ?></li>
-						<li><a href="https://bmac.libs.uga.edu/pawtucket2/index.php/Peabody/Index">Peabody</a></li>
-						<li><a href="https://bmac.libs.uga.edu/pawtucket2/index.php/Newsfilm/Index">Newsfilm</a></li>
+						<li><a href="/index.php/Peabody/Index">Peabody</a></li>
+						<li><a href="/index.php/Newsfilm/Index">Newsfilm</a></li>
 						<li <?php print ($this->request->getController() == "Audio/Radio") ? 'class="active"' : ''; ?>>
 						<?php print caNavLink($this->request, _t("Audio/Radio"), "", "", "FindingAids", "Collections",
 							 array('key' => '8e901317e36cd5591162a1079efcc97a', 'facet' => 'collection_area', 'id' => '1015', 'view' => 'images')); ?></li>
