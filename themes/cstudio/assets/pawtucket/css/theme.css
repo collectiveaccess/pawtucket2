@@ -19,6 +19,10 @@ a, a:hover {
 .form-control:focus {
   border-color: #000;
 }
+.fullWidth img{
+	width:100%;
+	height:auto;
+}
 #footer{
 	background-color:#EBEBEB;
 	color:#000;
@@ -97,4 +101,9 @@ a .frontExplore, a:hover .frontExplore{
 .multisearch .authorityResult {
   height: 70px;
   line-height: .9em;
+}
+
+/* browse */
+.bResultItem .bResultItemText a {
+  line-height: 1.3em;
 }
