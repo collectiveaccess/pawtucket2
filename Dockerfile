@@ -19,13 +19,8 @@ RUN apt-get -qq install libcurl4-gnutls-dev pkg-config libpng-dev libonig-dev li
 
 RUN apt-get -qq install autoconf && wget https://pecl.php.net/get/memcached-3.1.5.tgz && tar xzf memcached-3.1.5.tgz && cd memcached-3.1.5 && phpize && ./configure && make && make install && echo "extension=memcached.so" >> /usr/local/lib/php.ini && cd .. && rm -rf memcached-3.1.5*
 
-#Config changes for apache/php
-RUN sed -i "s/DirectoryIndex index.html/DirectoryIndex index.html index.php/" /app/apache2/conf/httpd.conf && sed -i "s/#AddType application\/x-gzip .tgz/AddType application\/x-httpd-php .php/" /app/apache2/conf/httpd.conf && sed -i "s/memory_limit = 128M/memory_limit = 1G/" /usr/local/lib/php.ini
-
-#Composer
-RUN curl --output /usr/local/bin/composer https://getcomposer.org/composer.phar     && chmod +x /usr/local/bin/composer
-
-RUN echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf
+#Config changes for php
+RUN sed -i "s/memory_limit = 128M/memory_limit = 1G/" /usr/local/lib/php.ini
 
 #GitLab runner
 RUN adduser --uid $LOCAL_UID --gecos 'gitlab-runner user' --disabled-password gitlab-runner
@@ -35,6 +30,7 @@ RUN rm -rf /app/apache2/htdocs
 
 #Copy startup script, setup file, and permissions script
 COPY docker_templates/gitlab-runner /etc/sudoers.d/
+COPY docker_templates/httpd.conf /app/apache2/conf/
 
 USER gitlab-runner
 
