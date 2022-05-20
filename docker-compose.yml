@@ -9,4 +9,5 @@ services:
 networks:
   default:
     external:
-      name: providence_default
+            #      name: providence_default
+      name: collective-access_default
