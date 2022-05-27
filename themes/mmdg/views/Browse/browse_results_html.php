@@ -184,6 +184,9 @@ if($enableGearDD){
 ?>		
 		</div>
 <?php
+		if($vs_intro = $this->getVar("browse_intro_".strToLower($this->request->getAction()))){
+			print "<div class='bBrowseIntro'>".$vs_intro."</div>";
+		}
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}

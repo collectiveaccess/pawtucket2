@@ -49,7 +49,8 @@
 ?>
 					
 					{{{<ifdef code="ca_entities.biography.bio_text"><div class='unit trimText'><label>Bio</label>^ca_entities.biography.bio_text%convertLineBreaks=1</div></ifdef>}}}
-					
+					{{{<ifcount code="ca_occurrences" restrictToTypes="venue" min="1"><div class='unit'><label>Venue<ifcount code="ca_occurrences.related" restrictToTypes="venue" min="2">s</ifcount></label><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></div></ifcount>}}}
+							
 				</div>
 			</div><!-- end row -->
 			<div class="row">
