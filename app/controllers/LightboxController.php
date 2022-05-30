@@ -163,7 +163,7 @@ class LightboxController extends FindController {
 
 		AssetLoadManager::register("mediaViewer");
 	
-		$o_context = new ResultContext($this->request, 'ca_objects', 'sets', 'lightbox');
+		$o_context = new ResultContext($this->request, 'ca_objects', 'lightbox');
 		$o_context->setAsLastFind();
 
 		$this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
