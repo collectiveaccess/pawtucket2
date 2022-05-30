@@ -45,5 +45,7 @@
 
 			removeButtonIcon: '<?= addslashes(caNavIcon(__CA_NAV_ICON_DELETE__, 1)); ?>'
 		});
+		
+		jQuery("#objectAutocomplete").focus();
 	});
 </script>
