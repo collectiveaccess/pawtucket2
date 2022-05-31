@@ -53,7 +53,7 @@
 				}
 ?>
 				{{{<ifdef code="ca_objects.date"><H6>Date</H6>^ca_objects.date<br/></ifdev>}}}
-				{{{<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width"><H6>Dimensions</H6></ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_length"><H6>Dimensions</H6><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_width"> X ^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_length"> X ^ca_objects.dimensions.dimensions_length</ifdef><br/></ifdef>}}}
 <?php
 				if($vb_removed && !$this->getVar("representation_id")){
 					print "<br/>No longer available<br/>";
