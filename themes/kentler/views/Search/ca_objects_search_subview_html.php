@@ -100,6 +100,9 @@
 					$vs_caption = $vs_artist.", ";
 				}
 				$vs_caption .= "<i>".$qr_results->get("ca_objects.preferred_labels.name")."</i>, ";
+				if($qr_results->get("ca_objects.date")){
+					$vs_caption .= $qr_results->get("ca_objects.date").", ";
+				}
 				$vs_medium = "";
 				if($qr_results->get("medium_text")){
 					$vs_medium = $qr_results->get("medium_text");
@@ -112,10 +115,8 @@
 					$vs_caption .= $vs_medium.", ";
 				}					
 				if($qr_results->get("ca_objects.dimensions")){
-					$vs_caption .= $qr_results->get("ca_objects.dimensions.dimensions_height")." X ".$qr_results->get("ca_objects.dimensions.dimensions_width").", ";
-				}
-				if($qr_results->get("ca_objects.date")){
-					$vs_caption .= $qr_results->get("ca_objects.date").".";
+					$vs_caption .= $qr_results->get("ca_objects.dimensions.dimensions_height")." X ".$qr_results->get("ca_objects.dimensions.dimensions_width").(($qr_results->get("ca_objects.dimensions.dimensions_length") ? " X ".$qr_results->get("ca_objects.dimensions.dimensions_length") : "")).".";
+					
 				}
 ?>
 				<br/><?php print caDetailLink($this->request, $vs_caption, '', 'ca_objects', $qr_results->get("ca_objects.object_id")); ?>
