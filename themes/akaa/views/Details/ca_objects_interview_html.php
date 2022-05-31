@@ -67,15 +67,22 @@
 		</div>
 		<div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
-				{{{<ifdef code="ca_objects.transcript.media.original.url"><div class="unit"><label><a href="^ca_objects.transcript.media.original.url"><span class='glyphicon glyphicon glyphicon-download' aria-hidden='true'></span> Transcript</a></label></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.interview"><div class='unit trimText'><label>Interview Excerpt</label>^ca_objects.interview</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.transcript.media.original.url"><div class="unit"><label><a href="^ca_objects.transcript.media.original.url"><span class='glyphicon glyphicon glyphicon-download' aria-hidden='true'></span> Interview Transcript</a></label></div></ifdef>}}}
 				
 			</div><!-- end col -->			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><div class="unit"><label>Interview With</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="interviewer" min="1"><div class="unit"><label>Interviewer</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="interviewer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.date.dates_value"><div class="unit"><label>Date</label>^ca_objects.date.dates_value%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.rights.copyrightStatement"><div class="unit"><label>Copyright Statement</label>^</div></ifdef>}}}
+				{{<ifdef code="ca_objects.date.dates_value"><div class="unit"><label>Date</label>^ca_objects.date.dates_value%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.rights.copyrightStatement"><div class="unit"><label>Copyright Statement</label>^ca_objects.rights.copyrightStatement</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.interview_location"><div class="unit"><label>Interview Location</label>^ca_objects.interview_location</div></ifdef>}}}
+				{{{{<ifcount code="ca_entities" restrictToRelationshipTypes="recorded" min="1"><div class="unit"><label>Recorded By</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="recorded" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
+				
+<?php
+				if($vs_tmp = $this->getVar("access_reproduction")){
+					print "<div class='unit'><label>Access and Reproduction</label>".$vs_tmp."</div>";
+				}
+?>
 			</div><!-- end col -->
 		</div><!-- end row -->
 {{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator"><ifcount code="ca_objects" restrictToRelationshipTypes="creator" restrictToTypes="image" min="1">
