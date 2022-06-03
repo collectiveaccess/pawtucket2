@@ -981,7 +981,6 @@ class DetailController extends FindController {
 		$sum = $this->request->getParameter('sum', pInteger);
 		
 		# --- check vars are set and email addresses are valid
-		$to_email = array();
 		$to_email_process = array();
 		if(!$to_email){
 			$errors["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
@@ -991,10 +990,7 @@ class DetailController extends FindController {
 			foreach($to_email_process as $email_to_verify){
 				$email_to_verify = trim($email_to_verify);
 				if(caCheckEmailAddress($email_to_verify)){
-					$to_email[$email_to_verify] = "";
-				}else{
-					$to_email = "";
-					$errors["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+					$to_email_process[$email_to_verify] = "";
 				}
 			}
 		}
@@ -1060,8 +1056,9 @@ class DetailController extends FindController {
 							$media_version = $rep_display_info['display_version'];
 							
 							$media['path'] = $t_primary_rep->getMediaPath('media', $media_version);
-							$media_info = $t_primary_rep->getFileInfo('media', $media_version);
-							if(!$media['name'] = $media_info['ORIGINAL_FILENAME']){
+							$media_info = $t_primary_rep->getMediaInfo('media');
+						
+							if(!($media['name'] = $media_info['ORIGINAL_FILENAME'])){
 								$media['name'] = $media_info[$media_version]['FILENAME'];
 							}
 							# --- this is the mimetype of the version being downloaded
@@ -1070,6 +1067,7 @@ class DetailController extends FindController {
 					}
 				}		
 			}
+			
 			if(caSendmail($to_email, array($from_email => $from_name), $subject, $mail_message_text, $mail_message_html, null, null, $media)){
 				$this->view->setVar("message", _t("Your email was sent"));
 				$this->render("Form/reload_html.php");
@@ -1089,7 +1087,7 @@ class DetailController extends FindController {
 			
 			$errors["general"] = _t("There were errors in your form");
 			$this->ShareForm(); 			
-		}else{
+		} else {
 			$this->view->setVar("message", _t("Your message was sent"));
 			$this->render("Form/reload_html.php");
 			return;
