@@ -3299,9 +3299,15 @@ var methods = {
 						var tw = layer.thumb.width;
 						var th = layer.thumb.height;
 						
+						console.log("overview", view.current_zoom(), x, y, tw, th, layer.info.width, layer.info.height, ((x/tw) * layer.info.width), ((y/th) * layer.info.height));
+						
 						if ((x >= 0) && (x <= tw) && (y >= 0) && (y <= th)) {
-							view.pan.xdest = ((x/tw) * layer.info.width) * view.current_zoom();
-							view.pan.ydest = ((y/th) * layer.info.height) * view.current_zoom();
+							view.pan.xdest = ((x/tw) * layer.info.width);
+							if(view.pan.xdest > (layer.info.width * view.current_zoom())) { view.pan.xdest  = (layer.info.width * view.current_zoom()); }
+							
+							view.pan.ydest = ((y/th) * layer.info.height);
+							if(view.pan.ydest > (layer.info.height * view.current_zoom())) { view.pan.ydest  = (layer.info.height * view.current_zoom()); }
+							
 							view.pan.level = layer.level;
 							view.needdraw = true;
 							return;
