@@ -3300,8 +3300,8 @@ var methods = {
 						var th = layer.thumb.height;
 						
 						if ((x >= 0) && (x <= tw) && (y >= 0) && (y <= th)) {
-							view.pan.xdest = ((x/tw) * layer.info.width);
-							view.pan.ydest = ((y/th) * layer.info.height);
+							view.pan.xdest = ((x/tw) * layer.info.width) * view.current_zoom();
+							view.pan.ydest = ((y/th) * layer.info.height) * view.current_zoom();
 							view.pan.level = layer.level;
 							view.needdraw = true;
 							return;
