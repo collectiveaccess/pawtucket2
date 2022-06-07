@@ -32,14 +32,33 @@ nav.navbar{
 .logoMiller img {
   width:50%;
 }
+@media (min-width: 768px) and (max-width:1010px){
+	.navbar-brand, .navbar-brand img {
+		width: 160px;
+	}
+	.navbar-brand img {
+		margin-top:7px;
+	}
+	.logoMiller {
+		position: absolute;
+		bottom: -20px;
+		width: 100%;
+		text-align: center;
+		left: 10px;
+		background-color: #FFF;
+	}
+	.logoMiller img {
+	  width: 50%;
+	}
+}
 nav.navbar{
 	-webkit-box-shadow: none;
 	box-shadow: none;
 }
 @media (min-width: 768px){
 	.navbar-nav > li > a {
-	  padding-top: 30px;
-	  padding-bottom: 30px;
+		padding-top: 32px;
+		padding-bottom: 36px;
 	}
 	.nav > li.dropdown > a.icon{
 		padding-top:30px;
@@ -68,7 +87,7 @@ nav.navbar{
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus{
 	color: #EBAA00;
 }
-@media (min-width: 992px){
+@media (min-width: 768px){
 	.navbar .formOutline {
 	  margin-left: 20px;
 	  background-color: #FFF;
@@ -78,11 +97,45 @@ nav.navbar{
 	#pageArea{
 		padding-left:5px;
 		padding-right:5px;
+	}	
+}
+.navbar .formOutline {
+	background-color: #FFF;
+}
+@media (max-width: 768px){
+	.navbar .formOutline {
+	  top: -10px;
 	}
-	
+	#user-navbar-toggle{
+		background-color:#7D092D;
+		z-index:100;
+		position: relative;
+	}
+}
+.navbar-toggle {
+	padding-bottom: 12px;
+	padding-top: 11px;
+}
+.navbar-toggle-user{
+	padding: 6px 10px 6px 10px;
 }
 #headerSearchButton{
 	color:#000;
+}
+.advancedSearchLink{
+	display:inline-block;
+	margin-left:20px;
+	color:#FFFFFF;
+	font-size:12px;
+}
+.advancedSearchLink:hover{
+	color:#FFFFFF;
+	text-decoration:underline;
+}
+@media (min-width: 992px) and (max-width:1064px){
+	.navbar-form .form-group {
+		width: 100px;
+	}
 }
 #footer {
 	margin: 0px 0px 0px 0px;
@@ -194,4 +247,109 @@ a.readmore-js-toggle {
 }
 .detail .btn-default, .detail .btn-default:hover{
 	color:#FFF;
+}
+.hpExploreButtons div{
+	margin-bottom:30px;	
+}
+/* results */
+#bRefine a {
+  color: #000;
+  font-size: 14px;
+  line-height: 146%;
+}
+#bRefine H2 {
+  font-size: 20px;
+  text-transform: capitalize;
+  color: #000;
+  margin-top: 0px;
+  font-family: 'Playfair Display', serif;
+}
+#bRefine H5, #bRefine H3{
+	color: #7D092D;
+}
+
+/* capstones */
+.landing.capstones H2{
+	color:#000;
+	text-align:center;
+	font-family: 'Playfair Display', serif;
+	margin-top:60px;
+	margin-bottom:20px;
+	font-size:22px;
+}
+.landing.capstones .btn-default{
+	width:100%;
+	padding:20px;
+	display:block;
+	text-align:center;
+}
+/* gallery */
+@media (min-width: 768px){
+	.gallery{
+		position:relative;
+	}
+	.gallery #galleryDetailImageArea #galleryDetailImageWrapper{
+		display:block;
+	}
+	.gallery #galleryDetailImageArea .galleryVertical #galleryDetailImageWrapper{
+		height:70vh;
+	}
+	.gallery #galleryDetailImageArea .galleryHorizontal #galleryDetailImageWrapper{
+		height:50vh;
+		margin-left:60px;
+		margin-right:60px;
+	}
+	.gallery #galleryDetailImageArea img{
+		height:100%;
+		width:100%;
+		max-height: 100%;
+		max-width: 100%;
+		object-fit:contain;
+	}
+	.gallery .galleryDetailNext, .gallery .galleryDetailPrevious {
+		top: 45%;
+	}
+	.gallery #galleryDetailImageArea {
+		height: auto;
+	}
+}
+#galleryDetailObjectInfo {
+	padding-left: 60px;
+	padding-right: 60px;
+}
+#galleryDetailObjectInfo .unit{
+	font-size:17px;
+	padding-bottom:20px;
+	text-align: center;
+}
+.galleryIntroOverlay{
+	position:absolute;
+	width:100%;
+	height:100vh;
+	background-color: rgba(255,255,255,.7);
+	text-align:center;
+	z-index:1000;
+	left:0px;
+}
+.galleryIntroOverlay H1{
+	color:#FFF;
+}
+.galleryIntroOverlay p{
+	font-family: 'Source Sans Pro', sans-serif;
+	font-weight:400;
+	font-size:20px;
+	color:#FFF;
+	margin-bottom:30px;
+}
+.galleryIntroOverlay .galleryIntroOverlayContent{
+	margin-top:10%;
+	background-color: rgba(0,0,0,.8);
+	max-width:550px;
+	margin-left:auto;
+	margin-right:auto;
+	padding:30px;
+}
+.galleryIntroOverlay .btn-default{
+	font-size:18px;
+	padding:10px;
 }

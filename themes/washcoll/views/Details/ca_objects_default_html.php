@@ -97,16 +97,28 @@
 					</unit>
 					</div>
 				</ifcount>}}}
-
+<?php
+					$t_set = new ca_sets();
+					$va_sets = $t_set->getSetsForItem("ca_objects", $t_object->get("ca_objects.object_id"), array("setType" => "public_presentation", "checkAccess" => $va_access_values));
+					if(is_array($va_sets) && sizeof($va_sets)){
+						print "<HR/><div class='unit'><h6>Part of ".((sizeof($va_sets) > 1) ? "Galleries" : "gallery")."</h6>";
+						foreach($va_sets as $va_set){
+							$va_set = array_pop($va_set);
+							print "<div>".caNavLink($this->request, $va_set["name"], "", "", "Gallery", $va_set["set_id"])."</div>";
+						}
+						print "</div>";
+					}
+?>
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>				
-				{{{<ifdev code="ca_objects.nonpreferred_labels"><div class="unit"><label>Alternate Title(s)</label>^ca_objects.nonpreferred_labels.name</div></ifdev>}}}
-				{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></unit></div></ifcount>}}}
+				{{{<ifdef code="ca_objects.nonpreferred_labels"><div class="unit"><label>Alternate Title(s)</label>^ca_objects.nonpreferred_labels.name</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.alt_id"><div class="unit"><label>Alternate Identifier(s)</label>^ca_objects.alt_id%delimiter=,_</div></ifdef>}}}
+				{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></unit></div></ifcount>}}}
+				
 <?php
-				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true))) {
+				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'exclude_relationship_types' => array("partner_organization")))) {
 					$va_entities_by_type = array();
 					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
 						$t_rel = new ca_objects_x_entities($va_entity_rel);
@@ -123,52 +135,47 @@
 					print "</div>";
 				}				
 ?>
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="partner_organization" min="1"><div class="unit"><label>Partner Organization<ifcount code="ca_entities" restrictToRelationshipTypes="partner_organization" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="partner_organization" delimiter="<br/>"><ifdef code="ca_entities.url"><a href="^ca_entities.url">^ca_entities.preferred_labels.displayname <i class="fa fa-external-link"></i></a></ifdef><ifnotdef code="ca_entities.url">^ca_entities.preferred_labels.displayname</ifnotdef></unit></div></ifcount>}}}
+				
+				{{{<ifdef code="ca_objects.unitdate.dacs_date_text"><div class="unit"><label>Date</label><unit relativeTo="ca_objects.unitdate" delimiter="<br/>"><ifdef code="ca_objects.unitdate.dacs_dates_labels">^ca_objects.unitdate.dacs_dates_labels: </ifdef>^ca_objects.unitdate.dacs_date_text</unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.description">
+					<div class='unit'><label>Description</label>
+						<span class="trimText">^ca_objects.description</span>
+					</div>
+				</ifdef>}}}
 				{{{<ifdef code="ca_objects.material_type_av"><div class="unit"><label>Material Type</label>^ca_objects.material_type_av%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.material_type_photo"><div class="unit"><label>Material Type</label>^ca_objects.material_type_photo%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.material_type_artifact"><div class="unit"><label>Material Type</label>^ca_objects.material_type_artifact%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.material_type_map"><div class="unit"><label>Material Type</label>^ca_objects.material_type_map%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.material_type_arch_drawings"><div class="unit"><label>Material Type</label>^ca_objects.material_type_arch_drawings%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.material_type_arch_manuscript"><div class="unit"><label>Material Type</label>^ca_objects.material_type_manuscript%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.medium"><div class="unit"><label>Medium</label>^ca_objects.medium%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.unitdate.dacs_date_text"><div class="unit"><label>Date</label><unit relativeTo="ca_objects.unitdate" delimiter="<br/>"><ifdef code="ca_objects.unitdate.dacs_dates_labels">^ca_objects.unitdate.dacs_dates_labels: </ifdef>^ca_objects.unitdate.dacs_date_text</unit></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.dimensions.display_dimensions"><div class="unit"><label>Dimensions</label><unit relativeTo="ca_objects.dimensions" delimiter="<br/><br/>"><ifdef code="ca_objects.dimensions.dimension_types">^ca_objects.dimensions.dimension_types: </ifdef>^ca_objects.dimensions.display_dimensions</unit><ifdef code="ca_objects.dimensions.dimensions_notes"><br/>^ca_objects.dimensions.dimensions_notes</ifdef></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.extentDACS.portion_label|ca_objects.extentDACS.extent_number|ca_objects.extentDACS.extent_type|ca_objects.extentDACS.container_summary|ca_objects.extentDACS.physical_details|ca_objects.extentDACS.extent_dimensions">
-					<div class="unit"><label>Extent</label>
-						<unit relativeTo="ca_objects.extentDACS" delimiter="<br/>">
-							<ifdef code="ca_objects.extentDACS.portion_label|ca_objects.extentDACS.extent_number|ca_objects.extentDACS.extent_type">
-								<ifdef code="ca_objects.extentDACS.portion_label">^ca_objects.extentDACS.portion_label: </ifdef>^ca_objects.extentDACS.extent_number<ifdef code="ca_objects.extentDACS.extent_type"> ^ca_objects.extentDACS.extent_type</ifdef><br/>
-							</ifdef>
-							<ifdef code="ca_objects.extentDACS.container_summary">Container Summary: ^ca_objects.extentDACS.container_summary<br/></ifdef>
-							<ifdef code="ca_objects.extentDACS.physical_details">Physical Details: ^ca_objects.extentDACS.physical_details<br/></ifdef>
-							<ifdef code="ca_objects.extentDACS.extent_dimensions">Dimensions: ^ca_objects.extentDACS.extent_dimensions<br/></ifdef>
-						</unit>
-					</div>
-				</ifdef>}}}
 				{{{<ifdef code="ca_objects.duration"><div class="unit"><label>Duration</label>^ca_objects.duration%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.geonames"><div class="unit"><label>Geonames</label>^ca_objects.geonames%delimiter=<br/></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.description">
-					<div class='unit'><label>Description</label>
-						<span class="trimText">^ca_objects.description</span>
-					</div>
-				</ifdef>}}}
+				{{{<ifdef code="ca_objects.dimensions.display_dimensions"><div class="unit"><label>Dimensions</label><unit relativeTo="ca_objects.dimensions" delimiter="<br/><br/>"><ifdef code="ca_objects.dimensions.dimension_types">^ca_objects.dimensions.dimension_types: </ifdef>^ca_objects.dimensions.display_dimensions</unit><ifdef code="ca_objects.dimensions.dimensions_notes"><br/>^ca_objects.dimensions.dimensions_notes</ifdef></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.preferCite"><div class="unit"><label>Preferred Citation</label>^ca_objects.preferCite</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.custodhist"><div class="unit"><label>Provenance</label>^ca_objects.custodhist</div></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.adminbiohist|ca_objects.accessrestrict|ca_objects.govtuse|ca_objects.custodhist|ca_objects.langmaterial|ca_objects.general_notes|ca_objects.physaccessrestrict|ca_objects.physical_description|ca_objects.physloc|ca_objects.preferCite|ca_objects.publication_note|ca_objects.related_materials|ca_objects.scopecontent|ca_objects.techaccessrestrict"><HR/></ifdef>}}}
+				
+				{{{<ifdef code="ca_objects.geonames"><div class="unit"><label>Geonames</label>^ca_objects.geonames%delimiter=<br/></div></ifdef>}}}
+				
+<?php
+if($remove_notes_screen){
+?>
 				{{{<ifdef code="ca_objects.adminbiohist"><div class="unit"><label>Administrative/Biographical History</label>^ca_objects.adminbiohist</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.accessrestrict"><div class="unit"><label>Conditions Governing Access Statement</label>^ca_objects.accessrestrict</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.govtuse"><div class="unit"><label>Conditions Governing Reproductions and Use</label>^ca_objects.govtuse</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.custodhist"><div class="unit"><label>Provenance</label>^ca_objects.custodhist</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.langmaterial"><div class="unit"><label>Languages and Scripts of Collection Materials</label>^ca_objects.langmaterial</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.general_notes"><div class="unit"><label>Notes</label>^ca_objects.general_notes</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.physaccessrestrict"><div class="unit"><label>Physical Access</label>^ca_objects.physaccessrestrict</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.physical_description"><div class="unit"><label>Physical Description</label>^ca_objects.physical_description</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.physloc"><div class="unit"><label>Physical Location</label>^ca_objects.physloc</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.preferCite"><div class="unit"><label>Preferred Citation</label>^ca_objects.preferCite</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.publication_note"><div class="unit"><label>Publication Note</label>^ca_objects.publication_note</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.related_materials"><div class="unit"><label>Related Archival Materials</label>^ca_objects.related_materials</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.scopecontent"><div class="unit"><label>Scope and Content</label>^ca_objects.scopecontent</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.techaccessrestrict"><div class="unit"><label>Technical Access</label>^ca_objects.techaccessrestrict</div></ifdef>}}}
-				
+				{{{<ifdef code="ca_objects.techaccessrestrict"><div class="unit"><label>Technical Access</label>^ca_objects.techaccessrestrict</div></ifdef>}}}				
 <?php
+}
 				$va_all_subjects = array();
 			
 				foreach(array("local_subjects", "LcshSubjects", "LcshNames", "LcshGenre", "aat") as $vs_field){
@@ -192,7 +199,7 @@
 					print "<hr></hr>";
 
 					ksort($va_all_subjects);
-					print "<div class='unit'><label>Subject(s)</label>".join(", ", $va_all_subjects)."</div>";
+					print "<div class='unit'><label>Subject(s)</label>".join("<br/>", $va_all_subjects)."</div>";
 				}
 ?>
 				{{{map}}}						

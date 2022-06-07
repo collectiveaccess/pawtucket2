@@ -46,20 +46,20 @@
 			<H2>Explore</H2>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-xs-12 col-sm-2 col-sm-offset-<?php print ($this->request->isLoggedIn()) ? "3" : "4"; ?>">
+	<div class="row hpExploreButtons">
+		<div class="col-xs-12 col-sm-4 <?php print ($this->request->isLoggedIn()) ? "" : "col-sm-offset-2"; ?> col-md-2 col-md-offset-<?php print ($this->request->isLoggedIn()) ? "3" : "4"; ?>">
 			<?php print caNavLink($this->request, "Archival Items", "btn-default", "", "Browse", "objects", array("facet" => "type_facet", "id" => $vn_archival_item_id)); ?>
 		</div><!--end col-sm-8-->
 <?php
 		if($this->request->isLoggedIn()){
 ?>
-		<div class="col-xs-12 col-sm-2">
+		<div class="col-xs-12 col-sm-4  col-md-2">
 			<?php print caNavLink($this->request, "Capstones", "btn-default", "", "Browse", "objects", array("facet" => "type_facet", "id" => $vn_capstone_id)); ?>
 		</div><!--end col-sm-8-->
 <?php
 		}
 ?>
-		<div class="col-xs-12 col-sm-2">
+		<div class="col-xs-12 col-sm-4  col-md-2">
 			<?php print caNavLink($this->request, "Collections", "btn-default", "", "Collections", "Index"); ?>
 		</div><!--end col-sm-8-->	
 	</div><!-- end row -->

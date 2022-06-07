@@ -102,11 +102,11 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>				
-				{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></unit></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.alt_id"><div class="unit"><label>Alternate Identifier(s)</label>^ca_objects.alt_id%delimiter=,_</div></ifdef>}}}
-<?php
-				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true))) {
+				{{{<ifdef code="ca_objects.nonpreferred_labels"><div class="unit"><label>Alternate Title(s)</label>^ca_objects.nonpreferred_labels.name</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.author_text"><div class="unit"><label>Author</label>^ca_objects.author_text%delimiter=,_</div></ifdef>}}}
+								
+<?php				
+				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'exclude_relationship_types' => array("partner_organization")))) {
 					$va_entities_by_type = array();
 					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
 						$t_rel = new ca_objects_x_entities($va_entity_rel);
@@ -123,9 +123,23 @@
 					print "</div>";
 				}				
 ?>
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="partner_organization" min="1"><div class="unit"><label>Partner Organization<ifcount code="ca_entities" restrictToRelationshipTypes="partner_organization" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="partner_organization" delimiter="<br/>"><ifdef code="ca_entities.url"><a href="^ca_entities.url">^ca_entities.preferred_labels.displayname <i class="fa fa-external-link"></i></a></ifdef><ifnotdef code="ca_entities.url">^ca_entities.preferred_labels.displayname</ifnotdef></unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.unitdate.dacs_date_text"><div class="unit"><label>Date</label><unit relativeTo="ca_objects.unitdate" delimiter="<br/>"><ifdef code="ca_objects.unitdate.dacs_dates_labels">^ca_objects.unitdate.dacs_dates_labels: </ifdef>^ca_objects.unitdate.dacs_date_text</unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.abstract">
+					<div class='unit'><label>Abstract</label>
+						<span class="trimText">^ca_objects.abstract</span>
+					</div>
+				</ifdef>}}}
+				{{{<ifdef code="ca_objects.description">
+					<div class='unit'><label>Keywords</label>
+						<span class="trimText">^ca_objects.description</span>
+					</div>
+				</ifdef>}}}
+				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.alt_id"><div class="unit"><label>Alternate Identifier(s)</label>^ca_objects.alt_id%delimiter=,_</div></ifdef>}}}
+
 				{{{<ifdef code="ca_objects.major"><div class="unit"><label>Capstone Major</label>^ca_objects.major%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.cap_types"><div class="unit"><label>Capstone Type</label>^ca_objects.cap_types%delimiter=,_</div></ifdef>}}}
+				{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.extentDACS.portion_label|ca_objects.extentDACS.extent_number|ca_objects.extentDACS.extent_type|ca_objects.extentDACS.container_summary|ca_objects.extentDACS.physical_details|ca_objects.extentDACS.extent_dimensions">
 					<div class="unit"><label>Extent</label>
 						<unit relativeTo="ca_objects.extentDACS" delimiter="<br/>">
@@ -136,16 +150,6 @@
 							<ifdef code="ca_objects.extentDACS.physical_details">Physical Details: ^ca_objects.extentDACS.physical_details<br/></ifdef>
 							<ifdef code="ca_objects.extentDACS.extent_dimensions">Dimensions: ^ca_objects.extentDACS.extent_dimensions<br/></ifdef>
 						</unit>
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.abstract">
-					<div class='unit'><label>Abstract</label>
-						<span class="trimText">^ca_objects.abstract</span>
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.description">
-					<div class='unit'><label>Description</label>
-						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
 				{{{<ifdef code="ca_objects.general_notes">
@@ -178,7 +182,7 @@
 					print "<hr></hr>";
 
 					ksort($va_all_subjects);
-					print "<div class='unit'><label>Subject(s)</label>".join(", ", $va_all_subjects)."</div>";
+					print "<div class='unit'><label>Subject(s)</label>".join("<br/>", $va_all_subjects)."</div>";
 				}
 ?>				
 				
