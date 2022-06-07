@@ -15,11 +15,13 @@
 	if($qr_collections && $qr_collections->numHits()) {
 		while($qr_collections->nextHit()) {
 			if ( $vn_i == 0) { print "<div class='row'>"; } 
-			print "<div class='col-sm-6'><div class='collectionTile'><div class='title'>".caDetailLink($this->request, $qr_collections->get("ca_collections.preferred_labels"), "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";	
+			$vs_tmp = "<div class='col-sm-6'><div class='collectionTile'><div class='title'>".$qr_collections->get("ca_collections.preferred_labels")."</div>";	
 			if (($o_collections_config->get("description_template")) && ($vs_scope = $qr_collections->getWithTemplate($o_collections_config->get("description_template")))) {
-				print "<div>".$vs_scope."</div>";
+				$vs_tmp .= "<div>".$vs_scope."</div>";
 			}
-			print "</div></div>";
+			$vs_tmp .= "</div>";
+			print caDetailLink($this->request, $vs_tmp, "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
+			print "</div>";
 			$vn_i++;
 			if ($vn_i == 2) {
 				print "</div><!-- end row -->\n";
