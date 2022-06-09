@@ -1706,6 +1706,9 @@ h2.exhibitionSection{
 	.userGuideSideNav{
 		position:fixed;
 	}
+	.userGuideSideNav ul{
+		max-width: 100%;
+	}
 }
 .userGuideSideNav{
 	margin-top: -15px;
