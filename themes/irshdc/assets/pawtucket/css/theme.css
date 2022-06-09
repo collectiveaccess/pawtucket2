@@ -1705,9 +1705,7 @@ h2.exhibitionSection{
 @media(min-width:768px){
 	.userGuideSideNav{
 		position:fixed;
-	}
-	.userGuideSideNav ul{
-		max-width: 100%;
+		width: 15%;
 	}
 }
 .userGuideSideNav{
