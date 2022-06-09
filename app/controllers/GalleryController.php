@@ -340,6 +340,7 @@
  			$this->view->setVar("row_id", $t_set_item->get("row_id"));
  			$this->view->setVar("label", $t_instance->getLabelForDisplay());
  			$this->view->setVar("table", $table);
+ 			$this->view->setVar("config", $this->config);
  			
  			Session::setVar("last_item_for_set_{$set_id}", $item_id);
  			Session::save();
