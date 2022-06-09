@@ -1721,6 +1721,9 @@ h2.exhibitionSection{
 	padding-left: 0px;
 	list-style: none;
 }
+.userGuideSideNav ol{
+	padding-left: 15px;
+}
 .userGuideSideNav H2{
 	margin-top: 40px;
 	color:#000;
