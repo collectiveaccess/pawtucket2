@@ -10,11 +10,13 @@ class NumberFormat extends Supervisor
     const FORMAT_TEXT = '@';
 
     const FORMAT_NUMBER = '0';
+    const FORMAT_NUMBER_0 = '0.0';
     const FORMAT_NUMBER_00 = '0.00';
     const FORMAT_NUMBER_COMMA_SEPARATED1 = '#,##0.00';
     const FORMAT_NUMBER_COMMA_SEPARATED2 = '#,##0.00_-';
 
     const FORMAT_PERCENTAGE = '0%';
+    const FORMAT_PERCENTAGE_0 = '0.0%';
     const FORMAT_PERCENTAGE_00 = '0.00%';
 
     const FORMAT_DATE_YYYYMMDD2 = 'yyyy-mm-dd';
@@ -104,7 +106,10 @@ class NumberFormat extends Supervisor
      */
     public function getSharedComponent()
     {
-        return $this->parent->getSharedComponent()->getNumberFormat();
+        /** @var Style */
+        $parent = $this->parent;
+
+        return $parent->getSharedComponent()->getNumberFormat();
     }
 
     /**
@@ -157,7 +162,7 @@ class NumberFormat extends Supervisor
         if ($this->isSupervisor) {
             return $this->getSharedComponent()->getFormatCode();
         }
-        if ($this->builtInFormatCode !== false) {
+        if (is_int($this->builtInFormatCode)) {
             return self::builtInFormatCode($this->builtInFormatCode);
         }
 
@@ -352,7 +357,7 @@ class NumberFormat extends Supervisor
      *
      * @param string $formatCodeIndex
      *
-     * @return bool|int
+     * @return false|int
      */
     public static function builtInFormatCodeIndex($formatCodeIndex)
     {

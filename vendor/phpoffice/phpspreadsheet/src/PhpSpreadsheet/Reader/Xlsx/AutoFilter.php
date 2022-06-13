@@ -22,7 +22,7 @@ class AutoFilter
     public function load(): void
     {
         // Remove all "$" in the auto filter range
-        $autoFilterRange = preg_replace('/\$/', '', $this->worksheetXml->autoFilter['ref']);
+        $autoFilterRange = preg_replace('/\$/', '', $this->worksheetXml->autoFilter['ref'] ?? '');
         if (strpos($autoFilterRange, ':') !== false) {
             $this->readAutoFilter($autoFilterRange, $this->worksheetXml);
         }
@@ -61,6 +61,7 @@ class AutoFilter
             //    Check for dynamic filters
             $this->readTopTenAutoFilter($filterColumn, $column);
         }
+        $autoFilter->setEvaluated(true);
     }
 
     private function readDateRangeAutoFilter(SimpleXMLElement $filters, Column $column): void

@@ -291,10 +291,8 @@ class Html extends BaseWriter
 
     /**
      * Get sheet index.
-     *
-     * @return int
      */
-    public function getSheetIndex()
+    public function getSheetIndex(): ?int
     {
         return $this->sheetIndex;
     }
@@ -356,6 +354,8 @@ class Html extends BaseWriter
             : '';
     }
 
+    public const BODY_LINE = '  <body>' . PHP_EOL;
+
     /**
      * Generate HTML header.
      *
@@ -386,7 +386,7 @@ class Html extends BaseWriter
 
         $html .= '  </head>' . PHP_EOL;
         $html .= '' . PHP_EOL;
-        $html .= '  <body>' . PHP_EOL;
+        $html .= self::BODY_LINE;
 
         return $html;
     }
@@ -697,10 +697,12 @@ class Html extends BaseWriter
                 $imageResource = $drawing->getImageResource();
                 if ($imageResource) {
                     ob_start(); //  Let's start output buffering.
+                    // @phpstan-ignore-next-line
                     imagepng($imageResource); //  This will normally output the image, but because of ob_start(), it won't.
                     $contents = ob_get_contents(); //  Instead, output above is saved to $contents
                     ob_end_clean(); //  End the output buffer.
 
+                    /** @phpstan-ignore-next-line */
                     $dataUri = 'data:image/jpeg;base64,' . base64_encode($contents);
 
                     //  Because of the nature of tables, width is more important than height.
@@ -748,7 +750,7 @@ class Html extends BaseWriter
                     if ($fp = fopen($chartFileName, 'rb', 0)) {
                         $picture = fread($fp, filesize($chartFileName));
                         fclose($fp);
-                        // base64 encode the binary data
+                        /** @phpstan-ignore-next-line */
                         $base64 = base64_encode($picture);
                         $imageData = 'data:' . $imageDetails['mime'] . ';base64,' . $base64;
 
@@ -1784,6 +1786,11 @@ class Html extends BaseWriter
         return $result;
     }
 
+    public function getOrientation(): ?string
+    {
+        return null;
+    }
+
     /**
      * Generate @page declarations.
      *
@@ -1819,7 +1826,7 @@ class Html extends BaseWriter
             $htmlPage .= 'margin-top: ' . $top;
             $bottom = StringHelper::FormatNumber($worksheet->getPageMargins()->getBottom()) . 'in; ';
             $htmlPage .= 'margin-bottom: ' . $bottom;
-            $orientation = $worksheet->getPageSetup()->getOrientation();
+            $orientation = $this->getOrientation() ?? $worksheet->getPageSetup()->getOrientation();
             if ($orientation === \PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE) {
                 $htmlPage .= 'size: landscape; ';
             } elseif ($orientation === \PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT) {

@@ -3,7 +3,7 @@
 namespace PhpOffice\PhpSpreadsheet\Calculation\LookupRef;
 
 use PhpOffice\PhpSpreadsheet\Calculation\Calculation;
-use PhpOffice\PhpSpreadsheet\Calculation\Functions;
+use PhpOffice\PhpSpreadsheet\Calculation\Information\ExcelError;
 use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
@@ -99,7 +99,7 @@ class RowColumnInformation
             return 1;
         }
         if (!is_array($cellAddress)) {
-            return Functions::VALUE();
+            return ExcelError::VALUE();
         }
 
         reset($cellAddress);
@@ -166,6 +166,7 @@ class RowColumnInformation
                 function ($value) {
                     return [$value];
                 },
+                // @phpstan-ignore-next-line
                 range($startAddress, $endAddress)
             );
         }
@@ -193,7 +194,7 @@ class RowColumnInformation
             return 1;
         }
         if (!is_array($cellAddress)) {
-            return Functions::VALUE();
+            return ExcelError::VALUE();
         }
 
         reset($cellAddress);

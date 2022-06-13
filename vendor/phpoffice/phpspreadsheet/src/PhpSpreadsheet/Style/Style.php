@@ -78,9 +78,7 @@ class Style extends Supervisor
      * @see Style::applyFromArray()
      * @see Style::getHashCode()
      *
-     * @phpstan-var null|array{styleByHash: array<string, Style>, hashByObjId: array<int, string>}
-     *
-     * @var array<string, array>
+     * @var ?array<string, array>
      */
     private static $cachedStyles;
 
@@ -132,17 +130,15 @@ class Style extends Supervisor
             $xfIndex = 0;
         }
 
-        return $this->parent->getCellXfByIndex($xfIndex);
+        return $activeSheet->getParent()->getCellXfByIndex($xfIndex);
     }
 
     /**
      * Get parent. Only used for style supervisor.
-     *
-     * @return Spreadsheet
      */
-    public function getParent()
+    public function getParent(): Spreadsheet
     {
-        return $this->parent;
+        return $this->getActiveSheet()->getParent();
     }
 
     /**
