@@ -29,7 +29,7 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 <?php
-					print "<div class='pull-right'><a href='' target='_blank' class='btn btn-default btn-small' title='View Collection in ArchiveSpace'>More Information <i class='fa fa-external-link'></i></a></div>";
+					#print "<div class='pull-right'><a href='' target='_blank' class='btn btn-default btn-small' title='View Collection in ArchiveSpace'>More Information <i class='fa fa-external-link'></i></a></div>";
 					if ($vn_pdf_enabled) {
 						print "<div class='exportCollection pull-right'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 					}

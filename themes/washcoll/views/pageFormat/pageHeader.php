@@ -102,7 +102,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print "<a href='https://www.washcoll.edu/people_departments/offices/miller-library/index.php' class='navbar-brand'>".caGetThemeGraphic($this->request, 'main-logo.svg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."<span class='logoMiller'>".caGetThemeGraphic($this->request, 'miller_library.png', array("alt" => "Miller Library", "role" => "banner"))."</span></a>";
+				print "<a href='https://www.washcoll.edu/people_departments/offices/miller-library/archives-special-collections/index.php' class='navbar-brand'>".caGetThemeGraphic($this->request, 'main-logo.svg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."<span class='logoMiller'>".caGetThemeGraphic($this->request, 'archives.png', array("alt" => "Archives & Special Collections", "role" => "banner"))."</span></a>";
 
 				#print caNavLink($this->request, caGetThemeGraphic($this->request, 'WC_logo_library.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");
 ?>
@@ -141,7 +141,7 @@
 						</div>
 						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
 					</div>
-					<?php print caNavLink($this->request, _t("Advanced Search"), "advancedSearchLink", "", "Search", "advanced/objects"); ?>
+					<?php print caNavLink($this->request, _t("Advanced Search"), "advancedSearchLink", "", "Search", "advanced/".(($this->request->isLoggedIn()) ? "objects_all" : "objects")); ?>
 					
 				</form>
 				<script type="text/javascript">

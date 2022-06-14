@@ -36,7 +36,7 @@
 						<?php print ((CookieOptionsManager::cookieManagerEnabled()) ? "<li>".caNavLink($this->request, _t("Manage Cookies"), "", "", "Cookies", "manage")."</li>" : ""); ?></li>
 					</ul>
 					<ul class="list-inline pull-right  social">
-						<li><a href="https://www.instagram.com/askwcarchives/" target="_blank"><i class="fa fa-twitter" aria-label="<?php print _t("Twitter"); ?>"></i></a></li>
+						<li><a href="https://www.instagram.com/askwcarchives/" target="_blank"><i class="fa fa-instagram" aria-label="<?php print _t("Twitter"); ?>"></i></a></li>
 						<li><a href="https://www.facebook.com/askWCarchives/" target="_blank"><i class="fa fa-facebook-square" aria-label="<?php print _t("Facebook"); ?>"></i></a></li>
 					</ul>
 					<div>
