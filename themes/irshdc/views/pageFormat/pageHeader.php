@@ -170,7 +170,14 @@
 						</ul>
 					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li><a href='/About' <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><span><?php print _t("About"); ?></span></a></li>
+					<li class="dropdown <?php print (in_array($this->request->getController(), array("AboutCollections", "CurrentProjects", "InformationResources"))) ? ' active"' : ''; ?>" style="position:relative;">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>About</span></a>
+						<ul class="dropdown-menu">
+							<li><a href='/AboutCollections' <?php print ($this->request->getController() == "AboutCollections") ? 'class="active"' : ''; ?>><span><?php print _t("About the Collections "); ?></span></a></li>
+							<li><a href='/CurrentProjects' <?php print ($this->request->getController() == "CurrentProjects") ? 'class="active"' : ''; ?>><span><?php print _t("Current Projects"); ?></span></a></li>
+							<li><a href='/InformationResources' <?php print ($this->request->getController() == "InformationResources") ? 'class="active"' : ''; ?>><span><?php print _t("Resources for Information Professionals"); ?></span></a></li>
+						</ul>
+					</li>
 					
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "<span>"._t("Contact")."</span>", "", "", "Contact", "Form"); ?></li>
 					<li><a href="http://irshdc.ubc.ca" target="_blank"><span>Centre Home</span></a></li>
