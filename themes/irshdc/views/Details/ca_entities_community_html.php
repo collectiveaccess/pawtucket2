@@ -111,7 +111,7 @@ if($vs_mode == "map"){
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.nonpreferred_labels.displayname">
 							<div class='unit'>
-								<H6>Alternate Name(s)</H6>
+								<H6>Other Name(s)</H6>
 								<div class="trimTextAltNames"><unit relativeTo="ca_entities.nonpreferred_labels" delimiter="<br/>">
 									<ifdef code="ca_entities.nonpreferred_labels.source_info"><span data-toggle="popover" title="Source" data-content="^ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifdef>
 									<ifnotdef code="ca_entities.nonpreferred_labels.source_info">^ca_entities.nonpreferred_labels.displayname</ifnotdef>
@@ -119,7 +119,7 @@ if($vs_mode == "map"){
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.alt_name_note">
-							<div class='unit'><h6>Note on Alternate Names</h6>^ca_entities.alt_name_note%delimiter=<br/></div>
+							<div class='unit'><h6>Note on Names</h6>^ca_entities.alt_name_note%delimiter=<br/></div>
 						</ifdef>}}}
 								
 						
