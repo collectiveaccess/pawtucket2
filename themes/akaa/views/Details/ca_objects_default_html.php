@@ -107,7 +107,7 @@
 				#	}
 				#}
 				if ($va_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><label>Description</label>".$va_description."</div>";
+					print "<div class='unit'><label>Medium</label>".$va_description."</div>";
 				}
 
 ?>
