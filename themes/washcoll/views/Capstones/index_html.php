@@ -6,7 +6,7 @@
 ?>
 	<div class="row">
 		<div class='col-md-12 col-lg-12 collectionsList'>
-			<h1>Capstones Collection</h1>
+			<h1>Senior Capstone Collection</h1>
 			<p>{{{capstones_intro_text_logged_in}}}</p>
 <?php	
 	$vn_i = 0;
@@ -38,7 +38,7 @@
 ?>
 	<div class="row">
 		<div class='col-md-12 col-lg-12'>
-			<h1>Capstones Collection</h1>
+			<h1>Senior Capstone Collection</h1>
 			<p>{{{capstones_intro_text_not_logged_in}}}</p>
 		</div>
 	</div>

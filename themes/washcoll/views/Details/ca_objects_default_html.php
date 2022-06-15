@@ -83,6 +83,33 @@
 					}
 					print '</div><!-- end detailTools -->';
 				}
+				$vs_copyright = $t_object->get("ca_objects.copyright", array("convertCodesToDisplayText" => true));
+				if($vs_copyright){
+					print "<div class='unit'><label>Copyright</label>";
+					switch(strToLower($vs_copyright)){
+						case "copyright undetermined":
+							 if($vs_tmp = $this->getVar("copyright_undetermined")){
+							 	print $vs_tmp;
+							 }else{
+							 	print $vs_copyright;
+							 }
+						break;
+						# ------------
+						case "in copyright":
+							 if($vs_tmp = $this->getVar("in_copyright")){
+							 	print $vs_tmp;
+							 }else{
+							 	print $vs_copyright;
+							 }
+						break;
+						# ------------
+						default:
+							print $vs_copyright;
+						break;
+						# ------------
+					}
+					print "</div>";
+				}
 ?>
 				{{{<ifcount code="ca_objects.related" min="1">
 					<hr/>
