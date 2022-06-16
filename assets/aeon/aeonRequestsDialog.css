@@ -1,0 +1,14 @@
+.ui-dialog .ui-dialog-titlebar{text-align:left}
+.aeon_request {font-size: .8em; text-align: left}
+.aeon_request .label { font-weight: bold; }
+.aeon_request .requestDesc { margin-left: 2em; }
+.aeon_request_header, .aeon_request .select_all_buttons,.aeon_request .requestItem, .aeon_request .notes, .aeon_request .scheduled_date, .aeon_request .review, .aeon_request .buttons, .aeon_request .simple_copy_opt, .aeon_request .advanced_copy_opt, .aeon_request .aeon_request_items{ margin-bottom: 1em; }
+.aeon_request .request_inputs { float:left; }
+.aeon_request .rev_sched_opt { float:left; clear:left; margin-right: 1em; height: 3em; }
+.aeon_request .buttons { clear:both; }
+.aeon_request .disabled { color: #aaa; }
+.aeon_request .advanced_copy_opt .label { display: inline-block; width: 14em;}
+.aeon_request .adv_copy_select { width: 20em;}
+.aeon_request .message { font-weight: bold; margin-bottom: .2em; }
+.aeon_request .select_all, .aeon_request .dialog_submit { margin-right: .5em; }
+.aeon_request .aeon_request_items { max-height: 500px; overflow-y: auto; }
