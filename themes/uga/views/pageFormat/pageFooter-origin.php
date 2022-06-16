@@ -29,13 +29,13 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		<div id="footer">
 			<ul class="list-inline pull-right social">
-				<li><a href="https://www.youtube.com/user/BrownMediaArchiveUGA"><img src="/pawtucket2/themes/uga/assets/pawtucket/graphics/youtube.jpg" alt="our youtube channel" border="0" height="32" width="32"></a></li>
-				<li><a href="http://www.facebook.com/BrownMediaArchivesPeabodyAwardsCollection"><img src="/pawtucket2/themes/uga/assets/pawtucket/graphics/fb.gif" alt="our facebook page" border="0" height="32" width="32"></a></li>
-				<li><a href="http://bmaatuga.tumblr.com/"><img src="/pawtucket2/themes/uga/assets/pawtucket/graphics/tumblr.jpg" alt="our tumblr page" border="0" height="32" width="32"></a></li>
-				<li><a href="https://twitter.com/BMAatUGA"><img src="/pawtucket2/themes/uga/assets/pawtucket/graphics/twit.png" alt="our twitter page" border="0" height="32" width="32"></a></li>
-				<li><a href="https://instagram.com/bmaatuga/"><img src="/pawtucket2/themes/uga/assets/pawtucket/graphics/insta.jpg" alt="our instagram page" border="0" height="32" width="32"></a></li>
+				<li><a href="https://www.youtube.com/user/BrownMediaArchiveUGA"><img src="/themes/uga/assets/pawtucket/graphics/youtube.jpg" alt="our youtube channel" border="0" height="32" width="32"></a></li>
+				<li><a href="http://www.facebook.com/BrownMediaArchivesPeabodyAwardsCollection"><img src="themes/uga/assets/pawtucket/graphics/fb.gif" alt="our facebook page" border="0" height="32" width="32"></a></li>
+				<li><a href="http://bmaatuga.tumblr.com/"><img src="/themes/uga/assets/pawtucket/graphics/tumblr.jpg" alt="our tumblr page" border="0" height="32" width="32"></a></li>
+				<li><a href="https://twitter.com/BMAatUGA"><img src="/themes/uga/assets/pawtucket/graphics/twit.png" alt="our twitter page" border="0" height="32" width="32"></a></li>
+				<li><a href="https://instagram.com/bmaatuga/"><img src="/themes/uga/assets/pawtucket/graphics/insta.jpg" alt="our instagram page" border="0" height="32" width="32"></a></li>
 			</ul>
-				<div class="ugalogo"><a href="http://www.uga.edu"><img src="/pawtucket2/themes/uga/assets/pawtucket/graphics/ugalogosmall.gif" /></a></div>
+				<div class="ugalogo"><a href="http://www.uga.edu"><img src="/themes/uga/assets/pawtucket/graphics/ugalogosmall.gif" /></a></div>
 				<div class="uga"><a href="http://www.uga.edu">University of Georgia</a></div>
 	<!--		<ul class="list-inline">
 				<li><a href="#">Link 1</a></li>

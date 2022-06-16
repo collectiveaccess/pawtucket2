@@ -114,8 +114,8 @@
 <input type="checkbox" name="Request" value="1" checked style="display:none"/><input type="hidden" name="ItemTitle_1" value="{{{ca_objects.preferred_labels.name}}}"/><input type="hidden" name="ItemSubtitle_1" value="{{{ca_objects.idno}}}"/><input type="hidden" name="ReferenceNumber_1" value="{{{ca_collections.preferred_labels.name}}}"/><input type="hidden" name="ItemNumber_1" value="{{{ca_objects.locationContainer.instantiationLocation}}}"/>
 {{{<ifdef code="ca_objects.instantiationPhysical"><input type="hidden" name ="ItemInfo2_1" value="^ca_objects.instantiationPhysical"/></ifdef>}}}<input type="hidden" name="SubLocation_1" value="https://bmac.libs.uga.edu/index.php/editor/objects/ObjectEditor/Summary/object_id/{{{ca_objects.object_id}}}"/>
 </form>
-				<script src="/pawtucket2/assets/aeon/aeonRequestsDialog.min.js"></script>
-				<script src="/pawtucket2/assets/jqote2/jquery.jqote2.min.js"></script>
+				<script src="/assets/aeon/aeonRequestsDialog.min.js"></script>
+				<script src="/assets/jqote2/jquery.jqote2.min.js"></script>
 				<style>
 					.ui-dialog { z-index: 10000 !important ;}
 					.requestDesc .label, .scheduled_date .label {
