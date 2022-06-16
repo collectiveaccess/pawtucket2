@@ -264,7 +264,7 @@
 
 				$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
 
-				$o_browse->execute(array('noCache' => caGetOption('noCache', $pa_args, false), 'checkAccess' => caUserIsPrivileged() ? $this->opa_access_values : null, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'omitChildRecords' => $vb_omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $va_browse_info, null), 'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $va_browse_info, null)));
+				$o_browse->execute(array('noCache' => caGetOption('noCache', $pa_args, false), 'checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'omitChildRecords' => $vb_omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $va_browse_info, null), 'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $va_browse_info, null)));
 
 				//
 				// Facets
