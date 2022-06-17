@@ -46,19 +46,19 @@
 <hr></hr>
 <!-- Verbundene Werkgruppen	 -->
 					{{{<ifcount code="ca_collections" min="1" excludeRelationshipTypes="vita"><h6>Related Series of Works</h6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" excludeRelationshipTypes="vita" sort="ca_collections.idno" sortDirection="ASC" delimiter=" "><p><l>^ca_collections.preferred_labels.name<unit delimiter=", "> (^ca_collections.year)</unit></l></p></unit>}}}
+					{{{<unit relativeTo="ca_collections" delimiter=" "><p><l>^ca_collections.preferred_labels.name<unit delimiter=", "> (^ca_collections.year)</unit></l> (^relationship_typename)</p></unit>}}}
 <!-- Einzelausstellungen -->
 					{{{<ifcount code="ca_occurrences.related" min="1" max="1" restrictToTypes="exhibition_solo"><H6>Related solo show</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" min="2" restrictToTypes="exhibition_solo"><H6>Related solo shows</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences_x_occurrences" restrictToTypes="exhibition_solo" sort="ca_occurrences.idno" sortDirection="DESC" delimiter=" "><unit relativeTo="ca_occurrences"><p><l>^ca_occurrences.displaye_exhibition</l></p></unit></unit>}}}
+					{{{<unit relativeTo="ca_occurrences"><p><l>^ca_occurrences.displaye_exhibition</l> (^relationship_typename)</p></unit>}}}
 <!-- Gruppenausstellungen -->
 					{{{<ifcount code="ca_occurrences.related" min="1" max="1" restrictToTypes="exhibition_group"><H6>Related group show</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" min="2" restrictToTypes="exhibition_group"><H6>Related group shows</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences_x_occurrences" restrictToTypes="exhibition_group" sort="ca_occurrences.idno" sortDirection="DESC" delimiter=" "><unit relativeTo="ca_occurrences"><p><l>^ca_occurrences.displaye_exhibition</l></p></unit></unit>}}}
+					{{{<unit relativeTo="ca_occurrences"><p><l>^ca_occurrences.displaye_exhibition</l> (^relationship_typename)</p></unit>}}}
 <!-- Zugehörige Literaturhinweise -->
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="article, leaflet, anthology, book, cat, dvd, self, web, periodical" min="1" max="1"><H6>Related bibliography</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="article, leaflet, anthology, book, cat, dvd, self, web, periodical" min="2"><H6>Related bibliography</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences_x_occurrences" restrictToTypes="article, leaflet, anthology, book, cat, dvd, self, web, periodical" sort="ca_occurrences.idno" sortDirection="DESC" delimiter=" "><unit relativeTo="ca_occurrences.displayed_bibliographies"><p><l>^ca_occurrences.displayed_bibliographies</l></p></unit></unit>}}}
+					{{{<unit relativeTo="ca_occurrences_x_occurrences" restrictToTypes="article, leaflet, anthology, book, cat, dvd, self, web, periodical" sort="ca_occurrences.idno" sortDirection="DESC" delimiter=" "><unit relativeTo="ca_occurrences.displayed_bibliographies"><p><l>^ca_occurrences.displayed_bibliographies</l> (^relationship_typename)</p></unit></unit>}}}
 
 				</div><!-- end col -->
 
