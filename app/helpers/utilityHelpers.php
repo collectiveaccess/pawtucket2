@@ -4503,4 +4503,3 @@ function caFileIsIncludable($ps_file) {
 		return new HTMLPurifier($config); 
 	}
 	# ----------------------------------------
-	

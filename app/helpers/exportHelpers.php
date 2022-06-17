@@ -29,11 +29,6 @@
  * 
  * ----------------------------------------------------------------------
  */
-use \PhpOffice\PhpPresentation\PhpPresentation;
-use \PhpOffice\PhpPresentation\IOFactory;
-use \PhpOffice\PhpPresentation\Style\Color;
-use \PhpOffice\PhpPresentation\Style\Alignment;
-
 
  /**
    *
@@ -348,8 +343,8 @@ use \PhpOffice\PhpPresentation\Style\Alignment;
 				exit;
 				break;
 			case 'pptx':
-				$ppt = new \PhpOffice\PhpPresentation\PhpPresentation();
-				
+				$ppt = new PhpOffice\PhpPresentation\PhpPresentation();
+
 				$vn_slide = 0;
 				while($po_result->nextHit()) {
 					if ($vn_slide > 0) {

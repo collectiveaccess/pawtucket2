@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2018 Whirl-i-Gig
+ * Copyright 2007-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -194,10 +194,13 @@ class RequestHTTP extends Request {
 		$this->ops_base_path = join('/', $va_tmp);
 		$this->ops_full_path = $_SERVER['REQUEST_URI'];
 		if (!caUseCleanUrls() && !preg_match("!/index.php!", $this->ops_full_path) && !preg_match("!/service.php!", $this->ops_full_path)) { $this->ops_full_path = rtrim($this->ops_full_path, "/")."/index.php"; }
-		$vs_path_info = str_replace($_SERVER['SCRIPT_NAME'], "", str_replace("?".$_SERVER['QUERY_STRING'], "", $this->ops_full_path));
+		$this->ops_full_path = preg_replace("![/]+!", "/", $this->ops_full_path);
+		$vs_path_info = str_replace($this->ops_script_name, "", str_replace("?".$_SERVER['QUERY_STRING'], "", $this->ops_full_path));
 		
-		$this->ops_path_info = $vs_path_info ? $vs_path_info : (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '');
-		if (__CA_URL_ROOT__) { $this->ops_path_info = preg_replace("!^".__CA_URL_ROOT__."/!", "", $this->ops_path_info); }
+		$this->ops_path_info = preg_replace("![/]+!", "/", $vs_path_info ? "/{$vs_path_info}" : (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : ''));
+		
+		if (__CA_URL_ROOT__) { $this->ops_path_info = preg_replace("!^".__CA_URL_ROOT__."!", "", $this->ops_path_info); }
+
 	}
 	# -------------------------------------------------------
 	/** 
@@ -521,9 +524,7 @@ class RequestHTTP extends Request {
 	 * @return HTMLPurifier Returns instance
 	 */
 	static public function getPurifier() {
-		if (!RequestHTTP::$html_purifier) { 
-			RequestHTTP::$html_purifier = caGetHTMLPurifier(); 
-		}
+		if (!RequestHTTP::$html_purifier) { RequestHTTP::$html_purifier = caGetHTMLPurifier(); }
 		return RequestHTTP::$html_purifier;
 	}
 	# -------------------------------------------------------
@@ -541,15 +542,18 @@ class RequestHTTP extends Request {
 		if (!isset($vm_val)) { return ""; }
 		
 		$vm_val = str_replace("\0", '', $vm_val);
+		
+		$purified = false;
 		if((caGetOption('purify', $pa_options, true) && $this->config->get('purify_all_text_input')) || caGetOption('forcePurify', $pa_options, false)) {
 		    if(is_array($vm_val)) {
 		        $vm_val = array_map(function($v) { return is_array($v) ? $v : str_replace("&amp;", "&", RequestHTTP::getPurifier()->purify(rawurldecode($v))); }, $vm_val);
 		    } else {
 		        $vm_val = str_replace("&amp;", "&", RequestHTTP::getPurifier()->purify(rawurldecode($vm_val)));
 		    }
+		    $purified = true;
 		}
 		
-		if ($vm_val == "") { return ""; }
+		if ($vm_val == "") { return ($pn_type == pArray) ? [] : ''; }
 		
 		switch($pn_type) {
 			# -----------------------------------------
@@ -572,7 +576,9 @@ class RequestHTTP extends Request {
 					if(caGetOption('retainBackslashes', $pa_options, true)) {
 						$vm_val = str_replace("\\", "\\\\", $vm_val);	// retain backslashes for some strange people desire them as valid input
 					}
-					$vm_val = rawurldecode($vm_val);
+					if(!$purified && caGetOption('urldecode', $pa_options, true)) {
+						$vm_val = rawurldecode($vm_val);
+					}
 					return $vm_val;
 				}
 				break;
@@ -625,6 +631,12 @@ class RequestHTTP extends Request {
 		}
 
 		if(defined('__CA_SITE_HOSTNAME__') && strlen(__CA_SITE_HOSTNAME__) > 0) {
+		    $host_without_port = __CA_SITE_HOSTNAME__;
+			$host_port = null;
+		    if(preg_match("/:([\d]+)$/", $host_without_port, $m)) {
+		    	$host_without_port = preg_replace("/:[\d]+$/", '', $host_without_port);
+		    	$host_port = (int)$m[1];
+		    } 
 		    
 			if (
 			    !($vn_port = (int)$this->getAppConfig()->get('out_of_process_search_indexing_port'))
@@ -632,11 +644,11 @@ class RequestHTTP extends Request {
 			    !($vn_port = (int)getenv('CA_OUT_OF_PROCESS_SEARCH_INDEXING_PORT'))
 			) {
                 if(__CA_SITE_PROTOCOL__ == 'https') { 
-                    $vn_port = 443;	
+                    $vn_port = $host_port ?? 443;	
                 } elseif(isset($_SERVER['SERVER_PORT']) &&  $_SERVER['SERVER_PORT']) {
                     $vn_port = $_SERVER['SERVER_PORT'];
                 } else {
-                    $vn_port = 80;
+                    $vn_port = $host_port ?? 80;
                 }
             }
 			
@@ -653,7 +665,7 @@ class RequestHTTP extends Request {
 			    && 
 			    !($vs_indexing_hostname = getenv('CA_OUT_OF_PROCESS_SEARCH_INDEXING_HOSTNAME'))
 			) {
-			    $vs_indexing_hostname = __CA_SITE_HOSTNAME__;
+			    $vs_indexing_hostname = $host_without_port;
 			}
 			// trigger async search indexing
 			if((__CA_APP_TYPE__ === 'PROVIDENCE') && !$this->getAppConfig()->get('disable_out_of_process_search_indexing')) {

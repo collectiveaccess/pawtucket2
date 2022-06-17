@@ -1,4 +1,4 @@
- # *** use ONLY lowercase letters in lists: input will be forced to lowercase for comparison ***
+# *** use ONLY lowercase letters in lists: input will be forced to lowercase for comparison ***
 
 # List month names; used whenever name of month needs to be displayed
 monthList = [enero, febrero, Marzo, abril, mayo, junio, julio, agosto, septiembre, octubre, noviembre, diciembre]

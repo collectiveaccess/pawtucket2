@@ -1565,7 +1565,7 @@
 		}
 
 		if($ps_table) {
-			// add user sorts
+			// Add user sorts
 			if(caGetOption('includeUserSorts', $pa_options, true)) {
 				/** @var RequestHTTP $po_request */
 				if(!($po_request = caGetOption('request', $pa_options)) || ($po_request->getUser()->canDoAction('can_use_user_sorts'))) {
@@ -1573,7 +1573,7 @@
 				}
 			}
 
-			// add sortable elements
+			// Add sortable elements
 			require_once(__CA_MODELS_DIR__ . '/ca_metadata_elements.php');
 			$va_sortable_elements = ca_metadata_elements::getSortableElements($ps_table, $pn_type_id);
 			foreach($va_sortable_elements as $vn_element_id => $va_sortable_element) {

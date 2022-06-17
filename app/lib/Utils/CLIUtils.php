@@ -409,8 +409,19 @@
 				print CLIProgressBar::next();
 				$va_versions = $qr_reps->getMediaVersions('media');
 				if (!is_array($va_versions)) { continue; }
+				
+				$multifiles = $t_rep->getFileList($qr_reps->get('ca_object_representations.representation_id'), null, null, ['returnAllVersions' => true]);
 				foreach($va_versions as $vs_version) {
 					$va_paths[$qr_reps->getMediaPath('media', $vs_version)] = true;
+					
+					if(is_array($multifiles)) {
+						foreach($multifiles as $mfinfo) {
+							foreach($mfinfo as $mfk => $mf) {
+								if(!preg_match("!_path$!", $mfk)) { continue; }
+								$va_paths[$mf] = true;
+							}
+						}
+					}
 				}
 			}
 			print CLIProgressBar::finish();
@@ -423,7 +434,6 @@
 			$vn_delete_count = 0;
 
 			print CLIProgressBar::start(sizeof($va_contents), _t('Finding unused files'));
-			$va_report = array();
 			foreach($va_contents as $vs_path) {
 				print CLIProgressBar::next();
 				if (!preg_match('!_ca_object_representation!', $vs_path)) { continue; } // skip non object representation files
@@ -432,7 +442,6 @@
 					if ($vb_delete_opt) {
 						unlink($vs_path);
 					}
-					$va_report[] = $vs_path;
 				}
 			}
 			print CLIProgressBar::finish()."\n";
@@ -2450,7 +2459,7 @@
 
 
 			if (in_array('all', $pa_kinds) || in_array('ca_attributes', $pa_kinds)) {
-				// get all Media elements
+				// get all media elements
 				$va_elements = ca_metadata_elements::getElementsAsList(false, null, null, true, false, true, array(16)); // 16=media
 
 				if (is_array($va_elements) && sizeof($va_elements)) {
@@ -3827,6 +3836,7 @@
 			$vb_delete_opt = (bool)$po_opts->getOption('delete');
 
 			foreach ($va_tables as $vs_t) {
+				Datamodel::getInstance($vs_t, true);
 				if (class_exists($vs_t) && method_exists($vs_t, 'listPotentialDupes')) {
 					$va_dupes = $vs_t::listPotentialDupes();
 					if (sizeof($va_dupes)) {
