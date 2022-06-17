@@ -828,12 +828,12 @@
  			}
  			
  			# --- get params from form
- 			$ps_comment = $this->request->getParameter('comment', pString);
+ 			$ps_comment = strip_tags($this->request->getParameter('comment', pString));
  			$pn_rank = $this->request->getParameter('rank', pInteger);
- 			$ps_tags = $this->request->getParameter('tags', pString);
- 			$ps_email = $this->request->getParameter('email', pString);
- 			$ps_name = $this->request->getParameter('name', pString);
- 			$ps_location = $this->request->getParameter('location', pString);
+ 			$ps_tags = strip_tags($this->request->getParameter('tags', pString));
+ 			$ps_email = strip_tags($this->request->getParameter('email', pString));
+ 			$ps_name = strip_tags($this->request->getParameter('name', pString));
+ 			$ps_location = strip_tags($this->request->getParameter('location', pString));
  			$ps_media1 = $_FILES['media1']['tmp_name'];
  			$ps_media1_original_name = $_FILES['media1']['name'];
  			$va_errors = array();
