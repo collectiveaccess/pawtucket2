@@ -371,9 +371,9 @@
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
+				if (($vn_key_start = $vn_start - 2500) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
-				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(2500));
 				$qr_res->seek($vn_start);
 			}
 				
