@@ -62,31 +62,30 @@
 					
 <?php
 					$va_LcshSubjects = $t_item->get("ca_collections.lcsh_terms", array("returnAsArray" => true));
-					$va_LcshSubjects_processed = array();
+					$va_all_subjects = array();
 					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
 						foreach($va_LcshSubjects as $vs_LcshSubjects){
 							$vs_lcsh_subject = "";
 							if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
 								$vs_LcshSubjects = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
 							}
-							$va_LcshSubjects_processed[] = caNavLink($this->request, $vs_LcshSubjects, "", "", "Search", "objects", array("search" => "ca_objects.lcsh_terms: ".$vs_LcshSubjects));
+							$va_all_subjects[strToLower($vs_LcshSubjects)] = caNavLink($this->request, $vs_LcshSubjects, "", "", "Search", "objects", array("search" => $vs_LcshSubjects));
 						
 						}
-						$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
 					}
 					
 					$t_list_item = new ca_list_items;
 					if($va_keywords = $t_item->get("ca_collections.internal_keywords", array("returnAsArray" => true))){
-						$va_keyword_links = array();
 						foreach($va_keywords as $vn_kw_id){
 							$t_list_item->load($vn_kw_id);
-							$va_keyword_links[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
+							$va_all_subjects[strToLower($t_list_item->get("ca_list_item_labels.name_singular"))] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Search", "objects", array("search" => $t_list_item->get("ca_list_item_labels.name_singular")));
 						}
-						$vs_keyword_links = join("<br/>", $va_keyword_links);
 					}
 					
-					if($vs_LcshSubjects || $vs_keyword_links){
-						print "<div class='unit'><label>Subjects/Keywords</label>".$vs_LcshSubjects.(($vs_LcshSubjects && $vs_keyword_links) ? "<br/>" : "").$vs_keyword_links."</div>";	
+					if(is_array($va_all_subjects) && sizeof($va_all_subjects)){
+						ksort($va_all_subjects);
+						$vs_keyword_links = join("<br/>", $va_all_subjects);
+						print "<div class='unit'><label>Subjects/Keywords</label>".$vs_keyword_links."</div>";	
 					}
 
 ?>

@@ -29,12 +29,13 @@
  *
  * ----------------------------------------------------------------------
  */
-	$vs_image_url = $this->request->getThemeUrlPath()."/assets/pawtucket/graphics/archives_home.jpg";
+	$vs_image_url = $this->request->getThemeUrlPath()."/assets/pawtucket/graphics/exhibitions_landing.jpg";
 ?>
 	<div id="main-background" style="background-image:url(<?php  print $vs_image_url; ?>)"></div>
 
 	<div class="content-narrow">
 		<h1>Exhibitions</h1>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tempor tristique tristique. Duis sit amet metus porta ex fringilla placerat. Morbi efficitur iaculis dapibus. Integer convallis lacus quis pulvinar malesuada. Mauris scelerisque lobortis orci sit amet fermentum. Mauris lobortis elementum nisi non cursus. Aliquam vitae tincidunt lorem. Pellentesque vitae felis vel ligula blandit tincidunt. Nulla varius lorem et augue iaculis rutrum.</p>
-		<p>Fusce pellentesque ex metus, id dictum metus rhoncus eu. Curabitur sagittis tellus tempus quam pharetra, nec faucibus massa porta. Phasellus pellentesque lorem scelerisque ligula tempor tempor. Sed in est id lectus ultricies dictum. Vestibulum congue mi id elit maximus pulvinar. Ut ultricies at felis a porttitor. </p>
+		<p>
+			Storm King complements its permanent display with special exhibitions and installations. These may comprise large-scale sculptures sited in outdoor “galleries” defined by sky and landscape, or smaller works and supporting materials shown in Storm King’s Museum Building. Exhibitions include loans from artists, private collectors, galleries and museums, as well as works from the permanent collection. Click <?php print caNavLink($this->request, "here", "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?> to view upcoming or current exhibitions. Click <?php print caNavLink($this->request, "here", "", "", "Browse", "exhibitions"); ?> to view and search past exhibitions at Storm King.
+		</p>
 	</div><!--end col-sm-8-->

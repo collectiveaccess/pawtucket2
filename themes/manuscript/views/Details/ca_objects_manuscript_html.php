@@ -47,7 +47,7 @@
 <?php
 			if($t_object->get('ca_object_representations')){
 ?>
-				<div class='col-sm-4 col-sm-offset-1'>
+				<div class='col-sm-5'>
 					{{{representationViewer}}}
 								
 					<div id="detailAnnotations"></div>
@@ -93,6 +93,19 @@
                     }
                     print "</div>";
 				}
+				$vs_id = $t_object->get('ca_objects.object_id');
+				$vs_call_number = $t_object->get('ca_objects.library_location');
+				if($vs_call_number || $vs_id){
+					print "<div class='row'>";
+					if($vs_call_number){
+						print "<div class='col-sm-5'><div class='unit'><h5>Holding Library Call No.</h5>".$vs_call_number."</div></div>";
+					}
+				
+					if($vs_id){
+						print "<div class='col-sm-7'><div class='unit'><h5>Manuscript Cookbooks Survey Database ID#</h5>".$vs_id."</div></div>";
+					}
+					print "</div>";
+				}				
 
                 #if ($vs_library_title = $t_object->get('ca_objects.nonpreferred_labels')){
                 #    print "<div class='unit'><h5>Library Title</h5>".$vs_library_title."</div>";

@@ -229,6 +229,7 @@ if (!$vb_ajax) {	// !ajax
 			}
 		}
 ?>
+		</div>
 <?php
 		if(in_array($vs_table, array("ca_objects", "ca_occurrences"))){
 ?>
@@ -238,19 +239,20 @@ if (!$vb_ajax) {	// !ajax
 						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within">
 						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
+						<input type="hidden" name="l" value="all">
 					</form>
 					<div style="clear:both"></div>
 				</div>
 <?php
 					if($vs_table == "ca_occurrences"){
-						print "<div class='text-center'>".caNavLink($this->request, _t("Notes About the Archive"), "btn btn-default btn-gray", "", "About", "")."</div>";
+						print "<div class='text-center'>".caNavLink($this->request, _t("Notes About the Archive"), "btn btn-default btn-gray btnAboutWord", "", "About", "")."</div>";
 					}
 ?>
 			</div>
 <?php
 		}
 ?>
-		</div>
+
 	</div>
 </div><!-- end row -->
 <div class="row" style="clear:both;">

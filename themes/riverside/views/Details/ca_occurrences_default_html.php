@@ -124,7 +124,7 @@
 			</div>
 			<div class="row bgOffWhiteLight">
 				<div class='col-sm-12 col-md-4'>					
-					{{{<ifdef code="ca_occurrences.broadcast_details"><div class="unit"><label>Broadcast Details</label>
+					{{{<ifdef code="ca_occurrences.broadcast_details%delimiter="><div class="unit"><label>Broadcast Details</label>
 						<unit relativeTo="ca_occurrences.broadcast_details" delimiter="<br/>">
 							<ifdef code="ca_occurrences.broadcast_details.aapb_asset"><b>Asset Type: </b>^ca_occurrences.broadcast_details.aapb_asset<br/></ifdef>
 							<ifdef code="ca_occurrences.broadcast_details.episode_name"><b>Episode Name: </b>^ca_occurrences.broadcast_details.episode_name<br/></ifdef>
@@ -245,7 +245,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects_non_audio_video', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects_non_audio_video', array('facet' => 'occurrence_facet_114', 'id' => '^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

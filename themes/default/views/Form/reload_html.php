@@ -31,7 +31,12 @@ $(document).ready(function() {
 						if(n > 0){
 							url = url.substring(0, n);
 						}
-						window.location.href = url + "/row_id/<?php print $vn_row_id; ?>";
+						var n = url.indexOf("?");
+						if(n > 0){
+							window.location.href = url + "&row_id=<?php print $vn_row_id; ?>";
+						}else{
+							window.location.href = url + "/row_id/<?php print $vn_row_id; ?>";
+						}
 <?php
 					}else{
 ?>
@@ -51,7 +56,12 @@ $(document).ready(function() {
 				if(n > 0){
 					url = url.substring(0, n);
 				}
-				window.location.href = url + "/row_id/<?php print $vn_row_id; ?>";
+				var n = url.indexOf("?");
+				if(n > 0){
+					window.location.href = url + "&row_id=<?php print $vn_row_id; ?>";
+				}else{
+					window.location.href = url + "/row_id/<?php print $vn_row_id; ?>";
+				}
 <?php
 			}else{
 ?>

@@ -71,7 +71,7 @@
 			<tr>
 				<td>
 <?php 
-					if ($vs_path = $vo_result->getMediaUrl('ca_object_representations.media', 'small')) {
+					if ($vs_path = $vo_result->getMediaPath('ca_object_representations.media', 'small')) {
 						print "<div class=\"checklistImage\"><img src='{$vs_path}'/></div>";
 					} else {
 ?>
@@ -83,7 +83,7 @@
 				</td><td style="vertical-align:top;">
 					<div class="metaBlock">
 <?php				
-					print "<div class='checklistTombstone'>".$vo_result->getWithTemplate("<ifdef code='ca_objects.preferred_labels|ca_objects.date'><b><ifdef code='ca_objects.preferred_labels'><i>^ca_objects.preferred_labels</i>, </ifdef>^ca_objects.date</b><br/></ifdef><ifdef code='ca_objects.idno'>MAP # ^ca_objects.idno<br/></ifdef><ifdef code='ca_objects.dimensions'>^ca_objects.dimensions<br/></ifdef><ifdef code='ca_objects.medium'>^ca_objects.medium</ifdef>")."</div>"; 						
+					print "<div class='checklistTombstone'>".$vo_result->getWithTemplate("<ifdef code='ca_objects.preferred_labels|ca_objects.date'><b><ifdef code='ca_objects.preferred_labels'><i>^ca_objects.preferred_labels</i>, </ifdef>^ca_objects.date</b><br/></ifdef><ifdef code='ca_objects.idno'><if rule='^ca_objects.idno !~ /[a-zA-Z]/'>MAP # </if>^ca_objects.idno<br/></ifdef><ifdef code='ca_objects.dimensions'>^ca_objects.dimensions inches<br/></ifdef><ifdef code='ca_objects.medium'>^ca_objects.medium</ifdef>")."</div>"; 						
 ?>
 					</div>				
 				</td>	

@@ -441,12 +441,31 @@ div.captionSlideshow{
 /* ------ Details -------------- */
 .jcarousel-control-prev{
 	left:0px !important;
-	bottom:25px !important;
+	bottom:45px !important;
 	top:auto !important;
 }
 .jcarousel-control-next{
 	right:0px !important;
-	bottom:25px !important;
+	bottom:45px !important;
+	top:auto !important;
+}
+.detail.ca_occurrences .jcarousel-wrapper, .detail.ca_entities .jcarousel-wrapper{
+	margin-top: 30px;
+}
+.detail.ca_occurrences .jcarousel-control-prev, .detail.ca_entities .jcarousel-control-prev{
+	left:0px !important;
+	top:-30px !important;
+	bottom:auto !important;
+}
+.detail.ca_occurrences .jcarousel-control-next, .detail.ca_entities .jcarousel-control-next{
+	right:0px !important;
+	top:-30px !important;
+	bottom:auto !important;
+}
+
+.jcarousel-control-next{
+	right:0px !important;
+	bottom:45px !important;
 	top:auto !important;
 }
 .jcarousel-control-prev, .jcarousel-control-next{
@@ -768,7 +787,7 @@ a.footerButton:hover{
           user-select: none;
 }
 
-.btn-default {
+.btn-default, a.btn-default {
     background:none;
     border-color: #CCCCCC;
     color:#666;
@@ -779,6 +798,7 @@ a.footerButton:hover{
     box-shadow: 0 0px 0 rgba(255, 255, 255, 0.15) inset, 0 0px 0px rgba(0, 0, 0, 0.075);
 }
 
+a.btn-default:hover,
 .btn-default:hover,
 .btn-default:focus,
 .btn-default:active,
@@ -787,6 +807,7 @@ a.footerButton:hover{
   color: #333333;
   background-color: #ebebeb;
   border-color: #adadad;
+  text-decoration:none;
 }
 
 .btn-default:active,

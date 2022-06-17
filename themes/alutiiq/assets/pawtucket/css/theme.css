@@ -36,6 +36,10 @@
 	width:100%;
 	height:auto;
 }
+.fullWidthImg.maxWidth img{
+	max-width:400px;
+	height:auto;
+}
 .bg_sand{
 	background-color: #D9D4C2;
 }
@@ -103,6 +107,11 @@ h1, .front h1{
 	padding-right:5px;
 	text-align:left;
 }
+@media(max-width:768px){
+	.hpIntroTopDesc{
+		margin-top:15px;
+	}
+}
 .hpIntroTopDescTitle{
 	font-weight:500;
 	font-size:16px;
@@ -165,7 +174,7 @@ a:hover .hpFindBox{
 .browse .btn, .sets .btn, .search .btn {
     background-color: #000;
 }
-.bResultListItem .bResultListItemText a {
+.bResultListItem .bResultListItemText a, a .bResultListItem .bResultListItemText {
     line-height: 1.2em;
     color: #000;
     font-size: 15px;
@@ -187,6 +196,10 @@ a:hover .hpFindBox{
 	clear:both;
 	margin-top:15px;
 	margin-bottom:10px;
+}
+.btnAboutWord{
+	width:100%;
+	margin:5px 0px 5px 0px !important;
 }
 .results .btn-search-refine{	
 	float: right;
@@ -299,7 +312,7 @@ a:hover .hpFindBox{
 	text-align: center;
 	padding:25px;
 	margin-top:40px;
-	margin-bottom:60px;
+	margin-bottom:10px;
 }
 a .wordFindBox{
 	color:#fff;
@@ -315,11 +328,12 @@ a:hover .wordFindBox{
 }
 .wordResources a .wordFindBox{
 	display:block;
-	margin-top:10px;
+	margin-top:20px;
 }
 .wordCallout{
 	font-size:20px;
 	line-height: 1.4em;
+	text-align:left;
 }
 .wordFeaturedLesson{
 	background-color:#f2f2f2;
@@ -336,11 +350,47 @@ a:hover .wordFindBox{
 .word.front .unit{
 	margin-top:10px;
 }
-.front.word H2, .front.word H3, .front.word H4{
+.front.word H2{
+	margin-top:30px;
+	font-size: 22px;
+}
+.front.word H3, .front.word H4{
 	margin-top:60px;
 	font-size: 22px;
 }
-
+.front.word .hpIntroTopDescTitle{
+	font-weight:500;
+	font-size:20px;
+	margin-bottom:20px;	
+}
+.front.word .hpIntroTop{
+	margin-top:50px;
+}
+.front.word .funderImg img{
+	width:100%;
+	height:auto;
+	max-width:300px;
+}
+.front.word .formoutline{
+	border:0px;
+	position:relative;
+}
+.front.word #heroSearchInput{
+	border:1px solid #666;
+	border-radius:0px;
+	padding-right:40px;
+	font-size:16px;
+}
+.front.word #heroSearchInput:focus{
+	border:1px solid #000;
+}
+.front.word #heroSearchButton{
+	position: absolute;
+	right: 20px;
+	top: 1px;
+	font-size: 16px;
+	background-color:transparent;
+}
 .words #bLetterBar a{
 	background-color:#000;
 	color:#FFF;
@@ -365,6 +415,12 @@ a:hover .wordFindBox{
 	.detailTools, .detailTool{
 		text-align:right;
 	}
+}
+.word.detail h2{
+	font-size:16px;
+}
+.word.detail .caAudioPlayer{
+	padding-top:0px;
 }
 .small{
 	font-size:.8em; 
@@ -391,4 +447,7 @@ a:hover .bResultListItemInstitution{
 }
 a.readmore-js-toggle {
     color: #AC143A;
+}
+.staticPage .btn-default{
+	margin-bottom:25px;
 }

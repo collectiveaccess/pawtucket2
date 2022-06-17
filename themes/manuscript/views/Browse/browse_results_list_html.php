@@ -174,9 +174,9 @@
 					} else {
 						// Get additional info for Manuscripts as they will have no images
 
-						if($qr_res->get('ca_objects.viewable') == 206){
+						if($qr_res->get('ca_objects.link_text') == 218){
 							if($vs_label_avail_info = $qr_res->get("ca_objects.institution_link") and $vs_table != 'ca_collections'){
-								$vs_label_see_link = "<a class='viewableLink' href='{$vs_label_avail_info}' target='_blank'>Viewable Online</a>";
+								$vs_label_see_link = "<a class='viewableLink' href='{$vs_label_avail_info}' target='_blank'>View Online</a>";
 							}
 						} else {
 							$vs_label_see_link = "";
@@ -204,7 +204,7 @@
 				$vn_results_output++;
 			}
 
-			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
 ?>
 <script type="text/javascript">

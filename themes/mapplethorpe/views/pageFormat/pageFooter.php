@@ -28,13 +28,13 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container --></div><!-- end contentWrapper -->
-		<footer id="footer" role="contentinfo">
+		<footer id="footer" role="contentinfo" <?php print ((strToLower($this->request->getController()) == "search") || (strToLower($this->request->getController()) == "browse")) ? " class='footerFixed'" : ""; ?>>
 			<div class="row">
 				<div class="col-sm-12 col-md-6">
 				<ul class="list-inline">
 					<li><?php print caNavLink($this->request, _t("Help"), "", "", "About", "Help"); ?></li>
 					<li><?php print caNavLink($this->request, _t("Terms & Conditions"), "", "", "About", "TermsConditions"); ?></li>
-					<li><a href="http://www.mapplethorpe.org/" target="_blank">Mapplethorpe Foundation Home</a></li>
+					<li><a href="http://www.mapplethorpe.org/" target="_blank">Mapplethorpe.org</a></li>
 				</ul>
 					All Mapplethorpe Images &copy; Robert Mapplethorpe Foundation
 				</div>

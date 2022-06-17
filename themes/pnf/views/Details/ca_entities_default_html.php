@@ -66,6 +66,14 @@
 					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}				
 				</div><!-- end col -->
 			</div><!-- end row -->
+<?php
+			if($va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToTypes" => array("book"), "sort" => "ca_entity_labels.surname/author;ca_entity_labels.forename/author;ca_objects.260_date"))){
+				$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', 'entities');
+				$o_rel_context->setAsLastFind(true);
+				$o_rel_context->setResultList($va_object_ids);
+				$o_rel_context->saveContext();
+			}
+?>
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
@@ -74,7 +82,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id', 'view' => 'list'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'entity_facet', 'id' => '^ca_entities.entity_id', 'view' => 'list', 'sort' => 'Author', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

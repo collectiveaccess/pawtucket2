@@ -110,6 +110,10 @@
 						$vs_caption = $vs_artist.", ";
 					}
 					$vs_caption .= "<i>".$qr_res->get("ca_objects.preferred_labels.name")."</i>, ";
+					
+					if($qr_res->get("ca_objects.date")){
+						$vs_caption .= $qr_res->get("ca_objects.date").", ";
+					}
 					$vs_medium = "";
 					if($qr_res->get("medium_text")){
 						$vs_medium = $qr_res->get("medium_text");
@@ -122,10 +126,7 @@
 						$vs_caption .= $vs_medium.", ";
 					}					
 					if($qr_res->get("ca_objects.dimensions")){
-						$vs_caption .= $qr_res->get("ca_objects.dimensions.dimensions_height")." X ".$qr_res->get("ca_objects.dimensions.dimensions_width").", ";
-					}
-					if($qr_res->get("ca_objects.date")){
-						$vs_caption .= $qr_res->get("ca_objects.date").".";
+						$vs_caption .= $qr_res->get("ca_objects.dimensions.dimensions_height")." X ".$qr_res->get("ca_objects.dimensions.dimensions_width").(($qr_res->get("ca_objects.dimensions.dimensions_length") ? " X ".$qr_res->get("ca_objects.dimensions.dimensions_length") : "")).". ";
 					}
 					$vs_info = null;
 					if ($qr_res->get('ca_objects.date')) {

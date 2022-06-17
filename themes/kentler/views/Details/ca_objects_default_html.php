@@ -53,16 +53,11 @@
 				}
 ?>
 				{{{<ifdef code="ca_objects.date"><H6>Date</H6>^ca_objects.date<br/></ifdev>}}}
-				{{{<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width"><H6>Dimensions</H6></ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_length"><H6>Dimensions</H6><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_width"> X ^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_length"> X ^ca_objects.dimensions.dimensions_length</ifdef><br/></ifdef>}}}
 <?php
 				if($vb_removed && !$this->getVar("representation_id")){
 					print "<br/>No longer available<br/>";
 				}
-?>	
-
-				{{{<ifdef code="ca_objects.artwork_tags"><HR/><H6>Tags</H6><unit delimiter=", ">^ca_objects.artwork_tags</unit><br/></ifdef>}}}
-
-<?php
 				$vs_collections = $t_object->get("ca_collections");
 				if(!(stripos($vs_collections, "Red Hook") === False)){
 					print "<H6>Part of the Red Hook Archives</H6>";
@@ -71,9 +66,12 @@
 				{{{<ifcount code="ca_occurrences" min="1" max="1"><HR/><H6>Related exhibition</H6></ifcount>}}}
 				{{{<ifcount code="ca_occurrences" min="2"><HR/><H6>Related exhibitions</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
+				
+				{{{<ifcount code="ca_objects.related" restrictToTypes="audio,video" min="1"><HR/><H6>Related Audio/Video</H6></ifcount>
+					<unit relativeTo="ca_objects.related" restrictToTypes="audio,video" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit>}}}
 <?php
 				if(!$vb_removed && $t_object->get("price")){
-					print "<HR/><H6>Price</H6>".$t_object->get("price")."<br/>";
+					#print "<HR/><H6>Price</H6>".$t_object->get("price")."<br/>";
 				}
 ?>
 			</div><!-- end col -->

@@ -35,7 +35,7 @@
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-
+	$va_options = $this->getVar("config_options");
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -62,13 +62,58 @@
 			<div class="row text-center">			
 				<div class='col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3'>
 <?php
-				$vs_rep_viewer = trim($this->getVar("representationViewer"));
+				if(strToLower($t_object->get("show_watermarked_image", array("convertCodesToDisplayText" => true))) == "yes"){
+					if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
+						$t_representation = Datamodel::getInstance("ca_object_representations", true);
+						$t_representation->load($pn_representation_id);
+					}else{
+						$t_representation = $t_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
+					}
+					if (!$t_representation) {
+						$t_representation = Datamodel::getInstance("ca_object_representations", true);
+					}
+					if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail_watermark', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
+					$vs_rep_viewer = caRepresentationViewer(
+						$this->request, 
+						$t_object, 
+						$t_object,
+						array_merge($va_options, $va_media_display_info, 
+							[
+								'display' => 'detail_watermark',
+								'showAnnotations' => true, 
+								'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $va_options, false), 
+								'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), 
+								'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false),
+								'checkAccess' => $va_access_values
+							]
+						)
+					);
+?>
+					<script type="text/javascript">
+						jQuery(document).ready(function() {
+							$( ".dlButton" ).each(function() {
+								var href_orig = $( this ).attr('href');
+								$( this ).attr('href', href_orig + '_watermark');
+							});
+						});
+						$( document ).ajaxComplete(function() {
+							$( ".dlButton" ).each(function() {
+								var href_orig = $( this ).attr('href');
+								if(!href_orig.includes("watermark")){
+									$( this ).attr('href', href_orig + '_watermark');
+								}
+							});
+						});
+					</script>
+<?php				
+				}else{
+					$vs_rep_viewer = trim($this->getVar("representationViewer"));
+				}
 				if($vs_rep_viewer){			
 					print $vs_rep_viewer;
 					print '<div id="detailAnnotations"></div>';
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-2 col-xs-2", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
 				}
-				
 				if($t_object->get("ca_object_representations.representation_id", array("checkAccess" => array(0)))){
 ?>
 					<div class="unit">
@@ -76,6 +121,9 @@
 					</div>
 <?php
 				}
+				if($vs_rep_viewer && $this->request->user->hasRole("staff")){
+					print '<br/><div class="unit">'.caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> "._t("Download High Resolution Media"), "btn-default", "", "Detail", "DownloadMedia", array("object_id" => $t_object->get("object_id"), "download" => 1, "version" => "original")).'</div>';
+				}		 				
 				
 
 				# Comment and Share Tools
@@ -100,7 +148,7 @@
 ?>
 				{{{<ifdef code="ca_objects.date"><div class="unit"><unit relativeTo="ca_objects.date" delimiter=", ">^ca_objects.date.date_value <ifdef code="ca_objects.date.date_types">(^ca_objects.date.date_types)</ifdef></unit></div></ifdef>}}}
 				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="Dedicated,Related,Publisher"><div class="unit"><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="Dedicated,Related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.material_techniques"><div class="unit">^ca_objects.material_techniques%,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.material_techniques"><div class="unit">^ca_objects.material_techniques%delimiter=,_</div></ifdef>}}}
 				
 
 				</div>
@@ -144,20 +192,20 @@
 							</div></ifdef></if>}}}
 							<!-- end Library fields -->
 							<!-- Format tab: Photo/Artifact/Art_arch -->
-							{{{<ifdef code="ca_objects.dimensions"><div class="unit"><label>Dimensions</label>
-								<ifdef code="ca_objects.dimensions.dimensions_length">Length: ^ca_objects.dimensions.dimensions_length<br/></div>
-								<ifdef code="ca_objects.dimensions.dimensions_width">Width: ^ca_objects.dimensions.dimensions_width<br/></div>
-								<ifdef code="ca_objects.dimensions.dimensions_height">Height: ^ca_objects.dimensions.dimensions_height<br/></div>
-								<ifdef code="ca_objects.dimensions.dimensions_depth">Depth: ^ca_objects.dimensions.dimensions_depth<br/></div>
-								<ifdef code="ca_objects.dimensions.dimensions_weight">Weight: ^ca_objects.dimensions.dimensions_weight<br/></div>
-								<ifdef code="ca_objects.dimensions.dimension_notes">Notes: ^ca_objects.dimensions.dimension_notes<br/></div>
+							{{{<ifdef code="ca_objects.dimensions.dimensions_length|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_depth|ca_objects.dimensions.dimensions_weight|ca_objects.dimensions.dimension_notes"><div class="unit"><label>Dimensions</label>
+								<ifdef code="ca_objects.dimensions.dimensions_length">Length: ^ca_objects.dimensions.dimensions_length<br/></ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_width">Width: ^ca_objects.dimensions.dimensions_width<br/></ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_height">Height: ^ca_objects.dimensions.dimensions_height<br/></ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_depth">Depth: ^ca_objects.dimensions.dimensions_depth<br/></ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_weight">Weight: ^ca_objects.dimensions.dimensions_weight<br/></ifdef>
+								<ifdef code="ca_objects.dimensions.dimension_notes">Notes: ^ca_objects.dimensions.dimension_notes<br/></ifdef>
 							</ifdef>}}}
-							{{{<ifdef code="ca_objects.photograph_format"><div class="unit"><label>Photograph Format (AAT)</label>^ca_objects.photograph_format%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.object_work_type"><div class="unit"><label>Object Work/Type (AAT)</label>^ca_objects.object_work_type%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.components_parts"><div class="unit"><label>Components/Parts</label>^ca_objects.components_parts%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.classification"><div class="unit"><label>Classification (AAT)</label>^ca_objects.classification%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.style"><div class="unit"><label>Style</label>^ca_objects.style%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.inscriptions"><div class="unit"><label>Inscriptions & Markings</label>^ca_objects.inscriptions%,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.photograph_format"><div class="unit"><label>Photograph Format (AAT)</label>^ca_objects.photograph_format%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.object_work_type"><div class="unit"><label>Object Work/Type (AAT)</label>^ca_objects.object_work_type%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.components_parts"><div class="unit"><label>Components/Parts</label>^ca_objects.components_parts%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.classification"><div class="unit"><label>Classification (AAT)</label>^ca_objects.classification%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.style"><div class="unit"><label>Style</label>^ca_objects.style%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.inscriptions"><div class="unit"><label>Inscriptions & Markings</label>^ca_objects.inscriptions%delimiter=,_&convertLineBreaks=1</div></ifdef>}}}
 						</div>
 						<div class='col-sm-12 col-md-6'>
 							{{{<ifdef code="ca_objects.url.link_url"><div class="unit"><label>External Link</label><unit delimiter="<br/>"><a href="^ca_objects.url.link_url" target="_blank"><ifdef code="ca_objects.url.link_text">^ca_objects.url.link_text</ifdef><ifnotdef code="ca_objects.url.link_text">^ca_objects.url.link_url</ifnotdef></a></div></ifdef>}}}
@@ -174,7 +222,7 @@
 									if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
 										$vs_LcshSubjects = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
 									}
-									$va_all_subjects[$vs_LcshSubjects] = caNavLink($this->request, $vs_LcshSubjects, "", "", "Search", "objects", array("search" => "ca_objects.lcsh_terms: ".$vs_LcshSubjects));
+									$va_all_subjects[strToLower($vs_LcshSubjects)] = caNavLink($this->request, $vs_LcshSubjects, "", "", "Search", "objects", array("search" => $vs_LcshSubjects));
 						
 								}
 								#$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
@@ -185,7 +233,7 @@
 								$va_keyword_links = array();
 								foreach($va_keywords as $vn_kw_id){
 									$t_list_item->load($vn_kw_id);
-									$va_all_subjects[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
+									$va_all_subjects[strToLower($t_list_item->get("ca_list_item_labels.name_singular"))] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Search", "objects", array("search" => $t_list_item->get("ca_list_item_labels.name_singular")));
 								}
 								#$vs_keyword_links = join("<br/>", $va_keyword_links);
 							}
@@ -198,17 +246,19 @@
 									if($vs_lc_names && (strpos($vs_lc_names, " [") !== false)){
 										$vs_lc_name = mb_substr($vs_lc_names, 0, strpos($vs_lc_names, " ["));
 									}
-									$va_all_subjects[] = caNavLink($this->request, $vs_lc_name, "", "", "Search", "objects", array("search" => "ca_objects.lc_names: ".$vs_lc_name));
+									$va_all_subjects[strToLower($vs_lc_name)] = caNavLink($this->request, $vs_lc_name, "", "", "Search", "objects", array("search" => $vs_lc_name));
 						
 								}
 								#$vs_lc_names = join("<br/>", $va_lc_names_processed);
 							}
-					
 							if(is_array($va_all_subjects) && sizeof($va_all_subjects)){
 								ksort($va_all_subjects);
 								$vs_subjects = join("<br/>", $va_all_subjects);
 								print "<div class='unit'><label>Subjects/Keywords</label>".$vs_subjects."</div>";	
 							}
+?>
+							{{{<ifdef code="ca_objects.rights.copyrightStatement"><div class="unit"><label>Copyright Statement</label>^ca_objects.rights.copyrightStatement</div></ifdef>}}}
+<?php
 							if($vs_rep_viewer){
 ?>
 								<div class="unit"><label>Rights and Restrictions</label>

@@ -35,7 +35,7 @@
  *
  * @marginTop 1in
  * @marginLeft 0.25in
- * @marginBottom 0.25in
+ * @marginBottom 0.5in
  * @marginRight 0.25in
  *
  * ----------------------------------------------------------------------
@@ -77,14 +77,14 @@
 ?>
 				<td style="vertical-align:top; text-align:middle; width:50%;">
 <?php 
-					if ($vs_path = $vo_result->getMediaUrl('ca_object_representations.media', 'medium')) {
+					if ($vs_path = $vo_result->getMediaPath('ca_object_representations.media', 'medium')) {
 						print "<div class=\"thumbnailImage\"><img src='{$vs_path}'/></div>";
 					} else {
 ?>
 						<div class="thumbnailPlaceholder">&nbsp;</div>
 <?php					
 					}
-					print "<div class='thumbnailTombstone'>".$vo_result->getWithTemplate("<ifdef code='ca_objects.preferred_labels|ca_objects.date'><ifdef code='ca_objects.preferred_labels'><i>^ca_objects.preferred_labels</i>, </ifdef>^ca_objects.date<br/></ifdef><ifdef code='ca_objects.idno'>MAP # ^ca_objects.idno</ifdef>")."</div>"; 							
+					print "<div class='thumbnailTombstone'>".$vo_result->getWithTemplate("<ifdef code='ca_objects.preferred_labels|ca_objects.date'><b><ifdef code='ca_objects.preferred_labels'><i>^ca_objects.preferred_labels</i>, </ifdef>^ca_objects.date</b><br/></ifdef><ifdef code='ca_objects.idno'><if rule='^ca_objects.idno !~ /[a-zA-Z]/'>MAP # </if>^ca_objects.idno</ifdef>")."</div>"; 							
 ?>
 				</td>
 <?php

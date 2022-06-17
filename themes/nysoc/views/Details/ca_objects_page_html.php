@@ -115,25 +115,29 @@
 									</thead>
 									<tbody>	
 						<?php
+							//Timer::start("s");
 									$vn_i = 0;
 									$qr_rels = caMakeSearchResult('ca_objects_x_entities', $va_rel_ids);
+									
+									//Timer::p("s", "[1] %time<Br>");
 									while($qr_rels->nextHit()) {
 										print "<tr class='ledgerRow'>";
 											print "<td id='entity".$vn_i."'>";
 											print "<span title='".$qr_rels->get("ca_entities.preferred_labels.surname").", ".$qr_rels->get("ca_entities.preferred_labels.forename")."'><span>";
-
+//Timer::p("s");
 											print $qr_rels->get("ca_entities.preferred_labels.displayname", array('returnAsLink' => true));
 											$vs_entity_info = null;
-											if ($qr_rels->getWithTemplate("^ca_entities.life_dates")) {
-												$vs_entity_info = $qr_rels->getWithTemplate("^ca_entities.life_dates")."<br/>";
+											if ($d = $qr_rels->get("ca_entities.life_dates")) {
+												$vs_entity_info = "{$d}<br/>";
 											}
-											if ($qr_rels->getWithTemplate("^ca_entities.industry_occupations")) {
-												$vs_entity_info.= $qr_rels->getWithTemplate("^ca_entities.industry_occupations", array('delimiter' => ', '))."<br/>";
+											if ($d = $qr_rels->get("^ca_entities.industry_occupations", array('delimiter' => ', '))) {
+												$vs_entity_info.= "{$d}<br/>";
 											}
 											if ($vs_entity_info) {					
-												TooltipManager::add('#entity'.$vn_i, "<div class='tooltipImage'>".$qr_rels->getWithTemplate('<unit relativeTo="ca_entities">^ca_object_representations.media.preview</unit>')."</div><b>".$qr_rels->get("ca_entities.preferred_labels.displayname")."</b><br/>".$vs_entity_info); 
+												//TooltipManager::add('#entity'.$vn_i, "<div class='tooltipImage'>".$qr_rels->getWithTemplate('<unit relativeTo="ca_entities">^ca_object_representations.media.preview</unit>')."</div><b>".$qr_rels->get("ca_entities.preferred_labels.displayname")."</b><br/>".$vs_entity_info); 
 											}
 											print "</td>";
+											//Timer::p("s", "[2] %time<Br>");
 
 											print "<td id='book".$vn_i."' style='max-width:200px;'>";
 					
@@ -177,8 +181,9 @@
 											print "</td>";
 									
 											print "<td>";
-											print "<span title='".$qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit></unit>')."'><span>";
-											print $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>');
+											$author = $qr_rels->getWithTemplate('<unit relativeTo="ca_objects" ><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels</unit></unit>');
+										//	print "<span title='".$author."'><span>";
+											print $author;
 											print "</td>"; 
 				
 											print "<td>";
@@ -198,6 +203,7 @@
 											print "</td>";													
 										print "</tr>";
 										$vn_i++;
+										if($vn_i >= 100) { break; }
 									}
 		?>							
 									</tbody>
