@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2015 Whirl-i-Gig
+ * Copyright 2008-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,11 +29,7 @@
  * 
  * ----------------------------------------------------------------------
  */
- 
- /**
-   *
-   */
- 
+
 require_once(__CA_LIB_DIR__.'/ModelSettings.php');
 require_once(__CA_LIB_DIR__.'/RepresentableBaseModel.php');
 require_once(__CA_LIB_DIR__.'/IHierarchy.php');
@@ -534,7 +530,7 @@ class ca_list_items extends RepresentableBaseModel implements IHierarchy {
 	#
 	# ------------------------------------------------------
 	public function __construct($pn_id=null) {
-		$this->SETTINGS = new ModelSettings($this, 'settings', array());
+		$this->SETTINGS = new ModelSettings($this, 'settings', []);
 		parent::__construct($pn_id);	# call superclass constructor
 	}
 	# ------------------------------------------------------
@@ -929,4 +925,3 @@ class ca_list_items extends RepresentableBaseModel implements IHierarchy {
 	}
 	# ------------------------------------------------------
 }
-?>
