@@ -10,7 +10,6 @@ use ZipStream\File;
 use ZipStream\Option\Archive as ArchiveOptions;
 use ZipStream\Option\File as FileOptions;
 use ZipStream\Option\Method;
-use ZipStream\Stream;
 use ZipStream\ZipStream;
 
 /**
@@ -76,7 +75,7 @@ class ZipStreamTest extends TestCase
         $tmpDir = $this->validateAndExtractZip($tmp);
 
         $files = $this->getRecursiveFileList($tmpDir);
-        $this->assertEquals(['sample.txt', 'test' . DIRECTORY_SEPARATOR . 'sample.txt'], $files);
+        $this->assertEquals(['sample.txt', 'test/sample.txt'], $files);
 
         $this->assertStringEqualsFile($tmpDir . '/sample.txt', 'Sample String Data');
         $this->assertStringEqualsFile($tmpDir . '/test/sample.txt', 'More Simple Sample Data');
@@ -308,7 +307,7 @@ class ZipStreamTest extends TestCase
         $tmpDir = $this->validateAndExtractZip($tmp);
 
         $files = $this->getRecursiveFileList($tmpDir);
-        $this->assertEquals(array('sample.txt', 'test' . DIRECTORY_SEPARATOR . 'sample.txt'), $files);
+        $this->assertEquals(array('sample.txt', 'test/sample.txt'), $files);
 
         $this->assertStringEqualsFile($tmpDir . '/sample.txt', 'Sample String Data');
         $this->assertStringEqualsFile($tmpDir . '/test/sample.txt', 'More Simple Sample Data');
@@ -434,7 +433,7 @@ class ZipStreamTest extends TestCase
         $tmpDir = $this->validateAndExtractZip($tmp);
 
         $files = $this->getRecursiveFileList($tmpDir);
-        $this->assertEquals(array('sample.txt', 'test' . DIRECTORY_SEPARATOR . 'sample.txt'), $files);
+        $this->assertEquals(array('sample.txt', 'test/sample.txt'), $files);
 
         $this->assertStringEqualsFile(__FILE__, file_get_contents($tmpDir . '/sample.txt'));
         $this->assertStringEqualsFile($tmpDir . '/test/sample.txt', 'More Simple Sample Data');
@@ -505,33 +504,6 @@ class ZipStreamTest extends TestCase
         $this->assertStringEqualsFile($tmpDir . '/sample.json', $body);
     }
 
-    public function testAddFileFromPsr7StreamWithOutputToPsr7Stream(): void
-    {
-        [$tmp, $resource] = $this->getTmpFileStream();
-        $psr7OutputStream = new Stream($resource);
-
-        $options = new ArchiveOptions();
-        $options->setOutputStream($psr7OutputStream);
-
-        $zip = new ZipStream(null, $options);
-
-        $body = 'Sample String Data';
-        $response = new Response(200, [], $body);
-
-        $fileOptions = new FileOptions();
-        $fileOptions->setMethod(Method::STORE());
-
-        $zip->addFileFromPsr7Stream('sample.json', $response->getBody(), $fileOptions);
-        $zip->finish();
-        $psr7OutputStream->close();
-
-        $tmpDir = $this->validateAndExtractZip($tmp);
-        $files = $this->getRecursiveFileList($tmpDir);
-
-        $this->assertEquals(array('sample.json'), $files);
-        $this->assertStringEqualsFile($tmpDir . '/sample.json', $body);
-    }
-
     public function testAddFileFromPsr7StreamWithFileSizeSet(): void
     {
         [$tmp, $stream] = $this->getTmpFileStream();
@@ -580,7 +552,7 @@ class ZipStreamTest extends TestCase
         $tmpDir = $this->validateAndExtractZip($tmp);
 
         $files = $this->getRecursiveFileList($tmpDir);
-        $this->assertEquals(['sample.txt', 'test' . DIRECTORY_SEPARATOR . 'sample.txt'], $files);
+        $this->assertEquals(['sample.txt', 'test/sample.txt'], $files);
 
         $this->assertStringEqualsFile($tmpDir . '/sample.txt', 'Sample String Data');
         $this->assertStringEqualsFile($tmpDir . '/test/sample.txt', 'More Simple Sample Data');

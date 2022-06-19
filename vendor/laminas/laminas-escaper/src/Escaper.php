@@ -6,8 +6,10 @@ namespace Laminas\Escaper;
 
 use function bin2hex;
 use function ctype_digit;
+use function function_exists;
 use function hexdec;
 use function htmlspecialchars;
+use function iconv;
 use function in_array;
 use function mb_convert_encoding;
 use function ord;
@@ -36,7 +38,7 @@ class Escaper
      * entities that XML supports. Using HTML entities would result in this error:
      *     XML Parsing Error: undefined entity
      *
-     * @var array<int, string>
+     * @var array
      */
     protected static $htmlNamedEntityMap = [
         34 => 'quot', // quotation mark
@@ -65,7 +67,6 @@ class Escaper
      * Static Matcher which escapes characters for HTML Attribute contexts
      *
      * @var callable
-     * @psalm-var callable(array<array-key, string>):string
      */
     protected $htmlAttrMatcher;
 
@@ -73,7 +74,6 @@ class Escaper
      * Static Matcher which escapes characters for Javascript contexts
      *
      * @var callable
-     * @psalm-var callable(array<array-key, string>):string
      */
     protected $jsMatcher;
 
@@ -81,7 +81,6 @@ class Escaper
      * Static Matcher which escapes characters for CSS Attribute contexts
      *
      * @var callable
-     * @psalm-var callable(array<array-key, string>):string
      */
     protected $cssMatcher;
 
@@ -256,7 +255,7 @@ class Escaper
      * Callback function for preg_replace_callback that applies HTML Attribute
      * escaping to all matches.
      *
-     * @param array<array-key, string> $matches
+     * @param array $matches
      * @return string
      */
     protected function htmlAttrMatcher($matches)
@@ -303,7 +302,7 @@ class Escaper
      * Callback function for preg_replace_callback that applies Javascript
      * escaping to all matches.
      *
-     * @param array<array-key, string> $matches
+     * @param array $matches
      * @return string
      */
     protected function jsMatcher($matches)
@@ -326,7 +325,7 @@ class Escaper
      * Callback function for preg_replace_callback that applies CSS
      * escaping to all matches.
      *
-     * @param array<array-key, string> $matches
+     * @param array $matches
      * @return string
      */
     protected function cssMatcher($matches)
@@ -392,21 +391,32 @@ class Escaper
     }
 
     /**
-     * Encoding conversion helper which wraps mb_convert_encoding
+     * Encoding conversion helper which wraps iconv and mbstring where they exist or throws
+     * and exception where neither is available.
      *
      * @param string $string
      * @param string $to
      * @param array|string $from
+     * @throws Exception\RuntimeException
      * @return string
      */
     protected function convertEncoding($string, $to, $from)
     {
-        $result = mb_convert_encoding($string, $to, $from);
+        if (function_exists('iconv')) {
+            $result = iconv($from, $to, $string);
+        } elseif (function_exists('mb_convert_encoding')) {
+            $result = mb_convert_encoding($string, $to, $from);
+        } else {
+            throw new Exception\RuntimeException(
+                static::class
+                . ' requires either the iconv or mbstring extension to be installed'
+                . ' when escaping for non UTF-8 strings.'
+            );
+        }
 
         if ($result === false) {
             return ''; // return non-fatal blank string on encoding errors from users
         }
-
         return $result;
     }
 }

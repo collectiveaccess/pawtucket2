@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace ZipStream\Option;
 
-use Psr\Http\Message\StreamInterface;
-
 final class Archive
 {
     const DEFAULT_DEFLATE_LEVEL = 6;
@@ -106,7 +104,7 @@ final class Archive
     private $deflateLevel = 6;
 
     /**
-     * @var StreamInterface|resource
+     * @var resource
      */
     private $outputStream;
 
@@ -230,7 +228,7 @@ final class Archive
     }
 
     /**
-     * @return StreamInterface|resource
+     * @return resource
      */
     public function getOutputStream()
     {
@@ -238,7 +236,7 @@ final class Archive
     }
 
     /**
-     * @param StreamInterface|resource $outputStream
+     * @param resource $outputStream
      */
     public function setOutputStream($outputStream): void
     {

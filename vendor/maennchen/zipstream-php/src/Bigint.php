@@ -108,7 +108,6 @@ class Bigint
     /**
      * Check if is over 32
      *
-     * @psalm-suppress ArgumentTypeCoercion
      * @param bool $force
      * @return bool
      */

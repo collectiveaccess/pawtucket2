@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ZipStream\Option;
 
 use DateTime;
-use DateTimeInterface;
 
 final class File
 {
@@ -21,7 +20,7 @@ final class File
      */
     private $deflateLevel;
     /**
-     * @var DateTimeInterface
+     * @var DateTime
      */
     private $time;
     /**
@@ -84,17 +83,17 @@ final class File
     }
 
     /**
-     * @return DateTimeInterface
+     * @return DateTime
      */
-    public function getTime(): DateTimeInterface
+    public function getTime(): DateTime
     {
         return $this->time;
     }
 
     /**
-     * @param DateTimeInterface $time
+     * @param DateTime $time
      */
-    public function setTime(DateTimeInterface $time): void
+    public function setTime(DateTime $time): void
     {
         $this->time = $time;
     }
