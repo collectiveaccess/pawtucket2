@@ -42,7 +42,7 @@
 				<li><a href="#">Link</a></li>
 				<li><a href="#">Link</a></li>
 			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2018</a></small></div>
+			<div><small>&copy; <a href="https://www.collectiveaccess.org">CollectiveAccess 2022</a></small></div>
 		</footer><!-- end footer -->
 <?php
 	//

@@ -817,15 +817,16 @@ class DetailController extends FindController {
 		}
 		
 		# --- get params from form
-		$comment = $this->request->getParameter('comment', pString);
+		$comment = strip_tags($this->request->getParameter('comment', pString));
 		$rank = $this->request->getParameter('rank', pInteger);
-		$tags = $this->request->getParameter('tags', pString);
-		$email = $this->request->getParameter('email', pString);
-		$name = $this->request->getParameter('name', pString);
-		$location = $this->request->getParameter('location', pString);
+		$tags = strip_tags($this->request->getParameter('tags', pString));
+		$email = strip_tags($this->request->getParameter('email', pString));
+		$name = strip_tags($this->request->getParameter('name', pString));
+		$location = strip_tags($this->request->getParameter('location', pString));
 		$media1 = $_FILES['media1']['tmp_name'];
 		$media1_original_name = $_FILES['media1']['name'];
-		$errors = array();
+		
+		$errors = [];
 		
 		if(!$this->request->getUserID() && !$name && !$email){
 			$errors["general"] = _t("Please enter your name and email");
