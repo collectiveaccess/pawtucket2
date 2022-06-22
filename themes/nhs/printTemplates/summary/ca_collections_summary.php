@@ -283,7 +283,7 @@
 <?php
 	}
 	$vs_tmp = $t_item->get("ca_collections.credit_line");
-	$vs_tmp2 = $t_item->getWithTemplate("<unit relativeTo='ca_object_lots' restrictToTypes='accession'>^ca_object_lots.idno_stub");
+	$vs_tmp2 = $t_item->getWithTemplate("<unit relativeTo='ca_object_lots' restrictToTypes='accession'>^ca_object_lots.idno_stub</unit>");
 	
 	if($vs_tmp || $vs_tmp2){
 ?>

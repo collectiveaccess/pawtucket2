@@ -374,12 +374,12 @@
 								}
 ?>
 								<div class='col-xs-6 col-sm-6 col-md-6 col-lg-6 <?php print $va_class; ?>' style='border-left:1px solid #ddd; margin-top:-30px;'>
-									<div class="row" id="trigger-overlay">
+									<div class="row" id="trigger-overlay2">
 										<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 											<!-- open/close -->
-											<div class="overlay overlay-corner">
+											<div class="overlay2 overlay2-corner">
 												<div ><!--Circulation Activity for <?php print $t_item->get('ca_entities.preferred_labels'); ?>-->
-													<button type="button" class="overlay-close"><i class="fa fa-times"></i></button>
+													<button type="button" class="overlay2-close"><i class="fa fa-times"></i></button>
 												</div>
 												
 												<div style="width:60%; height:400px; float:left; padding-right:10px;">

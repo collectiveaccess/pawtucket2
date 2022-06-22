@@ -73,7 +73,7 @@
 			}
 			$vn_object_id = $vo_result->get('ca_objects.object_id');
 								
-			$vs_caption = "<div class='resultType'>";
+			$vs_caption = "";
 			$vs_caption .= $vo_result->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))." &rsaquo; ";
 			if($vs_tmp = $vo_result->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
 				$vs_caption .= $vs_tmp;
@@ -86,7 +86,7 @@
 			if(($vs_brand) || ($vs_subbrand)){
 				$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
 			}
-			$vs_caption .= "</div>";
+			$vs_caption .= "<br/>";
 			$vs_caption .= trim($vo_result->get('ca_objects.preferred_labels'));
 			$vs_tmp = $vo_result->getWithTemplate('^ca_objects.manufacture_date');
 			if(!$vo_result->get("ca_objects.manufacture_date")){

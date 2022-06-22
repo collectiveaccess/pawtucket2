@@ -218,7 +218,7 @@
 </div>	<!-- end row -->
 <?php
 	}
-		if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork')))) {
+		if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork', 'incoming_artwork_loan')))) {
 ?>	
 <div class="row" style="clear:both;">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
@@ -230,7 +230,7 @@
 				<div id='artworksResults' class='scrollBlock'>
 					<div class='blockResultsScroller'>
 <?php
-					$va_artwork_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('artwork')));
+					$va_artwork_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('artwork', 'incoming_artwork_loan')));
 					foreach ($va_artwork_ids as $obj_key => $vn_object_id) {
 						$t_artwork = new ca_objects($vn_object_id);
 						print "<div class='artworksResult'>";

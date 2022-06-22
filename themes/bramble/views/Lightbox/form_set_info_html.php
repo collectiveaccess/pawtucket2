@@ -57,6 +57,8 @@
 ?>
 	<form id="SetForm" action="#" class="form-horizontal" role="form">
 <?php
+		print caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request)));
+		
 		if(($vs_mode != "project") && ($t_set->get("type_id") != $vn_project_set_type_id)){
 			print "<div class='form-group'><label class='col-sm-4 control-label'>Project</label><div class='col-sm-7'>";
 			if($vn_parent_id){

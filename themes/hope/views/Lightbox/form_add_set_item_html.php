@@ -50,6 +50,7 @@
 ?>
 	<form id="AddItemForm" action="#" class="form-horizontal" role="form">
 <?php
+		print caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request)));
 		$vs_add_to_sets = "";
 		$vs_parent_dropdowns = "";
 		if(is_array($va_write_parent_sets) && sizeof($va_write_parent_sets)){

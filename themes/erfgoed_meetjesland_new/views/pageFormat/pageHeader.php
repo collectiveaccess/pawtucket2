@@ -59,45 +59,35 @@
 	
 	<meta property="og:url" content="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" />
 	<meta property="og:type" content="website" />
+<?php
+	if(!in_array(strToLower($this->request->getAction), array("objects"))){
+		# --- this is set on detail page
+?>
 	<meta property="og:description" content="<?php print htmlspecialchars((MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name")); ?>" />
 	<meta property="og:title" content="<?php print $this->request->config->get("app_display_name"); ?>" />
 <?php
-	# --- what should the image to share be?
-	# --- default to logo --- use image from detail page if on object page
-	$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'meetjeslandLogo2.png'); # --- replace this with logos for institutions
-	if((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "objects")){
-		$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra()));
-		$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls("ca_objects");
-		$t_subject = new ca_objects();
-		if ((($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($vs_use_alt_identifier_in_urls)) && (substr($ps_id, 0, 3) == "id:")) {
-			$va_tmp = explode(":", $ps_id);
-			$ps_id = (int)$va_tmp[1];
-			$vb_use_identifiers_in_urls = $vs_use_alt_identifier_in_urls = false;
-		}
-
-		if($vs_use_alt_identifier_in_urls && $t_subject->hasElement($vs_use_alt_identifier_in_urls)) {
-			$va_load_params = [$vs_use_alt_identifier_in_urls => $ps_id];
-		} elseif ($vb_use_identifiers_in_urls && $t_subject->getProperty('ID_NUMBERING_ID_FIELD')) {
-			$va_load_params = [$t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id];
-		} else {
-			$va_load_params = [$t_subject->primaryKey() => (int)$ps_id];
-		}
-		
-		if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($va_load_params, ['returnAs' => 'firstModelInstance'])))) {
-			// invalid id - throw error
-			throw new ApplicationException("Invalid id");
-		}else{
-			if($vs_rep = $t_subject->get("ca_object_representations.media.medium.url", array("checkAccess" => $va_access_values))){
-				$vs_og_image = $vs_rep;
-			}
-			
-		}
 	}
-?>
-	<meta property="og:image" content="<?php print $vs_og_image; ?>" />
+?>	
 
 	
 	<?php print MetaTagManager::getHTML(); ?>
+	
+<?php
+	if((bool)CookieOptionsManager::allow("analytics")){
+?>	
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src=https://www.googletagmanager.com/gtag/js?id=G-92BXQLXRHN></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+ 
+	  gtag('config', 'G-92BXQLXRHN');
+	</script>
+<?php
+	}
+?>	
+	
     <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -196,11 +186,11 @@
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Expo's", "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Bladeren", "", "", "Browse", "Objects"); ?></li>
 					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
 						<ul class="dropdown-menu">
-							<li><a href="https://www.comeet.be/erfgoed-2/">Over Erfgoedcel Meetjesland</a></li>
+							<li><a href="https://www.comeet.be/erfgoed-2/" target="_blank">Over Erfgoedcel Meetjesland</a></li>
 							<li><?php print caNavLink($this->request, "Over de Erfgoedbank", "", "", "About", "Guide"); ?></li>
 							<li><?php print caNavLink($this->request, "Jouw collectie op de erfgoedbank", "", "", "About", "Collection"); ?></li>
 						</ul>

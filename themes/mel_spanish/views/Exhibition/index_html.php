@@ -14,18 +14,23 @@
 			<div class="jcarousel">
 				<ul>
 <?php
+					$va_tmp = array();
 					while($qr_res->nextHit()){
-						#if($qr_res->get("ca_object_representations.media.large")){
-							if($vs_media = $qr_res->getWithTemplate('<l><unit relativeTo="ca_objects" length="1">^ca_object_representations.media.large</unit></l>', array("checkAccess" => $va_access_values))){
-								print "<li><div class='frontSlide'>".$vs_media;
-								$vs_caption = $qr_res->getWithTemplate("<l>^ca_entities.preferred_labels.displayname</l>");
-								if($vs_caption){
-									print "<div class='frontSlideCaption'>".$vs_caption."</div>";
-								}
-								print "</div></li>";
-								$vb_item_output = true;
+						$vs_tmp = "";
+						if($vs_media = $qr_res->getWithTemplate('<l><unit relativeTo="ca_objects" length="1">^ca_object_representations.media.large</unit></l>', array("checkAccess" => $va_access_values))){
+							$vs_tmp = "<li><div class='frontSlide'>".$vs_media;
+							$vs_caption = $qr_res->getWithTemplate("<l>^ca_entities.preferred_labels.displayname</l>");
+							if($vs_caption){
+								$vs_tmp .= "<div class='frontSlideCaption'>".$vs_caption."</div>";
 							}
-						#}
+							$vs_tmp .= "</div></li>";
+							$vb_item_output = true;
+							$va_tmp[] = $vs_tmp;
+						}
+					}
+					if(is_array($va_tmp) && sizeof($va_tmp)){
+						shuffle($va_tmp);
+						print join("\n", $va_tmp);
 					}
 ?>
 				</ul>

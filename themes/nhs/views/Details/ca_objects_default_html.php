@@ -87,7 +87,7 @@
 				{{{<ifdef code="ca_objects.date.dates_value"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.date.dates_value</unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><h6>Description</h6>
-						<span class="trimText">^ca_objects.description</span>
+						<div class="trimText">^ca_objects.description</div>
 					</div>
 				</ifdef>}}}
 				

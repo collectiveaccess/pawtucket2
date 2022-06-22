@@ -81,7 +81,9 @@
 // 				}
 // 			}
 ?>			
-			{{{<ifdef code="ca_loans.loan_conditions"><div class="unit"><span class='metaTitle'>Loan Conditions: </span><span class="meta">^ca_loans.loan_conditions</span></div></ifdef>}}}			
+<?php
+	//		{{{<ifdef code="ca_loans.loan_conditions"><div class="unit"><span class='metaTitle'>Loan Conditions: </span><span class="meta">^ca_loans.loan_conditions</span></div></ifdef>}}}
+	?>		
 <?php
 			if ($t_item->get('ca_loans.loan_documents.loan_documents_media')){
 				$va_loan_images = $t_item->get('ca_loans.loan_documents', array('returnAsArray' => true, 'returnWithStructure' => true, 'ignoreLocale' => true, 'rawDate' => 1, 'version' => 'icon')); 

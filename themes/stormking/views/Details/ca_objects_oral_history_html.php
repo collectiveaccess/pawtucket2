@@ -51,7 +51,7 @@
 		</div>
 				
 		<div class="row">	
-			<div class='col-sm-12' style="text-align:center;">
+			<div class='col-sm-12 ohIframe' style="text-align:center;">
 <?php
 				if ($vn_vimeo_id = $t_object->get('ca_objects.vimeo_id')) {			
 					print '<iframe src="https://player.vimeo.com/video/'.$vn_vimeo_id.'?color=ffffff&title=0&byline=0&portrait=0" width="100%" height="460" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';

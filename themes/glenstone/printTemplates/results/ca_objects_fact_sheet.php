@@ -97,23 +97,37 @@
 						print "<div class='fact'><span style='font-weight:bold;'>Provenance</span><br/><div>".$va_provenance."</div></div>";
 				}
 			}
-			print "<br/>";
-			if (($va_exhibition_history = array_shift($vo_result->get('ca_objects.exhibition_history', array('returnAsArray' => true, 'returnWithStructure' => true, 'idsOnly' => true, 'sort' => 'ca_objects.exhibition_history.exhibition_date', 'sortDirection' => 'DESC')))) && (sizeof($va_exhibition_history))) {
-				print "<div class='fact'><span style='font-weight:bold;'>Exhibition History</span><br/>";
-				foreach ($va_exhibition_history as $ex_key => $va_exhibition) {
-					if(!$va_exhibition['exhibition_name']) { continue; }
-					if ($va_exhibition['related_loan']) {
-						print "<div>".caNavLink($this->request, $va_exhibition['exhibition_name'], '', '', 'Detail', 'loans/'.$va_exhibition['related_loan'])."</div>";
-					} else {
-						print "<div>".$va_exhibition['exhibition_name']."</div>";
+			
+			if ($va_exhibition_history = $vo_result->get('ca_objects.exhibition_history', array('returnWithStructure' => true, 'idsOnly' => true, 'sort' => 'ca_objects.exhibition_history.exhibition_date', 'sortDirection' => 'DESC'))) {
+				print "<br/>";
+				print "<div class='fact'><span style='font-weight: bold;'>Exhibition History</span><br/>";
+				$vn_i = 0;
+				foreach ($va_exhibition_history as $ex_key => $va_exhibition_t) {
+					foreach ($va_exhibition_t as $ex_key => $va_exhibition) {
+						$vs_tag = ($vn_i) ? "p" : "div";
+						if (trim($va_exhibition['related_loan'])) {
+							print "<{$vs_tag} class='exh'>".caNavLink($this->request, $va_exhibition['exhibition_name'], '', '', 'Detail', 'loans/'.$va_exhibition['related_loan'])."</{$vs_tag}>";
+						} else if(trim($va_exhibition['exhibition_name'])) {
+							print "<{$vs_tag} class='exh'>".$va_exhibition['exhibition_name']."</{$vs_tag}>";
+						}
+						$vn_i++;
 					}
 				}
 				print "</div>";
 			}
-			if ($va_literature = $vo_result->get('ca_objects.literature')) {
-			
-					print "<br/>";
-					print "<div class='fact'><span style='font-weight:bold;'>Literature</span> <br/><div>".$va_literature."</div></div>";
+			if ($va_literature = array_filter($vo_result->get('ca_objects.literature', ['returnAsArray' => true]), function($v) { return (bool)strlen(trim($v)); })) {
+				print "<br/>";
+				print "<div class='fact'><span style='font-weight: bold;'>Literature</span> <br/>";
+				
+				$vn_i = 0;
+				foreach($va_literature as $l) {
+					if(!trim($l)) { continue; }
+					$vs_tag = ($vn_i) ? "p" : "div";
+					print  "<{$vs_tag} class='exh'>{$l}</{$vs_tag}>\n";
+					
+					$vn_i++;
+				}
+				print "</div>";
 			}			
 ?>	
 			</div>

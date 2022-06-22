@@ -1515,6 +1515,30 @@ h1.primaryLandingBannerTitle {
     z-index: 1000;
     top: -33px;
 }
+.detailMediaToolbar .multiPage{
+	font-size:13px;
+	text-decoration:none !important;
+	color:#858585;
+}
+.detailMediaToolbar.multiPageAdded{
+	bottom: -63px;
+}
+.repViewerCont .multiPageIcon{
+	position: absolute;
+	top: 10px;
+	right: 10%;
+	color: #858585;
+	z-index: 1000;
+	font-size: 20px;
+	box-shadow: 0px 2px 3px #858585;
+	background-color:#fff;
+	padding:4px 5px 2px 5px;
+	border-radius:5px;
+	line-height:1em;
+}
+.repViewerCont img{
+	position:relative;
+}
 .collectionsList{
 	margin-top:30px;
 }
@@ -2037,4 +2061,61 @@ h1.primaryLandingBannerTitle {
 }
 .lbSetImgPlaceholder {
 	padding: 40px 5px 50px 5px;
+}
+
+/* multisearch */
+.multisearch H2, .multisearch H2 a, .multisearch H2 a:hover {
+    text-decoration: none;
+    color: #00305e;
+    font-size: 23px;
+}
+.multisearch .pull-right {
+    font-family: inherit;
+    padding-top: 15px;
+}
+.multisearchFullResults a{
+    color: #00305e;
+}
+.multisearchSort ul li a {
+    text-decoration: none;
+    color: #000;
+}
+.multisearchSort ul li.selectedSort a {
+    text-decoration: underline;
+    color: #000;
+}
+.multisearchImgPlaceholder {
+    color: #b7b7b7;
+}
+.multisearch .bResultItemText a {
+    color: #000;
+    line-height: 1.2em;
+    font-weight: normal;
+    font-family: "Optima LT Std";
+}
+.multisearch .bResultItemText a:hover{
+	text-decoration:none;
+}
+.multisearchFullResults .btn-small{
+	padding: 5px 5px 2px 5px;
+	margin-top: -5px;
+}
+.multisearchFullResults{
+	margin-left:10px;
+}
+.multisearch .resultBlock{
+	margin-bottom:30px;
+}
+.multisearch .authoritySet a{
+	color: #000;
+	line-height: 1.2em;
+	font-weight: normal;
+	font-family: "Optima LT Std";
+}
+.multisearch .authoritySet a:hover{
+	text-decoration:none;
+}
+.multisearch .authorityResult {
+    margin-bottom: 5px;
+    height: 70px;
 }

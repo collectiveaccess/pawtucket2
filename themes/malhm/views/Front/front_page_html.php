@@ -44,7 +44,7 @@
 		</div>
 	</div>
 <?php
-	$qr_members = ca_entities::find(["type_id" => "member"], ["returnAs" => "searchResult"]);
+	$qr_members = ca_entities::find(["type_id" => "member"], ["returnAs" => "searchResult", 'sort' => 'ca_entities.preferred_labels.displayname']);
 	if ($qr_members) {
 		print "<div class='row members'>";
 		print '<div class="containerWrapper">';
@@ -55,7 +55,7 @@
 		
 		
 		while ($qr_members->nextHit()) {
-			print "<div class='memberTile'>";
+			print "<div class='memberTile' style='height: 300px;'>";
 			print "<div class='memberImage'>".caDetailLink($this->request, $qr_members->get('ca_object_representations.media.iconlarge', array('checkAccess' => $va_access_values)), '', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
 			print "<div class='memberCaption'>".caDetailLink($this->request, $qr_members->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values)), '', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
 			print "</div>";

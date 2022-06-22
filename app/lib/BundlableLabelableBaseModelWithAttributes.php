@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2019 Whirl-i-Gig
+ * Copyright 2008-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -45,9 +45,9 @@ require_once(__CA_LIB_DIR__."/IDNumbering.php");
 require_once(__CA_APP_DIR__."/helpers/accessHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
 
-define('__CA_BUNDLE_ACCESS_NONE__', 0);
-define('__CA_BUNDLE_ACCESS_READONLY__', 1);
-define('__CA_BUNDLE_ACCESS_EDIT__', 2);
+if(!defined('__CA_BUNDLE_ACCESS_NONE__')) { define('__CA_BUNDLE_ACCESS_NONE__', 0); }
+if(!defined('__CA_BUNDLE_ACCESS_READONLY__')) { define('__CA_BUNDLE_ACCESS_READONLY__', 1); }
+if(!defined('__CA_BUNDLE_ACCESS_READONLY__')) { define('__CA_BUNDLE_ACCESS_READONLY__', 2); }
 
 /**
  * Returned by BundlableLabelableBaseModelWithAttributes::saveBundlesForScreenWillChangeParent() when parent will not be changed
@@ -104,7 +104,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		parent::__construct($pn_id);	# call superclass constructor
 		
 		if ($pn_id) {
-			if ($this->_rowAsSearchResult = $this->makeSearchResult($this->tableName(), array($pn_id))) {
+			if ($this->_rowAsSearchResult = $this->makeSearchResult($this->tableName(), array($this->getPrimaryKey()))) {
 				$this->_rowAsSearchResult->nextHit();
 			}
 		}

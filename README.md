@@ -59,6 +59,15 @@ you have not updated your Providence installation to version 1.7.8.
 Version 1.7 introduced zoomable media versions for multipage documents such as PDFs, Microsoft Word or Powerpoint. Systems migrated from pre-1.7 versions of CollectiveAccess will not have these media versions available causing the built-in document viewer to fail. If your system includes multipage documents you should regenerate the media **in Providence** using the command-line caUtils utility in `support/bin`. See the [Providence README](https://github.com/collectiveaccess/providence) for details.
 
 
+### Installing development versions
+
+The latest development version is always available in the `develop` branch (https://github.com/collectiveaccess/pawtucket2/tree/develop). Other feature-specific development versions are in branches prefixed with `dev/`. To install a development branch follow these steps:
+
+1. clone this repository into the location where you wish it to run using `git clone https://github.com/collectiveaccess/pawtucket2`.
+2. by default, the newly cloned repository will use the main branch, which contains code for the current release. Choose the `develop` branch by running from within the cloned repository `git checkout develop`.
+3. install the PHP package manager [Composer](https://getcomposer.org) if you do not already have it installed on your server.
+4. run `composer` from the root of the cloned repository with `composer.phar install`. This will download and install all required 3rd party software libraries. 
+5. follow the release version installation instructions to complete the installation.
 ### Useful Links
 
 * Web site: https://collectiveaccess.org
@@ -70,7 +79,8 @@ Version 1.7 introduced zoomable media versions for multipage documents such as P
   * https://docs.collectiveaccess.org/wiki/Release_Notes_for_Pawtucket2_1.7
   * https://docs.collectiveaccess.org/wiki/Release_Notes_for_Pawtucket2_1.7.8
 * Forum: https://www.collectiveaccess.org/support/forum
-* Bug Tracker: https://clangers.collectiveaccess.org
+
+To report issues please use GitHub Issues.
 
 ### Other modules
 

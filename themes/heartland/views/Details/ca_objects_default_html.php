@@ -33,6 +33,10 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$va_access_values = $this->getVar("access_values");
+	$va_options = $this->getVar('config_options');
+	$va_rep_ids = $t_object->get('ca_object_representations.representation_id', array('filterNonPrimaryRepresentations' => false, 'checkAccess' => $va_access_values, 'returnAsArray' => true));
+	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -48,12 +52,17 @@
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 				{{{representationViewer}}}
 				
-				{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><div class="row"><div class="col-xs-2 col-sm-2"><l>^ca_object_representations.media.iconlarge</l></div><div class="col-xs-10 col-sm-10"><l>^ca_objects.preferred_labels</l></div></div></unit></div></ifcount>}}}
-				
+<?php
+				if((strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))) == "sound") && (is_array($va_rep_ids)) && (sizeof($va_rep_ids) > 2)){
+					print "<div class='unit'><label>Play List</label>";
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array_merge($va_options, array("returnAs" => "list", "linkTo" => "carousel", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)));
+					print "</div>";
+				}else{
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array_merge($va_options, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)));
+				}
+?>
 				<div id="detailAnnotations"></div>
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
+				{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><div class="row"><div class="col-xs-2 col-sm-2"><l>^ca_object_representations.media.iconlarge</l></div><div class="col-xs-10 col-sm-10"><l>^ca_objects.preferred_labels</l></div></div></unit></div></ifcount>}}}
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
@@ -131,9 +140,12 @@
 					}
 					print "<label>Library of Congress Name Authority File</label>".join(", ", $va_LcshNames_processed);
 				}
+?>
+				{{{<ifdef code="ca_objects.tgn"><label>Location</label>^ca_objects.tgn%delimiter=,_<br/></ifdef>}}}
 
+<?php
 				if($vs_map = trim($this->getVar("map"))){
-					print "<div class='unit'>".$vs_map."</div>";
+					print "<br/><div class='unit'>".$vs_map."</div>";
 				}
 ?>
 

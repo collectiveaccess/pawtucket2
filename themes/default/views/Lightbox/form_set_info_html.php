@@ -35,7 +35,6 @@
 	$vs_lightbox_displayname 		= $va_lightboxDisplayName["singular"];
 	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	$vs_description_attribute 		= $this->getVar("description_attribute");
-
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
 <H1><?php print _t("%1 Information", ucfirst($vs_lightbox_displayname)); ?></H1>
@@ -46,6 +45,8 @@
 ?>
 	<form id="SetForm" action="#" class="form-horizontal" role="form">
 <?php
+		print caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request)));
+
 		if($va_errors["name"]){
 			print "<div class='alert alert-danger'>".$va_errors["name"]."</div>";
 		}
@@ -70,21 +71,29 @@
 			jQuery.getJSON(
 				'<?php print caNavUrl($this->request, '', 'Lightbox', 'ajaxSaveSetInfo', null); ?>',
 				jQuery('#SetForm').serializeObject(), function(data) {
-					jQuery("#lbSetName" + data.set_id).html(data.name);
-					jQuery("#lbSetDescription" + data.set_id).html(data.description);
-					jQuery("#caMediaPanel").data('panel').hidePanel();
+					if(data.errors){
+						var errors = $.map(data.errors, function(e){
+							return e;
+						}).join('; ');
+						jQuery('#SetForm').prepend('<div class="alert alert-danger">' + errors + '</div>');
+					}else{
+						jQuery("#lbSetName" + data.set_id).html(data.name);
+						jQuery("#lbSetDescription" + data.set_id).html(data.description);
+						jQuery("#caMediaPanel").data('panel').hidePanel();
 					
-					if(data.is_insert) { 
-						// add new set to list
-						var h = "<div class='col-xs-6 col-sm-6 col-md-6 lbSetListItemCol'>" + data.block + "</div>";
-						var l = jQuery('.lbSetListItemRow').last().find('.lbSetListItemCol').length;
+						if(data.is_insert) { 
+							// add new set to list
+							var h = "<div class='col-xs-6 col-sm-6 col-md-6 lbSetListItemCol'>" + data.block + "</div>";
+							var l = jQuery('.lbSetListItemRow').last().find('.lbSetListItemCol').length;
 				
-						if (l >= 2) {	// add row
-							jQuery('.lbSetListItemRow').last().parent().append('<div class="row lbSetListItemRow">' + h + "</div>");
-						} else {
-							jQuery('.lbSetListItemRow').last().append(h);
+							if (l >= 2) {	// add row
+								jQuery('.lbSetListItemRow').last().parent().append('<div class="row lbSetListItemRow">' + h + "</div>");
+							} else {
+								jQuery('.lbSetListItemRow').last().append(h);
+							}
 						}
 					}
+						
 				}
 			);
 			e.preventDefault();

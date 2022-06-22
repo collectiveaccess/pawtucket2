@@ -11,7 +11,7 @@
 	</div><!-- end col -->
 	<div class='col-sm-6'>
 		{{{<ifdef code="ca_objects.preferred_labels.name">
-			<h4>^ca_objects.preferred_labels.name</h4>
+			<h1>^ca_objects.preferred_labels.name</h1>
 		</ifdef>}}}
 		{{{<ifdef code="ca_objects.description">
 			<p>^ca_objects.description</p>
@@ -30,8 +30,8 @@
 		{{{<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="related">
 			<unit relativeTo="ca_occurrences" delimiter="" restrictToRelationshipTypes="related">
 				<br/><h2><l>^ca_occurrences.preferred_labels.name</l></h2>
-				<h2>^ca_occurrences.exhibition_subtitle</h2>
-				<h4>^ca_occurrences.opening_closing</h4>
+				<ifdef code="ca_occurrences.exhibition_subtitle"><h2>^ca_occurrences.exhibition_subtitle</h2></ifdef>
+				<div class='date'>^ca_occurrences.opening_closing</div>
 			</unit>
 		</ifcount>}}}
 			

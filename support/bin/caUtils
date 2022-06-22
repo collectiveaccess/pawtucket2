@@ -8,7 +8,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2019 Whirl-i-Gig
+ * Copyright 2013-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -40,7 +40,6 @@
 	require_once(__CA_APP_DIR__."/helpers/CLIHelpers.php");
 	require_once(__CA_LIB_DIR__."/Utils/CLIUtils.php");
 	require_once(__CA_LIB_DIR__."/ApplicationPluginManager.php");
-	require_once(__CA_LIB_DIR__."/Zend/Console/Getopt.php");
 
 	if (!caIsRunFromCLI()) {
 		die("Sorry, caUtils must be run from the command line!\n");
@@ -63,6 +62,9 @@
 
 	$vs_cmd = $argv[1];
 	$vs_cmd_proc = strtolower(str_replace("-", "_", $vs_cmd));
+	
+	// Define empty request
+	$g_request = new RequestHTTP(new ResponseHTTP());
 
 	//
 	// Check for plug-in commands

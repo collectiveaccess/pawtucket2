@@ -78,6 +78,15 @@
     
     <link href="https://fonts.googleapis.com/css?family=Radley:400,400i&amp;subset=latin-ext" rel="stylesheet">
 </head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-130608616-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+ 
+  gtag('config', 'UA-130608616-1');
+</script>
 <body class="initial">
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">

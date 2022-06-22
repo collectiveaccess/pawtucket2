@@ -208,10 +208,10 @@ body{
 }
 @media(max-width:768px){
 	#footer{
-		height:350px;
+		height:555px;
 	}
 	body{
-		margin-bottom:370px;
+		margin-bottom:575px;
 	}
 }
 #footer{
@@ -276,7 +276,11 @@ body{
 	}
 }
 #footer .homeLogo{
-	padding-top:30px;
+	padding-top: 20px;
+	padding-bottom: 15px;
+}
+#footer ul.social {
+	padding-top:0px;
 }
 #footer .homeLogo img{
 	width:70px;
@@ -360,7 +364,7 @@ table.attributeListItem{
     border-color: #000000;
 }
 /* cookie notice */
-#cookieNotice{
+/*#cookieNotice{
 	position: fixed;
 	bottom: 0px;
 	width: 100%;
@@ -383,7 +387,7 @@ table.attributeListItem{
 #cookieNotice a{
 	font-weight:bold;
 	text-decoration:underline;
-}
+}*/
 
 
 
@@ -747,6 +751,11 @@ H2.frontExpoTitle{
 	color:#000;
 	text-decoration:none;
 }
+.front .notificationMessage{
+	top: 100px;
+	position: relative;
+	z-index: 1000;
+}
 /* browse */
 #bRefine{
 	background-color: #f2f1ec;
@@ -769,6 +778,12 @@ H2.frontExpoTitle{
 }
 #bRefine H3{
 	color: #507811;
+}
+.resultAudioIcon{
+	float:right;
+	padding:0px 0px 5px 5px;
+	font-size:16px;
+	color:#777;
 }
 /* gallery */
 .gallery{
@@ -826,7 +841,7 @@ a.readmore-js-toggle {
 /* image viewer */
 .caMediaOverlayControls .close{
 	position: fixed;
-	top: 10px;
+	top: 40px;
 	right: 10px;
 }
 div.caMediaOverlayControls .close a{
@@ -848,6 +863,8 @@ div.caMediaOverlayControls{
 	float:left;
 	width:30%;
 	padding-right:15px;
+	display: flex;
+    align-items: center;
 }
 .collectionTile img{
 	width:100%;
@@ -865,4 +882,8 @@ div.caMediaOverlayControls{
 	color:#507811;
 	font-size: 16px;
 	font-weight:bold;
+}
+
+#caMediaPanel {
+    background-color: rgba(0, 0, 0, 0.5);
 }

@@ -63,6 +63,17 @@
 
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	
+	
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CHJFCMET9X"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-CHJFCMET9X');
+</script>
+
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
@@ -88,8 +99,6 @@
 "tweakJSON":{"header-logo-height":"50px","header-mobile-logo-max-height":"30px","header-vert-padding":"1.7vw","header-width":"Inset","maxPageWidth":"1467px","pagePadding":"0vw","tweak-blog-alternating-side-by-side-image-aspect-ratio":"1:1 Square","tweak-blog-alternating-side-by-side-image-spacing":"6%","tweak-blog-alternating-side-by-side-meta-spacing":"20px","tweak-blog-alternating-side-by-side-primary-meta":"Categories","tweak-blog-alternating-side-by-side-read-more-spacing":"20px","tweak-blog-alternating-side-by-side-secondary-meta":"Date","tweak-blog-basic-grid-columns":"2","tweak-blog-basic-grid-image-aspect-ratio":"3:2 Standard","tweak-blog-basic-grid-image-spacing":"22px","tweak-blog-basic-grid-meta-spacing":"8px","tweak-blog-basic-grid-primary-meta":"Categories","tweak-blog-basic-grid-read-more-spacing":"0px","tweak-blog-basic-grid-secondary-meta":"Date","tweak-blog-item-custom-width":"78","tweak-blog-item-show-author-profile":"false","tweak-blog-item-width":"Custom","tweak-blog-masonry-columns":"2","tweak-blog-masonry-horizontal-spacing":"30px","tweak-blog-masonry-image-spacing":"20px","tweak-blog-masonry-meta-spacing":"20px","tweak-blog-masonry-primary-meta":"Categories","tweak-blog-masonry-read-more-spacing":"20px","tweak-blog-masonry-secondary-meta":"Date","tweak-blog-masonry-vertical-spacing":"30px","tweak-blog-side-by-side-image-aspect-ratio":"1:1 Square","tweak-blog-side-by-side-image-spacing":"6%","tweak-blog-side-by-side-meta-spacing":"20px","tweak-blog-side-by-side-primary-meta":"Categories","tweak-blog-side-by-side-read-more-spacing":"20px","tweak-blog-side-by-side-secondary-meta":"Date","tweak-blog-single-column-image-spacing":"50px","tweak-blog-single-column-meta-spacing":"30px","tweak-blog-single-column-primary-meta":"Categories","tweak-blog-single-column-read-more-spacing":"30px","tweak-blog-single-column-secondary-meta":"Date","tweak-events-stacked-show-thumbnails":"true","tweak-events-stacked-thumbnail-size":"16:9 Widescreen","tweak-fixed-header":"false","tweak-fixed-header-style":"Basic","tweak-global-animations-animation-curve":"ease","tweak-global-animations-animation-delay":"0.6s","tweak-global-animations-animation-duration":"0.90s","tweak-global-animations-animation-style":"fade","tweak-global-animations-animation-type":"fade","tweak-global-animations-complexity-level":"detailed","tweak-global-animations-enabled":"true","tweak-portfolio-grid-basic-custom-height":"50","tweak-portfolio-grid-overlay-custom-height":"50","tweak-portfolio-hover-follow-acceleration":"10%","tweak-portfolio-hover-follow-animation-duration":"Medium","tweak-portfolio-hover-follow-animation-type":"Fade","tweak-portfolio-hover-follow-delimiter":"Forward Slash","tweak-portfolio-hover-follow-front":"false","tweak-portfolio-hover-follow-layout":"Inline","tweak-portfolio-hover-follow-size":"75","tweak-portfolio-hover-follow-text-spacing-x":"1.5","tweak-portfolio-hover-follow-text-spacing-y":"1.5","tweak-portfolio-hover-static-animation-duration":"Medium","tweak-portfolio-hover-static-animation-type":"Scale Up","tweak-portfolio-hover-static-delimiter":"Forward Slash","tweak-portfolio-hover-static-front":"false","tweak-portfolio-hover-static-layout":"Stacked","tweak-portfolio-hover-static-size":"75","tweak-portfolio-hover-static-text-spacing-x":"1.5","tweak-portfolio-hover-static-text-spacing-y":"1.5","tweak-portfolio-index-background-animation-duration":"Slow","tweak-portfolio-index-background-animation-type":"Fade","tweak-portfolio-index-background-custom-height":"70","tweak-portfolio-index-background-height":"Large","tweak-portfolio-index-background-horizontal-alignment":"Center","tweak-portfolio-index-background-link-format":"Inline","tweak-portfolio-index-background-persist":"false","tweak-portfolio-index-background-vertical-alignment":"Middle","tweak-portfolio-index-background-width":"Full Bleed","tweak-portfolio-slides-cover-animation-style":"Vertical Slide","tweak-portfolio-slides-cover-content-width":"M","tweak-portfolio-slides-cover-content-width-custom-value":"50","tweak-portfolio-slides-cover-detail-placement-horizontal":"Left","tweak-portfolio-slides-cover-detail-placement-vertical":"Middle","tweak-portfolio-slides-cover-indicator-type":"Bar","tweak-portfolio-slides-cover-overlay-color":"#ffffff","tweak-portfolio-slides-cover-overlay-opacity":"10","tweak-portfolio-slides-cover-text-align":"Left","tweak-portfolio-slides-cover-view-link":"true","tweak-portfolio-slides-inset-animation-style":"Vertical Slide","tweak-portfolio-slides-inset-content-width":"M","tweak-portfolio-slides-inset-content-width-custom-value":"50","tweak-portfolio-slides-inset-detail-placement":"Middle Left","tweak-portfolio-slides-inset-image-margin":"M","tweak-portfolio-slides-inset-image-margin-custom-value":"10","tweak-portfolio-slides-inset-indicator-type":"Bar","tweak-portfolio-slides-inset-overlay-color":"#ffffff","tweak-portfolio-slides-inset-overlay-opacity":"10","tweak-portfolio-slides-inset-view-link":"true","tweak-portfolio-slides-split-animation-style":"Vertical Slide","tweak-portfolio-slides-split-content-width":"M","tweak-portfolio-slides-split-content-width-custom-value":"50","tweak-portfolio-slides-split-detail-placement-horizontal":"Left","tweak-portfolio-slides-split-detail-placement-vertical":"Middle","tweak-portfolio-slides-split-image-align":"Right","tweak-portfolio-slides-split-image-width":"M","tweak-portfolio-slides-split-image-width-custom-value":"50","tweak-portfolio-slides-split-indicator-type":"Bar","tweak-portfolio-slides-split-overlay-color":"#ffffff","tweak-portfolio-slides-split-overlay-opacity":"10","tweak-portfolio-slides-split-position":"Split Left","tweak-portfolio-slides-split-text-align":"Left","tweak-portfolio-slides-split-view-link":"true","tweak-product-basic-item-click-action":"None","tweak-product-basic-item-gallery-aspect-ratio":"3:4 Three-Four (Vertical)","tweak-product-basic-item-gallery-design":"Slideshow","tweak-product-basic-item-gallery-width":"50%","tweak-product-basic-item-hover-action":"None","tweak-product-basic-item-image-spacing":"2vw","tweak-product-basic-item-image-zoom-factor":"1.75","tweak-product-basic-item-thumbnail-placement":"Side","tweak-product-basic-item-variant-picker-layout":"Dropdowns","tweak-products-columns":"2","tweak-products-gutter-column":"2vw","tweak-products-gutter-row":"2vw","tweak-products-header-text-alignment":"Middle","tweak-products-image-aspect-ratio":"2:3 Standard (Vertical)","tweak-products-image-text-spacing":"0.5vw","tweak-products-text-alignment":"Left","tweak-transparent-header":"false"},
 "templateId":"5c5a519771c10ba3470d8101","templateVersion":"7.1","pageFeatures":[1,2,4],"gmRenderKey":"QUl6YVN5Q0JUUk9xNkx1dkZfSUUxcjQ2LVQ0QWVUU1YtMGQ3bXk4","betaFeatureFlags":["blog_event_item_settings","domains_transfer_flow_improvements","themes","demo_content_improvement","seven_one_fonts_panel_targeting_modal","commerce_restock_notifications","seven_one_portfolio_hover_layouts","seven_one_theme_mapper_v3","commerce-recaptcha-enterprise","new_billing_system","commerce_activation_experiment_add_payment_processor_card","global_animations","ORDERS-SERVICE-check-digital-good-access-with-service","mobile_preview_page_editing","seven-one-section-duplication","domain_locking_via_registrar_service","new_stacked_index","trust_arc_on_config","commerce_setup_wizard","gallery_captions_71","commerce_instagram_product_checkout_links","domains_allow_async_gsuite","seven-one-content-preview-section-api","collection_typename_switching","commerce_minimum_order_amount","domain_deletion_via_registrar_service","ORDER_SERVICE-submit-subscription-order-through-service","site_header_footer","campaigns_single_opt_in","domain_info_via_registrar_service","nested_categories_migration_enabled","crm_campaigns_sending","gallery_settings_71","dg_downloads_from_fastly","domains_transfer_flow_hide_preface","local_listings","ORDERS-SERVICE-reset-digital-goods-access-with-service","commerce_product_composer_ab_test","override_block_styles","scripts_defer","commerce_subscription_order_delay","seven_one_header_editor_update","generic_iframe_loader_for_campaigns","newsletter_block_captcha","ORDER_SERVICE-submit-reoccurring-subscription-order-through-service","donations_customer_accounts","commerce_tax_panel_v2","domains_use_new_domain_connect_strategy","seven_one_image_overlay_opacity"],"yuiEliminationExperimentList":[{"name":"statsMigrationJobWidget-enabled","experimentType":"AB_TEST","variant":"true","containsError":false,"status":"ACTIVE"},{"name":"ContributionConfirmed-enabled","experimentType":"AB_TEST","variant":"false","containsError":false,"status":"ACTIVE"},{"name":"TextPusher-enabled","experimentType":"AB_TEST","variant":"true","containsError":false,"status":"ACTIVE"},{"name":"MenuItemWithProgress-enabled","experimentType":"AB_TEST","variant":"true","containsError":false,"status":"ACTIVE"},{"name":"imageProcJobWidget-enabled","experimentType":"AB_TEST","variant":"true","containsError":false,"status":"ACTIVE"},{"name":"QuantityChangePreview-enabled","experimentType":"AB_TEST","variant":"true","containsError":false,"status":"ACTIVE"},{"name":"CompositeModel-enabled","experimentType":"AB_TEST","variant":"false","containsError":false,"status":"ACTIVE"},{"name":"HasPusherMixin-enabled","experimentType":"AB_TEST","variant":"true","containsError":false,"status":"INACTIVE"},{"name":"ProviderList-enabled","experimentType":"AB_TEST","variant":"true","containsError":false,"status":"ACTIVE"},{"name":"MediaTracker-enabled","experimentType":"AB_TEST","variant":"false","containsError":false,"status":"ACTIVE"},{"name":"pushJobWidget-enabled","experimentType":"AB_TEST","variant":"true","containsError":false,"status":"ACTIVE"},{"name":"internal-enabled","experimentType":"AB_TEST","variant":"true","containsError":false,"status":"ACTIVE"},{"name":"BillingPanel-enabled","experimentType":"AB_TEST","variant":"false","containsError":false,"status":"ACTIVE"},{"name":"PopupOverlayEditor-enabled","experimentType":"AB_TEST","variant":"true","containsError":false,"status":"ACTIVE"},{"name":"CoverPagePicker-enabled","experimentType":"AB_TEST","variant":"true","containsError":false,"status":"ACTIVE"}],
 };</script>
-
-
 </head>
 <body id="collection-5f35c4ad07ed5c289adeb169"
     data-controller="SiteLoader, Flags"
@@ -129,27 +138,74 @@
               <div class="header-nav">
                 <div class="header-nav-wrapper">
                   <nav class="header-nav-list">
+                    
+
+
   
     <div class="header-nav-item header-nav-item--folder">
-      <a class="header-nav-folder-title preFade" href="#" onClick="return false;" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0421053s;">About</a>
-      <div class="header-nav-folder-content">        
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/about-chesapeake-heartland" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0526316s;">Chesapeake Heartland</a>
-            </div>
+      <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/About" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0387097s;">About</a>
+      <div class="header-nav-folder-content">
+        
           
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/staffandpartners" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Staff &amp; Partners</a>
+              <a href="https://chesapeakeheartland.org/about-chesapeake-heartland">Chesapeake Heartland</a>
             </div>
           
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Blog</a>
+          
+        
+          
+          
+            <div class="header-nav-folder-item header-nav-folder-item--external">
+              <a href="https://chesapeakeheartland.org/s/Digital-Archive-Visual-Sampler-2021.pdf">Digital Archive Visual Sampler</a>
             </div>
           
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/events" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Events</a>
+        
+          
+          
+            <div class="header-nav-folder-item header-nav-folder-item--external">
+              <a href="https://chesapeakeheartland.org/s/Program-Activities-Visual-Sampler-2021.pdf">Events &amp; Programming Overview</a>
             </div>
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/blog">Heartland Blog</a>
+            </div>
+          
+          
+        
       </div>
     </div>
+  
+  
+
+
+  
+    <div class="header-nav-item header-nav-item--folder">
+      <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/heartland-team" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0580645s;">Heartland Team</a>
+      <div class="header-nav-folder-content">
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/staffandpartners">Staff &amp; Partners</a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/internships-fellowships">Internships &amp; Fellowships</a>
+            </div>
+          
+          
+        
+      </div>
+    </div>
+  
+  
+
+
+  
     <div class="header-nav-item header-nav-item--folder header-nav-item--active">
       <a class="header-nav-folder-title preFade "  href="#" onClick="return false;" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0736842s;">Digital Archive</a>
       <div class="header-nav-folder-content">
@@ -179,27 +235,98 @@
     </div>
   
   
+	<div class="header-nav-item header-nav-item--folder">
+      <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/apply" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0857143s;">*Apply</a>
+      <div class="header-nav-folder-content">
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/hip-hop-time-capsule-app">Hip Hop Time Capsule Application</a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/community-curation-fellowship-app">Community Curation Fellowship Application</a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/staff-faculty-fellowship-app">Staff &amp; Faculty Fellowship Application</a>
+            </div>
+          
+          
+        
+      </div>
+    </div>
+
+
+	<div class="header-nav-item header-nav-item--collection">
+      <a href="https://chesapeakeheartland.org/kca-ch-artist-fellowship" data-animation-role="header-element" class="preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.102857s;">
+        
+        KCA/CH Artist Fellowship
+      </a>
+    </div>
+
+  
+    <div class="header-nav-item header-nav-item--folder">
+      <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.116129s;">Projects</a>
+      <div class="header-nav-folder-content">
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/commodore-collection">The Commodore Collection</a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/exhibit-main">Jason Patterson Exhibit</a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/hip-hop-time-capsule">Hip Hop Time Capsule</a>
+            </div>
+          
+          
+        
+          
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers">Ebony &amp; Ivory Towers</a>
+            </div>
+          
+          
+        
+      </div>
+    </div>
+  
+  
+
 
     <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/african-american-humanities-truck" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.136842s;">
+      <a href="https://chesapeakeheartland.org/african-american-humanities-truck" data-animation-role="header-element" class="preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0967742s;">
         
         Humanities Truck
       </a>
     </div>
   
-    <div class="header-nav-item header-nav-item--folder">
-      <a class="header-nav-folder-title preFade" href="#" onClick="return false;" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0421053s;">Internships &amp; Fellowships</a>
-      <div class="header-nav-folder-content">        
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0526316s;">About Internships &amp; Fellowships</a>
-            </div>
-      </div>
-    </div>
-    
+  
+  
+
+
+  
+  
     <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/exhibit-main" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.147368s;">
+      <a href="https://chesapeakeheartland.org/events" data-animation-role="header-element" class="preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.135484s;">
         
-        Jason Patterson Exhibit
+        Events
       </a>
     </div>
   
@@ -211,17 +338,12 @@
                   </nav>
                 </div>
               </div>
-            
-            
-          </div>
+           </div>
         
           
           <!-- Actions -->
           <div class="header-actions header-actions--right">
-            
-            
-              
-                <div class="header-actions-action header-actions-action--social">
+            <div class="header-actions-action header-actions-action--social">
                   
                     
                       <a class="icon icon--fill preFade " href="https://www.instagram.com/chesapeakeheartland" target="_blank" aria-label="" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.157895s;">
@@ -238,19 +360,6 @@
                     
                   
                 </div>
-              
-            
-
-          
-          
-
-          
-          
-          
-
-            
-            
-            
               <div class="showOnMobile">
                 
               </div>
@@ -286,33 +395,15 @@
               </div>
             </button>
           </div>
-        
-        
-        
-        
-        
-        
-
       </div>
       
         <div class="header-display-mobile" data-content-field="site-title">
           
             
           <!-- Social -->
-          
-            
-          
-        
-            
           <!-- Title and nav wrapper -->
           <div class="header-title-nav-wrapper">
-            
-
-            
-
-            
-              
-              <!-- Title -->
+            <!-- Title -->
               
                 <div class="header-title preFade" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.189474s;">
                   
@@ -347,11 +438,12 @@
           	<div class="header-nav-folder-item">
               <a href="https://chesapeakeheartland.org/staffandpartners" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.231579s;">Staff &amp; Partners</a>
             </div>
-          
+          	<div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Internships &amp; Fellowships</a>
+            </div>
             <div class="header-nav-folder-item">
               <a href="https://chesapeakeheartland.org/blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Blog</a>
             </div>
-          
             <div class="header-nav-folder-item">
               <a href="https://chesapeakeheartland.org/events" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0631579s;">Events</a>
             </div>
@@ -392,6 +484,18 @@
         
       </div>
     </div>
+
+	<div class="header-nav-item header-nav-item--folder">
+      <a class="header-nav-folder-title preFade" href="https://chesapeakeheartland.org/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0454545s;">Projects</a>
+      <div class="header-nav-folder-content">
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/exhibit-main" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">Jason Patterson Exhibit</a>
+            </div>
+          	<div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.105263s;">Ebony &amp; Ivory Towers</a>
+            </div>
+      </div>
+    </div>
   
     <div class="header-nav-item header-nav-item--collection">
       <a href="https://chesapeakeheartland.org/african-american-humanities-truck" data-animation-role="header-element" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.305263s;">
@@ -399,19 +503,10 @@
         Humanities Truck
       </a>
     </div>
-
-    <div class="header-nav-item header-nav-item--folder">
-      <a class="header-nav-folder-title preFade" href="#" onClick="return false;" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0421053s;">Internships &amp; Fellowships</a>
-      <div class="header-nav-folder-content">        
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0526316s;">About Internships &amp; Fellowships</a>
-            </div>
-      </div>
-    </div>
   
     <div class="header-nav-item header-nav-item--collection">
-      <a href="https://chesapeakeheartland.org/exhibit-main" data-animation-role="header-element" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.315789s;">
-        Jason Patterson Exhibit
+      <a href="https://chesapeakeheartland.org/commodore-collection" data-animation-role="header-element" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.147368s;">
+         The Commodore Collection
       </a>
     </div>
   
@@ -450,19 +545,6 @@
                     
                   
                 </div>
-              
-            
-
-          
-          
-
-          
-          
-          
-
-            
-            
-            
               <div class="showOnMobile">
                 
               </div>
@@ -486,11 +568,7 @@
               <span class="js-header-burger-close-title visually-hidden" hidden="">Close Menu</span>
               <div class="burger-box">
                 <div class="burger-inner
-                   header-menu-icon-doubleLineHamburger
-                  
-                  
-                  
-                ">
+                   header-menu-icon-doubleLineHamburger">
                   <div class="top-bun"></div>
                   <div class="patty"></div>
                   <div class="bottom-bun"></div>
@@ -509,23 +587,19 @@
     </div>
   </div>
   <!-- (Mobile) Menu Navigation -->
-  <div class="header-menu header-menu--folder-list
-    
-    
-    
-    
-    
-    " style="padding-top: 98.35px;">
+  <div class="header-menu header-menu--folder-list" style="padding-top: 98.35px;">
     <div class="header-menu-bg theme-bg--primary"></div>
     <div class="header-menu-nav">
-      <nav class="header-menu-nav-list">
+
+  <!-- new nav -->
+    <nav class="header-menu-nav-list">
         
       <div data-folder="root" class="header-menu-nav-folder header-menu-nav-folder--active">
           <!-- Menu Navigation -->
 <div class="header-menu-nav-folder-content">
 
   <div class="container header-menu-nav-item">
-    <a data-folder-id="/About" href="/About" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.357895s;">
+    <a data-folder-id="/About" href="/About">
       <div class="header-menu-nav-item-content">
         <span class="visually-hidden">Folder:</span>
         <span>About</span>
@@ -536,7 +610,18 @@
   
 
   <div class="container header-menu-nav-item">
-    <a data-folder-id="/digital-archive" href="/digital-archive" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.368421s;">
+    <a data-folder-id="/heartland-team" href="/heartland-team">
+      <div class="header-menu-nav-item-content">
+        <span class="visually-hidden">Folder:</span>
+        <span>Heartland Team</span>
+        <span class="chevron chevron--right"></span>
+      </div>
+    </a>
+  </div>
+  
+
+  <div class="container header-menu-nav-item">
+    <a data-folder-id="/digital-archive" href="/digital-archive">
       <div class="header-menu-nav-item-content">
         <span class="visually-hidden">Folder:</span>
         <span>Digital Archive</span>
@@ -544,28 +629,45 @@
       </div>
     </a>
   </div>
-
-  <div class="container header-menu-nav-item header-menu-nav-item--collection">
-    <a href="https://chesapeakeheartland.org/african-american-humanities-truck" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.4s;">
-      
-      Humanities Truck
-    </a>
-  </div>
-  
-  <div class="container header-menu-nav-item">
-    <a data-folder-id="/internships-fellowships" href="/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.368421s;">
+ <div class="container header-menu-nav-item">
+    <a data-folder-id="/apply" href="/apply">
       <div class="header-menu-nav-item-content">
         <span class="visually-hidden">Folder:</span>
-        <span>Internships &amp; Fellowships</span>
+        <span>*Apply</span>
         <span class="chevron chevron--right"></span>
       </div>
     </a>
   </div>
+  <div class="container header-menu-nav-item header-menu-nav-item--collection">
+    <a href="https://chesapeakeheartland.org/kca-ch-artist-fellowship">
+      
+      KCA/CH Artist Fellowship
+    </a>
+  </div>
+ <div class="container header-menu-nav-item">
+    <a data-folder-id="/projects" href="/projects">
+      <div class="header-menu-nav-item-content">
+        <span class="visually-hidden">Folder:</span>
+        <span>Projects</span>
+        <span class="chevron chevron--right"></span>
+      </div>
+    </a>
+  </div> 
 
   <div class="container header-menu-nav-item header-menu-nav-item--collection">
-    <a href="https://chesapeakeheartland.org/exhibit-main" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.389474s;">
+    <a href="https://chesapeakeheartland.org/african-american-humanities-truck">
       
-      Jason Patterson Exhibit
+      Humanities Truck
+    </a>
+  </div>
+
+  
+  
+
+  <div class="container header-menu-nav-item header-menu-nav-item--collection">
+    <a href="https://chesapeakeheartland.org/events">
+      
+      Events
     </a>
   </div>
 
@@ -574,7 +676,7 @@
 
           <div class="header-menu-actions">
             <div class="header-menu-actions-action header-menu-actions-action--social">
-              <a class="icon icon--lg icon--fill preFade" href="https://www.instagram.com/chesapeakeheartland" target="_blank" aria-label="" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.421053s;">
+              <a class="icon icon--lg icon--fill" href="https://www.instagram.com/chesapeakeheartland" target="_blank" aria-label="">
                 <svg viewBox="23 23 64 64">
                   <use xlink:href="#instagram-unauth-icon" width="110" height="110"></use>
                 </svg>
@@ -582,7 +684,7 @@
             </div>
             
             <div class="header-menu-actions-action header-menu-actions-action--social">
-              <a class="icon icon--lg icon--fill preFade" href="https://www.facebook.com/ChesapeakeHeartland" target="_blank" aria-label="Facebook" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.431579s;">
+              <a class="icon icon--lg icon--fill" href="https://www.facebook.com/ChesapeakeHeartland" target="_blank" aria-label="Facebook">
                 <svg viewBox="23 23 64 64">
                   <use xlink:href="#facebook-unauth-icon" width="110" height="110"></use>
                 </svg>
@@ -590,44 +692,63 @@
             </div>
             </div>
           
+          
         </div><div data-folder="/About" class="header-menu-nav-folder">
     <div class="header-menu-nav-folder-content">
     <div class="header-menu-controls container header-menu-nav-item">
-      <a class="header-menu-controls-control header-menu-controls-control--active preFade " data-action="back" href="/" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.442105s;" tabindex="-1">
+      <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
         <span class="chevron chevron--left"></span><span>Back</span>
       </a>
     </div>
     
     <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/about-chesapeake-heartland" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.452632s;" tabindex="-1">
+      <a href="https://chesapeakeheartland.org/about-chesapeake-heartland" tabindex="-1">
         
         Chesapeake Heartland
       </a>
     </div>
     
+    <div class="container header-menu-nav-item header-menu-nav-item--external">
+      <a href="https://chesapeakeheartland.org/s/Digital-Archive-Visual-Sampler-2021.pdf" tabindex="-1">Digital Archive Visual Sampler</a>
+    </div>
+    
+    <div class="container header-menu-nav-item header-menu-nav-item--external">
+      <a href="https://chesapeakeheartland.org/s/Program-Activities-Visual-Sampler-2021.pdf" tabindex="-1">Events &amp; Programming Overview</a>
+    </div>
+    
     <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/staffandpartners" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.463158s;" tabindex="-1">
+      <a href="https://chesapeakeheartland.org/blog" tabindex="-1">
+        
+        Heartland Blog
+      </a>
+    </div>
+    
+    </div>
+  </div><div data-folder="/heartland-team" class="header-menu-nav-folder">
+    <div class="header-menu-nav-folder-content">
+    <div class="header-menu-controls container header-menu-nav-item">
+      <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
+        <span class="chevron chevron--left"></span><span>Back</span>
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/staffandpartners" tabindex="-1">
         
         Staff &amp; Partners
       </a>
     </div>
     
     <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/blog" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.463158s;" tabindex="-1">
+      <a href="https://chesapeakeheartland.org/internships-fellowships" tabindex="-1">
         
-        Blog
-      </a>
-    </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/events" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.463158s;" tabindex="-1">
-        
-        Events
+        Internships &amp; Fellowships
       </a>
     </div>
     
     </div>
   </div>
+  
   <div data-folder="/digital-archive" class="header-menu-nav-folder">
     <div class="header-menu-nav-folder-content">
     <div class="header-menu-controls container header-menu-nav-item">
@@ -650,22 +771,78 @@
     
     </div>
   </div>
-  
-
-  <div data-folder="/internships-fellowships" class="header-menu-nav-folder">
+  <div data-folder="/apply" class="header-menu-nav-folder">
     <div class="header-menu-nav-folder-content">
     <div class="header-menu-controls container header-menu-nav-item">
-      <a class="header-menu-controls-control header-menu-controls-control--active preFade " data-action="back" href="/" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.473684s;" tabindex="-1">
+      <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
         <span class="chevron chevron--left"></span><span>Back</span>
       </a>
     </div>
     
-    <div class="container header-menu-nav-item header-menu-nav-item--external">
-      <a href="https://chesapeakeheartland.org/internships-fellowships" class="preFade " style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.484211s;" tabindex="-1">About Internships &amp; Fellowships</a>
+    <div class="container header-menu-nav-item">
+      <a href="/hip-hop-time-capsule-app" tabindex="-1">
+        
+        Hip Hop Time Capsule Application
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="/community-curation-fellowship-app" tabindex="-1">
+        
+        Community Curation Fellowship Application
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="/staff-faculty-fellowship-app" tabindex="-1">
+        
+        Staff &amp; Faculty Fellowship Application
+      </a>
+    </div>
+    
+    </div>
+  </div>
+  
+  
+  <div data-folder="/projects" class="header-menu-nav-folder">
+    <div class="header-menu-nav-folder-content">
+    <div class="header-menu-controls container header-menu-nav-item">
+      <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
+        <span class="chevron chevron--left"></span><span>Back</span>
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/commodore-collection" tabindex="-1">
+        
+        The Commodore Collection
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/exhibit-main" tabindex="-1">
+        
+        Jason Patterson Exhibit
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/hip-hop-time-capsule" tabindex="-1">
+        
+        Hip Hop Time Capsule
+      </a>
+    </div>
+    
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/ebony-and-ivory-towers" tabindex="-1">
+        
+        Ebony &amp; Ivory Towers
+      </a>
     </div>
     
     </div>
   </div></nav>
+  
     </div>
   </div>
 </header>

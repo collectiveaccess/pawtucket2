@@ -186,8 +186,9 @@
 						print "<HR/>";
 					}
 
-					if($vs_rights_info = $t_object->get("ca_objects.rights_information.rights_availability", array("convertCodesToDisplayText" => true))){
-						print '<div class="unit"><H6>Rights Infomation</H6>'.$vs_rights_info.'</div><HR/>';
+					$vs_rights_info = $t_object->get("ca_objects.rights_information.rights_availability", array("convertCodesToDisplayText" => true));
+					if($vs_rights_info == "Unavailable"){
+						print '<div class="unit"><H6>Rights Infomation</H6>The ELC Archives has no information on the rights for this item</div><HR/>';
 					}
 					#  collection hierarchy
 					$va_collection_hier_ids = array_pop($t_object->get("ca_collections.hierarchy.collection_id", array("returnAsArray" => true)));

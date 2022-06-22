@@ -99,10 +99,12 @@
 					}					
 					if ($va_related_entities = $t_item->get('ca_entities', array('returnWithStructure' => true, 'checkAccess' => $va_access_values, 'excludeRelationshipTypes' => array('principal_artist')))) {
 						foreach ($va_related_entities as $va_entity_id => $va_related_entity) {
+							if(isset($va_entity_list[$va_related_entity['relationship_typename']][$va_related_entity['entity_id']])) { continue; }
 							$va_entity_list[$va_related_entity['relationship_typename']][$va_related_entity['entity_id']][] = caNavLink($this->request, $va_related_entity['displayname'], '', '', 'Detail', 'entities/'.$va_related_entity['entity_id']);
 						}
 					}
 					if ($va_entity_list) {
+						ksort($va_entity_list);
 						foreach ($va_entity_list as $va_role => $va_entity) {
 							if (($va_entity_list['choreographer'] == $va_entity_list['original choreographer']) && ($va_role == 'original choreographer')) {
 								continue;

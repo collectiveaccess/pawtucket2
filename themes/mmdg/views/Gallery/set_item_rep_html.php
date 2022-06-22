@@ -1,7 +1,7 @@
 <?php
 	require_once(__CA_LIB_DIR__.'/Media/MediaViewerManager.php');
 	
-	$t_representation = $this->getVar("rep_object");
+	#$t_representation = $this->getVar("rep_object");
 	
 	$pn_previous_item_id = $this->getVar("previous_item_id");
 	$pn_next_item_id = $this->getVar("next_item_id");
@@ -15,31 +15,38 @@
 	$ps_table = $this->getVar("table");
 	$pn_rep_id = $this->getVar("representation_id");
 	if($pn_previous_item_id > 0){
-		print "<a href='#' class='galleryDetailPrevious' onclick='caGalleryNav(\"previous\"); return false;'><i class='fa fa-angle-left'></i></a>";
+		print "<a href='#' class='galleryDetailPrevious' onclick='caGalleryNav(\"previous\"); return false;'><i class='fa fa-angle-left' role='button' aria-label='previous'></i></a>";
 	}else{
-		print "<a href='#' class='galleryDetailPrevious inactive' onClick='return false;'><i class='fa fa-angle-left'></i></a>";
+		print "<a href='#' class='galleryDetailPrevious inactive' onClick='return false;'><i class='fa fa-angle-left' role='button' aria-label='previous'></i></a>";
 	}
 	if($pn_next_item_id > 0){
-		print "<a href='#' class='galleryDetailNext' onclick='caGalleryNav(\"next\"); return false;'><i class='fa fa-angle-right'></i></a>";
+		print "<a href='#' class='galleryDetailNext' onclick='caGalleryNav(\"next\"); return false;'><i class='fa fa-angle-right' role='button' aria-label='next'></i></a>";
 	}else{
-		print "<a href='#' class='galleryDetailNext inactive' onClick='return false;'><i class='fa fa-angle-right'></i></a>";
+		print "<a href='#' class='galleryDetailNext inactive' onClick='return false;'><i class='fa fa-angle-right' role='button' aria-label='next'></i></a>";
 	}
 	#print "<div id='galleryDetailImageWrapper'>".caDetailLink($this->request, $this->getVar("rep"), '', $ps_table,  $this->getVar("row_id")).$this->getVar("repToolBar")."</div>";	
-
+if($x){
+?>
+	<div id='galleryDetailImageWrapper'><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Detail',  'GetMediaOverlay', array('context' => 'gallery', 'id' => $pn_row_id, 'representation_id' => $pn_rep_id, 'overlay' => 1)); ?>", function() { var url = jQuery("#" + caMediaPanel.getPanelID()).data("reloadUrl"); if(url) { window.location = url; } }); return false;'><?php print $this->getVar("rep"); ?></a><?php print $this->getVar("repToolBar"); ?></div>	
+<?php
+}
 	$t_object = new ca_objects($pn_row_id);
-	
-	print "<div class='detail'>".caRepresentationViewer(
+	$this->request->setParameter('context', 'objects');
+	print "<div id='galleryDetailImageWrapper'>".caRepresentationViewer(
 				$this->request, 
 				$t_object, 
 				$t_object,
 				array(
 					'display' => 'detail',
-					'showAnnotations' => true, 
+					'showAnnotations' => false, 
 					'primaryOnly' => true, 
 					'dontShowPlaceholder' => true, 
 					'captionTemplate' => ''
 				)
-			)."</div>";						
+			)."</div>";
+			#/new/index.php/Detail/GetMediaOverlay/context/getSetItemRep/id/173/representation_id/382/overlay/1
+
+			#/new/index.php/Detail/GetMediaOverlay/context/gallery/id/173/representation_id/382/set_id/148/overlay/1					
 ?>
 
 

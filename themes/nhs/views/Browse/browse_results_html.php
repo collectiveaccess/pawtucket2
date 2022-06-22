@@ -219,7 +219,7 @@ if (!$vb_ajax) {	// !ajax
 } // !ajax
 if($qr_res->numHits() && $this->request->getParameter("collectionDetail", pString)){
 	# --- heading for collection detail pages object results - has to be done here cause we don't knowif the browse will have results on detail page
-	print "<div class='container'><div class='row'><div class='col-sm-12'><H4>Digitized Items from this Collection</H4><br/></div></div></div>";
+	print "<div class='container'><div class='row'><div class='col-sm-12'><H4>Items from this Collection</H4><br/></div></div></div>";
 }
 # --- check if this result page has been cached
 # --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id

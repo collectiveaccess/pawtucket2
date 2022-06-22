@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2 Default Theme\n"
 "POT-Creation-Date: 2019-06-06 10:45-0400\n"
-"PO-Revision-Date: 2019-06-14 10:09-0400\n"
+"PO-Revision-Date: 2021-06-25 11:38-0400\n"
 "Last-Translator: Maria Passarotti <maria@whirl-i-gig.com>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: nl_BE\n"
@@ -2161,6 +2161,10 @@ msgstr "Vul uw e-mailadres in"
 msgid "Send"
 msgstr "Verzend"
 
+#: themes/erfgoed_noorderkempen/views/Contact/form_html.php:112
+msgid "send"
+msgstr "Verzend"
+
 #: themes/erfgoed_noorderkempen/views/Details/ca_collections_default_html.php:42
 #: themes/erfgoed_noorderkempen/views/Details/ca_objects_default_html.php:86
 msgid "Download as PDF"
@@ -2181,3 +2185,35 @@ msgstr "Tags en commentaren"
 #: themes/erfgoed_noorderkempen/views/pageFormat/pageHeader.php:192
 msgid "Over ons"
 msgstr "Over ons"
+
+#: views/Cookies/banner_html.php:14
+msgid "This website uses cookies"
+msgstr "Deze website gebruikt cookies"
+
+#: views/Cookies/banner_html.php:20
+msgid "Manage"
+msgstr "Beheren"
+
+#: views/Cookies/banner_html.php:20
+msgid "Accept"
+msgstr "Accepteren"
+
+#: views/Cookies/form_manage_html.php:38 views/pageFormat/pageFooter.php:57
+msgid "Manage Cookies"
+msgstr "Cookies Beheren"
+
+#: views/Cookies/form_manage_html.php:93
+msgid "ON"
+msgstr "AAN"
+
+#: views/Cookies/form_manage_html.php:95
+msgid "OFF"
+msgstr "UIT"
+
+#: views/Cookies/form_manage_html.php:109
+msgid "Update"
+msgstr "Bewaar"
+
+#: views/Cookies/form_manage_html.php:109
+msgid "Accept All"
+msgstr "Accepteer Alles"

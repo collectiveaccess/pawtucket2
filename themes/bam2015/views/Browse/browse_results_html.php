@@ -304,7 +304,7 @@ if($this->request->getParameter("detailNav", pInteger)){
 if (!$vb_ajax) {	// !ajax
 	# --- are we showing the views dropdown?
 	$vb_show_views = false;
-	if(($vs_table != ca_occurrences) && (is_array($va_views) && (sizeof($va_views) > 1))){
+	if(($vs_table != 'ca_occurrences') && (is_array($va_views) && (sizeof($va_views) > 1))){
 		$vb_show_views = true;
 	}
 ?>
