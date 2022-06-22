@@ -54,7 +54,7 @@
 ?>			
 					<div id="detailAnnotations"></div>
 <?php
-					print $this->getVar('representationViewerThumbnailBar');
+					print "<div class='row'><div class='col-md-12 col-lg-8 col-lg-offset-2'>".$this->getVar('representationViewerThumbnailBar')."</div></div>";
 				}else{
 					# --- media placeholder
 					if($t_object->get("instantiationMediaType")){
