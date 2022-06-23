@@ -552,6 +552,15 @@ a.navbar-brand .line3{
 	position:relative;
 	text-align:center;
 }
+@media(min-width:768px){
+	.frontSlide img {
+		height: 475px;
+		width: auto;
+	}
+	.hpContentBoxContainer{
+		max-width: 1325px;
+	}
+}
 /* artistList */
 .artistListLetterBar a{
 	margin-right:15px;

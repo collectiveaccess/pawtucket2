@@ -83,7 +83,7 @@
 	print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 
-<div class="container">
+<div class="container hpContentBoxContainer">
 	
 	<div class="row" style="margin-top:20px;">
 		<div class="col-sm-3">

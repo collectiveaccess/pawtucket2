@@ -370,9 +370,9 @@
 			
 			$o_context->setParameter('key', $vs_key);
 			
-			if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
+			if (($vn_key_start = (int)$vn_start - 2500) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
-			$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+			$o_context->setResultList($qr_res->getPrimaryKeyValues(2500));
 			//if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
 			$qr_res->seek($vn_start);
 			
