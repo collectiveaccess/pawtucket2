@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,11 +33,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title>CollectiveAccess error</title>
-	<link href="<?php print $vs_path; ?>/themes/default/assets/pawtucket/css/error.css" rel="stylesheet" type="text/css" />
+	<link href="<?= $vs_path; ?>/themes/default/assets/pawtucket/css/error.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div id='errorDetails'>
-		<div id="logo"><img src="<?php print $vs_path ?>/themes/default/assets/pawtucket/graphics/ca_nav_logo300.png"/></div><!-- end logo -->
+		<div id="logo"><img src="<?php print $vs_path ?>/themes/default/assets/pawtucket/graphics/logo.svg"/></div><!-- end logo -->
 		<div id="content">
 			<div class='error'>Something went wrong</div>	
 			

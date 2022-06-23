@@ -591,12 +591,12 @@
             },
             "installation-source": "dist",
             "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Promise\\": "src/"
-                },
                 "files": [
                     "src/functions_include.php"
-                ]
+                ],
+                "psr-4": {
+                    "GuzzleHttp\\Promise\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -969,6 +969,7 @@
                 "issues": "https://github.com/hoaproject/Compiler/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Compiler"
             },
+            "abandoned": true,
             "install-path": "../hoa/compiler"
         },
         {
@@ -1043,6 +1044,7 @@
                 "issues": "https://github.com/hoaproject/Consistency/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Consistency"
             },
+            "abandoned": true,
             "install-path": "../hoa/consistency"
         },
         {
@@ -1110,6 +1112,7 @@
                 "issues": "https://github.com/hoaproject/Event/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Event"
             },
+            "abandoned": true,
             "install-path": "../hoa/event"
         },
         {
@@ -1175,6 +1178,7 @@
                 "issues": "https://github.com/hoaproject/Exception/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Exception"
             },
+            "abandoned": true,
             "install-path": "../hoa/exception"
         },
         {
@@ -1248,6 +1252,7 @@
                 "issues": "https://github.com/hoaproject/File/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/File"
             },
+            "abandoned": true,
             "install-path": "../hoa/file"
         },
         {
@@ -1313,6 +1318,7 @@
                 "issues": "https://github.com/hoaproject/Iterator/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Iterator"
             },
+            "abandoned": true,
             "install-path": "../hoa/iterator"
         },
         {
@@ -1389,6 +1395,7 @@
                 "issues": "https://github.com/hoaproject/Math/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Math"
             },
+            "abandoned": true,
             "install-path": "../hoa/math"
         },
         {
@@ -1460,6 +1467,7 @@
                 "issues": "https://github.com/hoaproject/Protocol/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Protocol"
             },
+            "abandoned": true,
             "install-path": "../hoa/protocol"
         },
         {
@@ -1527,6 +1535,7 @@
                 "issues": "https://github.com/hoaproject/Regex/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Regex"
             },
+            "abandoned": true,
             "install-path": "../hoa/regex"
         },
         {
@@ -1602,6 +1611,7 @@
                 "issues": "https://github.com/hoaproject/Stream/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Stream"
             },
+            "abandoned": true,
             "install-path": "../hoa/stream"
         },
         {
@@ -1673,6 +1683,7 @@
                 "issues": "https://github.com/hoaproject/Ustring/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Ustring"
             },
+            "abandoned": true,
             "install-path": "../hoa/ustring"
         },
         {
@@ -1739,6 +1750,7 @@
                 "issues": "https://github.com/hoaproject/Visitor/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Visitor"
             },
+            "abandoned": true,
             "install-path": "../hoa/visitor"
         },
         {
@@ -1802,6 +1814,7 @@
                 "issues": "https://github.com/hoaproject/Zformat/issues",
                 "source": "https://central.hoa-project.net/Resource/Library/Zformat"
             },
+            "abandoned": true,
             "install-path": "../hoa/zformat"
         },
         {
@@ -1901,8 +1914,8 @@
             "installation-source": "dist",
             "autoload": {
                 "psr-4": {
-                    "PasswordPolicy\\Tests\\": "tests/",
-                    "PasswordPolicy\\": "src/PasswordPolicy/"
+                    "PasswordPolicy\\": "src/PasswordPolicy/",
+                    "PasswordPolicy\\Tests\\": "tests/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",

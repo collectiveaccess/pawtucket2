@@ -262,6 +262,10 @@ h1 i {
 .navbar-nav > li > a {
     line-height: 27px;
 }   
+
+.logo {
+	margin-top: 5px;
+}
    
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus,

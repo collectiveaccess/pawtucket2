@@ -27,6 +27,9 @@ Version 1.7.15 is a maintenance release with these bug fixes and minor improveme
 * Fix for issue preventing correct display of relationship types for self-relationships (Eg. entity-entity relationships)
 * Allow apostrophes in email addresses for new users (GitHub issue #347)
 * Update vendor libraries to incorporate security fixes
+* Updated PDF output components for compatibility with new vendor libraries
+* Filter HTML tags from user profile and user comment form input to preclude potential XSS issue
+* Update logo graphics
 
 Note that this version supports 7.3 and 7.4. It is not yet compatible with PHP 8.
 

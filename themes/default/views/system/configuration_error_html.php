@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2014 Whirl-i-Gig
+ * Copyright 2011-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -45,7 +45,7 @@
 </head>
 <body>
 	<div id='box'>
-	<div id="logo"><img src="<?php print $vs_path ?>/themes/default/assets/pawtucket/graphics/ca_logo.png"/></div><!-- end logo -->
+	<div id="logo"><img src="<?= $vs_path ?>/themes/default/assets/pawtucket/graphics/logo.svg"/></div><!-- end logo -->
 	<div id="content">
 		<?php print "<div class='error'>An error in your system configuration has been detected</div>
 			General installation instructions can be found
