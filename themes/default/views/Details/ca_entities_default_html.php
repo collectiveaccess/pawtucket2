@@ -47,7 +47,7 @@
 					{{{<ifdef code="ca_entities.description"><div class='unit'><H6>Biography</H6>^ca_entities.description</div></ifdef>}}}
 					
 					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6></ifcount>}}}
-					{{{<ifcount code="ca_objects" min="2"><H6>Related collections</H6></ifcount>}}}
+					{{{<ifcount code="ca_objects" min="2"><H6>Related objects</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_objects"><l>^ca_objects.preferred_labels.name</l> (^relationship_typename)</unit>}}}
 
 
