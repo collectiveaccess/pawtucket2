@@ -104,7 +104,6 @@
 							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>}}}
 							
-							
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>}}}

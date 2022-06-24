@@ -48,7 +48,7 @@
 				<div class='col-md-6 col-lg-6'>
 					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
 					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.related.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit>}}}
 					
 					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 					{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
@@ -60,7 +60,7 @@
 					
 					{{{<ifcount code="ca_places.related" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 					{{{<ifcount code="ca_places.related" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.related.preferred_labels.name</l> (^relationship_typename)</unit>}}}				
+					{{{<unit relativeTo="ca_places.related" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}				
 				</div><!-- end col -->
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="2">

@@ -50,11 +50,11 @@
 <!-- Einzelausstellungen -->
 					{{{<ifcount code="ca_occurrences.related" min="1" max="1" restrictToTypes="exhibition_solo"><H6>Related solo show</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" min="2" restrictToTypes="exhibition_solo"><H6>Related solo shows</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences"><p><l>^ca_occurrences.displaye_exhibition</l> (^relationship_typename)</p></unit>}}}
+					{{{<unit relativeTo="ca_occurrences.related"><p><l>^ca_occurrences.displaye_exhibition</l> (^relationship_typename)</p></unit>}}}
 <!-- Gruppenausstellungen -->
 					{{{<ifcount code="ca_occurrences.related" min="1" max="1" restrictToTypes="exhibition_group"><H6>Related group show</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" min="2" restrictToTypes="exhibition_group"><H6>Related group shows</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences"><p><l>^ca_occurrences.displaye_exhibition</l> (^relationship_typename)</p></unit>}}}
+					{{{<unit relativeTo="ca_occurrences.related"><p><l>^ca_occurrences.displaye_exhibition</l> (^relationship_typename)</p></unit>}}}
 <!-- Zugehörige Literaturhinweise -->
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="article, leaflet, anthology, book, cat, dvd, self, web, periodical" min="1" max="1"><H6>Related bibliography</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="article, leaflet, anthology, book, cat, dvd, self, web, periodical" min="2"><H6>Related bibliography</H6></ifcount>}}}
