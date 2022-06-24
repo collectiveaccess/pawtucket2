@@ -46,6 +46,11 @@
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_entities.description"><div class='unit'><H6>Biography</H6>^ca_entities.description</div></ifdef>}}}
 					
+					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6></ifcount>}}}
+					{{{<ifcount code="ca_objects" min="2"><H6>Related collections</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_objects"><l>^ca_objects.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+
+
 					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
 					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit>}}}
