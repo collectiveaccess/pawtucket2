@@ -275,11 +275,11 @@
 			if (is_array($va_attrs) && sizeof($va_attrs)) {
 				return $this->editAttribute(
 					$va_attrs[0]->getAttributeID(),
-					$pm_element_code_or_id, $pa_values, $ps_error_source, $pa_options
+					$pm_element_code_or_id, $pa_values, $ps_error_source
 				);
 			} else {
 				return $this->addAttribute(
-					$pa_values, $pm_element_code_or_id, $ps_error_source, $pa_options
+					$pa_values, $pm_element_code_or_id, $ps_error_source
 				);
 			}
 		}
