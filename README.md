@@ -1,4 +1,4 @@
-# README: Pawtucket2 version 1.7.15
+# README: Pawtucket2 version 1.7.16
 
 ### About CollectiveAccess
 
@@ -21,15 +21,12 @@ Pawtucket2 is meant to be customized. The download package includes a neutral de
 All CollectiveAccess components are freely available under the open source GNU Public License version 3.
 
 
-### About CollectiveAccess 1.7.15
+### About CollectiveAccess 1.7.16
 
-Version 1.7.15 is a maintenance release with these bug fixes and minor improvements:
-* Fix for issue preventing correct display of relationship types for self-relationships (Eg. entity-entity relationships)
-* Allow apostrophes in email addresses for new users (GitHub issue #347)
+Version 1.7.16 is a maintenance release with these bug fixes and minor improvements:
+* Fix for issue preventing correct display of relationship types for non-self-relationships (Eg. object-entity relationships)
 * Update vendor libraries to incorporate security fixes
-* Updated PDF output components for compatibility with new vendor libraries
-* Filter HTML tags from user profile and user comment form input to preclude potential XSS issue
-* Update logo graphics
+* Fix issue where detection of PDFs using Zend_PDF library option would throw a fatal error
 
 Note that this version supports 7.3 and 7.4. It is not yet compatible with PHP 8.
 
@@ -41,28 +38,28 @@ NOTE: The update process is relatively safe and rarely, if ever, causes data los
 
 #### Updating from version 1.7 or later
 
-Before attempting to upgrade your Pawtucket2 installation to version 1.7.15 make sure your Providence installation has been updated to 1.7.15. While it is often possible to run an older version of Pawtucket2 with a newer version of Providence, it is not guaranteed. It is usually not possible to run an older version of Providence with a newer version of Pawtucket2.
+Before attempting to upgrade your Pawtucket2 installation to version 1.7.16 make sure your Providence installation has been updated to 1.7.16. While it is often possible to run an older version of Pawtucket2 with a newer version of Providence, it is not guaranteed. It is usually not possible to run an older version of Providence with a newer version of Pawtucket2.
 
-To update from a version 1.7.x installation decompress the CollectiveAccess Pawtucket 1.7.15 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory, custom theme (in `themes/your_theme_name_here`) and your setup.php file.
+To update from a version 1.7.x installation decompress the CollectiveAccess Pawtucket 1.7.16 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory, custom theme (in `themes/your_theme_name_here`) and your setup.php file.
 
 Once the updated files are in place navigate in your web browser to the home page of your Pawtucket2 installation. If you see the home page you're done. If you see this message:
 
 ```"Your database is out-of-date. Please install all schema migrations starting with migration #xxx."```
  
-you have not updated your Providence installation to version 1.7.15.
+you have not updated your Providence installation to version 1.7.16.
 
 
 #### Updating from version 1.6 or earlier
 
-To update from a version 1.6.x or older installation decompress the CollectiveAccess Providence 1.7.15 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory and custom theme (in `themes/your_theme_name_here`). 
+To update from a version 1.6.x or older installation decompress the CollectiveAccess Providence 1.7.16 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory and custom theme (in `themes/your_theme_name_here`). 
 
-Next rename your existing setup.php to something else (Eg. `setup.php-old`). Then copy the version 1.7.15 template in `setup.php-dist` to `setup.php`. Edit this file with your database login information, system name and other basic settings. You can reuse the settings in your old setup.php file as-is. Only the format of the setup.php file has changed.
+Next rename your existing setup.php to something else (Eg. `setup.php-old`). Then copy the version 1.7.16 template in `setup.php-dist` to `setup.php`. Edit this file with your database login information, system name and other basic settings. You can reuse the settings in your old setup.php file as-is. Only the format of the setup.php file has changed.
 
 Once the updated files are in place navigate in your web browser to the home page of your Pawtucket2 installation. If you see the home page you're done. If you see this message:
 
 ```"Your database is out-of-date. Please install all schema migrations starting with migration #xxx. Click here to automatically apply the required updates, or see the update HOW-TO for instructions on applying database updates manually."```
  
-you have not updated your Providence installation to version 1.7.15.
+you have not updated your Providence installation to version 1.7.16.
 
 Version 1.7 introduced zoomable media versions for multipage documents such as PDFs, Microsoft Word or Powerpoint. Systems migrated from pre-1.7 versions of CollectiveAccess will not have these media versions available causing the built-in document viewer to fail. If your system includes multipage documents you should regenerate the media **in Providence** using the command-line caUtils utility in `support/bin`. See the [Providence README](https://github.com/collectiveaccess/providence) for details.
 
