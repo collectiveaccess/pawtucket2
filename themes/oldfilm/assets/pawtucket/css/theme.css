@@ -1,0 +1,151 @@
+.container {
+  font-family: "Montserrat", Sans-serif;
+}
+
+/* ---------- Collections Search Bar (located in header) ---------- */
+.container form .formOutline button{
+  padding: 5px 12px;
+  border: 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+.container .navbar-form{
+  width: 254px;
+  padding: 0;
+}
+.container .navbar-form .form-group {
+  width: 210px;
+}
+
+
+/* ---------- Browse Results List ---------- */
+.bResultListItem .bResultListItemText {
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+}
+.bResultListItem .bResultListItemText a {
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+  /* margin-bottom: 2px; */
+}
+.bResultListItem .bResultListItemText .listResultDescription {
+  color: #000;
+  font-size: 12px;
+  /* font-weight: 600; */
+  font-weight: 400;
+  margin-top: 5px;
+}
+
+
+/* ---------- Browse Refine Subview ---------- */
+#bRefine h1 {
+  font-size: 30px;
+  text-transform: uppercase;
+  color: #666;
+  margin-top: 0px;
+  /* margin-bottom: 10px; */
+  font-weight: 500;
+}
+
+#bRefine H2 {
+  font-size: 18px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #666;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+
+/* ---------- Collection detail pages ---------- */
+
+.detail .detailNavBgLeft,
+.detail .detailNavBgRight {
+  margin-top: 0px;
+  background-color: #EBEBEB;
+  width: 45px;
+  height: 120px;
+  text-transform: uppercase;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.detail h1 {
+  font-size: 40px;
+  color: #262626;
+  line-height: 135%;
+  text-transform: none;
+}
+
+.detail .unit div.plyr button{
+  padding: 5px 12px;
+}
+
+.detail .unit {
+  margin-bottom: 20px;
+}
+
+.detail label {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  padding-bottom: 0px;
+  margin: 10px 0px 5px 0px;
+}
+
+.detail {
+  font-family: "Montserrat", Sans-serif;
+  color: #000;
+  font-size: 17px;
+}
+
+.detail .imageCaption {
+  font-size: 13px;
+}
+
+.caption {
+  font-size: 17px;
+  color: #000;
+  padding-top: 5px;
+}
+
+
+/* ---------- Collection Nav bar styles ---------- */
+/* .collection-nav{
+  margin-left: auto;
+  margin-right: auto;
+} */
+
+/* .collection-menu{
+  list-style: none;
+  margin: 0;
+  margin-bottom: 20px;
+  padding: 0;
+  overflow: hidden;
+} */
+
+/* .collection-menu .coll-menu-item {
+  float: left;
+} */
+
+/* .collection-menu .coll-menu-item a {
+  display: block;
+  color: #000;
+  text-align: center;
+  padding: 16px;
+  text-decoration: none;
+  font-family: inherit;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 16px;
+} */
+
+/* .coll-menu-item a:hover {
+  background-color: #3B3533;
+  color: #fff;
+} */

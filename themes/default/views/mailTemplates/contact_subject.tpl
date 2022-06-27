@@ -26,5 +26,5 @@
  * ----------------------------------------------------------------------
  */
 
-	print "[".$this->request->config->get("app_display_name")."] "._t("Contact form email");
+	print $this->request->config->get("app_display_name").": "._t("Contact form email");
 ?>

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2018 Whirl-i-Gig
+ * Copyright 2011-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -78,6 +78,22 @@ $_ca_attribute_settings['InformationServiceAttributeValue'] = array(		// global
 		'label' => _t('Does not use locale setting'),
 		'description' => _t('Check this option if you don\'t want your values to be locale-specific. (The default is to not be.)')
 	),
+	'allowDuplicateValues' => array(
+		'formatType' => FT_NUMBER,
+		'displayType' => DT_CHECKBOXES,
+		'default' => 0,
+		'width' => 1, 'height' => 1,
+		'label' => _t('Allow duplicate values?'),
+		'description' => _t('Check this option if you want to allow duplicate values to be set when element is not in a container and is repeating.')
+	),
+	'raiseErrorOnDuplicateValue' => array(
+		'formatType' => FT_NUMBER,
+		'displayType' => DT_CHECKBOXES,
+		'default' => 0,
+		'width' => 1, 'height' => 1,
+		'label' => _t('Show error message for duplicate values?'),
+		'description' => _t('Check this option to show an error message when value is duplicate and <em>allow duplicate values</em> is not set.')
+	),
 	'canBeUsedInSort' => array(
 		'formatType' => FT_NUMBER,
 		'displayType' => DT_CHECKBOXES,
@@ -135,6 +151,14 @@ $_ca_attribute_settings['InformationServiceAttributeValue'] = array(		// global
 		'label' => _t('Value delimiter'),
 		'validForRootOnly' => 1,
 		'description' => _t('Delimiter to use between multiple values when used in a display.')
+	),
+	'sortUsingList' => array(
+		'formatType' => FT_TEXT,
+		'displayType' => DT_FIELD,
+		'showLists' => true, 'allowNull' => true,
+		'width' => 40, 'height' => 1,
+		'label' => _t('Sort using list'),
+		'description' => _t('List code for list to sort information service values on. Each item in the referenced list should have an identifier that matches the information service item uri or id and a rank that reflects the desired sort order. Leave empty to sort information service items by their value.')
 	)
 );
 
@@ -216,7 +240,7 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 		));
 
 		//if (!trim($ps_value)) {
-		//$this->postError(1970, _t('Entry was blank.'), 'InformationServiceAttributeValue->parseValue()');
+		//$this->postError(1970, _t('Entry for <em>%1</em> was blank.', $pa_element_info['displayLabel']), 'InformationServiceAttributeValue->parseValue()');
 		//	return false;
 		//}
 
@@ -224,18 +248,20 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 			$va_tmp = explode('|', $ps_value);
 			$va_info = array();
 			if(sizeof($va_tmp) == 3) { /// value is already in desired format (from autocomplete lookup)
-				// get extra indexing info for this uri from plugin implementation
-				$this->opo_plugin = InformationServiceManager::getInformationServiceInstance($vs_service);
-				$vs_display_text = $this->opo_plugin->getDisplayValueFromLookupText($va_tmp[0]);
-				$va_info['indexing_info'] = $this->opo_plugin->getDataForSearchIndexing($pa_element_info['settings'], $va_tmp[2]);
-				$va_info['extra_info'] = $this->opo_plugin->getExtraInfo($pa_element_info['settings'], $va_tmp[2]);
+				if ($va_tmp[2]) {	// Skip if no url set (is "no match" message)
+					// get extra indexing info for this uri from plugin implementation
+					$this->opo_plugin = InformationServiceManager::getInformationServiceInstance($vs_service);
+					$vs_display_text = $this->opo_plugin->getDisplayValueFromLookupText($va_tmp[0]);
+					$va_info['indexing_info'] = $this->opo_plugin->getDataForSearchIndexing($pa_element_info['settings'], $va_tmp[2]);
+					$va_info['extra_info'] = $this->opo_plugin->getExtraInfo($pa_element_info['settings'], $va_tmp[2]);
 
-				return array(
-					'value_longtext1' => $vs_display_text,	// text
-					'value_longtext2' => $va_tmp[2],		// uri
-					'value_decimal1' => is_numeric($va_tmp[1]) ? $va_tmp[1] : null, 		// id
-					'value_blob' => caSerializeForDatabase($va_info)
-				);
+					return array(
+						'value_longtext1' => $vs_display_text,	// text
+						'value_longtext2' => $va_tmp[2],		// uri
+						'value_decimal1' => is_numeric($va_tmp[1]) ? $va_tmp[1] : null, 		// id
+						'value_blob' => caSerializeForDatabase($va_info)
+					);
+				}
 			} elseif((sizeof($va_tmp)==1) && (isURL($va_tmp[0], array('strict' => true)) || is_numeric($va_tmp[0]))) { // URI or ID -> try to look it up. we match hit when exactly 1 hit comes back
 				// try lookup cache
 				if(CompositeCache::contains($va_tmp[0], "InformationServiceLookup{$vs_service}")) {

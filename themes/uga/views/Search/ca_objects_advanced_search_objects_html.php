@@ -102,7 +102,7 @@
 			<option value="uc">User Copy Available</option>
 			<option value="ar">Collection Has Archival Master</option>
 			</select>
-			<h5><a href="https://peabody.libs.uga.edu/cgi-bin/parc.cgi?dbs=parc&userid=galileo&action=search&_cc=1">Search the Peabody Database</a>
+			<h5><a href="http://dbs.galib.uga.edu/cgi-bin/ultimate.cgi?dbs=parc&userid=galileo&action=search&_cc=1">Search the Peabody Database</a>
 			</h5>
 			<div style="height:10px"></div>
 			<button type="submit" class="btn btn-primary">Search</button>

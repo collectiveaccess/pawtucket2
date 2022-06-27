@@ -73,6 +73,22 @@
 			'label' => _t('Require value'),
 			'description' => _t('Check this option if you want an error to be thrown if this measurement is left blank.')
 		),
+		'allowDuplicateValues' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow duplicate values?'),
+			'description' => _t('Check this option if you want to allow duplicate values to be set when element is not in a container and is repeating.')
+		),
+		'raiseErrorOnDuplicateValue' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Show error message for duplicate values?'),
+			'description' => _t('Check this option to show an error message when value is duplicate and <em>allow duplicate values</em> is not set.')
+		),
 		'canBeUsedInSort' => array(
 			'formatType' => FT_NUMBER,
 			'displayType' => DT_CHECKBOXES,
@@ -161,7 +177,7 @@
 			if (caGetOption('returnAsDecimal', $pa_options, false)) {
 				return (float)$this->opn_duration;
 			}
-			if (!strlen($this->opn_duration)) { return ''; }
+			if (!strlen($this->opn_duration) || ((float)$this->opn_duration === 0.0)) { return ''; }
 			$o_tcp = new TimecodeParser();
 			$o_tcp->setParsedValueInSeconds($this->opn_duration);
 			

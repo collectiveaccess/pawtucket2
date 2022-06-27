@@ -1,4 +1,4 @@
-# README: Pawtucket2 version 1.7.11
+# README: Pawtucket2 version 1.8
 
 ### About CollectiveAccess
 
@@ -21,14 +21,9 @@ Pawtucket2 is meant to be customized. The download package includes a neutral de
 All CollectiveAccess components are freely available under the open source GNU Public License version 3.
 
 
-### About CollectiveAccess 1.7.11
+### About CollectiveAccess 1.8
 
-Version 1.7.11 is a maintenance release with these bug fixes and minor improvements:
-* Fix for potential indexing issue which would result in incorrectly tokenized search terms and poor or broken search functionality.
-* Fix for issue where image media processed in the background by the task queue would not honor custom center points when cropped.
-* Removed extraneous fonts and trackers.
-
-Note that this version supports PHP 7.2, 7.3 and 7.4. It is not compatible with PHP 8.
+Pawtucket 1.8 is compatible with PHP 7.2, 7.3 and 7.4. It is not yet compatible with PHP 8.
 
 
 ### Updating from a previous version
@@ -64,14 +59,28 @@ you have not updated your Providence installation to version 1.7.11.
 Version 1.7 introduced zoomable media versions for multipage documents such as PDFs, Microsoft Word or Powerpoint. Systems migrated from pre-1.7 versions of CollectiveAccess will not have these media versions available causing the built-in document viewer to fail. If your system includes multipage documents you should regenerate the media **in Providence** using the command-line caUtils utility in `support/bin`. See the [Providence README](https://github.com/collectiveaccess/providence) for details.
 
 
+### Installing development versions
+
+The latest development version is always available in the `develop` branch (https://github.com/collectiveaccess/pawtucket2/tree/develop). Other feature-specific development versions are in branches prefixed with `dev/`. To install a development branch follow these steps:
+
+1. clone this repository into the location where you wish it to run using `git clone https://github.com/collectiveaccess/pawtucket2`.
+2. by default, the newly cloned repository will use the main branch, which contains code for the current release. Choose the `develop` branch by running from within the cloned repository `git checkout develop`.
+3. install the PHP package manager [Composer](https://getcomposer.org) if you do not already have it installed on your server.
+4. run `composer` from the root of the cloned repository with `composer.phar install`. This will download and install all required 3rd party software libraries. 
+5. follow the release version installation instructions to complete the installation.
 ### Useful Links
 
 * Web site: https://collectiveaccess.org
 * Documentation: https://manual.collectiveaccess.org
 * Demo: https://demo.collectiveaccess.org/
-* System requirements: https://manual.collectiveaccess.org/setup/systemReq.html
-* Forum: https://www.collectiveaccess.org/support
-* Bug Tracker: https://clangers.collectiveaccess.org
+* Installation instructions: http://docs.collectiveaccess.org/wiki/Installing_Pawtucket2
+* Upgrade instructions: http://docs.collectiveaccess.org/wiki/Upgrading_Pawtucket2
+* Release Notes for 1.7:
+  * https://docs.collectiveaccess.org/wiki/Release_Notes_for_Pawtucket2_1.7
+  * https://docs.collectiveaccess.org/wiki/Release_Notes_for_Pawtucket2_1.7.8
+* Forum: https://www.collectiveaccess.org/support/forum
+
+To report issues please use GitHub Issues.
 
 ### Other modules
 

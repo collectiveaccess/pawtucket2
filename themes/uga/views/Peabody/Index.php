@@ -94,7 +94,7 @@
 						<button class="btn btn-primary space-above" id="searchButton" name="rows" type="submit" value="20">Search</button>
 			</form>
 			<div style="height:10px"></div>
-			<p>See: <a href="https://peabody.libs.uga.edu/cgi-bin/parc.cgi?dbs=parc&userid=galileo&action=search&_cc=1"><strong>More Search Options in Peabody Database</strong></a>
+			<p>See: <a href="http://dbs.galib.uga.edu/cgi-bin/ultimate.cgi?dbs=parc&userid=galileo&action=search&_cc=1"><strong>More Search Options in Peabody Database</strong></a>
 			</p>
 		</div>		
 	</div>

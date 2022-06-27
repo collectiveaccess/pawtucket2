@@ -57,33 +57,40 @@ class Configuration {
 	 *
 	 * @access private
 	 */
-	var $ops_config_settings;
+	private $ops_config_settings;
 
 	/**
 	 * Error message
 	 *
 	 * @access private
 	 */
-	var $ops_error="";		#  error message - blank if no error
+	private $ops_error="";		#  error message - blank if no error
 
 	/**
 	 * Absolute path to configuration file
 	 *
 	 * @access private
 	 */
-	var $ops_config_file_path;
+	private $ops_config_file_path;
 
 	/**
 	 * Display debugging info
 	 *
 	 * @access private
 	 */
-	var $opb_debug = false;
+	private $opb_debug = false;
+	
+	/**
+	 * MD5 hash for current configuration file path
+	 *
+	 * @access private
+	 */
+	private $ops_md5_path;
 
 	static $s_get_cache;
 	static $s_config_cache = null;
 	static $s_have_to_write_config_cache = false;
-	private $ops_md5_path;
+	
 
 	/* ---------------------------------------- */
 	/**
@@ -126,7 +133,7 @@ class Configuration {
 		$va_config_file_list = [];
 		
 		// cache key for on-disk caching
-		$vs_path_as_md5 = md5($_SERVER['HTTP_HOST'].$this->ops_config_file_path.'/'.$g_ui_locale.(isset($g_configuration_cache_suffix) ? '/'.$g_configuration_cache_suffix : ''));
+		$vs_path_as_md5 = md5(($_SERVER['HTTP_HOST'] ?? '') . $this->ops_config_file_path.'/'.$g_ui_locale.(isset($g_configuration_cache_suffix) ? '/'.$g_configuration_cache_suffix : ''));
 
 		#
 		# Is configuration file already cached?
@@ -144,6 +151,12 @@ class Configuration {
 			// Theme config overrides local config
 			if (defined('__CA_DEFAULT_THEME_CONFIG_DIRECTORY__') && file_exists(__CA_DEFAULT_THEME_CONFIG_DIRECTORY__.'/'.$vs_config_filename)) {
 				$va_config_file_list[] = $vs_top_level_config_path = __CA_DEFAULT_THEME_CONFIG_DIRECTORY__.'/'.$vs_config_filename;
+			}
+			
+			// Appname-specific config overrides local config
+			$appname_specific_path = __CA_LOCAL_CONFIG_DIRECTORY__.'/'.pathinfo($vs_config_filename, PATHINFO_FILENAME).'_'.__CA_APP_NAME__.'.'.pathinfo($vs_config_filename, PATHINFO_EXTENSION);
+			if (defined('__CA_LOCAL_CONFIG_DIRECTORY__') && file_exists($appname_specific_path)) {
+				$va_config_file_list[] = $vs_top_level_config_path = $appname_specific_path;
 			}
 		}
 		$o_config = ($vs_top_level_config_path === $this->ops_config_file_path) ? $this : Configuration::load($vs_top_level_config_path, false, false, true);
@@ -167,20 +180,25 @@ class Configuration {
 		array_unshift($va_config_file_list, $this->ops_config_file_path);
 
 		// try to figure out if we can get it from cache
+		$mtime_keys = [];
 		if((!defined('__CA_DISABLE_CONFIG_CACHING__') || !__CA_DISABLE_CONFIG_CACHING__) && !$pb_dont_cache) {
-			self::loadConfigCacheInMemory();
-
 			if($vb_setup_has_changed = caSetupPhpHasChanged()) {
 				self::clearCache();
+			} elseif(ExternalCache::contains($vs_path_as_md5, 'ConfigurationCache')) {	// try to load current file from cache
+				self::$s_config_cache[$vs_path_as_md5] = ExternalCache::fetch($vs_path_as_md5, 'ConfigurationCache');
 			}
 
-			if(!$vb_setup_has_changed && isset(self::$s_config_cache[$vs_path_as_md5])) {
+			if(!$vb_setup_has_changed && isset(self::$s_config_cache[$vs_path_as_md5])) {	// file has been loaded from cache
 				$vb_cache_is_invalid = false;
 				
+				// Check file times to make sure cache is not stale
 				foreach($va_config_file_list as $vs_config_file_path) {
+					$mtime_keys[] = $mtime_key = 'mtime_'.$vs_path_as_md5.md5($vs_config_file_path);
+					$mtime = ExternalCache::fetch($mtime_key, 'ConfigurationCache');
+					
 				    $vs_config_mtime = caGetFileMTime($vs_config_file_path);
-                    if($vs_config_mtime != self::$s_config_cache[$k='mtime_'.$vs_path_as_md5.md5($vs_config_file_path)]) { // config file has changed
-                        self::$s_config_cache[$k] = $vs_config_mtime;
+                    if($vs_config_mtime != $mtime) { // config file has changed
+                        self::$s_config_cache[$mtime_key] = $vs_config_mtime;
                         $vb_cache_is_invalid = true;
                         break;
                     }
@@ -195,7 +213,7 @@ class Configuration {
 
 		}
 
-		# load hash
+		# File contents 
 		$this->ops_config_settings = [];
 
 		# try loading global.conf file
@@ -207,9 +225,9 @@ class Configuration {
 		//
 		$this->ops_config_settings['scalars']['LOCALE'] = $g_ui_locale;
 
-		#
-		# load specified config file
-		#
+		//
+		// Load specified config file(s), overlaying each 
+		//
 		$vs_config_file_path = array_shift($va_config_file_list);
 		if (file_exists($vs_config_file_path) && $this->loadFile($vs_config_file_path, false, false)) {
 			$this->ops_config_settings["ops_config_file_path"] = $vs_config_file_path;
@@ -230,7 +248,15 @@ class Configuration {
 			// config cache to disk at least once on this request
 			self::$s_have_to_write_config_cache = true;
 			
-			ExternalCache::save('ConfigurationCache', self::$s_config_cache, 'default', 3600 * 3600 * 30);
+			// Write file to cache
+			ExternalCache::save($vs_path_as_md5, self::$s_config_cache[$vs_path_as_md5], 'ConfigurationCache', 3600 * 3600 * 30);
+			
+			// Write mtimes to cache for each component file (local, theme, stock)
+			if (is_array($mtime_keys) && sizeof($mtime_keys)) {
+				foreach($mtime_keys as $k) {
+					ExternalCache::save($k, self::$s_config_cache[$k], 'ConfigurationCache', 3600 * 3600 * 30);
+				}
+			}
 		}
 	}
 	/* ---------------------------------------- */
@@ -254,7 +280,7 @@ class Configuration {
 
 		$vs_key = $vs_scalar_value = $vs_assoc_key = "";
 		$vn_in_quote = $vn_state = 0;
-		$vb_escape_set = false;
+		$vb_escape_set = $vb_quoted_item_is_closed = false;
 		$va_assoc_pointer_stack = array();
 
 		$va_token_history = array();
@@ -416,6 +442,7 @@ class Configuration {
 					# ------------------------------------
 					# handle list values
 					case 30:
+					    if($vb_quoted_item_is_closed && (!in_array(trim($vs_token), [',', ']', ')']))) { break; }
 						switch($vs_token) {
 							# -------------------
 							case '"':
@@ -426,6 +453,7 @@ class Configuration {
 										$vn_in_quote = 1;
 									} else {
 										$vn_in_quote = 0;
+										$vb_quoted_item_is_closed = true;
 									}
 								}
 								$vb_escape_set = false;
@@ -439,8 +467,9 @@ class Configuration {
 										$this->ops_config_settings["lists"][$vs_key][] = $vs_item;
 									}
 									$vs_scalar_value = "";
+									$vb_quoted_item_is_closed = false;
 								}
-								$vb_escape_set = false;
+								$vb_escape_set  = false;
 								break;
 							# -------------------
 							case ']':
@@ -453,6 +482,7 @@ class Configuration {
 									}
 									# initialize
 									$vn_state = -1;
+									$vb_quoted_item_is_closed = false;
 								}
 								$vb_escape_set = false;
 								break;
@@ -482,6 +512,7 @@ class Configuration {
 					# handle associative array values
 					# get associative key
 					case 40:
+					    if($vb_quoted_item_is_closed && (!in_array(trim($vs_token), [',', '=', '}', ')']))) { break; }
 						switch($vs_token) {
 							# -------------------
 							case '"':
@@ -491,6 +522,7 @@ class Configuration {
 									if (!$vn_in_quote) {
 										$vn_in_quote = 1;
 									} else {
+									    $vb_quoted_item_is_closed = true;
 										$vn_in_quote = 0;
 									}
 								}
@@ -508,8 +540,9 @@ class Configuration {
 										if ($pb_die_on_error) { $this->_dieOnError(); }
 										return false;
 									}
-
+                                    
 									$vn_state = 50;
+									$vb_quoted_item_is_closed = false;
 								}
 								$vb_escape_set = false;
 								break;
@@ -524,13 +557,14 @@ class Configuration {
 									$vs_assoc_key = "";
 									$vs_scalar_value = "";
 									$vn_state = 40;
+									$vb_quoted_item_is_closed = false;
 								}
 								$vb_escape_set = false;
 								break;
 							# -------------------
 							case '}':
 								if ($vn_in_quote || $vb_escape_set) {
-									$vs_scalar_value .= "}";
+									$vs_assoc_key .= "}";
 								} else {
 									if (sizeof($va_assoc_pointer_stack) > 1) {
 										if ($vs_assoc_key) {
@@ -547,6 +581,7 @@ class Configuration {
 									}
 									$vs_key = $vs_assoc_key = $vs_scalar_value = "";
 									$vn_in_quote = 0;
+									$vb_quoted_item_is_closed = false;
 								}
 								$vb_escape_set = false;
 								break;
@@ -558,6 +593,7 @@ class Configuration {
 									$vb_escape_set = true;
 								}
 								break;
+							# -------------------
 							default:
 								if (preg_match("/^#/", trim($vs_token))) {
 									// comment
@@ -573,6 +609,7 @@ class Configuration {
 					# ------------------------------------
 					# handle associative value
 					case 50:
+					    if($vb_quoted_item_is_closed && (!in_array(trim($vs_token), [',', '{', '}', ',', ')']))) { break; }
 						switch($vs_token) {
 							# -------------------
 							case '"':
@@ -580,8 +617,10 @@ class Configuration {
 									$vs_scalar_value .= '"';
 								} else {
 									if (!$vn_in_quote) {
+									    if (preg_match("!^[ \t\n\r]+$!", $vs_scalar_value)) { $vs_scalar_value = ''; }
 										$vn_in_quote = 1;
 									} else {
+									    $vb_quoted_item_is_closed = true;
 										$vn_in_quote = 0;
 									}
 								}
@@ -598,6 +637,7 @@ class Configuration {
 									$vs_assoc_key = "";
 									$vs_scalar_value = "";
 									$vn_state = 40;
+									$vb_quoted_item_is_closed = false;
 								}
 								$vb_escape_set = false;
 								break;
@@ -614,6 +654,7 @@ class Configuration {
 									$vn_state = 40;
 									$vs_key = $vs_assoc_key = $vs_scalar_value = "";
 									$vn_in_quote = 0;
+									$vb_quoted_item_is_closed = false;
 								} else {
 									$vs_scalar_value .= $vs_token;
 								}
@@ -639,6 +680,7 @@ class Configuration {
 									}
 									$vs_key = $vs_assoc_key = $vs_scalar_value = "";
 									$vn_in_quote = 0;
+									$vb_quoted_item_is_closed = false;
 								}
 								$vb_escape_set = false;
 								break;
@@ -655,6 +697,7 @@ class Configuration {
 									$va_assoc_pointer_stack[] =& $va_assoc_pointer_stack[$i][$vs_assoc_key];
 									$vn_state = 60;
 									$vn_in_quote = 0;
+									$vb_quoted_item_is_closed = false;
 								}
 								$vb_escape_set = false;
 								break;
@@ -677,6 +720,7 @@ class Configuration {
 					# ------------------------------------
 					# handle list values nested in assoc
 					case 60:
+					    if($vb_quoted_item_is_closed && (!in_array(trim($vs_token), [',', ']', ')']))) { break; }
 						switch($vs_token) {
 							# -------------------
 							case '"':
@@ -687,6 +731,7 @@ class Configuration {
 										$vn_in_quote = 1;
 									} else {
 										$vn_in_quote = 0;
+										$vb_quoted_item_is_closed = true;
 									}
 								}
 								$vb_escape_set = false;
@@ -700,6 +745,7 @@ class Configuration {
 										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][] = $vs_item;
 									}
 									$vs_scalar_value = "";
+									$vb_quoted_item_is_closed = false;
 								}
 								$vb_escape_set = false;
 								break;
@@ -716,6 +762,7 @@ class Configuration {
 									# initialize
 									$vn_state = 40;
 									$vs_assoc_key = '';
+									$vb_quoted_item_is_closed = false;
 								}
 								$vb_escape_set = false;
 								break;
@@ -757,13 +804,17 @@ class Configuration {
 			if ($vn_in_quote && !in_array($vn_state, [10,20])) {
 				switch($vn_state) {
 					case 30:
-						$this->ops_error = "Missing trailing quote in list '$vs_key'<br/><strong>Last ".sizeof($va_token_history)." tokens were: </strong>".$this->_formatTokenHistory($va_token_history, array('outputAsHTML' => true));
-						break;
+						// $this->ops_error = "Missing trailing quote in list '$vs_key'<br/><strong>Last ".sizeof($va_token_history)." tokens were: </strong>".$this->_formatTokenHistory($va_token_history, array('outputAsHTML' => true));
+ 						//break;
+						continue(2);	// allow multiline quoted entries
 					case 40:
 					case 50:
-						$this->ops_error = "Missing trailing quote in associative array '$vs_key'<br/><strong>Last ".sizeof($va_token_history)." tokens were: </strong>".$this->_formatTokenHistory($va_token_history, array('outputAsHTML' => true));
+						//$this->ops_error = "Missing trailing quote in associative array '$vs_key'<br/><strong>Last ".sizeof($va_token_history)." tokens were: </strong>".$this->_formatTokenHistory($va_token_history, array('outputAsHTML' => true));
+						//break;
+						continue(2);	// allow multiline quoted entries
 					default:
 						$this->ops_error = "Missing trailing quote in '$vs_key' [Last token was '{$vs_token}'; state was $vn_state]<br/><strong>Last ".sizeof($va_token_history)." tokens were: </strong>".$this->_formatTokenHistory($va_token_history, array('outputAsHTML' => true));
+						break;
 				}
 				fclose($r_file);
 
@@ -835,7 +886,7 @@ class Configuration {
             }
             Configuration::$s_get_cache[$this->ops_md5_path][$ps_key] = $vs_tmp;
             
-            if (!$vs_tmp) { continue; }
+            if (!is_array($vs_tmp) && !strlen($vs_tmp)) { continue; }
             return $vs_tmp;
         }
         return $assoc_exists ? [] : null;
@@ -973,6 +1024,37 @@ class Configuration {
 	}
 	/* ---------------------------------------- */
 	/**
+	 * Return currently loaded configuration file as JSON
+	 *
+	 * @return string
+	 */
+	public function toJson() {
+		$config = array_merge(
+			is_array($this->ops_config_settings["scalars"]) ? $this->ops_config_settings["scalars"] : [], 
+			is_array($this->ops_config_settings["lists"]) ? $this->ops_config_settings["lists"] : [], 
+			is_array($this->ops_config_settings["assoc"]) ? $this->ops_config_settings["assoc"] : []
+		);	
+		return caFormatJson(json_encode($config));
+	}
+	/* ---------------------------------------- */
+	/**
+	 * Validate currently loaded configuration file against schema
+	 *
+	 * @return Opis\JsonSchema\ValidationResult Returns null if schema could not be loaded, either because it is invalid or does not exist.
+	 */
+	public function validate() {
+		$f = pathinfo($this->ops_config_file_path, PATHINFO_BASENAME);
+		
+		$v = new \Opis\JsonSchema\Validator();	
+		$loader = new \Opis\JsonSchema\Loaders\File("https://collectiveaccess.org", [__CA_LIB_DIR__."/Configuration/".ucfirst(strtolower(__CA_APP_TYPE__))."/schemas"]);
+		if (!($schema = $loader->loadSchema("https://collectiveaccess.org/{$f}.schema.json"))) { return null; } 	// no schema loaded
+
+		$result = $v->schemaValidation(json_decode($this->toJson()), $schema);
+		
+		return $result;
+	}
+	/* ---------------------------------------- */
+	/**
 	 * Find out if there was an error processing the configuration file
 	 *
 	 * @return bool Returns true if error occurred, false if not
@@ -1034,22 +1116,11 @@ class Configuration {
 	}
 	/* ---------------------------------------- */
 	/**
-	 * Removes all cached configuration
+	 * Remove all cached configuration
 	 */
 	public static function clearCache() {
-		ExternalCache::delete('ConfigurationCache');
+		ExternalCache::flush('ConfigurationCache');
 		self::$s_config_cache = null;
-	}
-	/* ---------------------------------------- */
-	/**
-	 * Load configuration from external cache into memory
-	 */
-	public static function loadConfigCacheInMemory() {
-		if(!is_null(self::$s_config_cache)) { return; }
-
-		if(ExternalCache::contains('ConfigurationCache')) {
-			self::$s_config_cache = ExternalCache::fetch('ConfigurationCache');
-		}
 	}
 	/* ---------------------------------------- */
 	/**
@@ -1057,7 +1128,9 @@ class Configuration {
 	 */
 	public function __destruct() {
 		if(isset(Configuration::$s_have_to_write_config_cache) && Configuration::$s_have_to_write_config_cache) {
-			ExternalCache::save('ConfigurationCache', self::$s_config_cache, 'default', 3600 * 3600 * 30);
+			foreach(self::$s_config_cache as $k => $v) {
+				ExternalCache::save($k, $v, 'ConfigurationCache', 3600 * 3600 * 30);
+			}
 			self::$s_have_to_write_config_cache = false;
 		}
 	}

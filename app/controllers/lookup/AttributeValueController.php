@@ -41,7 +41,8 @@
 			
 			$va_tmp = explode('.', $ps_bundle);
 			
-			if (!($t_table = Datamodel::getInstance($va_tmp[0], true))) {
+			
+			if (!($t_table = Datamodel::getInstanceByTableName($va_tmp[0], true))) {
 				// bad table name
 				print _t("Invalid table name");
 				return null;
