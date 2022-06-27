@@ -21,6 +21,9 @@ RUN apt-get -qq install autoconf && wget https://pecl.php.net/get/memcached-3.1.
 #Config changes for php
 RUN sed -i "s/memory_limit = 128M/memory_limit = 1G/" /usr/local/lib/php.ini
 
+#Composer
+RUN curl --output /usr/local/bin/composer https://getcomposer.org/composer.phar     && chmod +x /usr/local/bin/composer
+
 #GitLab runner
 ARG LOCAL_UID=1000
 RUN adduser --uid $LOCAL_UID --gecos 'gitlab-runner user' --disabled-password gitlab-runner
