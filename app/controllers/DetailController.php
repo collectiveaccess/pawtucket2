@@ -111,6 +111,7 @@ class DetailController extends FindController {
 		AssetLoadManager::register("readmore");
 		AssetLoadManager::register("maps");
 		
+		$options = (isset($this->opa_detail_types[$function]['options']) && is_array($this->opa_detail_types[$function]['options'])) ? $this->opa_detail_types[$function]['options'] : array();
 		//
 		// Media viewer
 		//
@@ -212,7 +213,6 @@ class DetailController extends FindController {
 		// Record view
 		$t_subject->registerItemView();
 		
-		$options = (isset($this->opa_detail_types[$function]['options']) && is_array($this->opa_detail_types[$function]['options'])) ? $this->opa_detail_types[$function]['options'] : array();
 		$this->view->setVar("config_options", $options);
 		
 		if (!caGetOption('disableExport', $options, false)) {
