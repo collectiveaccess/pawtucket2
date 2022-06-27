@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2018 Whirl-i-Gig
+ * Copyright 2009-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -39,9 +39,6 @@
  	require_once(__CA_LIB_DIR__.'/Attributes/Values/IAttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/Attributes/Values/AttributeValue.php');
  	require_once(__CA_LIB_DIR__.'/Configuration.php');
-	require_once(__CA_LIB_DIR__."/Zend/Http/Client.php");
- 	require_once(__CA_LIB_DIR__.'/Zend/Feed.php');
- 	require_once(__CA_LIB_DIR__.'/Zend/Feed/Atom.php');
  	require_once(__CA_LIB_DIR__.'/BaseModel.php');	// we use the BaseModel field type (FT_*) and display type (DT_*) constants
  	
  	global $_ca_attribute_settings;
@@ -70,6 +67,22 @@
 			'width' => 1, 'height' => 1,
 			'label' => _t('Does not use locale setting'),
 			'description' => _t('Check this option if you don\'t want your LCSH values to be locale-specific. (The default is to not be.)')
+		),
+		'allowDuplicateValues' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow duplicate values?'),
+			'description' => _t('Check this option if you want to allow duplicate values to be set when element is not in a container and is repeating.')
+		),
+		'raiseErrorOnDuplicateValue' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Show error message for duplicate values?'),
+			'description' => _t('Check this option to show an error message when value is duplicate and <em>allow duplicate values</em> is not set.')
 		),
 		'canBeUsedInSort' => array(
 			'formatType' => FT_NUMBER,
@@ -146,6 +159,7 @@
 				_t('Preservation Events') => 'cs:http://id.loc.gov/vocabulary/preservationEvents',
 				_t('Preservation Level Role') => 'cs:http://id.loc.gov/vocabulary/preservationLevelRole',
 				_t('Cryptographic Hash Functions') => 'cs:http://id.loc.gov/vocabulary/cryptographicHashFunctions',
+				_t('Controlled Vocabulary for Rare Materials Cataloging') => 'cs:http://id.loc.gov/vocabulary/rbmstr',
 				_t('MARC Relators') => 'cs:http://id.loc.gov/vocabulary/relators',
 				_t('MARC Countries') => 'cs:http://id.loc.gov/vocabulary/countries',
 				_t('MARC Geographic Areas') => 'cs:http://id.loc.gov/vocabulary/geographicAreas',
@@ -267,11 +281,17 @@
 					// try to match on text using id.loc.gov service
 					$ps_value = str_replace(array("‘", "’", "“", "”"), array("'", "'", '"', '"'), $ps_value);
 					
+					$vs_service_url = null;
 					if (caGetOption('matchUsingLOCLabel', $pa_options, false)) {
 						$vs_service_url = "http://id.loc.gov/authorities/label/".rawurlencode($ps_value);
+					} elseif (preg_match("!http://id.loc.gov/authorities/[A-Za-z]+!", $ps_value)) {
+						$vs_service_url = $ps_value;
+					}
+					
+					if($vs_service_url) {
 						$o_client = new Zend_Http_Client($vs_service_url);
 						$o_client->setConfig(array(
-							'maxredirects' => 0,
+							'maxredirects' => 5,
 							'timeout'      => 30));
 					
 						try {
@@ -281,15 +301,14 @@
 							return false;
 						}
 
-						// $vn_status = $o_response->getStatus();
 						$va_headers = $o_response->getHeaders();
-				
-						if (($vn_status >= 300) && ($vn_status <= 399) && (isset($va_headers['X-preflabel'])) && $va_headers['X-preflabel']) {
-							$vs_url = $va_headers['Location'];
+			
+						if ((isset($va_headers['X-preflabel'])) && $va_headers['X-preflabel']) {
+							$vs_url = $va_headers['X-uri'];
 							$va_url = explode("/", $vs_url);
 							$vs_id = array_pop($va_url);
 							$vs_label = $va_headers['X-preflabel'];
-					
+							
 							$vs_url = str_replace('http://id.loc.gov/', 'info:lc/', $vs_url);
 					
 							if ($vs_url) {
@@ -303,7 +322,7 @@
 								return false;
 							}
 						} else {
-							$this->postError(1970, _t('Could not get results from LCSH service for %1 [%2]', $ps_value, $vs_service_url), 'LCSHAttributeValue->parseValue()');
+							$this->postError(1970, _t('Could not get results from LCSH service for %1 [%2]; status was %3', $ps_value, $vs_service_url, $vn_status), 'LCSHAttributeValue->parseValue()');
 							return false;
 						}
 					} else {
@@ -337,7 +356,7 @@
 									'value_longtext2' => $vs_url,							// uri
 									'value_decimal1' => is_numeric($vs_id) ? $vs_id : null	// id
 								);
-							
+								break;
 							}
 						}
 					}	

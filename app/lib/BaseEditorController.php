@@ -561,7 +561,7 @@ class BaseEditorController extends ActionController {
 								if ($t_child->numErrors() > 0) { continue; }
 								$vn_child_count++;
 							}
-							$this->notification->addNotification(($vn_child_count == 1) ? _t("Transferred %1 children to <em>%2</em> (%3)", $vn_child_count, $t_target->getLabelForDisplay(), $t_target->get($t_target->getProperty('ID_NUMBERING_ID_FIELD'))) : _t("Transferred %1 children to <em>%2</em> (%3)", $vn_child_count, $t_target->getLabelForDisplay(), $t_target->get($t_target->getProperty('ID_NUMBERING_ID_FIELD'))), __NOTIFICATION_TYPE_INFO__);
+							$this->notification->addNotification(($vn_child_count == 1) ? _t("Transferred %1 child to <em>%2</em> (%3)", $vn_child_count, $t_target->getLabelForDisplay(), $t_target->get($t_target->getProperty('ID_NUMBERING_ID_FIELD'))) : _t("Transferred %1 children to <em>%2</em> (%3)", $vn_child_count, $t_target->getLabelForDisplay(), $t_target->get($t_target->getProperty('ID_NUMBERING_ID_FIELD'))), __NOTIFICATION_TYPE_INFO__);
 						}
 						
 						break;
@@ -743,7 +743,7 @@ class BaseEditorController extends ActionController {
 		
 		// Summary formats list
 		$formats = [];
-		if(is_array($available_templates = caGetAvailablePrintTemplates('summary', ['table' => $t_subject->tableName()]))) {
+		if(is_array($available_templates = caGetAvailablePrintTemplates('summary', ['table' => $t_subject->tableName(), 'restrictToTypes' => $t_subject->getTypeID()]))) {
             $num_available_templates = sizeof($available_templates);
             foreach($available_templates as $k => $v) {
                 if (($num_available_templates > 1) && (bool)$v['generic']) { continue; }    // omit generics from list when specific templates are available
@@ -2372,27 +2372,20 @@ class BaseEditorController extends ActionController {
 				$va_rep_info = $va_rep['info'][$ps_version];
 				$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $vs_idno);
 				
-				switch($vs_mode = $this->request->config->get('downloaded_file_naming')) {
+				switch($mode = $this->request->config->get([$this->ops_tablename.'_downloaded_file_naming', 'downloaded_file_naming'])) {
 					case 'idno':
-						$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+						$vs_filename = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
 						break;
 					case 'idno_and_version':
-						$vs_file_name = $vs_idno_proc.'_'.$ps_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+						$vs_filename = $vs_idno_proc.'_'.$ps_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
 						break;
 					case 'idno_and_rep_id_and_version':
-						$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION'];
+						$vs_filename = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION'];
 						break;
 					case 'original_name':
 					default:
-					    if (strpos($vs_mode, "^") !== false) { // template
-					        $vals = [];
-					        foreach(array_merge($va_rep['info'], $va_rep_info) as $k => $v) {
-					            if(is_array($v)) { continue; }
-					            if ($k == 'original_filename') { $v = pathinfo($v, PATHINFO_FILENAME); }
-					            $vals[strtolower($k)] = preg_replace('![^A-Za-z0-9_\-]+!', '_', $v);
-					        }
-					        $vals['idno'] = $vs_idno_proc;
-				            $vs_file_name = caProcessTemplate($vs_mode, $vals);
+					    if (strpos($mode, "^") !== false) { // template
+							$vs_filename = pathinfo(caProcessTemplateForIDs($mode, 'ca_object_representations', [$vn_representation_id]), PATHINFO_FILENAME);
 						} elseif (isset($va_rep['info']['original_filename']) && $va_rep['info']['original_filename']) {
 							$va_tmp = explode('.', $va_rep['info']['original_filename']);
 							if (sizeof($va_tmp) > 1) {
@@ -2400,20 +2393,20 @@ class BaseEditorController extends ActionController {
 									$va_tmp[] = $vs_ext;
 								}
 							}
-							$vs_file_name = join('_', $va_tmp);
+							$vs_filename = join('_', $va_tmp);
 						} else {
-							$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$ps_version;
+							$vs_filename = $vs_idno_proc.'_'.$ps_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
 						}
 
-						if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {
-							$vs_file_name.= "_{$vn_c}";
+						if (isset($va_file_names[$vs_filename.'.'.$va_rep_info['EXTENSION']])) {
+							$vs_filename.= "_{$vn_c}";
 						}
-						$vs_file_name .= '.'.$va_rep_info['EXTENSION'];
+						$vs_filename .= '.'.$va_rep_info['EXTENSION'];
 						break;
 				}
 				
-				$va_file_names[$vs_file_name] = true;
-				$o_view->setVar('version_download_name', $vs_file_name);
+				$va_file_names[$vs_filename] = true;
+				$o_view->setVar('version_download_name', $vs_filename);
 				
 				//
 				// Perform metadata embedding
@@ -2429,7 +2422,7 @@ class BaseEditorController extends ActionController {
                     $vs_path = $va_rep['paths'][$ps_version];
                 }
 
-				$va_file_paths[$vs_path] = $vs_file_name;
+				$va_file_paths[$vs_path] = $vs_filename;
 
 				$vn_c++;
 			}
@@ -2437,7 +2430,7 @@ class BaseEditorController extends ActionController {
 			if($vb_download_for_record){
 				$t_download_log->log(array(
 						"user_id" => $this->request->getUserID(), 
-						"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+						"ip_addr" => RequestHTTP::ip(), 
 						"table_num" => Datamodel::getTableNum($this->ops_table_name), 
 						"row_id" => $vn_child_id, 
 						"representation_id" => $pn_representation_id ? $pn_representation_id : null, 
@@ -2535,7 +2528,7 @@ class BaseEditorController extends ActionController {
 		$t_download_log = new Downloadlog();
 		$t_download_log->log(array(
 				"user_id" => $this->request->getUserID(), 
-				"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+				"ip_addr" => RequestHTTP::ip(), 
 				"table_num" => Datamodel::getTableNum($this->ops_table_name), 
 				"row_id" => $vn_subject_id, 
 				"representation_id" => null, 

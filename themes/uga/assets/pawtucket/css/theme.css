@@ -38,8 +38,34 @@
 .detailHead {
 	text-align:center;
 }
+.detail h1 {
+    font-size: 20px;
+}
+.detail{
+	font-size:15px;
+	color:#000;
+}
 .detail a {
-	color: #00cfb7;
+	color: #000000;
+}
+.detail .unit a {
+	text-decoration:underline;
+}
+.detail label {
+    font-size: 15px;
+    color: #000;
+    margin-bottom:0px;
+}
+.detail H2 {
+    font-size: 18px;
+    color: #000;
+    margin-top:35px;
+    margin-bottom:10px;
+    padding-bottom:10px;
+    border-bottom:2px solid #dddddd;
+}
+.detail .unit {
+    margin-bottom: 20px;
 }
 .dlButton {
 	display:none;
@@ -122,7 +148,46 @@
 #browseResultsContainer {
 	margin-top:5px;
 }
+.detail #detailAnnotations li{
+	font-size:13px;
+}
+.detail #detailAnnotations li.active, .detail #detailAnnotations ul li:hover {
+    background-color: #435c66;
+	color: #fff;
+}
+.detail #detailAnnotations li .annotation_description {
+	display:none;
+}
+.detail #detailAnnotations li.active{
+	font-style:normal;
+	font-weight:bold;
+}
+.detail #detailAnnotations li.active .annotation_description {
+	display:block;
+	font-weight:normal;
+	font-size:12px;
+	padding-top:10px;
+}
+.detail #detailAnnotations ul li.detailAnnotation a {
+    text-decoration: underline;
+}
 
+.detail #detailAnnotations ul li.detailAnnotation:hover a {
+    text-decoration: underline;
+    color:#FFF;
+}
+.detail #detailAnnotations .detailAnnotationList {
+    max-height: 500px;
+    overflow: auto;
+}
+.detailImgPlaceholder {
+    background-color: #F5F5F5;
+    color: #858585;
+    margin-bottom: 10px;
+    padding: 120px 5px 120px;
+    text-align: center;
+    width: 100%;
+}
 /* Media Viewer */
 
 .tileviewer div.viewerControls {
@@ -407,3 +472,58 @@ div#footer {
 	border-top: 20px solid #96b0ba;
 }
 div.ugalogo img { width: 160px; padding-left:15px;}
+
+/* browse */
+.bResultItem .bResultItemText a, .bResultListItem .bResultListItemText a {
+    color: #000;
+    line-height: 1.3em;
+    font-size: 14px;
+    font-weight:bold;
+}
+.bResultItem .bResultItemText small, .bResultItem .bResultItemText small a {
+    color: #454545;
+    font-size: 12px;
+    font-weight:normal;
+}
+.multisearch .multisearchResult a {
+    color: #000;
+    font-size: 13px;
+    line-height: 1.2em;
+}
+#objects_sort_direction{
+	color:#757575;
+}
+.bResultListItemCol {
+    height: 172px;
+}
+.bResultListItemContent {
+    height: 122px;
+    overflow: hidden;
+}
+.bResultListItem:hover{
+	height:162px;
+}
+.bResultListItem .bResultListItemImg {
+    max-height: 120px;
+    margin-right: 15px;
+}
+.bResultListItem img {
+    height: 120px;
+}
+bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemText small a {
+    color: #787878;
+}
+.bResultListItem .bResultListItemText, .bResultListItem .bResultListItemText b {
+    line-height: 1.3em;
+    font-size: 14px;
+    font-family: Latolight;
+}
+#bRefine H2 {
+    font-size: 20px;
+    text-transform: uppercase;
+    color: #666;
+    margin-top: 0px;
+    border-bottom: 1px solid #666;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}

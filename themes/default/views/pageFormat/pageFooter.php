@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2018 Whirl-i-Gig
+ * Copyright 2015-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,22 +27,22 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
-		<footer id="footer">
+		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+		<footer id="footer" role="contentinfo">
 			<ul class="list-inline pull-right social">
-				<li><i class="fa fa-twitter"></i></li>
-				<li><i class="fa fa-facebook-square"></i></li>
-				<li><i class="fa fa-youtube-play"></i></li>
+				<li><i class="fa fa-twitter" aria-label="<?php print _t("Twitter"); ?>"></i></li>
+				<li><i class="fa fa-facebook-square" aria-label="<?php print _t("Facebook"); ?>"></i></li>
+				<li><i class="fa fa-youtube-play" aria-label="<?php print _t("YouTube"); ?>"></i></li>
 			</ul>
 			<div>
 				Footer text here
 			</div>
 			<ul class="list-inline">
-				<li><a href="#">Link 1</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
+				<?php print ((CookieOptionsManager::cookieManagerEnabled()) ? "<li>".caNavLink($this->request, _t("Manage Cookies"), "", "", "Cookies", "manage")."</li>" : ""); ?></li>
+				<li><a href="#">Link</a></li>
+				<li><a href="#">Link</a></li>
 			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2018</a></small></div>
+			<div><small>&copy; <a href="https://www.collectiveaccess.org">CollectiveAccess 2022</a></small></div>
 		</footer><!-- end footer -->
 <?php
 	//
@@ -54,7 +54,7 @@
 ?>
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
-		<div id="caMediaPanel"> 
+		<div id="caMediaPanel" role="complementary"> 
 			<div id="caMediaPanelContentArea">
 			
 			</div>
@@ -70,6 +70,11 @@
 					caMediaPanel = caUI.initPanel({ 
 						panelID: 'caMediaPanel',										/* DOM ID of the <div> enclosing the panel */
 						panelContentID: 'caMediaPanelContentArea',		/* DOM ID of the content area <div> in the panel */
+						onCloseCallback: function(data) {
+							if(data && data.url) {
+								window.location = data.url;
+							}
+						},
 						exposeBackgroundColor: '#FFFFFF',						/* color (in hex notation) of background masking out page content; include the leading '#' in the color spec */
 						exposeBackgroundOpacity: 0.7,							/* opacity of background color masking out page content; 1.0 is opaque */
 						panelTransitionSpeed: 400, 									/* time it takes the panel to fade in/out in milliseconds */
@@ -81,5 +86,8 @@
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
 		</script>
+<?php
+	print $this->render("Cookies/banner_html.php");	
+?>
 	</body>
 </html>

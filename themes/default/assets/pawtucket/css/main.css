@@ -348,6 +348,10 @@ h1 i {
 	position:relative;
 	border-radius: 3px;
 }
+.navbar-form{
+	-webkit-box-shadow: none;
+	box-shadow:none;
+}
 .navbar-form .form-group {
 	width:140px;
 }
@@ -2828,6 +2832,14 @@ a.browseRemoveFacet .glyphicon {
 	padding-bottom:10px; 
 	margin-bottom:15px;
 }	
+.gallery .leaflet-popup-content-wrapper{
+	min-width:250px;
+	min-height: 102px;
+}
+.gallery .leaflet-popup-content-wrapper a{
+	color:#000;
+	font-weight:bold;
+}
  /* Universal viewer */
 .detail .repViewerCont .uv{
 	min-height:500px;
@@ -2925,6 +2937,17 @@ div.caMediaOverlayControls .close{
 	font-size: 22px;
 	opacity: 0.9;
 }
+
+div.caMediaOverlayControls .nextPreviousLinks{
+	float:right;
+	margin: 0px 10px 0px 20px;
+	font-size: 22px;
+	opacity: 0.9;
+	
+	color:#FFF;
+	font-size: 11px;
+}
+
 div.caMediaOverlayControls .download{
 	float:right;
 	margin: 2px 0 0 20px;
@@ -3237,7 +3260,7 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	font-size:12px !important;
 }
 .tl-timeline em{
-	font-family:lato !important;
+	font-family:LatoLight !important;
 }
 
 /* Advanced Search */
@@ -3476,7 +3499,19 @@ input[type='text'].ui-autocomplete-loading {
     object-fit: contain;
     background-color: #000;
 }
-
+/* plyr video */
+.plyr__control--overlaid {
+  background: #8a8a8a;
+  background: var(--plyr-video-control-background-hover,var(--plyr-color-main,var(--plyr-color-main,#8a8a8a)));
+}
+.plyr--video .plyr__control.plyr__tab-focus, .plyr--video .plyr__control:hover, .plyr--video .plyr__control[aria-expanded="true"] {
+  background: #ababab;
+  background: var(--plyr-video-control-background-hover,var(--plyr-color-main,var(--plyr-color-main,#ababab)));
+}
+.plyr--full-ui input[type="range"] {
+  color: #8a8a8a;
+  color: var(--plyr-range-fill-background,var(--plyr-color-main,var(--plyr-color-main,#8a8a8a)));
+}
 /* Fix for StoryMap/Leaflet conflict that results in StoryMap map markers rendered unclickable */
 .leaflet-marker-icon {
 	pointer-events: auto;
@@ -3492,3 +3527,68 @@ input[type='text'].ui-autocomplete-loading {
 .mirador-viewer .image-list .fa{
 	color:#000 !important;
 }
+
+/* cookie notice */
+#cookieNotice{
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	text-align: left;
+	color: #000;
+	background-color: #FFF;
+	padding: 30px 0px 30px 0px;
+	font-size: 16px;
+	z-index: 9999;
+	box-shadow: rgba(0,0,0,.5) 0px 5px 50px;
+	padding-left:15px;
+	padding-right:15px;
+}
+#cookieNotice .cookieNoticeHeading{
+	font-weight:bold;
+	font-size:1.25em;
+	font-family: lato;
+}
+#cookieNotice .btn{
+	margin:10px 10px 0px 10px;
+}
+#cookieNotice .btn-inverse{
+	color:#000;
+	background-color:#dfdfdf;
+}
+#cookieNotice .btn-inverse:hover{
+	color:#000;
+	background-color:#f1f1f1;
+}
+.cookieIntro{
+	font-size: 1.2em;
+}
+@media(max-width:768px){
+	.cookies .btn-group{
+		margin-top:20px;
+	}
+}
+.cookies label{
+	font-size:15px;
+}
+.cookieByCategory{
+	cursor: pointer;
+}
+.cookieByCategory .cookieCount{
+	text-decoration:underline;
+	font-size:.9em;
+	padding-bottom:10px;
+}
+.cookieByCategory .cookieCount .fa{
+	color:#777;
+}
+.cookieByCategory .cookiesList{
+	display:none;
+	padding:10px;
+	margin:10px;
+	background-color:#F2F2F2;
+}
+.cookieByCategory .cookiesList .row{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+

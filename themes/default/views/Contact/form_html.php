@@ -1,4 +1,4 @@
- <?php
+<?php
 	$o_config = caGetContactConfig();
 	$va_errors = $this->getVar("errors");
 	$vn_num1 = rand(1,10);
@@ -29,7 +29,7 @@
 	}
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
-	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+	    <input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 <?php
 	if($pn_id && $t_item->getPrimaryKey()){
 ?>
@@ -56,7 +56,7 @@
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 							<label for="name">Name</label>
-							<input type="text" class="form-control input-sm" id="email" placeholder="Enter name" name="name" value="{{{name}}}">
+							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
@@ -89,6 +89,27 @@
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
+<?php
+	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+        	};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+
+
+			<div class="row">
+				<div class="col-sm-12 col-md-offset-1 col-md-10">
+					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+					</div>
+				</div>
+			</div><!-- end row -->
+<?php
+	}
+?>
 		<div class="form-group">
 			<button type="submit" class="btn btn-default">Send</button>
 		</div><!-- end form-group -->

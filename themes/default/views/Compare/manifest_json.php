@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2018 Whirl-i-Gig
+ * Copyright 2016-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,8 +33,36 @@
  	$ps_id		 			= $this->getVar('id');
  	$ps_id_proc             = preg_replace("![^A-Za-z0-9_]+!", "_", $ps_id);
  	$pa_info 				= $this->getVar('info');
+ 
+ 	$instance = caGetMediaForMediaIdentifier($pa_info['resolved_id']);
  	
+ 	$resource_list = [];
+ 	$resources =  $instance->getFileList();
+ 	if (($instance->tableName() === 'ca_object_representations') && !sizeof($resources)){
+ 		$resources = $instance->getRepresentations(['small', 'tilepic', 'original'], null, []);
+ 		
+ 		$resource_list = array_map(function($v) {
+ 			return [
+ 				'id' => $v['representation_id'],
+ 				'url' => $v['urls']['small']
+ 			];
+ 		}, $resources);
+ 	} elseif($instance->tableName() === 'ca_attribute_values') {
+ 		$resource_list = [[
+			'id' => $v['value_id'],
+			'url' => $instance->getMediaUrl('value_blob', 'small')
+		]];
+ 	} else {
+ 		$resource_list = array_map(function($v) {
+ 			return [
+ 				'id' => $v['multifile_id'],
+ 				'url' => $v['preview_url']
+ 			];
+ 		}, $resources);
+ 	}
  	$va_compare_config      = $this->request->config->get('compare_images');
+ 	
+	$vs_base_url =  $this->request->getBaseUrlPath();
  	if (!is_array($va_compare_config = $va_compare_config[$pa_info['subject']])) { $va_compare_config = []; }
 ?>
 {
@@ -55,32 +83,36 @@
 	$va_canvases = [];
     $vn_width = $vn_height = 500; 
     
-    $va_canvases[] = "			{
-          \"@id\": \"{$ps_id_proc}_canvas\", 
-          \"@type\": \"sc:Canvas\", 
-          \"height\": {$vn_height}, 
-          \"images\": [
-            {
-              \"@type\": \"oa:Annotation\", 
-              \"motivation\": \"sc:painting\", 
-              \"on\": \"{$ps_id_proc}_canvas\", 
-              \"resource\": {
-                \"@id\": \"{$ps_id_proc}_res\", 
-                \"@type\": \"dctypes:Image\", 
-                \"format\": \"image/jpg\", 
-                \"height\": {$vn_height}, 
-                \"service\": {
-                  \"@context\": \"http://library.stanford.edu/iiif/image-api/1.1/context.json\", 
-                  \"@id\": \"/service.php/IIIF/{$ps_id}\", 
-                  \"profile\": \"http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level2\"
-                }, 
-                \"width\": {$vn_width}
-              }
-            }
-          ], 
-          \"label\": ".json_encode($pa_info['display']).", 
-          \"width\": {$vn_width}
-        }";
+    $p = 0;	// page number
+    foreach($resource_list as $r) {
+    	$p++;
+		$va_canvases[] = "			{
+			  \"@id\": \"{$ps_id_proc}_canvas{$r['id']}\", 
+			  \"@type\": \"sc:Canvas\", 
+			  \"height\": {$vn_height}, 
+			  \"images\": [
+				{
+				  \"@type\": \"oa:Annotation\", 
+				  \"motivation\": \"sc:painting\", 
+				  \"on\": \"{$ps_id_proc}_canvas{$r['id']}\", 
+				  \"resource\": {
+					\"@id\": \"{$ps_id_proc}_res_{$r['id']}\", 
+					\"@type\": \"dctypes:Image\", 
+					\"format\": \"image/jpg\", 
+					\"height\": {$vn_height}, 
+					\"service\": {
+					  \"@context\": \"http://library.stanford.edu/iiif/image-api/1.1/context.json\", 
+					  \"@id\": \"{$vs_base_url}/service.php/IIIF/{$ps_id}:{$p}\", 
+					  \"profile\": \"http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level2\"
+					}, 
+					\"width\": {$vn_width}
+				  }
+				}
+			  ], 
+			  \"label\": ".json_encode($pa_info['display']).", 
+			  \"width\": {$vn_width}
+			}";
+		}
         
 	print join(",", $va_canvases);
 ?>

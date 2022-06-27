@@ -63,6 +63,10 @@
 	
 		$g_request = $app->getRequest();
 		$resp = $app->getResponse();
+		
+		if (!BanHammer::verdict($g_request)) {
+			die("Connection refused");
+		}
 
 		// TODO: move this into a library so $_, $g_ui_locale_id and $g_ui_locale gets set up automatically
 		require_once(__CA_APP_DIR__."/helpers/initializeLocale.php");
@@ -108,19 +112,23 @@
 		if (caDeviceIsMobile()) { AssetLoadManager::register('mobile'); }
 	
 		// Prevent caching
-		$resp->addHeader("Cache-Control", "no-cache, must-revalidate");
+		$resp->addHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 		$resp->addHeader("Expires", "Mon, 26 Jul 1997 05:00:00 GMT");
 		
-		// Security headers
-		$resp->addHeader("X-XSS-Protection", "1; mode=block");
-		$resp->addHeader("X-Frame-Options", "SAMEORIGIN");
-		$resp->addHeader("Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com ajax.googleapis.com 'unsafe-inline' 'unsafe-eval';"); 
-		$resp->addHeader("X-Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com ajax.googleapis.com 'unsafe-inline' 'unsafe-eval';"); 
-	
+		//
+		// Output configurable headers from headers.conf
+		//
+		caEmitHeaders($resp);
+		
 		//
 		// Dispatch the request
 		//
-		$vb_auth_success = $g_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false, 'allow_external_auth' => ($g_request->getController() == 'LoginReg')));
+		//
+		// Don't try to authenticate when doing a login attempt or trying to access the 'forgot password' feature
+		//
+		if ((AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__) && !preg_match("/^[\/]{0,1}system\/auth\/callback/", strtolower($g_request->getPathInfo()))) || !preg_match("/^[\/]{0,1}system\/auth\/(dologin|login|forgot|requestpassword|initreset|doreset|callback)/", strtolower($g_request->getPathInfo()))) {
+		    $vb_auth_success = $g_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false, 'allow_external_auth' => ($g_request->getController() == 'LoginReg')));
+		}
 		$app->dispatch(true);
 
 		//

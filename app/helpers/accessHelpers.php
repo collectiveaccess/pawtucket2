@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2018 Whirl-i-Gig
+ * Copyright 2010-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -45,7 +45,7 @@
 	  * are enabled (via the 'dont_enforce_access_settings' configuration directive) and whether the user
 	  * is considered privileged.
 	  *
-	  * @param RequestHTTP $po_request The current request
+	  * @param RequestHTTP|ca_users $po_request The current request or user
 	  * @param array $pa_options Optional options. If omitted settings are taken application configuration file is used. Any array passed to this function should include the following keys: "dont_enforce_access_settings", "public_access_settings", "privileged_access_settings", "privileged_networks"
 	  * @return array An array of integer values that, if present in a record, indicate that the record should be displayed to the current user
 	  */
@@ -53,26 +53,29 @@
 		if(!caGetOption('ignoreProvidence', $pa_options, false)) {
 			if (defined("__CA_APP_TYPE__") && (__CA_APP_TYPE__ == 'PROVIDENCE')) { return null; }
 		}
-		$vb_dont_enforce_access_settings = isset($pa_options['dont_enforce_access_settings']) ? (bool)$pa_options['dont_enforce_access_settings'] : $po_request->config->get('dont_enforce_access_settings');
-		$va_privileged_access_settings = isset($pa_options['privileged_access_settings']) && is_array($pa_options['privileged_access_settings']) ? (bool)$pa_options['privileged_access_settings'] : (array)$po_request->config->getList('privileged_access_settings');
-		$va_public_access_settings = isset($pa_options['public_access_settings']) && is_array($pa_options['public_access_settings']) ? $pa_options['public_access_settings'] : (array)$po_request->config->getList('public_access_settings');
+		$config = Configuration::load();
+		
+		$vb_dont_enforce_access_settings = isset($pa_options['dont_enforce_access_settings']) ? (bool)$pa_options['dont_enforce_access_settings'] : $config->get('dont_enforce_access_settings');
+		$va_privileged_access_settings = isset($pa_options['privileged_access_settings']) && is_array($pa_options['privileged_access_settings']) ? (bool)$pa_options['privileged_access_settings'] : (array)$config->getList('privileged_access_settings');
+		$va_public_access_settings = isset($pa_options['public_access_settings']) && is_array($pa_options['public_access_settings']) ? $pa_options['public_access_settings'] : (array)$config->getList('public_access_settings');
 	
+		$vb_is_privileged = caUserIsPrivileged($po_request, $pa_options);
 		if (!$vb_dont_enforce_access_settings) {
 			$va_access = array();
-			$vb_is_privileged = caUserIsPrivileged($po_request, $pa_options);
 			if($vb_is_privileged) {
 				$va_access = $va_privileged_access_settings;
 			} else {
 				$va_access = $va_public_access_settings;
 			}
+			if(!is_array($va_access)) { $va_access = []; }
 			
-			if ($po_request->isLoggedIn()) {
-				$va_user_access = $po_request->user->getAccessStatuses(1);
+			if ($vb_is_privileged) {
+				$va_user_access = is_a($po_request, 'ca_users') ? $po_request->getAccessStatuses(1) : $po_request->user->getAccessStatuses(1);
 				if(is_array($va_user_access)) {
 					$va_access = array_unique(array_merge($va_access, $va_user_access));
 				}
 			}
-			return $va_access;
+			return array_map('intval', $va_access);
 		}
 		return array();
 	}
@@ -82,11 +85,13 @@
 	  * a privileged network, as defined by the 'privileged_networks' configuration directive. May 
 	  * be expanded in the future to consider user's access rights and/or other parameters.
 	  *
-	  * @param RequestHTTP $po_request The current request
+	  * @param RequestHTTP|ca_users $po_request The current request
 	  * @param array $pa_options Optional options. If omitted settings are taken application configuration file is used. Any array passed to this function should include "privileged_networks" as a key with a value listing all privileged networks
 	  * @return boolean True if user is privileged, false if not
 	  */
 	function caUserIsPrivileged($po_request, $pa_options=null) {
+		if(is_a($po_request, 'ca_users')) { return true; }
+		if($po_request->isLoggedIn()) { return true; }
 		$va_privileged_networks = isset($pa_options['privileged_networks']) && is_array($pa_options['privileged_networks']) ? $pa_options['privileged_networks'] : (array)$po_request->config->getList('privileged_networks');
 		
 		if (!($va_priv_ips = $va_privileged_networks)) {
@@ -301,7 +306,7 @@
 	 */
 	function caMakeTypeIDList($pm_table_name_or_num, $pa_types, $pa_options=null) {
 		if(!is_array($pa_options)) { $pa_options = []; }
-		if (!is_array($pa_types)) { $pa_types = []; }
+		if (!is_array($pa_types)) { $pa_types = $pa_types ? [$pa_types] : []; }
 		$vs_cache_key = caMakeCacheKeyFromOptions(array_merge($pa_options, $pa_types), "caMakeTypeIDList:{$pm_table_name_or_num}");
 		if (ExternalCache::contains($vs_cache_key, 'listItems')) { return ExternalCache::fetch($vs_cache_key, 'listItems'); }
 		if (is_numeric($pm_table_name_or_num)) {
@@ -311,6 +316,7 @@
 		}
 		$t_instance = Datamodel::getInstanceByTableName($vs_table_name, true);
 		if (!$t_instance) { return null; }	// bad table
+		if(is_a($t_instance, 'BaseLabel')) { $t_instance = $t_instance->getSubjectTableInstance(); }
 		if (!($vs_type_list_code = $t_instance->getTypeListCode())) { return null; }	// table doesn't use types
 		
 		$va_ret = caMakeItemIDList($vs_type_list_code, $pa_types, $pa_options);
@@ -335,8 +341,7 @@
 	 * @return array List of numeric item_ids
 	 */
 	function caMakeItemIDList($pm_list_code_or_id, $pa_item_idnos, $pa_options=null) {
-		if (!is_array($pa_item_idnos) && !strlen($pa_item_idnos)) { return []; }
-		if (!is_array($pa_item_idnos)) { $pa_item_idnos = [$pa_item_idnos]; }
+		if (!is_array($pa_item_idnos)) { $pa_item_idnos = strlen($pa_item_idnos) ? [$pa_item_idnos]: []; }
 		if (!is_array($pa_options)) { $pa_options = []; }
 		$vs_cache_key = caMakeCacheKeyFromOptions(array_merge($pa_options, $pa_item_idnos), "caMakeItemIDList:{$pm_list_code_or_id}");
 		if (ExternalCache::contains($vs_cache_key, 'listItems')) { return ExternalCache::fetch($vs_cache_key, 'listItems'); }
@@ -396,7 +401,7 @@
 	 */
 	function caMakeTypeList($pm_table_name_or_num, $pa_type_ids, $pa_options=null) {
 		if (is_array($pa_type_ids) && !sizeof($pa_type_ids)) { return array(); }
-		if (!is_array($pa_type_ids)) { $pa_type_ids = [$pa_type_ids]; }
+		if (!is_array($pa_type_ids)) { $pa_type_ids = strlen($pa_type_ids) ? [$pa_type_ids] : []; }
 		
 		if(isset($pa_options['dontIncludeSubtypesInTypeRestriction']) && (!isset($pa_options['dont_include_subtypes_in_type_restriction']) || !$pa_options['dont_include_subtypes_in_type_restriction'])) { $pa_options['dont_include_subtypes_in_type_restriction'] = $pa_options['dontIncludeSubtypesInTypeRestriction']; }
 	 	
@@ -456,6 +461,8 @@
 	function caMakeSourceIDList($pm_table_name_or_num, $pa_sources, $pa_options=null) {
 		if(isset($pa_options['dontIncludeSubsourcesInSourceRestriction']) && (!isset($pa_options['dont_include_subsources_in_source_restriction']) || !$pa_options['dont_include_subsources_in_source_restriction'])) { $pa_options['dont_include_subsources_in_source_restriction'] = $pa_options['dontIncludeSubsourcesInSourceRestriction']; }
 	 	
+		if (!is_array($pa_sources)) { $pa_sources = strlen($pa_sources) ? [$pa_sources] : []; }
+		
 		if (isset($pa_options['dont_include_subsources_in_source_restriction']) && $pa_options['dont_include_subsources_in_source_restriction']) {
 			$pa_options['noChildren'] = true;
 		}
@@ -520,6 +527,28 @@
 		
 		$t_rel_type = new ca_relationship_types();
 		return $t_rel_type->relationshipTypeListToIDs($pm_table_name_or_num, $pa_types, $pa_options);
+	}
+	# ------------------------------------------------------
+	/**
+	 * Converts the given list of relationship type ids or relationship type names into an expanded list of alphanumeric type codes. Processing
+	 * includes expansion of types to include subtypes and conversion of any type_ids to type codes.
+	 *
+	 * @param mixed $pm_table_name_or_num Table name or number to which types apply
+	 * @param array $pa_type_ids List of type_ids that are the basis of the list
+	 * @param array $pa_options Array of options:
+	 * 		dont_include_subtypes_in_type_restriction = if set, returned list is not expanded to include subtypes
+	 *		dontIncludeSubtypesInTypeRestriction = synonym for dont_include_subtypes_in_type_restriction
+	 *
+	 * @return array List of alphanumeric type codes
+	 */
+	function caMakeRelationshipTypeCodeList($table_name_or_num, $type_ids, $options=null) {
+		if (!$type_ids) { return []; }
+		if (!is_array($type_ids)) { $type_ids = [$type_ids]; }
+		if(isset($options['dontIncludeSubtypesInTypeRestriction']) && (!isset($options['dont_include_subtypes_in_type_restriction']) || !$options['dont_include_subtypes_in_type_restriction'])) { $options['dont_include_subtypes_in_type_restriction'] = $options['dontIncludeSubtypesInTypeRestriction']; }
+	 	
+		$options['includeChildren'] = (isset($options['dont_include_subtypes_in_type_restriction']) && $options['dont_include_subtypes_in_type_restriction']) ? false : true;
+		
+		return ca_relationship_types::relationshipTypeIDsToTypeCodes($type_ids, $options);
 	}
 	# ------------------------------------------------------
 	/**
@@ -692,7 +721,7 @@ $g_source_access_level_cache = array();
 	 * @param mixed $pm_id A primary key value of the row, or an array of values to check. If a single integer value is provided then a boolean result will be returned; if an array of values is provided then an array will be returned with all ids that are readable
 	 * @param string $ps_bundle_name An optional bundle to check access for
 	 *
-	 * @return If $pm_id is an integer return true if user has read access, otherwise false if the user does not have access; if $pm_id is an array of ids, returns an array with all ids the are readable; returns null if one or more parameters are invalid
+	 * @return array If $pm_id is an integer return true if user has read access, otherwise false if the user does not have access; if $pm_id is an array of ids, returns an array with all ids the are readable; returns null if one or more parameters are invalid
 	 */
 	function caCanRead($pn_user_id, $pm_table, $pm_id, $ps_bundle_name=null, $pa_options=null) {
 		$pb_return_as_array = caGetOption('returnAsArray', $pa_options, false);

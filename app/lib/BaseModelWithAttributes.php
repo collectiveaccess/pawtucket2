@@ -497,7 +497,7 @@
 				$this->setTransaction(new Transaction($this->getDb()));
 				$vb_we_set_transaction = true;
 			}
-			$vb_web_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
+			$we_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			$pa_options['dont_do_search_indexing'] = true;
 			
@@ -531,9 +531,13 @@
 				if(caGetOption('queueIndexing', $pa_options, true)) {
 					$va_index_options['queueIndexing'] = true;
 				}
+				if (method_exists($this, "deriveHistoryTrackingCurrentValue")) {
+                    $table = $this->tableName();
+                    if ($table::isHistoryTrackingCriterion($table)) { $this->updateDependentHistoryTrackingCurrentValues(); }
+                }
 				$this->doSearchIndexing(array_merge($this->getFieldValuesArray(true), $va_fields_changed_array), false, $va_index_options);
 				
-				if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+				if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 				if ($this->numErrors() > 0) {
 					if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 					$this->_FIELD_VALUES[$this->primaryKey()] = null;		// clear primary key set by BaseModel::insert()
@@ -541,6 +545,7 @@
 				}
 				
 				if ($vb_we_set_transaction) { $this->removeTransaction(true); }
+				
 				return $vn_id;
 			} else {
 				// push all attributes onto errored list
@@ -553,14 +558,14 @@
 				}
 			}
 		
-			if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 			$this->_FIELD_VALUES[$this->primaryKey()] = null;		// clear primary key set by BaseModel::insert()
 			return false;
 		}
 		# ------------------------------------------------------------------
 		public function update($pa_options=null) {
-			$vb_web_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
+			$we_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
 			
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			$pa_options['dont_do_search_indexing'] = true;
@@ -570,32 +575,31 @@
 			$va_fields_changed_array = $this->_FIELD_VALUE_CHANGED;
 			if(parent::update($pa_options)) {
 				$this->_commitAttributes($this->getTransaction());
-				
-			//	$va_field_values_with_updated_attributes = $this->addAttributesToFieldValuesArray();	// copy committed attribute values to field values array
-				
-				// set the field values array for this instance
-				//$this->setFieldValuesArray($va_field_values_with_updated_attributes);
 
 				$va_index_options = array();
 				if(caGetOption('queueIndexing', $pa_options, true)) {
 					$va_index_options['queueIndexing'] = true;
 				}
 				
+				if (method_exists($this, "deriveHistoryTrackingCurrentValue")) {
+                    $table = $this->tableName();
+                    if ($table::isHistoryTrackingCriterion($table)) { $this->updateDependentHistoryTrackingCurrentValues(); }
+                }
 				$this->doSearchIndexing($va_fields_changed_array, false, $va_index_options);
 				
-				if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+				if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 				if ($this->numErrors() > 0) {
 					return false;
 				}
 				return true;
 			}
 			
-			if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return false;
 		}
 		# ------------------------------------------------------------------
 		public function delete($pb_delete_related=false, $pa_options=null, $pa_fields=null, $pa_table_list=null) {
-			$vb_web_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
+			$we_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
 			
 			$o_trans = null;
 			if (!$this->inTransaction()) {
@@ -605,6 +609,7 @@
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			
 			$vn_id = $this->getPrimaryKey();
+			
 			if(($vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list)) && (!$this->hasField('deleted') || caGetOption('hard', $pa_options, false))) {
 				// Delete any associated attributes and attribute_values
 				if (!($qr_res = $this->getDb()->query("
@@ -616,7 +621,7 @@
 					$this->errors = $this->getDb()->errors();
 					if ($o_trans) { $o_trans->rollback(); }
 					
-					if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+					if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 					return false; 
 				}
 				
@@ -628,7 +633,7 @@
 					$this->errors = $this->getDb()->errors();
 					if ($o_trans) { $o_trans->rollback(); }
 					
-					if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+					if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 					return false;
 				}
 				
@@ -655,7 +660,7 @@
 							$this->errors = $this->getDb()->errors();
 							if ($o_trans) { $o_trans->rollback(); }
 					
-							if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false; 
 						} else {
 							$o_indexer = new SearchIndexer($this->getDb());
@@ -668,12 +673,13 @@
 				
 				if ($o_trans) { $o_trans->commit(); }
 					
-				if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+				if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+				
 				return $vn_rc;
 			}
-			
 			if ($o_trans) { $vn_rc ? $o_trans->commit() : $o_trans->rollback(); }
-			if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+			
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return $vn_rc;
 		}
 		# ------------------------------------------------------------------
@@ -1237,18 +1243,9 @@
 		 * @see BaseModelWithAttributes::getTypeCodeForID()
 		 */
 		public static function typeCodeForID($pn_type_id) {
-			$key = get_called_class()."_{$pn_type_id}";
-			if(CompositeCache::contains($key, 'BaseModelWithAttributesTypeIDs')) { 
-				return CompositeCache::fetch($key, 'BaseModelWithAttributesTypeIDs');
-			}
-			
 			$t = Datamodel::getInstance(get_called_class(), true);
 			$va_types = $t->getTypeList();
-			
-			$v = isset($va_types[$pn_type_id]) ? $va_types[$pn_type_id]['idno'] : null;
-			
-			CompositeCache::save($key, $v, 'BaseModelWithAttributesTypeIDs');
-			return $v;
+			return isset($va_types[$pn_type_id]) ? $va_types[$pn_type_id]['idno'] : null;
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -1321,7 +1318,16 @@
 				$pa_options['childrenOnlyForItemID'] = $this->get('type_id');
 			}
 			
-			$pa_options['limitToItemsWithID'] = caGetTypeRestrictionsForUser($this->tableName(), $pa_options);
+			$user_type_res = caGetTypeRestrictionsForUser($this->tableName(), $pa_options);
+			if (is_array($pa_options['limitToItemsWithID']) && sizeof($pa_options['limitToItemsWithID'])){
+			    $pa_options['limitToItemsWithID'] = caMakeTypeIDList($this->tableName(), $pa_options['limitToItemsWithID']);
+			}
+			
+			if (is_array($pa_options['limitToItemsWithID']) && sizeof($pa_options['limitToItemsWithID']) && is_array($user_type_res) && sizeof($user_type_res)) {
+			    $pa_options['limitToItemsWithID'] = array_intersect($user_type_res, $pa_options['limitToItemsWithID']);
+			} elseif(is_array($user_type_res) && sizeof($user_type_res)) {
+			    $pa_options['limitToItemsWithID'] = $user_type_res;
+			}
 			
 			if (caGetOption('inUse', $pa_options, false)) {
 				$vs_access_sql = '';
@@ -1350,7 +1356,7 @@
 				}
 			}
 			
-			return $t_list->getListAsHTMLFormElement($this->getTypeListCode(), $ps_name, $pa_attributes, array_merge($pa_options, ['value' => caGetOption('value', $pa_options, $this->get($this->getTypeFieldName()))]));
+			return $t_list->getListAsHTMLFormElement($this->getTypeListCode(), $ps_name, $pa_attributes, array_merge($pa_options, ['value' => $this->get($this->getTypeFieldName())]));
 		}
 		# ------------------------------------------------------------------
 		// --- Forms
@@ -1390,9 +1396,15 @@
 		  *
 		  * @param $po_request HTTPRequest
 		  * @param $ps_field string
-		  * @param $pa_options array
+		  * @param $pa_options array Options include:
+		  *		restrictToRelationshipTypes = 
+		  *		render = 
+		  *		class = 
+		  *		autocomplete = 
+		  *		value = 
+		  *		values = 
+		  *		
 		  * @return string HTML text of form element. Will return null (from superclass) if it is not possible to generate an HTML form widget for the bundle.
-		  * 
 		  */
 		public function htmlFormElementForSearch($po_request, $ps_field, $pa_options=null) {
 			if(!$pa_options) { $pa_options = array(); }
@@ -1400,7 +1412,7 @@
 			
 			if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $pa_options, array()))) { $vs_rel_types = "/{$vs_rel_types}"; }
 			if ($va_tmp[1] == $this->getTypeFieldName()) {
-				return $this->getTypeListAsHTMLFormElement($ps_field.$vs_rel_types, array('class' => caGetOption('class', $pa_options, null)), array_merge($pa_options, array('nullOption' => '-')));
+				return $this->getTypeListAsHTMLFormElement($ps_field.$vs_rel_types, array('class' => caGetOption('class', $pa_options, null), 'id' => caGetOption('id', $pa_options, str_replace('.', '_', $ps_field))), array_merge($pa_options, array('nullOption' => '-')));
 			}
 			
 			if ($ps_render = caGetOption('render', $pa_options, null)) {
@@ -1460,7 +1472,13 @@
 		  *
 		  * @param $po_request HTTPRequest
 		  * @param $ps_field string
-		  * @param $pa_options array
+		  * @param $pa_options array Options include:
+		  *		values = 
+		  *		width = 
+		  *		height = 
+		  *		class = 
+		  *		useCurrentRowValueAsDefault = 
+		  *		
 		  * @return string HTML text of form element. Will return null (from superclass) if it is not possible to generate an HTML form widget for the bundle.
 		  * 
 		  */
@@ -1468,8 +1486,11 @@
 			if(!$pa_options) { $pa_options = []; }
 			$va_tmp = explode('.', $ps_field);
 			
+			$use_current_row_value = caGetOption('useCurrentRowValueAsDefault', $pa_options, false);
+			
 			if ($va_tmp[1] == $this->getTypeFieldName()) {
-				return $this->getTypeListAsHTMLFormElement(null, null, $pa_options);
+			    unset($pa_options['values']);
+				return $this->getTypeListAsHTMLFormElement($ps_field, ($use_current_row_value ? ['value' => $this->get($this->getTypeFieldName())] : null), $pa_options);
 			}
 			
 			if ($va_tmp[0] != $this->tableName()) { return null; }
@@ -1735,6 +1756,9 @@
 				return false;
 			}
 			
+			$use_current_row_value = caGetOption('useCurrentRowValueAsDefault', $pa_options, false);
+			
+			$policy = caGetOption('policy', $pa_options, null);     // current value policy
 			$vb_is_sub_element = (bool)($t_element->get('parent_id'));
 			$t_parent = $vb_is_sub_element ? ca_metadata_elements::getInstance($t_element->get('parent_id')) : null;
 			while($vb_is_sub_element && ($t_parent->get('datatype') == 0) && ($t_parent->get('parent_id') > 0)) {
@@ -1773,12 +1797,28 @@
 					continue;
 				}
 				
+				if (caGetOption('autocomplete', $pa_options, false) && ca_metadata_elements::isAuthorityDatatype($va_element['element_id'])) {
+					$pa_options['asArrayElement'] = false;
+					
+					return caGetAdvancedSearchFormAutocompleteJS($po_request, $this->tableName().'.'.$va_element['element_code'], AuthorityAttributeValue::elementTypeToInstance($va_element['datatype']), array_merge($pa_options, ['restrictToField' => false]));
+				}
+				
 				$va_label = $this->getAttributeLabelAndDescription($va_element['element_id']);
 				
-				$vs_subelement_code = $this->tableName().'.'.($vb_is_sub_element ? $t_parent->get('element_code').'.' : '').(($vs_element_code !== $va_element['element_code']) ? "{$vs_element_code}." : "").$va_element['element_code'];
+				// Include "current_value" syntax if policy is set
+				$vs_subelement_code = $this->tableName().'.'.($policy ? "current_value.{$policy}." : '').($vb_is_sub_element ? $t_parent->get('element_code').'.' : '').(($vs_element_code !== $va_element['element_code']) ? "{$vs_element_code}." : "").$va_element['element_code'];
 				
-				$vs_value = (isset($pa_options['values']) && isset($pa_options['values'][$vs_subelement_code])) ? $pa_options['values'][$vs_subelement_code] : '';
-
+				$vm_values = (isset($pa_options['values']) && isset($pa_options['values'][$vs_subelement_code])) ? $pa_options['values'][$vs_subelement_code] : null;
+				
+				// Use current row value as default value if option is set
+				if (is_null($vm_values) && $use_current_row_value) { 
+				    $index_set = !is_null($index = caGetOption('index', $pa_options, null));
+				    $vm_values = $this->get($vs_subelement_code, ['returnAsArray' => $is = ((ca_metadata_elements::getDataTypeForElementCode($va_element['element_code']) == 3) || $index_set)]); 
+				    if ($is && $index_set) {
+				        $vm_values = $vm_values[$index];
+				    }
+				}
+			
 				$va_element_opts = array_merge(array(
 					'label' => $va_label['name'],
 					'description' => $va_label['description'],
@@ -1787,9 +1827,9 @@
 					'request' => $po_request,
 					'class' => $pa_options['class'],
 					'nullOption' => '-',
-					'value' => $vs_value,
+					'value' => $vm_values,
 					'forSearch' => true,
-					'render' => (isset($va_element['settings']['render']) && ($va_element['settings']['render'] == 'lookup')) ? $va_element['settings']['render'] : isset($pa_options['render']) ? $pa_options['render'] : 'select'
+					'render' => $va_element['settings']['render']//(isset($va_element['settings']['render']) && ($va_element['settings']['render'] == 'lookup')) ? $va_element['settings']['render'] : isset($pa_options['render']) ? $pa_options['render'] : 'select'
 				), array_merge($pa_options, $va_override_options));
 				
 				if (caGetOption('forSimpleForm', $pa_options, false)) { 
@@ -1813,7 +1853,7 @@
 					// prep element for use as search element
 					//
 					// ... replace value
-					$vs_form_element = str_replace('{{'.$va_element['element_id'].'}}', $vs_value, $vs_form_element);
+					$vs_form_element = str_replace('{{'.$va_element['element_id'].'}}', $vm_values, $vs_form_element);
 				
 				
 					// escape any special characters in jQuery selectors
@@ -2375,7 +2415,6 @@
 				}
 			}
 
-			$t_dupe->setMode(ACCESS_WRITE);
 			$t_dupe->update();
 
 			if($t_dupe->numErrors()) {
@@ -2425,7 +2464,6 @@
 				return false;
 			}
 			$t_restriction = new ca_metadata_type_restrictions();
-			$t_restriction->setMode(ACCESS_WRITE);
 			$t_restriction->set('table_num', $this->tableNum());
 			$t_restriction->set('element_id', $t_element->getPrimaryKey());
 			$t_restriction->set('type_id', $pn_type_id);	// TODO: validate $pn_type_id
@@ -2448,7 +2486,6 @@
 			}
 			$t_restriction = new ca_metadata_type_restrictions();
 			if ($t_restriction->load(array('element_id' => $t_element->getPrimaryKey(), 'type_id' => $pn_type_id, 'table_num' => $this->tableNum()))) {
-				$t_restriction->setMode(ACCESS_WRITE);
 				$t_restriction->delete();
 				if ($t_restriction->numErrors()) {
 					$this->postError(1981, _t("Couldn't remove element from restriction list: %1",join('; ', $t_restriction->getErrors())), 'BaseModelWithAttributes->addMetadataElementToType()');

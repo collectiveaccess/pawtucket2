@@ -101,7 +101,6 @@ define("__CA_MEDIA_QUEUED_ICON__", 'queued');
 require_once(__CA_LIB_DIR__."/BaseObject.php");
 require_once(__CA_LIB_DIR__."/ApplicationError.php");
 require_once(__CA_LIB_DIR__."/Configuration.php");
-require_once(__CA_LIB_DIR__."/Datamodel.php");
 require_once(__CA_LIB_DIR__."/ApplicationChangeLog.php");
 require_once(__CA_LIB_DIR__."/Parsers/TimeExpressionParser.php");
 require_once(__CA_LIB_DIR__."/Parsers/TimecodeParser.php");
@@ -119,8 +118,6 @@ require_once(__CA_APP_DIR__."/helpers/gisHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 require_once(__CA_LIB_DIR__."/ApplicationPluginManager.php");
 require_once(__CA_LIB_DIR__."/MediaContentLocationIndexer.php");
-require_once(__CA_LIB_DIR__.'/MediaReplicator.php');
-require_once(__CA_LIB_DIR__.'/Media/Remote/Base.php');
 
 /**
  * Base class for all database table classes. Implements database insert/update/delete
@@ -282,14 +279,7 @@ class BaseModel extends BaseObject {
 	 *
 	 * @access private
 	 */
-	private $opqs_get_change_log_subjects;		#
-
-	/**
-	 * array containing parsed version string from
-	 *
-	 * @access private
-	 */
-	private $opa_php_version;				#
+	private $opqs_get_change_log_subjects;
 	
 	/**
 	 * Flag controlling whether changes are written to the change log (ca_change_log)
@@ -551,7 +541,7 @@ class BaseModel extends BaseObject {
 	 * @return HTMLPurifier Returns instance
 	 */
 	static public function getPurifier() {
-		if (!BaseModel::$html_purifier) { BaseModel::$html_purifier = new HTMLPurifier(); }
+		if (!BaseModel::$html_purifier) { BaseModel::$html_purifier = caGetHTMLPurifier(); }
 		return BaseModel::$html_purifier;
 	}
 	# --------------------------------------------------------------------------------
@@ -1362,7 +1352,7 @@ class BaseModel extends BaseObject {
 								$vm_value = array_shift($va_ids);
 							}
 						}
-						if (($vm_value !== "") || ($this->getFieldInfo($vs_field, "IS_NULL") && ($vm_value == ""))) {
+						if (($vm_value !== "") || (($this->getFieldInfo($vs_field, "IS_NULL") && ($vm_value == "")))) {
 							if ($vm_value) {
 								if (($vs_list_code = $this->getFieldInfo($vs_field, "LIST_CODE")) && (!is_numeric($vm_value))) {	// translate ca_list_item idno's into item_ids if necessary
 									if ($vn_id = ca_lists::getItemID($vs_list_code, $vm_value)) {
@@ -2752,6 +2742,7 @@ class BaseModel extends BaseObject {
 	 *		updateOnlyMediaVersions = when set to an array of valid media version names, media is only processed for the specified versions
 	 *		force = if set field values are not verified prior to performing the update
 	 *		dontLogChange = don't log change in change log. [Default is false]
+	 *      dontUpdateHistoryCurrentValueTracking = Skip updating current value tracking caches. Used internally when deleting rows. [Default is false]
 	 * @return bool success state
 	 */
 	public function update($pa_options=null) {
@@ -3147,7 +3138,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 					case (FT_MEDIA):
 						$va_limit_to_versions = caGetOption("updateOnlyMediaVersions", $pa_options, null);
 						
-						if ($vs_media_sql = $this->_processMedia($vs_field, array('these_versions_only' => $va_limit_to_versions, 'batch' => caGetOption('batch', $pa_options, false)))) {
+						if ($vs_media_sql = $this->_processMedia($vs_field, array('processingMediaForReplication' => caGetOption('processingMediaForReplication', $pa_options, false), 'these_versions_only' => $va_limit_to_versions, 'batch' => caGetOption('batch', $pa_options, false)))) {
 							$vs_sql .= $vs_media_sql;
 							$vn_fields_that_have_been_set++; $fields_changed++;
 						} else {
@@ -3195,6 +3186,11 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 				} 
 				
 				SearchResult::clearResultCacheForRow($this->tableName(), $this->getPrimaryKey());
+                if (($fields_changed > 0) && method_exists($this, "deriveHistoryTrackingCurrentValue") && !caGetOption('dontUpdateHistoryCurrentValueTracking', $pa_options, false) && !defined('__CA_DONT_UPDATE_HISTORY_TRACKING_CACHE__')) {
+                    $table = $this->tableName();
+                    $this->deriveHistoryTrackingCurrentValue();
+                    if ($table::isHistoryTrackingCriterion($table)) { $this->updateDependentHistoryTrackingCurrentValues(); }
+                }
 				
 				if ((!isset($pa_options['dont_do_search_indexing']) || (!$pa_options['dont_do_search_indexing'])) &&  !defined('__CA_DONT_DO_SEARCH_INDEXING__')) {
 					# update search index
@@ -3337,7 +3333,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 				$vb_we_set_transaction = true;
 			}
 			$this->set('deleted', 1);
-			if ($vn_rc = self::update(array('force' => true))) {
+			if ($vn_rc = self::update(array('force' => true, 'dontUpdateHistoryCurrentValueTracking' => true))) {
 				if(!defined('__CA_DONT_DO_SEARCH_INDEXING__') || !__CA_DONT_DO_SEARCH_INDEXING__) {
 					$o_indexer = $this->getSearchIndexer();
 					$o_indexer->startRowUnIndexing($this->tableNum(), $vn_id);
@@ -4281,7 +4277,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			$vs_sql =  "{$ps_field} = ".$this->quote(caSerializeForDatabase($this->_FILES[$ps_field], true)).",";
 		} else {
 			// Don't try to process files when no file is actually set
-			if(isset($this->_SET_FILES[$ps_field]['tmp_name'])) { 
+			if(isset($this->_SET_FILES[$ps_field]['tmp_name']) && (isUrl($this->_SET_FILES[$ps_field]['tmp_name']) || is_readable($this->_SET_FILES[$ps_field]['tmp_name']))) { 
 				$o_tq = new TaskQueue();
 				$o_media_proc_settings = new MediaProcessingSettings($this, $ps_field);
 		
@@ -4645,8 +4641,8 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 								$magic = rand(0,99999);
 								$filepath = $vi["absolutePath"]."/".$dirhash."/".$magic."_".$this->_genMediaName($ps_field)."_".$v.".".$ext;
 							
-								if (!copy($this->_SET_FILES[$ps_field]['tmp_name'], $filepath)) {
-									$this->postError(1600, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
+								if (!is_readable($this->_SET_FILES[$ps_field]['tmp_name']) || !is_writeable(pathinfo($filepath, PATHINFO_DIRNAME)) || !copy($this->_SET_FILES[$ps_field]['tmp_name'], $filepath)) {
+									$this->postError(1670, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 									$m->cleanup();
 									set_time_limit($vn_max_execution_time);
 									if ($vb_is_fetched_file) { @unlink($vs_tmp_file); }
@@ -5521,7 +5517,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 				$magic = rand(0,99999);
 
 				$va_pieces = explode("/", $this->_SET_FILES[$field]['original_filename']);
-				$ext = array_pop($va_tmp = explode(".", array_pop($va_pieces)));
+				$ext = strtolower(array_pop($va_tmp = explode(".", array_pop($va_pieces))));
 				if ($properties["dangerous"]) { $ext .= ".bin"; }
 				if (!$ext) $ext = "bin";
 
@@ -5549,8 +5545,8 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 					"FILE_LAST_MODIFIED" => filemtime($this->_SET_FILES[$field]['tmp_name'])
 				);
 
-				if (!@copy($this->_SET_FILES[$field]['tmp_name'], $filepath)) {
-					$this->postError(1600, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processFiles()", $this->tableName().'.'.$field);
+				if (!is_readable($this->_SET_FILES[$field]['tmp_name']) || !is_writeable(pathinfo($filepath, PATHINFO_DIRNAME)) || !copy($this->_SET_FILES[$field]['tmp_name'], $filepath)) {
+					$this->postError(1670, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processFiles()", $this->tableName().'.'.$field);
 					return false;
 				}
 				@touch($filepath, filemtime($this->_SET_FILES[$field]['tmp_name']));
@@ -7008,7 +7004,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						}
 						if (is_array($va_rel = Datamodel::getOneToManyRelations($vs_table_name, $ps_additional_table_to_join))) {
 							// one-many rel
-							$va_sql_joins[] = "{$ps_additional_table_join_type} JOIN {$ps_additional_table_to_join} ON {$vs_table_name}".'.'.$va_rel['one_table_field']." = {$ps_additional_table_to_join}.".$va_rel['many_table_field'];
+							$va_sql_joins[$ps_additional_table_to_join] = "{$ps_additional_table_join_type} JOIN {$ps_additional_table_to_join} ON {$vs_table_name}".'.'.$va_rel['one_table_field']." = {$ps_additional_table_to_join}.".$va_rel['many_table_field'];
 						} else {
 							// TODO: handle many-many cases
 						}
@@ -7032,8 +7028,10 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 					}
 					$vs_sql_joins = join("\n", $va_sql_joins);
 					
+					$select_tables = array_keys($va_sql_joins);
+					$select_tables[] = $vs_table_name;
 					$vs_sql = "
-						SELECT * 
+						SELECT ".join(',', array_map(function($v) { return "{$v}.*"; }, $select_tables))."
 						FROM {$vs_table_name}
 						{$vs_sql_joins}
 						WHERE
@@ -9151,7 +9149,7 @@ $pa_options["display_form_field_tips"] = true;
 				$t_item_rel->set($t_item_rel->getLeftTableFieldName(), $this->getPrimaryKey());
 				$t_item_rel->set($t_item_rel->getRightTableFieldName(), $pn_rel_id);
 			}
-			$t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id);		// TODO: verify type_id based upon type_id's of each end of the relationship
+			if($t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
 			if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 			if(!is_null($ps_source_info)){ $t_item_rel->set("source_info",$ps_source_info); }
 			$t_item_rel->insert();
@@ -9178,7 +9176,7 @@ $pa_options["display_form_field_tips"] = true;
 					}
 					
 					$t_item_rel->set('rank', $pn_rank);	
-					$t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id);		// TODO: verify type_id based upon type_id's of each end of the relationship
+					if($t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
 					if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 					if(!is_null($ps_source_info)){ $t_item_rel->set("source_info",$ps_source_info); }
 					$t_item_rel->insert();
@@ -9203,7 +9201,7 @@ $pa_options["display_form_field_tips"] = true;
 						} else {
 							$t_item_rel->set($t_item_rel->getLeftTableFieldName(), $this->getPrimaryKey());
 							$t_item_rel->set($t_item_rel->getRightTableFieldName(), $pn_rel_id);
-							$t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id);	
+							if($t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }
 							$t_item_rel->insert();
 							
 							if ($t_item_rel->numErrors() > 0) {
@@ -9295,7 +9293,8 @@ $pa_options["display_form_field_tips"] = true;
 					$t_item_rel->set($t_item_rel->getRightTableFieldName(), $pn_rel_id);
 				}
 				if (!is_null($pn_rank)) { $t_item_rel->set('rank', $pn_rank);	}
-				if (!is_null($pn_type_id)) { $t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id);}	// TODO: verify type_id based upon type_id's of each end of the relationship
+
+				if (!is_null($pn_type_id) && $t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id);}	// TODO: verify type_id based upon type_id's of each end of the relationship
 				if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 				if(!is_null($pa_source_info)){ $t_item_rel->set("source_info",$pa_source_info); }
 				
@@ -9325,7 +9324,7 @@ $pa_options["display_form_field_tips"] = true;
 						}
 						
 						if (!is_null($pn_rank)) { $t_item_rel->set('rank', $pn_rank);	}
-						if (!is_null($pn_type_id)) { $t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
+						if (!is_null($pn_type_id) && ($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
 						if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 						if(!is_null($pa_source_info)){ $t_item_rel->set("source_info",$pa_source_info); }
 						
@@ -10726,23 +10725,6 @@ $pa_options["display_form_field_tips"] = true;
 		", array($this->tableNum(), $vn_row_id));
 		
 		$pk = $this->primaryKey();
-		$qr_set_comments = $o_db->query("
-			SELECT 
-			    c.comment_id, c.row_id set_item_id, c.user_id, c.locale_id, c.comment, c.media1, c.media2, c.media3, c.media4, 
-			    c.rating, c.email, c.name, c.created_on, c.access, c.ip_addr, c.moderated_on, c.moderated_by_user_id, c.location,
-			    csi.row_id, csi.table_num, csi.set_id, csi.`rank`,
-			    cs.set_code, csl.name set_name,
-			    u.fname, u.lname, u.email user_email
-			FROM ca_item_comments c
-			INNER JOIN ca_set_items AS csi ON csi.item_id = c.row_id AND csi.table_num = ?
-			INNER JOIN ca_sets AS cs ON cs.set_id = csi.set_id
-			INNER JOIN ca_set_labels AS csl ON csl.set_id = cs.set_id 
-			LEFT JOIN ca_users AS u ON c.user_id = u.user_id
-			WHERE
-				(c.table_num = 105) AND (csi.row_id = ?)
-				
-				{$vs_user_sql} {$vs_moderation_sql}
-		", array($this->tableNum(), $vn_row_id));
 		
         switch($vs_return_as) {
             case 'count':
@@ -10793,36 +10775,6 @@ $pa_options["display_form_field_tips"] = true;
 					if ($va_comments[$comment_id]['user_id']) {
 						$va_comments[$comment_id]['name'] = trim($va_comments[$comment_id]['fname'].' '.$va_comments[$comment_id]['lname']);
 						$va_comments[$comment_id]['email'] =  $va_comments[$comment_id]['user_email'];
-					}
-                }
-                 while ($qr_set_comments->nextRow()) {
-                    $comment_id = $qr_set_comments->get("comment_id");
-                    $va_comments[$comment_id] = $qr_set_comments->getRow();
-                    foreach (array("media1", "media2", "media3", "media4") as $vs_media_field) {
-                        $va_media_versions = array();
-                        $va_media_versions = $qr_set_comments->getMediaVersions($vs_media_field);
-                        $va_media = array();
-                        if (is_array($va_media_versions) && (sizeof($va_media_versions) > 0)) {
-                            foreach ($va_media_versions as $vs_version) {
-                                $va_image_info = array();
-                                $va_image_info = $qr_set_comments->getMediaInfo($vs_media_field, $vs_version);
-                                $va_image_info["TAG"] = $qr_set_comments->getMediaTag($vs_media_field, $vs_version);
-                                $va_image_info["URL"] = $qr_set_comments->getMediaUrl($vs_media_field, $vs_version);
-                                $va_media[$vs_version] = $va_image_info;
-                            }
-                            $va_comments[$comment_id][$vs_media_field] = $va_media;
-                        }
-                    }
-                    
-					$va_comments[$comment_id]['created_on_display'] = caGetLocalizedDate($va_comments[$comment_id]['created_on']);
-					
-					if ($va_comments[$comment_id]['user_id']) {
-						$va_comments[$comment_id]['name'] = trim($va_comments[$comment_id]['fname'].' '.$va_comments[$comment_id]['lname']);
-						$va_comments[$comment_id]['email'] =  $va_comments[$comment_id]['user_email'];
-					}
-					
-					if ($o_request) {
-						$va_comments[$comment_id]['set_message'] = _t("Comment made in set %1", caEditorLink($o_request, $qr_set_comments->get('set_name'), '', 'ca_sets', $va_comments[$comment_id]['set_id']));
 					}
                 }
                 break;
@@ -11820,7 +11772,18 @@ $pa_options["display_form_field_tips"] = true;
 		if ($vs_deleted_sql) { $va_sql[] = $vs_deleted_sql;}
 		$va_sql = array_filter($va_sql, function($v) { return strlen($v) > 0; });
 
-		$vs_sql = "SELECT * FROM {$vs_table} ".((sizeof($va_sql) > 0) ? " WHERE (".join(" AND ", $va_sql).")" : "");
+		$vs_pk = $t_instance->primaryKey();
+		
+		switch($ps_return_as) {
+			case 'queryresult':		
+			case 'arrays':
+				$select_flds = '*';
+				break;
+			default:
+				$select_flds = $vs_pk;
+				break;
+		}
+		$vs_sql = "SELECT {$select_flds} FROM {$vs_table} ".((sizeof($va_sql) > 0) ? " WHERE (".join(" AND ", $va_sql).")" : "");
 
 		$vs_orderby = '';
 		if ($vs_sort = caGetOption('sort', $pa_options, null)) {
@@ -11830,13 +11793,13 @@ $pa_options["display_form_field_tips"] = true;
 				switch($va_tmp[0]) {
 					case $vs_table:
 						if ($t_instance->hasField($va_tmp[1])) {
-							$vs_orderby = " ORDER BY {$vs_sort} {$vs_sort_direction}";
+							$vs_orderby = " ORDER BY `{$va_tmp[1]}` {$vs_sort_direction}";
 						}
 						break;
 					default:
 						if (sizeof($va_tmp) == 1) {
 							if ($t_instance->hasField($va_tmp[0])) {
-								$vs_orderby = " ORDER BY {$vs_sort} {$vs_sort_direction}";
+								$vs_orderby = " ORDER BY `{$vs_sort}` {$vs_sort_direction}";
 							}
 						}
 						break;
@@ -11868,7 +11831,6 @@ $pa_options["display_form_field_tips"] = true;
 		
 		$vn_c = 0;
 	
-		$vs_pk = $t_instance->primaryKey();
 		
 		switch($ps_return_as) {
 			case 'queryresult':

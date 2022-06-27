@@ -35,10 +35,13 @@
   */
 function caGetPreferredThemeForCurrentDevice($pa_theme_device_mappings) {
     if(isset($_GET['current_theme'])){
-        $_COOKIE['current_theme'] = preg_replace("![^A-Za-z0-9\-\_]+!", "", $_GET['current_theme']);
-    }
-    if(isset($_COOKIE['current_theme']) && file_exists(__CA_THEMES_DIR__.'/'.$_COOKIE['current_theme'])){
+        $vs_theme = preg_replace("![^A-Za-z0-9\-\_]+!", "", $_GET['current_theme']);
+        setcookie('current_theme', $vs_theme);
+    } elseif(isset($_COOKIE['current_theme'])) {
         $vs_theme = $_COOKIE['current_theme'];
+    }
+    
+    if(isset($vs_theme) && defined("__CA_THEMES_DIR__") && file_exists(__CA_THEMES_DIR__.'/'.$vs_theme)){
         return $vs_theme;
     }
     $vs_default_theme = 'default';
@@ -188,5 +191,30 @@ function caInstallVendorLibraries() {
 	}
 	
 	return $errors;
+}
+# --------------------------------------------------------------------------------------------
+ /**
+  * 
+  */
+function caEmitHeaders($response) {
+	$header_conf = Configuration::load(__CA_CONF_DIR__.'/headers.conf');
+	$groups = $header_conf->getAssocKeys();
+	if(is_array($groups)) {
+		foreach($groups as $g) {
+			if (is_array($header_group = $header_conf->getAssoc($g))) {
+				foreach($header_group as $h => $v) {
+					if(is_array($v)) {
+						foreach($v as $vv) {
+							$response->addHeader($h, $vv);
+						}
+					} else {
+						$response->addHeader($h, $v);
+					}
+				}
+			}
+		}
+		return true;
+	}
+	return falsd;
 }
 # ---------------------------------------------------------------------------------------------

@@ -236,33 +236,25 @@
  			$this->view->setVar('display_list', $va_display_list);
  			
  			# --- print forms used for printing search results as labels - in tools show hide under page bar
- 			$this->view->setVar('label_formats', caGetAvailablePrintTemplates('labels', array('table' => $this->ops_tablename, 'type' => 'label')));
+ 			$this->view->setVar('label_formats', caGetAvailablePrintTemplates('labels', array('table' => $this->ops_tablename, 'type' => 'label', 'restrictToTypes' => $this->opn_type_restriction_id)));
  			
  			# --- export options used to export search results - in tools show hide under page bar
  			$vn_table_num = Datamodel::getTableNum($this->ops_tablename);
 
 			//default export formats, not configurable
-			$va_export_options = array(
-				array(
-					'name' => _t('Tab delimited'),
-					'code' => '_tab'
-				),
-				array(
-					'name' => _t('Comma delimited (CSV)'),
-					'code' => '_csv'
-				),
-				array(
-					'name' => _t('Spreadsheet with media icons (XLSX)'),
-					'code' => '_xlsx'
-				),
-                array(
-                    'name' => _t('Word processing (DOCX)'),
-                    'code' => '_docx'
-                )				
-			);
+			$va_export_options = [];
+			
+			$include_export_options = $this->request->config->getList($this->ops_tablename.'_standard_results_export_formats');
+			foreach(
+			    ['tab' => _t('Tab delimited'), 'csv' => _t('Comma delimited (CSV)'), 
+			    'xlsx' => _t('Spreadsheet (XLSX)'), 'docx' => _t('Word processing (DOCX)')] as $ext => $name) {
+			    if (!is_array($include_export_options) || in_array($ext, $include_export_options)) {
+			        $va_export_options[] = ['name' => $name, 'code' => "_{$ext}"];
+			    }
+			}
 			
 			// merge default formats with drop-in print templates
-			$va_export_options = array_merge($va_export_options, caGetAvailablePrintTemplates('results', array('showOnlyIn' => ['search_browse_'.$this->opo_result_context->getCurrentView()], 'table' => $this->ops_tablename)));
+			$va_export_options = array_merge($va_export_options, caGetAvailablePrintTemplates('results', array('showOnlyIn' => ['search_browse_'.$this->opo_result_context->getCurrentView()], 'table' => $this->ops_tablename, 'restrictToTypes' => $this->opn_type_restriction_id)));
 			
 			$this->view->setVar('export_formats', $va_export_options);
 			$this->view->setVar('current_export_format', $this->opo_result_context->getParameter('last_export_type'));
@@ -430,9 +422,8 @@
 						$vn_left = $vn_left_margin;
 							
 						switch($vs_renderer) {
-							case 'PhantomJS':
 							case 'wkhtmltopdf':
-								// WebKit based renderers (PhantomJS, wkhtmltopdf) want things numbered relative to the top of the document (Eg. the upper left hand corner of the first page is 0,0, the second page is 0,792, Etc.)
+								// WebKit based renderers (wkhtmltopdf) want things numbered relative to the top of the document (Eg. the upper left hand corner of the first page is 0,0, the second page is 0,792, Etc.)
 								$vn_page_count++;
 								$vn_top = ($vn_page_count * $vn_page_height) + $vn_top_margin;
 								break;
@@ -504,6 +495,15 @@
 						$vs_file_extension = 'txt';
 						$vs_mimetype = "text/plain";
 					default:
+					    if(substr($ps_output_type, 0, 5) === '_docx') {
+					        $va_template_info = caGetPrintTemplateDetails('results', substr($ps_output_type, 6));
+                            if (!is_array($va_template_info)) {
+                                $this->postError(3110, _t("Could not find view for PDF"),"BaseFindController->PrintSummary()");
+                                return;
+                            }
+                            $this->render($va_template_info['path']);
+                            return;	
+					    }
 						break;
 				}
 
@@ -823,7 +823,7 @@
 								// make sure we don't download representations the user isn't allowed to read
 								if(!caCanRead($this->request->user->getPrimaryKey(), 'ca_object_representations', $vn_representation_id)){ continue; }
 								
-								switch($this->request->user->getPreference('downloaded_file_naming')) {
+								switch($mode = $this->request->config->get([$this->ops_tablename.'_downloaded_file_naming', 'downloaded_file_naming'])) {
 									case 'idno':
 										$vs_filename = "{$vs_idno_proc}{$vn_index}.{$vs_ext}";
 										break;
@@ -835,16 +835,21 @@
 										break;
 									case 'original_name':
 									default:
-										if ($vs_original_name) {
+										if (strpos($mode, "^") !== false) { // template
+											$vs_filename = pathinfo(caProcessTemplateForIDs($mode, 'ca_object_representations', [$pn_representation_id]), PATHINFO_FILENAME);
+										} elseif ($vs_original_name) {
 											$va_tmp = explode('.', $vs_original_name);
 											if (sizeof($va_tmp) > 1) { 
 												if (strlen($vs_filename_ext = array_pop($va_tmp)) < 3) {
 													$va_tmp[] = $vs_filename_ext;
 												}
 											}
-											$vs_filename = join('_', $va_tmp)."{$vn_index}.{$vs_ext}";
+											$vs_filename = join('_', $va_tmp)."{$vn_index}";
 										} else {
-											$vs_filename = "{$vs_idno_proc}_representation_{$vn_representation_id}_{$vs_version}{$vn_index}.{$vs_ext}";
+											$vs_filename = "{$vs_idno_proc}_representation_{$vn_representation_id}_{$vs_version}{$vn_index}";
+										}
+										if (!preg_match("!\.{$vs_ext}!", $vs_filename)) {
+											$vs_filename .= ".{$vs_ext}";
 										}
 										break;
 								}
