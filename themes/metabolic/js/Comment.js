@@ -14,7 +14,7 @@ const Comment = () => {
 
 	const { setComments, setTags, setTablename, setItemID, setIsLoggedIn, isLoggedIn } = useContext(CommentContext)
 
-  // console.log('isLoggedIn: ', isLoggedIn);
+   console.log('isLoggedIn: ', isLoggedIn);
 	useEffect(() => {
 
     setTablename(appData.tablename)

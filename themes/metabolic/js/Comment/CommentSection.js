@@ -54,11 +54,12 @@ const CommentSection = (props) => {
     e.preventDefault();
   }
 
+console.log('xxxisLoggedIn: ', isLoggedIn);
   return (
     <>
-      {isLoggedIn && comments?
+      {(isLoggedIn || (comments && (comments.length > 0))) ?
         <>
-          {comments.length >= 1 ?
+          {(comments && (comments.length >= 1)) ?
             <h2 className="mb-3"><b>{comments.length} {comments.length > 1 ? "Comments" : "Comment"}</b></h2>
           : <h2 className="mb-3"><b>Comments</b></h2>}
         </>

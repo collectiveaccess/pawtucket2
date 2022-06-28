@@ -95,7 +95,7 @@ const TagSection = () => {
   if(tags){
     return( 
       <>
-      	{isLoggedIn ? 
+      	{(isLoggedIn || (tags && (tags.length > 0))) ? 
         	<h2 className="mt-4"><b>Tags</b></h2>
         	:
         	null
