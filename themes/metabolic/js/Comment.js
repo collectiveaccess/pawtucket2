@@ -30,9 +30,9 @@ const Comment = () => {
 
   return (
     <div>
-			<CommentSection loginButtonText={appData.login_button_text} commentButtonText={appData.comment_button_text} />
+	  <CommentSection loginButtonText={appData.login_button_text} commentButtonText={appData.comment_button_text} />
       <TagSection />
-		</div>
+	</div>
   );
 }
 

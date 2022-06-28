@@ -56,7 +56,7 @@ const CommentSection = (props) => {
 
   return (
     <>
-      {comments?
+      {isLoggedIn && comments?
         <>
           {comments.length >= 1 ?
             <h2 className="mb-3"><b>{comments.length} {comments.length > 1 ? "Comments" : "Comment"}</b></h2>

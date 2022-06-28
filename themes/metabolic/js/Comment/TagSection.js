@@ -95,7 +95,11 @@ const TagSection = () => {
   if(tags){
     return( 
       <>
-        <h2 className="mt-4"><b>Tags</b></h2>
+      	{isLoggedIn ? 
+        	<h2 className="mt-4"><b>Tags</b></h2>
+        	:
+        	null
+        }
         <div className="tag-section" style={{width: "100%"}}>
           {tags ? 
             tags.map((tag, index) => {
