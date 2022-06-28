@@ -80,17 +80,17 @@
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
 			
-			if ($vs_table != 'ca_objects') {
-				$va_ids = array();
-				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-					$va_ids[] = $qr_res->get($vs_pk);
-					$vn_c++;
-				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+#			if ($vs_table != 'ca_objects') {
+#				$va_ids = array();
+#				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
+#					$va_ids[] = $qr_res->get($vs_pk);
+#					$vn_c++;
+#				}
+#				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
-				$vn_c = 0;	
-				$qr_res->seek($vn_start);
-			}
+#				$vn_c = 0;	
+#				$qr_res->seek($vn_start);
+#			}
 			
 			$t_list_item = new ca_list_items();
 			while($qr_res->nextHit()) {
@@ -113,10 +113,22 @@
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{			
 					$vs_caption 	= $qr_res->getWithTemplate(caGetOption('result_caption', $va_view_info, null));
+					$vs_tmp = "";
+					if($vs_table == "ca_objects"){
+						if($vs_tmp = trim($qr_res->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', ')))){
+							$vs_tmp = ", ".($g_ui_locale == "de_DE" ? "UT" : "ST").": ".$vs_tmp;
+						}
+						if($this->request->isLoggedIn()){
+							$vs_tmp .= " (".$qr_res->get("ca_objects.idno").")";
+						}
+						if($vs_tmp){
+							$vs_caption .= caDetailLink($this->request, $vs_tmp, '', 'ca_objects', $vs_pk);
+						}
+					}
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					if ($vs_table == 'ca_objects') {
+					if ($vs_table == 'ca_occurrences') {
 						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
@@ -129,9 +141,7 @@
 						$vs_info = null;
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					} else {
-						if($va_images[$vn_id]){
-							$vs_thumbnail = $va_images[$vn_id];
-						}else{
+						if(!($vs_thumbnail = $qr_res->getWithTemplate('<ifcount code="ca_occurrences" min="1"><unit relativeTo="ca_occurrences">^ca_object_representations.media.medium</unit><ifcount>', array("checkAccess" => $va_access_values)))){
 							$vs_thumbnail = $vs_default_placeholder_tag;
 						}
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			

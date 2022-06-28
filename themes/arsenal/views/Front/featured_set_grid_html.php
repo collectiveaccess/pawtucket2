@@ -41,10 +41,12 @@
 	# --- if there is a set configured to show on the front page, load it now
 	# --- it will be an occurrence set
 	#
+	$vs_title = "";
 	$va_featured_ids = array();
-	if($vs_set_code = $o_config->get("front_page_set_code")){
+	if($vs_set_code = $o_config->get("front_page_set_code2")){
 		$t_set = new ca_sets();
 		$t_set->load(array('set_code' => $vs_set_code));
+		$vs_title = $t_set->getLabelForDisplay();
 		$vn_shuffle = 0;
 		if($o_config->get("front_page_set_random")){
 			$vn_shuffle = 1;
@@ -64,11 +66,16 @@
 		$va_featured_ids = array_keys($t_occurrences->getRandomItems(40, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1, 'restrictByIntrinsic' => array("type_id" => $va_list_items->get("ca_list_items.item_id")))));
 		$qr_res = caMakeSearchResult('ca_occurrences', $va_featured_ids);
 	}
-	
 	if($qr_res && $qr_res->numHits()){
+		if($this->request->getParameter('slideshow', pInteger)){
 ?>
-<div class="row"><div class="col-sm-12">  
-		<div class="jcarousel-wrapper">
+<div class="row"><div class="col-sm-12">
+<?php
+	if($vs_title){
+		print '<div class="frontGridTitle">'.$vs_title.'</div>';
+	}
+?>  
+		<div class="jcarousel-wrapper" style="margin-top:0px;">
 			<!-- Carousel -->
 			<div class="jcarousel featured">
 				<ul>
@@ -170,5 +177,50 @@
 			});
 		</script>
 <?php
+	}else{
+?>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 col-lg-8 col-lg-offset-2">
+				<div class="frontGrid">	
+<?php
+	if($vs_title){
+		print '<div class="frontGridTitle">'.$vs_title.'</div>';
+	}
+
+		$i = $vn_col = 0;
+		while($qr_res->nextHit()){
+			if($vs_media = $qr_res->getWithTemplate('<ifdef code="ca_object_representations.media.widepreview"><l>^ca_object_representations.media.widepreview</l></ifdef>', array("checkAccess" => $va_access_values))){
+				if($vn_col == 0){
+					print "<div class='row'>";
+				}
+				print "<div class='col-sm-3 col-xs-6'>".$vs_media;
+				$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
+				if($vs_caption){
+					print "<div class='frontGridCaption'>".$vs_caption."</div>";
+				}
+				print "</div>";
+				$vb_item_output = true;
+				$i++;
+				$vn_col++;
+				if($vn_col == 4){
+					print "</div>";
+					$vn_col = 0;
+				}
+			}
+			if($i == 8){
+				break;
+			}
+		}
+		if($vn_col > 0){
+			print "</div><!-- end row -->";
+		}
+?>
+			</div>
+		</div>
+	</div>
+</div>
+<?php
+		}
 	}
 ?>

@@ -6,8 +6,27 @@
 	$t_set = new ca_sets();
 	$va_access_values = caGetUserAccessValues($this->request);
  	$va_sets = $this->getVar("sets");
-	if(is_array($va_sets) && sizeof($va_sets)){
-		$va_first_items_from_set = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
+	$va_first_items_from_set = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "widepreview", "checkAccess" => $va_access_values));
+					
+	$vs_front_page_set = $config->get('front_page_set_code');
+	$vb_omit_front_page_set = (bool)$config->get('omit_front_page_set_from_gallery');
+	foreach($va_sets as $set_id => $va_set) {
+		if ($vb_omit_front_page_set && $va_set['set_code'] == $vs_front_page_set) { 
+			unset($va_sets[$set_id]); 
+		}
+		$first_item = $va_first_items_from_set[$set_id];
+		$first_item = array_shift($first_item);
+		$vn_item_id = $first_item["item_id"];
+		# --- it there isn't a rep and this is not a set of objects, try to get a related object to show something
+		if(!$va_first_items_from_set[$set_id][$vn_item_id]["representation_tag"]){
+			if(Datamodel::getTableName($va_set['table_num']) != "ca_objects"){
+				if (!($t_instance = Datamodel::getInstanceByTableNum($va_set['table_num']))) { throw new ApplicationException(_t('Invalid item')); }
+				$t_instance->load($first_item["row_id"]);
+				if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.widepreview</unit>', array("checkAccess" => $this->opa_access_values))){
+					$va_first_items_from_set[$set_id][$vn_item_id] = array("representation_tag" => $vs_thumbnail);
+				}
+			}
+		}
 	}
 ?>
 

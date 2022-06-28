@@ -32,7 +32,6 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
 	
 	// get film work
@@ -40,11 +39,11 @@
 
 	$t_work = new ca_occurrences($vn_occurrence_id);
 	if($vn_occurrence_id){
-		$va_related_objects = $t_work->get("ca_objects.related",array("checkAccess" => $va_access_values, "returnWithStructure" => true, "restrictToTypes" => "film_print"));
+		$va_related_objects = $t_work->get("ca_objects.related",array("checkAccess" => $va_access_values, "returnWithStructure" => true, "restrictToTypes" => array("film_print", "digital_item", "video_item")));
 		if(is_array($va_related_objects) && sizeof($va_related_objects)){
-			foreach($va_related_objects as $vn_id => $va_info){
-				if($vn_id == $t_object->get("ca_objects.object_id")){
-					unset($va_related_objects[$vn_id]);
+			foreach($va_related_objects as $vn_i => $va_info){
+				if($va_info["object_id"] == $t_object->get("ca_objects.object_id")){
+					unset($va_related_objects[$vn_i]);
 				}
 			}
 		}
@@ -53,32 +52,26 @@
 
 	global $g_ui_locale;
 ?>
-<div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container">
+
 		<div class="row">
 			<div class='col-sm-12'>
-				<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
+				<div class='navTop'><!--- only shown at small screen size -->
+					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+				</div><!-- end detailTop -->
+				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 				<H2>{{{^ca_objects.type_id}}}</H2>
 				<HR>
 			</div>
 		</div>
 		<div class="row">
-			<div class='col-sm-6 col-md-6'>
-				{{{representationViewer}}}
-				
-				
-				<div id="detailAnnotations"></div>
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+<?php
+			# --- do not show object media.  Show primary rep from the occurrence
+			$vs_work_media = $t_work->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values));
+			$vs_work_media_caption = $t_work->getWithTemplate("<div class='small text-center'><ifdef code='ca_object_representations.caption'>^ca_object_representations.caption</ifdef> <ifdef code='ca_object_representations.copyright'>^ca_object_representations.copyright</ifdef></div>");
+			if($vs_work_media){
+?>
+			<div class='col-sm-6 col-md-6 fullWidthImg'>
+				<?php print $vs_work_media.(($vs_work_media_caption) ? "<div class='small'>".$vs_work_media_caption."</div>" : ""); ?>
 				
 <?php
 				# Comment and Share Tools
@@ -95,7 +88,7 @@
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt" aria-label="'._t("Share").'"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
 					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $t_object->get('ca_objects.object_id'), array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
 					print '</div><!-- end detailTools -->';
 				}				
@@ -105,7 +98,13 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6'>
-				
+<?php
+			}else{
+?>
+			<div class='col-sm-12'>
+<?php
+			}
+?>				
 
 
 
@@ -116,6 +115,8 @@
 
 <?php
 
+				$vs_work = $t_object->getWithTemplate("<ifcount code='ca_occurrences' min='1'><unit relativeTo='ca_occurrences'><l>^ca_occurrences.preferred_labels.name</l></unit></ifcount>");
+				print "<div class='unit'><label>"._t("Work")."</label>".$vs_work."</div>";
 				$va_alt_label_list = $t_object->get('ca_occurrences.nonpreferred_labels.name', array('returnAllLocales' => true, 'returnWithStructure' => true));
 				$vn_locale_de = $t_locale->loadLocaleByCode('de_DE');
 				$vn_locale_en = $t_locale->loadLocaleByCode('en_US');
@@ -221,7 +222,7 @@
 			}
 
 			$va_tags = $t_work->get("ca_list_items", array("returnWithStructure" => true));
-			if(sizeof($va_tags)){
+			if(is_array($va_tags) && sizeof($va_tags)){
 				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Schlagworte" : "Tags")."</label>";
 				$va_print_tags = array();
 				foreach($va_tags as $vn_id => $va_term_info){
@@ -235,24 +236,79 @@
 				print join(", ",$va_print_tags);
 				print "</div>";
 			}
+			
+			if($this->request->isLoggedIn() && $t_work->get('ca_occurrences.work_notes')){
+				print "<div class='unit'><label>".$t_work->getAttributeLabel('work_notes')."</label>".$t_work->get('ca_occurrences.work_notes', array('delimiter' => '<br/>'))."</div><!-- end unit -->";
+			}
+			if($t_work->get("ca_occurrences.credit_editable.credit_entity")){
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Kredite" : "Credits")."</label><div class='trimText'>";
+				print $t_work->getWithTemplate("<unit relativeTo='ca_occurrences.credit_editable' delimiter='<br/>'>^ca_occurrences.credit_editable.credit_role: ^ca_occurrences.credit_editable.credit_entity</unit>");
+				print "</div></div>";
+			}
+			
+			
+			if(strlen($t_object->get('ca_objects.funded_by'))>0){
+				print "<div class='unit'><i>".$t_object->get('ca_objects.funded_by', array('delimiter' => ', '))."</i></div><!-- end unit -->";
+			}
 
 ?>
 			</div><!-- end col -->
-		</div><!-- end row -->
-		<div class="row">
-			<div class='col-sm-12 col-md-12'><HR/></div>
 		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<h3><?php print ($g_ui_locale == "de_DE" ? "Technische Angaben" : "Technical Attributes"); ?></h2>
+				<div class="detailBox">
+					<div class="row">
+						<div class="col-sm-6">
+<?php
+							$va_show_public_fields = array(
+								'format', 'to_rent', 'version', 'lang_syn', 'lang_sub', 'lang_intertit', 'lang_txtlist', 'resolution_list', 'size', 'container_list', 'codec_list', 'lang_voiceover', 'lang_magnet', 'subtitle_type', 'audiodescription_lang', 'closed_caption_lang', 'duration', 'color', 'sound', 'sound_mix', 'optical_sound_type', 'ratio', 'projection_format', 'fps_list', 'length', 'weight', 'reels', 'gossip', 'material_type', 'installation_format'
+							);
+							$va_output = array();
+							
+							foreach($va_show_public_fields as $vs_bundle){
+								if(strlen($t_object->get("ca_objects.{$vs_bundle}"))>0) {
+									$va_output[] = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: ".$t_object->get("ca_objects.{$vs_bundle}",array('convertCodesToDisplayText' => true, 'delimiter' => ', '))."</div><!-- end unit -->";
+
+								}
+							}
+
+							$vn_i = 1;
+							foreach($va_output as $vs_output) {
+								print $vs_output."\n";
+
+								if($vn_i == (ceil(sizeof($va_output) / 2))) {
+									print '</div><div class="col-sm-6">';
+								}
+								$vn_i++;
+							}
+							
+							
+?>
+						</div>
+					</div>
+				</div><!-- end detailBox -->
+			
 		<div class="row">
 <?php
 			if(strlen($t_work->get('ca_occurrences.description'))>0){
-				print "<div class='col-sm-6'><div class='unit'><label>".$t_work->getAttributeLabel('description')."</label><span class='trimText'>".$t_work->get('ca_occurrences.description')."</span></div><!-- end unit --></div>";
-				print "<div class='col-sm-6'>";
-			}else{
-				print "<div class='col-sm-12 col-md-12'>";
+				if (is_array($va_related_objects) && sizeof($va_related_objects)) {
+					print "<div class='col-sm-6'>";
+				}else{
+					print "<div class='col-sm-12 col-md-12'>";
+				}
+				print "<div class='unit'><label>".$t_work->getAttributeLabel('description')."</label><div class='trimText'>".$t_work->get('ca_occurrences.description')."</div></div><!-- end unit -->";
+				print "</div>";
+
 			}
 			
 			# --- output related objects as links
 			if (is_array($va_related_objects) && sizeof($va_related_objects)) {
+				if(strlen($t_work->get('ca_occurrences.description'))>0){
+					print "<div class='col-sm-6'>";
+				}else{
+					print "<div class='col-sm-12 col-md-12'>";
+				}
 				$t_rel = new ca_objects();
 				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Weitere Kopien" : "More Prints")."</label>";
 				foreach($va_related_objects as $vn_id => $va_object_info){
@@ -270,113 +326,26 @@
 						$va_display_parts[] = $vs_version;
 					}					
 
-					if(strlen(trim($t_object->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-						$va_display_parts[] = ($g_ui_locale == "de_DE" ? "UT" : "ST").": ".$t_object->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', '));
+					if(strlen(trim($t_rel->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
+						$va_display_parts[] = ($g_ui_locale == "de_DE" ? "UT" : "ST").": ".$t_rel->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', '));
 					}
 
 					$vs_rel_label = join(', ',$va_display_parts);
 
-					if($this->request->config->get("dont_enforce_access_settings")) {
+					if($this->request->isLoggedIn()){
 						$vs_rel_label .= " (".$va_object_info["idno"].")";
 					}
 
 					print caDetailLink($this->request, $vs_rel_label, '', 'ca_objects', $t_rel->getPrimaryKey());
 					print "<br />";
 				}
-				print "</div>";
+				print "</div></div>";
 			}
 ?>
-			</div><!-- end col either 6 or 12 based on if there is a synopsis or not -->
 		</div><!-- end row -->
-		<div class="row">
-			<div class="col-sm-12">
-				<h3><?php print ($g_ui_locale == "de_DE" ? "Technische Angaben" : "Technical Attributes"); ?></h2>
-				<div class="detailBox">
-					<div class="row">
-						<div class="col-sm-6">
+
 <?php
-							//if($vs_idno = $t_object->get('ca_objects.oa3_id')){
-							//	print "<div class='unit'><b>".($g_ui_locale == "de_DE" ? "Kopiennummer" : "Print ID")."</b>: ".$vs_idno."</div><!-- end unit -->";
-							//}
-							if(strlen(trim($t_object->get('ca_objects.format', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('format')."</b>: ".$t_object->get('ca_objects.format',array("convertCodesToDisplayText" => true))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.to_rent', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('to_rent')."</b>: ".$t_object->get('ca_objects.to_rent',array("convertCodesToDisplayText" => true))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.version', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('version')."</b>: ".$t_object->get('ca_objects.version',array("convertCodesToDisplayText" => true))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.lang_syn', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('lang_syn')."</b>: ".$t_object->get('ca_objects.lang_syn', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('lang_sub')."</b>: ".$t_object->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.lang_intertit', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('lang_intertit')."</b>: ".$t_object->get('ca_objects.lang_intertit', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.lang_txtlist', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('lang_txtlist')."</b>: ".$t_object->get('ca_objects.lang_txtlist', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.resolution_list', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('resolution_list')."</b>: ".$t_object->get('ca_objects.resolution_list', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.size', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('size')."</b>: ".$t_object->get('ca_objects.size', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.container_list', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('container_list')."</b>: ".$t_object->get('ca_objects.container_list', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.codec_list', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('codec_list')."</b>: ".$t_object->get('ca_objects.codec_list', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-							}
-?>
-						</div>
-						<div class="col-sm-6">
-<?php
-							if(strlen(trim($t_object->get('ca_objects.lang_voiceover ', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('lang_voiceover')."</b>: ".$t_object->get('ca_objects.lang_voiceover', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.lang_magnet ', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('lang_magnet')."</b>: ".$t_object->get('ca_objects.lang_magnet', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-							}
-							if(strlen($t_object->get('ca_objects.duration'))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('duration')."</b>: ".$t_object->get('ca_objects.duration')."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.color', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('color')."</b>: ".$t_object->get('ca_objects.color', array("convertCodesToDisplayText" => true))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.sound', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('sound')."</b>: ".$t_object->get('ca_objects.sound', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-							}
-							if(strlen(trim($t_object->get('ca_objects.ratio', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('ratio')."</b>: ".$t_object->get('ca_objects.ratio', array("convertCodesToDisplayText" => true))."</div><!-- end unit -->";
-							}				
-							if(strlen(trim($t_object->get('ca_objects.projection_format', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('projection_format')."</b>: ".$t_object->get('ca_objects.projection_format',array("convertCodesToDisplayText" => true))."</div><!-- end unit -->";
-							}
-							if(strlen($t_object->get('ca_objects.fps_list'))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('fps_list')."</b>: ".$t_object->get('ca_objects.fps_list',array("convertCodesToDisplayText" => true))."</div><!-- end unit -->";
-							}
-							if(strlen($t_object->get('ca_objects.length'))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('length')."</b>: ".$t_object->get('ca_objects.length')."</div><!-- end unit -->";
-							}	
-							if(strlen($t_object->get('ca_objects.weight'))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('weight')."</b>: ".$t_object->get('ca_objects.weight')."</div><!-- end unit -->";
-							}	
-							if(strlen($t_object->get('ca_objects.reels'))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('reels')."</b>: ".$t_object->get('ca_objects.reels')."</div><!-- end unit -->";
-							}	
-							if(strlen($t_object->get('ca_objects.gossip'))>0){
-								print "<div class='unit'><b>".$t_object->getAttributeLabel('gossip')."</b>: ".$t_object->get('ca_objects.gossip')."</div><!-- end unit -->";
-							}				
-?>
-						</div>
-					</div>
-				</div><!-- end detailBox -->
-<?php
-			if($this->request->isLoggedIn() && $this->request->hasRole("frontendRestricted")){
+			if($this->request->isLoggedIn()){
 ?>
 				<h3><?php print ($g_ui_locale == "de_DE" ? "Interne Angaben" : "Hidden Attributes"); ?></h2>
 				<div class="detailBox">
@@ -389,7 +358,8 @@
 								// neu
 								'file_folder_name', 'bytes', 'number_of_files', 'image_frame', 'cpl', 'cpl_content_title_text',
 								'original_format_notes', 'original_format_sound', 'original_fps', 'original_source', 'creator',
-								'creation_date', 'processing_system', 'edited_by', 'processing_step', 'final', 'media'
+								'creation_date', 'processing_system', 'edited_by', 'processing_step', 'final', 'media',
+								'storage_location', 'vinegar', 'shrinking', 'film_base_type', 'print_id_old', 'colorspace'
 							);
 							$va_output = array();
 
@@ -400,7 +370,26 @@
 
 							foreach($va_show_internal_fields as $vs_bundle){
 								if(strlen($t_object->get("ca_objects.{$vs_bundle}"))>0) {
-									$va_output[] = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: ".$t_object->get("ca_objects.{$vs_bundle}",array('convertCodesToDisplayText' => true))."</div><!-- end unit -->";
+									switch($vs_bundle){
+										case "storage_location":
+											$vs_tmp = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: ";
+											$vs_tmp .= $t_object->getWithTemplate("<unit relativeTo='ca_objects.storage_locations' delimiter='<br/>'><ifdef code='ca_objects.storage_location.storage_location_number'>^ca_objects.storage_location.storage_location_number</ifdef><ifdef code='ca_objects.storage_location.storage_location_comment'><ifdef code='ca_objects.storage_location.storage_location_number'>, </ifdef>^ca_objects.storage_location.storage_location_comment</ifdef></unit>");
+											$vs_tmp .= "</div><!-- end unit -->";
+											$va_output[] = $vs_tmp;
+										break;
+										# ------------------------------
+										case "vinegar":
+											$vs_tmp = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: ";
+											$vs_tmp .= $t_object->getWithTemplate("<unit relativeTo='ca_objects.vinegar' delimiter='<br/>'><ifdef code='ca_objects.vinegar.vinegar_check_date'>^ca_objects.vinegar.vinegar_check_date</ifdef><ifdef code='ca_objects.vinegar.vinegar_value'><ifdef code='ca_objects.vinegar.vinegar_check_date'>, </ifdef>^ca_objects.vinegar.vinegar_value</ifdef><ifdef code='ca_objects.vinegar.vinegar_report'><br/>^ca_objects.vinegar.vinegar_report</ifdef></unit>");
+											$vs_tmp .= "</div><!-- end unit -->";
+											$va_output[] = $vs_tmp;
+										break;
+										# ------------------------------
+										default:
+											$va_output[] = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: ".$t_object->get("ca_objects.{$vs_bundle}",array('convertCodesToDisplayText' => true, 'delimiter' => ", "))."</div><!-- end unit -->";
+										break;
+										# ------------------------------
+									}
 								}
 							}
 
@@ -408,7 +397,7 @@
 							foreach($va_output as $vs_output) {
 								print $vs_output."\n";
 
-								if($vn_i >= (floor(sizeof($va_output) / 2))) {
+								if($vn_i == (ceil(sizeof($va_output) / 2))) {
 									print '</div><div class="col-sm-6">';
 								}
 								$vn_i++;
@@ -419,18 +408,8 @@
 				</div>			
 <?php
 			}
-?>			
-			
-			</div><!-- end col -->
-		</div><!-- end row -->
+?>
 
-			
-		</div><!-- end container -->
-	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
 
