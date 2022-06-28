@@ -27,10 +27,12 @@ nav.navbar{
   bottom: -37px;
   width: 100%;
   text-align: center;
-  left: 0px;
+  left: 10px;
 }
-.logoMiller img {
-  width:50%;
+logoMiller img {
+	width: 90%;
+	margin-left: 12px;
+	margin-top: -15px;
 }
 @media (min-width: 768px) and (max-width:1010px){
 	.navbar-brand, .navbar-brand img {
@@ -48,7 +50,9 @@ nav.navbar{
 		background-color: #FFF;
 	}
 	.logoMiller img {
-	  width: 50%;
+		width: 90%;
+		margin-left: -0px;
+		margin-top: 0px;
 	}
 }
 nav.navbar{
@@ -63,6 +67,9 @@ nav.navbar{
 	.nav > li.dropdown > a.icon{
 		padding-top:30px;
 	}
+}
+.navbar-default .navbar-nav .dropdown-menu > li > a{
+	font-size:14px;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
   background-color: #7D092D;
@@ -352,4 +359,11 @@ a.readmore-js-toggle {
 .galleryIntroOverlay .btn-default{
 	font-size:18px;
 	padding:10px;
+}
+
+.aboutContact img{
+	width:100%;
+	max-width:200px;
+	height:auto;
+	margin-bottom:30px;
 }
