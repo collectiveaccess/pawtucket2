@@ -2894,7 +2894,7 @@ a.browseRemoveFacet .glyphicon {
 }
 
 div.caMediaOverlayControls {
-	background-color: #000;
+	background-color: rgba(0,0,0,.5);
 	color:#FFF;
 	font-size: 11px;
 	text-align:center;
@@ -2904,7 +2904,7 @@ div.caMediaOverlayControls {
 	bottom:0px;
 	left:0px;
 	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
-	opacity:.5;	
+	opacity:1;	
 }
 
 div.caMediaOverlayControlsMinimal {
@@ -2937,9 +2937,14 @@ div.caMediaOverlayControls .close{
 	float:right;
 	margin: 0px 10px 0px 20px;
 	font-size: 22px;
-	opacity: 0.9;
+	text-shadow: 0 1px 0 #000000;
+	opacity: 1;
 }
-
+div.caMediaOverlayControls .close a .fa{
+	color:red;
+	font-size: 24px;
+	opacity: 1;
+}
 div.caMediaOverlayControls .nextPreviousLinks{
 	float:right;
 	margin: 0px 10px 0px 20px;
