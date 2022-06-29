@@ -141,7 +141,7 @@
 						</div>
 						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
 					</div>
-					<?php print caNavLink($this->request, _t("Advanced Search"), "advancedSearchLink", "", "Search", "advanced/".(($this->request->isLoggedIn()) ? "objects_all" : "objects")); ?>
+					<?php print caNavLink($this->request, _t("Advanced Search"), "advancedSearchLink", "", "Search", "advanced/objects"); ?>
 					
 				</form>
 				<script type="text/javascript">

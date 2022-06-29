@@ -49,7 +49,7 @@
 	</div>
 	<div class="row">
 		<div class="col-xs-12 col-sm-2 col-sm-offset-4">
-			<?php print caNavLink($this->request, "Login", "btn-default", "", "LoginReg", "LoginForm"); ?>
+			<a href='#' class='btn-default' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array()); ?>"); return false;' >Login</a>
 		</div><!--end col-sm-8-->
 		<div class="col-xs-12 col-sm-2">
 			<?php print caNavLink($this->request, "Register", "btn-default", "", "LoginReg", "RegisterFOrm"); ?>
