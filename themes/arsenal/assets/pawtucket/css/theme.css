@@ -59,7 +59,10 @@ a{
 a:hover{
 	color:#000;
 }
-
+.fullWidthImg img{
+	width:100%;
+	height:auto;
+}
 
 .container, #footer .container{
 	max-width:1330px;
@@ -74,6 +77,11 @@ a:hover{
 	background-color:#f2f2f2;
 }
 /* header */
+@media (max-width:767px){
+	.navDivide{
+		display:none;	
+	}
+}
 .navbar{
 	background-color: #ffffff;
 }
@@ -103,10 +111,16 @@ a:hover{
 }
 #headerSearchButton{
 	color:#000000;
+	background-color: transparent;
 }
 .navbar-brand{
 	width:175px;
 	padding-top: 0px;
+}
+@media (min-width:1010px){
+	.navbar-nav{
+		margin-top:30px;
+	}
 }
 @media (min-width:768px){
 	.navbar-brand{
@@ -129,9 +143,6 @@ a:hover{
 		padding-top: 25px;
 		padding-bottom: 25px;
 	}
-	.navbar-nav{
-		margin-top:30px;
-	}
 }
 @media (max-width:767px){
 	.navbar-nav{
@@ -147,7 +158,34 @@ a:hover{
 		right: auto;
 	}
 }
-
+@media(min-width:768px) and (max-width:1165px){
+	.navbar-brand{
+		width: 300px;
+		padding-top: 30px;
+		padding-left: 30px;
+	}
+	.navbar-form .form-group {
+		width: 150px;
+	}
+}
+@media (max-width: 1010px) {
+	ul.menuItems {
+		width: 100%;
+		border-top: 0px;
+		padding-top: 5px;
+		padding-bottom: 10px;
+		padding-left: 20px;
+	}
+	.navbar-brand{
+		padding-bottom:0px;
+	}
+}
+@media(max-width:768px){
+	.navbar-brand{
+		padding-top: 10px;
+		padding-bottom:0px;
+	}
+}
 .nav > li, .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
     font-family: Cinetype;
     text-transform:none;
@@ -234,13 +272,13 @@ a:hover{
 /* footer */
 /* offset needed for fixed footer */
 body{
-	margin-bottom:400px;
+	margin-bottom:425px;
 }
 #footer{
 	background-color: #000;
 	color:#FFF;
 	padding-top:53px;
-	height: 350px;
+	height: 375px;
 	border:0px;
 	font-size:14px;
 	font-weight:normal;
@@ -251,15 +289,25 @@ body{
 	font-size:18px;
 	line-height:1.5em;
 }
-@media(max-width:480px){
+@media(max-width:1190px){
 	/* CHANGE - does the footer height need to change for smaller screen sizes? */
-	/*#footer{
-		height:430px;
-	}*/
+	#footer{
+		height:450px;
+	}
 	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
-	/*body{
-		margin-bottom:480px;
-	}*/
+	body{
+		margin-bottom:425px;
+	}
+}
+@media(max-width:768px){
+	/* CHANGE - does the footer height need to change for smaller screen sizes? */
+	#footer{
+		height:750px;
+	}
+	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
+	body{
+		margin-bottom:725px;
+	}
 }
 #footer a{
 	color:#FFF;
@@ -289,6 +337,12 @@ body{
 	margin-top:110px;
 	margin-bottom:20px;
 }
+#footer .list-inline.loginLinks{
+	margin-top: 20px;
+}
+#footer .list-inline.loginLinks .userName{
+	font-size: .75em;
+}
 #footer .list-inline a{
 	font-size: 18px;
 	color: #FFF;
@@ -298,6 +352,12 @@ body{
 #footer .list-inline li{
 	padding-left:28px;
 	padding-right:0px;
+}
+@media(max-width: 768px) {
+	#footer .list-inline li {
+  		padding-right: 28px;
+  		padding-left: 0px;
+	}
 }
 #footer .social{
 	float:right;
@@ -507,7 +567,18 @@ body.frontContainer #footer{
 		width: 80%;
 	}
 }
-
+.hpMainCallout{
+	font-family: "Cinetype";
+	font-weight:700;
+	font-size:48px;	
+	margin-top: 60px;
+	text-align:center;
+}
+@media(max-width: 1100px) {
+	.hpMainCallout{
+		font-size:32px;
+	}
+}
 .hpIntro .callout{
 	text-align:center;
 	font-size: 28px;
@@ -527,7 +598,7 @@ body.frontContainer #footer{
 	-moz-osx-font-smoothing: grayscale;
 	font-weight:600;
 }
-@media(max-width:767px){
+@media(max-width:1100px){
 	.hpIntro .callout{
 		font-size: 20px;
 	}
@@ -556,6 +627,15 @@ body.frontContainer #footer{
 }
 .front h2.highlights{
 	padding-bottom:30px;
+}
+.frontGridTitle{
+	text-align:center;
+	font-size: 28px;
+	color: #000;
+	margin-bottom:15px;
+	font-family: "Cinetype";
+	-moz-osx-font-smoothing: grayscale;
+	font-weight:600;
 }
 /* hp explore */
 .hpExplore{
@@ -645,6 +725,9 @@ body.frontContainer #footer{
 	padding-bottom: 30px;
 	margin-bottom: 0px;
 }
+.gallery #galleryDetailImageGrid {
+	min-height: auto;
+}
 .gallery #galleryDetailImageGrid img {
   background-color: #fff;
 }
@@ -678,6 +761,27 @@ body.frontContainer #footer{
   font-size: 14px;
   font-weight:700;
 }
+.detail .navTop {
+  display: block;
+  
+}
+@media(min-width:768px){
+	.detail .navTop {
+		float:right;
+		padding-top: 17px;
+	}
+}
+.workImg img{
+	width:100%;
+	height:auto;
+}
+a.readmore-js-toggle {
+  padding-top: 10px;
+  color: #757575;
+}
+.detail h1 {
+	font-size: 24px;
+}
 /* about */
 .staticPage{
 	font-size:16px;
@@ -701,4 +805,7 @@ body.frontContainer #footer{
   width: 60%;
   z-index: 1000;
   left: 15%;
+}
+.form-control:focus {
+  border-color: #000;
 }

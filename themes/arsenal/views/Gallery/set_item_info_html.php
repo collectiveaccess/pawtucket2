@@ -1,10 +1,10 @@
 <?php
 	$t_item = $this->getVar("instance");
 	$t_set_item = $this->getVar("set_item");
-	$config = $this->getVar("config");
-	
+	$config = caGetGalleryConfig();
+	$ps_table = $this->getVar("table");	
 	$views = $config->get('views');
-	$views_info = $views['slideshow']['ca_objects'];
+	$views_info = $views['slideshow'][$ps_table];
 	
 	$vs_label = $t_item->getWithTemplate($views_info["labelTemplate"]);
 	$vs_content = $t_item->getWithTemplate($views_info["contentTemplate"]);

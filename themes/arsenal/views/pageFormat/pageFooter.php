@@ -25,7 +25,15 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	if($this->request->isLoggedIn()){
+		$va_user_links[] = '<li role="presentation" class="userName">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
+		#$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
+		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
+	} else {	
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+	}
 ?>
+
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer" class="text-center">
@@ -55,11 +63,14 @@
 					</div>
 					<div class="col-sm-5 text-right">
 						<ul class="list-inline">
-							<li><a href="https://www.arsenal-berlin.de/en/datenschutz/"><?php print _t("Privacy Policy"); ?></li>
-							<li><a href="https://www.arsenal-berlin.de/en/impressum/"><?php print _t("Imprint"); ?></li>
-							<li><a href="https://www.arsenal-berlin.de/en/institute/contact/"><?php print _t("Contact"); ?></li>
+							<li><a href="https://www.arsenal-berlin.de/en/datenschutz/"><?php print _t("Privacy Policy"); ?></a></li>
+							<li><a href="https://www.arsenal-berlin.de/en/impressum/"><?php print _t("Imprint"); ?></a></li>
+							<li><a href="https://www.arsenal-berlin.de/en/institute/contact/"><?php print _t("Contact"); ?></a></li>
 						</ul>
 						&copy; <?php print date("Y"); ?> Arsenal – Institut für Film und Videokunst e.V.
+						<ul class="list-inline loginLinks">
+							<?php print join("", $va_user_links); ?>
+						</ul>
 					</div>
 				</div>
 			</div>

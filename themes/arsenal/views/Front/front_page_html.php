@@ -36,40 +36,29 @@
 	 }
  	global $g_ui_locale;
  	if($g_ui_locale == "de_DE"){
- 		$hp_search_text = $this->getVar("hp_search_text_de");
+ 		$hp_callout_text = $this->getVar("hp_callout_text_de");
  		$hp_intro_title = $this->getVar("hp_intro_title_de");
 		$hp_intro = $this->getVar("hp_intro_de");
  	}else{
- 		$hp_search_text = $this->getVar("hp_search_text_en");
+ 		$hp_callout_text = $this->getVar("hp_callout_text_en");
  		$hp_intro_title = $this->getVar("hp_intro_title_en");
 		$hp_intro = $this->getVar("hp_intro_en");
  	
  	}
+	# --- display slideshow of random images
+	print $this->render("Front/featured_set_slideshow_html.php");
+
 ?>
 
-<div class="parallax hero<?php print $vs_hero; ?>">
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-				
-				<div class="heroSearch">
-					<H1>
-						<div class="line3"><?php print $hp_search_text; ?></div>
-					</H1>
-					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-						<div class="formOutline">
-							<div class="form-group">
-								<input type="text" class="form-control" id="heroSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
-							</div>
-							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
-						</div>
-					</form>
-				</div>
-			</div>
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="hpMainCallout"><?php print $hp_callout_text; ?></div>
 		</div>
 	</div>
 </div>
 <?php
+
 	if($hp_intro_title || $hp_intro){
 ?>
 	<div class="container hpIntro">
@@ -123,17 +112,9 @@
 			</div>
 		</div>
 	</div>-->
-
 <?php
-	# --- display slideshow of random images
-	print $this->render("Front/featured_set_slideshow_html.php");
-
-	# --- display galleries as a grid?
-	#print $this->render("Front/gallery_grid_html.php");
-	# --- display galleries as a slideshow?
-	#print $this->render("Front/gallery_slideshow_html.php");
+		print $this->render("Front/featured_set_grid_html.php");
 ?>
-
 <div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>
 
 		<script type="text/javascript">

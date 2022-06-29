@@ -112,6 +112,18 @@
 				}else{
 				
 					$vs_caption 	= $qr_res->getWithTemplate(caGetOption('result_caption', $va_view_info, null));
+					$vs_tmp = "";
+					if($vs_table == "ca_objects"){
+						if($vs_tmp = trim($qr_res->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', ')))){
+							$vs_tmp = ", ".($g_ui_locale == "de_DE" ? "UT" : "ST").": ".$vs_tmp;
+						}
+						if($this->request->isLoggedIn()){
+							$vs_tmp .= " (".$qr_res->get("ca_objects.idno").")";
+						}
+						if($vs_tmp){
+							$vs_caption .= caDetailLink($this->request, $vs_tmp, '', 'ca_objects', $vs_pk);
+						}
+					}
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
