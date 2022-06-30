@@ -64,7 +64,7 @@
 ?>
 			<div class='{{{block}}}Result'>
 <?php 			
-				if ($qr_results->get('ca_objects.type_id') == 28 || $qr_results->get('ca_objects.type_id') == 30) {	
+				if (in_array((int)$qr_results->get('ca_objects.type_id'), [28, 30, 234724])) { // == 28 || $qr_results->get('ca_objects.type_id') == 30) {	
 					$vs_style = "style='font-style:italic;'";
 				}
 				if ($qr_results->get('ca_objects.type_id') == 30) {
@@ -99,7 +99,7 @@
 				} else {
 					$va_strlen = 100;
 				}
-				if ($qr_results->get('ca_objects.type_id') == 28) {
+				if (in_array((int)$qr_results->get('ca_objects.type_id'), [28, 234724])) {
 					print "<p class='artist'>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'))."</p>";
 				}				
 				if (strlen($qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))) > $va_strlen) {
@@ -144,7 +144,7 @@
 					print "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $qr_results->get('deaccession_date'))."</div>\n";
 					#if ($vs_deaccession_notes = $qr_results->get('deaccession_notes')) { TooltipManager::add(".inspectorDeaccessioned", $vs_deaccession_notes); }
 				}	
-				if ($qr_results->get('ca_objects.type_id') == 28) {
+				if (in_array((int)$qr_results->get('ca_objects.type_id'), [28, 234724])) {
 					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 						print "<p class='idno'>".$qr_results->get("ca_objects.idno")."</p>";
 					}

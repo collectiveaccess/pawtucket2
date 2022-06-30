@@ -861,6 +861,7 @@ function caGetDisplayImagesForAuthorityItems($pm_table, $pa_ids, $pa_options=nul
 
 	$vs_linking_table = $va_path[1];
 
+	$vs_linking_table = $va_path[1];
 
 	$vs_rel_type_where = '';
 	if (is_array($va_rel_types = caGetOption('relationshipTypes', $pa_options, null)) && sizeof($va_rel_types)) {
@@ -1475,6 +1476,8 @@ function caGetCollectionLevelSummary($po_request, $va_collection_ids, $vn_level)
  * @param array $options Options include:
  *		template = 
  *		linkTemplate = An optional display template to format each returned link within. Use the placeholder ^LINK for the link. [Default is null]
+ *		restrictToTypes = Restrict links to items with specified types. [Default is null]
+ *		restrictToRelationshipTypes = Restrict links to items related with specified relationship types. [Default is null]
  *
  * @return array Array of links or null if an appropriate browse facet could not be found for the bundle 
  */	
@@ -1524,11 +1527,18 @@ function caGetBrowseLinks($t_instance, string $bundle, ?array $options=null) : ?
 		}
 	}
 	if($facet) {
-		$bt = caGetBrowseForType($table, $t_instance->getTypeCode());
-		$text = $template ? explode('|', $t_instance->getWithTemplate("<unit relativeTo='{$bundle}' delimiter='|'>{$template}</unit>", ['returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false])) : $t_instance->get($bundle, ['returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
+		$restrict_to_types = caGetOption('restrictToTypes', $options, null);
+		if($restrict_to_types && !is_array($restrict_to_types)) { $restrict_to_types = [$restrict_to_types]; }
+		$restrict_to_types_attr = (is_array($restrict_to_types) && sizeof($restrict_to_types)) ? "restrictToTypes='".join(',', $restrict_to_types)."'" : '';
 		
+		$restrict_to_relationship_types = caGetOption('restrictToRelationshipTypes', $options, null);
+		if($restrict_to_relationship_types && !is_array($restrict_to_relationship_types)) { $restrict_to_relationship_types = [$restrict_to_relationship_types]; }
+		$restrict_to_relationship_types_attr = (is_array($restrict_to_relationship_types) && sizeof($restrict_to_relationship_types)) ? "restrictToRelationshipTypes='".join(',', $restrict_to_relationship_types)."'" : '';
+		
+		$bt = caGetBrowseForType($table, $t_instance->getTypeCode());
+		$text = $template ? explode('|', $t_instance->getWithTemplate($z="<unit relativeTo='{$bundle}' delimiter='|' {$restrict_to_types_attr} {$restrict_to_relationship_types_attr}>{$template}</unit>", ['returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
 		if(!sizeof(array_filter($text, 'strlen'))) { return null; }
-		$ids = $t_instance->get($fld, ['returnAsArray' => true, 'convertCodesToIdnos' => false, 'makeLink' => false]);
+		$ids = $t_instance->get($fld, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToIdnos' => false, 'makeLink' => false]);
 		
 		$links = caCreateBrowseLinksFromText($text, $bt, array_map(function($v) use ($facet) { return ['facet' => $facet, 'id' => $v]; }, $ids), '', []);
 		return $link_template ? array_map(function($l) use ($link_template) {
@@ -1546,6 +1556,8 @@ function caGetBrowseLinks($t_instance, string $bundle, ?array $options=null) : ?
  * @param array $options Options include:
  *		template = 
  *		linkTemplate = An optional display template to format each returned link within. Use the placeholder ^LINK for the link. [Default is null]
+ *		restrictToTypes = Restrict links to items with specified types. [Default is null]
+ *		restrictToRelationshipTypes = Restrict links to items related with specified relationship types. [Default is null]
  *
  * @return array Array of links or null if an appropriate search could not be found for the bundle 
  */	
@@ -1570,8 +1582,15 @@ function caGetSearchLinks($t_instance, string $bundle, ?array $options=null) : ?
 			if($template) { $template = "<unit relativeTo='{$bundle}' delimiter='|'>{$template}</unit>"; }
 			break;
 	}
-	$text = $template ? explode('|', $t_instance->getWithTemplate($template, ['returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'delimiter' => '|'])) : $t_instance->get($bundle, ['returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
-	$values = $t_instance->get($bundle, ['returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
+	
+	$restrict_to_types = caGetOption('restrictToTypes', $options, null);
+	if($restrict_to_types && !is_array($restrict_to_types)) { $restrict_to_types = [$restrict_to_types]; }
+	
+	$restrict_to_relationship_types = caGetOption('restrictToRelationshipTypes', $options, null);
+	if($restrict_to_relationship_types && !is_array($restrict_to_relationship_types)) { $restrict_to_relationship_types = [$restrict_to_relationship_types]; }
+		
+	$text = $template ? explode('|', $t_instance->getWithTemplate($template, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'delimiter' => '|'])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
+	$values = $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
 	
 	if(!sizeof(array_filter($text, 'strlen'))) { return null; }
 	
@@ -1642,6 +1661,7 @@ function caCreateNavigationLinksFromText(array $text, string $module, string $co
 	$links = [];
 	$link_opts = ['absolute' => isset($options['absolute']) ? $options['absolute'] : false];
 	
+	sort($text);
 	foreach($text as $i => $t) {
 		$t = preg_replace("!([A-Za-z0-9]+)='([^']*)'!", "$1=\"$2\"", $t);
 		$l_tags = [];

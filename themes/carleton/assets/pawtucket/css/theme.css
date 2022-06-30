@@ -5,7 +5,12 @@ html{
 	max-width:1430px;
 }
 #pageArea{
-	margin-bottom:180px;
+	margin-bottom:220px;
+}
+@media(min-width:990px){
+	#pageArea{
+		margin-bottom:180px;
+	}
 }
 h1{
 	text-transform:none;
@@ -132,11 +137,14 @@ h1.page_title, .pageTitle--Main{
 }
 .bResultListItem .bResultListItemText, .bResultItemText .objectTitle{
 	font-weight:bold;
-	font-size:16px;
+	font-size:14px;
 }
 .collectionID, .collectionPath{
 	font-weight:normal;
 	font-size:12px;
+}
+#collectionLoad div{
+	clear:left;
 }
 .bResultListItemTextDesc{
 	font-size:12px;
@@ -150,6 +158,17 @@ h1.page_title, .pageTitle--Main{
 	background-color:#f5f5f5;
 	padding:5px 10px 5px 10px;
 	overflow:hidden;
+}
+.multisearch .authorityResult.collectionsResult {
+  margin-bottom: 5px;
+  height: 200px;
+  line-height: 1.1em;
+  background-color: #f5f5f5;
+  padding: 5px 10px 5px 10px;
+  overflow: hidden;
+}
+.multisearch .authoritySet.collections_allSet, #collections_allResults .blockResultsScroller, .multisearch .blockResults.collections_all_authorityBlock, .multisearch .collections_all_authorityBlock .scrollButtonPrevious, .multisearch .collections_all_authorityBlock .scrollButtonNext{
+	height:200px;
 }
 .bResultListItem .bResultListItemText {
 	line-height: 1em;
@@ -285,6 +304,86 @@ h1.page_title, .pageTitle--Main{
 .detail .detailNavBgLeft{
 	margin-left:15px;
 }
+.detail .collectionHierarchyPath{
+	padding-top:10px;
+}
+.detail .collectionHierarchyPath, .detail .collectionHierarchyPath a{
+	font-size:14px;
+	color:#000;
+}
+.detail H2{
+	text-transform:none;
+	color:#000
+}
+.detail.collections .unit{
+	clear:left;
+}
+.detail.collections a.showHide{
+	color:#0b5091;
+	font-weight:bold;
+	text-transform:uppercase;
+}
+.detail.collections .hierLevel1{
+	font-size:16px;
+}
+.detail.collections .hierLevel2{
+	font-size:15px;
+}
+.detail.collections .hierLevel3{
+	font-size:14px;
+}
+.detail .btn-default, .detail .btn-default:hover{
+	color:#FFF;
+	text-decoration:none;
+	background-color: #306aa2;
+}
+.detail .unit .caption{
+	line-height:1.2em;
+	margin-bottom:15px;
+	height:4em;
+	overflow:hidden;
+	
+}
+.detail .accessionsNote{
+	margin-bottom:20px;
+	padding:20px;
+	background-color:#EDEDED;
+}
+.collection-form .formOutline {
+	float: right;
+	top: 30px;
+}
+.collection-form .formOutline{
+	border:0px;
+}
+.collection-form input {
+  width:250px;
+  border:1px solid #888;
+  border-radius:0px;
+  background-color:#FFF;
+  box-shadow:none;
+  color:#000;
+  padding-right:30px;
+  padding: 7px 12px;
+}
+.collection-form #collectionSubmit {
+  padding: 9px;
+  border-radius:0px;
+  color:#306aa2;
+  background-color:transparent;
+  position:absolute;
+  right:0px;
+  top:0px;
+}
+#collectionSearch{
+	clear:both;
+	display:none;
+	top: 30px;
+    position: relative;
+	padding-top:30px;
+	padding-bottom:40px;
+	border-top:2px solid #000;
+}
 .contact H1, .advancedSearch H1{
 	font-size:24px;
 	font-weight:bold;
@@ -292,6 +391,7 @@ h1.page_title, .pageTitle--Main{
 
 .btn-default, .browse .btn, .sets .btn {
 	background-color: #0b5091;
+	color: #fff;
 }
 .btn-default:hover, .browse .btn:hover, .sets .btn:hover {
 	background-color: #3676b3;
@@ -299,9 +399,14 @@ h1.page_title, .pageTitle--Main{
 #footer{
 	background-color:#3676b3;
 	color:#FFF;
-	height:150px;
+	height:170px;
 	text-align:center;
 	padding-top:25px;
+}
+@media(min-width:990px){
+	#footer{
+		height:150px;
+	}
 }
 #footer img{	
 	width:200px;
@@ -310,6 +415,20 @@ h1.page_title, .pageTitle--Main{
 	font-family:Surveyor Display A,Surveyor Display B,Georgia,Times New Roman,serif;
 	padding-top:20px;
 	font-size:24px;
+}
+@media(min-width:990px){
+	#footer .footerLogin{
+		position:absolute;
+		bottom:20px;
+		right:30px;
+	}
+}
+#footer .footerLogin a{
+	color: #fff;
+	font-size:12px;
+}
+.front .jcarousel-control-next, .front .jcarousel-control-prev {
+  margin-top: -80px;
 }
 .frontClassificationCol a, .frontClassificationCol a:hover{
 	text-decoration:none;
@@ -342,4 +461,7 @@ a .frontClassification, a:hover .frontClassification{
 a.readmore-js-toggle {
   padding-top: 10px;
   color: #306aa2;
+}
+.form-control:focus {
+  border-color: #000000;
 }
