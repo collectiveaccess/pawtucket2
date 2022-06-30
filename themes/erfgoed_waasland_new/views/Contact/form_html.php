@@ -100,6 +100,27 @@
 				</div><!-- end row -->
 			</div><!-- end col -->
 		</div><!-- end row -->
+<?php
+	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+        	};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+
+
+			<div class="row">
+				<div class="col-sm-12 col-md-offset-1 col-md-10">
+					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+					</div>
+				</div>
+			</div><!-- end row -->
+<?php
+	}
+?>
 		<div class="row">
 			<div class="col-md-9">
 				<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
