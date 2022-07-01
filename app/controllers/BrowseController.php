@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2018 Whirl-i-Gig
+ * Copyright 2013-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -378,9 +378,12 @@
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
+				if (($max_result_count = $this->request->config->get('maximum_find_result_list_values')) < 10) {
+					$max_result_count = 1000;
+				}
+				if (($vn_key_start = $vn_start - $max_result_count) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
-				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues($max_result_count));
 				$qr_res->seek($vn_start);
 			}
 				
@@ -398,7 +401,7 @@
 				    'color' => '#cc0000', 
 				    'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
 				    'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
-				    //'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view))
+				    'ajaxContentUrl' => (caGetOption('title_template', $va_view_info['display'], null) || caGetOption('description_template', $va_view_info['display'], null)) ? caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view)) : null
 				);
 				
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));

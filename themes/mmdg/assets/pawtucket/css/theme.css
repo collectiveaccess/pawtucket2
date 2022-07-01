@@ -616,6 +616,28 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover, div.caMediaOverlay
 .gallery #galleryDetailImageArea #galleryDetailImageWrapper:hover .detailMediaToolbar {
   display: none;
 }
+.gallery #galleryDetailImageGrid a:hover img {
+	width: 150%;
+	height: auto;
+	position: absolute;
+	z-index:100;
+	background-color:#FFF;
+	left:-25%;
+	top:-100%;
+}
+.gallery #galleryDetailImageGrid .galleryIconActive:hover img{
+	background-color: #efefef;
+}
+.galleryIntro{
+	font-size:18px;
+	padding-bottom:30px;
+}
+.bBrowseIntro{
+	font-size:16px;
+}
+.bCriteria{
+	padding-bottom:10px;
+}
 .bResultItem .bResultItemText a, .bResultItem .bResultItemText div, .bResultItem .bResultItemText small{
 	background-color:#FFF;
 }

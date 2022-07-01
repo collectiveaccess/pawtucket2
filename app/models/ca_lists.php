@@ -506,7 +506,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		$vb_enabled_only = caGetOption('enabledOnly', $pa_options, false);
 		
 		$pa_check_access = caGetOption('checkAccess', $pa_options, null); 
-		if(!is_array($pa_check_access) && $pa_check_access) { $va_check_access = array($va_check_access); }
+		if(!is_array($pa_check_access) && $pa_check_access) { $pa_check_access = [$pa_check_access]; }
 	
 		$vb_labels_only = false;
 		if (isset($pa_options['labelsOnly']) && $pa_options['labelsOnly']) {

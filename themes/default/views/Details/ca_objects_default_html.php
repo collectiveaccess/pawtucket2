@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2018 Whirl-i-Gig
+ * Copyright 2013-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -102,16 +102,19 @@
 						<div class="col-sm-6">		
 							{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
 							{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
+							{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>}}}
 							
+							{{{<ifcount code="ca_occurrences" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
+							{{{<ifcount code="ca_occurrences" min="2"><label>Related occurrences</label></ifcount>}}}
+							{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</unit>}}}
 							
 							{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
 							{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
+							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>}}}
 							
 							{{{<ifcount code="ca_list_items" min="1" max="1"><label>Related Term</label></ifcount>}}}
 							{{{<ifcount code="ca_list_items" min="2"><label>Related Terms</label></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter="<br/>"><unit relativeTo="ca_list_items"><l>^ca_list_items.preferred_labels.name_plural</l></unit> (^relationship_typename)</unit>}}}
+							{{{<unit relativeTo="ca_list_items" delimiter="<br/>"><l>^ca_list_items.preferred_labels.name_plural</l> (^relationship_typename)</unit>}}}
 							
 						</div><!-- end col -->				
 						<div class="col-sm-6 colBorderLeft">

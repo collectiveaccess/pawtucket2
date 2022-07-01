@@ -49,13 +49,53 @@
 ?>
 					
 					{{{<ifdef code="ca_entities.biography.bio_text"><div class='unit trimText'><label>Bio</label>^ca_entities.biography.bio_text%convertLineBreaks=1</div></ifdef>}}}
-					
+							
 				</div>
 			</div><!-- end row -->
 			<div class="row">
 				<div class='col-sm-12'>
 					
 <?php					
+					if ($va_venues = $t_item->get('ca_occurrences', array('sort' => 'ca_occurrences.preferred_labels', 'restrictToTypes' => array('venue'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
+						$va_related_list = array();
+						$vb_show_view_all = false;
+						foreach ($va_venues as $va_venue) {
+							$va_related_list[$va_venue['relationship_typename']][] = caDetailLink($this->request, $va_venue['name'], '', 'ca_occurrences', $va_venue['occurrence_id']);
+						}
+						print "<div class='unit'><H3>Venues</H3>";
+						foreach ($va_related_list as $vs_role => $va_links) {
+							print "<div class='unit detailLinksGrid'><label>".ucfirst($vs_role)."</label>";
+							$i = 0;
+							$c = 0;
+							if(sizeof($va_links) > 18){
+								$vb_show_view_all = true;
+							}
+							foreach($va_links as $vs_link){
+								if($i == 0){
+									print "<div class='row'>";
+								}
+								print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".$vs_link."</div></div>";
+								$i++;
+								$c++;
+								if($i == 3){
+									print "</div>";
+									$i = 0;
+								}
+								if($c == 18){
+									break;
+								}
+							}
+							if($i > 0){
+								print "</div>";
+							}
+							print "</div><!-- end unit -->";
+						}
+						print "</div><!-- end unit -->";
+						if($vb_show_view_all){
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All Venues", "btn btn-default", "", "Browse", "venue", array("facet" => "entity_general_facet", "id" => $t_item->get("ca_entities.entity_id")))."</div>";
+						}
+					}
+					
 					if ($va_works = $t_item->get('ca_occurrences', array('sort' => 'ca_occurrences.premiereDate', 'restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$va_related_list = array();
 						$vb_show_view_all = false;
