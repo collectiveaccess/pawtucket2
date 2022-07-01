@@ -49,24 +49,26 @@
 		<div class="container"><div class="row">
 			<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1'>
 				
-				<H1>{{{^ca_object_lots.preferred_labels.name}}}</H1>
+				<H1>{{{^ca_object_lots.preferred_labels.name<ifdef code="ca_object_lots.inclusive_dates">, ^ca_object_lots.inclusive_dates%delimiter=,_</ifdef>}}}</H1>
 				<HR>
+				<div class="row">
+					<div class="col-xs-12 col-sm-9">
+						<div class="accessionsNote">{{{accessions_note}}}</div>					
+					</div>
+					<div class="col-xs-12 col-sm-3 text-right">
+<?php
+				print "<div class='text-right'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default btn-small", "", "Contact", "Form", array("table" => "ca_object_lots", "id" => $t_object_lot->get("ca_object_lots.lot_id")))."</div>";
+?>					
+					</div>
+				</div>
 				
 				{{{<ifdef code="ca_object_lots.idno_stub"><label>Identifier:</label>^ca_object_lots.idno_stub<br/></ifdef>}}}				
 				
-				{{{<ifdef code="ca_object_lots.inclusive_dates">
-					<div class='unit'><label>Inclusive Dates</label>^ca_object_lots.inclusive_dates%delimiter=,_
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_object_lots.material">
-					<div class='unit'><label>Material</label>^ca_object_lots.materials%delimiter=,_
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="unprocessed_extent.unprocessed_extent_value|unprocessed_extent.unprocessed_extent_unit|unprocessed_extent.unprocessed_extent_unit">
+				{{{<ifdef code="ca_object_lots.unprocessed_extent.unprocessed_extent_value|ca_object_lots.unprocessed_extent.unprocessed_extent_unit|ca_object_lots.unprocessed_extent.unprocessed_extent_unit">
 					<div class='unit'><label>Unprocessed Extent</label>
-						<ifdef code="unprocessed_extent.unprocessed_extent_value">^unprocessed_extent.unprocessed_extent_value </ifdef><ifdef code="unprocessed_extent.unprocessed_extent_unit">^unprocessed_extent.unprocessed_extent_unit</ifdef>
-						<ifdef code="unprocessed_extent.unprocessed_extent_value|unprocessed_extent.unprocessed_extent_unit"><br/></ifdef>
-						<ifdef code="unprocessed_extent.unprocessed_extent_note">^unprocessed_extent.unprocessed_extent_note</ifdef>
+						<ifdef code="ca_object_lots.unprocessed_extent.unprocessed_extent_value">^ca_object_lots.unprocessed_extent.unprocessed_extent_value </ifdef><ifdef code="ca_object_lots.unprocessed_extent.unprocessed_extent_unit">^ca_object_lots.unprocessed_extent.unprocessed_extent_unit</ifdef>
+						<ifdef code="ca_object_lots.unprocessed_extent.unprocessed_extent_value|ca_object_lots.unprocessed_extent.unprocessed_extent_unit"><br/></ifdef>
+						<ifdef code="ca_object_lots.unprocessed_extent.unprocessed_extent_note">^ca_object_lots.unprocessed_extent.unprocessed_extent_note</ifdef>
 				</ifdef>}}}
 				{{{<ifdef code="ca_object_lots.material">
 					<div class='unit'><label>Accession Terms and Restrictions</label>^ca_object_lots.accession_terms%delimiter=,_

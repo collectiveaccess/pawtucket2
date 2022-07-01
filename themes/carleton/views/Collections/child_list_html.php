@@ -23,8 +23,8 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 	if($qr_collections->numHits()){
 		while($qr_collections->nextHit()) {
 			$vs_icon = "";
-			# --- related objects?
-			$vn_rel_object_count = sizeof($qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values)));
+			# --- related items?
+			$vn_rel_item_count = sizeof($qr_collections->get("ca_collections.children.collection_id", array("restrictToTypes" => array("item"), "returnAsArray" => true, 'checkAccess' => $va_access_values)));
 			if(is_array($va_options["collection_type_icons"])){
 				$vs_icon = $va_options["collection_type_icons"][$qr_collections->get("ca_collections.type_id")];
 			}
@@ -41,7 +41,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				$vb_link = false;
 			}
 			if(!$o_config->get("always_link_to_detail")){
-				if(!sizeof($va_child_ids) && !$vn_rel_object_count){
+				if(!sizeof($va_child_ids) && !$vn_rel_item_count){
 					$vb_link = false;
 				}
 			}
@@ -74,9 +74,9 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				}
 				$vs_output .= "</span>";
 			}
-			if($vn_rel_object_count){
-				$vs_output .= " <small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
-			}
+			#if($vn_rel_item_count){
+			#	$vs_output .= " <small>(".$vn_rel_item_count." item".(($vn_rel_item_count == 1) ? "" : "s").")</small>";
+			#}
 			if($vn_level == 1){
 				$vs_output .= "</div>";
 			}

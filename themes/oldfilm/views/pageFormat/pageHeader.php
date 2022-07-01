@@ -273,7 +273,7 @@ body{background-color:var(--base-3);color:#222222;}a{color:#1e73be;}a:hover, a:f
 <div class="entry-content" itemprop="text" style="padding-top: 30px;"> 
 	<!-- style="position:absolute" -->
 	<div data-elementor-type="wp-page" data-elementor-id="43" class="elementor elementor-43" >
-		<section class="elementor-section elementor-top-section elementor-element elementor-element-a8baf76 elementor-section-height-min-height elementor-section-items-bottom elementor-section-stretched page-banner elementor-section-boxed elementor-section-height-default" data-id="a8baf76" data-element_type="section" data-settings="{&quot;stretch_section&quot;:&quot;section-stretched&quot;,&quot;background_background&quot;:&quot;classic&quot;}" style="width: 1188px; left: -30px;">
+		<section class="elementor-section elementor-top-section elementor-element elementor-element-a8baf76 elementor-section-height-min-height elementor-section-items-bottom elementor-section-stretched page-banner elementor-section-boxed elementor-section-height-default" data-id="a8baf76" data-element_type="section" data-settings="{&quot;stretch_section&quot;:&quot;section-stretched&quot;,&quot;background_background&quot;:&quot;classic&quot;}" style="width: 1188px; left: -30px; margin-bottom: 10px;">
 			<div class="elementor-container elementor-column-gap-default">
 				<div class="elementor-column elementor-col-100 elementor-top-column elementor-element elementor-element-ecf214f" data-id="ecf214f" data-element_type="column">
 					<div class="elementor-widget-wrap elementor-element-populated">
@@ -295,10 +295,26 @@ body{background-color:var(--base-3);color:#222222;}a{color:#1e73be;}a:hover, a:f
 
 <link rel="stylesheet" href="home/data/oldfilm/collection/themes/oldfilm/assets/pawtucket/css/theme.css" media='all' />
 
-<div class="container" style="max-width: 1140px;">
+<div class="container" style="max-width: 1140px; margin-bottom: 10px;">
 		<!-- <div class="col-sm-10"> -->
 
-			<nav class="collection-nav" aria-label="Primary" itemtype="https://schema.org/SiteNavigationElement" itemscope="">
+			<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
+					<div class="formOutline">
+						<div class="form-group">
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
+						</div>
+						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
+					</div>
+				</form>
+				<script type="text/javascript">
+					$(document).ready(function(){
+						$('#headerSearchButton').prop('disabled',true);
+						$('#headerSearchInput').on('keyup', function(){
+							$('#headerSearchButton').prop('disabled', this.value == "" ? true : false);     
+						})
+					});
+				</script>
+			<!-- <nav class="collection-nav" aria-label="Primary" itemtype="https://schema.org/SiteNavigationElement" itemscope="">
 				<ul class="collection-menu">
 
 					<li class="coll-menu-item">
@@ -310,7 +326,7 @@ body{background-color:var(--base-3);color:#222222;}a{color:#1e73be;}a:hover, a:f
 					</li>
 
 				</ul>
-			</nav>
+			</nav> -->
 			
 		<!-- </div> -->
 	</div>        
