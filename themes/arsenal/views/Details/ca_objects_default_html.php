@@ -316,8 +316,6 @@
 
 					$va_display_parts = array();
 
-					$va_display_parts[] = $va_object_info["label"];
-
 					if($vs_format = $t_rel->get("ca_objects.format", array("convertCodesToDisplayText" => true))){
 						$va_display_parts[] = $vs_format;
 					}
@@ -336,7 +334,7 @@
 						$vs_rel_label .= " (".$va_object_info["idno"].")";
 					}
 
-					print caDetailLink($this->request, $vs_rel_label, '', 'ca_objects', $t_rel->getPrimaryKey());
+					print caDetailLink($this->request, "&rarr; ".$vs_rel_label, '', 'ca_objects', $t_rel->getPrimaryKey());
 					print "<br />";
 				}
 				print "</div></div>";

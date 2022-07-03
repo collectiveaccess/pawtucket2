@@ -210,27 +210,32 @@ $t_item = $this->getVar("item");
 			<div class='col-sm-12 col-md-12'><HR/></div>
 		</div>
 		<div class="row">
-			<div class='col-sm-12 col-md-12'>
+			
 <?php
 			if(strlen($t_item->get('ca_occurrences.description'))>0){
+				print "<div class='col-sm-6 col-md-12'>";
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('description')."</label><div class='trimText'>".$t_item->get('ca_occurrences.description')."</div></div><!-- end unit -->";
+				print "</div><div class='col-sm-6 col-md-12'>";
+			}else{
+				print "<div class='col-sm-12'>";
+				# --- trailer here
 			}
+			
 			
 ?>
 			</div>
 		</div><!-- end row -->
 		<div class="row">
+			<div class='col-sm-12'>
 <?php
 			# --- output related objects as links
 			if (is_array($va_related_objects) && sizeof($va_related_objects)) {
 				$t_rel = new ca_objects();
-				print "<div class='col-sm-6'><div class='unit'><label>".($g_ui_locale == "de_DE" ? "Kopien" : "Copies")."</label>";
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Kopien" : "Copies")."</label>";
 				foreach($va_related_objects as $vn_id => $va_object_info){
 					$t_rel->load($va_object_info["object_id"]);
 
 					$va_display_parts = array();
-
-					$va_display_parts[] = $va_object_info["label"];
 
 					if($vs_format = $t_rel->get("ca_objects.format", array("convertCodesToDisplayText" => true))){
 						$va_display_parts[] = $vs_format;
@@ -250,14 +255,11 @@ $t_item = $this->getVar("item");
 						$vs_rel_label .= " (".$va_object_info["idno"].")";
 					}
 
-					print caDetailLink($this->request, $vs_rel_label, '', 'ca_objects', $t_rel->getPrimaryKey());
+					print caDetailLink($this->request, "&rarr; ".$vs_rel_label, '', 'ca_objects', $t_rel->getPrimaryKey());
 					print "<br />";
 				}
-				print "</div></div><div class='col-sm-6'>";
-			}else{
-				print "<div class='col-sm-12'>";
+				print "</div>";
 			}
-			# --- trailer here
 ?>	
 			</div>
 		</div>

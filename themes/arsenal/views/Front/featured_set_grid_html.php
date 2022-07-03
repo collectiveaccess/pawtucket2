@@ -208,9 +208,6 @@
 					$vn_col = 0;
 				}
 			}
-			if($i == 8){
-				break;
-			}
 		}
 		if($vn_col > 0){
 			print "</div><!-- end row -->";
