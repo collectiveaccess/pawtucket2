@@ -41,12 +41,41 @@
 	if($vn_occurrence_id){
 		$va_related_objects = $t_work->get("ca_objects.related",array("checkAccess" => $va_access_values, "returnWithStructure" => true, "restrictToTypes" => array("film_print", "digital_item", "video_item")));
 		if(is_array($va_related_objects) && sizeof($va_related_objects)){
+			$va_object_ids = array();
 			foreach($va_related_objects as $vn_i => $va_info){
 				if($va_info["object_id"] == $t_object->get("ca_objects.object_id")){
 					unset($va_related_objects[$vn_i]);
 				}
+				$va_object_ids[] = $va_info["object_id"];
 			}
+			$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
+			$o_context->setAsLastFind();
+			$o_context->setResultList($va_object_ids);
+			$o_context->saveContext();
 		}
+		$config = caGetDetailConfig();
+		$detail_types = $config->getAssoc('detailTypes');
+		$options = $detail_types['works'];
+		$t_representation = $t_work->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
+
+		if(!is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
+			
+		$vs_rep_viewer = caRepresentationViewer(
+					$this->request, 
+					$t_work, 
+					$t_work,
+					array_merge($options, $media_display_info, 
+						[
+							'display' => 'detail',
+							'showAnnotations' => true, 
+							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
+							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $options, false), 
+							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $options, false),
+							'checkAccess' => $va_access_values
+						]
+					)
+				);
+
 	}
 	$t_locale =					new ca_locales();
 
@@ -60,7 +89,7 @@
 				</div><!-- end detailTop -->
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 				<H2>{{{^ca_objects.type_id}}}</H2>
-				<HR>
+				<HR/>
 			</div>
 		</div>
 		<div class="row">
@@ -68,10 +97,10 @@
 			# --- do not show object media.  Show primary rep from the occurrence
 			$vs_work_media = $t_work->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values));
 			$vs_work_media_caption = $t_work->getWithTemplate("<div class='small text-center'><ifdef code='ca_object_representations.caption'>^ca_object_representations.caption</ifdef> <ifdef code='ca_object_representations.copyright'>^ca_object_representations.copyright</ifdef></div>");
-			if($vs_work_media){
+			if($vs_rep_viewer){
 ?>
 			<div class='col-sm-6 col-md-6 fullWidthImg'>
-				<?php print $vs_work_media.(($vs_work_media_caption) ? "<div class='small'>".$vs_work_media_caption."</div>" : ""); ?>
+				<?php print $vs_rep_viewer; ?>
 				
 <?php
 				# Comment and Share Tools
@@ -108,12 +137,89 @@
 
 
 
-
-
-
-
-
+				<!--<h3><?php print ($g_ui_locale == "de_DE" ? "Technische Angaben" : "Technical Attributes"); ?></h3>-->
+				
+					<div class="row">
+						<div class="col-sm-6">
 <?php
+							$va_show_public_fields = array(
+								'format', 'to_rent', 'version', 'lang_syn', 'lang_sub', 'lang_intertit', 'lang_txtlist', 'resolution_list', 'size', 'container_list', 'codec_list', 'lang_voiceover', 'lang_magnet', 'subtitle_type', 'audiodescription_lang', 'closed_caption_lang', 'duration', 'color', 'sound', 'sound_mix', 'optical_sound_type', 'ratio', 'projection_format', 'fps_list', 'length', 'weight', 'reels', 'gossip', 'material_type', 'installation_format'
+							);
+							$va_output = array();
+							
+							foreach($va_show_public_fields as $vs_bundle){
+								if(strlen($t_object->get("ca_objects.{$vs_bundle}"))>0) {
+									$va_output[] = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: ".$t_object->get("ca_objects.{$vs_bundle}",array('convertCodesToDisplayText' => true, 'delimiter' => ', '))."</div><!-- end unit -->";
+
+								}
+							}
+
+							$vn_i = 1;
+							foreach($va_output as $vs_output) {
+								print $vs_output."\n";
+
+								if($vn_i == (ceil(sizeof($va_output) / 2))) {
+									print '</div><div class="col-sm-6">';
+								}
+								$vn_i++;
+							}
+							
+							
+?>
+						</div>
+					</div>
+			</div><!-- end col -->
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+<?php
+			if(is_array($va_related_objects) && sizeof($va_related_objects)){
+				$t_rel = new ca_objects();
+				print "<HR/><div class='unit'><label>".($g_ui_locale == "de_DE" ? "Weitere Kopien" : "More Prints")."</label>";
+				foreach($va_related_objects as $vn_id => $va_object_info){
+					$t_rel->load($va_object_info["object_id"]);
+
+					$va_display_parts = array();
+
+					if($vs_format = $t_rel->get("ca_objects.format", array("convertCodesToDisplayText" => true))){
+						$va_display_parts[] = $vs_format;
+					}
+
+					if($vs_version = $t_rel->get("ca_objects.version", array("convertCodesToDisplayText" => true))){
+						$va_display_parts[] = $vs_version;
+					}					
+
+					if(strlen(trim($t_rel->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
+						$va_display_parts[] = ($g_ui_locale == "de_DE" ? "UT" : "ST").": ".$t_rel->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', '));
+					}
+
+					$vs_rel_label = join(', ',$va_display_parts);
+
+					if($this->request->isLoggedIn()){
+						$vs_rel_label .= " (".$va_object_info["idno"].")";
+					}
+
+					print caDetailLink($this->request, "&rarr; ".$vs_rel_label, '', 'ca_objects', $t_rel->getPrimaryKey());
+					print "<br />";
+				}
+				print "</div>";
+			}
+?>
+				<HR/>
+			</div>
+		</div>			
+		<div class="row">
+<?php
+			if(strlen($t_work->get('ca_occurrences.description'))>0){
+				print "<div class='col-sm-6'>";
+				print "<div class='unit'><label>".$t_work->getAttributeLabel('description')."</label>".$t_work->get('ca_occurrences.description')."</div><!-- end unit -->";
+				print "</div>";
+				print "<div class='col-sm-6'>";
+			}else{
+				print "<div class='col-sm-12'>";
+			}
+			
+
 
 				$vs_work = $t_object->getWithTemplate("<ifcount code='ca_occurrences' min='1'><unit relativeTo='ca_occurrences'><l>^ca_occurrences.preferred_labels.name</l></unit></ifcount>");
 				print "<div class='unit'><label>"._t("Work")."</label>".$vs_work."</div>";
@@ -185,12 +291,14 @@
 				$("#biocontent<?php print $vn_entity_id; ?>").show();
 				$("#bioshow<?php print $vn_entity_id; ?>").hide();
 				$("#biohide<?php print $vn_entity_id; ?>").show();
+				return false;
 			});
 
 			$("#biohide<?php print $vn_entity_id; ?>").click(function(event){
 				$("#biocontent<?php print $vn_entity_id; ?>").hide();
 				$("#biohide<?php print $vn_entity_id; ?>").hide();
 				$("#bioshow<?php print $vn_entity_id; ?>").show();
+				return false;
 			});
 		});
 	</script>
@@ -253,93 +361,6 @@
 
 ?>
 			</div><!-- end col -->
-		</div>
-		<div class="row">
-			<div class="col-sm-12">
-				<h3><?php print ($g_ui_locale == "de_DE" ? "Technische Angaben" : "Technical Attributes"); ?></h2>
-				<div class="detailBox">
-					<div class="row">
-						<div class="col-sm-6">
-<?php
-							$va_show_public_fields = array(
-								'format', 'to_rent', 'version', 'lang_syn', 'lang_sub', 'lang_intertit', 'lang_txtlist', 'resolution_list', 'size', 'container_list', 'codec_list', 'lang_voiceover', 'lang_magnet', 'subtitle_type', 'audiodescription_lang', 'closed_caption_lang', 'duration', 'color', 'sound', 'sound_mix', 'optical_sound_type', 'ratio', 'projection_format', 'fps_list', 'length', 'weight', 'reels', 'gossip', 'material_type', 'installation_format'
-							);
-							$va_output = array();
-							
-							foreach($va_show_public_fields as $vs_bundle){
-								if(strlen($t_object->get("ca_objects.{$vs_bundle}"))>0) {
-									$va_output[] = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: ".$t_object->get("ca_objects.{$vs_bundle}",array('convertCodesToDisplayText' => true, 'delimiter' => ', '))."</div><!-- end unit -->";
-
-								}
-							}
-
-							$vn_i = 1;
-							foreach($va_output as $vs_output) {
-								print $vs_output."\n";
-
-								if($vn_i == (ceil(sizeof($va_output) / 2))) {
-									print '</div><div class="col-sm-6">';
-								}
-								$vn_i++;
-							}
-							
-							
-?>
-						</div>
-					</div>
-				</div><!-- end detailBox -->
-			
-		<div class="row">
-<?php
-			if(strlen($t_work->get('ca_occurrences.description'))>0){
-				if (is_array($va_related_objects) && sizeof($va_related_objects)) {
-					print "<div class='col-sm-6'>";
-				}else{
-					print "<div class='col-sm-12 col-md-12'>";
-				}
-				print "<div class='unit'><label>".$t_work->getAttributeLabel('description')."</label><div class='trimText'>".$t_work->get('ca_occurrences.description')."</div></div><!-- end unit -->";
-				print "</div>";
-
-			}
-			
-			# --- output related objects as links
-			if (is_array($va_related_objects) && sizeof($va_related_objects)) {
-				if(strlen($t_work->get('ca_occurrences.description'))>0){
-					print "<div class='col-sm-6'>";
-				}else{
-					print "<div class='col-sm-12 col-md-12'>";
-				}
-				$t_rel = new ca_objects();
-				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Weitere Kopien" : "More Prints")."</label>";
-				foreach($va_related_objects as $vn_id => $va_object_info){
-					$t_rel->load($va_object_info["object_id"]);
-
-					$va_display_parts = array();
-
-					if($vs_format = $t_rel->get("ca_objects.format", array("convertCodesToDisplayText" => true))){
-						$va_display_parts[] = $vs_format;
-					}
-
-					if($vs_version = $t_rel->get("ca_objects.version", array("convertCodesToDisplayText" => true))){
-						$va_display_parts[] = $vs_version;
-					}					
-
-					if(strlen(trim($t_rel->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))))>0){
-						$va_display_parts[] = ($g_ui_locale == "de_DE" ? "UT" : "ST").": ".$t_rel->get('ca_objects.lang_sub', array("convertCodesToDisplayText" => true, 'delimiter' => ', '));
-					}
-
-					$vs_rel_label = join(', ',$va_display_parts);
-
-					if($this->request->isLoggedIn()){
-						$vs_rel_label .= " (".$va_object_info["idno"].")";
-					}
-
-					print caDetailLink($this->request, "&rarr; ".$vs_rel_label, '', 'ca_objects', $t_rel->getPrimaryKey());
-					print "<br />";
-				}
-				print "</div></div>";
-			}
-?>
 		</div><!-- end row -->
 
 <?php

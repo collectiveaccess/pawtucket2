@@ -49,6 +49,7 @@ H1, h1, h2, H2, H3, h3, H4, h4, H5, h5, #footer a.orgLink{
 .btn-default, .browse .btn, .sets .btn, .btn-default:focus, .btn-default:active, .btn-default.active {
 	background-color:#000;
 	color:#FFF;
+	font-family: "Cinetype";
 }
 .btn-default:hover{
 	background-color:#777;
@@ -272,41 +273,43 @@ a:hover{
 /* footer */
 /* offset needed for fixed footer */
 body{
-	margin-bottom:425px;
+	margin-bottom:600px;
 }
 #footer{
-	background-color: #000;
 	color:#FFF;
-	padding-top:53px;
-	height: 375px;
+	height: 525px;
 	border:0px;
 	font-size:14px;
 	font-weight:normal;
 	margin-top:50px;
-	padding-bottom:50px;
 	font-family:Cinetype;
 	-moz-osx-font-smoothing: grayscale;
 	font-size:18px;
 	line-height:1.5em;
+	padding:0px;
+}
+#footer .footerBg{
+	background-color: #000;
+	padding:53px 0px 25px 0px;
 }
 @media(max-width:1190px){
 	/* CHANGE - does the footer height need to change for smaller screen sizes? */
 	#footer{
-		height:450px;
+		height:615px;
 	}
 	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
 	body{
-		margin-bottom:425px;
+		margin-bottom:665px;
 	}
 }
 @media(max-width:768px){
 	/* CHANGE - does the footer height need to change for smaller screen sizes? */
 	#footer{
-		height:750px;
+		height:775px;
 	}
 	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
 	body{
-		margin-bottom:725px;
+		margin-bottom:825px;
 	}
 }
 #footer a{
@@ -336,6 +339,11 @@ body{
 #footer .list-inline{
 	margin-top:110px;
 	margin-bottom:20px;
+}
+@media(max-width:768px){
+	#footer .list-inline{
+		margin-top:20px;
+	}
 }
 #footer .list-inline.loginLinks{
 	margin-top: 20px;
@@ -377,12 +385,21 @@ body{
 }
 #footer .funder{
 	text-align:center;
-	margin-top:25px;
+	padding-top:25px;
+	padding-bottom:25px;
+	background-color:#FFF;
+	
 }
 #footer .funder img{
-	width:100%;
-	height:auto;
-	max-width:250px;
+	width:auto;
+	height:100px;
+	padding:0px 15px 0px 15px;
+}
+@media(max-width: 768px) {
+	#footer .funder img{
+		width:auto;
+		height:50px;
+	}
 }
 /* search / browse results */
 .bResultItemSetLink {
@@ -427,7 +444,6 @@ body{
 /* front */
 html.frontContainer {
     height: 100%;
-    padding:0px -15px 0px -15px;
 }
 body.frontContainer {
 	margin-bottom:0px;
@@ -436,6 +452,7 @@ body.frontContainer {
 body.frontContainer #footer{
 	position:relative !important;
 }
+
 
 .parallax {
 	position:relative;
@@ -505,7 +522,16 @@ body.frontContainer #footer{
 	}
 }
 
-
+#pageArea.front{
+	margin-left: -15px;
+	margin-right: -15px;
+	overflow: hidden;
+	margin-top:-20px;
+}
+.front .jcarousel-wrapper {
+  margin-bottom: 20px;
+  margin-top: 0px;
+}
 
 .heroSearch H1{
 	color: #FFF;
@@ -750,6 +776,30 @@ body.frontContainer #footer{
 .gallery #galleryDetailImageGrid img {
   background-color: #fff;
 }
+
+.gallery #galleryDetailImageArea #galleryDetailImageWrapper {
+	margin: 0px 60px 0px 60px;
+	height: auto;
+	display:flex;
+	align-items:center;
+}
+.gallery #galleryDetailImageArea #galleryDetailImageWrapper a, .gallery #galleryDetailImageArea #galleryDetailImageWrapper a img{
+	width:100%;
+	height:auto;
+	max-height:none;
+}
+@media (min-width: 768px){
+	.gallery #galleryDetailImageArea{
+		height: auto;
+		min-height:430px;
+	}
+	.gallery #galleryDetailImageArea img {
+		max-height:none;
+	}
+}
+.gallery .galleryDetailNext, .gallery .galleryDetailPrevious {
+	top: 45%;
+}
 /* collections */
 .collectionIntro {
 	font-size: 14px;
@@ -775,7 +825,7 @@ body.frontContainer #footer{
   font-size: 18px;
   line-height:27px;
 }
-.detail a {
+.detail a, .aboutSideNav a, .frontGridCaption a {
 	color: #000;
 	padding-bottom: 3px;
 	background-image: linear-gradient(90deg,#8946ff,#ff1bc0);
@@ -786,10 +836,10 @@ body.frontContainer #footer{
 	transition: background-size .5s linear;
 	padding-bottom: 0px;	
 }
-.detail a:hover {
+.detail a:hover, .aboutSideNav a:hover, .frontGridCaption a:hover {
 	text-decoration:none;
 	color:#000;
-background-size: 100% 2px;
+	background-size: 100% 2px;
 }
 .detail label{
   color: #000;
@@ -814,6 +864,15 @@ background-size: 100% 2px;
 		float:right;
 		padding-top: 17px;
 	}
+}
+.detail .navTop {
+	font-size:22px;
+}
+.detail .navTop a{
+	background-size: 0% 2px;
+}
+.detail .navTop a .small{
+	color:#000;
 }
 .workImg img{
 	width:100%;
@@ -883,4 +942,9 @@ a.readmore-js-toggle {
 }
 .form-control:focus {
   border-color: #000;
+}
+
+/* cookies */
+#cookieNotice .cookieNoticeHeading{
+	font-family:CinetypeBold;
 }

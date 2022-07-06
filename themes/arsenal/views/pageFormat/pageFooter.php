@@ -25,6 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
+	global $g_ui_locale;
+
  	if($this->request->isLoggedIn()){
 		$va_user_links[] = '<li role="presentation" class="userName">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		#$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
@@ -37,7 +39,7 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer" class="text-center">
-			<div class="container">
+			<div class="footerBg"><div class="container">
 				<ul class="list-inline social">
 					<li><a href="https://www.facebook.com/arsenal.kino/" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
 					<li><a href="https://twitter.com/kinoarsenal" target="_blank"><i class="fa fa-twitter"></i></a></li>
@@ -63,6 +65,7 @@
 					</div>
 					<div class="col-sm-5 text-right">
 						<ul class="list-inline">
+							<li><?php print caNavLink($this->request, _t("Cookies"), "", "", "Cookies", "manage"); ?></li>
 							<li><a href="https://www.arsenal-berlin.de/en/datenschutz/"><?php print _t("Privacy Policy"); ?></a></li>
 							<li><a href="https://www.arsenal-berlin.de/en/impressum/"><?php print _t("Imprint"); ?></a></li>
 							<li><a href="https://www.arsenal-berlin.de/en/institute/contact/"><?php print _t("Contact"); ?></a></li>
@@ -73,6 +76,17 @@
 						</ul>
 					</div>
 				</div>
+			</div></div>
+			<div class="funder">
+<?php
+					print caGetThemeGraphic($this->request, 'Neustart_Kultur.svg');
+					if($g_ui_locale == "de_DE"){
+						print caGetThemeGraphic($this->request, 'BKM.svg');
+					}else{
+						print caGetThemeGraphic($this->request, 'BKM_en.svg');
+					}
+
+?>
 			</div>
 		</footer><!-- end footer -->
 <?php

@@ -36,7 +36,17 @@ $t_item = $this->getVar("item");
 
 	
 	$va_related_objects = $t_item->get("ca_objects.related",array("checkAccess" => $va_access_values, "returnWithStructure" => true, "restrictToTypes" => array("film_print", "digital_item", "video_item")));
-
+	if(is_array($va_related_objects) && sizeof($va_related_objects)){
+		$va_object_ids = array();
+		foreach($va_related_objects as $vn_i => $va_info){
+			$va_object_ids[] = $va_info["object_id"];
+		}
+		$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_object_ids);
+		$o_context->saveContext();
+	}	
+	
 	$vs_representationViewer = trim($this->getVar("representationViewer"));
 
 	$t_locale =					new ca_locales();
@@ -213,17 +223,29 @@ $t_item = $this->getVar("item");
 			
 <?php
 			if(strlen($t_item->get('ca_occurrences.description'))>0){
-				print "<div class='col-sm-6 col-md-12'>";
+				print "<div class='col-sm-6'>";
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('description')."</label><div class='trimText'>".$t_item->get('ca_occurrences.description')."</div></div><!-- end unit -->";
-				print "</div><div class='col-sm-6 col-md-12'>";
-			}else{
-				print "<div class='col-sm-12'>";
-				# --- trailer here
+				print "</div>";
 			}
-			
-			
+			if((bool)CookieOptionsManager::allow("video")){
+				if($t_item->get('ca_occurrences.trailermedia') || $t_item->get('ca_occurrences.trailer.trailer_url')){
 ?>
-			</div>
+					<div class='col-sm-6 text-center'>
+						{{{<ifdef code="ca_occurrences.trailermedia"><div class="unit"><unit relativeTo="ca_occurrences.trailermedia" delimiter="<br/><br/>">^ca_occurrences.trailermedia%embed=1</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_occurrences.trailer.trailer_url"><div class="unit text-left"><unit relativeTo="ca_occurrences.trailer" delimiter="<br/>"><a href="^ca_occurrences.trailer.trailer_url" target="_blank">&rarr; ^ca_occurrences.trailer.trailer_description<ifnotdef code="ca_occurrences.trailer.trailer_description">Trailer</ifnotdef></a></unit></unit></ifdef>}}}
+					</div>
+<?php
+				}
+			}else{
+				if($t_item->get('ca_occurrences.trailer.trailer_url')){
+?>
+					<div class='col-sm-6 text-center'>
+						{{{<ifdef code="ca_occurrences.trailer.trailer_url"><div class="unit text-left"><unit relativeTo="ca_occurrences.trailer" delimiter="<br/>"><a href="^ca_occurrences.trailer.trailer_url" target="_blank">&rarr; ^ca_occurrences.trailer.trailer_description<ifnotdef code="ca_occurrences.trailer.trailer_description">Trailer</ifnotdef></a></unit></unit></ifdef>}}}
+					</div>
+<?php
+				}
+			}			
+?>
 		</div><!-- end row -->
 		<div class="row">
 			<div class='col-sm-12'>
@@ -268,7 +290,7 @@ $t_item = $this->getVar("item");
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 200
+		  maxHeight: 400
 		});
 	});
 </script>

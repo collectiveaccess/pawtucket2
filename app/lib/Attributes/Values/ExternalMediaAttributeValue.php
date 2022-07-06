@@ -120,7 +120,7 @@ $_ca_attribute_settings['ExternalMediaAttributeValue'] = [		// global
 	'mediaWidth' => array(
 		'formatType' => FT_NUMBER,
 		'displayType' => DT_FIELD,
-		'default' => '670px',
+		'default' => '100%',
 		'width' => 5, 'height' => 1,
 		'label' => _t('Default width of media display in user interface'),
 		'description' => _t('Width in pixels of the media display.')
@@ -128,7 +128,7 @@ $_ca_attribute_settings['ExternalMediaAttributeValue'] = [		// global
 	'mediaHeight' => array(
 		'formatType' => FT_NUMBER,
 		'displayType' => DT_FIELD,
-		'default' => '200px',
+		'default' => '100%',
 		'width' => 5, 'height' => 1,
 		'label' => _t('Height of media display in user interface'),
 		'description' => _t('Height in pixels of the media display.')
