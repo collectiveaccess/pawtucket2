@@ -3,6 +3,7 @@ services:
     build: .
     volumes:
       - $PWD:/app/apache2/htdocs
+      - ${APACHE_LOGS_DIR:-./log}:/app/apache2/logs
       - ${CA_MEDIA_DIR-../collective-access/media}:/app/apache2/htdocs/media
     ports:
       - "127.0.0.1:8080:80"
