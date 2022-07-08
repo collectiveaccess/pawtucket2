@@ -200,7 +200,7 @@ class DisplayTemplateParser {
 
 		if(!$qr_res) { return $pb_return_as_array ? array() : ""; }
 
-        $filter_non_primary_reps = self::_setPrimaryRepresentationFiltering($qr_res, caGetOption('filterNonPrimaryRepresentations', $pa_options, false));
+        $filter_non_primary_reps = self::_setPrimaryRepresentationFiltering($qr_res, caGetOption('filterNonPrimaryRepresentations', $pa_options, null));
         
 		$pa_check_access = ($t_instance->hasField('access')) ? caGetOption('checkAccess', $pa_options, null) : null;
 		if (!is_array($pa_check_access) || !sizeof($pa_check_access)) { $pa_check_access = null; }
@@ -818,6 +818,7 @@ class DisplayTemplateParser {
 											}
 										} else {
 											$va_relationship_type_ids = $qr_rels->getAllFieldValues("{$t}.type_id");
+											$va_relationship_type_orientations = array_fill(0, sizeof($va_relationship_type_ids), $t::getRelationshipOrientationForTables($t, $ps_tablename));
 										}
 										
 									} elseif($t_rel_instance->isRelationship()) {
@@ -1143,7 +1144,7 @@ class DisplayTemplateParser {
                             $va_val_list = [];
                             // (caGetOption('orientation', $pa_options, 'LTOR')
                             $va_relationship_orientations = array_slice($va_relationship_orientations, $vn_start);
-                            $orientation = $va_relationship_orientations[$pr_res->currentIndex()] ?? 'LTOR';
+                            $orientation = strtoupper($va_relationship_orientations[$pr_res->currentIndex()]) ?? 'LTOR';
                             
                             if (is_array($va_relationship_type_ids) && is_array($va_relationship_type_ids = array_slice($va_relationship_type_ids, $vn_start)) && ($vn_type_id = $va_relationship_type_ids[$pr_res->currentIndex()])) {
                                 $qr_rels = caMakeSearchResult('ca_relationship_types', array($vn_type_id));

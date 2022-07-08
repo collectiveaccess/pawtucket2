@@ -87,7 +87,7 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='divide'>&nbsp;</li>";
 						}
 					}
-					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction" role="button"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 					print "</ul></div>\n";
 				}
 			}
@@ -95,7 +95,8 @@ if (!$vb_ajax) {	// !ajax
 		<H1>
 <?php
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
-if($enableGearDD){
+			if($x){
+				# --- hide gear
 ?>		
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
@@ -104,7 +105,7 @@ if($enableGearDD){
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
 						print "<li role='menuitem'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
 						print "<li role='menuitem'><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
-						#print "<li class='divider' role='menuitem'></li>";
+						print "<li class='divider' role='menuitem'></li>";
 					}
 					if($vs_sort_control_type == 'dropdown'){
 						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -129,22 +130,21 @@ if($enableGearDD){
 						}
 					}
 					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
-						print "<li class='divider' role='menuitem'></li>\n";
 						print "<li role='menuitem'>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-						#print "<li class='divider' role='menuitem'></li>\n";
 					}
-					#if(is_array($va_export_formats) && sizeof($va_export_formats)){
-					#	// Export as PDF links
-					#	print "<li class='dropdown-header' role='menuitem'>"._t("Download results as:")."</li>\n";
-					#	foreach($va_export_formats as $va_export_format){
-					#		print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
-					#	}
-					#}
+					if(is_array($va_export_formats) && sizeof($va_export_formats)){
+						// Export as PDF links
+						print "<li class='divider' role='menuitem'></li>\n";
+						print "<li class='dropdown-header' role='menuitem'>"._t("Download results as:")."</li>\n";
+						foreach($va_export_formats as $va_export_format){
+							print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+						}
+					}
 ?>
 				</ul>
 			</div><!-- end btn-group -->
 <?php
-}
+			}
 			if(is_array($va_facets) && sizeof($va_facets)){
 ?>
 			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
@@ -160,11 +160,11 @@ if($enableGearDD){
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
-				if(trim($va_criterion['facet'])){
+				if($va_criterion['facet_name'] != "has_media_facet"){
 					print "<strong>".$va_criterion['facet'].':</strong>';
 				}
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter" role="button"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
 					print ' '.$va_criterion['value'];
 					$vs_search = $va_criterion['value'];
@@ -184,9 +184,6 @@ if($enableGearDD){
 ?>		
 		</div>
 <?php
-		if($vs_intro = $this->getVar("browse_intro_".strToLower($this->request->getAction()))){
-			print "<div class='bBrowseIntro'>".$vs_intro."</div>";
-		}
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}
@@ -210,7 +207,7 @@ if($enableGearDD){
 
 # --- check if this result page has been cached
 # --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
-$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id.$vs_letter);
+$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);
 if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
 	print ExternalCache::fetch($vs_cache_key, 'browse_results');
 }else{
@@ -231,9 +228,9 @@ if (!$vb_ajax) {	// !ajax
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
 			foreach($va_views as $vs_view => $va_view_info) {
 				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button"></span></a> ';
+					print '<a href="#" class="active"><span class="glyphicon  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
 				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 				}
 			}
 		}

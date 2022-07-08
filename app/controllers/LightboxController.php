@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2021 Whirl-i-Gig
+ * Copyright 2013-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -370,10 +370,14 @@ class LightboxController extends FindController {
 		
 		$o_context->setParameter('key', $vs_key);
 		
-		if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
+		if (($max_result_count = $this->request->config->get('maximum_find_result_list_values')) < 10) {
+			$max_result_count = 1000;
+		}
+		
+		if (($vn_key_start = (int)$vn_start - $max_result_count) < 0) { $vn_key_start = 0; }
 		$qr_res->seek($vn_key_start);
-		$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
-		//if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
+		$o_context->setResultList($qr_res->getPrimaryKeyValues($max_result_count));
+		
 		$qr_res->seek($vn_start);
 		
 		$o_context->saveContext();

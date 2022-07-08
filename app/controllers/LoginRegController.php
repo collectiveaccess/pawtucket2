@@ -129,14 +129,14 @@
                 $t_user = $this->request->user;
                 $t_user->purify(true);
         
-                $ps_email = $this->request->getParameter("email", pString);
-                $ps_fname = $this->request->getParameter("fname", pString);
-                $ps_lname = $this->request->getParameter("lname", pString);
-                $ps_password = $this->request->getParameter("password", pString);
-                $ps_password2 = $this->request->getParameter("password2", pString);
-                $ps_security = $this->request->getParameter("security", pString);
-				$ps_group_code = $this->request->getParameter("group_code", pString);
-
+                $ps_email = strip_tags($this->request->getParameter("email", pString));
+                $ps_fname = strip_tags($this->request->getParameter("fname", pString));
+                $ps_lname = strip_tags($this->request->getParameter("lname", pString));
+                $ps_password = strip_tags($this->request->getParameter("password", pString));
+                $ps_password2 = strip_tags($this->request->getParameter("password2", pString));
+                $ps_security = strip_tags($this->request->getParameter("security", pString));
+				$ps_group_code = strip_tags($this->request->getParameter("group_code", pString));
+                
                 $va_errors = [];
 
                 if (!caCheckEmailAddress($ps_email)) {

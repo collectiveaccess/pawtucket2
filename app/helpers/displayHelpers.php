@@ -4660,8 +4660,10 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				if (!($vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE'))) {
 				    $vs_mimetype = $t_instance->getMediaInfo('media', 'large', 'MIMETYPE');
 			        $vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype);
-			    } elseif (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype))) {
-					throw new ApplicationException(_t('Invalid viewer %1/%2', $ps_display_type, $vs_mimetype));
+			    }
+			    if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype))) {
+					//throw new ApplicationException(_t('Invalid viewer %1/%2', $ps_display_type, $vs_mimetype));
+					continue;
 				}
 
 				$va_display_info = caGetMediaDisplayInfo($ps_display_type, $vs_mimetype);
