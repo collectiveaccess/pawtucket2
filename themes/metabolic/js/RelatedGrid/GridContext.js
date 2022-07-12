@@ -28,12 +28,14 @@ const GridContextProvider = (props) => {
   const [sort, setSort] = useState(null); // Sort criteria
   
   const [sortDirection, setSortDirection] = useState('ASC'); // Sort direction
+  
+  const [statusMessage, setStatusMessage] = useState(''); // Status message for display (Eg. "preparing download")
 
   return (
     <GridContext.Provider
     value={{currentlySelectedItem, setCurrentlySelectedItem, data, setData, rawData, setRawData, start, setStart,
         itemsPerPage, setItemsPerPage, totalItems, setTotalItems, currentlySelectedRow, setCurrentlySelectedRow, itemIds, setItemIds, showSelectButtons, setShowSelectButtons, 
-        selectedGridItems, setSelectedGridItems, lightboxCreated, setLightboxCreated, sort, setSort, sortDirection, setSortDirection}}>
+        selectedGridItems, setSelectedGridItems, lightboxCreated, setLightboxCreated, sort, setSort, sortDirection, setSortDirection, statusMessage, setStatusMessage}}>
         {props.children}
     </GridContext.Provider>
   )

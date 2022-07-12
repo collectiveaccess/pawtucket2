@@ -5,16 +5,20 @@ const downloadUrl = pawtucketUIApps.RelatedGrid.downloadUrl;
 let downloadType = pawtucketUIApps.RelatedGrid.downloadType;
 if(!downloadType) { downloadType = 'download_original'; }
 
+const table = pawtucketUIApps.RelatedGrid.table;
+const id = pawtucketUIApps.RelatedGrid.id;
+
 const RelatedGridExportOptions = (props) => {
 
-  const { selectedGridItems, itemIds } = useContext(GridContext);
+  const { selectedGridItems, itemIds, statusMessage, setStatusMessage } = useContext(GridContext);
 
   const downloadAllItems = (e) => {
     const ids = itemIds.join(';');
 
+	setStatusMessage("Preparing download");
     Axios({
       method: 'POST',
-      url: downloadUrl + '/download_type/' + downloadType + '/ids/' + String(ids),
+      url: downloadUrl + '/include_children/1/download_type/' + downloadType + '/table/' + table + '/id/' + id,
       responseType: "blob",
     })
     .then(function (response) {
@@ -24,6 +28,8 @@ const RelatedGridExportOptions = (props) => {
       link.setAttribute('download', 'file.zip');
       document.body.appendChild(link);
       link.click();
+      
+	  setStatusMessage("");
     })
     .catch(function (error) {
       console.log(error);
@@ -35,6 +41,7 @@ const RelatedGridExportOptions = (props) => {
   const downloadSelectedItems = (e) => {
     const ids = selectedGridItems.join(';');
 
+	setStatusMessage("Preparing download");
     Axios({
       method: 'POST',
       url: downloadUrl + '/download_type/' + downloadType + '/ids/' + String(ids),
@@ -47,6 +54,8 @@ const RelatedGridExportOptions = (props) => {
       link.setAttribute('download', 'file.zip');
       document.body.appendChild(link);
       link.click();
+      
+	  setStatusMessage("");
     })
     .catch(function (error) {
       console.log(error);
@@ -63,9 +72,9 @@ const RelatedGridExportOptions = (props) => {
         </a>
         <div className="dropdown-menu dropdown-menu-right" aria-labelledby="exportOptionsIcon">
           {(selectedGridItems.length >= 1) ?
-            <a class="dropdown-item" onClick={(e)=>downloadSelectedItems(e)}>Download Selected Items</a>
+            <a className="dropdown-item" onClick={(e)=>downloadSelectedItems(e)}>Download Selected Items</a>
             :
-            <a class="dropdown-item" onClick={(e)=>downloadAllItems(e)}>Download All Items</a>
+            <a className="dropdown-item" onClick={(e)=>downloadAllItems(e)}>Download All Items</a>
           }
         </div>
       </div>

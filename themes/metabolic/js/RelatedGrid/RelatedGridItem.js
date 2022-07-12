@@ -35,7 +35,7 @@ const RelatedGridItem = (props) => {
 		if(tmp && (tmp.length > 0)) {
 			tmp = tmp.map((v) => v['values']);
 			tmp = tmp.shift();
-			console.log(tmp);
+			
 			altids = [];
 			for(let i in tmp) {
 				if(tmp[i]['value']) {

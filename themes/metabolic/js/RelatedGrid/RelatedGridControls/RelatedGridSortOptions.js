@@ -14,11 +14,11 @@ const RelatedGridSortOptions = (props) => {
 				<ion-icon name="funnel"></ion-icon>
 			</a>
 			<div className="dropdown-menu dropdown-menu-right" aria-labelledby="sortIcon">
-				<a class={"dropdown-item " + ((!sort || (sort === 'ca_objects.idno')) ? "active" : "")} onClick={(e)=>setSort('ca_objects.idno')}>Identifer</a>
-				<a class={"dropdown-item " + (sort === 'ca_objects.preferred_labels.name' ? "active" : "")} onClick={(e)=>setSort('ca_objects.preferred_labels.name')}>Title</a>
-				<div class="dropdown-divider"></div>
-				<a class={"dropdown-item " + ((!sortDirection || (sortDirection === 'ASC')) ? "active" : "")} onClick={(e)=>setSortDirection('ASC')}>Ascending</a>
-				<a class={"dropdown-item " + (sortDirection === 'DESC' ? "active" : "")} onClick={(e)=>setSortDirection('DESC')}>Descending</a>
+				<a className={"dropdown-item " + ((!sort || (sort === 'ca_objects.idno')) ? "active" : "")} onClick={(e)=>setSort('ca_objects.idno')}>Identifer</a>
+				<a className={"dropdown-item " + (sort === 'ca_objects.preferred_labels.name' ? "active" : "")} onClick={(e)=>setSort('ca_objects.preferred_labels.name')}>Title</a>
+				<div className="dropdown-divider"></div>
+				<a className={"dropdown-item " + ((!sortDirection || (sortDirection === 'ASC')) ? "active" : "")} onClick={(e)=>setSortDirection('ASC')}>Ascending</a>
+				<a className={"dropdown-item " + (sortDirection === 'DESC' ? "active" : "")} onClick={(e)=>setSortDirection('DESC')}>Descending</a>
 			</div>
 		</div>
 	</div>
