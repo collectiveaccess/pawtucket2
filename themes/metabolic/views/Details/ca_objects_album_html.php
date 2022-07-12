@@ -395,7 +395,7 @@
 // 				}
 // 			}
 ?>
-			<div id="relatedGrid" class="detailPrimaryMedia mt-3">
+			<div id="relatedGrid" class="detailPrimaryMedia mt-3 relatedGrid">
 				<!-- RelatedGrid.js React app goes here -->
 			</div>
 
@@ -440,23 +440,23 @@
 	if($this->request->isLoggedIn()) { 
 ?>
 	pawtucketUIApps['Comment'] = {
-			'selector': '#commentForm',
-			'key': '<?= $this->getVar('key'); ?>',
-			'baseUrl': '/service.php/UserGeneratedContent',
-			'searchUrl': '/index.php/MultiSearch/Index/search/',
-			'data': {
-					item_id: <?= $vn_id; ?>,
-					tablename: 'ca_objects',
-					show_form: <?= ($this->request->isLoggedIn()) ? "true" : "false"; ?>,
-					login_button_text: 'Login to Add Your Comment',
-					comment_button_text: 'Comment',
+		'selector': '#commentForm',
+		'key': '<?= $this->getVar('key'); ?>',
+		'baseUrl': '/service.php/UserGeneratedContent',
+		'searchUrl': '/index.php/MultiSearch/Index/search/',
+		'data': {
+			item_id: <?= $vn_id; ?>,
+			tablename: 'ca_objects',
+			show_form: <?= ($this->request->isLoggedIn()) ? "true" : "false"; ?>,
+			login_button_text: 'Login to Add Your Comment',
+			comment_button_text: 'Comment',
 
-					form_title: '<span>Add Your Comment</span>',
-					list_title: '<span class="mt-5">Comments</span>',
-					tag_field_title: 'Tags',
-					comment_field_title: 'Comment',
-					no_tags: true,
-			},
+			form_title: '<span>Add Your Comment</span>',
+			list_title: '<span class="mt-5">Comments</span>',
+			tag_field_title: 'Tags',
+			comment_field_title: 'Comment',
+			no_tags: true,
+		}
   };
 <?php
 	}
@@ -478,14 +478,14 @@
     };
 
 	pawtucketUIApps['MediaViewer'] = {
-			'selector': '#mediaDisplay',
-			'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => $va_access_values]); ?>,
-			'width': '800px',
-			'height': '500px',
-			'controlHeight': '72px',
-			'data': {
-			
-			}
+		'selector': '#mediaDisplay',
+		'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => $va_access_values]); ?>,
+		'width': '800px',
+		'height': '500px',
+		'controlHeight': '72px',
+		'data': {
+		
+		}
 	};
 </script>
 <script type="text/javascript">	
