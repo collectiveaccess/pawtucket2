@@ -21,7 +21,6 @@ function getGraphQLClient(uri, tokens, options=null) {
 	if(!options) { options = {}; }
 	
 	let use_token = options['refresh'] ? tokens.refresh_token : tokens.access_token;
-	console.log("apollo client use token", use_token);
 
 	const authLink = setContext((_, { headers }) => {
 	  // return the headers to the context so httpLink can read them
