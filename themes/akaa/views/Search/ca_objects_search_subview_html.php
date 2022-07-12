@@ -98,8 +98,19 @@
 <?php				
 				if($vs_block == "artworks"){
 					$vs_tmp = $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator')))."<br/><i>".$qr_results->get("ca_objects.preferred_labels")."</i>";
-					if ($qr_results->get('ca_objects.date.dates_value')) {
-						$vs_tmp.= "<br/>".$qr_results->get('ca_objects.date.dates_value');
+					$date = $qr_results->get('ca_objects.date.dates_value', array('delimiter' => ', '));
+					$date_note = $qr_results->get('ca_objects.date_notes');
+					if ($date || $date_note) {
+						$vs_tmp .= "<br/>";
+						if($date){
+							$vs_tmp .= $date;
+							if($date_note){
+								$vs_tmp .= ", ";
+							}
+						}
+						if($date_note){
+							$vs_tmp .= $date_note;
+						}
 					}
 					print "<div>".caDetailLink($this->request, $vs_tmp, '', 'ca_objects', $qr_results->get('ca_objects.object_id'))."</div>";
 				}else{

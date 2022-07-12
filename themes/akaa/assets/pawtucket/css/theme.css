@@ -3,12 +3,14 @@ html {
 	min-height:100%;
 }
 body {
-	margin-bottom:130px;
+	margin-bottom:110px;
 }
 a, a:hover {
   color: #666;
 }
-
+.container{
+	max-width:1500;
+}
 .detail a, .staticPage a {
   text-decoration:underline;
 }
@@ -66,18 +68,21 @@ a, a:hover {
 	height:auto;
 }
 #footer {
-	height:120px;
+	height:90px;
 	width:100%;
 	position:absolute;
-	bottom:0px;
-	background-color:#444;
-	color:#FFF;
-	padding:20px 15px 20px 15px;
+	bottom:0px;background-color: #fff;
+	color:#000;
+	padding:0px 15px 20px 15px;
+	border:0px;
+}
+#footer HR{
+	border-top: 1px solid #000;
+	margin-bottom:20px;
 }
 #footer a, #footer ul a {
 	font-size: 14px;
-	text-transform: uppercase;
-	color: #FFF;
+	color: #000;
 }
 #footer ul.social li a{
 	font-size: 22px;
@@ -85,8 +90,11 @@ a, a:hover {
 #footer ul.social li {
 	padding:0px 10px 0px 10px;
 }
-#footer ul li {
-  padding: 0px 10px 0px 10px;
+#footer ul li, #footer ul.social li {
+	padding: 0px 20px 0px 0px;
+}
+#footer ul.social {
+	padding-top: 0px;
 }
 #footer .backTop a {
 	background-color: #f5f5f5;
@@ -100,6 +108,26 @@ a, a:hover {
     top:-60px;
     right:30px;
     z-index:3000;
+}
+#footer .list-inline{
+	float:left;
+}
+#footer .copyright{
+	float:right;
+}
+@media(max-width:590px){
+	#footer .list-inline{
+		float:none;
+	}
+	#footer .copyright{
+		float:none;
+	}
+	#footer {
+		height:140px;
+	}
+	body {
+		margin-bottom:160px;
+	}
 }
 .front H1 {
 	font-size:20px;
@@ -184,21 +212,32 @@ a, a:hover {
 .browse .btn, .sets .btn {
   background-color: #000;
 }
+#bLetterBar a{
+	color:#000;
+}
+#bLetterBar a:hover, #bLetterBar a.selectedLetter {
+  font-weight: bold;
+  background-color: #000;
+  color: #FFF;
+}
 .bCriteria{
 	margin-bottom:5px;
 }
 .multisearch .multisearchResult a, .multisearch .authoritySet a {
   color: #000;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.2em;
 }
 .multisearch H2 a{
 	color:#000;
 }
+.bResultItemContent {
+  height: 260px;
+}
 .bResultItem:hover .bResultItemContent {
-  height: 240px;
-  max-height: 240px;
-  min-height: 240px;
+  height: 260px;
+  max-height: 260px;
+  min-height: 260px;
 }
 .bResultItem:hover .bResultItemImg {
   margin-bottom: 5px;
@@ -207,7 +246,7 @@ a, a:hover {
   overflow: hidden;
 }
 .bResultItemCol {
-  height: 260px;
+  height: 280px;
 }
 a.readmore-js-toggle{
 	color:#000;

@@ -62,14 +62,26 @@
 				if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => ', ', 'returnAsLink' => true))) {
 					print "<div class='unit'><label>Artist</label>".$va_artist."</div>";
 				}
+?>
+				{{{<ifdef code="ca_objects.nonpreferred_labels.name"><div class='unit'><label>Secondary Title</label><unit relativeTo="ca_objects.nonpreferred_labels" delimiter="<br/>"><i>^ca_objects.nonpreferred_labels.name</i></unit></div></ifdef>}}}
+<?php
 				$va_years = $t_object->get("ca_objects.date.dates_value", array("returnAsArray" => true));
-				if(is_array($va_years) && sizeof($va_years)){
+				$vs_date_note = $t_object->get("ca_objects.date_notes");
+				if((is_array($va_years) && sizeof($va_years)) || $vs_date_note){
 					print "<div class='unit'><label>Year".((sizeof($va_years) > 1) ? "s" : "")."</label>";
-					$va_tmp = array();
-					foreach($va_years as $vs_year){
-						$va_tmp[] = caNavLink($this->request, $vs_year, '', '', 'Browse', 'artworks', array("facet" => "year_facet", "id" => $vs_year));
+					if(is_array($va_years) && sizeof($va_years)){
+						$va_tmp = array();
+						foreach($va_years as $vs_year){
+							$va_tmp[] = caNavLink($this->request, $vs_year, '', '', 'Browse', 'artworks', array("facet" => "year_facet", "id" => $vs_year));
+						}
+						print join(", ", $va_tmp);
+						if($vs_date_note){
+							print ", ";
+						}
 					}
-					print join(", ", $va_tmp);
+					if($vs_date_note){
+						print $vs_date_note;
+					}
 					print "</div>";
 				}
 				$va_mediums = $t_object->get("ca_objects.medium", array("returnAsArray" => true));
@@ -108,6 +120,9 @@
 				#}
 				if ($va_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><label>Medium</label>".$va_description."</div>";
+				}
+				if ($vs_dimensions = $t_object->get('ca_objects.dimensions.measurement_notes', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><label>Dimensions</label>".$vs_dimensions."</div>";
 				}
 
 ?>

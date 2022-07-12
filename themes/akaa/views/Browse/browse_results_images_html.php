@@ -107,8 +107,19 @@
 					}
 					$vs_info = null;
 					$vs_tmp = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator')))."<br/><i>".$qr_res->get("{$vs_table}.preferred_labels")."</i>";
-					if ($qr_res->get('ca_objects.date.dates_value')) {
-						$vs_tmp.= "<br/>".$qr_res->get('ca_objects.date.dates_value');
+					$date = $qr_res->get('ca_objects.date.dates_value', array('delimiter' => ', '));
+					$date_note = $qr_res->get('ca_objects.date_notes');
+					if ($date || $date_note) {
+						$vs_tmp .= "<br/>";
+						if($date){
+							$vs_tmp .= $date;
+							if($date_note){
+								$vs_tmp .= ", ";
+							}
+						}
+						if($date_note){
+							$vs_tmp .= $date_note;
+						}
 					}
 					$vs_label_detail_link = "<div>".caDetailLink($this->request, $vs_tmp, '', $vs_table, $vn_id)."</div>";
 					

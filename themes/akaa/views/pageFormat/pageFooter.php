@@ -38,7 +38,7 @@
 ?>		
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 	
-		<div id="footer">
+		<div id="footer"><hr/>
 <?php
 	if ($this->request->getController() != "Front") {
 ?>
@@ -54,11 +54,10 @@
 						<li><a href="https://ahlfoundation.us13.list-manage.com/subscribe?u=9c1109adcfbd92fe96635dc7d&id=4624843a48" target="_blank">Join Our Newsletter</a></li>
 					</ul>
 					<ul class="list-inline social">
-						<li><a href="https://twitter.com/ahlnewyork" target="_blank"><i class="fa fa-twitter"></i></a></li>
 						<li><a href="https://www.instagram.com/ahlfoundation/" target="_blank"><i class="fa fa-instagram"></i></a></li>
 						<li><a href="https://www.facebook.com/ahlfoundation/" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
 					</ul>
-					<div>{{{copyright}}}</div>
+					<div class="copyright">{{{copyright}}}</div>
 				</div>
 			</div>
 
