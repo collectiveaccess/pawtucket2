@@ -613,10 +613,11 @@ class DetailController extends FindController {
 				$t_instance = Datamodel::getInstance($table, true);
 			}
 			$ids = array_filter(preg_split('![;,\| ]+!', $this->request->getParameter('ids', pString)), 'strlen');
+			$include_children = (bool)$this->request->getParameter('include_children', pInteger);
 			
 			// Support old object_id calls
 			if (!is_array($ids) || !sizeof($ids)) {
-				$ids =  [$this->request->getParameter('object_id', pInteger)];
+				$ids =  [$this->request->getParameter(['object_id', 'id'], pInteger)];
 			}
 			$download_type = $this->request->getParameter('download_type', pString);
 			
@@ -645,7 +646,6 @@ class DetailController extends FindController {
 					}
 				}
 			}
-			
 			$c = 1;
 			$file_names = $file_paths = [];
 			
@@ -653,7 +653,7 @@ class DetailController extends FindController {
 			$ids_to_download =  $o_app_plugin_manager->hookDetailDownloadMediaObjectIDs($ids_to_download);
 			$ids_to_download = array_unique($ids_to_download);
 			
-			$t_download_log = new Downloadlog();
+			$t_download_log = new DownloadLog();
 			
 			$qr = caMakeSearchResult($table, $ids_to_download);
 			while($qr->nextHit()) {
@@ -689,7 +689,7 @@ class DetailController extends FindController {
 						$rep_info = $qr_reps->getMediaInfo('ca_object_representations.media', $media_version);
 				
 						$vals = ['idno' => $idno_proc];
-						foreach(array_merge($rep_info, $info) as $k => $v) {
+						foreach(array_merge($rep_info ?? [], $info ?? []) as $k => $v) {
 							if (is_array($v)) { continue; }
 							if (strtolower($k) == 'original_filename') { $v = pathinfo($v, PATHINFO_FILENAME); }
 							$vals[strtolower($k)] = preg_replace('![^A-Za-z0-9_\-]+!', '_', $v);
@@ -698,14 +698,18 @@ class DetailController extends FindController {
 						$mode = $this->request->getAppConfig()->get('downloaded_file_naming');
 						
 						$filename = preg_replace('![^A-Za-z0-9_\-]+!', '_', preg_replace('!\.[A-Za-z].[A-Za-z0-9]{1,3}$!', '', caProcessTemplateForIDs($mode, 'ca_object_representations', [$rep_id]))).'.'.$rep_info['EXTENSION'];
-								
-				
+							
 						$file_names[$filename] = true;
 			
 						//
 						// Perform metadata embedding
 						if (!($path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($qr->getMediaPath('media', $media_version), $table, $id, $qr->get("{$table}.type_id", ['convertCodesToIdnos' => true]), $rep_id, $qr_reps->get('ca_object_representations.type_id', ['convertCodesToIdnos' => true])))) {
 							$path = $qr_reps->getMediaPath('ca_object_representations.media', $media_version);
+						}
+						if(!$path) { 
+							if(!($path = $qr_reps->getMediaPath('ca_object_representations.media', 'full'))) {
+								$path = $qr_reps->getMediaPath('ca_object_representations.media', 'large');
+							}
 						}
 						$file_paths[$path] = $filename;
 				
@@ -715,7 +719,6 @@ class DetailController extends FindController {
 				}
 				
 			}
-			
 			// Allow plugins to modify file path list
 			$file_paths = $o_app_plugin_manager->hookDetailDownloadMediaFilePaths($file_paths);
 			
