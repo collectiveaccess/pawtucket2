@@ -54,7 +54,6 @@ const CommentSection = (props) => {
     e.preventDefault();
   }
 
-console.log('xxxisLoggedIn: ', isLoggedIn);
   return (
     <>
       {(isLoggedIn || (comments && (comments.length > 0))) ?
