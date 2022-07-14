@@ -200,7 +200,7 @@ class DisplayTemplateParser {
 
 		if(!$qr_res) { return $pb_return_as_array ? array() : ""; }
 
-        $filter_non_primary_reps = self::_setPrimaryRepresentationFiltering($qr_res, caGetOption('filterNonPrimaryRepresentations', $pa_options, false));
+        $filter_non_primary_reps = self::_setPrimaryRepresentationFiltering($qr_res, caGetOption('filterNonPrimaryRepresentations', $pa_options, null));
         
 		$pa_check_access = ($t_instance->hasField('access')) ? caGetOption('checkAccess', $pa_options, null) : null;
 		if (!is_array($pa_check_access) || !sizeof($pa_check_access)) { $pa_check_access = null; }
@@ -274,10 +274,6 @@ class DisplayTemplateParser {
 			}
 		}
 		
-		if ($ps_skip_when && (($vn_start = caGetOption('unitStart', $pa_options, 0)) || ($vn_length = caGetOption('unitLength', $pa_options, null)))) {
-		    $va_proc_templates = array_slice($va_proc_templates, $vn_start, $vn_length);
-		}
-		
 		if ($pa_options['aggregateUnique']) {
 			$va_acc = [];
 			foreach($va_proc_templates as $va_val_list) {
@@ -288,6 +284,10 @@ class DisplayTemplateParser {
 				}
 			}
 			$va_proc_templates = array_unique($va_acc);
+		}
+		
+		if (($ps_skip_when || $pa_options['aggregateUnique']) && (($vn_start = caGetOption('unitStart', $pa_options, 0)) || ($vn_length = caGetOption('unitLength', $pa_options, null)))) {
+		    $va_proc_templates = array_slice($va_proc_templates, $vn_start, $vn_length);
 		}
 		
 		if (!$pb_include_blanks && !$pb_include_blanks_for_prefetch) { $va_proc_templates = array_filter($va_proc_templates, 'strlen'); }
@@ -582,6 +582,7 @@ class DisplayTemplateParser {
 					
 					$vn_start = (int)$o_node->start;
 					$vn_length = (int)$o_node->length;
+					$limit = (int)$o_node->limit;
 					
 					$pa_check_access = ($t_instance->hasField('access')) ? caGetOption('checkAccess', $pa_options, null) : null;
 					if (!is_array($pa_check_access) || !sizeof($pa_check_access)) { $pa_check_access = null; }
@@ -704,8 +705,12 @@ class DisplayTemplateParser {
 								]
 							)
 						);
-						
 						if ($vb_unique) { $va_tmpl_val = array_unique($va_tmpl_val); }
+						
+						if($limit > 0) { 
+							$va_tmpl_val = array_slice($va_tmpl_val, 0, $limit);
+						}
+						
 						if (($vn_start > 0) || !is_null($vn_length)) { 
 							$vn_last_unit_omit_count = sizeof($va_tmpl_val) - ($vn_length - $vn_start);
 						}
@@ -813,6 +818,7 @@ class DisplayTemplateParser {
 											}
 										} else {
 											$va_relationship_type_ids = $qr_rels->getAllFieldValues("{$t}.type_id");
+											$va_relationship_type_orientations = array_fill(0, sizeof($va_relationship_type_ids), $t::getRelationshipOrientationForTables($t, $ps_tablename));
 										}
 										
 									} elseif($t_rel_instance->isRelationship()) {
@@ -843,7 +849,7 @@ class DisplayTemplateParser {
 						}
 						
 						$vn_num_vals = sizeof($va_relative_ids);
-						if ((($vn_start > 0) || ($vn_length > 0)) && sizeof($va_relative_ids)) {
+						if ((!$vb_unique && !$vb_aggregate_unique) && ((($vn_start > 0) || ($vn_length > 0)) && sizeof($va_relative_ids))) {
 							// Only evaluate units that fall within the start/length window to save time
 							// We pass the full count of units as 'fullValueCount' to ensure that ^count, ^index and friends 
 							// are accurate.
@@ -880,6 +886,10 @@ class DisplayTemplateParser {
 								]
 							)
 						);
+						
+						if($limit > 0) { 
+							$va_tmpl_val = array_slice($va_tmpl_val, 0, $limit);
+						}
 						if ($vb_unique) { $va_tmpl_val = array_unique($va_tmpl_val); }
 						if (($vn_start > 0) || !is_null($vn_length)) { 
 							$vn_last_unit_omit_count = $vn_num_vals -  ($vn_length - $vn_start);
@@ -1134,7 +1144,7 @@ class DisplayTemplateParser {
                             $va_val_list = [];
                             // (caGetOption('orientation', $pa_options, 'LTOR')
                             $va_relationship_orientations = array_slice($va_relationship_orientations, $vn_start);
-                            $orientation = $va_relationship_orientations[$pr_res->currentIndex()] ?? 'LTOR';
+                            $orientation = strtoupper($va_relationship_orientations[$pr_res->currentIndex()]) ?? 'LTOR';
                             
                             if (is_array($va_relationship_type_ids) && is_array($va_relationship_type_ids = array_slice($va_relationship_type_ids, $vn_start)) && ($vn_type_id = $va_relationship_type_ids[$pr_res->currentIndex()])) {
                                 $qr_rels = caMakeSearchResult('ca_relationship_types', array($vn_type_id));
@@ -1800,6 +1810,9 @@ class DisplayTemplateParser {
 			} else {
 				if(isset($pa_values[$vs_tag])) { 
 					$vs_val = $pa_values[$vs_tag];
+					if(is_array($vs_val)) {
+						$vs_val = join(" ", $vs_val);
+					}
 				} elseif (
 				    is_array($vs_val = isset($pa_values[$va_tmp[0]]) ? $pa_values[$va_tmp[0]] : '')
 				) {
@@ -1953,7 +1966,7 @@ class DisplayTemplateParser {
 		
 	 	$filter_opt = $value;
 	 	$filter = true;
-        if(!(bool)$filter_opt || ($filter_opt === '0') || (strtolower($filter_opt) === 'no')) { $filter = false; }
+        if(!is_null($filter_opt) && (!(bool)$filter_opt || ($filter_opt === '0') || (strtolower($filter_opt) === 'no'))) { $filter = false; }
 		$res->filterNonPrimaryRepresentations($filter); 
 		
 		return $filter;
