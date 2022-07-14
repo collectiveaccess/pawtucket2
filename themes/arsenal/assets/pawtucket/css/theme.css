@@ -384,7 +384,7 @@ body{
   padding: 0px 0px 0px 35px;
 }
 #footer .funder{
-	text-align:center;
+	text-align:left;
 	padding-top:25px;
 	padding-bottom:25px;
 	background-color:#FFF;
@@ -393,7 +393,7 @@ body{
 #footer .funder img{
 	width:auto;
 	height:100px;
-	padding:0px 15px 0px 15px;
+	padding:0px 30px 0px 0px;
 }
 @media(max-width: 768px) {
 	#footer .funder img{
@@ -428,11 +428,12 @@ body{
 	color: #000;
 	margin-top: 0px;
 }
-#bRefine H5, #bRefine H3{
+#bRefine H5, #bRefine H3, #bRefine H3 a{
 	color:#000;
 	font-size:18px;
 	font-weight:700;
 	text-transform:capitalize;
+	text-decoration:none;
 }
 #bRefine a{
 	color:#000;
@@ -631,7 +632,7 @@ body.frontContainer #footer{
 	margin:30px 0px 70px 0px;
 	font-family: "Cinetype";
 	
-	font-weight:700;
+	font-weight:400;
 	line-height:1.5em;
 }
 .hpIntro .calloutTitle{
@@ -887,13 +888,14 @@ a.readmore-js-toggle {
 	margin-bottom:0px;
 	text-transform:none;
 }
-.detail h2 {
+.detail h2, .detail h2 a {
 	font-size: 28px;
 	color: #000;
 	text-transform: none;
 	padding-bottom: 0px;
 	margin: 0px 0px 5px 0px;
 	font-weight:700;
+	text-transform: capitalize;
 }
 /* about */
 .staticPage{
@@ -903,7 +905,7 @@ a.readmore-js-toggle {
 }
 .staticPage h1 {
 	font-size: 38px;
-	margin-bottom:0px;
+	margin-bottom:15px;
 	text-transform:none;
 }
 @media(min-width:768px){
@@ -916,11 +918,8 @@ a.readmore-js-toggle {
 	color: #000;
 	text-transform: none;
 	padding-bottom: 0px;
-	margin: 5px 0px 25px 0px;
+	margin: 0px 0px 15px 0px;
 	font-weight:700;
-}
-.aboutSideNav{
-	margin-top:10px;
 }
 .aboutSideNav ul{
 	line-height:1.7em;
