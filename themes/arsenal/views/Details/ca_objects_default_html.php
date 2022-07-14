@@ -47,7 +47,6 @@
 					unset($va_related_objects[$vn_i]);
 				}
 				$va_object_ids[] = $va_info["object_id"];
-				print $va_info["object_id"]."; ";
 			}
 			$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
 			#$o_context->setAsLastFind();
