@@ -21,6 +21,9 @@ RUN apt-get -qq install autoconf && wget https://pecl.php.net/get/memcached-3.1.
 #Config changes for php
 RUN sed -i "s/memory_limit = 128M/memory_limit = 1G/" /usr/local/lib/php.ini
 
+#PHPRedis
+RUN apt update && apt-get install -qq -y libzstd-dev && wget https://github.com/phpredis/phpredis/archive/refs/tags/5.3.4.tar.gz && tar xzf 5.3.4.tar.gz && cd phpredis-5.3.4 && phpize && ./configure --enable-redis-zstd && make -j$(nproc) && make install && echo "extension=redis.so" >> /usr/local/lib/php.ini &&  cd .. && rm -rf phpredis-5.3.4
+
 #Composer
 RUN curl --output /usr/local/bin/composer https://getcomposer.org/composer.phar     && chmod +x /usr/local/bin/composer
 
