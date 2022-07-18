@@ -80,7 +80,7 @@
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'widepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'largewidepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
@@ -96,7 +96,7 @@
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
 				if ($vs_table == 'ca_objects') {
-					if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values)))){
+					if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.largewidepreview', array("checkAccess" => $va_access_values)))){
 						$t_list_item->load($qr_res->get("type_id"));
 						$vs_typecode = $t_list_item->get("idno");
 						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
@@ -107,8 +107,19 @@
 					}
 					$vs_info = null;
 					$vs_tmp = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator')))."<br/><i>".$qr_res->get("{$vs_table}.preferred_labels")."</i>";
-					if ($qr_res->get('ca_objects.date.dates_value')) {
-						$vs_tmp.= "<br/>".$qr_res->get('ca_objects.date.dates_value');
+					$date = $qr_res->get('ca_objects.date.dates_value', array('delimiter' => ', '));
+					$date_note = $qr_res->get('ca_objects.date_notes');
+					if ($date || $date_note) {
+						$vs_tmp .= "<br/>";
+						if($date){
+							$vs_tmp .= $date;
+							if($date_note){
+								$vs_tmp .= ", ";
+							}
+						}
+						if($date_note){
+							$vs_tmp .= $date_note;
+						}
 					}
 					$vs_label_detail_link = "<div>".caDetailLink($this->request, $vs_tmp, '', $vs_table, $vn_id)."</div>";
 					
