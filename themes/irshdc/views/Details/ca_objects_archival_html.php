@@ -179,6 +179,7 @@ if($vs_mode == "map"){
 						}else{
 							print $vs_title;
 						}
+						print $vs_source_link;
 						print "</H4>";
 ?>
 						<div class="unit">{{{^ca_objects.type_id}}}
@@ -192,7 +193,7 @@ if($vs_mode == "map"){
 							</ifnotdef>
 						</ifdef>}}}
 <?php
-						print $vs_source_link;
+						#print $vs_source_link;
 ?>
 						</div>
 <?php
