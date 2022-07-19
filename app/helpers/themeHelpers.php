@@ -1535,10 +1535,11 @@ function caGetBrowseLinks($t_instance, string $bundle, ?array $options=null) : ?
 		if($restrict_to_relationship_types && !is_array($restrict_to_relationship_types)) { $restrict_to_relationship_types = [$restrict_to_relationship_types]; }
 		$restrict_to_relationship_types_attr = (is_array($restrict_to_relationship_types) && sizeof($restrict_to_relationship_types)) ? "restrictToRelationshipTypes='".join(',', $restrict_to_relationship_types)."'" : '';
 		
+		$va_access_values = caGetUserAccessValues($g_request);	
 		$bt = caGetBrowseForType($table, $t_instance->getTypeCode());
-		$text = $template ? explode('|', $t_instance->getWithTemplate($z="<unit relativeTo='{$bundle}' delimiter='|' {$restrict_to_types_attr} {$restrict_to_relationship_types_attr}>{$template}</unit>", ['returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
+		$text = $template ? explode('|', $t_instance->getWithTemplate($z="<unit relativeTo='{$bundle}' delimiter='|' {$restrict_to_types_attr} {$restrict_to_relationship_types_attr}>{$template}</unit>", ['returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $va_access_values])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $va_access_values]);
 		if(!sizeof(array_filter($text, 'strlen'))) { return null; }
-		$ids = $t_instance->get($fld, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToIdnos' => false, 'makeLink' => false]);
+		$ids = $t_instance->get($fld, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToIdnos' => false, 'makeLink' => false, 'checkAccess' => $va_access_values]);
 		
 		$links = caCreateBrowseLinksFromText($text, $bt, array_map(function($v) use ($facet) { return ['facet' => $facet, 'id' => $v]; }, $ids), '', []);
 		return $link_template ? array_map(function($l) use ($link_template) {
@@ -1588,9 +1589,10 @@ function caGetSearchLinks($t_instance, string $bundle, ?array $options=null) : ?
 	
 	$restrict_to_relationship_types = caGetOption('restrictToRelationshipTypes', $options, null);
 	if($restrict_to_relationship_types && !is_array($restrict_to_relationship_types)) { $restrict_to_relationship_types = [$restrict_to_relationship_types]; }
-		
-	$text = $template ? explode('|', $t_instance->getWithTemplate($template, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'delimiter' => '|'])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
-	$values = $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
+	
+	$va_access_values = caGetUserAccessValues($g_request);	
+	$text = $template ? explode('|', $t_instance->getWithTemplate($template, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'delimiter' => '|', 'checkAccess' => $va_access_values])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $va_access_values]);
+	$values = $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $va_access_values]);
 	
 	if(!sizeof(array_filter($text, 'strlen'))) { return null; }
 	

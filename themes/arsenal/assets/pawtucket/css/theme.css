@@ -49,6 +49,7 @@ H1, h1, h2, H2, H3, h3, H4, h4, H5, h5, #footer a.orgLink{
 .btn-default, .browse .btn, .sets .btn, .btn-default:focus, .btn-default:active, .btn-default.active {
 	background-color:#000;
 	color:#FFF;
+	font-family: "Cinetype";
 }
 .btn-default:hover{
 	background-color:#777;
@@ -272,41 +273,43 @@ a:hover{
 /* footer */
 /* offset needed for fixed footer */
 body{
-	margin-bottom:425px;
+	margin-bottom:600px;
 }
 #footer{
-	background-color: #000;
 	color:#FFF;
-	padding-top:53px;
-	height: 375px;
+	height: 525px;
 	border:0px;
 	font-size:14px;
 	font-weight:normal;
 	margin-top:50px;
-	padding-bottom:50px;
 	font-family:Cinetype;
 	-moz-osx-font-smoothing: grayscale;
 	font-size:18px;
 	line-height:1.5em;
+	padding:0px;
+}
+#footer .footerBg{
+	background-color: #000;
+	padding:53px 0px 25px 0px;
 }
 @media(max-width:1190px){
 	/* CHANGE - does the footer height need to change for smaller screen sizes? */
 	#footer{
-		height:450px;
+		height:615px;
 	}
 	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
 	body{
-		margin-bottom:425px;
+		margin-bottom:665px;
 	}
 }
 @media(max-width:768px){
 	/* CHANGE - does the footer height need to change for smaller screen sizes? */
 	#footer{
-		height:750px;
+		height:775px;
 	}
 	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
 	body{
-		margin-bottom:725px;
+		margin-bottom:825px;
 	}
 }
 #footer a{
@@ -336,6 +339,11 @@ body{
 #footer .list-inline{
 	margin-top:110px;
 	margin-bottom:20px;
+}
+@media(max-width:768px){
+	#footer .list-inline{
+		margin-top:20px;
+	}
 }
 #footer .list-inline.loginLinks{
 	margin-top: 20px;
@@ -376,13 +384,22 @@ body{
   padding: 0px 0px 0px 35px;
 }
 #footer .funder{
-	text-align:center;
-	margin-top:25px;
+	text-align:left;
+	padding-top:25px;
+	padding-bottom:25px;
+	background-color:#FFF;
+	
 }
 #footer .funder img{
-	width:100%;
-	height:auto;
-	max-width:250px;
+	width:auto;
+	height:100px;
+	padding:0px 30px 0px 0px;
+}
+@media(max-width: 768px) {
+	#footer .funder img{
+		width:auto;
+		height:50px;
+	}
 }
 /* search / browse results */
 .bResultItemSetLink {
@@ -403,12 +420,31 @@ body{
 	padding-bottom:20px;
 }
 .bResultItem .bResultItemText, .bResultListItemCol .bResultListItemText{
-  font-size: 12px;
+  font-size: 15px;
+}
+#bRefine H2 {
+	font-size: 24px;
+	text-transform: capitalize;
+	color: #000;
+	margin-top: 0px;
+}
+#bRefine H5, #bRefine H3, #bRefine H3 a{
+	color:#000;
+	font-size:18px;
+	font-weight:700;
+	text-transform:capitalize;
+	text-decoration:none;
+}
+#bRefine a{
+	color:#000;
+	font-size:14px;
+}
+#bRefine a.more {
+	color: #000;
 }
 /* front */
 html.frontContainer {
     height: 100%;
-    padding:0px -15px 0px -15px;
 }
 body.frontContainer {
 	margin-bottom:0px;
@@ -417,6 +453,7 @@ body.frontContainer {
 body.frontContainer #footer{
 	position:relative !important;
 }
+
 
 .parallax {
 	position:relative;
@@ -486,7 +523,16 @@ body.frontContainer #footer{
 	}
 }
 
-
+#pageArea.front{
+	margin-left: -15px;
+	margin-right: -15px;
+	overflow: hidden;
+	margin-top:-20px;
+}
+.front .jcarousel-wrapper {
+  margin-bottom: 20px;
+  margin-top: 0px;
+}
 
 .heroSearch H1{
 	color: #FFF;
@@ -570,8 +616,8 @@ body.frontContainer #footer{
 .hpMainCallout{
 	font-family: "Cinetype";
 	font-weight:700;
-	font-size:48px;	
-	margin-top: 60px;
+	font-size:55px;	
+	margin-top: 50px;
 	text-align:center;
 }
 @media(max-width: 1100px) {
@@ -583,11 +629,11 @@ body.frontContainer #footer{
 	text-align:center;
 	font-size: 28px;
 	color: #000;
-	margin:120px 0px 150px 0px;
+	margin:30px 0px 70px 0px;
 	font-family: "Cinetype";
 	
-	font-weight:300;
-	line-height:1.8em;
+	font-weight:400;
+	line-height:1.5em;
 }
 .hpIntro .calloutTitle{
 	text-align:center;
@@ -731,6 +777,30 @@ body.frontContainer #footer{
 .gallery #galleryDetailImageGrid img {
   background-color: #fff;
 }
+
+.gallery #galleryDetailImageArea #galleryDetailImageWrapper {
+	margin: 0px 60px 0px 60px;
+	height: auto;
+	display:flex;
+	align-items:center;
+}
+.gallery #galleryDetailImageArea #galleryDetailImageWrapper a, .gallery #galleryDetailImageArea #galleryDetailImageWrapper a img{
+	width:100%;
+	height:auto;
+	max-height:none;
+}
+@media (min-width: 768px){
+	.gallery #galleryDetailImageArea{
+		height: auto;
+		min-height:430px;
+	}
+	.gallery #galleryDetailImageArea img {
+		max-height:none;
+	}
+}
+.gallery .galleryDetailNext, .gallery .galleryDetailPrevious {
+	top: 45%;
+}
 /* collections */
 .collectionIntro {
 	font-size: 14px;
@@ -753,13 +823,38 @@ body.frontContainer #footer{
 }
 .detail {
   color: #000;
-  font-size: 14px;
-  line-height:1.3em;
+  font-size: 18px;
+  line-height:27px;
+}
+.detail a, .aboutSideNav a, .frontGridCaption a {
+	color: #000;
+	padding-bottom: 3px;
+	background-image: linear-gradient(90deg,#8946ff,#ff1bc0);
+	background-image: linear-gradient(90deg,#1468FF,#06d4ac);
+	background-position: 0 bottom;
+	background-repeat: no-repeat;
+	background-size: 0 2px;
+	transition: background-size .5s linear;
+	padding-bottom: 0px;	
+}
+.detail a:hover, .aboutSideNav a:hover, .frontGridCaption a:hover {
+	text-decoration:none;
+	color:#000;
+	background-size: 100% 2px;
 }
 .detail label{
   color: #000;
-  font-size: 14px;
+  font-size: 18px;
   font-weight:700;
+  text-transform:none;
+  margin-bottom:0px;
+}
+.detail H3{
+  color: #000;
+  font-size: 18px;
+  font-weight:700;
+  text-transform:none;
+  margin-bottom:5px;
 }
 .detail .navTop {
   display: block;
@@ -771,29 +866,67 @@ body.frontContainer #footer{
 		padding-top: 17px;
 	}
 }
+.detail .navTop {
+	font-size:22px;
+}
+.detail .navTop a{
+	background-size: 0% 2px;
+}
+.detail .navTop a .small{
+	color:#000;
+}
 .workImg img{
 	width:100%;
 	height:auto;
 }
 a.readmore-js-toggle {
-  padding-top: 10px;
-  color: #757575;
+	padding-top: 10px;
+	color: #000;
 }
 .detail h1 {
-	font-size: 24px;
+	font-size: 48px;
+	margin-bottom:0px;
+	text-transform:none;
+}
+.detail h2, .detail h2 a {
+	font-size: 28px;
+	color: #000;
+	text-transform: none;
+	padding-bottom: 0px;
+	margin: 0px 0px 5px 0px;
+	font-weight:700;
+	text-transform: capitalize;
 }
 /* about */
 .staticPage{
-	font-size:16px;
+	color: #000;
+	font-size: 18px;
+	line-height:27px;
 }
-.aboutSideNav{
-	margin-top:18px;
+.staticPage h1 {
+	font-size: 38px;
+	margin-bottom:15px;
+	text-transform:none;
+}
+@media(min-width:768px){
+	.staticPage h1 {
+		font-size: 48px;
+	}
+}
+.staticPage h2 {
+	font-size: 28px;
+	color: #000;
+	text-transform: none;
+	padding-bottom: 0px;
+	margin: 0px 0px 15px 0px;
+	font-weight:700;
 }
 .aboutSideNav ul{
 	line-height:1.7em;
 	list-style-type:none;
 	padding-left: 0px;
-	font-size:16px;
+	font-size:18px;
+	font-weight:700;
 }
 .aboutSideNav a, .aboutSideNav a:hover{
 	font-family:CinetypeBold;
@@ -808,4 +941,9 @@ a.readmore-js-toggle {
 }
 .form-control:focus {
   border-color: #000;
+}
+
+/* cookies */
+#cookieNotice .cookieNoticeHeading{
+	font-family:CinetypeBold;
 }

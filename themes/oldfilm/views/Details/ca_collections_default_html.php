@@ -25,6 +25,16 @@
 	// 	print "<li>$t</li>";
 	// }
 	// print "</ul>";
+
+	// $terms = $t_item->get("ca_entities_x_collections", array("returnAsArray" => true));
+	// print $terms
+
+	// $length_of_items = count(
+	// 	caNavUrl($this->request, '', 'Search', 'works', array('search' => 'ca_collections.collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true))
+	// );
+
+	// print $length_of_items;
+
 ?>
 
 <div class="row" style="margin-bottom: 20px">
@@ -62,26 +72,20 @@
 						}
 					?>
 
-					{{{<ifdef code="ca_collections.idno"><div class="unit"><label>Identifier:</label>^ca_collections.idno</unit></ifdef>}}}
-
+					<!-- {{{<ifdef code="ca_collections.idno"><div class="unit"><label>Identifier:</label>^ca_collections.idno</unit></ifdef>}}} -->
+					{{{<ifcount code="ca_object_lots" min="1"><div class="unit"><label>Collection Identifier(s)</label><unit relativeTo="ca_object_lots" delimiter="<br/>">^ca_object_lots.preferred_labels, ^ca_object_lots.idno_stub</unit></div></ifcount>}}}
+					{{{<ifcount code="ca_entities"  restrictToRelationshipTypes='created_by' min="1">
+						<label>Creator(s)</label>
+					</ifcount>}}}
+					<ul><?= join("\n", caGetBrowseLinks($t_item, 'ca_entities', ['restrictToRelationshipTypes' => 'created_by', 'linkTemplate' => '<li>^LINK</li>']) ?? []); ?></ul>
 
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes='donated' min="1">
 						<label>Donor(s)</label>
 					</ifcount>}}}
 					<ul><?= join("\n", caGetBrowseLinks($t_item, 'ca_entities', ['restrictToRelationshipTypes' => 'donated', 'linkTemplate' => '<li>^LINK</li>']) ?? []); ?></ul>
 					
-					
-					{{{<ifcount code="ca_entities"  restrictToRelationshipTypes='created_by' min="1">
-						<label>Creator(s)</label>
-					</ifcount>}}}
-					<ul><?= join("\n", caGetBrowseLinks($t_item, 'ca_entities', ['restrictToRelationshipTypes' => 'created_by', 'linkTemplate' => '<li>^LINK</li>']) ?? []); ?></ul>
-
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes='depicts'  min="1">
-						<label>Depicts</label>
-					</ifcount>}}}
-					<ul><?= join("\n", caGetBrowseLinks($t_item, 'ca_entities', ['restrictToRelationshipTypes' => 'depicts', 'linkTemplate' => '<li>^LINK</li>']) ?? []); ?></ul>
-
 					{{{<ifdef code="ca_collections.collection_primary_format"><div class="unit"><label>Primary Format and Extent</label>^ca_collections.collection_primary_format</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.secondary_format"><div class="unit"><label>Secondary Format and Extent</label>^ca_collections.secondary_format</div></ifdef>}}}
 
 					{{{<ifdef code="ca_collections.collection_datespan"><div class="unit"><label>Collection Date Range</label>^ca_collections.collection_datespan	</div></ifdef>}}}
 
@@ -100,13 +104,25 @@
 							<div class="unit">
 								<ul><?= join("\n", $links); ?></ul>
 							</div>
-					<?php
+<?php
 						}
-					?>
+					if($va_geoferences = $t_item->get('georeference', array("returnAsArray" => true))){
+?>
 
-					{{{<ifdef code="ca_collections.georeference">	<label>Places</label>	</ifdef>}}}
-				  {{{map}}}
-
+						<div class="unit"><label>Places</label>
+				  			{{{map}}}
+<?php
+				  
+				  		foreach($va_geoferences as $vs_georeference) {
+							$vs_georeference_short = mb_substr($vs_georeference, 0, strpos($vs_georeference, "["));
+							print caNavLink($this->request, $vs_georeference_short, '', '', 'Search', 'Collections', array('search' => $vs_georeference_short));
+							print "<br/>";
+						}
+?>
+						</div>
+<?php
+					}
+?>
 				</div>	<!-- end col -->
 
 				<div class='col-md-6 col-lg-6'>
@@ -152,7 +168,13 @@
 					{{{<ifdef code="ca_collections.collection_summary"><div class="unit"><label>Summary</label>^ca_collections.collection_summary</div></ifdef>}}}
 
 					{{{<ifdef code="ca_collections.collection_biographical_notes"><div class="unit"><label>Biographical/Historical Notes</label>^ca_collections.collection_biographical_notes</div></ifdef>}}}
+					
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes='depicts'  min="1">
+						<label>Depicts</label>
+					</ifcount>}}}
+					<ul><?= join("\n", caGetBrowseLinks($t_item, 'ca_entities', ['restrictToRelationshipTypes' => 'depicts', 'linkTemplate' => '<li>^LINK</li>']) ?? []); ?></ul>
 
+					
 					{{{<ifdef code="ca_collections.collection_access_repos"><div class="unit"><label>Repository</label>^ca_collections.collection_access_repos</div></ifdef>}}}
 
 					{{{<ifdef code="ca_collections.collection_access"><div class="unit"><label>Availability</label>^ca_collections.collection_access</div></ifdef>}}}
@@ -161,17 +183,34 @@
 					
 				</div><!-- end col -->
 			</div><!-- end row -->
+
+			<!-- {{{<ifcount code="ca_occurrences" min="1">
+					<div class='unit'>
+						<label>Related Occurrence<ifcount code="ca_occurrences" min="2">s</ifcount></label>
+							<ul>
+								<unit relativeTo="ca_occurrences" delimiter="">
+									<li> 
+										<l>^ca_occurrences.preferred_labels.name</l>
+									</li>
+								</unit>
+							</ul>
+					</div>
+			</ifcount>}}} -->
 			
+			<H2 style="margin: 35px 0px 20px 0px">
+				{{{<ifcount code="ca_occurrences" min="1"><unit relativeTo="ca_occurrences" length='1'>^count Items in this collection</unit></ifcount>}}}
+			</H2>
+
 			{{{<ifcount code="ca_objects" min="1">
-				<H2 style="margin: 35px 0px 20px 0px">Items in this collection</H2>
 					<div class="row">
 						<div id="browseResultsContainer">
 							<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 						</div><!-- end browseResultsContainer -->
 					</div><!-- end row -->
+
 					<script type="text/javascript">
 						jQuery(document).ready(function() {
-							jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'occurrences', array('search' => 'ca_collections.collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+							jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'works', array('search' => 'ca_collections.collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 								jQuery('#browseResultsContainer').jscroll({
 									autoTrigger: true,
 									loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -181,6 +220,7 @@
 							});
 						});
 					</script>
+
 			</ifcount>}}}
 
 		</div><!-- end container -->

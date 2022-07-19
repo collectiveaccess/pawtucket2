@@ -67,7 +67,7 @@
 	
 	if($qr_res && $qr_res->numHits()){
 ?>
-<div class="row"><div class="col-sm-12">  
+
 		<div class="jcarousel-wrapper">
 			<!-- Carousel -->
 			<div class="jcarousel featured">
@@ -108,7 +108,7 @@
 			}
 ?>
 		</div><!-- end jcarousel-wrapper -->
-</div></div>
+
 		<script type='text/javascript'>
 			jQuery(document).ready(function() {
 				/*

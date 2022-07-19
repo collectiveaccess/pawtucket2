@@ -25,11 +25,17 @@
  *
  * ----------------------------------------------------------------------
  */
+global $g_ui_locale;
+if($g_ui_locale == "de_DE"){
+	$vs_lang = "_de";
+}else{
+	$vs_lang = "_en";
+}
  
 $cookies_by_category = $this->getVar('cookiesByCategory');
 $config = $this->getVar('config');
 $intro = "";
-if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->get("cookiesIntroGlobalValue")))){
+if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->get("cookiesIntroGlobalValue").$vs_lang))){
 	$intro = $config->get("cookiesFormIntro");
 }
 ?>
