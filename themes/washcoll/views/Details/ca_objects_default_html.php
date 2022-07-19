@@ -185,7 +185,7 @@
 				
 				
 				{{{<ifdef code="ca_objects.geonames"><div class="unit"><label>Geonames</label>^ca_objects.geonames%delimiter=<br/></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.external_link.url_entry"><div class="unit"><label>External Links</label><unit relativeTo="ca_objects.external_link" delimiter="<br/>"><a href="^ca_objects.external_link.url_entry" target="_blank"><ifdef code="ca_objects.external_link.url_source">^ca_objects.external_link.url_source</ifdef><ifnotdef code="ca_objects.external_link.url_source">^ca_objects.external_link.url_entry</ifnotdef></a></unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.external_link"><div class="unit"><label>External Links</label><unit relativeTo="ca_objects.external_link" delimiter="<br/>"><a href="^ca_objects.url_entry" target="_blank"><ifdef code="ca_objects.url_source">^ca_objects.url_source</ifdef><ifnotdef code="ca_objects.url_source">^ca_objects.url_entry</ifnotdef></a></unit></div></ifdef>}}}
 				
 <?php
 				$va_all_subjects = array();

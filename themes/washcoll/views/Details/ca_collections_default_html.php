@@ -30,7 +30,7 @@
 				<div class='col-md-12 col-lg-12'>
 <?php
 					$vs_more_information_link = "";
-					if($vs_more_information_link = $t_item->get("ca_collections.external_link.url_entry")){
+					if($vs_more_information_link = $t_item->get("ca_collections.url_entry")){
 						print "<div class='pull-right'><a href='".$vs_more_information_link."' target='_blank' class='btn btn-default btn-small' title='View Collection in ArchiveSpace'>More Information <i class='fa fa-external-link'></i></a></div>";
 					}
 					if ($vn_pdf_enabled) {
