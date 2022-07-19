@@ -41,7 +41,7 @@
 		<div class="text_content with_images_column individual_columns">
 			<div class="columns">
 				<div class="column left text">
-					<H2>Case <?php print $vn_case; ?></H2>
+					<H2>Exhibit Case <?php print $vn_case; ?></H2>
 					<div class="scroll">
 						<p><?php print $vs_text; ?></p>
 					</div>
@@ -88,6 +88,7 @@
 		<div class="text_content">
 			<div class="text_2_col">
 				<div class="text">
+					<H2>Exhibit Case <?php print $vn_case; ?></H2>
 					<p><?php print $vs_text; ?></p>
 				</div>
 			</div>
@@ -130,7 +131,7 @@
 		<div class="text_content individual_columns">
 			<div class="columns">
 				<div class="column left text">
-					<H2>Case <?php print $vn_case; ?></H2>
+					<H2>Exhibit Case <?php print $vn_case; ?></H2>
 					<div class="scroll">
 						<p><?php print $vs_text; ?></p>
 					</div>
