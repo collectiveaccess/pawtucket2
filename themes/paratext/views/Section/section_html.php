@@ -2,6 +2,25 @@
 	$t_section = $this->getVar("section");
 	$vs_title = $this->getVar("section_title");
 	$vs_text = $this->getVar("section_text");
+	
+	if($t_section->get("ca_occurrences.idno") == "acknowledgments"){
+?>
+		<div class="text_content with_vertical_ornaments">
+			<div class="vertical_ornaments">
+				<div class="vertical_ornament_two"></div>
+				<div class="vertical_ornament_two"></div>
+				<div class="vertical_ornament_two"></div>
+			</div>
+			<div class="text acknowledgments">
+				<div class="dedication">
+					<strong>Dedicated to D.W. Cruickshank</strong><br/>
+					<i>Professor Emeritus, University College, Dublin</i>
+				</div>
+				<p><?php print $vs_text; ?></p>    
+			</div>
+		</div>
+<?php	
+	}else{
 ?>
 <div class="page_title">
     <h1><?php print $vs_title; ?></h1>
@@ -29,17 +48,6 @@
 <?php		
 		break;
 		# -----------------------------------------
-		case "acknowledgments":
-?>
-    <div class="vertical_ornaments">
-        <div class="vertical_ornament_two"></div>
-        <div class="vertical_ornament_two"></div>
-        <div class="vertical_ornament_two"></div>
-    </div>
-<?php		
-		
-		break;
-		# -----------------------------------------
 		default:
 ?>
     <div class="vertical_ornaments">
@@ -60,3 +68,6 @@
     </ol>-->
 	</div>
 </div>
+<?php	
+	}
+?>

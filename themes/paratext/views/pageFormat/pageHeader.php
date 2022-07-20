@@ -87,7 +87,9 @@
 				}
 ?>               
                 <li class="menu_item wide_submenu">
-                    <a href="" class="no-click">Exhibition</a>
+<?php
+					print caNavLink($this->request, "Exhibition", "", "", "Section", "Exhibition");
+?>
                     <ul class="sub_menu">
 <?php
 				$c = 1;

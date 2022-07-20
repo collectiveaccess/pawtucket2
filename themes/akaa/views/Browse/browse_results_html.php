@@ -189,12 +189,12 @@ if (!$vb_ajax) {	// !ajax
 
 		if($vb_showLetterBar){
 			print "<div id='bLetterBar'>";
+			print caNavLink($this->request, _t("All"), (!$vs_letter) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all'))." | "; 
 			foreach(array_keys($va_letter_bar) as $vs_l){
 				if(trim($vs_l)){
 					print caNavLink($this->request, $vs_l, ($vs_letter == $vs_l) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))." ";
 				}
 			}
-			print " | ".caNavLink($this->request, _t("All"), (!$vs_letter) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all')); 
 			print "</div>";
 		}
 ?>

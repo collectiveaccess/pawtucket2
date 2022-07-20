@@ -46,7 +46,7 @@
 					while($qr_res->nextHit()){
 						if($vs_media = $qr_res->getWithTemplate('^ca_object_representations.media.large', array("checkAccess" => $va_access_values))){
 							$vs_entity_id = $qr_res->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('creator')));
-							print "<li><div class='frontSlide'>".caNavLink($this->request, $vs_media, '', '', 'Detail', 'entities/'.$vs_entity_id);
+							print "<li><div class='frontSlide'>".caNavLink($this->request, $vs_media, '', '', 'Detail', 'artist/'.$vs_entity_id);
 							$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
 							if($vs_caption){
 								print "<div class='frontSlideCaption'>".$vs_caption."</div>";
