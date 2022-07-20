@@ -1,6 +1,5 @@
 <?php
 
-require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
 $va_public_access = array(1);
 $va_restricted_access = array(2);
 
@@ -17,5 +16,5 @@ $q_utensils_public = $o_db->query("SELECT distinct o.object_id FROM ca_objects o
 
 ?>
 <div class="hpStats">
-	<b>Manuscript Cookbooks Survey features <?php print $q_manuscripts_public->numRows(); ?> manuscripts and <?php print $q_institutions_public->numRows(); ?> kitchen utensils from <?php print $q_utensils_public->numRows(); ?> institutions.</b>
+	<b>Manuscript Cookbooks Survey features <?php print $q_manuscripts_public->numRows(); ?> manuscripts and <?php print $q_utensils_public->numRows(); ?> kitchen utensils from <?php print $q_institutions_public->numRows(); ?> institutions.</b>
 </div>
