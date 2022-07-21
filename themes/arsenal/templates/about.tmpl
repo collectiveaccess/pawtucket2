@@ -1,12 +1,19 @@
 <?php
 	global $g_ui_locale;
 	#print $g_ui_locale;
+	$vs_subtitle_de = $this->getVar("subtitle_de");
+	$vs_subtitle_en = $this->getVar("subtitle_en");
 	
 	if($g_ui_locale == "de_DE"){
 ?>
 	<div class="row">
 		<div class="col-sm-9 col-sm-offset-3">
 			<H1>{{{title_de}}}</H1>
+<?php
+			if($vs_subtitle_de){
+				print "<h2>".$vs_subtitle_de."</h2>";
+			}
+?>
 		</div>
 	</div>
 	<div class="row">
@@ -25,7 +32,6 @@
 			</div>
 		</div>
 		<div class="col-sm-9">
-			<h2>{{{subtitle_de}}}</h2>
 			{{{bodytext_de}}}
 		</div>
 </div>
@@ -37,6 +43,11 @@
 	<div class="row">
 		<div class="col-sm-9 col-sm-offset-3">
 			<H1>{{{title_en}}}</H1>
+<?php
+			if($vs_subtitle_en){
+				print "<h2>".$vs_subtitle_en."</h2>";
+			}
+?>
 		</div>
 	</div>
 	<div class="row">
@@ -55,7 +66,6 @@
 			</div>
 		</div>
 		<div class="col-sm-9">
-			<h2>{{{subtitle_en}}}</h2>
 			{{{bodytext_en}}}
 		</div>
 	</div>

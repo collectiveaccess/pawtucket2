@@ -185,24 +185,9 @@
 				
 				
 				{{{<ifdef code="ca_objects.geonames"><div class="unit"><label>Geonames</label>^ca_objects.geonames%delimiter=<br/></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.external_link.url_entry"><div class="unit"><label>External Links</label><unit relativeTo="ca_objects.external_link" delimiter="<br/>"><a href="^ca_objects.external_link.url_entry" target="_blank"><ifdef code="ca_objects.external_link.url_source">^ca_objects.external_link.url_source</ifdef><ifnotdef code="ca_objects.external_link.url_source">^ca_objects.external_link.url_entry</ifnotdef> <i class="fa fa-external-link"></i></a></unit></div></ifdef>}}}
 				
 <?php
-if($remove_notes_screen){
-?>
-				{{{<ifdef code="ca_objects.adminbiohist"><div class="unit"><label>Administrative/Biographical History</label>^ca_objects.adminbiohist</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.accessrestrict"><div class="unit"><label>Conditions Governing Access Statement</label>^ca_objects.accessrestrict</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.govtuse"><div class="unit"><label>Conditions Governing Reproductions and Use</label>^ca_objects.govtuse</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.langmaterial"><div class="unit"><label>Languages and Scripts of Collection Materials</label>^ca_objects.langmaterial</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.general_notes"><div class="unit"><label>Notes</label>^ca_objects.general_notes</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.physaccessrestrict"><div class="unit"><label>Physical Access</label>^ca_objects.physaccessrestrict</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.physical_description"><div class="unit"><label>Physical Description</label>^ca_objects.physical_description</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.physloc"><div class="unit"><label>Physical Location</label>^ca_objects.physloc</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.publication_note"><div class="unit"><label>Publication Note</label>^ca_objects.publication_note</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.related_materials"><div class="unit"><label>Related Archival Materials</label>^ca_objects.related_materials</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.scopecontent"><div class="unit"><label>Scope and Content</label>^ca_objects.scopecontent</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.techaccessrestrict"><div class="unit"><label>Technical Access</label>^ca_objects.techaccessrestrict</div></ifdef>}}}				
-<?php
-}
 				$va_all_subjects = array();
 			
 				foreach(array("local_subjects", "LcshSubjects", "LcshNames", "LcshGenre", "aat") as $vs_field){

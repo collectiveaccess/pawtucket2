@@ -33,10 +33,10 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$va_access_values = caGetUserAccessValues($this->request);
-	
+	$back_to_work = "";
 	// get film work
 	$vn_occurrence_id = $t_object->get('ca_occurrences.occurrence_id',array('restrictToTypes' => 'work', 'limit' => 1));
-
+	
 	$t_work = new ca_occurrences($vn_occurrence_id);
 	if($vn_occurrence_id){
 		$va_related_objects = $t_work->get("ca_objects.related",array("checkAccess" => $va_access_values, "returnWithStructure" => true, "restrictToTypes" => array("film_print", "digital_item", "video_item")));
@@ -49,7 +49,7 @@
 				$va_object_ids[] = $va_info["object_id"];
 			}
 			$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated');
-			$o_context->setAsLastFind();
+			#$o_context->setAsLastFind();
 			$o_context->setResultList($va_object_ids);
 			$o_context->saveContext();
 		}
@@ -76,10 +76,14 @@
 					)
 				);
 
+		$back_to_work = caDetailLink($this->request, _t("Back to %1", $t_work->get("ca_occurrences.type_id", array("convertCodesToDisplayText" => true)))." &rarr;", '', 'ca_occurrences', $vn_occurrence_id);
+					
 	}
 	$t_locale =					new ca_locales();
 
 	global $g_ui_locale;
+	
+				
 ?>
 
 		<div class="row">
@@ -88,7 +92,7 @@
 					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 				</div><!-- end detailTop -->
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
-				<H2>{{{^ca_objects.type_id}}}</H2>
+				<H2>{{{^ca_objects.type_id}}}<?php print ($back_to_work) ? " | ".$back_to_work : ""; ?></H2>
 				<HR/>
 			</div>
 		</div>
@@ -169,6 +173,15 @@
 						</div>
 					</div>
 			</div><!-- end col -->
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+<?php
+			if(strlen($t_object->get('ca_objects.funded_by'))>0){
+				print "<div class='unit'><i>".$t_object->get('ca_objects.funded_by', array('delimiter' => ', '))."</i></div><!-- end unit -->";
+			}
+?>
+			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-12">
@@ -349,15 +362,12 @@
 				print "<div class='unit'><label>".$t_work->getAttributeLabel('work_notes')."</label>".$t_work->get('ca_occurrences.work_notes', array('delimiter' => '<br/>'))."</div><!-- end unit -->";
 			}
 			if($t_work->get("ca_occurrences.credit_editable.credit_entity")){
-				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Kredite" : "Credits")."</label><div class='trimText'>";
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Credits" : "Credits")."</label><div class='trimText'>";
 				print $t_work->getWithTemplate("<unit relativeTo='ca_occurrences.credit_editable' delimiter='<br/>'>^ca_occurrences.credit_editable.credit_role: ^ca_occurrences.credit_editable.credit_entity</unit>");
 				print "</div></div>";
 			}
 			
 			
-			if(strlen($t_object->get('ca_objects.funded_by'))>0){
-				print "<div class='unit'><i>".$t_object->get('ca_objects.funded_by', array('delimiter' => ', '))."</i></div><!-- end unit -->";
-			}
 
 ?>
 			</div><!-- end col -->

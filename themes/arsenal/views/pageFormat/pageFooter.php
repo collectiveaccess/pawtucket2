@@ -78,15 +78,20 @@
 				</div>
 			</div></div>
 			<div class="funder">
+				<div class="container">
+					<div class="row"><div class="col-sm-12">
 <?php
-					print caGetThemeGraphic($this->request, 'Neustart_Kultur.svg');
 					if($g_ui_locale == "de_DE"){
 						print caGetThemeGraphic($this->request, 'BKM.svg');
 					}else{
 						print caGetThemeGraphic($this->request, 'BKM_en.svg');
 					}
+					print caGetThemeGraphic($this->request, 'Neustart_Kultur.svg');
+
 
 ?>
+					</div>
+				</div>
 			</div>
 		</footer><!-- end footer -->
 <?php
