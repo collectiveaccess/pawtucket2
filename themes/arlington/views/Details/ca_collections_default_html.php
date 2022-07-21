@@ -63,18 +63,16 @@
 						}
 					?>
 
-					<!-- <?php
-						$about = "<ifdef code='ca_collections.description'><div class='unit'><H6>About</H6><span class='trimText'>^ca_collections.description</span></div></ifdef>";
-						$about = strip_tags($about);
-					?> -->
-
 					{{{
 						<ifdef code="ca_collections.idno"><div class="unit"><H6>Collection Number</H6>^ca_collections.idno</div></ifdef>
-						<ifdef code="ca_collections.date"><div class="unit"><H6>Date(s)</H6>^ca_collections.date</div></ifdef>
-						<!-- <?= print $about; ?> -->
-						<ifdef code="ca_collections.description"><div class="unit"><H6>About</H6><span class="trimText">^ca_collections.description</span></div></ifdef>
-						<ifdef code="ca_collections.scopecontent"><div class="unit"><H6>Scope & Content</H6><span class="trimText">^ca_collections.scopecontent</span></div></ifdef>
-						<ifdef code="ca_collections.biohist"><div class="unit"><H6>History/Biography</H6><span class="trimText">^ca_collections.biohist</span></div></ifdef>
+						<ifdef code="ca_collections.date"><div class="unit"><H6>Date(s)</H6>^ca_collections.date_created</div></ifdef>
+						<!-- <ifdef code="ca_collections.description"><div class="unit"><H6>About</H6><span class="trimText">^ca_collections.description</span></div></ifdef> -->
+						<ifdef code="ca_collections.biohist"><div class="unit"><H6>History</H6><span class="trimText">^ca_collections.biohist</span></div></ifdef>
+						<ifdef code="ca_collections.scopecontent"><div class="unit"><H6>Scope and Content</H6><span class="trimText">^ca_collections.scopecontent</span></div></ifdef>
+						<ifdef code="ca_collections.arrangement_description"><div class="unit"><H6>Arrangement and Description</H6><span class="trimText">^ca_collections.arrangement_description</span></div></ifdef>
+						<ifdef code="ca_collections.collections_provenance"><div class="unit"><H6>Provenance</H6><span class="trimText">^ca_collections.collections_provenance</span></div></ifdef>
+						<ifdef code="ca_collections.collection_restrictions"><div class="unit"><H6>Restrictions</H6><span class="trimText">^ca_collections.collection_restrictions</span></div></ifdef>
+						<ifdef code="ca_collections.related_collections_text"><div class="unit"><H6>Related Collections</H6><span class="trimText">^ca_collections.related_collections_text</span></div></ifdef>
 					}}}
 
 
@@ -97,17 +95,6 @@
 					?>
 				</div><!-- end col -->
 
-				<!-- <?php
-					if($links = caGetBrowseLinks($t_item, 'ca_list_items', ['linkTemplate' => '<li>^LINK</li>'])) {
-				?>
-						<div class="unit">
-							<label>Subject(s)</label>
-							<ul><?= join("\n", $links); ?></ul>
-						</div>
-				<?php
-					}
-				?> -->
-
 			</div><!-- end row -->
 
 			<br/>
@@ -128,15 +115,6 @@
 					?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
-			
-			<!-- {{{<ifcount code="ca_objects" min="1" max="1">
-				<div class='unit'>
-					<unit relativeTo="ca_objects" delimiter=" ">
-						<l>^ca_object_representations.media.large</l>
-						<div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div>
-					</unit>
-				</div>
-			</ifcount>}}} -->
 
 			</br>
 

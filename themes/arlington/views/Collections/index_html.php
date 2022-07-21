@@ -1,4 +1,5 @@
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);
 	$o_collections_config = $this->getVar("collections_config");
 	$qr_collections = $this->getVar("collection_results");
 ?>
@@ -16,19 +17,22 @@
 				$vn_i = 0;
 				if($qr_collections && $qr_collections->numHits()) {
 					while($qr_collections->nextHit()) {
-						if ( $vn_i == 0) { print "<div class='row'>"; }
-
-						$vs_tmp = "<div class='col-sm-6'>
-									<div class='collectionTile'>
-
-											".$qr_collections->getWithTemplate("
+						# --- see if there is media on the collection record, otherwise default to an obejct media
+						$vs_media = "";
+						$vs_media = $qr_collections->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values));
+						if(!$vs_media){
+							$vs_media = $qr_collections->getWithTemplate("
 											<ifcount code='ca_objects' restrictToRelationshipTypes='featured'>
 												<unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' length='1'>
 													^ca_object_representations.media.iconlarge
 												</unit>
-											</ifcount>")."
+											</ifcount>");
+						}
+						
+						if ( $vn_i == 0) { print "<div class='row'>"; }
 
-										<div class='title'>".$qr_collections->get("ca_collections.preferred_labels")."</div>";	
+						$vs_tmp = "<div class='col-sm-6'>
+									<div class='collectionTile'>".$vs_media."<div class='title'>".$qr_collections->get("ca_collections.preferred_labels")."</div>";	
 
 
 						if (($o_collections_config->get("description_template")) && ($vs_scope = $qr_collections->getWithTemplate($o_collections_config->get("description_template")))) {

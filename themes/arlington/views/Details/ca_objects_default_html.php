@@ -72,7 +72,7 @@
 
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>
+			<div class='col-sm-6 col-md-6 col-lg-5 object-metadata-col'>
 
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 
@@ -89,80 +89,63 @@
 				
 				<HR>
 				
-				{{{<ifdef code="ca_objects.idno"><label>Identifier:</label>^ca_objects.idno<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.idno"><label>Identifier</label>^ca_objects.idno<br/></ifdef>}}}
 
-				{{{<ifdef code="ca_objects.date_created"><label>Date:</label>^ca_objects.date_created<br/></ifdef>}}}
-				
-				<!-- {{{<ifcount code="ca_entities" restrictToRelationshipTypes='creator' min="1"><label>Creator</label></ifcount>}}}
-				{{{<ifcount code="ca_entities" restrictToRelationshipTypes='creator' min="2"><label>Creators</label></ifcount>}}} -->
-				<!-- <?php
-					if($links = caGetBrowseLinks($t_object, 'ca_entities', ['restrictToRelationshipTypes' => 'creator', 'linkTemplate' => '<li>^LINK<li>']) ?? []) {
-				?>
-					<label>Creator(s)</label>
-						<div class="unit">
-							<ul><?= join("\n", $links); ?></ul>
+				{{{<ifdef code="ca_objects.date_created"><label>Date</label>^ca_objects.date_created<br/></ifdef>}}}
+
+				{{{<ifcount code="ca_entities" min="1">
+					<div class="unit">
+						<label>Related People/Organizations</label>
+							<ul><unit relativeTo="ca_entities" delimiter=" ">
+							<li><l>^ca_entities.preferred_labels.displayname</l></li>
+							</unit></ul>
 						</div>
-				<?php
-					}
-				?> -->
-
-				<!-- {{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-				{{{<unit relativeTo="ca_objects.entities" delimiter="<br/>">
-					<unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit>
-					(^relationship_typename)
-				</unit>}}} -->
-
-				<?php
-					if($links = caGetBrowseLinks($t_object, 'ca_entities', ['linkTemplate' => '<li>^LINK</li>']) ?? []) {
-				?>
-					<label>Related People</label>
-						<div class="unit">
-							<ul><?= join("\n", $links); ?></ul>
-						</div>
-				<?php
-					}
-				?>
-
+				</ifcount>}}}
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><label>Description</label>
 						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
 
-				{{{<ifcount code="ca_objects.format_text" min="1"><label>Format:</label></ifcount>}}}
+				{{{<ifcount code="ca_objects.format_text" min="1"><label>Format</label></ifcount>}}}
 				{{{<unit delimiter="; ">^ca_objects.format_text</unit>}}}
- 
+			
 				<?php
-					if($links = caGetBrowseLinks($t_object, 'ca_list_items', ['linkTemplate' => '<li>^LINK</li>']) ?? []) {
+					$list_item_links = caGetBrowseLinks($t_object, 'ca_list_items', ['linkTemplate' => '<li>^LINK</li>']);
+					$lcsh_links = caGetSearchLinks($t_object, 'ca_objects.lcsh_terms', ['linkTemplate' => '<li>^LINK</li>']);
+					$lcnaf_links = caGetSearchLinks($t_object, 'ca_objects.lcnaf_terms', ['linkTemplate' => '<li>^LINK</li>']);
+					
+					$links = array_merge($list_item_links ?? [], $lcsh_links ?? [], $lcnaf_links ?? []);
+					ksort($links);
+					
+					if(sizeof($links))  {
 				?>
-						<label>Subject(s)</label>
-						<div class="unit">
-							<ul><?= join("\n", $links); ?></ul>
-						</div>
+						<div class='unit'><label>Subject(s)</label>
+						<ul class="subjects-data"><?= join("\n", $links); ?></ul></div>
 				<?php
 					}
 				?>
 				
+				<?php
+					$spatial_coverage_links = caGetSearchLinks($t_object, 'ca_objects.spatial_coverage', ['linkTemplate' => '<li>^LINK</li>']) ?? [];
+					
+					if(sizeof($spatial_coverage_links))  {
+				?>
+						<div class='unit'><label>Location</label>
+						<ul class="subjects-data"><?= join("\n", $spatial_coverage_links); ?></ul></div>
+				<?php
+					}
+				?>
+
 				{{{<ifdef code="ca_objects.rights">
-					<label>Rights:</label><span class="trimText">^ca_objects.rights</span>
+					<label>Rights</label><span class="trimText">^ca_objects.rights</span>
 				</ifdef>}}}
-
+				
 				<hr></hr>
-
-				<div class="row">
-					<div class="col-sm-6">
-						{{{<ifdef code="ca_objects.spatial_coverage">
-							<div class='unit'><label>Location</label>
-							<span class="trimText">^ca_objects.spatial_coverage</span>
-						</div>
-						</ifdef>}}}
-						{{{map}}}
-					</div>
-				</div><!-- end row -->
+				
 
 				</BR>
-						
+				{{{map}}}	
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->

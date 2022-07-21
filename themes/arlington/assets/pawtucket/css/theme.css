@@ -168,7 +168,7 @@ a:hover{
 /* footer */
 /* offset needed for fixed footer */
 body{
-	margin-bottom:300px;
+	margin-bottom:340px;
 }
 #footer{
 	display: flex;
@@ -693,3 +693,9 @@ a.readmore-js-toggle{
 .headerAdvancedSearch a{
 	color: #000 !important;
 }
+
+
+.object-metadata-col .subjects-data{
+	margin-bottom: 0;
+}
+
