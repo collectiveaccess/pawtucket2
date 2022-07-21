@@ -10,12 +10,14 @@
 	
 	$va_paratext_exhibition_sections = $this->request->config->get("paratext_exhibition_sections");	
 	$vn_case = 0;
-	foreach($va_paratext_exhibition_sections as $vs_idno){
-		$vn_case++;
-		if($vs_idno == "$vs_current_section"){
-		 	break;
-		}
+	if(in_array($vs_current_section, $va_paratext_exhibition_sections)){
+		foreach($va_paratext_exhibition_sections as $vs_idno){
+			$vn_case++;
+			if($vs_idno == $vs_current_section){
+				break;
+			}
 	
+		}
 	}
 	
 	$vs_image_display = $t_section->get("ca_occurrences.image_display", array("convertCodesToDisplayText" => true));
@@ -38,23 +40,11 @@
 
 		</div>
 
-		<div class="text_content with_images_column individual_columns">
-			<div class="columns">
-				<div class="column left text">
-					<H2>Exhibit Case <?php print $vn_case; ?></H2>
-					<div class="scroll">
-						<p><?php print $vs_text; ?></p>
-					</div>
-				</div>
-		
-				<div class="column images">
-					<H2>
-<?php
-					print caNavLink($this->request, 'View Examples in Grid Layout', '', '', 'Section', $vs_current_section, array("view" => "grid"));
-?>
-					</H2>
-
-					<div class="scroll">
+		<div class="text_content with_images_column">
+			<div class="text">
+				<p><?php print $vs_text; ?></p>
+			</div>
+   			<div class="images">
 <?php
 				if($r_illustrations->numHits()){
 					while($r_illustrations->nextHit()){
@@ -62,8 +52,6 @@
 					}
 				}
 ?>
-   					</div>
-   				</div>
    			</div>
    		</div>
 <?php	
@@ -88,8 +76,13 @@
 		<div class="text_content">
 			<div class="text_2_col">
 				<div class="text">
+<?php
+				if($vn_case){
+?>
 					<H2>Exhibit Case <?php print $vn_case; ?></H2>
-					<p><?php print $vs_text; ?></p>
+<?php
+				}
+?>					<p><?php print $vs_text; ?></p>
 				</div>
 			</div>
    		
@@ -131,8 +124,13 @@
 		<div class="text_content individual_columns">
 			<div class="columns">
 				<div class="column left text">
+<?php
+				if($vn_case){
+?>
 					<H2>Exhibit Case <?php print $vn_case; ?></H2>
-					<div class="scroll">
+<?php
+				}
+?>					<div class="scroll">
 						<p><?php print $vs_text; ?></p>
 					</div>
 				</div>
@@ -140,12 +138,18 @@
 				<div class="column right image_gallery">
 
 
+<?php
+				if($vn_case){
+?>
 
 					<H2>
 <?php
 					print caNavLink($this->request, 'View Examples in Grid Layout', '', '', 'Section', $vs_current_section, array("view" => "grid"));
 ?>
 					</H2>
+<?php
+				}
+?>
 					<div class="scroll">
 					<div class="sidebar__inner">
 <?php

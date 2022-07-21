@@ -67,11 +67,11 @@
 ?>
 </head>
 <body class="<?php print $body_class; ?>">
-
+<a href="#" name="top" class="topLinkAnchor"></a>
+    
     <div id="site_bg">
         <div class="img_overlay" style="background: url(<?php print caGetThemeGraphicUrl($this->request, 'page_bg.jpg'); ?>) no-repeat center; background-size: cover;"></div>
     </div>
-    
     <header>
 
         <!-- SEARCH ICON -->

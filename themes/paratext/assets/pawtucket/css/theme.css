@@ -759,8 +759,8 @@ body.home .home_slider .swiper-container .swiper-pagination .swiper-pagination-b
 ***************   GALLERY PAGE   ***************
 ***********************************************/
 .gallery_main {
-  height: calc(100vh - 460px);
-  margin-top: 50px!important;
+  height: calc(100vh - 410px);
+  margin-top: 0px!important;
 }
 .gallery_main .swiper-wrapper.main .swiper-slide .columns {
   width: calc(100% - 110px);
@@ -1157,6 +1157,7 @@ ul.home_menu li a:hover {
 	line-height: 1.1em;
 	color: #804639;
 	margin: 10px 0px 5px 0px;
+	font-weight:100;
 }
 .acknowledgments .dedication i{
 	display:inline-block;
@@ -1169,9 +1170,10 @@ ul.home_menu li a:hover {
 }
 .text_content {
   background-color: rgba(255, 255, 255, 0.25);
-  padding: 60px 90px;
+  padding: 60px 90px 70px 90px;
   width: 810px;
   margin: 50px auto 0 auto;
+  position:relative;
 }
 .text_content .columns {
   display: flex;
@@ -1195,7 +1197,7 @@ ul.home_menu li a:hover {
 .text_content.individual_columns {
   height: calc(100vh - 240px);
   overflow: hidden;
-  padding: 60px 60px 60px 90px;
+  padding: 60px 60px 75px 90px;
   width: 840px;
 }
 
@@ -1555,24 +1557,44 @@ ul.home_menu li a:hover {
 
 /******* Exhibition Landing ********************/
 .case_buttons{
-	padding:50px 0px 50px 0px;
+	padding:45px 0px 45px 0px;
 	border:1px solid #804639;
 	margin-bottom:30px;
 	color: #804639;
 	text-align:center;
+	width:45%;
+	float:left;	
+}
+.case_buttons.col1{
+	margin-right:3%;
+}
+.case_buttons.col1{
+	margin-left:3%;
 }
 .exhibition_landing a{
 	text-decoration:none;
 }
+@media only screen and (max-width: 900px) {
+	.case_buttons{
+		width:100%;
+		float:none;	
+	}
+	.case_buttons.col1{
+		margin-right:0;
+	}
+	.case_buttons.col1{
+		margin-left:0;
+	}
+}
 .case_buttons .case_number{
-	font-size:20px;
+	font-size:18px;
 	font-style:italic;
 	font-weight:100;
 	margin-bottom:15px;	
 }
 
 .case_buttons .case_title{
-	font-size:36px;
+	font-size:24px;
 	font-weight:100;	
 }
 /***********************************************
@@ -1667,6 +1689,27 @@ table tbody tr td:nth-child(3) {
 /***********************************************
 *******************   FOOTER   *****************
 ***********************************************/
+.topLinkAnchor{
+	position:absolute;
+	top:0px;
+}
+.topLinkContainer{
+	position: relative;
+	top: -50px;
+	right: 20px;
+	padding: 0px 0px;
+	width: 985px;
+	margin: 0px auto 0 auto;
+  	text-align:right;
+}
+.topLink{
+	background-color: #804639;
+	padding:10px;
+	color:#FFF;
+	font-family: 'constantia', serif;
+  	font-size: 15px;
+  	text-decoration:none;
+}
 footer {
   text-align: center;
   color: #804639;

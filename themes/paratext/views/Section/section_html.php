@@ -12,10 +12,6 @@
 				<div class="vertical_ornament_two"></div>
 			</div>
 			<div class="text acknowledgments">
-				<div class="dedication">
-					<strong>Dedicated to D.W. Cruickshank</strong><br/>
-					<i>Professor Emeritus, University College, Dublin</i>
-				</div>
 				<p><?php print $vs_text; ?></p>    
 			</div>
 		</div>

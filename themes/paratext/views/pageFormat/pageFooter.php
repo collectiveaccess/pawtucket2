@@ -25,6 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	if(!in_array(strToLower($this->request->getController()), array("imagegallery", "front"))){
+?>
+	<div class="topLinkContainer"><a href="#top" class="topLink">Top</a></div>
+<?php
+	}
 ?>
 </body>
 
