@@ -861,7 +861,6 @@ function caGetDisplayImagesForAuthorityItems($pm_table, $pa_ids, $pa_options=nul
 
 	$vs_linking_table = $va_path[1];
 
-	$vs_linking_table = $va_path[1];
 
 	$vs_rel_type_where = '';
 	if (is_array($va_rel_types = caGetOption('relationshipTypes', $pa_options, null)) && sizeof($va_rel_types)) {
@@ -1575,7 +1574,9 @@ function caGetSearchLinks($t_instance, string $bundle, ?array $options=null) : ?
 	}
 	
 	$st = caGetBrowseForType($table, $t_instance->getTypeCode());
-	
+	if(!$st) {
+		return [];
+	}
 	$bundle_type = $bi['type'];
 	
 	switch($bundle_type) {
