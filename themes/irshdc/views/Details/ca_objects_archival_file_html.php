@@ -171,7 +171,6 @@
 ?>
 
 							</div>
-						</div>
 
 				</div>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>
