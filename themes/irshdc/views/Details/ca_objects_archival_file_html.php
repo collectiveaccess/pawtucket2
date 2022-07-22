@@ -78,15 +78,16 @@
 						print $vs_source_link;
 						print "</H4>";
 ?>
-						<div class="unit uppercase">{{{^ca_objects.type_id}}}</div>
-						{{{<ifdef code="ca_objects.displayDate">
-							<ifdef code="ca_objects.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
-								^ca_objects.displayDate
-							</div></ifdef>
-							<ifnotdef code="ca_objects.ISADG_dateNote">
-								<div>^ca_objects.displayDate</div>
-							</ifnotdef>
-						</ifdef>}}}
+						<div class="unit">
+							<div class="uppercase">{{{^ca_objects.type_id}}}</div>
+							{{{<ifdef code="ca_objects.displayDate">
+								<ifdef code="ca_objects.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
+									^ca_objects.displayDate
+								</div></ifdef>
+								<ifnotdef code="ca_objects.ISADG_dateNote">
+									<div>^ca_objects.displayDate</div>
+								</ifnotdef>
+							</ifdef>}}}
 						</div>
 						{{{<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="archival_part"><div class="unit"><H6>Location in Collection</H6><ifcount code="ca_collections" min="2" restrictToRelationshipTypes="archival_part"><br/></ifcount><unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef></unit></div></ifcount>}}}
 						<H6>
@@ -171,6 +172,7 @@
 ?>
 
 							</div>
+						</div>
 
 				</div>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>

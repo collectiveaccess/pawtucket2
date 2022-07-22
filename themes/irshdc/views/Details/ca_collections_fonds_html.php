@@ -88,7 +88,8 @@
 						print $vs_source_link;
 						print "</H4>";
 ?>
-						<div class="unit uppercase">{{{^ca_collections.type_id}}}
+						<div class="unit">
+							<div class="uppercase">{{{^ca_collections.type_id}}}</div>
 						
 						{{{<ifdef code="ca_collections.displayDate">
 							<ifdef code="ca_collections.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_collections.ISADG_dateNote">

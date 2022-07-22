@@ -182,19 +182,17 @@ if($vs_mode == "map"){
 						print $vs_source_link;
 						print "</H4>";
 ?>
-						<div class="unit uppercase">{{{^ca_objects.type_id}}}</div>
+						<div class="unit">
+							<div class="uppercase">{{{^ca_objects.type_id}}}</div>
 						
-						{{{<ifdef code="ca_objects.displayDate">
-							<ifdef code="ca_objects.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
-								^ca_objects.displayDate
-							</div></ifdef>
-							<ifnotdef code="ca_objects.ISADG_dateNote">
-								<div>^ca_objects.displayDate</div>
-							</ifnotdef>
-						</ifdef>}}}
-<?php
-						#print $vs_source_link;
-?>
+							{{{<ifdef code="ca_objects.displayDate">
+								<ifdef code="ca_objects.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
+									^ca_objects.displayDate
+								</div></ifdef>
+								<ifnotdef code="ca_objects.ISADG_dateNote">
+									<div>^ca_objects.displayDate</div>
+								</ifnotdef>
+							</ifdef>}}}
 						</div>
 <?php
 						# --- the collections the item is a direct part of
@@ -315,6 +313,7 @@ if($x){
 							print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."</textarea></div>";					
 ?>
 						</div>
+					</div>
 				</div>
 				<!--<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>-->
 				<div class='col-sm-12 col-md-2'>
