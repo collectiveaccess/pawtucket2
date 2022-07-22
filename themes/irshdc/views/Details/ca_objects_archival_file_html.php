@@ -111,12 +111,12 @@
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.scope_new.scope_new_text">
 							<ifdef code="ca_objects.scope_new.scope_new_source">
-								<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.scope_new.scope_new_source"><h6>Scope and Content</h6>
+								<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.scope_new.scope_new_source"><h6>Description</h6>
 									<div class="trimText">^ca_objects.scope_new.scope_new_text</div>
 								</div>
 							</ifdef>
 							<ifnotdef code="ca_objects.scope_new.scope_new_source">
-								<div class="unit"><h6>Scope and Content</h6>
+								<div class="unit"><h6>Description</h6>
 									<div class="trimText">^ca_objects.scope_new.scope_new_text</div>
 								</div>
 							</ifnotdef>
