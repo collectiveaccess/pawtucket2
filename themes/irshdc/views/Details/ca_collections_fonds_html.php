@@ -85,6 +85,7 @@
 						}else{
 							print $vs_title;
 						}
+						print $vs_source_link;
 						print "</H4>";
 ?>
 						<div class="unit uppercase">{{{^ca_collections.type_id}}}
@@ -97,9 +98,6 @@
 								<div>^ca_collections.displayDate</div>
 							</ifnotdef>
 						</ifdef>}}}
-<?php
-						print $vs_source_link;
-?>
 						</div>
 						{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Location in Collection</H6><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
 						<H6>
