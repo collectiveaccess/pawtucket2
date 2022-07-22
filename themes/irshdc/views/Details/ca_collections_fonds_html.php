@@ -87,7 +87,7 @@
 						}
 						print "</H4>";
 ?>
-						<div class="unit">{{{^ca_collections.type_id}}}
+						<div class="unit uppercase">{{{^ca_collections.type_id}}}
 						
 						{{{<ifdef code="ca_collections.displayDate">
 							<ifdef code="ca_collections.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_collections.ISADG_dateNote">
@@ -101,17 +101,17 @@
 						print $vs_source_link;
 ?>
 						</div>
-						{{{<ifdef code="ca_collections.parent_id"><H6>Location in Collection: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
+						{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Location in Collection</H6><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
 						<H6>
 							{{{<if rule='^ca_collections.resource_type !~ /-/'><ifdef code="ca_collections.resource_type">^ca_collections.resource_type%useSingular=1<ifdef code="ca_collections.genre"> > </ifdef></ifdef><ifdef code="ca_collections.genre">^ca_collections.genre%delimiter=,_</unit></ifdef></if>}}}
 						</H6>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						
 <?php
-						$vs_creators_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor,creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
+						$vs_creators_entities = $t_item->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="contributor,creator" delimiter="; "><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values));
 						$vs_creators_text = $t_item->get('ca_collections.creator_contributor');
 						if($vs_creators_entities || $vs_creators_text){
-							print '<div class="unit"><H6>Creators and Contributors</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? ", " : "").$vs_creators_text.'</div></div>';
+							print '<div class="unit"><H6>Creators and Contributors</H6><div class="trimTextShort">'.$vs_creators_entities.(($vs_creators_entities && $vs_creators_text) ? "; " : "").$vs_creators_text.'</div></div>';
 						}
 ?>						
 						{{{<ifdef code="ca_collections.RAD_admin_hist">
@@ -121,12 +121,12 @@
 						</ifdef>}}}
 						{{{<ifdef code="ca_collections.scope_new.scope_new_text">
 							<ifdef code="ca_collections.scope_new.scope_new_source">
-								<div class="unit" data-toggle="popover" title="Source" data-content="^ca_collections.scope_new.scope_new_source"><h6>Scope and Content</h6>
+								<div class="unit" data-toggle="popover" title="Source" data-content="^ca_collections.scope_new.scope_new_source"><h6>Description</h6>
 									<div class="trimText">^ca_collections.scope_new.scope_new_text</div>
 								</div>
 							</ifdef>
 							<ifnotdef code="ca_collections.scope_new.scope_new_source">
-								<div class="unit"><h6>Scope and Content</h6>
+								<div class="unit"><h6>Description</h6>
 									<div class="trimText">^ca_collections.scope_new.scope_new_text</div>
 								</div>
 							</ifnotdef>
@@ -162,12 +162,36 @@
 								
 						
 					</div><!-- end stoneBg -->
+					<div class="collapseBlock">
+							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+							<div class="collapseContent">
+							{{{
+								<ifdef code="ca_collections.nonpreferred_labels"><div class="unit"><H6>Alternate Title(s)</H6><unit relativeTo="ca_collections.nonpreferred_labels" delimiter="<br/>">^ca_collection_labels.name</unit></div></ifdef>
+								<ifcount code="ca_entities" restrictToRelationshipTypes="repository" min="1"><div class="unit"><h6>Holding Repository</h6><unit relativeTo="ca_entities" restrictToRelationshipTypes="repository" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>
+								<ifdef code="ca_collections.source_identifer"><div class='unit'><h6>Holding Repository Identifier</h6>^ca_collections.source_identifer</div></ifdef>
+								<ifdef code="ca_collections.RAD_extent"><div class="unit"><H6>Extent and Medium</H6><unit relativeTo="ca_collections.RAD_extent" delimiter="<br/>">^ca_collections.RAD_extent</unit></div></ifdef>
+								<ifdef code="ca_collections.RAD_custodial"><div class="unit"><h6>Archival History</h6>^ca_collections.RAD_custodial</div></ifdef>
+								<ifdef code="ca_collections.RAD_generalNote"><div class='unit'><h6>Notes</h6><unit relativeTo="ca_collections.RAD_generalNote" delimiter="<br/>">^ca_collections.RAD_generalNote</unit></div></ifdef>
+								<ifdef code="ca_collections.ISADG_archNote"><div class='unit'><h6>Archivist Notes</h6>^ca_collections.ISADG_archNote</div></ifdef>
+								<ifdef code="ca_collections.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_collections.govAccess</div></ifdef>
+								<ifdef code="ca_collections.RAD_usePub"><div class='unit'><h6>Terms Governing Reproduction</h6>^ca_collections.RAD_usePub</div></ifdef>
+								<ifdef code="ca_collections.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_collections.RAD_local_rights</div></ifdef>
+								<ifdef code="ca_collections.RAD_arrangement"><div class="unit"><h6>System of Arrangement</h6>^ca_collections.RAD_arrangement</div></ifdef>
+								<ifdef code="ca_collections.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_collections.ISADG_rules</div></ifdef>
+								<ifdef code="ca_collections.RAD_accruals"><div class="unit"><h6>Accruals</h6>^ca_collections.RAD_accruals</div></ifdef>
+							}}}
+<?php
+							print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'collections/'.$t_item->get("collection_id"))."</textarea></div>";					
+?>
+								
+							</div>
+						</div>
 <?php
 			if ($vb_show_hierarchy_viewer) {	
 ?>
 				<div class="row" id="collectionsWrapperArchival">
 					<div class='col-sm-12'>
-						<div class='collectionsContainer'><div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
+						<div class='collectionsContainer'><div class='label'>Collection Contents</div>
 							<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 						</div><!-- end findingAidContainer -->
 					</div><!-- end col -->
@@ -181,28 +205,7 @@
 <?php				
 			}									
 ?>						
-					{{{<ifdef code="ca_collections.nonpreferred_labels|ca_collections.RAD_extent|ca_collections.RAD_custodial|ca_collections.source_identifer|ca_collections.ISADG_archNote|ca_collections.ISADG_rules|ca_collections.RAD_generalNote|ca_collections.govAccess|ca_collections.RAD_usePub|ca_collections.RAD_local_rights">
-						<div class="collapseBlock">
-							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-							<div class="collapseContent">
-								<ifdef code="ca_collections.nonpreferred_labels"><div class="unit"><H6>Alternate Title(s)</H6>^ca_collections.nonpreferred_labels%delimiter=<br/></div></ifdef>
-								<ifdef code="ca_collections.RAD_extent"><div class="unit"><H6>Extent and Medium</H6>^ca_collections.RAD_extent%delimiter=<br/></div></ifdef>
-								<ifdef code="ca_collections.RAD_custodial"><div class="unit"><h6>Archival History</h6>^ca_collections.RAD_custodial</div></ifdef>
-								<ifdef code="ca_collections.RAD_accruals"><div class="unit"><h6>Accruals</h6>^ca_collections.RAD_accruals</div></ifdef>
-								<ifdef code="ca_collections.RAD_arrangement"><div class="unit"><h6>System of Arrangement</h6>^ca_collections.RAD_arrangement</div></ifdef>
-								<ifcount code="ca_entities" restrictToRelationshipTypes="repository" min="1"><div class="unit"><h6>Holding Repository</h6><unit relativeTo="ca_entities" restrictToRelationshipTypes="repository" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>
-								<ifdef code="ca_collections.source_identifer"><div class='unit'><h6>Holding Repository Identifier</h6>^ca_collections.source_identifer</div></ifdef>
-								
-								<ifdef code="ca_collections.RAD_generalNote"><div class='unit'><h6>Notes</h6>^ca_collections.RAD_generalNote</div></ifdef>
-								<ifdef code="ca_collections.ISADG_archNote"><div class='unit'><h6>Archivist Notes</h6>^ca_collections.ISADG_archNote</div></ifdef>
-								<ifdef code="ca_collections.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_collections.ISADG_rules</div></ifdef>
-								<ifdef code="ca_collections.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_collections.govAccess</div></ifdef>
-								<ifdef code="ca_collections.RAD_usePub"><div class='unit'><h6>Terms Governing Reproduction</h6>^ca_collections.RAD_usePub</div></ifdef>
-								<ifdef code="ca_collections.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_collections.RAD_local_rights</div></ifdef>
-								
-							</div>
-						</div>
-					</ifdef>}}}
+					
 
 				</div>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>

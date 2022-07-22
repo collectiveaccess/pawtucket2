@@ -77,7 +77,7 @@
 						}
 						print "</H4>";
 ?>
-						<div class="unit">{{{^ca_objects.type_id}}}
+						<div class="unit uppercase">{{{^ca_objects.type_id}}}</div>
 						
 						{{{<ifdef code="ca_objects.displayDate">
 							<ifdef code="ca_objects.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
@@ -91,7 +91,7 @@
 						print $vs_source_link;
 ?>
 						</div>
-						{{{<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="archival_part"><H6>Location in Collection: <ifcount code="ca_collections" min="2" restrictToRelationshipTypes="archival_part"><br/></ifcount><unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef></unit></H6></ifcount>}}}
+						{{{<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="archival_part"><div class="unit"><H6>Location in Collection</H6><ifcount code="ca_collections" min="2" restrictToRelationshipTypes="archival_part"><br/></ifcount><unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef></unit></div></ifcount>}}}
 						<H6>
 							{{{<if rule='^ca_objects.resource_type !~ /-/'><ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1<ifdef code="ca_objects.genre"> > </ifdef></ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef></if>}}}
 						</H6>
@@ -153,25 +153,28 @@
 						
 					</div><!-- end stoneBg -->
 						
-					{{{<ifdef code="ca_objects.nonpreferred_labels|ca_objects.RAD_extent|ca_objects.RAD_custodial|ca_objects.source_identifer|ca_objects.ISADG_archNote|ca_objects.ISADG_rules|ca_objects.RAD_generalNote|ca_objects.govAccess|ca_objects.rights_new|ca_objects.RAD_local_rights">
 						<div class="collapseBlock">
 							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 							<div class="collapseContent">
-								<ifdef code="ca_objects.nonpreferred_labels"><div class="unit"><H6>Alternate Title(s)</H6>^ca_objects.nonpreferred_labels%delimiter=<br/></div></ifdef>
-								<ifdef code="ca_objects.RAD_extent"><div class="unit"><H6>Extent and Medium</H6>^ca_objects.RAD_extent%delimiter=<br/></div></ifdef>
-								<ifdef code="ca_objects.RAD_custodial"><div class="unit"><h6>Archival History</h6>^ca_objects.RAD_custodial</div></ifdef>
-								<ifdef code="ca_objects.RAD_arrangement"><div class="unit"><h6>System of Arrangement</h6>^ca_objects.RAD_arrangement</div></ifdef>
+								{{{<ifdef code="ca_objects.nonpreferred_labels"><div class="unit"><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects.nonpreferred_labels" delimiter="<br/>">^ca_object_labels.name</unit></div></ifdef>
 								<ifcount code="ca_entities" restrictToRelationshipTypes="repository" min="1"><div class="unit"><h6>Holding Repository</h6><unit relativeTo="ca_entities" restrictToRelationshipTypes="repository" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>
 								<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Holding Repository Identifier</h6>^ca_objects.source_identifer</div></ifdef>
-								<ifdef code="ca_objects.RAD_generalNote"><div class='unit'><h6>Notes</h6>^ca_objects.RAD_generalNote</div></ifdef>
+								<ifdef code="ca_objects.RAD_extent"><div class="unit"><H6>Extent and Medium</H6>^ca_objects.RAD_extent%delimiter=<br/></div></ifdef>
+								<ifdef code="ca_objects.RAD_custodial"><div class="unit"><h6>Archival History</h6>^ca_objects.RAD_custodial</div></ifdef>
+								<ifdef code="ca_objects.RAD_generalNote"><div class='unit'><h6>Notes</h6><unit relativeTo="ca_objects.RAD_generalNote" delimiter="<br/>">^ca_objects.RAD_generalNote</unit></div></ifdef>
 								<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Archivist Notes</h6>^ca_objects.ISADG_archNote</div></ifdef>
-								<ifdef code="ca_objects.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_objects.ISADG_rules</div></ifdef>
 								<ifdef code="ca_objects.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_objects.govAccess</div></ifdef>
 								<ifdef code="ca_objects.rights_new"><div class='unit'><h6>Terms Governing Use and Reproduction</h6>^ca_objects.rights_new</div></ifdef>
 								<ifdef code="ca_objects.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_objects.RAD_local_rights</div></ifdef>
+								<ifdef code="ca_objects.RAD_arrangement"><div class="unit"><h6>System of Arrangement</h6>^ca_objects.RAD_arrangement</div></ifdef>
+								<ifdef code="ca_objects.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_objects.ISADG_rules</div></ifdef>
+								}}}
+<?php
+							print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."</textarea></div>";					
+?>
+
 							</div>
 						</div>
-					</ifdef>}}}
 
 				</div>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>
