@@ -1,3 +1,6 @@
+html{
+	scroll-behavior: smooth;
+}
 body {
   margin: 0;
   background-color: #e7ddcb;
@@ -1209,6 +1212,18 @@ ul.home_menu li a:hover {
 .text_content .columns .column.image_gallery .scroll {
   width: 100%;
 }
+.text_content.individual_columns .columns .column .scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.text_content.individual_columns .columns .column .scroll::-webkit-scrollbar-track {
+  background: #eeebe3;
+}
+.text_content.individual_columns .columns .column .scroll::-webkit-scrollbar-thumb {
+  background: #c3b7b4;
+}
+.text_content.individual_columns .columns .column .scroll::-webkit-scrollbar-thumb:hover {
+  background: #804639;
+}
 .text_content .columns .column.image_gallery {
   margin-left: 60px;
   margin-top: 0;
@@ -1514,6 +1529,19 @@ ul.home_menu li a:hover {
     width: 100%;
     margin-left: 0;
   }
+  .text_content.individual_columns {
+    height: auto;
+    padding: 40px 50px;
+    width: calc(100% - 160px);
+  }
+  .text_content.individual_columns .columns .column {
+    height: auto;
+    overflow-y: initial;
+    padding-right: 0;
+  }
+  .text_content.individual_columns .columns .column.image_gallery {
+    margin-top: 40px;
+  }
 }
 @media only screen and (max-width: 700px) {
   .page_title h1 {
@@ -1553,6 +1581,14 @@ ul.home_menu li a:hover {
   .text_content .team_photos .team_member:last-child {
     margin-bottom: 0;
   }
+  .text_content .team_photos .team_member:last-child {
+    margin-bottom: 0;
+  }
+  .text_content.individual_columns {
+    padding: 10px 30px;
+    width: calc(100% - 100px);
+    margin-top: 30px;
+  }
 }
 
 /******* Exhibition Landing ********************/
@@ -1565,6 +1601,10 @@ ul.home_menu li a:hover {
 	width:45%;
 	float:left;	
 }
+a:hover .case_buttons{
+	background-color: #804639;
+	color:#FFF;
+}
 .case_buttons.col1{
 	margin-right:3%;
 }
@@ -1575,9 +1615,16 @@ ul.home_menu li a:hover {
 	text-decoration:none;
 }
 @media only screen and (max-width: 900px) {
+	.exhibition_landing{
+		padding-top:20px;
+	}
 	.case_buttons{
 		width:100%;
 		float:none;	
+	}
+	.case_buttons .case_title{
+		padding-left: 20px;
+		padding-right: 20px;
 	}
 	.case_buttons.col1{
 		margin-right:0;
@@ -1780,6 +1827,24 @@ footer .agradecimientos a {
 }
 footer .agradecimientos a:hover {
   text-decoration: underline;
+}
+.back_to_top {
+  background-color: #804639;
+  color: #e7ddcb;
+  font-style: italic;
+  text-decoration: none;
+  padding: 8px 15px 8px 15px;
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  -webkit-transition: 0.25s ease-in-out;
+  -moz-transition: 0.25s ease-in-out;
+  -o-transition: 0.25s ease-in-out;
+  transition: 0.25s ease-in-out;
+  opacity: 0;
+}
+.back_to_top.show {
+  opacity: 1;
 }
 @media only screen and (max-width: 700px) {
   footer {
