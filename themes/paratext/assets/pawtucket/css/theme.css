@@ -1833,7 +1833,7 @@ footer .agradecimientos a:hover {
   color: #e7ddcb;
   font-style: italic;
   text-decoration: none;
-  padding: 8px 15px 8px 15px;
+  padding: 8px 15px 5px 15px;
   position: fixed;
   right: 40px;
   bottom: 40px;
@@ -1845,6 +1845,14 @@ footer .agradecimientos a:hover {
 }
 .back_to_top.show {
   opacity: 1;
+}
+.back_to_top .arrow{
+	transform: rotate(270deg);
+	display: inline-block;
+	margin-left: 3px;
+	font-style: normal;
+	top: -2px;
+	position: relative;
 }
 @media only screen and (max-width: 700px) {
   footer {
