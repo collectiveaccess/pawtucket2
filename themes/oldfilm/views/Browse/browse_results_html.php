@@ -157,13 +157,13 @@ if (!$vb_ajax) {	// !ajax
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
-				print "<strong>".$va_criterion['facet'].':</strong>';
-				if ($va_criterion['facet_name'] != '_search') {
+				#print "<strong>".$va_criterion['facet'].':</strong>';
+				#if ($va_criterion['facet_name'] != '_search') {
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter" role="button"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
-				}else{
-					print ' '.$va_criterion['value'];
+				#}else{
+				#	print ' '.$va_criterion['value'];
 					$vs_search = $va_criterion['value'];
-				}
+				#}
 				$i++;
 				if($i < sizeof($va_criteria)){
 					print " ";
@@ -202,7 +202,7 @@ if (!$vb_ajax) {	// !ajax
 
 # --- check if this result page has been cached
 # --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
-$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);
+$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id.$vs_letter);
 if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
 	print ExternalCache::fetch($vs_cache_key, 'browse_results');
 }else{
@@ -230,6 +230,14 @@ if (!$vb_ajax) {	// !ajax
 			}
 		}
 ?>
+		</div>
+		<div class="bSearchWithinContainer">
+			<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+				<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within">
+				<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+				<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
+			</form>
+			<div style="clear:both"></div>
 		</div>
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");

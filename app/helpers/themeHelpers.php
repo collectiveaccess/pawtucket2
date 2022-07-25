@@ -1534,10 +1534,11 @@ function caGetBrowseLinks($t_instance, string $bundle, ?array $options=null) : ?
 		if($restrict_to_relationship_types && !is_array($restrict_to_relationship_types)) { $restrict_to_relationship_types = [$restrict_to_relationship_types]; }
 		$restrict_to_relationship_types_attr = (is_array($restrict_to_relationship_types) && sizeof($restrict_to_relationship_types)) ? "restrictToRelationshipTypes='".join(',', $restrict_to_relationship_types)."'" : '';
 		
+		$va_access_values = caGetUserAccessValues($g_request);	
 		$bt = caGetBrowseForType($table, $t_instance->getTypeCode());
-		$text = $template ? explode('|', $t_instance->getWithTemplate($z="<unit relativeTo='{$bundle}' delimiter='|' {$restrict_to_types_attr} {$restrict_to_relationship_types_attr}>{$template}</unit>", ['returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
+		$text = $template ? explode('|', $t_instance->getWithTemplate($z="<unit relativeTo='{$bundle}' delimiter='|' {$restrict_to_types_attr} {$restrict_to_relationship_types_attr}>{$template}</unit>", ['returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $va_access_values])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $va_access_values]);
 		if(!sizeof(array_filter($text, 'strlen'))) { return null; }
-		$ids = $t_instance->get($fld, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToIdnos' => false, 'makeLink' => false]);
+		$ids = $t_instance->get($fld, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToIdnos' => false, 'makeLink' => false, 'checkAccess' => $va_access_values]);
 		
 		$links = caCreateBrowseLinksFromText($text, $bt, array_map(function($v) use ($facet) { return ['facet' => $facet, 'id' => $v]; }, $ids), '', []);
 		return $link_template ? array_map(function($l) use ($link_template) {
@@ -1587,14 +1588,21 @@ function caGetSearchLinks($t_instance, string $bundle, ?array $options=null) : ?
 	
 	$restrict_to_relationship_types = caGetOption('restrictToRelationshipTypes', $options, null);
 	if($restrict_to_relationship_types && !is_array($restrict_to_relationship_types)) { $restrict_to_relationship_types = [$restrict_to_relationship_types]; }
-		
-	$text = $template ? explode('|', $t_instance->getWithTemplate($template, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'delimiter' => '|'])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
-	$values = $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false]);
 	
+	$va_access_values = caGetUserAccessValues($g_request);	
+	$text = $template ? explode('|', $t_instance->getWithTemplate($template, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'delimiter' => '|', 'checkAccess' => $va_access_values])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $va_access_values]);
+	$values = $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $va_access_values]);
+	
+	$text = array_map(function($v) {
+		return preg_replace("!\[[^\]]*\]$!", "", $v);
+	}, $text);
+	$values = array_map(function($v) {
+		return preg_replace("![\"\']+!", "", preg_replace("!\[[^\]]*\]$!", "", $v));
+	}, $values);
 	if(!sizeof(array_filter($text, 'strlen'))) { return null; }
 	
 	$links =  caCreateSearchLinksFromText($text, $st, array_map(function($s) use ($bundle) { return "{$bundle}:\"{$s}\""; }, $values), '', []);
-	
+
 	return $link_template ? array_map(function($l) use ($link_template) {
 		return caProcessTemplate($link_template, ['LINK' => $l]);
 	}, $links) : $links;
@@ -1660,10 +1668,11 @@ function caCreateNavigationLinksFromText(array $text, string $module, string $co
 	$links = [];
 	$link_opts = ['absolute' => isset($options['absolute']) ? $options['absolute'] : false];
 	
-	sort($text);
 	foreach($text as $i => $t) {
 		$t = preg_replace("!([A-Za-z0-9]+)='([^']*)'!", "$1=\"$2\"", $t);
 		$l_tags = [];
+		
+		$key = trim(mb_strtolower(preg_replace("![^A-Za-z0-9 ]+!", " ", $t)));
 
 		$o_doc = str_get_dom($t);
 		$o_links = $o_doc('l');
@@ -1689,16 +1698,17 @@ function caCreateNavigationLinksFromText(array $text, string $module, string $co
 					$content = str_replace($l['directive'], $l['content'], $content);
 				}
 			}
-			$links[$i] = $content;
+			$links[$key] = $content;
 		} else {
 			if (isset($options['requireLinkTags']) && $options['requireLinkTags']) {
-				$links[$i] = $text;
+				$links[$key] = $text;
 				continue;
 			}
 			
-			$links[$i] = caNavLink($g_request, $t, $class, $module, $controller, $action, $params[$i], $link_opts);
+			$links[$key] = caNavLink($g_request, $t, $class, $module, $controller, $action, $params[$i], $link_opts);
 		}
 	}
+	ksort($links);
 	return $links;
 }
 # ---------------------------------------
