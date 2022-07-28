@@ -60,6 +60,7 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+	$vs_default_placeholder_tag_entities = "<div class='bResultItemImgPlaceholder'><span class='glyphicon glyphicon-user'></span></div>";
 
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
@@ -127,7 +128,11 @@
 								$vs_image = $vs_default_placeholder_tag;
 							}
 						}else{
-							$vs_image = $vs_default_placeholder_tag;
+							if($vs_table == "ca_entities"){
+								$vs_image = $vs_default_placeholder_tag_entities;
+							}else{
+								$vs_image = $vs_default_placeholder_tag;
+							}
 						}
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
