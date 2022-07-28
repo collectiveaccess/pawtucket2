@@ -368,20 +368,29 @@ body{
 	}
 }
 #footer .social{
-	float:right;
+	float:left;
 	padding-top:0px;
 	margin-top:-8px;
+}
+#footer ul.social li {
+	padding: 0px 35px 0px 0px;
 }
 #footer .social a{
 	font-size: 20px;
 	color:#FFF;
 	font-size:35px;
 }
+
+@media(min-width: 768px) {
+	#footer .social{
+		float:right;
+	}
+	#footer ul.social li {
+		padding: 0px 0px 0px 35px;
+	}
+}
 #footer ul {
     margin-top: 10px;
-}
-#footer ul.social li {
-  padding: 0px 0px 0px 35px;
 }
 #footer .funder{
 	text-align:left;
@@ -896,6 +905,36 @@ a.readmore-js-toggle {
 	margin: 0px 0px 5px 0px;
 	font-weight:700;
 	text-transform: capitalize;
+}
+.detailMediaCaption{
+	background-color:rgba(0,0,0, .7);
+	color:#FFF;
+	padding:15px 0px 15px 0px;
+	position:absolute;
+	bottom:0px;
+	width:100%;
+	opacity:0;
+	text-align:center;
+	transition: opacity 0.6s;
+}
+.detailMediaCaption div{
+	text-align: left;
+	font-size: 14px;
+	padding-left:20px;
+	line-height:1em
+}
+.repViewerCont:hover .detailMediaCaption{
+	background-color:rgba(0,0,0, .8);
+	color:#FFF;
+	padding:20px 0px 20px 0px;
+	position:absolute;
+	bottom:0px;
+	width:100%;
+	opacity:1;
+	transition: opacity 0.6s;
+}
+a.zoomButton, a.zoomButton:hover{
+	background-image:none;
 }
 /* about */
 .staticPage{

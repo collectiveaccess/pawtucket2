@@ -66,9 +66,9 @@
 					<div class="col-sm-5 text-right">
 						<ul class="list-inline">
 							<li><?php print caNavLink($this->request, _t("Cookies"), "", "", "Cookies", "manage"); ?></li>
-							<li><a href="https://www.arsenal-berlin.de/en/datenschutz/"><?php print _t("Privacy Policy"); ?></a></li>
-							<li><a href="https://www.arsenal-berlin.de/en/impressum/"><?php print _t("Imprint"); ?></a></li>
-							<li><a href="https://www.arsenal-berlin.de/en/institute/contact/"><?php print _t("Contact"); ?></a></li>
+							<li><?php print caNavLink($this->request, _t("Privacy Policy"), "", "", "About", "privacy"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Imprint"), "", "", "About", "imprint"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "contact"); ?></li>
 						</ul>
 						&copy; <?php print date("Y"); ?> Arsenal – Institut für Film und Videokunst e.V.
 						<ul class="list-inline loginLinks">
