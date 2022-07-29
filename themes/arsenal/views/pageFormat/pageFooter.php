@@ -52,11 +52,11 @@
 							<div class="col-sm-5">
 								Potsdamer Straße 2<br/>
 								10785 Berlin<br/>
-								Phone +49-30-26955-100<br/>
+								<?php print _t("Phone"); ?> +49-30-26955-100<br/>
 								<a href="mailto:mail@arsenal-berlin.de">mail@arsenal-berlin.de</a>
 							</div>
 							<div class="col-sm-7">
-								Archive<br/>
+								<?php print _t("Archive"); ?><br/>
 								silent green Kulturquartier<br/>
 								Gerichtstraße 35<br/>
 								13347 Berlin
@@ -82,7 +82,7 @@
 					<div class="row"><div class="col-sm-12">
 <?php
 					if($g_ui_locale == "de_DE"){
-						print caGetThemeGraphic($this->request, 'BKM.svg');
+						print "<span class='funderDE'>".caGetThemeGraphic($this->request, 'BKM.svg')."</span>";
 					}else{
 						print caGetThemeGraphic($this->request, 'BKM_en.svg');
 					}
