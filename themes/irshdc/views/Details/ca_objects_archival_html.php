@@ -184,16 +184,15 @@ if($vs_mode == "map"){
 ?>
 						<div class="unit">
 							<div class="uppercase">{{{^ca_objects.type_id}}}</div>
-						
+						</div>
 							{{{<ifdef code="ca_objects.displayDate">
-								<ifdef code="ca_objects.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
+								<ifdef code="ca_objects.ISADG_dateNote"><div class="unit" data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
 									^ca_objects.displayDate
 								</div></ifdef>
 								<ifnotdef code="ca_objects.ISADG_dateNote">
-									<div>^ca_objects.displayDate</div>
+									<div class="unit">^ca_objects.displayDate</div>
 								</ifnotdef>
 							</ifdef>}}}
-						</div>
 <?php
 						# --- the collections the item is a direct part of
 						$vs_rel_collections = $t_object->getWithTemplate('<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="archival_part"><unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef></unit></ifcount>', array("checkAccess" => $va_access_values));
@@ -294,14 +293,13 @@ if($x){
 						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 						<div class="collapseContent">
 							{{{<ifcount min="1" code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><div class='unit'><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^ca_objects.nonpreferred_labels.name</unit></div></ifcount>}}}
-							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Repository</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
+							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Holding Repository</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
 							{{{<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Holding Repository Identifier</h6>^ca_objects.source_identifer</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.NCTR_id"><div class='unit'><h6>Commission Object Identifier</h6>^ca_objects.NCTR_id</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.RAD_extent"><div class='unit'><h6>Extent and Medium</h6>^ca_objects.RAD_extent</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.digital_file_duration"><div class='unit'><h6>Duration</h6>^ca_objects.digital_file_duration</div></ifdef>}}}
 							
 							{{{<ifdef code="ca_objects.RAD_custodial"><div class='unit'><h6>Archival History</h6>^ca_objects.RAD_custodial</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.ownership_credit"><div class='unit'><h6>Credit/Citation</h6>^ca_objects.ownership_credit</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Notes</h6><unit relativeTo="ca_objects.MARC_generalNote" delimiter="<br/>">^ca_objects.MARC_generalNote</unit></div></ifdef>}}}
 							{{{<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Archivist Notes</h6>^ca_objects.ISADG_archNote</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_objects.govAccess</div></ifdef>}}}

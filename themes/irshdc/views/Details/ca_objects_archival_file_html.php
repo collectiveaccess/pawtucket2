@@ -80,15 +80,15 @@
 ?>
 						<div class="unit">
 							<div class="uppercase">{{{^ca_objects.type_id}}}</div>
-							{{{<ifdef code="ca_objects.displayDate">
-								<ifdef code="ca_objects.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
-									^ca_objects.displayDate
-								</div></ifdef>
-								<ifnotdef code="ca_objects.ISADG_dateNote">
-									<div>^ca_objects.displayDate</div>
-								</ifnotdef>
-							</ifdef>}}}
 						</div>
+						{{{<ifdef code="ca_objects.displayDate">
+							<ifdef code="ca_objects.ISADG_dateNote"><div class="unit" data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
+								^ca_objects.displayDate
+							</div></ifdef>
+							<ifnotdef code="ca_objects.ISADG_dateNote">
+								<div class="unit">^ca_objects.displayDate</div>
+							</ifnotdef>
+						</ifdef>}}}
 						{{{<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="archival_part"><div class="unit"><H6>Location in Collection</H6><unit relativeTo="ca_collections" restrictToRelationshipTypes="archival_part" delimiter="<br/>"><ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef></unit></div></ifcount>}}}
 						<H6>
 							{{{<if rule='^ca_objects.resource_type !~ /-/'><ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1<ifdef code="ca_objects.genre"> > </ifdef></ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef></if>}}}

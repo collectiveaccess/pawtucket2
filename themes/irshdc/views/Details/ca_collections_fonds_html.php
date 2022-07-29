@@ -90,17 +90,16 @@
 ?>
 						<div class="unit">
 							<div class="uppercase">{{{^ca_collections.type_id}}}</div>
-						
+						</div>
 						{{{<ifdef code="ca_collections.displayDate">
-							<ifdef code="ca_collections.ISADG_dateNote"><div data-toggle="popover" title="Note" data-content="^ca_collections.ISADG_dateNote">
+							<ifdef code="ca_collections.ISADG_dateNote"><div class="unit" data-toggle="popover" title="Note" data-content="^ca_collections.ISADG_dateNote">
 								^ca_collections.displayDate
 							</div></ifdef>
 							<ifnotdef code="ca_collections.ISADG_dateNote">
-								<div>^ca_collections.displayDate</div>
+								<div class="unit">^ca_collections.displayDate</div>
 							</ifnotdef>
 						</ifdef>}}}
-						</div>
-						{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Location in Collection</H6><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
+						{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Location in Collection</H6><unit relativeTo="ca_collections.parent"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></unit></div></ifdef>}}}
 						<H6>
 							{{{<if rule='^ca_collections.resource_type !~ /-/'><ifdef code="ca_collections.resource_type">^ca_collections.resource_type%useSingular=1<ifdef code="ca_collections.genre"> > </ifdef></ifdef><ifdef code="ca_collections.genre">^ca_collections.genre%delimiter=,_</unit></ifdef></if>}}}
 						</H6>

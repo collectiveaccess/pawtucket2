@@ -60,8 +60,9 @@
 							$vs_record_count = " <small>(".$va_collection_content["num_objects"]." record".(($va_collection_content["num_objects"] == 1) ? "" : "s").")</small>";
 						}
 						if($vb_link_sublist){
-							print "<div style='position:relative;'>".caDetailLink($this->request, "<small>View ".$va_collection_content["type"]."</small> ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : "detail"), 'linkoutRight', $va_collection_content["table"],  $va_collection_content["id"]);
+							print "<div style='position:relative;'>";
 							print "<a href='#' class='openCollection openCollection".$va_collection_content["id"]."'><span class='collapseIcon'>".$vs_icon."</span> ".$va_collection_content["name"].$vs_record_count."</a>";
+							print caDetailLink($this->request, "<small>View ".$va_collection_content["type"]."</small> ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : "detail"), 'linkoutRight', $va_collection_content["table"],  $va_collection_content["id"]);
 							print "</div><div id='collectionLoad".$va_collection_content["id"]."' class='collectionLoad'></div>";
 						}else{
 							# --- there are no grandchildren to show in browser, so check if we should link to detail page instead
@@ -74,8 +75,8 @@
 
 							if($vb_link_to_detail){
 								print "<div style='position:relative;'>";
-								print caDetailLink($this->request, "<small>View ".$va_collection_content["type"]."</small> ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : "detail"), 'linkoutRight', $va_collection_content["table"],  $va_collection_content["id"]);
 								print caDetailLink($this->request, $vs_icon_not_expand." ".$va_collection_content["name"].$vs_record_count, '', $va_collection_content["table"],  $va_collection_content["id"]);
+								print caDetailLink($this->request, "<small>View ".$va_collection_content["type"]."</small> ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : "detail"), 'linkoutRight', $va_collection_content["table"],  $va_collection_content["id"]);
 								print "</div>";
 							}else{
 								print "<div class='listItem'>".$vs_icon_not_expand." ".$va_collection_content["name"].$vs_record_count."</div>";
