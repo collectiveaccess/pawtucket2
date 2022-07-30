@@ -242,7 +242,6 @@ body.frontContainer {
 }
 body.frontContainer #footer{
 	position:relative !important;
-	height:auto;
 }
 
 .parallax {
@@ -395,18 +394,18 @@ body.frontContainer #footer{
 .hpIntro .callout{
 	text-align:center;
 	font-size: 28px;
-	color: #004c52;
+	color: #000;
 	margin:120px 0px 150px 0px;
-	font-family: "Roboto slab";
+	font-family: "Latolight";
 	font-weight:300;
 	line-height:1.8em;
 }
 .hpIntro .calloutTitle{
 	text-align:center;
 	font-size: 28px;
-	color: #f18e00;
+	color: #000;
 	margin-bottom:15px;
-	font-family: "Roboto slab";
+	font-family: "Lato";
 	font-weight:600;
 }
 @media(max-width:767px){
@@ -428,6 +427,7 @@ body.frontContainer #footer{
 	font-size:30px;
 	padding:10px 0px 10px 0px;
 	opacity:.8;
+	left: 0px;
 }
 .front h2, .front h3{
 	text-align: center;
