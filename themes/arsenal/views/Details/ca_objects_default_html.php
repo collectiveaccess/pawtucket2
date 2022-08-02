@@ -57,7 +57,6 @@
 		$detail_types = $config->getAssoc('detailTypes');
 		$options = $detail_types['works'];
 		$t_representation = $t_work->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
-
 		if(!is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
 			
 		$vs_rep_viewer = caRepresentationViewer(
@@ -70,7 +69,8 @@
 							'showAnnotations' => true, 
 							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
 							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $options, false), 
-							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $options, false),
+							#'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $options, false),
+							'captionTemplate' => "<ifdef code='ca_object_representations.caption|ca_object_representations.copyright'><div class='detailMediaCaption'><div><ifdef code='ca_object_representations.caption'>^ca_object_representations.caption</ifdef> <ifdef code='ca_object_representations.copyright'>^ca_object_representations.copyright</ifdef></div></div></ifdef>",
 							'checkAccess' => $va_access_values
 						]
 					)

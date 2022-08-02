@@ -31,13 +31,8 @@
 ?>
 
 <div class="row"><div class="col-sm-12 col-md-8 col-md-offset-2">
-	<H1><?php print $this->getVar("section_name"); ?></H1>
+	<H1><?php print _t("Featured Collections"); ?></H1>
 <?php
-	if($vs_intro_global_value = $config->get("gallery_intro_text_global_value")){
-		if($vs_tmp = $this->getVar($vs_intro_global_value)){
-			print "<div class='setDescription'>".$vs_tmp."</div>";
-		}
-	}
 	if(is_array($va_sets) && sizeof($va_sets)){
 		# --- main area with info about selected set loaded via Ajax				
 			$i = 0;

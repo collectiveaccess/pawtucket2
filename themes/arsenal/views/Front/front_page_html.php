@@ -59,16 +59,13 @@
 </div>
 <?php
 
-	if($hp_intro_title || $hp_intro){
+	if($hp_intro){
 ?>
 	<div class="container hpIntro">
 		<div class="row">
 			<div class="col-md-12 col-lg-8 col-lg-offset-2">
 				<div class="callout">
 	<?php
-				if($hp_intro_title){
-					print "<div class='calloutTitle'>".$hp_intro_title."</div>";
-				}
 				if($hp_intro){
 					print "<p>".$hp_intro."</p>";
 				}

@@ -52,11 +52,11 @@
 							<div class="col-sm-5">
 								Potsdamer Straße 2<br/>
 								10785 Berlin<br/>
-								Phone +49-30-26955-100<br/>
+								<?php print _t("Phone"); ?> +49-30-26955-100<br/>
 								<a href="mailto:mail@arsenal-berlin.de">mail@arsenal-berlin.de</a>
 							</div>
 							<div class="col-sm-7">
-								Archive<br/>
+								<?php print _t("Archive"); ?><br/>
 								silent green Kulturquartier<br/>
 								Gerichtstraße 35<br/>
 								13347 Berlin
@@ -66,9 +66,9 @@
 					<div class="col-sm-5 text-right">
 						<ul class="list-inline">
 							<li><?php print caNavLink($this->request, _t("Cookies"), "", "", "Cookies", "manage"); ?></li>
-							<li><a href="https://www.arsenal-berlin.de/en/datenschutz/"><?php print _t("Privacy Policy"); ?></a></li>
-							<li><a href="https://www.arsenal-berlin.de/en/impressum/"><?php print _t("Imprint"); ?></a></li>
-							<li><a href="https://www.arsenal-berlin.de/en/institute/contact/"><?php print _t("Contact"); ?></a></li>
+							<li><?php print caNavLink($this->request, _t("Privacy Policy"), "", "", "About", "privacy"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Imprint"), "", "", "About", "imprint"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "contact"); ?></li>
 						</ul>
 						&copy; <?php print date("Y"); ?> Arsenal – Institut für Film und Videokunst e.V.
 						<ul class="list-inline loginLinks">
@@ -82,7 +82,7 @@
 					<div class="row"><div class="col-sm-12">
 <?php
 					if($g_ui_locale == "de_DE"){
-						print caGetThemeGraphic($this->request, 'BKM.svg');
+						print "<span class='funderDE'>".caGetThemeGraphic($this->request, 'BKM.svg')."</span>";
 					}else{
 						print caGetThemeGraphic($this->request, 'BKM_en.svg');
 					}
