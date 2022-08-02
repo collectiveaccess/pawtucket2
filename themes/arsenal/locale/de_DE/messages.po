@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2\n"
-"POT-Creation-Date: 2022-07-29 11:20-0400\n"
-"PO-Revision-Date: 2022-07-29 11:20-0400\n"
+"POT-Creation-Date: 2022-07-30 00:07-0400\n"
+"PO-Revision-Date: 2022-07-30 00:07-0400\n"
 "Last-Translator: Seth <Seth@collectiveacess.org>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: de\n"
@@ -21,6 +21,2841 @@ msgstr ""
 "X-Poedit-SearchPath-4: app/helpers\n"
 "X-Poedit-SearchPath-5: app/controllers\n"
 "X-Poedit-SearchPath-6: app/printTemplates\n"
+"X-Poedit-SearchPath-7: themes/arsenal/conf\n"
+
+msgid "Start"
+msgstr ""
+
+msgid ""
+"Timecode of start point in hh:mm:ss:ff format (where hh=hours; mm=minutes; "
+"ss=seconds and ff=frames. You may use decimal seconds in lieu of frames if "
+"desired."
+msgstr ""
+
+msgid "End"
+msgstr ""
+
+msgid ""
+"Timecode of end point in hh:mm:ss:ff format (where hh=hours; mm=minutes; "
+"ss=seconds and ff=frames. You may use decimal seconds in lieu of frames if "
+"desired."
+msgstr ""
+
+#: app/models/ca_site_page_media.php:94
+#: app/plugins/FindingAid/printTemplates/header.php:44
+#: app/printTemplates/results/footer.php:42
+#: app/printTemplates/results/footer.php:72
+#: app/printTemplates/results/footer.php:89
+#: app/printTemplates/summary/footer.php:42
+#: app/printTemplates/summary/footer.php:45
+msgid "Page"
+msgstr ""
+
+msgid "Page where annotation is located"
+msgstr ""
+
+msgid "Upper left"
+msgstr ""
+
+msgid "Coordinate of upper left corner of rectangular region"
+msgstr ""
+
+msgid "Lower right"
+msgstr ""
+
+msgid "Coordinate of lower right corner of rectangular region"
+msgstr ""
+
+#: app/models/ca_bundle_display_placements.php:192
+#: app/models/ca_search_form_placements.php:192
+msgid "Label"
+msgstr ""
+
+msgid "Annotation label"
+msgstr ""
+
+msgid "Annotation description"
+msgstr ""
+
+#: app/models/ca_bundle_display_labels.php:79
+#: app/models/ca_data_exporter_labels.php:79
+#: app/models/ca_data_import_events.php:86
+#: app/models/ca_data_importer_labels.php:79
+#: app/models/ca_editor_ui_labels.php:71
+#: app/models/ca_editor_ui_screen_labels.php:71
+#: app/models/ca_editor_ui_screens.php:2119
+#: app/models/ca_editor_ui_screens.php:2375
+#: app/models/ca_list_item_labels.php:103
+#: app/models/ca_metadata_alert_rule_labels.php:86
+#: app/models/ca_metadata_dictionary_entry_labels.php:86
+#: app/models/ca_metadata_element_labels.php:79
+#: app/models/ca_search_form_labels.php:86 app/models/ca_user_groups.php:80
+#: app/models/ca_user_roles.php:74
+msgid "Description"
+msgstr ""
+
+msgid "X"
+msgstr ""
+
+msgid "X coordinate (as percentage of image width"
+msgstr ""
+
+msgid "Y"
+msgstr ""
+
+msgid "Y coordinate (as percentage of image height"
+msgstr ""
+
+#: app/models/ca_editor_ui_bundle_placements.php:225
+#: app/models/ca_search_forms.php:784
+msgid "Width"
+msgstr ""
+
+msgid "Width (as percentage of image width"
+msgstr ""
+
+#: app/models/ca_editor_ui_bundle_placements.php:234
+msgid "Height"
+msgstr ""
+
+msgid "Height (as percentage of image height"
+msgstr ""
+
+msgid "Text X"
+msgstr ""
+
+msgid "Text Y"
+msgstr ""
+
+msgid "Text width"
+msgstr ""
+
+msgid "Text height"
+msgstr ""
+
+#: app/helpers/displayHelpers.php:1870 app/helpers/displayHelpers.php:1882
+#: app/helpers/searchHelpers.php:1553 app/helpers/searchHelpers.php:1563
+#: app/helpers/searchHelpers.php:1575 app/helpers/searchHelpers.php:1585
+#: app/helpers/searchHelpers.php:1595 app/helpers/searchHelpers.php:1606
+#: app/helpers/searchHelpers.php:1617 app/helpers/searchHelpers.php:1627
+#: app/helpers/searchHelpers.php:1637 app/models/ca_collection_labels.php:73
+#: app/models/ca_collections.php:75 app/models/ca_data_import_event_log.php:74
+#: app/models/ca_data_import_events.php:78
+#: app/models/ca_data_import_items.php:83
+#: app/models/ca_data_importer_log_items.php:74
+#: app/models/ca_entity_labels.php:74 app/models/ca_list_item_labels.php:72
+#: app/models/ca_list_items.php:70 app/models/ca_loan_labels.php:72
+#: app/models/ca_metadata_alert_triggers.php:85
+#: app/models/ca_metadata_type_restrictions.php:78
+#: app/models/ca_movement_labels.php:72 app/models/ca_object_labels.php:72
+#: app/models/ca_object_lot_labels.php:73 app/models/ca_object_lots.php:61
+#: app/models/ca_object_representation_labels.php:72
+#: app/models/ca_object_representations.php:77 app/models/ca_objects.php:108
+#: app/models/ca_occurrence_labels.php:72 app/models/ca_occurrences.php:73
+#: app/models/ca_place_labels.php:72 app/models/ca_places.php:75
+#: app/models/ca_representation_annotation_labels.php:73
+#: app/models/ca_set_items.php:93 app/models/ca_sets.php:112
+#: app/models/ca_storage_location_labels.php:72
+#: app/models/ca_storage_locations.php:67 app/models/ca_tour_stops.php:77
+#: app/models/ca_tours.php:67
+#: app/models/ca_user_representation_annotation_labels.php:73
+msgid "Type"
+msgstr ""
+
+msgid "Type of annotation: rectangle, point, polygon, circle"
+msgstr ""
+
+msgid "Points"
+msgstr ""
+
+msgid "List of points defining polygon"
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "Type-specific annnotation options"
+msgstr ""
+
+msgid "Locked"
+msgstr ""
+
+msgid "Indicates if annotation is locked"
+msgstr ""
+
+msgid "CollectiveAccess logo"
+msgstr ""
+
+#: app/models/ca_metadata_alert_rules.php:76 app/models/ca_set_items.php:65
+#: app/models/ca_sets.php:91 app/models/ca_user_sorts.php:59
+msgid "Objects"
+msgstr ""
+
+msgid "object type"
+msgstr ""
+
+msgid "object types"
+msgstr ""
+
+msgid "Find objects according to the Types defined in your collection profile."
+msgstr ""
+
+#: app/helpers/searchHelpers.php:1530 app/helpers/searchHelpers.php:1542
+#: app/helpers/searchHelpers.php:1584 app/helpers/searchHelpers.php:1594
+#: app/helpers/searchHelpers.php:1616 app/helpers/searchHelpers.php:1626
+#: app/helpers/searchHelpers.php:1636 app/helpers/searchHelpers.php:1646
+#: app/helpers/searchHelpers.php:1653
+#: app/models/ca_bundle_display_labels.php:63
+#: app/models/ca_collection_labels.php:80
+#: app/models/ca_data_exporter_labels.php:63
+#: app/models/ca_data_importer_labels.php:63
+#: app/models/ca_editor_ui_labels.php:63
+#: app/models/ca_editor_ui_screen_labels.php:63
+#: app/models/ca_item_comments.php:104 app/models/ca_list_labels.php:70
+#: app/models/ca_loan_labels.php:79 app/models/ca_locales.php:53
+#: app/models/ca_metadata_alert_rule_labels.php:70
+#: app/models/ca_metadata_dictionary_entry_labels.php:70
+#: app/models/ca_metadata_element_labels.php:71
+#: app/models/ca_movement_labels.php:79 app/models/ca_object_labels.php:79
+#: app/models/ca_object_lot_labels.php:80
+#: app/models/ca_occurrence_labels.php:79 app/models/ca_place_labels.php:79
+#: app/models/ca_search_form_labels.php:70 app/models/ca_set_labels.php:71
+#: app/models/ca_storage_location_labels.php:79
+#: app/models/ca_tour_labels.php:70 app/models/ca_tour_stop_labels.php:70
+#: app/models/ca_user_groups.php:64 app/models/ca_user_roles.php:58
+#: app/models/ca_user_sorts.php:87
+msgid "Name"
+msgstr ""
+
+msgid "Role"
+msgstr ""
+
+msgid "person"
+msgstr ""
+
+msgid "people"
+msgstr ""
+
+msgid ""
+"Find objects according to the people associated with your records.  You can "
+"browse by name&#44; role&#44; or entity type according to your configuration."
+msgstr ""
+
+#: app/models/ca_places.php:44
+msgid "place"
+msgstr ""
+
+#: app/models/ca_bookmarks.php:68 app/models/ca_bundle_displays.php:77
+#: app/models/ca_data_importers.php:78 app/models/ca_editor_uis.php:87
+#: app/models/ca_metadata_dictionary_entries.php:55
+#: app/models/ca_metadata_type_restrictions.php:56 app/models/ca_places.php:45
+#: app/models/ca_search_forms.php:88
+msgid "places"
+msgstr ""
+
+msgid ""
+"Find objects according to the place relationships in your collection.  You "
+"can choose to view the available places as a list or hierarchy of place "
+"names."
+msgstr ""
+
+msgid "term"
+msgstr ""
+
+msgid "terms"
+msgstr ""
+
+msgid ""
+"Browse keywords and vocabulary terms you have associated with your records.  "
+"You can displays your keywords as a list or hierarchy of terms."
+msgstr ""
+
+msgid "century"
+msgstr ""
+
+msgid "centuries"
+msgstr ""
+
+msgid ""
+"Find objects according to associated dates.  You can normalize these dates "
+"by year&#44; decade or century."
+msgstr ""
+
+msgid "decade"
+msgstr ""
+
+msgid "decades"
+msgstr ""
+
+#: app/helpers/utilityHelpers.php:1300
+msgid "year"
+msgstr ""
+
+#: app/helpers/utilityHelpers.php:1300
+msgid "years"
+msgstr ""
+
+msgid "Years"
+msgstr ""
+
+#: app/models/ca_occurrences.php:42
+msgid "occurrence"
+msgstr ""
+
+#: app/models/ca_bookmarks.php:69 app/models/ca_bundle_displays.php:78
+#: app/models/ca_data_importers.php:79 app/models/ca_editor_uis.php:88
+#: app/models/ca_metadata_dictionary_entries.php:56
+#: app/models/ca_metadata_type_restrictions.php:57
+#: app/models/ca_occurrences.php:43 app/models/ca_search_forms.php:89
+msgid "occurrences"
+msgstr ""
+
+msgid ""
+"Find objects by Occurrences associated with your records&#44; such as "
+"historical events&#44; productions&#44; and other record types in your "
+"collection."
+msgstr ""
+
+#: app/models/ca_collections.php:44
+msgid "collection"
+msgstr ""
+
+#: app/models/ca_bookmarks.php:70 app/models/ca_bundle_displays.php:79
+#: app/models/ca_collections.php:45 app/models/ca_data_importers.php:80
+#: app/models/ca_editor_uis.php:89
+#: app/models/ca_metadata_dictionary_entries.php:57
+#: app/models/ca_metadata_type_restrictions.php:58
+#: app/models/ca_search_forms.php:90
+msgid "collections"
+msgstr ""
+
+msgid "Find objects according to the Collections they belong to."
+msgstr ""
+
+msgid "Has media"
+msgstr ""
+
+msgid "Does not have media"
+msgstr ""
+
+msgid "has media"
+msgstr ""
+
+msgid "Find objects that have associated media."
+msgstr ""
+
+msgid "Lots"
+msgstr ""
+
+#: app/models/ca_entities.php:43
+msgid "entity"
+msgstr ""
+
+#: app/models/ca_bookmarks.php:67 app/models/ca_bundle_displays.php:76
+#: app/models/ca_data_importers.php:77 app/models/ca_editor_uis.php:86
+#: app/models/ca_entities.php:44
+#: app/models/ca_metadata_dictionary_entries.php:54
+#: app/models/ca_metadata_type_restrictions.php:55
+#: app/models/ca_search_forms.php:87
+msgid "entities"
+msgstr ""
+
+#: app/helpers/searchHelpers.php:1543
+msgid "type"
+msgstr ""
+
+msgid "types"
+msgstr ""
+
+msgid "status"
+msgstr ""
+
+msgid "statuses"
+msgstr ""
+
+msgid "access status"
+msgstr ""
+
+msgid "access statuses"
+msgstr ""
+
+#: app/models/ca_metadata_alert_rules.php:78 app/models/ca_set_items.php:67
+#: app/models/ca_sets.php:93 app/models/ca_user_sorts.php:61
+msgid "Entities"
+msgstr ""
+
+#: app/controllers/CollectionsController.php:55
+#: app/models/ca_metadata_alert_rules.php:81 app/models/ca_set_items.php:70
+#: app/models/ca_sets.php:96 app/models/ca_user_sorts.php:64
+#: themes/arsenal/views/pageFormat/pageHeader.php:139
+msgid "Collections"
+msgstr ""
+
+#: app/models/ca_metadata_alert_rules.php:79 app/models/ca_set_items.php:68
+#: app/models/ca_sets.php:94 app/models/ca_user_sorts.php:62
+msgid "Places"
+msgstr ""
+
+#: app/models/ca_objects.php:52
+msgid "object"
+msgstr ""
+
+#: app/models/ca_bookmarks.php:65 app/models/ca_bundle_displays.php:74
+#: app/models/ca_data_importers.php:75 app/models/ca_editor_uis.php:84
+#: app/models/ca_metadata_dictionary_entries.php:52
+#: app/models/ca_metadata_type_restrictions.php:53 app/models/ca_objects.php:53
+#: app/models/ca_search_forms.php:85
+msgid "objects"
+msgstr ""
+
+msgid "Other authorities"
+msgstr ""
+
+#: app/models/ca_metadata_alert_rules.php:82 app/models/ca_set_items.php:71
+#: app/models/ca_sets.php:97 app/models/ca_storage_locations.php:441
+#: app/models/ca_storage_locations.php:453 app/models/ca_user_sorts.php:65
+msgid "Storage locations"
+msgstr ""
+
+msgid "Check outs by format"
+msgstr ""
+
+msgid "Check ins by format"
+msgstr ""
+
+msgid "Reservations by format"
+msgstr ""
+
+msgid "Image is being processed"
+msgstr ""
+
+msgid "Document is being processed"
+msgstr ""
+
+msgid "Video is being processed"
+msgstr ""
+
+msgid "Media is being processed"
+msgstr ""
+
+msgid "Audio is being processed"
+msgstr ""
+
+msgid "Accession number"
+msgstr ""
+
+msgid "Accession year"
+msgstr ""
+
+msgid "Accession type"
+msgstr ""
+
+msgid "Object number"
+msgstr ""
+
+msgid "Lot number"
+msgstr ""
+
+#: app/helpers/searchHelpers.php:1531 app/helpers/searchHelpers.php:1544
+#: app/helpers/searchHelpers.php:1554 app/helpers/searchHelpers.php:1564
+#: app/helpers/searchHelpers.php:1576 app/helpers/searchHelpers.php:1586
+#: app/helpers/searchHelpers.php:1596 app/helpers/searchHelpers.php:1607
+#: app/helpers/searchHelpers.php:1618 app/helpers/searchHelpers.php:1628
+#: app/helpers/searchHelpers.php:1638 app/models/ca_editor_ui_screens.php:1073
+#: app/models/ca_list_items.php:77 app/models/ca_occurrences.php:81
+msgid "Identifier"
+msgstr ""
+
+msgid "Path"
+msgstr ""
+
+msgid "User tags"
+msgstr ""
+
+#: app/models/ca_sets.php:119
+msgid "Set code"
+msgstr ""
+
+msgid "Related term"
+msgstr ""
+
+msgid "System administration"
+msgstr ""
+
+msgid ""
+"Actions required for general administration of the system. Only trusted "
+"administrative users should have access to these actions."
+msgstr ""
+
+msgid "Is administrator"
+msgstr ""
+
+msgid ""
+"Indicates user should not be subject to access control measures. Users with "
+"this action effectively have access to all other actions."
+msgstr ""
+
+msgid "Set access control"
+msgstr ""
+
+msgid "Allow user to create, edit and delete user logins, roles and groups."
+msgstr ""
+
+msgid "View logs"
+msgstr ""
+
+msgid "Allow user to view system logs"
+msgstr ""
+
+msgid "View own change logs"
+msgstr ""
+
+msgid "Allow user to view their own change logs in a global view"
+msgstr ""
+
+msgid "View change logs"
+msgstr ""
+
+msgid "Allow user to view all change logs in a global view"
+msgstr ""
+
+msgid "Configure user interfaces"
+msgstr ""
+
+msgid "Allow user to change user interface configuration"
+msgstr ""
+
+msgid "Configure metadata elements"
+msgstr ""
+
+msgid "Allow user to change metadata element configuration"
+msgstr ""
+
+msgid "Configure relationship types"
+msgstr ""
+
+msgid "Allow user to change relationship type configuration"
+msgstr ""
+
+msgid "Configure import/export mappings"
+msgstr ""
+
+msgid "Allow user to change import/export format mapping configuration"
+msgstr ""
+
+msgid "Configure locales"
+msgstr ""
+
+msgid "Allow user to change locale configuration"
+msgstr ""
+
+msgid "View configuration check"
+msgstr ""
+
+msgid "Allow user to view configuration checks"
+msgstr ""
+
+msgid "Manage advanced search forms"
+msgstr ""
+
+msgid "Allow user to add, edit or remove advanced search forms for all users"
+msgstr ""
+
+msgid "Manage displays"
+msgstr ""
+
+msgid "Allow user to add, edit or remove advanced displays for all users"
+msgstr ""
+
+msgid "Administrate sets"
+msgstr ""
+
+msgid ""
+"Allow user view, edit and delete all sets regardless of ownership or access "
+"control"
+msgstr ""
+
+msgid "Initiate search reindexing"
+msgstr ""
+
+msgid "Allow user recreate system search indices"
+msgstr ""
+
+msgid "Export Configuration"
+msgstr ""
+
+msgid "Allow user to export system configuration"
+msgstr ""
+
+msgid "Manage user sorts"
+msgstr ""
+
+msgid "Allow user to manage user defined sort field combinations"
+msgstr ""
+
+msgid "Can use plugin tools"
+msgstr ""
+
+msgid "Allow user to use tool plugins"
+msgstr ""
+
+msgid "Library check out"
+msgstr ""
+
+msgid ""
+"Actions required for check out of library items. Only users to handle "
+"library-style check in/out should have access to these actions."
+msgstr ""
+
+msgid "Can do library check in"
+msgstr ""
+
+msgid "Indicates user is allowed to check in library items for other users."
+msgstr ""
+
+msgid "Can do library check out"
+msgstr ""
+
+msgid "Indicates user is allowed to check out library items for other users."
+msgstr ""
+
+msgid "Searching and browsing"
+msgstr ""
+
+msgid "Actions allowing discovery of items using search and browse tools."
+msgstr ""
+
+msgid "Quicksearch"
+msgstr ""
+
+msgid "Allow user to use quicksearch interface to find items"
+msgstr ""
+
+msgid "Media import"
+msgstr ""
+
+msgid "Actions allowing batch import of media."
+msgstr ""
+
+#: app/helpers/displayHelpers.php:2147
+msgid "Batch import media"
+msgstr ""
+
+msgid "Allow user to import folders of media"
+msgstr ""
+
+msgid "Batch import data"
+msgstr ""
+
+msgid "Allow user to data in various formats"
+msgstr ""
+
+msgid "Batch export"
+msgstr ""
+
+msgid "Actions allowing batch export of records."
+msgstr ""
+
+#: app/helpers/displayHelpers.php:2170
+msgid "Batch export metadata"
+msgstr ""
+
+msgid ""
+"Allow user to create export mappings and export arbitrary sets of records."
+msgstr ""
+
+msgid "Personalization"
+msgstr ""
+
+msgid "Actions allowing personalization of the user's environment."
+msgstr ""
+
+msgid "Set preferences"
+msgstr ""
+
+msgid "Allow user to set their own preferences"
+msgstr ""
+
+msgid "Create advanced search forms"
+msgstr ""
+
+msgid "Allow user to create their own advanced search forms"
+msgstr ""
+
+msgid "Edit advanced search forms"
+msgstr ""
+
+msgid "Allow user to edit existing advanced search forms"
+msgstr ""
+
+msgid "Delete advanced search forms"
+msgstr ""
+
+msgid "Allow user to delete existing advanced search forms"
+msgstr ""
+
+msgid "Use advanced search forms"
+msgstr ""
+
+msgid "Allow user to use advanced search forms"
+msgstr ""
+
+msgid "Create displays"
+msgstr ""
+
+msgid "Allow user to create their custom data display formats"
+msgstr ""
+
+msgid "Edit displays"
+msgstr ""
+
+msgid "Allow user to edit existing custom data display formats"
+msgstr ""
+
+msgid "Delete displays"
+msgstr ""
+
+msgid "Allow user to delete existing custom data display formats"
+msgstr ""
+
+msgid "Use displays"
+msgstr ""
+
+msgid "Allow user to use existing custom data display formats"
+msgstr ""
+
+msgid "Duplicate displays"
+msgstr ""
+
+msgid "Allow user to use duplicate custom data display formats"
+msgstr ""
+
+msgid "Use user sorts"
+msgstr ""
+
+msgid "Allow user to use user defined sort field combinations"
+msgstr ""
+
+msgid "Use metadata alerts"
+msgstr ""
+
+msgid "Allow user to create metadata alerts for themselves"
+msgstr ""
+
+msgid "set management"
+msgstr ""
+
+msgid "Actions allowing management of catalogued content for personal use."
+msgstr ""
+
+msgid "Create user groups"
+msgstr ""
+
+msgid "Allow user to create their own user groups for data sharing"
+msgstr ""
+
+msgid "Create sets"
+msgstr ""
+
+msgid "Allow user to create their own sets objects or authority items"
+msgstr ""
+
+msgid "Edit sets and set content"
+msgstr ""
+
+msgid ""
+"Allow user to alter set information and content in sets for which they have "
+"access privileges"
+msgstr ""
+
+msgid "Delete sets and set content"
+msgstr ""
+
+msgid "Allow user to delete sets for which they have access privileges"
+msgstr ""
+
+msgid "Delete own sets and set content"
+msgstr ""
+
+msgid "Allow user to delete sets which they created"
+msgstr ""
+
+msgid "View sets"
+msgstr ""
+
+msgid ""
+"Allow user to view sets of objects or authority items for which they have "
+"access privileges"
+msgstr ""
+
+msgid "Duplicate sets"
+msgstr ""
+
+msgid "Allow user to duplicate sets"
+msgstr ""
+
+msgid "Duplicate items in set"
+msgstr ""
+
+msgid "Allow user to duplicate items in a set"
+msgstr ""
+
+msgid "Quick add sets"
+msgstr ""
+
+msgid "Allow user to add sets not already present while creating relationships"
+msgstr ""
+
+#: app/helpers/displayHelpers.php:1239
+msgid "Change type"
+msgstr ""
+
+msgid "Allow user to change types of existing sets"
+msgstr ""
+
+msgid "User generated content"
+msgstr ""
+
+msgid "Actions allowing moderation of user generated content."
+msgstr ""
+
+msgid "Manage user comments"
+msgstr ""
+
+msgid "Allow user to moderate and edit user-provided comments"
+msgstr ""
+
+msgid "Manage user tags"
+msgstr ""
+
+msgid "Allow user to moderate user-provided tags"
+msgstr ""
+
+msgid "Object editing"
+msgstr ""
+
+msgid "Actions allowing creation, editing and deletion of objects."
+msgstr ""
+
+msgid "Create object"
+msgstr ""
+
+msgid "Allow user to create new objects"
+msgstr ""
+
+msgid "Edit object"
+msgstr ""
+
+msgid "Allow user to edit existing objects"
+msgstr ""
+
+msgid "Delete object"
+msgstr ""
+
+msgid "Allow user to delete objects"
+msgstr ""
+
+msgid "Search objects"
+msgstr ""
+
+msgid "Allow user to search objects"
+msgstr ""
+
+#, fuzzy
+#| msgid "Browse %1"
+msgid "Browse objects"
+msgstr "Browse %1"
+
+msgid "Allow user to browse objects"
+msgstr ""
+
+msgid "Download media"
+msgstr ""
+
+msgid "Allow user to download media associated with the object"
+msgstr ""
+
+msgid "Duplicate objects"
+msgstr ""
+
+msgid "Allow user to duplicate objects"
+msgstr ""
+
+msgid "Quick add objects"
+msgstr ""
+
+msgid ""
+"Allow user to add objects not already present while creating relationships"
+msgstr ""
+
+msgid "Export objects"
+msgstr ""
+
+msgid "Allow user to export objects"
+msgstr ""
+
+msgid "Allow user to change types of existing objects"
+msgstr ""
+
+msgid "Manage access control lists"
+msgstr ""
+
+msgid "Allow user to manage access control lists for objects"
+msgstr ""
+
+msgid "Batch edit objects"
+msgstr ""
+
+msgid "Allow user to edit batches of objects"
+msgstr ""
+
+msgid "Batch delete objects"
+msgstr ""
+
+msgid "Allow user to delete batches of objects"
+msgstr ""
+
+msgid "Can see current location of object in inspector"
+msgstr ""
+
+msgid ""
+"Allow user to see current location of object in object editor inspector panel"
+msgstr ""
+
+msgid "View change log"
+msgstr ""
+
+msgid "Allow user to view object change logs"
+msgstr ""
+
+msgid "Object representation editing"
+msgstr ""
+
+msgid ""
+"Actions allowing creation, editing and deletion of object representations."
+msgstr ""
+
+msgid "Create object representation"
+msgstr ""
+
+msgid "Allow user to create new object representations"
+msgstr ""
+
+msgid "Edit object representation"
+msgstr ""
+
+msgid "Allow user to edit existing object representations"
+msgstr ""
+
+msgid "Delete object representation"
+msgstr ""
+
+msgid "Allow user to delete object representations"
+msgstr ""
+
+msgid "Search object representations"
+msgstr ""
+
+msgid "Allow user to search object representations"
+msgstr ""
+
+msgid "Browse object representations"
+msgstr ""
+
+msgid "Allow user to browse object representations"
+msgstr ""
+
+msgid "Duplicate object representations"
+msgstr ""
+
+msgid "Allow user to duplicate object representations"
+msgstr ""
+
+msgid "Export object representations"
+msgstr ""
+
+msgid "Allow user to export object representations"
+msgstr ""
+
+msgid "Allow user to change types of existing object representations"
+msgstr ""
+
+msgid "Allow user to manage access control lists for object representations"
+msgstr ""
+
+msgid "Batch edit object representations"
+msgstr ""
+
+msgid "Allow user to edit batches of object representations"
+msgstr ""
+
+msgid "Batch delete object representations"
+msgstr ""
+
+msgid "Allow user to delete batches of object representations"
+msgstr ""
+
+msgid "Allow user to view object representation change logs"
+msgstr ""
+
+msgid "Representation annotation editing"
+msgstr ""
+
+msgid ""
+"Actions allowing creation, editing and deletion of annotation on object "
+"representations."
+msgstr ""
+
+msgid "Create representation annotations"
+msgstr ""
+
+msgid "Allow user to create new representation annotations"
+msgstr ""
+
+msgid "Edit representation annotations"
+msgstr ""
+
+msgid "Allow user to edit existing representation annotations"
+msgstr ""
+
+msgid "Delete representation annotations"
+msgstr ""
+
+msgid "Allow user to delete representation annotations"
+msgstr ""
+
+msgid "Search representation annotations"
+msgstr ""
+
+msgid "Allow user to search representation annotations"
+msgstr ""
+
+msgid "Browse representation annotations"
+msgstr ""
+
+msgid "Allow user to browse representation annotations"
+msgstr ""
+
+msgid "Duplicate representation annotations"
+msgstr ""
+
+msgid "Allow user to duplicate representation annotations"
+msgstr ""
+
+msgid ""
+"Allow user to manage access control lists for representation annotations"
+msgstr ""
+
+msgid "Allow user to view annotation change logs"
+msgstr ""
+
+msgid "Object lot editing"
+msgstr ""
+
+msgid "Actions allowing creation, editing and deletion of object lots."
+msgstr ""
+
+msgid "Create object lot"
+msgstr ""
+
+msgid "Allow user to create new object lots"
+msgstr ""
+
+msgid "Edit object lot"
+msgstr ""
+
+msgid "Allow user to edit existing object lots"
+msgstr ""
+
+msgid "Delete object lot"
+msgstr ""
+
+msgid "Allow user to delete object lots"
+msgstr ""
+
+msgid "Search object lots"
+msgstr ""
+
+msgid "Allow user to search object lots"
+msgstr ""
+
+msgid "Browse object lots"
+msgstr ""
+
+msgid "Allow user to browse object lots"
+msgstr ""
+
+msgid "Duplicate object lots"
+msgstr ""
+
+msgid "Allow user to duplicate object lots"
+msgstr ""
+
+msgid "Export object lots"
+msgstr ""
+
+msgid "Allow user to export object lots"
+msgstr ""
+
+msgid "Quick add object lots"
+msgstr ""
+
+msgid ""
+"Allow user to add object lots not already present while creating "
+"relationships"
+msgstr ""
+
+msgid "Allow user to change types of existing object lots"
+msgstr ""
+
+msgid "Allow user to manage access control lists for object lots"
+msgstr ""
+
+msgid "Batch edit object lots"
+msgstr ""
+
+msgid "Allow user to edit batches of object lots"
+msgstr ""
+
+msgid "Batch delete object lots"
+msgstr ""
+
+msgid "Allow user to delete batches of object lots"
+msgstr ""
+
+msgid "Allow user to view lot change logs"
+msgstr ""
+
+msgid "Entity authority editing"
+msgstr ""
+
+msgid "Actions allowing creation, editing and deletion of entities."
+msgstr ""
+
+msgid "Create entity"
+msgstr ""
+
+msgid "Allow user to create new entities"
+msgstr ""
+
+msgid "Edit entity"
+msgstr ""
+
+msgid "Allow user to edit existing entities"
+msgstr ""
+
+msgid "Delete entity"
+msgstr ""
+
+msgid "Allow user to delete entities"
+msgstr ""
+
+msgid "Search entities"
+msgstr ""
+
+msgid "Allow user to search entities"
+msgstr ""
+
+msgid "Browse entities"
+msgstr ""
+
+msgid "Allow user to browse entities"
+msgstr ""
+
+msgid "Duplicate entities"
+msgstr ""
+
+msgid "Allow user to duplicate entities"
+msgstr ""
+
+msgid "Export entities"
+msgstr ""
+
+msgid "Allow user to export entities"
+msgstr ""
+
+msgid "Quick add entities"
+msgstr ""
+
+msgid ""
+"Allow user to add entities not already present while creating relationships"
+msgstr ""
+
+msgid "Allow user to change types of existing entities"
+msgstr ""
+
+msgid "Allow user to manage access control lists for entities"
+msgstr ""
+
+msgid "Batch edit entities"
+msgstr ""
+
+msgid "Allow user to edit batches of entities"
+msgstr ""
+
+msgid "Batch delete entities"
+msgstr ""
+
+msgid "Allow user to delete batches of entities"
+msgstr ""
+
+msgid "Allow user to view entity change logs"
+msgstr ""
+
+msgid "Place authority editing"
+msgstr ""
+
+msgid "Actions allowing creation, editing and deletion of places."
+msgstr ""
+
+msgid "Create place"
+msgstr ""
+
+msgid "Allow user to create new places"
+msgstr ""
+
+msgid "Edit place"
+msgstr ""
+
+msgid "Allow user to edit existing places"
+msgstr ""
+
+msgid "Delete place"
+msgstr ""
+
+msgid "Allow user to delete places"
+msgstr ""
+
+msgid "Search places"
+msgstr ""
+
+msgid "Allow user to search places"
+msgstr ""
+
+#, fuzzy
+#| msgid "Browse %1"
+msgid "Browse places"
+msgstr "Browse %1"
+
+msgid "Allow user to browse places"
+msgstr ""
+
+msgid "Duplicate places"
+msgstr ""
+
+msgid "Allow user to duplicate places"
+msgstr ""
+
+msgid "Export places"
+msgstr ""
+
+msgid "Allow user to export places"
+msgstr ""
+
+msgid "Quick add places"
+msgstr ""
+
+msgid ""
+"Allow user to add places not already present while creating relationships"
+msgstr ""
+
+msgid "Allow user to change types of existing places"
+msgstr ""
+
+msgid "Allow user to manage access control lists for places"
+msgstr ""
+
+msgid "Batch edit places"
+msgstr ""
+
+msgid "Allow user to edit batches of places"
+msgstr ""
+
+msgid "Batch delete places"
+msgstr ""
+
+msgid "Allow user to delete batches of places"
+msgstr ""
+
+msgid "Allow user to view place change logs"
+msgstr ""
+
+msgid "Occurrence-based authority editing"
+msgstr ""
+
+msgid ""
+"Actions allowing creation, editing and deletion of occurrence (user-defined"
+msgstr ""
+
+msgid "Create occurrence"
+msgstr ""
+
+msgid "Allow user to create new occurrences"
+msgstr ""
+
+msgid "Edit occurrence"
+msgstr ""
+
+msgid "Allow user to edit existing occurrences"
+msgstr ""
+
+msgid "Delete occurrence"
+msgstr ""
+
+msgid "Allow user to delete occurrences"
+msgstr ""
+
+msgid "Search occurrences"
+msgstr ""
+
+msgid "Allow user to search occurrences"
+msgstr ""
+
+msgid "Browse occurrences"
+msgstr ""
+
+msgid "Allow user to browse occurrences"
+msgstr ""
+
+msgid "Duplicate occurrences"
+msgstr ""
+
+msgid "Allow user to duplicate occurrences"
+msgstr ""
+
+msgid "Export occurrences"
+msgstr ""
+
+msgid "Allow user to export occurrences"
+msgstr ""
+
+msgid "Quick add occurrences"
+msgstr ""
+
+msgid ""
+"Allow user to add occurrences not already present while creating "
+"relationships"
+msgstr ""
+
+msgid "Allow user to change types of existing occurrences"
+msgstr ""
+
+msgid "Allow user to manage access control lists for occurrences"
+msgstr ""
+
+msgid "Batch edit occurrences"
+msgstr ""
+
+msgid "Allow user to edit batches of occurrences"
+msgstr ""
+
+msgid "Batch delete occurrences"
+msgstr ""
+
+msgid "Allow user to delete batches of occurrences"
+msgstr ""
+
+msgid "Allow user to view occurrence change logs"
+msgstr ""
+
+msgid "Collection authority editing"
+msgstr ""
+
+msgid "Actions allowing creation, editing and deletion of collections."
+msgstr ""
+
+msgid "Create collection"
+msgstr ""
+
+msgid "Allow user to create new collections"
+msgstr ""
+
+msgid "Edit collection"
+msgstr ""
+
+msgid "Allow user to edit existing collections"
+msgstr ""
+
+msgid "Delete collection"
+msgstr ""
+
+msgid "Allow user to delete collections"
+msgstr ""
+
+msgid "Search collections"
+msgstr ""
+
+msgid "Allow user to search collections"
+msgstr ""
+
+msgid "Browse collections"
+msgstr ""
+
+msgid "Allow user to browse collections"
+msgstr ""
+
+msgid "Duplicate collections"
+msgstr ""
+
+msgid "Allow user to duplicate collections"
+msgstr ""
+
+msgid "Export collections"
+msgstr ""
+
+msgid "Allow user to export collections"
+msgstr ""
+
+msgid "Quick add collections"
+msgstr ""
+
+msgid ""
+"Allow user to add collections not already present while creating "
+"relationships"
+msgstr ""
+
+msgid "Allow user to change types of existing collections"
+msgstr ""
+
+msgid "Allow user to manage access control lists for collections"
+msgstr ""
+
+msgid "Batch edit collections"
+msgstr ""
+
+msgid "Allow user to edit batches of collections"
+msgstr ""
+
+msgid "Batch delete collections"
+msgstr ""
+
+msgid "Allow user to delete batches of collections"
+msgstr ""
+
+msgid "Allow user to view collection change logs"
+msgstr ""
+
+msgid "Storage location authority editing"
+msgstr ""
+
+msgid "Actions allowing creation, editing and deletion of storage locations."
+msgstr ""
+
+msgid "Create storage locations"
+msgstr ""
+
+msgid "Allow user to create new storage locations"
+msgstr ""
+
+msgid "Edit storage locations"
+msgstr ""
+
+msgid "Allow user to edit existing storage locations"
+msgstr ""
+
+msgid "Delete storage locations"
+msgstr ""
+
+msgid "Allow user to delete storage locations"
+msgstr ""
+
+msgid "Search storage locations"
+msgstr ""
+
+msgid "Allow user to search storage locations"
+msgstr ""
+
+msgid "Browse storage locations"
+msgstr ""
+
+msgid "Allow user to browse storage locations"
+msgstr ""
+
+msgid "Duplicate storage locations"
+msgstr ""
+
+msgid "Allow user to duplicate storage locations"
+msgstr ""
+
+msgid "Export storage locations"
+msgstr ""
+
+msgid "Allow user to export storage locations"
+msgstr ""
+
+msgid "Quick add storage locations"
+msgstr ""
+
+msgid ""
+"Allow user to add storage locations not already present while creating "
+"relationships"
+msgstr ""
+
+msgid "Allow user to change types of existing storage locations"
+msgstr ""
+
+msgid "Allow user to manage access control lists for storage locations"
+msgstr ""
+
+msgid "Batch edit storage locations"
+msgstr ""
+
+msgid "Allow user to edit batches of storage locations"
+msgstr ""
+
+msgid "Batch delete storage locations"
+msgstr ""
+
+msgid "Allow user to delete batches of storage locations"
+msgstr ""
+
+msgid "Allow user to view storage location change logs"
+msgstr ""
+
+msgid "Loans editing"
+msgstr ""
+
+msgid "Actions allowing creation, editing and deletion of loans."
+msgstr ""
+
+msgid "Create loans"
+msgstr ""
+
+msgid "Allow user to create new loans"
+msgstr ""
+
+msgid "Edit loans"
+msgstr ""
+
+msgid "Allow user to edit existing loans"
+msgstr ""
+
+msgid "Delete loans"
+msgstr ""
+
+msgid "Allow user to delete loans"
+msgstr ""
+
+msgid "Search loans"
+msgstr ""
+
+msgid "Allow user to search loans"
+msgstr ""
+
+#, fuzzy
+#| msgid "Browse %1"
+msgid "Browse loans"
+msgstr "Browse %1"
+
+msgid "Allow user to browse loans"
+msgstr ""
+
+msgid "Duplicate loans"
+msgstr ""
+
+msgid "Allow user to duplicate loans"
+msgstr ""
+
+msgid "Export loans"
+msgstr ""
+
+msgid "Allow user to export loans"
+msgstr ""
+
+msgid "Quick add loans"
+msgstr ""
+
+msgid ""
+"Allow user to add loans not already present while creating relationships"
+msgstr ""
+
+msgid "Allow user to change types of existing loans"
+msgstr ""
+
+msgid "Allow user to manage access control lists for loans"
+msgstr ""
+
+msgid "Batch edit loans"
+msgstr ""
+
+msgid "Allow user to edit batches of loans"
+msgstr ""
+
+msgid "Batch delete loans"
+msgstr ""
+
+msgid "Allow user to delete batches of loans"
+msgstr ""
+
+msgid "Allow user to view loan change logs"
+msgstr ""
+
+msgid "Movements editing"
+msgstr ""
+
+msgid "Actions allowing creation, editing and deletion of movements."
+msgstr ""
+
+msgid "Create movements"
+msgstr ""
+
+msgid "Allow user to create new movements"
+msgstr ""
+
+msgid "Edit movements"
+msgstr ""
+
+msgid "Allow user to edit existing movements"
+msgstr ""
+
+msgid "Delete movements"
+msgstr ""
+
+msgid "Allow user to delete movements"
+msgstr ""
+
+msgid "Search movements"
+msgstr ""
+
+msgid "Allow user to search movements"
+msgstr ""
+
+msgid "Browse movements"
+msgstr ""
+
+msgid "Allow user to browse movements"
+msgstr ""
+
+msgid "Duplicate movements"
+msgstr ""
+
+msgid "Allow user to duplicate movements"
+msgstr ""
+
+msgid "Export movements"
+msgstr ""
+
+msgid "Allow user to export movements"
+msgstr ""
+
+msgid "Quick add movements"
+msgstr ""
+
+msgid ""
+"Allow user to add movements not already present while creating relationships"
+msgstr ""
+
+msgid "Allow user to change types of existing movements"
+msgstr ""
+
+msgid "Allow user to manage access control lists for movements"
+msgstr ""
+
+msgid "Batch edit movements"
+msgstr ""
+
+msgid "Allow user to edit batches of movements"
+msgstr ""
+
+msgid "Batch delete movements"
+msgstr ""
+
+msgid "Allow user to delete batches of movements"
+msgstr ""
+
+msgid "Allow user to view movements change logs"
+msgstr ""
+
+msgid "Tours editing"
+msgstr ""
+
+msgid "Actions allowing creation, editing and deletion of tours."
+msgstr ""
+
+msgid "Create tours"
+msgstr ""
+
+msgid "Allow user to create new tours"
+msgstr ""
+
+msgid "Edit tours"
+msgstr ""
+
+msgid "Allow user to edit existing tours"
+msgstr ""
+
+msgid "Delete tours"
+msgstr ""
+
+msgid "Allow user to delete tours"
+msgstr ""
+
+msgid "Search tours"
+msgstr ""
+
+msgid "Allow user to search tours"
+msgstr ""
+
+#, fuzzy
+#| msgid "Browse %1"
+msgid "Browse tours"
+msgstr "Browse %1"
+
+msgid "Allow user to browse tours"
+msgstr ""
+
+msgid "Duplicate tours"
+msgstr ""
+
+msgid "Allow user to duplicate tours"
+msgstr ""
+
+msgid "Export tours"
+msgstr ""
+
+msgid "Allow user to export tours"
+msgstr ""
+
+msgid "Allow user to change types of existing tours"
+msgstr ""
+
+msgid "Manage access control lists for tours"
+msgstr ""
+
+msgid "Allow user to manage access control lists for tours"
+msgstr ""
+
+msgid "Manage access control lists for tour stops"
+msgstr ""
+
+msgid "Allow user to manage access control lists for tour stops"
+msgstr ""
+
+msgid "Batch edit tours"
+msgstr ""
+
+msgid "Allow user to edit batches of tours"
+msgstr ""
+
+msgid "Batch edit tour stops"
+msgstr ""
+
+msgid "Allow user to edit batches of tour stops"
+msgstr ""
+
+msgid "Batch delete tours"
+msgstr ""
+
+msgid "Allow user to delete batches of tours"
+msgstr ""
+
+msgid "Batch delete tour stops"
+msgstr ""
+
+msgid "Allow user to delete batches of tour stops"
+msgstr ""
+
+msgid "Allow user to view tour change logs"
+msgstr ""
+
+msgid "List &amp; vocabulary editing"
+msgstr ""
+
+msgid ""
+"Actions allowing creation, editing and deletion of lists and list items."
+msgstr ""
+
+msgid "Create lists and list items"
+msgstr ""
+
+msgid "Allow user to create new lists"
+msgstr ""
+
+msgid "Edit lists and list items"
+msgstr ""
+
+msgid "Allow user to edit existing non-system lists"
+msgstr ""
+
+msgid "Edit system lists and system list items"
+msgstr ""
+
+msgid ""
+"Allow user to edit system lists. For this to have any effect the user also "
+"needs the rights to edit standard lists and list items."
+msgstr ""
+
+msgid "Delete lists and list items"
+msgstr ""
+
+msgid "Allow user to delete non-system lists"
+msgstr ""
+
+msgid "Delete system lists and system list items"
+msgstr ""
+
+msgid ""
+"Allow user to delete system lists. For this to have any effect the user also "
+"needs the rights to delete standard lists and list items."
+msgstr ""
+
+msgid "Duplicate lists"
+msgstr ""
+
+msgid "Allow user to duplicate lists"
+msgstr ""
+
+msgid "Duplicate list items"
+msgstr ""
+
+msgid "Allow user to duplicate list items"
+msgstr ""
+
+msgid "Export lists"
+msgstr ""
+
+msgid "Allow user to export lists"
+msgstr ""
+
+msgid "Export list items"
+msgstr ""
+
+msgid "Allow user to export list items"
+msgstr ""
+
+msgid "Change type for list items"
+msgstr ""
+
+msgid "Allow user to change types of existing list items"
+msgstr ""
+
+msgid "Manage access control lists for lists"
+msgstr ""
+
+msgid "Allow user to manage access control lists for lists"
+msgstr ""
+
+msgid "Manage access control lists for list items"
+msgstr ""
+
+msgid "Allow user to manage access control lists for list items"
+msgstr ""
+
+msgid "Batch edit list items"
+msgstr ""
+
+msgid "Allow user to edit batches of list items"
+msgstr ""
+
+msgid "Batch delete list items"
+msgstr ""
+
+msgid "Allow user to delete batches of list items"
+msgstr ""
+
+msgid "Web service API access"
+msgstr ""
+
+msgid ""
+"Actions allowing access and modification of content via web service "
+"interfaces."
+msgstr ""
+
+msgid "Use JSON search service"
+msgstr ""
+
+msgid "Allow user to use JSON search service"
+msgstr ""
+
+msgid "Use JSON item service"
+msgstr ""
+
+msgid ""
+"Allow user to use JSON item service (used to get and modify detailed "
+"information about records"
+msgstr ""
+
+msgid "Use JSON model service"
+msgstr ""
+
+msgid ""
+"Allow user to use JSON model service (used to get detailed information about "
+"the metadata schema"
+msgstr ""
+
+msgid "Use JSON browse service"
+msgstr ""
+
+msgid "Allow user to use JSON browse service."
+msgstr ""
+
+msgid "Can use config updater service"
+msgstr ""
+
+msgid ""
+"Note that users with this permission can potentially destroy data in your "
+"system!"
+msgstr ""
+
+msgid "Use JSON simple service"
+msgstr ""
+
+msgid "Allow user to use JSON simple service."
+msgstr ""
+
+msgid "Use JSON replication service"
+msgstr ""
+
+msgid "Allow user to use JSON replication service."
+msgstr ""
+
+msgid "Use cataloguing service"
+msgstr ""
+
+msgid ""
+"Allow user to use cataloguing web service (used to create new and edit "
+"existing catalog records"
+msgstr ""
+
+msgid "Use iteminfo service"
+msgstr ""
+
+msgid ""
+"Allow user to use iteminfo web service (used to get detailed information "
+"about records"
+msgstr ""
+
+msgid "Use search service"
+msgstr ""
+
+msgid "Allow user to use search web service."
+msgstr ""
+
+msgid "Use usercontent service"
+msgstr ""
+
+msgid ""
+"Allow user to use usercontent web service (used for creation of sets, tags, "
+"comments"
+msgstr ""
+
+msgid "Use access control service"
+msgstr ""
+
+msgid ""
+"Allow user to use access control web service. Note that this allows said "
+"user to create, edit and delete user accounts."
+msgstr ""
+
+msgid "Pawtucket Actions"
+msgstr ""
+
+msgid ""
+"Actions allowing access, sharing and modification of content on the front-"
+"end interface."
+msgstr ""
+
+msgid "Can NOT Login"
+msgstr ""
+
+msgid "Do not allow user to log into Pawtucket."
+msgstr ""
+
+msgid "Can Download Media"
+msgstr ""
+
+msgid "Allow user to download high resolution media in Pawtucket."
+msgstr ""
+
+msgid "Can Share Objects via Email"
+msgstr ""
+
+msgid "Allow user to share objects with other via email in Pawtucket."
+msgstr ""
+
+msgid "Can Share Objects via Facebook"
+msgstr ""
+
+msgid "Allow user to share objects with other via email in Facebook."
+msgstr ""
+
+msgid "Can Inititate Replication of Object Media to External Repositories"
+msgstr ""
+
+msgid ""
+"Allow user to initiate replication of object media to external repositories "
+"such as YouTube."
+msgstr ""
+
+msgid "Can do library self-check in"
+msgstr ""
+
+msgid "Indicates user is allowed to check in library items for themselves."
+msgstr ""
+
+msgid "Can do library self-check out"
+msgstr ""
+
+msgid "Indicates user is allowed to check out library items for themselves."
+msgstr ""
+
+msgid "Can edit site pages for theme"
+msgstr ""
+
+msgid ""
+"Indicates user is allowed to edit site pages displayed in the current theme."
+msgstr ""
+
+msgid "Can edit global values for theme"
+msgstr ""
+
+msgid ""
+"Indicates user is allowed to edit global values displayed in the current "
+"theme."
+msgstr ""
+
+msgid "Pawtucket Content Management Actions"
+msgstr ""
+
+msgid ""
+"Actions allowing modification of static content on the front-end interface."
+msgstr ""
+
+msgid "Create site page"
+msgstr ""
+
+msgid "Allow user to create new site pages"
+msgstr ""
+
+msgid "Edit site page"
+msgstr ""
+
+msgid "Allow user to edit existing site pages"
+msgstr ""
+
+msgid "Delete site page"
+msgstr ""
+
+msgid "Allow user to delete site pages"
+msgstr ""
+
+msgid "Duplicate site page"
+msgstr ""
+
+msgid "Allow user to use duplicate site pages"
+msgstr ""
+
+msgid "Allow user to view site page change logs"
+msgstr ""
+
+#: app/models/ca_bundle_displays.php:1902
+#: app/models/ca_bundle_displays.php:1919 app/models/ca_search_forms.php:792
+#: app/models/ca_search_forms.php:810 app/models/ca_search_forms.php:1058
+msgid "General"
+msgstr ""
+
+msgid "Editing"
+msgstr ""
+
+msgid "Batch editing"
+msgstr ""
+
+msgid "Quick add"
+msgstr ""
+
+msgid "Units of measurement"
+msgstr ""
+
+msgid "Duplication tools"
+msgstr ""
+
+msgid "Quick search"
+msgstr ""
+
+msgid "User profile"
+msgstr ""
+
+msgid "User interface locale"
+msgstr ""
+
+msgid ""
+"Locale in which to render the user interface; also controls localization of "
+"dates, numbers, etc."
+msgstr ""
+
+msgid "User interface theme"
+msgstr ""
+
+msgid "Theme set (views, CSS, graphics"
+msgstr ""
+
+msgid "Show current location as 'breadcrumb' trail"
+msgstr ""
+
+msgid ""
+"If set to 'yes' the path of menu options taken to reach the current screen "
+"will be displayed at the top of every screen"
+msgstr ""
+
+#: app/models/ca_bundle_displays.php:1612
+#: app/models/ca_bundle_displays.php:1760 app/models/ca_collections.php:132
+#: app/models/ca_list_items.php:246
+#: app/models/ca_metadata_dictionary_rules.php:217
+#: app/models/ca_object_lots.php:124 app/models/ca_objects.php:149
+#: app/models/ca_search_indexing_queue.php:81
+#: app/models/ca_search_indexing_queue.php:108
+msgid "No"
+msgstr ""
+
+#: app/models/ca_bundle_displays.php:1611
+#: app/models/ca_bundle_displays.php:1759 app/models/ca_collections.php:131
+#: app/models/ca_list_items.php:245
+#: app/models/ca_metadata_dictionary_rules.php:216
+#: app/models/ca_object_lots.php:123 app/models/ca_objects.php:148
+#: app/models/ca_search_indexing_queue.php:80
+#: app/models/ca_search_indexing_queue.php:107
+msgid "Yes"
+msgstr ""
+
+msgid "Autoclear Previous Quicksearch"
+msgstr ""
+
+msgid ""
+"Determines if the previous Quicksearch terms clear automatically when a new "
+"search is performed, or if the search terms remain editable for the next "
+"search."
+msgstr ""
+
+msgid "Clear search terms for a new search"
+msgstr ""
+
+msgid "Search terms remain editable for next search"
+msgstr ""
+
+msgid "Remember last search or browse"
+msgstr ""
+
+msgid ""
+"Determines if the last performed search, basic or advanced, or browse is "
+"retained after navigation away from results display"
+msgstr ""
+
+msgid "Clear previous search terms when performing a new search or browse"
+msgstr ""
+
+msgid ""
+"Retain previous search terms and results when performing a search or browse"
+msgstr ""
+
+msgid "Default cataloguing locale"
+msgstr ""
+
+msgid "Locale to default record and attribute locale setting to"
+msgstr ""
+
+msgid "Default action for handling references for an item to be deleted"
+msgstr ""
+
+msgid ""
+"When deleting an item it is possible to move any references to or from that "
+"item to another. Alternatively references can be deleted with the item. The "
+"default behavior may be set here."
+msgstr ""
+
+msgid "Use system default"
+msgstr ""
+
+msgid "Remove references"
+msgstr ""
+
+msgid "Transfer references to another item"
+msgstr ""
+
+msgid "Object editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing objects."
+msgstr ""
+
+msgid "Object lot editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing object lots."
+msgstr ""
+
+msgid "Entity editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing entities."
+msgstr ""
+
+msgid "Place editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing places."
+msgstr ""
+
+msgid "Occurrence editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing occurrences."
+msgstr ""
+
+msgid "Collection editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing collections."
+msgstr ""
+
+msgid "Storage location editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing storage locations."
+msgstr ""
+
+msgid "Object representation editor user interface"
+msgstr ""
+
+msgid ""
+"Selects which user interface to use when editing object representations."
+msgstr ""
+
+msgid "Representation annotation editor user interface"
+msgstr ""
+
+msgid ""
+"Selects which user interface to use when editing representation annotations."
+msgstr ""
+
+msgid "Sets editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing sets."
+msgstr ""
+
+msgid "Set item editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing set items."
+msgstr ""
+
+msgid "List editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing list information."
+msgstr ""
+
+msgid "List item editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing list items."
+msgstr ""
+
+msgid "Loan editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing loans."
+msgstr ""
+
+msgid "Movement editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing movements."
+msgstr ""
+
+msgid "Selects which user interface to use when editing tours."
+msgstr ""
+
+msgid "Selects which user interface to use when editing tour stops."
+msgstr ""
+
+msgid "Search form editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing search forms."
+msgstr ""
+
+msgid "Display editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing displays."
+msgstr ""
+
+msgid "Relationship type editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing relationship types."
+msgstr ""
+
+msgid "User interface editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when editing user interfaces."
+msgstr ""
+
+msgid "User interface screen editor user interface"
+msgstr ""
+
+msgid ""
+"Selects which user interface to use when editing user interface screens."
+msgstr ""
+
+msgid "Import/export mapping editor user interface"
+msgstr ""
+
+msgid ""
+"Selects which user interface to use when editing import/export mappings."
+msgstr ""
+
+msgid "Import/export mapping group editor user interface"
+msgstr ""
+
+msgid ""
+"Selects which user interface to use when editing import/export mapping "
+"groups."
+msgstr ""
+
+msgid "Tour editor user interface"
+msgstr ""
+
+msgid "Tour stop editor user interface"
+msgstr ""
+
+msgid "Selects which user interface to use when quick-adding entities."
+msgstr ""
+
+msgid "Selects which user interface to use when quick-adding places."
+msgstr ""
+
+msgid ""
+"Selects which user interface to use when editquick-addinging occurrences."
+msgstr ""
+
+msgid "Selects which user interface to use when quick-adding collections."
+msgstr ""
+
+msgid ""
+"Selects which user interface to use when quick-adding storage locations."
+msgstr ""
+
+msgid "Display measurements in"
+msgstr ""
+
+msgid ""
+"Determines units used to display measured quantities. Select 'units as "
+"entered' to display measurements in the form in which they were entered into "
+"the system."
+msgstr ""
+
+msgid "units as entered"
+msgstr ""
+
+msgid "metric units"
+msgstr ""
+
+msgid "imperial units"
+msgstr ""
+
+msgid "imperial fractions"
+msgstr ""
+
+msgid "Preferred display currency"
+msgstr ""
+
+msgid "Determines preferred currency to use for display."
+msgstr ""
+
+msgid "Duplicate non-preferred labels?"
+msgstr ""
+
+msgid "If set alternate names for the object will be duplicated."
+msgstr ""
+
+msgid "Duplicate object metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the object will be duplicated."
+msgstr ""
+
+msgid "Duplicate relationship interstitial metadata?"
+msgstr ""
+
+msgid ""
+"If set all interstitial fields for all selected relationships will be "
+"duplicated."
+msgstr ""
+
+msgid "Duplicate relationships?"
+msgstr ""
+
+msgid "Checked relationships will be duplicated."
+msgstr ""
+
+#: app/models/ca_metadata_alert_rules.php:80 app/models/ca_set_items.php:69
+#: app/models/ca_sets.php:95 app/models/ca_user_sorts.php:63
+msgid "Occurrences"
+msgstr ""
+
+#: app/models/ca_metadata_alert_rules.php:84 app/models/ca_set_items.php:73
+#: app/models/ca_sets.php:99 app/models/ca_user_sorts.php:67
+msgid "Loans"
+msgstr ""
+
+#: app/models/ca_metadata_alert_rules.php:85 app/models/ca_set_items.php:74
+#: app/models/ca_sets.php:100 app/models/ca_user_sorts.php:68
+msgid "Movements"
+msgstr ""
+
+#: app/models/ca_metadata_alert_rules.php:88 app/models/ca_set_items.php:77
+#: app/models/ca_sets.php:103 app/models/ca_tours.php:280
+#: app/models/ca_user_sorts.php:71
+msgid "Tour stops"
+msgstr ""
+
+msgid "Vocabulary"
+msgstr ""
+
+msgid "Duplicate object child records?"
+msgstr ""
+
+msgid "If set all selected all records under this object will be duplicated."
+msgstr ""
+
+msgid "Duplicate media?"
+msgstr ""
+
+msgid "If checked all media associated with the object will be duplicated."
+msgstr ""
+
+msgid "Duplicate element settings"
+msgstr ""
+
+msgid "Metadata elements to be duplicated."
+msgstr ""
+
+msgid "If set alternate names for the lot will be duplicated."
+msgstr ""
+
+msgid "Duplicate lot metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the lot will be duplicated."
+msgstr ""
+
+msgid "Duplicate lot child records?"
+msgstr ""
+
+msgid "If set all selected all records under this lot will be duplicated."
+msgstr ""
+
+msgid "If set alternate names for the entity will be duplicated."
+msgstr ""
+
+msgid "Duplicate entity metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the entity will be duplicated."
+msgstr ""
+
+#: app/models/ca_metadata_alert_rules.php:77 app/models/ca_set_items.php:66
+#: app/models/ca_sets.php:92 app/models/ca_user_sorts.php:60
+msgid "Object lots"
+msgstr ""
+
+msgid "Duplicate entity child records?"
+msgstr ""
+
+msgid "If set all selected all records under this entity will be duplicated."
+msgstr ""
+
+msgid "If set alternate names for the place will be duplicated."
+msgstr ""
+
+msgid "Duplicate place metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the place will be duplicated."
+msgstr ""
+
+msgid "Duplicate place child records?"
+msgstr ""
+
+msgid "If set all selected all records under this place will be duplicated."
+msgstr ""
+
+msgid "If set alternate names for the collection will be duplicated."
+msgstr ""
+
+msgid "Duplicate collection metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the collection will be duplicated."
+msgstr ""
+
+msgid "Duplicate collection child records?"
+msgstr ""
+
+msgid ""
+"If set all selected all records under this collection will be duplicated."
+msgstr ""
+
+msgid "If set alternate names for the occurrence will be duplicated."
+msgstr ""
+
+msgid "Duplicate occurrence metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the occurrence will be duplicated."
+msgstr ""
+
+msgid "Duplicate occurrence child records?"
+msgstr ""
+
+msgid ""
+"If set all selected all records under this occurrence will be duplicated."
+msgstr ""
+
+msgid "If set alternate names for the storage location will be duplicated."
+msgstr ""
+
+msgid "Duplicate storage location metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the storage location will be duplicated."
+msgstr ""
+
+msgid "Duplicate storage location child records?"
+msgstr ""
+
+msgid ""
+"If set all selected all records under this storage location will be "
+"duplicated."
+msgstr ""
+
+msgid "If set alternate names for the loan will be duplicated."
+msgstr ""
+
+msgid "Duplicate loan metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the loan will be duplicated."
+msgstr ""
+
+msgid "Duplicate loan child records?"
+msgstr ""
+
+msgid "If set all selected all records under this loan will be duplicated."
+msgstr ""
+
+msgid "If set alternate names for the movement will be duplicated."
+msgstr ""
+
+msgid "Duplicate movement metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the movement will be duplicated."
+msgstr ""
+
+msgid "Duplicate movement child records?"
+msgstr ""
+
+msgid "If set all selected all records under this movement will be duplicated."
+msgstr ""
+
+msgid "If set alternate names for the tour will be duplicated."
+msgstr ""
+
+msgid "Duplicate tour metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the tour will be duplicated."
+msgstr ""
+
+msgid "Duplicate tour stops?"
+msgstr ""
+
+msgid "If checked all stops in the tour will be included."
+msgstr ""
+
+msgid "If set alternate names for the tour stop will be duplicated."
+msgstr ""
+
+msgid "Duplicate tour stop metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the tour stop will be duplicated."
+msgstr ""
+
+msgid "If set alternate names for the list will be duplicated."
+msgstr ""
+
+msgid "Duplicate list metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the list will be duplicated."
+msgstr ""
+
+msgid "If set alternate names for the list item will be duplicated."
+msgstr ""
+
+msgid "Duplicate list item metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the list item will be duplicated."
+msgstr ""
+
+msgid "Duplicate list item child records?"
+msgstr ""
+
+msgid ""
+"If set all selected all records under this list item will be duplicated."
+msgstr ""
+
+msgid "If set alternate names for the set will be duplicated."
+msgstr ""
+
+msgid "Duplicate set metadata?"
+msgstr ""
+
+msgid "If set all selected fields in the set will be duplicated."
+msgstr ""
+
+msgid "Duplicate items?"
+msgstr ""
+
+msgid "If checked all items in the set will be included in the duplicated set."
+msgstr ""
+
+msgid "Duplicate placements?"
+msgstr ""
+
+msgid ""
+"If checked all placements in the display will be included in the duplicated "
+"set."
+msgstr ""
+
+msgid "Quick search settings"
+msgstr ""
+
+msgid "Customizes the scope and order of quick search results"
+msgstr ""
+
+msgid "Are you over 18 years of age?"
+msgstr ""
+
+msgid "If checked user has verified they are over 18 years of age."
+msgstr ""
+
+msgid "Field of research"
+msgstr ""
+
+msgid "The field of research the user is engaged in."
+msgstr ""
+
+msgid "Art history"
+msgstr ""
+
+msgid "Photography"
+msgstr ""
+
+msgid "Art gallery/dealer"
+msgstr ""
+
+msgid "Authentication"
+msgstr ""
+
+#: app/models/ca_list_items.php:232 app/models/ca_list_items.php:260
+msgid "Organization"
+msgstr ""
+
+msgid "Your organization."
+msgstr ""
+
+msgid "Address 1"
+msgstr ""
+
+msgid "Your street address."
+msgstr ""
+
+msgid "Address 2"
+msgstr ""
+
+msgid "Any additional information about your street address."
+msgstr ""
+
+msgid "City"
+msgstr ""
+
+msgid "Your city."
+msgstr ""
+
+msgid "State/province"
+msgstr ""
+
+msgid "Your state/province"
+msgstr ""
+
+msgid "Country"
+msgstr ""
+
+msgid "Your country."
+msgstr ""
+
+msgid "Postal code"
+msgstr ""
+
+msgid "Your postal code."
+msgstr ""
+
+#: themes/arsenal/views/pageFormat/pageFooter.php:55
+msgid "Phone"
+msgstr ""
+
+msgid "Your phone number."
+msgstr ""
+
+msgid "Fax"
+msgstr ""
+
+msgid "Your fax."
+msgstr ""
+
+msgid "Works"
+msgstr ""
+
+msgid "work"
+msgstr ""
+
+msgid "works"
+msgstr ""
+
+msgid "director"
+msgstr ""
+
+msgid "directors"
+msgstr ""
+
+msgid "country"
+msgstr ""
+
+msgid "countries"
+msgstr ""
+
+msgid "forum year"
+msgstr ""
+
+msgid "forum years"
+msgstr ""
+
+msgid "forum decade"
+msgstr ""
+
+msgid "forum decades"
+msgstr ""
+
+msgid "format"
+msgstr ""
+
+msgid "formats"
+msgstr ""
+
+msgid "Series title"
+msgstr ""
+
+msgid "Series titles"
+msgstr ""
+
+msgid "Has object"
+msgstr ""
+
+msgid "Does not have object"
+msgstr ""
+
+msgid "has object"
+msgstr ""
+
+msgid "Find works that have associated objects."
+msgstr ""
+
+msgid "Item Title"
+msgstr ""
+
+msgid "Item Identifier"
+msgstr ""
+
+msgid "Item URL"
+msgstr ""
+
+msgid "Email address"
+msgstr ""
+
+#: app/models/ca_data_import_event_log.php:88
+#: app/models/ca_data_import_items.php:128 app/models/ca_notifications.php:75
+msgid "Message"
+msgstr ""
+
+msgid "Thank you for your submission!"
+msgstr ""
+
+msgid ""
+"Thank you for your submission! Your media has been successfully uploaded to "
+"the archive for review."
+msgstr ""
+
+msgid "Essential"
+msgstr ""
+
+msgid ""
+"These cookies are strictly necessary to provide you with services available "
+"through our website and to use some of its features, such as logging in."
+msgstr ""
+
+msgid "Session cookie"
+msgstr ""
+
+msgid ""
+"Cookie used to maintain your preferences while using this site. No personal "
+"data is stored in the cookie, it is not shared with third-parties and it is "
+"discarded after your session is finished. This cookie is required for the "
+"site to function. It persists for ^lifespan."
+msgstr ""
+
+msgid "Performance and Functionality"
+msgstr ""
+
+msgid "Locale cookie"
+msgstr ""
+
+msgid ""
+"Cookie used to track your selected language setting while using this site. "
+"No personal data is stored in the cookie, it is not shared with third-"
+"parties and it is discarded after your session is finished. If you elect to "
+"not allow use of this cookie, you will not be able to change the language "
+"used on this site. It persists for ^lifespan."
+msgstr ""
+
+msgid "Streaming Video"
+msgstr ""
+
+msgid ""
+"Our site displays video from other streaming sites like Vimeo and YouTube.  "
+"These third party sites may set cookies through these embedded video players."
+msgstr ""
+
+msgid "Third party cookies to enable streaming video embedded players"
+msgstr ""
+
+msgid "People"
+msgstr ""
+
+msgid "Annotations"
+msgstr ""
+
+msgid "Installations"
+msgstr ""
+
+msgid "Object"
+msgstr ""
 
 #: app/controllers/BrowseController.php:87
 msgid "Browse %1"
@@ -38,13 +2873,6 @@ msgstr ""
 
 #: app/controllers/ClassroomController.php:132
 msgid "group"
-msgstr ""
-
-#: app/controllers/CollectionsController.php:55
-#: app/models/ca_metadata_alert_rules.php:81 app/models/ca_set_items.php:70
-#: app/models/ca_sets.php:96 app/models/ca_user_sorts.php:64
-#: themes/arsenal/views/pageFormat/pageHeader.php:139
-msgid "Collections"
 msgstr ""
 
 #: app/controllers/CompareController.php:44
@@ -1258,10 +4086,6 @@ msgstr ""
 msgid "Watch/Unwatch this record"
 msgstr ""
 
-#: app/helpers/displayHelpers.php:1239
-msgid "Change type"
-msgstr ""
-
 #: app/helpers/displayHelpers.php:1245 app/helpers/displayHelpers.php:2112
 msgid "Change Record Type"
 msgstr ""
@@ -1545,35 +4369,6 @@ msgstr ""
 msgid "Number of stops"
 msgstr ""
 
-#: app/helpers/displayHelpers.php:1870 app/helpers/displayHelpers.php:1882
-#: app/helpers/searchHelpers.php:1553 app/helpers/searchHelpers.php:1563
-#: app/helpers/searchHelpers.php:1575 app/helpers/searchHelpers.php:1585
-#: app/helpers/searchHelpers.php:1595 app/helpers/searchHelpers.php:1606
-#: app/helpers/searchHelpers.php:1617 app/helpers/searchHelpers.php:1627
-#: app/helpers/searchHelpers.php:1637 app/models/ca_collection_labels.php:73
-#: app/models/ca_collections.php:75 app/models/ca_data_import_event_log.php:74
-#: app/models/ca_data_import_events.php:78
-#: app/models/ca_data_import_items.php:83
-#: app/models/ca_data_importer_log_items.php:74
-#: app/models/ca_entity_labels.php:74 app/models/ca_list_item_labels.php:72
-#: app/models/ca_list_items.php:70 app/models/ca_loan_labels.php:72
-#: app/models/ca_metadata_alert_triggers.php:85
-#: app/models/ca_metadata_type_restrictions.php:78
-#: app/models/ca_movement_labels.php:72 app/models/ca_object_labels.php:72
-#: app/models/ca_object_lot_labels.php:73 app/models/ca_object_lots.php:61
-#: app/models/ca_object_representation_labels.php:72
-#: app/models/ca_object_representations.php:77 app/models/ca_objects.php:108
-#: app/models/ca_occurrence_labels.php:72 app/models/ca_occurrences.php:73
-#: app/models/ca_place_labels.php:72 app/models/ca_places.php:75
-#: app/models/ca_representation_annotation_labels.php:73
-#: app/models/ca_set_items.php:93 app/models/ca_sets.php:112
-#: app/models/ca_storage_location_labels.php:72
-#: app/models/ca_storage_locations.php:67 app/models/ca_tour_stops.php:77
-#: app/models/ca_tours.php:67
-#: app/models/ca_user_representation_annotation_labels.php:73
-msgid "Type"
-msgstr ""
-
 #: app/helpers/displayHelpers.php:1871 app/helpers/displayHelpers.php:1883
 msgid "Target format"
 msgstr ""
@@ -1618,20 +4413,12 @@ msgstr ""
 msgid "Close options"
 msgstr ""
 
-#: app/helpers/displayHelpers.php:2147
-msgid "Batch import media"
-msgstr ""
-
 #: app/helpers/displayHelpers.php:2151
 msgid "<strong>Directory (all users):</strong> %1"
 msgstr ""
 
 #: app/helpers/displayHelpers.php:2152
 msgid "<strong>Directory (user):</strong> %1"
-msgstr ""
-
-#: app/helpers/displayHelpers.php:2170
-msgid "Batch export metadata"
 msgstr ""
 
 #: app/helpers/displayHelpers.php:2173
@@ -3232,49 +6019,8 @@ msgstr ""
 msgid "Relevance"
 msgstr ""
 
-#: app/helpers/searchHelpers.php:1530 app/helpers/searchHelpers.php:1542
-#: app/helpers/searchHelpers.php:1584 app/helpers/searchHelpers.php:1594
-#: app/helpers/searchHelpers.php:1616 app/helpers/searchHelpers.php:1626
-#: app/helpers/searchHelpers.php:1636 app/helpers/searchHelpers.php:1646
-#: app/helpers/searchHelpers.php:1653
-#: app/models/ca_bundle_display_labels.php:63
-#: app/models/ca_collection_labels.php:80
-#: app/models/ca_data_exporter_labels.php:63
-#: app/models/ca_data_importer_labels.php:63
-#: app/models/ca_editor_ui_labels.php:63
-#: app/models/ca_editor_ui_screen_labels.php:63
-#: app/models/ca_item_comments.php:104 app/models/ca_list_labels.php:70
-#: app/models/ca_loan_labels.php:79 app/models/ca_locales.php:53
-#: app/models/ca_metadata_alert_rule_labels.php:70
-#: app/models/ca_metadata_dictionary_entry_labels.php:70
-#: app/models/ca_metadata_element_labels.php:71
-#: app/models/ca_movement_labels.php:79 app/models/ca_object_labels.php:79
-#: app/models/ca_object_lot_labels.php:80
-#: app/models/ca_occurrence_labels.php:79 app/models/ca_place_labels.php:79
-#: app/models/ca_search_form_labels.php:70 app/models/ca_set_labels.php:71
-#: app/models/ca_storage_location_labels.php:79
-#: app/models/ca_tour_labels.php:70 app/models/ca_tour_stop_labels.php:70
-#: app/models/ca_user_groups.php:64 app/models/ca_user_roles.php:58
-#: app/models/ca_user_sorts.php:87
-msgid "Name"
-msgstr ""
-
-#: app/helpers/searchHelpers.php:1531 app/helpers/searchHelpers.php:1544
-#: app/helpers/searchHelpers.php:1554 app/helpers/searchHelpers.php:1564
-#: app/helpers/searchHelpers.php:1576 app/helpers/searchHelpers.php:1586
-#: app/helpers/searchHelpers.php:1596 app/helpers/searchHelpers.php:1607
-#: app/helpers/searchHelpers.php:1618 app/helpers/searchHelpers.php:1628
-#: app/helpers/searchHelpers.php:1638 app/models/ca_editor_ui_screens.php:1073
-#: app/models/ca_list_items.php:77 app/models/ca_occurrences.php:81
-msgid "Identifier"
-msgstr ""
-
 #: app/helpers/searchHelpers.php:1536
 msgid "Type name"
-msgstr ""
-
-#: app/helpers/searchHelpers.php:1543
-msgid "type"
 msgstr ""
 
 #: app/helpers/searchHelpers.php:1545 app/helpers/searchHelpers.php:1555
@@ -3500,14 +6246,6 @@ msgstr ""
 
 #: app/helpers/themeHelpers.php:1191
 msgid "Keywords"
-msgstr ""
-
-#: app/helpers/utilityHelpers.php:1300
-msgid "year"
-msgstr ""
-
-#: app/helpers/utilityHelpers.php:1300
-msgid "years"
 msgstr ""
 
 #: app/helpers/utilityHelpers.php:1301
@@ -3988,54 +6726,12 @@ msgstr ""
 msgid "Indicates type of item bookmark represents."
 msgstr ""
 
-#: app/models/ca_bookmarks.php:65 app/models/ca_bundle_displays.php:74
-#: app/models/ca_data_importers.php:75 app/models/ca_editor_uis.php:84
-#: app/models/ca_metadata_dictionary_entries.php:52
-#: app/models/ca_metadata_type_restrictions.php:53 app/models/ca_objects.php:53
-#: app/models/ca_search_forms.php:85
-msgid "objects"
-msgstr ""
-
 #: app/models/ca_bookmarks.php:66 app/models/ca_bundle_displays.php:75
 #: app/models/ca_data_importers.php:76 app/models/ca_editor_uis.php:85
 #: app/models/ca_metadata_dictionary_entries.php:53
 #: app/models/ca_metadata_type_restrictions.php:54
 #: app/models/ca_object_lots.php:46 app/models/ca_search_forms.php:86
 msgid "object lots"
-msgstr ""
-
-#: app/models/ca_bookmarks.php:67 app/models/ca_bundle_displays.php:76
-#: app/models/ca_data_importers.php:77 app/models/ca_editor_uis.php:86
-#: app/models/ca_entities.php:44
-#: app/models/ca_metadata_dictionary_entries.php:54
-#: app/models/ca_metadata_type_restrictions.php:55
-#: app/models/ca_search_forms.php:87
-msgid "entities"
-msgstr ""
-
-#: app/models/ca_bookmarks.php:68 app/models/ca_bundle_displays.php:77
-#: app/models/ca_data_importers.php:78 app/models/ca_editor_uis.php:87
-#: app/models/ca_metadata_dictionary_entries.php:55
-#: app/models/ca_metadata_type_restrictions.php:56 app/models/ca_places.php:45
-#: app/models/ca_search_forms.php:88
-msgid "places"
-msgstr ""
-
-#: app/models/ca_bookmarks.php:69 app/models/ca_bundle_displays.php:78
-#: app/models/ca_data_importers.php:79 app/models/ca_editor_uis.php:88
-#: app/models/ca_metadata_dictionary_entries.php:56
-#: app/models/ca_metadata_type_restrictions.php:57
-#: app/models/ca_occurrences.php:43 app/models/ca_search_forms.php:89
-msgid "occurrences"
-msgstr ""
-
-#: app/models/ca_bookmarks.php:70 app/models/ca_bundle_displays.php:79
-#: app/models/ca_collections.php:45 app/models/ca_data_importers.php:80
-#: app/models/ca_editor_uis.php:89
-#: app/models/ca_metadata_dictionary_entries.php:57
-#: app/models/ca_metadata_type_restrictions.php:58
-#: app/models/ca_search_forms.php:90
-msgid "collections"
 msgstr ""
 
 #: app/models/ca_bookmarks.php:71 app/models/ca_bundle_displays.php:80
@@ -4127,23 +6823,6 @@ msgid "Name of display"
 msgstr ""
 
 #: app/models/ca_bundle_display_labels.php:79
-#: app/models/ca_data_exporter_labels.php:79
-#: app/models/ca_data_import_events.php:86
-#: app/models/ca_data_importer_labels.php:79
-#: app/models/ca_editor_ui_labels.php:71
-#: app/models/ca_editor_ui_screen_labels.php:71
-#: app/models/ca_editor_ui_screens.php:2119
-#: app/models/ca_editor_ui_screens.php:2375
-#: app/models/ca_list_item_labels.php:103
-#: app/models/ca_metadata_alert_rule_labels.php:86
-#: app/models/ca_metadata_dictionary_entry_labels.php:86
-#: app/models/ca_metadata_element_labels.php:79
-#: app/models/ca_search_form_labels.php:86 app/models/ca_user_groups.php:80
-#: app/models/ca_user_roles.php:74
-msgid "Description"
-msgstr ""
-
-#: app/models/ca_bundle_display_labels.php:79
 #: app/models/ca_metadata_alert_rule_labels.php:86
 #: app/models/ca_search_form_labels.php:86
 msgid "Description of display"
@@ -4220,11 +6899,6 @@ msgstr ""
 msgid ""
 "The relative priority of the display when displayed in a list with other "
 "displays. Lower numbers indicate higher priority."
-msgstr ""
-
-#: app/models/ca_bundle_display_placements.php:192
-#: app/models/ca_search_form_placements.php:192
-msgid "Label"
 msgstr ""
 
 #: app/models/ca_bundle_display_placements.php:193
@@ -4718,26 +7392,6 @@ msgstr ""
 msgid "Determines if value used is URL of media or the media itself."
 msgstr ""
 
-#: app/models/ca_bundle_displays.php:1611
-#: app/models/ca_bundle_displays.php:1759 app/models/ca_collections.php:131
-#: app/models/ca_list_items.php:245
-#: app/models/ca_metadata_dictionary_rules.php:216
-#: app/models/ca_object_lots.php:123 app/models/ca_objects.php:148
-#: app/models/ca_search_indexing_queue.php:80
-#: app/models/ca_search_indexing_queue.php:107
-msgid "Yes"
-msgstr ""
-
-#: app/models/ca_bundle_displays.php:1612
-#: app/models/ca_bundle_displays.php:1760 app/models/ca_collections.php:132
-#: app/models/ca_list_items.php:246
-#: app/models/ca_metadata_dictionary_rules.php:217
-#: app/models/ca_object_lots.php:124 app/models/ca_objects.php:149
-#: app/models/ca_search_indexing_queue.php:81
-#: app/models/ca_search_indexing_queue.php:108
-msgid "No"
-msgstr ""
-
 #: app/models/ca_bundle_displays.php:1614
 #: app/models/ca_bundle_displays.php:1762
 msgid "Include non-primary media"
@@ -4880,12 +7534,6 @@ msgstr ""
 
 #: app/models/ca_bundle_displays.php:1895
 msgid "Sets format for output of date when exporting."
-msgstr ""
-
-#: app/models/ca_bundle_displays.php:1902
-#: app/models/ca_bundle_displays.php:1919 app/models/ca_search_forms.php:792
-#: app/models/ca_search_forms.php:810 app/models/ca_search_forms.php:1058
-msgid "General"
 msgstr ""
 
 #: app/models/ca_bundle_displays.php:1906
@@ -5168,10 +7816,6 @@ msgstr ""
 #: app/models/ca_occurrence_labels.php:124 app/models/ca_place_labels.php:124
 #: app/models/ca_storage_location_labels.php:124
 msgid "Indicates if label is accessible to the public or not."
-msgstr ""
-
-#: app/models/ca_collections.php:44
-msgid "collection"
 msgstr ""
 
 #: app/models/ca_collections.php:52
@@ -6861,11 +9505,6 @@ msgstr ""
 #: app/models/ca_data_importer_log_items.php:80
 #: app/models/ca_metadata_dictionary_rules.php:80
 msgid "Debug"
-msgstr ""
-
-#: app/models/ca_data_import_event_log.php:88
-#: app/models/ca_data_import_items.php:128 app/models/ca_notifications.php:75
-msgid "Message"
 msgstr ""
 
 #: app/models/ca_data_import_event_log.php:88
@@ -8670,18 +11309,9 @@ msgid ""
 "set for underlying metadata element, if set."
 msgstr ""
 
-#: app/models/ca_editor_ui_bundle_placements.php:225
-#: app/models/ca_search_forms.php:784
-msgid "Width"
-msgstr ""
-
 #: app/models/ca_editor_ui_bundle_placements.php:226
 #: app/models/ca_editor_ui_bundle_placements.php:235
 msgid "Width, in characters or pixels."
-msgstr ""
-
-#: app/models/ca_editor_ui_bundle_placements.php:234
-msgid "Height"
 msgstr ""
 
 #: app/models/ca_editor_ui_bundle_placements.php:243
@@ -10105,10 +12735,6 @@ msgstr ""
 msgid "editor UIs ⇔ user associations"
 msgstr ""
 
-#: app/models/ca_entities.php:43
-msgid "entity"
-msgstr ""
-
 #: app/models/ca_entities.php:51
 msgid ""
 "Unique numeric identifier used by CollectiveAccess internally to identify "
@@ -10751,10 +13377,6 @@ msgstr ""
 
 #: app/models/ca_list_items.php:231
 msgid "Individual person"
-msgstr ""
-
-#: app/models/ca_list_items.php:232 app/models/ca_list_items.php:260
-msgid "Organization"
 msgstr ""
 
 #: app/models/ca_list_items.php:233
@@ -11506,50 +14128,9 @@ msgid ""
 "the alert ."
 msgstr ""
 
-#: app/models/ca_metadata_alert_rules.php:76 app/models/ca_set_items.php:65
-#: app/models/ca_sets.php:91 app/models/ca_user_sorts.php:59
-msgid "Objects"
-msgstr ""
-
-#: app/models/ca_metadata_alert_rules.php:77 app/models/ca_set_items.php:66
-#: app/models/ca_sets.php:92 app/models/ca_user_sorts.php:60
-msgid "Object lots"
-msgstr ""
-
-#: app/models/ca_metadata_alert_rules.php:78 app/models/ca_set_items.php:67
-#: app/models/ca_sets.php:93 app/models/ca_user_sorts.php:61
-msgid "Entities"
-msgstr ""
-
-#: app/models/ca_metadata_alert_rules.php:79 app/models/ca_set_items.php:68
-#: app/models/ca_sets.php:94 app/models/ca_user_sorts.php:62
-msgid "Places"
-msgstr ""
-
-#: app/models/ca_metadata_alert_rules.php:80 app/models/ca_set_items.php:69
-#: app/models/ca_sets.php:95 app/models/ca_user_sorts.php:63
-msgid "Occurrences"
-msgstr ""
-
-#: app/models/ca_metadata_alert_rules.php:82 app/models/ca_set_items.php:71
-#: app/models/ca_sets.php:97 app/models/ca_storage_locations.php:441
-#: app/models/ca_storage_locations.php:453 app/models/ca_user_sorts.php:65
-msgid "Storage locations"
-msgstr ""
-
 #: app/models/ca_metadata_alert_rules.php:83 app/models/ca_set_items.php:72
 #: app/models/ca_sets.php:98 app/models/ca_user_sorts.php:66
 msgid "Object representations"
-msgstr ""
-
-#: app/models/ca_metadata_alert_rules.php:84 app/models/ca_set_items.php:73
-#: app/models/ca_sets.php:99 app/models/ca_user_sorts.php:67
-msgid "Loans"
-msgstr ""
-
-#: app/models/ca_metadata_alert_rules.php:85 app/models/ca_set_items.php:74
-#: app/models/ca_sets.php:100 app/models/ca_user_sorts.php:68
-msgid "Movements"
 msgstr ""
 
 #: app/models/ca_metadata_alert_rules.php:86 app/models/ca_set_items.php:75
@@ -11560,12 +14141,6 @@ msgstr ""
 #: app/models/ca_metadata_alert_rules.php:87 app/models/ca_set_items.php:76
 #: app/models/ca_sets.php:102 app/models/ca_user_sorts.php:70
 msgid "Tours"
-msgstr ""
-
-#: app/models/ca_metadata_alert_rules.php:88 app/models/ca_set_items.php:77
-#: app/models/ca_sets.php:103 app/models/ca_tours.php:280
-#: app/models/ca_user_sorts.php:71
-msgid "Tour stops"
 msgstr ""
 
 #: app/models/ca_metadata_alert_rules.php:89
@@ -12909,10 +15484,6 @@ msgid ""
 "results)."
 msgstr ""
 
-#: app/models/ca_objects.php:52
-msgid "object"
-msgstr ""
-
 #: app/models/ca_objects.php:60
 msgid ""
 "Unique numeric identifier used by CollectiveAccess internally to identify "
@@ -13206,10 +15777,6 @@ msgstr ""
 msgid "Name of occurrence"
 msgstr ""
 
-#: app/models/ca_occurrences.php:42
-msgid "occurrence"
-msgstr ""
-
 #: app/models/ca_occurrences.php:50
 msgid ""
 "Unique numeric identifier used by CollectiveAccess internally to identify "
@@ -13295,10 +15862,6 @@ msgstr ""
 #: app/models/ca_representation_annotation_labels.php:88
 #: app/models/ca_user_representation_annotation_labels.php:88
 msgid "Sortable version of name value"
-msgstr ""
-
-#: app/models/ca_places.php:44
-msgid "place"
 msgstr ""
 
 #: app/models/ca_places.php:52
@@ -13943,10 +16506,6 @@ msgid "The user who created the set."
 msgstr ""
 
 #: app/models/ca_sets.php:119
-msgid "Set code"
-msgstr ""
-
-#: app/models/ca_sets.php:119
 msgid ""
 "A unique alphanumeric code for this set. You will need to specify this if "
 "you are using this set in a special context (on a web front-end, for "
@@ -14066,16 +16625,6 @@ msgstr ""
 
 #: app/models/ca_site_page_media.php:87
 msgid "Long description for media"
-msgstr ""
-
-#: app/models/ca_site_page_media.php:94
-#: app/plugins/FindingAid/printTemplates/header.php:44
-#: app/printTemplates/results/footer.php:42
-#: app/printTemplates/results/footer.php:72
-#: app/printTemplates/results/footer.php:89
-#: app/printTemplates/summary/footer.php:42
-#: app/printTemplates/summary/footer.php:45
-msgid "Page"
 msgstr ""
 
 #: app/models/ca_site_page_media.php:94
@@ -15367,10 +17916,6 @@ msgstr ""
 #: themes/arsenal/views/pageFormat/pageFooter.php:33
 #: themes/arsenal/views/pageFormat/pageHeader.php:50
 msgid "Logout"
-msgstr ""
-
-#: themes/arsenal/views/pageFormat/pageFooter.php:55
-msgid "Phone"
 msgstr ""
 
 #: themes/arsenal/views/pageFormat/pageFooter.php:59
