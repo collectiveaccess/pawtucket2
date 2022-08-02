@@ -4658,7 +4658,9 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				$t_instance = new ca_object_representations($vn_representation_id);
 
 				if (!($vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE'))) {
-				    $vs_mimetype = $t_instance->getMediaInfo('media', 'large', 'MIMETYPE');
+					$versions = $t_instance->getMediaVersions('media');
+					$version = array_pop($versions);
+				    $vs_mimetype = $t_instance->getMediaInfo('media', $version, 'MIMETYPE');
 			        $vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype);
 			    }
 			    if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype))) {
