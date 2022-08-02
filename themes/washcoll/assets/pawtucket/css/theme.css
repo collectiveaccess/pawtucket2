@@ -258,6 +258,10 @@ a.readmore-js-toggle {
 .hpExploreButtons div{
 	margin-bottom:30px;	
 }
+#caMediaPanelContentArea .close, #caMediaPanelContentArea .close a{
+	color:red;
+	opacity:1;
+}
 /* results */
 #bRefine a {
   color: #000;
