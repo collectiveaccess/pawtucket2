@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2\n"
 "POT-Creation-Date: 2022-07-30 00:07-0400\n"
-"PO-Revision-Date: 2022-07-30 00:07-0400\n"
-"Last-Translator: Seth <Seth@collectiveacess.org>\n"
+"PO-Revision-Date: 2022-08-02 08:25-0400\n"
+"Last-Translator: Maria Passarotti <maria@whirl-i-gig.com>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -282,18 +282,18 @@ msgid ""
 msgstr ""
 
 msgid "decade"
-msgstr ""
+msgstr "jahrzehnt"
 
 msgid "decades"
-msgstr ""
+msgstr "jahrzehnte"
 
 #: app/helpers/utilityHelpers.php:1300
 msgid "year"
-msgstr ""
+msgstr "yahr"
 
 #: app/helpers/utilityHelpers.php:1300
 msgid "years"
-msgstr ""
+msgstr "jahre"
 
 msgid "Years"
 msgstr ""
@@ -327,7 +327,7 @@ msgstr ""
 #: app/models/ca_metadata_type_restrictions.php:58
 #: app/models/ca_search_forms.php:90
 msgid "collections"
-msgstr ""
+msgstr "zusammenstellungen"
 
 msgid "Find objects according to the Collections they belong to."
 msgstr ""
@@ -389,7 +389,7 @@ msgstr ""
 #: app/models/ca_sets.php:96 app/models/ca_user_sorts.php:64
 #: themes/arsenal/views/pageFormat/pageHeader.php:139
 msgid "Collections"
-msgstr ""
+msgstr "Zusammenstellungen"
 
 #: app/models/ca_metadata_alert_rules.php:79 app/models/ca_set_items.php:68
 #: app/models/ca_sets.php:94 app/models/ca_user_sorts.php:62
@@ -2696,7 +2696,7 @@ msgid "Your state/province"
 msgstr ""
 
 msgid "Country"
-msgstr ""
+msgstr "Land"
 
 msgid "Your country."
 msgstr ""
@@ -2709,7 +2709,7 @@ msgstr ""
 
 #: themes/arsenal/views/pageFormat/pageFooter.php:55
 msgid "Phone"
-msgstr ""
+msgstr "Telefon"
 
 msgid "Your phone number."
 msgstr ""
@@ -2721,28 +2721,28 @@ msgid "Your fax."
 msgstr ""
 
 msgid "Works"
-msgstr ""
+msgstr "Werke"
 
 msgid "work"
-msgstr ""
+msgstr "werk"
 
 msgid "works"
-msgstr ""
+msgstr "werke"
 
 msgid "director"
-msgstr ""
+msgstr "regie"
 
 msgid "directors"
-msgstr ""
+msgstr "regie"
 
 msgid "country"
-msgstr ""
+msgstr "land"
 
 msgid "countries"
-msgstr ""
+msgstr "länder"
 
 msgid "forum year"
-msgstr ""
+msgstr "forumjahr"
 
 msgid "forum years"
 msgstr ""
@@ -2754,16 +2754,16 @@ msgid "forum decades"
 msgstr ""
 
 msgid "format"
-msgstr ""
+msgstr "format"
 
 msgid "formats"
-msgstr ""
+msgstr "formate"
 
 msgid "Series title"
-msgstr ""
+msgstr "Serientitel"
 
 msgid "Series titles"
-msgstr ""
+msgstr "Serientitel"
 
 msgid "Has object"
 msgstr ""
@@ -2903,7 +2903,7 @@ msgstr ""
 #: app/controllers/ContactController.php:43
 #: themes/arsenal/views/pageFormat/pageFooter.php:71
 msgid "Contact"
-msgstr ""
+msgstr "Kontakt"
 
 #: app/controllers/ContactController.php:66
 msgid "Please answer the security question"
@@ -3008,15 +3008,15 @@ msgstr ""
 
 #: app/controllers/DetailController.php:275
 msgid "Previous"
-msgstr ""
+msgstr "Zurück"
 
 #: app/controllers/DetailController.php:276
 msgid "Next"
-msgstr ""
+msgstr "Vor"
 
 #: app/controllers/DetailController.php:279
 msgid "Back"
-msgstr ""
+msgstr "Zur Liste"
 
 #: app/controllers/DetailController.php:520
 msgid "Invalid object/representation"
@@ -3424,7 +3424,7 @@ msgstr ""
 #: themes/arsenal/views/pageFormat/pageFooter.php:35
 #: themes/arsenal/views/pageFormat/pageHeader.php:52
 msgid "Login"
-msgstr ""
+msgstr "Anmelden"
 
 #: app/controllers/LoginRegController.php:57
 #: app/controllers/LoginRegController.php:321
@@ -3619,7 +3619,7 @@ msgstr ""
 #: themes/arsenal/views/pageFormat/pageHeader.php:120
 #: themes/arsenal/views/pageFormat/pageHeader.php:123
 msgid "Search"
-msgstr ""
+msgstr "Suche"
 
 #: app/controllers/MultiSearchController.php:66
 msgid "search"
@@ -3636,7 +3636,7 @@ msgstr ""
 #: app/controllers/SearchController.php:150
 #: app/controllers/SearchController.php:490
 msgid "Search %1"
-msgstr ""
+msgstr "Suche %1"
 
 #: app/controllers/lookup/AttributeValueController.php:47
 msgid "Invalid table name"
@@ -4005,7 +4005,7 @@ msgstr ""
 #: app/helpers/displayHelpers.php:787
 #: themes/arsenal/views/Browse/browse_results_html.php:102
 msgid "Results"
-msgstr ""
+msgstr "Gefunden"
 
 #: app/helpers/displayHelpers.php:987
 msgid "Deleted %1"
@@ -5884,7 +5884,7 @@ msgstr ""
 
 #: app/helpers/htmlFormHelpers.php:465
 msgid "More..."
-msgstr ""
+msgstr "Mehr…"
 
 #: app/helpers/importHelpers.php:84
 msgid ""
@@ -6108,7 +6108,7 @@ msgstr ""
 #: app/models/ca_site_page_media.php:56
 #: app/models/ca_user_representation_annotation_labels.php:80
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: app/helpers/searchHelpers.php:1659 app/helpers/searchHelpers.php:1667
 msgid "Date"
@@ -6573,7 +6573,7 @@ msgstr ""
 #: app/models/ca_user_roles.php:82 app/models/ca_user_sort_items.php:69
 #: app/models/ca_user_sorts.php:110 app/models/ca_users_x_roles.php:70
 msgid "Sort order"
-msgstr ""
+msgstr "Reihenfolge"
 
 #: app/models/ca_attribute_value_multifiles.php:91
 #: app/models/ca_object_representation_multifiles.php:94
@@ -11553,7 +11553,7 @@ msgstr ""
 #: app/models/ca_editor_ui_screens.php:2048
 #: themes/arsenal/views/Browse/browse_results_html.php:125
 msgid "Ascending"
-msgstr ""
+msgstr "Aufsteigend"
 
 #: app/models/ca_editor_ui_screens.php:751
 #: app/models/ca_editor_ui_screens.php:1095
@@ -11562,7 +11562,7 @@ msgstr ""
 #: app/models/ca_editor_ui_screens.php:2049
 #: themes/arsenal/views/Browse/browse_results_html.php:126
 msgid "Descending"
-msgstr ""
+msgstr "Absteigend"
 
 #: app/models/ca_editor_ui_screens.php:753
 #: app/models/ca_editor_ui_screens.php:1655
@@ -17765,7 +17765,7 @@ msgstr ""
 
 #: themes/arsenal/views/Browse/browse_refine_subview_html.php:44
 msgid "Filter by"
-msgstr ""
+msgstr "Filtern nach"
 
 #: themes/arsenal/views/Browse/browse_refine_subview_html.php:56
 #: themes/arsenal/views/Browse/browse_results_html.php:251
@@ -17775,16 +17775,16 @@ msgstr ""
 #: themes/arsenal/views/Browse/browse_refine_subview_html.php:87
 #: themes/arsenal/views/Browse/browse_refine_subview_html.php:91
 msgid "and %1 more"
-msgstr ""
+msgstr "und % weitere"
 
 #: themes/arsenal/views/Browse/browse_refine_subview_html.php:88
 msgid "close"
-msgstr ""
+msgstr "weniger"
 
 #: themes/arsenal/views/Browse/browse_results_html.php:82
 #: themes/arsenal/views/Browse/browse_results_html.php:115
 msgid "Sort by:"
-msgstr ""
+msgstr "Sortieren nach:"
 
 #: themes/arsenal/views/Browse/browse_results_html.php:95
 msgid "desc"
@@ -17812,7 +17812,7 @@ msgstr ""
 
 #: themes/arsenal/views/Browse/browse_results_html.php:124
 msgid "Sort order:"
-msgstr ""
+msgstr "Aufsteigend:"
 
 #: themes/arsenal/views/Browse/browse_results_html.php:136
 msgid "Start Over"
@@ -17833,43 +17833,43 @@ msgstr ""
 #: themes/arsenal/views/Browse/browse_results_images_html.php:173
 #: themes/arsenal/views/Browse/browse_results_list_html.php:172
 msgid "Next %1"
-msgstr ""
+msgstr "Vor %1"
 
 #: themes/arsenal/views/Cookies/banner_html.php:20
 msgid "This website uses cookies"
-msgstr ""
+msgstr "Diese Webseite verwendet Cookies"
 
 #: themes/arsenal/views/Cookies/banner_html.php:26
 msgid "Manage"
-msgstr ""
+msgstr "Einstellungen"
 
 #: themes/arsenal/views/Cookies/banner_html.php:26
 msgid "Accept"
-msgstr ""
+msgstr "Akzeptieren"
 
 #: themes/arsenal/views/Cookies/form_manage_html.php:44
 msgid "Manage Cookies"
-msgstr ""
+msgstr "Cookie Einstellungen"
 
 #: themes/arsenal/views/Cookies/form_manage_html.php:99
 msgid "ON"
-msgstr ""
+msgstr "AN"
 
 #: themes/arsenal/views/Cookies/form_manage_html.php:101
 msgid "OFF"
-msgstr ""
+msgstr "AUS"
 
 #: themes/arsenal/views/Cookies/form_manage_html.php:115
 msgid "Update"
-msgstr ""
+msgstr "Sichern"
 
 #: themes/arsenal/views/Cookies/form_manage_html.php:115
 msgid "Accept All"
-msgstr ""
+msgstr "Alle Akzeptieren"
 
 #: themes/arsenal/views/Details/ca_objects_default_html.php:79
 msgid "Back to %1"
-msgstr ""
+msgstr "Zurück zum %1"
 
 #: themes/arsenal/views/Details/ca_objects_default_html.php:116
 msgid "Comments and tags"
@@ -17881,7 +17881,7 @@ msgstr ""
 
 #: themes/arsenal/views/Details/ca_objects_default_html.php:238
 msgid "Work"
-msgstr ""
+msgstr "Werk"
 
 #: themes/arsenal/views/Front/gallery_grid_html.php:99
 msgid "View All"
@@ -17889,21 +17889,21 @@ msgstr ""
 
 #: themes/arsenal/views/Gallery/detail_html.php:57
 msgid "more"
-msgstr ""
+msgstr "mehr"
 
 #: themes/arsenal/views/Gallery/index_html.php:34
 msgid "Featured Collections"
-msgstr ""
+msgstr "Thematische Zusammenstellungen"
 
 #: themes/arsenal/views/Gallery/index_html.php:48
 #: themes/arsenal/views/Gallery/index_html.php:114
 msgid "item"
-msgstr ""
+msgstr "objekt"
 
 #: themes/arsenal/views/Gallery/index_html.php:48
 #: themes/arsenal/views/Gallery/index_html.php:114
 msgid "items"
-msgstr ""
+msgstr "Objekte"
 
 #: themes/arsenal/views/Gallery/index_html.php:116
 msgid "view %1"
@@ -17911,28 +17911,28 @@ msgstr ""
 
 #: themes/arsenal/views/Gallery/set_item_info_html.php:24
 msgid "VIEW RECORD"
-msgstr ""
+msgstr "ZUM FILM"
 
 #: themes/arsenal/views/pageFormat/pageFooter.php:33
 #: themes/arsenal/views/pageFormat/pageHeader.php:50
 msgid "Logout"
-msgstr ""
+msgstr "Abmelden"
 
 #: themes/arsenal/views/pageFormat/pageFooter.php:59
 msgid "Archive"
-msgstr ""
+msgstr "Archiv"
 
 #: themes/arsenal/views/pageFormat/pageFooter.php:68
 msgid "Cookies"
-msgstr ""
+msgstr "Cookies"
 
 #: themes/arsenal/views/pageFormat/pageFooter.php:69
 msgid "Privacy Policy"
-msgstr ""
+msgstr "Datenschutz"
 
 #: themes/arsenal/views/pageFormat/pageFooter.php:70
 msgid "Imprint"
-msgstr ""
+msgstr "Impressum"
 
 #: themes/arsenal/views/pageFormat/pageHeader.php:48
 msgid "Submit content"
@@ -17940,7 +17940,7 @@ msgstr ""
 
 #: themes/arsenal/views/pageFormat/pageHeader.php:123
 msgid "Search text"
-msgstr ""
+msgstr "Volltextsuche"
 
 #: themes/arsenal/views/pageFormat/pageHeader.php:127
 msgid "Advanced search"
@@ -17952,7 +17952,7 @@ msgstr ""
 
 #: themes/arsenal/views/pageFormat/pageHeader.php:138
 msgid "Browse"
-msgstr ""
+msgstr "Filtern"
 
 #: themes/arsenal/views/pageFormat/pageHeader.php:140
 msgid "Arsenal"
@@ -17960,7 +17960,7 @@ msgstr ""
 
 #: themes/arsenal/views/pageFormat/pageHeader.php:141
 msgid "About"
-msgstr ""
+msgstr "Über uns"
 
 #: themes/arsenal/views/pageFormat/pageHeader.php:142
 msgid "EN"
