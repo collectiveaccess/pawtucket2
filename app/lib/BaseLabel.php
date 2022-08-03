@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2017 Whirl-i-Gig
+ * Copyright 2008-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -161,7 +161,7 @@
 		 * locale of the label doesn't correspond to an existing TimeExpressionParser localization, then
 		 * the users' current locale setting is used.
 		 */
-		private function _generateSortableValue() {
+		protected function _generateSortableValue() {
 			if ($vs_sort_field = $this->getProperty('LABEL_SORT_FIELD')) {
 				$vs_display_field = $this->getProperty('LABEL_DISPLAY_FIELD');
 				
@@ -169,7 +169,7 @@
 					$t_locale = new ca_locales();
 					$vs_locale = $t_locale->localeIDToCode($this->get('locale_id'));
 				}
-				$vs_display_value = caSortableValue($this->get($vs_display_field), array('locale' => $vs_locale));
+				$vs_display_value = caSortableValue($this->get($vs_display_field), ['locale' => $vs_locale, 'maxLength' => 255]);
 				
 				$this->set($vs_sort_field, $vs_display_value);
 			}
@@ -211,6 +211,17 @@
                 }
 			}
 			return parent::htmlFormElement($ps_field, $ps_format, $pa_options);
+		}
+		# ------------------------------------------------------
+		/**
+		 * Convert label components into canonical format. Overridden by label classes.
+		 *
+		 * @param array $label_values
+		 *
+		 * @return array
+		 */
+		public static function normalizeLabel(array $label_values) : array {
+			return $label_values;
 		}
 		# -------------------------------------------------------
 	}

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2016-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -71,6 +71,13 @@ BaseModel::$s_ca_models_definitions['ca_site_page_media'] = array(
 				'DEFAULT' => '',
 				'LABEL' => 'Sortable media identifier', 'DESCRIPTION' => 'Value used for sorting media on identifier value.',
 				'BOUNDS_LENGTH' => array(0,255)
+		),
+		'idno_sort_num' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
+				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => false, 
+				'DEFAULT' => '',
+				'LABEL' => 'Sortable object identifier as integer', 'DESCRIPTION' => 'Integer value used for sorting objects; used for idno range query.'
 		),
 		'caption' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
@@ -177,7 +184,8 @@ BaseModel::$s_ca_models_definitions['ca_site_page_media'] = array(
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => 0,
-				'LABEL' => _t('Is deleted?'), 'DESCRIPTION' => _t('Indicates if media is deleted or not.')
+				'LABEL' => _t('Is deleted?'), 'DESCRIPTION' => _t('Indicates if media is deleted or not.'),
+				'DONT_INCLUDE_IN_SEARCH_FORM' => true
 		)
  	)
 );

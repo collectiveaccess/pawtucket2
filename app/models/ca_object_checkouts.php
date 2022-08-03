@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2016 Whirl-i-Gig
+ * Copyright 2014-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -150,7 +150,8 @@ BaseModel::$s_ca_models_definitions['ca_object_checkouts'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => 0,
 				'LABEL' => _t('Is deleted?'), 'DESCRIPTION' => _t('Indicates if the order is deleted or not.'),
-				'BOUNDS_VALUE' => array(0,1)
+				'BOUNDS_VALUE' => array(0,1),
+				'DONT_INCLUDE_IN_SEARCH_FORM' => true
 		),
  	)
 );
@@ -336,7 +337,7 @@ class ca_object_checkouts extends BundlableLabelableBaseModelWithAttributes {
 			$o_trans = $this->getTransaction();
 		} else {	
 			$vb_we_set_transaction = true;
-			$this->setTransaction($o_trans = new Transaction());
+			$this->setTransaction($o_trans = new Transaction($this->getDb()));
 		}
 		
 		$o_request = caGetOption('request', $pa_options, null);
@@ -387,7 +388,9 @@ class ca_object_checkouts extends BundlableLabelableBaseModelWithAttributes {
 		} else {
 			$vs_uuid = $this->getTransactionUUID();
 		}
-		$va_checkout_config = ca_object_checkouts::getObjectCheckoutConfigForType($t_object->getTypeCode());
+		if(is_null($va_checkout_config = ca_object_checkouts::getObjectCheckoutConfigForType($type_code = $t_object->getTypeCode()))) {
+			throw new ApplicationException(_t("Configuration for type %1 does not exist", $type_code));
+		}
 		
 		if (!($va_checkout_config['allow_override_of_due_dates'] && $ps_due_date && caDateToUnixTimestamp($ps_due_date))) {
 			// calculate default return date
@@ -444,7 +447,7 @@ class ca_object_checkouts extends BundlableLabelableBaseModelWithAttributes {
 			$o_trans = $this->getTransaction();
 		} else {	
 			$vb_we_set_transaction = true;
-			$this->setTransaction($o_trans = new Transaction());
+			$this->setTransaction($o_trans = new Transaction($this->getDb()));
 		}
 		
 		$o_request = caGetOption('request', $pa_options, null);
@@ -505,7 +508,7 @@ class ca_object_checkouts extends BundlableLabelableBaseModelWithAttributes {
 			$o_trans = $this->getTransaction();
 		} else {	
 			$vb_we_set_transaction = true;
-			$this->setTransaction($o_trans = new Transaction());
+			$this->setTransaction($o_trans = new Transaction($this->getDb()));
 		}
 		
 		$o_request = caGetOption('request', $pa_options, null);
@@ -530,7 +533,9 @@ class ca_object_checkouts extends BundlableLabelableBaseModelWithAttributes {
 		}
 		
 		$vs_uuid = $this->getTransactionUUID();
-		$va_checkout_config = ca_object_checkouts::getObjectCheckoutConfigForType($t_object->getTypeCode());
+		if(is_null($va_checkout_config = ca_object_checkouts::getObjectCheckoutConfigForType($type_code = $t_object->getTypeCode()))) {
+			throw new ApplicationException(_t("Configuration for type %1 does not exist", $type_code));
+		}
 		
 		$this->setMode(ACCESS_WRITE);
 		$this->set(array(
@@ -578,6 +583,8 @@ class ca_object_checkouts extends BundlableLabelableBaseModelWithAttributes {
 		
 		$va_type_config = $o_config->getAssoc('checkout_types');
 		$vs_type_code = is_numeric($pm_type_id) ? $t_object->getTypeCodeForID($pm_type_id) : $pm_type_id;
+		
+		if(!isset($va_type_config[$vs_type_code])) { $vs_type_code = "__default__"; }
 		
 		if(isset($va_type_config[$vs_type_code])) {
 			if (isset($va_type_config[$vs_type_code]['default_checkout_period'])) {
@@ -905,7 +912,7 @@ class ca_object_checkouts extends BundlableLabelableBaseModelWithAttributes {
 					return_date IS NULL
 					AND
 					user_id = ?
-					".(($pb_omit_overdue ? " AND (due_date > ".time().") " : ''))."
+					".(($pb_omit_overdue ? " AND ((due_date > ".time().") OR due_date IS NULL) " : ''))."
 					AND
 					deleted = 0
 				ORDER BY
@@ -921,7 +928,7 @@ class ca_object_checkouts extends BundlableLabelableBaseModelWithAttributes {
 					return_date IS NULL
 					AND
 					user_id = ?
-					".(($pb_omit_overdue ? " AND (due_date > ".time().") " : ''))."
+					".(($pb_omit_overdue ? " AND ((due_date > ".time().") OR due_date IS NULL) " : ''))."
 					AND
 					deleted = 0
 				ORDER BY

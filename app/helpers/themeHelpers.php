@@ -1574,7 +1574,9 @@ function caGetSearchLinks($t_instance, string $bundle, ?array $options=null) : ?
 	}
 	
 	$st = caGetBrowseForType($table, $t_instance->getTypeCode());
-	
+	if(!$st) {
+		return [];
+	}
 	$bundle_type = $bi['type'];
 	
 	switch($bundle_type) {
