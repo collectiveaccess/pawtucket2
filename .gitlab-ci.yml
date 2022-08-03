@@ -18,7 +18,7 @@ deploy_prod:
     - cp $SETUP_PHP_PAWTUCKET setup.php
     - docker-compose build --build-arg LOCAL_UID=$LOCAL_UID --build-arg SERVERNAME=$SERVERNAME  
     - docker-compose up -d
-    - docker-compose exec pawtucket "cd /app/apache2/htdocs && composer install --no-dev"
+    - docker-compose exec -T pawtucket "cd /app/apache2/htdocs && composer install --no-dev"
   after_script:
     - cd /app/pawtucket2 && rm .env
     - cd /app/pawtucket2 && chown gitlab-runner:daemon setup.php && chmod 640 setup.php
