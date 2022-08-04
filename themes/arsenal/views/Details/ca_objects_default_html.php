@@ -25,6 +25,9 @@
  *
  * ----------------------------------------------------------------------
  */
+	$t_locale =					new ca_locales();
+
+	global $g_ui_locale;
  
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
@@ -76,14 +79,16 @@
 					)
 				);
 
-		$back_to_work = caDetailLink($this->request, _t("Back to %1", $t_work->get("ca_occurrences.type_id", array("convertCodesToDisplayText" => true)))." &rarr;", '', 'ca_occurrences', $vn_occurrence_id);
+		$back_to_work = caDetailLink($this->request, ($g_ui_locale == "de_DE" ? "zurück zum Werk" : "back to Film Work")." &rarr;", '', 'ca_occurrences', $vn_occurrence_id);
 					
 	}
-	$t_locale =					new ca_locales();
-
-	global $g_ui_locale;
-	
-				
+	$vs_type = $t_object->getWithTemplate("^ca_objects.type_id");
+	switch($vs_type){
+		case "Filmkopie":
+			$vs_type = "Kopie";
+		break;
+		# ---------------
+	}		
 ?>
 
 		<div class="row">
@@ -92,7 +97,7 @@
 					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 				</div><!-- end detailTop -->
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
-				<H2>{{{^ca_objects.type_id}}}<?php print ($back_to_work) ? " | ".$back_to_work : ""; ?></H2>
+				<H2><?php print $vs_type; ?><?php print ($back_to_work) ? " | ".$back_to_work : ""; ?></H2>
 				<HR/>
 			</div>
 		</div>
