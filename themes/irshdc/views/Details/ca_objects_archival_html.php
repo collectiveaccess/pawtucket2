@@ -260,7 +260,7 @@ if($vs_mode == "map"){
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.about_school_photographs.about_school_photos_text">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.about_school_photographs.about_school_photos_source"><h6>About Residential School Photographs</h6>
-								<div class="trimText">^ca_objects.about_school_photographs.about_school_photos_text</div>
+								<div class="trimTextAboutPhotos">^ca_objects.about_school_photographs.about_school_photos_text</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
@@ -429,6 +429,10 @@ if($x){
 		  maxHeight: 80,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
+		});
+		$('.trimTextAboutPhotos').readmore({
+		  speed: 75,
+		  maxHeight: 48
 		});
 		var options = {
 			placement: function () {
