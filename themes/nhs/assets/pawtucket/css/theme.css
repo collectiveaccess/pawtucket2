@@ -387,6 +387,7 @@ div.browseFacetItem:hover{
 	font-size:14px;
 	height:auto;
 	text-align:center;
+	background-color:transparent;
 }
 #footer img{
 	margin-right:0px;
