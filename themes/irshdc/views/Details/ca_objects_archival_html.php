@@ -432,7 +432,7 @@ if($x){
 		});
 		$('.trimTextAboutPhotos').readmore({
 		  speed: 75,
-		  maxHeight: 48
+		  maxHeight: 58
 		});
 		var options = {
 			placement: function () {
