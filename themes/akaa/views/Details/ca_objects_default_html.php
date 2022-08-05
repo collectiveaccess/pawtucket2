@@ -58,13 +58,11 @@
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H1>{{{<i>^ca_objects.preferred_labels.name</i>}}}</H1>
 				<HR>
+				{{{<ifdef code="ca_objects.nonpreferred_labels.name"><div class='unit'><unit relativeTo="ca_objects.nonpreferred_labels" delimiter="<br/>"><i>^ca_objects.nonpreferred_labels.name</i></unit></div></ifdef>}}}
 <?php
 				if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => ', ', 'returnAsLink' => true))) {
 					print "<div class='unit'><label>Artist</label>".$va_artist."</div>";
 				}
-?>
-				{{{<ifdef code="ca_objects.nonpreferred_labels.name"><div class='unit'><label>Secondary Title</label><unit relativeTo="ca_objects.nonpreferred_labels" delimiter="<br/>"><i>^ca_objects.nonpreferred_labels.name</i></unit></div></ifdef>}}}
-<?php
 				$va_years = $t_object->get("ca_objects.date.dates_value", array("returnAsArray" => true));
 				$vs_date_note = $t_object->get("ca_objects.date_notes");
 				if((is_array($va_years) && sizeof($va_years)) || $vs_date_note){
