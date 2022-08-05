@@ -738,6 +738,13 @@ body.frontContainer #footer{
 }
 
 /* gallery */
+.gallery h1 {
+  font-size: 28px;
+	color: #000;
+	margin-bottom: 15px;
+	margin-top: 5px;
+  	text-transform:none;
+}
 @media(max-width:768px){
 	.galleryList{
 		text-align:center;
