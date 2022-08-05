@@ -2105,6 +2105,9 @@ a.digExhAnchors.offset{
 	margin-bottom:10px;
 	font-size: 16px;
 }
+.tl-timeline .tl-caption {
+  font-family: lato !important;
+}
 /* storymap */
 .vco-storymap h2.vco-headline-title, .vco-storymap h2 {
 	font-size: 17px !important;
