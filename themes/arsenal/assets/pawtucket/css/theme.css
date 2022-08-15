@@ -738,6 +738,13 @@ body.frontContainer #footer{
 }
 
 /* gallery */
+.gallery h1 {
+  font-size: 28px;
+	color: #000;
+	margin-bottom: 15px;
+	margin-top: 5px;
+  	text-transform:none;
+}
 @media(max-width:768px){
 	.galleryList{
 		text-align:center;
@@ -884,6 +891,7 @@ body.frontContainer #footer{
 }
 .detail .navTop a{
 	background-size: 0% 2px;
+	padding:10px;
 }
 .detail .navTop a .small{
 	color:#000;
@@ -909,6 +917,9 @@ a.readmore-js-toggle {
 	margin: 0px 0px 5px 0px;
 	font-weight:700;
 	text-transform: capitalize;
+}
+.detail h2 a {
+	text-transform:none;
 }
 .detailMediaCaption{
 	background-color:rgba(0,0,0, .7);

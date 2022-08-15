@@ -52,6 +52,14 @@ $t_item = $this->getVar("item");
 	$t_locale =					new ca_locales();
 
 	global $g_ui_locale;
+	
+	$vs_type = $t_item->getWithTemplate("^ca_occurrences.type_id");
+	switch($vs_type){
+		case "Filmwerk":
+			$vs_type = "Werk";
+		break;
+		# ---------------
+	}
 ?>
 
 		<div class="row">
@@ -60,7 +68,7 @@ $t_item = $this->getVar("item");
 					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 				</div><!-- end detailTop -->
 				<H1>{{{ca_occurrences.preferred_labels.name}}}</H1>
-				<H2>{{{^ca_occurrences.type_id}}}</H2>
+				<H2><?php print $vs_type; ?></H2>
 				<HR>
 			</div>
 		</div>
