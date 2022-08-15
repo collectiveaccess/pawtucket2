@@ -14,7 +14,7 @@
 					</div><!-- end gallerySetInfo -->
 				</div><!-- end col -->
 <?php
-				if(sizeof($va_sets) > 1){
+				if(sizeof($va_sets) > 0){
 ?>
 				<div class='col-sm-4'>
 					<div class="jcarousel-wrapper">
