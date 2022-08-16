@@ -205,7 +205,7 @@
 					$t_instance->load($set_item["row_id"]);
 						if($vs_thumbnail = $t_instance->getWithTemplate('^ca_object_representations.media.large', array("checkAccess" => $this->opa_access_values))){
 							$set_item["representation_tag"] = $vs_thumbnail;
-							$set_item["representation_id"] = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.representation_id</unit>', array("checkAccess" => $this->opa_access_values));
+							$set_item["representation_id"] = $t_instance->getWithTemplate('^ca_object_representations.representation_id', array("checkAccess" => $this->opa_access_values));
 						}elseif($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.large</unit>', array("checkAccess" => $this->opa_access_values))){
 							$set_item["representation_tag"] = $vs_thumbnail;
 							$set_item["representation_id"] = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.representation_id</unit>', array("checkAccess" => $this->opa_access_values));
