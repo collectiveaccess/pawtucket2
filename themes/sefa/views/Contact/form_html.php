@@ -132,7 +132,7 @@
 	 		<small>NYC</small>
 	 	</div>
 	 	<div class="thumbnail">
-	 		<?php print caGetThemeGraphic($this->request, 'about_hudson.jpg', array('alt' => 'Exterior of Susan Eley Fine Art Hudson NY')); ?>
+	 		<?php print caGetThemeGraphic($this->request, 'SEFA-HUDSON-vert.jpg', array('alt' => 'Exterior of Susan Eley Fine Art Hudson NY')); ?>
 	 		<small>Hudson, NY</small>
 	 	</div>
 	</div>
