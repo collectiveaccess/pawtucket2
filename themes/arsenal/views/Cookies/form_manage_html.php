@@ -60,10 +60,10 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
 		</div>
 		<div class="row">
 			<div class="col-sm-9 col-md-9">
-				<label><?= caGetOption('title', $category_info, '???'); ?></label>
+				<label><?= _t(caGetOption('title', $category_info, '???')); ?></label>
 				<div class="cookieByCategory">
-					<div class="cookieCount"><?= caGetOption('cookieCount', $category_info, ''); ?> <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></div>
-					<div class="cookiesList">
+					<div class="cookieCount" onClick="$('.cookiesList<?php print $category_code; ?>').toggle();"><?= caGetOption('cookieCount', $category_info, ''); ?> <i class="fa fa-chevron-circle-right" aria-hidden="true"></i></div>
+					<div class="cookiesList cookiesList<?php print $category_code; ?>">
 						<div class="row">
 							<div class="col-sm-4">
 								<b>Name</b>
@@ -77,10 +77,17 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
 ?>
 			<div class="row">
 				<div class="col-sm-4">
-					<?= caGetOption('name', $cookie_info, '???'); ?>
+					<?= _t(caGetOption('name', $cookie_info, '???')); ?>
 				</div>
 				<div class="col-sm-8">
-					<?= caGetOption('description', $cookie_info, '???'); ?>
+<?php
+					$global_value_name = caGetOption('globalValue', $cookie_info, '');
+					if($vs_tmp = $global_value_name.$vs_lang){
+						print $this->getVar($vs_tmp);
+					}else{
+						print caGetOption('description', $cookie_info, '???');
+					}
+?>
 				</div>
 			</div>	
 <?php
@@ -88,7 +95,16 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
 ?>
 					</div>
 				</div>
-				<div><?= caGetOption('description', $category_info, ''); ?></div>
+				<div>
+<?php
+					$global_value_name = caGetOption('globalValue', $category_info, '');
+					if($vs_tmp = $global_value_name.$vs_lang){
+						print print $this->getVar($vs_tmp);
+					}else{
+						print caGetOption('description', $category_info, '???');
+					}
+?>
+				</div>
 			</div>			
 			<div class="col-sm-3 col-md-3 text-center">
 <?php
@@ -127,11 +143,6 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
 				$(this).find('.btn').toggleClass('btn-success');
 			}
 		}
-	   return false;
-	});
-	
-	$('.cookieByCategory').click(function() {
-		$(this).find('.cookiesList').toggle();  
 	   return false;
 	});
 </script>
