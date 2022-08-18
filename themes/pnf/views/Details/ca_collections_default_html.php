@@ -45,8 +45,9 @@
 ?>
 					
 					{{{<ifdef code="ca_collections.description"><div class='unit'>^ca_collections.description</div></ifdef>}}}
+					
 					{{{<ifdef code="ca_collections.collection_address">
-						<div class='unit'><h6>Address</h6>
+						<div class='unit text-center'><h6>Address</h6>
 							<ifdef code="ca_collections.collection_address.collection_address_data1">^ca_collections.collection_address.collection_address_data1<br/></ifdef>
 							<ifdef code="ca_collections.collection_address.collection_address_data2">^ca_collections.collection_address.collection_address_data2<br/></ifdef>
 							<ifdef code="ca_collections.collection_address.collection_city">^ca_collections.collection_address.collection_city, </ifdef>
@@ -55,9 +56,9 @@
 							<ifdef code="ca_collections.collection_address.collection_country">^ca_collections.collection_address.collection_country</ifdef>						
 						</div></ifdef>}}}
 
-					{{{<ifcount code="ca_collections.children" min="1"><div class='unit'><h6>Contains</h6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifdef code="ca_collections.collection_website"><div class='unit'><h6><a href="^ca_collections.collection_website" target="_blank">Collection Website <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.library_OPAC"><div class='unit'><h6><a href="^ca_collections.library_OPAC" target="_blank">Library OPAC <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
+					{{{<ifcount code="ca_collections.children" min="1"><div class='unit text-center'><h6>Contains</h6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
+					{{{<ifdef code="ca_collections.collection_website"><div class='unit text-center'><h6><a href="^ca_collections.collection_website" target="_blank">Collection Website <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.library_OPAC"><div class='unit text-center'><h6><a href="^ca_collections.library_OPAC" target="_blank">Library OPAC <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
 				</div>
 				<div class='col-md-4 col-lg-4 col-lg-offset-1'>
 <?php
