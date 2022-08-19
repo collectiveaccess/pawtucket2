@@ -81,16 +81,13 @@
 			<div class='col-sm-6 col-md-6'>
 				<H2>{{{<unit>^ca_objects.type_id<ifdef code="ca_objects.idno">: ^ca_objects.idno</ifdef></unit>}}}</H2>
 				<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
-<?php
-				$vs_art_archival_creator_date = $t_object->getWithTemplate("<ifcount code='ca_entities' restrictToRelationshipTypes='creator' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='creator' delimiter=', '>^ca_entities.preferred_labels</unit></ifcount><ifdef code='ca_objects.artwork_date'><unit relativeTo='ca_objects.artwork_date'><if rule='^ca_objects.artwork_date.artwork_date_types =~ /Creation/'><ifcount code='ca_entities' restrictToRelationshipTypes='creator' min='1'>, </ifcount>^ca_objects.artwork_date.artwork_date_value</if></unit></ifdef><ifdef code='ca_objects.archival_object_date'><unit relativeTo='ca_objects.archival_object_date'><if rule='^ca_objects.archival_object_date.archival_object_date_types =~ /Creation/'><ifcount code='ca_entities' restrictToRelationshipTypes='creator' min='1'>, </ifcount>^ca_objects.archival_object_date.archival_object_date_value</if></unit></ifdef>");
-				$vs_pub_author_date = $t_object->getWithTemplate("<ifcount code='ca_entities' restrictToRelationshipTypes='author' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='author' delimiter=', '>^ca_entities.preferred_labels</unit></ifcount><ifdef code='ca_objects.publication_date'><unit relativeTo='ca_objects.publication_date'><if rule='^ca_objects.publication_date.publication_date_types =~ /Publication/'><ifcount code='ca_entities' restrictToRelationshipTypes='author' min='1'>, </ifcount>^ca_objects.publication_date.publication_date_value</if></unit></ifdef>");
-				$vs_oral_history_date = $t_object->getWithTemplate("<ifdef code='ca_objects.interview.oral_history_dates_value'><unit relativeTo='ca_objects.interview'><if rule='^ca_objects.interview.oral_history_dates_types =~ /Interview/'>^ca_objects.interview.oral_history_dates_value</if></unit></ifdef>");
-				
-				if($vs_pub_author_date || $vs_art_archival_creator_date || $vs_oral_history_date){
-					print "<div class='unit'>".$vs_art_archival_creator_date.$vs_pub_author_date.$vs_oral_history_date."</div>";
-				}
-
-?>				
+				{{{<ifdef code="ca_objects.display_date">
+					<div class='unit'>^ca_objects.display_date</div>
+				</ifdef>}}}	
+				{{{<ifnotdef code="ca_objects.display_date"><ifdef code="ca_objects.index_date">
+					<div class='unit'>^ca_objects.index_date</div>
+				</ifdef></ifnotdef>}}}	
+					
 				<HR>
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><span class="trimText">^ca_objects.description</span></div>
@@ -110,7 +107,7 @@
 				{{{<ifdef code="ca_objects.courtesy_line"><div class="unit"><label>Courtesy</label>^ca_objects.courtesy_line</div></ifdef>}}}
 				
 				<!-- oral history -->
-				{{{<ifdef code="ca_objects.interview.interview_location"><div class="unit"><label>Location</label>^ca_objects.interview.interview_location</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.interview_location"><div class="unit"><label>Location</label>^ca_objects.interview.interview_location</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.duration"><div class="unit"><label>Duration</label>^ca_objects.duration</div></ifdef>}}}
 				
 <?php

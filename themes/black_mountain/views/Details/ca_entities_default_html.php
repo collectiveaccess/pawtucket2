@@ -45,14 +45,14 @@
 				<div class='col-md-12 col-lg-12'>
 					<H2>{{{^ca_entities.type_id<ifdef code="ca_entities.idno">: ^ca_entities.idno</ifdef>}}}</H2>
 					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
-					{{{<ifdef code="ca_entities.lifespan"><div class="unit">^ca_entities.lifespan</div></ifdef>}}}
+					{{{<ifdef code="ca_entities.index_date"><div class="unit">^ca_entities.index_date</div></ifdef>}}}
 					<HR/>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-12'>
 					{{{<ifdef code="ca_entities.biography"><div class="unit"><span class="trimText">^ca_entities.biography</span></div></ifdef>}}}
-					{{{<ifdef code="ca_entities.date"><unit relativeTo="ca_entities.date" delimiter=" "><div class="unit"><label>^ca_entities.date.entity_dates_types</label>^ca_entities.date.dates_value</div></unit></ifdef>}}}
+					{{{<ifdef code="ca_entities.display_date"><unit relativeTo="ca_entities.display_date" delimiter="<br/>"><div class="unit"><label>Dates at BMC</label>^ca_entities.display_date</div></unit></ifdef>}}}
 
 <?php
 				# Comment and Share Tools
@@ -85,10 +85,10 @@
 ?>
 					
 				{{{<ifcount code="ca_occurrences" restrictToTypes="exhibitions" min="1"><div class="unit"><label>Related Exhibitions</label>
-					<unit relativeTo="ca_occurrences" restrictToTypes="exhibitions" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
+					<unit relativeTo="ca_occurrences" restrictToTypes="exhibitions" delimiter="<br/>" unique="1"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
 				
 				{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Events</label>
-					<unit relativeTo="ca_occurrences" restrictToTypes="event" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
+					<unit relativeTo="ca_occurrences" restrictToTypes="event" delimiter="<br/>" unique="1"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
 			

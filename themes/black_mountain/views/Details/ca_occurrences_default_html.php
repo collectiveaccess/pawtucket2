@@ -45,14 +45,21 @@
 				<div class='col-md-12 col-lg-12'>
 					<H2>{{{^ca_occurrences.type_id<ifdef code="ca_occurrences.idno">: ^ca_occurrences.idno</ifdef>}}}</H2>
 					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
-					{{{<ifdef code="ca_occurrences.occurrence_date.occurrence_date_value"><div class="unit">^ca_occurrences.occurrence_date.occurrence_date_value</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.display_date">
+						<div class='unit'>^ca_occurrences.display_date</div>
+					</ifdef>}}}	
+					{{{<ifnotdef code="ca_occurrences.display_date"><ifdef code="ca_occurrences.index_date">
+						<div class='unit'>^ca_occurrences.index_date</div>
+					</ifdef></ifnotdef>}}}
 					<HR/>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-12'>
 					{{{<ifdef code="ca_occurrences.description"><div class="unit"><span class="trimText">^ca_occurrences.description</span></div></ifdef>}}}
-
+					{{{<ifdef code="ca_occurrences.parent_id"><div class="unit"><label>Part of</label><unit relativeTo="ca_occurrences.parent"><l>^ca_occurrences.preferred_labels</l></unit></div></ifdef>}}}
+					{{{<ifcount code="ca_occurrences.children"><div class="unit"><label>In this series</label><unit relativeTo="ca_occurrences.children" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
+					
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
