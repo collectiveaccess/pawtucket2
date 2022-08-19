@@ -306,6 +306,8 @@
 				$this->view->setVar("rep_object", $t_rep);
 				if(Datamodel::getTableName($t_set->get('table_num')) == "ca_entities"){
 					$this->view->setVar("rep", $t_rep->getMediaTag("media", "large"));
+				}else{
+					$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
 				}
 				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery', 'set_id' => $set_id]));
 				$this->view->setVar("representation_id", $set_items[$item_id]["representation_id"]);
