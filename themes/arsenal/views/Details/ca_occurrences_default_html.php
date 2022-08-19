@@ -193,6 +193,12 @@ $t_item = $this->getVar("item");
 			if(strlen($t_item->get('ca_occurrences.forum_pdf'))>0){
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('forum_pdf')."</label>".$t_item->get('ca_occurrences.forum_pdf', array('delimiter' => ', '))."</div><!-- end unit -->";
 			}
+			
+			// TODO: need final text and formatting for link
+			if($url = $t_item->get('ca_occurrences.film_page_url')) {
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}'>"._t('View on Forum')."</a></div></div>";
+			}	
+			
 			if(strlen($t_item->get('ca_occurrences.world_premiere'))>0){
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('world_premiere')."</label>".$t_item->get('ca_occurrences.world_premiere', array('delimiter' => ', '))."</div><!-- end unit -->";
 			}
@@ -220,7 +226,6 @@ $t_item = $this->getVar("item");
 				print $t_item->getWithTemplate("<unit relativeTo='ca_occurrences.credit_editable' delimiter='<br/>'>^ca_occurrences.credit_editable.credit_role: ^ca_occurrences.credit_editable.credit_entity</unit>");
 				print "</div></div>";
 			}
-
 ?>
 			</div><!-- end col -->
 		</div><!-- end row -->
@@ -252,7 +257,7 @@ $t_item = $this->getVar("item");
 					</div>
 <?php
 				}
-			}			
+			}		
 ?>
 		</div><!-- end row -->
 		<div class="row">

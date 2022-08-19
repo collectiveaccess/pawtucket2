@@ -987,17 +987,24 @@ a.zoomButton, a.zoomButton:hover{
 	color:#000;	
 }
 .notificationMessage, .notificationInfo {
-  position: absolute;
-  top: 40px;
-  width: 60%;
-  z-index: 1000;
-  left: 15%;
+	position: absolute;
+	top: 40px;
+	width: 60%;
+	z-index: 1000;
+	left: 15%;
 }
 .form-control:focus {
-  border-color: #000;
+	border-color: #000;
 }
 
 /* cookies */
 #cookieNotice .cookieNoticeHeading{
 	font-family:CinetypeBold;
+}
+
+.cookieByCategory {
+	cursor: default;
+}
+.cookieCount{
+	cursor: pointer;
 }

@@ -60,7 +60,7 @@
 		$detail_types = $config->getAssoc('detailTypes');
 		$options = $detail_types['works'];
 		$t_representation = $t_work->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
-		if(!is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
+		if(!$t_representation || !is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
 			
 		$vs_rep_viewer = caRepresentationViewer(
 					$this->request, 
@@ -346,6 +346,11 @@
 			if(strlen($t_work->get('ca_occurrences.forum_pdf'))>0){
 				print "<div class='unit'><label>".$t_work->getAttributeLabel('forum_pdf')."</label>".$t_work->get('ca_occurrences.forum_pdf', array('delimiter' => ', '))."</div><!-- end unit -->";
 			}
+			
+			// TODO: need final text and formatting for link
+			if($url = $t_work->get('ca_occurrences.film_page_url')) {
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}'>"._t('View on Forum')."</a></div></div>";
+			}	
 
 			$va_tags = $t_work->get("ca_list_items", array("returnWithStructure" => true));
 			if(is_array($va_tags) && sizeof($va_tags)){

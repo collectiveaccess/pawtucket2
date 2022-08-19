@@ -91,7 +91,8 @@
 		</script>
 		<script type="text/javascript" language="javascript">
 			jQuery(document).ready(function() {
-				$('html').on('contextmenu', 'body', function(e){ return false; });
+				$(document).on('contextmenu', function(e){ return false; });
+				
 			});
 		</script>
 <?php
