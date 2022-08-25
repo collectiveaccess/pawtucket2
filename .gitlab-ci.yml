@@ -24,7 +24,7 @@ deploy_prod:
     - cd /app/pawtucket2 && chown gitlab-runner:daemon setup.php && chmod 640 setup.php
   environment:
     name: prod
-    url: https://pawtucket.galib.uga.edu
+    url: https://bmac.libs.uga.edu
   tags:
     - brown-hosting-shell
 
