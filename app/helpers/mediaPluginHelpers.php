@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2021 Whirl-i-Gig
+ * Copyright 2010-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -42,7 +42,7 @@
 	 * Get path in external_applications.conf for specified application. A path is only returned if it exists on the system.
 	 * If none of the configured paths for an application exist on the system, null is returned.
 	 *
-	 * @param string $ps_application_name The name of the application. This is the same as the relevant entry in external_applications.conf without the trailing "_app" (Ex. pdfminer, dcraw, ffmpeg)
+	 * @param string $ps_application_name The name of the application. This is the same as the relevant entry in external_applications.conf without the trailing "_app" (Ex. dcraw, ffmpeg)
 	 * @param array $options Options inclide:
 	 * 		executableName = Name of executable to test for when app path is a directory (Ex. for ImageMagick)
 	 *		returnAsArray = Return full list of configured paths. Paths are not checked for existence.
@@ -87,7 +87,7 @@
 			return $ps_imagemagick_path; 
 		}	// don't try exec test on Windows
 		
-		caExec($ps_imagemagick_path.'/identify 2> /dev/null', $va_output, $vn_return);
+		caExec($ps_imagemagick_path.' 2> /dev/null', $va_output, $vn_return);
 		
 		$vb_ret =  (($vn_return >= 0) && ($vn_return < 127));
 		
@@ -379,42 +379,6 @@
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
-	 * Detects if PDFMiner (http://www.unixuser.org/~euske/python/pdfminer/index.html) is installed in the given path.
-	 *
-	 * @param string $ps_pdfminer_path path to PDFMiner
-	 * @param array $options Options include:
-	 *		noCache = Don't cached path value. [Default is false]
-	 *
-	 * @return mixed Path to executable if installed, false if not installed
-	 */
-	function caPDFMinerInstalled($ps_pdfminer_path=null, $options=null) {
-		if (!caGetOption('noCache', $options, defined('__CA_DONT_CACHE_EXTERNAL_APPLICATION_PATHS__')) && CompositeCache::contains("mediahelper_pdfminer_installed", "mediaPluginInfo")) { return CompositeCache::fetch("mediahelper_pdfminer_installed", "mediaPluginInfo"); }
-		if(!$ps_pdfminer_path) { $ps_pdfminer_path = caGetExternalApplicationPath('pdfminer'); }
-
-		if (!caIsValidFilePath($ps_pdfminer_path)) { 
-			CompositeCache::save("mediahelper_pdfminer_installed", false, "mediaPluginInfo");
-			return false; 
-		}
-
-		if (!@is_readable($ps_pdfminer_path)) { 
-			CompositeCache::save("mediahelper_pdfminer_installed", false, "mediaPluginInfo");
-			return false; 
-		}
-		if ((caGetOSFamily() == OS_WIN32) && $ps_pdfminer_path) { 
-			CompositeCache::save("mediahelper_pdfminer_installed", $ps_pdfminer_path, "mediaPluginInfo");
-			return $ps_pdfminer_path; 
-		} // don't try exec test on Windows
-		
-		caExec($ps_pdfminer_path." > /dev/null",$va_output,$vn_return);
-		
-		$vb_ret = ($vn_return == 100);
-		
-		CompositeCache::save("mediahelper_pdfminer_installed", $ps_pdfminer_path, "mediaPluginInfo");
-		
-		return $vb_ret ? $ps_pdfminer_path : false;
-	}
-	# ------------------------------------------------------------------------------------------------
-	/**
 	 * Detects if wkhtmltopdf (http://www.wkhtmltopdf.org) is installed in the given path.
 	 *
 	 * @param string $ps_wkhtmltopdf_path path to wkhtmltopdf executable
@@ -654,6 +618,7 @@
 							$po_instance->replaceAttribute(array($va_tmp[1] => $vs_date, 'locale_id' => $pn_locale_id), $va_tmp[1]);
 						}
 					}
+					$po_instance->update();	// commit immediately and don't worry about errors (in case date is somehow invalid)
 					$vb_did_mapping = true;
 				}
 			}

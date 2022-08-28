@@ -2105,9 +2105,10 @@
 				$t_list = new ca_lists();
 				$va_items = $t_list->getItemsForList($vs_list_code, ['returnHierarchyLevels' => true]);
 				if (is_array($va_items)) {
+					$is_item_val_fld = in_array($vs_name_no_table, ['access', 'status']); // old-tyme fields that use item_value rather than idno
 					foreach ($va_items as $va_item) {
 						foreach ($va_item as $va_item_details) {
-							$va_select_options[$va_item_details['idno']] = str_repeat("&nbsp;", (int)$va_item_details['LEVEL'] * 5).$va_item_details['name_singular'];
+							$va_select_options[$is_item_val_fld ? $va_item_details['item_value'] : $va_item_details['idno']] = str_repeat("&nbsp;", (int)$va_item_details['LEVEL'] * 5).$va_item_details['name_singular'];
 						}
 					}
 				}
@@ -2115,6 +2116,8 @@
 			$va_result['input'] = 'select';
 			$va_result['values'] = $va_select_options;
 			$va_result['operators'] = $va_operators_by_type['select'];
+		} elseif($vs_name === "{$vs_table}.".$t_subject->getProperty('ID_NUMBERING_ID_FIELD')) {
+			$va_result['operators'] = array_merge($va_operators_by_type['select'], ['between']);
 		} else {
 			$va_result['input'] = 'text';
 		}
@@ -2226,5 +2229,23 @@
 	 */
 	function caIsSearchStem(string $value) : bool {
 		return (!preg_match('![\d]+$!', $value) && !preg_match('!\*$!', $value) && preg_match('![\w]+$!', $value));
+	}
+	# ---------------------------------------
+	/**
+	 * Tokenize string into individual words using method defined by currently configured search engine
+	 *
+	 * @param string $value String to tokenize
+	 *
+	 * @return array list of words
+	 */
+	function caTokenizeString(?string $value) : array {
+		$search_engine_class = SearchBase::searchEngineClassName();
+		
+		if(method_exists('SearchBase', $search_engine_class)) {
+			return $search_engine_class::tokenize($value);
+		} else {	// Any plugin that doesn't define its own tokenizer (like ElasticSearch) uses the SqlSearch2 tokenizer by default
+			require_once(__CA_LIB_DIR__.'/Plugins/SearchEngine/SqlSearch2.php');
+			return WLPlugSearchEngineSqlSearch2::tokenize($value);
+		}
 	}
 	# ---------------------------------------

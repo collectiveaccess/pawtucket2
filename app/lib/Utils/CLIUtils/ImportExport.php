@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018 Whirl-i-Gig
+ * Copyright 2018-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -32,7 +32,6 @@
  
 	trait CLIUtilsImportExport { 
 		# -------------------------------------------------------
-		# -------------------------------------------------------
 		/**
 		 *
 		 */
@@ -56,10 +55,6 @@
 			
 			if (($vs_add_to_set = $po_opts->getOption('add-to-set')) && (!($t_set = ca_sets::find(['set_code' => $vs_add_to_set], ['returnAs' => 'firstModelInstance'])))) {
 				CLIUtils::addError(_t('Set %1 does not exist', $vs_add_to_set));
-				return false;
-			}
-			if ($t_set && ((int)$t_set->get('table_num') !== (int)$t_mapping->get('table_num'))) {
-				CLIUtils::addError(_t('Set %1 does take items imported by mapping', $vs_add_to_set));
 				return false;
 			}
 			
@@ -191,10 +186,12 @@
 			$vb_use_temp_directory_for_logs_as_fallback = (bool)$po_opts->getOption('log-to-tmp-directory-as-fallback'); 
 
 			$vs_log_dir = $po_opts->getOption('log');
-			$vn_log_level = CLIUtils::getLogLevel($po_opts);
+			$vn_log_level = $po_opts->getOption('log-level');
 
             $va_opts = [
-                'logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level, 'logToTempDirectoryIfLogDirectoryIsNotWritable' => $vb_use_temp_directory_for_logs_as_fallback, 
+                'logDirectory' => $vs_log_dir,
+                'logLevel' => $vn_log_level,
+                'logToTempDirectoryIfLogDirectoryIsNotWritable' => $vb_use_temp_directory_for_logs_as_fallback,
                 'addToSet' => $vs_add_to_set,
                 'importTarget' => $vs_import_target,
                 'user_id' => $vn_user_id,
@@ -203,6 +200,7 @@
                 'matchMode' => $vs_match_mode,
                 'matchType' => $vs_match_type,
                 'allowDuplicateMedia' => (bool)$po_opts->getOption('allow-duplicate-media'),
+                'replaceExistingMedia' => (bool)$po_opts->getOption('replace-existing-media'),
                 'includeSubDirectories' => (bool)$po_opts->getOption('include-subdirectories'),
                 'deleteMediaOnImport' => (bool)$po_opts->getOption('delete-media-on-import'),
                 
@@ -280,26 +278,26 @@
 				"username|u-s" => _t('User name of user to log import against.'),
 				"log|l-s" => _t('Path to directory in which to log import details. If not set no logs will be recorded.'),
 				"log-level|d-s" => _t('Logging threshold. Possible values are, in ascending order of important: DEBUG, INFO, NOTICE, WARN, ERR, CRIT, ALERT. Default is INFO.'),
-				"add-to-set|t-s" => _t('Optional identifier of set to add all imported items to.'),
-				"log-to-tmp-directory-as-fallback|f-s" => _t('Use the system temporary directory for the import log if the application logging directory is not writable. Default report an error if the application log directory is not writeable.'),
-				"include-subdirectories|i-s" => _t('Process media in sub-directories. Default is false.'),
-				"match-type|mt-s" => _t('Sets how match between media and target record identifier is made. Valid values are: STARTS, ENDS, CONTAINS, EXACT. Default is EXACT.'),
-				"match-mode|m-s" => _t('Determines how matches are made between media and records. Valid values are DIRECTORY_NAME, FILE_AND_DIRECTORY_NAMES, FILE_NAME. Set to DIRECTORY_NAME to match media directory names to target record identifiers; to FILE_AND_DIRECTORY_NAMES to match on both file and directory names; to FILE_NAME to match only on file names. Default is FILE_NAME.'),
-				"import-mode" => _t('Determines if target records are created for media that do not match existing target records. Set to TRY_TO_MATCH to create new target records when no match is found. Set to ALWAYS_MATCH to only import media for existing records. Default is TRY_TO_MATCH.'),
-				'allow-duplicate-media|du-s' => _t('Import media even if it already exists in CollectiveAccess. Default is false – skip import of duplicate media.'),
-				'import-target|it-s' => _t('Table name of record to import media into. Should be a valid representation-taking table such as ca_objects, ca_entities, ca_occurrences, ca_places, etc. Default is ca_objects.'),
-				'import-target-type|itt-s' => _t('Type to use for all newly created target records. Default is the first type in the target\'s type list.'),
-				'import-target-idno|iti-s' => _t('Identifier to use for all newly created target records.'),
-				'import-target-idno-mode|itim-s' => _t('Sets how identifiers of newly created target records are set. Valid values are AUTO, FILENAME, FILENAME_NO_EXT, DIRECTORY_AND_FILENAME. Set to AUTO to use an identifier calculated according to system numbering settings; set to FILENAME to use the file name as identifier; set to FILENAME_NO_EXT to use the file name stripped of extension as the identifier; use DIRECTORY_AND_FILENAME to set the identifer to the directory name and file name with extension. Default is AUTO.'),
-				'import-target-access|ita-s' => _t('Set access for newly created target records. Possible values are %1. Default is %2.', $access_status_list_str, $access_status_default_str),
-				'import-target-status|its-s' => _t('Set status for newly created target records. Possible values are %1. Default is %2.', $workflow_status_list_str, $workflow_status_default_str),
-				'representation-type|rt-s' => _t('Type to use for all newly created representations. Possible values are %1. Default is %2.', $representation_type_list_str, $representation_type_default_str),
-				'representation-idno|ri-s' => _t('Identifier to use for all newly created representation records.'),
-				'representation-idno-mode|rim-s' => _t('Sets how identifiers of newly created representations are set. Valid values are AUTO, FILENAME, FILENAME_NO_EXT, DIRECTORY_AND_FILENAME. Set to AUTO to use an identifier calculated according to system numbering settings; set to FILENAME to use the file name as identifier; set to FILENAME_NO_EXT to use the file name stripped of extension as the identifier; use DIRECTORY_AND_FILENAME to set the identifer to the directory name and file name with extension. Default is AUTO.'),
-				'representation-access|ra-s' => _t('Set access for newly created representations. Possible values are %1. Default is %2.', $access_status_list_str, $access_status_default_str),
-				'representation-status|rs-s' => _t('Set status for newly created representations. Possible values are %1. Default is %2.', $workflow_status_list_str, $workflow_status_default_str),
-				'representation-mapping|rm-s' => _t('Code for mapping to apply when importing media.'),
-				'delete-media-on-import|dmoi-s' => _t('Remove media from directory after it has been successfully imported. Default is false.')
+				"add-to-set|S-s" => _t('Optional identifier of set to add all imported items to.'),
+				"log-to-tmp-directory-as-fallback" => _t('Use the system temporary directory for the import log if the application logging directory is not writable. Default report an error if the application log directory is not writeable.'),
+				"include-subdirectories" => _t('Process media in sub-directories. Default is false.'),
+				"match-type-s" => _t('Sets how match between media and target record identifier is made. Valid values are: STARTS, ENDS, CONTAINS, EXACT. Default is EXACT.'),
+				"match-mode-s" => _t('Determines how matches are made between media and records. Valid values are DIRECTORY_NAME, FILE_AND_DIRECTORY_NAMES, FILE_NAME. Set to DIRECTORY_NAME to match media directory names to target record identifiers; to FILE_AND_DIRECTORY_NAMES to match on both file and directory names; to FILE_NAME to match only on file names. Default is FILE_NAME.'),
+				"import-mode-s" => _t('Determines if target records are created for media that do not match existing target records. Set to TRY_TO_MATCH to create new target records when no match is found. Set to ALWAYS_MATCH to only import media for existing records. Default is TRY_TO_MATCH.'),
+				'allow-duplicate-media' => _t('Import media even if it already exists in CollectiveAccess. Default is false – skip import of duplicate media.'),
+				'replace-existing-media' => _t('Delete existing media on match records before importing new media. This option is destructive. Use with caution! Default is false.'),
+				'import-target-s' => _t('Table name of record to import media into. Should be a valid representation-taking table such as ca_objects, ca_entities, ca_occurrences, ca_places, etc. Default is ca_objects.'),
+				'import-target-type|t-s' => _t('Type to use for all newly created target records. Default is the first type in the target\'s type list.'),
+				'import-target-idno|i-s' => _t('Identifier to use for all newly created target records.'),
+				'import-target-idno-mode|m-s' => _t('Sets how identifiers of newly created target records are set. Valid values are AUTO, FILENAME, FILENAME_NO_EXT, DIRECTORY_AND_FILENAME. Set to AUTO to use an identifier calculated according to system numbering settings; set to FILENAME to use the file name as identifier; set to FILENAME_NO_EXT to use the file name stripped of extension as the identifier; use DIRECTORY_AND_FILENAME to set the identifer to the directory name and file name with extension. Default is AUTO.'),
+				'import-target-access|a-s' => _t('Set access for newly created target records. Possible values are %1. Default is %2.', $access_status_list_str, $access_status_default_str),
+				'import-target-status|w-s' => _t('Set status for newly created target records. Possible values are %1. Default is %2.', $workflow_status_list_str, $workflow_status_default_str),
+				'representation-type|T-s' => _t('Type to use for all newly created representations. Possible values are %1. Default is %2.', $representation_type_list_str, $representation_type_default_str),
+				'representation-idno|I-s' => _t('Identifier to use for all newly created representation records.'),
+				'representation-idno-mode|M-s' => _t('Sets how identifiers of newly created representations are set. Valid values are AUTO, FILENAME, FILENAME_NO_EXT, DIRECTORY_AND_FILENAME. Set to AUTO to use an identifier calculated according to system numbering settings; set to FILENAME to use the file name as identifier; set to FILENAME_NO_EXT to use the file name stripped of extension as the identifier; use DIRECTORY_AND_FILENAME to set the identifer to the directory name and file name with extension. Default is AUTO.'),
+				'representation-access|A-s' => _t('Set access for newly created representations. Possible values are %1. Default is %2.', $access_status_list_str, $access_status_default_str),
+				'representation-status|W-s' => _t('Set status for newly created representations. Possible values are %1. Default is %2.', $workflow_status_list_str, $workflow_status_default_str),
+				'remove-media-on-import|R' => _t('Remove media from directory after it has been successfully imported. Default is false.')
 			);
 		}
 		# -------------------------------------------------------
@@ -379,7 +377,7 @@
 				return false;
 			}
 			$vs_log_dir = $po_opts->getOption('log');
-			$vn_log_level = CLIUtils::getLogLevel($po_opts);
+			$vs_log_level = $po_opts->getOption('logLevel');
 
 			if (!($t_importer = ca_data_importers::loadImporterFromFile($vs_file_path, $va_errors, array('logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level)))) {
 				CLIUtils::addError(_t("Could not import '%1': %2", $vs_file_path, join("; ", $va_errors)));
@@ -453,57 +451,43 @@
 				CLIUtils::addError(_t('Set %1 does take items imported by mapping', $vs_add_to_set));
 				return false;
 			}
+			
 
 			$vb_direct = (bool)$po_opts->getOption('direct');
 			$vb_no_search_indexing = (bool)$po_opts->getOption('no-search-indexing');
-			$vb_use_temp_directory_for_logs_as_fallback = (bool)$po_opts->getOption('log-to-tmp-directory-as-fallback'); 
+			$vb_import_all_datasets = (bool)$po_opts->getOption('import-all-datasets');
+			$vb_use_temp_directory_for_logs_as_fallback = (bool)$po_opts->getOption('log-to-tmp-directory-as-fallback');
+			
+			$vs_detailed_log_name = $po_opts->getOption('detailed-log-name');
 
+			$vb_dryrun = (bool)$po_opts->getOption('dryrun');
 			$vs_format = $po_opts->getOption('format');
 			$vs_log_dir = $po_opts->getOption('log');
-			$vn_log_level = CLIUtils::getLogLevel($po_opts);
+			
+			$env = json_decode($po_opts->getOption('environment'), true);
 
 			if ($vb_no_search_indexing) {
 				define("__CA_DONT_DO_SEARCH_INDEXING__", true);
 			}
 
-			if (!ca_data_importers::importDataFromSource($vs_data_source, $vs_mapping, array('noTransaction' => $vb_direct, 'format' => $vs_format, 'showCLIProgressBar' => true, 'logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level, 'logToTempDirectoryIfLogDirectoryIsNotWritable' => $vb_use_temp_directory_for_logs_as_fallback, 'addToSet' => $vs_add_to_set))) {
-				CLIUtils::addError(_t("Could not import source %1: %2", $vs_data_source, join("; ", ca_data_importers::getErrorList())));
+			$t_importer = new ca_data_importers();
+			if (!$t_importer->importDataFromSource($vs_data_source, $vs_mapping, 
+				[	'dryRun' => $vb_dryrun, 'noTransaction' => $vb_direct, 
+					'format' => $vs_format, 'showCLIProgressBar' => true, 
+					'logDirectory' => $vs_log_dir, 'logLevel' => $po_opts->getOption('log-level'), 
+					'limitLogTo' => $po_opts->getOption('limit-log-to'), 
+					'logToTempDirectoryIfLogDirectoryIsNotWritable' => $vb_use_temp_directory_for_logs_as_fallback, 
+					'addToSet' => $vs_add_to_set, 'environment' => $env,
+					'detailedLogName' => $vs_detailed_log_name,
+					'importAllDatasets' => $vb_import_all_datasets
+				]
+			)) {
+				CLIUtils::addError(_t("Could not import source %1: %2", $vs_data_source, join("; ", $t_importer->getErrorList())));
 				return false;
 			} else {
 				CLIUtils::addMessage(_t("Imported data from source %1", $vs_data_source));
 				return true;
 			}
-		}
-		/**
-		* Helper function to get log levels
-		*/
-		private static function getLogLevel($po_opts){
-			$vn_log_level = KLogger::INFO;
-			switch($vs_log_level = $po_opts->getOption('log-level')) {
-				case 'DEBUG':
-					$vn_log_level = KLogger::DEBUG;
-					break;
-				case 'NOTICE':
-					$vn_log_level = KLogger::NOTICE;
-					break;
-				case 'WARN':
-					$vn_log_level = KLogger::WARN;
-					break;
-				case 'ERR':
-					$vn_log_level = KLogger::ERR;
-					break;
-				case 'CRIT':
-					$vn_log_level = KLogger::CRIT;
-					break;
-				case 'ALERT':
-					$vn_log_level = KLogger::ALERT;
-					break;
-				default:
-				case 'INFO':
-					$vn_log_level = KLogger::INFO;
-					break;
-			}
-			return $vn_log_level;
 		}
 		# -------------------------------------------------------
 		/**
@@ -515,12 +499,16 @@
 				"mapping|m=s" => _t('Mapping to import data with.'),
 				"format|f-s" => _t('The format of the data to import. (Ex. XLSX, tab, CSV, mysql, OAI, Filemaker XML, ExcelXML, MARC). If omitted an attempt will be made to automatically identify the data format.'),
 				"log|l-s" => _t('Path to directory in which to log import details. If not set no logs will be recorded.'),
-				"log-level|d-s" => _t('Logging threshold. Possible values are, in ascending order of important: DEBUG, INFO, NOTICE, WARN, ERR, CRIT, ALERT. Default is INFO.'),
+				"log-level|d-s" => _t('Logging threshold. Possible values are, in ascending order of importance: DEBUG, INFO, NOTICE, WARN, ERR, CRIT, ALERT. Default is INFO.'),
+				"limit-log-to|g-s" => _t('Limit logging to specific event types when log level is set to INFO. Limit logging to specific event types for log level INFO. Valid values are: GENERAL (general status messages), EXISTING_RECORD_POLICY (messages relating to merging of existing records, SKIP (messages relating to conditional skipping of mappings, groups or records), RELATIONSHIPS (messages relating to creating of relationships. Seprate multiple types with commas or semicolors.'),
+				"import-all-datasets" => _t('When importing an Excel .xslx file, if set import will be performed on all worksheets in the file. By default, only the first worksheet is imported.'),
 				"add-to-set|t-s" => _t('Optional identifier of set to add all imported items to.'),
+				"environment|e-s" => _t('JSON-encoded key value pairs to add to import environment values.'),
 				"dryrun" => _t('If set import is performed without data actually being saved to the database. This is useful for previewing an import for errors.'),
 				"direct" => _t('If set import is performed without a transaction. This allows viewing of imported data during the import, which may be useful during debugging/development. It may also lead to data corruption and should only be used for testing.'),
 				"no-search-indexing" => _t('If set indexing of changes made during import is not done. This may significantly reduce import time, but will neccessitate a reindex of the entire database after the import.'),
-				"log-to-tmp-directory-as-fallback" => _t('Use the system temporary directory for the import log if the application logging directory is not writable. Default report an error if the application log directory is not writeable.')
+				"log-to-tmp-directory-as-fallback" => _t('Use the system temporary directory for the import log if the application logging directory is not writable. Default report an error if the application log directory is not writeable.'),
+				"detailed-log-name" => _t('Name to use for detailed field-level error log. By default these log files are named with the date and code for the import mapping.')
 			);
 		}
 		# -------------------------------------------------------
@@ -611,46 +599,49 @@
 			return _t("Loads export mapping from Excel XLSX format file.");
 		}
 		# -------------------------------------------------------
-		public static function export_data($po_opts=null) {
+		public static function export_data($opts=null) {
 			require_once(__CA_MODELS_DIR__."/ca_data_exporters.php");
 
-			$vs_search = $po_opts->getOption('search');
-			$vs_id = $po_opts->getOption('id');
-			$vb_rdf = (bool)$po_opts->getOption('rdf');
+			$search = $opts->getOption('search');
+			$id = $opts->getOption('id');
+			$rdf = (bool)$opts->getOption('rdf');
 
-			if (!$vb_rdf && !$vs_search && !$vs_id) {
+			if (!$rdf && !$search && !$id) {
 				print _t('You must specify either an idno or a search expression to select a record or record set for export or activate RDF mode.')."\n";
 				return false;
 			}
-			if (!($vs_filename = $po_opts->getOption('file'))) {
+			if (!($filename = $opts->getOption('file'))) {
 				print _t('You must specify a file to write export output to.')."\n";
 				return false;
 			}
 
-			if(@file_put_contents($vs_filename, "") === false){
+			if(is_writeable($filename === false)){
 				// probably a permission error
-				print _t("Can't write to file %1. Check the permissions.",$vs_filename)."\n";
+				print _t("Can't write to file %1. Check the permissions.",$filename)."\n";
 				return false;
 			}
+			
+			$individual_files = (bool)$opts->getOption('individual-files');
+			$filename_template = (string)$opts->getOption('filename-template');
 
-			$vs_log_dir = $po_opts->getOption('log');
-			$vn_log_level = CLIUtils::getLogLevel($po_opts);
+			$log_dir = $opts->getOption('log');
+			$log_level = $opts->getOption('log-level');
 
 			// RDF mode
-			if($vb_rdf){
-				if (!($vs_config = $po_opts->getOption('config'))) {
+			if($rdf){
+				if (!($config = $opts->getOption('config'))) {
 					print _t('You must specify a configuration file that contains the export definition for the RDF mode.')."\n";
 					return false;
 				}
 
 				// test config syntax
-				if(!Configuration::load($vs_config)){
-					print _t('Syntax error in configuration file %s.',$vs_config)."\n";
+				if(!Configuration::load($config)){
+					print _t('Syntax error in configuration file %s.',$config)."\n";
 					return false;
 				}
 
-				if(ca_data_exporters::exportRDFMode($vs_config, $vs_filename,array('showCLIProgressBar' => true, 'logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level))){
-					print _t("Exported data to %1", CLIUtils::textWithColor($vs_filename, 'yellow'));
+				if(ca_data_exporters::exportRDFMode($config, $filename,array('showCLIProgressBar' => true, 'logDirectory' => $log_dir, 'logLevel' => $log_level))){
+					print _t("Exported data to %1", CLIUtils::textWithColor($filename, 'yellow'));
 					return true;
 				} else {
 					print _t("Could not run RDF mode export")."\n";
@@ -660,34 +651,34 @@
 
 			// Search or ID mode
 
-			if (!($vs_mapping = $po_opts->getOption('mapping'))) {
+			if (!($mapping = $opts->getOption('mapping'))) {
 				print _t('You must specify a mapping for export.')."\n";
 				return false;
 			}
 
-			if (!(ca_data_exporters::loadExporterByCode($vs_mapping))) {
-				print _t('Mapping %1 does not exist', $vs_mapping)."\n";
+			if (!(ca_data_exporters::loadExporterByCode($mapping))) {
+				print _t('Mapping %1 does not exist', $mapping)."\n";
 				return false;
 			}
 
-			if(sizeof($va_errors = ca_data_exporters::checkMapping($vs_mapping))>0){
-				print _t("Mapping %1 has errors: %2",$vs_mapping,join("; ",$va_errors))."\n";
+			if(sizeof($va_errors = ca_data_exporters::checkMapping($mapping))>0){
+				print _t("Mapping %1 has errors: %2",$mapping,join("; ",$va_errors))."\n";
 				return false;
 			}
 
-			if($vs_search){
-				if(!ca_data_exporters::exportRecordsFromSearchExpression($vs_mapping, $vs_search, $vs_filename, array('showCLIProgressBar' => true, 'logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level))){
-					print _t("Could not export mapping %1", $vs_mapping)."\n";
+			if($search){
+				if(!ca_data_exporters::exportRecordsFromSearchExpression($mapping, $search, $filename, ['showCLIProgressBar' => true, 'logDirectory' => $log_dir, 'logLevel' => $log_level, 'individualFiles' => $individual_files, 'filenameTemplate' => $filename_template])){
+					print _t("Could not export mapping %1", $mapping)."\n";
 					return false;
 				} else {
-					print _t("Exported data to %1", $vs_filename)."\n";
+					print _t("Exported data to %1", $filename)."\n";
 				}
-			} else if($vs_id){
-				if($vs_export = ca_data_exporters::exportRecord($vs_mapping, $vs_id, array('singleRecord' => true, 'logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level))){
-					file_put_contents($vs_filename, $vs_export);
-					print _t("Exported data to %1", CLIUtils::textWithColor($vs_filename, 'yellow'));
+			} else if($id){
+				if($export = ca_data_exporters::exportRecord($mapping, $id, ['singleRecord' => true, 'logDirectory' => $log_dir, 'logLevel' => $log_level, 'individualFiles' => $individual_files, 'filenameTemplate' => $filename_template])){
+					file_put_contents($filename, $export);
+					print _t("Exported data to %1", CLIUtils::textWithColor($filename, 'yellow'));
 				} else {
-					print _t("Could not export mapping %1", $vs_mapping)."\n";
+					print _t("Could not export mapping %1", $mapping)."\n";
 					return false;
 				}
 			}
@@ -703,6 +694,8 @@
 				"log-level|d-s" => _t('Optional logging threshold. Possible values are, in ascending order of important: DEBUG, INFO, NOTICE, WARN, ERR, CRIT, ALERT. Default is INFO.'),
 				"rdf" => _t('Switches to RDF export mode. You can use this to assemble record-level exports across authorities with multiple mappings in a single export (usually an RDF graph). -s, -i and -m are ignored and -c is required.'),
 				"config|c=s" => _t('Configuration file for RDF export mode.'),
+				"individual-files|j=s" => _t('Output non-CSV exports as individual files, rather than a single concatenated file.'),
+				"filename-template|t=s" => _t('Display template to generate file names with when individual-files option is set. Do not include the file extension. The exporter will append it. The default template uses the identifier of the exported records.'),
 			);
 		}
 		# -------------------------------------------------------
@@ -804,14 +797,14 @@
 		 *
 		 */
 		public static function load_ULANShortHelp() {
-			return _t("Load Getty Art & Architecture Thesaurus (AAT) into CollectiveAccess.");
+			return _t("Load Getty Union List of Artist Names (ULAN) into CollectiveAccess.");
 		}
 		# -------------------------------------------------------
 		/**
 		 *
 		 */
 		public static function load_ULANHelp() {
-			return _t("Loads the AAT from a Getty-provided XML file.");
+			return _t("Loads the ULAN from a Getty-provided XML file.");
 		}
 		# -------------------------------------------------------
 		/**
@@ -864,212 +857,179 @@
 			$t_list = new ca_lists();
 			$o_db = $t_list->getDb();
 			
-			$vn_locale_id = ca_locales::getDefaultCataloguingLocaleID();
+			$locale_id = ca_locales::getDefaultCataloguingLocaleID();
 
-			if (!($ps_source = (string)$po_opts->getOption('file'))) {
+			if (!($source = (string)$po_opts->getOption('file'))) {
 				CLIUtils::addError(_t("You must specify a file"));
 				return false;
 			}
-			if (!file_exists($ps_source) || !is_readable($ps_source)) {
+			if (!file_exists($source) || !is_readable($source)) {
 				CLIUtils::addError(_t("You must specify a valid file"));
 				return false;
 			}
 			
-			if (!($ps_list_code = (string)$po_opts->getOption('list'))) {
+			if (!($list_code = (string)$po_opts->getOption('list'))) {
 				CLIUtils::addError(_t("You must specify a list"));
 				return false;
 			}
 			
-			$pb_update = (bool)$po_opts->getOption('update'); 	// "update" parameter; we only allow updating of a list if this is explicitly set
-			$vb_is_update = false; // flag indicated if we're actually updating an existing list
-
+			$is_update = (bool)$po_opts->getOption('update'); 	// "update" parameter; we only allow updating of a list if this is explicitly set
+			
 			try {
-				$o_file = PHPExcel_IOFactory::load($ps_source);
+				$o_file = \PhpOffice\PhpSpreadsheet\IOFactory::load($source);
 			} catch (Exception $e) {
 				CLIUtils::addError(_t("You must specify a valid Excel .xls or .xlsx file: %1", $e->getMessage()));
 				return false;
 			}
 			
-			print CLIProgressBar::start($o_file->getActiveSheet()->getHighestRow(), _t('Loading non-preferred terms'));
-			// Get non-preferred terms
-			$o_file->setActiveSheetIndex(1);
-			$o_sheet = $o_file->getActiveSheet();
-			$o_rows = $o_sheet->getRowIterator();
-			
-			$o_rows->next();
-				
-			$va_non_preferred_terms = [];
-			while ($o_rows->valid() && ($o_row = $o_rows->current())) {
-				$o_cells = $o_row->getCellIterator();
-				$o_cells->setIterateOnlyExistingCells(false);
-
-				$vn_c = 0;
-				$va_data = array();
-
-				foreach ($o_cells as $o_cell) {
-					$va_data[$vn_c] = trim((string)$o_cell->getValue());
-					$vn_c++;
-
-					if ($vn_c > 3) { break; }
-				}
-				
-				$va_non_preferred_terms[$va_data[1]][] = $va_data[0];
-				
-				$o_rows->next();
-				CLIProgressBar::next();
-			}
-			CLIProgressBar::finish();
-			
-
 			// get list
-			
 			print CLIProgressBar::start(1, _t('Creating list'));
 			
-			if (!($t_list = ca_lists::find(['list_code' => $ps_list_code], ['returnAs' => 'firstModelInstance']))) {
+			if (!($t_list = ca_lists::find(['list_code' => $list_code], ['returnAs' => 'firstModelInstance']))) {
 				$t_list = new ca_lists();
 				$t_list->setMode(ACCESS_WRITE);
-				$t_list->set('list_code', $ps_list_code);
+				$t_list->set('list_code', $list_code);
 				$t_list->set('is_system_list', 1);
 				$t_list->set('is_hierarchical', 1);
 				$t_list->set('use_as_vocabulary', 1);
+				$t_list->set('default_sort', 1); // sory by rank
 				$t_list->insert();
 				
 				if ($t_list->numErrors()) {
-					CLIUtils::addError(_t("Could not create list %1: %2", $ps_list_code, join("; ", $t_list->getErrors())));
+					CLIUtils::addError(_t("Could not create list %1: %2", $list_code, join("; ", $t_list->getErrors())));
 					return false;
 				}
 				
-				$t_list->addLabel(['name' => 'Chenhall Nomenclature'], $vn_locale_id, null, true);
+				$t_list->addLabel(['name' => 'Chenhall Nomenclature'], $locale_id, null, true);
 				if ($t_list->numErrors()) {
-					CLIUtils::addError(_t("Could not label list %1: %2", $ps_list_code, join("; ", $t_list->getErrors())));
+					CLIUtils::addError(_t("Could not label list %1: %2", $list_code, join("; ", $t_list->getErrors())));
 					return false;
 				}
 				
-			} elseif (($t_list->numItemsInList($ps_list_code) > 0)) {
-				if ($pb_update) {
-					$vb_is_update = true;
-				} else {
-					CLIUtils::addError(_t("List %1 is not empty. The Chenhall Nomenclature may only be imported into an empty list.", $ps_list_code));
+			} elseif (($t_list->numItemsInList($list_code) > 0)) {
+				if (!$is_update) {
+					CLIUtils::addError(_t("List %1 is not empty. The Chenhall Nomenclature may only be imported into an empty list.", $list_code));
 					return false;
 				}
 			}
 			CLIProgressBar::finish();
 			
+			$root_id = $t_list->getRootListItemID();
 			
-			$vn_list_id = $t_list->getPrimaryKey();
+			print CLIProgressBar::start($o_file->getActiveSheet()->getHighestRow(), _t('Loading non-preferred terms'));
 
-			// Get preferred terms
-			
 			$o_file->setActiveSheetIndex(0);
 			$o_sheet = $o_file->getActiveSheet();
 			$o_rows = $o_sheet->getRowIterator();
-			$vn_add_count = 0;
-
-			print CLIProgressBar::start($o_file->getActiveSheet()->getHighestRow(), _t('Loading preferred terms'));
+			
+			$add_count = 0;
 			
 			$o_rows->next(); // skip first line
-			
-			$va_parents = [];
-			
+				
+			$parent_ids = [];
 			while ($o_rows->valid() && ($o_row = $o_rows->current())) {
 				$o_cells = $o_row->getCellIterator();
 				$o_cells->setIterateOnlyExistingCells(false);
 
-				$vn_c = 0;
-				$va_data = array();
+				$c = $level = 0;
+				$data = $non_preferred_terms = [];
+				$id = $definition = $definition_source = $notes = null;
 
 				foreach ($o_cells as $o_cell) {
-					$vm_val = $o_cell->getValue();
-					if ($vm_val instanceof PHPExcel_RichText) {
-						$vs_val = '';
-						foreach($vm_val->getRichTextElements() as $vn_x => $o_item) {
-							$o_font = $o_item->getFont();
-							$vs_text = $o_item->getText();
-							if ($o_font && $o_font->getBold()) {
-								$vs_val .= "<strong>{$vs_text}</strong>";
-							} elseif($o_font && $o_font->getItalic()) {
-								$vs_val .= "<em>{$vs_text}</em>";
-							} else {
-								$vs_val .= $vs_text;
+					switch($c) {
+						case 0:
+							$id = trim((string)$o_cell->getValue());
+							break;
+						case 1:
+							// skip
+							break;
+						case 11:
+							$non_preferred_terms = explode(';', trim((string)$o_cell->getValue()));
+							break;
+						case 12:
+							$definition = trim((string)$o_cell->getValue());
+							break;
+						case 13:
+							$definition_source = trim((string)$o_cell->getValue());
+							break;
+						case 14:
+							$notes = trim((string)$o_cell->getValue());
+							break;
+						default:
+							if(($c >= 2) && ($c <= 7) && ($t = trim((string)$o_cell->getValue()))) {
+								$level = $c - 2;
+								$data[$level] = $t;
 							}
-						}
-					} else {
-						$vs_val = trim((string)$vm_val);
+							break;
 					}
-					$va_data[$vn_c] = nl2br(preg_replace("![\n\r]{1}!", "\n\n", $vs_val));
-					$vn_c++;
 
-					if ($vn_c > 6) { break; }
+					$c++;
+					if ($c > 14) { break; }
 				}
+				
 				$o_rows->next();
-
+				print CLIProgressBar::next(1, _t($is_existing_item ? 'Updated preferred term %1' : 'Added preferred term %1', $data[$level]));
+				if(!sizeof($data)) { continue; }
 				
-				$va_acc = [];
-				foreach($va_data as $vn_col => $vs_term) {
-					if(!$vs_term) { continue; }
-					if($vn_col > 5) { break; }
-					$va_acc[] = $vs_term;
-				}
-				$vs_term = array_pop($va_acc);
-				$vs_key = md5(join("|", $va_acc));
-				if (!($vn_parent_id = $va_parents[$vs_key])) {
-					$vn_parent_id = $t_list->getRootListItemID();
-				}
+				$parent_id = isset($parent_ids[$level-1]) ? $parent_ids[$level-1] : $root_id;
 				
+				$is_existing_item = false;
 				$t_item = null;
-				$vb_is_existing_item = false;
-				if ($vb_is_update) {
+				if ($is_update) {
 					// look for existing list item
-					if ($t_item = ca_list_items::find(['list_id' => $vn_list_id, 'idno' => mb_substr($vs_term, 0, 255)], ['returnAs' => 'firstModelInstance'])) {
-						if (($t_item->get('ca_list_items.preferred_labels.name_plural') !== $vs_term) || ($t_item->get('ca_list_items.preferred_labels.description') !== $va_data[6])) {
-							if(!$t_item->replaceLabel(['name_singular' => $vs_term, 'name_plural' => $vs_term, 'description' => $va_data[6]], $vn_locale_id, null, true)) {
-								CLIUtils::addError(_t("Could not update term %1: %2", $vs_term, join("; ", $t_item->getErrors())));
+					if ($t_item = ca_list_items::find(['list_id' => $list_id, 'idno' => mb_substr($id, 0, 255)], ['returnAs' => 'firstModelInstance'])) {
+						if (($t_item->get('ca_list_items.preferred_labels.name_plural') !== $data[$level]) || ($t_item->get('ca_list_items.preferred_labels.description') !== $description)) {
+							if(!$t_item->replaceLabel(['name_singular' => $data[$level], 'name_plural' => $data[$level], 'description' => $description], $locale_id, null, true)) {
+								CLIUtils::addError(_t("Could not update term %1: %2", $data[$level], join("; ", $t_item->getErrors())));
 							}
 						}
-						$vb_is_existing_item = true;
+						$is_existing_item = true;
 						
 						if (!$t_item->removeAllLabels(__CA_LABEL_TYPE_NONPREFERRED__)) {
-							CLIUtils::addError(_t("Could not remove nonpreferred labels for update for term %1: %2", $vs_term, join("; ", $t_item->getErrors())));
+							CLIUtils::addError(_t("Could not remove nonpreferred labels for update for term %1: %2", $data[$level], join("; ", $t_item->getErrors())));
 						}
 						
-						if ($vn_parent_id != $t_item->get('ca_list_items.parent_id')) {
+						if ($parent_id != $t_item->get('ca_list_items.parent_id')) {
 							$t_item->setMode(ACCESS_WRITE);
-							$t_item->set('parent_id', $vn_parent_id);
+							$t_item->set('parent_id', $parent_id);
 							if (!$t_item->update()) {
-								CLIUtils::addError(_t("Could not update parent for term %1: %2", $vs_term, join("; ", $t_item->getErrors())));
+								CLIUtils::addError(_t("Could not update parent for term %1: %2", $data[$level], join("; ", $t_item->getErrors())));
 							}
 						}
 					}
 				}
+				$non_preferred_terms = array_filter($non_preferred_terms, function($v) { return strlen($v); });
 				
 				if (!$t_item) {
-					if (!($t_item = $t_list->addItem($vs_term, true, false, $vn_parent_id, null, $vs_term, '', 0, 1))) {
-						CLIUtils::addError(_t("Could not add term %1: %2", $vs_term, join("; ", $t_list->getErrors())));
+					if (!($t_item = $t_list->addItem($data[$level], true, false, $parent_id, null, $id, '', 0, 1))) {
+						CLIUtils::addError(_t("Could not add term %1: %2", $data[$level], join("; ", $t_list->getErrors())));
 						continue;
 					}
 				}
-				if (!$vb_is_existing_item) {
-					if (!$t_item->addLabel(['name_singular' => $vs_term, 'name_plural' => $vs_term, 'description' => $va_data[6]], $vn_locale_id, null, true)) {
-						CLIUtils::addError(_t("Could not add term label %1: %2", $vs_term, join("; ", $t_list->getErrors())));
+				$add_count++;
+				if (!$is_existing_item) {
+					if (!$t_item->addLabel(['name_singular' => $data[$level], 'name_plural' => $data[$level], 'description' => $definition], $locale_id, null, true)) {
+						CLIUtils::addError(_t("Could not add term label %1: %2", $data[$level], join("; ", $t_list->getErrors())));
 						continue;
 					}
 				}
-				print CLIProgressBar::next(1, _t($vb_is_existing_item ? 'Updated preferred term %1' : 'Added preferred term %1', $vs_term));
-				$va_parents[md5(join("|", array_merge($va_acc, [$vs_term])))] = $t_item->getPrimaryKey();
+				$parent_ids[$level] = $t_item->getPrimaryKey();
 				
-				if(is_array($va_non_preferred_terms[$vs_term])) {
-					foreach($va_non_preferred_terms[$vs_term] as $vs_non_preferred_term) {
-						if (!($t_item->addLabel(['name_singular' => $vs_non_preferred_term, 'name_plural' => $vs_non_preferred_term, 'description' => ''], $vn_locale_id, null, false))) {
-							CLIUtils::addError(_t("Could not add non-preferred term %1 to %2: %3", $vs_non_preferred_term, $vs_term, join("; ", $t_list->getErrors())));
+				if(is_array($non_preferred_terms)) {
+					foreach($non_preferred_terms as $npt) {
+						if (!($t_item->addLabel(['name_singular' => $npt, 'name_plural' => $npt, 'description' => ''], $locale_id, null, false))) {
+							CLIUtils::addError(_t("Could not add non-preferred term %1 to %2: %3", $npt, $data[$level], join("; ", $t_list->getErrors())));
 							continue;
 						}
 					}
 				}
+				
+
 			}
-
 			CLIProgressBar::finish();
+			
 
-			CLIUtils::addMessage(_t('Added %1 terms', $vn_add_count), array('color' => 'bold_green'));
+			CLIUtils::addMessage(_t('Added %1 terms', $add_count), array('color' => 'bold_green'));
 			return true;
 		}
 		# -------------------------------------------------------
@@ -1078,7 +1038,7 @@
 		 */
 		public static function load_chenhall_nomenclatureParamList() {
 			return array(
-				"file|f=s" => _t('Excel XLSX-format AASLH Chenhall Nomenclature file to load.'),
+				"file|f=s" => _t('Excel XLSX-format https://nomemclature.info Chenhall Nomenclature file to load.'),
 				"list|l=s" => _t('Code for list to load Chenhall Nomenclature into. If list with code does not exist it will be created.'),
 				"update|u=s" => _t('Update an existing Chenhall installation.')
 			);
@@ -1102,7 +1062,326 @@
 		 *
 		 */
 		public static function load_chenhall_nomenclatureHelp() {
-			return _t('Loads Chenhall Nomenclature from Excel XLSX format file into the specified list. You can obtain a copy of the Nomenclature from the American Association of State and Local History (AASLH).');
+			return _t('Loads Chenhall Nomenclature from Excel XLSX format file into the specified list. You can obtain a copy of the Nomenclature from https://nomenclature.info.');
 		}
 		# -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function run_external_export($po_opts=null) {
+            require_once(__CA_LIB_DIR__."/ExternalExportManager.php");
+            
+            $target = $po_opts->getOption('target');
+			if ($target && !ExternalExportManager::isValidTarget($target)) {
+				CLIUtils::addMessage(_t('Ignoring invalid target %1', $target));
+				$target = null;
+			}
+			
+			$log_level = $po_opts->getOption('log-level');
+			
+			$table = $po_opts->getOption('table');
+			if (!$table) {
+				CLIUtils::addError(_t('You must specify a table'));
+				return;
+			}
+			if (!Datamodel::tableExists($table)) {
+				CLIUtils::addError(_t('Invalid table %1', $table));
+				return;
+			}
+			$id = $po_opts->getOption('id');
+			if (!$id) {
+				CLIUtils::addError(_t('You must specify an id'));
+				return;
+			}
+            
+            $e = new ExternalExportManager();
+            $e->process($table, $id, ['target' => $target, 'logLevel' => $log_level]);
+		}
+		# -------------------------------------------------------
+		public static function run_external_exportParamList() {
+			return [
+				"table|t=s" => _t('Table of record to export.'),
+				"id|i=s" => _t('ID of row to export.'),
+				"target|a=s" => _t('Target to export to. If omitted all valid targets will be exported to.'),
+				"log-level|d-s" => _t('Logging threshold. Possible values are, in ascending order of important: DEBUG, INFO, NOTICE, WARN, ERR, CRIT, ALERT. Default is INFO.'),
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function run_external_exportUtilityClass() {
+            return _t('Import/Export');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function run_external_exportShortHelp() {
+			return _t('Run external export for a record.');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function run_external_exportHelp() {
+			return _t('To come.');
+        }
+        # -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function run_pending_external_exports($po_opts=null) {
+            require_once(__CA_LIB_DIR__."/ExternalExportManager.php");
+            
+            $target = $po_opts->getOption('target');
+			if ($target && !ExternalExportManager::isValidTarget($target)) {
+				CLIUtils::addMessage(_t('Ignoring invalid target %1', $target));
+				$target = null;
+			}
+			
+			$log_level = $po_opts->getOption('log-level');
+            
+            $e = new ExternalExportManager(['logLevel' => $log_level]);
+            $e->processPending(['target' => $target, 'logLevel' => $log_level]);
+		}
+		# -------------------------------------------------------
+		public static function run_pending_external_exportsParamList() {
+			return [
+				"target|a=s" => _t('Target to export to. If omitted all valid targets will be exported to.'),
+				"log-level|d-s" => _t('Logging threshold. Possible values are, in ascending order of important: DEBUG, INFO, NOTICE, WARN, ERR, CRIT, ALERT. Default is INFO.'),
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function run_pending_external_exportsUtilityClass() {
+            return _t('Import/Export');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function run_pending_external_exportsShortHelp() {
+			return _t('Trigger pending external exports.');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function run_pending_external_exportsHelp() {
+			return _t('To come.');
+        }
+        # -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function write_exporter_to_file($po_opts=null) {
+            require_once(__CA_LIB_DIR__."/ExternalExportManager.php");
+            
+            $file = $po_opts->getOption('file');
+            if (!$file) {
+				CLIUtils::addError(_t('A file must be specified'));
+				return;
+			}
+			
+			if ($file && ((file_exists($file) && !is_writeable($file)) || (!file_exists($file) && !is_writeable(pathinfo($file, PATHINFO_DIRNAME))))) {
+				CLIUtils::addError(_t('Cannot write to file %1', $file));
+				return;
+			}
+			
+			$mapping = $po_opts->getOption('mapping');
+			if (!$mapping) {
+				CLIUtils::addError(_t('An export mapping must be specified'));
+				return;
+			}
+			
+			
+			try {
+			    ca_data_exporters::writeExporterToFile($mapping, $file);
+			} catch (Exception $e) {
+			    CLIUtils::addError(_t('Could not export %1: %2', $mapping, $e->getMessage()));
+			    return;
+			}
+			CLIUtils::addMessage(_t('Exported %1', $mapping));
+		}
+		# -------------------------------------------------------
+		public static function write_exporter_to_fileParamList() {
+			return [
+				"mapping|m=s" => _t('Required. Exporter mapping to write to file.'),
+				"file|f=s" => _t('Required. File to save exporter to.')
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function write_exporter_to_fileUtilityClass() {
+            return _t('Import/Export');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function write_exporter_to_fileShortHelp() {
+			return _t('Write exporter mapping to Excel-format file.');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function write_exporter_to_fileHelp() {
+			return _t('Write exporter mapping to Excel-format file.');
+        }
+		# -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function export_search_using_display($po_opts=null) {
+            $file = $po_opts->getOption('file');
+            if (!$file) {
+				CLIUtils::addError(_t('A file must be specified'));
+				return;
+			}
+			
+			if ($file && ((file_exists($file) && !is_writeable($file)) || (!file_exists($file) && !is_writeable(pathinfo($file, PATHINFO_DIRNAME))))) {
+				CLIUtils::addError(_t('Cannot write to file %1', $file));
+				return;
+			}
+			
+			$table = $po_opts->getOption('table');
+			if (!$table) {
+				CLIUtils::addError(_t('A table must be specified'));
+				return;
+			}
+			
+			$format = strtoupper($po_opts->getOption('format'));
+			
+			
+			$display = $po_opts->getOption('display');
+			if(!($t_display = ca_bundle_displays::find(['display_code' => $display], ['returnAs' => 'firstModelInstance']))) {
+				CLIUtils::addError(_t('A valid display must be specified'));
+				return;
+			}
+			
+			$search = $po_opts->getOption('search');
+			if(!strlen($search)) { $search = '*'; }
+			
+			if(!($o_s = caGetSearchInstance($table))) {
+				CLIUtils::addError(_t('Could not create search for %1', $table));
+				return;
+			}
+			$result = $o_s->search($search);
+			
+			//$result, $format, $file, $ps_title=null
+			$view = new View(null, [__CA_THEME_DIR__.'/views/find']);
+			
+			$view->setVar('criteria_summary', $search);	// add displayable description of current search/browse parameters
+			$view->setVar('criteria_summary_truncated', mb_substr($search, 0, 60).((mb_strlen($search) > 60) ? '...' : ''));
+	
+			// get display list
+			$ret = $t_display->getDisplayListForResultsEditor($table, 
+ 				['user_id' => null, 'request' => null, 'type_id' => null]);
+ 				
+			$view->setVar('result', $result);
+			$view->setVar('t_display', $t_display);
+			$view->setVar('display_list', $display_list = $ret['displayList']);
+			$view->setVar('current_items_per_page', null);
+			
+			
+			$result->seek(0); // reset result before exporting anything
+			
+			switch($format) {
+				case 'XLSX':
+					$output = $view->render('Results/xlsx_results.php');
+					file_put_contents($file, $output);
+					return;
+				case 'DOCX':
+					$view->render('Results/docx_results.php');
+					file_put_contents($file, $output);
+					return;						
+				case 'CSV':
+					$delimiter = ",";
+					$file_extension = 'txt';
+					$mimetype = "text/plain";
+					break;
+				case 'TAB':
+					$delimiter = "\t";	
+					$file_extension = 'txt';
+					$mimetype = "text/plain";
+					break;
+				default:
+					CLIUtils::addError(_t('Invalid format %1', $format));
+					return;
+			}
+	
+			$rows = [];
+	
+			// output header
+	
+			$row = array();
+			foreach($display_list as $display_item) {
+				$row[] = $display_item['display'];
+			}
+			$rows[] = join($delimiter, $row);
+	
+			$result->seek(0);
+	
+			$r = fopen($file, "w");
+			while($result->nextHit()) {
+				$row = array();
+				foreach($display_list as $placement_id => $display_item) {
+					$vs_value = html_entity_decode($t_display->getDisplayValue($result, $placement_id, array('convert_codes_to_display_text' => true, 'convertLineBreaks' => false)), ENT_QUOTES, 'UTF-8');
+					$vs_value = preg_replace("![\r\n\t]+!", " ", $vs_value);
+				
+					// quote values as required
+					if (preg_match("![^A-Za-z0-9 .;]+!", $vs_value)) {
+						$vs_value = '"'.str_replace('"', '""', $vs_value).'"';
+					}
+					$row[] = $vs_value;
+				}
+				fputcsv($r, $row, $delimiter);
+			}
+			fclose($r);		
+			
+			CLIUtils::addMessage(_t('Exported %1', $mapping));
+		}
+		# -------------------------------------------------------
+		public static function export_search_using_displayParamList() {
+			return [
+				"table|t=s" => _t('Required. Table to search on.'),
+				"search|s=s" => _t('Required. Search to use.'),
+				"file|f=s" => _t('Required. File to save output to.'),
+				"format|x=s" => _t('Format to output in. Supported values as XLSX, DOCX, TAB and CSV.'),
+				"display|d=s" => _t('Code of display to format data with.'),
+				
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function export_search_using_displayUtilityClass() {
+            return _t('Import/Export');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function export_search_using_displayShortHelp() {
+			return _t('Write search to XLSX, Docx or PDF file using display.');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function export_search_using_displayHelp() {
+			return _t('Write exporter mapping to Excel-format file.');
+        }
+				
     }
