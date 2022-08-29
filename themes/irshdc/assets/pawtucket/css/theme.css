@@ -1658,6 +1658,7 @@ h2.exhibitionSection{
 }
 .staticPage p, .staticPage div {
     line-height: 1.8em;
+    font-size:16px;
 }
 .staticPage b{
 	font-family: lato;

@@ -122,13 +122,15 @@ if($vs_mode == "map"){
 								<div class="trimText">^ca_entities.description_new.description_new_txt</div>
 							</div>
 						</ifdef>}}}
+						{{{<ifdef code="ca_entities.additionalResources"><div class='unit'><H6>Additional Resources</H6>^ca_entities.additionalResources</div></ifdef>}}}		
+						
 						{{{<ifdef code="ca_entities.community_input_objects.comments_objects">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_entities.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
 								<div class="trimText">^ca_entities.community_input_objects.comments_objects</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.denomination"><div class='unit'><H6>Denomination</H6>^ca_entities.denomination%delimiter=,_</div></ifdef>}}}		
-						{{{<ifdef code="ca_entities.home_community.home_community_text"><div class='unit'><H6>Home Communities of Students</H6><unit delimiter="<br/>"><span data-toggle="popover" title="Source" data-content="^ca_entities.home_community.home_community_source"><div class="trimText">^ca_entities.home_community.home_community_text</div></span></unit></div></ifdef>}}}					
+						{{{<ifdef code="ca_entities.home_community.home_community_text"><div class='unit'><H6>Home Communities of Students</H6><unit delimiter="<br/>"><span data-toggle="popover" title="Source" data-content="^ca_entities.home_community.home_community_source"><div class="trimTextShort">^ca_entities.home_community.home_community_text</div></span></unit></div></ifdef>}}}					
 					</div><!-- end stoneBg -->
 <?php
 						include("themes_html.php");
@@ -266,7 +268,7 @@ if($vs_mode == "map"){
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 18
+		  maxHeight: 58
 		});
 		$('.trimTextSubjects').readmore({
 		  speed: 75,
