@@ -176,13 +176,13 @@ if($vs_mode == "map"){
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_entities", "row_id" => $t_item->get("entity_id")))."</div>";
 					if($vs_url = $t_item->get("ca_entities.moreRecordsUrl")){
 						print "<div class='detailTool'><a href='".$vs_url."'>Find More Records</a></div>";
 					}
 					if($vs_url = $t_item->get("ca_entities.resourcesUrl")){
 						print "<div class='detailTool'><a href='".$vs_url."'>Resources</a></div>";
 					}
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_entities", "row_id" => $t_item->get("entity_id")))."</div>";
 					print '</div><!-- end detailTools -->';			
 
 					if ($vn_comments_enabled) {
