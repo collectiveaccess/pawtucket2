@@ -147,7 +147,7 @@
 
 ?>
 				{{{<ifdef code="ca_objects.date"><div class="unit"><unit relativeTo="ca_objects.date" delimiter=", ">^ca_objects.date.date_value <ifdef code="ca_objects.date.date_types">(^ca_objects.date.date_types)</ifdef></unit></div></ifdef>}}}
-				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="Dedicated,Related,Publisher"><div class="unit"><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="Dedicated,Related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="Dedicated,Related,Publisher,Donor,Subject,Depicted"><div class="unit"><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="Dedicated,Related,Publisher,Donor,Subject,Depicted"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.material_techniques"><div class="unit">^ca_objects.material_techniques%delimiter=,_</div></ifdef>}}}
 				
 
@@ -193,12 +193,14 @@
 							<!-- end Library fields -->
 							<!-- Format tab: Photo/Artifact/Art_arch -->
 							{{{<ifdef code="ca_objects.dimensions.dimensions_length|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_depth|ca_objects.dimensions.dimensions_weight|ca_objects.dimensions.dimension_notes"><div class="unit"><label>Dimensions</label>
-								<ifdef code="ca_objects.dimensions.dimensions_length">Length: ^ca_objects.dimensions.dimensions_length<br/></ifdef>
-								<ifdef code="ca_objects.dimensions.dimensions_width">Width: ^ca_objects.dimensions.dimensions_width<br/></ifdef>
-								<ifdef code="ca_objects.dimensions.dimensions_height">Height: ^ca_objects.dimensions.dimensions_height<br/></ifdef>
-								<ifdef code="ca_objects.dimensions.dimensions_depth">Depth: ^ca_objects.dimensions.dimensions_depth<br/></ifdef>
-								<ifdef code="ca_objects.dimensions.dimensions_weight">Weight: ^ca_objects.dimensions.dimensions_weight<br/></ifdef>
-								<ifdef code="ca_objects.dimensions.dimension_notes">Notes: ^ca_objects.dimensions.dimension_notes<br/></ifdef>
+								<unit relativeTo="ca_objects.dimensions" delimiter="<br/>">
+									<ifdef code="ca_objects.dimensions.dimensions_length">Length: ^ca_objects.dimensions.dimensions_length<br/></ifdef>
+									<ifdef code="ca_objects.dimensions.dimensions_width">Width: ^ca_objects.dimensions.dimensions_width<br/></ifdef>
+									<ifdef code="ca_objects.dimensions.dimensions_height">Height: ^ca_objects.dimensions.dimensions_height<br/></ifdef>
+									<ifdef code="ca_objects.dimensions.dimensions_depth">Depth: ^ca_objects.dimensions.dimensions_depth<br/></ifdef>
+									<ifdef code="ca_objects.dimensions.dimensions_weight">Weight: ^ca_objects.dimensions.dimensions_weight<br/></ifdef>
+									<ifdef code="ca_objects.dimensions.dimension_notes">Notes: ^ca_objects.dimensions.dimension_notes<br/></ifdef>
+								</unit>
 							</ifdef>}}}
 							{{{<ifdef code="ca_objects.photograph_format"><div class="unit"><label>Photograph Format (AAT)</label>^ca_objects.photograph_format%delimiter=,_</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.object_work_type"><div class="unit"><label>Object Work/Type (AAT)</label>^ca_objects.object_work_type%delimiter=,_</div></ifdef>}}}
@@ -250,6 +252,14 @@
 						
 								}
 								#$vs_lc_names = join("<br/>", $va_lc_names_processed);
+							}
+							$va_entities = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("Subject","Depicted"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
+							$va_entities_processed = array();
+							if(is_array($va_entities) && sizeof($va_entities)){
+								foreach($va_entities as $va_entity){
+									$va_all_subjects[strToLower($va_entity["displayname"])] = caDetailLink($this->request, $va_entity["displayname"], "", "ca_entities", $va_entity["entity_id"]);
+						
+								}
 							}
 							if(is_array($va_all_subjects) && sizeof($va_all_subjects)){
 								ksort($va_all_subjects);
