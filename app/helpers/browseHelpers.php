@@ -274,7 +274,7 @@ function caGetFacetForMenuBar($po_request, $vs_browse_type, $pa_options=null) {
 	}
 	
 	if ($vs_default_facet && $vb_select_default_facet) {
-		$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { jQuery(\".browseMenuFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', $vs_browse_type, array('facet' => $vs_default_facet, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => 1))."\"); });</script>\n";
+		$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { jQuery(\".browseMenuFacet\").load(\"".caNavUrl($po_request, '*', 'Browse', $vs_browse_type, array('facet' => $vs_default_facet, 'getFacet' => 1, 'key' => $vs_key ? $vs_key : 'null', 'isNav' => 1))."\"); });</script>\n";
 	}
 	return $vs_buf;
 }
