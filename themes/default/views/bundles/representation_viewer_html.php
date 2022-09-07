@@ -62,7 +62,7 @@
 		$('.jcarousel').on('jcarousel:animate', function (event, carousel) {
 			$(carousel._element.context).find('li').hide().fadeIn(500);
 		}).on('jcarousel:createend jcarousel:animateend', function(event, carousel) {
-			var current_rep_id = parseInt($('.jcarousel').jcarousel('last').attr('id').replace('slide', ''));
+			var current_rep_id = parseInt($('.jcarousel').jcarousel('target').attr('id').replace('slide', ''));
 			var i = caSliderepresentation_ids.indexOf(current_rep_id);
 			console.log("current", current_rep_id, i, jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html());
 
