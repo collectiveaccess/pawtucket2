@@ -126,14 +126,8 @@
 						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('{{{active_representation_class}}}');
 						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('{{{active_representation_class}}}');
 					});
-					
-					
 				}
 			});
-			
-		//if({{{representation_id}}} > 0){
-		//	$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
-		//}
 	});
 </script>
 <?php
