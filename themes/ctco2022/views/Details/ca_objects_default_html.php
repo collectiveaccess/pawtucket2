@@ -54,10 +54,11 @@
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				
 <?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
+				# Inquire, Comment and Share Tools
 						
 					print '<div id="detailTools">';
+					print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("object_id")))."</div>";					
+						
 					if ($vn_comments_enabled) {
 ?>				
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?php print _t("Comments and tags"); ?>"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
@@ -70,8 +71,7 @@
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
-					print '</div><!-- end detailTools -->';
-				}				
+					print '</div><!-- end detailTools -->';				
 
 ?>
 
@@ -81,15 +81,17 @@
 				<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
 				<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 				<HR>
-				
-				<!-- {{{<ifdef code="ca_objects.measurementSet.measurements">^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)</ifdef>
-						<ifdef code="ca_objects.measurementSet.measurements,ca_objects.measurementSet.measurements"> x </ifdef>
-						<ifdef code="ca_objects.measurementSet.measurements2">^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)</ifdef>
-				}}} -->
-				<!-- {{{<ifdef code="ca_objects.idno"><label>Identifier:</label>^ca_objects.idno<br/></ifdef>}}} -->
-				<!-- {{{<ifdef code="ca_objects.containerID"><label>Box/series:</label>^ca_objects.containerID<br/></ifdef>}}}				 -->
-				
-				{{{<ifdef code="ca_objects.date"><label>Date</label>^ca_objects.date.date_value</ifdef>}}}
+<?php
+					if($t_object->get("source_id")){
+						$vs_source_as_link = getSourceAsLink($this->request, $t_object->get("source_id"), null);
+?>
+						<div class="unit"><label>Contributor</label>
+							<?php print $vs_source_as_link; ?>
+						</div>
+<?php
+					}				
+?>
+				{{{<ifdef code="ca_objects.date"><div class='unit'><label>Date</label>^ca_objects.date.date_value</div></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.public_description">
 					<div class='unit'><label>Description</label>
@@ -97,59 +99,74 @@
 					</div>
 				</ifdef>}}}
 
-				{{{<ifdef code="ca_objects.aat"><label>Object Type</label>^ca_objects.aat</ifdef>}}}
+				<?php
+					if($t_object->get("ca_objects.aat")){
+						if($links = caGetBrowseLinks($t_object, 'ca_objects.aat', ['template' => '<l>^ca_objects.aat</l>', 'linkTemplate' => '<div>^LINK</div>'])) {
+				?>
+							<div class="unit">
+								<label>Object Type</label>
+								<?= join("\n", $links); ?>
+							</div>
+				<?php
+						}
+					}
+				?>
 
-				{{{<ifdef code="ca_objects.ulan"><label>Artist Name</label>^ca_objects.ulan</ifdef>}}}
+				<!-- {{{<ifdef code="ca_objects.aat"><unit delimiter="<br/>"><label>Object Type</label>^ca_objects.aat</unit></ifdef>}}} -->
 
-				{{{<ifdef code="ca_objects.lcsh_terms"><label>Subjects</label>^ca_objects.lcsh_terms</ifdef>}}}
+
+
+				{{{<ifdef code="ca_objects.ulan"><div class='unit'><label>Artist Name</label>^ca_objects.ulan</div></ifdef>}}}
+
+				<?php
+					if($links = caGetBrowseLinks($t_object, 'ca_objects.lcsh_terms', ['template' => '<l>^ca_objects.lcsh_terms</l>', 'linkTemplate' => '<li>^LINK</li>'])) {
+				?>
+						{{{<ifdef code="ca_objects.lcsh_terms">
+							<label>Subjects</label>
+						</ifdef>}}}
+
+						<div class="unit">
+							<ul><?= join("\n", $links); ?></ul>
+						</div>
+				<?php
+					}
+				?>
+				<!-- {{{<ifdef code="ca_objects.lcsh_terms"><div class='unit' ><label>Subjects</label>^ca_objects.lcsh_terms</div></ifdef>}}} -->
 				
-				{{{<ifdef code="ca_objects.lc_names"><label>Names and Organizations</label>^ca_objects.lc_names</ifdef>}}}
+				{{{<ifdef code="ca_objects.lc_names"><div class='unit'><label>Names and Organizations</label>^ca_objects.lc_names</div></ifdef>}}}
 
-				{{{<ifcount code="ca_entities" min="1"><label>Related people</label></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>}}}
-
-				<!-- {{{<ifdef code="ca_objects.dimensions"><label>Dimensions</label>^ca_objects.dimensions</ifdef>}}} -->
+				{{{<ifdef code="ca_entities"><label>Related people</label></ifdef>}}}
+				{{{<unit relativeTo="ca_entities" delimiter="<br/>"><div class="unit"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</div></unit>}}}
 
 				{{{<ifdef code="ca_objects.dimensions"><label>Dimensions</label></ifdef>}}}
 				{{{
 					<ifcount code="ca_objects.dimensions" min="1">
 						<unit delimiter="<br/>">
-							<ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height H</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_height,ca_objects.dimensions.dimensions_width"> X </ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width W</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_width"> X </ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth D</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_length"> X </ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_length">^ca_objects.dimensions.dimensions_length L</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_weight">, ^ca_objects.dimensions.dimensions_weight Weight</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_diameter">, ^ca_objects.dimensions.dimensions_diameter Diameter</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_circumference">, ^ca_objects.dimensions.dimensions_circumference Circumference</ifdef>
-							<ifdef code="ca_objects.dimensions.measurement_notes">Measurement Notes: ^ca_objects.dimensions.measurement_notes</ifdef>
-							<ifdef code="ca_objects.dimensions.measurement_type">Measurement Types: ^ca_objects.dimensions.measurement_type</ifdef>
+							<div class="unit">
+								<ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height H</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_height,ca_objects.dimensions.dimensions_width"> X </ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width W</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_width"> X </ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth D</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_length"> X </ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_length">^ca_objects.dimensions.dimensions_length L</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_weight">, ^ca_objects.dimensions.dimensions_weight Weight</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_diameter">, ^ca_objects.dimensions.dimensions_diameter Diameter</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_circumference">, ^ca_objects.dimensions.dimensions_circumference Circumference</ifdef>
+								<ifdef code="ca_objects.dimensions.measurement_notes">Measurement Notes: ^ca_objects.dimensions.measurement_notes</ifdef>
+								<ifdef code="ca_objects.dimensions.measurement_type">Measurement Types: ^ca_objects.dimensions.measurement_type</ifdef>
+							</div>
 						</unit>
 					</ifcount>
 				}}}
 
-
-
-				{{{<ifdef code="ca_objects.credit_line"><label>Credit Line</label>^ca_objects.credit_line</ifdef>}}}
-				{{{<ifdef code="ca_objects.idno"><label>Identifier</label>^ca_objects.idno</ifdef>}}}
+				{{{<ifdef code="ca_objects.credit_line"><div class='unit'><label>Credit Line</label>^ca_objects.credit_line</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.idno"><div class='unit'><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
+				{{{<ifdef code="cca_objects.rights"><div class='unit'><label>Rights</label>^ca_objects.rights</div></ifdef>}}}
 			
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-6">		
-							
-							{{{<ifcount code="ca_occurrences" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
-							{{{<ifcount code="ca_occurrences" min="2"><label>Related occurrences</label></ifcount>}}}
-							{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</unit>}}}
-							
-							{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-							{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>}}}
-							
-							{{{<ifcount code="ca_list_items" min="1" max="1"><label>Related Term</label></ifcount>}}}
-							{{{<ifcount code="ca_list_items" min="2"><label>Related Terms</label></ifcount>}}}
-							{{{<unit relativeTo="ca_list_items" delimiter="<br/>"><l>^ca_list_items.preferred_labels.name_plural</l> (^relationship_typename)</unit>}}}
 							
 						</div><!-- end col -->				
 						<div class="col-sm-6 colBorderLeft">

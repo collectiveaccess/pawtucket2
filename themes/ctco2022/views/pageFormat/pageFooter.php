@@ -35,17 +35,7 @@
 				<div class="col-sm-4 text-left">
 					<div class="address">
 						<p class="footer-address">
-							Connecticut League of History Organizations
-							<br>
-							Central Connecticut State University, Department of History
-							<br>
-							1615 Stanley Street
-							<br>
-							New Britain, CT 06050
-							<br>
-							(860) 832-2674
-							<br>
-							info@clho.org
+							{{{footer_text}}}
  						</p>
 					</div>
  				</div>

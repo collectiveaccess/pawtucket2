@@ -85,6 +85,29 @@
 	}
 ?>
 
+
+	<div class="container link-page-breaker">
+		<div class="row">
+			<div class="col col-md-3 col-lg-3 text-center mr-1">
+				<div class="link-text">
+					<a href="/index.php/Browse/objects">Artifacts</a>
+				</div>
+			</div>
+			<div class="col col-md-3 col-lg-3 text-center mr-1">
+				<div class="link-text">
+					<a href="/index.php/Collections/index">Archives</a>
+				</div>
+			</div>
+			<div class="col col-md-3 col-lg-3 text-center">
+				<div class="link-text">
+					<a href="/index.php/Contributors">Contributors</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
 	<?php
 		print $this->render("Front/featured_set_slideshow_html.php");
 	?>

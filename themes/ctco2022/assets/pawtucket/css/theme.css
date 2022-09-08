@@ -43,6 +43,7 @@ a:hover{
 }
 .headerAdvancedSearch a{
 	font-size:13px;
+	color: #000;
 }
 #headerSearchButton{
 	color:#000000;
@@ -52,12 +53,16 @@ a:hover{
 	padding-top: 0px;
 }
 .navbar-brand img{
-	height: 100px;
+	height: 70px;
 	width: auto;
 }
 
 .navbar-collapse {
-	margin-top: 20px;
+	margin-top: 10px;
+}
+
+.navbar-nav{
+	/* margin-top: 10px; */
 }
 
 @media (min-width:768px){
@@ -89,8 +94,8 @@ a:hover{
 }
 @media(max-width:1010px){
 	.yamm .nav.navbar-right.menuItems .dropdown-menu {
-		left: 0;
-		right: auto;
+		/* left: 0;
+		right: auto; */
 	}
 }
 
@@ -102,6 +107,17 @@ a:hover{
 	color:#000000;
 	letter-spacing:1px;
 }
+
+.navbar-default .navbar-nav > li > a:hover{
+	color:#339f69 !important;
+	letter-spacing:1px !important;
+}
+.navbar-default .navbar-nav > li.active > a{
+	color:#339f69 !important;
+	letter-spacing:1px !important;
+}
+
+
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
 	background-color:transparent;
 	color:#787878; /* highlight color */
@@ -157,7 +173,7 @@ body{
 	padding-top:50px;
 	height: 260px;
 	border:0px;
-	font-size:14px;
+	font-size:15px;
 	font-weight:normal;
 	margin-top:50px;
 	padding-bottom:50px;
@@ -192,7 +208,7 @@ body{
 }
 #footer .address{
 	text-transform: uppercase;
-	font-size: 10px;
+	font-size: 12px;
 	line-height: 2;
 }
 @media(max-width: 768px) {
@@ -500,6 +516,37 @@ body.frontContainer #footer{
 	text-decoration:none;
 }
 
+
+/* Links Page Breaker */
+
+.link-page-breaker .row{
+	display: flex;
+	justify-content: center;
+}
+.link-page-breaker .row .col{
+	margin: 70px;
+	/* padding: 70px; */
+	border: #339f69 3pt solid ;
+}
+.link-page-breaker .row .col div.link-text{
+	font-size: 40px;
+	margin: 70px 0px 70px 0px;
+	color: #000;
+}
+.link-page-breaker .row .col div.link-text a{
+	color: #000;
+}
+.link-page-breaker .row .col div.link-text a:hover{
+	text-decoration: none;
+	color: #339f69;
+}
+
+
+.frontGridCaption a{
+	color: #000;
+}
+
+
 /* gallery */
 @media(max-width:768px){
 	.galleryList{
@@ -527,6 +574,11 @@ body.frontContainer #footer{
     margin-top: 5px;
     font-weight: bold;
 }
+
+.galleryList label a{
+	color: #000;
+}
+
 .gallery .setDescription {
 	font-size: 14px;
 	font-weight: normal;
@@ -550,6 +602,11 @@ body.frontContainer #footer{
 .gallery #galleryDetailImageGrid img {
   background-color: #fff;
 }
+
+#galleryDetailObjectInfo a.btn.btn-default{
+	background-color: #339f69;
+}
+
 /* collections */
 .collectionIntro {
 	font-size: 14px;
@@ -559,6 +616,96 @@ body.frontContainer #footer{
 .collectionsList a{
 	text-decoration:none;
 }
+collectionTile {
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	margin-bottom:15px;
+	padding:15px;
+	font-size:13px;
+	line-height:1.8em;
+}
+.collectionTile .title {
+	padding-bottom:10px;
+	font-family:lato;
+	
+}
+.collectionTile .title a {
+	text-decoration:none;
+	font-size:14px;
+}
 .collectionTile:hover{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.collectionTile a.btn-default{
+	background-color: #339f69;
+	color: #fff;
+}
+
+div#detailTools{
+	margin-top: 0 !important;
+}
+
+.detail h1 {
+	font-size: 22px;
+	color: #262626;
+	line-height: 135%;
+	text-transform: none;
+}
+
+.detail .unit {
+	font-size: 15px;
+	margin-bottom: 20px;
+}
+
+.detail label{
+	font-size: 16px;
+}
+
+/* Contrubutors page */
+
+/* .leaflet-container a {
+	color: #000;
+} */
+
+.contributors .contributorMap{
+	margin:30px 0px 30px 0px;
+}
+.contributorsList a{
+	font-size:15px;
+	font-weight:normal;
+	color:#333;
+	text-decoration:none;
+}
+.contributorsList p{
+	margin-bottom:20px;
+}
+.contributorTile {
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	margin-bottom:15px;
+	padding:15px;
+	font-size:13px;
+	line-height:1.8em;
+}
+.contributorImage{
+	margin-bottom:20px;
+}
+.contributorImage img{
+	width:100%;
+	height:auto;
+}
+.contributorTile .title {
+	padding-bottom:10px;
+	font-family:lato;
+	font-size:18px;
+	
+}
+.contributorTile .title a {
+	text-decoration:none;
+	font-size:14px;
+}
+.contributorTile:hover{
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+.contributorTile a.btn-default{
+	background-color: #339f69;
+	color: #fff;
 }

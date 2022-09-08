@@ -16,11 +16,17 @@
 		while($qr_collections->nextHit()) {
 			if ( $vn_i == 0) { print "<div class='row'>"; } 
 			$vs_tmp = "<div class='col-sm-6'><div class='collectionTile'><div class='title'>".$qr_collections->get("ca_collections.preferred_labels")."</div>";	
+
 			if (($o_collections_config->get("description_template")) && ($vs_scope = $qr_collections->getWithTemplate($o_collections_config->get("description_template")))) {
-				$vs_tmp .= "<div>".$vs_scope."</div>";
+				if(mb_strlen($vs_scope) > 300){
+					$vs_scope = strip_tags(mb_substr($vs_scope, 0, 300))."...";
+				}
+				$vs_tmp .= "<div>".$vs_scope."</div>". "<div class='text-right'>".caDetailLink($this->request, "View", "btn btn-default btn-small", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";
 			}
+
 			$vs_tmp .= "</div>";
 			print caDetailLink($this->request, $vs_tmp, "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
+
 			print "</div>";
 			$vn_i++;
 			if ($vn_i == 2) {
