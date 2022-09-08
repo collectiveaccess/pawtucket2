@@ -99,7 +99,7 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
 <?php
 					$global_value_name = caGetOption('globalValue', $category_info, '');
 					if($vs_tmp = $global_value_name.$vs_lang){
-						print print $this->getVar($vs_tmp);
+						print $this->getVar($vs_tmp);
 					}else{
 						print caGetOption('description', $category_info, '???');
 					}
