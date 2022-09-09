@@ -31,10 +31,11 @@
  */
    
 /**
- * Format source
+ * Format source as link
  *
  * @param RequestHTTP $po_request
- * @param ca_objects object of record
+ * @param source_id idno of source list item cooresponds to idno of contributor entity record
+ * @param vs_classname class to use in link
  */
 
    	function getSourceAsLink($o_request, $source_id, $vs_classname) {
@@ -52,6 +53,55 @@
 			}else{
 				return null;
 			}
+		}
+		
+		
+	
+	}
+/**
+ * Format source as text
+ *
+ * @param RequestHTTP $po_request
+ * @param source_id idno of source list item cooresponds to idno of contributor entity record
+ */
+
+   	function getSourceAsText($o_request, $source_id) {
+		if(!$source_id){
+			return null;
+		}
+		$va_access_values = caGetUserAccessValues($o_request);
+		$t_list_items = new ca_list_items($source_id);
+		
+		if($vs_source_idno = $t_list_items->get("ca_list_items.idno")){
+			$t_entity = new ca_entities();
+			$t_entity->load(array("idno" => $vs_source_idno));
+			if(!(is_array($va_access_values) && sizeof($va_access_values) && !in_array($t_entity->get("ca_entities.access"), $va_access_values))){
+				return $t_entity->get("ca_entities.preferred_labels");
+			}else{
+				return null;
+			}
+		}
+		
+		
+	
+	}
+	
+/**
+ * Get source_id for entity
+ *
+ * @param RequestHTTP $po_request
+ * @param entity_id idno of entity cooresponds to idno of source list item
+ */
+
+   	function getSourceIdForEntity($o_request, $entity_id) {
+		if(!$entity_id){
+			return null;
+		}
+		$t_entity = new ca_entities($entity_id);
+		if($vs_entity_idno = $t_entity->get("ca_entities.idno")){
+			$t_list_items = new ca_list_items();
+			$t_list_items->load(array("idno" => $vs_entity_idno));
+			return $t_list_items->get("item_id");
 		}
 		
 		

@@ -178,9 +178,9 @@
 					<!-- <li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>					 -->
 					
 					<li class="dropdown-container">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Help</a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
 						<ul class="dropdown-menu">
-							<li><a href="/index.php/about">About</a></li>
+							<li><a href="/index.php/about">About The Project</a></li>
 							<li><a href="/index.php/guide">Guide</a></li>
 							<li><a href="/index.php/faq">FAQ</a></li>
 							<li><a href="/index.php/terms_of_use">Terms of Use</a></li>

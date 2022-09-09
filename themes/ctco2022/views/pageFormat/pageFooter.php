@@ -31,29 +31,29 @@
 		
 		<footer id="footer" class="text-center">
 			<div class="row footer-center">
-
-				<div class="col-sm-4 text-left">
-					<div class="address">
-						<p class="footer-address">
-							{{{footer_text}}}
- 						</p>
-					</div>
- 				</div>
-
-				<div class="col-sm-4">
-					<p><a href="https://clho.org/ctcollections/" class="orgLink">
-						<?php
-							print caNavLink($this->request, caGetThemeGraphic($this->request, 'CLHO.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "", "", "","");
-						?>
-					</a></p>
-
+				
+				<div class="col-sm-6 col-md-5 col-lg-4">
+					<a href="https://clho.org/ctcollections/" class="orgLink">
+						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'CLHO.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "", "", "","");?>
+					</a>
+					
 					<ul class="list-inline social">
 						<li><a href="https://twitter.com/ctlho" target="_blank"><i class="fa fa-twitter"></i></a></li>
 						<li><a href="https://www.instagram.com/ctlho/" target="_blank"><i class="fa fa-instagram"></i></a></li>
 						<li><a href="https://www.facebook.com/CTLeague/?fref=nf&pnref=story.unseen-section" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
 						<li><a href="https://www.youtube.com/channel/UCXfy6rb4EaWFArEsRXYNneA" target="_blank"><i class="fa fa-youtube-play"></i></a></li>
 					</ul>
+					
+					<p>info@clho.org</p>
 				</div>
+
+				<div class="col-sm-6 col-md-5 col-lg-4 text-left">
+					<div class="address">
+						<p class="footer-address">
+							{{{footer_text}}}
+						 </p>
+					</div>
+				 </div>
 
 			</div>
 		</footer><!-- end footer -->

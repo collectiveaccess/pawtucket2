@@ -1,6 +1,7 @@
 /* fonts to change */
-/*
-body, .detail, .gallery, label, b, strong{
+
+
+/* body, .detail, .gallery, label, b, strong{
 	font-family: "xxx";
 	font-weight:400;
 }
@@ -12,20 +13,24 @@ H1, h1, h2, H2, H3, h3, H4, h4, H5, h5, #footer a.orgLink{
 	color:#000;
 	font-family: 'xxx';
 	font-weight:600;
-}
+} */
 .btn-default, .browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active {
-	background-color:#004c52;
+	background-color:#2A8457;
 }
 .btn-default:hover{
-	background-color:#f18e00;
+	background-color:#2A8457;
 }
 a{
-	color:#004c52;
+	color:#000;
 }
 a:hover{
-	color:#f18e00;
+	color:#2A8457;
 }
-*/
+
+
+
+
+
 .bgLightGray{
 	background-color:#f2f2f2;
 }
@@ -44,6 +49,10 @@ a:hover{
 .headerAdvancedSearch a{
 	font-size:13px;
 	color: #000;
+}
+.headerAdvancedSearch a:hover{
+	font-size:13px;
+	color: #2A8457;
 }
 #headerSearchButton{
 	color:#000000;
@@ -109,11 +118,11 @@ a:hover{
 }
 
 .navbar-default .navbar-nav > li > a:hover{
-	color:#339f69 !important;
+	color:#2A8457 !important;
 	letter-spacing:1px !important;
 }
 .navbar-default .navbar-nav > li.active > a{
-	color:#339f69 !important;
+	color:#2A8457 !important;
 	letter-spacing:1px !important;
 }
 
@@ -133,6 +142,7 @@ a:hover{
 	background-color:#ffffff;
 	border:0px;
 	box-shadow: 1px 3px 3px rgba(0, 0, 0, 0.2);
+	margin-top: 8px;
 }
 .navbar-nav > li > .dropdown-menu a{
 	text-transform:uppercase;
@@ -142,7 +152,8 @@ a:hover{
 }
 .navbar-nav > li > .dropdown-menu a:hover{
 	background-color:#fff;
-	color:#787878; /* highlight color */
+	color: #2A8457; 
+	/* highlight color */
 	/* background-color on hover */
 	/*background-color:#efefef;*/
 	
@@ -170,13 +181,14 @@ body{
 #footer{
 	background-color: #f2f2f2;
 	color:#000;
-	padding-top:50px;
+	padding-top:25px;
 	height: 260px;
 	border:0px;
 	font-size:15px;
 	font-weight:normal;
 	margin-top:50px;
-	padding-bottom:50px;
+	padding-bottom:25px;
+	text-transform: none;
 }
 @media(max-width:480px){
 	/* CHANGE - does the footer height need to change for smaller screen sizes? */
@@ -207,9 +219,10 @@ body{
 	font-weight:400;
 }
 #footer .address{
-	text-transform: uppercase;
-	font-size: 12px;
+	/* text-transform: uppercase; */
+	font-size: 14px;
 	line-height: 2;
+	margin-top: 20px;
 }
 @media(max-width: 768px) {
 	#footer .text-right{
@@ -284,7 +297,7 @@ body.frontContainer #footer{
 
 .parallax {
 	position:relative;
-    background-image: url("../graphics/lilac_house.jpg");
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/lilac_house.jpg");
 
     /* Full height */
     height: 100vh;
@@ -300,13 +313,16 @@ body.frontContainer #footer{
 	top:-20px;
 }
 .parallax.hero1 {
-	background-image: url("../graphics/lilac_house.jpg");
+	/* background-image: url("../graphics/lilac_house.jpg"); */
+		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/lilac_house.jpg");
 }
 .parallax.hero2 {
-    background-image: url("../graphics/lilac_house.jpg");
+    /* background-image: url("../graphics/lilac_house.jpg"); */
+		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/lilac_house.jpg");
 }
 .parallax.hero3 {
-    background-image: url("../graphics/lilac_house.jpg");
+    /* background-image: url("../graphics/lilac_house.jpg"); */
+		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/lilac_house.jpg");
 }
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
@@ -525,25 +541,26 @@ body.frontContainer #footer{
 }
 .link-page-breaker .row .col{
 	margin: 70px;
-	/* padding: 70px; */
-	border: #339f69 3pt solid ;
+	border: #2A8457 3pt solid ;
+}
+.link-page-breaker .row .col:hover{
+	text-decoration: none;
+	color: #2A8457;
 }
 .link-page-breaker .row .col div.link-text{
 	font-size: 40px;
 	margin: 70px 0px 70px 0px;
 	color: #000;
 }
-.link-page-breaker .row .col div.link-text a{
-	color: #000;
-}
-.link-page-breaker .row .col div.link-text a:hover{
+.link-page-breaker .row .col div.link-text:hover{
 	text-decoration: none;
-	color: #339f69;
+	color: #2A8457;
 }
 
 
 .frontGridCaption a{
 	color: #000;
+	font-size: 14px;
 }
 
 
@@ -604,14 +621,14 @@ body.frontContainer #footer{
 }
 
 #galleryDetailObjectInfo a.btn.btn-default{
-	background-color: #339f69;
+	background-color: #2A8457;
 }
 
 /* collections */
 .collectionIntro {
-	font-size: 14px;
+	font-size: 17px;
 	font-weight: normal;
-	line-height: 1.8em;
+	color: #000;
 }
 .collectionsList a{
 	text-decoration:none;
@@ -624,7 +641,8 @@ collectionTile {
 	line-height:1.8em;
 }
 .collectionTile .title {
-	padding-bottom:10px;
+	font-size: 17px;
+	padding: 10px 0 10px 0;
 	font-family:lato;
 	
 }
@@ -636,7 +654,7 @@ collectionTile {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 .collectionTile a.btn-default{
-	background-color: #339f69;
+	background-color: #2A8457;
 	color: #fff;
 }
 
@@ -668,6 +686,11 @@ div#detailTools{
 
 .contributors .contributorMap{
 	margin:30px 0px 30px 0px;
+}
+.contributorIntro{
+	font-size: 17px;
+	color: #000;
+	font-weight: normal;
 }
 .contributorsList a{
 	font-size:15px;
@@ -706,6 +729,6 @@ div#detailTools{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 .contributorTile a.btn-default{
-	background-color: #339f69;
+	background-color: #2A8457;
 	color: #fff;
 }

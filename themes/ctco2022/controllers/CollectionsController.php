@@ -82,20 +82,20 @@
  			caSetPageCSSClasses(array("collections", "detail"));
  		}
  		# -------------------------------------------------------
- 		public function Contributors() {
+ 		public function Index() {
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
  			
- 			$o_db = new Db();
- 			$o_db->query("SELECT distinct ca_collections.source_id FROM ca_collections WHERE ca_collections.type_id = ? AND ca_collections.access IN (".join(", ", $this->opa_access_values).")", $vn_collection_type_id);
- 			print $o_db->numRows();
- 			while($o_db->nextRow()){
- 				print $o_db->get("");
- 			}
  			$t_list = new ca_lists();
 			$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", ($this->opo_config->get("landing_page_collection_type")) ? $this->opo_config->get("landing_page_collection_type") : "collection");
-			$vs_sort = ($this->opo_config->get("landing_page_sort")) ? $this->opo_config->get("landing_page_sort") : "ca_collections.preferred_labels.name";
-			$qr_collections = ca_collections::find(array('type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => $vs_sort));
-			$this->view->setVar("collection_results", $qr_collections);
+			$o_db = new Db();
+ 			$qr_res = $o_db->query("SELECT distinct ca_collections.source_id FROM ca_collections WHERE ca_collections.type_id = ? AND ca_collections.access IN (".join(", ", $this->opa_access_values).")", $vn_collection_type_id);
+ 			$va_collection_sources = array();
+ 			if($qr_res->numRows()){
+				while($qr_res->nextRow()){
+					$va_collection_sources[$qr_res->get("source_id")] = getSourceAsText($this->request, $qr_res->get("source_id"));
+				}
+			}
+ 			$this->view->setVar("collection_sources", $va_collection_sources);
 			caSetPageCSSClasses(array("collections", "landing"));
  			$this->render("Collections/index_html.php");
  		}
@@ -103,19 +103,22 @@
  		/**
  		 *
  		 */ 
- 		public function Index() {
+ 		public function Collections() {
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
- 			
+ 			$vn_source_id = $this->request->getParameter('source_id', pInteger);
+	
  			$this->opo_result_context = new ResultContext($this->request, "ca_collections", "collections");
+ 			$this->opo_result_context->setParameter('source_id', $vn_source_id);
  			$this->opo_result_context->setAsLastFind();
  			
  			$t_list = new ca_lists();
 			$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", ($this->opo_config->get("landing_page_collection_type")) ? $this->opo_config->get("landing_page_collection_type") : "collection");
 			$vs_sort = ($this->opo_config->get("landing_page_sort")) ? $this->opo_config->get("landing_page_sort") : "ca_collections.preferred_labels.name";
-			$qr_collections = ca_collections::find(array('type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => $vs_sort));
+			$qr_collections = ca_collections::find(array('source_id' => $vn_source_id, 'type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => $vs_sort));
 			$this->view->setVar("collection_results", $qr_collections);
+			$this->view->setVar("source_name", getSourceAsText($this->request, $vn_source_id));
 			caSetPageCSSClasses(array("collections", "landing"));
- 			$this->render("Collections/index_html.php");
+ 			$this->render("Collections/collections_list_html.php");
  		}
  		# -------------------------------------------------------
  		public function CollectionHierarchy(){
@@ -157,9 +160,9 @@
  			$va_ret = array(
  				'module_path' => '',
  				'controller' => 'Collections',
- 				'action' => 'Index',
+ 				'action' => 'Collections',
  				'params' => array(
- 					
+ 					"source_id"
  				)
  			);
 			return $va_ret;
