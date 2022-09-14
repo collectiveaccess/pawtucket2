@@ -32,7 +32,7 @@
   $va_access_values = $this->getVar("access_values");
  $vs_hero = $this->request->getParameter("hero", pString);
  if(!$vs_hero){
- 	$vs_hero = rand(1, 3);
+ 	$vs_hero = rand(1, 2);
  }
 ?>
 
@@ -43,8 +43,8 @@
 				
 				<div class="heroSearch">
 					<H1>
-						<div class="line1">Welcome to</div>
-						<div class="line2">Site Name</div>
+						<div class="line1">Welcome to the</div>
+						<div class="line2">SITI Archive</div>
 						<div class="line3">{{{hp_search_text}}}</div>
 					</H1>
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
@@ -119,10 +119,10 @@
 
 <?php
 	# --- display slideshow of random images
-	#print $this->render("Front/featured_set_slideshow_html.php");
+	print $this->render("Front/featured_set_slideshow_html.php");
 
 	# --- display galleries as a grid?
-	print $this->render("Front/gallery_grid_html.php");
+	#print $this->render("Front/gallery_grid_html.php");
 	# --- display galleries as a slideshow?
 	#print $this->render("Front/gallery_slideshow_html.php");
 ?>
