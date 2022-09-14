@@ -54,14 +54,14 @@
 					<div class='row'>
 						<div class='col-md-6'>
 							{{{<ifdef code="ca_occurrences.date"><div class='unit trimText'><label>Date</label>^ca_occurrences.date</div></ifdef>}}}
+							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="director"><div class='unit trimText'><label>Director</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="director" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></div></unit></ifcount>}}}					
+							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="actor"><div class='unit trimText'><label>Actors</label><unit relativeTo="ca_entities_x_occurrences" restrictToRelationshipTypes="actor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> <ifdef code="ca_entities_x_occurrences.production_role">(^ca_entities_x_occurrences.production_role.role_test<if rule="^ca_entities_x_occurrences.production_role.understudy_test =~ /Yes/">, Understudy</if>)</ifdef></unit></div></ifcount>}}}					
+							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="presented_by,premiere"><div class='unit trimText'><label>Presented By</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="presented_by,premiere" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></div></unit></ifcount>}}}					
 							{{{<ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><div class='unit trimText'><label>Venue</label><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></div></ifcount>}}}					
 							{{{<ifdef code="ca_occurrences.language"><div class='unit trimText'><label>Language</label>^ca_occurrences.language%delimiter=,_</div></ifdef>}}}
 							{{{<ifdef code="ca_occurrences.runtime"><div class='unit trimText'><label>Running Time</label>^ca_occurrences.runtime</div></ifdef>}}}						
 						</div>
 						<div class='col-md-6'>
-							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="director"><div class='unit trimText'><label>Director</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="director" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></div></unit></ifcount>}}}					
-							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="presented_by,premiere"><div class='unit trimText'><label>Presented By</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="presented_by,premiere" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></div></unit></ifcount>}}}					
-							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="actor"><div class='unit trimText'><label>Actors</label><unit relativeTo="ca_entities_x_occurrences" restrictToRelationshipTypes="actor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> <ifdef code="ca_entities_x_occurrences.production_role">(^ca_entities_x_occurrences.production_role.role_test<if rule="^ca_entities_x_occurrences.production_role.understudy_test =~ /Yes/">, Understudy</if>)</ifdef></unit></div></ifcount>}}}					
 							{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="director,actor"><div class='unit trimText'><label>Production Credits</label><unit relativeTo="ca_entities" excludeRelationshipTypes="director,actor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</div></ifcount>}}}					
 						</div>
 					</div>
