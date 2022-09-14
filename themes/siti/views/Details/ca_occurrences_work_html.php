@@ -107,7 +107,11 @@
 						$va_related_list = array();
 						$vb_show_view_all = false;
 						foreach ($va_events as $va_event) {
-							$va_related_list[] = caDetailLink($this->request, $va_event['name'], '', 'ca_occurrences', $va_event['occurrence_id']);
+							$vs_premiere = "";
+							if($va_event['relationship_typename'] == 'premiere'){
+								$vs_premiere = " (Premiere)";
+							}
+							$va_related_list[] = caDetailLink($this->request, $va_event['name'].$vs_premiere, '', 'ca_occurrences', $va_event['occurrence_id']);
 						}
 						print "<div class='unit'><H3>Productions, Trainings & Events</H3><div class='unit detailLinksGrid'>";
 						$i = 0;
@@ -162,7 +166,7 @@
 			</div><!-- end unit -->
 			<ifcount code="ca_objects" min="21">
 				<div class="unit text-center">
-					<?php print caNavLink($this->request, "View All Media", "btn btn-default", "", "Browse", "objects", array("facet" => "work_facet", "id" => $t_item->get("ca_occurrences.occurrence_id"))); ?>
+					<?php print caNavLink($this->request, "View All Media", "btn btn-default", "", "Browse", "media", array("facet" => "work_facet", "id" => $t_item->get("ca_occurrences.occurrence_id"))); ?>
 				</div>
 			</ifcount>
 </ifcount>}}}

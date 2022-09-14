@@ -832,6 +832,9 @@ body.frontContainer #footer{
 	color:#000;
 	text-decoration:none;
 }
+a.readmore-js-toggle{
+	color:#0054A4;
+}
 /* listing */
 .listing .container{
 	max-width:1250px;
@@ -845,5 +848,7 @@ body.frontContainer #footer{
 }
 .collectionTile img{
 	width:100%;
-	height:auto;
+	height: 200px;
+	object-fit: cover;
+	object-position: center center;
 }

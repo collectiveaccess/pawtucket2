@@ -185,7 +185,7 @@
 			</div><!-- end unit -->
 			<ifcount code="ca_objects" min="21">
 				<div class="unit text-center">
-					<?php print caNavLink($this->request, "View All Media", "btn btn-default", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $t_item->get("ca_entities.entity_id"))); ?>
+					<?php print caNavLink($this->request, "View All Media", "btn btn-default", "", "Browse", "media", array("facet" => "entity_facet", "id" => $t_item->get("ca_entities.entity_id"))); ?>
 				</div>
 			</ifcount>
 </ifcount>}}}

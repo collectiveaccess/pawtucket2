@@ -198,7 +198,7 @@
 			</div><!-- end unit -->
 			<ifcount code="ca_objects" min="21">
 				<div class="unit text-center">
-					<?php print caNavLink($this->request, "View All Media", "btn btn-default", "", "Browse", "objects", array("facet" => "production_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id"))); ?>
+					<?php print caNavLink($this->request, "View All Media", "btn btn-default", "", "Browse", "media", array("facet" => "production_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id"))); ?>
 				</div>
 			</ifcount>
 </ifcount>}}}
