@@ -798,6 +798,7 @@ body.frontContainer #footer{
 	margin-bottom:15px;
 	background-color:#000;
 	text-align:center;
+	
 }
 .detail .detailLinksGrid .detailLinksGridItem:hover{
 	background-color: #0054A4;
@@ -806,9 +807,10 @@ body.frontContainer #footer{
 .detail .detailLinksGrid a{
 	display:inline-block;
 	max-height: 3.9em;
+	width:100%;
 	overflow: hidden;
 	line-height:1.3em;
-	margin:10px 10px 5px 10px;
+	padding:10px 10px 5px 10px;
 	color:#fff;
 	text-decoration:none;
 }
@@ -851,4 +853,9 @@ a.readmore-js-toggle{
 	height: 200px;
 	object-fit: cover;
 	object-position: center center;
+}
+/* About */
+.staticPage .container{
+	max-width:1250px;
+	font-size:16px;
 }

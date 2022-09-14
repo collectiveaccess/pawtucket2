@@ -155,7 +155,7 @@
 				<ul class="nav navbar-nav menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<li <?php print ($this->request->getController() == "Capsule") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Capsule Collections"), "", "", "Listing", "capsule_collections"); ?></li>					
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 					<li>
 						<form class="navbar-form" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
 							<div class="formOutline">

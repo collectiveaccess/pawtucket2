@@ -116,7 +116,7 @@
 						$va_related_list = array();
 						foreach ($va_productions as $va_production) {
 							$t_occ = new ca_occurrences($va_production['occurrence_id']);
-							$vs_date = $t_occ->get("ca_occurrences.date");
+							$vs_date = $t_occ->get("ca_occurrences.date", array("delimiter" => ", "));
 							$va_related_list[] = caDetailLink($this->request, $va_production['name'].(($vs_date) ? "<br/>".$vs_date : ""), '', 'ca_occurrences', $va_production['occurrence_id']);
 						}
 						print "<div class='unit'><H3>Productions</H3><div class='unit detailLinksGrid'>";
@@ -150,7 +150,7 @@
 							$t_occ = new ca_occurrences($va_event['occurrence_id']);
 							$vs_date = $t_occ->get("ca_occurrences.eventDate");
 							if(!$vs_date){
-								$vs_date = $t_occ->get("ca_occurrences.training_date");
+								$vs_date = $t_occ->get("ca_occurrences.training_date", array("delimiter" => ", "));
 							}
 							$va_related_list[] = caDetailLink($this->request, $va_event['name'].(($vs_date) ? "<br/>".$vs_date : ""), '', 'ca_occurrences', $va_event['occurrence_id']);
 						}

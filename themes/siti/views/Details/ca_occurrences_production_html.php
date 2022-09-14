@@ -62,7 +62,7 @@
 							{{{<ifdef code="ca_occurrences.runtime"><div class='unit trimText'><label>Running Time</label>^ca_occurrences.runtime</div></ifdef>}}}						
 						</div>
 						<div class='col-md-6'>
-							{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="director,actor"><div class='unit trimText'><label>Production Credits</label><unit relativeTo="ca_entities" excludeRelationshipTypes="director,actor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</div></ifcount>}}}					
+							{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="director,actor,presented_by"><div class='unit trimText'><label>Production Credits</label><unit relativeTo="ca_entities" excludeRelationshipTypes="director,actor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</div></ifcount>}}}					
 						</div>
 					</div>
 				</div>
@@ -125,9 +125,9 @@
 						$vb_show_view_all = false;
 						foreach ($va_events as $va_event) {
 							$t_occ = new ca_occurrences($va_event['occurrence_id']);
-							$vs_date = $t_occ->get("ca_occurrences.eventDate");
+							$vs_date = $t_occ->get("ca_occurrences.eventDate", array("delimiter" => ", "));
 							if(!$vs_date){
-								$vs_date = $t_occ->get("ca_occurrences.training_date");
+								$vs_date = $t_occ->get("ca_occurrences.training_date", array("delimiter" => ", "));
 							}
 							$va_related_list[] = caDetailLink($this->request, $va_event['name'].(($vs_date) ? "<br/>".$vs_date : ""), '', 'ca_occurrences', $va_event['occurrence_id']);
 						}
