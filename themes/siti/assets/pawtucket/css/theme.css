@@ -797,6 +797,7 @@ body.frontContainer #footer{
 .detail .detailLinksGrid .detailLinksGridItem{
 	margin-bottom:15px;
 	background-color:#000;
+	text-align:center;
 }
 .detail .detailLinksGrid .detailLinksGridItem:hover{
 	background-color: #0054A4;
@@ -808,7 +809,6 @@ body.frontContainer #footer{
 	overflow: hidden;
 	line-height:1.3em;
 	margin:10px 10px 5px 10px;
-	text-align:center;
 	color:#fff;
 	text-decoration:none;
 }

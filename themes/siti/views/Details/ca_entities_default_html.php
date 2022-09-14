@@ -97,12 +97,13 @@
 						}
 					}
 					
-					$va_all = $t_item->get('ca_occurrences', array('restrictToTypes' => array('production','training','special_event'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
 					$va_productions = $t_item->get('ca_occurrences', array('restrictToTypes' => array('production'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
 					if (sizeof($va_productions)) {
 						$va_related_list = array();
 						foreach ($va_productions as $va_production) {
-							$va_related_list[] = caDetailLink($this->request, $va_production['name'], '', 'ca_occurrences', $va_production['occurrence_id']);
+							$t_occ = new ca_occurrences($va_production['occurrence_id']);
+							$vs_date = $t_occ->get("ca_occurrences.date");
+							$va_related_list[] = caDetailLink($this->request, $va_production['name'].(($vs_date) ? "<br/>".$vs_date : ""), '', 'ca_occurrences', $va_production['occurrence_id']);
 						}
 						print "<div class='unit'><H3>Productions</H3><div class='unit detailLinksGrid'>";
 						$i = 0;
@@ -132,9 +133,14 @@
 					if (sizeof($va_events)) {
 						$va_related_list = array();
 						foreach ($va_events as $va_event) {
-							$va_related_list[] = caDetailLink($this->request, $va_event['name'], '', 'ca_occurrences', $va_event['occurrence_id']);
+							$t_occ = new ca_occurrences($va_event['occurrence_id']);
+							$vs_date = $t_occ->get("ca_occurrences.eventDate");
+							if(!$vs_date){
+								$vs_date = $t_occ->get("ca_occurrences.training_date");
+							}
+							$va_related_list[] = caDetailLink($this->request, $va_event['name'].(($vs_date) ? "<br/>".$vs_date : ""), '', 'ca_occurrences', $va_event['occurrence_id']);
 						}
-						print "<div class='unit'><H3>Trainings & Events</H3><div class='unit detailLinksGrid'>";
+						print "<div class='unit'><H3>Trainings & Special Events</H3><div class='unit detailLinksGrid'>";
 						$i = 0;
 						$c = 0;
 						foreach ($va_related_list as $vs_link) {
@@ -158,8 +164,8 @@
 						print "</div></div><!-- end unit -->";
 						
 					}
-					if(sizeof($va_all) > 18){
-						print "<div class='unit text-center'>".caNavLink($this->request, "View All Productions, Trainings & Events", "btn btn-default", "", "Browse", "productions", array("facet" => "entity_general_facet", "id" => $t_item->get("ca_entities.entity_id")))."</div>";
+					if((sizeof($va_productions) > 18) || (sizeof($va_events) > 18)){
+						print "<div class='unit text-center'>".caNavLink($this->request, "View All Productions, Trainings & Special Events", "btn btn-default", "", "Browse", "productions", array("facet" => "entity_general_facet", "id" => $t_item->get("ca_entities.entity_id")))."</div>";
 					}
 ?>					
 					

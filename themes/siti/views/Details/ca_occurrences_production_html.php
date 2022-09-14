@@ -72,7 +72,7 @@
 												
 					{{{<ifdef code="ca_occurrences.program_note_container.program_note"><div class='unit trimText'><label>Program Note</label><unit relativeTo="ca_occurrences.program_note_container" delimiter="<br/><br/>">^ca_occurrences.program_note_container.program_note</unit></div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.director_note_container.director_note"><div class='unit trimText'><label>Director's Note</label><unit relativeTo="ca_occurrences.director_note_container" delimiter="<br/><br/>">^ca_occurrences.director_note_container.director_note</unit></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.blurb_container.blurb"><div class='unit trimText'><label>Blub</label><unit relativeTo="ca_occurrences.blurb_container" delimiter="<br/><br/>">^ca_occurrences.blurb_container.blurb</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.blurb_container.blurb"><div class='unit trimText'><label>Blurb</label><unit relativeTo="ca_occurrences.blurb_container" delimiter="<br/><br/>">^ca_occurrences.blurb_container.blurb</unit></div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.process_note_container.process_note"><div class='unit trimText'><label>Notes on Process</label><unit relativeTo="ca_occurrences.process_note_container" delimiter="<br/><br/>">^ca_occurrences.process_note_container.process_note</unit></div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.quotes"><div class='unit trimText'><label>Quotes</label><unit relativeTo="ca_occurrences.quotes" delimiter="<br/><br/>">^ca_occurrences.quotes</unit></div></ifdef>}}}
 
@@ -124,9 +124,14 @@
 						$va_related_list = array();
 						$vb_show_view_all = false;
 						foreach ($va_events as $va_event) {
-							$va_related_list[] = caDetailLink($this->request, $va_event['name'], '', 'ca_occurrences', $va_event['occurrence_id']);
+							$t_occ = new ca_occurrences($va_event['occurrence_id']);
+							$vs_date = $t_occ->get("ca_occurrences.eventDate");
+							if(!$vs_date){
+								$vs_date = $t_occ->get("ca_occurrences.training_date");
+							}
+							$va_related_list[] = caDetailLink($this->request, $va_event['name'].(($vs_date) ? "<br/>".$vs_date : ""), '', 'ca_occurrences', $va_event['occurrence_id']);
 						}
-						print "<div class='unit'><H3>Trainings & Events</H3><div class='unit detailLinksGrid'>";
+						print "<div class='unit'><H3>Trainings & Special Events</H3><div class='unit detailLinksGrid'>";
 						$i = 0;
 						$c = 0;
 						if(sizeof($va_related_list) > 18){
@@ -152,7 +157,7 @@
 						}
 						print "</div></div><!-- end unit -->";
 						if($vb_show_view_all){
-							print "<div class='unit text-center'>".caNavLink($this->request, "View All Trainings & Events", "btn btn-default", "", "Browse", "productions", array("facet" => "production_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All Trainings & Special Events", "btn btn-default", "", "Browse", "productions", array("facet" => "production_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
 						}
 					}
 ?>					
