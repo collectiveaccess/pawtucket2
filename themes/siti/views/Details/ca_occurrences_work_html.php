@@ -108,7 +108,8 @@
 						foreach ($va_productions as $va_production) {
 							$t_occ = new ca_occurrences($va_production['occurrence_id']);
 							$vs_date = $t_occ->get("ca_occurrences.date", array("delimiter" => ", "));
-							$va_related_list[] = caDetailLink($this->request, $va_production['name'].(($vs_date) ? "<br/>".$vs_date : ""), '', 'ca_occurrences', $va_production['occurrence_id']);
+							$vs_venue = $t_occ->getWithTemplate('<ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter="<br/>">^ca_occurrences.preferred_labels.name</ifcount>');
+							$va_related_list[] = caDetailLink($this->request, $va_production['name'].(($vs_date) ? "<br/>".$vs_date : "").(($vs_venue) ? "<br/>".$vs_venue : ""), '', 'ca_occurrences', $va_production['occurrence_id']);
 						}
 						print "<div class='unit'><H3>Productions</H3><div class='unit detailLinksGrid'>";
 						$i = 0;
