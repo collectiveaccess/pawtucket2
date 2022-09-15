@@ -367,6 +367,9 @@ svg {
 	font-size: 18px;
 	display:none;
 }
+.bResultListItem{
+	background-color:#000;
+}
 .bResultListItem .bResultItemSetLink{	
 	bottom: 25px;
 	right: 12px;
@@ -377,20 +380,27 @@ svg {
 .bResultItem:hover .bResultItemText, .bResultListItem:hover .bResultListItemText{
 	padding-bottom:20px;
 }
-.bResultItem .bResultItemText, .bResultListItemCol .bResultListItemText, .bResultItem .bResultItemText a, .bResultListItemCol .bResultListItemText a{
+.bResultListItemCol .bResultListItemText, .bResultListItemCol .bResultListItemText a{
+	font-size: 16px;
+	font-weight:500;
+	color:#FFF;
+}
+.bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemText small a {
+	color: #FFF;
+	text-transform: uppercase;
+	font-size: .9em;
+}
+.bResultItem .bResultItemText, .bResultItem .bResultItemText a{
 	font-size: 16px;
 	font-weight:500;
 	color:#000;
 }
 .bResultItem .bResultItemText small, .bResultItem .bResultItemText small a {
-	font-size: 15px;
-	font-weight:500;
-	color:#000;
-}
-.bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemText small a, .bResultItem .bResultItemText small, .bResultItem .bResultItemText small a {
 	color: #ababab;
 	text-transform: uppercase;
 	font-size: .9em;
+	font-size: 15px;
+	font-weight:500;
 }
 .bResultListItemContent {
 	height: 77px;
@@ -806,7 +816,7 @@ body.frontContainer #footer{
 }
 .detail .detailLinksGrid a{
 	display:inline-block;
-	max-height: 3.9em;
+	max-height: 6em;
 	width:100%;
 	overflow: hidden;
 	line-height:1.3em;

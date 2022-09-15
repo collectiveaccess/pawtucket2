@@ -55,16 +55,16 @@
 					</div>
 					<div class="col-sm-4 text-right">
 						<div>
-							<a href="https://www.siti.org"><?php print caGetThemeGraphic($this->request, 'SITI_logo_white.png', array("alt" => $this->request->config->get("app_display_name"))); ?>
+							<a href="https://www.siti.org"><?php print caGetThemeGraphic($this->request, 'SITI_logo_white.png', array("alt" => $this->request->config->get("app_display_name"))); ?></a>
 						</div>
 						<div>
-							<a href="#" class="btn btn-default">Donate</a>
+							<a href="https://secure.givelively.org/donate/saratoga-international-theater-institute-inc" target="_blank" class="btn btn-default">Donate</a>
 						</div>
 						<ul class="list-inline social">
-							<li><a href="#" target="_blank"><i class="fa fa-instagram"></i></a></li>
-							<li><a href="#" target="_blank"><i class="fa fa-facebook-square"></i></a><!--<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12c0-5.5-4.5-10-10-10z"></path></svg>--></li>
-							<li><a href="#" target="_blank"><i class="fa fa-twitter"></i></a></li>
-							<li><a href="#" target="_blank"><i class="fa fa-youtube-play"></i></a></li>
+							<li><a href="https://www.instagram.com/siti_company/" target="_blank"><i class="fa fa-instagram"></i></a></li>
+							<li><a href="http://www.facebook.com/siticompany" target="_blank"><i class="fa fa-facebook-square"></i></a><!--<svg class="svg-icon" aria-hidden="true" role="img" focusable="false" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12c0-5.5-4.5-10-10-10z"></path></svg>--></li>
+							<li><a href="http://www.twitter.com/siticompany" target="_blank"><i class="fa fa-twitter"></i></a></li>
+							<li><a href="http://www.youtube.com/channel/UCAVWC_6X8zWcw6VNKY0C5tQ" target="_blank"><i class="fa fa-youtube-play"></i></a></li>
 						</ul>
 					</div>
 				</div>
