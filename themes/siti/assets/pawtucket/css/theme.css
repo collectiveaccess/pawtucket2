@@ -414,6 +414,15 @@ svg {
 .productions .bResultListItemCol {
 	height: 142px;
 }
+.bResultListItem:hover {
+	-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
+	padding: 10px;
+	margin: 0px;
+	height: auto;
+	font-size: 12px;
+	background-color:#0054A4;
+}
 #bLetterBar a{
 	font-size:14px;
 }
