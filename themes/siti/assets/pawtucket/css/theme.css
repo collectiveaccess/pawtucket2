@@ -431,6 +431,9 @@ svg {
 	color: #000;
 	font-size: 14px;
 }
+#bRefine {
+	background-color: #fff;
+}
 a.browseRemoveFacet .glyphicon {
 	color: #000 !important;
 }
