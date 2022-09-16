@@ -434,6 +434,9 @@ svg {
 a.browseRemoveFacet .glyphicon {
 	color: #000 !important;
 }
+a.browseRemoveFacet:hover .glyphicon {
+	color: #FDB913 !important;
+}
 .multisearch .authorityResult.productionsResult, .multisearch .authorityResult.trainingsResult, .multisearch .authorityResult.eventsResult{
 	height:70px;
 }
