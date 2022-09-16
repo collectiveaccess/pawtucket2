@@ -119,19 +119,16 @@
 					
 					
 					
-					$va_events = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('training','special_event'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
-					if (sizeof($va_events)) {
+					$va_trainings = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('training'), 'sort' => 'ca_occurrences.training_date', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					if (sizeof($va_trainings)) {
 						$va_related_list = array();
 						$vb_show_view_all = false;
-						foreach ($va_events as $va_event) {
-							$t_occ = new ca_occurrences($va_event['occurrence_id']);
-							$vs_date = $t_occ->get("ca_occurrences.eventDate", array("delimiter" => ", "));
-							if(!$vs_date){
-								$vs_date = $t_occ->get("ca_occurrences.training_date", array("delimiter" => ", "));
-							}
-							$va_related_list[] = caDetailLink($this->request, $va_event['name'].(($vs_date) ? "<br/>".$vs_date : ""), '', 'ca_occurrences', $va_event['occurrence_id']);
+						foreach ($va_trainings as $va_training) {
+							$t_occ = new ca_occurrences($va_training['occurrence_id']);
+							$vs_date = $t_occ->get("ca_occurrences.training_date", array("delimiter" => ", "));
+							$va_related_list[] = caDetailLink($this->request, $va_training['name'].(($vs_date) ? "<div class='small'>".$vs_date."</div>" : ""), '', 'ca_occurrences', $va_training['occurrence_id']);
 						}
-						print "<div class='unit'><H3>Trainings & Special Events</H3><div class='unit detailLinksGrid'>";
+						print "<div class='unit'><H3>Trainings</H3><div class='unit detailLinksGrid'>";
 						$i = 0;
 						$c = 0;
 						if(sizeof($va_related_list) > 18){
@@ -157,7 +154,45 @@
 						}
 						print "</div></div><!-- end unit -->";
 						if($vb_show_view_all){
-							print "<div class='unit text-center'>".caNavLink($this->request, "View All Trainings & Special Events", "btn btn-default", "", "Browse", "productions", array("facet" => "production_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All Trainings", "btn btn-default", "", "Browse", "trainings", array("facet" => "production_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
+						}
+					}
+					$va_events = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('special_event'), 'sort' => 'ca_occurrences.eventDate', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					if (sizeof($va_events)) {
+						$va_related_list = array();
+						$vb_show_view_all = false;
+						foreach ($va_events as $va_event) {
+							$t_occ = new ca_occurrences($va_event['occurrence_id']);
+							$vs_date = $t_occ->get("ca_occurrences.eventDate", array("delimiter" => ", "));
+							$va_related_list[] = caDetailLink($this->request, $va_event['name'].(($vs_date) ? "<div class='small'>".$vs_date."</div>" : ""), '', 'ca_occurrences', $va_event['occurrence_id']);
+						}
+						print "<div class='unit'><H3>Special Events</H3><div class='unit detailLinksGrid'>";
+						$i = 0;
+						$c = 0;
+						if(sizeof($va_related_list) > 18){
+							$vb_show_view_all = true;
+						}
+						foreach ($va_related_list as $vs_link) {
+							if($i == 0){
+								print "<div class='row'>";
+							}
+							print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".$vs_link."</div></div>";
+							$i++;
+							$c++;
+							if($i == 3){
+								print "</div>";
+								$i = 0;
+							}
+							if($c == 18){
+								break;
+							}
+						}
+						if($i > 0){
+							print "</div>";
+						}
+						print "</div></div><!-- end unit -->";
+						if($vb_show_view_all){
+							print "<div class='unit text-center'>".caNavLink($this->request, "View All Special Events", "btn btn-default", "", "Browse", "events", array("facet" => "production_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
 						}
 					}
 ?>					

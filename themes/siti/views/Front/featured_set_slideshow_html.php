@@ -44,6 +44,7 @@
 			<div class="jcarousel featured">
 				<ul>
 <?php
+					$c = 1;
 					while($qr_res->nextHit()){
 						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
 							print "<li><div class='frontSlide'>".$vs_media;
@@ -53,6 +54,10 @@
 							}
 							print "</div></li>";
 							$vb_item_output = true;
+							$c++;
+						}
+						if($c == 15){
+							break;
 						}
 					}
 ?>

@@ -32,7 +32,7 @@
   $va_access_values = $this->getVar("access_values");
  $vs_hero = $this->request->getParameter("hero", pString);
  if(!$vs_hero){
- 	$vs_hero = rand(1, 2);
+ 	$vs_hero = rand(1, 6);
  }
 ?>
 
@@ -101,7 +101,7 @@
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage2'></div>", "", "", "Browse", "productions"); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Productions, Trainings & Special Events", "", "", "Browse", "productions"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Productions", "", "", "Browse", "productions"); ?></div>
 						</div>
 					</div>
 				</div>

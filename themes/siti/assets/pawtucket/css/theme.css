@@ -385,6 +385,9 @@ svg {
 	font-weight:500;
 	color:#FFF;
 }
+.bResultListItemCol .bResultListItemText .small, .bResultListItemCol .bResultListItemText a .small{
+	font-size: 14px;
+}
 .bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemText small a {
 	color: #FFF;
 	text-transform: uppercase;
@@ -404,6 +407,12 @@ svg {
 }
 .bResultListItemContent {
 	height: 77px;
+}
+.productions .bResultListItemContent {
+	height: 95px;
+}
+.productions .bResultListItemCol {
+	height: 142px;
 }
 #bLetterBar a{
 	font-size:14px;
@@ -425,17 +434,23 @@ svg {
 a.browseRemoveFacet .glyphicon {
 	color: #000 !important;
 }
-.multisearch .authorityResult.productionsResult{
+.multisearch .authorityResult.productionsResult, .multisearch .authorityResult.trainingsResult, .multisearch .authorityResult.eventsResult{
 	height:70px;
 }
 .multisearch .authoritySet a {
 	font-size: 13px;
-	color: #000;
+	color: #FFF;
 	line-height: 1.2em;
 }
 .multisearch .authoritySet small a  {
 	text-transform: uppercase;
 	color: #454545;
+}
+.multisearch .authorityResult{
+	background-color:#000;
+}
+.multisearch .authorityResult:hover{
+	background-color:#0054A4;
 }
 /* front */
 html.frontContainer {
@@ -475,6 +490,22 @@ body.frontContainer #footer{
 }
 .parallax.hero2 {
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, 0)), url("../graphics/hero_2.jpg");
+    background-position: center 150px;
+}
+.parallax.hero3 {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, 0)), url("../graphics/hero_3.jpg");
+    background-position: center 185px;
+}
+.parallax.hero4 {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, 0)), url("../graphics/hero_4.jpg");
+    background-position: center 190px;
+}
+.parallax.hero5 {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, 0)), url("../graphics/hero_5.jpg");
+    background-position: center 150px;
+}
+.parallax.hero6 {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, 0)), url("../graphics/hero_6.jpg");
     background-position: center 150px;
 }
 /*.parallax.hero3 {
@@ -671,7 +702,7 @@ body.frontContainer #footer{
 	background-image: url('../graphics/hero_2.jpg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage3{
-	background-image: url('../graphics/hero_3.jpg');
+	background-image: url('../graphics/explore_1.jpg');
 }
 .hpExploreBox .hpExploreBoxDetails {
 	padding: 15px 13px 22px;
@@ -801,6 +832,9 @@ body.frontContainer #footer{
 	text-decoration:underline;
 	color: #4C5660;
 }
+.detail .small{
+	font-size:.8em;
+}
 .detail .detailLinksGrid{
 	margin-bottom:30px;
 }
@@ -815,6 +849,7 @@ body.frontContainer #footer{
 	color:#FFF;
 }
 .detail .detailLinksGrid a{
+	font-size:16px;
 	display:inline-block;
 	max-height: 6em;
 	width:100%;
@@ -823,6 +858,12 @@ body.frontContainer #footer{
 	padding:10px 10px 5px 10px;
 	color:#fff;
 	text-decoration:none;
+	font-weight:800;
+}
+.detail .detailLinksGrid a .small{
+	font-size:.8em;
+	font-weight:500;
+	line-height:1.2em;
 }
 .detail .detailLinksGrid a:hover, .detail .detailLinksGrid:hover a{
 	color:#FFF;

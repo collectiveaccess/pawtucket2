@@ -42,15 +42,15 @@
 					</div>
 					<div class="col-sm-2">
 						<div class="footerNavLinks text-left">
-							<a href="#" target="_blank">Productions</a><br/>
-							<a href="#" target="_blank">Training</a><br/>
-							<a href="#" target="_blank">About</a>
+							<a href="https://siti.org/productions/" target="_blank">Productions</a><br/>
+							<a href="https://siti.org/training/" target="_blank">Training</a><br/>
+							<a href="https://siti.org/about/" target="_blank">About</a>
 						</div>
 					</div>
 					<div class="col-sm-2">
 						<div class="footerNavLinks col2 text-left">
-							<a href="#" target="_blank">Get Involved</a><br/>
-							<a href="#" target="_blank">Blog</a>
+							<a href="https://siti.org/get-involved/" target="_blank">Get Involved</a><br/>
+							<a href="https://siti.org/blog/" target="_blank">Blog</a>
 						</div>
 					</div>
 					<div class="col-sm-4 text-right">
@@ -70,7 +70,7 @@
 				</div>
 				<div class="row">
 					<div class="col-sm-12 text-left">
-						<div class="copyright">© 2022 All Rights Reserved.</div>
+						<div class="copyright">© <?php print date("Y"); ?> All Rights Reserved.</div>
 					</div>
 				</div>
 			</div>
