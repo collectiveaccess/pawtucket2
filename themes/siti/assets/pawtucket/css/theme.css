@@ -467,6 +467,9 @@ a.browseRemoveFacet:hover .glyphicon {
 .multisearch .authorityResult:hover{
 	background-color:#0054A4;
 }
+.multisearch H3 a, .multisearch H3 a:hover, .multisearch H2 a, .multisearch H2 a:hover, .multisearchFullResults a, .multisearchSort ul li.selectedSort a {
+  color: #4C5660;
+}
 /* front */
 html.frontContainer {
     height: 100%;
