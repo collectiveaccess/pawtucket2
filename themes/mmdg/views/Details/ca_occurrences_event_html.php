@@ -69,6 +69,12 @@
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="scenic_designer" min="1"><div class='unit trimText'><label>Scenic Designer<ifcount code="ca_entities" restrictToRelationshipTypes="scenic_designer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="scenic_designer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 						</div>
 						<div class='col-md-6'>
+<?php
+							$va_musician_roles = array("Cello" => "cello", "Double Bass" => "double_bass", "Guitar" => "guitar", "Harpsichord" => "harpsichord", "Keyboard" => "keyboard", "Oboe" => "oboe", "Percussion" => "percussion", "Piano" => "piano", "Soprano Saxophone" => "soprano_saxophone", "Theremin" => "theremin", "Trombone" => "trombone", "Viola" => "viola", "Violin" => "violin");
+							foreach($va_musician_roles as $vs_role_label => $vs_role){
+								print $t_item->getWithTemplate('<ifcount code="ca_entities" restrictToRelationshipTypes="'.$vs_role.'" min="1"><div class="unit trimText"><label>'.$vs_role_label.'</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="'.$vs_role.'" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>');
+							}
+?>
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="musician" min="1"><div class='unit trimText'><label>Musician<ifcount code="ca_entities" restrictToRelationshipTypes="musician" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="musician" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="ensemble" min="1"><div class='unit trimText'><label>Ensemble</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="ensemble" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}					
 							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="singer" min="1"><div class='unit trimText'><label>Vocalist<ifcount code="ca_entities" restrictToRelationshipTypes="singer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="singer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
