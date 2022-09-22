@@ -185,12 +185,15 @@
 							</div>
 						</div>
 <?php
-			if ($vb_show_hierarchy_viewer) {	
+			if ($vb_show_hierarchy_viewer) {
+				$vs_icon = '<span class="glyphicon glyphicon-chevron-right"></span> ';
+				$vs_icon_open = '<span class="glyphicon glyphicon-chevron-down"></span> ';
+							
 ?>
 				<div class="row" id="collectionsWrapperArchival">
 					<div class='col-sm-12'>
-						<div class='collectionsContainer'><div class='label'>Collection Contents</div>
-							<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+						<div class='collectionsContainer'><div class='label'><a href="#" class="openCollectionContents"><span class='collapseIcon'><?php print $vs_icon; ?></span> Collection Contents</a></div>
+							<div id="collectionHierarchy" style="display:none;"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 						</div><!-- end findingAidContainer -->
 					</div><!-- end col -->
 				</div><!-- end row -->						
@@ -198,6 +201,21 @@
 				<script>
 					$(document).ready(function(){
 						$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchyArchival', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
+						
+						
+						$('.openCollectionContents').click(function(){
+							if($('.openCollectionContents').hasClass("active")){
+								$('.openCollectionContents .collapseIcon').html('<?php print $vs_icon; ?>');
+								$('.openCollectionContents').removeClass('active');
+							
+								$('#collectionHierarchy').hide();
+							}else{
+								$('#collectionHierarchy').show();
+								$('.openCollectionContents .collapseIcon').html('<?php print $vs_icon_open; ?>');
+								$('.openCollectionContents').addClass('active');
+							}
+							return false;
+						}); 
 					})
 				</script>
 <?php				

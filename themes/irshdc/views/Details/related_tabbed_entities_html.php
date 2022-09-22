@@ -3,7 +3,7 @@
 					$va_access_values = $this->getVar("access_values");
 					
 					# --- get all related authority records for tabbed presentation
-					$vs_rel_communities = $vs_rel_places = $vs_rel_entities = $vs_rel_events = $vs_rel_exhibitions = $vs_rel_collections;
+					$vs_rel_communities = $vs_rel_places = $vs_rel_entities = $vs_rel_events = $vs_rel_exhibitions = $vs_rel_collections = $vs_rel_archival_collections;
 					$vs_rel_places = $t_item->getWithTemplate('<ifcount code="ca_places.related" min="1"><div class="row relTab" id="relPlaces"><unit relativeTo="ca_places" delimiter=" "><div class="col-sm-12 col-md-3"><div class="placePlaceholder"><span>^ca_places.preferred_labels.name (^relationship_typename)</span></div></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
 					#$vs_rel_entities = $t_item->getWithTemplate('<ifcount code="ca_entities.related" excludeTypes="school,community" min="1"><div class="row relTab" id="relEntities"><unit relativeTo="ca_entities_x_entities" excludeTypes="school,community" delimiter=" "><div class="col-sm-12 col-md-3"><l><span><unit relativeTo="ca_entities.related">^ca_entities.preferred_labels.displayname</unit> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</span></l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
 					$vs_rel_entities = "";
@@ -39,13 +39,14 @@
 					$vs_rel_events = $t_item->getWithTemplate('<ifcount code="ca_occurrences.related" restrictToTypes="institutional" min="1"><div class="row relTab" id="relEvents"><unit relativeTo="ca_occurrences" restrictToTypes="institutional" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_occurrences.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
 					$vs_rel_exhibitions = $t_item->getWithTemplate('<ifcount code="ca_occurrences.related" restrictToTypes="exhibitions" min="1"><div class="row relTab" id="relExhibitions"><unit relativeTo="ca_occurrences" restrictToTypes="exhibitions" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_occurrences.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
 					$vs_rel_collections = $t_item->getWithTemplate('<ifcount code="ca_collections.related" restrictToTypes="ca_collection" min="1"><div class="row relTab" id="relCollections"><unit relativeTo="ca_collections.related" restrictToTypes="ca_collection" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_collections.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
+					$vs_rel_archival_collections = $t_item->getWithTemplate('<ifcount code="ca_collections.related" restrictToTypes="fonds,series,sub_series" min="1"><div class="row relTab" id="relArchivalCollections"><unit relativeTo="ca_collections.related" restrictToTypes="fonds,series,sub_series" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_collections.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
 					# --- rel_object is just for outputting label properly
 					$vs_rel_objects = $t_item->get('ca_objects.related', array("limit" => 1,"checkAccess" => $va_access_values, "restrictToTypes" => array("archival", "library", "work", "resource", "file", "survivor")));
 					
-					if($vs_rel_object || $vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions || $vs_rel_collections || $vs_rel_communities){
+					if($vs_rel_object || $vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions || $vs_rel_collections || $vs_rel_archival_collections || $vs_rel_communities){
 						print "<H1>Related</H1>";
 					}
-					if($vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions || $vs_rel_collections || $vs_rel_communities){
+					if($vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions || $vs_rel_collections || $vs_rel_archival_collections || $vs_rel_communities){
 ?>				
 						<div class="relatedBlock relatedBlockTabs">
 							<H3>
@@ -55,6 +56,12 @@
 									print "<div id='relCollectionsButton' class='relTabButton' onClick='toggleTag(\"relCollections\");'>Collections</div>";
 									if(!$vs_firstTab){
 										$vs_firstTab = "relCollections";
+									}
+								}
+								if($vs_rel_archival_collections){
+									print "<div id='relArchivalCollectionsButton' class='relTabButton' onClick='toggleTag(\"relArchivalCollections\");'>Fonds / Archival Collections</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relArchivalCollections";
 									}
 								}
 								if($vs_rel_entities){
@@ -96,7 +103,7 @@
 							</h3>
 							<div class="relatedBlockContent">							
 <?php
-								print $vs_rel_places.$vs_rel_entities.$vs_rel_communities.$vs_rel_events.$vs_rel_exhibitions.$vs_rel_collections;
+								print $vs_rel_places.$vs_rel_entities.$vs_rel_communities.$vs_rel_events.$vs_rel_exhibitions.$vs_rel_collections.$vs_rel_archival_collections;
 ?>
 							</div>
 						</div>

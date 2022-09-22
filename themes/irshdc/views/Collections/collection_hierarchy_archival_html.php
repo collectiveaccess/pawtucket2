@@ -75,7 +75,7 @@
 
 							if($vb_link_to_detail){
 								print "<div style='position:relative;'>";
-								print caDetailLink($this->request, $vs_icon_not_expand." ".$va_collection_content["name"].$vs_record_count, '', $va_collection_content["table"],  $va_collection_content["id"]);
+								print $vs_icon_not_expand." ".$va_collection_content["name"].$vs_record_count;
 								print caDetailLink($this->request, "<small>View ".$va_collection_content["type"]."</small> ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : "detail"), 'linkoutRight', $va_collection_content["table"],  $va_collection_content["id"]);
 								print "</div>";
 							}else{

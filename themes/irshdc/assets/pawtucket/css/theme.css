@@ -1137,12 +1137,30 @@ h3.popover-title{
 	padding-right:5px;
 }
 .collectionsContainer .label, #collectionLoad .label {
-	padding-left: 5px;
+	padding-left: 0px;
 	white-space: normal !important;
 	font-family: lato;
 	font-weight: normal;
 	font-size: 18px;
 	color: #262626;
+}
+.collectionsContainer .label a.openCollectionContents, #collectionLoad .label a.openCollectionContents {
+	white-space: normal !important;
+	font-family: lato;
+	font-weight: normal;
+	font-size: 18px;
+	color: #262626;
+	display:inline;
+	padding:0px;
+}
+.collectionsContainer .label a.openCollectionContents .glyphicon{
+	top:-1px;
+}
+.collectionsContainer .label a.openCollectionContents.active{
+	font-weight:normal !important;
+}
+.collectionsContainer .label a.openCollectionContents:hover, .collectionsContainer .label a.openCollectionContents:active, .collectionsContainer .label a.openCollectionContents:focus{
+	text-decoration:none !important;
 }
 #collectionsWrapperArchival .collectionsContainer a:hover{
 	background-color: transparent;
