@@ -48,6 +48,7 @@
 							<br/>1985 Learner's Walk
 							<br/>Vancouver, BC, Canada
 							<br/>V6T 1Z1
+							<br/><br/><a href="https://ubc.us20.list-manage.com/subscribe?u=864c7c8b0267ee128e9375a0b&id=eab5d0fbd2" target="_blank">Subscribe to the Centre's newsletter</a>
 						</div>
 					</div>
 					<div class="col-sm-6">
