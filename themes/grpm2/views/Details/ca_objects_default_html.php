@@ -80,7 +80,7 @@
 				
 ?>
 				<div class="detailCommentForm">
-					<form method="post" id="CommentForm" action="<?php print caNavUrl($this->request, '', 'Detail', 'saveCommentTagging', ['csrfToken' => caGenerateCSRFToken($this->request)]); ?>" class="form-horizontal" role="form" enctype="multipart/form-data">
+					<form method="post" id="CommentForm" action="<?php print caNavUrl($this->request, '', 'Detail', 'saveCommentTagging'); ?>" class="form-horizontal" role="form" enctype="multipart/form-data">
 						<H5>Add Your Comment & Tags</H5>
 <?php
 						print "<div class='form-group'><label for='tags' class='col-sm-12 control-label'>"._t("Tags")."</label><div class='col-sm-12'><input type='text' name='tags' value='' class='form-control' placeholder='"._t("tags separated by commas")."'></div><!-- end col-sm-12 --></div><!-- end form-group -->\n";
