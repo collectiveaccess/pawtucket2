@@ -63,9 +63,23 @@
 					if ($vs_genre = $t_item->get('ca_collections.pbcoreGenre')) {
                                                 print "<div class='unit'><span class='label'>Genre: </span>".$vs_genre."</div>";
                                         }
-					if ($vs_subject = $t_item->get('ca_collections.pbcoreSubject')) {
-                                                print "<div class='unit'><span class='label'>Subject Headings: </span>".$vs_subject."</div>";
-                                        }
+					// if ($vs_subject = $t_item->get('ca_collections.pbcoreSubject')) {
+//                                                 print "<div class='unit'><span class='label'>Subject Headings: </span>".$vs_subject."</div>";
+//                                         }
+					$va_subjects = [];
+					$va_tmp = $t_item->get("ca_collections.pbcoreSubject", array("returnAsArray" => true));
+						if(is_array($va_tmp)){
+							foreach($va_tmp as $vs_tmp){
+								if($vs_tmp){
+									$va_subjects[$vs_tmp] = caNavLink($this->request, $vs_tmp, "", "", "Search", "objects", array("search" => $vs_tmp));
+								}
+							}
+						}
+						if(is_array($va_subjects) && sizeof($va_subjects)){
+							ksort($va_subjects);
+							print "<div class='unit'><label>Subject Headings: </label><span class='trimText'>".join(", ", $va_subjects)."</span></div>";
+						}
+
 					if ($vs_external = $t_item->get('ca_collections.relatedExternalCollections')) {
                                                 print "<div class='unit'><span class='label'>Extent: </span>".$vs_external."</div>";
                                         }
