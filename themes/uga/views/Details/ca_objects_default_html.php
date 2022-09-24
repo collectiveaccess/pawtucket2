@@ -117,7 +117,7 @@
 					foreach($va_work_ids as $vn_work_id){
 						$t_work = new ca_occurrences($vn_work_id);
 						print "<div class='unit'>";
-						print "<b>".$t_work->get("ca_occurrences.preferred_labels")."</b>";
+						print $t_work->get("ca_occurrences.preferred_labels");
 						if($vs_tmp = trim($t_work->get("ca_occurrences.pbcoreDescription.pbcoreDescriptionText"))){
 							print "<br/>".$vs_tmp;
 						}
