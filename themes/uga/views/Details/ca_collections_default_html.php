@@ -70,8 +70,9 @@
 					$va_tmp = $t_item->get("ca_collections.pbcoreSubject", array("returnAsArray" => true));
 						if(is_array($va_tmp)){
 							foreach($va_tmp as $vs_tmp){
-								if($vs_tmp){
-									$va_subjects[$vs_tmp] = caNavLink($this->request, $vs_tmp, "", "", "Search", "objects", array("search" => $vs_tmp));
+								$proc = preg_replace("![^A-Za-z0-9 \-_]+!", " ", $vs_tmp);
+								if($vs_tmp && $proc){
+									$va_subjects[$vs_tmp] = caNavLink($this->request, $vs_tmp, "", "", "Search", "objects", array("search" => $proc));
 								}
 							}
 						}
