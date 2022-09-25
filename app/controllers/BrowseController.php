@@ -195,6 +195,7 @@
 			
 			// Get any preset-criteria
 			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
+			$show_base_criteria = caGetOption('showBaseCriteria', $va_browse_info, false);
 			
 			if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			    foreach ($va_facets as $vs_facet_spec) {
@@ -283,7 +284,7 @@
 			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
 			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
-				if(isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
+				if(!$show_base_criteria && isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
 				
 				// Enforce role-restricted facets here
 				if (isset($va_facet_info['require_roles']) && is_array($va_facet_info['require_roles']) && sizeof($va_facet_info['require_roles'])) {
@@ -299,7 +300,7 @@
 			
 			
 			// remove base criteria from display list
-			if (is_array($va_base_criteria)) {
+			if (!$show_base_criteria && is_array($va_base_criteria)) {
 				foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
 					unset($va_criteria[$vs_base_facet]);
 				}
