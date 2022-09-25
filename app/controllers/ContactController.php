@@ -86,6 +86,9 @@
 				}
  			}
  			$va_fields = $this->config->get("contact_form_elements");
+ 			$email_fields = array_filter($va_fields, function($v) {
+ 				return (bool)$v['email_address'] ?? false;
+ 			});
  			$this->view->setVar("contact_form_elements", $va_fields);
  			if(is_array($va_fields) && sizeof($va_fields)){
  				foreach($va_fields as $vs_element_name => $va_options){
@@ -114,7 +117,7 @@
 					# -- generate mail text from template - get both the text and the html versions
 					$vs_mail_message_text = $o_view->render("mailTemplates/contact.tpl");
 					$vs_mail_message_html = $o_view->render("mailTemplates/contact_html.tpl");
-					if(caSendmail($this->config->get("contact_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
+					if(caSendmail($this->config->get("contact_email"), $email_fields[0] ?? $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
 						$this->render("Contact/success_html.php");
 					}else{
 						$va_errors["display_errors"]["send_error"] = _t("Your email could not be sent");
