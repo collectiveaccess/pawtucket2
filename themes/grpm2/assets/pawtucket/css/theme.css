@@ -600,3 +600,15 @@ label{
 	font-size: 11px;
 	margin-top: 5px;
 }
+
+.deaccessionBanner {
+    text-align: center;
+    margin-top: 7px;
+}
+
+div.deaccessionBannerContainer {
+    background-color: #ffb3b3;
+    height: 40px;
+	margin-bottom: 10px;
+    vertical-align: center;
+}
