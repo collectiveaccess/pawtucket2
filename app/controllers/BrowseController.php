@@ -207,8 +207,8 @@
 			} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
 				$o_browse->addCriteria($vs_facet, $p);
 			} else { 
-				if ($o_browse->numCriteria() == 0) {
-					if (is_array($va_base_criteria)) {
+				if (($o_browse->numCriteria() == 0)) {
+					if (is_array($va_base_criteria) && !$vs_remove_criterion) {
 						foreach($va_base_criteria as $vs_facet => $vs_value) {
 							$o_browse->addCriteria($vs_facet, $vs_value);
 						}
