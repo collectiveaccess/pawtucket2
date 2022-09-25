@@ -89,12 +89,13 @@
  			$email_fields = array_keys(array_filter($va_fields, function($v) {
  				return (bool)$v['email_address'] ?? false;
  			}));
+ 			r
  			$from_address = null;
  			$this->view->setVar("contact_form_elements", $va_fields);
  			if(is_array($va_fields) && sizeof($va_fields)){
  				foreach($va_fields as $vs_element_name => $va_options){
  					$vs_element_value = $o_purifier->purify($this->request->getParameter($vs_element_name, pString, ['forcePurify' => true]));
- 					if(($email_fields[0] ?? false) && $vs_element_value) {
+ 					if(($email_fields[0] ?? false) && ($email_fields[0] === $vs_element_name) && $vs_element_value) {
  						$from_address = $vs_element_value;
  					}
  					if($va_options["required"] && !$vs_element_value){
@@ -111,6 +112,7 @@
  					$this->view->setVar($vs_element_name, $vs_element_value);
  				}
  			}
+ 
  			if(sizeof($va_errors) == 0){
  				# --- send email
  					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
