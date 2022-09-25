@@ -89,7 +89,7 @@
  			$email_fields = array_keys(array_filter($va_fields, function($v) {
  				return (bool)$v['email_address'] ?? false;
  			}));
- 			r
+
  			$from_address = null;
  			$this->view->setVar("contact_form_elements", $va_fields);
  			if(is_array($va_fields) && sizeof($va_fields)){
