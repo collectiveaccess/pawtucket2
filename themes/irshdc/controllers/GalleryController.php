@@ -114,6 +114,7 @@
  				$this->view->setVar("set", $t_set);
  				
 				$vs_table = Datamodel::getTableName($t_set->get('table_num'));
+				$this->view->setVar("table", $vs_table);
 				# --- don't save the gallery context when loaded via ajax
 				if (!$this->request->isAjax()){
 					$o_context = new ResultContext($this->request, $vs_table, 'gallery');
@@ -267,6 +268,7 @@
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
 			$vs_table = Datamodel::getTableName($t_set->get('table_num'));
+			
 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
  			$this->view->setVar("set_id", $pn_set_id);
  			
@@ -276,9 +278,24 @@
 			if(!(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && !in_array($t_rep->get("access"), $this->opa_access_values))){
 				$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
 				$this->view->setVar("rep_object", $t_rep);
-				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
+				$vs_rep = $t_rep->getMediaTag("media", "mediumlarge");
+				$this->view->setVar("rep", $vs_rep);
 				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"], ['context' => 'gallery']));
 				$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
+			}
+			if(($vs_table == "ca_objects") && (!$vs_rep)){
+				$t_instance = new ca_objects($va_set_items[$pn_item_id]["row_id"]);
+				$t_list_item = new ca_list_items();
+				$o_icons_conf = caGetIconsConfig();
+				$vs_default_placeholder = "<i class='fa fa-picture-o fa-4x'></i>";
+				$t_list_item->load($t_instance->get("resource_type"));
+				$vs_typecode = $t_list_item->get("idno");
+				if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_large_media_icon")){
+					$vs_thumbnail = $vs_type_placeholder;
+				}else{
+					$vs_thumbnail = $vs_default_placeholder_tag;
+				}
+				$this->view->setVar("placeholder", $vs_thumbnail);
 			}
  			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
  			$this->view->setVar("row_id", $va_set_items[$pn_item_id]["row_id"]);

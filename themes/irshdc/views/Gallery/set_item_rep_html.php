@@ -20,7 +20,11 @@
 	}else{
 		print "<a href='#' class='galleryDetailNext inactive' onClick='return false;'><i class='fa fa-angle-right'></i></a>";
 	}
-	print "<div id='galleryDetailImageWrapper'>".caDetailLink($this->request, $this->getVar("rep"), '', $ps_table,  $this->getVar("row_id")).$this->getVar("repToolBar")."</div>";	
+	if($this->getVar("rep")){
+		print "<div id='galleryDetailImageWrapper'>".caDetailLink($this->request, $this->getVar("rep"), '', $ps_table,  $this->getVar("row_id")).$this->getVar("repToolBar")."</div>";	
+	}elseif($this->getVar("placeholder")){
+		print "<div class='detailPlaceholderContainer'>".caDetailLink($this->request, $this->getVar("placeholder"), '', $ps_table,  $this->getVar("row_id"))."</div>";
+	}
 ?>
 
 

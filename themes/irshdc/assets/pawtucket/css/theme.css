@@ -1423,15 +1423,54 @@ h3.popover-title{
 	text-decoration:underline;
 	text-transform:none;
 }
+.gallery .detailPlaceholderContainer{
+	color: #858585;
+	padding: 60px 5px 72px;
+	text-align: center;
+	width: 100%;
+	font-size: 30px;
+}
+.gallery .detailPlaceholderContainer a{
+	color: #858585;
+	font-size: 30px;
+}
+@media (min-width: 768px) {
+	.gallery .detailPlaceholderContainer{
+		padding: 120px 5px 72px;
+	}
+}
+.galleryIconPlaceholderWrapper{
+	position: relative;
+}
+.galleryIconPlaceholderWrapper img{
+	background-color:#dedede !important;
+	border:none !important;
+	padding:0px !important;
+}
+a .galleryIconPlaceholderWrapper .galleryIconPlaceholder{
+	position:absolute;
+	width:100%;
+	text-align:center;
+	top:30%;
+	color: #858585;
+}
+a:hover .galleryIconPlaceholderWrapper .galleryIconPlaceholder, a.galleryIconActive .galleryIconPlaceholderWrapper .galleryIconPlaceholder{
+	color:#8a0000;
+}
+@media (max-width:767px){
+	a .galleryIconPlaceholderWrapper .galleryIconPlaceholdern .fa-4x{
+		font-size:3em;
+	}
+}
 .schoolBottom{
 	margin-bottom:100px;
 }
-	.schoolBottom .noPadding{
-		margin-right:0px;
-		margin-left:0px;
-		padding-right:0px;
-		padding-left:0px;
-	}
+.schoolBottom .noPadding{
+	margin-right:0px;
+	margin-left:0px;
+	padding-right:0px;
+	padding-left:0px;
+}
 .schoolBottom a.schoolTabButton .grayBg, .schoolBottom a.schoolTabButton:hover{
 	font-size:30px;
 	color:#FFF;

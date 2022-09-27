@@ -5,6 +5,7 @@
 	$ps_label = $this->getVar("label");
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
+	$ps_table = $this->getVar("table");
 ?>
 <div class='row'>
 	<div class="col-lg-10 col-lg-offset-1 col-md-12">
@@ -55,7 +56,21 @@
 			} else {
 				$vs_rep = $pa_set_item["representation_tag_".$vs_icon];
 			}
-			if($pa_set_item["representation_tag_".$vs_icon]){
+			if(($ps_table == "ca_objects") && (!$vs_rep)){
+				$t_instance = new ca_objects($pa_set_item["row_id"]);
+				$t_list_item = new ca_list_items();
+				$o_icons_conf = caGetIconsConfig();
+				$vs_default_placeholder = "<i class='fa fa-picture-o fa-4x'></i>";
+				$t_list_item->load($t_instance->get("resource_type"));
+				$vs_typecode = $t_list_item->get("idno");
+				if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_large_media_icon")){
+					$vs_rep = $vs_type_placeholder;
+				}else{
+					$vs_rep = $vs_default_placeholder_tag;
+				}
+				$vs_rep = "<div class='galleryIconPlaceholderWrapper'>".caGetThemeGraphic($this->request, 'spacer.png', array("alt" => "spacer image"))."<div class='galleryIconPlaceholder'>".$vs_rep."</div></div>";
+			}
+			if($vs_rep){
 				$vn_i++;
 				print "<div class='smallpadding col-xs-3 col-sm-2 col-md-".(($ps_description) ? "2" : "1").(($vn_i > 12) ? " galleryIconHidden" : "")."'>";
 				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."'  onclick='thumbnailNavigation(\"".$pa_set_item["item_id"]."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$vs_rep."</a>";
