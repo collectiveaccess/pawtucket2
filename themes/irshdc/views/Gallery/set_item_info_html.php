@@ -4,8 +4,13 @@
 ?>
 <?php print "(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")<br/>"; ?>
 <div class="galleryTombstoneScroll">
-
-	{{{<ifdef code="ca_objects.preferred_labels.name"><H4>^ca_objects.preferred_labels.name</H4></ifdef>}}}
+<?php
+	if($t_item->get("ca_set_items.preferred_labels") != "[BLANK]"){
+		print "<H4>".$t_item->get("ca_set_items.preferred_labels")."</H4>";
+	}else{
+		print $t_object->getWithTemplate('<ifdef code="ca_objects.preferred_labels.name"><H4>^ca_objects.preferred_labels.name</H4></ifdef>');
+	}
+?>
 	{{{<ifdef code="ca_objects.dc_website"><div class='unit'><a href="^ca_objects.dc_website" target="_blank">View Website <span class="glyphicon glyphicon-new-window"></span></a></div></ifdef>}}}
 	
 	{{{<case>
