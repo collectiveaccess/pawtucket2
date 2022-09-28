@@ -70,7 +70,7 @@
 						</div>
 						<div class='col-md-6'>
 <?php
-							$va_musician_roles = array("Cello" => "cello", "Double Bass" => "double_bass", "Guitar" => "guitar", "Harpsichord" => "harpsichord", "Keyboard" => "keyboard", "Oboe" => "oboe", "Percussion" => "percussion", "Piano" => "piano", "Soprano Saxophone" => "soprano_saxophone", "Theremin" => "theremin", "Trombone" => "trombone", "Viola" => "viola", "Violin" => "violin");
+							$va_musician_roles = array("Cello" => "cello", "Double Bass" => "double_bass", "Guitar" => "guitar", "Harmonium" => "harmonium", "Harpsichord" => "harpsichord", "Keyboard" => "keyboard", "Oboe" => "oboe", "Percussion" => "percussion", "Piano" => "piano", "Soprano Saxophone" => "soprano_saxophone", "Theremin" => "theremin", "Trombone" => "trombone", "Viola" => "viola", "Violin" => "violin");
 							foreach($va_musician_roles as $vs_role_label => $vs_role){
 								print $t_item->getWithTemplate('<ifcount code="ca_entities" restrictToRelationshipTypes="'.$vs_role.'" min="1"><div class="unit trimText"><label>'.$vs_role_label.'</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="'.$vs_role.'" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>');
 							}
