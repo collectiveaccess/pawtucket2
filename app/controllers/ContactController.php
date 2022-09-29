@@ -86,10 +86,18 @@
 				}
  			}
  			$va_fields = $this->config->get("contact_form_elements");
+ 			$email_fields = array_keys(array_filter($va_fields, function($v) {
+ 				return (bool)$v['email_address'] ?? false;
+ 			}));
+
+ 			$from_address = null;
  			$this->view->setVar("contact_form_elements", $va_fields);
  			if(is_array($va_fields) && sizeof($va_fields)){
  				foreach($va_fields as $vs_element_name => $va_options){
  					$vs_element_value = $o_purifier->purify($this->request->getParameter($vs_element_name, pString, ['forcePurify' => true]));
+ 					if(($email_fields[0] ?? false) && ($email_fields[0] === $vs_element_name) && $vs_element_value) {
+ 						$from_address = $vs_element_value;
+ 					}
  					if($va_options["required"] && !$vs_element_value){
  						$va_errors[$vs_element_name] = true;
  						$va_errors["display_errors"]["required_error"] = _t("Please enter the required information in the highlighted fields");
@@ -104,6 +112,7 @@
  					$this->view->setVar($vs_element_name, $vs_element_value);
  				}
  			}
+ 
  			if(sizeof($va_errors) == 0){
  				# --- send email
  					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
@@ -114,7 +123,7 @@
 					# -- generate mail text from template - get both the text and the html versions
 					$vs_mail_message_text = $o_view->render("mailTemplates/contact.tpl");
 					$vs_mail_message_html = $o_view->render("mailTemplates/contact_html.tpl");
-					if(caSendmail($this->config->get("contact_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
+					if(caSendmail($this->config->get("contact_email"), $from_address ?? $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
 						$this->render("Contact/success_html.php");
 					}else{
 						$va_errors["display_errors"]["send_error"] = _t("Your email could not be sent");

@@ -61,7 +61,7 @@
 					}
 				}
 				$qr_list->seek(0);
-				$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("used_website"), "objectTypes" => array("artwork", "mixed_media", "painting", "photograph", "print", "sculpture", "works_paper"), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
+				$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300square', 'relationshipTypes' => array("used_website"), "objectTypes" => array("artwork", "mixed_media", "painting", "photograph", "print", "sculpture", "works_paper"), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
 			}
 			if(is_array($va_years) && sizeof($va_years) > 1){		
 				arsort($va_years);
