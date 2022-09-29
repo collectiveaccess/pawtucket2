@@ -68,8 +68,7 @@
 				<div class="col-md-4 col-sm-4 widget footer-widget widget_text">
 					<h4 class="widgettitle">Supported By</h4>
 					<div class="textwidget">
-						<p><?php print caGetThemeGraphic($this->request, 'Holland-Museum-New-Leaders-Arts-Council-of-Michigan.png'); ?><br />&nbsp;</p>
-						<p><?php print caGetThemeGraphic($this->request, 'Holland-Museum-Michigan-council-for-arts-cultural-affairs.png'); ?><br />&nbsp;</p>
+						<p><?php print caGetThemeGraphic($this->request, 'macc-logo-color.png'); ?><br />&nbsp;</p>
 						<p><?php print caGetThemeGraphic($this->request, 'Holland-MuseumNEA-.png'); ?></p>
 					</div>
 				</div>
