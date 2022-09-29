@@ -96,9 +96,14 @@
 							if(Datamodel::getTableName($va_set['table_num']) != "ca_objects"){
 								$t_instance = Datamodel::getInstanceByTableNum($va_set['table_num']);
 								$t_instance->load($va_first_item["row_id"]);
-								if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $this->opa_access_values))){
+								if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_object_representations" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $this->opa_access_values))){
  									$va_set_first_items[$vn_set_id][$vn_item_id] = array("representation_tag" => $vs_thumbnail);
  								}
+ 								if(!$vs_thumbnail){
+									if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $this->opa_access_values))){
+										$va_set_first_items[$vn_set_id][$vn_item_id] = array("representation_tag" => $vs_thumbnail);
+									}
+								}
 							}
 						}
 					}
@@ -197,9 +202,16 @@
 				if(Datamodel::getTableName($t_set->get('table_num')) != "ca_objects"){
 					$t_instance = Datamodel::getInstanceByTableNum($t_set->get('table_num'));
 					$t_instance->load($va_set_item["row_id"]);
-						if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.large</unit>', array("checkAccess" => $this->opa_access_values))){
+						if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_object_representations" length="1">^ca_object_representations.media.large</unit>', array("checkAccess" => $this->opa_access_values))){
 							$va_set_item["representation_tag"] = $vs_thumbnail;
-							$va_set_item["representation_id"] = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.representation_id</unit>', array("checkAccess" => $this->opa_access_values));
+							$va_set_item["representation_id"] = $t_instance->getWithTemplate('<unit relativeTo="ca_object_representations" length="1">^ca_object_representations.representation_id</unit>', array("checkAccess" => $this->opa_access_values));
+							
+						}
+ 						if(!$vs_thumbnail){		
+							if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.large</unit>', array("checkAccess" => $this->opa_access_values))){
+								$va_set_item["representation_tag"] = $vs_thumbnail;
+								$va_set_item["representation_id"] = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.representation_id</unit>', array("checkAccess" => $this->opa_access_values));
+							}
 						}
 					}
  			}
