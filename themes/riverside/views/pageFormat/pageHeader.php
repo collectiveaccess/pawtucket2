@@ -152,7 +152,7 @@
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Galleries"), "", "", "Gallery", "Index"); ?></li>
 					<li class="dropdown<?php print (in_array(strToLower($this->request->getController()), array("about", "contact")) ? ' active' : ''); ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?> <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 <?php

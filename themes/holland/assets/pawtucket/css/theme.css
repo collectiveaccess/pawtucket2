@@ -534,6 +534,7 @@ body.initial .navbar-form .formOutline .btn-search{
 }
 body.initial .navbar .form-control{
 	height: 34px;
+	color:#FFF;
 }
 .filterMenuFacetList li.active {
     background-color: #454545;
