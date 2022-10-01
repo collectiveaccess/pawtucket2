@@ -126,7 +126,7 @@ function caSendmail($pa_to, $pa_from, $ps_subject, $ps_body_text, $ps_body_html=
 			$o_mail->setFrom($pa_from);
 		}
 		
-		if (!is_array($pa_to)) {
+		if (!is_array($pa_to) && $pa_to) {
 			$pa_to = preg_split('![,;\|]!', $pa_to);
 		}
 		
@@ -138,6 +138,9 @@ function caSendmail($pa_to, $pa_from, $ps_subject, $ps_body_text, $ps_body_html=
 			}
 		}
 		
+		if (!is_array($pa_cc) && $pa_cc) {
+			$pa_cc = preg_split('![,;\|]!', $pa_cc);
+		}
 		if (is_array($pa_cc) && sizeof($pa_cc)) {
 			foreach($pa_cc as $vs_to_email => $vs_to_name) {
 				if (is_numeric($vs_to_email)) {
