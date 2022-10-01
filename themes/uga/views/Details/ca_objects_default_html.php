@@ -33,6 +33,7 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	$vs_representation_viewer = trim($this->getVar("representationViewer"));
 	
+	
 	#$t_representation = new ca_object_representations($t_object->get("ca_object_representations.representation_id"));
 	#print_r($t_representation->getMediaInfo("media"));
 ?>
