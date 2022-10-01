@@ -85,7 +85,6 @@
 				$vb_restricted = false;
 				if($vn_cc_list_item_id = $t_object->get("ca_objects.creative_commons")){
 					$t_list_item = new ca_list_items($vn_cc_list_item_id);
-					print "<H6>Rights:</H6>";
 					if($t_list_item->get("ca_list_items.idno") == "cc_restricted"){
 						print "<a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a>";
 						$vb_restricted = true;
@@ -145,6 +144,8 @@
 		
 					</form>
 				</div>
+				
+				<hr></hr>	
 <?php
 				}else{
 ?>
@@ -156,7 +157,6 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6'>		
-				{{{<ifdef code="ca_objects.tier"><H6>Collection Tier:</H6>^ca_objects.tier<br/><br/></ifdef>}}}
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 
 				{{{<ifdef code="ca_objects.taxonomy"><H6>Taxonomy:</H6>^ca_objects.taxonomy<br/></ifdef>}}}
@@ -171,12 +171,17 @@
 				</ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.Date"><H6>Date:</H6>^ca_objects.Date</ifdef>}}}
+				
+				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related Place:</H6></ifcount>}}}
+				{{{<ifcount code="ca_places" min="2"><H6>Related Places:</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
+				
 
 				{{{<ifdef code="ca_objects.Format"><H6>Materials:</H6>^ca_objects.Format%delimiter=,_</ifdef>}}}
 				{{{<ifdef code="ca_objects.Dimensions_Container.Height"><H6>Dimensions:</H6><unit relativeTo="ca_objects.Dimensions_Container"><ifdef code="ca_objects.Dimensions_Container.Height">^ca_objects.Dimensions_Container.Height" h </ifdef><ifdef code="ca_objects.Dimensions_Container.Width">^Width" w </ifdef><ifdef code="ca_objects.Dimensions_Container.Depth">^Depth" d</ifdef></unit></ifdef>}}}
                 {{{<ifdef code="ca_objects.current_location_fld"><H6>Current Location Status:</H6>^ca_objects.current_location_fld</ifdef>}}}
-				
-
+				{{{<ifdef code="ca_objects.tier"><H6>Collection Tier:</H6>^ca_objects.tier</ifdef>}}}
+								
 				{{{<ifdef code="ca_objects.Source"><H6>Source:</H6>^ca_objects.Source</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.Current_Location"><H6>Currently:</H6>^ca_objects.Current_Location</ifdef>}}}
@@ -184,28 +189,25 @@
 				{{{<ifdef code="ca_objects.Links"><H6>Links:</H6><unit delimiter="<br/>" relativeTo="ca_objects.Links"><a href="^ca_objects.Links" target="_new">^ca_objects.Links</a></unit></ifdef>}}}
 
 				<hr></hr>	
-				{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Exhibit/Program</H6></ifcount>}}}
-				{{{<ifcount code="ca_occurrences" min="2"><H6>Exhibits/Programs</H6></ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Exhibit/Program:</H6></ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="2"><H6>Exhibits/Programs:</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l> (^ca_occurrences.date)<ifdef code="ca_occurrences.description"><br><span class="trimText">^ca_occurrences.description</span></ifdef><br/></unit>}}}
 
 
-				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Maker/Donor</H6></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><H6>Makers/Donors</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)<br/><ifdef code="ca_entities.biography"><br><span class="trimText">^ca_entities.biography</span></ifdef><br/></unit>}}}
+				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related Entity:</H6></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="2"><H6>Related Entities:</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_entities" delimiter=" "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)<br/><ifdef code="ca_entities.biography"><br/><span class="trimText">^ca_entities.biography</span></ifdef><ifdef code="ca_entities.nonpreferred_labels.displayname">Alternate names: <span class="trimText"><unit delimiter=", ">^ca_entities.nonpreferred_labels.displayname</unit></span></ifdef></unit>}}}
 				
-				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related Place</H6></ifcount>}}}
-				{{{<ifcount code="ca_places" min="2"><H6>Related Places</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
 				
-				{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
-				{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
+				{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term:</H6></ifcount>}}}
+				{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms:</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit>}}}
 				
-				{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
+				{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms:</H6></ifcount>}}}
 				{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
 				
-				{{{<ifcount code="ca_objects.related" min="1" max="1"><H6>Related Object</H6></ifcount>}}}
-				{{{<ifcount code="ca_objects.related" min="2"><H6>Related Objects</H6></ifcount>}}}
+				{{{<ifcount code="ca_objects.related" min="1" max="1"><H6>Related Object:</H6></ifcount>}}}
+				{{{<ifcount code="ca_objects.related" min="2"><H6>Related Objects:</H6></ifcount>}}}
 				{{{<div class="row relatedObjects"><unit relativeTo="ca_objects.related" delimiter=" "><div class="col-xs-12 col-md-4"><l>^ca_object_representations.media.small<div class="relatedObjectsTitle">^ca_objects.preferred_labels</div></l></div></unit></div>}}}
 
 				

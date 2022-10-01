@@ -420,6 +420,7 @@ hr{
 .detail h6{
 	font-size:14px;
 	margin-top: 20px;
+	font-weight: bold;
 }
 .repViewerContCont{
 	padding-bottom:38px;
