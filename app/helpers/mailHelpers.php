@@ -81,8 +81,84 @@
 		$o_config = Configuration::load();
 		$o_log = new Eventlog();
 
-		if($o_config->get('smtp_auth')){
-			$vs_smtp_auth = $o_config->get('smtp_auth');
+require_once(__CA_LIB_DIR__.'/Configuration.php');
+require_once(__CA_LIB_DIR__.'/View.php');
+require_once(__CA_LIB_DIR__.'/Logging/Eventlog.php');
+
+# ------------------------------------------------------------------------------------------------
+/**
+ * Sends mail using server settings specified in app.conf/global.conf
+ *
+ * Parameters are:
+ *
+ * 	$pa_to: 	Email address(es) of message recipients. Can be a string containing a single email address or
+ *				an associative array with keys set to multiple addresses and corresponding values optionally set to
+ *				a human-readable recipient name.
+ *	$pa_from:	The email address of the message sender. Can be a string containing a single email address or
+ *				an associative array with keys set to multiple addresses and corresponding values optionally set to
+ *				a human-readable sender name.
+ *	$ps_subject:	The subject line of the message
+ *	$ps_body_text:	The text of the message				(optional)
+ *	$ps_html_text:	The HTML-format text of the message (optional)
+ * 	$pa_cc: 	Email address(es) of cc'ed message recipients. Can be a string containing a single email address or
+ *				an associative array with keys set to multiple addresses and corresponding values optionally set to
+ *				a human-readable recipient name. (optional)
+ * 	$pa_bcc: 	Email address(es) of bcc'ed message recipients. Can be a string containing a single email address or
+ *				an associative array with keys set to multiple addresses and corresponding values optionally set to
+ *				a human-readable recipient name. (optional)
+ * 	$pa_attachments: 	array of arrays, each containing file path, name and mimetype of file to attach.
+ *				keys are "path", "name", "mimetype"
+ *
+ *  $pa_options:	Array of options. Options include:
+ *					log = Log activity? [Default is true]
+ *					logSuccess = Log successful sends? [Default is true]
+ *					logFailure = Log failed sends? [Default is true]
+ *					source = source of email, used for logging. [Default is "Registration"]
+ *					successMessage = Message to use for logging on successful send of email. Use %1 as a placeholder for a list of recipient email addresses. [Default is 'Email was sent to %1']
+ *					failureMessage = Message to use for logging on failure of send. Use %1 as a placeholder for a list of recipient email addresses; %2 for the error message. [Default is 'Could not send email to %1: %2']
+ *
+ * While both $ps_body_text and $ps_html_text are optional, at least one should be set and both can be set for a 
+ * combination text and HTML email
+ */
+function caSendmail($pa_to, $pa_from, $ps_subject, $ps_body_text, $ps_body_html='', $pa_cc=null, $pa_bcc=null, $pa_attachments=null, $pa_options=null) {
+	global $g_last_email_error;
+	$o_config = Configuration::load();
+	$o_log = new Eventlog();
+	if($o_config->get('smtp_auth')){
+		$vs_smtp_auth = $o_config->get('smtp_auth');
+	} else {
+		$vs_smtp_auth = '';
+	}
+	if($o_config->get('smtp_username')){
+		$vs_smtp_uname = $o_config->get('smtp_username');
+		$vs_smtp_auth = 'login';
+	} else {
+		$vs_smtp_uname = '';
+	}
+	if($o_config->get('smtp_password')){
+		$vs_smtp_pw = $o_config->get('smtp_password');
+		$vs_smtp_auth = 'login';
+	} else {
+		$vs_smtp_pw = '';
+	}
+	$va_smtp_config = array(
+		'username' => $vs_smtp_uname,
+		'password' => $vs_smtp_pw
+	);
+	
+	if($vs_smtp_auth){
+		$va_smtp_config['auth'] = $vs_smtp_auth;
+	}
+	if($vs_ssl = $o_config->get('smtp_ssl')){
+		$va_smtp_config['ssl'] = $vs_ssl;
+	}
+	if($vs_port = $o_config->get('smtp_port')){
+		$va_smtp_config['port'] = $vs_port;
+	}
+	
+	try {
+		if($o_config->get('smtp_use_sendmail_transport')){
+			$vo_tr = new Zend_Mail_Transport_Sendmail($va_smtp_config);
 		} else {
 			$vs_smtp_auth = '';
 		}
@@ -103,14 +179,8 @@
 			'password' => $vs_smtp_pw
 		);
 		
-		if($vs_smtp_auth){
-			$va_smtp_config['auth'] = $vs_smtp_auth;
-		}
-		if($vs_ssl = $o_config->get('smtp_ssl')){
-			$va_smtp_config['ssl'] = $vs_ssl;
-		}
-		if($vs_port = $o_config->get('smtp_port')){
-			$va_smtp_config['port'] = $vs_port;
+		if (!is_array($pa_to)) {
+			$pa_to = preg_split('![,;\|]!', $pa_to);
 		}
 		
 		try {
