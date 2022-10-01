@@ -127,6 +127,7 @@ function caSendmail($pa_to, $pa_from, $ps_subject, $ps_body_text, $ps_body_html=
 		if (is_array($pa_from)) {
 			foreach($pa_from as $vs_from_email => $vs_from_name) {
 				$o_mail->setFrom($vs_from_email, $vs_from_name);
+				break;
 			}
 		}
 		
