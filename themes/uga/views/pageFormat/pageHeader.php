@@ -201,7 +201,7 @@
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>>
 					<?php print caNavLink($this->request, _t("Search Collections"), "", "", "Search", "advanced/objects"); ?></li>
 					<li>
-						<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" class="form-inline menuSearch"
+						<form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>" class="form-inline menuSearch"
 						style="background-color: white; border: 2px solid darkgray; margin-top: -3px;">
 							<input class="form-control query width100" id="brownSearch" name="search" placeholder="Search" style="color: gray;text-align: right;" type="text">
 							<button class="btn btn-primary" id="searchButton" name="rows" type="submit" value="20"><i class="fa fa-search"></i></button>
