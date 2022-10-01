@@ -77,7 +77,6 @@ function caSendmail($pa_to, $pa_from, $ps_subject, $ps_body_text, $ps_body_html=
 	global $g_last_email_error;
 	$o_config = Configuration::load();
 	$o_log = new Eventlog();
-
 	if($o_config->get('smtp_auth')){
 		$vs_smtp_auth = $o_config->get('smtp_auth');
 	} else {
@@ -128,7 +127,7 @@ function caSendmail($pa_to, $pa_from, $ps_subject, $ps_body_text, $ps_body_html=
 		}
 		
 		if (!is_array($pa_to)) {
-			$pa_to = array($pa_to => $pa_to);
+			$pa_to = preg_split('![,;\|]!', $pa_to);
 		}
 		
 		foreach($pa_to as $vs_to_email => $vs_to_name) {
