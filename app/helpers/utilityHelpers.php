@@ -1638,7 +1638,7 @@ function caFileIsIncludable($ps_file) {
 		$valid_mimetypes_exp = [];
 		foreach($valid_mimetypes as $m) {
 			if(strpos($m, '/') === false) {
-				$valid_mimetypes_exp = array_merge($valid_mimetypes_exp, caGetMimetypesForClass($m));
+				$valid_mimetypes_exp = array_merge($valid_mimetypes_exp, caGetMimetypesForClass($m) ?? []);
 			} else {
 				$valid_mimetypes_exp[] = $m;
 			}	
