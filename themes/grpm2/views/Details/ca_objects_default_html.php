@@ -56,7 +56,7 @@
 					<div class="container">
 						<div class="row deaccessionBannerRow">
 							<div class="col-sm-12 deaccessionBanner">
-								<h1><?= _t('This item has been deaccessioned. It is no longer in the GRPM collection.'); ?></h1>
+								<h1><?= _t('This object has been deaccessioned and is no longer in the GRPM\'s collection'); ?></h1>
 							</div>
 						</div>
 					</div>
@@ -98,17 +98,17 @@
 					$t_list_item = new ca_list_items($vn_dl_version_item_id);
 					switch($t_list_item->get("ca_list_items.idno")){
 						case "high_res":
-							print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
+							print "<div class='text-left'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
 						break;
 						# -----------
 						case "low_res":
-							print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'large', 'download' => 1))."</div>";
+							print "<div class='text-left'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'large', 'download' => 1))."</div>";
 						break;
 						# -----------
 					}
 				}else{
 					if(!$vb_restricted){
-						print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
+						print "<div class='text-left'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
 					}
 				}
 				
@@ -141,6 +141,8 @@
 						<input type="hidden" name="item_id" value="<?php print $t_object->get("object_id"); ?>">
 						<input type="hidden" name="tablename" value="ca_objects">
 						<input type="hidden" name="inline" value="1">
+						<?= caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request))); ?>
+		
 					</form>
 				</div>
 <?php

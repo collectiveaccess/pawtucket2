@@ -608,7 +608,7 @@ label{
 
 div.deaccessionBannerContainer {
     background-color: #ffb3b3;
-    height: 40px;
+    height: auto;
 	margin-bottom: 10px;
     vertical-align: center;
 }
