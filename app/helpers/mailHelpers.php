@@ -118,12 +118,14 @@ function caSendmail($pa_to, $pa_from, $ps_subject, $ps_body_text, $ps_body_html=
 		
 		$o_mail = new Zend_Mail('UTF-8');
 		
+		if (!is_array($pa_from) && $pa_from) {
+			$pa_from = preg_split('![,;\|]!', $pa_from);
+		}
 		if (is_array($pa_from)) {
 			foreach($pa_from as $vs_from_email => $vs_from_name) {
 				$o_mail->setFrom($vs_from_email, $vs_from_name);
+				break;
 			}
-		} else {
-			$o_mail->setFrom($pa_from);
 		}
 		
 		if (!is_array($pa_to) && $pa_to) {
