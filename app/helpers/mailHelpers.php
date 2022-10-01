@@ -179,7 +179,7 @@ function caSendmail($pa_to, $pa_from, $ps_subject, $ps_body_text, $ps_body_html=
 			'password' => $vs_smtp_pw
 		);
 		
-		if (!is_array($pa_to)) {
+		if (!is_array($pa_to) && $pa_to) {
 			$pa_to = preg_split('![,;\|]!', $pa_to);
 		}
 		
@@ -189,22 +189,13 @@ function caSendmail($pa_to, $pa_from, $ps_subject, $ps_body_text, $ps_body_html=
 			} else {
 				$vo_tr = new Zend_Mail_Transport_Smtp($o_config->get('smtp_server'), $va_smtp_config);
 			}
-			
-			$o_mail = new Zend_Mail('UTF-8');
-			
-			if (is_array($pa_from)) {
-				foreach($pa_from as $vs_from_email => $vs_from_name) {
-					$o_mail->setFrom($vs_from_email, $vs_from_name);
-				}
-			} else {
-				$o_mail->setFrom($pa_from);
-			}
-			
-			if (!is_array($pa_to)) {
-				$pa_to = array($pa_to => $pa_to);
-			}
-			
-			foreach($pa_to as $vs_to_email => $vs_to_name) {
+		}
+		
+		if (!is_array($pa_cc) && $pa_cc) {
+			$pa_cc = preg_split('![,;\|]!', $pa_cc);
+		}
+		if (is_array($pa_cc) && sizeof($pa_cc)) {
+			foreach($pa_cc as $vs_to_email => $vs_to_name) {
 				if (is_numeric($vs_to_email)) {
 					$o_mail->addTo($vs_to_name, $vs_to_name);
 				} else {
