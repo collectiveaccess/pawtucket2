@@ -57,6 +57,8 @@
 					{{{<ifdef code="ca_objects.date"><div class='unit'><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.photograph_format"><div class='unit'><label>Format</label>^ca_objects.photograph_format%delimiter=,_</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.format_type"><div class='unit'><label>Format</label>^ca_objects.format_type%delimiter=,_</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.format_type_press"><div class='unit'><label>Format</label>^ca_objects.format_type_press%delimiter=,_</div></ifdef>}}}
+					
 					{{{<ifdef code="ca_objects.dimensions"><div class='unit'><label>Dimensions</label>^ca_objects.dimensions%delimiter=,_</div></ifdef>}}}
 					{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="interviewer,interviewee,photographer,videographer,creator"><div class='unit trimText'><label>Related People & Organizations</label><unit relativeTo="ca_entities.related" excludeRelationshipTypes="interviewer,interviewee,photographer,videographer,creator"><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></div></ifcount>}}}					
 					

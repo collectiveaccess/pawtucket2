@@ -420,6 +420,7 @@ hr{
 .detail h6{
 	font-size:14px;
 	margin-top: 20px;
+	font-weight: bold;
 }
 .repViewerContCont{
 	padding-bottom:38px;
@@ -608,7 +609,7 @@ label{
 
 div.deaccessionBannerContainer {
     background-color: #ffb3b3;
-    height: 40px;
+    height: auto;
 	margin-bottom: 10px;
     vertical-align: center;
 }

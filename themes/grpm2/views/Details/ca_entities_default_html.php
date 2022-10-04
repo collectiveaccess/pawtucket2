@@ -31,14 +31,16 @@
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{representationViewer}}}
+					<?= caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+
 					{{{<ifdef code="ca_entities.biography"><H6>Description</H6><span class="trimText">^ca_entities.biography</span><br/></ifdef>}}}
 					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
 					
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{map}}}
-					{{{<ifcount code="ca_entities.nonpreferred_labels" min="1" max="1"><H6>Other name</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities.nonpreferred_labels" min="2"><H6>Other names</H6></ifcount>}}}
+					{{{<ifcount code="ca_entities.nonpreferred_labels" min="1" max="1"><H6>Alternate name</H6></ifcount>}}}
+					{{{<ifcount code="ca_entities.nonpreferred_labels" min="2"><H6>Alternate names</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_entities.nonpreferred_labels" delimiter="<br/>">^ca_entities.nonpreferred_labels.displayname</unit>}}}
 					
 					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
