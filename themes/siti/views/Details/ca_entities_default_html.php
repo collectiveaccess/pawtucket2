@@ -59,6 +59,7 @@
 					}
 ?>
 					{{{<ifcount code="ca_entities.related" min="1"><div class='unit trimText'><label>Related People & Organizations</label><unit relativeTo="ca_entities.related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</div></ifcount>}}}					
+					{{{<ifdef code="ca_entities.idno"><div class='unit'><label>Identifier</label>^ca_entities.idno</div></ifdef>}}}
 						
 				</div>
 			</div><!-- end row -->

@@ -52,6 +52,8 @@
 			}
 ?>
 					{{{<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text"><div class='unit trimText'><label>Description</label><unit relativeTo="ca_occurrences.descriptionWithSource.prodesc_text" delimiter="<br/><br/>">^ca_occurrences.descriptionWithSource.prodesc_text</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.idno"><div class='unit'><label>Identifer</label>^ca_occurrences.idno</div></ifdef>}}}
+
 				</div>
 			</div><!-- end row -->
 			<div class="row">
