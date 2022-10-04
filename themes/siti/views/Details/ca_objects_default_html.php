@@ -49,6 +49,7 @@
 			}
 ?>
 					
+					{{{<ifdef code="ca_objects.idno"><div class='unit'><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="interviewer"><div class='unit trimText'><label>Interviewer</label><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="interviewer"><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}					
 					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="interviewee"><div class='unit trimText'><label>Interviewee</label><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="interviewee"><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}					
 					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="photographer"><div class='unit trimText'><label>Photographer</label><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="photographer"><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}					

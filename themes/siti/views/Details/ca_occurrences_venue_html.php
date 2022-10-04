@@ -90,7 +90,7 @@
 						print "</div></div><!-- end unit -->";
 						
 					}
-					if(sizeof($va_productions) > 18)){
+					if(sizeof($va_productions) > 18){
 						print "<div class='unit text-center'>".caNavLink($this->request, "View All Productions", "btn btn-default", "", "Browse", "productions", array("facet" => "venue_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
 					}
 					
