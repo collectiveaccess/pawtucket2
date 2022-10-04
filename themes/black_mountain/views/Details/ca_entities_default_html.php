@@ -51,9 +51,8 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-12'>
+					{{{<ifdef code="ca_entities.bmc_role.bmc_role_value|ca_entities.bmc_role.bmc_role_dates|ca_entities.bmc_role.bmc_notes"><div class="unit"><label>Dates at BMC</label><unit relativeTo="ca_entities.bmc_role" delimiter="<br/>"><ifdef code="ca_entities.bmc_role.bmc_role_value">^ca_entities.bmc_role.bmc_role_value<ifdef code="ca_entities.bmc_role.bmc_role_dates">, </ifdef></ifdef><ifdef code="ca_entities.bmc_role.bmc_role_dates"></ifdef>^ca_entities.bmc_role.bmc_role_dates<ifdef code="ca_entities.bmc_role.bmc_notes"><ifdef code="ca_entities.bmc_role.bmc_role_dates|ca_entities.bmc_role"><br/></ifdef>^ca_entities.bmc_role.bmc_notes</ifdef></unit></div></ifdef>}}}
 					{{{<ifdef code="ca_entities.biography"><div class="unit"><span class="trimText">^ca_entities.biography</span></div></ifdef>}}}
-					{{{<ifdef code="ca_entities.display_date"><unit relativeTo="ca_entities.display_date" delimiter="<br/>"><div class="unit"><label>Dates at BMC</label>^ca_entities.display_date</div></unit></ifdef>}}}
-
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
@@ -92,7 +91,7 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			
-{{{<ifcount code="ca_objects" min="1">
+{{{<ifcount code="ca_objects" min="1" restrictToTypes="artwork, oral_history, archival_object, publication">
 			<div class="row">
 				<div class="col-sm-12"><div class="unit"><label>Related Collection Items</label></div><HR/></div>
 			</div>
@@ -103,7 +102,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'person_facet', 'id' => '^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
