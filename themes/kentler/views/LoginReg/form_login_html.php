@@ -26,6 +26,14 @@
  * ----------------------------------------------------------------------
  */
  
+	$vn_benefit_id = $this->request->config->get("virtual_benefit_id");
+	$vs_disabled = "";
+	if($vn_benefit_id){
+		$t_occurrences = new ca_occurrences($vn_benefit_id);
+		if($t_occurrences->get("ca_occurrences.access") > 0){
+			$vs_disabled = " disabled='1'";
+		}
+	}
 	$vn_label_col = 3;
 	if($this->request->isAjax()){
 		$vn_label_col = 4;
@@ -51,18 +59,18 @@
 				<div class="form-group">
 					<label for="username" class="col-sm-<?php print $vn_label_col; ?> control-label"><?php print _t("Username"); ?></label>
 					<div class="col-sm-7">
-						<input type="text" class="form-control" id="username" name="username">
+						<input type="text" class="form-control" id="username" name="username"<?php print $vs_disabled; ?>>
 					</div><!-- end col-sm-7 -->
 				</div><!-- end form-group -->
 				<div class="form-group">
 					<label for="password" class="col-sm-<?php print $vn_label_col; ?> control-label"><?php print _t("Password"); ?></label>
 					<div class="col-sm-7">
-						<input type="password" name="password" class="form-control" id="password" />
+						<input type="password" name="password" class="form-control" id="password" <?php print $vs_disabled; ?>/>
 					</div><!-- end col-sm-7 -->
 				</div><!-- end form-group -->
 				<div class="form-group">
 					<div class="col-sm-offset-<?php print $vn_label_col; ?> col-sm-7">
-						<button type="submit" class="btn btn-default"><?php print _t("login"); ?></button>
+						<button type="submit" class="btn btn-default<?php print ($vs_disabled) ? " disabled" : ""; ?>" <?php print $vs_disabled; ?>><?php print _t("login"); ?></button>
 					</div>
 				</div>
 				<div class="form-group">
