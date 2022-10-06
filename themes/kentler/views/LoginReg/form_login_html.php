@@ -27,11 +27,11 @@
  */
  
 	$vn_benefit_id = $this->request->config->get("virtual_benefit_id");
-	$vs_disabled = "";
+	$vs_disabled = " disabled";
 	if($vn_benefit_id){
 		$t_occurrences = new ca_occurrences($vn_benefit_id);
-		if($t_occurrences->get("ca_occurrences.access") > 0){
-			$vs_disabled = " disabled='1'";
+		if($t_occurrences->get("ca_occurrences.access") == 1){
+			$vs_disabled = "";
 		}
 	}
 	$vn_label_col = 3;
@@ -54,6 +54,7 @@
 		print "<div class='alert alert-danger'>".$this->getVar("message")."</div>";
 	}
 ?>
+			<H2 class="text-center" id="demo"></H2>
 			<form id="LoginForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "login"); ?>" class="form-horizontal" role="form" method="POST">
 				<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 				<div class="form-group">
@@ -73,6 +74,70 @@
 						<button type="submit" class="btn btn-default<?php print ($vs_disabled) ? " disabled" : ""; ?>" <?php print $vs_disabled; ?>><?php print _t("login"); ?></button>
 					</div>
 				</div>
+				
+				
+
+<script>
+// Set the date we're counting down to
+var countDownDate = new Date("Oct 15, 2022 09:00:00").getTime();
+var countDownDate = new Date("Oct 6, 2022 18:36:00").getTime();
+
+// Update the count down every 1 second
+var x = setInterval(function() {
+
+  // Get today's date and time
+  var now = new Date().getTime();
+  // Find the distance between now and the count down date
+  var distance = countDownDate - now;
+
+  // Time calculations for days, hours, minutes and seconds
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+	if (distance > 0) {
+	  // Display the result in the element with id="demo"
+	  var timeleft = "";
+	  if(days > 0){
+		timeleft = days + " day";
+		if(days > 1){
+			timeleft += "s ";
+		}else{
+			timeleft += " ";
+		}
+	  }
+	  if(hours > 0){
+		timeleft += hours + " hour";
+		if(hours > 1){
+			timeleft += "s ";
+		}else{
+			timeleft += " ";
+		}
+	  }
+	  if(minutes > 0){
+		timeleft += minutes + " minute";
+		if(minutes > 1){
+			timeleft += "s ";
+		}else{
+			timeleft += " ";
+		}
+	  }
+	  if(seconds > 0){
+		timeleft +=  seconds + " seconds ";
+	  }
+	  document.getElementById("demo").innerHTML = "Login opens in " + timeleft;
+	}
+  // If the count down is finished, write some text
+  if (distance < 0) {
+    clearInterval(x);
+    document.getElementById("demo").innerHTML = "Please refresh the page to login!";
+    //$('#LoginForm input').removeAttr("disabled");
+    //$('#LoginForm button').removeAttr("disabled");
+    //$('#LoginForm button').removeClass("disabled");
+  }
+}, 1000);
+</script>
+
 				<div class="form-group">
 					<div class="col-sm-offset-<?php print $vn_label_col; ?> col-sm-7">
 <?php
