@@ -56,6 +56,8 @@
 							{{{<ifdef code="ca_occurrences.created_dateType"><div class='unit trimText'><label>Date Created</label>^ca_occurrences.created_dateType</div></ifdef>}}}
 							{{{<ifdef code="ca_occurrences.language"><div class='unit trimText'><label>Language</label>^ca_occurrences.language%delimiter=,_</div></ifdef>}}}
 							{{{<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text"><div class='unit trimText'><label>Description</label>^ca_occurrences.descriptionWithSource.prodesc_text</div></ifdef>}}}
+							{{{<ifdef code="ca_occurrences.idno"><div class='unit'><label>Identifer</label>^ca_occurrences.idno</div></ifdef>}}}
+
 						</div>
 						<div class='col-md-6'>
 							{{{<ifcount code="ca_occurrences.related" restrictToTypes="production" restrictToRelationshipTypes="premiere" min="1"><div class='unit trimText'><label>Premiere Production</label><unit relativeTo="ca_occurrences.related" restrictToTypes="production" restrictToRelationshipTypes="premiere" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name<ifdef code="ca_occurrences.date"><div class="small">^ca_occurrences.date</div></ifdef><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><div class="small"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter="<br/>">^ca_occurrences.preferred_labels.name</unit></div></ifcount></l></div></ifcount>}}}					

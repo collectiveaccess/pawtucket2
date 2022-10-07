@@ -75,6 +75,7 @@
 					{{{<ifdef code="ca_occurrences.blurb_container.blurb"><div class='unit trimText'><label>Blurb</label><unit relativeTo="ca_occurrences.blurb_container" delimiter="<br/><br/>">^ca_occurrences.blurb_container.blurb</unit></div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.process_note_container.process_note"><div class='unit trimText'><label>Notes on Process</label><unit relativeTo="ca_occurrences.process_note_container" delimiter="<br/><br/>">^ca_occurrences.process_note_container.process_note</unit></div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.quotes"><div class='unit trimText'><label>Quotes</label><unit relativeTo="ca_occurrences.quotes" delimiter="<br/><br/>">^ca_occurrences.quotes</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.idno"><div class='unit'><label>Identifer</label>^ca_occurrences.idno</div></ifdef>}}}
 
 				</div>
 			</div>

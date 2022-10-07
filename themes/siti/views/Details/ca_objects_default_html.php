@@ -66,6 +66,7 @@
 					{{{<ifdef code="ca_objects.descriptionWithSource.prodesc_text"><div class='unit trimText'><label>Description</label>^ca_objects.descriptionWithSource.prodesc_text</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.rightsStatement|ca_objects.rights"><div class='unit trimText'><label>Rights Information</label><ifdef code="ca_objects.rightsStatement.rightsStatement_text">^ca_objects.rightsStatement.rightsStatement_text </ifdef><a href="#" onClick="$('.rights').toggle(); return false;">Rights Summary</a><div class="unit rights" style="display:none;">^ca_objects.rights</div></div></ifdef>}}}
 					{{{<ifdef code="ca_objects.orderingInfo"><div class='unit trimText'><label>Ordering Information</label><unit relativeTo="ca_objects.orderingInfo" delimiter="<br/><br/>">^ca_objects.orderingInfo</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.idno"><div class='unit'><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 					
 					
 				</div>

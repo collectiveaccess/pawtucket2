@@ -29,7 +29,8 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	$va_access_values = 	caGetUserAccessValues($this->request);	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -51,15 +52,60 @@
 					{{{<ifnotdef code="ca_occurrences.display_date"><ifdef code="ca_occurrences.index_date">
 						<div class='unit'>^ca_occurrences.index_date</div>
 					</ifdef></ifnotdef>}}}
+					
 					<HR/>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-12'>
-					{{{<ifdef code="ca_occurrences.description"><div class="unit"><span class="trimText">^ca_occurrences.description</span></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.parent_id"><div class="unit"><label>Part of</label><unit relativeTo="ca_occurrences.parent"><l>^ca_occurrences.preferred_labels</l></unit></div></ifdef>}}}
-					{{{<ifcount code="ca_occurrences.children"><div class="unit"><label>In this series</label><unit relativeTo="ca_occurrences.children" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
+					{{{<ifdef code="ca_occurrences.event_type">
+						<div class='unit'><label>Event Type</label>^ca_occurrences.event_type</div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.event_format">
+						<div class='unit'><label>Event Format</label>^ca_occurrences.event_format</div>
+					</ifdef>}}}
+<?php
+					$va_programs = $t_item->get("ca_occurrences.related", array("restrictToTypes" => array("event", "exhibitions", "performance", "series"), "restrictToRelationshipTypes" => array("part_of"), "returnWithStructure" => 1, "checkAccess" => $va_access_values));
+					if(is_array($va_programs) && sizeof($va_programs)){
+						$va_programs_by_type = array();
+						foreach($va_programs as $va_program_info){
+							$va_programs_by_type[$va_program_info["relationship_typename"]][] = caDetailLink($this->request, $va_program_info["name"], "", "ca_occurrences", $va_program_info["occurrence_id"]);
+						}
+						# --- part of
+						if($va_part_of = $va_programs_by_type["Is Part of"]){
+							print "<div class='unit'><label>This ".$t_item->get("ca_occurrences.type_id", array("convertCodesToDisplayText" => true))." Is Part Of</label>".join("<br/>", $va_part_of)."</div>";
+						}
+						# --- contains
+						if($va_contains = $va_programs_by_type["Contains"]){
+							print "<div class='unit'><label>In this ".$t_item->get("ca_occurrences.type_id", array("convertCodesToDisplayText" => true))."</label>".join("<br/>", $va_contains)."</div>";
+						}
+					}
+?>
+					{{{<ifcount code="ca_occurrences.related" restrictToRelationshipTypes="in_conjunction_with" min="1"><div class="unit"><label>In Conjunction With</label>
+						<unit relativeTo="ca_occurrences.related" restrictToTypes="in_conjunction_with" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
 					
+					{{{<ifdef code="ca_occurrences.description"><div class="unit"><span class="trimText">^ca_occurrences.description</span></div></ifdef>}}}
+					
+					{{{<ifdef code="ca_occurrences.creditLine">
+						<div class='unit'><label>Credit</label>^ca_occurrences.creditLine</div>
+					</ifdef>}}}
+					
+<?php
+				$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
+				if(is_array($va_entities) && sizeof($va_entities)){
+					$va_entities_by_type = array();
+					foreach($va_entities as $va_entity_info){
+						$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
+					}
+					foreach($va_entities_by_type as $vs_type => $va_entity_links){
+						print "<div class='unit'><label>".$vs_type."</label>".join("<br/>", $va_entity_links)."</div>";
+					}
+				}
+
+?>				
+				
+				{{{<ifcount code="ca_occurrences.related" restrictToTypes="historical_events" min="1"><div class="unit"><label>Related Historical Events</label>
+					<unit relativeTo="ca_occurrences.related" restrictToTypes="historical_events" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
@@ -76,26 +122,10 @@
 					}
 					print '</div><!-- end detailTools -->';
 				}				
-				$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
-				if(is_array($va_entities) && sizeof($va_entities)){
-					$va_entities_by_type = array();
-					foreach($va_entities as $va_entity_info){
-						$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
-					}
-					foreach($va_entities_by_type as $vs_type => $va_entity_links){
-						print "<div class='unit'><label>".$vs_type."</label>".join("<br/>", $va_entity_links)."</div>";
-					}
-				}
-?>				
-				{{{<ifcount code="ca_occurrences.related" restrictToTypes="exhibitions" min="1"><div class="unit"><label>Related Exhibitions</label>
-					<unit relativeTo="ca_occurrences.related" restrictToTypes="exhibitions" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
-				
-				{{{<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1"><div class="unit"><label>Related Events</label>
-					<unit relativeTo="ca_occurrences.related" restrictToTypes="event" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
-
+?>
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="1">
+{{{<ifcount code="ca_objects" min="1" restrictToTypes="artwork, oral_history, archival_object, publication">
 			<div class="row">
 				<div class="col-sm-12"><div class="unit"><label>Related Collection Items</label></div><HR/></div>
 			</div>
@@ -106,7 +136,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'occ_all_facet', 'id' => '^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

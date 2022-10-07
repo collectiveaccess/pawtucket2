@@ -244,10 +244,10 @@
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="container menuBar">
 			<div class="row">
-				<div class="col-md-6 text-center">
+				<div class="col-md-7 text-center">
 					<ul class="nav navbar-nav navbar-right" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 						<li><?php print caNavLink($this->request, _t("Collection"), "", "", "Browse", "Objects"); ?></li>
-						<li><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "People"); ?></li>
+						<li><?php print caNavLink($this->request, _t("People & Organizations"), "", "", "Browse", "People"); ?></li>
 						<li><?php print caNavLink($this->request, _t("Programs"), "", "", "Browse", "Programs"); ?></li>
 					</ul>
 				</div>
