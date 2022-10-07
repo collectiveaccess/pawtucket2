@@ -80,62 +80,66 @@
 <script>
 // Set the date we're counting down to
 var countDownDate = new Date("Oct 15, 2022 09:00:00").getTime();
-//var countDownDate = new Date("Oct 6, 2022 18:36:00").getTime();
+//var countDownDate = new Date("Oct 7, 2022 15:57:00").getTime();
+var initNow = new Date().getTime();
+var initDistance = countDownDate - initNow;
+if (initDistance > 0) {
+	// Update the count down every 1 second
+	var x = setInterval(function() {
 
-// Update the count down every 1 second
-var x = setInterval(function() {
+	  // Get today's date and time
+	  var now = new Date().getTime();
+	  // Find the distance between now and the count down date
+	  var distance = countDownDate - now;
 
-  // Get today's date and time
-  var now = new Date().getTime();
-  // Find the distance between now and the count down date
-  var distance = countDownDate - now;
+	  // Time calculations for days, hours, minutes and seconds
+	  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+	  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+	  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+	  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+		if (distance > 0) {
+		  // Display the result in the element with id="demo"
+		  var timeleft = "";
+		  if(days > 0){
+			timeleft = days + " day";
+			if(days > 1){
+				timeleft += "s ";
+			}else{
+				timeleft += " ";
+			}
+		  }
+		  if(hours > 0){
+			timeleft += hours + " hour";
+			if(hours > 1){
+				timeleft += "s ";
+			}else{
+				timeleft += " ";
+			}
+		  }
+		  if(minutes > 0){
+			timeleft += minutes + " minute";
+			if(minutes > 1){
+				timeleft += "s ";
+			}else{
+				timeleft += " ";
+			}
+		  }
+		  if(seconds > 0){
+			timeleft +=  seconds + " seconds ";
+		  }
+		  document.getElementById("demo").innerHTML = "Login opens in " + timeleft;
+		}
+	  // If the count down is finished, write some text
+	  if (distance < 0) {
+		clearInterval(x);
+		document.getElementById("demo").innerHTML = "Please refresh the page to login!";
+		//$('#LoginForm input').removeAttr("disabled");
+		//$('#LoginForm button').removeAttr("disabled");
+		//$('#LoginForm button').removeClass("disabled");
+	  }
+	}, 1000);
 
-  // Time calculations for days, hours, minutes and seconds
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-	if (distance > 0) {
-	  // Display the result in the element with id="demo"
-	  var timeleft = "";
-	  if(days > 0){
-		timeleft = days + " day";
-		if(days > 1){
-			timeleft += "s ";
-		}else{
-			timeleft += " ";
-		}
-	  }
-	  if(hours > 0){
-		timeleft += hours + " hour";
-		if(hours > 1){
-			timeleft += "s ";
-		}else{
-			timeleft += " ";
-		}
-	  }
-	  if(minutes > 0){
-		timeleft += minutes + " minute";
-		if(minutes > 1){
-			timeleft += "s ";
-		}else{
-			timeleft += " ";
-		}
-	  }
-	  if(seconds > 0){
-		timeleft +=  seconds + " seconds ";
-	  }
-	  document.getElementById("demo").innerHTML = "Login opens in " + timeleft;
-	}
-  // If the count down is finished, write some text
-  if (distance < 0) {
-    clearInterval(x);
-    document.getElementById("demo").innerHTML = "Please refresh the page to login!";
-    //$('#LoginForm input').removeAttr("disabled");
-    //$('#LoginForm button').removeAttr("disabled");
-    //$('#LoginForm button').removeClass("disabled");
-  }
-}, 1000);
+}
 </script>
 
 				<div class="form-group">
