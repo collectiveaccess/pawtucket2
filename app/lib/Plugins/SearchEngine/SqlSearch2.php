@@ -171,7 +171,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		);
 		
 		if (defined('__CA_SEARCH_IS_FOR_PUBLIC_DISPLAY__')) {
-			$this->setOption('omitPrivateIndexing', true); 
+#			$this->setOption('omitPrivateIndexing', true); 
 		}
 	}
 	# -------------------------------------------------------
@@ -422,6 +422,10 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 					$text = $text_stem.'*';
 					$word_field = 'sw.stem';
 				}
+			}
+			
+			if(($word_field !== 'sw.stem') && ($this->search_config->get('always_stem') || $this->search_config->get('matchOnStem'))) {
+				$text .= '*';
 			}
 		
 			$params = [$subject_tablenum];
