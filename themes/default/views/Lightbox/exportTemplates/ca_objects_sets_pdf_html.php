@@ -46,12 +46,7 @@
 	</HEAD>
 	<BODY>
 		<div class='pageHeader'>
-<?php
-			if(file_exists($this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/ca_nav_logo300.png')){
-				print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/ca_nav_logo300.png"/>';
- 			}
- 			print "<div class='headerText'>".caGetLocalizedDate(null, array('dateFormat' => 'delimited'))."<br/>".mb_substr($vs_title, 0, 30).((mb_strlen($vs_title) > 30) ? '...' : '').", ".(($vn_num_items == 1) ? _t('%1 item', $vn_num_items) : _t('%1 items', $vn_num_items))."</div>";
-?>
+			<?= caGetReportLogo(); ?>
 		</div>
 
 	<table width="100%" cellpadding="0" cellspacing="0">

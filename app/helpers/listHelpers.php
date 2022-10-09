@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2018 Whirl-i-Gig
+ * Copyright 2011-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -284,19 +284,36 @@ require_once(__CA_MODELS_DIR__.'/ca_list_items.php');
 	 *
 	 * @return string|null
 	 */
-	$g_list_item_ids_for_values = [];
 	function caGetListItemIDForValue($ps_list_code, $ps_value, $pa_options=null) {
+		return array_shift(array_keys(caGetListItemForValue($ps_list_code, $ps_value, $pa_options)));
+	}
+	# ---------------------------------------
+	/**
+	 * Get list item info for value. Can be useful when handling access/status values
+	 * @param string $ps_list_code Code of the list
+	 * @param string $ps_value item_value of the list item in question
+	 * @param array $pa_options Options for ca_lists::getItemFromListByItemValue() plus:
+	 *		transaction = transaction to execute queries within. [Default=null]
+	 *      noCache = Don't use cache. [Default is false]
+	 *      dontCache = Synonym for noCache
+	 *      checkAccess = Array of access values to filter returned values on. If omitted no filtering is performed. [Default is null]
+	 *
+	 * @return array|null
+	 */
+	$g_list_items_for_values = [];
+	function caGetListItemForValue($ps_list_code, $ps_value, $pa_options=null) {
+		global $g_list_items_for_values;
 		$vs_cache_key = caMakeCacheKeyFromOptions($pa_options, "{$ps_list_code}/{$ps_value}");
 		
 		if(!caGetOption(['noCache', 'dontCache'], $pa_options, false)) {
-		    if(isset($g_list_item_ids_for_values[$vs_cache_key])) { return $g_list_item_ids_for_values[$vs_cache_key]; }
+		    if(isset($g_list_items_for_values[$vs_cache_key])) { return $g_list_items_for_values[$vs_cache_key]; }
         }
         
 		$t_list = new ca_lists();
 		if ($o_trans = caGetOption('transaction', $pa_options, null)) { $t_list->setTransaction($o_trans); }
 		
 		if ($va_item = $t_list->getItemFromListByItemValue($ps_list_code, $ps_value, $pa_options)) {
-			return $g_list_item_ids_for_values[$vs_cache_key] = array_shift(array_keys($va_item));
+			return $g_list_items_for_values[$vs_cache_key] = $va_item;
 		}
 		return null;
 	}
@@ -314,6 +331,7 @@ require_once(__CA_MODELS_DIR__.'/ca_list_items.php');
 	 */
 	$g_list_item_values_for_ids = [];
 	function caGetListItemValueForID($pn_id, $pa_options=null) {
+		global $g_list_item_values_for_ids;
 		if(!$pn_id || !is_numeric($pn_id)) { return null; }
 		$vs_cache_key = caMakeCacheKeyFromOptions($pa_options, $pn_id);
 		
@@ -498,8 +516,8 @@ require_once(__CA_MODELS_DIR__.'/ca_list_items.php');
 		if ($o_trans = caGetOption('transaction', $pa_options, null)) { $t_item->setTransaction($o_trans); }
 		
 		if (!is_array($pm_item_id)) { $pm_item_id = [$pm_item_id]; }
-		
-		$va_acc = caGetOption('includeSelf', $pa_options, false) ? [$pn_item_id] : [];
+
+		$va_acc = caGetOption('includeSelf', $pa_options, false) ? $pm_item_id : [];
 		foreach($pm_item_id as $pn_item_id) {
 			if (is_array($va_ancestors = $t_item->getHierarchyAncestors($pn_item_id, ['idsOnly' => true, 'includeSelf' => caGetOption('includeSelf', $pa_options, false)]))) {
 				$va_acc = array_merge($va_acc, $va_ancestors);

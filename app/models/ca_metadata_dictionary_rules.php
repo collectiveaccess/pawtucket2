@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2019 Whirl-i-Gig
+ * Copyright 2014-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,53 +29,7 @@
  * 
  * ----------------------------------------------------------------------
  */
- 
- /**
-   *
-   */
- 
 require_once(__CA_LIB_DIR__.'/ModelSettings.php');
-require_once(__CA_MODELS_DIR__.'/ca_metadata_dictionary_rule_violations.php');
-
-global $_ca_metadata_dictionary_rules_settings;
-$_ca_metadata_dictionary_rules_settings = array(		// global
-	'label' => array(
-		'formatType' => FT_TEXT,
-		'displayType' => DT_FIELD,
-		'width' => "620px", 'height' => 1,
-		'takesLocale' => true,
-		'label' => _t('Rule display label'),
-		'description' => _t('Short label for this rule, used for display in issue lists.')
-	),
-	'showasprompt' => array(
-		'formatType' => FT_NUMBER,
-		'displayType' => DT_SELECT,
-		'height' => 1,
-		'default' => 0,
-		'options' => [
-			_t('Yes') => 1,
-			_t('No') => 0,
-		],
-		'label' => _t('Show as prompt'),
-		'description' => _t('Display violations of this rule as on-screen prompts.')
-	),
-	'violationMessage' => array(
-		'formatType' => FT_TEXT,
-		'displayType' => DT_FIELD,
-		'width' => "620px", 'height' => "35px",
-		'takesLocale' => true,
-		'label' => _t('Rule violation message'),
-		'description' => _t('Message used for display to user when presenting issues.')
-	),
-	'description' => array(
-		'formatType' => FT_TEXT,
-		'displayType' => DT_FIELD,
-		'width' => "620px", 'height' => "35px",
-		'takesLocale' => true,
-		'label' => _t('Rule description'),
-		'description' => _t('Long form description of rule, used for display to user when presenting issues.')
-	)
-);
 
 BaseModel::$s_ca_models_definitions['ca_metadata_dictionary_rules'] = array(
  	'NAME_SINGULAR' 	=> _t('Metadata dictionary rule'),
@@ -138,6 +92,8 @@ BaseModel::$s_ca_models_definitions['ca_metadata_dictionary_rules'] = array(
 
 
 class ca_metadata_dictionary_rules extends BaseModel {
+	use ModelSettings;
+	
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -219,11 +175,6 @@ class ca_metadata_dictionary_rules extends BaseModel {
 
 	protected $FIELDS;
 	
-	/**
-	 * Settings delegate - implements methods for setting, getting and using 'settings' var field
-	 */
-	public $SETTINGS;
-	
 	# ------------------------------------------------------
 	function __construct($pn_id=null, $pa_additional_settings=null, $pa_setting_values=null) {
 		parent::__construct($pn_id);
@@ -246,34 +197,65 @@ class ca_metadata_dictionary_rules extends BaseModel {
 	  */
 	public function setSettingDefinitionsForRule($pa_additional_settings) {
 		if (!is_array($pa_additional_settings)) { $pa_additional_settings = array(); }
-		global $_ca_metadata_dictionary_rules_settings;
-		$this->SETTINGS = new ModelSettings($this, 'settings', array_merge($_ca_metadata_dictionary_rules_settings, $pa_additional_settings));
+		
+		$standard_settings = [
+			'label' => array(
+				'formatType' => FT_TEXT,
+				'displayType' => DT_FIELD,
+				'width' => "620px", 'height' => 1,
+				'takesLocale' => true,
+				'label' => _t('Rule display label'),
+				'description' => _t('Short label for this rule, used for display in issue lists.')
+			),
+			'showasprompt' => array(
+				'formatType' => FT_NUMBER,
+				'displayType' => DT_SELECT,
+				'height' => 1,
+				'default' => 0,
+				'options' => [
+					_t('Yes') => 1,
+					_t('No') => 0,
+				],
+				'label' => _t('Show as prompt'),
+				'description' => _t('Display violations of this rule as on-screen prompts.')
+			),
+			'violationMessage' => array(
+				'formatType' => FT_TEXT,
+				'displayType' => DT_FIELD,
+				'width' => "620px", 'height' => "35px",
+				'takesLocale' => true,
+				'label' => _t('Rule violation message'),
+				'description' => _t('Message used for display to user when presenting issues.')
+			),
+			'description' => array(
+				'formatType' => FT_TEXT,
+				'displayType' => DT_FIELD,
+				'width' => "620px", 'height' => "35px",
+				'takesLocale' => true,
+				'label' => _t('Rule description'),
+				'description' => _t('Long form description of rule, used for display to user when presenting issues.')
+			)
+		];
+		$this->setAvailableSettings(array_merge($standard_settings, $pa_additional_settings));
 		
 		return true;
 	}
 	# ----------------------------------------
-	public function __destruct() {
-		unset($this->SETTINGS);
-	}
-	# ----------------------------------------
 	/**
-	 * Reroutes calls to method implemented by settings delegate to the delegate class
-	 */
-	public function __call($ps_name, $pa_arguments) {
-		if (method_exists($this->SETTINGS, $ps_name)) {
-			return call_user_func_array(array($this->SETTINGS, $ps_name), $pa_arguments);
-		}
-		die($this->tableName()." does not implement method {$ps_name}");
-	}
-	# ----------------------------------------
-	/**
-	 * 
+	 * Return all rules for all or selected bundles
+	 *
+	 * @param array $pa_options Options include:
+	 *		db = Database connection to use. If omitted a new connection is created. [Default is null]
+	 *		bundles = List of bundle name to return rules for. If omitted all rules for all bundles are returned. [Default is null]
+	 *		table = Table to restrict entries to. If omitted rules for all tables are returned. [Default is null]
+	 *
+	 * @return array List of rules. Each rule is an array with rule data.
 	 */
 	static public function getRules($pa_options=null) {
 		if (!($o_db = caGetOption('db', $pa_options, null))) { $o_db = new Db(); }
 		
 		$vs_sql = "
-			SELECT cmdr.rule_id, cmdr.entry_id, cmde.bundle_name, cmde.settings entry_settings, 
+			SELECT cmdr.rule_id, cmdr.entry_id, cmde.bundle_name, cmde.settings entry_settings, cmde.table_num,
 			cmdr.rule_code, cmdr.rule_level, cmdr.expression, cmdr.settings rule_settings
 			FROM ca_metadata_dictionary_rules cmdr
 			INNER JOIN ca_metadata_dictionary_entries AS cmde ON cmde.entry_id = cmdr.entry_id
@@ -283,6 +265,10 @@ class ca_metadata_dictionary_rules extends BaseModel {
 		if($va_bundles = caGetOption('bundles', $pa_options, null, array('castTo' => 'array'))) {
 			$va_wheres[] = "(cmde.bundle_name IN (?))";
 			$va_params[] = $va_bundles;
+		}
+		if(($table = caGetOption('table', $pa_options, null)) && $table_num = Datamodel::getTableNum($table)) {
+			$va_wheres[] = "(cmde.table_num = ?)";
+			$va_params[] = $table_num;
 		}
 		if (sizeof($va_wheres) > 0) { $vs_sql .= " WHERE ".join(" AND ", $va_wheres); }
 		

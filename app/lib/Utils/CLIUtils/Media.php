@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018 Whirl-i-Gig
+ * Copyright 2018-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -32,7 +32,6 @@
  
 	trait CLIUtilsMedia { 
 		# -------------------------------------------------------
-		# -------------------------------------------------------
 		/**
 		 * Reprocess media
 		 */
@@ -47,9 +46,26 @@
 
 			$quiet = $po_opts->getOption('quiet');
 			$pa_mimetypes = caGetOption('mimetypes', $po_opts, null, ['delimiter' => [',', ';']]);
+			$skip_mimetypes = caGetOption('skip-mimetypes', $po_opts, null, ['delimiter' => [',', ';']]);
 			$pa_versions = caGetOption('versions', $po_opts, null, ['delimiter' => [',', ';']]);
 			$pa_kinds = caGetOption('kinds', $po_opts, 'all', ['forceLowercase' => true, 'validValues' => ['all', 'ca_object_representations', 'ca_attributes', 'icons'], 'delimiter' => [',', ';']]);
 			
+			$unprocessed = (bool)$po_opts->getOption('unprocessed');
+			$oriented_only = (bool)$po_opts->getOption('oriented-only');
+		
+			$va_log_options = array();
+			$vs_log_dir = $po_opts->getOption('log');
+			if ($vs_log_dir){
+				$va_log_options = array( 'logDirectory' => $vs_log_dir );
+			}
+			$vs_loglevel = $po_opts->getOption('log_level');
+			if ($vs_loglevel) {
+				$va_log_options['logLevel'] = $vs_loglevel;
+			}
+			$o_log = caGetLogger( $va_log_options, 'reprocess_media_log_directory' );
+
+			if ($o_log) { $o_log->logDebug(_t("[reprocess-media] Start preparing to reprocess media")); }
+
 			if (in_array('all', $pa_kinds) || in_array('ca_object_representations', $pa_kinds)) {
 				if (!($vn_start = (int)$po_opts->getOption('start_id'))) { $vn_start = null; }
 				if (!($vn_end = (int)$po_opts->getOption('end_id'))) { $vn_end = null; }
@@ -102,47 +118,73 @@
 					$va_params[] = $va_object_ids;
 				}
 
-				$qr_reps = $o_db->query("
-					SELECT *
-					FROM ca_object_representations
-					{$vs_sql_joins}
-					{$vs_sql_where}
-					ORDER BY ca_object_representations.representation_id
-				", $va_params);
+				if ( $o_log ) {
+					$o_log->logDebug( _t( "[reprocess-media] Running query for '$vs_sql_joins' and '$vs_sql_where' with params '"
+					                      . str_replace(array("\r", "\n"), '',var_export( $va_params, true ) . "'" )) );
+				}
 
-				if (!$quiet) { print CLIProgressBar::start($qr_reps->numRows(), _t('Re-processing representation media')); }
-				while($qr_reps->nextRow()) {
-					$va_media_info = $qr_reps->getMediaInfo('media');
-					$vs_original_filename = $va_media_info['ORIGINAL_FILENAME'];
+				$c = 0; $inc = 50;
+				do {
+					$qr_reps = $o_db->query("
+						SELECT ca_object_representations.representation_id, ca_object_representations.media, ca_object_representations.media_metadata
+						FROM ca_object_representations
+						{$vs_sql_joins}
+						{$vs_sql_where}
+						ORDER BY ca_object_representations.representation_id
+						LIMIT {$c}, {$inc}
+					", $va_params);
+					$n = $qr_reps->numRows();
+					
+					if (!$quiet) { print CLIProgressBar::start($qr_reps->numRows(), _t('Re-processing representation media')); }
+					while($qr_reps->nextRow()) {
+						$va_media_info = $qr_reps->getMediaInfo('media');
+						if(!is_array($va_media_info)) { print CLIProgressBar::next(1, "SKIPPED"); continue; }
+						$media_metadata = caUnserializeForDatabase($qr_reps->get('ca_object_representations.media_metadata'));
+						if($oriented_only && $media_metadata['EXIF']['IFD0']['Orientation'] == 1) { print CLIProgressBar::next(1, "SKIPPED"); continue; }
+					
+						$vs_original_filename = $va_media_info['ORIGINAL_FILENAME'];
 
-					if (!$quiet) { print CLIProgressBar::next(1, _t("Re-processing %1", ($vs_original_filename ? $vs_original_filename." (".$qr_reps->get('representation_id').")" : $qr_reps->get('representation_id')))); }
-					$vs_mimetype = $qr_reps->getMediaInfo('media', 'original', 'MIMETYPE');
-					if(is_array($pa_mimetypes) && sizeof($pa_mimetypes)) {
-						$vb_mimetype_match = false;
-						foreach($pa_mimetypes as $vs_mimetype_pattern) {
-							if(!preg_match("!^".preg_quote($vs_mimetype_pattern)."!", $vs_mimetype)) {
+						if($unprocessed) {
+							if(!sizeof(array_filter($va_media_info, function($v) {
+								return isset($v['QUEUED']);
+							}))) {
+								if (!$quiet) { print CLIProgressBar::next(1, $vs_message); }
 								continue;
 							}
-							$vb_mimetype_match = true;
-							break;
 						}
-						if (!$vb_mimetype_match) { continue; }
-					}
 
-					$t_rep->load($qr_reps->get('representation_id'));
-					$t_rep->set('media', $qr_reps->getMediaPath('media', 'original'), array('original_filename' => $vs_original_filename));
 
-					if (is_array($pa_versions) && sizeof($pa_versions)) {
-						$t_rep->update(array('updateOnlyMediaVersions' =>$pa_versions));
-					} else {
-						$t_rep->update();
-					}
+						if (!$quiet) {
+							$vs_message = _t("Re-processing %1", ($vs_original_filename ? $vs_original_filename." (".$qr_reps->get('representation_id').")" : $qr_reps->get('representation_id')));
+							print CLIProgressBar::next(1, $vs_message);
+							if ($o_log) { $o_log->logDebug($vs_message); }
+						}
+						$vs_mimetype = $qr_reps->getMediaInfo('media', 'original', 'MIMETYPE');
+						if(is_array($pa_mimetypes) && sizeof($pa_mimetypes)) {
+							if(!caMimetypeIsValid($vs_mimetype, $pa_mimetypes)) { continue; }
+						}
+						if(is_array($skip_mimetypes) && sizeof($skip_mimetypes)) {
+							if(caMimetypeIsValid($vs_mimetype, $skip_mimetypes)) { continue; }
+						}
 
-					if ($t_rep->numErrors()) {
-						CLIUtils::addError(_t("Error processing representation media: %1", join('; ', $t_rep->getErrors())));
+						$t_rep->load($qr_reps->get('representation_id'));
+						$t_rep->set('media', $qr_reps->getMediaPath('media', 'original'), array('original_filename' => $vs_original_filename));
+
+						if (is_array($pa_versions) && sizeof($pa_versions)) {
+							$t_rep->update(array('updateOnlyMediaVersions' =>$pa_versions));
+						} else {
+							$t_rep->update();
+						}
+
+						if ($t_rep->numErrors()) {
+							$vs_message = _t("Error processing representation media: %1", join('; ', $t_rep->getErrors()));
+							CLIUtils::addError($vs_message);
+							if ($o_log) { $o_log->logDebug($vs_message); }
+						}
 					}
-				}
-				if (!$quiet) { print CLIProgressBar::finish(); }
+					if (!$quiet) { print CLIProgressBar::finish(); }
+					$c += $inc;
+				} while($n > 0);
 			}
 
 			if ((in_array('all', $pa_kinds)  || in_array('ca_attributes', $pa_kinds)) && (!$vn_start && !$vn_end)) {
@@ -172,14 +214,23 @@
 									$va_media_info = $t_attr_val->getMediaInfo('value_blob');
 									$vs_original_filename = is_array($va_media_info) ? $va_media_info['ORIGINAL_FILENAME'] : '';
 
-									if (!$quiet) { print CLIProgressBar::next(1, _t("Re-processing %1", ($vs_original_filename ? $vs_original_filename." ({$vn_value_id})" : $vn_value_id))); }
+									if (!$quiet) {
+										$vs_message = _t( "Re-processing %1",
+											( $vs_original_filename ? $vs_original_filename . " ({$vn_value_id})"
+												: $vn_value_id ) );
+										print CLIProgressBar::next(1, $vs_message );
+										if ($o_log) { $o_log->logDebug($vs_message); }
+									}
 
 
 									$t_attr_val->set('value_blob', $t_attr_val->getMediaPath('value_blob', 'original'), array('original_filename' => $vs_original_filename));
 
 									$t_attr_val->update();
 									if ($t_attr_val->numErrors()) {
-										CLIUtils::addError(_t("Error processing attribute media: %1", join('; ', $t_attr_val->getErrors())));
+										$vs_message = _t( "Error processing attribute media: %1",
+											join( '; ', $t_attr_val->getErrors() ) );
+										CLIUtils::addError( $vs_message );
+										if ($o_log) { $o_log->logDebug($vs_message); }
 									}
 								}
 							}
@@ -203,14 +254,20 @@
 
 							$media_info = $t_instance->getMediaInfo($pk);
 
-							if (!$quiet) { print CLIProgressBar::next(1, _t("Re-processing %1 from %2", $id, $icon_table)); }
+							if (!$quiet) {
+								$vs_message = _t( "Re-processing %1 from %2", $id, $icon_table );
+								print CLIProgressBar::next(1, $vs_message );
+								if ($o_log) { $o_log->logDebug($vs_message); }
+							}
 
 
 							$t_instance->set('icon', ($p = $t_instance->getMediaPath('icon', 'original')) ? $p : $t_instance->getMediaPath('icon', 'iconlarge'));
 
 							$t_instance->update();
 							if ($t_instance->numErrors()) {
-								CLIUtils::addError(_t("Error processing icon media: %1", join('; ', $t_instance->getErrors())));
+								$vs_message = _t( "Error processing icon media: %1", join( '; ', $t_instance->getErrors() ) );
+								CLIUtils::addError( $vs_message );
+								if ($o_log) { $o_log->logDebug($vs_message); }
 							}
 						}	
 					}
@@ -228,14 +285,18 @@
 		public static function reprocess_mediaParamList() {
 			return array(
 				"mimetypes|m-s" => _t("Limit re-processing to specified mimetype(s) or mimetype stubs. Separate multiple mimetypes with commas."),
+				"skip-mimetypes|x-s" => _t("Do not reprocess specified mimetype(s) or mimetype stubs. Separate multiple mimetypes with commas."),
 				"versions|v-s" => _t("Limit re-processing to specified versions. Separate multiple versions with commas."),
-				"quiet|q" => _t('Suppress progress messages.'),
+				"log|L-s" => _t('Path to directory in which to log import details. If not set no logs will be recorded.'),
+				"log_level|d-s" => _t('Logging threshold. Possible values are, in ascending order of important: DEBUG, INFO, NOTICE, WARN, ERR, CRIT, ALERT. Default is INFO.'),
 				"start_id|s-n" => _t('Representation id to start reloading at'),
 				"end_id|e-n" => _t('Representation id to end reloading at'),
 				"id|i-n" => _t('Representation id to reload'),
 				"ids|l-s" => _t('Comma separated list of representation ids to reload'),
 				"object_ids|o-s" => _t('Comma separated list of object ids to reload'),
-				"kinds|k-s" => _t('Comma separated list of kind of media to reprocess. Valid kinds are ca_object_representations (object representations), ca_attributes (metadata elements) and icons (icon graphics on list items, storage locations, editors, editor screens, tours and tour stops). You may also specify "all" to reprocess all kinds of media. Default is "all"')
+				"kinds|k-s" => _t('Comma separated list of kind of media to reprocess. Valid kinds are ca_object_representations (object representations), ca_attributes (metadata elements) and icons (icon graphics on list items, storage locations, editors, editor screens, tours and tour stops). You may also specify "all" to reprocess all kinds of media. Default is "all"'),
+				"unprocessed|u" => _t('Reprocess all unprocessed media'),
+				"oriented-only|y-i" => _t('Only reprocess image media having the EXIF orientation set to a value > 1')
 			);
 		}
 		# -------------------------------------------------------
@@ -328,7 +389,7 @@
 				if ($vs_sql_where) { $vs_sql_where .= " AND mimetype = 'application/pdf'"; } else { $vs_sql_where = " WHERE mimetype = 'application/pdf'"; }
 
 				$qr_reps = $o_db->query("
-					SELECT *
+					SELECT representation_id, media_id
 					FROM ca_object_representations
 					{$vs_sql_where}
 					ORDER BY representation_id
@@ -451,8 +512,6 @@
 		public static function reindex_pdfsHelp() {
 			return _t("The CollectiveAccess document viewer can search text within PDFs and highlight matches. To enable this feature PDF content must be analyzed and indexed. If your database predates the introduction of in-viewer PDF search in CollectiveAccess 1.4, or search is otherwise failing to work properly, you can use this command to analyze and index PDFs in the database.");
 		}
-		
-		
 		# -------------------------------------------------------
 		/**
 		 *
@@ -531,6 +590,97 @@
 		 */
 		public static function regenerate_annotation_previewsHelp() {
 			return _t("Regenerates annotation preview media for some or all object representation annotations.");
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function find_duplicate_media($po_opts=null) {
+			// $kinds = caGetOption('kinds', $po_opts, 'all', 
+// 				['forceLowercase' => true, 
+// 				'validValues' => ['all', 'ca_object_representations', 'ca_attributes'], 
+// 				'delimiter' => [',', ';']]
+// 			);
+			
+			if (!($filename = $po_opts->getOption('file'))) {
+				print _t('You must specify a file to write report output to.')."\n";
+				return false;
+			}
+			
+			print CLIProgressBar::start(1, _t('Finding duplicates'));
+			
+			$o_db = new Db();
+			
+			$qr = $o_db->query("
+				SELECT md5, count(*) c
+				FROM ca_object_representations
+				WHERE
+					deleted = 0
+				GROUP BY md5
+				HAVING  c > 1
+			");
+			
+			$dupe_md5s = $qr->getAllFieldValues('md5');
+			
+			print CLIProgressBar::start($n = sizeof($dupe_md5s), _t('Analyzing duplicates'));
+			
+			$fp = fopen($filename, "w");
+			
+			$lines = [];
+			$headers = ['MD5', 'Count', 'Table', 'Idno'];
+			
+			fputcsv($fp, $headers);
+			foreach($dupe_md5s as $md5) {
+				if(is_array($reps = ca_object_representations::find(['md5' => $md5], ['returnAs' => 'modelInstances']))) {
+					$line = [$md5, sizeof($reps)];
+					
+					$list = [];
+					foreach($reps as $r) {
+						$ref = caGetReferenceToExistingRepresentationMedia($r, ['returnAsArray' => true]);
+						$list[] = $ref['idno'];
+					}
+					$line[] = Datamodel::getTableProperty($ref['table'], 'NAME_PLURAL');
+					$line[] = join('; ', $list);
+					
+					fputcsv($fp, $line);
+				}
+				print CLIProgressBar::next(1, $md5);
+			}
+			
+			fclose($fp);
+			print CLIProgressBar::finish();
+			CLIUtils::addMessage(($n == 1) ? _t('Found %1 duplicate', $n) : _t('Found %1 duplicates', $n));
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function find_duplicate_mediaParamList() {
+			return [
+				//"kinds|k-s" => _t('Comma separated list of kind of media to reprocess. Valid kinds are ca_object_representations (object representations) and ca_attributes (metadata elements). You may also specify "all" to reprocess all kinds of media. Default is "all"')
+				"file|f=s" => _t('Required. File to save export to.')
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function find_duplicate_mediaUtilityClass() {
+			return _t('Media');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function find_duplicate_mediaShortHelp() {
+			return _t("Lists media that have been uploaded more than once.");
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function find_duplicate_mediaHelp() {
+			return _t("Lists media that have been uploaded more than once.");
 		}
 		# -------------------------------------------------------
     }

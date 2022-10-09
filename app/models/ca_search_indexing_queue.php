@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2018 Whirl-i-Gig
+ * Copyright 2015-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -123,7 +123,7 @@ BaseModel::$s_ca_models_definitions['ca_search_indexing_queue'] = array(
             'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
             'IS_NULL' => true, 
             'DEFAULT' => '',
-            'LABEL' => _t('Stared on'), 'DESCRIPTION' => _t('Started on')
+            'LABEL' => _t('Started on'), 'DESCRIPTION' => _t('Started on')
 		)
 	)
 );
@@ -227,7 +227,7 @@ class ca_search_indexing_queue extends BaseModel {
     /**
      * Lock time out. Locks older than this will be removed.
      */
-    static $s_lock_timeout = 3 * 60 * 60;   // in seconds
+    static $s_lock_timeout = 60 * 60;   // in seconds
 
 	# ------------------------------------------------------
 	# --- Constructor
@@ -257,7 +257,7 @@ class ca_search_indexing_queue extends BaseModel {
 			
 			do {
 				$num_entries = 0;
-				if ($o_result = $o_db->query("SELECT * FROM ca_search_indexing_queue WHERE started_on IS NULL ORDER BY entry_id LIMIT 1000")) {
+				if ($o_result = $o_db->query("SELECT * FROM ca_search_indexing_queue WHERE started_on IS NULL ORDER BY entry_id LIMIT 100")) {
 					$num_entries = (int)$o_result->numRows();
 					if($num_entries > 0) {
 						$o_si = new SearchIndexer($o_db);

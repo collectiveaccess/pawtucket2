@@ -43,8 +43,8 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
 </div>
 <div class="row">
 	<div class="col-sm-12 col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
-	<div class="cookieIntro"><?php print $intro; ?></div>
-	<form id="CookieForm" action="<?= caNavUrl($this->request, '*', '*', 'save'); ?>" class="form-horizontal" role="form" method="POST">
+		<div class="cookieIntro"><?php print $intro; ?></div>
+		<form id="CookieForm" action="<?= caNavUrl($this->request, '*', '*', 'save'); ?>" class="form-horizontal" role="form" method="POST">
  
 <?php
  	foreach($cookies_by_category as $category_code => $category_info) {
@@ -109,7 +109,8 @@ if(!($config->get("cookiesIntroGlobalValue") && $intro = $this->getVar($config->
 			<button type="submit" class="btn btn-default"><?= _t('Update'); ?></button> <button class="btn btn-default" name="accept_all"  value="1"><?= _t('Accept All'); ?></button>
 		</div><!-- end form-group -->
 	</form>
-
+	</div>
+</div>
 <script type="text/javascript">
 	$('.btn-toggle').click(function() {
 		if(!$(this).hasClass('disabled')){

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2019 Whirl-i-Gig
+ * Copyright 2010-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -81,6 +81,13 @@ BaseModel::$s_ca_models_definitions['ca_loans'] = array(
 				'LABEL' => 'Idno sort', 'DESCRIPTION' => 'Sortable version of value in idno',
 				'BOUNDS_LENGTH' => array(0,255)
 		),
+		'idno_sort_num' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
+				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => false, 
+				'DEFAULT' => '',
+				'LABEL' => 'Sortable object identifier as integer', 'DESCRIPTION' => 'Integer value used for sorting objects; used for idno range query.'
+		),
 		'source_id' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
@@ -153,7 +160,8 @@ BaseModel::$s_ca_models_definitions['ca_loans'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => 0,
 				'LABEL' => _t('Is deleted?'), 'DESCRIPTION' => _t('Indicates if the loan is deleted or not.'),
-				'BOUNDS_VALUE' => array(0,1)
+				'BOUNDS_VALUE' => array(0,1),
+				'DONT_INCLUDE_IN_SEARCH_FORM' => true
 		),
 		'rank' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
@@ -378,6 +386,7 @@ class ca_loans extends RepresentableBaseModel implements IBundleProvider {
 		$this->BUNDLES['ca_storage_locations'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related storage locations'));
 		
 		$this->BUNDLES['ca_item_tags'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Tags'));
+		$this->BUNDLES['ca_item_comments'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Comments'));
 		
 		$this->BUNDLES['ca_list_items'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related vocabulary terms'));
 		

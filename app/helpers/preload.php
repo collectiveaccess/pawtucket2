@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2019 Whirl-i-Gig
+ * Copyright 2008-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -30,10 +30,7 @@
  * ----------------------------------------------------------------------
  */
  
-  /**
-   *
-   */
-spl_autoload_register(function ($class) {
+ spl_autoload_register(function ($class) {
     // Anything prefixed with "ca_" is a model
     if (substr($class, 0, 3) === 'ca_') {
         if(require(__CA_MODELS_DIR__."/{$class}.php")) { return true; }
@@ -81,11 +78,12 @@ if (isset($_COOKIE['CA_'.__CA_APP_NAME__.'_ui_locale'])) {
 	if (!initializeLocale($g_ui_locale)) { $g_ui_locale = null; }
 }
 
+setlocale(LC_CTYPE, !empty($g_ui_locale) ? "{$g_ui_locale}.UTF-8" : "en_US.UTF-8");
+
 require_once(__CA_LIB_DIR__.'/ResultContext.php');
 require_once(__CA_APP_DIR__.'/helpers/navigationHelpers.php');
 require_once(__CA_APP_DIR__.'/helpers/mailHelpers.php');
 
-require_once(__CA_LIB_DIR__.'/ApplicationMonitor.php');
 require_once(__CA_LIB_DIR__.'/BaseModel.php');
 require_once(__CA_LIB_DIR__.'/Controller/AppController.php');
 
