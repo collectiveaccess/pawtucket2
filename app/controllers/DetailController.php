@@ -1365,7 +1365,7 @@ class DetailController extends FindController {
 				'table' => 'ca_objects'
 			];
 		} elseif (!is_array($context_info = $this->opa_detail_types[$context])) { 
-			throw new ApplicationException(_t('Invalid context'));
+			throw new ApplicationException(_t('Invalid context %1', $context));
 		}
 		$o_context = ResultContext::getResultContextForLastFind($this->request, $context_info['table']);
 		
