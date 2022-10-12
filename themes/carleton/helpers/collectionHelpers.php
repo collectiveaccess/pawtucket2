@@ -70,7 +70,7 @@
 				$vs_output .= "<br/>";
 				if(!$vb_dont_show_top_level_description){
 					$vs_desc = "";
-					if($vs_sub_collection_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_sub_collection_desc_template))){
+					if($vs_sub_collection_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_sub_collection_desc_template, array("truncate" => 550, "ellipsis" => true)))){
 						$vs_output .= "<p>".$vs_desc."</p>";
 					}
 				}
