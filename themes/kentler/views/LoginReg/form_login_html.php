@@ -25,12 +25,12 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+ 	$vn_benefit_opens = strtotime("Oct 15, 2022 09:00:00");
 	$vn_benefit_id = $this->request->config->get("virtual_benefit_id");
 	$vs_disabled = " disabled";
 	if($vn_benefit_id){
 		$t_occurrences = new ca_occurrences($vn_benefit_id);
-		if($t_occurrences->get("ca_occurrences.access") == 1){
+		if(($t_occurrences->get("ca_occurrences.access") > 0) && (time() > $vn_benefit_opens)){
 			$vs_disabled = "";
 		}
 	}
