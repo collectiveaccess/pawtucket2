@@ -876,8 +876,7 @@ class DetailController extends FindController {
 			if($comment || $rank || $media1){
 				$t_item->addComment($comment, $rank, $this->request->getUserID(), null, $name, $email, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null, array('media1_original_filename' => $media1_original_name), $media1, null, null, null, $location);
 			}
-			if($tags){
-				$tags = array();
+			if(is_string($tags) && strlen($tags)){
 				$tags = explode(",", $tags);
 				foreach($tags as $tag){
 					$t_item->addTag(trim($tag), $this->request->getUserID(), null, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null);
@@ -1365,7 +1364,7 @@ class DetailController extends FindController {
 				'table' => 'ca_objects'
 			];
 		} elseif (!is_array($context_info = $this->opa_detail_types[$context])) { 
-			throw new ApplicationException(_t('Invalid context'));
+			throw new ApplicationException(_t('Invalid context %1', $context));
 		}
 		$o_context = ResultContext::getResultContextForLastFind($this->request, $context_info['table']);
 		

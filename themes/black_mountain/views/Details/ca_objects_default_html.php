@@ -73,45 +73,52 @@
 					}
 					print '</div><!-- end detailTools -->';
 				}				
-
 ?>
-
+				{{{<ifdef code="ca_objects.accessibility_description"><div class="unit"><label>Accessibility Description</label>^ca_objects.accessibility_description</div></ifdef>}}}
+				
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6'>
-				<H2>{{{<unit>^ca_objects.type_id<ifdef code="ca_objects.idno">: ^ca_objects.idno</ifdef></unit>}}}</H2>
+				<H2>{{{^ca_objects.type_id<ifdef code="ca_occurrences.idno">: ^ca_objects.idno</ifdef>}}}</H2>
 				<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
+				<div class='unit'>
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1">
+					<div><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div>
+				</ifcount>}}}	
 				{{{<ifdef code="ca_objects.display_date">
-					<div class='unit'>^ca_objects.display_date</div>
+					<div>^ca_objects.display_date</div>
 				</ifdef>}}}	
 				{{{<ifnotdef code="ca_objects.display_date"><ifdef code="ca_objects.index_date">
-					<div class='unit'>^ca_objects.index_date</div>
+					<div>^ca_objects.index_date</div>
 				</ifdef></ifnotdef>}}}	
-					
-				<HR>
+				{{{<ifdef code="ca_objects.PhysicalMediumDisplay"><div>^ca_objects.PhysicalMediumDisplay</div></ifdef>}}}
+				</div>
+				<HR>				
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><span class="trimText">^ca_objects.description</span></div>
 				</ifdef>}}}
 				
-				<!--publication-->
-				{{{<ifdef code="ca_objects.isbn_number"><div class="unit"><label>ISBN</label>^ca_objects.isbn_number</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.call_number"><div class="unit"><label>Call Number</label>^ca_objects.call_number</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.oclc"><div class="unit"><label>OCLC</label>^ca_objects.oclc</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.publications_lc.publications_lccn"><div class="unit"><label>LCCN</label>^ca_objects.publications_lc.publications_lccn ^ca_objects.publications_lc.publications_lc_classification</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.dewey_decimal.dewey_decimal_number"><div class="unit"><label>Dewey Decimal</label>^ca_objects.dewey_decimal.dewey_decimal_number ^ca_objects.dewey_decimal.dewey_decimal_label</div></ifdef>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="contributor" min="1">
+					<div class="unit"><label>Contributor<ifcount code="ca_entities" restrictToRelationshipTypes="contributor" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div>
+				</ifcount>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="printer" min="1">
+					<div class="unit"><label>Printer<ifcount code="ca_entities" restrictToRelationshipTypes="printer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="printer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div>
+				</ifcount>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="publisher" min="1">
+					<div class="unit"><label>Publisher<ifcount code="ca_entities" restrictToRelationshipTypes="publisher" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="publisher" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div>
+				</ifcount>}}}
+				{{{<ifdef code="ca_objects.dimensions.display_dimensions"><div class="unit"><label>Dimensions</label>^ca_objects.dimensions.display_dimensions</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.editionInformation"><div class="unit"><label>Edition</label>^ca_objects.editionInformation</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.series.series_title|ca_objects.series.series_id"><div class="unit"><label>Series</label>^ca_objects.series.series_title<ifdef code="ca_objects.series.series_id,ca_objects.series.series_title">, </ifdef>^ca_objects.series.series_id</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.rights.rightsStatement"><div class="unit"><label>Rights Statement</label>^ca_objects.rights.rightsStatement</div></ifdef>}}}
 				
-				<!--artwork & archival-->
-				{{{<ifdef code="ca_objects.PhysicalMediumDisplay"><div class="unit"><label>Medium</label>^ca_objects.PhysicalMediumDisplay</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.creditLine"><div class="unit"><label>Credit</label>^ca_objects.creditLine</div></ifdef>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="photographer,videographer,audio_recordist,producer,distributor" min="1">
+					<div class="unit"><label>Documentation Credit<ifcount code="ca_entities" restrictToRelationshipTypes="photographer,videographer,audio_recordist,producer,distributor" min="2">s</ifcount></label><unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="photographer,videographer,audio_recordist,producer,distributor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div>
+				</ifcount>}}}
 				{{{<ifdef code="ca_objects.citation"><div class="unit"><label>Citation</label>^ca_objects.citation</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.inscription"><div class="unit"><label>Inscription</label>^ca_objects.inscription</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.courtesy_line"><div class="unit"><label>Courtesy</label>^ca_objects.courtesy_line</div></ifdef>}}}
-				
-				<!-- oral history -->
-				{{{<ifdef code="ca_objects.interview_location"><div class="unit"><label>Location</label>^ca_objects.interview.interview_location</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.duration"><div class="unit"><label>Duration</label>^ca_objects.duration</div></ifdef>}}}
-				
 <?php
-				$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("creator", "author"), "returnWithStructure" => 1, "checkAccess" => $va_access_values));
+				$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("creator", "contributor", "printer", "publisher", "photographer", "videographer", "audio_recordist", "producer", "distributor"), "returnWithStructure" => 1, "checkAccess" => $va_access_values));
 				if(is_array($va_entities) && sizeof($va_entities)){
 					$va_entities_by_type = array();
 					foreach($va_entities as $va_entity_info){
@@ -128,7 +135,7 @@
 				{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Events</label>
 					<unit relativeTo="ca_occurrences" restrictToTypes="event" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
 
-				{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Collection Items</label>
+				{{{<ifcount code="ca_objects.related" min="1" restrictToTypes="artwork, oral_history, archival_object, publication"><div class="unit"><label>Related Collection Items</label>
 					<unit relativeTo="ca_objects.related"  delimiter=" ">
 						<div style="clear:left;"><l><ifdef code="ca_object_representations.media.icon"><div class="relatedIcon">^ca_object_representations.media.icon</div></ifdef>^ca_objects.preferred_labels<ifcount code='ca_entities' restrictToRelationshipTypes='creator' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='creator' delimiter=', '>, ^ca_entities.preferred_labels</unit></ifcount><ifdef code='ca_objects.artwork_date'><unit relativeTo='ca_objects.artwork_date'><if rule='^ca_objects.artwork_date.artwork_date_types =~ /Creation/'>, ^ca_objects.artwork_date.artwork_date_value</if></unit></ifdef><ifdef code='ca_objects.archival_object_date'><unit relativeTo='ca_objects.archival_object_date'><if rule='^ca_objects.archival_object_date.archival_object_date_types =~ /Creation/'>, ^ca_objects.archival_object_date.archival_object_date_value</if></unit></ifdef><ifcount code='ca_entities' restrictToRelationshipTypes='author' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='author' delimiter=', '>, ^ca_entities.preferred_labels</unit></ifcount><ifdef code='ca_objects.publication_date'><unit relativeTo='ca_objects.publication_date'><if rule='^ca_objects.publication_date.publication_date_types =~ /Publication/'>, ^ca_objects.publication_date.publication_date_value</if></unit></ifdef><ifdef code='ca_objects.interview.oral_history_dates_value'><unit relativeTo='ca_objects.interview'><if rule='^ca_objects.interview.oral_history_dates_types =~ /Interview/'>, ^ca_objects.interview.oral_history_dates_value</if></unit></ifdef>
 							</l></div></unit></div></ifcount>}}}
