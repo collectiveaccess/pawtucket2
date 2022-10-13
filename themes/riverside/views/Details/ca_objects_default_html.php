@@ -216,15 +216,18 @@
 				
 		<?php
 							$va_all_subjects = array();
-							$va_LcshSubjects = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
+							#$va_LcshSubjects = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
+							$va_LcshSubjects = $t_object->get('ca_objects.lcsh_terms', ['includeValueIDs' => true, 'returnWithStructure' => true]);
+							$va_LcshSubjects = $va_LcshSubjects[$t_object->get("ca_objects.object_id")];
 							$va_LcshSubjects_processed = array();
 							if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
-								foreach($va_LcshSubjects as $vs_LcshSubjects){
-									$vs_lcsh_subject = "";
+								foreach($va_LcshSubjects as $vs_LcshSubject_info){
+									$vs_LcshSubject = "";
+									$vs_LcshSubjects = $vs_LcshSubject_info["lcsh_terms"];
 									if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
-										$vs_LcshSubjects = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
+										$vs_LcshSubject = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
 									}
-									$va_all_subjects[strToLower($vs_LcshSubjects)] = caNavLink($this->request, $vs_LcshSubjects, "", "", "Search", "objects", array("search" => $vs_LcshSubjects));
+									$va_all_subjects[strToLower($vs_LcshSubject)] = caNavLink($this->request, $vs_LcshSubject, "", "", "Browse", "objects", array("facet" => "lcsh_terms_facet", "id" => $vs_LcshSubject_info["lcsh_terms_value_id"]));
 						
 								}
 								#$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
@@ -235,20 +238,24 @@
 								$va_keyword_links = array();
 								foreach($va_keywords as $vn_kw_id){
 									$t_list_item->load($vn_kw_id);
-									$va_all_subjects[strToLower($t_list_item->get("ca_list_item_labels.name_singular"))] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Search", "objects", array("search" => $t_list_item->get("ca_list_item_labels.name_singular")));
+									#$va_all_subjects[strToLower($t_list_item->get("ca_list_item_labels.name_singular"))] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Search", "objects", array("search" => $t_list_item->get("ca_list_item_labels.name_singular")));
+									$va_all_subjects[strToLower($t_list_item->get("ca_list_item_labels.name_singular"))] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
 								}
 								#$vs_keyword_links = join("<br/>", $va_keyword_links);
 							}
 							
-							$va_lc_names = $t_object->get("ca_objects.lc_names", array("returnAsArray" => true));
+							#$va_lc_names = $t_object->get("ca_objects.lc_names", array("returnAsArray" => true));
+							$va_lc_names = $t_object->get('ca_objects.lc_names', ['includeValueIDs' => true, 'returnWithStructure' => true]);
+							$va_lc_names = $va_lc_names[$t_object->get("ca_objects.object_id")];
 							$va_lc_names_processed = array();
 							if(is_array($va_lc_names) && sizeof($va_lc_names)){
-								foreach($va_lc_names as $vs_lc_names){
+								foreach($va_lc_names as $vs_lc_names_info){
 									$vs_lc_name = "";
+									$vs_lc_names = $vs_lc_names_info["lc_names"];
 									if($vs_lc_names && (strpos($vs_lc_names, " [") !== false)){
 										$vs_lc_name = mb_substr($vs_lc_names, 0, strpos($vs_lc_names, " ["));
 									}
-									$va_all_subjects[strToLower($vs_lc_name)] = caNavLink($this->request, $vs_lc_name, "", "", "Search", "objects", array("search" => $vs_lc_name));
+									$va_all_subjects[strToLower($vs_lc_name)] = caNavLink($this->request, $vs_lc_name, "", "", "Browse", "objects", array("facet" => "loc_names_facet", "id" => $vs_lc_names_info["lc_names_value_id"]));
 						
 								}
 								#$vs_lc_names = join("<br/>", $va_lc_names_processed);
