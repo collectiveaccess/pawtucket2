@@ -96,6 +96,11 @@ $images = array(
         <p>[Courtesy of Patrick Lenaghan, Head Curator of Prints, Photographs and Sculpture, Hispanic Society Museum & Library]</p>
         <p>Paret’s composition was engraved by <a target="_blank" href="http://bdh.bne.es/bnesearch/CompleteSearch.do?showYearItems=&field=todos&advanced=false&exact=on&textH=&completeText=&text=paret+y+alcazar&pageSize=1&pageSizeAbrv=30&pageNumber=67">Juan Moreno Tejada (1738–1805) for the book.</a></p>',
     ),
+    array(
+        'image'         => 'Moli_capellades.png',
+        'thumbnail'     => 'Moli_capellade_S.png',
+        'caption'       => '<p>In the 18th century, <a href="https://www.mmp-capellades.net/eng/information.html" target="_blank">Capellades</a>, a town one hour northwest of Barcelona, was an important paper-making center.  The large concentration of paper mills in the town was made possible by the abundance of clean water supply through the aquifers.  Before paper was produced by machines, each sheet was handmade by dipping a mould into a vat of fibrous liquid that was pressed and hung up to dry, then pressed to make the writing or printing surface we know as paper. Paper from Capellades was sold all over Europe. Now only one mill remains and functions as a living museum. Besides demonstrations for visitors, they produce paper for artists and other businesses who place specific orders. In some interesting way they bridge history by making traditional paper wit some very innovative ideas—adding chocolate to the paper for wrapping chocolate bars.</p>',
+    ),
 );
 ?>
 
