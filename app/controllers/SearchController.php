@@ -132,6 +132,12 @@
 				$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
 			}
 			
+			
+			// Set highlight text
+			if(!RequestHTTP::isAjax()) { 
+				MetaTagManager::setHighlightText($vs_search_expression); 
+			}
+			
 			// Allow plugins to rewrite search prior to execution
  			$qr_res = null;
 			$this->opo_app_plugin_manager->hookReplaceSearch(['search' => $ps_function, 'browseInfo' => &$va_browse_info, 'searchExpression' => &$vs_search_expression, 'result' => &$qr_res]);
@@ -412,6 +418,7 @@
 			//
 			if (!$vb_search_was_replaced) { $qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction)); }
 		
+			$qr_res->doHighlighting($o_search_config->get("do_highlighting"));
 			$this->view->setVar('result', $qr_res);
 		
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
@@ -433,7 +440,7 @@
 			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(5000)); $o_block_result_context->saveContext();}
 
 			$qr_res->seek($vn_start);
-			
+	
 			$this->opo_result_context->saveContext();
  			
  			if ($vn_type_id) {
