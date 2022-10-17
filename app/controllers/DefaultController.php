@@ -46,11 +46,11 @@ class DefaultController extends BasePawtucketController {
 		
 		array_unshift($path[0], $method);
 		
-		if(!($content = ca_site_pages::renderPageForPath($this, "/".trim(join("/", $path[0]), "/"), ['incrementViewCount' => true, 'checkAccess' => caGetUserAccessValues()]))) {
+		if(!($content = ca_site_pages::renderPageForPath($this, "/".trim(join("/", $path[0]), "/"), ['incrementViewCount' => true, 'checkAccess' => caGetUserAccessValues($this->request)]))) {
 			if($path[0][sizeof($path[0])-1] === '_default') {
 				$def_path = $path[0];
 				array_pop($def_path);
-				$content = $content = ca_site_pages::renderPageForPath($this, $path = "/".trim(join("/", $def_path), "/"), ['incrementViewCount' => true, 'checkAccess' => caGetUserAccessValues()]);
+				$content = $content = ca_site_pages::renderPageForPath($this, "/".trim(join("/", $def_path), "/"), ['incrementViewCount' => true, 'checkAccess' => caGetUserAccessValues()]);
 			}
 		}
 		if ($content) {
