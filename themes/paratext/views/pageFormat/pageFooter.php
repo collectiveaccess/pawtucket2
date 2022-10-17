@@ -51,7 +51,7 @@
     <div class="year">Nueva York. Año MMXXII</div>
     <!--<div class="agradecimientos"><?php print caNavLink($this->request, 'Acknowledgments', '', '', 'Section', 'Acknowledgments'); ?></div>-->
 	<div class="agradecimientos"><a href="mailto:contact@comediassueltasusa.org">Contact</a></div>
-
+	<a class="back_to_top" href="#top">Top <span class="arrow">➺</span></a>
 </footer>
 
 </html>

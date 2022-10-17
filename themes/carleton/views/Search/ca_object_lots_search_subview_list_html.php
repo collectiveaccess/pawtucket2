@@ -81,7 +81,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
-				print "<div class='collectionsResult authorityResult'>".$qr_results->get('ca_object_lots.preferred_labels.name', array('returnAsLink' => true))."</div>";
+				print "<div class='accessionsResult authorityResult'>".$qr_results->getWithTemplate('<l>^ca_object_lots.preferred_labels.name<ifdef code="ca_object_lots.inclusive_dates">, ^ca_object_lots.inclusive_dates%delimiter=,_</ifdef></if></l>')."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i >= $vn_items_per_column) {

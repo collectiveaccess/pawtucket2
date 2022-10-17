@@ -1,35 +1,34 @@
 # *** use ONLY lowercase letters in lists: input will be forced to lowercase for comparison ***
 
 # List month names; used whenever name of month needs to be displayed
-monthList = [january, february, march, april, may, june, july, august, september, october, november, december]
+monthList = [ديسمبر, نوفمبر, أكتوبر, سبتمبر, أغسطس, يوليو, يونيو, مايو, أبريل, مارس, فبراير, يناير]
 
 # *** the following list of months is for display and *SHOULD* be capitalized where appropriate
-monthListDisplay = [January, February, March, April, May, June, July, August, September, October, November, December]
+monthListDisplay = [ديسمبر, نوفمبر, أكتوبر, سبتمبر, أغسطس, يوليو, يونيو, مايو, أبريل, مارس, فبراير, يناير]
 
 # Hash table mapping acceptable month names to the display names defined in 'monthList'
 monthTable = {
-	jan = january, jan. = january,
-	feb = february, feb. = february,
-	mar = march, mar. = march,
-	apr = april, apr. = april,
-	ma = may,
-	jun = june, jun. = june,
-	jul = july, jul. = july,
-	aug = august, aug. = august,
-	sep = september, sep. = september,
-	sept = september, sept. = september,
-	oct = october, oct. = october,
-	nov = november, nov. = november,
-	dec = december, dec. = december
+	jan = يناير, jan. = يناير,
+	feb = فبراير, feb. = فبراير,
+	mar = مارس, mar. = مارس,
+	apr = أبريل, apr. = أبريل,
+	ma = مايو,
+	jun = يونيو, jun. = يونيو,
+	jul = يوليو, jul. = يوليو,
+	aug = أغسطس, aug. = أغسطس,
+	sep = سبتمبر, sep. = سبتمبر,
+	oct = أكتوبر, oct. = أكتوبر,
+	nov = نوفمبر, nov. = نوفمبر,
+	dec = ديسمبر, dec. = ديسمبر
 }
 
 # List of day names, starting with Sunday
-dayListDisplay = [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+dayListDisplay = [السبت, الجمعة, الخميس, الأربعاء, الثلاثاء, الاثنين, الأحد]
 
-rangePreConjunctions = [from, between]
-rangeConjunctions = [–, -, to, and, .., through, or]
+rangePreConjunctions = [ما بين, منذ ]
+rangeConjunctions = [–, -, أم, عبر, .., و, إلى]
 
-dateTimeConjunctions = [at,@]
+dateTimeConjunctions = [في,@]
 
 dateDelimiters = [/,-,.]
 timeDelimiters = [:,.]
@@ -38,57 +37,57 @@ timeAMMeridian = am
 timePMMeridian = pm
 
 meridianTable = {
-	a.m. = am,
-	p.m. = pm
+	a.m. = صباحاً ,
+	p.m. = مساءً  
 }
 
-dateCircaIndicator = [circa, c, c., ca, ca., about]
-dateProbablyIndicator = [probably, possibly]
+dateCircaIndicator = [حوالي, ح. , ح. , ح. , ح. , حول]
+dateProbablyIndicator = [ربما, محتمل]
 dateUncertaintyIndicator = [~]
-dateUncertaintyYearIndicator = [y]
-dateUncertaintyDayIndicator = [d]
+dateUncertaintyYearIndicator = [عام]
+dateUncertaintyDayIndicator = [يوم]
 
 # What to use to indicate a geological date ("millions of years ago")
-dateMYA = [mya]
+dateMYA = [قبل ملايين السنين]
 
 # What to use to indicate radiocarbon dates ("before present")
-dateBP = [bp]
+dateBP = [قبل الحاضر]
 
-dateADIndicator = CE
-dateBCIndicator = BCE
+dateADIndicator = ميلاديًا
+dateBCIndicator = قبل الميلاد
 ADBCTable = {
-	ad = CE,
-	a.d. = CE,
-	AD = CE,
-	bc = BCE,
-	b.c. = BCE,
-	BC = BCE,
-	c.e. = CE,
-	b.c.e. = BCE,
-	ce = CE,
-	bce = BCE
+	ad = م. ,
+	a.d. = م. ,
+	AD = م.  ,
+	bc = ق. م.,
+	b.c. = ق. م.,
+	BC = ق. م.,
+	c.e. =  م.,
+	b.c.e. = ق. م.,
+	ce =  م.,
+	bce = ق. م.
 }
 
-nowDate = [now]
-todayDate = [today]
-yesterdayDate = [yesterday]
-tomorrowDate = [tomorrow]
-undatedDate = [undated, unknown, nd., n.d., nd]
+nowDate = [حاليا]
+todayDate = [اليوم]
+yesterdayDate = [البارحة]
+tomorrowDate = [غداً ]
+undatedDate = [غ. م., غ. م., غ. م., غير معروف, غير مؤرخ]
 
-presentDate = [present, ?, ??, ???, ????]
-beforeQualifier = [before, prior to, pre]
-earlyQualifier = [early]
-midQualifier = [mid, middle]
-lateQualifier = [late]
-diedQualifier = [d., d, died]
-afterQualifier = [after, later than, post]
-bornQualifier = [b., b, born]
+presentDate = [حاضر, ?, ??, ???, ????]
+beforeQualifier = [قبل, قبل ذ لك, قبل]
+earlyQualifier = [مبكر]
+midQualifier = [وسط, منتصف]
+lateQualifier = [متأخر]
+diedQualifier = [مات, م. , م. ]
+afterQualifier = [ما بعد, فيما بعد, بعد]
+bornQualifier = [ولد, و. , و ]
 
 # Text to indicate century (as in "20th century")
-centuryIndicator = [century, cent]
+centuryIndicator = [قرن, قرن]
 
 # Text to indicate decade (as in "1920s")
-decadeIndicator = [s]
+decadeIndicator = [م]
 
 # list of numeric suffixes, starting with the one for zero
 # (eg. 0th, 1st, 2nd, 3rd would be a list like so: [th, st, nd, rd])
@@ -102,21 +101,21 @@ ordinalSuffixExceptions = {
 
 # in delimited dates (ex. 12/10/2009) is the first number a month or a day?
 # set to "0" for European style dates (day comes first); "1" for American-style dates (month comes first)
-monthComesFirstInDelimitedDate = 1
+monthComesFirstInDelimitedDate =0 
 
 # character(s) to append to day in full (not delimited) date
 # eg. in the date "1. February 2009", "." is the daySuffix
 # Note: you can put arbitrary text here - only punctuation
-daySuffix = 
+daySuffix = 1. 
 
 # Definite articles
-definiteArticles = [the]
+definiteArticles = [ال]
 
 # Indefinite articles
 indefiniteArticles = [a, an]
 
 # Seasons
-winterSeason = [winter]
-springSeason = [spring]
-summerSeason = [summer]
-autumnSeason = [autumn, fall]
+winterSeason = [شتاء]
+springSeason = [رابع ]
+summerSeason = [صيف]
+autumnSeason = [خريف, خريف]

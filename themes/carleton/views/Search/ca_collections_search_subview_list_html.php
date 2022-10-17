@@ -70,7 +70,7 @@
 <?php
 			}
 ?>
-			<div class='blockResults authorityBlock'>
+			<div class='blockResults authorityBlock collections_all_authorityBlock'>
 				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left" role="button" aria-label="previous"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right" role="button" aria-label="next"></i></div>
 				<div id='{{{block}}}Results' class='multiSearchResults' style="position:relative;">
 					<div class='blockResultsScroller'>
@@ -86,7 +86,7 @@
 					$vs_parent_path .= " ><br/>";
 				}
 				print "<div class='collectionsResult authorityResult'>";
-				print $qr_results->getWithTemplate("<ifdef code='ca_object_representations.media.icon'><div class='text-center'><l>^ca_object_representations.media.icon</l></div></ifdef>");
+				print $qr_results->getWithTemplate("<ifcount code='ca_object_representations' min='1'><l><unit relativeTo='ca_object_representations' length='1'><div style='float:left; padding:5px 10px 0px 0px;'>^ca_object_representations.media.icon</div></unit><l></ifcount>");
 				print $qr_results->getWithTemplate("<l>".$vs_parent_path."<b>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></b></l>", array('returnAsLink' => true))."</div>";
 			$vn_count++;
 			$vn_i++;

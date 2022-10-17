@@ -97,6 +97,14 @@
 			'label' => _t('Does not use locale setting'),
 			'description' => _t('Check this option if you don\'t want your currency values to be locale-specific. (The default is to not be.)')
 		),
+		'singleValuePerLocale' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow single value per locale'),
+			'description' => _t('Check this option to restrict entry to a single value per-locale.')
+		),
 		'allowDuplicateValues' => array(
 			'formatType' => FT_NUMBER,
 			'displayType' => DT_CHECKBOXES,
@@ -283,7 +291,7 @@
  				$o_locale = new Zend_Locale('en_US');
  			}
  			try {
- 				$vn_value = Zend_Locale_Format::getFloat($vs_decimal_value, array('locale' => $o_locale, 'precision' => 2));
+ 				$vn_value = preg_match("!^[\d\.]+$!", $vs_decimal_value) ? (float)$vs_decimal_value : Zend_Locale_Format::getFloat($vs_decimal_value, ['locale' => $o_locale, 'precision' => 2]);
  			} catch (Zend_Locale_Exception $e){
  				$this->postError(1970, _t('%1 does not use a valid decimal notation for your locale', $pa_element_info['displayLabel']), 'CurrencyAttributeValue->parseValue()');
  				return false;

@@ -111,6 +111,7 @@ class DetailController extends FindController {
 		AssetLoadManager::register("readmore");
 		AssetLoadManager::register("maps");
 		
+		$options = (isset($this->opa_detail_types[$function]['options']) && is_array($this->opa_detail_types[$function]['options'])) ? $this->opa_detail_types[$function]['options'] : array();
 		//
 		// Media viewer
 		//
@@ -212,7 +213,6 @@ class DetailController extends FindController {
 		// Record view
 		$t_subject->registerItemView();
 		
-		$options = (isset($this->opa_detail_types[$function]['options']) && is_array($this->opa_detail_types[$function]['options'])) ? $this->opa_detail_types[$function]['options'] : array();
 		$this->view->setVar("config_options", $options);
 		
 		if (!caGetOption('disableExport', $options, false)) {
@@ -817,15 +817,16 @@ class DetailController extends FindController {
 		}
 		
 		# --- get params from form
-		$comment = $this->request->getParameter('comment', pString);
+		$comment = strip_tags($this->request->getParameter('comment', pString));
 		$rank = $this->request->getParameter('rank', pInteger);
-		$tags = $this->request->getParameter('tags', pString);
-		$email = $this->request->getParameter('email', pString);
-		$name = $this->request->getParameter('name', pString);
-		$location = $this->request->getParameter('location', pString);
+		$tags = strip_tags($this->request->getParameter('tags', pString));
+		$email = strip_tags($this->request->getParameter('email', pString));
+		$name = strip_tags($this->request->getParameter('name', pString));
+		$location = strip_tags($this->request->getParameter('location', pString));
 		$media1 = $_FILES['media1']['tmp_name'];
 		$media1_original_name = $_FILES['media1']['name'];
-		$errors = array();
+		
+		$errors = [];
 		
 		if(!$this->request->getUserID() && !$name && !$email){
 			$errors["general"] = _t("Please enter your name and email");
@@ -875,8 +876,7 @@ class DetailController extends FindController {
 			if($comment || $rank || $media1){
 				$t_item->addComment($comment, $rank, $this->request->getUserID(), null, $name, $email, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null, array('media1_original_filename' => $media1_original_name), $media1, null, null, null, $location);
 			}
-			if($tags){
-				$tags = array();
+			if(is_string($tags) && strlen($tags)){
 				$tags = explode(",", $tags);
 				foreach($tags as $tag){
 					$t_item->addTag(trim($tag), $this->request->getUserID(), null, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null);
@@ -981,7 +981,6 @@ class DetailController extends FindController {
 		$sum = $this->request->getParameter('sum', pInteger);
 		
 		# --- check vars are set and email addresses are valid
-		$to_email = array();
 		$to_email_process = array();
 		if(!$to_email){
 			$errors["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
@@ -991,10 +990,7 @@ class DetailController extends FindController {
 			foreach($to_email_process as $email_to_verify){
 				$email_to_verify = trim($email_to_verify);
 				if(caCheckEmailAddress($email_to_verify)){
-					$to_email[$email_to_verify] = "";
-				}else{
-					$to_email = "";
-					$errors["to_email"] = _t("Please enter a valid email address or multiple addresses separated by commas");
+					$to_email_process[$email_to_verify] = "";
 				}
 			}
 		}
@@ -1060,8 +1056,9 @@ class DetailController extends FindController {
 							$media_version = $rep_display_info['display_version'];
 							
 							$media['path'] = $t_primary_rep->getMediaPath('media', $media_version);
-							$media_info = $t_primary_rep->getFileInfo('media', $media_version);
-							if(!$media['name'] = $media_info['ORIGINAL_FILENAME']){
+							$media_info = $t_primary_rep->getMediaInfo('media');
+						
+							if(!($media['name'] = $media_info['ORIGINAL_FILENAME'])){
 								$media['name'] = $media_info[$media_version]['FILENAME'];
 							}
 							# --- this is the mimetype of the version being downloaded
@@ -1070,6 +1067,7 @@ class DetailController extends FindController {
 					}
 				}		
 			}
+			
 			if(caSendmail($to_email, array($from_email => $from_name), $subject, $mail_message_text, $mail_message_html, null, null, $media)){
 				$this->view->setVar("message", _t("Your email was sent"));
 				$this->render("Form/reload_html.php");
@@ -1089,7 +1087,7 @@ class DetailController extends FindController {
 			
 			$errors["general"] = _t("There were errors in your form");
 			$this->ShareForm(); 			
-		}else{
+		} else {
 			$this->view->setVar("message", _t("Your message was sent"));
 			$this->render("Form/reload_html.php");
 			return;
@@ -1366,7 +1364,7 @@ class DetailController extends FindController {
 				'table' => 'ca_objects'
 			];
 		} elseif (!is_array($context_info = $this->opa_detail_types[$context])) { 
-			throw new ApplicationException(_t('Invalid context'));
+			throw new ApplicationException(_t('Invalid context %1', $context));
 		}
 		$o_context = ResultContext::getResultContextForLastFind($this->request, $context_info['table']);
 		

@@ -48,7 +48,6 @@
 		 */
 		private $ops_tmp_table_name;
 		# ------------------------------------------------
-		protected $opo_datamodel;
 		protected $opo_db;
 		
 		# ------------------------------------------------
@@ -303,6 +302,8 @@
 				$sort_directions = array_pad($sort_directions, sizeof($sort_fields), "asc");
 			}
 			
+			$sort_directions = array_map(function($v) { return strtolower($v); }, $sort_directions);
+			
 			$sorted_hits = $sort_key_values = [];
 			$qr_sort = $set_id = null;
 			
@@ -432,7 +433,7 @@
 								WHERE
 									{$is_preferred_sql} ".($is_preferred_sql ? ' AND ' : '')." {$table}.{$table_pk} IN (?)
 							";
-							
+						
 							$qr_sort = $this->opo_db->query($sql, array($hits));
 							
 							$acc = $rel_ids = [];
@@ -447,7 +448,7 @@
 							$keys = [];	// sortable values by sort id
 							while($qr_keys->nextHit()) {	// Loop on sortables
 								$sort_id = $qr_keys->get($sort_table_full_pk);
-								$sort_values = $qr_keys->get("{$sort_table}.`{$sort_field}`", ['sortable' => true, 'returnAsArray' => true]);
+								$sort_values = $qr_keys->get("{$sort_table}.{$sort_field}", ['sortable' => true, 'returnAsArray' => true]);
 								
 								if(!is_array($keys[$sort_id])) { $keys[$sort_id] = []; }
 								foreach($sort_values as $i => $sort_value) {
