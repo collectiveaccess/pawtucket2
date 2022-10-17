@@ -2374,21 +2374,6 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 	}
 	# ------------------------------------------------------
 	/**
-	 * Returns the first item from each set listed in $pa_set_ids.
-	 *
-	 * @param array $pa_set_ids The set_ids (*not* set codes) for which the first item should be fetched
-	 * @param array $pa_options And optional array of options. Supported values include:
-	 *			version = the media version to include with returned set items, when media is available
-	 *
-	 * @return array A list of items; the keys of the array are set_ids while the values are associative arrays containing the latest information.
-	 */
-	public static function getFirstItemFromSet($pn_set_id, $pa_options=null) {
-		$items_by_set = ca_sets::getFirstItemsFromSets([$pn_set_id], $pa_options);
-		
-		return array_shift(array_shift($items_by_set));
-	}
-	# ------------------------------------------------------
-	/**
 	 * Returns the primary items from each set listed in $pa_set_ids.  If no primary item is selected, default to first item in set
 	 *
 	 * @param array $pa_set_ids The set_ids (*not* set codes) for which the first item should be fetched
