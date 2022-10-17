@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2005-2017 Whirl-i-Gig
+ * Copyright 2005-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -297,7 +297,9 @@ class Datamodel {
 	 */
 	static public function getInstance($pm_table_name_or_num, $pb_use_cache=false, $pn_id=null) {
 		if (is_numeric($pm_table_name_or_num)) {
-			$t_instance = Datamodel::getInstanceByTableNum($pm_table_name_or_num, $pb_use_cache);
+			if($t_instance = Datamodel::getInstanceByTableNum($pm_table_name_or_num, $pb_use_cache)) {
+				return $t_instance;
+			}
 		}
 		$t_instance = Datamodel::getInstanceByTableName($pm_table_name_or_num, $pb_use_cache);
 		
@@ -311,7 +313,7 @@ class Datamodel {
 	 * @param bool $pb_use_cache Use a cached instance. Default is false.
 	 * @return null|BaseModel
 	 */
-	public function getInstanceByTableName($ps_table, $pb_use_cache=false) {
+	static public function getInstanceByTableName($ps_table, $pb_use_cache=false) {
 		if(!$ps_table) { return null; }
 		if($pb_use_cache && isset(Datamodel::$s_instance_cache[$ps_table])) { return Datamodel::$s_instance_cache[$ps_table]; }		// keep instances in statics for speed
 		
@@ -335,7 +337,7 @@ class Datamodel {
 	 * @param bool $pb_use_cache Use a cached instance. Default is false.
 	 * @return null|BaseModel
 	 */
-	public function getInstanceByTableNum($pn_tablenum, $pb_use_cache=false) {
+	static public function getInstanceByTableNum($pn_tablenum, $pb_use_cache=false) {
 		if($pb_use_cache && isset(Datamodel::$s_instance_cache[$pn_tablenum])) { return Datamodel::$s_instance_cache[$pn_tablenum]; }		// keep instances in statics for speed
 		if($vs_class_name = Datamodel::getTableName($pn_tablenum)) {
 			if($pb_use_cache && MemoryCache::contains($vs_class_name, 'DatamodelModelInstance')) {

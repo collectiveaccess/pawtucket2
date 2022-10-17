@@ -335,7 +335,7 @@ class SearchBase extends BaseFindEngine {
 	 * @return array
 	 */
 	public function getFieldOptions($pm_subject_table, $pm_content_table, $ps_fieldname) {
-		if (is_nuxsmeric($pm_subject_table)) {
+		if (is_numeric($pm_subject_table)) {
 			$pm_subject_table = Datamodel::getTableName($pm_subject_table);
 		}
 		if (is_numeric($pm_content_table)) {

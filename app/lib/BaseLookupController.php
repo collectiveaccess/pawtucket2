@@ -591,7 +591,9 @@ class BaseLookupController extends ActionController {
 				throw new ApplicationException(_t('Sorting is not supported for %1', $t_item->getProperty('NAME_PLURAL')));
 			}
 		
-			// Sort order must be "rank"
+			
+			
+		// Sort order must be "rank"
 			// first look in default sort field (if it exists)
 			$vb_has_sort_by_rank = false;
 			if ($vs_def_table_name && $t_def->hasField('default_sort')) {
@@ -607,7 +609,7 @@ class BaseLookupController extends ActionController {
 				}
 			}
 		
-			// manipulate ranks to place "id" row after "after_id"
+		// manipulate ranks to place "id" row after "after_id"
 			$t_item->setRankAfter($pn_after_id);
 			if ($t_item->numErrors()) { throw new ApplicationException(_t('Could not update rank: %1', join('; ', $t_item->getErrors()))); }
 			$vn_return = 1;

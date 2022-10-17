@@ -69,7 +69,6 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 		}
 		if (!($attrs = $this->opo_shibAuth->getAttributes())) { return false; }
 	    
-	    
         $map = array_flip($this->auth_config->get('shibboleth_field_map'));
 	    $uid = array_shift($attrs[$map['uid']]);
 	    if (!$uid) { return false; }

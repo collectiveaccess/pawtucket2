@@ -983,7 +983,7 @@ class MultipartIDNumber extends IDNumber {
 
 					singularAlreadyInUseMessage: '".addslashes(_t('Identifier is already in use'))."',
 					pluralAlreadyInUseMessage: '".addslashes(_t('Identifier is already in use %1 times'))."',
-					
+
 					sequenceMessage: '&lt;".addslashes(_t('%1 on save'))."&gt;'
 				});
 			";
@@ -1087,7 +1087,7 @@ class MultipartIDNumber extends IDNumber {
 
 			$i++;
 		}
-		
+
 		return join($separator, $values);
 	}
 	# -------------------------------------------------------

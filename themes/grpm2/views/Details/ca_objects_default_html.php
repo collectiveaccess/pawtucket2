@@ -50,7 +50,21 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container"><div class="row">
+		<div class="container">
+<?php if($t_object->get('is_deaccessioned')) { ?>
+				<div class="deaccessionBannerContainer">
+					<div class="container">
+						<div class="row deaccessionBannerRow">
+							<div class="col-sm-12 deaccessionBanner">
+								<h1><?= _t('This object has been deaccessioned and is no longer in the GRPM\'s collection'); ?></h1>
+							</div>
+						</div>
+					</div>
+				</div>
+<?php
+	}
+?>
+			<div class="row">
 			<div class='col-sm-6 col-md-6'>
 <?php
 				if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
@@ -67,6 +81,38 @@
 				<div class="">
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				</div>
+<?php
+				$vb_restricted = false;
+				if($vn_cc_list_item_id = $t_object->get("ca_objects.creative_commons")){
+					$t_list_item = new ca_list_items($vn_cc_list_item_id);
+					if($t_list_item->get("ca_list_items.idno") == "cc_restricted"){
+						print "<a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a>";
+						$vb_restricted = true;
+					}else{
+						print "<div class='detailCC'><a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_list_item->get("ca_list_items.icon.original")."<br/>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a></div>";
+					}
+				}
+				# --- if download_version not set, fall back to creative_commons to determine download version: high-res downloads for CC0 and no downloads for restricted
+				if($vn_dl_version_item_id = $t_object->get("ca_objects.download_version")){
+					$t_list_item = new ca_list_items($vn_dl_version_item_id);
+					switch($t_list_item->get("ca_list_items.idno")){
+						case "high_res":
+							print "<div class='text-left'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
+						break;
+						# -----------
+						case "low_res":
+							print "<div class='text-left'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'large', 'download' => 1))."</div>";
+						break;
+						# -----------
+					}
+				}else{
+					if(!$vb_restricted){
+						print "<div class='text-left'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
+					}
+				}
+				
+				
+?>
 				<br/><hr/><H2>Comments and Tags</H2>
 <?php
 				if((sizeof($va_comments) + sizeof($va_tags)) == 0){
@@ -80,7 +126,7 @@
 				
 ?>
 				<div class="detailCommentForm">
-					<form method="post" id="CommentForm" action="<?php print caNavUrl($this->request, '', 'Detail', 'saveCommentTagging', ['csrfToken' => caGenerateCSRFToken($this->request)]); ?>" class="form-horizontal" role="form" enctype="multipart/form-data">
+					<form method="post" id="CommentForm" action="<?php print caNavUrl($this->request, '', 'Detail', 'saveCommentTagging'); ?>" class="form-horizontal" role="form" enctype="multipart/form-data">
 						<H5>Add Your Comment & Tags</H5>
 <?php
 						print "<div class='form-group'><label for='tags' class='col-sm-12 control-label'>"._t("Tags")."</label><div class='col-sm-12'><input type='text' name='tags' value='' class='form-control' placeholder='"._t("tags separated by commas")."'></div><!-- end col-sm-12 --></div><!-- end form-group -->\n";
@@ -94,6 +140,8 @@
 						<input type="hidden" name="item_id" value="<?php print $t_object->get("object_id"); ?>">
 						<input type="hidden" name="tablename" value="ca_objects">
 						<input type="hidden" name="inline" value="1">
+						<?= caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request))); ?>
+		
 					</form>
 				</div>
 <?php
@@ -104,45 +152,10 @@
 <?php
 				}
 ?>
+				<hr/>
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6'>
-				
-				<!-- share buttons -->
-				<div class="shareBar">
-					<div class="shareButton"> 
-						<!-- Your share button code -->
-						<div class="fb-share-button" 
-						data-href="<?php print $vs_page_url; ?>" 
-						data-layout="button" 
-						data-size="large" 
-						data-mobile-iframe="true">
-						</div>
-					</div>
-					<div class="shareButton">
-						<a class="twitter-share-button"
-						  href="https://twitter.com/share"
-						  data-size="large"
-						  data-text="<?php print $t_object->get("ca_objects.preferred_labels.name"); ?>"
-						  data-url="<?php print $vs_page_url; ?>"
-						  data-hashtags=""
-						  data-via="GRMuseum"
-						  data-related="">
-						Tweet
-						</a>
-					</div>
-					<div class="shareButton">
-						<a href="https://www.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark" data-pin-tall="true"></a>
-					</div>
-					<div class="shareButton">
-<?php
-						print '<div class="btn-default"><span class="glyphicon glyphicon-envelope"></span> '.$this->getVar("shareLink").'</div>';
-?>
-					</div>
-					<div style="clear:left;"></div>
-				</div>
-				
-				{{{<ifdef code="ca_objects.tier"><H6>Collection Tier:</H6>^ca_objects.tier<br/><br/></ifdef>}}}
+			<div class='col-sm-6 col-md-6'>		
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 
 				{{{<ifdef code="ca_objects.taxonomy"><H6>Taxonomy:</H6>^ca_objects.taxonomy<br/></ifdef>}}}
@@ -157,74 +170,45 @@
 				</ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.Date"><H6>Date:</H6>^ca_objects.Date</ifdef>}}}
-
+				
+				
 				{{{<ifdef code="ca_objects.Format"><H6>Materials:</H6>^ca_objects.Format%delimiter=,_</ifdef>}}}
 				{{{<ifdef code="ca_objects.Dimensions_Container.Height"><H6>Dimensions:</H6><unit relativeTo="ca_objects.Dimensions_Container"><ifdef code="ca_objects.Dimensions_Container.Height">^ca_objects.Dimensions_Container.Height" h </ifdef><ifdef code="ca_objects.Dimensions_Container.Width">^Width" w </ifdef><ifdef code="ca_objects.Dimensions_Container.Depth">^Depth" d</ifdef></unit></ifdef>}}}
                 {{{<ifdef code="ca_objects.current_location_fld"><H6>Current Location Status:</H6>^ca_objects.current_location_fld</ifdef>}}}
-				
-
+				{{{<ifdef code="ca_objects.tier"><H6>Collection Tier:</H6>^ca_objects.tier</ifdef>}}}
+								
 				{{{<ifdef code="ca_objects.Source"><H6>Source:</H6>^ca_objects.Source</ifdef>}}}
-<?php
-				$vb_restricted = false;
-				if($vn_cc_list_item_id = $t_object->get("ca_objects.creative_commons")){
-					$t_list_item = new ca_list_items($vn_cc_list_item_id);
-					print "<H6>Rights:</H6>";
-					if($t_list_item->get("ca_list_items.idno") == "cc_restricted"){
-						print "<a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a>";
-						$vb_restricted = true;
-					}else{
-						print "<div class='detailCC'><a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_list_item->get("ca_list_items.icon.original")."<br/>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a></div>";
-					}
-				}
-				# --- if download_version not set, fall back to creative_commons to determine download version: high-res downloads for CC0 and no downloads for restricted
-				if($vn_dl_version_item_id = $t_object->get("ca_objects.download_version")){
-					$t_list_item = new ca_list_items($vn_dl_version_item_id);
-					switch($t_list_item->get("ca_list_items.idno")){
-						case "high_res":
-							print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
-						break;
-						# -----------
-						case "low_res":
-							print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'large', 'download' => 1))."</div>";
-						break;
-						# -----------
-					}
-				}else{
-					if(!$vb_restricted){
-						print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
-					}
-				}
-				
-				
-?>
+
 				{{{<ifdef code="ca_objects.Current_Location"><H6>Currently:</H6>^ca_objects.Current_Location</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.Links"><H6>Links:</H6><unit delimiter="<br/>" relativeTo="ca_objects.Links"><a href="^ca_objects.Links" target="_new">^ca_objects.Links</a></unit></ifdef>}}}
 
 				<hr></hr>	
-				{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Exhibit/Program</H6></ifcount>}}}
-				{{{<ifcount code="ca_occurrences" min="2"><H6>Exhibits/Programs</H6></ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Exhibit/Program:</H6></ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="2"><H6>Exhibits/Programs:</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l> (^ca_occurrences.date)<ifdef code="ca_occurrences.description"><br><span class="trimText">^ca_occurrences.description</span></ifdef><br/></unit>}}}
 
 
-				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Maker/Donor</H6></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><H6>Makers/Donors</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l><ifdef code="ca_entities.biography"><br><span class="trimText">^ca_entities.biography</span></ifdef><br/></unit>}}}
+				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related Entity:</H6></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="2"><H6>Related Entities:</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_entities" delimiter=" "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)<ifdef code="ca_entities.nonpreferred_labels.displayname"><br/>Alternate names: <span class="trimText"><unit delimiter=", ">^ca_entities.nonpreferred_labels.displayname</unit></span></ifdef><ifdef code="ca_entities.biography"><br/><span class="trimText">^ca_entities.biography</span></ifdef></unit><br/>}}}
 				
-				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related Place</H6></ifcount>}}}
-				{{{<ifcount code="ca_places" min="2"><H6>Related Places</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
 				
-				{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
-				{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
+				{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term:</H6></ifcount>}}}
+				{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms:</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit>}}}
 				
-				{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
+				{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms:</H6></ifcount>}}}
 				{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
 				
-				{{{<ifcount code="ca_objects.related" min="1" max="1"><H6>Related Object</H6></ifcount>}}}
-				{{{<ifcount code="ca_objects.related" min="2"><H6>Related Objects</H6></ifcount>}}}
+				{{{<ifcount code="ca_objects.related" min="1" max="1"><H6>Related Object:</H6></ifcount>}}}
+				{{{<ifcount code="ca_objects.related" min="2"><H6>Related Objects:</H6></ifcount>}}}
 				{{{<div class="row relatedObjects"><unit relativeTo="ca_objects.related" delimiter=" "><div class="col-xs-12 col-md-4"><l>^ca_object_representations.media.small<div class="relatedObjectsTitle">^ca_objects.preferred_labels</div></l></div></unit></div>}}}
+
+				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related Place:</H6></ifcount>}}}
+				{{{<ifcount code="ca_places" min="2"><H6>Related Places:</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
+				
 
 				
 				<?php ($this->getVar("map")) ? "<hr>" : ""; ?>
