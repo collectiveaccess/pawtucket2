@@ -74,7 +74,7 @@
 			<div class="row">
 				<div class='col-sm-12'>
 <?php					
-					if ($va_works = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
+					if ($va_works = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values, 'limit' => 20))) {
 						$vb_show_view_all = false;
 						print "<div class='unit'><H3>Works</H3><div class='unit detailLinksGrid'>";
 						$i = 0;
@@ -110,7 +110,7 @@
 						}
 					}
 					
-					$va_productions = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('production'), 'sort' => 'ca_occurrences.date', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					$va_productions = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('production'), 'sort' => 'ca_occurrences.date', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values, 'limit' => 20));
 					if (sizeof($va_productions)) {
 						$va_related_list = array();
 						foreach ($va_productions as $va_production) {
@@ -146,7 +146,7 @@
 					if(sizeof($va_productions) > 18){
 						print "<div class='unit text-center'>".caNavLink($this->request, "View All Productions", "btn btn-default", "", "Browse", "productions", array("facet" => "production_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
 					}
-					$va_trainings = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('training'), 'sort' => 'ca_occurrences.training_date', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					$va_trainings = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('training'), 'sort' => 'ca_occurrences.training_date', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values, 'limit' => 20));
 					if (sizeof($va_trainings)) {
 						$va_related_list = array();
 						foreach ($va_trainings as $va_training) {
@@ -181,7 +181,7 @@
 					if(sizeof($va_trainings) > 18){
 						print "<div class='unit text-center'>".caNavLink($this->request, "View All Trainings", "btn btn-default", "", "Browse", "trainings", array("facet" => "production_general_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
 					}
-					$va_events = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('special_event'), 'sort' => 'ca_occurrences.eventDate', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					$va_events = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('special_event'), 'sort' => 'ca_occurrences.eventDate', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values, 'limit' => 20));
 					if (sizeof($va_events)) {
 						$va_related_list = array();
 						foreach ($va_events as $va_event) {

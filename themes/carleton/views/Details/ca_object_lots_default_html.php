@@ -79,6 +79,14 @@
 					if($vs_tmp = $t_object_lot->get("ca_object_lots.scope_content")){
 						print "<div class='unit'><label>Scope and Content</label><span class='trimText'>".caConvertLineBreaks($vs_tmp)."</span></div>";
 					}
+				
+				if($this->request->isLoggedIn()){
+					$vs_storage_location = $t_object_lot->getWithTemplate("<ifcount code='ca_storage_locations' min='1'><unit relativeTo='ca_object_lots_x_storage_locations' delimiter='<br/><br/>'>^ca_storage_locations.hierarchy.preferred_labels.name%delimiter=_➜_<ifdef code='ca_object_lots_x_storage_locations.effective_date'><br>Location Date: ^ca_object_lots_x_storage_locations.effective_date</ifdef><ifdef code='ca_object_lots_x_storage_locations.staff'><br>Staff: ^ca_object_lots_x_storage_locations.staff</ifdef><ifdef code='ca_object_lots_x_storage_locations.description'><br>Content: ^ca_object_lots_x_storage_locations.description</ifdef><ifdef code='ca_object_lots_x_storage_locations.item_extent.extent_value'><br>Extent: ^ca_object_lots_x_storage_locations.item_extent.extent_value ^ca_object_lots_x_storage_locations.item_extent.extent_unit<ifdef code='ca_object_lots_x_storage_locations.item_extent.extent_note'><br/>^ca_object_lots_x_storage_locations.item_extent.extent_note</ifdef></ifdef></unit></ifcount>");
+					if($vs_storage_location){
+						print "<div class='unit'><label>Storage Location</label><span class='trimText'>".$vs_storage_location."</div>";
+					}
+				}
+				
 				?>
 				
 				

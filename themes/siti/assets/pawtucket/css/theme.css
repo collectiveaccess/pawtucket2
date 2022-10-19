@@ -801,6 +801,15 @@ body.frontContainer #footer{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 /* details*/
+.detail .unit a.blueLink{
+	color:#0054A4;
+	text-decoration:none;
+	font-family: 'Barlow';
+	font-weight:800;
+}
+.detail .unit a.blueLink:hover{
+	text-decoration:underline;
+}
 .detail .container{
 	max-width:1250px;
 }

@@ -57,6 +57,8 @@
 					{{{<ifdef code="ca_objects.date"><div class='unit'><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.photograph_format"><div class='unit'><label>Format</label>^ca_objects.photograph_format%delimiter=,_</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.format_type"><div class='unit'><label>Format</label>^ca_objects.format_type%delimiter=,_</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.format_type_press"><div class='unit'><label>Format</label>^ca_objects.format_type_press%delimiter=,_</div></ifdef>}}}
+					
 					{{{<ifdef code="ca_objects.dimensions"><div class='unit'><label>Dimensions</label>^ca_objects.dimensions%delimiter=,_</div></ifdef>}}}
 					{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="interviewer,interviewee,photographer,videographer,creator"><div class='unit trimText'><label>Related People & Organizations</label><unit relativeTo="ca_entities.related" excludeRelationshipTypes="interviewer,interviewee,photographer,videographer,creator"><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></div></ifcount>}}}					
 					
@@ -64,6 +66,7 @@
 					{{{<ifdef code="ca_objects.descriptionWithSource.prodesc_text"><div class='unit trimText'><label>Description</label>^ca_objects.descriptionWithSource.prodesc_text</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.rightsStatement|ca_objects.rights"><div class='unit trimText'><label>Rights Information</label><ifdef code="ca_objects.rightsStatement.rightsStatement_text">^ca_objects.rightsStatement.rightsStatement_text </ifdef><a href="#" onClick="$('.rights').toggle(); return false;">Rights Summary</a><div class="unit rights" style="display:none;">^ca_objects.rights</div></div></ifdef>}}}
 					{{{<ifdef code="ca_objects.orderingInfo"><div class='unit trimText'><label>Ordering Information</label><unit relativeTo="ca_objects.orderingInfo" delimiter="<br/><br/>">^ca_objects.orderingInfo</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.idno"><div class='unit'><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 					
 					
 				</div>
@@ -71,7 +74,7 @@
 			<div class="row">
 				<div class='col-sm-12'>
 <?php					
-					if ($va_works = $t_object->get('ca_occurrences', array('restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
+					if ($va_works = $t_object->get('ca_occurrences', array('restrictToTypes' => array('work'), 'returnWithStructure' => true, 'checkAccess' => $va_access_values, 'limit' => 20))) {
 						$vb_show_view_all = false;
 						print "<div class='unit'><H3>Works</H3><div class='unit detailLinksGrid'>";
 						$i = 0;
@@ -103,7 +106,7 @@
 						}
 					}
 					
-					$va_productions = $t_object->get('ca_occurrences', array('restrictToTypes' => array('production'), 'sort' => 'ca_occurrences.date', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					$va_productions = $t_object->get('ca_occurrences', array('restrictToTypes' => array('production'), 'sort' => 'ca_occurrences.date', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values, 'limit' => 20));
 					if (sizeof($va_productions)) {
 						$va_related_list = array();
 						foreach ($va_productions as $va_production) {
@@ -139,7 +142,7 @@
 					if(sizeof($va_productions) > 18){
 						print "<div class='unit text-center'>".caNavLink($this->request, "View All Productions", "btn btn-default", "", "Browse", "productions", array("facet" => "object_general_facet", "id" => $t_object->get("ca_objects.object_id")))."</div>";
 					}
-					$va_trainings = $t_object->get('ca_occurrences', array('restrictToTypes' => array('training'), 'sort' => 'ca_occurrences.training_date', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					$va_trainings = $t_object->get('ca_occurrences', array('restrictToTypes' => array('training'), 'sort' => 'ca_occurrences.training_date', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values, 'limit' => 20));
 					if (sizeof($va_trainings)) {
 						$va_related_list = array();
 						foreach ($va_trainings as $va_training) {
@@ -174,7 +177,7 @@
 					if(sizeof($va_trainings) > 18){
 						print "<div class='unit text-center'>".caNavLink($this->request, "View All Trainings", "btn btn-default", "", "Browse", "trainings", array("facet" => "object_general_facet", "id" => $t_object->get("ca_objects.object_id")))."</div>";
 					}
-					$va_events = $t_object->get('ca_occurrences', array('restrictToTypes' => array('special_event'), 'sort' => 'ca_occurrences.eventDate', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					$va_events = $t_object->get('ca_occurrences', array('restrictToTypes' => array('special_event'), 'sort' => 'ca_occurrences.eventDate', 'sortDirection' => 'asc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values, 'limit' => 20));
 					if (sizeof($va_events)) {
 						$va_related_list = array();
 						foreach ($va_events as $va_event) {

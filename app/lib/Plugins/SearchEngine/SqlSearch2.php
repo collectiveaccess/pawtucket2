@@ -171,7 +171,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		);
 		
 		if (defined('__CA_SEARCH_IS_FOR_PUBLIC_DISPLAY__')) {
-			$this->setOption('omitPrivateIndexing', true); 
+#			$this->setOption('omitPrivateIndexing', true); 
 		}
 	}
 	# -------------------------------------------------------
@@ -424,6 +424,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				}
 			}
 			
+
 			if(($word_field !== 'sw.stem') && ($this->search_config->get('always_stem'))) {
 				$text .= '*';
 			}
@@ -483,7 +484,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			
 				$flds = [];
 				foreach($restrictions['exclude'] as $r) {
-					$flds[] = "'".$r['table_num'].'/'.$r['field_num']."'";
+					$flds[] = $r['table_num'].'/'.$r['field_num'];
 				}
 				if(sizeof($flds)) {
 					$res[] = "(CONCAT(swi.field_table_num, '/', swi.field_num) NOT IN (?))";
@@ -629,7 +630,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			
 				$flds = [];
 				foreach($restrictions['exclude'] as $r) {
-					$flds[] = "'".$r['table_num'].'/'.$r['field_num']."'";
+					$flds[] = $r['table_num'].'/'.$r['field_num'];
 				}
 				if(sizeof($flds)) {
 					$res[] = "(CONCAT(swi.field_table_num, '/', swi.field_num) NOT IN (?))";
@@ -1655,6 +1656,14 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			}
 			return null;
 		}
+		
+		if (in_array(strtolower($field), ['preferred_labels', 'nonpreferred_labels'])) {
+			$t_table = $t_table->getLabelTableInstance();
+			$table = $t_table->tableName();
+			$field = $subfield;
+			$subfield = $subsubfield = $subsubsubfield = null;
+		}
+		
 		$table_num = $t_table->tableNum();
 		
 		// counts for relationship
@@ -1749,7 +1758,6 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				}
 			}
 		} else {
-
 			return array('access_point' => $tmp[0], 'relationship_type' => $tmp[1], 'table_num' => $table_num, 'field_num' => 'I'.$fld_num, 'field_num_raw' => $fld_num, 'datatype' => null, 'relationship_type_ids' => $rel_type_ids, 'type' => 'INTRINSIC', 'indexing_options' => $indexing_info);
 		}
 

@@ -52,6 +52,8 @@
 			}
 ?>
 					{{{<ifdef code="ca_occurrences.descriptionWithSource.prodesc_text"><div class='unit trimText'><label>Description</label><unit relativeTo="ca_occurrences.descriptionWithSource.prodesc_text" delimiter="<br/><br/>">^ca_occurrences.descriptionWithSource.prodesc_text</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.idno"><div class='unit'><label>Identifer</label>^ca_occurrences.idno</div></ifdef>}}}
+
 				</div>
 			</div><!-- end row -->
 			<div class="row">
@@ -90,7 +92,7 @@
 						print "</div></div><!-- end unit -->";
 						
 					}
-					if(sizeof($va_productions) > 18)){
+					if(sizeof($va_productions) > 18){
 						print "<div class='unit text-center'>".caNavLink($this->request, "View All Productions", "btn btn-default", "", "Browse", "productions", array("facet" => "venue_facet", "id" => $t_item->get("ca_occurrences.occurrence_id")))."</div>";
 					}
 					
