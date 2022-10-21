@@ -135,7 +135,13 @@ if($vb_2_col){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 400,
+		  moreLink: '<a href="#">More &#8964;</a>'
+		});
+		$('.trimTextShort').readmore({
+		  speed: 75,
+		  maxHeight: 112,
+		  moreLink: '<a href="#">More &#8964;</a>'
 		});
 	});
 </script>
