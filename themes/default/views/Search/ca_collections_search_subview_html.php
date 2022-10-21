@@ -107,7 +107,7 @@
 			}
 			print $vs_image_tag;
 ?>
-				<br/><?php print $qr_results->getWithTemplate($vs_caption_template); ?>
+				<br/><?php print $qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values)); ?>
 			</div>
 <?php
 			$vn_count++;

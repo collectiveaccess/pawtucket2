@@ -74,7 +74,7 @@
 		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
 				$vn_id 					= $qr_results->get("ca_objects.object_id");
-				$vs_label_detail_link 	= $qr_results->getWithTemplate($vs_caption_template);
+				$vs_label_detail_link 	= $qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values));
 				
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
