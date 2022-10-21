@@ -304,7 +304,15 @@ body{
 	padding-bottom:20px;
 }
 .bResultItem .bResultItemText, .bResultListItemCol .bResultListItemText{
-  font-size: 12px;
+  	font-size: 15px;
+	color: #000;
+	font-family: lato;
+}
+.bResultItem .bResultItemText a, .lbItemContent .caption a{
+	font-size: 15px;
+	color: #000;
+	font-family: lato;
+	line-height: 1.2em;
 }
 .bResultListItem .bResultListItemText a {
 	line-height: 1.2em;
@@ -312,10 +320,11 @@ body{
 	font-family: lato;
 	font-size: 16px;
 }
-.bResultListItem .bResultListItemText small a {
+.bResultListItem .bResultListItemText small a, .bResultItem .bResultItemText small a, .lbItemContent .caption small a {
 	font-size: 13px;
 	color:#595959;
 }
+
 #bRefine H2, #bRefine H5, #bRefine H3, #bRefine a{
 	color:#000;
 }
@@ -385,12 +394,32 @@ a.browseRemoveFacet .glyphicon{
 a.browseRemoveFacet:hover .glyphicon{
 	color:#000 !important;
 }
-.multisearch H2 a{
-	color:#000;
+.multisearchFullResults a {
+  color: #000;
 }
-.multisearch .authoritySet a, .multisearch H2 a{
-	color:#000;
-	font-family:Lato;
+.multisearchSort ul li a {
+  text-decoration: underline;
+  color: #000;
+}
+.multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious {
+  color: #000;
+}
+.multisearch H2 a {
+  color: #000;
+  font-family: Lato;
+}
+.multisearch .authoritySet a, .multisearch .multisearchResult a {
+  color: #000;
+  font-size: 14px;
+  font-family: Lato;
+  line-height: 1.1em;
+}
+.multisearch .authoritySet small a, .multisearch .multisearchResult small a{
+	font-size: 12px;
+	color:#595959;
+}
+.multisearch .authorityResult.programsResult{
+	height:70px;
 }
 /* front */
 #pageArea.front{

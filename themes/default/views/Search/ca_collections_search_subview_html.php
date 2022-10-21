@@ -45,6 +45,11 @@
 	}
 	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
 
+	$vs_caption_template = $va_block_info["caption_template"];
+	if(!$vs_caption_template){
+		$vs_caption_template = "<l>^ca_collections.preferred_labels.name</l>";
+	}
+	
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
@@ -102,7 +107,7 @@
 			}
 			print $vs_image_tag;
 ?>
-				<br/><?php print $qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true)); ?>
+				<br/><?php print $qr_results->getWithTemplate($vs_caption_template); ?>
 			</div>
 <?php
 			$vn_count++;
