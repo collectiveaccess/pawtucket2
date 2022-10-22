@@ -1494,7 +1494,7 @@ jQuery(document).ready(function() {
 			}
 
 			if ($vb_can_add_component) {
-				$vs_buf .= ' <a href="#" onclick=\'caObjectComponentPanel.showPanel("'.caNavUrl($po_view->request, '*', 'ObjectComponent', 'Form', array('parent_id' => $t_item->getPrimaryKey())).'"); return false;\')>'.caNavIcon(__CA_NAV_ICON_ADD__, '18px').'</a>';
+				$vs_buf .= ' <a href="#" onclick=\'caObjectComponentPanel.showPanel("'.caNavUrl($po_view->request, '*', 'ObjectComponent', 'Form', array('parent_id' => $t_item->getPrimaryKey())).'"); return false;\')>'.caNavIcon(__CA_NAV_ICON_ADD__, '18px').' '._t('Add component').'</a>';
 
 				$vo_change_type_view = new View($po_view->request, $po_view->request->getViewsDirectoryPath()."/bundles/");
 				$vo_change_type_view->setVar('t_item', $t_item);
@@ -3584,7 +3584,7 @@ jQuery(document).ready(function() {
 		
 		$buf = '';
 		if(caGetOption('showBatchEditorButton', $options, false)) {
-			$buf = '<div class="button batchEdit">'.caNavLink($request, caNavIcon(__CA_NAV_ICON_BATCH_EDIT__, '15px')._t(' Batch edit'), '', '*', '*', 'BatchEdit', ['placement_id' => $placement_id, 'primary_id' => $t_instance->getPrimaryKey(), 'screen' => $request->getActionExtra()]).'</div>';
+			$buf = '<div class="button batchEdit">'.caNavLink($request, caNavIcon(__CA_NAV_ICON_BATCH_EDIT__, '15px')._t(' Batch edit all'), '', '*', '*', 'BatchEdit', ['placement_id' => $placement_id, 'primary_id' => $t_instance->getPrimaryKey(), 'screen' => $request->getActionExtra()]).'</div>';
 		}
 		return $buf;
 	}
@@ -4435,14 +4435,9 @@ jQuery(document).ready(function() {
 					$po_request, 
 					"representation:{$pn_representation_id}", 
 					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
-					[
-						'viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 
-						'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 
-						'resultList' => caGetOption('resultList', $pa_options, null), 
-						'showRepresentationViewerNextPreviousLinks' => (bool)caGetOption('showRepresentationViewerNextPreviousLinks', $pa_options, false),
-						'representationViewerNextLink' => caGetOption('representationViewerNextLink', $pa_options, null),
-						'representationViewerPreviousLink' => caGetOption('representationViewerPreviousLink', $pa_options, null)
-					]
+					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 
+					'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 
+					'resultList' => caGetOption('resultList', $pa_options, null), 'showRepresentationViewerNextPreviousLinks' => (bool)caGetOption('showRepresentationViewerNextPreviousLinks', $pa_options, false)]
 				);
 
 				if ($pb_inline) {	
@@ -4682,7 +4677,9 @@ jQuery(document).ready(function() {
 				$t_instance = new ca_object_representations($vn_representation_id);
 
 				if (!($vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE'))) {
-				    $vs_mimetype = $t_instance->getMediaInfo('media', 'large', 'MIMETYPE');
+					$versions = $t_instance->getMediaVersions('media');
+					$version = array_pop($versions);
+				    $vs_mimetype = $t_instance->getMediaInfo('media', $version, 'MIMETYPE');
 			        $vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype);
 			    }
 			    if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype))) {
@@ -4809,7 +4806,7 @@ jQuery(document).ready(function() {
 			if ($pb_barcodes && ($vs_barcode_file = caParseBarcodeViewTag($vs_tag, $po_view, $pm_subject, $pa_options))) {
 				$va_barcode_files_to_delete[] = $vs_barcode_file;
 			} elseif ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
-				$po_view->setVar($vs_tag, $pm_subject->getWithTemplate($vs_tag, array('doHighlighting' => true, 'checkAccess' => $pa_access_values)));
+				$po_view->setVar($vs_tag, $pm_subject->getWithTemplate($vs_tag, array('checkAccess' => $pa_access_values)));
 			} elseif (strpos($vs_tag, ".") !== false) {
 				$po_view->setVar($vs_tag, $pm_subject->get($vs_tag, array('checkAccess' => $pa_access_values)));
 			} else {
