@@ -1140,7 +1140,7 @@ class SearchResult extends BaseObject {
 		} elseif($vb_return_as_count) {
 			$va_path_components['is_count'] = true;
 		}
-		//print "[".$this->tableName()."::".$this->getPrimaryKey()."] ".($this->do_highlighting ? "YES " : "NO")."<br>\n";
+		
 		$va_val_opts = array_merge($pa_options, array(
 			'returnAsArray' => $vb_return_as_array,
 			'returnAllLocales' => $vb_return_all_locales,

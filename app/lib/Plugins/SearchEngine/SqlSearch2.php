@@ -171,7 +171,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		);
 		
 		if (defined('__CA_SEARCH_IS_FOR_PUBLIC_DISPLAY__')) {
-#			$this->setOption('omitPrivateIndexing', true); 
+			$this->setOption('omitPrivateIndexing', true); 
 		}
 	}
 	# -------------------------------------------------------
@@ -424,7 +424,6 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				}
 			}
 			
-
 			if(($word_field !== 'sw.stem') && ($this->search_config->get('always_stem'))) {
 				$text .= '*';
 			}
@@ -1879,8 +1878,12 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 					$sql_where = "({$field} >= ? AND {$field} <= ?)";
 					$params = [$parsed_value['value_decimal1'], $parsed_value_end['value_decimal1']];
 				} else {
-					$sql_where = "({$field} = ?)";
 					$params = [$parsed_value['value_decimal1']];
+					if($parsed_value['value_decimal1'] === 0.0) {
+						$sql_where = "(({$field} = ?) OR ({$field} IS NULL))";
+					} else {
+						$sql_where = "({$field} = ?)";
+					}
 				}
 				break;
 		}

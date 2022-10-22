@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2021 Whirl-i-Gig
+ * Copyright 2008-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -256,14 +256,32 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		parent::__construct($id, $options);	# call superclass constructor
 		$this->FIELDS['datatype']['BOUNDS_CHOICE_LIST'] = array_flip(ca_metadata_elements::getAttributeTypes());
 
-		if($pn_id) { $this->opa_element_settings = $this->get('settings'); }
+		if($id) { $this->loadSettings(); }
 	}
 	# ------------------------------------------------------
 	public function load($pm_id=null, $pb_use_cache = true) {
 		if ($vn_rc = parent::load($pm_id, $pb_use_cache)) {
-			$this->opa_element_settings = $this->get('settings');
+			$this->loadSettings();
 		}
 		return $vn_rc;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public function loadSettings() : void {
+		$this->opa_element_settings = $this->get('settings');
+		
+		// Set data type default values if no setting value is present
+		if ($o_value = Attribute::getValueInstance($this->get('datatype'))) {
+			$available_settings = $o_value->getAvailableSettings($this->opa_element_settings) ?? [];
+		
+			foreach($available_settings as $setting => $setting_info) {
+				if(!isset($this->opa_element_settings[$setting])) {
+					$this->opa_element_settings[$setting] = $setting_info['default'] ?? null;
+				}
+			}
+		}
 	}
 	# ------------------------------------------------------
 	public function insert($pa_options=null) {
@@ -1202,51 +1220,6 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	}
 	# ------------------------------------------------------
 	/**
-	 * Get ca_attribute_values table field to use for sorting specified element. Sortable 
-	 * field is determined by the data type of the element.
-	 *
-	 * @param string|int $pm_element_code_or_id
-	 * @return string
-	 * @throws CompositeCacheInvalidParameterException
-	 */
-	static public function getElementSortField($pm_element_code_or_id) {
-		if(!$pm_element_code_or_id) { return null; }
-		if(is_numeric($pm_element_code_or_id)) { $pm_element_code_or_id = (int) $pm_element_code_or_id; }
-
-		if(CompositeCache::contains($pm_element_code_or_id, 'MetadataElements/ElementSortFields')) {
-			return CompositeCache::fetch($pm_element_code_or_id, 'MetadataElements/ElementSortFields');
-		}
-		$datatype = self::getElementDatatype($pm_element_code_or_id);
-		$types = self::getAttributeTypes();
-	
-		if (isset($types[$datatype]) && ($value = Attribute::getValueInstance($datatype, [], true))) {
-			$s = $value->sortField();
-			CompositeCache::save($pm_element_code_or_id, $s, 'MetadataElements/ElementSortFields');
-			return $s;
-		}
-		CompositeCache::save($pm_element_code_or_id, null, 'MetadataElements/ElementSortFields');
-		return null;
-	}
-	# ------------------------------------------------------
-	/**
-	 * Get ca_attribute_values sortable vlaue
-	 *
-	 * @param string|int $pm_element_code_or_id
-	 * @return string
-	 * @throws MemoryCacheInvalidParameterException
-	 */
-	static public function getSortableValueForElement($pm_element_code_or_id, $value) {
-		if(!$pm_element_code_or_id) { return null; }
-		if(is_numeric($pm_element_code_or_id)) { $pm_element_code_or_id = (int) $pm_element_code_or_id; }
-
-		$datatype = self::getElementDatatype($pm_element_code_or_id);
-		if ($attr_value = Attribute::getValueInstance($datatype, [], true)) {
-			return $attr_value->sortableValue($value);
-		}
-		return null;
-	}
-	# ------------------------------------------------------
-	/** 
 	 * Determine if element is of an authority type
 	 *
 	 * @param string|int $pm_element_code_or_id
@@ -1269,6 +1242,52 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 			], true));
 		}
 		return false;
+	}
+	
+	# ------------------------------------------------------
+	/**
+	 * Get ca_attribute_values table field to use for sorting specified element. Sortable 
+	 * field is determined by the data type of the element.
+	 *
+	 * @param string|int $pm_element_code_or_id
+	 * @return string
+	 * @throws CompositeCacheInvalidParameterException
+	 */
+	static public function getElementSortField($pm_element_code_or_id) {
+		if(!$pm_element_code_or_id) { return null; }
+		if(is_numeric($pm_element_code_or_id)) { $pm_element_code_or_id = (int) $pm_element_code_or_id; }
+
+		if(CompositeCache::contains($pm_element_code_or_id, 'ElementSortFields')) {
+			return CompositeCache::fetch($pm_element_code_or_id, 'ElementSortFields');
+		}
+		$datatype = self::getElementDatatype($pm_element_code_or_id);
+		$types = self::getAttributeTypes();
+	
+		if (isset($types[$datatype]) && ($value = Attribute::getValueInstance($datatype, [], true))) {
+			$s = $value->sortField();
+			CompositeCache::save($pm_element_code_or_id, $s, 'ElementSortFields');
+			return $s;
+		}
+		CompositeCache::save($pm_element_code_or_id, null, 'ElementSortFields');
+		return null;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Get ca_attribute_values sortable vlaue
+	 *
+	 * @param string|int $pm_element_code_or_id
+	 * @return string
+	 * @throws MemoryCacheInvalidParameterException
+	 */
+	static public function getSortableValueForElement($pm_element_code_or_id, $value) {
+		if(!$pm_element_code_or_id) { return null; }
+		if(is_numeric($pm_element_code_or_id)) { $pm_element_code_or_id = (int) $pm_element_code_or_id; }
+
+		$datatype = self::getElementDatatype($pm_element_code_or_id);
+		if ($attr_value = Attribute::getValueInstance($datatype, [], true)) {
+			return $attr_value->sortableValue($value);
+		}
+		return null;
 	}
 	# ------------------------------------------------------
 	/**

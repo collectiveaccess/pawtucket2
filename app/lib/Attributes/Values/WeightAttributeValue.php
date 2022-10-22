@@ -182,6 +182,7 @@
  					$this->ops_text_value = $vo_measurement->convertTo(Zend_Measure_Weight::KILOGRAM, 4);
  					break;
  				case 'english':
+ 				case 'fractions':
  					$vo_measurement = new Zend_Measure_Weight((float)$pa_value_array['value_decimal1'], 'KILOGRAM', $g_ui_locale);
  					$this->ops_text_value = $vo_measurement->convertTo(Zend_Measure_Weight::POUND, 4);
  					break;
@@ -193,11 +194,13 @@
 						$this->ops_text_value = $pa_value_array['value_longtext1'];
 					}
 					break;
- 			}	
- 			
- 			// Trim off trailing zeros in quantity
- 			$this->ops_text_value = preg_replace("!\.([1-9]*)[0]+([A-Za-z ]+)$!", ".$1$2", $this->ops_text_value);
- 			$this->ops_text_value = preg_replace("!\.([A-Za-z ]+)$!", "$1", $this->ops_text_value);
+ 			}
+
+		    // Trim off trailing zeros in quantity
+		    $symbols = Zend_Locale_Data::getList( $g_ui_locale, 'symbols');
+
+		    $this->ops_text_value = preg_replace(sprintf("!\%s([1-9]*)[0]+([A-Za-z ]+)$!",$symbols['decimal']), sprintf("%s$1$2",$symbols['decimal']), $this->ops_text_value);
+		    $this->ops_text_value = preg_replace(sprintf("!\%s([A-Za-z ]+)$!",$symbols['decimal']), "$1", $this->ops_text_value);
  			
  			$this->opn_decimal_value = $pa_value_array['value_decimal1'];
  		}
@@ -222,6 +225,7 @@
  					return $vo_measurement->convertTo(Zend_Measure_Weight::KILOGRAM, 2);
  					break;
  				case 'english':
+ 				case 'fractions':
  					$vo_measurement = new Zend_Measure_Weight((float)$this->opn_decimal_value, 'KILOGRAM', $g_ui_locale);
  					return $vo_measurement->convertTo(Zend_Measure_Weight::POUND, 2);
  					break;

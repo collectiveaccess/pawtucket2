@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018-2021 Whirl-i-Gig
+ * Copyright 2018-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -183,7 +183,9 @@
 						} else {
 							$tt = preg_split("![ ]*[,;]{1}[ ]*!", $type_list);
 						}
-						
+						if($t_instance->hasField('type_id') && $t_instance->getFieldInfo('type_id', 'IS_NULL')) {
+							$tt[] = null;
+						}
 						foreach($tt as $t) {
 							if(!is_array($config)) { break; }
 							if ($table === 'ca_storage_locations') { 
@@ -331,7 +333,7 @@
 		 * @return string Policy name
 		 */
 		public function getDefaultHistoryTrackingCurrentValuePolicy() {
-			return self::getDefaultHistoryTrackingCurrentValuePolicyForTable($this->tableName());
+			return self::getDefaultHistoryTrackingCurrentValuePolicyForTable($this->tableName(), ['restrictToTypes' => [$this->getTypeCode()]]);
 		}
 		# ------------------------------------------------------
 		/**
@@ -341,12 +343,35 @@
 		 *
 		 * @return string Policy name
 		 */
-		static public function getDefaultHistoryTrackingCurrentValuePolicyForTable(string $table=null) : ?string {
+		static public function getDefaultHistoryTrackingCurrentValuePolicyForTable(?string $table=null, ?array $options=null) : ?string {
 			if(is_null($table)) { $table = get_called_class(); }
+			$type_restrictions = caGetOption('restrictToTypes', $options, null);
+			
+			$default = null;
 			if (is_array($history_tracking_policies = self::getHistoryTrackingCurrentValuePolicyConfig()) && is_array($history_tracking_policies['defaults']) && isset($history_tracking_policies['defaults'][$table])) {
-				return $history_tracking_policies['defaults'][$table];
+				if(is_array($type_restrictions) && is_array($history_tracking_policies['defaults'][$table])) {
+					foreach($type_restrictions as $type) {
+						if(isset($history_tracking_policies['defaults'][$table][$type])) {
+							$default = $history_tracking_policies['defaults'][$table][$type];
+						}
+					}
+				} elseif(is_array($history_tracking_policies['defaults'][$table])) {
+					if(isset($history_tracking_policies['defaults'][$table]['__default__'])) { 
+						$default = $history_tracking_policies['defaults'][$table]['__default__'];
+					}
+				} else {
+					$default = $history_tracking_policies['defaults'][$table];
+				}
 			}
-			return null;
+			
+			if($default && is_array($type_restrictions) && sizeof($type_restrictions)) {
+				$policy_info = self::getHistoryTrackingCurrentValuePolicy($default);
+				if(is_array($policy_info['restrictToTypes']) && (sizeof(array_intersect($policy_info['restrictToTypes'], $type_restrictions)) == 0)) {
+					return null;
+				}
+			}
+			
+			return $default;
 		}
 		# ------------------------------------------------------
 		/**
@@ -538,6 +563,9 @@
 				}
 			}
 			
+			if(!caDateToHistoricTimestamps($values['date'])) {
+				$values['date'] = null;
+			}
 			$d = [
 				'policy' => $policy,
 				'table_num' => $subject_table_num, 
@@ -578,6 +606,10 @@
 			$e->setDb($this->getDb());	
 			$e->set($d);
 			
+			if($values['date']) {
+				$e->set('value_date', $values['date']);
+			}
+			
 			if (!($rc = $e->insert())) {
 				$this->errors = $e->errors;
 				return false;
@@ -615,15 +647,17 @@
 				return []; // No policies are configured
 			}
 			
+			$type_restrictions = caGetOption('restrictToTypes', $options, null);
+			
 			$policies = [];
 			foreach($policy_config['policies'] as $policy => $policy_info) {
 				if($table !== $policy_info['table']) { continue; }
+				if(is_array($type_restrictions) && is_array($policy_info['restrictToTypes']) && !sizeof(array_intersect($type_restrictions, $policy_info['restrictToTypes']))) { continue; }
 				if(is_array($uses) && sizeof($uses) && is_array($policy_info['elements'])) {
 					if(!sizeof(array_intersect(array_keys($policy_info['elements']), $uses))) {
 						continue;
 					}
 				}
-				// TODO: implement restrictToTypes; restrictToRelationshipTypes
 				$policies[$policy] = $policy_info;
 			}
 			return $policies;
@@ -706,7 +740,7 @@
 		 */ 
 		public function deriveHistoryTrackingCurrentValue($options=null) {
 			if(!($row_id = caGetOption('row_id', $options, null)) && !($row_id = $this->getPrimaryKey())) { return false; }
-			if(is_array($policies = self::getHistoryTrackingCurrentValuePolicies($this->tableName()))) {
+			if(is_array($policies = self::getHistoryTrackingCurrentValuePolicies($this->tableName(), ['restrictToTypes' => [$this->getTypeCode()]]))) {
 				foreach($policies as $policy => $policy_info) {
 					SearchResult::clearResultCacheForRow($this->tableName(), $row_id);
 					$h = $this->getHistory(['row_id' => $row_id, 'policy' => $policy, 'noCache' => true]);
@@ -879,6 +913,8 @@
 		 */
 		public function getCurrentValue($policy=null, $options=null) {
 		    if(!$policy) { $policy = $this->getInspectorHistoryTrackingDisplayPolicy('policy'); }
+		    if(!self::checkPolicyTypeRestrictions($policy, caGetOption('restrictToTypes', $options, []))) { return null; }
+		    
 		    if (is_array($history = $this->getHistory(['policy' => $policy, 'limit' => 1, 'currentOnly' => true, 'row_id' => caGetOption('row_id', $options, null)])) && (sizeof($history) > 0)) {
                 $current_value = array_shift(array_shift($history));
                 return is_array($current_value) ? $current_value : null;
@@ -890,11 +926,23 @@
 		 *
 		 */
 		public function getCurrentValueForDisplay($policy=null, $options=null) {
+			$options['restrictToTypes'] = [$this->getTypeCode()];
 			$current_value = $this->getCurrentValue($policy, $options);
 		    if (is_array($current_value)) {
 		   		return isset($current_value['display']) ? $current_value['display'] : null;
             }
             return null;
+		}
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		public function checkPolicyTypeRestrictions(?string $policy, array $type_restrictions, ?array $options=null) : ?bool {
+			if(!is_array($policy_info = self::getHistoryTrackingCurrentValuePolicy($policy))) { return null; }
+			if(!sizeof($type_restrictions)) { return true; }
+			if(!is_array($policy_info['restrictToTypes']) || !sizeof($policy_info['restrictToTypes'])) { return true; }
+			if(sizeof(array_intersect($type_restrictions, $policy_info['restrictToTypes'])) > 0) { return true; }
+            return false;
 		}
 		# ------------------------------------------------------
 		/**
@@ -929,7 +977,7 @@
 		
 			$policy = caGetOption('policy', $options, $this->getDefaultHistoryTrackingCurrentValuePolicy());
 			$row_id = caGetOption('row_id', $options, $this->getPrimaryKey());
-			
+		
 			if ($policy && !is_array($pa_bundle_settings = caGetOption('settings', $options, null))) {
 				$pa_bundle_settings = self::policy2bundleconfig(['policy' => $policy]);
 			}
@@ -942,7 +990,9 @@
 			$pb_no_cache 				= caGetOption('noCache', $options, false);
 			
 			// TODO: deal with proper clearing of cache
-			//if (!$pb_no_cache && ExternalCache::contains($vs_cache_key, "historyTrackingContent")) { return ExternalCache::fetch($vs_cache_key, "historyTrackingContent"); }
+			if (!$pb_no_cache && ExternalCache::contains($vs_cache_key, "historyTrackingContent")) { 
+				//return ExternalCache::fetch($vs_cache_key, "historyTrackingContent"); 
+			}
 		
 			$pb_display_label_only 		= caGetOption('displayLabelOnly', $options, false);
 		
@@ -973,6 +1023,10 @@
 			
 			$qr = caMakeSearchResult($table, [$row_id], ['transaction' => $this->getTransaction()]);
 			$qr->nextHit();
+			
+			// Check type restrictions
+			$type_id = $qr->get("{$table}.type_id", ['convertCodesToIdno'=> true]);
+			if($type_id && !self::checkPolicyTypeRestrictions($policy, [$type_id])) { return []; }
 				
 	//
 	// Get history
@@ -1418,7 +1472,7 @@
 				}
 			}
 			
-			// entities
+			// Entities
 			if (is_array($path = Datamodel::getPath($table, 'ca_entities')) && (sizeof($path) == 3) && ($path = array_keys($path)) && ($linking_table = $path[1])) {
 				$va_entities = $qr->get("{$linking_table}.relation_id", ['returnAsArray' => true, 'restrictToRelationshipTypes' => caGetOption('ca_entities_showRelationshipTypes', $pa_bundle_settings, null)]);
 				$va_child_entities = [];
@@ -1642,7 +1696,7 @@
 				}
 			}
 			
-			// objects
+			// Objects
 			if (is_array($path = Datamodel::getPath($table, 'ca_objects')) && (sizeof($path) == 3) && ($path = array_keys($path)) && ($linking_table = $path[1])) {
 				$va_objects = $qr->get("{$linking_table}.relation_id", ['returnAsArray' => true, 'restrictToRelationshipTypes' => caGetOption('ca_objects_showRelationshipTypes', $pa_bundle_settings, null)]);
 				$va_child_objects = [];
@@ -1812,7 +1866,7 @@
 				
 						$vs_color = $va_location_type_info[$vn_type_id]['color'];
 						if (!$vs_color || ($vs_color == '000000')) {
-							$vs_color = caGetOption("ca_storage_locations_color", $pa_bundle_settings, 'ffffff');
+							$vs_color = caGetOption("ca_storage_locations_{$va_location_type_info[$vn_type_id]['idno']}_color", $pa_bundle_settings, 'ffffff');
 						}
 						$vs_color = str_replace("#", "", $vs_color);
 				
@@ -2463,7 +2517,15 @@
 						
 							$va_path_components = caGetOption('pathComponents', $pa_options, null);
 							if (is_array($va_path_components) && $va_path_components['subfield_name']) {
-								if (($t_loc = Datamodel::getInstanceByTableName($va_current_location['type'], true)) && $t_loc->load($va_current_location['id'])) {
+								$path = Datamodel::getPath($this->tableName(), $va_current_location['type']);
+								if(!is_array($path) || (sizeof($path) !== 3)) { return null; }
+								$path = array_keys($path);
+								if($va_path_components['subfield_name'] === $path[1]) { // is ref to interstitial
+									if (($t_rel = Datamodel::getInstanceByTableName($path[1], true)) && $t_rel->load($va_current_location['relation_id'])) {
+										
+										return $t_rel->get(join('.', array_merge([$path[1]], array_slice($va_path_components['components'], 3))), ['convertCodesToDisplayText' => true]);
+									}
+								} elseif (($t_loc = Datamodel::getInstanceByTableName($va_current_location['type'], true)) && $t_loc->load($va_current_location['id'])) {
 									return $t_loc->get($va_current_location['type'].'.'.$va_path_components['subfield_name']);
 								}
 							} 

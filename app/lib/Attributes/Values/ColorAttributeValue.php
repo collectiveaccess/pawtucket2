@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018-2020 Whirl-i-Gig
+ * Copyright 2018-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -166,7 +166,8 @@
  			}
  			
  			return array(
- 				'value_longtext1' => $ps_value
+ 				'value_longtext1' => $ps_value,
+ 				'value_sortable' => $this->sortableValue($ps_value)
  			);
  		}
  		# ------------------------------------------------------------------
@@ -258,7 +259,18 @@
 		 * @return string Name of sort field
 		 */
 		public function sortField() {
-			return 'value_longtext1';
+			return 'value_sortable';
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Returns sortable value for metadata value
+		 *
+		 * @param string $value
+		 * 
+		 * @return string
+		 */
+		public function sortableValue(?string $value) {
+			return mb_strtolower(substr(trim($value), 0, 100));
 		}
  		# ------------------------------------------------------------------
 		/**

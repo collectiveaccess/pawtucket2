@@ -204,7 +204,7 @@
 							} elseif(strlen($va_coordinate['label'])) {
 								$vs_label = $va_coordinate['label'];
 							} else {
-								#$vs_label = $va_coordinate['path'];
+								$vs_label = $va_coordinate['path'];
 							}
                             
                             if (!is_null($vs_color) && $vs_color && (strpos($vs_color, '^') !== false)) {

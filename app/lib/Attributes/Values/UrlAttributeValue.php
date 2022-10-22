@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2020 Whirl-i-Gig
+ * Copyright 2009-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -279,9 +279,9 @@
  				$va_settings['regex'] = "(http|ftp|https|rtmp|rtsp):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&;:/~\+#]*[\w\-\@?^=%&/~\+#])?";
  			}
  			if ($va_settings['regex'] && !preg_match("!".$va_settings['regex']."!", $ps_value)) {
- 				// default to http if it's just a hostname + path
+ 				// default to https if it's just a hostname + path
  				if (!preg_match("!^[A-Za-z]+:\/\/!", $ps_value)) {
- 					$ps_value = "http://{$ps_value}";
+ 					$ps_value = "https://{$ps_value}";
  				} else {
 					// regex failed
 					$this->postError(1970, _t('%1 is not a valid url', $pa_element_info['displayLabel']), 'UrlAttributeValue->parseValue()');
@@ -290,7 +290,8 @@
  			}
  			
  			return array(
- 				'value_longtext1' => $ps_value
+ 				'value_longtext1' => $ps_value,
+ 				'value_sortable' => $this->sortableValue($ps_value)
  			);
  		}
  		# ------------------------------------------------------------------/**
@@ -369,7 +370,18 @@
 		 * @return string Name of sort field
 		 */
 		public function sortField() {
-			return 'value_longtext1';
+			return 'value_sortable';
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Returns sortable value for metadata value
+		 *
+		 * @param string $value
+		 * 
+		 * @return string
+		 */
+		public function sortableValue(?string $value) {
+			return mb_strtolower(substr(trim(preg_replace('!^[A-Za-z]+://!', '', $value)), 0, 100));
 		}
  		# ------------------------------------------------------------------
 		/**
