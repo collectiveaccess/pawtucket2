@@ -44,7 +44,11 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
-
+	$vs_caption_template = $va_block_info["caption_template"];
+	if(!$vs_caption_template){
+		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
+	}
+	
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
@@ -94,7 +98,7 @@
 				}
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
 ?>
-				<br/><?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
+				<br/><?php print $qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values)); ?>
 			</div><!-- end blockResult -->
 <?php
 			$vn_count++;
