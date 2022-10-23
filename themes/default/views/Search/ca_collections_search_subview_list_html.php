@@ -40,6 +40,10 @@
 	$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
 	$o_config = caGetSearchConfig();
+	$vs_caption_template = $va_block_info["caption_template"];
+	if(!$vs_caption_template){
+		$vs_caption_template = "<l>^ca_collections.preferred_labels.name</l>";
+	}
 	
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -77,7 +81,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
-				print "<div class='collectionsResult authorityResult'>".$qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true))."</div>";
+				print "<div class='collectionsResult authorityResult'>".$qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values))."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i >= $vn_items_per_column) {
