@@ -47,7 +47,7 @@
 							<ul class="list-inline social">
 								<li><a href="https://www.facebook.com/erfgoedcelmeetjesland/" target="_blank"><i class="fa fa-facebook-square" aria-label="Facebook"></i></a></li>
 								<li><a href="https://www.instagram.com/memorabelmeetjesland/" target="_blank"><i class="fa fa-instagram" aria-label="Instragram"></i></a></li>
-								<li><a href="https://www.comeet.be/erfgoed-2/" target="_blank"><i class="fa fa-home" aria-label="Home"></i></a></li>
+								<li><a href="https://comeet.be/onze-deelwerkingen/erfgoedcel-meetjesland/" target="_blank"><i class="fa fa-home" aria-label="Home"></i></a></li>
 							</ul>
 						</div>
 						<div class="col-sm-4">

@@ -57,8 +57,8 @@
 				print "</div>\n";
 				
 				if($vn_i == 24){
-					print "<div class='col-xs-3 col-sm-2 col-md-1' id='moreLink'>
-								<a href='#' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 24)." "._t("more")."</a>
+					print "<div class='col-xs-12 text-center' id='moreLink'>
+								<a href='#' class='btn btn-default' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 24)." "._t("more")."</a>
 							</div>";
 				}
 			}

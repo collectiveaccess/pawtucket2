@@ -839,6 +839,7 @@ div.caMediaOverlayControls{
 }
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a{
 	font-size:20px;
+	display:inline-block;
 }
 .detail .detailNavBgLeft, .detail .detailNavBgRight{
 	padding-top:10px;

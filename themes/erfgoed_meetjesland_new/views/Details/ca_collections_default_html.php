@@ -15,6 +15,22 @@
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	$vs_map = trim($this->getVar("map"));
+	
+	
+	$va_child_collection_ids = $t_item->get("ca_collections.children.collection_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+	if(is_array($va_child_collection_ids) && sizeof($va_child_collection_ids)){
+		$o_rel_context = new ResultContext($this->request, 'ca_collections', 'detailrelated', 'collections');
+		$o_rel_context->setAsLastFind(true);
+		$o_rel_context->setResultList($va_child_collection_ids);
+		$o_rel_context->saveContext();
+	}
+	$va_object_ids = $t_item->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+	if(is_array($va_object_ids) && sizeof($va_object_ids)){
+		$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', 'collections');
+		$o_rel_context->setAsLastFind(true);
+		$o_rel_context->setResultList($va_object_ids);
+		$o_rel_context->saveContext();
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -114,7 +130,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => 'ca_collections.parent_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => 'ca_collections.parent_id:^ca_collections.collection_id', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsCollectionContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -129,7 +145,7 @@
 		</ifdef>
 }}}
 {{{
-		
+		<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class="col-sm-12"><H2>Objecten</H2></div>
 			</div>
@@ -140,7 +156,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_field_facet', 'id' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_field_facet', 'id' => '^ca_collections.collection_id', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -152,6 +168,7 @@
 					
 				});
 			</script>
+		</ifcount>
 }}}
 		</div><!-- end container -->
 	</div><!-- end col -->
