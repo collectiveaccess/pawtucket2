@@ -17,18 +17,14 @@
 	$vs_map = trim($this->getVar("map"));
 	
 	
-	$va_child_collection_ids = $t_item->get("ca_collections.children.collection_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
-	if(is_array($va_child_collection_ids) && sizeof($va_child_collection_ids)){
-		$o_rel_context = new ResultContext($this->request, 'ca_collections', 'detailrelated', 'collections');
-		$o_rel_context->setAsLastFind(true);
-		$o_rel_context->setResultList($va_child_collection_ids);
-		$o_rel_context->saveContext();
-	}
-	$va_object_ids = $t_item->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
-	if(is_array($va_object_ids) && sizeof($va_object_ids)){
+	$o_browse = caGetBrowseInstance('ca_objects');
+	$o_browse->addCriteria("collection_field_facet", $t_item->get("ca_collections.collection_id"));
+	$o_browse->execute(array('checkAccess' => $va_access_values, 'request' => $this->request));
+	$qr_res = $o_browse->getResults();
+	if($qr_res->numHits()){
 		$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', 'collections');
 		$o_rel_context->setAsLastFind(true);
-		$o_rel_context->setResultList($va_object_ids);
+		$o_rel_context->setResultList($qr_res->getAllFieldValues('ca_objects.object_id'));
 		$o_rel_context->saveContext();
 	}
 ?>
@@ -145,7 +141,6 @@
 		</ifdef>
 }}}
 {{{
-		<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class="col-sm-12"><H2>Objecten</H2></div>
 			</div>
@@ -168,7 +163,6 @@
 					
 				});
 			</script>
-		</ifcount>
 }}}
 		</div><!-- end container -->
 	</div><!-- end col -->
