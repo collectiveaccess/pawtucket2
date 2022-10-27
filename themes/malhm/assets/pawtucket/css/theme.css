@@ -1189,3 +1189,145 @@ a.filterCollection:hover {
 	color:#fff;
 	text-decoration:none;
 }
+
+.navbar-form.big.notFront {
+	border:8px solid #eee;
+	margin-top:-20px;
+	position:relative;
+	width:100%;
+	padding-top:0px;
+	display:none;
+	z-index: 1000;
+	position:absolute;
+	left:0px;
+}
+.navbar-form.big.notFront .formOutline {
+	box-shadow:none;
+}
+.navbar-form.big.notFront {
+	padding:0px;
+}
+.navbar-form.big.notFront .form-control {
+	text-align:center;
+	height:44px;
+}
+.navbar-form.big.notFront .btn-search {
+	float:right;
+}
+.navbar-form.big.notFront .formOutline {
+	width:100%;
+}
+
+
+/* Detail gallery list */
+
+.detail .jcarousel {
+	height:275px;
+}
+.detail .setTile {
+    width: 301px;
+    padding-right: 5px;
+    background-color: #fff;
+    margin-right: 5px;
+    margin-left:5px;
+    padding-top: 10px;
+    padding-left: 10px;
+    height: 265px;
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    margin-top:3px;
+}
+.detail .setTile.oneItem {
+	width:205px;
+}
+.detail .imgPreview {
+	width:87px;
+	height:87px;
+	float:left;
+	margin-left:10px;
+	margin-bottom:10px;
+	background-color:#f5f5f5;
+}
+.detail .jcarousel-control-prev {
+	left:10px;
+}
+.detail .jcarousel-control-next {
+	right:10px;
+}
+.detail .jcarousel-control-prev, .detail .jcarousel-control-next {
+	top:100px;
+	background:transparent;
+	border:0px;
+	text-shadow: 0px 0px 8px #999;
+	font-size:32px;
+	box-shadow:none;
+}
+.detail .jcarousel-control-prev:hover, .detail .jcarousel-control-next:hover,
+.detail .jcarousel-control-prev:active, .detail .jcarousel-control-next:active,
+.detail .jcarousel-control-prev:focus, .detail .jcarousel-control-next:focus {
+	color:#fff;
+}
+.setTile img {
+	width:100%;
+	height:auto;
+}
+.detail .setImage {
+	background-color:#eee;
+	height:185px;
+	width:185px;
+	float:left;
+	margin-bottom:5px;
+}
+.detail .setCascade {
+	display:inline-block;
+	margin-bottom:20px;
+}
+.detail .setCascade img {
+	width:100%;
+	height:auto;
+	margin-bottom:5px;
+}
+.detail .lightboxDescription {
+	padding-left:15px;
+	padding-bottom:15px;
+	line-height: 1.4em;
+}
+.detail .jcarousel-pagination a.active {
+    background: #666;
+    color: #666;
+    opacity: 1;
+    text-shadow: none;
+    text-decoration: none;
+}
+.detail .jcarousel-pagination a {
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1px;
+    line-height: 1em;
+    min-width: 10px;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    color: #fff;
+    border-radius: 25px;
+    padding: 3px;
+    text-align: center;
+    margin-right: 5px;
+    border: 1px solid #666;
+    opacity: .75;
+}
+.detail .jcarousel-pagination {
+    position: relative;
+    padding: 0px;
+    margin: 0px auto 0px auto;
+    text-align: center;
+}
+.detail .jcarousel-control-prev{
+	left:-10px;
+}
+.detail .jcarousel-control-next{
+	right:-15px;
+}
+.detail .jcarousel-control-prev:hover, .detail .jcarousel-control-next:hover, .detail .jcarousel-control-prev:focus, .detail .jcarousel-control-next:focus{
+	color:#6e416c;
+}
