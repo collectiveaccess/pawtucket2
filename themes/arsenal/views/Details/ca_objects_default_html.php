@@ -65,7 +65,7 @@
 		$vs_rep_viewer = caRepresentationViewer(
 					$this->request, 
 					$t_work, 
-					$t_work,
+					$t_object,
 					array_merge($options, $media_display_info, 
 						[
 							'display' => 'detail',

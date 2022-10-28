@@ -178,6 +178,19 @@ $t_item = $this->getVar("item");
 				}
 				print "</div>";
 			}
+			
+			
+			// other credits
+			if(is_array($credits = $t_item->getRelatedItems('ca_entities', ['excludeRelationshipTypes' => ['director']]))) {
+				foreach($credits as $credit) {
+?><div class='unit'>
+	<label><?= ucfirst($credit['relationship_typename']); ?></label>
+	<?= caNavLink($this->request,$credit['label'],'','','Browse','objects',array("facet" => "entity_facet", "id" => $credit['entity_id'])); ?>
+</div><?php
+				}
+			}
+			
+			
 			if($t_item->get('ca_occurrences.country',array("convertCodesToDisplayText" => true))){
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('country')."</label>".$t_item->get('ca_occurrences.country', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
 			}
@@ -222,7 +235,7 @@ $t_item = $this->getVar("item");
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('work_notes')."</label>".$t_item->get('ca_occurrences.work_notes', array('delimiter' => '<br/>'))."</div><!-- end unit -->";
 			}
 			if($t_item->get("ca_occurrences.credit_editable.credit_entity")){
-				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Kredite" : "Credits")."</label><div class='trimText'>";
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Credits" : "Credits")."</label><div class='trimText'>";
 				print $t_item->getWithTemplate("<unit relativeTo='ca_occurrences.credit_editable' delimiter='<br/>'>^ca_occurrences.credit_editable.credit_role: ^ca_occurrences.credit_editable.credit_entity</unit>");
 				print "</div></div>";
 			}
