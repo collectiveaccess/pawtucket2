@@ -85,7 +85,7 @@
 						wrap:'circular'
 					});
 					$('.jcarousel.featured').jcarouselAutoscroll({
-					autostart: true,
+					autostart: false,
 					interval: 2000
 				});
 		

@@ -171,35 +171,27 @@
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 
 					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artifacts"), "", "", "Browse", "objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Archives") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "Archives", "Index"); ?></li>
-					<!-- <li <?php print ($this->request->getController() == "Contributors") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contributors"), "", "", "Contributors", "Index"); ?></li> -->
-					<li><a href="/index.php/Browse/contributors">Contributors</a></li>
-					<!-- <?php print $this->render("pageFormat/browseMenu.php"); ?> -->
-					<!-- <li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>-->
-					
-					<li <?php print ($this->request->getController() == "Transcribe") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Transcribe"), "", "", "Transcribe", "Index"); ?></li>
-					
+					<li <?php print (strtoLower($this->request->getController()) == "collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "Collections", "index"); ?></li>	
+					<li <?php print ($this->request->getController() == "Contributors") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contributors"), "", "", "Contributors", ""); ?></li>					
+					<li <?php print ($this->request->getController() == "Transcribe") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Transcribe"), "", "", "Transcribe", "Index"); ?></li>					
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-
-					<!-- <li <?php print ($this->request->getController() == "Help") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Help"), "", "", "Help", "Index"); ?></li> -->
+					<!-- <li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>					 -->
 					
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Help</a>
+					<li class="dropdown-container">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
 						<ul class="dropdown-menu">
-							<li><a href="/index.php/About/guide">Guide</a></li>
-							<li><a href="/index.php/About/faq">FAQ</a></li>
-							<li><a href="/index.php/About/terms_of_use">Terms of Use</a></li>
-							<li><a href="/index.php/About/plan_your_visit">Plan Your Visit</a></li>
+							<li><a href="/index.php/about">About The Project</a></li>
+							<li><a href="/index.php/guide">Guide</a></li>
+							<li><a href="/index.php/faq">FAQ</a></li>
+							<li><a href="/index.php/terms_of_use">Terms of Use</a></li>
+							<li><a href="/index.php/plan_your_visit">Plan Your Visit</a></li>
 						</ul>
 					</li>
 
-
-
-					<li><a href="https://twitter.com/ctlho" target="_blank"><i class="fa fa-twitter"></i></a></li>
+					<!-- <li><a href="https://twitter.com/ctlho" target="_blank"><i class="fa fa-twitter"></i></a></li>
 					<li><a href="https://www.instagram.com/ctlho/" target="_blank"><i class="fa fa-instagram"></i></a></li>
 					<li><a href="https://www.facebook.com/CTLeague/?fref=nf&pnref=story.unseen-section" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
-					<li><a href="https://www.youtube.com/channel/UCXfy6rb4EaWFArEsRXYNneA" target="_blank"><i class="fa fa-youtube-play"></i></a></li>
+					<li><a href="https://www.youtube.com/channel/UCXfy6rb4EaWFArEsRXYNneA" target="_blank"><i class="fa fa-youtube-play"></i></a></li> -->
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

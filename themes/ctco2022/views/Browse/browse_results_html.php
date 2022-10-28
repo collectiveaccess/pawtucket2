@@ -91,12 +91,6 @@ if (!$vb_ajax) {	// !ajax
 					print "</ul></div>\n";
 				}
 			}
-		if($this->request->getAction() == "contributors"){
-?>
-			<H1>Contributors</H1>
-			{{{contributors_intro}}}
-<?php
-		}else{
 ?>
 		<H1>
 <?php
@@ -158,9 +152,7 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
-<?php
-	}
-?>
+
 		<div class='bCriteria'>
 <?php
 		if (sizeof($va_criteria) > 0) {

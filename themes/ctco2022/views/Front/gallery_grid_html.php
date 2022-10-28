@@ -79,7 +79,7 @@
 						print "<div class='col-sm-3 col-xs-6'>";
 						print caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id);
 						if($va_set["name"]){
-							print "<div class='frontGridCaption'>".caNavLink($this->request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</div>"; 
+							print "<div class='frontGridCaption'><label>".caNavLink($this->request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</label></div>"; 
 						}
 						print "</div>";						
 						$i++;

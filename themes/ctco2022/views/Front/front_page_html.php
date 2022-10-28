@@ -85,6 +85,32 @@
 	}
 ?>
 
+
+	<div class="container link-page-breaker">
+		<div class="row">
+			<a class="col col-sm-4 text-center mr-1" href="/index.php/Browse/objects">
+				<div class="link-text">
+					Artifacts
+				</div>
+			</a>
+
+			<a class="col col-sm-4 text-center mr-1" href="/index.php/Collections/index">
+				<div class="link-text">
+					Archives
+				</div>
+			</a>
+
+			<a class="col col-sm-4 text-center" href="/index.php/Contributors">
+				<div class="link-text">
+					Contributors
+				</div>
+			</a>
+
+		</div>
+	</div>
+
+
+
 	<?php
 		print $this->render("Front/featured_set_slideshow_html.php");
 	?>
@@ -124,6 +150,8 @@
 		</div>
 	</div> -->
 
+	<br/><br/>
+
 <?php
 	# --- display slideshow of random images
 	#print $this->render("Front/featured_set_slideshow_html.php");
@@ -134,7 +162,7 @@
 	#print $this->render("Front/gallery_slideshow_html.php");
 ?>
 
-<div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>
+<div class="row"><div id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div></div>
 
 		<script type="text/javascript">
 			$(document).ready(function(){
