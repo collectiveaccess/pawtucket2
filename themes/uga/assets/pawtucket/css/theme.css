@@ -38,8 +38,34 @@
 .detailHead {
 	text-align:center;
 }
+.detail h1 {
+    font-size: 20px;
+}
+.detail{
+	font-size:15px;
+	color:#000;
+}
 .detail a {
-	color: #00cfb7;
+	color: #000000;
+}
+.detail .unit a {
+	text-decoration:underline;
+}
+.detail label {
+    font-size: 15px;
+    color: #000;
+    margin-bottom:0px;
+}
+.detail H2 {
+    font-size: 18px;
+    color: #000;
+    margin-top:35px;
+    margin-bottom:10px;
+    padding-bottom:10px;
+    border-bottom:2px solid #dddddd;
+}
+.detail .unit {
+    margin-bottom: 20px;
 }
 .dlButton {
 	display:none;
@@ -122,7 +148,46 @@
 #browseResultsContainer {
 	margin-top:5px;
 }
+.detail #detailAnnotations li{
+	font-size:13px;
+}
+.detail #detailAnnotations li.active, .detail #detailAnnotations ul li:hover {
+    background-color: #435c66;
+	color: #fff;
+}
+.detail #detailAnnotations li .annotation_description {
+	display:none;
+}
+.detail #detailAnnotations li.active{
+	font-style:normal;
+	font-weight:bold;
+}
+.detail #detailAnnotations li.active .annotation_description {
+	display:block;
+	font-weight:normal;
+	font-size:12px;
+	padding-top:10px;
+}
+.detail #detailAnnotations ul li.detailAnnotation a {
+    text-decoration: underline;
+}
 
+.detail #detailAnnotations ul li.detailAnnotation:hover a {
+    text-decoration: underline;
+    color:#FFF;
+}
+.detail #detailAnnotations .detailAnnotationList {
+    max-height: 500px;
+    overflow: auto;
+}
+.detailImgPlaceholder {
+    background-color: #F5F5F5;
+    color: #858585;
+    margin-bottom: 10px;
+    padding: 120px 5px 120px;
+    text-align: center;
+    width: 100%;
+}
 /* Media Viewer */
 
 .tileviewer div.viewerControls {
@@ -301,19 +366,15 @@ div.contenttab {
 h1.slogan { padding-top: inherit;  padding-left: 0; padding-bottom: 1em; }
 
 div.contentcol { padding-bottom: 2em; }
-div.contentcol div.headerbox { border-bottom: 5px solid #96b0ba; }
-div.contentcol div.headerbox div.headertab {
-    padding: .1em .2em .1em .5em;
-    background-color: #96b0ba;
-    border-radius: 10px 15px 0px 0px;	
-}
-div.contentcol div.headerbox div.lefttab{
-	width: 80px;
-	height: 30px;
-}
-div.contentcol div.headerbox div.middletab {
+
+#pageArea div.headerbox { border-bottom: 5px solid #96b0ba; margin-bottom: 2em; }
+
+div.headertab.middletab {
 	width: 200px;
 	height: 30px;
+	padding: .1em .2em .1em .5em;
+    background-color: #96b0ba;
+    border-radius: 10px 15px 0px 0px;
 }
 
 div.headertab h2.colheader {
@@ -337,18 +398,17 @@ div.contentcol li { list-style: none; padding-bottom: 1em; }
 	    padding: .8em 1em .5em;
 }
 
-.contentcol .title-box {
+.title-box {
     background-color: rgb(248, 247, 243);
     border: 1px solid rgb(210, 204, 179);
     border-radius: 6px;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
-    float: left;
     margin-bottom: 20px;
-    padding-bottom: 15px;
+    padding: 10px 15px 20px;
     width: 100%;
 }
-.contentcol .title-box h2 { color: #333; }
-.contentcol .title-box h2, .contentcol .title-box form {  padding-left: 15px;  padding-right: 15px; }
+.title-box h2 { color: #333; }
+
 .space-above { margin-top: 10px; }
  .btn-primary {
     background-color: #29393b;
@@ -371,16 +431,27 @@ p.textheader {
 #aeoncaption > a { float: right; }
 
 /* secondary page */
-div.staticPage div.row div.col-sm-8 + div.col-sm-3, div.row div.col-sm-7 + div.col-sm-4 {
+div#pageArea.staticPage div.row div.col-lg-4.col-md-5 {
 		background: lightgray;
-	    margin: auto 15px;
 	    padding: 20px;
 }
+
+#pageArea div.advancedContainer form h5 { margin: 1.5em 0 1em; }
+
+#pageArea div.row { margin-right: 0px; }
+
+.search-in {
+  display: inline;
+}
+.search-in h5 {
+  color: black;
+}
 	
-/* if screen is wider than 768 */
-@media screen and (min-width: 768px) {
-	div.staticPage div.row div.col-sm-8 + div.col-sm-3, div.row div.col-sm-7 + div.col-sm-4 {	
-	    float: right;
+/* if width is less than 992 */
+@media screen and (max-width: 992px) {
+	div.staticPage div.row div.col-lg-8 + div.col-lg-4,
+	div.staticPage div.row div.col-md-7 + div.col-md-5 {
+		     margin: auto 15px;
 	}
 }
 
@@ -401,3 +472,58 @@ div#footer {
 	border-top: 20px solid #96b0ba;
 }
 div.ugalogo img { width: 160px; padding-left:15px;}
+
+/* browse */
+.bResultItem .bResultItemText a, .bResultListItem .bResultListItemText a {
+    color: #000;
+    line-height: 1.3em;
+    font-size: 14px;
+    font-weight:bold;
+}
+.bResultItem .bResultItemText small, .bResultItem .bResultItemText small a {
+    color: #454545;
+    font-size: 12px;
+    font-weight:normal;
+}
+.multisearch .multisearchResult a {
+    color: #000;
+    font-size: 13px;
+    line-height: 1.2em;
+}
+#objects_sort_direction{
+	color:#757575;
+}
+.bResultListItemCol {
+    height: 172px;
+}
+.bResultListItemContent {
+    height: 122px;
+    overflow: hidden;
+}
+.bResultListItem:hover{
+	height:162px;
+}
+.bResultListItem .bResultListItemImg {
+    max-height: 120px;
+    margin-right: 15px;
+}
+.bResultListItem img {
+    height: 120px;
+}
+bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemText small a {
+    color: #787878;
+}
+.bResultListItem .bResultListItemText, .bResultListItem .bResultListItemText b {
+    line-height: 1.3em;
+    font-size: 14px;
+    font-family: Latolight;
+}
+#bRefine H2 {
+    font-size: 20px;
+    text-transform: uppercase;
+    color: #666;
+    margin-top: 0px;
+    border-bottom: 1px solid #666;
+    padding-bottom: 5px;
+    margin-bottom: 20px;
+}

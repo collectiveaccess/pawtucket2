@@ -4,17 +4,17 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	$t_set = $this->getVar('featured_set');
 	$qr_res = $this->getVar('featured_set_items_as_search_result');	
-	include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
+	include_once(__CA_LIB_DIR__."/Search/SetSearch.php");
 	#AssetLoadManager::register("cycle");
 ?>
-<H1><?php print _t("Testimony"); ?></H1>
+<H1><?php print _t("Holocaust Testimony"); ?></H1>
 <div class='row'>
 	<div class='col-sm-6'>
 <?php 
 		if ($va_description = $t_set->get('ca_sets.description')) {
 			print "<p>".$va_description."</p>";
 		}
-		print caNavLink($this->request, 'About Survivor Testimonies <i class="fa fa-chevron-right"></i>', '', '', 'Testimonies', 'collection');  
+		print caNavLink($this->request, 'About Holocaust Testimonies <i class="fa fa-chevron-right"></i>', '', '', 'Testimonies', 'collection');  
 ?>
 	</div>
 	<div class='col-sm-6 spotlight'>
@@ -33,7 +33,9 @@
 <?php	
 			if ($qr_res) {
 				while($qr_res->nextHit()) {		
-					print "<div class='slide'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.large'), '', '', 'Detail', 'objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
+					print "<div class='slide'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.large', array('scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px')), '', '', 'Detail', 'objects/'.$qr_res->get('ca_objects.object_id'));
+					print "<div class='frontSlideCaption'>".caNavLink($this->request, $qr_res->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$qr_res->get('ca_objects.object_id'))."</div>";
+					print "</div>";
 				}
 			}
 ?>
@@ -54,7 +56,7 @@
 
 <?php	
 	$vn_i = 0;
-	if (sizeof($qr_sets) > 0) {
+	if (is_array($qr_sets) && (sizeof($qr_sets) > 0)) {
 		while ($qr_sets->nextHit()) {
 			$t_set = new ca_sets($qr_sets->get('ca_sets.set_id'));
 			$va_featured_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $va_access_values)));

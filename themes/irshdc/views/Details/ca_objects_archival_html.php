@@ -61,7 +61,7 @@ if($vs_mode == "map"){
  		$va_breadcrumb_trail[] = $o_context->getResultsLinkForLastFind($this->request, "ca_objects", $vs_link_text, null, $va_params);
  	}
  	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels.name'), 60);
-
+	$vb_show_download_all_link = false;
 ?>
 			<div class="row">
 				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -110,9 +110,53 @@ if($vs_mode == "map"){
 ?>
 				</div><!-- end col -->
 <?php
+					# --- should we show the download all link?  Do not show on records with audio/video
+					$vb_show_download_all_link = true;
+					$va_rep_ids = $t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true));
+					foreach($va_rep_ids as $vn_rep_id){
+						$t_object_representation = new ca_object_representations($vn_rep_id);
+						$va_download_display_info = caGetMediaDisplayInfo('download', $t_object_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+						if(!caGetOption(['download_version', 'display_version'], $va_download_display_info)){
+							$vb_show_download_all_link = false;
+						}
+					}
+				}else{
+					$t_list_item = new ca_list_items();
+					$o_icons_conf = caGetIconsConfig();
+					$vs_default_placeholder = "<i class='fa fa-picture-o fa-4x'></i>";
+					$t_list_item->load($t_object->get("resource_type"));
+					$vs_typecode = $t_list_item->get("idno");
+					if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_large_media_icon")){
+						$vs_thumbnail = $vs_type_placeholder;
+					}else{
+						$vs_thumbnail = $vs_default_placeholder_tag;
+					}
+					
+?>
+					<div class='col-sm-12 col-md-5'>
+						
+						<?php print "<div class='detailPlaceholderContainer'>".$vs_thumbnail."</div>"; ?>
+<?php
+					# --- is there a transcript media - sometimes there is one even though the primary media in not accessible to the public and a placeholder shows for the audio
+					$t_list = new ca_lists();
+					$va_type = $t_list->getItemFromList("object_representation_types", "transcript");
+					$va_transcript_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
+						print "<div id='transcriptLink' class='text-center'>";
+						foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
+							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+							
+							print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
+						}
+						print "</div>";
+					}
+?>
+					</div>
+<?php
 				}
 ?>
-				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
+				<!--<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>-->
+				<div class='col-sm-12 col-md-5'>
 					<div class="stoneBg">
 <?php
 						$vs_source = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>', array("checkAccess" => $va_access_values));						
@@ -148,10 +192,15 @@ if($vs_mode == "map"){
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.curators_comments.comments">
-							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial Comment</h6>
 								<div class="trimText">^ca_objects.curators_comments.comments</div>
 							</div>
 						</ifdef>}}}
+						{{{<if rule="^ca_objects.show_photo_boilerplate =~ /Yes/">
+							<div class="unit" data-toggle="popover" title="Source" data-content="<?php print $this->getVar("photo_boilerplate_source"); ?>"><h6>About Residential School Photographs</h6>
+								<div class="trimText"><?php print $this->getVar("photo_boilerplate"); ?></div>
+							</div>
+						</if>}}}
 						{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
 								<div class="trimText">^ca_objects.community_input_objects.comments_objects</div>
@@ -195,7 +244,8 @@ if($vs_mode == "map"){
 						</div>
 					</div>
 				</div>
-				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>
+				<!--<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>-->
+				<div class='col-sm-12 col-md-2'>
 	<?php
 					# Comment and Share Tools
 						
@@ -215,6 +265,9 @@ if($vs_mode == "map"){
 					}
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+					}
+					if($vb_show_download_all_link){
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caNavLink($this->request, "Download", "faDownload", "", "Detail",  "DownloadMedia", array('object_id' => $vn_id, "download" => 1))."</div>";
 					}
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
 					if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
@@ -303,7 +356,7 @@ if($vs_mode == "map"){
 		var options = {
 			placement: function () {
 <?php
-			if($vs_representationViewer){
+#			if($vs_representationViewer){
 ?>
 				if ($(window).width() > 992) {
 					return "left";
@@ -311,11 +364,11 @@ if($vs_mode == "map"){
 					return "auto top";
 				}
 <?php
-			}else{
+#			}else{
 ?>
-				return "auto top";
+				//return "auto top";
 <?php			
-			}
+#			}
 ?>
 			},
 			trigger: "hover",
@@ -335,6 +388,15 @@ if($vs_mode == "map"){
   			block.find('.fa').toggleClass("fa-toggle-down");
   			block.find('.fa').toggleClass("fa-toggle-up");
   			
+		});
+		$( document ).ajaxComplete(function() {
+			if ($('div.caAudioPlayer').length) {
+				$('div.caAudioPlayer').each(function(i, obj) {
+					if(!$(this).find(".detailPlaceholderContainer").length) {
+						$(this).prepend('<div class="detailPlaceholderContainer"><i class="fa fa-file-sound-o fa-4x"></i></div>');
+					}
+				});
+			}
 		});
 	});
 </script>

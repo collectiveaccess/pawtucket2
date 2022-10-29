@@ -104,7 +104,7 @@
 			$this->view->setVar('classroom_display_name', $this->ops_classroom_display_name);
 			$this->view->setVar('classroom_display_name_plural', $this->ops_classroom_display_name_plural);
 			
-			$this->purifier = new HTMLPurifier();
+			$this->purifier = caGetHTMLPurifier();
 			
 			$this->view->setVar('educator_role', 'EDUCATOR');
 			$this->view->setVar('student_role', 'STUDENT');

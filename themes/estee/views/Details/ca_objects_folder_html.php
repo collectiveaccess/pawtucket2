@@ -32,6 +32,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$t_representation = 	$this->getVar("t_representation");
 	
 	$va_access_values = caGetUserAccessValues($this->request);
 	$va_bulk_items = $t_object->get("ca_objects.related.object_id", array("checkAccess" => $va_access_values, "restrictToTypes" => array("bulk"), "returnAsArray" => true));
@@ -90,12 +91,33 @@
 					print "<div class='detailTool'><i class='material-icons inline'>bookmark</i><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
+						if($t_representation){
+							$vs_mimetype = $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE');
+						}
 						$vs_use_statement = trim($t_object->get("ca_objects.use_statement"));
 						if(!$vs_use_statement){
 							$vs_use_statement = $this->getVar("use_statement");
 						}
 						print "<H6 class='detailUseStatement text-center'>".$vs_use_statement."</H6>";
 						print $vs_rep_viewer;
+						if($vs_mimetype == "application/pdf"){
+							$va_media_info = $t_representation->getMediaInfo('media');
+							$vn_num_pages = $va_media_info["original"]["PROPERTIES"]['pages'];
+							if($vn_num_pages > 1){
+?>
+								<script type="text/javascript">
+									jQuery(document).ready(function() {
+										if(!$("#cont<?php print $t_representation->get("ca_object_representations.representation_id"); ?> .detailMediaToolbar").hasClass("multiPageAdded")){
+											//$("#cont<?php print $t_representation->get("ca_object_representations.representation_id"); ?> .detailMediaToolbar a.zoomButton").append("<span class='multiPage'><?php print $vn_num_pages; ?> Pages</span>");
+											$("#cont<?php print $t_representation->get("ca_object_representations.representation_id"); ?> .detailMediaToolbar").append("<br/><span class='multiPage'><?php print $vn_num_pages; ?> Pages</span>");
+											$("#cont<?php print $t_representation->get("ca_object_representations.representation_id"); ?> .detailMediaToolbar").addClass("multiPageAdded");
+											$("#cont<?php print $t_representation->get("ca_object_representations.representation_id"); ?>.repViewerCont div:first").append("<div class='multiPageIcon'><span class='glyphicon glyphicon-book' aria-hidden='true'></span></div>");
+										}
+									});
+								</script>								
+<?php
+							}
+						}
 ?>
 						<script type="text/javascript">
 							jQuery(document).ready(function() {
@@ -164,7 +186,7 @@
 							<div class="unit"><H6>Date</H6><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
 						</if>
 						<if rule="^ca_objects.type_id !~ /Container/">
-							<div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list</unit><ifdef code="ca_objects.manufacture_date,ca_objects.season_list"> </ifdef><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
+							<div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list</unit><ifdef code="ca_objects.season_list"> </ifdef><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
 						</if>
 					}}}
 					{{{<ifdef code="ca_objects.archival_formats"><div class="unit"><H6>Archival Format</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.archival_formats</unit></div></ifdef>}}}
@@ -195,7 +217,12 @@
 						foreach($va_notes as $va_note){
 							$va_note["general_notes_text"] = trim($va_note["general_notes_text"]);
 							if($va_note["general_notes_text"] && strToLower($va_note["internal_external"]) == "unrestricted"){
-								$va_notes_filtered[] = ucfirst(strtolower($va_note["general_notes_text"]));
+								if(preg_match('/[a-z]/', $va_note["general_notes_text"])){
+ 									// There is at least one lowercase so don't need to fix all caps notes
+ 									$va_notes_filtered[] = $va_note["general_notes_text"];
+								}else{
+									$va_notes_filtered[] = ucfirst(mb_strtolower($va_note["general_notes_text"]));
+								}
 							}
 						}
 						if(sizeof($va_notes_filtered)){
@@ -208,12 +235,16 @@
 					if($vb_notes_output){
 						print "<HR/>";
 					}
+					$vs_rights_info = $t_object->get("ca_objects.rights_information.rights_availability", array("convertCodesToDisplayText" => true));
+					if($vs_rights_info == "Unavailable"){
+						print '<div class="unit"><H6>Rights Infomation</H6>The ELC Archives has no information on the rights for this item</div><HR/>';
+					}
 
 					#  parent - displayed as collection hierarchy and folder if available
 					$va_collection_hier_ids = array_pop($t_object->get("ca_collections.hierarchy.collection_id", array("returnAsArray" => true)));
 					$vs_collection_hier = "";
 					if($vs_tmp = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.related"><unit relativeTo="ca_collections.related"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></unit></ifcount>', array("checkAccess" => $va_access_values))){
-						$vs_collection_hier = caDetailLink($this->request, $vs_tmp, '', 'ca_collections', $va_collection_hier_ids[0]);	
+						$vs_collection_hier = caDetailLink($this->request, $vs_tmp, '', 'ca_collections', $va_collection_hier_ids[0], array("last_tab" => "guide", "row_id" => $t_object->get("ca_objects.object_id")));	
 					}
 					if ($vn_parent_object_id = $t_object->get('ca_objects.parent_id', array("checkAccess" => $va_access_values))) {
 						$t_parent = new ca_objects($vn_parent_object_id);
@@ -267,7 +298,7 @@
 									if($vs_tmp = $qr_children->get("ca_objects.".$vs_child_info_field, array("delimiter" => ", ")) ){
 										if(in_array($vs_child_info_field, array("fragrance", "shade"))){
 											if(!preg_match("/[a-z]/", $vs_tmp)){
-												$vs_tmp = ucwords(strtolower($vs_tmp));
+												$vs_tmp = ucwords(mb_strtolower($vs_tmp));
 											}
 											$va_child_info[] = $vs_tmp;
 										}else{
@@ -282,6 +313,16 @@
 							}
 						}
 						print "</div><hr/>";
+					}
+					$t_set = new ca_sets();
+					$va_sets = $t_set->getSetsForItem("ca_objects", $t_object->get("ca_objects.object_id"), array("setType" => "public_presentation", "checkAccess" => $va_access_values));
+					if(is_array($va_sets) && sizeof($va_sets)){
+						print "<div class='unit parentObject'><h6>This ".strToLower($t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true)))." is part of Featured ".((sizeof($va_sets) > 1) ? "Stories" : "Story")."</h6>";
+						foreach($va_sets as $va_set){
+							$va_set = array_pop($va_set);
+							print "<div>".caNavLink($this->request, $va_set["name"], "", "", "Gallery", $va_set["set_id"])."</div>";
+						}
+						print "</div><HR/>";
 					}
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTools'><div class='detailTool'><i class='material-icons inline'>save_alt</i>".caDetailLink($this->request, "Download Summary", "", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div></div>";
@@ -368,7 +409,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'bulk_media', array('view' => 'list', 'search' => 'object_id:'.$vn_id), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'bulk_media', array('view' => 'list', 'facet' => 'related_object_facet', 'id' => $vn_id), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",

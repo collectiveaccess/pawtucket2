@@ -29,7 +29,7 @@
 						}
 					}
 					
-					$vs_rel_objects = $t_item->get('ca_objects.related');
+					$vs_rel_objects = $t_item->get('ca_objects.related', array("checkAccess" => $va_access_values, "restrictToTypes" => array("archival", "library", "work", "resource", "file", "survivor")));
 					#$t_list = new ca_lists();
 					#$va_type = $t_list->getItemFromListByItemID("object_types", $t_item->get("type_id"));
 					#$va_type["idno"]

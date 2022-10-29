@@ -69,6 +69,35 @@
 			}
 		}
 	}
+	
+	# --- rep viewer loaded here so can use different configuration in media_display.conf to load watermarked image
+	
+	 			if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
+ 					$t_representation = Datamodel::getInstance("ca_object_representations", true);
+ 					$t_representation->load($pn_representation_id);
+ 				}else{
+ 					$t_representation = $t_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
+ 				}
+				if (!$t_representation) {
+					$t_representation = Datamodel::getInstance("ca_object_representations", true);
+				}
+				if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail_watermark', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
+				
+				$vs_rep_viewer = trim(caRepresentationViewer(
+					$this->request, 
+					$t_object, 
+					$t_object,
+					array_merge($va_options, $va_media_display_info, 
+						array(
+							'display' => 'detail_watermark',
+							'showAnnotations' => true, 
+							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $va_options, false), 
+							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), 
+							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false)
+						)
+					)
+				));
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -89,7 +118,8 @@
 					print "<div class='detailTool'><i class='material-icons inline'>bookmark</i><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
 				
 					print "</div>";
-					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
+					
+					if($vs_rep_viewer){
 						$vs_use_statement = trim($t_object->get("ca_objects.use_statement"));
 						if(!$vs_use_statement){
 							$vs_use_statement = $this->getVar("use_statement");
@@ -101,6 +131,18 @@
 							jQuery(document).ready(function() {
 								$('.dlButton').on('click', function () {
 									return confirm('<?php print $vs_use_statement; ?>');
+								});
+								$( ".dlButton" ).each(function() {
+									var href_orig = $( this ).attr('href');
+									$( this ).attr('href', href_orig + '_watermark');
+								});
+							});
+							$( document ).ajaxComplete(function() {
+								$( ".dlButton" ).each(function() {
+									var href_orig = $( this ).attr('href');
+									if(!href_orig.includes("watermark")){
+										$( this ).attr('href', href_orig + '_watermark');
+									}
 								});
 							});
 						</script>
@@ -148,7 +190,7 @@
 								<ifnotdef code="ca_objects.codes.product_code"><div class="unit"><H6>Product Code</H6>Not Available</div></ifnotdef>
 							</div>
 							<ifdef code="ca_objects.codes.batch_code"><div class="col-sm-4"><div class="unit"><H6>Batch Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.batch_code</unit></div></div></ifdef>
-							<ifdef code="ca_objects.codes.packaging_code"><div class="col-sm-4"><div class="unit"><H6>Packaging Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.product_code</unit></div></div></ifdef>
+							<ifdef code="ca_objects.codes.packaging_code"><div class="col-sm-4"><div class="unit"><H6>Packaging Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.packaging_code</unit></div></div></ifdef>
 						</div>
 						<ifdef code="ca_objects.codes.product_code|ca_objects.codes.batch_code|ca_objects.codes.packaging_code"><HR></ifdef>
 					</if>}}}
@@ -158,7 +200,7 @@
 							$vs_sub_brand = ucwords(mb_strtolower($vs_sub_brand));
 						}
 						$vs_sub_brand = "<span class='notransform'>".$vs_sub_brand."</span>";
-						print "<div class='unit'><H6>Sub-brand</H6>".$vs_sub_brand."</div>";
+						print "<div class='unit'><H6>Sub-brand/Collection</H6>".$vs_sub_brand."</div>";
 					}
 					
 					if($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)) != "Component"){
@@ -167,7 +209,7 @@
 							foreach($va_tmp as $vs_tmp){
 								if(trim($vs_tmp)){
 									if(!preg_match("/[a-z]/", $vs_tmp)){
-										$vs_tmp = ucwords(strtolower($vs_tmp));
+										$vs_tmp = ucwords(mb_strtolower($vs_tmp));
 									}
 									$va_tmp_formatted[] = $vs_tmp;
 								}
@@ -181,7 +223,7 @@
 							foreach($va_tmp as $vs_tmp){
 								if($vs_tmp){
 									if(!preg_match("/[a-z]/", $vs_tmp)){
-										$vs_tmp = ucwords(strtolower($vs_tmp));
+										$vs_tmp = ucwords(mb_strtolower($vs_tmp));
 									}
 									$va_tmp_formatted[] = $vs_tmp;
 								}
@@ -234,7 +276,7 @@
 						foreach($va_notes as $va_note){
 							$va_note["object_note_value"] = trim($va_note["object_note_value"]);
 							if($va_note["object_note_value"] && strToLower($va_note["object_note_status"]) == "unrestricted"){
-								$va_notes_filtered[] = ucfirst(strtolower($va_note["object_note_value"]));
+								$va_notes_filtered[] = ucfirst(mb_strtolower($va_note["object_note_value"]));
 							}
 						}
 						if(sizeof($va_notes_filtered)){
@@ -268,14 +310,14 @@
 						$vs_caption .= $t_parent->get("ca_objects.preferred_labels").". ";
 						$vs_shade = $t_parent->get("ca_objects.shade");
 						if(!preg_match("/[a-z]/", $vs_shade)){
-							$vs_shade = ucwords(strtolower($vs_shade));
+							$vs_shade = ucwords(mb_strtolower($vs_shade));
 						}
 						if($vs_shade){
 							$vs_caption .= $vs_shade;
 						}
 						$vs_fragrance = $t_parent->get("ca_objects.fragrance");
 						if(!preg_match("/[a-z]/", $vs_fragrance)){
-							$vs_fragrance = ucwords(strtolower($vs_fragrance));
+							$vs_fragrance = ucwords(mb_strtolower($vs_fragrance));
 						}
 						if($vs_fragrance){
 							if($vs_shade){
@@ -339,7 +381,7 @@
 									if($vs_tmp = $qr_children->get("ca_objects.".$vs_child_info_field, array("delimiter" => ", ")) ){
 										if(in_array($vs_child_info_field, array("fragrance", "shade"))){
 											if(!preg_match("/[a-z]/", $vs_tmp)){
-												$vs_tmp = ucwords(strtolower($vs_tmp));
+												$vs_tmp = ucwords(mb_strtolower($vs_tmp));
 											}
 											$va_child_info[] = $vs_tmp;
 										}else{
@@ -354,6 +396,17 @@
 							}
 						}
 						print "</div><hr/>";
+					}
+					
+					$t_set = new ca_sets();
+					$va_sets = $t_set->getSetsForItem("ca_objects", $t_object->get("ca_objects.object_id"), array("setType" => "public_presentation", "checkAccess" => $va_access_values));
+					if(is_array($va_sets) && sizeof($va_sets)){
+						print "<div class='unit parentObject'><h6>This ".strToLower($t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true)))." is part of Featured ".((sizeof($va_sets) > 1) ? "Stories" : "Story")."</h6>";
+						foreach($va_sets as $va_set){
+							$va_set = array_pop($va_set);
+							print "<div>".caNavLink($this->request, $va_set["name"], "", "", "Gallery", $va_set["set_id"])."</div>";
+						}
+						print "</div><HR/>";
 					}
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTools'><div class='detailTool'><i class='material-icons inline'>save_alt</i>".caDetailLink($this->request, "Download Summary", "", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div></div>";
@@ -390,7 +443,7 @@
 							$vs_caption .= "<br/>";
 							$vs_subbrand = $qr_related->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true));
 							if(!preg_match("/[a-z]/", $vs_subbrand)){
-								$vs_subbrand = ucwords(strtolower($vs_subbrand));
+								$vs_subbrand = ucwords(mb_strtolower($vs_subbrand));
 							}
 							if(($vs_brand = $qr_related->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || $vs_subbrand){
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";

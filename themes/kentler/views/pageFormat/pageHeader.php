@@ -48,7 +48,8 @@
 		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
-
+	# --- hide user links - we have benefit patrons login to site, but this is done through a direct link to login page
+	$vb_has_user_links = false;
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>

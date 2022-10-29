@@ -55,7 +55,7 @@ h1.masttitle {
   border-right: 1px solid #FAF3E1;
   text-transform:none;
 }
-h1.masttitle a:visited, h2.masturl a:visited {
+.masttitle a, h1.masttitle a:visited, h2.masturl a:visited {
   text-decoration: none;
   color: #FAF3E1;
 }
@@ -133,7 +133,7 @@ br.clearall {
 }
 #logoSub {
   position: absolute;
-  background: url('../graphics/logo_sub.gif') 0 -10px no-repeat;
+ /* background: url('../graphics/college_arts.jpg') no-repeat;*/
   display: block;
   width: 220px;
   height: 20px;
@@ -141,6 +141,11 @@ br.clearall {
   left: 10px;
   border: 0;
   clear: both;
+  margin-left:1px;
+}
+#logoSub img {
+	height: 20px;
+	width: 275px;
 }
 #logoSub2 {
   position: absolute;
@@ -195,6 +200,7 @@ br.clearall {
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family:Proximanova;
+	font-size:13px;
 }
 .navbar .navbar-nav > .active > a {
 	background-color:transparent;
@@ -206,6 +212,19 @@ br.clearall {
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
 	background-color:#f7f7f7;
 	color:#333;
+}
+.filterMenuFacetList li.active {
+	background-color:#fff;
+	border-bottom:2px solid #ddd;
+}
+.filterMenuFacetList li {
+	border-bottom:2px solid #fff;
+}
+.filterMenuFacetList li a {
+	font-size:13px;
+}
+div.browseFacetItem a {
+	font-size:13px;
 }
 @media (min-width: 768px) {
 	.navbar-form {
@@ -272,8 +291,35 @@ address {
 	font-style:normal;
 }
 
+/* Detail */
+
+.detail .detailNavBgLeft, .detail .detailNavBgRight {
+	background-color:transparent;
+}
+.repViewerContCont {
+	margin-bottom:10px;
+}
+.dlButton {
+	margin-top:20px;
+	margin-bottom:10px;
+}
+.dlFile {
+	color:#fff;
+	background-color:#333;
+	padding:10px;
+	border-radius:4px;
+	-webkit-border-radius:4px;
+}
+a.dlFile {
+	color:#fff;
+	font-weight:Bold;
+}
+
 /* Explore */
 
+#SitePage_Browse_Collection hr {
+	margin-top:5px;
+}
 #contentInner {
   position: relative;
   clear: both;
@@ -291,7 +337,7 @@ address {
   padding: 15px 0 0 90px;
 }
 #contentInner p {
-  font-size: 12px;
+  font-size: 14px;
 }
 #box1 h2, #box2 h2 {
 	margin-top:0px;
@@ -303,14 +349,14 @@ div.box ul {
 }
 div.box ul li.link {
   margin-top: 7px;
-  font-size: 12px;
+  font-size: 14px;
 }
 div.box ul li.lidef {
-  font-size: 11px;
-  padding: 0 0 0 14px;
+  font-size: 14px;
+  padding: 0 0 8px 14px;
 }
 .event {
-	height:350px;
+	height:300px;
 }
 .placeholder {
 	background-color:#f7f7f7;

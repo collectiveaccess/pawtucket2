@@ -48,6 +48,8 @@
 		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
+	MetaTagManager::addMeta("description", "The Florida Slave Trade and Documentation Center provides resources on the history of the slave trade in Florida and the Gulf");
+	MetaTagManager::addMeta("keywords", "slavery,slave trade,Florida Keys");
 
 ?><!DOCTYPE html>
 <html lang="en">

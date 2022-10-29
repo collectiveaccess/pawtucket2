@@ -31,6 +31,8 @@
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 
 ?>
 <div class="row">
@@ -65,6 +67,7 @@
 					}
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+						print "<div class='detailTool'><div class='sharethis-inline-share-buttons'></div></div>";
 					}
 					print '</div><!-- end detailTools -->';
 				}				
@@ -79,14 +82,8 @@
 				if ($va_accession = $t_object->get('ca_objects.idno')) {
 					print "<div class='unit'><h6>Accession Number</h6>".$va_accession."</div>";
 				}
-				if ($va_idno = $t_object->get('ca_objects.object_identifier')) {
-					print "<div class='unit'><h6>Identifier</h6>".$va_idno."</div>";
-				}
 				if ($va_altname = $t_object->get('ca_objects.nonpreferred_labels')) {
 					print "<div class='unit'><h6>Alternate Name</h6>".$va_altname."</div>";
-				}
-				if ($va_component = $t_object->get('ca_objects.component_parts')) {
-					print "<div class='unit'><h6>Component Part Names</h6>".$va_component."</div>";
 				}
 				if ($va_description = $t_object->get('ca_objects.description')) {
 					print "<div class='unit'><h6>Description</h6>".$va_description."</div>";
@@ -103,13 +100,13 @@
 				if ($va_dimensions = $t_object->getWithTemplate('<ifcount min="1" code="ca_objects.dimensions.display_dimensions"><unit><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"><br/>^ca_objects.dimensions.dimensions_notes</ifdef></unit></ifcount>')) {
 					print "<div class='unit'><h6>Dimensions</h6>".$va_dimensions."</div>";
 				}	
-				if (($va_material = $t_object->get('ca_objects.material', array('convertCodesToDisplayText' => true, 'delimiter' => ', ')))) {
+				if (($va_material = $t_object->get('ca_objects.material', array('convertCodesToDisplayText' => true, 'delimiter' => '; ')))) {
 					print "<div class='unit'><h6>Material</h6>".$va_material."</div>";
 				}
-				if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'photographer'), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+				if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'photographer'), 'delimiter' => '<br/>', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
 					print "<div class='unit'><h6>Artist/Photographer</h6>".$va_artist."</div>";
 				}
-				if ($va_manufacturer = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('manufacturer'), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+				if ($va_manufacturer = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('manufacturer'), 'delimiter' => '<br/>', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
 					print "<div class='unit'><h6>Manufacturer</h6>".$va_manufacturer."</div>";
 				}
 				if ($va_brand_name = $t_object->get('ca_objects.brand_name')) {
@@ -124,19 +121,19 @@
 				if ($va_title = $t_object->get('ca_objects.title')) {
 					print "<div class='unit'><h6>Artwork Title</h6>".$va_title."</div>";
 				}					
-				if ($va_phototype = $t_object->get('ca_objects.photograph_type', array('convertCodesToDisplayText' => true))) {
+				if ($va_phototype = $t_object->get('ca_objects.photograph_type', array('convertCodesToDisplayText' => true, 'delimiter' => '; '))) {
 					print "<div class='unit'><h6>Photograph Type</h6>".$va_phototype."</div>";
 				}
 				if ($va_subject = $t_object->get('ca_objects.subject_image')) {
 					print "<div class='unit'><h6>Subject/Image</h6>".$va_subject."</div>";
 				}
-				if ($va_medium = $t_object->get('ca_objects.medium', array('convertCodesToDisplayText' => true))) {
+				if ($va_medium = $t_object->get('ca_objects.medium', array('convertCodesToDisplayText' => true, 'delimiter' => '; '))) {
 					print "<div class='unit'><h6>Medium</h6>".$va_medium."</div>";
 				}				
-				if ($va_support = $t_object->get('ca_objects.support', array('convertCodesToDisplayText' => true))) {
+				if ($va_support = $t_object->get('ca_objects.support', array('convertCodesToDisplayText' => true, 'delimiter' => '; '))) {
 					print "<div class='unit'><h6>Support</h6>".$va_support."</div>";
 				}	
-				if ($va_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true))) {
+				if ($va_technique = $t_object->get('ca_objects.technique', array('convertCodesToDisplayText' => true, 'delimiter' => '; '))) {
 					print "<div class='unit'><h6>Technique</h6>".$va_technique."</div>";
 				}	
 				if ($va_school = $t_object->get('ca_objects.school_style')) {
@@ -151,15 +148,33 @@
 ?>
 				<hr></hr>
 					<div class="row">
-						<div class="col-sm-6">		
-							{{{<ifcount code="ca_entities" excludeRelationshipTypes="source_name" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-							{{{<ifcount code="ca_entities" excludeRelationshipTypes="source_name" min="2"><H6>Related people</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_entities" excludeRelationshipTypes="source_name" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+						<div class="col-sm-12">		
+							{{{<ifcount code="ca_entities" excludeRelationshipTypes="source_name" min="1" max="1"><H6>Related person/business/organization</H6></ifcount>}}}
+							{{{<ifcount code="ca_entities" excludeRelationshipTypes="source_name" min="2"><H6>Related people/businesses/organizations</H6></ifcount>}}}
+							{{{<unit relativeTo="ca_entities" excludeRelationshipTypes="source_name" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
 							
-							
-							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
+							{{{<ifcount code="ca_occurrences" restrictToTypes="associations" min="1" max="1"><H6>Related Association</H6></ifcount>}}}
+							{{{<ifcount code="ca_occurrences" restrictToTypes="associations" min="2"><H6>Related Associations</H6></ifcount>}}}
+							{{{<unit relativeTo="ca_occurrences" restrictToTypes="associations" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</unit>}}}
+
+							{{{<ifcount code="ca_occurrences" restrictToTypes="publications" min="1" max="1"><H6>Related Publications</H6></ifcount>}}}
+							{{{<ifcount code="ca_occurrences" restrictToTypes="publications" min="2"><H6>Related Publications</H6></ifcount>}}}
+							{{{<unit relativeTo="ca_occurrences" restrictToTypes="publications" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</unit>}}}
+<?php
+							#if ($va_related_associations = $t_object->get('ca_occurrences.preferred_labels', array('restrictToTypes' => array('associations'), 'returnAsLink' => true, 'delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {
+							#	print "<div class='unit'><h6>Related Associations</h6>".$va_related_associations."</div>";
+							#}
+							#if ($va_related_publications = $t_object->get('ca_occurrences.preferred_labels', array('restrictToTypes' => array('publications'), 'returnAsLink' => true, 'delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {
+							#	print "<div class='unit'><h6>Related Publications</h6>".$va_related_publications."</div>";
+							#}
+							if ($va_related_objects = $t_object->get('ca_objects.related', array('returnAsLink' => true, 'delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'returnWithStructure' => true))) {
+								print "<div class='unit'><h6>Related Objects</h6>";
+								foreach ($va_related_objects as $va_id => $va_related_object) {
+									print "<p>".caNavLink($this->request, $va_related_object['name'].', '.$va_related_object['idno'], '', '', 'Detail', 'objects/'.$va_related_object['object_id'])." (".$va_related_object['relationship_typename'].")</p>";
+								}
+								print "</div>";
+							}														
+?>
 							
 							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
 							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
@@ -168,7 +183,7 @@
 							{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
 							{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
 						</div><!-- end col -->				
-						<div class="col-sm-6 colBorderLeft">
+						<div class="col-sm-12 ">
 							{{{map}}}
 						</div>
 					</div><!-- end row -->

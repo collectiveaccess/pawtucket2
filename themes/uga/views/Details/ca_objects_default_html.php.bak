@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2015 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -49,7 +49,7 @@
 				
 				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				
 <?php
 				# Comment and Share Tools
@@ -95,6 +95,81 @@
 				
 				
 				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
+<?php
+				if ($va_works = $t_object->getWithTemplate('<unit relativeTo="ca_occurrences"><l>^ca_occurrences.preferred_labels</l><br/><br/><unit relativeTo="ca_occurrences.pbcoreAssetDate" delimiter="<br/>">^ca_occurrences.pbcoreAssetDate.pbcoreAssetDateText (^ca_occurrences.pbcoreAssetDate.pbcoreWorkDateType)</unit><br/><br/>^ca_occurrences.pbcoreDescription</unit>')){
+					print "<h6>Related Work</h6>".$va_works;
+				}
+?>				
+				
+				<br/><br/>
+				
+				<button id="aeon_submit">Request Item</button>
+				
+				<form id="aeon_request" name="EADRequest" action="https://uga.aeon.atlas-sys.com/logon/" method="post">
+  <input type="hidden" name="AeonForm"     value="EADRequest"/>
+  <input type="hidden" name="RequestType"  value="Loan"/>
+  <input type="hidden" name="Location"     value="Brown Media Archives"/>
+  <input type="hidden" name="DocumentType" value="media"/>
+  <input type="hidden" name="Site"         value="Brown Media Archives"/>
+<input type="checkbox" name="Request" value="1" checked style="display:none"/><input type="hidden" name="ItemTitle_1" value="{{{ca_objects.preferred_labels.name}}}"/><input type="hidden" name="ItemSubtitle_1" value="{{{ca_objects.idno}}}"/><input type="hidden" name="ReferenceNumber_1" value="{{{ca_collections.preferred_labels.name}}}"/><input type="hidden" name="ItemNumber_1" value="{{{ca_objects.locationContainer.instantiationLocation}}}"/>
+{{{<ifdef code="ca_objects.instantiationPhysical"><input type="hidden" name ="ItemInfo2_1" value="^ca_objects.instantiationPhysical"/></ifdef>}}}
+</form>
+				<script src="/pawtucket2/assets/aeon/aeonRequestsDialog.min.js"></script>
+				<script src="/pawtucket2/assets/jqote2/jquery.jqote2.min.js"></script>
+				<style>
+					.ui-dialog { z-index: 10000 !important ;}
+					.requestDesc .label, .scheduled_date .label {
+						font-size: 100%;
+						color: black;
+					}
+					
+				</style>
+				 <script>
+  var settings = {
+              title:'Confirm your viewing request',
+              url: 'https://uga.aeon.atlas-sys.com/logon/',
+              submitButtonSelector:'#aeon_submit',
+              itemFields: [
+                {
+                  name: 'ItemTitle',
+                  label: 'Object title'
+                },
+                {
+                  name: 'ReferenceNumber',
+                  label: 'Collection'
+                },
+								{
+									name: 'ItemSubtitle',
+									label: 'Identifier'
+								},
+               {
+                 name: 'ItemNumber',
+                 label: 'Barcode'
+               }
+{{{<ifdef code="ca_objects.instantiationPhysical">
+               ,{
+                 name: 'ItemInfo2',
+                 label: 'Physical format' 
+               } </ifdef>}}}
+              ],
+              globalFields: [
+                { name: 'Location' },
+                { name: 'DocumentType' },
+                { name: 'Site' }
+              ],
+              'scheduledDateLabel':'Select a date from the calendar (below) to visit UGA Special Collections to view the material.',
+              'userReviewLabel': 'Keep this request saved in your account for later review. IT WILL NOT BE SENT TO LIBRARIES STAFF FOR FULFILLMENT.',
+              'footer': '<i>* Requested items will be grouped by container in the Aeon system.</i>',
+              'cleanValues':  function(s){return s.replace(/(^\s*)|(\s*$)/g, "").replace(/(\n|\t)/g, '');},
+              'compressRequests':true,
+              'stripUnchecked':true,
+              'selectAllButtonsPosition': 'none'
+
+            };
+						
+						$('#aeon_submit').aeonRequestsDialog(settings);
+				 </script>
+
 				
 				<hr></hr>
 					<div class="row">
@@ -116,7 +191,7 @@
 							{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
 						</div><!-- end col -->				
 						<div class="col-sm-6 colBorderLeft">
-							{{{map}}}
+							
 						</div>
 					</div><!-- end row -->
 			</div><!-- end col -->

@@ -48,7 +48,6 @@
 		 */
 		private $ops_tmp_table_name;
 		# ------------------------------------------------
-		protected $opo_datamodel;
 		protected $opo_db;
 		
 		# ------------------------------------------------
@@ -287,10 +286,23 @@
 			
 			// Expand field list into array
 			$sort_fields = is_array($sort_list) ? $sort_list : explode(';', $sort_list); 
+			$embedded_sort_directions = array_map(function($v) { $t = explode(':', $v); return (sizeof($t) == 2) ? strtolower(trim(array_pop($t))) : null; }, $sort_fields);
+		
 			$sort_directions = is_array($sort_directions) ? $sort_directions : explode(';', $sort_directions); 
+			if(sizeof($sort_directions) < sizeof($sort_fields)) {
+				$sort_directions = array_pad($sort_directions, sizeof($sort_fields), $sort_directions[0]);
+			}
+			foreach($embedded_sort_directions as $i => $d) {
+				if(in_array($d, ['asc', 'desc'])) { 
+					$sort_fields[$i] = array_shift(explode(':', $sort_fields[$i]));
+					$sort_directions[$i] = $d; 
+				}
+			}
 			if (sizeof($sort_directions) !== sizeof($sort_fields)) {
 				$sort_directions = array_pad($sort_directions, sizeof($sort_fields), "asc");
 			}
+			
+			$sort_directions = array_map(function($v) { return strtolower($v); }, $sort_directions);
 			
 			$sorted_hits = $sort_key_values = [];
 			$qr_sort = $set_id = null;
@@ -337,7 +349,7 @@
 						}
 						
 						$sql = "
-							SELECT {$table_pk}, {$sort_field}
+							SELECT {$table_pk}, `{$sort_field}`
 							FROM {$table}
 							WHERE
 								{$table_pk} IN (?)
@@ -421,7 +433,7 @@
 								WHERE
 									{$is_preferred_sql} ".($is_preferred_sql ? ' AND ' : '')." {$table}.{$table_pk} IN (?)
 							";
-							
+						
 							$qr_sort = $this->opo_db->query($sql, array($hits));
 							
 							$acc = $rel_ids = [];
@@ -471,7 +483,7 @@
 					
 					$vs_join_sql = join("\n", $joins);
 					$sql = "
-						SELECT {$table}.{$table_pk}, {$sort_table}.{$sort_field}
+						SELECT {$table}.{$table_pk}, {$sort_table}.`{$sort_field}`
 						FROM {$table}
 						{$vs_join_sql}
 						WHERE
@@ -512,32 +524,36 @@
 				$sort_directions = array_pad($sort_directions, sizeof($sortable_values), (strtolower($sort_directions) == 'desc') ? 'desc' : 'asc');
 			}
 			
-			if (sizeof($hits) < 1000000) {
+			$o_conf = caGetSearchConfig();
+			if (!($max_hits_for_in_memory_sort = $o_conf->get('max_hits_for_in_memory_sort'))) { $max_hits_for_in_memory_sort = 1000000; }
+			if (sizeof($hits) < $max_hits_for_in_memory_sort) {
+				$sort_mode = SORT_FLAG_CASE;
+				if (!$o_conf->get('dont_use_natural_sort')) { $sort_mode |= SORT_NATURAL; } else { $sort_mode |= SORT_STRING; }
+				
 				//
 				// Perform sort in-memory
 				//
 				$sort_buffer = [];
 				
-				$c = 0;
 				foreach($hits as $idx => $hit) {
-					$key = '';
-					foreach($sortable_values as $vn_i => $sortable_values_level) {
+					
+					$keys = [];
+					foreach($sortable_values as $i => $sortable_values_level) {
+						if(!sizeof($sortable_values_level)) { continue; }
 						$v = preg_replace("![^\w_]+!u", " ", caRemoveAccents($sortable_values_level[$hit]));
-						
-						$key .= str_pad(substr($v,0,50), 50, ' ', is_numeric($v) ? STR_PAD_LEFT : STR_PAD_RIGHT);
+						$keys[] = str_pad(substr($v, 0, 50), 50, ' ', is_numeric($v) ? STR_PAD_LEFT : STR_PAD_RIGHT);
 					}
-					$sort_buffer[$key.str_pad($c, 8, '0', STR_PAD_LEFT)] = $return_index ? $idx . '/' . $hit : $hit;
-					$c++;
+					$ptr = &$sort_buffer;
+					
+					foreach($keys as $key) {
+						if (!is_array($ptr[$key])) { $ptr[$key] = []; }
+						$ptr = &$ptr[$key];
+					}
+					$ptr[] = $return_index ? $idx . '/' . $hit : $hit;
 				}
 				
-				$o_conf = caGetSearchConfig();
-
-				$sort_mode = SORT_FLAG_CASE;
-				if (!$o_conf->get('dont_use_natural_sort')) { $sort_mode |= SORT_NATURAL; } else { $sort_mode |= SORT_STRING; }
+				$sort_buffer = self::_sortKeys($sort_buffer, $sort_mode, $sort_directions, 0);
 				
-				ksort($sort_buffer, $sort_mode);
-				if (strtolower($sort_directions[0]) == 'desc') { $sort_buffer = array_reverse($sort_buffer); }
-
 				if($return_index) {
 					$return = [];
 					foreach($sort_buffer as $val) {
@@ -573,6 +589,24 @@
 					return $results['row_id'];
 				}
 			}
+		}
+		# ------------------------------------------------------------------
+		/**
+		 *
+		 */
+		static private function _sortKeys($sort_buffer, $sort_mode, $sort_directions, $level=0) {
+			ksort($sort_buffer, $sort_mode);
+			if(strtolower($sort_directions[$level]) === 'desc') { $sort_buffer = array_reverse($sort_buffer); }
+			
+			$ret = [];
+			foreach($sort_buffer as $key => $subkeys) {
+				if(is_array($subkeys)) {
+					$ret = array_merge($ret, self::_sortKeys($subkeys, $sort_mode, $sort_directions, $level + 1));
+				} else {
+					return $sort_buffer;
+				}
+			}
+			return $ret;
 		}
 		# ------------------------------------------------------------------
 		/**

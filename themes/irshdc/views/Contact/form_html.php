@@ -10,7 +10,8 @@
 	if($pn_row_id && $ps_table){
 		$t_instance = Datamodel::getInstanceByTableNum($ps_table);
 		$t_instance->load($pn_row_id);
-		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", str_replace("ca_", "", $ps_table), $pn_row_id);
+		#$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", str_replace("ca_", "", $ps_table), $pn_row_id);
+		$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_row_id);
 		$vs_name = $t_instance->get("preferred_labels");
 	}
 	$va_errors = $this->getVar("errors");
@@ -117,7 +118,7 @@
 			<div class="row">
 				<div class="col-sm-12 col-md-offset-1 col-md-10">
 					<div class="form-group">
-						<button type="submit" class="btn btn-default">Send</button>
+						<button type="submit" class="btn btn-default" onClick="$('.loadingForm').toggle();"><span class="loadingForm"><?php print _t('Send'); ?></span><span class="loadingForm" style="display:none;"> <?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></span></button>
 					</div><!-- end form-group -->
 				</div>
 			</div>

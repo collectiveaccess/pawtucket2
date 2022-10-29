@@ -136,7 +136,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 			foreach($va_criteria as $va_criterion) {
 				if ($va_criterion['facet_name'] != '_search') {
 					print "<strong>".$va_criterion['facet'].':</strong> '.$va_criterion['value'];
-					print ' '.caNavLink($this->request, '<span class="glyphicon glyphicon-remove-circle"></span>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					print ' '.caNavLink($this->request, '<i class="fa fa-times" aria-hidden="true"></i>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				} else {
 					print "<strong>".$va_criterion['facet'].':</strong> '.SearchEngine::getSearchExpressionForDisplay($va_criterion['value'], $vs_table);
 				}

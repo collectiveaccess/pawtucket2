@@ -40,6 +40,10 @@
 	$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
 	$o_config = caGetSearchConfig();
+	$vs_caption_template = $va_block_info["caption_template"];
+	if(!$vs_caption_template){
+		$vs_caption_template = "<l>^ca_collections.preferred_labels.name</l>";
+	}
 	
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -48,7 +52,7 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" aria-label="list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> | 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" role="button" aria-label="list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> | 
 <?php
 				}
 ?>
@@ -67,7 +71,7 @@
 			}
 ?>
 			<div class='blockResults authorityBlock'>
-				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
+				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left" role="button" aria-label="previous"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right" role="button" aria-label="next"></i></div>
 				<div id='{{{block}}}Results' class='multiSearchResults' style="position:relative;">
 					<div class='blockResultsScroller'>
 <?php
@@ -77,7 +81,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
-				print "<div class='collectionsResult authorityResult'>".$qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true))."</div>";
+				print "<div class='collectionsResult authorityResult'>".$qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values))."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i >= $vn_items_per_column) {
@@ -105,7 +109,8 @@
 						itemCount: <?php print $qr_results->numHits(); ?>,
 						preloadCount: <?php print $vn_count; ?>,
 						
-						itemWidth: jQuery('.{{{block}}}Result').outerWidth(true),
+						itemsPerColumn: <?php print $vn_items_per_column; ?>,
+						itemWidth: jQuery('.{{{block}}}Set').outerWidth(true),
 						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
 						itemLoadURL: '<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
 						itemContainerSelector: '.blockResultsScroller',

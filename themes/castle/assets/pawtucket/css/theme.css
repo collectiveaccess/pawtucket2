@@ -74,13 +74,13 @@ p, div {
 	font-family:Lora;
 }
 .navbar {
-	/*background-image: url("../graphics/lt-blue_stained_glass.jpg");*/
+	background-image: url("../graphics/Charcoal_Distressed.png");
 	background-color: #30302f;
 	margin-bottom:40px;
 }
 .navbar-brand {
 	width:339px;
-	padding-top:0px;
+	padding-top:8px;
 	padding-bottom:0px;
 }
 .nav > li {
@@ -463,6 +463,9 @@ a.browseRemoveFacet img {
 #browse-menu {
 	margin-top:-1px;
 }
+.results a btn-default .glyphicon {
+	color:#fff !important;
+}
 
 /* Front */
 
@@ -540,6 +543,9 @@ a.browseRemoveFacet img {
 .multisearchResult p {
 	margin-bottom:4px;
 }
+.multisearchResult small {
+	color:#ABABAB;
+}
 .multisearch .multisearchResult.objectsResult {
 	background-color: #f5f5f5;
 	box-shadow:none;
@@ -557,6 +563,7 @@ a.browseRemoveFacet img {
 	padding-bottom:50px;
 	background-color:#fff;
 	border:0px;
+	margin-bottom:0px;
 }
 
 /* Advanced Search */

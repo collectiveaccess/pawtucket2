@@ -44,10 +44,12 @@
 			Please note that for all requested display use outside of the United States, you will need to complete an international art loan agreement form. Please also take a moment to read the guidelines for international art loans, which you can find in the international loan form record in the database.
 		</p>
 		<p>
-			<br/><strong>Can I borrow works that are currently on display in corporate office spaces?</strong>
+			<br/><strong>Can I reproduce artwork in the collection, either digitally or in print?</strong>
 		</p>
 		<p>
-			Possibly—it doesn’t hurt to ask! Some works may not be available due to value, current placement and/or significance. Works on display that are part of a series may also not be available.
+			Works of art under copyright protection will require permission from the artist, the artist's estate/foundation, or the agency representing the artist's intellectual property rights. Please allow adequate time in your project schedule for requesting copyright permissions, which may take up to several weeks or longer. Contact the art team to learn more about how we can help facilitate these requests. 
+ 
+Visit <a href="http://copyright.gov">copyright.gov</a> and <a href="http://arsny.com">arsny.com</a> for more information about copyright law and artists currently protected by copyright.
 		</p>
 		<p>
 			<br/><strong>Anything else I should know?</strong>

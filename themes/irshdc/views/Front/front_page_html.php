@@ -42,7 +42,7 @@
 			$vn_timeline_set_id = $t_set->get("set_id");
 			$o_occ_context = new ResultContext($this->request, 'ca_occurrences', 'front');
 			$o_occ_context->setAsLastFind();
-			$o_occ_context->setResultList(array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))));
+			$o_occ_context->setResultList(array_keys($t_set->getItemRowIDs(array("checkAccess" => $va_access_values))));
 			$o_occ_context->saveContext();
 		}
 	}
@@ -65,29 +65,201 @@
 			<br/>
 			<br/>
 			<br/>
-			<H1>The Indian Residential School History and Dialogue Centre is located on the traditional, ancestral, unceded territory of the hən̓q̓əmin̓əm̓ speaking xʷməθkʷəy̓əm (Musqueam) people.</H1>
+			<H1>The Indian Residential School History and Dialogue Centre is located on the traditional, ancestral, unceded territory of the hən̓q̓əmin̓əm̓ speaking xʷməθkʷəy̓əm (Musqueam people).</H1>
 			<br/>
 			<br/>
 			<br/>
-		</div>
-	</div>
-	<div class="row blackBg primer">
-		<div class="col-sm-5 col-sm-offset-0 col-md-5 col-md-offset-1 col-lg-5 col-lg-offset-1">
-			<H2><?php print caNavLink($this->request, "Resources", "", "", "Listing", "Resources"); ?></H2>
-			<H3>Perspectives, stories and dialogues</H3>
-			<br/>
-			<p>
-				Explore a continually growing set of resources that explore the historical context of settler colonialism in Canada and foundational themes relating to the history of the Indian Residential School System, Indigenous histories, contemporary realities, and futures.
-			</p>
-			<p class="text-center">
-				<br/><?php print caNavLink($this->request, "MORE", "btn-default outline", "", "Listing", "Resources"); ?>
-			</p>
-		</div>
-		<div class="col-sm-7 col-sm-offset-0 col-md-6 col-md-offset-0 col-lg-5 col-lg-offset-1 bleed">
-			<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'centre6.jpg'), "", "", "Listing", "Resources"); ?>
 		</div>
 	</div>
 <?php
+	require_once(__CA_MODELS_DIR__."/ca_site_pages.php");
+	require_once(__CA_MODELS_DIR__."/ca_site_templates.php");
+	$t_site_templates = new ca_site_templates(array("template_code" => "features"));
+	if($vn_featured_template_id = $t_site_templates->get("ca_site_templates.template_id")){
+		$q_features = ca_site_pages::find(array('template_id' => $vn_featured_template_id), array('returnAs' => 'searchResult', 'checkAccess' => $va_access_values));
+		if($q_features->numHits() > 0){
+?>	
+	
+	
+<div class="row blackBg primer">	
+		<div class="jcarousel-wrapper mainSlideShow">
+			<!-- Carousel -->
+			<div class="jcarousel mainSlide">
+				<ul id="hpSlides">
+<?php
+			$va_features = array();
+			while($q_features->nextHit()){
+				$va_features_info = array();
+				$vn_page_id = $q_features->get('ca_site_pages.page_id');
+				$t_site_page = new ca_site_pages($vn_page_id);
+				$vs_image = $t_site_page->getWithTemplate("^ca_site_page_media.media.page");
+				if(!$vs_image){
+					$vs_image = caGetThemeGraphic($this->request, 'centre6.jpg');
+				}
+				
+				$va_page_content = array();
+				if (is_array($va_content = caUnserializeForDatabase($t_site_page->get('ca_site_pages.content')))) {
+					foreach($va_content as $vs_tag => $vs_content) {
+						$va_page_content[$vs_tag] = caProcessReferenceTags($this->request, $vs_content, ['page' => $vn_page_id]);
+					}
+				}
+				$va_features_info["page_id"] = $vn_page_id;
+				$va_features_info["image"] = $vs_image;
+				$va_features_info["hpurl"] = $va_page_content["hpurl"];
+				$va_features_info["hpsubtitle"] = $va_page_content["hpsubtitle"];
+				$va_features_info["hpdescription"] = $va_page_content["hpdescription"];
+				$va_features_info["hptitle"] = $va_page_content["hptitle"];
+				$va_features_info["hpbuttontext"] = $va_page_content["hpbuttontext"];
+				$va_features[$va_page_content["hporder"].".".$vn_page_id] = $va_features_info;
+			}
+			if(sizeof($va_features)){
+				krsort($va_features, SORT_NUMERIC);
+				foreach($va_features as $vn_key => $va_feature){
+					$vs_url = $va_feature["hpurl"];
+					$vs_image = $va_feature["image"];
+
+?>
+					<li>
+	
+					<div class="row">
+						<div class="col-sm-4 col-sm-offset-1 col-md-4 col-md-offset-1 col-lg-3 col-lg-offset-1 hpFeaturesText">
+							<H2><?php print (($vs_url) ? "<a href='".$vs_url."'>" : "").$va_feature["hptitle"].(($vs_url) ? "</a>" : ""); ?></H2>
+<?php
+							if($vs_tmp = $va_feature["hpsubtitle"]){
+								print "<H3>".$vs_tmp."</H3>";
+							}
+							if($vs_tmp = $va_feature["hpdescription"]){
+								print "<br/><p>".$vs_tmp."</p>";
+							}
+							if($vs_url){
+?>
+								<p class="text-center">
+									<br/><a href="<?php print $vs_url; ?>" class="btn-default outline"><?php print (($vs_tmp = $va_feature["hpbuttontext"]) ? $vs_tmp : "More"); ?></a>
+								</p>
+<?php							
+							}
+?>
+							
+						</div>
+						<div class="col-sm-7 col-sm-offset-0 col-md-7 col-md-offset-0 col-lg-7 col-lg-offset-1 imgCol">
+							<?php print (($vs_url) ? "<a href='".$vs_url."'>" : "").$vs_image.(($vs_url) ? "</a>" : ""); ?>
+						</div>
+					</div>
+
+					</li>
+<?php
+		}
+?>
+
+				</ul>
+			</div><!-- end jcarousel -->
+<?php
+		if(sizeof($va_features) > 1){
+?>
+			<!-- Prev/next controls -->
+			<a href="#" class="jcarousel-control-prev mainSlideNav"><i class="fa fa-angle-left"></i></a>
+			<a href="#" class="jcarousel-control-next mainSlideNav"><i class="fa fa-angle-right"></i></a>
+<?php
+		}
+?>		
+			
+		</div><!-- end jcarousel-wrapper -->
+	</div>
+<?php
+		if(sizeof($va_features) > 1){
+?>
+	<div class="row"><div class="col-sm-12">
+		<p class="jcarousel-pagination mainSlideNav">
+		<!-- Pagination items will be generated in here -->
+		</p>
+	</div></div>
+<?php
+		}
+?>
+			<script type='text/javascript'>
+				jQuery(document).ready(function() {
+					$('.mainSlide li').width($('.mainSlideShow').width());
+					$( window ).resize(function() {
+					  $('.mainSlide li').width($('.mainSlideShow').width());
+					});
+					/*
+					Carousel initialization
+					*/
+					$('.mainSlide')
+						.jcarousel({
+							// Options go here
+							wrap:'circular'
+						}).jcarouselAutoscroll({
+							interval: 7000,
+							target: '+=1',
+							autostart: true
+						});
+        		
+						$('.mainSlide').hover(function() {
+							$(this).jcarouselAutoscroll('stop');
+						}, function() {
+							$(this).jcarouselAutoscroll('start');
+						});
+						
+						
+		
+					/*
+					 Prev control initialization
+					 */
+					$('.jcarousel-control-prev.mainSlideNav')
+						.on('jcarouselcontrol:active', function() {
+							$(this).removeClass('inactive');
+						})
+						.on('jcarouselcontrol:inactive', function() {
+							$(this).addClass('inactive');
+						})
+						.jcarouselControl({
+							// Options go here
+							target: '-=1'
+						});
+		
+					/*
+					 Next control initialization
+					 */
+					$('.jcarousel-control-next.mainSlideNav')
+						.on('jcarouselcontrol:active', function() {
+							$(this).removeClass('inactive');
+						})
+						.on('jcarouselcontrol:inactive', function() {
+							$(this).addClass('inactive');
+						})
+						.jcarouselControl({
+							// Options go here
+							target: '+=1'
+						});
+		
+					/*
+					 Pagination initialization
+					 */
+					$('.jcarousel-pagination.mainSlideNav')
+						.on('jcarouselpagination:active', 'a', function() {
+							$(this).addClass('active');
+						})
+						.on('jcarouselpagination:inactive', 'a', function() {
+							$(this).removeClass('active');
+						})
+						.jcarouselPagination({
+							// Options go here
+						});
+			
+			
+					});
+					/*
+					setInterval("$('.jcarousel').jcarousel('scroll', '+=1')", 4000);
+					*/
+			</script>
+	
+<?php
+				
+			}
+		}
+	}
+
 	if($vn_timeline_set_id){
 
 ?>

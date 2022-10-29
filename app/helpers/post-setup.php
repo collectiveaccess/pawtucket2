@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018-2019 Whirl-i-Gig
+ * Copyright 2018-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -39,7 +39,6 @@ if (!defined("__CA_BASE_DIR__")) {
 	define("__CA_BASE_DIR__", ($_SERVER['SCRIPT_FILENAME'] && (php_sapi_name() !== 'cli'))  ? preg_replace("!/install$!", "", pathinfo($_SERVER['SCRIPT_FILENAME'], PATHINFO_DIRNAME)) :  join(DIRECTORY_SEPARATOR, array_slice(explode(DIRECTORY_SEPARATOR, __FILE__), 0, -3)));
 }
 
-
 #
 # __CA_URL_ROOT__ = the root-relative URL path to your CollectiveAccess installation
 #
@@ -54,7 +53,7 @@ if (!defined("__CA_BASE_DIR__")) {
 # 		Example: If CollectiveAccess will be accessed via http://www.mysite.org/apps/ca then __CA_URL_ROOT__ would be set to /apps/ca
 #
 if (!defined("__CA_URL_ROOT__")) {
-	define("__CA_URL_ROOT__", str_replace(isset($_SERVER['DOCUMENT_ROOT']) ? $_SERVER['DOCUMENT_ROOT'] : '', '', __CA_BASE_DIR__));
+	define("__CA_URL_ROOT__", str_replace($_SERVER['CONTEXT_DOCUMENT_ROOT'] ?? $_SERVER['DOCUMENT_ROOT'] ?? '', '', __CA_BASE_DIR__));
 }
 
 
@@ -288,6 +287,20 @@ if (!defined('__CA_REDIS_DB__')) {
 }
 
 
+#
+# Access control constants - declared here to ensure
+# They are accessible when parsing configuration files that reference them
+#
+define('__CA_BUNDLE_ACCESS_NONE__', 0);
+define('__CA_BUNDLE_ACCESS_READONLY__', 1);
+define('__CA_BUNDLE_ACCESS_EDIT__', 2);
+
+define('__CA_ACL_NO_ACCESS__', 0);
+define('__CA_ACL_READONLY_ACCESS__', 1);
+define('__CA_ACL_EDIT_ACCESS__', 2);
+define('__CA_ACL_EDIT_DELETE_ACCESS__', 3);
+
+
 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT);
 
 # __CA_ALLOW_AUTOMATIC_UPDATE_OF_VENDOR_DIR__
@@ -362,4 +375,36 @@ if (!defined('__CA_ALLOW_AUTOMATIC_UPDATE_OF_DATABASE__')) {
 # Flag indicating application type to code libraries
 if (!defined("__CA_APP_TYPE__")) {
 	define("__CA_APP_TYPE__", "PROVIDENCE");
+}
+
+
+# __CA_MEMORY_LIMIT__
+#
+# Override server request memory limit with setup.php defined value
+if (defined("__CA_MEMORY_LIMIT__")) {
+	ini_set('memory_limit', __CA_MEMORY_LIMIT__);
+}
+
+# __CA_LOG_DATABASE_QUERIES__
+#
+# Set this to have the application log all database queries with performance 
+# data to the log_queries log file.
+if (!defined('__CA_LOG_DATABASE_QUERIES__')) {
+	define('__CA_LOG_DATABASE_QUERIES__', false);
+}
+
+# __CA_LONG_DATABASE_QUERY_THRESHOLD__
+#
+# Queries whose executation is longer than this threshold (in seconds)
+# will be logged in the log_queries file as warnnings.
+if (!defined('__CA_LONG_DATABASE_QUERY_THRESHOLD__')) {
+	define('__CA_LONG_DATABASE_QUERY_THRESHOLD__', 0.5);
+}
+
+# __CA_SHOW_FULL_STACKTRACE_IN_DATABASE_QUERY_LOG__
+#
+# Includes full stacktrace in query log. If not set only the line of code
+# that triggered execution of the query is recordded in the log.
+if (!defined('__CA_SHOW_FULL_STACKTRACE_IN_DATABASE_QUERY_LOG__')) {
+	define('__CA_SHOW_FULL_STACKTRACE_IN_DATABASE_QUERY_LOG__', false);
 }

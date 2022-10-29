@@ -91,7 +91,9 @@ if($vs_mode == "map"){
  						$vs_featured_image = $t_representation->get("ca_object_representations.media.".$vs_version);
  						$vs_featured_image = caDetailLink($this->request, $vs_featured_image, '', "ca_objects", $vn_featured_object_id);
  						if($vs_caption = $t_representation->get("ca_object_representations.preferred_labels.name")){
-							$vs_featured_image .= "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
+							if($vs_caption != "[BLANK]"){
+								$vs_featured_image .= "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
+							}
 						};
  					}else{
  						$vs_featured_image =  caRepresentationViewer(
@@ -103,7 +105,7 @@ if($vs_mode == "map"){
 														'showAnnotations' => true, 
 														'primaryOnly' => true, 
 														'dontShowPlaceholder' => true, 
-														'captionTemplate' => "<unit relativeTo='ca_objects'><l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></l></unit>"
+														'captionTemplate' => "<unit relativeTo='ca_objects'><l><if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></if></l></unit>"
 													)
 												);
  					}
@@ -224,7 +226,7 @@ if($vs_mode == "map"){
 							</div><!-- end row -->
 							<script type="text/javascript">
 								jQuery(document).ready(function() {
-									jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+									jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_occurrence', 'id' => '^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 										jQuery('#browseResultsContainer').jscroll({
 											autoTrigger: true,
 											loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

@@ -82,7 +82,7 @@
 		
 		$va_disabled_options =  isset($pa_options['disabledOptions']) ? $pa_options['disabledOptions'] : array();
 		
-		$vb_content_is_list = (array_key_exists(0, $pa_content)) ? true : false;
+		$vb_content_is_list = caIsIndexedArray($pa_content);
 		
 		$va_colors = array();
 		if (isset($pa_options['colors']) && is_array($pa_options['colors'])) {
@@ -96,7 +96,7 @@
 			foreach($pa_content as $vs_val => $vs_opt) {
 				if ($vb_use_options_for_values) { $vs_val = preg_replace("!^[\s]+!", "", preg_replace("![\s]+$!", "", str_replace("&nbsp;", "", $vs_opt))); }
 				if ($COLOR = ($vs_color = $va_colors[$vs_val]) ? " data-color='#{$vs_color}'" : '') { $vb_uses_color = true; }
-				if (!($SELECTED = (((string)$vs_selected_val === (string)$vs_val) && strlen($vs_selected_val)) ? ' selected="1"' : '')) {
+				if (is_null($vs_selected_val) || !($SELECTED = (((string)$vs_selected_val === (string)$vs_val) && strlen($vs_selected_val)) ? ' selected="1"' : '')) {
 					$SELECTED = (is_array($va_selected_vals) && in_array($vs_val, $va_selected_vals)) ? ' selected="1"' : '';
 				}
 				$DISABLED = (isset($va_disabled_options[$vs_val]) && $va_disabled_options[$vs_val]) ? ' disabled="1"' : '';
@@ -107,7 +107,7 @@
 				foreach($pa_content as $vs_val) {
 					if ($COLOR = ($vs_color = $va_colors[$vs_val]) ? " data-color='#{$vs_color}'" : '') { $vb_uses_color = true; }
 					
-					if (!($SELECTED = ((string)$vs_selected_val === (string)$vs_val) ? ' selected="1"' : '')) {
+					if (is_null($vs_selected_val) || !($SELECTED = ((string)$vs_selected_val === (string)$vs_val) ? ' selected="1"' : '')) {
 						$SELECTED = (is_array($va_selected_vals) && in_array($vs_val, $va_selected_vals))  ? ' selected="1"' : '';
 					}
 					$DISABLED = (isset($va_disabled_options[$vs_val]) && $va_disabled_options[$vs_val]) ? ' disabled="1"' : '';
@@ -118,7 +118,7 @@
 					if ($vb_use_options_for_values) { $vs_val = preg_replace("!^[\s]+!", "", preg_replace("![\s]+$!", "", str_replace("&nbsp;", "", $vs_opt))); }
 					if ($COLOR = ($vs_color = $va_colors[$vs_val]) ? " data-color='#{$vs_color}'" : '') { $vb_uses_color = true; }
 				
-					if (!($SELECTED = ((string)$vs_selected_val === (string)$vs_val) ? ' selected="1"' : '')) {
+					if (is_null($vs_selected_val) || !($SELECTED = ((string)$vs_selected_val === (string)$vs_val) ? ' selected="1"' : '')) {
 						$SELECTED = (is_array($va_selected_vals) && in_array($vs_val, $va_selected_vals)) ? ' selected="1"' : '';
 					}
 					$DISABLED = (isset($va_disabled_options[$vs_val]) && $va_disabled_options[$vs_val]) ? ' disabled="1"' : '';
@@ -145,6 +145,7 @@
 	 * 		usewysiwygeditor = Use rich text editor (CKEditor) for text element. Only available when the height of the text element is multi-line. [Default is false]
 	 *      cktoolbar = app.conf directive name to pull CKEditor toolbar spec from. [Default is wysiwyg_editor_toolbar]
 	 *      contentUrl = URL to use to load content when CKEditor is use with CA-specific plugins. [Default is null]
+	 *		textAreaTagName = 
 	 * @return string
 	 */
 	function caHTMLTextInput($ps_name, $pa_attributes=null, $pa_options=null) {
@@ -207,12 +208,13 @@
 		}
 		
 		if ($vb_is_textarea) {
+			$tag_name = caGetOption('textAreaTagName', $pa_options, 'textarea');
 			$vs_value = $pa_attributes['value'];
 			if ($pa_attributes['size']) { $pa_attributes['cols'] = $pa_attributes['size']; }
 			unset($pa_attributes['size']);
 			unset($pa_attributes['value']);
 			$vs_attr_string = _caHTMLMakeAttributeString($pa_attributes, $pa_options);
-			$vs_element = "<textarea name='{$ps_name}' wrap='soft' {$vs_attr_string}>".$vs_value."</textarea>\n";
+			$vs_element = "<{$tag_name} name='{$ps_name}' wrap='soft' {$vs_attr_string}>".$vs_value."</{$tag_name}>\n";
 		} else {
 			$pa_attributes['size']  = !$pa_attributes['size'] ?  $pa_attributes['width'] : $pa_attributes['size'];
 			$vs_attr_string = _caHTMLMakeAttributeString($pa_attributes, $pa_options);
@@ -391,13 +393,16 @@
 		$vn_scale_css_width_to = caGetOption('scaleCSSWidthTo', $pa_options, null);
 		$vn_scale_css_height_to = caGetOption('scaleCSSHeightTo', $pa_options, null);
 		
+		$width = caGetOption('width', $pa_options, $va_attributes['width']);
+		$height = caGetOption('height', $pa_options, $va_attributes['height']);
+		
 		if ($vn_scale_css_width_to || $vn_scale_css_height_to) {
 			if (!$vn_scale_css_width_to) { $vn_scale_css_width_to = $vn_scale_css_height_to; }
 			if (!$vn_scale_css_height_to) { $vn_scale_css_height_to = $vn_scale_css_width_to; }
 			
-			$va_scaled_dimensions = caFitImageDimensions($va_attributes['width'], $va_attributes['height'], $vn_scale_css_width_to, $vn_scale_css_height_to);
-			$va_attributes['width'] = $va_scaled_dimensions['width'].'px';
-			$va_attributes['height'] = $va_scaled_dimensions['height'].'px';
+			$va_scaled_dimensions = caFitImageDimensions($width, $height, $vn_scale_css_width_to, $vn_scale_css_height_to);
+			$width = $va_attributes['width'] = $va_scaled_dimensions['width'].'px';
+			$height = $va_attributes['height'] = $va_scaled_dimensions['height'].'px';
 		}
 		
 		$vs_attr_string = _caHTMLMakeAttributeString($va_attributes, $pa_options);
@@ -407,12 +412,13 @@
 			# Tilepic
 			#
 			
-			$vn_width = 						(int)$pa_options["width"];
-			$vn_height = 						(int)$pa_options["height"];
-			
-			$vn_tile_width = 					(int)$pa_options["tile_width"];
-			$vn_tile_height = 					(int)$pa_options["tile_height"];
-			
+			$vn_tile_width = 					caGetOption('tile_width', $pa_options, 256, array('castTo'=>'int'));
+			$vn_tile_height = 					caGetOption('tile_height', $pa_options, 256, array('castTo'=>'int'));
+			// Tiles must be square.
+			if ($vn_tile_width != $vn_tile_height){
+				$vn_tile_height = $vn_tile_width;
+			}
+
 			$vn_layers = 						(int)$pa_options["layers"];
 			
 			if (!($vs_id_name = (string)$pa_options["idname"])) {
@@ -463,9 +469,10 @@
 			), $va_viewer_opts_from_app_config);
 			
 			$va_opts['info'] = array(
-				'width' => $vn_width,
-				'height' => $vn_height,
-				'tilesize'=> 256,
+				'width' => $width,
+				'height' => $height,
+				// Set tile size using function options.
+				'tilesize'=> $vn_tile_width,
 				'levels' => $vn_layers
 			);
 			
@@ -488,10 +495,10 @@ $vs_tag = "
 			# Standard image
 			#
 			
-			if (!isset($pa_options["width"])) $pa_options["width"] = 100;
-			if (!isset($pa_options["height"])) $pa_options["height"] = 100;
+			if (!isset($width)) $width = 100;
+			if (!isset($height)) $height = 100;
 					
-			if (($ps_url) && ($pa_options["width"] > 0) && ($pa_options["height"] > 0)) {
+			if (($ps_url) && ($width> 0) && ($height > 0)) {
 			
 				$vs_element = "<img {$vs_attr_string} />";
 			} else {

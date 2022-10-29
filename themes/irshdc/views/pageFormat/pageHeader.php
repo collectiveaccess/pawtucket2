@@ -154,6 +154,18 @@
 							<li><?php print caNavLink($this->request, "<span>"._t("BC Schools")."</span>", "", "", "Explore", "schools"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Featured Collections")."</span>", "", "", "Gallery", "Index"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Resources")."</span>", "", "", "Listing", "Resources"); ?></li>
+<?php
+	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewDigExh")){
+?>
+							<li><?php print caNavLink($this->request, "<span>"._t("Exhibitions")."</span>", "", "", "Listing", "exhibitions"); ?></li>
+<?php
+	}
+	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewEduRes")){
+?>
+							<li><?php print caNavLink($this->request, "<span>"._t("Educational Resources")."</span>", "", "", "Listing", "EducationalResources"); ?></li>
+<?php
+	}
+?>					
 						</ul>
 					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
@@ -162,12 +174,12 @@
 						<ul class="dropdown-menu">
 							<li><a href='/AboutTheProject'><span><?php print _t("About the Project"); ?></span></a></li>
 							<li><a href='/Acknowledgements'><span><?php print _t("Acknowledgements"); ?></span></a></li>
-							<li><a href='/SupportServices'><span><?php print _t("Support Services"); ?></span></a></li>
 						</ul>
 					</li>
 					
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "<span>"._t("Contact")."</span>", "", "", "Contact", "Form"); ?></li>
 					<li><a href="http://irshdc.ubc.ca" target="_blank"><span>Centre Home</span></a></li>
+					<li class='navLinkBorder'><a href="https://irshdc.ubc.ca/for-survivors/healing-and-wellness-resources/" target="_blank"><span>Wellness & Support</span></a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

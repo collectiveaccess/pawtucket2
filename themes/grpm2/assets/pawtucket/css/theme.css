@@ -60,6 +60,7 @@ b, strong {
 }
 .btn-default:hover, a.btn-default:hover, .btn-default a:hover{
 	background-color: #4BB7E6;
+	text-decoration:none;
 }
 a.btn-default, .btn-default a{
 	text-decoration:none;
@@ -419,6 +420,7 @@ hr{
 .detail h6{
 	font-size:14px;
 	margin-top: 20px;
+	font-weight: bold;
 }
 .repViewerContCont{
 	padding-bottom:38px;
@@ -449,6 +451,9 @@ hr{
 .detail .detailMediaToolbar {
     font-size: 20px;
 }
+.detail .detailMediaToolbar .dlButton{
+	display:none;
+}
 .detail #detailAnnotations {
     margin: 0px 0px 0px 0px;
 }
@@ -475,6 +480,10 @@ hr{
 	text-transform:none;
 	padding-bottom:4px;
 	border-radius: 4px;
+}
+.detailCC img{
+	width:100px;
+	height:auto;
 }
 /* detail comments */
 .detail .notificationMessage{
@@ -586,4 +595,21 @@ label{
 .gallery .setCascadeInfo .setCascadeTitle{
 	font-size:14px;
 	font-family:museo-slab;
+}
+
+.repCaption {
+	font-size: 11px;
+	margin-top: 5px;
+}
+
+.deaccessionBanner {
+    text-align: center;
+    margin-top: 7px;
+}
+
+div.deaccessionBannerContainer {
+    background-color: #ffb3b3;
+    height: auto;
+	margin-bottom: 10px;
+    vertical-align: center;
 }

@@ -65,7 +65,7 @@
 				
 					<div id="detailAnnotations"></div>
 <?php
-		if ($va_image_thumbnails = caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "list", "linkTo" => "carousel"))) {				
+		if ($va_image_thumbnails = caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "list", "linkTo" => "carousel", "version" => "icon"))) {				
 			print '<div class="jcarousel-wrapper-thumb">
                 <div class="jcarousel-thumb" data-jcarousel="true">';
             print $va_image_thumbnails;     
@@ -87,7 +87,7 @@
 	<?php				
 						}
 	?>					
-						<div class="detailTool"><a href="#" onclick='$("#shareWidgetsContainer").toggle(300);return false;'><span class="glyphicon glyphicon-share-alt"></span> Share</a></div><!-- end detailTool -->
+						<!--<div class="detailTool"><a href="#" onclick='$("#shareWidgetsContainer").toggle(300);return false;'><span class="glyphicon glyphicon-share-alt"></span> Share</a></div> end detailTool -->
 	<?php					
 						print '</div><!-- end detailTools -->';
 					}				
@@ -125,35 +125,35 @@
 				}
 				$vs_rights = false;
 				$vs_rights_text = "";
-				if ($vs_conditions_access = $t_object->get('ca_objects.govAccess')) {
-					$vs_rights = true;
-					$vs_rights_text.= "<h8>Conditions on Access</h8>";
-					$vs_rights_text.= "<div>".$vs_conditions_access."</div>";
-				}		
+#				if ($vs_conditions_access = $t_object->get('ca_objects.govAccess')) {
+#					$vs_rights = true;
+#					$vs_rights_text.= "<div class='unit'><h8>Conditions on Access</h8>";
+#					$vs_rights_text.= $vs_conditions_access."</div>";
+#				}		
 				if ($vs_conditions_use = $t_object->get('ca_objects.RAD_useRepro')) {
 					$vs_rights = true;
-					$vs_rights_text.= "<h8>Conditions on Use</h8>";
-					$vs_rights_text.= "<div>".$vs_conditions_use."</div>";
+					$vs_rights_text.= "<div class='unit'><h8>Conditions on Use</h8>";
+					$vs_rights_text.= $vs_conditions_use."</div>";
 				}
 				if ($vs_rights_reproduction = $t_object->get('ca_objects.RAD_usePub')) {
 					$vs_rights = true;
-					$vs_rights_text.= "<h8>Conditions on Reproduction and Publications </h8>";
-					$vs_rights_text.= "<div>".$vs_rights_reproduction."</div>";
+					$vs_rights_text.= "<div class='unit'><h8>Conditions on Reproduction and Publications </h8>";
+					$vs_rights_text.= $vs_rights_reproduction."</div>";
 				}
-				if ($vs_rights_statement = $t_object->get('ca_objects.rights_holder')) {
-					$vs_rights = true;
-					$vs_rights_text.= "<h8>Rights Holder</h8>";
-					$vs_rights_text.= "<div>".$vs_rights_statement."</div>";
-				}	
-				if ($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'use')) {
-					$vs_rights = true;
-					$vs_rights_text.= "<div class='unit'><h8>".$vs_licensing."</h8></div>";
-				}
+#				if ($vs_rights_statement = $t_object->get('ca_objects.rights_holder')) {
+#					$vs_rights = true;
+#					$vs_rights_text.= "<div class='unit'><h8>Rights Holder</h8>";
+#					$vs_rights_text.= $vs_rights_statement."</div>";
+#				}	
+#				if ($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'use')) {
+#					$vs_rights = true;
+#					$vs_rights_text.= "<div class='unit'><h8>".$vs_licensing."</h8></div>";
+#				}
 							
 				if ($vs_rights == true) {
 					print "<div class='rightsBlock'>";
-					print "<h8 style='margin-bottom:10px;'><a href='#' onclick='$(\"#rightsText\").toggle(300);return false;'>Rights <i class='fa fa-chevron-down'></i></a></h8>";
-					print "<div style='display:none;' id='rightsText'>".$vs_rights_text."</div>";
+					#print "<h8 style='margin-bottom:10px;'><a href='#' onclick='$(\"#rightsText\").toggle(300);return false;'>Rights <i class='fa fa-chevron-down'></i></a></h8>";
+					print "<div id='rightsText'>".$vs_rights_text."</div>";
 					print "</div>";
 				}												
 ?>	
@@ -175,7 +175,7 @@
 						if ($va_alt_id = $t_object->get('ca_objects.alt_id')) {
 							print "<div class='unit'><h8>Object ID</h8>".$va_alt_id."</div>";
 						}
-						if ($va_interview_date = $t_object->get('ca_objects.interview_dates', array('delimiter', ', '))) {
+						if ($va_interview_date = $t_object->get('ca_objects.interview_dates', array('delimiter' => '<br/>'))) {
 							print "<div class='unit'><h8>Date of Recording</h8>".$va_interview_date."</div>";
 						}
 						if ($va_creator_testimony = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => ', ', 'returnAsLink' => true))) {
@@ -203,6 +203,9 @@
 						if ($va_language_note = $t_object->get('ca_objects.language_note')) {
 							print "<div class='unit'><h8>Language Note</h8>".$va_language_note."</div>";
 						}
+						if ($va_rights = $t_object->get('ca_objects.dc_rights')) {
+							print "<div class='unit'><h8>Rights</h8>".$va_rights."</div>";
+						}
 						if ($va_summary = $t_object->get('ca_objects.MARC_summary')) {
 							print "<div class='unit trimText'><h8>Synopsis</h8>".$va_summary."</div>";
 						}
@@ -223,7 +226,7 @@
 							foreach ($va_assoc_materials_pdf as $vn_assoc_materials_obj_id => $vn_assoc_materials_pdf_image_array) {
 								foreach ($vn_assoc_materials_pdf_image_array as $vn_assoc_materials_pdf_id => $vn_assoc_materials_pdf_image) {
 									if ($vn_assoc_materials_pdf_image['transcript_supress'] == "No") {
-										print "<div class='unit document'><h8>Time-Coded narrative </h8>";
+										print "<div class='unit document'><h8>Time-Coded Summary </h8>";
 										$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_assoc_materials_pdf_id, $vn_media_element_id)) ;
 										if ($qr_res->nextRow()) {
 											print "<p><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'identifier' => 'attribute:'.$qr_res->get('value_id'), 'overlay' => 1))."\"); return false;'><i class='fa fa-file'></i> ".ucfirst($vn_assoc_materials_pdf_image['upload_type'])."</a></p>";

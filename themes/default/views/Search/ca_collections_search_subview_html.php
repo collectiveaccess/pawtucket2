@@ -45,6 +45,11 @@
 	}
 	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
 
+	$vs_caption_template = $va_block_info["caption_template"];
+	if(!$vs_caption_template){
+		$vs_caption_template = "<l>^ca_collections.preferred_labels.name</l>";
+	}
+	
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
@@ -52,7 +57,7 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" aria-label="list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> | 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" role="button" aria-label="list-icon"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> | 
 <?php
 				}
 ?>
@@ -71,7 +76,7 @@
 			}
 ?>
 			<div class='blockResults'>
-				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
+				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious" aria-label="previous" role="link" tabindex="0"><i class="fa fa-angle-left" role="button" aria-label="previous"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext" aria-label="next" role="link" tabindex="0"><i class="fa fa-angle-right" role="button" aria-label="next"></i></div>
 				<div id='{{{block}}}Results' class='multiSearchResults'>
 					<div class='blockResultsScroller'>
 <?php
@@ -102,7 +107,7 @@
 			}
 			print $vs_image_tag;
 ?>
-				<br/><?php print $qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true)); ?>
+				<br/><?php print $qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values)); ?>
 			</div>
 <?php
 			$vn_count++;

@@ -49,6 +49,7 @@
 ?>
 	<form id="AddItemForm" action="#" class="form-horizontal" role="form">
 <?php
+		print caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request)));
 		$vs_project_dropdowns = "";
 		if(is_array($va_write_project_sets) && sizeof($va_write_project_sets)){
 			$t_write_set = new ca_sets();

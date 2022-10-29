@@ -38,6 +38,12 @@
 	$o_config = $this->getVar("config");
 	$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
+	$vs_caption_template = $va_block_info["caption_template"];
+	if(!$vs_caption_template){
+		$vs_caption_template = "<l>^ca_entities.preferred_labels.displayname</l>";
+	}
+	$va_access_values = caGetUserAccessValues($this->request);
+	
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -46,7 +52,7 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" aria-label="list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> | 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" role="button" aria-label="list icon"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> | 
 <?php
 				}
 ?>
@@ -65,7 +71,7 @@
 			}
 ?>
 			<div class='blockResults authorityBlock'>
-				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
+				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious" aria-label="previous" role="link" tabindex="0"><i class="fa fa-angle-left" role="button" aria-label="previous"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext" aria-label="next" role="link" tabindex="0"><i class="fa fa-angle-right" role="button" aria-label="next"></i></div>
 				<div id='{{{block}}}Results' class='multiSearchResults' style="position:relative;">
 					<div class='blockResultsScroller'>
 <?php
@@ -75,7 +81,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
-				print "<div class='entitiesResult authorityResult'>".$qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true))."</div>";
+				print "<div class='entitiesResult authorityResult'>".$qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values))."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i >= $vn_items_per_column) {

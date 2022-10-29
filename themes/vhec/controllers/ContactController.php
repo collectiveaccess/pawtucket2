@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php");
  
  	class ContactController extends ActionController {
  		# -------------------------------------------------------
@@ -55,7 +55,7 @@
  		} 		
  		# ------------------------------------------------------
  		public function Send() {
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
  			# --- check for errors
  			$va_errors = array();
  			if($this->config->get("check_security")){
@@ -114,7 +114,7 @@
  		}
  		# -------------------------------------------------------
   		public function SendLibraryRequest() {
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
  			# --- check for errors
  			$va_errors = array();
  			if($this->config->get("check_security")){

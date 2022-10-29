@@ -53,7 +53,6 @@
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
@@ -83,6 +82,7 @@
 				{{{<ifdef code="ca_objects.unitdate.dacs_date_text"><div class="unit"><H6>Date</H6>^ca_objects.unitdate.dacs_date_text</div></ifdef>}}}
 				{{{<ifnotdef code="ca_objects.unitdate.dacs_date_text"><ifdef code="ca_objects.unitdate.dacs_date_value"><div class="unit"><H6>Date</H6>^ca_objects.unitdate.dacs_date_value</div></ifdef></ifnotdef>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Identifier</H6>^ca_objects.idno</div></ifdef>}}}
+				{{{<ifdef code='ca_object_representations.use_notice'><div class="unit red">^ca_object_representations.use_notice</div></ifdef>}}}
 				{{{<ifdef code="ca_object_representations.media_types"><div class="unit"><H6>Media Type</H6>^ca_object_representations.media_types%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_object_representations.caption"><div class="unit"><H6>Preferred Caption</H6>^ca_object_representations.caption</div></ifdef>}}}
 				

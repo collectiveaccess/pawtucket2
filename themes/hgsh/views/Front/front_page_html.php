@@ -29,67 +29,43 @@
  *
  * ----------------------------------------------------------------------
  */
-?>
-
-	<div class="row">
-		<div class="col-xs-12 col-sm-6">
-			<div class="row">
-			<div class="col-xs-6">
-				<div class="hpBrowseImage">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/history.jpg')."<div class='hpBrowseTitle'>History of the Suburb</div>", "", "", "Detail", "collections/64"); ?>
-				</div>
-			</div>			
-			<div class="col-xs-6">
-				<div class="hpBrowseImage">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/organisations.jpg')."<div class='hpBrowseTitle'>Organisations</div>", "", "", "Browse", "organisations"); ?>
-				</div>
-			</div>
-			</div>
-		</div>
-		<div class="col-xs-12 col-sm-6">
-			<div class="row">
-			<div class="col-xs-12">
-				<div class="hpBrowseImage hpBrowseImageSpacer">
-					<?php print caGetThemeGraphic($this->request, 'spacer.png'); ?>
-				</div>
-				<div class="hpText">
-					Hampstead Garden Suburb, near London’s Hampstead Heath, is a vibrant community set within a unique mix of open spaces, planned street scene, and internationally recognised architecture. Welcome to our Virtual Museum.<br/><?php print caNavLink($this->request, 'See Guide', '', '', 'About', 'museum_guide'); ?>
-				</div>
-			</div><!--end col-sm-8-->
+ ?>
+ 	<div class="row">
+		<div class="col-sm-12">
+			<div class="hpHero">
+				<?php print caGetThemeGraphic($this->request, 'home.jpg'); ?>
+				<form class="hpSearch" role="search" action="/index.php/MultiSearch/Index">
+					<H1>Welcome to the<br/>Hampstead Garden Suburb Heritage<br/>Virtual Museum</H1>
+					<div class="formOutline">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Search" name="search">
+						</div>
+						<button type="submit" class="hpSearchbtn-search"><span class="glyphicon glyphicon-search"></span></button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>
 	<div class="row">
+	    
 		<div class="col-xs-6 col-sm-3">
-			<div class="hpBrowseImage">
-				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/people.jpg')."<div class='hpBrowseTitle'>People</div>", "", "", "Browse", "people"); ?>
+			<div class="hpButton">
+				<?php print caNavLink($this->request, "Main entrance <i class='fa fa-hand-o-right' aria-hidden='true'></i>", "", "", "Front", "intro"); ?>
+			</div>
+		</div>
+		<div class="col-xs-6 col-sm-3">
+			<div class="hpButton">
+				<?php print caNavLink($this->request, "<i class='fa fa-clock-o' aria-hidden='true'></i> Timelines", "", "", "Browse", "events"); ?>
 			</div>
 		</div>	
 		<div class="col-xs-6 col-sm-3">
-			<div class="hpBrowseImage">
-				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/places.jpg')."<div class='hpBrowseTitle'>Places</div>", "", "", "Browse", "places"); ?>
-			</div>
-		</div>
-<!--	
-		<div class="col-xs-6 col-sm-3">
-			<div class="hpBrowseImage">
-				<?php #print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/objects.jpg')."<div class='hpBrowseTitle'>Objects</div>", "", "", "Browse", "objects"); ?>
-			</div>
-		</div>
--->		
-		<div class="col-xs-6 col-sm-3">
-			<div class="hpBrowseImage">
-				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/suburb_news.png')."<div class='hpBrowseTitle'>Suburb News</div>", "", "", "Browse", "newspapers"); ?>
+			<div class="hpButton">
+				<?php print caNavLink($this->request, "<i class='fa fa-map-marker' aria-hidden='true'></i> Maps", "", "", "Browse", "places"); ?>
 			</div>
 		</div>
 		<div class="col-xs-6 col-sm-3">
-			<div class="hpBrowseImage">
-				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/collections.jpg')."<div class='hpBrowseTitle'>Collections</div>", "", "", "Browse", "collections"); ?>
-			</div>
-		</div>
-		<div class="col-xs-6 col-sm-3">
-			<div class="hpBrowseImage">
-				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/events.jpg')."<div class='hpBrowseTitle'>Events</div>", "", "", "Browse", "events"); ?>
-			</div>
-		</div>
+            <div class="hpButton">
+            	<a href="https://twitter.com/HGSheritage1" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i> Twitter</a>
+            </div>
+        </div>
 	</div><!-- end row -->

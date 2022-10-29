@@ -36,7 +36,7 @@
 			<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 				<div class="frontSearchCollageOutline">
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Search" name="search">
+						<input type="text" class="form-control" placeholder="Search All Collections" name="search">
 					</div>
 					<button type="submit"><span class="glyphicon glyphicon-search"></span></button>
 				</div>
@@ -44,35 +44,22 @@
 		</div>
 	</div>
 <?php
-	$qr_members = ca_entities::find(["type_id" => "member"], ["returnAs" => "searchResult"]);
+	$qr_members = ca_entities::find(["type_id" => "member"], ["returnAs" => "searchResult", 'sort' => 'ca_entities.preferred_labels.displayname']);
 	if ($qr_members) {
 		print "<div class='row members'>";
 		print '<div class="containerWrapper">';
 		print "<div class='col-sm-12'><h1>Member Institutions</h1></div>";
-		print '<div class="col-sm-12"><div class="membersjcarousel-wrapper">
-				<!-- Carousel -->
-				<div class="membersjcarousel">';
+		//print '<div class="col-sm-12">';
 		
 		
 		while ($qr_members->nextHit()) {
-			print "<div class='memberTile'>";
+			print "<div class='col-6 col-sm-4 col-md-3 col-lg-3 col-xl-3 text-center' style='height: 300px;'>";
 			print "<div class='memberImage'>".caDetailLink($this->request, $qr_members->get('ca_object_representations.media.iconlarge', array('checkAccess' => $va_access_values)), '', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
 			print "<div class='memberCaption'>".caDetailLink($this->request, $qr_members->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values)), '', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
 			print "</div>";
 		}
 		
-		print "</div>";
-?>
-		<!-- Prev/next controls -->
-		<!--	<a href="#" class="membersjcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
-			<a href="#" class="membersjcarousel-control-next"><i class="fa fa-angle-right"></i></a> -->
-		
-			<!-- Pagination -->
-	<!--		<p class="membersjcarousel-pagination"> -->
-			<!-- Pagination items will be generated in here -->
-			</p> 
-<?php			
-		print "</div><!-- end carousel --></div><!-- end col -->";
+		//print "</div>";		
 		
 		print "</div><!-- end containerWrapper -->";
 		print "</div><!-- end row -->";

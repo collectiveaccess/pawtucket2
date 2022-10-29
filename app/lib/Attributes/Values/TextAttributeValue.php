@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2019 Whirl-i-Gig
+ * Copyright 2008-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -96,6 +96,30 @@
 			'width' => 1, 'height' => 1,
 			'label' => _t('Does not use locale setting'),
 			'description' => _t('Check this option if you don\'t want your text to be locale-specific. (The default is to be.)')
+		),
+		'singleValuePerLocale' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow single value per locale'),
+			'description' => _t('Check this option to restrict entry to a single value per-locale.')
+		),
+		'allowDuplicateValues' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Allow duplicate values?'),
+			'description' => _t('Check this option if you want to allow duplicate values to be set when element is not in a container and is repeating.')
+		),
+		'raiseErrorOnDuplicateValue' => array(
+			'formatType' => FT_NUMBER,
+			'displayType' => DT_CHECKBOXES,
+			'default' => 0,
+			'width' => 1, 'height' => 1,
+			'label' => _t('Show error message for duplicate values?'),
+			'description' => _t('Check this option to show an error message when value is duplicate and <em>allow duplicate values</em> is not set.')
 		),
 		'canBeUsedInSort' => array(
 			'formatType' => FT_NUMBER,
@@ -368,14 +392,15 @@
  					'value' => '{{'.$pa_element_info['element_id'].'}}', 
  					'maxlength' => $va_settings['maxChars'],
  					'class' => $vs_class,
- 					'id' => '{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', 'class' => "{$vs_class}".($va_settings['usewysiwygeditor'] ? " ckeditor" : '')
+ 					'id' => '{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', 'class' => "{$vs_class}".($va_settings['usewysiwygeditor'] ? " ckeditor-element" : '')
  				);
  			if (caGetOption('readonly', $pa_options, false)) { 
  				$va_opts['disabled'] = 1;
  			}
  			$vs_element .= caHTMLTextInput(
  				'{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', 
- 				$va_opts
+ 				$va_opts,
+ 				['textAreaTagName' => caGetOption('textAreaTagName', $pa_options, null)]
  			);
 
 			if (isset($va_settings['mustBeUnique']) && $va_settings['mustBeUnique']) {
@@ -417,7 +442,7 @@
  				    caDisplayTemplateParser.setOptions(".json_encode($va_parser_opts).");
  					jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').val(caDisplayTemplateParser.processDependentTemplate('".addslashes(preg_replace("![\r\n]+!", " ", $va_settings['dependentValueTemplate']))."', ".json_encode($va_element_dom_ids, JSON_FORCE_OBJECT).", true, {$vs_omit_units}));
  				";
- 				$vs_element .= "jQuery('".join(", ", $va_element_dom_ids)."').on('keyup', function(e) { 
+ 				$vs_element .= "jQuery('".join(", ", $va_element_dom_ids)."').on('keyup change', function(e) { 
  					jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').val(caDisplayTemplateParser.processDependentTemplate('".addslashes(preg_replace("![\r\n]+!", " ", $va_settings['dependentValueTemplate']))."', ".json_encode($va_element_dom_ids, JSON_FORCE_OBJECT).", true, {$vs_omit_units}));
  				});";
  				

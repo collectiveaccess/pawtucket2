@@ -1003,7 +1003,7 @@
  				$this->render("Form/reload_html.php");
  				return;
  			}
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
     		$ps_to_email = $o_purifier->purify($this->request->getParameter('to_email', pString));
  			$ps_from_email = $o_purifier->purify($this->request->getParameter('from_email', pString));
  			$ps_from_name = $o_purifier->purify($this->request->getParameter('from_name', pString));
@@ -1555,7 +1555,7 @@
 # Custom Worksheet stuff
 # -------------------------------------------------------
  		public function Custom() {
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
  			$pa_print_fields = $this->request->getParameter('print_fields', pArray);
  			$pn_occurrence_id = $this->request->getParameter('occurrence_id', pString);
  			$t_occurrence = new ca_occurrences($pn_occurrence_id);
@@ -1695,7 +1695,7 @@
  		public function Full() {
  			$t_lists = new ca_lists();
 			$t_list_items = new ca_list_items();
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
  			$pn_occurrence_id = $this->request->getParameter('occurrence_id', pString);
  			$t_occurrence = new ca_occurrences($pn_occurrence_id);
  			$va_access_values = caGetUserAccessValues($this->request);
@@ -1920,7 +1920,7 @@
  		}
  		# -------------------------------------------------------
  		public function downloadCustomWorksheet() {
- 			$o_purifier = new HTMLPurifier();
+ 			$o_purifier = caGetHTMLPurifier();
  			$pn_occurrence_id = $this->request->getParameter('occurrence_id', pInteger);
  			$pn_relation_id = $this->request->getParameter('relation_id', pInteger);
  			$t_objects_x_occurrences = new ca_objects_x_occurrences($pn_relation_id);
