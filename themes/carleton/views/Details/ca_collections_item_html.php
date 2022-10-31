@@ -42,6 +42,7 @@
 		"Container ID" => "^ca_collections.container_id",
 		"AV Subtype" => "^ca_collections.av_subtype",
 		"Dates" => "<ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef><ifnotdef code='ca_collections.inclusive_dates'>^ca_collections.display_date%delimiter=,_</ifnotdef>",
+		"Additional Date Information" => "^ca_collections.date_info",
 		"Description" => "^ca_collections.description",
 		"Language" => "^ca_collections.language%delimiter=,_",
 		"Related Creators" => "<ifcount min='1' code='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject'><unit relativeTo='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject' delimiter='<br/>'><if rule='^ca_entities.added_on_import =~ /Yes/'>^ca_entities.preferred_labels.displayname (^relationship_typename)</if><if rule='^ca_entities.added_on_import !~ /Yes/'><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></if></unit></ifcount>",
