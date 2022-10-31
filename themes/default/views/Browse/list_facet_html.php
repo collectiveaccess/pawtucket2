@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2015 Whirl-i-Gig
+ * Copyright 2014-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -41,7 +41,6 @@
 	$vn_facet_size =		$this->getVar('facet_size');
 	
 	$va_letter_bar = array();
-	$vs_order_by = $va_facet_info["order_by_label_fields"][0];
 	$vs_facet_list = "";	
 	
 	$vn_c = 0;
@@ -85,7 +84,7 @@
 		    $vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
 			
 			if($va_facet_info["group_mode"]== "alphabetical"){
-				$vs_first_letter = mb_strtoupper(mb_substr($va_item[$vs_order_by], 0, 1));
+				$vs_first_letter = mb_strtoupper(mb_substr($va_item['label_sort_'], 0, 1));
 				if(!$vs_first_letter){
 					$vs_first_letter = mb_strtoupper(mb_substr($va_item["label"], 0, 1));
 				}

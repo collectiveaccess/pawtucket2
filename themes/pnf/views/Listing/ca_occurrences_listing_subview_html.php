@@ -138,12 +138,29 @@
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {
 			$vn_id = $qr_list->get('ca_occurrences.occurrence_id');
-			$vs_sort = strToLower(strip_tags(str_replace(array("The ", ",", ".", "\"", "“", "”", "La ", "El ", "Los ", "Las ", "Una ", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), array("", "", "", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "u", "u", "u", "N", "n", "S", "s"), trim(strip_tags($qr_list->get('ca_occurrences.author')." ".$qr_list->get('ca_occurrences.preferred_labels'))))));
+			$vs_sort_author = $qr_list->get('ca_occurrences.author');
+			# --- don't sort by second author...and the word 'and' could be in multiple languages
+			if(strpos($qr_list->get('ca_occurrences.author'), ' and ' ) !== false){
+				$va_tmp_author = explode(" and ", strip_tags($qr_list->get('ca_occurrences.author')));
+				$vs_sort_author = $va_tmp_author[0];
+			}elseif(strpos($qr_list->get('ca_occurrences.author'), ' y ' ) !== false){
+				$va_tmp_author = explode(" y ", strip_tags($qr_list->get('ca_occurrences.author')));
+				$vs_sort_author = $va_tmp_author[0];
+			}elseif(strpos($qr_list->get('ca_occurrences.author'), ' e ' ) !== false){
+				$va_tmp_author = explode(" e ", strip_tags($qr_list->get('ca_occurrences.author')));
+				$vs_sort_author = $va_tmp_author[0];
+			}elseif(strpos($qr_list->get('ca_occurrences.author'), ' et ' ) !== false){
+				$va_tmp_author = explode(" et ", strip_tags($qr_list->get('ca_occurrences.author')));
+				$vs_sort_author = $va_tmp_author[0];
+			}
+			
+			
+			$vs_sort = strToLower(strip_tags(str_replace(array("The ", ",", ".", "\"", "“", "”", "&quot;", "&ldquo;", "La ", "El ", "Los ", "Las ", "Una ", "A ", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), array("", "", "", "", "", "", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "u", "u", "u", "N", "n", "S", "s"), trim(strip_tags($vs_sort_author." ".$qr_list->get('ca_occurrences.preferred_labels'))))));
 			$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			# --- if title has quotes, do not italicize
 			$vs_title_class = "listTitleItalic";
-			if((strpos($qr_list->get('ca_occurrences.preferred_labels'), '"' ) !== false) || (strpos($qr_list->get('ca_occurrences.preferred_labels'), '“' ) !== false)){
+			if((strpos($qr_list->get('ca_occurrences.preferred_labels'), '"' ) !== false) || (strpos($qr_list->get('ca_occurrences.preferred_labels'), '“' ) !== false)  || (strpos($qr_list->get('ca_occurrences.preferred_labels'), '&quot;') !== false)  || (strpos($qr_list->get('ca_occurrences.preferred_labels'), '&ldquo;') !== false)){
 				$vs_title_class = "listTitleNoItalic";
 			}
 			$vs_tmp_title = "<div class='listLink listEntry listEntryIndentSecondLine'>".(($qr_list->get('ca_occurrences.author')) ? "<span class='listAuthor'>".$qr_list->get('ca_occurrences.author')."</span> " : "")."<span class='".$vs_title_class."'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</span><span class='listPub'>&nbsp;".$qr_list->get('ca_occurrences.publication_info')."</span>".(($qr_list->get('ca_occurrences.internal_notes')) ? " ".$qr_list->get('ca_occurrences.internal_notes') : "")."</div>\n";

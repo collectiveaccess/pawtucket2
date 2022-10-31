@@ -77,6 +77,15 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 * Returns table number of result context (eg. what kind of item is the find result composed of?)
+		 *
+		 * @return string
+		 */
+		public function tableNum() {
+			return Datamodel::getTableNum($this->ops_table_name);
+		}
+		# ------------------------------------------------------------------
+		/**
 		 * Returns type result context
 		 *
 		 * @return string
@@ -270,6 +279,38 @@
 		public function setResultList($pa_result_list) {
 			$this->setSearchHistory(is_array($pa_result_list) ? sizeof($pa_result_list) : 0);
 			return $this->setContextValue('result_list', $pa_result_list);
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Returns number of items in the result list from the context's operation. 
+		 *
+		 * @return int
+		 */
+		public function getResultCount() {
+			if ($va_context = $this->getContext()) {
+				return sizeof($va_context['result_list']);
+			}
+			return 0;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Returns list of type_ids used by items in result list
+		 *
+		 * @return array
+		 */
+		public function getResultListTypes($options=null) {
+			$ids = $this->getResultList();
+		
+			if (!is_array($ids) || !sizeof($ids)) { return null; }
+			
+			$qr = caMakeSearchResult($t = $this->tableName(), $ids);
+			$type_ids = [];
+			while($qr->nextHit()) {
+				if($type_id = $qr->get("{$t}.type_id", $options)) {
+					$type_ids[$type_id] = $qr->get("{$t}.type_id", ['convertCodesToDisplayText' => true]);
+				}
+			}
+			return $type_ids;
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -494,7 +535,11 @@
 		 */
 		public function getTypeRestriction(&$pb_type_restriction_has_changed) {
 			$pb_type_restriction_has_changed = false;
-			if (!($pn_type_id = htmlspecialchars(html_entity_decode($this->opo_request->getParameter('type_id', pString, ['forcePurify' => true]))))) {
+			
+			if((bool)$this->opo_request->getParameter('clearType', pInteger)) {
+				$pb_type_restriction_has_changed = true;
+				return null;
+			} elseif (!($pn_type_id = htmlspecialchars(html_entity_decode($this->opo_request->getParameter('type_id', pString, ['forcePurify' => true]))))) {
  				if ($va_context = $this->getContext()) {
 					return $va_context['type_id'] ? $va_context['type_id'] : null;
 				}
@@ -706,6 +751,10 @@
 		 * @return string - sort as set
 		 */
 		public function setParameter($ps_param, $pm_value) {
+			if(is_null($pm_value)) { 
+				$this->deleteContextValue('param_'.$ps_param);
+				return true;
+			}
 			return $this->setContextValue('param_'.$ps_param, $pm_value);
 		}
 		# ------------------------------------------------------------------
@@ -844,8 +893,10 @@
 			if (is_array($va_nav['params'])) {
 				foreach ($va_nav['params'] as $vs_param) {
 					if (!($vs_param = trim($vs_param))) { continue; }
-					if(!trim($va_params[$vs_param] = $po_request->getParameter($vs_param, pString))) {
-						$va_params[$vs_param] = trim($o_context->getParameter($vs_param));
+					if(strlen($v = trim($po_request->getParameter($vs_param, pString, ['forcePurify' => true])))) {
+						$va_params[$vs_param] = $v;
+					} elseif(strlen($v = trim($o_context->getParameter($vs_param)))) {
+						$va_params[$vs_param] = $v;
 					}
 				}
 				
@@ -873,7 +924,10 @@
 			
 			$vs_last_find = ResultContext::getLastFind($po_request, $pm_table_name_or_num);
 			$va_tmp = explode('/', $vs_last_find);
-			
+			if (!is_array($pa_attributes)) {
+				$pa_attributes = [];
+			}
+			$pa_attributes['aria-label'] = _t('Return to results');
 			$o_find_navigation = Configuration::load(((defined('__CA_THEME_DIR__') && file_exists(__CA_THEME_DIR__.'/conf/find_navigation.conf')) ? __CA_THEME_DIR__ : __CA_APP_DIR__).'/conf/find_navigation.conf');
 			$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
 			$va_nav = $va_find_nav[$va_tmp[0]];
@@ -910,8 +964,10 @@
 			if (is_array($va_nav['params'])) {
 				foreach ($va_nav['params'] as $vs_param) {
 					if (!($vs_param = trim($vs_param))) { continue; }
-					if(!trim($va_params[$vs_param] = $po_request->getParameter($vs_param, pString, ['forcePurify' => true]))) {
-						$va_params[$vs_param] = trim($o_context->getParameter($vs_param));
+					if(strlen($v = trim($po_request->getParameter($vs_param, pString, ['forcePurify' => true])))) {
+						$va_params[$vs_param] = $v;
+					} elseif(strlen($v = trim($o_context->getParameter($vs_param)))) {
+						$va_params[$vs_param] = $v;
 					}
 				}
 				
@@ -1059,6 +1115,17 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 * Removes context value. It is not meant to be invoked by outside callers.
+		 *
+		 * @param $ps_key - string identifier for context value
+		 * @param $pm_value - the value (string, number, array)
+		 */
+		protected function deleteContextValue($ps_key) {
+			unset($this->opa_context[$ps_key]);
+			return true;
+		}
+		# ------------------------------------------------------------------
+		/**
 		 * Saves all changes to current context to persistent storage
 		 *
 		 * @param string Optional find type string to save context under; allows you to save to any context regardless of what is currently loaded. Don't use this unless you know what you're doing.
@@ -1094,6 +1161,7 @@
 			$va_semi_context = array_merge($va_existing_semi_context, $va_semi_context);
 			ResultContextStorage::setVar('result_context_'.$this->ops_table_name.'_'.$vs_find_type.($vs_find_subtype ? "_{$vs_find_subtype}" : ""), $va_semi_context);
 			
+			ResultContextStorage::save();
 			return true;
 		}
 		# ------------------------------------------------------------------
@@ -1269,6 +1337,18 @@
 			} else {
 				if (!($s = self::$storage)) { $s = 'Session'; }
 				return$s::getVar($key, $value, $options);
+			}
+		}
+		
+		/**
+		 *
+		 */
+		static public function save() {
+			if (is_object(self::$storage)) {
+				return self::$storage->update();
+			} else {
+				if (!($s = self::$storage)) { $s = 'Session'; }
+				return$s::save();
 			}
 		}
 	}

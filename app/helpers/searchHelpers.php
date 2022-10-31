@@ -437,6 +437,8 @@
 	 * @return array|string
 	 */
 	function caPuppySearch($po_request, $ps_search_expression, $pa_blocks, $pa_options=null) {
+		$o_search_config = caGetSearchConfig();
+		
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		$va_access_values = caGetUserAccessValues($po_request);
  		if(is_array($va_access_values) && sizeof($va_access_values)){
@@ -449,6 +451,8 @@
 		$va_contexts = caGetOption('contexts', $pa_options, array(), array('castTo' => 'array'));
 		unset($pa_options['contexts']);
 		
+		// Set highlight text
+		MetaTagManager::setHighlightText($ps_search_expression);
 		
 		if ($purifier = RequestHTTP::getPurifier()) { $ps_search_expression = $purifier->purify($ps_search_expression); }
 		
@@ -506,6 +510,8 @@
  			
  			$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction); 
  			
+ 			$search_expression_for_display = $va_contexts[$vs_block]->getSearchExpressionForDisplay($ps_search_expression);
+ 			
  			$va_options['sort'] = $va_sorts[$ps_sort];
  			$va_options['sort_direction'] = $ps_sort_direction;
  			
@@ -527,12 +533,14 @@
 				foreach($base_criteria as $facet => $value){
 					$o_browse->addCriteria($facet, $value);
 				}
-				$o_browse->addCriteria('_search', [$ps_search_expression]);
+				$o_browse->addCriteria("_search", [$ps_search_expression.(($o_search_config->get(['matchOnStem', 'match_on_stem']) && caIsSearchStem($ps_search_expression)) ? '*' : '')], [$search_expression_for_display]);
 				$o_browse->execute();
 				$qr_res = $o_browse->getResults($va_options);
 			} else {
 				$qr_res = $o_search->search(trim($ps_search_expression).(($vb_match_on_stem && !preg_match('![\*\"\']$!', $ps_search_expression)) ? '*' : ''), $va_options);
 			}
+			
+			$qr_res->doHighlighting($o_search_config->get('do_highlighting'));
 			$va_contexts[$vs_block]->setSearchExpression($ps_search_expression);
 			$va_contexts[$vs_block]->setResultList($qr_res->getPrimaryKeyValues());
 			
@@ -579,6 +587,8 @@
 			
 			
 			$o_view = new View($po_request, $po_request->getViewsDirectoryPath());
+			
+			$qr_res->doHighlighting($o_search_config->get("do_highlighting"));
 			$o_view->setVar('result', $qr_res);
 			$o_view->setVar('count', $vn_count);
 			$o_view->setVar('block', $vs_block);
@@ -652,6 +662,8 @@
 	function caSplitSearchResultByType($pr_res, $pa_options=null) {
 		if (!($t_instance = Datamodel::getInstanceByTableName($pr_res->tableName(), true))) { return null; }
 		
+		$o_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+		
 		if (!($vs_type_fld = $t_instance->getTypeFieldName())) { return null; }
 		$vs_table = $t_instance->tableName();
 		$va_types = $t_instance->getTypeList();
@@ -667,6 +679,7 @@
 			$qr_res = $pr_res->getClone();
 			$qr_res->filterResult("{$vs_table}.{$vs_type_fld}", array($vn_type_id));
 			$qr_res->seek(0);
+			$qr_res->doHighlighting($o_search_config->get('do_highlighting'));
 			$va_results[$vn_type_id] = array(
 				'type' => $va_types[$vn_type_id],
 				'result' =>$qr_res
@@ -2105,9 +2118,10 @@
 				$t_list = new ca_lists();
 				$va_items = $t_list->getItemsForList($vs_list_code, ['returnHierarchyLevels' => true]);
 				if (is_array($va_items)) {
+					$is_item_val_fld = in_array($vs_name_no_table, ['access', 'status']); // old-tyme fields that use item_value rather than idno
 					foreach ($va_items as $va_item) {
 						foreach ($va_item as $va_item_details) {
-							$va_select_options[$va_item_details['idno']] = str_repeat("&nbsp;", (int)$va_item_details['LEVEL'] * 5).$va_item_details['name_singular'];
+							$va_select_options[$is_item_val_fld ? $va_item_details['item_value'] : $va_item_details['idno']] = str_repeat("&nbsp;", (int)$va_item_details['LEVEL'] * 5).$va_item_details['name_singular'];
 						}
 					}
 				}
@@ -2115,6 +2129,8 @@
 			$va_result['input'] = 'select';
 			$va_result['values'] = $va_select_options;
 			$va_result['operators'] = $va_operators_by_type['select'];
+		} elseif($vs_name === "{$vs_table}.".$t_subject->getProperty('ID_NUMBERING_ID_FIELD')) {
+			$va_result['operators'] = array_merge($va_operators_by_type['select'], ['between']);
 		} else {
 			$va_result['input'] = 'text';
 		}
@@ -2226,5 +2242,23 @@
 	 */
 	function caIsSearchStem(string $value) : bool {
 		return (!preg_match('![\d]+$!', $value) && !preg_match('!\*$!', $value) && preg_match('![\w]+$!', $value));
+	}
+	# ---------------------------------------
+	/**
+	 * Tokenize string into individual words using method defined by currently configured search engine
+	 *
+	 * @param string $value String to tokenize
+	 *
+	 * @return array list of words
+	 */
+	function caTokenizeString(?string $value) : array {
+		$search_engine_class = SearchBase::searchEngineClassName();
+		
+		if(method_exists('SearchBase', $search_engine_class)) {
+			return $search_engine_class::tokenize($value);
+		} else {	// Any plugin that doesn't define its own tokenizer (like ElasticSearch) uses the SqlSearch2 tokenizer by default
+			require_once(__CA_LIB_DIR__.'/Plugins/SearchEngine/SqlSearch2.php');
+			return WLPlugSearchEngineSqlSearch2::tokenize($value);
+		}
 	}
 	# ---------------------------------------

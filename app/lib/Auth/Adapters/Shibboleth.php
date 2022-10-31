@@ -55,10 +55,16 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 		if(!$this->opo_shibAuth->isAuthenticated()){
 			return false;
 		}
+
 		if (!($va_attrs = $this->opo_shibAuth->getAttributes())) { return false; }
 	    if (!is_array($va_attrs['emailAddress'])) { return false; }
 	    ///print_R($va_attrs);
 	    $uid = array_shift($va_attrs['emailAddress']);
+
+		// if (!($attrs = $this->opo_shibAuth->getAttributes())) { return false; }
+// 	    
+//         $map = array_flip($this->auth_config->get('shibboleth_field_map'));
+// 	    $uid = array_shift($attrs[$map['uid']]);
 	    if (!$uid) { return false; }
 	    if (ca_users::find(['user_name' => $uid], ['returnAs' => 'count']) > 0) {
 	        return true;

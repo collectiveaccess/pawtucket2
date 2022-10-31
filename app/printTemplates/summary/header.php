@@ -43,14 +43,9 @@
 					<meta charset="utf-8" />
 					<meta charset="utf-8" />
 				</head>
-				<body><div id='header'>
-			<?php
-					if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
-						print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
-					}
-			?>	
-				</div>
-			</body>
+				<body>	
+					<div id='header'><?= caGetReportLogo(); ?></div>
+			<	/body>
 			</html><!--END HEADER-->
 <?php
 		break;
@@ -58,11 +53,7 @@
 		default:
 ?>
 			<div id='headerdompdf'>
-<?php
-				if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
-					print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
-				}
-?>
+				<?= caGetReportLogo(); ?>
 			</div>
 <?php
 		break;
