@@ -85,12 +85,15 @@
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1">
 					<div><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div>
 				</ifcount>}}}	
-				{{{<ifdef code="ca_objects.display_date">
-					<div>^ca_objects.display_date</div>
-				</ifdef>}}}	
-				{{{<ifnotdef code="ca_objects.display_date"><ifdef code="ca_objects.index_date">
-					<div>^ca_objects.index_date</div>
-				</ifdef></ifnotdef>}}}	
+<?php
+				$vs_display_date = $t_object->get("ca_objects.display_date", array("delimiter" => ", "));
+				$vs_index_date = $t_object->get("ca_objects.index_date", array("delimiter" => ", "));
+				if($vs_display_date){
+					print "<div>".$vs_display_date."</div>";
+				}elseif($vs_index_date){
+					print "<div>".$vs_index_date."</div>";
+				}
+?>
 				{{{<ifdef code="ca_objects.PhysicalMediumDisplay"><div>^ca_objects.PhysicalMediumDisplay</div></ifdef>}}}
 				</div>
 				<HR>				
@@ -136,9 +139,7 @@
 					<unit relativeTo="ca_occurrences" restrictToTypes="event" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
 
 				{{{<ifcount code="ca_objects.related" min="1" restrictToTypes="artwork, oral_history, archival_object, publication"><div class="unit"><label>Related Collection Items</label>
-					<unit relativeTo="ca_objects.related"  delimiter=" ">
-						<div style="clear:left;"><l><ifdef code="ca_object_representations.media.icon"><div class="relatedIcon">^ca_object_representations.media.icon</div></ifdef>^ca_objects.preferred_labels<ifcount code='ca_entities' restrictToRelationshipTypes='creator' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='creator' delimiter=', '>, ^ca_entities.preferred_labels</unit></ifcount><ifdef code='ca_objects.artwork_date'><unit relativeTo='ca_objects.artwork_date'><if rule='^ca_objects.artwork_date.artwork_date_types =~ /Creation/'>, ^ca_objects.artwork_date.artwork_date_value</if></unit></ifdef><ifdef code='ca_objects.archival_object_date'><unit relativeTo='ca_objects.archival_object_date'><if rule='^ca_objects.archival_object_date.archival_object_date_types =~ /Creation/'>, ^ca_objects.archival_object_date.archival_object_date_value</if></unit></ifdef><ifcount code='ca_entities' restrictToRelationshipTypes='author' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='author' delimiter=', '>, ^ca_entities.preferred_labels</unit></ifcount><ifdef code='ca_objects.publication_date'><unit relativeTo='ca_objects.publication_date'><if rule='^ca_objects.publication_date.publication_date_types =~ /Publication/'>, ^ca_objects.publication_date.publication_date_value</if></unit></ifdef><ifdef code='ca_objects.interview.oral_history_dates_value'><unit relativeTo='ca_objects.interview'><if rule='^ca_objects.interview.oral_history_dates_types =~ /Interview/'>, ^ca_objects.interview.oral_history_dates_value</if></unit></ifdef>
-							</l></div></unit></div></ifcount>}}}
+					<unit relativeTo="ca_objects.related"  delimiter=" "><div style="clear:left;"><l><ifdef code="ca_object_representations.media.icon"><div class="relatedIcon">^ca_object_representations.media.icon</div></ifdef>^ca_objects.preferred_labels<ifcount code='ca_entities' restrictToRelationshipTypes='creator,author' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='creator,author' delimiter=', '>, ^ca_entities.preferred_labels</unit></ifcount><ifdef code='ca_objects.index_date'>, ^ca_objects.index_date</ifdef></l> (^relationship_typename)</div><unit></ifcount>}}}
 
 						
 			</div><!-- end col -->
