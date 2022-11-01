@@ -144,8 +144,6 @@
 		
 					</form>
 				</div>
-				
-				<hr></hr>	
 <?php
 				}else{
 ?>
@@ -154,6 +152,7 @@
 <?php
 				}
 ?>
+				<hr/>
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6'>		
@@ -172,11 +171,7 @@
 				
 				{{{<ifdef code="ca_objects.Date"><H6>Date:</H6>^ca_objects.Date</ifdef>}}}
 				
-				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related Place:</H6></ifcount>}}}
-				{{{<ifcount code="ca_places" min="2"><H6>Related Places:</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
 				
-
 				{{{<ifdef code="ca_objects.Format"><H6>Materials:</H6>^ca_objects.Format%delimiter=,_</ifdef>}}}
 				{{{<ifdef code="ca_objects.Dimensions_Container.Height"><H6>Dimensions:</H6><unit relativeTo="ca_objects.Dimensions_Container"><ifdef code="ca_objects.Dimensions_Container.Height">^ca_objects.Dimensions_Container.Height" h </ifdef><ifdef code="ca_objects.Dimensions_Container.Width">^Width" w </ifdef><ifdef code="ca_objects.Dimensions_Container.Depth">^Depth" d</ifdef></unit></ifdef>}}}
                 {{{<ifdef code="ca_objects.current_location_fld"><H6>Current Location Status:</H6>^ca_objects.current_location_fld</ifdef>}}}
@@ -196,7 +191,7 @@
 
 				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related Entity:</H6></ifcount>}}}
 				{{{<ifcount code="ca_entities" min="2"><H6>Related Entities:</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" delimiter=" "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)<br/><ifdef code="ca_entities.biography"><br/><span class="trimText">^ca_entities.biography</span></ifdef><ifdef code="ca_entities.nonpreferred_labels.displayname">Alternate names: <span class="trimText"><unit delimiter=", ">^ca_entities.nonpreferred_labels.displayname</unit></span></ifdef></unit>}}}
+				{{{<unit relativeTo="ca_entities" delimiter=" "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)<ifdef code="ca_entities.nonpreferred_labels.displayname"><br/>Alternate names: <span class="trimText"><unit delimiter=", ">^ca_entities.nonpreferred_labels.displayname</unit></span></ifdef><ifdef code="ca_entities.biography"><br/><span class="trimText">^ca_entities.biography</span></ifdef></unit><br/>}}}
 				
 				
 				{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term:</H6></ifcount>}}}
@@ -209,6 +204,11 @@
 				{{{<ifcount code="ca_objects.related" min="1" max="1"><H6>Related Object:</H6></ifcount>}}}
 				{{{<ifcount code="ca_objects.related" min="2"><H6>Related Objects:</H6></ifcount>}}}
 				{{{<div class="row relatedObjects"><unit relativeTo="ca_objects.related" delimiter=" "><div class="col-xs-12 col-md-4"><l>^ca_object_representations.media.small<div class="relatedObjectsTitle">^ca_objects.preferred_labels</div></l></div></unit></div>}}}
+
+				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related Place:</H6></ifcount>}}}
+				{{{<ifcount code="ca_places" min="2"><H6>Related Places:</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
+				
 
 				
 				<?php ($this->getVar("map")) ? "<hr>" : ""; ?>
