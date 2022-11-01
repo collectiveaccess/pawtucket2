@@ -86,6 +86,9 @@
 			if(($vs_brand) || ($vs_subbrand)){
 				$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
 			}
+			if($vs_idno = $vo_result->get("ca_objects.idno")){
+				$vs_caption .= ", Object ID: ".$vs_idno;
+			}
 			$vs_caption .= "<br/>";
 			$vs_caption .= trim($vo_result->get('ca_objects.preferred_labels'));
 			$vs_tmp = $vo_result->getWithTemplate('^ca_objects.manufacture_date');
@@ -98,7 +101,9 @@
 			if($vs_tmp = $vo_result->get("ca_objects.codes.product_code")){
 				$vs_caption .= " (".$vs_tmp.")";
 			}
-			
+			if($vs_tmp = $vo_result->get("ca_objects.shade")){
+				$vs_caption .= ", ".$vs_tmp;
+			}			
 ?>
 			<div class="thumbnail" style="left: <?php print $vn_left; ?>px; top: <?php print $vn_top; ?>px;">
 				<?php print "<div class='imgThumb'><img src='".$vo_result->getMediaPath('ca_object_representations.media', 'preview170')."'/></div>"; ?>

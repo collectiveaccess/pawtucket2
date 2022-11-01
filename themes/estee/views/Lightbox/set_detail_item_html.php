@@ -86,7 +86,7 @@
 <?php
 			if($vb_download){
 ?>
-				&nbsp;&nbsp;<?php print caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span>", "", "", "Detail", "DownloadRepresentation", array('context' => 'products', 'representation_id' => $vn_representation_id, 'id' => $vn_object_id, 'download' => 1, 'version' => $vs_download_version), array("title" => _t("Download"))); ?>
+				&nbsp;&nbsp;<?php print caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span>", "", "", "Detail", "DownloadMedia", array('context' => 'products', 'object_id' => $vn_object_id, 'download' => 1, 'version' => $vs_download_version), array("title" => _t("Download"))); ?>
 <?php
 			}
 ?>
