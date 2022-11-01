@@ -91,6 +91,7 @@
 ?>
 				<div class='glossary_illustration'>
 <?php
+			if ($g_ui_locale == 'en_US'){
 				print caGetThemeGraphic($this->request, 'Anatomy_Numbered_v2.jpg');
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 590, null, array('style' => 'z-index:100; position:absolute; top:3%; left:32%; width:18%; height:3%;'));
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:7%; left:32%; width:18%; height:3%;'));
@@ -114,6 +115,33 @@
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 569, null, array('style' => 'z-index:100; position:absolute; top:81%; left:35%; width:28%; height:3%;'));
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:85%; left:35%; width:28%; height:3%;'));
 				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 479, null, array('style' => 'z-index:100; position:absolute; top:89%; left:35%; width:28%; height:3%;'));
+
+			}else{
+				print caGetThemeGraphic($this->request, 'Anatomy_Numbered_spanish.jpg');
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 590, null, array('style' => 'z-index:100; position:absolute; top:3%; left:32%; width:18%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:7%; left:32%; width:18%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 477, null, array('style' => 'z-index:100; position:absolute; top:11%; left:32%; width:18%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 642, null, array('style' => 'z-index:100; position:absolute; top:15%; left:32%; width:18%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:19%; left:32%; width:18%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 523, null, array('style' => 'z-index:100; position:absolute; top:23%; left:32%; width:18%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 479, null, array('style' => 'z-index:100; position:absolute; top:27%; left:32%; width:18%; height:3%;'));
+				
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 492, null, array('style' => 'z-index:100; position:absolute; top:3%; left:51%; width:15%; height:6%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 490, null, array('style' => 'z-index:100; position:absolute; top:10%; left:51%; width:15%; height:6%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 580, null, array('style' => 'z-index:100; position:absolute; top:16%; left:51%; width:15%; height:6%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 585, null, array('style' => 'z-index:100; position:absolute; top:23%; left:51%; width:15%; height:4%;'));
+				
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 524, null, array('style' => 'z-index:100; position:absolute; top:44%; left:4%; width:22%; height:8%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:44%; left:75%; width:22%; height:13%;'));
+				
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:69%; left:35%; width:28%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:73%; left:35%; width:28%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 485, null, array('style' => 'z-index:100; position:absolute; top:77%; left:35%; width:28%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 569, null, array('style' => 'z-index:100; position:absolute; top:81%; left:35%; width:28%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 518, null, array('style' => 'z-index:100; position:absolute; top:85%; left:35%; width:28%; height:3%;'));
+				print caDetailLink($this->request, _t('&nbsp;'), '', 'ca_occurrences', 479, null, array('style' => 'z-index:100; position:absolute; top:89%; left:35%; width:28%; height:3%;'));
+
+			}
 				
 ?>
 				
@@ -135,7 +163,11 @@
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {
 			$vn_id = $qr_list->get('ca_occurrences.occurrence_id');
-			$vs_sort = strToLower(strip_tags(str_replace(array("The ", ",", ".", "\"", "“", "”", "La ", "El ", "Los ", "Las ", "Una ", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), array("", "", "", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "u", "u", "u", "N", "n", "S", "s"), trim(strip_tags($qr_list->get('ca_occurrences.preferred_labels'))))));
+			if ($g_ui_locale == 'en_US'){
+				$vs_sort = strToLower(strip_tags(str_replace(array("The ", ",", ".", "\"", "“", "”", "La ", "El ", "Los ", "Las ", "Una ", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), array("", "", "", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "u", "u", "u", "N", "n", "S", "s"), trim(strip_tags($qr_list->get('ca_occurrences.preferred_labels'))))));
+			}else{
+				$vs_sort = strToLower(strip_tags(str_replace(array("The ", ",", ".", "\"", "“", "”", "La ", "El ", "Los ", "Las ", "Una ", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), array("", "", "", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "u", "u", "u", "N", "n", "S", "s"), trim(strip_tags($qr_list->get('ca_occurrences.nonpreferred_labels'))))));
+			}
 			$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			if(!$va_links_array[$vs_first_letter][$vs_sort]){
@@ -144,14 +176,22 @@
 				if(is_array($va_cross_refs) && sizeof($va_cross_refs)){
 					foreach($va_cross_refs as $va_cross_ref){
 						if($va_cross_ref["direction"] == "ltor"){
-							$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels <i>see</i> <unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.preferred_labels</l></unit>')."</div>\n";	
+							if ($g_ui_locale == 'en_US'){
+								$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('^ca_occurrences.preferred_labels <i>see</i> <unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.preferred_labels</l></unit>')."</div>\n";	
+							}else{
+								$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('^ca_occurrences.nonpreferred_labels <i>see</i> <unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="related"><l>^ca_occurrences.nonpreferred_labels</l></unit>')."</div>\n";	
+							}
 							$vb_cross_ref = true;
 							break;
 						}
 					}
 				}
 				if(!$vb_cross_ref){
-					$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</div>\n";	
+					if ($g_ui_locale == 'en_US'){
+						$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</div>\n";	
+					}else{
+						$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listCol'>".$qr_list->getWithTemplate('<l>^ca_occurrences.nonpreferred_labels</l>')."</div>\n";	
+					}
 				}
 			}
 		}
