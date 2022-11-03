@@ -44,6 +44,7 @@
 							}
 						}
 ?>
+						<li><a href="https://collections.irshdc.ubc.ca/WhereToFindRecords">Find Archives</a></li>
 					</ul>	
 				</li>
 <?php				
