@@ -1363,3 +1363,8 @@ select {
 #donate:hover{
 	background: #ff783a;
 }
+
+/* Media viewer */
+.tileviewer div a.tileviewerControlSelected, div.caMediaOverlayControls .close a .fa {
+  color: #ff6c2f;
+}

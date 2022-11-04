@@ -79,7 +79,7 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6'>
-				<H2>{{{^ca_objects.type_id<ifdef code="ca_occurrences.idno">: ^ca_objects.idno</ifdef>}}}</H2>
+				<H2>{{{^ca_objects.type_id<ifdef code="ca_objects.idno">: ^ca_objects.idno</ifdef>}}}</H2>
 				<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 				<div class='unit'>
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1">
@@ -110,7 +110,9 @@
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="publisher" min="1">
 					<div class="unit"><label>Publisher<ifcount code="ca_entities" restrictToRelationshipTypes="publisher" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="publisher" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div>
 				</ifcount>}}}
-				{{{<ifdef code="ca_objects.dimensions.display_dimensions"><div class="unit"><label>Dimensions</label>^ca_objects.dimensions.display_dimensions</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.publication"><div class="unit"><label>Publication</label><unit relativeTo="ca_objects.publication" delimiter="<br/>">^ca_objects.publication</unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.call_number"><div class="unit"><label>Call Number</label>^ca_objects.call_number</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.dimensions.display_dimensions"><div class="unit"><label>Dimensions</label><unit relativeTo="ca_objects.dimensions" delimiter="<br/>">^ca_objects.dimensions.display_dimensions</unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.editionInformation"><div class="unit"><label>Edition</label>^ca_objects.editionInformation</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.series.series_title|ca_objects.series.series_id"><div class="unit"><label>Series</label>^ca_objects.series.series_title<ifdef code="ca_objects.series.series_id,ca_objects.series.series_title">, </ifdef>^ca_objects.series.series_id</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.rights.rightsStatement"><div class="unit"><label>Rights Statement</label>^ca_objects.rights.rightsStatement</div></ifdef>}}}
@@ -132,8 +134,13 @@
 					}
 				}
 ?>				
+				{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label>
+					<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels</l></unit></div></ifcount>}}}
+				
+				{{{<ifdef code="ca_objects.exhibition_history"><div class="unit"><label>Exhibition History</label><unit relativeTo="ca_objects.exhibition_history" delimiter="<br/><br/>">^ca_objects.exhibition_history</unit></div></ifdef>}}}
 				{{{<ifcount code="ca_occurrences" restrictToTypes="exhibitions" min="1"><div class="unit"><label>Related Exhibitions</label>
 					<unit relativeTo="ca_occurrences" restrictToTypes="exhibitions" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
+				{{{<ifdef code="ca_objects.bibliography"><div class="unit"><label>Bibliography</label><unit relativeTo="ca_objects.bibliography" delimiter="<br/><br/>">^ca_objects.bibliography</unit></div></ifdef>}}}
 				
 				{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Events</label>
 					<unit relativeTo="ca_occurrences" restrictToTypes="event" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
