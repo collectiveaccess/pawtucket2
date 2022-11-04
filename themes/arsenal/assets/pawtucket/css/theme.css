@@ -125,7 +125,7 @@ a:hover{
 }
 @media (min-width:768px){
 	.navbar-brand{
-		width: 375px;
+		width: 345px;
 		padding-top: 40px;
 		padding-bottom: 35px;
 	}
