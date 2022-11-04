@@ -83,9 +83,10 @@
 								while($qr->nextHit()) {
 									print caNavLink($this->request, $qr->get("ca_list_items.preferred_labels.name_singular"), "", "", "Browse", "artwork", array("facet" => "keyword_facet", "id" => $qr->getPrimaryKey()))."<br/>";
 								}
+								print "</div>";
 							}
 							if($t_object->get("ca_objects.related")){
-								print "<div class='unit text-center'>".caNavLink($this->request, "Related Artwork", "btn btn-light btn-sm", "", "Browse",  "artwork", array('facet' => 'related_object_facet', 'id' => $t_object->get("ca_objects.object_id")))."</div>";
+								print "<div class='unit text-center'>".caNavLink($this->request, "Related Artwork", "btn btn-light btn-sm", "", "Browse",  "artwork", array('dontSetFind' => 1, 'facet' => 'related_object_facet', 'id' => $t_object->get("ca_objects.object_id")))."</div>";
 							}
 	?>						
 						</div><!-- end col -->
