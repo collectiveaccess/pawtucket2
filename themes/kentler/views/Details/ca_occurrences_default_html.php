@@ -292,7 +292,7 @@
 					ksort($va_artworks_no_media, SORT_NATURAL);
 					$va_all_images = array_merge($va_art_installations, $va_artworks, $va_artworks_no_media);
 					if(sizeof($va_all_images)){
-						print "<H6>"._t("%1 Images", $t_item->get("type_id", array("convertCodesToDisplayText" => true)))."</H6><br/>";
+						print "<H6>"._t("%1 Images", $t_item->get("type_id", array("convertCodesToDisplayText" => true)))."</H6><div>Click to Enlarge.</div><br/>";
 						if($vn_total_images > $vn_cap_for_grid){
 							# --- grid
 							print "<div class='exhibitGrid'>";
