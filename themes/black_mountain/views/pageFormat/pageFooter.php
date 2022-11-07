@@ -116,6 +116,7 @@ Or email us at: <a href="mailto:info@blackmountaincollege.org">info@blackmountai
 //				   return false;
 //				 });
 //			}); 
+			document.addEventListener('contextmenu', event => event.preventDefault());
 		</script>
 <?php
 	print $this->render("Cookies/banner_html.php");	
