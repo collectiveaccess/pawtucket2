@@ -275,6 +275,8 @@
 							}
 ?>
 							{{{<ifdef code="ca_objects.rights.copyrightStatement"><div class="unit"><label>Copyright Statement</label>^ca_objects.rights.copyrightStatement</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.credit_line"><div class="unit"><label>Credit</label>^ca_objects.credit_line</div></ifdef>}}}
+
 <?php
 							if($vs_rep_viewer){
 ?>
