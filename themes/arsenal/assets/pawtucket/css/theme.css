@@ -125,9 +125,9 @@ a:hover{
 }
 @media (min-width:768px){
 	.navbar-brand{
-		width: 345px;
-		padding-top: 40px;
-		padding-bottom: 35px;
+		width: 270px;
+		padding-top: 35px;
+		padding-bottom: 37px;
 	}
 	.navbar > .container .navbar-brand {
 	  margin-left: -11px;
@@ -629,7 +629,7 @@ body.frontContainer #footer{
 .hpMainCallout{
 	font-family: "Cinetype";
 	font-weight:700;
-	font-size:55px;	
+	font-size:45px;	
 	margin-top: 50px;
 	text-align:center;
 }
@@ -640,7 +640,7 @@ body.frontContainer #footer{
 }
 .hpIntro .callout{
 	text-align:center;
-	font-size: 28px;
+	font-size: 24px;
 	color: #000;
 	margin:30px 0px 70px 0px;
 	font-family: "Cinetype";
