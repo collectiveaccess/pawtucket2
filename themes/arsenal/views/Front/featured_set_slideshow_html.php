@@ -61,7 +61,8 @@
 	if(sizeof($va_featured_ids) == 0){
 		$t_list_items = new ca_list_items(array("idno" => "work"));
 		$o_db = new Db();
-		$qr_res = $o_db->query("SELECT ca_occurrences.* FROM ca_occurrences INNER JOIN (SELECT CEIL(RAND() * (SELECT MAX(occurrence_id) FROM ca_occurrences)) AS id) AS x INNER JOIN ca_object_representations_x_occurrences ON ca_object_representations_x_occurrences.occurrence_id = ca_occurrences.occurrence_id WHERE ca_occurrences.occurrence_id <= x.id AND ca_occurrences.access IN (1) AND ca_occurrences.type_id = ? AND ca_occurrences.deleted = 0 ORDER BY ca_occurrences.occurrence_id ASC LIMIT 100", array($t_list_items->get("ca_list_items.item_id")));
+		$qr_res = $o_db->query("SELECT ca_occurrences.* FROM ca_occurrences INNER JOIN ca_object_representations_x_occurrences ON ca_object_representations_x_occurrences.occurrence_id = ca_occurrences.occurrence_id WHERE ca_occurrences.access IN (1) AND ca_occurrences.type_id = ? AND ca_occurrences.deleted = 0 ORDER BY RAND() LIMIT 40", array($t_list_items->get("ca_list_items.item_id")));
+		
 		while($qr_res->nextRow()) {
 			$va_featured_ids[$qr_res->get("ca_occurrences.occurrence_id")] = $qr_res->get("ca_occurrences.occurrence_id");
 		}
