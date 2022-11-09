@@ -1,4 +1,11 @@
 {
+  "name": "collectiveaccess/pawtucket2",
+  "description": "Pawtucket improved.",
+  "type": "package",
+  "license": "GPL-3.0-only",
+  "bin" : [
+    "support/bin/caUtils"
+  ],
   "require": {
     "caseyamcl/phpoaipmh": "^3.0",
     "collectiveaccess/service-wrapper": "v1.1.3",
