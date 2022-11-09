@@ -54,12 +54,12 @@
 					$va_current[$qr_list->get("ca_occurrences.exhibitionRank").".".$qr_list->get("ca_occurrences.occurrence_id")] = array("id" => $qr_list->get("ca_occurrences.occurrence_id"), "title_link" => $qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>'), "date" => $qr_list->get("ca_occurrences.exhibition_dates"), "short_desc" => $qr_list->get("ca_occurrences.short_description"));
 				}else{
 					#if($va_raw_dates["exhibition_dates"][0] > $vs_current_date){
-						$va_past[] = array("id" => $qr_list->get("ca_occurrences.occurrence_id"), "title_link" => $qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>'), "date" => $qr_list->get("ca_occurrences.exhibition_dates"));
+						#$va_past[] = array("id" => $qr_list->get("ca_occurrences.occurrence_id"), "title_link" => $qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>'), "date" => $qr_list->get("ca_occurrences.exhibition_dates"));
 					#}
 				}
-				if(sizeof($va_past) == 3){
-					break;
-				}
+				#if(sizeof($va_past) == 3){
+				#	break;
+				#}
 			}
 		}
 		#$va_reps = $t_occurrence->getPrimaryMediaForIDs($va_ids, array("medium"), array("checkAccess" => $va_access_values));
