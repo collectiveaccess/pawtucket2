@@ -41,7 +41,7 @@
 		"Alternate Name" => "^ca_collections.nonpreferred_labels%delimiter=,_",
 		"Container ID" => "^ca_collections.container_id",
 		"AV Subtype" => "^ca_collections.av_subtype",
-		"Dates" => "<ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef><ifnotdef code='ca_collections.inclusive_dates'>^ca_collections.display_date%delimiter=,_</ifnotdef>",
+		"Dates" => "<ifdef code='ca_collections.display_date'>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'>^ca_collections.inclusive_dates%delimiter=,_</ifnotdef>",
 		"Additional Date Information" => "^ca_collections.date_info",
 		"Description" => "^ca_collections.description",
 		"Language" => "^ca_collections.language%delimiter=,_",
