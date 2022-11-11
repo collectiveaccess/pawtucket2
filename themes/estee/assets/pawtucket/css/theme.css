@@ -1715,6 +1715,15 @@ h1.primaryLandingBannerTitle {
     width: 100% !important;
     height: auto !Important;
 }
+.staticPage #newsletter img{
+	width: 100%;
+	height: auto;
+	max-width: 600px;
+	margin-bottom: 40px;
+}
+.staticPage #newsletter{
+	text-align:center;
+}
 /*
 #contactTabs.nav-tabs > li, #aboutTabs.nav-tabs > li, #collectionTabs.nav-tabs > li{
 	float:none;

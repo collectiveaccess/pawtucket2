@@ -78,6 +78,8 @@
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
  			
+ 			$o_search_config = caGetSearchConfig();
+ 			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type");
@@ -269,6 +271,12 @@
 				unset($va_criteria['_search']);
 			} 
 
+			//
+			// Set highlight text
+			//
+			if(isset($va_criteria['_search']) && !RequestHTTP::isAjax()) { 
+				MetaTagManager::setHighlightText($va_criteria['_search']);
+			}
 
  			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
  			
@@ -363,6 +371,7 @@
 				}
 			}
 			
+			$qr_res->doHighlighting($o_search_config->get("do_highlighting"));
 			$this->view->setVar('result', $qr_res);
 				
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {

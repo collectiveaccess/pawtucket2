@@ -256,7 +256,7 @@ html{
 	padding-bottom:20px;
 }
 .bResultItem .bResultItemText, .bResultListItemCol .bResultListItemText{
-  font-size: 12px;
+  font-size: 14px;
 }
 /* front */
 html.frontContainer {
@@ -1362,4 +1362,9 @@ select {
 }
 #donate:hover{
 	background: #ff783a;
+}
+
+/* Media viewer */
+.tileviewer div a.tileviewerControlSelected, div.caMediaOverlayControls .close a .fa {
+  color: #ff6c2f;
 }

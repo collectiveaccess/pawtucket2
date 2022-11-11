@@ -111,6 +111,8 @@ class DetailController extends FindController {
 		AssetLoadManager::register("readmore");
 		AssetLoadManager::register("maps");
 		
+		$o_search_config = caGetSearchConfig();
+		
 		$options = (isset($this->opa_detail_types[$function]['options']) && is_array($this->opa_detail_types[$function]['options'])) ? $this->opa_detail_types[$function]['options'] : array();
 		//
 		// Media viewer
@@ -250,6 +252,8 @@ class DetailController extends FindController {
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").$t_subject->get('preferred_labels').(($idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$idno}]" : ""));
 		}
 		$type = $t_subject->getTypeCode();
+		
+		$t_subject->doHighlighting($o_search_config->get("do_highlighting"));
 		
 		$this->view->setVar('detailType', $table);
 		$this->view->setVar('item', $t_subject);

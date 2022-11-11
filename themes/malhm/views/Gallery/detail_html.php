@@ -16,7 +16,7 @@ $t_set_creator = new ca_users($t_set->get('ca_users.user_id'));
 $vs_contributor_credit = null;
 $t_contributor = null;
 if($t_set_creator->hasRole("member")){
-	# --- is there a contributor entity related to the suer account that made the set?
+	# --- is there a contributor entity related to the user account that made the set?
 	$t_contributor = new ca_entities($t_set_creator->get("entity_id"));
 	print "<div class='curatedByTitle'>Curated by: ".caDetailLink($this->request, $t_contributor->get("ca_entities.preferred_labels.displayname"), '', 'ca_entities',  $t_set_creator->get("entity_id"))."</div>";
 }

@@ -20,7 +20,7 @@
 		"Classification" => "^ca_collections.col_classification%delimiter=,_",
 		#"Unit ID" => "^ca_collections.unit_id%delimiter=,_",
 		"Container ID" => "^ca_collections.container_id",
-		"Dates" => "<ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef><ifnotdef code='ca_collections.inclusive_dates'>^ca_collections.display_date%delimiter=,_</ifnotdef>",
+		"Dates" => "<ifdef code='ca_collections.display_date'>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'>^ca_collections.inclusive_dates%delimiter=,_</ifnotdef>",
 		"Additional Date Information" => "^ca_collections.date_info",
 		"Material Type" => "^ca_collections.material_type%delimiter=,_",
 		"Format" => "^ca_collections.format%delimiter=,_",

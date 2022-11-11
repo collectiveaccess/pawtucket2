@@ -24,9 +24,9 @@
 				foreach ($va_sets_by_type as $vs_typename => $va_sets) {
 					#foreach ($va_set_info_t as $vs_set_name => $va_set_infos) {
 						$va_set_ids = array();
-						if ($vs_typename == "user") {
+						//if ($vs_typename == "user") {
 							$va_set_ids = array_keys($va_sets);
-							$r_sets = caMakeSearchResult("ca_sets", $va_set_ids, array("sort" => array("ca_sets.set_rank"), "sortDirection" => "asc"));
+							$r_sets = caMakeSearchResult("ca_sets", $va_set_ids, array("sort" => array("ca_sets.preferred_labels.name"), "sortDirection" => "asc"));
 							print '<div class="row">';
 							print "<hr><h2>".$va_set_confs[$vs_typename]['name']." ".caNavLink($this->request, '<small> | see all <i class="fa fa-external-link"></i></small>', '', 'Gallery', 'featured', $vs_typename)."</h2>";
 							print "<div class='lightboxDescription textContent'>".$va_set_confs[$vs_typename]['description']."</div>";
@@ -36,7 +36,6 @@
 										<ul>';
 								
 
-								#$va_first_items_from_set = $t_set->getPrimaryItemsFromSets($va_set_ids, array("version" => "iconlarge", "checkAccess" => $this->opa_access_values));
 								if($r_sets->numHits()){
 									while($r_sets->nextHit()){
 										if ($r_sets->get('ca_sets.hide', array('convertCodesToDisplayText' => true)) != "No") {					
@@ -134,58 +133,58 @@
 							</script>
 							</div><!-- end row -->
 <?php							
-						} else {
-							print '<div class="row">';
-							print "<h2>".$va_set_confs[$vs_typename]['name']." ".caNavLink($this->request, '<small> | see all <i class="fa fa-external-link"></i></small>', '', 'Gallery', 'featured', $vs_typename)."</h2>";
-							print "<div class='lightboxDescription textContent'>".$va_set_confs[$vs_typename]['description']."</div>";
-
-							$va_set_ids = array_keys($va_sets);
-							$r_sets = caMakeSearchResult("ca_sets", $va_set_ids, array("sort" => array("ca_sets.set_rank"), "sortDirection" => "asc"));
-							$t_set = new ca_sets();
-							$va_first_items_from_set = $t_set->getPrimaryItemsFromSets($va_set_ids, array("version" => "medium", "checkAccess" => $va_access_values));
-							$vn_col_no = 1;
-							$vn_rule_no = 1;
-							$va_layout = array();
-							if($r_sets->numHits()){
-								while($r_sets->nextHit()){
-									$vn_set_id = $r_sets->get("set_id");
-									$t_set = new ca_sets($vn_set_id);
-									$va_set_info = $va_sets[$vn_set_id];
-									$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
-									# --- if this set was made by a contributor, created them with link to their contributor page
-									$t_set_creator = new ca_users($t_set->get('ca_users.user_id'));
-									$vs_contributor_credit = null;
-									$t_contributor = null;
-									if($t_set_creator->hasRole("member")){
-										# --- is there a contributor entity related to the suer account that made the set?
-										$t_contributor = new ca_entities($t_set_creator->get("entity_id"));
-										$vs_contributor_credit = caDetailLink($this->request, $t_contributor->get("ca_entities.preferred_labels.displayname"), '', 'ca_entities',  $t_set_creator->get("entity_id"));
-									}else{
-										$vs_contributor_credit = $t_set_creator->getPreference('user_profile_username');
-									}
-									if ($va_first_item['representation_tag']) {
-										$vs_description = $t_set->get('ca_sets.set_description');
-										if(mb_strlen($vs_description) > 250){
-											$vs_description = substr($vs_description, 0, 250)."...";
-										}
-										$va_layout[$vn_col_no][]= ( $vn_rule_no > 4 ? "<hr>" : "" )."<div class='setCascade'><div class='setCascadeImage'>".caNavLink($this->request, $va_first_item['representation_tag'], '', '', 'Gallery', $vn_set_id)."</div><div class='name'>".caNavLink($this->request, $va_set_info['name'], '', '', 'Gallery', $vn_set_id)." <small>(".$va_set_info['item_count']." items)</small></div>".(($vs_contributor_credit) ? "<div>Curated by: ".$vs_contributor_credit."</div>" : "")."<div>".$vs_description."</div></div>";
-										$vn_col_no++;
-										$vn_rule_no++;
-										if ($vn_col_no == 5) {
-											$vn_col_no = 1;
-										}
-									}
-								}
-							}
-							foreach ($va_layout as $va_col_no => $vs_item) {
-								print "<div class='col-sm-3'>";
-								foreach ($vs_item as $va_key => $vs_item_link) {
-									print $vs_item_link;
-								}
-								print "</div>";
-							}
-							print "</div><!-- end row -->";					
-						}				
+						// } else {
+// 							print '<div class="row">';
+// 							print "<h2>".$va_set_confs[$vs_typename]['name']." ".caNavLink($this->request, '<small> | see all <i class="fa fa-external-link"></i></small>', '', 'Gallery', 'featured', $vs_typename)."</h2>";
+// 							print "<div class='lightboxDescription textContent'>".$va_set_confs[$vs_typename]['description']."</div>";
+// 
+// 							$va_set_ids = array_keys($va_sets);
+// 							$r_sets = caMakeSearchResult("ca_sets", $va_set_ids, array("sort" => array("ca_sets.set_rank"), "sortDirection" => "asc"));
+// 							$t_set = new ca_sets();
+// 							$va_first_items_from_set = $t_set->getPrimaryItemsFromSets($va_set_ids, array("version" => "medium", "checkAccess" => $va_access_values));
+// 							$vn_col_no = 1;
+// 							$vn_rule_no = 1;
+// 							$va_layout = array();
+// 							if($r_sets->numHits()){
+// 								while($r_sets->nextHit()){
+// 									$vn_set_id = $r_sets->get("set_id");
+// 									$t_set = new ca_sets($vn_set_id);
+// 									$va_set_info = $va_sets[$vn_set_id];
+// 									$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
+// 									# --- if this set was made by a contributor, created them with link to their contributor page
+// 									$t_set_creator = new ca_users($t_set->get('ca_users.user_id'));
+// 									$vs_contributor_credit = null;
+// 									$t_contributor = null;
+// 									if($t_set_creator->hasRole("member")){
+// 										# --- is there a contributor entity related to the suer account that made the set?
+// 										$t_contributor = new ca_entities($t_set_creator->get("entity_id"));
+// 										$vs_contributor_credit = caDetailLink($this->request, $t_contributor->get("ca_entities.preferred_labels.displayname"), '', 'ca_entities',  $t_set_creator->get("entity_id"));
+// 									}else{
+// 										$vs_contributor_credit = $t_set_creator->getPreference('user_profile_username');
+// 									}
+// 									if ($va_first_item['representation_tag']) {
+// 										$vs_description = $t_set->get('ca_sets.set_description');
+// 										if(mb_strlen($vs_description) > 250){
+// 											$vs_description = substr($vs_description, 0, 250)."...";
+// 										}
+// 										$va_layout[$vn_col_no][]= ( $vn_rule_no > 4 ? "<hr>" : "" )."<div class='setCascade'><div class='setCascadeImage'>".caNavLink($this->request, $va_first_item['representation_tag'], '', '', 'Gallery', $vn_set_id)."</div><div class='name'>".caNavLink($this->request, $va_set_info['name'], '', '', 'Gallery', $vn_set_id)." <small>(".$va_set_info['item_count']." items)</small></div>".(($vs_contributor_credit) ? "<div>Curated by: ".$vs_contributor_credit."</div>" : "")."<div>".$vs_description."</div></div>";
+// 										$vn_col_no++;
+// 										$vn_rule_no++;
+// 										if ($vn_col_no == 5) {
+// 											$vn_col_no = 1;
+// 										}
+// 									}
+// 								}
+// 							}
+// 							foreach ($va_layout as $va_col_no => $vs_item) {
+// 								print "<div class='col-sm-3'>";
+// 								foreach ($vs_item as $va_key => $vs_item_link) {
+// 									print $vs_item_link;
+// 								}
+// 								print "</div>";
+// 							}
+// 							print "</div><!-- end row -->";					
+					//	}				
 					#}			
 				}
 
