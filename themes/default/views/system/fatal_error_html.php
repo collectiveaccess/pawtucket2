@@ -37,7 +37,7 @@ $path = join("/", $tmp);
 </head>
 <body>
 	<div id='errorDetails'>
-		<div id="logo"><img src="<?= $path ?>/themes/default/assets/pawtucket/graphics/logo.svg" width="350" height="35" alt="CollectiveAccess"/></div><!-- end logo -->
+		<div id="logo"><img src="<?= $path ?>/themes/default/assets/pawtucket/graphics/logos/logo.svg" width="350" height="35" alt="CollectiveAccess"/></div><!-- end logo -->
 		<div id="content">
 			<div class='error'>Something went wrong</div>	
 			

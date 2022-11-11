@@ -45,7 +45,7 @@
 </head>
 <body>
 	<div id='box'>
-	<div id="logo"><img src="<?= $vs_path ?>/themes/default/assets/pawtucket/graphics/logo.svg"  width="350" height="35" alt="CollectiveAccess"/></div><!-- end logo -->
+	<div id="logo"><img src="<?= $vs_path ?>/themes/default/assets/pawtucket/graphics/logos/logo.svg"  width="350" height="35" alt="CollectiveAccess"/></div><!-- end logo -->
 	<div id="content">
 		<?= "<div class='error'>An error in your system configuration has been detected</div>
 			General installation instructions can be found

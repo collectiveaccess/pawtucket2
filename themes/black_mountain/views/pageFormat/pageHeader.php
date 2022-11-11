@@ -236,7 +236,7 @@
 	
 	
 <?php
-		print "<div>".caGetThemeGraphic($this->request, 'XantiSchawinskyUntitled.jpg', array("alt" => "Xanti Schawinsky, Untitled", "role" => "banner"))."</div>";
+		print "<div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'XantiSchawinskyUntitled.jpg', array("alt" => "Xanti Schawinsky, Untitled", "role" => "banner")), "", "", "", "")."</div>";
 		print "<div class='frontHeroCaption'><i>Untitled</i>, Xanti Schawinsky</div>";
 ?>
 	
@@ -249,6 +249,7 @@
 						<li><?php print caNavLink($this->request, _t("Collection"), "", "", "Browse", "Objects"); ?></li>
 						<li><?php print caNavLink($this->request, _t("People & Organizations"), "", "", "Browse", "People"); ?></li>
 						<li><?php print caNavLink($this->request, _t("Programs"), "", "", "Browse", "Programs"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "Collections"); ?></li>
 					</ul>
 				</div>
 				<div class="col-md-3">
