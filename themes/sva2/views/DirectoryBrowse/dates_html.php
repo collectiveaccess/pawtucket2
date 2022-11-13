@@ -6,6 +6,8 @@
 			<li><span class="material-icons">keyboard_arrow_right</span></li>
 		</ul>
 	</div> -->
+	<!-- <a href="#main-content" class="btn btn-default go-down" tabindex="1" role="button"  aria-label="arrow button to skip to main content"><span class="material-icons down-icon">keyboard_arrow_down</span></a>
+	<p class="skip-btn">SKIP TO MAIN CONTENT</p> -->
 
 	<div id="directoryBrowse"></div>
 </div>

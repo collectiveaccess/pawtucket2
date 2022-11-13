@@ -102,7 +102,7 @@ class DirectoryController extends \GraphQLServices\GraphQLServiceController {
 							switch($binfo['barType']) {
 								case 'year':
 									$years = caNormalizeDateRange($qr->get($binfo['barElementCode']), 'year', ['returnAsArray' => true]);
-									
+									if(!is_array($years)) { $years = []; }
 									foreach($years as $y) {
 										if(isset($bar_values[$y])) { continue(3); }
 									}
@@ -215,6 +215,16 @@ class DirectoryController extends \GraphQLServices\GraphQLServiceController {
 							'description' => _t('Value to return content for.')
 						],
 						[
+							'name' => 'start',
+							'type' => Type::int(),
+							'description' => _t('Offset into result')
+						],
+						[
+							'name' => 'limit',
+							'type' => Type::int(),
+							'description' => _t('Maximum number of items to return')
+						],
+						[
 							'name' => 'noCache',
 							'type' => Type::int(),
 							'description' => _t('Cache disable flag')
@@ -224,9 +234,13 @@ class DirectoryController extends \GraphQLServices\GraphQLServiceController {
 						$binfo = self::browseInfo($args['browse']);
 						$value = $args['value'];
 						
-						if(!$args['noCache'] && ExternalCache::contains('browseBarContent_'.$args['browse'].'_'.$value, 'DirectoryBrowse')) {
-							return ExternalCache::fetch('browseBarContent_'.$args['browse'].'_'.$value, 'DirectoryBrowse');
-						}
+						$start = (int)$args['start'];
+						$limit = (int)$args['limit'];
+						
+						$cache_key = md5('browseBarContent_'.$args['browse'].'_'.$value.'_'.$start.'_'.$limit);
+						// if(!$args['noCache'] && ExternalCache::contains($cache_key, 'DirectoryBrowse')) {
+// 							return ExternalCache::fetch($cache_key, 'DirectoryBrowse');
+// 						}
 						
 						$table = $binfo['table'];
 						$related_table = $binfo['relatedTable'];
@@ -238,8 +252,10 @@ class DirectoryController extends \GraphQLServices\GraphQLServiceController {
 						
 						$display_template = $binfo['displayTemplate'];
 						
+						$random = false;
 						if(!strlen($value)) { 
-							throw new \ServiceException(_t('Value must not be empty'));
+							//throw new \ServiceException(_t('Value must not be empty'));
+							$random = true;
 						}
 					
 						$needs_wildcard = false;
@@ -255,17 +271,35 @@ class DirectoryController extends \GraphQLServices\GraphQLServiceController {
 								break;
 						}
 						
-						$tmp = explode('.', $binfo['barElementCode']);
-						array_shift($tmp);
-						
-						if(sizeof($tmp) == 2) {
-							$criteria = [$tmp[0] => [$tmp[1] => $value.($needs_wildcard ? '%' : '')]];
+						if($random) {
+							$t = Datamodel::getInstance($table, true);
+							$ids = array_keys($t->getRandomItems(20, ['checkAccess' => [1]]));
+							
+							$qr = caMakeSearchResult($table, $ids);
+							$total_size = $qr->numHits();
 						} else {
-							$criteria = [$tmp[0] => $value.($needs_wildcard ? '%' : '')];
-						}
+							$tmp = explode('.', $binfo['barElementCode']);
+							array_shift($tmp);
 						
-						$qr = $table::find($criteria, ['returnAs' => 'searchResult', 'restrictToTypes' => $restrict_to_types, 'allowWildcards' => $needs_wildcard]);
+							if(sizeof($tmp) == 2) {
+								$criteria = [$tmp[0] => [$tmp[1] => $value.($needs_wildcard ? '%' : '')]];
+							} else {
+								$criteria = [$tmp[0] => $value.($needs_wildcard ? '%' : '')];
+							}
+					
 
+							// ----------------------------------------------------
+							$other_qr = $table::find($criteria, ['returnAs' => 'searchResult', 'restrictToTypes' => $restrict_to_types, 'allowWildcards' => $needs_wildcard]);
+						
+							$total_size = 0;
+
+							while($other_qr->nextHit()) {
+								$total_size = $total_size + 1;
+							}
+							// -----------------------------------------------------
+						
+							$qr = $table::find($criteria, ['sort' => "{$table}.preferred_labels.".(($table == 'ca_entities') ? 'surname' : 'name'), 'start' => $start, 'limit' => $limit, 'returnAs' => 'searchResult', 'restrictToTypes' => $restrict_to_types, 'allowWildcards' => $needs_wildcard]);
+						}
 						$ret_values = $ids = $text = [];
 						
 						while($qr->nextHit()) {
@@ -277,7 +311,6 @@ class DirectoryController extends \GraphQLServices\GraphQLServiceController {
 							$text[] = $display_template ? $qr->getWithTemplate($display_template) : $qr->get("{$table}.preferred_labels");
 						}
 						
-						
 						$processed_text = caCreateLinksFromText($text, $table, $ids);
 						
 						foreach($processed_text as $i => $t) {
@@ -288,10 +321,11 @@ class DirectoryController extends \GraphQLServices\GraphQLServiceController {
 						}
 						
 						$ret = [
-							'values' => $ret_values
+							'values' => $ret_values,
+							'total_size' => $total_size
 						];
 					
-						ExternalCache::save('browseBarContent_'.$args['browse'].'_'.$value, $ret, 'DirectoryBrowse');
+						ExternalCache::save($cache_key, $ret, 'DirectoryBrowse');
 						return $ret;
 					}
 				],

@@ -1,29 +1,33 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import DirectoryBrowseContextProvider from './DirectoryBrowse/DirectoryBrowseContext';
-// import { DirectoryBrowseContext } from './DirectoryBrowse/DirectoryBrowseContext';
+import { DirectoryBrowseContext } from './DirectoryBrowse/DirectoryBrowseContext';
 
-import PeopleBrowse from './DirectoryBrowse/PeopleBrowse';
-import ExhibitionsBrowse from './DirectoryBrowse/ExhibitionsBrowse';
-import DatesBrowse from './DirectoryBrowse/DatesBrowse';
+import BrowseBar from "./DirectoryBrowse/BrowseBar";
+import BrowseContentContainer from './DirectoryBrowse/BrowseContentContainer';
 
 const selector = pawtucketUIApps.DirectoryBrowse.selector;
 const currentBrowse = pawtucketUIApps.DirectoryBrowse.currentBrowse;
 
 const DirectoryBrowse = () => {
-  // const { currentBrowse, setCurrentBrowse } = useContext(DirectoryBrowseContext);
+
+  const { displayTitle, setDisplayTitle } = useContext(DirectoryBrowseContext);
 
   if(currentBrowse){
-    if(currentBrowse == 'people'){
-      return ( <PeopleBrowse /> )
-    } else if(currentBrowse == 'exhibitionsByName'){
-      return ( <ExhibitionsBrowse /> )
-    } else if (currentBrowse == 'exhibitionsByYear') {
-      return ( <DatesBrowse /> )
-    }
-  }else{
-    return null;
-  }
+    return (
+      <div className="main-browse">
+        <div className="row mb-2">
+          <h1 >{displayTitle}</h1>
+          <div className='row ml-auto mr-0 align-items-center'>
+            <a href="#main-content" className="go-down" tabIndex="1" role="button" aria-label="arrow button to skip to main content"><span className="material-icons down-icon">keyboard_arrow_down</span></a>
+            <p className="skip-btn mb-2">SKIP TO MAIN CONTENT</p>
+          </div> 	
 
+        </div>
+        <BrowseBar />
+        <BrowseContentContainer />
+      </div>
+    )
+  }
 }
 
 /**

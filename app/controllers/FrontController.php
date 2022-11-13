@@ -72,7 +72,7 @@
 						$vn_shuffle = 1;
 					}
 					# Enforce access control on set
-					if(!is_array($va_access_values) || (sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+					if((!is_array($va_access_values) || (sizeof($va_access_values) == 0)) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
 						$this->view->setVar('featured_set_id', $t_set->get("set_id"));
 						$this->view->setVar('featured_set', $t_set);
 						$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());

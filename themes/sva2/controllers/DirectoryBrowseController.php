@@ -48,6 +48,12 @@ class DirectoryBrowseController extends BasePawtucketController {
 	 *
 	 */
 	function People($options = null) {
+		MetaTagManager::setWindowTitle(
+			$this->request->config->get("app_display_name").
+			$this->request->config->get("page_title_delimiter").
+			_t('Browse Artists & Curators')
+		);
+		
 		$o_result_context = new ResultContext($this->request, 'ca_entities', 'people');
 		$o_result_context->setAsLastFind();
 		$this->render("DirectoryBrowse/people_html.php");
@@ -57,6 +63,12 @@ class DirectoryBrowseController extends BasePawtucketController {
 	 *
 	 */
 	function Exhibitions($options = null) {
+		MetaTagManager::setWindowTitle(
+			$this->request->config->get("app_display_name").
+			$this->request->config->get("page_title_delimiter").
+			_t('Browse Exhibitions')
+		);
+		
 		$o_result_context = new ResultContext($this->request, 'ca_occurrences', 'exhibitions');
 		$o_result_context->setAsLastFind();
 		$this->render("DirectoryBrowse/exhibitions_html.php");
@@ -66,6 +78,11 @@ class DirectoryBrowseController extends BasePawtucketController {
 	 *
 	 */
 	function Dates($options = null) {
+		MetaTagManager::setWindowTitle(
+			$this->request->config->get("app_display_name").
+			$this->request->config->get("page_title_delimiter").
+			_t('Browse Exhibitions by date')
+		);
 		$o_result_context = new ResultContext($this->request, 'ca_occurrences', 'dates');
 		$o_result_context->setAsLastFind();
 		$this->render("DirectoryBrowse/dates_html.php");

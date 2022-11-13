@@ -46,13 +46,13 @@ const getBrowseBar = (url, browse, callback) => {
       console.log("Error while attempting to fetch browseBar: ", error);
     });
 }
-const getBrowseContent = (url, browse, value, callback) => {
+const getBrowseContent = (url, browse, value, start, limit, callback) => {
   const client = getGraphQLClient(url + '/Directory', {});
   client
     .query({
       query: gql`
-        query($browse: String, $value: String) { browseContent (browse: $browse, value: $value) { values { value, display } } }`
-      , variables: { 'browse': browse, 'value': value }
+        query($browse: String, $value: String, $start: Int, $limit: Int) { browseContent (browse: $browse, value: $value, start: $start, limit: $limit) { total_size, values { value, display } } }`
+      , variables: { 'browse': browse, 'value': value, 'start': start, 'limit': limit }
     })
     .then(function (result) {
       callback(result.data['browseContent']);

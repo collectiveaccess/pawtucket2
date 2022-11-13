@@ -96,6 +96,10 @@ class DirectorySchema extends \GraphQLServices\GraphQLSchema {
 					'values' => [
 						'type' => Type::listOf($browseContentValue),
 						'description' => 'values for the browse'
+					],
+					'total_size' => [
+						'type' => Type::int(),
+						'description' => 'Number of items this value will return'
 					]
 				]
 			]),

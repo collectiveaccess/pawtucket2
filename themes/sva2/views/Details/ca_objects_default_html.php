@@ -33,7 +33,8 @@
 ?>
 
 <div class="container-fluid exhibition-detail-container">
-	<div class="row breadcrumb-nav justify-content-start">
+	
+	<!-- <div class="row breadcrumb-nav justify-content-start">
 			<ul class="breadcrumb">
 			<li>
 				<?= $t_object->getWithTemplate('<unit relativeTo="ca_occurrences" restrictToTypes="exhibition"><l>^ca_occurrences.preferred_labels.name</l></unit>'); ?>
@@ -41,15 +42,20 @@
 				<li><span class="material-icons">keyboard_arrow_right</span></li>
 				<li>{{{<l>^ca_objects.preferred_labels.name</l>}}}</li>
 			</ul>
-	</div>
+	</div> -->
+
+	<div class='skip-controls row ml-auto mr-0 align-items-center'>
+		<a href="#main-content" class="go-down" tabindex="1" role="button" aria-label="arrow button to skip to main content"><span class="material-icons down-icon">keyboard_arrow_down</span></a>
+		<p class="skip-btn mb-2">SKIP TO MAIN CONTENT</p>
+	</div> 	
 
     <div class="row exhibition-label justify-content-start">
-        <h2>{{{^ca_objects.preferred_labels.name}}} </h2>	
+      <h1>{{{^ca_objects.preferred_labels.name}}} </h1>	
 			<div class="line-border"></div>
 		</div>
 
 		<!--Media Viewer-->
-		<div class="row justify-content-center">	
+		<div id="main-content" class="row justify-content-center">	
 			<div id="mediaDisplay"></div>
 		</div>
 		
@@ -140,21 +146,32 @@
 				{{{<ifcount restrictToRelationshipTypes="designer" code="ca_entities" min="2">
 						<p class="detail-label">Designers</p></ifcount>}}}
 	
-				{{{<p class="detail-value"><unit restrictToRelationshipTypes="designer" relativeTo="ca_entities.related" delimiter=",">
-							<span class="p"><l>^ca_entities.preferred_labels</l></span>
-						</unit></p> </p>}}}
+				<!-- {{{<p class="detail-value"><unit restrictToRelationshipTypes="designer" relativeTo="ca_entities.related" delimiter=",">
+						<span class="p"><l>^ca_entities.preferred_labels</l></span>
+						<l>^ca_entities.preferred_labels</l>
+				</unit></p> </p>}}} -->
+
+				{{{<unit restrictToRelationshipTypes="designer" relativeTo="ca_entities.related" delimiter=",">
+					<l>^ca_entities.preferred_labels</l>
+				</unit>}}}
 				
 				<!-- Artist -->
 				{{{<ifcount restrictToRelationshipTypes="artist" code="ca_entities" min="1" max="1">
-						<p class="detail-label">Artist</p>
-						</ifcount>}}}
+					<p class="detail-label">Artist</p>
+				</ifcount>}}}
 	
 				{{{<ifcount restrictToRelationshipTypes="artist" code="ca_entities" min="2">
-						<p class="detail-label">Artists</p></ifcount>}}}
+					<p class="detail-label">Artists</p></ifcount>}}}
 	
-				{{{<p class="detail-value"><unit restrictToRelationshipTypes="artist" relativeTo="ca_entities.related" delimiter=", " >
-						<span class="p"><l>^ca_entities.preferred_labels</l></span>
-						</unit></p> </p>}}}
+				<!-- {{{<p class="detail-value"><unit restrictToRelationshipTypes="artist" relativeTo="ca_entities.related" delimiter=", " >
+					<span class="p"><l>^ca_entities.preferred_labels</l></span>
+					<l>^ca_entities.preferred_labels</l>
+				</unit></p> </p>}}} -->
+
+				{{{<unit restrictToRelationshipTypes="artist" relativeTo="ca_entities.related" delimiter=", " >
+					<!-- <span class="p"><l>^ca_entities.preferred_labels</l></span> -->
+					<l>^ca_entities.preferred_labels</l>
+				</unit>}}}
 				
 				<!-- Photographer -->
 				{{{<ifcount restrictToRelationshipTypes="photographer" code="ca_entities" min="1" max="1">
@@ -165,9 +182,13 @@
 						<p class="detail-label">Photographers</p>
 						</ifcount>}}}
 	
-				{{{<p class="detail-value"><unit restrictToRelationshipTypes="photographer" relativeTo="ca_entities.related" delimiter=", " >
-						<span class="p"><l>^ca_entities.preferred_labels</l></span>
-						</unit></p> }}}		
+				<!-- {{{<p class="detail-value"><unit restrictToRelationshipTypes="photographer" relativeTo="ca_entities.related" delimiter=", " >
+					<span class="p"><l>^ca_entities.preferred_labels</l></span>
+					<l>^ca_entities.preferred_labels</l>
+				</unit></p> }}}		 -->
+				{{{<unit restrictToRelationshipTypes="photographer" relativeTo="ca_entities.related" delimiter=", " >
+					<l>^ca_entities.preferred_labels</l>
+				</unit>}}}		
 
 			</div>
 		

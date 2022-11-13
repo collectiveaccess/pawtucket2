@@ -20,6 +20,13 @@
  *
  * ----------------------------------------------------------------------
  */
+$vs_search = (string)$this->getVar('search');
+$action = "http://sva.whirl-i-gig.com:8085/index.php/Browse/exhibitions/search/${vs_search}";
+
+$vs_full_link = caNavLink('', '', '', 'Browse', '', array('search' => str_replace("/", "", $vs_search)));
+
+// echo $vs_full_link;
+
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -27,7 +34,7 @@
     <meta name="viewport" content="width=device-width , initial-scale=1" />
     <script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
-    <title>SVA 2</title>
+    <title><?= MetaTagManager::getWindowTitle(); ?></title>
   </head>
 
 <body id="pawtucketApp">
@@ -79,38 +86,37 @@
 			</div>
 
 			<nav class="navbar navbar-expand-lg navbar-light main-nav">
+
 			  <a class="navbar-brand main-logo" href="/index.php/">SVA Exhibitions Archive</a>
 
 			  <button class="navbar-toggler mb-1 mt-1" type="button" data-toggle="modal" data-target="#modalContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 			  </button>
 
-			  <div class="collapse navbar-collapse justify-content-end" id='navbarSupportedContent'>
-					<p class='mb-0 mr-1 desktop-menu dropdown-label'>BROWSE ALL BY</p>
+			  <fieldset class="collapse navbar-collapse justify-content-end" id='navbarSupportedContent'>
+						<label class='mb-0 mr-1 desktop-menu dropdown-label' for="browseAllBy">BROWSE ALL BY</label>
+						<ul class="navbar-nav browse-dropdown desktop-menu mr-2" id="browseAllBy">
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">	Select an Option</a>
+								<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+									<a class="dropdown-item" href="/index.php/DirectoryBrowse/People" role="button" aria-labelledby="browseByPeople">People</a>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="/index.php/DirectoryBrowse/Exhibitions" role="button" aria-labelledby="browseByExhibitions">Exhibitions</a>
+									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="/index.php/DirectoryBrowse/Dates" role="button" aria-labelledby="browseByDates">Dates</a>
+								</div>
+							</li>
+						</ul>
 
-					<ul class="navbar-nav browse-dropdown desktop-menu mr-2">
-						<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Select an Option
-						</a>
-						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<a class="dropdown-item" href="/index.php/DirectoryBrowse/People">People</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="/index.php/DirectoryBrowse/Exhibitions">Exhibitions</a>
-							<div class="dropdown-divider"></div>
-							<a class="dropdown-item" href="/index.php/DirectoryBrowse/Dates">Dates</a>
-						</div>
-						</li>
-					</ul>
+						<form class="form-inline d-flex desktop-menu" method="get" action="/index.php/Browse/Exhibitions" >
+							<input class="form-control search-input rounded-0 desktop-menu" type="search" name="search" placeholder="Enter Your Query" aria-label="Enter Your Query">
+							<button class="btn btn-sm rounded-0 d-flex search-button desktop-menu" type="submit">
+								<p class='mb-0 ml-1 desktop-menu'>SEARCH</p>
+								<span class="material-icons search-icon ml-1 mb-1 pt-1 desktop-menu">search</span>
+							</button>
+						</form>
+			  </fieldset>
 
-					<form class="form-inline d-flex desktop-menu" action="http://sva.whirl-i-gig.com:8085/index.php/MultiSearch/Index" method="get">
-						<input class="form-control search-input rounded-0 desktop-menu" type="search" name="search" placeholder="Enter Your Query" aria-label="Search">
-						<button class="btn btn-sm rounded-0 d-flex search-button desktop-menu" type="submit">
-							<p class='mb-0 ml-1 desktop-menu'>SEARCH</p>
-							<span class="material-icons search-icon ml-1 mb-1 pt-1 desktop-menu">search</span>
-						</button>
-					</form>
-			  </div>
 			</nav>
 		</div><!-- row -->
 	</div><!-- container-fluid -->

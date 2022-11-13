@@ -7,7 +7,68 @@
 
 <div class="container-fluid entities-container">
 
-	<div class="row breadcrumb-nav justify-content-start">
+	<div class='skip-controls row ml-auto mr-0 align-items-center'>
+		<a href="#main-content" class="go-down" tabindex="1" role="button" aria-label="arrow button to skip to main content">
+			<span class="material-icons down-icon">keyboard_arrow_down</span>
+		</a>
+		<p class="skip-btn mb-2">SKIP TO MAIN CONTENT</p>
+	</div> 	
+
+	<div class="row entities-label justify-content-start">
+		<h1>{{{^ca_entities.preferred_labels.displayname}}} Exhibitions</h1>
+		<div class="line-border"></div>
+	</div>
+
+		<div id="main-content" class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 exhibition-items">
+
+			{{{<unit relativeTo="ca_occurrences" delimiter="<br/>">
+					<div class="col">					  
+						<div class="card exhibition-item" tabindex="0">
+
+							<unit relativeTo="ca_objects" delimiter=" " length='1'>
+
+								<ifdef code="ca_object_representations"> 
+									<a>^ca_object_representations.media.large</a>
+
+									<!-- <if rule="^ca_objects.access =~ / /">
+										<div style='width: 100%; height: 200px; margin: auto; background-color: #c8c8c8; text-align: center;'>
+											<p className='no-image' style='padding-top: 85px; text-decoration: none;'>
+												No Image Available
+											</p>
+										</div>
+									</if> -->
+								</ifdef>
+
+								<ifnotdef code="ca_object_representations">
+									<div style='width: 100%; height: 200px; margin: auto; background-color: #c8c8c8; text-align: center;'>
+										<p className='no-image' style='padding-top: 85px; text-decoration: none;'>
+											No Image Available
+										</p>
+									</div>
+								</ifnotdef>
+
+							</unit>
+
+							<!-- <unit relativeTo="ca_occurrences" delimiter=" " start="0" length="1"> -->
+								<l>^preferred_labels.name</l>
+							<!-- </unit> -->
+
+						</div>
+					</div>					 
+			</unit>}}}
+
+		</div><!-- end row -->
+
+</div><!-- end container -->
+
+
+
+
+
+
+
+
+	<!-- <div class="row breadcrumb-nav justify-content-start">
 		<ul class="breadcrumb">
 			<li>
 				<?php
@@ -21,28 +82,4 @@
 			<li><span class="material-icons">keyboard_arrow_right</span></li>
 			<li>{{{<l>^ca_entities.preferred_labels.displayname</l>}}}</li>
 		</ul>
-	</div>
-
-	<div class="row justify-content-start">
-		<h2>{{{^ca_entities.preferred_labels.displayname}}} Exhibitions</h2>
-		<div class="line-border"></div>
-	</div><!-- end row -->
-
-	
-		<div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 exhibition-items">
-			{{{
-			<unit relativeTo="ca_occurrences" delimiter="<br/>">
-				<div class="col">					  
-					<div class="card exhibition-item" tabindex="0">
-							<unit relativeTo="ca_objects" delimiter=" " start="0" length="1"><div class="item-image"><l>^ca_object_representations.media.small</div></l></unit>
-							<div class="item-label"><l>^ca_occurrences.preferred_labels.name</l></div>
-							<!-- <unit relativeTo="ca_occurrences.dates" skipWhen="^ca_occurrences.dates.dates_type !~ /Exhibition dates/">
-								<if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"> <br> ^ca_occurrences.dates.dates_value</if>
-							</unit> -->
-					</div>
-				</div>					 
-			</unit>
-			}}}
-		</div><!-- end row -->
-
-</div><!-- end container -->
+	</div> -->

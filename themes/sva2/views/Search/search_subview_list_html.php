@@ -67,13 +67,14 @@
 					while($qr_results->nextHit()) {
 						$vn_count++;
 				?>
-						<!-- <div class="col"> -->
-							<div class='col card search-item' tabindex='0'>
-								<?php
-									print caDetailLink($qr_results->getWithTemplate($va_block_info["resultTemplate"]), "", $va_block_info["table"], $qr_results->getPrimaryKey());
+						<!-- tabindex='0' -->
+						<div class='col'>
+							<div class='card'>
+								<?=
+									caDetailLink($qr_results->getWithTemplate($va_block_info["resultTemplate"]), "", $va_block_info["table"], $qr_results->getPrimaryKey());
 								?>
 							</div>
-						<!-- <div> -->
+						</div>
 					<?php					
 						if ($vn_count == $vn_hits_per_block) {break;} 
 						$index = $index + 1;
@@ -81,7 +82,9 @@
 					?>
 			</div>
 		<!-- </div> -->
-		<div class='row justify-content-center col-12 p-0 m-0 full-row'><?php print $vs_full_link; ?></div>
+		<div class='row justify-content-center col-12 p-0 m-0 full-row'>
+			<?= $vs_full_link; ?>
+		</div>
 <?php
 	}
 ?>

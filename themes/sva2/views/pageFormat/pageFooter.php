@@ -25,33 +25,33 @@
 			<footer id="footer">
 
 				<div class="row row-cols-1 row-cols-2-lg">
-					<div class="col-md-3 footer-title p-0">SVA Exhibitions Archive</div>
+					<div class="col-md-3 footer-title p-0"><a class="main-logo" href="/index.php/">SVA Exhibitions Archive</a></div>
 
 					<div class="col-md-9 p-0">
 						<ul class="list justify-content-end">
 							<li class="list-item"><a href="#">Glaser Archives</a></li>
-							<li class="divi"></li>
+							<li aria-hidden="true" class="divi"></li>
 							<li class="list-item"><a href="#">SVA Archives</a></li>
-							<li class="divi"></li>
+							<li aria-hidden="true" class="divi"></li>
 							<li class="list-item"><a href="#">About</a></li>
-							<li class="divi"></li>
+							<li aria-hidden="true" class="divi"></li>
 							<li class="list-item"><a href="#">Visit</a></li>
-							<li class="divi"></li>
+							<li aria-hidden="true" class="divi"></li>
 							<li class="list-item"><a href="#">Accessibility Notice</a></li>
 						</ul>
 					</div>
 
 				</div>
 
-				<!-- <div class="row footer-text-notice">
+				<div class="row footer-text-notice">
 					<p>
-						There’s more! Please contact the archives for more information about particular exhibitions.
+						There's more! Please contact the archives for more information about particular exhibitions.
  						</br></br>
 						The images on this site are protected by copyright and/or related rights. Their appearance on this site is merely intended to illustrate certain of the content available for educational purposes in the School of Visual Arts Archives (a division of the Visual Arts Foundation).  For other uses contact the archives for information about obtaining permission from the rights-holder(s).
 					</p>
-				</div> -->
+				</div>
 
-			</footer><!-- end footer -->
+			</footer>
 			
 			<script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>
     	<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
