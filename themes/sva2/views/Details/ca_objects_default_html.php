@@ -50,7 +50,7 @@
 	</div> 	
 
     <div class="row exhibition-label justify-content-start">
-      <h1>{{{^ca_objects.preferred_labels.name}}} </h1>	
+    	 <h1>{{{^ca_objects.preferred_labels.name}}} </h1>	
 			<div class="line-border"></div>
 		</div>
 
@@ -137,44 +137,49 @@
 			</div>
 
 			<div class="col-sm-6">
-			
+				<!-- Exhibition -->
+				<div class="mb-4">
+				{{{<ifcount restrictToRelationshipTypes="exhibition" code="ca_occurrences" min="1" max="1">
+						<p class="detail-label">Exhibition</p>
+						</ifcount>}}}
+				{{{<ifcount restrictToRelationshipTypes="exhibition" code="ca_occurrences" min="2">
+						<p class="detail-label">Exhibitions</p></ifcount>}}}
+				{{{<unit restrictToRelationshipTypes="exhibition" relativeTo="ca_occurrences.related" delimiter=",">
+					<l>^ca_occurrences.preferred_labels</l>
+				</unit>}}}
+				</div>
+				
 				<!-- Designer -->
+				<div class="mb-4">
 				{{{<ifcount restrictToRelationshipTypes="designer" code="ca_entities" min="1" max="1">
 						<p class="detail-label">Designer</p>
 						</ifcount>}}}
 	
 				{{{<ifcount restrictToRelationshipTypes="designer" code="ca_entities" min="2">
 						<p class="detail-label">Designers</p></ifcount>}}}
-	
-				<!-- {{{<p class="detail-value"><unit restrictToRelationshipTypes="designer" relativeTo="ca_entities.related" delimiter=",">
-						<span class="p"><l>^ca_entities.preferred_labels</l></span>
-						<l>^ca_entities.preferred_labels</l>
-				</unit></p> </p>}}} -->
 
 				{{{<unit restrictToRelationshipTypes="designer" relativeTo="ca_entities.related" delimiter=",">
 					<l>^ca_entities.preferred_labels</l>
 				</unit>}}}
+				</div>
 				
 				<!-- Artist -->
+				<div class="mb-4">
 				{{{<ifcount restrictToRelationshipTypes="artist" code="ca_entities" min="1" max="1">
 					<p class="detail-label">Artist</p>
 				</ifcount>}}}
 	
 				{{{<ifcount restrictToRelationshipTypes="artist" code="ca_entities" min="2">
 					<p class="detail-label">Artists</p></ifcount>}}}
-	
-				<!-- {{{<p class="detail-value"><unit restrictToRelationshipTypes="artist" relativeTo="ca_entities.related" delimiter=", " >
-					<span class="p"><l>^ca_entities.preferred_labels</l></span>
-					<l>^ca_entities.preferred_labels</l>
-				</unit></p> </p>}}} -->
 
 				{{{<unit restrictToRelationshipTypes="artist" relativeTo="ca_entities.related" delimiter=", " >
-					<!-- <span class="p"><l>^ca_entities.preferred_labels</l></span> -->
 					<l>^ca_entities.preferred_labels</l>
 				</unit>}}}
+				</div>
 				
 				<!-- Photographer -->
-				{{{<ifcount restrictToRelationshipTypes="photographer" code="ca_entities" min="1" max="1">
+				<div class="mb-4">
+				{{{<div><ifcount restrictToRelationshipTypes="photographer" code="ca_entities" min="1" max="1">
 						<p class="detail-label">Photographer</p>
 						</ifcount>}}}
 	
@@ -182,14 +187,10 @@
 						<p class="detail-label">Photographers</p>
 						</ifcount>}}}
 	
-				<!-- {{{<p class="detail-value"><unit restrictToRelationshipTypes="photographer" relativeTo="ca_entities.related" delimiter=", " >
-					<span class="p"><l>^ca_entities.preferred_labels</l></span>
-					<l>^ca_entities.preferred_labels</l>
-				</unit></p> }}}		 -->
 				{{{<unit restrictToRelationshipTypes="photographer" relativeTo="ca_entities.related" delimiter=", " >
-					<l>^ca_entities.preferred_labels</l>
+					^ca_entities.preferred_labels
 				</unit>}}}		
-
+				</div>
 			</div>
 		
 		</div>

@@ -34,7 +34,6 @@ const FacetedBrowseResults = () => {
         <FacetedBrowseControls />
         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 fb-results-row">
           {resultItems.map((item, index) => {
-            console.log("Browse Item: ", item);
             return (
               <div className="col card fb-result-card" key={index}> 
                 {(item.media) ? 
@@ -52,7 +51,7 @@ const FacetedBrowseResults = () => {
                   </a> 
                 }
                 {/* <a href={item.detailUrl}>{(item.title) ? item.title : item.value}</a> */}
-                <a>{(item.title) ? item.title : item.value}</a>
+                <a href={item.detailUrl} role="link" aria-label={`link to ${(item.title) ? item.title : item.value}`}>{(item.title) ? item.title : item.value}</a>
               </div>
             )
           })}

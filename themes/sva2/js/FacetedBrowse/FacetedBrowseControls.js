@@ -43,11 +43,11 @@ const FacetedBrowseControls = () => {
 
         <div id='main-content' className="row row-cols-2 row-cols-1-sm" style={{ margin: "0px 0px 20px 0px"}}>
           
-          <div className="col-6 pl-0 d-flex justify-content-start align-items-center">
+          <div className="col-10 pl-0 faceted-browse-label">
             <h1 className="total-items">{totalResultItems} {contentTypeDisplay}</h1>
           </div>
 
-          <div className="col-6 d-flex justify-content-end align-items-center">
+          <div className="col-2 d-flex justify-content-end align-items-center">
 
             <div className="dropdown d-inline mr-3" >
               <a href="#" role="button" id="dropdownMenuLink-Sort" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="material-icons">filter_list</span></a>

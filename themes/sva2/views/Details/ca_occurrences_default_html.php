@@ -37,15 +37,13 @@
 ?>
 
 <div class="container-fluid occurrences-container">
-
 	<div class='skip-controls row ml-auto mr-0 align-items-center'>
 		<a href="#main-content" class="go-down" tabindex="1" role="button" aria-label="arrow button to skip to main content"><span class="material-icons down-icon">keyboard_arrow_down</span></a>
 		<p class="skip-btn mb-2">SKIP TO MAIN CONTENT</p>
 	</div> 	
 
-	<div class="row occurrence-label justify-content-center">
-		<div class="line-border"></div>
-		<h1 class="text-center">{{{^ca_occurrences.preferred_labels.name}}}</h1>
+	<div class="row occurrence-label justify-content-start">
+		<h1>{{{^ca_occurrences.preferred_labels.name}}}</h1>
 		<div class="line-border"></div>
 	</div>
 
@@ -78,7 +76,7 @@
 
 	<div class="row details-heading justify-content-start">
 		<h2>Details</h2>
-		<div class="line-border"></div>
+		{{{<ifdef code="ca_occurrences.description_public"><div class="line-border"></div></ifdef>}}}
 		
 		<div class="col">
 			{{{<ifdef code="ca_occurrences.description_public">

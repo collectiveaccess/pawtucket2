@@ -59,10 +59,10 @@
 						// $media = $qr->getWithTemplate('<l>^ca_object_representations.media.medium</l>', ["checkAccess" => $this->getVar("access_values")]);
 						$media = $qr->getWithTemplate('<l><unit relativeTo="ca_objects" start="0" length="1">^ca_object_representations.media.large</unit></l>', ["checkAccess" => $this->getVar("access_values")]);
 						// $caption = $qr->getWithTemplate("<l>^ca_occurrences.preferred_labels.name</l>");	
-						$caption = $qr->getWithTemplate("<p>^ca_occurrences.preferred_labels.name</p>");	
+						$caption = $qr->getWithTemplate("<l>^ca_occurrences.preferred_labels.name</l>");	
 			?>
 					<div class="col">
-						<div class="card exhibition-item">
+						<div class="card exhibition-items">
 							<?= $media; ?>
 							<?= $caption; ?>
 						</div>

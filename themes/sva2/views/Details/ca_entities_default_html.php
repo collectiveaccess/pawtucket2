@@ -24,34 +24,14 @@
 			{{{<unit relativeTo="ca_occurrences" delimiter="<br/>">
 					<div class="col">					  
 						<div class="card exhibition-item" tabindex="0">
+<l><case>
+<unit relativeTo="ca_objects" skipWhen="^ca_objects.series%convertCodesToIdno=1 !~ /poster/i"><ifdef code="ca_object_representations">^ca_object_representations.media.large</ifdef></unit>
+<unit relativeTo="ca_objects" skipWhen="^ca_objects.series%convertCodesToIdno=1 !~ /announcement/i"><ifdef code="ca_object_representations">^ca_object_representations.media.large</ifdef></unit>
+<unit relativeTo="ca_objects" ><ifdef code="ca_object_representations">^ca_object_representations.media.large</ifdef></unit>
+<ifnotdef code="ca_object_representations"><div style='width: 100%; height: 200px; margin: auto; background-color: #c8c8c8; text-align: center;'><p className='no-image' style='padding-top: 85px; text-decoration: none;'>No Image Available</p></div></ifnotdef>
+</case></l>
 
-							<unit relativeTo="ca_objects" delimiter=" " length='1'>
-
-								<ifdef code="ca_object_representations"> 
-									<a>^ca_object_representations.media.large</a>
-
-									<!-- <if rule="^ca_objects.access =~ / /">
-										<div style='width: 100%; height: 200px; margin: auto; background-color: #c8c8c8; text-align: center;'>
-											<p className='no-image' style='padding-top: 85px; text-decoration: none;'>
-												No Image Available
-											</p>
-										</div>
-									</if> -->
-								</ifdef>
-
-								<ifnotdef code="ca_object_representations">
-									<div style='width: 100%; height: 200px; margin: auto; background-color: #c8c8c8; text-align: center;'>
-										<p className='no-image' style='padding-top: 85px; text-decoration: none;'>
-											No Image Available
-										</p>
-									</div>
-								</ifnotdef>
-
-							</unit>
-
-							<!-- <unit relativeTo="ca_occurrences" delimiter=" " start="0" length="1"> -->
-								<l>^preferred_labels.name</l>
-							<!-- </unit> -->
+							<l>^preferred_labels.name</l>
 
 						</div>
 					</div>					 
