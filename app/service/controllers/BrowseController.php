@@ -295,7 +295,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 							throw new \ServiceException(_t('No criteria specified'));
 						}
 						
-						$browse->execute(['checkAccess' => caGetUserAccessValues()]);	
+						$browse->execute(['checkAccess' => caGetUserAccessValues(), 'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $browse_info, null)]);	
 						
 						return self::getMutationResponse($browse, $browse_info, $args);
 					}
@@ -420,7 +420,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						$browse->addCriteria($facet, is_array($values) ? $values : [$value]);
 						
 						$user_access_values = caGetUserAccessValues();
-						$browse->execute(['checkAccess' => $user_access_values]);	
+						$browse->execute(['checkAccess' => $user_access_values, 'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $browse_info, null)]);	
 						
 						return self::getMutationResponse($browse, $browse_info, $args);
 					}
@@ -473,7 +473,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						$browse->removeCriteria($facet, $values);
 						
 						$user_access_values = caGetUserAccessValues();
-						$browse->execute(['checkAccess' => $user_access_values]);	
+						$browse->execute(['checkAccess' => $user_access_values, 'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $browse_info, null)]);	
 						
 						return self::getMutationResponse($browse, $browse_info, $args);
 					}
@@ -504,7 +504,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						$browse->removeAllCriteria();
 						
 						$user_access_values = caGetUserAccessValues();
-						$browse->execute(['checkAccess' => $user_access_values]);	
+						$browse->execute(['checkAccess' => $user_access_values, 'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $browse_info, null)]);	
 						
 						return self::getMutationResponse($browse, $browse_info, $args);
 					}
@@ -544,7 +544,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 			}
 		}	
 		$user_access_values = caGetUserAccessValues();
-		if (caGetOption('execute', $options, true)) { $browse->execute(['checkAccess' => $user_access_values]); }
+		if (caGetOption('execute', $options, true)) { $browse->execute(['checkAccess' => $user_access_values, 'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $browse_info, null)]); }
 		
 		return [
 			$browse_info, $browse
@@ -585,8 +585,10 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 		
 		// TODO: make caGetDisplayImagesForAuthorityItems() more efficient
 		$qr->seek($start);
-		$m = caGetDisplayImagesForAuthorityItems($table, $qr->getAllFieldValues($qr->primaryKey()), ['return' => 'data', 'versions' => ['small', 'medium', 'large', 'iiif', 'original', 'h264_hi', 'mp3', 'compressed'], 'useRelatedObjectRepresentations' => ($table !== 'ca_objects')]);
-
+		
+		if(!($func = $browse_info['usePreviewHelper'] ?? null)) { $func = 'caGetDisplayImagesForAuthorityItems'; }
+		$m = $func($table, $qr->getAllFieldValues($qr->primaryKey()), ['return' => 'data', 'versions' => ['small', 'medium', 'large', 'iiif', 'original', 'h264_hi', 'mp3', 'compressed'], 'useRelatedObjectRepresentations' => ($table !== 'ca_objects')]);
+		
 		$m = array_map(function($versions) {
 		    $acc = [];
 			foreach ($versions as $v => $info) {

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2018 Whirl-i-Gig
+ * Copyright 2011-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1794,5 +1794,34 @@
 		if(sizeof($va_sets) == 0) { return false; }
 		$t_set = new ca_sets();
 		return $t_set->getPreferredDisplayLabelsForIDs(array_keys($va_sets));
+	}
+	# ---------------------------------------
+	/**
+	 * Check is string suitable for use as a wildcard-suffixed search stem
+	 *
+	 * @param string $value 
+	 *
+	 * @return bool
+	 */
+	function caIsSearchStem(string $value) : bool {
+		return (!preg_match('![\d]+$!', $value) && !preg_match('!\*$!', $value) && preg_match('![\w]+$!', $value));
+	}
+	# ---------------------------------------
+	/**
+	 * Tokenize string into individual words using method defined by currently configured search engine
+	 *
+	 * @param string $value String to tokenize
+	 *
+	 * @return array list of words
+	 */
+	function caTokenizeString(?string $value) : array {
+		$search_engine_class = SearchBase::searchEngineClassName();
+		
+		if(method_exists('SearchBase', $search_engine_class)) {
+			return $search_engine_class::tokenize($value);
+		} else {	// Any plugin that doesn't define its own tokenizer (like ElasticSearch) uses the SqlSearch2 tokenizer by default
+			require_once(__CA_LIB_DIR__.'/Plugins/SearchEngine/SqlSearch2.php');
+			return WLPlugSearchEngineSqlSearch2::tokenize($value);
+		}
 	}
 	# ---------------------------------------
