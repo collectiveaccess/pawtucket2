@@ -61,9 +61,9 @@
 						<label for="ca_objects.uc_creator[]">Creator(s) name (person who created the item)</label>
 						{{{ca_objects.uc_creator%class=form-control&width=100%}}}
 					</div>
-					<div class="form-group">
+					<div class="form-group elementRequired">
 						{{{ca_objects.preferred_labels.name:error}}}
-						<label for="ca_objects_preferred_labels_name">Title (do you wish to title this item?)</label>
+						<label for="ca_objects_preferred_labels_name">Title (do you wish to title this item?) <span class="required">(* Required)</span></label>
 						{{{ca_objects.preferred_labels.name%width=220px&class=form-control&width=100%}}}
 					</div>
 					<div class="form-group">
@@ -91,7 +91,7 @@
 					</div>
 					<div class="form-group">
 						{{{ca_objects.description_w_type.description:error}}}
-						<label for="ca_objects.uc_text[]">Essay, poem, or other writing submitted as part of Creating in Place. Please enter into the box below:</label>
+						<label for="ca_objects.uc_text[]">Essay, poem, or other writing. Please enter into the box below:</label>
 						{{{ca_objects.uc_text%class=form-control&width=100%&height=5}}}
 					</div>
 					<div class="form-group elementRequired">
