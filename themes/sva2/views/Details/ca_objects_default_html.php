@@ -211,7 +211,7 @@
 <script type="text/javascript">	
     pawtucketUIApps['MediaViewer'] = {
         'selector': '#mediaDisplay',
-        'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true]); ?>,
+        'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true, 'checkAccess' => caGetUserAccessValues()]); ?>,
         'width': '100%',
         // 'width': '600px',
         'height': '500px',
