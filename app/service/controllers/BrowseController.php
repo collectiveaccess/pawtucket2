@@ -588,7 +588,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 		
 		if(!($func = $browse_info['usePreviewHelper'] ?? null)) { $func = 'caGetDisplayImagesForAuthorityItems'; }
 		$m = $func($table, $qr->getAllFieldValues($qr->primaryKey()), ['return' => 'data', 'versions' => ['small', 'medium', 'large', 'iiif', 'original', 'h264_hi', 'mp3', 'compressed'], 'useRelatedObjectRepresentations' => ($table !== 'ca_objects')]);
-		
+		if(!is_array($m)) { $m = []; }
 		$m = array_map(function($versions) {
 		    $acc = [];
 			foreach ($versions as $v => $info) {

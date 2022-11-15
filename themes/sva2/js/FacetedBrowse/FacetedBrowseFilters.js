@@ -7,7 +7,7 @@ const search_value = pawtucketUIApps.FacetedBrowse.data.search;
 
 const FacetedBrowseFilters = () => {
 
-  const { browseType, key, setKey, facets, setFacets, setFilters, filters, setResultItems, setTotalResultItems, setSort } = useContext(FacetedBrowseContext)
+  const { browseType, key, setKey, facets, setFacets, setFilters, filters, setResultItems, setTotalResultItems, setSort, isLoading, setIsLoading } = useContext(FacetedBrowseContext)
 
   const [ currentFacet, setCurrentFacet ] = useState();
   const [ selectedFacets, setSelectedFacets ] = useState([]);
@@ -33,16 +33,13 @@ const FacetedBrowseFilters = () => {
   useEffect(() => {
     if(key){
       getFacets(serviceUrl, browseType, key, function (data) {
-        console.log("getFacets: ", data);
         setFacets(data.facets);
         setKey(data.key);
       });
     }
   }, [key])
 
-
   const selectFacet = (name, value) => {
-    console.log("func selectFacet");
     
     setCurrentFacet(name);
     let tempArr = [...selectedFacets];
@@ -50,11 +47,9 @@ const FacetedBrowseFilters = () => {
     if(selectedFacets.includes(value)){
       tempArr.pop(value);
       setSelectedFacets(tempArr);
-      console.log("popped");
     }else{
       tempArr.push(value);
       setSelectedFacets(tempArr);
-      console.log("pushed");
     }
   }
 
@@ -79,7 +74,6 @@ const FacetedBrowseFilters = () => {
     setSelectedFacets(tempArr)
 
     removeFilterValue(serviceUrl, browseType, key, facet, String(value), (data) => {
-      console.log("removeFilterValue: ", data);
       setResultItems(data.items);
       setTotalResultItems(data.item_count);
       setFilters(data.filters)
@@ -94,7 +88,6 @@ const FacetedBrowseFilters = () => {
   const removeAllFilters = (e) => {
     setSelectedFacets([])
     removeAllFilterValues(serviceUrl, browseType, key, (data) => {
-      console.log("removeAllFilterValues: ", data);
       setResultItems(data.items);
       setTotalResultItems(data.item_count);
       setFilters(data.filters)
@@ -112,11 +105,12 @@ const FacetedBrowseFilters = () => {
     })
   })
 
+	if(isLoading) { return ''; }
     return (
       <div className="col-4 faceted-browse-filters">
         <div className="sticky-content">
 
-          <h3 className="filterby-heading"> Filter By </h3>
+        <h3 className="filterby-heading"> Filter By </h3>
 
           {(filters && filters.length >= 1) ?
             <div className="container-fluid filters-container">
@@ -189,50 +183,6 @@ const FacetedBrowseFilters = () => {
               })
             : null}
           </div>
-
-          {/* <div className="facets-list">
-            {facets? 
-            facets.map((facet, index) => {
-              console.log("facet: ", facet, index);
-              return(
-
-                <div className="facet-item" key={index}>
-                  {(facet.values.length > 0) ? 
-                    <>
-                      <a href="#" className="facet-item-label" onClick={e => setFacetResults(e, facet.name)} tabIndex="0">
-                        <p>{(facet.values.length > 1) ? facet.labelPlural : facet.labelSingular}</p>
-                      </a>
-
-                      <div id={`curr-facet-vals-${facet.name}`} style={{ 'display': (currFacetVals == `curr-facet-vals-${facet.name}`)? 'block' :'none'}}>
-                        <div className="container-fluid facet-values-container active" > 
-                          <div className="row m-0 facet-values-row">
-                            <div className="column-container">
-                              {facet.values.map((val, index) =>
-                                <div className="facet-value" key={index}>
-                                  <div className="input-checkbox">
-                                    <a href="#" tabIndex='0' onClick={() => {selectFacet(val.id)}}>
-                                      <input type="checkbox" id={`checkbox-${val.id}`} onChange={() => {selectFacet(val.id)}} tabIndex='-1'/>
-                                    </a>
-                                    <label htmlFor={`checkbox-${val.id}`}>{val.value}</label>
-                                  </div>                 
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="row justify-content-center m-0 mb-3">
-                          <a href="#" tabIndex='0' className="btn btn-secondary btn-sm" href="#" onClick={(e) => { addFilter(e) }}>Apply</a>
-                        </div>
-                      </div>
-                    </>
-                  : null}
-                </div>
-
-              )
-            })
-             :null}
-          </div> */}
-
         </div>
       </div>
     )

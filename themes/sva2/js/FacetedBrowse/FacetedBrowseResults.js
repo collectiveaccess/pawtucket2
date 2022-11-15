@@ -1,24 +1,25 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { FacetedBrowseContext } from './FacetedBrowseContext';
-import FacetedBrowseControls from './FacetedBrowseControls';
 import { addFilterValue, getResult } from './FacetedQueries';
 
 const serviceUrl = pawtucketUIApps.FacetedBrowse.data.serviceUrl;
 
 const FacetedBrowseResults = () => {
 
-  const { browseType, setFilters, resultItems, setResultItems, resultItemsPerPage, setResultItemsPerPage, totalResultItems, setTotalResultItems, key, setKey, sort, contentTypeDisplay, setContentTypeDisplay, availableSorts, setAvailableSorts} = useContext(FacetedBrowseContext)
+  const { browseType, setFilters, resultItems, setResultItems, resultItemsPerPage, setResultItemsPerPage, totalResultItems, setTotalResultItems, key, setKey, sort, contentTypeDisplay, setContentTypeDisplay, availableSorts, setAvailableSorts, isLoading, setIsLoading} = useContext(FacetedBrowseContext)
 
   useEffect(() => {
     if(key){
+      setIsLoading(true);
       getResult(serviceUrl, browseType, key, 0, resultItemsPerPage, sort , (data) => {
         // console.log("getResult: ", data);
         setResultItems(data.items);
         setTotalResultItems(data.item_count);
         setFilters(data.filters)
         setKey(data.key);
-        setAvailableSorts(data.available_sorts)
-        setContentTypeDisplay(data.content_type_display)
+        setAvailableSorts(data.available_sorts);
+        setContentTypeDisplay(data.content_type_display);
+        setIsLoading(false);
       });
     }
   }, [key, resultItemsPerPage])
@@ -30,8 +31,7 @@ const FacetedBrowseResults = () => {
 
   if (resultItems) {
     return (
-      <div className="col-8 pl-0 faceted-browse-results">
-        <FacetedBrowseControls />
+    	<>
         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-3 fb-results-row">
           {resultItems.map((item, index) => {
             return (
@@ -62,7 +62,7 @@ const FacetedBrowseResults = () => {
             <button type="button" className="btn btn-outline-secondary fb-results-load-more-button" onClick={loadMoreResultItems}>Load More</button>
           </div>
         : null}
-      </div>
+      </>
     )
   } else {
     return null;

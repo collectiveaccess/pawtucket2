@@ -5,11 +5,17 @@ import { getResult } from './FacetedQueries';
 const serviceUrl = pawtucketUIApps.FacetedBrowse.data.serviceUrl;
 
 const FacetedBrowseControls = () => {
-  const { totalResultItems, sort, setSort, resultItemsPerPage, browseType, key, setTotalResultItems, setFilters, setKey, setResultItems, contentTypeDisplay, setContentTypeDisplay, availableSorts, setAvailableSorts } = useContext(FacetedBrowseContext)
+  const { totalResultItems, sort, setSort, resultItemsPerPage, browseType, key, setTotalResultItems, setFilters, setKey, setResultItems, contentTypeDisplay, setContentTypeDisplay, availableSorts, setAvailableSorts, isLoading, setIsLoading } = useContext(FacetedBrowseContext)
 
   const [selectedField, setSelectedField] = useState("ca_occurrences.preferred_labels.name");
   const [ selectedDirection, setSelectedDirection ] = useState(":DESC");
 
+
+  
+  useEffect(() => {
+  	//console.log("loading: ", isLoading);
+  }, [isLoading]);
+  
   const handleChange = (event) => {
     const { name, value } = event.target;
     // console.log(name + ' ' + value);
@@ -27,7 +33,6 @@ const FacetedBrowseControls = () => {
       setSort(selectedField.concat(selectedDirection));
 
       getResult(serviceUrl, browseType, key, 0, resultItemsPerPage, selectedField.concat(selectedDirection), function (data) {
-        console.log("getResult: ", data);
         setResultItems(data.items);
         setTotalResultItems(data.item_count);
         setFilters(data.filters)
@@ -37,6 +42,9 @@ const FacetedBrowseControls = () => {
     }
   }
 
+  	let msg = <h1 className="total-items">{totalResultItems} {contentTypeDisplay}</h1>;
+  	if(totalResultItems === 0) { msg = <h1 className="total-items">No {contentTypeDisplay} were found</h1>; }
+  	if(isLoading) { msg = '<span class="loading-icon spin material-icons">cached</span> Loading'; }
   if(availableSorts){
     return (
       <div className="faceted-browse-controls">
@@ -44,7 +52,7 @@ const FacetedBrowseControls = () => {
         <div id='main-content' className="row row-cols-2 row-cols-1-sm" style={{ margin: "0px 0px 20px 0px"}}>
           
           <div className="col-10 pl-0 faceted-browse-label">
-            <h1 className="total-items">{totalResultItems} {contentTypeDisplay}</h1>
+            {msg}
           </div>
 
           <div className="col-2 d-flex justify-content-end align-items-center">
@@ -105,7 +113,14 @@ const FacetedBrowseControls = () => {
       </div>
     )
   } else{
-      return null;
+      return <div className="faceted-browse-controls">
+
+        <div id='main-content' className="row row-cols-2 row-cols-1-sm" style={{ margin: "0px 0px 20px 0px"}}>
+          <div className="col-10 pl-0 faceted-browse-label">
+           <h1 className="total-items" dangerouslySetInnerHTML={{__html: msg}}></h1>
+          </div>
+        </div>
+    </div>;
   }
 }
 

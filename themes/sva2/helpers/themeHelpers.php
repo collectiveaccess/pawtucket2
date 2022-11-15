@@ -107,6 +107,5 @@ function caGetExhibitionBrowsePreviews($pm_table, $pa_ids, $pa_options=null) {
 				break;
 		}
 	}
-	//print_R($va_res);
 	return $va_res;
 }

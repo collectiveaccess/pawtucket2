@@ -2,8 +2,6 @@ import React, { createContext, useState } from 'react';
 export const FacetedBrowseContext = createContext();
 
 const FacetedBrowseContextProvider = (props) => {
-
-
   const [ availableSorts, setAvailableSorts ] = useState();
   const [ browseType, setBrowseType ] = useState('exhibitions'); //default browsetype
   const [ contentTypeDisplay, setContentTypeDisplay ] = useState();
@@ -14,6 +12,7 @@ const FacetedBrowseContextProvider = (props) => {
   const [ resultItemsPerPage, setResultItemsPerPage ] = useState(16);
   const [ sort, setSort ] = useState('');
   const [ totalResultItems, setTotalResultItems ] = useState();
+  const [ isLoading, setIsLoading ] = useState(false);
 
 
   return (
@@ -29,6 +28,7 @@ const FacetedBrowseContextProvider = (props) => {
         resultItemsPerPage, setResultItemsPerPage,
         sort, setSort,
         totalResultItems, setTotalResultItems,
+        isLoading, setIsLoading
       }}>
       {props.children}
     </FacetedBrowseContext.Provider>
