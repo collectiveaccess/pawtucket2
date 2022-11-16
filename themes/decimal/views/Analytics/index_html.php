@@ -24,99 +24,99 @@
 <?php
 			print caGetThemeGraphic($this->request, 'bodySm2.jpg');
 			# not on the body
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 378), array('style' => 'left:38%; top:2%; width:20%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 378), array('style' => 'left:38%; top:2%; width:20%;')); 
 			# entire body
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 316), array('style' => 'left:38%; top:5.7%; width:20%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 316), array('style' => 'left:38%; top:5.7%; width:20%;')); 
 			# eye
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 287), array('style' => 'left:13%; top:10.3%; width:8%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 287), array('style' => 'left:13%; top:10.3%; width:8%;')); 
 			# ear
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 288), array('style' => 'left:25%; top:15.3%; width:8%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 288), array('style' => 'left:25%; top:15.3%; width:8%;')); 
 			# brain
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 357), array('style' => 'left:65%; top:12%; width:8%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 357), array('style' => 'left:65%; top:12%; width:8%;')); 
 			# head
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 200), array('style' => 'left:79%; top:9%; width:8%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 200), array('style' => 'left:79%; top:9%; width:8%;')); 
 			# jaw
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 284), array('style' => 'left:80%; top:11%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 284), array('style' => 'left:80%; top:11%; width:10%;')); 
 			# nose
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 289), array('style' => 'left:80%; top:13%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 289), array('style' => 'left:80%; top:13%; width:10%;')); 
 			# throat
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 293), array('style' => 'left:80%; top:15%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 293), array('style' => 'left:80%; top:15%; width:10%;')); 
 			# cheek
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 285), array('style' => 'left:80%; top:17%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 285), array('style' => 'left:80%; top:17%; width:10%;')); 
 			# forehead
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 283), array('style' => 'left:80%; top:19%; width:12%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 283), array('style' => 'left:80%; top:19%; width:12%;')); 
 			# face
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 360), array('style' => 'left:80%; top:21%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 360), array('style' => 'left:80%; top:21%; width:10%;')); 
 			# chin
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 286), array('style' => 'left:80%; top:23%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 286), array('style' => 'left:80%; top:23%; width:10%;')); 
 			# mouth
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 290), array('style' => 'left:13%; top:20.3%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 290), array('style' => 'left:13%; top:20.3%; width:10%;')); 
 			# teeth
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 291), array('style' => 'left:13%; top:23%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 291), array('style' => 'left:13%; top:23%; width:10%;')); 
 			# toungue
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 292), array('style' => 'left:13%; top:25%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 292), array('style' => 'left:13%; top:25%; width:10%;')); 
 			# back
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 315), array('style' => 'left:13%; top:30.5%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 315), array('style' => 'left:13%; top:30.5%; width:10%;')); 
 			# skin
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 358), array('style' => 'left:17%; top:35%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 358), array('style' => 'left:17%; top:35%; width:10%;')); 
 			# neck
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 270), array('style' => 'left:55%; top:19%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 270), array('style' => 'left:55%; top:19%; width:10%;')); 
 			# thorax
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 301), array('style' => 'left:55%; top:21%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 301), array('style' => 'left:55%; top:21%; width:10%;')); 
 			# shoulder
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 294), array('style' => 'left:73%; top:29%; width:12%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 294), array('style' => 'left:73%; top:29%; width:12%;')); 
 			# heart
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 386), array('style' => 'left:66%; top:33%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 386), array('style' => 'left:66%; top:33%; width:10%;')); 
 			# arm
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 202), array('style' => 'left:69%; top:39%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 202), array('style' => 'left:69%; top:39%; width:10%;')); 
 			# elbow
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 295), array('style' => 'left:69%; top:41.5%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 295), array('style' => 'left:69%; top:41.5%; width:10%;')); 
 			# abdomen
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 204), array('style' => 'left:73%; top:44.5%; width:12%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 204), array('style' => 'left:73%; top:44.5%; width:12%;')); 
 			# waist
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 303), array('style' => 'left:75%; top:47%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 303), array('style' => 'left:75%; top:47%; width:10%;')); 
 			# stomach
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 390), array('style' => 'left:75%; top:49%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 390), array('style' => 'left:75%; top:49%; width:10%;')); 
 			# digestive tract
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 391), array('style' => 'left:75%; top:51%; width:15%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 391), array('style' => 'left:75%; top:51%; width:15%;')); 
 			# wrist
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 296), array('style' => 'left:76%; top:54%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 296), array('style' => 'left:76%; top:54%; width:10%;')); 
 			# hand
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 297), array('style' => 'left:71%; top:65.5%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 297), array('style' => 'left:71%; top:65.5%; width:10%;')); 
 			# leg
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 306), array('style' => 'left:58%; top:60%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 306), array('style' => 'left:58%; top:60%; width:10%;')); 
 			# hip
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 205), array('style' => 'left:58%; top:62.5%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 205), array('style' => 'left:58%; top:62.5%; width:10%;')); 
 			# groin
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 304), array('style' => 'left:58%; top:64.5%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 304), array('style' => 'left:58%; top:64.5%; width:10%;')); 
 			# thigh
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 307), array('style' => 'left:58%; top:66.5%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 307), array('style' => 'left:58%; top:66.5%; width:10%;')); 
 			# calf
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 309), array('style' => 'left:58%; top:68.5%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 309), array('style' => 'left:58%; top:68.5%; width:10%;')); 
 			# ankle
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 311), array('style' => 'left:63%; top:74%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 311), array('style' => 'left:63%; top:74%; width:10%;')); 
 			# foot
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 312), array('style' => 'left:65%; top:84%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 312), array('style' => 'left:65%; top:84%; width:10%;')); 
 			# toe
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 313), array('style' => 'left:45%; top:88.5%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 313), array('style' => 'left:45%; top:88.5%; width:10%;')); 
 			# torso
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 203), array('style' => 'left:13%; top:40%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 203), array('style' => 'left:13%; top:40%; width:10%;')); 
 			# breast
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 302), array('style' => 'left:13%; top:42%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 302), array('style' => 'left:13%; top:42%; width:10%;')); 
 			# chest
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 300), array('style' => 'left:13%; top:44%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 300), array('style' => 'left:13%; top:44%; width:10%;')); 
 			# lungs
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 387), array('style' => 'left:13%; top:46%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 387), array('style' => 'left:13%; top:46%; width:10%;')); 
 			# thumb
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 299), array('style' => 'left:11%; top:53%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 299), array('style' => 'left:11%; top:53%; width:10%;')); 
 			# finger
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 298), array('style' => 'left:10%; top:56%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 298), array('style' => 'left:10%; top:56%; width:10%;')); 
 			# buttock
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 305), array('style' => 'left:13%; top:63%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 305), array('style' => 'left:13%; top:63%; width:10%;')); 
 			# genitals
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 389), array('style' => 'left:13%; top:70%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 389), array('style' => 'left:13%; top:70%; width:10%;')); 
 			# knee
-			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody_facet', 'id' => 308), array('style' => 'left:15%; top:78%; width:10%;')); 
+			print caNavLink($this->request, '&nbsp;', '', '', 'Browse', 'objects', array('facet' => 'locationOnBody', 'id' => 308), array('style' => 'left:15%; top:78%; width:10%;')); 
 			
 ?>
 		</div>
@@ -201,11 +201,11 @@
 <div class="row">
 	<div class="col-sm-10 col-sm-offset-1">
 <?php
-		if(is_array($va_analytics_facets["use_facet"]) && sizeof($va_analytics_facets["use_facet"])){
-			$vs_facet_name = "use_facet";
-			print "<H2>".$va_analytics_facets["use_facet"]["label_singular"]."</H2>";
+		if(is_array($va_analytics_facets["use"]) && sizeof($va_analytics_facets["use"])){
+			$vs_facet_name = "use";
+			print "<H2>".$va_analytics_facets["use"]["label_singular"]."</H2>";
 			print "<div class='row'>";
-			foreach($va_analytics_facets["use_facet"]["content"] as $vn_index => $va_facet){
+			foreach($va_analytics_facets["use"]["content"] as $vn_index => $va_facet){
 				print "<div class='col-md-2 col-sm-12'>".caNavLink($this->request, $va_facet["label"].(($va_facet["content_count"]) ? " (".$va_facet["content_count"].")" : ""), 'platformLink', '', 'Browse', 'objects', array('facet' => $vs_facet_name, 'id' => $va_facet["id"]))."</div>";
 			}
 			print "</div>";
@@ -220,7 +220,7 @@
 		if(is_array($va_analytics_facets) && sizeof($va_analytics_facets)){
 			$vn_c = 0;
 			foreach($va_analytics_facets as $vs_facet_name => $va_facet_content){
-				if($vs_facet_name == "use_facet"){
+				if($vs_facet_name == "use"){
 					continue;
 				}
 				if($vn_c == 0){
