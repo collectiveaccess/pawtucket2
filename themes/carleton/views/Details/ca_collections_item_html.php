@@ -41,7 +41,7 @@
 		"Alternate Name" => "^ca_collections.nonpreferred_labels%delimiter=,_",
 		"Container ID" => "^ca_collections.container_id",
 		"AV Subtype" => "^ca_collections.av_subtype",
-		"Dates" => "<ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef><ifnotdef code='ca_collections.inclusive_dates'>^ca_collections.display_date%delimiter=,_</ifnotdef>",
+		"Dates" => "<ifdef code='ca_collections.display_date'>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'>^ca_collections.inclusive_dates%delimiter=,_</ifnotdef>",
 		"Additional Date Information" => "^ca_collections.date_info",
 		"Description" => "^ca_collections.description",
 		"Language" => "^ca_collections.language%delimiter=,_",
@@ -102,7 +102,7 @@
 				<div class='col-md-12'>
 					<H1>{{{<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>^ca_collections.preferred_labels</if>}}}</H1>
 					<H2>{{{^ca_collections.type_id ^ca_collections.id_number}}}</H2>
-					{{{<ifdef code="ca_collections.parent_id"><div class="collectionHierarchyPath"><b>Part of:</b> <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></l></unit></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.parent_id"><div class="collectionHierarchyPath"><b>Part of:</b> <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'>, ^ca_collections.inclusive_dates%delimiter=,_</ifnotdef></l></unit></div></ifdef>}}}
 					<HR/>
 				</div>
 
