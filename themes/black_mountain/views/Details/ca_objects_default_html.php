@@ -145,7 +145,7 @@
 				{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Events</label>
 					<unit relativeTo="ca_occurrences" restrictToTypes="event" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
 
-				{{{<ifcount code="ca_objects.related" min="1" restrictToTypes="artwork, oral_history, archival_object, publication"><div class="unit"><label>Related Collection Items</label>
+				{{{<ifcount code="ca_objects.related" min="1" restrictToTypes="artwork, oral_history, archival_object, publication"><div class="unit"><label>Related Objects</label>
 					<unit relativeTo="ca_objects.related"  delimiter=" "><div style="clear:left;"><l><ifdef code="ca_object_representations.media.icon"><div class="relatedIcon">^ca_object_representations.media.icon</div></ifdef>^ca_objects.preferred_labels<ifcount code='ca_entities' restrictToRelationshipTypes='creator,author' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='creator,author' delimiter=', '>, ^ca_entities.preferred_labels</unit></ifcount><ifdef code='ca_objects.index_date'>, ^ca_objects.index_date</ifdef></l> (^relationship_typename)</div><unit></ifcount>}}}
 
 						

@@ -102,7 +102,7 @@
 			
 {{{<ifcount code="ca_objects" min="1" restrictToTypes="artwork, oral_history, archival_object, publication">
 			<div class="row">
-				<div class="col-sm-12"><div class="unit"><label>Related Collection Items</label></div><HR/></div>
+				<div class="col-sm-12"><div class="unit"><label>Related Objects</label></div><HR/></div>
 			</div>
 			<div class="row">
 				<div id="browseResultsContainer">

@@ -97,10 +97,25 @@
 					
 					<HR/>
 					{{{<ifdef code="ca_occurrences.description"><div class="unit"><span class="trimText">^ca_occurrences.description</span></div></ifdef>}}}
-					
-					{{{<ifdef code="ca_occurrences.event_type">
-						<div class='unit'><label>Event Type</label>^ca_occurrences.event_type</div>
-					</ifdef>}}}
+
+<?php
+$va_event_types = $t_item->get("ca_occurrences.event_type", array("returnAsArray" => true));
+if(is_array($va_event_types) && sizeof($va_event_types)){
+?>
+	<div class='unit'><label>Event Type</label>
+<?php
+		$va_tmp = array();
+		$t_list_item = new ca_list_items();
+		foreach($va_event_types as $vn_event_type_id){
+			$t_list_item->load($vn_event_type_id);
+			$va_tmp[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Programs", array("facet" => "event_type_facet", "id" => $vn_event_type_id));
+		}
+		print join(", ", $va_tmp);
+?>
+	</div>
+<?php	
+}
+?>
 					{{{<ifdef code="ca_occurrences.event_format">
 						<div class='unit'><label>Event Format</label>^ca_occurrences.event_format</div>
 					</ifdef>}}}
@@ -174,7 +189,7 @@
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1" restrictToTypes="artwork, oral_history, archival_object, publication">
 			<div class="row">
-				<div class="col-sm-12"><div class="unit"><label>Related Collection Items</label></div><HR/></div>
+				<div class="col-sm-12"><div class="unit"><label>Related Objects</label></div><HR/></div>
 			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
