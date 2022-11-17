@@ -1,15 +1,17 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+
 body {
-	font-family:proximanova;
+	font-family: "Open Sans";
 }
 h1, h2, h3, h4, h5, h6 {
-	font-family:proximanova;
+	font-family: "Open Sans";
 	color: #1c2957;
 }
 a {
 	color: #1c2957;
 }
 b, strong {
-    font-family: proximanova;
+    font-family: "Open Sans";
 }
 .btn-default {
 	padding: 7px 5px 5px 5px;
@@ -36,7 +38,7 @@ textarea {
 	padding:5px 13px;
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
-	font-family:proximanova;
+	font-family: "Open Sans";
 	text-transform:uppercase;
 	font-size:13px;
 }
@@ -61,7 +63,7 @@ textarea {
     margin-right: -15px;
 }
 .navbar-brand {
-	width: 350px;
+	width: 225px;
 	padding-bottom: 5px;
 	padding-top:10px;
 }
@@ -141,7 +143,7 @@ textarea {
 	height:50px;
 	color: #666;
 	padding-top:8px;
-	font-family:proximanova;
+	font-family: "Open Sans";
 }
 
 #footer .info {
@@ -181,7 +183,7 @@ textarea {
 	overflow:inherit;
 }
 .browseTargetLabel {
-	font-family:proximanovabold;
+	font-family:arialbold;
 	color: #1c2957;
 }
 .mainfacet {
@@ -192,7 +194,7 @@ textarea {
 }
 .browseHeadernav a {
 	color: #333;
-	font-family: proximanovabold;
+	font-family: arialbold;
 	font-size:14px;
 	padding-right:5px;
 	margin-right:5px;
@@ -311,7 +313,7 @@ a.caAdvancedSearchFormReset:hover, a.caAdvancedSearchFormSubmit:hover {
 	text-transform:uppercase;
 	margin-bottom:10px;
 	margin-top:10px;
-	font-family: proximanovabold; 
+	font-family: arialbold; 
 }
 .listRow {
 	margin-bottom:15px;
@@ -623,7 +625,7 @@ a.caAdvancedSearchFormReset:hover, a.caAdvancedSearchFormSubmit:hover {
 /* Detail */
 
 .detail #detailTools {
-	font-family:proximanova;
+	font-family: "Open Sans";
 }
 .creditLine {
 	padding-top:10px;

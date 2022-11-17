@@ -58,7 +58,7 @@
 		$va_options = array();
 		$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
 		#print caObjectDetailMedia($this->request, $object_id, $t_representation, $t_object, array_merge($va_media_display_info, array("primaryOnly" => true)));		
-		require_once(__CA_LIB_DIR__."/core/Media/MediaViewerManager.php");
+		require_once(__CA_LIB_DIR__."/Media/MediaViewerManager.php");
 		print caRepresentationViewer($this->request, $t_object, $t_object, array_merge($va_options, $va_media_display_info, 
 							array(
 								'display' => 'detail',

@@ -28,7 +28,7 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
- 	require_once(__CA_LIB_DIR__."/core/Media/MediaViewerManager.php");
+ 	require_once(__CA_LIB_DIR__."/Media/MediaViewerManager.php");
  	
  	class GalleryController extends ActionController {
  		# -------------------------------------------------------
@@ -292,14 +292,13 @@
 		 *		display = The type of media_display.conf display configuration to be used (Eg. "detail", "media_overlay"). [Default is "media_overlay"]
 		 */
 		public function GetMediaOverlay($pa_options=null) {
-			$o_dm = Datamodel::load();
 			
 			$ps_context = 'gallery';			
             $va_context = [
                 'table' => 'ca_objects'
             ];
 			
-			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
+			if (!($pt_subject = Datamodel::getInstance($vs_subject = $va_context['table']))) {
 				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
 			}
 			if (!($pn_subject_id = $this->request->getParameter('id', pInteger))) { $pn_subject_id = $this->request->getParameter($pt_subject->primaryKey(), pInteger); }

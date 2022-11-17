@@ -8,41 +8,35 @@
 		<H1><?php print _t("Staff"); ?></H1>
 		
 
-<b>Sylvia Rhor, PhD</b><br/>
+<b>Sylvia Rhor Samaniego, PhD</b><br/>
 Director and Curator<br/>
 104 Frick Fine Arts Building<br/>
 Tel: 412-648-2423<br/>
 Email: <a href='mailto:sylvia.rhor@pitt.edu'>sylvia.rhor@pitt.edu</a><br/><br/>
 
-<b>Emi Finkelstein</b><br/>
-UAG Graduate Assistant, 2019-2020<br/>
-104 Frick Fine Arts Building<br/>
-Tel: 412-648-2423<br/>
-Email: <a href='mailto:ehf12@pitt.edu'>ehf12@pitt.edu</a><br/><br/>
+<b>Mrinalini Rajagopalan</b><br/>
+Chair and Associate Professor<br/>
+115 Frick Fine Arts Building<br/>
+Tel: 412-648-2400<br/>
+Email: <a href='mailto"mrr55@pitt.edu'>mrr55@pitt.edu</a><br/><br/>
 
-<b>Paulina Pardo</b><br/>
-UAG Graduate Assistant, 2019-2020<br/>
+<b>Isaiah Bertagnolli</b><br/>
+UAG Graduate Fellow, 2021-22<br/>
 104 Frick Fine Arts Building<br/>
 Tel: 412-648-2423<br/>
-Email: <a href='mailto:pap55@pitt.edu'>pap55@pitt.edu</a><br/><br/>
+Email: <a href='mailto:itb4@pitt.edu'>itb4@pitt.edu</a><br/><br/>
 
-<b>Chelsea Gunn</b><br/>
-Art on Campus Graduate Assistant, 2019-2020<br/>
-104 Frick Fine Arts Building<br/>
-Tel: 412-648-2423<br/>
-Email: <a href='mailto:cmg100@pitt.edu'>cmg100@pitt.edu</a><br/><br/>
+<b>Jamie Roncinske</b><br/>
+UAG Intern<br/><br/>
+ 
+<b>Emily Wiley</b><br/>
+UAG Intern<br/><br/>
 
-<b>Ellen Larson</b><br/>
-Assistant Curator and Graduate Fellow, 2017-2019<br/>
+<b>Karoline Swiontek</b><br/>
+Academic and Fiscal Manager<br/> 
 104 Frick Fine Arts Building<br/>
-Tel: 412-648-2423<br/>
-Email: <a href='mailto:ellenlarson@pitt.edu'>ellenlarson@pitt.edu</a><br/><br/>				
-
-<b>Adriana Miramontes Olivas</b><br/>
-Graduate Assistant, 2018-2019<br/>
-104 Frick Fine Arts Building<br/>
-Tel: 412-648-2423<br/>
-Email: <a href='mailto:adriana.miramontes@pitt.edu'>adriana.miramontes@pitt.edu</a><br/><br/>	
+Tel: 412-648-2400<br/>
+Email: <a href='mailto:karoline@pitt.edu'>karoline@pitt.edu</a><br/><br/>
 
 	</div>
 	<div class="col-sm-1"></div>
