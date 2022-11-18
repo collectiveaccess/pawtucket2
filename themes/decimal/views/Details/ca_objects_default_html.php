@@ -125,9 +125,10 @@
 					print "</div>";
 				}
 				if ($va_classes = $t_object->get('ca_objects.classification', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+					$ids = $t_object->get('ca_objects.classification', array('returnAsArray' => true, 'convertCodesToDisplayText' => false));
 					print "<div class='unit'><h6>Discursive Type</h6>";
 					foreach ($va_classes as $va_p => $va_class) {
-						print caNavLink($this->request, ucwords($va_class), '', '', 'Search', 'objects', array('search' => "ca_objects.classification:\"".$va_class."\""), [], ['dontURLEncodeParameters' => true]);
+						print caNavLink($this->request, ucwords($va_class), '', '', 'Search', 'objects', array('search' => "ca_objects.classification:\"".$ids[$va_p]."\""), [], ['dontURLEncodeParameters' => true]);
 						if (end($va_classes) != $va_class) { print ", ";}
 					}
 					print "</div>";
