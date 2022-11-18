@@ -159,6 +159,7 @@ class DetailController extends FindController {
 			// invalid id - throw error
 			throw new ApplicationException("Invalid id");
 		} 
+		$t_subject->autoConvertLineBreaks(true);
 		
 		$ps_view = $this->request->getParameter('view', pString);
 		if($ps_view === 'pdf') {
