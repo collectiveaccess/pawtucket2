@@ -134,7 +134,7 @@
 <li id="menu-item-25413" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-25413"><a href="https://www.blackmountaincollege.org/art/">Art</a>
 <ul class="sub-menu">
 	<li id="menu-item-4222" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4222"><a href="https://www.blackmountaincollege.org/exhibitions/">Exhibitions</a></li>
-	<li id="menu-item-14658" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-14658"><a href="https://www.blackmountaincollege.org/selections-from-our-collection/">Permanent Collection</a></li>
+	<li id="menu-item-14658" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-14658"><?php print caNavLink($this->request, "Collections", "", "", "", ""); ?></li>
 </ul>
 </li>
 <li id="menu-item-5604" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5604"><a>Learn</a>
@@ -191,7 +191,7 @@
 <li id="menu-item-25413" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-25413"><a href="https://www.blackmountaincollege.org/art/">Art</a>
 <ul class="sub-menu">
 	<li id="menu-item-4222" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4222"><a href="https://www.blackmountaincollege.org/exhibitions/">Exhibitions</a></li>
-	<li id="menu-item-14658" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-14658"><a href="https://www.blackmountaincollege.org/selections-from-our-collection/">Permanent Collection</a></li>
+	<li id="menu-item-14658" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-14658"><?php print caNavLink($this->request, "Collections", "", "", "", ""); ?></li>
 </ul>
 </li>
 <li id="menu-item-5604" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5604"><a>Learn</a>
