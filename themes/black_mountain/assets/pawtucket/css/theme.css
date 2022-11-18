@@ -669,6 +669,12 @@ hr{
 	font-family: 'Poppins',Helvetica,Arial,Lucida,sans-serif;
 	font-weight: 400;
 }
+.front .frontFeaturedVideos {
+	margin-bottom:15px;
+}
+.front .frontFeaturedVideos .videoCol{
+	margin-bottom:30px;
+}
 .front .frontIntro{
 	font-family: 'Poppins',Helvetica,Arial,Lucida,sans-serif;
 	font-weight: 400;
