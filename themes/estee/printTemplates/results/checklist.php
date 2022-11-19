@@ -97,6 +97,10 @@
 						if($vs_brand || $vs_subbrand){
 							$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
 						}
+						if($vs_idno = $vo_result->get("ca_objects.idno")){
+							$vs_caption .= "<br/>Object ID: ".$vs_idno;
+						}
+						
 						$vs_caption .= "</div>";
 						$vs_caption .= trim($vo_result->get('ca_objects.preferred_labels'));
 						$vs_tmp = $vo_result->getWithTemplate('^ca_objects.manufacture_date');
@@ -108,6 +112,9 @@
 						}
 						if($vs_tmp = $vo_result->get("ca_objects.codes.product_code")){
 							$vs_caption .= " (".$vs_tmp.")";
+						}
+						if($vs_tmp = $vo_result->get("ca_objects.shade", array("delimiter" => ", "))){
+							$vs_caption .= "<br/>".$vs_tmp;
 						}					
 					
 					print "<div class='unit'>".$vs_caption."</div>"; 

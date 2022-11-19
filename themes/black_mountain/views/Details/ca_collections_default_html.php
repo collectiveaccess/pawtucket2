@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/bundles/ca_entities_default_html.php : 
+ * themes/default/views/bundles/ca_collections_default_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -43,16 +43,13 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H2>{{{^ca_entities.type_id<ifdef code="ca_entities.idno">: ^ca_entities.idno</ifdef>}}}</H2>
-					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
-					{{{<ifdef code="ca_entities.index_date"><div class="unit">^ca_entities.index_date</div></ifdef>}}}
+					<H2>{{{^ca_collections.type_id<ifdef code="ca_collections.idno">: ^ca_collections.idno</ifdef>}}}</H2>
+					<H1>{{{^ca_collections.preferred_labels}}}</H1>
 					<HR/>
-				</div><!-- end col -->
-			</div><!-- end row -->
-			<div class="row">			
-				<div class='col-sm-12'>
-					{{{<ifdef code="ca_entities.bmc_role.bmc_role_value|ca_entities.bmc_role.bmc_role_dates|ca_entities.bmc_role.bmc_notes"><div class="unit"><label>Dates at BMC</label><unit relativeTo="ca_entities.bmc_role" delimiter="<br/>"><ifdef code="ca_entities.bmc_role.bmc_role_value">^ca_entities.bmc_role.bmc_role_value<ifdef code="ca_entities.bmc_role.bmc_role_dates">, </ifdef></ifdef><ifdef code="ca_entities.bmc_role.bmc_role_dates"></ifdef>^ca_entities.bmc_role.bmc_role_dates<ifdef code="ca_entities.bmc_role.bmc_notes"><ifdef code="ca_entities.bmc_role.bmc_role_dates|ca_entities.bmc_role.bmc_role"><br/></ifdef>^ca_entities.bmc_role.bmc_notes</ifdef></unit></div></ifdef>}}}
-					{{{<ifdef code="ca_entities.biography"><div class="unit"><span class="trimText">^ca_entities.biography</span></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.collection_date"><div class="unit"><label>Date</label><unit relativeTo="ca_collections.collection_date" delimiter="<br/>">^ca_collections.collection_date.collection_date_value<ifdef code="ca_collections.collection_date.collection_date_types">, ^ca_collections.collection_date.collection_date_types</ifdef></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.description"><div class="unit"><span class="trimText">^ca_collections.description</span></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.biography"><div class="unit"><label>Biographical Note</label><span class="trimText">^ca_collections.biography</span></div></ifdef>}}}
+					
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
@@ -69,7 +66,7 @@
 					}
 					print '</div><!-- end detailTools -->';
 				}
-				$va_places = $t_item->get("ca_places", array("returnWithStructure" => 1, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("born_at", "died_at", "was_active_at")));
+				$va_places = $t_item->get("ca_places", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
 				if(is_array($va_places) && sizeof($va_places)){
 					$va_places_by_type = array();
 					foreach($va_places as $va_place_info){
@@ -80,7 +77,7 @@
 					}
 				}
 				
-				$va_entities = $t_item->get("ca_entities.related", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
+				$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
 				if(is_array($va_entities) && sizeof($va_entities)){
 					$va_entities_by_type = array();
 					foreach($va_entities as $va_entity_info){
@@ -97,6 +94,9 @@
 				
 				{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Events</label>
 					<unit relativeTo="ca_occurrences" restrictToTypes="event" delimiter="<br/>" unique="1"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
+				
+				{{{<ifdef code="ca_collections.bibliography"><div class="unit"><label>Bibliography</label><span class="trimText">^ca_collections.bibliography</span></div></ifdef>}}}
+					
 				</div><!-- end col -->
 			</div><!-- end row -->
 			
@@ -111,7 +111,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'person_facet', 'id' => '^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

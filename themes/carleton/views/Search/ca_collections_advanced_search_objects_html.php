@@ -15,7 +15,7 @@
 			</div>		
 			<div class='row'>
 				<div class="advancedSearchField col-sm-12">
-					<label for='ca_collections_preferred_labels_name' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to Collection names only.') ?>"><?php _p('Name') ?></label>
+					<label for='ca_collections_preferred_labels_name' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to Collection titles only.') ?>"><?php _p('Title') ?></label>
 					{{{ca_collections.preferred_labels.name%width=220px}}}
 				</div>
 			</div>

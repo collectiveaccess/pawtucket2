@@ -112,6 +112,11 @@ class SearchResult extends BaseObject {
 	 * Return values with text highlighed?
 	 */
 	public $do_highlighting = false;
+	
+	/**
+	 * Auto-convert line breaks to HTML breaks for text values returned by get()?
+	 */
+	private $auto_convert_line_breaks = false;
 
 	# ------------------------------------------------------------------
 	private $opb_disable_get_with_template_prefetch = false;
@@ -1018,6 +1023,7 @@ class SearchResult extends BaseObject {
 	 *			truncate = Return all values from the beginning truncated to a maximum length; equivalent of passing start=0 and length. [Default is null]
 	 *			ellipsis = Add ellipsis ("...") to truncated values. Values will be set to the truncated length including the ellipsis. Eg. a value truncated to 12 characters will include 9 characters of text and 3 characters of ellipsis. [Default is false]
 	 *			convertLineBreaks = Convert newlines to <br/> tags. [Default is false]
+	 *			autoConvertLineBreaks = Convert newlines to <br/> tags when no <br/> or <p> tags are present in the value. [Default is instance default set using autoConvertLineBreaks() method; default if unset]
 	 *
 	 *		[Formatting options for hierarchies]
 	 *			maxLevelsFromTop = Restrict the number of levels returned to the top-most beginning with the root. [Default is null]
@@ -1056,6 +1062,8 @@ class SearchResult extends BaseObject {
 		}
 		
 		$vb_convert_line_breaks = isset($pa_options['convertLineBreaks']) ? (bool)$pa_options['convertLineBreaks'] : false;
+		$auto_convert_line_breaks = caGetOption('autoConvertLineBreaks', $pa_options, $this->auto_convert_line_breaks);
+		
 		
 		$config = Configuration::load();
 		
@@ -1140,7 +1148,7 @@ class SearchResult extends BaseObject {
 		} elseif($vb_return_as_count) {
 			$va_path_components['is_count'] = true;
 		}
-		//print "[".$this->tableName()."::".$this->getPrimaryKey()."] ".($this->do_highlighting ? "YES " : "NO")."<br>\n";
+		
 		$va_val_opts = array_merge($pa_options, array(
 			'returnAsArray' => $vb_return_as_array,
 			'returnAllLocales' => $vb_return_all_locales,
@@ -1856,7 +1864,20 @@ class SearchResult extends BaseObject {
 		} else {
 			$vm_val = $this->do_highlighting ? $this->highlight($vm_val) : $vm_val;
 		}
-		if ($vb_convert_line_breaks) {
+		
+		
+		if($auto_convert_line_breaks) {
+			if(is_array($vm_val)) {
+				foreach($vm_val as $i => $v) {
+					if(is_array($v)) { continue; }
+					if(!preg_match('!(<br>|<br/>|<p>)!i', $v)) {
+						$vm_val[$i] = nl2br($v);
+					}
+				}
+			} elseif(!preg_match('!(<br[^>]*>|<br[^/]*/>|<p[^>]*>)!i', $vm_val)) {
+				$vm_val = nl2br($vm_val);
+			}
+		} elseif ($vb_convert_line_breaks) {
 			if(is_array($vm_val)) {
 				return array_map(function($v) { return !is_array($v) ? nl2br($v) : $v; }, $vm_val);
 			} else {
@@ -3797,6 +3818,23 @@ class SearchResult extends BaseObject {
 		} else {
 			return in_array($pm_modifier, $va_hierarchy_modifiers);
 		}
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Set default line break conversion behavior for get(). If $auto_convert is set to true all 
+	 * text values will be returned with line breaks converted to HTML breaks if the text 
+	 * does not already contain <br> or <p> tags. If $auto_convert is set to null or omitted 
+	 * the current auto convert value is returned.
+	 * 
+	 * @param bool $auto_convert
+	 *
+	 * @return bool The current auto convert value 
+	 */
+	public function autoConvertLineBreaks(?bool $auto_convert=null) : bool {
+		if(!is_null($auto_convert)) {
+			$this->auto_convert_line_breaks = $auto_convert;
+		}
+		return $this->auto_convert_line_breaks;
 	}
 	# ------------------------------------------------------------------
 	/**
