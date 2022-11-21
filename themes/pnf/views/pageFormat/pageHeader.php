@@ -25,6 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
+	global $g_ui_locale;
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$va_classroomDisplayName = caGetClassroomDisplayName();
@@ -133,6 +134,9 @@ $( document ).ready(function() {
 		<div class="main_menu">
 			<div class="menu-main-menu-container">
 				<ul id="menu-main-menu" class="menu">
+<?php
+	if ($g_ui_locale == 'en_US'){
+?>
 					<li id="menu-item-453" class="menu-item menu-item-type-post_type  current-menu-item  menu-item-object-page menu-item-453"><?php print caNavLink($this->request, _t('Database'), '', '', '', '');?></a></li>
 					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-450"><a href="/ornaments/"><?php print  _t('Ornaments');?></a></li>
 					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#"><?php print _t('Resources');?></a>
@@ -198,6 +202,74 @@ if($this->request->isLoggedIn()){
 					<!--<li id="menu-item-189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-189"><a href="/contact/">Contact</a></li>-->
 					<li class="divider divider-responsive"></li>
 				</ul>
+<?php
+	}else{
+?>	
+<ul id="menu-main-menu" class="menu">
+<?php
+	if ($g_ui_locale == 'en_US'){
+?>
+					<li id="menu-item-453" class="menu-item menu-item-type-post_type  current-menu-item  menu-item-object-page menu-item-453"><?php print caNavLink($this->request, _t('Database'), '', '', '', '');?></a></li>
+					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-450"><a href="/ornaments/"><?php print  _t('Ornaments');?></a></li>
+					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#">Recursos</a>
+						<ul class="sub-menu">
+							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-410"><a href="/lists/about-these-lists/">Sobre Estos Recursos</a></li>
+							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, 'Bibliografia', '', '', 'Listing', 'bibliography');?></li>
+							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><?php print caNavLink($this->request, 'CATALOGO DE AUTORIDADES: AUTORES, TRADUCTORES, ADAPTADORES', '', '', 'Listing', 'playwrights'); ?></a></li>
+							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><?php print caNavLink($this->request, 'CATALOGO DE AUTORIDADES: IMPRESORES, LIBREROS, LIBRERIAS', '', '', 'Listing', 'printers');?></a></li>
+							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/">CATALOGOS IMPRESOS DE COLECCIONES DE COMEDIAS Y DE SUELTAS</a></li>						
+							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, 'EDICIONES MODERNIZDAS DE COMEDIAS', '', '', 'Listing', 'modern_editions');?></li>
+<?php
+if($this->request->isLoggedIn()){
+?>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'GLOSARIO', '', '', 'Listing', 'glossary');?></li>		
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'ILUSTRACIONES', '', '', 'Pictorials', 'Illustrations');?></li>
+<?php
+}
+?>
+							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, 'INSTITUCIONES', '', '', 'Browse', 'collections');?></li>													
+
+<?php
+if($this->request->isLoggedIn()){
+?>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'ESCUDOS Y MARCAS DE IMPRESORES', '', '', 'Pictorials', 'PrintersDevices');?></li>	
+
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'MISCELANEAS', '', '', 'Listing', 'miscellanies');?></li>							
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'ORNAMENTOS', '', '', 'Pictorials', 'ornaments');?></li>
+
+<?php
+}
+?>
+							
+							<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.comediassueltasusa.org/other-websites-of-interest/">OTRAS PAGINAS WEB DE INTERES</a></li>
+
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'TITULOS MODERNIZADOS', '', '', 'Listing', 'ccssusa');?></li>						
+
+						</ul>
+					</li>
+					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/"><?php print _t('Essays');?></a></li>
+					<li id="menu-item-911" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children current-menu-parent current-menu-ancestor menu-item-911"><a href="#">Zarzuela</a>
+						<ul class="sub-menu">
+							<li id="menu-item-207" class="menu-item menu-item-type-post_type_archive menu-item-object-news current-menu-item menu-item-207"><a href="/news/">News &amp; Updates</a></li>
+							<li id="menu-item-ca1" class="menu-item menu-item-type-post_type menu-item-object-news menu-item-ca1"><?php print caNavLink($this->request, _t('Statistical Table'), '', '', 'About', 'Statistics');?></a></li>
+							
+						</ul>
+					</li>
+					
+					<li id="menu-item-523" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-523 aboutMenu"><a href="#"><?php print _t('About');?></a>
+						<ul class="sub-menu">
+							<li id="menu-item-441" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-441"><a href="/about-2/"><?php print _t('About this website');?></a></li> 
+							<li id="menu-item-442" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-442"><?php print caNavLink($this->request, _t('Participating Institutions'), '', '', 'Browse', 'collections');?></li>
+							<li id="menu-item-445" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-445"><a href="/contributors-and-team/"><?php print _t('Contributors and team');?></a></li>
+							<li id="menu-item-445" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-445"><a href="/contact/"><?php print _t('Contact');?></a></li>					
+						</ul>
+					</li>	
+					<!--<li id="menu-item-189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-189"><a href="/contact/">Contact</a></li>-->
+					<li class="divider divider-responsive"></li>
+				</ul>	
+<?php
+	}
+?>
 			</div>			
 		</div>	
 		<div class="site_banner_mask"></div>
