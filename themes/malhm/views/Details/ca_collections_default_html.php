@@ -28,6 +28,10 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
+<?php
+	print "<div class='instLink'><small>from the holdings of</small><div>".caDetailLink($this->request, caGetListItemByIDForDisplay($vn_source_id = $t_item->get('source_id')), '', 'ca_entities', ca_entities::getIDForIdno(caGetListItemIdno($vn_source_id)))."</div></div>";
+
+?>
 					<h6>{{{<ifdef code="ca_collections.idno">^ca_collections.idno</ifdef>}}}</h6>
 					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
 

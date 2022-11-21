@@ -10,16 +10,17 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	$va_access_values = caGetUserAccessValues($this->request);
 	
-	$entity_source_id = caGetListItemID('object_sources', $t_item->get('ca_entities.idno'));
+	$r_sets = null;
+	if($entity_source_id = caGetListItemID('object_sources', $t_item->get('ca_entities.idno'))) {
 	
-	$r_sets = ca_sets::findAsSearchResult(['created_by_member' => $entity_source_id], ['checkAccess' => $va_access_values, 'sort' => 'ca_sets.preferred_labels.name',]);
+		$r_sets = ca_sets::findAsSearchResult(['created_by_member' => $entity_source_id], ['checkAccess' => $va_access_values, 'sort' => 'ca_sets.preferred_labels.name',]);
 
 	
-	if (($vn_num_objects = ca_objects::find(['source_id' => $entity_source_id], ['checkAccess' => $va_access_values,'returnAs' => 'count'])) > 1000) {
-		$vs_num_objects = "{$vn_num_objects} objects on MNCollections";
-	} else {
-		$vs_num_objects = ($vn_num_objects == 1) ? "{$vn_num_objects} object on MNCollections" : "{$vn_num_objects} objects on MNCollections";
-	}
+		if (($vn_num_objects = ca_objects::find(['source_id' => $entity_source_id], ['checkAccess' => $va_access_values,'returnAs' => 'count'])) > 1000) {
+			$vs_num_objects = "{$vn_num_objects} objects on MNCollections";
+		} else {
+			$vs_num_objects = ($vn_num_objects == 1) ? "{$vn_num_objects} object on MNCollections" : "{$vn_num_objects} objects on MNCollections";
+		}
 	
 	$search_browse_bar_top = '
 					<div class="browseSearchBar">'."<span class='resultCountDetailPage resultCount'>{$vs_num_objects}</span>".'<form class="detailSearch" role="search" action="" id="detailSearchFormTop">
@@ -40,7 +41,10 @@
 							</div>	
 						</div>
 					</form>'.caNavLink($this->request, "Filter this Collection <i class='fa fa-external-link'></i>", 'filterCollection', '', 'Browse', 'objects', array('facet' => 'source_facet', 'id' => $entity_source_id))."</div>";
-			
+		
+	} else {
+		$vs_num_objects = $search_browse_bar_top = $search_browse_bar_bottom  = '';
+	}	
 ?>
 <div class='containerWrapper'>
 <div class="row">
@@ -125,8 +129,8 @@
 
 			<hr>
 <?php
-			if($r_sets->numHits()){
-							print '<div class="row"><h3>Contributed Galleries</h3>';
+			if($r_sets && $r_sets->numHits()){
+							print '<div class="row"><h3>Featured Galleries</h3>';
 							print '
 								<div class="jcarousel-wrapper col-sm-12">
 									<div class="jcarousel">
