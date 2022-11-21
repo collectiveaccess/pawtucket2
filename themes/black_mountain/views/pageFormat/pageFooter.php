@@ -66,7 +66,7 @@ Or email us at: <a href="mailto:info@blackmountaincollege.org">info@blackmountai
 		</a>
 	</li>
 
-</ul><p id="footer-info">Designed by <a href="https://www.elegantthemes.com" title="Premium WordPress Themes" onclick="javascript:window.open('https://www.elegantthemes.com/', '_blank', 'noopener'); return false;">Elegant Themes</a> | Powered by <a href="https://www.wordpress.org" onclick="javascript:window.open('https://www.wordpress.org/', '_blank', 'noopener'); return false;">WordPress</a></p>					</div>
+</ul>					</div>
 				</div>
 			</footer>
 <?php
@@ -116,6 +116,7 @@ Or email us at: <a href="mailto:info@blackmountaincollege.org">info@blackmountai
 //				   return false;
 //				 });
 //			}); 
+			document.addEventListener('contextmenu', event => event.preventDefault());
 		</script>
 <?php
 	print $this->render("Cookies/banner_html.php");	

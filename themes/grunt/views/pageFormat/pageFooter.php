@@ -32,15 +32,14 @@
 			<div class="row bgBlack">
 				<div class="col-sm-12 text-center">
 					<p>
-						<a href="https://grunt.ca/" class="orgLink">Grunt Gallery</a>
+						<a href="https://grunt.ca/" class="orgLink">grunt gallery</a>
 					</p>
 					<p>
-						&copy; <?php print date("Y"); ?> &middot; {{{accessibility_footer_text}}}
+						&copy; <?php print date("Y"); ?>
 					</p>
 					<ul class="list-inline">
 						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Privacy Policy"), "", "", "", ""); ?></li>
-						<li><?php print caNavLink($this->request, _t("Rights & Use"), "", "", "", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Privacy Policy / Terms of Use"), "", "", "About#Privacy_Terms", ""); ?></li>
 					</ul>
 				</div>
 			</div>

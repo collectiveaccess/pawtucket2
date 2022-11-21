@@ -113,28 +113,14 @@
 				
 					$vs_caption 	= $qr_res->getWithTemplate(caGetOption('result_caption', $va_view_info, null), array("checkAccess" => $va_access_values));
 					$vs_thumbnail = "";
-					#$vs_type_placeholder = "";
-					#$vs_typecode = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
-				
-					#if(!$vs_image){
-					#	if ($vs_table == 'ca_objects') {
-					#		$t_list_item->load($qr_res->get("type_id"));
-					#		$vs_typecode = $t_list_item->get("idno");
-					#		if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-					#			$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-					#		}else{
-					#			$vs_image = $vs_default_placeholder_tag;
-					#		}
-					#	}else{
-					#		$vs_image = $vs_default_placeholder_tag;
-					#	}
-					#}
 					$vs_rep_detail_link 	= "";
-					if($vs_image){
-						$vs_rep_detail_link 	= "<div class='text-center bResultListItemImg'>".caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id)."</div>";	
+					if($vs_table != 'ca_entities'){
+						$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+						if($vs_image){
+							$vs_rep_detail_link 	= "<div class='text-center bResultListItemImg'>".caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id)."</div>";	
+						}
+						$vs_add_to_set_link = "";
 					}
-					$vs_add_to_set_link = "";
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' class='bResultItemSetLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}

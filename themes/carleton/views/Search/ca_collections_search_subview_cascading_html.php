@@ -74,7 +74,7 @@
 		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
 				$vn_id 					= $qr_results->get("ca_collections.collection_id");
-				$vs_date = $qr_results->getWithTemplate("<ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef><ifnotdef code='ca_collections.inclusive_dates'>^ca_collections.display_date%delimiter=,_</ifnotdef>");
+				$vs_date = $qr_results->getWithTemplate("<ifdef code='ca_collections.display_date'>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'>^ca_collections.inclusive_dates%delimiter=,_</ifnotdef>");
 
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_results->get("ca_collections.preferred_labels.name").(($vs_date) ? ", ".$vs_date : ""), '', 'ca_collections', $vn_id);
 				

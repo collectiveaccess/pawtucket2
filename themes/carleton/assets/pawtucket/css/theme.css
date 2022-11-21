@@ -110,6 +110,21 @@ h1{
 		float:right;width:32%
 	}
 }
+@media (min-width:761px){
+	.navbar-form .form-group {
+  		width: 90px;
+	}
+}
+@media (min-width:825px){
+	.navbar-form .form-group {
+  		width: 140px;
+	}
+}
+@media (min-width:940px){
+	.navbar-form .form-group {
+  		width: 250px;
+	}
+}
 .banner__primary-content{position:relative;z-index:20}
 
 h1.page_title, .pageTitle--Main{

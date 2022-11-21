@@ -48,7 +48,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-10'>
-					<H1>{{{ca_objects.preferred_labels.name}}}</H1>
+					<H1><i>{{{ca_objects.preferred_labels.name}}}</i></H1>
 <?php
 					$vs_object_date = $t_object->get("ca_objects.date_container.date");
 					$vs_artist = $t_object->getWithTemplate("<ifcount code='ca_entities' min='1' restrictToRelationshipTypes='Artist,Author'><unit relativeTo='ca_entities' delimiter=', ' restrictToRelationshipTypes='Artist,Author'><l>^ca_entities.preferred_labels</l></unit></ifcount>", array("checkAccess" => $va_access_values));
@@ -123,8 +123,24 @@ if($vb_2_col){
 							<span class="trimText">^ca_objects.content_description</span>
 						</div>
 					</ifdef>}}}
-					{{{<ifdef code="ca_objects.alt_title"><div class='unit'><label>Alternate Title</label><unit relativeTo="ca_objects.alt_title" delimiter="<br/>">^ca_objects.alt_title</unit></div></ifdef>}}}
-
+					{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.call_number"><div class="unit"><label>Call Number</label>^ca_objects.call_number</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.custom_extent"><div class="unit"><label>Extent</label>^ca_objects.custom_extent</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.language"><div class='unit'><label>Language</label><unnit relativeTo="ca_objects.language" delimiter="<br/>">^ca_objects.language</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.ISBN"><div class="unit"><label>ISBN</label>^ca_objects.ISBN</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.ISSN"><div class="unit"><label>ISSN</label>^ca_objects.ISSN</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.volume"><div class="unit"><label>Volume</label>^ca_objects.volume</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.issue"><div class="unit"><label>Issue</label>^ca_objects.issue</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.edition"><div class="unit"><label>Edition</label>^ca_objects.edition</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.series"><div class="unit"><label>Series Statement</label>^ca_objects.series</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.publication_info"><div class="unit"><label>Place of Publication</label>^ca_objects.publication_info</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.publisher"><div class="unit"><label>Publisher</label>^ca_objects.publisher</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.physical_lib.phys_lib|ca_objects.physical_lib.phys_notes_lib"><div class="unit"><label>Physical Description</label><ifdef code="ca_objects.physical_lib.phys_lib">^ca_objects.physical_lib.phys_lib<ifdef code="ca_objects.physical_lib.phys_notes_lib"><br/></ifdef></ifdef><ifdef code="ca_objects.physical_lib.phys_notes_lib">^ca_objects.physical_lib.phys_notes_lib</ifdef></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.physical_lib.phys_document_type"><div class="unit"><label>Publication Type</label>^ca_objects.physical_lib.phys_document_type</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.physical_lib.phys_spine"><div class="unit"><label>Spine Height</label>^ca_objects.physical_lib.phys_spine</div></ifdef>}}}
+					
+					
+					
 <?php
 				$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
 				if(is_array($va_entities) && sizeof($va_entities)){
@@ -139,23 +155,10 @@ if($vb_2_col){
 ?>					
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToType="program">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place</label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
 					
-					
-					{{{<ifdef code="ca_objects.call_number"><div class="unit"><label>Call Number</label>^ca_objects.call_number</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.ISBN"><div class="unit"><label>ISBN</label>^ca_objects.ISBN</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.ISSN"><div class="unit"><label>ISSN</label>^ca_objects.ISSN</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.volume"><div class="unit"><label>Volume</label>^ca_objects.volume</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.issue"><div class="unit"><label>Issue</label>^ca_objects.issue</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.edition"><div class="unit"><label>Edition</label>^ca_objects.edition</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.series"><div class="unit"><label>Series Statement</label>^ca_objects.series</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.publication_info"><div class="unit"><label>Place of Publication</label>^ca_objects.publication_info</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.publisher"><div class="unit"><label>Publisher</label>^ca_objects.publisher</div></ifdef>}}}
-					
-					{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 					
 					{{{<ifdef code="ca_objects.rightsSummary_asset"><div class="unit"><i>^ca_objects.rightsSummary_asset</i></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.web_notice"><div class="unit"><i>^ca_objects.web_notice</i></div></ifdef>}}}
 					
 				</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->

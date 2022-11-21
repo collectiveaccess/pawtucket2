@@ -128,7 +128,7 @@
 					$vs_desc = "";
 					switch($vs_table){
 						case "ca_collections":
-							$vs_parent_path = $qr_res->getWithTemplate("<unit relativeTo='ca_collections.parent'><unit relativeTo='ca_collections.hierarchy' delimiter=' &gt; '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></unit></unit>");
+							$vs_parent_path = $qr_res->getWithTemplate("<unit relativeTo='ca_collections.parent'><unit relativeTo='ca_collections.hierarchy' delimiter=' &gt; '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'>, ^ca_collections.inclusive_dates%delimiter=,_</ifnotdef></unit></unit>");
 							if($vs_parent_path){
 								$vs_parent_path .= " >";
 							}
@@ -140,9 +140,9 @@
 								$vs_label_detail_link = "<div class='resultClassification'>".$vs_tmp."</div>";
 							}
 							if(strToLower($qr_res->getWithTemplate("^ca_collections.type_id")) == "collection"){
-								$vs_label_detail_link 	.= $qr_res->getWithTemplate("<div class='collectionID'>^ca_collections.type_id ^ca_collections.id_number</div>^ca_collections.preferred_labels<ifdef code='ca_collections.inclusive_dates'><br/>^ca_collections.inclusive_dates%delimiter=,_</ifdef>");
+								$vs_label_detail_link 	.= $qr_res->getWithTemplate("<div class='collectionID'>^ca_collections.type_id ^ca_collections.id_number</div>^ca_collections.preferred_labels<ifdef code='ca_collections.display_date'><br/>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><br/>^ca_collections.inclusive_dates%delimiter=,_</ifnotdef>");
 							}else{
-								$vs_label_detail_link 	.= "<div class='collectionPath'>".$vs_parent_path."</div>".$qr_res->getWithTemplate("^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef>");
+								$vs_label_detail_link 	.= "<div class='collectionPath'>".$vs_parent_path."</div>".$qr_res->getWithTemplate("^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'>, ^ca_collections.inclusive_dates%delimiter=,_</ifnotdef>");
 							}
 							if(strToLower($qr_res->getWithTemplate("^ca_collections.type_id")) == "item"){
 								$vs_thumbnail = $qr_res->getWithTemplate("<ifcount code='ca_object_representations' min='1'><l><unit relativeTo='ca_object_representations' length='1'><div class='bResultCollectionListItemImg'>^ca_object_representations.media.iconlarge</div></unit><l></ifcount>");
