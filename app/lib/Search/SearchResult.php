@@ -761,7 +761,11 @@ class SearchResult extends BaseObject {
 		$is_label = is_a($t_rel_instance, 'BaseLabel');
 		$dont_check_label_access = Configuration::load()->get('dont_check_label_access');		
 		if(!($is_label && $dont_check_label_access) && isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_instance->hasField('access')) {
-			$vs_criteria_sql .= " AND ({$ps_tablename}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
+			if($t_rel_instance->hasField('is_preferred')) {
+				$vs_criteria_sql .= " AND ({$ps_tablename}.is_preferred = 1 OR ({$ps_tablename}.access IN (".join(",", $pa_options['checkAccess']) .") AND {$ps_tablename}.is_preferred = 0))";	
+			} else {
+				$vs_criteria_sql .= " AND ({$ps_tablename}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
+			}
 		}
 		if(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_instance->hasField('access')) {
 			$vs_criteria_sql .= " AND ({$this->ops_table_name}.access IN (".join(",", $pa_options['checkAccess']) ."))";	
@@ -2124,7 +2128,8 @@ class SearchResult extends BaseObject {
 				}
 				
 				foreach($va_labels_by_locale as $vn_id => $va_label) {
-					if (!$dont_check_label_access && is_array($pa_check_access) && sizeof($pa_check_access) && $label_instance->hasField('access') && !in_array($va_label['access'], $pa_check_access)) {
+					$is_not_preferred = ($label_instance->hasField('is_preferred')) ? !(bool)$va_label['is_preferred'] : true;
+					if ($is_not_preferred && !$dont_check_label_access && is_array($pa_check_access) && sizeof($pa_check_access) && $label_instance->hasField('access') && !in_array($va_label['access'], $pa_check_access)) {
 						continue;
 					}
 				    if (is_array($va_restrict_to_type_ids) && sizeof($va_restrict_to_type_ids) && !in_array($va_label['type_id'], $va_restrict_to_type_ids)) { continue; }
