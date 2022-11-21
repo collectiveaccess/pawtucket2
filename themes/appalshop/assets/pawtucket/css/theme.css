@@ -788,6 +788,32 @@ font-size: 12pt;
 .gallery .setDescription {
     font-weight: normal;
 }
+.gallery .video-js {
+	min-height: 300px;
+}
+@media (min-width: 768px) {
+  	.gallery .video-js {
+    	min-height: 400px;
+	}
+}
+.gallery .setDescription {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.8em;
+}
+.gallery .plyr__video-wrapper{
+	min-height:250px;
+	width:auto;
+}
+@media (min-width: 768px) {
+	.gallery .plyr__video-wrapper{
+		height:400px;
+		width:auto;
+	}
+}
+.gallery #galleryDetailImageArea #galleryDetailImageWrapper:hover .detailMediaToolbar {
+  display: none;
+}
 /* SEARCH RESULTS */
 
 .objects .multisearchResult a {
