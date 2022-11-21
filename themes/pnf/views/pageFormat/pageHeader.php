@@ -204,10 +204,6 @@ if($this->request->isLoggedIn()){
 				</ul>
 <?php
 	}else{
-?>	
-<ul id="menu-main-menu" class="menu">
-<?php
-	if ($g_ui_locale == 'en_US'){
 ?>
 					<li id="menu-item-453" class="menu-item menu-item-type-post_type  current-menu-item  menu-item-object-page menu-item-453"><?php print caNavLink($this->request, _t('Database'), '', '', '', '');?></a></li>
 					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-450"><a href="/ornaments/"><?php print  _t('Ornaments');?></a></li>
