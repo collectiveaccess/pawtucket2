@@ -782,7 +782,12 @@ font-size: 12pt;
 	font-size:13px;
 	color:#000;
 }
-  
+.gallery #galleryDetailImageGrid {
+    min-height: auto;
+}
+.gallery .setDescription {
+    font-weight: normal;
+}
 /* SEARCH RESULTS */
 
 .objects .multisearchResult a {
