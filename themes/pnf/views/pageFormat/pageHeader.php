@@ -145,10 +145,10 @@ $( document ).ready(function() {
 							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><?php print caNavLink($this->request, _t('Authority File: Playwrights, translators, adaptors'), '', '', 'Listing', 'playwrights'); ?></a></li>
 							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><?php print caNavLink($this->request, _t('Authority File: Printers, publishers, booksellers, bookstores'), '', '', 'Listing', 'printers');?></a></li>
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Bibliography'), '', '', 'Listing', 'bibliography');?></li>
-							<?php
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Glossary'), '', '', 'Listing', 'glossary');?></li>		
+<?php
 if($this->request->isLoggedIn()){
 ?>
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t('Glossary'), '', '', 'Listing', 'glossary');?></li>		
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, _t("Illustrations"), '', '', 'Pictorials', 'Illustrations');?></li>
 <?php
 }
@@ -162,7 +162,6 @@ if($this->request->isLoggedIn()){
 }
 ?>
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Modernized editions of plays'), '', '', 'Listing', 'modern_editions');?></li>
-							<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.comediassueltasusa.org/other-websites-of-interest/"><?php print _t('Other Websites of Interest');?></a></li>
 							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/"><?php print _t('Printed catalogs of Spanish drama & comedias sueltas');?></a></li>						
 <?php
 if($this->request->isLoggedIn()){
@@ -180,6 +179,7 @@ if($this->request->isLoggedIn()){
 <?php
 }
 ?>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.comediassueltasusa.org/other-websites-of-interest/"><?php print _t('Websites of Interest');?></a></li>
 						</ul>
 					</li>
 					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/"><?php print _t('Essays');?></a></li>
@@ -215,10 +215,10 @@ if($this->request->isLoggedIn()){
 							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><?php print caNavLink($this->request, 'CATALOGO DE AUTORIDADES: IMPRESORES, LIBREROS, LIBRERIAS', '', '', 'Listing', 'printers');?></a></li>
 							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/">CATALOGOS IMPRESOS DE COLECCIONES DE COMEDIAS Y DE SUELTAS</a></li>						
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, 'EDICIONES MODERNIZDAS DE COMEDIAS', '', '', 'Listing', 'modern_editions');?></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'GLOSARIO', '', '', 'Listing', 'glossary');?></li>		
 <?php
 if($this->request->isLoggedIn()){
 ?>
-							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'GLOSARIO', '', '', 'Listing', 'glossary');?></li>		
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'ILUSTRACIONES', '', '', 'Pictorials', 'Illustrations');?></li>
 <?php
 }
@@ -237,7 +237,7 @@ if($this->request->isLoggedIn()){
 }
 ?>
 							
-							<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.comediassueltasusa.org/other-websites-of-interest/">OTRAS PAGINAS WEB DE INTERES</a></li>
+							<li class="menu-item menu-item-type-post_type menu-item-object-page"><a href="https://www.comediassueltasusa.org/other-websites-of-interest/">PAGINAS WEB DE INTERES</a></li>
 
 							<li class="menu-item menu-item-type-post_type menu-item-object-lists"><?php print caNavLink($this->request, 'TITULOS MODERNIZADOS', '', '', 'Listing', 'ccssusa');?></li>						
 
@@ -246,8 +246,8 @@ if($this->request->isLoggedIn()){
 					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/"><?php print _t('Essays');?></a></li>
 					<li id="menu-item-911" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children current-menu-parent current-menu-ancestor menu-item-911"><a href="#">Zarzuela</a>
 						<ul class="sub-menu">
-							<li id="menu-item-207" class="menu-item menu-item-type-post_type_archive menu-item-object-news current-menu-item menu-item-207"><a href="/news/">News &amp; Updates</a></li>
-							<li id="menu-item-ca1" class="menu-item menu-item-type-post_type menu-item-object-news menu-item-ca1"><?php print caNavLink($this->request, _t('Statistical Table'), '', '', 'About', 'Statistics');?></a></li>
+							<li id="menu-item-207" class="menu-item menu-item-type-post_type_archive menu-item-object-news current-menu-item menu-item-207"><a href="/news/">Novedades</a></li>
+							<li id="menu-item-ca1" class="menu-item menu-item-type-post_type menu-item-object-news menu-item-ca1"><?php print caNavLink($this->request, 'Tabla de Estadistica', '', '', 'About', 'Statistics');?></a></li>
 							
 						</ul>
 					</li>
@@ -280,7 +280,7 @@ if($this->request->isLoggedIn()){
 		<div class="logo_container">
 			<div class="logo_positioner">
 				<div class="logo">
-					<a href="/"><div class="homeLink">HOME</div><img src="/wp-content/themes/twentyfifteen-child-01/img/sidebarimg.jpg" scale="0" style="border-width: 0px;"></a>
+					<a href="/"><div class="homeLink"><?php print ($g_ui_locale == 'en_US') ? 'HOME' : 'Inicio'; ?></div><img src="/wp-content/themes/twentyfifteen-child-01/img/sidebarimg.jpg" scale="0" style="border-width: 0px;"></a>
 				</div>
 				<div class="tagline"></div>
 			</div>

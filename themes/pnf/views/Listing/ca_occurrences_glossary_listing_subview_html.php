@@ -52,8 +52,7 @@
 			if ($g_ui_locale == 'en_US'){
 				print "<h2>{$va_listing_info['displayName']}</h2>\n";
 			}else{
-				print "<H2>Glossary</H2>\n";	
-			
+				print "<H2>Glosario</H2>\n";				
 			}		
 ?>
 	</nav><hr style="margin-top:-18px;"/>
@@ -147,8 +146,13 @@
 				
 			</div>
 <?php
+				if ($g_ui_locale == 'en_US'){
+					$vs_enlarge = "ENLARGE";
+				}else{
+					$vs_enlarge = "AGRANDAR";				
+				}
 				if($vs_mode != "enlarge_image"){
-					print "<div style='text-align:center'>".caNavLink($this->request, "<span class='glyphicon glyphicon-search'></span> ENLARGE", '', '', 'Listing', 'glossary', array("mode" => "enlarge_image"))."</div>";
+					print "<div style='text-align:center'>".caNavLink($this->request, "<span class='glyphicon glyphicon-search'></span> ".$vs_enlarge, '', '', 'Listing', 'glossary', array("mode" => "enlarge_image"))."</div>";
 				}else{
 					print "<div style='text-align:center'>".caNavLink($this->request, "BACK", '', '', 'Listing', 'glossary')."</div>";
 				}
