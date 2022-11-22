@@ -790,10 +790,14 @@ font-size: 12pt;
 }
 .gallery .video-js {
 	min-height: 300px;
+	min-width:300px;
+	width:100%;
 }
 @media (min-width: 768px) {
   	.gallery .video-js {
     	min-height: 400px;
+		min-width:500px;
+		width:100%;
 	}
 }
 .gallery .setDescription {
@@ -803,12 +807,14 @@ font-size: 12pt;
 }
 .gallery .plyr__video-wrapper{
 	min-height:250px;
-	width:auto;
+	min-width:500px;
+	width:100%;
 }
 @media (min-width: 768px) {
 	.gallery .plyr__video-wrapper{
 		height:400px;
-		width:auto;
+		min-width:500px;
+		width:100%;
 	}
 }
 .gallery #galleryDetailImageArea #galleryDetailImageWrapper:hover .detailMediaToolbar {
