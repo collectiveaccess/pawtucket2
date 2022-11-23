@@ -202,6 +202,9 @@ a:hover{
 	  margin-left: 50px;
 	}
 }
+.navbar-collapse {
+  max-height: 450px;
+}
 /* header mobile icons navigation */
 .navbar-default .navbar-toggle{
 	border-color:#000;
@@ -238,16 +241,6 @@ body{
 footer .container{
 	max-width:1250px;
 	padding-top:44px;
-}
-@media(max-width:480px){
-	/* CHANGE - does the footer height need to change for smaller screen sizes? */
-	/*#footer{
-		height:430px;
-	}*/
-	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
-	/*body{
-		margin-bottom:480px;
-	}*/
 }
 #footer a{
 	color:#FDB913;
@@ -355,6 +348,26 @@ svg {
 	font-weight:500;
 	padding-top:23px;
 	margin-left:-15px;
+}
+
+@media(max-width:767px){
+	/* CHANGE - does the footer height need to change for smaller screen sizes? */
+	#footer{
+		height:860px;
+	}
+	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
+	body{
+		margin-bottom:910px;
+	}
+	#footer .footerNavLinks a{
+		padding-left:0px;
+	}
+	#footer .footerNavLinks.col2 {
+	  margin-left: 0px;
+	}
+	#footer ul.social li {
+		padding: 18px 38px 10px 3px;
+	}
 }
 /* search / browse results */
 .browse H1, .browse h1, .search H1, .search h1 {

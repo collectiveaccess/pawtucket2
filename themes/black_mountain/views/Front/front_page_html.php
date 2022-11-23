@@ -36,14 +36,37 @@
 		<div class="col-sm-12">
 			<h1>Explore the Collection</h1>
 			<div class="frontIntro">
-				The BMCM+AC Permanent Collection is made up of over 4,000 objects dating from the 1930s through the present, with works by alumni and faculty demonstrating the progression of their careers at and following Black Mountain College. The collection includes paintings, sculpture, photographs, ceramics, textiles, assemblage, furniture, blueprints, books and paperworks. In addition, the museum has been facilitating oral history documentation since 1999, resulting in a collection of recorded interviews with fifty-eight Black Mountain College alumni to date.
+				{{{hp_intro}}}
 			</div>
 		</div>
 	</div>
-	
-	
-	
-<?php	
+<?php
+	$hp_video_1 = $this->getVar("hp_video_1");
+	$hp_video_2 = $this->getVar("hp_video_2");
+	$hp_video_3 = $this->getVar("hp_video_3");
+	$hp_video_4 = $this->getVar("hp_video_4");
+	if($hp_video_1 || $hp_video_2 || $hp_video_3 || $hp_video_4){
+?>
+	<div class="frontFeaturedVideos">
+		<div class="row">
+<?php
+			if($hp_video_1){
+				print "<div class='col-sm-6 videoCol'>".$hp_video_1."</div>";
+			}
+			if($hp_video_2){
+				print "<div class='col-sm-6 videoCol'>".$hp_video_2."</div>";
+			}
+			if($hp_video_3){
+				print "<div class='col-sm-6 videoCol'>".$hp_video_3."</div>";
+			}
+			if($hp_video_4){
+				print "<div class='col-sm-6 videoCol'>".$hp_video_4."</div>";
+			}
+?>
+		</div>				
+	</div>
+<?php
+	}	
 	$t_lists = new ca_lists();
 	$vn_event_id = $t_lists->getItemIDFromList("occurrence_types", "event");
 	$vn_exhibition_id = $t_lists->getItemIDFromList("occurrence_types", "exhibitions");
@@ -61,6 +84,10 @@
 			$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
 			if(is_array($va_featured_ids) && sizeof($va_featured_ids)){
 				$qr_set_items = caMakeSearchResult($va_frontPageSetInfo["table"], $va_featured_ids);
+				$va_params = array();
+				if($va_frontPageSetInfo["filter"] && $va_frontPageSetInfo["filter_id"]){
+					$va_params = array("facet" => $va_frontPageSetInfo["filter"], "id" => $va_frontPageSetInfo["filter_id"]);
+				}
 ?>
 				<div class="row">
 					<div class="col-sm-12">
@@ -82,10 +109,7 @@
 							break;
 						}
 					}
-					$va_params = array();
-					if($va_frontPageSetInfo["filter"] && $va_frontPageSetInfo["filter_id"]){
-						$va_params = array("facet" => $va_frontPageSetInfo["filter"], "id" => $va_frontPageSetInfo["filter_id"]);
-					}
+					
 ?>					
 					</div>
 				</div>

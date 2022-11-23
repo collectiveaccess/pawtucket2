@@ -1,0 +1,33 @@
+fields = {
+	title = {
+		label = Page title,
+		description = Title for page,
+		
+		width = 600px,
+		height = 1
+	},
+	authors = {
+		label = Author(s),
+		description = Page authors,
+		
+		usewysiwygeditor = 0,
+		width = 600px,
+		height = 1
+	},
+	description = {
+		label = Description,
+		description = Research description,
+		
+		usewysiwygeditor = 1,
+		width = 600px,
+		height = 250px
+	},
+	source_link = {
+		label = Source/link,
+		description = Source of content (link or citation),
+		
+		usewysiwygeditor = 0,
+		width = 600px,
+		height = 50px
+	}
+}

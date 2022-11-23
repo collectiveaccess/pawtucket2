@@ -63,14 +63,13 @@
 <?php
 $va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
 $vb_2_col = false;
-if($t_item->get("ca_occurrences.content_description") || $t_item->get("ca_occurrences.historical_description") || sizeof($va_entities)){
+if($t_item->get("ca_occurrences.content_description") || $t_item->get("ca_occurrences.credits") || sizeof($va_entities)){
 	$vb_2_col = true;
 }
 if($vb_2_col){
 ?>
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_occurrences.content_description"><div class="unit"><label>About the Program</label><div class="trimText">^ca_occurrences.content_description</div></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.historical_description"><div class="unit"><label>Historical Description</label><div class="trimText">^ca_occurrences.historical_description</div></div></ifdef>}}}
 <?php
 				if(is_array($va_entities) && sizeof($va_entities)){
 					$va_entities_by_type = array();
@@ -126,7 +125,7 @@ if($vb_2_col){
 					{{{<ifdef code="ca_occurrences.program_location"><div class="unit"><label>Location</label><div class="trimTextShort"><unit relativeTo="ca_occurrences.program_location" delimiter="<br/><br/>">^ca_occurrences.program_location<unit></div></div></ifdef>}}}
 					
 					{{{<ifdef code="ca_occurrences.rightsSummary_asset"><div class="unit"><i>^ca_occurrences.rightsSummary_asset</i></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.web_notice"><div class="unit"><i>^ca_occurrences.web_notice</i></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.content_notice"><div class="unit"><i>^ca_occurrences.content_notice</i></div></ifdef>}}}
 					
 					
 				</div><!-- end col -->
