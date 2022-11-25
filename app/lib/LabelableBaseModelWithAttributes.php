@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2021 Whirl-i-Gig
+ * Copyright 2008-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -128,7 +128,7 @@
 			$pb_queue_indexing = caGetOption('queueIndexing', $pa_options, false);
 			
 			$effective_date = caGetOption(['effective_date', 'effectiveDate'], $pa_options, null);
-			$label_access = caGetOption(['access', 'label_access', 'labelAccess'], $pa_options, 0);
+			$label_access = caGetOption(['access', 'label_access', 'labelAccess'], $pa_options, 1);
 			$source_info = caGetOption(['source_info', 'sourceInfo'], $pa_options, null);
 			
 			$vs_table_name = $this->tableName();
@@ -213,7 +213,7 @@
 			$pb_queue_indexing = caGetOption('queueIndexing', $pa_options, false);
 			
 			$effective_date = caGetOption(['effective_date', 'effectiveDate'], $pa_options, null);
-			$label_access = caGetOption(['access', 'label_access', 'labelAccess'], $pa_options, 0);
+			$label_access = caGetOption(['access', 'label_access', 'labelAccess'], $pa_options, 1);
 			$source_info = caGetOption(['source_info', 'sourceInfo'], $pa_options, null);
 			
 			$vs_table_name = $this->tableName();
@@ -818,6 +818,8 @@
 										$vm_value = $t_label->quote($vs_field, is_null($vm_value) ? '' : $vm_value);
 									}
 								}
+								
+								if(!is_null($vm_value) && (strtolower($vs_op) === 'is')) { $vs_op = '='; }
 
 								if (is_null($vm_value)) {
 									if ($vs_op !== '=') { $vs_op = 'IS'; }
@@ -856,6 +858,8 @@
 						} else {
 							if (!caIsValidSqlOperator($vs_op, ['type' => 'string', 'nullable' => true, 'isList' => (is_array($vm_value) && sizeof($vm_value))])) { throw new ApplicationException(_t('Invalid string operator: %1', $vs_op)); }
 						}
+						
+						if(!is_null($vm_value) && (strtolower($vs_op) === 'is')) { $vs_op = '='; }
 
 						if (is_null($vm_value)) {
 							$vs_op = 'IS'; 
@@ -905,6 +909,8 @@
 						foreach($va_field_values_by_key as $va_field_value) {
 							$vs_op = strtolower($va_field_value[0]);
 							$vm_value = $va_field_value[1];
+							
+							if(!is_null($vm_value) && (strtolower($vs_op) === 'is')) { $vs_op = '='; }
 					
 							$va_q = [];
 							if (($vn_element_id = array_search($vs_field, $va_element_codes)) !== false) {
@@ -978,7 +984,7 @@
 								
 								if(!$processed) {
 									if (!($vs_fld = Attribute::getSortFieldForDatatype($vn_datatype))) { $vs_fld = 'value_longtext1'; }
-						
+
 									if ($vn_datatype == __CA_ATTRIBUTE_VALUE_LIST__) {
 										if ($t_element = ca_metadata_elements::getInstance($vs_field)) {
 											if (is_array($vm_value)) { 
@@ -990,6 +996,8 @@
 											}
 										}
 									}
+									
+									if(!is_null($vm_value) && (strtolower($vs_op) === 'is')) { $vs_op = '='; }
 						
 									$vs_q = "((ca_attribute_values.element_id = {$vn_element_id}) AND ";
 									if (is_null($vm_value)) {
