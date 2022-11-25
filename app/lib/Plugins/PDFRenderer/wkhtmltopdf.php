@@ -138,7 +138,7 @@ class WLPlugPDFRendererwkhtmltopdf Extends BasePDFRendererPlugIn Implements IWLP
 		@unlink($vs_header_path);
 		@unlink($vs_footer_path);
 		
-		if($path = caGetOption('writeFile', $pa_options, false)) {
+		if($path = caGetOption('writeFile', $options, false)) {
 			copy($vs_output_path, $path);
 		}
 		@unlink($vs_output_path);
