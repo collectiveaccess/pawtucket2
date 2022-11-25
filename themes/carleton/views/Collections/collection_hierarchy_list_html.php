@@ -3,6 +3,7 @@
 	$o_collections_config = $this->getVar("collections_config");
 	$t_item = $this->getVar("item");
 	$vn_collection_id = $this->getVar("collection_id");
+	$start = $this->getVar("start");
 
 ?>
 <div class="row" id="collectionsWrapperList">			
@@ -14,9 +15,7 @@
 		</div>
 		<div class='unit row'>
 			<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-<?php
-				print caGetCollectionHierarchyList($this->request, array($t_item->get('ca_collections.collection_id')), 1);
-?>	
+				<?= $this->getVar('content');?>	
 			</div>
 		</div>
 		<div class='unit row'>
@@ -26,3 +25,14 @@
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+	function caHierarchyLoadMore(link, collection_id, start, level=0) {
+		let sel = '#hierLevelFor' + collection_id;
+		jQuery(link).parent().remove();
+		$.post('<?= caNavUrl($this->request, '*', '*', 'CollectionHierarchyListPage'); ?>/collection_id/' + collection_id + '/start/' + start + '/level/' + level, function(data) {
+			$(sel + ' > div.levelChildren').append(data); 
+			console.log(this, 'append', sel + ' div.levelChildren', $(sel + ' div.levelChildren'), level); 
+		});
+	}
+</script>
