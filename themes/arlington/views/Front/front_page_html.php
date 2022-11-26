@@ -93,9 +93,9 @@
 		<div class="row">
 				<div class="col-md-4">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "objects", "index"); ?>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "browse", "objects"); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, _t("objects"), "", "", "objects", "index"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, _t("objects"), "", "", "browse", "objects"); ?></div>
 						</div>
 					</div>
 				</div>

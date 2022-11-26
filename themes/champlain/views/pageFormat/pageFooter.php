@@ -30,7 +30,7 @@
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
 			<div>
-			<p><i class="fa fa-copyright" aria-hidden="true"></i> 2019 Champlain College </p>
+			<p><i class="fa fa-copyright" aria-hidden="true"></i> 2022 Champlain College </p>
 
 			</div>
 		</footer><!-- end footer -->

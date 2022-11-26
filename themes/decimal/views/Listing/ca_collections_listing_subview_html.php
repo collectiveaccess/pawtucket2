@@ -39,8 +39,12 @@
 		
 		print "<h2>{$va_listing_info['displayName']}</h2>\n";
 		
+		print "<div style='column-count: 3;'>";
 		while($qr_list->nextHit()) {
-			print caNavLink($this->request, $qr_list->get('ca_collections.preferred_labels'), 'platformLink', '', 'Browse', 'objects', array("facet" => "collection_facet", "id" => $qr_list->get('ca_collections.collection_id')));
+			print caNavLink($this->request, $qr_list->get('ca_collections.preferred_labels'), 'platformLink', '', 'Browse', 'objects', 
+				["facet" => "collection", "id" => $qr_list->get('ca_collections.collection_id')]
+			);
 		}
+		print "</div>";
 	}
 ?>

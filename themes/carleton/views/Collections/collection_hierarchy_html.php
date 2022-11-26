@@ -55,8 +55,17 @@
 							#if($vn_rel_item_count){
 							#	$vs_record_count = "<br/><small>(".$vn_rel_item_count." item".(($vn_rel_item_count == 1) ? "" : "s").")</small>";
 							#}
+							$va_child_media = array();
+							$vs_child_media = $qr_collection_children->getWithTemplate("<unit relativeTo='ca_collections.children' delimiter=';'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values));
+							if($vs_child_media){
+								$va_child_media = explode(";", $vs_child_media);
+							}
 							if($vb_link_sublist){
-								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->getWithTemplate($vs_label_template).$vs_record_count."</a>";
+								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->getWithTemplate($vs_label_template).$vs_record_count;
+								if(is_array($va_child_media) && sizeof($va_child_media)){
+									print "<br/><i class='fa fa-image'></i> ".sizeof($va_child_media)." item".((sizeof($va_child_media) > 1) ? "s" : "")." with media";
+								}
+								print "</a>";
 							}else{
 								# --- there are no grandchildren to show in browser, so check if we should link to detail page instead
 								$vb_link_to_detail = true;

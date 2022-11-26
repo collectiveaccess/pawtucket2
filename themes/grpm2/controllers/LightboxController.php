@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2021 Whirl-i-Gig
+ * Copyright 2013-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -67,6 +67,11 @@
         protected $opb_is_login_redirect = false;
         
         /**
+         * @var HTMLPurifier
+         */
+        protected $purifier;
+        
+        /**
          * @var string
          */
         protected $ops_tablename = 'ca_objects';
@@ -112,6 +117,7 @@
 			$this->ops_description_attribute = ($this->opo_config->get("lightbox_set_description_element_code") ? $this->opo_config->get("lightbox_set_description_element_code") : "description");
 			$this->view->setVar('description_attribute', $this->ops_description_attribute);
 			
+			$this->purifier = new HTMLPurifier();
 			
  			parent::setTableSpecificViewVars();
  		}
@@ -130,7 +136,7 @@
             # Get sets for display
             $t_sets = new ca_sets();
  			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
- 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
+ 			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "parents_only" => true));
 
  			# Remove write sets from the read array
  			$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
@@ -297,7 +303,7 @@
 			
 			$va_browse_options = array('checkAccess' => $this->opa_access_values, 'no_cache' => true);
 
-            $o_browse->execute(array_merge($va_browse_options, array('strictPhraseSearching' => true, 'checkAccess' => $this->opa_access_values, 'request' => $this->request)));
+            $o_browse->execute(array_merge($va_browse_options, array('strictPhraseSearching' => true)));
 
 		if ($ps_view !== 'timelineData') {
 			//
@@ -307,7 +313,7 @@
 				$o_browse->setFacetGroup($vs_facet_group);
 			}
 			$va_available_facet_list = $this->opo_config->get("availableFacets");
-			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request,]);
+			$va_facets = $o_browse->getInfoForAvailableFacets();
 			if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
 					if (!in_array($vs_facet_name, $va_available_facet_list)) {
@@ -440,13 +446,13 @@
  			
  			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
  			// set_id is passed through form, otherwise we're saving a new set
- 			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_SET_EDIT_ACCESS__) : new ca_sets();
+ 			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_SET_READ_ACCESS__) : new ca_sets();
  			
  			if(!$t_set->get("set_id") && ($pn_parent_id = $this->request->getParameter('parent_id', pInteger))){
  				# --- if making a new reponse set, check there isn't already one for the user
  				$va_user_response_ids = $t_set->getSetResponseIds($this->request->getUserID(), $pn_parent_id);
  				if(is_array($va_user_response_ids) && sizeof($va_user_response_ids)){
- 					$va_errors[] = _t('Only one response allowed');
+ 					$va_errors[] = _t('Only one reponse allowed');
  				}
  			}
  			// check for errors
@@ -462,8 +468,11 @@
  			$this->view->setVar("description", $ps_description);
 
  			$t_list = new ca_lists();
- 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
- 			
+ 			if($this->request->user->hasRole("teacher")){
+ 				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('teacher_set_type'));
+ 			}else{
+ 				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
+ 			}
  			$t_object = new ca_objects();
  			$vn_object_table_num = $t_object->tableNum();
  			
@@ -572,7 +581,7 @@
 					$this->view->setVar('message', _t("Removed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _t("invalid group/set id"));
+				$this->view->setVar('errors', _("invalid group/set id"));
 			}
 			$this->setAccess();
  		}
@@ -597,7 +606,7 @@
 					$this->view->setVar('message', _t("Removed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _t("invalid user/set id"));
+				$this->view->setVar('errors', _("invalid user/set id"));
 			}
  			$this->setAccess();
  		}
@@ -624,7 +633,7 @@
 					$this->view->setVar('message', _t("Changed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _t("invalid group/set id or access"));
+				$this->view->setVar('errors', _("invalid group/set id or access"));
 			}
 			$this->setAccess();
  		}
@@ -651,7 +660,7 @@
 					$this->view->setVar('message', _t("Changed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _t("invalid user/set id or access"));
+				$this->view->setVar('errors', _("invalid user/set id or access"));
 			}
 			$this->setAccess();
  		}
@@ -693,9 +702,7 @@
  			if(!$pn_access){
  				$va_errors["access"] = _t("Please select an access level");
  			}
- 			$vs_share_message = $this->purifier->purify($this->request->getParameter('share_message', pString));
- 			$this->view->setVar('share_message', $vs_share_message);
- 			if(!is_array($va_errors) || (sizeof($va_errors) == 0)){
+ 			if(sizeof($va_errors) == 0){
 				if($pn_group_id){
 					$t_sets_x_user_groups = new ca_sets_x_user_groups();
 					if($t_sets_x_user_groups->load(array("set_id" => $t_set->get("set_id"), "group_id" => $pn_group_id))){
@@ -722,7 +729,6 @@
 								$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
 								$o_view->setVar("display_name", $vs_display_name);
  								$o_view->setVar("display_name_plural", $vs_display_name_plural);
- 								$o_view->setVar("share_message", $vs_share_message);
 							
 								# -- generate email subject line from template
 								$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
@@ -734,7 +740,7 @@
 								foreach($va_group_users as $va_user_info){
 									// don't send notification to self
 									if($this->request->user->get("user_id") != $va_user_info["user_id"]){
-										caSendmail($va_user_info["email"], $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+										caSendmail($va_user_info["email"], array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 									}
 								}
 							}							
@@ -748,11 +754,11 @@
 					$va_error_emails = array();
 					$va_success_emails = array();
 					$va_error_emails_has_access = array();
-					
+					$t_user = new ca_users();
 					foreach($va_users as $vs_user){
 						// lookup the user/users
-						$t_user = ca_users::find(['email' => $vs_user, 'active' => 1, 'userclass' => ['<', 255]], ['returnAs' => 'firstModelInstance']);
-						if($t_user && ($vn_user_id = $t_user->get("user_id"))){
+						$t_user->load(array("email" => $vs_user));
+						if($vn_user_id = $t_user->get("user_id")){
 							$t_sets_x_users = new ca_sets_x_users();
 							if(($vn_user_id == $t_set->get("user_id")) || ($t_sets_x_users->load(array("set_id" => $t_set->get("set_id"), "user_id" => $vn_user_id)))){
 								$va_error_emails_has_access[] = $vs_user;
@@ -801,7 +807,7 @@
 						$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
 						$o_view->setVar("display_name", $vs_display_name);
  						$o_view->setVar("display_name_plural", $vs_display_name_plural);
-						$o_view->setVar("share_message", $vs_share_message);
+							
 					
 						# -- generate email subject line from template
 						$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
@@ -811,7 +817,7 @@
 						$vs_mail_message_html = $o_view->render("mailTemplates/share_set_notification_html.tpl");
 					
 						foreach($va_success_emails as $vs_email){
-							caSendmail($vs_email, $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+							caSendmail($vs_email, array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 						}
 					}
 				}
@@ -882,7 +888,6 @@
 				}else{
 					$t_user_group->set('user_id', $this->request->getUserID());
 					$t_user_group->set('code', 'lb_'.$this->request->getUserID().'_'.time());
-					$t_user_group->set('for_public_use', 1);
 					$t_user_group->insert();
 					if($t_user_group->get("group_id")){
 						$t_user_group->addUsers($this->request->getUserID());
@@ -929,7 +934,6 @@
                 throw new ApplicationException(_t("Item does not exist"));
             }
  			
- 			$this->view->setVar("access_values", $this->opa_access_values);
  			$this->view->setVar("set", $t_set);
  			$this->view->setVar("tablename", $ps_tablename);
  			$this->view->setVar("item_id", $pn_item_id);
@@ -943,9 +947,6 @@
          */
  		function ajaxAddComment() {
             if($this->opb_is_login_redirect) { return; }
-            if (!caValidateCSRFToken($this->request)) {
-				throw new ApplicationException(_t("Invalid CSRF token"));
-			}
 
  			// when close is set to true, will make the form view disappear after saving form
 
@@ -1003,9 +1004,7 @@
          */
  		function ajaxDeleteComment() {
             if($this->opb_is_login_redirect) { return; }
-			if (!caValidateCSRFToken($this->request)) {
-				throw new ApplicationException(_t("Invalid CSRF token"));
-			}
+
             $va_errors = array();
             $vs_message = null;
             $vn_count = null;
@@ -1023,6 +1022,7 @@
                     if (($this->request->getUserID() != $t_comment->get("user_id")) && !$t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
                         $va_errors[] = _t('You do not have access to this comment');
                     } else {
+                        $t_comment->setMode(ACCESS_WRITE);
                         $t_comment->delete(true);
                         if ($t_comment->numErrors()) {
                             $va_errors = $t_comment->getErrors();
@@ -1049,9 +1049,7 @@
          */
  		public function deleteLightbox() {
             if($this->opb_is_login_redirect) { return; }
-			if (!caValidateCSRFToken($this->request)) {
-				throw new ApplicationException(_t("Invalid CSRF token"));
-			}
+
 			$va_errors = array();
 			$vs_message = $vn_set_id = $vs_set_name = null;
 			
@@ -1083,10 +1081,6 @@
          */
  		public function ajaxReorderItems() {
             if($this->opb_is_login_redirect) { return; }
-        	if (!caValidateCSRFToken($this->request)) {
-				throw new ApplicationException(_t("Invalid CSRF token"));
-			}
-
 
             if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
 				
@@ -1110,9 +1104,6 @@
          */
  		public function ajaxDeleteItem() {
             if($this->opb_is_login_redirect) { return; }
-            if (!caValidateCSRFToken($this->request)) {
-				throw new ApplicationException(_t("Invalid CSRF token"));
-			}
 
             if($t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
 				
@@ -1138,9 +1129,6 @@
          */
  		public function ajaxAddItem($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
-            if (!caValidateCSRFToken($this->request)) {
-				throw new ApplicationException(_t("Invalid CSRF token"));
-			}
 
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
@@ -1152,7 +1140,7 @@
             
  			// set_id is passed through form, otherwise we're saving a new set, and adding the item to it
  			if($this->request->getParameter('set_id', pInteger)){
- 				$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
+ 				$t_set = $this->_getSet(__CA_SET_READ_ACCESS__);
  				if(!$t_set && $t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
  					$va_errors["general"] = _t("You can not add items to this %1.  You have read only access.", $vs_display_name);
  					$this->view->setVar('errors', $va_errors);
@@ -1172,14 +1160,19 @@
 				$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));
 	
 				$t_list = new ca_lists();
-				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
-				
+				if($this->request->user->hasRole("teacher")){
+					$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('teacher_set_type'));
+				}else{
+					$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
+				}
+			
 				$t_object = new ca_objects();
 				$t_object->purify(true);
 				
 				$vn_object_table_num = $t_object->tableNum();
 				$t_set->setMode(ACCESS_WRITE);
 				$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
+				$t_set->set('access', $this->request->getParameter('access', pInteger));
 				$t_set->set('table_num', $vn_object_table_num);
 				$t_set->set('type_id', $vn_set_type_user);
 				$t_set->set('user_id', $this->request->getUserID());
@@ -1376,17 +1369,48 @@
 	
 					$t_rep = new ca_object_representations($va_rep['representation_id']);
 					$va_rep_info = $t_rep->getMediaInfo("media", $vs_download_version);
+					//$va_rep_info = $va_rep['info'][$vs_download_version];
+					$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $vs_idno);
 
-					$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $vs_download_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
+					switch($this->request->user->getPreference('downloaded_file_naming')) {
+						case 'idno':
+							$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'idno_and_version':
+							$vs_file_name = $vs_idno_proc.'_'.$vs_download_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'idno_and_rep_id_and_version':
+							$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_download_version.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'original_name':
+						default:
+							if ($va_rep['info']['original_filename']) {
+								$va_tmp = explode('.', $va_rep['info']['original_filename']);
+								if (sizeof($va_tmp) > 1) { 
+									if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
+										$va_tmp[] = $vs_ext;
+									}
+								}
+								$vs_file_name = join('_', $va_tmp); 					
+							} else {
+								$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_download_version;
+							}
+							
+							if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {
+								$vs_file_name.= "_{$vn_c}";
+							}
+							$vs_file_name .= '.'.$va_rep_info['EXTENSION'];
+							break;
+					} 
 					
-					$va_file_names[$vs_filename] = true;
+					$va_file_names[$vs_file_name] = true;
 				
 					//
 					// Perform metadata embedding
 					if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $vs_download_version), 'ca_objects', $t_instance->getPrimaryKey(), $t_instance->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
 						$vs_path = $t_rep->getMediaPath('media', $vs_download_version);
 					}
-					$va_file_paths[$vs_path] = $vs_filename;
+					$va_file_paths[$vs_path] = $vs_file_name;
 					
 					$vn_c++;
 				}
@@ -1398,9 +1422,9 @@
 
 				foreach($va_paths as $vn_pk => $va_reps) {
 					$vn_c = 1;
-					foreach($va_reps as $vs_path => $vs_filename) {
+					foreach($va_reps as $vs_path => $vs_file_name) {
 						if (!file_exists($vs_path)) { continue; }
-						$o_zip->addFile($vs_path, $vs_filename);
+						$o_zip->addFile($vs_path, $vs_file_name);
 
 						$vn_c++;
 					}

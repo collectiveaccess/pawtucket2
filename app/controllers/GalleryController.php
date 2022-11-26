@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2021 Whirl-i-Gig
+ * Copyright 2013-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -82,7 +82,11 @@
 					}
 					$sets = caExtractValuesByUserLocale($t_set->getSets($set_opts));
 					$set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
-					
+				
+					// Sort by name by default; otherwise sort on rank
+					if($this->config->get('gallery_sort_by') !== 'name') {
+						$sets = caSortArrayByKeyInValue($sets, ['rank', 'set_id']);
+					}
 					$vs_front_page_set = $o_front_config->get('front_page_set_code');
 					$vb_omit_front_page_set = (bool)$this->config->get('omit_front_page_set_from_gallery');
 					foreach($sets as $set_id => $va_set) {
