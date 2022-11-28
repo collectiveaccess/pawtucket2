@@ -30,7 +30,7 @@
 	}
 ?>
 
-<div class="row"><div class="col-sm-12 col-md-8 col-md-offset-2">
+<div class="row"><div class="col-sm-12">
 	<H1><?php print _t("Featured Collections"); ?></H1>
 <?php
 	if(is_array($va_sets) && sizeof($va_sets)){
@@ -41,7 +41,7 @@
 				if($i == 1){
 					print "<div class='row'>";
 				}
-				print "<div class='col-sm-3'>";
+				print "<div class='col-sm-3 col-md-3 col-lg-2'>";
 				$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
 				print "<div class='galleryList'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id).
 							"<label>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $vn_set_id)."</label>

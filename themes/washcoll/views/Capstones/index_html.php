@@ -44,7 +44,7 @@
 	</div>
 	<div class="row">
 		<div class='col-md-12 col-lg-12'>
-			<H2 class="text-center">Login or regsiter for access to the Capstones Collection</H2>
+			<H2 class="text-center">Login or register for access to the Capstones Collection</H2>
 		</div>
 	</div>
 	<div class="row">

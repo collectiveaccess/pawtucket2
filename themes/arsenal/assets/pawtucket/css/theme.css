@@ -85,6 +85,10 @@ a:hover{
 }
 .navbar{
 	background-color: #ffffff;
+	margin-bottom:35px;
+}
+.frontContainer .navbar{
+	margin-bottom:0px;
 }
 .navbar .formOutline{
 	border-radius:0px;
@@ -120,17 +124,18 @@ a:hover{
 }
 @media (min-width:1010px){
 	.navbar-nav{
-		margin-top:30px;
+		margin-top:27px;
 	}
 }
 @media (min-width:768px){
 	.navbar-brand{
-		width: 375px;
-		padding-top: 40px;
-		padding-bottom: 35px;
+		width: 270px;
+		padding-top: 35px;
+		padding-bottom: 37px;
 	}
 	.navbar > .container .navbar-brand {
 	  margin-left: -11px;
+	  padding-left:15px;
 	}
 
 	.navbar-nav > li > a {
@@ -161,8 +166,8 @@ a:hover{
 }
 @media(min-width:768px) and (max-width:1165px){
 	.navbar-brand{
-		width: 300px;
-		padding-top: 30px;
+		width: 270px;
+		padding-top: 35px;
 		padding-left: 30px;
 	}
 	.navbar-form .form-group {
@@ -415,6 +420,21 @@ body{
 	}
 }
 /* search / browse results */
+.results .frontGridTitle{
+	text-align:left;
+	font-size: 48px;
+	color: #000;
+	margin-bottom:15px;
+	font-family: "CinetypeBold";
+	-moz-osx-font-smoothing: grayscale;
+	font-weight:700;
+	line-height:1em;
+}
+@media(max-width:767px){
+	.results .browseGridTitle{
+		font-size: 38px;
+	}
+}
 .bResultItemSetLink {
 	position: absolute;
 	right: 10px;
@@ -540,7 +560,7 @@ body.frontContainer #footer{
 	margin-left: -15px;
 	margin-right: -15px;
 	overflow: hidden;
-	margin-top:-20px;
+	margin-top:0px;
 }
 .front .jcarousel-wrapper {
   margin-bottom: 20px;
@@ -629,7 +649,7 @@ body.frontContainer #footer{
 .hpMainCallout{
 	font-family: "Cinetype";
 	font-weight:700;
-	font-size:55px;	
+	font-size:45px;	
 	margin-top: 50px;
 	text-align:center;
 }
@@ -640,7 +660,7 @@ body.frontContainer #footer{
 }
 .hpIntro .callout{
 	text-align:center;
-	font-size: 28px;
+	font-size: 24px;
 	color: #000;
 	margin:30px 0px 70px 0px;
 	font-family: "Cinetype";
@@ -738,7 +758,18 @@ body.frontContainer #footer{
 }
 
 /* gallery */
-@media(max-width:768px){
+.gallery h1 {
+  	font-size: 48px;
+	color: #000;
+	margin-bottom: 15px;
+	margin-top: 0px;
+  	text-transform:none;
+	line-height:1em;
+}
+@media(max-width:767px){
+	.gallery h1 {
+  		font-size: 38px;
+  	}
 	.galleryList{
 		text-align:center;
 	}
@@ -884,6 +915,7 @@ body.frontContainer #footer{
 }
 .detail .navTop a{
 	background-size: 0% 2px;
+	padding:10px;
 }
 .detail .navTop a .small{
 	color:#000;
@@ -909,6 +941,9 @@ a.readmore-js-toggle {
 	margin: 0px 0px 5px 0px;
 	font-weight:700;
 	text-transform: capitalize;
+}
+.detail h2 a {
+	text-transform:none;
 }
 .detailMediaCaption{
 	background-color:rgba(0,0,0, .7);
@@ -950,6 +985,7 @@ a.zoomButton, a.zoomButton:hover{
 	font-size: 38px;
 	margin-bottom:15px;
 	text-transform:none;
+	line-height: 1em;
 }
 @media(min-width:768px){
 	.staticPage h1 {
@@ -976,17 +1012,24 @@ a.zoomButton, a.zoomButton:hover{
 	color:#000;	
 }
 .notificationMessage, .notificationInfo {
-  position: absolute;
-  top: 40px;
-  width: 60%;
-  z-index: 1000;
-  left: 15%;
+	position: absolute;
+	top: 40px;
+	width: 60%;
+	z-index: 1000;
+	left: 15%;
 }
 .form-control:focus {
-  border-color: #000;
+	border-color: #000;
 }
 
 /* cookies */
 #cookieNotice .cookieNoticeHeading{
 	font-family:CinetypeBold;
+}
+
+.cookieByCategory {
+	cursor: default;
+}
+.cookieCount{
+	cursor: pointer;
 }

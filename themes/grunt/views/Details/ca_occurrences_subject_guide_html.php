@@ -57,6 +57,8 @@
 					{{{<ifdef code="ca_occurrences.funding_acknowl"><div class="unit"><label>Funding Acknowledgements</label><div class="trimText">^ca_occurrences.funding_acknowl</div></div></ifdef>}}}
 
 <?php
+				$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
+
 				if(is_array($va_entities) && sizeof($va_entities)){
 					$va_entities_by_type = array();
 					foreach($va_entities as $va_entity_info){

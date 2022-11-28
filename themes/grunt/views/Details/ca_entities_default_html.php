@@ -29,7 +29,8 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -43,25 +44,45 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
+				<div class='col-md-10'>
 					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
 					<H2>{{{^ca_entities.type_id}}}</H2>
-					<HR/>
+					
+				</div><!-- end col -->
+				<div class='col-md-2'>
+<?php
+					print "<div id='detailTools'><div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "", "", "Contact", "Form", array("table" => "ca_entities", "id" => $t_item->get("ca_entities.entity_id")))."</div></div>";
+?>
 				</div><!-- end col -->
 			</div><!-- end row -->
+			<div class="row">
+				<div class='col-md-12'>
+					<HR/>
+				</div>
+			</div>
 			<div class="row">			
 <?php
 $vb_2_col = false;
-if($t_item->get("ca_entities.vital_dates_ind.vital_date_value_ind") || $t_item->get("ca_entities.ind_gen_role") || $t_item->get("ca_entities.biography.biography_text")){
+$vs_alt_labels = $t_item->getWithTemplate("^ca_entities.nonpreferred_labels", array("checkAccess" => $va_access_values, "delimiter" => "<br/>"));
+if($vs_alt_labels || $t_item->get("ca_entities.vital_dates_org.vital_date_value_org") || $t_item->get("ca_entities.ind_gen_role") || $t_item->get("ca_entities.org_gen_role") || $t_item->get("ca_entities.grunt_role.grunt_role_gen") || $t_item->get("ca_entities.biography.biography_text") || $t_item->get("ca_entities.org_desc.org_desc_text")){
 	$vb_2_col = true;
 }
 if($vb_2_col){
 ?>
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_entities.vital_dates_ind.vital_date_value_ind"><unit relativeTo="ca_entities.vital_dates_ind" delimiter=" "><div class="unit"><ifdef code="ca_entities.vital_dates_ind.entity_date_types_ind"><label>^ca_entities.vital_dates_ind.entity_date_types_ind</label></ifdef>^ca_entities.vital_dates_ind.vital_date_value_ind<ifdef code="ca_entities.vital_dates_ind.vital_date_location_ind">, ^ca_entities.vital_dates_ind.vital_date_location_ind</ifdef></div></unit></ifdef>}}}
+<?php
+					if($vs_alt_labels){
+						print "<div class='unit'><label>Alternate Names</label>".$vs_alt_labels."</div>";
+					}
+?>
+					{{{<ifdef code="ca_entities.ind_gen_role"><div class="unit"><label>Roles</label>^ca_entities.ind_gen_role%delimiter=,_&%useSingular=1</div></ifdef>}}}
+					{{{<ifdef code="ca_entities.org_gen_role"><div class="unit"><label>Type</label>^ca_entities.org_gen_role%delimiter=,_&%useSingular=1</div></ifdef>}}}
+					{{{<ifdef code="ca_entities.grunt_role.grunt_role_gen"><div class="unit"><label>Roles at grunt</label><unit relativeTo='ca_entities.grunt_role' delimiter=', '>^ca_entities.grunt_role.grunt_role_gen%useSingular=1<ifdef code='ca_entities.grunt_role.grunt_role_date'> (^ca_entities.grunt_role.grunt_role_date)</ifdef></unit></div></ifdef>}}}
 					
-					{{{<ifdef code="ca_entities.ind_gen_role"><div class="unit"><label>Roles</label>^ca_entities.ind_gen_role%delimiter=,_</div></ifdef>}}}
+					{{{<ifdef code="ca_entities.vital_dates_org.vital_date_value_org"><unit relativeTo="ca_entities.vital_dates_org" delimiter=" "><div class="unit"><ifdef code="ca_entities.vital_dates_org.entity_date_types_org"><label>^ca_entities.vital_dates_org.entity_date_types_org</label></ifdef>^ca_entities.vital_dates_org.vital_date_value_org</div></unit></ifdef>}}}
+					
 					{{{<ifdef code="ca_entities.biography.biography_text"><div class="unit"><label>Biography</label><div class="trimText">^ca_entities.biography.biography_text</div></div></ifdef>}}}
+					{{{<ifdef code="ca_entities.org_desc.org_desc_text"><div class="unit"><label>About</label><div class="trimTextShort">^ca_entities.org_desc.org_desc_text</div></div></ifdef>}}}
 					
 <?php
 				# Comment and Share Tools
@@ -90,11 +111,14 @@ if($vb_2_col){
 <?php
 }
 ?>
-					{{{<ifdef code="ca_entities.idno"><div class="unit"><label>Identifier</label>^ca_entities.idno</div></ifdef>}}}
+					{{{<ifdef code="ca_entities.website"><div class="unit"><label>Website</label><unit relativeTo="ca_entities.website" delimiter=", "><a href="^ca_entities.website" target="_blank">^ca_entities.website</a></unit></div></ifdef>}}}
+					{{{<if rule='^ca_entities.type_id =~ /Organization/'><ifdef code="ca_entities.address"><div class="unit"><label>Address</label><unit relativeTo="ca_entities.address" delimiter="<br/><br/>"></unit><ifdef code="ca_entities.address.address1">^ca_entities.address.address1<br/></ifdef><ifdef code="ca_entities.address.address2">^ca_entities.address.address2<br/></ifdef><ifdef code="ca_entities.address.city">^ca_entities.address.city, </ifdef><ifdef code="ca_entities.address.stateprovince">^ca_entities.address.stateprovince </ifdef><ifdef code="ca_entities.address.country">^ca_entities.address.country</ifdef></div></ifdef></if>}}}
+					
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					
 					{{{<ifcount code="ca_occurrences" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToType="program">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
-					{{{<ifcount code="ca_entities.related" min="1"><div class="unit"><label>Related people & organizations<ifcount code="ca_entities.related" min="2">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+					{{{<ifcount code="ca_entities.related" min="1"><div class="unit"><label>Related people & organizations</label><div class="trimTextShort"><unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place</label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
 					
 				</div><!-- end col -->
 			</div><!-- end row -->

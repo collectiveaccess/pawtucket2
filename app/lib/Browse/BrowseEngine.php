@@ -123,6 +123,11 @@
 		 * @var Flag indicating if browse criteria have changed since the last execute()
 		 */
 		private $opb_criteria_have_changed = false;
+		
+		/**
+		 * Terms used for matching in search
+		 */
+		protected $searched_terms = [];
 		# ------------------------------------------------------
 		/**
 		 * @var Type_id cache
@@ -1103,6 +1108,8 @@
 		 * @return bool True on success, null if the browse could not be executed (Eg. no settings), false no error
 		 */
 		public function execute($pa_options=null) {
+			$this->searched_terms = [];
+			
 			global $AUTH_CURRENT_USER_ID;
 			if (!is_array($this->opa_browse_settings)) { return null; }
 			if (!is_array($pa_options)) { $pa_options = array(); }
@@ -1626,7 +1633,7 @@
 													case __CA_ATTRIBUTE_VALUE_LIST__:
 														if ($vs_f != 'item_id') { continue(2); }
 														
-														if((!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) ) {
+														if(!caGetOption(['dontExpandHierarchically', 'dont_expand_hierarchically'], $va_facet_info, false)) {
 
 															// Include sub-items
 															$t_list_item = new ca_list_items();
@@ -2169,7 +2176,7 @@
 
                                         if ($va_facet_info['type'] == 'relationship_types') {
                                             $vs_get_item_sql = "(".$t_item_rel->tableName().".type_id = ".(int)$vn_row_id.")";
-										} elseif ((!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) && $t_rel_item->isHierarchical() && $t_rel_item->load((int)$vn_row_id)) {
+										} elseif (!caGetOption(['dontExpandHierarchically', 'dont_expand_hierarchically'], $va_facet_info, false) && $t_rel_item->isHierarchical() && $t_rel_item->load((int)$vn_row_id)) {
 											$vs_hier_left_fld = $t_rel_item->getProperty('HIERARCHY_LEFT_INDEX_FLD');
 											$vs_hier_right_fld = $t_rel_item->getProperty('HIERARCHY_RIGHT_INDEX_FLD');
 
@@ -2365,7 +2372,7 @@
 										}
 									}
 
-									$dont_expand_hierarchically = caGetOption('dontExpandHierarchically', $va_facet_info, false);
+									$dont_expand_hierarchically = caGetOption(['dontExpandHierarchically', 'dont_expand_hierarchically'], $va_facet_info, false);
 									foreach($va_row_ids as $vn_row_id) {
 										$vn_row_id = urldecode($vn_row_id);
 										
@@ -2673,7 +2680,8 @@
 											$va_row_ids = array_filter($va_row_ids, function($a) { return !($a === '*'); });
 										}
 										$qr_res = $o_search->search(join(" AND ", $va_row_ids), $va_options);
-
+										$this->searched_terms = $o_search->getSearchedTerms();
+										
 										$va_acc[$vn_i] = $qr_res->getPrimaryKeyValues();
 										$vn_i++;
 										break;
@@ -4298,7 +4306,7 @@
 									$va_children_by_parent_id[$vn_parent_id][] = $vn_val;
 								}
 								
-								if (!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) {
+								if (!caGetOption(['dontExpandHierarchically', 'dont_expand_hierarchically'], $va_facet_info, false)) {
 									$t_rel_item = new ca_list_items();
 									$qr_res->seek(0);
 									$va_ids = $qr_res->getAllFieldValues($vs_rel_pk);
@@ -4323,7 +4331,7 @@
 											if (!($vn_parent_id = $qr_ancestors->get("parent_id"))) { continue; }
 											
 
-                                            if ((!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) && $t_rel_item->isHierarchical()) {
+                                            if (!caGetOption(['dontExpandHierarchically', 'dont_expand_hierarchically'], $va_facet_info, false) && $t_rel_item->isHierarchical()) {
                                                 $vs_hier_left_fld = $t_rel_item->getProperty('HIERARCHY_LEFT_INDEX_FLD');
                                                 $vs_hier_right_fld = $t_rel_item->getProperty('HIERARCHY_RIGHT_INDEX_FLD');
 
@@ -6955,7 +6963,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						    return $va_facet_items;
 						}
 
-		if (!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) {
+		if (!caGetOption(['dontExpandHierarchically', 'dont_expand_hierarchically'], $va_facet_info, false)) {
 						$qr_res->seek(0);
 						$va_ids = $qr_res->getAllFieldValues($vs_rel_pk);
 						$qr_ancestors = call_user_func($t_rel_item->tableName().'::getHierarchyAncestorsForIDs', $va_ids, array('returnAs' => 'SearchResult'));
@@ -7974,5 +7982,12 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 	            
 	        return null;
 	    }
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		public function getSearchedTerms() {
+			return $this->searched_terms ?? [];
+		}
 		# ------------------------------------------------------
 	}

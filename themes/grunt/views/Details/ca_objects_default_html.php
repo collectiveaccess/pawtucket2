@@ -72,7 +72,7 @@
 			<div class="row">
 <?php
 $vb_2_col = false;
-if($t_object->get("ca_objects.creative_access_desc") || trim($this->getVar("representationViewer"))){
+if($t_object->get("ca_objects.creative_access_desc") || trim($this->getVar("representationViewer") || $t_object->get("ca_objects.transcript_upload_container.transcript_upload.url") || $t_object->get("ca_objects.visual_description_container.visual_description_upload"))){
 	$vb_2_col = true;
 }
 if($vb_2_col){
@@ -107,7 +107,10 @@ if($vb_2_col){
 
 	?>
 
+					{{{<ifdef code="ca_objects.transcript_upload_container.transcript_upload.url"><div class="unit"><unit relativeTo="ca_objects.transcript_upload_container.transcript_upload" delimiter="<br/>"><ifdef code="ca_objects.transcript_upload_container.transcript_upload.url"><a href="^ca_objects.transcript_upload_container.transcript_upload.url%version=original"><span class="glyphicon glyphicon-download-alt" role="button" aria-label="Download"></span></a> <a href="^ca_objects.transcript_upload_container.transcript_upload.url%version=original"><ifdef code="ca_objects.transcript_upload_container.transcript_caption">^ca_objects.transcript_upload_container.transcript_caption</ifdef><ifnotdef code="ca_objects.transcript_upload_container.transcript_caption">Download Transcript</ifnotdef></a></ifdef></unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.visual_description_container.visual_description_upload.url"><div class="unit"><unit relativeTo="ca_objects.visual_description_container.visual_description_upload" delimiter="<br/>"><ifdef code="ca_objects.visual_description_container.visual_description_upload.url"><a href="^ca_objects.visual_description_container.visual_description_upload.url%version=original"><span class="glyphicon glyphicon-download-alt" role="button" aria-label="Download"></span></a> <a href="^ca_objects.visual_description_container.visual_description_upload.url%version=original"><ifdef code="ca_objects.visual_description_container.visual_description_caption">^ca_objects.visual_description_container.visual_description_caption</ifdef><ifnotdef code="ca_objects.visual_description_container.visual_description_caption">Download Visual Description</ifnotdef></a></ifdef></unit></div></ifdef>}}}
 					{{{<ifdef code="ca_objects.creative_access_desc"><div class='unit'><label>Creative Access Description</label>^ca_objects.creative_access_desc</div></ifdef>}}}
+					
 				</div><!-- end col -->
 			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
@@ -123,8 +126,12 @@ if($vb_2_col){
 							<span class="trimText">^ca_objects.dc_description</span>
 						</div>
 					</ifdef>}}}
-					{{{<ifdef code="ca_objects.alt_title"><div class='unit'><label>Alternate Title</label><unit relativeTo="ca_objects.alt_title" delimiter="<br/>">^ca_objects.alt_title</unit></div></ifdef>}}}
-
+					{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.custom_extent"><div class="unit"><label>Extent</label>^ca_objects.custom_extent</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.tape_number"><div class="unit"><label>Tape Number</label>^ca_objects.tape_number</div></ifdef>}}}
+					
+					{{{<ifdef code="ca_objects.language"><div class='unit'><label>Language</label><unnit relativeTo="ca_objects.language" delimiter="<br/>">^ca_objects.language</unit></div></ifdef>}}}
+					
 <?php
 				$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
 				if(is_array($va_entities) && sizeof($va_entities)){
@@ -140,11 +147,13 @@ if($vb_2_col){
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToType="program">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
 					
-					{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 					
+					{{{<ifdef code="ca_objects.object_history.bib_ref"><div class='unit'><label>Bibliography</label>^ca_objects.object_history.bib_ref</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.object_history.exhibition_hist"><div class='unit'><label>Exhibition History</label>^ca_objects.object_history.exhibition_hist</div></ifdef>}}}
+
 					{{{<ifdef code="ca_objects.rightsSummary_asset"><div class="unit"><i>^ca_objects.rightsSummary_asset</i></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.web_notice"><div class="unit"><i>^ca_objects.web_notice</i></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.content_notice"><div class="unit"><i>^ca_objects.content_notice</i></div></ifdef>}}}
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place</label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
 					
 				</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
