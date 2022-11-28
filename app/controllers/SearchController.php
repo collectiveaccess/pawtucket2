@@ -133,8 +133,8 @@
  			}
  			
  			
+			$vs_search_expression = $this->opo_result_context->getSearchExpression();
  			if(!$this->request->isAjax()) {
-				$vs_search_expression = $this->opo_result_context->getSearchExpression();
 				if ($ps_label = $this->request->getParameter('label', pString, ['forcePurify' => true])) {
 					$this->opo_result_context->setSearchExpressionForDisplay("{$ps_label}: {$vs_search_expression}"); 
 					$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
@@ -356,9 +356,7 @@
 			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced || (bool)$o_search_config->get('use_strict_phrase_searching_for_advanced_searches'), 'rootRecordsOnly' => $vb_root_records_only))); }
 		
 			// Set highlight text
-			if(!RequestHTTP::isAjax()) { 
-				MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $vs_search_expression); 
-			}
+			MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $vs_search_expression, ['persist' => !RequestHTTP::isAjax()]); 
 		
 			//
 			// Facets

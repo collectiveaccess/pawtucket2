@@ -278,9 +278,7 @@
 			//
 			// Set highlight text
 			//
-			if(isset($va_criteria['_search']) && !RequestHTTP::isAjax()) { 
-				MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $va_criteria['_search']);
-			}
+			MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $va_criteria['_search'] ?? '', ['persist' => !RequestHTTP::isAjax()]);
 			
 			//
 			// Facets

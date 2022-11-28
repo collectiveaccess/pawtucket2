@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2021 Whirl-i-Gig
+ * Copyright 2011-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -530,7 +530,7 @@
 					$o_browse->addCriteria($facet, $value);
 				}
 				$o_browse->addCriteria("_search", [caMatchOnStem($ps_search_expression)], [$search_expression_for_display]);
-				$o_browse->execute();
+				$o_browse->execute($va_options);
 				$qr_res = $o_browse->getResults($va_options);
 				
 				if($vn_i == 0) { MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $ps_search_expression); }
@@ -1769,7 +1769,7 @@
 				
 				if (isset($config_sorts[$k])) { return true; }
 				foreach($va_display_bundles as $b) {
-					if (preg_match("!^{$b}!", $k) || preg_match("!^{$k}!", $b)) { return true; }
+					if (preg_match("!^".preg_quote($b, '!')."!", $k) || preg_match("!^".preg_quote($k, '!')."!", $b)) { return true; }
 				}
 				return false;
 			}, ARRAY_FILTER_USE_BOTH);
@@ -2105,6 +2105,9 @@
 		} elseif(preg_match("!^count[/\.]{1}!", $va_name[1]))  {
 			// counts are always ints
 			$va_result['type'] = 'integer';
+		} elseif ($vs_name === '_fulltext') {
+			# Mark type as fulltext so that correct operator(s) get made available.
+			$va_result['type'] = 'fulltext';
 		}
 		
 		// Use the relevant input field type and operators based on type.
@@ -2131,6 +2134,10 @@
 			$va_result['operators'] = array_merge($va_operators_by_type['select'], ['between']);
 		} else {
 			$va_result['input'] = 'text';
+		}
+		if ($va_result['type'] === 'fulltext') {
+			// Now mark type to be a valid type that is supported by Query Builder
+			$va_result['type'] = 'string';
 		}
 		
 		// Set up option groups
