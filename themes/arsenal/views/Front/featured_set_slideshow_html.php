@@ -56,13 +56,19 @@
 		}
 	}
 	#
-	# --- no configured set/items in set so grab random objects with media
+	# --- no configured set/items in set so grab random works with media
 	#
 	if(sizeof($va_featured_ids) == 0){
-		$t_occurrences = new ca_occurrences();
-		$va_list_items = new ca_list_items(array("idno" => "work"));
-		$va_featured_ids = array_keys($t_occurrences->getRandomItems(40, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1, 'restrictByIntrinsic' => array("type_id" => $va_list_items->get("ca_list_items.item_id")))));
+		$t_list_items = new ca_list_items(array("idno" => "work"));
+		$o_db = new Db();
+		$qr_res = $o_db->query("SELECT ca_occurrences.* FROM ca_occurrences INNER JOIN ca_object_representations_x_occurrences ON ca_object_representations_x_occurrences.occurrence_id = ca_occurrences.occurrence_id WHERE ca_occurrences.access IN (1) AND ca_occurrences.type_id = ? AND ca_occurrences.deleted = 0 ORDER BY RAND() LIMIT 40", array($t_list_items->get("ca_list_items.item_id")));
+		
+		while($qr_res->nextRow()) {
+			$va_featured_ids[$qr_res->get("ca_occurrences.occurrence_id")] = $qr_res->get("ca_occurrences.occurrence_id");
+		}
+		shuffle($va_featured_ids);
 		$qr_res = caMakeSearchResult('ca_occurrences', $va_featured_ids);
+	
 	}
 	
 	if($qr_res && $qr_res->numHits()){

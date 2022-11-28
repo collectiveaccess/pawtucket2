@@ -131,10 +131,10 @@ BaseModel::$s_ca_models_definitions['ca_entity_labels'] = array(
 		),
 		'name_sort' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 512, 'DISPLAY_HEIGHT' => 1,
+				'DISPLAY_WIDTH' => 100, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => 'Sort order', 'DESCRIPTION' => 'Sortable version of name value',
+				'LABEL' => 'Sortable value', 'DESCRIPTION' => 'Sortable version of name value',
 				'BOUNDS_LENGTH' => array(0,512)
 		),
 		'source_info' => array(
@@ -281,20 +281,7 @@ class ca_entity_labels extends BaseLabel {
 
 	protected $FIELDS;
 	
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
+
 	# ------------------------------------------------------
 	/**
 	 * Override insert() to adjust entity name format as needed
@@ -309,13 +296,15 @@ class ca_entity_labels extends BaseLabel {
 	 * @return bool
 	 */
 	public function insert($options=null) {
+		$is_org = (($t_entity = caGetOption('subject', $options, null)) && ($t_entity->getTypeSetting('entity_class') == 'ORG'));
+
 		if (!trim($this->get('surname')) && !trim($this->get('forename'))) {
 			// auto-split entity name into forename and surname if displayname is set and 
 			// surname and forename are not explicitly defined
 			$we_set_displayname = false;
 			if($displayname = trim($this->get('displayname'))) {
 			
-				if (($t_entity = caGetOption('subject', $options, null)) && ($t_entity->getTypeSetting('entity_class') == 'ORG')) {
+				if ($is_org) {
 					$label = [
 						'displayname' => $displayname,
 						'surname' => $displayname,
@@ -343,8 +332,19 @@ class ca_entity_labels extends BaseLabel {
 		
 		// Generate displayname from forename/middlename/surname when subject
 		// entity is organization or displayname is not explicitly defined
-		if (($t_entity = caGetOption('subject', $options, null)) && ($t_entity->getTypeSetting('entity_class') == 'ORG')) {
-			$this->set('displayname', $this->get('surname'));
+		if ($is_org) {
+			if($this->get('displayname') && !$this->get('surname')) {
+				$this->set('surname', trim($this->get('displayname')));
+			} elseif($this->get('displayname') && $this->get('forename')) {
+				$this->set('surname', trim(preg_replace('![ ]+!', ' ', $this->get('forename').' '.$this->get('middlename').' '.$this->get('surname'))));
+				$this->set('displayname', $this->get('surname'));
+			} elseif(!$this->get('displayname')) {	
+				$this->set('displayname', trim(preg_replace('![ ]+!', ' ', $this->get('forename').' '.$this->get('middlename').' '.$this->get('surname'))));
+				$this->set('surname', $this->get('displayname'));
+			}
+			
+			$this->set('middlename', '');
+			$this->set('forename', '');	
 		} elseif (!$this->get('displayname')) {
 			if(is_array($normalized_label = self::normalizeLabel($label_values = [
 				'prefix' => $this->get('prefix'),
@@ -365,7 +365,6 @@ class ca_entity_labels extends BaseLabel {
 				$this->set('displayname', self::labelAsString($label_values));
 			}
 		}
-		
 		return parent::insert($options);
 	}
 	# ------------------------------------------------------
@@ -373,12 +372,13 @@ class ca_entity_labels extends BaseLabel {
 	 * Convert label components into canonical format
 	 *
 	 * @param array $label_values
+	 * @param array $options
 	 *
 	 * @return array
 	 */
 	public static function normalizeLabel(array $label_values, ?array $options=null) : array {
-		$normalized_values = DataMigrationUtils::splitEntityName(self::labelAsString($label_values), $options);
-		return $normalized_values;
+		$is_org = (($t_entity = caGetOption('subject', $options, null)) && ($t_entity->getTypeSetting('entity_class') == 'ORG'));
+		return DataMigrationUtils::splitEntityName(self::labelAsString($label_values), array_merge(['type' => $is_org ? 'ORG' : 'IND'], $options ?? []));
 	}
 	# ------------------------------------------------------
 	/**
@@ -388,12 +388,17 @@ class ca_entity_labels extends BaseLabel {
 	 *
 	 * @return string
 	 */
-	public static function labelAsString(array $label_values) : string {
-		return trim(preg_replace('![ ]+!', ' ', $label_values['prefix'].' '.$label_values['forename'].' '.$label_values['other_forenames'].' '.$label_values['middlename'].' '.$label_values['surname'].' '.$label_values['suffix']));
+	public static function labelAsString(array $label_values) : ?string {
+		$n = trim(preg_replace('![ ]+!', ' ', ($label_values['prefix'] ?? null).' '.($label_values['forename'] ?? null).' '.($label_values['other_forenames'] ?? null).' '.($label_values['middlename'] ?? null).' '.($label_values['surname'] ?? null).' '.($label_values['suffix'] ?? null)));
+		if(!$n) { $n = $label_values['displayname'] ?? null; }
+		return $n;
 	}
 	# ------------------------------------------------------
 	/**
 	 *
+	 * @param array $options
+	 *
+	 * @return bool
 	 */
 	public function update($options=null) {
 		if (!trim($this->get('surname')) && !trim($this->get('forename'))) {

@@ -25,6 +25,9 @@
  *
  * ----------------------------------------------------------------------
  */
+	$t_locale =					new ca_locales();
+
+	global $g_ui_locale;
  
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
@@ -57,12 +60,12 @@
 		$detail_types = $config->getAssoc('detailTypes');
 		$options = $detail_types['works'];
 		$t_representation = $t_work->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
-		if(!is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
+		if(!$t_representation || !is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
 			
 		$vs_rep_viewer = caRepresentationViewer(
 					$this->request, 
 					$t_work, 
-					$t_work,
+					$t_object,
 					array_merge($options, $media_display_info, 
 						[
 							'display' => 'detail',
@@ -76,14 +79,16 @@
 					)
 				);
 
-		$back_to_work = caDetailLink($this->request, _t("Back to %1", $t_work->get("ca_occurrences.type_id", array("convertCodesToDisplayText" => true)))." &rarr;", '', 'ca_occurrences', $vn_occurrence_id);
+		$back_to_work = caDetailLink($this->request, ($g_ui_locale == "de_DE" ? "zurück zum Werk" : "back to Film Work")." &rarr;", '', 'ca_occurrences', $vn_occurrence_id);
 					
 	}
-	$t_locale =					new ca_locales();
-
-	global $g_ui_locale;
-	
-				
+	$vs_type = $t_object->getWithTemplate("^ca_objects.type_id");
+	switch($vs_type){
+		case "Filmkopie":
+			$vs_type = "Kopie";
+		break;
+		# ---------------
+	}		
 ?>
 
 		<div class="row">
@@ -92,7 +97,7 @@
 					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 				</div><!-- end detailTop -->
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
-				<H2>{{{^ca_objects.type_id}}}<?php print ($back_to_work) ? " | ".$back_to_work : ""; ?></H2>
+				<H2><?php print $vs_type; ?><?php print ($back_to_work) ? " | ".$back_to_work : ""; ?></H2>
 				<HR/>
 			</div>
 		</div>
@@ -341,6 +346,11 @@
 			if(strlen($t_work->get('ca_occurrences.forum_pdf'))>0){
 				print "<div class='unit'><label>".$t_work->getAttributeLabel('forum_pdf')."</label>".$t_work->get('ca_occurrences.forum_pdf', array('delimiter' => ', '))."</div><!-- end unit -->";
 			}
+			
+			// TODO: need final text and formatting for link
+			if($url = $t_work->get('ca_occurrences.film_page_url')) {
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}'>"._t('View on Forum')."</a></div></div>";
+			}	
 
 			$va_tags = $t_work->get("ca_list_items", array("returnWithStructure" => true));
 			if(is_array($va_tags) && sizeof($va_tags)){
