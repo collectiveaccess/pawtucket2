@@ -98,7 +98,7 @@
 							</div>
 					<?php
 						}
-						if($links = caGetBrowseLinks($t_item, 'ca_list_items', ['linkTemplate' => '<li>^LINK</li>'])) {
+						if($links = caGetBrowseLinks($t_item, 'ca_list_items', ['linkTemplate' => '<li>^LINK</li>', 'restrictToRelationshipTypes' => ['subject']])) {
 					?>
 							<label>Subject(s)</label>
 							<div class="unit">
@@ -184,18 +184,7 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 
-			<!-- {{{<ifcount code="ca_occurrences" min="1">
-					<div class='unit'>
-						<label>Related Occurrence<ifcount code="ca_occurrences" min="2">s</ifcount></label>
-							<ul>
-								<unit relativeTo="ca_occurrences" delimiter="">
-									<li> 
-										<l>^ca_occurrences.preferred_labels.name</l>
-									</li>
-								</unit>
-							</ul>
-					</div>
-			</ifcount>}}} -->
+			
 			
 			<H2 style="margin: 35px 0px 20px 0px">
 				{{{<ifcount code="ca_occurrences" min="1"><unit relativeTo="ca_occurrences" length='1'>^count Items in this collection</unit></ifcount>}}}
@@ -238,54 +227,3 @@
 
 
 
-<!-- {{{<ifcount code="ca_objects" min="1" max="1">
-	<div class='unit'>
-		<unit relativeTo="ca_objects" delimiter=" ">
-			<l>^ca_object_representations.media.large</l>
-			<div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div>
-		</unit>
-	</div>
-</ifcount>}}} -->
-
-<!-- {{{<ifdef code="ca_collections.georeference"><div class="unit">
-	<label>Places</label>
-	<?php 
-			$places = $t_item->get("ca_collections.georeference", array("returnAsArray" => true));
-			print "<ul>";
-			foreach($places as $pl){	print "<li>$pl</li>"; }
-			print "</ul>";
-	?>
-</div></ifdef>}}} -->
-
-<!-- <H2>{{{^ca_collections.type_id}}} {{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2> -->
-<!-- {{{<ifdef code="ca_collections.parent_id"><div class="unit">Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}} -->
-<!-- {{{<ifdef code="ca_collections.description"><div class="unit"><label>About</label>^ca_collections.description</div></ifdef>}}} -->
-<!-- 'template' => '<l>^ca_collections.preferred_labels.name</l> (^relationship_typename)',  -->
-<!-- <?php
-	if($links = caGetSearchLinks($t_item, 'ca_collections.related', ['template' => '<l>^ca_collections.preferred_labels.name</l>', 'linkTemplate' => '<li>^LINK</li>'])) {
-?>
-		{{{<ifcount code="ca_collections.related" min="1">
-			<label>Related collection<ifcount code="ca_collections.related" min="2">s</ifcount></label>
-		</ifcount>}}}
-
-		<div class="unit">
-			<ul><?= join("\n", $links); ?></ul>
-		</div>
-<?php
-	}
-?> -->
-<!-- {{{<ifcount code="ca_places" min="1">
-	<label>Related place<ifcount code="ca_places" min="2">s</ifcount></label>
-</ifcount>}}}
-{{{<unit relativeTo="ca_places_x_collections"><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}		 -->
-
-<!-- <?php
-	if($links = caGetBrowseLinks($t_item, 'ca_entities', ['template' => '<l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)', 'linkTemplate' => '<li>^LINK</li>'])) {
-?>
-		<label>People</label>
-		<div class="unit">
-			<ul><?= join("\n", $links); ?></ul>
-		</div>
-<?php
-	}
-?> -->

@@ -160,7 +160,7 @@
 				<div class="container">
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
-								<div class="bgGray mainTitle">Shaw-Olson Center for College History</div>
+								<div class="bgGray mainTitle">St. Olaf College Archives</div>
 							</div>
 						</div>
 					</div>

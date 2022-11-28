@@ -4435,9 +4435,14 @@ jQuery(document).ready(function() {
 					$po_request, 
 					"representation:{$pn_representation_id}", 
 					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
-					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 
-					'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 
-					'resultList' => caGetOption('resultList', $pa_options, null), 'showRepresentationViewerNextPreviousLinks' => (bool)caGetOption('showRepresentationViewerNextPreviousLinks', $pa_options, false)]
+					[
+						'viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 
+						'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 
+						'resultList' => caGetOption('resultList', $pa_options, null), 
+						'showRepresentationViewerNextPreviousLinks' => (bool)caGetOption('showRepresentationViewerNextPreviousLinks', $pa_options, false),
+						'representationViewerNextLink' => caGetOption('representationViewerNextLink', $pa_options, null),
+						'representationViewerPreviousLink' => caGetOption('representationViewerPreviousLink', $pa_options, null)
+					]
 				);
 
 				if ($pb_inline) {	
@@ -4804,7 +4809,7 @@ jQuery(document).ready(function() {
 			if ($pb_barcodes && ($vs_barcode_file = caParseBarcodeViewTag($vs_tag, $po_view, $pm_subject, $pa_options))) {
 				$va_barcode_files_to_delete[] = $vs_barcode_file;
 			} elseif ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
-				$po_view->setVar($vs_tag, $pm_subject->getWithTemplate($vs_tag, array('checkAccess' => $pa_access_values)));
+				$po_view->setVar($vs_tag, $pm_subject->getWithTemplate($vs_tag, array('doHighlighting' => true, 'checkAccess' => $pa_access_values)));
 			} elseif (strpos($vs_tag, ".") !== false) {
 				$po_view->setVar($vs_tag, $pm_subject->get($vs_tag, array('checkAccess' => $pa_access_values)));
 			} else {

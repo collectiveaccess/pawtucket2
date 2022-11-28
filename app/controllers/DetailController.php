@@ -111,6 +111,8 @@ class DetailController extends FindController {
 		AssetLoadManager::register("readmore");
 		AssetLoadManager::register("maps");
 		
+		$o_search_config = caGetSearchConfig();
+		
 		$options = (isset($this->opa_detail_types[$function]['options']) && is_array($this->opa_detail_types[$function]['options'])) ? $this->opa_detail_types[$function]['options'] : array();
 		//
 		// Media viewer
@@ -157,6 +159,7 @@ class DetailController extends FindController {
 			// invalid id - throw error
 			throw new ApplicationException("Invalid id");
 		} 
+		$t_subject->autoConvertLineBreaks(true);
 		
 		$ps_view = $this->request->getParameter('view', pString);
 		if($ps_view === 'pdf') {
@@ -250,6 +253,8 @@ class DetailController extends FindController {
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").$t_subject->get('preferred_labels').(($idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$idno}]" : ""));
 		}
 		$type = $t_subject->getTypeCode();
+		
+		$t_subject->doHighlighting($o_search_config->get("do_highlighting"));
 		
 		$this->view->setVar('detailType', $table);
 		$this->view->setVar('item', $t_subject);
@@ -876,8 +881,7 @@ class DetailController extends FindController {
 			if($comment || $rank || $media1){
 				$t_item->addComment($comment, $rank, $this->request->getUserID(), null, $name, $email, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null, array('media1_original_filename' => $media1_original_name), $media1, null, null, null, $location);
 			}
-			if($tags){
-				$tags = array();
+			if(is_string($tags) && strlen($tags)){
 				$tags = explode(",", $tags);
 				foreach($tags as $tag){
 					$t_item->addTag(trim($tag), $this->request->getUserID(), null, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null);
@@ -1365,7 +1369,7 @@ class DetailController extends FindController {
 				'table' => 'ca_objects'
 			];
 		} elseif (!is_array($context_info = $this->opa_detail_types[$context])) { 
-			throw new ApplicationException(_t('Invalid context'));
+			throw new ApplicationException(_t('Invalid context %1', $context));
 		}
 		$o_context = ResultContext::getResultContextForLastFind($this->request, $context_info['table']);
 		

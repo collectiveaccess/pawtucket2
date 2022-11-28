@@ -155,7 +155,7 @@ body{
 .pageContainer{position:relative;}
 .thumbnail { font: "Noto Sans Light"; font-size: 8px; line-height:.7em; width: 200px;  height: 205px; position: absolute; text-align: center; margin: 0px; padding: 3px; border-radius:0px;}	
 .imgThumb {text-align:center;}
-.caption {font-size:8px; color:#333; display:block; line-height:.9em;  padding-top:3px;}
+.caption {font-size:8px; color:#333; display:block; line-height:1em;  padding-top:3px;}
 .pageBreak { page-break-before: always; height:1px; }
 .clear { clear: both; height: 1px; }
 

@@ -291,7 +291,7 @@ body.frontContainer #footer{
 
 .parallax {
 	position:relative;
-    background-image: url("../graphics/hero_2.jpg");
+    background-image: url("../graphics/new_hero_image.jpeg");
 
     /* Full height */
     height: 100vh;
@@ -307,13 +307,13 @@ body.frontContainer #footer{
 	top:-20px;
 }
 .parallax.hero1 {
-	background-image: url("../graphics/hero_2.jpg");
+	background-image: url("../graphics/new_hero_image.jpeg");
 }
 .parallax.hero2 {
-    background-image: url("../graphics/hero_2.jpg");
+    background-image: url("../graphics/new_hero_image.jpeg");
 }
 .parallax.hero3 {
-    background-image: url("../graphics/hero_2.jpg");
+    background-image: url("../graphics/new_hero_image.jpeg");
 }
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
@@ -508,7 +508,7 @@ body.frontContainer #footer{
 	box-shadow: 0 2px 14px 0 rgba(0,0,0,.3);
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage1{
-	background-image: url('../graphics/explore_objects.jpg');
+	background-image: url('../graphics/new_explore_objects.jpg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage2{
 	background-image: url('../graphics/explore_collections.jpg');

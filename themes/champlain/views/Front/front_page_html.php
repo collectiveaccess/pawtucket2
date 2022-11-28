@@ -29,11 +29,13 @@
  *
  * ----------------------------------------------------------------------
  */
+ 		$access_values = caGetUserAccessValues($this->request);
+ 
 		print $this->render("Front/featured_set_slideshow_html.php");
 		
 		$o = new ca_objects();
-		$qr_recently_added = caMakeSearchResult('ca_objects', $o->getRecentlyAddedItems(3, ['checkAccess' => caGetUserAccessValues($this->request), 'hasRepresentations' => true, 'idsOnly' => true]));
-        $qr_recently_viewed = caMakeSearchResult('ca_objects', $o->getRecentlyViewedItems(3, ['checkAccess' => caGetUserAccessValues($this->request), 'hasRepresentations' => true]));
+		$qr_recently_added = caMakeSearchResult('ca_objects', $o->getRecentlyAddedItems(3, ['checkAccess' => $access_values, 'hasRepresentations' => true, 'idsOnly' => true]));
+        $qr_recently_viewed = caMakeSearchResult('ca_objects', $o->getRecentlyViewedItems(3, ['checkAccess' => $access_values, 'hasRepresentations' => true]));
 
 ?>
 	<div class="row">
@@ -46,13 +48,13 @@
 		<h2>Recently Added</h2>
 		<p><div class="row recent"><?php
 		    while($qr_recently_added->nextHit()) {
-		        print $qr_recently_added->getWithTemplate('<div class="col-sm-6 col-md-6 col-lg-4 recently"><l>^ca_object_representations.media.small</l> <br/><br/> <l>^ca_objects.preferred_labels.name</l></div>');
+		        print $qr_recently_added->getWithTemplate('<div class="col-sm-6 col-md-6 col-lg-4 recently"><l>^ca_object_representations.media.small</l> <br/><br/> <l>^ca_objects.preferred_labels.name</l></div>', ['checkAccess' => $access_values]);
 		    }
 		?></div></p>
 		<h2>Recently Viewed</h2>
 		<p><div class="row recent"><?php
 		    while($qr_recently_viewed->nextHit()) {
-		        print $qr_recently_viewed->getWithTemplate('<div class="col-sm-6 col-md-6 col-lg-4 recently"><l>^ca_object_representations.media.small</l> <br/><br/> <l>^ca_objects.preferred_labels.name</l></div>');
+		        print $qr_recently_viewed->getWithTemplate('<div class="col-sm-6 col-md-6 col-lg-4 recently"><l>^ca_object_representations.media.small</l> <br/><br/> <l>^ca_objects.preferred_labels.name</l></div>', ['checkAccess' => $access_values]);
 		    }
 		?></div></p>	
 		</div>

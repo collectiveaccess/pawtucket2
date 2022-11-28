@@ -73,7 +73,7 @@
 							</div>
 					<?php
 						}
-						if($links = caGetBrowseLinks($t_item, 'ca_list_items', ['linkTemplate' => '<li>^LINK</li>'])) {
+						if($links = caGetBrowseLinks($t_item, 'ca_list_items', ['linkTemplate' => '<li>^LINK</li>', 'restrictToRelationshipTypes' => ['subject']])) {
 					?>
 							<div class="unit">
 								<label>Subject(s)</label>
@@ -187,15 +187,7 @@
 <?php					
 							}
 						}
-						if($links = caGetSearchLinks($t_item, 'ca_list_items', ['template' => '<l>^ca_list_items.preferred_labels</l>', 'linkTemplate' => '<li>^LINK</li>', 'restrictToRelationshipTypes' => 'subject'])) {
-					?>
-							<div class="unit">
-							{{{<ifcount code="ca_list_items" restrictToRelationshipTypes="subject" min="1" max="1"><label>Subject</label></ifcount>}}}
-							{{{<ifcount code="ca_list_items" restrictToRelationshipTypes="subject" min="2"><label>Subjects</label></ifcount>}}}
-								<ul><?= join("\n", $links); ?></ul>
-							</div>
-					<?php
-						}
+						
 						if($links = caGetBrowseLinks($t_item, 'ca_places', ['template' => '<l>^ca_places.preferred_labels.name</l>', 'linkTemplate' => '<li>^LINK</li>'])) {
 ?>
 							<div class='unit'>
