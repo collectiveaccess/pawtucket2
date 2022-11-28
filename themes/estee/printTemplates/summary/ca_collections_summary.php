@@ -50,9 +50,9 @@
 	if($vn_brand){
 		$t_list_item = new ca_list_items();
 		$t_list_item->load($vn_brand);
-		$vs_brand_img = $t_list_item->get("ca_list_items.icon.large");
+		$vs_brand_img = $t_list_item->get("ca_list_items.icon.large.path");
 		if($vs_brand_img == "No media available"){
-			$vs_brand_img = $t_list_item->get("ca_list_items.icon.square400");
+			$vs_brand_img = $t_list_item->get("ca_list_items.icon.square400.path");
 		}
 		$vs_brand_description = $t_list_item->get("ca_list_items.description");
 	}
@@ -63,7 +63,7 @@
 
 ?>
 	<div class="title">
-		<h1 class="title collectionLogo"><?php print ($vs_brand_img) ? $vs_brand_img : $t_item->getLabelForDisplay();?></h1>
+		<h1 class="title collectionLogo"><?php print ($vs_brand_img) ? "<img src='".$vs_brand_img."'>" : $t_item->getLabelForDisplay();?></h1>
 	</div>
 	
 	

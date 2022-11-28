@@ -69,8 +69,8 @@ function caGetCollectionLevelSummaryEstee($po_request, $va_collection_ids, $vn_l
 				$vs_icon = $va_collection_type_icons[$qr_collections->get("ca_collections.type_id")];
 			}			
 			# --- related objects?
-			$va_object_ids = $qr_collections->get("ca_objects.object_id", array("excludeTypes" => "item", "returnAsArray" => true, 'checkAccess' => $va_access_values));
-			$vn_rel_object_count = sizeof($va_object_ids);
+			$va_object_ids = $qr_collections->get("ca_objects.object_id", array("excludeTypes" => "item", "returnAsArray" => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_objects.rank'));
+			#$vn_rel_object_count = sizeof($va_object_ids);
 			$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => $vs_sub_collection_sort));
 			$vs_output .= "<div class='unit' style='margin-left:".(40*($vn_level - 1))."px;'>";
 			if($vs_icon){
@@ -84,14 +84,14 @@ function caGetCollectionLevelSummaryEstee($po_request, $va_collection_ids, $vn_l
 			}
 			$vs_output .= "</b>";
 		
-			if($vn_rel_object_count){
-				$vs_output .= " <span class='small'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</span>";
-			}
+			#if($vn_rel_object_count){
+			#	$vs_output .= " <span class='small'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</span>";
+			#}
 			$vs_output .= "<br/>";
 			if(!$vb_dont_show_top_level_description){
 				$vs_desc = "";
 				if($vs_sub_collection_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_sub_collection_desc_template))){
-					$vs_output .= "<div class='unit'>".$vs_desc."</pdiv";
+					$vs_output .= "<div class='unit'>".$vs_desc."</div>";
 				}
 			}
 			# --- objects
