@@ -446,13 +446,9 @@
  		}	
 		$vn_items_per_page_default = caGetOption('itemsPerPage', $pa_options, 10);
 		$vn_items_per_column_default = caGetOption('itemsPerColumn', $pa_options, 1);
-		$vb_match_on_stem = caGetOption('matchOnStem', $pa_options, false);
 		
 		$va_contexts = caGetOption('contexts', $pa_options, array(), array('castTo' => 'array'));
 		unset($pa_options['contexts']);
-		
-		// Set highlight text
-		MetaTagManager::setHighlightText($ps_search_expression);
 		
 		if ($purifier = RequestHTTP::getPurifier()) { $ps_search_expression = $purifier->purify($ps_search_expression); }
 		
@@ -533,11 +529,15 @@
 				foreach($base_criteria as $facet => $value){
 					$o_browse->addCriteria($facet, $value);
 				}
-				$o_browse->addCriteria("_search", [$ps_search_expression.(($o_search_config->get(['matchOnStem', 'match_on_stem']) && caIsSearchStem($ps_search_expression)) ? '*' : '')], [$search_expression_for_display]);
+				$o_browse->addCriteria("_search", [caMatchOnStem($ps_search_expression)], [$search_expression_for_display]);
 				$o_browse->execute();
 				$qr_res = $o_browse->getResults($va_options);
+				
+				if($vn_i == 0) { MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $ps_search_expression); }
 			} else {
-				$qr_res = $o_search->search(trim($ps_search_expression).(($vb_match_on_stem && !preg_match('![\*\"\']$!', $ps_search_expression)) ? '*' : ''), $va_options);
+				$qr_res = $o_search->search(caMatchOnStem($ps_search_expression), $va_options);
+				
+				if($vn_i == 0) { MetaTagManager::setHighlightText($o_search->getSearchedTerms() ?? $ps_search_expression); }
 			}
 			
 			$qr_res->doHighlighting($o_search_config->get('do_highlighting'));
@@ -806,8 +806,6 @@
 	
 	 	$va_query_elements = $va_query_booleans = array();
 	 	
-	 	$vb_match_on_stem = caGetOption(['matchOnStem', 'match_on_stem'], $pa_options, false);
-	 	
 	 	if (is_array($va_values) && sizeof($va_values)) {
 			foreach($va_values as $vs_element => $va_value_list) {
 				foreach($va_value_list as $vn_i => $vs_value) {
@@ -818,7 +816,7 @@
 						$vs_query_element = $vs_value;
 					}
 					
-					$vs_query_element .= ($vb_match_on_stem && caIsSearchStem($vs_query_element)) ? '*' : '';
+					$vs_query_element = caMatchOnStem($vs_query_element, $pa_options);
 					
 					$va_query_booleans[$vs_element][] = (isset($va_booleans["{$vs_element}:boolean"][$vn_i]) && $va_booleans["{$vs_element}:boolean"][$vn_i]) ? $va_booleans["{$vs_element}:boolean"][$vn_i] : 'AND';
 					switch($vs_element){
@@ -2260,5 +2258,24 @@
 			require_once(__CA_LIB_DIR__.'/Plugins/SearchEngine/SqlSearch2.php');
 			return WLPlugSearchEngineSqlSearch2::tokenize($value);
 		}
+	}
+	# ---------------------------------------
+	/**
+	 * Check if matchOnStem mode is enable and suitable for search. If true, a wildcard should be appened onto the search.
+	 *
+	 * @param string $search_expression
+	 * @param array $options Options include:
+	 *		matchOnStem = Add wildcard to search expression is expression is suitable as a stem. [Default is to use search.conf value]
+	 *		match_on_stem = Synonym for matchOnStem.
+	 *
+	 * @return string Search string with wildcard appended if suitable
+	 */
+	function caMatchOnStem(string $search_expression, ?array $options=null) : string {
+		$config = caGetSearchConfig();
+		$search_expression = trim($search_expression);
+		if(strlen($search_expression) && (caGetOption(['matchOnStem', 'match_on_stem'], $options, false) || $config->get(['matchOnStem', 'match_on_stem'])) && caIsSearchStem($search_expression) && !caSearchIsForSets($search_expression)) {
+			return $search_expression.'*';
+		}
+		return $search_expression;
 	}
 	# ---------------------------------------

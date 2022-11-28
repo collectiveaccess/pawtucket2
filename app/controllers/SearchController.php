@@ -119,24 +119,6 @@
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
  			
- 			$vs_search_expression = $this->opo_result_context->getSearchExpression();
- 			if ($ps_label = $this->request->getParameter('label', pString, ['forcePurify' => true])) {
-				$this->opo_result_context->setSearchExpressionForDisplay("{$ps_label}: {$vs_search_expression}"); 
- 			    $vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
- 			} elseif($vs_named_search=caGetNamedSearch($vs_search_expression, $this->request->getParameter('values', pString, ['forcePurify' => true]))) {
- 				$vs_search_expression_for_display = caGetNamedSearchForDisplay($vs_search_expression, $this->request->getParameter('values', pString));
- 				$this->opo_result_context->setSearchExpression($vs_named_search);
- 				$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
- 				$vs_search_expression = $vs_named_search;
- 			} else {
-				$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
-			}
-			
-			
-			// Set highlight text
-			if(!RequestHTTP::isAjax()) { 
-				MetaTagManager::setHighlightText($vs_search_expression); 
-			}
 			
 			// Allow plugins to rewrite search prior to execution
  			$qr_res = null;
@@ -150,8 +132,23 @@
  				return;
  			}
  			
- 			$this->opo_result_context->setAsLastFind(true);
  			
+ 			if(!$this->request->isAjax()) {
+				$vs_search_expression = $this->opo_result_context->getSearchExpression();
+				if ($ps_label = $this->request->getParameter('label', pString, ['forcePurify' => true])) {
+					$this->opo_result_context->setSearchExpressionForDisplay("{$ps_label}: {$vs_search_expression}"); 
+					$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
+				} elseif($vs_named_search=caGetNamedSearch($vs_search_expression, $this->request->getParameter('values', pString, ['forcePurify' => true]))) {
+					$vs_search_expression_for_display = caGetNamedSearchForDisplay($vs_search_expression, $this->request->getParameter('values', pString));
+					$this->opo_result_context->setSearchExpression($vs_named_search);
+					$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
+					$vs_search_expression = $vs_named_search;
+				} else {
+					$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
+				}
+				
+ 				$this->opo_result_context->setAsLastFind(true);
+ 			}
  			
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_browse_info["displayName"]).$this->request->config->get("page_title_delimiter").$this->opo_result_context->getSearchExpressionForDisplay());
  			
@@ -162,7 +159,7 @@
  				$this->opo_result_context->setSearchExpression(
  					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])])
  				); 
- 				if ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context)) {
+ 				if (!$this->request->isAjax() && ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context))) {
  					$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
  				}
  			}
@@ -268,10 +265,10 @@
 			//
 			
 			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
-				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get(['matchOnStem', 'match_on_stem']) && caIsSearchStem($vs_search_expression)) ? '*' : '')), array($vs_search_expression_for_display));
+				$o_browse->addCriteria("_search", [caMatchOnStem($vs_search_expression)], array($vs_search_expression_for_display));
 			}
 			if ($vs_search_refine = $this->request->getParameter('search_refine', pString, ['forcePurify' => true])) {
-				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get(['matchOnStem', 'match_on_stem']) && caIsSearchStem($vs_search_refine)) ? '*' : '')), array($vs_search_refine));
+				$o_browse->addCriteria('_search', [caMatchOnStem($vs_search_refine)], array($vs_search_refine));
 			} elseif ($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) {
 				$o_browse->addCriteria($vs_facet, explode("|", $this->request->getParameter('id', pString, ['forcePurify' => true])));
 			} elseif (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
@@ -357,6 +354,11 @@
  			
  			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
 			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced || (bool)$o_search_config->get('use_strict_phrase_searching_for_advanced_searches'), 'rootRecordsOnly' => $vb_root_records_only))); }
+		
+			// Set highlight text
+			if(!RequestHTTP::isAjax()) { 
+				MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $vs_search_expression); 
+			}
 		
 			//
 			// Facets
