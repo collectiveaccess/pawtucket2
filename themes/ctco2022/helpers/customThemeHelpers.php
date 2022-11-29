@@ -98,10 +98,11 @@
 			return null;
 		}
 		$t_entity = new ca_entities($entity_id);
+		$t_list = new ca_lists();
 		if($vs_entity_idno = $t_entity->get("ca_entities.idno")){
-			$t_list_items = new ca_list_items();
-			$t_list_items->load(array("idno" => $vs_entity_idno));
-			return $t_list_items->get("item_id");
+			$va_source_info = $t_list->getItemFromList("object_sources", $vs_entity_idno);
+			#print_r($va_source_info);
+			return $va_source_info["item_id"];
 		}
 		
 		

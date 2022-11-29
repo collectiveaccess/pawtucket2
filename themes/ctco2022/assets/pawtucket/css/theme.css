@@ -66,6 +66,11 @@ a:hover{
 	width: auto;
 }
 
+.navbar-header .orgLinkHeader a img{
+	height: 70px;
+	width: auto;
+}
+
 .navbar-collapse {
 	margin-top: 10px;
 }
@@ -282,6 +287,62 @@ body{
 .bResultItem .bResultItemText, .bResultListItemCol .bResultListItemText{
   font-size: 12px;
 }
+@media(max-width:768px){
+	.results .bSearchWithinContainer{
+		display:none;
+	}
+}
+.results .bSearchWithinContainer{
+	clear:both;
+	padding:15px 0px 15px 0px;
+	text-align:center;
+}
+.results .btn-search-refine, .results .btn-search-refine:hover{	
+	font-size: 14px;
+	cursor: pointer;
+	background-color: #fff;
+	color:#000;
+	font-size: 14px;
+	line-height:1em;
+	padding: 9px;
+	
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	outline: 0;
+	border:0px;
+	border-radius: 0px;
+}
+.bSearchWithin, .bSearchWithin:focus {
+    width: 80%;
+    box-shadow: none;
+    border: 0px;
+    border: 0px;
+    border-radius: 0px;
+    height: 35px;
+    font-size: 14px;
+    line-height: 26px;
+    background-color: #FFF;
+	font-size: 14px;
+	display: inline-block;
+	display:inline-block;
+}
+.browseRemoveFacet, .browseRemoveFacet .btn{
+	display:block;
+	width:100%;
+	font-size:11px;
+	margin:0px 0px 5px 0px;
+}
+.browseRemoveFacet .btn{
+	white-space: normal;
+}
+.browseRemoveFacet:hover, .browseRemoveFacet .btn:hover{
+	text-decoration:none;
+}
+a.browseRemoveFacet .glyphicon{
+	color:#fff !important;
+}
 /* front */
 html.frontContainer {
     height: 100%;
@@ -300,7 +361,7 @@ body.frontContainer #footer{
     background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/lilac_house.jpg");
 
     /* Full height */
-    height: 100vh;
+    height: 80vh;
 
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
@@ -318,11 +379,23 @@ body.frontContainer #footer{
 }
 .parallax.hero2 {
     /* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/lilac_house.jpg");
+		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/X73.265_representationl.jpg");
 }
 .parallax.hero3 {
     /* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/lilac_house.jpg");
+		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/horses.jpg");
+}
+.parallax.hero4 {
+    /* background-image: url("../graphics/lilac_house.jpg"); */
+		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/hero4.jpg");
+}
+.parallax.hero5 {
+    /* background-image: url("../graphics/lilac_house.jpg"); */
+		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/hero5.jpg");
+}
+.parallax.hero6 {
+    /* background-image: url("../graphics/lilac_house.jpg"); */
+		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/hero6.jpg");
 }
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
@@ -417,6 +490,11 @@ body.frontContainer #footer{
 #heroSearchButton{
 	color:#000;
 	font-size: 20px;
+}
+
+.heroSearch p{
+	margin-top: 5px;
+	font-size: 14px;
 }
 
 @media(max-width: 1355px) {
@@ -677,6 +755,15 @@ div#detailTools{
 .detail label{
 	font-size: 16px;
 }
+@media(min-width:768px){
+	.detailBrowseAll{
+		text-align:right;
+	}
+}
+.detailBrowseAll a, .detailBrowseAll a:hover{
+	color:#FFF;
+	text-decoration:none;
+}
 
 /* Contrubutors page */
 
@@ -718,9 +805,14 @@ div#detailTools{
 .contributorTile .title {
 	padding-bottom:10px;
 	font-family:lato;
-	font-size:18px;
+	font-size:20px;
+	font-weight: bolder;
 	
 }
+.contributorTile .description {
+	font-size:18px;
+}
+
 .contributorTile .title a {
 	text-decoration:none;
 	font-size:14px;
@@ -731,4 +823,46 @@ div#detailTools{
 .contributorTile a.btn-default{
 	background-color: #2A8457;
 	color: #fff;
+}
+/* transcribe */
+.collectionImageCrop img{
+	width:100%;
+	height: 200px;
+	object-fit: cover;
+	object-position: center center;
+	margin-bottom:10px;
+}
+.collectionImageCrop{
+	font-size:16px;
+	font-weight:bold;
+	line-height:1.2em;
+}
+.transcribe .collectionTile .btn-sm{
+	margin-top:10px;
+	padding:5px;
+	line-height: 1em;
+}
+.transcribeIntro {
+	font-size: 17px;
+	font-weight: normal;
+	color: #000;
+	margin-bottom:30px;
+}
+.transcribe H2{
+	margin-top:30px;
+}
+.bSearchWithin .form-control{
+	width:80%;
+	float:left;
+}
+.bSearchWithin .btn-default{
+	float:left;
+	padding: 8px;
+	font-size: 18px;
+	margin-left: -3px;
+}
+.transcribe .resultCount{
+	color: #000;
+	margin-bottom:20px;
+	font-size: 17px;
 }
