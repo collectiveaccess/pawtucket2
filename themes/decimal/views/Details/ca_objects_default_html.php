@@ -90,7 +90,7 @@
 					#print_r($va_publications);
 					print "<div class='unit'><h6>Publication Title</h6>";
 					foreach($va_publications as $vs_publication){
-						print caNavLink($this->request, $vs_publication, '', '', 'Browse', 'objects', array('facet' => 'analytics_pub_title_facet', 'id' => ca_attribute_values::getValueIDFor(ca_metadata_elements::getElementID('publication_title_name'), $vs_publication)));
+						print caNavLink($this->request, $vs_publication, '', '', 'Browse', 'objects', array('facet' => 'analytics_pub_title', 'id' => ca_attribute_values::getValueIDFor(ca_metadata_elements::getElementID('publication_title_name'), $vs_publication)));
 					}
 					print "</div>";
 				}
@@ -104,7 +104,7 @@
 
 					print "<div class='unit'><h6>Creators/Contributors</h6>";
 					foreach ($va_creators as $va_pr => $va_creator) {
-						print caNavLink($this->request, ucwords($va_creator['label']), '', '', 'Browse', 'objects/facet/entity_facet/id/'.$va_creator['entity_id'])." (".$va_creator['relationship_typename'].")";
+						print caNavLink($this->request, ucwords($va_creator['label']), '', '', 'Browse', 'objects/facet/entity/id/'.$va_creator['entity_id'])." (".$va_creator['relationship_typename'].")";
 						if (end($va_creators) != $va_creator) { print "<br/>";}
 					}					
 					print "</div>";
@@ -112,49 +112,59 @@
 				if ($va_media_types = $t_object->get('ca_objects.media_type', array('returnAsArray' => true))) {
 					print "<div class='unit'><h6>Media Type</h6>";
 					foreach ($va_media_types as $va_p => $va_media_type) {
-						print caNavLink($this->request, ucwords(caGetListItemByIDForDisplay($va_media_type)), '', '', 'Browse', 'objects/facet/media_type_facet/id/'.$va_media_type);
+						print caNavLink($this->request, ucwords(caGetListItemByIDForDisplay($va_media_type)), '', '', 'Browse', 'objects/facet/media_type/id/'.$va_media_type);
 					}
 					print "</div>";
 				}
 				if ($va_pers = $t_object->get('ca_objects.persuasive_intention', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><h6>Persuasive Intent</h6>";
 					foreach ($va_pers as $va_p => $va_per) {
-						print caNavLink($this->request, ucwords($va_per), '', '', 'Search', 'objects', array('search' => "ca_objects.persuasive_intention:'".$va_per."'"));
+						print caNavLink($this->request, ucwords($va_per), '', '', 'Search', 'objects', array('search' => "ca_objects.persuasive_intention:\"".$va_per."\""), [], ['dontURLEncodeParameters' => true]);
 						if (end($va_pers) != $va_per) { print ", ";}
 					}
 					print "</div>";
 				}
+				if ($va_classes = $t_object->get('ca_objects.classification', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+					$ids = $t_object->get('ca_objects.classification', array('returnAsArray' => true, 'convertCodesToDisplayText' => false));
+					print "<div class='unit'><h6>Discursive Type</h6>";
+					foreach ($va_classes as $va_p => $va_class) {
+						print caNavLink($this->request, ucwords($va_class), '', '', 'Search', 'objects', array('search' => "ca_objects.classification:\"".$ids[$va_p]."\""), [], ['dontURLEncodeParameters' => true]);
+						if (end($va_classes) != $va_class) { print ", ";}
+					}
+					print "</div>";
+				}
+				
 				if ($va_description = $t_object->get('ca_objects.description', array('delimiter' => ', '))) {
 					print "<div class='unit'><h6>Description</h6>".$va_description."</div>";
 				}
 				if ($va_uses = $t_object->get('ca_objects.use', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><h6>HCI Platform</h6>";
 					foreach ($va_uses as $va_p => $va_use) {
-						print caNavLink($this->request, ucwords($va_use), '', '', 'Search', 'objects', array('search' => "ca_objects.use:'".$va_use."'"));
+						print caNavLink($this->request, ucwords($va_use), '', '', 'Search', 'objects', array('search' => "ca_objects.use:\"".$va_use."\""), [], ['dontURLEncodeParameters' => true]);
 					}					
 					print "</div>";
-				}				
-				if ($va_classes = $t_object->get('ca_objects.classification', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><h6>Discursive Type</h6>";
-					foreach ($va_classes as $va_p => $va_class) {
-						print caNavLink($this->request, ucwords($va_class), '', '', 'Search', 'objects', array('search' => "ca_objects.classification:'".$va_class."'"));
-						if (end($va_classes) != $va_class) { print ", ";}
-					}
+				}	
+				if ($rels_to_body = $t_object->get('ca_objects.relation_to_body', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+					print "<div class='unit'><h6>Relation to Body</h6>";
+					foreach ($rels_to_body as $va_p => $rel_to_body) {
+						print caNavLink($this->request, ucwords($rel_to_body), '', '', 'Search', 'objects', array('search' => "ca_objects.relation_to_body:\"".$rel_to_body."\""), [], ['dontURLEncodeParameters' => true]);
+					}					
 					print "</div>";
-				}
-
+				}	
 				if ($va_body = $t_object->get('ca_objects.locationOnBody', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><h6>Location on Body</h6>";
+					print "<div class='unit'><h6>Related Body Part</h6>";
 					foreach ($va_body as $va_p => $va_bod) {
-						print caNavLink($this->request, ucwords($va_bod), '', '', 'Search', 'objects', array('search' => "ca_objects.locationOnBody:'".$va_bod."'"));
+						print caNavLink($this->request, ucwords($va_bod), '', '', 'Search', 'objects', array('search' => "ca_objects.locationOnBody:\"".$va_bod."\""), [], ['dontURLEncodeParameters' => true]);
 						if (end($va_body) != $va_bod) { print ", ";}
 					}					
 					print "</div>";
 				}
+						
+				
 				if ($va_augments = $t_object->get('ca_objects.augments', array('returnAsArray' => true))) {
 					print "<div class='unit'><h6>Augments</h6>";
 					foreach ($va_augments as $va_p => $va_augment) {
-						print caNavLink($this->request, ucwords($va_augment), '', '', 'Search', 'objects', array('search' => "ca_objects.augments:'".$va_augment."'"));
+						print caNavLink($this->request, ucwords($va_augment), '', '', 'Search', 'objects', array('search' => "ca_objects.augments:\"".$va_augment."\""), [], ['dontURLEncodeParameters' => true]);
 						if (end($va_augments) != $va_augment) { print ", ";}
 					}
 					print "</div>";
@@ -162,7 +172,7 @@
 				if ($va_techs = $t_object->get('ca_objects.technology', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><h6>Technology Keywords</h6>";
 					foreach ($va_techs as $va_p => $va_tech) {
-						print caNavLink($this->request, ucwords($va_tech), '', '', 'Search', 'objects', array('search' => "ca_objects.technology:'".$va_tech."'"));
+						print caNavLink($this->request, ucwords($va_tech), '', '', 'Search', 'objects', array('search' => "ca_objects.technology:\"".$va_tech."\""), [], ['dontURLEncodeParameters' => true]);
 						if (end($va_techs) != $va_tech) { print ", ";}
 					}					
 					print "</div>";
@@ -170,7 +180,7 @@
 				if ($va_keywords = $t_object->get('ca_objects.keywords', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><h6>Keywords</h6>";
 					foreach ($va_keywords as $va_p => $va_keyword) {
-						print caNavLink($this->request, ucwords($va_keyword), '', '', 'Search', 'objects', array('search' => "ca_objects.keywords:'".$va_keyword."'"));
+						print caNavLink($this->request, ucwords($va_keyword), '', '', 'Search', 'objects', array('search' => "ca_objects.keywords:\"".$va_keyword."\""), [], ['dontURLEncodeParameters' => true]);
 						if (end($va_keywords) != $va_keyword) { print ", ";}
 					}					
 					print "</div>";
@@ -178,7 +188,7 @@
 				if ($va_marketing_keywords = $t_object->get('ca_objects.marketing', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><h6>Marketing Keywords</h6>";
 					foreach ($va_marketing_keywords as $va_p => $va_marketing_keyword) {
-						print caNavLink($this->request, ucwords($va_marketing_keyword), '', '', 'Search', 'objects', array('search' => "ca_objects.marketing:'".$va_marketing_keyword."'"));
+						print caNavLink($this->request, ucwords($va_marketing_keyword), '', '', 'Search', 'objects', array('search' => "ca_objects.marketing:\"".$va_marketing_keyword."\"", [], ['dontURLEncodeParameters' => true]));
 						if (end($va_marketing_keywords) != $va_marketing_keyword) { print ", ";}
 					}					
 					print "</div>";
@@ -203,7 +213,7 @@
 
 								print "<div class='unit'><h6>Related Film</h6>";
 								foreach ($va_productions as $va_pr => $va_production) {
-									print caNavLink($this->request, ucwords($va_production['label']), '', '', 'Browse', 'objects/facet/occurrence_facet/id/'.$va_production['occurrence_id']);
+									print caNavLink($this->request, ucwords($va_production['label']), '', '', 'Browse', 'objects/facet/occurrence/id/'.$va_production['occurrence_id']);
 									if (end($va_productions) != $va_production) { print ", ";}
 								}					
 								print "</div>";
@@ -215,7 +225,7 @@
 
 								print "<div class='unit'><h6>Related Items</h6>";
 								foreach ($va_people as $va_pr => $va_person) {
-									print caNavLink($this->request, ucwords($va_person['label']), '', '', 'Browse', 'objects/facet/entity_facet/id/'.$va_person['entity_id']);
+									print caNavLink($this->request, ucwords($va_person['label']), '', '', 'Browse', 'objects/facet/entity/id/'.$va_person['entity_id']);
 									if (end($va_people) != $va_person) { print "<br/>";}
 								}					
 								print "</div>";
@@ -224,7 +234,7 @@
 
 								print "<div class='unit'><h6>Related Collections</h6>";
 								foreach ($va_collections as $va_co => $va_collection) {
-									print caNavLink($this->request, ucwords($va_collection['label']), '', '', 'Browse', 'objects/facet/collection_facet/id/'.$va_collection['collection_id']);
+									print caNavLink($this->request, ucwords($va_collection['label']), '', '', 'Browse', 'objects/facet/collection/id/'.$va_collection['collection_id']);
 									if (end($va_collections) != $va_collection) { print "<br/>";}
 								}					
 								print "</div>";

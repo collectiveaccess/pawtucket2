@@ -34,20 +34,20 @@
 <!-- <link rel="stylesheet" href="home/data/oldfilm/collection/themes/oldfilm/assets/pawtucket/css/theme.css" media='all' /> -->
 
 	<div class="row">
-		<div class="col-sm-10" style='margin-bottom: 40px;'>
+		<div class="col-sm-offset-2 col-sm-8 text-center" style='margin-bottom: 40px;'>
 
 			<p>
 				We care for approximately 800 moving image collections, which would take more than a year to watch. Of these, 300+ are described online at the collection level.
 			</p>
 
-			<div class="row" style='margin-top: 20px;'>
-				<a href="/collection/index.php/Browse/collections" class="elementor-button-link elementor-button elementor-size-sm" role="button">
+			<div style='margin-top: 20px;'>
+				<a href="/Browse/collections" class="elementor-button-link elementor-button elementor-size-sm" role="button">
 					<span class="elementor-button-content-wrapper">
 						<span class="elementor-button-text">View Collections</span>
 					</span>
 				</a>
 
-				<a href="/collection/index.php/Browse/occurrences" class="elementor-button-link elementor-button elementor-size-sm" role="button">
+				<a href="/Browse/works" class="elementor-button-link elementor-button elementor-size-sm" role="button">
 					<span class="elementor-button-content-wrapper">
 						<span class="elementor-button-text">View Works</span>
 					</span>

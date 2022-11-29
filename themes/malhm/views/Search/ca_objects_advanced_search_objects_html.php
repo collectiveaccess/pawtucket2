@@ -18,8 +18,8 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by Category.">Category</span>
-			{{{ca_objects.chenhall%width=220px&render=select&inUse=1}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by Type.">Type</span>
+			{{{ca_objects.type_id}}}
 		</div>			
 	</div>
 	<div class='row'>
