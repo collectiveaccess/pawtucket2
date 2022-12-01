@@ -96,6 +96,8 @@
 					<unit relativeTo="ca_occurrences" restrictToTypes="event" delimiter="<br/>" unique="1"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
 				
 				{{{<ifdef code="ca_collections.bibliography"><div class="unit"><label>Bibliography</label><span class="trimText">^ca_collections.bibliography</span></div></ifdef>}}}
+				{{{<ifcount code="ca_collections.related" min="1"><div class="unit"><label>Related Collections</label>
+					<unit relativeTo="ca_collections.related" delimiter="<br/>" unique="1"><l>^ca_collections.preferred_labels</l></unit></div></ifcount>}}}
 					
 				</div><!-- end col -->
 			</div><!-- end row -->
