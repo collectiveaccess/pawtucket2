@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2021 Whirl-i-Gig
+ * Copyright 2006-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -76,6 +76,7 @@ define("TEP_TOKEN_PROBABLY", 28);
 define("TEP_TOKEN_EARLY", 29);
 define("TEP_TOKEN_MID", 30);
 define("TEP_TOKEN_LATE", 31);
+define("TEP_TOKEN_ACADEMIC_DATE", 32);
 
 # --- Meridian types
 define("TEP_MERIDIAN_AM", 0);
@@ -280,6 +281,22 @@ class TimeExpressionParser {
 							}
 							break;
 						# ----------------------
+						case TEP_TOKEN_ACADEMIC_DATE:
+							$this->getToken();
+							$va_dates['start'] = array(
+								'month' => 7, 'day' => 1, 'year' => $va_token['start'],
+								'hours' => null, 'minutes' => null, 'seconds' => null,
+								'uncertainty' => false, 'uncertainty_units' => '', 'is_circa' => false, 'is_probably' => false, 'dont_window' => true
+							);
+							$va_dates['end'] = array(
+								'month' => 6, 'day' => 30, 'year' => $va_token['end'],
+								'hours' => null, 'minutes' => null, 'seconds' => null,
+								'uncertainty' => false, 'uncertainty_units' => '', 'is_circa' => false, 'is_probably' => false, 'dont_window' => true
+							);		
+							$vn_state = TEP_STATE_DATE_RANGE_CONJUNCTION;
+							$vb_can_accept = true;
+							break(2);
+						# ----------------------
 						case TEP_TOKEN_INTEGER:
 							// is this a quarter century expression?
 							if (((int)$va_token['value'] > 0) && ((int)$va_token['value'] <= 21)) {
@@ -327,7 +344,7 @@ class TimeExpressionParser {
 								$this->skipToken();
 								$this->skipToken();
 							
-								$vn_state = TEP_STATE_ACCEPT;
+								$vn_state = TEP_STATE_DATE_RANGE_CONJUNCTION;
 								$vb_can_accept = true;
 								break(2);
 							} elseif ($va_peek['type'] == TEP_TOKEN_BP) {
@@ -344,7 +361,7 @@ class TimeExpressionParser {
 								$this->skipToken();
 								$this->skipToken();
 						
-								$vn_state = TEP_STATE_ACCEPT;
+								$vn_state = TEP_STATE_DATE_RANGE_CONJUNCTION;
 								$vb_can_accept = true;
 								break(2);
 							}
@@ -622,6 +639,10 @@ class TimeExpressionParser {
 						'hours' => null, 'minutes' => null, 'seconds' => null,
 						'uncertainty' => false, 'uncertainty_units' => '', 'is_circa' => false, 'is_probably' => false
 					);
+					if(!isset($va_date['hours'])) { $va_date['hours'] = 23; }
+					if(!isset($va_date['minutes'])) { $va_date['minutes'] = 59; }
+					if(!isset($va_date['seconds'])) { $va_date['seconds'] = 59; }
+					
 					$va_dates['end'] = $va_date;
 					$this->skipToken();
 					$vn_state = TEP_STATE_ACCEPT;
@@ -636,9 +657,9 @@ class TimeExpressionParser {
 				if ($va_date = $this->_parseDateExpression()) {
 					if(!$va_date['month']) { $va_date['month'] = 1; }
 					if (!$va_date['day']) { $va_date['day'] = 1; }
-					$va_date['hours'] = 0;
-					$va_date['minutes'] = 0;
-					$va_date['seconds'] = 0;
+					if(!isset($va_date['hours'])) { $va_date['hours'] = 0; }
+					if(!isset($va_date['minutes'])) { $va_date['minutes'] = 0; }
+					if(!isset($va_date['seconds'])) { $va_date['seconds'] = 0; }
 					
 					$va_dates['start'] = $va_date;
 					$va_dates['end'] = array(
@@ -669,7 +690,47 @@ class TimeExpressionParser {
 				break;
 			# -------------------------------------------------------
 			case TEP_STATE_DATE_RANGE_END_DATE:
-				//$vb_circa_is_set = (bool)$va_dates['start']['is_circa'];	// carry over circa-ness from start
+				//
+				// Look for MYA dates
+				//
+				$va_peek = $this->peekToken(2);
+				if ($va_peek['type'] == TEP_TOKEN_MYA) {
+					$va_dates['end'] = array(
+						'month' => 12, 'day' => 31, 'year' => intval($va_token['value']) * -1000000,
+						'hours' => null, 'minutes' => null, 'seconds' => null,
+						'uncertainty' => false, 'uncertainty_units' => '', 'is_circa' => false, 'is_probably' => false, 'dont_window' => true
+					);
+					$this->skipToken();
+					$this->skipToken();
+				
+					$vn_state = TEP_STATE_ACCEPT;
+					$vb_can_accept = true;
+					break;
+				} elseif ($va_peek['type'] == TEP_TOKEN_BP) {
+					$va_dates['end'] = array(
+						'month' => 12, 'day' => 31, 'year' => 1950 - intval($va_token['value']),
+						'hours' => null, 'minutes' => null, 'seconds' => null,
+						'uncertainty' => false, 'uncertainty_units' => '', 'is_circa' => false, 'is_probably' => false, 'dont_window' => true, 'is_bp' => true
+					);
+					$this->skipToken();
+					$this->skipToken();
+			
+					$vn_state = TEP_STATE_ACCEPT;
+					$vb_can_accept = true;
+					break;
+				} elseif($va_token['type'] == TEP_TOKEN_ACADEMIC_DATE) {
+					//$this->getToken();
+					$va_dates['end'] = array(
+						'month' => 6, 'day' => 30, 'year' => $va_token['end'],
+						'hours' => null, 'minutes' => null, 'seconds' => null,
+						'uncertainty' => false, 'uncertainty_units' => '', 'is_circa' => false, 'is_probably' => false, 'dont_window' => true
+					);		
+					$this->skipToken();
+			
+					$vn_state = TEP_STATE_ACCEPT;
+					$vb_can_accept = true;
+					break;
+				}
 				
 				#
 				# is this a decade expression?
@@ -727,7 +788,6 @@ class TimeExpressionParser {
 			}
 			# -------------------------------------------------------
 		}
-		
 		
 		if ($this->getParseError()) {
 			return false;
@@ -852,7 +912,8 @@ class TimeExpressionParser {
 		$ps_expression = preg_replace("/([\d]{1,2})-([A-Za-z]{3,15})-([\d]{2,4})/", "$1#$2#$3", $ps_expression);
 		
 		# convert dd-mm-yyyy dates to dd/mm/yyyy to prevent our range conjunction code below doesn't mangle it
-		$ps_expression = preg_replace("/([\d]{2})-([\d]{2})-([\d]{4})/", "$1/$2/$3", $ps_expression);
+		$ps_expression = preg_replace("/([\d]{1,2})-([\d]{1,2})-([\d]{4})/", "$1/$2/$3", $ps_expression);
+		$ps_expression = preg_replace("/([\d]{2})-([\d]{2})-([\d]{2})/", "$1/$2/$3", $ps_expression);
 		
 		if (preg_match("/([\d]{4})-([\d]{2})(\/|$)/", $ps_expression, $va_matches)) {
 			if (intval($va_matches[2]) > 12) {
@@ -871,6 +932,10 @@ class TimeExpressionParser {
 			$ps_expression = preg_replace('!([\d]{2})[\-]{2}!', '\1__', $ps_expression);
 			$ps_expression = preg_replace('!([\d]{3})[\-]{1}$!', '\1_', $ps_expression);
 			$ps_expression = preg_replace('!([\d]{3})[\-]{1}[\D]+!', '\1_', $ps_expression);
+		}
+		
+		if (preg_match("!([\d]+)[ ]*[\-]{1}[ ]*([\d]+)!", $ps_expression, $m)) {	
+			$ps_expression = preg_replace("!([\d]+)[ ]*[\-]{1}[ ]*([\d]+)!", "$1 - $2", $ps_expression);
 		}
 		
 		if (!preg_match("!^[\-]{1}[\d]+$!", $ps_expression)) {			
@@ -1771,6 +1836,15 @@ class TimeExpressionParser {
 		}
 
 		
+		if($this->opo_datetime_settings->get('assumeAcademicYears') && preg_match('!^([\d]{4})/([\d]{2})$!', $vs_token, $m)) {
+			$s = (int)$m[1];
+			$e = (int)$m[2];
+			$sx = $s % 100;
+			
+			if ((($e > $sx) && (($e - $sx) === 1)) || (($sx === 99) && ($e === 0))) {	
+				return ['value' => $vs_token, 'start' => $s, 'end' => $s+1, 'type' => TEP_TOKEN_ACADEMIC_DATE];
+			}
+		}
 		
 		// text month
 		$va_month_table = $this->opo_language_settings->getAssoc("monthTable");
@@ -1981,7 +2055,7 @@ class TimeExpressionParser {
 					if ($va_next_tok['type'] == TEP_TOKEN_MERIDIAN) { break; }		// is time
 					
 					if (is_numeric($va_tmp[1]) && ($va_tmp[1] > 0) && ($va_tmp[1] == intval($va_tmp[1]))) {
-						if (($va_tmp[1] >= 1) && ($va_tmp[1] <= $this->daysInMonth($vn_month, 2004))) {		// since year is unspecified we use a leap year
+						if (!$this->opo_datetime_settings->get('assumeMonthYearDelimitedDates') && ($va_tmp[1] >= 1) && ($va_tmp[1] <= $this->daysInMonth($vn_month, 2004))) {		// since year is unspecified we use a leap year
 							// got day
 							$vn_day = $va_tmp[1];
 						} else {
@@ -2012,7 +2086,7 @@ class TimeExpressionParser {
 				    $vb_month_comes_first = $this->opo_language_settings->get('monthComesFirstInDelimitedDate');
 				}
 				
-				if ($vb_month_comes_first) {
+				if ((bool)$vb_month_comes_first) {
 					$vn_month = $va_tmp[0];
 					$vn_day = $va_tmp[1];
 				} else {
@@ -2039,7 +2113,11 @@ class TimeExpressionParser {
 							return(array('value' => $vs_token, 'month' => $vn_month, 'day' => $vn_day, 'year' => $vn_year, 'type' => TEP_TOKEN_DATE));
 						}
 					}
-				} else {
+				} elseif(
+					($vn_month > 0) && ($vn_month < $this->daysInMonth($vn_day, $vn_year ? $vn_year : 2004)) 
+					&& 
+					(($vn_day > 0) && ($vn_day <= 12))
+				) {
 					// try to swap day and month and see if that works...
 					$m = $vn_month;
 					$vn_month = $vn_day;
@@ -2136,10 +2214,6 @@ class TimeExpressionParser {
 				$pa_dates['end'] = $pa_dates['start']; 
 			}
 		}
-		
-		//if ($pa_dates['start']['is_circa'] || $pa_dates['end']['is_circa']) {
-			//$pa_dates['start']['is_circa'] = $pa_dates['end']['is_circa'] = true;
-		//}
 		
 		if ($pa_dates['start']['is_undated']) {
 			$this->opn_start_unixtime = null;
@@ -2609,6 +2683,17 @@ class TimeExpressionParser {
 			return "????";
 		}
 	
+	
+		// academic dates
+		if($this->opo_datetime_settings->get('assumeAcademicYears')) {
+			
+			if(
+				(substr($va_dates['start'], 5, 10) === '0701000000') &&
+				(substr($va_dates['end'], 5, 10) === '0630235959')
+			) {
+				return (int)$va_dates['start'].'/'.substr((int)$va_dates['end'], 2);
+			}
+		}
 		
 		// only return times?
 		if (isset($pa_options['timeOnly']) && $pa_options['timeOnly']) {
@@ -3049,6 +3134,10 @@ class TimeExpressionParser {
 					$va_end_pieces['month'] == 12 && $va_end_pieces['day'] == 31
 				) {
 					// years only
+					if($va_start_pieces['is_bp'] ?? false) {
+						$va_bp_indicators = $this->opo_language_settings->getList("dateBP");
+						return (1950 - $va_start_pieces['year']).' '.$va_bp_indicators[0].' '.$vs_range_conjunction.' '.(1950 - $va_end_pieces['year']).' '.$va_bp_indicators[0];
+					}
 
 					// catch decade dates
 					$vs_start_year = $this->_dateToText(array('year' => $va_start_pieces['year'], 'era' => $va_start_pieces['era'], 'uncertainty' => $va_start_pieces['uncertainty'], 'uncertainty_units' => $va_start_pieces['uncertainty_units']), $pa_options);
