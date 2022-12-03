@@ -42,6 +42,20 @@
  	$t_item = $this->getVar('t_subject');
 	$t_display = $this->getVar('t_display');
 	$va_placements = $this->getVar("placements");
+	
+	if($va_brand = $t_item->get('ca_collections.brand', array("returnAsArray" => true))){
+		$vn_brand = $va_brand[0];
+	}
+	$vs_brand_img = "";
+	if($vn_brand){
+		$t_list_item = new ca_list_items();
+		$t_list_item->load($vn_brand);
+		$vs_brand_img = $t_list_item->get("ca_list_items.icon.large.path");
+		if($vs_brand_img == "No media available"){
+			$vs_brand_img = $t_list_item->get("ca_list_items.icon.square400.path");
+		}
+		$vs_brand_description = $t_list_item->get("ca_list_items.description");
+	}
 
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
@@ -49,16 +63,23 @@
 
 ?>
 	<div class="title">
-		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
+		<h1 class="title collectionLogo"><?php print ($vs_brand_img) ? "<img src='".$vs_brand_img."'>" : $t_item->getLabelForDisplay();?></h1>
 	</div>
 	
 	
 <?php
 	if ($t_item->get("ca_collections.children.collection_id") || $t_item->get("ca_objects.object_id")){
-		print "<hr/><br/><div class='unit'><H6>Collection Contents</H6></div>";
+		print "<hr/><br/><div class='unit'>Exported on: ".date("d/m/Y")."</div><div class='unit'><H4>Table of Contents</H4></div>";
+		print "<div class='toc'>".caGetCollectionLevelSummaryTOCEstee($this->request, array($t_item->get('ca_collections.collection_id')), 1)."</div>";
+		print "<br/><div class='unit'><H4>Collection Contents</H4></div>";
 		if ($t_item->get('ca_collections.collection_id')) {
-			print caGetCollectionLevelSummary($this->request, array($t_item->get('ca_collections.collection_id')), 1);
+			print caGetCollectionLevelSummaryEstee($this->request, array($t_item->get('ca_collections.collection_id')), 1);
 		}
 	}
 	print $this->render("pdfEnd.php");
+
+
+
+
+
 ?>

@@ -86,7 +86,7 @@
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'medium', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
@@ -116,7 +116,7 @@
 					# --- inclusive dates?
 					$vs_inclusive_date = "";
 					if(strToLower($qr_res->get("ca_collections.type_id", array("convertCodesToDisplayText" => true))) == "item"){
-						$vs_inclusive_date = $qr_res->getWithTemplate("<ifdef code='ca_collections.display_date'>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'>^ca_collections.inclusive_dates%delimiter=,_</ifnotdef>");
+						$vs_inclusive_date = $qr_res->getWithTemplate("<ifdef code='ca_collections.display_date'>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef>");
 					}
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels").(($vs_inclusive_date) ? ", ".$vs_inclusive_date : ""), '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
@@ -154,7 +154,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultItemText'>
-						<div class='objectTitle'>{$vs_label_detail_link}</div>".$qr_res->getWithTemplate("<ifcount min='1' code='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject'><b><unit relativeTo='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject' delimiter='<br/>'>^ca_entities.preferred_labels.displayname</unit></b><br/></ifcount><ifdef code='ca_collections.description'><div>^ca_collections.description</div></ifdef>").$qr_res->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections'><unit relativeTo='ca_collections.hierarchy' delimiter=' > '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'>, ^ca_collections.inclusive_dates%delimiter=,_</ifnotdef></unit></unit></ifcount>")."
+						<div class='objectTitle'>{$vs_label_detail_link}</div>".$qr_res->getWithTemplate("<ifcount min='1' code='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject'><b><unit relativeTo='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject' delimiter='<br/>'>^ca_entities.preferred_labels.displayname</unit></b><br/></ifcount><ifdef code='ca_collections.description'><div>^ca_collections.description</div></ifdef>").$qr_res->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections'><unit relativeTo='ca_collections.hierarchy' delimiter=' > '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef></unit></unit></ifcount>")."
 					</div><!-- end bResultItemText -->
 				</div><!-- end bResultItemContent -->
 			</div><!-- end bResultItem -->

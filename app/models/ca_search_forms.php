@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2021 Whirl-i-Gig
+ * Copyright 2009-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -901,6 +901,7 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 							$vs_label = $label ?? $t_instance->getDisplayLabel($vs_bundle);
 							
 							$vs_display = "<div id='searchFormEditor_{$vs_table}_{$vs_field}'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> ".$policy_label.$vs_label."</div>";
+
 							$va_available_bundles[strip_tags($vs_display)][$vs_bundle] = array(
 								'bundle' => $vs_bundle,
 								'label' => caUcFirstUTF8Safe($vs_label),
@@ -927,6 +928,7 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 							$vs_label = $label ?? $t_instance->getDisplayLabel($vs_bundle);
 
 							$vs_display = "<div id='searchFormEditor_{$vs_table}_{$vs_field}'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> ".$policy_label.$vs_label."</div>";
+
 							$va_available_bundles[strip_tags($vs_display)][$vs_bundle] = array(
 								'bundle' => $vs_bundle,
 								'label' => caUcFirstUTF8Safe($vs_label),
@@ -940,6 +942,7 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 								"#searchFormEditor_{$vs_table}_{$vs_field}",
 								"<h2>{$vs_label}</h2>{$vs_description}"
 							);
+
 						} elseif((sizeof($bundle_bits) > 2) && ($bundle_bits[1] === 'related')) {
 							// self-related?
 							if (caGetBundleAccessLevel($vs_primary_table, $bundle_bits[2]) == __CA_BUNDLE_ACCESS_NONE__) { continue;}
@@ -1036,7 +1039,6 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 							
 							$vs_base_bundle = ($bundle_bits[1] === 'related') ? "{$subject_table}.preferred_labels.{$bundle_bits[2]}"  : "{$vs_table}.{$vs_field}";
 							$vs_bundle = $policy ? "{$vs_table}.current_value.{$p}.{$vs_field}" : (($bundle_bits[1] === 'related') ? "{$subject_table}.preferred_labels.{$bundle_bits[2]}" : "{$vs_table}.{$vs_field}");
-
 
 							$vs_label = $label ?? $t_instance->getDisplayLabel($vs_base_bundle, ['useDisambiguationLabels' => true, 'includeSourceSuffix' => false]);
 							if ($policy) { 
@@ -1351,8 +1353,6 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 	public function getLuceneQueryStringForHTMLFormInput($pa_form_content, array $options=null) {
 		$va_values = $this->extractFormValuesFromArray($pa_form_content);
 
-		$match_on_stem = caGetSearchConfig()->get('match_on_stem');
-
 		$va_query_elements = [];
 		if (is_array($va_values) && sizeof($va_values)) {
 			foreach($va_values as $vs_element => $va_values) {
@@ -1365,7 +1365,7 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 						$vs_query_element = $vs_value;
 					}
 					
-					$vs_query_element .= ($match_on_stem && caIsSearchStem($vs_query_element)) ? '*' : '';
+					$vs_query_element = caMatchOnStem($vs_query_element);
 					
 					switch($vs_element){
 						case '_fulltext':		// don't qualify special "fulltext" element

@@ -206,7 +206,7 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 ?>
 <?php					
 					if ($vn_pdf_enabled) {
-						print "<div class='detailTools'><div class='detailTool'><i class='material-icons inline'>save_alt</i>".caDetailLink($this->request, "Download Summary", "", "ca_collections", $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div></div>";
+						print "<div class='detailTools'><div class='detailTool'><i class='material-icons inline'>save_alt</i>".caDetailLink($this->request, "Download Collection Guide", "", "ca_collections", $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div></div>";
 					}
 ?>
 										</div>
