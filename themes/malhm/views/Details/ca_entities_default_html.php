@@ -10,12 +10,11 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	$va_access_values = caGetUserAccessValues($this->request);
 	
-	$r_sets = null;
+	$r_sets = $r_collections = null;
 	if($entity_source_id = caGetListItemID('object_sources', $t_item->get('ca_entities.idno'))) {
 	
 		$r_sets = ca_sets::findAsSearchResult(['created_by_member' => $entity_source_id], ['checkAccess' => $va_access_values, 'sort' => 'ca_sets.preferred_labels.name',]);
-
-	
+		
 		if (($vn_num_objects = ca_objects::find(['source_id' => $entity_source_id], ['checkAccess' => $va_access_values,'returnAs' => 'count'])) > 1000) {
 			$vs_num_objects = "{$vn_num_objects} objects on MNCollections";
 		} else {
@@ -45,6 +44,10 @@
 	} else {
 		$vs_num_objects = $search_browse_bar_top = $search_browse_bar_bottom  = '';
 	}	
+	
+	if($collection_source_id = caGetListItemID('collection_sources', $t_item->get('ca_entities.idno'))) {
+		$r_collections = ca_collections::findAsSearchResult(['source_id' => $collection_source_id, 'type_id' => 'collection'], ['checkAccess' => $va_access_values, 'sort' => 'ca_collections.preferred_labels.name']);
+	}
 ?>
 <div class='containerWrapper'>
 <div class="row">
@@ -130,104 +133,117 @@
 			<hr>
 <?php
 			if($r_sets && $r_sets->numHits()){
-							print '<div class="row"><h3>Featured Galleries</h3>';
-							print '
-								<div class="jcarousel-wrapper col-sm-12">
-									<div class="jcarousel">
-										<ul>';
-								
-
-									while($r_sets->nextHit()){
-										if ($r_sets->get('ca_sets.hide', array('convertCodesToDisplayText' => true)) != "No") {					
-											$vn_set_id = $r_sets->get("set_id");
-											$t_set = new ca_sets($vn_set_id);
-											$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_access_values, "limit" => 3)));
-											
-											if (sizeof($va_set_items) == 1 ) { $vs_one_image = "oneItem";} else { $vs_one_image = "";}
-											if (sizeof($va_set_items) > 0 ) {
-												print "<li ><div class='setTile ".$vs_one_image."'>";
-												$vs_item = 0;
-												foreach ($va_set_items as $va_key => $va_set_item) {
-													if ($vs_item == 0) {
-														print "<div class='setImage'>".caNavLink($this->request, $va_set_item['representation_tag_iconlarge'], '', '', 'Gallery', $vn_set_id)."</div>";
-													} else {
-														print "<div class='imgPreview'>".$va_set_item['representation_tag_iconlarge']."</div>";
-													}
-													$vs_item++;
-												}
-												$item_count = $t_set->getItemCount();
-												print "<div class='name' style='clear: both;'>".caNavLink($this->request, $t_set->get('ca_sets.preferred_labels.name'), '', '', 'Gallery', $vn_set_id)." <small>(".$item_count." items)</small></div>";
-												
-												print "</div></li>";
-											}
-										}
-									}	
-								print "</ul></div><!-- end jcarousel -->";
+				print '<div class="row"><h3>Featured Galleries</h3>';
+				print '
+					<div class="jcarousel-wrapper col-sm-12">
+						<div class="jcarousel">
+							<ul>';
 					
-								print '<a href="#" class="jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>';
-								print '<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>';
+
+						while($r_sets->nextHit()){
+							if ($r_sets->get('ca_sets.hide', array('convertCodesToDisplayText' => true)) != "No") {					
+								$vn_set_id = $r_sets->get("set_id");
+								$t_set = new ca_sets($vn_set_id);
+								$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_access_values, "limit" => 3)));
+								
+								if (sizeof($va_set_items) == 1 ) { $vs_one_image = "oneItem";} else { $vs_one_image = "";}
+								if (sizeof($va_set_items) > 0 ) {
+									print "<li ><div class='setTile ".$vs_one_image."'>";
+									$vs_item = 0;
+									foreach ($va_set_items as $va_key => $va_set_item) {
+										if ($vs_item == 0) {
+											print "<div class='setImage'>".caNavLink($this->request, $va_set_item['representation_tag_iconlarge'], '', '', 'Gallery', $vn_set_id)."</div>";
+										} else {
+											print "<div class='imgPreview'>".$va_set_item['representation_tag_iconlarge']."</div>";
+										}
+										$vs_item++;
+									}
+									$item_count = $t_set->getItemCount();
+									print "<div class='name' style='clear: both;'>".caNavLink($this->request, $t_set->get('ca_sets.preferred_labels.name'), '', '', 'Gallery', $vn_set_id)." <small>(".$item_count." items)</small></div>";
+									
+									print "</div></li>";
+								}
+							}
+						}
+					print "</ul></div><!-- end jcarousel -->";
+		
+					print '<a href="#" class="jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>';
+					print '<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>';
 ?>			
-								<!-- Pagination -->
-								<p class="jcarousel-pagination">
-								<!-- Pagination items will be generated in here -->
-								</p>					
-							</div>	<!-- end jc wrapper -->
-							<script type='text/javascript'>
-								jQuery(document).ready(function() {
-									/*
-									Carousel initialization
-									*/
-									$('.jcarousel')
-										.jcarousel({
-											// Options go here
-											wrap:'circular'
-										});
-	
-									/*
-									 Prev control initialization
-									 */
-									$('.jcarousel-control-prev')
-										.on('jcarouselcontrol:active', function() {
-											$(this).removeClass('inactive');
-										})
-										.on('jcarouselcontrol:inactive', function() {
-											$(this).addClass('inactive');
-										})
-										.jcarouselControl({
-											// Options go here
-											target: '-=1'
-										});
-	
-									/*
-									 Next control initialization
-									 */
-									$('.jcarousel-control-next')
-										.on('jcarouselcontrol:active', function() {
-											$(this).removeClass('inactive');
-										})
-										.on('jcarouselcontrol:inactive', function() {
-											$(this).addClass('inactive');
-										})
-										.jcarouselControl({
-											// Options go here
-											target: '+=1'
-										});
-									/*
-									 Pagination initialization
-									 */
-									$('.jcarousel-pagination')
-										.on('jcarouselpagination:active', 'a', function() {
-											$(this).addClass('active');
-										})
-										.on('jcarouselpagination:inactive', 'a', function() {
-											$(this).removeClass('active');
-										})
-										.jcarouselPagination({
-											// Options go here
-										});	
-								});
-							</script>
-							</div><!-- end row -->			
+					<!-- Pagination -->
+					<p class="jcarousel-pagination">
+					<!-- Pagination items will be generated in here -->
+					</p>					
+				</div>	<!-- end jc wrapper -->
+				<script type='text/javascript'>
+					jQuery(document).ready(function() {
+						/*
+						Carousel initialization
+						*/
+						$('.jcarousel')
+							.jcarousel({
+								// Options go here
+								wrap:'circular'
+							});
+
+						/*
+						 Prev control initialization
+						 */
+						$('.jcarousel-control-prev')
+							.on('jcarouselcontrol:active', function() {
+								$(this).removeClass('inactive');
+							})
+							.on('jcarouselcontrol:inactive', function() {
+								$(this).addClass('inactive');
+							})
+							.jcarouselControl({
+								// Options go here
+								target: '-=1'
+							});
+
+						/*
+						 Next control initialization
+						 */
+						$('.jcarousel-control-next')
+							.on('jcarouselcontrol:active', function() {
+								$(this).removeClass('inactive');
+							})
+							.on('jcarouselcontrol:inactive', function() {
+								$(this).addClass('inactive');
+							})
+							.jcarouselControl({
+								// Options go here
+								target: '+=1'
+							});
+						/*
+						 Pagination initialization
+						 */
+						$('.jcarousel-pagination')
+							.on('jcarouselpagination:active', 'a', function() {
+								$(this).addClass('active');
+							})
+							.on('jcarouselpagination:inactive', 'a', function() {
+								$(this).removeClass('active');
+							})
+							.jcarouselPagination({
+								// Options go here
+							});	
+					});
+				</script>
+		</div><!-- end row -->			
+<?php
+	}
+				if($r_collections && $r_collections->numHits()){
+?>
+				<h3>Archival Collections</h3>
+				<div class="row archivalCollections">
+<?php
+					while($r_collections->nextHit()){			
+						$collection_id = $r_collections->get("collection_id");
+						print "<div class='col-md-3 archivalCollectionWrapper'><div class='archivalCollection'>".caNavLink($this->request, $r_collections->get('ca_collections.preferred_labels.name'), '', 'Detail', 'collections', $collection_id)."</div></div>";
+					}
+?>
+				</div><!-- end row -->			
 <?php
 	}
 ?>
