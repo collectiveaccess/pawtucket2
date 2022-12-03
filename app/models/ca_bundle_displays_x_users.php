@@ -164,4 +164,3 @@ class ca_bundle_displays_x_users extends BaseRelationshipModel {
 	
 	# ----------------------------------------
 }
-?>
