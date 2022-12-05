@@ -209,7 +209,7 @@ if($this->request->isLoggedIn()){
 					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-450"><a href="/ornaments/"><?php print  _t('Ornaments');?></a></li>
 					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#">Recursos</a>
 						<ul class="sub-menu">
-							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-410"><a href="/lists/about-these-lists/">Sobre Estos Recursos</a></li>
+							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-410"><a href="/lists/about-these-lists/">ACERCA DE ESTOS RECURSOS</a></li>
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, 'Bibliografia', '', '', 'Listing', 'bibliography');?></li>
 							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><?php print caNavLink($this->request, 'CATALOGO DE AUTORIDADES: AUTORES, TRADUCTORES, ADAPTADORES', '', '', 'Listing', 'playwrights'); ?></a></li>
 							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><?php print caNavLink($this->request, 'CATALOGO DE AUTORIDADES: IMPRESORES, LIBREROS, LIBRERIAS', '', '', 'Listing', 'printers');?></a></li>
