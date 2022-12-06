@@ -83,7 +83,6 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	static private $doc_content_buffer = [];			// content buffer used when indexing
 	
 	static protected $filter_stop_words = null;
-	
 	# -------------------------------------------------------
 	public function __construct($db=null) {
 		global $g_ui_locale;
@@ -207,6 +206,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 *
 	 */
 	public function search(int $subject_tablenum, string $search_expression, array $filters=[], $rewritten_query) {
+		$this->initSearch($subject_tablenum, $search_expression, $filters, $rewritten_query);
 		$hits = $this->_filterQueryResult(
 			$subject_tablenum, 
 			$this->_processQuery($subject_tablenum, $rewritten_query), 
@@ -427,7 +427,8 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			if(($word_field !== 'sw.stem') && ($this->search_config->get('always_stem'))) {
 				$text .= '*';
 			}
-		
+			$this->searched_terms[] = $text;
+			
 			$params = [$subject_tablenum];
 			$word_op = '=';
 		
@@ -483,7 +484,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			
 				$flds = [];
 				foreach($restrictions['exclude'] as $r) {
-					$flds[] = "'".$r['table_num'].'/'.$r['field_num']."'";
+					$flds[] = $r['table_num'].'/'.$r['field_num'];
 				}
 				if(sizeof($flds)) {
 					$res[] = "(CONCAT(swi.field_table_num, '/', swi.field_num) NOT IN (?))";
@@ -560,6 +561,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				
 				if (strlen($escaped_text = $this->db->escape(join(' ', self::tokenize($term->text, true))))) {
 					$words[] = $escaped_text;
+					$this->searched_terms[] = $escaped_text;
 				}
 			}
 		
@@ -629,7 +631,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			
 				$flds = [];
 				foreach($restrictions['exclude'] as $r) {
-					$flds[] = "'".$r['table_num'].'/'.$r['field_num']."'";
+					$flds[] = $r['table_num'].'/'.$r['field_num'];
 				}
 				if(sizeof($flds)) {
 					$res[] = "(CONCAT(swi.field_table_num, '/', swi.field_num) NOT IN (?))";
@@ -1655,6 +1657,14 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			}
 			return null;
 		}
+		
+		if (in_array(strtolower($field), ['preferred_labels', 'nonpreferred_labels'])) {
+			$t_table = $t_table->getLabelTableInstance();
+			$table = $t_table->tableName();
+			$field = $subfield;
+			$subfield = $subsubfield = $subsubsubfield = null;
+		}
+		
 		$table_num = $t_table->tableNum();
 		
 		// counts for relationship
@@ -1749,7 +1759,6 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				}
 			}
 		} else {
-
 			return array('access_point' => $tmp[0], 'relationship_type' => $tmp[1], 'table_num' => $table_num, 'field_num' => 'I'.$fld_num, 'field_num_raw' => $fld_num, 'datatype' => null, 'relationship_type_ids' => $rel_type_ids, 'type' => 'INTRINSIC', 'indexing_options' => $indexing_info);
 		}
 
@@ -1871,8 +1880,12 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 					$sql_where = "({$field} >= ? AND {$field} <= ?)";
 					$params = [$parsed_value['value_decimal1'], $parsed_value_end['value_decimal1']];
 				} else {
-					$sql_where = "({$field} = ?)";
 					$params = [$parsed_value['value_decimal1']];
+					if($parsed_value['value_decimal1'] === 0.0) {
+						$sql_where = "(({$field} = ?) OR ({$field} IS NULL))";
+					} else {
+						$sql_where = "({$field} = ?)";
+					}
 				}
 				break;
 		}

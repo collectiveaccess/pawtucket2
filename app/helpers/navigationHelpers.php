@@ -857,7 +857,7 @@
  				$vs_fa_class = 'far fa-clock';	
  				break;				
  			case __CA_NAV_ICON_SPINNER__:
- 				$vs_fa_class = 'fas fa-cog far fa-spin';	
+ 				$vs_fa_class = 'fa fa-cog far fa-spin';	
  				break;								
  			case __CA_NAV_ICON_HIER__:
  				$vs_fa_class = 'fas fa-sitemap';

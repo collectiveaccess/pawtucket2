@@ -15,7 +15,7 @@
 		if($t_item){
 			$t_item->load($pn_id);
 			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
-			$vs_name = $t_item->get($ps_table.".preferred_labels.name");
+			$vs_name = $t_item->get($ps_table.".preferred_labels");
 			$vs_idno = $t_item->get($ps_table.".idno");
 			$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
 		}

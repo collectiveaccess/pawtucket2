@@ -213,20 +213,7 @@ class ca_attribute_values extends BaseModel {
 
 	protected $FIELDS;
 	
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
+
 	# ------------------------------------------------------
 	/**
 	 * Stub out indexing for this table - it is never indexed
@@ -345,11 +332,10 @@ class ca_attribute_values extends BaseModel {
 		$t_element = ca_attributes::getElementInstance($this->get('element_id'));
 		$pa_element_info = $t_element->getFieldValuesArray();
 		
-		$this->setMode(ACCESS_WRITE);
-		
 		$o_attr_value = Attribute::getValueInstance($t_element->get('datatype'));
 		$pa_element_info['displayLabel'] = $t_element->getLabelForDisplay(false);
 		$va_values = $o_attr_value->parseValue($ps_value, $pa_element_info, $pa_options);
+
 		if (isset($va_values['_dont_save']) && $va_values['_dont_save']) { return true; }
 		
 		if (is_array($va_values)) {
