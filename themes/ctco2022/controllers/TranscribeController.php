@@ -66,7 +66,7 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
 
             // Catch disabled flag
-            if ($this->request->config->get('allow_transcriptions') && $this->request->config->get('allow_transcriptions')) {
+            if (!$this->request->config->get('allow_transcriptions')) {
  				throw new ApplicationException('Transcription is not enabled');
  			}
  			
@@ -96,7 +96,7 @@
  			$o_context->setAsLastFind();
  			
  			$qr_sets = ca_sets::find(["type_id" => "transcription_collection", "featured" => "yes"], ['returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values]);
-			$set_media = $qr_sets ? ca_sets::getFirstItemsFromSets($set_ids = $qr_sets->getAllFieldValues('ca_sets.set_id'), ['version' => 'medium', 'checkAccess' => $this->opa_access_values]) : [];
+			$set_media = $qr_sets ? ca_sets::getFirstItemsFromSets($set_ids = $qr_sets->getAllFieldValues('ca_sets.set_id'), ['version' => 'iconlarge', 'checkAccess' => $this->opa_access_values]) : [];
 			if ($qr_sets) { $qr_sets->seek(0); }
 			
 			$this->view->setVar('sets', $qr_sets);

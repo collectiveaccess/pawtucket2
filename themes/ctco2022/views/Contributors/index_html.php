@@ -33,7 +33,7 @@
 				if(mb_strlen($vs_description) > 300){
 					$vs_description = strip_tags(mb_substr($vs_description, 0, 300))."...";
 				}
-				$vs_tmp .= "<div>".$vs_description."</div>";
+				$vs_tmp .= "<div class='description'>".$vs_description."</div>";
 			}
 			$vs_tmp .= "<br/><div class='text-right'>".caDetailLink($this->request, "View", "btn btn-default btn-small", "ca_entities",  $qr_contributors->get("ca_entities.entity_id"))."</div>";
 			$vs_tmp .= "</div></div><!-- end col 9/12 --></div><!-- end row -->";

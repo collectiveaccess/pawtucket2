@@ -44,10 +44,10 @@
 ?>
 		<div class="bSearchWithin"><form role="search" action="<?php print caNavUrl($this->request, '*', 'Transcribe', '*'); ?>" >
 			<div class="form-group">
-				<button type="submit" class="pull-right btn-default"><span class="glyphicon glyphicon-search"></span></button><input type="text" class="form-control" placeholder="Search within" name="search_refine">
+				<input type="text" class="form-control" placeholder="Search within" name="search_refine"><button type="submit" class="btn-default"><span class="glyphicon glyphicon-search"></span></button>
 				<input type="hidden" name="key" value="<?php print $vs_key; ?>">
 			</div>
-		</form></div>
+		</form><div style="clear:both;"></div></div>
 <?php
 		print "<H3>"._t("Filter by")."</H3>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {

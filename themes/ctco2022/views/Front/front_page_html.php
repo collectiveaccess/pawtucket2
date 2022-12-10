@@ -32,7 +32,7 @@
   $va_access_values = $this->getVar("access_values");
  $vs_hero = $this->request->getParameter("hero", pString);
  if(!$vs_hero){
- 	$vs_hero = rand(1, 3);
+ 	$vs_hero = rand(1, 6);
  }
 ?>
 
@@ -55,6 +55,7 @@
 							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
 					</form>
+					<p class="search-suggest">Not sure what to search for? Try fairfield museum, beaded purse, flask</p>
 				</div>
 			</div>
 		</div>

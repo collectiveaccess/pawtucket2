@@ -71,7 +71,6 @@
 <?php
 	}
 ?>	
-
 	
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
@@ -118,9 +117,8 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-<?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ctco_logo_2020.jpeg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");
-?>
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'ctco_logo_2020.jpeg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");?>
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'CLHO.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");?>
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -170,9 +168,15 @@
 
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 
-					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artifacts"), "", "", "Browse", "objects"); ?></li>
-					<li <?php print (strtoLower($this->request->getController()) == "collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "Collections", "index"); ?></li>	
-					<li <?php print ($this->request->getController() == "Contributors") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contributors"), "", "", "Contributors", ""); ?></li>					
+					<li class="dropdown-container">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Collections</a>
+						<ul class="dropdown-menu">
+							<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artifacts"), "", "", "Browse", "objects"); ?></li>
+							<li <?php print (strtoLower($this->request->getController()) == "collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "Collections", "index"); ?></li>	
+							<li <?php print ($this->request->getController() == "Contributors") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contributors"), "", "", "Contributors", ""); ?></li>	
+						</ul>
+					</li>
+				
 					<li <?php print ($this->request->getController() == "Transcribe") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Transcribe"), "", "", "Transcribe", "Index"); ?></li>					
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 					<!-- <li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>					 -->

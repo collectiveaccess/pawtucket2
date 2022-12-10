@@ -58,17 +58,49 @@
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_entities.life_dates"><div class='unit'><label>Life Dates</label>^ca_entities.life_dates</div></ifdef>}}}
 					{{{<ifdef code="ca_entities.biography"><div class='unit'><label>Biography</label>^ca_entities.biography</div></ifdef>}}}
+
+					{{{<ifdef code="ca_entities.address">
+						<label>Address</label>
+						<unit relativeTo="ca_entities.address" delimiter="<br/>">
+							<ifdef code="ca_entities.address.address1">^address1</ifdef> <br/>
+							<ifdef code="ca_entities.address.address2">^address2</ifdef> <br/>
+							<ifdef code="ca_entities.address.city, ca_entities.address.stateprovince, ca_entities.address.postalcode, ca_entities.address.country">^city, ^stateprovince, ^postalcode, ^country</ifdef>
+						</unit>
+					</ifdef>}}}	
+
+					<br/><br/>
+
+					{{{<ifdef code="ca_entities.email">
+						<!-- <label>Email</label> -->
+						<unit relativeTo="ca_entities.email" delimiter="<br/>">
+							^email
+						</unit>
+					</ifdef>}}}	
+					
+					<br/>
+
+					{{{<ifdef code="ca_entities.website">
+						<!-- <label>Website</label> -->
+						<unit relativeTo="ca_entities.website" delimiter="<br/>">
+							<a href="^website" target="_blank">^website</a>
+						</unit>
+					</ifdef>}}}	
+
+
 				</div><!-- end col -->
 
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{representationViewer}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
+
+			<br/>
 <?php
 	if($vn_source_id){
 ?>
 		<div class="row">
-			<div class="col-sm-12"><label>Artifacts</label></div>
+			<div class="col-sm-6"><label>Artifacts</label></div>
+			<div class="col-sm-6 detailBrowseAll"><?php print caNavLink($this->request, "Browse all Artifacts <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "", "Browse", "objects", array("facet" => "source_facet", "id" => $vn_source_id)); ?></div>
 		</div>
 		<div class="row">
 				<div id="browseResultsContainer">
