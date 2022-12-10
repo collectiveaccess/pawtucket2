@@ -79,7 +79,7 @@
 					)
 				);
 
-		$back_to_work = caDetailLink($this->request, ($g_ui_locale == "de_DE" ? "zurück zum Werk" : "back to Film Work")." &rarr;", '', 'ca_occurrences', $vn_occurrence_id);
+		$back_to_work = caDetailLink($this->request, ($g_ui_locale == "de_DE" ? "zum Werk" : "to Film Work"), '', 'ca_occurrences', $vn_occurrence_id);
 					
 	}
 	$vs_type = $t_object->getWithTemplate("^ca_objects.type_id");
@@ -349,7 +349,7 @@
 			
 			// TODO: need final text and formatting for link
 			if($url = $t_work->get('ca_occurrences.film_page_url')) {
-				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}'>"._t('View on Forum')."</a></div></div>";
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}' target='_blank'>".($g_ui_locale == "de_DE" ? "For more information on the film visit the Forum page" : "Mehr Informationen zum Film auf der Webseite des Forums")."</a></div></div>"; 
 			}	
 
 			$va_tags = $t_work->get("ca_list_items", array("returnWithStructure" => true));
@@ -392,7 +392,7 @@
 						<div class="col-sm-6">
 <?php
 							$va_show_internal_fields = array(
-								'object_type', 'notes', 'condition', 'condition_opt', 'condition_date', 'condition_comm', 'condition_color', 
+								'object_type', 'print_id', 'notes', 'condition', 'condition_opt', 'condition_date', 'condition_comm', 'condition_color', 
 								'source', 'source_date', 'oa3create_date', 'oa3change_date', 'rights', 'textlist',
 								// neu
 								'file_folder_name', 'bytes', 'number_of_files', 'image_frame', 'cpl', 'cpl_content_title_text',

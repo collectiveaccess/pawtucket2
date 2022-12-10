@@ -144,8 +144,8 @@
 <?php
 				if((bool)CookieOptionsManager::allow("performance")){
 ?>
-					<li <?php print ($g_ui_locale == "en_US") ? 'class="active"' : ''; ?>><?php print caChangeLocaleLink($this->request, 'en_US', _t("EN"), ''); ?>&nbsp;</li>
-					<li <?php print ($g_ui_locale == "de_DE") ? 'class="active"' : ''; ?>><?php print caChangeLocaleLink($this->request, 'de_DE', _t("DE"), ''); ?></li>
+					<li <?php print ($g_ui_locale == "de_DE") ? 'class="active"' : ''; ?>><?php print caChangeLocaleLink($this->request, 'de_DE', _t("DE"), ''); ?>&nbsp;</li>
+					<li <?php print ($g_ui_locale == "en_US") ? 'class="active"' : ''; ?>><?php print caChangeLocaleLink($this->request, 'en_US', _t("EN"), ''); ?></li>
 <?php
 				}
 ?>
