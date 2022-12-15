@@ -52,7 +52,7 @@
 								<li><a href="https://twitter.com/KentlerDrawing" target="_blank"><i class="fa fa-twitter"></i></a></li>
 								<li><a href="https://www.facebook.com/kentlergallery/?fref=ts" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
 								<li><a href="https://www.instagram.com/kentlerdrawing" target="_blank"><i class="fa fa-instagram"></i></a></li>
-								<li><a href="mailto:info@kentlergallery.org"><i class="fa fa-envelope"></i></a></li>
+								<li><a href="mailto:drawing@kentlergallery.org"><i class="fa fa-envelope"></i></a></li>
 							</ul>
 							<div class='terms'><a href="/news/index.php/terms-of-use">Terms of Use</a></div>
 						</h5>
