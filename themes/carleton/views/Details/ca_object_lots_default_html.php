@@ -47,7 +47,7 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1'>
+			<div class='col-md-12 col-lg-12'>
 				
 				<H1>{{{^ca_object_lots.preferred_labels.name<ifdef code="ca_object_lots.inclusive_dates">, ^ca_object_lots.inclusive_dates%delimiter=,_</ifdef>}}}</H1>
 				<HR>

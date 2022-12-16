@@ -114,7 +114,7 @@
 							<div class="logo_container">
 					<span class="logo_helper"></span>
 					<a href="https://www.blackmountaincollege.org/">
-						<img src="https://www.blackmountaincollege.org/wp-content/uploads/LogoBlackMountainCollegeMuseumWeb2.png" alt="Black Mountain College Museum + Arts Center" id="logo" data-height-percentage="83" data-actual-width="730" data-actual-height="100" width="730" height="100">
+						<img src="<?php print caGetThemeGraphicUrl($this->request, "LogoBlackMountainCollegeMuseumWeb2.png"); ?>" alt="Black Mountain College Museum + Arts Center" id="logo" data-height-percentage="83" data-actual-width="730" data-actual-height="100" width="730" height="100">
 					</a>
 				</div>
 							<div id="et-top-navigation" data-height="70" data-fixed-height="40">
@@ -134,7 +134,7 @@
 <li id="menu-item-25413" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-25413"><a href="https://www.blackmountaincollege.org/art/">Art</a>
 <ul class="sub-menu">
 	<li id="menu-item-4222" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4222"><a href="https://www.blackmountaincollege.org/exhibitions/">Exhibitions</a></li>
-	<li id="menu-item-14658" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-14658"><a href="https://www.blackmountaincollege.org/selections-from-our-collection/">Permanent Collection</a></li>
+	<li id="menu-item-14658" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-14658"><?php print caNavLink($this->request, "Collections", "", "", "", ""); ?></li>
 </ul>
 </li>
 <li id="menu-item-5604" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5604"><a>Learn</a>
@@ -176,7 +176,7 @@
 				<div class="mobile_nav closed">
 					<span class="select_page">Select Page</span>
 					<span class="mobile_menu_bar mobile_menu_bar_toggle" onClick="$('#mobile_menu').toggle(); return false;"></span>
-				<ul id="mobile_menu" class="et_mobile_menu" style="display: block;"><li id="menu-item-4164" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4164 et_first_mobile_item"><a title="https://www.blackmountaincollege.org/visit/" href="https://www.blackmountaincollege.org/visit/">Visit</a></li>
+				<ul id="mobile_menu" class="et_mobile_menu"><li id="menu-item-4164" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4164 et_first_mobile_item"><a title="https://www.blackmountaincollege.org/visit/" href="https://www.blackmountaincollege.org/visit/">Visit</a></li>
 <li id="menu-item-4165" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-4165"><a>Programs</a>
 <ul class="sub-menu">
 	<li id="menu-item-8987" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-8987"><a href="https://www.blackmountaincollege.org/events/">Events</a></li>
@@ -191,7 +191,7 @@
 <li id="menu-item-25413" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-25413"><a href="https://www.blackmountaincollege.org/art/">Art</a>
 <ul class="sub-menu">
 	<li id="menu-item-4222" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-4222"><a href="https://www.blackmountaincollege.org/exhibitions/">Exhibitions</a></li>
-	<li id="menu-item-14658" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-14658"><a href="https://www.blackmountaincollege.org/selections-from-our-collection/">Permanent Collection</a></li>
+	<li id="menu-item-14658" class="menu-item menu-item-type-post_type menu-item-object-post menu-item-14658"><?php print caNavLink($this->request, "Collections", "", "", "", ""); ?></li>
 </ul>
 </li>
 <li id="menu-item-5604" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-5604"><a>Learn</a>
@@ -244,23 +244,23 @@
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="container menuBar">
 			<div class="row">
-				<div class="col-md-7 text-center">
-					<ul class="nav navbar-nav navbar-right" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-						<li><?php print caNavLink($this->request, _t("Collection"), "", "", "Browse", "Objects"); ?></li>
-						<li><?php print caNavLink($this->request, _t("People & Organizations"), "", "", "Browse", "People"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Programs"), "", "", "Browse", "Programs"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "Collections"); ?></li>
-					</ul>
-				</div>
-				<div class="col-md-3">
-					<form class="navbar-form" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
-						<div class="formOutline">
-							<div class="form-group">
-								<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search the Collection"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
+				<div class="col-md-12 text-center">
+					<div class="menuContainer">
+						<form class="navbar-form" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
+							<div class="formOutline">
+								<div class="form-group">
+									<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search the Collection"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
+								</div>
+								<button type="submit" class="btn-search" id="headerSearchButton"><span></span></button>
 							</div>
-							<button type="submit" class="btn-search" id="headerSearchButton"><span></span></button>
-						</div>
-					</form>
+						</form>
+						<ul class="nav navbar-nav navbar-right" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
+							<li><?php print caNavLink($this->request, _t("Objects"), "", "", "Browse", "Objects"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "Collections"); ?></li>
+							<li><?php print caNavLink($this->request, _t("People & Organizations"), "", "", "Browse", "People"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Programs"), "", "", "Browse", "Programs"); ?></li>
+						</ul>
+					</div>
 					<script type="text/javascript">
 						$(document).ready(function(){
 							$('#headerSearchButton').prop('disabled',true);

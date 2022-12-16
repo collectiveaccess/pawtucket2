@@ -48,6 +48,24 @@ a:hover{
 .navbar{
 	background-color: #ffffff;
 }
+.navbar-form{
+	margin: 0px;
+	padding:0px;
+}
+@media(min-width: 992px){
+	.navbar-form{
+		width: 200px;
+		float: right;
+		margin-left: 15px;
+		padding-left:0px;
+	}
+}
+.menuContainer{
+	margin-right:auto;
+	margin-left:auto;
+	display: inline-block;
+}
+
 .navbar .formOutline{
 	border-radius:0px;
 	background-color:#fff;
@@ -59,10 +77,6 @@ a:hover{
 .navbar-form .form-group {
   display: inline-block;
   width: 90%;
-}
-.navbar-form{
-  padding-left: 0px;
-  margin-left:0px;
 }
 .headerAdvancedSearch{
 	text-align:right;
@@ -185,10 +199,27 @@ a:hover{
 		display: inline-block;
 	}
 	.navbar-default .navbar-nav > li > a{
-		padding:5px;
+		padding: 5px 15px;
+		font-size:14px;
 	}
 	.navbar-form .form-group {
 	  width: 85%;
+	}
+}
+
+@media(max-width: 475px){
+	.navbar-default .navbar-nav > li > a{
+		padding: 5px 5px;
+		font-size:12px;
+	}
+}
+@media(max-width: 375px){
+	.navbar-nav > li{
+		width:100%;
+	}
+	.navbar-default .navbar-nav > li > a{
+		padding: 5px 0px 0px 0px;
+		font-size:13px;
 	}
 }
 /* header mobile icons navigation */
@@ -638,6 +669,12 @@ hr{
 	font-family: 'Poppins',Helvetica,Arial,Lucida,sans-serif;
 	font-weight: 400;
 }
+.front .frontFeaturedVideos {
+	margin-bottom:15px;
+}
+.front .frontFeaturedVideos .videoCol{
+	margin-bottom:30px;
+}
 .front .frontIntro{
 	font-family: 'Poppins',Helvetica,Arial,Lucida,sans-serif;
 	font-weight: 400;
@@ -686,7 +723,19 @@ a:hover .frontGridCaption{
 	line-height:1em;
 	font-size:12px;
 }
-
+@media(max-width:575px){
+	.front .sectionTitle{
+		color: #ff6600 !important;
+		font-size:24px;
+		padding-bottom: 0px;
+	}
+	.frontBrowseAll{
+		padding-top:2px;
+	}
+	.frontBrowseAll a{
+		font-size: 14px;
+	}
+}
 
 
 
@@ -1367,4 +1416,13 @@ select {
 /* Media viewer */
 .tileviewer div a.tileviewerControlSelected, div.caMediaOverlayControls .close a .fa {
   color: #ff6c2f;
+}
+
+@media(max-width: 991px){
+	.container{
+		width: 100%;
+	}
+	header .container{
+		width: 80%;
+	}
 }

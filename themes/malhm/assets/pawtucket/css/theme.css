@@ -986,6 +986,7 @@ ul.socialRow li .connect{
 }
 
 
+
 /* Lightbox */
 .gallery {
     font-size: inherit;
@@ -1378,4 +1379,27 @@ a.filterCollection:hover {
 }
 .detail .jcarousel-control-prev:hover, .detail .jcarousel-control-next:hover, .detail .jcarousel-control-prev:focus, .detail .jcarousel-control-next:focus{
 	color:#6e416c;
+}
+
+.archivalCollections {
+	
+}
+
+.archivalCollectionWrapper {
+	padding: 5px;
+	
+}
+
+.archivalCollection {
+	font-size: 14px;
+	line-height: 16px;
+	background: #f0f0f0;
+	
+	height: 60px;
+	padding: 5px;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
 }

@@ -113,7 +113,8 @@ if (!$vb_ajax) {	// !ajax
 		<H1>
 <?php
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
-?>		
+
+?>
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
 				<ul class="dropdown-menu" role="menu">
@@ -169,6 +170,11 @@ if (!$vb_ajax) {	// !ajax
 		</H1>
 		
 <?php
+		if(!$vn_is_advanced && ($vs_table == "ca_collections")){
+			if($vs_search_intro = $this->getVar("search_intro")){
+				print "<div class='searchIntro'>".$vs_search_intro."</div>";
+			}
+		}
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}

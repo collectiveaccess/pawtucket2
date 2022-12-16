@@ -37,11 +37,11 @@
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		
-		print "<div class='container'><div class'row'><div class='col-sm-12'><h1>{$va_listing_info['displayName']}</h2></div></div>\n";
-		print "<div class='collectionsList'><div class'row'>";
+		print "<div class='row'><div class='col-sm-12'><h1>{$va_listing_info['displayName']}</h2></div></div>\n";
+		print "<div class='collectionsList'><div class='row'>";
 		while($qr_list->nextHit()) {
 			print $qr_list->getWithTemplate("<l><div class='col-sm-4'><div class='collectionTile'><unit relativeTo='ca_objects' restrictToRelationshipTypes='feature' length='1'>^ca_object_representations.media.large</unit><div class='title'>^ca_occurrences.preferred_labels.name</l></div></div></div>");
 		}
-		print "</div></div></div>";
+		print "</div></div>";
 	}
 ?>

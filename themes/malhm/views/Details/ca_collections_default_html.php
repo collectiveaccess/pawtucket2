@@ -28,6 +28,10 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
+<?php
+	print "<div class='instLink'><small>from the holdings of</small><div>".caDetailLink($this->request, caGetListItemByIDForDisplay($vn_source_id = $t_item->get('source_id')), '', 'ca_entities', ca_entities::getIDForIdno(caGetListItemIdno($vn_source_id)))."</div></div>";
+
+?>
 					<h6>{{{<ifdef code="ca_collections.idno">^ca_collections.idno</ifdef>}}}</h6>
 					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
 
@@ -65,7 +69,7 @@
 						print "<div class='unit'><h6>Extent</h6>".$vs_extent."</div>";
 					}
 					if ($vs_creator = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {
-						print "<div class='unit'><h6>Creators</h6>".$vs_creator."</div>";
+						print "<div class='unit'><h6>Creators</h6>".caDetailLink($this->request, $vs_creator, '', 'ca_entities', $t_item->get('ca_entities.entity_id'))."</div>";
 					}
 					if ($vs_scope = $t_item->get('ca_collections.scopecontent')) {
 						print "<div class='unit'><h6>Scope & Content</h6>".$vs_scope."</div>";
@@ -76,11 +80,11 @@
 					if ($vs_cond = $t_item->get('ca_collections.accessrestrict')) {
 						print "<div class='unit'><h6>Conditions Governing Access</h6>".$vs_cond."</div>";
 					}
-					if ($vs_aat = $t_item->get('ca_collections.aat', array('delimiter' => '<br/>'))) {
-						print "<div class='unit'><h6>Getty Art and Architecture Thesarus</h6>".$vs_aat."</div>";
+					if (is_array($aat = $t_item->get('ca_collections.aat', array('returnAsArray' => true))) && ($aat = array_filter($aat, "strlen")) && sizeof($aat)) {
+						print "<div class='unit'><h6>Getty Art and Architecture Thesarus</h6>".join('<br/>', $aat)."</div>";
 					}	
-					if ($vs_ulan = $t_item->get('ca_collections.ulan', array('delimiter' => '<br/>'))) {
-						print "<div class='unit'><h6>Getty Union List of Artist Names</h6>".$vs_ulan."</div>";
+					if (is_array($ulan = $t_item->get('ca_collections.ulan', array('returnAsArray' => true))) && ($ulan = array_filter($ulan, "strlen"))&& sizeof($ulan)) {
+						print "<div class='unit'><h6>Getty Union List of Artist Names</h6>".join('<br/>', $ulan)."</div>";
 					}
 					if ($vs_geo = $t_item->get('ca_collections.geo_notes', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><h6>Geographic Notes</h6>".$vs_geo."</div>";
@@ -94,10 +98,10 @@
 					if ($vs_otherfindingaid = $t_item->get('ca_collections.otherfindingaid')) {
 						print "<div class='unit'><h6>Finding Aids</h6>".$vs_otherfindingaid."</div>";
 					}										
-					if ($va_entity_rels = $t_item->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+					if ($va_entity_rels = $t_item->get('ca_entities_x_collections.relation_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						$va_entities_by_type = array();
 						foreach ($va_entity_rels as $va_key => $va_entity_rel) {
-							$t_rel = new ca_objects_x_entities($va_entity_rel);
+							$t_rel = new ca_entities_x_collections($va_entity_rel);
 							if ($t_rel->get('ca_objects.access') != 0){ continue;}
 							$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
 							$va_entities_by_type[$vn_type_id][] = caDetailLink($this->request, $t_rel->get('ca_entities.preferred_labels'), '', 'ca_entities', $t_rel->get('ca_entities.entity_id'));
@@ -106,7 +110,6 @@
 						print "<hr>";
 						print "<h6>Related People and Organizations</h6>";
 						foreach ($va_entities_by_type as $va_type => $va_entity_id) {
-							print "<div><b>".ucfirst($va_type)."</b></div>";
 							foreach ($va_entity_id as $va_key => $va_entity_link) {
 								print "<div>".$va_entity_link."</div>";
 							} 

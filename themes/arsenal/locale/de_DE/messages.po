@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2\n"
 "POT-Creation-Date: 2022-07-30 00:07-0400\n"
-"PO-Revision-Date: 2022-08-02 08:25-0400\n"
+"PO-Revision-Date: 2022-08-17 12:37-0400\n"
 "Last-Translator: Maria Passarotti <maria@whirl-i-gig.com>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: de\n"
@@ -2742,13 +2742,13 @@ msgid "countries"
 msgstr "länder"
 
 msgid "forum year"
-msgstr "forumjahr"
+msgstr "forumsjahr"
 
 msgid "forum years"
-msgstr ""
+msgstr "forumsjahre"
 
 msgid "forum decade"
-msgstr ""
+msgstr "forumsjahrzehnt"
 
 msgid "forum decades"
 msgstr ""
@@ -2803,15 +2803,18 @@ msgid ""
 msgstr ""
 
 msgid "Essential"
-msgstr ""
+msgstr "Notwendig"
 
 msgid ""
 "These cookies are strictly necessary to provide you with services available "
 "through our website and to use some of its features, such as logging in."
 msgstr ""
+"Ohne diesen Cookie funktionieren wichtige Bedienelemente der Seite wie die "
+"gefächerte Suche und das Blättern in Suchergebnissen nicht. Auch für das "
+"Login ist dieser Cookie notwendig."
 
 msgid "Session cookie"
-msgstr ""
+msgstr "Session cookie"
 
 msgid ""
 "Cookie used to maintain your preferences while using this site. No personal "
@@ -2819,12 +2822,14 @@ msgid ""
 "discarded after your session is finished. This cookie is required for the "
 "site to function. It persists for ^lifespan."
 msgstr ""
+"Der Session Cookie enthält keine persönlichen Daten und wird nach Beendigung "
+"der Session gelöscht. "
 
 msgid "Performance and Functionality"
-msgstr ""
+msgstr "Verbesserung der Funktionalität"
 
 msgid "Locale cookie"
-msgstr ""
+msgstr "Spracheinstellungen"
 
 msgid ""
 "Cookie used to track your selected language setting while using this site. "
@@ -2833,9 +2838,11 @@ msgid ""
 "not allow use of this cookie, you will not be able to change the language "
 "used on this site. It persists for ^lifespan."
 msgstr ""
+"Der Cookie für die Spracheinstellungen enthält keine persönlichen Daten und "
+"wird nach Beendigung der Session gelöscht.  "
 
 msgid "Streaming Video"
-msgstr ""
+msgstr "Streaming Video"
 
 msgid ""
 "Our site displays video from other streaming sites like Vimeo and YouTube.  "
@@ -3000,7 +3007,7 @@ msgstr ""
 
 #: app/controllers/CookiesController.php:71
 msgid "Saved settings"
-msgstr ""
+msgstr "Einstellungen gespeichert"
 
 #: app/controllers/DetailController.php:242
 msgid "This item is not available for view"
@@ -3520,7 +3527,7 @@ msgstr ""
 
 #: app/controllers/LoginRegController.php:258
 msgid "Login failed"
-msgstr ""
+msgstr "Login gescheitert"
 
 #: app/controllers/LoginRegController.php:266
 msgid " and added to the group"
@@ -3529,15 +3536,15 @@ msgstr ""
 #: app/controllers/LoginRegController.php:272
 #: app/controllers/system/AuthController.php:42
 msgid "You are now logged in"
-msgstr ""
+msgstr "Sie sind nun eingeloggt"
 
 #: app/controllers/LoginRegController.php:286
 msgid "You have been logged in"
-msgstr ""
+msgstr "Sie sind nun eingeloggt"
 
 #: app/controllers/LoginRegController.php:305
 msgid "You have been logged out"
-msgstr ""
+msgstr "Sie haben sich erfolgreich ausgeloggt"
 
 #: app/controllers/LoginRegController.php:360
 #: app/controllers/LoginRegController.php:724
@@ -17405,7 +17412,7 @@ msgstr ""
 
 #: app/models/ca_users.php:62
 msgid "User name"
-msgstr ""
+msgstr "Loginname"
 
 #: app/models/ca_users.php:62
 msgid ""
@@ -17439,7 +17446,7 @@ msgstr ""
 
 #: app/models/ca_users.php:82
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 #: app/models/ca_users.php:82
 msgid ""
@@ -17775,7 +17782,7 @@ msgstr ""
 #: themes/arsenal/views/Browse/browse_refine_subview_html.php:87
 #: themes/arsenal/views/Browse/browse_refine_subview_html.php:91
 msgid "and %1 more"
-msgstr "und % weitere"
+msgstr "und %1 weitere"
 
 #: themes/arsenal/views/Browse/browse_refine_subview_html.php:88
 msgid "close"
@@ -17885,7 +17892,7 @@ msgstr "Werk"
 
 #: themes/arsenal/views/Front/gallery_grid_html.php:99
 msgid "View All"
-msgstr ""
+msgstr "Alle anzeigen"
 
 #: themes/arsenal/views/Gallery/detail_html.php:57
 msgid "more"
@@ -17911,7 +17918,7 @@ msgstr ""
 
 #: themes/arsenal/views/Gallery/set_item_info_html.php:24
 msgid "VIEW RECORD"
-msgstr "ZUM FILM"
+msgstr "ZUM Datensatz"
 
 #: themes/arsenal/views/pageFormat/pageFooter.php:33
 #: themes/arsenal/views/pageFormat/pageHeader.php:50
@@ -17936,7 +17943,7 @@ msgstr "Impressum"
 
 #: themes/arsenal/views/pageFormat/pageHeader.php:48
 msgid "Submit content"
-msgstr ""
+msgstr "Abschicken"
 
 #: themes/arsenal/views/pageFormat/pageHeader.php:123
 msgid "Search text"
@@ -17948,7 +17955,7 @@ msgstr ""
 
 #: themes/arsenal/views/pageFormat/pageHeader.php:137
 msgid "Primary Navigation"
-msgstr ""
+msgstr "Hauptmenü"
 
 #: themes/arsenal/views/pageFormat/pageHeader.php:138
 msgid "Browse"

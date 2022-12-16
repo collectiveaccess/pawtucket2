@@ -51,7 +51,7 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-12'>
-					{{{<ifdef code="ca_entities.bmc_role.bmc_role_value|ca_entities.bmc_role.bmc_role_dates|ca_entities.bmc_role.bmc_notes"><div class="unit"><label>Dates at BMC</label><unit relativeTo="ca_entities.bmc_role" delimiter="<br/>"><ifdef code="ca_entities.bmc_role.bmc_role_value">^ca_entities.bmc_role.bmc_role_value<ifdef code="ca_entities.bmc_role.bmc_role_dates">, </ifdef></ifdef><ifdef code="ca_entities.bmc_role.bmc_role_dates"></ifdef>^ca_entities.bmc_role.bmc_role_dates<ifdef code="ca_entities.bmc_role.bmc_notes"><ifdef code="ca_entities.bmc_role.bmc_role_dates|ca_entities.bmc_role.bmc_role"><br/></ifdef>^ca_entities.bmc_role.bmc_notes</ifdef></unit></div></ifdef>}}}
+					{{{<ifdef code="ca_entities.bmc_role.bmc_role_value|ca_entities.bmc_role.bmc_role_dates|ca_entities.bmc_role.bmc_notes"><div class="unit"><label>Dates at BMC</label><unit relativeTo="ca_entities.bmc_role" delimiter="<br/>"><ifdef code="ca_entities.bmc_role.bmc_role_value">^ca_entities.bmc_role.bmc_role_value<ifdef code="ca_entities.bmc_role.bmc_role_dates">, </ifdef></ifdef><ifdef code="ca_entities.bmc_role.bmc_role_dates"></ifdef>^ca_entities.bmc_role.bmc_role_dates%dateFormat=original<ifdef code="ca_entities.bmc_role.bmc_notes"><ifdef code="ca_entities.bmc_role.bmc_role_dates|ca_entities.bmc_role.bmc_role"><br/></ifdef>^ca_entities.bmc_role.bmc_notes</ifdef></unit></div></ifdef>}}}
 					{{{<ifdef code="ca_entities.biography"><div class="unit"><span class="trimText">^ca_entities.biography</span></div></ifdef>}}}
 <?php
 				# Comment and Share Tools
@@ -102,7 +102,7 @@
 			
 {{{<ifcount code="ca_objects" min="1" restrictToTypes="artwork, oral_history, archival_object, publication">
 			<div class="row">
-				<div class="col-sm-12"><div class="unit"><label>Related Collection Items</label></div><HR/></div>
+				<div class="col-sm-12"><div class="unit"><label>Related Objects</label></div><HR/></div>
 			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
