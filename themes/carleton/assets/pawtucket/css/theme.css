@@ -134,6 +134,12 @@ h1.page_title, .pageTitle--Main{
 	text-decoration:none;
 	background-image:none !important;
 }
+@media (max-width: 768px){
+	ul.menuItems {
+		border-top: 0px;
+		padding-left: 30px;
+	}
+}
 /* browse */
 .results H1{
 	text-transform: capitalize;
