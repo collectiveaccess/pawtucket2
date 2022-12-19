@@ -7,7 +7,7 @@
 		<small>Hudson, NY</small>
 	</div>
 	<div class="col-sm-6 fullWidthImg">
-		<?php print caGetThemeGraphic($this->request, 'SEFA_NYC.jpg', array('alt' => 'Exterior of Susan Eley Fine Art NYC')); ?>
+		<?php print caGetThemeGraphic($this->request, 'SEFA_NYC_2022.JPG', array('alt' => 'Exterior of Susan Eley Fine Art NYC')); ?>
 		<small>NYC</small>
 	</div>
 </div>
@@ -27,8 +27,15 @@
 			<div class="col-sm-8">
 				<br/>
 				<H1>Director Biography</H1>
-				{{{director_bio_text}}}
-				<br/>
+				<div class="row">
+					<div class="col-sm-6 fullWidthImg">
+						<?php print caGetThemeGraphic($this->request, 'Susan_Eley.jpg', array('alt' => 'Portrait of Susan Eley')); ?>
+					</div>
+					<div class="col-sm-6">
+						{{{director_bio_text}}}
+					</div>
+				</div>
+				<br/><br/>
 				<H1>Accessibility Statement</H1>
 				{{{accessibility_text}}}
 				<div class="row" style="margin-top:50px;">
