@@ -33,8 +33,13 @@
 			<div class="row footer-center">
 				
 				<div class="col-sm-6 col-md-5 col-lg-4">
-					<a href="https://clho.org/ctcollections/" class="orgLink">
+
+					<!-- <a href="https://clho.org/ctcollections/" class="orgLink">
 						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'CLHO.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "", "", "","");?>
+					</a> -->
+
+					<a href="https://clho.org/ctcollections/" class="orgLink">
+						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'CLHO_Logo_transparent.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "", "", "","");?>
 					</a>
 					
 					<ul class="list-inline social">
@@ -47,13 +52,16 @@
 					<p>info@clho.org</p>
 				</div>
 
-				<div class="col-sm-6 col-md-5 col-lg-4 text-left">
+				<div class="col-sm-6 col-md-5 col-lg-4">
+					<a href="https://clho.org/ctcollections/" class="orgLink">
+						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'nhprc-logo.tif', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "", "", "","");?>
+					</a>
 					<div class="address">
 						<p class="footer-address">
 							{{{footer_text}}}
 						 </p>
 					</div>
-				 </div>
+				</div>
 
 			</div>
 		</footer><!-- end footer -->

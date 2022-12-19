@@ -35,20 +35,13 @@
 ?>
 <div class="transcription container textContent">
 	<div class="row">
-		<div class="col-sm-10 col-sm-offset-1">
-			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; All Collections</H1>
-			<p>
-				By transcribing a record, you are creating searchable data that can be used by genealogists, 
-				researchers, students, teachers, and everyone else. You are helping museums document their 
-				collections and share information in a meaningful way.
-			</p>
-			<p>
-				Want to start transcribing? Please read our <a href="/TranscriptionTips/Index">Transcription Tips</a> first. 
-			</p>
+		<div class="col-sm-12 col-md-8 col-md-offset-2">
+			<h1><?php print caNavLink($this->request, 'Transcribe', '', '', 'Transcribe', "Index"); ?> &gt; All Collections</H1>
+			<div class="transcribeIntro">{{{transcribe_collections_list_intro}}}</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-10 col-sm-offset-1">
+		<div class="col-sm-12 col-md-8 col-md-offset-2">
 			<div class="row">
 <?php
 						while($qr_sets->nextHit()) {
@@ -56,9 +49,9 @@
 							if(!isset($set_media[$set_id])) { continue; }
 							$item = array_shift($set_media[$set_id]);
 ?>
-			<div class="col-sm-3 collectionTile">
-				<div class="collectionImageCrop hovereffect"><?php print caNavLink($this->request, $item['representation_tag'], '', '', 'Transcribe', "Collection/{$set_id}"); ?>
-				<div class="overlay"><h2><?php print caNavLink($this->request, $qr_sets->get('ca_sets.preferred_labels.name'), '', '', 'Transcribe', "Collection/{$set_id}"); ?></h2></div>
+			<div class="col-sm-3">
+				<div class="collectionTile">
+					<div class="collectionImageCrop hovereffect"><?php print caNavLink($this->request, $item['representation_tag'].'<div class="overlay">'.$qr_sets->get('ca_sets.preferred_labels.name').'</div>', '', '', 'Transcribe', "Collection/{$set_id}"); ?>
 				</div>
 			</div>
 <?php

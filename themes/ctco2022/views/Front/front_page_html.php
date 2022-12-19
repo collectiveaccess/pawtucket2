@@ -32,8 +32,25 @@
   $va_access_values = $this->getVar("access_values");
  $vs_hero = $this->request->getParameter("hero", pString);
  if(!$vs_hero){
- 	$vs_hero = rand(1, 3);
+ 	$vs_hero = rand(1, 6);
  }
+ 
+ $front_page_config = caGetFrontConfig();
+ $suggested_searches = $front_page_config->get('suggested_searches');
+ 
+//  $search_to_display = array_slice($suggested_searches, rand(0,sizeof($suggested_searches)), 3);
+ $search_to_display = array_rand(array_flip($suggested_searches), 3);
+ 
+//  $request = $this->request;
+//  $links_to_display = array_map(function($s) use ($request) {
+//  	return caNavLink($request, $s, 'cssClassGoesHere', '', 'Search', 'objects', ['search' => $s]);
+//  }, $search_to_display);
+
+ $links_to_display = [];
+ foreach($search_to_display as $s) {
+ 	$links_to_display[] = caNavLink($this->request, $s, 'search-link', '', 'Search', 'objects', ['search' => $s]);
+ }
+
 ?>
 
 <div class="parallax hero<?php print $vs_hero; ?>">
@@ -55,6 +72,7 @@
 							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
 					</form>
+					<p class="search-suggest">Not sure what to search for? Try <?= join(', ', $links_to_display); ?></p>
 				</div>
 			</div>
 		</div>
@@ -102,7 +120,7 @@
 
 			<a class="col col-sm-4 text-center" href="/index.php/Contributors">
 				<div class="link-text">
-					Contributors
+					Institutions
 				</div>
 			</a>
 
