@@ -108,4 +108,19 @@
 		
 	
 	}
+	function getCollectionSourceIdForEntity($o_request, $entity_id) {
+		if(!$entity_id){
+			return null;
+		}
+		$t_entity = new ca_entities($entity_id);
+		$t_list = new ca_lists();
+		if($vs_entity_idno = $t_entity->get("ca_entities.idno")){
+			$va_source_info = $t_list->getItemFromList("collection_sources", $vs_entity_idno);
+			#print_r($va_source_info);
+			return $va_source_info["item_id"];
+		}
+		
+		
+	
+	}
 ?>

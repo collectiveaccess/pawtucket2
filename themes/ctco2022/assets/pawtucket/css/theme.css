@@ -62,7 +62,7 @@ a:hover{
 	padding-top: 0px;
 }
 .navbar-brand img{
-	height: 70px;
+	height: 85px;
 	width: auto;
 }
 
@@ -496,6 +496,10 @@ body.frontContainer #footer{
 	margin-top: 5px;
 	font-size: 14px;
 }
+.heroSearch p a{
+	color: #fff;
+	text-decoration: underline;
+}
 
 @media(max-width: 1355px) {
 	.heroSearch H1 .line1, .heroSearch H1 .line3 {
@@ -747,13 +751,17 @@ div#detailTools{
 	text-transform: none;
 }
 
+.detail a{
+	font-size: 13px;
+}
+
 .detail .unit {
-	font-size: 15px;
-	margin-bottom: 20px;
+	font-size: 13px;
+	margin-bottom: 15px;
 }
 
 .detail label{
-	font-size: 16px;
+	font-size: 13px;
 }
 @media(min-width:768px){
 	.detailBrowseAll{
