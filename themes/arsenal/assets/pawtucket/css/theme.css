@@ -119,12 +119,16 @@ a:hover{
 	background-color: transparent;
 }
 .navbar-brand{
-	width:175px;
+	width:180px;
 	padding-top: 0px;
 }
 @media (min-width:1010px){
 	.navbar-nav{
 		margin-top:27px;
+	}
+	.navbar > .container .navbar-brand {
+		margin-left: -11px;
+		padding-left:15px;
 	}
 }
 @media (min-width:768px){
@@ -133,11 +137,7 @@ a:hover{
 		padding-top: 35px;
 		padding-bottom: 37px;
 	}
-	.navbar > .container .navbar-brand {
-	  margin-left: -11px;
-	  padding-left:15px;
-	}
-
+	
 	.navbar-nav > li > a {
 		padding-top: 25px;
 		padding-bottom: 25px;
@@ -162,6 +162,15 @@ a:hover{
 	.yamm .nav.navbar-right.menuItems .dropdown-menu {
 		left: 0;
 		right: auto;
+	}
+}
+@media(min-width:768px) and (max-width:1010px){
+	.formOutline{
+		margin-right:15px;
+	}
+	.navbar > .container .navbar-brand {
+		margin-left:5px;
+		padding-left:15px;
 	}
 }
 @media(min-width:768px) and (max-width:1165px){
@@ -422,7 +431,7 @@ body{
 /* search / browse results */
 .results .frontGridTitle{
 	text-align:left;
-	font-size: 48px;
+	font-size: 42px;
 	color: #000;
 	margin-bottom:15px;
 	font-family: "CinetypeBold";
@@ -649,7 +658,7 @@ body.frontContainer #footer{
 .hpMainCallout{
 	font-family: "Cinetype";
 	font-weight:700;
-	font-size:45px;	
+	font-size:42px;	
 	margin-top: 50px;
 	text-align:center;
 }
@@ -759,7 +768,7 @@ body.frontContainer #footer{
 
 /* gallery */
 .gallery h1 {
-  	font-size: 48px;
+  	font-size: 42px;
 	color: #000;
 	margin-bottom: 15px;
 	margin-top: 0px;
@@ -886,6 +895,9 @@ body.frontContainer #footer{
 	color:#000;
 	background-size: 100% 2px;
 }
+.detail a{
+	color:#757575;
+}
 .detail label{
   color: #000;
   font-size: 18px;
@@ -929,7 +941,7 @@ a.readmore-js-toggle {
 	color: #000;
 }
 .detail h1 {
-	font-size: 48px;
+	font-size: 42px;
 	margin-bottom:0px;
 	text-transform:none;
 }
@@ -989,7 +1001,7 @@ a.zoomButton, a.zoomButton:hover{
 }
 @media(min-width:768px){
 	.staticPage h1 {
-		font-size: 48px;
+		font-size: 42px;
 	}
 }
 .staticPage h2 {
