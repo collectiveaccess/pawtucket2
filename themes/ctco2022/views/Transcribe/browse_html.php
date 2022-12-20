@@ -55,14 +55,9 @@
 <div class="transcription container textContent">
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-1">
-			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; Browse</H1>
-			<p>
-				By transcribing a record, you are creating searchable data that can be used 
-				by genealogists, researchers, students, teachers, and everyone else. You are 
-				helping museums document their collections and share information in a meaningful way.
-			</p>
+			<h1><?php print caNavLink($this->request, 'Transcribe', '', '', 'Transcribe', "Index"); ?> &gt; Browse</H1>
 			
-			<?php print "<div class='unit'><span class='name'>".$qr_result->numHits()."</span> transcribable items</div>"; ?>
+			<?php print "<div class='resultCount'>".$qr_result->numHits()." transcribable items</div>"; ?>
 <?php
 				if (sizeof($va_criteria) > 0) {
 					print "<div class='bCriteria'>";
@@ -95,12 +90,14 @@
 								
 								$status_info = caGetTranscriptionStatusInfo($transcription_status, 'items', $object_id);
 ?>
-			<div class="col-sm-3 collectionTile">
-				<div class="collectionImageCrop hovereffect">
-					<?php print caNavLink($this->request, $qr_result->get('ca_object_representations.media.small'), '', '', 'Transcribe', "Item", ['id' => $object_id]); ?>
-					<div class="overlay"><h2><?php print caNavLink($this->request, $qr_result->get('ca_objects.preferred_labels.name'), '', '', 'Transcribe', "Item", ['id' => $object_id]); ?></h2></div>
+			<div class="col-sm-6 col-md-3">
+				<div class="collectionTile">
+					<div class="collectionImageCrop">
+						<?php print caNavLink($this->request, $qr_result->get('ca_object_representations.media.iconlarge').'<div class="overlay">'.$qr_result->get('ca_objects.preferred_labels.name').'</div>', '', '', 'Transcribe', "Item", ['id' => $object_id]); ?>
+					</div>
+				
+					<?php print caNavLink($this->request, $status_info['status'], "btn btn-sm btn-{$status_info['color']}", '*', 'Transcribe', 'Item', ['id' => $object_id]); ?>
 				</div>
-				<?php print caNavLink($this->request, $status_info['status'], "btn btn-sm btn-{$status_info['color']}", '*', 'Transcribe', 'Item', ['id' => $object_id]); ?>
 			</div>
 <?php
 								$vn_c++;

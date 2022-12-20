@@ -140,72 +140,48 @@
                   <nav class="header-nav-list">
                     
 
-
-  
     <div class="header-nav-item header-nav-item--folder">
       <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/About" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0387097s;">About</a>
-      <div class="header-nav-folder-content">
-        
-          
+
+  		<div class="header-nav-folder-content">
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/about-chesapeake-heartland">Chesapeake Heartland</a>
+              <a href="https://chesapeakeheartland.org/about-chesapeake-heartland">
+                <span class="header-nav-folder-item-content">
+                  Chesapeake Heartland
+                </span>
+              </a>
             </div>
-          
-          
-        
-          
-          
-            <div class="header-nav-folder-item header-nav-folder-item--external">
-              <a href="https://chesapeakeheartland.org/s/Digital-Archive-Visual-Sampler-2021.pdf">Digital Archive Visual Sampler</a>
-            </div>
-          
-        
-          
-          
-            <div class="header-nav-folder-item header-nav-folder-item--external">
-              <a href="https://chesapeakeheartland.org/s/Program-Activities-Visual-Sampler-2021.pdf">Events &amp; Programming Overview</a>
-            </div>
-          
-        
-          
             <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/blog">Heartland Blog</a>
+              <a href="https://chesapeakeheartland.org/staffandpartners">
+                <span class="header-nav-folder-item-content">
+                  Staff &amp; Partners
+                </span>
+              </a>
             </div>
-          
-          
-        
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/internships-fellowships">
+                <span class="header-nav-folder-item-content">
+                  Internships &amp; Fellowships
+                </span>
+              </a>
+            </div>
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/events">
+                <span class="header-nav-folder-item-content">
+                  Events
+                </span>
+              </a>
+            </div>
+            <div class="header-nav-folder-item">
+              <a href="https://chesapeakeheartland.org/blog">
+                <span class="header-nav-folder-item-content">
+                  Heartland Blog
+                </span>
+              </a>
+            </div>
       </div>
-    </div>
-  
-  
-
-
-  
-    <div class="header-nav-item header-nav-item--folder">
-      <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/heartland-team" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0580645s;">Heartland Team</a>
-      <div class="header-nav-folder-content">
-        
-          
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/staffandpartners">Staff &amp; Partners</a>
-            </div>
-          
-          
-        
-          
-            <div class="header-nav-folder-item">
-              <a href="https://chesapeakeheartland.org/internships-fellowships">Internships &amp; Fellowships</a>
-            </div>
-          
-          
-        
-      </div>
-    </div>
-  
-  
-
-
-  
+    </div>  
+ 
     <div class="header-nav-item header-nav-item--folder header-nav-item--active">
       <a class="header-nav-folder-title preFade "  href="#" onClick="return false;" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0736842s;">Digital Archive</a>
       <div class="header-nav-folder-content">
@@ -234,6 +210,11 @@
       </div>
     </div>
     <div class="header-nav-item header-nav-item--collection">
+      <a href="https://chesapeakeheartland.org/isaac-a-musical-journey" data-animation-role="header-element" class="preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.075s;">
+        ISAAC
+      </a>
+    </div>
+    <div class="header-nav-item header-nav-item--collection">
       <a href="https://chesapeakeheartland.org/hip-hop-time-capsule">Hip Hop Time Capsule</a>
     </div>
 
@@ -242,6 +223,13 @@
       <a class="header-nav-folder-title preFade fadeIn" href="https://chesapeakeheartland.org/projects" tabindex="-1" data-animation-role="header-element" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.116129s;">Projects</a>
       <div class="header-nav-folder-content">
         
+			<div class="header-nav-folder-item">
+				  <a href="https://chesapeakeheartland.org/historical-signage-and-visualization-project">
+					<span class="header-nav-folder-item-content">
+					  Historical Signage &amp; Visualization Project
+					</span>
+				  </a>
+            </div>
 			<div class="header-nav-folder-item">
 				  <a href="https://chesapeakeheartland.org/kca-ch-artist-fellowship">
 					<span class="header-nav-folder-item-content">
@@ -556,7 +544,7 @@
 <div class="header-menu-nav-folder-content">
 
   <div class="container header-menu-nav-item">
-    <a data-folder-id="/About" href="https://chesapeakeheartland.org/About">
+    <a data-folder-id="/About" href="/About">
       <div class="header-menu-nav-item-content">
         <span class="visually-hidden">Folder:</span>
         <span>About</span>
@@ -567,18 +555,7 @@
   
 
   <div class="container header-menu-nav-item">
-    <a data-folder-id="/heartland-team" href="https://chesapeakeheartland.org/heartland-team">
-      <div class="header-menu-nav-item-content">
-        <span class="visually-hidden">Folder:</span>
-        <span>Heartland Team</span>
-        <span class="chevron chevron--right"></span>
-      </div>
-    </a>
-  </div>
-  
-
-  <div class="container header-menu-nav-item">
-    <a data-folder-id="/digital-archive" href="https://chesapeakeheartland.org/digital-archive">
+    <a data-folder-id="/digital-archive" href="/digital-archive">
       <div class="header-menu-nav-item-content">
         <span class="visually-hidden">Folder:</span>
         <span>Digital Archive</span>
@@ -589,6 +566,14 @@
   
 
   <div class="container header-menu-nav-item header-menu-nav-item--collection">
+    <a href="https://chesapeakeheartland.org/isaac-a-musical-journey">
+      <div class="header-menu-nav-item-content">
+        ISAAC
+      </div>
+    </a>
+  </div>
+
+  <div class="container header-menu-nav-item header-menu-nav-item--collection">
     <a href="https://chesapeakeheartland.org/hip-hop-time-capsule">
       <div class="header-menu-nav-item-content">
         Hip Hop Time Capsule
@@ -596,8 +581,8 @@
     </a>
   </div>
 
-  <div class="container header-menu-nav-item">
-    <a data-folder-id="/projects" href="https://chesapeakeheartland.org/projects">
+  <div class="container header-menu-nav-item header-menu-nav-item--active">
+    <a data-folder-id="/projects" href="/projects" aria-current="true">
       <div class="header-menu-nav-item-content">
         <span class="visually-hidden">Folder:</span>
         <span>Projects</span>
@@ -637,65 +622,59 @@
             </div>
           
           
-        </div><div data-folder="/About" class="header-menu-nav-folder">
-    <div class="header-menu-nav-folder-content">
-    <div class="header-menu-controls container header-menu-nav-item">
-      <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
-        <span class="chevron chevron--left"></span><span>Back</span>
-      </a>
-    </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/about-chesapeake-heartland" tabindex="-1">
-        <div class="header-menu-nav-item-content">
-          Chesapeake Heartland
         </div>
-      </a>
-    </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/events" tabindex="-1">
-        <div class="header-menu-nav-item-content">
-          Events
-        </div>
-      </a>
-    </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/blog" tabindex="-1">
-        <div class="header-menu-nav-item-content">
-          Heartland Blog
-        </div>
-      </a>
-    </div>
-    
-    </div>
-  </div><div data-folder="/heartland-team" class="header-menu-nav-folder">
-    <div class="header-menu-nav-folder-content">
-    <div class="header-menu-controls container header-menu-nav-item">
-      <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="https://chesapeakeheartland.org/" tabindex="-1">
-        <span class="chevron chevron--left"></span><span>Back</span>
-      </a>
-    </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/staffandpartners" tabindex="-1">
-        <div class="header-menu-nav-item-content">
-          Staff &amp; Partners
-        </div>
-      </a>
-    </div>
-    
-    <div class="container header-menu-nav-item">
-      <a href="https://chesapeakeheartland.org/internships-fellowships" tabindex="-1">
-        <div class="header-menu-nav-item-content">
-          Internships &amp; Fellowships
-        </div>
-      </a>
-    </div>
-    
-    </div>
-  </div><div data-folder="/digital-archive" class="header-menu-nav-folder">
+	<div data-folder="/About" class="header-menu-nav-folder">
+		<div class="header-menu-nav-folder-content">
+		<div class="header-menu-controls container header-menu-nav-item">
+		  <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
+			<span class="chevron chevron--left"></span><span>Back</span>
+		  </a>
+		</div>
+	
+		<div class="container header-menu-nav-item">
+		  <a href="https://chesapeakeheartland.org/about-chesapeake-heartland" tabindex="0">
+			<div class="header-menu-nav-item-content">
+			  Chesapeake Heartland
+			</div>
+		  </a>
+		</div>
+	
+		<div class="container header-menu-nav-item">
+		  <a href="https://chesapeakeheartland.org/staffandpartners" tabindex="0">
+			<div class="header-menu-nav-item-content">
+			  Staff &amp; Partners
+			</div>
+		  </a>
+		</div>
+	
+		<div class="container header-menu-nav-item">
+		  <a href="https://chesapeakeheartland.org/internships-fellowships" tabindex="0">
+			<div class="header-menu-nav-item-content">
+			  Internships &amp; Fellowships
+			</div>
+		  </a>
+		</div>
+	
+		<div class="container header-menu-nav-item">
+		  <a href="https://chesapeakeheartland.org/events" tabindex="0">
+			<div class="header-menu-nav-item-content">
+			  Events
+			</div>
+		  </a>
+		</div>
+	
+		<div class="container header-menu-nav-item">
+		  <a href="https://chesapeakeheartland.org/blog" tabindex="0">
+			<div class="header-menu-nav-item-content">
+			  Heartland Blog
+			</div>
+		  </a>
+		</div>
+	
+		</div>
+  </div>
+  
+  <div data-folder="/digital-archive" class="header-menu-nav-folder">
     <div class="header-menu-nav-folder-content">
     <div class="header-menu-controls container header-menu-nav-item">
       <a class="header-menu-controls-control header-menu-controls-control--active" data-action="back" href="/" tabindex="-1">
@@ -728,6 +707,13 @@
       </a>
     </div>
     
+    <div class="container header-menu-nav-item">
+      <a href="https://chesapeakeheartland.org/historical-signage-and-visualization-project" tabindex="0">
+        <div class="header-menu-nav-item-content">
+          Historical Signage &amp; Visualization Project
+        </div>
+      </a>
+    </div>
     <div class="container header-menu-nav-item">
       <a href="https://chesapeakeheartland.org/kca-ch-artist-fellowship" tabindex="-1">
         <div class="header-menu-nav-item-content">

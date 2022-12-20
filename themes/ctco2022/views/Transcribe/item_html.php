@@ -43,26 +43,32 @@
 	
 	$set = $this->getVar('set');
 ?>
-<div class="transcription container textContent">
+<div class="transcription container detail">
 	<div class="row">
 		<div class="col-sm-1">
-			<div class="setsBack">
+			<div class="navLeftRight"><div class="detailNavBgLeft">
 				<?php print $previous_id ? caNavLink($this->request, '<i class="fa fa-angle-left" aria-label="back"></i><div class="small">Previous</div>', '', '*', 'Transcribe', 'Item', ['id' => $previous_id]) : ''; ?>
 				<?php print $set['set_id'] ? caNavLink($this->request, '<i class="fa fa-angle-double-left" aria-label="back"></i><div class="small">Back</div>', '', '*', 'Transcribe', 'Collection/'.$set['set_id']) : ''; ?>
-			</div>
+			</div></div>
 		</div>
 		<div class="col-sm-10">
-			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; <?php print is_array($set) ? caNavLink($this->request, $set['name'], '', '*', 'Transcribe', 'Collection/'.$set['set_id'])." &gt; " : ""; ?><?php print $t_item->get('ca_objects.preferred_labels.name'); ?></H1>
-			<p >
-				
-				<h4><?php print caDetailLink($this->request, $t_item->get('ca_objects.preferred_labels.name')." (".$t_item->get('ca_objects.idno').")", '' ,$t_item->tableName(), $t_item->getPrimaryKey()); ?></h4>
-				<h6><?php print $t_item->get("ca_entities", array("restrictToRelationshipTypes" => array("repository"), "returnAsLink" => true, "checkAccess" => $access_values));?></h6>
-				<?php print $t_item->get('ca_objects.description'); ?>
-			</p>
-			<div style="clear:both; margin-top:10px;">
+			<h1><?php print caNavLink($this->request, 'Transcribe', '', '', 'Transcribe', "Index"); ?> &gt; <?php print is_array($set) ? caNavLink($this->request, $set['name'], '', 'Transcribe', 'Collection', $set['set_id'])."" : ""; ?><br/><?php print caDetailLink($this->request, $t_item->get('ca_objects.preferred_labels.name')." (".$t_item->get('ca_objects.idno').")", '' ,$t_item->tableName(), $t_item->getPrimaryKey()); ?></H1>
+<?php
+			if($t_item->get("source_id")){
+				$vs_source_as_link = getSourceAsLink($this->request, $t_item->get("source_id"), null);
+?>
+				<div class="unit"><label>Contributor</label>
+					<?php print $vs_source_as_link; ?>
+				</div>
+<?php
+			}				
+			if($vs_tmp = $t_item->get('ca_objects.description')){
+				print "<div class='unit'>".$vs_tmp."</div>";			
+			}
+?>
 
 				<div class="row">
-					<div class="col-sm-7">
+					<div class="col-sm-7" style="overflow: hidden;">
 						<?php 
 							print array_shift(caRepresentationViewerHTMLBundles($this->request, caMakeSearchResult('ca_object_representations', [$representation_id]), $t_item, ['display' => 'transcribe']));
 						?>
@@ -95,15 +101,17 @@
 					<div class="col-sm-5">
 						<?php print caFormTag($this->request, 'SaveTranscription', 'transcript', null, 'post', 'multipart/form-data', '_top', ['disableUnsavedChangesWarning' => true]); ?>
 							<div class="unit">
-								<span class="name">Transcription: </span>
+								<label>Transcription: </label>
 
 <?php
 	if($transcription->isComplete()) {
 ?>
 	<div class='completedText'> 
-		<?php print $transcription->get('transcription'); ?>
+		<div class='unit'>
+			<?php print $transcription->get('transcription'); ?>
+		</div>
 		
-		<div class='saveControls'> 
+		<div class='unit'> 
 			<button class='btn btn-lg btn-danger'>Edit this transcription</button>
 		</div>
 		
@@ -115,16 +123,16 @@
 <?php
 	} else {
 ?>
-							<?php print caHTMLTextInput('transcription', ['value' => $transcription->get('transcription'), 'id' => 'transcription'], ['width' => '525px', 'height' => '400px']); ?>
+							<div class='unit'><?php print caHTMLTextInput('transcription', ['value' => $transcription->get('transcription'), 'id' => 'transcription'], ['width' => '525px', 'height' => '400px']); ?></div>
 					
 							<?php print caHTMLHiddenInput('id', ['value' => $t_item->getPrimaryKey()]); ?>
 							<?php print caHTMLHiddenInput('representation_id', ['value' => $representation_id]); ?>
 <?php
 	if ($start_date = $transcription->get('ca_representation_transcriptions.created_on')) {
-		print "<div class='startTime'>(Started {$start_date})</div>";
+		print "<div class='unit startTime'>(Started {$start_date})</div>";
 	}
 ?>
-							<div class='saveControls'> 
+							<div class='unit'> 
 								<button class='btn btn-lg btn-danger'>Save transcription</button>
 								<?php print caHTMLCheckboxInput('complete', ['value' => 1]); ?> Completed?
 							</div>
@@ -142,29 +150,17 @@
 <?php
 	} else {
 ?>
-						<div>
-							<ul>
-								<li>If you cannot read a word, enter [illegible]. If you are making an educated guess, enter the word in square brackets with a question mark, ie [shipyard?]</li>
-								<li>Save your work often</li>
-								<li>Some records may include spelling mistakes and/or abbreviations. Please do not correct spelling or expand abbreviations, but simply transcribe the record as it appears. If a word has been misspelled, put (sic) afterwards so it is clear this is not a transcription error. If words have been crossed out, they should not be included in the transcription.
-</li>
-								<li>Focus on the text rather than formatting. No need for adding line or paragraph breaks or noting that words are underlined, bolded, etc.; the goal is to make the text searchable and easy to read. </li>
-								<li>When you finish a transcription, check the completed box. For multi-page documents, you will need to do this for each page.</li>
-								<li>View <a href="/TranscriptionTips/Index" target="_new">Transcription Tips</a></li>
-							</ul>
-							
-						</div>
+						<div class="unit">{{{transcribe_item_instructions}}}</div>
 <?php
 	}
 ?>
 					</div>
 				</div>
-			</div>
 		</div>	
 	<div class="col-sm-1">
-		<div class="setsBack">
+		<div class="navLeftRight"><div class="detailNavBgRight">
 			<?php print $next_id ? caNavLink($this->request, '<i class="fa fa-angle-right" aria-label="back"></i><div class="small">Next</div>', '', '*', 'Transcribe', 'Item', ['id' => $next_id]) : ''; ?>
-		</div>
+		</div></div>
 	</div>
 	</div>
 </div>
