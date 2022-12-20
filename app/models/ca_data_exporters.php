@@ -192,11 +192,11 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 		self::$s_variables = array();
 	}
 	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
+	public function __construct($id=null, ?array $options=null) {
 		$this->opo_app_plugin_manager = new ApplicationPluginManager();
 		BaseModel::$s_ca_models_definitions['ca_data_exporters']['FIELDS']['table_num']['BOUNDS_CHOICE_LIST'] = array_flip(caGetPrimaryTables(true));
 		global $_ca_data_exporters_settings;
-		parent::__construct($pn_id);
+		parent::__construct($id, $options);
 
 		// settings
 		$this->initSettings();
@@ -265,6 +265,16 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 			'default' => '',
 			'label' => _t('Type restrictions'),
 			'description' => _t('If set, this mapping will only be available for these types. Multiple types are separated by commas or semicolons.')
+		);
+
+		$va_settings['locale'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 1,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Locale'),
+			'description' => _t('Locale code to use to get the field values when mapping-specific locale is not set. If not set, the system/user default is used.')
 		);
 
 		// if exporter_format is set, pull in format-specific settings
@@ -1555,6 +1565,8 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 			$o_log->logError(_t("Failed to load exporter with code '%1' for item with ID %2", $ps_exporter_code, $pn_record_id));
 			return false;
 		}
+		
+		$pa_options['settings'] = $t_exporter->getSettings();
 
 		$va_type_restrictions = $t_exporter->getSetting('typeRestrictions');
 		if(is_array($va_type_restrictions) && sizeof($va_type_restrictions)) {
@@ -1614,7 +1626,6 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 
 		$o_manager->hookExportRecord(array('exporter_instance' => $t_exporter, 'record_id' => $pn_record_id, 'export' => &$va_export));
 
-		$pa_options['settings'] = $t_exporter->getSettings();
 
 		$vs_wrap_before = $t_exporter->getSetting('wrap_before_record');
 		$vs_wrap_after = $t_exporter->getSetting('wrap_after_record');
@@ -1915,16 +1926,20 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 			$va_get_options['template'] = $vs_template;
 		}
 
-		if($vs_locale = $settings['locale']) {
+		if(($vs_locale = $settings['locale']) || ($vs_locale = caGetOption('locale', $pa_options['settings'], null))) {
 			// the global UI locale for some reason has a higher priority
 			// than the locale setting in BaseModelWithAttributes::get
 			// which is why we unset it here and restore it later
 			global $g_ui_locale;
 			$vs_old_ui_locale = $g_ui_locale;
 			$g_ui_locale = null;
-
+			
 			$va_get_options['locale'] = $vs_locale;
 		}
+		if($settings['returnAllLocales']) {
+			$va_get_options['returnAllLocales'] = true;
+		}
+		
 		
 		// AttributeValue settings that are simply passed through by the exporter
 	
@@ -2114,7 +2129,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 			} else if(in_array($vs_source, array("relationship_type_id", "relationship_type_code", "relationship_typename"))) {
 				if(isset($pa_options[$vs_source]) && strlen($pa_options[$vs_source])>0) {
 
-					$o_log->logDebug(_t("Source refers to releationship type information. Value for this mapping is '%1'", $pa_options[$vs_source]));
+					$o_log->logDebug(_t("Source refers to relationship type information. Value for this mapping is '%1'", $pa_options[$vs_source]));
 
 					$va_item_info[] = array(
 						'text' => $pa_options[$vs_source],
@@ -2126,7 +2141,7 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 					$va_values = $t_instance->get($vs_source, array_merge($va_get_options, ['returnAsArray' => true]));
 					if($deduplicate) { $va_values = array_unique($va_values); } 
 					
-					$vs_get = join(caGetOption('delimiter', $va_get_opts, ';'), $va_values);
+					$vs_get = join(caGetOption('delimiter', $va_get_opts, ';'), $va_values ?? []);
 					$o_log->logDebug(_t("Source is a simple get() for some bundle. Value for this mapping is '%1'", $vs_get));
 					$o_log->logDebug(_t("get() options are: %1", print_r($va_get_options,true)));
 
@@ -2365,13 +2380,15 @@ class ca_data_exporters extends BundlableLabelableBaseModelWithAttributes {
 		} else {
 			if (!($table = Datamodel::getTableName($pn_table_num))) { return false; }
 			
+			$include_deleted = caGetOption('includeDeleted', $pa_options, false);
+			
 			$t_instance = null;
 			if (is_numeric($pn_record_id)) {
 				// Try numeric id
-				$t_instance = $table::find($pn_record_id, array_merge($pa_options, ['returnAs' => 'firstModelInstance', 'start' => 0, 'limit' => null]));
+				$t_instance = $table::find($pn_record_id, array_merge($pa_options, ['includeDeleted' => $include_deleted, 'returnAs' => 'firstModelInstance', 'start' => 0, 'limit' => null]));
 			}
 			if(!$t_instance) {
-				$t_instance = $table::find([Datamodel::getTableProperty($table, 'ID_NUMBERING_ID_FIELD') => $pn_record_id], array_merge($pa_options, ['returnAs' => 'firstModelInstance', 'start' => 0, 'limit' => null]));
+				$t_instance = $table::find([Datamodel::getTableProperty($table, 'ID_NUMBERING_ID_FIELD') => $pn_record_id], array_merge($pa_options, ['includeDeleted' => $include_deleted, 'returnAs' => 'firstModelInstance', 'start' => 0, 'limit' => null]));
 			}
 			
 			if (!$t_instance) {

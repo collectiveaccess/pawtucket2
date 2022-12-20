@@ -96,10 +96,8 @@
 		<div class="container" style='max-width:none;'><div class="row grayBack"><div class="col-sm-12">
 			<ul class='socialRow'>
 				<li><span class="connect">Connect with us!</span></li>
-				<li><a href='mailto:staff@mnhistoryalliance.org' target='_blank'><i class='fa fa-envelope-o'></i></a></li>
-				<li><a href='https://www.linkedin.com/company/minnesota-alliance-of-local-history-museums/' target='_blank'><i class='fa fa-linkedin'></i></a></li>
+				<li><a href='mailto:gibson@mnhistoryalliance.org' target='_blank'><i class='fa fa-envelope-o'></i></a></li>
 				<li><a href='https://www.instagram.com/mnhistoryalliance/' target='_blank'><i class='fa fa-instagram'></i></a></li>
-				<li><a href='https://twitter.com/MNlocalhistory' target='_blank'><i class='fa fa-twitter'></i></a></li>
 				<li><a href='https://www.facebook.com/MNHistoryAlliance/' target='_blank'><i class='fa fa-facebook'></i></a></li>
 			</ul>
 		</div></div></div>

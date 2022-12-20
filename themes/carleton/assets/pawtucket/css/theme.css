@@ -134,6 +134,12 @@ h1.page_title, .pageTitle--Main{
 	text-decoration:none;
 	background-image:none !important;
 }
+@media (max-width: 768px){
+	ul.menuItems {
+		border-top: 0px;
+		padding-left: 30px;
+	}
+}
 /* browse */
 .results H1{
 	text-transform: capitalize;
@@ -172,6 +178,80 @@ h1.page_title, .pageTitle--Main{
 	font-weight: 600;
 	padding-bottom: 7px;
 	color: #666;
+}
+.multipleMediaIcon{
+	position:absolute;
+	top: 5px;
+	right: 20px;
+	z-index:10;
+	background-color:#FFF;
+	padding:5px;
+	font-size:18px;
+	color:#777;
+}
+.bResultItemContent:hover .multipleMediaIcon {
+	right: 5px;
+}
+.bResultListItemText .multipleMediaIcon {
+	right: auto;
+	left:20px;
+}
+.bResultListItem:hover .multipleMediaIcon{
+	left:5px
+	right:auto;
+}
+.searchIntro{
+	font-size:14px;
+	font-family: 'Gotham SSm A,Gotham SSm B,Helvetica Neue,Helvetica,Arial,sans-serif';
+}
+/* browse  multiple select */
+.facetItem .glyphicon-chevron-down {
+	font-size:10px;
+}
+.facetContainer{
+	position:relative;
+	padding-bottom:20px;
+}
+#bRefine .facetItem {
+	padding-left:20px; 
+	margin-bottom:10px;
+}
+#bRefine .facetItem[facet_item_selected="1"] {
+	padding-left:20px;
+}
+[facet_item_selected="1"]::before {
+	font-family: FontAwesome;
+	content: "\f067"; 
+	padding-right:6px;
+	position:absolute;
+	left:7px;
+	top:4px;
+	font-size:11px;
+}
+.facetApply {
+	clear:both;
+	right:15px;
+	display:block;
+	text-align: center;
+    margin-top: 20px;
+
+}
+a.facetApply {
+    background-color: #306aa2;
+    color:#FFF !important;
+    font-size: 13px;
+    border-radius: 3px;
+    width:50px;
+    padding-top:4px;
+    padding-bottom:4px;
+    margin-left: auto;
+    margin-right: auto; 
+    position:absolute;
+    bottom:0px;
+    left:0px;
+}
+#bRefine a.more {
+  color: #306aa2;
 }
 /* ---------- Search Within -------------------- */
 @media(max-width:768px){
@@ -287,10 +367,13 @@ a:hover {
 #bRefine H2{
 	font-size:18px;
 	color:#000;
+	padding-left:15px;
 }
 #bRefine H3{
 	font-size:16px;
 	color:#000;
+	padding-left:15px;
+	cursor:pointer;
 }
 #bRefine{
 	background-color:#cdddec;

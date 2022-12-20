@@ -64,7 +64,7 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-		if($vs_table == "ca_collections"){
+		if(in_array($vs_table, array("ca_collections", "ca_object_lots"))){
 			$vn_col_span = 12;
 			$vn_col_span_sm = 12;
 			$vn_col_span_xs = 12;
@@ -126,9 +126,10 @@
 				
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					$vs_desc = "";
+					$vs_multiple_media = "";
 					switch($vs_table){
 						case "ca_collections":
-							$vs_parent_path = $qr_res->getWithTemplate("<unit relativeTo='ca_collections.parent'><unit relativeTo='ca_collections.hierarchy' delimiter=' &gt; '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></unit></unit>");
+							$vs_parent_path = $qr_res->getWithTemplate("<unit relativeTo='ca_collections.parent'><unit relativeTo='ca_collections.hierarchy' delimiter=' &gt; '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef></unit></unit>");
 							if($vs_parent_path){
 								$vs_parent_path .= " >";
 							}
@@ -140,13 +141,16 @@
 								$vs_label_detail_link = "<div class='resultClassification'>".$vs_tmp."</div>";
 							}
 							if(strToLower($qr_res->getWithTemplate("^ca_collections.type_id")) == "collection"){
-								$vs_label_detail_link 	.= $qr_res->getWithTemplate("<div class='collectionID'>^ca_collections.type_id ^ca_collections.id_number</div>^ca_collections.preferred_labels<ifdef code='ca_collections.inclusive_dates'><br/>^ca_collections.inclusive_dates%delimiter=,_</ifdef>");
+								$vs_label_detail_link 	.= $qr_res->getWithTemplate("<div class='collectionID'>^ca_collections.type_id ^ca_collections.id_number</div>^ca_collections.preferred_labels<ifdef code='ca_collections.display_date'><br/>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'><br/>^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef>");
 							}else{
-								$vs_label_detail_link 	.= "<div class='collectionPath'>".$vs_parent_path."</div>".$qr_res->getWithTemplate("^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef>");
+								$vs_label_detail_link 	.= "<div class='collectionPath'>".$vs_parent_path."</div>".$qr_res->getWithTemplate("^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef>");
 							}
 							if(strToLower($qr_res->getWithTemplate("^ca_collections.type_id")) == "item"){
 								$vs_thumbnail = $qr_res->getWithTemplate("<ifcount code='ca_object_representations' min='1'><l><unit relativeTo='ca_object_representations' length='1'><div class='bResultCollectionListItemImg'>^ca_object_representations.media.iconlarge</div></unit><l></ifcount>");
 								$vs_desc = $qr_res->getWithTemplate("^ca_collections.description");
+								if($qr_res->getWithTemplate("<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='0' length='1'>^count</unit>", array("checkAccess" => $va_access_values)) > 1){
+									$vs_multiple_media = '<div class="multipleMediaIcon"><i class="fa fa-files-o" aria-hidden="true" title="multiple media"></i></div>';
+								}
 							}else{
 								$vs_desc = strip_tags($qr_res->getWithTemplate("^ca_collections.scope_content%convertLineBreaks=1&truncate=500&ellipsis=1"));
 							}
@@ -196,7 +200,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 				<div class='bResultListItemContent'>
 					<div class='bResultListItemText'>
-						{$vs_thumbnail}{$vs_label_detail_link}<div class='bResultListItemTextDesc'>{$vs_desc}</div>
+						{$vs_multiple_media}{$vs_thumbnail}{$vs_label_detail_link}<div class='bResultListItemTextDesc'>{$vs_desc}</div>
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
 			</div><!-- end bResultListItem -->

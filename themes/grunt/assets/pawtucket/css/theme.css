@@ -22,6 +22,9 @@ a:hover{
 	color:#f18e00;
 }
 */
+H1, h1, h2, H2, H3, h3, H4, h4, H5, h5{
+	text-transform:capitalize;
+}
 a, a:hover {
   color: #000;
 }
@@ -29,6 +32,7 @@ a, a:hover {
 	background-color:#000;
 	color:#009BF5;
 	text-shadow: none;
+	text-transform:capitalize;
 }
 .btn-default:hover{
 	background-color:#009BF5;
@@ -133,7 +137,7 @@ hr{
 
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
     font-family: lato;
-    text-transform:uppercase;
+    text-transform:capitalize;
 }
 .navbar-default .navbar-nav > li > a{
 	color:#000000;
@@ -161,7 +165,7 @@ hr{
 	box-shadow: 1px 3px 3px rgba(0, 0, 0, 0.2);
 }
 .navbar-nav > li > .dropdown-menu a{
-	text-transform:uppercase;
+	text-transform:capitalize;
 	letter-spacing:1px;
 	color:#000000;
 	font-family:lato;
@@ -247,7 +251,7 @@ body{
 	font-weight:400;
 }
 #footer .address{
-	text-transform: uppercase;
+	text-transform: capitalize;
 	font-size: 14px;
 }
 @media(max-width: 768px) {
@@ -259,7 +263,7 @@ body{
 	font-size: 14px;
 	color: #FFF;
 	font-weight: 400;
-	text-transform: uppercase;
+	text-transform: capitalize;
 }
 #footer .social a{
 	font-size: 20px;
@@ -482,7 +486,7 @@ body.frontContainer #footer{
 	object-fit:cover;
 }
 .front .featuredExhibition a.featuredExhibitionTitle{
-	font-size: 24px;
+	font-size: 20px;
     font-family: Lato;
     line-height: 1.2em;
 	font-weight: 700;
@@ -550,7 +554,7 @@ body.frontContainer #footer{
 	font-size:20px;
 	line-height:28px;
 	color:#000;
-	text-transform:uppercase;
+	text-transform:capitalize;
 	margin-bottom:6px;
 	font-family: Lato;
 }
@@ -658,9 +662,10 @@ body.frontContainer #footer{
   text-decoration:underline;
 }
 .detail label {
-  font-size: 13px;
-  color: #000;
-  margin-bottom:0px;
+	font-size: 15px;
+	color: #000;
+	 margin-bottom:0px;
+	text-transform:capitalize;
 }
 .detail h1 {
 	font-size: 21px;
@@ -681,6 +686,7 @@ body.frontContainer #footer{
 	color:#000;
 	font-size:14px;
 	padding:10px;
+	text-transform:capitalize;
 }
 .detailTool a .glyphicon{
 	color:#000;
@@ -701,4 +707,25 @@ body.frontContainer #footer{
 /* static pages */
 .staticPage{
 	font-size:18px;
+}
+.aboutSideNav{
+	position: fixed;
+	width: 23%;
+}
+.aboutSideNav ul{
+	padding-left: 0px;
+	list-style-type: none;
+	font-size: 18px;
+}
+.aboutSideNav ul li{
+	padding-bottom: 10px;
+}
+.aboutSideNav a, .aboutSideNav a:hover{
+	font-family:Lato;
+	color:#000;	
+}
+.aboutSection{
+	font-size: 18px;
+	font-family:Lato;
+	margin-top:30px;
 }

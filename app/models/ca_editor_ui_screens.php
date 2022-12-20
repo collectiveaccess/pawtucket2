@@ -216,10 +216,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 	static $s_placement_list_cache;		// cache for getPlacements()
 	static $s_table_num_cache;			// cache for getTableNum()
 	
-	# ----------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);
-	}
 	# ------------------------------------------------------
 	protected function initLabelDefinitions($pa_options=null) {
 		parent::initLabelDefinitions($pa_options);
@@ -297,7 +293,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 			return false;
 		}
 		
-		$t_placement = new ca_editor_ui_bundle_placements(null, is_array($pa_options['additional_settings']) ? $pa_options['additional_settings'] : null);
+		$t_placement = new ca_editor_ui_bundle_placements(null, null, is_array($pa_options['additional_settings']) ? $pa_options['additional_settings'] : null);
 		if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 		$t_placement->setMode(ACCESS_WRITE);
 		$t_placement->set('screen_id', $vn_screen_id);
@@ -612,7 +608,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 
 		$vs_table_display_name = $t_instance->getProperty('NAME_PLURAL');
 		
-		$t_placement = new ca_editor_ui_bundle_placements(null, array());
+		$t_placement = new ca_editor_ui_bundle_placements(null, null, []);
 		if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 		$va_defined_bundles = method_exists($t_instance, "getBundleList") ? $t_instance->getBundleList(array('includeBundleInfo' => true)) : [];		// these are the bundles defined for this type of editor
 		
@@ -920,6 +916,15 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 								'label' => _t('Restrict to relationship types'),
 								'description' => _t('Restricts display to items related using the specified relationship type(s). Leave all unselected for no restriction.')
 							),
+							'dontShowRelationshipTypes' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_CHECKBOXES,
+								'width' => 10, 'height' => 1,
+								'takesLocale' => false,
+								'default' => false,
+								'label' => _t('Do not show relationship types?'),
+								'description' => _t('If checked relationship types will not be shown when displaying related items.')
+							),
 							'restrict_to_types' => array(
 								'formatType' => FT_TEXT,
 								'displayType' => DT_SELECT,
@@ -1149,7 +1154,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 								'takesLocale' => false,
 								'default' => false,
 								'label' => _t('Show batch editing button?'),
-								'description' => _t('If checked an option to batch edit related records will be displaye.')
+								'description' => _t('If checked an option to batch edit related records will be displayed.')
 							)
 						);
 				
@@ -1339,13 +1344,13 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 						);
 					}
 
-					if (in_array($vs_bundle, array('ca_places', 'ca_list_items', 'ca_storage_locations'))) {
+					if (in_array($vs_bundle, array('ca_collections', 'ca_places', 'ca_list_items', 'ca_storage_locations'))) {
 						$va_additional_settings['useHierarchicalBrowser'] = array(
 							'formatType' => FT_TEXT,
 							'displayType' => DT_CHECKBOXES,
 							'width' => 10, 'height' => 1,
 							'takesLocale' => false,
-							'default' => '1',
+							'default' => ($vs_bundle === 'ca_collections') ? '0' : '1',
 							'label' => _t('Use hierarchy browser?'),
 							'description' => _t('If checked a hierarchical browser will be used to select related items instead of an auto-complete lookup.')
 						);
@@ -1473,6 +1478,16 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 								'description' => _t('URL pointing to documentation for this hierarchy browser. Leave blank if no documentation URL exists.')
 							)
 						);
+						if($vs_bundle === 'hierarchy_location') {
+							$va_additional_settings['headerDisplayTemplate'] = [
+								'formatType' => FT_TEXT,
+								'displayType' => DT_FIELD,
+								'default' => '',
+								'width' => "475px", 'height' => "100px",
+								'label' => _t('Header display template'),
+								'description' => _t('Layout for item in hierarchy browser header. The template is evaluated relative to item being edited.')
+							];
+						}
 					} else {
 						switch($vs_bundle) {
 							case 'authority_references_list':
@@ -1581,6 +1596,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 									)		
 								);
 								break;
+							case 'generic':
 							case 'ca_objects_components_list':
 								$va_additional_settings = array(
 									'displayTemplate' => array(
@@ -2500,7 +2516,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 						return false;
 					}
 				} else {
-					$t_placement = new ca_editor_ui_bundle_placements($vn_placement_id, $va_available_bundles[$vs_bundle]['settings']);
+					$t_placement = new ca_editor_ui_bundle_placements($vn_placement_id, null, $va_available_bundles[$vs_bundle]['settings']);
 					if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
 					$t_placement->setMode(ACCESS_WRITE);
 					$t_placement->set('rank', $vn_i + 1);

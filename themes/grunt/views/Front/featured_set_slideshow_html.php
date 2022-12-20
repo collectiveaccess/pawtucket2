@@ -83,8 +83,8 @@
 						wrap:'circular'
 					});
 					$('.jcarousel.featured').jcarouselAutoscroll({
-					autostart: true,
-					interval: 2000
+					autostart: false,
+					interval: 3200
 				});
 		
 				/*
