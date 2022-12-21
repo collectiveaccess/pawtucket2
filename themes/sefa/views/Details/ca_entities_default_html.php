@@ -67,7 +67,7 @@
 				if(sizeof($va_exhibitions) > 0){
 					foreach($va_exhibitions as $va_exhibition){
 						$t_occurrence->load($va_exhibition["occurrence_id"]);
-						print "<h2>".caDetailLink($this->request, $t_occurrence->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $va_exhibition["occurrence_id"], null, null, array("type_id" => $t_occurrence->get("ca_occurrences.type_id")))."</h2>";
+						print "<h2><i>".caDetailLink($this->request, $t_occurrence->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $va_exhibition["occurrence_id"], null, null, array("type_id" => $t_occurrence->get("ca_occurrences.type_id")))."</i></h2>";
 						if($t_occurrence->get("ca_occurrences.exhibition_subtitle")){
 							print "<h3>".$t_occurrence->get("ca_occurrences.exhibition_subtitle")."</h3>";
 						}

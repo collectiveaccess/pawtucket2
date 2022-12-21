@@ -31,6 +31,19 @@
  */
 	$va_access_values = $this->getVar("access_values");
 	$o_config = caGetFrontConfig();
+	
+	# --- announcement global values?
+	$announcement_title = $this->getVar("home_page_announcement_title");
+	$announcement = $this->getVar("home_page_announcement");
+	if($announcement_title || $announcement){
+?>
+		<div class="hp_announcement">
+			<?php print ($announcement_title) ? "<div class='announcementTitle'>".$announcement_title."</div>" : ""; ?>
+			<?php print $announcement; ?>
+		</div>
+<?php
+	}
+	
 	# --- grab the set that has the featured 
 	$t_set = new ca_sets();
 	$t_set->load(array('set_code' => $o_config->get("front_page_exhibit_set_code")));
@@ -52,7 +65,7 @@
 				print "<div class='col-sm-12'><div class='frontSlide'>".caDetailLink($this->request, $t_object->get("ca_object_representations.media.front", array("checkAccess" => $va_access_values)), '', 'ca_occurrences', $t_exhibition->get("occurrence_id"), null, null, array("type_id" => $t_exhibition->get("ca_occurrences.type_id")))."</div></div>";
 			}
 			print "<div class='col-sm-12'>";
-			print "<h1>".caDetailLink($this->request, $t_exhibition->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $t_exhibition->get("ca_occurrences.occurrence_id"), null, null, array("type_id" => $t_exhibition->get("ca_occurrences.type_id")))."</h1>";
+			print "<h1><i>".caDetailLink($this->request, $t_exhibition->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $t_exhibition->get("ca_occurrences.occurrence_id"), null, null, array("type_id" => $t_exhibition->get("ca_occurrences.type_id")))."</i></h1>";
 			if($t_exhibition->get("ca_occurrences.exhibition_subtitle")){
 				print "<h2>".caDetailLink($this->request, $t_exhibition->get("ca_occurrences.exhibition_subtitle"), '', 'ca_occurrences', $t_exhibition->get("ca_occurrences.occurrence_id"), null, null, array("type_id" => $t_exhibition->get("ca_occurrences.type_id")))."</h2>";
 			}

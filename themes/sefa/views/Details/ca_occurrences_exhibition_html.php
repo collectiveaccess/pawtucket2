@@ -135,7 +135,7 @@
 ?>
 			</div> <!--end thumbnail-->
 				<p>
-					<h1>{{{ca_occurrences.preferred_labels.name}}}</h1>
+					<h1><i>{{{ca_occurrences.preferred_labels.name}}}</i></h1>
 					{{{<ifdef code="ca_occurrences.exhibition_subtitle">
 						<h2>^ca_occurrences.exhibition_subtitle</h2>
 					</ifdef>}}}
