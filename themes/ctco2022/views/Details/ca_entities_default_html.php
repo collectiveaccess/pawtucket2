@@ -61,30 +61,27 @@
 					{{{<ifdef code="ca_entities.biography"><div class='unit'><label>Biography</label>^ca_entities.biography</div></ifdef>}}}
 
 					{{{<ifdef code="ca_entities.address">
-						<label>Address</label>
+						<div class="unit"><label>Address</label>
 						<unit relativeTo="ca_entities.address" delimiter="<br/>">
-							<ifdef code="ca_entities.address.address1">^address1</ifdef> <br/>
-							<ifdef code="ca_entities.address.address2">^address2</ifdef> <br/>
-							<ifdef code="ca_entities.address.city, ca_entities.address.stateprovince, ca_entities.address.postalcode, ca_entities.address.country">^city, ^stateprovince, ^postalcode, ^country</ifdef>
-						</unit>
-					</ifdef>}}}	
-
-					<br/><br/>
+							<ifdef code="ca_entities.address.address1">^ca_entities.address.address1 <br/></ifdef> 
+							<ifdef code="ca_entities.address.address2">^ca_entities.address.address2 <br/></ifdef>
+							<ifdef code="ca_entities.address.city|ca_entities.address.stateprovince|ca_entities.address.postalcode|ca_entities.address.country">^ca_entities.address.city<ifdef code="ca_entities.address.city,ca_entities.address.stateprovince">, </ifdef>^ca_entities.address.stateprovince ^ca_entities.address.postalcode ^ca_entities.address.country</ifdef>
+						</unit></div>
+					</ifdef>}}}
 
 					{{{<ifdef code="ca_entities.email">
 						<!-- <label>Email</label> -->
+						<div class="unit">
 						<unit relativeTo="ca_entities.email" delimiter="<br/>">
-							^email
-						</unit>
+							<a href="mailto:^ca_entities.email">^ca_entities.email</a>
+						</unit></div>
 					</ifdef>}}}	
 					
-					<br/>
-
 					{{{<ifdef code="ca_entities.website">
 						<!-- <label>Website</label> -->
-						<unit relativeTo="ca_entities.website" delimiter="<br/>">
+						<div class="unit"><unit relativeTo="ca_entities.website" delimiter="<br/>">
 							<a href="^website" target="_blank">^website</a>
-						</unit>
+						</unit></div>
 					</ifdef>}}}	
 
 
@@ -100,7 +97,7 @@
 	if($vn_source_id){
 ?>
 		<div class="row">
-			<div class="col-sm-6"><label>Artifacts</label></div>
+			<div class="col-sm-6"><H2>Artifacts</H2></div>
 			<div class="col-sm-6 detailBrowseAll">
 <?php
 			print caNavLink($this->request, "Browse all Artifacts <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "", "Browse", "objects", array("facet" => "source_facet", "id" => $vn_source_id)); 

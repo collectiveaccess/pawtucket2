@@ -51,7 +51,7 @@
 ?>
 			<div class="col-sm-3">
 				<div class="collectionTile">
-					<div class="collectionImageCrop hovereffect"><?php print caNavLink($this->request, $item['representation_tag'].'<div class="overlay">'.$qr_sets->get('ca_sets.preferred_labels.name').'</div>', '', '', 'Transcribe', "Collection/{$set_id}"); ?>
+					<div class="collectionImageCrop hovereffect"><?php print caNavLink($this->request, $item['representation_tag'].'<div class="overlay">'.$qr_sets->get('ca_sets.preferred_labels.name').'</div>', '', '', 'Transcribe', "Collection/{$set_id}"); ?></div>
 				</div>
 			</div>
 <?php

@@ -810,22 +810,31 @@ div#detailTools{
 
 .detail h1 {
 	font-size: 22px;
-	color: #262626;
+	color: #454545;
 	line-height: 135%;
 	text-transform: none;
 }
-
+.detail h2 {
+	font-size: 20px;
+	color: #262626;
+	line-height: 1em;
+	text-transform: none;
+}
 .detail a{
-	font-size: 13px;
+	font-size: 14px;
+	color:#454545;
+	text-decoration:underline;
 }
 
 .detail .unit {
-	font-size: 13px;
+	font-size: 14px;
 	margin-bottom: 15px;
+	color:#454545;
 }
 
 .detail label{
-	font-size: 13px;
+	font-size: 14px;
+	color:#454545;
 }
 @media(min-width:768px){
 	.detailBrowseAll{
@@ -836,7 +845,9 @@ div#detailTools{
 	color:#FFF;
 	text-decoration:none;
 }
-
+.detail #browseResultsContainer a{
+	text-decoration:none;
+}
 /* Contrubutors page */
 
 /* .leaflet-container a {
@@ -939,6 +950,9 @@ div#detailTools{
 	color: #000;
 	margin-bottom:20px;
 	font-size: 17px;
+}
+.transcribe .btn-default{
+	margin-bottom:10px;
 }
 
 /* advanced search */
