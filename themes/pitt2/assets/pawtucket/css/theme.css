@@ -88,22 +88,25 @@ b, strong{
 	position: fixed;
 	width:100%;
 	top:0px;
+	z-index: 10000;
 }
 .heroCollections{
 	background-image: url("../graphics/Collections_Header2.jpeg");
 	background-color:#000;
-	height: 600px;
-	background-position: center center;
+	height: 698px;
+	background-position: center 98px;
     background-repeat: no-repeat;
     background-size: cover;
+	margin-top: -98px;
 }
 .heroExhibitions{
 	background-image: url("../graphics/Exhibitions_Header2.jpeg");
 	background-color:#000;
-	height: 600px;
-	background-position: center center;
+	height: 698px;
+	background-position: center 98px;
     background-repeat: no-repeat;
     background-size: cover;
+	margin-top: -98px;
 }
 .navbar .formOutline{
 	border-radius:0px;
@@ -142,7 +145,7 @@ b, strong{
 	margin-top:9px;
 }
 .initial .navbar-nav{
-	margin-top:40px;
+	margin-top:41px;
 }
 .navbar-nav > li > a {
 	line-height:68px;
@@ -495,7 +498,7 @@ ul.searchformPITT {
 		padding-right:5px !important;
 		padding-left:5px !important;
 		transition: all 0.2s linear;
-		
+		clear:both;
 	}
 	.nav > li > a.ddChevron.rotate{
 		transform: rotate(180deg);
@@ -815,6 +818,9 @@ body{
 	font-family: 'Rubik';
 	font-size: 11px;
 }
+#bSortByList a .glyphicon, #bSortByList a .fa {
+	color: #000000 !important;
+}
 /* front */
 .front H1{
 	font-size:32px;
@@ -829,6 +835,7 @@ body{
 	font-size: 16px;
 	color: #000000;
 	margin-bottom:30px;
+	margin-top:30px;
 }
 @media(max-width:768px){
 	.frontList{
@@ -872,6 +879,69 @@ body{
 		margin-top:30px;
 	}
 }
+.frontList p{
+	margin-bottom:30px;
+}
+
+/* hp search */
+@media(max-width:420px), (max-height:420px){
+	.front .heroSearch .form-group, .hpAdvancedSearch{
+		width:300px;
+	}
+}
+
+.heroSearch form{
+	text-align:center;
+}
+.heroSearch{
+    margin-bottom:60px;
+    text-align:center;
+}
+.heroSearch .formOutline {
+	border: 1px solid #000;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-transition: none;
+    position: relative;
+    border-radius: 0px;
+    margin-bottom:5px;
+    text-align:center;
+}
+.front .heroSearch .formOutline{
+	display: inline-block;
+	background-color:#FFF;
+}
+.front .heroSearch .form-group {	
+    width: 400px;
+    display: inline-block;
+	margin-bottom: 0;
+}
+.hpAdvancedSearch{
+	text-align: right;
+	width: 435px;
+	display: inline-block;
+	margin-bottom: 0;
+}
+.hpAdvancedSearch a{
+	color: #003594;
+}
+.front .heroSearch .form-control, .front .heroSearch .form-control:focus{
+	border:0px;
+	box-shadow:none;
+	font-size:18px;
+	height:44px;
+}
+#heroSearchButton{
+	color:#000;
+	font-size: 20px;
+}
+
+@media(max-width: 570px) {
+	.front .heroSearch .form-group {
+		width: 80%;
+	}
+}
+
 /* hp explore */
 .hpExplore{
 	padding-top:45px;
@@ -1011,9 +1081,19 @@ a.readmore-js-toggle {
 	float: right;
 	margin-top: 5px;
 	font-size: 12px;
-	font-family: lato;
 	text-transform: uppercase;
 	margin-left: 20px;
+	font-family: Merriweather;
+	color: #000;
+	font-weight: 400;
+}
+#bFilter li a{
+	text-transform: none;
+}
+#bFilter .open > .dropdown-menu {
+  display: block;
+  max-height: 300px;
+  overflow-y: scroll;
 }
 #bLetterBar a {
 	padding: 3px 5px 3px 5px;
@@ -1060,12 +1140,14 @@ a.readmore-js-toggle {
 }
 .filterOptions, .filterOptions:hover, .filterOptions:active{
 	color:#000;
-	font-family: LatoLight;
 	font-size: 12px;
 	text-transform:capitalize;
 	text-decoration:underline;
 	padding-left:10px;
 	padding-right:10px;
+	font-family: Merriweather;
+	color: #000;
+	font-weight: 400;
 }
 #bFilter .btn-group{
 	border-left:1px solid #757575;
@@ -1080,6 +1162,25 @@ a.readmore-js-toggle {
   color: #000;
   font-family: "merriweather";
 }
+.entitiesResult a{
+	font-size:13px;
+	font-family: "merriweather";
+	font-weight:200;
+}
+#creatorsBlock{
+	overflow:hidden;
+}
+.multisearch .resultBlock {
+	margin-bottom: 10px;
+	margin-top: 20px;
+}
+.multisearch H2 {
+  margin: 0px;
+    margin-bottom: 0px;
+  padding: 0px;
+  text-transform: none;
+  margin-bottom: 10px;
+}
 /* detail */
 .detail .navTop{
 	display: block;
@@ -1093,6 +1194,7 @@ a.readmore-js-toggle {
 }
 .detail .navTop a {
   background-color: #eaeaea;
+  margin-top: 2px;
 }
 .detail H1{
 	font-size:20px;
@@ -1349,9 +1451,17 @@ a.readmore-js-toggle {
 .gallery H2{
 	text-transform:none;
 }
-
-
-
+div.caMediaOverlayControls .close{
+	position:fixed;
+	top:10px;
+	right:10px;
+}
+.advancedSearchField .formLabel{
+	font-family: Merriweather;
+	color:#000;
+	text-transform:none;
+	font-size:14px;
+}
 
 
 

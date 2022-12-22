@@ -141,12 +141,7 @@
 							<li><a href="https://uag.pitt.edu/events/#past-events">Past Events</a></li>
 						</ul>	
 					</li>
-					<li class="dropdown<?php print (strToLower($this->request->getController()) != "gallery") ? " current" : ""; ?>" style="position:relative;"><a href="#" class="ddChevron"><span class="ticon ticon-angle-down wpex-transition-all wpex-duration-300" aria-hidden="true"></span></a><?php print caNavLink($this->request, "Collections", "dropdown-toggle mainhead top", "", "", ""); ?>
-						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, "Creators", "", "", "Browse", "creators"); ?></li>
-							<li><?php print caNavLink($this->request, "Collection Items", "", "", "Browse", "objects"); ?></li>
-						</ul>	
-					</li>
+					<li class="dropdown<?php print (strToLower($this->request->getController()) != "gallery") ? " current" : ""; ?>" style="position:relative;"><?php print caNavLink($this->request, "Collections", "dropdown-toggle mainhead top", "", "", ""); ?></li>
 					<li><a href="https://www.uag.pitt.edu/academic-programs">Academic Programs</a></li>
 					<li><a href="https://www.uag.pitt.edu/look-listen-read">Look, Listen & Read</a></li>
 					<li class="dropdown hideMobile" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top searchicon" data-toggle="dropdown"><span class="wpex-menu-search-icon ticon ticon-search" aria-hidden="true"></span></a>
@@ -205,12 +200,12 @@
 ?>
 	<div class="pageTitle"><div class="container"><div class="row"><div class="col-sm-12">
 <?php
-		if(strToLower($this->request->getController()) != "gallery"){
+		if(!in_array(strToLower($this->request->getController()), array("front", "gallery"))){
 ?>
 			<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
 				<div class="formOutline">
 					<div class="form-group">
-						<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
+						<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search the Collection"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
 					</div>
 					<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
 				</div>
@@ -246,8 +241,9 @@
 				
 				
 				<ul role="list" aria-label="<?php print _t("Secondary Navigation"); ?>">			
+					<li><?php print caNavLink($this->request, "Search the Collection", "", "", "", ""); ?></li>		
 					<li><?php print caNavLink($this->request, "Creators", "", "", "Browse", "creators"); ?></li>		
-					<li><?php print caNavLink($this->request, "Collection Items", "", "", "Browse", "objects"); ?></li>
+					<li><?php print caNavLink($this->request, "Objects", "", "", "Browse", "objects"); ?></li>
 <?php
 	if ($vb_has_user_links) {
 ?>

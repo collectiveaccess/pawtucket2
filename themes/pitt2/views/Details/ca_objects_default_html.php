@@ -9,8 +9,8 @@
 
 ?>
 		<div class="row">
-			<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-				{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+			<div class='col-xs-12 navTop'>
+				{{{previousLink}}}{{{nextLink}}}<br/>{{{resultsLink}}}
 			</div><!-- end detailTop -->
 		</div>
 		<div class="row">

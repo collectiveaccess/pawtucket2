@@ -36,26 +36,43 @@
 	$vs_hp_intro = $this->getVar("hp_intro");
 	if($vs_hp_intro_title || $vs_hp_intro){
 ?>
-	<div class="hpIntro">
+	<div class="row">
+		<div class="col-sm-12 col-md-10 col-md-offset-1"><div class="hpIntro">
 <?php
 		if($vs_hp_intro){
 			print $vs_hp_intro;
 		}
 ?>
-	</div>
+	</div></div></div>
 <?php
 	}
 ?>
+		<div class="heroSearch">
+			<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<div class="formOutline">
+					<div class="form-group">
+						<input type="text" class="form-control" id="heroSearchInput" placeholder="<?php print _t("Search the Collection"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
+					</div>
+					<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
+				</div>
+			</form>
+			<div class="hpAdvancedSearch"><?php print caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
+		</div>
+
 		<H1>Explore the Collection</H1>
 		<div class="frontList">
 			<div class="row">
 				<div class="col-sm-4"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'placeholder.png'), "", "", "Browse", "creators"); ?></div>
-				<div class='col-sm-8'><label><?php print caNavLink($this->request, "Browse Creators", "", "", "Browse", "objects"); ?></label><span class='trimText'>{{{hp_creators_intro}}}</span></div>
+				<div class='col-sm-8'><label><?php print caNavLink($this->request, "Creators", "", "", "Browse", "creators"); ?></label><p>{{{hp_creators_intro}}}</p>
+					<div class="text-center"><?php print caNavLink($this->request, "Browse Creators", "btn btn-default", "", "Browse", "creators"); ?></div>
+				</div>
 			</div>
 			<div class='row'><div class='col-sm-12'><hr/></div></div>
 			<div class="row">
 				<div class="col-sm-4"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'placeholder.png'), "", "", "Browse", "objects"); ?></div>
-				<div class='col-sm-8'><label><?php print caNavLink($this->request, "Browse Collection Items", "", "", "Browse", "objects"); ?></label><span class='trimText'>{{{hp_items_intro}}}</span></div>
+				<div class='col-sm-8'><label><?php print caNavLink($this->request, "Objects", "", "", "Browse", "objects"); ?></label><p>{{{hp_items_intro}}}</p>
+					<div class="text-center"><?php print caNavLink($this->request, "Browse Objects", "btn btn-default", "", "Browse", "objects"); ?></div>
+				</div>
 			</div>
 			<div class='row'><div class='col-sm-12'><hr/></div></div>
 		</div>
