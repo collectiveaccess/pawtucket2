@@ -66,7 +66,7 @@
 	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-print_r($va_browse_info);	
+	
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
