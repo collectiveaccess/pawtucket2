@@ -81,8 +81,7 @@ a:hover{
 
 @media (min-width:768px){
 	.navbar-brand{
-		width: 200px;
-		padding-top: 8px;
+		padding-top: 3px;
 	}
 }
 @media (min-width:768px){
@@ -112,7 +111,15 @@ a:hover{
 		right: auto; */
 	}
 }
-
+@media (max-width: 767px){
+	ul.menuItems {
+		border-top: solid 0px #ddd;
+	}
+	.navbar-form{
+		margin-bottom:0px;
+		padding-bottom:0px;
+	}
+}
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
     font-family: lato;
     text-transform:uppercase;
@@ -181,13 +188,12 @@ a:hover{
 /* footer */
 /* offset needed for fixed footer */
 body{
-	margin-bottom:300px;
+	margin-bottom:470px;
 }
 #footer{
-	background-color: #f2f2f2;
+	background-color: #ffffff;
 	color:#000;
-	padding-top:25px;
-	height: 260px;
+	height: 440px;
 	border:0px;
 	font-size:15px;
 	font-weight:normal;
@@ -195,42 +201,52 @@ body{
 	padding-bottom:25px;
 	text-transform: none;
 }
-@media(max-width:480px){
-	/* CHANGE - does the footer height need to change for smaller screen sizes? */
-	/*#footer{
-		height:430px;
-	}*/
-	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
-	/*body{
-		margin-bottom:480px;
-	}*/
+@media(max-width:570px){
+	#footer{
+		height:460px;
+	}
+	body{
+		margin-bottom:490px;
+	}
 }
 
 #footer .footer-center{
 	display: flex;
 	justify-content: center;
+	padding-top:40px;
 }
-
+.footerBg{
+	background-color: #f2f2f2;
+}
 #footer a{
 	color:#000;
-	font-weight:bold;
-	font-size:16px;
+	font-size:14px;
 	text-decoration:none;
 }
-#footer a.orgLink{
-	/*font-family: 'Lato', serif;*/
-	font-size:28px;
-	color:#000;
-	font-weight:400;
+#footer .footerSocialBlock{
+	padding-bottom:20px
 }
+#footer a.orgLink{
+	display:inline-block;
+}
+#footer a.orgLink img{
+	height: 120px;
+	width: auto;
+}
+
 #footer .address{
 	/* text-transform: uppercase; */
 	font-size: 14px;
 	line-height: 2;
-	margin-top: 20px;
+	display:inline-block;
+	text-align:center;
+	margin-left:20px
 }
-@media(max-width: 768px) {
-	#footer .text-right{
+@media(min-width:545px){
+	#footer a.orgLink img{
+		margin-top: -40px;
+	}
+	#footer .address{
 		text-align:left;
 	}
 }
@@ -253,18 +269,38 @@ body{
 }
 #footer .funder{
 	text-align:center;
-	margin-top:25px;
 }
 #footer .funder img{
 	width:100%;
 	height:auto;
 	max-width:250px;
 }
-#footer img{
+#footer .funderLinks{
+	background-color: #FFF;
+	padding-top:25px;
+	padding-bottom:25px;
+}
+#footer .funderLinks img{
+	padding:0px 10px 0px 10px;
+}
+#footer .funderLinks .funderLinksVert img{
 	height: 120px;
 	width: auto;
 }
-
+#footer .funderLinks .funderLinksHorizontal img{
+	height: 80px;
+	width: auto;
+}
+@media(max-width:544px){
+	#footer .funderLinks .funderLinksVert img{
+		height: 60px;
+		width: auto;
+	}
+	#footer .funderLinks .funderLinksHorizontal img{
+		height: 40px;
+		width: auto;
+	}
+}
 
 /* search / browse results */
 .bResultItemSetLink {
@@ -343,6 +379,9 @@ body{
 a.browseRemoveFacet .glyphicon{
 	color:#fff !important;
 }
+#bRefine H2, #bRefine H5, #bRefine H3, #bRefine a{
+	color:#454545;
+}
 /* front */
 html.frontContainer {
     height: 100%;
@@ -406,7 +445,7 @@ body.frontContainer #footer{
 	position:relative;
 	text-align:center;
 	color:#FFF;
-	margin-top: 27vh;
+	margin-top: 20vh;
 	padding-top:50px;
 	padding-bottom:50px;
 	font-size:28px;
@@ -617,7 +656,7 @@ body.frontContainer #footer{
 
 /* Links Page Breaker */
 
-.link-page-breaker .row{
+/*.link-page-breaker .row{
 	display: flex;
 	justify-content: center;
 }
@@ -638,13 +677,38 @@ body.frontContainer #footer{
 	text-decoration: none;
 	color: #2A8457;
 }
-
+*/
+.hpFeaturedLinksContainer{
+	padding-left:10%;
+	padding-right:10%;
+	max-width:510px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.hpFeaturedLinks{
+	font-size: 40px;
+	margin: 70px 0px 70px 0px;
+	color: #000;
+	display:block;
+	border: #2A8457 3pt solid;
+	padding:70px 0px 70px 0px;
+	transition: 0.3s;
+	box-shadow: 0 2px 14px 0 rgba(0,0,0,.2);
+}
+.hpFeaturedLinks:hover{
+	text-decoration: none;
+	box-shadow: 0 2px 14px 0 rgba(0,0,0,.5);
+	color: #000;
+}
 
 .frontGridCaption a{
 	color: #000;
 	font-size: 14px;
 }
-
+.search-suggest{
+	padding-left:30px;
+	padding-right:30px;
+}
 
 /* gallery */
 @media(max-width:768px){
@@ -805,10 +869,12 @@ div#detailTools{
 }
 .contributorImage{
 	margin-bottom:20px;
+	text-align:center;
 }
 .contributorImage img{
 	width:100%;
 	height:auto;
+	max-width: 250px;
 }
 .contributorTile .title {
 	padding-bottom:10px;
@@ -873,4 +939,14 @@ div#detailTools{
 	color: #000;
 	margin-bottom:20px;
 	font-size: 17px;
+}
+
+/* advanced search */
+.advancedSearch .btn-default .glyphicon{
+	color:#FFF !important;
+}
+@media (min-width:991px){
+	.advancedSearch .formLinks{
+		float:right;
+	}
 }

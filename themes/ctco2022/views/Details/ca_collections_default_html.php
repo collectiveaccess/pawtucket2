@@ -55,7 +55,6 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-8 col-lg-8'>
-<?php print $t_item->get("ca_collections.source_id"); ?>
 					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
 					<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
 					{{{<ifdef code="ca_collections.parent_id"><div class="unit">Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
@@ -90,9 +89,8 @@
 
 			<div class="row">
 
-				<div class='col-md-10 col-lg-10'>
+				<div class='col-md-12'>
 					{{{<ifdef code="ca_collections.description"><label>About</label>^ca_collections.description<br/></ifdef>}}}
-					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
 					<?php
 						# Comment and Share Tools
 						if ($vn_comments_enabled | $vn_share_enabled) {
