@@ -7,7 +7,7 @@ const DirectoryBrowseContextProvider = (props) => {
   const [ browseBarValue, setBrowseBarValue ] = useState(null);
   const [ browseContentData, setBrowseContentData ] = useState(null); //data being loaded in the browseContent
   const [ start, setStart ] = useState(0); //start
-  const [ limit, setLimit ] = useState(20); //limit
+  const [ limit, setLimit ] = useState(50); //limit
   const [ displayTitle, setDisplayTitle ] = useState(null);
   const [ totalSize, setTotalSize ] = useState(null) //total amount of items for a browseBar value
 

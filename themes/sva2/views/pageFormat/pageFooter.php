@@ -29,15 +29,13 @@
 
 					<div class="col-md-9 p-0">
 						<ul class="list justify-content-end">
-							<li class="list-item"><a href="#">Glaser Archives</a></li>
+							<li class="list-item"><a href="https://archives.sva.edu/glaser-archives">Glaser Archives</a></li>
 							<li aria-hidden="true" class="divi"></li>
-							<li class="list-item"><a href="#">SVA Archives</a></li>
+							<li class="list-item"><a href="https://archives.sva.edu">SVA Archives</a></li>
 							<li aria-hidden="true" class="divi"></li>
-							<li class="list-item"><a href="#">About</a></li>
+							<li class="list-item"><a href="https://archives.sva.edu/page/about">About</a></li>
 							<li aria-hidden="true" class="divi"></li>
-							<li class="list-item"><a href="#">Visit</a></li>
-							<li aria-hidden="true" class="divi"></li>
-							<li class="list-item"><a href="#">Accessibility Notice</a></li>
+							<li class="list-item"><a href="https://archives.sva.edu/visit-us">Visit</a></li>
 						</ul>
 					</div>
 

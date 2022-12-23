@@ -121,7 +121,7 @@ const FacetedBrowseFilters = () => {
               {filters.map((filter) => {
                 return(
                   filter.values.map((val, index) => {
-                    return (
+                    return (val.value === '_search') ? null : (
                       <div className="row mb-1 m-0 filter" key={index}>
                         <div className="text-center align-items-center">
                           <p data-toggle="tooltip" data-placement="top" title={val.value} data-original-title={val.value}>{val.value}</p>

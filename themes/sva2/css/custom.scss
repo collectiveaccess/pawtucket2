@@ -1821,3 +1821,120 @@ a {
 span.loading-icon {
 	font-size: 36px;
 }
+
+
+/* MediaViewer.js styles */
+.mediaViewer {
+	position: relative;
+	margin: 0px;
+	padding: 0px;
+}
+
+.mediaViewerContainer {
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+.mediaViewerIcon {
+	width: 72px;
+	height: 72px;
+}
+
+.mediaViewerControls {
+	margin: 0px;
+	padding: 0px;
+}
+
+.mediaViewerIconSelected {
+	border: 2px solid #cc0000;
+}
+
+.mediaDisplayFullscreen {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: #cccccc;
+	z-index: 30000;
+	display: none;
+	margin: 0px;
+	padding: 0px;
+	overflow:hidden;
+}
+
+
+.mediaViewerList .slick-prev:before, .slick-next:before {
+	color: #000 !important;
+}
+
+.mediaViewerList .slick-slide a {
+	outline: none;
+}
+
+.mediaViewerList  .slick-selected {
+	border: 2px #cc0000 solid;
+	border-radius: 5px;
+}
+
+.mediaViewerPDFContainer {
+	width: 100%;
+	height: 100%;
+}
+
+#pdf-viewer{
+	width: 100%;
+	height: 100%;
+}
+:fullscreen{
+	overflow: scroll !important;
+}
+
+#pdf-viewer:-webkit-full-screen {
+  width: 100%;
+  height: 100%;
+}
+
+.mediaViewerPDFViewer {
+	overflow: scroll;
+}
+
+.mediaViewerPDFViewer .react-pdf__Page__canvas {
+	margin: 0 auto;
+}
+
+.react-pdf__Page__canvas{
+	margin-left: 0;
+}
+
+input.currentPage {
+	text-align:right;
+	width: 30px;
+}
+
+// metabolic ImportUploader
+.importUploaderDropZone {
+  height: 150px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 0px;
+}
+
+.importUploaderDropZoneInput {
+	height: 100%;
+	width: 100%;
+  cursor: default !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.importUploaderDropZoneInput:focus {
+  outline: none !important;
+}
+

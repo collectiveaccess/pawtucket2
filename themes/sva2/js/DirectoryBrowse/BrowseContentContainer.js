@@ -43,7 +43,7 @@ const BrowseContentContainer = () => {
 
     setLastListValue(String(browseContentData[browseContentData.length - 1][0]))
 
-    let newLimit = limit + 20;
+    let newLimit = limit + 50;
     setLimit(newLimit);
 
     setIsLoaded(true)

@@ -41,6 +41,8 @@ const BrowseBar = (props) => {
       })
       setBrowseBarData(values);
       setDisplayTitle(data.displayTitle)
+      
+   	  if (!browseBarValue) { setBrowseBarValue(values[0].display); } // set default letter
     });
   }, [setBrowseBarData])
 
@@ -65,7 +67,7 @@ const BrowseBar = (props) => {
   
   const setValue = (e, item) => {
     setBrowseBarValue(item);
-    setLimit(20); //resets the limit everytime a new browse bar value is selected
+    setLimit(50); //resets the limit everytime a new browse bar value is selected
     getAnchor(item)
     e.preventDefault();
   }
@@ -101,14 +103,15 @@ const BrowseBar = (props) => {
     }
   }
   
-
   if(currentBrowse == "exhibitionsByYear"){
+  	console.log("render", browseBarValue);
     return(
       <>
         <div className="row line-border mb-4" id="main-content"></div>
           <div className="row b-bar" id="items-cont">
             <Slider {...settings}>
               {browseBarData? browseBarData.map((item, index) => {
+              	if(item.display == browseBarValue ) { console.log("set"); }
                 // tabIndex={browseBarValue == item.display ? "1" : "0"}
                 return (
                   <div key={index} tabIndex={browseBarValue == item.display ? "1" : "0"} href={`#${item.display}`}>
@@ -118,7 +121,7 @@ const BrowseBar = (props) => {
                       aria-disabled={item.disabled == 0 ? false : true} 
                       aria-selected={item.display == browseBarValue ? true : false} 
                       aria-label={`browse content by the year ${item.display}`} 
-                      className={(item.disabled == 0) ? "browse-bar-item" : "browse-bar-item disabled"} 
+                      className={(item.disabled == 0) ? ((browseBarValue == item.display) ? "browse-bar-item active" : "browse-bar-item") : "browse-bar-item disabled"} 
                       onClick={(e) => {setValue(e, item.display)}}>{item.display}
                     </a>
                   </div>
@@ -145,13 +148,14 @@ const BrowseBar = (props) => {
                     aria-disabled={item.disabled == 0 ? false : true} 
                     aria-selected={item.display == browseBarValue? true : false} 
                     aria-label={`browse content by the letter ${item.display}`} 
-                    className={(item.disabled == 0) ? `browse-bar-item alpha-item` : `browse-bar-item disabled alpha-item`} 
+                    className={(item.disabled == 0) ? ((browseBarValue == item.display) ? `browse-bar-item alpha-item active` : `browse-bar-item alpha-item`) : `browse-bar-item disabled alpha-item`} 
                     onClick={(e) => {setValue(e, item.display)}}
                   >{item.display}</a>
                 ) 
               }) : null}
             </div>
           </div>
+          
         <div className="row line-border mt-4"></div>
       </>
     )

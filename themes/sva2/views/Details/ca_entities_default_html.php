@@ -21,12 +21,12 @@
 
 		<div id="main-content" class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 exhibition-items">
 
-			{{{<unit relativeTo="ca_occurrences" delimiter="<br/>">
+			{{{<unit relativeTo="ca_occurrences" restrictToTypes="exhibitions" delimiter="<br/>">
 					<div class="col">					  
 						<div class="card exhibition-item" tabindex="0">
 <l><case>
-<unit relativeTo="ca_objects" skipWhen="^ca_objects.series%convertCodesToIdno=1 !~ /poster/i"><unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="1">^ca_object_representations.media.large</unit></unit>
-<unit relativeTo="ca_objects" skipWhen="^ca_objects.series%convertCodesToIdno=1 !~ /announcement/i"><unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="1">^ca_object_representations.media.large</unit></unit>
+<unit relativeTo="ca_objects" skipWhen="^ca_objects.series%convertCodesToIdno=1 !~ /poster/i" limit="1"><unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="1">^ca_object_representations.media.large</unit></unit>
+<unit relativeTo="ca_objects" skipWhen="^ca_objects.series%convertCodesToIdno=1 !~ /announcement/i" limit="1"><unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="1">^ca_object_representations.media.large</unit></unit>
 <unit relativeTo="ca_objects" limit="1"><unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="1">^ca_object_representations.media.large</unit></unit>
 <ifnotdef code="ca_object_representations"><div style='width: 100%; height: 200px; margin: auto; background-color: #c8c8c8; text-align: center;'><p className='no-image' style='padding-top: 85px; text-decoration: none;'>No Image Available</p></div></ifnotdef>
 </case></l>

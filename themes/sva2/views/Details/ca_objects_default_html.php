@@ -188,7 +188,7 @@
 						</ifcount>}}}
 	
 				{{{<unit restrictToRelationshipTypes="photographer" relativeTo="ca_entities.related" delimiter=", " >
-					^ca_entities.preferred_labels
+					<l>^ca_entities.preferred_labels</l>
 				</unit>}}}		
 				</div>
 			</div>
@@ -216,6 +216,18 @@
         // 'width': '600px',
         'height': '500px',
         'controlHeight': '50px',
-        'data': { }
+        'data': { },
+        'options': {
+				'pdfViewer': {
+					'showThumbnails': true,
+					'showSearch': false,
+					'showZoom': true,
+					'showPaging': true,
+					'showRotate': true,
+					'showTwoPageSpread': true,
+					'showFullScreen': true,
+					'showToolBar': true
+				}
+			}
     };
 </script>
