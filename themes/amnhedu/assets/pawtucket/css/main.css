@@ -12,6 +12,7 @@ body {
 	font-family: LatoLight;
 	color:#454545;
 	margin-bottom:80px; 
+	font-size: 16px;
 	
 }
 p {
@@ -3535,4 +3536,19 @@ table.caLibraryHistory, tr.caLibraryHistory, th.caLibraryHistory, td.caLibraryHi
 a.form-button, span.form-button {
 	text-decoration: none;
 	cursor: pointer;	
+}
+
+
+h3.ui-accordion-header {
+	background-color: #BBD6ED !important;
+}
+
+h3.ui-accordion-header {
+	background-color: #BBD6ED !important;
+	color: #000;
+}
+
+h3.ui-accordion-header-active {
+	color: #000;
+	font-weight: bold;
 }

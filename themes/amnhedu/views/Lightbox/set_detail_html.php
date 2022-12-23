@@ -70,7 +70,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
-					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
+					print "<div id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
 					$i = 0;
 					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 						$i++;
@@ -83,12 +83,12 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='divide'>&nbsp;</li>";
 						}
 					}
-					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc"))))."</li>";
-					print "</ul></H5>\n";
+					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc"))))."</li>";
+					print "</ul></div>\n";
 				}
 			}
 ?>
-			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
+			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left' aria-label='back'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
 			<H1>
 				<?php print "<span id='lbSetName".$t_set->get("set_id")."'>".$t_set->getLabelForDisplay()."</span>"; ?>
 				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$qr_set_items->numHits()."</span> items)</span>"; ?>
@@ -166,9 +166,9 @@ if (!$vb_ajax) {	// !ajax
 					</ul>
 				</div><!-- end btn-group -->
 			</H1>
-			<H5>
 <?php
 				if (sizeof($va_criteria) > 1) {
+					print "<div class='bCriteria'>";
 					foreach($va_criteria as $va_criterion) {
 						if ($va_criterion['facet_name'] != '_search') {
 							print "<strong>".$va_criterion['facet'].':</strong> ';
@@ -177,9 +177,9 @@ if (!$vb_ajax) {	// !ajax
 						}
 					}
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'._t("Start Over").'</span></button>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1));
+					print "</div>";
 				}
 ?>
-			</H5>
 		</div><!-- end col -->
 		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 			<div id="lbViewButtons">
@@ -190,9 +190,9 @@ if (!$vb_ajax) {	// !ajax
 						if (!$qr_set_items->hasData($va_view_info['data'])) { continue; }	// don't show view options for which there is no data (eg. map requires mappable data)
 					}
 					if ($vs_current_view === $vs_view) {
-						print '<a href="#" class="active"><span class="glyphicon '.$va_view_info['icon'].'"></span></a> ';
+						print '<a href="#" class="active"><span class="glyphicon '.$va_view_info['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
 					} else {
-						print caNavLink($this->request, '<span class="glyphicon '.$va_view_info['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'set_id' => $t_set->get("set_id"), 'key' => $vs_browse_key)).' ';
+						print caNavLink($this->request, '<span class="glyphicon '.$va_view_info['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'set_id' => $t_set->get("set_id"), 'key' => $vs_browse_key)).' ';
 					}
 				}
 			}
@@ -251,7 +251,7 @@ if (!$vb_ajax) {	// !ajax
 							$va_captions = caProcessTemplateForIDs($vs_caption_template, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
 
 							$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'small';
-							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
+							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version), array("checkAccess" => $va_access_values));
 
 							$va_comment_counts = ca_set_items::getNumCommentsForIDs($va_item_ids);
 
@@ -318,6 +318,7 @@ if (!$vb_ajax) {    // !ajax
                 <div id="lbSetCommentErrors" style="display: none;" class='alert alert-danger'></div>
                 <form action="#" id="addComment" method="post">
                     <div class="form-group">
+                        <label for="addCommentTextArea">Comment</label>
                         <textarea id="addCommentTextArea" name="comment"
                                   placeholder="<?php print addslashes(_t("add your comment")); ?>"
                                   class="form-control"></textarea>
@@ -406,7 +407,7 @@ if (!$vb_ajax) {    // !ajax
                 var data = $(this).sortable('serialize');
                 jQuery.ajax({
                     type: 'POST',
-                    url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems"); ?>/row_ids/' + data
+                    url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems", ['csrfToken' => caGenerateCSRFToken($this->request)]); ?>/row_ids/' + data
                 });
             }
         });
@@ -414,7 +415,7 @@ if (!$vb_ajax) {    // !ajax
         jQuery("#lbSetResultLoadContainer").on('click', ".lbItemDeleteButton", function(e) {
                 var id = jQuery(this).data("item_id");
 
-                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id} , function(data) {
+                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteItem'); ?>', {'set_id': '<?php print $t_set->get("set_id"); ?>', 'item_id':id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?>} , function(data) {
                     if(data.status == 'ok') {
                         jQuery('.lbItem' + data.item_id).fadeOut(500, function() { jQuery('.lbItem' + data.item_id).remove(); });
                         jQuery('.lbSetCountInt').html(data.count);  // update count
@@ -429,7 +430,7 @@ if (!$vb_ajax) {    // !ajax
         );
 
         jQuery("#addComment").on('submit', function(e) {
-            jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val() } , function(data) {
+            jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment'); ?>', {'id': '<?php print $t_set->get("set_id"); ?>', 'type': 'ca_sets', 'comment': jQuery("#addCommentTextArea").val(), 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> } , function(data) {
                 if(data.status == 'ok') {
                     jQuery("#lbSetCommentErrors").hide()
                     jQuery("#addCommentTextArea").val('');
@@ -448,7 +449,7 @@ if (!$vb_ajax) {    // !ajax
         jQuery("div.lbComments").on('click', '.lbComment', function(e) {
             var comment_id = jQuery(this).data("comment_id");
             if(comment_id) {
-                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {
+                jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> }, function(data) {
                     if(data.status == 'ok') {
                         jQuery("#lbSetCommentErrors").hide()
                         jQuery("#lbComments" + data.comment_id).remove();
