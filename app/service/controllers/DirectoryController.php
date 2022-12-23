@@ -255,16 +255,18 @@ class DirectoryController extends \GraphQLServices\GraphQLServiceController {
 						$random = false;
 						if(!strlen($value)) { 
 							//throw new \ServiceException(_t('Value must not be empty'));
-							$random = true;
+							//$random = true;
 						}
 					
 						$needs_wildcard = false;
 						switch($binfo['barType']) {
 							case 'year':
 								// noop
+								if(!strlen($value)) { $value = $binfo['minYear']; }
 								break;
 							case 'alphabetical':	
 								$needs_wildcard = true;
+								if(!strlen($value)) { $value = 'A'; }
 								break;
 							default:
 								throw new \ServiceException(_t('Invalid barType'));
