@@ -144,7 +144,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 						list($browse_info, $browse) = self::browseParams($args);
 						$user_access_values = caGetUserAccessValues();
 						$facets = $browse->getInfoForAvailableFacets(['checkAccess' => $user_access_values]);
-						
+						unset($facets['_search']);
 						$ret = array_map(function($f, $n) use ($browse) { 
 							$facet_values = $browse->getFacet($n, ['checkAccess' => $user_access_values]);
 							if(!is_array($facet_values)) { $facet_values = []; }
