@@ -176,7 +176,7 @@ class BaseEditorController extends ActionController {
 			if (($vs_bundle = $this->request->getParameter('bundle', pString)) && ($vs_bundle_screen = $t_ui->getScreenWithBundle($vs_bundle))) {
 				// jump to screen containing url-specified bundle
 				$this->request->setActionExtra($vs_bundle_screen);
-			} else {
+			} elseif(isset($va_nav['defaultScreen'])) {
 				$this->request->setActionExtra($va_nav['defaultScreen']);
 			}
 		}
@@ -250,11 +250,11 @@ class BaseEditorController extends ActionController {
 		if($vn_subject_id && $vs_rel_table && $vn_rel_type_id && $vn_rel_id) {
 			if(Datamodel::tableExists($vs_rel_table)) {
 				Debug::msg("[Save()] Relating new record using parameters from request: $vs_rel_table / $vn_rel_type_id / $vn_rel_id");
-				$t_subject->addRelationship($vs_rel_table, $vn_rel_id, $vn_rel_type_id, _t('now'));
+				if(!$t_subject->relationshipExists($vs_rel_table, $vn_rel_id, $vn_rel_type_id)) { 
+					$t_subject->addRelationship($vs_rel_table, $vn_rel_id, $vn_rel_type_id, _t('now'));
+				}
 			}
 			$this->notification->addNotification(_t("Added relationship"), __NOTIFICATION_TYPE_INFO__);
-			$this->render('screen_html.php');
-			return;
 		}
 
 		if (in_array($this->ops_table_name, array('ca_representation_annotations'))) { $vs_auth_table_name = 'ca_objects'; }
@@ -516,7 +516,8 @@ class BaseEditorController extends ActionController {
 	        
 			$vb_we_set_transaction = false;
 			if (!$t_subject->inTransaction()) {
-				$t_subject->setTransaction($o_t = new Transaction());
+				$o_t = new Transaction();
+				$t_subject->setTransaction($o_t);
 				$vb_we_set_transaction = true;
 			}
 			
@@ -658,7 +659,7 @@ class BaseEditorController extends ActionController {
 		if ((!($vn_display_id = $this->request->getParameter('display_id', pInteger))) || !isset($va_displays[$vn_display_id])) {
 			$vn_display_id = $this->request->user->getVar($t_subject->tableName().'_summary_display_id');
 		}
-		if (!isset($va_displays[$vn_display_id]) || (is_array($va_displays[$vn_display_id]['settings']['show_only_in']) && sizeof($va_displays[$vn_display_id]['settings']['show_only_in']) && !in_array('editor_summary', $va_displays[$vn_display_id]['settings']['show_only_in']))) {
+		if (!isset($va_displays[$vn_display_id]) || (is_array($va_displays[$vn_display_id]['settings']['show_only_in'] ?? null) && sizeof($va_displays[$vn_display_id]['settings']['show_only_in']) && !in_array('editor_summary', $va_displays[$vn_display_id]['settings']['show_only_in']))) {
 		    $va_tmp = array_filter($va_displays, function($v) { return !isset($v['settings']['show_only_in']) || !is_array($v['settings']['show_only_in']) || in_array('editor_summary', $v['settings']['show_only_in']); });
 		    $vn_display_id = sizeof($va_tmp) > 0 ? array_shift(array_keys($va_tmp)) : 0;
 		}
@@ -1175,6 +1176,8 @@ class BaseEditorController extends ActionController {
 		AssetLoadManager::register('imageScroller');
 		AssetLoadManager::register('datePickerUI');
 
+		$vn_above_id = $vn_after_id = null;
+		
 		$t_subject = Datamodel::getInstanceByTableName($this->ops_table_name);
 		$vn_subject_id = $this->request->getParameter($t_subject->primaryKey(), pInteger);
 
@@ -1210,6 +1213,7 @@ class BaseEditorController extends ActionController {
         
 		// pass relationship parameters to Save() action from Edit() so
 		// that we can create a relationship for a newly created object
+		$vs_rel_table = $vn_rel_type_id = $vn_rel_id = null;
 		if($vs_rel_table = $this->getRequest()->getParameter('rel_table', pString)) {
 			$vn_rel_type_id = $this->getRequest()->getParameter('rel_type_id', pString);
 			$vn_rel_id = $this->getRequest()->getParameter('rel_id', pInteger);
@@ -1219,8 +1223,6 @@ class BaseEditorController extends ActionController {
 				$this->view->setVar('rel_type_id', $vn_rel_type_id);
 				$this->view->setVar('rel_id', $vn_rel_id);
 			}
-
-			return array($vn_subject_id, $t_subject, $t_ui, null, null, null, $vs_rel_table, $vn_rel_type_id, $vn_rel_id);
 		}
 
 		if ($vs_parent_id_fld = $t_subject->getProperty('HIERARCHY_PARENT_ID_FLD')) {
@@ -1253,10 +1255,10 @@ class BaseEditorController extends ActionController {
 					$t_subject->set('idno', $t_parent->get('idno'));
 				}
 			}
-			return array($vn_subject_id, $t_subject, $t_ui, $vn_parent_id, $vn_above_id, $vn_after_id);
+			return array($vn_subject_id, $t_subject, $t_ui, $vn_parent_id, $vn_above_id, $vn_after_id, $vs_rel_table, $vn_rel_type_id, $vn_rel_id);
 		}
 
-		return array($vn_subject_id, $t_subject, $t_ui);
+		return array($vn_subject_id, $t_subject, $t_ui, null, null, null, $vs_rel_table, $vn_rel_type_id, $vn_rel_id);
 	}
 	# -------------------------------------------------------
 	# Dynamic navigation generation
@@ -1493,8 +1495,7 @@ class BaseEditorController extends ActionController {
 		$limit_to_types = $this->getRequest()->config->get($this->ops_table_name.'_navigation_new_menu_limit_types_to');
 		$exclude_types = $this->getRequest()->config->get($this->ops_table_name.'_navigation_new_menu_exclude_types');
 		
-        $va_limit_to_type_ids = (is_array($va_limit_to_types) && sizeof($va_limit_to_types)) ? caMakeTypeIDList($this->ops_table_name, $va_limit_to_types, ['dontIncludeSubtypesInTypeRestriction' => true]) : null;
-		foreach($va_subtypes as $vs_sort_key => $va_type) {
+        foreach($va_subtypes as $vs_sort_key => $va_type) {
 			foreach($va_type as $vn_item_id => $va_item) {
 				if (is_array($pa_restrict_to_types) && !in_array($vn_item_id, $pa_restrict_to_types)) { continue; }
 				if (is_array($limit_to_types) && sizeof($limit_to_types) && !in_array($va_item['parameters']['type_id'], $limit_to_types)) { continue; }

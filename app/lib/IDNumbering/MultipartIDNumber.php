@@ -244,7 +244,7 @@ class MultipartIDNumber extends IDNumber {
 		$i = 0;
 		$element_errors = [];
 		foreach($elements as $ename => $info) {
-			$v = $element_vals[$i];
+			$v = $element_vals[$i] ?? null;
 			$value_len = mb_strlen($v);
 
 			switch($info['type']) {
@@ -451,7 +451,7 @@ class MultipartIDNumber extends IDNumber {
 						$element_vals[$i] = $element_info['value'];
 						break;
 					case 'SERIAL':
-						if(!isset($value[$ename])) { $element_vals[$i] = ''; }
+						$element_vals[$i] = $value[$ename] ?? '';
 						break;
 					default:
 						$element_vals[$i] = $value[$ename] ?? null;
@@ -621,26 +621,32 @@ class MultipartIDNumber extends IDNumber {
 		$output = [];
 
 		foreach ($elements as $element) {
-			$element_info = $elements_normal_order[$element];
+			$element_info = $elements_normal_order[$element] ?? null;
 			$i = array_search($element, $element_names_normal_order);
 			$padding = 20;
+			
+			$v = $element_values[$i] ?? null;
+			if(($i === (sizeof($element_names_normal_order) - 1)) && (sizeof($element_values) > sizeof($element_names_normal_order))) {	// last item with extra elements
+				$extra_elements = array_splice($element_values, $i + 1);
+				$v .= $separator.join($separator, $extra_elements);
+			}
 
 			switch($element_info['type']) {
 				case 'LIST':
-					$w = $padding - mb_strlen($element_values[$i]);
+					$w = $padding - mb_strlen($v);
 					if ($w < 0) { $w = 0; }
-					$output[] = str_repeat(' ', $w).$element_values[$i];
+					$output[] = str_repeat(' ', $w).$v;
 					break;
 				case 'CONSTANT':
 					$len = mb_strlen($element_info['value']);
 					if ($padding < $len) { $padding = $len; }
-					$repeat_len = ($padding - mb_strlen($element_values[$i]));
-					$n = $padding - mb_strlen($element_values[$i]);
-					$output[] = (($repeat_len > 0) ? (($n >= 0) ? str_repeat(' ', $n) : '') : '').$element_values[$i];
+					$repeat_len = ($padding - mb_strlen($v));
+					$n = $padding - mb_strlen($v);
+					$output[] = (($repeat_len > 0) ? (($n >= 0) ? str_repeat(' ', $n) : '') : '').$v;
 					break;
 				case 'FREE':
 				case 'ALPHANUMERIC':
-					$tmp = preg_split('![^A-Za-z0-9]+!',  $element_values[$i]);
+					$tmp = preg_split('![^A-Za-z0-9]+!',  $v);
 
 					$zeroless_output = [];
 					$raw_output = [];
@@ -670,29 +676,29 @@ class MultipartIDNumber extends IDNumber {
 							$zeroless_output[] = $piece;
 						}
 					}
-					$output[] = join('', $raw_output); //.' '.join('.', $zeroless_output);
+					$output[] = join('', $raw_output); 
 					break;
 				case 'SERIAL':
 				case 'NUMERIC':
 					if ($padding < $element_info['width']) { $padding = $element_info['width']; }
-					$n = $padding - strlen(intval($element_values[$i]));
+					$n = $padding - strlen(intval($v));
 					
-					$output[] = (($n >= 0) ? str_repeat(' ', $n) : '').intval($element_values[$i]);
+					$output[] = (($n >= 0) ? str_repeat(' ', $n) : '').intval($v);
 					break;
 				case 'YEAR':
-					$p = (($element_info['width'] == 2) ? 2 : 4) - mb_strlen($element_values[$i]);
+					$p = (($element_info['width'] == 2) ? 2 : 4) - mb_strlen($v);
 					if ($p < 0) { $p = 0; }
-					$output[] = str_repeat(' ', $p).$element_values[$i];
+					$output[] = str_repeat(' ', $p).$v;
 					break;
 				case 'MONTH':
 				case 'DAY':
-					$p = 2 - mb_strlen($element_values[$i]);
+					$p = 2 - mb_strlen($v);
 					if ($p < 0) { $p = 0; }
 					$n = 2 - $p;
-					$output[] = (($n >= 0) ? str_repeat(' ', $n) : '').$element_values[$i];
+					$output[] = (($n >= 0) ? str_repeat(' ', $n) : '').$v;
 					break;
 				case 'PARENT':
-					$tmp = explode($separator, $element_values[$i]);
+					$tmp = explode($separator, $v);
 					
 					foreach($tmp as $t) {
 						$n = $padding - mb_strlen($t);
@@ -700,8 +706,8 @@ class MultipartIDNumber extends IDNumber {
 					}
 					break;
 				default:
-					$n = $padding - mb_strlen($element_values[$i]);
-					$output[] = (($n >= 0) ? str_repeat(' ', $n) : '').$element_values[$i];
+					$n = $padding - mb_strlen($v);
+					$output[] = (($n >= 0) ? str_repeat(' ', $n) : '').$v;
 					break;
 
 			}
@@ -729,9 +735,9 @@ class MultipartIDNumber extends IDNumber {
 		
 		$n = 0;
 		foreach ($elements as $element) {
-			$element_info = $elements_normal_order[$element];
+			$element_info = $elements_normal_order[$element] ?? null;
 			$i = array_search($element, $element_names_normal_order);
-			$v = $element_values[$i];
+			$v = $element_values[$i] ?? null;
 			
 			$range = caGetOption('range', $element_info, 5);
 			$precision = caGetOption('precision', $element_info, 2);
@@ -830,7 +836,8 @@ class MultipartIDNumber extends IDNumber {
 		foreach($elements as $element) {
 			$element_info = $elements_normal_order[$element];
 			$i = array_search($element, $elements);
-            if(!is_array($output[$i])) { $output[$i] = []; }
+            if(!is_array($output[$i] ?? null)) { $output[$i] = []; }
+            if(!isset($element_values[$i])) { $element_values[$i] = null; }
 			switch($element_info['type']) {
 				case 'LIST':
 					$output[$i] = array($element_values[$i]);
@@ -978,7 +985,7 @@ class MultipartIDNumber extends IDNumber {
 			if (($info['type'] == 'SERIAL') && ($element_values[$i] == '')) {
 				$next_in_seq_is_present = true;
 			}
-			$tmp = $this->genNumberElement($ename, $name, $element_values[$i], $id_prefix, $generate_for_search_form, $options);
+			$tmp = $this->genNumberElement($ename, $name, $element_values[$i] ?? null, $id_prefix, $generate_for_search_form, $options);
 			$element_control_names[] = $name.'_'.$ename;
 
 			if (($options['show_errors']) && (isset($errors[$ename]))) {
@@ -1377,7 +1384,7 @@ class MultipartIDNumber extends IDNumber {
 			case 'FREE':
 			case 'NUMERIC':
 			case 'ALPHANUMERIC':
-				if (!$element_value && !$generate_for_search_form) { $element_value = $element_info['default']; }
+				if (!$element_value && !$generate_for_search_form) { $element_value = $element_info['default'] ?? null; }
 				$width = $this->getElementWidth($element_info, 3);
 				if (!$element_value || $element_info['editable'] || $generate_for_search_form) {
 					$element .= '<input type="text" name="'.$element_form_name.'" id="'.$id_prefix.$element_form_name.'" value="'.htmlspecialchars($element_value, ENT_QUOTES, 'UTF-8').'" size="'.$width.'" maxlength="'.$width.'"'.($options['readonly'] ? ' disabled="1" ' : '').'/>';

@@ -291,7 +291,7 @@
 					if (isset($va_current_location_criteria[$vs_key]) && $vb_use_app_defaults) {
 						$va_bundle_settings[$vs_key] = $va_current_location_criteria[$vs_key];
 					} elseif(!$vb_use_app_defaults || !in_array($vs_key, ['sortDirection'])) {
-						$va_bundle_settings[$vs_key] = $pa_bundle_settings[$vs_key];
+						$va_bundle_settings[$vs_key] = $pa_bundle_settings[$vs_key] ?? null;
 					}
 				}
 				$pa_bundle_settings = $va_bundle_settings;
@@ -477,7 +477,7 @@
 			if (is_null($values) && !$is_future) {			
 				// Remove current value
 				if ($l = ca_history_tracking_current_values::find(['policy' => $policy, 'table_num' => $subject_table_num, 'row_id' => $row_id], ['returnAs' => 'firstModelInstance', 'transaction' => $this->getTransaction()])) {
-					$l->setDb($this->getDb());	
+					$l->setTransaction($this->getTransaction());
 					self::$s_history_tracking_deleted_current_values[$l->get('tracked_table_num')][$l->get('tracked_row_id')][$policy] = 
 					    self::$s_history_tracking_deleted_current_values[$l->get('current_table_num')][$l->get('current_row_id')][$policy] = 
 					        ['table_num' => $l->get('table_num'), 'row_id' => $l->get('row_id')];
@@ -513,7 +513,7 @@
 				//throw new ApplicationException(_t('Invalid subject row id'));
 				return null; // row no longer exists
 			}
-			$t->setDb($this->getDb());
+			$t->setTransaction($this->getTransaction());
 			
 			// Look for existing current tracking values
 			if ($ls = ca_history_tracking_current_values::find(['policy' => $policy, 'table_num' => $subject_table_num, 'row_id' => $row_id], ['returnAs' => 'arrays', 'transaction' => $this->getTransaction()])) {
@@ -536,7 +536,7 @@
                         	
                         	// Future location is now current location
                         	$t_l = new ca_history_tracking_current_values();
-							$t_l->setDb($this->getDb());	
+							$t_l->setTransaction($this->getTransaction());
 							$t_l->load($l['tracking_id']);
 							$t_l->set('is_future', null);
 							if (!($rc = $t_l->update())) {
@@ -554,7 +554,7 @@
 								['table_num' => $l['table_num'], 'row_id' => $l['row_id']];
 					}
 					$t_l = new ca_history_tracking_current_values();
-					$t_l->setDb($this->getDb());	
+					$t_l->setTransaction($this->getTransaction());
 					$t_l->load($l['tracking_id']);
 				    if (!($rc = $t_l->delete())) {
                         $this->errors = $t_l->errors;
@@ -594,6 +594,7 @@
 						// keep
 						$found = true;
 					} else {
+						$fe->setTransaction($this->getTransaction());
 						$fe->delete(true);
 					}
 				}
@@ -603,7 +604,7 @@
 			}
 		
 			$e = new ca_history_tracking_current_values();
-			$e->setDb($this->getDb());	
+			$e->setTransaction($this->getTransaction());
 			$e->set($d);
 			
 			if($values['date']) {
@@ -978,6 +979,7 @@
 			$policy = caGetOption('policy', $options, $this->getDefaultHistoryTrackingCurrentValuePolicy());
 			$row_id = caGetOption('row_id', $options, $this->getPrimaryKey());
 		
+			$pa_bundle_settings = null;
 			if ($policy && !is_array($pa_bundle_settings = caGetOption('settings', $options, null))) {
 				$pa_bundle_settings = self::policy2bundleconfig(['policy' => $policy]);
 			}
@@ -1984,7 +1986,7 @@
                     foreach($by_date as $i => $h) {
                         if(isset($deleted[$h['tracked_table_num']][$h['tracked_row_id']]) || isset($deleted[$h['current_table_num']][$h['current_row_id']])) {
                             unset($va_history[$d][$i]);
-                            if(!sizeof($va_history[$d])) { unset($va_history[$d]); }
+                            if(!is_array($va_history) || !is_array($va_history[$d]) || !sizeof($va_history[$d])) { unset($va_history[$d]); }
                         }
                         break(2);
                     }
@@ -2166,7 +2168,7 @@
 					$o_view->setVar('collection_types', $va_coll_types);
 					$o_view->setVar('collection_relationship_types', $t_coll_rel->getRelationshipTypes(null, null,  array_merge($pa_options, $pa_bundle_settings)));
 					
-					if(!is_array($bundle_config['ca_collections_showRelationshipTypes'])) { $bundle_config['ca_collections_showRelationshipTypes'] = []; }
+					if(!is_array($bundle_config['ca_collections_showRelationshipTypes'] ?? null)) { $bundle_config['ca_collections_showRelationshipTypes'] = []; }
 					$o_view->setVar('collection_relationship_types_by_sub_type', $t_coll_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  $bundle_config, ['restrictToRelationshipTypes' => $bundle_config['ca_collections_showRelationshipTypes']]));
 				}
 			}
@@ -2188,7 +2190,7 @@
 					$o_view->setVar('entity_types', $va_entity_types);
 					$o_view->setVar('entity_relationship_types', $t_entity_rel->getRelationshipTypes(null, null,  array_merge($pa_options, $pa_bundle_settings)));
 					
-					if(!is_array($bundle_config['ca_entities_showRelationshipTypes'])) { $bundle_config['ca_entities_showRelationshipTypes'] = []; }
+					if(!is_array($bundle_config['ca_entities_showRelationshipTypes'] ?? null)) { $bundle_config['ca_entities_showRelationshipTypes'] = []; }
 					$o_view->setVar('entity_relationship_types_by_sub_type', $t_entity_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($bundle_config, ['restrictToRelationshipTypes' => $bundle_config['ca_entities_showRelationshipTypes']])));
 				}
 			}
@@ -2215,7 +2217,7 @@
 					}
 					$o_view->setVar('loan_relationship_types', $rel_types);
 					
-					if(!is_array($bundle_config['ca_loans_showRelationshipTypes'])) { $bundle_config['ca_loans_showRelationshipTypes'] = []; }
+					if(!is_array($bundle_config['ca_loans_showRelationshipTypes'] ?? null)) { $bundle_config['ca_loans_showRelationshipTypes'] = []; }
 					$o_view->setVar('loan_relationship_types_by_sub_type', $t_loan_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($bundle_config, ['restrictToRelationshipTypes' => $bundle_config['ca_loans_showRelationshipTypes']])));
 				}
 			}
@@ -2243,7 +2245,7 @@
 					}
 					$o_view->setVar('movement_relationship_types', $rel_types);
 					
-					if(!is_array($bundle_config['ca_movements_showRelationshipTypes'])) { $bundle_config['ca_movements_showRelationshipTypes'] = []; }
+					if(!is_array($bundle_config['ca_movements_showRelationshipTypes'] ?? null)) { $bundle_config['ca_movements_showRelationshipTypes'] = []; }
 					$o_view->setVar('movement_relationship_types_by_sub_type', $t_movement_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($bundle_config, ['restrictToRelationshipTypes' => $bundle_config['ca_movements_showRelationshipTypes']])));
 				}
 			}
@@ -2258,7 +2260,7 @@
 				if ($t_object_rel = Datamodel::getInstance($linking_table, true)) {
 					$o_view->setVar('object_relationship_types', $t_object_rel->getRelationshipTypes(null, null,  array_merge($pa_options, $pa_bundle_settings)));
 					
-					if(!is_array($bundle_config['ca_objects_showRelationshipTypes'])) { $bundle_config['ca_objects_showRelationshipTypes'] = []; }
+					if(!is_array($bundle_config['ca_objects_showRelationshipTypes'] ?? null)) { $bundle_config['ca_objects_showRelationshipTypes'] = []; }
 					$o_view->setVar('object_relationship_types_by_sub_type', $t_object_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($bundle_config, ['restrictToRelationshipTypes' => $bundle_config['ca_objects_showRelationshipTypes']])));
 				}
 			}
@@ -2273,7 +2275,7 @@
 				if ($t_location_rel = Datamodel::getInstance($linking_table, true)) {
 					$o_view->setVar('location_relationship_types', $t_location_rel->getRelationshipTypes(null, null,  array_merge($pa_options, $pa_bundle_settings)));
 					
-					if(!is_array($bundle_config['ca_storage_locations_showRelationshipTypes'])) { $bundle_config['ca_storage_locations_showRelationshipTypes'] = []; }
+					if(!is_array($bundle_config['ca_storage_locations_showRelationshipTypes'] ?? null)) { $bundle_config['ca_storage_locations_showRelationshipTypes'] = []; }
 					$o_view->setVar('location_relationship_types_by_sub_type', $t_location_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($bundle_config, ['restrictToRelationshipTypes' => $bundle_config['ca_storage_locations_showRelationshipTypes']])));
 				}
 			}
@@ -2572,7 +2574,7 @@
 		 *
 		 */
 		public static function getHistoryTrackingEditorBundleSettingsData($table, $options=null) {
-			$cache_key = caMakeCacheKeyFromOptions($options, $table);
+			$cache_key = caMakeCacheKeyFromOptions($options ?? [], $table);
 			//if (!caGetOption('noCache', $options, false) && ExternalCache::contains($cache_key, "historyTrackingEditorBundleSettingsData")) { return ExternalCache::fetch($cache_key, 'historyTrackingEditorBundleSettingsData'); }			
 			$additional_settings = [];
 			
@@ -3276,7 +3278,7 @@
 		    $newly_added = self::getNewlyAddedCurrentValues();
 		    $deleted = self::getDeletedCurrentValues();
 		    
-		    if (is_array($newly_added[$table_num][$row_id])) {
+		    if (is_array($newly_added[$table_num][$row_id] ?? null)) {
 		        foreach($newly_added[$table_num][$row_id] as $p => $was_current) {
 		            $rows[$p][$was_current['table_num']][$was_current['row_id']] = true;
 		        }
