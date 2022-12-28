@@ -3716,7 +3716,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 					$vn_index = null;
 					if($vn_rep_id == $vn_primary_id){
 						$vn_index = 0;
-					}elseif (!($vn_index = (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($qr_reps->tableName()).'.rank'))) {
+					}elseif (!($vn_index = (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($pt_subject->tableName()).'.rank'))) {
 						$vn_index = $qr_reps->get('ca_object_representations.representation_id');
 					}
 					$va_rep_info[$vn_index] = array("rep_id" => $vn_rep_id, "tag" => $va_rep_tags[$vn_rep_id]);
