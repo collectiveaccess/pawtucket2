@@ -79,10 +79,10 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H1>
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>">
+					<!-- {{{<unit relativeTo="ca_collections" delimiter="<br/>">
 							<l>^ca_collections.preferred_labels.name</l>
 						</unit>
-						<ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}
+						<ifcount min="1" code="ca_collections"> ➔ </ifcount>}}} -->
 					{{{ca_objects.preferred_labels.name}}}
 				</H1>
 
@@ -96,111 +96,103 @@
 					if($t_object->get("source_id")){
 						$vs_source_as_link = getSourceAsLink($this->request, $t_object->get("source_id"), null);
 				?>
-						<div class="unit"><label>From</label>
-							<?php print $vs_source_as_link; ?>
+						<div class="unit">
+							<label style="display: inline;">From</label>
+							<span style="display: inline;"><?php print $vs_source_as_link; ?></span>
 						</div>
 				<?php
-					}				
+					}		
 				?>
 
-				{{{<ifdef code="ca_objects.type_id" >
-					<label>Classification</label>
-					<unit relativeTo="ca_objects.type_id" delimiter="<br/>">
-						^type_id
-					</unit>
-				</ifdef>}}}	
+				<HR>
 
-				{{{<ifdef code="ca_entities">
-					<label>Related people</label>
-					<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="donor, collector, provider">
-						<l>^preferred_labels</l> (^relationship_typename)
-					</unit>
+				{{{<ifdef code="ca_objects.idno">
+					<div class="unit">
+						<!-- <label>Accession/ID Number</label> -->
+						<unit relativeTo="ca_objects.idno" delimiter="<br/>">^idno</unit>
+					</div>
 				</ifdef>}}}
-				<!-- excludeRelationshipTypes="donor, collector, provider" -->
 
-				<!-- {{{<ifdef code="ca_objects.date" >
-					<label>Date</label>
-					<unit relativeTo="ca_objects.date" delimiter="<br/>" excludeTypes='accepted; collected'>
-						^date_value (^date_types)
-					</unit>
-				</ifdef>}}}	 -->
-
+				{{{<ifdef code="ca_objects.type_id" >
+					<div class="unit">
+						<!-- <label>Classification</label> -->
+						<unit relativeTo="ca_objects.type_id" delimiter="<br/>">^type_id</unit>
+					</div>
+				</ifdef>}}}	
 
 				{{{<ifdef code="ca_objects.date" >
-					<label>Date</label>
-					<unit relativeTo="ca_objects.date" delimiter="<br/>">
-						<if rule='^ca_objects.date.date_types !~ /accepted/ and ^ca_objects.date.date_types !~ /collected/'>^date_value (^date_types)</if>
-					</unit>
+					<div class="unit">
+						<!-- <label>Date</label> -->
+						<unit relativeTo="ca_objects.date" delimiter="<br/>">
+							<if rule='^ca_objects.date.date_types !~ /accepted/ and ^ca_objects.date.date_types !~ /collected/'>^date_value <ifdef code="ca_objects.date.date_types,ca_objects.date.date_value">(^date_types)</ifdef></if>
+						</unit>
+					</div>
 				</ifdef>}}}	
-
-
 
 				{{{<ifdef code="ca_objects.material" >
 					<label>Material</label>
-					<unit relativeTo="ca_objects.material" delimiter="<br/>">
-						^material
-					</unit>
+					<div class="unit">			
+						<unit relativeTo="ca_objects.material" delimiter=", ">^material</unit>
+					</div>
 				</ifdef>}}}	
 
 				{{{<ifdef code="ca_objects.medium" >
 					<label>Medium</label>
-					<unit relativeTo="ca_objects.medium" delimiter="<br/>">
-						^medium
-					</unit>
+					<div class="unit">			
+						<unit relativeTo="ca_objects.medium" delimiter=", ">^medium</unit>
+					</div>
 				</ifdef>}}}	
 
 				{{{<ifdef code="ca_objects.dimensions">
 					<label>Dimensions</label>
 					<ifcount code="ca_objects.dimensions" min="1">
-						<unit relativeTo="ca_objects.dimensions" delimiter="<br/>">
-							<ifdef code="ca_objects.dimensions.dimensions_height">^dimensions_height H</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_height,ca_objects.dimensions.dimensions_width"> X </ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_width">^dimensions_width W</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_width"> X </ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_depth">^dimensions_depth D</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_length"> X </ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_length">^dimensions_length L</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_weight">, ^dimensions_weight Weight</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_diameter">, ^dimensions_diameter Diameter</ifdef>
-							<ifdef code="ca_objects.dimensions.dimensions_circumference">, ^dimensions_circumference Circumference</ifdef>
-							<ifdef code="ca_objects.dimensions.measurement_notes"> <br/> Measurement Notes: ^measurement_notes</ifdef>
-							<ifdef code="ca_objects.dimensions.measurement_type"><br/> Measurement Types: ^measurement_type</ifdef>
-							<br/>
-						</unit>
+						<div class="unit">
+							<unit relativeTo="ca_objects.dimensions" delimiter="">
+								<ifdef code="ca_objects.dimensions.dimensions_height">^dimensions_height H</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_height,ca_objects.dimensions.dimensions_width"> X </ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_width">^dimensions_width W</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_width"> X </ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_depth">^dimensions_depth D</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_depth,ca_objects.dimensions.dimensions_length"> X </ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_length">^dimensions_length L</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_weight">, ^dimensions_weight Weight</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_diameter">, ^dimensions_diameter Diameter</ifdef>
+								<ifdef code="ca_objects.dimensions.dimensions_circumference">, ^dimensions_circumference Circumference</ifdef>
+								<ifdef code="ca_objects.dimensions.measurement_notes">Measurement Notes: ^measurement_notes</ifdef>
+								<ifdef code="ca_objects.dimensions.measurement_type">Measurement Types: ^measurement_type</ifdef>
+								<br/>
+							</unit>
+						</div>
 					</ifcount>
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.credit_line">
 					<label>Credit Line</label>
-					<unit relativeTo="ca_objects.credit_line" delimiter="<br/>">
-						^credit_line
-					</unit>
+					<div class="unit">			
+						<unit relativeTo="ca_objects.credit_line" delimiter="<br/>">
+							^credit_line
+						</unit>
+					</div>
 				</ifdef>}}}
 
-				{{{<ifdef code="ca_objects.idno">
-					<label>Accession/ID Number</label>
-					<unit relativeTo="ca_objects.idno" delimiter="<br/>">
-						^idno
-					</unit>
-				</ifdef>}}}
-
-				<br/>
-
-				{{{<ifdef code="ca_objects.public_description">
-					<br/>
-					<!-- <label>Description</label> -->
-					<unit relativeTo="ca_objects.public_description" delimiter="<br/>">
-						^public_description
-						<!-- <span class="trimText">^public_description</span> -->
-					</unit>
+				{{{<ifdef code="ca_entities">
+					<label>Related people</label>
+					<div class="unit">			
+						<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="donor, collector, provider">
+							<l>^preferred_labels</l> (^relationship_typename)
+						</unit>
+					</div>
 				</ifdef>}}}
 
 				<?php
 					if($t_object->get("ca_objects.aat")){
 						if($links = caGetBrowseLinks($t_object, 'ca_objects.aat', ['template' => '<l>^ca_objects.aat</l>', 'linkTemplate' => '<div>^LINK</div>'])) {
 				?>
-							<div class="unit">
+							{{{<ifdef code="ca_objects.aat">
 								<label>Object Type</label>
+							</ifdef>}}}
+
+							<div class="unit">
 								<?= join("\n", $links); ?>
 							</div>
 				<?php
@@ -224,34 +216,37 @@
 
 				{{{<ifdef code="ca_objects.ulan">
 					<label>Artist Name</label>
-					<unit relativeTo="ca_objects.ulan" delimiter="<br/>">
-						^ulan
-					</unit>
+					<div class="unit">
+						<unit relativeTo="ca_objects.ulan" delimiter="<br/>">^ulan</unit>
+					</div>
 				</ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.lc_names">
 					<label>Related People and Organizations</label>
-					<unit relativeTo="ca_objects.lc_names" delimiter="<br/>">
-						^lc_names
-					</unit>
+					<div class="unit">			
+						<unit relativeTo="ca_objects.lc_names" delimiter="<br/>">^lc_names</unit>
+					</div>
 				</ifdef>}}}
 
+				{{{<ifdef code="ca_objects.public_description">
+					<div class="unit">					
+						<!-- <label>Description</label> -->
+						<unit relativeTo="ca_objects.public_description" delimiter="<br/>">
+							^public_description
+							<!-- <span class="trimText">^public_description</span> -->
+						</unit>
+					</div>
+				</ifdef>}}}
 
-				<!-- {{{<ifdef code="ca_objects.rights">
-					<label>Rights</label>
-					<unit relativeTo="ca_objects.rights" delimiter="<br/>">
-						^rights
-					</unit>
-				</ifdef>}}} -->
-			
 				<hr></hr>
-					<div class="row">
-						<div class="col-sm-6"></div>
-						<!-- end col -->				
-						<div class="col-sm-6 colBorderLeft">
-							{{{map}}}
-						</div>
-					</div><!-- end row -->
+
+				<div class="row">
+					<div class="col-sm-6"></div>
+					<!-- end col -->				
+					<div class="col-sm-6 colBorderLeft">
+						{{{map}}}
+					</div>
+				</div><!-- end row -->
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->

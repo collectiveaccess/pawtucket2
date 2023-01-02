@@ -32,6 +32,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	
 	$vn_source_id = getSourceIdForEntity($this->request, $t_item->get("ca_entities.entity_id"));
+	$vn_collection_source_id = getCollectionSourceIdForEntity($this->request, $t_item->get("ca_entities.entity_id"));
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -100,7 +101,14 @@
 ?>
 		<div class="row">
 			<div class="col-sm-6"><label>Artifacts</label></div>
-			<div class="col-sm-6 detailBrowseAll"><?php print caNavLink($this->request, "Browse all Artifacts <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "", "Browse", "objects", array("facet" => "source_facet", "id" => $vn_source_id)); ?></div>
+			<div class="col-sm-6 detailBrowseAll">
+<?php
+			print caNavLink($this->request, "Browse all Artifacts <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "", "Browse", "objects", array("facet" => "source_facet", "id" => $vn_source_id)); 
+			if($vn_collection_source_id){
+				print " ".caNavLink($this->request, "View Archives <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "", "Collections", "Collections", array("source_id" => $vn_collection_source_id));
+			}
+?>
+		</div>
 		</div>
 		<div class="row">
 				<div id="browseResultsContainer">

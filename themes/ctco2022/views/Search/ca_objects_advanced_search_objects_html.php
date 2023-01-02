@@ -21,22 +21,22 @@
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
+			<label for='ca_collections_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records by Institution.') ?>"><?php _p('Institution') ?></label>
+			{{{ca_objects.source_id%width=200px&height=40px}}}
+		</div>
+		<div class="advancedSearchField col-sm-6">
+			<label for='ca_collections_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records within a particular collection.') ?>"><?php _p('Collection') ?></label>
+			{{{ca_collections.preferred_labels%restrictToTypes=collection%width=200px&height=40px}}}
+		</div>
+	</div>
+	<div class='row'>
+		<div class="advancedSearchField col-sm-6">
 			<label for='ca_objects_idno' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search object identifiers.') ?>"><?php _p('Accession number') ?></label>
 			{{{ca_objects.idno%width=210px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_objects_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to object types.') ?>"><?php _p('Type') ?></label>
 			{{{ca_objects.type_id%height=30px&id=ca_objects_type_id}}}
-		</div>
-	</div>
-	<div class='row'>
-		<div class="advancedSearchField col-sm-6">
-			<label for='ca_collections_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records by contributor.') ?>"><?php _p('Contributor') ?></label>
-			{{{ca_objects.source_id%width=200px&height=40px}}}
-		</div>
-		<div class="advancedSearchField col-sm-6">
-			<label for='ca_collections_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records within a particular collection.') ?>"><?php _p('Collection') ?></label>
-			{{{ca_collections.preferred_labels%restrictToTypes=collection%width=200px&height=40px}}}
 		</div>
 	</div>
 	<div class='row'>

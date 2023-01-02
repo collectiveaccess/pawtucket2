@@ -5,7 +5,7 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2">
-			<H1>Contributors</H1>
+			<H1>Institutions</H1>
 			<br/>
 			<div class="contributorIntro">{{{contributors_intro}}}</div>
 			<div class="contributorMap"><?php print $vs_map; ?></div>
