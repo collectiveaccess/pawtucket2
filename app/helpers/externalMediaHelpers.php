@@ -108,7 +108,7 @@ function caGetExternalMediaEmbedCode(string $url, ?array $options=null) {
 	
 	switch($info['source']) {
 		case 'YOUTUBE':
-			return "<iframe src=\"https://www.youtube.com/embed/{$code}\" width=\"{$width}}\" height=\"{$height}}\" title=\"{$title}\" frameborder=\"0\" allowfullscreen></iframe>";
+			return "<iframe src=\"https://www.youtube.com/embed/{$code}\" width=\"{$width}\" height=\"{$height}\" title=\"{$title}\" frameborder=\"0\" allowfullscreen></iframe>";
 		case 'VIMEO':
 			return "<div style=\"padding-bottom: 75%; position: relative;\"><iframe width=\"{$width}\" height=\"{$height}\" title=\"{$title}\" src=\"https://player.vimeo.com/video/{$code}\" frameborder=\"0\" allow=\"accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen\"  style=\"position: absolute; top: 0px; left: 0px;\"></iframe></div>";
 	}
