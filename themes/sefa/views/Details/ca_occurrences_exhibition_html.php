@@ -122,7 +122,7 @@
 			default:
 ?>		
 			
-			<div class="thumbnail">
+			<div class="thumbnail thumbnailImgLeft">
 <?php
 				$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("used_website"), "excludeTypes" => array("installation_shot", "catalog"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
 				foreach($va_objects as $va_object){
