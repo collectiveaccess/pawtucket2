@@ -164,6 +164,12 @@ strong, b {
 	margin-left:0;
 	margin-right: 0px;
 }
+.exhibitions .thumbnail > img {
+	display: block;
+	max-width: 100%;
+	max-height: 800px;
+	width: auto;
+}
 div.captionSlideshow{
 	margin-top: 10px;
 	padding-left:35px !important;
