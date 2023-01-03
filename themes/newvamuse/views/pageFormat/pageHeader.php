@@ -156,7 +156,7 @@
 						</ul>
 					</li>
 					<li <?php print ($this->request->getController() == "Transcribe") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Transcribe"), "", "", "Transcribe", "Index"); ?></li>
-					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "teachers")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("For Teachers"), "", "", "About", "teachers"); ?></li>
+					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "teachers")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("For Teachers"), "", "", "EducationalResources", "Index"); ?></li>
 					<li class="<?php print (($this->request->getController() == "About") && ($this->request->getAction() != "teachers") && ($this->request->getAction() != "support") && ($this->request->getAction() != "Index")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help</a>
 						<ul class='dropdown-menu'>
 							<li><?php print caNavLink($this->request, _t("Guide"), "", "", "About", "guide"); ?></li>

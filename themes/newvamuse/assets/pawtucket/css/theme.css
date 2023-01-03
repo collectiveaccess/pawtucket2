@@ -273,7 +273,7 @@ h1,h2 {
 .front .supportText {
 	font-size:18px;
 }
-.front .jcarousel-wrapper, .transcription .jcarousel-wrapper {
+.front .jcarousel-wrapper, .transcription .jcarousel-wrapper{
 	margin-top:10px;
 }
 
@@ -305,11 +305,11 @@ h1,h2 {
 	color:#333;
 	text-decoration:none;
 }
-.front .memberTile {
+.front .memberTile, .educationalResources .memberTile {
 	width:250px;
 	padding-right:15px;
 }
-.front .memberTile a {
+.front .memberTile a, .educationalResources .memberTile a {
 	color: #454545;
 }
 .front .curated .memberTile a {
@@ -320,7 +320,7 @@ h1,h2 {
 	padding-left:30px;
 	padding-right:30px;
 }
-.front .memberTile p {
+.front .memberTile p, .educationalResources .memberTile p {
 	text-align:center;
 	padding-top:5px;
 }
@@ -333,7 +333,7 @@ h1,h2 {
 	width:100%;
 	height:auto;
 }
-.front .memberImageCrop {
+.front .memberImageCrop, .educationalResources .memberImageCrop {
 	background-color:#f5f5f5;
 	min-height:100px;
 	height:235px;
@@ -341,7 +341,7 @@ h1,h2 {
 	background-color:#ededed;
 	text-align:center;
 }
-.front .memberImageCrop img {
+.front .memberImageCrop img. .educationalResources .memberImageCrop img {
 	height:100%;
 	width:auto;
 	vertical-align:middle;
@@ -350,7 +350,7 @@ h1,h2 {
 	padding-left:30px;
 	padding-right:30px;
 }
-.front .jcarousel-control-prev, .front .jcarousel-control-next, .transcription .jcarousel-control-prev, .transcription .jcarousel-control-next {
+.front .jcarousel-control-prev, .front .jcarousel-control-next, .transcription .jcarousel-control-prev, .transcription .jcarousel-control-next, .educationalResources .jcarousel-control-prev, .educationalResources .jcarousel-control-next {
 	top:120px;
 	font-size:40px;
 	text-shadow: 0px 0px 5px #999;
@@ -379,7 +379,7 @@ h1,h2 {
 .front .curated.jcarousel-pagination a.active, .front .recent.jcarousel-pagination a.active, .transcription .transcription.jcarousel-pagination a.active {
     opacity: 1;
 }
-.front .jcarousel-pagination, .transcription .jcarousel-pagination {
+.front .jcarousel-pagination, .transcription .jcarousel-pagination, .educationalResources .jcarousel-pagination{
 	margin-bottom:50px;
 }
 
@@ -1233,6 +1233,11 @@ div.caMediaOverlayControlsMinimal:hover {
 	height:100%;
 	width:auto;
 	vertical-align:middle;
+	margin: 0 auto 0 auto;
+}
+
+.collectionImageContainer {
+	text-align: center;
 }
 
 .transcription .startTime {
@@ -1274,4 +1279,37 @@ div.caMediaOverlayControlsMinimal:hover {
 
 .transcription .unit img {
 	width: unset;
+}
+
+.educationalResourcesDownloadList {
+	list-style-type: none;
+	padding: 0;
+}
+
+.educationalResources .repViewerCont img {
+	max-width: 100%;
+}
+
+.educationalResources .landingBtn {
+	font-size: 14px;
+}
+
+.educationalResources h2 { 
+	margin-top:15px;
+	margin-bottom:10px;
+}
+
+.educationalResources .jcarousel-wrapper {
+	margin-top: 30px;
+}
+
+.educationalResources .jcarousel {
+	height: 280px;
+	margin-top: 30px;
+}
+
+.educationalResources .educationalResources.jcarousel-pagination a.active {
+	color:white;
+	background-color:white;
+	opacity: 1;
 }
