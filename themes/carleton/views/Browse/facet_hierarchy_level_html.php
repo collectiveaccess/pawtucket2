@@ -35,18 +35,60 @@
 	$va_links = array();
 	
 	foreach($va_facet_list as $vn_key => $va_facet){
-		foreach($va_facet as $vn_id => $va_children){
-			if (!is_array($va_children)) { continue; }
+		if($vs_facet_name == "classification_facet"){		
+			foreach($va_facet as $vn_id => $va_children) {
+				if (!is_array($va_children)) { continue; }
+				$vs_content_count = (isset($va_children['content_count']) && ($va_children['content_count'] > 0)) ? " (".$va_children['content_count'].")" : "";
+				$vs_name = caTruncateStringWithEllipsis($va_children["name"], 75);
+				print "<div class='col-sm-12 facetItemHier' data-facet='{$vs_facet_name}' data-facet_item_id='{$vn_id}'>".caNavLink($this->request, $vs_name.$vs_content_count, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0))."</div>";
+			}
+?>
+				<a href="#" id="<?php print $vs_facet_name; ?>_facet_apply" data-facet="<?php print $vs_facet_name; ?>" class="facetApplyHier">Apply</a>
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+            
+            jQuery(".facetApplyHier").hide();
+            
+            jQuery(".facetItemHier").on('click', function(e) { 
+            	if (jQuery(this).attr('facet_item_selected') == '1') {
+            		jQuery(this).attr('facet_item_selected', '');
+            	} else {
+            		jQuery(this).attr('facet_item_selected', '1');
+            	}
+            	
+            	if (jQuery("div.facetItemHier[facet_item_selected='1']").length > 0) {
+            		jQuery("#" + jQuery(this).data('facet') + "_facet_apply").show();
+            	} else {
+            		jQuery("#" + jQuery(this).data('facet') + "_facet_apply").hide();
+            	}
+            	
+            	e.preventDefault();
+            	return false;
+            });
+            
+            jQuery(".facetApplyHier").on('click', function(e) { 
+            	var facet = jQuery(this).data('facet');
+            	
+            	var ids = [];
+            	jQuery.each(jQuery("#" + facet + "_facet_container").find("[facet_item_selected=1]"), function(k,v) {
+            		ids.push(jQuery(v).data('facet_item_id'));
+            	});
+            	window.location = '<?php print caNavUrl($this->request, '*', '*', $vs_browse_type, array('key' => $vs_key)); ?>/facet/' + facet + '/id/' + ids.join('|');
+            	e.preventDefault();
+            });
+		});
+	</script>
+<?php	
+		}else{
+		
+			foreach($va_facet as $vn_id => $va_children){
+				if (!is_array($va_children)) { continue; }
 			
-			$vs_content_count = (isset($va_children['content_count']) && ($va_children['content_count'] > 0)) ? " (".$va_children['content_count'].")" : "";
-			$vs_name = caTruncateStringWithEllipsis($va_children["name"], 75);
+				$vs_content_count = (isset($va_children['content_count']) && ($va_children['content_count'] > 0)) ? " (".$va_children['content_count'].")" : "";
+				$vs_name = caTruncateStringWithEllipsis($va_children["name"], 75);
 			
-			if(isset($vs_name)){
-				$vs_buf = "<div ".($vb_is_nav ? "class='browseFacetItem browseFacetHierarchyItem col-sm-6 col-md-4'" : "").">";
-				if($vs_facet_name == "classification_facet"){
-					# --- just show the top level records for classification browse
-					$vs_buf .= caNavLink($this->request, $vs_name.$vs_content_count, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0));		
-				}else{
+				if(isset($vs_name)){
+					$vs_buf = "<div ".($vb_is_nav ? "class='browseFacetItem browseFacetHierarchyItem col-sm-6 col-md-4'" : "").">";
 					if($vs_link_to == "morePanel"){
 						if((int)$va_children["children"] > 0){
 							$vs_buf .= "<a href='#' data-item_id='{$vn_id}' class='caSubItems caSubItem{$vs_facet_name}' title='".addslashes(_t('View sub-items'))."'>{$vs_name}</a>";
@@ -58,10 +100,10 @@
 						if((int)$va_children["children"] > 0){
 							$vs_buf .= ' <a href="#" title="'._t('View sub-items').'" onClick=\'jQuery("#bHierarchyList'.(($vs_link_to) ? '' : 'MorePanel').'_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0)).'"); jQuery(".bAncestorList_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0)).'"); return false;\'><span class="glyphicon glyphicon-chevron-down"></span></a>';
 						}
-					}
+					}			
+					$vs_buf .= "</div>";
+					$va_links[mb_strtolower($va_children["name"])] = $vs_buf;
 				}
-				$vs_buf .= "</div>";
-				$va_links[mb_strtolower($va_children["name"])] = $vs_buf;
 			}
 		}
 	}

@@ -80,7 +80,7 @@
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
 			
-			if ($vs_table != 'ca_objects') {
+			if (!in_array($vs_table, array('ca_collections', 'ca_objects'))) {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 					$va_ids[] = $qr_res->get($vs_pk);
@@ -122,7 +122,8 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					if ($vs_table == 'ca_objects') {
+					$vs_multiple_media = "";
+					if (in_array($vs_table, array('ca_collections', 'ca_objects'))) {
 						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
@@ -131,6 +132,9 @@
 							}else{
 								$vs_thumbnail = $vs_default_placeholder_tag;
 							}
+						}
+						if($qr_res->getWithTemplate("<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='0' length='1'>^count</unit>", array("checkAccess" => $va_access_values)) > 1){
+							$vs_multiple_media = '<div class="multipleMediaIcon"><i class="fa fa-files-o" aria-hidden="true" title="multiple media"></i></div>';
 						}
 						$vs_info = null;
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
@@ -152,7 +156,7 @@
 		<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='bResultItem' id='row{$vn_id}'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_multiple_media}{$vs_rep_detail_link}</div>
 					<div class='bResultItemText'>
 						<div class='objectTitle'>{$vs_label_detail_link}</div>".$qr_res->getWithTemplate("<ifcount min='1' code='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject'><b><unit relativeTo='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject' delimiter='<br/>'>^ca_entities.preferred_labels.displayname</unit></b><br/></ifcount><ifdef code='ca_collections.description'><div>^ca_collections.description</div></ifdef>").$qr_res->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections'><unit relativeTo='ca_collections.hierarchy' delimiter=' > '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef></unit></unit></ifcount>")."
 					</div><!-- end bResultItemText -->

@@ -32,6 +32,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	
 	$vn_source_id = getSourceIdForEntity($this->request, $t_item->get("ca_entities.entity_id"));
+	$vn_collection_source_id = getCollectionSourceIdForEntity($this->request, $t_item->get("ca_entities.entity_id"));
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -58,17 +59,53 @@
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_entities.life_dates"><div class='unit'><label>Life Dates</label>^ca_entities.life_dates</div></ifdef>}}}
 					{{{<ifdef code="ca_entities.biography"><div class='unit'><label>Biography</label>^ca_entities.biography</div></ifdef>}}}
+
+					{{{<ifdef code="ca_entities.address">
+						<div class="unit"><label>Address</label>
+						<unit relativeTo="ca_entities.address" delimiter="<br/>">
+							<ifdef code="ca_entities.address.address1">^ca_entities.address.address1 <br/></ifdef> 
+							<ifdef code="ca_entities.address.address2">^ca_entities.address.address2 <br/></ifdef>
+							<ifdef code="ca_entities.address.city|ca_entities.address.stateprovince|ca_entities.address.postalcode|ca_entities.address.country">^ca_entities.address.city<ifdef code="ca_entities.address.city,ca_entities.address.stateprovince">, </ifdef>^ca_entities.address.stateprovince ^ca_entities.address.postalcode ^ca_entities.address.country</ifdef>
+						</unit></div>
+					</ifdef>}}}
+
+					{{{<ifdef code="ca_entities.email">
+						<!-- <label>Email</label> -->
+						<div class="unit">
+						<unit relativeTo="ca_entities.email" delimiter="<br/>">
+							<a href="mailto:^ca_entities.email">^ca_entities.email</a>
+						</unit></div>
+					</ifdef>}}}	
+					
+					{{{<ifdef code="ca_entities.website">
+						<!-- <label>Website</label> -->
+						<div class="unit"><unit relativeTo="ca_entities.website" delimiter="<br/>">
+							<a href="^website" target="_blank">^website</a>
+						</unit></div>
+					</ifdef>}}}	
+
+
 				</div><!-- end col -->
 
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{representationViewer}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
+
+			<br/>
 <?php
 	if($vn_source_id){
 ?>
 		<div class="row">
-			<div class="col-sm-12"><label>Artifacts</label></div>
+			<div class="col-sm-6"><H2>Artifacts</H2></div>
+			<div class="col-sm-6 detailBrowseAll">
+<?php
+			print caNavLink($this->request, "Browse all Artifacts <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "", "Browse", "objects", array("facet" => "source_facet", "id" => $vn_source_id)); 
+			if($vn_collection_source_id){
+				print " ".caNavLink($this->request, "View Archives <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "", "Collections", "Collections", array("source_id" => $vn_collection_source_id));
+			}
+?>
+		</div>
 		</div>
 		<div class="row">
 				<div id="browseResultsContainer">

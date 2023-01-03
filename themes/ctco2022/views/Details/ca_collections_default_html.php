@@ -89,9 +89,8 @@
 
 			<div class="row">
 
-				<div class='col-md-10 col-lg-10'>
-					{{{<ifdef code="ca_collections.description"><label>About</label>^ca_collections.description<br/></ifdef>}}}
-					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
+				<div class='col-md-12'>
+					{{{<ifdef code="ca_collections.description"><div class="unit"><label>About</label>^ca_collections.description</div></ifdef>}}}
 					<?php
 						# Comment and Share Tools
 						if ($vn_comments_enabled | $vn_share_enabled) {
@@ -148,8 +147,8 @@
 						}
 					?> -->
 
-					{{{<ifcount code="ca_entities" min="1"><label>Related People/Institutions</label>
-							<unit relativeTo="ca_entities" delimiter=""><div class="unit"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</div></unit>
+					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related People/Institutions</label>
+							<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div>
 					</ifcount>}}}
 
 				</div><!-- end col -->

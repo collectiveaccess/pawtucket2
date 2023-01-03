@@ -35,62 +35,51 @@
 ?>
 <div class="transcription container textContent">
 	<div class="row">
-		<div class="col-sm-10 col-sm-offset-1">
+		<div class="col-sm-12 col-md-8 col-md-offset-2">
 			<h1>Transcribe</H1>
-			<p>
-				Transcribe is a new way for people to connect with collections and share knowledge. 
-				By transcribing a record, you are creating searchable data that can be used by genealogists, 
-				researchers, students, teachers, and everyone else. You are helping museums document their 
-				collections and share information in a meaningful way.
+			<div class="transcribeIntro">{{{transcribe_intro}}}</div>
+			<p class="text-center">
+				<?php print caNavLink($this->request, 'View all collections', 'btn btn-default', '*', 'Transcribe', 'Collections'); ?>
+				<?php print caNavLink($this->request, 'Browse items for transcription', 'btn btn-default', '*', 'Transcribe', 'Browse'); ?>
 			</p>
-			<p>
-				Want to start transcribing? Please read our <a href="/TranscriptionTips/Index">Transcription Tips</a> first. 
-			</p>
-			<div style="clear:both; margin-top:40px;">
-				<p class="text-center">
-					<?php print caNavLink($this->request, 'View all collections', 'btn btn-danger btn-lg', '*', 'Transcribe', 'Collections'); ?>
-					<?php print caNavLink($this->request, 'Browse items for transcription', 'btn btn-danger btn-lg', '*', 'Transcribe', 'Browse'); ?>
-				</p>
-				
-				<div style="clear:both; margin-top:10px;">
-					<h2>Featured Collections</h2>
-					<div class="jcarousel-wrapper">
-						<div class="jcarousel">
-							<ul>
 <?php
-					if ($qr_sets) { 
+				if ($qr_sets) { 
+?>
+					<div>
+						<h2>Featured Collections</h2>
+<?php
+						$i = 0;
 						while($qr_sets->nextHit()) {
 							$set_id = $qr_sets->get('ca_sets.set_id');
 							if(!isset($set_media[$set_id])) { continue; }
 							$item = array_shift($set_media[$set_id]);
-?>
-								<li>
-									<div class='collectionTile'>
-										<div class='collectionImageCrop hovereffect'>
-											<?php print caNavLink($this->request, $item['representation_tag'], '', '', 'Transcribe', "Collection/{$set_id}"); ?>
-											<div class='overlay'>
-												<h2><?php print caNavLink($this->request, $qr_sets->get('ca_sets.preferred_labels.name'), '', '', 'Transcribe', "Collection/{$set_id}"); ?></h2>
-											</div>
-									</div>
-								</li>
-<?php
+							
+							$i++;
+							if($i == 1){
+								print "<div class='row'>";
+							}
+							print "<div class='col-sm-3'>";
+							$vn_num_items = $qr_sets->getWithTemplate("<unit relativeTo='ca_set_items' length='1'>^count</unit>");
+							print "<div class='galleryList'>".caNavLink($this->request, $item['representation_tag'], '', 'Transcribe', "Collection", $set_id).
+								"<label>".caNavLink($this->request, $qr_sets->get('ca_sets.preferred_labels.name'), '', 'Transcribe', "Collection", $set_id)."</label>
+								<div><small class='uppercase'>".$vn_num_items." ".(($vn_num_items == 1) ? _t("item") : _t("items"))."</small></div>
+							</div>\n";
+							print "</div><!-- end col -->";
+							if($i == 4){
+								print "</div><!-- end row -->";
+								$i = 0;
+							}
+
 						}
-					}
+						if($i){
+							print "</div><!-- end row -->";
+						}
+?>
+					</div>
+<?php
+				}
 ?>	
-							</ul>
-						</div>	<!-- end jc  -->
-						<!-- Prev/next controls -->
-						<a href="#" class="jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
-						<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
-		
-						<!-- Pagination -->
-						<p class="transcription jcarousel-pagination">
-							<!-- Pagination items will be generated in here -->
-						</p>			
-					</div>	<!-- end jc wrapper -->
-				</div>
-			</div>
-		</div>	
+			</div>	
 	</div>
 </div>
 
