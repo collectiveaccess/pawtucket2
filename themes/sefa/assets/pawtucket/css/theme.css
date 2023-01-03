@@ -167,7 +167,7 @@ strong, b {
 .exhibitions .thumbnail > img {
 	display: block;
 	max-width: 100%;
-	max-height: 800px;
+	max-height: 700px;
 	width: auto;
 }
 div.captionSlideshow{
