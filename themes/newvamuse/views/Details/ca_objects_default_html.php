@@ -33,7 +33,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
-	$va_access_values = caGetUserAccessValues($this->request);
+	$va_access_values = 	caGetUserAccessValues($this->request);
 
 	# --- get the placeholder graphic from the novamuse theme
 	$vn_rep_id = $this->getVar("representation_id");
@@ -276,6 +276,15 @@
 				}
 				if ($va_manufacturer = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'delimiter' => ', ', 'restrictToRelationshipTypes' => 'manufacturer'))) {
 					print "<div class='unit'><span class='name'>"._t("Manufacturer").": </span><span class='data'>".$va_manufacturer."</span></div>";
+				}
+				
+				
+				if ($edu = $t_object->get('ca_occurrences.occurrence_id', ['returnAsSearchResult' => true])) {
+					
+					while($edu->nextHit()) {
+						$res[] = "<span class='data'>".$edu->get('ca_occurrences.preferred_labels.name', ['returnAsLink' => true, 'checkAccess' => $va_access_values])."</span>";
+					}
+					print "<div class='unit'><span class='name'>"._t("Educational resources").": </span>".join(", ", $res)."</div>\n";
 				}
 ?>				
 				

@@ -238,11 +238,11 @@
 ?>
 				<?= "<li><a href='{$fetched_from}'>Open</a> {$file_label} in GoogleDrive ({$filesize})</li>\n"; ?>
 <?php
-			} else {
+			} 
 ?>
-				<?= "<li>".caNavLink($this->request, 'Download', '', '*', '*', 'Download', ['id' => $t_resource->getPrimaryKey(), 'representation_id' => $r['representation_id']])." {$file_label} from NovaMuse ({$filesize})</li>\n"; ?>
+			<?= "<li>".caNavLink($this->request, 'Download', '', '*', '*', 'Download', ['id' => $t_resource->getPrimaryKey(), 'representation_id' => $r['representation_id']])." {$file_label} from NovaMuse ({$filesize})</li>\n"; ?>
 <?php
-			}
+			
 		}
 		
 		if ($n > 1) {
