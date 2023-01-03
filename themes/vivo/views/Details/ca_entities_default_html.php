@@ -51,7 +51,7 @@
 				</div><!-- end col -->
 				<div class='col-md-2'>
 <?php
-					print "<div id='detailTools'><div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "", "", "Contact", "Form", array("table" => "ca_entities", "id" => $t_item->get("ca_entities.entity_id")))."</div></div>";
+					print "<div id='detailTools'><div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Feedback", "", "", "Contact", "Form", array("contactType" => "Feedback", "table" => "ca_entities", "id" => $t_item->get("ca_entities.entity_id")))."</div></div>";
 ?>
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -125,6 +125,7 @@ if($vb_2_col){
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					
 					{{{<ifcount code="ca_occurrences" min="1" restrictToType="event"><div class="unit"><label>Related programs & events</label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToType="event"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="1" restrictToType="subject_guide"><div class="unit"><label>Related Subject Guides</label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToType="subject_guide"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
 					{{{<ifcount code="ca_entities.related" min="1"><div class="unit"><label>Related people, organisations & indigenous communities</label><div class="trimTextShort"><unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></div></div></ifcount>}}}
 					{{{<ifdef code="ca_entities.places"><div class="unit"><label>Related places</label>^ca_entities.places%delimiter=,_</div></ifcount>}}}
 					

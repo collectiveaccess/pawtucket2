@@ -69,8 +69,10 @@
 					}
 				}
 ?>
-				{{{<ifcount code="ca_occurrences.related" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences.related" min="2" restrictToType="program">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
-					
+				{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
+				{{{<ifcount code="ca_occurrences.related" min="1" restrictToType="event"><div class="unit"><label>Related programs & events</label><div class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToType="event"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+				{{{<ifcount code="ca_occurrences.related" min="1" restrictToType="subject_guide"><div class="unit"><label>Related Subject Guides</label><div class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToType="subject_guide"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+						
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {

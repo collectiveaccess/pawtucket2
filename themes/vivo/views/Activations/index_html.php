@@ -14,6 +14,48 @@
 		</div>
 	</div>
 	<div class="row">
+		<div class="col-sm-12">
+<?php
+	$va_access_values = $this->getVar("access_values");
+	$qr_res = $this->getVar('featured_set_items_as_search_result');
+	$vs_featured_set_name = $this->getVar('featured_set_name');
+	if($qr_res && $qr_res->numHits()){
+?>
+		<H2><?php print ($vs_featured_set_name) ? $vs_featured_set_name : "Featured Events"; ?></H2>
+
+			<div class="frontGrid">	
+<?php
+		
+					$vn_col = $i = 0;
+					while($qr_res->nextHit()){
+						$vs_media = $qr_res->getWithTemplate('<unit relativeTo="ca_objects"><ifdef code="ca_object_representations.media.widepreview"><l><unit relativeTo="ca_objects">^ca_object_representations.media.widepreview</l></ifdef></unit>', array("checkAccess" => $va_access_values));
+						if($vn_col == 0){
+							print "<div class='row'>";
+						}
+						print "<div class='col-sm-3 col-xs-6'>".$vs_media.$qr_res->getWithTemplate('<l><div class="frontGridCaption">^ca_occurrences.preferred_labels.name</div></l>')."</div>"; 
+						$i++;
+						$vn_col++;
+						if($vn_col == 4){
+							print "</div>";
+							$vn_col = 0;
+						}
+						if($i == 4){
+							break;
+						}
+					}
+					if($vn_col > 0){
+						print "</div><!-- end row -->";
+					}
+?>
+			</div>
+		
+
+<?php
+	}
+?>
+	</div>
+</div>
+	<div class="row">
 		<div class="col-sm-6">
 			<H2><?php print caNavLink($this->request, "Selections From the Archive", "", "", "Gallery", "Index"); ?></H2>
 <?php
