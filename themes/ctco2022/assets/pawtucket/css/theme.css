@@ -26,7 +26,17 @@ a{
 a:hover{
 	color:#2A8457;
 }
+.form-control:focus {
+	border-color: #000;
+}
 
+.front .notificationMessage, .front .notificationInfo {
+	position: absolute;
+	z-index: 5;
+	left: 10%;
+	width: 80%;
+	text-align: center;
+}
 
 
 
