@@ -3,6 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$va_access_values = 	caGetUserAccessValues($this->request);
 	
 	if ($va_external_link = $t_item->get('ca_entities.external_link', array('returnWithStructure' => true))) {
 		foreach ($va_external_link as $va_key => $va_external_link_t) {
@@ -49,7 +50,13 @@
 #								}
 #							}
 #						}
-#					}					
+#					}		
+			
+					if($res = $t_item->get("ca_occurrences", array("restrictToTypes" => ["member_institution"], 'delimiter' => ', ', "returnAsLink" => true, "checkAccess" => $va_access_values))) {
+						print "<div class='unit'><span class='name'>"._t("Educational resources").": </span>".$res."</div>\n";
+					}
+
+			
 					if ($va_social_media = $t_item->get('ca_entities.social_media', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 						print "<div class='unit connect'><div class='name' style='width:100%;'>Connect</div>";
 						foreach ($va_social_media as $va_key => $va_social_media_t) { 
