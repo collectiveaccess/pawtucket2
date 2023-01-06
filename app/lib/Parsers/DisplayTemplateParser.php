@@ -468,7 +468,7 @@ class DisplayTemplateParser {
 					$vb_omit_blanks = !is_null($o_node->omitBlanks) ? (bool)$o_node->omitBlanks : null;
 					$vs_filter = !is_null($o_node->filter) ? (string)$o_node->filter : null;
 					
-					$va_get_options = ['limit' => $vn_limit, 'returnAsCount' => true, 'checkAccess' => $pa_check_access, 'restrictToTypes' => $va_restrict_to_types, 'excludeTypes' => $va_exclude_types, 'restrictToRelationshipTypes' => $va_restrict_to_relationship_types, 'excludeRelationshipTypes' => $va_exclude_to_relationship_types];
+					$va_get_options = ['returnAsCount' => true, 'checkAccess' => $pa_check_access, 'restrictToTypes' => $va_restrict_to_types, 'excludeTypes' => $va_exclude_types, 'restrictToRelationshipTypes' => $va_restrict_to_relationship_types, 'excludeRelationshipTypes' => $va_exclude_to_relationship_types];
 					if (!is_null($vb_omit_blanks)) { 
 						$pa_options['includeBlankValuesInArray'] = $va_get_options['includeBlankValuesInArray'] = !$vb_omit_blanks; 
 					}
@@ -478,6 +478,8 @@ class DisplayTemplateParser {
 					$vm_count = ($vb_bool == 'AND') ? 0 : [];
 					if (($vn_limit = ($vn_max > 0) ? $vn_max : $vn_min) == 0) { $vn_limit = 1; }
 					$vn_limit++;
+					$va_get_options['limit'] = $vn_limit;
+
 					foreach($va_codes as $vs_code) {
 						if($vs_filter_regex) {
 							$vals = $pr_res->get($vs_code, array_merge($va_get_options, ['returnAsCount' => false, 'returnAsArray' => true]));
