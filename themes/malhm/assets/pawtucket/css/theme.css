@@ -101,7 +101,7 @@ p {
 	margin-top:-20px;
 }
 .front h1 {
-	color:#fff;
+	color:#000;
 	padding-top:0px;
 	text-align:center;
 }
@@ -131,20 +131,21 @@ p {
 	border-radius:0px;
 	box-shadow:none;
 	border:2px solid #eee;
-	height:40px;
-	width:600px;
+	height:46px;
+	width:40%;
 	margin-left:auto;
 	margin-right:auto;
 	background-color:#fff;
 }
 .frontSearchCollage  input.form-control::placeholder, .frontSearchCollage input.form-control {
 	color:#333333;
-	font-size:14px;
+	font-size:18px;
 	font-family: 'Montserrat';
+	margin: 5px 0 0 0 ;
 }
 .frontSearchCollageOutline button{
 	float:right;
-	margin-top: 4px;
+	margin-top: 7px;
 
     padding: 6px;
     margin-bottom: 0;
@@ -163,6 +164,11 @@ p {
     user-select: none;
 
 }
+
+.homeText {
+	text-align: center;
+}
+
 .frontSearchCollageOutline .form-group{
 	float:left;
 	width:85%;
@@ -187,6 +193,7 @@ p {
 .front H2{
     font-family: 'Montserrat';
     font-weight:bold;
+    text-align: center;
 }
 .browse .btn, .sets .btn, .btn-default, .btn-default:hover {
 	background-color:#6e416c;
@@ -456,7 +463,7 @@ ul.socialRow li .connect{
 /* Front */
 
 .front .row.members {
-	padding-top:30px;
+	padding-top: 0px;
 	padding-bottom:30px;
 }
 .front .members h1{
