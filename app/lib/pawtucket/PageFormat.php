@@ -68,8 +68,6 @@
 				$this->getResponse()->prependContent($o_view->render('pageFormat/notifications.php'), 'notifications');
 			}
 			
-			$o_view->setVar('nav', $nav ?? false);
-			
 			if(is_array($va_template_values = $o_request->config->getAssoc('global_template_values'))) {
 				$o_appvars = new ApplicationVars();
  				foreach($va_template_values as $vs_name => $va_info) {
