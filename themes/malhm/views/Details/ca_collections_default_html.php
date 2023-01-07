@@ -62,22 +62,22 @@
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
 <?php
-					if ($vs_date = $t_item->getWithTemplate('<unit relativeTo="ca_collections.unitdate">^ca_collections.unitdate.dacs_date_value ^ca_collections.unitdate.dacs_dates_types</unit>')) {
+					if ($vs_date = $t_item->getWithTemplate('<unit relativeTo="ca_collections.unitdate" delimiter="">^ca_collections.unitdate.dacs_date_value ^ca_collections.unitdate.dacs_dates_types</unit>')) {
 						print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
 					}
-					if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
+					if ($vs_extent = $t_item->get('ca_collections.extentDACS', ['delimiter' => ''])) {
 						print "<div class='unit'><h6>Extent</h6>".$vs_extent."</div>";
 					}
 					if ($vs_creator = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {
 						print "<div class='unit'><h6>Creators</h6>".caDetailLink($this->request, $vs_creator, '', 'ca_entities', $t_item->get('ca_entities.entity_id'))."</div>";
 					}
-					if ($vs_scope = $t_item->get('ca_collections.scopecontent')) {
+					if ($vs_scope = $t_item->get('ca_collections.scopecontent', ['delimiter' => ''])) {
 						print "<div class='unit'><h6>Scope & Content</h6>".$vs_scope."</div>";
 					}
-					if ($vs_admin = $t_item->get('ca_collections.adminbiohist')) {
+					if ($vs_admin = $t_item->get('ca_collections.adminbiohist', ['delimiter' => ''])) {
 						print "<div class='unit'><h6>Administrative Biographical History Elements</h6>".$vs_admin."</div>";
 					}	
-					if ($vs_cond = $t_item->get('ca_collections.accessrestrict')) {
+					if ($vs_cond = $t_item->get('ca_collections.accessrestrict', ['delimiter' => ''])) {
 						print "<div class='unit'><h6>Conditions Governing Access</h6>".$vs_cond."</div>";
 					}
 					if (is_array($aat = $t_item->get('ca_collections.aat', array('returnAsArray' => true))) && ($aat = array_filter($aat, "strlen")) && sizeof($aat)) {
@@ -92,10 +92,10 @@
 					if ($vs_lcsh = $t_item->get('ca_collections.lcsh_terms', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><h6>Library of Congress Subject Headings</h6>".$vs_lcsh."</div>";
 					}																													
-					if ($vs_language = $t_item->get('ca_collections.langmaterial')) {
+					if ($vs_language = $t_item->get('ca_collections.langmaterial', ['delimiter' => ''])) {
 						print "<div class='unit'><h6>Languages</h6>".$vs_language."</div>";
 					}	
-					if ($vs_otherfindingaid = $t_item->get('ca_collections.otherfindingaid')) {
+					if ($vs_otherfindingaid = $t_item->get('ca_collections.otherfindingaid', ['delimiter' => ''])) {
 						print "<div class='unit'><h6>Finding Aids</h6>".$vs_otherfindingaid."</div>";
 					}										
 					if ($va_entity_rels = $t_item->get('ca_entities_x_collections.relation_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {

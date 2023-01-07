@@ -123,6 +123,28 @@
 					$q_guides = caMakeSearchResult('ca_occurrences', $va_subject_guide_ids);
 				}
 				$this->view->setVar('subject_guides', $q_guides);
+				
+				# --- featured events
+				$this->view->setVar('access_values', $this->opa_access_values);
+
+				#
+				# --- if there is a set configured to show on the front page, load it now
+				#
+				$va_featured_ids = array();
+				if($vs_set_code = $this->request->config->get("activations_events_set_code")){
+					$t_set = new ca_sets();
+					$t_set->load(array('set_code' => $vs_set_code));
+					$vn_shuffle = 1;
+					# Enforce access control on set
+					if((sizeof($this->opa_access_values) == 0) || (sizeof($this->opa_access_values) && in_array($t_set->get("access"), $this->opa_access_values))){
+						$this->view->setVar('featured_set_id', $t_set->get("set_id"));
+						$this->view->setVar('featured_set', $t_set);
+						$this->view->setVar('featured_set_name', $t_set->get("ca_sets.preferred_labels"));
+						$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
+						$this->view->setVar('featured_set_item_ids', $va_featured_ids);
+						$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_occurrences', $va_featured_ids));
+					}
+				}
 				$this->render("Activations/index_html.php");
  			}
  		}

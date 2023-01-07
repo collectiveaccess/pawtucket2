@@ -218,13 +218,19 @@
 						<unit relativeTo="ca_objects.lc_names" delimiter="<br/>">^ca_objects.lc_names</unit>
 					</div>
 				</ifdef>}}}
+				
+				{{{<ifcount code="ca_collections" min="1">
+					<div class="unit">			
+						<label>Related Collection</label>
+						<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels</l></unit>
+					</div>
+				</ifcount>}}}
 
 				{{{<ifdef code="ca_objects.public_description">
 					<div class="unit">					
 						<!-- <label>Description</label> -->
 						<unit relativeTo="ca_objects.public_description" delimiter="<br/>">
-							^ca_objects.public_description
-							<!-- <span class="trimText">^public_description</span> -->
+							^ca_objects.public_description%convertLineBreaks=1
 						</unit>
 					</div>
 				</ifdef>}}}

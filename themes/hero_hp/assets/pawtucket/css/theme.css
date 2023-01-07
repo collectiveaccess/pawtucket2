@@ -596,3 +596,15 @@ body.frontContainer #footer{
 .collectionTile:hover{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
+
+
+.form-control:focus {
+	border-color: #000;
+}
+.front .notificationMessage, .front .notificationInfo {
+	position: absolute;
+	z-index: 5;
+	left: 10%;
+	width: 80%;
+	text-align: center;
+}
