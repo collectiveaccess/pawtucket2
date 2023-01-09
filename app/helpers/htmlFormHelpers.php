@@ -53,6 +53,8 @@
 	 */
 	function caHTMLSelect($ps_name, $pa_content, $pa_attributes=null, $pa_options=null) {
 		if (!is_array($pa_content)) { $pa_content = array(); }
+		if(!isset($pa_attributes['style'])) $pa_attributes['style']="";
+
 		if (is_array($va_dim = caParseFormElementDimension(isset($pa_options['width']) ? $pa_options['width'] : null))) {
 			if ($va_dim['type'] == 'pixels') {
 				$pa_attributes['style'] = "width: ".$va_dim['dimension']."px; ".$pa_attributes['style'];
