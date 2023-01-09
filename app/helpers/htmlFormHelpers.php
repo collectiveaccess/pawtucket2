@@ -78,7 +78,7 @@
 		
 		$vs_element = "<select name='{$ps_name}' {$vs_attr_string}>\n";
 		
-		$vs_selected_val = isset($pa_options['value']) ? $pa_options['value'] : null;
+		$vs_selected_val = isset($pa_options['values']) ? $pa_options['values'] : null;
 		if (is_array($pa_options['values']) && $vs_selected_val) { 
 			$pa_options['values'][] = $vs_selected_val;
 			$vs_selected_val = null; 
