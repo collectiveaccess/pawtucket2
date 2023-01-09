@@ -242,7 +242,7 @@ class DetailController extends FindController {
 		# Enforce access control
 		#
 		if(sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
-			$this->notification->addNotification(_t("This item is not available for view"), "message");
+			$this->notification->addNotification(_t("This item is not available for view"), __NOTIFICATION_TYPE_INFO__);
 			$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
 			return;
 		}
