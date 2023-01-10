@@ -75,7 +75,7 @@
 					print '</div><!-- end detailTools -->';
 				}				
 ?>
-				{{{<ifdef code="ca_objects.accessibility_description"><div class="unit"><label>Accessibility Description</label>^ca_objects.accessibility_description</div></ifdef>}}}
+				{{{<ifdef code="ca_occurrences.accessibility_description"><div class="unit"><label>Accessibility Description</label>^ca_occurrences.accessibility_description</div></ifdef>}}}
 				
 			</div><!-- end col -->
 			<div class='col-sm-6 col-md-6'>
@@ -147,6 +147,8 @@ if(is_array($va_event_types) && sizeof($va_event_types)){
 					{{{<ifdef code="ca_occurrences.creditLine">
 						<div class='unit'><label>Credit</label>^ca_occurrences.creditLine</div>
 					</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.external_link.url_entry"><div class="unit"><label>External Link</label><unit relativeTo="ca_occurrences.external_link" delimiter="<br/>"><a href="^ca_occurrences.external_link.url_entry" target="_blank"><ifdef code="ca_occurrences.external_link.url_source">^ca_occurrences.external_link.url_source</ifdef><ifnotdef code="ca_occurrences.external_link.url_source">^ca_occurrences.external_link.url_entry</ifnotdef></a></unit></div></ifdef>}}}
+
 					
 <?php
 				$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));

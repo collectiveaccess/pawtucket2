@@ -122,6 +122,7 @@
 					<div class="unit"><label>Documentation Credit<ifcount code="ca_entities" restrictToRelationshipTypes="photographer,videographer,audio_recordist,producer,distributor" min="2">s</ifcount></label><unit relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="photographer,videographer,audio_recordist,producer,distributor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div>
 				</ifcount>}}}
 				{{{<ifdef code="ca_objects.citation"><div class="unit"><label>Citation</label>^ca_objects.citation</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.external_link.url_entry"><div class="unit"><label>External Link</label><unit relativeTo="ca_objects.external_link" delimiter="<br/>"><a href="^ca_objects.external_link.url_entry" target="_blank"><ifdef code="ca_objects.external_link.url_source">^ca_objects.external_link.url_source</ifdef><ifnotdef code="ca_objects.external_link.url_source">^ca_objects.external_link.url_entry</ifnotdef></a></unit></div></ifdef>}}}
 <?php
 				$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("creator", "contributor", "printer", "publisher", "photographer", "videographer", "audio_recordist", "producer", "distributor"), "returnWithStructure" => 1, "checkAccess" => $va_access_values));
 				if(is_array($va_entities) && sizeof($va_entities)){
