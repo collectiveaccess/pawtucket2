@@ -100,7 +100,13 @@
 		if (isset($pa_options['contentArrayUsesKeysForValues']) && $pa_options['contentArrayUsesKeysForValues']) {
 			foreach($pa_content as $vs_val => $vs_opt) {
 				if ($vb_use_options_for_values) { $vs_val = preg_replace("!^[\s]+!", "", preg_replace("![\s]+$!", "", str_replace("&nbsp;", "", $vs_opt))); }
-				if ($COLOR = ($vs_color = $va_colors[$vs_val]) ? " data-color='#{$vs_color}'" : '') { $vb_uses_color = true; }
+
+				$COLOR = "";
+				if(isset($va_colors[$vs_val])) {
+					$COLOR = " data-color='#" . $va_colors[$vs_val] . "'";
+					$vb_uses_color = true;
+				}
+				
 				if (is_null($vs_selected_val) || !($SELECTED = (((string)$vs_selected_val === (string)$vs_val) && strlen($vs_selected_val)) ? ' selected="1"' : '')) {
 					$SELECTED = (is_array($va_selected_vals) && in_array($vs_val, $va_selected_vals)) ? ' selected="1"' : '';
 				}
@@ -110,7 +116,12 @@
 		} else {
 			if ($vb_content_is_list) {
 				foreach($pa_content as $vs_val) {
-					if ($COLOR = ($vs_color = $va_colors[$vs_val]) ? " data-color='#{$vs_color}'" : '') { $vb_uses_color = true; }
+
+					$COLOR = "";
+					if(isset($va_colors[$vs_val])) {
+						$COLOR = " data-color='#" . $va_colors[$vs_val] . "'";
+						$vb_uses_color = true;
+					}
 					
 					if (is_null($vs_selected_val) || !($SELECTED = ((string)$vs_selected_val === (string)$vs_val) ? ' selected="1"' : '')) {
 						$SELECTED = (is_array($va_selected_vals) && in_array($vs_val, $va_selected_vals))  ? ' selected="1"' : '';
@@ -121,7 +132,12 @@
 			} else {
 				foreach($pa_content as $vs_opt => $vs_val) {
 					if ($vb_use_options_for_values) { $vs_val = preg_replace("!^[\s]+!", "", preg_replace("![\s]+$!", "", str_replace("&nbsp;", "", $vs_opt))); }
-					if ($COLOR = ($vs_color = $va_colors[$vs_val]) ? " data-color='#{$vs_color}'" : '') { $vb_uses_color = true; }
+
+					$COLOR = "";
+					if(isset($va_colors[$vs_val])) {
+						$COLOR = " data-color='#" . $va_colors[$vs_val] . "'";
+						$vb_uses_color = true;
+					}
 				
 					if (is_null($vs_selected_val) || !($SELECTED = ((string)$vs_selected_val === (string)$vs_val) ? ' selected="1"' : '')) {
 						$SELECTED = (is_array($va_selected_vals) && in_array($vs_val, $va_selected_vals)) ? ' selected="1"' : '';
