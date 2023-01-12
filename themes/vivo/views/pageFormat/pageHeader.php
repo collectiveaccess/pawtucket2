@@ -93,6 +93,9 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@300;400&display=swap" rel="stylesheet">
 </head> 
 
 <body class='<?php print (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
@@ -187,7 +190,8 @@
 						<li><?php print caNavLink($this->request, "About", "", "", "About", "Index"); ?></li>
 						<li><?php print caNavLink($this->request, "How to Use this Site", "", "", "About", "Guide"); ?></li>
 						<li><?php print caNavLink($this->request, "Research Requests", "", "", "Contact", "Form", array("contactType" => "ResearchRequest")); ?></li>
-						<li><?php print caNavLink($this->request, "Rights & Reproduction", "", "", "Contact", "Form", array("contactType" => "Reproduction")); ?></li>
+						<li><?php print caNavLink($this->request, "Reproduction Requests", "", "", "Contact", "Form", array("contactType" => "Reproduction")); ?></li>
+						<li><?php print caNavLink($this->request, "Rights & Reproduction", "", "", "About", "RightsReproduction"); ?></li>
 						<li><?php print caNavLink($this->request, "Policies", "", "", "About", "Policies"); ?></li>
 						<li><?php print caNavLink($this->request, "Donating to the Archive", "", "", "About", "Donate"); ?></li>
 					</ul>
