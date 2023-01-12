@@ -90,6 +90,7 @@ hr{
 		padding-bottom: 18px;
 	}
 }
+
 @media (min-width:768px){
 	.navbar-nav > li > a {
 		padding-top: 45px;
@@ -143,7 +144,7 @@ hr{
 	color:#000000;
 	letter-spacing:1px;
 }
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li:focus > a,  .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
 	background-color:transparent;
 	color:#000000; /* highlight color */
 	/* underline on hover or active */
@@ -153,6 +154,9 @@ hr{
   	text-underline-position: under;
   	/* change background color on hover or active */
   	/*background-color: #f3f3f3;*/
+}
+.navbar-default .navbar-nav > li.dropdown:focus > ul{
+	display:block;
 }
 .navbar-nav > li.dropdown .fa{
 	position: relative;
@@ -424,6 +428,12 @@ a.browseRemoveFacet:hover .glyphicon{
 }
 .multisearch .authorityResult.programsResult{
 	height:70px;
+}
+.noSearchResults{
+	text-transform:none;
+}
+.noSearchResults a{
+	text-decoration:underline;
 }
 /* front */
 #pageArea.front{
@@ -704,6 +714,43 @@ body.frontContainer #footer{
 		text-align:right;
 	}
 }
+.detail .detailMediaToolbar, .gallery .detailMediaToolbar {
+	background-color: #ebebeb;
+	padding: 7px 7px 7px 7px;
+	font-size: 16px;
+	position: absolute;
+	display: inline-block;
+	top: 0px;
+	z-index: 200;
+	position: relative;
+	text-align: center;
+	width: 100%;
+	background-color: #FFF;
+}
+.detail .detailMediaToolbar a, .gallery .detailMediaToolbar a{
+	padding-right: 5px;
+	padding-left: 5px;
+}
+.detail .repViewerCont img {
+	width: 100%;
+	height: auto;
+	max-height: 700px;
+	object-fit: contain;
+}
+#browseResultsContainer {
+	margin-top: 10px;
+}
+.detailFilter{
+	font-size: 13px;
+	font-family: lato;
+	padding-bottom: 15px;
+}
+.detailFilter .btn-group{
+	margin-right:30px;
+}
+.detailFilter .btn-group button{
+	font-size:12px;
+}
 /* static pages */
 .staticPage{
 	font-size:18px;
@@ -728,4 +775,10 @@ body.frontContainer #footer{
 	font-size: 18px;
 	font-family:Lato;
 	margin-top:30px;
+}
+/* advanced search */
+@media (min-width:992px){
+	.advancedSearchNav{
+		text-align:right;
+	}
 }
