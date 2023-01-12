@@ -262,15 +262,7 @@ class DetailController extends FindController {
 		
 		caAddPageCSSClasses(array($table, $function, $type));
 		
-		
-		// Do we need to pull in the multisearch result set?
-		if ((ResultContext::getLastFind($this->request, $table, array('noSubtype' => true))) === 'multisearch') {
-			$o_context = new ResultContext($this->request, $table, 'multisearch', $function);
-			$o_context->setAsLastFind(false);
-			$o_context->saveContext();
-		} else {
-			$o_context = ResultContext::getResultContextForLastFind($this->request, $table);
-		}
+		$o_context = ResultContext::getResultContextForLastFind($this->request, $table);
 		
 		$this->view->setVar('previousID', $vn_previous_id = $o_context->getPreviousID($t_subject->getPrimaryKey()));
 		$this->view->setVar('nextID', $vn_next_id = $o_context->getNextID($t_subject->getPrimaryKey()));
@@ -279,7 +271,8 @@ class DetailController extends FindController {
 		
 		$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $options, _t('Previous')), '', $table, $vn_previous_id, [], ['aria-label' => _t('Previous')]) : '');
 		$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $options, _t('Next')), '', $table, $vn_next_id, [], ['aria-label' => _t('Next')]) : '');
-		$params = array();
+		
+		$params = [];
 		$params["row_id"] = $t_subject->getPrimaryKey(); # --- used to jump to the last viewed item in the search/browse results
 		$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $table, caGetOption('resultsLink', $options, _t('Back')), null, $params, ['aria-label' => _t('Back')]));
 		$this->view->setVar('resultsURL', ResultContext::getResultsUrlForLastFind($this->request, $table, $params));
@@ -408,7 +401,6 @@ class DetailController extends FindController {
 			$o_rel_context->setAsLastFind(true);
 			
 			$qr_rel_res = $o_browse->getResults();
-			#$o_rel_context->setResultList($qr_rel_res->getAllFieldValues('ca_objects.object_id'));
 			$o_rel_context->setResultList($qr_rel_res->getPrimaryKeyValues(1000));
 			
 			$o_rel_context->saveContext();

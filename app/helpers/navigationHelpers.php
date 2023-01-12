@@ -683,7 +683,7 @@
 				$vs_fa_class = 'fas fa-plus-circle';	
 				break;
 			case __CA_NAV_ICON_DELETE__:
-				$vs_fa_class = 'fa fa-times';
+				$vs_fa_class = 'fas fa-times';
 				$vs_ca_class = 'deleteIcon'; 
 				break;
 			case __CA_NAV_ICON_CANCEL__:
@@ -746,7 +746,7 @@
 				$vs_fa_class = 'fas fa-times-circle';
 				break;
 			case __CA_NAV_ICON_CLOSE__:
-				$vs_fa_class = 'fa fa-times';
+				$vs_fa_class = 'fas fa-times';
 				break;
 			case __CA_NAV_ICON_WATCH__:
 				$vs_fa_class = 'far fa-eye';

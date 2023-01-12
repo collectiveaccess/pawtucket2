@@ -10,12 +10,12 @@
 	$va_collection_type_icons = $this->getVar("collection_type_icons");
 	$vb_has_children = false;
 	$vb_has_grandchildren = false;
-	if($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.id_number'))){
+	if($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => array("ca_collections.type_id", "ca_collections.id_number")))){
 		$vb_has_children = true;
 		$qr_collection_children = caMakeSearchResult("ca_collections", $va_collection_children);
 		if($qr_collection_children->numHits()){
 			while($qr_collection_children->nextHit()){
-				if($qr_collection_children->get("ca_collections.children.collection_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.id_number'))){
+				if($qr_collection_children->get("ca_collections.children.collection_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => array("ca_collections.type_id", "ca_collections.id_number")))){
 					$vb_has_grandchildren = true;
 				}
 			}

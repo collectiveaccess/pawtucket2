@@ -308,9 +308,7 @@ h1 i {
 	color:#cccccc;
 }
 .navbar-brand img {
-  	width: 240px;
-  	margin: 8px 0 0 -2px;
-  	
+  	width: 100%;
 }
 .navbar-brand {
 	width:200px;

@@ -43,23 +43,36 @@
 			</form>
 		</div>
 	</div>
+	
+	<div class="row">
+		<div class="col-sm-10 col-sm-offset-1 homeText">
+			<h1>Explore the collections of history and cultural organizations across Minnesota</h1>
+		</div>
+	</div>
 <?php
 	$qr_members = ca_entities::find(["type_id" => "member"], ["returnAs" => "searchResult", 'sort' => 'ca_entities.preferred_labels.displayname']);
 	if ($qr_members) {
 		print "<div class='row members'>";
 		print '<div class="containerWrapper">';
-		print "<div class='col-sm-12'><h1>Member Institutions</h1></div>";
+		print "<div class='col-sm-12'><h2>Contributing Institutions</h2></div>";
 		//print '<div class="col-sm-12">';
 		
 		
 		while ($qr_members->nextHit()) {
-			print "<div class='col-6 col-sm-4 col-md-3 col-lg-3 col-xl-3 text-center' style='height: 300px;'>";
-			print "<div class='memberImage'>".caDetailLink($this->request, $qr_members->get('ca_object_representations.media.iconlarge', array('checkAccess' => $va_access_values)), '', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
-			print "<div class='memberCaption'>".caDetailLink($this->request, $qr_members->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values)), '', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
-			print "</div>";
+			
+			// print "<div class='col-6 col-sm-4 col-md-3 col-lg-3 col-xl-3 text-center' style='height: 300px;'>";
+// 			print "<div class='memberImage'>".caDetailLink($this->request, $qr_members->get('ca_object_representations.media.iconlarge', array('checkAccess' => $va_access_values)), '', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
+// 			print "<div class='memberCaption'>".caDetailLink($this->request, $qr_members->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values)), '', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
+// 			print "</div>";
+?>
+			<div class="col-md-3 archivalCollectionWrapper">
+				<div class="archivalCollection">
+					<?= caDetailLink($this->request, $qr_members->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values)), '', 'ca_entities', $qr_members->get('ca_entities.entity_id')); ?>
+				</div>
+			</div>		
+<?php
 		}
-		
-		//print "</div>";		
+				
 		
 		print "</div><!-- end containerWrapper -->";
 		print "</div><!-- end row -->";
@@ -125,7 +138,7 @@
 	<div class="row purple">
 		<div class="containerWrapper">
 			<div class="col-sm-10 col-sm-offset-1">
-				<H1>{{{homepage_text}}}</H1>
+				<H1 style="color: #fff;">{{{homepage_text}}}</H1>
 			</div><!--end col-sm-8-->	
 		</div>
 	</div><!-- end row -->

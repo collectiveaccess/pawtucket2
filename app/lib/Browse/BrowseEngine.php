@@ -140,6 +140,7 @@
 		 */
 		public function __construct($pm_subject_table_name_or_num, $pn_browse_id=null, $ps_browse_context='') {
 			$this->opo_db = new Db();
+			parent::__construct($this->opo_db);
 
 			$this->opa_result_filters = array();
 
@@ -1197,7 +1198,7 @@
 							switch($va_facet_info['type']) {
 								# -----------------------------------------------------
 								case 'hierarchy':
-									$children = $vs_target_browse_table_name::getHierarchyChildrenForIDs($va_row_ids, ['maxLevels' => 1]);
+									$children = $vs_target_browse_table_name::getHierarchyChildrenForIDs($va_row_ids, ['maxLevels' => ($va_facet_info['restrict_to_top_level'] ?? false) ? null : 1]);
 									$va_acc[$vn_i] = $children;
 									$vn_i++;
 									break;
@@ -3947,14 +3948,7 @@
 							:
 							 "{$main_prefix}.parent_id = ".(int)$t_subject->getHierarchyRootID();
 					}
-					if ($vs_browse_type_limit_sql) {
-						$va_where_sql[] = $vs_browse_type_limit_sql;
-					}
-
-					if ($vs_browse_source_limit_sql) {
-						$va_where_sql[] = $vs_browse_source_limit_sql;
-					}
-
+					
 					if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_item->hasField('access')) {
 						$va_where_sql[] = "({$content_prefix}.access IN (".join(',', $pa_options['checkAccess'])."))";
 					}
@@ -3966,13 +3960,13 @@
 					if (is_array($va_restrict_to_types) && sizeof($va_restrict_to_types)) {
 						$va_restrict_to_type_ids = caMakeTypeIDList($vs_browse_table_name, $va_restrict_to_types, array('dont_include_subtypes_in_type_restriction' => true));
 						if (is_array($va_restrict_to_type_ids) && sizeof($va_restrict_to_type_ids)) {
-							$va_where_sql[] = "({$content_prefix}.".$t_item->getTypeFieldName()." IN (".join(", ", $va_restrict_to_type_ids).")".($t_item->getFieldInfo('type_id', 'IS_NULL') ? " OR (".$vs_browse_table_name.'.'.$t_item->getTypeFieldName()." IS NULL)" : '').")";
+							$va_where_sql[] = "({$content_prefix}.".$t_item->getTypeFieldName()." IN (".join(", ", $va_restrict_to_type_ids).")".($t_item->getFieldInfo('type_id', 'IS_NULL') ? " OR (".$content_prefix.'.'.$t_item->getTypeFieldName()." IS NULL)" : '').")";
 						}
 					}
 					if (is_array($va_exclude_types) && sizeof($va_exclude_types)) {
 						$va_exclude_type_ids = caMakeTypeIDList($vs_browse_table_name, $va_exclude_types, array('dont_include_subtypes_in_type_restriction' => true));
 						if (is_array($va_exclude_type_ids) && sizeof($va_exclude_type_ids)) {
-							$va_where_sql[] = "({$content_prefix}.".$t_item->getTypeFieldName()." NOT IN (".join(", ", $va_exclude_type_ids).")".($t_item->getFieldInfo('type_id', 'IS_NULL') ? " OR (".$vs_browse_table_name.'.'.$t_item->getTypeFieldName()." IS NULL)" : '').")";
+							$va_where_sql[] = "({$content_prefix}.".$t_item->getTypeFieldName()." NOT IN (".join(", ", $va_exclude_type_ids).")".($t_item->getFieldInfo('type_id', 'IS_NULL') ? " OR (".$content_prefix.'.'.$t_item->getTypeFieldName()." IS NULL)" : '').")";
 						}
 					}
 
@@ -3990,6 +3984,8 @@
 					if (is_array($va_results) && sizeof($va_results)) {
 						if ($va_facet_info['relative_to']) {
 							$va_where_sql[] = $this->ops_browse_table_name.".".$t_subject->primaryKey()." IN (".join(",", $va_results).")";
+						} elseif($va_facet_info['restrict_to_top_level'] ?? false) {
+							$va_where_sql[] = "{$child_prefix}.{$vs_item_pk} IN (".join(",", $va_results).")";
 						} else {
 							$va_where_sql[] = "{$main_prefix}.{$vs_item_pk} IN (".join(",", $va_results).")";
 						}
@@ -4021,9 +4017,13 @@
 					}
 
 
-					$hier_sql = 
-						"INNER JOIN {$vs_browse_table_name} AS {$child_prefix} ON {$child_prefix}.parent_id = {$main_prefix}.{$vs_item_pk}"
-						;
+					if($va_facet_info['restrict_to_top_level'] ?? false) {
+						$hier_sql = 
+							"INNER JOIN {$vs_browse_table_name} AS {$child_prefix} ON {$child_prefix}.hier_collection_id = {$main_prefix}.hier_collection_id";
+					} else {
+						$hier_sql = 
+							"INNER JOIN {$vs_browse_table_name} AS {$child_prefix} ON {$child_prefix}.parent_id = {$main_prefix}.{$vs_item_pk}";
+					}
 					if ($vb_check_availability_only) {
 						$vs_sql = "
 							SELECT 1

@@ -38,6 +38,9 @@
 		if(!$qr_list) { continue; }
 		
 		print "<div class='row'><div class='col-sm-12'><h1>{$va_listing_info['displayName']}</h2></div></div>\n";
+		if($vs_intro = $this->getVar("subject_guides_intro_text")){
+			print "<p>".$vs_intro."</p>";
+		}
 		print "<div class='collectionsList'><div class='row'>";
 		while($qr_list->nextHit()) {
 			print $qr_list->getWithTemplate("<l><div class='col-sm-4'><div class='collectionTile'><unit relativeTo='ca_objects' restrictToRelationshipTypes='feature' length='1'>^ca_object_representations.media.large</unit><div class='title'>^ca_occurrences.preferred_labels.name</l></div></div></div>");

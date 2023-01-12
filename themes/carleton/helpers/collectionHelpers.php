@@ -101,9 +101,11 @@ function caGetCollectionHierarchyList($po_request, $va_collection_ids, $vn_level
 			$c++;
 			
 			if($c >= $max_items) { 
-				$s = $start + $c;
-				$parent_id = $qr_collections->get('ca_collections.parent_id');
-				$vs_output .= "<div class='unit' style='margin-left:".(30*($vn_level - 1))."px;'><a href='#' class='loadMore' onclick='caHierarchyLoadMore(this, {$parent_id}, {$s}, {$vn_level}); return false;'>"._t('+ %1 more', ($n-$start-$c))."</a></div>\n";
+				if(($n-$start-$c) > 0){
+					$s = $start + $c;
+					$parent_id = $qr_collections->get('ca_collections.parent_id');
+					$vs_output .= "<div class='unit' style='margin-left:".(30*($vn_level - 1))."px;'><a href='#' class='loadMore' onclick='caHierarchyLoadMore(this, {$parent_id}, {$s}, {$vn_level}); return false;'>"._t('+ %1 more', ($n-$start-$c))."</a></div>\n";
+				}
 				break; 
 			}
 		}

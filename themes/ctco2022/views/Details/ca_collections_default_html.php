@@ -89,9 +89,8 @@
 
 			<div class="row">
 
-				<div class='col-md-10 col-lg-10'>
-					{{{<ifdef code="ca_collections.description"><label>About</label>^ca_collections.description<br/></ifdef>}}}
-					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
+				<div class='col-md-12'>
+					{{{<ifdef code="ca_collections.description"><div class="unit"><label>About</label>^ca_collections.description</div></ifdef>}}}
 					<?php
 						# Comment and Share Tools
 						if ($vn_comments_enabled | $vn_share_enabled) {
@@ -129,9 +128,9 @@
 					{{{
 						<!-- <ifdef code="ca_collections.extentDACS"><div class="unit"><label>Extent</label><span class="trimText">^ca_collections.extentDACS</span></div></ifdef> -->
 						
-						<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/Biographical History Element</label><span class="trimText">^ca_collections.adminbiohist</span></div></ifdef>
-						<ifdef code="ca_collections.scopecontent"><div class="unit"><label>Scope & content</label><span class="trimText">^ca_collections.scopecontent</span></div></ifdef>
-						<ifdef code="ca_collections.arrangement"><div class="unit"><label>Arrangement</label><span class="trimText">^ca_collections.arrangement</span></div></ifdef>
+						<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/Biographical History Element</label><span class="trimText"><unit relativeTo="ca_collections.adminbiohist" delimiter="<br/><br/>">^ca_collections.adminbiohist%convertLineBreaks=1</unit></span></div></ifdef>
+						<ifdef code="ca_collections.scopecontent"><div class="unit"><label>Scope & content</label><span class="trimText">^ca_collections.scopecontent%convertLineBreaks=1</span></div></ifdef>
+						<ifdef code="ca_collections.arrangement"><div class="unit"><label>Arrangement</label><span class="trimText">^ca_collections.arrangement%convertLineBreaks=1</span></div></ifdef>
 					}}}
 
 					<!-- <?php
@@ -148,8 +147,8 @@
 						}
 					?> -->
 
-					{{{<ifcount code="ca_entities" min="1"><label>Related People/Institutions</label>
-							<unit relativeTo="ca_entities" delimiter=""><div class="unit"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</div></unit>
+					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related People/Institutions</label>
+							<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div>
 					</ifcount>}}}
 
 				</div><!-- end col -->
