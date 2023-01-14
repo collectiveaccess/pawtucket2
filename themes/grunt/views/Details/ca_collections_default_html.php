@@ -86,8 +86,8 @@
 					{{{<ifdef code="ca_collections.RAD_scopecontent"><div class="unit"><label>Scope and Content</label>^ca_collections.RAD_scopecontent</div></ifdef>}}}
 					
 					{{{<ifcount code="ca_collections.related" min="1"><div class="unit"><label>Related Collections</label><unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related People & Organizations</label><div class="trimTextShort"><unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></div></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToType="program">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter=", " restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related People & Organizations</label><span class="trimTextShort"><unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></span></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToType="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter=", " restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					
 					
 <?php
