@@ -310,9 +310,12 @@ if (!$vb_ajax) {    // !ajax
             if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
             }
+            print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "", "", "contact", "form", array('id' => $vn_set_id, 'table' => 'ca_sets'))."</div><hr/>";
+			
             if ($vs_description = $t_set->get($vs_description_attribute)) {
                 print "<span id='lbSetDescription".$t_set->get("set_id")."'>{$vs_description}</span><hr/>";
             }
+            
 ?>
             <div>
                 <div id="lbSetCommentErrors" style="display: none;" class='alert alert-danger'></div>
