@@ -308,18 +308,43 @@ class BaseFindEngine extends BaseObject {
 			$sort_directions = array_pad($sort_directions, sizeof($sort_fields), "asc");
 		}
 		
-		$primary_sort_field = array_shift($sort_fields);
+		$parsed_sort_spec = self::_parseSortOpts(array_shift($sort_fields));
+		$primary_sort_field = $parsed_sort_spec['sort'];
+		$options = array_merge($options, $parsed_sort_spec['options']);
 		if ($primary_sort_field === '_natural') { return $hits; }
 		$primary_sort_direction = self::sortDirection(array_shift($sort_directions));
 		
 		$sorted_hits = $this->doSort($hits, $table, $primary_sort_field, $primary_sort_direction, array_merge($options, ['relationshipTypes' => array_shift($rel_types)]));
 		
 		// secondary sorts?
-		if(is_array($sort_fields) && (sizeof($sort_fields) > 0)) {
+		if(is_array($sort_fields) && (sizeof($sort_fields) > 0)) {	
+			foreach($sort_fields as $i => $s) {
+				$parsed_sort_spec = self::_parseSortOpts($s);
+				$sort_fields[$i] = $parsed_sort_spec['sort'];
+				$options = array_merge($options, $parsed_sort_spec['options']);
+			}
 			$sorted_hits = $this->_secondarySortHits($hits, $sorted_hits, $table, $primary_sort_field, $primary_sort_direction, $sort_fields, $sort_directions, array_merge($options, ['relationshipTypes' => $rel_types]));
 		}
 		
 		return $sorted_hits;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	private static function _parseSortOpts(string $sort) : array {
+		$tmp = explode('%', $sort);
+		$spec = array_shift($tmp);
+		$opts = join("%", $tmp);
+		
+		$tag_opt_tmp = array_filter(preg_split("![\%\&]{1}!", $opts), "strlen");
+		
+		$opts = [];
+		foreach($tag_opt_tmp as $t) {
+			$tmp2 = explode('=', $t);
+			$opts[$tmp2[0]] = $tmp2[1];
+		}
+		return ['sort' => $spec, 'options' => $opts];
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -451,7 +476,10 @@ class BaseFindEngine extends BaseObject {
 
 		$hit_table = $this->_createTempTableForHits($hits);
 		if ($sort_table === $table) {	// sort in primary table
-			if ($t_table->hasField($sort_field)) {			// sort key is intrinsic
+			if (in_array($sort_field, ['history_tracking_current_value', 'ca_objects_location'])) {
+				$policy = caGetOption('policy', $options, $table::getDefaultHistoryTrackingCurrentValuePolicyForTable($sort_table));
+				$sort_key_values = $this->_sortByHistoryTrackingCurrentValue($t_table, $hit_table, $policy, $limit_sql, $sort_direction, $hits);
+			} elseif ($t_table->hasField($sort_field)) {			// sort key is intrinsic
 				$sort_key_values = $this->_sortByIntrinsic($t_table, $hit_table, $sort_field, $limit_sql, $sort_direction);
 			} elseif(method_exists($t_table, 'hasElement') && $t_table->hasElement($sort_field)) { // is attribute
 				$sort_key_values = $this->_sortByAttribute($t_table, $hit_table, $sort_field, $sort_subfield, $limit_sql, $sort_direction, $hits);
@@ -469,7 +497,7 @@ class BaseFindEngine extends BaseObject {
 			$t_rel_table = Datamodel::getInstance($sort_table, true);
 			if($is_label = is_a($t_rel_table, 'BaseLabel')) {
 				$sort_field = $t_rel_table->getSubjectTableName().'.preferred_labels.'.$sort_field.($sort_subfield ? ".{$sort_subfield}" : '');
-				list($sort_table, $sort_field, $sort_subfield) = $x=explode(".", $sort_field);
+				list($sort_table, $sort_field, $sort_subfield) = explode(".", $sort_field);
 				$t_rel_table = Datamodel::getInstance($sort_table, true);
 			}
 			
@@ -659,6 +687,43 @@ class BaseFindEngine extends BaseObject {
 	/**
 	 *
 	 */
+	private function _sortByHistoryTrackingCurrentValue($t_table, string $hit_table, string $policy=null, string $limit_sql=null, $direction='asc', array $hits=null) {
+		$table_num = $t_table->tableNum();
+		$table_name = $t_table->tableName();
+		
+		if(!method_exists($t_table, 'getPolicyConfig')) { return []; }
+		if(!is_array($policy_info = $table_name::getPolicyConfig($policy))) {
+			throw new ApplicationException(_t('Invalid policy %1', $policy));
+		}
+		
+		$direction = self::sortDirection($direction);
+
+		
+		$sql = "SELECT htcv.row_id
+				FROM ca_history_tracking_current_values htcv
+				INNER JOIN ca_history_tracking_current_value_labels AS l ON htcv.tracking_id = l.tracking_id
+				INNER JOIN {$hit_table} AS ht ON ht.row_id = htcv.row_id
+				WHERE 
+					htcv.table_num = ? AND (is_future IS NULL OR is_future = 0) AND htcv.policy = ?
+				ORDER BY l.value_sort {$direction}
+					{$limit_sql}";
+		$qr_sort = $this->db->query($sql, [$table_num, $policy]);
+		$sort_keys = [];
+		while($qr_sort->nextRow()) {
+			$row = $qr_sort->getRow();
+			$sort_keys[$row['row_id']] = true;
+		}
+		
+		// Add any row without the attribute set to the end of the sort set
+		foreach($hits as $h) {
+			if (!$sort_keys[$h]) { $sort_keys[$h] = true; }
+		}
+		return $sort_keys;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
 	private function _sortByRelatedAttribute($t_table, $t_rel_table, string $hit_table, string $element_code=null, string $subelement_code=null, string $limit_sql=null, $direction='asc', array $hits=null, array $options=null) {
 		$table = $t_table->tableName();
 		$table_pk = $t_table->primaryKey();
@@ -672,31 +737,20 @@ class BaseFindEngine extends BaseObject {
 		}
 		$attr_val_sort_field = ca_metadata_elements::getElementSortField($subelement_code ? $subelement_code : $element_code);
 
-		$attr_tmp_table = $this->_createTempTableForAttributeIDs();
-		$sql = "
-			INSERT INTO {$attr_tmp_table} 
-				SELECT a.attribute_id, a.row_id 
-				FROM ca_attributes a  
-				INNER JOIN {$hit_table} AS ht ON ht.row_id = a.row_id
-				WHERE a.table_num = ? and a.element_id = ?
-		";
-
-		$qr_sort = $this->db->query($sql, [$rel_table_num, $element_id]);
-		
 		$joins = $this->_getJoins($t_table, $t_rel_table, $element_code, caGetOption('relationshipTypes', $options, null));
 		$join_sql = join("\n", $joins);
 		
-		$sql = "SELECT s.{$rel_table_pk} row_id
+		$sql = "SELECT t.{$table_pk} row_id
 					FROM {$table} t
 					{$join_sql}
 					INNER JOIN ca_attributes AS a ON a.row_id = s.{$rel_table_pk} AND a.table_num = {$rel_table_num}
 					INNER JOIN ca_attribute_values AS cav ON cav.attribute_id = a.attribute_id
-					INNER JOIN {$attr_tmp_table} AS attr_tmp ON attr_tmp.attribute_id = a.attribute_id
-					WHERE cav.element_id = ? 
-					ORDER BY cav.value_sortable {$direction}
-					{$limit_sql}";
-	
-		$qr_sort = $this->db->query($sql, [$element_id]);
+					INNER JOIN {$hit_table} AS ht ON ht.row_id = t.{$table_pk}
+					WHERE a.element_id = ? AND cav.element_id = ? 
+					ORDER BY cav.value_sortable {$direction}";
+
+		$qr_sort = $this->db->query($sql, [$element_id, $element_id]);
+		
 		$sort_keys = [];
 		while($qr_sort->nextRow()) {
 			$row = $qr_sort->getRow();
@@ -802,9 +856,9 @@ class BaseFindEngine extends BaseObject {
 		
 		$sql = "
 			SELECT s.`{$intrinsic}` val
-			FROM {$table}
+			FROM {$table} t
 			{$join_sql}
-			WHERE {$table}.{$table_pk} IN (?)
+			WHERE t.{$table_pk} IN (?)
 			ORDER BY val {$direction}
 		";
 		$qr_sort = $this->db->query($sql, [$hits]);
@@ -1245,7 +1299,7 @@ class BaseFindEngine extends BaseObject {
 					$joins[] = "INNER JOIN {$rel_table} AS s ON (s.{$rel_table_pk} = l.".$t_relation->getLeftTableFieldName().") OR (s.{$rel_table_pk} = l.".$t_relation->getRightTableFieldName().")";
 				} elseif ($is_attribute) {
 					$joins[] = "INNER JOIN {$linking_table} AS l ON attr_tmp.row_id = l.{$rel_table_pk}{$rel_type_sql}";
-					$joins[] = "INNER JOIN {$table} AS t ON t.{$table_pk} = l.{$table_pk}";
+					$joins[] = "INNER JOIN {$table} AS s ON s.{$rel_table_pk} = l.{$rel_table_pk}";
 				} else {							
 					$joins[] = "INNER JOIN {$linking_table} AS l ON t.{$table_pk} = l.{$table_pk}{$rel_type_sql}";
 					$joins[] = "INNER JOIN {$rel_table} AS s ON s.{$rel_table_pk} = l.{$rel_table_pk}";
