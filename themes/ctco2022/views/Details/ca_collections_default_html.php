@@ -128,9 +128,9 @@
 					{{{
 						<!-- <ifdef code="ca_collections.extentDACS"><div class="unit"><label>Extent</label><span class="trimText">^ca_collections.extentDACS</span></div></ifdef> -->
 						
-						<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/Biographical History Element</label><span class="trimText">^ca_collections.adminbiohist</span></div></ifdef>
-						<ifdef code="ca_collections.scopecontent"><div class="unit"><label>Scope & content</label><span class="trimText">^ca_collections.scopecontent</span></div></ifdef>
-						<ifdef code="ca_collections.arrangement"><div class="unit"><label>Arrangement</label><span class="trimText">^ca_collections.arrangement</span></div></ifdef>
+						<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/Biographical History Element</label><span class="trimText"><unit relativeTo="ca_collections.adminbiohist" delimiter="<br/><br/>">^ca_collections.adminbiohist%convertLineBreaks=1</unit></span></div></ifdef>
+						<ifdef code="ca_collections.scopecontent"><div class="unit"><label>Scope & content</label><span class="trimText">^ca_collections.scopecontent%convertLineBreaks=1</span></div></ifdef>
+						<ifdef code="ca_collections.arrangement"><div class="unit"><label>Arrangement</label><span class="trimText">^ca_collections.arrangement%convertLineBreaks=1</span></div></ifdef>
 					}}}
 
 					<!-- <?php

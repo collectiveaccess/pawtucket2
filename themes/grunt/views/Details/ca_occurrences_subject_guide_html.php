@@ -46,15 +46,15 @@
 			<div class="row">
 				<div class='col-md-12'>
 					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
-					{{{<ifdef code="ca_occurrences.occurrence_date|ca_occurrences.program_type"><H2>^ca_occurrences.occurrence_date<ifdef code="ca_occurrences.program_type"><br/>^ca_occurrences.program_type%delimiter=,_</ifdef></H2></ifdef>}}}
+					<H2>{{{^ca_occurrences.type_id}}}</H2>
 					<HR/>
 				</div>
 			</div>
 			<div class="row">			
 				<div class='col-sm-12'>
-					{{{<ifdef code="ca_occurrences.content_description"><div class="unit"><label>About the Program</label><div class="trimText">^ca_occurrences.content_description</div></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.acknowledgements"><div class="unit"><label>Acknowledgements</label><div class="trimText">^ca_occurrences.acknowledgements</div></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.funding_acknowl"><div class="unit"><label>Funding Acknowledgements</label><div class="trimText">^ca_occurrences.funding_acknowl</div></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.content_description"><div class="unit"><span class="trimText">^ca_occurrences.content_description</span></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.acknowledgements"><div class="unit"><label>Acknowledgements</label><span class="trimText">^ca_occurrences.acknowledgements</span></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.funding_acknowl"><div class="unit"><label>Funding Acknowledgements</label><span class="trimText">^ca_occurrences.funding_acknowl</span></div></ifdef>}}}
 
 <?php
 				$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
@@ -69,7 +69,7 @@
 					}
 				}
 ?>
-				{{{<ifcount code="ca_occurrences.related" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences.related" min="2" restrictToType="program">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+				{{{<ifcount code="ca_occurrences.related" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences.related" min="2" restrictToType="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					
 <?php
 				# Comment and Share Tools
@@ -104,7 +104,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_occurrence', 'id' => '^ca_occurrences.occurrence_id', 'detailNav' => 'occurrence'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

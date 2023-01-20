@@ -26,7 +26,17 @@ a{
 a:hover{
 	color:#2A8457;
 }
+.form-control:focus {
+	border-color: #000;
+}
 
+.front .notificationMessage, .front .notificationInfo {
+	position: absolute;
+	z-index: 5;
+	left: 10%;
+	width: 80%;
+	text-align: center;
+}
 
 
 
@@ -827,13 +837,13 @@ div#detailTools{
 }
 
 .detail .unit {
-	font-size: 14px;
+	font-size: 15px;
 	margin-bottom: 15px;
 	color:#454545;
 }
 
 .detail label{
-	font-size: 14px;
+	font-size: 15px;
 	color:#454545;
 }
 @media(min-width:768px){
@@ -909,6 +919,10 @@ div#detailTools{
 	background-color: #2A8457;
 	color: #fff;
 }
+.leaflet-container a {
+	color: #000;
+	font-weight:bold;
+}
 /* transcribe */
 .collectionImageCrop img{
 	width:100%;
@@ -963,4 +977,9 @@ div#detailTools{
 	.advancedSearch .formLinks{
 		float:right;
 	}
+}
+
+/* static page */
+.staticPage{
+	font-size: 15px;
 }
