@@ -135,7 +135,7 @@ $t_item = $this->getVar("item");
 				foreach($va_entity_ids as $vn_entity_id) {
 					if ($t_entity->load($vn_entity_id)) {           // doesn't hurt to make sure the entity actually loaded... but it should never fail
 						if ($vs_director_name = $t_entity->get('ca_entities.preferred_labels.displayname')) {
-							print caNavLink($this->request,$vs_director_name,'','','Browse','objects',array("facet" => "entity_facet", "id" => $vn_entity_id));
+							print caNavLink($this->request,$vs_director_name,'','','Browse','works',array("facet" => "entity_facet", "id" => $vn_entity_id));
 							print "\n";
 						}
 						if ($vs_director_bio = $t_entity->get('ca_entities.director_bio')) {
@@ -185,7 +185,7 @@ $t_item = $this->getVar("item");
 				foreach($credits as $credit) {
 ?><div class='unit'>
 	<label><?= ucfirst($credit['relationship_typename']); ?></label>
-	<?= caNavLink($this->request,$credit['label'],'','','Browse','objects',array("facet" => "entity_facet", "id" => $credit['entity_id'])); ?>
+	<?= caNavLink($this->request,$credit['label'],'','','Browse','works',array("facet" => "entity_facet", "id" => $credit['entity_id'])); ?>
 </div><?php
 				}
 			}
@@ -222,7 +222,7 @@ $t_item = $this->getVar("item");
 				$va_print_tags = array();
 				foreach($va_tags as $vn_id => $va_term_info){
 					if($va_term_info["idno"]=="exp"){
-						$va_print_tags[] = caNavLink($this->request, $va_term_info["label"], '', '', 'Search', 'objects', array('search' => $va_term_info["label"]));
+						$va_print_tags[] = caNavLink($this->request, $va_term_info["label"], '', '', 'Search', 'works', array('search' => $va_term_info["label"]));
 					} else {
 						$va_print_tags[] = $va_term_info["label"];
 					}
