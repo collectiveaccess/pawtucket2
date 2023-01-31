@@ -43,8 +43,8 @@
 				
 				<div class="heroSearch">
 					<H1>
-						<div class="line1">Welcome to</div>
-						<div class="line2">Educational Film Practice in Austria</div>
+						<div class="line1"><?= _t('Welcome to'); ?></div>
+						<div class="line2"><?= _t('Educational Film Practice'); ?> </br> <?= _t('in Austria'); ?></div>
 						<div class="line3">{{{hp_search_text}}}</div>
 					</H1>
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
@@ -86,7 +86,7 @@
 ?>
 	<div class="row hpExplore bgLightGray">
 		<div class="col-md-12 col-lg-8 col-lg-offset-2">
-		<H2 class="frontSubHeading text-center">Explore The Archive</H2>
+		<H2 class="frontSubHeading text-center"><?= _t('Explore The Archive'); ?></H2>
 
 			<div class="row">
 				<div class="col-md-4">
@@ -114,6 +114,34 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="row">
+				<div class="col-md-4">
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage4'></div>", "", "", "browse", "texts"); ?>
+						<div class="hpExploreBoxDetails">
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Texts", "", "", "browse", "texts"); ?></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage5'></div>", "", "", "browse", "images"); ?>
+						<div class="hpExploreBoxDetails">
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Images", "", "", "browse", "images"); ?></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage6'></div>", "", "", "browse", "places"); ?>
+						<div class="hpExploreBoxDetails">
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Locations", "", "", "browse", "places"); ?></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
 		</div>
 	</div>
 
