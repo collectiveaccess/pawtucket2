@@ -52,6 +52,7 @@
 					{{{<ifdef code="ca_collections.originals_location"><div class="unit"><label>Existence and Location of Originals</label>^ca_collections.originals_location%convertLineBreaks=1</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.scopecontent"><div class="unit"><label>Scope and Content</label>^ca_collections.scopecontent%convertLineBreaks=1</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.arrangement"><div class="unit"><label>System of Arrangement</label>^ca_collections.arrangement%convertLineBreaks=1</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.see_also"><div class="unit"><label>See and See Also Notes</label>^ca_collections.see_also%convertLineBreaks=1</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.accessrestrict"><div class="unit"><label>Conditions governing access</label>^ca_collections.accessrestrict%convertLineBreaks=1</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><label>Physcial access</label>^ca_collections.physaccessrestrict%convertLineBreaks=1</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.techaccessrestrict"><div class="unit"><label>Technical access</label>^ca_collections.techaccessrestrict%convertLineBreaks=1</div></ifdef>}}}
