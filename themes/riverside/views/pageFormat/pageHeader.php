@@ -160,7 +160,7 @@
 							print "<li>".caNavLink($this->request, _t("Resources"), '', '', 'About', 'Resources', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Policies"), '', '', 'About', 'Policies', '')."</li>";
 							print "<li><a href='https://www.trcnyc.org/give'>"._t("Support Riverside")."</a></li>";
-							print "<li>".caNavLink($this->request, _t("Research appointment"), '', '', 'About', 'ResearchAppointments', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Research appointments"), '', '', 'About', 'ResearchAppointments', '')."</li>";
 ?>
 							<li><a href="https://trcnyc.libanswers.com/">Contact</a></li>
 						</ul>	
