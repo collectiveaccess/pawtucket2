@@ -62,7 +62,7 @@
 			<div class="row text-center">			
 				<div class='col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3'>
 <?php
-				if($vs_rep_viewer){			
+				if($vs_rep_viewer = trim($this->getVar("representationViewer"))){			
 					print $vs_rep_viewer;
 					print '<div id="detailAnnotations"></div>';
 					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-2 col-xs-2", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
