@@ -10,7 +10,14 @@
 	<div class="col-sm-12 col-md-10 col-lg-offset-1 col-lg-8 col-lg-offset-2">
 		<H1>{{{title}}}</H1>
 		{{{bodytext}}}
+<?php
+		if($vs_download_links){
+?>
 		<hr/>
+		<b>Additional Policies</b>
 		<div class='policyFileLinks'><?php print $vs_download_links; ?></div>
+<?php
+		}
+?>
 	</div>
 </div>
