@@ -1351,9 +1351,6 @@ a.facetApply {
 .staticPage .btn-default{
     text-decoration:none;
 }
-.staticPage .policyFileLinks{
-	text-align:center;
-}
 .staticPage .policyFileLinks .btn-default{
-	margin: 0px 5px 10px 5px;
+	margin: 0px 10px 10px 0px;
 }
