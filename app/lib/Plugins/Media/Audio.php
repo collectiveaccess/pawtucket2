@@ -779,7 +779,7 @@ class WLPlugMediaAudio Extends BaseMediaPlugin Implements IWLPlugMedia {
 
 				if(caGetOption('user_interface', $options, false, ['forceLowercase' => true]) !== 'mediaelement') {
 ?>
-					<div class="<?= $class; ?> audio-responsive">
+					<div class="<?= $class; ?> audio-responsive" style="width: <?= $width; ?>px; height: <?= $height; ?>px;">
 						<video id="<?= $id; ?>" playsinline controls data-poster="<?= $poster_frame_url; ?>" width="<?= $width; ?>" height="<?= $height; ?>" >
 						  <source src="<?= $url; ?>" type="<?= $properties["mimetype"]; ?>" />
 <?php
