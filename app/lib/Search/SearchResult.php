@@ -3861,6 +3861,7 @@ class SearchResult extends BaseObject {
 		$highlight_text = array_reduce($highlight_text, function($c, $v) {
 			if(mb_substr($v, -1, 1) == '*') {
 				$v = mb_substr($v, 0, mb_strlen($v) - 1);
+				if($v[-1] == 'i') { $v = mb_substr($v, 0, mb_strlen($v) - 1); }
 				array_push($c, preg_quote($v, '/').'[A-Za-z0-9]*');
 			}
 			if(!strlen($v)) { array_pop($c); return $c; }
@@ -3875,7 +3876,7 @@ class SearchResult extends BaseObject {
 		usort($highlight_text, function($a, $b) {
 			return strlen($b) <=> strlen($a);
 		});
-		$highlight_text = array_map(function($v) { return preg_quote($v, '/'); }, $highlight_text);
+		
 		$content = $g_highlight_cache[$content] = preg_replace("/(?<![A-Za-z0-9])(".join('|', $highlight_text).")/i", "<span class=\"highlightText\">\\1</span>", $content);
 		
 		return $content;
