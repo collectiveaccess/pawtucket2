@@ -5449,12 +5449,14 @@ jQuery(document).ready(function() {
 				}, array_slice($search_terms, $s, $n));
 				$regex = trim(join('[ ]+', $terms));
 				if(preg_match("/(?<![A-Za-z0-9]){$regex}/iu", $content, $m)) {
-					$index = mb_strpos($content, $m[0]);
-					$start = (($index-$before) > 0) ? ($index-$before) : 0;
-					$length = $before + $after + mb_strlen($m[0]);
-					if($length > (mb_strlen($content) - $start)) { $length = (mb_strlen($content) - $start); }
-					$extext = mb_substr($content, $start, $length);
-					$excerpts[] = "<p>... {$extext} ...</p>";
+					if($m[0]){
+						$index = mb_strpos($content, $m[0]);
+						$start = (($index-$before) > 0) ? ($index-$before) : 0;
+						$length = $before + $after + mb_strlen($m[0]);
+						if($length > (mb_strlen($content) - $start)) { $length = (mb_strlen($content) - $start); }
+						$extext = mb_substr($content, $start, $length);
+						$excerpts[] = "<p>... {$extext} ...</p>";
+					}
 				}
 				$n--;
 			}
