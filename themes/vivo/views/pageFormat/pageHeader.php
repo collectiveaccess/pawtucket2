@@ -93,6 +93,9 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@300;400&display=swap" rel="stylesheet">
 </head> 
 
 <body class='<?php print (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
@@ -118,7 +121,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'vivoLogo.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");
+				print "<a href='https://www.vivomediaarts.com/' class='navbar-brand'>".caGetThemeGraphic($this->request, 'vivoLogo.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner"))."</a>";
 ?>
 			</div>
 
@@ -156,12 +159,13 @@
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>
 					<li <?php print ($this->request->getController() == "Activations") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Activations"), "", "", "Activations", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "VideoOut") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Video Out"), "", "", "VideoOut", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 <?php
 	if ($vb_has_user_links) {
 ?>
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Login</a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print ($this->request->isLoggedIn()) ? "Lightbox" : "Login"; ?></a>
 						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 <?php
@@ -173,3 +177,41 @@
 	</nav>
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div role="main" id="main"><div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+<?php
+		$vs_contactType = $this->request->getParameter("contactType", pString);
+		if((in_array($this->request->getAction(), array("videooutartists", "videoout"))) || (in_array($this->request->getController(), array("About", "VideoOut", "VideoOutAbout", "VideoOutSubmit", "VideoOutNews"))) || (($this->request->getController() == "Contact") && (in_array($vs_contactType, array("ResearchRequest", "Reproduction", "RentalPurchase"))))){
+?>
+			<div class="row">
+				<div class='col-sm-3'>
+<?php
+				if(($this->request->getController() == "About") || (($this->request->getController() == "Contact") && (in_array($vs_contactType, array("ResearchRequest", "Reproduction"))))){
+?>
+					<ul class="sectionSubNav">
+						<li><?php print caNavLink($this->request, "About", "", "", "About", "Index"); ?></li>
+						<li><?php print caNavLink($this->request, "How to Use this Site", "", "", "About", "Guide"); ?></li>
+						<li><?php print caNavLink($this->request, "Research Requests", "", "", "Contact", "Form", array("contactType" => "ResearchRequest")); ?></li>
+						<li><?php print caNavLink($this->request, "Reproduction Requests", "", "", "Contact", "Form", array("contactType" => "Reproduction")); ?></li>
+						<li><?php print caNavLink($this->request, "Rights & Reproduction", "", "", "About", "RightsReproduction"); ?></li>
+						<li><?php print caNavLink($this->request, "Policies", "", "", "About", "Policies"); ?></li>
+						<li><?php print caNavLink($this->request, "Donating to the Archive", "", "", "About", "Donate"); ?></li>
+					</ul>
+<?php
+				}elseif((in_array($this->request->getAction(), array("videooutartists", "videoout"))) || in_array($this->request->getController(), array("VideoOut", "VideoOutAbout", "VideoOutSubmit", "VideoOutNews")) || (($this->request->getController() == "Contact") && (in_array($vs_contactType, array("RentalPurchase"))))){
+?>
+					<ul class="sectionSubNav">
+						<li><?php print caNavLink($this->request, "Video Out", "", "", "VideoOut", "Index"); ?></li>
+						<li><?php print caNavLink($this->request, "Artists", "", "", "Browse", "videooutartists"); ?></li>
+						<li><?php print caNavLink($this->request, "Browse Videos", "", "", "Browse", "videoout"); ?></li>
+						<li><?php print caNavLink($this->request, "About Video Out", "", "", "VideoOutAbout", ""); ?></li>
+						<li><?php print caNavLink($this->request, "Rental & Purchase", "", "", "Contact", "Form", array("contactType" => "RentalPurchase")); ?></li>
+						<li><?php print caNavLink($this->request, "Submit for Distribution", "", "", "VideoOutSubmit", ""); ?></li>
+						<li><?php print caNavLink($this->request, "News & Projects", "", "", "VideoOutNews", ""); ?></li>
+					</ul>
+<?php				
+				}
+?>
+				</div>
+				<div class='col-sm-9'>
+<?php
+		}
+?>

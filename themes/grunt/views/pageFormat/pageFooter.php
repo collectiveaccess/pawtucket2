@@ -39,7 +39,9 @@
 					</p>
 					<ul class="list-inline">
 						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Privacy Policy / Terms of Use"), "", "", "About#Privacy_Terms", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Land Acknowledgement"), "", "", "About#Land_Acknowledgement", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "About#Privacy_Terms", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Accessibility Statement"), "", "", "About#Accessibility_Statement", ""); ?></li>
 					</ul>
 				</div>
 			</div>

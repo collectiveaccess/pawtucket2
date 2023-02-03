@@ -11,7 +11,7 @@
 	}
 ?>
 
-<div class="row"><div class="col-sm-12 col-md-8 col-md-offset-2">
+<div class="row"><div class="col-sm-12">
 	<H1><?php print $this->getVar("section_name"); ?></H1>
 <?php
 	if($vs_intro_global_value = $config->get("gallery_intro_text_global_value")){
@@ -27,14 +27,11 @@
 				if($i == 1){
 					print "<div class='row'>";
 				}
-				print "<div class='col-sm-3'>";
+				print "<div class='col-sm-4'>";
 				$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
-				print "<div class='galleryList'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id).
-							"<label>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $vn_set_id)."</label>
-							<div><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small></div>
-						</div>\n";
+				print caNavLink($this->request, "<div class='activation-block-wrapper'>".$va_first_item["representation_tag"]."<div class='activation-info-block'><label>".$va_set["name"]."</label><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small></div></div>\n", '', '', 'Gallery', $vn_set_id);
 				print "</div><!-- end col -->";
-				if($i == 4){
+				if($i == 3){
 					print "</div><!-- end row -->";
 					$i = 0;
 				}

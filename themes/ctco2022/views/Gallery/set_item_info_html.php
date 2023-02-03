@@ -15,6 +15,17 @@
 
 	print "<H2>".$vs_label."</H2>";
 
+	if($t_item->get("source_id")){
+		$vs_source_as_link = getSourceAsLink($this->request, $t_item->get("source_id"), null);
+?>
+		<HR>
+		<div class="unit">
+			<label style="display: inline;">From</label>
+			<span style="display: inline;"><?php print $vs_source_as_link; ?></span>
+		</div>
+		<HR>
+<?php
+	}
 	print $vs_content;
 	
 	// if($vs_set_item_content != "[BLANK]"){
