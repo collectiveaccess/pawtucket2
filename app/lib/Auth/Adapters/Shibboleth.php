@@ -34,8 +34,8 @@ require_once(__CA_LIB_DIR__.'/Auth/BaseAuthAdapter.php');
 require_once(__CA_MODELS_DIR__.'/ca_users.php');
 
 class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
-
     public function __construct(){
+    	if(caIsRunFromCLI()) { return; }
         $this->opo_auth_config = Configuration::load(__CA_APP_DIR__."/conf/authentication.conf");
         $vs_shibSP = $this->opo_auth_config->get('shibboleth_service_provider');
         try{
@@ -46,6 +46,7 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
     }
 	# --------------------------------------------------------------------------------
 	public function authenticate($ps_username, $ps_password = '', $pa_options=null) {
+    	if(caIsRunFromCLI()) { return false; }
 		try{
         	$this->opo_shibAuth->requireAuth();
 		} catch (Exception $e){
@@ -73,6 +74,7 @@ class ShibbolethAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	}
     # --------------------------------------------------------------------------------
     public function getUserInfo($ps_username, $ps_password, $pa_options=null) {
+    	if(caIsRunFromCLI()) { return; }
         if(!$this->opo_shibAuth->isAuthenticated()){
             if (!$this->authenticate($ps_username, $ps_password)) {
                 throw new ShibbolethException(_t("User could not be authenticated."));
