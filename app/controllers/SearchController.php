@@ -156,11 +156,14 @@ class SearchController extends FindController {
 		// Handle advanced search form submissions
 		//
 		if($vb_is_advanced) { 
-			$this->opo_result_context->setSearchExpression(
-				$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])])
-			); 
+			if (!$this->request->isAjax()) {
+				$this->opo_result_context->setSearchExpression(
+					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])])
+				); 
+			}
 			if (!$this->request->isAjax() && ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context))) {
 				$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
+				$this->opo_result_context->setSearchExpression($vs_search_expression);
 			}
 		}
 		

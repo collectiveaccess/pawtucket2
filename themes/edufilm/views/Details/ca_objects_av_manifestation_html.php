@@ -77,29 +77,71 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
-				<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
+				<!-- <H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1> -->
+				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 				<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 
 				<HR>
 								
 				{{{<ifdef code="ca_objects.idno"><label>Identifier:</label>^ca_objects.idno<br/></ifdef>}}}
 				{{{<ifdef code="ca_objects.vhh_Title.TitleText"><label>Title:</label>^ca_objects.vhh_Title.TitleText<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.vhh_MediaTypeTech"><label>Media Technology Type:</label>^ca_objects.vhh_MediaTypeTech.MTT_List<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.vhh_Language"><label>Language:</label>^ca_objects.vhh_Language<br/></ifdef>}}}
+				
+				{{{<ifdef code="ca_objects.vhh_MediaTypeTech">
+					<label>Media Technology Type:</label>
+					<unit relativeTo="ca_objects.vhh_MediaTypeTech" delimiter="<br/>">
+						^MTT_List
+					</unit>
+				</ifdef>}}}
+
+				{{{<ifdef code="ca_objects.vhh_Language">
+					<label>Language:</label>
+					<unit relativeTo="ca_objects.vhh_Language" delimiter="<br/>">
+						^lang_Name <ifdef code="ca_objects.vhh_Language">(^lang_Usage)</ifdef>
+					</unit>
+				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_Description">
-					<div class='unit'><label>Description</label>
-						<span class="trimText">^ca_objects.vhh_Description</span>
+					<label>Description</label>
+					<div class='unit'>
+						<span class="trimText">^ca_objects.vhh_Description.DescriptionText</span>
 					</div>
 				</ifdef>}}}
 
-				{{{<ifdef code="ca_objects.vhh_URL"><label>URL:</label>^ca_objects.vhh_URL<br/></ifdef>}}}	
-				{{{<ifdef code="ca_objects.vhh_Note"><label>Note:</label>^ca_objects.vhh_Note<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.vhh_URL"><label>URL:</label><unit relativeTo="ca_objects.vhh_URL"><a href="ca_objects.vhh_URL" target="_blank">^ca_objects.vhh_URL</a></unit><br/></ifdef>}}}	
+
+				{{{<ifdef code="ca_objects.vhh_Note">
+					<label>Note:</label>
+					<unit relativeTo="ca_objects" delimiter="<br/>">							
+						<span class="trimText">^ca_objects.vhh_Note.vhh_NoteText</span>
+					</unit>
+				</ifdef>}}}		
+
 				{{{<ifdef code="ca_objects.vhh_Origin"><label>Origin:</label>^ca_objects.vhh_Origin<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.vhh_CarrierType2"><label>Carrier Type:</label>^ca_objects.vhh_CarrierType2<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.vhh_DigitalFormatAV"><label>Digital Format:</label>^ca_objects.vhh_DigitalFormatAV<br/></ifdef>}}}
+
+				{{{<ifdef code="ca_objects.vhh_CarrierType2">
+					<label>Carrier Type:</label>
+					<unit relativeTo="ca_objects.vhh_CarrierType2" delimiter="<br/>">
+						^CarrierTypeList
+					</unit>
+				</ifdef>}}}
+
+				{{{<ifdef code="ca_objects.vhh_DigitalFormatAV">
+					<label>Digital Format:</label>
+					<unit relativeTo="ca_objects.vhh_DigitalFormatAV" delimiter="<br/>">
+						<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_Coding">(^digi_Coding)</ifdef>
+						<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_CodingAudio">(^digi_CodingAudio)</ifdef>
+						<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_MIME2">(^digi_MIME2)</ifdef>
+					</unit>	
+				</ifdef>}}}
+
 				{{{<ifdef code="ca_objects.vhh_AspectRatio"><label>Aspect Ratio:</label>^ca_objects.vhh_AspectRatio<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.vhh_Extent"><label>Extent:</label>^ca_objects.vhh_Extent.ext_Value<br/></ifdef>}}}
+
+				{{{<ifdef code="ca_objects.vhh_Extent">
+					<label>Extent:</label>
+					<unit relativeTo="ca_objects.vhh_Extent" delimiter="<br/>">
+						^ext_Value <ifdef code="ca_objects.vhh_Extent">(^ext_Unit)</ifdef>
+					</unit>	
+				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_Duration"><label>Duration:</label>^ca_objects.vhh_Duration<br/></ifdef>}}}
 
@@ -119,47 +161,35 @@
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_Provenance"><label>Provenance:</label>^ca_objects.vhh_Provenance<br/></ifdef>}}}
-
-				<!-- {{{<ifdef code="ca_objects.vhh_Identifier"><label>External Identifier:</label>^ca_objects.vhh_Identifier<br/></ifdef>}}}	 -->
-				<!-- {{{<ifdef code="ca_objects.vhh_CountryOfReference"><label>Country of Reference:</label>^ca_objects.vhh_CountryOfReference<br/></ifdef>}}}	
-				{{{<ifdef code="ca_objects.vhh_Date"><label>Date:</label>^ca_objects.vhh_Date<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.vhh_MediaType"><label>Media Type:</label>^ca_objects.vhh_MediaType<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.vhh_GenreAV"><label>Genre(AV):</label>^ca_objects.vhh_GenreAV<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.edu_FilmDevices"><label>Devices:</label>^ca_objects.edu_FilmDevices<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.edu_KnowledgeField"><label>Field of Knowledge:</label>^ca_objects.edu_KnowledgeField<br/></ifdef>}}}
-				 -->
 						
 				<hr></hr>
 
-				{{{<ifcount code="ca_collections" min="1" max="1"><label>Related collection</label></ifcount>}}}
-				{{{<ifcount code="ca_collections" min="2"><label>Related collections</label></ifcount>}}}
+				{{{<ifcount code="ca_collections" min="1" max="1"><label><?= _t('Related Case Study'); ?></label></ifcount>}}}
+				{{{<ifcount code="ca_collections" min="2"><label><?= _t('Related Case Studies'); ?></label></ifcount>}}}
 				{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit>}}}
 				
-				{{{<ifcount code="ca_entities.related" min="1" max="1"><label>Related person</label></ifcount>}}}
-				{{{<ifcount code="ca_entities.related" min="2"><label>Related people</label></ifcount>}}}
+				{{{<ifcount code="ca_entities.related" min="1" max="1"><label><?= _t('Related Person/Organization'); ?></label></ifcount>}}}
+				{{{<ifcount code="ca_entities.related" min="2"><label><?= _t('Related People/Organizations'); ?></label></ifcount>}}}
 				{{{<unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
 				
-				{{{<ifcount code="ca_occurrences" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
-				{{{<ifcount code="ca_occurrences" min="2"><label>Related occurrences</label></ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="1" max="1"><label><?= _t('Related Event'); ?></label></ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="2"><label><?= _t('Related Events'); ?></label></ifcount>}}}
 				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit>}}}
 				
-				{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-				{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
+				{{{<ifcount code="ca_places" min="1" max="1"><label><?= _t('Related Location'); ?></label></ifcount>}}}
+				{{{<ifcount code="ca_places" min="2"><label><?= _t('Related Locations'); ?></label></ifcount>}}}
 				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}				
 
 				<div class="row">
 					<div class="col-sm-12">		
-						{{{<ifdef code="ca_objects"><label>Related objects</label></ifdef>}}}
-						{{{<unit relativeTo="ca_objects" delimiter="<br/>">
-							<label>Related objects</label>
-							<l>^ca_objects.preferred_labels</l>
+						{{{<ifdef code="ca_objects.related"><label><?= _t('Related Items'); ?></label></ifdef>}}}
+						{{{<unit relativeTo="ca_objects.related" delimiter="<br/>">
+							<l>^ca_objects.preferred_labels</l> (^ca_objects.type_id)
 						</unit>}}}
 					</div><!-- end col -->				
 				</div><!-- end row -->
 						
 			</div><!-- end col -->
-
-
 
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
