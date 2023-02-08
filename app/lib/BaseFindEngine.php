@@ -354,7 +354,7 @@ class BaseFindEngine extends BaseObject {
 		if(!sizeof($hits)) { return []; }
 		$sort_spec = array_shift($sort_fields);
 		$sort_direction = self::sortDirection(array_shift($sort_directions));
-		list($sort_table, $sort_field, $sort_subfield) = explode(".", $sort_spec);
+		list($sort_table, $sort_field, $sort_subfield) = array_pad(explode(".", $sort_spec), 3, null);
 	
 		// Extract sortable values present on results page ($page_hits)
 		$values = $this->_getSortValues($page_hits, $table, $primary_field, $sort_direction);
@@ -468,7 +468,7 @@ class BaseFindEngine extends BaseObject {
 		
 		$table_pk = $t_table->primaryKey();
 		$table_num = $t_table->tableNum();
-		list($sort_table, $sort_field, $sort_subfield) = explode(".", $sort_field);
+		list($sort_table, $sort_field, $sort_subfield) = array_pad(explode(".", $sort_field), 3, null);
 		if (!($t_bundle = Datamodel::getInstanceByTableName($sort_table, true))) { 
 			//throw new ApplicationException(_t('Invalid sort field: %1', $sort_table));
 			return $hits;
@@ -626,7 +626,7 @@ class BaseFindEngine extends BaseObject {
 			SELECT t.{$table_pk}
 			FROM {$table} t
 			{$join_sql}
-			INNER JOIN {$rel_label_table} AS rl ON rl.{$rel_table_pk} = s.{$rel_table_pk}
+			LEFT JOIN {$rel_label_table} AS rl ON rl.{$rel_table_pk} = s.{$rel_table_pk}
 			INNER JOIN {$hit_table} AS ht ON ht.row_id = t.{$table_pk}
 			ORDER BY rl.`{$rel_label_field}` {$direction}
 			{$limit_sql}
@@ -743,8 +743,8 @@ class BaseFindEngine extends BaseObject {
 		$sql = "SELECT t.{$table_pk} row_id
 					FROM {$table} t
 					{$join_sql}
-					INNER JOIN ca_attributes AS a ON a.row_id = s.{$rel_table_pk} AND a.table_num = {$rel_table_num}
-					INNER JOIN ca_attribute_values AS cav ON cav.attribute_id = a.attribute_id
+					LEFT JOIN ca_attributes AS a ON a.row_id = s.{$rel_table_pk} AND a.table_num = {$rel_table_num}
+					LEFT JOIN ca_attribute_values AS cav ON cav.attribute_id = a.attribute_id
 					INNER JOIN {$hit_table} AS ht ON ht.row_id = t.{$table_pk}
 					WHERE a.element_id = ? AND cav.element_id = ? 
 					ORDER BY cav.value_sortable {$direction}";
@@ -774,7 +774,7 @@ class BaseFindEngine extends BaseObject {
 		$table_pk = $t_table->primaryKey();
 		$table_num = $t_table->tableNum();
 		
-		list($sort_table, $sort_field, $sort_subfield) = explode(".", $sort_field);
+		list($sort_table, $sort_field, $sort_subfield) = array_pad(explode(".", $sort_field), 3, null);
 		
 		$values = [];
 		
@@ -833,6 +833,8 @@ class BaseFindEngine extends BaseObject {
 		$sort_keys = [];
 		while($qr_sort->nextRow()) {
 			$row = $qr_sort->getRow();
+			
+			if(!isset($sort_keys[$row['val']])) { $sort_keys[$row['val']] = 0; }
 			$sort_keys[$row['val']]++;
 		}
 		return $sort_keys;
@@ -891,6 +893,7 @@ class BaseFindEngine extends BaseObject {
 		$sort_keys = [];
 		while($qr_sort->nextRow()) {
 			$row = $qr_sort->getRow();
+			if(!isset($sort_keys[$row['val']])) { $sort_keys[$row['val']] = 0; }
 			$sort_keys[$row['val']]++;
 		}
 		
@@ -986,8 +989,8 @@ class BaseFindEngine extends BaseObject {
 		$sql = "SELECT cav.value_sortable val
 					FROM {$table} pt
 					{$join_sql}
-					INNER JOIN ca_attributes AS a ON a.row_id = t.{$rel_table_pk} AND a.table_num = {$rel_table_num}
-					INNER JOIN ca_attribute_values AS cav ON cav.attribute_id = a.attribute_id
+					LEFT JOIN ca_attributes AS a ON a.row_id = t.{$rel_table_pk} AND a.table_num = {$rel_table_num}
+					LEFT JOIN ca_attribute_values AS cav ON cav.attribute_id = a.attribute_id
 					WHERE cav.element_id = ? AND pt.{$table_pk} IN (?)
 				ORDER BY val {$direction}
 					";
@@ -1011,7 +1014,7 @@ class BaseFindEngine extends BaseObject {
 		$table_pk = $t_table->primaryKey();
 		$table_num = $t_table->tableNum();
 		
-		list($sort_table, $sort_field, $sort_subfield) = explode(".", $sort_field);
+		list($sort_table, $sort_field, $sort_subfield) = array_pad(explode(".", $sort_field), 3, null);
 		
 		$row_ids = [];
 		
@@ -1116,7 +1119,7 @@ class BaseFindEngine extends BaseObject {
 	 *
 	 */
 	private function _getRowIDsForLabel(array $values, $t_table, string $hit_table, string $label_field) {
-		if (!is_array($hits) || !sizeof($hits)) { return []; }
+		if (!is_array($values) || !sizeof($values)) { return []; }
 		$table = $t_table->tableName();
 		$table_pk = $t_table->primaryKey();
 		$table_num = $t_table->tableNum();
@@ -1166,7 +1169,7 @@ class BaseFindEngine extends BaseObject {
 			SELECT rl.{$table_pk}, rl.{$label_field} val
 			FROM {$label_table} t
 			{$join_sql}
-			INNER JOIN {$rel_label_table} AS rl ON rl.{$rel_table_pk} = s.{$rel_table_pk}
+			LEFT JOIN {$rel_label_table} AS rl ON rl.{$rel_table_pk} = s.{$rel_table_pk}
 			INNER JOIN {$hit_table} AS ht ON ht.row_id = l.{$table_pk}
 			WHERE
 				rl.{$label_field} IN (?)
@@ -1259,7 +1262,8 @@ class BaseFindEngine extends BaseObject {
 		
 		while(sizeof($hits) > 0) {
 			$hits_buf = array_splice($hits, 0, 250000, []);
-			if (!$this->db->query("INSERT IGNORE INTO {$table_name} VALUES ".join(',', array_map(function($v) { return '('.(int)$v.')'; }, $hits_buf)))) {
+			$sql = "INSERT IGNORE INTO {$table_name} VALUES ".join(',', array_map(function($v) { return '('.(int)$v.')'; }, $hits_buf));
+			if (!$this->db->query($sql)) {
 				$this->_dropTempTable($table_name);
 				return false;
 			}
@@ -1292,14 +1296,14 @@ class BaseFindEngine extends BaseObject {
 				if ($table === $rel_table) {
 					$t_relation = Datamodel::getInstance($linking_table, true);
 					// self relation
-					$joins[] = "INNER JOIN {$linking_table} AS l ON t.{$table_pk} = l.{$table_pk}{$rel_type_sql}";
-					$joins[] = "INNER JOIN {$rel_table} AS s ON (s.{$rel_table_pk} = l.".$t_relation->getLeftTableFieldName().") OR (s.{$rel_table_pk} = l.".$t_relation->getRightTableFieldName().")";
+					$joins[] = "LEFT JOIN {$linking_table} AS l ON t.{$table_pk} = l.{$table_pk}{$rel_type_sql}";
+					$joins[] = "LEFT JOIN {$rel_table} AS s ON (s.{$rel_table_pk} = l.".$t_relation->getLeftTableFieldName().") OR (s.{$rel_table_pk} = l.".$t_relation->getRightTableFieldName().")";
 				} elseif ($is_attribute) {
-					$joins[] = "INNER JOIN {$linking_table} AS l ON attr_tmp.row_id = l.{$rel_table_pk}{$rel_type_sql}";
-					$joins[] = "INNER JOIN {$table} AS s ON s.{$rel_table_pk} = l.{$rel_table_pk}";
+					$joins[] = "LEFT JOIN {$linking_table} AS l ON attr_tmp.row_id = l.{$rel_table_pk}{$rel_type_sql}";
+					$joins[] = "LEFT JOIN {$table} AS s ON s.{$rel_table_pk} = l.{$rel_table_pk}";
 				} else {							
-					$joins[] = "INNER JOIN {$linking_table} AS l ON t.{$table_pk} = l.{$table_pk}{$rel_type_sql}";
-					$joins[] = "INNER JOIN {$rel_table} AS s ON s.{$rel_table_pk} = l.{$rel_table_pk}";
+					$joins[] = "LEFT JOIN {$linking_table} AS l ON t.{$table_pk} = l.{$table_pk}{$rel_type_sql}";
+					$joins[] = "LEFT JOIN {$rel_table} AS s ON s.{$rel_table_pk} = l.{$rel_table_pk}";
 				}
 				
 				break;
