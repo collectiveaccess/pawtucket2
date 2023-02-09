@@ -721,6 +721,7 @@ body{
 }
 .landAck{
 	padding-top:30px;
+	font-family:latolight;
 }
 /* search / browse results */
 .bResultItemSetLink {
@@ -843,6 +844,7 @@ body.frontContainer #footer{
 
 .front .frontIntro{
 	font-size:16px;
+	font-family: "Noto Sans Mono";
 }
 .btn-front{
 	background-image: -webkit-gradient(linear,left top,left bottom,from(#d9d9d9),to(#f2f2f2));
@@ -1124,6 +1126,22 @@ body.frontContainer #footer{
 	font-size: 15px;
 	text-transform: none;
 	text-decoration: none;
+}
+#browseResultsContainer {
+	margin-top: 10px;
+}
+.detailFilter{
+	font-size: 13px;
+	font-family: 'Work Sans';
+	font-weight: 500;
+	text-transform: capitalize;
+	padding-bottom: 15px;
+}
+.detailFilter .btn-group{
+	margin-right:30px;
+}
+.detailFilter .btn-group button{
+	font-size:12px;
 }
 /* used for collections and activations listings */
 .activation-block-wrapper {

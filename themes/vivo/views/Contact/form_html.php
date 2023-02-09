@@ -13,9 +13,16 @@
 		$t_item = Datamodel::getInstanceByTableName($ps_table);
 		if($t_item){
 			$t_item->load($pn_id);
-			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
-			$vs_name = $t_item->get($ps_table.".preferred_labels");
-			$vs_idno = $t_item->get($ps_table.".idno");
+			if($ps_table = "ca_sets"){
+				$vs_name = $t_item->getLabelForDisplay();
+				$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "", "Lightbox", "setDetail", array("set_id" => $pn_id));
+				$vs_admin_url = $this->request->config->get("site_host")."/admin/index.php/manage/sets/SetEditor/Edit/set_id/".$pn_id;
+				$vs_idno = "";
+			}else{
+				$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
+				$vs_name = $t_item->get($ps_table.".preferred_labels");
+				$vs_idno = $t_item->get($ps_table.".idno");
+			}
 		}
 	}
 	$vs_contactType = $this->request->getParameter("contactType", pString);
@@ -38,7 +45,11 @@
 		# --------------------------
 		default:
 			if($pn_id && $ps_table){
-				$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
+				if($ps_table == "ca_sets"){
+					$vs_page_title = "Lightbox Inquiry";
+				}else{
+					$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
+				}
 			}else{
 				$vs_page_title = ($o_config->get("contact_page_title")) ? $o_config->get("contact_page_title") : _t("Contact");
 			}
@@ -82,7 +93,7 @@
 				</p>
 				<input type="hidden" name="itemId" value="<?php print $vs_idno; ?>">
 				<input type="hidden" name="itemTitle" value="<?php print $vs_name; ?>">
-				<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
+				<input type="hidden" name="itemURL" value="<?php print ($ps_table == "ca_sets") ? $vs_admin_url : $vs_url; ?>">
 				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
 				<hr/><br/>
