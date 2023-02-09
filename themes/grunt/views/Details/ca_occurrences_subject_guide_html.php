@@ -69,7 +69,7 @@
 					}
 				}
 ?>
-				{{{<ifcount code="ca_occurrences.related" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences.related" min="2" restrictToType="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
+				{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences.related" min="2" restrictToTypes="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					
 <?php
 				# Comment and Share Tools

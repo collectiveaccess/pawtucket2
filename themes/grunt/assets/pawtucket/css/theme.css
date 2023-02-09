@@ -643,15 +643,15 @@ body.frontContainer #footer{
 }
 
 /* listing */
-.listing .collectionTile .title {
+.collectionTile .title {
 	padding: 10px;
 	font-family: "Lato";
 	font-size:20px;
 	font-weight:bold;
 	text-align:center;
-	text-transform:capitalize;
+	text-transform:none;
 }
-.listing .collectionTile img{
+.collectionTile img{
 	width:100%;
 	height: 200px;
 	object-fit: cover;
@@ -750,6 +750,32 @@ body.frontContainer #footer{
 }
 .detailFilter .btn-group button{
 	font-size:12px;
+}
+.collectionDetailListItem{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	background-color: #FFFFFF;
+	line-height: 1em;
+	padding: 10px;
+	height: 90px;
+	overflow: hidden;
+	margin-bottom:30px;
+}
+.detail .unit .collectionDetailListItemText, .detail .unit .collectionDetailListItemText a{
+	line-height: 1.2em;
+	color: #000;
+	font-family: lato;
+	font-size: 16px;
+	text-decoration:none;
+}
+.detail .unit .collectionDetailListItemText small a{
+	font-size: 13px;
+	color: #595959;
+	text-decoration:none;
+}
+.detail .unit .btn-default{
+	color:#fff;
+	text-decoration:none;
 }
 /* static pages */
 .staticPage{
