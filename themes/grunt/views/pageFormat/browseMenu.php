@@ -43,7 +43,7 @@
 								print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), '', '', 'Browse', $vs_browse_name, '')."</li>";
 							}
 						}
-						#print "<li>".caNavLink($this->request, "Collections", '', '', 'Collections', 'Index', '')."</li>";
+						print "<li>".caNavLink($this->request, "Collections", '', '', 'Collections', 'Index', '')."</li>";
 							
 ?>
 					</ul>	

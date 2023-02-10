@@ -120,7 +120,7 @@ if($vb_2_col){
 					
 					{{{<ifdef code="ca_occurrences.language"><div class="unit"><label>Language</label>^ca_occurrences.language</div></ifdef>}}}
 
-					{{{<ifcount code="ca_occurrences.related" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences.related" min="2" restrictToType="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences.related" min="2" restrictToTypes="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					
 					{{{<ifdef code="ca_occurrences.program_location"><div class="unit"><label>Location</label><span class="trimTextShort"><unit relativeTo="ca_occurrences.program_location" delimiter="<br/><br/>">^ca_occurrences.program_location<unit></span></div></ifdef>}}}
 					

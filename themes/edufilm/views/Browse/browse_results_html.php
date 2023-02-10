@@ -96,7 +96,6 @@ if (!$vb_ajax) {	// !ajax
 		<H1>
 <?php
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
-			if($hiding_gear){
 ?>		
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
@@ -134,7 +133,7 @@ if (!$vb_ajax) {	// !ajax
 					}
 					if(is_array($va_export_formats) && sizeof($va_export_formats)){
 						// Export as PDF links
-						print "<li class='divider' role='menuitem'></li>\n";
+						#print "<li class='divider' role='menuitem'></li>\n";
 						print "<li class='dropdown-header' role='menuitem'>"._t("Download results as:")."</li>\n";
 						foreach($va_export_formats as $va_export_format){
 							print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
@@ -144,7 +143,6 @@ if (!$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
-			}
 			if(is_array($va_facets) && sizeof($va_facets)){
 ?>
 			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
