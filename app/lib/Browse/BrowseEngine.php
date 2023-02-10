@@ -1689,7 +1689,7 @@
 										}
 										
 										$vs_container_sql = '';
-										if (is_array($va_element_code) && (sizeof($va_element_code) == 1) && is_array($va_container_ids[$va_element_code[0]]) && sizeof($va_container_ids[$va_element_code[0]])) {
+										if (!caGetOption('multiple', $va_facet_info, false) && is_array($va_element_code) && (sizeof($va_element_code) == 1) && is_array($va_container_ids[$va_element_code[0]]) && sizeof($va_container_ids[$va_element_code[0]])) {
 										    $vs_container_sql = " AND ca_attributes.attribute_id IN (?)";
 										    $va_attr_values[] = $va_container_ids[$va_element_code[0]];
 										}
@@ -4258,7 +4258,7 @@
 					if (is_array($va_wheres) && sizeof($va_wheres) && ($vs_where_sql = join(' AND ', $va_wheres))) {
 						$vs_where_sql = ' AND ('.$vs_where_sql.')';
 					}
-	
+
 					if ($vb_check_availability_only) {
 						// exclude criteria values
 						$params = [$vn_element_id];
