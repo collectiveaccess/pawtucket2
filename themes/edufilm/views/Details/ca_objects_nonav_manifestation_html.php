@@ -182,7 +182,7 @@
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_ColorAV">
-					<label>Color:</label>
+					<label><?= _t('Color:'); ?></label>
 					<ifdef code="ca_objects.vhh_ColorAV.colAV_HasColor">Has Color? - (^ca_objects.vhh_ColorAV.colAV_HasColor)</ifdef>
 					<ifdef code="ca_objects.vhh_ColorAV.colAV_ColorDetail">Color Detail - (^ca_objects.vhh_ColorAV.colAV_ColorDetail)</ifdef>
 					<br/>
