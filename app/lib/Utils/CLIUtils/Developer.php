@@ -197,7 +197,7 @@ trait CLIUtilsDeveloper{
 	}
 	# -------------------------------------------------------
 	/**
-	 * Get table/row id pair for a GUID
+	 * Extract strings from theme for translation
 	 */
 	public static function extract_strings_for_translation($opts=null) {	
 		$theme = $opts->getOption('theme');
