@@ -20,5 +20,11 @@
     "scholarslab/bagit": "~0.2",
     "guzzlehttp/psr7": "^1.4",
     "joshralph/password-policy": "~0.2"
+  },
+  "config": {
+    "discard-changes": true,
+    "allow-plugins" : {
+      "php-http/discovery": false
+    }
   }
 }
