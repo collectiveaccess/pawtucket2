@@ -2,16 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2\n"
 "POT-Creation-Date: 2016-10-10 23:03-0400\n"
-"PO-Revision-Date: 2016-10-19 10:07-0400\n"
+"PO-Revision-Date: 2023-02-12 01:07-0500\n"
 "Last-Translator: Seth <Seth@collectiveacess.org>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
-"Language: en_US\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.10\n"
-"X-Poedit-Basepath: ../..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+"X-Poedit-Basepath: ../..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _t;_\n"
 "X-Poedit-SearchPath-0: lib\n"
@@ -2878,7 +2878,7 @@ msgstr ""
 
 #: helpers/searchHelpers.php:1246 helpers/searchHelpers.php:1252
 msgid "date"
-msgstr ""
+msgstr "datum"
 
 #: helpers/searchHelpers.php:1247 helpers/searchHelpers.php:1253
 #: models/ca_users.php:47
@@ -4713,12 +4713,14 @@ msgid "%1 browse"
 msgstr ""
 
 #: lib/ca/BaseBrowseController.php:282
+#, fuzzy
 msgid "browse"
-msgstr ""
+msgstr "Browse %1"
 
 #: lib/ca/BaseBrowseController.php:340 lib/ca/BaseBrowseController.php:344
+#, fuzzy
 msgid "Browse"
-msgstr ""
+msgstr "Browse %1"
 
 #: lib/ca/BaseEditorController.php:110
 msgid "Duplicated %1 \"%2\" (%3)"
@@ -4913,8 +4915,8 @@ msgstr ""
 
 #: lib/ca/BaseLookupController.php:186
 msgid ""
-"<em>%1</em> matches %2 more record(s) without the current filter. Create <em>"
-"%1</em>?"
+"<em>%1</em> matches %2 more record(s) without the current filter. Create "
+"<em>%1</em>?"
 msgstr ""
 
 #: lib/ca/BaseLookupController.php:189
@@ -5522,11 +5524,11 @@ msgstr ""
 msgid ""
 "Your database is out-of-date. Please install all schema migrations starting "
 "with migration #%1. <a href='index.php?updateSchema=1'><strong>Click here</"
-"strong></a> to automatically apply the required updates, or see the <a href="
-"\"http://docs.collectiveaccess.org/wiki/Applying_Database_Updates\">update "
-"HOW-TO</a> for instructions on applying database updates manually.<br/><br/"
-"><div align='center'><strong>NOTE: you should back-up your database before "
-"applying updates!</strong></div>"
+"strong></a> to automatically apply the required updates, or see the <a "
+"href=\"http://docs.collectiveaccess.org/wiki/"
+"Applying_Database_Updates\">update HOW-TO</a> for instructions on applying "
+"database updates manually.<br/><br/><div align='center'><strong>NOTE: you "
+"should back-up your database before applying updates!</strong></div>"
 msgstr ""
 
 #: lib/ca/ConfigurationCheck.php:250
@@ -5728,12 +5730,13 @@ msgstr ""
 
 #: lib/ca/ConfigurationCheck.php:483 lib/pawtucket/ConfigurationCheck.php:396
 msgid ""
-"It looks like at least one of the PHP configuration variables \"post_max_size"
-"\" and \"upload_max_filesize\" is set to a very low value. Note that the "
-"lowest of both values limits the size of the files you can upload to "
-"CollectiveAccess. We recommend values greater than \"5M\" but in general you "
-"should set them to values greater than the largest file you will upload to "
-"CollectiveAccess. Your values: upload_max_filesize=%1 and post_max_size=%2."
+"It looks like at least one of the PHP configuration variables "
+"\"post_max_size\" and \"upload_max_filesize\" is set to a very low value. "
+"Note that the lowest of both values limits the size of the files you can "
+"upload to CollectiveAccess. We recommend values greater than \"5M\" but in "
+"general you should set them to values greater than the largest file you will "
+"upload to CollectiveAccess. Your values: upload_max_filesize=%1 and "
+"post_max_size=%2."
 msgstr ""
 
 #: lib/ca/ConfigurationCheck.php:497 lib/ca/ConfigurationCheck.php:504
@@ -13610,8 +13613,8 @@ msgid ""
 "A list of Perl-compatible regular expressions. Each expression has two "
 "parts, a matching expression and a substitution expression, and is expressed "
 "as a JSON object with <em>match</em> and <em>replaceWith</em> keys. Ex. "
-"[{\"match\": \"([\\d]+)\\.([\\d]+)\", \"replaceWith\": \"\\1:\\2\"}, {\"match"
-"\": \"[^\\d:]+\", \"replaceWith\": \"\"}] "
+"[{\"match\": \"([\\d]+)\\.([\\d]+)\", \"replaceWith\": \"\\1:\\2\"}, "
+"{\"match\": \"[^\\d:]+\", \"replaceWith\": \"\"}] "
 msgstr ""
 
 #: models/ca_data_importer_items.php:433 models/ca_data_importers.php:372
@@ -19166,10 +19169,10 @@ msgstr ""
 
 #: models/ca_users.php:70
 msgid ""
-"\"Full\" user accounts may log into all CollectiveAccess interfaces. \"Public"
-"\" user accounts may only log into the publicly accessible front-end system "
-"(if one exists). \"Deleted\" users may not log into any interface – the "
-"account is considered removed."
+"\"Full\" user accounts may log into all CollectiveAccess interfaces. "
+"\"Public\" user accounts may only log into the publicly accessible front-end "
+"system (if one exists). \"Deleted\" users may not log into any interface – "
+"the account is considered removed."
 msgstr ""
 
 #: models/ca_users.php:72
