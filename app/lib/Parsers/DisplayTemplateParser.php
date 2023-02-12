@@ -928,6 +928,9 @@ class DisplayTemplateParser {
 						$vs_acc .= $vs_proc_template;
 					}
 					break;
+				case 't':
+					$vs_acc .= _t($o_node->getInnerText());
+					break;
 				default:
 					if ($o_node->children && (sizeof($o_node->children) > 0)) {
 						$vs_proc_template = DisplayTemplateParser::_processChildren($pr_res, $o_node->children, $pa_vals, $pa_options);
