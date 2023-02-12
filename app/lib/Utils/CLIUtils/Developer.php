@@ -201,6 +201,7 @@ trait CLIUtilsDeveloper{
 	 */
 	public static function extract_strings_for_translation($opts=null) {	
 		$theme = $opts->getOption('theme');
+		if(!$theme) { $theme = __CA_THEME__; }
 		if(!file_exists(__CA_THEMES_DIR__."/{$theme}")) { 
 			CLIUtils::addError(_t('Theme %1 does not exist', $theme));
 			return null;
