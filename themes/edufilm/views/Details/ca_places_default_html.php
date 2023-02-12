@@ -100,9 +100,11 @@
 					</div></ifdef>}}}
 					
 					{{{<ifdef code="ca_places.vhh_Date">
+						<unit relativeTo="ca_places.vhh_Date" delimiter="<br/>">
+						<if rule='^ca_places.vhh_Date.date_Type =~ /date of foundation/'>
 						<label>Date:</label>
-						<unit relativeTo="ca_places.vhh_Date" delimiter="<br/>" restrictToTypes="dateOfFoundation">
-							^date_Date <ifdef code="ca_places.vhh_Date.date_Type">(^date_Type)</ifdef>
+							^date_Date <ifdef code="ca_places.vhh_Date.date_Type">(^date_Type)</ifdef>						
+						</if>
 						</unit>
 					</ifdef>}}}		
 
@@ -253,7 +255,7 @@
 					
 					{{{<ifcount code="ca_places.related" min="1" max="1"><label><?= _t('Related Location'); ?></label></ifcount>}}}
 					{{{<ifcount code="ca_places.related" min="2"><label><?= _t('Related Locations'); ?></label></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>">
+					{{{<unit relativeTo="ca_places.related" delimiter="<br/>">
 						<l>^ca_places.related.preferred_labels.name</l> (^relationship_typename) 
 					</unit>}}}	
 
