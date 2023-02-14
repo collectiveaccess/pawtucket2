@@ -31,6 +31,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -83,14 +84,46 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-12'>
+					{{{<ifdef code="ca_collections.date_container.date"><div class="unit"><label>Date</label>^ca_collections.date_container.date%delimiter=,_</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.RAD_scopecontent"><div class="unit"><label>Scope and Content</label>^ca_collections.RAD_scopecontent</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.RAD_admin_hist"><div class="unit"><label>Administrative/Biographical History</label>^ca_collections.RAD_admin_hist</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.RAD_material"><div class="unit"><label>Related Materials</label>^ca_collections.RAD_material</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.RAD_langMaterial"><div class="unit"><label>Language</label>^ca_collections.RAD_langMaterial%delimiter=,_</div></ifdef>}}}
+					
 					
 					{{{<ifcount code="ca_collections.related" min="1"><div class="unit"><label>Related Collections</label><unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related People & Organizations</label><div class="trimTextShort"><unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></div></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToType="program">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter=", " restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
-					
-					
 <?php
+				$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
+				if(is_array($va_entities) && sizeof($va_entities)){
+					$va_entities_by_type = array();
+					foreach($va_entities as $va_entity_info){
+						$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
+					}
+					foreach($va_entities_by_type as $vs_type => $va_entity_links){
+						print "<div class='unit'><label>".$vs_type."</label>".join(", ", $va_entity_links)."</div>";
+					}
+				}
+				$va_programs = $t_item->get('ca_occurrences.related', array('restrictToTypes' => array('program'), 'sort' => 'ca_occurrences.occurrence_date', 'sortDirection' => 'desc', 'returnWithStructure' => true, 'checkAccess' => $va_access_values, 'limit' => 10));
+				if(is_array($va_programs) && sizeof($va_programs)){
+?>
+					<div class="unit"><label>Related program<?php print (sizeof($va_programs) > 1) ? "s" : ""; ?></label>
+						<div class="row">
+<?php
+						foreach($va_programs as $va_program){
+							$t_occ = new ca_occurrences($va_program['occurrence_id']);
+							print "<div class='col-sm-6'><div class='collectionDetailListItem'><div class='collectionDetailListItemText'>".$t_occ->getWithTemplate("<ifdef code='ca_occurrences.occurrence_date'><small><l>^ca_occurrences.occurrence_date</l></small><br/></ifdef><l>^ca_occurrences.preferred_labels</l><ifcount code='ca_entities' restrictToRelationshipTypes='Artist' min='1'><br/><small><l><unit relativeTo='ca_entities' restrictToRelationshipTypes='Artist' delimiter=', '>^ca_entities.preferred_labels.displayname</unit></l></small></ifcount>")."</div></div></div>";
+						}
+?>
+						</div>
+<?php
+						if(sizeof($va_programs) == 10){
+							print "<div class='text-center'>".caNavLink($this->request, "View All", "btn btn-default", "", "Browse", "programs", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id")))."</div>";
+						}
+?>
+					</div>
+<?php				
+				}	
+
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
 						
@@ -121,7 +154,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => '^ca_collections.collection_id', 'detailNav' => 'collection'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

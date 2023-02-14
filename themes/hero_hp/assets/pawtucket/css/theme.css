@@ -231,6 +231,64 @@ body{
 .bResultItem .bResultItemText, .bResultListItemCol .bResultListItemText{
   font-size: 12px;
 }
+@media(max-width:768px){
+	.results .bSearchWithinContainer{
+		display:none;
+	}
+}
+.results .bSearchWithinContainer{
+	clear:both;
+	padding:15px 0px 15px 0px;
+	text-align:center;
+}
+.results .btn-search-refine, .results .btn-search-refine:hover{	
+	font-size: 14px;
+	cursor: pointer;
+	background-color: #fff;
+	color:#000;
+	font-size: 14px;
+	line-height:1em;
+	padding: 9px;
+	
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	outline: 0;
+	border:0px;
+	border-radius: 0px;
+	margin-left: -30px;
+}
+.bSearchWithin, .bSearchWithin:focus {
+    width: 80%;
+    box-shadow: none;
+    border: 0px;
+    border: 0px;
+    border-radius: 0px;
+    height: 35px;
+    font-size: 14px;
+    line-height: 26px;
+    background-color: #FFF;
+	font-size: 14px;
+	display: inline-block;
+	display:inline-block;
+	padding-right: 30px;
+}
+.browseRemoveFacet, .browseRemoveFacet .btn{
+	display:block;
+	width:100%;
+	font-size:11px;
+	margin:0px 0px 5px 0px;
+}
+.browseRemoveFacet .btn{
+	white-space: normal;
+}
+.browseRemoveFacet:hover, .browseRemoveFacet .btn:hover{
+	text-decoration:none;
+}
+a.browseRemoveFacet .glyphicon{
+	color:#fff !important;
+}
 /* front */
 html.frontContainer {
     height: 100%;
@@ -539,4 +597,16 @@ body.frontContainer #footer{
 }
 .collectionTile:hover{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+
+.form-control:focus {
+	border-color: #000;
+}
+.front .notificationMessage, .front .notificationInfo {
+	position: absolute;
+	z-index: 5;
+	left: 10%;
+	width: 80%;
+	text-align: center;
 }

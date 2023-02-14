@@ -81,7 +81,7 @@
 
  			caSetPageCSSClasses(array("sets", "transcribe"));
  			
-			$this->purifier = caGetHTMLPurifier();
+			$this->purifier = new HTMLPurifier();
 			
  			parent::setTableSpecificViewVars();
  		}

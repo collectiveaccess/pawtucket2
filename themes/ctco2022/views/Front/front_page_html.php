@@ -32,8 +32,25 @@
   $va_access_values = $this->getVar("access_values");
  $vs_hero = $this->request->getParameter("hero", pString);
  if(!$vs_hero){
- 	$vs_hero = rand(1, 3);
+ 	$vs_hero = rand(1, 6);
  }
+ 
+ $front_page_config = caGetFrontConfig();
+ $suggested_searches = $front_page_config->get('suggested_searches');
+ 
+//  $search_to_display = array_slice($suggested_searches, rand(0,sizeof($suggested_searches)), 3);
+ $search_to_display = array_rand(array_flip($suggested_searches), 3);
+ 
+//  $request = $this->request;
+//  $links_to_display = array_map(function($s) use ($request) {
+//  	return caNavLink($request, $s, 'cssClassGoesHere', '', 'Search', 'objects', ['search' => $s]);
+//  }, $search_to_display);
+
+ $links_to_display = [];
+ foreach($search_to_display as $s) {
+ 	$links_to_display[] = caNavLink($this->request, $s, 'search-link', '', 'Search', 'objects', ['search' => $s]);
+ }
+
 ?>
 
 <div class="parallax hero<?php print $vs_hero; ?>">
@@ -55,6 +72,7 @@
 							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
 					</form>
+					<p class="search-suggest">Not sure what to search for? Try <?= join(', ', $links_to_display); ?></p>
 				</div>
 			</div>
 		</div>
@@ -84,71 +102,26 @@
 <?php
 	}
 ?>
-
-
-	<div class="container link-page-breaker">
+	
+	<div class="container">
 		<div class="row">
-			<a class="col col-sm-4 text-center mr-1" href="/index.php/Browse/objects">
-				<div class="link-text">
-					Artifacts
-				</div>
-			</a>
-
-			<a class="col col-sm-4 text-center mr-1" href="/index.php/Collections/index">
-				<div class="link-text">
-					Archives
-				</div>
-			</a>
-
-			<a class="col col-sm-4 text-center" href="/index.php/Contributors">
-				<div class="link-text">
-					Contributors
-				</div>
-			</a>
-
+			<div class="col-sm-12 col-md-4 text-center"><div class="hpFeaturedLinksContainer">
+				<?php print caNavLink($this->request, "Artifacts", "hpFeaturedLinks", "", "Browse", "objects"); ?>
+			</div></div>
+			<div class="col-sm-12 col-md-4 text-center"><div class="hpFeaturedLinksContainer">
+				<?php print caNavLink($this->request, "Archives", "hpFeaturedLinks", "", "Collections", "Index"); ?>
+			</div></div>
+			<div class="col-sm-12 col-md-4 text-center"><div class="hpFeaturedLinksContainer">
+				<?php print caNavLink($this->request, "Institutions", "hpFeaturedLinks", "", "Contributors", "Index"); ?>
+			</div></div>
 		</div>
 	</div>
 
 
 
-	<?php
+<?php
 		print $this->render("Front/featured_set_slideshow_html.php");
-	?>
-
-
-
-	<!-- <div class="row hpExplore bgLightGray">
-		<div class="col-md-12 col-lg-8 col-lg-offset-2">
-		<H2 class="frontSubHeading text-center">Explore The Archive</H2>
-
-			<div class="row">
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
-						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "xxx", "", "", "", ""); ?></div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
-						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "xxx", "", "", "", ""); ?></div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
-						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "xxx", "", "", "", ""); ?></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div> -->
+?>
 
 	<br/><br/>
 
