@@ -76,13 +76,13 @@
 					<div id="detailAnnotations"></div>
 				
 					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-					{{{<ifcount code="ca_entities.vhh_GroupName" min="1">
+					{{{<ifdef code="ca_entities.vhh_GroupName"><div class="unit">
 						<label>Name</label>
 						<unit relativeTo="ca_entities.vhh_GroupName" delimiter="<br/>">
 							^GN_Name 
 							<ifdef code="ca_entities.vhh_GroupName.GN_Type">(^GN_Type)</ifdef> 
 
-							<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+							<ifdef code="ca_entities.vhh_GroupName.GN_TempScope|ca_entities.vhh_GroupName.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 								<ifdef code="ca_entities.vhh_GroupName.GN_TempScope">
 									<br/>
@@ -96,27 +96,27 @@
 								</ifdef>
 							</div>
 						</unit>
-					</ifcount>}}}
+					</div></ifdef>}}}
 
-					{{{<ifcount code="ca_entities.vhh_Date" min="1"><label>Date</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities.vhh_Date" delimiter="<br/>">
+					{{{<ifdef code="ca_entities.vhh_Date"><div class="unit"><label>Date</label>
+						<unit relativeTo="ca_entities.vhh_Date" delimiter="<br/>">
 						^ca_entities.vhh_Date.date_Date <ifdef code="ca_entities.vhh_Date.date_Type">(^ca_entities.vhh_Date.date_Type)</ifdef>
-					</unit>}}}
+					</unit></div></ifdef>}}}
 										
-					{{{<ifcount code="ca_entities.vhh_TypeOfActivity2" min="1">
+					{{{<ifdef code="ca_entities.vhh_TypeOfActivity2"><div class="unit">
 						<label>Type of Activity</label>
 						<unit relativeTo="ca_entities.vhh_TypeOfActivity2" delimiter="<br/>">
 							^ca_entities.vhh_TypeOfActivity2.ActivityList 
 							<ifdef code="ca_entities.vhh_TypeOfActivity2.TOA_TempScope">(^ca_entities.vhh_TypeOfActivity2.TOA_TempScope)</ifdef>
 						</unit>
-					</ifcount>}}}
+					</div></ifdef>}}}
 
-					{{{<ifcount code="ca_entities.vhh_TypeOfActivity2" min="1">
+					{{{<ifdef code="ca_entities.vhh_TypeOfActivity2"><div class="unit">
 						<label>Type of Activity</label>
 
 						<unit relativeTo="ca_entities.vhh_TypeOfActivity2" delimiter="<br/>">
 							^ActivityList.preferred_labels.name_singular 
-							<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+							<ifdef code="ca_entities.vhh_TypeOfActivity2.TOA_TempScope|ca_entities.vhh_TypeOfActivity2.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 								<ifdef code="ca_entities.vhh_TypeOfActivity2.TOA_TempScope">
 									<br/>
@@ -130,17 +130,17 @@
 								</ifdef>
 							</div>
 						</unit>
-					</ifcount>}}}
+					</ifdef></ifdef>}}}
 					
 					{{{<ifdef code="ca_entities.vhh_Description"><div class='unit'><label>Description</label>^ca_entities.vhh_Description</div></ifdef>}}}
 					{{{<ifdef code="ca_entities.vhh_URL"><div class='unit'><label>URL</label><unit relativeTo="ca_entities.vhh_URL" delimiter="<br/>"><a href="ca_entities.vhh_URL" target="_blank">^ca_entities.vhh_URL</a></unit></div></ifdef>}}}
 
 					{{{<ifdef code="ca_entities.vhh_Note">
-						<label>Notes</label>
+						<div class='unit'><label>Notes</label>
 
 						<unit relativeTo="ca_entities.vhh_Note" delimiter="<br/>">							
 							<span class="trimText">^vhh_NoteText</span>
-							<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+							<ifdef code="^ca_entities.vhh_Note.vhh_NoteReference"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 								<ifdef code="^ca_entities.vhh_Note.vhh_NoteReference">
 									<br/>
@@ -152,7 +152,7 @@
 								</ifdef>
 							</div>
 						</unit>
-					</ifdef>}}}
+					</div></ifdef>}}}
 					
 				</div><!-- end col -->
 
@@ -160,15 +160,15 @@
 					
 					{{{<ifdef code="ca_entities.description"><div class='unit'><label>Biography</label>^ca_entities.description</div></ifdef>}}}
 					
-					{{{<ifcount code="ca_collections" min="1" max="1"><label><?= _t('Related Case Study'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><label><?= _t('Related Case Studies'); ?></label></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+					{{{<ifcount code="ca_collections" min="1"><div class="unit"><ifcount code="ca_collections" min="1" max="1"><label><?= _t('Related Case Study'); ?></label></ifcount>
+						<ifcount code="ca_collections" min="2"><label><?= _t('Related Case Studies'); ?></label></ifcount>
+						<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
 					
-					{{{<ifcount code="ca_occurrences" min="1" max="1"><label><?= _t('Related Event'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="2"><label><?= _t('Related Events'); ?></label></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>">
+					{{{<ifcount code="ca_occurrences" min="1"><div class="unit"><ifcount code="ca_occurrences" min="1" max="1"><label><?= _t('Related Event'); ?></label></ifcount>
+						<ifcount code="ca_occurrences" min="2"><label><?= _t('Related Events'); ?></label></ifcount>
+						<unit relativeTo="ca_entities_x_occurrences" delimiter="<br/>">
 						<l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)
-						<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+						<ifdef code="ca_entities_x_occurrences.vhh_TemporalScope|ca_entities_x_occurrences.vhh_Note.vhh_NoteText"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 						<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 							<ifdef code="ca_entities_x_occurrences.vhh_TemporalScope">
 								<br/>
@@ -192,14 +192,13 @@
 								</unit>
 							</ifdef>
 						</div>
-						<br/>
-					</unit>}}}
+					</unit></div></ifcount>}}}
 					
-					{{{<ifcount code="ca_places" min="1" max="1"><label><?= _t('Related Location'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><label><?= _t('Related Locations'); ?></label></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>">
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><ifcount code="ca_places" min="1" max="1"><label><?= _t('Related Location'); ?></label></ifcount>
+						<ifcount code="ca_places" min="2"><label><?= _t('Related Locations'); ?></label></ifcount>
+						<unit relativeTo="ca_entities_x_places" delimiter="<br/>">
 						<l>^ca_places.preferred_labels.name</l> (^relationship_typename)
-						<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+						<ifdef code="ca_entities_x_places.vhh_TemporalScope|ca_entities_x_places.vhh_Note.vhh_NoteText"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 						<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 							<ifdef code="ca_entities_x_places.vhh_TemporalScope">
 								<br/>
@@ -223,16 +222,13 @@
 								</unit>
 							</ifdef>
 						</div>
-						<br/>
-					</unit>}}}
-					
-					</br>
+					</unit></div></ifcount>}}}
 
-					{{{<ifcount code="ca_entities.related" min="1" max="1"><label><?= _t('Related Person/Organization'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_entities.related" min="2"><label><?= _t('Related People/Organizations'); ?></label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities.related" delimiter="<br/>">
+					{{{<ifcount code="ca_entities.related" min="1"><div class="unit"><ifcount code="ca_entities.related" min="1" max="1"><label><?= _t('Related Person/Organization'); ?></label></ifcount>
+						<ifcount code="ca_entities.related" min="2"><label><?= _t('Related People/Organizations'); ?></label></ifcount>
+						<unit relativeTo="ca_entities_x_entities.related" delimiter="<br/>">
 						<l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)
-						<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+						<ifdef code="ca_entities_x_entities.vhh_TemporalScope|ca_entities_x_entities.vhh_Note.vhh_NoteText"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 						<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 							<ifdef code="ca_entities_x_entities.vhh_TemporalScope">
 								<br/>
@@ -256,10 +252,7 @@
 								</unit>
 							</ifdef>
 						</div>
-						<br/>
-					</unit>}}}
-					
-					</br></br>
+					</unit></div></ifcount>}}}
 
 					<!-- TODO: where do we stick the visualization? -->
 					<?= $this->render('Details/entity_viz_html.php'); ?>

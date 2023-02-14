@@ -83,137 +83,137 @@
 
 				<HR>
 								
-				{{{<ifdef code="ca_objects.idno"><label>Identifier:</label>^ca_objects.idno<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.vhh_Title.TitleText"><label>Title:</label>^ca_objects.vhh_Title.TitleText<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier:</label>^ca_objects.idno</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.vhh_Title.TitleText"><div class="unit"><label>Title:</label>^ca_objects.vhh_Title.TitleText</div></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.vhh_MediaTypeTech">
-					<label>Media Technology Type:</label>
+					<div class="unit"><label>Media Technology Type:</label>
 					<unit relativeTo="ca_objects.vhh_MediaTypeTech" delimiter="<br/>">
 						^MTT_List
 					</unit>
-				</ifdef>}}}
+				</div></ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_Language2">
-					<label>Language:</label>
+					<div class="unit"><label>Language:</label>
 					<unit relativeTo="ca_objects.vhh_Language2" delimiter="<br/>">
 						^vhh_Language2
 					</unit>
-				</ifdef>}}}
+				</div></ifdef>}}}
 
 
 				{{{<ifdef code="ca_objects.vhh_Description">
-					<label>Description</label>
+					<div class="unit"><label>Description</label>
 					<div class='unit'>
 						<span class="trimText">^vhh_Description</span>
 					</div>
-				</ifdef>}}}
+				</div></ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_URL">
-					<label>URL:</label>
+					<div class="unit"><label>URL:</label>
 					<unit relativeTo="ca_objects" delimiter="<br/>">
 						<a href="ca_objects.vhh_URL" target="_blank">^ca_objects.vhh_URL</a>
 					</unit>
-				</ifdef>}}}	
-				{{{<ifdef code="ca_objects.vhh_Note"><label>Note:</label>^vhh_Note<br/></ifdef>}}}
+				</div></ifdef>}}}	
+				{{{<ifdef code="ca_objects.vhh_Note"><div class="unit"><label>Note:</label>^vhh_Note</div></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.vhh_Origin"><label>Origin:</label>^vhh_Origin<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.vhh_Origin"><div class="unit"><label>Origin:</label>^vhh_Origin</div></ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_PublicationStatus">
-					<label>Publication Status:</label>
+					<div class="unit"><label>Publication Status:</label>
 					<unit relativeTo="ca_objects.vhh_PublicationStatus" delimiter="<br/>">
 						^vhh_PublicationStatus
 					</unit>
-				</ifdef>}}}
+				</div></ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_PublicationType2">
-					<label>Publication Type:</label>
+					<div class="unit"><label>Publication Type:</label>
 					<unit relativeTo="ca_objects.vhh_PublicationType2" delimiter="<br/>">
 						^PublicationTypeList
 					</unit>
-				</ifdef>}}}
+				</div></ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_SourceType">
-					<label>Source Type:</label>
+					<div class="unit"><label>Source Type:</label>
 					<unit relativeTo="ca_objects.vhh_SourceType" delimiter="<br/>">
 						^vhh_SourceType
 					</unit>
-				</ifdef>}}}
+				</div></ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_GenreNonAV">
-					<label>Genre (Non-AV):</label>
+					<div class="unit"><label>Genre (Non-AV):</label>
 					<unit relativeTo="ca_objects.vhh_GenreNonAV" delimiter="<br/>">
 						^GenreNonAV_List
 					</unit>
-				</ifdef>}}}
+				</div></ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_CarrierType2">
-					<label>Carrier Type:</label>
+					<div class="unit"><label>Carrier Type:</label>
 					<unit relativeTo="ca_objects.vhh_CarrierType2" delimiter="<br/>">
 						^CarrierTypeList
 					</unit>
-				</ifdef>}}}
+				</div></ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_DigitalFormatAV">
-					<label>Digital Format:</label>
+					<div class="unit"><label>Digital Format:</label>
 					<unit relativeTo="ca_objects.vhh_DigitalFormatAV" delimiter="<br/>">
 						<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_Coding">(^digi_Coding)</ifdef>
 						<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_CodingAudio">(^digi_CodingAudio)</ifdef>
 						<ifdef code="ca_objects.vhh_DigitalFormatAV.digi_MIME2">(^digi_MIME2)</ifdef>
 					</unit>	
-				</ifdef>}}}
+				</div></ifdef>}}}
 
-				{{{<ifdef code="ca_objects.vhh_AspectRatio"><label>Aspect Ratio:</label>^ca_objects.vhh_AspectRatio<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.vhh_AspectRatio"><div class="unit"><label>Aspect Ratio:</label>^ca_objects.vhh_AspectRatio</div></ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_Extent">
-					<label>Extent:</label>
+					<div class="unit"><label>Extent:</label>
 					<unit relativeTo="ca_objects.vhh_Extent" delimiter="<br/>">
 						^ext_Value <ifdef code="ca_objects.vhh_Extent">(^ext_Unit)</ifdef>
 					</unit>	
-				</ifdef>}}}
+				</div></ifdef>}}}
 
-				{{{<ifdef code="ca_objects.vhh_Duration"><label>Duration:</label>^ca_objects.vhh_Duration<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.vhh_Duration"><div class="unit"><label>Duration:</label>^ca_objects.vhh_Duration</div></ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_Sound">
-					<label>Sound</label>
+					<div class="unit"><label>Sound</label>
 					<ifdef code="ca_objects.vhh_Sound.snd_SystemName">System - (^ca_objects.vhh_Sound.snd_SystemName)</ifdef>
 					<ifdef code="ca_objects.vhh_Sound.snd_HasSound">Has Sound? - (^ca_objects.vhh_Sound.snd_HasSound)</ifdef>
 					<ifdef code="ca_objects.vhh_Sound.snd_Method">Method - (^ca_objects.vhh_Sound.snd_Method)</ifdef>
-					<br/>
+					</div>
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.vhh_ColorAV">
-					<label><?= _t('Color:'); ?></label>
+					<div class="unit"><label><?= _t('Color:'); ?></label>
 					<ifdef code="ca_objects.vhh_ColorAV.colAV_HasColor">Has Color? - (^ca_objects.vhh_ColorAV.colAV_HasColor)</ifdef>
 					<ifdef code="ca_objects.vhh_ColorAV.colAV_ColorDetail">Color Detail - (^ca_objects.vhh_ColorAV.colAV_ColorDetail)</ifdef>
-					<br/>
+					</div>
 				</ifdef>}}}
 
-				{{{<ifdef code="ca_objects.vhh_Provenance"><label>Provenance:</label>^ca_objects.vhh_Provenance<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.vhh_Provenance"><div class="unit"><label>Provenance:</label>^ca_objects.vhh_Provenance</div></ifdef>}}}
 						
 				<hr></hr>
 
-				{{{<ifcount code="ca_collections" min="1" max="1"><label><?= _t('Related Case Study'); ?></label></ifcount>}}}
-				{{{<ifcount code="ca_collections" min="2"><label><?= _t('Related Case Studies'); ?></label></ifcount>}}}
-				{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+				{{{<ifcount code="ca_collections" min="1"><div class="unit"><ifcount code="ca_collections" min="1" max="1"><label><?= _t('Related Case Study'); ?></label></ifcount>
+					<ifcount code="ca_collections" min="2"><label><?= _t('Related Case Studies'); ?></label></ifcount>
+					<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
 				
-				{{{<ifcount code="ca_entities.related" min="1" max="1"><label><?= _t('Related Person/Organization'); ?></label></ifcount>}}}
-				{{{<ifcount code="ca_entities.related" min="2"><label><?= _t('Related People/Organizations'); ?></label></ifcount>}}}
-				{{{<unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
+				{{{<ifcount code="ca_entities" min="1"><div class="unit"><ifcount code="ca_entities.related" min="1" max="1"><label><?= _t('Related Person/Organization'); ?></label></ifcount>
+					<ifcount code="ca_entities.related" min="2"><label><?= _t('Related People/Organizations'); ?></label></ifcount>
+					<unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
 				
-				{{{<ifcount code="ca_occurrences" min="1" max="1"><label><?= _t('Related Event'); ?></label></ifcount>}}}
-				{{{<ifcount code="ca_occurrences" min="2"><label><?= _t('Related Events'); ?></label></ifcount>}}}
-				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+				{{{<ifcount code="ca_collections" min="1"><div class="unit"><ifcount code="ca_occurrences" min="1" max="1"><label><?= _t('Related Event'); ?></label></ifcount>
+					<ifcount code="ca_occurrences" min="2"><label><?= _t('Related Events'); ?></label></ifcount>
+					<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
 				
-				{{{<ifcount code="ca_places" min="1" max="1"><label><?= _t('Related Location'); ?></label></ifcount>}}}
-				{{{<ifcount code="ca_places" min="2"><label><?= _t('Related Locations'); ?></label></ifcount>}}}
-				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}				
+				{{{<ifcount code="ca_places" min="1"><div class="unit"><ifcount code="ca_places" min="1" max="1"><label><?= _t('Related Location'); ?></label></ifcount>
+					<ifcount code="ca_places" min="2"><label><?= _t('Related Locations'); ?></label></ifcount>
+					<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}				
 
 				<div class="row">
 					<div class="col-sm-12">		
-						{{{<ifdef code="ca_objects.related"><label><?= _t('Related Items'); ?></label></ifdef>}}}
-						{{{<unit relativeTo="ca_objects.related" delimiter="<br/>">
+						{{{<ifcount code="ca_objects.related" min="1"><label><?= _t('Related Items'); ?></label>
+							<unit relativeTo="ca_objects.related" delimiter="<br/>">
 							<l>^ca_objects.preferred_labels</l> (is part of) &rarr; (^ca_objects.type_id)
-						</unit>}}}
+						</unit></div></ifcount>}}}
 					</div><!-- end col -->				
 				</div><!-- end row -->
 						
