@@ -28,7 +28,7 @@
 		</div></div>
 		<div class='row'><div class="advancedSearchField col-sm-12">
 			<label for='ca_objects_date_date_value[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records of a particular date or date range.') ?>"><?php _p('Date range <i>(e.g. 1970-1979)</i>') ?></label>
-			{{{ca_objects.dates.date_value%width=400px&height=25px&useDatePicker=0&height=1}}}
+			{{{ca_objects.date.date_value%width=400px&height=25px&useDatePicker=0&height=1}}}
 		</div></div>
 		<div class='row'><div class="advancedSearchField col-sm-12">
 			<label for='ca_objects_idno' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search object identifiers.') ?>"><?php _p('Accession number') ?></label>

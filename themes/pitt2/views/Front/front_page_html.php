@@ -37,7 +37,7 @@
 	if($vs_hp_intro_title || $vs_hp_intro){
 ?>
 	<div class="row">
-		<div class="col-sm-12 col-md-10 col-md-offset-1"><div class="hpIntro">
+		<div class="col-sm-12"><div class="hpIntro">
 <?php
 		if($vs_hp_intro){
 			print $vs_hp_intro;
@@ -62,16 +62,14 @@
 		<H1>Explore the Collection</H1>
 		<div class="frontList">
 			<div class="row">
-				<div class="col-sm-4"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'placeholder.png'), "", "", "Browse", "creators"); ?></div>
-				<div class='col-sm-8'><label><?php print caNavLink($this->request, "Creators", "", "", "Browse", "creators"); ?></label><p>{{{hp_creators_intro}}}</p>
-					<div class="text-center"><?php print caNavLink($this->request, "Browse Creators", "btn btn-default", "", "Browse", "creators"); ?></div>
+				<div class='col-sm-12'><label><?php print caNavLink($this->request, "Creators", "", "", "Browse", "creators"); ?></label><p>{{{hp_creators_intro}}}</p>
+					<div><?php print caNavLink($this->request, "Browse Creators", "btn btn-default", "", "Browse", "creators"); ?></div>
 				</div>
 			</div>
 			<div class='row'><div class='col-sm-12'><hr/></div></div>
 			<div class="row">
-				<div class="col-sm-4"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'placeholder.png'), "", "", "Browse", "objects"); ?></div>
-				<div class='col-sm-8'><label><?php print caNavLink($this->request, "Objects", "", "", "Browse", "objects"); ?></label><p>{{{hp_items_intro}}}</p>
-					<div class="text-center"><?php print caNavLink($this->request, "Browse Objects", "btn btn-default", "", "Browse", "objects"); ?></div>
+				<div class='col-sm-12'><label><?php print caNavLink($this->request, "Objects", "", "", "Browse", "objects"); ?></label><p>{{{hp_items_intro}}}</p>
+					<div><?php print caNavLink($this->request, "Browse Objects", "btn btn-default", "", "Browse", "objects"); ?></div>
 				</div>
 			</div>
 			<div class='row'><div class='col-sm-12'><hr/></div></div>
