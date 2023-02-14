@@ -17,7 +17,7 @@
 				$va_object_ids = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
 				$q_artworks = caMakeSearchResult("ca_objects", $va_object_ids);
 				if($q_artworks->numHits()){
-					print "<div class='col-sm-8 col-offset-4'>";
+					print "<div class='col-sm-8 col-sm-offset-4'>";
 				}else{
 					print "<div class='col-sm-12'>";
 				}
