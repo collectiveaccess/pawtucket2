@@ -17,6 +17,19 @@
 				$va_object_ids = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
 				$q_artworks = caMakeSearchResult("ca_objects", $va_object_ids);
 				if($q_artworks->numHits()){
+					print "<div class='col-sm-8 col-offset-4'>";
+				}else{
+					print "<div class='col-sm-12'>";
+				}
+?>
+				{{{representationViewer}}}
+				
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+			</div>
+		</div>
+		<div class="row">
+<?php			
+				if($q_artworks->numHits()){
 					print "<div class='col-sm-4'><br/><br/>";
 					while($q_artworks->nextHit()){
 						$vs_image = "";
@@ -74,10 +87,7 @@
 				
 				{{{<ifdef code="ca_objects.description">^ca_objects.description<br/></ifdev>}}}
 				
-				{{{representationViewer}}}
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-			
 				{{{<ifcount code="ca_entities" min="1" max="1"><HR/><H6>Related person</H6></ifcount>
 					<ifcount code="ca_entities" min="2"><HR/><H6>Related people</H6></ifcount>
 					<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
