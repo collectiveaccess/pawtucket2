@@ -19,7 +19,7 @@
 					$va_object_ids = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
 					$q_artworks = caMakeSearchResult("ca_objects", $va_object_ids);
 					if($q_artworks->numHits()){
-						print "<div class='col-sm-8 col-sm-offset-4'>";
+						print "<div class='col-sm-7 col-sm-offset-5'>";
 					}else{
 						print "<div class='col-sm-12'>";
 					}
@@ -32,7 +32,7 @@
 				<div class="row">
 <?php			
 				if($q_artworks->numHits()){
-					print "<div class='col-sm-4'><br/><br/>";
+					print "<div class='col-sm-5'>";
 					while($q_artworks->nextHit()){
 						$vs_image = "";
 						$vs_image = $q_artworks->get('ca_object_representations.media.large', array("checkAccess" => $va_access_values));
@@ -71,7 +71,7 @@
 						#if($tmp["label"]){
 						#	print "<br/><small>".$tmp["label"]."</small>";
 						#}
-						print "</div></div><!-- end col --><div class='col-sm-8'>";
+						print "</div></div><!-- end col --><div class='col-sm-7'>";
 					}
 				}else{
 					print "<div class='col-sm-12'>";
