@@ -12,22 +12,24 @@
 	</div><!-- end detailTop -->
 	<div class='col-xs-12 col-sm-12'>
 		<div class="row">
-			
-<?php			
-				$va_object_ids = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
-				$q_artworks = caMakeSearchResult("ca_objects", $va_object_ids);
-				if($q_artworks->numHits()){
-					print "<div class='col-sm-8 col-sm-offset-4'>";
-				}else{
-					print "<div class='col-sm-12'>";
-				}
-?>
-				{{{representationViewer}}}
+			<div class='col-sm-10'>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-			</div>
-		</div>
-		<div class="row">
+				<div class="row">
+<?php			
+					$va_object_ids = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
+					$q_artworks = caMakeSearchResult("ca_objects", $va_object_ids);
+					if($q_artworks->numHits()){
+						print "<div class='col-sm-8 col-sm-offset-4'>";
+					}else{
+						print "<div class='col-sm-12'>";
+					}
+?>
+					{{{representationViewer}}}
+				
+					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+					</div>
+				</div>
+				<div class="row">
 <?php			
 				if($q_artworks->numHits()){
 					print "<div class='col-sm-4'><br/><br/>";
@@ -69,7 +71,7 @@
 						#if($tmp["label"]){
 						#	print "<br/><small>".$tmp["label"]."</small>";
 						#}
-						print "</div></div><!-- end col --><div class='col-sm-6'>";
+						print "</div></div><!-- end col --><div class='col-sm-8'>";
 					}
 				}else{
 					print "<div class='col-sm-12'>";
@@ -79,22 +81,27 @@
 			
 			
 			
-				<!--<H1>{{{<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="creator">^ca_entities.preferred_labels.displayname</unit>}}}</H1>
-				<H4>{{{^ca_objects.preferred_labels.name}}}</H4>
-				<HR/>-->
+						<!--<H1>{{{<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="creator">^ca_entities.preferred_labels.displayname</unit>}}}</H1>
+						<H4>{{{^ca_objects.preferred_labels.name}}}</H4>
+						<HR/>-->
 
-				{{{<ifdef code="ca_objects.date"><H6>Date</H6>^ca_objects.date<br/></ifdev>}}}
+						{{{<ifdef code="ca_objects.date"><H6>Date</H6>^ca_objects.date<br/></ifdev>}}}
 				
-				{{{<ifdef code="ca_objects.description">^ca_objects.description<br/></ifdev>}}}
+						{{{<ifdef code="ca_objects.description">^ca_objects.description<br/></ifdev>}}}
 				
 				
-				{{{<ifcount code="ca_entities" min="1" max="1"><HR/><H6>Related person</H6></ifcount>
-					<ifcount code="ca_entities" min="2"><HR/><H6>Related people</H6></ifcount>
-					<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+						{{{<ifcount code="ca_entities" min="1" max="1"><HR/><H6>Related person</H6></ifcount>
+							<ifcount code="ca_entities" min="2"><HR/><H6>Related people</H6></ifcount>
+							<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 				
-				{{{<ifcount code="ca_occurrences" min="1" max="1"><HR/><H6>Related exhibition</H6></ifcount>}}}
-				{{{<ifcount code="ca_occurrences" min="2"><HR/><H6>Related exhibitions</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
+						{{{<ifcount code="ca_occurrences" min="1" max="1"><HR/><H6>Related exhibition</H6></ifcount>}}}
+						{{{<ifcount code="ca_occurrences" min="2"><HR/><H6>Related exhibitions</H6></ifcount>}}}
+						{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
+			
+					</div>
+				</div>
+			
+			
 			</div><!-- end col -->
 			<div class='navLeftRight col-sm-2'>
 				<div class="detailNavBgRight">
