@@ -205,18 +205,18 @@ h1.page_title, .pageTitle--Main{
 	font-family: 'Gotham SSm A,Gotham SSm B,Helvetica Neue,Helvetica,Arial,sans-serif';
 }
 /* browse  multiple select */
-.facetItem .glyphicon-chevron-down {
+.facetItem .glyphicon-chevron-down, .facetItemHier .glyphicon-chevron-down {
 	font-size:10px;
 }
 .facetContainer{
 	position:relative;
 	padding-bottom:20px;
 }
-#bRefine .facetItem {
+#bRefine .facetItem, #bRefine .facetItemHier {
 	padding-left:20px; 
 	margin-bottom:10px;
 }
-#bRefine .facetItem[facet_item_selected="1"] {
+#bRefine .facetItem[facet_item_selected="1"], #bRefine .facetItemHier[facet_item_selected="1"] {
 	padding-left:20px;
 }
 [facet_item_selected="1"]::before {
@@ -228,7 +228,7 @@ h1.page_title, .pageTitle--Main{
 	top:4px;
 	font-size:11px;
 }
-.facetApply {
+.facetApply, .facetApplyHier {
 	clear:both;
 	right:15px;
 	display:block;
@@ -236,7 +236,7 @@ h1.page_title, .pageTitle--Main{
     margin-top: 20px;
 
 }
-a.facetApply {
+a.facetApply, a.facetApplyHier {
     background-color: #306aa2;
     color:#FFF !important;
     font-size: 13px;
@@ -374,6 +374,22 @@ a:hover {
 	color:#000;
 	padding-left:15px;
 	cursor:pointer;
+}
+#bRefine H3::after {
+	content: "\25bc";
+	font-family: 'bb';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-moz-osx-font-smoothing: grayscale;
+	text-decoration: none;
+	color: #000;
+	vertical-align: 1px;
+	margin-left: 3px;
+	font-size: 9px;
 }
 #bRefine{
 	background-color:#cdddec;
@@ -614,6 +630,7 @@ a:hover {
 	height:170px;
 	text-align:center;
 	padding-top:25px;
+	z-index:10;
 }
 @media(min-width:990px){
 	#footer{

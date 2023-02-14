@@ -320,6 +320,9 @@ body, .detail, .gallery, label, b, strong{
 	font-family: 'Pitch sans';
 	font-weight:400;
 }
+hr {
+	border-top: 1px solid #000;
+}
 b, strong{
 	font-family: 'Pitch sans';
 	font-weight:700;
@@ -350,11 +353,13 @@ body{
 	margin-right:19px;
 }
 
-.btn-default, .browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active {
+.btn-default, .browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .detail .btn-default {
 	background-color:#000000;
 	font-family: 'Work Sans';
 	font-weight: 500;
 	text-transform: capitalize;
+	color:#FFF;
+	text-decoration:none;
 }
 .btn-default:hover{
 	background-color:#666;
@@ -398,7 +403,7 @@ a:hover{
 .navbar-form{
 	padding-left:0px;
 	padding-right:0px;
-	width:20%;
+	width:25%;
 	position:relative;
 	-webkit-align-self: stretch;
 	-ms-flex-item-align: stretch;
@@ -536,7 +541,7 @@ ul.menuItems {
 
 
 .subTitle{
-	width:20%;
+	width:25%;
 	text-align:center;
 }
 .nav > li.subTitle > a, .nav > li.subTitle > a:hover, .nav > li.subTitle > a:focus{
@@ -558,6 +563,26 @@ ul.menuItems {
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus{
 	background-color:#000;
 	color:#FFF;
+}
+
+/* sub navigation */
+ul.sectionSubNav{
+	padding-left:0px;
+}
+ul.sectionSubNav li{
+	list-style: none;
+	display: block;
+	width: 100%;
+	padding: 10px 12px;
+	background-image: linear-gradient(155deg,#ccc,#f2f2f2);
+}
+ul.sectionSubNav li a{
+	font-size:14px;
+	font-family: "Pitch sans", Arial, sans-serif;
+	text-decoration: none;
+}
+ul.sectionSubNav li a:hover{
+	text-decoration:underline;
 }
 /* footer */
 /* offset needed for fixed footer */
@@ -696,6 +721,7 @@ body{
 }
 .landAck{
 	padding-top:30px;
+	font-family:latolight;
 }
 /* search / browse results */
 .bResultItemSetLink {
@@ -796,6 +822,7 @@ a.browseRemoveFacet .glyphicon{
 	font-family: 'Work Sans',sans-serif;
 	color:#333;
 	text-transform:capitalize;
+	font-size: 16px;
 }
 #bRefine a{
 	color:#333;
@@ -817,6 +844,7 @@ body.frontContainer #footer{
 
 .front .frontIntro{
 	font-size:16px;
+	font-family: "Noto Sans Mono";
 }
 .btn-front{
 	background-image: -webkit-gradient(linear,left top,left bottom,from(#d9d9d9),to(#f2f2f2));
@@ -852,7 +880,7 @@ body.frontContainer #footer{
 }
 
 
-.front-form{
+.front-form{ /* also used on video out landing page */
 	padding-left:0px;
 	padding-right:0px;
 	width:50%;
@@ -903,7 +931,14 @@ body.frontContainer #footer{
 	-webkit-transition: background-color .2s,color .2s;
 	transition: background-color .2s,color .2s;
 }
-
+.frontGridCaption {  /* also used on video out landing page */
+  padding: 10px;
+  margin-bottom: 30px;
+  background-image: -webkit-gradient(linear,left top,left bottom,from(#d9d9d9),to(#f2f2f2));
+  background-image: linear-gradient(180deg,#d9d9d9,#f2f2f2);
+  display: block;
+  width: 100%;
+}
 /* hp explore */
 .hpExplore{
 	padding-top:45px;
@@ -977,6 +1012,7 @@ body.frontContainer #footer{
 	font-size: 14px;
 	font-weight: normal;
 	line-height: 1.8em;
+	margin-bottom:30px;
 }
 .gallery .unit{
 	margin-bottom: 12px;
@@ -1079,6 +1115,34 @@ body.frontContainer #footer{
 	color:#333;
 	font-weight:500;
 }
+.browseAllCollection, .exportCollection{
+	background-image: -webkit-gradient(linear,left top,left bottom,from(#d9d9d9),to(#f2f2f2));
+	background-image: linear-gradient(180deg,#d9d9d9,#f2f2f2);
+	padding:7px;
+	text-align:center;
+}
+.detail .exportCollection .fa, .detail .exportCollection .glyphicon, .detail .exportCollection a, .browseAllCollection a, .browseAllCollection .fa {
+	color: #000 !important;
+	font-size: 15px;
+	text-transform: none;
+	text-decoration: none;
+}
+#browseResultsContainer {
+	margin-top: 10px;
+}
+.detailFilter{
+	font-size: 13px;
+	font-family: 'Work Sans';
+	font-weight: 500;
+	text-transform: capitalize;
+	padding-bottom: 15px;
+}
+.detailFilter .btn-group{
+	margin-right:30px;
+}
+.detailFilter .btn-group button{
+	font-size:12px;
+}
 /* used for collections and activations listings */
 .activation-block-wrapper {
 	margin-bottom:30px;
@@ -1169,4 +1233,10 @@ a label{
 .multisearch .authorityResult{
 	background-image: -webkit-gradient(linear,left top,left bottom,from(#d9d9d9),to(#f2f2f2));
 	background-image: linear-gradient(180deg,#d9d9d9,#f2f2f2);
+}
+
+
+
+.form-control:focus {
+  border-color: #000;
 }

@@ -84,7 +84,13 @@
 		    $vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
 			
 			if($va_facet_info["group_mode"]== "alphabetical"){
-				$vs_first_letter = mb_strtoupper(mb_substr($va_item['label_sort_'], 0, 1));
+				$vs_first_letter = "";
+				if(is_array($va_facet_info["order_by_label_fields"]) && sizeof($va_facet_info["order_by_label_fields"])){
+					$vs_first_letter = mb_strtoupper(mb_substr($va_item[$va_facet_info["order_by_label_fields"][0]], 0, 1));
+				}
+				if(!$vs_first_letter){
+					$vs_first_letter = mb_strtoupper(mb_substr($va_item['label_sort_'], 0, 1));
+				}
 				if(!$vs_first_letter){
 					$vs_first_letter = mb_strtoupper(mb_substr($va_item["label"], 0, 1));
 				}

@@ -88,9 +88,10 @@
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
 				$va_multiple_selection_facet_list[$vs_facet_name] = caGetOption('multiple', $va_facet_info, false, ['castTo' => 'boolean']);
 			
-				if ($vs_facet_name != "classification_facet" && ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name)))) {
-					print "<H3>".$va_facet_info['label_singular']."</H3>";
-					print "<p>".$va_facet_info['description']."</p>";
+				if (((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name)))) {
+					print "<h3 type='button' onClick='jQuery(\"#facetGroup{$vs_facet_name}\").toggle(); return false;'>".$va_facet_info['label_singular']."</H3><div id='facetGroup{$vs_facet_name}' class='facetGroupShowHide' ".(($vn_facets_with_content > 1) ? "style='display:none;'" : "").">"; 
+					print "<div class='container facetContainer' id='{$vs_facet_name}_facet_container'><div class='row'>";
+					
 	?>
 						<script type="text/javascript">
 							jQuery(document).ready(function() {
@@ -99,6 +100,7 @@
 						</script>
 						<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 	<?php
+					print "</div></div></div>";
 				} else {				
 					if($va_facet_info["columns"]){
 						$vn_facet_display_length_initial = 33;
@@ -109,18 +111,18 @@
 					}
 					if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 					$vn_facet_size = sizeof($va_facet_info['content']);
-					print "<h3 type='button' onClick='jQuery(\".facetGroupShowHide\").hide(); jQuery(\"#facetGroup{$vs_facet_name}\").show(); return false;'>".$va_facet_info['label_singular']."</H3><div id='facetGroup{$vs_facet_name}' class='facetGroupShowHide' ".(($vn_facets_with_content > 1) ? "style='display:none;'" : "").">"; 
+					print "<h3 type='button' onClick='jQuery(\"#facetGroup{$vs_facet_name}\").toggle(); return false;'>".$va_facet_info['label_singular']."</H3><div id='facetGroup{$vs_facet_name}' class='facetGroupShowHide' ".(($vn_facets_with_content > 1) ? "style='display:none;'" : "").">"; 
 					print "<div class='container facetContainer' id='{$vs_facet_name}_facet_container'><div class='row'>";
 					$vn_c = 0;
 					$vn_col = 0;
 					foreach($va_facet_info['content'] as $va_item) {
 						$vs_label = $va_item['label'];
 						$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-						print "<div class='".(($va_facet_info["columns"]) ? "col-md-12 col-lg-4" : "col-sm-12")." facetItem ' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+						print "<div class='".(($va_facet_info["columns"]) ? "col-md-12 col-lg-6" : "col-sm-12")." facetItem ' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 						
 						$vn_c++;
 						$vn_col++;
-						if ($va_facet_info["columns"] && ($vn_col == 3)) {
+						if ($va_facet_info["columns"] && ($vn_col == 2)) {
 							print "<div style='clear:both;width:100%;'></div>";
 							$vn_col = 0;
 						}

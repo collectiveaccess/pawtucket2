@@ -57,19 +57,30 @@
 	{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></H6></ifdef>}}}
 	{{{<ifdef code="ca_collections.label">^ca_collections.label<br/></ifdev>}}}
 	</div>
-	<div class="unit">
-	{{{<ifdef code="ca_collections.description"><label>About</label>^ca_collections.description<br/></ifdef>}}}
 	{{{
-		<ifdef code="ca_collections.unitdate"><div class="unit" delimiter=";"><label>Date</label>^ca_collections.unitdate</div></ifdef>
-		<ifdef code="ca_collections.repository"><div class="unit"><label>Repository</label>^ca_collections.repository</div></ifdef>
-		<ifdef code="ca_collections.extentDACS"><div class="unit"><H6>Extent</H6><span class="trimText">^ca_collections.extentDACS</span></div></ifdef>
-		
-		<ifdef code="ca_collections.adminbiohist"><div class="unit"><H6>Administrative/Biographical History Element</H6><span class="trimText">^ca_collections.adminbiohist</span></div></ifdef>
-		<ifdef code="ca_collections.scopecontent"><div class="unit"><H6>Scope & content</H6><span class="trimText">^ca_collections.scopecontent</span></div></ifdef>
-		<ifdef code="ca_collections.arrangement"><div class="unit"><H6>Arrangement</H6><span class="trimText">^ca_collections.arrangement</span></div></ifdef>
+		<ifdef code="ca_collections.unitdate">
+			<div class="unit"><H6>Date</H6><unit relativeTo="ca_collections.unitdate" delimiter="<br/>">^ca_collections.unitdate.dacs_date_value<ifdef code="ca_collections.unitdate.dacs_dates_types"> (^ca_collections.unitdate.dacs_dates_types)</ifdef></div></ifdef>
 	}}}
-	</div>
-	
+<?php
+	if($t_item->get("source_id")){
+		$vs_source_as_text = getSourceAsText($this->request, $t_item->get("source_id"), null);
+?>
+		<div class="unit"><H6>Contributor</H6>
+			<?php print $vs_source_as_text; ?>
+		</div>
+<?php
+	}				
+?>						
+		
+	{{{
+		<ifdef code="ca_collections.adminbiohist"><div class="unit"><H6>Administrative/Biographical History Element</H6><span class="trimText"><unit relativeTo="ca_collections.adminbiohist" delimiter="<br/><br/>">^ca_collections.adminbiohist%convertLineBreaks=1</unit></span></div></ifdef>
+		<ifdef code="ca_collections.scopecontent"><div class="unit"><H6>Scope & content</H6><span class="trimText">^ca_collections.scopecontent%convertLineBreaks=1</span></div></ifdef>
+		<ifdef code="ca_collections.arrangement"><div class="unit"><H6>Arrangement</H6><span class="trimText">^ca_collections.arrangement%convertLineBreaks=1</span></div></ifdef>
+	}}}
+
+	{{{<ifcount code="ca_entities" min="1"><div class="unit"><H6>Related People/Institutions</H6>
+			<unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></div>
+	</ifcount>}}}	
 	
 <?php
 	if ($t_item->get("ca_collections.children.collection_id") || $t_item->get("ca_objects.object_id")){

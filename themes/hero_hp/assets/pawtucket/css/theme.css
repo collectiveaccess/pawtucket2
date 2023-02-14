@@ -257,6 +257,7 @@ body{
 	outline: 0;
 	border:0px;
 	border-radius: 0px;
+	margin-left: -30px;
 }
 .bSearchWithin, .bSearchWithin:focus {
     width: 80%;
@@ -271,6 +272,7 @@ body{
 	font-size: 14px;
 	display: inline-block;
 	display:inline-block;
+	padding-right: 30px;
 }
 .browseRemoveFacet, .browseRemoveFacet .btn{
 	display:block;
@@ -595,4 +597,16 @@ body.frontContainer #footer{
 }
 .collectionTile:hover{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+
+.form-control:focus {
+	border-color: #000;
+}
+.front .notificationMessage, .front .notificationInfo {
+	position: absolute;
+	z-index: 5;
+	left: 10%;
+	width: 80%;
+	text-align: center;
 }

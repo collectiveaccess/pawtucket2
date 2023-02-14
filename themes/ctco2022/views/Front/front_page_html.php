@@ -102,71 +102,26 @@
 <?php
 	}
 ?>
-
-
-	<div class="container link-page-breaker">
+	
+	<div class="container">
 		<div class="row">
-			<a class="col col-sm-4 text-center mr-1" href="/index.php/Browse/objects">
-				<div class="link-text">
-					Artifacts
-				</div>
-			</a>
-
-			<a class="col col-sm-4 text-center mr-1" href="/index.php/Collections/index">
-				<div class="link-text">
-					Archives
-				</div>
-			</a>
-
-			<a class="col col-sm-4 text-center" href="/index.php/Contributors">
-				<div class="link-text">
-					Institutions
-				</div>
-			</a>
-
+			<div class="col-sm-12 col-md-4 text-center"><div class="hpFeaturedLinksContainer">
+				<?php print caNavLink($this->request, "Artifacts", "hpFeaturedLinks", "", "Browse", "objects"); ?>
+			</div></div>
+			<div class="col-sm-12 col-md-4 text-center"><div class="hpFeaturedLinksContainer">
+				<?php print caNavLink($this->request, "Archives", "hpFeaturedLinks", "", "Collections", "Index"); ?>
+			</div></div>
+			<div class="col-sm-12 col-md-4 text-center"><div class="hpFeaturedLinksContainer">
+				<?php print caNavLink($this->request, "Institutions", "hpFeaturedLinks", "", "Contributors", "Index"); ?>
+			</div></div>
 		</div>
 	</div>
 
 
 
-	<?php
+<?php
 		print $this->render("Front/featured_set_slideshow_html.php");
-	?>
-
-
-
-	<!-- <div class="row hpExplore bgLightGray">
-		<div class="col-md-12 col-lg-8 col-lg-offset-2">
-		<H2 class="frontSubHeading text-center">Explore The Archive</H2>
-
-			<div class="row">
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
-						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "xxx", "", "", "", ""); ?></div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
-						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "xxx", "", "", "", ""); ?></div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
-						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "xxx", "", "", "", ""); ?></div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div> -->
+?>
 
 	<br/><br/>
 

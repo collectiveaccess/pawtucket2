@@ -35,7 +35,7 @@
 			case "list":
 				if(sizeof($va_browse_types) > 1){
 ?>
-				<li class="dropdown<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print $o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse"); ?></a>
+				<li class="dropdown<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" style="position:relative;" role="menuitem" tabindex="0"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print $o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse"); ?></a>
 					<ul class="dropdown-menu">
 <?php
 						foreach($va_browse_types as $vs_browse_name => $va_browse_type){
@@ -43,7 +43,7 @@
 								print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), '', '', 'Browse', $vs_browse_name, '')."</li>";
 							}
 						}
-						#print "<li>".caNavLink($this->request, "Collections", '', '', 'Collections', 'Index', '')."</li>";
+						print "<li>".caNavLink($this->request, "Collections", '', '', 'Collections', 'Index', '')."</li>";
 							
 ?>
 					</ul>	

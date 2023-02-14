@@ -25,6 +25,12 @@
  *
  * ----------------------------------------------------------------------
  */
+		$vs_contactType = $this->request->getParameter("contactType", pString);
+		if((in_array($this->request->getAction(), array("videooutartists", "videoout"))) || (in_array($this->request->getController(), array("About", "VideoOut", "VideoOutAbout", "VideoOutSubmit", "VideoOutNews"))) || (($this->request->getController() == "Contact") && (in_array($vs_contactType, array("ResearchRequest", "Reproduction", "RentalPurchase"))))){
+?>
+			</div></div>
+<?php
+		}
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->

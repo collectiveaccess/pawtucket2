@@ -136,10 +136,9 @@
 					// check the visible top of the browser
 					if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height()) > scrollTop)) {
 						jQuery('#bRefine').addClass('fixed');
-						jQuery('#bRefine').width(jQuery('#browseLeftCol').width() - 20);
+						jQuery('#bRefine').width(panelWidth);
 					} else {
 						jQuery('#bRefine').removeClass('fixed');
-						jQuery('#bRefine').css('width', '100%');
 					}
 				});
             }

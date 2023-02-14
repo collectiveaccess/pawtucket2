@@ -38,7 +38,8 @@
 	}
 	if($qr_res && $qr_res->numHits()){
 ?>
-<div class="row"><div class="col-sm-12"><H2 class="highlights">Highlights</H2>  
+<div class="row"><div class="col-sm-12">
+	<H2 class="highlights"><?= _t('Highlights'); ?></H2>  
 		<div class="jcarousel-wrapper">
 			<!-- Carousel -->
 			<div class="jcarousel featured">
