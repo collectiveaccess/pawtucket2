@@ -33,6 +33,8 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -78,56 +80,22 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
-				<H1>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H1>
+				<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 				<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 				<HR>
 				
-				
-				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.containerID"><div class="unit"><label>Box/series</label>^ca_objects.containerID</div></ifdef>}}}				
-				
 				{{{<ifdef code="ca_objects.description">
-					<div class='unit'><label>Description</label>
+					<div class='unit'>
 						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
-				
-				
-				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><div class="unit"><label>Date</label>^ca_objects.dateSet.setDisplayValue</div></ifdef>}}}
-			
-				<hr></hr>
-					<div class="row">
-						<div class="col-sm-6">		
-							{{{<ifcount code="ca_entities" min="1"><div class="unit">
-								<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>
-								<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>
-								<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
-							</div></ifcount>}}}
-							
-							{{{<ifcount code="ca_occurrences" min="1"><div class="unit">
-								<ifcount code="ca_occurrences" min="1" max="1"><label>Related occurrence</label></ifcount>
-								<ifcount code="ca_occurrences" min="2"><label>Related occurrences</label></ifcount>
-								<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</unit>
-							</div></ifcount>}}}
-							
-							{{{<ifcount code="ca_places" min="1"><div class="unit">
-								<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>
-								<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>
-								<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>
-							</div></ifcount>}}}
-							
-							{{{<ifcount code="ca_list_items" min="1"><div class="unit">
-								<ifcount code="ca_list_items" min="1" max="1"><label>Related Term</label></ifcount>
-								<ifcount code="ca_list_items" min="2"><label>Related Terms</label></ifcount>
-								<unit relativeTo="ca_list_items" delimiter="<br/>"><l>^ca_list_items.preferred_labels.name_plural</l> (^relationship_typename)</unit>
-							</div></ifcount>}}}
-							
-						</div><!-- end col -->				
-						<div class="col-sm-6 colBorderLeft">
-							{{{map}}}
-						</div>
-					</div><!-- end row -->
+				{{{<ifdef code="ca_objects.website">
+					<div class="unit">
+						<unit relativeTo="ca_objects.website" delimiter="<br/>"><a href="^ca_objects.website" target="_blank">View Website <span class="glyphicon glyphicon-new-window"></span></a></unit>
+					</div>
+				</ifdef>}}}
 						
+										
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
@@ -142,7 +110,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 250
 		});
 	});
 </script>

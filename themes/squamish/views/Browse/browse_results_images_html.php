@@ -147,7 +147,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultItemText'>
-						".$qr_res->get("ca_objects.access")." --- {$vs_caption}
+						{$vs_caption}
 					</div><!-- end bResultItemText -->
 				</div><!-- end bResultItemContent -->
 				{$vs_add_to_set_link}

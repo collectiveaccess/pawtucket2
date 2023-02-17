@@ -29,11 +29,23 @@
  *
  * ----------------------------------------------------------------------
  */
-  $va_access_values = $this->getVar("access_values");
- $vs_hero = $this->request->getParameter("hero", pString);
- if(!$vs_hero){
- 	$vs_hero = rand(1, 2);
- }
+	AssetLoadManager::register('timeline', null, 1);
+	$va_access_values = $this->getVar("access_values");
+	$this->config = caGetFrontConfig();
+	$vs_hero = $this->request->getParameter("hero", pString);
+	if(!$vs_hero){
+		$vs_hero = rand(1, 2);
+	}
+ 
+ # --- timeline set - occurrences
+	if($vs_timeline_set_code = $this->config->get("front_page_set_code")){
+		$t_set = new ca_sets();
+		$t_set->load(array('set_code' => $vs_timeline_set_code));
+		if(is_array($va_access_values) && sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values)){
+			$vn_timeline_set_id = $t_set->get("set_id");
+		}
+	}
+
 ?>
 
 <div class="parallax hero<?php print $vs_hero; ?>">
@@ -92,24 +104,24 @@
 			<div class="row">
 				<div class="col-md-4">
 					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Archives &<br/>Oral History", "", "", "", ""); ?>
+						<?php print caNavLink($this->request, "Archives &<br/>Oral History", "", "", "Browse", "Archives"); ?>
 					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Cultural<br/>Collections", "", "", "", ""); ?>
+						<?php print caNavLink($this->request, "Cultural<br/>Collections", "", "", "Browse", "cultural"); ?>
 					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Library<br/>Collections", "", "", "", ""); ?>
+						<?php print caNavLink($this->request, "Library<br/>Collections", "", "", "Browse", "library"); ?>
 					</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-4">
 					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Community<br/>Resources", "", "", "", ""); ?>
+						<?php print caNavLink($this->request, "Community<br/>Resources", "", "", "Listing", "Resources"); ?>
 					</div>
 				</div>
 				<div class="col-md-4">
@@ -119,7 +131,7 @@
 				</div>
 				<div class="col-md-4">
 					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Academic<br/>Works", "", "", "", ""); ?>
+						<?php print caNavLink($this->request, "Academic<br/>Works", "", "", "Browse", "academic"); ?>
 					</div>
 				</div>
 			</div>
@@ -127,6 +139,33 @@
 	</div>
 
 <?php
+
+	if($vn_timeline_set_id){
+
+?>
+	<div class="row">
+		<div class="col-sm-12">
+			<div id="frontTimelineContainer" class="hpTimeline">
+				<div id="timeline-embed"></div>
+			</div>
+	
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					createStoryJS({
+						type:       'timeline',
+						width:      '100%',
+						height:     '100%',
+						source:     '<?php print caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'timeline', 'set_id' => $vn_timeline_set_id)); ?>',
+						embed_id:   'timeline-embed',
+						initial_zoom: '5'
+					});
+				});
+			</script>
+		</div>
+	</div>
+<?php
+	}
+
 	# --- display slideshow of random images
 	#print $this->render("Front/featured_set_slideshow_html.php");
 

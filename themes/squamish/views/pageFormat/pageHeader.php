@@ -166,15 +166,15 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "about") || strToLower($this->request->getController()) == "contact") ? ' active' : ''; ?>">
+					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "about") || strToLower($this->request->getController()) == "contact" || strToLower($this->request->getController()) == "guide") ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("About the Collections"), "", "", "About", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, _t("User Guide"), "", "", "About", "Guide"); ?></li>
+							<li><?php print caNavLink($this->request, _t("About the Collections"), "", "", "About", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("User Guide"), "", "", "Guide", ""); ?></li>
 							<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "Contact", "form"); ?></li>
 						</ul>
 					</li>
-					<li <?php print ($this->request->getController() == "Storytelling") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Storytelling"), "", "", "About", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Storytelling") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Storytelling"), "", "", "", ""); ?></li>
 					<li class="dropdown-container<?php print (strToLower($this->request->getController()) == "listing") ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">

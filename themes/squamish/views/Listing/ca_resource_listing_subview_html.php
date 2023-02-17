@@ -35,7 +35,7 @@
  	$va_listing_info = $this->getVar('listingInfo');
  	$va_access_values = $this->getVar("access_values");
 ?>
-	<div class="row bg_dark_eye exploreRow exploreResourcesRow">
+	<div class="row bg_dark_eye pageHeaderRow">
 		<div class="col-sm-12">
 			<H1>External Resources</H1>
 			<p>
