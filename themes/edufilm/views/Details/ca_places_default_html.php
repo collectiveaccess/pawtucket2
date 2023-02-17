@@ -83,7 +83,7 @@
 						<div class="unit"><label>Name</label>
 						<unit relativeTo="ca_places.vhh_TitlePlace" delimiter="<br/>">
 							^TP_Name
-							<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+							<ifdef code="ca_places.vhh_TitlePlace.TP_TempScope|ca_places.vhh_TitlePlace.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 								<ifdef code="ca_places.vhh_TitlePlace.TP_TempScope">
 									<br/>
@@ -100,16 +100,16 @@
 					</div></ifdef>}}}
 					
 					{{{<ifdef code="ca_places.vhh_Date">
-						<unit relativeTo="ca_places.vhh_Date" delimiter="<br/>">
-						<if rule='^ca_places.vhh_Date.date_Type =~ /date of foundation/'>
+						<unit relativeTo="ca_places.vhh_Date" delimiter=" ">
+						<div class="unit"><if rule='^ca_places.vhh_Date.date_Type =~ /date of foundation/'>
 						<label>Date:</label>
 							^date_Date <ifdef code="ca_places.vhh_Date.date_Type">(^date_Type)</ifdef>						
 						</if>
-						</unit>
+						</div></unit>
 					</ifdef>}}}		
 
 					{{{<ifdef code="ca_places.vhh_Address">
-						<label>Address:</label>
+						<div class="unit"><label>Address:</label>
 						<unit relativeTo="ca_places.vhh_Address" delimiter="<br/>">
 							<ifdef code="ca_places.vhh_Address.A_StreetNo">^A_StreetNo,</ifdef>
 							<ifdef code="ca_places.vhh_Address.A_Street">^A_Street,</ifdef>
@@ -117,30 +117,30 @@
 							<ifdef code="ca_places.vhh_Address.A_Country">^A_Country,</ifdef>
 							<ifdef code="ca_places.vhh_Address.A_Zipcode">^A_Zipcode</ifdef>
 							<ifdef code="ca_places.vhh_Address.A_TempScope">(^A_TempScope)</ifdef>
-						</unit>
+						</unit></div>
 					</ifdef>}}}				
 
 					<!-- {{{<ifdef code="ca_places.vhh_UseOfSpace"><label>Use Of Space</label>^ca_places.vhh_UseOfSpace<br/></ifdef>}}} -->
 
 					{{{<ifdef code="ca_places.vhh_UseOfSpace">
-						<label>Use Of Space:</label>
+						<div class="unit"><label>Use Of Space:</label>
 						<unit relativeTo="ca_places.vhh_UseOfSpace" delimiter="<br/>">
 							^UOS_TypeList.preferred_labels.name_singular
-						</unit>
+						</unit></div>
 					</ifdef>}}}
 
 					{{{<ifdef code="ca_places.edu_EduPlaceType">
-						<label>Educational Place Type:</label>
+						<div class="unit"><label>Educational Place Type:</label>
 						<unit relativeTo="ca_places.edu_EduPlaceType" delimiter="<br/>">
 							^edu_EduPlaceTypeType
-						</unit>
+						</unit></div>
 					</ifdef>}}}
 
 					{{{<ifdef code="ca_places.edu_VenueCapacity">
-						<label>Capacity:</label>
+						<div class="unit"><label>Capacity:</label>
 						<unit relativeTo="ca_places.edu_VenueCapacity" delimiter="<br/>">
 							<ifdef code="ca_places.edu_VenueCapacity.edu_VenueSeatsNumber">^ca_places.edu_VenueCapacity.edu_VenueSeatsNumber</ifdef>
-							<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+							<ifdef code="ca_places.edu_VenueCapacity.edu_TemporalScope|ca_places.edu_VenueCapacity"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 								<ifdef code="ca_places.edu_VenueCapacity.edu_TemporalScope">
 									<br/>
@@ -153,23 +153,23 @@
 									<small>^ca_places.edu_VenueCapacity.__source__</small>
 								</ifdef>
 							</div>
-						</unit>
+						</unit></div>
 					</ifdef>}}}
 
-					{{{<ifdef code="ca_places.description"><label>About</label>^ca_places.description<br/></ifdef>}}}
+					{{{<ifdef code="ca_places.description"><div class="unit"><label>About</label>^ca_places.description<br/></div></ifdef>}}}
 
 					{{{<ifdef code="ca_places.vhh_URL">
-						<label>URL:</label>
+						<div class="unit"><label>URL:</label>
 						<unit relativeTo="ca_places.vhh_URL" delimiter="<br/>">
 							<a href="^ca_places.vhh_URL" target="_blank">^ca_places.vhh_URL</a>
-						</unit>
+						</unit></div>
 					</ifdef>}}}
 
 					{{{<ifdef code="ca_places.vhh_Note">
-						<label>Note:</label>
+						<div class="unit"><label>Note:</label>
 						<unit relativeTo="ca_places.vhh_Note" delimiter="<br/>">
 							^vhh_NoteText
-							<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+							<ifdef code="^ca_places.vhh_Note.vhh_NoteReference"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 								<ifdef code="^ca_places.vhh_Note.vhh_NoteReference">
 									<br/>
@@ -180,22 +180,22 @@
 									<small>^ca_places.vhh_Note.vhh_NoteReference.__source__</small>
 								</ifdef>
 							</div>
-						</unit>
+						</unit></div>
 					</ifdef>}}}
 
-					{{{<ifcount code="ca_collections" min="1" max="1"><label><?= _t('Related Case Study'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><label><?= _t('Related Case Studies'); ?></label></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>">
+					{{{<ifcount code="ca_collections" min="1"><div class="unit"><ifcount code="ca_collections" min="1" max="1"><label><?= _t('Related Case Study'); ?></label></ifcount>
+						<ifcount code="ca_collections" min="2"><label><?= _t('Related Case Studies'); ?></label></ifcount>
+						<unit relativeTo="ca_collections" delimiter="<br/>">
 						<l>^ca_collections.preferred_labels.name</l> (^relationship_typename)
-					</unit>}}}
+					</unit></div></ifcount>}}}
 					
-					{{{<ifcount code="ca_entities" min="1" max="1"><label><?= _t('Related Person/Organization'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><label><?= _t('Related People/Organizations'); ?></label></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="1"><div class="unit"><ifcount code="ca_entities" min="1" max="1"><label><?= _t('Related Person/Organization'); ?></label></ifcount>
+						<ifcount code="ca_entities" min="2"><label><?= _t('Related People/Organizations'); ?></label></ifcount>
 
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>">
+						<unit relativeTo="ca_entities_x_places" delimiter="<br/>">
 						<l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)
 
-						<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+						<ifdef code="ca_entities_x_places.vhh_TemporalScope|ca_entities_x_places.vhh_Note.vhh_NoteText"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 						<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 							<ifdef code="ca_entities_x_places.vhh_TemporalScope">
 								<br/>
@@ -220,13 +220,13 @@
 							</ifdef>
 						</div>
 						<br/>
-					</unit>}}}
+					</unit></div></ifcount>}}}
 					
-					{{{<ifcount code="ca_occurrences" min="1" max="1"><label><?= _t('Related Event'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="2"><label><?= _t('Related Events'); ?></label></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>">
+					{{{<ifcount code="ca_occurrences" min="1"><div class="unit"><ifcount code="ca_occurrences" min="1" max="1"><label><?= _t('Related Event'); ?></label></ifcount>
+						<ifcount code="ca_occurrences" min="2"><label><?= _t('Related Events'); ?></label></ifcount>
+						<unit relativeTo="ca_places_x_occurrences" delimiter="<br/>">
 						<l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)
-						<a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a>
+						<ifdef code="ca_places_x_occurrences.vhh_TemporalScope|ca_places_x_occurrences.vhh_Note.vhh_NoteText"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 						<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 							<ifdef code="ca_places_x_occurrences.vhh_TemporalScope">
 								<br/>
@@ -251,13 +251,13 @@
 							</ifdef>
 						</div>
 						<br/>
-					</unit>}}}
+					</unit></div></ifcount>}}}
 					
-					{{{<ifcount code="ca_places.related" min="1" max="1"><label><?= _t('Related Location'); ?></label></ifcount>}}}
-					{{{<ifcount code="ca_places.related" min="2"><label><?= _t('Related Locations'); ?></label></ifcount>}}}
-					{{{<unit relativeTo="ca_places.related" delimiter="<br/>">
-						<l>^ca_places.related.preferred_labels.name</l> (^relationship_typename) 
-					</unit>}}}	
+					{{{<ifcount code="ca_places.related" min="1"><div class="unit"><ifcount code="ca_places.related" min="1" max="1"><label><?= _t('Related Location'); ?></label></ifcount>
+						<ifcount code="ca_places.related" min="2"><label><?= _t('Related Locations'); ?></label></ifcount>
+					<unit relativeTo="ca_places.related" delimiter="<br/>">
+						<l>^ca_places.preferred_labels.name</l> (^relationship_typename) 
+					</unit></div></ifcount>}}}	
 
 				</div><!-- end col -->
 			</div><!-- end row -->
