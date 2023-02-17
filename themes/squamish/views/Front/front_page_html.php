@@ -170,7 +170,7 @@
 	#print $this->render("Front/featured_set_slideshow_html.php");
 
 	# --- display galleries as a grid?
-	print $this->render("Front/gallery_grid_html.php");
+	#print $this->render("Front/gallery_grid_html.php");
 	# --- display galleries as a slideshow?
 	#print $this->render("Front/gallery_slideshow_html.php");
 ?>
