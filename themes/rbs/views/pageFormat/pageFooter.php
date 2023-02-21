@@ -50,7 +50,7 @@
 			P.O. Box 400103 <br>
 			Charlottesville, VA 22904</p>
         </div>
-		<div class="footer-col mcol col-sm-3 col-md-2 " style="height: 168px;">
+		<div class="footer-col mcol col-sm-3 col-md-3 " style="height: 168px;">
 			<p><strong>CONTACT</strong>
 			Barbara Heritage <br/>
 			Phone: 434-924-3878<br>
