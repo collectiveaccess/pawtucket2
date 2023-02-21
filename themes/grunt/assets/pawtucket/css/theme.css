@@ -750,6 +750,8 @@ body.frontContainer #footer{
 }
 .detailFilter .btn-group button{
 	font-size:12px;
+	background-color:#efefef;
+	color:#000;
 }
 .collectionDetailListItem{
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -776,6 +778,24 @@ body.frontContainer #footer{
 .detail .unit .btn-default{
 	color:#fff;
 	text-decoration:none;
+}
+.detail .relTabButton {
+	display: inline-block;
+	padding: 15px 30px 15px 30px;
+	cursor: pointer;
+	color: #000;
+	font-size:15px;
+	font-family:lato;
+	background-color:#FFF;
+	margin-right:1px;
+}
+.detail .relTabButton:hover, .detail .relTabButton.selected {
+	background-color:#000;
+	color:#0081ca;
+}
+.detail .relatedBlockTabs{
+	margin-bottom:15px;
+	border-bottom:1px solid #000;
 }
 /* static pages */
 .staticPage{
