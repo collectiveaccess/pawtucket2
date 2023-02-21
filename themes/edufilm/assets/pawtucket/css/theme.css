@@ -63,7 +63,7 @@ a:hover{
 }
 @media (min-width:768px){
 	.navbar-brand{
-		width: 200px;
+		width: 178px;
 		padding-top: 8px;
 	}
 	.navbar-brand p.header-logo {

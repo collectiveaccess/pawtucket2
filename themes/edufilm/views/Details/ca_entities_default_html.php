@@ -76,18 +76,21 @@
 				
 					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 					
-					{{{<ifcount code="ca_entities.vhh_Date" min="1"><label>Date</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities.vhh_Date" delimiter="<br/>">
+					{{{<ifdef code="ca_entities.vhh_Date" min="1"><div class="unit"><label>Date</label>
+						<unit relativeTo="ca_entities.vhh_Date" delimiter="<br/>">
 						<l>^ca_entities.vhh_Date.date_Date</l> <ifdef code="ca_entities.vhh_Date.date_Type">(^date_Type)</ifdef>
-					</unit>}}}
+					</unit></div></ifdef>}}}
 
 					
 					{{{<ifdef code="ca_entities.vhh_Sex"><div class='unit'><label>Gender</label>^ca_entities.vhh_Sex</div></ifdef>}}}
 					
-					{{{<ifcount code="ca_entities.vhh_TypeOfActivity2" min="1"><label>Type of Activity</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities.vhh_TypeOfActivity2" delimiter="<br/>">
-						<l>^ca_entities.vhh_TypeOfActivity2.ActivityList</l> (^ca_entities.vhh_TypeOfActivity2.TOA_TempScope)
-					</unit>}}}
+					{{{<ifdef code="ca_entities.vhh_TypeOfActivity2"><div class="unit">
+						<label>Type of Activity</label>
+						<unit relativeTo="ca_entities.vhh_TypeOfActivity2" delimiter="<br/>">
+							^ca_entities.vhh_TypeOfActivity2.ActivityList 
+							<ifdef code="ca_entities.vhh_TypeOfActivity2.TOA_TempScope">(^ca_entities.vhh_TypeOfActivity2.TOA_TempScope)</ifdef>
+						</unit>
+					</div></ifdef>}}}
 					
 					{{{<ifdef code="ca_entities.vhh_Description"><div class='unit'><label>Description</label>^ca_entities.vhh_Description</div></ifdef>}}}
 
