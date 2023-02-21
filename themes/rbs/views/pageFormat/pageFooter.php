@@ -46,16 +46,15 @@
 	<div class="row" >
 		<div class="footer-col mcol col-sm-3 col-md-2 flush-left" style="height: 168px;">
         	<p><strong>Rare Book School</strong>
-            114 Alderman Library<br>
-			University of Virginia<br>
+            University of Virginia<br>
 			P.O. Box 400103 <br>
 			Charlottesville, VA 22904</p>
         </div>
 		<div class="footer-col mcol col-sm-3 col-md-2 " style="height: 168px;">
 			<p><strong>CONTACT</strong>
-			Ruth-Ellen St. Onge <br/>
-			Phone: 434-924-8434<br>
-			Email: <a href="mailto:ruthellen.stonge@virginia.edu">ruthellen.stonge@virginia.edu</a><br>
+			Barbara Heritage <br/>
+			Phone: 434-924-3878<br>
+			Email: <a href="mailto:barbara.heritage@virginia.edu">barbara.heritage@virginia.edu</a><br>
 			</p>
 		</div> 
 		<div class="footer-col mcol " style="text-align:right;float:right">
