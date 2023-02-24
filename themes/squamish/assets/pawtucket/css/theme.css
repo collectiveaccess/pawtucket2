@@ -352,7 +352,10 @@ body.frontContainer {
 body.frontContainer #footer{
 	position:relative !important;
 }
-
+#pageArea.front{
+	top:-20px;
+	position: relative;
+}
 .parallax {
 	position:relative;
     background-image: url("../graphics/hero1.jpg");
@@ -368,18 +371,11 @@ body.frontContainer #footer{
     
     margin-left: -15px;
 	margin-right: -15px;
-	top:-20px;
 }
 .parallax.hero1 {
 	background-image: url("../graphics/hero1.jpg");
 }
-.parallax.hero2 {
-    background-image: url("../graphics/hero2.jpeg");
-    background-position: top center;
-    background-repeat: no-repeat;
-    background-size: cover;
 
-}
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
 		width:300px;
@@ -694,7 +690,10 @@ body.frontContainer #footer{
 .collectionTile:hover{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
-
+.collectionTile {
+  font-size: 14px;
+  line-height: 1.8em;
+}
 
 .form-control:focus {
 	border-color: #000;

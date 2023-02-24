@@ -34,7 +34,7 @@
 	$this->config = caGetFrontConfig();
 	$vs_hero = $this->request->getParameter("hero", pString);
 	if(!$vs_hero){
-		$vs_hero = rand(1, 2);
+		$vs_hero = rand(1, 1);
 	}
  
  # --- timeline set - occurrences
@@ -55,8 +55,8 @@
 				
 				<div class="heroSearch">
 					<H1>
-						<div class="line1">Welcome to the</div>
-						<div class="line2">Squamish Nation Collections</div>
+						<div class="line1">Welcome to</div>
+						<div class="line2">Ta X̱ay Sxwimálatn Chet</div>
 						<div class="line3">{{{hp_search_text}}}</div>
 					</H1>
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
@@ -99,8 +99,6 @@
 ?>
 	<div class="row hpExplore bg_beige_eye">
 		<div class="col-md-12 col-lg-8 col-lg-offset-2">
-		<H2 class="frontSubHeading text-center">Explore The Archive</H2>
-
 			<div class="row">
 				<div class="col-md-4">
 					<div class="bg_side_pattern hpExploreBox">
