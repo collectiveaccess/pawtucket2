@@ -17,6 +17,7 @@
 			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
 			$vs_name = $t_item->get($ps_table.".preferred_labels");
 			$vs_idno = $t_item->get($ps_table.".idno");
+			$vs_item_type = $t_item->getWithTemplate("^".$ps_table.".type_id");
 			$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
 		}
 	}
@@ -43,6 +44,7 @@
 				<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
 				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
+				<input type="hidden" name="itemtype" value="<?php print $vs_item_type; ?>">
 				<hr/><br/><br/>
 	
 			</div>
