@@ -694,6 +694,11 @@ body.frontContainer #footer{
   font-size: 14px;
   line-height: 1.8em;
 }
+@media(min-width:768px){
+	.collectionTile {
+		min-height: 240px;
+	}
+}
 
 .form-control:focus {
 	border-color: #000;
@@ -865,6 +870,15 @@ body.frontContainer #footer{
 }
 .detail a:hover, .detail .detailTool a:hover .glyphicon, .detail .detailTool a:hover   {
 	color: #D23929;
+}
+.detail .detailPlaceholderContainer{
+	background-color: #F5F5F5;
+	border: 2px solid #EDEDED;
+	color: #000;
+	padding: 60px 30px 72px;
+	text-align: center;
+	width: 100%;
+	font-size: 18px;
 }
 /* advanced Search */
 .advancedSearchField .formLabel {

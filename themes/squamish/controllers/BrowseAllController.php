@@ -43,10 +43,10 @@
  		/**
  		 *
  		 */ 
- 		public function __call($ps_function, $pa_args) {
+ 		public function Archives() {
  			$va_access_values = caGetUserAccessValues($this->request);
  			$this->view->setVar('access_values', $va_access_values);
-			$this->render("BrowseAll/index_html.php");
+			$this->render("BrowseAll/archives_html.php");
  		}
  		# -------------------------------------------------------
  	}

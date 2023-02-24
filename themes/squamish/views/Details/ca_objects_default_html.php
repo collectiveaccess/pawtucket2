@@ -47,7 +47,15 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
-				{{{representationViewer}}}
+<?php
+				if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
+					print $vs_rep_viewer;
+				}else{
+					# placeholder
+					$vs_placeholder_text = $this->getVar("detail_media_note");
+					print "<div class='detailPlaceholderContainer'>".$vs_placeholder_text."</div>";					
+				}
+?>
 				
 				
 				<div id="detailAnnotations"></div>
