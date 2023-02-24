@@ -1126,3 +1126,8 @@ h2.tl-headline{
 		column-gap: 50px;
 	}
 }
+
+.multisearch .authorityResult {
+	margin-bottom: 5px;
+	height: 74px;
+}
