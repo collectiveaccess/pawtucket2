@@ -12,7 +12,7 @@
 					<div class="landingBox">
 						<?php print caNavLink($this->request, "<div class='landingBoxImage landingBoxImage1'></div>", "", "", "Collections", "Index"); ?>
 						<div class="landingBoxDetails">
-							<div class="landingBoxTitle"><?php print caNavLink($this->request, "Archival Collection", "", "", "Collections", "Index"); ?></div>
+							<div class="landingBoxTitle"><?php print caNavLink($this->request, "Archival Collections", "", "", "Collections", "Index"); ?></div>
 						</div>
 					</div>
 				</div>
