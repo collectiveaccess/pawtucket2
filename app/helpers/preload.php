@@ -70,6 +70,8 @@ require_once(__CA_LIB_DIR__."/Cache/PersistentCache.php"); // is used in utility
 
 require_once(__CA_LIB_DIR__."/Utils/Debug.php");
 require_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
+require_once(__CA_APP_DIR__."/helpers/logHelpers.php");
+require_once(__CA_APP_DIR__."/helpers/requestHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/themeHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/initializeLocale.php");
 
@@ -97,10 +99,6 @@ require_once(__CA_LIB_DIR__.'/AppNavigation.php');
 require_once(__CA_LIB_DIR__.'/Controller/ActionController.php');
 
 require_once(__CA_MODELS_DIR__.'/ca_acl.php');
-
-require_once(__CA_LIB_DIR__.'/Cache/ExternalCache.php');
-require_once(__CA_LIB_DIR__.'/Cache/CompositeCache.php');
-require_once(__CA_LIB_DIR__.'/Cache/MemoryCache.php');
 
 require_once(__CA_APP_DIR__.'/lib/GarbageCollection.php');
 require_once(__CA_APP_DIR__.'/helpers/guidHelpers.php');

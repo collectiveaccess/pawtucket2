@@ -414,7 +414,6 @@ class BaseRelationshipModel extends BundlableLabelableBaseModelWithAttributes im
 			}
 			if(sizeof($restrict_to_relationship_types)) {
 				$va_restrict_to_type_list = [];
-
 				foreach($restrict_to_relationship_types as $vs_type_code) {
 					if (!strlen(trim($vs_type_code))) { continue; }
 					
@@ -700,7 +699,8 @@ class BaseRelationshipModel extends BundlableLabelableBaseModelWithAttributes im
 					
 					$va_row['typename'] = $va_row['typename_reverse'];
 					
-					$vs_key = ((strlen($va_row['rank']) > 0)  ? sprintf("%08d", (int)$va_row['rank']) : "").preg_replace('![^A-Za-z0-9_]+!', '_', mb_strtolower($va_row['typename_reverse']));				
+					$vs_key = ((strlen($va_row['rank']) > 0)  ? sprintf("%08d", (int)$va_row['rank']) : "").preg_replace('![^A-Za-z0-9_]+!', '_', mb_strtolower($va_row['typename_reverse']));
+				
 				}
 				
 				if(in_array($va_row['type_id'], $add_parents)) {

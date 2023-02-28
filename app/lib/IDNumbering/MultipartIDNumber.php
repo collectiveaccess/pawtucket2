@@ -158,20 +158,22 @@ class MultipartIDNumber extends IDNumber {
 		
 		if ($separator && $this->formatHas('PARENT', 0)) {
 			// starts with PARENT element so explode in reverse since parent value may include separators
-				
-			$element_vals_in_reverse = array_reverse(explode($separator, $value));
-			$num_elements = sizeof($elements = $this->getElements());
-			
-			$element_vals = [];
-			while(sizeof($elements) > 1) {
-				array_shift($elements);
-				$element_vals[] = array_shift($element_vals_in_reverse);
-				
-				$num_elements--;
+			$v_proc = preg_replace("!^".preg_quote($this->getParentValue(), '!')."!", "_PARENT_", $value);
+		
+			$element_vals = explode($separator, $v_proc);
+
+			$i = 0;
+			foreach ($this->getElements() as $element_info) {
+				switch ($element_info['type']) {
+					case 'PARENT':
+						$element_vals[$i] = $this->getParentValue();
+						break;
+					default:
+						if(!array_key_exists($i, $element_vals)) { $element_vals[$i] = null; }
+						break;
+				}
+				$i++;
 			}
-			
-			$element_vals[] = join($separator, array_reverse($element_vals_in_reverse));
-			$element_vals = array_reverse($element_vals);
 		} elseif ($separator) {
 			// Standard operation, use specified non-empty separator to split value
 			$element_vals = explode($separator, $value);
@@ -389,9 +391,12 @@ class MultipartIDNumber extends IDNumber {
 
 		$separator = $this->getSeparator();
 		$elements = $this->getElements();
+		
+		$is_parent = null;
 
 		if ($value == null) {
 			$element_vals = [];
+			$i = 0;
 			foreach($elements as $ename => $element_info) {
 				if ($ename == $element_name) { break; }
 				switch($element_info['type']) {
@@ -421,6 +426,7 @@ class MultipartIDNumber extends IDNumber {
 						}
 						break;
 					case 'PARENT':
+						$is_parent = $i;
 						$element_vals[] = $this->getParentValue();
 						break;
 					case 'SERIAL':
@@ -430,11 +436,51 @@ class MultipartIDNumber extends IDNumber {
 						$element_vals[] = '';
 						break;
 				}
+				$i++;
 			}
 		} elseif(is_array($value)) {
-			$element_vals = array_values($value);
+			$element_vals = [];
+			$i = 0;
+			foreach($elements as $ename => $element_info) {
+				switch($element_info['type']) {
+					case 'PARENT':
+						$is_parent = $i;
+						$element_vals[$i] = $value[$ename] ?? null;
+						break;
+					case 'CONSTANT':
+						$element_vals[$i] = $element_info['value'];
+						break;
+					case 'SERIAL':
+						$element_vals[$i] = $value[$ename] ?? '';
+						break;
+					default:
+						$element_vals[$i] = $value[$ename] ?? null;
+						break;
+				}
+				$i++;
+			}
 		} else {
 			$element_vals = $this->explodeValue($value);
+			
+			$i = 0;
+			foreach($elements as $ename => $element_info) {
+				switch($element_info['type']) {
+					case 'PARENT':
+						$is_parent = $i;
+						break;
+					case 'CONSTANT':
+						$element_vals[$i] = $element_info['value'];
+						break;
+					case 'SERIAL':
+						if(!isset($element_vals[$i])) { $element_vals[$i] = ''; }
+						break;
+				}
+				$i++;
+			}
+		}
+
+		if(!is_null($is_parent)) {
+			$this->isChild(true, $element_vals[$is_parent]);
 		}
 
 		$tmp = [];
@@ -442,7 +488,9 @@ class MultipartIDNumber extends IDNumber {
 		$blank_count = 0;
 		foreach($elements as $ename => $element_info) {
 			if ($ename == $element_name) { break; }
-			if (!strlen($v = array_shift($element_vals))) { $blank_count++; }
+			$v = array_shift($element_vals);
+			if(is_array($v)) { $v = join($separator, $v); }
+			if (!strlen($v)) { $blank_count++; }
 			$tmp[] = $v;
 			$i++;
 		}
@@ -543,7 +591,7 @@ class MultipartIDNumber extends IDNumber {
 			if(isset($element_info['minimum']) && (($min = (int)$element_info['minimum']) > 0) && ($num < $min)) { 
 				$num = $min;
 			}
-
+			
 			if (($zeropad_to_length = (int)$element_info['zeropad_to_length']) > 0) {
 				return sprintf("%0{$zeropad_to_length}d", $num);
 			} else {
@@ -576,22 +624,29 @@ class MultipartIDNumber extends IDNumber {
 			$element_info = $elements_normal_order[$element];
 			$i = array_search($element, $element_names_normal_order);
 			$padding = 20;
+			
+			$v = $element_values[$i];
+			if(($i === (sizeof($element_names_normal_order) - 1)) && (sizeof($element_values) > sizeof($element_names_normal_order))) {	// last item with extra elements
+				$extra_elements = array_splice($element_values, $i + 1);
+				$v .= $separator.join($separator, $extra_elements);
+			}
 
 			switch($element_info['type']) {
 				case 'LIST':
-					$w = $padding - mb_strlen($element_values[$i]);
+					$w = $padding - mb_strlen($v);
 					if ($w < 0) { $w = 0; }
-					$output[] = str_repeat(' ', $w).$element_values[$i];
+					$output[] = str_repeat(' ', $w).$v;
 					break;
 				case 'CONSTANT':
 					$len = mb_strlen($element_info['value']);
 					if ($padding < $len) { $padding = $len; }
-					$repeat_len = ($padding - mb_strlen($element_values[$i]));
-					$output[] = (($repeat_len > 0) ? str_repeat(' ', $padding - mb_strlen($element_values[$i])) : '').$element_values[$i];
+					$repeat_len = ($padding - mb_strlen($v));
+					$n = $padding - mb_strlen($v);
+					$output[] = (($repeat_len > 0) ? (($n >= 0) ? str_repeat(' ', $n) : '') : '').$v;
 					break;
 				case 'FREE':
 				case 'ALPHANUMERIC':
-					$tmp = preg_split('![^A-Za-z0-9]+!',  $element_values[$i]);
+					$tmp = preg_split('![^A-Za-z0-9]+!',  $v);
 
 					$zeroless_output = [];
 					$raw_output = [];
@@ -621,29 +676,38 @@ class MultipartIDNumber extends IDNumber {
 							$zeroless_output[] = $piece;
 						}
 					}
-					$output[] = join('', $raw_output); //.' '.join('.', $zeroless_output);
+					$output[] = join('', $raw_output); 
 					break;
 				case 'SERIAL':
 				case 'NUMERIC':
 					if ($padding < $element_info['width']) { $padding = $element_info['width']; }
-					$output[] = str_repeat(' ', $padding - strlen(intval($element_values[$i]))).intval($element_values[$i]);
+					$n = $padding - strlen(intval($v));
+					
+					$output[] = (($n >= 0) ? str_repeat(' ', $n) : '').intval($v);
 					break;
 				case 'YEAR':
-					$p = (($element_info['width'] == 2) ? 2 : 4) - mb_strlen($element_values[$i]);
+					$p = (($element_info['width'] == 2) ? 2 : 4) - mb_strlen($v);
 					if ($p < 0) { $p = 0; }
-					$output[] = str_repeat(' ', $p).$element_values[$i];
+					$output[] = str_repeat(' ', $p).$v;
 					break;
 				case 'MONTH':
 				case 'DAY':
-					$p = 2 - mb_strlen($element_values[$i]);
+					$p = 2 - mb_strlen($v);
 					if ($p < 0) { $p = 0; }
-					$output[] = str_repeat(' ', 2 - $p).$element_values[$i];
+					$n = 2 - $p;
+					$output[] = (($n >= 0) ? str_repeat(' ', $n) : '').$v;
 					break;
 				case 'PARENT':
-					$output[] = $element_values[$i].str_repeat(' ', $padding - mb_strlen($element_values[$i]));
+					$tmp = explode($separator, $v);
+					
+					foreach($tmp as $t) {
+						$n = $padding - mb_strlen($t);
+						$output[] = (($n >= 0) ? str_repeat(' ', $n) : '').$t;
+					}
 					break;
 				default:
-					$output[] = str_repeat(' ', $padding - mb_strlen($element_values[$i])).$element_values[$i];
+					$n = $padding - mb_strlen($v);
+					$output[] = (($n >= 0) ? str_repeat(' ', $n) : '').$v;
 					break;
 
 			}
@@ -968,16 +1032,17 @@ class MultipartIDNumber extends IDNumber {
 			$lookup_url_info = caJSONLookupServiceUrl($options['request'], $options['table']);
 			$js .= "
 				caUI.initIDNoChecker({
-					errorIcon: \"".$options['error_icon']."\",
-					processIndicator: \"".$options['progress_indicator']."\",
+					errorIcon: ".json_encode($options['error_icon']).",
+					processIndicator: ".json_encode($options['progress_indicator']).",
 					idnoStatusID: 'idnoStatus',
-					lookupUrl: '".$lookup_url_info['idno']."',
-					searchUrl: '".$options['search_url']."',
+					lookupUrl: ".json_encode($lookup_url_info['idno']).",
+					searchUrl: ".json_encode($options['search_url']).",
 					idnoFormElementIDs: [".join(',', $ids)."],
-					separator: '".$this->getSeparator()."',
+					separator: ".json_encode($this->getSeparator()).",
 					row_id: ".intval($options['row_id']).",
 					type_id: ".intval($options['type_id']).",
 					context_id: ".intval($options['context_id']).",
+					parentValue: ".json_encode($this->getParentValue()).",
 					checkDupes: ".(($options['check_for_dupes'] && !$next_in_seq_is_present) ? '1' : '0').",
 					includesSequence: ".($next_in_seq_is_present ? '1' : '0').",
 
@@ -1055,8 +1120,6 @@ class MultipartIDNumber extends IDNumber {
 						$values[$i] = '%';
 					} elseif (($num_serial_elements - $num_serial_elements_seen) < $max_num_replacements) {
 						$values[$i] = '%';
-					} else {
-						$values[$i] = null;
 					}
 					break;
 				case 'CONSTANT':
@@ -1080,6 +1143,12 @@ class MultipartIDNumber extends IDNumber {
 						$values[$i] = $tmp['mday'];
 					}
 					break;
+				case 'LIST':
+				case 'FREE':
+				case 'NUMERIC':
+				case 'ALPHANUMERIC':
+					// noop
+					break;
 				default:
 					$values[$i] = null;
 					break;
@@ -1087,7 +1156,6 @@ class MultipartIDNumber extends IDNumber {
 
 			$i++;
 		}
-
 		return join($separator, $values);
 	}
 	# -------------------------------------------------------

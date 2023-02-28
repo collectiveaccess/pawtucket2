@@ -530,6 +530,7 @@ class DataMigrationUtils {
 	 *		locale = locale code to use when applying rules; if omitted current user locale is employed
 	 *		displaynameFormat = surnameCommaForename, surnameCommaForenameMiddlename, forenameCommaSurname, forenameSurname, forenamemiddlenamesurname, original [Default = original]
 	 *		doNotParse = Use name as-is in the surname and display name fields. All other fields are blank. [Default = false]
+	 *		type = entity type, used to determine organization vs. individual format. If omitted individual is assumed. [Default is null]
 	 *
 	 * @return array Array containing parsed name, keyed on ca_entity_labels fields (eg. forename, surname, middlename, etc.)
 	 */
@@ -542,6 +543,11 @@ class DataMigrationUtils {
 				'forename' => '', 'middlename' => '', 'surname' => $text,
 				'displayname' => $text, 'prefix' => '', 'suffix' => ''
 			];
+		}
+		
+		$class = null;
+		if ($entity_type = caGetOption('type', $options, false)) {
+			$class = caGetListItemSettingValue('entity_types', $entity_type, 'entity_class');
 		}
 		
 		// Split names in non-roman alphabets
@@ -608,7 +614,7 @@ class DataMigrationUtils {
 		// check for titles
 		$prefix_for_name = null;
 		foreach($titles as $title) {
-			if (preg_match("!^({$title}[\.]{0,1})!i", $text, $matches)) {
+			if (preg_match("!^({$title}[\.]{0,1})[\s]+!i", $text, $matches)) {
 				$prefix_for_name = $matches[1];
 				$text = str_replace($matches[1], '', $text);
 			}
@@ -712,25 +718,26 @@ class DataMigrationUtils {
 				}
 			}
 		}
-
+		
+		if($class === 'ORG') { $options['displaynameFormat'] = 'forenamemiddlenamesurname'; }
 		switch($format = caGetOption('displaynameFormat', $options, 'original', array('forceLowercase' => true))) {
 			case 'surnamecommaforename':
-				$name['displayname'] = ((strlen(trim($name['surname']))) ? $name['surname'].", " : '').$name['forename'];
+				$name['displayname'] = trim(((strlen(trim($name['surname']))) ? $name['surname'].", " : '').$name['forename'], ', ');
 				break;
 			case 'surnamecommaforenamemiddlename':
-				$name['displayname'] = trim((((strlen(trim($name['surname']))) ? $name['surname'].", " : '').$name['forename']).' '.$name['middlename']);
+				$name['displayname'] = trim((((strlen(trim($name['surname']))) ? $name['surname'].", " : '').$name['forename']).' '.$name['middlename'], ', ');
 				break;
 			case 'forenamecommasurname':
-				$name['displayname'] = trim($name['forename'].', '.$name['surname']);
+				$name['displayname'] = trim($name['forename'].', '.$name['surname'], ', ');
 				break;
 			case 'forenamesurname':
-				$name['displayname'] = trim($name['forename'].' '.$name['surname']);
+				$name['displayname'] = trim($name['forename'].' '.$name['surname'], ', ');
 				break;
 			case 'forenamemiddlenamesurname':
-				$name['displayname'] = trim($name['forename'].($name['middlename'] ? ' '.$name['middlename'] : '').' '.$name['surname']);
+				$name['displayname'] = trim($name['forename'].($name['middlename'] ? ' '.$name['middlename'] : '').' '.$name['surname'], ', ');
 				break;
 			case 'surnameforename':
-				$name['displayname'] = trim($name['surname'].' '.$name['forename']);
+				$name['displayname'] = trim($name['surname'].' '.$name['forename'], ', ');
 				break;
 			case 'original':
 				$name['displayname'] = $original_text;
@@ -746,6 +753,15 @@ class DataMigrationUtils {
 		foreach($name as $k => $v) {
 			$name[$k] = trim(preg_replace('![ ]+!', ' ', $v));
 		}
+		
+		if($class === 'ORG') {
+			$name = [
+				'displayname' => $name['displayname'],
+				'surname' => $name['displayname'],
+				'suffix' => $name['suffix']
+			];
+		}
+		
 		return $name;
 	}
 	
@@ -777,13 +793,13 @@ class DataMigrationUtils {
 		$name = [];
 		
 		foreach($values['ind_suffixes'] as $suffix) {
-			if (preg_match("![,]*[ ]*({$suffix}[\.]{0,1})$!i", $text, $matches)) {
+			if (preg_match("![, ]+[ ]*({$suffix}[\.]{0,1})$!i", $text, $matches)) {
 				$name['suffix'] = $matches[1];
 				$text = str_replace($matches[0], '', $text);
 			}
 		}
 		foreach($values['corp_suffixes'] as $suffix) {
-			if (preg_match("![,]*[ ]*({$suffix}[\.]{0,1})$!i", $text, $matches)) {
+			if (preg_match("![, ]+[ ]*({$suffix}[\.]{0,1})$!i", $text, $matches)) {
 				$name['suffix'] = $matches[1];
 				$text = str_replace($matches[0], '', $text);
 				$name['is_corporation'] = true;
@@ -870,7 +886,7 @@ class DataMigrationUtils {
 										(caGetOption('skipExistingValues', $options, true) 
 										|| 
 										caGetOption('_skipExistingValues', $va_values, true)), // default to skipping attribute values if they already exist (until v1.7.9 default was _not_ to skip)
-									'matchOn' => caGetOption('_matchOn', $va_values, null)]);
+									'matchOn' => caGetOption('_matchOn', $va_values, ['idno', 'labels'])]);
 						} else {
 							foreach($va_expanded_values as $va_v) {
 								if($source_value = caGetOption('_source', $va_v, null)) {
@@ -885,7 +901,7 @@ class DataMigrationUtils {
 											caGetOption('skipExistingValues', $options, true) 
 											|| 
 											caGetOption('_skipExistingValues', $va_values, true)), // default to skipping attribute values if they already exist (until v1.7.9 default was _not_ to skip)
-										'matchOn' => caGetOption('_matchOn', $va_values, null)]);
+										'matchOn' => caGetOption('_matchOn', $va_values, ['idno', 'labels'])]);
 							}
 						}
 					} else {
@@ -900,7 +916,7 @@ class DataMigrationUtils {
 							), $vs_element, null, [
 								'source' => $source_value, 
 								'skipExistingValues' => true, 
-								'matchOn' => caGetOption('_matchOn', $va_values, null)
+								'matchOn' => caGetOption('_matchOn', $va_values, ['idno', 'labels'])
 							]);
 						}
 					}
@@ -942,7 +958,9 @@ class DataMigrationUtils {
 				$va_labels = $va_nonpreferred_labels;
 			}
 			foreach($va_labels as $va_label) {
-				$pt_instance->addLabel($va_label, $locale_id, null, false);
+				$label_locale = (isset($va_label['locale']) && $va_label['locale']) ? $va_label['locale'] : $locale_id;
+				
+				$pt_instance->addLabel($va_label, $label_locale, null, false);
 
 				if ($pt_instance->numErrors()) {
 					if(isset($options['outputErrors']) && $options['outputErrors']) {

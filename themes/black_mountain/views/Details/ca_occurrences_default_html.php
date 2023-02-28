@@ -30,7 +30,8 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$va_access_values = 	caGetUserAccessValues($this->request);	
+	$va_access_values = 	caGetUserAccessValues($this->request);
+	$vs_represenation_viewer = trim($this->getVar("representationViewer"));
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -43,7 +44,48 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 			<div class="row">
+<?php
+			if($vs_represenation_viewer){
+?>
+				<div class='col-sm-6 col-md-6'>
+				{{{representationViewer}}}
+				
+				
+				<div id="detailAnnotations"></div>
+				
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+				
+<?php
+				# Comment and Share Tools
+				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
+						
+					print '<div id="detailTools">';
+					if ($vn_comments_enabled) {
+?>				
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?php print _t("Comments and tags"); ?>"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
+						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
+<?php				
+					}
+					if ($vn_share_enabled) {
+						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt" aria-label="'._t("Share").'"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+					}
+					if ($vn_pdf_enabled) {
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+					}
+					print '</div><!-- end detailTools -->';
+				}				
+?>
+				{{{<ifdef code="ca_occurrences.accessibility_description"><div class="unit"><label>Accessibility Description</label>^ca_occurrences.accessibility_description</div></ifdef>}}}
+				
+			</div><!-- end col -->
+			<div class='col-sm-6 col-md-6'>
+<?php
+			}else{
+?>
 				<div class='col-md-12 col-lg-12'>
+<?php
+			}
+?>
 					<H2>{{{^ca_occurrences.type_id<ifdef code="ca_occurrences.idno">: ^ca_occurrences.idno</ifdef>}}}</H2>
 					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
 					{{{<ifdef code="ca_occurrences.display_date">
@@ -54,13 +96,26 @@
 					</ifdef></ifnotdef>}}}
 					
 					<HR/>
-				</div><!-- end col -->
-			</div><!-- end row -->
-			<div class="row">			
-				<div class='col-sm-12'>
-					{{{<ifdef code="ca_occurrences.event_type">
-						<div class='unit'><label>Event Type</label>^ca_occurrences.event_type</div>
-					</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.description"><div class="unit"><span class="trimText">^ca_occurrences.description</span></div></ifdef>}}}
+
+<?php
+$va_event_types = $t_item->get("ca_occurrences.event_type", array("returnAsArray" => true));
+if(is_array($va_event_types) && sizeof($va_event_types)){
+?>
+	<div class='unit'><label>Event Type</label>
+<?php
+		$va_tmp = array();
+		$t_list_item = new ca_list_items();
+		foreach($va_event_types as $vn_event_type_id){
+			$t_list_item->load($vn_event_type_id);
+			$va_tmp[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "Programs", array("facet" => "event_type_facet", "id" => $vn_event_type_id));
+		}
+		print join(", ", $va_tmp);
+?>
+	</div>
+<?php	
+}
+?>
 					{{{<ifdef code="ca_occurrences.event_format">
 						<div class='unit'><label>Event Format</label>^ca_occurrences.event_format</div>
 					</ifdef>}}}
@@ -81,14 +136,19 @@
 						}
 					}
 ?>
-					{{{<ifcount code="ca_occurrences.related" restrictToRelationshipTypes="in_conjunction_with" min="1"><div class="unit"><label>In Conjunction With</label>
-						<unit relativeTo="ca_occurrences.related" restrictToTypes="in_conjunction_with" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
+
+					{{{<ifcount code="ca_places" restrictToRelationshipTypes="occurred_at" min="1"><div class="unit"><label>Location</label>
+						<unit relativeTo="ca_places" restrictToRelationshipTypes="occurred_at" delimiter="<br/>">^ca_places.preferred_labels</unit></div></ifcount>}}}
+					{{{<ifcount code="ca_places" restrictToRelationshipTypes="has_subject" min="1"><div class="unit"><label>Subject</label>
+						<unit relativeTo="ca_places" restrictToRelationshipTypes="has_subject" delimiter="<br/>">^ca_places.preferred_labels</unit></div></ifcount>}}}
 					
-					{{{<ifdef code="ca_occurrences.description"><div class="unit"><span class="trimText">^ca_occurrences.description</span></div></ifdef>}}}
+					
 					
 					{{{<ifdef code="ca_occurrences.creditLine">
 						<div class='unit'><label>Credit</label>^ca_occurrences.creditLine</div>
 					</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.external_link.url_entry"><div class="unit"><label>External Link</label><unit relativeTo="ca_occurrences.external_link" delimiter="<br/>"><a href="^ca_occurrences.external_link.url_entry" target="_blank"><ifdef code="ca_occurrences.external_link.url_source">^ca_occurrences.external_link.url_source</ifdef><ifnotdef code="ca_occurrences.external_link.url_source">^ca_occurrences.external_link.url_entry</ifnotdef></a></unit></div></ifdef>}}}
+
 					
 <?php
 				$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
@@ -106,6 +166,10 @@
 				
 				{{{<ifcount code="ca_occurrences.related" restrictToTypes="historical_events" min="1"><div class="unit"><label>Related Historical Events</label>
 					<unit relativeTo="ca_occurrences.related" restrictToTypes="historical_events" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div></ifcount>}}}
+
+				{{{<ifcount code="ca_occurrences.related" restrictToRelationshipTypes="in_conjunction_with" min="1"><div class="unit"><label>In Conjunction With</label>
+						<span class="trimText"><unit relativeTo="ca_occurrences.related" restrictToRelationshipTypes="in_conjunction_with" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></span></div></ifcount>}}}
+					
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
@@ -127,7 +191,7 @@
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1" restrictToTypes="artwork, oral_history, archival_object, publication">
 			<div class="row">
-				<div class="col-sm-12"><div class="unit"><label>Related Collection Items</label></div><HR/></div>
+				<div class="col-sm-12"><div class="unit"><label>Related Objects</label></div><HR/></div>
 			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
@@ -160,7 +224,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 128
 		});
 	});
 </script>
