@@ -37,11 +37,15 @@
 ?>
 				<li class="dropdown<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print $o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse"); ?> <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 					<ul class="dropdown-menu">
-						<li><?php print caNavLink($this->request, 'Browse All', '', '', '', 'BrowseAll', 'Index'); ?></li>
 <?php
 						foreach($va_browse_types as $vs_browse_name => $va_browse_type){
 							if(!$va_browse_type["dontShowInBrowseMenu"]){
 								print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), '', '', 'Browse', $vs_browse_name, '')."</li>";
+							}
+							if($vs_browse_name == "archives"){
+?>
+								<li><?php print caNavLink($this->request, _t("Archives & Oral History"), "", "", "BrowseAll", "Archives"); ?></li>
+<?php
 							}
 						}
 ?>
