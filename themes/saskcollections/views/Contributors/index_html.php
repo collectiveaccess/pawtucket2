@@ -2,12 +2,17 @@
 	$vs_map = $this->getVar("map");
 	$qr_contributors = $this->getVar("contributor_results");
 	$o_config = $this->getVar("config");
+	
+	global $g_ui_locale;
+	$vs_lang_suffix = "_en";
+	if($g_ui_locale == "fr_FR"){
+		$vs_lang_suffix = "_fr";
+	}
 ?>
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2">
 			<H1>Participating Institutions</H1>
-			<br/>
-			<div class="contributorIntro">{{{contributors_intro}}}</div>
+			<div class="contributorIntro">{{{contributors_intro<?php print $vs_lang_suffix; ?>}}}</div>
 			<div class="contributorMap"><?php print $vs_map; ?></div>
 		</div>
 	</div>

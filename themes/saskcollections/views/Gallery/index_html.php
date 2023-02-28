@@ -9,13 +9,18 @@
 	if(is_array($va_sets) && sizeof($va_sets)){
 		$va_first_items_from_set = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
 	}
+	global $g_ui_locale;
+	$vs_lang_suffix = "_en";
+	if($g_ui_locale == "fr_FR"){
+		$vs_lang_suffix = "_fr";
+	}
 ?>
 
 <div class="row"><div class="col-sm-12 ">
 	<H1><?php print $this->getVar("section_name"); ?></H1>
 <?php
 	if($vs_intro_global_value = $config->get("gallery_intro_text_global_value")){
-		if($vs_tmp = $this->getVar($vs_intro_global_value)){
+		if($vs_tmp = $this->getVar($vs_intro_global_value.$vs_lang_suffix)){
 			print "<div class='setDescription'>".$vs_tmp."</div>";
 		}
 	}

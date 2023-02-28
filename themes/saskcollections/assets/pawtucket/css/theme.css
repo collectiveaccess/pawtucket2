@@ -38,20 +38,28 @@ src:url("https://fast.fonts.net/dv2/14/51318b0e-57fc-4136-b7d1-46aee6c2b565.woff
 /* fonts to change */
 
 
-body, .detail, .gallery, label, b, strong{
+body, .detail, .gallery, label{
 	color: #222;
-	font: 300 18px/24px "proxima-nova-n3","proxima-nova",sans-serif;
+	font-family: "proxima-nova",sans-serif;
+	font-size:15px;
 }
-/*
+
 b, strong{
-	font-family: "xxx";
+	font-family: "proxima-nova",sans-serif;
 	font-weight:600;
 }
+/*
 H1, h1, h2, H2, H3, h3, H4, h4, H5, h5, #footer a.orgLink{
 	color:#000;
 	font-family: 'xxx';
 	font-weight:600;
 } */
+h1 {
+	color: #27529A;
+	font: 400 48px/50px "Gill Sans W01 Book",sans-serif;
+	margin-bottom: 30px;
+	text-transform:none;
+}
 .container{
 	max-width: 1190px;
 }
@@ -551,12 +559,18 @@ body{
 	padding-bottom:20px;
 }
 .bResultItem .bResultItemText, .bResultListItemCol .bResultListItemText{
-  font-size: 12px;
+  font-size: 13px;
 }
 @media(max-width:768px){
 	.results .bSearchWithinContainer{
 		display:none;
 	}
+}
+.results H1 {
+	margin: 0px 0px 10px 0px;
+	padding: 0px;
+	font-size: 24px;
+	text-transform: capitalize;
 }
 .results .bSearchWithinContainer{
 	clear:both;
@@ -610,7 +624,11 @@ a.browseRemoveFacet .glyphicon{
 	color:#fff !important;
 }
 #bRefine H2, #bRefine H5, #bRefine H3, #bRefine a{
-	color:#454545;
+	color:#222;
+}
+#bRefine a {
+  color: #222;
+  font-size: 15px;
 }
 /* front */
 html.frontContainer {
@@ -710,7 +728,7 @@ body.frontContainer #footer{
 .heroSearch H1 .line1, .heroSearch H1 .line3 {
     font-size: 28px;
     text-transform: none;
-    font-family: latolight;
+    font-family: "proxima-nova",sans-serif;
 }
 .heroSearch H1 .line2{
 	font-size: 43px;
@@ -719,7 +737,7 @@ body.frontContainer #footer{
 	color:#FFF;
 	padding-top:20px;
 	padding-bottom:20px;
-	font-family: "Lato";
+	font-family: "Gill Sans W01 Book",sans-serif;
 	line-height: 1.1em;
 }
 .heroSearch .formOutline {
@@ -830,10 +848,17 @@ body.frontContainer #footer{
 	text-transform:capitalize;
 	font-size:24px;
 	padding-bottom:15px;
+	
+	color: #728ebd;
+	font-family: "Gill Sans W01 Book",sans-serif;
+	text-transform:uppercase;
 }
 .front h2.highlights{
 	padding-bottom:30px;
 	padding-top:30px;
+	color: #728ebd;
+	font-family: "Gill Sans W01 Book",sans-serif;
+	text-transform:uppercase;
 }
 /* hp explore */
 .hpExplore{
@@ -969,13 +994,12 @@ body.frontContainer #footer{
 }
 .galleryList label {
     display: block;
-    font-size: 15px;
+    font-size: 17px;
     text-transform: none;
     margin-bottom: 0px;
     padding-bottom: 0px;
     line-height: 1.1em;
     margin-top: 5px;
-    font-weight: bold;
 }
 
 .galleryList label a{
@@ -983,17 +1007,23 @@ body.frontContainer #footer{
 }
 
 .gallery .setDescription {
-	font-size: 15px;
+	font-size: 17px;
 	font-weight: normal;
 	line-height: 1.2em;
+	padding-bottom: 30px;
 }
 .gallery #galleryDetailObjectInfo{
 	font-size: 15px;
 	line-height: inherit;
 }
 .gallery .unit{
-	margin-bottom: 12px;
+	margin-bottom: 15px;
 	font-size:15px;
+}
+.gallery label {
+	text-transform: uppercase;
+	color: #000;
+	font-size: 15px;
 }
 .gallery .galleryViewRecord{
 	padding-top:15px;
@@ -1059,6 +1089,7 @@ div#detailTools{
 	color: #222;
 	line-height: 135%;
 	text-transform: none;
+	margin-bottom:0px;
 }
 .detail h2 {
 	font-size: 20px;
@@ -1228,5 +1259,5 @@ div#detailTools{
 
 /* static page */
 .staticPage{
-	font-size: 15px;
+	font-size: 17px;
 }
