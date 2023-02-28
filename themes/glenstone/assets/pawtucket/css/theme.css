@@ -1111,7 +1111,7 @@ p.bookTitle {
 .tabdiv {
 	clear:both;
 	width:100%;
-	height:60px;
+	height:auto;
 	min-width:330px;
 }
 .toggle a{
