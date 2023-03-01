@@ -1,14 +1,13 @@
 <div class="row">
-	<div class="col-md-4 col-md-offset-2">
+	<div class="col-md-8">
 		<h1><?php _p('Advanced Search') ?></h1>
 
         <p><?php _p("Enter your search terms in the fields below."); ?></p>
 
 	</div>
-	<div class="col-md-4 formLinks"></div>
 </div>
 <div class="row">
-	<div class="col-md-8 col-md-offset-2">
+	<div class="col-md-8">
 {{{form}}}
 <div class='advancedContainer'>
 	<div class='row'>

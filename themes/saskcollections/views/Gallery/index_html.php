@@ -11,7 +11,7 @@
 	}
 	global $g_ui_locale;
 	$vs_lang_suffix = "_en";
-	if($g_ui_locale == "fr_FR"){
+	if($g_ui_locale == "fr_CA"){
 		$vs_lang_suffix = "_fr";
 	}
 ?>

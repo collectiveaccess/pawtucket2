@@ -117,8 +117,8 @@
 				</button>
 				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo-2017.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");?>
 				<ul class="hideMobile nav navbar-nav navbar-right" id="language-navbar" role="list" aria-label="<?= _t("Language Navigation"); ?>">
-					<li <?= ($g_ui_locale == "fr_FR") ? 'class="active"' : ''; ?>><?= caChangeLocaleLink($this->request, 'fr_FR', _t("FR"), ''); ?></li>
-					<li <?= ($g_ui_locale == "en_US") ? 'class="active"' : ''; ?>><?= caChangeLocaleLink($this->request, 'en_US', _t("EN"), ''); ?></li>
+					<li <?= ($g_ui_locale == "en_CA") ? 'class="active"' : ''; ?>><?= caChangeLocaleLink($this->request, 'en_CA', _t("EN"), ''); ?></li>
+					<li <?= ($g_ui_locale == "fr_CA") ? 'class="active"' : ''; ?>><?= caChangeLocaleLink($this->request, 'fr_CA', _t("FR"), ''); ?></li>
 				</ul>
 				<form class="hideMobile navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>" aria-label="<?php print _t("Search"); ?>">
 					
@@ -149,17 +149,18 @@
 
 				<div class="container"><ul class="nav navbar-nav menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 
-					<li class="bg4 dropdown-container">
+					<li class="bg1 dropdown-container">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
-						<ul class="dropdown-menu bg4">
+						<ul class="dropdown-menu bg1">
 							<li><?php print caNavLink($this->request, _t("About SaskCollections"), "", "", "About", "Index"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Guide"), "", "", "About", "Guide"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "About", "Contact"); ?></li>
 						</ul>
 					</li>
-					<li class='bg1<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>'><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
+					<li class='bg2<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>'><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
 					
-					<li class='bg2<?php print ($this->request->getController() == "Contributors") ? ' active"' : ''; ?>'><?php print caNavLink($this->request, _t("Participants"), "", "", "Contributors", ""); ?></li>	
-					<li class='bg3<?php print ($this->request->getController() == "Gallery") ? ' active"' : ''; ?>'><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
+					<li class='bg3<?php print ($this->request->getController() == "Contributors") ? ' active"' : ''; ?>'><?php print caNavLink($this->request, _t("Participants"), "", "", "Contributors", ""); ?></li>	
+					<li class='bg4<?php print ($this->request->getController() == "Gallery") ? ' active"' : ''; ?>'><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 					<li class="bg5 dropdown-container">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print ($this->request->isLoggedIn()) ? "<span class='glyphicon glyphicon-user' aria-label='"._t("User options")."'></span> "."Account" : _t("Login"); ?></a>
 						<ul class="dropdown-menu bg5">
@@ -172,8 +173,8 @@
 					<li class="mobileMenuItems dropdown-container">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Language"); ?></a>
 						<ul class="dropdown-menu">
-							<li><?= caChangeLocaleLink($this->request, 'de_FR', _t("FR"), ''); ?></li>
-							<li><?= caChangeLocaleLink($this->request, 'en_US', _t("EN"), ''); ?></li>
+							<li><?= caChangeLocaleLink($this->request, 'en_CA', _t("EN"), ''); ?></li>
+							<li><?= caChangeLocaleLink($this->request, 'fr_CA', _t("FR"), ''); ?></li>
 						</ul>
 					</li>
 					<li class='mobileMenuItems'>

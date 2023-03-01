@@ -222,7 +222,8 @@ a:hover {
 		background-color: #27529A !important; 
 	}
 	.navbar-nav > li.bg5, .dropdown-menu.bg5, .dropdown-menu.bg5 li{
-		background-color: #61941E !important; 
+		background-color: #61941E !important;
+		color: #FFF; 
 	}
 	.navbar-nav > li.bg6, .dropdown-menu.bg6, .dropdown-menu.bg6 li{
 		background-color: #1C8A39 !important; 
@@ -347,6 +348,9 @@ a:hover {
 		/* background-color on hover */
 		/*background-color:#efefef;*/
 	
+	}
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a{
+		color: #27529A;
 	}
 }
 @media (min-width: 768px){
@@ -571,6 +575,12 @@ body{
 	padding: 0px;
 	font-size: 24px;
 	text-transform: capitalize;
+}
+.advancedSearch h1 {
+	color: #27529A;
+	font: 400 48px/50px "Gill Sans W01 Book",sans-serif;
+	margin-bottom: 30px;
+	text-transform:none;
 }
 .results .bSearchWithinContainer{
 	clear:both;
@@ -810,7 +820,7 @@ body.frontContainer #footer{
 	font-size: 28px;
 	color: #000;
 	margin:80px 0px 20px 0px;
-	font-family: "Latolight";
+	font-family: "proxima-nova",sans-serif;
 	font-weight:300;
 	line-height:1.8em;
 }
@@ -819,7 +829,7 @@ body.frontContainer #footer{
 	font-size: 28px;
 	color: #000;
 	margin-bottom:15px;
-	font-family: "Lato";
+	font-family: "proxima-nova",sans-serif;
 	font-weight:600;
 }
 @media(max-width:767px){
@@ -894,7 +904,7 @@ body.frontContainer #footer{
 	color:#000;
 	text-transform:uppercase;
 	margin-bottom:6px;
-	font-family: Lato;
+	font-family: "Gill Sans W01 Book", sans-serif;
 }
 .hpExploreBox .hpExploreBoxTitle a:hover {
 	text-decoration:none;
@@ -1065,7 +1075,7 @@ collectionTile {
 .collectionTile .title {
 	font-size: 17px;
 	padding: 10px 0 10px 0;
-	font-family:lato;
+	font-family: "Gill Sans W01 Book", sans-serif;
 	
 }
 .collectionTile .title a {
@@ -1177,13 +1187,13 @@ div#detailTools{
 }
 .contributorTile .title {
 	padding-bottom:10px;
-	font-family:lato;
+	font-family: "Gill Sans W01 Book", sans-serif;
 	font-size:20px;
-	font-weight: bolder;
-	
+	font-weight: 400;
+	color:#22559a;
 }
 .contributorTile .description {
-	font-size:18px;
+	font-size:17px;
 }
 
 .contributorTile .title a {
@@ -1256,6 +1266,11 @@ div#detailTools{
 		float:right;
 	}
 }
+.advancedSearchField .formLabel{
+	font-size: 15px;
+	color:#222;
+}
+
 
 /* static page */
 .staticPage{

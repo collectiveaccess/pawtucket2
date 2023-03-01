@@ -5,14 +5,18 @@
 	
 	global $g_ui_locale;
 	$vs_lang_suffix = "_en";
-	if($g_ui_locale == "fr_FR"){
+	if($g_ui_locale == "fr_CA"){
 		$vs_lang_suffix = "_fr";
 	}
 ?>
 	<div class="row">
-		<div class="col-sm-12 col-md-8 col-md-offset-2">
-			<H1>Participating Institutions</H1>
+		<div class="col-sm-12">
+			<H1><?php print _t("Participating Institutions"); ?></H1>
 			<div class="contributorIntro">{{{contributors_intro<?php print $vs_lang_suffix; ?>}}}</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12 col-md-8 col-md-offset-2">
 			<div class="contributorMap"><?php print $vs_map; ?></div>
 		</div>
 	</div>
