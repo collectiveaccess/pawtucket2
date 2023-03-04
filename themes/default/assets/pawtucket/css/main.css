@@ -3710,7 +3710,7 @@ div.caLibraryTransactionListItemContainer {
     -moz-border-radius-: 4px;
     -webkit-border-radius: 4px;
     
-	margin: 5px 0 0 0;
+	margin: -20px 0 0 0;
 }
 
 div.caLibraryTransactionListItemMedia {

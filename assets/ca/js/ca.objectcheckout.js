@@ -170,7 +170,7 @@ var caUI = caUI || {};
 		// Methods
 		// --------------------------------------------------------------------------------
 		that.addInitialValues = function() {
-			if(that.initialValueList.length  === 0) { return; }
+			if(that.initialValueList && (that.initialValueList.length === 0)) { return; }
 			
 			jQuery.getJSON(
 				that.getInfoURL,
