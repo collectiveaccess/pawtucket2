@@ -375,6 +375,9 @@ body.frontContainer #footer{
 .parallax.hero1 {
 	background-image: url("../graphics/hero1.jpg");
 }
+.parallax.hero2 {
+	background-image: url("../graphics/Squamish_hero1.jpg");
+}
 
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
@@ -763,6 +766,12 @@ body.frontContainer #footer{
 }
 .landingBox .landingBoxImage.landingBoxImage3{
 	background-image: url('../graphics/hero_1.jpg');
+}
+.landingBox .landingBoxImage.landingBoxImageArchives{
+	background-image: url('../graphics/Archival_Item_sm.jpg');
+}
+.landingBox .landingBoxImage.landingBoxImageCollections{
+	background-image: url('../graphics/Archival_Collection_sm.jpg');
 }
 .landingBox .landingBoxDetails {
 	padding: 15px 13px 22px;
