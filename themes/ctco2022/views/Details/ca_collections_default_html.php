@@ -147,8 +147,8 @@
 						}
 					?> -->
 
-					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related People/Institutions</label>
-							<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div>
+					{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="donor,collector"><div class="unit"><label>Related People/Institutions</label>
+							<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="donor,collector"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div>
 					</ifcount>}}}
 
 				</div><!-- end col -->
@@ -164,7 +164,7 @@
 
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id', 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
 							jQuery('#browseResultsContainer').jscroll({
 								autoTrigger: true,
 								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

@@ -36,6 +36,16 @@
 			{{{ca_collections.idno%width=200px&height=1}}}
 		</div>
 	</div>
+	<div class='row'>
+		<div class="advancedSearchField col-sm-6">
+			<label for='ca_entities' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search collections by their creator.') ?>"><?php _p('Creator') ?></label>
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=creator&width=200px&height=1}}}
+		</div>
+		<div class="advancedSearchField col-sm-6">
+			<label for='ca_entities' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search collections by related people or institutions.') ?>"><?php _p('Related People and Institutions') ?></label>
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=related&width=200px&height=1}}}
+		</div>
+	</div>
 	<br style="clear: both;"/>
 	<div class='advancedFormSubmit'>
 		<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
