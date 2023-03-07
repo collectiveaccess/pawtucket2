@@ -69,7 +69,7 @@ if($t_item->get("ca_occurrences.content_description") || $t_item->get("ca_occurr
 if($vb_2_col){
 ?>
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_occurrences.content_description"><div class="unit"><label>About the Program</label><div class="trimText">^ca_occurrences.content_description</div></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.content_description"><div class="unit"><label>About the Program</label><span class="trimText">^ca_occurrences.content_description</span></div></ifdef>}}}
 <?php
 				if(is_array($va_entities) && sizeof($va_entities)){
 					$va_entities_by_type = array();
@@ -114,15 +114,15 @@ if($vb_2_col){
 ?>
 					{{{<ifdef code="ca_occurrences.idno"><div class="unit"><label>Identifier</label>^ca_occurrences.idno</div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.parent_id"><div class="unit"><label>Part of the series</label><unit relativeTo="ca_occurrences.parent" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.children.occurrence_id"><div class="unit"><label>Programs in this series</label><div class="trimTextShort"><unit relativeTo="ca_occurrences.children" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.children.occurrence_id"><div class="unit"><label>Programs in this series</label><span class="trimTextShort"><unit relativeTo="ca_occurrences.children" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></span></div></ifdef>}}}
 					
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					
 					{{{<ifdef code="ca_occurrences.language"><div class="unit"><label>Language</label>^ca_occurrences.language</div></ifdef>}}}
 
-					{{{<ifcount code="ca_occurrences.related" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences.related" min="2" restrictToType="program">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences.related" min="2" restrictToTypes="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					
-					{{{<ifdef code="ca_occurrences.program_location"><div class="unit"><label>Location</label><div class="trimTextShort"><unit relativeTo="ca_occurrences.program_location" delimiter="<br/><br/>">^ca_occurrences.program_location<unit></div></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.program_location"><div class="unit"><label>Location</label><span class="trimTextShort"><unit relativeTo="ca_occurrences.program_location" delimiter="<br/><br/>">^ca_occurrences.program_location<unit></span></div></ifdef>}}}
 					
 					{{{<ifdef code="ca_occurrences.rightsSummary_asset"><div class="unit"><i>^ca_occurrences.rightsSummary_asset</i></div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.content_notice"><div class="unit"><i>^ca_occurrences.content_notice</i></div></ifdef>}}}
@@ -135,14 +135,14 @@ if($vb_2_col){
 				<div class="col-sm-12"><label>Related Archive, Library & Publication Objects</label><HR/></div>
 			</div>
 			<div class="row">
-				<div id="browseResultsContainer">
+				<div id="browseResultsContainerobjects">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
+					jQuery("#browseResultsContainerobjects").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_occurrence', 'id' => '^ca_occurrences.occurrence_id', 'detailNav' => 'occurrence'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery('#browseResultsContainerobjects').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
 							padding: 20,

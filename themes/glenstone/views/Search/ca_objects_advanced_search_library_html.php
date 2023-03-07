@@ -61,10 +61,10 @@ $va_access_values = caGetUserAccessValues($this->request);
 		</div>
 		<div class="col-sm-4" style='border-left:1px solid #ddd;'>
 			<h1>Glenstone Library Resources</h1>
-			<h3><?php print caNavLink($this->request, 'New Library Acquisitions', '', '', 'Lightbox', 'setDetail', array('set_id' => $vs_library_code)); ?></h3>
+			<h3><?php print caNavLink($this->request, 'New Library Acquisitions', '', '', 'Lightbox', 'setDetail', array('set_id' => 61)); ?></h3>
+			<p><?php print caNavLink($this->request, 'Digital Video Collection', '', '', 'Lightbox', 'setDetail', array('set_id' => 3406)); ?></p>
 			<h3>Library Databases</h3>
 			<p><a href='http://www.jstor.org/' target="_blank">JSTOR</a></p>
-			<p><a href='http://www.artstor.org/index.shtml' target="_blank">ARTstor</a></p>
 			<p><a href='https://www.worldcat.org/' target="_blank">WorldCat</a></p>
 			<h3>Other Museum Library Catalogs</h3>
 			<p><a href='https://library.nga.gov/' target="_blank">National Gallery of Art</a></p>

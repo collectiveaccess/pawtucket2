@@ -77,7 +77,7 @@ if($t_object->get("ca_objects.creative_access_desc") || trim($this->getVar("repr
 }
 if($vb_2_col){
 ?>
-				<div class='col-sm-6 col-md-6 col-lg-6'>
+				<div class='col-sm-6 col-md-6 col-lg-8'>
 					{{{representationViewer}}}
 				
 				
@@ -113,7 +113,7 @@ if($vb_2_col){
 					
 				</div><!-- end col -->
 			
-				<div class='col-sm-6 col-md-6 col-lg-6'>
+				<div class='col-sm-6 col-md-6 col-lg-4'>
 <?php
 }else{
 ?>
@@ -145,7 +145,7 @@ if($vb_2_col){
 				}
 ?>					
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToType="program">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToTypes="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					
 					
 					{{{<ifdef code="ca_objects.object_history.bib_ref"><div class='unit'><label>Bibliography</label>^ca_objects.object_history.bib_ref</div></ifdef>}}}

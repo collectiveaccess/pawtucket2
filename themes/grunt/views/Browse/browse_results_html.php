@@ -51,8 +51,7 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
-	
+	$vn_result_size 	= $qr_res->numHits();
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
@@ -66,7 +65,135 @@
 	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-	
+
+if($vs_detailNav = $this->request->getParameter("detailNav", pString)){
+	# --- this is the filter/sort nav bar above related objects on entity and occurrence
+	# --- detailNav = entity, occurrence, collection
+	switch($vs_detailNav){
+		case "collection":
+			switch($vs_table){
+				case "ca_objects":
+					$va_filter_facets = array("type_facet");
+				break;
+				# ------------------
+				case "ca_entities":
+					$va_filter_facets = array("type_facet");
+				break;
+				# ------------------
+				case "ca_occurrences":
+					$va_filter_facets = array("program_type_facet", "decade_facet", "year_facet");
+				break;
+				# ------------------
+			}
+		break;
+		# -------------------
+		case "occurrence":
+		case "entity":
+		default:
+			$va_filter_facets = array("type_facet");
+		break;
+		# -------------------
+		
+	}
+	$vs_browse_type = $this->request->getAction();
+?>
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="detailFilter">
+
+<?php				
+				$vs_label_output = 0;
+
+				if((sizeof($va_criteria) > 1)){
+					# --- check if type criteria has been selected
+					foreach($va_criteria as $va_facet_criteria){
+						if (!in_array($va_facet_criteria['facet_name'], array("detail_entity", "detail_occurrence", "collection_facet", "role_collections_facet"))) {
+							if(!$vs_label_output){
+								print "Filter by: ";
+								$vs_label_output = 1;
+							}
+							print '<div class="btn-group"><a href="#" onClick="loadDetailResults'.$vs_browse_type.'(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, 'removeCriterion' => $va_facet_criteria['facet_name'], 'removeID' => urlencode($va_facet_criteria['id'])), array('dontURLEncodeParameters' => true)).'\'); return false;"><button class="btn btn-default">'.$va_facet_criteria["facet"].": ".str_replace("Texts ➜ ", "", $va_facet_criteria["value"]).' <span class="glyphicon glyphicon-remove-circle"></span></button></a></div>';
+						}
+					}
+				}
+
+
+				foreach($va_filter_facets as $vs_filter_facet){
+					if(is_array($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]["content"]) > 1){
+						if(!$vs_label_output){
+							print "Filter by: ";
+							$vs_label_output = 1;
+						}
+?>
+								<div class="btn-group">
+									<a href="#" data-toggle="dropdown"><button class='btn btn-default'><?php print $va_facets[$vs_filter_facet]["label_singular"]; ?> <i class="fa fa-caret-down"></button></i></a>
+									<ul class="dropdown-menu" role="menu">
+<?php
+										foreach($va_facets[$vs_filter_facet]["content"] as $vn_item_id => $va_item){
+											print '<li><a href="#" onClick="loadDetailResults'.$vs_browse_type.'(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'facet' => $vs_filter_facet, 'id' => $va_item['id'], 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">'.$va_item["label"].'</a></li>';
+										}
+?>
+									</ul>
+								</div><!-- end btn-group -->
+<?php
+					}
+				}
+?>
+
+<?php					
+				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+?>
+								Sort by: <div class="btn-group">
+								<a href="#" data-toggle="dropdown"><button class='btn btn-default'><?php print urldecode($vs_current_sort); ?> <i class="fa fa-caret-down"></i></button></a>
+								<ul class="dropdown-menu" role="menu">
+<?php
+									print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
+									foreach($va_sorts as $vs_sort => $vs_sort_flds) {
+										if ($vs_current_sort === $vs_sort) {
+											print "<li><a href='#' onClick='return false;'><em>{$vs_sort}</em></a></li>\n";
+										} else {
+											print '<li><a href="#" onClick="loadDetailResults'.$vs_browse_type.'(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'sort' => $vs_sort, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">'.$vs_sort.'</a></li>';
+										}
+									}
+									print "<li class='divider'></li>\n";
+									print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
+									print '<li><a href="#" onClick="loadDetailResults'.$vs_browse_type.'(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'asc'), array('dontURLEncodeParameters' => true)).'\'); return false;">'.(($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : '').'</a></li>';
+									print '<li><a href="#" onClick="loadDetailResults'.$vs_browse_type.'(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'desc'), array('dontURLEncodeParameters' => true)).'\'); return false;">'.(($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : '').'</a></li>';
+?>
+								</ul>
+							</div>
+<?php
+				}
+				if($vb_showLetterBar){
+					print "<div id='bLetterBar'>";
+					foreach(array_keys($va_letter_bar) as $vs_l){
+						if(trim($vs_l)){
+							#print caNavLink($this->request, $vs_l, ($vs_letter == $vs_l) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))." ";
+							print '<a href="#" '.(($vs_letter == $vs_l) ? 'class="selectedLetter"' : '').' onClick="loadDetailResults'.$vs_browse_type.'(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'l' => $vs_l, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">'.$vs_l.'</a>';
+						}
+					}
+					#print " | ".caNavLink($this->request, _t("All"), (!$vs_letter) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all')); 
+					print ' | <a href="#" '.((!$vs_letter) ? 'class="selectedLetter"' : '').' onClick="loadDetailResults'.$vs_browse_type.'(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'l' => 'all', 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">All</a>';
+					print "</div>";
+				}
+?>
+				</div></div></div><!--- end row --></div><!--- end container -->
+	<script type='text/javascript'>	
+		function loadDetailResults<?php print $vs_browse_type; ?>(url) {
+			jQuery("#browseResultsContainer<?php print $vs_browse_type; ?>").data('jscroll', null);
+			jQuery("#browseResultsContainer<?php print $vs_browse_type; ?>").load(url, function() {
+				jQuery("#browseResultsContainer<?php print $vs_browse_type; ?>").jscroll({
+					autoTrigger: true,
+					loadingHtml: "<i class='caIcon fa fa fa-cog fa-spin fa-1x' ></i> Loading...",
+					padding: 20,
+					nextSelector: "a.jscroll-next"
+				});
+			});
+		}
+	</script>
+<?php
+}	
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
