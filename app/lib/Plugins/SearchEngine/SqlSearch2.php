@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2022 Whirl-i-Gig
+ * Copyright 2010-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -103,7 +103,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			self::$whitespace_tokenizer_regex = '[\s\"\—\-]+';
 		}
 		if(!(self::$punctuation_tokenizer_regex = $this->search_config->get('punctuation_tokenizer_regex'))) {
-			self::$whitespace_tokenizer_regex = '[\.,;:\(\)\{\}\[\]\|\\\+_\!\&«»\']+';
+			self::$punctuation_tokenizer_regex = '[\.,;:\(\)\{\}\[\]\|\\\+_\!\&«»\']+';
 		}
 		
 		if(self::$filter_stop_words) {
@@ -488,7 +488,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				}
 				if(sizeof($flds)) {
 					$res[] = "(CONCAT(swi.field_table_num, '/', swi.field_num) NOT IN (?))";
-					$params[] = join(',', $flds);
+					$params[] = $flds;
 				}
 				if(sizeof($res)) {
 					$field_sql .= " AND (".join(' OR ', $res).")";
@@ -765,7 +765,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		
 		if ($ap['datatype'] === 'COUNT') {
 			$params = [
-				$subject_tablenum, (int)$lower_text, (int)$upper_text
+				$subject_tablenum, $ap['table_num'], (int)$lower_text, (int)$upper_text
 			];
 			
 			$rel_type_sql = '';
@@ -778,7 +778,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				FROM ca_sql_search_word_index swi
 				INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id
 				WHERE
-					swi.table_num = ? AND swi.field_num = 'COUNT' AND sw.word BETWEEN ? AND ? {$rel_type_sql}
+					swi.table_num = ? AND swi.field_table_num = ? AND swi.field_num = 'COUNT' AND sw.word BETWEEN ? AND ? {$rel_type_sql}
 				GROUP BY swi.row_id
 			", $params);
 			return $this->_arrayFromDbResult($qr_res);
@@ -933,7 +933,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 						$a = $s->getItems(['idsOnly' => true]);
 						break;
 					default:
-						$a = $qr->get($spk, ['returnAsArray' => true]);
+						$a = $qr->get($spk, ['restrictToRelationshipTypes' => $ap['relationship_type_ids'] ?? null, 'returnAsArray' => true]);
 						break;
 				}
 				
@@ -1117,8 +1117,8 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			// Tokenize string
 			$words = [];
 			if ($tokenize || $force_tokenize) {
-				foreach($content as $content) {
-					$words = array_merge($words, self::tokenize((string)$content));
+				foreach($content as $c) {
+					$words = array_merge($words, self::tokenize((string)$c));
 				}
 			}
 			if (!$tokenize) { $words = array_merge($words, $content); }
@@ -1658,11 +1658,21 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			return null;
 		}
 		
+		if((mb_strtolower($field) === 'related') && $rel_table) {
+			$spec = explode('.', $tmp[0]);
+			$table = array_shift($spec);
+			array_shift($spec);
+			$tmp = preg_split('![/\|]+!', join('.', array_merge([$table], $spec)));
+			list($field, $subfield, $subsubfield, $subsubsubfield) = array_pad($spec, 4 , null);
+		}
+		
 		if (in_array(strtolower($field), ['preferred_labels', 'nonpreferred_labels'])) {
 			$t_table = $t_table->getLabelTableInstance();
 			$table = $t_table->tableName();
-			$field = $subfield;
+			if(!($field = $subfield)) { $field = $t_table->getDisplayField(); }
 			$subfield = $subsubfield = $subsubsubfield = null;
+			
+			$tmp[0] = join('.', [$table, $field]);
 		}
 		
 		$table_num = $t_table->tableNum();

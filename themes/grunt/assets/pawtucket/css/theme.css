@@ -643,15 +643,15 @@ body.frontContainer #footer{
 }
 
 /* listing */
-.listing .collectionTile .title {
+.collectionTile .title {
 	padding: 10px;
 	font-family: "Lato";
 	font-size:20px;
 	font-weight:bold;
 	text-align:center;
-	text-transform:capitalize;
+	text-transform:none;
 }
-.listing .collectionTile img{
+.collectionTile img{
 	width:100%;
 	height: 200px;
 	object-fit: cover;
@@ -750,6 +750,52 @@ body.frontContainer #footer{
 }
 .detailFilter .btn-group button{
 	font-size:12px;
+	background-color:#efefef;
+	color:#000;
+}
+.collectionDetailListItem{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	background-color: #FFFFFF;
+	line-height: 1em;
+	padding: 10px;
+	height: 90px;
+	overflow: hidden;
+	margin-bottom:30px;
+}
+.detail .unit .collectionDetailListItemText, .detail .unit .collectionDetailListItemText a{
+	line-height: 1.2em;
+	color: #000;
+	font-family: lato;
+	font-size: 16px;
+	text-decoration:none;
+}
+.detail .unit .collectionDetailListItemText small a{
+	font-size: 13px;
+	color: #595959;
+	text-decoration:none;
+}
+.detail .unit .btn-default{
+	color:#fff;
+	text-decoration:none;
+}
+.detail .relTabButton {
+	display: inline-block;
+	padding: 15px 30px 15px 30px;
+	cursor: pointer;
+	color: #000;
+	font-size:15px;
+	font-family:lato;
+	background-color:#FFF;
+	margin-right:1px;
+}
+.detail .relTabButton:hover, .detail .relTabButton.selected {
+	background-color:#000;
+	color:#0081ca;
+}
+.detail .relatedBlockTabs{
+	margin-bottom:15px;
+	border-bottom:1px solid #000;
 }
 /* static pages */
 .staticPage{

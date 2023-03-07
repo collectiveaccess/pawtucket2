@@ -141,7 +141,9 @@
 								</div>
 								<div class="col-sm-3">
 <?php
-									print "<H4>".$qr_res->get('ca_objects.preferred_labels')."</H4>";
+									if($qr_res->get('ca_objects.preferred_labels') != "[BLANK]"){
+										print "<H4>".$qr_res->get('ca_objects.preferred_labels')."</H4>";
+									}
 									if(($vs_brand = $qr_res->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || ($vs_subbrand = $qr_res->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true)))){
 										print "<div class='unit'><H6>Brand</H6>".$vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."</div>";
 									}
@@ -151,7 +153,7 @@
 									if($vs_tmp = $qr_res->get('ca_objects.transferred_date', array("delimeter" => ", "))){
 										print "<div class='unit'><H6>Publication Date</H6>".$vs_tmp."</div>";
 									}
-									if($vs_tmp = $qr_res->get('ca_objects.language', array("delimeter" => ", "))){
+									if($vs_tmp = $qr_res->get('ca_objects.language', array("delimeter" => ", ", "convertCodesToDisplayText" => true))){
 										print "<div class='unit'><H6>Language</H6>".$vs_tmp."</div>";
 									}
 									$va_entities = $qr_res->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));

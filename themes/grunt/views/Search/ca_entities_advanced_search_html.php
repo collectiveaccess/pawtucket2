@@ -18,8 +18,8 @@
 	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<label for='ca_entities_preferred_labels_name' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to the names of people and organizations.') ?>"><?php _p('Name') ?></label>
-			{{{ca_entities.preferred_labels.name%width=220px}}}
+			<label for='ca_entities_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to the names of people and organizations.') ?>"><?php _p('Name') ?></label>
+			{{{ca_entities.preferred_labels%width=220px}}}
 		</div>
 	</div>
 	<div class='row'>

@@ -1,0 +1,33 @@
+<?php
+	global $g_ui_locale;
+	
+	if($g_ui_locale == "en_CA"){
+?>
+	<div class="row">
+		<div class="col-sm-12">
+			<H1>{{{title_en}}}</H1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			{{{bodytext_en}}}
+		</div>
+	</div>
+
+<?php
+	}else{
+?>
+	<div class="row">
+		<div class="col-sm-12">
+			<H1>{{{title_fr}}}</H1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+			{{{bodytext_fr}}}
+		</div>
+	</div>
+
+<?php
+	}
+?>

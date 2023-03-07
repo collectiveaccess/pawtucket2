@@ -257,6 +257,7 @@ body{
 	outline: 0;
 	border:0px;
 	border-radius: 0px;
+	margin-left: -30px;
 }
 .bSearchWithin, .bSearchWithin:focus {
     width: 80%;
@@ -271,6 +272,7 @@ body{
 	font-size: 14px;
 	display: inline-block;
 	display:inline-block;
+	padding-right: 30px;
 }
 .browseRemoveFacet, .browseRemoveFacet .btn{
 	display:block;
