@@ -220,7 +220,6 @@ trait CLIUtilsDeveloper{
 		$extracted_strings = [];
 		
 		$directories = [__CA_THEMES_DIR__."/default", __CA_THEMES_DIR__."/{$theme}", __CA_BASE_DIR__."/app/models", __CA_BASE_DIR__."/app/lib", __CA_BASE_DIR__."/app/helpers", __CA_BASE_DIR__."/app/conf"];
-		
 		$file_count = 0;
 		foreach($directories as $d) {
 			$files = caGetDirectoryContentsAsList($d);
@@ -241,7 +240,7 @@ trait CLIUtilsDeveloper{
 				while($line = fgets($r)) {
 					// _() construction used in config files
 					if($is_conf) {
-						$strings = preg_match_all("!_\([\"]{0,1}([^\"\)]+?)[\"]{0,1}\)!", $line, $m);
+						$strings = preg_match_all("!_\([\"\']{0,1}([^\"\)]+?)[\"\']{0,1}[,\)]+!", $line, $m);
 	
 						$extracted_strings = array_merge($extracted_strings, array_filter($m[1], function($v) {
 							return preg_match("![A-Za-z0-9]+!", $v);
@@ -249,8 +248,8 @@ trait CLIUtilsDeveloper{
 					}
 					
 					// _t() construction used in code
-					$strings = preg_match_all("!_t\([\"\']{1}([^\"\)]+?)[\"\']{1}\)!", $line, $m);
-	
+					$strings = preg_match_all("!_t\([\"\']{0,1}([^\"\)]+?)[\"\']{0,1}[,\)]+!", $line, $m);
+
 					$extracted_strings = array_merge($extracted_strings, array_filter($m[1], function($v) {
 						return preg_match("![A-Za-z0-9]+!", $v);
 					}));
