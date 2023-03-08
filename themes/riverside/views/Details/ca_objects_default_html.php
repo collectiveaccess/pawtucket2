@@ -134,16 +134,6 @@
 							{{{<ifdef code="ca_objects.volume_number"><div class="unit"><label>Volume Number</label>^ca_objects.volume_number</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.issue_number"><div class="unit"><label>Issue Number</label>^ca_objects.issue_number</div></ifdef>}}}
 				
-							<!-- Library fields -->
-							{{{<if rule='(^ca_objects.rare_book =~ /Yes/)'><ifdef code="ca_objects.rare_book"><div class="unit"><label>Rare Book</label>^ca_objects.rare_book</div></ifdef>
-								<ifdef code="ca_objects.rare_book_info"><div class="unit"><label>Rare Book Cataloging</label>
-								<ifdef code="ca_objects.rare_book_info.binding"><b>Binding</b><br/>^ca_objects.rare_book_info.binding<br/><br/></ifdef>
-								<ifdef code="ca_objects.rare_book_info.rarebook_transcription"><b>Transcription of the Title</b><br/>^ca_objects.rare_book_info.rarebook_transcription<br/><br/></ifdef>
-								<ifdef code="ca_objects.rare_book_info.rarebook_marks"><b>Marks/Inscriptions/Signatures</b><br/>^ca_objects.rare_book_info.rarebook_marks<br/><br/></ifdef>
-								<ifdef code="ca_objects.rare_book_info.rarebook_bibhistnote"><b>Bibliographic/Historical Note</b><br/>^ca_objects.rare_book_info.rarebook_bibhistnote<br/><br/></ifdef>
-								<ifdef code="ca_objects.rare_book_info.rarebook_provenance"><b>Provenance</b><br/>^ca_objects.rare_book_info.rarebook_provenance<br/><br/></ifdef>
-							</div></ifdef></if>}}}
-							<!-- end Library fields -->
 							<!-- Format tab: Photo/Artifact/Art_arch -->
 							{{{<ifdef code="ca_objects.dimensions.dimensions_length|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_depth|ca_objects.dimensions.dimensions_weight|ca_objects.dimensions.dimension_notes"><div class="unit"><label>Dimensions</label>
 								<unit relativeTo="ca_objects.dimensions" delimiter="<br/>">
@@ -163,6 +153,16 @@
 							{{{<ifdef code="ca_objects.inscriptions"><div class="unit"><label>Inscriptions & Markings</label>^ca_objects.inscriptions%delimiter=,_&convertLineBreaks=1</div></ifdef>}}}
 						</div>
 						<div class='col-sm-12 col-md-6'>
+							<!-- Library fields -->
+							{{{<if rule='(^ca_objects.rare_book_info)'>
+								<ifdef code="ca_objects.rare_book_info"><div class="unit"><label>Rare Book Cataloging</label>
+								<ifdef code="ca_objects.rare_book_info.binding"><b>Binding</b><br/>^ca_objects.rare_book_info.binding<br/><br/></ifdef>
+								<ifdef code="ca_objects.rare_book_info.rarebook_transcription"><b>Transcription of the Title</b><br/>^ca_objects.rare_book_info.rarebook_transcription<br/><br/></ifdef>
+								<ifdef code="ca_objects.rare_book_info.rarebook_marks"><b>Marks/Inscriptions/Signatures</b><br/>^ca_objects.rare_book_info.rarebook_marks<br/><br/></ifdef>
+								<ifdef code="ca_objects.rare_book_info.rarebook_bibhistnote"><b>Bibliographic/Historical Note</b><br/>^ca_objects.rare_book_info.rarebook_bibhistnote<br/><br/></ifdef>
+								<ifdef code="ca_objects.rare_book_info.rarebook_provenance"><b>Provenance</b><br/>^ca_objects.rare_book_info.rarebook_provenance<br/><br/></ifdef>
+							</div></ifdef></if>}}}
+							<!-- end Library fields -->
 							{{{<ifdef code="ca_objects.url.link_url"><div class="unit"><label>External Link</label><unit delimiter="<br/>"><a href="^ca_objects.url.link_url" target="_blank"><ifdef code="ca_objects.url.link_text">^ca_objects.url.link_text</ifdef><ifnotdef code="ca_objects.url.link_text">^ca_objects.url.link_url</ifnotdef></a></div></ifdef>}}}
 							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Dedicated,Related"><div class="unit"><label>Related People & Organizations</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="Dedicated,Related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
 							{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount>/Broadcast<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifcount>}}}
@@ -239,6 +239,7 @@
 <?php				
 							}
 ?>
+
 						</div>
 					</div></div><!-- end bgOffWhiteLight -->
 				</div>
