@@ -629,6 +629,81 @@ body.frontContainer #footer{
 	padding-bottom:30px;
 	padding-top:30px;
 }
+
+.frontAlert{
+	position:fixed;
+	bottom:0px;
+	left:0px;
+	background-color:rgba(0, 0, 0, 0.6);
+	width:100%;
+	height:100%;
+	z-index:2000;
+}
+.frontAlert div.frontAlertBox{
+	margin:25vh 25vw;
+	height:50vh;
+	background-color:#FFF;
+	border:2px solid #000;
+	position:relative;	
+}
+.frontAlert div.frontAlertMessage{
+	padding: 60px;
+	max-height:50vh;
+	font-size: 18px;
+	color: #000;
+	overflow:scroll;
+	text-align:center;
+}
+.frontAlert div.frontAlertMessage strong, .frontAlert div.frontAlertMessage b{
+	font-size: 24px;
+}
+div.frontAlertClose{
+	position:absolute;
+	right:10px;
+	top:10px;
+	margin:0px;
+	font-size:34px;
+}
+.frontAlert .enterButton{
+	text-align:center;
+	margin-top:30px;
+}
+.frontAlert div.frontAlertBox{
+	margin:5vh 5vw;
+	height:90vh;
+}
+.frontAlert div.frontAlertMessage{
+	max-height:90vh;
+	font-size: 13px;
+}
+@media(min-width:768px){
+	.frontAlert div.frontAlertBox{
+		margin:15vh 15vw;
+		height:70vh;
+	}
+	.frontAlert div.frontAlertMessage{
+		max-height:70vh;
+		font-size: 18px;
+	}
+}
+@media(min-width:1145px){
+	.frontAlert div.frontAlertBox{
+		margin:20vh 20vw;
+		height:60vh;
+	}
+	.frontAlert div.frontAlertMessage{
+		max-height:60vh;
+	}
+}
+@media(min-width:1550px){
+	.frontAlert div.frontAlertBox{
+		margin:25vh 25vw;
+		height:50vh;
+	}
+	.frontAlert div.frontAlertMessage{
+		max-height:50vh;
+	}
+}
 /* hp explore */
 .hpExplore{
 	padding-top:45px;
@@ -882,6 +957,10 @@ div#detailTools{
 .detail #browseResultsContainer a{
 	text-decoration:none;
 }
+.detail .alert{
+	font-size:18px;
+	text-align:center;
+}
 /* Contrubutors page */
 
 /* .leaflet-container a {
@@ -974,15 +1053,23 @@ div#detailTools{
 .transcribe H2{
 	margin-top:30px;
 }
+.bSearchWithin{
+	height: 40px;
+}
 .bSearchWithin .form-control{
 	width:80%;
 	float:left;
+	border:none;
+	-webkit-box-shadow: none;
+	box-shadow:none;
 }
 .bSearchWithin .btn-default{
 	float:left;
-	padding: 8px;
+	padding: 3px 8px 3px 8px;
 	font-size: 18px;
 	margin-left: -3px;
+	background-color: transparent;
+	color:#828282;
 }
 .transcribe .resultCount{
 	color: #000;
