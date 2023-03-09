@@ -567,8 +567,8 @@ div.globalLinks a {
   right: -5px;
 }
 .jcarousel li {
-	height:400px;
-	min-width:525px;
+	max-height:400px;
+	max-width:525px;
 }
 .jcarousel .frontSlide {
 	background-color:#000;
