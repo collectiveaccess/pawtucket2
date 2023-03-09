@@ -42,6 +42,11 @@
 							if(!$va_browse_type["dontShowInBrowseMenu"]){
 								print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), '', '', 'Browse', $vs_browse_name, '')."</li>";
 							}
+							if($vs_browse_name == "archives"){
+?>
+								<li><?php print caNavLink($this->request, _t("Archives & Oral History"), "", "", "BrowseAll", "Archives"); ?></li>
+<?php
+							}
 						}
 ?>
 					</ul>	

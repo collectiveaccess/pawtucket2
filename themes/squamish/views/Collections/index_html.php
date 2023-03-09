@@ -3,7 +3,7 @@
 	$qr_collections = $this->getVar("collection_results");
 ?>
 	<div class="row">
-		<div class='col-md-12 col-lg-12 collectionsList'>
+		<div class='col-md-12 col-lg-10 col-lg-offset-1 collectionsList'>
 			<h1><?php print $this->getVar("section_name"); ?></h1>
 <?php
 	if($vs_intro_global_value = $o_collections_config->get("collections_intro_text_global_value")){

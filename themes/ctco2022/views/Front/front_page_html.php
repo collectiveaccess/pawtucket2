@@ -60,7 +60,7 @@
 				
 				<div class="heroSearch">
 					<H1>
-						<div class="line1">Welcome to the</div>
+						<div class="line1">Welcome to</div>
 						<div class="line2">Connecticut Collections</div>
 						<div class="line3">{{{hp_search_text}}}</div>
 					</H1>

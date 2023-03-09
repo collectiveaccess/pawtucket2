@@ -135,7 +135,6 @@ if($vb_2_col){
 					{{{<ifdef code="ca_objects.series"><div class="unit"><label>Series Statement</label>^ca_objects.series</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.publication_info"><div class="unit"><label>Place of Publication</label>^ca_objects.publication_info</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.publisher"><div class="unit"><label>Publisher</label>^ca_objects.publisher</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.physical_lib.phys_lib|ca_objects.physical_lib.phys_notes_lib"><div class="unit"><label>Physical Description</label><ifdef code="ca_objects.physical_lib.phys_lib">^ca_objects.physical_lib.phys_lib<ifdef code="ca_objects.physical_lib.phys_notes_lib"><br/></ifdef></ifdef><ifdef code="ca_objects.physical_lib.phys_notes_lib">^ca_objects.physical_lib.phys_notes_lib</ifdef></div></ifdef>}}}
 					{{{<ifdef code="ca_objects.physical_lib.phys_document_type"><div class="unit"><label>Publication Type</label>^ca_objects.physical_lib.phys_document_type</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.physical_lib.phys_spine"><div class="unit"><label>Spine Height</label>^ca_objects.physical_lib.phys_spine</div></ifdef>}}}
 					
