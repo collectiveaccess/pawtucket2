@@ -154,7 +154,7 @@
 						</div>
 						<div class='col-sm-12 col-md-6'>
 							<!-- Library fields -->
-							{{{<if rule='(^ca_objects.rare_book_info)'>
+							{{{<if rule='(^ca_objects.rare_book =~ /Yes/)'>
 								<ifdef code="ca_objects.rare_book_info"><div class="unit"><label>Rare Book Cataloging</label>
 								<ifdef code="ca_objects.rare_book_info.binding"><b>Binding</b><br/>^ca_objects.rare_book_info.binding<br/><br/></ifdef>
 								<ifdef code="ca_objects.rare_book_info.rarebook_transcription"><b>Transcription of the Title</b><br/>^ca_objects.rare_book_info.rarebook_transcription<br/><br/></ifdef>
