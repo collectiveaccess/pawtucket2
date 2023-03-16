@@ -2,7 +2,8 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	global $g_ui_locale;
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -17,7 +18,17 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
+<?php
+	if ($g_ui_locale == 'en_US'){
+?>
 					<H4>{{{^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels"> ☜☞ ^ca_occurrences.nonpreferred_labels</ifdef>}}}</H4>
+<?php
+	}else{
+?>
+					<H4>{{{^ca_occurrences.nonpreferred_labels<ifdef code="ca_occurrences.preferred_labels"> ☜☞ ^ca_occurrences.preferred_labels</ifdef>}}}</H4>
+<?php	
+	}
+?>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
