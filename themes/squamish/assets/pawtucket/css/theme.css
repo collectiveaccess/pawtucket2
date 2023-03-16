@@ -896,6 +896,10 @@ body.frontContainer #footer{
 	width: 100%;
 	font-size: 18px;
 }
+.detail .unit a.btn{
+	color:#FFF;
+	text-decoration:none;
+}
 /* advanced Search */
 .advancedSearchField .formLabel {
 	text-transform: capitalize;

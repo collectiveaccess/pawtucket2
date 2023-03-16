@@ -104,7 +104,11 @@
 				{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>"><l>^ca_storage_locations.preferred_labels.displayname</l></unit>
 					</div></ifcount>}}}
-				
+<?php
+				if($vn_collection_id = $t_object->get("ca_collections.collection_id", array("limit" => 1))){
+					print "<div class='unit'>".caDetailLink($this->request, "More from this ".$t_object->get("ca_collections.type_id", array("limit" => 1, "convertCodesToDisplayText" => true)), "btn btn-default", "ca_collections", $vn_collection_id)."</div>";
+				}
+?>
 				<div class="unit">{{{map}}}</div>
 						
 			</div><!-- end col -->
