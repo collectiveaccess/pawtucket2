@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2022 Whirl-i-Gig
+ * Copyright 2014-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -189,7 +189,7 @@ class BaseFindEngine extends BaseObject {
 	public function cleanupTemporaryResultTable() {
 		if ($this->tmp_table_name) {
 			if($this->db->connected()) {
-				$this->db->query("DROP TABLE {$this->tmp_table_name}");
+				$this->db->query("DROP TEMPORARY TABLE {$this->tmp_table_name}");
 			}
 		}
 		if ($this->tmp_file_path) { @unlink($this->tmp_file_path); }
@@ -468,6 +468,7 @@ class BaseFindEngine extends BaseObject {
 		
 		$table_pk = $t_table->primaryKey();
 		$table_num = $t_table->tableNum();
+
 		list($sort_field, $sort_filter) = array_pad(explode('|', $sort_field), 2, null);
 		list($sort_table, $sort_field, $sort_subfield) = array_pad(explode(".", $sort_field), 3, null);
 		if (!($t_bundle = Datamodel::getInstanceByTableName($sort_table, true))) { 
@@ -561,6 +562,8 @@ class BaseFindEngine extends BaseObject {
 		$joins = $this->_getJoins($t_table, $t_rel_table, $intrinsic, caGetOption('relationshipTypes', $options, null));
 		$join_sql = join("\n", $joins);
 		
+		$intrinsic = array_shift(explode('/', $intrinsic));
+		
 		$sql = "
 			SELECT t.{$table_pk}
 			FROM {$table} t
@@ -618,6 +621,8 @@ class BaseFindEngine extends BaseObject {
 		$rel_table_num = $t_rel_table->tableNum();
 		$rel_label_table = $t_rel_table->getLabelTableName();
 		
+		$rel_label_field = array_shift(explode('/', $rel_label_field));
+		
 		$t_label = $t_rel_table->getLabelTableInstance();
 		if (!$rel_label_field || !$t_label->hasField($rel_label_field)) { $rel_label_field = $t_rel_table->getLabelSortField(); }
 		
@@ -635,7 +640,6 @@ class BaseFindEngine extends BaseObject {
 			ORDER BY rl.`{$rel_label_field}` {$direction}
 			{$limit_sql}
 		";
-		
 		$qr_sort = $this->db->query($sql);
 		$sort_keys = $qr_sort->getAllFieldValues($table_pk);
 		
@@ -808,7 +812,7 @@ class BaseFindEngine extends BaseObject {
 					INNER JOIN {$hit_table} AS ht ON ht.row_id = t.{$table_pk}
 					{$filter_join}
 					WHERE cav.element_id = ? {$filter_where}
-					ORDER BY cav.value_sortable {$direction}";
+					ORDER BY cav.value_sortable {$direction}"; 
 		$qr_sort = $this->db->query($sql, [$element_id]);
 		$sort_keys = [];
 		while($qr_sort->nextRow()) {
@@ -1308,7 +1312,7 @@ class BaseFindEngine extends BaseObject {
 	 */
 	private function _createTempTableForHits(array $hits) {
 		$table_name = '_caSortTmp'.str_replace('-', '',caGenerateGUID());
-		$this->db->query("DROP TABLE IF EXISTS {$table_name}");
+		$this->db->query("DROP TEMPORARY TABLE IF EXISTS {$table_name}");
 		$this->db->query("
 			CREATE TEMPORARY TABLE {$table_name} (
 				row_id int unsigned not null primary key
@@ -1346,12 +1350,14 @@ class BaseFindEngine extends BaseObject {
 
 		$is_attribute = method_exists($t_rel_table, 'hasElement') ? $t_rel_table->hasElement($sort_field) : false;
 		
-		$rel_type_sql = (is_array($rel_types) && (sizeof($rel_types) > 0)) ? " AND l.type_id IN (".join(',', array_map('intval', $rel_types)).")" : '';
-	
 		$joins = [];
 		switch($psize = sizeof($path)) {
 			case 3:
 				$linking_table = $path[1];
+				
+				$rel_types = caMakeRelationshipTypeIDList($linking_table, $rel_types);
+				$rel_type_sql = (is_array($rel_types) && (sizeof($rel_types) > 0)) ? " AND l.type_id IN (".join(',', array_map('intval', $rel_types)).")" : '';
+	
 				if ($table === $rel_table) {
 					$t_relation = Datamodel::getInstance($linking_table, true);
 					// self relation
@@ -1390,7 +1396,7 @@ class BaseFindEngine extends BaseObject {
 	 */
 	private function _createTempTableForAttributeIDs() {		
 		$table_name = '_caAttrTmp_'.str_replace('-', '',caGenerateGUID());
-		$this->db->query("DROP TABLE IF EXISTS {$table_name}");
+		$this->db->query("DROP TEMPORARY TABLE IF EXISTS {$table_name}");
 		$this->db->query("CREATE TEMPORARY TABLE {$table_name} (attribute_id int unsigned not null primary key, row_id int unsigned not null) engine=memory");
 		$this->temporary_tables[$table_name] = true;
 		
@@ -1402,7 +1408,7 @@ class BaseFindEngine extends BaseObject {
 	 */
 	private function _dropTempTable($table_name) {
 		$this->db->query("
-			DROP TABLE IF EXISTS {$table_name};
+			DROP TEMPORARY TABLE IF EXISTS {$table_name};
 		");
 		if ($this->db->numErrors()) {
 			return false;

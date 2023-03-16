@@ -159,6 +159,10 @@
 				}
 				if ($vs_lang_or = $t_object->get('ca_objects.041_h', array("delimiter" => ", "))) {
 					print "<div class='unit'><h6>Language(s) of original</h6>".$vs_lang_or."</div>";
+					if($vs_uniform_title = $t_object->get('ca_objects.240_Uniform', array("delimiter" => ", "))){
+						print "<div class='unit'><h6>Title In Original Language</h6>".$vs_uniform_title."</div>";
+					
+					}
 				}	
 				$vs_pagination = $t_object->get('ca_objects.pagination', array("delimiter" => ", "));
 				$vs_format = $t_object->get('ca_objects.format', array("delimiter" => ", "));										
