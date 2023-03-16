@@ -128,7 +128,7 @@ function caGetCollectionLevelSummaryTOCSquamish($po_request, $va_collection_ids,
 			if($va_exclude_collection_type_ids && is_array($va_exclude_collection_type_ids) && (in_array($qr_collections->get("ca_collections.type_id"), $va_exclude_collection_type_ids))){
 				continue;
 			}
-			$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => $vs_sub_collection_sort));
+			#$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => $vs_sub_collection_sort));
 			if(strToLower($qr_collections->getWithTemplate("^ca_collections.type_id")) != "collection"){
 				$vs_output .= "<div class='unit' style='margin-left:".(20*($vn_level - 2))."px;'>";
 				$vs_output .= "<b>";
@@ -142,9 +142,9 @@ function caGetCollectionLevelSummaryTOCSquamish($po_request, $va_collection_ids,
 				$vs_output .= "<br/>";
 				$vs_output .= "</div>";
 			}
-			if(sizeof($va_child_ids)) {
-				$vs_output .=  caGetCollectionLevelSummaryTOCSquamish($po_request, $va_child_ids, $vn_level + 1);
-			}
+			#if(sizeof($va_child_ids)) {
+			#	$vs_output .=  caGetCollectionLevelSummaryTOCSquamish($po_request, $va_child_ids, $vn_level + 1);
+			#}
 		}
 	}
 	return $vs_output;
