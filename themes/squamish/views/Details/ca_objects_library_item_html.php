@@ -84,15 +84,8 @@
 						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
-				{{{<ifcount code="ca_collections" min="1">
-					<div class="unit"><label>Part of</label>
-						<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>
-					</div></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator"><div class="unit"><label>Creators</label>
-						<unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>
-					</div></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="interviewee,interviewer,knowledge_sharer"><div class="unit"><label>Speakers</label>
-						<unit relativeTo="ca_entities" restrictToRelationshipTypes="interviewee,interviewer,knowledge_sharer" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>
+				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="author"><div class="unit"><label>Author<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="author">s</ifcount></label>
+						<unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>
 					</div></ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="contributor,editor,elder,illustrator,knowledge_keeper,translator"><div class="unit"><label>Additional Contributors and Acknowledgements</label>
 						<unit relativeTo="ca_entities" restrictToRelationshipTypes="contributor,editor,elder,illustrator,knowledge_keeper,translator" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>
@@ -101,8 +94,7 @@
 				
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.publisher"><div class="unit"><label>Publisher</label>^ca_objects.publisher</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.display_date"><div class="unit"><label>Date</label>^ca_objects.display_date%delimiter=,_</div></ifdef>}}}
-				{{{<ifnotdef code="ca_objects.display_date"><ifdef code="ca_objects.date"><div class="unit"><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef></ifnotdef>}}}
+				{{{<ifdef code="ca_objects.date"><div class="unit"><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.ISBN"><div class="unit"><label>ISBN</label>^ca_objects.ISBN</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.ISSN"><div class="unit"><label>ISSN</label>^ca_objects.ISSN</div></ifdef>}}}
 				
@@ -112,11 +104,6 @@
 				{{{<ifdef code="ca_objects.creation_production"><div class="unit"><label>Creation/Production Credits Note</label>^ca_objects.creation_production</div></ifdef>}}}
 			
 				{{{<ifdef code="ca_objects.additional_form"><div class="unit"><label>Additional Physical Form Note</label>^ca_objects.additional_form</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.phys_desc">
-					<div class='unit'><label>Physical Description</label>
-						<span class="trimText">^ca_objects.phys_desc</span>
-					</div>
-				</ifdef>}}}
 				{{{<ifdef code="ca_objects.formatted_contents">
 					<div class='unit'><label>Table of Contents</label>
 						<span class="trimText">^ca_objects.formatted_contents</span>
@@ -124,42 +111,14 @@
 				</ifdef>}}}
 				
 					
-				{{{<ifdef code="ca_objects.inscription"><div class="unit"><label>Inscription</label>^ca_objects.inscription%delimiter=,_</div></ifdef>}}}
-				
-				
-<?php
-				$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("creator", "contributor", "interviewee", "interviewer", "knowledge_sharer", "contributor", "editor", "elder", "illustrator", "knowledge_keeper", "translator"), "returnWithStructure" => 1, "checkAccess" => $va_access_values));
-				if(is_array($va_entities) && sizeof($va_entities)){
-					$va_entities_by_type = array();
-					foreach($va_entities as $va_entity_info){
-						$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
-					}
-					foreach($va_entities_by_type as $vs_type => $va_entity_links){
-						print "<div class='unit'><label>".$vs_type."</label>".join("<br/>", $va_entity_links)."</div>";
-					}
-				}
-?>
-				
-				
 				{{{<ifdef code="ca_objects.GMD"><div class="unit"><label>General Material Designation</label>^ca_objects.GMD%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.materials"><div class="unit"><label>Materials</label>^ca_objects.materials%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.record_type"><div class="unit"><label>Record Type</label>^ca_objects.record_type%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.object_type"><div class="unit"><label>Object Type</label>^ca_objects.object_type%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.oral_history_type"><div class="unit"><label>Oral History Type</label>^ca_objects.oral_history_type%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.theme"><div class="unit"><label>Themes</label>^ca_objects.theme%delimiter=,_</div></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.publication_container.publication"><div class="unit"><label>Publication Details</label><unit relativeTo="ca_objects.publication_container" delimiter="<br/><br/>"><ifdef code="ca_objects.publication_container.publication">^ca_objects.publication_container.publication<br/></ifdef><ifdef code="ca_objects.publication_container.volume">^ca_objects.publication_container.volume, </ifdef><ifdef code="ca_objects.publication_container.issue">^ca_objects.publication_container.issue, </ifdef><ifdef code="ca_objects.publication_container.page_numbers">^ca_objects.publication_container.page_numbers</ifdef></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.rights_summary"><div class="unit"><label>Rights Summary</label>^ca_objects.rights_summary%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.doi"><div class="unit"><label>DOI</label>^ca_objects.doi</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.keywords"><div class="unit"><label>Keywords</label>^ca_objects.keywords%delimiter=,_</div></ifdef>}}}
-				
-				{{{<ifdef code="ca_objects.genre"><div class="unit"><label>Genre</label>^ca_objects.genre%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
 				
 				{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>"><l>^ca_storage_locations.preferred_labels.displayname</l></unit>
 					</div></ifcount>}}}
-				{{{<ifdef code="ca_objects.repository_item_URL"><div class="unit"><label>URL</label><a href="^ca_objects.repository_item_URL">^ca_objects.repository_item_URL</a></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.bd_call"><div class="unit"><label>Call Number</label><ifdef code="ca_objects.bd_call.classification_code">^ca_objects.bd_call.classification_code </ifdef>^ca_objects.bd_call.bd_call_number</div></ifdef>}}}
 				
 				<div class="unit">{{{map}}}</div>
