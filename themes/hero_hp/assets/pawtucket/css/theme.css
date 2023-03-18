@@ -231,6 +231,7 @@ body{
 .bResultItem .bResultItemText, .bResultListItemCol .bResultListItemText{
   font-size: 12px;
 }
+
 @media(max-width:768px){
 	.results .bSearchWithinContainer{
 		display:none;
