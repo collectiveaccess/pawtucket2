@@ -612,6 +612,11 @@ class DisplayTemplateParser {
 					$va_get_options['allDescendants'] = (int)$o_node->allDescendants ?: null;
 					$va_get_options['filterNonPrimaryRepresentations'] = $filter_non_primary_reps;
 					
+					$locale = caGetOption('locale', $$o_node->locale, null);
+					if($o_node->locale) {
+						$va_get_options['locale'] = $locale = $o_node->locale;
+					}
+					
 					if ($o_node->sort) {
 						$va_get_options['sort'] = preg_split('![ ,;]+!', $o_node->sort);
 						$va_get_options['sortDirection'] = $o_node->sortDirection;
@@ -712,7 +717,8 @@ class DisplayTemplateParser {
 									'includeBlankValuesInTopLevelForPrefetch' => false,
 									'unique' => $vb_unique,
 									'aggregateUnique' => $vb_aggregate_unique,
-									'filterNonPrimaryRepresentations' => $filter_non_primary_reps
+									'filterNonPrimaryRepresentations' => $filter_non_primary_reps,
+									'locale' => $locale
 								]
 							)
 						);
@@ -895,7 +901,8 @@ class DisplayTemplateParser {
 									'relationshipTypeIDs' => $va_relationship_type_ids,
 									'relationshipTypeOrientations' => $va_relationship_type_orientations,
 									'filterNonPrimaryRepresentations' => $filter_non_primary_reps,
-									'primaryIDs' => $va_get_options['primaryIDs'] ?? null
+									'primaryIDs' => $va_get_options['primaryIDs'] ?? null,
+									'locale' => $locale
 								]
 							)
 						);
