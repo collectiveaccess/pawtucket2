@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/bundles/ca_entities_default_html.php : 
+ * themes/default/views/bundles/ca_occurrences_default_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -44,16 +44,23 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
-					<H2>{{{^ca_entities.type_id}}}</H2>
+					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
+					<H2>{{{^ca_occurrences.type_id}}}</H2>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-12'>
-					{{{<ifdef code="ca_entities.bio_history_container.bio_history"><div class='unit'><label>Biography / History</label>^ca_entities.bio_history_container.bio_history</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.nonpreferred_labels"><div class="unit"><label>Alternate Names</label><unit relativeTo="ca_occurrences.nonpreferred_labels" delimiter="<br/>">^ca_occurrences.nonpreferred_labels.name</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.description"><div class="unit"><label>Description</label>^ca_occurrences.description</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.date"><div class="unit"><label>Date</label>^ca_occurrences.date%delimiter=,_</div></ifdef>}}}
 					
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related Places</label>
+						<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit></div>}}}	
+					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related People and Organizations</label>
+						<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></div>}}}	
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Related Archival Collection<ifcount code="ca_collections" min="2">s</ifcount></label>
 						<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit></div>}}}	
+
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
@@ -70,10 +77,25 @@
 					}
 					print '</div><!-- end detailTools -->';
 				}				
-?>	
+?>
+					
+					{{{<ifcount code="ca_collections" min="1" max="1"><label>Related collection</label></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="2"><label>Related collections</label></ifcount>}}}
+					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+					
+					{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
+					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
+					
+					{{{<ifcount code="ca_occurrences.related" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
+					{{{<ifcount code="ca_occurrences.related" min="2"><label>Related occurrences</label></ifcount>}}}
+					{{{<unit relativeTo="ca_occurrences.related" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+					
+					{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
+					{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
+					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}					
 				</div><!-- end col -->
 			</div><!-- end row -->
-			
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
@@ -82,7 +104,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -94,8 +116,7 @@
 					
 				});
 			</script>
-</ifcount>}}}
-		</div><!-- end container -->
+</ifcount>}}}		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">
