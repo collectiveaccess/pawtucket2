@@ -116,6 +116,14 @@ if($vs_mode == "map"){
 								</div></unit>
 							</div>
 						</ifdef>}}}
+						{{{<ifdef code="ca_entities.IRSSA_Dates.IRSSA_Dates_date">
+							<div class='unit'>
+								<H6>IRSSA Dates</H6>
+								<unit delimiter="<br/>" relativeTo="ca_entities.IRSSA_Dates"><div data-toggle="popover" title="Source" data-content="^ca_entities.IRSSA_Dates.IRSSA_Dates_source">
+									<ifdef code="ca_entities.IRSSA_Dates.IRSSA_Dates_date">^ca_entities.IRSSA_Dates.IRSSA_Dates_date</ifdef>
+								</div></unit>
+							</div>
+						</ifdef>}}}
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><l><unit relativeTo="ca_entities.related">^ca_entities.preferred_labels.displayname</unit></l> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</unit></div></ifcount>}}}
 						{{{<ifdef code="ca_entities.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
