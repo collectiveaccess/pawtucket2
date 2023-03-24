@@ -30,6 +30,9 @@
 	$va_classroomDisplayName = caGetClassroomDisplayName();
 	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
+	global $g_ui_locale;
+	$cur_locale = str_replace("_CA", "", $g_ui_locale);
+	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
 		if(caDisplayLightbox($this->request)){
@@ -169,6 +172,13 @@
 						<ul class='dropdown-menu'>
 							<li><?php print caNavLink($this->request, _t("Featured Galleries"), "", "", "Gallery", "Index"); ?></li>
 							<?php print join("\n", $va_user_links); ?>
+						</ul>
+					</li>
+					
+					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= $cur_locale; ?></a>
+						<ul class='dropdown-menu'>
+							<li class="<?= ($g_ui_locale === 'en_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, _t("EN"), "", "*", "*", "*", ['lang' => 'en_CA']); ?></li>
+							<li class="<?= ($g_ui_locale === 'fr_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, _t("FR"), "", "*", "*", "*", ['lang' => 'fr_CA']); ?></li>
 						</ul>
 					</li>
 <?php
