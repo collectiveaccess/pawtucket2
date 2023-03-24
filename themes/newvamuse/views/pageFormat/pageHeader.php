@@ -189,7 +189,7 @@
 			<form class="navbar-form big <?php print $vs_class; ?>" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 				<div class="formOutline">
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Search our collections" name="search">
+						<input type="text" class="form-control" placeholder="<?= _t('Search our collections'); ?>" name="search">
 					</div>
 					<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 				</div>
