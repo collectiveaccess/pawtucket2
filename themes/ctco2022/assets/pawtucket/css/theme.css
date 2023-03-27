@@ -861,6 +861,10 @@ div#detailTools{
 	text-decoration:underline;
 }
 
+.detail a{
+	font-size: 13px;
+}
+
 .detail .unit {
 	font-size: 15px;
 	margin-bottom: 15px;
