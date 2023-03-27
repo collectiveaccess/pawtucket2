@@ -129,6 +129,10 @@ if($vs_mode == "map"){
 							$vb_show_download_all_link = false;
 						}
 					}
+					# --- if there is only a book cover disable download button
+					if((sizeof($va_book_cover_rep_ids) > 0) && ((sizeof($va_full_text_rep_ids) == 0) && (sizeof($va_transcript_rep_ids) == 0))){
+						$vb_show_download_all_link = false;
+					}
 
 				}else{
 					$t_list_item = new ca_list_items();
@@ -343,9 +347,9 @@ if($vs_mode == "map"){
 						}
 					}
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
-					if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
-						print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
-					}
+					#if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
+					#	print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
+					#}
 					print '</div><!-- end detailTools -->';			
 
 
