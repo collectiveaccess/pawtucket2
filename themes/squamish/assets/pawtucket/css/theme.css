@@ -340,6 +340,9 @@ a.browseRemoveFacet .glyphicon{
 	color: #000;
 	font-size: 14px;
 }
+#bRefine H3{
+	cursor: pointer;
+}
 /* front */
 html.frontContainer {
     height: 100%;
@@ -714,6 +717,10 @@ body.frontContainer #footer{
 	text-align: center;
 }
 
+#collectionLoad div.hierarchyObjects a{
+	font-weight:normal;
+	font-size:13px;
+}
 /* Header with background image like on Browse All and External Resources */
 .pageHeaderRow{
 	padding-top:30px;
@@ -888,6 +895,10 @@ body.frontContainer #footer{
 	text-align: center;
 	width: 100%;
 	font-size: 18px;
+}
+.detail .unit a.btn{
+	color:#FFF;
+	text-decoration:none;
 }
 /* advanced Search */
 .advancedSearchField .formLabel {

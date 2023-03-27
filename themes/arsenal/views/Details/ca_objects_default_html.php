@@ -79,7 +79,7 @@
 					)
 				);
 
-		$back_to_work = caDetailLink($this->request, ($g_ui_locale == "de_DE" ? "zurück zum Werk" : "back to Film Work")." &rarr;", '', 'ca_occurrences', $vn_occurrence_id);
+		$back_to_work = caDetailLink($this->request, ($g_ui_locale == "de_DE" ? "zum Werk" : "to Film Work"), '', 'ca_occurrences', $vn_occurrence_id);
 					
 	}
 	$vs_type = $t_object->getWithTemplate("^ca_objects.type_id");
@@ -286,7 +286,7 @@
 				foreach($va_entity_ids as $vn_entity_id) {
 					if ($t_entity->load($vn_entity_id)) {           // doesn't hurt to make sure the entity actually loaded... but it should never fail
 						if ($vs_director_name = $t_entity->get('ca_entities.preferred_labels.displayname')) {
-							print caNavLink($this->request,$vs_director_name,'','','Browse','objects',array("facet" => "entity_facet", "id" => $vn_entity_id));
+							print caNavLink($this->request,$vs_director_name,'','','Browse','works',array("facet" => "entity_facet", "id" => $vn_entity_id));
 							print "\n";
 						}
 						if ($vs_director_bio = $t_entity->get('ca_entities.director_bio')) {
@@ -349,7 +349,7 @@
 			
 			// TODO: need final text and formatting for link
 			if($url = $t_work->get('ca_occurrences.film_page_url')) {
-				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}'>"._t('View on Forum')."</a></div></div>";
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}' target='_blank'>".($g_ui_locale == "de_DE" ? "For more information on the film visit the Forum page" : "Mehr Informationen zum Film auf der Webseite des Forums")."</a></div></div>"; 
 			}	
 
 			$va_tags = $t_work->get("ca_list_items", array("returnWithStructure" => true));
@@ -358,7 +358,7 @@
 				$va_print_tags = array();
 				foreach($va_tags as $vn_id => $va_term_info){
 					if($va_term_info["idno"]=="exp"){
-						$va_print_tags[] = caNavLink($this->request, $va_term_info["label"], '', '', 'Search', 'objects', array('search' => $va_term_info["label"]));
+						$va_print_tags[] = caNavLink($this->request, $va_term_info["label"], '', '', 'Search', 'works', array('search' => $va_term_info["label"]));
 					} else {
 						$va_print_tags[] = $va_term_info["label"];
 					}
@@ -392,7 +392,7 @@
 						<div class="col-sm-6">
 <?php
 							$va_show_internal_fields = array(
-								'object_type', 'notes', 'condition', 'condition_opt', 'condition_date', 'condition_comm', 'condition_color', 
+								'object_type', 'print_id', 'notes', 'condition', 'condition_opt', 'condition_date', 'condition_comm', 'condition_color', 
 								'source', 'source_date', 'oa3create_date', 'oa3change_date', 'rights', 'textlist',
 								// neu
 								'file_folder_name', 'bytes', 'number_of_files', 'image_frame', 'cpl', 'cpl_content_title_text',

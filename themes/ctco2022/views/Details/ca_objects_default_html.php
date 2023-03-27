@@ -85,7 +85,6 @@
 				{{{<ifdef code="ca_objects.nonpreferred_labels">
 					<H3>^ca_objects.nonpreferred_labels</H3>
 				</ifdef>}}}	
-
 				<?php
 					if($t_object->get("source_id")){
 						$vs_source_as_link = getSourceAsLink($this->request, $t_object->get("source_id"), null);
@@ -232,6 +231,7 @@
 					print "<hr></hr><div class='unit'>".$vs_map."</div>";
 				}
 ?>
+
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
