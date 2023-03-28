@@ -68,7 +68,7 @@
 			<?php print _t("Date Range"); ?> <i>(e.g., 1776-1792)</i><br/>
 			{{{ca_objects.260_date%width=200px&height=1&useDatePicker=0}}}
 		</div>
-		
+		<div class="col-sm-6 field">
 			<?php print _t("Comedias Sueltas Database ID#"); ?><br/>
 			{{{ca_objects.object_id}}}
 		</div>
