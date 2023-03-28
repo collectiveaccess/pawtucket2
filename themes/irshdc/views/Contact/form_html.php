@@ -51,7 +51,7 @@
 				if($ps_contactType == "askArchivist"){
 					print "<h4>Please use this form to inquire about a specific item in our archive.</h4>";
 				}elseif($ps_contactType == "takedown"){
-					print "<h4>Please use this form to request a record be removed from the website for privacy or other reasons.</H4><p>Your takedown request will be forwarded to the National Centre for Truth and Reconciliation, which are the source archives for this record. They will contact you directly to follow up on your request.</p>";
+					print "<p>Please use this form to request a record be removed from the website for privacy or other reasons.</p><p>Your takedown request will also be forwarded to the archive that holds the original record and, if applicable, the National Centre for Truth and Reconciliation. They will contact you directly to follow up on your request.</p>";
 					print "<br/><input type='hidden' name='takedownRequest' value='User Requested Record be Taken Down'>";
 				}
 ?>				

@@ -145,7 +145,7 @@ while($qr_res->nextHit()) {
 				'url' => $qr_res->getWithTemplate($va_view_info['display']['image'], array('returnURL' => true, 'checkAccess' => $va_access_values)),
 				'thumbnail' => $qr_res->getWithTemplate($va_view_info['display']['icon'], array('returnURL' => true, 'checkAccess' => $va_access_values)),
 				'credit' => $qr_res->getWithTemplate($va_view_info['display']['credit_template']),
-				'caption' => $qr_res->getWithTemplate($va_view_info['display']['caption_template'])
+				'caption' => $va_set_items[$qr_res->get($vs_primary_key)]["caption"]
 			],
 			'start_date' => $va_timeline_dates['start_date'],
 			'end_date' => $va_timeline_dates['end_date'],
