@@ -139,7 +139,7 @@ if($vs_mode == "map"){
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.denomination"><div class='unit'><H6>Denomination</H6>^ca_entities.denomination%delimiter=,_</div></ifdef>}}}		
 						{{{<ifdef code="ca_entities.home_community.home_community_text"><div class='unit'><H6>Home Communities of Students</H6><unit delimiter="<br/>"><span data-toggle="popover" title="Source" data-content="^ca_entities.home_community.home_community_source"><div class="trimTextShort">^ca_entities.home_community.home_community_text</div></span></unit></div></ifdef>}}}					
-						{{{<ifdef code="ca_entities.note_community_name"><div class='unit'><H6>Note on Home Communities</H6>^ca_entities.note_community_name</div></ifdef>}}}		
+						{{{<ifdef code="ca_entities.note_community_name"><div class='unit'><H6>Note on Home Communities</H6><div class="trimTextShort">^ca_entities.note_community_name</div></div></ifdef>}}}		
 						
 					</div><!-- end stoneBg -->
 <?php
