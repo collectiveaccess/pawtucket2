@@ -60,7 +60,7 @@
 						<unit relativeTo="ca_entities.external_link" delimiter="<br/>"><a href="^ca_entities.external_link.url_entry" target="_blank"><ifdef code="ca_entities.external_link.url_source">^ca_entities.external_link.url_source</ifdef><ifnotdef code="ca_entities.external_link.url_source">^ca_entities.external_link.url_entry</ifnotdef></unit></ifdef>}}}
 				</div><!-- end col -->
 				<div class='col-sm-6'>
-					{{{map}}}
+					<div class="unit">{{{map}}}</div>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			

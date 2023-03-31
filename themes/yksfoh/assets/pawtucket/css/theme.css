@@ -102,8 +102,13 @@ a:visited{
 	text-transform: none;
 	font-size: 16px;
 	font-weight:600;
-	color:#244C5A;
+	color:#DD0303;
 	line-height: 1.1em;
+	-webkit-transition: all .4s ease;
+	transition: all .4s ease;
+}
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+  	color: #005a65;
 }
 .navbar-brand{
 	padding-top: 8px;
@@ -780,6 +785,10 @@ a.hpLinkBox:hover{
 }
 .detail .detailNavBgLeft, .detail .detailNavBgRight {
 	height: 150px;
+}
+.detail .mainImg .bResultItemImgPlaceholder{
+	padding: 100px 5px 120px;
+	font-size: 28px;
 }
 .multisearch .sortValues{
 	font-size:14px;
