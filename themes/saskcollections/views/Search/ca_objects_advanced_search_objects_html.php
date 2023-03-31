@@ -58,8 +58,8 @@
 			{{{ca_objects.source_id%width=200px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_object_representations_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records with media.') ?>"><?php _p('Has Media') ?></label>
-			{{{ca_object_representations.media_class%width=200px&height=1}}}
+			<!--<label for='ca_object_representations_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records with media.') ?>"><?php _p('Has Media') ?></label>
+			{{{ca_object_representations.media_class%width=200px&height=1}}}-->
 		</div>
 	</div>
 	<br style="clear: both;"/>
