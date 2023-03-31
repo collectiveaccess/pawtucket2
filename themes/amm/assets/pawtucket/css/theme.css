@@ -200,12 +200,12 @@ a:hover{
 /* footer */
 /* offset needed for fixed footer */
 body{
-	margin-bottom:370px;
+	margin-bottom:420px;
 }
 #footer{
 	background-color: #ffffff;
 	color:#000;
-	height: 340px;
+	height: 370px;
 	border:0px;
 	font-size:15px;
 	font-weight:normal;
@@ -215,10 +215,10 @@ body{
 }
 @media(max-width:570px){
 	#footer{
-		height:460px;
+		height:510px;
 	}
 	body{
-		margin-bottom:490px;
+		margin-bottom:540px;
 	}
 }
 
@@ -430,25 +430,20 @@ body.frontContainer #footer{
 	top:-20px;
 }
 .parallax.hero1 {
-	/* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2), rgba(0, 0, 0, 0.4)), url("../graphics/hero/hero1.jpg");
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .2)), url("../graphics/hero/MHVWindmill-Credit-GrajewskiFotographInc.jpg");
 }
 .parallax.hero2 {
-    /* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0.3)), url("../graphics/hero/hero2.jpg");
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, 0.1)), url("../graphics/hero/MHVvillagestreetCrediGrajewskiFotographInc.jpg");
 }
 .parallax.hero3 {
-    /* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, .7), rgba(0, 0, 0, .3), rgba(0, 0, 0, 0.1)), url("../graphics/hero/hero3.jpeg");
-		background-position: center bottom;
+	background-image: url("../graphics/hero/MHVChortitzHousebarn-Credit-GrajewskiFotographInc.jpg");
+	background-position: center bottom;
 }
 .parallax.hero4 {
-    /* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/hero/hero4.jpg");
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2)), url("../graphics/hero/JAVDavidMuseum.jpeg");
 }
 .parallax.hero5 {
-    /* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/hero/hero5.jpg");
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, .2)), url("../graphics/hero/basketball.jpg");
 }
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
@@ -628,6 +623,81 @@ body.frontContainer #footer{
 .front h2.highlights{
 	padding-bottom:30px;
 	padding-top:30px;
+}
+
+.frontAlert{
+	position:fixed;
+	bottom:0px;
+	left:0px;
+	background-color:rgba(0, 0, 0, 0.6);
+	width:100%;
+	height:100%;
+	z-index:2000;
+}
+.frontAlert div.frontAlertBox{
+	margin:25vh 25vw;
+	height:50vh;
+	background-color:#FFF;
+	border:2px solid #000;
+	position:relative;	
+}
+.frontAlert div.frontAlertMessage{
+	padding: 60px;
+	max-height:50vh;
+	font-size: 18px;
+	color: #000;
+	overflow:scroll;
+	text-align:center;
+}
+.frontAlert div.frontAlertMessage strong, .frontAlert div.frontAlertMessage b{
+	font-size: 24px;
+}
+div.frontAlertClose{
+	position:absolute;
+	right:10px;
+	top:10px;
+	margin:0px;
+	font-size:34px;
+}
+.frontAlert .enterButton{
+	text-align:center;
+	margin-top:30px;
+}
+.frontAlert div.frontAlertBox{
+	margin:5vh 5vw;
+	height:90vh;
+}
+.frontAlert div.frontAlertMessage{
+	max-height:90vh;
+	font-size: 13px;
+}
+@media(min-width:768px){
+	.frontAlert div.frontAlertBox{
+		margin:15vh 15vw;
+		height:70vh;
+	}
+	.frontAlert div.frontAlertMessage{
+		max-height:70vh;
+		font-size: 18px;
+	}
+}
+@media(min-width:1145px){
+	.frontAlert div.frontAlertBox{
+		margin:20vh 20vw;
+		height:60vh;
+	}
+	.frontAlert div.frontAlertMessage{
+		max-height:60vh;
+	}
+}
+@media(min-width:1550px){
+	.frontAlert div.frontAlertBox{
+		margin:25vh 25vw;
+		height:50vh;
+	}
+	.frontAlert div.frontAlertMessage{
+		max-height:50vh;
+	}
 }
 /* hp explore */
 .hpExplore{
@@ -882,6 +952,10 @@ div#detailTools{
 .detail #browseResultsContainer a{
 	text-decoration:none;
 }
+.detail .alert{
+	font-size:18px;
+	text-align:center;
+}
 /* Contrubutors page */
 
 /* .leaflet-container a {
@@ -974,15 +1048,23 @@ div#detailTools{
 .transcribe H2{
 	margin-top:30px;
 }
+.bSearchWithin{
+	height: 40px;
+}
 .bSearchWithin .form-control{
 	width:80%;
 	float:left;
+	border:none;
+	-webkit-box-shadow: none;
+	box-shadow:none;
 }
 .bSearchWithin .btn-default{
 	float:left;
-	padding: 8px;
+	padding: 3px 8px 3px 8px;
 	font-size: 18px;
 	margin-left: -3px;
+	background-color: transparent;
+	color:#828282;
 }
 .transcribe .resultCount{
 	color: #000;

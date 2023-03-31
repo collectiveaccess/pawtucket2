@@ -137,8 +137,10 @@
 					if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height()) > scrollTop)) {
 						jQuery('#bRefine').addClass('fixed');
 						jQuery('#bRefine').width(panelWidth);
+						jQuery('.browseTop').show();
 					} else {
 						jQuery('#bRefine').removeClass('fixed');
+						jQuery('.browseTop').hide();
 					}
 				});
             }

@@ -138,14 +138,14 @@
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "Works"); ?><span class="navDivide">&nbsp;&nbsp;//&nbsp;&nbsp;</span></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Gallery", "Index"); ?><span class="navDivide">&nbsp;&nbsp;//&nbsp;&nbsp;</span></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured"), "", "", "Gallery", "Index"); ?><span class="navDivide">&nbsp;&nbsp;//&nbsp;&nbsp;</span></li>
 					<li><a href="https://www.arsenal-berlin.de" itemprop="url"><?php print _t("Arsenal"); ?></a><span class="navDivide">&nbsp;&nbsp;//&nbsp;&nbsp;</span></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "collection"); ?><?php print ((bool)CookieOptionsManager::allow("performance")) ? '<span class="navDivide">&nbsp;&nbsp;//&nbsp;&nbsp;</span>' : ''; ?></li>
 <?php
 				if((bool)CookieOptionsManager::allow("performance")){
 ?>
-					<li <?php print ($g_ui_locale == "en_US") ? 'class="active"' : ''; ?>><?php print caChangeLocaleLink($this->request, 'en_US', _t("EN"), ''); ?>&nbsp;</li>
-					<li <?php print ($g_ui_locale == "de_DE") ? 'class="active"' : ''; ?>><?php print caChangeLocaleLink($this->request, 'de_DE', _t("DE"), ''); ?></li>
+					<li <?php print ($g_ui_locale == "de_DE") ? 'class="active"' : ''; ?>><?php print caChangeLocaleLink($this->request, 'de_DE', _t("DE"), ''); ?>&nbsp;</li>
+					<li <?php print ($g_ui_locale == "en_US") ? 'class="active"' : ''; ?>><?php print caChangeLocaleLink($this->request, 'en_US', _t("EN"), ''); ?></li>
 <?php
 				}
 ?>

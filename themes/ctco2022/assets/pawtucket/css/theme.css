@@ -203,7 +203,7 @@ body{
 #footer{
 	background-color: #ffffff;
 	color:#000;
-	height: 440px;
+	height: 300px;
 	border:0px;
 	font-size:15px;
 	font-weight:normal;
@@ -223,7 +223,8 @@ body{
 #footer .footer-center{
 	display: flex;
 	justify-content: center;
-	padding-top:40px;
+	padding-top:60px;
+	padding-bottom:60px;
 }
 .footerBg{
 	background-color: #f2f2f2;
@@ -244,17 +245,23 @@ body{
 	width: auto;
 }
 
+
 #footer .address{
 	/* text-transform: uppercase; */
 	font-size: 14px;
 	line-height: 2;
 	display:inline-block;
 	text-align:center;
-	margin-left:20px
+	margin-left: 20px;
+	margin-bottom: 0;
 }
+#footer p{
+	margin-bottom: 0;
+}
+
 @media(min-width:545px){
 	#footer a.orgLink img{
-		margin-top: -40px;
+		margin-top: -80px;
 	}
 	#footer .address{
 		text-align:left;
@@ -275,7 +282,7 @@ body{
     margin-top: 10px;
 }
 #footer ul.social li {
-  padding: 0px 5px 0px 5px;
+  /* padding: 0px 5px 0px 5px; */
 }
 #footer .funder{
 	text-align:center;
@@ -390,7 +397,25 @@ a.browseRemoveFacet .glyphicon{
 	color:#fff !important;
 }
 #bRefine H2, #bRefine H5, #bRefine H3, #bRefine a{
-	color:#454545;
+	color: #2c2c2c;;
+}
+.browseTop{
+	position: fixed;
+	z-index: 2000;
+	bottom: 0px;
+	right: 10px;
+	display:none;
+}
+@media (min-width: 992px) {
+	.browseTop{
+		bottom: 0px;
+	}
+}
+.results a.btn.browseTop .glyphicon{
+	color:#fff !important;
+}
+.results a.btn.browseTop {
+	background-color:#757575;
 }
 /* front */
 html.frontContainer {
@@ -820,7 +845,7 @@ div#detailTools{
 
 .detail h1 {
 	font-size: 22px;
-	color: #454545;
+	color: #2c2c2c;
 	line-height: 135%;
 	text-transform: none;
 }
@@ -832,19 +857,23 @@ div#detailTools{
 }
 .detail a{
 	font-size: 14px;
-	color:#454545;
+	color:#2c2c2c;
 	text-decoration:underline;
+}
+
+.detail a{
+	font-size: 13px;
 }
 
 .detail .unit {
 	font-size: 15px;
 	margin-bottom: 15px;
-	color:#454545;
+	color:#2c2c2c;
 }
 
 .detail label{
 	font-size: 15px;
-	color:#454545;
+	color:#2c2c2c;
 }
 @media(min-width:768px){
 	.detailBrowseAll{

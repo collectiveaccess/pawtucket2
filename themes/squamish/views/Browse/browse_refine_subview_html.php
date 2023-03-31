@@ -74,6 +74,12 @@
 			if($vs_criteria){
 				print "<div class='bCriteria'>".$vs_criteria."</div>";
 			}
+			$vn_facets_with_content = 0;
+			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+				if(is_array($va_facet_info['content']) && sizeof($va_facet_info['content'])){
+					$vn_facets_with_content++;
+				}
+			}
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 				if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
@@ -89,7 +95,7 @@
 	<?php
 				} else {				
 					if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-					print "<h3>".$va_facet_info['label_singular']."</h3>"; 
+					print "<h3 type='button' onClick='jQuery(\".facetGroupShowHide\").hide(); jQuery(\"#facetGroup{$vs_facet_name}\").show(); return false;'>".$va_facet_info['label_singular']."</H3><div id='facetGroup{$vs_facet_name}' class='facetGroupShowHide' ".(($vn_facets_with_content > 1) ? "style='display:none;'" : "").">"; 
 					switch($va_facet_info["group_mode"]){
 						case "alphabetical":
 						case "list":
@@ -121,6 +127,7 @@
 						break;
 						# ---------------------------------------------
 					}
+					print "</div>";
 				}
 			}
 		}
