@@ -51,7 +51,7 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<H1>{{{^ca_entities.preferred_labels}}}</H1>
-					<!-- <H2>{{{^ca_entities.type_id}}}{{{<ifdef code="ca_entities.idno">, ^ca_entities.idno</ifdef>}}}</H2> -->
+					<hr/>
 				</div><!-- end col -->
 			</div><!-- end row -->
 
@@ -87,7 +87,27 @@
 					{{{<ifdef code="ca_entities.website">
 						<!-- <label>Website</label> -->
 						<div class="unit"><unit relativeTo="ca_entities.website" delimiter="<br/>">
-							<a href="^website" target="_blank"><span class='glyphicon glyphicon-new-window'></span></a> <a href="^website" target="_blank">^website</a>
+							<a href="^website" target="_blank"><span class='glyphicon glyphicon-new-window'></span></a> <a href="^website" target="_blank">Website</a>
+						</unit></div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_entities.facebookLink">
+						<div class="unit"><unit relativeTo="ca_entities.facebookLink" delimiter="<br/>">
+							<a href="^facebookLink" target="_blank"><i class="fa fa-facebook-square" aria-hidden="true"></i></a> <a href="^facebookLink" target="_blank">Facebook</a>
+						</unit></div>
+					</ifdef>}}}	
+					{{{<ifdef code="ca_entities.instagramLink">
+						<div class="unit"><unit relativeTo="ca_entities.instagramLink" delimiter="<br/>">
+							<a href="^instagramLink" target="_blank"><i class="fa fa-instagram" aria-hidden="true"></i></a> <a href="^instagramLink" target="_blank">Instagram</a>
+						</unit></div>
+					</ifdef>}}}		
+					{{{<ifdef code="ca_entities.twitterLink">
+						<div class="unit"><unit relativeTo="ca_entities.twitterLink" delimiter="<br/>">
+							<a href="^twitterLink" target="_blank"><i class='fa fa-twitter-square'></i></a> <a href="^twitterLink" target="_blank">Twitter</a>
+						</unit></div>
+					</ifdef>}}}		
+					{{{<ifdef code="ca_entities.youtubeLink">
+						<div class="unit"><unit relativeTo="ca_entities.youtubeLink" delimiter="<br/>">
+							<a href="^youtubeLink" target="_blank"><i class='fa fa-youtube-square'></i></a> <a href="^youtubeLink" target="_blank">YouTube</a>
 						</unit></div>
 					</ifdef>}}}	
 				</div><!-- end col -->

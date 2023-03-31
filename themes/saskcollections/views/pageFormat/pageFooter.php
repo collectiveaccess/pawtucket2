@@ -34,13 +34,7 @@ if($g_ui_locale == "fr_CA"){
 
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row -->
-<?php
-	if(strToLower($this->request->getController()) != "front"){
-?>
 	</div><!-- end container -->
-<?php
-	}
-?>
 
 	
 		

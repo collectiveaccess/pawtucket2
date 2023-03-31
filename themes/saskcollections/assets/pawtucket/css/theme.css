@@ -63,6 +63,10 @@ h1 {
 .container{
 	max-width: 1190px;
 }
+
+.container.wideContainer{
+	max-width: 5000px;
+}
 .btn-default, .browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active {
 	background-color:#22559a;
 }
@@ -675,14 +679,22 @@ body.frontContainer #footer{
 	/*background-image: linear-gradient(to bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2), rgba(0, 0, 0, 0.4)), url("../graphics/hero/hero1.jpg"); */
 }
 .parallax.hero2 {
-	background-image: linear-gradient(to bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.3)), url("../graphics/hero/hero2.jpg");
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .2)), url("../graphics/hero/hero8.jpg");
 }
 .parallax.hero3 {
-    background-image: url("../graphics/hero/hero3.jpg");
+	background-image: url("../graphics/hero/hero3.jpg");
+    background-position: center bottom;
 }
 .parallax.hero4 {
     /* background-image: url("../graphics/lilac_house.jpg"); */
 		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .3)), url("../graphics/hero/hero4.jpg");
+}
+.parallax.hero5 {
+    /* background-image: url("../graphics/lilac_house.jpg"); */
+		background-image: url("../graphics/hero/hero5.jpg");
+}
+.parallax.hero6 {
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .2)), url("../graphics/hero/hero7.jpg");
 }
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
@@ -745,8 +757,8 @@ body.frontContainer #footer{
 	font-weight: 500;
 	text-transform:none;
 	color:#FFF;
-	padding-top:20px;
-	padding-bottom:20px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	font-family: "Gill Sans W01 Book",sans-serif;
 	line-height: 1.1em;
 }
