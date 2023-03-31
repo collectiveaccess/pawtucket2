@@ -679,7 +679,7 @@ body.frontContainer #footer{
 	/*background-image: linear-gradient(to bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2), rgba(0, 0, 0, 0.4)), url("../graphics/hero/hero1.jpg"); */
 }
 .parallax.hero2 {
-	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .2)), url("../graphics/hero/hero8.jpg");
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .2)), url("../graphics/hero/hero2.jpg");
 }
 .parallax.hero3 {
 	background-image: url("../graphics/hero/hero3.jpg");
@@ -694,7 +694,7 @@ body.frontContainer #footer{
 		background-image: url("../graphics/hero/hero5.jpg");
 }
 .parallax.hero6 {
-    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .2)), url("../graphics/hero/hero7.jpg");
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .2)), url("../graphics/hero/hero6.jpg");
 }
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
