@@ -300,7 +300,7 @@ $t_item = $this->getVar("item");
 					$vs_rel_label = join(', ',$va_display_parts);
 
 					if($this->request->isLoggedIn()){
-						$vs_rel_label .= " (".$va_object_info["idno"].")";
+						$vs_rel_label .= " (".(($print_id = $t_rel->get('ca_objects.print_id')) ? $print_id : $va_object_info["idno"]).")";
 					}
 
 					print caDetailLink($this->request, "&rarr; ".$vs_rel_label, '', 'ca_objects', $t_rel->getPrimaryKey());
