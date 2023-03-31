@@ -74,10 +74,15 @@ a:hover{
 	padding-top: 0px;
 }
 .navbar-brand img{
-	height: 75px;
+	height: 55px;
 	width: auto;
 }
-
+@media (min-width:1085px){
+	.navbar-brand img{
+		height: 75px;
+		width: auto;
+	}
+}
 .navbar-header .orgLinkHeader a img{
 	height: 70px;
 	width: auto;
@@ -91,10 +96,8 @@ a:hover{
 	/* margin-top: 10px; */
 }
 
-@media (min-width:768px){
-	.navbar-brand{
-		padding-top: 9px;
-	}
+.navbar-brand{
+	padding-top: 9px;
 }
 @media (min-width:768px){
 	.navbar-nav > li > a {
@@ -643,14 +646,13 @@ body.frontContainer #footer{
 }
 .frontAlert div.frontAlertMessage{
 	padding: 60px;
-	max-height:50vh;
 	font-size: 18px;
 	color: #000;
 	overflow:scroll;
 	text-align:center;
 }
 .frontAlert div.frontAlertMessage strong, .frontAlert div.frontAlertMessage b{
-	font-size: 24px;
+	font-size: 16px;
 }
 div.frontAlertClose{
 	position:absolute;
@@ -668,35 +670,32 @@ div.frontAlertClose{
 	height:90vh;
 }
 .frontAlert div.frontAlertMessage{
-	max-height:90vh;
+	position: relative;
+	height: 100%;
 	font-size: 13px;
 }
 @media(min-width:768px){
 	.frontAlert div.frontAlertBox{
-		margin:15vh 15vw;
-		height:70vh;
+		margin:10vh 15vw;
+		max-height:80vh;
 	}
 	.frontAlert div.frontAlertMessage{
-		max-height:70vh;
 		font-size: 18px;
+	}
+	.frontAlert div.frontAlertMessage strong, .frontAlert div.frontAlertMessage b{
+		font-size: 20px;
 	}
 }
 @media(min-width:1145px){
 	.frontAlert div.frontAlertBox{
-		margin:20vh 20vw;
-		height:60vh;
-	}
-	.frontAlert div.frontAlertMessage{
-		max-height:60vh;
+		margin:15vh 15vw;
+		height:70vh;
 	}
 }
 @media(min-width:1550px){
 	.frontAlert div.frontAlertBox{
-		margin:25vh 25vw;
-		height:50vh;
-	}
-	.frontAlert div.frontAlertMessage{
-		max-height:50vh;
+		margin:15vh 25vw;
+		height:70vh;
 	}
 }
 /* hp explore */
