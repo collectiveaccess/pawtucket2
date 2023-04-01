@@ -221,7 +221,7 @@
 	}
 ?>
 
-						<h2>Download</h2>
+						<h2><?= _t('Download'); ?></h2>
 						
 						<ul class="educationalResourcesDownloadList">
 <?php
