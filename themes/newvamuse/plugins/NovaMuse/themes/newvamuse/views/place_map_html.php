@@ -37,7 +37,27 @@ $names		= $this->getVar('names');
 			</p>
 			<div style="clear:both; margin-top:10px;">
 				<?php print $this->getVar("map"); ?>
+<?php
+	foreach($this->getVar('layers') as $hier_id => $hier) {
+?>				
+			<span style="margin-right: 10px;"><input type="checkbox" name="hier_<?= $hier_id; ?>" checked='1'  id="hier_<?= $hier_id; ?>" value="<?= $hier_id; ?>" class="layerToggle"/> <?= $hier; ?></span>
+<?php
+	}
+?>
 			</div>
 		</div>	
 	</div>
+	
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery('.layerToggle').on('click', function(e) {
+				let hier_id = e.target.value;
+				if(e.target.checked) {
+					map.addLayer(itemGroupsmap[hier_id]);
+				} else {
+					map.removeLayer(itemGroupsmap[hier_id]);
+				}
+			})
+		});
+	</script>
 </div>

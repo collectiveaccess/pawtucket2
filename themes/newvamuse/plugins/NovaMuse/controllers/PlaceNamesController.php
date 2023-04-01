@@ -77,9 +77,15 @@ class PlaceNamesController extends ActionController {
 		#$o_search->setTypeRestrictions(array($this->opn_member_institution_id));
 		$o_search->addResultFilter("ca_places.access", "IN", join(',', $this->opa_access_values));
 		
-		$qr_res = ca_places::findAsSearchResult('*'); //$o_search->search("ca_places.type_id:".$this->opn_member_institution_id);		// This is fastest
-		$o_map = new GeographicMap(900, 500, 'map');
-		$va_map_stats = $o_map->mapFrom($qr_res, "georeference", array("ajaxContentUrl" => caNavUrl($this->request, "*", "*", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
+		$o_map = new GeographicMap('100%', 500, 'map');
+		
+		$place_hierarchies = caGetListItems('place_hierarchies');
+		$this->view->setVar('layers', $place_hierarchies);
+		foreach($place_hierarchies as $place_hier_id => $place_hier_name) {
+			$qr_res = ca_places::findAsSearchResult(['hierarchy_id' => $place_hier_id]);
+		
+			$va_map_stats = $o_map->mapFrom($qr_res, "georeference", array("group" => $place_hier_id, "ajaxContentUrl" => caNavUrl($this->request, "*", "*", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
+		}
 		$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));
 		
 		$this->render('place_map_html.php');

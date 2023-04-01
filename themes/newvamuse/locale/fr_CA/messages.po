@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: NovaMuse TEST System\n"
-"POT-Creation-Date: 31\n"
-"PO-Revision-Date: 2023-03-27 00:45-0400\n"
+"POT-Creation-Date: 30\n"
+"PO-Revision-Date: 2023-04-01 13:55-0400\n"
 "Last-Translator: info@put-your-domain-here.com\n"
 "Language-Team: ANSM\n"
 "Language: fr_CA\n"
@@ -366,6 +366,12 @@ msgstr "Contact"
 msgid "Item Inquiry"
 msgstr "Demande d'article"
 
+msgid "Security Question"
+msgstr "Question de sécurité"
+
+msgid "Send"
+msgstr "Envoyer"
+
 msgid "Your message has been sent."
 msgstr "Votre message est envoyé. "
 
@@ -473,9 +479,6 @@ msgstr "Votre nom"
 
 msgid "Your email address"
 msgstr "Votre adresse courriel"
-
-msgid "Security Question"
-msgstr "Question de sécurité"
 
 msgid "Subject"
 msgstr "Sujet"
@@ -819,9 +822,6 @@ msgstr ""
 msgid "E-mail"
 msgstr "Courriel"
 
-msgid "Send"
-msgstr "Envoyer"
-
 msgid "Full results"
 msgstr "Résultats complets"
 
@@ -1157,20 +1157,14 @@ msgstr "Rétroaction"
 msgid "Question"
 msgstr "Question"
 
-msgid "Next record"
-msgstr "Dossier ouvert"
+msgid "<i class='fa fa-angle-right'></i><div class='small'>Next</div>"
+msgstr "<i class='fa fa-angle-right'></i><div class='small'>Suivant</div>"
 
-msgid "Prev record"
-msgstr "Dossier ouvert"
+msgid "<i class='fa fa-angle-left'></i><div class='small'>Prev</div>"
+msgstr "<i class='fa fa-angle-left'></i><div class='small'>Prévenir</div>"
 
-msgid "Back to search"
-msgstr "ajouter à chacun"
-
-msgid "Prev"
-msgstr "Précédent"
-
-msgid "Back"
-msgstr "Retour"
+msgid "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>"
+msgstr "<i class='fa fa-angle-double-left'></i><div class='small'>Retour</div>"
 
 msgid "Educational resources"
 msgstr "Ressources pédagogiques"
@@ -1182,6 +1176,18 @@ msgid "Check out these selections curated by NovaMuse contributors."
 msgstr ""
 "Jetez un coup d'œil à ces sélections réalisées par des collaborateurs de "
 "NovaMuse."
+
+msgid "thumbnail"
+msgstr "vignette"
+
+msgid "list"
+msgstr "liste"
+
+msgid "map"
+msgstr "carte"
+
+msgid "timeline"
+msgstr "Newlines"
 
 msgid "People & Organizations"
 msgstr "Personnes et organisations"
@@ -2119,6 +2125,17 @@ msgstr ""
 "Nouvelle-Écosse contribuent à NovaMuse. Cliquez sur une épingle pour en "
 "savoir plus sur chaque institution."
 
+msgid "Nova Scotia Place Names"
+msgstr "Nouvelle-Écosse"
+
+msgid ""
+"Nova Scotia's colonial history means that community place names have changed "
+"over time. Click on a pin to learn more about each location."
+msgstr ""
+"En raison de l'histoire coloniale de la Nouvelle-Écosse, les noms des "
+"localités ont changé au fil du temps. Cliquez sur une épingle pour en savoir "
+"plus sur chaque lieu."
+
 msgid "What is NovaMuse?"
 msgstr "Qu'est-ce que NovaMuse ?"
 
@@ -2291,17 +2308,6 @@ msgstr "Pour les enseignants"
 msgid "Educational Resources"
 msgstr "Ressources pédagogiques"
 
-msgid "Showing <span class='name'>%1</span> matching resources"
-msgstr "Affichage de <span class='name'>%1</span> ressources correspondantes"
-
-msgid "Showing the <span class='name'>%1</span> most recently added resources"
-msgstr ""
-"Afficher les <span class='name'>%1</span> ressources les plus récemment "
-"ajoutées"
-
-msgid "There are no resources available"
-msgstr "Il n'y a pas de ressources disponibles"
-
 msgid ""
 "Welcome to #NovaMuseEd, our teacher resource section, where you can help "
 "your students make connections to the world, past and present. Anything in "
@@ -2325,6 +2331,21 @@ msgstr ""
 "Nous serions ravis de voir ces ressources en action. N'hésitez pas à nous "
 "taguer à @NovaMuse_ca ou #NovaMuseEd. Si vous avez des idées de ressources "
 "supplémentaires"
+
+msgid "Visit the <a href=\"/About/guide\">help</a> page to learn more."
+msgstr ""
+"Consultez la page d'<a href=\"/About/guide\">aide</a> pour en savoir plus."
+
+msgid "Showing <span class='name'>%1</span> matching resources"
+msgstr "Affichage de <span class='name'>%1</span> ressources correspondantes"
+
+msgid "Showing the <span class='name'>%1</span> most recently added resources"
+msgstr ""
+"Afficher les <span class='name'>%1</span> ressources les plus récemment "
+"ajoutées"
+
+msgid "There are no resources available"
+msgstr "Il n'y a pas de ressources disponibles"
 
 msgid "Visit the"
 msgstr "Visitez le site"
@@ -2392,6 +2413,36 @@ msgstr "Contributeurs"
 msgid "Browse Themes"
 msgstr "Parcourir les mouvements"
 
+msgid "Architecture"
+msgstr "Chargement du thésaurus Getty Art & Architecture (AAT)"
+
+msgid "Art"
+msgstr "Galerie d'art/revendeur"
+
+msgid "Communications"
+msgstr "notifications"
+
+msgid "Farming"
+msgstr "Agriculture"
+
+msgid "Fishing"
+msgstr "Pêche"
+
+msgid "Household Life"
+msgstr "La vie du ménage"
+
+msgid "Industry"
+msgstr "Industrie"
+
+msgid "Military"
+msgstr "Militaire Europe/ME/Canada"
+
+msgid "Recreation"
+msgstr "Représentation"
+
+msgid "Transportation"
+msgstr "Transport"
+
 msgid "Support the Museums"
 msgstr "Soutenez-nous"
 
@@ -2418,6 +2469,9 @@ msgstr ""
 
 msgid "creating your own"
 msgstr "Téléphone du créateur"
+
+msgid "Create My Gallery"
+msgstr "Créer un événement"
 
 msgid "see all"
 msgstr "voir tous"
@@ -2446,6 +2500,32 @@ msgstr "Nom d’utilisateur"
 msgid "Filter results"
 msgstr "Filtrer les résultats"
 
+msgid "Objects Advanced Search"
+msgstr "Recherche avancée"
+
+msgid ""
+"Use one or more fields below to search for specific terms found in object "
+"records. Hover over the name of a field to find out more."
+msgstr ""
+"Utilisez un ou plusieurs champs ci-dessous pour rechercher des termes "
+"spécifiques dans les fiches d'objets. Survolez le nom d'un champ pour en "
+"savoir plus."
+
+msgid "Keyword"
+msgstr "Mot-clé"
+
+msgid "Object Name"
+msgstr "Numéro d'objet"
+
+msgid "Date range"
+msgstr "Date de lecture"
+
+msgid "History"
+msgstr "Historique"
+
+msgid "Reset"
+msgstr "Réinitialiser"
+
 msgid "Top results for %1"
 msgstr "Principaux résultats pour %1"
 
@@ -2457,6 +2537,9 @@ msgstr "<span class='name'>%1</span> éléments transcriptibles"
 
 msgid "There are no items available for transcription"
 msgstr "Il n'y a pas d'articles disponibles pour la transcription"
+
+msgid "Back"
+msgstr "Retour"
 
 msgid "Collection"
 msgstr "Collecte"
@@ -2492,12 +2575,6 @@ msgstr ""
 "généalogistes, les chercheurs, les étudiants, les enseignants et tous les "
 "autres. Vous aidez les musées à documenter leurs collections et à partager "
 "des informations de manière significative."
-
-msgid ""
-"Want to start transcribing? Please read our Transcription Tips</a> first."
-msgstr ""
-"Vous voulez commencer à transcrire ? Lisez d'abord nos conseils en matière "
-"de transcription</a>."
 
 msgid "View all collections"
 msgstr "Recherche de collections"
@@ -2580,6 +2657,15 @@ msgstr ""
 
 msgid "Connect With Us"
 msgstr "Connectez avec nous"
+
+msgid "Land Acknowledgement"
+msgstr "Reconnaissance des terres"
+
+msgid "Land Acknowledgement (Mi'kmaq)"
+msgstr "Reconnaissance des terres (Mi'kmaq)"
+
+msgid "Land Acknowledgement (Gaelic)"
+msgstr "Reconnaissance des terres (gaélique)"
 
 msgid "Explore"
 msgstr "Explorez"
@@ -3608,9 +3694,6 @@ msgstr "Suivi de l'historique - valeur actuelle"
 
 msgid "Current history tracking date"
 msgstr "Date de suivi de l'historique actuel"
-
-msgid "History"
-msgstr "Historique"
 
 msgid "Current contents"
 msgstr "Contenu actuel"
@@ -6401,9 +6484,6 @@ msgstr ""
 
 msgid "bubbles"
 msgstr "bulles"
-
-msgid "list"
-msgstr "liste"
 
 msgid "Format of relationship list"
 msgstr "Format de la liste des relations"
@@ -10900,6 +10980,9 @@ msgstr ""
 "à cette page. Par exemple, si elle est définie sur <em>/pages/staff</em>, "
 "cette page sera accessible au public à l'aide d'une URL similaire à celle-ci "
 "<em>: http://your.domain.com/pages/staff.</em>"
+
+msgid "Locale of page"
+msgstr "Locale de l'étiquette"
 
 msgid ""
 "Controls whether the page is available publicly. Set to <em>accessible to "
@@ -23196,9 +23279,6 @@ msgstr "salle de classe"
 msgid "Login to add to %1"
 msgstr "Connectez-vous pour ajouter à %1"
 
-msgid "Reset"
-msgstr "Réinitialiser"
-
 msgid "AND"
 msgstr "ET"
 
@@ -25484,6 +25564,24 @@ msgstr "Télécopieur"
 
 msgid "Your fax."
 msgstr "Votre fax."
+
+#~ msgid "Next record"
+#~ msgstr "Dossier ouvert"
+
+#~ msgid "Prev record"
+#~ msgstr "Dossier ouvert"
+
+#~ msgid "Back to search"
+#~ msgstr "ajouter à chacun"
+
+#~ msgid "Prev"
+#~ msgstr "Précédent"
+
+#~ msgid ""
+#~ "Want to start transcribing? Please read our Transcription Tips</a> first."
+#~ msgstr ""
+#~ "Vous voulez commencer à transcrire ? Lisez d'abord nos conseils en "
+#~ "matière de transcription</a>."
 
 #~ msgid ""
 #~ "You may add text annotations to the image. Each annotation is associated "
