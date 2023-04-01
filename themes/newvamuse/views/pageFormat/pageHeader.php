@@ -144,23 +144,24 @@
 					</div>
 				</form>-->
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li class="<?php print (($this->request->getController() == "About")  && (($this->request->getAction() == "Index") | ($this->request->getAction() == "support")))? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
+					<li class="<?php print (($this->request->getController() == "About")  && (($this->request->getAction() == "Index") | ($this->request->getAction() == "support")))? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= _t('About'); ?></a>
 						<ul class='dropdown-menu'>
 							<li><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Support Us"), "", "", "About", "support"); ?></li>
 						</ul>
 					</li>
 					<li <?php print ($this->request->getController() == 'MemberMap') ? 'class="active"' : ""; ?>><?php print caNavLink($this->request, _t("Contributors"), "", "NovaMuse", "MemberMap", "Index"); ?></li>
-					<li class="<?php print (($this->request->getController() == "Browse")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Explore</a>
+					<li class="<?php print (($this->request->getController() == "Browse")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= _t('Explore'); ?></a>
 						<ul class='dropdown-menu'>
 							<li><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Made in Nova Scotia"), "", "", "Browse", "entities"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Historic Place Names"), "", "NovaMuse", "PlaceNames", "Index"); ?></li>
 						</ul>
 					</li>
 					<li <?php print ($this->request->getController() == "Transcribe") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Transcribe"), "", "", "Transcribe", "Index"); ?></li>
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "teachers")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("For Teachers"), "", "", "EducationalResources", "Index"); ?></li>
-					<li class="<?php print (($this->request->getController() == "About") && ($this->request->getAction() != "teachers") && ($this->request->getAction() != "support") && ($this->request->getAction() != "Index")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help</a>
+					<li class="<?php print (($this->request->getController() == "About") && ($this->request->getAction() != "teachers") && ($this->request->getAction() != "support") && ($this->request->getAction() != "Index")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= _t('Help'); ?></a>
 						<ul class='dropdown-menu'>
 							<li><?php print caNavLink($this->request, _t("Guide"), "", "", "About", "guide"); ?></li>
 							<li><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "questions"); ?></li>
@@ -177,8 +178,8 @@
 					
 					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= $cur_locale; ?></a>
 						<ul class='dropdown-menu'>
-							<li class="<?= ($g_ui_locale === 'en_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, _t("EN"), "", "*", "*", "*", ['lang' => 'en_CA']); ?></li>
-							<li class="<?= ($g_ui_locale === 'fr_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, _t("FR"), "", "*", "*", "*", ['lang' => 'fr_CA']); ?></li>
+							<li class="<?= ($g_ui_locale === 'en_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, "EN", "", "*", "*", "*", ['lang' => 'en_CA']); ?></li>
+							<li class="<?= ($g_ui_locale === 'fr_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, "FR", "", "*", "*", "*", ['lang' => 'fr_CA']); ?></li>
 						</ul>
 					</li>
 <?php

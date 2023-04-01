@@ -2,7 +2,7 @@
 	<?php print "<div class='leader'>".caGetThemeGraphic($this->request, 'ship.jpg')."</div>";?>
 	<H1><?php print $this->getVar("section_name"); ?></H1>
 	<p style='margin-left:15px;' class='textContent'>
-		Explore connections across all our collections. See what objects appear in Galleries created by museums and other users. Make your own connections between objects by <?php print caNavLink($this->request, 'creating your own', '', '', 'Lightbox', 'Index');?>. myNovaMuse allows you to save items, add comments, and share your Galleries if you wish.</p>
+		<?= _t('Explore connections across all our collections. See what objects appear in Galleries created by museums and other users. Make your own connections between objects by %1. myNovaMuse allows you to save items, add comments, and share your Galleries if you wish.', caNavLink($this->request, _t('creating your own'), '', '', 'Lightbox', 'Index')); ?></p>
 	<p style='text-align:center;margin-top:45px;' class='textContent'><?php print caNavLink($this->request, '<span class="btn-default">Create My Gallery</span>', '', '', 'Lightbox', 'Index');?></p>
 	<hr>
 <?php
@@ -135,7 +135,7 @@
 <?php							
 						} else {
 							print '<div class="row">';
-							print "<h2>".$va_set_confs[$vs_typename]['name']." ".caNavLink($this->request, '<small> | see all <i class="fa fa-external-link"></i></small>', '', 'Gallery', 'featured', $vs_typename)."</h2>";
+							print "<h2>".$va_set_confs[$vs_typename]['name']." ".caNavLink($this->request, '<small> | '._t('see all').' <i class="fa fa-external-link"></i></small>', '', 'Gallery', 'featured', $vs_typename)."</h2>";
 							print "<div class='lightboxDescription textContent'>".$va_set_confs[$vs_typename]['description']."</div>";
 
 							$va_set_ids = array_keys($va_sets);
