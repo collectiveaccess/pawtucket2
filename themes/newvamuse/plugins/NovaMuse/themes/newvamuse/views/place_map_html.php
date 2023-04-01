@@ -31,9 +31,9 @@ $names		= $this->getVar('names');
 <div class="container textContent">
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-1">
-			<h1><?php print _t("Historic Place Names"); ?></H1>
+			<h1><?php print _t("Nova Scotia Place Names"); ?></H1>
 			<p style='padding-bottom:15px;'>
-				<?php print _t("Historic place names across Nova Scotia. Click on a pin to learn more about each location."); ?> 
+				<?php print _t("Nova Scotia's colonial history means that community place names have changed over time. Click on a pin to learn more about each location."); ?> 
 			</p>
 			<div style="clear:both; margin-top:10px;">
 				<?php print $this->getVar("map"); ?>

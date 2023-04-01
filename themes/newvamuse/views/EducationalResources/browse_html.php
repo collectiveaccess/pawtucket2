@@ -64,7 +64,13 @@
 		<div class="col-sm-10 col-sm-offset-1">
 			<h1><a href="/About/Teachers"><?= _t('For Teachers'); ?></a> &gt; <a href="/EducationalResources/Index"><?= _t('Educational Resources'); ?></a> &gt; <?= _t('Browse'); ?></H1>
 			<p>
-			 	<?= _t('Welcome to #NovaMuseEd, our teacher resource section, where you can help your students make connections to the world, past and present. Anything in this section can be downloaded and used for educational purposes. Learning activities are also customizable so you can better meet the unique needs of learners, classes and programs.</p><p>We would love to see these resources in action. Feel free to tag us at @NovaMuse_ca or #NovaMuseEd. If you have ideas for additional resources, please contact us. This is a new initiative, and we look forward to building resources with you and for you.</p><p>Visit the <a href="/About/guide">help</a> page to learn more.'); ?>
+			 	<?= _t('Welcome to #NovaMuseEd, our teacher resource section, where you can help your students make connections to the world, past and present. Anything in this section can be downloaded and used for educational purposes. Learning activities are also customizable so you can better meet the unique needs of learners, classes and programs.'); ?>
+			</p>
+			<p>
+			 	<?= _t('We would love to see these resources in action. Feel free to tag us at @NovaMuse_ca or #NovaMuseEd. If you have ideas for additional resources, please contact us. This is a new initiative, and we look forward to building resources with you and for you.'); ?>
+			</p>
+			<p>
+			 	<?= _t('Visit the <a href="/About/guide">help</a> page to learn more.'); ?>
 			</p>
 			
 			<?= (sizeof($va_criteria) > 0) ? "<div class='unit'>"._t("Showing <span class='name'>%1</span> matching resources", $qr_result->numHits())."</div>" : "<div class='unit'>"._t("Showing the <span class='name'>%1</span> most recently added resources", $qr_result->numHits())."</div>"

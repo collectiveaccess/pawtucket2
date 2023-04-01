@@ -76,7 +76,7 @@ class PlaceNamesController extends ActionController {
 		$o_search = new PlaceSearch();
 		#$o_search->setTypeRestrictions(array($this->opn_member_institution_id));
 		$o_search->addResultFilter("ca_places.access", "IN", join(',', $this->opa_access_values));
-		//$qr_res = $o_search->search("*", array('sort' => 'ca_entity_labels.name', 'sort_direction' => 'asc'));
+		
 		$qr_res = ca_places::findAsSearchResult('*'); //$o_search->search("ca_places.type_id:".$this->opn_member_institution_id);		// This is fastest
 		$o_map = new GeographicMap(900, 500, 'map');
 		$va_map_stats = $o_map->mapFrom($qr_res, "georeference", array("ajaxContentUrl" => caNavUrl($this->request, "*", "*", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
