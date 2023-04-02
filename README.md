@@ -23,7 +23,7 @@ All CollectiveAccess components are freely available under the open source GNU P
 
 ### About CollectiveAccess 2.0
 
-Pawtucket 2.0 is compatible with PHP 7.4, 8.0, 8.2 and 8.2.
+Pawtucket2 2.0 is compatible with PHP 7.4, 8.0, 8.2 and 8.2.
 
 
 ### Updating from a previous version
@@ -35,7 +35,7 @@ NOTE: The update process is relatively safe and rarely, if ever, causes data los
 
 Before attempting to upgrade your Pawtucket2 installation to version 2.0 make sure your Providence installation has been updated to 2.0. While it is often possible to run an older version of Pawtucket2 with a newer version of Providence, it is not guaranteed. It is usually not possible to run an older version of Providence with a newer version of Pawtucket2.
 
-To update from a version 1.7.x installation decompress the CollectiveAccess Pawtucket 2.0 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory, custom theme (in `themes/your_theme_name_here`) and your setup.php file. Note that themes written for use in 1.7 and PHP 7.x may require modifications for use for Pawtucket 2.0 due to changes in the PHP programming language.
+To update from a version 1.7.x installation decompress the CollectiveAccess Pawtucket2 2.0 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory, custom theme (in `themes/your_theme_name_here`) and your setup.php file. Note that themes written for use in 1.7 and PHP 7.x may require modifications for use for Pawtucket2 2.0 due to changes in the PHP programming language.
 
 Once the updated files are in place navigate in your web browser to the home page of your Pawtucket2 installation. If you see the home page you're done. If you see this message:
 
