@@ -140,14 +140,14 @@ BaseModel::$s_ca_models_definitions['ca_list_items'] = array(
 				'FIELD_TYPE' => FT_BIT, 'DISPLAY_TYPE' => DT_SELECT, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
-				'DEFAULT' => '1',
+				'DEFAULT' => 1,
 				'LABEL' => _t('Is enabled?'), 'DESCRIPTION' => _t('If checked this item is selectable and can be used in cataloguing.')
 		),
 		'is_default' => array(
 				'FIELD_TYPE' => FT_BIT, 'DISPLAY_TYPE' => DT_SELECT, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
-				'DEFAULT' => '',
+				'DEFAULT' => 0,
 				'LABEL' => _t('Is default?'), 'DESCRIPTION' => _t('If checked this item will be the default selection for the list.')
 		),
 		'validation_format' => array(
@@ -972,6 +972,7 @@ class ca_list_items extends RepresentableBaseModel implements IHierarchy {
 			$this->_setSettingsForList();
 			ExternalCache::flush('listItems');
 			CompositeCache::flush('BaseModelWithAttributesTypeIDs');
+			CompositeCache::flush('typeListCodes');
 		}
 		return $vn_rc;
 	}
@@ -1001,6 +1002,7 @@ class ca_list_items extends RepresentableBaseModel implements IHierarchy {
 			$this->_setSettingsForList();
 			ExternalCache::flush('listItems');
 			CompositeCache::flush('BaseModelWithAttributesTypeIDs');
+			CompositeCache::flush('typeListCodes');
 		}
 		return $vn_rc;
 	}
@@ -1051,6 +1053,10 @@ class ca_list_items extends RepresentableBaseModel implements IHierarchy {
 			}
 			
 			if ($o_trans) { $o_trans->commit(); }
+			
+			ExternalCache::flush('listItems');
+			CompositeCache::flush('BaseModelWithAttributesTypeIDs');
+			CompositeCache::flush('typeListCodes');
 				
 			if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return true;

@@ -668,7 +668,7 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 		$va_names = [];
 		while($qr_res->nextRow()) {
 			$t_instance = Datamodel::getInstanceByTableNum($qr_res->get('table_num'), true);
-			$va_restriction_names = array_map(function($v) { return caUcFirstUTF8Safe(caGetListItemByIDForDisplay($v['type_id'], ['return' => $vb_use_singular ? 'singular' : 'plural'])); }, $t_form->getTypeRestrictions(null, ['form_id' => $qr_res->get('form_id')]));
+			$va_restriction_names = array_map(function($v) use ($vb_use_singular) { return caUcFirstUTF8Safe(caGetListItemByIDForDisplay($v['type_id'], ['return' => $vb_use_singular ? 'singular' : 'plural'])); }, $t_form->getTypeRestrictions(null, ['form_id' => $qr_res->get('form_id')]));
 			
 			switch($t_instance->tableName()) {
 				case 'ca_occurrences':
@@ -872,11 +872,11 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
                     }
  
 // Don't include fields in self-related records (Eg. objects related to objects) as it appears to confuse more than help                  
-//                     if(is_array($va_fields['related']) && is_array($va_fields['related']['fields'])) {
-//                         foreach($va_fields['related']['fields'] as $f => $finfo) {
-// 							$va_field_list["{$vs_table}.related.{$f}"] = $finfo;
-//                         }
-//                     }
+                    if(is_array($va_fields['related']) && is_array($va_fields['related']['fields'])) {
+                        foreach($va_fields['related']['fields'] as $f => $finfo) {
+							$va_field_list["{$vs_table}.related.{$f}"] = $finfo;
+                        }
+                    }
 
 					foreach($va_field_list as $vs_field => $va_field_indexing_info) {
 						if(in_array('DONT_INCLUDE_IN_SEARCH_FORM', $va_field_indexing_info)) { continue; }
@@ -1037,7 +1037,6 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 							
 							$vs_base_bundle = (($bundle_bits[1] ?? null) === 'related') ? "{$subject_table}.preferred_labels.{$bundle_bits[2]}"  : "{$vs_table}.{$vs_field}";
 							$vs_bundle = $policy ? "{$vs_table}.current_value.{$p}.{$vs_field}" : ((($bundle_bits[1] ?? null) === 'related') ? "{$subject_table}.preferred_labels.{$bundle_bits[2]}" : "{$vs_table}.{$vs_field}");
-
 
 
 							$vs_label = $label ?? $t_instance->getDisplayLabel($vs_base_bundle, ['useDisambiguationLabels' => true, 'includeSourceSuffix' => false]);

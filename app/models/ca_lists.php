@@ -483,6 +483,8 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		if (!isset($pa_options['returnHierarchyLevels'])) { $pa_options['returnHierarchyLevels'] = false; }
 		if ((isset($pa_options['directChildrenOnly']) && $pa_options['directChildrenOnly'])) { $pa_options['returnHierarchyLevels'] = false; }
 	
+		$va_seen_locales = $va_items = [];
+		
 		$pn_start = caGetOption('start', $pa_options, 0);
 		$pn_limit = caGetOption('limit', $pa_options, null);
 		$pb_dont_cache = caGetOption('dontCache', $pa_options, false);
@@ -585,9 +587,6 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 			";
 			//print $vs_sql;
 			$qr_res = $o_db->query($vs_sql, $va_params);
-			
-			$va_seen_locales = array();
-			$va_items = array();
 			
 			if ($pn_start > 0) { $qr_res->seek($pn_start); }
 			$vn_c = 0;
@@ -713,7 +712,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 * Recursive function that processes each level of hierarchical list
 	 */
 	private function _getItemsForListProcListLevel($pn_root_id, $pa_items, &$pa_sorted_items, $pa_options) {
-		$va_items = $pa_items[$pn_root_id];
+		$va_items = $pa_items[$pn_root_id] ?? null;
 		if (!is_array($va_items)) { return; }
 		if (isset($pa_options['extractValuesByUserLocale']) && $pa_options['extractValuesByUserLocale']) {
 			uksort($va_items, "strnatcasecmp");
@@ -1449,6 +1448,8 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 *	checkAccess = Array of access values to filter returned values on. If omitted no filtering is performed. [Default is null]
 	 *	exclude = array of item idnos to omit from the returned list. [Default is null]
 	 *
+	 *	separateDisabledValues = Separate disabled values, placing them after enabled items. [Default is false]
+	 *  hideDisabledValues = Omit disabled values from list. [Default is false]
 	 *  forceEnabled = enable all list items regardless of the value of the item's is_enabled value [Default is false]
 	 *
 	 *  deferHierarchyLoad = defer hierarchy browser loads until user clicks on expand button. [Default is false]
@@ -1461,6 +1462,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 			$t_list->setTransaction($o_trans);
 		}
 		
+		$va_list_items = null;
 		$defer_hierarchy_load = caGetOption('deferHierarchyLoad', $pa_options, false);
 		
 		if (!is_array($pa_options)) { $pa_options = array(); }
@@ -1561,21 +1563,21 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		}
 		
 		
-		if (is_array($pa_options['limitToItemsWithID']) && sizeof($pa_options['limitToItemsWithID'])) {
+		if (is_array($pa_options['limitToItemsWithID'] ?? null) && sizeof($pa_options['limitToItemsWithID'])) {
 		    $pa_options['limitToItemsWithID'] = caMakeItemIDList($pm_list_name_or_id, $pa_options['limitToItemsWithID']);
 			// expand limit list to include parents of items that are included
 			$va_to_add = array();
 			foreach($va_list_items as $vn_item_id => $va_item) {
 				if (($vn_parent_id = $va_item['parent_id']) && in_array($vn_item_id, $pa_options['limitToItemsWithID'])) {
 					$va_to_add[$vn_parent_id] = true;
-					while($vn_parent_id = $va_list_items[$vn_parent_id]['parent_id']) {
-						if($va_list_items[$vn_parent_id]['parent_id']) { $va_to_add[$va_list_items[$vn_parent_id]['parent_id']] = true; }
+					while($vn_parent_id = ($va_list_items[$vn_parent_id]['parent_id'] ?? null)) {
+						if($va_list_items[$vn_parent_id]['parent_id'] ?? null) { $va_to_add[$va_list_items[$vn_parent_id]['parent_id']] = true; }
 					}
 				}
 			}	
 			$pa_options['limitToItemsWithID'] += array_keys($va_to_add);
 		}
-		if (is_array($pa_options['omitItemsWithID']) && sizeof($pa_options['omitItemsWithID'])) {
+		if (is_array($pa_options['omitItemsWithID'] ?? null) && sizeof($pa_options['omitItemsWithID'])) {
 		     $pa_options['omitItemsWithID'] = caMakeItemIDList($pm_list_name_or_id, $pa_options['omitItemsWithID']);
 		}
 		
@@ -1609,11 +1611,13 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		$vn_default_val = null;
 		
 		$separate_disabled = caGetOption('separateDisabledValues', $pa_options, false);
+		$hide_disabled_values = caGetOption('hideDisabledValues', $pa_options, false);
 		
 		$disabled_option_list = [];
 		foreach($va_list_items as $vn_item_id => $va_item) {
 			if (is_array($pa_options['limitToItemsWithID']) && !in_array($vn_item_id, $pa_options['limitToItemsWithID'])) { continue; }
 			if (is_array($pa_options['omitItemsWithID']) && in_array($vn_item_id, $pa_options['omitItemsWithID'])) { continue; }
+			if ($hide_disabled_values && !$va_item['is_enabled'] && ($va_item['item_id'] != $pa_options['value'])) { continue; }
 			if (is_array($va_in_use_list) && !in_array($vn_item_id, $va_in_use_list)) { continue; }
 			if (is_array($pa_check_access) && (sizeof($pa_check_access) > 0) && !in_array($va_item['access'], $pa_check_access)) { continue; }
 			if (is_array($pa_exclude_items) && (sizeof($pa_exclude_items) > 0) && in_array($va_item['idno'], $pa_exclude_items)) { continue; }
@@ -1902,7 +1906,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 					initDataUrl: ".json_encode(caNavUrl($pa_options['request'], 'lookup', 'ListItem', 'GetHierarchyAncestorList')).",
 				
 					selectOnLoad : true,
-					browserWidth: ".(int)$va_width['dimension'].",
+					browserWidth: ".(int)($va_width['dimension'] ?? 670).",
 				
 					className: '".($vb_is_vertical_hier_browser ? 'hierarchyBrowserLevelVertical' : 'hierarchyBrowserLevel')."',
 					classNameContainer: '".($vb_is_vertical_hier_browser ? 'hierarchyBrowserContainerVertical' : 'hierarchyBrowserContainer')."',

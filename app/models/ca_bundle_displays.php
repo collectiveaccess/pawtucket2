@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2021 Whirl-i-Gig
+ * Copyright 2010-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -511,6 +511,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			
 			$t_user = new ca_users($pn_user_id);
 			while($qr_res->nextRow()) {
+				$vb_use_item_values = false;
 				$vs_bundle_name = $vs_bundle_name_proc = $qr_res->get('bundle_name');
 				$va_bundle_name = explode(".", $vs_bundle_name);
 				if (!isset($va_available_bundles[$vs_bundle_name]) && (sizeof($va_bundle_name) > 2)) {
@@ -527,7 +528,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				$placements[$placement_id]['allowEditing'] = $vb_user_can_edit;
 							
 				if (!$pb_settings_only) {
-					$t_placement->setSettingDefinitionsForPlacement($va_available_bundles[$vs_bundle_name_proc]['settings']);
+					$t_placement->setSettingDefinitionsForPlacement($va_available_bundles[$vs_bundle_name_proc]['settings'] ?? null);
 					$placements[$placement_id]['display'] = $va_available_bundles[$vs_bundle_name]['display'] ?? null;
 					$placements[$placement_id]['settingsForm'] = $t_placement->getHTMLSettingForm(array('id' => $vs_bundle_name.'_'.$placement_id, 'settings' => $va_settings, 'table' => $vs_subject_table));
 				} else {
@@ -580,7 +581,6 @@ if (!$pb_omit_editing_info) {
 								}
 							}
 
-							$vb_use_item_values = false;
 							switch($t_subject->getFieldInfo($va_bundle_name[1], 'DISPLAY_TYPE')) {
 								case 'DT_SELECT':
 									if ($vs_list_code = $t_subject->getFieldInfo($va_bundle_name[1], 'LIST')) {
@@ -1003,7 +1003,7 @@ if (!$pb_omit_editing_info) {
 			'format' => [
 				'formatType' => FT_TEXT,
 				'displayType' => DT_FIELD,
-				'width' => 35, 'height' => 5,
+				'width' => '490px', 'height' => 20,
 				'takesLocale' => false,
 				'default' => '',
 				'label' => _t('Display format'),
@@ -1045,7 +1045,7 @@ if (!$pb_omit_editing_info) {
 			'format' => array(
 				'formatType' => FT_TEXT,
 				'displayType' => DT_FIELD,
-				'width' => 35, 'height' => 5,
+				'width' => '490px', 'height' => 20,
 				'takesLocale' => false,
 				'default' => '',
 				'label' => _t('Display format'),
@@ -1089,7 +1089,7 @@ if (!$pb_omit_editing_info) {
 			'format' => array(
 				'formatType' => FT_TEXT,
 				'displayType' => DT_FIELD,
-				'width' => 35, 'height' => 5,
+				'width' => '490px', 'height' => 20,
 				'takesLocale' => false,
 				'default' => '',
 				'label' => _t('Display format'),
@@ -1249,7 +1249,7 @@ if (!$pb_omit_editing_info) {
 				'format' => array(
 					'formatType' => FT_TEXT,
 					'displayType' => DT_FIELD,
-					'width' => 35, 'height' => 5,
+					'width' => '490px', 'height' => 20,
 					'takesLocale' => false,
 					'default' => '',
 					'label' => _t('Display format'),
@@ -1326,7 +1326,7 @@ if (!$pb_omit_editing_info) {
 				'format' => array(
 					'formatType' => FT_TEXT,
 					'displayType' => DT_FIELD,
-					'width' => 35, 'height' => 5,
+					'width' => '490px', 'height' => 20,
 					'takesLocale' => false,
 					'default' => '',
 					'label' => _t('Display format'),
@@ -1360,7 +1360,7 @@ if (!$pb_omit_editing_info) {
 				'format' => array(
 					'formatType' => FT_TEXT,
 					'displayType' => DT_FIELD,
-					'width' => 35, 'height' => 5,
+					'width' => '490px', 'height' => 20,
 					'takesLocale' => false,
 					'default' => '',
 					'label' => _t('Display format'),
@@ -1417,7 +1417,7 @@ if (!$pb_omit_editing_info) {
 				'format' => array(
 					'formatType' => FT_TEXT,
 					'displayType' => DT_FIELD,
-					'width' => 35, 'height' => 5,
+					'width' => '490px', 'height' => 20,
 					'takesLocale' => false,
 					'default' => '',
 					'label' => _t('Display format'),
@@ -1480,7 +1480,7 @@ if (!$pb_omit_editing_info) {
 				'format' => array(
 					'formatType' => FT_TEXT,
 					'displayType' => DT_FIELD,
-					'width' => 35, 'height' => 5,
+					'width' => '490px', 'height' => 20,
 					'takesLocale' => false,
 					'default' => '',
 					'label' => _t('Display format'),
@@ -1524,7 +1524,7 @@ if (!$pb_omit_editing_info) {
 				'display_template' => array(
 					'formatType' => FT_TEXT,
 					'displayType' => DT_FIELD,
-					'width' => 35, 'height' => 5,
+					'width' => '490px', 'height' => 20,
 					'takesLocale' => false,
 					'default' => '',
 					'label' => _t('Display format'),
@@ -1558,7 +1558,7 @@ if (!$pb_omit_editing_info) {
 				'display_template' => array(
 					'formatType' => FT_TEXT,
 					'displayType' => DT_FIELD,
-					'width' => 35, 'height' => 5,
+					'width' => '490px', 'height' => 20,
 					'takesLocale' => false,
 					'default' => '',
 					'label' => _t('Display format'),
@@ -1697,7 +1697,7 @@ if (!$pb_omit_editing_info) {
 				'format' => array(
 					'formatType' => FT_TEXT,
 					'displayType' => DT_FIELD,
-					'width' => 35, 'height' => 5,
+					'width' => '490px', 'height' => 20,
 					'takesLocale' => false,
 					'default' => '',
 					'label' => _t('Display format'),
@@ -2189,9 +2189,45 @@ if (!$pb_omit_editing_info) {
 	 */
 	public function getDisplayValue($po_result, $pn_placement_id, $options=null) {
 		if (!is_array($options)) { $options = []; }
+		
+		$vb_return_info =	caGetOption('returnInfo', $options, false);
+		
 		if (!is_numeric($pn_placement_id)) {
 			$vs_bundle_name = $pn_placement_id;
 			$va_placement = [];
+		} elseif($pn_placement_id < 0) {	// default display
+			$val = $bundle = null;
+			switch((int)$pn_placement_id) {
+				case -1:	// idno
+					if($instance = $po_result->getInstance()) {
+						$val = $po_result->get($bundle = $instance->tableName().'.'.$instance->getProperty('ID_NUMBERING_ID_FIELD'));
+					}
+					$bundle_type =  'intrinsic';
+					break;
+				case -2:	// display name	
+					if($instance = $po_result->getInstance()) {
+						$val = $po_result->get($bundle = $instance->tableName().'.preferred_labels');
+					}
+					$bundle_type =  'preferred_labels';
+					break;
+				default:
+					return null;
+					break;
+			}
+			if($vb_return_info) {
+				return [
+					'value' => $val,
+					'bundle' => $bundle,
+					'type' => $bundle_type,
+					'minCount' => 1,
+					'maxCount' => 1,
+					'count' => 1,
+					'ids' => $po_result->getPrimaryKey(),
+					'inlineEditable' => true
+				];
+			} else {
+				return $val;
+			}
 		} else {
 			$placements = $this->getPlacements(['settingsOnly' => true, 'omitEditingInfo' => true]);
 			$va_placement = $placements[$pn_placement_id];
@@ -2200,7 +2236,6 @@ if (!$pb_omit_editing_info) {
 		$va_settings = 		caGetOption('settings', $va_placement, [], array('castTo' => 'array'));
 		$o_request = 		caGetOption('request', $options, null);
 		
-		$vb_return_info =	caGetOption('returnInfo', $options, false);
 		$vb_include_nonprimary_media = caGetOption('show_nonprimary', $options, false);
 		
 		if(method_exists($po_result, 'filterNonPrimaryRepresentations')) { $po_result->filterNonPrimaryRepresentations(!$vb_include_nonprimary_media); }
@@ -3139,9 +3174,10 @@ if (!$pb_omit_editing_info) {
 
 					
 					if($vb_set_value) { 
-						$t_subject->saveBundlesForScreen(null, $request, $save_options = [
+						$save_options = [
 							'bundles' => [$bundle], 'formName' => '_resultsEditor'
-						]);
+						];
+						$t_subject->saveBundlesForScreen(null, $request, $save_options);
 					}
 					if ($request->numActionErrors()) { 
 						$bundles = $request->getActionErrorSources();
@@ -3304,10 +3340,8 @@ if (!$pb_omit_editing_info) {
 			'instance' => $t_subject, 'is_insert' => false
 		]);
 
-		$vb_save_rc = $t_subject->saveBundlesForScreen(null, $request, 
-				$save_options = ['bundles' => ca_bundle_displays::makeBundlesForResultsEditor([$bundle]), 
-				'formName' => 'complex']
-		);
+		$save_options = ['bundles' => ca_bundle_displays::makeBundlesForResultsEditor([$bundle]), 'formName' => 'complex'];
+		$vb_save_rc = $t_subject->saveBundlesForScreen(null, $request, $save_options);
 		
 		$vs_message = _t("Saved changes to %1", $type_name);
 		

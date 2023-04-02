@@ -3561,6 +3561,7 @@ class ca_users extends BaseModel {
 		$vs_cache_key = $ps_table_name.'/'.$pm_type_code_or_id."/".$this->getPrimaryKey();
 		if (isset(ca_users::$s_user_type_access_cache[$vs_cache_key])) { return ca_users::$s_user_type_access_cache[$vs_cache_key]; }
 
+		$vn_type_id = null;
 		if(in_array($ps_table_name, ca_users::$s_bundlable_tables)) { // type-level access control only applies to these tables
 			$va_roles = array_merge($this->getUserRoles(['skipVars' => false]), $this->getGroupRoles(['skipVars' => false]));
 			
@@ -3577,7 +3578,7 @@ class ca_users extends BaseModel {
 			foreach($va_roles as $vn_role_id => $va_role_info) {
 				$va_vars = $va_role_info['vars'];
 				
-				if (is_array($va_vars['type_access_settings'])) {
+				if (is_array($va_vars['type_access_settings'] ?? null)) {
 					if (isset($va_vars['type_access_settings'][$ps_table_name.'.'.$vn_type_id]) && ((int)$va_vars['type_access_settings'][$ps_table_name.'.'.$vn_type_id] > $vn_access)) {
 						$vn_access = (int)$va_vars['type_access_settings'][$ps_table_name.'.'.$vn_type_id];
 						
@@ -3613,7 +3614,7 @@ class ca_users extends BaseModel {
 	 *		__CA_BUNDLE_ACCESS_READONLY__ (implies ability to view bundle content only)
 	 *		__CA_BUNDLE_ACCESS_NONE__ (indicates that the user has no access to bundle)
 	 */
-	public function getTypesWithAccess($ps_table_name, $pn_access) {
+	public function getTypesWithAccess($ps_table_name, $pn_access, ?array $pa_options=null) {
 		$vb_exact = caGetOption('exactAccess', $pa_options, false);
 		$vs_cache_key = $ps_table_name."/".(int)$pn_access."/".$this->getPrimaryKey().(int)$vb_exact;
 		if (isset(ca_users::$s_user_type_with_access_cache[$vs_cache_key])) { return ca_users::$s_user_type_with_access_cache[$vs_cache_key]; }
@@ -3630,7 +3631,7 @@ class ca_users extends BaseModel {
 		foreach($va_roles as $vn_role_id => $va_role_info) {
 			$va_vars = $va_role_info['vars'];
 			
-			if (!is_array($va_vars['type_access_settings'])) { $va_vars['type_access_settings'] = array(); }
+			if (!is_array($va_vars['type_access_settings'] ?? null)) { $va_vars['type_access_settings'] = array(); }
 			
 			if (is_array($va_available_types)) {
 				foreach($va_available_types as $vn_type_id) {
@@ -3676,7 +3677,7 @@ class ca_users extends BaseModel {
 			foreach($va_roles as $vn_role_id => $va_role_info) {
 				$va_vars = $va_role_info['vars'];
 				
-				if (is_array($va_vars['source_access_settings'])) {
+				if (is_array($va_vars['source_access_settings'] ?? null)) {
 					if (isset($va_vars['source_access_settings'][$ps_table_name.'.'.$vn_source_id]) && ((int)$va_vars['source_access_settings'][$ps_table_name.'.'.$vn_source_id] > $vn_access)) {
 						$vn_access = (int)$va_vars['source_access_settings'][$ps_table_name.'.'.$vn_source_id];
 						
@@ -3712,7 +3713,7 @@ class ca_users extends BaseModel {
 	 *		__CA_BUNDLE_ACCESS_READONLY__ (implies ability to view bundle content only)
 	 *		__CA_BUNDLE_ACCESS_NONE__ (indicates that the user has no access to bundle)
 	 */
-	public function getSourcesWithAccess($ps_table_name, $pn_access, $pa_options=null) {
+	public function getSourcesWithAccess($ps_table_name, $pn_access, ?array $pa_options=null) {
 		$vb_exact = caGetOption('exactAccess', $pa_options, false);
 		$vs_cache_key = $ps_table_name."/".(int)$pn_access."/".$this->getPrimaryKey().(int)$vb_exact;
 		if (isset(ca_users::$s_user_source_with_access_cache[$vs_cache_key])) { return ca_users::$s_user_source_with_access_cache[$vs_cache_key]; }
@@ -3730,7 +3731,7 @@ class ca_users extends BaseModel {
 		foreach($va_roles as $vn_role_id => $va_role_info) {
 			$va_vars = $va_role_info['vars'];
 			
-			if (!is_array($va_vars['source_access_settings'])) { $va_vars['source_access_settings'] = array(); }
+			if (!is_array($va_vars['source_access_settings'] ?? null)) { $va_vars['source_access_settings'] = array(); }
 			
 			if(is_array($va_available_sources)) {
 				foreach($va_available_sources as $vn_source_id) {
