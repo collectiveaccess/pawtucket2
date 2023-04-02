@@ -74,10 +74,15 @@ a:hover{
 	padding-top: 0px;
 }
 .navbar-brand img{
-	height: 75px;
+	height: 55px;
 	width: auto;
 }
-
+@media (min-width:1085px){
+	.navbar-brand img{
+		height: 75px;
+		width: auto;
+	}
+}
 .navbar-header .orgLinkHeader a img{
 	height: 70px;
 	width: auto;
@@ -91,10 +96,8 @@ a:hover{
 	/* margin-top: 10px; */
 }
 
-@media (min-width:768px){
-	.navbar-brand{
-		padding-top: 9px;
-	}
+.navbar-brand{
+	padding-top: 9px;
 }
 @media (min-width:768px){
 	.navbar-nav > li > a {
@@ -200,12 +203,12 @@ a:hover{
 /* footer */
 /* offset needed for fixed footer */
 body{
-	margin-bottom:370px;
+	margin-bottom:420px;
 }
 #footer{
 	background-color: #ffffff;
 	color:#000;
-	height: 340px;
+	height: 370px;
 	border:0px;
 	font-size:15px;
 	font-weight:normal;
@@ -215,10 +218,10 @@ body{
 }
 @media(max-width:570px){
 	#footer{
-		height:460px;
+		height:510px;
 	}
 	body{
-		margin-bottom:490px;
+		margin-bottom:540px;
 	}
 }
 
@@ -430,25 +433,20 @@ body.frontContainer #footer{
 	top:-20px;
 }
 .parallax.hero1 {
-	/* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2), rgba(0, 0, 0, 0.4)), url("../graphics/hero/hero1.jpg");
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .2)), url("../graphics/hero/MHVWindmill-Credit-GrajewskiFotographInc.jpg");
 }
 .parallax.hero2 {
-    /* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, .6), rgba(0, 0, 0, 0.3)), url("../graphics/hero/hero2.jpg");
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, 0.1)), url("../graphics/hero/MHVvillagestreetCrediGrajewskiFotographInc.jpg");
 }
 .parallax.hero3 {
-    /* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, .7), rgba(0, 0, 0, .3), rgba(0, 0, 0, 0.1)), url("../graphics/hero/hero3.jpeg");
-		background-position: center bottom;
+	background-image: url("../graphics/hero/MHVChortitzHousebarn-Credit-GrajewskiFotographInc.jpg");
+	background-position: center bottom;
 }
 .parallax.hero4 {
-    /* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/hero/hero4.jpg");
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2)), url("../graphics/hero/JAVDavidMuseum.jpeg");
 }
 .parallax.hero5 {
-    /* background-image: url("../graphics/lilac_house.jpg"); */
-		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/hero/hero5.jpg");
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, .2)), url("../graphics/hero/basketball.jpg");
 }
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
@@ -648,14 +646,13 @@ body.frontContainer #footer{
 }
 .frontAlert div.frontAlertMessage{
 	padding: 60px;
-	max-height:50vh;
 	font-size: 18px;
 	color: #000;
 	overflow:scroll;
 	text-align:center;
 }
 .frontAlert div.frontAlertMessage strong, .frontAlert div.frontAlertMessage b{
-	font-size: 24px;
+	font-size: 16px;
 }
 div.frontAlertClose{
 	position:absolute;
@@ -673,35 +670,32 @@ div.frontAlertClose{
 	height:90vh;
 }
 .frontAlert div.frontAlertMessage{
-	max-height:90vh;
+	position: relative;
+	height: 100%;
 	font-size: 13px;
 }
 @media(min-width:768px){
 	.frontAlert div.frontAlertBox{
-		margin:15vh 15vw;
-		height:70vh;
+		margin:10vh 15vw;
+		max-height:80vh;
 	}
 	.frontAlert div.frontAlertMessage{
-		max-height:70vh;
 		font-size: 18px;
+	}
+	.frontAlert div.frontAlertMessage strong, .frontAlert div.frontAlertMessage b{
+		font-size: 20px;
 	}
 }
 @media(min-width:1145px){
 	.frontAlert div.frontAlertBox{
-		margin:20vh 20vw;
-		height:60vh;
-	}
-	.frontAlert div.frontAlertMessage{
-		max-height:60vh;
+		margin:15vh 15vw;
+		height:70vh;
 	}
 }
 @media(min-width:1550px){
 	.frontAlert div.frontAlertBox{
-		margin:25vh 25vw;
-		height:50vh;
-	}
-	.frontAlert div.frontAlertMessage{
-		max-height:50vh;
+		margin:15vh 25vw;
+		height:70vh;
 	}
 }
 /* hp explore */

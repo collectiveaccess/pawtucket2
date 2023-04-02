@@ -4,27 +4,27 @@
 <div class="transcription educationalResources container textContent">
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-1">
-			<h1><a href="/About/Teachers">For Teachers</a> &gt; <a href="/EducationalResources/Index">Educational Resources</a></H1>
+			<h1><a href="/About/Teachers"><?= _t('For Teachers'); ?></a> &gt; <a href="/EducationalResources/Index"><?= _t('Educational Resources'); ?></a></H1>
 			<p>
-			 	Welcome to #NovaMuseEd, our teacher resource section, where you can help your students make connections to the world, past and present. Anything in this section can be downloaded and used for educational purposes. Learning activities are also customizable so you can better meet the unique needs of learners, classes and programs.
+			 	<?= _t('Welcome to #NovaMuseEd, our teacher resource section, where you can help your students make connections to the world, past and present. Anything in this section can be downloaded and used for educational purposes. Learning activities are also customizable so you can better meet the unique needs of learners, classes and programs.'); ?>
 			</p><p>
-			We would love to see these resources in action. Feel free to tag us at @NovaMuse_ca or #NovaMuseEd. If you have ideas for additional resources, please contact us. This is a new initiative, and we look forward to building resources with you and for you.
+			<?= _t('We would love to see these resources in action. Feel free to tag us at @NovaMuse_ca or #NovaMuseEd. If you have ideas for additional resources, please contact us. This is a new initiative, and we look forward to building resources with you and for you.'); ?>
 			</p>
-			<p>Visit the <a href="/About/guide">help</a> page to learn more.</p>
+			<p><?= _t('Visit the').' <a href="/About/guide">'._t('help').'</a> '._t('page to learn more.'); ?></p>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-9 col-md-offset-1 text-center">
-			<h2>Explore educational resources:</h2>
-			<a role="button" class="btn btn-primary btn-lg landingBtn" href="/EducationalResources/Browse/facet/type_facet/id/1615">Learning Activities</a>
-			<a role="button" class="btn btn-success btn-lg landingBtn" href="/EducationalResources/Browse/facet/type_facet/id/1614">Colouring, Games and Puzzles</a>
-			<a role="button" class="btn btn-warning btn-lg landingBtn" href="/EducationalResources/Browse/facet/type_facet/id/1616">Audio/Video</a>
-			<a role="button" class="btn btn-danger btn-lg landingBtn" href="/Gallery/Index">Create Your Own Gallery</a>
+			<h2><?= _t('Explore educational resources'); ?>:</h2>
+			<a role="button" class="btn btn-primary btn-lg landingBtn" href="/EducationalResources/Browse/facet/type_facet/id/1615"><?= _t('Learning Activities'); ?></a>
+			<a role="button" class="btn btn-success btn-lg landingBtn" href="/EducationalResources/Browse/facet/type_facet/id/1614"><?= _t('Colouring, Games and Puzzles'); ?></a>
+			<a role="button" class="btn btn-warning btn-lg landingBtn" href="/EducationalResources/Browse/facet/type_facet/id/1616"><?= _t('Audio/Video'); ?></a>
+			<a role="button" class="btn btn-danger btn-lg landingBtn" href="/Gallery/Index"><?= _t('Create Your Own Gallery'); ?></a>
 		</div>
 	</div>
 	
 	<div class="row recent">
-		<h2>What's New</h2>
+		<h2><?= _t('What\'s New'); ?></h2>
 		<div class="recent jcarousel-wrapper">
 			<div class="recent jcarousel" style="height: 310px;">
 				<ul>
