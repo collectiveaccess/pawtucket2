@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2022 Whirl-i-Gig
+ * Copyright 2010-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -490,15 +490,15 @@ trait ModelSettings {
 					}
 				}
 				if (isset($va_properties['showOnSelect'])) {
-					if (!is_array($va_properties['showOnSelect'])) { $va_properties['showOnSelect'] = array($va_properties['showOnSelect']); }
+					if (!is_array($va_properties['showOnSelect'])) { $va_properties['showOnSelect'] = [$va_properties['showOnSelect']]; }
 					
-					$va_ids = array();
+					$va_ids = [];
 					foreach($va_properties['showOnSelect'] as $vs_n) {
 						$va_ids[] = "#".$pa_options['id_prefix']."_{$vs_n}_container";
 					}
 					$va_attributes['onchange'] = 'jQuery(this).prop("checked") ? jQuery("'.join(",", $va_ids).'").slideDown(250).find("input, textarea").val("") : jQuery("'.join(",", $va_ids).'").slideUp(250);';
 					
-					if (!$va_attributes['checked']) {
+					if (!($va_attributes['checked'] ?? false)) {
 						$vs_return .= "<script type='text/javascript'>
 	jQuery(document).ready(function() {
 		jQuery('".join(",", $va_ids)."').hide();
@@ -686,6 +686,7 @@ trait ModelSettings {
 							$va_select_opts[$e['display_label']] = $e['element_code'];
 						}
 						
+						$va_opts = ['id' => $vs_input_id, 'width' => $vn_width, 'height' => $vn_height, 'value' => $vs_value];
 						$vs_select_element = caHTMLSelect($vs_input_name, $va_select_opts, $va_select_attr, $va_opts);
 					} elseif (is_array($va_properties['showSortableBundlesFor'] ?? null) && (strlen($va_properties['showSortableBundlesFor']['table'] ?? '') > 0)) {
 						$va_select_opts = array_merge([

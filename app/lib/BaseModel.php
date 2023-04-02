@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2021 Whirl-i-Gig
+ * Copyright 2000-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -636,7 +636,7 @@ class BaseModel extends BaseObject {
 		$changed_field_values_array = [];
 		foreach($fieldnames as $fieldname) {
 			if($this->changed($fieldname)) {
-				$changed_field_values_array[$fieldname] = $this->_FIELD_VALUES[$fieldname];
+				$changed_field_values_array[$fieldname] = $this->_FIELD_VALUES[$fieldname] ?? null;
 			}
 		}
 		return $changed_field_values_array;
@@ -649,7 +649,7 @@ class BaseModel extends BaseObject {
 	 * @return mixed original field value
 	 */
 	public function getOriginalValue($ps_field) {
-		return $this->_FIELD_VALUES_OLD[$ps_field];
+		return $this->_FIELD_VALUES_OLD[$ps_field] ?? null;
 	}
 	# --------------------------------------------------------------------------------
 	/**
@@ -1178,7 +1178,7 @@ class BaseModel extends BaseObject {
 			$vs_prop = caEscapeForXML($vs_prop);
 		}
 
-		if (!(isset($pa_options["DONT_STRIP_SLASHES"]) && $pa_options["DONT_STRIP_SLASHES"])) {
+		if (!caGetOption("DONT_STRIP_SLASHES", $pa_options, true)) {
 			if (is_string($vs_prop)) { $vs_prop = stripSlashes($vs_prop); }
 		}
 		
@@ -1696,7 +1696,7 @@ class BaseModel extends BaseObject {
 						break;
 					case (FT_TEXT):
 						$vm_value = (string)$vm_value;
-						if (is_string($vm_value)) {
+						if (is_string($vm_value) && isset($pa_options['stripSlashes']) && ($pa_options['stripSlashes'])) {
 							$vm_value = stripSlashes($vm_value);
 						}
 						
@@ -3507,7 +3507,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			$vs_sql = "DELETE FROM ".$this->tableName()." WHERE ";
 
 			$vs_wheres = "";
-			while(list($vs_field, $vm_val) = each($pa_fields)) {
+			foreach($pa_fields as $vs_field => $vm_val){
 				$vn_datatype = $this->_getFieldTypeType($vs_field);
 				switch($vn_datatype) {
 					# -----------------------------
@@ -5656,9 +5656,10 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			$vs_sql =  "$field = ".$this->quote(caSerializeForDatabase($this->_FILES[$field], true)).",";
 		} else {
 			$va_field_info = $this->getFieldInfo($field);
-			if ((file_exists($this->_SET_FILES[$field]['tmp_name']))) {
+			$ffname = $this->_SET_FILES[$field]['tmp_name'] ?? null;
+			if ((file_exists($ffname))) {
 				$ff = new File();
-				$mimetype = $ff->divineFileFormat($this->_SET_FILES[$field]['tmp_name'], $this->_SET_FILES[$field]['original_filename']);
+				$mimetype = $ff->divineFileFormat($ffname, $this->_SET_FILES[$field]['original_filename'] ?? null);
 
 				if (is_array($va_field_info["FILE_FORMATS"]) && sizeof($va_field_info["FILE_FORMATS"]) > 0) {
 					if (!in_array($mimetype, $va_field_info["FILE_FORMATS"])) {
@@ -5682,32 +5683,33 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 
 				if(!is_array($properties = $ff->getProperties())) { $properties = array(); }
 				
-				if ($properties['dangerous'] > 0) { $vn_dangerous = 1; }
+				if (($properties['dangerous'] ?? 0) > 0) { $vn_dangerous = 1; }
 
-				if (($dirhash = $this->_getDirectoryHash($vi["absolutePath"], $this->getPrimaryKey())) === false) {
+				if (($dirhash = $this->_getDirectoryHash($vi["absolutePath"] ?? null, $this->getPrimaryKey())) === false) {
 					$this->postError(1600, _t("Could not create subdirectory for uploaded file in %1. Please ask your administrator to check the permissions of your media directory.", $vi["absolutePath"]),"BaseModel->_processFiles()", $this->tableName().'.'.$field);
 					return false;
 				}
 				$magic = rand(0,99999);
 
-				$va_pieces = explode("/", $this->_SET_FILES[$field]['original_filename']);
-				$ext = strtolower(array_pop($va_tmp = explode(".", array_pop($va_pieces))));
-				if ($properties["dangerous"]) { $ext .= ".bin"; }
+				$va_pieces = explode("/", $this->_SET_FILES[$field]['original_filename'] ?? '');
+				$va_tmp = explode(".", array_pop($va_pieces));
+				$ext = strtolower(array_pop($va_tmp));
+				if ($properties["dangerous"] ?? 0) { $ext .= ".bin"; }
 				if (!$ext) $ext = "bin";
 
-				$filestem = $vi["absolutePath"]."/".$dirhash."/".$magic."_".$this->_genMediaName($field);
+				$filestem = ($vi["absolutePath"] ?? null)."/".$dirhash."/".$magic."_".$this->_genMediaName($field);
 				$filepath = $filestem.".".$ext;
 
 
 				$filesize = isset($properties["filesize"]) ? $properties["filesize"] : 0;
 				if (!$filesize) {
-					$properties["filesize"] = filesize($this->_SET_FILES[$field]['tmp_name']);
+					$properties["filesize"] = filesize($ffname);
 				}
 
 				$file_desc = array(
 					"FILE" => 1, # signifies is file
 					"VOLUME" => $va_field_info["FILE_VOLUME"],
-					"ORIGINAL_FILENAME" => $this->_SET_FILES[$field]['original_filename'],
+					"ORIGINAL_FILENAME" => $this->_SET_FILES[$field]['original_filename'] ?? null,
 					"MIMETYPE" => $mimetype,
 					"FILENAME" => $this->_genMediaName($field).".".$ext,
 					"HASH" => $dirhash,
@@ -5715,15 +5717,15 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 					"PROPERTIES" => $properties,
 					"DANGEROUS" => $vn_dangerous,
 					"CONVERSIONS" => array(),
-					"MD5" => md5_file($this->_SET_FILES[$field]['tmp_name']),
-					"FILE_LAST_MODIFIED" => filemtime($this->_SET_FILES[$field]['tmp_name'])
+					"MD5" => md5_file($ffname),
+					"FILE_LAST_MODIFIED" => filemtime($ffname)
 				);
 
-				if (!is_readable($this->_SET_FILES[$field]['tmp_name']) || !is_writeable(pathinfo($filepath, PATHINFO_DIRNAME)) || !copy($this->_SET_FILES[$field]['tmp_name'], $filepath)) {
+				if (!is_readable($ffname) || !is_writeable(pathinfo($filepath, PATHINFO_DIRNAME)) || !copy($ffname, $filepath)) {
 					$this->postError(1670, _t("File could not be copied. Ask your administrator to check permissions and file space for %1",$vi["absolutePath"]),"BaseModel->_processFiles()", $this->tableName().'.'.$field);
 					return false;
 				}
-				@touch($filepath, filemtime($this->_SET_FILES[$field]['tmp_name']));
+				@touch($filepath, filemtime($ffname));
 
 
 				# -- delete old file if its name is different from the one we just wrote (otherwise, we overwrote it)
@@ -5849,7 +5851,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 	public function dump () {
 		$this->clearErrors();
 		reset($this->FIELDS);
-		while (list($field, $attr) = each($this->FIELDS)) {
+		foreach($this->FIELDS as $field => $attr){
 			switch($attr['FIELD_TYPE']) {
 				case FT_HISTORIC_DATERANGE:
 					echo "{$field} = ".$this->_FIELD_VALUES[$attr['START']]."/".$this->_FIELD_VALUES[$attr['END']]."<BR>\n";
@@ -6099,7 +6101,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		$err_halt = $this->error->getHaltOnError();
 		$err_report = $this->error->getReportOnError();
 		$this->error->setErrorOutput(0);
-		while(list($field,$attr) = each($fields)) {
+		foreach($fields as $field => $attr){
 			$pb_need_reload = false;
 			$this->verifyFieldValue ($field, $this->get($field), $pb_need_reload);
 			if ($errnum = $this->error->getErrorNumber()) {
@@ -7271,6 +7273,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		if (!$this->isHierarchical()) { return null; }
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		$vs_table_name = $this->tableName();
+		$vn_hierarchy_id = null;
 		
 		$t_instance = (!$pn_id) ? $this : Datamodel::getInstanceByTableNum($this->tableNum(), false);
 		if (!$pn_id && $this->inTransaction()) { $t_instance->setTransaction($this->getTransaction()); }
@@ -8079,7 +8082,8 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			while($qr_sort_res->nextHit()) {
 				$va_key = array();
 				foreach($pa_sort as $vs_sort) {
-					$va_key[] = str_pad(substr($qr_sort_res->get($vs_sort), 10), 10, " ", STR_PAD_LEFT);
+					$k = trim(mb_strtolower(mb_substr($qr_sort_res->get($vs_sort), 0, 10)));
+					$va_key[] = str_pad($k, 10, " ", STR_PAD_RIGHT);
 				}
 				$va_sort_keys[$vn_i] = join("", $va_key)."".str_pad("{$vn_i}", 7, " ", STR_PAD_LEFT);
 				$vn_i++;
@@ -8116,7 +8120,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 	 * Traverse parent_id indexed array and return flattened list
 	 */
 	private function _getFlattenedHierarchyArray($pa_hierarchy_data, $pn_id, $ps_sort_direction='asc') {
-		if (!is_array($pa_hierarchy_data[$pn_id])) { return array(); }
+		if (!is_array($pa_hierarchy_data[$pn_id] ?? null)) { return []; }
 		
 		$va_data = array();
 		foreach($pa_hierarchy_data[$pn_id] as $vs_sort_key => $va_item) {
@@ -9382,7 +9386,12 @@ $pa_options["display_form_field_tips"] = true;
 		foreach($va_fields as $vs_field => $va_info) {
 			if (isset($va_info['IDENTITY']) && $va_info['IDENTITY']) { continue;}	
 			
-			if ((isset($va_many_to_one_relations[$vs_field]) && $va_many_to_one_relations[$vs_field]) && (!isset($va_info['IS_NULL']) || !$va_info['IS_NULL'])) {
+			if (
+				(isset($va_many_to_one_relations[$vs_field]) && $va_many_to_one_relations[$vs_field]) 
+				&& 
+				(!isset($va_info['IS_NULL']) || !$va_info['IS_NULL'])
+				&& (!isset($va_info['NOT_MANDATORY']) || !(bool)$va_info['NOT_MANDATORY'])
+			) {
 				$va_mandatory_fields[] = $vs_field;
 				continue;
 			}
@@ -9532,6 +9541,11 @@ $pa_options["display_form_field_tips"] = true;
 					if($t_item_rel->hasField($f = $t_item_rel->getTypeFieldName())) { $t_item_rel->set($f, $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
 					if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 					if(!is_null($ps_source_info)){ $t_item_rel->set("source_info",$ps_source_info); }
+					
+					if(!is_null($is_primary = caGetOption('is_primary', $pa_options, null)) && $t_item_rel->hasField('is_primary')) {
+						$t_item_rel->set('is_primary', $is_primary);	
+					}
+					
 					$t_item_rel->insert();
 					
 					if ($t_item_rel->numErrors() > 0) {
@@ -12234,7 +12248,7 @@ $pa_options["display_form_field_tips"] = true;
 			}, []);
 			if((is_array($ids) && sizeof($ids))) {
 				$ids = array_map(function($v) { return is_numeric($v) ? $v : ca_locales::codeToID($v); }, $ids);
-				if(is_array($pa_values['parent_id'])) {
+				if(is_array($pa_values['parent_id'] ?? null)) {
 					foreach($pa_values['parent_id'] as $i => $v) {
 						if (isset($ids[$v[1]])) {
 							$pa_values['parent_id'][$i][1] = $ids[$v[1]];

@@ -260,6 +260,14 @@ $_ca_attribute_settings['ListAttributeValue'] = array(		// global
 		'label' => _t('Separate disabled values?'),
 		'description' => _t('Group disabled entries after active entries.')
 	),
+	'hideDisabledValues' => array(
+		'formatType' => FT_NUMBER,
+		'displayType' => DT_CHECKBOXES,
+		'default' => 0,
+		'width' => 1, 'height' => 1,
+		'label' => _t('Hide disabled values?'),
+		'description' => _t('Omit disabled entries from list.')
+	),
 );
 
 
@@ -549,6 +557,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 		
 		$current_selection_display_format = caGetOption('currentSelectionDisplayFormat', $pa_options, caGetOption('currentSelectionDisplayFormat', $pa_element_info['settings'], null));
 		$separate_disabled_values = caGetOption('separateDisabledValues', $pa_options, caGetOption('separateDisabledValues', $pa_element_info['settings'], false));
+		$hide_disabled_values = caGetOption('hideDisabledValues', $pa_options, caGetOption('hideDisabledValues', $pa_element_info['settings'], false));
 		
 		$vn_max_columns = $pa_element_info['settings']['maxColumns'] ?? 1;
 
@@ -571,6 +580,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 					'implicitNullOption' => $vb_implicit_nulls, 'auto_shrink' => $vb_auto_shrink, 
 					'currentSelectionDisplayFormat' => $current_selection_display_format,
 					'separateDisabledValues' => $separate_disabled_values,
+					'hideDisabledValues' => $hide_disabled_values,
 					'deferHierarchyLoad' => (bool)($pa_element_info['settings']['deferHierarchyLoad'] ?? false)
 				]
 			)
@@ -578,6 +588,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 
 		// dependant field visibility
 		$vs_show_hide_js = '';
+		$cases = $all_ids =  [];
 		if(Configuration::load()->get('enable_dependent_field_visibility')) {
 			switch($render_as) {
 				case 'radio_buttons':
@@ -601,8 +612,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 				$t_list = new ca_lists();
 				$vb_yes_was_set = false;
 				
-				$cases = $all_ids =  [];
-				if(!$pa_element_info['settings']['requireValue'] && is_array($pa_element_info['settings']['hideIfSelected___null__']) && sizeof($pa_element_info['settings']['hideIfSelected___null__'])) {
+				if(!($pa_element_info['settings']['requireValue'] ?? false) && is_array($pa_element_info['settings']['hideIfSelected___null__'] ?? null) && sizeof($pa_element_info['settings']['hideIfSelected___null__'])) {
 				    $va_hideif_for_null = $pa_element_info['settings']['hideIfSelected___null__'];
 				    foreach($va_hideif_for_null as $vs_key) {
                         $va_tmp = self::resolveHideIfSelectedKey($vs_key);

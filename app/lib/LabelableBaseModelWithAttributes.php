@@ -32,7 +32,7 @@
  
  /**
   *
-  */
+  */ 
 define('__CA_LABEL_TYPE_PREFERRED__', 0);
 define('__CA_LABEL_TYPE_NONPREFERRED__', 1);
 define('__CA_LABEL_TYPE_ANY__', 2);
@@ -140,6 +140,17 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		
 		$t_label->purify($this->purify());
 		$t_label->setLabelTypeList($this->getAppConfig()->get($pb_is_preferred ? "{$vs_table_name}_preferred_label_type_list" : "{$vs_table_name}_nonpreferred_label_type_list"));
+		
+		// Does label exist?
+		$label_table = $t_label->tableName();
+		
+		$dupe_check_values = array_merge($pa_label_values, [$this->primaryKey() => $this->getPrimaryKey(), 'locale_id' => ca_locales::codeToID($pn_locale_id), 'type_id' => $pn_type_id]);
+		// if ($t_label->hasField('effective_date')) {
+// 			$dupe_check_values['effective_date'] = $effective_date;
+// 		}
+		if(($dupe_count = $label_table::find($dupe_check_values, ['transaction' => $o_trans, 'returnAs' => 'count'])) > 0) {
+			return false;
+		}
 		
 		foreach($pa_label_values as $vs_field => $vs_value) {
 			if ($t_label->hasField($vs_field)) { 
@@ -400,7 +411,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		if (!($vn_id = $this->getPrimaryKey())) { return null; }
 		$va_labels = $this->getLabels(array($pn_locale_id), $pb_is_preferred ? __CA_LABEL_TYPE_PREFERRED__ : __CA_LABEL_TYPE_NONPREFERRED__);
 		
-		if (sizeof($va_labels)) {
+		if (is_array($va_labels) && sizeof($va_labels)) {
 			$va_labels = caExtractValuesByUserLocale($va_labels);
 			$va_label = array_shift($va_labels);
 			$vn_rc = $this->editLabel(
@@ -550,6 +561,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 	 *		purifyWithFallback = executes the search with "purify" set and falls back to search with unpurified text if nothing is found. [Default is false]
 	 *		checkAccess = array of access values to filter results by; if defined only items with the specified access code(s) are returned. Only supported for <table_name>.hierarchy.preferred_labels and <table_name>.children.preferred_labels because these returns sets of items. For <table_name>.parent.preferred_labels, which returns a single row at most, you should do access checking yourself. (Everything here applies equally to nonpreferred_labels)
 	 *		restrictToTypes = Restrict returned items to those of the specified types. An array of list item idnos and/or item_ids may be specified. [Default is null]			 
+ 	 *		excludeTypes = Restrict returned items to those that are not of the specified types. An array of list item idnos and/or item_ids may be specified. [Default is null]			 
 	 *		dontIncludeSubtypesInTypeRestriction = If restrictToTypes is set, by default the type list is expanded to include subtypes (aka child types). If set, no expansion will be performed. [Default is false]
 	 *		includeDeleted = If set deleted rows are returned in result set. [Default is false]
 	 *		dontFilterByACL = If set don't enforce item-level ACL rules. [Default is false]
@@ -592,15 +604,24 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		
 		$va_sql_params = [];
 		
-		$vs_type_restriction_sql = '';
+		$va_type_restriction_sql = [];
 		$va_type_restriction_params = [];
 		if ($va_restrict_to_types = caGetOption('restrictToTypes', $pa_options, null)) {
 			$include_subtypes = caGetOption('dontIncludeSubtypesInTypeRestriction', $pa_options, false);
 			if (is_array($va_restrict_to_types = caMakeTypeIDList($vs_table, $va_restrict_to_types, ['dontIncludeSubtypesInTypeRestriction' => $include_subtypes])) && sizeof($va_restrict_to_types)) {
-				$vs_type_restriction_sql = "{$vs_table}.".$t_instance->getTypeFieldName()." IN (?)";
+				$va_type_restriction_sql[] = "{$vs_table}.".$t_instance->getTypeFieldName()." IN (?)";
 				$va_type_restriction_params[] = $va_restrict_to_types;
 			}
 		}
+		if ($va_exclude_types = caGetOption('excludeTypes', $pa_options, null)) {
+			$include_subtypes = caGetOption('dontIncludeSubtypesInTypeRestriction', $pa_options, false);
+			if (is_array($va_exclude_types = caMakeTypeIDList($vs_table, $va_exclude_types, ['dontIncludeSubtypesInTypeRestriction' => $include_subtypes])) && sizeof($va_restrict_to_types)) {
+				$va_type_restriction_sql[] = "{$vs_table}.".$t_instance->getTypeFieldName()." NOT IN (?)";
+				$va_type_restriction_params[] = $va_exclude_types;
+			}
+		}
+		$vs_type_restriction_sql = sizeof($va_type_restriction_sql) ? join(' AND ', $va_type_restriction_sql) : '';
+		
 		
 		// try to get label schema info (some records, notably relationships, won't have labels)
 		$vs_label_table = $vs_label_table_pk = null;
@@ -990,7 +1011,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 							}
 							
 							if(!$processed) {
-								if (!($flds = Attribute::getQueryFieldsForDatatype($vn_datatype))) { $flds = ['value_longtext1']; }
+								if (!($flds = CA\Attributes\Attribute::getQueryFieldsForDatatype($vn_datatype))) { $flds = ['value_longtext1']; }
 								$vs_fld = array_shift($flds);
 								if ($vn_datatype == __CA_ATTRIBUTE_VALUE_LIST__) {
 									if ($t_element = ca_metadata_elements::getInstance($vs_field)) {
@@ -1030,7 +1051,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 									$va_attr_params[] = $vm_value;
 								}
 							}
-							if (sizeof($va_q)) { $va_attr_sql[] = join(" AND ", $va_q); }
+							if (is_array($va_q) && sizeof($va_q)) { $va_attr_sql[] = join(" AND ", $va_q); }
 						}
 					}
 				}
@@ -2024,7 +2045,6 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		$vs_cache_key = caMakeCacheKeyFromOptions(array_merge($pa_options, array('table_name' => $this->tableName(), 'id' => $vn_id, 'mode' => (int)$pn_mode)));
-
 		if (!$pb_dont_cache && is_array($va_tmp = LabelableBaseModelWithAttributes::$s_label_cache[$this->tableName()][$vn_id][$vs_cache_key] ?? null)) {
 			return $va_tmp;
 		}
@@ -2041,7 +2061,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		if (!is_array($pa_locale_ids)) { $pa_locale_ids = $pa_locale_ids ? [$pa_locale_ids] : []; }
 		$pa_locale_ids = array_map(function($v) { return is_numeric($v) ? $v : ca_locales::codeToID($v); }, $pa_locale_ids);
 
-		if (sizeof($pa_locale_ids) > 0) {
+		if (is_array($pa_locale_ids) && (sizeof($pa_locale_ids) > 0)) {
 			$vs_label_where_sql .= ' AND (l.locale_id IN ('.join(',', $pa_locale_ids).'))';
 		}
 		$vs_locale_join_sql = 'INNER JOIN ca_locales AS loc ON loc.locale_id = l.locale_id';
@@ -2095,7 +2115,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 				}
 			}
 			
-			if (sizeof($va_ids) > 0) {
+			if (is_array($va_ids) && (sizeof($va_ids) > 0)) {
 				$vs_restrict_to_type_sql = ' AND l.type_id IN ('.join(',', $va_ids).')';
 			}
 			
@@ -2420,7 +2440,6 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		$o_view->setVar('t_subject', $this);
 		$o_view->setVar('t_label', $t_label);
 		$o_view->setVar('add_label', isset($pa_bundle_settings['add_label'][$g_ui_locale]) ? $pa_bundle_settings['add_label'][$g_ui_locale] : null);
-
 		$o_view->setVar('graphicsPath', $pa_options['graphicsPath'] ?? null);
 		
 		$o_view->setVar('show_effective_date', $po_request->config->get("{$table}_preferred_label_show_effective_date"));			
@@ -2437,7 +2456,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		$va_new_labels_to_force_due_to_error = array();
 		
 		if ($this->getPrimaryKey()) {
-			if (sizeof($va_labels)) {
+			if (is_array($va_labels) && sizeof($va_labels)) {
 				foreach ($va_labels as $va_labels_by_locale) {
 					foreach($va_labels_by_locale as $vn_locale_id => $va_label_list) {
 						foreach($va_label_list as $va_label) {
@@ -2479,7 +2498,6 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		if(!$bundle_preview) {
 			$l = current($va_inital_values);
 			$bundle_preview = is_array($l) ? $l[$this->getLabelDisplayField()] : null;
-
 		}
 		$o_view->setVar('bundle_preview', $bundle_preview);
 		
@@ -2528,7 +2546,6 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		$o_view->setVar('t_subject', $this);
 		$o_view->setVar('t_label', $t_label);
 		$o_view->setVar('add_label', isset($pa_bundle_settings['add_label'][$g_ui_locale]) ? $pa_bundle_settings['add_label'][$g_ui_locale] : null);
-
 		$o_view->setVar('graphicsPath', $pa_options['graphicsPath'] ?? null);
 		
 		$o_view->setVar('show_effective_date', $po_request->config->get("{$table}_nonpreferred_label_show_effective_date"));			
@@ -2545,7 +2562,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		if ($this->getPrimaryKey()) {
 			// generate list of inital form values; the label bundle Javascript call will
 			// use the template to generate the initial form
-			if (sizeof($va_labels)) {
+			if (is_array($va_labels) && sizeof($va_labels)) {
 				foreach ($va_labels as $vn_item_id => $va_labels_by_locale) {
 					foreach($va_labels_by_locale as $vn_locale_id => $va_label_list) {
 						foreach($va_label_list as $va_label) {
@@ -2638,7 +2655,6 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 	 */
 	public function getPreferredDisplayLabelsForIDs($pa_ids, $pa_options=null) {
 		if(!is_array($pa_options)) { $pa_options = []; }
-
 		$va_ids = array();
 		foreach($pa_ids as $vn_id) {
 			if (intval($vn_id) > 0) { $va_ids[] = intval($vn_id); }
@@ -2719,7 +2735,6 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		$vb_return_all_locales = caGetOption('returnAllLocales', $pa_options, false);
 		
 		$vs_cache_key = md5($this->tableName()."/".print_r($pa_ids, true).'/'.print_R($pa_options, true).'_non_preferred');
-
 		if ((!isset($pa_options['noCache']) || !$pa_options['noCache']) && (LabelableBaseModelWithAttributes::$s_labels_by_id_cache[$vs_cache_key] ?? null)) {
 			return LabelableBaseModelWithAttributes::$s_labels_by_id_cache[$vs_cache_key];
 		}
@@ -2856,7 +2871,6 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 			
 			if ($vb_return_for_bundle) {
 				$va_row['label'] = $va_initial_values[$va_row['group_id']]['label'] ?? null;
-
 				$va_row['id'] = $va_row['group_id'];
 				$va_groups[(int)$qr_res->get('relation_id')] = $va_row;
 			} else {
@@ -3102,7 +3116,6 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 			
 			if ($vb_return_for_bundle) {
 				$va_row['label'] = $va_initial_values[$va_row['user_id']]['label'] ?? null;
-
 				$va_row['id'] = $va_row['user_id'];
 				$va_users[(int)$qr_res->get('relation_id')] = $va_row;
 			} else {
@@ -3406,7 +3419,6 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 				}
 			}
 			if (!$this->removeUserRoles($va_role_ids_to_remove)) { return false; }
-
 			if (!$this->addUserRoles($pa_role_ids)) { return false; }
 		}
 		return true;

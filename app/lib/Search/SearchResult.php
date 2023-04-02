@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2022 Whirl-i-Gig
+ * Copyright 2008-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -554,7 +554,7 @@ class SearchResult extends BaseObject {
 				if (!$va_row_id_map[$va_row[$vs_pk]]) { continue; }
 				
 				SearchResult::$opa_hierarchy_children_prefetch_cache[$ps_tablename][$va_row[$vs_parent_id_fld]][$vs_opt_md5][] = 
-				SearchResult::$opa_hierarchy_children_prefetch_cache[$ps_tablename][$va_row_id_map[$va_row[$vs_parent_id_fld]]][$vs_opt_md5][] =
+				SearchResult::$opa_hierarchy_children_prefetch_cache[$ps_tablename][$va_row_id_map[$va_row[$vs_parent_id_fld] ?? null] ?? null][$vs_opt_md5][] =
 					$va_row_ids_in_current_level[] = $va_row[$vs_pk];
 			}
 			$vn_level++;
@@ -650,7 +650,7 @@ class SearchResult extends BaseObject {
 		
 		
 		foreach($va_row_ids as $vn_row_id) {
-			if(is_array($va_related_items = self::$s_rel_prefetch_cache[$this->ops_table_name][$vn_row_id][$ps_tablename][$vs_opt_md5])) {
+			if(is_array($va_related_items = (self::$s_rel_prefetch_cache[$this->ops_table_name][$vn_row_id][$ps_tablename][$vs_opt_md5] ?? null))) {
 				$va_base_row_ids[$vn_row_id] = caExtractValuesFromArrayList($va_related_items, $t_rel_instance->primaryKey());
 				$va_related_ids += $va_base_row_ids[$vn_row_id];
 				$pa_cache[$this->ops_table_name][$vn_row_id][$ps_tablename][$vs_opt_md5] = $va_base_row_ids[$vn_row_id];
@@ -1014,6 +1014,7 @@ class SearchResult extends BaseObject {
 	 *			output = Convert list item_ids to display text in user's preferred locale ("text") or idno ("idno"). This is an easier to type alternative to the convertCodesToDisplayText and convertCodesToIdno options. [Default is null]
 	 *			sort = Array list of bundles to sort returned values on. Currently sort is only supported when getting related values via simple related <table_name> and <table_name>.related bundle specifiers. Eg. from a ca_objects results you can sort when fetching 'ca_entities', 'ca_entities.related', 'ca_objects.related', etc.. The sortable bundle specifiers are fields with or without tablename. Only those fields returned for the related tables (intrinsics and label fields) are sortable. You can also sort on attributes if returnWithStructure is set. [Default is null]
 	 *			stripTags = Remove HTML/XML tags from returned values. [Default is false]
+	 *			locale = Locale to return values in. If omitted the user's default locale is used. [Default is null]
 	 *
 	 *		[Formatting for strings only]
  	 *			toUpper = Force all values to upper case. [Default is false]
@@ -1968,6 +1969,9 @@ class SearchResult extends BaseObject {
 		$pa_check_access		= $pa_options['checkAccess'] ?? null;
 		$pb_primary_only		= $pa_options['primaryOnly'] ?? false;
 		$pa_exclude_idnos		= $pa_options['excludeIdnos'] ?? null;
+		
+		$primary_ids		= $pa_options['primaryIDs'] ?? null;
+		
 		if (!is_array($pa_exclude_idnos)) { $pa_exclude_idnos = []; }
 		
 		if (!($t_rel_instance = SearchResult::$s_instance_cache[$va_path_components['table_name']])) {
@@ -1996,6 +2000,7 @@ class SearchResult extends BaseObject {
 		
 		$va_ids = array();
 		foreach($pa_value_list as $vn_i => $va_rel_item) {
+			if(is_array($primary_ids) && sizeof($primary_ids) && in_array($va_rel_item[$vs_pk], $primary_ids)) { continue; }
 		    if ($pb_primary_only && isset($va_rel_item['is_primary']) && !$va_rel_item['is_primary']) { continue; }
 			$va_ids[] = $va_rel_item[$vs_pk];
 		}
@@ -2223,7 +2228,8 @@ class SearchResult extends BaseObject {
 		$va_path_components					=& $pa_options['pathComponents'];
 		$vs_delimiter						= isset($pa_options['delimiter']) ? $pa_options['delimiter'] : ';';
 		$vb_convert_codes_to_display_text 	= isset($pa_options['convertCodesToDisplayText']) ? (bool)$pa_options['convertCodesToDisplayText'] : false;
-		$locale = isset($pa_options['locale']) ? $pa_options['locale'] : null;
+		
+		$locale = isset($pa_options['locale']) ? ca_locales::codeToID($pa_options['locale']) : null;
 		
 		$va_return_values = [];
 		$vb_return_value_id = null;
@@ -2255,7 +2261,7 @@ class SearchResult extends BaseObject {
 				$vb_return_source = ($va_path_components['components'][sizeof($va_path_components['components'])-1] === '__source__');
 				
 				if ($vb_return_source) {
-					$va_return_values[(int)$vn_id][] = $o_attribute->getValueSource();
+					$va_return_values[(int)$vn_id][null][(int)$o_attribute->getAttributeID()] = $o_attribute->getValueSource();
 					continue;
 				}
 
@@ -2517,9 +2523,9 @@ class SearchResult extends BaseObject {
 					}
 				}
 				
-				if ($va_path_components['subfield_name'] && $pa_options['returnBlankValues'] && !$vb_did_return_value) {
+				if (isset($va_path_components['subfield_name']) && isset($pa_options['returnBlankValues']) && (bool)$pa_options['returnBlankValues']  && !$vb_did_return_value) {
 					// value is missing so insert blank
-					if ($pa_options['returnWithStructure']) {
+					if ($pa_options['returnWithStructure'] ?? false) {
 						$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()][$va_path_components['subfield_name']] = '';
 						if($include_value_ids) {
 							$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()]["{$vs_element_code}_value_id"] = null;

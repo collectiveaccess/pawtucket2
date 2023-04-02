@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018-2022 Whirl-i-Gig
+ * Copyright 2018-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -344,10 +344,10 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 	public function getAttributeBundleHTML($pa_element_info, $pa_options=null) {
  		AssetLoadManager::register('leaflet');
 		
-		$va_element_width = caParseFormElementDimension($pa_element_info['settings']['fieldWidth']);
-		$vn_element_width = $va_element_width['dimension'];
-		$va_element_height = caParseFormElementDimension($pa_element_info['settings']['fieldHeight']);
-		$vn_element_height = $va_element_height['dimension'];
+		$va_element_width = caParseFormElementDimension($pa_element_info['settings']['fieldWidth'] ?? null);
+		$vn_element_width = $va_element_width['dimension'] ?? null;
+		$va_element_height = caParseFormElementDimension($pa_element_info['settings']['fieldHeight'] ?? null);
+		$vn_element_height = $va_element_height['dimension'] ?? null;
 		
 		$map_width_info = caParseFormElementDimension(caGetOption('mapWidth', $pa_options, '695px'));
 		$map_width = $map_width_info['dimension'].'px';

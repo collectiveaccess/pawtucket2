@@ -147,7 +147,7 @@
 			
 			$history_tracking_policies = self::getHistoryTrackingCurrentValuePolicyConfig();
 			
-			if ($policy && is_array($history_tracking_policies) && is_array($history_tracking_policies['policies']) && is_array($history_tracking_policies['policies'][$policy])) {
+			if ($policy && is_array($history_tracking_policies) && is_array($history_tracking_policies['policies'] ?? null) && is_array($history_tracking_policies['policies'][$policy] ?? null)) {
 				$policy_info = $history_tracking_policies['policies'][$policy];
 				$map = $policy_info['elements'];
 			}
@@ -193,18 +193,18 @@
 							if(!is_array($config)) { break; }
 							if ($table === 'ca_storage_locations') { 
 								$bundle_settings["{$table}_setInterstitialElementsOnAdd"] = $config['setInterstitialElementsOnAdd'];
-								$bundle_settings["{$table}_useDatePicker"] = $config['useDatePicker'];
+								$bundle_settings["{$table}_useDatePicker"] = $config['useDatePicker'] ?? false;
 							} else {
-								$bundle_settings["{$table}_{$t}_setInterstitialElementsOnAdd"] = $config['setInterstitialElementsOnAdd'];
+								$bundle_settings["{$table}_{$t}_setInterstitialElementsOnAdd"] = $config['setInterstitialElementsOnAdd'] ?? null;
 							}
-							$bundle_settings["{$table}_{$t}_displayTemplate"] = $config['template'];
-							$bundle_settings["{$table}_{$t}_color"] = $config['color'];
+							$bundle_settings["{$table}_{$t}_displayTemplate"] = $config['template'] ?? null;
+							$bundle_settings["{$table}_{$t}_color"] = $config['color'] ?? null;
 							$bundle_settings["{$table}_showTypes"][] = array_shift(caMakeTypeIDList($table, [$t]));
 							
-							$bundle_settings["{$table}_{$t}_useRelated"] = $config['useRelated'];
-							$bundle_settings["{$table}_{$t}_useRelatedRelationshipType"] = $config['useRelatedRelationshipType'];
+							$bundle_settings["{$table}_{$t}_useRelated"] = $config['useRelated'] ?? null;
+							$bundle_settings["{$table}_{$t}_useRelatedRelationshipType"] = $config['useRelatedRelationshipType'] ?? null;
 						
-							$bundle_settings["{$table}_{$t}_dateElement"] = $config['date'];
+							$bundle_settings["{$table}_{$t}_dateElement"] = $config['date'] ?? null;
 
 							if ((sizeof($path) === 3) && ($rel_types = caGetOption(['restrictToRelationshipTypes', 'showRelationshipTypes'], $config, null)) && $path[1]) { 
 								$bundle_settings["{$table}_showRelationshipTypes"] = [];
@@ -252,7 +252,7 @@
 		 * @return array Element array or null if not available.
 		 */
 		static public function historyTrackingPolicyUses($policy, $table, $type=null, $options=null) {
-			if (is_array($policy = self::getHistoryTrackingCurrentValuePolicy($policy)) && is_array($map = $policy['elements']) && is_array($map[$table])) {
+			if (is_array($policy = self::getHistoryTrackingCurrentValuePolicy($policy)) && is_array($map = ($policy['elements'] ?? null)) && is_array($map[$table] ?? null)) {
 				if(is_null($type) && is_array($map[$table]) && (sizeof($map[$table]) > 0)) {
 					return true;
 				} elseif(is_array($map[$table][$type])) {
@@ -325,7 +325,7 @@
 		 * @return array Policy or null if policy does not exist.
 		 */
 		static public function getHistoryTrackingCurrentValuePolicy($policy, $key=null) {
-			if ($policy && is_array($history_tracking_policies = self::getHistoryTrackingCurrentValuePolicyConfig()) && is_array($history_tracking_policies['policies']) && is_array($history_tracking_policies['policies'][$policy])) {
+			if ($policy && is_array($history_tracking_policies = self::getHistoryTrackingCurrentValuePolicyConfig()) && is_array($history_tracking_policies['policies'] ?? null) && is_array($history_tracking_policies['policies'][$policy] ?? null)) {
 				if ($key) { return isset($history_tracking_policies['policies'][$policy][$key]) ? $history_tracking_policies['policies'][$policy][$key] : null; }
 				return $history_tracking_policies['policies'][$policy];
 			}
@@ -353,14 +353,14 @@
 			$type_restrictions = caGetOption('restrictToTypes', $options, null);
 			
 			$default = null;
-			if (is_array($history_tracking_policies = self::getHistoryTrackingCurrentValuePolicyConfig()) && is_array($history_tracking_policies['defaults']) && isset($history_tracking_policies['defaults'][$table])) {
-				if(is_array($type_restrictions) && is_array($history_tracking_policies['defaults'][$table])) {
+			if (is_array($history_tracking_policies = self::getHistoryTrackingCurrentValuePolicyConfig()) && is_array($history_tracking_policies['defaults'] ?? null) && isset($history_tracking_policies['defaults'][$table])) {
+				if(is_array($type_restrictions) && is_array($history_tracking_policies['defaults'][$table] ?? null)) {
 					foreach($type_restrictions as $type) {
 						if(isset($history_tracking_policies['defaults'][$table][$type])) {
 							$default = $history_tracking_policies['defaults'][$table][$type];
 						}
 					}
-				} elseif(is_array($history_tracking_policies['defaults'][$table])) {
+				} elseif(is_array($history_tracking_policies['defaults'][$table] ?? null)) {
 					if(isset($history_tracking_policies['defaults'][$table]['__default__'])) { 
 						$default = $history_tracking_policies['defaults'][$table]['__default__'];
 					}
@@ -371,7 +371,7 @@
 			
 			if($default && is_array($type_restrictions) && sizeof($type_restrictions)) {
 				$policy_info = self::getHistoryTrackingCurrentValuePolicy($default);
-				if(is_array($policy_info['restrictToTypes']) && (sizeof(array_intersect($policy_info['restrictToTypes'], $type_restrictions)) == 0)) {
+				if(is_array($policy_info['restrictToTypes'] ?? null) && (sizeof(array_intersect($policy_info['restrictToTypes'], $type_restrictions)) == 0)) {
 					return null;
 				}
 			}
@@ -416,13 +416,14 @@
 		 * @return 
 		 */
 		public static function getConfigurationForHistoryTrackingCurrentValue($policy, $table, $type_id=null, $options=null) {
+			if(!is_array($options)) { $options = []; }
 			$cache_key = caMakeCacheKeyFromOptions($options, "{$policy}/{$table}/{$type_id}");
 		
 			if (isset(self::$s_history_tracking_current_value_type_configuration_cache[$cache_key])) { return self::$s_history_tracking_current_value_type_configuration_cache[$cache_key]; }
 			$o_config = Configuration::load();
 		
 			$policy_config = self::getHistoryTrackingCurrentValuePolicy($policy); //$o_config->getAssoc('current_location_criteria');
-			$map = $policy_config['elements'];
+			$map = $policy_config['elements'] ?? null;
 		
 			if (!($t_instance = Datamodel::getInstance($table, true))) { return self::$s_history_tracking_current_value_type_configuration_cache[$cache_key] = null; }
 	
@@ -487,7 +488,7 @@
 					    self::$s_history_tracking_deleted_current_values[$l->get('current_table_num')][$l->get('current_row_id')][$policy] = 
 					        ['table_num' => $l->get('table_num'), 'row_id' => $l->get('row_id')];
 					
-				    if (!($rc = $l->delete())) {
+				    if (!($rc = $l->delete(true))) {
                         $this->errors = $l->errors;
                         return false;
                     }
@@ -500,7 +501,7 @@
 				return null;
 			}
 			
-			if(($values['current_table_num'] && !Datamodel::getTableName($values['current_table_num'])) || ($values['tracked_table_num'] && !Datamodel::getTableName($values['tracked_table_num']))) {
+			if((($values['current_table_num'] ?? null) && !Datamodel::getTableName($values['current_table_num'])) || ($values['tracked_table_num'] && !Datamodel::getTableName($values['tracked_table_num']))) {
 				throw new ApplicationException(_t('Invalid table specification for policy %1', $policy));
 			}
 			
@@ -537,6 +538,7 @@
                           
                         if($l['is_future'] > 0) {
                         	// Delete existing entries (TODO: log this so sync can replicate it)
+                        	$this->getDb()->query("DELETE FROM ca_history_tracking_current_value_labels WHERE tracking_id IN (SELECT tracking_id FROM ca_history_tracking_current_values WHERE table_num = ? AND row_id = ? AND is_future IS NULL and tracking_id <> ?)", [$subject_table_num, $row_id, $l['tracking_id']]);
                         	$this->getDb()->query("DELETE FROM ca_history_tracking_current_values WHERE table_num = ? AND row_id = ? AND is_future IS NULL and tracking_id <> ?", [$subject_table_num, $row_id, $l['tracking_id']]);
                         	
                         	// Future location is now current location
@@ -561,7 +563,7 @@
 					$t_l = new ca_history_tracking_current_values();
 					$t_l->setTransaction($this->getTransaction());
 					$t_l->load($l['tracking_id']);
-				    if (!($rc = $t_l->delete())) {
+				    if (!($rc = $t_l->delete(true))) {
                         $this->errors = $t_l->errors;
                         return false;
                     }
@@ -585,6 +587,7 @@
 				'is_future' => $is_future
 			];
 			
+			$found = false;
 			if(
 				($is_future > 0) 
 				&& 
@@ -659,13 +662,15 @@
 				return []; // No policies are configured
 			}
 			
-			$type_restrictions = caGetOption('restrictToTypes', $options, null);
+			if(is_array($type_restrictions = caGetOption('restrictToTypes', $options, null))) {
+				$type_restrictions = array_filter($type_restrictions, 'strlen');
+			}
 			
 			$policies = [];
 			foreach($policy_config['policies'] as $policy => $policy_info) {
 				if($table !== $policy_info['table']) { continue; }
-				if(is_array($type_restrictions) && is_array($policy_info['restrictToTypes']) && !sizeof(array_intersect($type_restrictions, $policy_info['restrictToTypes']))) { continue; }
-				if(is_array($uses) && sizeof($uses) && is_array($policy_info['elements'])) {
+				if(is_array($type_restrictions) && is_array($policy_info['restrictToTypes'] ?? null) && !sizeof(array_intersect($type_restrictions, $policy_info['restrictToTypes']))) { continue; }
+				if(is_array($uses) && sizeof($uses) && is_array($policy_info['elements'] ?? null)) {
 					if(!sizeof(array_intersect(array_keys($policy_info['elements']), $uses))) {
 						continue;
 					}
@@ -805,7 +810,7 @@
 		 *
 		 */
 		private function _rewriteEntryWithRelated($entry) {
-			if ($entry['useRelated']) {
+			if ($entry['useRelated'] ?? false) {
 				if (!($t_related = Datamodel::getInstance($entry['useRelated'], true))) {
 					throw new ApplicationException(_t("Invalid table specification for 'useRelated' in history tracking policy"));
 				}
@@ -952,7 +957,7 @@
 		public function checkPolicyTypeRestrictions(?string $policy, array $type_restrictions, ?array $options=null) : ?bool {
 			if(!is_array($policy_info = self::getHistoryTrackingCurrentValuePolicy($policy))) { return null; }
 			if(!sizeof($type_restrictions)) { return true; }
-			if(!is_array($policy_info['restrictToTypes']) || !sizeof($policy_info['restrictToTypes'])) { return true; }
+			if(!is_array($policy_info['restrictToTypes'] ?? null) || !sizeof($policy_info['restrictToTypes'])) { return true; }
 			if(sizeof(array_intersect($type_restrictions, $policy_info['restrictToTypes'])) > 0) { return true; }
             return false;
 		}
@@ -1204,9 +1209,16 @@
                                 foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
                                     $va_date_bits = explode('.', $vs_date_element);
                                     $vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_loans.{$vs_date_element}";
+                                    
+                                    $d = $qr_loans->get($vs_date_spec, array('sortable' => true));
+                                    $b = explode("/", $d);
+                                    if(($b[0] <= $vn_current_date) && ($b[1] > $vn_current_date)) { 
+                                    	$b[0] = $vn_current_date;
+                                    	$d = join('/', $b);
+                                    }
                                     $va_dates[] = array(
-                                        'sortable' => $qr_loans->get($vs_date_spec, array('sortable' => true)),
-                                        'bounds' => explode("/", $qr_loans->get($vs_date_spec, array('sortable' => true))),
+                                        'sortable' => $d,
+                                        'bounds' => $b,
                                         'display' => $qr_loans->get($vs_date_spec)
                                     );
                                 }
@@ -2162,7 +2174,7 @@
                         $o_view->setVar('occurrence_types', $va_occ_types);
                         $o_view->setVar('occurrence_relationship_types', $rel_types);
                         
-                        if(!is_array($bundle_config['ca_occurrences_showRelationshipTypes'])) { $bundle_config['ca_occurrences_showRelationshipTypes'] = []; }
+                        if(!is_array($bundle_config['ca_occurrences_showRelationshipTypes'] ?? null)) { $bundle_config['ca_occurrences_showRelationshipTypes'] = []; }
                         $o_view->setVar('occurrence_relationship_types_by_sub_type', $t_occ_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($bundle_config, ['restrictToRelationshipTypes' => $bundle_config['ca_occurrences_showRelationshipTypes']])));
                     }
 				}
@@ -2424,7 +2436,7 @@
 			$placement_code = caGetOption('placement_code', $options, null);
 			
 			$no_template = caGetOption('noTemplate', $options, false);
-			if((is_array($interstitial_elements = $settings["{$rel_table}_".($type_idno ? "{$type_idno}_" : "")."setInterstitialElementsOnAdd"])|| is_array($interstitial_elements = $settings["setInterstitialElementsOnAdd"])) && sizeof($interstitial_elements) && ($linking_table = Datamodel::getLinkingTableName($subject_table, $rel_table))) {
+			if((is_array($interstitial_elements = ($settings["{$rel_table}_".($type_idno ? "{$type_idno}_" : "")."setInterstitialElementsOnAdd"] ?? null)) || is_array($interstitial_elements = ($settings["setInterstitialElementsOnAdd"] ?? null))) && sizeof($interstitial_elements) && ($linking_table = Datamodel::getLinkingTableName($subject_table, $rel_table))) {
 				$buf .= "<table class='caHistoryTrackingUpdateLocationMetadata'>\n";
 				/** @var BaseRelationshipModel $t_rel */
 				if (!($t_rel = Datamodel::getInstance($linking_table, true))) { return null; }	
@@ -2437,8 +2449,8 @@
 					$label = null;
 					if (($t_ui) && is_array($p = $t_ui->getPlacementsForBundle("$linking_table.$element_code", $request))) {
 						$l = array_shift($p);
-						if (!($label = caGetOption($g_ui_locale, $l['settings']['label'], null))) {
-							if (is_string($l['settings']['label'])) { $label = $l['settings']['label']; }
+						if (!($label = caGetOption($g_ui_locale, $l['settings']['label'] ?? null, null))) {
+							if (isset($l['settings']['label']) && is_string($l['settings']['label'])) { $label = $l['settings']['label'] ?? null; }
 						}
 					}
 					if (!$label) {
@@ -2556,13 +2568,16 @@
 				case 'history_tracking_current_contents':
 					if (method_exists($this, "getContents")) {
 					    $policy = caGetOption('policy', $pa_options, null);
-						if ($qr = $this->getContents($policy, ['row_id' => $pn_row_id])) { 
-							$contents = [];
-							$p = self::getHistoryTrackingCurrentValuePolicy($policy);
-							while($qr->nextHit()) {
-							    $contents[] = $qr->getWithTemplate("<l>^".$p['table'].".preferred_labels</l>");
+						$p = self::getHistoryTrackingCurrentValuePolicy($policy);
+						$contents_config = caGetOption('contents', $p, []);
+						$pa_options['expandHierarchically'] = caGetOption('expandHierarchically', $contents_config, false);
+						if ($qr = $this->getContents($policy, ['row_id' => $pn_row_id], $pa_options)) {
+							$template = caGetOption('template', $contents_config, "<l>$p[table].preferred_labels </l>");
+							$delimiter = caGetOption('delimiter', $contents_config, "; ");
+							while($qr->nextHit()) { 
+								$contents[] = $qr->getWithTemplate($template);
 							}
-							return join("; ", $contents);
+							return join($delimiter, $contents);
 						}
 					}
 					return null;
@@ -2591,8 +2606,9 @@
 		 *
 		 */
 		public static function getHistoryTrackingEditorBundleSettingsData($table, $options=null) {
+			if(!is_array($options)) { $options = []; }
 			$cache_key = caMakeCacheKeyFromOptions($options ?? [], $table);
-			//if (!caGetOption('noCache', $options, false) && ExternalCache::contains($cache_key, "historyTrackingEditorBundleSettingsData")) { return ExternalCache::fetch($cache_key, 'historyTrackingEditorBundleSettingsData'); }			
+			if (!caGetOption('noCache', $options, false) && ExternalCache::contains($cache_key, "historyTrackingEditorBundleSettingsData")) { return ExternalCache::fetch($cache_key, 'historyTrackingEditorBundleSettingsData'); }			
 			$additional_settings = [];
 			
 			$additional_settings['ca_object_lots_showTypes'] = array(

@@ -71,13 +71,16 @@ class DisplayTemplateParser {
 		foreach($po_nodes as $vn_index => $o_node) {
 			switch($vs_tag = $o_node->tag) {
 				case 'unit':
+					$check_access = $o_node->skipAccessControl ? null : caGetOption('checkAccess', $pa_options, null);
+					
 					if ($vs_relative_to = $o_node->relativeTo) { 
-						$va_get_options = ['returnAsArray' => true, 'checkAccess' => caGetOption('checkAccess', $pa_options, null)];
+						$va_get_options = ['returnAsArray' => true, 'checkAccess' => $check_access];
 				
 						$va_get_options['restrictToTypes'] = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'restrictToTypes']); 
 						$va_get_options['excludeTypes'] = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'excludeTypes']); 
 						$va_get_options['restrictToRelationshipTypes'] = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'restrictToRelationshipTypes']);
 						$va_get_options['excludeRelationshipTypes'] = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'excludeRelationshipTypes']);
+						
 						$va_get_options['allDescendants'] = (int) $o_node->allDescendants ?: null;
 						if ($o_node->sort) {
 							$va_get_options['sort'] = preg_split('![ ,;]+!', $o_node->sort);
@@ -273,7 +276,8 @@ class DisplayTemplateParser {
 			    } catch (Exception $e) {
 			        // noop
 			    }
-				$v = DisplayTemplateParser::_processChildren($qr_res, $va_template['tree']->children, $va_val_list, array_merge($pa_options, ['returnAsArray' => $pa_options['aggregateUnique'] ?? false]));
+				$v = DisplayTemplateParser::_processChildren($qr_res, $va_template['tree']->children, $va_val_list, $o=array_merge($pa_options, ['returnAsArray' => $pa_options['aggregateUnique'] ?? false]));
+			
 				if ($pb_index_with_ids) {
 					$va_proc_templates[$qr_res->get($vs_pk)] = $v;
 				} else {
@@ -321,7 +325,7 @@ class DisplayTemplateParser {
 	 *
 	 */
 	static public function parse($ps_template, $pa_options=null) {
-		$vs_cache_key = md5($ps_template);
+		$vs_cache_key = md5($ps_template, print_r($pa_options, true));
 		if(isset(DisplayTemplateParser::$template_cache[$vs_cache_key])) { return DisplayTemplateParser::$template_cache[$vs_cache_key]; }
 		
 		$ps_template_original = $ps_template;
@@ -440,7 +444,11 @@ class DisplayTemplateParser {
 				case 'ifnotdef':
 					$vb_omit_blanks = !is_null($o_node->omitBlanks) ? (bool)$o_node->omitBlanks : null;
 					$vs_filter = !is_null($o_node->filter) ? (string)$o_node->filter : null;
-					$opts = ['index' => caGetOption('index', $pa_options, null), 'mode' => ($vs_tag == 'ifdef') ? 'present' : 'not_present', 'filter' => $vs_filter, 'checkAccess' => caGetOption('checkAccess', $pa_options, null)];
+					
+					$check_access = $o_node->skipAccessControl ? null : caGetOption('checkAccess', $pa_options, null);
+					
+					$opts = ['index' => caGetOption('index', $pa_options, null), 'mode' => ($vs_tag == 'ifdef') ? 'present' : 'not_present', 'filter' => $vs_filter, 'checkAccess' => $check_access];
+					if($o_node->skipAccessControl) { unset($opts['checkAccess']); }
 					if (!is_null($vb_omit_blanks)) { $opts['includeBlankValuesInArray'] = !$vb_omit_blanks; }
 					
 					$vb_defined = DisplayTemplateParser::_evaluateCodeAttribute($pr_res, $o_node, $opts);
@@ -457,8 +465,7 @@ class DisplayTemplateParser {
 					
 					if(!is_array($va_codes = DisplayTemplateParser::_getCodesFromAttribute($o_node)) || !sizeof($va_codes)) { break; }
 					
-					$pa_check_access = ($t_instance->hasField('access')) ? caGetOption('checkAccess', $pa_options, null) : null;
-					if (!is_array($pa_check_access) || !sizeof($pa_check_access)) { $pa_check_access = null; }
+					$check_access = (($t_instance->hasField('access')) && !$o_node->skipAccessControl) ? caGetOption('checkAccess', $pa_options, null) : null;
 					
 					$vb_bool = DisplayTemplateParser::_getCodesBooleanModeAttribute($o_node);
 					$va_restrict_to_types = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'restrictToTypes']); 
@@ -468,7 +475,14 @@ class DisplayTemplateParser {
 					$vb_omit_blanks = !is_null($o_node->omitBlanks) ? (bool)$o_node->omitBlanks : null;
 					$vs_filter = !is_null($o_node->filter) ? (string)$o_node->filter : null;
 					
-					$va_get_options = ['returnAsCount' => true, 'checkAccess' => $pa_check_access, 'restrictToTypes' => $va_restrict_to_types, 'excludeTypes' => $va_exclude_types, 'restrictToRelationshipTypes' => $va_restrict_to_relationship_types, 'excludeRelationshipTypes' => $va_exclude_to_relationship_types];
+					$va_get_options = [
+						'limit' => $vn_limit, 'returnAsCount' => true, 'checkAccess' => $check_access, 
+						'restrictToTypes' => $va_restrict_to_types, 'excludeTypes' => $va_exclude_types, 
+						'restrictToRelationshipTypes' => $va_restrict_to_relationship_types, 
+						'excludeRelationshipTypes' => $va_exclude_to_relationship_types,
+						'locale' => caGetOption('locale', $pa_options, null)
+					];
+					
 					if (!is_null($vb_omit_blanks)) { 
 						$pa_options['includeBlankValuesInArray'] = $va_get_options['includeBlankValuesInArray'] = !$vb_omit_blanks; 
 					}
@@ -478,8 +492,6 @@ class DisplayTemplateParser {
 					$vm_count = ($vb_bool == 'AND') ? 0 : [];
 					if (($vn_limit = ($vn_max > 0) ? $vn_max : $vn_min) == 0) { $vn_limit = 1; }
 					$vn_limit++;
-					$va_get_options['limit'] = $vn_limit;
-
 					foreach($va_codes as $vs_code) {
 						if($vs_filter_regex) {
 							$vals = $pr_res->get($vs_code, array_merge($va_get_options, ['returnAsCount' => false, 'returnAsArray' => true]));
@@ -595,11 +607,10 @@ class DisplayTemplateParser {
 					$vn_length = (int)$o_node->length;
 					$limit = (int)$o_node->limit;
 					
-					$pa_check_access = ($t_instance->hasField('access')) ? caGetOption('checkAccess', $pa_options, null) : null;
-					if (!is_array($pa_check_access) || !sizeof($pa_check_access)) { $pa_check_access = null; }
-
+					$check_access = (($t_instance->hasField('access')) && !$o_node->skipAccessControl) ? caGetOption('checkAccess', $pa_options, null) : null;
+					
 					// additional get options for pulling related records
-					$va_get_options = ['returnAsArray' => true, 'checkAccess' => $pa_check_access];
+					$va_get_options = ['returnAsArray' => true, 'checkAccess' => $check_access];
 				
 					$va_get_options['restrictToTypes'] = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'restrictToTypes']); 
 					$va_get_options['filterTypes'] = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'filterTypes']); 
@@ -612,7 +623,7 @@ class DisplayTemplateParser {
 					$va_get_options['allDescendants'] = (int)$o_node->allDescendants ?: null;
 					$va_get_options['filterNonPrimaryRepresentations'] = $filter_non_primary_reps;
 					
-					$locale = caGetOption('locale', $$o_node->locale, null);
+					$locale = caGetOption('locale', $o_node->locale, null);
 					if($o_node->locale) {
 						$va_get_options['locale'] = $locale = $o_node->locale;
 					}
@@ -717,6 +728,7 @@ class DisplayTemplateParser {
 									'includeBlankValuesInTopLevelForPrefetch' => false,
 									'unique' => $vb_unique,
 									'aggregateUnique' => $vb_aggregate_unique,
+									'checkAccess' => $va_get_options['checkAccess'],
 									'filterNonPrimaryRepresentations' => $filter_non_primary_reps,
 									'locale' => $locale
 								]
@@ -750,10 +762,10 @@ class DisplayTemplateParser {
 							// by allowing the restrictToTypes on the relationship to be applied on the inner unit as is required.
 							//
 							if (!is_array($va_get_options['restrictToTypes']) || !sizeof($va_get_options['restrictToTypes'])) {
-								$va_get_options['restrictToTypes'] = $pa_options['restrictToTypes'];
+								$va_get_options['restrictToTypes'] = $pa_options['restrictToTypes'] ?? null;
 							}
 							if (!is_array($va_get_options['excludeTypes']) || !sizeof($va_get_options['excludeTypes'])) {
-								$va_get_options['excludeTypes'] = $pa_options['excludeTypes'];
+								$va_get_options['excludeTypes'] = $pa_options['excludeTypes'] ?? null;
 							}
 						}
 						
@@ -902,6 +914,7 @@ class DisplayTemplateParser {
 									'relationshipTypeOrientations' => $va_relationship_type_orientations,
 									'filterNonPrimaryRepresentations' => $filter_non_primary_reps,
 									'primaryIDs' => $va_get_options['primaryIDs'] ?? null,
+									'checkAccess' => $va_get_options['checkAccess'],
 									'locale' => $locale
 								]
 							)
@@ -952,7 +965,7 @@ class DisplayTemplateParser {
 						if ($t_instance->isRelationship() && (is_array($va_tmp = caGetTemplateTags($o_node->html(), ['firstPartOnly' => true])) && sizeof($va_tmp))) {
 							$vs_linking_context = array_shift($va_tmp);
 							if (in_array($vs_linking_context, [$t_instance->getLeftTableName(), $t_instance->getRightTableName()])) {
-								$va_linking_ids = $pr_res->get("{$vs_linking_context}.".Datamodel::primaryKey($vs_linking_context), ['returnAsArray' => true, 'primaryIDs' => $pa_options['primaryIDs']]);
+								$va_linking_ids = $pr_res->get("{$vs_linking_context}.".Datamodel::primaryKey($vs_linking_context), ['returnAsArray' => true, 'primaryIDs' => $pa_options['primaryIDs'] ?? null]);
 							}
 						}
 						
@@ -1109,6 +1122,7 @@ class DisplayTemplateParser {
                     if(is_array($va_sortables)) {
                         foreach($va_sortables as $i => $va_sort_values) {
                             if (!is_array($va_sort_values)) { continue; }
+                            if(!isset( $va_tag_vals[$vn_index]['__sort__'])) {  $va_tag_vals[$vn_index]['__sort__'] = ''; }
                             foreach($va_sort_values as $vn_index => $vs_sort_value) {
                                 $va_tag_vals[$vn_index]['__sort__'] .= $vs_sort_value;
                             }

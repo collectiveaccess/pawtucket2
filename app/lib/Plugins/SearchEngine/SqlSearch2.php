@@ -508,7 +508,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 					FROM {$table}".($t->hasField('deleted') ? " WHERE deleted = 0" : "")."
 				", []);
 			} elseif($use_boost) {
-				$qr_res = $this->db->query($s="
+				$qr_res = $this->db->query("
 					SELECT swi.row_id, SUM(swi.boost) boost
 					FROM ca_sql_search_word_index swi
 					".(!$is_blank ? 'INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id' : '')."
@@ -519,7 +519,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 					GROUP BY swi.row_id
 				", $params);
 			} else {
-				$qr_res = $this->db->query($s="
+				$qr_res = $this->db->query("
 					SELECT DISTINCT swi.row_id, 100 boost
 					FROM ca_sql_search_word_index swi
 					".(!$is_blank ? 'INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id' : '')."
@@ -553,6 +553,9 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 	if (in_array($field_elements[0], [_t('created'), _t('modified')])) {
 	 		return $this->_processQueryChangeLog($subject_tablenum, $query);
 	 	}
+	 	
+	 	$field_sql = null;
+	 	
 	 	if ($this->getOption('strictPhraseSearching')) {
 	 		$words = [];
 	 		$temp_tables = [];
@@ -682,7 +685,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				$field = $terms[0]->field;
 	 			break;
 	 	}
-	 	
+	 	$text = str_replace('*', '', $text);	// strip wildcards
 	 	$field_lc = mb_strtolower($field);
 	 	$field_elements = explode('.', $field_lc);
 	 	if (in_array($field_elements[0], [_t('created'), _t('modified')])) {
@@ -1782,15 +1785,15 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 *
 	 */
 	private function _getBooleanOperator(?array $signs, int $index) {
-		if (is_null($signs) || ($signs[$i] === true)) {	
+		if (is_null($signs ?? null) || (($signs[$index] ?? null) === true)) {	
 			// if array is null then according to Zend Lucene all subqueries should be "are required"... so we AND them
 			return "AND";
-		} elseif (is_null($signs[$index])) {	
+		} elseif (is_null($signs[$index] ?? null)) {	
 			// is the sign for a particular query is null then OR it is (it is "neither required nor prohibited")
 			return 'OR';
 		} else {
 			// true sign indicates "required" (AND) operation, false indicates "prohibited" (NOT) operation
-			return ($signs[$index] === false) ? 'NOT' : 'AND';	
+			return (($signs[$index] ?? null) === false) ? 'NOT' : 'AND';	
 		}
 	}
 	# -------------------------------------------------------

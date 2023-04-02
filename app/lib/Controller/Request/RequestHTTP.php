@@ -582,7 +582,7 @@ class RequestHTTP extends Request {
 		$vm_val = $this->parameterExists($pa_name, $ps_http_method, $pa_options);
 		if (!isset($vm_val)) { return ""; }
 		
-		$vm_val = str_replace("\0", '', $vm_val);
+		if(!is_array($vm_val)) { $vm_val = str_replace("\0", '', $vm_val); }
 		
 		$purified = false;
 		if((caGetOption('purify', $pa_options, true) && $this->config->get('purify_all_text_input')) || caGetOption('forcePurify', $pa_options, false)) {
@@ -614,9 +614,6 @@ class RequestHTTP extends Request {
 			# -----------------------------------------
 			case pString:
 				if (is_string($vm_val)) {
-					if(caGetOption('retainBackslashes', $pa_options, true)) {
-						$vm_val = str_replace("\\", "\\\\", $vm_val);	// retain backslashes for some strange people desire them as valid input
-					}
 					if(!$purified && caGetOption('urldecode', $pa_options, true)) {
 						$vm_val = rawurldecode($vm_val);
 					}
@@ -1043,7 +1040,7 @@ class RequestHTTP extends Request {
 	static public function ip() {
 		if (isset($_SERVER['HTTP_X_REAL_IP']) && $_SERVER['HTTP_X_REAL_IP']) { return $_SERVER['HTTP_X_REAL_IP']; }
 		if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']) { return $_SERVER['HTTP_X_FORWARDED_FOR']; }
-		return $_SERVER['REMOTE_ADDR'];
+		return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
 	}
 	# ----------------------------------------
 }

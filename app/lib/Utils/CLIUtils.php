@@ -45,7 +45,9 @@ require_once(__CA_LIB_DIR__.'/Utils/CLIUtils/Performance.php');
 require_once(__CA_LIB_DIR__.'/Utils/CLIUtils/Test.php');
 require_once(__CA_LIB_DIR__.'/Utils/CLIUtils/Statistics.php');
 require_once(__CA_LIB_DIR__.'/Utils/CLIUtils/Developer.php');
+require_once(__CA_LIB_DIR__.'/Utils/CLIUtils/TaskQueue.php');
 require_once(__CA_LIB_DIR__.'/Utils/CLIUtils/BanHammer.php');
+require_once(__CA_LIB_DIR__.'/Utils/CLIUtils/Localization.php');
 
 class CLIUtils extends CLIBaseUtils {
 	use CLIUtilsMaintenance;
@@ -60,4 +62,6 @@ class CLIUtils extends CLIBaseUtils {
 	use CLIUtilsDeveloper;
 	use CLIUtilsTest;
 	use CLIUtilsBanHammer;
+	use CLIUtilsTaskQueue;
+	use CLIUtilsLocalization;
 }

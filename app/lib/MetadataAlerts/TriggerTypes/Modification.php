@@ -65,7 +65,7 @@ class Modification extends Base {
 		if(!sizeof($values)) { return false; }
 		if (is_array($filters = $values['element_filters']) && !sizeof($filters)) { $filters = null; }
 		unset($filters['_non_element_filter']);
-
+		
 		$non_element_filter = $values['element_filters']['_non_element_filter'] ?? null;
 		
 		$is_modified = null;
@@ -104,8 +104,7 @@ class Modification extends Base {
 						$is_modified = false;
 					}
 				}
-				
-				if(!is_null($is_modified)) {
+				if($is_modified !== false) {
 					$is_modified = $t_instance->attributeDidChange($code);
 				}
 			}

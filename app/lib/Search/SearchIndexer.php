@@ -580,6 +580,8 @@ class SearchIndexer extends SearchBase {
 		$for_current_value_reindex = caGetOption('forCurrentValueReindex', $pa_options, false);
 		if (!$pb_reindex_mode && !$for_current_value_reindex && is_array($pa_changed_fields) && !sizeof($pa_changed_fields)) { return; }	// don't bother indexing if there are no changed fields
 
+		$vb_started_indexing = false;
+
 		$vs_subject_tablename = Datamodel::getTableName($pn_subject_table_num);
 		$t_subject = Datamodel::getInstanceByTableName($vs_subject_tablename, true);
 		$t_subject->setDb($this->getDb());	// force the subject instance to use the same db connection as the indexer, in case we're operating in a transaction
@@ -931,6 +933,7 @@ if (!$for_current_value_reindex) {
 							$qr_res = $this->opo_db->query($vs_sql, $va_params);
 						}
 						
+						$vn_count = 0;
 						while($qr_res->nextRow()) {
 							$vn_count++;
 							
@@ -1729,12 +1732,13 @@ if (!$for_current_value_reindex) {
 							}
 							
 							if ($vn_datatype == __CA_ATTRIBUTE_VALUE_LIST__) {
-								$this->opo_engine->indexField($pn_subject_table_num, $field_num_prefix.$vn_element_id, $pn_row_id, $vs_v = [$vo_value->getDisplayValue(['output' => 'idno']), $vo_value->getDisplayValue(['output' => 'text'])], array_merge($pa_data, ['DONT_TOKENIZE' => false]));
+								$v = [$vo_value->getDisplayValue(['output' => 'idno']), $vo_value->getDisplayValue(['output' => 'text'])];
+								$this->opo_engine->indexField($pn_subject_table_num, $field_num_prefix.$vn_element_id, $pn_row_id, $v, array_merge($pa_data, ['DONT_TOKENIZE' => false]));
 								$this->_genIndexInheritance($t_inheritance_subject ? $t_inheritance_subject : $pt_subject,
 									$t_inheritance_subject ? $pt_subject : null,
 									$field_num_prefix.$vn_element_id,
 									$pn_inheritance_subject_id ? $pn_inheritance_subject_id :
-										($pn_inheritance_subject_id ? $pn_inheritance_subject_id : $pn_row_id), $pn_row_id, [$vs_v], array_merge($pa_data, ['DONT_TOKENIZE' => 1]));
+										($pn_inheritance_subject_id ? $pn_inheritance_subject_id : $pn_row_id), $pn_row_id, $v, array_merge($pa_data, ['DONT_TOKENIZE' => 1]));
 							}
 							$va_tmp[$vo_attribute->getAttributeID()] = $vs_value_to_index;
 						}

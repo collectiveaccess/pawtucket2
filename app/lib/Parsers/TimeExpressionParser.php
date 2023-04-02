@@ -236,12 +236,26 @@ class TimeExpressionParser {
 		return false;
 	}
 	# -------------------------------------------------------------------
+	/**
+	 * Parse date/time expression
+	 *
+	 * @param string $ps_expression 
+	 * @param array $pa_options Options include:
+	 *		locale = set locale for parse. Locale setting will be set as current locale for subsequent parses. [Default is null]
+	 *
+	 * @return bool
+	 */
 	public function parse($ps_expression, $pa_options=null) {
 		if ($ps_expression == __TEP_NOW__) {
 			$ps_expression = array_shift($this->opo_language_settings->getList("nowDate"));		
 		}
 		
 		if (!$pa_options) { $pa_options = array(); }
+		
+		if($locale = caGetOption('locale', $pa_options, null)) {
+			$this->setLanguage($locale);
+		}
+		
 		$this->init();
 		
 		if ($this->tokenize($this->preprocess($ps_expression)) == 0) {
@@ -694,7 +708,7 @@ class TimeExpressionParser {
 				// Look for MYA dates
 				//
 				$va_peek = $this->peekToken(2);
-				if ($va_week && ($va_peek['type'] == TEP_TOKEN_MYA)) {
+				if ($va_peek && ($va_peek['type'] == TEP_TOKEN_MYA)) {
 					$va_dates['end'] = array(
 						'month' => 12, 'day' => 31, 'year' => intval($va_token['value']) * -1000000,
 						'hours' => null, 'minutes' => null, 'seconds' => null,
@@ -1668,7 +1682,7 @@ class TimeExpressionParser {
 	private function _parseCentury($va_token, $part_of_range_qualifier=null) {
 		$va_next_token = $this->peekToken(2);
 		
-		$vs_next_token_lc = mb_strtolower($va_next_token['value']);
+		$vs_next_token_lc = mb_strtolower($va_next_token['value'] ?? null);
 		$vn_use_romans = $this->opo_datetime_settings->get("useRomanNumeralsForCenturies");
 										
 		if (
@@ -2181,6 +2195,7 @@ class TimeExpressionParser {
 			case 4:
 				$vn_hours = (int)$va_tmp[0]; 
 				$vn_minutes = (int)$va_tmp[1]; 
+				if(!isset($va_tmp[3])) { $va_tmp[3] = 0; }
 				$vn_seconds = (int)$va_tmp[2] + (is_numeric($va_tmp[3]) ? (intval($va_tmp[3]) / pow(10, strlen((intval($va_tmp[3]))))) : 0);
 				if (is_numeric($vn_hours) && ($vn_hours == intval($vn_hours)) && ($vn_hours >= 0) && ($vn_hours <= 23)) {
 					if (is_numeric($vn_minutes) && ($vn_minutes == intval($vn_minutes)) && ($vn_minutes >= 0) && ($vn_minutes <= 59)) {
@@ -2962,7 +2977,7 @@ class TimeExpressionParser {
 					$vs_before_qualifier = $va_died_qualifiers[0];
 				} else {
 					$va_before_qualifiers = $this->opo_language_settings->getList('beforeQualifier');
-					if ($pa_options['beforeQualifier'] && in_array($pa_options['beforeQualifier'], $va_before_qualifiers)) {
+					if (isset($pa_options['beforeQualifier']) && $pa_options['beforeQualifier'] && in_array($pa_options['beforeQualifier'], $va_before_qualifiers)) {
 						$vs_before_qualifier = $pa_options['beforeQualifier'] ;
 					} else {
 						$vs_before_qualifier = $va_before_qualifiers[0];
@@ -2974,8 +2989,8 @@ class TimeExpressionParser {
 						return $vs_before_qualifier.' '. $this->_dateToText(array(
 							'year' => $va_end_pieces['year'],
 							'era' => $va_end_pieces['era'],
-							'uncertainty' => $va_end_pieces['uncertainty'],
-							'uncertainty_units' => $va_end_pieces['uncertainty_units']
+							'uncertainty' => $va_end_pieces['uncertainty'] ?? null,
+							'uncertainty_units' => $va_end_pieces['uncertainty_units'] ?? null
 						), $pa_options);
 					} else {
 						if ($va_end_pieces['day'] == $this->daysInMonth($va_end_pieces['month'], $va_end_pieces['year'])) { unset($va_end_pieces['day']); }
@@ -3311,7 +3326,7 @@ class TimeExpressionParser {
 		$pn_seconds -= ($vn_minutes * 60);
 		$vn_seconds = $pn_seconds;
 		
-		if ($pa_options['timeFormat'] == 12) {
+		if (($pa_options['timeFormat'] ?? null) == 12) {
 			if ($vn_hours < 12) {
 				$vs_meridian = $this->opo_language_settings->get('timeAMMeridian');
 			} else {
@@ -3326,7 +3341,7 @@ class TimeExpressionParser {
 				$vn_hours = 12;
 			}
 			
-			if ($pa_options['timeOmitSeconds'] || ($vn_seconds == 0)) {
+			if (($pa_options['timeOmitSeconds'] ?? false) || ($vn_seconds == 0)) {
 				$vs_text = join($vs_time_delim, array($vn_hours, sprintf('%02d', $vn_minutes))).' '.$vs_meridian;		
 			} else {
 				$vs_text = join($vs_time_delim, array($vn_hours, sprintf('%02d', $vn_minutes), sprintf('%02d', $vn_seconds))).' '.$vs_meridian;

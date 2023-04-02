@@ -285,9 +285,9 @@ class DateRangeAttributeValue extends AttributeValue implements IAttributeValue 
 	}
 	# ------------------------------------------------------------------
 	public function loadTypeSpecificValueFromRow($pa_value_array) {
-		$this->ops_text_value = $pa_value_array['value_longtext1'];
-		$this->opn_start_date = $pa_value_array['value_decimal1'];
-		$this->opn_end_date = $pa_value_array['value_decimal2'];
+		$this->ops_text_value = $pa_value_array['value_longtext1'] ?? null;
+		$this->opn_start_date = $pa_value_array['value_decimal1'] ?? null;
+		$this->opn_end_date = $pa_value_array['value_decimal2'] ?? null;
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -367,10 +367,12 @@ class DateRangeAttributeValue extends AttributeValue implements IAttributeValue 
 		if ($ps_value) {
 			$locale = caGetOption('locale', $pa_options, self::$locale);
 			DateRangeAttributeValue::$o_tep->setLanguage($locale);
-			if (!DateRangeAttributeValue::$o_tep->parse($ps_value)) { 
-				// invalid date
-				$this->postError(1970, _t('%1 is invalid', $pa_element_info['displayLabel']), 'DateRangeAttributeValue->parseValue()');
-				return false;
+			if (!DateRangeAttributeValue::$o_tep->parse($ps_value)) {
+				if($locale == self::$locale || !DateRangeAttributeValue::$o_tep->parse($ps_value, ['locale' => self::$locale])) { 
+					// invalid date
+					$this->postError(1970, _t('%1 is invalid', $pa_element_info['displayLabel'] ?? null), 'DateRangeAttributeValue->parseValue()');
+					return false;
+				}
 			}
 			$va_dates = DateRangeAttributeValue::$o_tep->getHistoricTimestamps();
 			if ($va_settings['dateRangeBoundaries']) {

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2022 Whirl-i-Gig
+ * Copyright 2007-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -174,6 +174,7 @@ class MultipartIDNumber extends IDNumber {
 				}
 				$i++;
 			}
+			$element_vals = array_map(function($v) { return ($v === '_PARENT_') ? '' : $v; }, $element_vals);
 		} elseif ($separator) {
 			// Standard operation, use specified non-empty separator to split value
 			$element_vals = explode($separator, $value);
@@ -516,7 +517,7 @@ class MultipartIDNumber extends IDNumber {
 		} 
 		
 		if (!($t_instance = Datamodel::getInstanceByTableName($table, true))) { return 'ERR'; }
-		if ((bool)$element_info['sequence_by_type']) {
+		if ((bool)($element_info['sequence_by_type'] ?? false)) {
 			$stypes = is_array($element_info['sequence_by_type']) ? $element_info['sequence_by_type'] : [$element_info['sequence_by_type']];
 			$sequence_by_types = caMakeTypeIDList($table, $stypes, ['dontIncludeSubtypesInTypeRestriction' => (bool)$element_info['dont_include_subtypes']]);
 			$type = $this->getType();
@@ -766,13 +767,13 @@ class MultipartIDNumber extends IDNumber {
 				$ints[] = $this->_numToSortableInt((float)$sv, $range, $precision);
 			} elseif(preg_match('!^([\d]+)([A-Za-z]+)$!', $sv, $m)) {
 				// Treat trailing letters on a numeric values as right-of-decimal (Eg. a sub-identifier)
-				$ints[] = $this->_numToSortableInt($m[0].'.'.$this->_stringToSortableInt($m[1], $range, $precision), $range, $precision);
+				$ints[] = $this->_numToSortableInt((float)($m[0].'.'.$this->_stringToSortableInt($m[1], $range, $precision)), $range, $precision);
 			} elseif(strpos($sv, '.') !== false) {
 				$x = explode('.', $sv);
 				while(sizeof($x) > 0) {
 					$svp = array_shift($x);
 					if(is_numeric($svp)) {
-						$ints[] = $this->_numToSortableInt($svp, $range, $precision);
+						$ints[] = $this->_numToSortableInt((float)$svp, $range, $precision);
 					} else {
 						// Treat as base-36 number
 						$ints[] = $this->_stringToSortableInt($svp, $range, $precision);
@@ -1225,7 +1226,8 @@ class MultipartIDNumber extends IDNumber {
 					$tmp[$ename] = $element_values[$name.'_'.$ename];
 					continue;
 				}
-
+				$element_values[$name.'_'.$ename] = $element_values[$name.'_'.$ename] ?? null;
+				
 				if (($element_values[$name.'_'.$ename] == '') || ($element_values[$name.'_'.$ename] == '%') || $always_generate_serial_values) {
 					if ($element_values[$name.'_'.$ename] == '%') { $element_values[$name.'_'.$ename] = ''; }
 					$tmp[$ename] = $this->getNextValue($ename, $tmp, $dont_mark_serial_value_as_used);
@@ -1324,6 +1326,8 @@ class MultipartIDNumber extends IDNumber {
 		$element_form_name = $name.'_'.$element_name;
 
 		$element_value = $value;
+		$element_info['editable'] = $element_info['editable'] ?? false;
+		
 		switch($element_info['type']) {
 			# ----------------------------------------------------
 			case 'LIST':

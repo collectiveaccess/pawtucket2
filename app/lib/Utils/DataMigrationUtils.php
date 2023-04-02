@@ -628,7 +628,6 @@ class DataMigrationUtils {
 			$suffix_for_name = $n['suffix'];
 			$is_corporation = $n['is_corporation'];
 		}
-		
 		$name = ['surname' => '', 'forename' => '', 'middlename' => '', 'displayname' => '', 'prefix' => $prefix_for_name, 'suffix' => $suffix_for_name];
 	
 		if ($suffix_for_name && $is_corporation) {
@@ -806,8 +805,8 @@ class DataMigrationUtils {
 			}
 		}
 		
-		// Treat parentheticals as suffixes
-		if (preg_match("![,]*[ ]*([\(]+.*[ \)]+)$!i", $text, $matches)) {
+		// Treat parentheticals at end of string as suffixes
+		if (preg_match("![,]*[ ]*([\(]+[^\)]*[ \)]+)$!i", $text, $matches)) {
 			$name['suffix'] = $matches[1];
 			$text = str_replace($matches[0], '', $text);
 		}
@@ -1051,7 +1050,6 @@ class DataMigrationUtils {
 	private static function _getID($ps_table, $pa_label, $pn_parent_id, $pn_type_id, $locale_id, $pa_values=null, $options=null) {
 		if (!is_array($options)) { $options = array(); }
 		
-		
 		/** @var KLogger $o_log */
 		$o_log = (isset($options['log']) && $options['log'] instanceof KLogger) ? $options['log'] : null;
 		
@@ -1210,6 +1208,11 @@ class DataMigrationUtils {
 					} elseif($vs_table_class == 'ca_entities') {
 						// entities only
 						$va_params = array($vs_label_spec => array('forename' => $pa_label['forename'], 'middlename' => $pa_label['middlename'], 'surname' => $pa_label['surname']));
+						if(isset($options['ignoreLabelFields']) && is_array($options['ignoreLabelFields'])) { 
+							foreach($options['ignoreLabelFields'] as $f) {
+								unset($va_params[$vs_label_spec][$f]);
+							}
+						}
 						if (!$pb_ignore_parent) { $va_params['parent_id'] = $vn_parent_id; }
 						$vn_id = $vs_table_class::find($va_params, array('returnAs' => 'firstId', 'purifyWithFallback' => true, 'transaction' => $options['transaction'], 'restrictToTypes' => $va_restrict_to_types, 'dontIncludeSubtypesInTypeRestriction' => true));
 					} else {
@@ -1256,7 +1259,9 @@ class DataMigrationUtils {
 					$va_tmp = explode('.', $vs_match_on);
 					$vs_element = array_pop($va_tmp);
 					if ($t_instance->hasField($vs_element) || $t_instance->hasElement($vs_element)) {
-						$va_params = array($vs_element => $pa_label[$vs_label_display_fld]);
+						$va_params = [$vs_element => $pa_values[$vs_element] ?? $pa_label[$vs_element] ?? $pa_label[$vs_label_display_fld]];
+						
+						if (!$pb_ignore_parent && $vn_parent_id) { $va_params['parent_id'] = $vn_parent_id; }
 						$vn_id = $vs_table_class::find($va_params, array('returnAs' => 'firstId', 'purifyWithFallback' => true, 'transaction' => $options['transaction'], 'restrictToTypes' => $va_restrict_to_types, 'dontIncludeSubtypesInTypeRestriction' => true));
 						if ($vn_id) { break(2); }
 					}
@@ -1289,7 +1294,6 @@ class DataMigrationUtils {
 				$t_instance->setTransaction($options['transaction']);
 			}
 			
-			$t_instance->setMode(ACCESS_WRITE);
 			if($t_instance->hasField('locale_id')) { $t_instance->set('locale_id', $locale_id); }
 			if($t_instance->hasField('type_id')) { $t_instance->set('type_id', $pn_type_id); }
 			

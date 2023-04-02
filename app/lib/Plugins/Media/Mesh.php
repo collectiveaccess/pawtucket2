@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
+ * Copyright 2013-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -224,6 +224,8 @@ class WLPlugMediaMesh extends BaseMediaPlugin implements IWLPlugMedia {
 				($filesize <= 1048576)
 				&&
 				($json = json_decode(file_get_contents($filepath), true))
+				&&
+				is_array($json)
 				&& 
 				(sizeof(array_intersect(
 					['asset', 'bufferViews', 'buffers', 'extensionsUsed', 'images', 
@@ -249,7 +251,7 @@ class WLPlugMediaMesh extends BaseMediaPlugin implements IWLPlugMedia {
 	public function get($property) {
 		if ($this->handle ?? null) {
 			if ($this->info["PROPERTIES"][$property] ?? null) {
-				return $this->properties[$property];
+				return $this->properties[$property] ?? nnull;
 			} else {
 				return '';
 			}
@@ -263,7 +265,7 @@ class WLPlugMediaMesh extends BaseMediaPlugin implements IWLPlugMedia {
 			if ($this->info["PROPERTIES"][$property] ?? null) {
 				switch($property) {
 					default:
-						if ($this->info["PROPERTIES"][$property] == 'W') {
+						if (($this->info["PROPERTIES"][$property] ?? null) == 'W') {
 							$this->properties[$property] = $value;
 						} else {
 							# read only
@@ -334,14 +336,14 @@ class WLPlugMediaMesh extends BaseMediaPlugin implements IWLPlugMedia {
 		switch($operation) {
 			# -----------------------
 			case "SET":
-				while(list($k, $v) = each($parameters)) {
+				foreach($parameters as $k => $v){
 					$this->set($k, $v);
 				}
 				break;
 			# -----------------------
 			case 'SCALE':
-				$this->properties["version_width"] = $parameters["width"];
-				$this->properties["version_height"] = $parameters["height"];
+				$this->properties["version_width"] = $parameters["width"] ?? null;
+				$this->properties["version_height"] = $parameters["height"] ?? null;
 				# noop
 				break;
 			# -----------------------
@@ -352,8 +354,8 @@ class WLPlugMediaMesh extends BaseMediaPlugin implements IWLPlugMedia {
 	public function write($filepath, $ps_mimetype) {
 		if (!($this->handle ?? null)) { return false; }
 
-		$this->properties["width"] = $this->properties["version_width"];
-		$this->properties["height"] = $this->properties["version_height"];
+		$this->properties["width"] = $this->properties["version_width"] ?? null;
+		$this->properties["height"] = $this->properties["version_height"] ?? null;
 		
 		# is mimetype valid?
 		if (!($ext = ($this->info["EXPORT"][$ps_mimetype] ?? null))) {
@@ -417,7 +419,7 @@ class WLPlugMediaMesh extends BaseMediaPlugin implements IWLPlugMedia {
 	# ------------------------------------------------
 	public function extension2mimetype($extension) {
 		reset($this->info["EXPORT"]);
-		while(list($k, $v) = each($this->info["EXPORT"])) {
+		foreach($this->info["EXPORT"] as $k => $v){
 			if ($v === $extension) {
 				return $k;
 			}

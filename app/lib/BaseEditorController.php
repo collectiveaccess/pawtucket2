@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2022 Whirl-i-Gig
+ * Copyright 2009-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1944,8 +1944,8 @@ class BaseEditorController extends ActionController {
 		//
 		// Does user have access to row?
 		//
-		if ($pt_subject->getAppConfig()->get('perform_item_level_access_checking') && $vn_subject_id) {
-			if ($pt_subject->checkACLAccessForUser($this->request->user) < __CA_BUNDLE_ACCESS_READONLY__) {
+		if ($pt_subject->getAppConfig()->get('perform_item_level_access_checking') && $pt_subject->getPrimaryKey()) {
+			if (method_exists($pt_subject, 'checkACLAccessForUser') && $pt_subject->checkACLAccessForUser($this->request->user) < __CA_BUNDLE_ACCESS_READONLY__) {
 				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
 				return false;
 			}
@@ -2327,7 +2327,7 @@ class BaseEditorController extends ActionController {
 
 		$pa_annotations = $this->request->getParameter('save', pArray);
 
-		$va_annotation_ids = array();
+		$va_annotation_ids = [];
 		if (is_array($pa_annotations)) {
 			foreach($pa_annotations as $vn_i => $va_annotation) {
 				$vs_label = (isset($va_annotation['label']) && ($va_annotation['label'])) ? $va_annotation['label'] : '';
@@ -2794,8 +2794,7 @@ class BaseEditorController extends ActionController {
 				break;
 			default:
 				// relationship bundles
-				$table = preg_replace("!_related_list$!", "", $bundle_name);
-		
+				$table = preg_replace("!(_related_list|_table)$!", "", $bundle_name);
 				if($ids = $this->request->getParameter('ids', pString)) {
 					$ids = explode(";", $ids);
 				} else {

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2021 Whirl-i-Gig
+ * Copyright 2013-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -155,6 +155,9 @@
 					$va_tmp['tags'] = array();
 					$va_tmp['urls'] = array();
 			
+					$va_tmp['typename'] = caGetListItemIdno($qr_reps->get('ca_object_representations.type_id'));
+					$va_tmp['label'] = $qr_reps->get('ca_object_representations.preferred_labels.name');
+					
 					$va_info = $qr_reps->getMediaInfo('media');
 					$va_tmp['info'] = array('original_filename' => $va_info['ORIGINAL_FILENAME']);
 					foreach ($pa_versions as $vs_version) {
@@ -328,22 +331,18 @@
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			
 			$require_media = caGetOption('requireMedia', $pa_options, false);
-		
-			if (!is_array($pa_versions)) { 
-				$pa_versions = array('preview170');
-			}
-		
-			if (isset($pa_options['return_primary_only']) && $pa_options['return_primary_only']) {
+
+			if ($pa_options['return_primary_only'] ?? false) {
 				$vs_is_primary_sql = ' AND (caoor.is_primary = 1)';
 			} else {
 				$vs_is_primary_sql = '';
 			}
 		
-			if (!is_array($pa_options['return_with_access']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) > 0) {
+			if (!is_array($pa_options['return_with_access'] ?? null) && is_array($pa_options['checkAccess'] ?? null) && sizeof($pa_options['checkAccess']) > 0) {
 				$pa_options['return_with_access'] = $pa_options['checkAccess'];
 			}
 		
-			if (is_array($pa_options['return_with_access']) && sizeof($pa_options['return_with_access']) > 0) {
+			if (is_array($pa_options['return_with_access'] ?? null) && sizeof($pa_options['return_with_access']) > 0) {
 				$vs_access_sql = ' AND (caor.access IN ('.join(", ", $pa_options['return_with_access']).'))';
 			} else {
 				$vs_access_sql = '';
@@ -369,7 +368,7 @@
 					caoor.`rank`, caoor.is_primary DESC
 			", $va_type_restriction_filters['params']);
 		
-			$va_rep_ids = array();
+			$va_rep_ids = [];
 			while($qr_reps->nextRow()) {
 				if($require_media && (!is_array($versions = $qr_reps->getMediaVersions('media')) || !sizeof($versions))) { continue; }
 				$va_rep_ids[$qr_reps->get('representation_id')] = ($qr_reps->get('is_primary') == 1) ? true : false;
@@ -1141,6 +1140,8 @@
 		public function getPrimaryMediaForIDs($pa_ids, $pa_versions, $pa_options = null) {
 			if (!is_array($pa_ids) || !sizeof($pa_ids)) { return array(); }
 			if (!is_array($pa_options)) { $pa_options = array(); }
+			
+			$require_media = caGetOption('requireMedia', $pa_options, false);
 			$va_access_values = $pa_options["checkAccess"];
 			if (isset($va_access_values) && is_array($va_access_values) && sizeof($va_access_values)) {
 				$vs_access_where = ' AND orep.access IN ('.join(',', $va_access_values).')';
@@ -1171,18 +1172,40 @@
             
 			$va_media = [];
 			while($qr_res->nextRow()) {
+				$t = $qr_res;
+				
+				if($require_media) {
+					if(!$t->get('ca_object_representations.media')) {
+						// this is a media-less representation, so fall back to something with media...
+						// doing it this way isn't terribly efficient but media-less reps are rare so let's
+						// just leave it at this for now.
+						$t = $o_db->query("
+							SELECT orep.representation_id, oxor.{$vs_pk}, orep.media
+							FROM ca_object_representations orep
+							INNER JOIN {$vs_linking_table} AS oxor ON oxor.representation_id = orep.representation_id
+							WHERE
+								(oxor.{$vs_pk} = ?) AND oxor.is_primary = 0 AND orep.deleted = 0 {$vs_access_where}
+						", [$qr_res->get($vs_pk)]);	
+						while($t->nextRow()) {
+							if($t->get('ca_object_representations.media')) { 
+								break; 
+							}
+						}
+					}
+				}
+				
 				$va_media_tags = [
-					'representation_id' => $qr_res->get('ca_object_representations.representation_id'),
-					'access' => $qr_res->get('ca_object_representations.access')
+					'representation_id' => $t->get('ca_object_representations.representation_id'),
+					'access' => $t->get('ca_object_representations.access')
 				];
 				
 				foreach($pa_versions as $vs_version) {
-					$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version);
-					$va_media_tags['info'][$vs_version] = $qr_res->getMediaInfo('ca_object_representations.media', $vs_version);
-					$va_media_tags['urls'][$vs_version] = $qr_res->getMediaUrl('ca_object_representations.media', $vs_version);
-					$va_media_tags['paths'][$vs_version] = $qr_res->getMediaPath('ca_object_representations.media', $vs_version);
+					$va_media_tags['tags'][$vs_version] = $t->getMediaTag('ca_object_representations.media', $vs_version);
+					$va_media_tags['info'][$vs_version] = $t->getMediaInfo('ca_object_representations.media', $vs_version);
+					$va_media_tags['urls'][$vs_version] = $t->getMediaUrl('ca_object_representations.media', $vs_version);
+					$va_media_tags['paths'][$vs_version] = $t->getMediaPath('ca_object_representations.media', $vs_version);
 				}
-				$va_media[$qr_res->get($vs_pk)] = $va_media_tags;
+				$va_media[$t->get($vs_pk)] = $va_media_tags;
 			}
 		
 			// Preserve order of input ids
