@@ -3025,15 +3025,10 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 }
 
 .caAudioPlayer {
-	position: absolute;
-	top: 50%;
-	left:0;
-	right:0;
+	position: relative;
 	margin-left: auto;
 	margin-right: auto;
 	padding: 0px;
-	width: 50%;
-	height: 40px;
 }
 
 .caAudioPlayerEmbedded {

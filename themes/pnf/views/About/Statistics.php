@@ -45,7 +45,7 @@ $qr_authors = $o_browse_authors->getResults();
 <div class="row">
 	<div class="col-sm-12 col-md-offset-1 col-md-10">
 		<div id="statistics">
-			<H2>Statistical Table</H2>
+			<H2><?php print ($g_ui_locale == "en_US") ? "Statistical Table" : "Tabla de Estadísticas"; ?></H2>
 			<div class="statisticsIntro">{{{statistics_intro}}}</div>
 			<hr/>
 			<div class="row">

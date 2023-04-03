@@ -47,6 +47,16 @@
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
+			<label for='ca_entities' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records by their creators and contributors.') ?>"><?php _p('Creators and Contributors') ?></label>
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=creator,attributed,contributor&width=200px&height=1}}}
+		</div>
+		<div class="advancedSearchField col-sm-6">
+			<label for='ca_entities' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records by related people and institutions.') ?>"><?php _p('Related People and Institutions') ?></label>
+			{{{ca_entities.preferred_labels%excludeRelationshipTypes=donor,collector,provider,creator,attributed,contributor&width=200px&height=1}}}
+		</div>
+	</div>
+	<div class='row'>
+		<div class="advancedSearchField col-sm-6">
 			<label for='ca_objects.date.dates_value[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records of a particular date or date range.') ?>"><?php _p('Date range <i>(e.g. 1970-1979)</i>') ?></label>
 			{{{ca_objects.date.date_value%width=200px&height=1&useDatePicker=0}}}
 		</div>

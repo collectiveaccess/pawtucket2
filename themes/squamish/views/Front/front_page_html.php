@@ -34,7 +34,7 @@
 	$this->config = caGetFrontConfig();
 	$vs_hero = $this->request->getParameter("hero", pString);
 	if(!$vs_hero){
-		$vs_hero = rand(1, 1);
+		$vs_hero = rand(1, 2);
 	}
  
  # --- timeline set - occurrences
@@ -102,7 +102,7 @@
 			<div class="row">
 				<div class="col-md-4">
 					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Archives &<br/>Oral History", "", "", "Browse", "Archives"); ?>
+						<?php print caNavLink($this->request, "Archives &<br/>Oral History", "", "", "BrowseAll", "Archives"); ?>
 					</div>
 				</div>
 				<div class="col-md-4">

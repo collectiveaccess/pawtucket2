@@ -340,6 +340,9 @@ a.browseRemoveFacet .glyphicon{
 	color: #000;
 	font-size: 14px;
 }
+#bRefine H3{
+	cursor: pointer;
+}
 /* front */
 html.frontContainer {
     height: 100%;
@@ -374,6 +377,9 @@ body.frontContainer #footer{
 }
 .parallax.hero1 {
 	background-image: url("../graphics/hero1.jpg");
+}
+.parallax.hero2 {
+	background-image: url("../graphics/Squamish_hero1.jpg");
 }
 
 @media(max-width:420px), (max-height:420px){
@@ -711,6 +717,10 @@ body.frontContainer #footer{
 	text-align: center;
 }
 
+#collectionLoad div.hierarchyObjects a{
+	font-weight:normal;
+	font-size:13px;
+}
 /* Header with background image like on Browse All and External Resources */
 .pageHeaderRow{
 	padding-top:30px;
@@ -763,6 +773,12 @@ body.frontContainer #footer{
 }
 .landingBox .landingBoxImage.landingBoxImage3{
 	background-image: url('../graphics/hero_1.jpg');
+}
+.landingBox .landingBoxImage.landingBoxImageArchives{
+	background-image: url('../graphics/Archival_Item_sm.jpg');
+}
+.landingBox .landingBoxImage.landingBoxImageCollections{
+	background-image: url('../graphics/Archival_Collection_sm.jpg');
 }
 .landingBox .landingBoxDetails {
 	padding: 15px 13px 22px;
@@ -879,6 +895,10 @@ body.frontContainer #footer{
 	text-align: center;
 	width: 100%;
 	font-size: 18px;
+}
+.detail .unit a.btn{
+	color:#FFF;
+	text-decoration:none;
 }
 /* advanced Search */
 .advancedSearchField .formLabel {

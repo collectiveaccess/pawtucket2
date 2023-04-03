@@ -132,7 +132,7 @@
 					{{{<ifdef code="ca_collections.historyUse"><div class="unit"><label>Administrative / Biographical History</label><span class="trimText"><unit relativeTo="ca_collections.historyUse" delimiter="<br/><br/>">^ca_collections.historyUse%convertLineBreaks=1</unit></span></div></ifdef>}}}
 					{{{<ifdef code="ca_collections.RAD_arrangement"><div class="unit"><label>System of Arrangement</label><span class="trimText">^ca_collections.RAD_arrangement%convertLineBreaks=1</span></div></ifdef>}}}
 
-					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related Peopleand Organizations</label>
+					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related People and Organizations</label>
 							<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div>
 					</ifcount>}}}
 
