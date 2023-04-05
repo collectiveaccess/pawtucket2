@@ -91,6 +91,9 @@
 					{{{<ifdef code="ca_collections.descriptive_note"><div class="unit"><label>Descriptive Notes</label><unit relativeTo="ca_collections.descriptive_note" delimiter="<br/><br/>">^ca_collections.descriptive_note</unit></div></ifdef>}}}
 					{{{<ifdef code="ca_collections.rights_container.access_conditions"><div class="unit"><label>Access Conditions</label>^ca_collections.rights_container.access_conditions</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.rights_container.use_reproduction"><div class="unit"><label>Use and Reproduction Conditions</label>^ca_collections.rights_container.use_reproduction</div></ifdef>}}}					
+					{{{<if rule='^ca_collections.type_id =~ /File/'><ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
+						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.preferred_labels.name</unit>
+					</div></ifcount></if>}}}
 <?php
 				if($vn_parent_collection_id = $t_item->get("ca_collections.parent.collection_id")){
 					print "<div class='unit'>".caDetailLink($this->request, "More from this ".$t_item->get("ca_collections.parent.type_id", array("convertCodesToDisplayText" => true)), "btn btn-default", "ca_collections", $vn_parent_collection_id)."</div>";
