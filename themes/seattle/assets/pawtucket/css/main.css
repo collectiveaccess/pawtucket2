@@ -14,7 +14,7 @@ body {
 	margin-bottom:80px; col-lg-offset-1
 }
 a, a:hover {
-	color:#19bed1;
+	color:#003da5;
 }
 a, a:active, a:focus {
    outline: 0;
@@ -28,7 +28,7 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 }
 H1, h1{
 	font-size: 20px;
-	color:#19bed1;
+	color:#003da5;
 	text-transform:uppercase;
 	margin-top:0px;
 }
@@ -37,7 +37,7 @@ H1 .btn-group{
 }
 H2, h2{
 	font-size: 18px;
-	color:#19bed1;
+	color:#003da5;
 }
 H3, h3{
 	font-size: 16px;
@@ -354,7 +354,7 @@ h1 i {
           box-shadow: none;
 }          
 .form-control:focus {
-    border-color: #19BED1;
+    border-color: #003da5;
     box-shadow: 0 0 0 rgba(0, 0, 0, 0.075) inset, 0 0 0px rgba(102, 175, 233, 0.6);
     outline: 0 none;
 }
@@ -452,7 +452,7 @@ h1 i {
     text-transform: uppercase;
     padding: 6px 7px 5px 7px;
     box-shadow: 0 0px 0 rgba(255, 255, 255, 0.15) inset, 0 0px 0px rgba(0, 0, 0, 0.075);
-    background-color: #19bed1;
+    background-color: #003da5;
     border-radius: 0px;
     letter-spacing: 1px;
     color: #fff;
@@ -462,7 +462,7 @@ h1 i {
 	color: #fff;
 }
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
-	background-color: #19bed1;
+	background-color: #003da5;
 	color: #fff;
 }
 
@@ -508,7 +508,7 @@ h1 i {
 }
 
 .filterMenuFacetList li.active{
-	background-color:#19bed1;
+	background-color:#003da5;
 }
 
 .filterMenuFacetList li.active a{
@@ -601,7 +601,7 @@ div.browseFacetItem a{
 }
 div.browseFacetItem a:hover {
 	text-decoration:none;
-	color: #19bed1;
+	color: #003da5;
 }
 div.browseFacetItem li{
 	margin:0px;
@@ -858,7 +858,7 @@ a.browseRemoveFacet img {
 	color:#636363;
 }
 #footer ul a{
-	color: #19bed1;
+	color: #003da5;
 	text-decoration:none;
 }
 #footer ul li{
@@ -1540,7 +1540,7 @@ a.browseRemoveFacet img {
 	margin:0px;
 }
 .detail H6 a{
-	color:#19bed1;
+	color:#003da5; 
 	/*font-size:9px;*/
 	padding:2px 0px 0px 10px;
 	text-decoration:none;
@@ -1822,7 +1822,7 @@ a.browseRemoveFacet img {
 
 a.readmore-js-toggle{
    padding-top:10px;
-   color:#19bed1;
+   color:#003da5;
 }
 .trimText {margin-top:5px;}
 
@@ -2235,7 +2235,7 @@ a.browseRemoveFacet .glyphicon {
 }
 
 .browse .btn, .sets .btn {
-	background-color:#19bed1;
+	background-color:#003da5;
 	font-size:10px;
 	color:#fff;
 	margin-left:5px;

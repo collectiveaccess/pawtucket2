@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2022 Whirl-i-Gig
+ * Copyright 2009-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -600,7 +600,10 @@ function caDetailItemComments($po_request, $pn_item_id, $t_item, $va_comments, $
 /*
  * Returns the info for each set
  *
- * options: "write_access" = false
+ * Options include: 
+ * 		write_access = Show controls for modifying set. [Default is false]
+ *		set_description_code = Code for set description metadata element. Omit to not show set description text. [Default is null]		
+ *
  *
  */
 function caLightboxSetListItem($po_request, $t_set, $va_check_access = array(), $pa_options = array()) {
@@ -664,6 +667,11 @@ function caLightboxSetListItem($po_request, $t_set, $va_check_access = array(), 
 	}
 	$vs_set_display .= "<div class='row'>".$vs_primary_image_block."<div class='col-sm-6'><div id='comment{$vn_set_id}' class='lbSetComment'><!-- load comments here --></div>\n<div class='lbSetThumbRowContainer'><div class='row lbSetThumbRow' id='lbSetThumbRow{$vn_set_id}'>".$vs_secondary_image_block."</div><!-- end row --></div><!-- end lbSetThumbRowContainer --></div><!-- end col --></div><!-- end row -->";
 	$vs_set_display .= "</div><!-- end lbSetContent -->\n";
+	
+	if($set_description_code = caGetOption('set_description_code', $pa_options, null)) {
+		$vs_set_display .= $t_set->get("ca_sets.{$set_description_code}");
+	}
+	
 	$vs_set_display .= "<div class='lbSetExpandedInfo' id='lbExpandedInfo{$vn_set_id}'>\n<hr><div>created by: ".trim($t_set->get("ca_users.fname")." ".$t_set->get("ca_users.lname"))."</div>\n";
 	$vs_set_display .= "<div>"._t("Items: %1", $t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access)))."</div>\n";
 	if($vb_write_access){
