@@ -15,7 +15,8 @@
 	if($qr_collections && $qr_collections->numHits()) {
 		while($qr_collections->nextHit()) {
 			if ( $vn_i == 0) { print "<div class='row'>"; } 
-			$vs_tmp = "<div class='col-sm-6'><div class='collectionTile'><div class='title'>".$qr_collections->get("ca_collections.preferred_labels")."</div>";	
+			print "<div class='col-sm-6'>";
+			$vs_tmp = "<div class='collectionTile'><div class='title'>".$qr_collections->get("ca_collections.preferred_labels")."</div>";	
 			if (($o_collections_config->get("description_template_landing")) && ($vs_scope = $qr_collections->getWithTemplate($o_collections_config->get("description_template_landing")))) {
 				$vs_tmp .= "<div>".$vs_scope."</div>";
 			}
