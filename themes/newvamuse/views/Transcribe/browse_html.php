@@ -55,14 +55,14 @@
 <div class="transcription container textContent">
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-1">
-			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; Browse</H1>
+			<h1><a href="/Transcribe/Index"><?= _t('Transcribe'); ?></a> &gt; <?= _t('Browse'); ?></H1>
 			<p>
-				By transcribing a record, you are creating searchable data that can be used 
+				<?= _t('By transcribing a record, you are creating searchable data that can be used 
 				by genealogists, researchers, students, teachers, and everyone else. You are 
-				helping museums document their collections and share information in a meaningful way.
+				helping museums document their collections and share information in a meaningful way.'); ?>
 			</p>
 			
-			<?php print "<div class='unit'><span class='name'>".$qr_result->numHits()."</span> transcribable items</div>"; ?>
+			<?php print "<div class='unit'>"._t("<span class='name'>%1</span> transcribable items", $qr_result->numHits())."</div>"; ?>
 <?php
 				if (sizeof($va_criteria) > 0) {
 					print "<div class='bCriteria'>";
