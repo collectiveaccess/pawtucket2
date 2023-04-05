@@ -44,7 +44,7 @@
 				<li style="font-size:150%;"><a  href="http://www.seattle.gov/cityarchives">SMA Home</a></li>
 				
 			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
+			<div><small>&copy; <?= date('Y'); ?> City of Seattle</small></div>
 		</footer><!-- end footer -->
 <script type="text/javascript">
 

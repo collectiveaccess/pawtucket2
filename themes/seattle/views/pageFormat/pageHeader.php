@@ -162,20 +162,20 @@
 		<h1><span style="padding-right:50px;"></span>
 		<!--	<a style="padding-right:50px;" href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Objects"> All Objects</a> <span class="rwd-line"><br/></span>-->
 		
-			<a style="padding-right:50px;" onclick="$('#loadingmessage').css('display','inline');" onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');" href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Objects/facet/type_facet/id/28/view/images">Audio</a><span class="rwd-line"><br/></span>
-			<a style="padding-right:50px;" onclick="$('#loadingmessage').css('display','inline');" onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');" href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Objects/facet/type_facet/id/9639/view/images">Drawings</a><span class="rwd-line"><br/></span>
+			<a style="padding-right:20px;" onclick="$('#loadingmessage').css('display','inline');" onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');" href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Objects/facet/type_facet/id/28/view/images">Audio</a><span class="rwd-line"><br/></span>
+			<a style="padding-right:20px;" onclick="$('#loadingmessage').css('display','inline');" onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');" href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Objects/facet/type_facet/id/9639/view/images">Drawings</a><span class="rwd-line"><br/></span>
 
-			<a style="padding-right:50px;" href="#" onmouseover="$('#imagedecades').css('display','block');">Images <span style="font-size:70%"></span></a><span class="rwd-line"><br/></span>
+			<a style="padding-right:20px;" href="#" onmouseover="$('#imagedecades').css('display','block');">Images <span style="font-size:70%"></span></a><span class="rwd-line"><br/></span>
 			
-			<a style="padding-right:50px;" onclick="$('#loadingmessage').css('display','inline');" onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');" href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Objects/facet/type_facet/id/26/view/images">Maps</a><span class="rwd-line"><br/></span>
+			<a style="padding-right:20px;" onclick="$('#loadingmessage').css('display','inline');" onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');" href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Objects/facet/type_facet/id/26/view/images">Maps</a><span class="rwd-line"><br/></span>
 	
-			<a style="padding-right:50px;" onclick="$('#loadingmessage').css('display','inline');" onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');" href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Objects/facet/type_facet/id/9673/view/images">Moving Images</a><span class="rwd-line"><br/></span>
+			<a style="padding-right:20px;" onclick="$('#loadingmessage').css('display','inline');" onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');" href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Objects/facet/type_facet/id/9673/view/images">Moving Images</a><span class="rwd-line"><br/></span>
 	
-			<a style="padding-right:50px;" onclick="$('#loadingmessage').css('display','inline');" onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');"  href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Objects/facet/type_facet/id/25/view/list">Textual Records</a><span class="rwd-line"><br/></span>
+			<a style="padding-right:20px;" onclick="$('#loadingmessage').css('display','inline');" onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');"  href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Objects/facet/type_facet/id/25/view/list">Textual Records</a><span class="rwd-line"><br/></span>
 		
-			<a style="padding-right:50px;"  onclick="$('#loadingmessage').css('display','inline');"onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');"  href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Collections/facet/type_facet/id/116/view/images">Series</a><span class="rwd-line"><br/></span>
+			<a style="padding-right:20px;"  onclick="$('#loadingmessage').css('display','inline');"onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');"  href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Collections/facet/type_facet/id/116/view/images">Series</a><span class="rwd-line"><br/></span>
 			
-			<a style="padding-right:50px;"   onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');"  href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Collections/facet/type_facet/id/2302/view/images">Virtual Collections</a></h1> 
+			<a style="padding-right:20px;"   onmouseover="$('#imagedecades').css('display','none');$('#loadingmessage').css('display','none');"  href="<?php print __CA_URL_ROOT__?>/index.php/Browse/Collections/facet/type_facet/id/2302/view/images">Virtual Collections</a></h1> 
 		</ul>
 		<ul id="imagedecades" style="background-color:#edf2f9 ;padding-bottom:15px;padding-top:2px;display:none;"><h3 style="font-color:black"><a style="font-size:80%;padding-right:10px;" onclick="$('#loadingmessage').css('display','inline');" href="<?php print __CA_URL_ROOT__?>/index.php/Search/objects/search/ca_objects.type_id%3A23+AND+ca_objects.date.dates_value%3A%221850-1899%22">1800s</a>
 		<a style="padding-right:10px;font-size:80%;" onclick="$('#loadingmessage').css('display','inline');"  href="<?php print __CA_URL_ROOT__?>/index.php/Search/objects/search/ca_objects.type_id%3A23+AND+ca_objects.date.dates_value%3A%221900-1909%22">1900-1909</a>
@@ -236,11 +236,11 @@
 					
 					
 					
-					<li > <a href="/digital-collections/index.php/Gallery/Index" style="color:white;">Gallery</a></li>		
-					<li ><a href="<?php print __CA_URL_ROOT__?>/index.php/Search/advanced/objects" style="color:white;" onclick="localStorage.removeItem('subjects');">Advanced Search</a></li>
-					<li ><a href="http://archives.seattle.gov/finding-aids" style="color:white;">Finding Aids</a></li>
-					<li ><a href="http://www.seattle.gov/cityarchives/search-collections/collection-search" style="color:white;">Collections Home</a></li>
-					<li ><a href="http://www.seattle.gov/cityarchives" style="color:white;">SMA Home</a></li>
+					<li><?= caNavLink($this->request, 'Gallery', '', '', 'Gallery', 'Index', null, ['style' => 'color:white;']); ?></li>		
+					<li><a href="<?php print __CA_URL_ROOT__?>/index.php/Search/advanced/objects" style="color:white;" onclick="localStorage.removeItem('subjects');">Advanced Search</a></li>
+					<li><a href="http://archives.seattle.gov/finding-aids" style="color:white;">Finding Aids</a></li>
+					<li><a href="http://www.seattle.gov/cityarchives/search-collections/collection-search" style="color:white;">Collections Home</a></li>
+					<li><a href="http://www.seattle.gov/cityarchives" style="color:white;">SMA Home</a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
