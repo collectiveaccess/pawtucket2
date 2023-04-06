@@ -200,7 +200,7 @@
 
 				<?php
 					if($t_object->get("ca_objects.ulan")) {
-						$links = caGetBrowseLinks($t_object, 'ca_objects.ulan', ['template' => '<l>^ca_objects.ulan</l>', 'linkTemplate' => '^LINK'])
+						$links = caGetBrowseLinks($t_object, 'ca_objects.ulan', [ 'linkTemplate' => '^LINK'])
 				?>
 						<div class="unit">
 							<label>Related People</label>
@@ -209,7 +209,7 @@
 				<?php
 					}
 					if($t_object->get("ca_objects.lcsh_terms")) {
-						$links = caGetSearchLinks($t_object, 'ca_objects.lcsh_terms', ['template' => '<l>^ca_objects.lcsh_terms</l>', 'linkTemplate' => '<li>^LINK</li>'])
+						$links = caGetSearchLinks($t_object, 'ca_objects.lcsh_terms', [ 'linkTemplate' => '<li>^LINK</li>'])
 				?>
 						<div class="unit">
 							<label>Subjects</label>
@@ -220,7 +220,7 @@
 				
 				
 					if($t_object->get("ca_objects.lc_names")) {
-						$links = caGetSearchLinks($t_object, 'ca_objects.lc_names', ['template' => '<l>^ca_objects.lc_names</l>', 'linkTemplate' => '^LINK'])
+						$links = caGetSearchLinks($t_object, 'ca_objects.lc_names', ['linkTemplate' => '^LINK'])
 				?>
 						<div class="unit">
 							<label>Related People in LC</label>

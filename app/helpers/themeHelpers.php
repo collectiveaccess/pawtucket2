@@ -1552,6 +1552,10 @@ function caGetBrowseLinks($t_instance, string $bundle, ?array $options=null) : ?
 		$bt = caGetBrowseForType($table, $t_instance->getTypeCode());
 		$text = $template ? explode('|', $t_instance->getWithTemplate($z="<unit relativeTo='{$bundle}' delimiter='|' {$restrict_to_types_attr} {$restrict_to_relationship_types_attr}>{$template}</unit>", ['returnAsArray' => false, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $access_values])) : $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $access_values]);
 		if(!sizeof(array_filter($text, 'strlen'))) { return null; }
+		
+		$text = array_map(function($v) {
+			return preg_replace("!\[[^\]]*\]!", "", $v);
+		}, $text);
 		$ids = $t_instance->get($fld, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToIdnos' => false, 'makeLink' => false, 'checkAccess' => $access_values]);
 		
 		$links = caCreateBrowseLinksFromText($text, $bt, array_map(function($v) use ($facet) { return ['facet' => $facet, 'id' => $v]; }, $ids), '', []);
@@ -1610,12 +1614,13 @@ function caGetSearchLinks($t_instance, string $bundle, ?array $options=null) : ?
 	$values = $t_instance->get($bundle, ['restrictToRelationshipTypes' => $restrict_to_relationship_types, 'restrictToTypes' => $restrict_to_types, 'returnAsArray' => true, 'convertCodesToDisplayText' => true, 'makeLink' => false, 'checkAccess' => $access_values]);
 	
 	$text = array_map(function($v) {
-		return preg_replace("!\[[^\]]*\]$!", "", $v);
+		return preg_replace("!\[[^\]]*\]!", "", $v);
 	}, $text);
 	$values = array_map(function($v) {
 		return preg_replace("![\"\']+!", "", preg_replace("!\[[^\]]*\]$!", "", $v));
 	}, $values);
 	if(!sizeof(array_filter($text, 'strlen'))) { return null; }
+	
 	
 	$links =  caCreateSearchLinksFromText($text, $st, array_map(function($s) use ($bundle) { return "{$bundle}:\"{$s}\""; }, $values), '', []);
 
