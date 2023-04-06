@@ -83,7 +83,7 @@
 				</H1>
 
 				{{{<ifdef code="ca_objects.nonpreferred_labels">
-					<H3>^ca_objects.nonpreferred_labels</H3>
+					<H3><unit relativeTo="ca_objects.nonpreferred_labels" delimiter="<br/>">^ca_object_labels.name</unit></H3>
 				</ifdef>}}}	
 				<?php
 					if($t_object->get("source_id")){
@@ -107,15 +107,12 @@
 						</unit>
 					</div>
 				</ifcount>}}}
-
-				{{{<ifdef code="ca_objects.date" >
-					<div class="unit">
-						<!-- <label>Date</label> -->
-						<unit relativeTo="ca_objects.date" delimiter="<br/>">
-							<if rule='^ca_objects.date.date_types !~ /accepted/ and ^ca_objects.date.date_types !~ /collected/'>^ca_objects.date.date_value <ifdef code="ca_objects.date.date_types,ca_objects.date.date_value">(^ca_objects.date.date_types)</ifdef></if>
-						</unit>
-					</div>
-				</ifdef>}}}	
+<?php
+				$vs_date = $t_object->getWithTemplate('<unit relativeTo="ca_objects.date" delimiter="<br/>"><if rule="^ca_objects.date.date_types !~ /accepted/ and ^ca_objects.date.date_types !~ /collected/">^ca_objects.date.date_value <ifdef code="ca_objects.date.date_types,ca_objects.date.date_value">(^ca_objects.date.date_types)</ifdef></if></unit>');
+				if($vs_date){
+					print '<div class="unit">'.$vs_date.'</div>';
+				}
+?>
 
 				{{{<ifdef code="ca_objects.medium" >
 					<div class="unit">			
@@ -176,7 +173,7 @@
 
 				{{{<ifdef code="ca_objects.idno">
 					<div class="unit">
-						<!-- <label>Accession/ID Number</label> -->
+						<label>Accession/ID Number</label>
 						<unit relativeTo="ca_objects.idno" delimiter="<br/>">^ca_objects.idno</unit>
 					</div>
 				</ifdef>}}}
@@ -201,15 +198,18 @@
 					}
 				?>
 
-				{{{<ifdef code="ca_objects.ulan">
-					<div class="unit">
-						<label>Related People</label>
-						<unit relativeTo="ca_objects.ulan" delimiter="<br/>">^ca_objects.ulan</unit>
-					</div>
-				</ifdef>}}}
-
 				<?php
-					if($links = caGetBrowseLinks($t_object, 'ca_objects.lcsh_terms', ['template' => '<l>^ca_objects.lcsh_terms</l>', 'linkTemplate' => '<li>^LINK</li>'])) {
+					if($t_object->get("ca_objects.ulan")) {
+						$links = caGetBrowseLinks($t_object, 'ca_objects.ulan', ['template' => '<l>^ca_objects.ulan</l>', 'linkTemplate' => '^LINK'])
+				?>
+						<div class="unit">
+							<label>Related People</label>
+							<?= join("<br/>", $links); ?>
+						</div>
+				<?php
+					}
+					if($t_object->get("ca_objects.lcsh_terms")) {
+						$links = caGetSearchLinks($t_object, 'ca_objects.lcsh_terms', ['template' => '<l>^ca_objects.lcsh_terms</l>', 'linkTemplate' => '<li>^LINK</li>'])
 				?>
 						<div class="unit">
 							<label>Subjects</label>
@@ -217,14 +217,18 @@
 						</div>
 				<?php
 					}
-				?>
 				
-				{{{<ifdef code="ca_objects.lc_names">
-					<div class="unit">			
-						<label>Related People in LC</label>
-						<unit relativeTo="ca_objects.lc_names" delimiter="<br/>">^ca_objects.lc_names</unit>
-					</div>
-				</ifdef>}}}
+				
+					if($t_object->get("ca_objects.lc_names")) {
+						$links = caGetSearchLinks($t_object, 'ca_objects.lc_names', ['template' => '<l>^ca_objects.lc_names</l>', 'linkTemplate' => '^LINK'])
+				?>
+						<div class="unit">
+							<label>Related People in LC</label>
+							<?= join("<br/>", $links); ?>
+						</div>
+				<?php
+					}
+				?>
 
 <?php
 				if($vs_map = $this->getVar("map")){

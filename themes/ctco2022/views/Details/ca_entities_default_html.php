@@ -71,7 +71,7 @@
 
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
-				<div class="col-sm-12"><label>Artifacts</label></div>
+				<div class="col-sm-12"><label>Objects</label></div>
 			</div>
 			<div class="row">
 				<div id="browseResultsContainer">

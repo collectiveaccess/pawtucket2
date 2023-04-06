@@ -48,7 +48,7 @@
 
  $links_to_display = [];
  foreach($search_to_display as $s) {
- 	$links_to_display[] = caNavLink($this->request, $s, 'search-link', '', 'Search', 'objects', ['search' => $s]);
+ 	$links_to_display[] = caNavLink($this->request, $s, 'search-link', '', 'MultiSearch', 'Index', ['search' => $s]);
  }
 
 ?>
@@ -72,7 +72,8 @@
 							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
 					</form>
-					<p class="search-suggest">Not sure what to search for? Try <?= join(', ', $links_to_display); ?></p>
+					<p class="search-suggest">Not sure what to search for? Try <?= join(', ', $links_to_display); ?>.<br/>
+					Or use the <?php print caNavLink($this->request, _t("advanced search"), "", "", "Search", "advanced/objects"); ?>.</p>
 				</div>
 			</div>
 		</div>
@@ -106,7 +107,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-12 col-md-4 text-center"><div class="hpFeaturedLinksContainer">
-				<?php print caNavLink($this->request, "Artifacts", "hpFeaturedLinks", "", "Browse", "objects"); ?>
+				<?php print caNavLink($this->request, "Objects", "hpFeaturedLinks", "", "Browse", "objects"); ?>
 			</div></div>
 			<div class="col-sm-12 col-md-4 text-center"><div class="hpFeaturedLinksContainer">
 				<?php print caNavLink($this->request, "Archives", "hpFeaturedLinks", "", "Collections", "Index"); ?>
@@ -135,7 +136,7 @@
 	#print $this->render("Front/gallery_slideshow_html.php");
 ?>
 
-<div class="row"><div id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div></div>
+<div class="row"><div id="hpScrollBar"><div class="col-sm-12">MORE<br/><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div></div>
 
 		<script type="text/javascript">
 			$(document).ready(function(){
