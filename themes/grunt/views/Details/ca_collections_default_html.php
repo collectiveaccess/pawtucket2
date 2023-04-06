@@ -142,25 +142,25 @@
 <?php
 								$vs_firstTab = "";
 								if($vb_objects){
-									print "<div id='relObjectsButton' class='relTabButton' onClick='toggleTag(\"relObjects\");'>Archive, Library & Publication Objects</div>";
+									print "<div id='relObjectsButton' class='relTabButton' onClick='toggleTag(\"relObjects\");'>Archive, Library & Publication Objects (".$t_item->getWithTemplate("<unit relativeTo='ca_objects' limit='1'>^count</unit>", array("checkAccess" => $va_access_values)).")</div>";
 									if(!$vs_firstTab){
 										$vs_firstTab = "relObjects";
 									}
 								}
 								if($vb_programs){
-									print "<div id='relProgramsButton' class='relTabButton' onClick='toggleTag(\"relPrograms\");'>Programs</div>";
+									print "<div id='relProgramsButton' class='relTabButton' onClick='toggleTag(\"relPrograms\");'>Programs (".$t_item->getWithTemplate("<unit relativeTo='ca_occurrences' limit='1'>^count</unit>", array("checkAccess" => $va_access_values)).")</div>";
 									if(!$vs_firstTab){
 										$vs_firstTab = "relPrograms";
 									}
 								}
 								if($vb_entities_artist){
-									print "<div id='relEntitiesArtistButton' class='relTabButton' onClick='toggleTag(\"relEntitiesArtist\");'>Artists</div>";
+									print "<div id='relEntitiesArtistButton' class='relTabButton' onClick='toggleTag(\"relEntitiesArtist\");'>Artists (".$t_item->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='Artist' limit='1'>^count</unit>", array("checkAccess" => $va_access_values)).")</div>";
 									if(!$vs_firstTab){
 										$vs_firstTab = "relEntitiesArtist";
 									}
 								}
 								if($vb_entities_curator){
-									print "<div id='relEntitiesCuratorButton' class='relTabButton' onClick='toggleTag(\"relEntitiesCurator\");'>Curators</div>";
+									print "<div id='relEntitiesCuratorButton' class='relTabButton' onClick='toggleTag(\"relEntitiesCurator\");'>Curators (".$t_item->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='Curator' limit='1'>^count</unit>", array("checkAccess" => $va_access_values)).")</div>";
 									if(!$vs_firstTab){
 										$vs_firstTab = "relEntitiesCurator";
 									}
@@ -219,7 +219,7 @@
 										</div><!-- end row -->
 										<script type="text/javascript">
 											jQuery(document).ready(function() {
-												jQuery("#browseResultsContainercollection_artists").load("<?php print caNavUrl($this->request, '', 'Browse', 'collection_artists', array('facets' => 'collection_facet:^ca_collections.collection_id;role_collections_facet:119', 'detailNav' => 'collection', 'l' => 'all'), array('dontURLEncodeParameters' => true)); ?>", function() {
+												jQuery("#browseResultsContainercollection_artists").load("<?php print caNavUrl($this->request, '', 'Browse', 'collection_artists', array('facet' => 'collection_artist_facet', 'id' => '^ca_collections.collection_id', 'detailNav' => 'collection', 'l' => 'all'), array('dontURLEncodeParameters' => true)); ?>", function() {
 													jQuery('#browseResultsContainercollection_artists').jscroll({
 														autoTrigger: true,
 														loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -240,7 +240,7 @@
 										</div><!-- end row -->
 										<script type="text/javascript">
 											jQuery(document).ready(function() {
-												jQuery("#browseResultsContainercollection_curators").load("<?php print caNavUrl($this->request, '', 'Browse', 'collection_curators', array('facets' => 'collection_facet:^ca_collections.collection_id;role_collections_facet:282', 'detailNav' => 'collection', 'l' => 'all'), array('dontURLEncodeParameters' => true)); ?>", function() {
+												jQuery("#browseResultsContainercollection_curators").load("<?php print caNavUrl($this->request, '', 'Browse', 'collection_curators', array('facet' => 'collection_curator_facet', 'id' => '^ca_collections.collection_id', 'detailNav' => 'collection', 'l' => 'all'), array('dontURLEncodeParameters' => true)); ?>", function() {
 													jQuery('#browseResultsContainercollection_curators').jscroll({
 														autoTrigger: true,
 														loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

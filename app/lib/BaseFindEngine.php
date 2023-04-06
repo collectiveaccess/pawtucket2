@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2022 Whirl-i-Gig
+ * Copyright 2014-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -189,7 +189,7 @@ class BaseFindEngine extends BaseObject {
 	public function cleanupTemporaryResultTable() {
 		if ($this->tmp_table_name) {
 			if($this->db->connected()) {
-				$this->db->query("DROP TABLE {$this->tmp_table_name}");
+				$this->db->query("DROP TEMPORARY TABLE {$this->tmp_table_name}");
 			}
 		}
 		if ($this->tmp_file_path) { @unlink($this->tmp_file_path); }
@@ -488,15 +488,20 @@ class BaseFindEngine extends BaseObject {
 			} elseif(method_exists($t_table, 'hasElement') && $t_table->hasElement($sort_field)) { // is attribute
 				$sort_key_values = $this->_sortByAttribute($t_table, $hit_table, $sort_field, $sort_subfield, $limit_sql, $sort_direction, $hits, ['filter' => $sort_filter_field ,'filterValues' => $sort_field_values]);
 			} elseif($sort_field === 'preferred_labels') {
-				$sort_key_values = $this->_sortByLabels($t_table, $hit_table, $sort_subfield, $limit_sql, $sort_direction);	
+				$sort_key_values = $this->_sortByLabels($t_table, $hit_table, $sort_subfield, $limit_sql, $sort_direction, ['isPreferred' => true]);	
+			} elseif($sort_field === 'nonpreferred_labels') {
+				$sort_key_values = $this->_sortByLabels($t_table, $hit_table, $sort_subfield, $limit_sql, $sort_direction, ['isPreferred' => false]);	
+			
 			} else {
 				//throw new ApplicationException(_t('Unhandled sort'));
 				return $hits;
 			}
 		} elseif($t_table->getLabelTableName() == $sort_table) {
 			// is label?
-			$sort_key_values = $this->_sortByLabels($t_table, $hit_table, $sort_field, $limit_sql, $sort_direction);	
+			$sort_key_values = $this->_sortByLabels($t_table, $hit_table, $sort_field, $limit_sql, $sort_direction, ['isPreferred' => true]);	
 		} else {
+			list($sort_field, $set_id) = array_pad(explode('/', $sort_field), 2, null);
+			
 			// is related field
 			$t_rel_table = Datamodel::getInstance($sort_table, true);
 			if($is_label = is_a($t_rel_table, 'BaseLabel')) {
@@ -506,10 +511,14 @@ class BaseFindEngine extends BaseObject {
 			}
 			
 			$is_attribute = method_exists($t_rel_table, 'hasElement') ? $t_rel_table->hasElement($sort_field) : false;
-			if ($t_rel_table->hasField($sort_field)) {			// sort key is intrinsic
+			if(($sort_table === 'ca_set_items')) {
+				$sort_key_values = $this->_sortBySet($t_table, $t_rel_table, $hit_table, $sort_field, $set_id, $limit_sql, $sort_direction, $options);
+			} elseif ($t_rel_table->hasField($sort_field)) {			// sort key is intrinsic
 				$sort_key_values = $this->_sortByRelatedIntrinsic($t_table, $t_rel_table, $hit_table, $sort_field, $limit_sql, $sort_direction, $options);
 			} elseif($sort_field === 'preferred_labels') {		// sort key is preferred labels
-				$sort_key_values = $this->_sortByRelatedLabels($t_table, $t_rel_table, $hit_table, $sort_subfield, $limit_sql, $sort_direction, $options);	
+				$sort_key_values = $this->_sortByRelatedLabels($t_table, $t_rel_table, $hit_table, $sort_subfield, $limit_sql, $sort_direction, array_merge($options, ['isPreferred' => true]));	
+			} elseif($sort_field === 'nonpreferred_labels') {		// sort key is preferred labels
+				$sort_key_values = $this->_sortByRelatedLabels($t_table, $t_rel_table, $hit_table, $sort_subfield, $limit_sql, $sort_direction, array_merge($options, ['isPreferred' => false]));	
 			} elseif($is_attribute) {							// sort key is metadata attribute
 				$sort_key_values = $this->_sortByRelatedAttribute($t_table, $t_rel_table, $hit_table, $sort_field, $sort_subfield, $limit_sql, $sort_direction, $hits, ['filter' => $sort_filter_field ,'filterValues' => $sort_field_values]);		
 			} else {
@@ -561,6 +570,8 @@ class BaseFindEngine extends BaseObject {
 		$joins = $this->_getJoins($t_table, $t_rel_table, $intrinsic, caGetOption('relationshipTypes', $options, null));
 		$join_sql = join("\n", $joins);
 		
+		$intrinsic = array_shift(explode('/', $intrinsic));
+		
 		$sql = "
 			SELECT t.{$table_pk}
 			FROM {$table} t
@@ -582,7 +593,7 @@ class BaseFindEngine extends BaseObject {
 	/**
 	 *
 	 */
-	private function _sortByLabels($t_table, string $hit_table, string $label_field=null, string $limit_sql=null, $direction='asc') {
+	private function _sortByLabels($t_table, string $hit_table, string $label_field=null, string $limit_sql=null, $direction='asc', ?array $options=null) {
 		$table = $t_table->tableName();
 		$table_pk = $t_table->primaryKey();
 		$table_num = $t_table->tableNum();
@@ -593,10 +604,16 @@ class BaseFindEngine extends BaseObject {
 		
 		$direction = self::sortDirection($direction);
 		
+		$is_preferred = caGetOption('isPreferred', $options, null);
+		$pref_sql = '';
+		if($t_label->hasField('is_preferred') && !is_null($is_preferred)) {
+			$pref_sql = " WHERE l.is_preferred = ".($is_preferred ? "1" : "0");
+		}
 		$sql = "
 			SELECT l.{$table_pk}
 			FROM {$label_table} l
 			INNER JOIN {$hit_table} AS ht ON ht.row_id = l.{$table_pk}
+			{$pref_sql}
 			ORDER BY l.`{$label_field}` {$direction}
 			{$limit_sql}
 		";
@@ -618,6 +635,8 @@ class BaseFindEngine extends BaseObject {
 		$rel_table_num = $t_rel_table->tableNum();
 		$rel_label_table = $t_rel_table->getLabelTableName();
 		
+		$rel_label_field = array_shift(explode('/', $rel_label_field));
+		
 		$t_label = $t_rel_table->getLabelTableInstance();
 		if (!$rel_label_field || !$t_label->hasField($rel_label_field)) { $rel_label_field = $t_rel_table->getLabelSortField(); }
 		
@@ -626,16 +645,22 @@ class BaseFindEngine extends BaseObject {
 		$joins = $this->_getJoins($t_table, $t_rel_table, $rel_label_field, $rel_types);
 		$join_sql = join("\n", $joins);
 		
+		$is_preferred = caGetOption('isPreferred', $options, null);
+		$pref_sql = '';
+		if($t_label->hasField('is_preferred') && !is_null($is_preferred)) {
+			$pref_sql = " WHERE rl.is_preferred = ".($is_preferred ? "1" : "0");
+		}
+		
 		$sql = "
 			SELECT t.{$table_pk}
 			FROM {$table} t
 			{$join_sql}
 			LEFT JOIN {$rel_label_table} AS rl ON rl.{$rel_table_pk} = s.{$rel_table_pk}
 			INNER JOIN {$hit_table} AS ht ON ht.row_id = t.{$table_pk}
+			{$pref_sql}
 			ORDER BY rl.`{$rel_label_field}` {$direction}
 			{$limit_sql}
 		";
-		
 		$qr_sort = $this->db->query($sql);
 		$sort_keys = $qr_sort->getAllFieldValues($table_pk);
 		
@@ -714,6 +739,33 @@ class BaseFindEngine extends BaseObject {
 		// Add any row without the attribute set to the end of the sort set
 		foreach($hits as $h) {
 			if (!$sort_keys[$h]) { $sort_keys[$h] = true; }
+		}
+		return $sort_keys;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	private function _sortBySet($t_table, $t_rel_table, string $hit_table, string $intrinsic=null, int $set_id=null, string $limit_sql=null, $direction='asc', array $options=null) {
+		$table = $t_table->tableName();
+		$table_pk = $t_table->primaryKey();
+		$table_num = $t_table->tableNum();
+		
+		$direction =  self::sortDirection($direction);
+		
+		$sql = "
+			SELECT t.{$table_pk}
+			FROM {$table} t
+			INNER JOIN ca_set_items AS csi ON csi.row_id = t.{$table_pk} AND csi.table_num = ? AND csi.set_id = ?
+			INNER JOIN {$hit_table} AS ht ON ht.row_id = t.{$table_pk}
+			ORDER BY csi.`{$intrinsic}` {$direction}
+			{$limit_sql}
+		";
+		$qr_sort = $this->db->query($sql, [$t_table->tableNum(), $set_id]);
+		$sort_keys = [];
+		while($qr_sort->nextRow()) {
+			$row = $qr_sort->getRow();
+			$sort_keys[$row[$table_pk]] = true;
 		}
 		return $sort_keys;
 	}
@@ -808,7 +860,7 @@ class BaseFindEngine extends BaseObject {
 					INNER JOIN {$hit_table} AS ht ON ht.row_id = t.{$table_pk}
 					{$filter_join}
 					WHERE cav.element_id = ? {$filter_where}
-					ORDER BY cav.value_sortable {$direction}";
+					ORDER BY cav.value_sortable {$direction}"; 
 		$qr_sort = $this->db->query($sql, [$element_id]);
 		$sort_keys = [];
 		while($qr_sort->nextRow()) {
@@ -1308,7 +1360,7 @@ class BaseFindEngine extends BaseObject {
 	 */
 	private function _createTempTableForHits(array $hits) {
 		$table_name = '_caSortTmp'.str_replace('-', '',caGenerateGUID());
-		$this->db->query("DROP TABLE IF EXISTS {$table_name}");
+		$this->db->query("DROP TEMPORARY TABLE IF EXISTS {$table_name}");
 		$this->db->query("
 			CREATE TEMPORARY TABLE {$table_name} (
 				row_id int unsigned not null primary key
@@ -1346,12 +1398,14 @@ class BaseFindEngine extends BaseObject {
 
 		$is_attribute = method_exists($t_rel_table, 'hasElement') ? $t_rel_table->hasElement($sort_field) : false;
 		
-		$rel_type_sql = (is_array($rel_types) && (sizeof($rel_types) > 0)) ? " AND l.type_id IN (".join(',', array_map('intval', $rel_types)).")" : '';
-	
 		$joins = [];
 		switch($psize = sizeof($path)) {
 			case 3:
 				$linking_table = $path[1];
+				
+				$rel_types = caMakeRelationshipTypeIDList($linking_table, $rel_types);
+				$rel_type_sql = (is_array($rel_types) && (sizeof($rel_types) > 0)) ? " AND l.type_id IN (".join(',', array_map('intval', $rel_types)).")" : '';
+	
 				if ($table === $rel_table) {
 					$t_relation = Datamodel::getInstance($linking_table, true);
 					// self relation
@@ -1390,7 +1444,7 @@ class BaseFindEngine extends BaseObject {
 	 */
 	private function _createTempTableForAttributeIDs() {		
 		$table_name = '_caAttrTmp_'.str_replace('-', '',caGenerateGUID());
-		$this->db->query("DROP TABLE IF EXISTS {$table_name}");
+		$this->db->query("DROP TEMPORARY TABLE IF EXISTS {$table_name}");
 		$this->db->query("CREATE TEMPORARY TABLE {$table_name} (attribute_id int unsigned not null primary key, row_id int unsigned not null) engine=memory");
 		$this->temporary_tables[$table_name] = true;
 		
@@ -1402,7 +1456,7 @@ class BaseFindEngine extends BaseObject {
 	 */
 	private function _dropTempTable($table_name) {
 		$this->db->query("
-			DROP TABLE IF EXISTS {$table_name};
+			DROP TEMPORARY TABLE IF EXISTS {$table_name};
 		");
 		if ($this->db->numErrors()) {
 			return false;

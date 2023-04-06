@@ -59,8 +59,6 @@
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_entities.life_dates"><div class='unit'><label>Life Dates</label>^ca_entities.life_dates</div></ifdef>}}}
 					{{{<ifdef code="ca_entities.biography"><div class='unit'>^ca_entities.biography%convertLineBreaks=1</div></ifdef>}}}
-
-
 				</div><!-- end col -->
 
 				<div class='col-sm-6 col-md-6 col-lg-6'>
@@ -70,6 +68,7 @@
 
 			<br/>
 		
+
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class="col-sm-12"><label>Objects</label></div>
