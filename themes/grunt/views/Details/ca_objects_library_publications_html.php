@@ -48,7 +48,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-10'>
-					<H1><i>{{{ca_objects.preferred_labels.name}}}</i></H1>
+					<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 <?php
 					$vs_object_date = $t_object->get("ca_objects.date_container.date");
 					$vs_artist = $t_object->getWithTemplate("<ifcount code='ca_entities' min='1' restrictToRelationshipTypes='Artist,Author'><unit relativeTo='ca_entities' delimiter=', ' restrictToRelationshipTypes='Artist,Author'><l>^ca_entities.preferred_labels</l></unit></ifcount>", array("checkAccess" => $va_access_values));
@@ -152,6 +152,7 @@ if($vb_2_col){
 					}
 				}
 ?>					
+					{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToTypes="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place</label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}

@@ -144,6 +144,7 @@ if($vb_2_col){
 					}
 				}
 ?>					
+					{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToTypes="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					
@@ -152,7 +153,7 @@ if($vb_2_col){
 					{{{<ifdef code="ca_objects.object_history.exhibition_hist"><div class='unit'><label>Exhibition History</label>^ca_objects.object_history.exhibition_hist</div></ifdef>}}}
 
 					{{{<ifdef code="ca_objects.rightsSummary_asset"><div class="unit"><i>^ca_objects.rightsSummary_asset</i></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.content_notice"><div class="unit"><i>^ca_objects.content_notice</i></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.content_notice"><div class="unit"><label>Content</label>^ca_objects.content_notice</div></ifdef>}}}
 					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place</label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
 					
 				</div><!-- end col -->
