@@ -48,6 +48,7 @@ a:hover{
 .navbar{
 	background-color: #ffffff;
 }
+
 .navbar .formOutline{
 	border-radius:0px;
 	background-color:#fff;
@@ -399,6 +400,15 @@ a.browseRemoveFacet .glyphicon{
 #bRefine H2, #bRefine H5, #bRefine H3, #bRefine a{
 	color: #2c2c2c;;
 }
+#bRefine H2 span{
+	font-size:12px;
+	text-transform:none;
+	color:#2c2c2c;
+	font-weight:normal;
+	display:block;
+	padding-top:2px;
+	font-family:latolight;
+}
 .browseTop{
 	position: fixed;
 	z-index: 2000;
@@ -416,6 +426,72 @@ a.browseRemoveFacet .glyphicon{
 }
 .results a.btn.browseTop {
 	background-color:#757575;
+}
+#bRefine H3[type="button"]{
+	cursor: pointer;
+	text-transform:capitalize;
+}
+#bRefine .facetGroup li .facetItem {
+    margin-bottom: 12px;
+}
+#bRefine .row, #bRefine .container {
+	margin-bottom:0px;
+}
+#bRefine .row {
+	max-height:250px;
+	overflow-y:auto;
+	margin-bottom:10px;
+}
+#bRefine.fixed {
+	padding-top:160px;
+}
+.facetItem .glyphicon-chevron-down {
+	font-size:10px;
+}
+.facetContainer{
+	position:relative;
+	padding-bottom:20px;
+}
+#bRefine .facetItem {
+	padding-left:20px; 
+	margin-bottom:10px;
+}
+#bRefine .facetItem[facet_item_selected="1"] {
+	padding-left:20px;
+}
+#bRefine HR{
+	border-top: 1px solid #000;
+}
+[facet_item_selected="1"]::before {
+	font-family: FontAwesome;
+	content: "\f067"; 
+	padding-right:6px;
+	position:absolute;
+	left:7px;
+	top:4px;
+	font-size:11px;
+}
+.facetApply {
+	clear:both;
+	right:15px;
+	display:block;
+	text-align: center;
+    margin-top: 20px;
+
+}
+a.facetApply {
+    background-color: #ddd;
+    color: #333;
+    font-size: 13px;
+    border-radius: 3px;
+    width:50px;
+    padding-top:4px;
+    padding-bottom:4px;
+    margin-left: auto;
+    margin-right: auto; 
+    position:absolute;
+    bottom:0px;
+    left:0px;
 }
 /* front */
 html.frontContainer {
@@ -447,6 +523,24 @@ body.frontContainer #footer{
 	margin-right: -15px;
 	top:-20px;
 }
+@media(min-width:768px){
+	.frontContainer .navbar{
+		position:fixed;
+		width:100%;
+		top:0px;
+	}
+	.parallax{
+		margin-top: 134px;
+		top:0px;
+		height: 100vh;
+	}
+}
+@media(min-width:1111px){
+	.parallax{
+		margin-top: 96px;
+	}
+}
+
 .parallax.hero1 {
 	/* background-image: url("../graphics/lilac_house.jpg"); */
 		background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1), rgba(0, 0, 0, 0.5)), url("../graphics/lilac_house.jpg");
@@ -634,10 +728,16 @@ body.frontContainer #footer{
 	background-color: rgba(227, 230, 232, 0.3);
 	color:#000;
 	text-align:center;
-	font-size:30px;
 	padding:10px 0px 10px 0px;
 	opacity:.8;
 	left: 0px;
+	font-size:20px;
+	line-height: 1em;
+	font-weight: bold;
+	font-family: Lato;
+}
+#hpScrollBar i{
+	font-size:22px;
 }
 .front h2, .front h3{
 	text-align: center;
@@ -814,7 +914,16 @@ body.frontContainer #footer{
 .collectionsList a{
 	text-decoration:none;
 }
-collectionTile {
+@media (min-width: 768px){
+	.collectionBrowseAll {
+ 		text-align: right;
+	}
+}
+.collectionBrowseAll .btn-default{
+	font-size:14px;
+	color: #FFF;
+}
+.collectionTile {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 	margin-bottom:15px;
 	padding:15px;
@@ -854,6 +963,9 @@ div#detailTools{
 	color: #262626;
 	line-height: 1em;
 	text-transform: none;
+}
+.detail h3 {
+	line-height: 1.2em;
 }
 .detail a{
 	font-size: 14px;
@@ -896,6 +1008,9 @@ div#detailTools{
 	font-size: 17px;
 	color: #000;
 	font-weight: normal;
+}
+.contributorsList{
+	margin-top:20px;
 }
 .contributorsList a{
 	font-size:15px;
@@ -1007,4 +1122,24 @@ div#detailTools{
 /* static page */
 .staticPage{
 	font-size: 15px;
+}
+
+/* media viewer */
+div.caMediaOverlayControls .close a .fa {
+	top: 2px;
+	position: relative;
+}
+div.caMediaOverlayControls a, .caMediaOverlayControlsMinimal a {
+	color: red;
+	font-size: 18px;
+}
+.caMediaOverlayControlsMinimal{
+	top:40px;
+	right:30px;
+}
+.caMediaOverlayControlsMinimal .close {
+	opacity: 1;
+	text-shadow:none;
+	width:100px;
+	text-align:right;
 }
