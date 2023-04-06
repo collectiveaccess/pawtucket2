@@ -91,7 +91,7 @@ hr{
 @media (min-width:768px){
 	.navbar-brand{
 		width: 200px;
-		padding-top: 10px;
+		padding-top: 25px;
 		padding-bottom: 18px;
 	}
 }
