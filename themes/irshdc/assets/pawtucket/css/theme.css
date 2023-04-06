@@ -1728,6 +1728,10 @@ h2.exhibitionSection{
 	width:100%;
 	height:auto;
 }
+.staticPage .video-js{
+	width:100% !important;
+	height:500px !important;
+}
 
 /* User Guide */
 
