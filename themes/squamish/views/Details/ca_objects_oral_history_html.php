@@ -97,7 +97,7 @@
 				{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
 				
 				{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
-						<unit relativeTo="ca_storage_locations" delimiter="<br/>"><l>^ca_storage_locations.preferred_labels.displayname</l></unit>
+						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.preferred_labels.name</unit>
 					</div></ifcount>}}}
 				
 				<div class="unit">{{{map}}}</div>

@@ -97,10 +97,10 @@
 	if($vn_source_id){
 ?>
 		<div class="row">
-			<div class="col-sm-6"><H2>Artifacts</H2></div>
+			<div class="col-sm-6"><H2>Objects</H2></div>
 			<div class="col-sm-6 detailBrowseAll">
 <?php
-			print caNavLink($this->request, "Browse all Artifacts <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "", "Browse", "objects", array("facet" => "source_facet", "id" => $vn_source_id)); 
+			print caNavLink($this->request, "Browse all Objects <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "", "Browse", "objects", array("facet" => "source_facet", "id" => $vn_source_id)); 
 ?>
 
 	</br></br>
@@ -136,7 +136,7 @@
 ?>			
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
-				<div class="col-sm-12"><label>Artifacts</label></div>
+				<div class="col-sm-12"><label>Objects</label></div>
 			</div>
 			<div class="row">
 				<div id="browseResultsContainer">

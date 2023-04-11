@@ -334,7 +334,7 @@ class DetailController extends FindController {
 			$vn_mapped_count = 0;	
 			foreach($map_attributes as $map_attribute) {
 				if ($t_subject->get($map_attribute)){
-					$ret = $o_map->mapFrom($t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false)));
+					$ret = $o_map->mapFrom($t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => caGetOption('mapFuzz', $options, null)));
 					$vn_mapped_count += $ret['items'];
 				}
 			}
