@@ -7,7 +7,7 @@
 
 	</div>
 	<div class="col-md-4 formLinks">
-		<?php print caNavLink($this->request, "Artifacts Advanced Search <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "Search", "advanced", "objects"); ?>
+		<?php print caNavLink($this->request, "Objects Advanced Search <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "Search", "advanced", "objects"); ?>
 	</div>
 </div>
 <div class="row">
