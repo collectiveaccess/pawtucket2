@@ -61,14 +61,12 @@
 
 					<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
 
-					{{{<ifdef code="ca_object_representations">^ca_object_representations.media.medium</ifdef>}}}
-
 					{{{<ifdef code="ca_collections.parent_id">
 						<div class="unit"><?= _t('Part of'); ?>:<unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">
 							<l>^ca_collections.preferred_labels.name</l>
 						</unit></div>
 					</ifdef>}}}
-
+<hr/>
 					<!-- <?php					
 						if ($vn_pdf_enabled) {
 							print "<div class='exportCollection'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
@@ -77,47 +75,29 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 
-			<div class="row">
-				<div class='col-sm-12'>
-					<?php
-						if ($vb_show_hierarchy_viewer) {	
-					?>
-						<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-						<script>
-							$(document).ready(function(){
-								$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
-							})
-						</script>
-					<?php				
-						}									
-					?>				
-				</div><!-- end col -->
-			</div><!-- end row -->
-
 			<div class="row">			
+<?php
+			if(trim($this->getVar("representationViewer"))){
+?>
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l></unit></div></ifcount>}}}
-					<?php
-						# Comment and Share Tools
-						if ($vn_comments_enabled | $vn_share_enabled) {
-								
-							print '<div id="detailTools">';
-							if ($vn_comments_enabled) {
-					?>				
-							<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?php print _t("Comments and tags"); ?>"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-							<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-					<?php				
-							}
-							if ($vn_share_enabled) {
-								print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt" aria-label="'._t("Share").'"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-							}
-							print '</div><!-- end detailTools -->';
-						}				
-					?>
+					{{{representationViewer}}}
+				
+				
+					<div id="detailAnnotations"></div>
+				
+					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+
 				</div><!-- end col -->
 
-				<div class='col-md-12 col-lg-12'>
-					{{{<ifdef code="ca_collections.vhh_Note"><label>Notes</label><br/>^ca_collections.vhh_Note</ifdef>}}}
+				<div class='col-md-6'>
+<?php
+			}else{
+?>
+				<div class='col-sm-12'>
+<?php
+			}
+?>
+					{{{<ifdef code="ca_collections.vhh_Note.vhh_NoteText"><div class="unit"><label><t>Notes</t></label><unit relativeTo="ca_collections.vhh_Note" delimiter="<br/><br/>">^ca_collections.vhh_Note.vhh_NoteText%convertLineBreaks=1</unit></div></ifdef>}}}
 					<!-- 
 						{{{<ifcount code="ca_entities" min="1"><label>Related people</label></ifcount>}}}
 						{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}	
@@ -126,88 +106,307 @@
 			</div><!-- end row -->
 
 			</br>
-<?php
-					if ($va_related = $t_item->get('ca_entities', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
-						print "<div class='unit'><H3>Related People & Organizations</H3><div class='unit detailLinksGrid'>";
-						$i = 0;
-						foreach ($va_related as $va_related_info) {
-							if($i == 0){
-								print "<div class='row'>";
-							}
-							print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".caDetailLink($this->request, $va_related_info['displayname'], '', 'ca_entities', $va_related_info['entity_id'])."</div></div>";
-							$i++;
-							if($i == 3){
-								print "</div><!-- end row -->";
-								$i = 0;
-							}
-						}
-						if($i > 0){
-							print "</div>";
-						}
-						print "</div></div><!-- end unit -->";
-					}
-					if ($va_related = $t_item->get('ca_occurrences', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
-						print "<div class='unit'><H3>Related Events</H3><div class='unit detailLinksGrid'>";
-						$i = 0;
-						foreach ($va_related as $va_related_info) {
-							if($i == 0){
-								print "<div class='row'>";
-							}
-							print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".caDetailLink($this->request, $va_related_info['name'], '', 'ca_occurrences', $va_related_info['occurrence_id'])."</div></div>";
-							$i++;
-							if($i == 3){
-								print "</div><!-- end row -->";
-								$i = 0;
-							}
-						}
-						if($i > 0){
-							print "</div>";
-						}
-						print "</div></div><!-- end unit -->";
-					}
-					if ($va_related = $t_item->get('ca_places', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
-						print "<div class='unit'><H3>Related Locations</H3><div class='unit detailLinksGrid'>";
-						$i = 0;
-						foreach ($va_related as $va_related_info) {
-							if($i == 0){
-								print "<div class='row'>";
-							}
-							print "<div class='col-sm-12 col-md-4'><div class='detailLinksGridItem'>".caDetailLink($this->request, $va_related_info['name'], '', 'ca_places', $va_related_info['place_id'])."</div></div>";
-							$i++;
-							if($i == 3){
-								print "</div><!-- end row -->";
-								$i = 0;
-							}
-						}
-						if($i > 0){
-							print "</div>";
-						}
-						print "</div></div><!-- end unit -->";
-					}
-?>
-			{{{<ifcount code="ca_objects.related" min="1">
-				<H1>Related Films</H1>
-				<div class="row">
-					<div id="browseResultsContainer">
-						<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-					</div><!-- end browseResultsContainer -->
-				</div><!-- end row -->
-				<script type="text/javascript">
-					jQuery(document).ready(function() {
-						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'films', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-							jQuery('#browseResultsContainer').jscroll({
-								autoTrigger: true,
-								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-								padding: 20,
-								nextSelector: 'a.jscroll-next'
-							});
-						});
-						
-						
-					});
-				</script>
-			</ifcount>}}}
 
+<?php
+	$vb_show_tabs = $vb_people = $vb_organizations = $vb_locations = $vb_films = $vb_texts = $vb_images = $vb_events = false;
+	
+	$va_related_people_ids = $t_item->get("ca_entities.entity_id", array("restrictToTypes" => array("person"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(is_array($va_related_people_ids) && sizeof($va_related_people_ids)){
+		$vb_people = true;
+		$vb_show_tabs = true;
+	}
+	$va_related_org_ids = $t_item->get("ca_entities.entity_id", array("restrictToTypes" => array("organization"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(is_array($va_related_org_ids) && sizeof($va_related_org_ids)){
+		$vb_organizations = true;
+		$vb_show_tabs = true;
+	}
+	$va_related_locations_ids = $t_item->get("ca_places.place_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(is_array($va_related_locations_ids) && sizeof($va_related_locations_ids)){
+		$vb_locations = true;
+		$vb_show_tabs = true;
+	}
+	$va_related_event_ids = $t_item->get("ca_occurrences.occurrence_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(is_array($va_related_event_ids) && sizeof($va_related_event_ids)){
+		$vb_events = true;
+		$vb_show_tabs = true;
+	}
+	$va_related_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	
+	$o_related_object = caMakeSearchResult("ca_objects", $va_related_object_ids, array("checkAccess" => $va_access_values));
+	if($o_related_object){
+		while($o_related_object->nextHit()){
+			switch($o_related_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))){
+				case "AVCreation":
+					$vb_films = true;
+					$vb_show_tabs = true;
+				break;
+				# -----------------------
+				case "NonAVManifestation":
+					switch($o_related_object->get("ca_objects.vhh_MediaType.MT_List", array("convertCodesToDisplayText" => true))){
+						case "still image (photographic)":
+						case "still image (other)":
+							$vb_images = true;
+							$vb_show_tabs = true;
+						break;
+						# ------------------
+						case "text":
+						case "imagetext":
+							$vb_texts = true;
+							$vb_show_tabs = true;
+						break;
+						# ------------------
+					}
+				break;
+				# -----------------------
+				
+			}
+			if($vb_films && $vb_texts && $vb_images){
+				break;
+			}
+		}
+	}
+		if($vb_show_tabs){
+?>
+			<div class="row">
+				<div class="col-sm-12">
+						<div class="relatedBlock">
+							<div class="relatedBlockTabs">
+<?php
+								$vs_firstTab = "";
+								if($vb_people){
+									print "<div id='relPeopleButton' class='relTabButton' onClick='toggleTag(\"relPeople\");'>"._t("People")."</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relPeople";
+									}
+								}
+								if($vb_organizations){
+									print "<div id='relOrganizationsButton' class='relTabButton' onClick='toggleTag(\"relOrganizations\");'>"._t("Organizations")."</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relOrganizations";
+									}
+								}
+								if($vb_locations){
+									print "<div id='relLocationsButton' class='relTabButton' onClick='toggleTag(\"relLocations\");'>"._t("Locations")."</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relLocations";
+									}
+								}
+								
+								if($vb_films){
+									print "<div id='relFilmsButton' class='relTabButton' onClick='toggleTag(\"relFilms\");'>"._t("Films")."</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relFilms";
+									}
+								}
+								if($vb_images){
+									print "<div id='relImagesButton' class='relTabButton' onClick='toggleTag(\"relImages\");'>"._t("Images")."</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relImages";
+									}
+								}
+								if($vb_texts){
+									print "<div id='relTextsButton' class='relTabButton' onClick='toggleTag(\"relTexts\");'>"._t("Texts")."</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relTexts";
+									}
+								}
+								if($vb_events){
+									print "<div id='relEventsButton' class='relTabButton' onClick='toggleTag(\"relEvents\");'>"._t("Events")."</div>";
+									if(!$vs_firstTab){
+										$vs_firstTab = "relEvents";
+									}
+								}
+?>
+							</div>
+							<div class="relatedBlockContent">							
+<?php
+									if($vb_people){
+?>							
+										<div class="row relTab" id="relPeople">
+											<div id="browseResultsContainerPeople">
+												<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+											</div><!-- end browseResultsContainer -->
+										</div><!-- end row -->
+										<script type="text/javascript">
+											jQuery(document).ready(function() {
+												jQuery("#browseResultsContainerPeople").load("<?php print caNavUrl($this->request, '', 'Browse', 'people', array('facet' => 'collection_facet', 'id' => $t_item->get('ca_collections.collection_id'), 'view' => 'images', 'sort' => 'CollectionSort', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+													jQuery('#browseResultsContainerPeople').jscroll({
+														autoTrigger: true,
+														loadingHtml: '',
+														padding: 20,
+														nextSelector: 'a.jscroll-next'
+													});
+												});
+					
+					
+											});
+										</script>
+<?php
+									}
+									if($vb_organizations){
+?>							
+										<div class="row relTab" id="relOrganizations">
+											<div id="browseResultsContainerOrganizations">
+												<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+											</div><!-- end browseResultsContainer -->
+										</div><!-- end row -->
+										<script type="text/javascript">
+											jQuery(document).ready(function() {
+												jQuery("#browseResultsContainerOrganizations").load("<?php print caNavUrl($this->request, '', 'Browse', 'organization', array('facet' => 'collection_facet', 'id' => $t_item->get('ca_collections.collection_id'), 'view' => 'images', 'sort' => 'CollectionSort', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+													jQuery('#browseResultsContainerOrganizations').jscroll({
+														autoTrigger: true,
+														loadingHtml: '',
+														padding: 20,
+														nextSelector: 'a.jscroll-next'
+													});
+												});
+					
+					
+											});
+										</script>
+<?php
+									}
+									if($vb_locations){
+?>							
+										<div class="row relTab" id="relLocations">
+											<div id="browseResultsContainerLocations">
+												<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+											</div><!-- end browseResultsContainer -->
+										</div><!-- end row -->
+										<script type="text/javascript">
+											jQuery(document).ready(function() {
+												jQuery("#browseResultsContainerLocations").load("<?php print caNavUrl($this->request, '', 'Browse', 'places', array('facet' => 'collection_facet', 'id' => $t_item->get('ca_collections.collection_id'), 'view' => 'list', 'sort' => 'CollectionSort', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+													jQuery('#browseResultsContainerLocations').jscroll({
+														autoTrigger: true,
+														loadingHtml: '',
+														padding: 20,
+														nextSelector: 'a.jscroll-next'
+													});
+												});
+					
+					
+											});
+										</script>
+<?php
+									}
+									if($vb_films){
+?>							
+										<div class="row relTab" id="relFilms">
+											<div id="browseResultsContainerFilms">
+												<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+											</div><!-- end browseResultsContainer -->
+										</div><!-- end row -->
+										<script type="text/javascript">
+											jQuery(document).ready(function() {
+												jQuery("#browseResultsContainerFilms").load("<?php print caNavUrl($this->request, '', 'Browse', 'films', array('facet' => 'collection_facet', 'id' => $t_item->get('ca_collections.collection_id'), 'view' => 'images', 'sort' => 'CollectionSort', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+													jQuery('#browseResultsContainerFilms').jscroll({
+														autoTrigger: true,
+														loadingHtml: '',
+														padding: 20,
+														nextSelector: 'a.jscroll-next'
+													});
+												});
+					
+					
+											});
+										</script>
+<?php
+									}
+									if($vb_images){
+?>
+										<div class="row relTab" id="relImages">
+											<div id="browseResultsContainerImages">
+												<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+											</div><!-- end browseResultsContainer -->
+										</div><!-- end row -->
+										<script type="text/javascript">
+											jQuery(document).ready(function() {
+												jQuery("#browseResultsContainerImages").load("<?php print caNavUrl($this->request, '', 'Search', 'images', array('search' => 'collection_id:'.$t_item->get('ca_collections.collection_id'), 'view' => 'images', 'sort' => 'CollectionSort', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+													jQuery('#browseResultsContainerImages').jscroll({
+														autoTrigger: true,
+														loadingHtml: '',
+														padding: 20,
+														nextSelector: 'a.jscroll-next'
+													});
+												});
+					
+					
+											});
+										</script>
+<?php
+									}
+									if($vb_texts){
+?>										
+										<div class="row relTab" id="relTexts">
+											<div id="browseResultsContainerTexts">
+												<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+											</div><!-- end browseResultsContainer -->
+										</div><!-- end row -->
+										<script type="text/javascript">
+											jQuery(document).ready(function() {
+												jQuery("#browseResultsContainerTexts").load("<?php print caNavUrl($this->request, '', 'Search', 'texts', array('search' => 'collection_id:'.$t_item->get('ca_collections.collection_id'), 'view' => 'images', 'sort' => 'CollectionSort', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+													jQuery('#browseResultsContainerTexts').jscroll({
+														autoTrigger: true,
+														loadingHtml: '',
+														padding: 20,
+														nextSelector: 'a.jscroll-next'
+													});
+												});
+					
+					
+											});
+										</script>
+<?php
+									}
+									if($vb_events){
+?>							
+										<div class="row relTab" id="relEvents">
+											<div id="browseResultsContainerEvents">
+												<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+											</div><!-- end browseResultsContainer -->
+										</div><!-- end row -->
+										<script type="text/javascript">
+											jQuery(document).ready(function() {
+												jQuery("#browseResultsContainerEvents").load("<?php print caNavUrl($this->request, '', 'Browse', 'occurrences', array('facet' => 'collection_facet', 'id' => $t_item->get('ca_collections.collection_id'), 'view' => 'list', 'sort' => 'CollectionSort', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+													jQuery('#browseResultsContainerEvents').jscroll({
+														autoTrigger: true,
+														loadingHtml: '',
+														padding: 20,
+														nextSelector: 'a.jscroll-next'
+													});
+												});
+					
+					
+											});
+										</script>
+<?php
+									}
+?>
+
+								
+								
+							</div>
+						</div>
+				</div>
+			</div>
+
+
+						<script type="text/javascript">
+							function toggleTag(ID){
+								$('.relTab').css('display', 'none');
+								$('#' + ID).css('display', 'block');
+								$('.relTabButton').removeClass('selected');
+								$('#' + ID + 'Button').addClass('selected');
+							}
+							jQuery(document).ready(function() {
+								toggleTag("<?php print $vs_firstTab; ?>");
+							});
+						</script>
+
+
+<?php
+			}
+?>	
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>

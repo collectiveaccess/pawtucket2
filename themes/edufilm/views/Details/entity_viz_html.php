@@ -1,14 +1,16 @@
 <?php
-global $request;
+global $request, $cur_entity_id;
 $request = $this->request;
 
 $t_entity = $this->getVar("item");
-$entity_id = $t_entity->getPrimaryKey();
+$cur_entity_id = $t_entity->getPrimaryKey();
+
+AssetLoadManager::register('visnetwork');
 
 
 if(!function_exists('_getRelsForEntity')) {
 	function _getRelsForEntity($t_entity, $entity_nodes, $entity_edges, $level) {
-		global $request;
+		global $request, $cur_entity_id;
 	
 		if($level > 2) {
 			return ['nodes' => $entity_nodes, 'edges' => $entity_edges];
@@ -23,13 +25,14 @@ if(!function_exists('_getRelsForEntity')) {
 	
 		if(is_array($rel_entities)) {
 			foreach($rel_entities as $e) {
+				if(isset($entity_nodes[$e['entity_id']])) { continue; }
 				$entity_nodes[$e['entity_id']] = [
 					'shape' => 'box',
 					'physics' => true,
-					'margin' => 10,
+					'margin' => 15,
 					'color' => [
-						'border' => '#000',
-						'background' => '#ccc',
+						'border' => ((int)$cur_entity_id == (int)$e['entity_id']) ? "#DF7137" : '#000',
+						'background' => ((int)$cur_entity_id == (int)$e['entity_id']) ? "#DF7137" : '#ccc',
 						'highlight' => '#999'
 					],
 					'id' => $e['entity_id'],
@@ -73,6 +76,8 @@ $data = _getRelsForEntity($t_entity, [], [], 0);
 if(is_array($data) && is_array($data['nodes']) && (sizeof($data['nodes']) > 1)) { 
 ?>
 <div id="entityRelationshipViz"></div>
+<?= "<div class='text-right'>".caDetailLink($this->request, '<span class="glyphicon glyphicon-zoom-in" role="button" aria-label="Zoom"></span>', "vizZoom", "ca_entities", $cur_entity_id, array("mode" => "visualization"))."</div>"; ?>
+					
 <script>
 	// create an array with nodes
 	var nodes = new vis.DataSet(<?= json_encode(array_values($data['nodes'])); ?>);

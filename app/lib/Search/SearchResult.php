@@ -2253,7 +2253,7 @@ class SearchResult extends BaseObject {
 				$vb_return_source = ($va_path_components['components'][sizeof($va_path_components['components'])-1] === '__source__');
 				
 				if ($vb_return_source) {
-					$va_return_values[(int)$vn_id][] = $o_attribute->getValueSource();
+					$va_return_values[(int)$vn_id][null][(int)$o_attribute->getAttributeID()] = $o_attribute->getValueSource();
 					continue;
 				}
 
