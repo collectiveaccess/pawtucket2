@@ -37,7 +37,7 @@ if($g_ui_locale == "fr_CA"){
   $va_access_values = $this->getVar("access_values");
  $vs_hero = $this->request->getParameter("hero", pString);
  if(!$vs_hero){
- 	$vs_hero = rand(1, 4);
+ 	$vs_hero = rand(1, 6);
  }
  
  $front_page_config = caGetFrontConfig();
@@ -68,7 +68,7 @@ if($g_ui_locale == "fr_CA"){
 						<div class="line1"><?php print _t("Welcome to"); ?></div>
 						<div class="line2">SaskCollections</div>
 					</H1>
-					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+					<form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>">
 						<div class="formOutline">
 							<div class="form-group">
 								<input type="text" class="form-control" id="heroSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
@@ -89,7 +89,7 @@ if($g_ui_locale == "fr_CA"){
 ?>
 	<div class="container hpIntro">
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-12 col-lg-10 col-lg-offset-1">
 				<div class="callout">
 	<?php
 				if($vs_hp_intro_title){

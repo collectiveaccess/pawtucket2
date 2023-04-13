@@ -609,6 +609,11 @@ class DisplayTemplateParser {
 					$va_get_options['allDescendants'] = (int)$o_node->allDescendants ?: null;
 					$va_get_options['filterNonPrimaryRepresentations'] = $filter_non_primary_reps;
 					
+					$locale = caGetOption('locale', $$o_node->locale, null);
+					if($o_node->locale) {
+						$va_get_options['locale'] = $locale = $o_node->locale;
+					}
+					
 					if ($o_node->sort) {
 						$va_get_options['sort'] = preg_split('![ ,;]+!', $o_node->sort);
 						$va_get_options['sortDirection'] = $o_node->sortDirection;
@@ -709,7 +714,8 @@ class DisplayTemplateParser {
 									'includeBlankValuesInTopLevelForPrefetch' => false,
 									'unique' => $vb_unique,
 									'aggregateUnique' => $vb_aggregate_unique,
-									'filterNonPrimaryRepresentations' => $filter_non_primary_reps
+									'filterNonPrimaryRepresentations' => $filter_non_primary_reps,
+									'locale' => $locale
 								]
 							)
 						);
@@ -891,7 +897,8 @@ class DisplayTemplateParser {
 									'relationshipTypeIDs' => $va_relationship_type_ids,
 									'relationshipTypeOrientations' => $va_relationship_type_orientations,
 									'filterNonPrimaryRepresentations' => $filter_non_primary_reps,
-									'primaryIDs' => $va_get_options['primaryIDs']
+									'primaryIDs' => $va_get_options['primaryIDs'],
+									'locale' => $locale
 								]
 							)
 						);
@@ -1154,9 +1161,8 @@ class DisplayTemplateParser {
 					switch(strtolower($vs_get_spec)) {
                         case 'relationship_typename':
                             $va_val_list = [];
-                            // (caGetOption('orientation', $pa_options, 'LTOR')
                             $va_relationship_orientations = array_slice($va_relationship_orientations, $vn_start);
-                            $orientation = strtoupper($va_relationship_orientations[$pr_res->currentIndex()]) ?? 'LTOR';
+                            $orientation = caGetOption('orientation', $pa_options, strtoupper($va_relationship_orientations[$pr_res->currentIndex()]) ?? 'LTOR');
                             
                             if (is_array($va_relationship_type_ids) && is_array($va_relationship_type_ids = array_slice($va_relationship_type_ids, $vn_start)) && ($vn_type_id = $va_relationship_type_ids[$pr_res->currentIndex()])) {
                                 $qr_rels = caMakeSearchResult('ca_relationship_types', array($vn_type_id));

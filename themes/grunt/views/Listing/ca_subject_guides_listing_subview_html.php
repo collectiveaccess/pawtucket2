@@ -39,7 +39,7 @@
 		
 		print "<div class='row'><div class='col-sm-12'><h1>{$va_listing_info['displayName']}</h2></div></div>\n";
 		if($vs_intro = $this->getVar("subject_guides_intro_text")){
-			print "<p>".$vs_intro."</p>";
+			print "<div class='subjectGuideIntro'>".$vs_intro."</div>";
 		}
 		print "<div class='collectionsList'><div class='row'>";
 		while($qr_list->nextHit()) {

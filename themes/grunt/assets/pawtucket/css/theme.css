@@ -25,6 +25,11 @@ a:hover{
 H1, h1, h2, H2, H3, h3, H4, h4, H5, h5{
 	text-transform:capitalize;
 }
+h1 i {
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+}
 a, a:hover {
   color: #000;
 }
@@ -86,7 +91,7 @@ hr{
 @media (min-width:768px){
 	.navbar-brand{
 		width: 200px;
-		padding-top: 10px;
+		padding-top: 25px;
 		padding-bottom: 18px;
 	}
 }
@@ -641,7 +646,12 @@ body.frontContainer #footer{
 .collectionTile:hover{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
-
+.subjectGuideIntro{
+	font-size: 16px;
+	font-weight: normal;
+	line-height: 1.8em;
+	padding-bottom:20px;
+}
 /* listing */
 .collectionTile .title {
 	padding: 10px;
@@ -821,6 +831,13 @@ body.frontContainer #footer{
 	font-size: 18px;
 	font-family:Lato;
 	margin-top:30px;
+}
+.projectSitePage b, .projectSitePage strong{
+	font-family: Lato;
+	font-weight:normal;
+}
+.projectSitePage a{
+	text-decoration:underline;
 }
 /* advanced search */
 @media (min-width:992px){

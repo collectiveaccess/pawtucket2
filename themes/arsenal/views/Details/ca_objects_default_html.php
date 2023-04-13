@@ -40,6 +40,9 @@
 	// get film work
 	$vn_occurrence_id = $t_object->get('ca_occurrences.occurrence_id',array('restrictToTypes' => 'work', 'limit' => 1));
 	
+	// Force media viewing context to "works" so the viewer will pull representations relative to occurrences, not objects
+	$this->request->setParameter('context', 'works');
+	
 	$t_work = new ca_occurrences($vn_occurrence_id);
 	if($vn_occurrence_id){
 		$va_related_objects = $t_work->get("ca_objects.related",array("checkAccess" => $va_access_values, "returnWithStructure" => true, "restrictToTypes" => array("film_print", "digital_item", "video_item")));
@@ -65,7 +68,7 @@
 		$vs_rep_viewer = caRepresentationViewer(
 					$this->request, 
 					$t_work, 
-					$t_object,
+					$t_work,
 					array_merge($options, $media_display_info, 
 						[
 							'display' => 'detail',
@@ -157,8 +160,8 @@
 							$va_output = array();
 							
 							foreach($va_show_public_fields as $vs_bundle){
-								if(strlen($t_object->get("ca_objects.{$vs_bundle}"))>0) {
-									$va_output[] = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: ".$t_object->get("ca_objects.{$vs_bundle}",array('convertCodesToDisplayText' => true, 'delimiter' => ', '))."</div><!-- end unit -->";
+								if(strlen($v = trim($t_object->get("ca_objects.{$vs_bundle}",array('convertCodesToDisplayText' => true, 'delimiter' => ', '))))>0) {
+									$va_output[] = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: {$v}</div><!-- end unit -->";
 
 								}
 							}

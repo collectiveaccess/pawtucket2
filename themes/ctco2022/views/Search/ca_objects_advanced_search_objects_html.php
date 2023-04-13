@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-md-4 col-md-offset-2">
-		<h1><?php _p('Artifacts Advanced Search') ?></h1>
+		<h1><?php _p('Objects Advanced Search') ?></h1>
 
         <p><?php _p("Enter your search terms in the fields below."); ?></p>
 
@@ -28,7 +28,7 @@
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_collections_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records by Institution.') ?>"><?php _p('Institution') ?></label>
-			{{{ca_objects.source_id%width=200px&height=1}}}
+			{{{ca_objects.source_id%width=200px&height=1&inUse=1}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_collections_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records within a particular collection.') ?>"><?php _p('Collection') ?></label>
@@ -42,7 +42,7 @@
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_objects_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to object types.') ?>"><?php _p('Type') ?></label>
-			{{{ca_objects.type_id%id=ca_objects_type_id}}}
+			{{{ca_objects.type_id%id=ca_objects_type_id&inUse=1}}}
 		</div>
 	</div>
 	<div class='row'>
@@ -52,7 +52,7 @@
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_entities' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records by related people and institutions.') ?>"><?php _p('Related People and Institutions') ?></label>
-			{{{ca_entities.preferred_labels%excludeRelationshipTypes=donor,collector,provider,creator,attributed,contributor&width=200px&height=1}}}
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=associated,publisher,owner,previous_owner&width=200px&height=1}}}
 		</div>
 	</div>
 	<div class='row'>

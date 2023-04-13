@@ -86,7 +86,6 @@
 		
 		$t_locale = new ca_locales();
 		$g_ui_locale_id = $t_locale->localeCodeToID($g_ui_locale);		// get current UI locale as locale_id	  (available as global)
-		
 		if($vs_lang) {
 			if(!initializeLocale($g_ui_locale)) die("Error loading locale ".$g_ui_locale);
 			$g_request->reloadAppConfig();	// need to reload app config to reflect current locale
