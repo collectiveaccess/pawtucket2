@@ -77,58 +77,58 @@
 	</div>
 </div>
 <?php
-	print $this->render("Front/gallery_slideshow_html.php");
+		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
-
-<div class="container hpIntro">
-	<div class="row">
-		<div class="col-md-12 col-lg-8 col-lg-offset-2">
-			<div class="callout2">
-				<div class="calloutTitle">{{{home_call_to_action_title}}}</div>
-				<p>{{{home_call_to_action}}}</p>
-				<p class="text-center"><?php print caNavLink($this->request, _t("Lees er meer over"), "btn btn-default", "", "About", "Collection"); ?></p>
-			</div>
-		</div>
-	</div>
-</div>
+</div></div>
 <div class="row"><div class="col-sm-12 col-md-12 col-lg-8 col-lg-offset-2 frontPlaces">
 	
 <?php
-	$t_list = new ca_lists();
-	$vn_place_type_id = $t_list->getItemIDFromList('place_types', 'EGC_regio');
-	if($vn_place_type_id){
-		$r_places = ca_places::find(array('type_id' => $vn_place_type_id), array('returnAs' => 'searchResult', 'sort' => 'ca_places.idno'));
-			
-		$i = 0;
-		if($r_places->numHits()){
+	if($vs_place_set_code = $this->request->config->get("front_page_places_set_code")){
+		$t_set = new ca_sets();
+		$t_set->load(array('set_code' => $vs_place_set_code));
+		# Enforce access control on set
+		if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+			$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
+			$r_places = caMakeSearchResult('ca_places', $va_featured_ids);
+		
+			$i = 0;
+			if($r_places->numHits()){
 ?>
 			<h2>Bladeren per stad of gemeente</h2>
 <?php
-			while($r_places->nextHit()){
-				if($i == 0){
-					print "<div class='row'>";
-				}
-				$vs_img = "";
-				if($r_places->get("ca_object_representations.media.iconlarge")){
-					$vs_img = $r_places->getWithTemplate("^ca_object_representations.media.iconlarge");	
-					if($vs_img){
-						$vs_img = caNavLink($this->request, $vs_img, "", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."<br/>";
+				while($r_places->nextHit()){
+					if($i == 0){
+						print "<div class='row'>";
+					}
+					$vs_img = "";
+					#if($r_places->get("ca_object_representations.media.iconlarge")){
+						$vs_img = $r_places->getWithTemplate("^ca_object_representations.media.iconlarge");	
+						if(!$vs_img){
+							$vs_img = $r_places->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>");
+						}
+						if($vs_img){
+							$vs_img = caNavLink($this->request, $vs_img, "", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."<br/>";
+						}
+					#}
+					print "<div class='col-sm-12 col-md-3 text-center'>".$vs_img.caNavLink($this->request, $r_places->get("ca_places.preferred_labels.name"), "frontPlaceLink", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."</div>";
+					$i++;
+					if($i == 4){
+						print "</div><!-- end row -->";
+						$i = 0;
 					}
 				}
-				print "<div class='col-sm-12 col-md-3 text-center'>".$vs_img.caNavLink($this->request, $r_places->get("ca_places.preferred_labels.name"), "frontPlaceLink", "", "Browse", "objects", array("facet" => "place_facet", "id" => $r_places->get("ca_places.place_id")))."</div>";
-				$i++;
-				if($i == 4){
-					print "</div><!-- end row -->";
-					$i = 0;
-				}
 			}
+			if($i > 0){
+				print "</div><!-- end row -->";
+			}				
 		}
-		if($i > 0){
-			print "</div><!-- end row -->";
-		}
-	}	
+	}
+	
 ?>
 </div></div>
+<?php
+		print $this->render("Front/gallery_slideshow_html.php");
+?>
 <div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>
 		<script type="text/javascript">
 			$(document).ready(function(){

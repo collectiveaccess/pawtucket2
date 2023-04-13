@@ -45,7 +45,7 @@
 				</head>
 				<body>	
 					<div id='header'><?= caGetReportLogo(); ?></div>
-			<	/body>
+				</body>
 			</html><!--END HEADER-->
 <?php
 		break;
