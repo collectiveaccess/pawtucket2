@@ -1,3 +1,4 @@
+/* headers Ochre: #D6B366; Green: #7C7C50; Purple: #8C737D; Orange/Sienna: #BA5E2E; */
 /* fonts to change */
 
 /* body, .detail, .gallery, label, b, strong{
@@ -31,8 +32,13 @@ a:hover{
 }
 /* header */
 .navbar{
-	background-color: #ffffff;
-	background-color: #d1d1d1;
+	background-color: #BA5E2E;
+/*
+	#AB9F6F
+	#B6AD8F
+	#D9D2C3
+	#EAE6D7
+*/
 	position: sticky;
 	top: 0;
 }
@@ -140,6 +146,12 @@ a:hover{
 	color:#000000;
 	font-family:lato;
 }
+
+.navbar-nav > li > .dropdown-menu .das-bild{
+	margin-left: 15px;
+	font-size: 11px;
+}
+
 .navbar-nav > li > .dropdown-menu a:hover{
 	background-color:#fff;
 	color:#000;
@@ -170,7 +182,7 @@ body{
 }
 #footer{
 	/* background-color: #f2f2f2; */
-	background-color: #d1d1d1;
+	background-color: #BA5E2E;
 	color:#000;
 	padding-top: 75px;
 	height: 300px;
@@ -260,7 +272,7 @@ body{
 }
 
 #footer .funderLinks .funderLinksHorizontal img {
-	height: 80px;
+	height: 60px;
 	width: auto;
 }
 
@@ -475,6 +487,9 @@ a.facetApply {
 	font-family: Latolight;
 	font-weight: 600;
 }
+#bLetterBar a{
+	color:#000;
+}
 /* front */
 html.frontContainer {
     /*height: 100%;*/
@@ -490,7 +505,7 @@ body.frontContainer #footer{
 
 .parallax {
 	position:relative;
-    background-image: url("../graphics/Background/Das_Bild_Jg_1929_H9_Schulkino-St-Poelten.jpeg");
+    background-image: url("../graphics/Background/Das_Bild_Jg_1929_H9_Schulkino-St-Poelten_Cropped.jpeg");
 
     /* Full height */
     height: 100vh;
@@ -508,13 +523,13 @@ body.frontContainer #footer{
 	top:-20px;
 }
 .parallax.hero1 {
-	background-image: url("../graphics/Background/Das_Bild_Jg_1929_H9_Schulkino-St-Poelten.jpeg");
+	background-image: url("../graphics/Background/Das_Bild_Jg_1929_H9_Schulkino-St-Poelten_Cropped.jpeg");
 }
 .parallax.hero2 {
-    background-image: url("../graphics/Background/Das_Bild_Jg_1929_H9_Schulkino-St-Poelten.jpeg");
+    background-image: url("../graphics/Background/Das_Bild_Jg_1929_H9_Schulkino-St-Poelten_Cropped.jpeg");
 }
 .parallax.hero3 {
-    background-image: url("../graphics/Background/Das_Bild_Jg_1929_H9_Schulkino-St-Poelten.jpeg");
+    background-image: url("../graphics/Background/Das_Bild_Jg_1929_H9_Schulkino-St-Poelten_Cropped.jpeg");
 }
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
@@ -713,7 +728,7 @@ body.frontContainer #footer{
 	background-image: url('../graphics/People/OeStA-Akt_Die-oesterreichische-Delegation_Lehrfilmkonferenz-Basel_Ausschnitt_1928.jpg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage3{
-	background-image: url('../graphics/Organizations/OeStA-Akt_Logo-Schutzmarke_OeLFDAusschnitt_1930.jpeg');
+	background-image: url('../graphics/Organizations/OeVA_Logo-Schulkinobund_Ausschnitt-1.jpeg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage4{
 	background-image: url('../graphics/Texts/Primaerliteratur_Lehrfilm_divers.jpg');
@@ -722,7 +737,7 @@ body.frontContainer #footer{
 	background-image: url('../graphics/Images/Paedag-Steiermark_U-1117_DITMAR-1006_014.jpg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage6{
-	background-image: url('../graphics/Locations/Map_Auswahl_Bildsammlung_SHB-Film-Post_1948-1958.jpg');
+	background-image: url('../graphics/Locations/Image_AVM-Einsatz_SCHRODT-Johann_Red_SHB-Festschrift_1945-1974_Wien_oJ_068.jpeg');
 }
 .hpExploreBox .hpExploreBoxDetails {
 	padding: 15px 13px 22px;
@@ -739,7 +754,10 @@ body.frontContainer #footer{
 .hpExploreBox .hpExploreBoxTitle a:hover {
 	text-decoration:none;
 }
-
+.hpSearchHelp a{
+	color:#FFF;
+	font-size:18px;
+}
 /* gallery */
 @media(max-width:768px){
 	.galleryList{
@@ -804,6 +822,9 @@ body.frontContainer #footer{
 }
 
 /* details */
+.detail #detailAnnotations {
+	margin: 0px 0px 0px 0px;
+}
 
 .detail .detailLinksGrid{
 	margin-bottom:30px;
@@ -842,6 +863,20 @@ body.frontContainer #footer{
 	color:#000;
 	text-decoration:none;
 }
+.detail .btn-default{
+	color:#FFF !important;
+	background-color:#000;
+}
+.detail .unit {
+	font-size: 17px !important;
+	margin-bottom: 15px;
+	line-height: 1.6;
+}
+
+.detail label {
+	font-size: 15px;
+}
+
 .detail .btn-default:hover{
 	text-decoration:none;
 	text-shadow:none;
@@ -851,19 +886,62 @@ body.frontContainer #footer{
 .detail .bResultItemText a{
 	text-decoration:none;
 }
+.detail .unit br{
+	margin-bottom: 15px;
+}
+.detail .trimText br{
+	margin-bottom: 15px;
+}
+.detail .entityInfo br{
+	margin-bottom: 0px;
+}
+a.readmore-js-toggle{
+	color: #757575;
+}
 
 /* entity relationship visualization */
 #entityRelationshipViz {
-  width: 500px;
+  width: 100%;
   height: 300px;
   border: 1px solid lightgray;
 }
-
-/* .detail .entityInfoButton, .itemInfoButton{
-	color: #0000EE !important;
+.enlargedViz #entityRelationshipViz {
+  width: 100%;
+  height: 600px;
+}
+a.vizZoom{
+	color:#000;
+	font-size:18px;
+	display:inline-block;
+	text-align:right;
+	padding:5px;
 }
 
-.detail .entityInfo, .itemInfo{
-	padding-left: 20px !important;
-	display: none !important;
-} */
+/* detail page tabs */
+.detail .relTabButton {
+	display: inline-block;
+	padding: 15px 30px 15px 30px;
+	cursor: pointer;
+	color: #000;
+	font-size:15px;
+	font-family:lato;
+	background-color:#e6e6e6;
+	margin-right:2px;
+}
+.detail .relTabButton:hover, .detail .relTabButton.selected {
+	background-color: #333;
+	color: #fff;
+}
+.detail .relatedBlockTabs{
+	margin-bottom:15px;
+	border-bottom:1px solid #333;
+}
+
+.staticPage, staticPage p{
+	font-size:17px;
+	line-height:1.6em;
+}
+.staticPage img{
+	max-width: 100%;
+	height: auto;
+}
