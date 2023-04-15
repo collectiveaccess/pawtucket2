@@ -53,13 +53,13 @@
 			</div>
 			<div class="row funderLinks">
 				<div class="col-sm-12 text-center">
-					<a href="" class="funderLinksHorizontal">
+					<a class="funderLinksHorizontal">
 						<?php print caGetThemeGraphic($this->request, 'EN_DH_WEB.png', array("alt" => $this->request->config->get("app_display_name")));?>
 					</a>
-					<a href="" class="funderLinksHorizontal">
+					<a class="funderLinksHorizontal">
 						<?php print caGetThemeGraphic($this->request, 'fwf-logo_var2.jpg', array("alt" => $this->request->config->get("app_display_name")));?>
 					</a>
-					<a href="" class="funderLinksHorizontal">
+					<a class="funderLinksHorizontal">
 						<?php print caGetThemeGraphic($this->request, 'Uni_Logo_2016.jpg', array("alt" => $this->request->config->get("app_display_name")));?>
 					</a>
 				</div>

@@ -76,18 +76,30 @@
 					{{{<ifdef code="ca_collections.idno"><div class="unit"><label>Identifier</label>^ca_collections.idno</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.display_date"><div class="unit"><label>Date</label>^ca_collections.display_date%delimiter=,_</div></ifdef>}}}
 					{{{<ifnotdef code="ca_collections.display_date"><ifdef code="ca_collections.date"><div class="unit"><label>Date</label>^ca_collections.date%delimiter=,_</div></ifdef></ifnotdef>}}}
-
+					{{{<ifdef code="ca_collections.date_note"><div class="unit"><label>Date Note</label><unit relativeTo="ca_collections.date_note" delimiter="<br/>">^ca_collections.date_note</unit></div></ifdef>}}}
+					
 					{{{<ifdef code="ca_collections.phys_desc"><div class="unit"><label>Physical Description</label>^ca_collections.phys_desc</div></ifdef>}}}
-					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator"><div class="unit"><label>Creator<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="creator">s</ifcount></label>
-						<unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>
+					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,contributor"><div class="unit"><label>Creator<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="creator,contributor">s</ifcount></label>
+						<unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,contributor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l><ifdef code="ca_entities.bio_history_container.bio_history"><br/>^ca_entities.bio_history_container.bio_history</ifdef></unit>
 					</div></ifcount>}}}
 					
-					{{{<ifdef code="ca_collections.provenance"><div class="unit"><label>Provenance</label>^ca_collections.provenance</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.description"><div class="unit"><label>Scope & Content</label>^ca_collections.description</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.provenance"><div class="unit"><label>Provenance</label>^ca_collections.provenance</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.language"><div class="unit"><label>Language</label>^ca_collections.language%delimiter=,_</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.arrangement"><div class="unit"><label>Arrangement</label>^ca_collections.arrangement</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.arrangement"><div class="unit"><label>System of Arrangement</label>^ca_collections.arrangement</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.accruals"><div class="unit"><label>Accruals</label>^ca_collections.accruals</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.descriptive_note"><div class="unit"><label>Descriptive Notes</label><unit relativeTo="ca_collections.descriptive_note" delimiter="<br/><br/>">^ca_collections.descriptive_note</unit></div></ifdef>}}}
 					{{{<ifdef code="ca_collections.rights_container.access_conditions"><div class="unit"><label>Access Conditions</label>^ca_collections.rights_container.access_conditions</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.rights_container.use_reproduction"><div class="unit"><label>Use and Reproduction Conditions</label>^ca_collections.rights_container.use_reproduction</div></ifdef>}}}					
+					{{{<if rule='^ca_collections.type_id =~ /File/'><ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
+						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.preferred_labels.name</unit>
+					</div></ifcount></if>}}}
+<?php
+				if($vn_parent_collection_id = $t_item->get("ca_collections.parent.collection_id")){
+					print "<div class='unit'>".caDetailLink($this->request, "More from this ".$t_item->get("ca_collections.parent.type_id", array("convertCodesToDisplayText" => true)), "btn btn-default", "ca_collections", $vn_parent_collection_id)."</div>";
+				}
+?>
+
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">

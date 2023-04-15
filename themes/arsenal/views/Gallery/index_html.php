@@ -1,5 +1,6 @@
 <?php
 	$config = caGetGalleryConfig();
+	global $g_ui_locale;
 	switch($config->get("landing_page_format")){
 		case "grid":
 
@@ -31,7 +32,7 @@
 ?>
 
 <div class="row"><div class="col-sm-12">
-	<H1><?php print _t("Featured Collections"); ?></H1>
+	<H1><?php print ($g_ui_locale == "en_US") ? $config->get('gallery_section_name') : $config->get('gallery_section_name_german'); ?></H1>
 <?php
 	if(is_array($va_sets) && sizeof($va_sets)){
 		# --- main area with info about selected set loaded via Ajax				

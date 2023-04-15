@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2018 Whirl-i-Gig
+ * Copyright 2008-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -86,9 +86,11 @@
 		
 		$t_locale = new ca_locales();
 		$g_ui_locale_id = $t_locale->localeCodeToID($g_ui_locale);		// get current UI locale as locale_id	  (available as global)
-		if(!initializeLocale($g_ui_locale)) die("Error loading locale ".$g_ui_locale);
-		$g_request->reloadAppConfig();	// need to reload app config to reflect current locale
-	
+		if($vs_lang) {
+			if(!initializeLocale($g_ui_locale)) die("Error loading locale ".$g_ui_locale);
+			$g_request->reloadAppConfig();	// need to reload app config to reflect current locale
+		}
+		
 		//
 		// PageFormat plug-in generates header/footer shell around page content
 		//

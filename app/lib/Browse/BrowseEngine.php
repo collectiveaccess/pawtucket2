@@ -651,12 +651,20 @@
 						    $value = ca_attribute_values::getValuesFor($pn_row_id);
 							return $value['value_longtext1'].' '.sprintf("%4.2f", $value['value_decimal1']);
 							break;
+						case __CA_ATTRIBUTE_VALUE_LCSH__:
+						case __CA_ATTRIBUTE_VALUE_INFORMATIONSERVICE__:
+							if (!is_numeric($pn_row_id)) {
+								$pn_row_id = ca_attribute_values::getValueIDFor($t_element->getPrimaryKey(), $pn_row_id);
+							} 
+						    $value = preg_replace('![ ]*\[[^\]]*\]!', '', ca_attribute_values::getValuesFor($pn_row_id));
+						    return $value['value_longtext1'] ?? '???';
+							break;
 						default:
 							if (!is_numeric($pn_row_id)) {
 								$pn_row_id = ca_attribute_values::getValueIDFor($t_element->getPrimaryKey(), $pn_row_id);
 							} 
 						    $value = ca_attribute_values::getValuesFor($pn_row_id);
-							return $value['value_longtext1'];
+							return $value['value_longtext1'] ?? '???';
 							break;
 					}
 
@@ -1662,14 +1670,8 @@
 															$va_attr_values[] = $va_value['value_integer1'];
 														}
                                                         break;
-													case __CA_ATTRIBUTE_VALUE_INFORMATIONSERVICE__:
-														if($vs_f == 'value_longtext2') {
-															$va_attr_sql[] = "(ca_attribute_values.value_longtext2 = ?)";
-															$va_attr_values[] = $va_value['value_longtext2'];
-															break(2);
-														}
-														break;
 													case __CA_ATTRIBUTE_VALUE_LCSH__:
+													case __CA_ATTRIBUTE_VALUE_INFORMATIONSERVICE__:
 														if ($vs_f == 'value_longtext2') {
 															$va_attr_sql[] = "(ca_attribute_values.value_longtext2 = ?)";
 															$va_attr_values[] = $va_value['value_longtext2'];
@@ -3618,6 +3620,11 @@
 								$va_wheres[] = "(".$t_rel_item->tableName().".type_id IN (".join(',', $va_restrict_to_types)."))";
 							}
 							
+							$vs_browse_type_sql = null;
+							if (is_array($va_browse_type_ids) && sizeof($va_browse_type_ids) && !($va_facet_info['relative_to'] ?? false)) {
+								$va_wheres[] = $vs_browse_type_sql = "(".$t_subject->tableName().".type_id IN (".join(',', $va_browse_type_ids)."))";
+							}
+							
 							if (is_array($va_restrict_to_lists) && sizeof($va_restrict_to_lists)) {
 								$va_wheres[] = "(".$t_rel_item->tableName().".list_id IN (".join(',', $va_restrict_to_lists)."))";
 							}
@@ -3685,7 +3692,7 @@
 											{$vs_join_sql}
 											{$vs_where_sql}
 										)".($vs_item_deleted_sql ? " AND {$vs_item_deleted_sql}" : "")
-										  .($id_set ? " AND {$id_set}" : "")."
+										  .($id_set ? " AND {$id_set}" : "").($vs_browse_type_sql ? " AND {$vs_browse_type_sql}" : '')."
 										LIMIT 2
 									";
 								} else {	
@@ -3713,7 +3720,7 @@
 											{$vs_join_sql}
 											{$vs_where_sql}
 										)".($vs_item_deleted_sql ? " AND {$vs_item_deleted_sql}" : "")
-										  .($id_set ? " AND {$id_set}" : "");
+										  .($id_set ? " AND {$id_set}" : "").($vs_browse_type_sql ? " AND {$vs_browse_type_sql}" : '');
 								} else {
 									$vs_sql = "
 										SELECT DISTINCT {$vs_browse_table_name}.{$vs_browse_table_pk}
@@ -4336,7 +4343,6 @@
 						if(!is_array($va_suppress_values = caGetOption('suppress', $va_facet_info, null))) {
 							$va_suppress_values = caGetOption('exclude_values', $va_facet_info, null);
 						}
-
 						$access = null;
 						switch($vn_element_type) {
 							case __CA_ATTRIBUTE_VALUE_LIST__:
@@ -4359,7 +4365,7 @@
 								$va_list_label_cache = $t_list_item->getPreferredDisplayLabelsForIDs($va_values);
 
 								// Translate value idnos to ids
-								if (is_array($va_suppress_values)) { $va_suppress_values = ca_lists::getItemIDsFromList($t_element->get('list_id'), $va_suppress_values); }
+								if (is_array($va_suppress_values)) { $va_suppress_values = ca_lists::getItemIDsFromList($t_element->get('list_id'), $va_suppress_values, ['noChildren' => true]); }
 
 								$va_facet_list = [];
 								$va_children_by_parent_id = [];
@@ -4547,6 +4553,7 @@
 									);
 									break;
 								case __CA_ATTRIBUTE_VALUE_LCSH__:
+								case __CA_ATTRIBUTE_VALUE_INFORMATIONSERVICE__:
 								    $value_id = ca_attribute_values::getValueIDFor($o_attr->getElementID(), $vs_val);
 									$va_values[strToLower($vs_val)] = array(
 										'id' => $value_id,
@@ -7384,12 +7391,6 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 
 					$this->opo_ca_browse_cache->setResults($va_results);
 					$this->opo_ca_browse_cache->save();
-				}
-
-				$vn_start = (int) caGetOption('start', $pa_options, 0);
-				$vn_limit = (int) caGetOption('limit', $pa_options, 0);
-				if (($vn_start > 0) || ($vn_limit > 0)) {
-					$va_results = array_slice($va_results, $vn_start, $vn_limit);
 				}
 			}
 			if (!is_array($va_results)) { $va_results = array(); }

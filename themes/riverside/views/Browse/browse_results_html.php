@@ -79,13 +79,15 @@ if (!$vb_ajax) {	// !ajax
 					$i = 0;
 					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 						$i++;
-						if ($vs_current_sort === $vs_sort) {
-							print "<li class='selectedSort'>{$vs_sort}</li>\n";
-						} else {
-							print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
-						}
-						if($i < sizeof($va_sorts)){
-							print "<li class='divide'>&nbsp;</li>";
+						if($vs_sort != "Collection"){
+							if ($vs_current_sort === $vs_sort) {
+								print "<li class='selectedSort'>{$vs_sort}</li>\n";
+							} else {
+								print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
+							}
+							if($i < sizeof($va_sorts)){
+								print "<li class='divide'>&nbsp;</li>";
+							}
 						}
 					}
 					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
@@ -110,10 +112,12 @@ if (!$vb_ajax) {	// !ajax
 						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 							print "<li class='dropdown-header' role='menuitem'>"._t("Sort by:")."</li>\n";
 							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-								if ($vs_current_sort === $vs_sort) {
-									print "<li role='menuitem'><a href='#'><em>{$vs_sort}</em></a></li>\n";
-								} else {
-									print "<li role='menuitem'>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
+								if($vs_sort != "Collection"){
+									if ($vs_current_sort === $vs_sort) {
+										print "<li role='menuitem'><a href='#'><em>{$vs_sort}</em></a></li>\n";
+									} else {
+										print "<li role='menuitem'>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
+									}
 								}
 							}
 							print "<li class='divider' role='menuitem'></li>\n";

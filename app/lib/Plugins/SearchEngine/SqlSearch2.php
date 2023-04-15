@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2022 Whirl-i-Gig
+ * Copyright 2010-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -103,7 +103,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			self::$whitespace_tokenizer_regex = '[\s\"\—\-]+';
 		}
 		if(!(self::$punctuation_tokenizer_regex = $this->search_config->get('punctuation_tokenizer_regex'))) {
-			self::$whitespace_tokenizer_regex = '[\.,;:\(\)\{\}\[\]\|\\\+_\!\&«»\']+';
+			self::$punctuation_tokenizer_regex = '[\.,;:\(\)\{\}\[\]\|\\\+_\!\&«»\']+';
 		}
 		
 		if(self::$filter_stop_words) {
@@ -657,10 +657,13 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			return $hits;
 	 	} else {
 	 		$acc = [];
-			foreach($terms as $i => $term) {
+	 		$i = 0;
+			foreach($terms as $term) {
 				$hits = $this->_processQueryTerm($subject_tablenum, $term);
+				if(!is_array($hits)) { continue; }
 				if ($i == 0) { $acc = $hits; continue; }
 				$acc = array_intersect_key($acc, $hits);
+				$i++;
 			}
 			return $acc;
 	 	}
@@ -765,7 +768,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		
 		if ($ap['datatype'] === 'COUNT') {
 			$params = [
-				$subject_tablenum, (int)$lower_text, (int)$upper_text
+				$subject_tablenum, $ap['table_num'], (int)$lower_text, (int)$upper_text
 			];
 			
 			$rel_type_sql = '';
@@ -778,7 +781,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				FROM ca_sql_search_word_index swi
 				INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id
 				WHERE
-					swi.table_num = ? AND swi.field_num = 'COUNT' AND sw.word BETWEEN ? AND ? {$rel_type_sql}
+					swi.table_num = ? AND swi.field_table_num = ? AND swi.field_num = 'COUNT' AND sw.word BETWEEN ? AND ? {$rel_type_sql}
 				GROUP BY swi.row_id
 			", $params);
 			return $this->_arrayFromDbResult($qr_res);
@@ -933,7 +936,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 						$a = $s->getItems(['idsOnly' => true]);
 						break;
 					default:
-						$a = $qr->get($spk, ['returnAsArray' => true]);
+						$a = $qr->get($spk, ['restrictToRelationshipTypes' => $ap['relationship_type_ids'] ?? null, 'returnAsArray' => true]);
 						break;
 				}
 				
@@ -1117,8 +1120,8 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			// Tokenize string
 			$words = [];
 			if ($tokenize || $force_tokenize) {
-				foreach($content as $content) {
-					$words = array_merge($words, self::tokenize((string)$content));
+				foreach($content as $c) {
+					$words = array_merge($words, self::tokenize((string)$c));
 				}
 			}
 			if (!$tokenize) { $words = array_merge($words, $content); }

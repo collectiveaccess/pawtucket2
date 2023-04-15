@@ -79,10 +79,13 @@ hr {
 		margin-top:26px;
 	}
 	.nav > li.dropdown > a.icon{
-		padding-top: 15px;
+		padding-top: 11px;
 		padding-bottom: 15px;
 		margin-top: 15px;
 		margin-bottom: 15px;
+	}
+	.nav > li.dropdown > a.icon .glyphicon-user{
+		padding-left:5px;
 	}
 }
 @media (max-width:767px){
@@ -141,6 +144,12 @@ hr {
   top: -1px;
   font-size: 10px;
   font-size:10px;
+}
+.userIconLabel{
+	display:block;
+	font-size:10px;
+	font-weight:normal;
+	line-height: .7em;
 }
 /* header mobile icons navigation */
 .navbar-default .navbar-toggle{
@@ -340,6 +349,15 @@ a.browseRemoveFacet .glyphicon{
 	color: #000;
 	font-size: 14px;
 }
+#bRefine H3{
+	cursor: pointer;
+}
+#bRefine H3:hover{
+	text-decoration:underline;
+}
+#bRefine H3 .fa{
+	font-size: 12px;
+}
 /* front */
 html.frontContainer {
     height: 100%;
@@ -374,6 +392,9 @@ body.frontContainer #footer{
 }
 .parallax.hero1 {
 	background-image: url("../graphics/hero1.jpg");
+}
+.parallax.hero2 {
+	background-image: url("../graphics/Squamish_hero1.jpg");
 }
 
 @media(max-width:420px), (max-height:420px){
@@ -711,6 +732,17 @@ body.frontContainer #footer{
 	text-align: center;
 }
 
+#collectionLoad div.hierarchyObjects{
+	margin-left:10px;
+}
+#collectionLoad div.hierarchyObjects label{
+	cursor: pointer;
+}
+
+#collectionLoad div.hierarchyObjects a{
+	font-weight:normal;
+	font-size:13px;
+}
 /* Header with background image like on Browse All and External Resources */
 .pageHeaderRow{
 	padding-top:30px;
@@ -763,6 +795,12 @@ body.frontContainer #footer{
 }
 .landingBox .landingBoxImage.landingBoxImage3{
 	background-image: url('../graphics/hero_1.jpg');
+}
+.landingBox .landingBoxImage.landingBoxImageArchives{
+	background-image: url('../graphics/Archival_Item_sm.jpg');
+}
+.landingBox .landingBoxImage.landingBoxImageCollections{
+	background-image: url('../graphics/Archival_Collection_sm.jpg');
 }
 .landingBox .landingBoxDetails {
 	padding: 15px 13px 22px;
@@ -879,6 +917,22 @@ body.frontContainer #footer{
 	text-align: center;
 	width: 100%;
 	font-size: 18px;
+}
+.detail .unit a.btn{
+	color:#FFF;
+	text-decoration:none;
+}
+div.caMediaOverlayControls .objectInfo {
+	width: auto;
+	float: right;
+	padding-top: 4px;
+}
+div.caMediaOverlayControls, div.caMediaOverlayControls:hover {
+	top: 30px;
+	width: auto;
+	right: 0px;
+	left: auto;
+	background-color:transparent;
 }
 /* advanced Search */
 .advancedSearchField .formLabel {
@@ -1116,7 +1170,7 @@ h2.tl-headline{
 .staticPage h1{
 	color:#000;
 }
-@media (min-width:768px){
+/*@media (min-width:768px){
 	.colText{
 		-webkit-columns: auto 2;
 		-moz-columns: auto 2;
@@ -1125,7 +1179,7 @@ h2.tl-headline{
 		-moz-column-gap: 50px;
 		column-gap: 50px;
 	}
-}
+}*/
 
 .multisearch .authorityResult {
 	margin-bottom: 5px;

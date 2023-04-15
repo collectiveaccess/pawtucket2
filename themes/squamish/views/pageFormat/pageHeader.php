@@ -141,7 +141,7 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span></a>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span><span class='userIconLabel'>LOGIN</span></a>
 						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
@@ -178,11 +178,11 @@
 					<li class="dropdown-container<?php print (strToLower($this->request->getController()) == "listing") ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("Learning & Teaching"), "", "", "", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("Curriculum"), "", "", "", ""); ?></li>
 							<li><?php print caNavLink($this->request, _t("External Resources"), "", "", "Listing", "Resources"); ?></li>
 						</ul>
 					</li>
-					<li <?php print ($this->request->getController() == "Storytelling") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Storytelling"), "", "", "", ""); ?></li>
+					<li <?php print ($this->request->getController() == "Storytelling") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Storytelling & Research Guides"), "", "", "", ""); ?></li>
 					
 				</ul>
 			</div><!-- /.navbar-collapse -->
