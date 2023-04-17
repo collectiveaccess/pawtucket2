@@ -178,20 +178,21 @@
 					<li class="dropdown-container">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= _t('Project'); ?></a>
 						<ul class="dropdown-menu">
-							<li><a href="/index.php/about_project"><?= _t('About The Project'); ?></a></li>
-							<li><a href="/index.php/database_media"><?= _t('Database & Media Collection'); ?></a></li>
-							<li><a href="/index.php/key_institutions"><?= _t('Key Institutions'); ?></a></li>
-							<li><a href="/index.php/key_findings"><?= _t('Key Findings'); ?></a></li>
-							<li><a href="/index.php/publications_events"><?= _t('Publications & Events'); ?></a></li>
-							<li><a href="/index.php/search_info"><?= _t('Search Information'); ?></a></li>
-							
+							<li><?php print caNavLink($this->request, _t('About The Project'), "", "", "about_project", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Database & Media Collection'), "", "", "database_media", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Key Institutions'), "", "", "key_institutions", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Key Findings'), "", "", "key_findings", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Project team'), "", "", "Projektteam", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Publications & Events'), "", "", "publications_events", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Search Information'), "", "", "search_info", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Research overview'), "", "", "Recherchebericht", ""); ?></li>	
 							<!-- <li><a href="/index.php/acknowledgements"><?= _t('Acknowledgements'); ?></a></li> -->
 							<!-- <li><a href="/index.php/impressium_credits"><?= _t('Impressium & Credits'); ?></a></li> -->
 						</ul>
 					</li>
 					
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li><a href="/index.php/Browse/collections"><?= _t('Case Studies'); ?></a></li>
+					<li <?php print (($this->request->getController() == "Browse") && (strToLower($this->request->getAction()) == "collections")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t('Case Studies'), "", "", "browse", "case-studies"); ?></li>
 					
 					<li <?= ($g_ui_locale == "de_DE") ? 'class="active"' : ''; ?>><?= caChangeLocaleLink($this->request, 'de_DE', _t("DE"), ''); ?></li>
 					<li <?= ($g_ui_locale == "en_US") ? 'class="active"' : ''; ?>><?= caChangeLocaleLink($this->request, 'en_US', _t("EN"), ''); ?></li>
