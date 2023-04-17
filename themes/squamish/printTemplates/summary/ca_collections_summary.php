@@ -61,7 +61,7 @@
 	
 	{{{<ifdef code="ca_collections.phys_desc"><div class="unit"><H6>Physical Description</H6>^ca_collections.phys_desc</div></ifdef>}}}
 	{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,contributor"><div class="unit"><H6>Creator<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="creator,contributor">s</ifcount></H6>
-		<unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,contributor" delimiter="<br/>">^ca_entities.preferred_labels.displayname<ifdef code="ca_entities.bio_history_container.bio_history"><br/>^ca_entities.bio_history_container.bio_history</ifdef></unit>
+		<unit relativeTo="ca_entities_x_collections" restrictToRelationshipTypes="creator,contributor" delimiter="<br/>">^ca_entities.preferred_labels.displayname<if rule='^ca_collections.type_id =~ /Collection/'><ifdef code="ca_entities.bio_history_container.bio_history"><br/>^ca_entities.bio_history_container.bio_history</ifdef></if></unit>
 	</div></ifcount>}}}
 	
 	{{{<ifdef code="ca_collections.description"><div class="unit"><H6>Scope & Content</H6>^ca_collections.description</div></ifdef>}}}
