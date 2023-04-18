@@ -72,23 +72,6 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
-				<div class='col-sm-12'>
-					<?php
-						if ($vb_show_hierarchy_viewer) {	
-					?>
-							<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-							<script>
-								$(document).ready(function(){
-									$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
-								})
-							</script>
-					<?php				
-						}									
-					?>				
-				</div><!-- end col -->
-			</div><!-- end row -->
-
-			<div class="row">
 
 				<div class='col-md-12'>
 					{{{<ifdef code="ca_collections.description"><div class="unit"><label>About</label>^ca_collections.description</div></ifdef>}}}
@@ -155,7 +138,24 @@
 				</div><!-- end col -->
 
 			</div><!-- end row -->
+			<div class="row">
+				<div class='col-sm-12'>
+					<?php
+						if ($vb_show_hierarchy_viewer) {	
+					?>
+							<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+							<script>
+								$(document).ready(function(){
+									$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
+								})
+							</script>
+					<?php				
+						}									
+					?>				
+				</div><!-- end col -->
+			</div><!-- end row -->
 
+			
 			{{{<ifcount code="ca_objects" min="1">
 				<div class="row">
 					<div id="browseResultsContainer">
