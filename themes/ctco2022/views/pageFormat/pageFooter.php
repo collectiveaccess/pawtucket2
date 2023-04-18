@@ -31,7 +31,7 @@
 		
 		<footer id="footer" class="text-center">
 			<div class="row footer-center footerBg">
-				<div class="col-sm-12 text-center">
+				<div class="col-sm-10 col-md-7 col-lg-6 text-center"> 				
 					<a href="https://clho.org/ctcollections/" class="orgLink">
 						<?php print caGetThemeGraphic($this->request, 'CLHO_Logo_transparent.png', array("alt" => $this->request->config->get("app_display_name")));?>
 					</a>
@@ -41,9 +41,17 @@
 						</p>
 					</div>
 				</div>
-
+				<div class="col-sm-2 col-md-3 col-lg-2 text-left">
+					<ul class="list-inline social">
+						<li><a href="https://twitter.com/ctlho" target="_blank"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="https://www.instagram.com/ctlho/" target="_blank"><i class="fa fa-instagram"></i></a></li>
+						<li><a href="https://www.facebook.com/CTLeague/?fref=nf&pnref=story.unseen-section" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+						<li><a href="https://www.youtube.com/channel/UCXfy6rb4EaWFArEsRXYNneA" target="_blank"><i class="fa fa-youtube-play"></i></a></li>
+					</ul>
+					<p><a href="mailto:ctco@clho.org"><i class="fa fa-envelope"></i> ctco@clho.org</a></p>
+				</div>
 			</div>
-			<div class="row footerBg footerSocialBlock">
+			<!-- <div class="row footerBg footerSocialBlock">
 				<div class="col-sm-12 text-center">	
 					<ul class="list-inline social">
 						<li><a href="https://twitter.com/ctlho" target="_blank"><i class="fa fa-twitter"></i></a></li>
@@ -53,11 +61,12 @@
 					</ul>
 					<p><a href="mailto:info@clho.org"><i class="fa fa-envelope"></i> info@CLHO.org</a></p>
 				</div>
-			</div>
+			</div> -->
 			<div class="row funderLinks">
 				<div class="col-sm-12 text-center">
-					<a href="https://www.archives.gov/nhprc/apply/program.html" class="funderLinksVert"><?php print caGetThemeGraphic($this->request, 'nhprc-logo-1.png', array("alt" => $this->request->config->get("app_display_name")));?></a>
+					<h3>Funding provided by:</h3>
 					<a href="https://cthumanities.org/" class="funderLinksHorizontal"><?php print caGetThemeGraphic($this->request, 'CTH-Cultural-Support-Color-Horizontal.png', array("alt" => $this->request->config->get("app_display_name")));?></a>
+					<a href="https://www.archives.gov/nhprc/apply/program.html" class="funderLinksVert"><?php print caGetThemeGraphic($this->request, 'nhprc-logo-1.png', array("alt" => $this->request->config->get("app_display_name")));?></a>
 				</div>
 			</div>
 		</footer><!-- end footer -->

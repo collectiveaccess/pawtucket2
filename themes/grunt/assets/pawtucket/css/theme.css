@@ -25,6 +25,11 @@ a:hover{
 H1, h1, h2, H2, H3, h3, H4, h4, H5, h5{
 	text-transform:capitalize;
 }
+h1 i {
+	font-size: inherit;
+	font-weight: inherit;
+	color: inherit;
+}
 a, a:hover {
   color: #000;
 }
@@ -86,7 +91,7 @@ hr{
 @media (min-width:768px){
 	.navbar-brand{
 		width: 200px;
-		padding-top: 10px;
+		padding-top: 25px;
 		padding-bottom: 18px;
 	}
 }
@@ -641,7 +646,12 @@ body.frontContainer #footer{
 .collectionTile:hover{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
-
+.subjectGuideIntro{
+	font-size: 16px;
+	font-weight: normal;
+	line-height: 1.8em;
+	padding-bottom:20px;
+}
 /* listing */
 .collectionTile .title {
 	padding: 10px;
@@ -750,6 +760,8 @@ body.frontContainer #footer{
 }
 .detailFilter .btn-group button{
 	font-size:12px;
+	background-color:#efefef;
+	color:#000;
 }
 .collectionDetailListItem{
 	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -777,6 +789,24 @@ body.frontContainer #footer{
 	color:#fff;
 	text-decoration:none;
 }
+.detail .relTabButton {
+	display: inline-block;
+	padding: 15px 30px 15px 30px;
+	cursor: pointer;
+	color: #000;
+	font-size:15px;
+	font-family:lato;
+	background-color:#FFF;
+	margin-right:1px;
+}
+.detail .relTabButton:hover, .detail .relTabButton.selected {
+	background-color:#000;
+	color:#0081ca;
+}
+.detail .relatedBlockTabs{
+	margin-bottom:15px;
+	border-bottom:1px solid #000;
+}
 /* static pages */
 .staticPage{
 	font-size:18px;
@@ -801,6 +831,13 @@ body.frontContainer #footer{
 	font-size: 18px;
 	font-family:Lato;
 	margin-top:30px;
+}
+.projectSitePage b, .projectSitePage strong{
+	font-family: Lato;
+	font-weight:normal;
+}
+.projectSitePage a{
+	text-decoration:underline;
 }
 /* advanced search */
 @media (min-width:992px){

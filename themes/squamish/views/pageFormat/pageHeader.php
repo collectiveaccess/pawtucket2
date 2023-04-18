@@ -141,7 +141,7 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span></a>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span><span class='userIconLabel'>LOGIN</span></a>
 						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
@@ -166,24 +166,24 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "about") || strToLower($this->request->getController()) == "contact") ? ' active' : ''; ?>">
+					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "about") || strToLower($this->request->getController()) == "contact" || strToLower($this->request->getController()) == "guide") ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("About the Collections"), "", "", "About", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, _t("User Guide"), "", "", "About", "Guide"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "Contact", "form"); ?></li>
+							<li><?php print caNavLink($this->request, _t("About Ta X̱ay Sxwimálatn Chet"), "", "", "About", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("User Guide"), "", "", "Guide", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "About", "Contact"); ?></li>
 						</ul>
 					</li>
-					<li <?php print ($this->request->getController() == "Storytelling") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Storytelling"), "", "", "About", "Index"); ?></li>
+					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li class="dropdown-container<?php print (strToLower($this->request->getController()) == "listing") ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("Learning & Teaching"), "", "", "", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("Curriculum"), "", "", "", ""); ?></li>
 							<li><?php print caNavLink($this->request, _t("External Resources"), "", "", "Listing", "Resources"); ?></li>
 						</ul>
 					</li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li <?php print ($this->request->getController() == "Storytelling") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Storytelling & Research Guides"), "", "", "", ""); ?></li>
+					
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

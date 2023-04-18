@@ -35,11 +35,11 @@
  	$va_listing_info = $this->getVar('listingInfo');
  	$va_access_values = $this->getVar("access_values");
 ?>
-	<div class="row bg_dark_eye exploreRow exploreResourcesRow">
+	<div class="row bg_dark_eye pageHeaderRow">
 		<div class="col-sm-12">
 			<H1>External Resources</H1>
 			<p>
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit. In lacus velit, viverra sit amet mattis dictum, maximus vel quam. Nullam porta eget elit in eleifend. Nulla facilisi. Nullam gravida enim quis enim luctus luctus. Ut viverra turpis a lorem aliquam vehicula. Duis mollis accumsan felis elementum consequat. Quisque vel fringilla nulla. Nam posuere sem id nibh convallis elementum. Maecenas nec augue mi. Proin porttitor commodo tincidunt. Aliquam lorem nisi, dignissim sit amet lectus finibus, consequat maximus risus. Nulla volutpat mauris sodales enim viverra, semper malesuada ex eleifend. Fusce a imperdiet mi. Sed nec orci id nibh aliquam pulvinar quis ac nibh. Sed id ligula leo. Cras urna ex, pulvinar et lorem at, bibendum dapibus massa. Nunc fringilla leo id arcu vehicula imperdiet. Pellentesque tincidunt, sem vel tristique consequat, sapien augue vestibulum tellus, eget ornare dui eros eget augue. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque a justo ipsum. Nunc venenatis rhoncus maximus. Suspendisse enim odio, finibus sed iaculis et, consectetur et sapien. Etiam condimentum bibendum sem posuere aliquam. Cras non turpis ac tortor semper congue. Phasellus sollicitudin ultricies justo nec malesuada.</p>
+			{{{resources_intro}}}
 		</div>
 	</div>
 	<div class='row'>
@@ -56,7 +56,7 @@
 				$i = 0;
 			}
 			$vs_image = $qr_list->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.media.large</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
-			$vs_desc = $qr_list->get("ca_objects.description");
+			$vs_desc = strip_tags($qr_list->get("ca_objects.description"));
 			if(mb_strlen($vs_desc) > 250){
 				$vs_desc = substr($vs_desc, 0, 250)."...";
 			}

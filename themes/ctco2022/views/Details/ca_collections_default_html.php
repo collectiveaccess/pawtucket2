@@ -55,6 +55,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-8 col-lg-8'>
+<?php print $t_item->get("ca_collections.source_id"); ?>
 					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
 					<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
 					{{{<ifdef code="ca_collections.parent_id"><div class="unit">Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
@@ -70,23 +71,6 @@
 					</div>
 				</div><!-- end col -->
 			</div><!-- end row -->
-			<div class="row">
-				<div class='col-sm-12'>
-					<?php
-						if ($vb_show_hierarchy_viewer) {	
-					?>
-							<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-							<script>
-								$(document).ready(function(){
-									$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
-								})
-							</script>
-					<?php				
-						}									
-					?>				
-				</div><!-- end col -->
-			</div><!-- end row -->
-
 			<div class="row">
 
 				<div class='col-md-12'>
@@ -111,8 +95,9 @@
 
 
 					{{{
-						<ifdef code="ca_collections.unitdate">
-							<div class="unit"><label>Date</label><unit relativeTo="ca_collections.unitdate" delimiter="<br/>">^ca_collections.unitdate.dacs_date_value<ifdef code="ca_collections.unitdate.dacs_dates_types"> (^ca_collections.unitdate.dacs_dates_types)</ifdef></div></ifdef>
+						<ifdef code="ca_collections.unitdate.dacs_date_value">
+							<div class="unit"><label>Date</label><unit relativeTo="ca_collections.unitdate" delimiter="<br/>"><ifdef code="ca_collections.unitdate.dacs_date_value">^ca_collections.unitdate.dacs_date_value<ifdef code="ca_collections.unitdate.dacs_dates_types"> (^ca_collections.unitdate.dacs_dates_types)</ifdef></ifdef></div>
+						</ifdef>
 					}}}
 <?php
 					if($t_item->get("source_id")){
@@ -147,14 +132,31 @@
 						}
 					?> -->
 
-					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related People/Institutions</label>
-							<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div>
+					{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="donor,collector"><div class="unit"><label>Related People/Institutions</label>
+							<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="donor,collector"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div>
 					</ifcount>}}}
 
 				</div><!-- end col -->
 
 			</div><!-- end row -->
+			<div class="row">
+				<div class='col-sm-12'>
+					<?php
+						if ($vb_show_hierarchy_viewer) {	
+					?>
+							<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+							<script>
+								$(document).ready(function(){
+									$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
+								})
+							</script>
+					<?php				
+						}									
+					?>				
+				</div><!-- end col -->
+			</div><!-- end row -->
 
+			
 			{{{<ifcount code="ca_objects" min="1">
 				<div class="row">
 					<div id="browseResultsContainer">
@@ -164,7 +166,7 @@
 
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id', 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
 							jQuery('#browseResultsContainer').jscroll({
 								autoTrigger: true,
 								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

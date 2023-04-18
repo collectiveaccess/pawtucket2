@@ -144,3 +144,21 @@
 				});
 			});
 		</script>
+		
+<?php
+if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
+	# --- display lightbox alert
+	if(!CookieOptionsManager::showBanner()){
+		Session::setVar('visited_time', time());
+	}
+
+?>
+	<div class="frontAlert" onclick="$('.frontAlert').remove(); return false;">
+		<div class="frontAlertBox"><div class="pull-right pointer frontAlertClose" onclick="$('.frontAlert').remove(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+			<div class="frontAlertMessage">{{{hp_alert_message}}}<div class="enterButton"><a href="#" class="btn btn-default">Enter</a></div></div>
+			
+		</div>
+	</div>
+<?php
+}
+?>
