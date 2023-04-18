@@ -95,8 +95,9 @@
 
 
 					{{{
-						<ifdef code="ca_collections.unitdate">
-							<div class="unit"><label>Date</label><unit relativeTo="ca_collections.unitdate" delimiter="<br/>">^ca_collections.unitdate.dacs_date_value<ifdef code="ca_collections.unitdate.dacs_dates_types"> (^ca_collections.unitdate.dacs_dates_types)</ifdef></div></ifdef>
+						<ifdef code="ca_collections.unitdate.dacs_date_value">
+							<div class="unit"><label>Date</label><unit relativeTo="ca_collections.unitdate" delimiter="<br/>"><ifdef code="ca_collections.unitdate.dacs_date_value">^ca_collections.unitdate.dacs_date_value<ifdef code="ca_collections.unitdate.dacs_dates_types"> (^ca_collections.unitdate.dacs_dates_types)</ifdef></ifdef></div>
+						</ifdef>
 					}}}
 <?php
 					if($t_item->get("source_id")){
