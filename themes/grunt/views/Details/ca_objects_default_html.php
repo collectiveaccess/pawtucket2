@@ -153,7 +153,7 @@ if($vb_2_col){
 					{{{<ifdef code="ca_objects.object_history.exhibition_hist"><div class='unit'><label>Exhibition History</label>^ca_objects.object_history.exhibition_hist</div></ifdef>}}}
 
 					{{{<ifdef code="ca_objects.rightsSummary_asset"><div class="unit"><i>^ca_objects.rightsSummary_asset</i></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.content_notice"><div class="unit"><label>Content</label>^ca_objects.content_notice</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.content_notice"><div class="unit"><label>Contains</label>^ca_objects.content_notice</div></ifdef>}}}
 					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place</label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
 					
 				</div><!-- end col -->

@@ -715,34 +715,18 @@ var clipboard = new Clipboard('.copy-button');
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
-		if($vb_is_search && !$vn_result_size && $vs_search){
-			# --- try to display did you mean results if available
-			$o_search = caGetSearchInstance($vs_table);
-			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {
-				$va_suggest_links = array();
-				foreach($va_suggestions as $vs_suggestion){
-					$va_suggest_links[] = caNavLink($this->request, $vs_suggestion, '', '*', '*', '*', array('search' => $vs_suggestion, 'sort' => $vs_current_sort, 'view' => $vs_current_view));
-				}
-				
-				if (sizeof($va_suggest_links) > 1) {
-					print "<div class='col-sm-12'>"._t("Did you mean one of these: %1?", join(', ', $va_suggest_links))."</div>";
-				} else {
-					print "<div class='col-sm-12'>"._t("Did you mean %1?", join(', ', $va_suggest_links))."</div>";
-				}
-			}
-		}
 } // !ajax
 
 # --- check if this result page has been cached
 # --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
 $vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);
-if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
-	print ExternalCache::fetch($vs_cache_key, 'browse_results');
-}else{
+// if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
+// 	print ExternalCache::fetch($vs_cache_key, 'browse_results');
+// }else{
 	$vs_result_page = $this->render("Browse/browse_results_{$vs_current_view}_html.php");
 	ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results');
 	print $vs_result_page;
-}		
+//}		
 
 if (!$vb_ajax) {	// !ajax
 ?>

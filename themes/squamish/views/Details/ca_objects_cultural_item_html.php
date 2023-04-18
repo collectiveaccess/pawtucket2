@@ -81,6 +81,7 @@
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.date"><div class="unit"><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.preferred_labels.name"><div class="unit"><label>Object Name / Title</label>^ca_objects.preferred_labels.name</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.object_type"><div class="unit"><label>Object Type</label>^ca_objects.object_type%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'>
 						<label>Description</label>
@@ -89,8 +90,6 @@
 				</ifdef>}}}
 				{{{<ifdef code="ca_objects.inscription"><div class="unit"><label>Inscription</label>^ca_objects.inscription%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.materials"><div class="unit"><label>Materials</label>^ca_objects.materials%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.object_type"><div class="unit"><label>Object Type</label>^ca_objects.object_type%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.theme"><div class="unit"><label>Themes</label>^ca_objects.theme%delimiter=,_</div></ifdef>}}}
 <?php
 				$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
 				if(is_array($va_entities) && sizeof($va_entities)){

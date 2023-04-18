@@ -115,12 +115,19 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					$vs_image = (in_array($vs_table, array('ca_objects', 'ca_entities'))) ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
-				
+					$t_list_item->load($qr_res->get($vs_table.".type_id"));
+					$vs_typecode = $t_list_item->get("idno");
+					$vs_image = "";		
+					if(($vs_table == "ca_objects") && ($vs_typecode == "nonav_manifestation")){
+						# --- image needs to come from related item for text and images
+						$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.related' restrictToTypes='item' restrictToRelationshipTypes='IsItemOfNonAV' limit='1'>^ca_object_representations.media.small</unit>", array("checkAccess" => $va_access_values));	
+						
+						
+					}else{
+						$vs_image = (in_array($vs_table, array('ca_objects', 'ca_entities'))) ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					}
 					if(!$vs_image){
 						#if ($vs_table == 'ca_objects') {
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
 							# --- have different icons for text and media nonav_manifestation
 							if(($vs_table == "ca_objects") && ($vs_typecode == "nonav_manifestation")){
 								switch($qr_res->get("ca_objects.vhh_MediaType.MT_List", array("convertCodesToDisplayText" => true))){
