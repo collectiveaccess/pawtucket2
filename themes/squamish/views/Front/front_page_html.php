@@ -107,7 +107,7 @@
 				</div>
 				<div class="col-md-4">
 					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Cultural<br/>Collections", "", "", "Browse", "cultural"); ?>
+						<?php print caNavLink($this->request, "Cultural<br/>Collection", "", "", "Browse", "cultural"); ?>
 					</div>
 				</div>
 				<div class="col-md-4">

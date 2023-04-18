@@ -37,6 +37,9 @@ a:hover{
 hr {
 	border-color: #000;
 }
+.underline{
+	text-decoration:underline;
+}
 .bgLightGray{
 	background-color:#f2f2f2;
 }
@@ -79,10 +82,13 @@ hr {
 		margin-top:26px;
 	}
 	.nav > li.dropdown > a.icon{
-		padding-top: 15px;
+		padding-top: 11px;
 		padding-bottom: 15px;
 		margin-top: 15px;
 		margin-bottom: 15px;
+	}
+	.nav > li.dropdown > a.icon .glyphicon-user{
+		padding-left:5px;
 	}
 }
 @media (max-width:767px){
@@ -141,6 +147,12 @@ hr {
   top: -1px;
   font-size: 10px;
   font-size:10px;
+}
+.userIconLabel{
+	display:block;
+	font-size:10px;
+	font-weight:normal;
+	line-height: .7em;
 }
 /* header mobile icons navigation */
 .navbar-default .navbar-toggle{
@@ -342,6 +354,31 @@ a.browseRemoveFacet .glyphicon{
 }
 #bRefine H3{
 	cursor: pointer;
+}
+#bRefine H3:hover{
+	text-decoration:underline;
+}
+#bRefine H3 .fa{
+	font-size: 12px;
+}
+.bResultItemContent .bResultItemImgPlaceholder {
+	background-color: #F5F5F5;
+	border: 2px solid #EDEDED;
+	color: #858585;
+	margin-bottom: 10px;
+	padding: 60px 20% 72px;
+	text-align: center;
+	width: 100%;
+}
+.bResultListItemContent .bResultItemImgPlaceholder img{
+	width:72px;
+	height:auto;
+}
+.bResultListItemImg .bResultItemImgPlaceholder {
+	padding: 20px 10px;
+}
+.multisearchImgPlaceholder {
+	padding: 20px 20%;
 }
 /* front */
 html.frontContainer {
@@ -717,6 +754,13 @@ body.frontContainer #footer{
 	text-align: center;
 }
 
+#collectionLoad div.hierarchyObjects{
+	margin-left:10px;
+}
+#collectionLoad div.hierarchyObjects label{
+	cursor: pointer;
+}
+
 #collectionLoad div.hierarchyObjects a{
 	font-weight:normal;
 	font-size:13px;
@@ -738,16 +782,6 @@ body.frontContainer #footer{
 	text-transform:capitalize;
 }
 
-@media (min-width: 768px) {
-	.pageHeaderRow p {
-		-webkit-columns: auto 2; /* Chrome, Safari, Opera */
-		-moz-columns: auto 2; /* Firefox */
-		columns: auto 2;
-		-webkit-column-gap: 50px; /* Chrome, Safari, Opera */
-		-moz-column-gap: 50px; /* Firefox */
-		column-gap: 50px;
-	}
-}
 .pageHeaderRow.dark, .pageHeaderRow.dark H1{
 	color:#000;
 }
@@ -899,6 +933,18 @@ body.frontContainer #footer{
 .detail .unit a.btn{
 	color:#FFF;
 	text-decoration:none;
+}
+div.caMediaOverlayControls .objectInfo {
+	width: auto;
+	float: right;
+	padding-top: 4px;
+}
+div.caMediaOverlayControls, div.caMediaOverlayControls:hover {
+	top: 30px;
+	width: auto;
+	right: 0px;
+	left: auto;
+	background-color:transparent;
 }
 /* advanced Search */
 .advancedSearchField .formLabel {
@@ -1136,7 +1182,7 @@ h2.tl-headline{
 .staticPage h1{
 	color:#000;
 }
-@media (min-width:768px){
+/*@media (min-width:768px){
 	.colText{
 		-webkit-columns: auto 2;
 		-moz-columns: auto 2;
@@ -1145,7 +1191,7 @@ h2.tl-headline{
 		-moz-column-gap: 50px;
 		column-gap: 50px;
 	}
-}
+}*/
 
 .multisearch .authorityResult {
 	margin-bottom: 5px;

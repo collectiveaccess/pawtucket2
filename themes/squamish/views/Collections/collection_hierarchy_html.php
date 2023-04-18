@@ -16,6 +16,8 @@
 			while($qr_collection_children->nextHit()){
 				if($qr_collection_children->get("ca_collections.children.collection_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.idno_sort'))){
 					$vb_has_grandchildren = true;
+				}elseif($qr_collection_children->get("ca_objects.object_id", array('checkAccess' => $va_access_values))){
+					$vb_has_grandchildren = true;
 				}
 			}
 		}
