@@ -132,7 +132,7 @@
 							<li><a href="https://www.uag.pitt.edu/exhibitions/current">Current Exhibitions</a></li>
 							<li><a href="https://www.uag.pitt.edu/exhibitions/future">Future Exhibitions</a></li>
 							<li><a href="https://www.uag.pitt.edu/exhibitions/past">Past Exhibitions</a></li>
-							<li><?php print caNavLink($this->request, "Online Exhibitions", "", "", "Gallery", "Index"); ?></a></li>
+							<li><a href="https://www.uag.pitt.edu/exhibitions/online">Online Exhibitions</a></li>
 						</ul>	
 					</li>
 					<li class="dropdown" style="position:relative;"><a href="#" class="ddChevron"><span class="ticon ticon-angle-down wpex-transition-all wpex-duration-300" aria-hidden="true"></span></a><a href="https://www.uag.pitt.edu/events" class="dropdown-toggle mainhead top">Events</a>
