@@ -1063,7 +1063,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				ob_start();
 ?>
 			<div class="<?= $class; ?> video-responsive" style="width: <?= $width; ?>px; height:<?= $height; ?>px;">
-				<video id="<?= $id; ?>" playsinline controls data-poster="<?= $poster_frame_url; ?>" width="<?= $width; ?>" height="<?= $height; ?>" >
+				<video id="<?= $id; ?>" playsinline controls data-poster="<?= $poster_frame_url; ?>" width="<?= $width; ?>" height="<?= $height; ?>" style="object-fit: contain;">
 				  <source src="<?= $url; ?>" type="<?= $properties["mimetype"]; ?>" />
 <?php
 						if(is_array($captions)) {
