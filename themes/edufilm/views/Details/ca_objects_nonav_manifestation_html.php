@@ -251,7 +251,7 @@
 				{{{<ifdef code="ca_objects.vhh_Extent">
 					<div class="unit"><label><t>Extent</t></label>
 					<unit relativeTo="ca_objects.vhh_Extent" delimiter="<br/>">
-						^ext_Value <ifdef code="ca_objects.vhh_Extent">(^ext_Unit)</ifdef>
+						^ext_Value <ifdef code="ca_objects.vhh_Extent">^ext_Unit</ifdef>
 						<ifdef code="ca_objects.vhh_Extent.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 								<ifdef code="ca_objects.vhh_Extent.__source__">

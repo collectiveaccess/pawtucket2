@@ -936,6 +936,10 @@ a.vizZoom{
 	margin-bottom:15px;
 	border-bottom:1px solid #333;
 }
+.detail .fullWidthImg img{
+	width:100%;
+	height:auto;
+}
 
 .staticPage, staticPage p{
 	font-size:17px;

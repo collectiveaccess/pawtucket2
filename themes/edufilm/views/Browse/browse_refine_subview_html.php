@@ -103,7 +103,9 @@
 					$va_facet_popover = array();
 					$vs_facet_desc = "";
 					$vs_label = $va_item['label'];
-					$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+					if($vs_facet_name != "type_of_activity_facet"){
+						$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+					}
 					print "<div class='".(($va_facet_info["columns"]) ? "col-md-12 col-lg-4" : "col-sm-12")." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view)).$vs_facet_desc."</div>";
 					$vn_c++;
 					$vn_col++;

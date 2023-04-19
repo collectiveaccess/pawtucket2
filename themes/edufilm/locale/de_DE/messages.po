@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Educational Film Practice in Austria\n"
 "POT-Creation-Date: 31\n"
-"PO-Revision-Date: 2023-04-11 17:23-0400\n"
+"PO-Revision-Date: 2023-04-19 14:28-0400\n"
 "Last-Translator: Maria Passarotti <maria@whirl-i-gig.com>\n"
 "Language-Team: EDUFILM\n"
 "Language: de_DE\n"
@@ -1016,7 +1016,7 @@ msgid "films"
 msgstr "Filme"
 
 msgid "External Identifier"
-msgstr "Externer ID"
+msgstr "Externe ID"
 
 msgid "Country of Production"
 msgstr "Produktionsland"
@@ -1476,7 +1476,7 @@ msgid "Digital Format"
 msgstr "Digitales Format:"
 
 msgid "Physical Format"
-msgstr "Digitales Format:"
+msgstr "Physisches Format"
 
 msgid "Media Technology Type"
 msgstr "Art der Medientechnologie"
@@ -13479,3 +13479,39 @@ msgstr "Beschränkt auf Typen"
 
 msgid "from %1"
 msgstr "von %1"
+
+msgid "has image"
+msgstr "hat Bild"
+
+msgid "does not have image"
+msgstr "hat kein Bild"
+
+msgid "does not have note"
+msgstr "hat keine Anmerkung"
+
+msgid "Country"
+msgstr "Land"
+
+msgid "Archive"
+msgstr "Archiv"
+
+msgid "biography"
+msgstr "biographie"
+
+msgid "has biography"
+msgstr "hat Biographie"
+
+msgid "does not have biography"
+msgstr "hat keine Biographie"
+
+msgid "historical overview"
+msgstr "Historischer Überblick"
+
+msgid "has historical overview"
+msgstr "hat Historischer Überblick"
+
+msgid "does not have historical overview"
+msgstr "hat keine Historischer Überblick"
+
+msgid "Provenance"
+msgstr "Herkunft"
