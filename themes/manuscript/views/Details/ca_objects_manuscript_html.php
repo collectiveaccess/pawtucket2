@@ -47,7 +47,7 @@
 <?php
 			if($t_object->get('ca_object_representations')){
 ?>
-				<div class='col-sm-4 col-sm-offset-1'>
+				<div class='col-sm-5'>
 					{{{representationViewer}}}
 								
 					<div id="detailAnnotations"></div>
