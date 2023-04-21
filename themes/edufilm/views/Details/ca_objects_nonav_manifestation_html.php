@@ -414,7 +414,7 @@
 					<div class="unit"><label><t>Education Type</t></label>
 					<unit relativeTo="ca_objects.edu_EducationType" delimiter="<br/>">
 
-						<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeType"><t>Type</t> - (^ca_objects.edu_EducationType.edu_EducationTypeType)</ifdef>
+						<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeType|ca_objects.edu_EducationType.edu_EducationTypeText"><t>Type</t> &mdash; (<b>^ca_objects.edu_EducationType.edu_EducationTypeType</b><ifdef code="ca_objects.edu_EducationType.edu_EducationTypeText,ca_objects.edu_EducationType.edu_EducationTypeType"> - </ifdef>^ca_objects.edu_EducationType.edu_EducationTypeText)</ifdef>
 						<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeGrade"><t>Grade</t> - (^ca_objects.edu_EducationType.edu_EducationTypeGrade)</ifdef>
 						<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeAge"><t>Age</t> - (^ca_objects.edu_EducationType.edu_EducationTypeAge)</ifdef>
 

@@ -168,22 +168,22 @@
 						</div>
 					</ifdef>}}}
 					{{{<ifdef code="ca_entities.vhh_Description">
-						<div class="unit"><label><t>Description</t></label>
 							<unit relativeTo="ca_entities.vhh_Description" delimiter=" ">
 								<if rule='^ca_entities.vhh_Description.DescriptionType !~ /(biography|Biografie)/i'>
-									<div><ifdef code="ca_entities.vhh_Description.DescriptionType"><b>^ca_entities.vhh_Description.DescriptionType</b> &mdash;</ifdef>^ca_entities.vhh_Description.DescriptionText
+								<div class="unit"><label><t>Description</t></label>
+									<div><span class="trimText"><ifdef code="ca_entities.vhh_Description.DescriptionType"><b>^ca_entities.vhh_Description.DescriptionType</b> &mdash;</ifdef>^ca_entities.vhh_Description.DescriptionText
 									<ifdef code="ca_entities.vhh_Description.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
-									<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
-										<ifdef code="ca_entities.vhh_Description.__source__">
-											<br/>
-											<small><t>Source:</t></small>
-											<small>^ca_entities.vhh_Description.__source__</small>
-										</ifdef>
-									</div>
-									</div>
+										<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+											<ifdef code="ca_entities.vhh_Description.__source__">
+												<br/>
+												<small><t>Source:</t></small>
+												<small>^ca_entities.vhh_Description.__source__</small>
+											</ifdef>
+										</div>
+									</span></div>
+								</div>
 								</if>
 							</unit>
-						</div>
 					</ifdef>}}}
 
 					{{{<ifdef code="ca_entities.vhh_URL">

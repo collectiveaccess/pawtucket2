@@ -13515,3 +13515,6 @@ msgstr "hat keine Historischer Überblick"
 
 msgid "Provenance"
 msgstr "Herkunft"
+
+msgid "does not have description"
+msgstr "hat keine Beschreibung"
