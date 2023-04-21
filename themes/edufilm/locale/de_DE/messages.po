@@ -13518,3 +13518,6 @@ msgstr "Herkunft"
 
 msgid "does not have description"
 msgstr "hat keine Beschreibung"
+
+msgid "Has Video or Image"
+msgstr "Hat Video oder Bild"
