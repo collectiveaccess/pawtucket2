@@ -62,7 +62,7 @@ class CheckInController extends ActionController {
 			throw new ApplicationException(_t('Invalid checkout'));
 		}
 		$user_id = $t_checkout->get('user_id');
-		if($user_id != $this->request->getUserID()) {
+		if(!$this->request->user->canDoAction('can_do_library_checkinout_for_anyone') && ($user_id != $this->request->getUserID())) {
 			throw new ApplicationException(_t('Checkout is not by current user'));
 		}
 		if(!($t_object = ca_objects::find(['object_id' => $t_checkout->get('object_id')], ['returnAs' => 'firstModelInstance']))) {
