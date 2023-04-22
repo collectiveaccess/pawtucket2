@@ -262,7 +262,7 @@
 						<div class="unit"><label><t>Education Type</t></label>
 						<unit relativeTo="ca_objects.edu_EducationType" delimiter="<br/>">
 
-							<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeType|ca_objects.edu_EducationType.edu_EducationTypeText"><b><t>Type</t></b> &mdash; (^ca_objects.edu_EducationType.edu_EducationTypeType<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeText,ca_objects.edu_EducationType.edu_EducationTypeType"> - </ifdef>^ca_objects.edu_EducationType.edu_EducationTypeText)</ifdef>
+							<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeType|ca_objects.edu_EducationType.edu_EducationTypeText"><t>Type</t> &mdash; (<b>^ca_objects.edu_EducationType.edu_EducationTypeType</b><ifdef code="ca_objects.edu_EducationType.edu_EducationTypeText,ca_objects.edu_EducationType.edu_EducationTypeType"> - </ifdef>^ca_objects.edu_EducationType.edu_EducationTypeText)</ifdef>
 							<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeGrade"><b><t>Grade</t></b> &mdash; (^ca_objects.edu_EducationType.edu_EducationTypeGrade)</ifdef>
 							<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeAge"><b><t>Age</t></b> &mdash; (^ca_objects.edu_EducationType.edu_EducationTypeAge)</ifdef>
 
@@ -500,7 +500,7 @@
 								<br/>
 								<t>Extent</t>:
 								<unit relativeTo="ca_objects.vhh_Extent" delimiter="<br/>">
-									^ext_Value <ifdef code="ca_objects.vhh_Extent">(^ext_Unit)</ifdef>
+									^ext_Value <ifdef code="ca_objects.vhh_Extent">^ext_Unit</ifdef>
 									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
 										<ifdef code="ca_objects.vhh_Extent">
 											<small><t>Source</t>:</small>
