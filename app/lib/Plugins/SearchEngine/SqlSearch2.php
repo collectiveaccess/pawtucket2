@@ -326,6 +326,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 */
 	private function _processQueryMultiterm(int $subject_tablenum, $query) {
 		$terms = $query->getTerms();
+		$signs = $query->getSigns();
 		
 		$acc = [];
 	 	foreach($terms as $i => $term) {
@@ -552,6 +553,9 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 	if (in_array($field_elements[0], [_t('created'), _t('modified')])) {
 	 		return $this->_processQueryChangeLog($subject_tablenum, $query);
 	 	}
+	 	
+	 	$field_sql = null;
+	 	
 	 	if ($this->getOption('strictPhraseSearching')) {
 	 		$words = [];
 	 		$temp_tables = [];
@@ -684,7 +688,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				$field = $terms[0]->field;
 	 			break;
 	 	}
-	 	
+	 	$text = str_replace('*', '', $text);	// strip wildcards
 	 	$field_lc = mb_strtolower($field);
 	 	$field_elements = explode('.', $field_lc);
 	 	if (in_array($field_elements[0], [_t('created'), _t('modified')])) {
@@ -958,6 +962,8 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			if (!($t_instance = Datamodel::getInstance($subject_tablenum, true))) {
 				throw new ApplicationException(_t('Invalid subject table: %1', $subject_tablenum));
 			}
+			$table_name = $t_instance->tableName();
+			
 			foreach($filters as $filter) {
 				$tmp = explode('.', $filter['field']);
 				$path = [];
@@ -1100,7 +1106,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			$field_num_proc = (int)substr($content_fieldname, 1);
 			
 			// do we need to index this (don't index attribute types that we'll search directly)
-			if (WLPlugSearchEngineSqlSearch2::$metadata_elements[$field_num_proc]) {
+			if (WLPlugSearchEngineSqlSearch2::$metadata_elements[$field_num_proc] ?? null) {
 				switch(WLPlugSearchEngineSqlSearch2::$metadata_elements[$field_num_proc]['datatype']) {
 					case __CA_ATTRIBUTE_VALUE_CONTAINER__:	
 					case __CA_ATTRIBUTE_VALUE_GEOCODE__:	
@@ -1648,11 +1654,11 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 */
 	private function _getElementIDForAccessPoint($subject_tablenum, $access_point) {
 		$tmp = preg_split('![/\|]+!', $access_point);
-		list($table, $field, $subfield, $subsubfield, $subsubsubfield) = explode('.', $tmp[0]);
+		list($table, $field, $subfield, $subsubfield, $subsubsubfield) = array_pad(explode('.', $tmp[0]), 5, null);
 		if ($table === '_fulltext') { return null; }	// ignore "_fulltext" specifier – just treat as text search
 		
 		$rel_table = caGetRelationshipTableName($subject_tablenum, $table);
-		$rel_type_ids = ($tmp[1] && $rel_table) ? caMakeRelationshipTypeIDList($rel_table, preg_split("![,;]+!", $tmp[1])) : [];
+		$rel_type_ids = (is_array($tmp) && sizeof($tmp) && ($tmp[1] ?? null) && $rel_table) ? caMakeRelationshipTypeIDList($rel_table, preg_split("![,;]+!", $tmp[1])) : [];
 		
 		if (!($t_table = Datamodel::getInstanceByTableName($table, true))) { 
 			if(in_array($table, caSearchGetTablesForAccessPoints([$tmp[0]]))) {
@@ -1758,8 +1764,8 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 					);
 				} else {
 					return array(
-						'access_point' => $tmp[0],
-						'relationship_type' => $tmp[1],
+						'access_point' => $tmp[0] ?? null,
+						'relationship_type' => $tmp[1] ?? null,
 						'table_num' => $table_num,
 						'element_id' => $t_element->getPrimaryKey(),
 						'field_num' => 'A'.$t_element->getPrimaryKey(),
@@ -1772,7 +1778,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				}
 			}
 		} else {
-			return array('access_point' => $tmp[0], 'relationship_type' => $tmp[1], 'table_num' => $table_num, 'field_num' => 'I'.$fld_num, 'field_num_raw' => $fld_num, 'datatype' => null, 'relationship_type_ids' => $rel_type_ids, 'type' => 'INTRINSIC', 'indexing_options' => $indexing_info);
+			return array('access_point' => $tmp[0] ?? null, 'relationship_type' => $tmp[1] ?? null, 'table_num' => $table_num, 'field_num' => 'I'.$fld_num, 'field_num_raw' => $fld_num, 'datatype' => null, 'relationship_type_ids' => $rel_type_ids, 'type' => 'INTRINSIC', 'indexing_options' => $indexing_info);
 		}
 
 		return null;
@@ -1782,15 +1788,15 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 *
 	 */
 	private function _getBooleanOperator(?array $signs, int $index) {
-		if (is_null($signs) || ($signs[$i] === true)) {	
+		if (is_null($signs ?? null) || (($signs[$index] ?? null) === true)) {	
 			// if array is null then according to Zend Lucene all subqueries should be "are required"... so we AND them
 			return "AND";
-		} elseif (is_null($signs[$index])) {	
+		} elseif (is_null($signs[$index] ?? null)) {	
 			// is the sign for a particular query is null then OR it is (it is "neither required nor prohibited")
 			return 'OR';
 		} else {
 			// true sign indicates "required" (AND) operation, false indicates "prohibited" (NOT) operation
-			return ($signs[$index] === false) ? 'NOT' : 'AND';	
+			return (($signs[$index] ?? null) === false) ? 'NOT' : 'AND';	
 		}
 	}
 	# -------------------------------------------------------
