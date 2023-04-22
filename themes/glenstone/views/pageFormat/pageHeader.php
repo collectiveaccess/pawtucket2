@@ -26,11 +26,12 @@
  * ----------------------------------------------------------------------
  */
  
-$can_do_library_checkin = $can_do_library_checkout = $library_services_enabled = false;
+$can_do_library_checkin = $can_do_library_checkout = $library_services_enabled = $is_general_library_login = false;
 if($this->request->isLoggedIn()) {
 	$can_do_library_checkin = $this->request->user->canDoAction('can_do_library_checkin');
 	$can_do_library_checkout = $this->request->user->canDoAction('can_do_library_checkout');
 	$library_services_enabled = $this->request->config->get('enable_library_services');
+	$is_general_library_login = $this->request->user->canDoAction('can_do_library_checkinout_for_anyone');
 }
 ?><!DOCTYPE html>
 <html lang="en">
@@ -80,7 +81,7 @@ if($this->request->isLoggedIn()) {
 			if($this->request->isLoggedIn()){
 				print '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 				print '<li class="divider"></li>';
-				if($can_do_library_checkout) {
+				if($can_do_library_checkout && !$is_general_library_login) {
 					print "<li>".caNavLink($this->request, _t('My Loans'), '', 'Library', 'CheckOut', 'MyLoans', [])."</li>";
 				}
 				print "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Lightbox', 'Index', array())."</li>";
@@ -104,22 +105,7 @@ if($this->request->isLoggedIn()) {
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art"), "", "", "Search/advanced", "artworks"); ?></li>
-<?php
-					if($library_services_enabled && ($can_do_library_checkin || $can_do_library_checkout)) {
-?><li style="position:relative;" class="dropdown <?= ($this->request->getController() == "About") ? 'active' : ''; ?>"><?php print caNavLink($this->request, _t("Library"), "dropdown-toggle", "", "Search/advanced", "library", [], ['data-toggle' => 'dropdown']); ?>
-						<ul class="dropdown-menu">
-						<?php if($can_do_library_checkout) { ?><li <?php print ($this->request->getController() == "CheckOut") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Search"), "", "", "Search/advanced", "library"); ?></li><?php } ?>
-						<?php if($can_do_library_checkout) { ?><li <?php print ($this->request->getController() == "CheckOut") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Borrow"), "", "Library", "CheckOut", "Index"); ?></li><?php } ?>
-						<?php if($can_do_library_checkin) { ?><li <?php print ($this->request->getController() == "CheckIn") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Return"), "", "Library", "CheckIn", "Index"); ?></li><?php } ?>
-						</ul>
-						</li>
-<?php
-					} else {
-?>
-						<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Library"), "", "", "Search/advanced", "library"); ?></li>
-<?php
-					}
-?>
+					<li <?php print ($this->request->getController() == "Library") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Library"), "", "", "Search/advanced", "Library"); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives"), "", "", "Search/advanced", "archives"); ?></li>
 <?php
 					if ($this->request->user && ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin")  || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new"))){				
