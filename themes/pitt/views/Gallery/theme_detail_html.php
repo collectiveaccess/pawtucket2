@@ -23,6 +23,7 @@
 			}
 			
 ?>
+			<br />
 			<?php print $t_set->get('ca_sets.set_description') ?>		
 			</div>		
 		</div>	<!-- end col -->	
@@ -55,9 +56,12 @@
 				$va_theme_list = array();
 				foreach ($pa_set_items as $va_key => $pa_set_item) {
 					$t_set_item = new ca_set_items($pa_set_item['item_id']);
-					$va_themes = $t_set_item->get('ca_set_items.set_item_theme', array('returnAsArray' => true));
-					foreach ($va_themes as $va_key => $va_theme) {
-						$va_theme_list[$va_theme] = "<div class='galleryItem'>".caNavLink($this->request, caGetListItemByIDForDisplay($va_theme), '', '', 'Gallery', $pn_set_id, array('theme_id' => $va_theme))."</div>";
+					if ($va_themes = $t_set_item->get('ca_set_items.set_item_theme', array('returnAsArray' => true))){
+						foreach ($va_themes as $va_key => $va_theme) {
+							if ($va_theme != 0) {
+								$va_theme_list[$va_theme] = "<div class='galleryItem'>".caNavLink($this->request, caGetListItemByIDForDisplay($va_theme), '', '', 'Gallery', $pn_set_id, array('theme_id' => $va_theme))."</div>";
+							}
+						}
 					}
 				}
 				foreach ($va_theme_list as $s_key => $va_theme_list_link) {
