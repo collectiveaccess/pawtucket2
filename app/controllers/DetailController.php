@@ -353,7 +353,16 @@ class DetailController extends FindController {
 			$vn_mapped_count = 0;	
 			foreach($map_attributes as $map_attribute) {
 				if ($t_subject->get($map_attribute)){
-					$ret = $o_map->mapFrom($t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => caGetOption('mapFuzz', $options, null)));
+					$map_fuzz_level = null;
+					if(is_array($map_fuzz_config = caGetOption('mapFuzz', $options, null))) {
+						$when = $map_fuzz_config['when'] ?? null;
+						if(($when && $t_subject->evaluateExpression($map_fuzz_config['when'])) || !$when) {
+							$map_fuzz_level = $map_fuzz_config['level'] ?? null;
+						}
+					} else{
+						$map_fuzz_level = $map_fuzz_config;
+					}
+					$ret = $o_map->mapFrom($t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => (int)$map_fuzz_level));
 					$vn_mapped_count += $ret['items'];
 				}
 			}
