@@ -56,7 +56,7 @@
 				$i = 0;
 			}
 			$vs_image = $qr_list->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.media.large</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
-			$vs_desc = $qr_list->get("ca_objects.description");
+			$vs_desc = strip_tags($qr_list->get("ca_objects.description"));
 			if(mb_strlen($vs_desc) > 250){
 				$vs_desc = substr($vs_desc, 0, 250)."...";
 			}
