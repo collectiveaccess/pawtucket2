@@ -99,7 +99,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<div class='site-header'><?php print caNavLink($this->request, 'Florida Slave Trade<br/>Documentation and Education Center', '', '', '', '');?></div>
+				<div class='site-header'><?php print caNavLink($this->request, 'Florida Slave Trade<br/>Documentation &<br/>Education Center', '', '', '', '');?></div>
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -140,7 +140,7 @@
 					<li <?php print (($this->request->getController() == "Browse") || ($this->request->getAction() == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Database"), "", "", "Browse", "objects"); ?></li>
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibition"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print (($this->request->getController() == "Learn") || ($this->request->getAction() == "occurrences")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Learn"), "", "", "Learn", "Index"); ?></li>					
+					<li <?php print ($this->request->getController() == "Learn") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Learn"), "", "", "Learn", ""); ?></li>					
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
 				
 				</ul>
