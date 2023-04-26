@@ -110,7 +110,7 @@
 				$va_hierarchy = $t_collection->hierarchyWithTemplate("<l>^ca_collections.preferred_labels.name</l>", array('collection_id' => $va_collection_id, 'sort' => 'ca_collections.preferred_labels.name', 'checkAccess' => $va_access_values));
 				foreach($va_hierarchy as $vn_i => $va_hierarchy_item) {
 					$t_collection_item = new ca_collections($va_hierarchy_item['id']);
-					if (!in_array($t_collection_item->get('ca_collections.access'), $va_access_values)) {
+					if (is_array($va_access_values) && sizeof($va_access_values) && !in_array($t_collection_item->get('ca_collections.access'), $va_access_values)) {
 						continue;
 					}
 					if ($t_collection_item->get('ca_collections.fa_access') != 261 && $va_hierarchy_item['level'] != 0) {

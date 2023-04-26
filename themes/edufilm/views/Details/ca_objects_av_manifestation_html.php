@@ -170,7 +170,7 @@
 				{{{<ifdef code="ca_objects.vhh_Extent">
 					<label><t>Extent:</t></label>
 					<unit relativeTo="ca_objects.vhh_Extent" delimiter="<br/>">
-						^ext_Value <ifdef code="ca_objects.vhh_Extent">(^ext_Unit)</ifdef>
+						^ext_Value <ifdef code="ca_objects.vhh_Extent">^ext_Unit</ifdef>
 					</unit>	
 				</ifdef>}}}
 
