@@ -287,9 +287,9 @@ if($this->request->getParameter("detailNav", pInteger)){
 	<br/><br/>
 	<script type="text/javascript">		
 		function <?php print $vs_load_function; ?>(url, searchParam) {
-			jQuery("#browseResultsContainer<?php print ($vs_table == ca_occurrences) ? "Occ" : ""; ?>").data('jscroll', null);
-			jQuery("#browseResultsContainer<?php print ($vs_table == ca_occurrences) ? "Occ" : ""; ?>").load(url, {'search': searchParam}, function() {
-				jQuery("#browseResultsContainer<?php print ($vs_table == ca_occurrences) ? "Occ" : ""; ?>").jscroll({
+			jQuery("#browseResultsContainer<?php print ($vs_table == 'ca_occurrences') ? "Occ" : ""; ?>").data('jscroll', null);
+			jQuery("#browseResultsContainer<?php print ($vs_table == 'ca_occurrences') ? "Occ" : ""; ?>").load(url, {'search': searchParam}, function() {
+				jQuery("#browseResultsContainer<?php print ($vs_table == 'ca_occurrences') ? "Occ" : ""; ?>").jscroll({
 					autoTrigger: true,
 					loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
 					padding: 20,
