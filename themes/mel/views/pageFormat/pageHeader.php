@@ -76,9 +76,14 @@
 		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
 		print $o_debugbar_renderer->renderHead();
 	}
+
+$vb_black = false;
+if((in_array(strToLower($this->request->getController()), array("front", "learn"))) || ((strToLower($this->request->getController()) == "gallery") && (strToLower($this->request->getAction()) == "index"))){
+	$vb_black = true;
+}
 ?>
 </head>
-<body>
+<body <?php print ($vb_black) ? "class='black'" : ""; ?>>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->

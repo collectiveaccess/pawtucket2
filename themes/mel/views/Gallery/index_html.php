@@ -1,7 +1,7 @@
 <div class="row"><div class="col-sm-8 col-sm-offset-2">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12 col-sm-8">
+            <div class="col-xs-12 col-sm-8 exhibitionIntro">
                 <H1>Evidence of the Transatlantic Slave Trade</H1>
                 {{{exhibition_text}}}
             </div>
@@ -27,6 +27,16 @@
 			$va_sets_sorted[strToLower($va_set['set_code'])] = $va_set;
 		}
 		ksort($va_sets_sorted);
+		$va_set_ids_sorted = array();
+		foreach($va_sets_sorted as $va_set){
+			$va_set_ids_sorted[] = $va_set["set_id"];
+		}
+		
+		$o_context = new ResultContext($this->request, 'ca_sets', 'gallery');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_set_ids_sorted);
+		$o_context->saveContext();
+
 		# --- main area with info about selected set loaded via Ajax
 ?>
 		<div class="container">

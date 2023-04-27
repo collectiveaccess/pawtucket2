@@ -26,6 +26,14 @@ body {
 	max-width:1500px;
 	background-color:#FFF;
 }
+
+body.black {
+	background-color:#000;
+}
+
+body.black .container {
+	background-color:transparent;
+}
 #pageArea{
 	padding-top:20px;
 	padding-bottom:40px;
@@ -46,12 +54,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 h1 {
 	text-transform:capitalize;
-	font-size:20px;
+	font-size:30px;
 }
 h6{
     margin: 10px 0px 2px 0px;
 }
-
+body.black h1, body.black .staticPage p, .exhibitionIntro{
+	color:#FFF;
+}
 .btn-default, .browse .btn, .sets .btn {
 	background-color: #575757;
 	border-radius: 5px;
@@ -213,8 +223,8 @@ hr {
 }
 .front .hpCallOut{
 	font-family: 'Libre Caslon Text', serif;
-	font-size:40px;
-	color: #000;
+	font-size:50px;
+	color: #FFF;
 	padding-top:30px;
 	padding-bottom:30px;
 	text-align:center;
@@ -222,6 +232,7 @@ hr {
 .front .hpIntro{
 	margin-top:30px;
 	font-size:18px;
+	color: #FFF;
 }
 .front h1{
     font-family: 'Libre Caslon Text', serif;
