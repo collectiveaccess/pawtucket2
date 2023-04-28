@@ -172,7 +172,7 @@
 						</div>
 						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
 					</div>
-					<div class="headerAdvancedSearch"><?php print caNavLink($this->request, "Geavanceerd zoeken", "", "", "Search", "advanced/objects"); ?></div>
+					<div class="headerAdvancedSearch"><?php print caNavLink($this->request, "Uitgebreid zoeken", "", "", "Search", "advanced/objects"); ?></div>
 				</form>
 				<script type="text/javascript">
 					$(document).ready(function(){
@@ -183,16 +183,17 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
+					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Bladeren", "", "", "Browse", "Objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Expo's", "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Bladeren", "", "", "Browse", "Objects"); ?></li>
 					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, "About page", "", "", "About", ""); ?></li>
-							<li><?php print caNavLink($this->request, "About page", "", "", "About", ""); ?></li>
+							<li><?php print caNavLink($this->request, "Over Erfgoedcel Zuidrand", "", "", "OverErfgoedcelZuidrand", ""); ?></li>
+							<li><?php print caNavLink($this->request, "Over Erfgoedbank Zuidrand", "", "", "OverErfgoedbankZuidrand", ""); ?></li>
 						</ul>
 					</li>
+					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Contact", "", "", "Contact", "Form"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
