@@ -2032,7 +2032,7 @@ msgstr "E-mail"
 #: themes/default/views/Search/ca_occurrences_search_subview_html.php:49
 #: themes/default/views/Search/ca_places_search_subview_html.php:49
 msgid "Full results"
-msgstr "Alle resultaten"
+msgstr "Filter- en weergaveopties"
 
 #: themes/default/views/Search/ca_collections_search_subview_html.php:59
 #: themes/default/views/Search/ca_collections_search_subview_list_html.php:55
