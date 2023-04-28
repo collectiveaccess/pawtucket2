@@ -82,6 +82,9 @@ if((in_array(strToLower($this->request->getController()), array("front", "learn"
 	$vb_black = true;
 }
 ?>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica+SC&display=swap" rel="stylesheet">
 </head>
 <body <?php print ($vb_black) ? "class='black'" : ""; ?>>
 	<nav class="navbar navbar-default yamm" role="navigation">
