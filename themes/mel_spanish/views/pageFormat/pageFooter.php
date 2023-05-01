@@ -31,7 +31,7 @@
 		<footer id="footer" role="contentinfo">
 			<div class="row">
 				<div class="col-sm-12 text-center">
-					&copy; <?php print date("Y"); ?> by Mel Fisher Maritime Museum
+					&copy; <?php print date("Y"); ?> by <a href="https://www.melfisher.org">Mel Fisher Maritime Museum</a>
 					<br/>200 Greene Street | Key West, Florida 33040
 				</div>
 			</div>

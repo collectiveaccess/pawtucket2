@@ -80,7 +80,7 @@
 					
 					{{{<ifdef code="ca_collections.phys_desc"><div class="unit"><label>Physical Description</label>^ca_collections.phys_desc</div></ifdef>}}}
 					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,contributor"><div class="unit"><label>Creator<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="creator,contributor">s</ifcount></label>
-						<unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,contributor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l><ifdef code="ca_entities.bio_history_container.bio_history"><br/>^ca_entities.bio_history_container.bio_history</ifdef></unit>
+						<unit relativeTo="ca_entities_x_collections" restrictToRelationshipTypes="creator,contributor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l><if rule='^ca_collections.type_id =~ /Collection/'><ifdef code="ca_entities.bio_history_container.bio_history"><br/>^ca_entities.bio_history_container.bio_history</ifdef></if></unit>
 					</div></ifcount>}}}
 					
 					{{{<ifdef code="ca_collections.description"><div class="unit"><label>Scope & Content</label>^ca_collections.description</div></ifdef>}}}

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2019 Whirl-i-Gig
+ * Copyright 2013-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -264,6 +264,25 @@ class DetailController extends FindController {
 		
 		$o_context = ResultContext::getResultContextForLastFind($this->request, $table);
 		
+		if($o_context->findType() === 'multisearch') {
+			if(!in_array($t_subject->getPrimaryKey(), $o_context->getResultList())) {
+				// try to find context that contains item
+				$search_config = caGetSearchConfig();
+				$blocks = array_filter($search_config->getAssoc('multisearchTypes') ?? [], function($v) use ($table) {
+					return ($v['table'] === $table);
+				});
+				foreach($blocks as $block => $block_info) {
+					if($block === $o_context->findSubType()) { continue; }
+					if($o_new_context = new ResultContext($this->request, $table, 'multisearch', $block)) {
+						if(in_array($t_subject->getPrimaryKey(), $o_new_context->getResultList())) {
+							$o_context = $o_new_context;
+							break;
+						}
+					}
+				}
+			}
+		}
+		
 		$this->view->setVar('previousID', $vn_previous_id = $o_context->getPreviousID($t_subject->getPrimaryKey()));
 		$this->view->setVar('nextID', $vn_next_id = $o_context->getNextID($t_subject->getPrimaryKey()));
 		$this->view->setVar('previousURL', caDetailUrl($this->request, $table, $vn_previous_id));
@@ -334,7 +353,16 @@ class DetailController extends FindController {
 			$vn_mapped_count = 0;	
 			foreach($map_attributes as $map_attribute) {
 				if ($t_subject->get($map_attribute)){
-					$ret = $o_map->mapFrom($t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => caGetOption('mapFuzz', $options, null)));
+					$map_fuzz_level = null;
+					if(is_array($map_fuzz_config = caGetOption('mapFuzz', $options, null))) {
+						$when = $map_fuzz_config['when'] ?? null;
+						if(($when && $t_subject->evaluateExpression($map_fuzz_config['when'])) || !$when) {
+							$map_fuzz_level = $map_fuzz_config['level'] ?? null;
+						}
+					} else{
+						$map_fuzz_level = $map_fuzz_config;
+					}
+					$ret = $o_map->mapFrom($t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => (int)$map_fuzz_level));
 					$vn_mapped_count += $ret['items'];
 				}
 			}

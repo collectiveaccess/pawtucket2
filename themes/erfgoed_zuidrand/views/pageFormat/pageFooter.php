@@ -31,17 +31,17 @@
 		<footer id="footer" role="contentinfo">
 			<div class="footerBg row">
 				<div class="col-sm-12 col-md-8 col-md-offset-2">
-					<div class="footerHeading"><span class="footerCopyright">&copy;</span> Streekvereniging Zuidrand</div>
+					<div class="footerHeading"><a href="https://www.dezuidrand.be/erfgoedcel-zuidrand"><span class="footerCopyright">&copy;</span> Erfgoedcel Zuidrand</a>
+						<p>{{{footer_text}}}</p>
+					</div>
 					<div class="row">
 						<div class="col-sm-4 footerContact">
-							<b>Contact</b><br/>
-							Streekvereniging Zuidrand<br/>
+							<a href="https://www.dezuidrand.be/erfgoedcel-zuidrand">Erfgoedcel Zuidrand</a><br/>
 							Gemeenteplein 1<br/>
 							2550 Kontich<br/>
-							T - xx xxx xx xx<br/>
+							T - 0483 56 01 68<br/>
 							E - <a href="mailto:info@dezuidrand.be">info@dezuidrand.be</a>
-
-						
+							
 						</div>
 						<div class="col-sm-4">
 							<ul class="list-inline social">
@@ -54,7 +54,7 @@
 							<div class="funder">
 								<a href="http://www.vlaanderen.be"><?php print caGetThemeGraphic($this->request, 'Vlaanderen-verbeelding-werkt_vol.png'); ?></a>
 							</div>
-							<br/><?php print caNavLink($this->request, "Disclaimer", "", "", "About", "disclaimer")."<br/>".((CookieOptionsManager::cookieManagerEnabled()) ? caNavLink($this->request, _t("Manage Cookies"), "", "", "Cookies", "manage") : ""); ?>
+							<?php print caNavLink($this->request, "Disclaimer", "", "", "About", "disclaimer")." | ".((CookieOptionsManager::cookieManagerEnabled()) ? caNavLink($this->request, _t("Manage Cookies"), "", "", "Cookies", "manage") : ""); ?>
 						</div>
 					</div>
 				</div>
@@ -121,6 +121,17 @@
 //				   return false;
 //				 });
 //			}); 
+		</script>
+		<script type="text/javascript">
+			$( ".front .notificationMessage" ).delay(1500).fadeOut("slow");
+			$(document).ready(function(){
+				$(document).bind("contextmenu",function(e){
+					return false;
+				});
+				$(document).bind("dragstart", function(e) {
+					return false;
+				});
+			});
 		</script>
 <?php
 	print $this->render("Cookies/banner_html.php");	

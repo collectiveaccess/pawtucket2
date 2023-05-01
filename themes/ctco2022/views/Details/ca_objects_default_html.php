@@ -161,6 +161,13 @@
 						</unit>
 					</div>
 				</ifdef>}}}
+				{{{<ifnotdef code="ca_objects.public_description"><ifdef code="ca_objects.description">
+					<div class="unit">
+						<unit relativeTo="ca_objects.description" delimiter="<br/>">
+							^ca_objects.description%convertLineBreaks=1
+						</unit>
+					</div>
+				</ifdef></ifnotdef>}}}
 
 				{{{<ifdef code="ca_objects.credit_line">
 					<div class="unit">			
