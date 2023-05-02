@@ -181,8 +181,7 @@
 							}else{
 								$vs_image = $va_rep["tags"][$vs_version];
 							}
-							$va_tmp = array("image" => $vs_image, "label" => $va_rep["label"], "image_link" => "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'exhibitions', 'id' => $t_item->getPrimaryKey(), 'representation_id' => $va_rep["representation_id"], 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
-							
+							$va_tmp = array("image" => $vs_image, "label" => $va_rep["label"], "image_link" => "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'exhibitions', 'id' => $t_item->getPrimaryKey(), 'representation_id' => $va_rep["representation_id"], 'overlay' => 1))."\"); return false;' >".$vs_image."</a>", "download_link" => caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download", "pull-right btn-small", "", "Detail", "DownloadRepresentation", array("context" => "exhibitions", "representation_id" => $va_rep["representation_id"], "id" => $t_item->getPrimaryKey(), "download" => "1",  "version" => "original")));
 							$vs_sort_key = "";
 							if(trim($va_rep["idno_sort"])){
 								$vs_sort_key = $va_rep["idno_sort"];
@@ -340,6 +339,8 @@
 						print "<H6>"._t("Press and Promotion")."</H6><br/>";
 						foreach($va_promos as $va_promo){
 							print "<div class='fullWidthImg'>".$va_promo["image_link"];
+							# --- download link
+							print $va_promo["download_link"];
 							if($va_promo["label"]){
 								print "<br/><small>".$va_promo["label"]."</small>";
 							}
