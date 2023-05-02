@@ -223,6 +223,11 @@ ul.menuItems{
     color:#000;
     line-height: 1.7em;
 }
+.staticPage img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
 .front H1 {
     font-size: 42px;
     line-height:1.5em;
