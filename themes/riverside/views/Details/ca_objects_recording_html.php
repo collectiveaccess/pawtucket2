@@ -73,6 +73,8 @@
 				foreach($va_copies as $vn_copy_id){
 					$t_copy = new ca_objects($vn_copy_id);
 					if($t_copy_rep = $t_copy->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
+						if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_copy_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
+	
 						$vb_media = true;
 						$va_opts = array('display' => 'detail', 'object_id' => $t_copy->get('object_id'), 'representation_id' => $t_copy_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => $va_access_values);			
 						print "<div class='unit'>".caRepresentationViewer(
