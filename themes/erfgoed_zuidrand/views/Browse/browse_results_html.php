@@ -221,7 +221,7 @@ if (!$vb_ajax) {	// !ajax
 	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 		
 		<div class="pull-left">
-			<?php print caNavLink($this->request, "Geavanceerd zoeken", "", "", "Search", "advanced/objects"); ?>
+			<?php print caNavLink($this->request, "Uitgebreid zoeken", "", "", "Search", "advanced/objects"); ?>
 		</div>
 		<div id="bViewButtons">
 <?php

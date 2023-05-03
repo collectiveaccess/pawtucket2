@@ -51,12 +51,23 @@ body {
 	}
 }
 @media(min-width: 990px){
-	#imgHeader, .navbar-collapse, .mainContainer{
-		width: 960px;
+	#imgHeader, .navbar-collapse{
+		max-width: 960px;
 		margin: 0 auto !important;
 	}
 	#imgHeader{
 		padding: 17px 0 7px 0;
+	}
+	#pageArea{
+		max-width: 960px;
+		margin-left:auto;
+		margin-right:auto;
+	}
+}
+@media(min-width: 1200px){
+	
+	#pageArea{
+		max-width: 1160px;
 	}
 }
 .scaleImg img, .scaleImg{

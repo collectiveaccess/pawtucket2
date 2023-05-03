@@ -19,7 +19,7 @@
 			if(!$vs_image){
 				$vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>");				
 			}
-			$vs_tmp = "<div class='col-sm-6'><div class='collectionTile'>".$vs_image."<div class='title'>".$qr_collections->get("ca_collections.preferred_labels")."</div>";	
+			$vs_tmp = "<div class='col-sm-6'><div class='collectionTile'><div class='collectionTileImage'>".$vs_image."</div><div class='title'>".$qr_collections->get("ca_collections.preferred_labels")."</div>";	
 			if (($o_collections_config->get("description_template")) && ($vs_scope = $qr_collections->getWithTemplate($o_collections_config->get("description_template")))) {
 				$vs_tmp .= "<div>".$vs_scope."</div>";
 			}

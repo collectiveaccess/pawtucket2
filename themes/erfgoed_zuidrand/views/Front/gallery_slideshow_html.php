@@ -37,7 +37,6 @@
  	$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 			
  	$t_set = new ca_sets();
 	$va_sets = array();
-	$vn_featured_set_id = "";
 	if($vn_gallery_set_type_id){
 		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id, 'table' => "ca_objects");
 		$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
@@ -54,48 +53,22 @@
 				if ($vb_omit_front_page_set && $o_set_res->get('ca_sets.set_code') == $vs_front_page_set) { 
 					unset($va_sets[$o_set_res->get('ca_sets.set_id')]);
 				}
-				if($o_set_res->get('ca_sets.featured_expo', array('convertCodesToDisplayText' => true)) == 'Ja'){
-					unset($va_sets[$o_set_res->get('ca_sets.set_id')]);
-					$vn_featured_set_id = $o_set_res->get('ca_sets.set_id');	
-				}
-				if($o_set_res->get('ca_sets.show_homepage', array('convertCodesToDisplayText' => true)) != 'Ja'){
+				if($o_set_res->get('ca_sets.show_homepage', array('convertCodesToDisplayText' => true)) != 'Nee'){
 					unset($va_sets[$o_set_res->get('ca_sets.set_id')]); 	
 				}
 			}
 		}
 	}
-	if((is_array($va_sets) && sizeof($va_sets)) || $vn_featured_set_id){
+	if(is_array($va_sets) && sizeof($va_sets)){
 ?>
-		<div class="row bgOffWhiteLight"><div class="col-sm-12"><h2>Expo's</h2></div></div>
+		<div class="row bgGray"><div class="col-sm-12"><h2 class="frontExpoTitle">Expo's</h2></div></div>
 <?php	
-	}
-	if($vn_featured_set_id){
-		$t_featured = new ca_sets($vn_featured_set_id);
-		$va_featured_set_first_item = $t_set->getPrimaryItemsFromSets(array($vn_featured_set_id), array("version" => "large", "checkAccess" => $va_access_values));
-		$va_first_item = array_shift($va_featured_set_first_item[$vn_featured_set_id]);
-?>
-<div class="row bgOffWhiteLight"><div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2 frontFeaturedExpo">
-	<div class="container"><div class="row bgWhite">
-		<div class="col-sm-5 col-md-5 col-md-5 col-lg-7 colNoPadding frontFeaturedExpoImg">
-			<?php print caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_featured_set_id); ?>
-		</div>
-		<div class="col-sm-7 col-md-7 col-lg-5 colNoPadding">
-			<div class="frontFeaturedExpoText">
-				<h3><?php print caNavLink($this->request, $t_featured->get("ca_sets.preferred_labels.name"), "", "", "Gallery", $vn_featured_set_id); ?></h3>
-				<p><?php print (mb_strlen($t_featured->get("ca_sets.set_description")) > 600) ? mb_substr(strip_tags($t_featured->get("ca_sets.set_description")), 0, 600)."..." : $t_featured->get("ca_sets.set_description"); ?></p>
-				<p class="text-center"><?php print caNavLink($this->request, _t("Meer"), "btn btn-default", "", "Gallery", $vn_featured_set_id); ?></p>
-			</div>
-		</div>
-	</div></div>
-</div></div>
-<?php		
-		
 	}
 
 	if(is_array($va_sets) && sizeof($va_sets)){
 ?>
 
-<div class="row bgOffWhiteLight"><div class="col-sm-12 col-md-12 col-lg-12 frontExpos">
+<div class="row bgGray"><div class="col-sm-12 col-md-12 col-lg-12 frontExpos">
 		<div class="jcarousel-wrapper galleryItems-wrapper">
 			<!-- Carousel -->
 			<div class="jcarousel galleryItems">
@@ -141,14 +114,11 @@
 						// Options go here
 						wrap:'circular'
 					});
-					$('.jcarousel').jcarouselAutoscroll({
-					autostart: true
-				});
 		
 				/*
 				 Prev control initialization
 				 */
-				$('.jcarousel-control-prev')
+				$('.jcarousel-control-prev.galleryItemsNav')
 					.on('jcarouselcontrol:active', function() {
 						$(this).removeClass('inactive');
 					})
@@ -163,7 +133,7 @@
 				/*
 				 Next control initialization
 				 */
-				$('.jcarousel-control-next')
+				$('.jcarousel-control-next.galleryItemsNav')
 					.on('jcarouselcontrol:active', function() {
 						$(this).removeClass('inactive');
 					})
@@ -178,7 +148,7 @@
 				/*
 				 Pagination initialization
 				 */
-				$('.jcarousel-pagination')
+				$('.jcarousel-pagination.galleryItemsPagination')
 					.on('jcarouselpagination:active', 'a', function() {
 						$(this).addClass('active');
 					})

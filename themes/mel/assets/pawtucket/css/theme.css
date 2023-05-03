@@ -12,16 +12,32 @@
 @font-face {font-family: 'Chivo';src: url('chivo/Chivo-Regular.ttf');src: url('chivo/Chivo-Regular.ttf') format('truetype');}
 @font-face {font-family: 'ChivoBold';src: url('chivo/Chivo-Bold.ttf');src: url('chivo/Chivo-Bold.ttf') format('truetype');}
 
-
 /* General */
 
 body {
 	font-family:Raleway;
-	color:#333;
+	color:#000;
+	background-color:#333;
+	margin-bottom: 230px;
+}
+.container{
+	max-width:1500px;
+	background-color:#FFF;
 }
 
+body.black {
+	background-color:#000;
+}
+
+body.black .container {
+	background-color:transparent;
+}
+#pageArea{
+	padding-top:20px;
+	padding-bottom:40px;
+}
 a {
-	color:#274769;
+	color:#575757;
 	text-decoration: underline;
 }
 
@@ -31,7 +47,8 @@ a:hover, a:active, a:focus{
 }
 h1, h2, h3, h4, h5, h6 {
     font-family: ChivoBold;
-	color: #274769;
+   /* font-family: 'Libre Caslon Text', serif;*/
+	color: #575757;
 }
 h1 {
 	text-transform:capitalize;
@@ -40,19 +57,27 @@ h1 {
 h6{
     margin: 10px 0px 2px 0px;
 }
-
+body.black h1, body.black .staticPage p, .exhibitionIntro{
+	color:#FFF;
+}
+.exhibitionIntro H1{
+	font-family: 'IM Fell DW Pica SC', serif;
+	font-size:33px;
+}
 .btn-default, .browse .btn, .sets .btn {
-	background-color: #274769;
+	background-color: #575757;
 	border-radius: 5px;
+    text-decoration:none;
 }
 
-.btn-default:hover, .btn-default:active, .btn-default:focus, .btn-default:visited{
-    background-color: #5ba6f5;
+.btn-default:hover, .btn-default:active, .btn-default:focus{
+    background-color: #000;
+    text-decoration:none;
 }
 
 hr {
-    color: #274769;
-    border: 1px solid #274769;
+    color: #575757;
+    border: 1px solid #575757;
 }
 
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
@@ -62,18 +87,18 @@ hr {
 /* Header */
 
 .navbar {
-	border-top: 6px solid #ecf2f8;
-	border-bottom: 3px solid #274769;
+	border-bottom: 3px solid #575757;
 	box-shadow: none;
 	-webkit-box-shadow: none;
+	margin-bottom:0px;
 }
 .navbar a {
-	color: #274769;
+	color: #575757;
 	text-decoration:none;
 }
 
 .navbar a:hover, .navbar-default .navbar-nav > li > a:hover{
-    color: #5ba6f5 !important;
+    color: #000 !important;
     text-decoration: none;
 }
 
@@ -87,38 +112,70 @@ hr {
     padding-right: 10px;
     padding-left: 10px;
 }
-
+@media (min-width: 768px){
+	.navbar-nav > li > a {
+	  padding-top: 19px;
+	  padding-bottom: 20px;
+	}
+}
+@media (min-width: 768px){
+	.navbar-form {
+	  margin-top: 14px;
+	}
+}
 .navbar-nav > li a, .navbar-nav > li a:hover, .navbar-default .navbar-nav > li > a,
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
-	color: #274769;
+	color: #575757;
 }
 .navbar .formOutline {
 	background-color:#fff;
 }
 .navbar .formOutline input::placeholder, .navbar .formOutline input {
-	color:#274769;
+	color:#575757;
 	font-size:14px;
 }
 
 .site-header{
     text-transform:uppercase;
-    padding-top:11px;
+    padding-top:6px;
+    padding-bottom:6px;
     font-size:16px;
     line-height: 18px;
     font-family: ChivoBold;
     letter-spacing: 0.075em;
 }
+@media(max-width:1100px){
+	.site-header{
+		padding-left:15px;
+	}
+}
 
 /* Footer */
 
 #footer {
-	font-size:12px;
-	color:#333;
-	border-top: 3px solid #274769;
+	font-size:14px;
+	color:#FFF;
+	background-color: transparent;
+	border-top:0px;
+	padding-top: 30px;
+	padding-left:0px;
+	padding-right:0px;
+	
+	height:220px;
+}
+#footer .container{
+	background-color:transparent;
+}
+.footerBottom{
+	background-color:#FFF;
+	margin-top:30px;
+	padding-top:5px;
+	padding-bottom:10px;
 }
 
 #footer a {
-	color: #274769;
+	color: #FFF;
+	text-decoration:underline
 }
 
 #footer a:hover, #footer a:active, #footer a:focus{
@@ -127,11 +184,11 @@ hr {
 }
 
 #footer .footer-logo img {
-	float:right;
-	max-height: 100px;
+	max-height: 80px;
 	max-width: 350px;
 	padding-left: 10px;
 	padding-bottom: 5px;
+	padding-right: 10px;
 }
 
 #footer .footer-logo .mel img{
@@ -144,7 +201,7 @@ hr {
 
 #footer .footer-logo div{
     padding-top: 5px;
-    
+    display:inline-block;
 }
 
 .funder img {
@@ -162,12 +219,35 @@ hr {
 }	
 
 /* Front Page */
+.bgGray{
+	background-color:#eaeaea;
+	border-radius: 10px;
+}
+.front .hpCallOut{
+	font-family: 'IM Fell DW Pica SC', serif;
+	font-size:35px;
+	color: #FFF;
+	padding-top:30px;
+	padding-bottom:30px;
+	text-align:center;
+}
+@media(min-width:768px){
+	.front .hpCallOut{
+		font-size:55px;
+	}
+}
+.front .hpIntro{
+	margin-top:30px;
+	font-size:18px;
+	color: #FFF;
+}
 .front h1{
-    font-family: Chivo;
+    font-family: 'IM Fell DW Pica SC', serif;
 }
 
 .front-features{
     padding-bottom: 15px;
+    margin-top:30px;
 }
 
 .front-feature-box{
@@ -187,7 +267,7 @@ hr {
 .front-feature-title{
     position: absolute;
     bottom: 0;
-    background: #274769;
+    background: #575757;
     width: 100%;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -201,9 +281,15 @@ hr {
 /* Browse */
 
 #bRefine{
-    background-color: #efefef;
+    background-color: #eaeaea;
+    border-radius:10px;
 }
-
+#bRefine H5, #bRefine H3, #bRefine H2{
+	color:#000;
+}
+#bRefine a {
+	color: #000;
+}
 .browseRemoveFacet > .btn-default{
     max-width: 80%;
     white-space: pre-wrap;
@@ -220,6 +306,19 @@ hr {
     border: none;
 }
 
+.bResultItem .bResultItemText small, .bResultItem .bResultItemText small a, .bResultItem .bResultItemText a {
+  color: #000;
+  font-size:14px;
+}
+
+.browseIntro{
+	font-size:18px;
+	padding-bottom:20px;
+}
+.browseIntro b{
+	font-size:30px;
+	color:#575757;
+}
 /*  Advanced Search */
     .caAdvancedSearchFormReset, .caAdvancedSearchFormSubmit{
         text-decoration: none;
@@ -285,7 +384,7 @@ hr {
 /* Set Index */
 
 .gallery p {
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .set-feature-box{
@@ -305,7 +404,7 @@ hr {
 .set-feature-title{
     position: absolute;
     bottom: 0;
-    background: #274769;
+    background: #575757;
     width: 100%;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -375,4 +474,15 @@ div.caMediaOverlayControls{
 
 div.caMediaOverlayControls .close{
 	margin-right: 20px;
+}
+.contact, .detail .unit, .staticPage{
+	font-size:16px;
+}
+.staticPage img{
+	width:100%;
+	height:auto;
+	margin-bottom:20px;
+}
+.sketchfab-embed-wrapper{
+	margin:20px 0px 20px 0px;
 }
