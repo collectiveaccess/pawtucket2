@@ -280,7 +280,7 @@
 				print "</div><!-- end unit -->";
 			}
 			
-			$va_entity_ids = $t_work->get('ca_entities.entity_id', array('returnAsArray' => true));
+			$va_entity_ids = $t_work->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => ['director'], 'returnAsArray' => true));
 			$t_entity = new ca_entities();
 			if(is_array($va_entity_ids) && sizeof($va_entity_ids)){
 				$vn_i = 0;
