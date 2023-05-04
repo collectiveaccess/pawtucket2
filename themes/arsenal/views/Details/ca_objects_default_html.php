@@ -155,7 +155,7 @@
 						<div class="col-sm-6">
 <?php
 							$va_show_public_fields = array(
-								'format', 'to_rent', 'version', 'lang_syn', 'lang_sub', 'lang_intertit', 'lang_txtlist', 'resolution_list', 'size', 'container_list', 'codec_list', 'lang_voiceover', 'lang_magnet', 'subtitle_type', 'audiodescription_lang', 'closed_caption_lang', 'duration', 'color', 'sound', 'sound_mix', 'optical_sound_type', 'ratio', 'projection_format', 'fps_list', 'length', 'weight', 'reels', 'gossip', 'material_type', 'installation_format'
+								'format', 'to_rent', 'version', 'lang_syn', 'lang_sub', 'lang_intertit', 'lang_txtlist','duration', 'resolution_list', 'size', 'container_list', 'codec_list', 'lang_voiceover', 'lang_magnet', 'subtitle_type', 'audiodescription_lang', 'closed_caption_lang', 'color', 'sound', 'sound_mix', 'optical_sound_type', 'ratio', 'projection_format', 'fps_list', 'length', 'weight', 'reels', 'gossip', 'material_type', 'installation_format'
 							);
 							$va_output = array();
 							
@@ -280,7 +280,7 @@
 				print "</div><!-- end unit -->";
 			}
 			
-			$va_entity_ids = $t_work->get('ca_entities.entity_id', array('returnAsArray' => true));
+			$va_entity_ids = $t_work->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => ['director'], 'returnAsArray' => true));
 			$t_entity = new ca_entities();
 			if(is_array($va_entity_ids) && sizeof($va_entity_ids)){
 				$vn_i = 0;
