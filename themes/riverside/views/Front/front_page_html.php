@@ -116,9 +116,9 @@
 					<div href="#" class="indiv-blog">
 						<div class="post-image hpBgImgResources"></div>
 						<div class="post-details">
-							<h4 class="post-title"><?php print caNavLink($this->request, "WRVR-FM Recordings", "", "", "Browse", "objects", array("facet" => "collection_facet", "id" => 5)); ?></h4>
+							<h4 class="post-title"><?php print caNavLink($this->request, "WRVR-FM Recordings", "", "", "Browse", "objects", array("facet" => "collection_facet", "id" => 134)); ?></h4>
 							<p class="post-excerpt">{{{home_recordings_intro}}}</p>
-							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Browse", "objects", array("facet" => "collection_facet", "id" => 5)); ?>">More</a>
+							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Browse", "objects", array("facet" => "collection_facet", "id" => 134)); ?>">More</a>
 						</div>
 					</div>
 				</div>
