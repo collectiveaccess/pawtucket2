@@ -24,8 +24,6 @@
 		} 
 	} else {
 		print "<H1>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H1>";
-		
-		
 	}
 ?>
 <?php

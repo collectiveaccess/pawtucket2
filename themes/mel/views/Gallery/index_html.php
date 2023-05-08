@@ -1,13 +1,19 @@
 <div class="row"><div class="col-sm-8 col-sm-offset-2">
     <div class="container">
         <div class="row">
-            <div class="col-xs-12">
-                <H1><?php #print $this->getVar("section_name"); ?>Meet 25 Objects</H1>
-                <p>The Mel Fisher Maritime Museum’s transatlantic slave trade artifact collection contains rare tangible evidence of a cruel period in history. These objects document an era that history books all too often ignore.</p>
-                
-                <p>More than thirty years of research, conservation, and exhibition have brought us to this online virtual exhibition.</p>
-                
-                <p>We have selected twenty-five objects to chronicle the history of the trade.</p>
+            <div class="col-xs-12 col-sm-8 exhibitionIntro">
+                <H1>Evidence of the Transatlantic Slave Trade</H1>
+                {{{exhibition_text}}}
+            </div>
+            <div class="col-xs-12 col-sm-4">
+            	<div class="set-feature-box">
+<?php 
+						print caNavLink($this->request, caGetThemeGraphic($this->request, 'Detailed_Triangle_Trade_square.jpg'), "", "", "Introduction", "");
+?>
+					<div class="set-feature-title">
+						<?php print "<H4>".caNavLink($this->request, "Introduction", "", "", "Introduction", "")."</H4>"; ?>
+					</div>
+				</div>
             </div>
         </div>
     </div>
@@ -15,15 +21,32 @@
 	$va_sets = $this->getVar("sets");
 	$va_first_items_from_set = $this->getVar("first_items_from_sets");
 	if(is_array($va_sets) && sizeof($va_sets)){
+		# --- sort by set_code
+		$va_sets_sorted = array();
+		foreach($va_sets as $va_set){
+			$va_sets_sorted[strToLower($va_set['set_code'])] = $va_set;
+		}
+		ksort($va_sets_sorted);
+		$va_set_ids_sorted = array();
+		foreach($va_sets_sorted as $va_set){
+			$va_set_ids_sorted[] = $va_set["set_id"];
+		}
+		
+		$o_context = new ResultContext($this->request, 'ca_sets', 'gallery');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_set_ids_sorted);
+		$o_context->saveContext();
+
 		# --- main area with info about selected set loaded via Ajax
 ?>
 		<div class="container">
 			<div class="row">
 				<div class='col-sm-12'>
-					<div id="gallerySetInfo" class="row">
+					<div class="row">
 					<hr/>
 <?php
-                    foreach($va_sets as $vn_set_id => $va_set){
+                    foreach($va_sets_sorted as $vs_set_code => $va_set){
+                        $vn_set_id = $va_set["set_id"];
                         $t_set = new ca_sets($va_set["set_id"]);
                         $va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
                         $t_first_rep = new ca_object_representations($va_first_item['representation_id']);
@@ -47,7 +70,7 @@
 <?php
                     }
 ?>
-					</div><!-- end gallerySetInfo -->
+					</div>
 				</div><!-- end col -->
 			</div><!-- end row -->
 		</div><!-- end container -->

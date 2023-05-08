@@ -33,7 +33,7 @@
 		}
 	}
 ?>
-<div class="row"><div class="col-sm-12">
+<div class="row"><div class="col-sm-12 col-md-8 col-md-offset-2">
 	<H1><?php print $vs_page_title; ?></H1>
 <?php
 	if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
