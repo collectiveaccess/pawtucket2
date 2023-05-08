@@ -147,6 +147,8 @@ class RequestHTTP extends Request {
 		# create session
 		$vs_app_name = $this->config->get("app_name");
 
+		// @todo: REMOVE IN FUTURE VERSION
+		// JSON API (deprecated)
 		// restore session from token for service requests
 		if(($this->ops_script_name=="service.php") && isset($_GET['authToken']) && (strlen($_GET['authToken']) > 0)) {
 			$vs_token = preg_replace("/[^a-f0-9]/", "", $_GET['authToken']); // sanitize
@@ -178,6 +180,8 @@ class RequestHTTP extends Request {
 		
 		$this->ops_request_method = (isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"] : null);
 		
+		// @todo: REMOVE IN FUTURE VERSION
+		// JSON API (deprecated)
 		/* allow authentication via URL for web service API like so: http://user:pw@example.com/ */
 		if($this->ops_script_name=="service.php") {
 			$this->ops_raw_post_data = file_get_contents("php://input");
@@ -202,6 +206,13 @@ class RequestHTTP extends Request {
 		
 		$this->ops_path_info = preg_replace("![/]+!", "/", $vs_path_info ? "/{$vs_path_info}" : (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : ''));
 		
+		if(!caIsRunFromCLI() && defined('__CA_SITE_HOSTNAME__') && !ExternalCache::contains('system_url', 'system')) {
+			ExternalCache::save('system_url', [
+				'protocol' => __CA_SITE_PROTOCOL__,
+				'hostname' => __CA_SITE_HOSTNAME__,
+				'url_root' => __CA_URL_ROOT__
+			], 'system');
+		}
 		if (__CA_URL_ROOT__) { $this->ops_path_info = preg_replace("!^".__CA_URL_ROOT__."!", "", $this->ops_path_info); }
 	}
 	# -------------------------------------------------------
@@ -361,15 +372,11 @@ class RequestHTTP extends Request {
 	 */
 	public function getViewsDirectoryPath($pb_use_default=false) {
 		if ($this->config->get('always_use_default_theme')) { $pb_use_default = true; }
-		switch($this->getScriptName()){
-			case "service.php":
-				return $this->getServiceViewPath();
-				break;
-			case "index.php":
-			default:
-				return $this->getThemeDirectoryPath($pb_use_default).'/views';
-				break;
-		}
+		
+		if(defined('__CA_IS_SERVICE_REQUEST__') && __CA_IS_SERVICE_REQUEST__) {
+			return $this->getServiceViewPath();
+		} 
+		return $this->getThemeDirectoryPath($pb_use_default).'/views';
 	}
 	# -------------------------------------------------------
 	/**
@@ -575,13 +582,16 @@ class RequestHTTP extends Request {
 		$vm_val = $this->parameterExists($pa_name, $ps_http_method, $pa_options);
 		if (!isset($vm_val)) { return ""; }
 		
-		$vm_val = str_replace("\0", '', $vm_val);
+		if(!is_array($vm_val)) { $vm_val = str_replace("\0", '', $vm_val); }
+		
+		$purified = false;
 		if((caGetOption('purify', $pa_options, true) && $this->config->get('purify_all_text_input')) || caGetOption('forcePurify', $pa_options, false)) {
 		    if(is_array($vm_val)) {
 		        $vm_val = array_map(function($v) { return is_array($v) ? $v : str_replace("&amp;", "&", RequestHTTP::getPurifier()->purify(rawurldecode($v))); }, $vm_val);
 		    } else {
 		        $vm_val = str_replace("&amp;", "&", RequestHTTP::getPurifier()->purify(rawurldecode($vm_val)));
 		    }
+		    $purified = true;
 		}
 		
 		if ($vm_val == "") { return ($pn_type == pArray) ? [] : ''; }
@@ -604,10 +614,7 @@ class RequestHTTP extends Request {
 			# -----------------------------------------
 			case pString:
 				if (is_string($vm_val)) {
-					if(caGetOption('retainBackslashes', $pa_options, true)) {
-						$vm_val = str_replace("\\", "\\\\", $vm_val);	// retain backslashes for some strange people desire them as valid input
-					}
-					if(caGetOption('urldecode', $pa_options, true)) {
+					if(!$purified && caGetOption('urldecode', $pa_options, true)) {
 						$vm_val = rawurldecode($vm_val);
 					}
 					return $vm_val;
@@ -875,7 +882,11 @@ class RequestHTTP extends Request {
                 } else {
                 	// Redirect to external auth?
                 	try {
-                		return $this->user->authenticate($vs_tmp1, $vs_tmp2, $pa_options["options"]);
+                		if($rc = $this->user->authenticate($vs_tmp1, $vs_tmp2, $pa_options["options"])) {
+                			$vn_auth_type = ($rc == 2) ? 2 : 1;
+                			$vn_user_id = $this->user->getPrimaryKey();
+                			$vb_login_successful = true;
+                		}
                 	} catch (Exception $e) {
                 		$o_event_log->log(array("CODE" => "LOGF", "SOURCE" => "Auth", "MESSAGE" => "Failed login with exception '".$e->getMessage()." (".$_SERVER['REQUEST_URI']."); IP=".$_SERVER["REMOTE_ADDR"]."; user agent='".$_SERVER["HTTP_USER_AGENT"]."'"));
                 		$this->opo_response->addHeader("Location", $vs_auth_login_url);
@@ -1029,7 +1040,7 @@ class RequestHTTP extends Request {
 	static public function ip() {
 		if (isset($_SERVER['HTTP_X_REAL_IP']) && $_SERVER['HTTP_X_REAL_IP']) { return $_SERVER['HTTP_X_REAL_IP']; }
 		if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']) { return $_SERVER['HTTP_X_FORWARDED_FOR']; }
-		return $_SERVER['REMOTE_ADDR'];
+		return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
 	}
 	# ----------------------------------------
 }

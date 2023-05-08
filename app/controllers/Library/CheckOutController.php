@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2022 Whirl-i-Gig
+ * Copyright 2014-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -48,7 +48,18 @@ class CheckOutController extends ActionController {
 	 * Checkout items screen
 	 */
 	public function Index() {
-		$user_id = $this->request->getUserID();
+		if($this->request->user->canDoAction('can_do_library_checkinout_for_anyone')) {
+			$this->render('checkout/find_user_html.php');
+		} else {
+			$this->Items();
+		}
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function Items() {
+		$user_id = $this->request->user->canDoAction('can_do_library_checkinout_for_anyone') ? $this->request->getParameter('user_id', pInteger) : $this->request->getUserID();
 		
 		$this->view->setVar('user_id', $user_id);
 		$this->view->setVar('checkout_types', ca_object_checkouts::getObjectCheckoutTypes());
@@ -82,6 +93,10 @@ class CheckOutController extends ActionController {
 			switch($status = $t_object->getCheckoutStatus()) {
 				case __CA_OBJECTS_CHECKOUT_STATUS_AVAILABLE__:
 					$status_display = _t('Available');
+					break;
+				case __CA_OBJECTS_CHECKOUT_STATUS_RETURNED_PENDING_CONFIRMATION__:
+					$status_display = _t('Unavailable pending confirmation of return');
+					break;
 					break;
 				case __CA_OBJECTS_CHECKOUT_STATUS_OUT__:
 					$t_checkout = ca_object_checkouts::getCurrentCheckoutInstance($object_id);
@@ -227,7 +242,11 @@ class CheckOutController extends ActionController {
 						$vb_res = $t_checkout->checkout($item['object_id'], $user_id, $item['note'], $item['due_date'], array('request' => $this->request));
 			
 						if ($vb_res) {
-							$ret['checkouts'][$item['object_id']] = _t('Checked out <em>%1</em>; due date is %2', $name, $item['due_date']);
+							if($item['due_date'] ?? null) {
+								$ret['checkouts'][$item['object_id']] = _t('Checked out <em>%1</em>; due date is %2', $name, $item['due_date']);
+							} else {
+								$ret['checkouts'][$item['object_id']] = _t('Checked out <em>%1</em>', $name);
+							}
 							$item['_display'] = $t_checkout->getWithTemplate($checkout_template);
 							$checked_out_items[] = $item;
 						} else {
@@ -241,7 +260,7 @@ class CheckOutController extends ActionController {
 			if($library_config->get('send_item_checkout_receipts') && ((sizeof($checked_out_items) > 0) || (sizeof($reserved_items) > 0)) && ($user_email = $this->request->user->get('ca_users.email'))) {
 				if (!caSendMessageUsingView(null, $user_email, $sender_email, "[{$app_name}] {$subject}", "library_checkout_receipt.tpl", ['subject' => $subject, 'from_user_id' => $user_id, 'sender_name' => $sender_name, 'sender_email' => $sender_email, 'sent_on' => time(), 'checkout_date' => caGetLocalizedDate(), 'checkouts' => $checked_out_items, 'reservations' => $reserved_items], null, [], ['source' => 'Library checkout receipt'])) {
 					global $g_last_email_error;
-					$va_ret['errors'][] = _t('Could send receipt: %1', $g_last_email_error);
+					$va_ret['errors'][] = _t('Could not send receipt: %1', $g_last_email_error);
 				}
 			}
 		}
@@ -294,7 +313,7 @@ class CheckOutController extends ActionController {
 							
 							if (!caSendMessageUsingView(null, $user_email, $sender_email, "[{$app_name}] {$subject}", "library_checkin_receipt.tpl", ['subject' => $subject, 'from_user_id' => $user_id, 'sender_name' => $sender_name, 'sender_email' => $sender_email, 'sent_on' => time(), 'checkin_date' => caGetLocalizedDate(), 'checkins' => [['_display' => $t_checkout->getWithTemplate($display_template)]]], null, [], ['source' => 'Library checkin receipt'])) {
 								global $g_last_email_error;
-								$ret['errors'][] = _t('Could send receipt: %1', $g_last_email_error);
+								$ret['errors'][] = _t('Could not send receipt: %1', $g_last_email_error);
 							}
 						}
 					} else {

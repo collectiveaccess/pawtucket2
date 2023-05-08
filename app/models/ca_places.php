@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2022 Whirl-i-Gig
+ * Copyright 2008-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -202,7 +202,7 @@ BaseModel::$s_ca_models_definitions['ca_places'] = array(
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => 'View count', 'DESCRIPTION' => 'Number of views for this record.'
+				'LABEL' => 'View count', 'DESCRIPTION' => _t('Number of views for this record.')
 		),
 		'submission_user_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT,
@@ -210,7 +210,7 @@ BaseModel::$s_ca_models_definitions['ca_places'] = array(
 			'IS_NULL' => true, 
 			'DEFAULT' => null,
 			'DONT_ALLOW_IN_UI' => true,
-			'LABEL' => _t('Submitted by user'), 'DESCRIPTION' => _t('User submitting this object')
+			'LABEL' => _t('Submitted by user'), 'DESCRIPTION' => _t('User submitting this place')
 		),
 		'submission_group_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT,
@@ -218,7 +218,7 @@ BaseModel::$s_ca_models_definitions['ca_places'] = array(
 			'IS_NULL' => true, 
 			'DEFAULT' => null,
 			'DONT_ALLOW_IN_UI' => true,
-			'LABEL' => _t('Submitted for group'), 'DESCRIPTION' => _t('Group this object was submitted under')
+			'LABEL' => _t('Submitted for group'), 'DESCRIPTION' => _t('Group this place was submitted under')
 		),
 		'submission_status_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT,
@@ -227,7 +227,7 @@ BaseModel::$s_ca_models_definitions['ca_places'] = array(
 			'DEFAULT' => null,
 			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
 			'LIST_CODE' => 'submission_statuses',
-			'LABEL' => _t('Submission status'), 'DESCRIPTION' => _t('Indicates submission status of the object.')
+			'LABEL' => _t('Submission status'), 'DESCRIPTION' => _t('Indicates submission status')
 		),
 		'submission_via_form' => array(
 			'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_OMIT,
@@ -235,7 +235,15 @@ BaseModel::$s_ca_models_definitions['ca_places'] = array(
 			'IS_NULL' => true,
 			'DEFAULT' => null,
 			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
-			'LABEL' => _t('Submission via form'), 'DESCRIPTION' => _t('Indicates what contribute form was used to create the submission.')
+			'LABEL' => _t('Submission via form'), 'DESCRIPTION' => _t('Indicates what contribute form was used to create the submission')
+		),
+		'submission_session_id' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT,
+			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => true,
+			'DEFAULT' => null,
+			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
+			'LABEL' => _t('Submission session'), 'DESCRIPTION' => _t('Indicates submission session')
 		)
  	)
 );
@@ -366,20 +374,7 @@ class ca_places extends RepresentableBaseModel implements IBundleProvider, IHier
 
 	protected $FIELDS;
 	
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
+
 	# ------------------------------------------------------
 	protected function initLabelDefinitions($pa_options=null) {
 		parent::initLabelDefinitions($pa_options);
@@ -419,6 +414,8 @@ class ca_places extends RepresentableBaseModel implements IBundleProvider, IHier
 
 		$this->BUNDLES['hierarchy_navigation'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Hierarchy navigation'));
 		$this->BUNDLES['hierarchy_location'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Location in hierarchy'));
+		
+		$this->BUNDLES['generic'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Display template'));
 	}
 	# ------------------------------------------------------
 	/**
@@ -507,8 +504,10 @@ class ca_places extends RepresentableBaseModel implements IBundleProvider, IHier
 	 * Override insert() to check parent_id and default to default hierarchy if none is specified.
 	 */ 
 	public function insert($pa_options=null) {
-		if((int)$this->get('parent_id') <= 0) {
-			if ($default_hierarchy_id = caGetDefaultItemID('place_hierarchies')) {
+		if(((int)$this->get('parent_id') <= 0) && (!preg_match('!^Root node for!', $this->get('idno'))))  {
+			if(($hierarchy_id = $this->get('hierarchy_id')) && ($root_id = ca_places::find(['hierarchy_id' => $hierarchy_id], ['returnAs' => 'firstId']))) {
+				// noop
+			} elseif ($default_hierarchy_id = caGetDefaultItemID('place_hierarchies')) {
 				$root_id = ca_places::find(['hierarchy_id' => $default_hierarchy_id], ['returnAs' => 'firstId']);
 			} elseif(is_array($hierarchies = $this->getHierarchyList()) && sizeof($hierarchies)) {
 				$first_hierarchy = array_shift($hierarchies);

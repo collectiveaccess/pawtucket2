@@ -35,7 +35,6 @@
  	
 	
 	$t_item = $this->getVar('t_subject');
-	
 	if($this->request->config->get('summary_footer_enabled')) {
 		switch($this->getVar('PDFRenderer')) {
 			case 'wkhtmltopdf':
@@ -52,7 +51,11 @@
 		if($this->request->config->get('summary_show_timestamp')) {
 			$vs_footer .= "<span class='footerText'>".caGetLocalizedDate(null, array('dateFormat' => 'delimited'))."</span>";
 		}
-		$vs_footer .= "<span class='footerText'>Downloaded from: ".$this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_item->get("ca_objects.object_id"))."</span>";
+		if($t_item->tableName() == "ca_objects"){
+			$vs_footer .= "<span class='footerText'>Downloaded from: ".$this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_item->get("ca_objects.object_id"))."</span>";
+		}elseif($t_item->tableName() == "ca_collections"){
+			$vs_footer .= "<span class='footerText'>Downloaded from: ".$this->request->config->get("site_host").caNavUrl($this->request, "Detail", "collections", $t_item->get("ca_collections.collection_id"))."</span>";
+		}
 		switch($this->getVar('PDFRenderer')) {
 			case 'wkhtmltopdf':
 ?>

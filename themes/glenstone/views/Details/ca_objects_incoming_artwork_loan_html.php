@@ -142,13 +142,14 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 <?php 			if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("art_insurance_loan")){ ?>					
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#Financial').fadeIn(100);">Financials</a></div>
 <?php 			}  ?>	
-<?php 			if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("art_condition_new") || $this->request->user->hasUserRole("art_conservation_new")){ ?>										
+<?php 			if (false) { //$this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("art_condition_new") || $this->request->user->hasUserRole("art_conservation_new")){ ?>										
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#Condition').fadeIn(100);">Condition</a></div>
-<?php 			}  ?>						
+<?php 			}  ?>	
+<?php 			if(false) {  ?>						
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#Description').fadeIn(100);">Description</a></div>
-				</div>
-				
-					<hr>
+<?php 			}  ?>	
+				</div>	
+				<hr style="clear: both; margin: 0 0 10px 0;"/>
 				
 				<div id="artworkInfo" class="infoBlock">
 					{{{<div class='unit'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist|creator"><l>^ca_entities.preferred_labels</l></unit></div>}}}
@@ -156,6 +157,10 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					{{{<ifdef code="ca_objects.medium"><div class='unit'>^ca_objects.medium</div></ifdef>}}}
 					{{{<ifcount min="1" code="ca_objects.dimensions.display_dimensions"><div class='unit'><unit delimiter="<br/>">^ca_objects.dimensions.display_dimensions</unit></div></ifcount>}}}
 <?php
+					if(!($credit_line = trim($t_object->get('ca_objects.lender.lender_credit_line', array('delimiter' => ';'))))) {
+						$credit_line = "Glenstone Museum, Potomac, Maryland";
+					}
+					print "<div>{$credit_line}</div>"; 
 					if ($t_object->get('ca_objects.edition.edition_number')) {
 						print "<div class='unit'>Edition ".$t_object->get('ca_objects.edition.edition_number')." / ".$t_object->get('ca_objects.edition.edition_total');
 						if ($t_object->get('ca_objects.edition.ap_total')) {

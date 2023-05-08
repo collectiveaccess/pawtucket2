@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2021 Whirl-i-Gig
+ * Copyright 2008-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -282,11 +282,11 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 	#    the record identified by the primary key value
 	#
 	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
+	public function __construct($id=null, ?array $options=null) {
+		parent::__construct($id, $options);	# call superclass constructor
 		
 		// 
-		if ($pn_id) { $this->loadSubtypeLists();}
+		if ($id) { $this->loadSubtypeLists();}
 	}
 	# ------------------------------------------------------
 	public function load($pm_id = NULL, $pb_use_cache = true) {
@@ -354,6 +354,7 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 	 * @params string $ps_type_code
 	 * @params array $options Options include:
 	 *      includeTypeCodesAsKeys = Also set type codes are keys in the returned array. [Default is false]
+	 *		returnAllLocales = 
 	 *
 	 * Returns array keyed on relationship type_id; values are associative arrays keys on ca_relationship_types/ca_relationship_type_labels field names
 	 */
@@ -390,7 +391,7 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 			    $va_relationships[$va_row['type_code']][$locale_id] = $va_row;
 			}
 		}
-		return caExtractValuesByUserLocale($va_relationships);
+		return caGetOption('returnAllLocales', $options, false)  ? $va_relationships : caExtractValuesByUserLocale($va_relationships);
 	}
 	# ------------------------------------------------------
 	/**
@@ -406,7 +407,7 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 		
 		if(!is_array($match_on = caGetOption('matchOn', $pa_options, []))) { $match_on = []; }
 		$match_on = array_filter(array_map('strtolower', $match_on), function ($v) { return in_array($v, ['type_code', 'typecode', 'label', 'labels']); });
-		if(!sizeof($match_on)) { $match_on = ['type_code']; }
+		if(!sizeof($match_on)) { $match_on = ['type_code', 'label']; }
 		
 		$pm_type_code_or_id = mb_strtolower($pm_type_code_or_id);
 		
@@ -559,7 +560,7 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 	 public function relationshipTypeListToIDs($pm_table_name_or_num, $pa_list, $pa_options=null) {
 	 	$va_rel_ids = array();
 		foreach($pa_list as $vm_type) {
-			if ($vn_type_id = $this->getRelationshipTypeID($pm_table_name_or_num, $vm_type)) {
+			if ($vn_type_id = $this->getRelationshipTypeID($pm_table_name_or_num, $vm_type, null, null, $pa_options)) {
 				$va_rel_ids[] = $vn_type_id;
 			}
 		}
@@ -574,6 +575,22 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 		}
 		
 		return $va_rel_ids;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Check a list of relationship type codes and/or ids for validity
+	 *
+	 * @param mixed $table_name_or_num The name or number of the relationship table that the types are valid for (Eg. ca_objects_x_entities)
+	 * @param array $list A list of relationship type_code string and/or numeric type_ids
+	 * @param array $options No options are supported
+	 * @return array 
+	 */
+	 public function validateRelationshipTypeCodes($table_name_or_num, array $list, ?array $options=null) {
+	 	$ret = [];
+		foreach($list as $type) {
+			$ret[$type] = (bool)$this->getRelationshipTypeID($table_name_or_num, $type, null, null, ['cache' => false]);
+		}
+		return $ret;
 	}
 	# ------------------------------------------------------
 	/**
@@ -693,6 +710,7 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 			$vn_type_id = $qr_res->get('type_id');
 			$va_hierarchies[$vn_type_id]['type_id'] = $va_hierarchies[$vn_type_id]['item_id'] = $vn_type_id;	
 			$va_hierarchies[$vn_type_id]['name'] = $va_relationship_tables[$qr_res->get('table_num')]['name'];	
+			$va_hierarchies[$vn_type_id]['table_num'] = $qr_res->get('table_num');
 			
 			$qr_children = $o_db->query("
 				SELECT count(*) children
@@ -744,7 +762,8 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 		
 		$vb_we_set_transaction = false;
 		if (!$this->inTransaction()) {
-			$this->setTransaction($o_trans = new Transaction($this->getDb()));
+			$o_trans = new Transaction($this->getDb());
+			$this->setTransaction($o_trans);
 			$vb_we_set_transaction = true;
 		} else {
 			$o_trans = $this->getTransaction();
@@ -779,7 +798,8 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 		
 		$vb_we_set_transaction = false;
 		if (!$this->inTransaction()) {
-			$this->setTransaction($o_trans = new Transaction($this->getDb()));
+			$o_trans = new Transaction($this->getDb());
+			$this->setTransaction($o_trans);
 			$vb_we_set_transaction = true;
 		} else {
 			$o_trans = $this->getTransaction();
@@ -862,11 +882,9 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 		$vn_num_rows = (int)$this->getDb()->affectedRows();
 		
 		// Reindex modified relationships
-		if (!BaseModel::$search_indexer) {
-			BaseModel::$search_indexer = new SearchIndexer($this->getDb());
-		}
+		$si = $this->getSearchIndexer();
 		foreach($va_to_reindex_relations as $vn_relation_id => $va_row) {
-			BaseModel::$search_indexer->indexRow($vn_table_num, $vn_relation_id, $va_row, false, null, array('type_id' => true));
+			$si->indexRow($vn_table_num, $vn_relation_id, $va_row, false, null, array('type_id' => true));
 		}
 		
 		return $vn_num_rows;

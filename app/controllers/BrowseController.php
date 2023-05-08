@@ -78,6 +78,8 @@
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
  			
+ 			$o_search_config = caGetSearchConfig();
+ 			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type");
@@ -269,10 +271,14 @@
 				unset($va_criteria['_search']);
 			} 
 
-
  			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
  			
 			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'omitChildRecords' => $vb_omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $va_browse_info, null)));
+			
+			//
+			// Set highlight text
+			//
+			MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $va_criteria['_search'] ?? '', ['persist' => !RequestHTTP::isAjax()]);
 			
 			//
 			// Facets
@@ -363,6 +369,7 @@
 				}
 			}
 			
+			$qr_res->doHighlighting($o_search_config->get("do_highlighting"));
 			$this->view->setVar('result', $qr_res);
 				
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {

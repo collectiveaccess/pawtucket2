@@ -1,20 +1,20 @@
 <?php
-	$t_item = $this->getVar("item");
-	$va_comments = $this->getVar("comments");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");	
-	
-	if ($va_external_link = $t_item->get('ca_entities.external_link', array('returnWithStructure' => true))) {
-		foreach ($va_external_link as $va_key => $va_external_link_t) {
-			foreach ($va_external_link_t as $va_key => $va_external_link_info) {
-				if ($va_external_link_info['url_entry']) {
-					$vs_external_link = $va_external_link_info['url_entry'];
-					break;
-				}
+$t_item = $this->getVar("item");
+$va_comments = $this->getVar("comments");
+$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+$vn_share_enabled = 	$this->getVar("shareEnabled");	
+$va_access_values = 	caGetUserAccessValues($this->request);
+
+if ($va_external_link = $t_item->get('ca_entities.external_link', array('returnWithStructure' => true))) {
+	foreach ($va_external_link as $va_key => $va_external_link_t) {
+		foreach ($va_external_link_t as $va_key => $va_external_link_info) {
+			if ($va_external_link_info['url_entry']) {
+				$vs_external_link = $va_external_link_info['url_entry'];
+				break;
 			}
 		}
-	}					
-
+	}
+}					
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -37,21 +37,15 @@
 <?php
 					if ($va_description = $t_item->get('ca_entities.biography')) {
 						print "<div class='unit'>".$va_description."</div>";
+					}		
+			
+					if($res = $t_item->get("ca_occurrences", array("restrictToTypes" => ["member_institution"], 'delimiter' => ', ', "returnAsLink" => true, "checkAccess" => $va_access_values))) {
+						print "<div class='unit'><span class='name'>"._t("Educational resources").": </span>".$res."</div>\n";
 					}
-#					if ($va_external_link = $t_item->get('ca_entities.external_link', array('returnWithStructure' => true))) {
-#						foreach ($va_external_link as $va_key => $va_external_link_t) {
-#							foreach ($va_external_link_t as $va_key => $va_external_link_info) {
-#								if ($va_external_link_info['url_source']) {
-#									print "<div class='unit'><span class='data'><a href='".$va_external_link_info['url_entry']."' target='_blank'>".$va_external_link_info['url_source']."</a></span></div>";
-#								} else {
-#									print "<div class='unit'><span class='data'><a href='".$va_external_link_info['url_entry']."' target='_blank'>".$va_external_link_info['url_entry']."</a></span></div>";
-#								
-#								}
-#							}
-#						}
-#					}					
+
+			
 					if ($va_social_media = $t_item->get('ca_entities.social_media', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
-						print "<div class='unit connect'><div class='name' style='width:100%;'>Connect</div>";
+						print "<div class='unit connect'><div class='name' style='width:100%;'><?= _t('Connect'); ?></div>";
 						foreach ($va_social_media as $va_key => $va_social_media_t) { 
 							foreach ($va_social_media_t as $va_key => $va_social_media_link) {
 								switch ($va_social_media_link['platform']) {
@@ -77,7 +71,7 @@
 					}
 					print "<div class='unit'>".$this->getVar('map')."</div>";
 					if($t_item->get("ca_entities.address")){
-						print "<div class='unit'><h6>Address</h6>";
+						print "<div class='unit'><h6><?= _t('Address'); ?></h6>";
 						if($t_item->get("ca_entities.address.address1")){
 							print $t_item->get("ca_entities.address.address1")."<br/>";
 						}
@@ -164,9 +158,9 @@
 			<div class='row'><div class='col-sm-12'><div class='browseSearchBar'>
 <?php
 			if (($vn_num_objects = $t_item->get("ca_objects", array("returnAsCount" => true, 'limit' => 1001))) > 1000) {
-			    $vs_num_objects = "1000+ results";
+			    $vs_num_objects = _t("1000+ results");
 			} else {
-			    $vs_num_objects = ($vn_num_objects == 1) ? "{$vn_num_objects} result" : "{$vn_num_objects} results";
+			    $vs_num_objects = ($vn_num_objects == 1) ? _t("%1 result", $vn_num_objects) : _t("%1 results", $vn_num_objects);
 			}
 			
 			print 	"<div class='resultCountDetailPage resultCount'>{$vs_num_objects}</div>"; 
@@ -179,7 +173,7 @@
 							</div>	
 						</div>
 					</form>';
-		print caNavLink($this->request, "Filter this Collection <i class='fa fa-external-link'></i>", 'filterCollection', '', 'Browse', 'objects', array('facet' => 'member_inst_facet', 'id' => $t_item->get('ca_entities.entity_id')));
+		print caNavLink($this->request, _t("Filter this Collection")." <i class='fa fa-external-link'></i>", 'filterCollection', '', 'Browse', 'objects', array('facet' => 'member_inst_facet', 'id' => $t_item->get('ca_entities.entity_id')));
 					
 		print "</div></div></div>";
 ?>

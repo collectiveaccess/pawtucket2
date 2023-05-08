@@ -559,6 +559,7 @@
 		$pb_dont_show_content = (isset($pa_options['dont_show_content']) && $pa_options['dont_show_content']) ? true : false;
 		
 		if($vs_classname = (!$pb_no_background) ? 'form-button' : '') {
+			if(!isset($pa_attributes['class'])) { $pa_attributes['class'] = null; }
 			$pa_attributes['class'] .= " {$vs_classname}";
 		}
 		
@@ -636,7 +637,7 @@
 	function caNavIcon($pn_type, $pm_size=2, $pa_attributes=null, $pa_options=null) {
 		if (!is_array($pa_attributes)) { $pa_attributes = array(); }
 		
-		$vs_opt_class = $pa_attributes['class'] ? ' '.$pa_attributes['class'] : '';
+		$vs_opt_class = ($pa_attributes['class'] ?? null) ? ' '.$pa_attributes['class'] : '';
 		unset($pa_attributes['class']);
 		
 		if ($vs_color = caGetOption('color', $pa_options, null)) {
@@ -683,7 +684,7 @@
 				$vs_fa_class = 'fas fa-plus-circle';	
 				break;
 			case __CA_NAV_ICON_DELETE__:
-				$vs_fa_class = 'fa fa-times';
+				$vs_fa_class = 'fas fa-times';
 				$vs_ca_class = 'deleteIcon'; 
 				break;
 			case __CA_NAV_ICON_CANCEL__:
@@ -746,7 +747,7 @@
 				$vs_fa_class = 'fas fa-times-circle';
 				break;
 			case __CA_NAV_ICON_CLOSE__:
-				$vs_fa_class = 'fa fa-times';
+				$vs_fa_class = 'fas fa-times';
 				break;
 			case __CA_NAV_ICON_WATCH__:
 				$vs_fa_class = 'far fa-eye';

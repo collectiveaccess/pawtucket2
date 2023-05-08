@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2012-2019 Whirl-i-Gig
+ * Copyright 2012-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -200,9 +200,9 @@ class ca_data_exporter_items extends BaseModel {
 	protected $FIELDS;
 	
 	# ------------------------------------------------------
-	public function __construct($pn_id=null) {		
+	public function __construct($id=null, ?array $options=null) {		
 		global $_ca_data_exporter_items_settings;
-		parent::__construct($pn_id);
+		parent::__construct($id, $options);
 		
 		//
 		$this->initSettings();
@@ -409,6 +409,16 @@ class ca_data_exporter_items extends BaseModel {
 			'default' => '',
 			'label' => _t('Locale'),
 			'description' => _t('Locale code to use to get the field values. If not set, the system/user default is used.')
+		);
+		
+		$va_settings['returnAllLocales'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 1,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Return all locales'),
+			'description' => _t('Return all available values for any locale. If not set, only values for the current locale are returned.')
 		);
 
 		$va_settings['omitIfEmpty'] = array(
@@ -617,6 +627,16 @@ class ca_data_exporter_items extends BaseModel {
 			'default' => '',
 			'label' => _t('Apply one or more regular expression-based substitutions to a source value prior to import.'),
 			'description' => _t('A list of Perl-compatible regular expressions. Each expression has two parts, a matching expression and a substitution expression, and is expressed as a JSON object with <em>match</em> and <em>replaceWith</em> keys. Ex. [{"match": "([\\d]+)\\.([\\d]+)", "replaceWith": "\\1:\\2"}, {"match": "[^\\d:]+", "replaceWith": ""}] ')
+		);
+		
+		$va_settings['includeDeleted'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 1,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Include deleted records'),
+			'description' => _t('Include deleted records in the exported data set.')
 		);
 		
 		$this->setAvailableSettings($va_settings);

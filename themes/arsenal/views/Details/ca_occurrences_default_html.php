@@ -52,6 +52,14 @@ $t_item = $this->getVar("item");
 	$t_locale =					new ca_locales();
 
 	global $g_ui_locale;
+	
+	$vs_type = $t_item->getWithTemplate("^ca_occurrences.type_id");
+	switch($vs_type){
+		case "Filmwerk":
+			$vs_type = "Werk";
+		break;
+		# ---------------
+	}
 ?>
 
 		<div class="row">
@@ -60,7 +68,7 @@ $t_item = $this->getVar("item");
 					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 				</div><!-- end detailTop -->
 				<H1>{{{ca_occurrences.preferred_labels.name}}}</H1>
-				<H2>{{{^ca_occurrences.type_id}}}</H2>
+				<H2><?php print $vs_type; ?></H2>
 				<HR>
 			</div>
 		</div>
@@ -127,7 +135,7 @@ $t_item = $this->getVar("item");
 				foreach($va_entity_ids as $vn_entity_id) {
 					if ($t_entity->load($vn_entity_id)) {           // doesn't hurt to make sure the entity actually loaded... but it should never fail
 						if ($vs_director_name = $t_entity->get('ca_entities.preferred_labels.displayname')) {
-							print caNavLink($this->request,$vs_director_name,'','','Browse','objects',array("facet" => "entity_facet", "id" => $vn_entity_id));
+							print caNavLink($this->request,$vs_director_name,'','','Browse','works',array("facet" => "entity_facet", "id" => $vn_entity_id));
 							print "\n";
 						}
 						if ($vs_director_bio = $t_entity->get('ca_entities.director_bio')) {
@@ -170,6 +178,19 @@ $t_item = $this->getVar("item");
 				}
 				print "</div>";
 			}
+			
+			
+			// other credits
+			if(is_array($credits = $t_item->getRelatedItems('ca_entities', ['excludeRelationshipTypes' => ['director']]))) {
+				foreach($credits as $credit) {
+?><div class='unit'>
+	<label><?= ucfirst($credit['relationship_typename']); ?></label>
+	<?= caNavLink($this->request,$credit['label'],'','','Browse','works',array("facet" => "entity_facet", "id" => $credit['entity_id'])); ?>
+</div><?php
+				}
+			}
+			
+			
 			if($t_item->get('ca_occurrences.country',array("convertCodesToDisplayText" => true))){
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('country')."</label>".$t_item->get('ca_occurrences.country', array("convertCodesToDisplayText" => true, 'delimiter' => ', '))."</div><!-- end unit -->";
 			}
@@ -185,6 +206,12 @@ $t_item = $this->getVar("item");
 			if(strlen($t_item->get('ca_occurrences.forum_pdf'))>0){
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('forum_pdf')."</label>".$t_item->get('ca_occurrences.forum_pdf', array('delimiter' => ', '))."</div><!-- end unit -->";
 			}
+			
+			// TODO: need final text and formatting for link
+			if($url = $t_item->get('ca_occurrences.film_page_url')) {
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}' target='_blank'>".($g_ui_locale == "de_DE" ? "For more information on the film visit the Forum page" : "Mehr Informationen zum Film auf der Webseite des Forums")."</a></div></div>";
+			}	
+			
 			if(strlen($t_item->get('ca_occurrences.world_premiere'))>0){
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('world_premiere')."</label>".$t_item->get('ca_occurrences.world_premiere', array('delimiter' => ', '))."</div><!-- end unit -->";
 			}
@@ -195,7 +222,7 @@ $t_item = $this->getVar("item");
 				$va_print_tags = array();
 				foreach($va_tags as $vn_id => $va_term_info){
 					if($va_term_info["idno"]=="exp"){
-						$va_print_tags[] = caNavLink($this->request, $va_term_info["label"], '', '', 'Search', 'objects', array('search' => $va_term_info["label"]));
+						$va_print_tags[] = caNavLink($this->request, $va_term_info["label"], '', '', 'Search', 'works', array('search' => $va_term_info["label"]));
 					} else {
 						$va_print_tags[] = $va_term_info["label"];
 					}
@@ -208,11 +235,10 @@ $t_item = $this->getVar("item");
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('work_notes')."</label>".$t_item->get('ca_occurrences.work_notes', array('delimiter' => '<br/>'))."</div><!-- end unit -->";
 			}
 			if($t_item->get("ca_occurrences.credit_editable.credit_entity")){
-				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Kredite" : "Credits")."</label><div class='trimText'>";
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Credits" : "Credits")."</label><div class='trimText'>";
 				print $t_item->getWithTemplate("<unit relativeTo='ca_occurrences.credit_editable' delimiter='<br/>'>^ca_occurrences.credit_editable.credit_role: ^ca_occurrences.credit_editable.credit_entity</unit>");
 				print "</div></div>";
 			}
-
 ?>
 			</div><!-- end col -->
 		</div><!-- end row -->
@@ -244,7 +270,7 @@ $t_item = $this->getVar("item");
 					</div>
 <?php
 				}
-			}			
+			}		
 ?>
 		</div><!-- end row -->
 		<div class="row">
@@ -274,7 +300,7 @@ $t_item = $this->getVar("item");
 					$vs_rel_label = join(', ',$va_display_parts);
 
 					if($this->request->isLoggedIn()){
-						$vs_rel_label .= " (".$va_object_info["idno"].")";
+						$vs_rel_label .= " (".(($print_id = $t_rel->get('ca_objects.print_id')) ? $print_id : $va_object_info["idno"]).")";
 					}
 
 					print caDetailLink($this->request, "&rarr; ".$vs_rel_label, '', 'ca_objects', $t_rel->getPrimaryKey());

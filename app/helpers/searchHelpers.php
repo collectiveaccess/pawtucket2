@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2021 Whirl-i-Gig
+ * Copyright 2011-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -188,14 +188,14 @@
 			return null; 
 		}
 		
-		$find_type = $m[1];
+		$find_type = $m[1] ?? null;
 		$is_advanced = false;
-		if(preg_match("!^([A-Z]{1}[a-z]+)Advanced$!", $m[2], $madm)) { 
-			$table_desc = $madm[1];
+		if(preg_match("!^([A-Z]{1}[a-z]+)Advanced$!", $m[2] ?? null, $madm)) { 
+			$table_desc = $madm[1] ?? null;
 			$is_advanced = true;
 			$find_type .= 'Advanced';
 		} else {
-			$table_desc = $m[2];
+			$table_desc = $m[2] ?? null;
 		}
 		
 		$table_map = [
@@ -408,7 +408,7 @@
 		$va_aps = array();
 		foreach($va_tables as $vs_table) {
 			$va_config = $o_search_indexing_config->getAssoc($vs_table);
-			if(is_array($va_config) && is_array($va_config['_access_points'])) {
+			if(is_array($va_config ?? null) && is_array($va_config['_access_points'] ?? null)) {
 				if (array_intersect($pa_access_points, array_keys($va_config['_access_points']))) {
 					$va_aps[$vs_table] = true;	
 				}
@@ -437,18 +437,18 @@
 	 * @return array|string
 	 */
 	function caPuppySearch($po_request, $ps_search_expression, $pa_blocks, $pa_options=null) {
+		$o_search_config = caGetSearchConfig();
+		
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		$va_access_values = caGetUserAccessValues($po_request);
- 		if(is_array($va_access_values) && sizeof($va_access_values)){
+ 		if(is_array($va_access_values ?? null) && sizeof($va_access_values)){
  			$pa_options["checkAccess"] = $va_access_values;
  		}	
 		$vn_items_per_page_default = caGetOption('itemsPerPage', $pa_options, 10);
 		$vn_items_per_column_default = caGetOption('itemsPerColumn', $pa_options, 1);
-		$vb_match_on_stem = caGetOption('matchOnStem', $pa_options, false);
 		
 		$va_contexts = caGetOption('contexts', $pa_options, array(), array('castTo' => 'array'));
 		unset($pa_options['contexts']);
-		
 		
 		if ($purifier = RequestHTTP::getPurifier()) { $ps_search_expression = $purifier->purify($ps_search_expression); }
 		
@@ -470,7 +470,7 @@
 		
 		$va_table_counts = array();
 		foreach($pa_blocks as $vs_block => $va_block_info) {
-			if (!($o_search = caGetSearchInstance($va_block_info['table']))) { continue; }
+			if (!($o_search = caGetSearchInstance($va_block_info['table'] ?? null))) { continue; }
 			
 			if (!is_array($va_block_info['options'])) { $va_block_info['options'] = array(); }
 			$va_options = array_merge($pa_options, $va_block_info['options']);
@@ -506,6 +506,8 @@
  			
  			$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction); 
  			
+ 			$search_expression_for_display = $va_contexts[$vs_block]->getSearchExpressionForDisplay($ps_search_expression);
+ 			
  			$va_options['sort'] = $va_sorts[$ps_sort];
  			$va_options['sort_direction'] = $ps_sort_direction;
  			
@@ -527,19 +529,26 @@
 				foreach($base_criteria as $facet => $value){
 					$o_browse->addCriteria($facet, $value);
 				}
-				$o_browse->addCriteria('_search', [$ps_search_expression]);
-				$o_browse->execute();
+				$o_browse->addCriteria("_search", [caMatchOnStem($ps_search_expression)], [$search_expression_for_display]);
+				$o_browse->execute($va_options);
+
 				$qr_res = $o_browse->getResults($va_options);
+				
+				if($vn_i == 0) { MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $ps_search_expression); }
 			} else {
-				$qr_res = $o_search->search(trim($ps_search_expression).(($vb_match_on_stem && !preg_match('![\*\"\']$!', $ps_search_expression)) ? '*' : ''), $va_options);
+				$qr_res = $o_search->search(caMatchOnStem($ps_search_expression), $va_options);
+				
+				if($vn_i == 0) { MetaTagManager::setHighlightText($o_search->getSearchedTerms() ?? $ps_search_expression); }
 			}
+			
+			$qr_res->doHighlighting($o_search_config->get('do_highlighting'));
 			$va_contexts[$vs_block]->setSearchExpression($ps_search_expression);
 			$va_contexts[$vs_block]->setResultList($qr_res->getPrimaryKeyValues());
 			
 			// In Ajax mode we scroll to an offset
 			$vn_start = 0;
 			if ($vb_ajax_mode) {
-				if (($vn_start = $po_request->getParameter('s', pInteger)) < $qr_res->numHits()) {
+				if (($vn_start = (int)$po_request->getParameter('s', pInteger)) < $qr_res->numHits()) {
 					$qr_res->seek($vn_start);
 					if (isset($va_contexts[$vs_block])) {
 						$va_contexts[$vs_block]->setParameter('start', $vn_start);
@@ -579,6 +588,8 @@
 			
 			
 			$o_view = new View($po_request, $po_request->getViewsDirectoryPath());
+			
+			$qr_res->doHighlighting($o_search_config->get("do_highlighting"));
 			$o_view->setVar('result', $qr_res);
 			$o_view->setVar('count', $vn_count);
 			$o_view->setVar('block', $vs_block);
@@ -652,6 +663,8 @@
 	function caSplitSearchResultByType($pr_res, $pa_options=null) {
 		if (!($t_instance = Datamodel::getInstanceByTableName($pr_res->tableName(), true))) { return null; }
 		
+		$o_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+		
 		if (!($vs_type_fld = $t_instance->getTypeFieldName())) { return null; }
 		$vs_table = $t_instance->tableName();
 		$va_types = $t_instance->getTypeList();
@@ -667,6 +680,7 @@
 			$qr_res = $pr_res->getClone();
 			$qr_res->filterResult("{$vs_table}.{$vs_type_fld}", array($vn_type_id));
 			$qr_res->seek(0);
+			$qr_res->doHighlighting($o_search_config->get('do_highlighting'));
 			$va_results[$vn_type_id] = array(
 				'type' => $va_types[$vn_type_id],
 				'result' =>$qr_res
@@ -793,8 +807,6 @@
 	
 	 	$va_query_elements = $va_query_booleans = array();
 	 	
-	 	$vb_match_on_stem = caGetOption('matchOnStem', $pa_options, false);
-	 	
 	 	if (is_array($va_values) && sizeof($va_values)) {
 			foreach($va_values as $vs_element => $va_value_list) {
 				foreach($va_value_list as $vn_i => $vs_value) {
@@ -805,7 +817,7 @@
 						$vs_query_element = $vs_value;
 					}
 					
-					$vs_query_element .= ($vb_match_on_stem && !preg_match('!\*$!', $vs_query_element) && preg_match('!^[\w]+$!', $vs_query_element) && !preg_match('!^[0-9]+$!', $vs_query_element)) ? '*' : '';
+					$vs_query_element = caMatchOnStem($vs_query_element, $pa_options);
 					
 					$va_query_booleans[$vs_element][] = (isset($va_booleans["{$vs_element}:boolean"][$vn_i]) && $va_booleans["{$vs_element}:boolean"][$vn_i]) ? $va_booleans["{$vs_element}:boolean"][$vn_i] : 'AND';
 					switch($vs_element){
@@ -1495,7 +1507,7 @@
 			}
 		} 
 		
-		// Try to use customer user interface labels for fields when set
+		// Try to use custom user interface labels for fields when set
 		$ui_bundle_label_map = [];
 		if (isset($options['request']) && ($t_ui = ca_editor_uis::loadDefaultUI($ps_table, $options['request'], $pn_type_id))) {
 			$va_screens = $t_ui->getScreens();
@@ -1713,7 +1725,7 @@
 			
 			foreach($sortable_elements as $element_id => $sortable_element) {
 				$va_base_fields[$ps_table.'.'.$sortable_element['element_code']] = $sortable_element['display_label'];
-				if(is_array($sortable_element['elements'])) {
+				if(is_array($sortable_element['elements'] ?? null)) {
 					foreach($sortable_element['elements'] as $e) {
 						$va_base_fields[$ps_table.'.'.$sortable_element['element_code'].'.'.$e['element_code']] = str_repeat("&nbsp;", 5).'↳ '.$e['display_label'];
 					}	
@@ -1758,7 +1770,7 @@
 				
 				if (isset($config_sorts[$k])) { return true; }
 				foreach($va_display_bundles as $b) {
-					if (preg_match("!^{$b}!", $k) || preg_match("!^{$k}!", $b)) { return true; }
+					if (preg_match("!^".preg_quote($b, '!')."!", $k) || preg_match("!^".preg_quote($k, '!')."!", $b)) { return true; }
 				}
 				return false;
 			}, ARRAY_FILTER_USE_BOTH);
@@ -2042,12 +2054,12 @@
 		);
 		if ($va_field_info) {
 			// Get the list code and display type for further processing below.
-			$vs_list_code = $va_field_info['LIST'] ?: $va_field_info['LIST_CODE'];
-			$vn_display_type = $va_field_info['DISPLAY_TYPE'];
+			$vs_list_code = $va_field_info['LIST'] ?? $va_field_info['LIST_CODE'] ?? null;
+			$vn_display_type = $va_field_info['DISPLAY_TYPE'] ?? null;
 			// The "hardcoded" options are `label` => `id` so this needs to be flipped for the query builder.
-			$va_select_options = is_array($va_field_info['OPTIONS']) ? array_flip($va_field_info['OPTIONS']) : null;
+			$va_select_options = is_array($va_field_info['OPTIONS'] ?? null) ? array_flip($va_field_info['OPTIONS']) : null;
 			// Convert CA field type to query builder type and operators.
-			switch ($va_field_info['FIELD_TYPE']) {
+			switch ($va_field_info['FIELD_TYPE'] ?? null) {
 				case FT_NUMBER:
 					$va_result['type'] = 'integer';
 					break;
@@ -2091,9 +2103,12 @@
 						$va_result['type'] = 'time';
 						break;
 				}
-		} elseif(preg_match("!^count[/\.]{1}!", $va_name[1]))  {
+		} elseif(preg_match("!^count[/\.]{1}!", ($va_name[1] ?? null)))  {
 			// counts are always ints
 			$va_result['type'] = 'integer';
+		} elseif ($vs_name === '_fulltext') {
+			# Mark type as fulltext so that correct operator(s) get made available.
+			$va_result['type'] = 'fulltext';
 		}
 		
 		// Use the relevant input field type and operators based on type.
@@ -2117,9 +2132,13 @@
 			$va_result['values'] = $va_select_options;
 			$va_result['operators'] = $va_operators_by_type['select'];
 		} elseif($vs_name === "{$vs_table}.".$t_subject->getProperty('ID_NUMBERING_ID_FIELD')) {
-			$va_result['operators'] = array_merge($va_operators_by_type['select'], ['between']);
+			$va_result['operators'] = array_merge($va_operators_by_type['string'], ['between']);
 		} else {
 			$va_result['input'] = 'text';
+		}
+		if ($va_result['type'] === 'fulltext') {
+			// Now mark type to be a valid type that is supported by Query Builder
+			$va_result['type'] = 'string';
 		}
 		
 		// Set up option groups
@@ -2247,5 +2266,24 @@
 			require_once(__CA_LIB_DIR__.'/Plugins/SearchEngine/SqlSearch2.php');
 			return WLPlugSearchEngineSqlSearch2::tokenize($value);
 		}
+	}
+	# ---------------------------------------
+	/**
+	 * Check if matchOnStem mode is enable and suitable for search. If true, a wildcard should be appened onto the search.
+	 *
+	 * @param string $search_expression
+	 * @param array $options Options include:
+	 *		matchOnStem = Add wildcard to search expression is expression is suitable as a stem. [Default is to use search.conf value]
+	 *		match_on_stem = Synonym for matchOnStem.
+	 *
+	 * @return string Search string with wildcard appended if suitable
+	 */
+	function caMatchOnStem(string $search_expression, ?array $options=null) : string {
+		$config = caGetSearchConfig();
+		$search_expression = trim($search_expression);
+		if(strlen($search_expression) && (caGetOption(['matchOnStem', 'match_on_stem'], $options, false) || $config->get(['matchOnStem', 'match_on_stem'])) && caIsSearchStem($search_expression) && !caSearchIsForSets($search_expression)) {
+			return $search_expression.'*';
+		}
+		return $search_expression;
 	}
 	# ---------------------------------------

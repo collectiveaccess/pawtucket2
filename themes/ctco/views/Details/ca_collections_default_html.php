@@ -52,7 +52,7 @@
 				if ($vs_repository = $t_item->getWithTemplate('<unit>^ca_collections.repository.repositoryline1<ifdef code="ca_collections.repository.repositoryline1,ca_collections.repository.repositoryline1">, </ifdef>^ca_collections.repository.repositoryline2</unit>')) {
 					print "<div class='unit'><h6>Repository</h6>".$vs_repository."</div>";
 				}
-				if ($va_date = $t_item->getWithTemplate('<ifcount min="1" code="ca_collections.date.date_value"><unit delimiter="<br/>"><ifdef code="ca_collections.date.date_value">^ca_collections.date.date_value (^ca_collections.date.date_types)</ifdef></unit></ifcount>')) {
+				if ($va_date = $t_item->getWithTemplate('<ifdef code="ca_collections.date.date_value"><unit delimiter="<br/>"><ifdef code="ca_collections.date.date_value">^ca_collections.date.date_value (^ca_collections.date.date_types)</ifdef></unit></ifdef>')) {
 					print "<div class='unit'><h6>Date</H6>".$va_date."</div>";
 				}				
 				if ($va_extent = $t_item->get('ca_collections.extentDACS')) {

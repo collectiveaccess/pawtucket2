@@ -93,8 +93,20 @@ class Replicator {
 	 */
 	protected $get_log_service_params;
 	
+	/**
+	 * Maximum number of times to retry failed service connections
+	 */
 	protected $max_retries = 5;
+	
+	/**
+	 * Delay in milliseconds between retries of failed service connections
+	 */
 	protected $retry_delay = 1000;
+	
+	/**
+	 * Cached access values for guids
+	 */
+	protected $guid_access_cache = [];
 	
 	# --------------------------------------------------------------------------------------------------------------
 	public function __construct() {
@@ -106,10 +118,19 @@ class Replicator {
 	 *
 	 */
 	protected function getSourcesAsServiceClients() {
-		$va_sources = $this->opo_replication_conf->get('sources');
-		if(!is_array($va_sources)) { throw new Exception('No sources configured'); }
+		$sources = $this->opo_replication_conf->get('sources');
+		if($enabled_sources = $this->opo_replication_conf->getList('enabled_sources')) {
+			$filtered_sources = [];
+			foreach($enabled_sources as $s) {
+				if(isset($sources[$s])) {
+					$filtered_sources[$s] = $sources[$s];
+				}
+			}
+			$sources = $filtered_sources;
+		}
+		if(!is_array($sources)) { throw new Exception('No sources configured'); }
 
-		return $this->getConfigAsServiceClients($va_sources);
+		return $this->getConfigAsServiceClients($sources);
 	}
 	# --------------------------------------------------------------------------------------------------------------
 	/**
@@ -171,6 +192,18 @@ class Replicator {
 
 			foreach($this->getTargetsAsServiceClients() as $vs_target_key => $o_target) {
 				/** @var CAS\ReplicationService $o_target */
+				
+				
+				// get setIntrinsics -- fields that are set on the target side (e.g. to tag/mark
+				// where records came from if multiple systems are being synced into one)
+				$va_set_intrinsics_config = $this->opo_replication_conf->get('targets')[$vs_target_key]['setIntrinsics'];
+				$va_set_intrinsics_default = is_array($va_set_intrinsics_config['__default__']) ? $va_set_intrinsics_config['__default__'] : array();
+				$va_set_intrinsics_source = is_array($va_set_intrinsics_config[$source_system_guid]) ? $va_set_intrinsics_config[$source_system_guid] : array();
+				$va_set_intrinsics = array_replace($va_set_intrinsics_default, $va_set_intrinsics_source);
+				$vs_set_intrinsics = null;
+				if (is_array($va_set_intrinsics) && sizeof($va_set_intrinsics)) {
+					$vs_set_intrinsics = json_encode($va_set_intrinsics);
+				}
 				
 				$this->target = $o_target;
 				$this->target_key = $vs_target_key;
@@ -318,8 +351,13 @@ class Replicator {
 						->addGetParameter('pushMediaTo', $vs_push_media_to)
 						->setRetries($this->max_retries)->setRetryDelay($this->retry_delay)
 						->request()->getRawData();
-
-					if(!is_array($va_source_log_entries)) { break; }
+									
+					if (!is_array($va_source_log_entries) || !sizeof($va_source_log_entries)) {
+						$this->log(_t("No new log entries found for source %1 and target %2. Skipping this combination now.",
+							$vs_source_key, $vs_target_key), Zend_Log::INFO);
+						break;
+					}
+					
                     $log_ids = array_keys($va_source_log_entries);
                     $start_log_id = array_shift($log_ids);
                     $end_log_id = array_pop($log_ids);
@@ -351,12 +389,8 @@ class Replicator {
 						
 						
 						$vs_access = is_array($pa_filter_on_access_settings) ? join(";", $pa_filter_on_access_settings) : "";
-						$o_access_by_guid = $o_source->setRequestMethod('POST')->setEndpoint('hasAccess')
-						                    ->addGetParameter('access', $vs_access)
-											->setRequestBody(array_unique(array_merge(caExtractArrayValuesFromArrayOfArrays($va_source_log_entries, 'guid'), array_keys($va_subject_guids))))
-											->setRetries($this->max_retries)->setRetryDelay($this->retry_delay)
-											->request();
-						$va_access_by_guid = $o_access_by_guid->getRawData();
+						
+						$va_access_by_guid = $this->_hasAccess($o_source, $vs_access, array_unique(array_merge(caExtractArrayValuesFromArrayOfArrays($va_source_log_entries, 'guid'), array_keys($va_subject_guids))));
 
                         // List of log entries to push
 					    $va_filtered_log_entries = [];
@@ -442,18 +476,13 @@ class Replicator {
                         
                                                 // Check access settings for dependent rows; we only want to replicate rows that
                                                 // meet the configured access requirements (Eg. public rows only)
-                                                $o_access_for_dependent = $o_source->setRequestMethod('POST')->setEndpoint('hasAccess')
-                                                                    ->addGetParameter('access', $vs_access)
-                                                                    ->setRequestBody(array_unique(caExtractArrayValuesFromArrayOfArrays($va_log_for_missing_guid, 'guid')))
-                                                                    ->setRetries($this->max_retries)->setRetryDelay($this->retry_delay)
-                                                                    ->request();
-                                                $va_access_for_dependent = $o_access_for_dependent->getRawData();
+												$va_access_for_dependent = $this->_hasAccess($o_source, $vs_access, array_unique(caExtractArrayValuesFromArrayOfArrays($va_log_for_missing_guid, 'guid')));    
                                                 
                                                 $va_filtered_log_for_missing_guid = [];  
                                                 ksort($va_log_for_missing_guid, SORT_NUMERIC);
                                                 $this->log(_t("[%1] Missing log for %2 is %3", $vs_source_key, $vs_missing_guid, print_R($va_log_for_missing_guid, true)), Zend_Log::DEBUG);
                                                 foreach($va_log_for_missing_guid as $va_missing_entry) {
-                                                	if ($this->sent_log_ids[$va_missing_entry['log_id']]) { 
+                                                	if (($va_missing_entry['log_id'] != 1) && $this->sent_log_ids[$va_missing_entry['log_id']]) { 
                                                 		$this->log(_t("[%1] Skipped missing log_id %2 becaue it has already been sent.", $vs_source_key, $va_missing_entry['log_id']), Zend_Log::WARN);
                                                                 
                                                 		continue; 
@@ -516,12 +545,7 @@ class Replicator {
                                           
                                                     if (is_array($pa_filter_on_access_settings)) {
                                                         // Filter missing guid list using access criteria
-                                                        $o_access_for_missing = $o_source->setRequestMethod('POST')->setEndpoint('hasAccess')
-                                                                            ->addGetParameter('access', $vs_access)
-                                                                            ->setRequestBody($missing_guids)
-                                                                            ->setRetries($this->max_retries)->setRetryDelay($this->retry_delay)
-                                                                            ->request();
-                                                        $va_access_for_missing = $o_access_for_missing->getRawData();
+                                                        $va_access_for_missing = $this->_hasAccess($o_source, $vs_access, $missing_guids);
                                                         
                                                         if (is_array($va_access_for_missing)) {
                                                         	$missing_guids = array_filter(array_keys(array_filter($va_access_for_missing, function($v) use ($pa_filter_on_access_settings) { return (($v == '?') || (in_array((int)$v, $pa_filter_on_access_settings, true))); })), 'strlen');
@@ -624,6 +648,7 @@ class Replicator {
                                                         
                                                         $o_backlog_resp = $o_target->setRequestMethod('POST')->setEndpoint('applylog')
                                                             ->addGetParameter('system_guid', $source_system_guid)
+															->addGetParameter('setIntrinsics', $vs_set_intrinsics)
                                                             ->setRequestBody($va_entries)
                                                             ->setRetries($this->max_retries)->setRetryDelay($this->retry_delay)
                                                             ->request();
@@ -655,14 +680,8 @@ class Replicator {
                         if(sizeof($source_log_entries_for_missing_guids)) {
                             $source_log_entries_for_missing_guids = array_reverse($source_log_entries_for_missing_guids);
 						
-						    list($source_log_entries_for_missing_guids, $source_log_entries_for_missing_guids_seen_guids) = $this->_pushMissingGUIDs($source_log_entries_for_missing_guids, $source_log_entries_for_missing_guids_seen_guids);
+						    list($source_log_entries_for_missing_guids, $source_log_entries_for_missing_guids_seen_guids) = $this->_pushMissingGUIDs($source_log_entries_for_missing_guids, $source_log_entries_for_missing_guids_seen_guids, $vs_set_intrinsics);
                         }
-					}
-					
-					if (!is_array($va_source_log_entries) || !sizeof($va_source_log_entries)) {
-						$this->log(_t("No new log entries found for source %1 and target %2. Skipping this combination now.",
-							$vs_source_key, $vs_target_key), Zend_Log::INFO);
-						break;
 					}
 					
 					if (is_array($va_filtered_log_entries)) {
@@ -682,17 +701,13 @@ class Replicator {
 					    }
 					    $va_source_log_entries = $va_filtered_log_entries;
 					}
-
-					// get setIntrinsics -- fields that are set on the target side (e.g. to tag/mark
-					// where records came from if multiple systems are being synced into one)
-					$va_set_intrinsics_config = $this->opo_replication_conf->get('targets')[$vs_target_key]['setIntrinsics'];
-					$va_set_intrinsics_default = is_array($va_set_intrinsics_config['__default__']) ? $va_set_intrinsics_config['__default__'] : array();
-					$va_set_intrinsics_source = is_array($va_set_intrinsics_config[$source_system_guid]) ? $va_set_intrinsics_config[$source_system_guid] : array();
-					$va_set_intrinsics = array_replace($va_set_intrinsics_default, $va_set_intrinsics_source);
-					$vs_set_intrinsics = null;
-					if (is_array($va_set_intrinsics) && sizeof($va_set_intrinsics)) {
-						$vs_set_intrinsics = json_encode($va_set_intrinsics);
+					
+					if (!is_array($va_source_log_entries) || !sizeof($va_source_log_entries)) {
+						$this->log(_t("No new log entries found for source %1 and target %2. Will try pulling new ones.",
+							$vs_source_key, $vs_target_key), Zend_Log::INFO);
+						//break;
 					}
+
 
 					// apply that log at the current target
 					ksort($va_source_log_entries, SORT_NUMERIC);
@@ -745,7 +760,7 @@ class Replicator {
 						$this->log(_t("[%1] Running missing guid queue with %2 guids.", $vs_source_key, sizeof($source_log_entries_for_missing_guids)), Zend_Log::DEBUG);
 						$source_log_entries_for_missing_guids = array_reverse($source_log_entries_for_missing_guids);
 					
-						list($source_log_entries_for_missing_guids, $source_log_entries_for_missing_guids_seen_guids) = $this->_pushMissingGUIDs($source_log_entries_for_missing_guids, $source_log_entries_for_missing_guids_seen_guids);
+						list($source_log_entries_for_missing_guids, $source_log_entries_for_missing_guids_seen_guids) = $this->_pushMissingGUIDs($source_log_entries_for_missing_guids, $source_log_entries_for_missing_guids_seen_guids, $vs_set_intrinsics);
 					}
 				}
 
@@ -836,7 +851,7 @@ class Replicator {
 	/**
 	 *
 	 */
-	private function _pushMissingGUIDs($source_log_entries_for_missing_guids, $source_log_entries_for_missing_guids_seen_guids) {
+	private function _pushMissingGUIDs($source_log_entries_for_missing_guids, $source_log_entries_for_missing_guids_seen_guids, $set_intrinsics) {
 		$va_dependency_list = $this->_analyzeDependencies($source_log_entries_for_missing_guids);
 		
 		//
@@ -1003,6 +1018,7 @@ class Replicator {
 				
 				$o_backlog_resp = $this->target->setRequestMethod('POST')->setEndpoint('applylog')
 					->addGetParameter('system_guid', $this->source_guid)
+					->addGetParameter('setIntrinsics', $set_intrinsics)
 					->setRequestBody($va_entries)
 					->setRetries($this->max_retries)->setRetryDelay($this->retry_delay)
 					->request();
@@ -1018,6 +1034,41 @@ class Replicator {
 			unset($source_log_entries_for_missing_guids_seen_guids[$vs_missing_guid]);
 		}
 		return [$source_log_entries_for_missing_guids, $source_log_entries_for_missing_guids_seen_guids];
+	}
+	# --------------------------------------------------------------------------------------------------------------
+	/**
+	 *
+	 */
+	private function _hasAccess($o_source, $access, $guids) {
+		if(sizeof($this->guid_access_cache) > 100000) { 
+			$this->guid_access_cache = array_slice($this->guid_access_cache, 75000);
+		}
+		// Check if guids are cached
+		$cached_res = [];
+		$filtered_guids = [];
+		foreach($guids as $guid) {
+			if(isset($this->guid_access_cache[$guid])) {
+				$cached_res[$guid] = $this->guid_access_cache[$guid];
+				continue;
+			}
+			$filtered_guids[] = $guid;
+		}
+		$filtered_guids = array_unique($filtered_guids);
+		
+		$r = $o_source->setRequestMethod('POST')->setEndpoint('hasAccess')
+			->addGetParameter('access', $access)
+			->setRequestBody($filtered_guids)
+			->setRetries($this->max_retries)->setRetryDelay($this->retry_delay)
+			->request();
+			
+		$res = $r->getRawData();
+		foreach($res as $guid => $access) {
+			$this->guid_access_cache[$guid] = $access;
+		}
+		
+		$res = array_merge($res, $cached_res);
+		
+		return $res;
 	}
 	# --------------------------------------------------------------------------------------------------------------
 }

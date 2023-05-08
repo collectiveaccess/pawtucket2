@@ -345,7 +345,7 @@ BaseModel::$s_ca_models_definitions['ca_objects'] = array(
 			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 			'IS_NULL' => false, 
 			'DEFAULT' => '',
-			'LABEL' => 'View count', 'DESCRIPTION' => 'Number of views for this record.'
+			'LABEL' => 'View count', 'DESCRIPTION' => _t('Number of views for this record.')
 		),
 		'circulation_status_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT,
@@ -379,7 +379,7 @@ BaseModel::$s_ca_models_definitions['ca_objects'] = array(
 			'DEFAULT' => null,
 			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
 			'LIST_CODE' => 'submission_statuses',
-			'LABEL' => _t('Submission status'), 'DESCRIPTION' => _t('Indicates submission status of the object.')
+			'LABEL' => _t('Submission status'), 'DESCRIPTION' => _t('Indicates submission status')
 		),
 		'submission_via_form' => array(
 			'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_OMIT,
@@ -387,7 +387,15 @@ BaseModel::$s_ca_models_definitions['ca_objects'] = array(
 			'IS_NULL' => true,
 			'DEFAULT' => null,
 			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
-			'LABEL' => _t('Submission via form'), 'DESCRIPTION' => _t('Indicates what contribute form was used to create the submission.')
+			'LABEL' => _t('Submission via form'), 'DESCRIPTION' => _t('Indicates what contribute form was used to create the submission')
+		),
+		'submission_session_id' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT,
+			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => true,
+			'DEFAULT' => null,
+			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
+			'LABEL' => _t('Submission session'), 'DESCRIPTION' => _t('Indicates submission session')
 		)
 	)
 );
@@ -538,7 +546,7 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 	#    the record identified by the primary key value
 	#
 	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
+	public function __construct($id=null, ?array $options=null) {
 		if (
 			!is_null(BaseModel::$s_ca_models_definitions['ca_objects']['FIELDS']['acl_inherit_from_parent']['DEFAULT'])
 			||
@@ -553,7 +561,7 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 				BaseModel::$s_ca_models_definitions['ca_objects']['FIELDS']['acl_inherit_from_ca_collections']['DEFAULT'] = (int)$o_config->get('ca_objects_acl_inherit_from_ca_collections_default');
 			}
 		}
-		parent::__construct($pn_id);
+		parent::__construct($id, $options);
 	}
 	# ------------------------------------------------------
 	protected function initLabelDefinitions($pa_options=null) {
@@ -619,6 +627,8 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 		$this->BUNDLES['submission_group'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Submission group'), 'displayOnly' => true);
 		
 		$this->BUNDLES['home_location_value'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Home location display value'), 'displayOnly' => true);
+		
+		$this->BUNDLES['generic'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Display template'));
 	}
 	# ------------------------------------------------------
 	/**
@@ -738,7 +748,8 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 	public function duplicate($pa_options=null) {
 		$vb_we_set_transaction = false;
 		if (!$this->inTransaction()) {
-			$this->setTransaction($o_t = new Transaction($this->getDb()));
+			$o_t = new Transaction($this->getDb());
+			$this->setTransaction($o_t);
 			$vb_we_set_transaction = true;
 		} else {
 			$o_t = $this->getTransaction();
@@ -821,9 +832,11 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 		
 		$o_view->setVar('t_subject', $this);
 		
-		$o_view->setVar('checkout_history', $va_history = $this->getCheckoutHistory());
-		$o_view->setVar('checkout_count', sizeof($va_history));
-		$o_view->setVar('client_list', $va_client_list = array_unique(caExtractValuesFromArrayList($va_history, 'user_name')));
+		$o_view->setVar('checkout_history', $history = $this->getCheckoutHistory());
+		$o_view->setVar('reservations', $reservations = $this->getCheckoutReservations());
+		$o_view->setVar('checkout_count', sizeof($history));
+		$o_view->setVar('reservation_count', sizeof($reservations));
+		$o_view->setVar('client_list', $va_client_list = array_unique(caExtractValuesFromArrayList($history, 'user_name')));
 		$o_view->setVar('client_count', sizeof($va_client_list));
 		
 		
@@ -880,9 +893,9 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 		$va_component_types = $this->getAppConfig()->getList('ca_objects_component_types');
 		
 		if (is_array($va_component_types) && (sizeof($va_component_types) && !in_array('*', $va_component_types))) {
-			$va_ids = ca_objects::find(array('parent_id' => $pn_object_id, 'type_id' => $va_component_types, array('returnAs' => 'ids')));
+			$va_ids = ca_objects::find(['parent_id' => $pn_object_id, 'type_id' => $va_component_types], ['returnAs' => 'ids']);
 		} else {
-			$va_ids = ca_objects::find(array('parent_id' => $pn_object_id, array('returnAs' => 'ids')));
+			$va_ids = ca_objects::find(['parent_id' => $pn_object_id], ['returnAs' => 'ids']);
 		}
 	
 		if (!is_array($va_ids)) { return 0; }
@@ -1015,6 +1028,7 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 		
 		$t_checkout = new ca_object_checkouts();
 		$va_is_out = $t_checkout->objectIsOut($vn_object_id);
+		$vb_awaits_confirmation = $t_checkout->objectNeedsReturnConfirmation($vn_object_id);;
 		$va_reservations = $t_checkout->objectHasReservations($vn_object_id);
 		$vn_num_reservations = sizeof($va_reservations);
 		$vb_is_reserved = is_array($va_reservations) && sizeof($va_reservations);
@@ -1040,6 +1054,9 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 			$va_info['checkout_notes'] = $t_checkout->get('checkout_notes');
 			$va_info['due_date'] = $t_checkout->get('due_date', array('timeOmit' => true));
 			$va_info['user_name'] = $t_checkout->get('ca_users.fname').' '.$t_checkout->get('ca_users.lname').(($vs_email = $t_checkout->get('ca_users.email')) ? " ({$vs_email})" : '');
+		} elseif ($vb_awaits_confirmation) {
+			$va_info['status'] = __CA_OBJECTS_CHECKOUT_STATUS_RETURNED_PENDING_CONFIRMATION__;
+			$va_info['status_display'] = _t('Unavailable pending confirmation of return');
 		} elseif ($vb_is_reserved) {
 			$va_info['status'] = __CA_OBJECTS_CHECKOUT_STATUS_RESERVED__;
 			$va_info['status_display'] = ($vn_num_reservations == 1) ? _t('Reserved') : _t('%1 reservations', $vn_num_reservations);
@@ -1054,6 +1071,15 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 		if ($vb_return_as_array) { return $va_info; }
 		if ($vb_return_as_text) { return $va_info['status_display']; }
 		return $va_info['status'];
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public function confirmReturn(?array $options=null) {
+		if(!($object_id = $this->getPrimaryKey())) { return null; }
+		$t_checkout = new ca_object_checkouts();
+		return $t_checkout->confirmReturn($object_id);
 	}
 	# ------------------------------------------------------
 	/**

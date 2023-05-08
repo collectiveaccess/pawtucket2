@@ -30,6 +30,8 @@
 	$va_classroomDisplayName = caGetClassroomDisplayName();
 	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
+	$class = null;
+	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
 	if($this->request->isLoggedIn()){
@@ -94,10 +96,8 @@
 		<div class="container" style='max-width:none;'><div class="row grayBack"><div class="col-sm-12">
 			<ul class='socialRow'>
 				<li><span class="connect">Connect with us!</span></li>
-				<li><a href='mailto:staff@mnhistoryalliance.org' target='_blank'><i class='fa fa-envelope-o'></i></a></li>
-				<li><a href='https://www.linkedin.com/company/minnesota-alliance-of-local-history-museums/' target='_blank'><i class='fa fa-linkedin'></i></a></li>
+				<li><a href='mailto:gibson@mnhistoryalliance.org' target='_blank'><i class='fa fa-envelope-o'></i></a></li>
 				<li><a href='https://www.instagram.com/mnhistoryalliance/' target='_blank'><i class='fa fa-instagram'></i></a></li>
-				<li><a href='https://twitter.com/MNlocalhistory' target='_blank'><i class='fa fa-twitter'></i></a></li>
 				<li><a href='https://www.facebook.com/MNHistoryAlliance/' target='_blank'><i class='fa fa-facebook'></i></a></li>
 			</ul>
 		</div></div></div>
@@ -140,26 +140,7 @@
 	}
 ?>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
-<?php
-	if ($vb_has_user_links) {
-?>
-				<ul class="nav navbar-nav navbar-right" id="user-navbar">
-					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
-						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
-					</li>
-				</ul>
-<?php
-	}
-?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-					<div class="formOutline">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
-						</div>
-						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
-					</div>
-				</form>
+
 				<ul class="nav navbar-nav navbar-right menuItems">
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "browse") &&  (strToLower($this->request->getAction()) == "contributors")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contributors"), "", "", "Browse", "Contributors"); ?></li>
@@ -180,11 +161,38 @@
 							<li <?php print ((strToLower($this->request->getController()) == "help") && (strToLower($this->request->getAction()) == "terms")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "Help", "terms"); ?></li>
 							<li <?php print ((strToLower($this->request->getController()) == "help") && (strToLower($this->request->getAction()) == "visit")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Plan Your Visit"), "", "", "Help", "visit"); ?></li>
 						</ul>
-					</li>					
+					</li>	
+<?php
+	if ($vb_has_user_links) {
+?>
+					<li class="dropdown" style="position:relative;">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">MyMNCollections</span></a>
+						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
+					</li>
+<?php
+	}
+?>
+<?php	
+	if(!($this->request->getController() === 'Front')) {
+?>
+				<li class='bigGlass'><a href="#" onclick="$('.navbar-form.big.notFront').slideToggle( 200 ).find('input').focus();return false;" ><i style='font-size:30px;' class="glyphicon glyphicon-search"></i></a></li>
 				</ul>
+<?php
+		$class = "notFront";
+	}			
+?>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 		</div><!-- end wrapper -->
 	</nav>
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+
+			<form class="navbar-form big <?= $class; ?>" role="search" action="<?= caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<div class="formOutline">
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="Search All Collections" name="search">
+					</div>
+					<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+				</div>
+			</form>

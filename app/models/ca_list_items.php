@@ -140,14 +140,14 @@ BaseModel::$s_ca_models_definitions['ca_list_items'] = array(
 				'FIELD_TYPE' => FT_BIT, 'DISPLAY_TYPE' => DT_SELECT, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
-				'DEFAULT' => '1',
+				'DEFAULT' => 1,
 				'LABEL' => _t('Is enabled?'), 'DESCRIPTION' => _t('If checked this item is selectable and can be used in cataloguing.')
 		),
 		'is_default' => array(
 				'FIELD_TYPE' => FT_BIT, 'DISPLAY_TYPE' => DT_SELECT, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
-				'DEFAULT' => '',
+				'DEFAULT' => 0,
 				'LABEL' => _t('Is default?'), 'DESCRIPTION' => _t('If checked this item will be the default selection for the list.')
 		),
 		'validation_format' => array(
@@ -843,20 +843,7 @@ class ca_list_items extends RepresentableBaseModel implements IHierarchy {
 
 	protected $FIELDS;
 	
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
+
 	# ------------------------------------------------------
 	protected function initLabelDefinitions($pa_options=null) {
 		parent::initLabelDefinitions($pa_options);
@@ -985,6 +972,7 @@ class ca_list_items extends RepresentableBaseModel implements IHierarchy {
 			$this->_setSettingsForList();
 			ExternalCache::flush('listItems');
 			CompositeCache::flush('BaseModelWithAttributesTypeIDs');
+			CompositeCache::flush('typeListCodes');
 		}
 		return $vn_rc;
 	}
@@ -1014,6 +1002,7 @@ class ca_list_items extends RepresentableBaseModel implements IHierarchy {
 			$this->_setSettingsForList();
 			ExternalCache::flush('listItems');
 			CompositeCache::flush('BaseModelWithAttributesTypeIDs');
+			CompositeCache::flush('typeListCodes');
 		}
 		return $vn_rc;
 	}
@@ -1064,6 +1053,10 @@ class ca_list_items extends RepresentableBaseModel implements IHierarchy {
 			}
 			
 			if ($o_trans) { $o_trans->commit(); }
+			
+			ExternalCache::flush('listItems');
+			CompositeCache::flush('BaseModelWithAttributesTypeIDs');
+			CompositeCache::flush('typeListCodes');
 				
 			if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return true;
@@ -1261,7 +1254,7 @@ class ca_list_items extends RepresentableBaseModel implements IHierarchy {
 	 *
 	 * @return array
 	 */
-	public function rewriteFindCriteria(array $criteria) : array {
+	static public function rewriteFindCriteria(array $criteria) : array {
 		if (isset($criteria['list_id']) && !is_numeric($criteria['list_id'])) {
 						
 			$list_id_vals = $criteria['list_id'];

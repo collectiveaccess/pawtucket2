@@ -25,6 +25,9 @@
  *
  * ----------------------------------------------------------------------
  */
+	$t_locale =					new ca_locales();
+
+	global $g_ui_locale;
  
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
@@ -36,6 +39,9 @@
 	$back_to_work = "";
 	// get film work
 	$vn_occurrence_id = $t_object->get('ca_occurrences.occurrence_id',array('restrictToTypes' => 'work', 'limit' => 1));
+	
+	// Force media viewing context to "works" so the viewer will pull representations relative to occurrences, not objects
+	$this->request->setParameter('context', 'works');
 	
 	$t_work = new ca_occurrences($vn_occurrence_id);
 	if($vn_occurrence_id){
@@ -57,7 +63,7 @@
 		$detail_types = $config->getAssoc('detailTypes');
 		$options = $detail_types['works'];
 		$t_representation = $t_work->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
-		if(!is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
+		if(!$t_representation || !is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
 			
 		$vs_rep_viewer = caRepresentationViewer(
 					$this->request, 
@@ -76,14 +82,16 @@
 					)
 				);
 
-		$back_to_work = caDetailLink($this->request, _t("Back to %1", $t_work->get("ca_occurrences.type_id", array("convertCodesToDisplayText" => true)))." &rarr;", '', 'ca_occurrences', $vn_occurrence_id);
+		$back_to_work = caDetailLink($this->request, ($g_ui_locale == "de_DE" ? "zum Werk" : "to Film Work"), '', 'ca_occurrences', $vn_occurrence_id);
 					
 	}
-	$t_locale =					new ca_locales();
-
-	global $g_ui_locale;
-	
-				
+	$vs_type = $t_object->getWithTemplate("^ca_objects.type_id");
+	switch($vs_type){
+		case "Filmkopie":
+			$vs_type = "Kopie";
+		break;
+		# ---------------
+	}		
 ?>
 
 		<div class="row">
@@ -92,7 +100,7 @@
 					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 				</div><!-- end detailTop -->
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
-				<H2>{{{^ca_objects.type_id}}}<?php print ($back_to_work) ? " | ".$back_to_work : ""; ?></H2>
+				<H2><?php print $vs_type; ?><?php print ($back_to_work) ? " | ".$back_to_work : ""; ?></H2>
 				<HR/>
 			</div>
 		</div>
@@ -152,8 +160,8 @@
 							$va_output = array();
 							
 							foreach($va_show_public_fields as $vs_bundle){
-								if(strlen($t_object->get("ca_objects.{$vs_bundle}"))>0) {
-									$va_output[] = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: ".$t_object->get("ca_objects.{$vs_bundle}",array('convertCodesToDisplayText' => true, 'delimiter' => ', '))."</div><!-- end unit -->";
+								if(strlen($v = trim($t_object->get("ca_objects.{$vs_bundle}",array('convertCodesToDisplayText' => true, 'delimiter' => ', '))))>0) {
+									$va_output[] = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: {$v}</div><!-- end unit -->";
 
 								}
 							}
@@ -281,7 +289,7 @@
 				foreach($va_entity_ids as $vn_entity_id) {
 					if ($t_entity->load($vn_entity_id)) {           // doesn't hurt to make sure the entity actually loaded... but it should never fail
 						if ($vs_director_name = $t_entity->get('ca_entities.preferred_labels.displayname')) {
-							print caNavLink($this->request,$vs_director_name,'','','Browse','objects',array("facet" => "entity_facet", "id" => $vn_entity_id));
+							print caNavLink($this->request,$vs_director_name,'','','Browse','works',array("facet" => "entity_facet", "id" => $vn_entity_id));
 							print "\n";
 						}
 						if ($vs_director_bio = $t_entity->get('ca_entities.director_bio')) {
@@ -341,6 +349,11 @@
 			if(strlen($t_work->get('ca_occurrences.forum_pdf'))>0){
 				print "<div class='unit'><label>".$t_work->getAttributeLabel('forum_pdf')."</label>".$t_work->get('ca_occurrences.forum_pdf', array('delimiter' => ', '))."</div><!-- end unit -->";
 			}
+			
+			// TODO: need final text and formatting for link
+			if($url = $t_work->get('ca_occurrences.film_page_url')) {
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}' target='_blank'>".($g_ui_locale == "de_DE" ? "For more information on the film visit the Forum page" : "Mehr Informationen zum Film auf der Webseite des Forums")."</a></div></div>"; 
+			}	
 
 			$va_tags = $t_work->get("ca_list_items", array("returnWithStructure" => true));
 			if(is_array($va_tags) && sizeof($va_tags)){
@@ -348,7 +361,7 @@
 				$va_print_tags = array();
 				foreach($va_tags as $vn_id => $va_term_info){
 					if($va_term_info["idno"]=="exp"){
-						$va_print_tags[] = caNavLink($this->request, $va_term_info["label"], '', '', 'Search', 'objects', array('search' => $va_term_info["label"]));
+						$va_print_tags[] = caNavLink($this->request, $va_term_info["label"], '', '', 'Search', 'works', array('search' => $va_term_info["label"]));
 					} else {
 						$va_print_tags[] = $va_term_info["label"];
 					}
@@ -382,7 +395,7 @@
 						<div class="col-sm-6">
 <?php
 							$va_show_internal_fields = array(
-								'object_type', 'notes', 'condition', 'condition_opt', 'condition_date', 'condition_comm', 'condition_color', 
+								'object_type', 'print_id', 'notes', 'condition', 'condition_opt', 'condition_date', 'condition_comm', 'condition_color', 
 								'source', 'source_date', 'oa3create_date', 'oa3change_date', 'rights', 'textlist',
 								// neu
 								'file_folder_name', 'bytes', 'number_of_files', 'image_frame', 'cpl', 'cpl_content_title_text',
