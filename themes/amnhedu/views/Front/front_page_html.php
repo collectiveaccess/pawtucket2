@@ -29,16 +29,16 @@
  *
  * ----------------------------------------------------------------------
  */
-    require_once(__CA_LIB_DIR__."/Browse/BrowseEngine.php");
- 		
-		$o = new ca_objects();
-		$qr_recently_added = caMakeSearchResult('ca_objects', $o->getRecentlyAddedItems(2, ['checkAccess' => caGetUserAccessValues($this->request), 'hasRepresentations' => true, 'idsOnly' => true]));
-        $qr_recently_viewed = caMakeSearchResult('ca_objects', $o->getRecentlyViewedItems(2, ['checkAccess' => caGetUserAccessValues($this->request), 'hasRepresentations' => true]));
-						
-        $browse = new BrowseEngine('ca_objects');
-        
-        $specimen_categories = $browse->getFacet('specimen_category_facet');
-        $cultural_history = $browse->getFacet('artifact_category_facet');
+require_once(__CA_LIB_DIR__."/Browse/BrowseEngine.php");
+
+$o = new ca_objects();
+$qr_recently_added = caMakeSearchResult('ca_objects', $o->getRecentlyAddedItems(2, ['checkAccess' => caGetUserAccessValues($this->request), 	'hasRepresentations' => true, 'idsOnly' => true]));
+$qr_recently_viewed = caMakeSearchResult('ca_objects', $o->getRecentlyViewedItems(2, ['checkAccess' => caGetUserAccessValues($this->request), 'hasRepresentations' => true]));
+				
+$browse = new BrowseEngine('ca_objects');
+
+$specimen_categories = $browse->getFacet('specimen_category_facet');
+$cultural_history = $browse->getFacet('artifact_category_facet');
 ?>
 <div class="container">
 	<div class="row">
@@ -48,6 +48,15 @@
 		</div>
 	</div><!-- end row -->
 	
+	<div class="row">
+		<div class="col-sm-12">
+			<h1>Request Form</h1>
+			Please fill out <a href="/themes/amnhedu/documents/object_request_form.pdf" target="_blank">this form</a> to make your object requests. Email it to <a href="mailto:educationcollection@amnh.org">educationcollection@amnh.org</a>.
+		</div>
+	</div><!-- end row -->
+	
+
+
 	
 	<div class="row">
 		<div class="col-sm-12">
@@ -85,7 +94,7 @@ Once you have registered, you will be able to log-in and make any needed edits t
     The easiest way to search for an object in CollectiveAccess is via the search bar in the upper right-hand corner of the screen. If you know the object’s TC number, you can search using that. Otherwise it is possible to search by subject/object type, such as “fungus” or “bird.” If you know the specific name of the object you can search using that, such as “Orange Sunburst Lichen” or “Scaly Naped Parrot.” We recommend that if you cannot find the object you are looking for at first, you try different names. If you cannot find “Scaly Naped Parrot,” try searching “parrot” and see if it comes up that way. Please note that cataloguing is on-going and not all objects in the Education Collection have been catalogued in Collective Access.  If you cannot find what you are looking for, you can email <a href="mailto:educationcollection@amnh.org">educationcollection@amnh.org</a> to schedule an appointment to browse. 
     </p>
     <p>
-    	CollectiveAccess allows you to download the results of your search in various formats (excel, checklist, pdf, powerpoint).  You can also add all or select records from your search into a “lightbox” set.  Read more about lightboxes here (anchor link to “What is a lightbox and how do I set one up?”)
+    	CollectiveAccess allows you to download the results of your search in various formats (excel, checklist, pdf, powerpoint).  You can also add all or select records from your search into a “lightbox” set.  Read more about <a href="#" onclick="selectPanel(7); return false;">lightboxes</a> here.
     </p>
   </div>
   <h3>How do I schedule an appointment to browse the collection?</h3>
@@ -98,7 +107,7 @@ Once you have registered, you will be able to log-in and make any needed edits t
   <h3>How do I check objects out of the collection?</h3>
   <div>
     <p>
-   Because we are ensuring that all objects that go out for loan have a record in Collective Access and have been renumbered, at this time all check outs are being done by staff that is working directly with the Collection.  Please do not check out items using the “borrow” or “reserve” buttons on the front end of Collective Access.  All loans need to be arranged with collections staff by emailing  <a href="mailto:educationcollection@amnh.org">educationcollection@amnh.org</a>.
+   Because we are ensuring that all objects that go out for loan have a record in Collective Access and have been renumbered, at this time all check outs are being done by staff that is working directly with the Collection.  Please do not check out items using the “borrow” or “reserve” buttons on the front end of Collective Access.  Please fill out <a href="/themes/amnhedu/documents/object_request_form.pdf" target="_blank">this form</a> to make your object requests. Email it to <a href="mailto:educationcollection@amnh.org">educationcollection@amnh.org</a>.
     </p>
   </div>
   
@@ -156,4 +165,9 @@ The prefix TV stands for Teaching Volunteer. TV objects are objects that belong 
     		heightStyle: "content"
     	});
   	});
+  	function selectPanel(index) {
+  		jQuery("#accordion").accordion({
+    		active: index
+    	});
+  	}
 </script>

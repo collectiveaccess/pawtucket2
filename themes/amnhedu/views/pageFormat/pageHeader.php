@@ -108,7 +108,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'amnh.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'amnh-logo-white.svg'), "navbar-brand", "", "","");
 				print "<br/>";
 ?>
 			</div>
