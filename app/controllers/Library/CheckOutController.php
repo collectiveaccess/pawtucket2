@@ -303,7 +303,7 @@ class CheckOutController extends ActionController {
 					$borrow_date = $t_checkout->get('ca_object_checkouts.checkout_date', array('timeOmit' => true));
 			
 					if ($t_checkout->numErrors() == 0) {
-						$this->notification->addNotification(_t('Returned <em>%1</em> (%2) borrowed by %3 on %4', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), $user_name, $borrow_date), "message");
+						$this->notification->addNotification(_t('Returned <em>%1</em> (%2) borrowed by %3 on %4', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), $user_name, $borrow_date), __NOTIFICATION_TYPE_INFO__);
 					
 						if($library_config->get('send_item_checkin_receipts') && ($user_email = $this->request->user->get('ca_users.email'))) {							
 							$app_name = Configuration::load()->get('app_display_name');
@@ -317,16 +317,16 @@ class CheckOutController extends ActionController {
 							}
 						}
 					} else {
-						$this->notification->addNotification(_t('Could not check in <em>%1</em> (%2): %3', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), join("; ", $t_checkout->getErrors())), "error");
+						$this->notification->addNotification(_t('Could not check in <em>%1</em> (%2): %3', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno'), join("; ", $t_checkout->getErrors())), __NOTIFICATION_TYPE_ERROR__);
 					}
 				} catch (Exception $e) {
-					$this->notification->addNotification(_t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno')), 'error');
+					$this->notification->addNotification(_t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno')), __NOTIFICATION_TYPE_ERROR__);
 				}
 			} elseif($t_checkout->isReservation()) {
 				$t_checkout->delete();
-				$this->notification->addNotification(_t('Removed reservation for <em>%1</em>', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno')), 'error');
+				$this->notification->addNotification(_t('Removed reservation for <em>%1</em>', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno')), __NOTIFICATION_TYPE_ERROR__);
 			} else {
-				$this->notification->addNotification(_t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno')), 'error');
+				$this->notification->addNotification(_t('<em>%1</em> (%2) is not out', $t_object->get('ca_objects.preferred_labels.name'), $t_object->get('ca_objects.idno')), __NOTIFICATION_TYPE_ERROR__);
 			}
 		}
 		$this->MyLoans();
