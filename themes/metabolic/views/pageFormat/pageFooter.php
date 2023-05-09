@@ -38,6 +38,8 @@
 			<div class="pt-3 pb-0">
 				<?php print caNavLink("About The Studio", "", "", "About", ""); ?>
 				<a href="mailto:info@metabolicstudio.org" class="px-3">Contact</a>
+				<?php print caNavLink("Terms of Service", "px-3", "", "Terms", ""); ?>
+				<?php print caNavLink("Privacy Policy", "px-3", "", "Privacy", ""); ?>
 			</div>
 		</footer><!-- end footer -->
 		<script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>

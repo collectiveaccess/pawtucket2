@@ -723,7 +723,32 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 				}
 			}
 		} elseif($t = \Datamodel::getInstance($element_code, true)) { // is related
-			if(is_array($options = caGetOption('options', $info, null)) && sizeof($options)) {
+			if(($where_bundle = caGetOption('selectUsing', $info, null)) && $where_value = caGetOption('whereValue', $info, null)) {
+				if($qr = $element_code::find([$where_bundle => $where_value], ['returnAs' => 'searchResult', 'sort' => caGetOption('sort', $info, null), 'sortDirection' => caGetOption('sortDirection', $info, 'asc')])) {
+					$options = [];
+					while($qr->nextHit()) {
+						$options[$qr->get("{$element_code}.preferred_labels")] = $qr->getPrimaryKey();
+					}
+					$type = [
+						'type' => 'array', 'format' => 'string',
+						'items' => [
+							'type' => 'string', 'format' => 'string', 
+							'enum' => array_values($options), 'enumNames' => array_keys($options)
+						],
+						'uniqueItems' => true
+					];
+				
+					if($render === 'checkboxes') {
+						$type['uiSchema'] = [
+							"ui:widget" => "checkboxes",
+									"classNames" => "importCheckboxList",
+							"ui:options" => [
+								"inline" => true
+							]
+						];
+					}
+				}
+			} elseif(is_array($options = caGetOption('options', $info, null)) && sizeof($options)) {
 				$type = [
 					'type' => 'array', 'format' => 'string',
 					'items' => [
