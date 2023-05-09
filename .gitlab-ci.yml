@@ -4,7 +4,7 @@ stages:
   - push
 
 # Staging Push
-# Manual job to push the last commit to dev to staging
+# Manual job to push the last commit to bmac to staging
 push_to_staging:
   stage: push
   only:
@@ -18,6 +18,25 @@ push_to_staging:
     - rm -rf /tmp/collective-access-public-interface_${CI_PIPELINE_ID}
   tags:
     - shell
+
+
+# Prod Push
+# Manual job to push the last commit to staging to prod
+push_to_prod:
+  stage: push
+  only:
+    - bmac-staging
+  when: manual
+  script:
+    - git clone -n https://gitlab.galileo.usg.edu/ugalibs/collective-access-public-interface.git /tmp/collective-access-public-interface_${CI_PIPELINE_ID}
+    - cd /tmp/collective-access-public-interface_${CI_PIPELINE_ID}
+    - git checkout ${CI_COMMIT_SHA}
+    - sudo -H -u pushbot git push origin HEAD:bmac-prod
+    - cd /tmp
+    - rm -rf /tmp/collective-access-public-interface_${CI_PIPELINE_ID}
+  tags:
+    - shell
+
 
 ## Code Deploy
 # Sync the local copy of the code
