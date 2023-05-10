@@ -29,11 +29,11 @@
  *
  * ----------------------------------------------------------------------
  */
-  $va_access_values = $this->getVar("access_values");
- $vs_hero = $this->request->getParameter("hero", pString);
- if(!$vs_hero){
- 	$vs_hero = rand(1, 3);
- }
+	$va_access_values = $this->getVar("access_values");
+	$vs_hero = $this->request->getParameter("hero", pString);
+	if(!$vs_hero){
+ 		$vs_hero = rand(1, 3);
+	}
 ?>
 
 <div class="parallax hero<?php print $vs_hero; ?>">

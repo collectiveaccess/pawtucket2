@@ -72,23 +72,6 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
-				<div class='col-sm-12'>
-					<?php
-						if ($vb_show_hierarchy_viewer) {	
-					?>
-							<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-							<script>
-								$(document).ready(function(){
-									$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
-								})
-							</script>
-					<?php				
-						}									
-					?>				
-				</div><!-- end col -->
-			</div><!-- end row -->
-
-			<div class="row">
 
 				<div class='col-md-12'>
 					{{{<ifdef code="ca_collections.description"><div class="unit"><label>About</label>^ca_collections.description</div></ifdef>}}}
@@ -112,8 +95,9 @@
 
 
 					{{{
-						<ifdef code="ca_collections.unitdate">
-							<div class="unit"><label>Date</label><unit relativeTo="ca_collections.unitdate" delimiter="<br/>">^ca_collections.unitdate.dacs_date_value<ifdef code="ca_collections.unitdate.dacs_dates_types"> (^ca_collections.unitdate.dacs_dates_types)</ifdef></div></ifdef>
+						<ifdef code="ca_collections.unitdate.dacs_date_value">
+							<div class="unit"><label>Date</label><unit relativeTo="ca_collections.unitdate" delimiter="<br/>"><ifdef code="ca_collections.unitdate.dacs_date_value">^ca_collections.unitdate.dacs_date_value<ifdef code="ca_collections.unitdate.dacs_dates_types"> (^ca_collections.unitdate.dacs_dates_types)</ifdef></ifdef></div>
+						</ifdef>
 					}}}
 <?php
 					if($t_item->get("source_id")){
@@ -155,7 +139,24 @@
 				</div><!-- end col -->
 
 			</div><!-- end row -->
+			<div class="row">
+				<div class='col-sm-12'>
+					<?php
+						if ($vb_show_hierarchy_viewer) {	
+					?>
+							<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+							<script>
+								$(document).ready(function(){
+									$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
+								})
+							</script>
+					<?php				
+						}									
+					?>				
+				</div><!-- end col -->
+			</div><!-- end row -->
 
+			
 			{{{<ifcount code="ca_objects" min="1">
 				<div class="row">
 					<div id="browseResultsContainer">
