@@ -84,6 +84,10 @@
 						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
+				{{{<ifcount code="ca_collections" min="1">
+					<div class="unit"><label>Part of</label>
+						<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>
+					</div></ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="interviewee,interviewer,knowledge_sharer"><div class="unit"><label>Speakers</label>
 						<unit relativeTo="ca_entities" restrictToRelationshipTypes="interviewee,interviewer,knowledge_sharer" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>
 					</div></ifcount>}}}
@@ -95,7 +99,7 @@
 				{{{<ifdef code="ca_objects.theme"><div class="unit"><label>Themes</label>^ca_objects.theme%delimiter=,_</div></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
-				
+				{{{<ifdef code="ca_objects.rights_container.access_conditions|ca_objects.rights_container.use_reproduction"><div class="unit"><label>Restriction</label><ifdef code="ca_objects.rights_container.access_conditions">Access: ^ca_objects.rights_container.access_conditions<ifdef code="ca_objects.rights_container.access_conditions,ca_objects.rights_container.use_reproduction"><br/></ifdef><ifdef code="ca_objects.rights_container.use_reproduction'>Reproduction: ^ca_objects.rights_container.use_reproduction</ifdef></div></ifdef>}}}
 				{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.preferred_labels.name</unit>
 					</div></ifcount>}}}

@@ -34,7 +34,7 @@
 	$this->config = caGetFrontConfig();
 	$vs_hero = $this->request->getParameter("hero", pString);
 	if(!$vs_hero){
-		$vs_hero = rand(1, 2);
+		$vs_hero = rand(1, 6);
 	}
  
  # --- timeline set - occurrences
