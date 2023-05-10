@@ -827,7 +827,7 @@ body.frontContainer #footer{
 	text-transform:capitalize;
 }
 
-.pageHeaderRow.dark, .pageHeaderRow.dark H1{
+.pageHeaderRow.dark, .pageHeaderRow.dark H1, .pageHeaderRow H1 a, .pageHeaderRow H1 a .fa{
 	color:#000;
 }
 .exploreRow p, .exploreRow .text-center{
