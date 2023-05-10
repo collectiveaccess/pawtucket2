@@ -1,16 +1,46 @@
 <?php
+	$config = caGetGalleryConfig();
 	$pa_set_items = $this->getVar("set_items");
 	$pn_set_id = $this->getVar("set_id");
 	$t_set = $this->getVar("set");
 	$ps_label = $this->getVar("label");
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
+	$va_access_values = $this->getVar("access_values");
 	if (!($t_instance = Datamodel::getInstanceByTableNum($t_set->get('table_num')))) { throw new ApplicationException(_t('Invalid item')); }
+	$vs_set_type = $this->getVar("set_type");
+	
+	switch($vs_set_type){
+		case "research_guides":
+			$vs_title = caNavLink($this->request, "<i class='fa fa-angle-left' role='button' aria-label='back'></i> Research Guides", "", "", "Gallery", "Index", array("set_type" => "research_guides"));
+			$vs_header_class = "bg_dark_eye";
+			
+			#$vs_landing_page_format = "grid";
+		break;
+		# --------------------------------
+		case "highlights":
+			$vs_title = caNavLink($this->request, "<i class='fa fa-angle-left' role='button' aria-label='back'></i> Highlights", "", "", "Gallery", "Index", array("set_type" => "highlights"));
+			$vs_header_class = "bg_beige_eye dark";
+		break;
+		# --------------------------------
+	}
 				
 ?>
 	<div class="row">
 		<div class="col-sm-12">
-			<H1><?php print $this->getVar("label")."</H1>"; ?>
+			<div class="row pageHeaderRow <?php print $vs_header_class; ?>">
+				<div class="col-sm-12">
+					<H1><?php print $vs_title; ?></H1>
+<?php
+					if($vs_intro_global_value = $config->get("gallery_intro_text_global_value_".$vs_set_type)){
+						if($vs_tmp = $this->getVar($vs_intro_global_value)){
+							print "<p>".$vs_tmp."</p>";
+						}
+					}
+?>
+				</div>
+			</div>
+			<H2><?php print $this->getVar("label")."</H2>"; ?>
 <?php
 	if($ps_description){
 		print "<div class='setDescription'>".$ps_description."</div>";

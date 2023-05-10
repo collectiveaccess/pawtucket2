@@ -821,7 +821,7 @@ body.frontContainer #footer{
 	font-weight:400;
 	color:#FFF;
 }
-.pageHeaderRow H1{
+.pageHeaderRow H1, .pageHeaderRow H1 a, .pageHeaderRow H1 a .fa{
 	color: #FFF;
 	font-size:28px;
 	text-transform:capitalize;
@@ -1249,7 +1249,7 @@ h2.tl-headline{
 	margin-bottom:50px;
 }
 .alphabetNavigation a.btn{
-	margin:0px 5px 0px 5px;
+	margin:0px 5px 10px 5px;
 	font-size: 20px;
 }
 .alphabetNavigation a.letterActive{

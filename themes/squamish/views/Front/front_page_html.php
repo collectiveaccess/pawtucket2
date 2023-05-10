@@ -56,7 +56,7 @@
 				<div class="heroSearch">
 					<H1>
 						<div class="line1">Welcome to</div>
-						<div class="line2">Ta X̱ay Sxwimálatn Chet</div>
+						<div class="line2">Ta X̱ay Sxwimálatncht</div>
 						<div class="line3">{{{hp_search_text}}}</div>
 					</H1>
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
@@ -124,7 +124,7 @@
 				</div>
 				<div class="col-md-4">
 					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Curriculum &<br/>Teaching Materials", "", "", "", ""); ?>
+						<?php print caNavLink($this->request, "Curriculum &<br/>Teaching Materials", "", "", "Browse", "Curriculum"); ?>
 					</div>
 				</div>
 				<div class="col-md-4">

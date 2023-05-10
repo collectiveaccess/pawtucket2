@@ -184,7 +184,12 @@
  				$set_id = (int)$function;
  				$t_set = $this->_getSet($set_id);
  				if (!($table = Datamodel::getTableName($t_set->get('table_num')))) { throw new ApplicationException(_t('Invalid set')); }
- 				
+ 				if(!$vs_set_type){
+ 					$va_idnos = $t_list->itemIDsToIDNOs(array($t_set->get("ca_sets.type_id")));
+ 					$vs_set_type = $va_idnos[$t_set->get("ca_sets.type_id")]; 		
+ 					$this->view->setVar('set_type', $vs_set_type);
+ 
+ 				}
  				$this->view->setVar("set_id", $set_id);
  				$this->view->setVar("set", $t_set);
  				

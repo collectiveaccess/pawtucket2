@@ -16,7 +16,7 @@
 		print "<p><small class='uppercase'>".$this->getVar("num_items")." ".(($this->getVar("num_items") == 1) ? _t("item") : _t("items"))."</small></p>";
 		print "<p>".$this->getVar("description")."</p>";
 		
-		print "<br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-th-large' aria-label='View gallery'></span> "._t("view %1", $this->getVar("section_item_name")), "btn btn-default", "", "Gallery", $this->getVar("set_id"));
+		print "<br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-th-large' aria-label='View gallery'></span> "._t("view"), "btn btn-default", "", "Gallery", $this->getVar("set_id"));
 ?>
 	</div><!-- end col -->
 </div><!-- end col --></div><!-- end row -->
