@@ -209,7 +209,7 @@ $t_item = $this->getVar("item");
 			
 			// TODO: need final text and formatting for link
 			if($url = $t_item->get('ca_occurrences.film_page_url')) {
-				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}' target='_blank'>".($g_ui_locale == "de_DE" ? "For more information on the film visit the Forum page" : "Mehr Informationen zum Film auf der Webseite des Forums")."</a></div></div>";
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}' target='_blank'>".($g_ui_locale == "de_DE" ? "Mehr Informationen zum Film auf der Webseite des Forums" : "For more information on the film visit the Forum page")."</a></div></div>";
 			}	
 			
 			if(strlen($t_item->get('ca_occurrences.world_premiere'))>0){

@@ -54,6 +54,15 @@
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-TBLJZ6MF7Z"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'G-TBLJZ6MF7Z');
+	</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
@@ -82,6 +91,9 @@ if((in_array(strToLower($this->request->getController()), array("front", "learn"
 	$vb_black = true;
 }
 ?>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica+SC&display=swap" rel="stylesheet">
 </head>
 <body <?php print ($vb_black) ? "class='black'" : ""; ?>>
 	<nav class="navbar navbar-default yamm" role="navigation">

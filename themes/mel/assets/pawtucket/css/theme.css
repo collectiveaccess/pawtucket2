@@ -12,8 +12,6 @@
 @font-face {font-family: 'Chivo';src: url('chivo/Chivo-Regular.ttf');src: url('chivo/Chivo-Regular.ttf') format('truetype');}
 @font-face {font-family: 'ChivoBold';src: url('chivo/Chivo-Bold.ttf');src: url('chivo/Chivo-Bold.ttf') format('truetype');}
 
-@import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap');
-
 /* General */
 
 body {
@@ -61,6 +59,10 @@ h6{
 }
 body.black h1, body.black .staticPage p, .exhibitionIntro{
 	color:#FFF;
+}
+.exhibitionIntro H1{
+	font-family: 'IM Fell DW Pica SC', serif;
+	font-size:33px;
 }
 .btn-default, .browse .btn, .sets .btn {
 	background-color: #575757;
@@ -222,12 +224,17 @@ hr {
 	border-radius: 10px;
 }
 .front .hpCallOut{
-	font-family: 'Libre Caslon Text', serif;
-	font-size:50px;
+	font-family: 'IM Fell DW Pica SC', serif;
+	font-size:35px;
 	color: #FFF;
 	padding-top:30px;
 	padding-bottom:30px;
 	text-align:center;
+}
+@media(min-width:768px){
+	.front .hpCallOut{
+		font-size:55px;
+	}
 }
 .front .hpIntro{
 	margin-top:30px;
@@ -235,7 +242,7 @@ hr {
 	color: #FFF;
 }
 .front h1{
-    font-family: 'Libre Caslon Text', serif;
+    font-family: 'IM Fell DW Pica SC', serif;
 }
 
 .front-features{

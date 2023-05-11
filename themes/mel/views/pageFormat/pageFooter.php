@@ -44,7 +44,7 @@
 		    			<div class="col-sm-12 footer-logo text-center">
 			       			<div class="deo"><?php print caGetThemeGraphic($this->request, 'deo.png'); ?></div>
 			       			<div class="aam"><?php print caGetThemeGraphic($this->request, 'aam_logo.png'); ?></div>
-			        		<div class="mel"><?php print caGetThemeGraphic($this->request, 'mel_fisher_logo.png'); ?></div>
+			        		<div class="mel"><a href="https://www.melfisher.org/"><?php print caGetThemeGraphic($this->request, 'mel_fisher_logo.png'); ?></a></div>
 			        		<div class="mel"><?php print caGetThemeGraphic($this->request, 'imls_logo_2c.jpg'); ?></div>
 			    		</div>
 			    	</div>

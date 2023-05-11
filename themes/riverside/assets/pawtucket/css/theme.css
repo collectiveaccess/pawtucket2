@@ -1265,6 +1265,10 @@ a.facetApply {
 	text-decoration:underline;
 }
 
+
+.recording.detail .detailMediaToolbar{
+	display:none !important;
+}
 /* IE styles to fix object fit not being supported - sigh - for IE 9 and above */
 @media screen and (min-width:0\0) and (min-resolution: +72dpi) {
     /* IE9+ CSS to fix object-fit not being supported.*/

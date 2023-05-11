@@ -34,12 +34,12 @@
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-1">
 		    <div class="row">
-		        <div class="col-xs-12 col-sm-8 col-sm-offset-2">
+		        <div class="col-xs-12">
                     <div class="hpCallOut">{{{homepage_callout}}}</div>
                 </div>
             </div>
             <div class="row">
-		        <div class="col-xs-12 col-sm-10 col-sm-offset-1 hpIntro">
+		        <div class="col-xs-12 col-md-10 col-md-offset-1 hpIntro">
                     {{{homepage_text}}}
                 </div>
             </div>
