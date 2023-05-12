@@ -398,7 +398,7 @@ body.frontContainer #footer{
 }
 .parallax {
 	position:relative;
-    background-image: url("../graphics/hero1.jpg");
+    background-image: url("../graphics/hero/HoweSound1.JPG");
 
     /* Full height */
     height: 100vh;
@@ -413,10 +413,22 @@ body.frontContainer #footer{
 	margin-right: -15px;
 }
 .parallax.hero1 {
-	background-image: url("../graphics/hero1.jpg");
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0)), url("../graphics/hero/HoweSound1.JPG");
 }
 .parallax.hero2 {
-	background-image: url("../graphics/Squamish_hero1.jpg");
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, .2), rgba(0, 0, 0, .1)), url("../graphics/hero/HoweSound2.jpg");
+}
+.parallax.hero3 {
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, 0)), url("../graphics/hero/SquamishValley3.jpg");
+}
+.parallax.hero4 {
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, 0)), url("../graphics/hero/TheTwins.jpg");
+}
+.parallax.hero5 {
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, .1), rgba(0, 0, 0, .2)), url("../graphics/hero/WaterfallLongExposure.jpg");
+}
+.parallax.hero6 {
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, .1)), url("../graphics/hero/WelcomeFigureSoundView.jpg");
 }
 
 @media(max-width:420px), (max-height:420px){
@@ -672,6 +684,27 @@ body.frontContainer #footer{
 }
 */
 /* gallery */
+@media (max-width: 767px){
+	#gallerySetInfo {
+	  display: block;
+	}
+}
+.gallery H2, .gallery H2 a {
+	padding-top: 0px;
+	text-transform: none;
+	color: #000;
+	font-size: 18px !important;
+	margin-top: 0px;
+}
+.gallery H3 {
+	text-transform: none;
+}
+.gallery .galleryItem.selected {
+	padding: 10px;
+	-webkit-box-shadow: 0 0px 3px rgba(0, 0, 0, 1);
+	box-shadow: 0 0px 3px rgba(0, 0, 0, 1);
+	margin: 5px 10px 15px 5px;
+}
 @media(max-width:768px){
 	.galleryList{
 		text-align:center;
@@ -720,6 +753,18 @@ body.frontContainer #footer{
 }
 .gallery #galleryDetailImageGrid img {
   background-color: #fff;
+}
+.galleryPlaceholder{
+	background-color: #F5F5F5;
+	border: 2px solid #EDEDED;
+	color: #000;
+	padding: 60px 30px 72px;
+	text-align: center;
+	width: 100%;
+	font-size: 18px;
+}
+#galleryDetailImageWrapper .galleryPlaceholder{
+	margin-top: 25%;
 }
 /* collections */
 .collectionIntro {
@@ -776,13 +821,13 @@ body.frontContainer #footer{
 	font-weight:400;
 	color:#FFF;
 }
-.pageHeaderRow H1{
+.pageHeaderRow H1, .pageHeaderRow H1 a, .pageHeaderRow H1 a .fa{
 	color: #FFF;
 	font-size:28px;
 	text-transform:capitalize;
 }
 
-.pageHeaderRow.dark, .pageHeaderRow.dark H1{
+.pageHeaderRow.dark, .pageHeaderRow.dark H1, .pageHeaderRow H1 a, .pageHeaderRow H1 a .fa{
 	color:#000;
 }
 .exploreRow p, .exploreRow .text-center{
@@ -1196,4 +1241,97 @@ h2.tl-headline{
 .multisearch .authorityResult {
 	margin-bottom: 5px;
 	height: 74px;
+}
+
+.alphabetNavigation{
+	text-align:center;
+	margin-top:20px;
+	margin-bottom:50px;
+}
+.alphabetNavigation a.btn{
+	margin:0px 5px 10px 5px;
+	font-size: 20px;
+}
+.alphabetNavigation a.letterActive{
+	background-color:#FFF;
+	color:#D23929;
+	box-shadow: 0 0px 6px 0 rgba(0,0,0,.5);
+	text-decoration: none;
+}
+.alphabetLetter{
+	font-size:100px;
+	text-shadow: 0px 0px 3px #959494;
+	text-align:center;
+}
+@media(min-width:768px){
+	.alphabetLetter{
+		padding-top:20%;
+	}
+}
+.alphabetLetterInfo{
+	background-color:#DBD5CD;
+	padding:30px;
+}
+.alphabetLetterInfo .unit a{
+	color:#D23929;
+	text-decoration:underline;
+}
+.alphabetLetterInfo .unit{
+	font-size: 18px;
+	color: #000;
+	margin-bottom: 15px;
+}
+.alphabetLetterInfo label {
+	font-size: 17px;
+	color: #000;
+	text-transform: capitalize;
+	font-weight:600;
+	margin-bottom: 0px;
+	display: block;
+}
+.language .audioButton{	
+	color: #000;
+	cursor: pointer;
+	font-size: 100px;
+	margin-top:10px;
+}
+.beigeCard {
+	background-color: #DBD5CD;
+	color: #000;
+	padding: 20px;
+	font-size: 16px;
+	font-weight: 300;
+	box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+	margin-bottom: 45px;
+	min-height:240px;
+}
+.beigeCard .cardTitle {
+	text-transform: none;
+	color: #000;
+	font-size: 20px;
+	font-weight: 600;
+	margin-bottom: 5px;
+}
+.beigeCard .cardTitle a {
+  text-transform: none;
+  color: #000;
+  font-size: 20px;
+  font-weight: 600;
+}
+.beigeCard .unit a{
+	color:#D23929;
+	text-decoration:underline;
+}
+.beigeCard .unit{
+	font-size: 18px;
+	color: #000;
+	margin-bottom: 15px;
+}
+.beigeCard label {
+	font-size: 17px;
+	color: #000;
+	text-transform: capitalize;
+	font-weight:600;
+	margin-bottom: 0px;
+	display: block;
 }

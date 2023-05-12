@@ -94,6 +94,9 @@
 					{{{<if rule='^ca_collections.type_id =~ /File/'><ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.preferred_labels.name</unit>
 					</div></ifcount></if>}}}
+					{{{<ifcount code="ca_object_lots" min="1"><div class="unit"><label>Related Accession<ifcount code="ca_object_lots" min="2">s</ifcount></label>
+						<unit relativeTo="ca_object_lots" delimiter="<br/>"><ifdef code="ca_object_lots.preferred_labels">^ca_object_lots.preferred_labels </ifdef><ifdef code="ca_object_lots.idno_stub">(^ca_object_lots.idno_stub)</ifdef></unit>
+					</div></ifcount>}}}
 <?php
 				if($vn_parent_collection_id = $t_item->get("ca_collections.parent.collection_id")){
 					print "<div class='unit'>".caDetailLink($this->request, "More from this ".$t_item->get("ca_collections.parent.type_id", array("convertCodesToDisplayText" => true)), "btn btn-default", "ca_collections", $vn_parent_collection_id)."</div>";

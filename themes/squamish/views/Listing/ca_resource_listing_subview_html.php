@@ -37,7 +37,7 @@
 ?>
 	<div class="row bg_dark_eye pageHeaderRow">
 		<div class="col-sm-12">
-			<H1>External Resources</H1>
+			<H1>Squamish Material in Other Archives</H1>
 			<p>
 			{{{resources_intro}}}
 		</div>
@@ -52,7 +52,6 @@
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {
 			if($i == 3){
-				print "</div><div class='row'>";
 				$i = 0;
 			}
 			$vs_image = $qr_list->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.media.large</unit>", array("checkAccess" => $va_access_values, "limit" => 1));

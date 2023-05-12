@@ -147,6 +147,7 @@
 				</ul>
 <?php
 	}
+	$vs_set_type = $this->request->getParameter('set_type', pString);
 ?>
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
 					<div class="formOutline">
@@ -175,14 +176,24 @@
 						</ul>
 					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="dropdown-container<?php print (strToLower($this->request->getController()) == "listing") ? ' active' : ''; ?>">
+					<li class="dropdown-container<?php print (((strToLower($this->request->getAction()) == "curriculum")) || (in_array(strToLower($vs_set_type), array('research_guides'))) || (in_array(strToLower($this->request->getController()), array("listing", "language")))) ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("Curriculum"), "", "", "", ""); ?></li>
-							<li><?php print caNavLink($this->request, _t("External Resources"), "", "", "Listing", "Resources"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Curriculum"), "", "", "Browse", "curriculum"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Sḵwx̱wú7mesh sníchim"), "", "", "Language", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Research Guides"), "", "", "Gallery", "Index", array("set_type" => "research_guides")); ?></li>
+							<li><?php print caNavLink($this->request, _t("Squamish Material in Other Archives"), "", "", "Listing", "Resources"); ?></li>
 						</ul>
 					</li>
-					<li <?php print ($this->request->getController() == "Storytelling") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Storytelling & Research Guides"), "", "", "", ""); ?></li>
+
+					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "gallery") && (in_array($vs_set_type, array("timelines", "highlights", "maps")))) ? ' active' : ''; ?>">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Storytelling <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("Highlights"), "", "", "Gallery", "Index", array("set_type" => "highlights")); ?></li>
+							<li><?php print caNavLink($this->request, _t("Maps"), "", "", "Gallery", "Index", array("set_type" => "maps")); ?></li>
+							<li><?php print caNavLink($this->request, _t("Timelines"), "", "", "Gallery", "Index", array("set_type" => "timelines")); ?></li>
+						</ul>
+					</li>
 					
 				</ul>
 			</div><!-- /.navbar-collapse -->

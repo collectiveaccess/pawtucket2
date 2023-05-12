@@ -78,46 +78,24 @@
 				<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 				<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 				<HR>
-				
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'>
+						<label>Description</label>
 						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
-				{{{<ifcount code="ca_collections" min="1">
-					<div class="unit"><label>Part of</label>
-						<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>
+				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="author,contributor,creator,editor,elder,illustrator,knowledge_keeper,rights_holder,subject"><div class="unit"><label>Contributors</label>
+						<unit relativeTo="ca_entities" restrictToRelationshipTypes="author,contributor,creator,editor,elder,illustrator,knowledge_keeper,rights_holder,subject" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>
 					</div></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,contributor"><div class="unit"><label>Creators and Contributors</label>
-						<unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,contributor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>
-					</div></ifcount>}}}
-				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.display_date"><div class="unit"><label>Date</label>^ca_objects.display_date%delimiter=,_</div></ifdef>}}}
-				{{{<ifnotdef code="ca_objects.display_date"><ifdef code="ca_objects.date"><div class="unit"><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef></ifnotdef>}}}
-				
-				{{{<ifdef code="ca_objects.GMD"><div class="unit"><label>General Material Designation</label>^ca_objects.GMD%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.phys_desc"><div class="unit"><label>Physical Description</label>^ca_objects.phys_desc</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.record_type"><div class="unit"><label>Record Type</label>^ca_objects.record_type%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.date"><div class="unit"><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.alt_date"><div class="unit"><label>Alternate Date</label>^ca_objects.alt_date%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.learning_level"><div class="unit"><label>Learning Level</label>^ca_objects.learning_level%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.lesson_plan_type"><div class="unit"><label>Lesson Plan Type</label>^ca_objects.lesson_plan_type%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.learning_objectives"><div class="unit"><label>Learning Objectives</label>^ca_objects.learning_objectives%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.theme"><div class="unit"><label>Themes</label>^ca_objects.theme%delimiter=,_</div></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
-				
-				{{{<ifdef code="ca_objects.rights_container.access_conditions|ca_objects.rights_container.use_reproduction"><div class="unit"><label>Restrictions</label>
-					<ifdef code="ca_objects.rights_container.access_conditions">Access: ^ca_objects.rights_container.access_conditions</ifdef>
-					<ifdef code="ca_objects.rights_container.use_reproduction"><ifdef code="ca_objects.rights_container.access_conditions"><br/></ifdef>Reproduction: ^ca_objects.rights_container.use_reproduction</ifdef>
-				</div></ifdef>}}}
-				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="holding_repository"><div class="unit"><label>Holding Repository</label>
-						<unit relativeTo="ca_entities" restrictToRelationshipTypes="holding_repository" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>
-					</div></ifcount>}}}
-				{{{<ifdef code="ca_objects.repository_item_URL"><div class="unit"><label>URL</label><a href="^ca_objects.repository_item_URL" target="_blank">^ca_objects.repository_item_URL</a></div></ifdef>}}}
-				{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
-						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.preferred_labels.name</unit>
-					</div></ifcount>}}}
-<?php
-				if($vn_collection_id = $t_object->get("ca_collections.collection_id", array("limit" => 1))){
-					print "<div class='unit'>".caDetailLink($this->request, "More from this ".$t_object->get("ca_collections.type_id", array("limit" => 1, "convertCodesToDisplayText" => true)), "btn btn-default", "ca_collections", $vn_collection_id)."</div>";
-				}
-?>
+				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				<div class="unit">{{{map}}}</div>
 						
 			</div><!-- end col -->
