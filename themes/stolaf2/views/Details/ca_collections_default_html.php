@@ -271,10 +271,14 @@
 ?>
 					
 					{{{<ifcount code="ca_places" min="1"><div class="unit"><ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount><ifcount code="ca_places" min="2"><label>Related places</label></ifcount><unit relativeTo="ca_places" delimiter="<br/>"><unit relativeTo="ca_places.hierarchy" delimiter=" &gt; "><l>^ca_places.preferred_labels</l></unit></unit></div></ifcount>}}}
+					
+<?php
+					if($vs_map = $this->getVar("map")){
+						print "<div class='unit'>".$vs_map."</div>";
+					}
+?>					
 					{{{<ifdef code="ca_collections.relation"><div class="unit"><label>Related Collections</label>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
 
-					<br/>{{{map}}}
-					
 					
 					
 <?php

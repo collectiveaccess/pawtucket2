@@ -163,10 +163,11 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
+					<li <?php print (strToLower($this->request->getController()) == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>				
 					<li <?php print ((strToLower($this->request->getController()) == "Browse") && ((strToLower($this->request->getAction()) == "collections") || (strToLower($this->request->getAction()) == "archival_collections"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse Collections"), "", "", "Browse", "archival_collections"); ?></li>				
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "Search", "advanced", "collections"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured Records"), "", "", "Gallery", "Index"); ?></li>
-					<li><a href="https://wp.stolaf.edu/archives/about-fram/">About This Tool</a></li>
+					<li><a href="https://wp.stolaf.edu/archives/about-fram/" target="_blank">About This Tool</a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
