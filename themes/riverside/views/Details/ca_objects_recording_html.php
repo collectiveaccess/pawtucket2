@@ -246,7 +246,7 @@
 <?php				
 							}
 ?>
-
+							{{{<ifdef code="ca_objects.url.link_url"><div class="unit"><label>URL</label><unit relativeTo="ca_objects.url" delimiter="<br/>"><a href="^ca_objects.url.link_url"><ifdef code="ca_objects.url.link_text">^ca_objects.url.link_text</ifdef><ifnotdef code="ca_objects.url.link_text">^ca_objects.url.link_url</ifnotdef></a></unit></div></ifdef>}}}
 						</div>
 					</div></div><!-- end bgOffWhiteLight -->
 				</div>
