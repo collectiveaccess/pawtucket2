@@ -68,6 +68,21 @@
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
 if (!$vb_ajax) {	// !ajax
+	if(strToLower($this->request->getAction()) == "curriculum"){
+?>
+			<div class="row pageHeaderRow bg_dark_eye">
+				<div class="col-sm-12">
+					<H1>Curriculum</H1>
+<?php
+					if($vs_tmp = $this->getVar("curriculum_intro_text")){
+						print "<p>".$vs_tmp."</p>";
+					}
+?>
+				</div>
+			</div>
+
+<?php
+	}
 ?>
 <div class="row" style="clear:both;">
 	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>

@@ -50,7 +50,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-sm-12 col-md-6 col-md-offset-3 text-center'>
-					<H1>{{{^ca_objects.preferred_labels.name}}} {{{<if rule='(^ca_objects.type_id =~ /audio|moving/)'><ifcount code="ca_occurrences" restrictToTypes="event" min="1"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><br/>Event/Broadcast: <l>^ca_occurrences.preferred_labels.name</l> <l><span class="small"><i class="fa fa-external-link" aria-hidden="true"></i></span></l></unit></div></ifcount></if>}}}</H1>
+					<H1>{{{^ca_objects.preferred_labels.name}}} {{{<if rule='(^ca_objects.type_id =~ /audio|moving/)'><ifcount code="ca_occurrences" restrictToTypes="event" min="1"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><br/>Event: <l>^ca_occurrences.preferred_labels.name</l> <l><span class="small"><i class="fa fa-external-link" aria-hidden="true"></i></span></l></unit></div></ifcount></if>}}}</H1>
 					<div class='unit'><H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2></div>			
 				</div>
 				<div class='col-sm-12 col-md-3 text-center'>
@@ -165,7 +165,7 @@
 							<!-- end Library fields -->
 							{{{<ifdef code="ca_objects.url.link_url"><div class="unit"><label>External Link</label><unit delimiter="<br/>"><a href="^ca_objects.url.link_url" target="_blank"><ifdef code="ca_objects.url.link_text">^ca_objects.url.link_text</ifdef><ifnotdef code="ca_objects.url.link_text">^ca_objects.url.link_url</ifnotdef></a></div></ifdef>}}}
 							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Dedicated,Related"><div class="unit"><label>Related People & Organizations</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="Dedicated,Related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-							{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount>/Broadcast<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifcount>}}}
+							{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifcount>}}}
 				
 		<?php
 							$va_all_subjects = array();
@@ -246,7 +246,7 @@
 			</div>
 
 <?php
-$va_related_objects = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true));
+$va_related_objects = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
 $t_list_item = new ca_list_items();
 if(is_array($va_related_objects) && sizeof($va_related_objects)){
 	$qr_related_objects = caMakeSearchResult("ca_objects", $va_related_objects);

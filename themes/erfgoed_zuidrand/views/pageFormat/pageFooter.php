@@ -30,7 +30,7 @@
 		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer" role="contentinfo">
 			<div class="footerBg row">
-				<div class="col-sm-12 col-md-8 col-md-offset-2">
+				<div class="col-md-12 col-lg-8 col-lg-offset-2">
 					<div class="footerHeading"><a href="https://www.dezuidrand.be/erfgoedcel-zuidrand"><span class="footerCopyright">&copy;</span> Erfgoedcel Zuidrand</a>
 						<p>{{{footer_text}}}</p>
 					</div>

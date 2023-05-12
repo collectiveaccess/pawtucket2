@@ -35,7 +35,7 @@
 			case "list":
 				if(sizeof($va_browse_types) > 1){
 ?>
-				<li class="dropdown<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print $o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse"); ?> <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
+				<li class="dropdown<?php print ($this->request->getController() == "Browse" && (strToLower($this->request->getAction()) != "curriculum")) ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print $o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse"); ?> <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 					<ul class="dropdown-menu">
 <?php
 						foreach($va_browse_types as $vs_browse_name => $va_browse_type){

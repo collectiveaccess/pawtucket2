@@ -190,7 +190,7 @@ a:hover{
 	color: #000;
 	padding-top:25px;
 	padding-bottom:25px;
-	height:250px;
+	height:380px;
 	border-top:0px;
 	text-align:center;
 	margin-top:0px;
@@ -202,15 +202,31 @@ a:hover{
 	padding-bottom:25px;
 }
 body{
-	margin-bottom:250px;
+	margin-bottom:410px;
 	color:#000
 }
-@media(max-width:768px){
+@media(max-width:1475px){
 	#footer{
-		height:350px;
+		height:400px;
 	}
 	body{
-		margin-bottom:350px;
+		margin-bottom:450px;
+	}
+}
+@media(max-width:914px){
+	#footer{
+		height:650px;
+	}
+	body{
+		margin-bottom:700px;
+	}
+}
+@media(max-width:550px){
+	#footer{
+		height:700px;
+	}
+	body{
+		margin-bottom:750px;
 	}
 }
 #footer{
@@ -295,6 +311,12 @@ body{
 .footerPartnerLogos img{
 	height: 50px;
 	width: auto;
+}
+@media(max-width:768px){
+	.footerPartnerLogos img{
+		height: 40px;
+		width: auto;
+	}
 }
 /* detail page */
 .detail{
