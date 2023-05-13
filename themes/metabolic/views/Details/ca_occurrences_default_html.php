@@ -1,270 +1,117 @@
 <?php
+	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");	
-
-	$t_occurrence 			= $this->getVar('item');
-	$vn_occurrence_id 	= $t_occurrence->getPrimaryKey();
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	$va_config_options = 	$this->getVar("config_options");
 	
-	$vs_title 					= $this->getVar('label');
-	
-	$va_access_values	= $this->getVar('access_values');
-	$t_list = new ca_lists();
-	$vn_silo_id = $t_list->getItemIDFromList('collection_types', 'silo');
-	
+	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl("*", "*", "*"));
+	MetaTagManager::addMetaProperty("og:title", ($va_config_options["og_title"]) ? $t_item->getWithTemplate($va_config_options["og_title"]) : $t_item->get("ca_occurrences.preferred_labels.name"));
+	MetaTagManager::addMetaProperty("og:type", ($va_config_options["og_type"]) ? $va_config_options["og_type"] : "website");
+	if($va_config_options["og_description"] && ($vs_tmp = $t_item->getWithTemplate($va_config_options["og_description"]))){
+		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
+	}
+	if($vs_tmp = $va_config_options["fb_app_id"]){
+		MetaTagManager::addMetaProperty("fb:app_id", $vs_tmp);
+	}
+	if($vs_rep = $t_item->get("ca_object_representations.media.page.url", array("checkAccess" => $va_access_values))){
+		MetaTagManager::addMetaProperty("og:image", $vs_rep);
+		MetaTagManager::addMetaProperty("og:image:width", $t_object->get("ca_object_representations.media.page.width"));
+		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
+	}	
+?>
+<div class="row">
+	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
+		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+	</div><!-- end detailTop -->
+	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+		<div class="detailNavBgLeft">
+			{{{previousLink}}}{{{resultsLink}}}
+		</div><!-- end detailNavBgLeft -->
+	</div><!-- end col -->
+	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+		<div class="container">
+			<div class="row">
+				<div class='col-md-12 col-lg-12'>
+					<H4>{{{^ca_occurrences.preferred_labels.name}}}</H4>
+					<H6>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef>}}}</H6>
+				</div><!-- end col -->
+			</div><!-- end row -->
+			<div class="row">			
+				<div class='col-sm-6 col-md-6 col-lg-6'>
+					{{{<ifdef code="ca_occurrences.description"><H6>About</H6>^ca_occurrences.description<br/></ifdef>}}}
+					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
 
-if (!$this->request->isAjax()) {
-?>
-	<div id="detailBody" >
-		<div id="pageNav">
-			{{{resultsLink}}}{{{previousLink}}}{{{nextLink}}}
-		</div><!-- end nav -->
-		<div class='recordTitle'><h1><?php print caUcFirstUTF8Safe($t_occurrence->getTypeName()).': '.$t_occurrence->get('ca_occurrences.preferred_labels'); ?></h1></div>
-		<div id="rightCol" class="occurrence">	
 <?php
-
-			# --- identifier
-			print "<h3>"._t("Identifier")."</h3><p>";
-			print $t_occurrence->get('idno');
-			print "</p>";
-			if($va_alt_name = $t_occurrence->get('ca_occurrences.nonpreferred_labels')){
-				print "<h3>"._t("Alternate Title")."</h3><p> ".$va_alt_name."</p>";
-			}			
-			if(($va_dates = $t_occurrence->get('ca_occurrences.date', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true)))&&(($this->getVar('typename') != 'Audio/Film/Video'))){
-				if(sizeof($va_dates)){
-					$va_dates_for_display = array();
-					foreach($va_dates as $va_date){
-						#print_r($va_date);
-						if($va_date["dates_value"]){
-							$va_dates_for_display[] = "<p>".$va_date["dates_value"]." <span class='details'>(".strtolower($va_date["dc_dates_types"]).")</span></p><!-- end unit -->";
-						}
-					}
-					if(sizeof($va_dates_for_display)){
-						print "<h3>"._t("Date%1", ((sizeof($va_dates) > 1) ? "s" : ""))."</h3>";
-						print implode("\n", $va_dates_for_display);
-					}
-				}
-			}
-			if($va_links = $t_occurrence->get("ca_occurrences.external_link", array("returnWithStructure" => true))){
-				$va_linksToOutput = array();
-				foreach($va_links as $va_link){
-					if($va_link['url_source']){
-						$vs_link = "<a href='".$va_link['url_entry']."' target='_blank'>".$va_link['url_source']."</a>";
-					}elseif($va_link['url_entry']){
-						$vs_link = "<a href='".$va_link['url_entry']."' target='_blank'>".$va_link['url_entry']."</a>";
-					}
-					if($vs_link){
-						$va_linksToOutput[] = $vs_link;
-					}
-				}
-				if(sizeof($va_linksToOutput)){
-					print "<h3>"._t("Link")."</h3><p>";
-					print join("<br/>", $va_linksToOutput);
-					print "</p>";
-				}
-			}			
-			# --- description
-				if($vs_description_text = $t_occurrence->get("ca_occurrences.description")){
-					print "<h3>Description</h3><div id='description' class='scrollPane'><p>".$vs_description_text."</p></div>";				
-
-				}
-
-			# --- entities
-			$va_entities = $t_occurrence->get("ca_entities", array("returnWithStructure" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_entities) > 0){	
-?>
-				<h3><?php print _t("Related")." ".((sizeof($va_entities) > 1) ? _t("People/Organizations") : _t("Person/Organization")); ?></h3>
-				<p>
-<?php
-				$vn_i = 1;
-				foreach($va_entities as $va_entity) {
-					print caNavLink($this->request, $va_entity["label"], '', '', 'Detail', 'entities/'.$va_entity["entity_id"])." <span class='details'>(".$va_entity['relationship_typename'].")</span>";
-					if($vn_i < sizeof($va_entities)){
-						print ", ";
-					}
-					$vn_i++;
-				}
-?>
-				</p>
-<?php
-			}
-			
-			# --- occurrences
-			$va_occurrences = $t_occurrence->get("ca_occurrences", array("returnWithStructure" => 1, 'checkAccess' => $va_access_values));
-			$va_sorted_occurrences = array();
-			if(sizeof($va_occurrences) > 0){
-				$t_occ = new ca_occurrences();
-				$va_item_types = $t_occ->getTypeList();
-				foreach($va_occurrences as $va_occurrence) {
-					$t_occ->load($va_occurrence['occurrence_id']);
-					$va_rel_entities = array();
-					$va_rel_entities = $t_occ->get("ca_entities", array('restrictToTypes' => array('organization'), "returnWithStructure" => 1, 'checkAccess' => $va_access_values, 'sort' => 'surname'));
-					$va_occurrence["related_entities"] = $va_rel_entities;
-					$va_sorted_occurrences[$va_occurrence['item_type_id']][$va_occurrence['occurrence_id']] = $va_occurrence;
-				}
-				
-				$t_list = new ca_lists();
-				$vn_exhibition_type_id = $t_list->getItemIDFromList("occurrence_types", "exhibition");
-				
-				foreach($va_sorted_occurrences as $vn_occurrence_type_id => $va_occurrence_list) {
-?>
-						<h3><?php print _t("Related")." ".$va_item_types[$vn_occurrence_type_id]['name_singular'].((sizeof($va_occurrence_list) > 1) ? "s" : ""); ?></h3>
-				<div class='scrollPane'>
-<?php
-					foreach($va_occurrence_list as $vn_rel_occurrence_id => $va_info) {
-						print "<p>".caNavLink($this->request, $va_info["label"], '', '', 'Detail', 'occurrences/'.$vn_rel_occurrence_id);
-						if($vn_exhibition_type_id == $vn_occurrence_type_id){
-							# --- this is an exhibition, so try to display organizations related to the exhibition
-							$vn_i = 1;
-							foreach($va_info['related_entities'] as $va_organization){
-								print ", ".$va_organization["displayname"];
-								if($vn_i < sizeof($va_info['related_entities'])){
-									print ", ";
-								}
-								$vn_i++;
-							}
-						}
-						print " <span class='details'>(".$va_info['relationship_typename'].")</span></p>";
-					}
-?>
-				</div>
-<?php					
-				}
-			}
-			# --- places
-			$va_places = $t_occurrence->get("ca_places", array("returnWithStructure" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_places) > 0){
-				print "<h3>"._t("Related Place").((sizeof($va_places) > 1) ? "s" : "")."</h3>";
-?>
-				<div class='scrollPane'>
-<?php
-				foreach($va_places as $va_place_info){
-					print "<p>".$va_place_info['label']." <span class='details'>(".$va_place_info['relationship_typename'].")</span></p>";
-				}
-?>
-				</div>
+				# Comment and Share Tools
+				if ($vn_comments_enabled | $vn_share_enabled) {
+						
+					print '<div id="detailTools">';
+					if ($vn_comments_enabled) {
+?>				
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
 <?php				
-			}
-			# --- collections
-			$va_collections = $t_occurrence->get("ca_collections", array("returnWithStructure" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_collections) > 0){
-// 				print "<h3>"._t("Related Project/Silo")."</h3><div class='scrollPane'>";
-// 				foreach($va_collections as $va_collection_info){
-// 					print "<p>".(($this->request->config->get('allow_detail_for_ca_collections')) ? caNavLink($this->request, $va_collection_info['label'], '', 'Detail', 'Collection', 'Show', array('collection_id' => $va_collection_info['collection_id'])) : $va_collection_info['label'])." <span class='details'>(".$va_collection_info['relationship_typename'].")</span></p>";
-// 				}
-// 				print "</div>";
-
-				print "<h3>"._t("Related Project/Silo").((sizeof($va_collections) > 1) ? "s" : "")."</h3>";
-?>
-				<div class='scrollPane'>
-<?php
-				$va_silos = array();
-				$va_collection_links = array();
-				$t_related_collection = new ca_collections();
-				foreach($va_collections as $va_collection_info){
-					if($va_collection_info["item_type_id"] != $vn_silo_id){
-						# --- if the related collection is not a silo, check for a related silo to list it under
-						$t_related_collection->load($va_collection_info['collection_id']);
-						$va_related_silos = $t_related_collection->get("ca_collections", array("returnWithStructure" => 1, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('silo')));
-						if(sizeof($va_related_silos)){
-							foreach($va_related_silos as $va_related_silo){
-								$va_silos[$va_related_silo["collection_id"]][] = $va_collection_info['collection_id'];
-								$va_collection_links[$va_related_silo["collection_id"]] = caNavLink($this->request, $va_related_silo['label'], '', '', 'Detail', 'collections/'.$va_related_silo['collection_id']);						
-							}
-						}else{
-							if(!$va_silos[$va_collection_info['collection_id']]){
-								$va_silos[$va_collection_info['collection_id']] = array();
-							}
-						}
-					}else{
-						if(!$va_silos[$va_collection_info['collection_id']]){
-							$va_silos[$va_collection_info['collection_id']] = array();
-						}
 					}
-					$va_collection_links[$va_collection_info['collection_id']] = caNavLink($this->request, $va_collection_info['label'], '', '', 'Detail', 'collections/'.$va_collection_info['collection_id']);
-					#print "<p> <span class='details'>(".$va_collection_info['relationship_typename'].")</span></p>";
-				}
-				if(sizeof($va_silos)){
-					foreach($va_silos as $vn_silo_id => $va_projectsPhases){
-						print "<p>".$va_collection_links[$vn_silo_id];
-							$i = 0;
-							if(sizeof($va_projectsPhases)){
-								print " (";
-							}
-							foreach($va_projectsPhases as $vn_projectPhase_id){
-								print "<span class='grayLink'>".$va_collection_links[$vn_projectPhase_id]."</spn>";
-								$i++;
-								if($i < sizeof($va_projectsPhases)){
-									print ", ";
-								}
-							}
-							if(sizeof($va_projectsPhases)){
-								print ")";
-							}
-						print "</p>";
+					if ($vn_share_enabled) {
+						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
-				}
+					print '</div><!-- end detailTools -->';
+				}				
 ?>
-				</div>
-<?php
-			}
-			# --- vocabulary terms
-			$va_terms = $t_occurrence->get("ca_list_items", array("returnWithStructure" => 1, 'checkAccess' => $va_access_values));
-			if(sizeof($va_terms) > 0){
-				print "<h3>"._t("Subject").((sizeof($va_terms) > 1) ? "s" : "")."</h3>";
-?>
-				<div class='scrollPane'>
-<?php
-				foreach($va_terms as $va_term_info){
-					print "<p>".caNavLink($this->request, $va_term_info['label'], '', '', 'Search', 'Index', array('search' => $va_term_info['label']))."</p>";
-				}
-?>
-				</div>
-<?php				
-			}
-			# --- map
-			if($t_occurrence->get('ca_occurrences.georeference.geocode')){
-				$o_map = new GeographicMap(285, 200, 'map');
-				$o_map->mapFrom($t_occurrence, 'ca_occurrences.georeference.geocode');
-				print "<div class='unit'>".$o_map->render('HTML')."</div>";
-				if($t_occurrence->get('ca_occurrences.georeference.geo_notes')) {
-					print "<p><b>Location notes: </b>".$t_occurrence->get('ca_occurrences.georeference.geo_notes')."</p>";
-				}
-				if($t_occurrence->get('ca_occurrences.georeference.geo_date')) {
-					print "<p><b>Location dates: </b>".$t_occurrence->get('ca_occurrences.georeference.geo_date')."</p>";
-				}
-			}
-
-?>
-	</div><!-- end rightCol -->
-			
-	<div id="leftCol">
-		<div id="resultBox">
-<?php
-}
-		// set parameters for paging controls view
-		$this->setVar('other_paging_parameters', array(
-			'occurrence_id' => $vn_occurrence_id
-		));
-		print $this->render('Details/related_objects_grid_carousel.php');
-		#print $this->render('related_objects_grid.php');
-
-if (!$this->request->isAjax()) {
-?>
-		</div><!-- end resultBox -->
-
-
-	</div><!-- end leftCol -->
-</div><!-- end detailBody -->
-
-<?php
-}
-?>
-
-	<script type="text/javascript">
-
-		jQuery('.scrollPane').jScrollPane({
-			
-			animateScroll: true,
+					
+				</div><!-- end col -->
+				<div class='col-md-6 col-lg-6'>
+					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
+					
+					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					
+					{{{<ifcount code="ca_occurrences.related" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
+					{{{<ifcount code="ca_occurrences.related" min="2"><H6>Related occurrences</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l></unit>}}}
+					
+					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
+					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}					
+				</div><!-- end col -->
+			</div><!-- end row -->
+{{{<ifcount code="ca_objects" min="2">
+			<div class="row">
+				<div id="browseResultsContainer">
+					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+				</div><!-- end browseResultsContainer -->
+			</div><!-- end row -->
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl('', 'Search', 'objects', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery('#browseResultsContainer').jscroll({
+							autoTrigger: true,
+							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+							padding: 20,
+							nextSelector: 'a.jscroll-next'
+						});
+					});
+					
+					
+				});
+			</script>
+</ifcount>}}}		</div><!-- end container -->
+	</div><!-- end col -->
+	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+		<div class="detailNavBgRight">
+			{{{nextLink}}}
+		</div><!-- end detailNavBgLeft -->
+	</div><!-- end col -->
+</div><!-- end row -->
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 120
 		});
-	</script>
+	});
+</script>

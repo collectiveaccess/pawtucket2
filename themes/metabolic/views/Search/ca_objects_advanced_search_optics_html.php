@@ -1,5 +1,5 @@
 <div id="caAdvancedSearchFormBorder"><div id="caAdvancedSearchForm">
-		<H1><?php print _t("Optics Division Search"); ?><small> <?php print caNavLink($this->request, 'or search all collections', '', 'Search', 'advanced', 'objects');?></small></H1>
+		<H1><?php print _t("Optics Division Search"); ?><small> <?php print caNavLink('or search all collections', '', 'Search', 'advanced', 'objects');?></small></H1>
 
 {{{form}}}
 	

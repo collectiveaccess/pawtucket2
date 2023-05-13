@@ -2,21 +2,64 @@
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 ?>
 
-<h1>About the Archive</h1>
-<div class="textContent">
-<p>Lauren Bon and Metabolic Studio practice at the intersection of art and philanthropy. The metabolic cycle that initiated the Metabolic Studio in 2007 began with Not A Cornfield (2005-2006), Ms. Bon’s artwork that grew a 32-acre cornfield in the historic core of downtown Los Angeles on a disused train yard.</p>
- 
-<p>Working with social brownfields – locations that for environmental, political or other reasons are unable to support life – Lauren Bon and the Metabolic Studio make metabolic sculptures that use creative endeavor to galvanize transition within complex bureaucracies.</p>
- 
-<p>Strawberry Flag (July 2009-October 2010) for example, was a revisionist vision of the American flag as an experimental aquaponic strawberry farm.  The artwork was in the form of a veterans’ program.  Strawberry Flag created significant veteran training and employment opportunities, brought out the potential for meaning and value inherent in underutilized and often undervalued resources, and simultaneously seeded the ground for future veteran-led projects to emerge.</p>
- 
-<p>The work of Ms. Bon and the Metabolic Studio work remaps our biosphere. Not A Cornfield and Strawberry Flag mark historically significant properties that are key in the development of the City of Los Angeles. The Studio’s work in the Owens Valley, which is now in its fifth year, focuses on the resources that were mined out of the Owens Valley: silver and water. The work is an act of consciousness aimed at November 8, 2013, the anniversary that will mark one hundred years since the water was removed from the valley.</p>
- 
+	<div class="row">
+		<div class="col-sm-12">
+			<H1 class="meow"><?php print _t("About"); ?></H1>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
+	<nav class="nav nav-pills flex-column flex-sm-row">
+	  <a class="text-center text-md-left nav-item nav-link active" href="#pillTab1" data-toggle="tab">Pill Tab 1</a>
+	  <a class="text-center text-md-left nav-item nav-link" href="#pillTab2" data-toggle="tab">Pill Tab 2</a>
+	  <a class="text-center text-md-left nav-item nav-link" href="#pillTab3" data-toggle="tab">Pill tab 3</a>
+	  <a class="text-center text-md-left nav-item nav-link disabled" href="#pillTab4" data-toggle="tab">Disabled</a>
+	</nav>
+	<div class="tab-content">
+	  <div class="tab-pane container active" id="pillTab1"><p>Pill-Tab 1 content</p></div>
+	  <div class="tab-pane container fade" id="pillTab2"><p>Pill-Tab 2 content</p></div>
+	  <div class="tab-pane container fade" id="pillTab3"><p>Pill-Tab 3 content</p></div>
+	  <div class="tab-pane container fade" id="pillTab4"><p>Pill-Tab 4 content</p></div>
+	</div>
+	<br/><br/><br/><br/><br/><br/>
+		
+			<div class="nav nav-tabs flex-column flex-sm-row">
+				<a class="nav-item nav-link text-center text-md-left active " data-toggle="tab" href="#tab1">tab 1</a>
+				<a class="nav-item nav-link text-center text-md-left" data-toggle="tab" href="#tab2">Tab 2</a>
+				<a class="nav-item nav-link text-center text-md-left" data-toggle="tab" href="#tab3">Tab 3 asdas da sd asd ass dsa </a>
+			</div>
 
-<!--	<p><div class="hpRss"><?php print caNavLink($this->request, '<img src="'.$this->request->getThemeUrlPath(true).'/graphics/feed.gif" border="0" title="'._t('Get alerted to newly added items by RSS').'" width="14" height="14"/> '._t('Get alerted to newly added items by RSS'), 'caption', '', 'Feed', 'recentlyAdded'); ?></div></p>
--->
-<h1>Contact</h1>
-<p>
-For further assistance with the archive, please contact <a href='mailto:archive@metabolicstudio.org'>archive@metabolicstudio.org</a>.
-</p>
-</div>
+				<!-- Tab panes -->
+				<div class="tab-content">
+				  <div class="tab-pane container active" id="tab1"><p>Tab 1 content</p></div>
+				  <div class="tab-pane container fade" id="tab2"><p>Tab 2 content</p></div>
+				  <div class="tab-pane container fade" id="tab3"><p>Tab 3 content</p></div>
+				</div>
+				<br/><br/><br/><br/><br/><br/>
+		</div>
+	</div>
+	<div id="anotherClock"></div>
+	<div class="row">
+		<div class="col-sm-8">
+			<h3>Contact The Archives</h3>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nec ligula erat. Pellentesque nibh leo, pharetra et posuere vel, accumsan vitae sapien. Phasellus a tortor id felis scelerisque blandit. Curabitur a tristique tortor. Morbi non tortor eget dui blandit laoreet. Quisque lacus quam, auctor sit amet volutpat dictum, scelerisque sit amet neque. Vivamus non massa finibus, ultrices nunc vel, scelerisque dui. Aliquam commodo, quam eget fringilla finibus, enim diam sodales ligula, sollicitudin faucibus ligula lorem vitae arcu. Sed efficitur nisi sit amet lobortis malesuada. Ut quis imperdiet elit. Mauris blandit suscipit leo, non tristique est ultrices eu.</p>
+		</div>
+		<div class="col-sm-3 col-sm-offset-1">
+			<h6>&nbsp;</h6><address>Archives<br>			100 Second Avenue, 2nd floor<br>			New York, NY 10010</address>
+		
+			<address>Jennifer Smith, Archivist<br>			<span class="info">Phone</span> — 212 222.2222<br>			<span class="info">Fax</span> — 212 222.2223<br>			<span class="info">Email</span> — <a href="#">email@archive.edu</a></address>
+		</div>
+	</div>
+	
+	
+
+<script>	
+	let pawtucketUIApps = {
+		'clock': {
+			'selector': '#anotherClock',
+			'data': {
+				'message': "This is an about page clock!!!!!"
+			}
+		}
+	}; 
+</script>

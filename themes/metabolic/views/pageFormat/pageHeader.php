@@ -1,13 +1,8 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/pageFormat/pageHeader.php : 
- * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,120 +20,53 @@
  *
  * ----------------------------------------------------------------------
  */
-	$va_lightboxDisplayName = caGetLightboxDisplayName();
-	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
-	
-	# Collect the user links: they are output twice, once for toggle menu and once for nav
-	$va_user_links = array();
-	if($this->request->isLoggedIn()){
-		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
-		$va_user_links[] = '<li class="divider nav-divider"></li>';
-		if(caDisplayLightbox($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
-		}
-		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-		}
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
-	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
-	}
-	$vb_has_user_links = (sizeof($va_user_links) > 0);
-
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+    <script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
+    
 	<?php print MetaTagManager::getHTML(); ?>
-	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
-
-	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	
-	<script type="text/javascript">
-		jQuery(document).ready(function() {
-    		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
-    	});
-	</script>
-<?php
-	if(Debug::isEnabled()) {		
-		//
-		// Pull in JS and CSS for debug bar
-		// 
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+	<title><?php print MetaTagManager::getWindowTitle(); ?></title>
 </head>
-<body>
-<div id='bodyDiv'>
-	<div id="header">
-	  <div class="logo">
-		
-<?php
-		print caNavLink($this->request, caGetThemeGraphic($this->request, 'metabolic_logo.png'), "", "", "", "");
-?>
-		
-	
-	  </div>
-	  <div class="portal">
+<body id="pawtucketApp">
 
-		<div id="search">
-			<form name="header_search" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" method="get">
-			
-				<!-- <div id="searchButton"><input style='width:47px' type="submit" value="Search" /></div> -->
-				<div id="searchElement">
-					<input type="text" placeholder="Search" name="search" value="<?php print ($vs_search) ? $vs_search : ''; ?>" onclick='jQuery("#quickSearch").select();' id="quickSearch"  autocomplete="off" size="30"/>
-
-					<div class='advancedSearch'><?php print caNavLink($this->request, _t("advanced search"), "", "Search", "advanced", "optics");?></div>
-				</div>
-				
+    <script type="text/javascript">
+        let pawtucketUIApps = {};
+    </script>
+    
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+		<?php print caNavLink(caGetThemeGraphic("metabolic/metabolicStudioLogo.png", array("alt" => "Metabolic Studio")), "navbar-brand", "", "Front", "Index"); ?>
+		<button class="navbar-toggler p-2" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+			<ul class="navbar-nav ml-auto mr-3">
+			  <?php print join("\n", caGetNavItemsForBootstrap([
+				_t('Find') => ['controller' => 'Browse', 'action' => 'Objects'],
+				_t('Actions') => ['controller' => 'Listing', 'action' => 'Actions'],
+				_t('Chronology') => ['controller' => 'Chronology', 'action' => 'View'],
+				//_t('Activity') => ['controller' => 'Activity', 'action' => 'View'],
+				#_t('Collections') => ['controller' => 'Gallery', 'action' => 'Index'],
+				#_t('About') => ['controller' => 'About', 'action' => 'Studio']
+			  ])); ?>
+		  
+			  <?php print join("\n", caGetNavUserItemsForBootstrap(($this->request->isLoggedIn()) ? _t('My Metabolic') : _t('Login'), array("showLoginForm" => true))); ?>
+			</ul>
+			<form class="form-inline my-2 my-lg-0 navSearch" action="<?php print caNavUrl('', 'MultiSearch', 'Index'); ?>">
+			  <input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" placeholder="Search" aria-label="Search" />
+			  <button class="btn" type="submit"><i class="material-icons">search</i></button>
 			</form>
-			
-		</div><!-- end search -->
-		
-	  </div><!-- end portal -->
-	  <div id="nav">
-		
-<?php				
-
-			print "<div style='float:left; text-transform:uppercase;'>";
-			#join(" ", $this->getVar('nav')->getHTMLMenuBarAsLinkArray());
-			print caNavLink($this->request, _t("About"), "", "", "About", "Index");
-			print caNavLink($this->request, _t("Browse"), "", "", "About", "browse");
-			print caNavLink($this->request, _t("My Sets"), "", "", "Lightbox", "Index");
-			#print caNavLink($this->request, _t("Chronology"), "", "MetabolicChronology", "Show", "Index");
-			print caNavLink($this->request, _t("Collection"), "", "", "Gallery", "Index");
-			print caNavLink($this->request, _t("Contribute"), "", "", "Contribute", "archive");
-			if($this->request->isLoggedIn()){
-				print caNavLink($this->request, _t("Logout"), "", "", "LoginReg", "Logout");
-			}else{
-				print caNavLink($this->request, _t("Login"), "", "", "LoginReg", "LoginForm");
-			}
-			print "</div>";
-
-
+      </div>
+	</nav>
 	
-
-?>		
-		</div><!-- end nav -->
-	</div><!-- end header -->
-<?php
-	$o_result_context = new ResultContext($this->request, 'ca_objects', 'basic_search');
-	$vs_search = $o_result_context->getSearchExpression();
-?>	
-	<div class="container" style="clear:both;"><div class="row"><div class="col-xs-12" style="padding:0px;">
-<?php	
-	$vs_controller = $this->request->getController();
-	if (in_array($vs_controller, array('Detail', 'Form', 'Share', 'Contribute'))) {
-		print "<div id='detailPageAreaBorder'><div id='detailPageArea'>";
-	} else {
-		print "<div id='pageArea' ".caGetPageCSSClasses().">";
-	}	
-?>			
-						
+<div role="main" id="main">
+	<div id="mediaDisplayFullscreen" class="mediaDisplayFullscreen">
+		<!-- Used by MediaViewer.js React app -->
+	</div>
+	<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+		<div class="container-fluid"><div class="row"><div class="col-sm-12">
+		

@@ -1,13 +1,8 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/pageFormat/pageFooter.php : 
- * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,68 +21,26 @@
  * ----------------------------------------------------------------------
  */
 ?>
-		<div style="clear:both; height:1px;"><!-- empty --></div>
-<?php
-		# --- depending on the current page, we might need an extra /div to close the border table around the pageArea div
-		if(in_array($this->request->getController(), array("Object", "Entity", "Occurrence", "Collection", "Place", "Form", "Share"))){
-			print "</div><!-- end detailPageAreaBorder -->";
-		}
-?>
-	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
-	<div id="footer">
-
-		<div style="float: right; margin-right: 10px;">
-			<style>.ig-b- { display: inline-block; }
-			.ig-b- img { visibility: hidden; }
-			.ig-b-:hover { background-position: 0 -60px; } .ig-b-:active { background-position: 0 -120px; }
-			.ig-b-48 { width: 48px; height: 48px; background: url(//badges.instagram.com/static/images/ig-badge-sprite-48.png) no-repeat 0 0; }
-			@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2 / 1), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
-			.ig-b-48 { background-image: url(//badges.instagram.com/static/images/ig-badge-sprite-48@2x.png); background-size: 60px 178px; } }</style>
-			<a href="http://instagram.com/metabolicstudio?ref=badge" class="ig-b- ig-b-48"><img src="//badges.instagram.com/static/images/ig-badge-48.png" alt="Instagram" /></a>
-		</div>
-	
-				Metabolic Studio <br/>
-	1745 N. Spring Street Unit 4 Los Angeles, CA 90012 <br/>
-	<a href="mailto:info@metabolicstudio.org">info@metabolicstudio.org</a> phone 323.226.1158  
-
-	</div><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
-	
-</div><!-- end bodyDiv -->	
-		<?php print TooltipManager::getLoadHTML(); ?>
-		<div id="caMediaPanel"> 
-			<div id="caMediaPanelContentArea">
-			
+					<div style="clear:both; height:1px;"><!-- empty --></div>
+				</div><!-- end col --></div><!-- end row --></div><!-- end container -->
+			</div><!-- end pageArea -->
+		</div><!-- end main -->
+		<footer id="footer" class="py-5">
+			<H1 class="pt-3 pb-1">&copy; Metabolic Studio</H1>
+			<div class="pt-0 pb-3">
+				1745 N. SPRING STREET UNIT 4 LOS ANGELES, CA 90012
 			</div>
-		</div>
-		<script type="text/javascript">
-			/*
-				Set up the "caMediaPanel" panel that will be triggered by links in object detail
-				Note that the actual <div>'s implementing the panel are located here in views/pageFormat/pageFooter.php
-			*/
-			var caMediaPanel;
-			jQuery(document).ready(function() {
-				if (caUI.initPanel) {
-					caMediaPanel = caUI.initPanel({ 
-						panelID: 'caMediaPanel',										/* DOM ID of the <div> enclosing the panel */
-						panelContentID: 'caMediaPanelContentArea',		/* DOM ID of the content area <div> in the panel */
-						exposeBackgroundColor: '#FFFFFF',						/* color (in hex notation) of background masking out page content; include the leading '#' in the color spec */
-						exposeBackgroundOpacity: 0.7,							/* opacity of background color masking out page content; 1.0 is opaque */
-						panelTransitionSpeed: 400, 									/* time it takes the panel to fade in/out in milliseconds */
-						allowMobileSafariZooming: true,
-						mobileSafariViewportTagID: '_msafari_viewport',
-						closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
-					});
-				}
-			});
-			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
-		</script>
+			<div class="py-4">
+				<a href="https://www.facebook.com/metabolicstudio" class="px-3" target="_blank"><ion-icon name="logo-facebook" alt="Facebook"></ion-icon></a>
+				<a href="https://www.instagram.com/metabolicstudio/" class="px-3" target="_blank"><ion-icon name="logo-instagram" alt="Instagram"></ion-icon></a>
+				<a href="https://twitter.com/metabolic1745" class="px-3" target="_blank"><ion-icon name="logo-twitter" alt="Twitter"></ion-icon></a>
+			</div>
+			<div class="pt-3 pb-0">
+				<?php print caNavLink("About The Studio", "", "", "About", ""); ?>
+				<a href="mailto:info@metabolicstudio.org" class="px-3">Contact</a>
+			</div>
+		</footer><!-- end footer -->
+		<script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>
+    	<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js?t=456464"></script>
 	</body>
 </html>
