@@ -29,6 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
+ global $g_ui_locale;
  require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
  $va_access_values = $this->getVar("access_values");
  $vs_hero = $this->request->getParameter("hero", pString);

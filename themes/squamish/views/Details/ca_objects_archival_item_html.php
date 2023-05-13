@@ -102,10 +102,14 @@
 				
 				{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.rights_container.access_conditions|ca_objects.rights_container.use_reproduction"><div class="unit"><label>Rights</label>
+				{{{<ifdef code="ca_objects.rights_container.access_conditions|ca_objects.rights_container.use_reproduction"><div class="unit"><label>Restrictions</label>
 					<ifdef code="ca_objects.rights_container.access_conditions">Access: ^ca_objects.rights_container.access_conditions</ifdef>
 					<ifdef code="ca_objects.rights_container.use_reproduction"><ifdef code="ca_objects.rights_container.access_conditions"><br/></ifdef>Reproduction: ^ca_objects.rights_container.use_reproduction</ifdef>
 				</div></ifdef>}}}
+				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="holding_repository"><div class="unit"><label>Holding Repository</label>
+						<unit relativeTo="ca_entities" restrictToRelationshipTypes="holding_repository" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>
+					</div></ifcount>}}}
+				{{{<ifdef code="ca_objects.repository_item_URL"><div class="unit"><label>URL</label><a href="^ca_objects.repository_item_URL" target="_blank">^ca_objects.repository_item_URL</a></div></ifdef>}}}
 				{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.preferred_labels.name</unit>
 					</div></ifcount>}}}
