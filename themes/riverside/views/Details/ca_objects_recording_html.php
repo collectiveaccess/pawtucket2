@@ -156,8 +156,8 @@
 							{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 							{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 							{{{<ifdef code="ca_objects.parent_id"><div class="unit"><label>Part of</label><unit relativeTo="ca_objects.parent"><l>^ca_objects.preferred_labels.name</l></unit></div></ifdef>}}}
-							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Contributor,Translator,artist,author,creator,photographer,producer,writer"><div class="unit"><label>Creators & Contributors</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="Contributor,Translator,artist,author,creator,photographer,producer,writer"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Publisher"><div class="unit"><label>Publisher</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="Publisher"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+							{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="subject,Depicted,Publisher"><div class="unit"><label>Creators & Contributors</label><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="subject,Depicted,Publisher"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="publisher"><div class="unit"><label>Publisher</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="publisher"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						</div>
 						<div class='col-sm-12 col-md-4'>
 							{{{<ifdef code="ca_objects.broadcast_details"><unit relativeTo="ca_objects.broadcast_details" delimiter="<br/>">
@@ -224,7 +224,7 @@
 								}
 								#$vs_lc_names = join("<br/>", $va_lc_names_processed);
 							}
-							$va_entities = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("Subject","Depicted"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
+							$va_entities = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("subject","Depicted"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
 							$va_entities_processed = array();
 							if(is_array($va_entities) && sizeof($va_entities)){
 								foreach($va_entities as $va_entity){
@@ -246,7 +246,7 @@
 <?php				
 							}
 ?>
-
+							{{{<ifdef code="ca_objects.url.link_url"><div class="unit"><label>URL</label><unit relativeTo="ca_objects.url" delimiter="<br/>"><a href="^ca_objects.url.link_url"><ifdef code="ca_objects.url.link_text">^ca_objects.url.link_text</ifdef><ifnotdef code="ca_objects.url.link_text">^ca_objects.url.link_url</ifnotdef></a></unit></div></ifdef>}}}
 						</div>
 					</div></div><!-- end bgOffWhiteLight -->
 				</div>

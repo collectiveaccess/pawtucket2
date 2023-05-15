@@ -205,11 +205,9 @@ a.navbar-brand, .navbar-default .navbar-brand{
 .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
   color: #e4a01b;
 }
-@media (min-width:768px){
-	.navbar-default .navbar-brand{
-		width: auto;
-		padding-top: 17px;
-	}
+.navbar-default .navbar-brand{
+	width: auto;
+	padding-top: 17px;
 }
 @media (min-width:768px){
 	.navbar-nav > li > a {
@@ -309,10 +307,38 @@ a.navbar-brand, .navbar-default .navbar-brand{
 	background-color:#000;
 	color:#FFF;
 }
-
-
-
-
+@media (min-width: 767px) and (max-width: 1210px){
+	ul.menuItems {
+		width: 100%;
+		border-top: solid 1px #fff;
+	}
+	.navbar-collapse .navbar-nav.navbar-right:last-child {
+	  margin-right: 0px;
+	}
+	.menuItems.navbar-nav > li > a {
+		padding-top:5px;
+		padding-bottom:5px;
+	}
+	.container.menuBar {
+		padding:0px;
+	}
+	.navbar > .container .navbar-brand {
+		margin-left:0px;
+	}
+}
+.navbar-default .navbar-toggle {
+	border-color: #fff;
+	color: #fff;
+	padding: 10px;
+line-height: 1em;
+}
+.navbar-default .navbar-toggle .icon-bar {
+	background-color: #fff;
+}
+.navbar-default .navbar-toggle-user {
+	padding-bottom: 5px;
+	padding-top: 7px;
+}
 
 #footer{
 	background-color: #242121;
@@ -772,6 +798,9 @@ body.frontContainer #footer{
 	}
 	.heroSearch H1 .line2 {
 		font-size:35px;
+	}
+	#heroSearchButton {
+		padding: 5px 6px 0px 6px;
 	}
 }
 

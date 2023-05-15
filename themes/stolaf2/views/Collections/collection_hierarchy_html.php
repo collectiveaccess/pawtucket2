@@ -100,7 +100,14 @@
 					if($vb_has_grandchildren){
 ?>
 							<div id='collectionLoad' class='col-xs-12 col-sm-8 col-md-8 col-lg-8'>
-								<i class='fa fa-arrow-left'></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container to the left to see its contents.
+<?php
+								$vs_collection_term = ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true)));
+								$vs_article = "a";
+								if(substr(strToLower($vs_collection_term), 0, 1) == "a"){
+									$vs_article = "an";
+								}
+?>
+								<i class='fa fa-arrow-left'></i> Click <?php print $vs_article." ".$vs_collection_term; ?> container to the left to see its contents.
 							</div>
 <?php
 					}
