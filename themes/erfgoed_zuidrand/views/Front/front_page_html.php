@@ -34,7 +34,7 @@
  $va_access_values = $this->getVar("access_values");
  $vs_hero = $this->request->getParameter("hero", pString);
  if(!$vs_hero){
- 	$vs_hero = rand(1, 1);
+ 	$vs_hero = rand(1, 3);
  }
 ?>
 
@@ -45,9 +45,9 @@
 				
 				<div class="heroSearch">
 					<H1>
-						<div class="line1">Ontdek hier</div>
 						<div class="line2">Erfgoedbank Zuidrand</div>
-						<div class="line3">Een blik achteruit</div>
+						<div class="heroSearchDivide"></div>
+						<div class="line3">een blik achteruit</div>
 					</H1>
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 						<div class="formOutline">
