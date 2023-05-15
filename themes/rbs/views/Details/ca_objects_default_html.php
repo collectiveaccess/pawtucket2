@@ -56,7 +56,7 @@
 					print "<div class='unit'><h6>Identifier</h6>".$vs_identifier."</div>";
 				}
 				if ($vs_rbs_no = $t_object->get('ca_object_lots.preferred_labels')) {
-					print "<div class='unit'><h6>RBS number</h6>".$vs_rbs_no."</div>";
+					print "<div class='unit'><h6>RBS number</h6>".$vs_rbs_no." (".$t_object->get('ca_object_lots.idno_stub').")</div>";
 				}
 				if ($vs_call = $t_object->get('ca_objects.call_number')) {
 					print "<div class='unit'><h6>Call Number</h6>".$vs_call."</div>";
