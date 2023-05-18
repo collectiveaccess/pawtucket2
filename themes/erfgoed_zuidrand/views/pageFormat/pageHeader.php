@@ -51,6 +51,7 @@
 		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 		$va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'About', 'userTools', array())."\"); return false;' >"._t("Hoe werkt dit?")."</a></li>";
 	}
+	$va_user_links[] = "<li><a href='/admin' target='_blank'>Login databank</a></li>";
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 	$va_access_values = caGetUserAccessValues($this->request);
 
@@ -145,6 +146,8 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
 <?php
+	print caNavLink($this->request, "<i class='fa fa-home' aria-hidden='true' aria-label='"._t("Home")."'></i>", "navHomeLink", "", "","");
+			
 	if ($vb_has_user_links) {
 ?>
 			<div class="collapse navbar-collapse" id="user-navbar-toggle" aria-label="<?php print _t("Mobile User Navigation"); ?>">
