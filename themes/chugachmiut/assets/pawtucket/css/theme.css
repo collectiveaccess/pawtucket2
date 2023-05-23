@@ -24,7 +24,7 @@ H1, h1, h2, H2, H3, h3, H4, h4, H5, h5, #footer a.orgLink{
 */
 
 /* h1 for communities, people, subjects, collections */
-h1{
+h1, .advancedSearch h1{
 	font-size:36px;
 	padding-top:10px;
 	padding-bottom:10px;
@@ -147,6 +147,12 @@ hr{
 	letter-spacing:1px;
 	color:#000000;
 	font-family:lato;
+}
+.dropdown-container a .fa {
+	font-size: 10px;
+	top: -2px;
+	display: inline-block;
+	position: relative;
 }
 .navbar-nav > li > .dropdown-menu a:hover{
 	background-color:#fff;
@@ -274,6 +280,12 @@ body{
 	font-size: 24px;
 	text-transform: capitalize;
 }
+.advancedSearch h1{
+	font-size:36px;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+
 .bResultItemSetLink {
 	position: absolute;
 	right: 10px;

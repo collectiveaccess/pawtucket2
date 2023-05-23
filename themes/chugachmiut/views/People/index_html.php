@@ -26,7 +26,7 @@
 	<div class="row peopleBrowseButton">
 		<div class="col-sm-9 col-sm-offset-3 col-md-4 col-md-offset-4 text-center">
 <?php
-					print caNavLink($this->request, "Browse All Community Members <i class='fa fa-arrow-right'></i>", "btn btn-default", "", "Browse", "community");
+					print caNavLink($this->request, "Browse All Community Members <i class='fa fa-arrow-right'></i>", "btn btn-default", "", "Browse", "community_members");
 ?>
 		</div>
 	</div>

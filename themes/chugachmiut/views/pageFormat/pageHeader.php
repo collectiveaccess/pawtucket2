@@ -166,7 +166,13 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "about") || strToLower($this->request->getController()) == "contact") ? ' active' : ''; ?>">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Archive <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "Contact", "Form"); ?></li>
+						</ul>
+					</li>
 					<?php #print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print (strToLower($this->request->getController()) == "communities") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Communities"), "", "", "Communities", "index"); ?></li>					
 					<li <?php print (strToLower($this->request->getController()) == "people") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("People"), "", "", "People", "index"); ?></li>					
