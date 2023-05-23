@@ -273,6 +273,9 @@ body{
 	height:auto;
 	max-width:250px;
 }
+#footer ul li {
+  padding: 0px 10px 0px 10px;
+}
 /* search / browse results */
 .results H1 {
 	margin: 0px 0px 10px 0px;
