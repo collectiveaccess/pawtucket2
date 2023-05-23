@@ -7,7 +7,7 @@
 	<div class="col-sm-12 col-lg-10 col-lg-offset-1">
 		<div class="row">
 			<div class="col-sm-12">
-				<H1>Communties</H1>
+				<H1>Communities</H1>
 				<div class="communitiesMap"><?php print $vs_map; ?></div>
 				<div class="communitiesIntro">{{{communities_intro}}}</div>
 				
