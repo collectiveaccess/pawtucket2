@@ -819,6 +819,9 @@ a .communitiesTile .title, a .subjectsTile .title {
     background-color:#117E9C;
     color:#FFF;
 }
+h1 i.fa{
+	font-size: 36px;
+}
 .leaflet-container a {
 	color: #000;
 	font-weight:bold;

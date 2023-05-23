@@ -36,14 +36,12 @@
 						<div class="address">&copy; <?php print date("Y"); ?></div>
 					</p>
 					<ul class="list-inline social">
-						<li><a href="#" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fa fa-instagram"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fa fa-twitter-square"></i></a></li>
+						<li><a href="#" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
+						<li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+						<li><a href="#" target="_blank"><i class="fab fa-twitter-square"></i></a></li>
 					</ul>
 					<ul class="list-inline">
 						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Site Page"), "", "", "", ""); ?></li>
-						<li><?php print caNavLink($this->request, _t("Site Page"), "", "", "", ""); ?></li>
 					</ul>
 				</div>
 			</div>
