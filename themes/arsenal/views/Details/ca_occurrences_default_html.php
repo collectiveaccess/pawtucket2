@@ -203,8 +203,8 @@ $t_item = $this->getVar("item");
 			if(strlen($t_item->get('ca_occurrences.forum_year'))>0){
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('forum_year')."</label>".$t_item->get('ca_occurrences.forum_year', array('delimiter' => ', '))."</div><!-- end unit -->";
 			}
-			if(strlen($t_item->get('ca_occurrences.forum_pdf'))>0){
-				print "<div class='unit'><label>".$t_item->getAttributeLabel('forum_pdf')."</label>".$t_item->get('ca_occurrences.forum_pdf', array('delimiter' => ', '))."</div><!-- end unit -->";
+			if(strlen($murl = $t_item->get('ca_occurrences.forum_catalogue_pdf.original.url'))>0){
+				print "<div class='unit'><label>".$t_item->getAttributeLabel('forum_catalogue_pdf')."</label><a href='{$murl}' target='_new'>"._t('PDF')."</a></div><!-- end unit -->";  
 			}
 			
 			// TODO: need final text and formatting for link

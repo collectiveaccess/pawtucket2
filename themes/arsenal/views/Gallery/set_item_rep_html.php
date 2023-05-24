@@ -23,7 +23,7 @@
 	}else{
 		print "<a href='#' class='galleryDetailNext inactive' onClick='return false;'><i class='fa fa-angle-right' role='button' aria-label='next'></i></a>";
 	}
-	print "<div id='galleryDetailImageWrapper'>".caDetailLink($this->request, $t_instance->get("ca_object_representations.media.mediumlarge", array("checkAccess" => $va_access_values)), '', $ps_table,  $this->getVar("row_id"))."</div>";	
+	print "<div id='galleryDetailImageWrapper'>".caDetailLink($this->request, $t_instance->getWithTemplate("<unit relativeTo='ca_occurrences'>^ca_object_representations.media.mediumlarge.tag</unit>", array("checkAccess" => $va_access_values)), '', $ps_table,  $this->getVar("row_id"))."</div>";	
 ?>
 
 
