@@ -14,7 +14,7 @@
 		# --------------------------------
 		case "highlights":
 			$vs_title = "Highlights";
-			$vs_header_class = "bg_beige_eye dark";
+			$vs_header_class = "bg_dark_eye";
 		break;
 		# --------------------------------
 	}
