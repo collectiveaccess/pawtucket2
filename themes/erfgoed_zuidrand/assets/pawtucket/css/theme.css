@@ -103,6 +103,24 @@ body{
 		right: auto;
 	}
 }
+.navHomeLink{
+	float: right;
+	font-size: 24px;
+	padding-top: 33px;
+	color: #000;
+	display:none;
+}
+@media (min-width:768px){
+	.navHomeLink{
+		display:block;
+	}
+}
+
+@media (max-width:1010px){
+	.navHomeLink{
+		padding-right:15px;
+	}
+}
 .navbar-default .navbar-toggle{
 	border-color:#794683;
 	color:#794683;
@@ -190,7 +208,7 @@ a:hover{
 	color: #000;
 	padding-top:25px;
 	padding-bottom:25px;
-	height:250px;
+	height:380px;
 	border-top:0px;
 	text-align:center;
 	margin-top:0px;
@@ -202,15 +220,31 @@ a:hover{
 	padding-bottom:25px;
 }
 body{
-	margin-bottom:250px;
+	margin-bottom:410px;
 	color:#000
 }
-@media(max-width:768px){
+@media(max-width:1475px){
 	#footer{
-		height:350px;
+		height:400px;
 	}
 	body{
-		margin-bottom:350px;
+		margin-bottom:450px;
+	}
+}
+@media(max-width:914px){
+	#footer{
+		height:650px;
+	}
+	body{
+		margin-bottom:700px;
+	}
+}
+@media(max-width:550px){
+	#footer{
+		height:700px;
+	}
+	body{
+		margin-bottom:750px;
 	}
 }
 #footer{
@@ -228,7 +262,7 @@ body{
 #footer .footerHeading a{
 	font-family:'lovelo-black';
 	font-size:20px;
-	color:#000;
+	color:#FFF;
 	text-decoration:none;
 }
 #footer .footerLinks{
@@ -276,7 +310,7 @@ body{
 	font-size:14px;
 	color:#000;
 	line-height:1.2em;
-	margin-top:10px;
+	margin-top:5px;
 }
 @media(max-width:768px){
 	#footer .footerContact{
@@ -295,6 +329,12 @@ body{
 .footerPartnerLogos img{
 	height: 50px;
 	width: auto;
+}
+@media(max-width:768px){
+	.footerPartnerLogos img{
+		height: 40px;
+		width: auto;
+	}
 }
 /* detail page */
 .detail{
@@ -431,6 +471,14 @@ body.frontContainer #footer{
 .parallax.hero1 {
 	background-image: url("../graphics/hero_1.jpg");
 }
+.parallax.hero2 {
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0.1)), url("../graphics/hero_2.jpg");
+}
+.parallax.hero3 {
+	background-image: url("../graphics/hero_3.jpg");
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0)), url("../graphics/hero_3.jpg");
+
+}
 @media(min-width:1025px){
 	.parallax.hero1 {
 		background-position: center 40px;
@@ -458,6 +506,16 @@ body.frontContainer #footer{
 	box-shadow:0 2px 14px 0 rgba(0,0,0,.3);
 	margin-left:40px;
 	margin-right:40px;
+	border-radius: 40px;
+}
+.heroSearchDivide{
+	height:4px;
+	background-color:#A07DA2;
+	width:50%;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top: 30px;
+	margin-bottom: 20px;
 }
 .heroAdvancedSearchLink{
 	text-align: right;
@@ -517,7 +575,7 @@ body.frontContainer #footer{
 	text-align: center;
 	line-height: 1.1em;
 	margin:0px;
-	padding:0px 15px 0px 15px;
+	padding:0px 15px 10px 15px;
 }
 .heroSearch H1 .line1, .heroSearch H1 .line3 {
     font-size: 28px;

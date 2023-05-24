@@ -145,9 +145,10 @@
 ?>
 
 				{{{<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth|ca_objects.dimensions.weight"><div class="unit"><label>Afmetingen</label><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.dimensions.dimensions_name">^ca_objects.dimensions.dimensions_name: </ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth</ifdef><ifdef code="ca_objects.dimensions.dimensions_unit"> ^ca_objects.dimensions.dimensions_unit</ifdef><ifdef code="ca_objects.dimensions.weight"> ^ca_objects.dimensions.weight</ifdef><ifdef code="ca_objects.dimensions.weight,ca_objects.dimensions.weight_unit"> ^ca_objects.dimensions.weight_unit</ifdef></unit></div></ifdef>}}}
+
 				{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Plaatsen</label><unit relativeTo="ca_places" delimiter="<br/>">
-					<unit relativeTo="ca_places.hierarchy" delimiter=" > ">
-						<ifdef code="^ca_places.parent_id"><if rule="^ca_places.preferred_labels !~ /België/"><?php print caNavLink($this->request, "^ca_places.preferred_labels", "", "", "Browse", "objects/facet/place_facet/id/^ca_places.place_id"); ?></if></ifdef>
+					<unit relativeTo="ca_places.hierarchy" delimiter=" ">
+						<ifdef code="^ca_places.parent_id"><if rule="^ca_places.preferred_labels !~ /België/"><if rule="^ca_places.parent.preferred_labels !~ /België/"> > </if><?php print caNavLink($this->request, "^ca_places.preferred_labels", "", "", "Browse", "objects/facet/place_facet/id/^ca_places.place_id"); ?></if></ifdef>
 					</unit>
 				</unit></div></ifcount>}}}
 				
