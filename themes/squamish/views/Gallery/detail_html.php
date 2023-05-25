@@ -79,7 +79,6 @@
  				if(!$vs_rep){
  					# --- if there is no rep and this is not an objects table, try to show a related object rep instead
  					$vs_rep = $t_instance->getWithTemplate("<unit relativeTo='ca_objects.related' length='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values));
- 					$vs_rep_title = $t_instance->getWithTemplate("<unit relativeTo='ca_objects.related' length='1'>^ca_objects.preferred_labels.name</unit>");
  				}
  				if(!$vs_rep){
  					$vs_rep = caGetThemeGraphic($this->request, 'eye_square.png', array("alt" => "No media available"));
