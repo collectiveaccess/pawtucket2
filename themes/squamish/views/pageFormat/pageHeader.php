@@ -141,7 +141,7 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span><span class='userIconLabel'>LOGIN</span></a>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span><span class='userIconLabel'><?php print ($this->request->isLoggedIn()) ? "ACCOUNT" : "LOGIN"; ?></span></a>
 						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
@@ -175,7 +175,8 @@
 						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, _t("How to Use this Database"), "", "", "Guide", ""); ?></li>
 							<li><?php print caNavLink($this->request, _t("Research Guides"), "", "", "Gallery", "Index", array("set_type" => "research_guides")); ?></li>
-							<li><?php print caNavLink($this->request, _t("Squamish Material in Other Archives"), "", "", "Listing", "Resources"); ?></li>
+							<li><?php print caNavLink($this->request, _t("External Resources"), "", "", "Listing", "Resources"); ?></li>
+							<li><a href="https://collections.squamish.net/findsquamisharchives"><?php print _t("Squamish Materials in Other Archives"); ?></a></li>
 						</ul>
 					</li>
 
