@@ -759,3 +759,6 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover, div.caMediaOverlay
 .plyr__video-wrapper {
  height: none !important;
 }    
+.toolbar{
+	z-index: 99999;
+}
