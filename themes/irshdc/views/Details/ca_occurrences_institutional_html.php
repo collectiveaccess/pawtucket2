@@ -142,7 +142,7 @@ if($vs_mode == "map"){
 						{{{<ifcount code="ca_places" min="1"><div class="unit"><H6>Location<ifcount code="ca_places" min="2">s</ifcount></H6><unit relativeTo="ca_places">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
 						{{{<ifdef code="ca_occurrences.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_occurrences.description_new.description_new_source"><h6>Description</h6>
-								<div class="trimText">^ca_occurrences.description_new.description_new_txt</div>
+								<div class="trimTextDescription">^ca_occurrences.description_new.description_new_txt</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_occurrences.community_input_items.comments_objects">
@@ -274,9 +274,9 @@ if($vs_mode == "map"){
 		  speed: 75,
 		  maxHeight: 18
 		});
-		$('.trimTextSubjects').readmore({
+		$('.trimTextDescription').readmore({
 		  speed: 75,
-		  maxHeight: 80,
+		  maxHeight: 200,
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});
