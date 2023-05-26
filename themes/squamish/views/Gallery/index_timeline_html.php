@@ -9,7 +9,7 @@
 	
 ?>
 
-			<div class="row bg_beige_eye pageHeaderRow dark">
+			<div class="row bg_dark_eye pageHeaderRow">
 				<div class="col-sm-12">
 					<H1>Timelines</H1>
 <?php

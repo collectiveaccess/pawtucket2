@@ -11,7 +11,7 @@
 			<div class="row">
 				<div class="col-sm-4">
 					<div class="landingBox">
-						<?php print caNavLink($this->request, "<div class='landingBoxImage landingBoxImage1'></div>", "", "", "Language", "Alphabet"); ?>
+						<?php print caNavLink($this->request, "<div class='landingBoxImage landingBoxImageAlphabet'></div>", "", "", "Language", "Alphabet"); ?>
 						<div class="landingBoxDetails">
 							<div class="landingBoxTitle"><?php print caNavLink($this->request, "Alphabet", "", "", "Language", "Alphabet"); ?></div>
 						</div>
@@ -19,7 +19,7 @@
 				</div>
 				<div class="col-sm-4">
 					<div class="landingBox">
-						<?php print caNavLink($this->request, "<div class='landingBoxImage landingBoxImage1'></div>", "", "", "Language", "Sentences"); ?>
+						<?php print caNavLink($this->request, "<div class='landingBoxImage landingBoxImageSentences'></div>", "", "", "Language", "Sentences"); ?>
 						<div class="landingBoxDetails">
 							<div class="landingBoxTitle"><?php print caNavLink($this->request, "Sentences and Phrases", "", "", "Language", "Sentences"); ?></div>
 						</div>

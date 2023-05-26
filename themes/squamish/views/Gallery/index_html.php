@@ -7,14 +7,14 @@
 	switch($vs_set_type){
 		case "research_guides":
 			$vs_title = "Research Guides";
-			$vs_header_class = "bg_dark_eye";
+			$vs_header_class = "bg_beige_eye dark";
 			
 			#$vs_landing_page_format = "grid";
 		break;
 		# --------------------------------
 		case "highlights":
 			$vs_title = "Highlights";
-			$vs_header_class = "bg_beige_eye dark";
+			$vs_header_class = "bg_dark_eye";
 		break;
 		# --------------------------------
 	}
