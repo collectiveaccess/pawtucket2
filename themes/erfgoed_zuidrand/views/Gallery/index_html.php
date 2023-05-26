@@ -9,7 +9,7 @@
 
 <div class="row"><div class="col-sm-12 col-md-8 col-md-offset-2">
 	<H1><?php print $this->getVar("section_name"); ?></H1>
-	<p>{{{expos_intro}}}</p>
+	<div class="galleryIntro">{{{expos_intro}}}</div>
 <?php
 	if(is_array($va_sets) && sizeof($va_sets)){
 		# --- main area with info about selected set loaded via Ajax				

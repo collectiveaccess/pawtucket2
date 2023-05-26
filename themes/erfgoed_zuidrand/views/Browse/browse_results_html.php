@@ -223,7 +223,7 @@ if (!$vb_ajax) {	// !ajax
 		<div class="pull-left">
 			<?php print caNavLink($this->request, "Uitgebreid zoeken", "", "", "Search", "advanced/objects"); ?>
 		</div>
-		<div id="bViewButtons">
+		<div id="bViewButtons"><span class="viewButtonsLabel">Weergaveopties: </span>
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
 			foreach($va_views as $vs_view => $va_view_info) {
