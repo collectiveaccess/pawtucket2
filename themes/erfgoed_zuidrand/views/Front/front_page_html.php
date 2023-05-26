@@ -73,6 +73,7 @@
 			}
 ?>
 				<p>{{{hometext}}}</p>
+				<p><?php print caNavLink($this->request, "Contacteer ons", "btn btn-default", "", "Contact", "Form"); ?></p>
 			</div>
 		</div>
 	</div>
