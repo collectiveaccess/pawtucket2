@@ -762,3 +762,6 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover, div.caMediaOverlay
 .toolbar{
 	z-index: 99999;
 }
+#caMediaPanelContentArea{
+	margin-top:0px;
+}
