@@ -2,6 +2,7 @@
 	$config = caGetGalleryConfig();
 	$pa_set_items = $this->getVar("set_items");
 	$pn_set_id = $this->getVar("set_id");
+	$ps_table = $this->getVar("table");
 	$t_set = $this->getVar("set");
 	$ps_label = $this->getVar("label");
 	$ps_description = $this->getVar("description");
@@ -13,14 +14,14 @@
 	switch($vs_set_type){
 		case "research_guides":
 			$vs_title = caNavLink($this->request, "<i class='fa fa-angle-left' role='button' aria-label='back'></i> Research Guides", "", "", "Gallery", "Index", array("set_type" => "research_guides"));
-			$vs_header_class = "bg_dark_eye";
+			$vs_header_class = "bg_beige_eye dark";
 			
 			#$vs_landing_page_format = "grid";
 		break;
 		# --------------------------------
 		case "highlights":
 			$vs_title = caNavLink($this->request, "<i class='fa fa-angle-left' role='button' aria-label='back'></i> Highlights", "", "", "Gallery", "Index", array("set_type" => "highlights"));
-			$vs_header_class = "bg_beige_eye dark";
+			$vs_header_class = "bg_dark_eye";
 		break;
 		# --------------------------------
 	}
@@ -69,10 +70,12 @@
 			if($pa_set_item["representation_url_iconlarge"]){
 				$vs_icon = "iconlarge";
 			}
+			$t_instance->load($pa_set_item["row_id"]);		
+ 				
 			$vs_rep = $pa_set_item["representation_tag_".$vs_icon];
+			$vs_rep_title = $t_instance->get($ps_table.".preferred_labels");
 			if (!$vs_rep) {
-				$t_instance->load($pa_set_item["row_id"]);		
- 				$vs_rep = $t_instance->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values));
+				$vs_rep = $t_instance->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values));
  				if(!$vs_rep){
  					# --- if there is no rep and this is not an objects table, try to show a related object rep instead
  					$vs_rep = $t_instance->getWithTemplate("<unit relativeTo='ca_objects.related' length='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values));
@@ -84,7 +87,7 @@
 			if($vs_rep){
 				$vn_i++;
 				print "<div class='smallpadding col-xs-3 col-sm-2 col-md-1".(($vn_i > 24) ? " galleryIconHidden" : "")."'>";
-				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$vs_rep."</a>";
+				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' title='".$vs_rep_title."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$vs_rep."</a>";
 				print "</div>\n";
 				
 				if($vn_i == 24){

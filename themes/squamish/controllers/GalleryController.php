@@ -190,6 +190,7 @@
  					$this->view->setVar('set_type', $vs_set_type);
  
  				}
+ 				$this->view->setVar("table", $table);
  				$this->view->setVar("set_id", $set_id);
  				$this->view->setVar("set", $t_set);
  				

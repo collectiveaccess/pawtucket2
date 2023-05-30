@@ -38,7 +38,7 @@
 						<div class="col-sm-4 footerContact">
 							<a href="https://www.dezuidrand.be/erfgoedcel-zuidrand">Erfgoedcel Zuidrand</a><br/>
 							Gemeenteplein 1<br/>
-							2550 Kontich<br/>
+							2550 Kontich<br/><br/>
 							T - 0483 56 01 68<br/>
 							E - <a href="mailto:info@dezuidrand.be">info@dezuidrand.be</a>
 							
@@ -54,7 +54,7 @@
 							<div class="funder">
 								<a href="http://www.vlaanderen.be"><?php print caGetThemeGraphic($this->request, 'Vlaanderen-verbeelding-werkt_vol.png'); ?></a>
 							</div>
-							<?php print caNavLink($this->request, "Disclaimer", "", "", "About", "disclaimer")." | ".((CookieOptionsManager::cookieManagerEnabled()) ? caNavLink($this->request, _t("Manage Cookies"), "", "", "Cookies", "manage") : ""); ?>
+							<?php print caNavLink($this->request, "Disclaimer", "", "", "About", "Disclaimer")." | ".((CookieOptionsManager::cookieManagerEnabled()) ? caNavLink($this->request, _t("Manage Cookies"), "", "", "Cookies", "manage") : ""); ?>
 						</div>
 					</div>
 				</div>
