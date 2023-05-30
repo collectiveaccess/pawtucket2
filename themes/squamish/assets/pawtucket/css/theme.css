@@ -86,10 +86,11 @@ hr {
 		padding-bottom: 15px;
 		margin-top: 15px;
 		margin-bottom: 15px;
+		text-align:center;
 	}
-	.nav > li.dropdown > a.icon .glyphicon-user{
+/*	.nav > li.dropdown > a.icon .glyphicon-user{
 		padding-left:5px;
-	}
+	}*/
 }
 @media (max-width:767px){
 	.navbar-nav{
@@ -647,6 +648,112 @@ body.frontContainer #footer{
 	padding-top:45px;
 	margin-bottom: 45px;
 }
+
+.bg_geo_pattern{
+	background-image: url("../graphics/Pattern.png");
+	background-size:cover;
+	background-repeat:no-repeat;
+	background-position:50%;
+}
+.bg_geo_pattern .hpExploreBox{
+	padding: 0px 10px 0px 10px;
+	background-color: rgb(219, 213, 205, .8);
+	background-image: none;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+	margin-bottom: 30px;
+	-webkit-transition: all .4s;
+	-o-transition: all .4s;
+	transition: all .4s;
+}
+.bg_geo_pattern .hpExploreBox:hover{
+	background-color: rgb(219, 213, 205, 1);
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.7);
+}
+.bg_geo_pattern .hpExploreBox a{
+	color:#000;
+	font-weight:600;
+	display: block;
+	padding: 92px 0;
+	font-size: 20px;
+	line-height: 27px;
+	font-family: "Tahoma", sans-serif;
+	text-align:center;
+	color:#000;
+}
+.bg_geo_pattern .hpExploreBox:hover a, .bg_geo_pattern .hpExploreBox a:hover{
+	text-decoration:none;
+}
+
+.bg_geo_pattern{
+	background-image: url("../graphics/Pattern.png");
+	background-size:cover;
+	background-repeat:no-repeat;
+	background-position:50%;
+}
+.bg_geo_pattern .hpExploreBoxGeoPattern{
+	padding: 0px 10px 0px 10px;
+	background-color: rgb(219, 213, 205, .8);
+	background-image: none;
+	background-position: -74px 0px;
+	background-repeat: no-repeat;
+	background-size: contain;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+	margin-bottom: 30px;
+}
+
+.bg_beige{
+	background-color:#DBD5CD;
+}
+.bg_beige .hpExploreBoxGeo{
+	padding: 0px 10px 0px 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+	margin-bottom: 30px;
+	-webkit-transition: all .4s;
+	-o-transition: all .4s;
+	transition: all .4s;
+	background-size: 310%;
+	background-repeat: no-repeat;
+	background-image: url("../graphics/Pattern.png");
+}
+.bg_beige .hpExploreBoxGeo:hover{
+	box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.9);
+	margin-bottom: 30px;
+}
+.hpExploreBoxGeo a{
+	color:#000;
+	font-weight:600;
+	color:#000;
+	font-weight:600;
+	display: block;
+	padding: 92px 0;
+	font-size: 20px;
+	line-height: 27px;
+	font-family: "Tahoma", sans-serif;
+	text-align:center;
+	color:#fff;
+	text-shadow: #000 1px 0 10px;
+}
+.hpExploreBoxGeo:hover a, .hpExploreBoxGeo a:hover{
+	text-decoration:none;
+}
+.bg_beige .hpExploreBoxGeo1{
+	background-position: top left;
+}
+.bg_beige .hpExploreBoxGeo2{
+	background-position: top center;
+}
+.bg_beige .hpExploreBoxGeo3{
+	background-position: top right;
+}
+.bg_beige .hpExploreBoxGeo4{
+	background-position: bottom left;
+}
+.bg_beige .hpExploreBoxGeo5{
+	background-position: bottom center;
+}
+.bg_beige .hpExploreBoxGeo6{
+	background-position: bottom right;
+}
 /*
 .hpExploreBox{
 	margin-bottom: 45px;
@@ -766,6 +873,9 @@ body.frontContainer #footer{
 #galleryDetailImageWrapper .galleryPlaceholder{
 	margin-top: 25%;
 }
+.gallery #gallerySetInfo a{
+	text-transform:none;
+}
 /* collections */
 .collectionIntro {
 	font-size: 14px;
@@ -785,6 +895,11 @@ body.frontContainer #footer{
 @media(min-width:768px){
 	.collectionTile {
 		min-height: 240px;
+	}
+}
+@media(min-width:1360px){
+	.collectionTile {
+		min-height: 140px;
 	}
 }
 
@@ -827,7 +942,7 @@ body.frontContainer #footer{
 	text-transform:capitalize;
 }
 
-.pageHeaderRow.dark, .pageHeaderRow.dark H1, .pageHeaderRow H1 a, .pageHeaderRow H1 a .fa{
+.pageHeaderRow.dark, .pageHeaderRow.dark H1, .pageHeaderRow.dark H1 a, .pageHeaderRow.dark H1 a .fa{
 	color:#000;
 }
 .exploreRow p, .exploreRow .text-center{
@@ -858,6 +973,13 @@ body.frontContainer #footer{
 }
 .landingBox .landingBoxImage.landingBoxImageCollections{
 	background-image: url('../graphics/Archival_Collection_sm.jpg');
+}
+.landingBox .landingBoxImage.landingBoxImageSentences{
+	background-image: url('../graphics/sentences.jpg');
+}
+.landingBox .landingBoxImage.landingBoxImageAlphabet{
+	background-image: url('../graphics/alphabet2.jpg');
+	background-position:left center;
 }
 .landingBox .landingBoxDetails {
 	padding: 15px 13px 22px;
@@ -990,6 +1112,12 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover {
 	right: 0px;
 	left: auto;
 	background-color:transparent;
+}
+.detail .audioButton{	
+	color: #000;
+	cursor: pointer;
+	font-size: 50px;
+	margin-top:0px;
 }
 /* advanced Search */
 .advancedSearchField .formLabel {
@@ -1133,7 +1261,25 @@ h2.tl-headline{
 	background-color: #fff !important;
 	border:0px !important;
 }
-
+.gallery #gallerySetInfo .timelineMore a{
+	background-color:#D23929 !important;
+	border-radius: 4px;
+	background: none;
+	border: 0px;
+	text-shadow: 0 0px 0 #FFFFFF;
+	font-size: 13px;
+	text-transform: uppercase;
+	padding: 6px 7px 5px 7px;
+	box-shadow: 0 0px 0 rgba(255, 255, 255, 0.15) inset, 0 0px 0px rgba(0, 0, 0, 0.075);
+	letter-spacing: 1px;
+	color: #fff;
+	font-family: Lato;
+}
+.gallery #gallerySetInfo .timelineMore a:hover{
+	background-color:#D23929;
+	box-shadow: 0 0px 6px 0 rgba(0,0,0,.5);
+	text-decoration: none;
+}
 /* User Guide */
 
 .userGuideBody H2{
@@ -1246,11 +1392,15 @@ h2.tl-headline{
 .alphabetNavigation{
 	text-align:center;
 	margin-top:20px;
-	margin-bottom:50px;
+	margin-bottom:30px;
+}
+.alphabetNavigation div{
+	margin-bottom:20px;
 }
 .alphabetNavigation a.btn{
 	margin:0px 5px 10px 5px;
 	font-size: 20px;
+	text-transform: none;
 }
 .alphabetNavigation a.letterActive{
 	background-color:#FFF;
@@ -1289,7 +1439,7 @@ h2.tl-headline{
 	margin-bottom: 0px;
 	display: block;
 }
-.language .audioButton{	
+.language .audioButton {	
 	color: #000;
 	cursor: pointer;
 	font-size: 100px;

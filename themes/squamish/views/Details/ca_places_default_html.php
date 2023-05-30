@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/bundles/ca_occurrences_default_html.php : 
+ * themes/default/views/bundles/ca_placess_default_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -44,22 +44,49 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
-					<H2>{{{^ca_occurrences.type_id}}}</H2>
+					<H1>{{{^ca_places.preferred_labels.name}}}</H1>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
-				<div class='col-sm-12'>
-					{{{<ifdef code="ca_occurrences.nonpreferred_labels"><div class="unit"><label>Alternate Names</label><unit relativeTo="ca_occurrences.nonpreferred_labels" delimiter="<br/>">^ca_occurrences.nonpreferred_labels.name</div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.description"><div class="unit"><label>Description</label>^ca_occurrences.description</div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.date"><div class="unit"><label>Date</label>^ca_occurrences.date%delimiter=,_</div></ifdef>}}}
+				<div class='col-md-6 col-lg-6'>
+
 					
-					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related Places</label>
-						<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit></div>}}}	
-					{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Related People and Organizations</label>
-						<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></div>}}}	
-					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Related Archival Collection<ifcount code="ca_collections" min="2">s</ifcount></label>
-						<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit></div>}}}	
+<?php
+					$vs_clip_url = $t_item->get("ca_places.pronunciation_container.pronunciation_upload.mp3.url");
+					$vs_clip_notes = $t_item->get("ca_places.pronunciation_container.pronunciation_note");
+					if($vs_clip_url){				
+						print "<div class='unit'><i id='playPronunciation".$vs_rep_id."' class='fa fa-play-circle-o audioButton' aria-hidden='true'></i>";
+						if($vs_clip_notes){
+							print "<br/>".$vs_clip_notes;
+						}
+						print "</div>";				
+?>
+						<script type='text/javascript'>
+							$(document).ready(function() {
+								var audioElement<?php print $vs_rep_id; ?> = document.createElement('audio');
+								audioElement<?php print $vs_rep_id; ?>.setAttribute('src', '<?php print $vs_clip_url; ?>');
+								$('#playPronunciation<?php print $vs_rep_id; ?>').click(function() {
+									//return audioElement<?php print $vs_rep_id; ?>.paused ? audioElement<?php print $vs_rep_id; ?>.play() : audioElement<?php print $vs_rep_id; ?>.pause();
+							
+									if(audioElement<?php print $vs_rep_id; ?>.paused){
+										$('#playPronunciation<?php print $vs_rep_id; ?>').removeClass('fa-play-circle-o');
+										$('#playPronunciation<?php print $vs_rep_id; ?>').addClass('fa-pause-circle-o');
+										return audioElement<?php print $vs_rep_id; ?>.play();
+									}else{
+										$('#playPronunciation<?php print $vs_rep_id; ?>').removeClass('fa-pause-circle-o');
+										$('#playPronunciation<?php print $vs_rep_id; ?>').addClass('fa-play-circle-o');
+										return audioElement<?php print $vs_rep_id; ?>.pause();
+									}
+								});
+							});
+						</script>
+<?php
+					}
+?>
+					{{{<ifdef code="ca_places.description"><div class="unit"><label>Description</label>^ca_places.description</div></ifdef>}}}
+					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Related Collection<ifcount code="ca_collections" min="2">s</ifcount></label>
+						<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div>
+					</ifcount>}}}
 
 <?php
 				# Comment and Share Tools
@@ -79,21 +106,10 @@
 				}				
 ?>
 					
-					{{{<ifcount code="ca_collections" min="1" max="1"><label>Related collection</label></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><label>Related collections</label></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+				</div><!-- end col -->
+				<div class='col-md-6 col-lg-6'>
+					{{{map}}}
 					
-					{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_occurrences.related" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
-					{{{<ifcount code="ca_occurrences.related" min="2"><label>Related occurrences</label></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences.related" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}					
 				</div><!-- end col -->
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">
@@ -109,7 +125,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'browse', 'objects', array('facet' => 'occurrence_facet', 'id' => '^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'place_facet', 'id' => '^ca_places.place_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -129,11 +145,3 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
-<script type='text/javascript'>
-	jQuery(document).ready(function() {
-		$('.trimText').readmore({
-		  speed: 75,
-		  maxHeight: 120
-		});
-	});
-</script>
