@@ -135,6 +135,82 @@
 			</div>
 		</div>
 	</div>
+	<div class="row hpExplore bg_geo_pattern">
+		<div class="col-md-12 col-lg-8 col-lg-offset-2">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "Archives &<br/>Oral History", "", "", "BrowseAll", "Archives"); ?>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "Cultural<br/>Collection", "", "", "Browse", "cultural"); ?>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "Reference<br/>Library", "", "", "Browse", "library"); ?>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "External<br/>Resources", "", "", "Listing", "Resources"); ?>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "Curriculum &<br/>Teaching Materials", "", "", "Browse", "Curriculum"); ?>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "Academic<br/>Works", "", "", "Browse", "academic"); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row hpExplore bg_beige">
+		<div class="col-md-12 col-lg-8 col-lg-offset-2">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="hpExploreBoxGeo hpExploreBoxGeo1">
+						<?php print caNavLink($this->request, "Archives &<br/>Oral History", "", "", "BrowseAll", "Archives"); ?>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="hpExploreBoxGeo hpExploreBoxGeo2">
+						<?php print caNavLink($this->request, "Cultural<br/>Collection", "", "", "Browse", "cultural"); ?>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="hpExploreBoxGeo hpExploreBoxGeo3">
+						<?php print caNavLink($this->request, "Reference<br/>Library", "", "", "Browse", "library"); ?>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-4">
+					<div class="hpExploreBoxGeo hpExploreBoxGeo4">
+						<?php print caNavLink($this->request, "External<br/>Resources", "", "", "Listing", "Resources"); ?>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="hpExploreBoxGeo hpExploreBoxGeo5">
+						<?php print caNavLink($this->request, "Curriculum &<br/>Teaching Materials", "", "", "Browse", "Curriculum"); ?>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="hpExploreBoxGeo hpExploreBoxGeo6">
+						<?php print caNavLink($this->request, "Academic<br/>Works", "", "", "Browse", "academic"); ?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 <?php
 

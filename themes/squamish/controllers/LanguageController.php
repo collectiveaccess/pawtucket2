@@ -70,6 +70,27 @@
 				$this->view->setVar('set_items_as_search_result', caMakeSearchResult('ca_objects', $va_row_ids));
 			}
 			
+			# --- what is the set code of the vowel set?
+ 			$vs_vowel_set_code = $this->request->config->get("alphabet_page_vowel_set_code");
+			
+			$t_vowel_set = new ca_sets();
+			$t_vowel_set->load(array('set_code' => $vs_vowel_set_code));
+			# Enforce access control on set
+			if((sizeof($this->opa_access_values) == 0) || (sizeof($this->opa_access_values) && in_array($t_vowel_set->get("access"), $this->opa_access_values))){
+				$this->view->setVar('vowel_set', $t_vowel_set);
+				$va_row_ids = array_keys(is_array($va_tmp = $t_vowel_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values))) ? $va_tmp : array());
+				$va_vowel_set_items = caExtractValuesByUserLocale($t_vowel_set->getItems(array("checkAccess" => $this->opa_access_values)));
+				$va_vowel_row_to_item_ids = array();
+				foreach($va_vowel_set_items as $vn_item_id => $va_item_info){
+					$va_vowel_row_to_item_ids[$va_item_info["row_id"]] = $vn_item_id;
+				}
+				$this->view->setVar('vowel_set_id', $t_vowel_set->get("ca_sets.set_id"));
+				$this->view->setVar('vowel_set_items', $va_vowel_set_items);
+				$this->view->setVar('vowel_row_to_item_ids', $va_vowel_row_to_item_ids);
+				$this->view->setVar('vowel_set_item_row_ids', $va_row_ids);
+				$this->view->setVar('vowel_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_row_ids));
+			}
+			
 			
 			$this->render("Language/alphabet_html.php");
  		}
