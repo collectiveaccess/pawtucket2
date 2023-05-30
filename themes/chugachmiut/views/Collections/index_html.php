@@ -6,7 +6,7 @@
 			<H1>Collections</H1>
 			<div class="row bgTurq">
 				<div class="col-sm-12 col-md-6 collectionHeaderImage">
-					<?php print caGetThemeGraphic($this->request, 'hero_1.jpg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")); ?>
+					<?php print caGetThemeGraphic($this->request, 'Collections.jpg', array("alt" => "Collections")); ?>
 				</div>
 				<div class="col-sm-12 col-md-6 text-center">
 					<div class="collectionIntro">{{{collections_intro}}}</div>
