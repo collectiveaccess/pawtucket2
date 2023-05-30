@@ -141,7 +141,7 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span><span class='userIconLabel'>LOGIN</span></a>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span><span class='userIconLabel'><?php print ($this->request->isLoggedIn()) ? "ACCOUNT" : "LOGIN"; ?></span></a>
 						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
@@ -167,28 +167,24 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "about") || strToLower($this->request->getController()) == "contact" || strToLower($this->request->getController()) == "guide") ? ' active' : ''; ?>">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
+					<li <?php print ((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) != "contact")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+					<li <?php print (strToLower($this->request->getAction()) == "contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact Us"), "", "", "About", "Contact"); ?></li>
+					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li class="dropdown-container<?php print (((strToLower($this->request->getController()) == "guide")) || (in_array(strToLower($vs_set_type), array('research_guides'))) || (in_array(strToLower($this->request->getController()), array("listing")))) ? ' active' : ''; ?>">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Research Help <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("About Ta X̱ay Sxwimálatn Chet"), "", "", "About", ""); ?></li>
-							<li><?php print caNavLink($this->request, _t("User Guide"), "", "", "Guide", ""); ?></li>
-							<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "About", "Contact"); ?></li>
+							<li><?php print caNavLink($this->request, _t("How to Use this Database"), "", "", "Guide", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("Research Guides"), "", "", "Gallery", "Index", array("set_type" => "research_guides")); ?></li>
+							<li><?php print caNavLink($this->request, _t("External Resources"), "", "", "Listing", "Resources"); ?></li>
+							<li><a href="https://collections.squamish.net/findsquamisharchives"><?php print _t("Squamish Materials in Other Archives"); ?></a></li>
 						</ul>
 					</li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="dropdown-container<?php print (((strToLower($this->request->getAction()) == "curriculum")) || (in_array(strToLower($vs_set_type), array('research_guides'))) || (in_array(strToLower($this->request->getController()), array("listing", "language")))) ? ' active' : ''; ?>">
+
+					<li class="dropdown-container<?php print (((strToLower($this->request->getController()) == "gallery") && (in_array($vs_set_type, array("timelines", "highlights", "maps")))) || ((strToLower($this->request->getAction()) == "curriculum")) || ((strToLower($this->request->getController()) == "language"))) ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, _t("Curriculum"), "", "", "Browse", "curriculum"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Sḵwx̱wú7mesh sníchim"), "", "", "Language", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Research Guides"), "", "", "Gallery", "Index", array("set_type" => "research_guides")); ?></li>
-							<li><?php print caNavLink($this->request, _t("Squamish Material in Other Archives"), "", "", "Listing", "Resources"); ?></li>
-						</ul>
-					</li>
-
-					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "gallery") && (in_array($vs_set_type, array("timelines", "highlights", "maps")))) ? ' active' : ''; ?>">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Storytelling <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
-						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, _t("Highlights"), "", "", "Gallery", "Index", array("set_type" => "highlights")); ?></li>
 							<li><?php print caNavLink($this->request, _t("Maps"), "", "", "Gallery", "Index", array("set_type" => "maps")); ?></li>
 							<li><?php print caNavLink($this->request, _t("Timelines"), "", "", "Gallery", "Index", array("set_type" => "timelines")); ?></li>
