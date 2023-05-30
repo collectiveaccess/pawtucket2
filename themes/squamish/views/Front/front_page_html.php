@@ -112,14 +112,14 @@
 				</div>
 				<div class="col-md-4">
 					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Library<br/>Collections", "", "", "Browse", "library"); ?>
+						<?php print caNavLink($this->request, "Reference<br/>Library", "", "", "Browse", "library"); ?>
 					</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-4">
 					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Community<br/>Resources", "", "", "Listing", "Resources"); ?>
+						<?php print caNavLink($this->request, "External<br/>Resources", "", "", "Listing", "Resources"); ?>
 					</div>
 				</div>
 				<div class="col-md-4">

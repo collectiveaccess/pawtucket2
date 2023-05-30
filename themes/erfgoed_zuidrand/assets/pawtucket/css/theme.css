@@ -852,6 +852,11 @@ div.ligthboxAlertClose{
 	font-size:16px;
 	color:#777;
 }
+.viewButtonsLabel{
+	font-size: 14px;
+	top: -4px;
+	position: relative;
+}
 /* gallery */
 .gallery{
 	font-size:15px;
@@ -975,6 +980,11 @@ div.caMediaOverlayControls{
 	color:#56925D;
 	font-size:15px;
 	line-height: 1.4em;
+}
+.collectionIntro, .galleryIntro{
+	font-size:18px;
+	margin-top:10px;
+	margin-bottom:20px;
 }
 
 .bodytext a, #caFormOverlay a{
