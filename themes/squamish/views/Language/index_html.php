@@ -13,7 +13,7 @@
 					<div class="landingBox">
 						<?php print caNavLink($this->request, "<div class='landingBoxImage landingBoxImageAlphabet'></div>", "", "", "Language", "Alphabet"); ?>
 						<div class="landingBoxDetails">
-							<div class="landingBoxTitle"><?php print caNavLink($this->request, "Alphabet", "", "", "Language", "Alphabet"); ?></div>
+							<div class="landingBoxTitle"><?php print caNavLink($this->request, "Guide To Pronunciation", "", "", "Language", "Alphabet"); ?></div>
 						</div>
 					</div>
 				</div>
