@@ -67,8 +67,8 @@ body{
 	color:#794683;
 }
 .navbar-brand{
-	width:175px;
-	padding-top: 0px;
+	width: 105px;
+	padding-top: 8px;
 }
 @media (min-width:768px){
 	.navbar-brand{
@@ -875,7 +875,7 @@ div.ligthboxAlertClose{
 .galleryList img{
 	width:100%;
 	height:auto;
-	max-width:250px;
+	max-width:280px;
 }
 .galleryList a.labelLink{
 	display:inline-block;
