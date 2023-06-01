@@ -21,6 +21,18 @@
 		$vs_collection_number = $t_item->get("ca_collections.repository.repository_country");
 	}
 	$va_access_values = caGetUserAccessValues($this->request);
+	
+	$o_browse = caGetBrowseInstance("ca_objects");
+	$o_browse->addCriteria("collection_facet", $t_item->get("ca_collections.collection_id"));
+	$o_browse->execute(array('checkAccess' => $va_access_values));
+	$vb_show_objects_link = false;
+	if($o_browse->numResults()){
+		$vb_show_objects_link = true;
+	}
+	$vb_show_collections_link = false;
+	if($t_item->get("ca_collections.children.collection_id", array("checkAccess" => $va_access_values))){
+		$vb_show_collections_link = true;
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -113,9 +125,26 @@
 			<div class="row">
 				<div class="col-sm-12">
 <?php
+			if($vb_show_objects_link || $vb_show_collections_link){
+?>
+				<div class='collectionBrowseItems'>
+<?php
+				if($vb_show_objects_link){
+					print caNavLink($this->request, "<span class='glyphicon glyphicon-search' aria-label='Search'></span> Browse Archival Items", "btn btn-default", "", "browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id")));					
+				}
+				if($vb_show_collections_link){
+					print "&nbsp;&nbsp;&nbsp;".caNavLink($this->request, "<span class='glyphicon glyphicon-search' aria-label='Search'></span> Search Collection Hierarchy", "btn btn-default", "", "browse", "collections", array("facet" => "collection", "id" => $t_item->get("ca_collections.collection_id"))); 
+											
+				}
+?>
+				</div>
+<?php			
+			}
 			# --- are there sub records?
-			if($vb_show_hierarchy_viewer){	
-
+			if($vb_show_hierarchy_viewer){
+				
+				
+				if($searchWithin){	
 ?>
 						<div class="collection-form">
 							<div class="formOutline" style="position:relative;">
@@ -136,7 +165,7 @@
 									$("#collectionSearch").slideDown("200", function () {
 										$('#collectionSearch').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
 										var s = escape("ca_collections.collection_id:<?php print $t_item->get("ca_collections.collection_id"); ?> AND " + searchstring.val());
-										jQuery("#collectionSearch").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', null, array('dontURLEncodeParameters' => false)); ?>", { search: s }, function() {
+										jQuery("#collectionSearch").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', null, array('dontURLEncodeParameters' => false)); ?>", { search: s }, function() {
 											jQuery("#collectionSearch").jscroll({
 												autoTrigger: true,
 												loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
@@ -153,7 +182,7 @@
 										$("#collectionSearch").slideDown("200", function () {
 											$('#collectionSearch').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
 											var s = escape("ca_collections.collection_id:<?php print $t_item->get("ca_collections.collection_id"); ?> AND " + searchstring.val());
-											jQuery("#collectionSearch").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', null, array('dontURLEncodeParameters' => false)); ?>", { search: s }, function() {
+											jQuery("#collectionSearch").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', null, array('dontURLEncodeParameters' => false)); ?>", { search: s }, function() {
 												jQuery("#collectionSearch").jscroll({
 													autoTrigger: true,
 													loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
@@ -167,6 +196,9 @@
 								return false;
 							});
 						</script>
+<?php
+				}
+?>
 						<div class='clearfix'></div>					
 					<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 					<script>

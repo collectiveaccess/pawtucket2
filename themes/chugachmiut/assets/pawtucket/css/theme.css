@@ -880,6 +880,7 @@ h1 i.fa{
 	color: #FFF;
 	font-size: 24px;
 	padding: 50px 0px 20px 0px;
+	line-height: 1.8em;
 }
 @media(max-width:1400px){
 	.peopleIntro, .collectionIntro, .subjectsIntro{

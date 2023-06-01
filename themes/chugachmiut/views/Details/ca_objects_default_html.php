@@ -58,7 +58,7 @@
 				
 				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-4 col-md-2 col-xs-3", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				
 <?php
 				# Comment and Share Tools
@@ -143,7 +143,17 @@
 						<ifdef code="ca_objects.content_warning"><div class="unit warning"><unit relativeTo="ca_objects.content_warning" delimiter="<br/>">^ca_objects.content_warning</unit></div></ifdef>
 						<ifdef code="ca_objects.cultural_app_warning"><div class="unit warning"><unit relativeTo="ca_objects.content_warning" delimiter="<br/>"><unit relativeTo="ca_objects.cultural_app_warning" delimiter="<br/>">^ca_objects.cultural_app_warning</unit></div></ifdef>
 						<ifdef code="ca_objects.category"><div class="unit"><label>Special Category</label>^ca_objects.category%delimiter=,_</div></ifdef>
-						<ifdef code="ca_objects.subjects"><div class="unit"><label>Subjects</label>^ca_objects.subjects%delimiter=,_</div></ifdef>
+					<?php
+						if($links = caGetSearchLinks($t_object, 'ca_objects.subjects', ['linkTemplate' => '^LINK'])) {
+					?>
+							
+							<div class="unit">
+								<label>Subjects</label>
+								<?= join(", ", $links); ?>
+							</div>
+					<?php
+						}
+					?>
 						<ifdef code="ca_objects.terms_container.term"><div class="unit"><label>Related Terms</label><unit relativeTo="ca_objects.terms_container"><ifdef code="ca_objects.terms_container.term_link"><a href="^ca_objects.terms_container.term_link">^ca_objects.terms_container.term</a></ifdef><ifnotdef code="ca_objects.terms_container.term_link">^ca_objects.terms_container.term</ifnotdef></unit></div></ifdef>
 						<ifdef code="ca_objects.orthography"><div class="unit"><label>Orthography</label>^ca_objects.orthography%delimiter=,_</div></ifdef>
 				

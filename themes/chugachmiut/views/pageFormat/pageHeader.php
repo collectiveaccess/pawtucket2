@@ -174,6 +174,7 @@
 						</ul>
 					</li>
 					<?php #print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li <?php print (strToLower($this->request->getController()) == "browse" && strToLower($this->request->getAction()) == "objects") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Heritage Items"), "", "", "Browse", "objects"); ?></li>					
 					<li <?php print (strToLower($this->request->getController()) == "communities") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Communities"), "", "", "Communities", "index"); ?></li>					
 					<li <?php print (strToLower($this->request->getController()) == "people") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("People"), "", "", "People", "index"); ?></li>					
 					<li <?php print (strToLower($this->request->getController()) == "collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					

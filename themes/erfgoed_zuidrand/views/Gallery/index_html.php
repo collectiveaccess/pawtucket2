@@ -19,7 +19,7 @@
 				if($i == 1){
 					print "<div class='row'>";
 				}
-				print "<div class='col-sm-3'>";
+				print "<div class='col-xs-6 col-sm-3'>";
 				$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
 				print "<div class='galleryList'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id).caNavLink($this->request, $va_set["name"]."<br/><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small>", 'labelLink', '', 'Gallery', $vn_set_id)."
 						</div>\n";

@@ -6,7 +6,7 @@
 			<H1>People</H1>
 			<div class="row bgTurq">
 				<div class="col-sm-6 peopleHeaderImage">
-					<?php print caGetThemeGraphic($this->request, 'hero_1.jpg', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")); ?>
+					<?php print caGetThemeGraphic($this->request, 'People.jpg', array("alt" => "People")); ?>
 				</div>
 				<div class="col-sm-6 text-center">
 					<div class="peopleIntro">{{{people_intro}}}</div>
