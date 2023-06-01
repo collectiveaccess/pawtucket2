@@ -49,9 +49,9 @@
 			$vs_quote = $qr_people->get("ca_entities.quote");
 			
 			if($vs_image = $qr_people->get("ca_object_representations.media.iconlarge")){
-				$vs_image_col = "<div class='col-sm-3'>".caDetailLink($this->request, $vs_image, "", "ca_entities", $qr_people->get("ca_entities.entity_id"))."</div>\n";
+				$vs_image_col = "<div class='col-sm-4'>".caDetailLink($this->request, $vs_image, "", "ca_entities", $qr_people->get("ca_entities.entity_id"))."</div>\n";
 			}
-			$vs_quote_col = (($vs_image) ? "<div class='col-sm-9'>" : "<div class='col-sm-9'>").caDetailLink($this->request, $vs_name, "personName", "ca_entities", $qr_people->get("ca_entities.entity_id"))."<div class='peopleFeaturedQuote'>".$vs_quote."</div>".caDetailLink($this->request, "More", "btn btn-default", "ca_entities", $qr_people->get("ca_entities.entity_id"))."</div>";
+			$vs_quote_col = (($vs_image) ? "<div class='col-sm-8'>" : "<div class='col-sm-8'>").caDetailLink($this->request, $vs_name, "personName", "ca_entities", $qr_people->get("ca_entities.entity_id"))."<div class='peopleFeaturedQuote'>&ldquo;".$vs_quote."&rdquo;</div>".caDetailLink($this->request, "More", "btn btn-default", "ca_entities", $qr_people->get("ca_entities.entity_id"))."</div>";
 			print "\n<div class='row peopleFeaturedRow'>";
 			if($i == 1){
 				print $vs_image_col.$vs_quote_col;
