@@ -169,6 +169,7 @@
 					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "about") || strToLower($this->request->getController()) == "contact") ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Archive <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
 							<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 							<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "Contact", "Form"); ?></li>
 						</ul>

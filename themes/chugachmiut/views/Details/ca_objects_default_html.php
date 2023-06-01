@@ -197,3 +197,19 @@
 		});
 	});
 </script>
+<?php
+	if($t_object->get("ca_objects.content_warning")){
+?>
+		<div class="detailAlert">
+			<div class="detailAlertBox">
+				<div class="detailAlertMessage"><b>Content Warning</b><br/>{{{detail_content_warning}}}
+<?php
+				print "<br/><br/><b>".$t_object->getWithTemplate("^ca_objects.content_warning", array("delimiter" => "br/"))."</b>";
+?>
+				<div class="enterButton"><?php print caNavLink($this->request, "Exit", "btn btn-default", "", "", ""); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-default" onclick="$('.detailAlert').remove(); return false;">Continue <i class='fa fa-arrow-right'></i></button></div></div>
+				
+			</div>
+		</div>
+<?php	
+	}
+?>

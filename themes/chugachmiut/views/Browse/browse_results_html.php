@@ -153,6 +153,18 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		</H1>
 <?php
+		if (sizeof($va_criteria) == 1) {
+			foreach($va_criteria as $va_criterion) {
+				$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
+				if(!$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
+					$t_authority_table = new $va_current_facet["table"];
+					$t_authority_table->load($va_criterion['id']);
+					if($vs_tmp = $t_authority_table->get($va_current_facet["show_description_when_first_facet"])){
+						$vs_facet_description = "<b>".$va_criterion["value"]."</b><br/>".$vs_tmp;
+					}					
+				}
+			}
+		}
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}

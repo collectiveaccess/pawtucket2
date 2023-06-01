@@ -29,7 +29,8 @@
 				}
 				$vs_tmp .= "<div class='title'>".$qr_communities->get("ca_places.preferred_labels")."</div>";	
 				$vs_tmp .= "</div>";
-				print caDetailLink($this->request, $vs_tmp, "", "ca_places",  $qr_communities->get("ca_places.place_id"));
+				#print caDetailLink($this->request, $vs_tmp, "", "ca_places",  $qr_communities->get("ca_places.place_id"));
+				print caNavLink($this->request, $vs_tmp, "", "", "Browse", "objects", array("facet" => "place_facet", "id" => $qr_communities->get("ca_places.place_id")));
 
 				print "</div><!-- end col-4 -->";
 				$vn_i++;
