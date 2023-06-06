@@ -90,7 +90,8 @@
 	</div>
 <?php
 	}
-	
+	# --- display slideshow of featured set
+	print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 	<div class="row hpExplore bgTurq">
 		<div class="col-md-12 col-lg-6 col-lg-offset-3">
@@ -137,7 +138,7 @@
 
 <?php
 	# --- display slideshow of random images
-	print $this->render("Front/featured_set_slideshow_html.php");
+	#print $this->render("Front/featured_set_slideshow_html.php");
 
 	# --- display galleries as a grid?
 	#print $this->render("Front/gallery_grid_html.php");

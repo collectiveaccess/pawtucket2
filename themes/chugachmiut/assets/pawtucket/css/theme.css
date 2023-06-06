@@ -576,7 +576,7 @@ body.frontContainer #footer{
 	text-align:center;
 	font-size: 28px;
 	color: #000;
-	margin:60px 0px 130px 0px;
+	margin:60px 0px 60px 0px;
 	font-family: "Latolight";
 	font-weight:300;
 	line-height:1.8em;
@@ -623,6 +623,7 @@ body.frontContainer #footer{
 /* hp explore */
 .hpExplore{
 	padding-top:45px;
+	margin-top: 45px;
 	margin-bottom: 45px;
 }
 .hpExploreBox{
