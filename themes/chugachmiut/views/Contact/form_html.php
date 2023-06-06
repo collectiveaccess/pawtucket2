@@ -148,7 +148,9 @@
 				break;
 				# -----------------
 			}
-
+?>
+	<p class='unit'>*{{{contact_comment_privacy}}}</p>
+<?php
 	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
 ?>
 		<script type="text/javascript">

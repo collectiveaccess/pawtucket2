@@ -89,27 +89,6 @@ class CollectionsController extends ActionController {
 	public function Index() {
 		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
 		
-		$t_list = new ca_lists();
-		$vn_repository_type_id = $t_list->getItemIDFromList("entity_types", $this->opo_config->get("repository_entity_type"));
-		$o_db = new Db();
-		$qr_res = ca_entities::find(array('type_id' => $vn_repository_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => 'ca_entity_labels.name_sort'));
-		$va_repositories = array();
-		if($qr_res->numHits()){
-			while($qr_res->nextHit()){
-				$va_repositories[$qr_res->get("ca_entities.entity_id")] = $qr_res->get("ca_entities.preferred_labels.displayname");
-			}
-		}
-		$this->view->setVar("repositories", $va_repositories);
-		caSetPageCSSClasses(array("collections", "landing"));
-		$this->render("Collections/index_html.php");
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */ 
-	public function IndexOLD() {
-		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
-		
 		$this->opo_result_context = new ResultContext($this->request, "ca_collections", "collections");
 		$this->opo_result_context->setAsLastFind();
 		

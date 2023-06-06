@@ -180,7 +180,7 @@
 					<li <?php print (strToLower($this->request->getController()) == "people") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("People"), "", "", "People", "index"); ?></li>					
 					<li <?php print (strToLower($this->request->getController()) == "collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
 					<li <?php print (strToLower($this->request->getController()) == "subjects") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Subjects"), "", "", "Subjects", "index"); ?></li>					
-					<li><a href="https://chugachheritageak.org">For Educators</a></li>
+					<li><a href="https://chugachheritageak.org" target="_blank">For Educators</a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
