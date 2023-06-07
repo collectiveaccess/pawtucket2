@@ -648,6 +648,112 @@ body.frontContainer #footer{
 	padding-top:45px;
 	margin-bottom: 45px;
 }
+
+.bg_geo_pattern{
+	background-image: url("../graphics/Pattern.png");
+	background-size:cover;
+	background-repeat:no-repeat;
+	background-position:50%;
+}
+.bg_geo_pattern .hpExploreBox{
+	padding: 0px 10px 0px 10px;
+	background-color: rgb(219, 213, 205, .8);
+	background-image: none;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+	margin-bottom: 30px;
+	-webkit-transition: all .4s;
+	-o-transition: all .4s;
+	transition: all .4s;
+}
+.bg_geo_pattern .hpExploreBox:hover{
+	background-color: rgb(219, 213, 205, 1);
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.7);
+}
+.bg_geo_pattern .hpExploreBox a{
+	color:#000;
+	font-weight:600;
+	display: block;
+	padding: 92px 0;
+	font-size: 20px;
+	line-height: 27px;
+	font-family: "Tahoma", sans-serif;
+	text-align:center;
+	color:#000;
+}
+.bg_geo_pattern .hpExploreBox:hover a, .bg_geo_pattern .hpExploreBox a:hover{
+	text-decoration:none;
+}
+
+.bg_geo_pattern{
+	background-image: url("../graphics/Pattern.png");
+	background-size:cover;
+	background-repeat:no-repeat;
+	background-position:50%;
+}
+.bg_geo_pattern .hpExploreBoxGeoPattern{
+	padding: 0px 10px 0px 10px;
+	background-color: rgb(219, 213, 205, .8);
+	background-image: none;
+	background-position: -74px 0px;
+	background-repeat: no-repeat;
+	background-size: contain;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+	margin-bottom: 30px;
+}
+
+.bg_beige{
+	background-color:#DBD5CD;
+}
+.bg_beige .hpExploreBoxGeo{
+	padding: 0px 10px 0px 10px;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
+	margin-bottom: 30px;
+	-webkit-transition: all .4s;
+	-o-transition: all .4s;
+	transition: all .4s;
+	background-size: 310%;
+	background-repeat: no-repeat;
+	background-image: url("../graphics/Pattern.png");
+}
+.bg_beige .hpExploreBoxGeo:hover{
+	box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.9);
+	margin-bottom: 30px;
+}
+.hpExploreBoxGeo a{
+	color:#000;
+	font-weight:600;
+	color:#000;
+	font-weight:600;
+	display: block;
+	padding: 92px 0;
+	font-size: 20px;
+	line-height: 27px;
+	font-family: "Tahoma", sans-serif;
+	text-align:center;
+	color:#fff;
+	text-shadow: #000 1px 0 10px;
+}
+.hpExploreBoxGeo:hover a, .hpExploreBoxGeo a:hover{
+	text-decoration:none;
+}
+.bg_beige .hpExploreBoxGeo1{
+	background-position: top left;
+}
+.bg_beige .hpExploreBoxGeo2{
+	background-position: top center;
+}
+.bg_beige .hpExploreBoxGeo3{
+	background-position: top right;
+}
+.bg_beige .hpExploreBoxGeo4{
+	background-position: bottom left;
+}
+.bg_beige .hpExploreBoxGeo5{
+	background-position: bottom center;
+}
+.bg_beige .hpExploreBoxGeo6{
+	background-position: bottom right;
+}
 /*
 .hpExploreBox{
 	margin-bottom: 45px;
@@ -1286,7 +1392,10 @@ h2.tl-headline{
 .alphabetNavigation{
 	text-align:center;
 	margin-top:20px;
-	margin-bottom:50px;
+	margin-bottom:30px;
+}
+.alphabetNavigation div{
+	margin-bottom:20px;
 }
 .alphabetNavigation a.btn{
 	margin:0px 5px 10px 5px;

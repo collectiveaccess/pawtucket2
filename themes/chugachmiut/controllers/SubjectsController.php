@@ -72,14 +72,16 @@ class SubjectsController extends BasePawtucketController {
 		}
 		$vs_subject_name = $t_list->getItemForDisplayByItemID($pn_subject_id, array("return" => "plural"));
 		$va_subjects = $t_list->getChildItemsForList("subjects", $pn_subject_id, array("directChildrenOnly" => "1"));
+		$t_list_item = new ca_list_items();
+		$t_list_item->load($pn_subject_id);
+		$this->view->setVar("parent_id", $t_list_item->get("ca_list_items.parent_id"));
 		
 		$va_subjects_for_display = array();
 		if(is_array($va_subjects) && sizeof($va_subjects)){
-			$t_list_item = new ca_list_items();
 			foreach($va_subjects as $vn_item_id => $va_subject){
 				$va_subject = array_pop($va_subject);
 				$t_list_item->load($vn_item_id);
-				$va_subjects_for_display[$vn_item_id] = array("name" => $va_subject["name_singular"], "image" => $t_list_item->get("ca_list_items.icon.original"));
+				$va_subjects_for_display[$vn_item_id] = array("name" => $va_subject["name_singular"], "image" => $t_list_item->get("ca_list_items.icon.original"), "children" => (($t_list_item->get("ca_list_items.children.item_id")) ? true : false));
 			}
 		}
 				
