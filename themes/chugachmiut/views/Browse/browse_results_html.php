@@ -97,7 +97,7 @@ if (!$vb_ajax) {	// !ajax
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
 			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
+				<a href="#" data-toggle="dropdown"><span class="glyphicon glyphicon-cog bGear" aria-label="Result options"></span></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
@@ -153,6 +153,18 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		</H1>
 <?php
+		if (sizeof($va_criteria) == 1) {
+			foreach($va_criteria as $va_criterion) {
+				$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
+				if(!$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
+					$t_authority_table = new $va_current_facet["table"];
+					$t_authority_table->load($va_criterion['id']);
+					if($vs_tmp = $t_authority_table->get($va_current_facet["show_description_when_first_facet"])){
+						$vs_facet_description = "<b>".$va_criterion["value"]."</b><br/>".$vs_tmp;
+					}					
+				}
+			}
+		}
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}

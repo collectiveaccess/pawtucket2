@@ -169,16 +169,18 @@
 					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "about") || strToLower($this->request->getController()) == "contact") ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Archive <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
 							<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 							<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "Contact", "Form"); ?></li>
 						</ul>
 					</li>
 					<?php #print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li <?php print (strToLower($this->request->getController()) == "browse" && strToLower($this->request->getAction()) == "objects") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Heritage Items"), "", "", "Browse", "objects"); ?></li>					
 					<li <?php print (strToLower($this->request->getController()) == "communities") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Communities"), "", "", "Communities", "index"); ?></li>					
 					<li <?php print (strToLower($this->request->getController()) == "people") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("People"), "", "", "People", "index"); ?></li>					
 					<li <?php print (strToLower($this->request->getController()) == "collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
 					<li <?php print (strToLower($this->request->getController()) == "subjects") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Subjects"), "", "", "Subjects", "index"); ?></li>					
-					<li><a href="https://chugachheritageak.org">For Educators</a></li>
+					<li><a href="https://chugachheritageak.org" target="_blank">For Educators</a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
