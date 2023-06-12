@@ -576,7 +576,7 @@ body.frontContainer #footer{
 	text-align:center;
 	font-size: 28px;
 	color: #000;
-	margin:60px 0px 130px 0px;
+	margin:60px 0px 60px 0px;
 	font-family: "Latolight";
 	font-weight:300;
 	line-height:1.8em;
@@ -623,6 +623,7 @@ body.frontContainer #footer{
 /* hp explore */
 .hpExplore{
 	padding-top:45px;
+	margin-top: 45px;
 	margin-bottom: 45px;
 }
 .hpExploreBox{
@@ -685,8 +686,7 @@ h3.featuredItems{
 	color:#000;
 	padding-bottom:20px;
 }
-
-@media(min-width:769px){
+@media(min-width:992px){
 	.jcarousel-control-prev.featured{
 		left:-50px !important;
 	}
@@ -864,6 +864,22 @@ div.detailAlertClose{
 		margin:15vh 25vw;
 		height:70vh;
 	}
+}
+.detailTool.culturalNarrative{
+	border-top: 1px solid #FFF;
+	margin-top:5px;
+}
+.detailTool.culturalNarrative label{
+	text-transform:none;
+}
+.detailTool.culturalNarrative div{
+	text-transform:none;
+	color:#000;
+	font-size:14px;
+	font-family: latolight;
+}
+#caFormOverlay H1{
+	font-size:24px;
 }
 /* collections */
 .collectionIntro {
@@ -1077,20 +1093,73 @@ h1 i.fa{
 	padding:10px 15px 9px 15px;
 }
 .peopleFeaturedList a.personName{
-	font-size:20px;
+	font-size:24px;
 	font-family:Lato;
 }
-.peopleFeaturedRow{
-	margin-bottom:30px;
+.peopleFeaturedRow{	
+	padding: 30px;
 }
 .peopleFeaturedQuote{
 	font-size: 18px;
 	font-style: italic;
 	font-weight: bold;
-	padding-bottom:10px;
+	color:#000;
+	padding: 30px;
+	background-color: #ededed;
+	margin:10px 0px 20px 0px;
 }
 .repositoryRow{
 	margin-bottom:30px;
+}
+.peopleSlideshow .jcarousel-control-prev, .peopleSlideshow .jcarousel-control-next {
+  background-color: transparent;
+  height: 45px;
+  margin-top: -30px;
+  padding-bottom: 20px;
+  padding-top: 10px;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 55px;
+  width: 45px;
+  border-radius: 0px;
+  box-shadow: 0 0 0px #999999;
+  text-shadow: 0px 0px 10px #000000;
+}
+@media(min-width:768px){
+	.peopleSlideshow a.jcarousel-control-prev, .peopleSlideshow a.jcarousel-control-next {
+	  color: #000;
+	  text-shadow: 0px 0px 5px #666;
+	}
+}
+.peopleSlideshow .jcarousel-pagination {
+  position: relative;
+  padding: 0px;
+  margin: 0px auto 0px auto;
+  text-align: center;
+}
+.peopleSlideshow .jcarousel-pagination a {
+  text-decoration: none;
+  display: inline-block;
+  font-size: 1px;
+  line-height: 1em;
+  min-width: 10px;
+  width: 10px;
+  height: 10px;
+  background: #fff;
+  color: #fff;
+  border-radius: 25px;
+  padding: 3px;
+  text-align: center;
+  margin-right: 5px;
+  border: 1px solid #666;
+  opacity: .75;
+}
+.peopleSlideshow .jcarousel-pagination a.active {
+  background: #666;
+  color: #666;
+  opacity: 1;
+  text-shadow: none;
+  text-decoration: none;
 }
 .repositoryRow a{
 	display:block;

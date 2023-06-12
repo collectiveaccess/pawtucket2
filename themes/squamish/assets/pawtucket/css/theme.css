@@ -1119,6 +1119,32 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover {
 	font-size: 50px;
 	margin-top:0px;
 }
+.detail #detailTools{
+	margin-top:0px;
+	padding:10px;
+}
+.detail #detailTools .discussion div{
+	text-transform:none;
+	font-size: 12px;
+	margin-bottom:10px;
+}
+.detail #detailTools .fa-folder{
+	font-size:12px;
+}
+.detail #detailTools, .detail #detailTools a, .detail .detailTool span, .detail .detailTool i{
+	color:#000;
+}
+.detail #detailTools a:hover, .detail #detailTools a:hover .fa{
+	color:#D23929 !important;
+}
+.detail .detailTool i{
+	font-size:16px;
+}
+@media(min-width:1200px){
+	.detail #detailTools {
+		text-align:center;
+	}
+}
 /* advanced Search */
 .advancedSearchField .formLabel {
 	text-transform: capitalize;
