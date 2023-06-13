@@ -118,7 +118,7 @@ a:hover{
 .btn, .btn a{
     text-decoration:none;
 }
-.btn-default, .btn-default:active, .btn-default:focus, .sets .btn, .browse .btn, .browse .btn:focus, .sets .btn:focus, .browse .btn:active, .sets .btn:active{
+.btn-default, .btn-default:active, .btn-default:focus, .sets .btn, .browse .btn, .browse .btn:focus, .sets .btn:focus, .browse .btn:active, .sets .btn:active, .detail .btn-default{
 	background-color:#e4a01b;
 	color:#000;
 	text-shadow: none;

@@ -5,7 +5,7 @@
 	$vn_num2 = rand(1,10);
 	$vn_sum = $vn_num1 + $vn_num2;
 	$vs_page_title = ($o_config->get("contact_page_title")) ? $o_config->get("contact_page_title") : _t("Contact");
-	
+	$vs_inquire_type = $this->request->getParameter("inquire_type", pString);
 	# --- if a table has been passed this is coming from the Item Inquiry/Ask An Archivist contact form on detail pages
 	$pn_id = $this->request->getParameter("id", pInteger);
 	$ps_table = $this->request->getParameter("table", pString);
@@ -18,7 +18,17 @@
 			$vs_name = $t_item->get($ps_table.".preferred_labels");
 			$vs_idno = $t_item->get($ps_table.".idno");
 			$vs_item_type = $t_item->getWithTemplate("^".$ps_table.".type_id");
-			$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
+			switch($vs_inquire_type){
+				# -----------------
+				case "request_permissions":
+					$vs_page_title = ($o_config->get("request_permissions_page_title")) ? $o_config->get("request_permissions_page_title") : _t("Request Permissions");
+				break;
+				# -----------------
+				case "item_inquiry":
+					$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
+				break;
+				# -----------------
+			}
 		}
 	}
 ?>
@@ -45,7 +55,7 @@
 				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
 				<input type="hidden" name="itemtype" value="<?php print $vs_item_type; ?>">
-				<hr/><br/><br/>
+				<hr/>
 	
 			</div>
 		</div>
@@ -55,18 +65,93 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="row">
-					<div class="col-sm-4">
+					<div class="col-sm-12">
+						<b>Contact Information</b>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
-							<label for="name">Name</label>
+							<label for="name">Name*</label>
 							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}">
 						</div>
 					</div><!-- end col -->
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
-							<label for="email">Email address</label>
+							<label for="email">Email address*</label>
 							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
 						</div>
+					</div><!-- end col -->					
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group<?php print (($va_errors["phone"]) ? " has-error" : ""); ?>">
+							<label for="phone">Phone*</label>
+							<input type="text" class="form-control input-sm" id="email" placeholder="Phone number" name="phone" value="{{{phone}}}">
+						</div>
 					</div><!-- end col -->
+					<div class="col-sm-6">
+						<div class="form-group<?php print (($va_errors["organization"]) ? " has-error" : ""); ?>">
+							<label for="phone">Affiliated Organization</label>
+							<input type="text" class="form-control input-sm" id="organization" placeholder="Organization" name="organization" value="{{{organization}}}">
+						</div>
+					</div><!-- end col -->
+				</div>
+			</div><!-- end col -->
+		</div><!-- end row -->
+		<div class="row">
+			<div class="col-md-9">
+				<div class="row">
+					<div class="col-sm-12">
+						<hr/>
+					</div>
+				</div>
+<?php
+			switch($vs_inquire_type){
+				# -----------------
+				case "request_permissions":
+					$vs_intended_use = $this->request->getParameter("intended_use", pString);
+?>
+					<div class="form-group<?php print (($va_errors["intended_use"]) ? " has-error" : ""); ?>">
+						<label for="message">Intended Use</label>
+						<select name="intended_use" class="form-control input-sm">
+							<option value="Personal or Research only, not for publication or commercial use" <?php print ($vs_intended_use == "Personal or Research only, not for publication or commercial use") ? "selected":""; ?>>Personal or Research only, not for publication or commercial use</option>
+							<option value="Educational (e.g. lesson plans, curriculum development, presentation, assignments)" <?php print ($vs_intended_use == "Educational (e.g. lesson plans, curriculum development, presentation, assignments)") ? "selected":""; ?>>Educational (e.g. lesson plans, curriculum development, presentation, assignments)</option>
+							<option value="Publication (e.g. book, newspaper, newsletter, magazine, report, website, social media)" <?php print ($vs_intended_use == "Publication (e.g. book, newspaper, newsletter, magazine, report, website, social media)") ? "selected":""; ?>>Publication (e.g. book, newspaper, newsletter, magazine, report, website, social media)</option>
+							<option value="Commercial (e.g. books for sale, paid journals, advertisements)" <?php print ($vs_intended_use == "Commercial (e.g. books for sale, paid journals, advertisements)") ? "selected":""; ?>>Commercial (e.g. books for sale, paid journals, advertisements)</option>
+							<option value="Other" <?php print ($vs_intended_use == "Other") ? "selected":""; ?>>Other</option>
+						</select>
+					</div>
+					<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
+						<label for="message">Rationale*</label><br/><small>Please provide your rationale for requesting access and use.</small>
+						<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
+					</div>
+<?php
+				break;
+				# -----------------
+				case "item_inquiry":
+				default:
+?>
+				<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
+					<label for="message">Message*</label>
+					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
+				</div>
+
+<?php
+				break;
+				# -----------------
+			}
+?>
+			</div><!-- end col -->
+		</div><!-- end row -->
+		<div class="row">
+			<div class="col-md-9">
+				<div class="row">
+					<div class="col-sm-12">
+						<hr/>
+					</div>
+				</div>
+				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
 							<label for="security">Security Question</label>
@@ -81,16 +166,14 @@
 						</div><!-- end form-group -->
 					</div><!-- end col -->
 				</div><!-- end row -->
-			</div><!-- end col -->
-		</div><!-- end row -->
-		<div class="row">
-			<div class="col-md-9">
-				<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-					<label for="message">Message</label>
-					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
+				<div class="row">
+					<div class="col-sm-12">
+						<hr/>
+					</div>
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
+		
 <?php
 	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
 ?>
