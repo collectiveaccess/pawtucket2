@@ -38,22 +38,19 @@
 	}
 	if($qr_res && $qr_res->numHits()){
 ?>
-<div class="row"><div class="col-sm-12"><H2 class="highlights">Highlights</H2>  
-		<div class="jcarousel-wrapper">
+<div class="row"><div class="col-sm-12 col-md-6 col-md-offset-3"><H3 class="featuredItems">Featured Heritage Items</H3>  
+		<div class="jcarousel-wrapper featuredItemsSlideShow">
 			<!-- Carousel -->
-			<div class="jcarousel featured">
+			<div class="jcarousel featured featuredItemsSlide">
 				<ul>
 <?php
 					while($qr_res->nextHit()){
-						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
-							print "<li><div class='frontSlide'>".$vs_media;
-							$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
-							if($vs_caption){
-								print "<div class='frontSlideCaption'>".$vs_caption."</div>";
-							}
-							print "</div></li>";
-							$vb_item_output = true;
-						}
+						$vs_media = $qr_res->getWithTemplate("<div class='featuredItemMedia'><l>^ca_object_representations.media.large</l>", array("checkAccess" => $va_access_values));
+						$vs_description = $qr_res->getWithTemplate("<div class='featuredItemTitle'><l>^ca_objects.preferred_labels.name</l></div><div class='featuredItemDescription'>^ca_objects.summary</div>");
+						$vs_button = $qr_res->getWithTemplate("<div class='text-center'><l><button class='btn btn-default'>More</button></l></div>");
+						print "<li><div class='row'><div class='col-sm-5'>".$vs_media."</div><div class='col-sm-7'>".$vs_description.$vs_button."</div></div></li>";
+						$vb_item_output = true;
+						
 					}
 ?>
 				</ul>
@@ -79,14 +76,19 @@
 				/*
 				Carousel initialization
 				*/
+				$('.featuredItemsSlide li').width($('.featuredItemsSlideShow').width());
+				$( window ).resize(function() {
+				  $('.featuredItemsSlide li').width($('.featuredItemsSlideShow').width());
+				});
+				
 				$('.jcarousel.featured')
 					.jcarousel({
 						// Options go here
 						wrap:'circular'
 					});
 					$('.jcarousel.featured').jcarouselAutoscroll({
-					autostart: true,
-					interval: 2000
+					autostart: false,
+					interval: 8000
 				});
 		
 				/*

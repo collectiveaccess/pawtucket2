@@ -67,8 +67,8 @@ body{
 	color:#794683;
 }
 .navbar-brand{
-	width:175px;
-	padding-top: 0px;
+	width: 105px;
+	padding-top: 8px;
 }
 @media (min-width:768px){
 	.navbar-brand{
@@ -852,6 +852,11 @@ div.ligthboxAlertClose{
 	font-size:16px;
 	color:#777;
 }
+.viewButtonsLabel{
+	font-size: 14px;
+	top: -4px;
+	position: relative;
+}
 /* gallery */
 .gallery{
 	font-size:15px;
@@ -870,7 +875,7 @@ div.ligthboxAlertClose{
 .galleryList img{
 	width:100%;
 	height:auto;
-	max-width:250px;
+	max-width:280px;
 }
 .galleryList a.labelLink{
 	display:inline-block;
@@ -975,6 +980,11 @@ div.caMediaOverlayControls{
 	color:#56925D;
 	font-size:15px;
 	line-height: 1.4em;
+}
+.collectionIntro, .galleryIntro{
+	font-size:18px;
+	margin-top:10px;
+	margin-bottom:20px;
 }
 
 .bodytext a, #caFormOverlay a{

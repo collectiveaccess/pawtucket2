@@ -35,9 +35,9 @@
  	$va_listing_info = $this->getVar('listingInfo');
  	$va_access_values = $this->getVar("access_values");
 ?>
-	<div class="row bg_dark_eye pageHeaderRow">
+	<div class="row pageHeaderRow bg_beige_eye dark">
 		<div class="col-sm-12">
-			<H1>Squamish Material in Other Archives</H1>
+			<H1>External Resources</H1>
 			<p>
 			{{{resources_intro}}}
 		</div>

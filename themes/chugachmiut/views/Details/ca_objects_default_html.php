@@ -58,29 +58,8 @@
 				
 				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-4 col-md-2 col-xs-3", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				
-<?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?php print _t("Comments and tags"); ?>"></span><?= _t('Comments and Tags'); ?> (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt" aria-label="'._t("Share").'"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
-					}
-					print '</div><!-- end detailTools -->';
-				}				
-
-?>
 
 			</div><!-- end col -->
 			
@@ -110,8 +89,30 @@
 			<div class='col-md-12 col-lg-3'>
 				<div id='detailTools' class='bgLightGray'>
 <?php
-				print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Loan Request", "", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
-				print "<div class='detailTool'>".caNavLink($this->request, "<i class='fa fa-comments-o' aria-hidden='true'></i> Share Your Cultural Narrative", "", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+				print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Loan Request", "", "", "Contact", "Form", array("inquire_type" => "loan", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+				#print "<div class='detailTool'>".caNavLink($this->request, "<i class='fa fa-comments-o' aria-hidden='true'></i> Share Your Cultural Narrative", "", "", "Contact", "Form", array("inquire_type" => "cultural_narrative", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+				print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire About this Item", "", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+				if ($vn_comments_enabled) {
+					#$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
+?>				
+					<div class="detailTool culturalNarrative">
+						<label>Share Your Cultural Narrative</label>
+								<div>{{{detail_share_cultural_narrative}}}</div>
+<?php
+							
+								if($this->request->isLoggedIn()){
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_objects", "item_id" => $t_object->getPrimaryKey()))."\"); return false;' ><i class='fa fa-comments-o' aria-hidden='true'></i> "._t("Add your comment")."</a>";
+								}else{
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' ><i class='fa fa-comments-o' aria-hidden='true'></i> "._t("Login/register to comment")."</a>";
+								}
+								#if($vn_num_comments){
+								#	print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
+								#}
+?>
+					</div>
+<?php				
+				}
+
 ?>
 				</div>
 			</div>
@@ -143,7 +144,17 @@
 						<ifdef code="ca_objects.content_warning"><div class="unit warning"><unit relativeTo="ca_objects.content_warning" delimiter="<br/>">^ca_objects.content_warning</unit></div></ifdef>
 						<ifdef code="ca_objects.cultural_app_warning"><div class="unit warning"><unit relativeTo="ca_objects.content_warning" delimiter="<br/>"><unit relativeTo="ca_objects.cultural_app_warning" delimiter="<br/>">^ca_objects.cultural_app_warning</unit></div></ifdef>
 						<ifdef code="ca_objects.category"><div class="unit"><label>Special Category</label>^ca_objects.category%delimiter=,_</div></ifdef>
-						<ifdef code="ca_objects.subjects"><div class="unit"><label>Subjects</label>^ca_objects.subjects%delimiter=,_</div></ifdef>
+					<?php
+						if($links = caGetSearchLinks($t_object, 'ca_objects.subjects', ['linkTemplate' => '^LINK'])) {
+					?>
+							
+							<div class="unit">
+								<label>Subjects</label>
+								<?= join(", ", $links); ?>
+							</div>
+					<?php
+						}
+					?>
 						<ifdef code="ca_objects.terms_container.term"><div class="unit"><label>Related Terms</label><unit relativeTo="ca_objects.terms_container"><ifdef code="ca_objects.terms_container.term_link"><a href="^ca_objects.terms_container.term_link">^ca_objects.terms_container.term</a></ifdef><ifnotdef code="ca_objects.terms_container.term_link">^ca_objects.terms_container.term</ifnotdef></unit></div></ifdef>
 						<ifdef code="ca_objects.orthography"><div class="unit"><label>Orthography</label>^ca_objects.orthography%delimiter=,_</div></ifdef>
 				
@@ -187,3 +198,19 @@
 		});
 	});
 </script>
+<?php
+	if($t_object->get("ca_objects.content_warning")){
+?>
+		<div class="detailAlert">
+			<div class="detailAlertBox">
+				<div class="detailAlertMessage"><b>Content Warning</b><br/>{{{detail_content_warning}}}
+<?php
+				print "<br/><br/><b>".$t_object->getWithTemplate("^ca_objects.content_warning", array("delimiter" => "br/"))."</b>";
+?>
+				<div class="enterButton"><?php print caNavLink($this->request, "Exit", "btn btn-default", "", "", ""); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-default" onclick="$('.detailAlert').remove(); return false;">Continue <i class='fa fa-arrow-right'></i></button></div></div>
+				
+			</div>
+		</div>
+<?php	
+	}
+?>

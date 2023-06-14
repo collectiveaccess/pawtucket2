@@ -7,7 +7,7 @@
 	<div class="col-sm-12 col-lg-10 col-lg-offset-1">
 		<div class="row">
 			<div class="col-sm-12">
-				<H1>Communties</H1>
+				<H1>Communities</H1>
 				<div class="communitiesMap"><?php print $vs_map; ?></div>
 				<div class="communitiesIntro">{{{communities_intro}}}</div>
 				
@@ -29,7 +29,8 @@
 				}
 				$vs_tmp .= "<div class='title'>".$qr_communities->get("ca_places.preferred_labels")."</div>";	
 				$vs_tmp .= "</div>";
-				print caDetailLink($this->request, $vs_tmp, "", "ca_places",  $qr_communities->get("ca_places.place_id"));
+				#print caDetailLink($this->request, $vs_tmp, "", "ca_places",  $qr_communities->get("ca_places.place_id"));
+				print caNavLink($this->request, $vs_tmp, "", "", "Browse", "objects", array("facet" => "place_facet", "id" => $qr_communities->get("ca_places.place_id")));
 
 				print "</div><!-- end col-4 -->";
 				$vn_i++;

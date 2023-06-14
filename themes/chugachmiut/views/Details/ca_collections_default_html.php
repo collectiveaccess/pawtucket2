@@ -38,6 +38,9 @@
 	if($o_collections_config->get("do_not_display_collection_browser")){
 		$vb_show_hierarchy_viewer = false;	
 	}
+	if($t_item->get("ca_collections.type_id", array("convertCodesToDisplayText" => true)) == "Repository"){
+		$vb_show_hierarchy_viewer = false;	
+	}
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 
@@ -57,7 +60,6 @@
 				<div class='col-md-12 col-lg-12'>
 					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
 					<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
-					{{{<ifdef code="ca_collections.parent_id"><div class="unit">Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
 <?php					
 					if ($vn_pdf_enabled) {
 						print "<div class='exportCollection'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
@@ -72,8 +74,8 @@
 					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,contributor,author"><div class="unit"><label>Creators and Contributors</label>
 									<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator,contributor,author"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
 								</div></ifcount>}}}
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="repository" min="1"><div class="unit"><label>Repository</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="repository"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}				
-				
+					{{{<ifdef code="ca_collections.parent_id"><div class="unit"><label>Part of</label><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
+
 					{{{<ifdef code="ca_collections.summary">
 						<div class='unit'><label>Summary</label>
 							<span class="trimText">^ca_collections.summary</span>
@@ -177,7 +179,39 @@
 					
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="1">
+<?php
+	if($t_item->get("ca_collections.type_id", array("convertCodesToDisplayText" => true)) == "Repository"){
+?>
+	{{{<ifdef code="ca_collections.children.collection_id">
+				<div class="row">
+					<div class="col-sm-12">
+						<H3>Collections</H3>
+					</div>
+				</div>
+				<div class="row">
+					<div id="browseResultsContainer">
+						<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+					</div><!-- end browseResultsContainer -->
+				</div><!-- end row -->
+				<script type="text/javascript">
+					jQuery(document).ready(function() {
+						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => 'ca_collections.parent_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+							jQuery('#browseResultsContainer').jscroll({
+								autoTrigger: true,
+								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+								padding: 20,
+								nextSelector: 'a.jscroll-next'
+							});
+						});
+					
+					
+					});
+				</script>
+	</ifdef>}}}
+<?php	
+	}else{
+?>
+	{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class="col-sm-12">
 					<H3>Heritage Items</H3>
@@ -202,7 +236,10 @@
 					
 				});
 			</script>
-</ifcount>}}}
+	</ifcount>}}}
+<?php
+	}
+?>
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>

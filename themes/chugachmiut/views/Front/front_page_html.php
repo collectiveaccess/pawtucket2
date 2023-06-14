@@ -90,6 +90,8 @@
 	</div>
 <?php
 	}
+	# --- display slideshow of featured set
+	print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 	<div class="row hpExplore bgTurq">
 		<div class="col-md-12 col-lg-6 col-lg-offset-3">
@@ -98,7 +100,7 @@
 			<div class="row">
 				<div class="col-md-6">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImageCommunities'></div>", "", "", "Communities", "Index"); ?>
 						<div class="hpExploreBoxDetails">
 							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Communities", "", "", "Communities", "Index"); ?></div>
 						</div>
@@ -106,7 +108,7 @@
 				</div>
 				<div class="col-md-6">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImagePeople'></div>", "", "", "People", "Index"); ?>
 						<div class="hpExploreBoxDetails">
 							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "People", "", "", "People", "Index"); ?></div>
 						</div>
@@ -116,7 +118,7 @@
 			<div class="row">
 				<div class="col-md-6">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImageCollections'></div>", "", "", "Collections", "Index"); ?>
 						<div class="hpExploreBoxDetails">
 							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Collections", "", "", "Collections", "Index"); ?></div>
 						</div>
@@ -124,7 +126,7 @@
 				</div>
 				<div class="col-md-6">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImageSubjects'></div>", "", "", "Subjects", "Index"); ?>
 						<div class="hpExploreBoxDetails">
 							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Subjects", "", "", "Subjects", "Index"); ?></div>
 						</div>
@@ -139,7 +141,7 @@
 	#print $this->render("Front/featured_set_slideshow_html.php");
 
 	# --- display galleries as a grid?
-	print $this->render("Front/gallery_grid_html.php");
+	#print $this->render("Front/gallery_grid_html.php");
 	# --- display galleries as a slideshow?
 	#print $this->render("Front/gallery_slideshow_html.php");
 ?>
