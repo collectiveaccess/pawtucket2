@@ -58,7 +58,7 @@ $current_sort_dir 					= $this->getVar('direction');
 <?php
 				}
 
-				foreach(['name' => _t('Name'), 'user_id' => _t('Creator'), 'set_id' => _('Order created')] as $s => $l) {
+				foreach(['name' => _t('Name'), 'user_id' => _t('Creator'), 'set_id' => _t('Order created')] as $s => $l) {
 					if ($current_sort === $s) {
 						print "<li><a href='#'><strong><em>{$l}</em></strong></a></li>\n";
 					} else {

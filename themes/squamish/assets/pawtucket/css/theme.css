@@ -725,13 +725,19 @@ body.frontContainer #footer{
 	color:#000;
 	font-weight:600;
 	display: block;
-	padding: 92px 0;
+	padding: 75px 0px;
 	font-size: 20px;
 	line-height: 27px;
 	font-family: "Tahoma", sans-serif;
 	text-align:center;
 	color:#fff;
 	text-shadow: #000 1px 0 10px;
+	-webkit-transition: all .4s;
+	-o-transition: all .4s;
+	transition: all .4s;
+}
+.bg_beige .hpExploreBoxGeo:hover a{
+	text-shadow: #000 2px 0 15px;
 }
 .hpExploreBoxGeo:hover a, .hpExploreBoxGeo a:hover{
 	text-decoration:none;
@@ -753,6 +759,28 @@ body.frontContainer #footer{
 }
 .bg_beige .hpExploreBoxGeo6{
 	background-position: bottom right;
+}
+@media(min-width:768px){
+	.containerExploreBoxGeo{
+		width:750px;
+	}
+	.bg_beige .hpExploreBoxGeo{
+		height:170px;
+	}
+	.hpExploreBoxGeo a{
+		padding: 55px 0px;
+	}
+}
+@media(min-width:1200px){
+	.containerExploreBoxGeo{
+		width:1000px;
+	}
+	.bg_beige .hpExploreBoxGeo{
+		height:200px;
+	}
+	.hpExploreBoxGeo a{
+		padding: 75px 0px;
+	}
 }
 /*
 .hpExploreBox{

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Educational Film Practice in Austria\n"
 "POT-Creation-Date: 31\n"
-"PO-Revision-Date: 2023-04-19 14:28-0400\n"
+"PO-Revision-Date: 2023-06-14 17:23-0400\n"
 "Last-Translator: Maria Passarotti <maria@whirl-i-gig.com>\n"
 "Language-Team: EDUFILM\n"
 "Language: de_DE\n"
@@ -867,7 +867,7 @@ msgid "Get suggested words in this manifest"
 msgstr "Abrufen von vorgeschlagenen Wörtern in diesem Manifest"
 
 msgid "Browse"
-msgstr "Durchsuchen"
+msgstr "Browsen"
 
 msgid "Browse by"
 msgstr "Browse %1"
@@ -1368,7 +1368,7 @@ msgid "URL"
 msgstr "URL"
 
 msgid "Biography"
-msgstr "Biographie"
+msgstr "Biografie"
 
 msgid "Related Case Study"
 msgstr "Verknüpfte Fallstudie"
@@ -13496,7 +13496,7 @@ msgid "Archive"
 msgstr "Archiv"
 
 msgid "biography"
-msgstr "biographie"
+msgstr "biografie"
 
 msgid "has biography"
 msgstr "hat Biographie"
@@ -13507,11 +13507,14 @@ msgstr "hat keine Biographie"
 msgid "historical overview"
 msgstr "Historischer Überblick"
 
+msgid "Historical overview"
+msgstr "Historischer Überblick"
+
 msgid "has historical overview"
-msgstr "hat Historischer Überblick"
+msgstr "Historischer Überblick vorhanden"
 
 msgid "does not have historical overview"
-msgstr "hat keine Historischer Überblick"
+msgstr "Historischer Überblick nicht vorhanden"
 
 msgid "Provenance"
 msgstr "Herkunft"
@@ -13521,3 +13524,15 @@ msgstr "hat keine Beschreibung"
 
 msgid "Has Video or Image"
 msgstr "Hat Video oder Bild"
+
+msgid "Educational Film Practice"
+msgstr "Lehrfilm-Praktiken"
+
+msgid "Timeline"
+msgstr "Timeline"
+
+msgid "Research Overview"
+msgstr "Rechercheüberblick"
+
+msgid "Project Team"
+msgstr "Projektteam"
