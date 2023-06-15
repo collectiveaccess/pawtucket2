@@ -43,7 +43,7 @@
 		<li><a href="http://www.libs.uga.edu/scl/visit/maps.html">Maps and Directions</a></li>
 		<li><a href="http://www.libs.uga.edu/scl/visit/parking.html">Parking</a></li>
 		<li><a href="http://www.libs.uga.edu/scl/research/policies.html">Policies</a></li>
-		<li><a href="http://bmac.libs.uga.edu/pawtucket2/index.php/Contact/Form">Staff Directory</a></li>
+		<li><a href="/index.php/Contact/Form">Staff Directory</a></li>
 		</ul>
 		
 	</div>

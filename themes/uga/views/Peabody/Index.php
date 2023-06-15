@@ -45,7 +45,7 @@
 	<div class="col-lg-4 col-md-5">
 		<h1>Search Peabody Collection</h1>
 		<div>
-			<form method="post" action="http://dbs.galib.uga.edu/cgi-bin/parc.cgi">
+			<form method="post" action="https://peabody.libs.uga.edu/cgi-bin/parc.cgi">
 
 						<input type="hidden" name="userid" value="galileo">
 						<input type="hidden" name="action" value="query"> 

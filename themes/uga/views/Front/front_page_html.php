@@ -49,7 +49,7 @@
 					
 				<div class="nwidget layout block title-box clearfix " data-additional-classes="" data-title="Search Peabody Collection">				
 					<h2>Search Peabody Awards Collection</h2>	
-					<form method="post" action="http://dbs.galib.uga.edu/cgi-bin/parc.cgi">
+					<form method="post" action="https://peabody.libs.uga.edu/cgi-bin/parc.cgi">
 
 						<input type="hidden" name="userid" value="galileo">
 						<input type="hidden" name="action" value="query"> 
@@ -173,9 +173,9 @@
 							<H2 class="colheader"><a href="http://www.libs.uga.edu/blog/?cat=33">NEWS</a></H2>
 						</div>
 					</div>
-					<script src="http://feeds.feedburner.com/uga/dodO?format=sigpro" type="text/javascript" >
+					<script src="https://feeds.feedburner.com/uga/dodO?format=sigpro" type="text/javascript" >
 					</script>
-					<noscript><p>Subscribe to RSS headline updates from: <a href="http://feeds.feedburner.com/uga/dodO"> </noscript>
+					<noscript><p>Subscribe to RSS headline updates from: <a href="https://feeds.feedburner.com/uga/dodO"> </noscript>
 				</div>		
 			</div>
 		</div><!--end col-sm-8 for left Columns-->
@@ -186,7 +186,7 @@
 							<H2 class="colheader"><a href="http://www.libs.uga.edu/blog/?event-categories=mediaarchivespeabodyevents">UPCOMING EVENTS</a></H2>
 						</div>
 			</div>
-			<script src="http://feeds.feedburner.com/EventsMediaArchivesUGALibs?format=sigpro" type="text/javascript" ></script><noscript><p>Subscribe to RSS headline updates from: <a href="http://feeds.feedburner.com/EventsMediaArchivesUGALibs">
+			<script src="https://feeds.feedburner.com/EventsMediaArchivesUGALibs?format=sigpro" type="text/javascript" ></script><noscript><p>Subscribe to RSS headline updates from: <a href="https://feeds.feedburner.com/EventsMediaArchivesUGALibs">
 			</a><br/>Powered by FeedBurner</p> </noscript>
 
 			<div id="aeon">

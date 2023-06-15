@@ -62,7 +62,7 @@
 		<div class="advancedContainer col-sm-12">
 		
 			<H2>Peabody Awards Collection Search</H2>			
-			<form method="post" action="http://dbs.galib.uga.edu/cgi-bin/parc.cgi">			
+			<form method="post" action="https://peabody.libs.uga.edu/cgi-bin/parc.cgi">			
 			<input type="hidden" name="userid" value="galileo">
 			<input type="hidden" name="action" value="query"> 
 			<input type="text" name="term_a" value="" size="37" placeholder="Enter Keywords">

@@ -48,6 +48,15 @@
 .detail a {
 	color: #000000;
 }
+
+.detail a {
+	color: #000000;
+}
+
+a.plyr__control {
+	color: #fff;
+}
+
 .detail .unit a {
 	text-decoration:underline;
 }
@@ -526,4 +535,7 @@ bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemTex
     border-bottom: 1px solid #666;
     padding-bottom: 5px;
     margin-bottom: 20px;
+}
+.caAudioPlayer {
+	background-color: #000;
 }

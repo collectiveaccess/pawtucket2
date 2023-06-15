@@ -33,6 +33,7 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	$vs_representation_viewer = trim($this->getVar("representationViewer"));
 	
+	
 	#$t_representation = new ca_object_representations($t_object->get("ca_object_representations.representation_id"));
 	#print_r($t_representation->getMediaInfo("media"));
 ?>
@@ -117,7 +118,7 @@
 					foreach($va_work_ids as $vn_work_id){
 						$t_work = new ca_occurrences($vn_work_id);
 						print "<div class='unit'>";
-						print "<b>".$t_work->get("ca_occurrences.preferred_labels")."</b>";
+						print $t_work->get("ca_occurrences.preferred_labels");
 						if($vs_tmp = trim($t_work->get("ca_occurrences.pbcoreDescription.pbcoreDescriptionText"))){
 							print "<br/>".$vs_tmp;
 						}
@@ -210,7 +211,7 @@
   <input type="hidden" name="DocumentType" value="media"/>
   <input type="hidden" name="Site"         value="Brown Media Archives"/>
 <input type="checkbox" name="Request" value="1" checked style="display:none"/><input type="hidden" name="ItemTitle_1" value="{{{ca_objects.preferred_labels.name}}}"/><input type="hidden" name="ItemSubtitle_1" value="{{{ca_objects.idno}}}"/><input type="hidden" name="ReferenceNumber_1" value="{{{ca_collections.preferred_labels.name}}}"/><input type="hidden" name="ItemNumber_1" value="{{{ca_objects.locationContainer.instantiationLocation}}}"/>
-{{{<ifdef code="ca_objects.instantiationPhysical"><input type="hidden" name ="ItemInfo2_1" value="^ca_objects.instantiationPhysical"/></ifdef>}}}<input type="hidden" name="SubLocation_1" value="https://bmac.libs.uga.edu/index.php/editor/objects/ObjectEditor/Summary/object_id/{{{ca_objects.object_id}}}"/>
+{{{<ifdef code="ca_objects.instantiationPhysical"><input type="hidden" name ="ItemInfo2_1" value="^ca_objects.instantiationPhysical"/></ifdef>}}}<input type="hidden" name="SubLocation_1" value="https://ca.libs.uga.edu/index.php/editor/objects/ObjectEditor/Summary/object_id/{{{ca_objects.object_id}}}"/>
 </form>
 				<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/aeon/aeonRequestsDialog.min.js"></script>
 				<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/jqote2/jquery.jqote2.min.js"></script>

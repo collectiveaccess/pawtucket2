@@ -9,6 +9,8 @@
 	$va_criteria = $this->getVar('criteria');
 	$vs_key = $this->getVar('key');
 	$vs_view = $this->getVar('view');
+	
+	$allowed_tags = ['p', 'b', 'i', 'em', 'strong', 'u'];
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -52,28 +54,43 @@
 						print "<div class='unit'><span class='label'>Collection Dates: </span>".$vs_date."</div>";
 					}
 					if ($vs_scope = $t_item->get('ca_collections.collectionScopeContent')) {
-                                                print "<div class='unit'><span class='label'>Scope and Content Note: </span>".$vs_scope."</div>";
+                                                print "<div class='unit'><span class='label'>Scope and Content Note: </span>".strip_tags($vs_scope, $allowed_tags)."</div>";
 					}
 					if ($vs_bio = $t_item->get('ca_collections.collectionBio')) {
-						print "<div class='unit'><span class='label'>Biographical Note: </span>".$vs_bio."</div>";
+						print "<div class='unit'><span class='label'>Biographical Note: </span>".strip_tags($vs_bio, $allowed_tags)."</div>";
 					}
 					if ($vs_extent = $t_item->get('ca_collections.collectionExtent')) {
-						print "<div class='unit'><span class='label'>Extent: </span>".$vs_extent."</div>";
+						print "<div class='unit'><span class='label'>Extent: </span>".strip_tags($vs_extent, $allowed_tags)."</div>";
 					}
 					if ($vs_genre = $t_item->get('ca_collections.pbcoreGenre')) {
-                                                print "<div class='unit'><span class='label'>Genre: </span>".$vs_genre."</div>";
+                                                print "<div class='unit'><span class='label'>Genre: </span>".strip_tags($vs_genre, $allowed_tags)."</div>";
                                         }
-					if ($vs_subject = $t_item->get('ca_collections.pbcoreSubject')) {
-                                                print "<div class='unit'><span class='label'>Subject Headings: </span>".$vs_subject."</div>";
-                                        }
+					// if ($vs_subject = $t_item->get('ca_collections.pbcoreSubject')) {
+//                                                 print "<div class='unit'><span class='label'>Subject Headings: </span>".$vs_subject."</div>";
+//                                         }
+					$va_subjects = [];
+					$va_tmp = $t_item->get("ca_collections.pbcoreSubject", array("returnAsArray" => true));
+						if(is_array($va_tmp)){
+							foreach($va_tmp as $vs_tmp){
+								$proc = preg_replace("![^A-Za-z0-9 \-_]+!", " ", $vs_tmp);
+								if($vs_tmp && $proc){
+									$va_subjects[$vs_tmp] = caNavLink($this->request, $vs_tmp, "", "", "Search", "collections", array("search" => $proc));
+								}
+							}
+						}
+						if(is_array($va_subjects) && sizeof($va_subjects)){
+							ksort($va_subjects);
+							print "<div class='unit'><label>Subject Headings: </label><span class='trimText'>".join(", ", $va_subjects)."</span></div>";
+						}
+
 					if ($vs_external = $t_item->get('ca_collections.relatedExternalCollections')) {
-                                                print "<div class='unit'><span class='label'>Extent: </span>".$vs_external."</div>";
+                                                print "<div class='unit'><span class='label'>Extent: </span>".strip_tags($vs_external, $allowed_tags)."</div>";
                                         }
 					if ($vs_provenance = $t_item->get('ca_collections.collectionProvenance')) {
-                                                print "<div class='unit'><span class='label'>Provenance: </span>".$vs_provenance."</div>";
+                                                print "<div class='unit'><span class='label'>Provenance: </span>".strip_tags($vs_provenance, $allowed_tags)."</div>";
                                         }
 					if ($vs_citation = $t_item->get('ca_collections.collectionCitation')) {
-                                                print "<div class='unit'><span class='label'>Cite Collection As: </span>".$vs_citation."</div>";
+                                                print "<div class='unit'><span class='label'>Cite Collection As: </span>".strip_tags($vs_citation, $allowed_tags)."</div>";
                                         }
 					//if ($va_events = $t_item->get('ca_occurrences.preferred_labels', array('returnAsLink' => true, 'restrictToTypes' => array('work'), 'delimiter' => ', '))) {
 					//	print "<div class='unit'><span class='label'>Related works: </span>".$va_events."</div>";
@@ -117,6 +134,8 @@
 			
 			<div class='detailBrowseControls'>
 				<div id='detailBrowseFacetList' class='detailBrowseFacetList' data-key='<?php print $vs_key; ?>'>
+
+<div class="pull-right"><span class="glyphicon glyphicon-list"></span> <?= caNavLink($this->request, _t('Full results'), '', '', 'Search', 'objects', ['search' => 'idno:"'.$t_item->get('idno').'"']); ?></div>
 <?php
 	if (sizeof($va_facets) > 0) {
 	
@@ -142,7 +161,7 @@
 			</div>
 <?php
 	// Related items
-	if (sizeof($t_item->get('ca_objects.object_id', array('returnAsArray' => true)) > 1)) { 
+	if (is_array($items = $t_item->get('ca_objects.object_id', array('returnAsArray' => true))) && (sizeof($items) > 1)) { 
 ?>
 				<hr class="divide" style="margin-bottom:0px;"/>
 				<div class="row">
