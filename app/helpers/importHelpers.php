@@ -810,7 +810,7 @@
 		$vs_dest_table = $va_group_dest[0];
 		$va_group_dest[] = $vs_terminal;
 		
-		$pm_value = (!isset($pa_source_data[$pa_item['source']]) && $o_reader) ? caProcessImportItemSettingsForValue($o_reader->get($pa_item['source'], array('returnAsArray'=> true)), $pa_item['settings']) : $pa_source_data[$pa_item['source']];
+		$pm_value = (!isset($pa_source_data[$pa_item['source']]) && $o_reader) ? caProcessImportItemSettingsForValue($o_reader->get($pa_item['source'], array('returnAsArray'=> true)), $pa_item) : $pa_source_data[$pa_item['source']];
 
 		if (is_array($pm_value)) {
 			if (isset($pm_value[$pn_value_index])) {
@@ -827,7 +827,7 @@
 		if (!is_array($va_delimiter)) { $va_delimiter = [$va_delimiter]; }
 		if (sizeof($va_delimiter)) {
 			foreach($va_delimiter as $vn_index => $vs_delim) {
-				if (!trim($vs_delim, "\t ")) { unset($va_delimiter[$vn_index]); continue; }
+				if (($vs_delim !== ' ') && !trim($vs_delim, "\t ")) { unset($va_delimiter[$vn_index]); continue; }
 				$va_delimiter[$vn_index] = preg_quote($vs_delim, "!");
 			}
 		}
@@ -865,7 +865,6 @@
 		) {		
 			foreach($va_delimited_items as $vn_x => $vs_delimited_item) {
 				$va_items = sizeof($va_delimiter) ? preg_split("!(".join("|", $va_delimiter).")!", $vs_delimited_item) : array($vs_delimited_item);
-
                 $va_items = array_map("trim", $va_items);
                 
                 if($text_transform) {
@@ -875,7 +874,7 @@
                 }
 				foreach($va_items as $vn_i => $vs_item) {
 					$va_parents = $pa_item['settings']["{$ps_refinery_name}_parents"];
-					
+					$vs_item = caProcessImportItemSettingsForValue($vs_item, $pa_item, ['skipRegularExpressions' => true]); // do replacement values on split values
 					// Set label
 					$va_val = [];       // values for current item
 					$vs_item = caProcessImportItemSettingsForValue($vs_item, $pa_item);	// apply replacement values
@@ -907,7 +906,8 @@
 									$va_val['_type'] = BaseRefinery::parsePlaceholder($va_p['type'], $pa_source_data, $pa_item, $pn_value_index, array('reader' => $o_reader, 'delimiter' => $va_delimiter, 'returnAsString' => true, 'returnDelimitedValueAt' => $vn_x, 'applyImportItemSettings' => $apply_import_item_settings));
 									
 									foreach($match_on as $m) {
-									    $va_val[$m] = BaseRefinery::parsePlaceholder($va_p[$m] ?? $va_p['attributes'][$m], $pa_source_data, $pa_item, $pn_value_index, array('reader' => $o_reader, 'delimiter' => $va_delimiter, 'returnAsString' => true, 'returnDelimitedValueAt' => $vn_x, 'applyImportItemSettings' => $apply_import_item_settings));
+										if(is_null($vx = $va_p[$m] ?? $va_p['attributes'][$m] ?? null)) { continue; }
+									    $va_val[$m] = BaseRefinery::parsePlaceholder($vx, $pa_source_data, $pa_item, $pn_value_index, array('reader' => $o_reader, 'delimiter' => $va_delimiter, 'returnAsString' => true, 'returnDelimitedValueAt' => $vn_x, 'applyImportItemSettings' => $apply_import_item_settings));
 										$va_val['_matchOn'][] = $m;
 									}
 									break;
@@ -1218,6 +1218,14 @@
 						if ((!isset($va_val['_relationship_type']) || !$va_val['_relationship_type']) && $o_log && ($ps_refinery_name !== 'objectRepresentationSplitter')) {
 							$o_log->logWarn(_t("[{$ps_refinery_name}Refinery] No relationship type is set for %2 \"%1\"", $vs_item, $ps_item_prefix));
 						}
+						
+						if (
+							(!isset($va_val['_relationship_orientation']) || !$va_val['_relationship_orientation']) 
+							&&
+							($vs_rel_orientation_opt = $pa_item['settings']["{$ps_refinery_name}_relationshipOrientation"])
+						) {
+							$va_val['_relationship_orientation'] = BaseRefinery::parsePlaceholder($vs_rel_orientation_opt, $pa_source_data, $pa_item, $vn_x, array( 'returnDelimitedValueAt' => $vn_i, 'reader' => $o_reader, 'returnAsString' => true, 'applyImportItemSettings' => $apply_import_item_settings, 'delimiter' => $vs_rel_type_delimiter_opt ?? $va_delimiter));
+						}
 	
 						$label_is_not_set = (!isset($va_val['preferred_labels']) || (is_array($va_val['preferred_labels']) && !sizeof($va_val['preferred_labels'])) || (!is_array($va_val['preferred_labels']) && !strlen($va_val['preferred_labels'])));
 						switch($ps_table) {
@@ -1225,7 +1233,7 @@
 								if(!isset($va_val['preferred_labels']) || !is_array($va_val['preferred_labels'])) { 
 									$va_val['preferred_labels'] = DataMigrationUtils::splitEntityName($vs_item, array_merge($pa_options, ['type' => $va_val['_type'], 'doNotParse' => $pa_item['settings']["{$ps_refinery_name}_doNotParse"]])); 
 								}
-								$va_val['preferred_labels'] = ca_entity_labels::normalizeLabel($va_val['preferred_labels'], array_merge($pa_options, ['type' => $va_val['_type']]));
+								//$va_val['preferred_labels'] = ca_entity_labels::normalizeLabel($va_val['preferred_labels'], array_merge($pa_options, ['type' => $va_val['_type']]));
 								if(!isset($va_val['idno'])) { $va_val['idno'] = $vs_item; }
 								if($pa_item['settings']["{$ps_refinery_name}_ignoreLabelFields"] ?? null) { $va_val['_ignoreLabelFields'] = $pa_item['settings']["{$ps_refinery_name}_ignoreLabelFields"]; }
 								break;
@@ -1466,13 +1474,14 @@ function caProcessRefineryRelatedMultiple($po_refinery_instance, &$pa_item, $pa_
 	 * used by refineries to apply regular expressions to values get()'ed from reader class
 	 *
 	 * @param mixed $pm_value
-	 * @param array $pa_item_settings
+	 * @param array $pa_item
 	 * @param array $options Options include:
 	 *		skipRegularExpressions = don't apply configured regular expressions. [Default is false]
 	 *
 	 * @return mixed
 	 */
-	function caProcessImportItemSettingsForValue($pm_value, $pa_item_settings, array $options=null) {
+	function caProcessImportItemSettingsForValue($pm_value, $pa_item, array $options=null) {
+		$pa_item_settings = $pa_item['settings'] ?? [];
 		if (!caGetOption('skipRegularExpressions', $options, false) && isset($pa_item_settings['applyRegularExpressions']) && is_array($pa_item_settings['applyRegularExpressions'])) {
 			if(is_array($pa_item_settings['applyRegularExpressions'])) {
 				if (is_array($pm_value)) {
@@ -1498,10 +1507,10 @@ function caProcessRefineryRelatedMultiple($po_refinery_instance, &$pa_item, $pa_
 		
 		if(is_array($pm_value)) {
 			foreach($pm_value as $vn_i => $vs_value) {
-				$pm_value[$vn_i] = ca_data_importers::replaceValue($vs_value, $pa_item_settings, []);
+				$pm_value[$vn_i] = ca_data_importers::replaceValue($vs_value, $pa_item, []);
 			}
 		} else {
-			$pm_value = ca_data_importers::replaceValue($pm_value, $pa_item_settings, []);
+			$pm_value = ca_data_importers::replaceValue($pm_value, $pa_item, []);
 		}
 		return $pm_value;
 	}

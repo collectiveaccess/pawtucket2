@@ -179,15 +179,13 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= _t('Project'); ?></a>
 						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, _t('About The Project'), "", "", "about_project", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Educational Film Practice'), "", "", "educational_film_practice", ""); ?></li>
 							<li><?php print caNavLink($this->request, _t('Database & Media Collection'), "", "", "database_media", ""); ?></li>
-							<li><?php print caNavLink($this->request, _t('Key Institutions'), "", "", "key_institutions", ""); ?></li>
-							<li><?php print caNavLink($this->request, _t('Key Findings'), "", "", "key_findings", ""); ?></li>
-							<li><?php print caNavLink($this->request, _t('Project team'), "", "", "Projektteam", ""); ?></li>
-							<li><?php print caNavLink($this->request, _t('Publications & Events'), "", "", "publications_events", ""); ?></li>
 							<li><?php print caNavLink($this->request, _t('Search Information'), "", "", "search_info", ""); ?></li>
-							<li><?php print caNavLink($this->request, _t('Research overview'), "", "", "Recherchebericht", ""); ?></li>	
-							<!-- <li><a href="/index.php/acknowledgements"><?= _t('Acknowledgements'); ?></a></li> -->
-							<!-- <li><a href="/index.php/impressium_credits"><?= _t('Impressium & Credits'); ?></a></li> -->
+							<li><?php print caNavLink($this->request, _t('Timeline'), "", "", "timeline", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Research Overview'), "", "", "Recherchebericht", ""); ?></li>	
+							<li><?php print caNavLink($this->request, _t('Project Team'), "", "", "Projektteam", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Publications & Events'), "", "", "publications_events", ""); ?></li>
 						</ul>
 					</li>
 					
