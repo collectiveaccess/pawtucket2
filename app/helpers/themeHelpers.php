@@ -1621,7 +1621,6 @@ function caGetSearchLinks($t_instance, string $bundle, ?array $options=null) : ?
 	}, $values);
 	if(!sizeof(array_filter($text, 'strlen'))) { return null; }
 	
-	
 	$links =  caCreateSearchLinksFromText($text, $st, array_map(function($s) use ($bundle) { return "{$bundle}:\"{$s}\""; }, $values), '', []);
 
 	return $link_template ? array_map(function($l) use ($link_template) {

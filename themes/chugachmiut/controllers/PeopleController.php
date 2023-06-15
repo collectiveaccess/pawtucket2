@@ -37,6 +37,7 @@
  			$this->config = caGetFrontConfig();
  			caSetPageCSSClasses(array("people"));
  			$this->view->setVar('access_values', $this->opa_access_values);
+ 			AssetLoadManager::register("carousel");
  			
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name"));
  		}

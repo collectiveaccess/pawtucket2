@@ -133,7 +133,7 @@
 					print caNavLink($this->request, "<span class='glyphicon glyphicon-search' aria-label='Search'></span> Browse Archival Items", "btn btn-default", "", "browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id")));					
 				}
 				if($vb_show_collections_link){
-					print "&nbsp;&nbsp;&nbsp;".caNavLink($this->request, "<span class='glyphicon glyphicon-search' aria-label='Search'></span> Search Collection Hierarchy", "btn btn-default", "", "browse", "collections", array("facet" => "collection", "id" => $t_item->get("ca_collections.collection_id"))); 
+					print "&nbsp;&nbsp;&nbsp;".caNavLink($this->request, "<span class='glyphicon glyphicon-search' aria-label='Search'></span> Search folder titles", "btn btn-default", "", "browse", "collections", array("facet" => "collection", "id" => $t_item->get("ca_collections.collection_id"))); 
 											
 				}
 ?>

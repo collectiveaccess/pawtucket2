@@ -1,5 +1,5 @@
 <?php
-	$va_repositories = $this->getVar("repositories");
+	$qr_repositories = $this->getVar("collection_results");
 ?>
 	<div class="row">
 		<div class="col-sm-12 col-lg-10 col-lg-offset-1">
@@ -32,9 +32,9 @@
 					</div>
 				</div>
 <?php	
-	if(is_array($va_repositories) && sizeof($va_repositories)) {
-		foreach($va_repositories as $vn_repository_id => $vs_repository) {
-			print "\n<div class='row repositoryRow'><div class='col-sm-12 col-md-6 col-md-offset-3'>".caDetailLink($this->request, $vs_repository, "", "ca_entities", $vn_repository_id)."</div></div>";
+	if($qr_repositories->numHits()) {
+		while($qr_repositories->nextHit()) {
+			print "\n<div class='row repositoryRow'><div class='col-sm-12 col-md-6 col-md-offset-3'>".caDetailLink($this->request, $qr_repositories->get("ca_collections.preferred_labels"), "", "ca_collections", $qr_repositories->get("ca_collections.collection_id"))."</div></div>";
 		}
 	}
 	print "\n<div class='row repositoryRow'><div class='col-sm-12 col-md-6 col-md-offset-3'><hr/><br/>".caNavLink($this->request, "Browse All Collections <i class='fa fa-arrow-right'></i>", "", "", "Browse", "Collections")."</div></div>";

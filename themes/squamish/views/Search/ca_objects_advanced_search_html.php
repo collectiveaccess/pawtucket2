@@ -16,11 +16,11 @@
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_objects_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Indicate what type of Collection you would like to search within. Use the plus button to add multiple Collections types.') ?>"><?php _p('Collection Type') ?></label>
-			{{{ca_objects.type_id%height=30px&id=ca_objects_type_id&inUse=1}}}
+			{{{ca_objects.type_id%height=30px&id=ca_objects_type_id}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_objects_object_type' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Select object types from the list below. Click the plus button to add multiple object types.') ?>"><?php _p('Object Type') ?></label>
-			{{{ca_objects.object_type%width=210px&id=ca_objects_object_type&inUse=1}}}
+			<label for='ca_objects_object_type' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Select item types from the list below. Click the plus button to add multiple item types.') ?>"><?php _p('Item Type') ?></label>
+			{{{ca_objects.object_type%width=210px&id=ca_objects_object_type}}}
 		</div>
 	</div>
 	<div class='row'>
