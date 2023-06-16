@@ -1619,7 +1619,7 @@
 										
 										if (in_array($vn_datatype, [__CA_ATTRIBUTE_VALUE_LIST__]) && !is_numeric($vn_row_id)) {
 											$va_value = ['item_id' => caGetListItemID($t_element->get('list_id'), $vn_row_id)];
-										} elseif (in_array($vn_datatype, [__CA_ATTRIBUTE_VALUE_OBJECTS__, __CA_ATTRIBUTE_VALUE_OBJECTS__, __CA_ATTRIBUTE_VALUE_PLACES__, __CA_ATTRIBUTE_VALUE_OCCURRENCES__, __CA_ATTRIBUTE_VALUE_COLLECTIONS__, __CA_ATTRIBUTE_VALUE_LOANS__, __CA_ATTRIBUTE_VALUE_MOVEMENTS__, __CA_ATTRIBUTE_VALUE_MOVEMENTS__, __CA_ATTRIBUTE_VALUE_OBJECTLOTS__, __CA_ATTRIBUTE_VALUE_LIST__])) {
+										} elseif (in_array($vn_datatype, [__CA_ATTRIBUTE_VALUE_ENTITIES__, __CA_ATTRIBUTE_VALUE_OBJECTS__, __CA_ATTRIBUTE_VALUE_OBJECTS__, __CA_ATTRIBUTE_VALUE_PLACES__, __CA_ATTRIBUTE_VALUE_OCCURRENCES__, __CA_ATTRIBUTE_VALUE_COLLECTIONS__, __CA_ATTRIBUTE_VALUE_LOANS__, __CA_ATTRIBUTE_VALUE_MOVEMENTS__, __CA_ATTRIBUTE_VALUE_MOVEMENTS__, __CA_ATTRIBUTE_VALUE_OBJECTLOTS__, __CA_ATTRIBUTE_VALUE_LIST__])) {
 										    $va_value = $o_attr->parseValue($vn_row_id, $t_element->getFieldValuesArray());
 										} else {
 											
@@ -1672,9 +1672,9 @@
                                                         break;
 													case __CA_ATTRIBUTE_VALUE_LCSH__:
 													case __CA_ATTRIBUTE_VALUE_INFORMATIONSERVICE__:
-														if (in_array($vs_f, ['value_longtext1', 'value_longtext2'], true) && isset($va_value[$vs_f]) && strlen($va_value[$vs_f])) {
-															$va_attr_sql[] = "(ca_attribute_values.{$vs_f} = ?)";
-															$va_attr_values[] = $va_value[$vs_f];
+														if ($vs_f == 'value_longtext2') {
+															$va_attr_sql[] = "(ca_attribute_values.value_longtext2 = ?)";
+															$va_attr_values[] = $va_value['value_longtext2'];
 														}
 														break;
 													default:
@@ -1716,6 +1716,7 @@
 											{$filter_join}
 											WHERE
 												(ca_attribute_values.element_id = ?) {$vs_attr_sql} {$vs_container_sql} {$vs_where_sql} {$filter_where}";
+
 										$qr_res = $this->opo_db->query($vs_sql, $va_attr_values);
 										
 										if (!is_array($va_acc[$vn_i])) { $va_acc[$vn_i] = []; }
@@ -7390,9 +7391,6 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 
 					$this->opo_ca_browse_cache->setResults($va_results);
 					$this->opo_ca_browse_cache->save();
-				}
-				if(($start = caGetOption('start', $pa_options, 0)) || ($limit = caGetOption('limit', $pa_options, null))) {
-					$va_results = array_slice($va_results, $start, $limit);
 				}
 			}
 			if (!is_array($va_results)) { $va_results = array(); }

@@ -34,6 +34,8 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
+	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -46,7 +48,7 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+			<div class='col-sm-6 col-md-5 col-lg-5'>
 <?php
 				if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
 					print "<div>".$vs_rep_viewer."</div>";
@@ -63,18 +65,11 @@
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				{{{<ifdef code="ca_objects.transcription_container.transcription_upload"><div class="unit"><label>Transcript</label><unit relativeTo="ca_objects.transcription_container" delimiter="<br/>"><a href="^ca_objects.transcription_container.transcription_upload.original.url"><span class='glyphicon glyphicon glyphicon-download' aria-hidden='true'></span> <ifdef code="ca_objects.transcription_container.transcription_caption">^ca_objects.transcription_container.transcription_caption</ifdef><ifnotdef code="ca_objects.transcription_container.transcription_caption">Download</ifnotdef></a></unit></div></ifdef>}}}
 
-<?php
-				print "<div id='detailTools'><div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask / Comment", "", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
-				
-				if ($vn_pdf_enabled) {
-					print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
-				}
-				print "</div>";
-?>
+
 
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>
+			<div class='col-sm-6 col-md-5 col-lg-5'>
 				<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 				<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 				<HR>
@@ -121,6 +116,38 @@
 				<div class="unit">{{{map}}}</div>
 						
 			</div><!-- end col -->
+			<div class='col-sm-12 col-md-2 col-lg-2'>
+				<div id='detailTools' class='bg_beige'>
+<?php
+				#print "<div class='detailTool'>".caNavLink($this->request, "<i class='fa fa-comments-o' aria-hidden='true'></i> Share Your Cultural Narrative", "", "", "Contact", "Form", array("inquire_type" => "cultural_narrative", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+				print "<div class='detailTool'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array('object_id' => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]." ".$va_add_to_set_link_info["link_text"]."</a></div>";
+					
+				print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+				print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Request Permissions", "", "", "Contact", "Form", array("inquire_type" => "request_permissions", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+				if ($vn_comments_enabled) {
+					#$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
+?>				
+					<div class="detailTool discussion">
+						<label>Discussion</label>
+								<div>{{{detail_discussion}}}</div>
+<?php
+							
+								if($this->request->isLoggedIn()){
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_objects", "item_id" => $t_object->getPrimaryKey()))."\"); return false;' ><i class='fa fa-comments-o' aria-hidden='true'></i> "._t("Add your comment")."</a>";
+								}else{
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' ><i class='fa fa-comments-o' aria-hidden='true'></i> "._t("Login/register to comment")."</a>";
+								}
+								#if($vn_num_comments){
+								#	print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
+								#}
+?>
+					</div>
+<?php				
+				}
+
+?>
+				</div>				
+			</div>
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
