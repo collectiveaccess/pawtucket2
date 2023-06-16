@@ -189,14 +189,14 @@
 					</div>
 				</div>
 				<div class="row">
-					<div id="browseResultsContainer">
+					<div id="browseResultsContainerCollections">
 						<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-					</div><!-- end browseResultsContainer -->
+					</div><!-- end browseResultsContainerCollections -->
 				</div><!-- end row -->
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => 'ca_collections.parent_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-							jQuery('#browseResultsContainer').jscroll({
+						jQuery("#browseResultsContainerCollections").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => 'ca_collections.parent_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+							jQuery('#browseResultsContainerCollections').jscroll({
 								autoTrigger: true,
 								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
 								padding: 20,
@@ -209,7 +209,7 @@
 				</script>
 	</ifdef>}}}
 <?php	
-	}else{
+	}
 ?>
 	{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
@@ -237,9 +237,6 @@
 				});
 			</script>
 	</ifcount>}}}
-<?php
-	}
-?>
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
