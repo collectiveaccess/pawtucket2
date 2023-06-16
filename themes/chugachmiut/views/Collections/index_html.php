@@ -76,7 +76,7 @@
 						}
 						$vs_description = $qr_res->getWithTemplate("<div class='featuredItemTitle'><l>^ca_collections.preferred_labels.name</l></div>");
 						$vs_button = $qr_res->getWithTemplate("<div class='text-center'><l><button class='btn btn-default'>Learn More</button></l></div>");
-						print "<li class='bgLightGray'><div class='row'><div class='col-sm-3'>".$vs_media."</div><div class='col-sm-9'>".$vs_description.$vs_button."</div></div></li>";
+						print "<li class='bgLightGray'><div class='row'><div class='col-sm-4'>".$vs_media."</div><div class='col-sm-8'>".$vs_description.$vs_button."</div></div></li>";
 						$vb_item_output = true;
 						
 					}
