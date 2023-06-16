@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+ 	$va_access_values = caGetUserAccessValues($this->request);
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -180,6 +180,113 @@
 						
 					</div><!-- end col -->
 				</div><!-- end row --></div><!-- end container -->
+<?php			
+	$va_related_objects = $t_object->get("ca_objects.related.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+	$qr_res = caMakeSearchResult("ca_objects", $va_related_objects);
+	if($qr_res && $qr_res->numHits()){
+?>
+<div class="row"><div class="col-sm-12 col-md-6 col-md-offset-3"><H3 class="featuredItems">Related Heritage Items</H3>  
+		<div class="jcarousel-wrapper featuredItemsSlideShow">
+			<!-- Carousel -->
+			<div class="jcarousel featured featuredItemsSlide">
+				<ul>
+<?php
+					while($qr_res->nextHit()){
+						$vs_media = $qr_res->getWithTemplate("<div class='featuredItemMedia'><l>^ca_object_representations.media.large</l></div>", array("checkAccess" => $va_access_values));
+						$vs_description = $qr_res->getWithTemplate("<div class='featuredItemTitle'><l>^ca_objects.preferred_labels.name</l></div>");
+						$vs_button = $qr_res->getWithTemplate("<div class='text-center'><l><button class='btn btn-default'>More</button></l></div>");
+						print "<li><div class='row'><div class='col-xs-5'>".$vs_media."</div><div class='col-xs-7'>".$vs_description.$vs_button."</div></div></li>";
+						$vb_item_output = true;
+						
+					}
+?>
+				</ul>
+			</div><!-- end jcarousel -->
+<?php
+			if($vb_item_output){
+?>
+			<!-- Prev/next controls -->
+			<a href="#" class="jcarousel-control-prev featured"><i class="fa fa-angle-left"></i></a>
+			<a href="#" class="jcarousel-control-next featured"><i class="fa fa-angle-right"></i></a>
+		
+			<!-- Pagination -->
+			<p class="jcarousel-pagination featured">
+			<!-- Pagination items will be generated in here -->
+			</p>
+<?php
+			}
+?>
+		</div><!-- end jcarousel-wrapper -->
+</div></div>
+		<script type='text/javascript'>
+			jQuery(document).ready(function() {
+				/*
+				Carousel initialization
+				*/
+				$('.featuredItemsSlide li').width($('.featuredItemsSlideShow').width());
+				$( window ).resize(function() {
+				  $('.featuredItemsSlide li').width($('.featuredItemsSlideShow').width());
+				});
+				
+				$('.jcarousel.featured')
+					.jcarousel({
+						// Options go here
+						wrap:'circular'
+					});
+					$('.jcarousel.featured').jcarouselAutoscroll({
+					autostart: false,
+					interval: 8000
+				});
+		
+				/*
+				 Prev control initialization
+				 */
+				$('.jcarousel-control-prev.featured')
+					.on('jcarouselcontrol:active', function() {
+						$(this).removeClass('inactive');
+					})
+					.on('jcarouselcontrol:inactive', function() {
+						$(this).addClass('inactive');
+					})
+					.jcarouselControl({
+						// Options go here
+						target: '-=1'
+					});
+		
+				/*
+				 Next control initialization
+				 */
+				$('.jcarousel-control-next.featured')
+					.on('jcarouselcontrol:active', function() {
+						$(this).removeClass('inactive');
+					})
+					.on('jcarouselcontrol:inactive', function() {
+						$(this).addClass('inactive');
+					})
+					.jcarouselControl({
+						// Options go here
+						target: '+=1'
+					});
+		
+				/*
+				 Pagination initialization
+				 */
+				$('.jcarousel-pagination.featured')
+					.on('jcarouselpagination:active', 'a', function() {
+						$(this).addClass('active');
+					})
+					.on('jcarouselpagination:inactive', 'a', function() {
+						$(this).removeClass('active');
+					})
+					.jcarouselPagination({
+						// Options go here
+					});
+			});
+		</script>
+<?php
+	}
+?>
+			
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
@@ -199,13 +306,22 @@
 	});
 </script>
 <?php
-	if($t_object->get("ca_objects.content_warning")){
+	if($t_object->get("ca_objects.content_warning") || ($t_object->get("ca_objects.sacred")) || $t_object->get("ca_objects.cultural_app_warning")){
 ?>
 		<div class="detailAlert">
 			<div class="detailAlertBox">
-				<div class="detailAlertMessage"><b>Content Warning</b><br/>{{{detail_content_warning}}}
+				<div class="detailAlertMessage"><b>Warning</b><br/>{{{detail_content_warning}}}
 <?php
-				print "<br/><br/><b>".$t_object->getWithTemplate("^ca_objects.content_warning", array("delimiter" => "br/"))."</b>";
+				if($t_object->get("ca_objects.content_warning")){
+					print "<br/><br/><b>".$t_object->getWithTemplate("^ca_objects.content_warning", array("delimiter" => "br/"))."</b>";
+				}
+				if($t_object->get("ca_objects.sacred")){
+					print "<br/><br/><b>Sacred Item</b>";
+				}
+				if($t_object->get("ca_objects.cultural_app_warning")){
+					print "<br/><br/><b>".$t_object->getWithTemplate("^ca_objects.cultural_app_warning", array("delimiter" => "br/"))."</b>";
+				}
+				
 ?>
 				<div class="enterButton"><?php print caNavLink($this->request, "Exit", "btn btn-default", "", "", ""); ?>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-default" onclick="$('.detailAlert').remove(); return false;">Continue <i class='fa fa-arrow-right'></i></button></div></div>
 				
@@ -213,4 +329,5 @@
 		</div>
 <?php	
 	}
+
 ?>

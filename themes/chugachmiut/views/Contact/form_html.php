@@ -115,7 +115,7 @@
 					<div class="row">
 						<div class="col-sm-4 col-md-2">
 							<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-								<label for="message">Loan Type</label>
+								<label for="loan_type">Loan Type</label>
 								<select name="loan_type" class="form-control input-sm">
 									<option value="digital" <?php print ($vs_loan_type == "digital") ? "selected":""; ?>>Digital</option>
 									<option value="physical" <?php print ($vs_loan_type == "physical") ? "selected":""; ?>>Physical</option>

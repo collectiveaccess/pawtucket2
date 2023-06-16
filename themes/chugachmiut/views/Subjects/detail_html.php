@@ -2,6 +2,7 @@
 	$va_subjects = $this->getVar("subjects");
 	$vs_subject_name = $this->getVar("subject_name");
 	$vn_parent_id = $this->getVar("parent_id");
+	$vs_level = $this->getVar("level");
 ?>
 	<div class="row">
 		<div class="col-sm-12 col-md-10 col-md-offset-1">
@@ -17,7 +18,7 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-12">
-			<div class="peopleFeaturedList">
+			<div class="subjectsFeaturedList">
 <?php	
 	if(is_array($va_subjects) && sizeof($va_subjects)) {
 		foreach($va_subjects as $vn_subject_id => $va_subject) {
@@ -27,12 +28,12 @@
 			if($va_subject["image"]){
 				print "<div class='subjectsImage'>".$va_subject["image"]."</div>";
 			}
-			if($va_subject["children"]){
+			if($va_subject["children"] && ($vs_level < 3)){
 				print caNavLink($this->request, $va_subject["name"]." <i class='fa fa-arrow-right'></i>", "title".(($va_subject["image"]) ? "WithImage" : ""), "", "Subjects", "Detail", array("subject_id" => $vn_subject_id), array("title" => "More Subjects"));
 			}else{
 				print caNavLink($this->request, $va_subject["name"], "title".(($va_subject["image"]) ? "WithImage" : ""), "", "Browse", "objects", array("facet" => "subjects_facet", "id" => $vn_subject_id), array("title" => "Browse Heritage Items"));
 			}
-			print caNavLink($this->request, "<span class='glyphicon glyphicon-search' aria-label='Submit'></span>", "subjectsBrowse", "", "Browse", "objects", array("facet" => "subjects_facet", "id" => $vn_subject_id), array("title" => "Browse Heritage Items"));
+			print caNavLink($this->request, "<span class='glyphicon glyphicon-search' aria-label='Submit'></span><span class='subjectsBrowseLabel'>Browse Heritage Items</span>", "subjectsBrowse", "", "Browse", "objects", array("facet" => "subjects_facet", "id" => $vn_subject_id), array("title" => "Browse Heritage Items"));
 			print "</div><!-- end tile --></div></div>";
 		}
 	}
