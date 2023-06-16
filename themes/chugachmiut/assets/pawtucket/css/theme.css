@@ -737,7 +737,7 @@ h3.featuredItems{
 @media(min-width:768px){
 	.detail a.jcarousel-control-prev, .detail a.jcarousel-control-next {
 		text-decoration: none;
-		top:200px;
+		top:40%;
 	}
 }
 .collections a.jcarousel-control-prev, .collections a.jcarousel-control-next {
