@@ -35,17 +35,7 @@
 <?php	
 	if($qr_repositories->numHits()) {
 		while($qr_repositories->nextHit()) {
-			$vs_tmp = "<div class='repositoryTile'>";
-			$vs_image = "";
-			if($vs_image = $qr_repositories->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values))){
-				$vs_tmp .= "<div class='repositoryImage'>".$vs_image."</div>";
-			}
-			$vs_tmp .= "<div class='title'>".$qr_repositories->get("ca_collections.preferred_labels")."</div>";	
-			$vs_tmp .= "</div>";
-				
-			
-			
-			print "\n<div class='row'><div class='col-sm-12 col-md-6 col-md-offset-3'>".caDetailLink($this->request, $vs_tmp, "", "ca_collections", $qr_repositories->get("ca_collections.collection_id"))."</div></div>";
+				print "\n<div class='row repositoryRow'><div class='col-sm-12 col-md-6 col-md-offset-3'>".caDetailLink($this->request, $qr_repositories->get("ca_collections.preferred_labels"), "", "ca_collections", $qr_repositories->get("ca_collections.collection_id"))."</div></div>";
 		}
 	}
 	print "\n<div class='row repositoryRow'><div class='col-sm-12 col-md-6 col-md-offset-3'><hr/><br/>".caNavLink($this->request, "Browse All Collections <i class='fa fa-arrow-right'></i>", "", "", "Browse", "Collections")."</div></div>";

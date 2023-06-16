@@ -43,7 +43,7 @@
 	}
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
-
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -57,7 +57,20 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
+<?php
+			if($vs_image = $t_item->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values))){
+?>
+				<div class="col-sm-2">
+					<div class="collectionImage"><?php print $vs_image; ?></div>
+				</div>
+				<div class='col-sm-10'>
+<?php			
+			}else{
+?>
+				<div class="col-sm-12">
+<?php
+			}
+?>
 					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
 					<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
 <?php					
@@ -65,12 +78,12 @@
 						print "<div class='exportCollection'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 					}
 ?>
-					<hr/>
+					
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
-				
+				<div class="col-sm-12">
+					<hr/>
 					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,contributor,author"><div class="unit"><label>Creators and Contributors</label>
 									<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator,contributor,author"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
 								</div></ifcount>}}}

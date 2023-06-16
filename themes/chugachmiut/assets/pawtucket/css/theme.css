@@ -1159,7 +1159,7 @@ h1 i.fa{
 	font-size: 20px;
 	padding-top:8px;
 }
-.peopleIntro, .collectionIntro{
+.peopleIntro, .collectionIntro, .subjectsIntro{
 	color: #FFF;
 	font-size: 24px;
 	padding: 50px 0px 20px 0px;
@@ -1286,6 +1286,7 @@ h1 i.fa{
 }
 .subjectsLanding{	
 	margin-bottom:230px;
+	margin-top:30px;
 }
 .subjectsSymbolContainer {
 	width:640px;
@@ -1294,7 +1295,7 @@ h1 i.fa{
 	position:relative;
 }
 .subjectsSymbol {
-	border-radius:50%;
+	/*border-radius:50%;*/
 	overflow:hidden;
 	
 }
@@ -1308,12 +1309,6 @@ h1 i.fa{
     width:100%;
     height:auto;
     overflow:hidden;
-}
-.subjectsIntro {
-	font-size: 17px;
-	color: #000;
-	font-weight: normal;
-	margin-bottom: 30px;
 }
 .subjectsLandingButton{
 	text-align:center;
@@ -1359,4 +1354,9 @@ h1 i.fa{
 		bottom: -30%;
 		left: 32%;
 	}
+}
+.collectionImage img{
+	width:100%;
+	height:auto;
+	margin-bottom:30px;
 }
