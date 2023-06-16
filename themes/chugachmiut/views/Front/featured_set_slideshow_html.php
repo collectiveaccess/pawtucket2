@@ -45,7 +45,7 @@
 				<ul>
 <?php
 					while($qr_res->nextHit()){
-						$vs_media = $qr_res->getWithTemplate("<div class='featuredItemMedia'><l>^ca_object_representations.media.large</l>", array("checkAccess" => $va_access_values));
+						$vs_media = $qr_res->getWithTemplate("<div class='featuredItemMedia'><l>^ca_object_representations.media.large</l></div>", array("checkAccess" => $va_access_values));
 						$vs_description = $qr_res->getWithTemplate("<div class='featuredItemTitle'><l>^ca_objects.preferred_labels.name</l></div><div class='featuredItemDescription'>^ca_objects.summary</div>");
 						$vs_button = $qr_res->getWithTemplate("<div class='text-center'><l><button class='btn btn-default'>More</button></l></div>");
 						print "<li><div class='row'><div class='col-sm-5'>".$vs_media."</div><div class='col-sm-7'>".$vs_description.$vs_button."</div></div></li>";

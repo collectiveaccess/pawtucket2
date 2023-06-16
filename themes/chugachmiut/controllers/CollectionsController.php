@@ -88,6 +88,7 @@ class CollectionsController extends ActionController {
 	 */ 
 	public function Index() {
 		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
+		AssetLoadManager::register("carousel");
 		
 		$this->opo_result_context = new ResultContext($this->request, "ca_collections", "collections");
 		$this->opo_result_context->setAsLastFind();
@@ -97,6 +98,34 @@ class CollectionsController extends ActionController {
 		$vs_sort = ($this->opo_config->get("landing_page_sort")) ? $this->opo_config->get("landing_page_sort") : "ca_collections.preferred_labels.name";
 		$qr_collections = ca_collections::find(array('type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => $vs_sort));
 		$this->view->setVar("collection_results", $qr_collections);
+		
+		
+		
+		# --- what is the set code of the featured people set?
+		$vs_set_code = $this->opo_config->get("collections_landing_page_set_code");
+		
+		$t_set = new ca_sets();
+		$t_set->load(array('set_code' => $vs_set_code));
+		# Enforce access control on set
+		if((sizeof($this->opa_access_values) == 0) || (sizeof($this->opa_access_values) && in_array($t_set->get("access"), $this->opa_access_values))){
+			$va_row_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values))) ? $va_tmp : array());
+			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("checkAccess" => $this->opa_access_values)));
+			$va_row_to_item_ids = array();
+			foreach($va_set_items as $vn_item_id => $va_item_info){
+				$va_row_to_item_ids[$va_item_info["row_id"]] = $vn_item_id;
+			}
+			$this->view->setVar('set_id', $t_set->get("ca_sets.set_id"));
+			$this->view->setVar('set_items', $va_set_items);
+			$this->view->setVar('row_to_item_ids', $va_row_to_item_ids);
+			$this->view->setVar('set_item_row_ids', $va_row_ids);
+			$this->view->setVar('featured_collections_as_search_result', caMakeSearchResult('ca_collections', $va_row_ids));
+		}
+
+		
+		
+		
+		
+		
 		caSetPageCSSClasses(array("collections", "landing"));
 		$this->render("Collections/index_html.php");
 	}
