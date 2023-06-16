@@ -2,14 +2,26 @@
 	$va_subjects = $this->getVar("subjects");
 ?>
 	
-	<div class="row subjectsLanding">
+	<div class="row">
 		<div class="col-sm-12 col-lg-10 col-lg-offset-1">
 			<H1>Subjects</H1>
-			<div class="subjectsIntro">{{{subjects_intro}}}</div>
+			<div class="row bgTurq">
+				<div class="col-sm-4 col-md-6 subjectsHeaderImage">
+					<?php print caGetThemeGraphic($this->request, 'rattle.jpg', array("alt" => "rattle")); ?>
+				</div>
+				<div class="col-sm-8 col-md-6 text-center">
+					<div class="subjectsIntro">{{{subjects_intro}}}</div>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+	<div class="row subjectsLanding">
+		<div class="col-sm-12 col-lg-10 col-lg-offset-1">
 			<div class="row">
 				<div class="col-sm-12 text-center">
 					<div class="subjectsSymbolContainer">
-						<div class="subjectsSymbol"><?php print caGetThemeGraphic($this->request, 'LlamSua.jpg', array("alt" => "Llam Sua")); ?></div>
+						<div class="subjectsSymbol"><?php print caGetThemeGraphic($this->request, 'LlamSua2.jpg', array("alt" => "Llam Sua")); ?></div>
 <?php	
 					if(is_array($va_subjects) && sizeof($va_subjects)) {
 						$i = 0;
