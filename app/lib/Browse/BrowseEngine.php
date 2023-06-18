@@ -133,6 +133,11 @@
 		 * Terms used for matching in search
 		 */
 		protected $searched_terms = [];
+
+		/**
+		 * Description of matches by return row_id
+		 */
+		protected $seach_result_desc = [];
 		# ------------------------------------------------------
 		/**
 		 * @var Type_id cache
@@ -1131,6 +1136,7 @@
 		 */
 		public function execute($pa_options=null) {
 			$this->searched_terms = [];
+			$this->seach_result_desc = [];
 			
 			global $AUTH_CURRENT_USER_ID;
 			if (!is_array($this->opa_browse_settings)) { return null; }
@@ -1689,9 +1695,9 @@
                                                         break;
 													case __CA_ATTRIBUTE_VALUE_LCSH__:
 													case __CA_ATTRIBUTE_VALUE_INFORMATIONSERVICE__:
-														if ($vs_f == 'value_longtext2') {
-															$va_attr_sql[] = "(ca_attribute_values.value_longtext2 = ?)";
-															$va_attr_values[] = $va_value['value_longtext2'];
+														if (in_array($vs_f, ['value_longtext1', 'value_longtext2'], true) && isset($va_value[$vs_f]) && strlen($va_value[$vs_f])) {
+															$va_attr_sql[] = "(ca_attribute_values.{$vs_f} = ?)";
+															$va_attr_values[] = $va_value[$vs_f];
 														}
 														break;
 													default:
@@ -1733,7 +1739,6 @@
 											{$filter_join}
 											WHERE
 												(ca_attribute_values.element_id = ?) {$vs_attr_sql} {$vs_container_sql} {$vs_where_sql} {$filter_where}";
-
 										$qr_res = $this->opo_db->query($vs_sql, $va_attr_values);
 										
 										if (!is_array($va_acc[$vn_i])) { $va_acc[$vn_i] = []; }
@@ -2725,6 +2730,7 @@
 										}
 										$qr_res = $o_search->search(join(" AND ", $va_row_ids), $va_options);
 										$this->searched_terms = $o_search->getSearchedTerms();
+										$this->seach_result_desc = $o_search->getSearchResultDesc();
 										
 										$va_acc[$vn_i] = $qr_res->getPrimaryKeyValues();
 										$vn_i++;
@@ -3059,10 +3065,15 @@
 		# Get facet
 		# ------------------------------------------------------
 		/**
-		 * Return list of items from the specified facet that are related to the current browse set
+		 * Return list of values from the specified facet that are related to the current browse set
 		 *
-		 * Options:
+		 * @param string $ps_facet_name
+		 * @param array $pa_options Options:
 		 *		checkAccess = array of access values to filter facets that have an 'access' field by
+		 *		start = Start list of returned facet values at zero-based index. [Default is 0]
+		 *		limit = Maximum length of returned facet values. [Default is null; all values are returned]
+		 *
+		 * @return bool
 		 */
 		public function getFacet($ps_facet_name, $pa_options=null) {
 			if (!is_array($this->opa_browse_settings)) { return null; }
@@ -7213,13 +7224,13 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 								while($qr_labels->nextRow()) {
 									$va_fetched_row = $qr_labels->getRow();
 									
-									$l = $va_fetched_row[$vs_label_display_field];
+									$l = trim($va_fetched_row[$vs_label_display_field]);
 									if($idno_fld && $va_facet_info['include_idno'] && $va_fetched_row[$idno_fld]) { $l .= " (".$va_fetched_row[$idno_fld].")"; }
 									$label_values = ['label' => $l];
 									if ($natural_sort) {
-										$label_values['label_sort_'] = caSortableValue($va_fetched_row[$vs_label_display_field]);
+										$label_values['label_sort_'] = caSortableValue($l);
 									}else{
-										$label_values['label_sort_'] = caSortableValue($va_fetched_row[$vs_sort_by_field]);
+										$label_values['label_sort_'] = caSortableValue(trim($va_fetched_row[$vs_sort_by_field]));
 									}
 									
 									$va_facet_item = array_merge($va_facet_items[$va_fetched_row[$vs_rel_pk]], $label_values);
@@ -7419,7 +7430,7 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 
 			if(is_array($va_results =  $this->opo_ca_browse_cache->getResults()) && sizeof($va_results)) {
 				if ($vb_will_sort) {
-					$va_results = $this->sortHits($va_results, $this->ops_browse_table_name, $vs_sort, $vs_sort_direction, $pa_options);
+					$va_results = $this->sortHits($va_results, $this->ops_browse_table_name, $vs_sort, $vs_sort_direction, array_merge($pa_options, ['start' => 0, 'limit' => null]));
 
 					$this->opo_ca_browse_cache->setParameter('table_num', $this->opn_browse_table_num);
 					$this->opo_ca_browse_cache->setParameter('sort', $vs_sort);
@@ -7428,6 +7439,9 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 					$this->opo_ca_browse_cache->setResults($va_results);
 					$this->opo_ca_browse_cache->save();
 				}
+				if(($start = caGetOption('start', $pa_options, 0)) || ($limit = caGetOption('limit', $pa_options, null))) {
+ 					$va_results = array_slice($va_results, $start, $limit);
+ 				}
 			}
 			if (!is_array($va_results)) { $va_results = array(); }
 
@@ -8126,6 +8140,13 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 		 */
 		public function getSearchedTerms() {
 			return $this->searched_terms ?? [];
+		}		
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		public function getSearchResultDesc() {
+			return $this->seach_result_desc ?? [];
 		}
 		# ------------------------------------------------------
 	}

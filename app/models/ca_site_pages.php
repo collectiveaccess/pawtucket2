@@ -267,7 +267,7 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 		
 		foreach($pages as $i => $page) {
 			$pages[$i]['template_title'] = $templates_by_id[$pages[$i]['template_id']]; 
-			$pages[$i]['locale'] = ca_locales::localeIDToCode($pages[$i]['locale_id']); 
+			$pages[$i]['locale'] = ca_locales::IDToCode($pages[$i]['locale_id']); 
 		}
 		
 		return $pages;
@@ -332,7 +332,7 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 	 */
 	public static function renderPageForPath($po_controller, $ps_path, $options=null) {
 		$locale_id = caGetOption(['locale', 'locale_id'], $options, ca_locales::getDefaultCataloguingLocaleID());
-		
+
 		if(!is_numeric($locale_id)) { $locale_id =  ca_locales::codeToID($locale_id); }
 		
 		$ps_path = preg_replace("!/_default$!", "", $ps_path);	// strip default path component if present

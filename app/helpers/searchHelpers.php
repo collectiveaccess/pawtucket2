@@ -1515,7 +1515,8 @@
 				if (is_array($va_placements = $t_ui->getScreenBundlePlacements($va_screen['screen_id'], $pn_type_id))) {
 					foreach($va_placements as $va_placement) {
 						// Older installations have the bundle name prefixed with "ca_attribute_"
-						$vs_bundle_name = str_replace('ca_attribute_', '', $va_placement['bundle_name']);
+						$vs_bundle_name = caConvertBundleNameToCode($va_placement['bundle_name'], ['convertOldStyleNamesOnly' => true]);
+						
 						$va_bundle_bits = explode('.', $vs_bundle_name);
 						if (!Datamodel::tableExists($va_bundle_bits[0])) {
 							array_unshift($va_bundle_bits, $ps_table);
@@ -2285,5 +2286,73 @@
 			return $search_expression.'*';
 		}
 		return $search_expression;
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caFormatSearchResultDesc(int $id, array $result_desc_data, ?array $options=null) : ?string {
+		$request = caGetOption('request', $options, null);
+		$max_title_length = caGetOption('maxTitleLength', $options, 40);
+		if(is_array($result_desc_data[$id] ?? null)) {
+			$m = $result_desc_data[$id];
+			$s = "";
+			
+			$by_table = [];
+			foreach($m['desc'] as $d) {
+				$by_table[$d['table']][$d['field_row_id']][$d['field_num']][$d['word']]++;
+			}
+			
+			$lines = $titles = [];
+			foreach($by_table as $t => $by_row_id) {
+				$t_instance = Datamodel::getInstance($t);
+				foreach($by_row_id as $row_id => $by_field) {
+					$t_instance->load($row_id);
+					$t_subject = method_exists($t_instance, 'getSubjectTableInstance') ? $t_instance->getSubjectTableInstance() : $t_instance;
+					
+					$title = caTruncateStringWithEllipsis($t_subject->get("preferred_labels"), $max_title_length);
+					if(!($subject_name = $request ? caEditorLink($request, $title, '', $t_subject->tableName(), $t_subject->getPrimaryKey()) : $title)) {
+						$subject_name = $title;
+					}
+					$titles[$row_id] = "<em>".caUcFirstUTF8Safe(method_exists($t_instance, 'getTypeName') ? $t_instance->getTypeName() : $t_instance->getProperty('NAME_SINGULAR'))."</em> {$subject_name}";
+					
+					foreach($by_field as $field_num => $words) {
+						$lines[$row_id][] = _t("<em>%1</em>: %2",  mb_strtolower(caFieldNumToDisplayText($t, $field_num)), caMakeCommaListWithConjunction(array_keys($words)));
+					}
+				}
+			}
+			if(!sizeof($lines)) { return null; }
+			$s .= "<ul>";
+			foreach($lines as $row_id => $m) {
+				$s .= "<li>{$titles[$row_id]}</li>\n";
+				$s .= join("\n", array_map(function($v) { return "<li>{$v}</li>\n"; }, $m));
+			}
+			$s .= "</ul>";
+			return $s;
+		}
+		return null;
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caFieldNumToDisplayText($table_name_or_num, string $field_num) : ?string {
+		$prefix = strtoupper(substr($field_num, 0, 1));
+		
+		switch($prefix) {
+			case 'A':
+				return ca_metadata_elements::getElementLabel(substr($field_num, 1));
+				break;
+			case 'I':
+				if($t_instance = Datamodel::getInstance($table_name_or_num)) {
+					$field_name = $t_instance->fieldName(substr($field_num, 1));
+					$field_info = $t_instance->getFieldInfo($field_name);
+					return $field_info['LABEL'];
+				}
+				break;
+			default:
+				return $field_num;
+				break;
+		}
 	}
 	# ---------------------------------------

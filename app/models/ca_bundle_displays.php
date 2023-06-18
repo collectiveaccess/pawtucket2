@@ -2199,13 +2199,14 @@ if (!$pb_omit_editing_info) {
 			$val = $bundle = null;
 			switch((int)$pn_placement_id) {
 				case -1:	// idno
-					if($instance = $po_result->getInstance()) {
+					
+					if($instance = is_a($po_result, 'BaseModel') ? $po_result : $po_result->getInstance()) {
 						$val = $po_result->get($bundle = $instance->tableName().'.'.$instance->getProperty('ID_NUMBERING_ID_FIELD'));
 					}
 					$bundle_type =  'intrinsic';
 					break;
 				case -2:	// display name	
-					if($instance = $po_result->getInstance()) {
+					if($instance = is_a($po_result, 'BaseModel') ? $po_result : $po_result->getInstance()) {
 						$val = $po_result->get($bundle = $instance->tableName().'.preferred_labels');
 					}
 					$bundle_type =  'preferred_labels';
@@ -2381,8 +2382,8 @@ if (!$pb_omit_editing_info) {
 			}
 			
 			// policy passed for history tracking current value
-			// returnPath passed to force absolute file path to be used when running reports – some systems cannot handle urls in PDFs due to DNS configuration
-			$vs_val = $po_result->get(join(".", $va_bundle_bits), array_merge(['doRefSubstitution' => true], $options, ['policy' => $va_settings['policy'] ?? null, 'returnPath' => $options['forReport']]));	
+			// returnTagWithPath passed to force absolute file path to be used when running reports – some systems cannot handle urls in PDFs due to DNS configuration
+			$vs_val = $po_result->get(join(".", $va_bundle_bits), array_merge(['doRefSubstitution' => true], $options, ['policy' => $va_settings['policy'] ?? null, 'returnTagWithPath' => $options['forReport']]));	
 		}
 		
 		if (isset($options['purify']) && $options['purify']) {
@@ -2502,7 +2503,7 @@ if (!$pb_omit_editing_info) {
 		}
 		if(($options['maximumLength'] > 0) && (mb_strlen($vs_val) > $options['maximumLength'])) {
 			$doc = new DOMDocument();
-			@$doc->loadHTML('<?xml encoding="utf-8" ?>'.mb_substr($vs_val, 0, $options['maximumLength']));
+			@$doc->loadHTML('<?xml encoding="utf-8" ?>'.mb_substr(caEscapeForXML($vs_val), 0, $options['maximumLength']));
 			return $doc->saveHTML();
 		}
 		
@@ -2918,7 +2919,11 @@ if (!$pb_omit_editing_info) {
 			$label_display_field = $t_label ? $t_label->getDisplayField() : null;
 			foreach($display_list as $i => $display_item) {
 				$tmp = explode('.', $display_item['bundle_name']);
-				
+
+				if(!isset($tmp[1])){
+					$tmp[1] = null;
+				}
+
 				if (
 					(($tmp[0] === $label_table_name) && ($tmp[1] === $label_display_field))
 					||
