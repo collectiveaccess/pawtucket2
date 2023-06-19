@@ -368,6 +368,11 @@ class SearchController extends FindController {
 		// Set highlight text
 		MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $vs_search_expression, ['persist' => !RequestHTTP::isAjax()]); 
 	
+		$result_desc = $o_browse->getSearchResultDesc() ?? [];
+		$this->view->setVar('result_desc', $result_desc);
+		$this->opo_result_context->setResultDescription($result_desc);
+		
+	
 		//
 		// Facets
 		//

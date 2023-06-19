@@ -264,6 +264,10 @@ class DetailController extends FindController {
 		
 		$o_context = ResultContext::getResultContextForLastFind($this->request, $table);
 		
+		
+		$result_desc = $o_context->getResultDescription();
+		$this->view->setVar('resultDesc', $result_desc[$t_subject->getPrimaryKey()] ?? null);
+		
 		if($o_context->findType() === 'multisearch') {
 			if(!in_array($t_subject->getPrimaryKey(), $o_context->getResultList())) {
 				// try to find context that contains item
@@ -316,6 +320,31 @@ class DetailController extends FindController {
 			}
 			if(!is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
 			
+			$default_annotation_id = $start_timecode = null;
+			
+			if($start_timecode = $this->request->getParameter('start', pString)) {
+				// Timecode specified
+			} elseif(
+				($annotation_identifier = $this->request->getParameter('annotation', pString)) &&
+				(($options['annotationIdentifier'] ?? null) && 
+				($t_instance = ca_representation_annotations::findAsInstance([$options['annotationIdentifier'] => $annotation_identifier])))
+			) {
+				$default_annotation_id = $t_instance->get('ca_representation_annotations.annotation_id');
+			} elseif($item_match_desc = $result_desc[$t_subject->getPrimaryKey()] ?? null) {
+				// Search matched annotation?
+				foreach($item_match_desc['desc'] as $m) {
+					if($m['table'] === 'ca_representation_annotations') {
+						$default_annotation_id = $m['field_row_id'];
+						break;
+					}
+					if($m['table'] === 'ca_representation_annotation_labels') {
+						if($t_instance = ca_representation_annotation_labels::findAsInstance($m['field_row_id'])) {
+							$default_annotation_id = $t_instance->get('ca_representation_annotation_labels.annotation_id');
+							break;
+						}
+					}
+				}
+			}
 			$this->view->setVar('representationViewerPrimaryOnly', $rep_viewer_primary_only = caGetOption('representationViewerPrimaryOnly', $options, false));
 			$this->view->setVar('representationViewer', 
 				caRepresentationViewer(
@@ -326,6 +355,8 @@ class DetailController extends FindController {
 						[
 							'display' => 'detail',
 							'showAnnotations' => true, 
+							'defaultAnnotationID' => $default_annotation_id,	// jump to specific annotation?
+							'startTimecode' => $start_timecode,				// jump to specific time?
 							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
 							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $options, false), 
 							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $options, false),
@@ -534,9 +565,17 @@ class DetailController extends FindController {
 	 *
 	 */ 
 	public function GetTimebasedRepresentationAnnotationList() {
-		$id 			= $this->request->getParameter('id', pInteger);
-		$representation_id 	= $this->request->getParameter('representation_id', pInteger);
+		$id 					= $this->request->getParameter('id', pInteger);
+		$representation_id 		= $this->request->getParameter('representation_id', pInteger);
 		$detail_type			= $this->request->getParameter('context', pString);
+		$default_annotation_id 	= $this->request->getParameter('default_annotation_id', pInteger);
+		$start_timecode 		= $this->request->getParameter('start_timecode', pString);
+		
+		$start_time = null;
+		if($start_timecode) {
+			$tc = new TimecodeParser($start_timecode);
+			$start_time = $tc->getSeconds();
+		}
 		$detail_options 		= (isset($this->opa_detail_types[$detail_type]['options']) && is_array($this->opa_detail_types[$detail_type]['options'])) ? $this->opa_detail_types[$detail_type]['options'] : array();
 		
 		if(!$id) { $id = 0; }
@@ -559,7 +598,7 @@ class DetailController extends FindController {
 		) {
 			while($qr_annotations->nextHit()) {
 				if (!preg_match('!^TimeBased!', $qr_annotations->getAnnotationType())) { continue; }
-				$annotation_list[] = $qr_annotations->getWithTemplate($vs_template);
+				$annotation_list[$qr_annotations->getPrimaryKey()] = $qr_annotations->getWithTemplate($vs_template);
 				$annotation_times[] = array((float)$qr_annotations->getPropertyValue('startTimecode', true) - (float)$props['timecode_offset'], (float)$qr_annotations->getPropertyValue('endTimecode', true) - (float)$props['timecode_offset']);
 			}
 			$qr_annotations->seek(0);
@@ -568,6 +607,8 @@ class DetailController extends FindController {
 		$this->view->setVar('representation_id', $representation_id);
 		$this->view->setVar('annotation_list', $annotation_list);
 		$this->view->setVar('annotation_times', $annotation_times);
+		$this->view->setVar('default_annotation_id', $default_annotation_id);
+		$this->view->setVar('start_time', $start_time);
 		$this->view->setVar('annotations_search_results', $qr_annotations);
 		$this->view->setVar('player_name', "caMediaOverlayTimebased_{$representation_id}_detail");
 		
