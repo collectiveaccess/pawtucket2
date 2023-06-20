@@ -186,7 +186,7 @@
 				$vs_copyright = "";
 				$vs_copy_status = $t_object->get("ca_objects.copyright_status", array("convertCodesToDisplayText" => true));
 				switch($vs_copy_status){
-					case "public domain":
+					case "publiek domein":
 						$vs_copyright = "<a href='https://creativecommons.org/publicdomain/mark/1.0/' target='_blank'>".$vs_copy_status."</a>";
 						$vs_copyright .= "<br/><a href='https://creativecommons.org/publicdomain/mark/1.0/' target='_blank' class='copyrightLogo'>".caGetThemeGraphic($this->request, 'no_copyright_blue_x2.png')."</a>";
 					break;

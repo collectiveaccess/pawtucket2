@@ -375,9 +375,9 @@ a.readmore-js-toggle {
 .detail #detailComments button.translatedButton{
 	display:inline;
 }
-.copyrightLogo img, .copyrightLogoBg img{
-	height:50px;
-	width:auto;
+.detail .unit .copyrightLogo img, .detail .unit .copyrightLogoBg img{
+	height:50px !important;
+	width:auto !important;
 }
 .copyrightLogoBg{
 	background-color: #318ac7;
