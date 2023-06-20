@@ -63,6 +63,43 @@
 		</div><!-- end browseResultsContainer -->
 	</div>
 <?php
+		$va_people = $t_item->get("ca_entities.entity_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+	
+		if(is_array($va_people) && sizeof($va_people)){
+			$q_featured_people = caMakeSearchResult('ca_entities', $va_people);
+			if($q_featured_people->numHits()){
+				print "<div class='row'><div class='col-sm-12'><div class='btn btn-default'>"._t("People")."</div></div></div><!-- end row -->\n";
+				$i = 0;
+				while($q_featured_people->nextHit()){
+					if($i == 0){
+						print "<div class='row'>";
+					}
+					if(!($vs_media = $q_featured_people->getWithTemplate("<ifcount code='ca_objects' restrictToRelationshipTypes='cover' min='1'><l><unit relativeTo='ca_objects' restrictToRelationshipTypes='cover' limit='1'>^ca_object_representations.media.resultcrop</unit></l></ifcount>", array("checkAccess" => $va_access_values)))){
+						$vs_media = caGetThemeGraphic($this->request, 'placeholder.jpg');
+					}
+					$vs_caption = $q_featured_people->getWithTemplate('<l>^ca_entities.preferred_labels</l>');
+					if($vs_caption){
+						$vs_caption = "<div class='bResultText'>".$vs_caption."</div>";
+					}
+					
+					print "<div class='bResultItemCol col-xs-6 col-sm-4 col-md-4'>
+						<div class='bResult'>
+							{$vs_media}
+							{$vs_caption}
+						</div>
+					</div><!-- end col -->";
+					$i++;
+					if($i == 3){
+						print "</div><!-- end row -->";
+						$i = 0;
+					}
+				}
+				if($i > 0){
+					print "</div><!-- end row -->";
+				}
+			}
+		}
+
 	# related objects
 	$t_object_thumb = new ca_objects();
 	

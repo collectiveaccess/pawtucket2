@@ -13,6 +13,8 @@
 	$vn_place_parent_id = $t_item->get('ca_places.parent.place_id');
 	$vn_ids[] = $vn_place_id;
 	$va_images = caGetDisplayImagesForAuthorityItems('ca_places', $vn_ids, array('version' => 'resultcrop', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+	$va_images_related = caGetDisplayImagesForAuthorityItems('ca_places', $vn_ids, array('version' => 'resultcrop', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'useRelatedObjectRepresentations' => true, 'checkAccess' => $va_access_values));
+	
 	$va_detail_image = caGetDisplayImagesForAuthorityItems('ca_places', [$vn_place_id], array('version' => 'large', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 	$va_parent_detail_image = caGetDisplayImagesForAuthorityItems('ca_places', [$vn_place_parent_id], array('version' => 'thumbnail', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
 
@@ -23,7 +25,7 @@
 
 	# --- place groups type_id = 167
 	$qr_place_groups = ca_places::find(['type_id' => 167, 'access' => 1], ['returnAs' => 'searchResult']);
-
+	$vs_default_placeholder = caGetThemeGraphic($this->request, 'placeholder.jpg');
 ?>
 <div class="row">
 </div><!-- end row -->
@@ -69,7 +71,9 @@
 			
 			if($va_images[$vn_id]){
 				$vs_rep_detail_link = caDetailLink($this->request, $va_images[$vn_id], '', 'ca_places', $vn_id);		
-			} else {
+			} elseif($va_images_related[$vn_id]) {
+				$vs_rep_detail_link = caDetailLink($this->request, $va_images_related[$vn_id], '', 'ca_places', $vn_id);		
+			}else{
 				$vs_rep_detail_link = caDetailLink($this->request, $vs_default_placeholder, '', 'ca_places', $vn_id);
 			}
 			$vs_label_detail_link = caDetailLink($this->request, $qr_res->get('ca_places.preferred_labels'), '', 'ca_places', $vn_id);
