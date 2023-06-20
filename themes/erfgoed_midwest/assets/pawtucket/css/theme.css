@@ -375,6 +375,14 @@ a.readmore-js-toggle {
 .detail #detailComments button.translatedButton{
 	display:inline;
 }
+.copyrightLogo img, .copyrightLogoBg img{
+	height:50px;
+	width:auto;
+}
+.copyrightLogoBg{
+	background-color: #318ac7;
+	padding: 15px;
+}
 /* cookie notice */
 #cookieNotice{
 	position: fixed;
