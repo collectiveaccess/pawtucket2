@@ -72,9 +72,18 @@ class SubjectsController extends BasePawtucketController {
 		}
 		$vs_subject_name = $t_list->getItemForDisplayByItemID($pn_subject_id, array("return" => "plural"));
 		$va_subjects = $t_list->getChildItemsForList("subjects", $pn_subject_id, array("directChildrenOnly" => "1"));
+		$va_levels = $t_list->getItemsForList("subjects", array("returnHierarchyLevels" => true));
+		$va_level_info = array_pop($va_levels[$pn_subject_id]);
+		$vs_level = $va_level_info["LEVEL"];
+		$this->view->setVar("level", $vs_level);
 		$t_list_item = new ca_list_items();
 		$t_list_item->load($pn_subject_id);
-		$this->view->setVar("parent_id", $t_list_item->get("ca_list_items.parent_id"));
+		$vn_root_id = $t_list->getRootItemIDForList("subjects");
+		$vn_parent_id = $t_list_item->get("ca_list_items.parent_id");
+		
+		if($vn_root_id != $vn_parent_id){
+			$this->view->setVar("parent_id", $vn_parent_id);
+		}
 		
 		$va_subjects_for_display = array();
 		if(is_array($va_subjects) && sizeof($va_subjects)){
