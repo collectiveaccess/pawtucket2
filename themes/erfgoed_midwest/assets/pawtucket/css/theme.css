@@ -375,13 +375,19 @@ a.readmore-js-toggle {
 .detail #detailComments button.translatedButton{
 	display:inline;
 }
-.detail .unit .copyrightLogo img, .detail .unit .copyrightLogoBg img{
+.detail .unit .copyrightLogo img{
 	height:50px !important;
 	width:auto !important;
 }
-.copyrightLogoBg{
+.detail .unit .copyrightLogoBg img{
+	height:30px !important;
+	width:auto !important;
+}
+.copyrightLogoBg {
 	background-color: #318ac7;
-	padding: 15px;
+	padding: 10px;
+	display: inline-block;
+	margin-top: 10px;
 }
 /* cookie notice */
 #cookieNotice{
