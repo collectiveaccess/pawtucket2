@@ -383,6 +383,10 @@ a.readmore-js-toggle {
 	height:30px !important;
 	width:auto !important;
 }
+.copyrightLogo {
+	display: inline-block;
+	margin-top: 10px;
+}
 .copyrightLogoBg {
 	background-color: #318ac7;
 	padding: 10px;
