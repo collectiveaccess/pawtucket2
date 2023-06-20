@@ -1778,7 +1778,11 @@ msgstr "%1 objecten"
 
 #: themes/default/views/Lightbox/form_add_set_item_html.php:39
 msgid "Add item to %1"
-msgstr "Voeg object toe %1"
+msgstr "Voeg object toe aan %1"
+
+#: themes/default/views/Lightbox/form_add_set_item_html.php:61
+msgid "OR Create a New %1"
+msgstr "Of maak een nieuw %1 aan"
 
 #: themes/default/views/Lightbox/form_add_set_item_html.php:50
 msgid "Select a %1"
