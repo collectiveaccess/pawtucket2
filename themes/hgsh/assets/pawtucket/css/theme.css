@@ -416,6 +416,10 @@ nav, .navbar, .navbar-default{
 	color:#717B67;
 }
 
+
+.detail a{
+	color:#006E9D;
+}
 /* browse results */
 .browse .btn{
 	background-color:#006E9D;
