@@ -211,6 +211,7 @@
 ?>
 					<div class='unit'><h6>Auteursrecht</h6>
 						<?php print $vs_copyright; ?>
+						<br/>Lees meer over de rechtenstatus in de <?php print caNavLink($this->request, _t("disclaimer"), "", "", "About", "Disclaimer"); ?>
 					</div>
 <?php
 				}
