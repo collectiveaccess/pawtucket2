@@ -139,7 +139,11 @@
 ?>
 				</div>				
 			</div>
-		</div><!-- end row --></div><!-- end container -->
+		</div><!-- end row -->
+<?php
+		include("related_objects_html.php");
+?>
+		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">

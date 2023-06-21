@@ -43,6 +43,9 @@ hr {
 .bgLightGray{
 	background-color:#f2f2f2;
 }
+#caMediaPanelContentArea{
+	margin-top:0px;
+}
 /* header */
 .navbar{
 	background-color: #ffffff;
@@ -1141,6 +1144,9 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover {
 	left: auto;
 	background-color:transparent;
 }
+div.caMediaOverlayControls .repNav{
+	width:auto;
+}
 .detail .audioButton{	
 	color: #000;
 	cursor: pointer;
@@ -1172,6 +1178,29 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover {
 	.detail #detailTools {
 		text-align:center;
 	}
+}
+.detail .relatedObjectsContainer a{
+	text-decoration:none
+}
+a .relatedObjectsCard{
+	height: 90px;
+	padding: 10px;
+	color:#000;
+	margin-bottom: 30px;
+	-webkit-transition: all .4s;
+	-o-transition: all .4s;
+	transition: all .4s;
+	font-size:13px;
+}
+a:hover .relatedObjectsCard{	
+	box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
+	text-decoration:none;	
+}
+a .relatedObjectsCard img{
+	float:left;
+	margin-right:10px;
+	height:auto;
+	width:70px;
 }
 /* advanced Search */
 .advancedSearchField .formLabel {
