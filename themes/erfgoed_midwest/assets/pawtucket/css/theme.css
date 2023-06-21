@@ -386,12 +386,14 @@ a.readmore-js-toggle {
 .copyrightLogo {
 	display: inline-block;
 	margin-top: 10px;
+	margin-bottom: 10px;
 }
 .copyrightLogoBg {
 	background-color: #318ac7;
 	padding: 10px;
 	display: inline-block;
 	margin-top: 10px;
+	margin-bottom: 10px;
 }
 /* cookie notice */
 #cookieNotice{
