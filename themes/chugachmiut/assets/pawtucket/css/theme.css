@@ -1367,3 +1367,10 @@ h1 i.fa{
 	height:auto;
 	margin-bottom:30px;
 }
+
+.popover-content {
+    min-width: 125px;
+}
+.subjectsTile:hover .popover-content{
+	color:#000;
+}
