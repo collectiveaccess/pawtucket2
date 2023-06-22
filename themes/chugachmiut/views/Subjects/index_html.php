@@ -31,7 +31,7 @@
 							if($vs_img){
 								$vs_img = "<div class='subjectImg'>".$vs_img."</div>";
 							}
-							print "<div class='subjectsLandingButton subjectsLandingButton".$i." bgTurq'>".caNavLink($this->request, $vs_img."<div class='subjectTerm'>".$va_subject["name"]."</div>", "", "", "Subjects", "Detail", array("subject_id" => $vn_subject_id))."</div>";
+							print "<div class='subjectsLandingButton subjectsLandingButton".$i." bgTurq' data-toggle='popover' title='' data-content='Click to explore'>".caNavLink($this->request, $vs_img."<div class='subjectTerm'>".$va_subject["name"]."</div>", "", "", "Subjects", "Detail", array("subject_id" => $vn_subject_id))."</div>";
 						}
 					}	
 ?>		
@@ -45,3 +45,22 @@
 			<div class="subjectsIntroBottom">{{{subjects_intro_bottom}}}</div>
 		</div>
 	</div>
+	
+<script type='text/javascript'>
+	jQuery(document).ready(function() {	
+		
+		var options = {
+			placement: "auto top",
+			trigger: "hover",
+			html: "true"
+		};
+		
+		$('[data-toggle="popover"]').each(function() {
+			if($(this).attr('data-content')){
+				$(this).popover(options).click(function(e) {
+					$(this).popover('toggle');
+				});
+			}
+		});
+	});
+</script>

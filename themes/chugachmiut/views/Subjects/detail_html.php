@@ -29,11 +29,11 @@
 				print "<div class='subjectsImage'>".$va_subject["image"]."</div>";
 			}
 			if($va_subject["children"] && ($vs_level < 2)){
-				print caNavLink($this->request, $va_subject["name"]." <i class='fa fa-arrow-right'></i>", "title".(($va_subject["image"]) ? "WithImage" : ""), "", "Subjects", "Detail", array("subject_id" => $vn_subject_id), array("title" => "More Subjects"));
+				print caNavLink($this->request, $va_subject["name"]." <i class='fa fa-arrow-right'></i>", "title".(($va_subject["image"]) ? "WithImage" : ""), "", "Subjects", "Detail", array("subject_id" => $vn_subject_id), array("title" => "", "data-toggle" => "popover", "data-content" => "More Subjects"));
 			}else{
-				print caNavLink($this->request, $va_subject["name"], "title".(($va_subject["image"]) ? "WithImage" : ""), "", "Browse", "objects", array("facet" => "subjects_facet", "id" => $vn_subject_id), array("title" => "Browse Heritage Items"));
+				print caNavLink($this->request, $va_subject["name"], "title".(($va_subject["image"]) ? "WithImage" : ""), "", "Browse", "objects", array("facet" => "subjects_facet", "id" => $vn_subject_id), array("title" => "", "data-toggle" => "popover", "data-content" => "Browse Heritage Items"));
 			}
-			print caNavLink($this->request, "<span class='glyphicon glyphicon-search' aria-label='Submit'></span><span class='subjectsBrowseLabel'>Browse Heritage Items</span>", "subjectsBrowse", "", "Browse", "objects", array("facet" => "subjects_facet", "id" => $vn_subject_id), array("title" => "Browse Heritage Items"));
+			print caNavLink($this->request, "<span class='glyphicon glyphicon-search' aria-label='Submit'></span><span class='subjectsBrowseLabel'>Browse Heritage Items</span>", "subjectsBrowse", "", "Browse", "objects", array("facet" => "subjects_facet", "id" => $vn_subject_id), array("title" => "", "data-toggle" => "popover", "data-content" => "Browse Heritage Items"));
 			print "</div><!-- end tile --></div></div>";
 		}
 	}
@@ -43,3 +43,22 @@
 			</div>
 		</div>
 	</div>
+	
+<script type='text/javascript'>
+	jQuery(document).ready(function() {	
+		
+		var options = {
+			placement: "left",
+			trigger: "hover",
+			html: "true"
+		};
+		
+		$('[data-toggle="popover"]').each(function() {
+			if($(this).attr('data-content')){
+				$(this).popover(options).click(function(e) {
+					$(this).popover('toggle');
+				});
+			}
+		});
+	});
+</script>
