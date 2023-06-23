@@ -7,7 +7,7 @@
 			<H1>Subjects</H1>
 			<div class="row bgTurq">
 				<div class="col-sm-4 col-md-6 subjectsHeaderImage">
-					<?php print caGetThemeGraphic($this->request, 'rattle.jpg', array("alt" => "rattle")); ?>
+					<?php print caGetThemeGraphic($this->request, 'rattle_cropped.jpg', array("alt" => "rattle")); ?>
 				</div>
 				<div class="col-sm-8 col-md-6 text-center">
 					<div class="subjectsIntro">{{{subjects_intro}}}</div>
@@ -31,7 +31,7 @@
 							if($vs_img){
 								$vs_img = "<div class='subjectImg'>".$vs_img."</div>";
 							}
-							print "<div class='subjectsLandingButton subjectsLandingButton".$i." bgTurq'>".caNavLink($this->request, $vs_img."<div class='subjectTerm'>".$va_subject["name"]."</div>", "", "", "Subjects", "Detail", array("subject_id" => $vn_subject_id))."</div>";
+							print "<div class='subjectsLandingButton subjectsLandingButton".$i." bgTurq' data-toggle='popover' title='' data-content='Click to explore'>".caNavLink($this->request, $vs_img."<div class='subjectTerm'>".$va_subject["name"]."</div>", "", "", "Subjects", "Detail", array("subject_id" => $vn_subject_id))."</div>";
 						}
 					}	
 ?>		
@@ -40,3 +40,27 @@
 			</div>		
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-sm-12 col-md-10 col-lg-offset-1 col-lg-8 col-lg-offset-2">
+			<div class="subjectsIntroBottom">{{{subjects_intro_bottom}}}</div>
+		</div>
+	</div>
+	
+<script type='text/javascript'>
+	jQuery(document).ready(function() {	
+		
+		var options = {
+			placement: "auto top",
+			trigger: "hover",
+			html: "true"
+		};
+		
+		$('[data-toggle="popover"]').each(function() {
+			if($(this).attr('data-content')){
+				$(this).popover(options).click(function(e) {
+					$(this).popover('toggle');
+				});
+			}
+		});
+	});
+</script>
