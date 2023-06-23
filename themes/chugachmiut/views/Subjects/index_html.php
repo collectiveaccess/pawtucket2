@@ -7,7 +7,7 @@
 			<H1>Subjects</H1>
 			<div class="row bgTurq">
 				<div class="col-sm-4 col-md-6 subjectsHeaderImage">
-					<?php print caGetThemeGraphic($this->request, 'basket.jpg', array("alt" => "Basket")); ?>
+					<?php print caGetThemeGraphic($this->request, 'BearGutSewing.jpg', array("alt" => "Basket")); ?>
 				</div>
 				<div class="col-sm-8 col-md-6 text-center">
 					<div class="subjectsIntro">{{{subjects_intro}}}</div>

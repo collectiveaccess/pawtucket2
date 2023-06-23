@@ -651,7 +651,7 @@ body.frontContainer #footer{
 	box-shadow: 0 2px 14px 0 rgba(0,0,0,.3);
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImageSubjects{
-	background-image: url('../graphics/basket.jpg');
+	background-image: url('../graphics/BearGutSewing.jpg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImagePeople{
 	background-image: url('../graphics/People.jpg');
@@ -1300,7 +1300,7 @@ h1 i.fa{
 	margin-top:30px;
 }
 .subjectsSymbolContainer {
-	width:640px;
+	width:650px;
 	margin-left: auto;
 	margin-right: auto;	
 	position:relative;
@@ -1349,20 +1349,20 @@ h1 i.fa{
 }
 .subjectsLandingButton1{
 	top: 10%;
-	left: -35%;
+	left: -25%;
 }
 
 .subjectsLandingButton2{
 	top: 10%;
-	right: -35%;
+	right: -23%;
 }
 .subjectsLandingButton3{
-	bottom: -38%;
+	bottom: -25%;
 	left: 28%;
 }
 @media(min-width:1590px){
 	.subjectsLandingButton3{
-		bottom: -38%;
+		bottom: -25%;
 		left: 28%;
 	}
 }
