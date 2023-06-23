@@ -134,8 +134,16 @@
 			
 				{{{<ifdef code="ca_objects.vhh_URL">
 					<div class="unit"><label><t>URL</t></label>
-					<unit relativeTo="ca_objects" delimiter="<br/>">
+					<unit relativeTo="ca_objects.vhh_URL" delimiter="<br/>">
 						<a href="^ca_objects.vhh_URL" target="_blank">^ca_objects.vhh_URL</a>
+						<ifdef code="ca_objects.vhh_URL.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+						<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+							<ifdef code="ca_objects.vhh_URL.__source__">
+								<br/>
+								<small>Source:</small>
+								<small>^ca_objects.vhh_URL.__source__</small>
+							</ifdef>
+						</div>
 					</unit></div>
 				</ifdef>}}}
 
