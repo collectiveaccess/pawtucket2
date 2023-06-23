@@ -7,7 +7,7 @@
 			<H1>Subjects</H1>
 			<div class="row bgTurq">
 				<div class="col-sm-4 col-md-6 subjectsHeaderImage">
-					<?php print caGetThemeGraphic($this->request, 'rattle_cropped.jpg', array("alt" => "rattle")); ?>
+					<?php print caGetThemeGraphic($this->request, 'basket.jpg', array("alt" => "Basket")); ?>
 				</div>
 				<div class="col-sm-8 col-md-6 text-center">
 					<div class="subjectsIntro">{{{subjects_intro}}}</div>
@@ -21,7 +21,7 @@
 			<div class="row">
 				<div class="col-sm-12 text-center">
 					<div class="subjectsSymbolContainer">
-						<div class="subjectsSymbol"><?php print caGetThemeGraphic($this->request, 'LlamSua2.jpg', array("alt" => "Llam Sua")); ?></div>
+						<div class="subjectsSymbol"><?php print caGetThemeGraphic($this->request, 'RattleDesign.jpg', array("alt" => "Rattle")); ?></div>
 <?php	
 					if(is_array($va_subjects) && sizeof($va_subjects)) {
 						$i = 0;
