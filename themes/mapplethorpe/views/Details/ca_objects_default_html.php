@@ -79,9 +79,9 @@
 							$t_list_item = new ca_list_items;
 							if($va_keywords = $t_object->get("ca_objects.keywords", array("returnAsArray" => true))){
 								print "<div class='unit'><label>Keywords</label>";
-								foreach($va_keywords as $vn_kw_id){
-									$t_list_item->load($vn_kw_id);
-									print caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "artwork", array("facet" => "keyword_facet", "id" => $vn_kw_id))."<br/>";
+								$qr = caMakeSearchResult('ca_list_items', array_values($va_keywords), ['sort' => 'ca_list_items.preferred_labels.name_singular']);
+								while($qr->nextHit()) {
+									print caNavLink($this->request, $qr->get("ca_list_items.preferred_labels.name_singular"), "", "", "Browse", "artwork", array("facet" => "keyword_facet", "id" => $qr->getPrimaryKey()))."<br/>";
 								}
 								print "</div>";
 							}

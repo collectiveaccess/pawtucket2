@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2019 Whirl-i-Gig
+ * Copyright 2008-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -234,8 +234,8 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 	static $s_placements_for_bundle_cache = [];
 	
 	# ----------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);
+	public function __construct($id=null, ?array $options=null) {
+		parent::__construct($id, $options);
 		
 		if (!ca_editor_uis::$s_loaded_relationship_tables) {
 			require_once(__CA_MODELS_DIR__.'/ca_relationship_types.php');
@@ -333,6 +333,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 					$va_uis_by_type = $po_request->user->getPreference("cataloguing_{$vs_table_name}_editor_ui");
 					break;
 			}
+			
 			$va_available_uis_by_type = $po_request->user->_getUIListByType($vn_table_num);
 		} else {
 			$va_uis_by_type = $va_available_uis_by_type = [];
@@ -345,20 +346,26 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 					$vn_type_id = null;
 				}
 				$va_uis_by_type = []; 
-			} else {
-				if (!isset($va_available_uis_by_type[$vn_type_id][$va_uis_by_type[$vn_type_id]]) && !isset($va_available_uis_by_type['__all__'][$va_uis_by_type[$vn_type_id]])) {
-					$vn_type_id = null;
-				}
+			} elseif (isset($va_uis_by_type[$vn_type_id]) && !isset($va_available_uis_by_type[$vn_type_id][$va_uis_by_type[$vn_type_id]]) && !isset($va_available_uis_by_type['__all__'][$va_uis_by_type[$vn_type_id]])) {
+				$vn_type_id = null;
 			}
 		}
 	
+		if($vn_type_id && isset($va_uis_by_type[$vn_type_id])) {
+			if ($t_ui = ca_editor_uis::findAsInstance(['ui_id' => $va_uis_by_type[$vn_type_id]])) { return $t_ui; }
+		}
+		if(isset($va_uis_by_type['__all__'])) {
+			if ($t_ui = ca_editor_uis::findAsInstance(['ui_id' => $va_uis_by_type['__all__']])) { return $t_ui; }
+		}
+		
+		
 		$t_ui = new ca_editor_uis();
 		
 		// If table supports null types take type_id=null to be  "none" rather than a signal to allow any type of editor
 		if (!$vn_type_id && method_exists($t_instance, "getTypeFieldName") && (bool)$t_instance->getFieldInfo($t_instance->getTypeFieldName(), 'IS_NULL')) {
 			$vn_type_id = '_NONE_';
 		}
-		if (!$vn_type_id || !($vn_rc = $t_ui->load($va_uis_by_type[$vn_type_id]))) {
+		if (!$vn_type_id || !(is_array($va_uis_by_type) && ($vn_rc = $t_ui->load($va_uis_by_type[$vn_type_id])))) {
 			$va_ui_ids = ca_editor_uis::getAvailableUIs($vn_table_num, $po_request, $vn_type_id, true);
 			
 			if (!is_array($va_ui_ids) || (sizeof($va_ui_ids) == 0)) { return ca_editor_uis::$s_default_ui_cache[$pm_table_name_or_num.'/'.$pn_type_id] = false; }
@@ -387,14 +394,16 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 	public function getScreens($pn_type_id=null, $pa_options=null) {
 		if (!($vn_id = $this->getPrimaryKey())) { return false; }
 		
-		$vs_cache_key = caMakeCacheKeyFromOptions($pa_options, "{$vn_id}/{$pn_type_id}");
+		$vs_cache_key = caMakeCacheKeyFromOptions($pa_options ?? [], "{$vn_id}/{$pn_type_id}");
 		if (isset(self::$s_screen_cache[$vs_cache_key])) { return self::$s_screen_cache[$vs_cache_key]; }
 		if (!($t_instance = Datamodel::getInstanceByTableNum($this->get('editor_type')))) { return null; }
 		
 		if($t_instance instanceof BaseRelationshipModel) {
 			$va_types = $t_instance->getRelationshipTypes();
-		} else {
+		} elseif(method_exists($t_instance, 'getTypeList')) {
 			$va_types = $t_instance->getTypeList();	
+		} else {
+			$va_types = [];
 		}
 		$o_db = $this->getDb();
 		
@@ -428,7 +437,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 						SELECT screen_id 
 						FROM ca_editor_ui_screens_x_user_groups
 						WHERE
-							group_id IN (?)
+							group_id IN (?) AND (access > 0)
 					)
 				)";
 				$va_params[] = array_keys($va_groups);
@@ -441,7 +450,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 						SELECT screen_id 
 						FROM ca_editor_ui_screens_x_roles
 						WHERE
-							role_id IN (?)
+							role_id IN (?) AND (access > 0)
 					)
 				)";
 				$va_params[] = array_keys($va_roles);
@@ -483,7 +492,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		while($qr_res->nextRow()) {
 		    if ($vb_ids_only) { $va_ids[] = $qr_res->get('screen_id'); continue; }
 		    
-			if (!$va_screens[$vn_screen_id = $qr_res->get('screen_id')][$vn_screen_locale_id = $qr_res->get('locale_id')]) {
+			if (!($va_screens[$vn_screen_id = $qr_res->get('screen_id')][$vn_screen_locale_id = $qr_res->get('locale_id')] ?? null)) {
 				$va_screens[$vn_screen_id][$vn_screen_locale_id] = $qr_res->getRow();
 				if ((bool)$va_screens[$vn_screen_id][$vn_screen_locale_id]['is_default']) {
 					$va_screens[$vn_screen_id][$vn_screen_locale_id]['isDefault'] = "◉";
@@ -493,6 +502,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 			
 			if($qr_res->get('restriction_type_id')) {
 				$vs_key_to_add = ($t_instance instanceof BaseRelationshipModel) ? 'type_code' : 'name_plural';
+				if(!isset($va_types[$qr_res->get('restriction_type_id')])) { continue; }
 				$va_screens[$vn_screen_id][$vn_screen_locale_id]['typeRestrictions'][$qr_res->get('restriction_type_id')] = $va_types[$qr_res->get('restriction_type_id')][$vs_key_to_add];
 			}
 		}
@@ -523,7 +533,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		foreach($va_screens as $vn_screen_id => $va_screen_labels_by_locale) {
 			if (is_array($va_screens_with_bundles) && !isset($va_screens_with_bundles[$vn_screen_id])) { unset($va_screens[$vn_screen_id]); continue; }
 			foreach($va_screen_labels_by_locale as $vn_locale_id => $va_restriction_info) {
-				if (!is_array($va_screens[$vn_screen_id][$vn_locale_id]['typeRestrictions'])) { continue; }
+				if (!is_array($va_screens[$vn_screen_id][$vn_locale_id]['typeRestrictions'] ?? null)) { continue; }
 				$va_screens[$vn_screen_id][$vn_locale_id]['typeRestrictionsForDisplay'] = join(', ', $va_screens[$vn_screen_id][$vn_locale_id]['typeRestrictions']);
 			}
 		}
@@ -614,6 +624,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		if ($vn_user_id = $po_request->getUserID()) {
 			$t_user = $po_request->getUser();
 			
+			$acc = null;
 			// Check for user access
 			$qr_users = $t_user->getDb()->query("
 				SELECT screen_id, user_id, access 
@@ -621,8 +632,9 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 				WHERE
 					user_id = ? AND screen_id = ?", array($vn_user_id, $vn_screen_id));
 					
-			if ($qr_users->nextRow()) {
-				return (int)$qr_users->get('access');
+			while ($qr_users->nextRow()) {
+				$uacc = (int)$qr_users->get('access');
+				if(($uacc > $acc) || is_null($acc)) { $acc = $uacc; }
 			}
 			
 			// Check for group access
@@ -634,8 +646,9 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 					WHERE
 						group_id IN (?) AND screen_id = ?", array(array_keys($va_groups), $vn_screen_id));
 						
-				if ($qr_groups->nextRow()) {
-					return (int)$qr_groups->get('access');
+				while ($qr_groups->nextRow()) {
+					$uacc = (int)$qr_groups->get('access');
+					if(($uacc > $acc) || is_null($acc)) { $acc = $uacc; }
 				}
 			}		
 			
@@ -648,10 +661,12 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 					WHERE
 						role_id IN (?) AND screen_id = ?", array(array_keys($va_roles), $vn_screen_id));
 						
-				if ($qr_roles->nextRow()) {
-					return (int)$qr_roles->get('access');
+				while ($qr_roles->nextRow()) {
+					$uacc = (int)$qr_roles->get('access');
+					if(($uacc > $acc) || is_null($acc)) { $acc = $uacc; }
 				}
-			}			
+			}	
+			if(!is_null($acc)) { return $acc; }	
 		}
 		
 		$qr_all = $t_user->getDb()->query("
@@ -726,7 +741,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 	public function getScreenBundlePlacements($pm_screen, $pn_type_id=null, $pa_options=null) {
 		if (!($vn_id = $this->getPrimaryKey())) { return false; }
 		
-		$vs_cache_key = caMakeCacheKeyFromOptions($pa_options, "{$vn_id}/{$pm_screen}/{$pn_type_id}");
+		$vs_cache_key = caMakeCacheKeyFromOptions($pa_options ?? [], "{$vn_id}/{$pm_screen}/{$pn_type_id}");
 		
 		if (isset(self::$s_screen_bundle_cache[$vs_cache_key])) { return self::$s_screen_bundle_cache[$vs_cache_key]; }
 		
@@ -762,7 +777,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 			$va_tmp['settings'] = $qr_res->getVars('settings');
 			
 			$va_types = [];
-			if (isset($va_tmp['settings']['bundleTypeRestrictions'])) {
+			if (isset($va_tmp['settings']['bundleTypeRestrictions']) && is_array($va_tmp['settings']['bundleTypeRestrictions']) && sizeof($va_tmp['settings']['bundleTypeRestrictions'])) {
 				$va_types = $va_tmp['settings']['bundleTypeRestrictions'];
 				if ($va_types && !is_array($va_types)) { $va_types = [$va_types]; }
 				
@@ -792,18 +807,22 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 	 * @param string $ps_bundle_name
 	 * @param RequestHTTP $po_request
 	 * @param array $pa_options Options include:
-	 *		user_id = User_id to apply access control for
+	 *		user_id = User_id to apply access control for. [Default is current user]
+	 &		type_id = Restrict to type. [Default is null]
 	 */
 	public function getScreenWithBundle($ps_bundle_name, $po_request=null, $pa_options=null) {
 		if (!$this->getPrimaryKey()) { return null; }
 		if(!caGetOption('user_id', $pa_options, null) && $po_request) { $pa_options['user_id'] = $po_request->getUserID(); }
+		$type_id = caGetOption('type_id', $pa_options, null);
 		
-		foreach($this->getScreens(null, $pa_options) as $va_screen) {
+		foreach($this->getScreens($type_id, $pa_options) as $va_screen) {
 			$vn_screen_id = $va_screen['screen_id'];
-			$va_placements = $this->getScreenBundlePlacements('Screen'.$vn_screen_id);
+			$va_placements = $this->getScreenBundlePlacements('Screen'.$vn_screen_id, $type_id, $pa_options);
 			
 			foreach($va_placements as $va_placement) {
 				if ($va_placement['bundle_name'] === $ps_bundle_name) {
+					return 'Screen'.$vn_screen_id;
+				} elseif(str_replace("ca_attribute_", "", $va_placement['bundle_name']) === $ps_bundle_name) {
 					return 'Screen'.$vn_screen_id;
 				}
 			}
@@ -820,6 +839,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 	 * @param RequestHTTP $po_request The current request
 	 * @param array $pa_options Options include:
 	 *		user_id = User_id to apply access control for
+	 *		type_id = 
 	 *
 	 * @return array A list of placement info, one for each placement in the editor
 	 */
@@ -827,7 +847,8 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		if (!($vn_id = $this->getPrimaryKey())) { return null; }
 	    if (!is_array($pa_options)) { $pa_options = []; }
 	    
-	    $vs_cache_key = caMakeCacheKeyFromOptions($pa_options, "{$vn_id}/{$ps_bundle_name}");
+		$type_id = caGetOption('type_id', $pa_options, null);
+	    $vs_cache_key = caMakeCacheKeyFromOptions($pa_options ?? [], "{$vn_id}/{$type_id}/{$ps_bundle_name}");
 		
 		if (isset(self::$s_placements_for_bundle_cache[$vs_cache_key])) { return self::$s_placements_for_bundle_cache[$vs_cache_key]; }
 
@@ -835,7 +856,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		if(!caGetOption('user_id', $pa_options, null) && $po_request) { $pa_options['user_id'] = $po_request->getUserID(); }
 	
 		$va_found = [];
-		foreach($this->getScreens(null, array_merge($pa_options, ['idsOnly' => true])) as $vn_screen_id) {
+		foreach($this->getScreens($type_id, array_merge($pa_options, ['idsOnly' => true])) as $vn_screen_id) {
 			$va_placements = $this->getScreenBundlePlacements('Screen'.$vn_screen_id, null, ['bundleList' => [$ps_bundle_name]]);
 			
 			foreach($va_placements as $va_placement) {
@@ -875,7 +896,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		$va_nav = [];
 		$vn_default_screen_id = null;
 		foreach($va_screens as $va_screen) {
-			$va_screen_restrictions = $va_screen['typeRestrictions'];
+			$va_screen_restrictions = $va_screen['typeRestrictions'] ?? null;
 		    if(is_array($va_screen_restrictions)) { $va_screen_restrictions = caMakeTypeIDList($this->get('editor_type'), array_keys($va_screen_restrictions)); }
 			
 			if(is_array($restrict_to_types) && is_array($va_screen_restrictions) && (sizeof($va_screen_restrictions) > 0)) {
@@ -906,7 +927,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 			);
 			
 			if(isset($pa_options['returnTypeRestrictions']) && $pa_options['returnTypeRestrictions']) {
-				$va_nav['screen_'.$va_screen['screen_id']]['typeRestrictions'] = $va_screen['typeRestrictions'];
+				$va_nav['screen_'.$va_screen['screen_id']]['typeRestrictions'] = $va_screen['typeRestrictions'] ?? null;
 			}
 			
 			if (is_array($pa_options)) {
@@ -917,6 +938,65 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		return array('fragment' => $va_nav, 'defaultScreen' => 'Screen'.$vn_default_screen_id);
 	}
 	# ----------------------------------------
+	/**
+	 * Add bundle placement to screen in currently loaded user interface
+	 *
+	 * @param mixed $pm_screen screen_id, idno or preferred label of screen to add bundle to.
+	 * @param string $ps_bundle_name Name of bundle to add (eg. ca_objects.idno, ca_objects.preferred_labels.name)
+	 * @param array $pa_settings Placement settings array; keys should be valid setting names
+	 * @param int $pn_rank Optional value that determines sort order of bundles in the screen. If omitted, placement is added to the end of the screen.
+	 * @param array $pa_options Optional array of options. Supports the following options:
+	 * 		user_id = if specified then add will fail if specified user does not have edit access for the display
+	 * @return int Returns placement_id of newly created placement on success, false on error
+	 */
+	public function addPlacementToScreen($pm_screen, $ps_bundle_name, $ps_placement_code, $pa_settings, $pn_rank=null, $pa_options=null) {
+	    if(!$this->getPrimaryKey()) { return null; }
+	    if ($t_screen = ca_editor_ui_screens::loadScreen($this->getPrimaryKey(), $pm_screen, $pa_options)) {
+	        return $t_screen->addPlacement($ps_bundle_name, $ps_placement_code, $pa_settings, $pn_rank, $pa_options);
+	    }
+	    return null;
+	}
+	# ----------------------------------------
+	/**
+	 * Add bundle placement to currently loaded screen before a specified bundle
+	 *
+	 * @param mixed $pm_screen screen_id, idno or preferred label of screen to add bundle to.
+	 * @param string $ps_bundle_name Name of bundle to add (eg. ca_objects.idno, ca_objects.preferred_labels.name)
+	 * @param string $ps_placement_code Placement code
+	 * @param array $pa_settings Placement settings array; keys should be valid setting names
+	 * @param string $ps_relative_to_bundle_name_or_placement_code Bundle name or placement code of placement to insert new placement before.
+	 * @param array $pa_options Optional array of options. Supports the following options:
+	 * 		user_id = if specified then add will fail if specified user does not have edit access for the display
+	 * @return int Returns placement_id of newly created placement on success, false on error
+	 */
+	public function addPlacementToScreenBefore($pm_screen, $ps_bundle_name, $ps_placement_code, $pa_settings, $ps_relative_to_bundle_name_or_placement_code, $pa_options=null) {
+	    if(!$this->getPrimaryKey()) { return null; }
+	    if ($t_screen = ca_editor_ui_screens::loadScreen($this->getPrimaryKey(), $pm_screen, $pa_options)) {
+	        return $t_screen->addPlacementBefore($ps_bundle_name, $ps_placement_code, $pa_settings, $ps_relative_to_bundle_name_or_placement_code, $pa_options);
+	    }
+	    return null;
+	}
+	# ----------------------------------------
+	/**
+	 * Add bundle placement to currently loaded screen after a specified bundle
+	 *
+	 * @param mixed $pm_screen screen_id, idno or preferred label of screen to add bundle to.
+	 * @param string $ps_bundle_name Name of bundle to add (eg. ca_objects.idno, ca_objects.preferred_labels.name)
+	 * @param string $ps_placement_code Placement code
+	 * @param array $pa_settings Placement settings array; keys should be valid setting names
+	 * @param string $ps_relative_to_bundle_name_or_placement_code Bundle name or placement code of placement to insert new placement after.
+	 * @param array $pa_options Optional array of options. Supports the following options:
+	 * 		user_id = if specified then add will fail if specified user does not have edit access for the display
+	 * @return int Returns placement_id of newly created placement on success, false on error
+	 */
+	public function addPlacementToScreenAfter($pm_screen, $ps_bundle_name, $ps_placement_code, $pa_settings, $ps_relative_to_bundle_name_or_placement_code, $pa_options=null) {
+	    if(!$this->getPrimaryKey()) { return null; }
+	    if ($t_screen = ca_editor_ui_screens::loadScreen($this->getPrimaryKey(), $pm_screen, $pa_options)) {
+	        return $t_screen->addPlacementAfter($ps_bundle_name, $ps_placement_code, $pa_settings, $ps_relative_to_bundle_name_or_placement_code, $pa_options);
+	    }
+	    return null;
+	}
+	# ----------------------------------------
 	# Static
 	# ----------------------------------------
 	/**
@@ -925,7 +1005,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 	public static function getUIList($pm_table=null, $pn_user_id=null, $pn_type_id=null){
 		$pn_table_num = Datamodel::getTableNum($pm_table);
 		if ($pn_user_id) { $vs_key = $pn_user_id; } else { $vs_key = "_all_"; }
-		if (ca_editor_uis::$s_available_ui_cache[$pm_table.'/'.$pn_user_id]) { return ca_editor_uis::$s_available_ui_cache[$pm_table.'/'.$pn_user_id]; }
+		if (ca_editor_uis::$s_available_ui_cache[$pm_table.'/'.$pn_user_id] ?? null) { return ca_editor_uis::$s_available_ui_cache[$pm_table.'/'.$pn_user_id]; }
 		$o_db = new Db();
 		
 		$va_wheres = $va_params = [];
@@ -992,12 +1072,12 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 	 */
 	public static function getAvailableUIs($pn_table_num, $po_request, $pn_type_id=null) {
 		$pn_user_id = $po_request->getUserID();
-		if (ca_editor_uis::$s_available_ui_cache[$pn_table_num.'/'.$pn_type_id.'/'.$pn_user_id]) { return ca_editor_uis::$s_available_ui_cache[$pn_table_num.'/'.$pn_type_id.'/'.$pn_user_id]; }
+		if (ca_editor_uis::$s_available_ui_cache[$pn_table_num.'/'.$pn_type_id.'/'.$pn_user_id] ?? null) { return ca_editor_uis::$s_available_ui_cache[$pn_table_num.'/'.$pn_type_id.'/'.$pn_user_id]; }
 		
 		if ($pn_type_id) {
 			$va_ui_list = $po_request->user->_getUIListByType($pn_table_num);
-			if (!is_array($va_uis = $va_ui_list[$pn_type_id])) { $va_uis = []; }
-			if (is_array($va_ui_list['__all__'])) {
+			if (!is_array($va_uis = ($va_ui_list[$pn_type_id] ?? null))) { $va_uis = []; }
+			if (is_array($va_ui_list['__all__'] ?? null)) {
 				$va_uis = $va_uis + $va_ui_list['__all__'];
 			}
 		} else {
@@ -1503,4 +1583,12 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		];
 	}
 	# ----------------------------------------
+
+	public function invalidateScreenCache($po_screen, $pa_options=null){
+		if (!($vn_id = $this->getPrimaryKey())) { return false; }
+		$pn_type_id = $po_screen->getTypeID();
+		$vs_cache_key = caMakeCacheKeyFromOptions([], "{$vn_id}/{$pn_type_id}");
+
+		unset(ca_editor_uis::$s_screen_cache[$vs_cache_key]);
+	}
 }

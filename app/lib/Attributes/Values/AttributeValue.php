@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2016 Whirl-i-Gig
+ * Copyright 2008-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -49,9 +49,24 @@ abstract class AttributeValue extends BaseObject {
 
 	# ------------------------------------------------------------------
 	public function __construct($pa_value_array=null) {
+ 		global $_ca_attribute_settings;
+		
 		parent::__construct();
 		if (is_array($pa_value_array)) {
 			$this->loadValueFromRow($pa_value_array);
+		}
+		
+		// Add options relevant for all attributes, regardless of type
+		if(is_array($settings = $_ca_attribute_settings[$c = get_called_class()])) {
+			$settings['includeSourceData'] = [
+				'formatType' => FT_NUMBER,
+				'displayType' => DT_CHECKBOXES,
+				'default' => 0,
+				'width' => 1, 'height' => 1,
+				'label' => _t('Include source information?'),
+				'description' => _t('Check this option if source information can be specified for this attribute. (The default is no.)')
+			];
+			$_ca_attribute_settings[$c] = $settings;
 		}
 	}
 	# ------------------------------------------------------------------
@@ -66,7 +81,7 @@ abstract class AttributeValue extends BaseObject {
 
 		$this->ops_sort_value = null;
 		if ($vs_sort_field = $this->sortField()) {
-			$this->ops_sort_value = $pa_value_array[$vs_sort_field];
+			$this->ops_sort_value = $pa_value_array[$vs_sort_field] ?? null;
 		}
 	}
 	# ------------------------------------------------------------------
@@ -129,12 +144,32 @@ abstract class AttributeValue extends BaseObject {
 	}
 	# ------------------------------------------------------------------
 	/**
+	 * Returns sortable value for metadata value
+	 *
+	 * @param string $value
+	 * 
+	 * @return string
+	 */
+	public function sortableValue(?string $value) {
+		return null;
+	}
+	# ------------------------------------------------------------------
+	/**
 	 * Returns name of field in ca_attribute_values to use for sort operations
 	 *
 	 * @return string Name of sort field
 	 */
 	public function sortField() {
 		return null;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Returns name of field in ca_attribute_values to use for query operations
+	 *
+	 * @return string Name of sort field
+	 */
+	public function queryFields() : ?array {
+		return ['value_longtext1'];
 	}
 	# ------------------------------------------------------------------
 	/**

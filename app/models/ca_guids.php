@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -161,20 +161,7 @@ class ca_guids extends BaseModel {
 	 */
 	static $s_lock_resource = null;
 
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
+
 	# ------------------------------------------------------
 	/**
 	 * Get GUID for given row
@@ -201,7 +188,7 @@ class ca_guids extends BaseModel {
 			$vs_guid = $qr_guid->get('guid');
 			return $vs_guid;
 		} else {
-			if(!caGetOption('dontAdd', $pa_options) && ($t_instance = Datamodel::getInstance($pn_table_num, true))) {
+			if(!caGetOption('dontAdd', $pa_options, false) && ($t_instance = Datamodel::getInstance($pn_table_num, true))) {
 				if($vs_guid = self::addForRow($pn_table_num, $pn_row_id, $pa_options)) {
 					return $vs_guid;
 				}
@@ -260,6 +247,36 @@ class ca_guids extends BaseModel {
 	}
 	# ------------------------------------------------------
 	/**
+	 * Get row id and table num for given GUID
+	 *
+	 * @param array $guids
+	 * @param array $options
+	 * @return array|null
+	 * 			keys are 'row_id' and 'table_num'
+	 */
+	public static function getInfoForGUIDs(array $guids, ?array $options=null) : ?array {
+		if(!sizeof($guids)) { return null; }
+		
+		/** @var Transaction $o_tx */
+		if($o_tx = caGetOption('transaction', $options, null)) {
+			$o_db = $o_tx->getDb();
+		} else {
+			$o_db = new Db();
+		}
+
+		$qr_guid = $o_db->query('
+			SELECT table_num, row_id FROM ca_guids WHERE guid IN (?)
+		', [$guids]);
+
+		$ret = [];
+		while($qr_guid->nextRow()) {
+			$ret[] = $qr_guid->getRow();
+		}
+
+		return $ret;
+	}
+	# ------------------------------------------------------
+	/**
 	 * Return access value for row identified by GUID
 	 *
 	 * @param string $ps_guid
@@ -276,13 +293,23 @@ class ca_guids extends BaseModel {
 		
 		if (!($va_info = self::getInfoForGUID($ps_guid))) { return null; }
 
+        $pa_access = array_map("intval", $pa_access);
         
         if (in_array(Datamodel::getTableName($va_info['table_num']), ['ca_lists', 'ca_list_items', 'ca_list_labels', 'ca_list_item_labels', 'ca_object_lots', 'ca_object_lot_labels'])) {   //TODO: make tables for which we should ignore access configurable
             return true;
         } elseif (Datamodel::isLabel($va_info['table_num'])) {
             if (($t_label = Datamodel::getInstanceByTableNum($va_info['table_num'], true)) && $t_label->load($va_info['row_id'])) {
-                if (($t_subject = $t_label->getSubjectTableInstance()) && $t_subject->hasField('access')) {
-                    $return = in_array($t_subject->get('access'), $pa_access);
+                if (($t_subject = $t_label->getSubjectTableInstance())) {
+                	if ($t_subject->hasField('deleted')) {
+						if((int)$t_subject->get('deleted') !== 0) {
+							return false;
+						}
+					}
+                	if ($t_subject->hasField('access')) {
+						if(!in_array((int)$t_subject->get('access'), $pa_access, true)) {
+							return false;
+						}
+					}
                 }
                 return true;
             }
@@ -294,17 +321,29 @@ class ca_guids extends BaseModel {
                 $t_rel->load($va_info['row_id']);
             
                 $vb_left = $vb_right = null;
-                if ($t_left->hasField('access') && ($t_left->load($t_rel->get($t_rel->getLeftTableFieldName())))) {
-                    $vb_left = in_array($t_left->get('access'), $pa_access);
+                
+                if($t_left->load($t_rel->get($t_rel->getLeftTableFieldName()))) {
+					if ($t_left->hasField('deleted')) {
+						if((int)$t_left->get('deleted') !== 0) { return false; }
+					}
+					if ($t_left->hasField('access')) {
+						if (!in_array((int)$t_left->get('access'), $pa_access, true)) { return false; }
+					}
+					$vb_left = true;
+				}
+                if ($t_right->load($t_rel->get($t_rel->getRightTableFieldName()))) {
+                	if ($t_right->hasField('deleted')) {
+						if((int)$t_right->get('deleted') !== 0) { return false; }
+					}
+					if ($t_right->hasField('access')) {
+						if (!in_array((int)$t_right->get('access'), $pa_access, true)) { return false; }
+					}
+					$vb_right = true;
                 }
-                if ($t_right->hasField('access') && ($t_right->load($t_rel->get($t_rel->getRightTableFieldName())))) {
-                    $vb_right = in_array($t_right->get('access'), $pa_access);
-                }
-                if (($vb_left === false) || ($vb_right === false)) { return false; }
                 if (is_null($vb_left) && is_null($vb_right)) { return null; }
                 return true;
             }
-        } elseif(in_array($va_info['table_num'], [3,4])) {
+        } elseif(in_array((int)$va_info['table_num'], [3,4], true)) {
             if ($va_info['table_num'] == 3) {
                 $t_attr_val = new ca_attribute_values($va_info['row_id']);
                 $t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
@@ -320,13 +359,13 @@ class ca_guids extends BaseModel {
             if (!Datamodel::getFieldInfo($vn_table_num, 'access')) { return false; }        // TODO: support attributes on non-acess control tables (eg. config tables; interstitial attributes on relationships)
             $qr_guid = $o_db->query('
                 SELECT access FROM '.Datamodel::getTableName($vn_table_num)." WHERE ".Datamodel::primaryKey($vn_table_num).' = ?
-            ', [$vn_row_id]);
+            '.(Datamodel::getFieldInfo($vn_table_num, 'deleted') ? ' AND deleted = 0' : ''), [$vn_row_id]);
 
             if($qr_guid->nextRow()) {
-                return in_array((int)$qr_guid->get('access'), $pa_access);
+                return in_array((int)$qr_guid->get('access'), $pa_access, true);
             }
             return false;
-        } elseif(in_array($va_info['table_num'], [105])) {
+        } elseif(in_array((int)$va_info['table_num'], [105], true)) {
             
                 $qr_guid = $o_db->query("
                     SELECT s.access 
@@ -343,10 +382,10 @@ class ca_guids extends BaseModel {
             if (!Datamodel::getFieldInfo($va_info['table_num'], 'access')) { return null; }
             $qr_guid = $o_db->query('
                 SELECT access FROM '.Datamodel::getTableName($va_info['table_num'])." WHERE ".Datamodel::primaryKey($va_info['table_num']).' = ?
-            ', [$va_info['row_id']]);
+            '.(Datamodel::getFieldInfo($va_info['table_num'], 'deleted') ? ' AND deleted = 0' : ''), [$va_info['row_id']]);
 
             if($qr_guid->nextRow()) {
-                return in_array((int)$qr_guid->get('access'), $pa_access);
+                return in_array((int)$qr_guid->get('access'), $pa_access, true);
             }
         }
 
@@ -382,6 +421,58 @@ class ca_guids extends BaseModel {
 		if(!$qr_record->nextRow()) { return false; }
 
 		return (bool) $qr_record->get('deleted');
+	}
+	# ------------------------------------------------------
+	/**
+	 * Return GUIDs for table
+	 *
+	 * @param string $table
+	 * @param array $options Options include:
+	 *		limit = Maximum number of GUIDs to return. [Default is 1000]
+	 * @return array List of guids
+	 */
+	public static function guidsForTable($table, ?array $options=null) : array {
+		if(!($table_num = Datamodel::getTableNum($table))) { return []; }
+		if($o_tx = caGetOption('transaction', $options, null)) {
+			$o_db = $o_tx->getDb();
+		} else {
+			$o_db = new Db();
+		}
+		$limit = caGetOption('limit', $options, 1000);
+		$qr = $o_db->query(
+			"SELECT * FROM ca_guids WHERE table_num = ? LIMIT {$limit}", [$table_num]
+		);
+		$guids = $qr->getAllFieldValues('guid');
+		
+		return is_array($guids) ? $guids : [];
+	}
+	# ------------------------------------------------------
+	/**
+	 * Remove GUIDs for table that do not reference a valid row. Note rows marked as deleted
+	 * are considered valid.
+	 *
+	 * @param string $table
+	 * @param array $options No options are available.
+	 * @return bool
+	 */
+	public static function removeUnusedGUIDs($table, ?array $options=null) : bool {
+		if(!($table_num = Datamodel::getTableNum($table))) { return false; }
+		if($o_tx = caGetOption('transaction', $options, null)) {
+			$o_db = $o_tx->getDb();
+		} else {
+			$o_db = new Db();
+		}
+		$pk = Datamodel::primaryKey($table);
+		
+		try {
+			$qr = $o_db->query(
+				"DELETE FROM ca_guids WHERE table_num = ? AND row_id NOT IN (SELECT {$pk} FROM {$table})", [$table_num]
+			);
+		} catch (DatabaseException $e) {
+			return false;
+		}
+		
+		return true;
 	}
 	# ------------------------------------------------------
 }

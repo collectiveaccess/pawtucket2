@@ -36,7 +36,6 @@
 
 require_once(__CA_LIB_DIR__."/ApplicationPluginManager.php");
 require_once(__CA_LIB_DIR__."/WidgetManager.php");
-require_once(__CA_LIB_DIR__."/Datamodel.php");
 require_once(__CA_LIB_DIR__."/SyncableBaseModel.php");
  	
 
@@ -204,8 +203,8 @@ class ca_user_roles extends BaseModel {
 	#    the record identified by the primary key value
 	#
 	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
+	public function __construct($id=null, ?array $options=null) {
+		parent::__construct($id, $options);	# call superclass constructor
 		
  		$this->opo_app_plugin_manager = new ApplicationPluginManager();
 		$this->opo_widget_manager = new WidgetManager();
@@ -312,7 +311,10 @@ class ca_user_roles extends BaseModel {
 			ca_user_roles::$s_bundle_list[$ps_table] = array_keys($t_ui_screens->getAvailableBundles($ps_table,array('dontCache' => true)));
 		}
 		if(!in_array($ps_bundle, ca_user_roles::$s_bundle_list[$ps_table])) {
-			return false; 
+			$ps_bundle = "ca_attribute_{$ps_bundle}";	// rewrite straight element codes with prefix
+			if(!in_array($ps_bundle, ca_user_roles::$s_bundle_list[$ps_table])) {
+				return false; 
+			}
 		}
 
 		$va_vars['bundle_access_settings'][$ps_table.".".$ps_bundle] = $pn_access;
@@ -532,13 +534,13 @@ class ca_user_roles extends BaseModel {
 			// expand actions that need expanding
 			foreach($va_raw_actions as $vs_group => $va_group_info) {
 				$va_new_actions = array();
-				if(!is_array($va_group_info["actions"])) { $va_group_info["actions"] = array(); }
+				if(!is_array($va_group_info["actions"] ?? null)) { $va_group_info["actions"] = array(); }
 				foreach($va_group_info["actions"] as $vs_action_key => $va_action){
 					if(isset($va_action['requires']) && is_array($va_action['requires']) && !ca_user_roles::_evaluateActionRequirements($va_action['requires'])) {
 						unset($va_raw_actions[$vs_group]["actions"][$vs_action_key]);
 						continue;
 					}
-					if(is_array($va_action["expand_types"]) && strlen($va_action["expand_types"]["table"])>0){
+					if(is_array($va_action["expand_types"] ?? null) && strlen($va_action["expand_types"]["table"])>0){
 						$t_instance = Datamodel::getInstanceByTableName($va_action["expand_types"]["table"], true);
 						if(method_exists($t_instance, "getTypeList")){
 							$va_type_list = $t_instance->getTypeList();

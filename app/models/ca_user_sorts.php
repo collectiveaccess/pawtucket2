@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2016-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -211,20 +211,7 @@ class ca_user_sorts extends BaseModel {
 	 */
 	static $s_lock_resource = null;
 
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
+
 	# ------------------------------------------------------
 	/**
 	 * Add sort bundle to this sort
@@ -285,7 +272,7 @@ class ca_user_sorts extends BaseModel {
 	public function getSortBundleNames() {
 		if(!$this->getPrimaryKey()) { return false; }
 
-		$qr_sort_bundles = $this->getDb()->query('SELECT bundle_name,`rank` FROM ca_user_sort_items WHERE sort_id=? ORDER BY `rank`, item_id', $this->getPrimaryKey());
+		$qr_sort_bundles = $this->getDb()->query('SELECT bundle_name, `rank` FROM ca_user_sort_items WHERE sort_id=? ORDER BY `rank`, item_id', $this->getPrimaryKey());
 
 		$va_sort_bundle_names = array();
 		while($qr_sort_bundles->nextRow()) {

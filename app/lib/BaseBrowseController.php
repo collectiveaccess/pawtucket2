@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2017 Whirl-i-Gig
+ * Copyright 2009-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -35,7 +35,6 @@
   */
  
 	require_once(__CA_LIB_DIR__."/BaseFindController.php");
-	require_once(__CA_LIB_DIR__."/Datamodel.php");
 	require_once(__CA_MODELS_DIR__."/ca_relationship_types.php");
  	require_once(__CA_APP_DIR__.'/helpers/browseHelpers.php');
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
@@ -53,6 +52,10 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
+ 			if ($po_request->config->get($this->ops_tablename.'_disable_browse')) {
+				throw new ApplicationException(_t('Browse interface is disabled'));
+			}
+			
  			if ($this->ops_tablename) {
 				if ($va_items_per_page_config = $po_request->config->get('items_per_page_options_for_'.$this->ops_tablename.'_browse')) {
 					$this->opa_items_per_page = $va_items_per_page_config;
@@ -87,8 +90,7 @@
 			AssetLoadManager::register('hierBrowser');
  			
  			$va_access_values = caGetUserAccessValues($this->request);
- 			
- 			
+ 			$va_criteria = null;
  			
  			//
  			// Enforce type restriction, if defined
@@ -113,7 +115,7 @@
 			// Get elements of result context
  			$vn_page_num 			= $this->opo_result_context->getCurrentResultsPageNumber();
  			
- 			if ($this->opb_type_restriction_has_changed || ($this->request->getParameter('reset', pString) == 'clear')) { 
+ 			if ($this->opo_result_context->typeRestrictionHasChanged() || ($this->request->getParameter('reset', pString) == 'clear')) { 
  				$this->opo_browse->removeAllCriteria(); 
  				$this->opo_result_context->setSearchExpression($this->opo_browse->getBrowseID());
  			}
@@ -133,6 +135,13 @@
  				$vs_view = array_shift($va_tmp); 
  			}
  			
+ 			$va_criteria = $this->opo_browse->getCriteria() ?? [];
+ 			
+ 			if((sizeof($va_criteria) === 0) && ($default_sort = $this->request->config->get($this->ops_tablename.'_reset_sort_on_new_browse'))) {
+				$this->opo_result_context->setCurrentSort($default_sort);
+				$this->opo_result_context->setCurrentSortDirection('ASC');
+			}
+ 			
  			if (!($vs_sort 	= $this->opo_result_context->getCurrentSort())) { 
  				$va_tmp = array_keys($this->opa_sorts);
  				$vs_sort = array_shift($va_tmp); 
@@ -147,32 +156,23 @@
  			if (
  				$this->opo_browse->criteriaHaveChanged() 
  				&& 
- 				(is_array($va_criteria = $this->opo_browse->getCriteria()) && (sizeof($va_criteria) == 1))
+ 				(is_array($va_criteria) && (sizeof($va_criteria) == 1))
  			) {
  				$va_tmp = array_keys($va_criteria);
   				
  				$va_tmp1 = array_keys($va_criteria[$va_tmp[0]]);
  				$va_facet_info = $this->opo_browse->getInfoForFacet($va_tmp[0]);
  				
- 				if ($this->request->config->get('redirect_to_'.$va_facet_info['table'].'_detail_if_is_first_facet')) {
+ 				if ($this->request->config->get('redirect_to_'.($va_facet_info['table'] ?? null).'_detail_if_is_first_facet')) {
  					$t_table = Datamodel::getInstanceByTableName($va_facet_info['table'], true);
- 					
- 					$va_newmuseum_hack_occurrence_type_ids = $this->request->config->getList('newmuseum_hack_browse_should_redirect_occurrence_types_to_object_details');
- 					if (is_array($va_newmuseum_hack_occurrence_type_ids) && sizeof($va_newmuseum_hack_occurrence_type_ids) && ($va_facet_info['table'] == 'ca_occurrences')) {
- 						if ($t_table->load($va_tmp1[0])) {
- 							if (in_array($t_table->getTypeID(), $va_newmuseum_hack_occurrence_type_ids)) {
- 								if (sizeof($va_objects = $t_table->getRelatedItems('ca_objects'))) {
- 									$va_object = array_shift($va_objects);
- 									$vn_object_id = $va_object['object_id'];
- 									$this->response->setRedirect(caNavUrl($this->request, 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id)));
- 									return;
- 								}
- 							}
- 						}
- 					}
  					$this->response->setRedirect(caNavUrl($this->request, 'Detail', ucfirst($t_table->getProperty('NAME_SINGULAR')), 'Show', array($t_table->primaryKey() => $va_tmp1[0])));
  					return;
  				}
+ 			}
+ 			
+ 			if(((!is_array($va_criteria) || sizeof($va_criteria) === 0)) && ($default_sort = $this->request->config->get($this->ops_tablename.'_browse_default_sort'))) {
+				$this->opo_result_context->setCurrentSort($vs_sort = $default_sort);
+				$this->opo_result_context->setCurrentSortDirection($vs_sort_direction = 'ASC');
  			}
  			
  			MetaTagManager::setWindowTitle(_t('%1 browse', $this->browseName('plural')));
@@ -189,7 +189,11 @@
 			if ($vs_facet_group = $this->request->config->get($this->ops_tablename.(($this->opo_browse->numCriteria() < 1) ? '_browse_facet_group' : '_browse_refine_facet_group'))) {
 				$this->opo_browse->setFacetGroup($vs_facet_group);
 			}
- 			$this->opo_browse->execute(array('checkAccess' => $va_access_values, 'no_cache' => !$this->opo_result_context->cacheIsValid(), 'rootRecordsOnly' => $this->view->getVar('hide_children')));
+ 			$this->opo_browse->execute([
+ 				'checkAccess' => $va_access_values, 
+ 				'no_cache' => !$this->opo_result_context->cacheIsValid(), 
+ 				'rootRecordsOnly' => $this->view->getVar('hide_children'), 
+ 				'filterDeaccessionedRecords' => $this->view->getVar('hide_deaccession')]);
  			$this->opo_result_context->validateCache();
  			
 			$this->opo_result_context->setSearchExpression($this->opo_browse->getBrowseID());
@@ -210,7 +214,7 @@
 			$this->view->setVar('result_context', $this->opo_result_context);
 			
  			$this->view->setVar('criteria', $va_criteria = $this->opo_browse->getCriteriaWithLabels());
- 			$this->view->setVar('available_facets', $this->opo_browse->getInfoForAvailableFacets());
+ 			$this->view->setVar('available_facets', $va_facets_with_info);
  			
  			$this->view->setVar('facets_with_content', $this->opo_browse->getInfoForFacetsWithContent());
  			$this->view->setVar('facet_info', $va_facet_info = $this->opo_browse->getInfoForFacets());
@@ -244,17 +248,21 @@
 			$this->view->setVar('num_pages', $vn_num_pages = ceil($vn_num_hits/$vn_items_per_page));
 			if ($vn_page_num > $vn_num_pages) { $vn_page_num = 1; }
 			
-			if ($pa_options['output_format']) {
+			if ($pa_options['output_format'] ?? null) {
 				$vo_result = $this->opo_browse->getResults(array('sort' => $vs_sort, 'sort_direction' => $vs_sort_direction));
 			} else {
 				$vo_result = $this->opo_browse->getResults(array('sort' => $vs_sort, 'sort_direction' => $vs_sort_direction, 'start' => ($vn_page_num - 1) * $vn_items_per_page, 'limit' => $vn_items_per_page));
 			}
 			
+			$result_desc = ($this->request->user->getPreference('show_search_result_desc') === 'show') ? $this->opo_browse->getSearchResultDesc() : [];
+			$this->view->setVar('result_desc', $result_desc);
+			$this->opo_result_context->setResultDescription($result_desc);
+			
 			// Only prefetch what we need
 			$vo_result->setOption('prefetch', $vn_items_per_page);
 			
 			if ($vo_result) {
-				if ($vb_criteria_have_changed || $vb_sort_has_changed) {
+				if ($vb_criteria_have_changed || $vb_sort_has_changed || $this->type_restriction_has_changed) {
 					// Put the results id list into the results context - we used this for previous/next navigation
 					$vo_full_result = $this->opo_browse->getResults(array('sort' => $vs_sort, 'sort_direction' => $vs_sort_direction));
 					$this->opo_result_context->setResultList($vo_full_result->getPrimaryKeyValues());
@@ -326,7 +334,7 @@
 			
 			$this->_setBottomLineValues($vo_result, $va_display_list, $t_display);
 			
- 			switch($pa_options['output_format']) {
+ 			switch($pa_options['output_format'] ?? null) {
  				# ------------------------------------
  				case 'LABELS':
  					$this->_genLabels($vo_result, $this->request->getParameter("label_form", pString), _t('Browse'), _t('Browse'));
@@ -367,12 +375,7 @@
  				
  			$vs_cache_key = md5(join("/", array($ps_facet_name,$vs_show_group,$vs_grouping,$vm_id)));
  			$va_facet_info = $this->opo_browse->getInfoForFacet($ps_facet_name);
- 			
- 			//if (($va_facet_info['group_mode'] != 'hierarchical') && ($vs_content = $this->opo_browse->getCachedFacetHTML($vs_cache_key))) { 
- 			//	$this->response->addContent($vs_content);
- 			//	return;
- 			//}
- 			
+ 					
  			// Enforce type restriction
  			$this->opo_browse->setTypeRestrictions(array($this->opn_type_restriction_id));
  			
@@ -390,18 +393,6 @@
  					$this->view->setVar('modify', $vm_id);
  				}
  			}
- 			
- 			// Using the back-button can cause requests for facets that are no longer available
- 			// In these cases we reset the browse.
- 			// if (!($va_facet = $this->opo_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values)))) {
-//  				 $this->opo_browse->removeAllCriteria();
-//  				 $this->opo_browse->execute();
-//  				 $va_facet = $this->opo_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values));
-//  				 $va_facet_info = $this->opo_browse->getInfoForFacet($ps_facet_name);
-//  				 
-// 				$this->opo_result_context->setSearchExpression($this->opo_browse->getBrowseID());
-// 				$this->opo_result_context->saveContext();
-//  			}
  			
  			$this->view->setVar('browse_last_id', (int)$vm_id ? (int)$vm_id : (int)$this->opo_result_context->getParameter($ps_facet_name.'_browse_last_id'));
  			$this->view->setVar('facet', $va_facet);
@@ -460,7 +451,7 @@
  			if(!is_array($va_facet_info = $this->opo_browse->getInfoForFacet($ps_facet_name))) { return null; }
  			
  			$va_facet = $this->opo_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values));
-
+ 				
  			if (in_array($va_facet_info['type'], ['current_value', 'location']) ){
  				//
  				// Hierarchical display of current location facets is only available when pure storage location tracking (ie. only 

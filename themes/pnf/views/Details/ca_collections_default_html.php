@@ -43,10 +43,22 @@
 						print "<div class='unit'><H6>Part Of</H6>".$vs_collection_parent."</div>";
 					}
 ?>
+					
 					{{{<ifdef code="ca_collections.description"><div class='unit'>^ca_collections.description</div></ifdef>}}}
-					{{{<ifcount code="ca_collections.children" min="1"><div class='unit'><h6>Contains</h6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifdef code="ca_collections.collection_website"><div class='unit'><h6><a href="^ca_collections.collection_website" target="_blank">Collection Website <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.library_OPAC"><div class='unit'><h6><a href="^ca_collections.library_OPAC" target="_blank">Library OPAC <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
+					
+					{{{<ifdef code="ca_collections.collection_address">
+						<div class='unit text-center'><h6>Address</h6>
+							<ifdef code="ca_collections.collection_address.collection_address_data1">^ca_collections.collection_address.collection_address_data1<br/></ifdef>
+							<ifdef code="ca_collections.collection_address.collection_address_data2">^ca_collections.collection_address.collection_address_data2<br/></ifdef>
+							<ifdef code="ca_collections.collection_address.collection_city">^ca_collections.collection_address.collection_city, </ifdef>
+							<ifdef code="ca_collections.collection_address.collection_stateprovince">^ca_collections.collection_address.collection_stateprovince </ifdef>
+							<ifdef code="ca_collections.collection_address.collection_postalcode">^ca_collections.collection_address.collection_postalcode </ifdef>
+							<ifdef code="ca_collections.collection_address.collection_country">^ca_collections.collection_address.collection_country</ifdef>						
+						</div></ifdef>}}}
+
+					{{{<ifcount code="ca_collections.children" min="1"><div class='unit text-center'><h6>Contains</h6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
+					{{{<ifdef code="ca_collections.collection_website"><div class='unit text-center'><h6><a href="^ca_collections.collection_website" target="_blank">Collection Website <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.library_OPAC"><div class='unit text-center'><h6><a href="^ca_collections.library_OPAC" target="_blank">Library OPAC <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
 				</div>
 				<div class='col-md-4 col-lg-4 col-lg-offset-1'>
 <?php
@@ -65,18 +77,7 @@
 					}
 					print '</div><!-- end detailTools -->';
 				}				
-?>
-					
-					{{{<ifdef code="ca_collections.collection_address">
-						<div class='unit'><h6>Address</h6>
-							<ifdef code="ca_collections.collection_address.collection_address_data1">^ca_collections.collection_address.collection_address_data1<br/></ifdef>
-							<ifdef code="ca_collections.collection_address.collection_address_data2">^ca_collections.collection_address.collection_address_data2<br/></ifdef>
-							<ifdef code="ca_collections.collection_address.collection_city">^ca_collections.collection_address.collection_city, </ifdef>
-							<ifdef code="ca_collections.collection_address.collection_stateprovince">^ca_collections.collection_address.collection_stateprovince </ifdef>
-							<ifdef code="ca_collections.collection_address.collection_postalcode">^ca_collections.collection_address.collection_postalcode </ifdef>
-							<ifdef code="ca_collections.collection_address.collection_country">^ca_collections.collection_address.collection_country</ifdef>						
-						</div></ifdef>}}}
-<?php
+
 					if($vs_map = $this->getVar("map")){
 						print "<div class='unit'><br/>".$vs_map."</div>";
 					}
@@ -105,7 +106,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'institution_facet', 'id' => '^ca_collections.collection_id', 'showFilterPanel' => 1, 'view' => 'list', 'sort' => 'Author', 'sortDirection' => 'asc', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'institution_facet', 'id' => '^ca_collections.collection_id', 'showFilterPanel' => 1, 'view' => 'list', 'sort' => 'Author', 'sortDirection' => 'asc'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						//jQuery('#browseResultsContainer').jscroll({
 						//	autoTrigger: true,
 						//	loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

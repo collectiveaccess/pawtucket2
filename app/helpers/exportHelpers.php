@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2022 Whirl-i-Gig
+ * Copyright 2016-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -359,40 +359,11 @@ function caExportResult($po_request, $po_result, $ps_template, $ps_output_filena
 				if ($o_sheet->getColumnDimension($vs_chr)->getWidth() == -1) {
 					$o_sheet->getColumnDimension($vs_chr)->setAutoSize(true);	
 				}
-			}			
-			if($po_request->config->get('excel_report_header_enabled') || $po_request->config->get('excel_report_footer_enabled')){
-				$o_sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
-				$o_sheet->getPageMargins()->setTop(1);
-				$o_sheet->getPageMargins()->setRight(0.75);
-				$o_sheet->getPageMargins()->setLeft(0.75);
-				$o_sheet->getPageMargins()->setBottom(1);
-				$o_sheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1,1);
-	
-				if($po_request->config->get('excel_report_header_enabled')){
-					if(file_exists($po_request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$po_request->config->get('report_img'))){
-						$vs_logo_path = $po_request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$po_request->config->get('report_img');
-					}
-					$objDrawing = new \PhpOffice\PhpSpreadsheet\Worksheet\HeaderFooterDrawing();
-					$objDrawing->setName('Image');
-					$objDrawing->setPath($vs_logo_path);
-					$objDrawing->setHeight(36);
-					$o_sheet->getHeaderFooter()->addImage($objDrawing, \PhpOffice\PhpSpreadsheet\Worksheet\HeaderFooter::IMAGE_HEADER_LEFT);
-					if($vs_criteria_summary = caGetOption('criteriaSummary', $pa_options, '')){
-						$vs_criteria_summary = str_replace("&", "+", strip_tags(html_entity_decode($vs_criteria_summary)));
-						$vs_criteria_summary = (strlen($vs_criteria_summary) > 90) ? mb_substr($vs_criteria_summary, 0, 90)."..." : $vs_criteria_summary;
-						$vs_criteria_summary = wordwrap($vs_criteria_summary, 50, "\n", true);
-						$o_sheet->getHeaderFooter()->setOddHeader('&L&G& '.(($po_request->config->get('excel_report_show_search_term')) ? '&R&B&12 '.$vs_criteria_summary : ''));
-					}
-				}
-				if($po_request->config->get('excel_report_footer_enabled')){
-					$o_sheet->getHeaderFooter()->setOddFooter('&L&10'.$po_request->config->get('excel_report_footer_text').' &C&10Page &P of &N &R&10 '.date("m/t/y"));
-				}
 			}
+
 			$o_writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($workbook);
-			$vs_filename = caGetOption('filename', $va_export_config[$vs_table][$ps_template], 'export_results');
-			$vs_filename = preg_replace('![^A-Za-z0-9_\-\.]+!', '_', $vs_filename);
 			header('Content-type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-			header('Content-Disposition:inline;filename='.$vs_filename.'_'.date("Y-m-d").'.xlsx');
+			header('Content-Disposition:inline;filename='.$filename_stub.'.xlsx');
 			$o_writer->save('php://output');
 			exit;
 			break;
@@ -468,11 +439,20 @@ function caExportResult($po_request, $po_result, $ps_template, $ps_output_filena
 			$vs_filename = caGetOption('filename', $va_export_config[$vs_table][$ps_template], 'export_results');
 			$vs_filename = preg_replace('![^A-Za-z0-9_\-\.]+!', '_', $vs_filename);
 			header('Content-type: application/vnd.openxmlformats-officedocument.presentationml.presentation');
-			header('Content-Disposition:inline;filename='.$vs_filename.'_'.date("Y-m-d").'.pptx');
+			header('Content-Disposition:inline;filename='.$filename_stub.'.pptx');
 			
 			$o_writer = \PhpOffice\PhpPresentation\IOFactory::createWriter($ppt, 'PowerPoint2007');
-			$o_writer->save('php://output');
-			return;
+			$o_writer->save($filepath = caGetTempFileName('caPPT', 'pptx'));
+			
+			set_time_limit(0);
+			$o_fp = @fopen($filepath, "rb");
+			while(is_resource($o_fp) && !feof($o_fp)) {
+				print(@fread($o_fp, 1024*8));
+				ob_flush();
+				flush();
+			}
+			@unlink($filepath);
+			exit;
 			break;
 		case 'pdf':
 			//

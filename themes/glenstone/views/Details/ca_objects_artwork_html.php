@@ -193,7 +193,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#Description').fadeIn(100);">Description</a></div>
 				</div>
 				
-					<hr>
+				<hr style="clear: both; margin: 0 0 10px 0;"/>
 				
 				<div id="artworkInfo" class="infoBlock">
 					{{{<div class='unit'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist|creator"><l>^ca_entities.preferred_labels</l></unit></div>}}}
@@ -201,6 +201,10 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					{{{<ifdef code="ca_objects.medium"><div class='unit'>^ca_objects.medium</div></ifdef>}}}
 					{{{<ifcount min="1" code="ca_objects.dimensions.display_dimensions"><div class='unit'><unit delimiter="<br/>">^ca_objects.dimensions.display_dimensions</unit></div></ifcount>}}}
 <?php
+					if(!($credit_line = trim($t_object->get('ca_objects.lender.lender_credit_line', array('delimiter' => ';'))))) {
+						$credit_line = ''; //"Glenstone Museum, Potomac, Maryland";
+					}
+					print "<div>{$credit_line}</div>"; 
 					if ($t_object->get('ca_objects.edition.edition_number')) {
 						print "<div class='unit'>Edition ".$t_object->get('ca_objects.edition.edition_number')." / ".$t_object->get('ca_objects.edition.edition_total');
 						if ($t_object->get('ca_objects.edition.ap_total')) {
@@ -638,7 +642,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 						}	
 					}
 					
-					if(is_array($artwork_docs = $t_object->get('ca_objects.artwork_documents', ['returnWithStructure' => true])) && sizeof($artwork_docs)) {
+					if(is_array($artwork_docs = $t_object->get('ca_objects.artwork_documents', ['version' => 'thumbnail', 'returnWithStructure' => true])) && sizeof($artwork_docs)) {
 					   $artwork_docs = array_shift($artwork_docs);
 					   $artwork_docs = array_filter($artwork_docs, function($v) { return $v['artwork_documents_primary'] == 162; });
 					   
@@ -664,7 +668,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
                             
                                 $qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($attr_id, $vn_media_element_id)) ;
                                 if ($qr_res->nextRow()) {
-                                    print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail/artworks', 'GetMediaOverlay', array('context' => 'artworks', 'overlay' => 1, 'overlay' => 1, 'id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$artwork_doc['artwork_documents_media']."</a>";
+                                    print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail/artworks', 'GetMediaOverlay', array('context' => 'artworks', 'overlay' => 1, 'overlay' => 1, 'id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$artwork_doc['artwork_documents_media']."</a><br/>";
                                 }
                             
                                 print ($artwork_doc['artwork_documents_date'] ? $artwork_doc['artwork_documents_date'].": " : "").$artwork_doc['description_document']."<br/>\n";

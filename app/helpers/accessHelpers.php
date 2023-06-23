@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2021 Whirl-i-Gig
+ * Copyright 2010-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -45,14 +45,17 @@
 	  * are enabled (via the 'dont_enforce_access_settings' configuration directive) and whether the user
 	  * is considered privileged.
 	  *
-	  * @param RequestHTTP|ca_users $po_request The current request or user
+	  * @param RequestHTTP|ca_users $po_request The current request or a ca_users instance
 	  * @param array $pa_options Optional options. If omitted settings are taken application configuration file is used. Any array passed to this function should include the following keys: "dont_enforce_access_settings", "public_access_settings", "privileged_access_settings", "privileged_networks"
 	  * @return array An array of integer values that, if present in a record, indicate that the record should be displayed to the current user
 	  */
-	function caGetUserAccessValues($po_request, $pa_options=null) {
+	function caGetUserAccessValues($po_request=null, $pa_options=null) {
+		global $g_request;
+		if(!$po_request) { $po_request = $g_request; }
 		if(!caGetOption('ignoreProvidence', $pa_options, false)) {
 			if (defined("__CA_APP_TYPE__") && (__CA_APP_TYPE__ == 'PROVIDENCE')) { return null; }
 		}
+
 		$config = Configuration::load();
 		
 		$vb_dont_enforce_access_settings = isset($pa_options['dont_enforce_access_settings']) ? (bool)$pa_options['dont_enforce_access_settings'] : $config->get('dont_enforce_access_settings');
@@ -62,6 +65,9 @@
 		$vb_is_privileged = caUserIsPrivileged($po_request, $pa_options);
 		if (!$vb_dont_enforce_access_settings) {
 			$va_access = array();
+
+			$vb_is_privileged = ((is_a($po_request, 'ca_users') && $po_request->isLoaded()) || caUserIsPrivileged($po_request, $pa_options));
+
 			if($vb_is_privileged) {
 				$va_access = $va_privileged_access_settings;
 			} else {
@@ -69,6 +75,7 @@
 			}
 			if(!is_array($va_access)) { $va_access = []; }
 			
+
 			if ($vb_is_privileged) {
 				$va_user_access = is_a($po_request, 'ca_users') ? $po_request->getAccessStatuses(1) : $po_request->user->getAccessStatuses(1);
 				if(is_array($va_user_access)) {
@@ -124,8 +131,8 @@
 	/**
 	 * Return list of types to restrict activity by for given table
 	 *
-	 * @param mixed $pm_table_name_or_num Table name of number to fetch types for
-	 * @param array $pa_options Array of options:
+	 * @param mixed $table_name_or_num Table name of number to fetch types for
+	 * @param array $options Array of options:
 	 *		access = minimum access level user must have to a type for it to be returned. Values are:
 	 *			__CA_BUNDLE_ACCESS_NONE__ (0)
 	 *			__CA_BUNDLE_ACCESS_READONLY__ (1)
@@ -136,50 +143,51 @@
 	 *
 	 * @return array List of numeric type_ids for which the user has access, or null if there are no restrictions at all
 	 */
-	function caGetTypeRestrictionsForUser($pm_table_name_or_num, $pa_options=null) {
+	function caGetTypeRestrictionsForUser($table_name_or_num, $options=null) {
 		global $g_request, $g_access_helpers_type_restriction_cache;
-		if (!is_array($pa_options)) { $pa_options = array(); }
+		if (!is_array($options)) { $options = array(); }
 		
-		//if ($g_request && $g_request->isLoggedIn() && ($g_request->user->canDoAction('is_administrator'))) { return null; }
+		$user_id = ($g_request && $g_request->isLoggedIn()) ? $g_request->getUserID() : '';
 		
-		$vs_cache_key = md5($pm_table_name_or_num."/".print_r($pa_options, true));
-		if (isset($g_access_helpers_type_restriction_cache[$vs_cache_key])) { return $g_access_helpers_type_restriction_cache[$vs_cache_key]; }
+		$cache_key = caMakeCacheKeyFromOptions($options, $table_name_or_num.'/'.$user_id);
+		
+		if (isset($g_access_helpers_type_restriction_cache[$cache_key])) { return $g_access_helpers_type_restriction_cache[$cache_key]; }
 		$o_config = Configuration::load();
 		
-		$vn_min_access = isset($pa_options['access']) ? (int)$pa_options['access'] : __CA_BUNDLE_ACCESS_READONLY__;
+		$min_access = isset($options['access']) ? (int)$options['access'] : __CA_BUNDLE_ACCESS_READONLY__;
 		
-		if (is_numeric($pm_table_name_or_num)) {
-			$vs_table_name = Datamodel::getTableName($pm_table_name_or_num);
+		if (is_numeric($table_name_or_num)) {
+			$table_name = Datamodel::getTableName($table_name_or_num);
 		} else {
-			$vs_table_name = $pm_table_name_or_num;
+			$table_name = $table_name_or_num;
 		}
-		$t_instance = Datamodel::getInstanceByTableName($vs_table_name, true);
+		$t_instance = Datamodel::getInstanceByTableName($table_name, true);
 		if (!$t_instance) { return null; }	// bad table
 		
 		// get types user has at least read-only access to
-		$va_type_ids = null;
+		$type_ids = null;
 		if ((bool)$t_instance->getAppConfig()->get('perform_type_access_checking') && $g_request && $g_request->isLoggedIn()) {
-			if (is_array($va_type_ids = $g_request->user->getTypesWithAccess($t_instance->tableName(), $vn_min_access))) {
-				$va_type_ids = caMakeTypeIDList($pm_table_name_or_num, $va_type_ids, array_merge($pa_options, array('dont_include_subtypes_in_type_restriction' => true)));
+			if (is_array($type_ids = $g_request->user->getTypesWithAccess($t_instance->tableName(), $min_access))) {
+				$type_ids = caMakeTypeIDList($table_name_or_num, $type_ids, array_merge($options, array('dont_include_subtypes_in_type_restriction' => true)));
 			}
 		}
 		// get types from config file
-		if ($va_config_types = $t_instance->getAppConfig()->getList($vs_table_name.'_restrict_to_types')) {
-			if ((bool)$o_config->get($vs_table_name.'_restrict_to_types_dont_include_subtypes')) {
-				$pa_options['dont_include_subtypes_in_type_restriction'] = true;
+		if ($config_types = $t_instance->getAppConfig()->getList($table_name.'_restrict_to_types')) {
+			if ((bool)$o_config->get($table_name.'_restrict_to_types_dont_include_subtypes')) {
+				$options['dont_include_subtypes_in_type_restriction'] = true;
 			}
-			$va_config_type_ids = caMakeTypeIDList($pm_table_name_or_num, $va_config_types, $pa_options);
+			$config_type_ids = caMakeTypeIDList($table_name_or_num, $config_types, $options);
 			
-			if (is_array($va_config_type_ids)) {
-				if (is_array($va_type_ids) && sizeof($va_type_ids)) {
-					$va_type_ids = array_intersect($va_type_ids, $va_config_type_ids);
+			if (is_array($config_type_ids)) {
+				if (is_array($type_ids) && sizeof($type_ids)) {
+					$type_ids = array_intersect($type_ids, $config_type_ids);
 				} else {
-					$va_type_ids = $va_config_type_ids;
+					$type_ids = $config_type_ids;
 				}
 			}
 		}
 		
-		return $g_access_helpers_type_restriction_cache[$vs_cache_key] = $va_type_ids;
+		return $g_access_helpers_type_restriction_cache[$cache_key] = $type_ids;
 	}
 	# ---------------------------------------------------------------------------------------------
 	/**
@@ -322,6 +330,35 @@
 		$va_ret = caMakeItemIDList($vs_type_list_code, $pa_types, $pa_options);
 		ExternalCache::save($vs_cache_key, $va_ret, 'listItems');
 		return $va_ret;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Checks validity of type codes and/or ids in a list
+	 *
+	 * @param mixed $table_name_or_num Table name or number to which types apply
+	 * @param array $types List of type codes and/or type_ids that are the basis of the list
+	 * @param array $options No options are supported
+	 *
+	 * @return array Keys are type codes/ids; values are true for valid, false for invalid
+	 */
+	function caValidateTypeList($table_name_or_num, $types, ?array $options=null) {
+		if (!$types) { return []; }
+		if (!is_array($types)) { $types = [$types]; }
+		
+		$t_instance = Datamodel::getInstance($table_name_or_num, true);
+		if (!$t_instance) { return null; }	// bad table
+		if(is_a($t_instance, 'BaseLabel')) { $t_instance = $t_instance->getSubjectTableInstance(); }
+		if (!($type_list_code = $t_instance->getTypeListCode())) { return null; }	// table doesn't use types
+		
+		$t_list = new ca_lists();
+		if (!is_array($idnos_in_list = $t_list->getItemsForList($type_list_code, ['idnosOnly' => true]))) { return null; }
+		if (!is_array($ids_in_list = $t_list->getItemsForList($type_list_code, ['idsOnly' => true]))) { return null; }
+		
+		$ret = [];
+		foreach($types as $type) {
+			$ret[$type] = ((bool)in_array($type, $idnos_in_list) || (bool)in_array($type, $ids_in_list) );
+		}
+		return $ret;
 	}
 	# ---------------------------------------------------------------------------------------------
 	/**
@@ -530,6 +567,23 @@
 	}
 	# ------------------------------------------------------
 	/**
+	 * Checks validity of relationship type codes and/or ids in a list
+	 *
+	 * @param mixed $table_name_or_num Table name or number to which types apply
+	 * @param array $types List of type codes and/or type_ids that are the basis of the list
+	 * @param array $options No options are supported
+	 *
+	 * @return array Keys are type codes/ids; values are true for valid, false for invalid
+	 */
+	function caValidateRelationshipTypeList($table_name_or_num, $types, ?array $options=null) {
+		if (!$types) { return []; }
+		if (!is_array($types)) { $types = [$types]; }
+		
+		$t_rel_type = new ca_relationship_types();
+		return $t_rel_type->validateRelationshipTypeCodes($table_name_or_num, $types, $options);
+	}
+	# ------------------------------------------------------
+	/**
 	 * Converts the given list of relationship type ids or relationship type names into an expanded list of alphanumeric type codes. Processing
 	 * includes expansion of types to include subtypes and conversion of any type_ids to type codes.
 	 *
@@ -582,10 +636,10 @@
 	 */
 	function caMergeTypeRestrictionLists($t_instance, $pa_options) {
 		$va_restrict_to_type_ids = null;
-		if (is_array($pa_options['restrict_to_types']) && sizeof($pa_options['restrict_to_types'])) {
+		if (isset($pa_options['restrict_to_types']) && is_array($pa_options['restrict_to_types']) && sizeof($pa_options['restrict_to_types'])) {
 			$pa_options['restrictToTypes'] = $pa_options['restrict_to_types'];
 		}
-		if (is_array($pa_options['restrictToTypes']) && sizeof($pa_options['restrictToTypes'])) {
+		if (isset($pa_options['restrictToTypes']) && is_array($pa_options['restrictToTypes']) && sizeof($pa_options['restrictToTypes'])) {
 			$va_restrict_to_type_ids = caMakeTypeIDList($t_instance->tableName(), $pa_options['restrictToTypes'], array('noChildren' => caGetOption(['dontIncludeSubtypesInTypeRestriction', 'dont_include_subtypes_in_type_restriction'], $pa_options, true)));
 		}
 		
@@ -619,10 +673,10 @@
 	 */
 	function caMergeSourceRestrictionLists($t_instance, $pa_options) {
 		$va_restrict_to_source_ids = null;
-		if (is_array($pa_options['restrict_to_sources']) && sizeof($pa_options['restrict_to_sources'])) {
+		if (isset($pa_options['restrict_to_sources']) && is_array($pa_options['restrict_to_sources']) && sizeof($pa_options['restrict_to_sources'])) {
 			$pa_options['restrictToSources'] = $pa_options['restrict_to_sources'];
 		}
-		if (is_array($pa_options['restrictToSources']) && sizeof($pa_options['restrictToSources'])) {
+		if (isset($pa_options['restrictToSources']) && is_array($pa_options['restrictToSources']) && sizeof($pa_options['restrictToSources'])) {
 			$va_restrict_to_source_ids = caMakeSourceIDList($t_instance->tableName(), $pa_options['restrictToSources'], array('noChildren' => true));
 		}
 		
@@ -725,7 +779,7 @@ $g_source_access_level_cache = array();
 	 */
 	function caCanRead($pn_user_id, $pm_table, $pm_id, $ps_bundle_name=null, $pa_options=null) {
 		$pb_return_as_array = caGetOption('returnAsArray', $pa_options, false);
-		$t_user = new ca_users($pn_user_id, true);
+		$t_user = new ca_users($pn_user_id, ['useCache' => true]);
 		if (!$t_user->getPrimaryKey()) { return null; }
 		
 		$ps_table_name = (is_numeric($pm_table)) ? Datamodel::getTableName($pm_table) : $pm_table;		
@@ -784,7 +838,7 @@ $g_source_access_level_cache = array();
 	function caTranslateBundlesForAccessChecking($ps_table_name, $ps_bundle_name) {
 		
 		$va_tmp = explode(".", $ps_bundle_name);
-		if (in_array($va_tmp[1], array('hierarchy', 'parent', 'children'))) {
+		if (in_array($va_tmp[1] ?? null, array('hierarchy', 'parent', 'children'))) {
 			unset($va_tmp[1]); 
 		}
 		

@@ -1,0 +1,7 @@
+{
+  "name": "@apollo/client/testing",
+  "main": "testing.cjs.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "sideEffects": false
+}

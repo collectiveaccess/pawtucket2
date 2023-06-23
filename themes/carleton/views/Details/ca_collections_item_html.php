@@ -36,14 +36,16 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	
 	$va_fields = array(
+		"Classification" => "^ca_collections.col_classification%delimiter=,_",
 		#"Unit ID" => "^ca_collections.unit_id%delimiter=,_",
 		"Alternate Name" => "^ca_collections.nonpreferred_labels%delimiter=,_",
 		"Container ID" => "^ca_collections.container_id",
 		"AV Subtype" => "^ca_collections.av_subtype",
-		"Dates" => "<ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef><ifnotdef code='ca_collections.inclusive_dates'>^ca_collections.display_date%delimiter=,_</ifnotdef>",
+		"Dates" => "<ifdef code='ca_collections.display_date'>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef>",
+		"Additional Date Information" => "^ca_collections.date_info",
 		"Description" => "^ca_collections.description",
 		"Language" => "^ca_collections.language%delimiter=,_",
-		"Related Creators" => "<ifcount min='1' code='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject'><unit relativeTo='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject' delimiter='<br/>'>^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>",
+		"Related Creators" => "<ifcount min='1' code='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject'><unit relativeTo='ca_entities' excludeRelationshipTypes='donor,depicted,original_owner,subject' delimiter='<br/>'><if rule='^ca_entities.added_on_import =~ /Yes/'>^ca_entities.preferred_labels.displayname (^relationship_typename)</if><if rule='^ca_entities.added_on_import !~ /Yes/'><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></if></unit></ifcount>",
 		"Event Type" => "^ca_collections.event_type%delimiter=,_",
 		"Related Publications" => "^ca_collections.related_publications",
 		"Related Materials" => "<ifdef code='ca_collections.related_materials'><span class='trimText'>^ca_collections.related_materials</span></ifdef>",
@@ -70,7 +72,7 @@
 		"Library of Congress Subject Headings" => "^ca_collections.lcsh_terms%delimiter=,_",
 		"People Depicted" => "^ca_collections.people_depicted",
 		"Related People and Organizations (Library of Congress Name Authority File)" => "^ca_collections.lc_names%delimiter=,_",
-		"Related People and Organizations" => "<ifcount code='ca_entities' min='1' restrictToRelationshipTypes='depicted,subject'><unit relativeTo='ca_entities' restrictToRelationshipTypes='depicted,subject' delimiter='<br/>'>^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>",
+		"Related People and Organizations" => "<ifcount code='ca_entities' min='1' restrictToRelationshipTypes='depicted,subject'><unit relativeTo='ca_entities' restrictToRelationshipTypes='depicted,subject' delimiter='<br/>'><if rule='^ca_entities.added_on_import =~ /Yes/'>^ca_entities.preferred_labels.displayname (^relationship_typename)</if><if rule='^ca_entities.added_on_import !~ /Yes/'><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></if></unit></ifcount>",
 		"Key Terms" => "^ca_collections.key_terms",
 		"Subjects" => "^ca_collections.local_subjects%delimiter=,_",
 		"Transcription" => "<ifdef code='ca_collections.transcription.transcription_text'>^ca_collections.transcription.transcription_text</ifdef><ifdef code='ca_collections.transcription.transcription_date'><br/>^ca_collections.transcription.transcription_date</ifdef>",
@@ -100,7 +102,7 @@
 				<div class='col-md-12'>
 					<H1>{{{<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>^ca_collections.preferred_labels</if>}}}</H1>
 					<H2>{{{^ca_collections.type_id ^ca_collections.id_number}}}</H2>
-					{{{<ifdef code="ca_collections.parent_id"><div class="collectionHierarchyPath"><b>Part of:</b> <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></l></unit></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.parent_id"><div class="collectionHierarchyPath"><b>Part of:</b> <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef></l></unit></div></ifdef>}}}
 					<HR/>
 				</div>
 
@@ -161,7 +163,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'items', array('search' => 'ca_collections.parent_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'items', array('_advanced' => 0, 'search' => 'ca_collections.parent_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

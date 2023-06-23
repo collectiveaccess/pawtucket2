@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2018 Whirl-i-Gig
+ * Copyright 2008-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -54,10 +54,11 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 	var $properties;
 	
 	var $opo_config;
-	var $opo_external_app_config;
 	var $ops_libreoffice_path;
 	
 	var $opa_metadata;
+	
+	private $media = null;
 	
 	var $info = array(
 		"IMPORT" => array(
@@ -153,8 +154,6 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 	
 	var $opa_transformations = array();
 	
-	var $opb_libre_office_installed = false;
-	
 	# ------------------------------------------------
 	public function __construct() {
 		$this->description = _t('Accepts and processes Microsoft Word, Excel and PowerPoint format documents');
@@ -167,9 +166,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 	# for import and export
 	public function register() {
 		$this->opo_config = Configuration::load();
-		$this->opo_external_app_config = Configuration::load(__CA_CONF_DIR__."/external_applications.conf");
-		$this->ops_libreoffice_path = $this->opo_external_app_config->get('libreoffice_app');
-		$this->opb_libre_office_installed = caMediaPluginLibreOfficeInstalled($this->ops_libreoffice_path);
+		$this->ops_libreoffice_path = caMediaPluginLibreOfficeInstalled();
 		
 		$this->info["INSTANCE"] = $this;
 		return $this->info;
@@ -182,22 +179,22 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 			$va_status['available'] = true;
 		}
 		
-		if (!($this->opb_libre_office_installed)) { 
+		if (!($this->ops_libreoffice_path)) { 
 			$va_status['warnings'][] = _t("LibreOffice cannot be found: conversion to PDF and generation of page previews will not be performed; you can obtain LibreOffice at http://www.libreoffice.org/");
 		}
 		
 		return $va_status;
 	}
 	# ------------------------------------------------
-	public function divineFileFormat($ps_filepath) {
-		if ($ps_filepath == '') { return ''; }
+	public function divineFileFormat($filepath) {
+		if ($filepath == '') { return ''; }
 		
-		if ($vs_mimetype = $this->isWordExcelorPPTdoc($ps_filepath)) {
+		if ($vs_mimetype = $this->isWordExcelorPPTdoc($filepath)) {
 			switch($vs_mimetype) {
 				case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
 					$this->properties = $this->handle = $this->ohandle = array(
 						"mimetype" => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-						"filesize" => filesize($ps_filepath),
+						"filesize" => filesize($filepath),
 						"typename" => "Microsoft Word/OpenOffice",
 						"content" => ""
 					);
@@ -205,7 +202,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 				case 'application/msword':
 					$this->properties = $this->handle = $this->ohandle = array(
 						"mimetype" => 'application/msword',
-						"filesize" => filesize($ps_filepath),
+						"filesize" => filesize($filepath),
 						"typename" => "Microsoft Word",
 						"content" => ""
 					);
@@ -213,7 +210,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 				case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
 					$this->properties = $this->handle = $this->ohandle = array(
 						"mimetype" => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-						"filesize" => filesize($ps_filepath),
+						"filesize" => filesize($filepath),
 						"typename" => "Microsoft Excel/OpenOffice",
 						"content" => ""
 					);
@@ -221,7 +218,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 				case 'application/vnd.ms-excel':
 					$this->properties = $this->handle = $this->ohandle = array(
 						"mimetype" => 'application/vnd.ms-excel',
-						"filesize" => filesize($ps_filepath),
+						"filesize" => filesize($filepath),
 						"typename" => "Microsoft Excel",
 						"content" => ""
 					);
@@ -229,7 +226,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 				case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
 					$this->properties = $this->handle = $this->ohandle = array(
 						"mimetype" => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-						"filesize" => filesize($ps_filepath),
+						"filesize" => filesize($filepath),
 						"typename" => "Microsoft PowerPoint/OpenOffice",
 						"content" => ""
 					);
@@ -237,7 +234,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 				case 'application/vnd.ms-powerpoint':
 					$this->properties = $this->handle = $this->ohandle = array(
 						"mimetype" => 'application/vnd.ms-powerpoint',
-						"filesize" => filesize($ps_filepath),
+						"filesize" => filesize($filepath),
 						"typename" => "Microsoft PowerPoint",
 						"content" => ""
 					);
@@ -255,21 +252,21 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 	/**
 	 * 
 	 */
-	private function isWord972000doc($ps_filepath) {
-		if ($r_fp = @fopen($ps_filepath, "r")) {
-			$vs_sig = fgets($r_fp, 9);
+	private function isWord972000doc($filepath) {
+		if ($r_fp = @fopen($filepath, "r")) {
+			$ps_sig = fgets($r_fp, 9);
 			// Testing on the first 8 bytes of the file isn't great... 
-			// any Microsoft Compound Document formated
+			// any Microsoft Compound Document formatted
 			// file will be accepted by this test.
 			if (
-				(ord($ps_sig{0}) == 0xD0) &&
-				(ord($ps_sig{1}) == 0xCF) &&
-				(ord($ps_sig{2}) == 0x11) &&
-				(ord($ps_sig{3}) == 0xE0) &&
-				(ord($ps_sig{4}) == 0xA1) &&
-				(ord($ps_sig{5}) == 0xB1) &&
-				(ord($ps_sig{6}) == 0x1A) &&
-				(ord($ps_sig{7}) == 0xE1)
+				(ord($ps_sig[0]) == 0xD0) &&
+				(ord($ps_sig[1]) == 0xCF) &&
+				(ord($ps_sig[2]) == 0x11) &&
+				(ord($ps_sig[3]) == 0xE0) &&
+				(ord($ps_sig[4]) == 0xA1) &&
+				(ord($ps_sig[5]) == 0xB1) &&
+				(ord($ps_sig[6]) == 0x1A) &&
+				(ord($ps_sig[7]) == 0xE1)
 			) {
 				// Look for Word string in doc... this is hacky but seems to work well
 				// If it has both the file sig above and this string it's pretty likely
@@ -288,50 +285,72 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 	}
 	# ----------------------------------------------------------
 	/**
-	 * Detect if document pointed to by $ps_filepath is a valid Word, Excel or PowerPoint XML (OpenOffice) document.
+	 * Detect if document pointed to by $filepath is a valid Word, Excel or PowerPoint XML (OpenOffice) document.
 	 *
-	 * @param string $ps_filepath The path to the file to analyze
+	 * @param string $filepath The path to the file to analyze
 	 * @param string $ps_sig The signature (first 9 bytes) of the file
 	 * @return string WORD if the document is a Word doc, EXCEL if the document is an Excel doc, PPT if it is a PowerPoint doc or boolean false if it's not a valid Word or Excel XML (OpenOffice) file
 	 */
-	private function isWordExcelorPPTdoc($ps_filepath) {
+	private function isWordExcelorPPTdoc($filepath) {
 		// Check Powerpoint
-		if (in_array(pathinfo(strtolower($ps_filepath), PATHINFO_EXTENSION), ['ppt', 'pptx'])) {
+		if (in_array(pathinfo(strtolower($filepath), PATHINFO_EXTENSION), ['ppt', 'pptx'])) {
 			$va_ppt_types = ['PowerPoint2007' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'PowerPoint97' => 'application/vnd.ms-powerpoint'];
 		
 			foreach ($va_ppt_types as $vs_type => $vs_mimetype) {
-				$o_reader = \PhpOffice\PhpPresentation\IOFactory::createReader($vs_type);
-				if ($o_reader->canRead($ps_filepath)) {
-					return $vs_mimetype;
+				try {
+					$o_reader = \PhpOffice\PhpPresentation\IOFactory::createReader($vs_type);
+					if ($o_reader->canRead($filepath)) {
+						return $vs_mimetype;
+					}
+				} catch(\PhpOffice\PhpPresentation\Reader\Exception $e) {
+					// noop
 				}
 			}
 		}
 		
 		// 2007+ .docx files
-		if (in_array(pathinfo(strtolower($ps_filepath), PATHINFO_EXTENSION), ['doc', 'docx'])) {	// PhpWord often will identify Excel docs as Word (and PHPExcel will identify Word docs as Excel...) so we test file extensions here			
+		if (in_array(pathinfo(strtolower($filepath), PATHINFO_EXTENSION), ['doc', 'docx'])) {	// PhpWord often will identify Excel docs as Word (and \PhpOffice\PhpSpreadsheet\Spreadsheet will identify Word docs as Excel...) so we test file extensions here			
 			// Check Word
-			if ($this->isWord972000doc($ps_filepath)) {		// old-style .doc files
+			if ($this->isWord972000doc($filepath)) {		// old-style .doc files
 				return 'application/msword';
 			}
 		
 			$va_word_types = ['Word2007' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
 		
 			foreach ($va_word_types as $vs_type => $vs_mimetype) {
-				$o_reader = \PhpOffice\PhpWord\IOFactory::createReader($vs_type);
-				if ($o_reader->canRead($ps_filepath)) {
-					return $vs_mimetype;
+				try {
+					$o_reader = \PhpOffice\PhpWord\IOFactory::createReader($vs_type);
+					if ($o_reader->canRead($filepath)) {
+						return $vs_mimetype;
+					}
+				} catch(\PhpOffice\PhpWord\Reader\Exception $e) {
+					// noop
 				}
 			}
 		}
 		
 		
 		// Check Excel
-		if (in_array(pathinfo(strtolower($ps_filepath), PATHINFO_EXTENSION), ['xls', 'xlsx'])) {
+		if (in_array(pathinfo(strtolower($filepath), PATHINFO_EXTENSION), ['xls', 'xlsx'])) {
 			$va_excel_types = ['Excel2007' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Excel5' => 'application/vnd.ms-excel', 'Excel2003XML' => 'application/vnd.ms-excel'];
 			foreach ($va_excel_types as $vs_type => $vs_mimetype) {
-				$o_reader = PHPExcel_IOFactory::createReader($vs_type);
-				if ($o_reader->canRead($ps_filepath)) {
-					return $vs_mimetype;
+				try {
+					switch($vs_type) {
+						case 'Excel2007':
+							$o_reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+							break;
+						case 'Excel5':
+							$o_reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+							break;
+						case 'Excel2003XML':
+							$o_reader = new \PhpOffice\PhpSpreadsheet\Reader\Xml();
+							break;
+					}
+					if ($o_reader->canRead($filepath)) {
+						return $vs_mimetype;
+					}
+				} catch(\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
+					// noop
 				}
 			}
 		}
@@ -341,8 +360,8 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 	# ----------------------------------------------------------
 	public function get($property) {
 		if ($this->handle) {
-			if ($this->info["PROPERTIES"][$property]) {
-				return $this->properties[$property];
+			if ($this->info["PROPERTIES"][$property] ?? null) {
+				return $this->properties[$property] ?? null;
 			} else {
 				return '';
 			}
@@ -353,10 +372,10 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 	# ----------------------------------------------------------
 	public function set($property, $value) {
 		if ($this->handle) {
-			if ($this->info["PROPERTIES"][$property]) {
+			if ($this->info["PROPERTIES"][$property] ?? null) {
 				switch($property) {
 					default:
-						if ($this->info["PROPERTIES"][$property] == 'W') {
+						if (($this->info["PROPERTIES"][$property] ?? null) == 'W') {
 							$this->properties[$property] = $value;
 						} else {
 							# read only
@@ -393,24 +412,23 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 		return $this->opa_metadata;
 	}
 	# ------------------------------------------------
-	public function read ($ps_filepath) {
-		if (is_array($this->handle) && ($this->handle["filepath"] == $ps_filepath)) {
-			# noop
-		} else {
-			if (!file_exists($ps_filepath)) {
-				$this->postError(1650, _t("File %1 does not exist", $ps_filepath), "WLPlugMediaOffice->read()");
+	public function read ($filepath, $mimetype="", $options=null) {
+		if (!isset($this->handle) || ($filepath !== ($this->filepath ?? null))) {
+			if (!file_exists($filepath)) {
+				$this->postError(1650, _t("File %1 does not exist", $filepath), "WLPlugMediaOffice->read()");
 				$this->handle = "";
 				$this->filepath = "";
 				return false;
 			}
-			if (!($this->divineFileFormat($ps_filepath))) {
-				$this->postError(1650, _t("File %1 is not a Microsoft Word, Excel or PowerPoint document", $ps_filepath), "WLPlugMediaOffice->read()");
+			if (!($this->divineFileFormat($filepath))) {
+				$this->postError(1650, _t("File %1 is not a Microsoft Word, Excel or PowerPoint document", $filepath), "WLPlugMediaOffice->read()");
 				$this->handle = "";
 				$this->filepath = "";
 				return false;
 			}
 		}
-		$this->filepath = $ps_filepath;
+		$this->filepath = $filepath;
+		$this->opa_metadata = caExtractMetadataWithExifTool($filepath);
 		
 		// Hardcode width/height since we haven't any way of calculating these short of generating a PDF
 		$this->set('width', 612);
@@ -435,8 +453,8 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 		# get parameters for this operation
 		$sparams = $this->info["TRANSFORMATIONS"][$ps_operation];
 		
-		$this->properties["version_width"] = $w = $pa_parameters["width"];
-		$this->properties["version_height"] = $h = $pa_parameters["height"];
+		$this->properties["version_width"] = $w = $pa_parameters["width"] ?? null;
+		$this->properties["version_height"] = $h = $pa_parameters["height"] ?? null;
 		
 		$cw = $this->get("width");
 		$ch = $this->get("height");
@@ -444,7 +462,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 		switch($ps_operation) {
 			# -----------------------
 			case "SET":
-				while(list($k, $v) = each($pa_parameters)) {
+				foreach($pa_parameters as $k => $v){	
 					$this->set($k, $v);
 				}
 				break;
@@ -453,7 +471,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 				$vn_width_ratio = $w/$cw;
 				$vn_height_ratio = $h/$ch;
 				$vn_orig_resolution = $this->get("resolution");
-				switch($pa_parameters["mode"]) {
+				switch($pa_parameters["mode"] ?? null) {
 					# ----------------
 					case "width":
 						$vn_resolution = ceil($vn_orig_resolution * $vn_width_ratio);
@@ -496,7 +514,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 				$this->properties["height"] = ceil($vn_resolution * ($ch/$vn_orig_resolution));
 				$this->properties["target_width"] = $w;
 				$this->properties["target_height"] = $h;
-				$this->properties["antialiasing"] = ($pa_parameters["antialiasing"]) ? 1 : 0;
+				$this->properties["antialiasing"] = isset($pa_parameters["antialiasing"]) ? 1 : 0;
 				break;
 			# -----------------------
 		}
@@ -508,32 +526,33 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 	 *		dontUseDefaultIcons = If set to true, write will fail rather than use default icons when preview can't be generated. Default is false – to use default icons.
 	 *
 	 */
-	public function write($ps_filepath, $ps_mimetype, $pa_options=null) {
+	public function write($filepath, $ps_mimetype, $pa_options=null) {
 		if (!$this->handle) { return false; }
 		
 		$vb_dont_allow_default_icons = (isset($pa_options['dontUseDefaultIcons']) && $pa_options['dontUseDefaultIcons']) ? true : false;
+		$vs_filepath_with_extension = null;
 		
 		# is mimetype valid?
-		if (!($vs_ext = $this->info["EXPORT"][$ps_mimetype])) {
+		if (!($vs_ext = ($this->info["EXPORT"][$ps_mimetype] ?? null))) {
 			$this->postError(1610, _t("Can't convert file to %1", $ps_mimetype), "WLPlugMediaOffice->write()");
 			return false;
 		} 
 		
 		# write the file
 		if ($ps_mimetype == "application/msword") {
-			if ( !copy($this->filepath, $ps_filepath.".doc") ) {
-				$this->postError(1610, _t("Couldn't write file to '%1'", $ps_filepath), "WLPlugMediaOffice->write()");
+			if ( !copy($this->filepath, $filepath.".doc") ) {
+				$this->postError(1610, _t("Couldn't write file to '%1'", $filepath), "WLPlugMediaOffice->write()");
 				return false;
 			}
 		} else {
-			if (!isset(WLPlugMediaOffice::$s_pdf_conv_cache[$this->filepath]) && $this->opb_libre_office_installed) {
+			if (!isset(WLPlugMediaOffice::$s_pdf_conv_cache[$this->filepath]) && $this->ops_libreoffice_path) {
 				$vs_tmp_dir_path = caGetTempDirPath();
 				$va_tmp = explode("/", $this->filepath);
 				$vs_out_file = array_pop($va_tmp);
 				
 				putenv("HOME={$vs_tmp_dir_path}");		// libreoffice will fail silently if you don't set this environment variable to a directory it can write to. Nice way to waste a day debugging. Yay!
-				exec($this->ops_libreoffice_path." --headless --convert-to pdf:writer_pdf_Export \"-env:UserInstallation=file:///tmp/LibreOffice_Conversion_${USER}\" ".caEscapeShellArg($this->filepath)."  --outdir ".caEscapeShellArg($vs_tmp_dir_path).(caIsPOSIX() ? " 2>&1" : ""), $va_output, $vn_return);
-				exec($this->ops_libreoffice_path." --headless --convert-to html:HTML \"-env:UserInstallation=file:///tmp/LibreOffice_Conversion_${USER}\" ".caEscapeShellArg($this->filepath)."  --outdir ".caEscapeShellArg($vs_tmp_dir_path).(caIsPOSIX() ? " 2>&1" : ""), $va_output, $vn_return);
+				caExec($this->ops_libreoffice_path." --headless --convert-to pdf:writer_pdf_Export \"-env:UserInstallation=file:///tmp/LibreOffice_Conversion_${USER}\" ".caEscapeShellArg($this->filepath)."  --outdir ".caEscapeShellArg($vs_tmp_dir_path).(caIsPOSIX() ? " 2>&1" : ""), $va_output, $vn_return);
+				caExec($this->ops_libreoffice_path." --headless --convert-to html:HTML \"-env:UserInstallation=file:///tmp/LibreOffice_Conversion_${USER}\" ".caEscapeShellArg($this->filepath)."  --outdir ".caEscapeShellArg($vs_tmp_dir_path).(caIsPOSIX() ? " 2>&1" : ""), $va_output, $vn_return);
 			
 				$va_out_file = explode(".", $vs_out_file);
 				if (sizeof($va_out_file) > 1) { array_pop($va_out_file); }
@@ -551,14 +570,14 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 				}
 			}
 			
-			if ($vs_media = WLPlugMediaOffice::$s_pdf_conv_cache[$this->filepath]) {
+			if ($vs_media = (WLPlugMediaOffice::$s_pdf_conv_cache[$this->filepath] ?? null)) {
 				switch($ps_mimetype) {
 					case 'application/pdf':
 						$o_media = new Media();
 						$o_media->read($vs_media);
 						$o_media->set('version', $this->get('version'));
-						$o_media->write($ps_filepath, $ps_mimetype, array());
-						$vs_filepath_with_extension = $ps_filepath.".pdf";
+						$o_media->write($filepath, $ps_mimetype, array());
+						$vs_filepath_with_extension = $filepath.".pdf";
 						break;
 					case 'image/jpeg':
 						$o_media = new Media();
@@ -568,10 +587,10 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 							$o_media->transform($va_transform['op'], $va_transform['params']);
 						}
 						
-						$o_media->write($ps_filepath, $ps_mimetype, array());
+						$o_media->write($filepath, $ps_mimetype, array());
 						$this->set('width', $o_media->get('width'));
 						$this->set('height', $o_media->get('height'));
-						$vs_filepath_with_extension = $ps_filepath.".jpg";
+						$vs_filepath_with_extension = $filepath.".jpg";
 						break;
 				}
 			}
@@ -584,20 +603,20 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 		
 		
 		$this->properties["mimetype"] = $ps_mimetype;
-		$this->properties["filesize"] = filesize($ps_filepath.".".$vs_ext);
+		$this->properties["filesize"] = filesize($filepath.".".$vs_ext);
 		//$this->properties["typename"] = $this->typenames[$ps_mimetype];
 		
-		return $ps_filepath.".".$vs_ext;
+		return $filepath.".".$vs_ext;
 	}
 	# ------------------------------------------------
 	/** 
 	 *
 	 */
-	public function &writePreviews($ps_filepath, $pa_options) {
-		if ($vs_pdf_path = WLPlugMediaOffice::$s_pdf_conv_cache[$this->filepath]) {
-			$o_media = new Media();
-			if ($o_media->read($vs_pdf_path)) {
-				return $o_media->writePreviews(array_merge($pa_options, array('dontUseDefaultIcons' => true)));	
+	public function &writePreviews($filepath, $pa_options) {
+		if ($vs_pdf_path = (WLPlugMediaOffice::$s_pdf_conv_cache[$this->filepath] ?? null)) {
+			$this->media = new Media();
+			if ($this->media->read($vs_pdf_path)) {
+				return $this->media->writePreviews(array_merge($pa_options, array('dontUseDefaultIcons' => true)));	
 			}
 		
 		}
@@ -617,16 +636,16 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 	}
 	# ------------------------------------------------
 	public function mimetype2extension($mimetype) {
-		return $this->info["EXPORT"][$mimetype];
+		return $this->info["EXPORT"][$mimetype] ?? null;
 	}
 	# ------------------------------------------------
 	public function mimetype2typename($mimetype) {
-		return $this->typenames[$mimetype];
+		return $this->typenames[$mimetype] ?? null;
 	}
 	# ------------------------------------------------
 	public function extension2mimetype($extension) {
 		reset($this->info["EXPORT"]);
-		while(list($k, $v) = each($this->info["EXPORT"])) {
+		foreach($this->info["EXPORT"] as $k => $v){
 			if ($v === $extension) {
 				return $k;
 			}
@@ -643,12 +662,12 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 		$this->handle = $this->ohandle;
 		$this->opa_transformations = array();
 		$this->properties = array(
-			"mimetype" => $this->ohandle["mimetype"],
-			"filesize" => $this->ohandle["filesize"],
-			"typename" => $this->ohandle["typename"],
-			"width" => $this->ohandle["width"],
-			"height" => $this->ohandle["height"],
-			"resolution" => $this->ohandle["resolution"]
+			"mimetype" => $this->ohandle["mimetype"] ?? null,
+			"filesize" => $this->ohandle["filesize"] ?? null,
+			"typename" => $this->ohandle["typename"] ?? null,
+			"width" => $this->ohandle["width"] ?? null,
+			"height" => $this->ohandle["height"] ?? null,
+			"resolution" => $this->ohandle["resolution"] ?? null
 		);
 	}
 	# ------------------------------------------------
@@ -663,12 +682,12 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 			if (!isset($pa_options[$vs_k])) { $pa_options[$vs_k] = null; }
 		}
 		
-		$vn_viewer_width = intval($pa_options['viewer_width']);
+		$vn_viewer_width = intval($pa_options['viewer_width'] ?? 400);
 		if ($vn_viewer_width < 100) { $vn_viewer_width = 400; }
-		$vn_viewer_height = intval($pa_options['viewer_height']);
+		$vn_viewer_height = intval($pa_options['viewer_height'] ?? 400);
 		if ($vn_viewer_height < 100) { $vn_viewer_height = 400; }
 		
-		if (!($vs_id = isset($pa_options['id']) ? $pa_options['id'] : $pa_options['name'])) {
+		if (!($vs_id = isset($pa_options['id']) ? $pa_options['id'] : $pa_options['name'] ?? null)) {
 			$vs_id = '_msword';
 		}
 			

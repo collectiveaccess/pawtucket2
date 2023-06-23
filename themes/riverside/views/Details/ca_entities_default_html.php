@@ -7,7 +7,7 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	$vs_image = "";
 	if(!$vs_representation_viewer){
-		$vs_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='Depicted' length='1'>^ca_object_representations.media.large</unit>");
+		$vs_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='Depicted' length='1'>^ca_object_representations.media.large</unit>", array("checkAccess" => $va_access_values));
 	}
 ?>
 <div class="row">

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2021 Whirl-i-Gig
+ * Copyright 2009-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -58,7 +58,17 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		$o_config = Configuration::load();
 		$va_default_locales = $o_config->getList('locale_defaults');
 
-		$va_preferred_locales = array();
+		$va_preferred_locales = [];
+	
+		if (is_array($pa_preferred_locales)) {
+			foreach($pa_preferred_locales as $vs_preferred_locale) {
+				if(is_numeric($vs_preferred_locale)) {
+					$vs_preferred_locale = ca_locales::IDToCode($vs_preferred_locale);
+				}
+				$va_preferred_locales[$vs_preferred_locale] = true;
+			}
+		}
+		
 		$va_similar_locales = [];
 		if ($ps_item_locale) {
 			// if item locale is passed as locale_id we need to convert it to a code
@@ -76,12 +86,6 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 			$va_similar_locales = ca_locales::localesForLanguage($ps_item_locale, ['codesOnly' => true]);
 		}
 
-		if (is_array($pa_preferred_locales)) {
-			foreach($pa_preferred_locales as $vs_preferred_locale) {
-				$va_preferred_locales[$vs_preferred_locale] = true;
-			}
-		}
-
 		$va_fallback_locales = array();
 		if (is_array($va_default_locales)) {
 			foreach($va_default_locales as $vs_fallback_locale) {
@@ -96,7 +100,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		    $va_fallback_locales[$vs_similar_locale] = true;
 		}
 
-		if ($g_ui_locale) {
+		if ($g_ui_locale && !is_array($va_preferred_locales) || !sizeof($va_preferred_locales)) {
 			if (!isset($va_preferred_locales[$g_ui_locale]) || !$va_preferred_locales[$g_ui_locale]) {
 				$va_preferred_locales[$g_ui_locale] = true;
 			}
@@ -362,9 +366,11 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				break;
 			default:
 				// Check relationships
-				$va_tables = array(
-					'ca_objects', 'ca_object_lots', 'ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections', 'ca_storage_locations', 'ca_list_items', 'ca_loans', 'ca_movements', 'ca_tours', 'ca_tour_stops', 'ca_object_representations'
-				);
+				$va_tables = [
+					'ca_objects', 'ca_object_lots', 'ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections', 
+					'ca_storage_locations', 'ca_list_items', 'ca_loans', 'ca_movements', 'ca_tours', 'ca_tour_stops', 
+					'ca_object_representations'
+				];
 
 				if (!in_array($t_instance->tableName(), $va_tables)) { return null; }
 
@@ -439,132 +445,146 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		}
 
 		$vs_output = '';
-		if (sizeof($va_reference_to_buf)) {
-			// add autocompleter for remapping
-			if ($vn_reference_to_count == 1) {
-				$vs_output .= "<h3 id='caReferenceHandlingToCount'>"._t('This %1 is referenced %2 time', $vs_typename, $vn_reference_to_count).". "._t('When deleting this %1:', $vs_typename)."</h3>\n";
-			} else {
-				$vs_output .= "<h3 id='caReferenceHandlingToCount'>"._t('This %1 is referenced %2 times', $vs_typename, $vn_reference_to_count).". "._t('When deleting this %1:', $vs_typename)."</h3>\n";
-			}
+		// add autocompleter for remapping
+		if ($vn_reference_to_count == 1) {
+			$vs_output .= "<h3 id='caReferenceHandlingToCount'>"._t('This %1 is referenced %2 time', $vs_typename, $vn_reference_to_count).". "._t('When deleting this %1:', $vs_typename)."</h3>\n";
+		} elseif($vn_reference_to_count > 1) {
+			$vs_output .= "<h3 id='caReferenceHandlingToCount'>"._t('This %1 is referenced %2 times', $vs_typename, $vn_reference_to_count).". "._t('When deleting this %1:', $vs_typename)."</h3>\n";
+		} else {
+			$vs_output .= "<h3 id='caReferenceHandlingToCount'>"._t('When deleting this %1:', $vs_typename)."</h3>\n";
+		}
 
-			$va_delete_opts = ['value' => 'delete', 'id' => 'caReferenceHandlingToDelete'];
-			$va_remap_opts = ['value' => 'remap', 'id' => 'caReferenceToHandlingRemap'];
-			$va_remap_lookup_opts = ['value' => '', 'size' => 40, 'id' => 'caReferenceHandlingToRemapTo', 'class' => 'lookupBg'];
-			if ($vs_default === 'delete') { 
-				$va_delete_opts['checked'] = 1; 
-				$va_remap_lookup_opts['disabled'] = 1; 
-			} else {
-				$va_remap_opts['checked'] = 1; 
-			}
+		$va_delete_opts = ['value' => 'delete', 'id' => 'caReferenceHandlingToDelete'];
+		$va_remap_opts = ['value' => 'remap', 'id' => 'caReferenceToHandlingRemap'];
+		$va_remap_lookup_opts = ['value' => '', 'size' => 40, 'id' => 'caReferenceHandlingToRemapTo', 'class' => 'lookupBg'];
+		if ($vs_default === 'delete') { 
+			$va_delete_opts['checked'] = 1; 
+			$va_remap_lookup_opts['disabled'] = 1; 
+		} else {
+			$va_remap_opts['checked'] = 1; 
+		}
+		
+		if ($vn_reference_to_count > 0) {
 			$vs_output .= caHTMLRadioButtonInput('caReferenceHandlingTo', $va_delete_opts).' '._t('remove all references')."<br/>\n";
-
-			if ($vs_instance_table === 'ca_storage_locations') {
-				AssetLoadManager::register('hierBrowser');
-				$vs_output .= caHTMLRadioButtonInput('caReferenceHandlingTo', $va_remap_opts).' '._t('transfer references to').' ';
-
-				$vs_output .= "<div id=\"caReferenceHandlingToRemapToHierBrowser\" class=\"hierarchyBrowserSmall\" style=\"width: 700px;\">
-						<!-- Content for hierarchy browser is dynamically inserted here by ca.hierbrowser -->
-					</div><!-- end hierbrowser -->";
-				$vs_output .= "
-					<div class=\"hierarchyBrowserFind\">
-						"._t('Find').": <input type=\"text\" id=\"caReferenceHandlingToRemapToHierBrowserSearch\" name=\"search\" value=\"\" size=\"25\"/>
-					</div>";
-
-			} else {
-				$vs_output .= caHTMLRadioButtonInput('caReferenceHandlingTo', $va_remap_opts).' '._t('transfer references to').' '.caHTMLTextInput('caReferenceHandlingToRemapTo', $va_remap_lookup_opts);
-			}
-			$vs_output .= "<a href='#' class='button' onclick='jQuery(\"#caReferenceHandlingToRemapToID\").val(\"\"); jQuery(\"#caReferenceHandlingToRemapTo\").val(\"\"); jQuery(\"#caReferenceHandlingToClear\").css(\"display\", \"none\"); return false;' style='display: none;' id='caReferenceHandlingToClear'>"._t('Clear').'</a>';
-			$vs_output .= caHTMLHiddenInput('caReferenceHandlingToRemapToID', array('value' => '', 'id' => 'caReferenceHandlingToRemapToID'));
-
-			if ($vn_child_count > 0) {
-				$vs_output .= '<p class="formLabelWarning" id="caChildDeletionWarning"><i class="caIcon fa fa-info-circle fa-1x"></i> '._t('Child records will be deleted')."</p>\n";
-			}
-
-			$vs_output .= "<script type='text/javascript'>";
-
-			$va_service_info = caJSONLookupServiceUrl($po_request, $t_instance->tableName(), array('noSymbols' => 1, 'noInline' => 1, 'exclude' => (int)$t_instance->getPrimaryKey(), 'table_num' => (int)$t_instance->get('table_num')));
-
-			if ($vs_instance_table === 'ca_storage_locations') {
-				$vs_output .= "
-	var caReferenceHandlingToRemapToHierBrowser = null;
-
-	jQuery(document).ready(function() {
-		if (!caReferenceHandlingToRemapToHierBrowser) {
-			caReferenceHandlingToRemapToHierBrowser = caUI.initHierBrowser('caReferenceHandlingToRemapToHierBrowser', {
-				levelDataUrl: '".$va_service_info['levelList']."',
-				initDataUrl: '".$va_service_info['ancestorList']."',
-
-				readOnly: true,
-				editButtonIcon: \"".caNavIcon(__CA_NAV_ICON_RIGHT_ARROW__, 1)."\",
-				disabledButtonIcon: \"".caNavIcon(__CA_NAV_ICON_DOT__, 1)."\",
-
-				allowDragAndDropSorting: false,
-
-				initItemID: '".$t_instance->get("{$vs_instance_table}.parent_id")."',
-
-				excludeItemIDs: [".$t_instance->getPrimaryKey()."],
-				indicator: \"".caNavIcon(__CA_NAV_ICON_SPINNER__, 1)."\",
-				displayCurrentSelectionOnLoad: false,
-
-				onSelection: function(id) {
-					jQuery(\"#caReferenceHandlingToRemapToID\").val(id);
-				}
-			});
+		} else {
+			$vs_output .= caHTMLRadioButtonInput('caReferenceHandlingTo', $va_delete_opts).' '._t('remove all associated metadata')."<br/>\n";
 		}
-		jQuery(\"#caReferenceHandlingToRemapToHierBrowserSearch\").attr(\"disabled\", true);
-		jQuery('#caReferenceToHandlingRemap').click(function() {
-			caReferenceHandlingToRemapToHierBrowser.isReadOnly(false);
-			jQuery(\"#caReferenceHandlingToRemapToHierBrowserSearch\").attr(\"disabled\", false);
-			jQuery('#caChildDeletionWarning').hide();
-		});
-		jQuery('#caReferenceHandlingToDelete').click(function() {
-			caReferenceHandlingToRemapToHierBrowser.isReadOnly(true);
-			jQuery(\"#caReferenceHandlingToRemapToHierBrowserSearch\").attr(\"disabled\", true);
 
-			jQuery('#caChildDeletionWarning').show();
-		});
-		jQuery('#caReferenceHandlingToRemapToHierBrowserSearch').autocomplete(
-			{
-				source: '".$va_service_info['search']."', minLength: 3, delay: 800, html: true,
-				select: function( event, ui ) {
-					if (ui.item.id) {
-						caReferenceHandlingToRemapToHierBrowser.setUpHierarchy(ui.item.id);	// jump browser to selected item
-						jQuery('#caReferenceHandlingToRemapToID').val(ui.item.id);
-					}
-					event.preventDefault();
-					jQuery('#caReferenceHandlingToRemapToHierBrowserSearch').val('');
-				}
-			}
-		).click(function() { this.select() });
-	})";
+		if ($vs_instance_table === 'ca_storage_locations') {
+			AssetLoadManager::register('hierBrowser');
+			$vs_output .= caHTMLRadioButtonInput('caReferenceHandlingTo', $va_remap_opts).' '._t('transfer references to').' ';
+
+			$vs_output .= "<div id=\"caReferenceHandlingToRemapToHierBrowser\" class=\"hierarchyBrowserSmall\" style=\"width: 700px;\">
+					<!-- Content for hierarchy browser is dynamically inserted here by ca.hierbrowser -->
+				</div><!-- end hierbrowser -->";
+			$vs_output .= "
+				<div class=\"hierarchyBrowserFind\">
+					"._t('Find').": <input type=\"text\" id=\"caReferenceHandlingToRemapToHierBrowserSearch\" name=\"search\" value=\"\" size=\"25\"/>
+				</div>";
+
+		} else {
+			if ($vn_reference_to_count > 0) {
+				$vs_output .= caHTMLRadioButtonInput('caReferenceHandlingTo', $va_remap_opts).' '._t('transfer references to').' '.caHTMLTextInput('caReferenceHandlingToRemapTo', $va_remap_lookup_opts)."<br/>\n";
+				$vs_output .= caHTMLCheckboxInput('caReferenceHandlingMetadata', ['id' => 'caReferenceHandlingMetadata', 'value' => 1, 'checked' => 1], []).' '._t('also transfer metadata');
 			} else {
-				$vs_output .= "jQuery(document).ready(function() {";
-				$vs_output .= "jQuery('#caReferenceHandlingToRemapTo').autocomplete(
-						{
-							source: '".$va_service_info['search']."', html: true,
-							minLength: 3, delay: 800,
-							select: function(event, ui) {
-								jQuery('#caReferenceHandlingToRemapToID').val(ui.item.id);
-								jQuery('#caReferenceHandlingClear').css('display', 'inline');
-							}
+				$vs_output .= caHTMLRadioButtonInput('caReferenceHandlingTo', $va_remap_opts).' '._t('transfer metadata to').' '.caHTMLTextInput('caReferenceHandlingToRemapTo', $va_remap_lookup_opts)."<br/>\n";
+				$vs_output .= caHTMLHiddenInput('caReferenceHandlingMetadata', ['id' => 'caReferenceHandlingMetadata', 'value' => 1], []);
+			}
+			
+		}
+		$vs_output .= "<a href='#' class='button' onclick='jQuery(\"#caReferenceHandlingToRemapToID\").val(\"\"); jQuery(\"#caReferenceHandlingToRemapTo\").val(\"\"); jQuery(\"#caReferenceHandlingToClear\").css(\"display\", \"none\"); return false;' style='display: none;' id='caReferenceHandlingToClear'>"._t('Clear').'</a>';
+		$vs_output .= caHTMLHiddenInput('caReferenceHandlingToRemapToID', array('value' => '', 'id' => 'caReferenceHandlingToRemapToID'));
+
+		if ($vn_child_count > 0) {
+			$vs_output .= '<p class="formLabelWarning" id="caChildDeletionWarning"><i class="caIcon fa fa-info-circle fa-1x"></i> '._t('Child records will be deleted')."</p>\n";
+		}
+
+		$vs_output .= "<script type='text/javascript'>";
+
+		$va_service_info = caJSONLookupServiceUrl($po_request, $t_instance->tableName(), array('noSymbols' => 1, 'noInline' => 1, 'exclude' => (int)$t_instance->getPrimaryKey(), 'table_num' => (int)$t_instance->get('table_num')));
+
+		if ($vs_instance_table === 'ca_storage_locations') {
+			$vs_output .= "
+var caReferenceHandlingToRemapToHierBrowser = null;
+
+jQuery(document).ready(function() {
+	if (!caReferenceHandlingToRemapToHierBrowser) {
+		caReferenceHandlingToRemapToHierBrowser = caUI.initHierBrowser('caReferenceHandlingToRemapToHierBrowser', {
+			levelDataUrl: ".json_encode($va_service_info['levelList']).",
+			initDataUrl: ".json_encode($va_service_info['ancestorList']).",
+
+			readOnly: true,
+			editButtonIcon: ".json_encode(caNavIcon(__CA_NAV_ICON_RIGHT_ARROW__, 1)).",
+			disabledButtonIcon: ".json_encode(caNavIcon(__CA_NAV_ICON_DOT__, 1)).",
+
+			allowDragAndDropSorting: false,
+
+			initItemID: ".(int)$t_instance->get("{$vs_instance_table}.parent_id").",
+
+			excludeItemIDs: [".(int)$t_instance->getPrimaryKey()."],
+			indicator: ".json_encode(caNavIcon(__CA_NAV_ICON_SPINNER__, 1)).",
+			displayCurrentSelectionOnLoad: false,
+
+			onSelection: function(id) {
+				jQuery(\"#caReferenceHandlingToRemapToID\").val(id);
+			}
+		});
+	}
+	jQuery(\"#caReferenceHandlingToRemapToHierBrowserSearch, #caReferenceHandlingMetadata\").attr(\"disabled\", true);
+	jQuery('#caReferenceToHandlingRemap').click(function() {
+		caReferenceHandlingToRemapToHierBrowser.isReadOnly(false);
+		jQuery(\"#caReferenceHandlingToRemapToHierBrowserSearch, #caReferenceHandlingMetadata\").attr(\"disabled\", false);
+		jQuery('#caChildDeletionWarning').hide();
+	});
+	jQuery('#caReferenceHandlingToDelete').click(function() {
+		caReferenceHandlingToRemapToHierBrowser.isReadOnly(true);
+		jQuery(\"#caReferenceHandlingToRemapToHierBrowserSearch, #caReferenceHandlingMetadata\").attr(\"disabled\", true);
+
+		jQuery('#caChildDeletionWarning').show();
+	});
+	jQuery('#caReferenceHandlingToRemapToHierBrowserSearch').autocomplete(
+		{
+			source: ".json_encode($va_service_info['search']).", minLength: 3, delay: 800, html: true,
+			select: function( event, ui ) {
+				if (ui.item.id) {
+					caReferenceHandlingToRemapToHierBrowser.setUpHierarchy(ui.item.id);	// jump browser to selected item
+					jQuery('#caReferenceHandlingToRemapToID').val(ui.item.id);
+				}
+				event.preventDefault();
+				jQuery('#caReferenceHandlingToRemapToHierBrowserSearch').val('');
+			}
+		}
+	).click(function() { this.select() });
+})";
+		} else {
+			$vs_output .= "jQuery(document).ready(function() {";
+			$vs_output .= "jQuery(\"#caReferenceHandlingToRemapToHierBrowserSearch, #caReferenceHandlingMetadata\").attr(\"disabled\", true);\n";
+			$vs_output .= "jQuery('#caReferenceHandlingToRemapTo').autocomplete(
+					{
+						source: ".json_encode($va_service_info['search']).", html: true,
+						minLength: 3, delay: 800,
+						select: function(event, ui) {
+							jQuery('#caReferenceHandlingToRemapToID').val(ui.item.id);
+							jQuery('#caReferenceHandlingClear').css('display', 'inline');
 						}
-					);";
+					}
+				);";
 
-				$vs_output .= "jQuery('#caReferenceToHandlingRemap').click(function() {
-					jQuery('#caReferenceHandlingToRemapTo').attr('disabled', false);
-					jQuery('#caChildDeletionWarning').hide();
-				});
-				jQuery('#caReferenceHandlingToDelete').click(function() {
-					jQuery('#caReferenceHandlingToRemapTo').attr('disabled', true);
-					jQuery('#caChildDeletionWarning').show();
-				});
-				";
-				$vs_output .= "});";
-			}
-			$vs_output .= "</script>\n";
-
-			TooltipManager::add('#caReferenceHandlingToCount', "<h2>"._t('References to this %1', $t_instance->getProperty('NAME_SINGULAR'))."</h2>\n".join("\n", $va_reference_to_buf));
+			$vs_output .= "jQuery('#caReferenceToHandlingRemap').click(function() {
+				jQuery('#caReferenceHandlingToRemapTo, #caReferenceHandlingMetadata').attr('disabled', false);
+				jQuery('#caChildDeletionWarning').hide();
+			});
+			jQuery('#caReferenceHandlingToDelete').click(function() {
+				jQuery('#caReferenceHandlingToRemapTo, #caReferenceHandlingMetadata').attr('disabled', true);
+				jQuery('#caChildDeletionWarning').show();
+			});
+			";
+			$vs_output .= "});";
 		}
+		$vs_output .= "</script>\n";
+
+		TooltipManager::add('#caReferenceHandlingToCount', "<h2>"._t('References to this %1', $t_instance->getProperty('NAME_SINGULAR'))."</h2>\n".join("\n", $va_reference_to_buf));
+
 
 		if (sizeof($va_reference_from_buf)) {
 			// add autocompleter for remapping
@@ -695,6 +715,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				if (isset($va_metadata_data) && is_array($va_metadata_data)) {
 					$vs_buf .= "<tr><th>".preg_replace('!^METADATA_!', '', $vs_metadata_type)."</th><th colspan='2'><!-- empty --></th></tr>\n";
 					foreach($va_metadata_data as $vs_key => $vm_value) {
+						if(!in_array($vs_key, ['FILE', 'IFD0', 'EXIF'])) { continue; }
 						$vs_buf .=  "<tr valign='top'><td><!-- empty --></td><td>{$vs_key}</td><td>"._caFormatMediaMetadataArray($vm_value, 0, $vs_key)."</td></tr>\n";
 						$vn_metadata_rows++;
 					}
@@ -717,11 +738,17 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 	 *
 	 * @return string - formated metadata for display to user
 	 */
-	function _caFormatMediaMetadataArray($pa_array, $pn_level=0, $ps_key=null) {
+	function _caFormatMediaMetadataArray($pa_array, $pn_level=0, $ps_key=null, ?array $options=null) {
 		if(!is_array($pa_array)) { return $pa_array; }
 
-		$vs_buf = "<div style='width: 100%; overflow: auto;'><table style='margin-left: ".($pn_level * 10)."px;'>";
+		$no_table = caGetOption('noTable', $options, false);
+		
+		$vs_buf = $no_table ? '' : "<div style='width: 100%; overflow: auto;'><table style='margin-left: ".($pn_level * 10)."px;'>";
 		foreach($pa_array as $vs_key => $vs_val) {
+			if(is_array($vs_val)) {
+				$vs_buf .= _caFormatMediaMetadataArray($vs_val, $pn_level++, null, ['noTable' => true]);
+				continue;
+			}
 			if (preg_match("!^Undefined!i", $vs_key)) { continue; }
 			$vs_val = preg_replace('![^A-Za-z0-9 \-_\+\!\@\#\$\%\^\&\*\(\)\[\]\{\}\?\<\>\,\.\"\'\=]+!', '', $vs_val);
 			switch($vs_key) {
@@ -737,7 +764,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 			}
 			$vs_buf .= "<tr><td width='130'>{$vs_key}</td><td>"._caFormatMediaMetadataArray($vs_val, $pn_level + 1, $vs_key)."</td></tr>";
 		}
-		$vs_buf .= "</table></div>\n";
+		$vs_buf .= $no_table ? '' : "</table></div>\n";
 		return $vs_buf;
 	}
 	# ------------------------------------------------------------------------------------------------
@@ -773,11 +800,19 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
 		$vs_buf = '';
 		if (is_array($va_found_ids) && sizeof($va_found_ids)) {
+			$default_to_summary_view_conf = $po_request->config->getList("{$vs_table_name}_editor_defaults_to_summary_view");
+			if(is_array($default_to_summary_view_conf) && sizeof($default_to_summary_view_conf)) {
+				$t_table = Datamodel::getInstance($vs_table_name, true);
+				$t_ui = ca_editor_uis::loadDefaultUI($vs_table_name, $po_request, $t_table->getTypeID($pn_id));
+				$default_to_summary_view = $t_ui ? in_array($t_ui->get('editor_code'), $default_to_summary_view_conf, true) : false;
+			} else {
+				$default_to_summary_view = (bool)$po_request->config->get("{$vs_table_name}_editor_defaults_to_summary_view");
+			}
 			if ($vn_prev_id > 0) {
 				if(
 					$po_request->user->canAccess($po_request->getModulePath(),$po_request->getController(),"Edit",array($vs_pk => $vn_prev_id))
 					&&
-					!($po_request->getAppConfig()->get($vs_table_name.'_editor_defaults_to_summary_view'))
+					!$default_to_summary_view
 				){
 					$vs_buf .= caNavLink($po_request, caNavIcon(__CA_NAV_ICON_SCROLL_LT__, 2), 'prev record', $po_request->getModulePath(), $po_request->getController(), 'Edit'.'/'.$po_request->getActionExtra(), array($vs_pk => $vn_prev_id)).'&nbsp;';
 				} else {
@@ -795,7 +830,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				if(
 					$po_request->user->canAccess($po_request->getModulePath(),$po_request->getController(),"Edit",array($vs_pk => $vn_next_id))
 					&&
-					!($po_request->getAppConfig()->get($vs_table_name.'_editor_defaults_to_summary_view'))
+					!$default_to_summary_view
 				){
 					$vs_buf .= '&nbsp;'.caNavLink($po_request,caNavIcon(__CA_NAV_ICON_SCROLL_RT__, 2), 'next record', $po_request->getModulePath(), $po_request->getController(), 'Edit'.'/'.$po_request->getActionExtra(), array($vs_pk => $vn_next_id));
 				} else {
@@ -920,6 +955,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
 		$vs_style               = null;
 		$vs_idno                = null;
+		$vn_num_objects			= 0;
 
 		$t_item 				= $po_view->getVar('t_item');
 		$vs_table_name = $t_item->tableName();
@@ -1084,7 +1120,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				}
 
 
-				$vs_buf .= "<div class='recordTitle {$vs_table_name}' style='width:190px; overflow:hidden;'>{$vs_label}".(($vb_show_idno) ? "<a title='$vs_idno'>".($vs_idno ? " ({$vs_idno})" : '') : "")."</a></div>";
+				$vs_buf .= "<div class='recordTitle {$vs_table_name}' style='width:190px; overflow:hidden;'>{$vs_label}".(($vb_show_idno) ? ($vs_idno ? " ({$vs_idno})" : '') : '')."</div>";
 				if (($vs_table_name === 'ca_object_lots') && $t_item->getPrimaryKey()) {
 					$vs_buf .= "<div id='inspectorLotMediaDownload'><strong>".((($vn_num_objects = $t_item->numObjects(null, ['excludeChildObjects' => $po_view->request->config->get("exclude_child_objects_in_inspector_log_count")])) == 1) ? _t('Lot contains %1 object', $vn_num_objects) : _t('Lot contains %1 objects', $vn_num_objects))."</strong>\n";
 				}
@@ -1204,7 +1240,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		function caToggleItemWatch() {
 			var url = '".caNavUrl($po_view->request, $po_view->request->getModulePath(), $po_view->request->getController(), 'toggleWatch', array($t_item->primaryKey() => $vn_item_id))."';
 
-			jQuery.getJSON(url, {}, function(data, status) {
+			jQuery.getJSON(url, {'csrfToken': ".json_encode(caGenerateCSRFToken($po_view->request))."}, function(data, status) {
 				if (data['status'] == 'ok') {
 					jQuery('#caWatchItemButton').html((data['state'] == 'watched') ? '".addslashes(caNavIcon(__CA_NAV_ICON_UNWATCH__, '20px'))."' : '".addslashes(caNavIcon(__CA_NAV_ICON_WATCH__, '20px'))."');
 				} else {
@@ -1218,7 +1254,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				$vs_buf .= "{$vs_watch}\n";
 				TooltipManager::add("#caWatchItemButton", _t('Watch/Unwatch this record'));
 
-				if ($po_view->request->user->canDoAction("can_change_type_{$vs_table_name}") && (sizeof($t_item->getTypeList()) > 1)) {
+				if ($po_view->request->user->canDoAction("can_change_type_{$vs_table_name}") && (sizeof($t_item->getTypeList()) >= 1)) {
 
 					$vs_buf .= "<div id='inspectorChangeType' class='inspectorActionButton'><div id='inspectorChangeTypeButton'><a href='#' onclick='caTypeChangePanel.showPanel(); return false;'>".caNavIcon(__CA_NAV_ICON_CHANGE__, '20px', array('title' => _t('Change type')))."</a></div></div>\n";
 
@@ -1263,8 +1299,8 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 			if($po_view->request->user->canDoAction('can_duplicate_'.$vs_table_name) && $t_item->getPrimaryKey()) {
 				$vs_buf .= "<div id='caDuplicateItemButton' class='inspectorActionButton'>";
 
-				$vs_buf .= caFormTag($po_view->request, 'Edit', 'DuplicateItemForm', $po_view->request->getModulePath().'/'.$po_view->request->getController(), 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true, 'noTimestamp' => true));
-				$vs_buf .= "<div>".caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_DUPLICATE__, '20px'), '', 'DuplicateItemForm')."</div>";
+				$vs_buf .= caFormTag($po_view->request, 'Edit', 'DuplicateItemForm', $po_view->request->getModulePath().'/'.$po_view->request->getController(), 'post', 'multipart/form-data', '_top', array('noCSRFToken' => false, 'disableUnsavedChangesWarning' => true, 'noTimestamp' => true));
+				$vs_buf .= "<div>".caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_DUPLICATE__, '20px'), '', 'DuplicateItemForm', null, ['aria-label' => _t('Duplicate item')])."</div>";
 
 				$vs_buf .= caHTMLHiddenInput($t_item->primaryKey(), array('value' => $t_item->getPrimaryKey()));
 				$vs_buf .= caHTMLHiddenInput('mode', array('value' => 'dupe'));
@@ -1464,7 +1500,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
 			$va_object_container_types = $po_view->request->config->getList('ca_objects_container_types');
 			$va_object_component_types = $po_view->request->config->getList('ca_objects_component_types');
-			$vb_can_add_component = (($vs_table_name === 'ca_objects') && $t_item->getPrimaryKey() && ($po_view->request->user->canDoAction('can_create_ca_objects')) && $t_item->canTakeComponents());
+			$vb_can_add_component = (($vs_table_name === 'ca_objects') && $t_item->getPrimaryKey() && ($po_view->request->user->canDoAction('can_create_ca_objects')) && ($t_item->canTakeComponents() || $t_item->isComponent()));
 
 			if (method_exists($t_item, 'getComponentCount')) {
 				if ($vn_component_count = $t_item->getComponentCount()) {
@@ -1478,7 +1514,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 			}
 
 			if ($vb_can_add_component) {
-				$vs_buf .= ' <a href="#" onclick=\'caObjectComponentPanel.showPanel("'.caNavUrl($po_view->request, '*', 'ObjectComponent', 'Form', array('parent_id' => $t_item->getPrimaryKey())).'"); return false;\')>'.caNavIcon(__CA_NAV_ICON_ADD__, '18px').'</a>';
+				$vs_buf .= ' <a href="#" onclick=\'caObjectComponentPanel.showPanel("'.caNavUrl($po_view->request, '*', 'ObjectComponent', 'Form', array('parent_id' => $t_item->getPrimaryKey())).'"); return false;\')>'.caNavIcon(__CA_NAV_ICON_ADD__, '18px').' '._t('Add component').'</a>';
 
 				$vo_change_type_view = new View($po_view->request, $po_view->request->getViewsDirectoryPath()."/bundles/");
 				$vo_change_type_view->setVar('t_item', $t_item);
@@ -1610,14 +1646,14 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
 					if(!(bool)$po_view->request->config->get('ca_sets_disable_duplication_of_items') && $po_view->request->user->canDoAction('can_duplicate_items_in_sets') && $po_view->request->user->canDoAction('can_duplicate_' . $vs_set_table_name)) {
 						$vs_buf .= '<div style="border-top: 1px solid #aaaaaa; margin-top: 5px; font-size: 10px; text-align: right;" ></div>';
-						$vs_buf .= caFormTag($po_view->request, 'DuplicateItems', 'caDupeSetItemsForm', 'manage/sets/SetEditor', 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true));
+						$vs_buf .= caFormTag($po_view->request, 'DuplicateItems', 'caDupeSetItemsForm', 'manage/sets/SetEditor', 'post', 'multipart/form-data', '_top', array('noCSRFToken' => false, 'disableUnsavedChangesWarning' => true));
 						$vs_buf .= _t("Duplicate items in this set and add to") . " ";
 						$vs_buf .= caHTMLSelect('setForDupes', array(
 							_t('current set') => 'current',
 							_t('new set') => 'new',
 						));
 						$vs_buf .= caHTMLHiddenInput('set_id', array('value' => $t_item->getPrimaryKey()));
-						$vs_buf .= caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_GO__, "18px"), "button", "caDupeSetItemsForm");
+						$vs_buf .= caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_GO__, "18px"), "button", "caDupeSetItemsForm", null, ['aria-label' => _t('Duplicate items')]);
 						$vs_buf .= "</form>";
 						$vs_buf .= '<div style="border-top: 1px solid #aaaaaa; margin-top: 5px; font-size: 10px; text-align: right;" ></div>';
 					}
@@ -1643,7 +1679,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 					$vs_buf .= "<div id='exporterFormList'>";
 					$vs_buf .= ca_data_exporters::getExporterListAsHTMLFormElement('exporter_id', $vn_set_table_num, array('id' => 'caExporterList'),array('width' => '135px'));
 					$vs_buf .= caHTMLHiddenInput('set_id', array('value' => $t_item->getPrimaryKey()));
-					$vs_buf .= caFormSubmitLink($po_view->request, _t('Export')." &rsaquo;", "button", "caExportForm");
+					$vs_buf .= caFormSubmitLink($po_view->request, _t('Export')." &rsaquo;", "button", "caExportForm", null, ['aria-label' => _t('Export')]);
 					$vs_buf .= "</div>\n";
 					$vs_buf .= "</form>";
 
@@ -1704,9 +1740,9 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
 					if ($vs_type_list) {
 						$vs_buf .= '<div style="border-top: 1px solid #aaaaaa; margin-top: 5px; font-size: 10px;">';
-						$vs_buf .= caFormTag($po_view->request, 'Edit', 'NewChildForm', 'administrate/setup/list_item_editor/ListItemEditor', 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true));
+						$vs_buf .= caFormTag($po_view->request, 'Edit', 'NewChildForm', 'administrate/setup/list_item_editor/ListItemEditor', 'post', 'multipart/form-data', '_top', array('noCSRFToken' => false, 'disableUnsavedChangesWarning' => true));
 						$vs_buf .= _t('Add a %1 to this list', $vs_type_list).caHTMLHiddenInput($t_list_item->primaryKey(), array('value' => '0')).caHTMLHiddenInput('parent_id', array('value' => $t_list_item->getPrimaryKey()));
-						$vs_buf .= caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_ADD__, '18px'), '', 'NewChildForm');
+						$vs_buf .= caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_ADD__, '18px'), '', 'NewChildForm', null, ['aria-label' => _t('Add a %1 to this list', $vs_type_list)]);
 						$vs_buf .= "</form></div>\n";
 					}
 			}
@@ -1899,7 +1935,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				$vs_buf .= "<div id='exporterFormList'>";
 				$vs_buf .= ca_data_exporters::getExporterListAsHTMLFormElement('exporter_id', $t_item->tableNum(), array('id' => 'caExporterList'), array('width' => '120px', 'recordType' => $t_item->getTypeCode(), 'value' => Session::getVar('exporter_id')));
 				$vs_buf .= caHTMLHiddenInput('item_id', array('value' => $t_item->getPrimaryKey()));
-				$vs_buf .= caFormSubmitLink($po_view->request, _t('Export')." &rsaquo;", "button", "caExportForm");
+				$vs_buf .= caFormSubmitLink($po_view->request, _t('Export')." &rsaquo;", "button", "caExportForm", null, ['aria-label' => _t('Export data')]);
 				$vs_buf .= "</div>\n";
 				$vs_buf .= "</form>";
 
@@ -1922,7 +1958,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				$vs_buf .= "<div id='externalExporterFormList'>";
 				$vs_buf .= ExternalExportManager::getTargetListAsHTMLFormElement('target', $t_item->tableNum(), array('id' => 'caExternalExporterList'), array('width' => '120px', 'restrictToTypes' => [$t_item->getTypeCode()]));
 				$vs_buf .= caHTMLHiddenInput('item_id', array('value' => $t_item->getPrimaryKey()));
-				$vs_buf .= caFormSubmitLink($po_view->request, _t('Export')." &rsaquo;", "button", "caExternalExportForm");
+				$vs_buf .= caFormSubmitLink($po_view->request, _t('Export')." &rsaquo;", "button", "caExternalExportForm", null, ['aria-label' => _t('Export to external repository')]);
 				$vs_buf .= "</div>\n";
 				$vs_buf .= "</form>";
 				$vs_buf .= "</div>";
@@ -1988,10 +2024,17 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
 			$vs_buf .= "</script>\n";
 		}
-
+		
+		// Search results debug
+		if($po_view->request->user->getPreference('show_search_result_desc') === 'show') {
+			$result_desc = $o_result_context->getResultDescription() ?? null;
+			if(is_array($result_desc) && sizeof($result_desc)) {
+				$vs_buf .= "<div class='searchResultDesc'><span class='searchResultDescHeading'>"._t('Search <em>%1</em> matched on', $o_result_context->getSearchExpression()).':</span><br/>'.caFormatSearchResultDesc($t_item->getPrimaryKey(), $result_desc, ['maxTitleLength' => 20, 'request' => $po_view->request])."</div>\n";
+			}
+		}
         $o_app_plugin_manager = new ApplicationPluginManager();
         $va_hookAppend = $o_app_plugin_manager->hookAppendToEditorInspector(array("t_item"=>$t_item));
-        if (is_string($va_hookAppend["caEditorInspectorAppend"])) {
+        if (is_string($va_hookAppend["caEditorInspectorAppend"] ?? null)) {
             $vs_buf .= $va_hookAppend["caEditorInspectorAppend"];
         }
 
@@ -2130,13 +2173,10 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		$vs_buf .= "<h4><div id='caColorbox' style='border: 6px solid #{$vs_color}; padding-bottom:15px;'>\n";
 		$vs_buf .= "<strong>"._t("Batch import media")."</strong>\n";
 
-		$vs_batch_media_import_root_directory = $po_view->request->config->get('batch_media_import_root_directory');
-		$vs_buf .= "<p>"._t('<strong>Server directory:</strong> %1', $vs_batch_media_import_root_directory)."</p>\n";
-
-		// Show the counts here is nice but can bog the server down when the import directory is an NFS or SAMBA mount
-		//$va_counts = caGetDirectoryContentsCount($vs_batch_media_import_root_directory, true, false, false); 
-		//$vs_buf .= "<p>"._t('<strong>Directories on server:</strong> %1', $va_counts['directories'])."<br/>\n";
-		//$vs_buf .= _t('<strong>Files on server:</strong> %1', $va_counts['files'])."<p>\n";
+		$global_batch_media_import_root_directory = caGetSharedMediaUploadPath();
+		$user_batch_media_import_root_directory = caGetMediaUploadPathForUser($po_view->request->getUserID());
+		$vs_buf .= "<p class='abbreviatedPath' title='{$global_batch_media_import_root_directory}'>"._t('<strong>Directory (all users):</strong> %1', caTruncateStringWithEllipsis($global_batch_media_import_root_directory, 30, 'middle'))."</p>\n";
+		$vs_buf .= "<p class='abbreviatedPath' title='{$user_batch_media_import_root_directory}'>"._t('<strong>Directory (user):</strong> %1', caTruncateStringWithEllipsis($user_batch_media_import_root_directory, 30, 'middle'))."</p>\n";
 
 		$vs_buf .= "</div></h4>\n";
 
@@ -2188,17 +2228,14 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 			if ((int)($o_config->get("{$vs_right_table_name}_disable"))) { return false; }
 		} else {
 			switch($vs_table_name) {
-				case 'ca_object_representations':
-					if (!(int)($o_config->get('ca_objects_disable'))) { return true; }
+				case 'ca_tour_stops':
+					if ((int)($o_config->get('ca_tours_disable'))) { return false; }
+					break;
+				default:
+					if ((int)($o_config->get($vs_table_name.'_disable'))) { return false; }
 					break;
 			}
-			if ((int)($o_config->get($vs_table_name.'_disable'))) { return false; }
-		}
-
-		switch($vs_table_name) {
-			case 'ca_tour_stops':
-				if ((int)($o_config->get('ca_tours_disable'))) { return false; }
-				break;
+			
 		}
 
 		return true;
@@ -2316,7 +2353,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 	 * @return array An array of tags, or an array of arrays when parseOptions option is set.
 	 */
 	function caGetTemplateTags($ps_template, $pa_options=null) {
-		$key = caMakeCacheKeyFromOptions($pa_options, $ps_template);
+		$key = caMakeCacheKeyFromOptions($pa_options ?? [], $ps_template);
 		if(MemoryCache::contains($key, 'DisplayTemplateParserUtils')) { return MemoryCache::fetch($key, 'DisplayTemplateParserUtils'); }
 		
 		$va_tags = caExtractTagsFromTemplate($ps_template, $pa_options);
@@ -2526,6 +2563,15 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				case 'NL2BR':
 					$ps_value = nl2br($ps_value);
 					break;
+				case 'TRUNCATE':
+					$ellipsis = ((bool)$va_tmp[2]);
+					if((int)$va_tmp[1] > 0) { 
+						$ellipsis = $ellipsis && (mb_strlen($ps_value) > (int)$va_tmp[1]);
+						$ps_value = mb_substr($ps_value, 0, (int)$va_tmp[1]); 
+						if($ellipsis) { $ps_value .= '...'; }
+					}
+					
+					break;
 			}
 		}
 
@@ -2607,6 +2653,17 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				return "{$vs_display} {$vs_reltype_disp}";
 				break;
 		}
+	}
+	# ------------------------------------------------------------------------------------------------
+	/**
+	 * Determines if template includes link tags (<l>).
+	 *
+	 * @param string $template
+	 
+	 * @return bool
+	 */
+	function caTemplateHasLinks($template) {
+		return preg_match('!<l>!', $template);
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -3001,16 +3058,16 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		if (isset($pa_options['relatedItems']) && is_array($pa_options['relatedItems']) && sizeof($pa_options['relatedItems'])) {
 			$va_tmp = array();
 			foreach ($pa_options['relatedItems'] as $vn_relation_id => $va_relation) {
-				$va_items[$va_relation[$vs_rel_pk]]['relation_id'] = $va_relation['relation_id'];
-				$va_items[$va_relation[$vs_rel_pk]]['relationship_type_id'] = $va_items[$va_relation[$vs_rel_pk]]['type_id'] = ($va_relation['direction']) ?  $va_relation['direction'].'_'.$va_relation['relationship_type_id'] : $va_relation['relationship_type_id'];
-				$va_items[$va_relation[$vs_rel_pk]]['rel_type_id'] = $va_relation['relationship_type_id'];
-				$va_items[$va_relation[$vs_rel_pk]]['item_type_id'] = $va_relation['item_type_id'];
-				$va_items[$va_relation[$vs_rel_pk]]['relationship_typename'] = $va_relation['relationship_typename'];
-				$va_items[$va_relation[$vs_rel_pk]]['idno'] = $va_relation[$vs_idno_fld];
-				$va_items[$va_relation[$vs_rel_pk]]['idno_sort'] = $va_relation[$vs_idno_sort_fld];
-				$va_items[$va_relation[$vs_rel_pk]]['label'] = $va_relation['label'];
-				$va_items[$va_relation[$vs_rel_pk]]['direction'] = $va_relation['direction'];
-				$va_items[$va_relation[$vs_rel_pk]]['effective_date'] = $va_relation['effective_date'];
+				$va_items[$va_relation[$vs_rel_pk]]['relation_id'] = $va_relation['relation_id'] ?? null;
+				$va_items[$va_relation[$vs_rel_pk]]['relationship_type_id'] = $va_items[$va_relation[$vs_rel_pk]]['type_id'] = ($va_relation['relationship_type_id'] ?? null) ? ($va_relation['direction']) ?  $va_relation['direction'].'_'.$va_relation['relationship_type_id'] : $va_relation['relationship_type_id'] : null;
+				$va_items[$va_relation[$vs_rel_pk]]['rel_type_id'] = $va_relation['relationship_type_id'] ?? null;
+				$va_items[$va_relation[$vs_rel_pk]]['item_type_id'] = $va_relation['item_type_id'] ?? null;
+				$va_items[$va_relation[$vs_rel_pk]]['relationship_typename'] = $va_relation['relationship_typename'] ?? null;
+				$va_items[$va_relation[$vs_rel_pk]]['idno'] = $va_relation[$vs_idno_fld] ?? null;
+				$va_items[$va_relation[$vs_rel_pk]]['idno_sort'] = $va_relation[$vs_idno_sort_fld] ?? null;
+				$va_items[$va_relation[$vs_rel_pk]]['label'] = $va_relation['label'] ?? null;
+				$va_items[$va_relation[$vs_rel_pk]]['direction'] = $va_relation['direction'] ?? null;
+				$va_items[$va_relation[$vs_rel_pk]]['effective_date'] = $va_relation['effective_date'] ?? null;
 
 				if (isset($va_relation['surname'])) {		// pass forename and surname entity label fields to support proper sorting by name
 					$va_items[$va_relation[$vs_rel_pk]]['surname'] = $va_relation['surname'];
@@ -3023,7 +3080,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
                 if ($vs_template) {
                 	$pk = is_object($qr_rel_items) ? $qr_rel_items->primaryKey() : null;
-                	$va_items[$va_relation[$vs_rel_pk]]['_display'] = caProcessTemplateForIDs($vs_template, $pt_rel->tableName(), array($va_relation['relation_id'] ? $va_relation['relation_id'] : $va_relation[$pk]), array('returnAsArray' => false, 'returnAsLink' => false, 'delimiter' => caGetOption('delimiter', $pa_options, $vs_display_delimiter), 'resolveLinksUsing' => $vs_rel_table, 'primaryIDs' => $va_primary_ids));
+                	$va_items[$va_relation[$vs_rel_pk]]['_display'] = caProcessTemplateForIDs($vs_template, $pt_rel->tableName(), array($va_relation['relation_id'] ?? null ? $va_relation['relation_id'] : $va_relation[$pk] ?? null), array('returnAsArray' => false, 'returnAsLink' => false, 'delimiter' => caGetOption('delimiter', $pa_options, $vs_display_delimiter), 'resolveLinksUsing' => $vs_rel_table, 'primaryIDs' => $va_primary_ids));
                 } else {
                     $va_items[$va_relation[$vs_rel_pk]]['_display'] = $va_items[$va_relation[$vs_rel_pk]]['label'];
                 }
@@ -3034,7 +3091,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 			unset($va_tmp);
 		}
 
-		if(is_array($pa_options['sortOrder'])) {
+		if(is_array($pa_options['sortOrder'] ?? null)) {
 			$va_items_sorted = [];
 			foreach($pa_options['sortOrder'] as $id) {
 				$va_items_sorted[$id] = $va_items[$id];
@@ -3074,13 +3131,18 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 			}
 
 			$po_request = caGetOption('request',$pa_options);
-			if($po_request && ca_editor_uis::loadDefaultUI($pt_rel->tableName(),$po_request,$va_item['rel_type_id'])) {
+			if($po_request && ca_editor_uis::loadDefaultUI($pt_rel->tableName(),$po_request,$va_item['rel_type_id'] ?? null)) {
 				$va_item['hasInterstitialUI'] = true;
 			} else {
 				$va_item['hasInterstitialUI'] = false;
 			}
 
-			$va_initial_values[$va_item['relation_id'] ? (int)$va_item['relation_id'] : $va_item[$vs_rel_pk]] = array_merge(
+			if(!($va_item['relation_id'] ?? null)) {
+				$va_item['relation_id'] = $va_item[$vs_rel_pk] ?? null;
+			}
+			$va_item['relation_id'] = (int)$va_item['relation_id'] ;
+			
+			$va_initial_values[$va_item['relation_id']] = array_merge(
 				$va_item,
 				array(
 					'label' => $vs_display
@@ -3203,9 +3265,10 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 	 * @param string $ps_class Optional CSS class to apply to links
 	 * @param string $ps_target
 	 * @param array $pa_options Supported options are:
-	 *		requireLinkTags = if set then links are only added when explicitly defined with <l> tags. Default is to make the entire text a link in the absence of <l> tags.
+	 *		requireLinkTags = If set then links are only added when explicitly defined with <l> tags. Default is to make the entire text a link in the absence of <l> tags.
 	 * 		addRelParameter =
 	 *      absolute = Return absolute urls [Default is false]
+	 *		bundle = When generating an editor link, will cause link to be to screen containing the specified bundle. If omitted or the bundle does not exist in the editor the default screen will be shown. [Default is null]
 	 *
 	 * @return array A list of HTML links
 	 */
@@ -3224,7 +3287,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		}
 
 		$va_links = array();
-		$va_link_opts = ['absolute' => isset($pa_options['absolute']) ? $pa_options['absolute'] : false];
+		$va_link_opts = ['absolute' => $pa_options['absolute'] ?? false, 'bundle' => $pa_options['bundle'] ?? 'ca_object_components_list'];
 
 		global $g_request;
 		if (!$g_request) { return $pa_text; }
@@ -3312,7 +3375,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 	 */
 	function caGetBundleDisplayTemplate($pt_subject, $ps_related_table, $pa_bundle_settings, $pa_options=null) {
 		$vs_template = null;
-		if(strlen(trim($pa_bundle_settings['display_template']))) {
+		if(strlen(trim($pa_bundle_settings['display_template'] ?? null))) {
 			$vs_template = trim($pa_bundle_settings['display_template']);
 		}
 
@@ -3373,7 +3436,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
 		$vs_buf  = "<span class='bundleContentPreview' id='{$ps_preview_id_prefix}_BundleContentPreview'>{$ps_preview_init}</span>";
 		$vs_buf .= "<span class='iconButton'>";
-		$vs_buf .= "<a href='#' onclick='caBundleVisibilityManager.toggle(\"{$ps_id_prefix}\");  return false;'>".caNavIcon(__CA_NAV_ICON_VISIBILITY_TOGGLE__, '18px', array('id' =>"{$ps_id_prefix}VisToggleButton"))."</a>";
+		$vs_buf .= "<a href='#' onclick='caBundleVisibilityManager.toggle(\"{$ps_id_prefix}\");  return false;' aria-label='" . _t('Toggle visibility') . "'>".caNavIcon(__CA_NAV_ICON_VISIBILITY_TOGGLE__, '18px', array('id' =>"{$ps_id_prefix}VisToggleButton"))."</a>";
 		$vs_buf .= "</span>\n";
 		$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { caBundleVisibilityManager.registerBundle('{$ps_id_prefix}', '{$vs_force}'); }); </script>";
 
@@ -3392,7 +3455,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 	function caEditorBundleMetadataDictionary($po_request, $ps_id_prefix, $pa_settings) {
 		global $g_ui_locale;
 
-		$definition = caGetOption($g_ui_locale, $pa_settings['definition'], null);
+		$definition = caGetOption($g_ui_locale, $pa_settings['definition'] ?? null, null);
 		if(is_array($definition)) { $definition = join ("", $definition); }
 		if (!($vs_definition = trim($definition))) { return ''; }
 
@@ -3414,6 +3477,8 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		$config = Configuration::load();
 		$default_sorts = $config->getAssoc("{$related_table}_default_bundle_display_sorts");
 	
+		$type_specific_sorts = null;
+		
 		if(!is_array($default_sorts) || !is_array($default_sort_options = caGetOption('options', $default_sorts, null))) { $default_sort_options = []; }
 		if(is_array($rel_types = caGetOption(['restrict_to_types', 'restrictToTypes'], $settings, null)) && sizeof($rel_types)) {
 			$path = array_keys(Datamodel::getPath($table, $related_table));
@@ -3513,10 +3578,12 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		} else {
 			$sort_fields_proc = $default_sort_options = [];
 			
+			// Expand global sort list to include parents when sort is on container field
 			foreach($va_sort_fields as $sf => $n) {
 				$tmp = explode('.', $sf);
-				if(sizeof($tmp) > 2) {
-					$sort_fields_proc[$k=join('.', array_slice($tmp, 0, 2))] = ca_metadata_elements::getElementLabel($tmp[1]);
+				if((sizeof($tmp) > 2) && !in_array($tmp[1], ['preferred_labels', 'nonpreferred_labels']))  {
+					if(!($label = ca_metadata_elements::getElementLabel($tmp[1]))) { continue; }
+					$sort_fields_proc[$k=join('.', array_slice($tmp, 0, 2))] = $label;
 					$default_sort_options[$k] = true;
 				}
 				$sort_fields_proc[$sf] = $n;
@@ -3565,7 +3632,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		
 		$buf = '';
 		if(caGetOption('showBatchEditorButton', $options, false)) {
-			$buf = '<div class="button batchEdit">'.caNavLink($request, caNavIcon(__CA_NAV_ICON_BATCH_EDIT__, '15px')._t(' Batch edit'), '', '*', '*', 'BatchEdit', ['placement_id' => $placement_id, 'primary_id' => $t_instance->getPrimaryKey(), 'screen' => $request->getActionExtra()]).'</div>';
+			$buf = '<div class="button batchEdit">'.caNavLink($request, caNavIcon(__CA_NAV_ICON_BATCH_EDIT__, '15px')._t(' Batch edit all'), '', '*', '*', 'BatchEdit', ['placement_id' => $placement_id, 'primary_id' => $t_instance->getPrimaryKey(), 'screen' => $request->getActionExtra()]).'</div>';
 		}
 		return $buf;
 	}
@@ -3609,7 +3676,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
 		$target = $pt_related->tableName();
 		if(!$pt_related->getAppConfig()->get("{$target}_enable_home_location")) { return null; }
-		$policies = array_filter(ca_objects::getHistoryTrackingCurrentValuePoliciesForTable($target), function($v) { return array_key_exists('ca_storage_locations', $v['elements']); });
+		$policies = array_filter(ca_objects::getHistoryTrackingCurrentValuePolicies($target), function($v) { return array_key_exists('ca_storage_locations', $v['elements']); });
 		if(!is_array($policies) || !sizeof($policies)) { return ''; }
 		if (!$ps_policy) { $ps_policy = $target::getDefaultHistoryTrackingCurrentValuePolicy(); }
 		if(is_object($initial_values)) {
@@ -4057,6 +4124,8 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
  		$pb_dont_show_placeholder 			= caGetOption('dontShowPlaceholder', $pa_options, false);
  		$ps_display_annotations	 			= caGetOption('displayAnnotations', $pa_options, false);
  		$ps_annotation_display_template 	= caGetOption('displayAnnotationTemplate', $pa_options, caGetOption('displayAnnotationTemplate', $va_detail_config['options'], '^ca_representation_annotations.preferred_labels.name'));
+		$default_annotation_id		 		= caGetOption('defaultAnnotationID', $pa_options, null);
+		$start_timecode		 				= caGetOption('startTimecode', $pa_options, null);
 		$ps_display_type		 			= caGetOption('display', $pa_options, false);
 
  		
@@ -4126,6 +4195,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
 				$filtered_rep_ids = [];
 				while($qr_reps->nextHit()) {
+					if(!$qr_reps->get('ca_object_representations.media')) { continue; }
 					$mimetype = $qr_reps->getMediaInfo('ca_object_representations.media', 'original', 'mimetype');
 					if($show_only_media_types && !caMimetypeIsValid($mimetype, $show_only_media_types)) { continue; }
 
@@ -4191,6 +4261,9 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		$o_view->setVar('placeholder', $vs_placeholder);
 		$o_view->setVar('slides', $vs_slides);
 		$o_view->setVar('display_annotations', $ps_display_annotations);
+		$o_view->setVar('default_annotation_id', $default_annotation_id);
+		$o_view->setVar('start_timecode', $start_timecode);
+
 		return $o_view->render('representation_viewer_html.php');
  	}
  	# ---------------------------------------
@@ -4787,7 +4860,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 			if ($pb_barcodes && ($vs_barcode_file = caParseBarcodeViewTag($vs_tag, $po_view, $pm_subject, $pa_options))) {
 				$va_barcode_files_to_delete[] = $vs_barcode_file;
 			} elseif ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
-				$po_view->setVar($vs_tag, $pm_subject->getWithTemplate($vs_tag, array('checkAccess' => $pa_access_values)));
+				$po_view->setVar($vs_tag, $pm_subject->getWithTemplate($vs_tag, array('autoConvertLineBreaks' => true, 'checkAccess' => $pa_access_values)));
 			} elseif (strpos($vs_tag, ".") !== false) {
 				$po_view->setVar($vs_tag, $pm_subject->get($vs_tag, array('checkAccess' => $pa_access_values)));
 			} else {
@@ -4886,7 +4959,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 				return $pa_settings[$ps_key][$ps_locale];
 			} elseif(is_array($va_locales_for_language = ca_locales::localesForLanguage($ps_locale, ['codesOnly' => true]))) {
 				foreach($va_locales_for_language as $vs_locale) {
-					if($pa_settings[$ps_key][$vs_locale]) { return $pa_settings[$ps_key][$vs_locale]; }
+					if($pa_settings[$ps_key][$vs_locale] ?? null) { return $pa_settings[$ps_key][$vs_locale]; }
 				}
 			}
 		}
@@ -5158,6 +5231,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 	 */
 	function caGetRepresentationDownloadFileName(string $table, array $data, ?array $options=null) : string {
 		$config = Configuration::load();
+		if(isset($data['extension']) && (in_array(strtolower($data['extension']), ['m4v', 'm4a']))) { $data['extension'] = 'mp4'; }
 		switch($mode = caGetOption('mode', $options, $config->get(["{$table}_downloaded_file_naming", 'downloaded_file_naming']))) {
 			case 'idno':
 				$filename = $data['idno'].(strlen($data['index']) ? '_'.$data['index'] : '').'.'.$data['extension'];
@@ -5250,7 +5324,7 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		$config = Configuration::load();
 		
 		if(is_array($branding = $config->getAssoc('branding')) && is_array($logo = caGetOption($type, $branding, null)) && !empty($logo['src'])) {
-			return caHTMLImage(($abs ? __CA_BASE_DIR__ : __CA_URL_ROOT__).'/'.caGetOption('src', $logo), ['alt' => caGetOption('alt', $logo), 'class' => caGetOption('class', $logo), 'id' => caGetOption('id', $logo), 'scaleCSSWidthTo' => caGetOption('width', $logo), 'scaleCSSHeightTo' => caGetOption('height', $logo)]);
+			return caHTMLImage(($abs ? __CA_BASE_DIR__ : __CA_URL_ROOT__).'/'.caGetOption('src', $logo), ['alt' => caGetOption('alt', $logo), 'class' => caGetOption('class', $logo), 'style' => caGetOption('style', $logo), 'id' => caGetOption('id', $logo), 'scaleCSSWidthTo' => caGetOption('width', $logo), 'scaleCSSHeightTo' => caGetOption('height', $logo)]);
 		}
 		
 		if(!$g_request) { return null; }
@@ -5336,3 +5410,113 @@ require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 		throw new ApplicationException(_t('Invalid sidecar type'));
 	}
 	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	function caGetReferenceToExistingRepresentationMedia(ca_object_representations $t_rep, array $options=null) {
+		$return_as_array = caGetOption('returnAsArray', $options, false);
+		
+		global $g_request;
+		$rel = $rec_label = null;
+		foreach(['ca_objects', 'ca_entities', 'ca_occurrences', 'ca_collections'] as $parent_table) {
+			if($rel_list = $t_rep->getRelatedItems($parent_table, ['returnAs' => 'array'])) {
+				$rel = array_shift($rel_list);
+				$rec_label = $rel['label'].($rel['idno']? " (".$rel['idno'].")" : '');
+				break;
+			}
+		}
+	
+		if($return_as_array) {
+			if($rec_label) {
+				return [
+					'table' => $parent_table,
+					'id' => $rel[Datamodel::primaryKey($parent_table)],
+					'label' => $rel['label'],
+					'idno' => $rel['idno']
+				];
+			} else {
+				return [
+					'table' => 'ca_object_representations',
+					'id' => $t_rep->getPrimaryKey(),
+					'label' => $t_rep->get('ca_object_representations.preferred_labels.name'),
+					'idno' => $t_rep->get('ca_object_representations.idno')
+				];
+			}
+		} else {
+			$rec_label = $rec_label ? 
+				_t('Media aleady exists in %1', ($g_request ? 
+					caEditorLink($g_request, $rec_label, '', $parent_table, $rel[Datamodel::primaryKey($parent_table)])
+					: $rec_label))
+				:
+				($g_request ? _t('Media aleady %1', caEditorLink($g_request, _t('exists'), '', 'ca_object_representations', $t_rep->getPrimaryKey())) : _t('Media already exists'))
+			;
+			return $rec_label;
+		}
+	}
+	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	function caGetTextExcerpt(?string $content, array $search_terms, ?array $options=null) : ?string {
+		$before = caGetOption('before', $options, 100);
+		$after = caGetOption('after', $options, 100);
+		$search_terms = array_map(function($v) {
+			$t = preg_replace('![i]{0,1}\*!', '', $v);
+			return $t;
+		}, $search_terms);
+		
+		$excerpts = [];
+		for($s=0; $s < sizeof($search_terms); $s++) {
+			$n = sizeof($search_terms) - $s;
+			while($n > 0) {
+				$terms = array_map(function($v) {
+					return preg_quote($v, '!')."[^\s]*";
+				}, array_slice($search_terms, $s, $n));
+				$regex = trim(join('[ ]+', $terms));
+				if(preg_match("/(?<![A-Za-z0-9]){$regex}/iu", $content, $m)) {
+					if($m[0]){
+						$index = mb_strpos($content, $m[0]);
+						$start = (($index-$before) > 0) ? ($index-$before) : 0;
+						$length = $before + $after + mb_strlen($m[0]);
+						if($length > (mb_strlen($content) - $start)) { $length = (mb_strlen($content) - $start); }
+						$extext = mb_substr($content, $start, $length);
+						$excerpts[] = "<p>... {$extext} ...</p>";
+					}
+				}
+				$n--;
+			}
+		}
+		return join('', array_unique($excerpts));
+	}
+	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	function caHighlightText($content, $highlight_words) {
+		if(is_array($content)) { return $content; }
+
+		if(!is_array($highlight_words)) { return $content; }	// use global directly, if possible, for performance
+		
+		$highlight_words = array_reduce($highlight_words, function($c, $v) {
+			if(mb_substr($v, -1, 1) == '*') {
+				$v = mb_substr($v, 0, mb_strlen($v) - 1);
+				if($v[-1] == 'i') { $v = mb_substr($v, 0, mb_strlen($v) - 1); }
+				array_push($c, preg_quote($v, '/').'[A-Za-z0-9]*');
+			}
+			if(!strlen($v)) { array_pop($c); return $c; }
+			if(mb_substr($v, -1, 1) == 's') {
+				array_push($c, (mb_substr($v, 0, mb_strlen($v) - 1)."'s"));
+				array_push($c, (mb_substr($v, 0, mb_strlen($v) - 1)."’s"));
+			}
+			array_push($c, $v);
+			return $c;
+		}, []);
+		if(!sizeof($highlight_words)) { return $content; }
+		usort($highlight_words, function($a, $b) {
+			return strlen($b) <=> strlen($a);
+		});
+		
+		$content = preg_replace("/(?<![A-Za-z0-9])(".join('|', $highlight_words).")/i", "<span class=\"highlightText\">\\1</span>", $content);
+		
+		return $content;
+	}

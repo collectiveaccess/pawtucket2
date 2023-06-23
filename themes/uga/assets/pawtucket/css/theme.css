@@ -539,3 +539,7 @@ bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemTex
 .caAudioPlayer {
 	background-color: #000;
 }
+.highlightText {
+	background-color: #FBF719;
+	opacity: 0.8;
+}

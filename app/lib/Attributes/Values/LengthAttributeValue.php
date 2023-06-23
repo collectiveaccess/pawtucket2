@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2020 Whirl-i-Gig
+ * Copyright 2009-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -66,6 +66,14 @@ $_ca_attribute_settings['LengthAttributeValue'] = array(		// global
         'label' => _t('Does not use locale setting'),
         'description' => _t('Check this option if you don\'t want your measurements to be locale-specific. (The default is not to be.)')
     ),
+    'singleValuePerLocale' => array(
+		'formatType' => FT_NUMBER,
+		'displayType' => DT_CHECKBOXES,
+		'default' => 0,
+		'width' => 1, 'height' => 1,
+		'label' => _t('Allow single value per locale'),
+		'description' => _t('Check this option to restrict entry to a single value per-locale.')
+	),
     'requireValue' => array(
         'formatType' => FT_NUMBER,
         'displayType' => DT_CHECKBOXES,
@@ -165,6 +173,7 @@ class LengthAttributeValue extends AttributeValue implements IAttributeValue {
         global $g_ui_locale;
         global $g_ui_units_pref;
         
+        $pa_value_array['value_decimal1'] = $pa_value_array['value_decimal1'] ?? null;
         if ($pa_value_array['value_decimal1'] === '' || is_null($pa_value_array['value_decimal1'])) {
             $this->ops_text_value = '';
             return;
@@ -206,7 +215,7 @@ class LengthAttributeValue extends AttributeValue implements IAttributeValue {
                 $t = explode("/", $v); return ((int)$t[1] > $acc) ? (int)$t[1] : $acc; 
             }, 0);
             
-            if (!in_array($vs_units, ['metric', 'english','as_entered'])) {
+            if (!in_array($vs_units, ['metric', 'english','as_entered', 'original', 'fractions'])) {
                 $vs_as_entered_units = caParseLengthDimension($pa_value_array['value_longtext1'])->getType();
                 $vs_units = 'as_entered'; 
             }
@@ -238,6 +247,7 @@ class LengthAttributeValue extends AttributeValue implements IAttributeValue {
                     $vs_value = $vo_measurement->convertTo($vs_convert_to_units, $vn_precision);
                     break;
                 case 'english':
+                case 'fractions':
                     $vs_value_in_inches = $vo_measurement->convertTo(Zend_Measure_Length::INCH, 15);
                     $vn_value_in_inches = (float)preg_replace("![^0-9\.\,]+!", "", $vs_value_in_inches);
                     
@@ -268,7 +278,7 @@ class LengthAttributeValue extends AttributeValue implements IAttributeValue {
                                 $vs_value = $vo_feet->convertTo($vs_convert_to_units, $vn_precision);
                                 if(in_array($vs_convert_to_units, $this->config->get('add_period_after_units'))) { $vs_value .= '.'; }
                                 
-                                if ($vn_inches > 0) {
+                                if (($vn_inches > 0) && ($vs_units === 'fractions')) {
                                     $vs_value .= " ".caLengthToFractions($vn_inches, $vn_maximum_denominator, true, ['precision' => $this->config->get('inch_decimal_precision'), 'allowFractionsFor' => $fracs, 'useUnicodeFractionGlyphsFor' => $unicode_fracs]);
                                     if(in_array(Zend_Measure_Length::INCH, $this->config->get('add_period_after_units'))) { $vs_value .= '.'; }
                                 }
@@ -294,7 +304,7 @@ class LengthAttributeValue extends AttributeValue implements IAttributeValue {
                                     $vs_value .= " ".$vo_feet->convertTo(Zend_Measure_Length::FEET, $this->config->get('feet_decimal_precision'));
                                     if(in_array(Zend_Measure_Length::INCH, $this->config->get('add_period_after_units'))) { $vs_value .= '.'; }
                                 }
-                                if ($vn_inches > 0) {
+                                if (($vn_inches > 0) && ($vs_units === 'fractions')) {
                                     $vs_value .= " ".caLengthToFractions($vn_inches, $vn_maximum_denominator, true, ['units' => Zend_Measure_Length::INCH, 'allowFractionsFor' => $fracs, 'useUnicodeFractionGlyphsFor' => $unicode_fracs]);
                                     if(in_array(Zend_Measure_Length::INCH, $this->config->get('add_period_after_units'))) { $vs_value .= '.'; }
                                 }
@@ -302,12 +312,15 @@ class LengthAttributeValue extends AttributeValue implements IAttributeValue {
                                 break;
                             case Zend_Measure_Length::INCH:
                             default:
-                                $vs_value = caLengthToFractions($vs_value_in_inches, $vn_maximum_denominator, true, ['units' => $vs_convert_to_units, 'allowFractionsFor' => $fracs, 'useUnicodeFractionGlyphsFor' => $unicode_fracs]);
+                            	if($vs_units === 'fractions') {
+                                	$vs_value = caLengthToFractions($vs_value_in_inches, $vn_maximum_denominator, true, ['units' => $vs_convert_to_units, 'allowFractionsFor' => $fracs, 'useUnicodeFractionGlyphsFor' => $unicode_fracs]);
+                                }
                                 break;
                         }
                     } 
                     break;
                 case 'as_entered': 
+                case 'original':
                     // as-entered
                     return $pa_value_array['value_longtext1'];
                     break;
@@ -399,6 +412,15 @@ class LengthAttributeValue extends AttributeValue implements IAttributeValue {
     public function sortField() {
         return 'value_decimal1';
     }
+    # ------------------------------------------------------------------
+	/**
+	 * Returns name of field in ca_attribute_values to use for query operations
+	 *
+	 * @return string Name of sort field
+	 */
+	public function queryFields() : ?array {
+		return ['value_decimal1'];
+	}
     # ------------------------------------------------------------------
     /**
      * Returns constant for length attribute value

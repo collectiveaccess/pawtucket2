@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2020 Whirl-i-Gig
+ * Copyright 2016-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -61,7 +61,8 @@
 				if (is_a($t_instance, "ca_object_representations")) {
 				    $poster = $t_instance->getMediaUrl('media', caGetOption('viewer_poster_version', $pa_data['display'], 'small'));
 					$va_viewer_opts = [
-						'id' => $vs_id, 'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
+						'id' => $vs_id, 'class' => caGetOption('class', $pa_data['display'], null),
+						'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
 					    'poster_frame_url' => $poster, 'captions' => $t_instance->getCaptionFileList(),
 					    'controls' => caGetOption('controls', $pa_data['display'], null)
 					];
@@ -102,7 +103,8 @@
 					
 					$poster = $t_instance->getMediaUrl('media', caGetOption('viewer_poster_version', $pa_data['display'], 'small'));
 					$va_viewer_opts = [
-						'id' => $vs_id, 'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
+						'id' => $vs_id, 'class' => caGetOption('class', $pa_data['display'], null),
+						'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
 						'poster_frame_url' => $poster
 					];
 					
@@ -117,7 +119,8 @@
 					}
 					$poster = $t_instance->getMediaUrl('value_blob', caGetOption('viewer_poster_version', $pa_data['display'], 'small'));
 					$va_viewer_opts = [
-						'id' => $vs_id, 'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
+						'id' => $vs_id, 'class' => caGetOption('class', $pa_data['display'], null),
+						'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
 						'poster_frame_url' => $poster
 					];
 					

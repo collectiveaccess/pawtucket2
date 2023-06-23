@@ -78,6 +78,8 @@
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
  			
+ 			$o_search_config = caGetSearchConfig();
+ 			
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type");
@@ -195,27 +197,26 @@
 			
 			// Get any preset-criteria
 			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
+			$show_base_criteria = caGetOption('showBaseCriteria', $va_browse_info, false);
 			
+			if (($o_browse->numCriteria() == 0)) {
+				if (is_array($va_base_criteria) && !$vs_remove_criterion) {
+					foreach($va_base_criteria as $vs_facet => $vs_value) {
+						$o_browse->addCriteria($vs_facet, $vs_value);
+					}
+				} else {
+					$o_browse->addCriteria("_search", array("*"));
+				}
+			}
 			if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			    foreach ($va_facets as $vs_facet_spec) {
 			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
 			        $vs_facet = array_shift($va_tmp);
 			        $o_browse->addCriteria($vs_facet, preg_split("![\|,]+!", join(":", $va_tmp))); 
 			    }
-			
 			} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
 				$o_browse->addCriteria($vs_facet, $p);
-			} else { 
-				if ($o_browse->numCriteria() == 0) {
-					if (is_array($va_base_criteria)) {
-						foreach($va_base_criteria as $vs_facet => $vs_value) {
-							$o_browse->addCriteria($vs_facet, $vs_value);
-						}
-					} else {
-						$o_browse->addCriteria("_search", array("*"));
-					}
-				}
-			}
+			} 
 			
 			//
 			// Sorting
@@ -268,10 +269,14 @@
 				unset($va_criteria['_search']);
 			} 
 
-
  			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
  			
 			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'omitChildRecords' => $vb_omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $va_browse_info, null)));
+			
+			//
+			// Set highlight text
+			//
+			MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $va_criteria['_search'] ?? '', ['persist' => !RequestHTTP::isAjax()]);
 			
 			//
 			// Facets
@@ -283,7 +288,7 @@
 			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
 			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
-				if(isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
+				if(!$show_base_criteria && isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
 				
 				// Enforce role-restricted facets here
 				if (isset($va_facet_info['require_roles']) && is_array($va_facet_info['require_roles']) && sizeof($va_facet_info['require_roles'])) {
@@ -299,7 +304,7 @@
 			
 			
 			// remove base criteria from display list
-			if (is_array($va_base_criteria)) {
+			if (!$show_base_criteria && is_array($va_base_criteria)) {
 				foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
 					unset($va_criteria[$vs_base_facet]);
 				}
@@ -362,6 +367,7 @@
 				}
 			}
 			
+			$qr_res->doHighlighting($o_search_config->get("do_highlighting"));
 			$this->view->setVar('result', $qr_res);
 				
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
