@@ -90,6 +90,8 @@
 				</ifdef>}}}
 				{{{<ifdef code="ca_objects.inscription"><div class="unit"><label>Inscription</label>^ca_objects.inscription%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.materials"><div class="unit"><label>Materials</label>^ca_objects.materials%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.theme"><div class="unit"><label>Themes</label>^ca_objects.theme%delimiter=,_</div></ifdef>}}}
+				
 <?php
 				$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
 				if(is_array($va_entities) && sizeof($va_entities)){
@@ -138,7 +140,11 @@
 ?>
 				</div>				
 			</div>
-		</div><!-- end row --></div><!-- end container -->
+		</div><!-- end row -->
+<?php
+		include("related_objects_html.php");
+?>
+		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">

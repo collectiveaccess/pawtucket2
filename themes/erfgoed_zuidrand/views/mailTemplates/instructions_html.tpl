@@ -34,7 +34,7 @@ print _t("<p>Je wordt gevraagd een nieuw wachtwoord aan te maken. Als je nog ste
 
 <p>Met vriendelijke groet,<br/>
 
-Erfgoedcel Meetjesland - COMEET</p>
+Erfgoedcel Zuidrand</p>
 ", $this->request->config->get("ca_admin_email"));
 
 

@@ -99,10 +99,18 @@
 				{{{<ifdef code="ca_objects.theme"><div class="unit"><label>Themes</label>^ca_objects.theme%delimiter=,_</div></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.rights_container.access_conditions|ca_objects.rights_container.use_reproduction"><div class="unit"><label>Restriction</label><ifdef code="ca_objects.rights_container.access_conditions">Access: ^ca_objects.rights_container.access_conditions<ifdef code="ca_objects.rights_container.access_conditions,ca_objects.rights_container.use_reproduction"><br/></ifdef><ifdef code="ca_objects.rights_container.use_reproduction'>Reproduction: ^ca_objects.rights_container.use_reproduction</ifdef></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.rights_container.access_conditions|ca_objects.rights_container.use_reproduction"><div class="unit"><label>Restrictions</label>
+					<ifdef code="ca_objects.rights_container.access_conditions">Access: ^ca_objects.rights_container.access_conditions</ifdef>
+					<ifdef code="ca_objects.rights_container.use_reproduction"><ifdef code="ca_objects.rights_container.access_conditions"><br/></ifdef>Reproduction: ^ca_objects.rights_container.use_reproduction</ifdef>
+				</div></ifdef>}}}
 				{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.preferred_labels.name</unit>
 					</div></ifcount>}}}
+<?php
+				if($vn_collection_id = $t_object->get("ca_collections.collection_id", array("limit" => 1))){
+					print "<div class='unit'>".caDetailLink($this->request, "More from this ".$t_object->get("ca_collections.type_id", array("limit" => 1, "convertCodesToDisplayText" => true)), "btn btn-default", "ca_collections", $vn_collection_id)."</div>";
+				}
+?>
 				
 				<div class="unit">{{{map}}}</div>
 						
@@ -139,7 +147,11 @@
 ?>
 				</div>				
 			</div>
-		</div><!-- end row --></div><!-- end container -->
+		</div><!-- end row -->
+<?php
+		include("related_objects_html.php");
+?>
+		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">

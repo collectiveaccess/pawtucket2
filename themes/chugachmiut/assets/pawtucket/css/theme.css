@@ -267,7 +267,7 @@ body{
 	font-weight:400;
 }
 #footer .address{
-	text-transform: uppercase;
+	text-transform: none;
 	font-size: 14px;
 }
 @media(max-width: 768px) {
@@ -303,6 +303,17 @@ body{
 }
 #footer ul li {
   padding: 0px 10px 0px 10px;
+}
+#footer .social .contact a{
+	font-size: 14px;
+	color: #FFF;
+	font-weight: 400;
+	text-transform: uppercase;
+	margin-top:-10px;
+}
+#footer .social .contact{
+	top: -5px;
+	position: relative;
 }
 /* search / browse results */
 .results H1 {
@@ -640,7 +651,7 @@ body.frontContainer #footer{
 	box-shadow: 0 2px 14px 0 rgba(0,0,0,.3);
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImageSubjects{
-	background-image: url('../graphics/rattle.jpg');
+	background-image: url('../graphics/BearGutSewing.jpg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImagePeople{
 	background-image: url('../graphics/People.jpg');
@@ -1159,7 +1170,7 @@ h1 i.fa{
 	font-size: 20px;
 	padding-top:8px;
 }
-.peopleIntro, .collectionIntro{
+.peopleIntro, .collectionIntro, .subjectsIntro{
 	color: #FFF;
 	font-size: 24px;
 	padding: 50px 0px 20px 0px;
@@ -1286,15 +1297,16 @@ h1 i.fa{
 }
 .subjectsLanding{	
 	margin-bottom:230px;
+	margin-top:30px;
 }
 .subjectsSymbolContainer {
-	width:640px;
+	width:650px;
 	margin-left: auto;
 	margin-right: auto;	
 	position:relative;
 }
 .subjectsSymbol {
-	border-radius:50%;
+	/*border-radius:50%;*/
 	overflow:hidden;
 	
 }
@@ -1308,12 +1320,6 @@ h1 i.fa{
     width:100%;
     height:auto;
     overflow:hidden;
-}
-.subjectsIntro {
-	font-size: 17px;
-	color: #000;
-	font-weight: normal;
-	margin-bottom: 30px;
 }
 .subjectsLandingButton{
 	text-align:center;
@@ -1343,20 +1349,39 @@ h1 i.fa{
 }
 .subjectsLandingButton1{
 	top: 10%;
-	left: -20%;
+	left: -25%;
 }
 
 .subjectsLandingButton2{
 	top: 10%;
-	right: -20%;
+	right: -23%;
 }
 .subjectsLandingButton3{
-	bottom: -30%;
-	left: 32%;
+	bottom: -25%;
+	left: 28%;
 }
 @media(min-width:1590px){
 	.subjectsLandingButton3{
-		bottom: -30%;
-		left: 32%;
+		bottom: -25%;
+		left: 28%;
 	}
+}
+.subjectsIntroBottom{
+	color: #000;
+	font-size: 24px;
+	line-height: 1.8em;
+	text-align:center;
+	margin-top: 40px;
+}
+.collectionImage img{
+	width:100%;
+	height:auto;
+	margin-bottom:30px;
+}
+
+.popover-content {
+    min-width: 125px;
+}
+.subjectsTile:hover .popover-content{
+	color:#000;
 }
