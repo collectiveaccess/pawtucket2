@@ -33,15 +33,14 @@
 				<div class="col-sm-12 text-center">
 					<p>
 						<a href="#" class="orgLink">Chugachmiut Heritage Library & Archive</a>
-						<div class="address">&copy; <?php print date("Y"); ?></div>
+						<div class="address">
+							1840 Bragaw St. Ste. 110, Anchorage, AK 99508 | (907)562-4155<br/>
+							&copy; <?php print date("Y"); ?>
+						</div>
 					</p>
 					<ul class="list-inline social">
-						<li><a href="#" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fab fa-twitter-square"></i></a></li>
-					</ul>
-					<ul class="list-inline">
-						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+						<li><a href="https://www.facebook.com/ChugachmiutHeritage/" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
+						<li class="contact"><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 					</ul>
 				</div>
 			</div>

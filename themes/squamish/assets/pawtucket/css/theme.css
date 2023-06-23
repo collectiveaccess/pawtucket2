@@ -1573,3 +1573,6 @@ h2.tl-headline{
 	margin-bottom: 0px;
 	display: block;
 }
+#caMediaOverlayContent .caAudioPlayer{
+	margin-top:25%;
+}
