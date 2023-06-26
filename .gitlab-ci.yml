@@ -1,14 +1,74 @@
 stages:
   - deploy
   - redeploy
+  - push
+
+# Staging Push
+# Manual job to push the last commit to bmac to staging
+push_to_staging:
+  stage: push
+  only:
+    - bmac
+  script:
+    - git clone -n https://gitlab.galileo.usg.edu/ugalibs/collective-access-public-interface.git /tmp/collective-access-public-interface_${CI_PIPELINE_ID}
+    - cd /tmp/collective-access-public-interface_${CI_PIPELINE_ID}
+    - git checkout ${CI_COMMIT_SHA}
+    - sudo -H -u pushbot git push origin HEAD:bmac-staging
+    - cd /tmp
+    - rm -rf /tmp/collective-access-public-interface_${CI_PIPELINE_ID}
+  tags:
+    - shell
+
+
+# Prod Push
+# Manual job to push the last commit to staging to prod
+push_to_prod:
+  stage: push
+  only:
+    - bmac-staging
+  when: manual
+  script:
+    - git clone -n https://gitlab.galileo.usg.edu/ugalibs/collective-access-public-interface.git /tmp/collective-access-public-interface_${CI_PIPELINE_ID}
+    - cd /tmp/collective-access-public-interface_${CI_PIPELINE_ID}
+    - git checkout ${CI_COMMIT_SHA}
+    - sudo -H -u pushbot git push origin HEAD:bmac-prod
+    - cd /tmp
+    - rm -rf /tmp/collective-access-public-interface_${CI_PIPELINE_ID}
+  tags:
+    - shell
 
 
 ## Code Deploy
 # Sync the local copy of the code
+deploy_staging:
+  stage: deploy
+  only:
+    - bmac-staging
+  before_script:
+    - cd /app/pawtucket2-staging && cp $STAGING_ENV_FILE .env
+  script:
+    - cd /app/pawtucket2-staging
+    - git pull
+    - source .env
+    - cp $SETUP_PHP_PAWTUCKET setup.php
+    - docker-compose build --build-arg LOCAL_UID=$LOCAL_UID --build-arg SERVERNAME=$SERVERNAME_STAGING
+    - docker-compose up -d
+    - docker-compose exec -T pawtucket /bin/bash -c "cd /app/apache2/htdocs && composer install"
+  after_script:
+    - cd /app/pawtucket2-staging && rm .env
+    - cd /app/pawtucket2-staging && chown gitlab-runner:daemon setup.php && chmod 640 setup.php
+  environment:
+    name: staging
+    url: https://bmac-staging.libs.uga.edu
+  tags:
+    - brown-hosting-shell
+
+## Code Deploy - prod
+# Sync the local copy of the code
 deploy_prod:
   stage: deploy
   only:
-    - bmac
+    - bmac-prod
   before_script:
     - cd /app/pawtucket2 && cp $PROD_ENV_FILE .env
   script:
