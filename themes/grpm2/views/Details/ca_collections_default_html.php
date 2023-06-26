@@ -31,42 +31,8 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
-					
-					<!-- share buttons -->
-					<br/><div class="shareBar">
-						<div class="shareButton"> 
-							<!-- Your share button code -->
-							<div class="fb-share-button" 
-							data-href="<?php print $vs_page_url; ?>" 
-							data-layout="button" 
-							data-size="large" 
-							data-mobile-iframe="true">
-							</div>
-						</div>
-						<div class="shareButton">
-							<a class="twitter-share-button"
-							  href="https://twitter.com/share"
-							  data-size="large"
-							  data-text="<?php print $t_item->get("ca_collections.preferred_labels.name"); ?>"
-							  data-url="<?php print $vs_page_url; ?>"
-							  data-hashtags=""
-							  data-via="GRMuseum"
-							  data-related="">
-							Tweet
-							</a>
-						</div>
-						<div class="shareButton">
-							<a href="https://www.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark" data-pin-tall="true"></a>
-						</div>
-						<div class="shareButton">
-	<?php
-							print '<div class="btn-default"><span class="glyphicon glyphicon-envelope"></span> '.$this->getVar("shareLink").'</div>';
-	?>
-						</div>
-						<div style="clear:left;"></div>
-					</div>
-					
+					<H4>{{{<unit relativeTo='ca_collections.hierarchy' delimiter=' ➜ '><l>^ca_collections.preferred_labels.name</l></unit>}}}</H4>
+										
 					<H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6>
 					{{{<ifdef code="ca_collections.Description"><H6>Description</H6>^ca_collections.Description<br/></ifdef>}}}
 					

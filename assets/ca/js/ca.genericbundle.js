@@ -6,7 +6,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2016 Whirl-i-Gig
+ * Copyright 2008-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -42,6 +42,7 @@ var caUI = caUI || {};
 			templateClassName: 'caItemTemplate',
 			initialValueTemplateClassName: 'caItemTemplate',
 			itemListClassName: 'caItemList',
+			newItemListClassName: '',
 			listItemClassName: 'caRelatedItem',
 			itemClassName: 'labelInfo',
 			localeClassName: 'labelLocale',
@@ -59,6 +60,7 @@ var caUI = caUI || {};
 			onItemCreate: null,	/* callback function when a bundle item is created */
 			onAddItem: null,
 			incrementLocalesForNewBundles: true,
+			singleValuePerLocale: false,
 			defaultValues: {},
 			bundlePreview: '',
 			readonly: 0,
@@ -71,7 +73,7 @@ var caUI = caUI || {};
 			partialLoadUrl: null,
 			loadFrom: 0,
 			loadSize: 5,
-			partialLoadMessage: "Load next %",
+			partialLoadMessage: "Load next %num",
 			partialLoadIndicator: null,
 			onPartialLoad: null,	// called after partial data load is completed
 
@@ -88,8 +90,15 @@ var caUI = caUI || {};
 
 			isSortable: false,
 			listSortOrderID: null,
-			listSortItems: null // if set, limits sorting to items specified by selector
+			listSortItems: null, // if set, limits sorting to items specified by selector
+			
+			loadedSort: null,			// Dynamically loaded sort order
+			loadedSortDirection: null,
+			
+			buttons: []
 		}, options);
+		
+		if (!that.newItemListClassName) { that.newItemListClassName = that.itemListClassName; }
 
 		if (that.maxRepeats == 0) { that.maxRepeats = 65535; }
 
@@ -114,9 +123,11 @@ var caUI = caUI || {};
 		}
 
 		that.appendToInitialValues = function(initialValues) {
-			jQuery.each(initialValues, function(i, v) {
-				that.initialValues[i] = v;
-				that.addToBundle(i, v, true);
+			var sort_order = initialValues.sort;
+			var data = initialValues.data;
+			jQuery.each(sort_order, function(i, v) {
+				that.initialValues[v] = data[v];
+				that.addToBundle(v, data[v], true);
 				return true;
 			});
 			that.updateBundleFormState();
@@ -125,9 +136,9 @@ var caUI = caUI || {};
 		that.loadNextValues = function() {
 			if (!that.partialLoadUrl) { return false; }
 
-			jQuery.getJSON(that.partialLoadUrl, { start: that.loadFrom, limit: that.loadSize }, function(data) {
-				jQuery(that.container + " ." + that.itemListClassName + ' #' + that.fieldNamePrefix + '__busy').remove();
-				jQuery(that.container + " ." + that.itemListClassName + ' #' + that.fieldNamePrefix + '__next').remove();
+			jQuery.getJSON(that.partialLoadUrl, { start: that.loadFrom, limit: that.loadSize, sort: that.loadedSort, sortDirection: that.loadedSortDirection }, function(data) {
+				jQuery(that.container + " ." + that.itemListClassName + ' .caItemLoadNextBundles').remove();
+				
 				that.loadFrom += that.loadSize;
 				that.appendToInitialValues(data);
 
@@ -148,15 +159,25 @@ var caUI = caUI || {};
 		that.addNextValuesLink = function() {
 			var end = (that.loadFrom + that.loadSize)
 			if (end > that.totalValueCount) { end = that.totalValueCount % that.loadSize; } else { end = that.loadSize; }
-
-			var msg = that.partialLoadMessage.replace("%", end + "/" + that.totalValueCount);
-			jQuery(that.container + " ." + that.itemListClassName).append("<div class='caItemLoadNextBundles'><a href='#' id='" + that.fieldNamePrefix + "__next' class='caItemLoadNextBundles'>" + msg + "</a><span id='" + that.fieldNamePrefix + "__busy' class='caItemLoadNextBundlesLoadIndicator'>" + that.partialLoadIndicator + "</span></div>");
-			jQuery(that.container + " ." + that.itemListClassName + ' #' + that.fieldNamePrefix + '__next').on('click', function(e) {
-				jQuery(that.container + " ." + that.itemListClassName + ' #' + that.fieldNamePrefix + '__busy').show();
+			
+			var p = that.container + " ." + that.itemListClassName;
+			var msg = that.partialLoadMessage.replace("%num", end).replace("%total", that.totalValueCount);
+			jQuery(p).append("<div class='caItemLoadNextBundles'><a href='#' id='" + that.fieldNamePrefix + "__next' class='caItemLoadNextBundles'>" + msg + "</a><span id='" + that.fieldNamePrefix + "__busy' class='caItemLoadNextBundlesLoadIndicator'>" + that.partialLoadIndicator + "</span></div>");
+			jQuery(p).off('click').off('scroll').on('click', '.caItemLoadNextBundles', function(e) {
+				jQuery(p).off('click'); // remove handler to prevent repeated calls
+				jQuery(p + ' #' + that.fieldNamePrefix + '__busy').show(); // show loading indicator
 				that.loadNextValues();
 				e.preventDefault();
 				return false;
+			}).on('scroll', null, function(e) {
+				// Trigger load of next page when bottom of current result set is reached.
+				if ((jQuery(this).scrollTop() + jQuery(this).height()) >= jQuery(this)[0].scrollHeight) {
+					jQuery(p + " .caItemLoadNextBundles").click();	
+				}
 			});
+			if ((jQuery(p).scrollTop() + jQuery(p).height()) >= jQuery(p)[0].scrollHeight) {
+				jQuery(p + " .caItemLoadNextBundles").click();	
+			}
 		}
 
 		that.addToBundle = function(id, initialValues, dontUpdateBundleFormState) {
@@ -210,6 +231,15 @@ var caUI = caUI || {};
 				}
 			}
 
+			// Set default value for new items
+			var is_new = id ? false : true;
+			if (!id) {
+				jQuery.each(this.defaultValues, function(k, v) {
+					if (v && !templateValues[k]) { templateValues[k] = v; }
+				});
+				id = 'new_' + this.getCount();	// set id to ensure sub-fields get painted with unsaved warning handler
+			}
+		
 			// print out any errors
 			var errStrs = [];
 			if (this.errors && this.errors[id]) {
@@ -222,36 +252,27 @@ var caUI = caUI || {};
 			templateValues.error = errStrs.join('<br/>');
 			templateValues.fieldNamePrefix = this.fieldNamePrefix; // always pass field name prefix to template
 
-			// Set default value for new items
-			var is_new = id ? false : true;
-			if (!id) {
-				jQuery.each(this.defaultValues, function(k, v) {
-					if (v && !templateValues[k]) { templateValues[k] = v; }
-				});
-				id = 'new_' + this.getCount();	// set id to ensure sub-fields get painted with unsaved warning handler
-			}
-
 			// replace values in template
 			var jElement = jQuery(this.container + ' textarea.' + (isNew ? this.templateClassName : this.initialValueTemplateClassName)).template(templateValues);
 
 			if(options.useAnimation) {
 				jQuery(jElement).hide();
 				if ((this.addMode == 'prepend') && isNew) {	// addMode only applies to newly created bundles
-					jQuery(this.container + " ." + this.itemListClassName).prepend(jElement);
+					jQuery(this.container + " ." + this.newItemListClassName).prepend(jElement);
 				} else {
-					jQuery(this.container + " ." + this.itemListClassName).append(jElement);
+					jQuery(this.container + " ." + (isNew ? this.newItemListClassName : this.itemListClassName)).append(jElement);
 				}
 				jQuery(jElement).slideDown(this.animationDuration);
 			} else {
 				if ((this.addMode == 'prepend') && isNew) {	// addMode only applies to newly created bundles
-					jQuery(this.container + " ." + this.itemListClassName).prepend(jElement);
+					jQuery(this.container + " ." + this.newItemListClassName).prepend(jElement);
 				} else {
-					jQuery(this.container + " ." + this.itemListClassName).append(jElement);
+					jQuery(this.container + " ." + (isNew ? this.newItemListClassName : this.itemListClassName)).append(jElement);
 				}
 			}
 
 			if (!dontUpdateBundleFormState && $.fn['scrollTo']) {	// scroll to newly added bundle
-				jQuery(this.container + " ." + this.itemListClassName).scrollTo("999999px", 250);
+				jQuery(this.container + " ." + this.newItemListClassName).scrollTo("999999px", 250);
 			}
 
 			if (this.onInitializeItem && (initialValues && !initialValues['_handleAsNew'])) {
@@ -269,16 +290,13 @@ var caUI = caUI || {};
 			var fieldRegex = new RegExp(this.fieldNamePrefix + "([A-Za-z0-9_\-]+)_([0-9]+)");
 			for(i=0; i < selects.length; i++) {
 				var element_id = selects[i].id;
-
 				var info = element_id.match(fieldRegex);
-				if (info && info[2] && (parseInt(info[2]) == id)) {
-					if (!this.initialValues[id]) {
-						console.log("err", this.initialValues, this.initialValues[id], id, info, info[1]);
-					}
-					if (typeof(this.initialValues[id][info[1]]) == 'boolean') {
+				if (info && info[2] && ((parseInt(info[2]) == id) || ('new_' + info[2] ==  id))) {
+					if (this.initialValues[id] && typeof(this.initialValues[id][info[1]]) == 'boolean') {
 						this.initialValues[id][info[1]] = (this.initialValues[id][info[1]]) ? '1' : '0';
 					}
-					jQuery(this.container + " #" + element_id + " option[value=" + this.initialValues[id][info[1]] +"]").prop('selected', true);
+					let iv = this.initialValues[id] ? this.initialValues[id][info[1]] : initialValues[info[1].replace('_new', '')];
+					jQuery(this.container + " #" + element_id + " option[value='" + iv +"']").prop('selected', true);
 				}
 			}
 
@@ -377,12 +395,21 @@ var caUI = caUI || {};
 			} else {
 				jQuery("#" +this.itemID + templateValues.n).find("." + this.deleteButtonClassName).css("display", "none");
 			}
+			
+			// attach other buttons
+			if(this.buttons) {
+				for(var i in this.buttons) {
+					let b = this.buttons[i];
+					//console.log('button', this.buttons[i]);
+					jQuery("#" +this.itemID + templateValues.n).find("." + b['className']).on('click', null, {}, function(e) { b['callback'](templateValues.n); e.preventDefault(); return false; });
+				}
+			}
 
 			// set default locale for new
 			if (isNew) {
 				if (defaultLocaleSelectedIndex !== false) {
-					if (jQuery(this.container + " #" + this.fieldNamePrefix + "locale_id_" + templateValues.n +" option:eq(" + defaultLocaleSelectedIndex + ")").length) {
-						// There's a locale drop-dow to mess with
+					if (jQuery(this.container + " #" + this.fieldNamePrefix + "locale_id_" + templateValues.n +" option").length) {
+						// There's a locale drop-down to mess with
 						jQuery(this.container + " #" + this.fieldNamePrefix + "locale_id_" + templateValues.n +" option:eq(" + defaultLocaleSelectedIndex + ")").prop('selected', true);
 					} else {
 						// No locale drop-down, or it somehow doesn't include the locale we want
@@ -390,8 +417,8 @@ var caUI = caUI || {};
 						jQuery(this.container + " #" + this.fieldNamePrefix + "locale_id_" + templateValues.n).remove();
 					}
 				} else {
-					if (jQuery(this.container + " #" + this.fieldNamePrefix + "locale_id_" + templateValues.n +" option[value=" + that.defaultLocaleID + "]").length) {
-						// There's a locale drop-dow to mess with
+					if (jQuery(this.container + " #" + this.fieldNamePrefix + "locale_id_" + templateValues.n +" option").length) {
+						// There's a locale drop-down to mess with
 						jQuery(this.container + " #" + this.fieldNamePrefix + "locale_id_" + templateValues.n +" option[value=" + that.defaultLocaleID + "]").prop('selected', true);
 					} else {
 						// No locale drop-down, or it somehow doesn't include the locale we want
@@ -424,6 +451,15 @@ var caUI = caUI || {};
 			}
 
 			return this;
+		};
+		
+		that.refreshLocaleAvailability = function() {
+            var localeList = jQuery.makeArray(jQuery(this.container + " select." + this.localeClassName + ":first option"));
+            for(i=0; i < localeList.length; i++) {
+                if (jQuery(this.container + " select." + this.localeClassName + " option:selected[value=" + localeList[i].value + "]").length > 0) {
+                    jQuery(this.container + " select." + this.localeClassName + " option:not(:selected)[value=" + localeList[i].value + "]").attr('disabled', true);
+                }
+            }
 		};
 
 		that.updateBundleFormState = function() {
@@ -458,6 +494,11 @@ var caUI = caUI || {};
 					jQuery(this.container + " ." + options.listItemClassName + ":odd").css('background-color', '#' + options.evenColor);
 				}	
 			}
+			
+			// Disable locales if "single-value-per-locale" restriction is in placementID
+            if(that.singleValuePerLocale) {
+                this.refreshLocaleAvailability();
+            }
 			return this;
 		};
 
@@ -514,8 +555,10 @@ var caUI = caUI || {};
 		}
 		jQuery.each(that.initialValueOrder, function(i, k) {
 			var v = that.initialValues[k];
-			v['_key'] = k;
-			initialValuesSorted.push(v);
+			if(v) {
+				v['_key'] = k;
+				initialValuesSorted.push(v);
+			}
 		});
 
 		// perform configured sort

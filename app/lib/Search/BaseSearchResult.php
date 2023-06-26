@@ -41,8 +41,9 @@
 	class BaseSearchResult extends SearchResult {
 		# -------------------------------------------------------
 		private $opo_list = null;
-		private $opo_datamodel = null;
 		private $opa_locales = null;
+		
+		private $ops_filter_field = null;
 		
 		/**
 		 * Name of labels table for this type of search subject (eg. for ca_objects, the label table is ca_object_labels)

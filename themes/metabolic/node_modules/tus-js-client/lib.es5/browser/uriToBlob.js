@@ -1,0 +1,30 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = uriToBlob;
+
+/**
+ * uriToBlob resolves a URI to a Blob object. This is used for
+ * React Native to retrieve a file (identified by a file://
+ * URI) as a blob.
+ */
+function uriToBlob(uri) {
+  return new Promise(function (resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'blob';
+
+    xhr.onload = function () {
+      var blob = xhr.response;
+      resolve(blob);
+    };
+
+    xhr.onerror = function (err) {
+      reject(err);
+    };
+
+    xhr.open('GET', uri);
+    xhr.send();
+  });
+}

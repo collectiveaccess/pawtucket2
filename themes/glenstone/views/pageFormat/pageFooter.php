@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2015 Whirl-i-Gig
+ * Copyright 2014-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,7 +29,7 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		<div id="footer">
 			<div>
-				©1995–2022 Glenstone.org, all rights reserved.
+				©1995–2023 Glenstone.org, all rights reserved.
 			</div>
 			<div>
 				<a href='/themes/glenstone/assets/pawtucket/graphics/userguide.pdf' target='_blank'>User Guide</a>

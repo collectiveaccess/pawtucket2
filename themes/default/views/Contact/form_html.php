@@ -15,7 +15,7 @@
 		if($t_item){
 			$t_item->load($pn_id);
 			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
-			$vs_name = $t_item->get($ps_table.".preferred_labels.name");
+			$vs_name = $t_item->get($ps_table.".preferred_labels");
 			$vs_idno = $t_item->get($ps_table.".idno");
 			$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
 		}
@@ -55,19 +55,19 @@
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
-							<label for="name">Name</label>
+							<label for="name"><?php print _t("Name"); ?></label>
 							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
-							<label for="email">Email address</label>
+							<label for="email"><?php print _t("Email address"); ?></label>
 							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-							<label for="security">Security Question</label>
+							<label for="security"><?php print _t("Security Question"); ?></label>
 							<div class='row'>
 								<div class='col-sm-6'>
 									<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
@@ -84,7 +84,7 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-					<label for="message">Message</label>
+					<label for="message"><?php print _t("Message"); ?></label>
 					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
 				</div>
 			</div><!-- end col -->
@@ -111,7 +111,7 @@
 	}
 ?>
 		<div class="form-group">
-			<button type="submit" class="btn btn-default">Send</button>
+			<button type="submit" class="btn btn-default"><?php print _t("Send"); ?></button>
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 	</form>

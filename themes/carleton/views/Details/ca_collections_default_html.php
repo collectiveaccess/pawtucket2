@@ -20,17 +20,17 @@
 		"Classification" => "^ca_collections.col_classification%delimiter=,_",
 		#"Unit ID" => "^ca_collections.unit_id%delimiter=,_",
 		"Container ID" => "^ca_collections.container_id",
-		"Dates" => "<ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef><ifnotdef code='ca_collections.inclusive_dates'>^ca_collections.display_date%delimiter=,_</ifnotdef>",
+		"Dates" => "<ifdef code='ca_collections.display_date'>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef>",
 		"Additional Date Information" => "^ca_collections.date_info",
 		"Material Type" => "^ca_collections.material_type%delimiter=,_",
 		"Format" => "^ca_collections.format%delimiter=,_",
 		"Contains Object Type" => "^ca_collections.contains_object_type%delimiter=,_",
 		"Extent" => "<ifdef code='ca_collections.item_extent.extent_value'>^ca_collections.item_extent.extent_value </ifdef>^ca_collections.item_extent.extent_unit<ifdef code='ca_collections.item_extent.extent_value|ca_collections.item_extent.extent_unit'><br/></ifdef>^ca_collections.item_extent.extent_note",
 		"Finding Aid Author" => "^ca_collections.finding_aid_author",
-		"Related Creators" => "<ifcount code='ca_entities' restrictToRelationshipTypes='creator,primary_creator'><unit relativeTo='ca_entities' restrictToRelationshipTypes='creator,primary_creator' delimiter='<br/>'>^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>",
-		"Related People and Organizations" => "<ifcount code='ca_entities' restrictToRelationshipTypes='photographers,related,contributor'><unit relativeTo='ca_entities' restrictToRelationshipTypes='photographers,related,contributor' delimiter='<br/>'>^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>",
-		"Related Collections" => "<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections.related' delimiter='<br/>'>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates</ifdef></unit></ifcount>",
-		"URL" => "<unit relativeTo='ca_collections.url' delimiter='<br/>'><a href='^ca_collections.url.link_url' target='_blank'><ifdef code='ca_collections.url.link_text'>^ca_collections.url.link_text</ifdef><ifnotdef code='ca_collections.url.link_text'>^ca_collections.url.link_url</ifnotdef></a></unit>",
+		"Related Creators" => "<ifcount code='ca_entities' restrictToRelationshipTypes='creator,primary_creator'><unit relativeTo='ca_entities' restrictToRelationshipTypes='creator,primary_creator' delimiter='<br/>'><if rule='^ca_entities.added_on_import =~ /Yes/'>^ca_entities.preferred_labels.displayname (^relationship_typename)</if><if rule='^ca_entities.added_on_import !~ /Yes/'><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></if></unit></ifcount>",
+		"Related People and Organizations" => "<ifcount code='ca_entities' restrictToRelationshipTypes='photographers,related,contributor'><unit relativeTo='ca_entities' restrictToRelationshipTypes='photographers,related,contributor' delimiter='<br/>'><if rule='^ca_entities.added_on_import =~ /Yes/'>^ca_entities.preferred_labels.displayname (^relationship_typename)</if><if rule='^ca_entities.added_on_import !~ /Yes/'><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></if></unit></ifcount>",
+		"Related Collections" => "<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections.related' delimiter='<br/>'>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef></unit></ifcount>",
+		"URL" => "<ifdef code='ca_collections.url.link_url'><unit relativeTo='ca_collections.url' delimiter='<br/>'><a href='^ca_collections.url.link_url' target='_blank'><ifdef code='ca_collections.url.link_text'>^ca_collections.url.link_text</ifdef><ifnotdef code='ca_collections.url.link_text'>^ca_collections.url.link_url</ifnotdef></a></unit></ifdef>",
 		"Notes" => "^ca_collections.notes%delimiter=,_",
 		"Scope and Content" => "<ifdef code='ca_collections.scope_content'><span class='trimText'>^ca_collections.scope_content</span></ifdef>",
 		"System of Arrangement" => "^ca_collections.arrangement",
@@ -73,8 +73,8 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H1>{{{^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef>}}}</H1>
-					{{{<ifdef code="ca_collections.parent_id"><div class="unit collectionHierarchyPath">Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></l></unit></div></ifdef>}}}
+					<H1>{{{^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef>}}}</H1>
+					{{{<ifdef code="ca_collections.parent_id"><div class="collectionHierarchyPath"><b>Part of:</b> <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef></l></unit></div></ifdef>}}}
 <?php
 					print "<div class='pull-right text-right'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default btn-small", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";
 
@@ -200,27 +200,7 @@
 ?>
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="1">
-			<div class="row">
-				<div id="browseResultsContainer">
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
-</ifcount>}}}
+
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>

@@ -78,7 +78,7 @@
 				</div>
 			</div>
 			<div class="pageTitleWrap">
-				<h1 class="pageTitle"><div class="pageTitle--Main">Carleton College Archives</div></h1>
+				<h1 class="pageTitle"><div class="pageTitle--Main"><a href="https://www.carleton.edu/library/collections/archives/">Carleton College Archives</a></div></h1>
 			</div>
 		</div>
 	</header>
@@ -106,7 +106,7 @@
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/collections"); ?></li>
 					<!--<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>-->
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-					<li><a href="https://www.carleton.edu/library/collections/archives/"><?php print _t("About"); ?></a></li>
+					<li><a href="<?php print ($vs_guide_link = $this->getVar("guide_link")) ? $vs_guide_link : "https://www.carleton.edu/library/collections/archives/database-user-guide/"; ?>"><?php print _t("Guide"); ?></a></li>
 					<li>
 						<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
 							<div class="formOutline">

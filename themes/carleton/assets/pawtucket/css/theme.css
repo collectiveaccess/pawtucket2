@@ -110,12 +110,40 @@ h1{
 		float:right;width:32%
 	}
 }
+@media (min-width:761px){
+	.navbar-form .form-group {
+  		width: 90px;
+	}
+}
+@media (min-width:825px){
+	.navbar-form .form-group {
+  		width: 140px;
+	}
+}
+@media (min-width:940px){
+	.navbar-form .form-group {
+  		width: 250px;
+	}
+}
 .banner__primary-content{position:relative;z-index:20}
 
 h1.page_title, .pageTitle--Main{
 	font-size: 44px;
 }
+.pageTitle--Main a{
+	text-decoration:none;
+	background-image:none !important;
+}
+@media (max-width: 768px){
+	ul.menuItems {
+		border-top: 0px;
+		padding-left: 30px;
+	}
+}
 /* browse */
+.results H1{
+	text-transform: capitalize;
+}
 .bResultListItemCol, .bResultListItem:hover{
 	height:202px;
 }
@@ -142,6 +170,155 @@ h1.page_title, .pageTitle--Main{
 .collectionID, .collectionPath{
 	font-weight:normal;
 	font-size:12px;
+	padding-bottom: 3px;
+}
+.resultClassification{
+	font-size: 14px;
+	font-family: Surveyor Display A,Surveyor Display B,Georgia,Times New Roman,serif;
+	font-weight: 600;
+	padding-bottom: 7px;
+	color: #666;
+}
+.multipleMediaIcon{
+	position:absolute;
+	top: 5px;
+	right: 20px;
+	z-index:10;
+	background-color:#FFF;
+	padding:5px;
+	font-size:18px;
+	color:#777;
+}
+.bResultItemContent:hover .multipleMediaIcon {
+	right: 5px;
+}
+.bResultListItemText .multipleMediaIcon {
+	right: auto;
+	left:20px;
+}
+.bResultListItem:hover .multipleMediaIcon{
+	left:5px
+	right:auto;
+}
+.searchIntro{
+	font-size:14px;
+	font-family: 'Gotham SSm A,Gotham SSm B,Helvetica Neue,Helvetica,Arial,sans-serif';
+}
+/* browse  multiple select */
+.facetItem .glyphicon-chevron-down, .facetItemHier .glyphicon-chevron-down {
+	font-size:10px;
+}
+.facetContainer{
+	position:relative;
+	padding-bottom:20px;
+}
+#bRefine .facetItem, #bRefine .facetItemHier {
+	padding-left:20px; 
+	margin-bottom:10px;
+}
+#bRefine .facetItem[facet_item_selected="1"], #bRefine .facetItemHier[facet_item_selected="1"] {
+	padding-left:20px;
+}
+[facet_item_selected="1"]::before {
+	font-family: FontAwesome;
+	content: "\f067"; 
+	padding-right:6px;
+	position:absolute;
+	left:7px;
+	top:4px;
+	font-size:11px;
+}
+.facetApply, .facetApplyHier {
+	clear:both;
+	right:15px;
+	display:block;
+	text-align: center;
+    margin-top: 20px;
+
+}
+a.facetApply, a.facetApplyHier {
+    background-color: #306aa2;
+    color:#FFF !important;
+    font-size: 13px;
+    border-radius: 3px;
+    width:50px;
+    padding-top:4px;
+    padding-bottom:4px;
+    margin-left: auto;
+    margin-right: auto; 
+    position:absolute;
+    bottom:0px;
+    left:0px;
+}
+#bRefine a.more {
+  color: #306aa2;
+}
+/* ---------- Search Within -------------------- */
+@media(max-width:768px){
+	.results .bSearchWithinContainer{
+		display:none;
+	}
+}
+.results .bSearchWithinContainer{
+	clear:both;
+	padding:15px 0px 15px 0px;	
+	background-color: #cdddec;
+	text-align:center;
+}
+.results .btn-search-refine, .results .btn-search-refine:hover{	
+	font-size: 14px;
+	cursor: pointer;
+	background-color: #306aa2;
+	color:#FFF;
+	font-size: 14px;
+	line-height:1em;
+	padding: 9px;
+	
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	outline: 0;
+	border:0px;
+	border-radius: 0px;
+}
+.bSearchWithin, .bSearchWithin:focus {
+    width: 80%;
+    box-shadow: none;
+    border: 0px;
+    border: 0px;
+    border-radius: 0px;
+    height: 35px;
+    font-size: 14px;
+    line-height: 26px;
+    background-color: #FFF;
+	font-size: 14px;
+	display: inline-block;
+	display:inline-block;
+}
+/* collections results in list are full width so have auto height and no roll over margin change */
+a .bResultListItemCol{
+	color:#000;
+}
+a:hover {
+	color:#000;
+	text-decoration:none;
+}
+.ca_collections .bResultListItemCol, .ca_collections .bResultListItemContent, .ca_collections .bResultListItemCol, .bResultListItem:hover {
+	height:auto;
+}
+.ca_collections .bResultListItemCol {
+	margin-bottom: 30px;
+}
+.ca_collections .bResultListItem:hover{
+	margin:0px;
+	padding:10px;
+}
+.ca_collections .bResultListItemTextDesc{
+	max-height:208px;
+}
+.ca_collections .bResultListItemCol:hover .bResultListItemTextDesc{
+	max-height:none;
 }
 #collectionLoad div{
 	clear:left;
@@ -173,13 +350,46 @@ h1.page_title, .pageTitle--Main{
 .bResultListItem .bResultListItemText {
 	line-height: 1em;
 }
+.bResultCollectionListItemImg{
+	float:left;
+	width:120px;
+	padding:0px 10px 10px 0px;
+}
+.bResultCollectionListItemImg img{
+	width:100%;
+	height:auto;
+}
+@media(min-width:768px){
+	#bRefine{
+		display:block !Important;
+	}
+}
 #bRefine H2{
 	font-size:18px;
 	color:#000;
+	padding-left:15px;
 }
 #bRefine H3{
 	font-size:16px;
 	color:#000;
+	padding-left:15px;
+	cursor:pointer;
+}
+#bRefine H3::after {
+	content: "\25bc";
+	font-family: 'bb';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-moz-osx-font-smoothing: grayscale;
+	text-decoration: none;
+	color: #000;
+	vertical-align: 1px;
+	margin-left: 3px;
+	font-size: 9px;
 }
 #bRefine{
 	background-color:#cdddec;
@@ -188,7 +398,22 @@ h1.page_title, .pageTitle--Main{
 	color:#000;
 }
 
-
+#bMorePanel{
+	left:0px;
+	right:auto;
+}
+.browseRemoveFacet, .browseRemoveFacet .btn{
+	display:block;
+	width:100%;
+	font-size:11px;
+	margin:0px 0px 5px 0px;
+}
+.browseRemoveFacet .btn{
+	white-space: normal;
+}
+.browseRemoveFacet:hover, .browseRemoveFacet .btn:hover{
+	text-decoration:none;
+}
 .navbar{
 	-webkit-box-shadow: none;
 	box-shadow: none;
@@ -344,6 +569,9 @@ h1.page_title, .pageTitle--Main{
 	overflow:hidden;
 	
 }
+.detail .unit a{
+	text-decoration:underline;
+}
 .detail .accessionsNote{
 	margin-bottom:20px;
 	padding:20px;
@@ -402,6 +630,7 @@ h1.page_title, .pageTitle--Main{
 	height:170px;
 	text-align:center;
 	padding-top:25px;
+	z-index:10;
 }
 @media(min-width:990px){
 	#footer{

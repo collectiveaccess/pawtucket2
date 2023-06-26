@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2019 Whirl-i-Gig
+ * Copyright 2014-2021 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,61 +29,8 @@
  * 
  * ----------------------------------------------------------------------
  */
- 
- /**
-   *
-   */
- 
 require_once(__CA_LIB_DIR__.'/ModelSettings.php');
-require_once(__CA_MODELS_DIR__.'/ca_metadata_dictionary_rules.php');
-require_once(__CA_MODELS_DIR__.'/ca_metadata_dictionary_entry_labels.php');
-require_once(__CA_MODELS_DIR__.'/ca_lists.php');
-require_once(__CA_MODELS_DIR__.'/ca_relationship_types.php');
-
-global $_ca_metadata_dictionary_entry_settings;
-$_ca_metadata_dictionary_entry_settings = array(		// global
-	'mandatory' => array(
-		'formatType' => FT_TEXT,
-		'displayType' => DT_CHECKBOXES,
-		'width' => "10", 'height' => "1",
-		'takesLocale' => false,
-		'default' => 0,
-		'label' => _t('Is mandatory?'),
-		'description' => _t('If checked data entry bundle is mandatory and a valid value must be set before it can be saved.')
-	),
-	'definition' => array(
-		'formatType' => FT_TEXT,
-		'displayType' => DT_FIELD,
-		'width' => "660px", 'height' => "400px",
-		'takesLocale' => true,
-		'label' => _t('Definition'),
-		'usewysiwygeditor' => true,
-		'description' => _t('Extended text describing standards for entry in this data entry bundle.')
-	),
-	'restrict_to_types' => array(
-		'formatType' => FT_TEXT,
-		'displayType' => DT_SELECT,
-		'useList' => null,
-		'width' => "200px", 'height' => 5,
-		'takesLocale' => false,
-		'multiple' => 1,
-		'default' => '',
-		'label' => _t('Restrict to types'),
-		'description' => _t('Restricts entry to items of the specified type(s). Leave all unchecked for no restriction.')
-	),
-	'restrict_to_relationship_types' => array(
-		'formatType' => FT_TEXT,
-		'displayType' => DT_SELECT,
-		'useRelationshipTypeList' => null,
-		'width' => "200px", 'height' => 5,
-		'takesLocale' => false,
-		'multiple' => 1,
-		'default' => '',
-		'label' => _t('Restrict to relationship types'),
-		'description' => _t('Restricts entry to items related using the specified relationship type(s). Leave all unchecked for no restriction.')
-	)
-);
-
+ 
 BaseModel::$s_ca_models_definitions['ca_metadata_dictionary_entries'] = array(
  	'NAME_SINGULAR' 	=> _t('Data dictionary entry'),
  	'NAME_PLURAL' 		=> _t('Data dictionary entries'),
@@ -145,6 +92,8 @@ BaseModel::$s_ca_models_definitions['ca_metadata_dictionary_entries'] = array(
 
 
 class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttributes {
+	use ModelSettings;
+	
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -227,11 +176,6 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 	protected $FIELDS;
 	
 	/**
-	 * Settings delegate - implements methods for setting, getting and using 'settings' var field
-	 */
-	public $SETTINGS;
-	
-	/**
 	 * Array of preloaded definitions, indexed by entry_id
 	 */
 	static $s_definition_cache;
@@ -258,8 +202,8 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 	 * @param array $pa_additional_settings Optional array of additional entry-level settings to support.
 	 * @param array $pa_setting_values Optional array of setting values to set.
 	 */
-	function __construct($pn_id=null, $pa_additional_settings=null, $pa_setting_values=null) {
-		parent::__construct($pn_id);
+	function __construct($id=null, ?array $options=null, $pa_additional_settings=null, $pa_setting_values=null) {
+		parent::__construct($id, $options);
 		
 		//
 		if (!is_array($pa_additional_settings)) { $pa_additional_settings = array(); }
@@ -319,8 +263,8 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 	 *
 	 * @return array|null
 	 */
-	static public function getEntries() {
-		if (!($o_db = caGetOption('db', $pa_options, null))) { $o_db = new Db(); }
+	static public function getEntries(?array $options=null) {
+		if (!($o_db = caGetOption('db', $options, null))) { $o_db = new Db(); }
 		
 		$t = new ca_metadata_dictionary_entries();
 		$qr = $o_db->query("
@@ -367,9 +311,49 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 	  */
 	public function setSettingDefinitionsForEntry($pa_additional_settings) {
 		if (!is_array($pa_additional_settings)) { $pa_additional_settings = []; }
-		global $_ca_metadata_dictionary_entry_settings;
 		
-		$standard_settings = $_ca_metadata_dictionary_entry_settings;
+		$standard_settings = [	
+			'mandatory' => array(
+				'formatType' => FT_TEXT,
+				'displayType' => DT_CHECKBOXES,
+				'width' => "10", 'height' => "1",
+				'takesLocale' => false,
+				'default' => 0,
+				'label' => _t('Is mandatory?'),
+				'description' => _t('If checked data entry bundle is mandatory and a valid value must be set before it can be saved.')
+			),
+			'definition' => array(
+				'formatType' => FT_TEXT,
+				'displayType' => DT_FIELD,
+				'width' => "660px", 'height' => "400px",
+				'takesLocale' => true,
+				'label' => _t('Definition'),
+				'usewysiwygeditor' => true,
+				'description' => _t('Extended text describing standards for entry in this data entry bundle.')
+			),
+			'restrict_to_types' => array(
+				'formatType' => FT_TEXT,
+				'displayType' => DT_SELECT,
+				'useList' => null,
+				'width' => "200px", 'height' => 5,
+				'takesLocale' => false,
+				'multiple' => 1,
+				'default' => '',
+				'label' => _t('Restrict to types'),
+				'description' => _t('Restricts entry to items of the specified type(s). Leave all unchecked for no restriction.')
+			),
+			'restrict_to_relationship_types' => array(
+				'formatType' => FT_TEXT,
+				'displayType' => DT_SELECT,
+				'useRelationshipTypeList' => null,
+				'width' => "200px", 'height' => 5,
+				'takesLocale' => false,
+				'multiple' => 1,
+				'default' => '',
+				'label' => _t('Restrict to relationship types'),
+				'description' => _t('Restricts entry to items related using the specified relationship type(s). Leave all unchecked for no restriction.')
+			)
+		];
 		
 		if ($bundle = $this->get('bundle_name')) {
 			$tmp = explode('.', $bundle);
@@ -381,7 +365,7 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 				$standard_settings['restrict_to_relationship_types']['useRelationshipTypeList'] = $path[1];
 			}
 		}
-		$this->SETTINGS = new ModelSettings($this, 'settings', array_merge($standard_settings, $pa_additional_settings));
+		$this->setAvailableSettings(array_merge($standard_settings, $pa_additional_settings));
 		
 		return true;
 	}
@@ -506,66 +490,65 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 			ca_metadata_dictionary_entries::preloadDefinitions(array($ps_bundle_name));
 		}
 		
-		if(!is_array($va_types = caGetOption('restrict_to_types', $pa_settings, null)) && $va_types) {
-			$va_types = array($va_types);
+		if(!is_array($va_types = caGetOption(['restrict_to_types', 'restrictToTypes'], $pa_settings, null)) && $va_types) {
+			$va_types = [$va_types];
 		}
-		if(!is_array($va_types)) { $va_types = array(); }
-		if(sizeof($va_types = array_filter($va_types, 'strlen'))) {
-			$va_types = ca_lists::itemIDsToIDNOs($va_types);
+		if(!is_array($va_types)) { $va_types = []; }
+		if(sizeof($va_types = array_filter($va_types, 'strlen')) && Datamodel::tableExists($ps_bundle_name)) {
+			$va_types = array_merge($va_types, caMakeTypeIDList($ps_bundle_name, $va_types));
 		}
 		
-		if(!is_array($va_relationship_types = caGetOption('restrict_to_relationship_types', $pa_settings, null)) && $va_relationship_types) {
-			$va_relationship_types = array($va_relationship_types);
+		if(!is_array($va_relationship_types = caGetOption(['restrict_to_relationship_types', 'restrictToRelationshipTypes'], $pa_settings, null)) && $va_relationship_types) {
+			$va_relationship_types = [$va_relationship_types];
 		}
-		if(!is_array($va_relationship_types)) { $va_relationship_types = array(); }
+		if(!is_array($va_relationship_types)) { $va_relationship_types = []; }
 		if (sizeof($va_relationship_types = array_filter($va_relationship_types, 'strlen'))) {
-			$va_relationship_types = ca_relationship_types::relationshipTypeIDsToTypeCodes($va_relationship_types);
+			$va_relationship_types = array_merge($va_relationship_types, ca_relationship_types::relationshipTypeIDsToTypeCodes($va_relationship_types));
 		}
 		
 		if ($va_entry_list = ca_metadata_dictionary_entries::entryExists($ps_bundle_name)) {
 			$vn_entry_id = null;
 			
-			//if (sizeof($va_types) || sizeof($va_relationship_types)) {
+			if (sizeof($va_types) || sizeof($va_relationship_types)) {
 				foreach(array_keys($va_entry_list) as $vn_id) {
 					$va_entry = ca_metadata_dictionary_entries::$s_definition_cache[$vn_id];
-					if (is_array($va_tables = $va_entry['settings']['restrict_to']) && sizeof($va_tables)) {
+					if (is_array($va_tables = ($va_entry['settings']['restrict_to'] ?? null)) && sizeof($va_tables)) {
 						if(in_array($pt_subject->tableName(), $va_tables)) { 
 							$vn_entry_id = $vn_id;
 						} else {
 							$vn_entry_id = null;
-							continue;
 						}
 					}
 					if (sizeof($va_relationship_types)) {
 						if(
-							is_array($va_entry_types = $va_entry['settings']['restrict_to_relationship_types'])
+							is_array($va_entry_types = ($va_entry['settings']['restrict_to_relationship_types'] ?? null))
 						) {
 							if (sizeof(array_intersect($va_relationship_types, $va_entry_types))) {
 								$vn_entry_id = $vn_id;
 							} else {
 								$vn_entry_id = null;
-								continue;
 							}
 						}
 					}
 					if (sizeof($va_types)) {
 						if(
-							is_array($va_entry_types = $va_entry['settings']['restrict_to_types'])
+							is_array($va_entry_types = ($va_entry['settings']['restrict_to_types'] ?? null))
 						) {
 							if (sizeof(array_intersect($va_types, $va_entry_types))) {
 								$vn_entry_id = $vn_id;
 							} else {
 								$vn_entry_id = null;
-								continue;
 							}
 						}
 					}
 					
 					if ($vn_entry_id) { break; }
 				}
-			//}
+			} else {
+			    $vn_entry_id = array_pop(array_keys($va_entry_list));
+			}
 			
-			if (!$vn_entry_id)  { $vn_entry_id = array_pop(array_keys($va_entry_list)); }
+			if (!$vn_entry_id)  { return null; }
 			return ca_metadata_dictionary_entries::$s_definition_cache[$vn_entry_id];
 		}
 		
@@ -574,6 +557,8 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 	
 	# ------------------------------------------------------
 	/**
+	 * Render editor bundle for dictionary entry rules
+	 *
 	 * @param RequestHTTP $po_request
 	 * @param string $ps_form_name
 	 * @param string $ps_placement_code
@@ -645,17 +630,18 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 				preg_match("/^{$vs_id_prefix}_(.+?)_(new_[\d]+|[\d]+)$/u", $vs_k, $va_matches)	
 			) {
 				$rule_id = $va_matches[2];
-				if (isset($rules[$rule_id]) && is_array($rules[$rule_id])) {
-					$setting = $va_matches[1];
-					if (in_array($setting, $settings_list)) {
-						if ($locale = isset($va_matches[3]) ? $va_matches[3] : null) {
-							$settings[$rule_id][$setting][$locale] = $vm_v;
-						} else {
-							$settings[$rule_id][$setting] = $vm_v;
-						}
-						continue;
-					}
+				if (!isset($rules[$rule_id]) || !is_array($rules[$rule_id])) {
+				    $rules[$rule_id] = [];
 				}
+                $setting = $va_matches[1];
+                if (in_array($setting, $settings_list)) {
+                    if ($locale = isset($va_matches[3]) ? $va_matches[3] : null) {
+                        $settings[$rule_id][$setting][$locale] = $vm_v;
+                    } else {
+                        $settings[$rule_id][$setting] = $vm_v;
+                    }
+                    continue;
+                }
 			}
 			if(preg_match("/^{$vs_id_prefix}_(.+?)_new_([\d]+)$/u", $vs_k, $va_matches)) {
 				$adds[$va_matches[2]][$va_matches[1]] = $vm_v;
@@ -672,7 +658,7 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 			if (!isset($rules[$rule_id])) { continue; }
 			if (!$t_rule->load($rule_id)) { continue; }
 			
-			$t_rule->delete();
+			$t_rule->delete(true);
 			if($t_rule->numErrors() > 0) {
 				$this->errors = $t_rule->errors;
 				return false;
@@ -722,20 +708,6 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 		
 		MemoryCache::flush('MDDictRuleList');
 		return true;
-	}
-	# ------------------------------------------------------
-	public function __destruct() {
-		unset($this->SETTINGS);
-	}
-	# ------------------------------------------------------
-	/**
-	 * Reroutes calls to method implemented by settings delegate to the delegate class
-	 */
-	public function __call($ps_name, $pa_arguments) {
-		if (method_exists($this->SETTINGS, $ps_name)) {
-			return call_user_func_array(array($this->SETTINGS, $ps_name), $pa_arguments);
-		}
-		die($this->tableName()." does not implement method {$ps_name}");
 	}
 	# ------------------------------------------------------
 }

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2016 Whirl-i-Gig
+ * Copyright 2015-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -51,7 +51,7 @@ class ReplicationService {
 	 * @throws Exception
 	 */
 	public static function dispatch($ps_endpoint, $po_request) {
-	
+		if(!defined('__CA_IS_REPLICATION__')) { define('__CA_IS_REPLICATION__', true); }
 		if (is_null(ReplicationService::$s_logger)) { 
 			ReplicationService::$s_logger = new Logger('replication');
 		}
@@ -84,8 +84,20 @@ class ReplicationService {
 			case 'hasaccess':
 				$va_return = self::hasAccess($po_request);
 				break;
+			case 'getguidsfortable':
+				$va_return = self::getGUIDsForTable($po_request);
+				break;
+			case 'setlastlogid':	
+				$va_return = self::setLastLogID($po_request);
+				break;
+			case 'getlastlogidsforguids':
+				$va_return = self::getLastLogIDsForGUIDs($po_request);
+				break;
+			case 'getpublicguids':
+				$va_return = self::getPublicGUIDs($po_request);
+				break;
 			default:
-				throw new Exception('Unknown endpoint');
+				throw new Exception('Unknown endpoint '.$ps_endpoint);
 
 		}
 		return $va_return;
@@ -103,6 +115,12 @@ class ReplicationService {
 
 		$pn_limit = $po_request->getParameter('limit', pInteger);
 		if(!$pn_limit) { $pn_limit = null; }
+		
+		if(($max_retries = (int)$o_replication_conf->get('max_media_upload_retries')) < 0) {
+			$max_retries = 5;
+		}
+		
+		$abort_sync_on_failed_media_upload = (bool)$o_replication_conf->get('abort_sync_on_failed_media_upload');
 
 		$pa_options = array();
 		if($ps_skip_if_expression = $po_request->getParameter('skipIfExpression', pString, null, array('retainBackslashes' => false))) {
@@ -171,12 +189,12 @@ class ReplicationService {
 					if (!file_exists(realpath($vs_local_path))) { continue; }
 					
 					ReplicationService::$s_logger->log("Push media {$vs_url}::{$vs_md5} [".caHumanFilesize($vn_filesize = @filesize($vs_local_path))."]");
-					if ($vn_filesize > (1024 * 1024 * 250)) { continue; } // bail if file > 250megs
+					if ($vn_filesize > (1024 * 1024 * 750)) { continue; } // bail if file > 750megs
 					// send media to remote service endpoint
 					$o_curl = curl_init($va_target_conf['url'] . '/service.php/replication/pushMedia');
 					$o_file = new CURLFile(realpath($vs_local_path));
 
-					$vn_retries = 5;
+					$vn_retries = $max_retries;
 					while($vn_retries > 0) {
 						$vn_retries--;
 						
@@ -206,7 +224,11 @@ class ReplicationService {
 						$vn_code = curl_getinfo($o_curl, CURLINFO_HTTP_CODE);
 						if($vn_code != 200) {
 							if ($vn_retries == 0) {
-								throw new Exception(_t("Could not upload file [%1] to target [%2]. HTTP response code was %3.", $vs_local_path, $ps_push_media_to, $vn_code));
+								ReplicationService::$s_logger->log(_t("Could not upload file [%1] to target [%2] after %4 retries. HTTP response code was %3.", $vs_local_path, $ps_push_media_to, $vn_code, $max_retries));
+								if($abort_sync_on_failed_media_upload) {
+									throw new Exception(_t("Could not upload file [%1] to target [%2] after $4 retries. HTTP response code was %3.", $vs_local_path, $ps_push_media_to, $vn_code, $max_retries));
+								}
+								break;
 							}
 							ReplicationService::$s_logger->log(_t("Could not upload file [%1] to target [%2]. HTTP response code was %3. Retrying (%4 remaining)", $vs_local_path, $ps_push_media_to, $vn_code, $vn_retries));
 							sleep(2);
@@ -223,6 +245,10 @@ class ReplicationService {
 		} else {
 			$va_log = ca_change_log::getLog($pn_from, $pn_limit, array_merge($pa_options, ['forceValuesForAllAttributeSLots' => true]));
 		}
+
+        foreach($va_log as $i => $l) {
+            unset($va_log[$i]['snapshot']['media_content']);
+        }
 
 		return $va_log;
 	}
@@ -268,6 +294,30 @@ class ReplicationService {
 	 * @return array
 	 * @throws Exception
 	 */
+	public static function setLastLogID($po_request) {
+		$vs_source_system_guid = trim($po_request->getParameter('system_guid', pString));
+		if(!strlen($vs_source_system_guid)) { throw new Exception('Must provide a system guid'); }
+		$log_id = $po_request->getParameter('log_id', pInteger);
+		if($log_id > 0) {
+			$t_replication_log = new ca_replication_log();
+			$t_replication_log->set('source_system_guid', $vs_source_system_guid);
+			$t_replication_log->set('status', 'C');
+			$t_replication_log->set('log_id', $log_id);
+			$t_replication_log->insert();
+			if ($t_replication_log->numErrors()) {
+				throw new Exception(_t('Could not set last log_id: %1', join("; ", $t_replication_log->getErrors())));
+			}
+		} else {
+			throw new Exception(_t('Log_id is not valid'));
+		}
+		return ['log_id' => $log_id];
+	}
+	# -------------------------------------------------------
+	/**
+	 * @param RequestHTTP $po_request
+	 * @return array
+	 * @throws Exception
+	 */
 	public static function applyLog($po_request) {
 		$vs_source_system_guid = trim($po_request->getParameter('system_guid', pString));
 		if(!strlen($vs_source_system_guid)) { throw new Exception('must provide a system guid'); }
@@ -279,70 +329,70 @@ class ReplicationService {
 		}
 
 		$vn_last_applied_log_id = null;
-		//$vn_force_last_applied_log_id = $po_request->getParameter('last_applied_log_id', pInteger);
 		
-		//if ($vn_force_last_applied_log_id) {
-		//    $vn_last_applied_log_id = $vn_force_last_applied_log_id;
-		//} else {
-            $va_log = json_decode($po_request->getRawPostData(), true);
-            if(!is_array($va_log)) { throw new \Exception('log must be array'); }
-            $o_db = new Db();
+		$va_log = json_decode($c=$po_request->getRawPostData(), true);
+		if(!is_array($va_log)) { throw new \Exception('Log must be array: '.$c); }
+		$o_db = new Db();
 
-            // run
-            $va_sanity_check_errors = array();
-            $va_return = array(); $vs_error = null;
+		// run
+		$va_sanity_check_errors = array();
+		$va_return = array(); $vs_error = null;
 
-            foreach($va_log as $vn_log_id => $va_log_entry) {
-                $o_tx = new \Transaction($o_db);
-                try {
-                    if ($va_log_entry['SKIP']) { throw new CA\Sync\LogEntry\IrrelevantLogEntry(_t('Skip log entry')); }
-                
-                    $o_log_entry = CA\Sync\LogEntry\Base::getInstance($vs_source_system_guid, $vn_log_id, $va_log_entry, $o_tx);
-                    $o_log_entry->sanityCheck();
-                } catch (CA\Sync\LogEntry\IrrelevantLogEntry $e) {
-                    // skip log entry (still counts as "applied")
-                    $o_tx->rollback();
-                    $vn_last_applied_log_id = $vn_log_id;
-                    ReplicationService::$s_logger->log("[IrrelevantLogEntry] Sanity check error: ".$e->getMessage());
-                    continue;
-                } catch (\Exception $e) {
-                    // append log entry to message for easier debugging
-                    $va_sanity_check_errors[] = $e->getMessage() . ' ' . _t("Log entry was: %1", print_r($va_log_entry, true));
-                    ReplicationService::$s_logger->log("[ERROR] Sanity check error: ".$e->getMessage());
-                }
+		foreach($va_log as $vn_log_id => $va_log_entry) {
+			$o_tx = new \Transaction($o_db);
+			try {
+				if ($va_log_entry['SKIP']) { throw new CA\Sync\LogEntry\IrrelevantLogEntry(_t('Skip log entry')); }
+			
+				$o_log_entry = CA\Sync\LogEntry\Base::getInstance($vs_source_system_guid, $vn_log_id, $va_log_entry, $o_tx);
+				$o_log_entry->sanityCheck();
+			} catch (CA\Sync\LogEntry\IrrelevantLogEntry $e) {
+				// skip log entry (still counts as "applied")
+				$o_tx->rollback();
+				$vn_last_applied_log_id = $vn_log_id;
+				ReplicationService::$s_logger->log("[IrrelevantLogEntry] Sanity check error: ".$e->getMessage());
+				continue;
+			} catch (CA\Sync\LogEntry\InvalidLogEntryException $e) {
+				// skip log entry (still counts as "applied")
+				$o_tx->rollback();
+				$vn_last_applied_log_id = $vn_log_id;
+				ReplicationService::$s_logger->log("[InvalidLogEntryException] Sanity check error: ".$e->getMessage());
+				continue;
+			} catch (\Exception $e) {
+				// append log entry to message for easier debugging
+				$va_sanity_check_errors[] = $e->getMessage() . ' ' . _t("Log entry was: %1", print_r($va_log_entry, true));
+				ReplicationService::$s_logger->log("[ERROR] Sanity check error: ".$e->getMessage());
+			}
 
-                // if there were sanity check errors, return them here
-                if(sizeof($va_sanity_check_errors)>0) {
-                    $o_tx->rollback();
-                    throw new \Exception(join("\n", $va_sanity_check_errors));
-                }
+			// if there were sanity check errors, return them here
+			if(sizeof($va_sanity_check_errors)>0) {
+				$o_tx->rollback();
+				throw new \Exception(join("\n", $va_sanity_check_errors));
+			}
 
-                $o_tx = new \Transaction($o_db);
-                try {
-                    $o_log_entry = CA\Sync\LogEntry\Base::getInstance($vs_source_system_guid, $vn_log_id, $va_log_entry, $o_tx);
-                    $o_log_entry->apply($pa_entry_options);
+			$o_tx = new \Transaction($o_db);
+			try {
+				$o_log_entry = CA\Sync\LogEntry\Base::getInstance($vs_source_system_guid, $vn_log_id, $va_log_entry, $o_tx);
+				$o_log_entry->apply($pa_entry_options);
 
-                    $vn_last_applied_log_id = $vn_log_id;
-                } catch(CA\Sync\LogEntry\IrrelevantLogEntry $e) {
-                    $o_tx->rollback();
-                    $vn_last_applied_log_id = $vn_log_id; // if we chose to ignore it, still counts as replicated! :-)
-                
-                    ReplicationService::$s_logger->log("[IrrelevantLogEntry] Apply error: ".$e->getMessage());
-                } catch(\Exception $e) {
-                    $vs_error = get_class($e) . ': ' . $e->getMessage() . $e->getTraceAsString() . ' ' . _t("Log entry was: %1", print_r($va_log_entry, true));
-                    $o_tx->rollback();
-                    ReplicationService::$s_logger->log("[ERROR] Apply error: ".$e->getMessage());
-                    break;
-                }
-                $o_tx->commit();
-           // }
+				$vn_last_applied_log_id = $vn_log_id;
+			} catch(CA\Sync\LogEntry\IrrelevantLogEntry $e) {
+				$o_tx->rollback();
+				$vn_last_applied_log_id = $vn_log_id; // if we chose to ignore it, still counts as replicated! :-)
+			
+				ReplicationService::$s_logger->log("[IrrelevantLogEntry] Apply error: ".$e->getMessage());
+			} catch(\Exception $e) {
+				$vs_error = get_class($e) . ': ' . $e->getMessage() . $e->getTraceAsString() . ' ' . _t("Log entry was: %1", print_r($va_log_entry, true));
+				$o_tx->rollback();
+				ReplicationService::$s_logger->log("[ERROR] Apply error: ".$e->getMessage());
+				break;
+			}
+			$o_tx->commit();
         }
 
 		if($vn_last_applied_log_id) {
 			$va_return['replicated_log_id'] = $vn_last_applied_log_id;
 
 			$t_replication_log = new ca_replication_log();
-			$t_replication_log->setMode(ACCESS_WRITE);
 			$t_replication_log->set('source_system_guid', $vs_source_system_guid);
 			$t_replication_log->set('status', 'C');
 			$t_replication_log->set('log_id', $vn_last_applied_log_id);
@@ -427,16 +477,16 @@ class ReplicationService {
 			throw new Exception('Could not move temporary file. Please check the permissions for the workspace directory.');
 		}
 
-		$va_files[$vs_checksum] = $vs_new_file_path;
 
-		// only stash 500 files tops
-		if(sizeof($va_files) > 500) {
-			$va_excess_files = array_splice($va_files, 99);
+		// only stash 2000 files tops
+		if(sizeof($va_files) > 2000) {
+			$va_excess_files = array_splice($va_files, 0, 500);	// remove first 25% of list
 
 			foreach($va_excess_files as $vs_file) {
 				@unlink($vs_file);
 			}
 		}
+		$va_files[$vs_checksum] = $vs_new_file_path;
 
 		$o_app_vars->setVar('pushMediaFiles', $va_files);
 		$o_app_vars->save();
@@ -462,6 +512,7 @@ class ReplicationService {
 		$va_results = [];
 		if(is_array($va_guids_to_check)) {
 			foreach($va_guids_to_check as $vs_guid) {
+				if(!trim($vs_guid)) { continue; }
 				if (!($va_results[$vs_guid] = ca_guids::getInfoForGUID($vs_guid))) {
 					$va_results[$vs_guid] = '???';
 				}
@@ -494,6 +545,77 @@ class ReplicationService {
 			}
 		}
 		return $va_results;
+	}
+	# -------------------------------------------------------
+	/**
+	 * Get GUIDs for table. Used to get full list of guids from base tables such as ca_locales 
+	 *
+	 * @param RequestHTTP $po_request
+	 * @return array
+	 * @throws Exception
+	 */
+	public static function getGUIDsForTable($po_request) {
+		$table = $po_request->getParameter('table', pString);
+		
+		return ca_guids::guidsForTable($table, ['limit' => 500]);
+	}
+	# -------------------------------------------------------
+	/**
+	 * @param RequestHTTP $po_request
+	 * @return array
+	 * @throws Exception
+	 */
+	public static function getLastLogIDsForGUIDs($po_request) {
+		if($po_request->getRequestMethod() === 'POST') { 
+			$guids = json_decode($po_request->getRawPostData(), true);
+		} else {
+			$guids = explode(";", $po_request->getParameter('guids', pString));
+		}
+		if ((!is_array($guids) || !sizeof($guids)) && ($guid = $po_request->getParameter('guid', pString))) {
+			$guids = [$guid];
+		}
+		
+		$db = new Db();
+		$ret = array_map(function($v) use ($db) {
+			$qr = $db->query("SELECT max(log_id) log_id, logged_table_num, logged_row_id FROM ca_change_log WHERE logged_table_num = ? AND logged_row_id = ?", [$v['table_num'], $v['row_id']]);
+			if($qr->nextRow()) {
+				$v['log_id'] = $qr->get('log_id');	
+			} else {
+				$v['log_id'] = null;
+			}
+			return $v;
+		}, ca_guids::getInfoForGUIDs($guids));
+		return $ret;
+		
+	}
+	# -------------------------------------------------------
+	/**
+	 * @param RequestHTTP $po_request
+	 * @return array
+	 * @throws Exception
+	 */
+	public static function getPublicGUIDs($po_request) {
+		$table = $po_request->getParameter('table', pString);
+		if(!sizeof($access = explode(";", $po_request->getParameter('access', pString)))) {
+			$access = [1];
+		}
+		
+		if(!($table_num = Datamodel::getTableNum($table))) {
+			return null;
+		}
+		
+		$pk = Datamodel::primaryKey($table);
+		
+		$db = new Db();
+		$qr = $db->query("
+			SELECT g.guid 
+			FROM ca_guids g
+			INNER JOIN {$table} AS t ON t.{$pk} = g.row_id AND g.table_num = ? 
+			WHERE t.access IN (?)
+		", [$table_num, $access]);
+		
+		
+		return $qr->getAllFieldValues('guid');	
 	}
 	# -------------------------------------------------------
 }

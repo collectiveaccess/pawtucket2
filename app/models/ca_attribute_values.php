@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2019 Whirl-i-Gig
+ * Copyright 2008-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -115,6 +115,13 @@ BaseModel::$s_ca_models_definitions['ca_attribute_values'] = array(
 				'DEFAULT' => '',
 				'LABEL' => 'Integer value container', 'DESCRIPTION' => 'Integer attribute value container'
 		),
+		'value_sortable' => array(
+				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
+				'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
+				'IS_NULL' => true, 
+				'DEFAULT' => '',
+				'LABEL' => 'Sortable text value', 'DESCRIPTION' => 'Sortable text value'
+		),
 		'source_info' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
 				'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
@@ -213,20 +220,7 @@ class ca_attribute_values extends BaseModel {
 
 	protected $FIELDS;
 	
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
+
 	# ------------------------------------------------------
 	/**
 	 * Stub out indexing for this table - it is never indexed
@@ -266,7 +260,7 @@ class ca_attribute_values extends BaseModel {
 		$this->set('attribute_id', $pn_attribute_id);
 		$this->set('element_id', $pa_element_info['element_id']);
 		
-		$o_attr_value = Attribute::getValueInstance($pa_element_info['datatype']);
+		$o_attr_value = \CA\Attributes\Attribute::getValueInstance($pa_element_info['datatype']);
 		$pa_element_info['displayLabel'] = $t_element->getLabelForDisplay(false);
 		$va_values = $o_attr_value->parseValue($ps_value, $pa_element_info, $pa_options);
 		if (isset($va_values['_dont_save']) && $va_values['_dont_save']) { return true; }
@@ -345,11 +339,11 @@ class ca_attribute_values extends BaseModel {
 		$t_element = ca_attributes::getElementInstance($this->get('element_id'));
 		$pa_element_info = $t_element->getFieldValuesArray();
 		
-		$this->setMode(ACCESS_WRITE);
+		$o_attr_value = \CA\Attributes\Attribute::getValueInstance($t_element->get('datatype'));
 		
-		$o_attr_value = Attribute::getValueInstance($t_element->get('datatype'));
 		$pa_element_info['displayLabel'] = $t_element->getLabelForDisplay(false);
 		$va_values = $o_attr_value->parseValue($ps_value, $pa_element_info, $pa_options);
+
 		if (isset($va_values['_dont_save']) && $va_values['_dont_save']) { return true; }
 		
 		if (is_array($va_values)) {
@@ -436,7 +430,7 @@ class ca_attribute_values extends BaseModel {
 		$this->FIELDS['value_blob']['FIELD_TYPE'] = ($pb_setting) ? FT_FILE : FT_TEXT;
 		// We have to deserialize the FT_FILE info array ourselves since when we loaded the attribute value model
 		// BaseModel didn't know it was an FT_FILE field
-		$this->_FIELD_VALUES['value_blob'] = caUnserializeForDatabase($this->_FIELD_VALUES['value_blob']);
+		$this->_FIELD_VALUES['value_blob'] = caUnserializeForDatabase($this->_FIELD_VALUES['value_blob'] ?? null);
 	}
 	# ------------------------------------------------------
 	/**
@@ -486,7 +480,6 @@ class ca_attribute_values extends BaseModel {
  				return null;
  			}
  		}
- 		$t_multifile->setMode(ACCESS_WRITE);
  		$t_multifile->set('value_id', $this->getPrimaryKey());
  		$t_multifile->set('media', $ps_filepath);
  		$t_multifile->set('resource_path', $ps_resource_path);

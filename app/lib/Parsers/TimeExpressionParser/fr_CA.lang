@@ -15,7 +15,7 @@ monthTable = {
 	mar = mars, mars = mars,
 	avr = avril, avr. = avril,
 	mai = mai,
-	jun = juin, juin = juin
+	jun = juin, juin = juin,
 	jul = juillet, juill. = juillet,
 	aoû = août, 
 	sep = septembre, sept. = septembre,
@@ -27,12 +27,9 @@ monthTable = {
 # List of day names, starting with Sunday
 dayListDisplay = [Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi]
 
-#rangePreConjunctions = [from, between]
 rangePreConjunctions = [depuis, après]
 
-#rangeConjunctions = [to, -, and, .., through]
-# ???
-rangeConjunctions = [to, -, et, .., through]
+rangeConjunctions = [to, –, -, et, .., through]
 
 dateTimeConjunctions = [à,@]
 

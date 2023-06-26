@@ -29,11 +29,11 @@
  *
  * ----------------------------------------------------------------------
  */
-  $va_access_values = $this->getVar("access_values");
- $vs_hero = $this->request->getParameter("hero", pString);
- if(!$vs_hero){
- 	$vs_hero = rand(1, 3);
- }
+	$va_access_values = $this->getVar("access_values");
+	$vs_hero = $this->request->getParameter("hero", pString);
+	if(!$vs_hero){
+ 		$vs_hero = rand(1, 3);
+	}
 ?>
 
 <div class="parallax hero<?php print $vs_hero; ?>">
@@ -127,7 +127,7 @@
 	#print $this->render("Front/gallery_slideshow_html.php");
 ?>
 
-<div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>
+<div id="hpScrollBar"><div class="row"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div></div>
 
 		<script type="text/javascript">
 			$(document).ready(function(){

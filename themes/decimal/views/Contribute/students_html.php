@@ -189,7 +189,7 @@
 					</div>
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.locationOnBody:error}}}
-						<span class='title'>Location on body</span><br/>
+						<span class='title'>Related body part</span><br/>
 						{{{ca_objects.locationOnBody%width=350px&multiple=1}}}
 					</div>				
 				</div>
