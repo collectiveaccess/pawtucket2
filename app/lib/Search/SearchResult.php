@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2022 Whirl-i-Gig
+ * Copyright 2008-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1014,6 +1014,7 @@ class SearchResult extends BaseObject {
 	 *			output = Convert list item_ids to display text in user's preferred locale ("text") or idno ("idno"). This is an easier to type alternative to the convertCodesToDisplayText and convertCodesToIdno options. [Default is null]
 	 *			sort = Array list of bundles to sort returned values on. Currently sort is only supported when getting related values via simple related <table_name> and <table_name>.related bundle specifiers. Eg. from a ca_objects results you can sort when fetching 'ca_entities', 'ca_entities.related', 'ca_objects.related', etc.. The sortable bundle specifiers are fields with or without tablename. Only those fields returned for the related tables (intrinsics and label fields) are sortable. You can also sort on attributes if returnWithStructure is set. [Default is null]
 	 *			stripTags = Remove HTML/XML tags from returned values. [Default is false]
+	 *			locale = Locale to return values in. If omitted the user's default locale is used. [Default is null]
 	 *
 	 *		[Formatting for strings only]
  	 *			toUpper = Force all values to upper case. [Default is false]
@@ -1876,11 +1877,11 @@ class SearchResult extends BaseObject {
 			if(is_array($vm_val)) {
 				foreach($vm_val as $i => $v) {
 					if(is_array($v)) { continue; }
-					if(!preg_match('!(<br>|<br/>|<p>)!i', $v)) {
+					if($v === strip_tags($v)) {
 						$vm_val[$i] = nl2br($v);
 					}
 				}
-			} elseif(!preg_match('!(<br[^>]*>|<br[^/]*/>|<p[^>]*>)!i', $vm_val)) {
+			} elseif($vm_val === strip_tags($vm_val)) {
 				$vm_val = nl2br($vm_val);
 			}
 		} elseif ($vb_convert_line_breaks) {
@@ -2222,7 +2223,8 @@ class SearchResult extends BaseObject {
 		$va_path_components					=& $pa_options['pathComponents'];
 		$vs_delimiter						= isset($pa_options['delimiter']) ? $pa_options['delimiter'] : ';';
 		$vb_convert_codes_to_display_text 	= isset($pa_options['convertCodesToDisplayText']) ? (bool)$pa_options['convertCodesToDisplayText'] : false;
-		$locale = isset($pa_options['locale']) ? $pa_options['locale'] : null;
+		
+		$locale = isset($pa_options['locale']) ? ca_locales::codeToID($pa_options['locale']) : null;
 		
 		$va_return_values = [];
 		
@@ -2250,6 +2252,12 @@ class SearchResult extends BaseObject {
 				
 				$vb_did_return_value = false;
 				$vb_return_value_id = ($va_path_components['components'][sizeof($va_path_components['components'])-1] === 'value_id');
+				$vb_return_source = ($va_path_components['components'][sizeof($va_path_components['components'])-1] === '__source__');
+				
+				if ($vb_return_source) {
+					$va_return_values[(int)$vn_id][null][(int)$o_attribute->getAttributeID()] = $o_attribute->getValueSource();
+					continue;
+				}
 
 				foreach($va_values as $o_value) {
 					$vs_val_proc = null;
@@ -3861,6 +3869,7 @@ class SearchResult extends BaseObject {
 		$highlight_text = array_reduce($highlight_text, function($c, $v) {
 			if(mb_substr($v, -1, 1) == '*') {
 				$v = mb_substr($v, 0, mb_strlen($v) - 1);
+				if($v[-1] == 'i') { $v = mb_substr($v, 0, mb_strlen($v) - 1); }
 				array_push($c, preg_quote($v, '/').'[A-Za-z0-9]*');
 			}
 			if(!strlen($v)) { array_pop($c); return $c; }
@@ -3875,7 +3884,7 @@ class SearchResult extends BaseObject {
 		usort($highlight_text, function($a, $b) {
 			return strlen($b) <=> strlen($a);
 		});
-		$highlight_text = array_map(function($v) { return preg_quote($v, '/'); }, $highlight_text);
+		
 		$content = $g_highlight_cache[$content] = preg_replace("/(?<![A-Za-z0-9])(".join('|', $highlight_text).")/i", "<span class=\"highlightText\">\\1</span>", $content);
 		
 		return $content;

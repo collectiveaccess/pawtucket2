@@ -31,21 +31,38 @@
 		<footer id="footer" class="text-center">
 			<div class="row">
 				<div class="col-sm-12 text-center">
-					<p>
-						<a href="/index.php" class="orgLink">PLUÖ</a>
-						<!-- <div class="address">Address</div> -->
-					</p>
 
-					<!-- <ul class="list-inline social">
-						<li><a href="#" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fa fa-instagram"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fa fa-twitter-square"></i></a></li>
-					</ul> -->
+					<a href="/index.php" class="orgLink">
+						<?php print caGetThemeGraphic($this->request, 'Lehrfilmpraktiken_GERADE.png', array("alt" => $this->request->config->get("app_display_name")));?>
+					</a> 
+
+					<!-- <p>
+						<a href="/index.php" class="orgLink"><?= _t('Praktiken des Lehr- und Unterrichtfilms in Österreich'); ?></a>
+					</p> -->
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 text-center">	
 					<ul class="list-inline">
-						<li><?php print caNavLink($this->request, _t("Impressum & Credits"), "", "", "", "impressium_credits"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Imprint & Credits"), "", "", "", "imprint_credits"); ?></li>
 						<li><?php print caNavLink($this->request, _t("Acknowledgements"), "", "", "", "acknowledgements"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "", "contact_us"); ?></li>
+						<!-- <li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li> -->
 					</ul>
+				</div>
+				<br><br>
+			</div>
+			<div class="row funderLinks">
+				<div class="col-sm-12 text-center">
+					<a class="funderLinksHorizontal">
+						<?php print caGetThemeGraphic($this->request, 'EN_DH_WEB.png', array("alt" => $this->request->config->get("app_display_name")));?>
+					</a>
+					<a class="funderLinksHorizontal">
+						<?php print caGetThemeGraphic($this->request, 'fwf-logo_var2.jpg', array("alt" => $this->request->config->get("app_display_name")));?>
+					</a>
+					<a class="funderLinksHorizontal">
+						<?php print caGetThemeGraphic($this->request, 'Uni_Logo_2016.jpg', array("alt" => $this->request->config->get("app_display_name")));?>
+					</a>
 				</div>
 			</div>
 		</footer><!-- end footer -->

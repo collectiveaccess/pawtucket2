@@ -79,7 +79,7 @@
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
 			
-			if ($vs_table != 'ca_objects') {
+			if (!in_array($vs_table, array('ca_objects', 'ca_entities'))) {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
@@ -115,20 +115,43 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
-				
+					$t_list_item->load($qr_res->get($vs_table.".type_id"));
+					$vs_typecode = $t_list_item->get("idno");
+					$vs_image = "";		
+					if(($vs_table == "ca_objects") && ($vs_typecode == "nonav_manifestation")){
+						# --- image needs to come from related item for text and images
+						$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.related' restrictToTypes='item' restrictToRelationshipTypes='IsItemOfNonAV' limit='1'>^ca_object_representations.media.small</unit>", array("checkAccess" => $va_access_values));	
+						
+						
+					}else{
+						$vs_image = (in_array($vs_table, array('ca_objects', 'ca_entities'))) ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					}
 					if(!$vs_image){
-						if ($vs_table == 'ca_objects') {
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
+						#if ($vs_table == 'ca_objects') {
+							# --- have different icons for text and media nonav_manifestation
+							if(($vs_table == "ca_objects") && ($vs_typecode == "nonav_manifestation")){
+								switch($qr_res->get("ca_objects.vhh_MediaType.MT_List", array("convertCodesToDisplayText" => true))){
+									case "text":
+									case "imagetext":
+										$vs_typecode = $vs_typecode."_text";
+									break;
+									# ------------------
+									case "still image (other)":
+									case "still image (photographic)":
+										$vs_typecode = $vs_typecode."_image";
+									break;
+									# ------------------
+								}
+							}
+							
 							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 								$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 							}else{
 								$vs_image = $vs_default_placeholder_tag;
 							}
-						}else{
-							$vs_image = $vs_default_placeholder_tag;
-						}
+						#}else{
+						#	$vs_image = $vs_default_placeholder_tag;
+						#}
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
@@ -137,19 +160,22 @@
 						$vs_add_to_set_link = "<a href='#' class='bResultItemSetLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 				
-					
 					$vs_result_output = "
-		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
-				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
-					<div class='bResultListItemText'>
-						{$vs_caption}
-					</div><!-- end bResultListItemText -->
-				</div><!-- end bResultListItemContent -->
-				{$vs_add_to_set_link}
-			</div><!-- end bResultListItem -->
-		</div><!-- end col -->";
+						<div class='bResultListItemCol col-xs-12'>
+							<div class='bResultListItem' id='row{$vn_id}'>
+								<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
+								<div class='bResultListItemContent'><div class='row'>
+																		<div class='col-md-2'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div></div>
+																		<div class='col-md-10'>
+																			<div class='bResultListItemText'>
+																				{$vs_caption}
+																			</div><!-- end bResultListItemText -->
+																		</div>
+																	</div>
+								</div><!-- end bResultListItemContent -->
+								{$vs_add_to_set_link}
+							</div><!-- end bResultListItem -->
+						</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				

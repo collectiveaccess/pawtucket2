@@ -51,14 +51,7 @@
 
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_objects" min="1" max="1">
-						<div class='unit'>
-							<unit relativeTo="ca_objects" delimiter=" ">
-								<l>^ca_object_representations.media.large</l>
-								<!-- <div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div> -->
-							</unit>
-						</div>
-					</ifcount>}}}
+					
 					<?php
 						# Comment and Share Tools
 						if ($vn_comments_enabled | $vn_share_enabled) {
@@ -76,55 +69,77 @@
 							print '</div><!-- end detailTools -->';
 						}				
 					?>
-
-					{{{<ifcount code="ca_entities.vhh_Date" min="1"><label>Date</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities.vhh_Date" delimiter="<br/>">
-						<l>^ca_entities.vhh_Date.date_Date</l> (^ca_entities.vhh_Date.date_Type)
-					</unit>}}}
+					{{{representationViewer}}}
+				
+				
+					<div id="detailAnnotations"></div>
+				
+					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+					
+					{{{<ifdef code="ca_entities.vhh_Date" min="1"><div class="unit"><label><t>Date</t></label>
+						<unit relativeTo="ca_entities.vhh_Date" delimiter="<br/>">
+						<l>^ca_entities.vhh_Date.date_Date</l> <ifdef code="ca_entities.vhh_Date.date_Type">(^date_Type)</ifdef>
+					</unit></div></ifdef>}}}
 
 					
-					{{{<ifdef code="ca_entities.vhh_Sex"><div class='unit'><label>Gender</label>^ca_entities.vhh_Sex</div></ifdef>}}}
+					{{{<ifdef code="ca_entities.vhh_Sex"><div class='unit'><label><t>Gender</t></label>^ca_entities.vhh_Sex</div></ifdef>}}}
 					
-					{{{<ifcount code="ca_entities.vhh_Date" min="1"><label>Type of Activity</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities.vhh_TypeOfActivity2" delimiter="<br/>">
-						<l>^ca_entities.vhh_TypeOfActivity2.ActivityList</l> (^ca_entities.vhh_TypeOfActivity2.TOA_TempScope)
-					</unit>}}}
+					{{{<ifdef code="ca_entities.vhh_TypeOfActivity2" >
+						<div class="unit"><label><t>Type of Activity</t></label>
+							<unit relativeTo="ca_entities.vhh_TypeOfActivity2" delimiter="<br/>"><ifdef code="ca_entities.vhh_TypeOfActivity2.ActivityList|ca_entities.vhh_TypeOfActivity2.ActivityText">
+								<b>^ActivityList.preferred_labels.name_singular</b><ifdef code="ca_entities.vhh_TypeOfActivity2.ActivityList,ca_entities.vhh_TypeOfActivity2.ActivityText"> &mdash; </ifdef>^ca_entities.vhh_TypeOfActivity2.ActivityText
+								<ifdef code="ca_entities.vhh_TypeOfActivity2.TOA_TempScope|ca_entities.vhh_TypeOfActivity2.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+								<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+									<ifdef code="ca_entities.vhh_TypeOfActivity2.TOA_TempScope">
+										<br/>
+										<small><t>Temporal Scope:</t></small>
+										<small>^ca_entities.vhh_TypeOfActivity2.TOA_TempScope</small>
+									</ifdef>
+									<ifdef code="ca_entities.vhh_TypeOfActivity2.__source__">
+										<br/>
+										<small><t>Source:</t></small>
+										<small>^ca_entities.vhh_TypeOfActivity2.__source__</small>
+									</ifdef>
+								</div>
+							</ifdef></unit>
+						</div>
+					</ifdef>}}}
 					
-					{{{<ifdef code="ca_entities.vhh_Description"><div class='unit'><label>Description</label>^ca_entities.vhh_Description</div></ifdef>}}}
+					{{{<ifdef code="ca_entities.vhh_Description"><div class='unit'><label><t>Description</t></label>^ca_entities.vhh_Description</div></ifdef>}}}
 
-					{{{<ifdef code="ca_entities.vhh_URL"><div class='unit'><label>URL</label>^ca_entities.vhh_URL</div></ifdef>}}}
+					{{{<ifdef code="ca_entities.vhh_URL"><div class='unit'><label><t>URL</t></label><unit relativeTo="ca_entities.vhh_URL" delimiter="<br/>"><a href="^ca_entities.vhh_URL" target="_blank">^ca_entities.vhh_URL</a></unit></div></ifdef>}}}
 
-					{{{<ifdef code="ca_entities.vhh_Note"><div class='unit'><label>Notes</label><span class="trimText">^ca_entities.vhh_Note</span></div></ifdef>}}}
+					{{{<ifdef code="ca_entities.vhh_Note"><div class='unit'><label><t>Notes</t></label><span class="trimText">^ca_entities.vhh_Note%convertLineBreaks=1</span></div></ifdef>}}}
 					
 				</div><!-- end col -->
 
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 
 				
-					{{{<ifdef code="ca_entities.description"><div class='unit'><label>Biography</label>^ca_entities.description</div></ifdef>}}}
+					{{{<ifdef code="ca_entities.description"><div class='unit'><label><t>Biography</t></label>^ca_entities.description</div></ifdef>}}}
 					
-					{{{<ifcount code="ca_collections" min="1" max="1"><label>Related collection</label></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><label>Related collections</label></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="1" max="1"><label><t>Related Case Study</t></label></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="2"><label><t>Related Case Studies</t></label></ifcount>}}}
 					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit>}}}
-
 					
-					{{{<ifcount code="ca_entities.related" min="1" max="1"><label>Related person</label></ifcount>}}}
-					{{{<ifcount code="ca_entities.related" min="2"><label>Related people</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_occurrences" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="2"><label>Related occurrences</label></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="1" max="1"><label><t>Related Event</t></label></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="2"><label><t>Related Events</t></label></ifcount>}}}
 					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit>}}}
 					
-					{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}				
+					{{{<ifcount code="ca_places" min="1" max="1"><label><t>Related Location</t></label></ifcount>}}}
+					{{{<ifcount code="ca_places" min="2"><label><t>Related Locations</t></label></ifcount>}}}
+					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+
+					{{{<ifcount code="ca_entities.related" min="1" max="1"><label><t>Related Person/Organization</t></label></ifcount>}}}
+					{{{<ifcount code="ca_entities.related" min="2"><label><t>Related People/Organizations</t></label></ifcount>}}}
+					{{{<unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
+					
+					{{{map}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
 			
-{{{<ifcount code="ca_objects" min="1">
-			<H1>Related Objects</H1>
-
+{{{<ifcount code="ca_objects.related" min="1">
+			<H1><t>Related Films, Texts and Images</t></H1>
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>

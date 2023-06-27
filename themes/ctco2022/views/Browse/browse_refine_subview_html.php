@@ -37,8 +37,9 @@
 	$vs_current_view	= $this->getVar('view');
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	
-	$vn_facet_display_length_initial = 10;
+	$vn_facet_display_length_initial = 60;
 	$vn_facet_display_length_maximum = 60;
+	$va_multiple_selection_facet_list = [];
 	$vs_criteria = "";
 	if (sizeof($va_criteria) > 0) {
 		$i = 0;
@@ -60,7 +61,7 @@
 ?>
 			<div class="bSearchWithinContainer">
 				<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-					<input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within"><button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button>
+					<input type="text" class="form-control bSearchWithin" placeholder="Search within results" name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within"><button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button>
 					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
 				</form>
@@ -70,11 +71,30 @@
 		}
 		if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria)){
 			print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
-			print "<H2>"._t("Filter by")."</H2>";
+			print "<H2>"._t("Filter by")."<span class='small'>Click headings to expand</span></H2>";
 			if($vs_criteria){
 				print "<div class='bCriteria'>".$vs_criteria."</div>";
 			}
+			$vn_facets_with_content = 0;
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+				if(is_array($va_facet_info['content']) && sizeof($va_facet_info['content'])){
+					$vn_facets_with_content++;
+				}
+			}
+			$facet_c = 0;
+			$divide = false;
+			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+				if(!$divide){
+					if(in_array($vs_facet_name, array("getty_art_facet", "getty_ulan_facet", "lcsh_facet", "lcsh_name_facet", "lcsh_tgm_facet", "collection_facet"))){
+						if($facet_c > 0){
+							print "<HR/>";
+						}
+						$divide = true;
+					}
+					
+				}
+				$facet_c++;
+				$va_multiple_selection_facet_list[$vs_facet_name] = caGetOption('multiple', $va_facet_info, false, ['castTo' => 'boolean']);
 			
 				if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
 					print "<H3>".$va_facet_info['label_singular']."</H3>";
@@ -88,39 +108,49 @@
 						<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 	<?php
 				} else {				
-					if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-					print "<h3>".$va_facet_info['label_singular']."</h3>"; 
-					switch($va_facet_info["group_mode"]){
-						case "alphabetical":
-						case "list":
-						default:
-							$vn_facet_size = sizeof($va_facet_info['content']);
-							$vn_c = 0;
-							foreach($va_facet_info['content'] as $va_item) {
-								$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-								print "<div>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
-								$vn_c++;
-						
-								if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
-									print "<span id='{$vs_facet_name}_more' style='display: none;'>";
-								} else {
-									if(($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
-										break;
-									}
-								}
+				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
+					$vn_facet_size = sizeof($va_facet_info['content']);
+					print "<h3 type='button' onClick='jQuery(\".facetGroupShowHide\").hide(); jQuery(\"#facetGroup{$vs_facet_name}\").show(); return false;'>".$va_facet_info['label_singular']."</H3><div id='facetGroup{$vs_facet_name}' class='facetGroupShowHide' ".(($vn_facets_with_content > 1) ? "style='display:none;'" : "").">"; 
+					print "<div class='container facetContainer' id='{$vs_facet_name}_facet_container'><div class='row'>";
+
+					$vn_c = 0;
+					$vn_col = 0;
+					foreach($va_facet_info['content'] as $va_item) {
+						$va_facet_popover = array();
+						$vs_facet_desc = "";
+						$vs_label = $va_item['label'];
+						$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+						print "<div class='".(($va_facet_info["columns"]) ? "col-md-12 col-lg-4" : "col-sm-12")." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view)).$vs_facet_desc."</div>";
+						$vn_c++;
+						$vn_col++;
+						if ($va_facet_info["columns"] && ($vn_col == 3)) {
+							print "<div style='clear:both;width:100%;'></div>";
+							$vn_col = 0;
+						}
+						if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
+							print "<span id='{$vs_facet_name}_more' style='display: none;'>";
+						} else {
+							if(($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
+								break;
 							}
-							if (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
-								print "</span>\n";
-						
-								$vs_link_open_text = _t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial);
-								$vs_link_close_text = _t("close", $vn_facet_size - $vn_facet_display_length_initial);
-								print "<div><a href='#' class='more' id='{$vs_facet_name}_more_link' onclick='jQuery(\"#{$vs_facet_name}_more\").slideToggle(250, function() { jQuery(this).is(\":visible\") ? jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_close_text)."\") : jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_open_text)."\")}); return false;'><em>{$vs_link_open_text}</em></a></div>";
-							} elseif (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum)) {
-								print "<div><a href='#' class='more' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
-							}
-						break;
-						# ---------------------------------------------
+						}
 					}
+					if (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
+						print "</span>\n";
+				
+						$vs_link_open_text = _t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial);
+						$vs_link_close_text = _t("close", $vn_facet_size - $vn_facet_display_length_initial);
+						print "<div><a href='#' class='more' id='{$vs_facet_name}_more_link' onclick='jQuery(\"#{$vs_facet_name}_more\").slideToggle(250, function() { jQuery(this).is(\":visible\") ? jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_close_text)."\") : jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_open_text)."\")}); return false;'><em>{$vs_link_open_text}</em></a></div>";
+					} elseif (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum)) {
+						print "<div><a href='#' class='more' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
+					}
+					if ($va_multiple_selection_facet_list[$vs_facet_name]) {
+	?>
+						<a href="#" id="<?php print $vs_facet_name; ?>_facet_apply" data-facet="<?php print $vs_facet_name; ?>" class="facetApply">Apply</a>
+	<?php
+					}
+
+					print "</div><!-- end row --></div><!-- end container --></div><!-- end facetGroup -->";
 				}
 			}
 		}
@@ -142,6 +172,65 @@
 					}
 				});
             }
+            
+            var multiple_selection_facet_list = <?php print json_encode($va_multiple_selection_facet_list); ?>;
+            
+            jQuery(".facetApply").hide();
+            
+            jQuery(".facetItem").on('click', function(e) { 
+            	if (!multiple_selection_facet_list[jQuery(this).data('facet')]) { return; }
+            	if (jQuery(this).attr('facet_item_selected') == '1') {
+            		jQuery(this).attr('facet_item_selected', '');
+            	} else {
+            		jQuery(this).attr('facet_item_selected', '1');
+            	}
+            	
+            	if (jQuery("div.facetItem[facet_item_selected='1']").length > 0) {
+            		jQuery("#" + jQuery(this).data('facet') + "_facet_apply").show();
+            	} else {
+            		jQuery("#" + jQuery(this).data('facet') + "_facet_apply").hide();
+            	}
+            	
+            	e.preventDefault();
+            	return false;
+            });
+            
+            jQuery(".facetApply").on('click', function(e) { 
+            	var facet = jQuery(this).data('facet');
+            	
+            	var ids = [];
+            	jQuery.each(jQuery("#" + facet + "_facet_container").find("[facet_item_selected=1]"), function(k,v) {
+            		ids.push(jQuery(v).data('facet_item_id'));
+            	});
+<?php
+	if($vb_show_filter_panel){
+?>
+				var url = '<?php print caNavUrl($this->request, '*', '*','*', array('key' => $vs_key, 'view' => $vs_view)); ?>/facet/' + facet + '/id/' + ids.join('|') + '/dontSetFind/1/showFilterPanel/1<?php print ($vn_acquisition_movement_id) ? "/acquisition_movement_id/".$vn_acquisition_movement_id : ""; ?><?php print ($vs_detail_type) ? "/detailType/".$vs_detail_type : ""; ?>';
+ 				$('#browseResultsDetailContainer').load(url);
+<?php
+	}else{
+?>            	
+            	window.location = '<?php print caNavUrl($this->request, '*', '*','*', array('key' => $vs_key, 'view' => $vs_view)); ?>/facet/' + facet + '/id/' + ids.join('|');
+<?php
+	}
+?>            	
+            	e.preventDefault();
+            });
+ <?php
+	if($vb_show_filter_panel){
+?>
+          
+            $(".catchLinks").on("click", "a", function(event){
+				if(!$(this).hasClass('dontCatch') && $(this).attr('href') != "#"){
+					event.preventDefault();
+					var url = $(this).attr('href') + "/showFilterPanel/1";
+					$('#browseResultsDetailContainer').load(url);
+				}
+								
+			});
+<?php
+	}
+?>		
 		});
 	</script>
 <?php	

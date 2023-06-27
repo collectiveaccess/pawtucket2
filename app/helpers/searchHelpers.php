@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2022 Whirl-i-Gig
+ * Copyright 2011-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -437,6 +437,8 @@
 	 * @return array|string
 	 */
 	function caPuppySearch($po_request, $ps_search_expression, $pa_blocks, $pa_options=null) {
+		$o_search_config = caGetSearchConfig();
+		
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		$va_access_values = caGetUserAccessValues($po_request);
  		if(is_array($va_access_values) && sizeof($va_access_values)){
@@ -504,6 +506,8 @@
  			
  			$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction); 
  			
+ 			$search_expression_for_display = $va_contexts[$vs_block]->getSearchExpressionForDisplay($ps_search_expression);
+ 			
  			$va_options['sort'] = $va_sorts[$ps_sort];
  			$va_options['sort_direction'] = $ps_sort_direction;
  			
@@ -525,7 +529,6 @@
 				foreach($base_criteria as $facet => $value){
 					$o_browse->addCriteria($facet, $value);
 				}
-
 				$o_browse->addCriteria("_search", [caMatchOnStem($ps_search_expression)], [$search_expression_for_display]);
 				$o_browse->execute($va_options);
 
@@ -537,6 +540,8 @@
 				
 				if($vn_i == 0) { MetaTagManager::setHighlightText($o_search->getSearchedTerms() ?? $ps_search_expression); }
 			}
+			
+			$qr_res->doHighlighting($o_search_config->get('do_highlighting'));
 			$va_contexts[$vs_block]->setSearchExpression($ps_search_expression);
 			$va_contexts[$vs_block]->setResultList($qr_res->getPrimaryKeyValues());
 			
@@ -583,6 +588,8 @@
 			
 			
 			$o_view = new View($po_request, $po_request->getViewsDirectoryPath());
+			
+			$qr_res->doHighlighting($o_search_config->get("do_highlighting"));
 			$o_view->setVar('result', $qr_res);
 			$o_view->setVar('count', $vn_count);
 			$o_view->setVar('block', $vs_block);
@@ -656,6 +663,8 @@
 	function caSplitSearchResultByType($pr_res, $pa_options=null) {
 		if (!($t_instance = Datamodel::getInstanceByTableName($pr_res->tableName(), true))) { return null; }
 		
+		$o_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+		
 		if (!($vs_type_fld = $t_instance->getTypeFieldName())) { return null; }
 		$vs_table = $t_instance->tableName();
 		$va_types = $t_instance->getTypeList();
@@ -671,6 +680,7 @@
 			$qr_res = $pr_res->getClone();
 			$qr_res->filterResult("{$vs_table}.{$vs_type_fld}", array($vn_type_id));
 			$qr_res->seek(0);
+			$qr_res->doHighlighting($o_search_config->get('do_highlighting'));
 			$va_results[$vn_type_id] = array(
 				'type' => $va_types[$vn_type_id],
 				'result' =>$qr_res
@@ -1497,12 +1507,12 @@
 			}
 		} 
 		
-		// Try to use customer user interface labels for fields when set
+		// Try to use custom user interface labels for fields when set
 		$ui_bundle_label_map = [];
 		if (isset($options['request']) && ($t_ui = ca_editor_uis::loadDefaultUI($ps_table, $options['request'], $pn_type_id))) {
-			$va_screens = $t_ui->getScreens();
+			$va_screens = $t_ui->getScreens($pn_type_id);
 			foreach($va_screens as $va_screen) {
-				if (is_array($va_placements = $t_ui->getScreenBundlePlacements($va_screen['screen_id']))) {
+				if (is_array($va_placements = $t_ui->getScreenBundlePlacements($va_screen['screen_id'], $pn_type_id))) {
 					foreach($va_placements as $va_placement) {
 						// Older installations have the bundle name prefixed with "ca_attribute_"
 						$vs_bundle_name = str_replace('ca_attribute_', '', $va_placement['bundle_name']);
@@ -2122,7 +2132,7 @@
 			$va_result['values'] = $va_select_options;
 			$va_result['operators'] = $va_operators_by_type['select'];
 		} elseif($vs_name === "{$vs_table}.".$t_subject->getProperty('ID_NUMBERING_ID_FIELD')) {
-			$va_result['operators'] = array_merge($va_operators_by_type['select'], ['between']);
+			$va_result['operators'] = array_merge($va_operators_by_type['string'], ['between']);
 		} else {
 			$va_result['input'] = 'text';
 		}

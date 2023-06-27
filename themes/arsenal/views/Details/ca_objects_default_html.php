@@ -40,6 +40,9 @@
 	// get film work
 	$vn_occurrence_id = $t_object->get('ca_occurrences.occurrence_id',array('restrictToTypes' => 'work', 'limit' => 1));
 	
+	// Force media viewing context to "works" so the viewer will pull representations relative to occurrences, not objects
+	$this->request->setParameter('context', 'works');
+	
 	$t_work = new ca_occurrences($vn_occurrence_id);
 	if($vn_occurrence_id){
 		$va_related_objects = $t_work->get("ca_objects.related",array("checkAccess" => $va_access_values, "returnWithStructure" => true, "restrictToTypes" => array("film_print", "digital_item", "video_item")));
@@ -65,7 +68,7 @@
 		$vs_rep_viewer = caRepresentationViewer(
 					$this->request, 
 					$t_work, 
-					$t_object,
+					$t_work,
 					array_merge($options, $media_display_info, 
 						[
 							'display' => 'detail',
@@ -79,7 +82,7 @@
 					)
 				);
 
-		$back_to_work = caDetailLink($this->request, ($g_ui_locale == "de_DE" ? "zurück zum Werk" : "back to Film Work")." &rarr;", '', 'ca_occurrences', $vn_occurrence_id);
+		$back_to_work = caDetailLink($this->request, ($g_ui_locale == "de_DE" ? "zum Werk" : "to Film Work"), '', 'ca_occurrences', $vn_occurrence_id);
 					
 	}
 	$vs_type = $t_object->getWithTemplate("^ca_objects.type_id");
@@ -152,13 +155,13 @@
 						<div class="col-sm-6">
 <?php
 							$va_show_public_fields = array(
-								'format', 'to_rent', 'version', 'lang_syn', 'lang_sub', 'lang_intertit', 'lang_txtlist', 'resolution_list', 'size', 'container_list', 'codec_list', 'lang_voiceover', 'lang_magnet', 'subtitle_type', 'audiodescription_lang', 'closed_caption_lang', 'duration', 'color', 'sound', 'sound_mix', 'optical_sound_type', 'ratio', 'projection_format', 'fps_list', 'length', 'weight', 'reels', 'gossip', 'material_type', 'installation_format'
+								'format', 'to_rent', 'version', 'lang_syn', 'lang_sub', 'lang_intertit', 'lang_txtlist','duration', 'resolution_list', 'size', 'container_list', 'codec_list', 'lang_voiceover', 'lang_magnet', 'subtitle_type', 'audiodescription_lang', 'closed_caption_lang', 'color', 'sound', 'sound_mix', 'optical_sound_type', 'ratio', 'projection_format', 'fps_list', 'length', 'weight', 'reels', 'gossip', 'material_type', 'installation_format'
 							);
 							$va_output = array();
 							
 							foreach($va_show_public_fields as $vs_bundle){
-								if(strlen($t_object->get("ca_objects.{$vs_bundle}"))>0) {
-									$va_output[] = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: ".$t_object->get("ca_objects.{$vs_bundle}",array('convertCodesToDisplayText' => true, 'delimiter' => ', '))."</div><!-- end unit -->";
+								if(strlen($v = trim($t_object->get("ca_objects.{$vs_bundle}",array('convertCodesToDisplayText' => true, 'delimiter' => ', '))))>0) {
+									$va_output[] = "<div class='unit'><b>".$t_object->getAttributeLabel($vs_bundle)."</b>: {$v}</div><!-- end unit -->";
 
 								}
 							}
@@ -277,7 +280,7 @@
 				print "</div><!-- end unit -->";
 			}
 			
-			$va_entity_ids = $t_work->get('ca_entities.entity_id', array('returnAsArray' => true));
+			$va_entity_ids = $t_work->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => ['director'], 'returnAsArray' => true));
 			$t_entity = new ca_entities();
 			if(is_array($va_entity_ids) && sizeof($va_entity_ids)){
 				$vn_i = 0;
@@ -286,7 +289,7 @@
 				foreach($va_entity_ids as $vn_entity_id) {
 					if ($t_entity->load($vn_entity_id)) {           // doesn't hurt to make sure the entity actually loaded... but it should never fail
 						if ($vs_director_name = $t_entity->get('ca_entities.preferred_labels.displayname')) {
-							print caNavLink($this->request,$vs_director_name,'','','Browse','objects',array("facet" => "entity_facet", "id" => $vn_entity_id));
+							print caNavLink($this->request,$vs_director_name,'','','Browse','works',array("facet" => "entity_facet", "id" => $vn_entity_id));
 							print "\n";
 						}
 						if ($vs_director_bio = $t_entity->get('ca_entities.director_bio')) {
@@ -349,7 +352,7 @@
 			
 			// TODO: need final text and formatting for link
 			if($url = $t_work->get('ca_occurrences.film_page_url')) {
-				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}'>"._t('View on Forum')."</a></div></div>";
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}' target='_blank'>".($g_ui_locale == "de_DE" ? "For more information on the film visit the Forum page" : "Mehr Informationen zum Film auf der Webseite des Forums")."</a></div></div>"; 
 			}	
 
 			$va_tags = $t_work->get("ca_list_items", array("returnWithStructure" => true));
@@ -358,7 +361,7 @@
 				$va_print_tags = array();
 				foreach($va_tags as $vn_id => $va_term_info){
 					if($va_term_info["idno"]=="exp"){
-						$va_print_tags[] = caNavLink($this->request, $va_term_info["label"], '', '', 'Search', 'objects', array('search' => $va_term_info["label"]));
+						$va_print_tags[] = caNavLink($this->request, $va_term_info["label"], '', '', 'Search', 'works', array('search' => $va_term_info["label"]));
 					} else {
 						$va_print_tags[] = $va_term_info["label"];
 					}
@@ -392,7 +395,7 @@
 						<div class="col-sm-6">
 <?php
 							$va_show_internal_fields = array(
-								'object_type', 'notes', 'condition', 'condition_opt', 'condition_date', 'condition_comm', 'condition_color', 
+								'object_type', 'print_id', 'notes', 'condition', 'condition_opt', 'condition_date', 'condition_comm', 'condition_color', 
 								'source', 'source_date', 'oa3create_date', 'oa3change_date', 'rights', 'textlist',
 								// neu
 								'file_folder_name', 'bytes', 'number_of_files', 'image_frame', 'cpl', 'cpl_content_title_text',

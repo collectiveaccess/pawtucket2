@@ -45,7 +45,7 @@
 </head>
 <body>
 	<div id='box'>
-	<div id="logo"><img src="<?php print $vs_path ?>/themes/default/assets/pawtucket/graphics/logos/logo.svg"/></div><!-- end logo -->
+	<div id="logo"><img src="<?php print $vs_path ?>/themes/default/assets/pawtucket/graphics/ca_logo.png"/></div><!-- end logo -->
 	<div id="content">
 		<?php print "<div class='error'>An error in your system configuration has been detected</div>
 			General installation instructions can be found

@@ -156,11 +156,14 @@ class SearchController extends FindController {
 		// Handle advanced search form submissions
 		//
 		if($vb_is_advanced) { 
-			$this->opo_result_context->setSearchExpression(
-				$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])])
-			); 
+			if (!$this->request->isAjax()) {
+				$this->opo_result_context->setSearchExpression(
+					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, ['match_on_stem' => $o_search_config->get(['matchOnStem', 'match_on_stem'])])
+				); 
+			}
 			if (!$this->request->isAjax() && ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context))) {
 				$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
+				$this->opo_result_context->setSearchExpression($vs_search_expression);
 			}
 		}
 		
@@ -292,6 +295,9 @@ class SearchController extends FindController {
 		//
 		$vb_sort_changed = false;
 		$o_block_result_context = null;
+		
+		$va_sort_by = caGetOption('sortBy', $va_browse_info, null);
+		
 		if (!($ps_sort = urldecode($this->request->getParameter("sort", pString, ['forcePurify' => true])))) {
 			// inherit sort setting from multisearch? (used when linking to full results from multisearch result)
 			if ($this->request->getParameter("source", pString, ['forcePurify' => true]) === 'multisearch') {
@@ -306,12 +312,17 @@ class SearchController extends FindController {
 		} elseif($ps_sort != $this->opo_result_context->getCurrentSort()){ 
 			$vb_sort_changed = true; 
 		}
-		if(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
+		
+		if(preg_match("!^ca_set_items.rank:[\d]+$!", $ps_sort)) {
+			$ps_sort = str_replace(":", "/", $ps_sort);
+			$va_sort_by[$ps_sort] = $ps_sort;
+		} elseif(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
 			if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
 				$ps_sort = array_shift(array_keys($va_sorts));
 				$vb_sort_changed = true;
 			}
 		}
+		
 		if($vb_sort_changed){
 			# --- set the default sortDirection if available
 			$va_sort_direction = caGetOption('sortDirection', $va_browse_info, null);
@@ -330,7 +341,6 @@ class SearchController extends FindController {
 		$this->opo_result_context->setCurrentSort($ps_sort);
 		$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
 		
-		$va_sort_by = caGetOption('sortBy', $va_browse_info, null);
 		$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 		$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
 		$this->view->setVar('sortControl', $vs_sort_by_select ? _t('Sort with %1', $vs_sort_by_select) : '');

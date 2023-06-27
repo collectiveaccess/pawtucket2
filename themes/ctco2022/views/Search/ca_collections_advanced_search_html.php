@@ -7,7 +7,7 @@
 
 	</div>
 	<div class="col-md-4 formLinks">
-		<?php print caNavLink($this->request, "Artifacts Advanced Search <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "Search", "advanced", "objects"); ?>
+		<?php print caNavLink($this->request, "Objects Advanced Search <span class='glyphicon glyphicon-new-window'></span>", "btn btn-default", "Search", "advanced", "objects"); ?>
 	</div>
 </div>
 <div class="row">
@@ -34,6 +34,16 @@
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_collections_idno' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search collection identifier.') ?>"><?php _p('Collection Identifier') ?></label>
 			{{{ca_collections.idno%width=200px&height=1}}}
+		</div>
+	</div>
+	<div class='row'>
+		<div class="advancedSearchField col-sm-6">
+			<label for='ca_entities' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search collections by their creator.') ?>"><?php _p('Creator') ?></label>
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=creator&width=200px&height=1}}}
+		</div>
+		<div class="advancedSearchField col-sm-6">
+			<label for='ca_entities' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search collections by related people or institutions.') ?>"><?php _p('Related People and Institutions') ?></label>
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=related&width=200px&height=1}}}
 		</div>
 	</div>
 	<br style="clear: both;"/>

@@ -30,7 +30,7 @@
 <?php
 		} 
 	} else {
-		print "<H1 class='noSearchResults'>Sorry, your search for \"".caUcFirstUTF8Safe($this->getVar('search'))."\" returned no results. Please check your spelling, try the ".caNavLink($this->request, "advanced search", "", "Search", "advanced", "objects").", or ".caNavLink($this->request, "contact us", "", "Search", "Contact", "form")." for assistance.</H1>";
+		print "<H1 class='noSearchResults'>Sorry, your search for \"".caUcFirstUTF8Safe($this->getVar('search'))."\" returned no results. Please check your spelling, try the ".caNavLink($this->request, "advanced search", "", "Search", "advanced", "objects").", or ".caNavLink($this->request, "contact us", "", "", "Contact", "form")." for assistance.</H1>";
 	}
 ?>
 <?php

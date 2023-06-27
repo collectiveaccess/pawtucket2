@@ -79,7 +79,7 @@ if($vb_2_col){
 					{{{<ifdef code="ca_entities.org_gen_role"><div class="unit"><label>Type</label>^ca_entities.org_gen_role%delimiter=,_&%useSingular=1</div></ifdef>}}}
 					{{{<ifdef code="ca_entities.grunt_role.grunt_role_gen"><div class="unit"><label>Roles at grunt</label><unit relativeTo='ca_entities.grunt_role' delimiter=', '>^ca_entities.grunt_role.grunt_role_gen%useSingular=1<ifdef code='ca_entities.grunt_role.grunt_role_date'> (^ca_entities.grunt_role.grunt_role_date)</ifdef></unit></div></ifdef>}}}
 					
-					{{{<ifdef code="ca_entities.vital_dates_org.vital_date_value_org"><unit relativeTo="ca_entities.vital_dates_org" delimiter=" "><div class="unit"><ifdef code="ca_entities.vital_dates_org.entity_date_types_org"><label>^ca_entities.vital_dates_org.entity_date_types_org</label></ifdef>^ca_entities.vital_dates_org.vital_date_value_org</div></unit></ifdef>}}}
+					{{{<ifdef code="ca_entities.vital_dates_org.vital_date_value_org"><unit relativeTo="ca_entities.vital_dates_org" delimiter=" "><div class="unit"><ifdef code="ca_entities.vital_dates_org.entity_date_types_org"><label>^ca_entities.vital_dates_org.entity_date_types_org</label></ifdef>^ca_entities.vital_dates_org.vital_date_value_org<ifdef code="ca_entities.vital_dates_org.vital_date_location_org"><br/>^ca_entities.vital_dates_org.vital_date_location_org</ifdef></div></unit></ifdef>}}}
 					
 					{{{<ifdef code="ca_entities.biography.biography_text"><div class="unit"><label>Biography</label><span class="trimText">^ca_entities.biography.biography_text</span></div></ifdef>}}}
 					{{{<ifdef code="ca_entities.org_desc.org_desc_text"><div class="unit"><label>About</label><span class="trimTextShort">^ca_entities.org_desc.org_desc_text</span></div></ifdef>}}}
@@ -114,9 +114,9 @@ if($vb_2_col){
 					{{{<ifdef code="ca_entities.website"><div class="unit"><label>Website</label><unit relativeTo="ca_entities.website" delimiter=", "><a href="^ca_entities.website" target="_blank">^ca_entities.website</a></unit></div></ifdef>}}}
 					{{{<if rule='^ca_entities.type_id =~ /Organization/'><ifdef code="ca_entities.address"><div class="unit"><label>Address</label><unit relativeTo="ca_entities.address" delimiter="<br/><br/>"></unit><ifdef code="ca_entities.address.address1">^ca_entities.address.address1<br/></ifdef><ifdef code="ca_entities.address.address2">^ca_entities.address.address2<br/></ifdef><ifdef code="ca_entities.address.city">^ca_entities.address.city, </ifdef><ifdef code="ca_entities.address.stateprovince">^ca_entities.address.stateprovince </ifdef><ifdef code="ca_entities.address.country">^ca_entities.address.country</ifdef></div></ifdef></if>}}}
 					
-					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
 					
-					{{{<ifcount code="ca_occurrences" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToType="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToTypes="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					{{{<ifcount code="ca_entities.related" min="1"><div class="unit"><label>Related people & organizations</label><span class="trimTextShort"><unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place</label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
 					
@@ -128,14 +128,14 @@ if($vb_2_col){
 				<div class="col-sm-12"><label>Related Archive, Library & Publication Objects</label><HR/></div>
 			</div>
 			<div class="row">
-				<div id="browseResultsContainer">
+				<div id="browseResultsContainerobjects">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_entity', 'id' => '^ca_entities.entity_id', 'detailNav' => 'entity'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
+					jQuery("#browseResultsContainerobjects").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_entity', 'id' => '^ca_entities.entity_id', 'detailNav' => 'entity'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery('#browseResultsContainerobjects').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
 							padding: 20,

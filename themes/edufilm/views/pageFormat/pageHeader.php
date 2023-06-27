@@ -25,6 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	global $g_ui_locale;
+ 	
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$va_classroomDisplayName = caGetClassroomDisplayName();
@@ -118,12 +120,12 @@
 					<span class="icon-bar"></span>
 				</button>
 
-				<a href="/index.php" class="navbar-brand">
+				<!-- <a href="/index.php" class="navbar-brand">
 					<p class="header-logo">PLUÖ</p>
 					</img src="" alt="">
-				</a>
+				</a> -->
 <?php
-				// print caNavLink($this->request, caGetThemeGraphic($this->request, 'ca_nav_logo300.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'Lehrfilmpraktiken_GERADE.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -160,7 +162,7 @@
 						</div>
 						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
 					</div>
-					<div class="headerAdvancedSearch"><?php print caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
+					<!-- <div class="headerAdvancedSearch"><?php print caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div> -->
 				</form>
 				<script type="text/javascript">
 					$(document).ready(function(){
@@ -174,20 +176,24 @@
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					
 					<li class="dropdown-container">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Project</a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= _t('Project'); ?></a>
 						<ul class="dropdown-menu">
-							<li><a href="/index.php/about_project">About The Project</a></li>
-							<li><a href="/index.php/database_media">Database & Media Collection</a></li>
-							<li><a href="/index.php/key_institutions">Key Institutions</a></li>
-							<li><a href="/index.php/key_findings">Key Findings</a></li>
-							<li><a href="/index.php/publications_events">Publications & Events</a></li>
-							<!-- <li><a href="/index.php/acknowledgements">Acknowledgements</a></li> -->
-							<!-- <li><a href="/index.php/impressium_credits">Impressium & Credits</a></li> -->
+							<li><?php print caNavLink($this->request, _t('About The Project'), "", "", "about_project", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Educational Film Practice'), "", "", "educational_film_practice", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Database & Media Collection'), "", "", "database_media", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Search Information'), "", "", "search_info", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Timeline'), "", "", "timeline", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Research Overview'), "", "", "Recherchebericht", ""); ?></li>	
+							<li><?php print caNavLink($this->request, _t('Project Team'), "", "", "Projektteam", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t('Publications & Events'), "", "", "publications_events", ""); ?></li>
 						</ul>
 					</li>
 					
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li><a href="/index.php/Browse/collections">Case Studies</a></li>
+					<li <?php print (($this->request->getController() == "Browse") && (strToLower($this->request->getAction()) == "collections")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t('Case Studies'), "", "", "browse", "case-studies"); ?></li>
+					
+					<li <?= ($g_ui_locale == "de_DE") ? 'class="active"' : ''; ?>><?= caChangeLocaleLink($this->request, 'de_DE', _t("DE"), ''); ?></li>
+					<li <?= ($g_ui_locale == "en_US") ? 'class="active"' : ''; ?>><?= caChangeLocaleLink($this->request, 'en_US', _t("EN"), ''); ?></li>
 
 					<!-- <li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li> -->
 					<!-- <li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li> -->

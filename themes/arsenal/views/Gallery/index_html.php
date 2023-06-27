@@ -1,5 +1,6 @@
 <?php
 	$config = caGetGalleryConfig();
+	global $g_ui_locale;
 	switch($config->get("landing_page_format")){
 		case "grid":
 
@@ -25,13 +26,19 @@
 				if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.widepreview</unit>', array("checkAccess" => $this->opa_access_values))){
 					$va_first_items_from_set[$set_id][$vn_item_id] = array("representation_tag" => $vs_thumbnail);
 				}
+			}elseif(Datamodel::getTableName($va_set['table_num']) == "ca_objects"){
+				if (!($t_instance = Datamodel::getInstanceByTableNum($va_set['table_num']))) { throw new ApplicationException(_t('Invalid item')); }
+				$t_instance->load($first_item["row_id"]);
+				if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_occurrences.related" length="1">^ca_object_representations.media.widepreview</unit>', array("checkAccess" => $this->opa_access_values))){
+					$va_first_items_from_set[$set_id][$vn_item_id] = array("representation_tag" => $vs_thumbnail);
+				}
 			}
 		}
 	}
 ?>
 
 <div class="row"><div class="col-sm-12">
-	<H1><?php print _t("Featured Collections"); ?></H1>
+	<H1><?php print ($g_ui_locale == "en_US") ? $config->get('gallery_section_name') : $config->get('gallery_section_name_german'); ?></H1>
 <?php
 	if(is_array($va_sets) && sizeof($va_sets)){
 		# --- main area with info about selected set loaded via Ajax				

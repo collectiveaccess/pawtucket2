@@ -48,7 +48,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-10'>
-					<H1><i>{{{ca_objects.preferred_labels.name}}}</i></H1>
+					<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 <?php
 					$vs_object_date = $t_object->get("ca_objects.date_container.date");
 					$vs_artist = $t_object->getWithTemplate("<ifcount code='ca_entities' min='1' restrictToRelationshipTypes='Artist,Author'><unit relativeTo='ca_entities' delimiter=', ' restrictToRelationshipTypes='Artist,Author'><l>^ca_entities.preferred_labels</l></unit></ifcount>", array("checkAccess" => $va_access_values));
@@ -135,7 +135,6 @@ if($vb_2_col){
 					{{{<ifdef code="ca_objects.series"><div class="unit"><label>Series Statement</label>^ca_objects.series</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.publication_info"><div class="unit"><label>Place of Publication</label>^ca_objects.publication_info</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.publisher"><div class="unit"><label>Publisher</label>^ca_objects.publisher</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.physical_lib.phys_lib|ca_objects.physical_lib.phys_notes_lib"><div class="unit"><label>Physical Description</label><ifdef code="ca_objects.physical_lib.phys_lib">^ca_objects.physical_lib.phys_lib<ifdef code="ca_objects.physical_lib.phys_notes_lib"><br/></ifdef></ifdef><ifdef code="ca_objects.physical_lib.phys_notes_lib">^ca_objects.physical_lib.phys_notes_lib</ifdef></div></ifdef>}}}
 					{{{<ifdef code="ca_objects.physical_lib.phys_document_type"><div class="unit"><label>Publication Type</label>^ca_objects.physical_lib.phys_document_type</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.physical_lib.phys_spine"><div class="unit"><label>Spine Height</label>^ca_objects.physical_lib.phys_spine</div></ifdef>}}}
 					
@@ -153,8 +152,9 @@ if($vb_2_col){
 					}
 				}
 ?>					
+					{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="1" restrictToType="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToType="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToType="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToTypes="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place</label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
 					
 					

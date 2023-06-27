@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2022 Whirl-i-Gig
+ * Copyright 2015-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -54,11 +54,6 @@ class DisplayTemplateParser {
 	 *
 	 */
 	static $join_tag_vals = [];
-	
-	/**
-	 *
-	 */
-	static $do_highlighting = false;
 	
 	# -------------------------------------------------------------------
 	/**
@@ -144,6 +139,9 @@ class DisplayTemplateParser {
 	 *      unitLength = Maximum number of templating iteration to evaluate. If null, no limit is enforced (there may be more than one iteration when relativeToContainer is set). [Default is null]
 	 *      indexWithIDs = Return array with indexes set to row_ids. [Default is false; use numeric indices starting with zero]
 	 *
+	 *		doHighlighting = 
+	 *		autoConvertLineBreaks = 
+	 *
 	 * @return mixed Output of processed templates
 	 *
 	 * TODO: sort and sortDirection are not currently supported! They are ignored for the time being
@@ -159,6 +157,7 @@ class DisplayTemplateParser {
 		}
 		
 		$do_highlighting = $pa_options['highlighting'] ?? false;
+		$autoconvert_linebreaks = $pa_options['autoConvertLineBreaks'] ?? false;
 		
 		self::$join_tag_vals = [];
 		
@@ -205,11 +204,12 @@ class DisplayTemplateParser {
 
 		$qr_res = caMakeSearchResult($ps_tablename, $pa_row_ids, ['sort' => caGetOption('sort', $pa_options, null), 'sortDirection' => caGetOption('sortDirection', $pa_options, null)]);
 		$qr_res->doHighlighting($do_highlighting);
+		$qr_res->autoConvertLineBreaks($autoconvert_linebreaks);
 		
 		if(!$qr_res) { return $pb_return_as_array ? array() : ""; }
 
         $filter_non_primary_reps = self::_setPrimaryRepresentationFiltering($qr_res, caGetOption('filterNonPrimaryRepresentations', $pa_options, null));
-        
+
 		$pa_check_access = ($t_instance->hasField('access')) ? caGetOption('checkAccess', $pa_options, null) : null;
 		if (!is_array($pa_check_access) || !sizeof($pa_check_access)) { $pa_check_access = null; }
 		
@@ -581,7 +581,7 @@ class DisplayTemplateParser {
 					$vb_aggregate_unique = $o_node->aggregateUnique ? (bool)$o_node->aggregateUnique : false;
 					$vb_omit_blanks = !is_null($o_node->omitBlanks) ? (bool)$o_node->omitBlanks : null;
 
-					$filter_non_primary_reps = self::_setPrimaryRepresentationFiltering($pr_res, caGetOption('filterNonPrimaryRepresentations', $options, $o_node->filterNonPrimaryRepresentations));
+					$filter_non_primary_reps = self::_setPrimaryRepresentationFiltering($pr_res, caGetOption('filterNonPrimaryRepresentations', $pa_options, $o_node->filterNonPrimaryRepresentations));
 
 					$vs_unit_skip_if_expression = (string)$o_node->skipIfExpression;
 					$vs_unit_skip_when = (string)$o_node->skipWhen;
@@ -608,6 +608,11 @@ class DisplayTemplateParser {
 					$va_get_options['maxLevelsFromBottom'] = (int)$o_node->maxLevelsFromBottom ?: null;
 					$va_get_options['allDescendants'] = (int)$o_node->allDescendants ?: null;
 					$va_get_options['filterNonPrimaryRepresentations'] = $filter_non_primary_reps;
+					
+					$locale = caGetOption('locale', $$o_node->locale, null);
+					if($o_node->locale) {
+						$va_get_options['locale'] = $locale = $o_node->locale;
+					}
 					
 					if ($o_node->sort) {
 						$va_get_options['sort'] = preg_split('![ ,;]+!', $o_node->sort);
@@ -709,7 +714,8 @@ class DisplayTemplateParser {
 									'includeBlankValuesInTopLevelForPrefetch' => false,
 									'unique' => $vb_unique,
 									'aggregateUnique' => $vb_aggregate_unique,
-									'filterNonPrimaryRepresentations' => $filter_non_primary_reps
+									'filterNonPrimaryRepresentations' => $filter_non_primary_reps,
+									'locale' => $locale
 								]
 							)
 						);
@@ -807,7 +813,6 @@ class DisplayTemplateParser {
 								        $va_relative_ids = array_values($va_relative_ids);
                                         
                                         $rels = $t_instance->getRelatedItems($t_rel_instance->tableName(), array_merge($va_get_options, array('returnAs' => 'data', 'row_ids' => [$pr_res->getPrimaryKey()]))) ?? [];
-
 								        $va_relation_ids = is_array($rels) ? array_keys($rels) : [];
 								 
 								        $va_relationship_type_ids = array_values(array_map(function($r) { return $r['relationship_type_id']; }, $rels));
@@ -892,7 +897,8 @@ class DisplayTemplateParser {
 									'relationshipTypeIDs' => $va_relationship_type_ids,
 									'relationshipTypeOrientations' => $va_relationship_type_orientations,
 									'filterNonPrimaryRepresentations' => $filter_non_primary_reps,
-									'primaryIDs' => $va_get_options['primaryIDs']
+									'primaryIDs' => $va_get_options['primaryIDs'],
+									'locale' => $locale
 								]
 							)
 						);
@@ -920,6 +926,9 @@ class DisplayTemplateParser {
 						$vs_proc_template = caProcessTemplate($o_node->getInnerText(), array_merge($pa_vals, ['omitcount' => (int)$vn_last_unit_omit_count]), ['quote' => $pb_quote]);
 						$vs_acc .= $vs_proc_template;
 					}
+					break;
+				case 't':
+					$vs_acc .= _t($o_node->getInnerText());
 					break;
 				default:
 					if ($o_node->children && (sizeof($o_node->children) > 0)) {
@@ -1152,9 +1161,8 @@ class DisplayTemplateParser {
 					switch(strtolower($vs_get_spec)) {
                         case 'relationship_typename':
                             $va_val_list = [];
-                            // (caGetOption('orientation', $pa_options, 'LTOR')
                             $va_relationship_orientations = array_slice($va_relationship_orientations, $vn_start);
-                            $orientation = strtoupper($va_relationship_orientations[$pr_res->currentIndex()]) ?? 'LTOR';
+                            $orientation = caGetOption('orientation', $pa_options, strtoupper($va_relationship_orientations[$pr_res->currentIndex()]) ?? 'LTOR');
                             
                             if (is_array($va_relationship_type_ids) && is_array($va_relationship_type_ids = array_slice($va_relationship_type_ids, $vn_start)) && ($vn_type_id = $va_relationship_type_ids[$pr_res->currentIndex()])) {
                                 $qr_rels = caMakeSearchResult('ca_relationship_types', array($vn_type_id));
