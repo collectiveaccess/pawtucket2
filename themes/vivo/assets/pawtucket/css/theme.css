@@ -844,7 +844,7 @@ body.frontContainer #footer{
 
 .front .frontIntro{
 	font-size:16px;
-	font-family: "Noto Sans Mono";
+	font-family: latolight;
 }
 .btn-front{
 	background-image: -webkit-gradient(linear,left top,left bottom,from(#d9d9d9),to(#f2f2f2));
@@ -855,6 +855,11 @@ body.frontContainer #footer{
 	padding: 20px;
 	color:#333;
 	font-weight:500;
+}
+.btn-front:hover{
+	background-image: -webkit-gradient(linear,left top,left bottom,from(#d3d3d3),to(#f2f2f2));
+	background-image: linear-gradient(180deg,#d3d3d3,#f2f2f2);
+	color:#000;
 }
 
 #hpScrollBar{

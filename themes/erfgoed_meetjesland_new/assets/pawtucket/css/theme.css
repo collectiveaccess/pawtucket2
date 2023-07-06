@@ -871,6 +871,9 @@ div.caMediaOverlayControls{
 .bodytext a, #caFormOverlay a{
 	text-decoration:underline;
 }
+.bodytext a.btn-default{
+	text-decoration:none;
+}
 #pageArea.staticPage img{
 	width:100%;
 	height:auto;
