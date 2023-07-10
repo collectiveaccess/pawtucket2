@@ -823,10 +823,6 @@ function caFileIsIncludable($ps_file) {
 	# ----------------------------------------
 	/**
 	 *
-	 * @param int $user_id
-	 * @param array $options Options include:
-	 *		dontCreateDirectory = don't create user directory if it does not exist. [Default is false]
-	 * @return string pa 
 	 */
 	function caCleanUserMediaDirectory($user) {
 	    // use configured directory to dump media with fallback to standard tmp directory
@@ -1772,7 +1768,7 @@ function caFileIsIncludable($ps_file) {
 		$valid_mimetypes_exp = [];
 		foreach($valid_mimetypes as $m) {
 			if(strpos($m, '/') === false) {
-				$valid_mimetypes_exp = array_merge($valid_mimetypes_exp, caGetMimetypesForClass($m) ?? []);
+				$valid_mimetypes_exp = array_merge($valid_mimetypes_exp, caGetMimetypesForClass($m));
 			} else {
 				$valid_mimetypes_exp[] = $m;
 			}	
