@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2021 Whirl-i-Gig
+ * Copyright 2010-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -124,7 +124,7 @@ final class ConfigurationCheck {
 			}
 		}
 		if(!$vb_innodb_available){
-			self::addError(_t("Your MySQL installation doesn't support the InnoDB storage engine which is required by CollectiveAccess."));
+			self::addError(_t("Your MySQL installation doesn't support the InnoDB storage engine which is required by CollectiveAccess. For more information also see %1.","<a href='http://dev.mysql.com/doc/refman/5.1/en/innodb.html' target='_blank'>http://dev.mysql.com/doc/refman/5.1/en/innodb.html</a>"));
 		}
 
 		return true;
@@ -163,7 +163,7 @@ final class ConfigurationCheck {
 		if (!in_array('ca_schema_updates', self::$opo_db->getTables())) {
 			self::addError(_t("Your database is extremely out-of-date. Please install all database migrations starting with migration #1 or contact support@collectiveaccess.org for assistance."));
 		} else if (($vn_schema_revision = self::getSchemaVersion()) < __CollectiveAccess_Schema_Rev__) {
-			self::addError(_t("Your database is out-of-date. Please install all schema migrations starting with migration #%1.",($vn_schema_revision + 1)));
+			self::addError(_t("Your database is out-of-date. Please install all schema migrations starting with migration #%1. See <a href=\"https://manual.collectiveaccess.org/providence/user/setup/installation.html\">https://manual.collectiveaccess.org/providence/user/setup/installation.html</a> for migration instructions.",($vn_schema_revision + 1)));
 		}
 		return true;
 	}

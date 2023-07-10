@@ -43,7 +43,6 @@ include_once(__CA_APP_DIR__."/helpers/mediaPluginHelpers.php");
 include_once(__CA_APP_DIR__."/helpers/avHelpers.php");
 include_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
 include_once(__CA_LIB_DIR__."/Parsers/OggParser.php");
-include_once(__CA_BASE_DIR__."/vendor/james-heinrich/getid3/getid3/getid3.php");
 
 class WLPlugMediaAudio Extends BaseMediaPlugin Implements IWLPlugMedia {
 

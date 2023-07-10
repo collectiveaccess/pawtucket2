@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2020 Whirl-i-Gig
+ * Copyright 2009-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -35,7 +35,6 @@
   */
   
 require_once(__CA_LIB_DIR__."/Configuration.php");
-require_once(__CA_LIB_DIR__."/Datamodel.php");
 require_once(__CA_LIB_DIR__."/Db.php");
  
  class ApplicationChangeLog {
@@ -62,8 +61,9 @@ require_once(__CA_LIB_DIR__."/Db.php");
  	/**
  	 *
  	 */
-	public function getChangeLogForRowForDisplay($t_item, $ps_css_id=null, $pn_user_id=null) {
-		return $this->_getLogDisplayOutputForRow($this->getChangeLogForRow($t_item, array('user_id' => $pn_user_id)), array('id' => $ps_css_id));
+	public function getChangeLogForRowForDisplay($t_item, $ps_css_id=null, $pn_user_id=null, $options=null) {
+		if(!is_array($options)) { $options = []; }
+		return $this->_getLogDisplayOutputForRow($this->getChangeLogForRow($t_item, array_merge($options, ['user_id' => $pn_user_id])), ['id' => $ps_css_id]);
 	}
 	# ----------------------------------------
 	/**
@@ -395,7 +395,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
 										$va_rel = Datamodel::getManyToOneRelations($t_obj->tableName(), $vs_field);
 										$va_rel_values = [];
 											
-										if ($t_rel_obj = Datamodel::getInstance($va_rel['one_table'], true)) {
+										if (($va_rel['one_table'] ?? null) && ($t_rel_obj = Datamodel::getInstance($va_rel['one_table'], true))) {
 											$t_rel_obj->load($vs_value);
 											
 											foreach($va_disp_fields as $vs_display_field) {
@@ -435,7 +435,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
 									} else {
 							
 										// Adjust display of value for different field types
-										switch($va_field_info['FIELD_TYPE']) {
+										switch($va_field_info['FIELD_TYPE'] ?? null) {
 											case FT_BIT:
 												$vs_proc_val = $vs_value ? 'Yes' : 'No';
 												break;
@@ -447,7 +447,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
 										if ($t_user && !$t_user->getBundleAccessLevel($t_item->tableName(), $vs_field)) { continue; }	// does user have access to this bundle?
 										
 										// Adjust display of value for lists
-										if ($va_field_info['LIST']) {
+										if ($va_field_info['LIST'] ?? null) {
 											$t_list = new ca_lists();
 											if ($t_list->load(array('list_code' => $va_field_info['LIST']))) {
 												$vn_list_id = $t_list->getPrimaryKey();
@@ -457,7 +457,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
 												}
 											}
 										} else {
-											if ($va_field_info['BOUNDS_CHOICE_LIST']) {
+											if ($va_field_info['BOUNDS_CHOICE_LIST'] ?? null) {
 												// TODO
 											}
 										}
@@ -465,7 +465,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
 								}
 								
 								$va_changes[] = array(
-									'label' => $va_field_info['LABEL'],
+									'label' => $va_field_info['LABEL'] ?? null,
 									'description' => (strlen((string)$vs_proc_val) ? $vs_proc_val : $vs_blank_placeholder),
 									'value' => $vs_value
 								);
@@ -497,9 +497,11 @@ require_once(__CA_LIB_DIR__."/Db.php");
 								
 								if ($t_user && !$t_user->getBundleAccessLevel($t_item->tableName(), $vs_element_code)) { continue; }	// does user have access to this bundle?
 							
-								if ($o_attr_val = Attribute::getValueInstance($t_element->get('datatype'))) {
+								$code = null;
+								if ($o_attr_val = \CA\Attributes\Attribute::getValueInstance($t_element->get('datatype'))) {
 									$o_attr_val->loadValueFromRow($va_log_entry['snapshot']);
-									$vs_attr_val = $o_attr_val->getDisplayValue();
+									$vs_attr_val = $o_attr_val->getDisplayValue(['output' => 'idno']);
+									$code = $t_element->get('ca_metadata_elements.element_code');
 								} else {
 									$vs_attr_val = '?';
 								}
@@ -507,7 +509,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
 								// Convert list-based attributes to text
 								if ($vn_list_id = $t_element->get('list_id')) {
 									$t_list = new ca_lists();
-									$vs_attr_val = $t_list->getItemFromListForDisplayByItemID($vn_list_id, $vs_attr_val, true);
+									$vs_attr_val = $t_list->getItemFromListForDisplayByItemID($vn_list_id, $vs_attr_val, []);
 								}
 								
 								if (!$vs_attr_val) { 
@@ -516,11 +518,13 @@ require_once(__CA_LIB_DIR__."/Db.php");
 								$vs_label = $t_element->getLabelForDisplay();
 								$va_attributes[$va_log_entry['snapshot']['attribute_id']]['values'][] = array(
 									'label' => $vs_label,
-									'value' => $vs_attr_val
+									'value' => $vs_attr_val,
+									'code' => $code
 								);
 								$va_changes[] = array(
 									'label' => $vs_label,
-									'description' => $vs_attr_val
+									'description' => $vs_attr_val,
+									'code' => $code
 								);
 							}
 						}
@@ -533,11 +537,17 @@ require_once(__CA_LIB_DIR__."/Db.php");
 								if ($t_obj->getLeftTableNum() == $t_item->tableNum()) {
 									// other side of rel is on right
 									$t_related_table = Datamodel::getInstanceByTableNum($t_obj->getRightTableNum(), true);
-									$t_related_table->load($va_log_entry['snapshot'][$t_obj->getRightTableFieldName()]);
+									
+									if($id = ($va_log_entry['snapshot'][$t_obj->getRightTableFieldName()] ?? null)) {
+										$t_related_table->load($id);
+									}
 								} else {
 									// other side of rel is on left
 									$t_related_table = Datamodel::getInstanceByTableNum($t_obj->getLeftTableNum(), true);
-									$t_related_table->load($va_log_entry['snapshot'][$t_obj->getLeftTableFieldName()]);
+									
+									if($id = ($va_log_entry['snapshot'][$t_obj->getLeftTableFieldName()] ?? null)) {
+										$t_related_table->load($id);
+									}
 								}
 								$t_rel = Datamodel::getInstanceByTableNum($t_obj->tableNum(), true);
 								
@@ -550,8 +560,8 @@ require_once(__CA_LIB_DIR__."/Db.php");
 									'table_name' => $t_related_table->tableName(),
 									'table_num' => $t_related_table->tableNum(),
 									'row_id' => $t_related_table->getPrimaryKey(),
-									'rel_type_id' => $va_log_entry['snapshot']['type_id'],
-									'rel_typename' => $t_rel->getRelationshipTypename('ltor', $va_log_entry['snapshot']['type_id'])
+									'rel_type_id' => $va_log_entry['snapshot']['type_id'] ?? null,
+									'rel_typename' => $t_rel->getRelationshipTypename('ltor', $va_log_entry['snapshot']['type_id'] ?? null)
 								);
 							}
 						}
@@ -568,13 +578,13 @@ require_once(__CA_LIB_DIR__."/Db.php");
 						
 							$va_log_output[$vs_unit_identifier][] = array(
 								'datetime' => $vs_datetime,
-								'timestamp' => $va_log_entry['log_datetime'],
-								'user_id' => $va_log_entry['user_id'],
+								'timestamp' => $va_log_entry['log_datetime'] ?? null,
+								'user_id' => $va_log_entry['user_id'] ?? null,
 								'user_fullname' => $vs_user,
 								'user_email' => $vs_email,
 								'user' => $vs_user.($vs_email ? ' ('.$vs_email.')' : ''),
-								'changetype_display' => $va_change_types[$va_log_entry['changetype']],
-								'changetype' => $va_log_entry['changetype'],
+								'changetype_display' => $va_change_types[$va_log_entry['changetype']] ?? null,
+								'changetype' => $va_log_entry['changetype'] ?? null,
 								'changes' => $va_changes,
 								'subject' => $vs_subject_display_name,
 								'subject_id' => $vn_subject_row_id,
@@ -980,6 +990,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
  	 *		tables = Limit returned data to that related to a list of tables. Values may be table names or numbers. [Default is null]
  	 *		daterange = A valid date/time expression to limit returned log entries to. [Default is null]
  	 *		user_id = ID of user to perform access control checks as. If omitted no access control checks are performed. [Default is null]
+ 	 *		changetype = Filter on type of logged change. Valid values are I (insert), U (update), D (delete). [Default is null]
  	 *		start = Index of log entry (or unit if "limitByUnit" option is set) to start result set with. [Default is 0]
  	 *		limit = Maximum number of entries returned. Omit or set to zero for no limit. [Default is null – no limit]
  	 *		transaction = A database transaction to perform log queries within. [Default is null]
@@ -1007,6 +1018,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
 		$start = caGetOption('start', $options, 0, ['castTo' => 'int']);
 		$limit = caGetOption('limit', $options, null, ['castTo' => 'int']);
 		$user_id = caGetOption('user_id', $options, null);
+		$changetype = caGetOption('changetype', $options, null, ['forceUppercase' => true, 'validValues' => ['I', 'U', 'D']]);
 		
 		$sql_limit = ($limit > 0) ? "LIMIT {$start},{$limit}" : '';
 		
@@ -1032,6 +1044,12 @@ require_once(__CA_LIB_DIR__."/Db.php");
 				$params[] = $user_id;
 			}
 		}
+
+		$sql_changetype = null;
+		if(in_array($changetype, ['I', 'U', 'D'], true)) {
+			$sql_changetype = "AND (wcl.changetype = ?)";
+			$params[] = $changetype;
+		}
 		
 		if (!$sql_table) { $sql_table = "1"; }
 		
@@ -1044,7 +1062,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
 				FROM ca_change_log wcl
 				LEFT JOIN ca_change_log_subjects AS wcls ON wcl.log_id = wcls.log_id
 				WHERE
-					{$sql_table} {$sql_daterange} {$sql_user_id}
+					{$sql_table} {$sql_daterange} {$sql_user_id} {$sql_changetype}
 				GROUP BY wcl.unit_id
 				ORDER BY m
 				{$sql_limit}
@@ -1052,11 +1070,14 @@ require_once(__CA_LIB_DIR__."/Db.php");
 			if (!$qr) { return null; }
 			$units += $qr->getAllFieldValues('unit_id');
 		}
-		if(sizeof($units = array_unique($units)) > 0) {
+		if(is_array($units) && (sizeof($units = array_unique($units)) > 0)) {
 			$sql_daterange = $sql_limit = null;
 			$sql_user_id = "AND (wcl.unit_id IN (?))";
 			$sql_table = "1";
 			$params = [$units];
+			if($sql_changetype) {
+				$params[] = $changetype;
+			}
 		}
 			
 		$log = [];
@@ -1069,7 +1090,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
 			LEFT JOIN ca_change_log_subjects AS wcls ON wcl.log_id = wcls.log_id
 			LEFT JOIN ca_users AS wu ON wcl.user_id = wu.user_id
 			WHERE
-				{$sql_table} {$sql_daterange} {$sql_user_id}
+				{$sql_table} {$sql_daterange} {$sql_user_id} {$sql_changetype}
 			{$sql_limit}
 		", $params);
 		if ($qr) {
@@ -1336,7 +1357,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
 								
 								if ($t_user && !$t_user->getBundleAccessLevel($t_logged->tableName(), $vs_element_code)) { continue; }	// does user have access to this bundle?
 							
-								if ($o_attr_val = Attribute::getValueInstance($t_element->get('datatype'))) {
+								if ($o_attr_val = \CA\Attributes\Attribute::getValueInstance($t_element->get('datatype'))) {
 									$o_attr_val->loadValueFromRow($va_log_entry['snapshot']);
 									$vs_attr_val = $o_attr_val->getDisplayValue();
 								} else {
