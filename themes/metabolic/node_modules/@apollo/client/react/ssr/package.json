@@ -1,0 +1,7 @@
+{
+  "name": "@apollo/client/react/ssr",
+  "main": "ssr.cjs.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "sideEffects": false
+}

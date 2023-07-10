@@ -30,337 +30,206 @@
  * ----------------------------------------------------------------------
  */
  
-trait CLIUtilsSearch { 
-	# -------------------------------------------------------
-	/**
-	 * Rebuild search indices
-	 */
-	public static function rebuild_search_index($po_opts=null) {
-		require_once(__CA_LIB_DIR__."/Search/SearchIndexer.php");
-		ini_set('memory_limit', '4000m');
-		set_time_limit(24 * 60 * 60 * 7); /* maximum indexing time: 7 days :-) */
+	trait CLIUtilsSearch { 
+		# -------------------------------------------------------
+		/**
+		 * Rebuild search indices
+		 */
+		public static function rebuild_search_index($po_opts=null) {
+			require_once(__CA_LIB_DIR__."/Search/SearchIndexer.php");
+			ini_set('memory_limit', '4000m');
+			set_time_limit(24 * 60 * 60 * 7); /* maximum indexing time: 7 days :-) */
 
-		$o_si = new SearchIndexer();
+			$o_si = new SearchIndexer();
 
-		$va_tables = null;
-		if ($vs_tables = (string)$po_opts->getOption('tables')) {
-			$va_tables = preg_split("![;,]+!", $vs_tables);
+			$va_tables = null;
+			if ($vs_tables = (string)$po_opts->getOption('tables')) {
+				$va_tables = preg_split("![;,]+!", $vs_tables);
+			}
+			$o_si->reindex($va_tables, array('showProgress' => true, 'interactiveProgressDisplay' => true));
+
+			return true;
 		}
-		$o_si->reindex($va_tables, array('showProgress' => true, 'interactiveProgressDisplay' => true));
-
-		return true;
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function rebuild_search_indexParamList() {
-		return array(
-			"tables|t-s" => _t('Specific tables to reindex, separated by commas or semicolons. If omitted all tables will be reindexed.')
-		);
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function rebuild_search_indexUtilityClass() {
-		return _t('Search');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function rebuild_search_indexHelp() {
-		return _t("CollectiveAccess relies upon indices when searching your data. Indices are simply summaries of your data designed to speed query processing. The precise form and characteristics of the indices used will vary with the type of search engine you are using. They may be stored on disk, in a database or on another server, but their purpose is always the same: to make searches execute faster.
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function rebuild_search_indexParamList() {
+			return array(
+				"tables|t-s" => _t('Specific tables to reindex, separated by commas or semicolons. If omitted all tables will be reindexed.')
+			);
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function rebuild_search_indexUtilityClass() {
+			return _t('Search');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function rebuild_search_indexHelp() {
+			return _t("CollectiveAccess relies upon indices when searching your data. Indices are simply summaries of your data designed to speed query processing. The precise form and characteristics of the indices used will vary with the type of search engine you are using. They may be stored on disk, in a database or on another server, but their purpose is always the same: to make searches execute faster.
 
 \tFor search results to be accurate the database and indices must be in sync. CollectiveAccess simultaneously updates both the database and indicies as you add, edit and delete data, keeping database and indices in agreement. Occasionally things get out of sync, however. If the basic and advanced searches are consistently returning unexpected results you can use this tool to rebuild the indices from the database and bring things back into alignment.
 
 \tNote that depending upon the size of your database rebuilding can take from a few minutes to several hours. During the rebuilding process the system will remain usable but search functions may return incomplete results. Browse functions, which do not rely upon indices, will not be affected.");
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function rebuild_search_indexShortHelp() {
-		return _t("Rebuilds search indices. Use this if you suspect the indices are out of sync with the database.");
-	}
-
-
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function create_ngrams($po_opts=null) {
-		require_once(__CA_LIB_DIR__."/Db.php");
-
-		$o_db = new Db();
-
-		$pb_clear = ((bool)$po_opts->getOption('clear'));
-		$pa_sizes = caGetOption('sizes', $po_opts, null, ['delimiter' => [',', ';']]);
-		
-		foreach($pa_sizes as $vn_i => $vn_size) {
-			$vn_size = (int)$vn_size;
-			if (!$vn_size || ($vn_size <= 0)) { unset($pa_sizes[$vn_i]); continue; }
-			$pa_sizes[$vn_i] = $vn_size;
 		}
-		if(!is_array($pa_sizes) || !sizeof($pa_sizes)) { $pa_sizes = array(2,3,4); }
-
-		$vs_insert_ngram_sql = "
-			INSERT  INTO ca_sql_search_ngrams
-			(word_id, ngram, seq)
-			VALUES
-		";
-
-		if ($pb_clear) {
-			$qr_res = $o_db->query("TRUNCATE TABLE ca_sql_search_ngrams");
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function rebuild_search_indexShortHelp() {
+			return _t("Rebuilds search indices. Use this if you suspect the indices are out of sync with the database.");
 		}
 
-		//create ngrams
-		$qr_res = $o_db->query("SELECT word_id, word FROM ca_sql_search_words");
 
-		print CLIProgressBar::start($qr_res->numRows(), _t('Starting...'));
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function create_ngrams($po_opts=null) {
+			require_once(__CA_LIB_DIR__."/Db.php");
 
-		$vn_c = 0;
-		$vn_ngram_c = 0;
-		while($qr_res->nextRow()) {
-			print CLIProgressBar::next();
-			$vn_word_id = $qr_res->get('word_id');
-			$vs_word = $qr_res->get('word');
-			print CLIProgressBar::next(1, _t('Processing %1', $vs_word));
+			$o_db = new Db();
 
-			if (!$pb_clear) {
-				$qr_chk = $o_db->query("SELECT word_id FROM ca_sql_search_ngrams WHERE word_id = ?", array($vn_word_id));
-				if ($qr_chk->nextRow()) {
-					continue;
-				}
-			}
-
-			$vn_seq = 0;
-			foreach($pa_sizes as $vn_size) {
-				$va_ngrams = caNgrams((string)$vs_word, $vn_size);
-
-				$va_ngram_buf = array();
-				foreach($va_ngrams as $vs_ngram) {
-					$va_ngram_buf[] = "({$vn_word_id},'{$vs_ngram}',{$vn_seq})";
-					$vn_seq++;
-					$vn_ngram_c++;
-				}
-
-				if (sizeof($va_ngram_buf)) {
-					$o_db->query($vs_insert_ngram_sql."\n".join(",", $va_ngram_buf));
-				}
-			}
-			$vn_c++;
-		}
-		print CLIProgressBar::finish();
-		CLIUtils::addMessage(_t('Processed %1 words and created %2 ngrams', $vn_c, $vn_ngram_c));
-		return true;
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function create_ngramsParamList() {
-		return array(
-			"clear|c=s" => _t('Clear all existing ngrams. Default is false.'),
-			"sizes|s=s" => _t('Comma-delimited list of ngram sizes to generate. Default is 4.')
-		);
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function create_ngramsUtilityClass() {
-		return _t('Search');
-	}
-
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function create_ngramsShortHelp() {
-		return _t('Create ngrams from search indices to support spell correction of search terms.');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function create_ngramsHelp() {
-		return _t('Ngrams.');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function process_indexing_queue($po_opts=null) {
-		require_once(__CA_MODELS_DIR__.'/ca_search_indexing_queue.php');
-
-		ca_search_indexing_queue::process();
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function process_indexing_queueParamList() {
-		return array(
-
-		);
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function process_indexing_queueUtilityClass() {
-		return _t('Search');
-	}
-
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function process_indexing_queueShortHelp() {
-		return _t('Process search indexing queue.');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function process_indexing_queueHelp() {
-		return _t('Process search indexing queue.');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function make_sitemap($opts=null) {
-		if(!defined('__CA_APP_TYPE__') || (__CA_APP_TYPE__ !== 'PAWTUCKET')) {
-			CLIUtils::addError(_t('Can only run in Pawtucket'));
-			return false;
-		}
-		
-		$file = (string)$opts->getOption('file');
-		
-		if(!$file) { 
-			$file = __CA_BASE_DIR__.'/sitemap.xml';
-		}
-		if(!($r = fopen($file, "w"))) {
-			CLIUtils::addError(_t('Could not open file %1 for writing', $file));
-			return false;
-		}
-		
-		$dconfig = caGetDetailConfig();
-		if(!is_array($detail_types = $dconfig->get('detailTypes'))) { 
-			CLIUtils::addError(_t('Warning: no details are defined for this installation'));
-		}
-		
-		$bconfig = caGetBrowseConfig();
-		if(!is_array($browse_types = $bconfig->get('browseTypes'))) { 
-			CLIUtils::addError(_t('Warning: no browses are defined for this installation'));
-		}
-		$site_host = Configuration::load()->get('site_host');
-		
-		
-		// Output header
-		fputs($r, '<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-');
-		
-		// Add static content pages
-		if($qr = ca_site_pages::find('*', ['returnAs' => 'searchResult'])) {
-			while($qr->nextHit()) {	
-				$url = $site_host.$qr->get('path');
-				$last_modified = $qr->get("ca_site_pages.lastModified", ['dateFormat' => 'iso8601']);
-				fputs($r, "<url>
-	<loc>{$url}</loc>
-	<lastmod>{$last_modified}</lastmod>
-</url>\n");
-			}
-		}
-		
-		// Add browse landing pages
-		if(is_array($browse_types)) {
-			foreach($browse_types as $browse => $binfo) {
-				$url = caNavUrl('', 'Browse', $browse, [], ['absolute' => true]);
-				$last_modified = date('c');
-				fputs($r, "<url>
-	<loc>{$url}</loc>
-	<lastmod>{$last_modified}</lastmod>
-</url>\n");
-			}
-		}
-		
-		// Add detail pages
-		if(is_array($detail_types)) {
-			$seen = [];
-			$c = 0;
-		
-			foreach($detail_types as $detail => $dinfo) {
-				$table = caGetOption('table', $dinfo, null);
-				print CLIProgressBar::next(1, _t('Processing %1::%2', $table, $detail));
-				if(!Datamodel::tableExists($table)) { 
-					CLIUtils::addError(_t('Table %1 defined for detail %2 is not valid', $table, $detail));
-					continue;
-				}
-				if(!($qr = $table::find('*', ['restrictToTypes' => caGetOption('restrictToTypes', $dinfo, null), 'returnAs' => 'SearchResult', 'checkAccess' => Configuration::load()->getList('public_access_settings')]))) {
-					CLIUtils::addError(_t('Query for table %1 defined for detail %2 failed', $table, $detail));
-					continue;
-				}
+			$pb_clear = ((bool)$po_opts->getOption('clear'));
+			$pa_sizes = caGetOption('sizes', $po_opts, null, ['delimiter' => [',', ';']]);
 			
-				$c++;
-				print CLIProgressBar::start($qr->numHits(), _t('Processing %1/%2 (%3 of %4)', $table, $detail, $c, sizeof($detail_types)));
-			
-				while($qr->nextHit()) {	
-					$url = caDetailUrl($table, $qr->getPrimaryKey(), false, null, ['absolute' => true]);
-					$url_md5 = md5($url);
-					if(isset($seen[$url_md5])) { continue; }
-					$last_modified = $qr->get("{$table}.lastModified", ['dateFormat' => 'iso8601']);
-					fputs($r, "<url>
-	<loc>{$url}</loc>
-	<lastmod>{$last_modified}</lastmod>
-</url>\n");
-				
-					print CLIProgressBar::next(1, _t('Processing %1', $url));
-					$seen[$url_md5] = true;
-				}
+			foreach($pa_sizes as $vn_i => $vn_size) {
+				$vn_size = (int)$vn_size;
+				if (!$vn_size || ($vn_size <= 0)) { unset($pa_sizes[$vn_i]); continue; }
+				$pa_sizes[$vn_i] = $vn_size;
 			}
-		}
-		
-		fputs($r, '</urlset>');
-		fclose($r);
-		
-		print CLIProgressBar::finish();
-		CLIUtils::addMessage(_t('Wrote sitemap to %1', $file));
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function make_sitemapParamList() {
-		return [
-			"file|f=s" => _t('Path to file to write sitemap to. Default is to write to sitemap.xml in the root directory of the installation.')
-		];
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function make_sitemapUtilityClass() {
-		return _t('Search');
-	}
+			if(!is_array($pa_sizes) || !sizeof($pa_sizes)) { $pa_sizes = array(2,3,4); }
 
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function make_sitemapShortHelp() {
-		return _t('Create XML-format site map.');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function make_sitemapHelp() {
-		return _t('Create XML-format site map.');
-	}
-	# -------------------------------------------------------
-}
+			$vs_insert_ngram_sql = "
+				INSERT  INTO ca_sql_search_ngrams
+				(word_id, ngram, seq)
+				VALUES
+			";
+
+			if ($pb_clear) {
+				$qr_res = $o_db->query("TRUNCATE TABLE ca_sql_search_ngrams");
+			}
+
+			//create ngrams
+			$qr_res = $o_db->query("SELECT word_id, word FROM ca_sql_search_words");
+
+			print CLIProgressBar::start($qr_res->numRows(), _t('Starting...'));
+
+			$vn_c = 0;
+			$vn_ngram_c = 0;
+			while($qr_res->nextRow()) {
+				print CLIProgressBar::next();
+				$vn_word_id = $qr_res->get('word_id');
+				$vs_word = $qr_res->get('word');
+				print CLIProgressBar::next(1, _t('Processing %1', $vs_word));
+
+				if (!$pb_clear) {
+					$qr_chk = $o_db->query("SELECT word_id FROM ca_sql_search_ngrams WHERE word_id = ?", array($vn_word_id));
+					if ($qr_chk->nextRow()) {
+						continue;
+					}
+				}
+
+				$vn_seq = 0;
+				foreach($pa_sizes as $vn_size) {
+					$va_ngrams = caNgrams((string)$vs_word, $vn_size);
+
+					$va_ngram_buf = array();
+					foreach($va_ngrams as $vs_ngram) {
+						$va_ngram_buf[] = "({$vn_word_id},'{$vs_ngram}',{$vn_seq})";
+						$vn_seq++;
+						$vn_ngram_c++;
+					}
+
+					if (sizeof($va_ngram_buf)) {
+						$o_db->query($vs_insert_ngram_sql."\n".join(",", $va_ngram_buf));
+					}
+				}
+				$vn_c++;
+			}
+			print CLIProgressBar::finish();
+			CLIUtils::addMessage(_t('Processed %1 words and created %2 ngrams', $vn_c, $vn_ngram_c));
+			return true;
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function create_ngramsParamList() {
+			return array(
+				"clear|c=s" => _t('Clear all existing ngrams. Default is false.'),
+				"sizes|s=s" => _t('Comma-delimited list of ngram sizes to generate. Default is 4.')
+			);
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function create_ngramsUtilityClass() {
+			return _t('Search');
+		}
+
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function create_ngramsShortHelp() {
+			return _t('Create ngrams from search indices to support spell correction of search terms.');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function create_ngramsHelp() {
+			return _t('Ngrams.');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function process_indexing_queue($po_opts=null) {
+			require_once(__CA_MODELS_DIR__.'/ca_search_indexing_queue.php');
+			
+			if($force = ((bool)$po_opts->getOption('force'))) {
+				ca_search_indexing_queue::lockRelease();	
+			}
+			ca_search_indexing_queue::process();
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function process_indexing_queueParamList() {
+			return [
+				"force|c=f" => _t('Process queue even if a lock exists from another indexing process.'),
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function process_indexing_queueUtilityClass() {
+			return _t('Search');
+		}
+
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function process_indexing_queueShortHelp() {
+			return _t('Process search indexing queue.');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function process_indexing_queueHelp() {
+			return _t('Process search indexing queue.');
+		}
+		# -------------------------------------------------------
+    }

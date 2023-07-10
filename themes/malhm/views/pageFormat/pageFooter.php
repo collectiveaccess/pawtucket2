@@ -51,9 +51,7 @@
 					<div class='col-sm-12 col-md-3 col-lg-3'> 
 						<div class='pull-right social'>
 							<span class='socialFooter'><a href='https://www.facebook.com/MNHistoryAlliance/' target='_blank'><i class='fa fa-facebook'></i></a></span>
-							<span class='socialFooter'><a href='https://twitter.com/MNlocalhistory' target='_blank'><i class='fa fa-twitter'></i></a></span>
-							<span class='socialFooter'><a href='https://www.linkedin.com/company/28123620/' target='_blank'><i class='fa fa-linkedin'></i></a></span>
-							<span class='socialFooter'><a href='mailTo:staff@mnhistoryalliance.org' target='_blank'><i class='fa fa-envelope-o'></i></a></span>
+							<span class='socialFooter'><a href='mailTo:gibson@mnhistoryalliance.org' target='_blank'><i class='fa fa-envelope-o'></i></a></span>
 							<span class='socialFooter'><a href='https://www.instagram.com/mnhistoryalliance/' target='_blank'><i class='fa fa-instagram'></i></a></span>
 							<div class='copy'>© COPYRIGHT <?php print date("Y"); ?>. ALL RIGHTS RESERVED.</div>
 							<div class='clean'>

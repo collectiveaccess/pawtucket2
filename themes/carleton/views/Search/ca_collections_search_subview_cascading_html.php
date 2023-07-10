@@ -54,7 +54,7 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" role="button" aria-label="list icon"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search), 'facet' => 'has_media_facet', 'id' => 1)); ?></span> 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" role="button" aria-label="list icon"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> 
 <?php
 				}
 				if($x){
@@ -74,7 +74,7 @@
 		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
 				$vn_id 					= $qr_results->get("ca_collections.collection_id");
-				$vs_date = $qr_results->getWithTemplate("<ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef><ifnotdef code='ca_collections.inclusive_dates'>^ca_collections.display_date%delimiter=,_</ifnotdef>");
+				$vs_date = $qr_results->getWithTemplate("<ifdef code='ca_collections.display_date'>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef>");
 
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_results->get("ca_collections.preferred_labels.name").(($vs_date) ? ", ".$vs_date : ""), '', 'ca_collections', $vn_id);
 				
@@ -84,7 +84,10 @@
 				}
 				
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', 'ca_collections', $vn_id);
-				
+				$vs_multiple_media = '';
+				if($qr_results->getWithTemplate("<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='0' length='1'>^count</unit>", array("checkAccess" => $va_access_values)) > 1){
+					$vs_multiple_media = '<div class="multipleMediaIcon"><i class="fa fa-files-o" aria-hidden="true" title="multiple media"></i></div>';
+				}
 				$vs_rep_id = $qr_results->get("ca_object_representations.representation_id");
 				
 				#$vs_parent_path = $qr_results->getWithTemplate("<unit relativeTo='ca_collections.parent'><unit relativeTo='ca_collections.hierarchy' delimiter=' &gt; '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></unit></unit>");
@@ -96,7 +99,7 @@
 				print "
 	<div class='bResultItemCol col-xs-12 col-sm-3 col-lg-2'>
 		<div class='bResultItem'>
-			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_multiple_media}{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
 					<div class='objectTitle'>{$vs_label_detail_link}</div>".$vs_tmp."
 				</div><!-- end bResultItemText -->

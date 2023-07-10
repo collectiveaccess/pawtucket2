@@ -3,6 +3,27 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$va_access_values = caGetUserAccessValues($this->request);
+
+	$vs_video = "";
+	# --- get the object related with "primary"
+	if($vs_primary_video_object_id = $t_item->get("ca_objects.object_id", array('checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array("primary"), "limit" => 1))){
+		$t_object_video = new ca_objects($vs_primary_video_object_id);
+		$vs_video = $t_object_video->get('ca_object_representations.media.original', array("checkAccess" => $va_access_values));
+	}
+	if(!$vs_primary_video_object_id){
+		$va_objects_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values, "excludeRelationshipTypes" => "primary"));
+		$qr_hits = caMakeSearchResult("ca_objects", $va_objects_ids);
+		if($qr_hits->numHits()){
+			while($qr_hits->nextHit()){
+				if($vs_video = $qr_hits->get('ca_object_representations.media.original', array("checkAccess" => $va_access_values))){
+					break;	
+				}
+			}
+		}
+	
+	}
+
 ?>
 
 
@@ -31,102 +52,163 @@
 				
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					
-					{{{<ifdef code="ca_occurrences.idno"><label>Identifier</label>^ca_occurrences.idno<br/></ifdef>}}}
-					
-					<?php
-						if($links = caGetSearchLinks($t_item, 'ca_collections', ['template' => '<l>^ca_collections.preferred_labels.name</l>', 'linkTemplate' => '<li>^LINK</li>'])) {
-					?>
-							{{{<ifcount code="ca_collections.related" min="1">
-								<label>Related collection<ifcount code="ca_collections.related" min="2">s</ifcount></label>
-							</ifcount>}}}
-							<div class="unit">
-								<ul><?= join("\n", $links); ?></ul>
-							</div>
-					<?php
-						}
-					?>
+					{{{<ifdef code="ca_occurrences.idno"><div class='unit'><label>Identifier</label>^ca_occurrences.idno</div></ifdef>}}}
+<?php
+					if($vs_video){
+						print "<div class='unit'>".$vs_video."</div>";
+					}
+?>					
+					{{{<ifcount code="ca_collections" min="1">
+							<label>Collection<ifcount code="ca_collections.related" min="2">s</ifcount></label>
+							<div class="unit"><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels</l></unit></div>
+					</ifcount>}}}
 
 					<?php
 						if($links = caGetSearchLinks($t_item, 'ca_occurrences.genre_terms', ['linkTemplate' => '<li>^LINK</li>'])) {
 					?>
-							<label>Genre(s)</label>
+							
 							<div class="unit">
+								<label>Genre(s)</label>
 								<ul><?= join("\n", $links); ?></ul>
 							</div>
 					<?php
 						}
-						if($links = caGetBrowseLinks($t_item, 'ca_list_items', ['linkTemplate' => '<li>^LINK</li>'])) {
+						if($links = caGetBrowseLinks($t_item, 'ca_list_items', ['linkTemplate' => '<li>^LINK</li>', 'restrictToRelationshipTypes' => ['subject']])) {
 					?>
-							<label>Subject(s)</label>
 							<div class="unit">
+								<label>Subject(s)</label>
 								<ul><?= join("\n", $links); ?></ul>
 							</div>
 					<?php
 						}
+						if($vs_map = $this->getVar("map")){
+	?>
+							<ifdef code="ca_occurrences.georeference">
+								<div class="unit"><label>Places</label><?php print $vs_map; ?></div>
+							</ifdef>
+	<?php
+						}
 					?>
+					{{{<ifdef code="ca_occurrences.georeference_verbatim"><div class="unit"><unit reltaiveTo="ca_occurrences.georeference_verbatim" delimiter="<br/>">^ca_occurrences.georeference_verbatim</unit></div></ifdef>}}}
 					
-					{{{<ifdef code="ca_occurrences.georeference">
-						<label>Places</label>
-						<div class="unit"></div>
-					</ifdef>}}}
-					{{{map}}}
 					
-					{{{<ifdef code="ca_occurrences.RightsSummaryNHF.NHFRightsSummaryPub"><label>Rights</label>^ca_occurrences.RightsSummaryNHF.NHFRightsSummaryPub<br/></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.RightsSummaryNHF.NHFRightsSummaryPub"><div class="unit"><label>Rights</label>^ca_occurrences.RightsSummaryNHF.NHFRightsSummaryPub</div></ifdef>}}}
 					
 				</div><!-- end col -->
 				
 				<div class='col-md-6 col-lg-6'>
 					
-					{{{<ifdef code="ca_occurrences.occ_date"><label>Date</label>^ca_occurrences.occ_date<br/></ifdef>}}}
-					
-					{{{<unit relativeTo="ca_occurrences.pbcoreDescription" delimiter=""><ifdef code="ca_occurrences.pbcoreDescription.description_text"><label>^ca_occurrences.pbcoreDescription.descriptionType</label>^ca_occurrences.pbcoreDescription.description_text<br/></ifdef></unit>}}}
+					{{{<ifdef code="ca_occurrences.occ_date"><div class='unit'><label>Date</label>^ca_occurrences.occ_date</div></ifdef>}}}
+<?php
+					if(!$t_item->get("ca_occurrences.occ_date")){			
+						# --- coverage
+						$va_coverage = $t_item->get('ca_occurrences.pbcoreCoverage', array("returnWithStructure" => 1, 'convertCodesToDisplayText' => true));
+						if(is_array($va_coverage) && sizeof($va_coverage)){
+							$va_dates = array();
+							$va_coverage = array_pop($va_coverage);
+							foreach($va_coverage as $va_coverage_info){
+								if($va_coverage_info["coverageType"] == "Temporal"){
+									$va_dates[] = $va_coverage_info["coverage"];
+								}
+							}
+							if(sizeof($va_dates)){
+								print "\n<div class='unit'><label>"._t("Date(s)")."</label>".(implode(", ", $va_dates))."</div><!-- end unit -->";
+							}
+						}
+					}
+?>
+					{{{<ifdef code="ca_occurrences.ic_stills.ic_stills_media">
+						<div class='unit fullWidthImg'>^ca_occurrences.ic_stills.ic_stills_media.medium<ifdef code="ca_occurrences.ic_stills.ic_stills_credit"><b>Credit:</b> ^ca_occurrences.ic_stills.ic_stills_credit</ifdef>
+					</ifdef>}}}
+<?php
+						# --- video clip
+						if($vs_player = $t_item->get("ca_occurrences.ic_moving_images.ic_moving_images_media", array('version' => 'original', 'showMediaInfo' => false, 'viewer_width'=> 400, 'viewer_height' => 300, 'poster_frame_version' => 'medium'))){
+							
+							print "\n<div class='unit fullWidthImg'>".$vs_player."";
+							if($t_item->get("ca_occurrences.ic_moving_images.ic_moving_images_credit")){
+								print "<div class='imageCaption'>"._t("Credit:")." ".$t_item->get("ca_occurrences.ic_moving_images.ic_moving_images_credit")."</div>";
+							}
+							print "</div><!-- end unit -->";
+						}
+?>
+					{{{<unit relativeTo="ca_occurrences.pbcoreDescription" delimiter=""><ifdef code="ca_occurrences.pbcoreDescription.description_text"><div class='unit'><label>^ca_occurrences.pbcoreDescription.descriptionType</label>^ca_occurrences.pbcoreDescription.description_text</div></ifdef></unit>}}}
 					
 					<?php
-						if($links = caGetSearchLinks($t_item, 'ca_entities', ['template' => '<l>^ca_entities.preferred_labels.displayname</l>', 'linkTemplate' => '<li>^LINK</li>'])) {
+						if($links = caGetSearchLinks($t_item, 'ca_entities', ['template' => '<l>^ca_entities.preferred_labels.displayname%restrictToRelationshipTypes=creator</l>', 'linkTemplate' => '<li>^LINK</li>', 'restrictToRelationshipTypes' => array('creator')])) {
 					?>
-							{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-							{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
 							<div class="unit">
+							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1" max="1"><label>Creator</label></ifcount>}}}
+							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="2"><label>Creators</label></ifcount>}}}
+								<ul><?= join("\n", $links); ?></ul>
+							</div>
+					<?php
+						}
+						if($links = caGetSearchLinks($t_item, 'ca_entities', ['template' => '<l>^ca_entities.preferred_labels.displayname</l>', 'linkTemplate' => '<li>^LINK</li>', 'restrictToRelationshipTypes' => array('contributor')])) {
+					?>
+							<div class="unit">
+							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="contributor" min="1" max="1"><label>Contributor</label></ifcount>}}}
+							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="contributor" min="2"><label>Contributors</label></ifcount>}}}
 								<ul><?= join("\n", $links); ?></ul>
 							</div>
 					<?php
 						}
 					?>
-
 					<?php
 						if($links = caGetSearchLinks($t_item, 'ca_occurrences.related', ['template' => '<l>^ca_occurrences.related.preferred_labels.name</l>', 'linkTemplate' => '<li>^LINK</li>'])) {
 					?>
-							{{{<ifcount code="ca_occurrences.related" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
-							{{{<ifcount code="ca_occurrences.related" min="2"><label>Related occurrences</label></ifcount>}}}
 							<div class="unit">
+							{{{<ifcount code="ca_occurrences.related" min="1" max="1"><label>Related work</label></ifcount>}}}
+							{{{<ifcount code="ca_occurrences.related" min="2"><label>Related works</label></ifcount>}}}
 								<ul><?= join("\n", $links); ?></ul>
 							</div>
 					<?php
 						}
-					?>
-
-					<?php
+						$va_entities = $t_item->get("ca_entities", array('checkAccess' => $va_access_values, "returnWithStructure" => 1, "excludeRelationshipTypes" => array("creator", "contributor")));
+						if(is_array($va_entities) && sizeof($va_entities) > 0){
+							$va_entity_by_type = array();
+							foreach($va_entities as $va_entity){
+								$va_entity_by_type[$va_entity["relationship_typename"]][] = array("entity_id" => $va_entity["entity_id"], "relationship_typename" => $va_entity["relationship_typename"], "label" => $va_entity["label"]);
+							}
+							foreach($va_entity_by_type as $vs_relationship_typename => $va_entities_by_type){
+?>
+								<div class="unit"><label><?php print caUcFirstUTF8Safe($vs_relationship_typename); ?></label><ul>
+<?php
+								$vn_i = 1;
+								foreach($va_entities_by_type as $va_entity) {
+									print "<li>".caNavLink($this->request, $va_entity["label"], '', '', 'Browse', 'collections', array('facet' => 'entity_facet', 'id' => $va_entity['entity_id']));
+									if(sizeof($va_entities_by_type) > $vn_i){
+										print ", ";
+									}
+									print "</li>";
+									$vn_i++;
+								}
+?>
+								</ul></div><!-- end unit --->
+<?php					
+							}
+						}
+						
 						if($links = caGetBrowseLinks($t_item, 'ca_places', ['template' => '<l>^ca_places.preferred_labels.name</l>', 'linkTemplate' => '<li>^LINK</li>'])) {
-					?>
+?>
+							<div class='unit'>
 							{{{<ifcount code="ca_places" min="1">
 								<label>Related place<ifcount code="ca_places" min="2">s</ifcount></label>
 							</ifcount>}}}
 	
-							<div class="unit">
 								<ul><?= join("\n", $links); ?></ul>
 							</div>
 					<?php
 						}
 					?>
-					
+						
 				</div><!-- end col -->
 
 			</div><!-- end row -->
 			
 			{{{<ifcount code="ca_objects" min="1">
 
-				<H2 style="margin: 35px 0px 20px 0px">Copies</H2>
-
+				<H2 style="margin: 35px 0px 20px 0px"><ifcount code="ca_objects" min="1" max="1">1 Copy</ifcount><ifcount code="ca_objects" min="2"><unit relativeTo="ca_objects" length='1'>^count</unit> Copies</ifcount></H2>
+			
 				<div class="row">
 					<div id="browseResultsContainer">
 						<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -167,71 +249,3 @@
 		});
 	});
 </script>
-					
-<!-- <H2>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef>}}}</H2> -->
-
-<!-- {{{<ifcount code="ca_collections" min="1" max="1"><label>Related collection</label></ifcount>}}}
-{{{<ifcount code="ca_collections" min="2"><label>Related collections</label></ifcount>}}}
-{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}} -->
-
-<!-- {{{<ifdef code="ca_occurrences.description"><label>About</label>^ca_occurrences.description<br/></ifdef>}}} -->
-
-<!-- {{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}} -->
-
-<!-- {{{<ifcount code="ca_occurrences.related" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
-{{{<ifcount code="ca_occurrences.related" min="2"><label>Related occurrences</label></ifcount>}}}
-{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l></unit>}}} -->
-
-<!-- {{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}} -->
-
-<!-- {{{<ifdef code="ca_occurrences.genre_terms">
-	<div class="unit">
-		<label>Genre(s)</label>
-		<ul>
-			<unit relativeTo="ca_list_items">
-				<li> 
-					<l>^ca_collections.genre_terms</l>
-				</li>
-			</unit>
-		</ul>
-
-		<?php
-			$genres = $t_item->get("ca_occurrences.genre_terms", array("returnAsArray" => true, "convertCodesToDisplayText" => true));
-			print "<ul>";
-			foreach($genres as $g){print "<li>$g</li>";}
-			print "</ul>";
-		?>
-	</div>
-</ifdef>}}} -->
-
-<!-- {{{<ifdef code="ca_list_items">
-	<div class="unit">
-		<label>Subjects</label>
-
-		<ul>
-		<unit relativeTo="ca_list_items">
-				<li><a href="/collection/index.php/Browse/collections/facet/term_facet/id/^ca_list_items.item_id">^ca_list_items.preferred_labels</a></li>
-			</unit>
-		</ul>
-
-		<?php
-			$subjects = $t_item->get("ca_list_items", array("returnAsArray" => true, "convertCodesToDisplayText" => true));
-			print "<ul>";
-			foreach($subjects as $s){print "<li>$s</li>";}
-			print "</ul>";
-		?>
-	</div>
-</ifdef>}}} -->
-
-<!-- {{{<ifcount code="ca_objects" min="1" max="1">
-	<div class='unit'>
-		<unit relativeTo="ca_objects" delimiter=" ">
-			<l>^ca_object_representations.media.large</l>
-			<label>Related Object</label> <l>^ca_objects.preferred_labels.name</l>
-		</unit>
-	</div>
-</ifcount>}}} -->

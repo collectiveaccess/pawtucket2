@@ -22,45 +22,13 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<H4>{{{^ca_occurrences.preferred_labels.name}}}</H4>
-					<!-- share buttons -->
-					<br/><div class="shareBar">
-						<div class="shareButton"> 
-							<!-- Your share button code -->
-							<div class="fb-share-button" 
-							data-href="<?php print $vs_page_url; ?>" 
-							data-layout="button" 
-							data-size="large" 
-							data-mobile-iframe="true">
-							</div>
-						</div>
-						<div class="shareButton">
-							<a class="twitter-share-button"
-							  href="https://twitter.com/share"
-							  data-size="large"
-							  data-text="<?php print $t_item->get("ca_occurrences.preferred_labels.name"); ?>"
-							  data-url="<?php print $vs_page_url; ?>"
-							  data-hashtags=""
-							  data-via="GRMuseum"
-							  data-related="">
-							Tweet
-							</a>
-						</div>
-						<div class="shareButton">
-							<a href="https://www.pinterest.com/pin/create/button/" data-pin-do="buttonBookmark" data-pin-tall="true"></a>
-						</div>
-						<div class="shareButton">
-	<?php
-							print '<div class="btn-default"><span class="glyphicon glyphicon-envelope"></span> '.$this->getVar("shareLink").'</div>';
-	?>
-						</div>
-						<div style="clear:left;"></div>
-					</div>
+
 					<H6>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef>}}}</H6>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_occurrences.description"><H6>Description</H6><span class="trimText">^ca_occurrences.description</span><br/></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.description"><H6>Description</H6><span class="trimText" style="overflow-y: scroll;">^ca_occurrences.description</span><br/></ifdef>}}}
 					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
@@ -113,7 +81,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 150
 		});
 	});
 </script>

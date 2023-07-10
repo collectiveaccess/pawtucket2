@@ -70,7 +70,7 @@
  			caSetPageCSSClasses(array("sets", "eductionalresources"));
  			$this->config = Configuration::load("educational_resources.conf");
  			
-			$this->purifier = caGetHTMLPurifier();
+			$this->purifier = new HTMLPurifier();
 			
  			parent::setTableSpecificViewVars();
  		}

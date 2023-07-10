@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2015 Whirl-i-Gig
+ * Copyright 2014-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -81,7 +81,7 @@ class BaseDelimitedDataReader extends BaseDataReader {
 		$this->ops_display_name = _t('Base delimited data reader');
 		$this->ops_description = _t('Provides basic functions for all delimited data readers');
 		
-		$this->opa_formats = array();
+		$this->opa_formats = [];
 		
 		$this->opa_properties['delimiter'] = $this->ops_delimiter;
 		
@@ -103,13 +103,7 @@ class BaseDelimitedDataReader extends BaseDataReader {
 		$this->opn_current_row = 0;
 		
 		if($this->opo_parser->parse($ps_source)) {
-			$r_f = fopen($ps_source, 'rb');
-			$this->opn_num_rows = 0;
-			while (!feof($r_f)) {
-				$vs_buf = fread($r_f, 8192);
-				$this->opn_num_rows += (substr_count($vs_buf, "\n") + (substr_count($vs_buf, "\r")));
-			}
-			fclose($r_f);
+			$this->opn_num_rows = $this->opo_parser->numRows();
 			
 			$this->ops_source = $ps_source;
 			return true;
@@ -131,6 +125,7 @@ class BaseDelimitedDataReader extends BaseDataReader {
 		if (!$this->opo_parser->nextRow()) { return false; }
 		
 		$this->opa_row_buf = $this->opo_parser->getRow();
+		array_unshift($this->opa_row_buf, null);		// make one-based
 		$this->opn_current_row++;
 		return true;
 	}
@@ -182,7 +177,6 @@ class BaseDelimitedDataReader extends BaseDataReader {
 		if (is_array($va_row = $this->opo_parser->getRow())) {
 			// Make returned array 1-based to match delimiter data parser style (column numbers begin with 1)
 			array_unshift($va_row, null);
-			unset($va_row[0]);
 			return $va_row;
 		}
 
@@ -223,6 +217,15 @@ class BaseDelimitedDataReader extends BaseDataReader {
 	 */
 	public function valuesCanRepeat() {
 		return false;
+	}
+	# -------------------------------------------------------
+	/**
+	 * Return file extensions
+	 * 
+	 * @return array
+	 */
+	public function getFileExtensions() : array {
+		return ['txt'];
 	}
 	# -------------------------------------------------------
 }

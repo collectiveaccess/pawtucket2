@@ -168,6 +168,7 @@ body{
 .unit {font-size:11px;margin-bottom:12px; text-align:left; clear:left;}
 .unitSmall {font-size:10px;margin-bottom:10px; text-align:left;}
 h6 {margin:0px 0px 5px 0px; padding:0px; font-weight:normal; font-family:'Optima LT Std';}
+h4 {margin:0px 0px 5px 0px; padding:0px; font-weight:normal; font-family:'Optima LT Std'; font-size:14px;}
 .tombstone { margin-top:20px;}
 .clear { clear: both; }
 
@@ -233,3 +234,14 @@ h6.objectType{
 	float:left;
 	margin-bottom:20px;
 }
+
+/* collection summary */
+.collectionLogo img{
+	width: 300px;
+	height:auto;
+}
+.toc a{
+	color:#000;
+	text-decoration:none;
+}
+.toc .unit {font-size:11px;margin-bottom:3px; text-align:left; clear:left;}

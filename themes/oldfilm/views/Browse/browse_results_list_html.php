@@ -64,7 +64,14 @@
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
 
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-	
+
+	$va_ids_with_video = array();
+	if($vs_table == "ca_collections"){
+		$va_ids_with_video = nhfCollectionsWithClips($this->request);
+	}elseif($vs_table == "ca_occurrences"){
+		$va_ids_with_video = nhfOccWithClips($this->request);
+	}
+		
 		$vn_col_span = 6;
 		$vn_col_span_sm = 6;
 		$vn_col_span_xs = 12;
@@ -118,6 +125,10 @@
 					#	default:
 					#		$vs_label_detail_link = caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					#};
+					$vs_has_video = "";
+					if(in_array($vn_id, $va_ids_with_video)){
+						$vs_has_video = "<i class='fa fa-video-camera' aria-hidden='true'></i>";
+					}
 					$vs_label_detail_link = $qr_res->getWithTemplate($vs_label_template);
 					$vs_description = "";
 					if($vs_desc_template){
@@ -130,7 +141,10 @@
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
-				
+					$vn_number = "";
+					if(in_array($vs_table, array("ca_occurrences", "ca_objects"))){
+						$vn_number = 1 + $vn_start + $vn_c.") ";
+					}
 					$vs_result_output = "
 						<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 
@@ -139,7 +153,7 @@
 								<div class='bResultListItemContent'>
 
 									<div class='bResultListItemText'>
-										{$vs_label_detail_link}{$vs_description}
+										".$vn_number."{$vs_label_detail_link} ".$vs_has_video."{$vs_description}
 									</div>
 									<!-- end bResultListItemText -->
 

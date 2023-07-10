@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2016-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -69,6 +69,14 @@
 		'width' => 1, 'height' => 1,
 		'label' => _t('Does not use locale setting'),
 		'description' => _t('Check this option if you don\'t want your FloorPlan values to be locale-specific. (The default is to not be.)')
+	),
+	'singleValuePerLocale' => array(
+		'formatType' => FT_NUMBER,
+		'displayType' => DT_CHECKBOXES,
+		'default' => 0,
+		'width' => 1, 'height' => 1,
+		'label' => _t('Allow single value per locale'),
+		'description' => _t('Check this option to restrict entry to a single value per-locale.')
 	),
 	'canBeUsedInSort' => array(
 		'formatType' => FT_NUMBER,
@@ -246,22 +254,31 @@ class FloorPlanAttributeValue extends AttributeValue implements IAttributeValue 
  		return $_ca_attribute_settings['FloorPlanAttributeValue'];
  	}
  	# ------------------------------------------------------------------
-		/**
-		 * Returns name of field in ca_attribute_values to use for sort operations
-		 * 
-		 * @return string Name of sort field
-		 */
-		public function sortField() {
-			return 'value_blob';
-		}
+	/**
+	 * Returns name of field in ca_attribute_values to use for sort operations
+	 * 
+	 * @return string Name of sort field
+	 */
+	public function sortField() {
+		return 'value_blob';
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Returns name of field in ca_attribute_values to use for query operations
+	 *
+	 * @return string Name of sort field
+	 */
+	public function queryFields() : ?array {
+		return ['value_blob'];
+	}
  	# ------------------------------------------------------------------
-		/**
-		 * Returns constant for FloorPlan attribute value
-		 * 
-		 * @return int Attribute value type code
-		 */
-		public function getType() {
-			return __CA_ATTRIBUTE_VALUE_FLOORPLAN__;
-		}
- 		# ------------------------------------------------------------------
+	/**
+	 * Returns constant for FloorPlan attribute value
+	 * 
+	 * @return int Attribute value type code
+	 */
+	public function getType() {
+		return __CA_ATTRIBUTE_VALUE_FLOORPLAN__;
+	}
+	# ------------------------------------------------------------------
 }

@@ -49,7 +49,6 @@ class CollectiveAccessDataReader extends BaseDataReader {
 	private $opn_current_row = 0;
 	
 	private $opo_client = null;
-	private $opo_datamodel = null;
 	
 	private $ops_table = null;
 	private $ops_path = null;
@@ -373,7 +372,7 @@ class CollectiveAccessDataReader extends BaseDataReader {
 							foreach($va_rel_data as $vn_i => $va_rel) {
 								$va_labels = $va_rel['preferred_labels'];
 								if (is_array($pa_filter_to_types) && !in_array($va_rel['type_id_code'], $pa_filter_to_types)) { continue; }
-								if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types)) { continue; }
+								if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types) && !in_array($va_rel['relationship_type_code'], $pa_filter_to_relationship_types)) { continue; }
 								$va_rels[] = $va_labels[$vs_display_field];
 							}
 							
@@ -393,7 +392,7 @@ class CollectiveAccessDataReader extends BaseDataReader {
 							foreach($va_rel_data as $vn_i => $va_rel) {
 								$va_labels = $va_rel['nonpreferred_labels'];
 								if (is_array($pa_filter_to_types) && !in_array($va_rel['type_id_code'], $pa_filter_to_types)) { continue; }
-								if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types)) { continue; }
+								if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types) && !in_array($va_rel['relationship_type_code'], $pa_filter_to_relationship_types)) { continue; }
 								$va_rels[] = $va_labels[$vs_display_field];
 							}
 							
@@ -409,7 +408,7 @@ class CollectiveAccessDataReader extends BaseDataReader {
 					$va_rels = [];
 					foreach($va_rel_data as $vn_i => $va_rel) {
 						if (is_array($pa_filter_to_types) && !in_array($va_rel['type_id_code'], $pa_filter_to_types)) { continue; }
-						if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types)) { continue; }
+						if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types) && !in_array($va_rel['relationship_type_code'], $pa_filter_to_relationship_types)) { continue; }
 								
 						if (isset($va_rel['intrinsic'][$va_col[1]])) {
 							if ($pb_convert_codes_to_display_text && isset($va_rel['intrinsic'][$va_col[1].'_display'])) {
@@ -444,8 +443,28 @@ class CollectiveAccessDataReader extends BaseDataReader {
 							foreach($va_rel_data as $vn_i => $va_rel) {
 								$va_labels = $va_rel['preferred_labels'];
 								if (is_array($pa_filter_to_types) && !in_array($va_rel['type_id_code'], $pa_filter_to_types)) { continue; }
-								if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types)) { continue; }
+								if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types) && !in_array($va_rel['relationship_type_code'], $pa_filter_to_relationship_types)) { continue; }
 								$va_rels[] = $va_labels[$va_col[2]];
+							}
+							
+							if ($pb_return_as_array) {
+								return $va_rels;
+							} else {
+								return join($vs_delimiter, $va_rels);
+							}
+						}
+						return null;
+					}
+					if (($va_col[1] == 'hierarchy') && ($va_col[2] == 'preferred_labels')) {
+						// figure out what the display field is
+						$vs_display_field = $t_instance->getLabelDisplayField();
+						if ($t_instance = Datamodel::getInstanceByTableName($va_col[0], true)) {
+							$va_rels = [];
+							foreach($va_rel_data as $vn_i => $va_rel) {
+								$va_labels = $va_rel['preferred_labels_hierarchy'];
+								if (is_array($pa_filter_to_types) && !in_array($va_rel['type_id_code'], $pa_filter_to_types)) { continue; }
+								if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types) && !in_array($va_rel['relationship_type_code'], $pa_filter_to_relationship_types)) { continue; }
+								$va_rels[] = join(caGetOption('hierarchicalDelimiter', $pa_options, ';'), $va_labels);
 							}
 							
 							if ($pb_return_as_array) {
@@ -463,8 +482,31 @@ class CollectiveAccessDataReader extends BaseDataReader {
 							foreach($va_rel_data as $vn_i => $va_rel) {
 								$va_labels = $va_rel['nonpreferred_labels'];
 								if (is_array($pa_filter_to_types) && !in_array($va_rel['type_id_code'], $pa_filter_to_types)) { continue; }
-								if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types)) { continue; }
+								if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types) && !in_array($va_rel['relationship_type_code'], $pa_filter_to_relationship_types)) { continue; }
 								$va_rels[] = $va_labels[$va_col[2]];
+							}
+							
+							if ($pb_return_as_array) {
+								return $va_rels;
+							} else {
+								return join($vs_delimiter, $va_rels);
+							}
+						}
+						return null;
+					}
+					
+					break;
+				// ------------------------------------------------------------------------------------------------
+				case 4:
+					if (($va_col[1] == 'hierarchy') && ($va_col[2] == 'preferred_labels')) {
+						// figure out what the display field is
+						if ($t_instance = Datamodel::getInstanceByTableName($va_col[0], true)) {
+							$va_rels = [];
+							foreach($va_rel_data as $vn_i => $va_rel) {
+								$va_labels = $va_rel['preferred_labels_hierarchy'];
+								if (is_array($pa_filter_to_types) && !in_array($va_rel['type_id_code'], $pa_filter_to_types)) { continue; }
+								if (is_array($pa_filter_to_relationship_types) && !in_array($va_rel['relationship_typename'], $pa_filter_to_relationship_types) && !in_array($va_rel['relationship_type_code'], $pa_filter_to_relationship_types)) { continue; }
+								$va_rels[] = join(caGetOption('hierarchicalDelimiter', $pa_options, ';'), $va_labels);
 							}
 							
 							if ($pb_return_as_array) {

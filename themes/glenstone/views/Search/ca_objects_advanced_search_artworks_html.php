@@ -98,7 +98,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 			print "<ul id='pavilionList' class='exhibitionList'>\n";
 			foreach($pavilion_contents as $p) {
 				print "<li class='exhibitionListItem pavilionRoom' data-list_id='pavilionRoom{$p['id']}'><a href='#'>".$p['display']."</a></li>\n";
-				if ($q_pavilion_exh = ca_occurrences::find(['exhibition_location' => $p['id'], 'type_id' => 'exhibition'], ['returnAs' => 'searchResult', 'sort' => 'ca_occurrences.exh_dates', 'sortDirection' => 'DESC'])) {
+				if ($q_pavilion_exh = ca_occurrences::find(['exhibition_location' => $p['id'], 'type_id' => 'exhibition'], ['returnAs' => 'searchResult', 'sort' => 'ca_occurrences.exh_dates', 'sortDirection' => 'DESC', 'checkAccess' => $va_access_values])) {
 					print "<ul id='pavilionRoom{$p['id']}' class='exhibitionList'>\n";
 					while($q_pavilion_exh->nextHit()) {
 						print "<li class='exhibitionListItem'>".caDetailLink($this->request, $q_pavilion_exh->get('ca_occurrences.preferred_labels.name'), '', 'ca_occurrences', $q_pavilion_exh->get('ca_occurrences.occurrence_id'))."</li>";

@@ -538,4 +538,12 @@ bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemTex
 }
 .caAudioPlayer {
 	background-color: #000;
+<<<<<<< HEAD
+=======
+}
+
+.highlightText {
+	background-color: #FBF719;
+	opacity: 0.8;
+>>>>>>> dev/php8
 }

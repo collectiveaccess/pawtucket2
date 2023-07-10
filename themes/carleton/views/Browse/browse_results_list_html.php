@@ -64,15 +64,28 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-		$vn_col_span = 6;
-		$vn_col_span_sm = 6;
-		$vn_col_span_xs = 12;
-		$vb_refine = false;
-		if(is_array($va_facets) && sizeof($va_facets)){
-			$vb_refine = true;
+		if(in_array($vs_table, array("ca_collections", "ca_object_lots"))){
+			$vn_col_span = 12;
+			$vn_col_span_sm = 12;
+			$vn_col_span_xs = 12;
+			$vb_refine = false;
+			if(is_array($va_facets) && sizeof($va_facets)){
+				$vb_refine = true;
+				$vn_col_span = 12;
+				$vn_col_span_sm = 12;
+				$vn_col_span_xs = 12;
+			}
+		}else{
 			$vn_col_span = 6;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 12;
+			$vb_refine = false;
+			if(is_array($va_facets) && sizeof($va_facets)){
+				$vb_refine = true;
+				$vn_col_span = 6;
+				$vn_col_span_sm = 6;
+				$vn_col_span_xs = 12;
+			}
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -92,6 +105,7 @@
 			#}
 			
 			$t_list_item = new ca_list_items();
+			$qr_res->filterNonPrimaryRepresentations(false);
 			while($qr_res->nextHit()) {
 				if($vn_c == $vn_hits_per_block){
 					if($vb_row_id_loaded){
@@ -113,37 +127,50 @@
 				
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					$vs_desc = "";
+					$vs_multiple_media = "";
 					switch($vs_table){
 						case "ca_collections":
-							$vs_parent_path = $qr_res->getWithTemplate("<unit relativeTo='ca_collections.parent'><unit relativeTo='ca_collections.hierarchy' delimiter=' &gt; '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></unit></unit>");
+							$vs_parent_path = $qr_res->getWithTemplate("<unit relativeTo='ca_collections.parent'><unit relativeTo='ca_collections.hierarchy' delimiter=' &gt; '>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef></unit></unit>");
 							if($vs_parent_path){
 								$vs_parent_path .= " >";
 							}
 				#print "<div class='collectionsResult authorityResult'>".$qr_results->getWithTemplate("<l>".$vs_parent_path."<b>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></b></l>", array('returnAsLink' => true))."</div>";
 
 							
-							
-							
-							if(strToLower($qr_res->getWithTemplate("^ca_collections.type_id")) == "collection"){
-								$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->getWithTemplate("<div class='collectionID'>^ca_collections.type_id ^ca_collections.id_number</div>^ca_collections.preferred_labels<ifdef code='ca_collections.inclusive_dates'><br/>^ca_collections.inclusive_dates%delimiter=,_</ifdef>"), '', $vs_table, $vn_id);
-							}else{
-								$vs_label_detail_link 	= caDetailLink($this->request, "<div class='collectionPath'>".$vs_parent_path."</div>".$qr_res->getWithTemplate("^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef>"), '', $vs_table, $vn_id);
+							$vs_label_detail_link = $vs_thumbnail = "";
+							if($vs_tmp = $qr_res->getWithTemplate("^ca_collections.col_classification%delimiter=,_")){
+								$vs_label_detail_link = "<div class='resultClassification'>".$vs_tmp."</div>";
 							}
-							$vs_desc = $qr_res->getWithTemplate("^ca_collections.scope_content%convertLineBreaks=1");
+							if(strToLower($qr_res->getWithTemplate("^ca_collections.type_id")) == "collection"){
+								$vs_label_detail_link 	.= $qr_res->getWithTemplate("<div class='collectionID'>^ca_collections.type_id ^ca_collections.id_number</div>^ca_collections.preferred_labels<ifdef code='ca_collections.display_date'><br/>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'><br/>^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef>");
+							}else{
+								$vs_label_detail_link 	.= "<div class='collectionPath'>".$vs_parent_path."</div>".$qr_res->getWithTemplate("^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef>");
+							}
+							if(strToLower($qr_res->getWithTemplate("^ca_collections.type_id")) == "item"){
+								$vs_thumbnail = $qr_res->getWithTemplate("<ifcount code='ca_object_representations' min='1'><l><unit relativeTo='ca_object_representations' length='1'><div class='bResultCollectionListItemImg'>^ca_object_representations.media.iconlarge</div></unit><l></ifcount>");
+								$vs_desc = $qr_res->getWithTemplate("^ca_collections.description");
+								if($qr_res->getWithTemplate("<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='0' length='1'>^count</unit>", array("checkAccess" => $va_access_values)) > 1){
+									$vs_multiple_media = '<div class="multipleMediaIcon"><i class="fa fa-files-o" aria-hidden="true" title="multiple media"></i></div>';
+								}
+							}else{
+								$vs_desc = strip_tags($qr_res->getWithTemplate("^ca_collections.scope_content%convertLineBreaks=1&truncate=500&ellipsis=1"));
+							}
+							
+							$vs_desc .= caGetTextExcerpt($qr_res->get('ca_object_representations.media_content', ['highlight' => false]), MetaTagManager::getHighlightText());
 						break;
 						# ---------
 						case "ca_object_lots":
 							$vs_date = $qr_res->get("ca_object_lots.inclusive_dates", array("delimiter" => ", "));
-							$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels").(($vs_date) ? ", ".$vs_date : ""), '', $vs_table, $vn_id);
+							$vs_label_detail_link 	= $qr_res->get("{$vs_table}.preferred_labels").(($vs_date) ? ", ".$vs_date : "");
 						break;
 						# ---------
 						default:
-							$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+							$vs_label_detail_link 	= $qr_res->get("{$vs_table}.preferred_labels");
 						break;
 						# ---------
 					}
 					
-					$vs_thumbnail = "";
+					#$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
 					#$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
@@ -170,24 +197,23 @@
 				
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
-					$vs_result_output = "
+					$vs_result_output = caDetailLink($this->request, "
 		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='bResultListItem' id='row{$vn_id}'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 				<div class='bResultListItemContent'>
 					<div class='bResultListItemText'>
-						{$vs_label_detail_link}<div class='bResultListItemTextDesc'>{$vs_desc}</div>
+						{$vs_multiple_media}{$vs_thumbnail}{$vs_label_detail_link}<div class='bResultListItemTextDesc'>{$vs_desc}</div>
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
 			</div><!-- end bResultListItem -->
-		</div><!-- end col -->";
+		</div><!-- end col -->", '', $vs_table, $vn_id);
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				
 				$vn_c++;
 				$vn_results_output++;
 			}
-			
 			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
 ?>

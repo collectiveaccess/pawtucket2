@@ -79,6 +79,7 @@
 	}
 ?>
 </head>
+<!-- Google tag (gtag.js) --> <script async src="https://www.googletagmanager.com/gtag/js?id=G-1N4YJ2Z5HC"></script> <script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-1N4YJ2Z5HC'); </script>
 <body  class='<?php print (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
 	<nav class="navbar navbar-default yamm" role="navigation">
@@ -151,16 +152,17 @@
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Galleries"), "", "", "Gallery", "Index"); ?></li>
 					<li class="dropdown<?php print (in_array(strToLower($this->request->getController()), array("about", "contact")) ? ' active' : ''); ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?> <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 <?php
 							print "<li><a href='https://www.trcnyc.org/history'>"._t("About the Collection")."</a></li>";
 							print "<li>".caNavLink($this->request, _t("Resources"), '', '', 'About', 'Resources', '')."</li>";
-							print "<li>".caNavLink($this->request, _t("Rights & Reproduction"), '', '', 'About', 'RightsRepo', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Policies"), '', '', 'About', 'Policies', '')."</li>";
 							print "<li><a href='https://www.trcnyc.org/give'>"._t("Support Riverside")."</a></li>";
-							print "<li>".caNavLink($this->request, _t("Contact"), '', '', 'Contact', 'Form', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Research appointments"), '', '', 'About', 'ResearchAppointments', '')."</li>";
 ?>
+							<li><a href="https://trcnyc.libanswers.com/">Contact</a></li>
 						</ul>	
 					</li>
 				</ul>

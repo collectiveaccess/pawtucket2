@@ -9,13 +9,13 @@
 		<div class='advancedContainer'>
 			<div class='row'>
 				<div class="advancedSearchField col-sm-12">
-					<label for="_fulltext" class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search across all fields in the database.') ?>"><?php _p('Keyword') ?></label>
+					<label for="_fulltext" class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search across all fields in the database including document text.') ?>"><?php _p('Keyword (Including Document Text)') ?></label>
 					{{{_fulltext%width=200px&height=1}}}
 				</div>			
 			</div>		
 			<div class='row'>
 				<div class="advancedSearchField col-sm-12">
-					<label for='ca_collections_preferred_labels_name' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to Collection names only.') ?>"><?php _p('Name') ?></label>
+					<label for='ca_collections_preferred_labels_name' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to Collection titles only.') ?>"><?php _p('Title') ?></label>
 					{{{ca_collections.preferred_labels.name%width=220px}}}
 				</div>
 			</div>

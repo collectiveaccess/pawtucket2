@@ -26,7 +26,7 @@ monthTable = {
 dayListDisplay = [zondag, maandag, dinsdag, woensdag, donderdag, vrijdag, zaterdag]
 
 rangePreConjunctions = [van, vanaf, tussen]
-rangeConjunctions = [tot, -, en, .., tem, t.e.m]
+rangeConjunctions = [tot, –, -, en, .., tem, t.e.m]
 
 dateTimeConjunctions = [om,@]
 
@@ -84,7 +84,7 @@ decadeIndicator = [s]
 # list of numeric suffixes, starting with the one for zero
 # (eg. 0th, 1st, 2nd, 3rd would be a list like so: [th, st, nd, rd])
 # NL: irregular up until 20 - afterwards the default is "ste"
-ordinalSuffixes = [ste, ste, de, de, de, de, de, de, ste, de, de, de, de, de, de, de, de, de, de, de, ste]
+ordinalSuffixes = [de, ste, de, de, de, de, de, de, ste, de, de, de, de, de, de, de, de, de, de, de, ste]
 ordinalSuffixDefault = ste
 
 # in delimited dates (ex. 12/10/2009) is the first number a month or a day?

@@ -2246,15 +2246,15 @@ a.browseRemoveFacet .glyphicon {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 	background-color:#FFFFFF;
 	line-height:1em;
-	padding:10px; /*had commented this out*/
+	padding:10px; /* had commented this out */
 }
 .bResultListItem:hover{
--webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
-	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
-	padding:20px; /*had commented this out*/
-	margin:-10px; /*had commented this out*/
-	height:112px;
-	font-size:12px;
+/* -webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2); */
+	/* box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2); */
+	/* padding:20px; had commented this out */
+	/* margin:-10px; had commented this out */
+	/* height:112px; */
+	/* font-size:12px; */
 
 }
 .bResultListItem .bResultListItemImg{

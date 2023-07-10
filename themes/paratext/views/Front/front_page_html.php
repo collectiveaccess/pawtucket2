@@ -148,17 +148,13 @@
                 	</li>
 <?php
 				}
-				foreach($va_paratext_exhibition_sections as $vs_idno){
 ?>
-					<li class="menu_item">
-                    	<div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
-                       	<?php print caNavLink($this->request, "Exhibition", '', '', 'Section', $vs_idno); ?>
-                   		<div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
-                	</li>
-<?php
-					break;
-				}
-?>
+				<li class="menu_item">
+					<div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
+					<?php print caNavLink($this->request, "Exhibition", '', '', 'Section', 'Exhibition'); ?>
+					<div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
+				</li>
+
                 <li class="menu_item">
                     <div class="ornament"></div><div class="ornament"></div><div class="ornament"></div>
                         <?php print caNavLink($this->request, _t("Printers' addresses"), "", "", "Printers", "Index"); ?>

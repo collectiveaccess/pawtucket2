@@ -159,6 +159,10 @@
 				}
 				if ($vs_lang_or = $t_object->get('ca_objects.041_h', array("delimiter" => ", "))) {
 					print "<div class='unit'><h6>Language(s) of original</h6>".$vs_lang_or."</div>";
+					if($vs_uniform_title = $t_object->get('ca_objects.240_Uniform', array("delimiter" => ", "))){
+						print "<div class='unit'><h6>Title In Original Language</h6>".$vs_uniform_title."</div>";
+					
+					}
 				}	
 				$vs_pagination = $t_object->get('ca_objects.pagination', array("delimiter" => ", "));
 				$vs_format = $t_object->get('ca_objects.format', array("delimiter" => ", "));										
@@ -179,6 +183,9 @@
 				}
 				if ($vs_notes = $t_object->get('ca_objects.505_content_notes', array("delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>Content Notes</h6>".$vs_notes."</div>";
+				}
+				if ($vs_740_analytical_title = $t_object->get('ca_objects.740_analytical_title', array("delimiter" => "<br/>"))) {
+					print "<div class='unit'><h6>Added Contents Titles</h6>".$vs_740_analytical_title."</div>";
 				}
 				if ($vs_citation = $t_object->get('ca_objects.510_citation_reference', array("delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>Citation Reference</h6>".$vs_citation."</div>";

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2016 Whirl-i-Gig
+ * Copyright 2014-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,31 +26,38 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/ApplicationError.php");
- 	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
-	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
-	require_once(__CA_MODELS_DIR__.'/ca_site_pages.php');
-	require_once(__CA_MODELS_DIR__.'/ca_site_templates.php');
- 
- 	class DefaultController extends BasePawtucketController {
- 		# -------------------------------------------------------
- 		 
- 		# -------------------------------------------------------
- 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			caSetPageCSSClasses(array("staticPage"));
- 		}
- 		# -------------------------------------------------------
- 		public function __call($ps_method, $pa_path) {
- 			$this->view->setVar('response', $this->response);
- 			
- 			array_unshift($pa_path[0], $ps_method);
- 			
- 			if ($vs_content = ca_site_pages::renderPageForPath($this, $vs_path = "/".trim(join("/", $pa_path[0]), "/"), ['incrementViewCount' => true, 'checkAccess' => caGetUserAccessValues($this->request)])) {
- 				$this->response->addContent($vs_content);
- 				return;
- 			}
- 			$this->render(join("/", $pa_path[0]).".php", false);
- 		}
- 		# ------------------------------------------------------
- 	}
+require_once(__CA_LIB_DIR__."/ApplicationError.php");
+require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
+require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
+
+class DefaultController extends BasePawtucketController {
+	# -------------------------------------------------------
+	 
+	# -------------------------------------------------------
+	public function __construct(&$request, &$response, $view_paths=null) {
+		parent::__construct($request, $response, $view_paths);
+		caSetPageCSSClasses(array("staticPage"));
+	}
+	# -------------------------------------------------------
+	public function __call($method, $path) {
+		global $g_ui_locale_id;
+		
+		$this->view->setVar('response', $this->response);
+		
+		array_unshift($path[0], $method);
+		
+		if(!($content = ca_site_pages::renderPageForPath($this, "/".trim(join("/", $path[0]), "/"), ['locale_id' => $g_ui_locale_id, 'incrementViewCount' => true, 'checkAccess' => caGetUserAccessValues($this->request)]))) {
+			if($path[0][sizeof($path[0])-1] === '_default') {
+				$def_path = $path[0];
+				array_pop($def_path);
+				$content = $content = ca_site_pages::renderPageForPath($this, "/".trim(join("/", $def_path), "/"), ['incrementViewCount' => true, 'checkAccess' => caGetUserAccessValues($this->request)]);
+			}
+		}
+		if ($content) {
+			$this->response->addContent($content);
+			return;
+		}
+		$this->render(join("/", $path[0]).".php", false);
+	}
+	# ------------------------------------------------------
+}

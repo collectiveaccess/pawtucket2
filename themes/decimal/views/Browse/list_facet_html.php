@@ -62,7 +62,7 @@
 		}
 		
 		if ((int)$vn_facet_size >= ((int)$vn_start + (int)$vn_items_per_page)) {
-			print caNavLink($this->request, caBusyIndicatorIcon($this->request).' '._t('Loading'), 'caNextPage', '*', '*', '*', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0, 's' => $vn_start + $vn_items_per_page));
+			print caNavLink($this->request, caBusyIndicatorIcon($this->request).' '._t('Loading'), 'caNextPage', '*', '*', '*', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0, 's' => (int)$vn_start + (int)$vn_items_per_page));
 		}
 		if ($vn_start == 0) {
 ?>

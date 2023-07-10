@@ -38,7 +38,13 @@
 	$o_config = $this->getVar("config");
 	$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
-	
+
+	$vs_caption_template = $va_block_info["caption_template"];
+	if(!$vs_caption_template){
+		$vs_caption_template = "<l>^ca_places.preferred_labels.name</l>";
+	}
+	$va_access_values = caGetUserAccessValues($this->request);
+		
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
@@ -75,7 +81,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
-				print "<div class='{{{block}}}Result authorityResult'>".$qr_results->get('ca_places.preferred_labels.name', array('returnAsLink' => true))."</div><!-- end Result -->";
+				print "<div class='{{{block}}}Result authorityResult'>".$qr_results->getWithTemplate($vs_caption_template, array("checkAccess" => $va_access_values))."</div><!-- end Result -->";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i == $vn_items_per_column) {

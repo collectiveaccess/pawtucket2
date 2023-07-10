@@ -1,0 +1,170 @@
+@import "~bootstrap/scss/bootstrap";
+@import "~react-responsive-carousel/lib/styles/carousel.css";
+
+$font-stack:  "Lato", sans-serif;
+$primary-color: #151515;
+$lighter-color: #777;
+$very-light: #ced4da;
+$very-very-light: #f0f0f0;
+$ca-blue: #1ab3c8;
+
+html {
+	min-height:100%;
+	position:relative;
+}
+body {
+  font: 100% $font-stack;
+  color: $primary-color;
+  margin-bottom:150px;
+  font-weight:300;
+}
+
+#pageArea {
+    margin-top: 75px;
+}
+
+@media (min-width: 1200px) {
+	.container {
+		max-width: 1300px;
+	}
+}
+*, :after, :before {
+    box-sizing: border-box;
+}
+a {
+	color:$primary-color;
+}
+a:hover {
+	color: $ca-blue;
+	text-decoration:none;
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+	font-weight:400;
+}
+h1 {
+	font-size:2rem;
+	margin-bottom: 1rem;
+}
+h3 {
+	font-size:1.3rem;
+	margin-bottom: .8rem;
+}
+p {
+	line-height:1.8rem;
+}
+address {
+	line-height:1.8rem;
+}
+label {
+	font-weight:400;
+}
+hr {
+	border-top:1px solid $very-light;
+}
+input:focus, input:active, textarea:focus, textarea:active {
+	outline:none;
+	border:0px;
+}
+::-webkit-input-placeholder, ::-moz-placeholder, :-ms-input-placeholder, :-moz-placeholder { /* Chrome/Opera/Safari */
+	font-family:$font-stack;
+	color:$primary-color;
+	font-weight:300;
+}
+img {
+	width:100%;
+	height:auto;
+}
+.btn-group {
+	font-size:1.4rem;
+}
+.dropdown-menu {
+	li {
+		padding: .5rem 1.25rem;
+    	display: inline-block;
+    	white-space: nowrap;
+    	width:100%;
+    	font-weight:300;
+    	font-size:.9rem;
+	}
+	li.navLink {
+		padding:0px;
+
+	}
+	.active {
+		font-weight:400;
+	}
+	.divider {
+		border-top:1px solid $very-light;
+		padding:0 0 .3rem 0;
+		margin:0px;
+	}
+	.dropdown-header {
+		color:$primary-color;
+		font-weight:400;
+		font-size:1rem;
+	}
+}
+.form-group {
+	border:1px solid $very-light;
+	border-radius: 1rem;
+	input {
+		display:inline-block;
+	}
+	button {
+		display:inline-block;
+		border:0px;
+		background-color:transparent;
+		padding-right:10px;
+	}
+	.form-control {
+		&:focus {
+    		outline:0px !important;
+    		-webkit-appearance:none;
+    		-webkit-box-shadow: none;
+    		box-shadow: none;
+		}		
+		border:0px; 
+		background-color:transparent;
+		font-size: .9rem;
+		font-family:$font-stack;
+		color:$primary-color;
+		font-weight:300;
+	}	
+}
+
+#footer {
+	border-top:1px solid $very-light;
+	padding-top:15px;
+	padding-bottom:15px;
+	position:absolute;
+	bottom:0;
+	height:100px;
+	width:100%;
+	.social {
+		text-align:right;
+		display:inline-block;
+		width:100%;
+	}
+	.social li {
+		display:inline-block;
+		list-style-type:none;
+		padding-left:.5rem;
+		padding-right:.5rem;
+		color:$lighter-color;
+		float:right;
+	}
+	.social li svg {
+		width:21px;
+	}
+	.poweredBy {
+		display:inline-block;
+		font-size:.8rem;
+	}
+
+}
+
+/* Media carousel */
+p.legend a {
+    color: $ca-blue;
+}
+

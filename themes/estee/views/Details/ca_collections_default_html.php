@@ -92,7 +92,7 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 				</div><!-- end browseResultsDetailContainer -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collection_objects', array('search' => 'collection_id:'.$t_item->get('ca_collections.collection_id'), 'sort' => 'Rank', 'direction' => 'asc', 'showFilterPanel' => 1, 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collection_objects', array('search' => 'collection_id:'.$t_item->get('ca_collections.collection_id'), 'sort' => 'Date', 'direction' => 'asc', 'showFilterPanel' => 1, 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 //						jQuery('#browseResultsDetailContainer').jscroll({
 //							autoTrigger: true,
 //							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -183,7 +183,7 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 									</div><!-- end browseResultsDetailContainer -->
 									<script type="text/javascript">
 										jQuery(document).ready(function() {
-											jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'brand_facet', 'id' => $vn_brand, 'showFilterPanel' => 1, 'view' => 'images', 'dontSetFind' => 1, 'key' => $ps_key), array('dontURLEncodeParameters' => true)); ?>", function() {
+											jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'brand_facet', 'id' => $vn_brand, 'showFilterPanel' => 1, 'view' => 'images', 'dontSetFind' => 1, 'sort' => 'Media', 'direction' => 'asc', 'key' => $ps_key), array('dontURLEncodeParameters' => true)); ?>", function() {
 						//						jQuery('#browseResultsDetailContainer').jscroll({
 						//							autoTrigger: true,
 						//							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -203,6 +203,11 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 										<div class="col-sm-12">
 <?php
 											print $t_item->getWithTemplate('<ifdef code="ca_collections.public_notes"><div class="unit"><p>^ca_collections.public_notes</p></div><br/></ifdef><ifdef code="ca_collections.scopecontent"><div class="unit"><p>^ca_collections.scopecontent</p></div><br/></ifdef>');
+?>
+<?php					
+					if ($vn_pdf_enabled) {
+						print "<div class='detailTools'><div class='detailTool'><i class='material-icons inline'>save_alt</i>".caDetailLink($this->request, "Download Collection Guide", "", "ca_collections", $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div></div>";
+					}
 ?>
 										</div>
 									</div>

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,37 +25,39 @@
  *
  * ----------------------------------------------------------------------
  */
-	$vs_player_name = 			$this->getVar('player_name');
-	$va_annotations = 			$this->getVar('annotation_list');
-	$va_annotation_times = 		$this->getVar('annotation_times');
-	$vn_representation_id = 	$this->getVar('representation_id');
+$vs_player_name = 			$this->getVar('player_name');
+$va_annotations = 			$this->getVar('annotation_list');
+$va_annotation_times = 		$this->getVar('annotation_times');
+$default_annotation_id = 	$this->getVar('default_annotation_id');
+$start_time = 				$this->getVar('start_time');
+$vn_representation_id = 	$this->getVar('representation_id');
 
-	if (sizeof($va_annotations) > 0) {
+if (sizeof($va_annotations) > 0) {
 ?>
-<h6><?php print _t('Video Index (%1)', sizeof($va_annotations)); ?></h6>
+<h6><?=  _t('Video Index (%1)', sizeof($va_annotations)); ?></h6>
 <div class='detailAnnotationList'>
 	<ul class='detailAnnotation'>
 <?php
-		foreach($va_annotations as $vs_annotation) {
-			print "<li class='detailAnnotation'>".preg_replace('/\[info.*?\]/', '', $vs_annotation)."</li>\n";
+		foreach($va_annotations as $annotation_id => $vs_annotation) {
+			print "<li class='detailAnnotation' id='detailAnnotation{$annotation_id}'>".preg_replace('/\[info.*?\]/', '', $vs_annotation)."</li>\n";
 		}
 ?>
 	</ul>
 <?php
-	}
+}
 ?>
 </div>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
-		var detailAnnotationTimes = <?php print json_encode($va_annotation_times); ?>;
+		var detailAnnotationTimes = <?=  json_encode($va_annotation_times); ?>;
 		jQuery('li.detailAnnotation').on('click', function(e) {
 			var i = jQuery('li.detailAnnotation').index(e.target); 
 			
-			caUI.mediaPlayerManager.seek('<?php print $vs_player_name; ?>', detailAnnotationTimes[i][0]);
+			caUI.mediaPlayerManager.seek('<?= $vs_player_name; ?>', detailAnnotationTimes[i][0]);
 		});
 		
-		caUI.mediaPlayerManager.onTimeUpdate('<?php print $vs_player_name; ?>', function() {
-			var ct = caUI.mediaPlayerManager.currentTime('<?php print $vs_player_name; ?>');
+		caUI.mediaPlayerManager.onTimeUpdate('<?= $vs_player_name; ?>', function() {
+			var ct = caUI.mediaPlayerManager.currentTime('<?=  $vs_player_name; ?>');
 			
 			jQuery('li.detailAnnotation').removeClass('active');
 			jQuery.each(detailAnnotationTimes, function(i, v) {
@@ -64,5 +66,17 @@
 				}
 			});
 		});
+		
+<?php
+	if($default_annotation_id) {
+?>
+		jQuery('#detailAnnotation<?= $default_annotation_id; ?>').click();
+<?php
+	} elseif($start_time) {
+?>
+		caUI.mediaPlayerManager.seek('<?= $vs_player_name; ?>', <?= (float)$start_time; ?>);
+<?php
+	}
+?>
 	});
 </script>

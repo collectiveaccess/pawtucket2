@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2019 Whirl-i-Gig
+ * Copyright 2013-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -111,6 +111,8 @@ class DetailController extends FindController {
 		AssetLoadManager::register("readmore");
 		AssetLoadManager::register("maps");
 		
+		$o_search_config = caGetSearchConfig();
+		
 		$options = (isset($this->opa_detail_types[$function]['options']) && is_array($this->opa_detail_types[$function]['options'])) ? $this->opa_detail_types[$function]['options'] : array();
 		//
 		// Media viewer
@@ -157,6 +159,7 @@ class DetailController extends FindController {
 			// invalid id - throw error
 			throw new ApplicationException("Invalid id");
 		} 
+		$t_subject->autoConvertLineBreaks(true);
 		
 		$ps_view = $this->request->getParameter('view', pString);
 		if($ps_view === 'pdf') {
@@ -239,7 +242,7 @@ class DetailController extends FindController {
 		# Enforce access control
 		#
 		if(sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
-			$this->notification->addNotification(_t("This item is not available for view"), "message");
+			$this->notification->addNotification(_t("This item is not available for view"), __NOTIFICATION_TYPE_INFO__);
 			$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
 			return;
 		}
@@ -251,20 +254,37 @@ class DetailController extends FindController {
 		}
 		$type = $t_subject->getTypeCode();
 		
+		$t_subject->doHighlighting($o_search_config->get("do_highlighting"));
+		
 		$this->view->setVar('detailType', $table);
 		$this->view->setVar('item', $t_subject);
 		$this->view->setVar('itemType', $type);
 		
 		caAddPageCSSClasses(array($table, $function, $type));
 		
+		$o_context = ResultContext::getResultContextForLastFind($this->request, $table);
 		
-		// Do we need to pull in the multisearch result set?
-		if ((ResultContext::getLastFind($this->request, $table, array('noSubtype' => true))) === 'multisearch') {
-			$o_context = new ResultContext($this->request, $table, 'multisearch', $function);
-			$o_context->setAsLastFind(false);
-			$o_context->saveContext();
-		} else {
-			$o_context = ResultContext::getResultContextForLastFind($this->request, $table);
+		
+		$result_desc = $o_context->getResultDescription();
+		$this->view->setVar('resultDesc', $result_desc[$t_subject->getPrimaryKey()] ?? null);
+		
+		if($o_context->findType() === 'multisearch') {
+			if(!in_array($t_subject->getPrimaryKey(), $o_context->getResultList())) {
+				// try to find context that contains item
+				$search_config = caGetSearchConfig();
+				$blocks = array_filter($search_config->getAssoc('multisearchTypes') ?? [], function($v) use ($table) {
+					return ($v['table'] === $table);
+				});
+				foreach($blocks as $block => $block_info) {
+					if($block === $o_context->findSubType()) { continue; }
+					if($o_new_context = new ResultContext($this->request, $table, 'multisearch', $block)) {
+						if(in_array($t_subject->getPrimaryKey(), $o_new_context->getResultList())) {
+							$o_context = $o_new_context;
+							break;
+						}
+					}
+				}
+			}
 		}
 		
 		$this->view->setVar('previousID', $vn_previous_id = $o_context->getPreviousID($t_subject->getPrimaryKey()));
@@ -274,7 +294,8 @@ class DetailController extends FindController {
 		
 		$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $options, _t('Previous')), '', $table, $vn_previous_id, [], ['aria-label' => _t('Previous')]) : '');
 		$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $options, _t('Next')), '', $table, $vn_next_id, [], ['aria-label' => _t('Next')]) : '');
-		$params = array();
+		
+		$params = [];
 		$params["row_id"] = $t_subject->getPrimaryKey(); # --- used to jump to the last viewed item in the search/browse results
 		$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $table, caGetOption('resultsLink', $options, _t('Back')), null, $params, ['aria-label' => _t('Back')]));
 		$this->view->setVar('resultsURL', ResultContext::getResultsUrlForLastFind($this->request, $table, $params));
@@ -299,6 +320,31 @@ class DetailController extends FindController {
 			}
 			if(!is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
 			
+			$default_annotation_id = $start_timecode = null;
+			
+			if($start_timecode = $this->request->getParameter('start', pString)) {
+				// Timecode specified
+			} elseif(
+				($annotation_identifier = $this->request->getParameter('annotation', pString)) &&
+				(($options['annotationIdentifier'] ?? null) && 
+				($t_instance = ca_representation_annotations::findAsInstance([$options['annotationIdentifier'] => $annotation_identifier])))
+			) {
+				$default_annotation_id = $t_instance->get('ca_representation_annotations.annotation_id');
+			} elseif($item_match_desc = $result_desc[$t_subject->getPrimaryKey()] ?? null) {
+				// Search matched annotation?
+				foreach($item_match_desc['desc'] as $m) {
+					if($m['table'] === 'ca_representation_annotations') {
+						$default_annotation_id = $m['field_row_id'];
+						break;
+					}
+					if($m['table'] === 'ca_representation_annotation_labels') {
+						if($t_instance = ca_representation_annotation_labels::findAsInstance($m['field_row_id'])) {
+							$default_annotation_id = $t_instance->get('ca_representation_annotation_labels.annotation_id');
+							break;
+						}
+					}
+				}
+			}
 			$this->view->setVar('representationViewerPrimaryOnly', $rep_viewer_primary_only = caGetOption('representationViewerPrimaryOnly', $options, false));
 			$this->view->setVar('representationViewer', 
 				caRepresentationViewer(
@@ -309,6 +355,8 @@ class DetailController extends FindController {
 						[
 							'display' => 'detail',
 							'showAnnotations' => true, 
+							'defaultAnnotationID' => $default_annotation_id,	// jump to specific annotation?
+							'startTimecode' => $start_timecode,				// jump to specific time?
 							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
 							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $options, false), 
 							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $options, false),
@@ -336,7 +384,16 @@ class DetailController extends FindController {
 			$vn_mapped_count = 0;	
 			foreach($map_attributes as $map_attribute) {
 				if ($t_subject->get($map_attribute)){
-					$ret = $o_map->mapFrom($t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false)));
+					$map_fuzz_level = null;
+					if(is_array($map_fuzz_config = caGetOption('mapFuzz', $options, null))) {
+						$when = $map_fuzz_config['when'] ?? null;
+						if(($when && $t_subject->evaluateExpression($map_fuzz_config['when'])) || !$when) {
+							$map_fuzz_level = $map_fuzz_config['level'] ?? null;
+						}
+					} else{
+						$map_fuzz_level = $map_fuzz_config;
+					}
+					$ret = $o_map->mapFrom($t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => (int)$map_fuzz_level));
 					$vn_mapped_count += $ret['items'];
 				}
 			}
@@ -403,7 +460,6 @@ class DetailController extends FindController {
 			$o_rel_context->setAsLastFind(true);
 			
 			$qr_rel_res = $o_browse->getResults();
-			#$o_rel_context->setResultList($qr_rel_res->getAllFieldValues('ca_objects.object_id'));
 			$o_rel_context->setResultList($qr_rel_res->getPrimaryKeyValues(1000));
 			
 			$o_rel_context->saveContext();
@@ -509,9 +565,17 @@ class DetailController extends FindController {
 	 *
 	 */ 
 	public function GetTimebasedRepresentationAnnotationList() {
-		$id 			= $this->request->getParameter('id', pInteger);
-		$representation_id 	= $this->request->getParameter('representation_id', pInteger);
+		$id 					= $this->request->getParameter('id', pInteger);
+		$representation_id 		= $this->request->getParameter('representation_id', pInteger);
 		$detail_type			= $this->request->getParameter('context', pString);
+		$default_annotation_id 	= $this->request->getParameter('default_annotation_id', pInteger);
+		$start_timecode 		= $this->request->getParameter('start_timecode', pString);
+		
+		$start_time = null;
+		if($start_timecode) {
+			$tc = new TimecodeParser($start_timecode);
+			$start_time = $tc->getSeconds();
+		}
 		$detail_options 		= (isset($this->opa_detail_types[$detail_type]['options']) && is_array($this->opa_detail_types[$detail_type]['options'])) ? $this->opa_detail_types[$detail_type]['options'] : array();
 		
 		if(!$id) { $id = 0; }
@@ -534,7 +598,7 @@ class DetailController extends FindController {
 		) {
 			while($qr_annotations->nextHit()) {
 				if (!preg_match('!^TimeBased!', $qr_annotations->getAnnotationType())) { continue; }
-				$annotation_list[] = $qr_annotations->getWithTemplate($vs_template);
+				$annotation_list[$qr_annotations->getPrimaryKey()] = $qr_annotations->getWithTemplate($vs_template);
 				$annotation_times[] = array((float)$qr_annotations->getPropertyValue('startTimecode', true) - (float)$props['timecode_offset'], (float)$qr_annotations->getPropertyValue('endTimecode', true) - (float)$props['timecode_offset']);
 			}
 			$qr_annotations->seek(0);
@@ -543,6 +607,8 @@ class DetailController extends FindController {
 		$this->view->setVar('representation_id', $representation_id);
 		$this->view->setVar('annotation_list', $annotation_list);
 		$this->view->setVar('annotation_times', $annotation_times);
+		$this->view->setVar('default_annotation_id', $default_annotation_id);
+		$this->view->setVar('start_time', $start_time);
 		$this->view->setVar('annotations_search_results', $qr_annotations);
 		$this->view->setVar('player_name', "caMediaOverlayTimebased_{$representation_id}_detail");
 		
@@ -876,8 +942,7 @@ class DetailController extends FindController {
 			if($comment || $rank || $media1){
 				$t_item->addComment($comment, $rank, $this->request->getUserID(), null, $name, $email, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null, array('media1_original_filename' => $media1_original_name), $media1, null, null, null, $location);
 			}
-			if($tags){
-				$tags = array();
+			if(is_string($tags) && strlen($tags)){
 				$tags = explode(",", $tags);
 				foreach($tags as $tag){
 					$t_item->addTag(trim($tag), $this->request->getUserID(), null, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null);
@@ -1365,7 +1430,7 @@ class DetailController extends FindController {
 				'table' => 'ca_objects'
 			];
 		} elseif (!is_array($context_info = $this->opa_detail_types[$context])) { 
-			throw new ApplicationException(_t('Invalid context'));
+			throw new ApplicationException(_t('Invalid context %1', $context));
 		}
 		$o_context = ResultContext::getResultContextForLastFind($this->request, $context_info['table']);
 		

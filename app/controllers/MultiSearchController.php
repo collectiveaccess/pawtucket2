@@ -25,61 +25,61 @@
  *
  * ----------------------------------------------------------------------
  */
- 	require_once(__CA_LIB_DIR__."/pawtucket/BaseMultiSearchController.php");
- 	
- 	class MultiSearchController extends BaseMultiSearchController {
- 		# -------------------------------------------------------
- 		protected $ops_find_type = 'multisearch';
- 				
- 		# -------------------------------------------------------
- 		/**
- 		 *
- 		 */
- 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
-			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-            } 
-            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
-            	print "You do not have access to view this page.";
-            	die;
-            }			
-            
- 			caSetPageCSSClasses(array("multisearch"));
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search").$this->request->config->get("page_title_delimiter").$this->request->getParameter('search', pString));
- 		}
- 		# -------------------------------------------------------
- 		/**
- 		 * Search handler (returns search form and results, if any)
- 		 * Most logic is contained in the BaseSearchController->Search() method; all you usually
- 		 * need to do here is instantiate a new subject-appropriate subclass of BaseSearch 
- 		 * (eg. ObjectSearch for objects, EntitySearch for entities) and pass it to BaseSearchController->Search() 
- 		 */ 
- 		public function Index($pa_options=null) {
- 			return parent::Index($pa_options);
- 		}
- 		# -------------------------------------------------------
- 		/**
- 		 *
- 		 */
-		public function searchName($ps_mode='singular') {
- 			return ($ps_mode == 'singular') ? _t('search') : _t('searches');
- 		}
-		# -------------------------------------------------------
-		/** 
-		 * Generate the URL for the "back to results" link from a browse result item
-		 * as an array of path components.
-		 */
- 		public static function getReturnToResultsUrl($po_request) {
- 			$va_ret = array(
- 				'module_path' => '',
- 				'controller' => 'MultiSearch',
- 				'action' => 'Index',
- 				'params' => array(
- 					'search'
- 				)
- 			);
-			return $va_ret;
- 		}
- 		# -------------------------------------------------------
+require_once(__CA_LIB_DIR__."/pawtucket/BaseMultiSearchController.php");
+
+class MultiSearchController extends BaseMultiSearchController {
+	# -------------------------------------------------------
+	protected $ops_find_type = 'multisearch';
+			
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+		parent::__construct($po_request, $po_response, $pa_view_paths);
+		if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+			$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+		} 
+		if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+			print "You do not have access to view this page.";
+			die;
+		}			
+		
+		caSetPageCSSClasses(array("multisearch"));
+		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search").$this->request->config->get("page_title_delimiter").$this->request->getParameter('search', pString));
 	}
+	# -------------------------------------------------------
+	/**
+	 * Search handler (returns search form and results, if any)
+	 * Most logic is contained in the BaseSearchController->Search() method; all you usually
+	 * need to do here is instantiate a new subject-appropriate subclass of BaseSearch 
+	 * (eg. ObjectSearch for objects, EntitySearch for entities) and pass it to BaseSearchController->Search() 
+	 */ 
+	public function Index($pa_options=null) {
+		return parent::Index($pa_options);
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function searchName($ps_mode='singular') {
+		return ($ps_mode == 'singular') ? _t('search') : _t('searches');
+	}
+	# -------------------------------------------------------
+	/** 
+	 * Generate the URL for the "back to results" link from a browse result item
+	 * as an array of path components.
+	 */
+	public static function getReturnToResultsUrl($po_request) {
+		$va_ret = array(
+			'module_path' => '',
+			'controller' => 'MultiSearch',
+			'action' => 'Index',
+			'params' => array(
+				'search'
+			)
+		);
+		return $va_ret;
+	}
+	# -------------------------------------------------------
+}

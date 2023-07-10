@@ -414,7 +414,7 @@
  	 */
 	function caGISDecimalToSignedDecimal($ps_value){
 		$ps_value = trim($ps_value);
-		list($vn_left_of_decimal, $vn_right_of_decimal, $vs_dir) = preg_split('![\. ]{1}!',$ps_value);
+		list($vn_left_of_decimal, $vn_right_of_decimal, $vs_dir) = array_pad(preg_split('![\. ]{1}!',$ps_value), 3, null);
 		if (preg_match('!([A-Za-z]+)$!', $vn_right_of_decimal, $va_matches)) {
 			$vs_dir = $va_matches[1];
 			$vn_right_of_decimal = preg_replace('!([A-Za-z]+)$!', '', $vn_right_of_decimal);
@@ -475,7 +475,6 @@
 	 *	
 	 *		lat1,long1 ~ distance
 	 *			ex. 43.34,-74.23 ~ 5km
-	 *	[Area with
 	 */ 
 	function caParseGISSearch($ps_value) {
 		$ps_value = preg_replace('![ ]*,[ ]*!', ',', $ps_value);
@@ -501,9 +500,9 @@
 					if (!sizeof($va_tokens)) {
 						return array(
 							'min_latitude' => $vn_lat1,
-							'max_latitude' =>  $vn_lat1,
-							'min_longitude' =>  $vn_long1,
-							'max_longitude' =>  $vn_long1
+							'max_latitude' => $vn_lat1,
+							'min_longitude' => $vn_long1,
+							'max_longitude' => $vn_long1
 						);
 					}
 					
@@ -532,9 +531,9 @@
 					
 					return array(
 						'min_latitude' => ($vn_lat1 > $vn_lat2) ? $vn_lat2 : $vn_lat1,
-						'max_latitude' =>  ($vn_lat1 < $vn_lat2) ? $vn_lat2 : $vn_lat1,
-						'min_longitude' =>  ($vn_long1 > $vn_long2) ? $vn_long2 : $vn_long1,
-						'max_longitude' =>  ($vn_long1 < $vn_long2) ? $vn_long2 : $vn_long1,
+						'max_latitude' => ($vn_lat1 < $vn_lat2) ? $vn_lat2 : $vn_lat1,
+						'min_longitude' => ($vn_long1 > $vn_long2) ? $vn_long2 : $vn_long1,
+						'max_longitude' => ($vn_long1 < $vn_long2) ? $vn_long2 : $vn_long1,
 					);
 					break;
 				case 3:	// distance
@@ -662,4 +661,3 @@
 		return array();
 	}
 	# --------------------------------------------------------------------------------------------
-?>

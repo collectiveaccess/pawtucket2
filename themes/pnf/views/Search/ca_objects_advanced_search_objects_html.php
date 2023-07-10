@@ -58,15 +58,19 @@
 			{{{ca_objects.041_lang}}}
 		</div>	
 		<div class="col-sm-6 field">
-			<?php print _t("Bookseller"); ?><br/>
+			<?php print _t("Bookseller / Distributor"); ?><br/>
 			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=bookseller}}}
 		</div>		
 	</div>		
 	<hr>		
 	<div class='row'>		
-		<div class="col-sm-12 field">
+		<div class="col-sm-6 field">
 			<?php print _t("Date Range"); ?> <i>(e.g., 1776-1792)</i><br/>
-			{{{ca_objects.260_date%width=200px&height=40px&useDatePicker=0}}}
+			{{{ca_objects.260_date%width=200px&height=1&useDatePicker=0}}}
+		</div>
+		<div class="col-sm-6 field">
+			<?php print _t("Comedias Sueltas Database ID#"); ?><br/>
+			{{{ca_objects.object_id}}}
 		</div>
 	</div>	
 	<hr>

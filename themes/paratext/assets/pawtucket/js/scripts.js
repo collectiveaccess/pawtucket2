@@ -290,3 +290,20 @@ function sortTable(n) {
         }
     }
 }
+
+/****************************************************
+****************** BACK TO TOP BUTTON ********************
+****************************************************/
+$(window).scroll(function() {
+
+	// distance scrolled
+	var scrollTop = $(window).scrollTop();
+
+    if (scrollTop > 200) {
+    	$('.back_to_top').addClass("show");
+    }
+    else {
+    	$('.back_to_top').removeClass("show");
+    }
+
+});

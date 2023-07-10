@@ -1,0 +1,15 @@
+coverage
+src
+test
+gulpfile.js
+demo
+.babelrc
+.travis.yml
+.coveralls.yml
+.editorconfig
+.eslintrc
+.nvmrc
+.gitignore
+webpack.config.js
+
+

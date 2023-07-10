@@ -73,7 +73,7 @@
 										if($vs_lc_terms && (strpos($vs_lc_terms, " [") !== false)){
 											$vs_lc_term = mb_substr($vs_lc_terms, 0, strpos($vs_lc_terms, " ["));
 										}
-										$va_all_subjects[] = caNavLink($this->request, $vs_lc_term, "", "", "Multisearch", "Index", array("search" => $vs_lc_term));
+										$va_all_subjects[] = caNavLink($this->request, $vs_lc_term, "", "", "MultiSearch", "Index", array("search" => $vs_lc_term));
 									}
 								}
 							}

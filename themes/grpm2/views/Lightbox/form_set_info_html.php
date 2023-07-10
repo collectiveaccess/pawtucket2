@@ -46,8 +46,6 @@
 ?>
 	<form id="SetForm" action="#" class="form-horizontal" role="form">
 <?php
-		print caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request)));
-		
 		if($va_errors["name"]){
 			print "<div class='alert alert-danger'>".$va_errors["name"]."</div>";
 		}

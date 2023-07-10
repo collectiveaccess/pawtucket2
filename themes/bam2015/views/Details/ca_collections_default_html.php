@@ -88,7 +88,7 @@
 									searchstring.focus();
 									$("#collectionSearch").slideDown("200", function () {
 										$('#collectionSearch').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
-										var s = escape("(ca_collections.hier_collection_id:<?php print $vn_id; ?>) AND " + searchstring.val());
+										var s = escape("(ca_collections.collection_id:<?php print $vn_id; ?>) AND " + searchstring.val());
 										jQuery("#collectionSearch").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('detailNav' => '0', 'openResultsInOverlay' => '0'), array('dontURLEncodeParameters' => false)); ?>", { search: s })
 									});
 								});
@@ -98,7 +98,7 @@
 									searchstring.focus();
 										$("#collectionSearch").slideDown("200", function () {
 											$('#collectionSearch').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
-											var s = escape("(ca_collections.hier_collection_id:<?php print $vn_id; ?>) AND " + searchstring.val());
+											var s = escape("(ca_collections.collection_id:<?php print $vn_id; ?>) AND " + searchstring.val());
 											jQuery("#collectionSearch").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('detailNav' => '0', 'openResultsInOverlay' => '0'), array('dontURLEncodeParameters' => false)); ?>", { search: s })
 										});
 									}

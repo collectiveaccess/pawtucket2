@@ -26,8 +26,7 @@
  * ----------------------------------------------------------------------
  */
 	require_once(__CA_LIB_DIR__."/Plugins/CurrencyConversion/BaseCurrencyConversionPlugin.php");
-	require_once(__CA_LIB_DIR__."/Zend/Currency.php");
-	
+
 	class WLPlugCurrencyConversionEuroBank Extends BaseCurrencyConversionPlugIn implements IWLPlugCurrencyConversion {
 		# ------------------------------------------------
 		/**
@@ -56,6 +55,8 @@
 		 * @return string Converted value with currency specifier, unless numericValue option is set.
 		 */
 		static public function convert($ps_value, $ps_to, $pa_options=null) {
+			global $_locale;
+			
 			$va_currency_data = WLPlugCurrencyConversionEuroBank::_loadData();
 			$ps_to = parent::normalizeCurrencySpecifier($ps_to);
 			
@@ -97,11 +98,7 @@
 				return (float)sprintf("%01.2f", $vn_converted_value);
 			}
 			
-			if(Zend_Registry::isRegistered("Zend_Locale")) {
-				$o_locale = Zend_Registry::get('Zend_Locale');
-			} else {
-				$o_locale = new Zend_Locale('en_US');
-			}
+			$o_locale = $_locale ? $_locale : new Zend_Locale(__CA_DEFAULT_LOCALE__);
 			
 			$vs_format = Zend_Locale_Data::getContent($o_locale, 'currencynumber');
 
@@ -176,4 +173,3 @@
 		}
 		# ------------------------------------------------
 	}
-?>

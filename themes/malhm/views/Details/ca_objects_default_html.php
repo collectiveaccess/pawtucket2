@@ -74,7 +74,6 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-ini_set("display_errors", "on");
 				print "<div class='instLink'><small>from the collection of</small><div>".caDetailLink($this->request, caGetListItemByIDForDisplay($vn_source_id = $t_object->get('source_id')), '', 'ca_entities', ca_entities::getIDForIdno(caGetListItemIdno($vn_source_id)))."</div></div>";
 
 				
