@@ -169,10 +169,10 @@
 					{{{<ifdef code="ca_objects.vhh_Description">
 						<div class='unit'>
 							<label><t>Description</t></label>
-							<span class="trimText">^ca_objects.vhh_Description.DescriptionText</span>
+							
 
-							<unit relativeTo="ca_objects.vhh_Description" delimiter="<br/>">
-
+							<unit relativeTo="ca_objects.vhh_Description" delimiter="<br/><br/>">
+								<span class="trimText">^ca_objects.vhh_Description.DescriptionText</span>
 								<ifdef code="ca_objects.vhh_Description.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 								<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 									<ifdef code="ca_objects.vhh_Description.__source__">
