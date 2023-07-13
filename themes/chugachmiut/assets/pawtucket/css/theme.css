@@ -990,6 +990,15 @@ div.detailAlertClose{
 #caFormOverlay H1{
 	font-size:24px;
 }
+.detailPlaceholder{
+	background-color: #F5F5F5;
+	border: 2px solid #EDEDED;
+	color: #757575;
+	padding: 60px 30px 72px;
+	text-align: center;
+	width: 100%;
+	font-size: 18px;
+}
 /* collections */
 .collectionIntro {
 	font-size: 14px;
