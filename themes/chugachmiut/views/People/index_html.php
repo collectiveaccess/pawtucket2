@@ -5,10 +5,10 @@
 		<div class="col-sm-12 col-lg-10 col-lg-offset-1">
 			<H1>People</H1>
 			<div class="row bgTurq">
-				<div class="col-sm-6 peopleHeaderImage">
+				<div class="col-sm-12 col-md-6 peopleHeaderImage">
 					<?php print caGetThemeGraphic($this->request, 'People.jpg', array("alt" => "People")); ?>
 				</div>
-				<div class="col-sm-6 text-center">
+				<div class="col-sm-12 col-md-6 text-center">
 					<div class="peopleIntro">{{{people_intro}}}</div>
 					<div class="peopleSearch"><form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'people'); ?>">
 						<div class="formOutline">
