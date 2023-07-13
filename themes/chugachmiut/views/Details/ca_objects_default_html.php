@@ -33,6 +33,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$vs_rep_viewer = trim($this->getVar("representationViewer"));
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -53,8 +54,13 @@
 		</div>
 		<div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5'>
-				{{{representationViewer}}}
-				
+<?php
+				if($vs_rep_viewer){
+					print $vs_rep_viewer;
+				}else{
+					print "<div class='detailPlaceholder'><i class='fa fa-image fa-5x' aria-label='media placeholder'></i></div>";
+				}
+?>				
 				
 				<div id="detailAnnotations"></div>
 				
@@ -68,8 +74,8 @@
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,contributor,author"><div class="unit"><label>Creators and Contributors</label>
 								<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator,contributor,author"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
 							</div></ifcount>}}}
-				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="repository" min="1"><div class="unit"><label>Repository</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="repository"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}				
-				
+				{{{<ifcount min="1" code="ca_collections"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></div></unit>}}}
+						
 				{{{<ifdef code="ca_objects.summary">
 					<div class='unit'><label>Summary</label>
 						<span class="trimText">^ca_objects.summary</span>
@@ -133,7 +139,6 @@
 						{{{<ifdef code="ca_objects.format_material"><div class="unit"><label>Format/Material</label>^ca_objects.format_material%delimiter=,_</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.publisher_container.publisher|ca_objects.publisher_container.pub_place"><div class="unit"><label>Publisher</label>^ca_objects.publisher_container.publisher<ifdef code="ca_objects.publisher_container.pub_place">, ^ca_objects.publisher_container.pub_place</ifdef></div></ifdef>}}}
-						{{{<ifcount min="1" code="ca_collections"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></div></unit>}}}
 						{{{<ifdef code="ca_objects.copies"><div class="unit"><label>Number of Copies</label>^ca_objects.copies</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 					</div>
