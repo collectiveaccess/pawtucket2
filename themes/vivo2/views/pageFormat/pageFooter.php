@@ -25,24 +25,72 @@
  *
  * ----------------------------------------------------------------------
  */
+ 
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
-		<footer id="footer" class="text-center">
+		<footer id="footer">
+			
+			<div class="container">
 			<div class="row">
-				<div class="col-sm-12 text-center">
-					<p>
-						<a href="#" class="orgLink">Chugachmiut Heritage Library & Archive</a>
-						<div class="address">
-							1840 Bragaw St. Ste. 110, Anchorage, AK 99508 | (907) 562-4155<br/>
-							&copy; <?php print date("Y"); ?>
-						</div>
-					</p>
-					<ul class="list-inline social">
-						<li><a href="https://www.facebook.com/ChugachmiutHeritage/" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
-						<li class="contact"><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+				<div class="col-sm-4">
+					<div class="orgLink">
+							Crista Dahl
+							<br/>Media Library & Archive
+							<hr/>
+							VIVO Media Arts Centre
+					</div>
+				</div>
+				<div class="col-sm-2">
+					<ul class="">
+						<li class="title">About</li>
+						<li><?php print caNavLink($this->request, _t("The Archive"), "", "", "About", "Index"); ?></li>
+						<li><?php print caNavLink($this->request, _t("How to Use this Site"), "", "", "About", "Guide"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Research & Reproduction"), "", "", "About", "ResearchReproduction"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Policies"), "", "", "About", "Policies"); ?></li>
 					</ul>
 				</div>
+				<div class="col-sm-2">
+					<ul class="">
+						<li class="title">Browse</li>
+						<li><?php print caNavLink($this->request, _t("All Objects"), "", "", "Browse", "objects"); ?></li>
+						<li><?php print caNavLink($this->request, _t("People & Organizations"), "", "", "Browse", "entities"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Videos"), "", "", "Browse", "video"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Events"), "", "", "Browse", "events"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Research Guides"), "", "", "Browse", "research_guides"); ?></li>
+					</ul>
+				</div>
+				<div class="col-sm-2">
+					<ul class="">
+						<li class="title">Collections</li>
+<?php
+	$col_config = caGetCollectionsConfig();
+	$vs_sves_id = $col_config->get("sves_idno");
+	if($vs_sves_id){
+		$t_sves_collection = new ca_collections(array("idno" => $vs_sves_id));
+		if($vn_sves_id = $t_sves_collection->get("ca_collections.collection_id")){
+?>
+						<li><?php print caDetailLink($this->request, _t("Satellite Video Exchange Society"), "", "ca_collections",  $vn_sves_id); ?></li>
+<?php
+		}
+	}
+?>
+						<li><?php print caNavLink($this->request, _t("Explore All Collections"), "", "", "Collections", "index"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Projects"), "", "", "Gallery", "Index"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Donate"), "", "", "About", "Donate"); ?></li>
+					</ul>
+				</div>
+				<div class="col-sm-2">
+					<ul class="">
+						<li class="title"><?php print caNavLink($this->request, _t("Video Out")." <span class='material-symbols-outlined'>open_in_new</span>", "", "", "VideoOut", "Index"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "videoout"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "videooutartists"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Rental & Sales"), "", "", "Contact", "form", array("contactType" => "RentalPurchase")); ?></li>
+						<li><?php print caNavLink($this->request, _t("Submit for Distribution"), "", "", "VideoOutSubmit", ""); ?></li>
+						<li><a href="https://www.vivomediaarts.com/"><?php print _t("VIVO Media Arts")." <span class='material-symbols-outlined'>open_in_new</span>"; ?></a></li>
+					</ul>
+				</div>
+			</div>
 			</div>
 		</footer><!-- end footer -->
 <?php
