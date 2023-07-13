@@ -107,14 +107,13 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="row">
-					<div class="col-sm-4">
+					<div class="col-sm-12">
 						<div class="form-group<?php print (($va_errors["contactType"]) ? " has-error" : ""); ?>">
 							<label for="name">Contact Type</label>
 							<select name="requestType">
 								<option value="Research Request">Research Request</option>
 								<option value="Reproduction Request">Reproduction Request</option>
 								<option value="General Inquiry">General Inquiry</option>
-								<option value="Video Out Rental or Purchase Inquiry">Video Out Rental or Purchase Inquiry</option>
 							</select>
 						</div>
 					</div><!-- end col -->

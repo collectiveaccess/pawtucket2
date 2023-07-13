@@ -86,7 +86,7 @@
 								print "</div>";
 							}
 							if($t_object->get("ca_objects.related")){
-								print "<div class='unit text-center'>".caNavLink($this->request, "Related Artwork", "btn btn-light btn-sm", "", "Browse",  "artwork", array('facet' => 'related_object_facet', 'id' => $t_object->get("ca_objects.object_id")))."</div>";
+								print "<div class='unit text-center'>".caNavLink($this->request, "Related Artwork", "btn btn-light btn-sm", "", "Browse",  "artwork", array('dontSetFind' => 1, 'facet' => 'related_object_facet', 'id' => $t_object->get("ca_objects.object_id")))."</div>";
 							}
 	?>						
 						</div><!-- end col -->
