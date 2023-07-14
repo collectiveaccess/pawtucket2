@@ -626,6 +626,9 @@ body.frontContainer #footer{
     margin-top:80px;
     margin-bottom:80px;
 }
+.frontGrid a{
+	color:#000;
+}
 /* hp explore */
 .bg_side_pattern{
 	padding: 0px 10px 0px 10px;

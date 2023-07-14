@@ -139,7 +139,10 @@
 	</div>
 
 <?php
-
+	# --- display galleries as a grid?
+	print $this->render("Front/gallery_grid_html.php");
+	
+	
 	if($vn_timeline_set_id){
 
 ?>
@@ -166,10 +169,7 @@
 <?php
 	}
 
-	# --- display galleries as a grid?
-	print $this->render("Front/gallery_grid_html.php");
-	
-	# --- display slideshow of random images
+# --- display slideshow of random images
 	print $this->render("Front/featured_set_slideshow_html.php");
 
 	# --- display galleries as a slideshow?

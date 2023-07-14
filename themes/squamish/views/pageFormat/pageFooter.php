@@ -61,9 +61,7 @@
 <?php
 if((!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
 	# --- display lightbox alert
-	if(!CookieOptionsManager::showBanner()){
-		Session::setVar('visited_time', time());
-	}
+	Session::setVar('visited_time', time());
 
 ?>
 	<div class="disclaimerAlert">
