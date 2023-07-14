@@ -55,7 +55,7 @@
 			$vs_name = $qr_people->get("ca_entities.preferred_labels.displayname");
 			$vs_quote = $qr_people->get("ca_entities.quote");
 			
-			if($vs_image = $qr_people->get("ca_object_representations.media.iconlarge")){
+			if($vs_image = $qr_people->get("ca_object_representations.media.large")){
 				$vs_image_col = "<div class='col-sm-4'>".caDetailLink($this->request, $vs_image, "", "ca_entities", $qr_people->get("ca_entities.entity_id"))."</div>\n";
 			}
 			$vs_quote_col = (($vs_image) ? "<div class='col-sm-8'>" : "<div class='col-sm-8'>").caDetailLink($this->request, $vs_name, "personName", "ca_entities", $qr_people->get("ca_entities.entity_id"))."<div class='peopleFeaturedQuote'>&ldquo;".$vs_quote."&rdquo;</div><div class='text-center'>".caDetailLink($this->request, "More", "btn btn-default", "ca_entities", $qr_people->get("ca_entities.entity_id"))."</div></div>";
