@@ -1079,6 +1079,11 @@ body.frontContainer #footer{
 	background-image: url('../graphics/alphabet2.jpg');
 	background-position:left center;
 }
+.landingBox .landingBoxImage.landingBoxImageTalkingDictionary{
+	background-image: url('../graphics/talkingDictionary.jpg');
+	background-position:left center;
+}
+talkingDictionary
 .landingBox .landingBoxDetails {
 	padding: 15px 13px 22px;
 	text-align:center;
@@ -1090,6 +1095,7 @@ body.frontContainer #footer{
 	text-transform:capitalize;
 	margin-bottom:6px;
 	font-family: "Tahoma", sans-serif;
+	margin-top: 8px;
 }
 .landingBox .landingBoxTitle a:hover {
 	text-decoration:none;

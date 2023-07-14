@@ -27,9 +27,9 @@
 				</div>
 				<div class="col-sm-4">
 					<div class="landingBox">
-						<a href="#"><div class='landingBoxImage landingBoxImage1'></div></a>
+						<a href="#"><div class='landingBoxImage landingBoxImageTalkingDictionary'></div></a>
 						<div class="landingBoxDetails">
-							<div class="landingBoxTitle"><a href="#">Talking dictionary</a></div>
+							<div class="landingBoxTitle"><a href="#">Talking dictionary <i>(Coming Soon)</i></a></div>
 						</div>
 					</div>
 				</div>

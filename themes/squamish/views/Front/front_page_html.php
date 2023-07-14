@@ -38,7 +38,7 @@
 	}
  
  # --- timeline set - occurrences
-	if($vs_timeline_set_code = $this->config->get("front_page_set_code")){
+	if($vs_timeline_set_code = $this->config->get("front_page_timeline_set_code")){
 		$t_set = new ca_sets();
 		$t_set->load(array('set_code' => $vs_timeline_set_code));
 		if(is_array($va_access_values) && sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values)){
@@ -166,11 +166,12 @@
 <?php
 	}
 
-	# --- display slideshow of random images
-	#print $this->render("Front/featured_set_slideshow_html.php");
-
 	# --- display galleries as a grid?
-	#print $this->render("Front/gallery_grid_html.php");
+	print $this->render("Front/gallery_grid_html.php");
+	
+	# --- display slideshow of random images
+	print $this->render("Front/featured_set_slideshow_html.php");
+
 	# --- display galleries as a slideshow?
 	#print $this->render("Front/gallery_slideshow_html.php");
 ?>
