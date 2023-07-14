@@ -821,6 +821,73 @@ body.frontContainer #footer{
 	text-decoration:none;
 }
 */
+.disclaimerAlert{
+	position:fixed;
+	bottom:0px;
+	left:0px;
+	background-color:rgba(0, 0, 0, 0.6);
+	width:100%;
+	height:100%;
+	z-index:2000;
+}
+.disclaimerAlert div.disclaimerAlertBox{
+	margin:25vh 25vw;
+	height:50vh;
+	background-color:#FFF;
+	border:2px solid #000;
+	position:relative;	
+}
+.disclaimerAlert div.disclaimerAlertMessage{
+	padding: 60px;
+	font-size: 18px;
+	color: #000;
+	overflow:scroll;
+	text-align:center;
+}
+.disclaimerAlert div.disclaimerAlertMessage H1{
+	margin-bottom:30px;
+	font-size:24px;
+}
+.disclaimerAlert div.disclaimerAlertMessage strong, .disclaimerAlert div.disclaimerAlertMessage b{
+	font-size: 18px;
+}
+.disclaimerAlert .enterButton{
+	text-align:center;
+	margin-top:30px;
+}
+.disclaimerAlert div.disclaimerAlertBox{
+	margin:5vh 5vw;
+	height:90vh;
+}
+.disclaimerAlert div.disclaimerAlertMessage{
+	position: relative;
+	height: 100%;
+	font-size: 13px;
+}
+@media(min-width:768px){
+	.disclaimerAlert div.disclaimerAlertBox{
+		margin:10vh 15vw;
+		max-height:80vh;
+	}
+	.disclaimerAlert div.disclaimerAlertMessage{
+		font-size: 18px;
+	}
+	.disclaimerAlert div.disclaimerAlertMessage strong, .disclaimerAlert div.disclaimerAlertMessage b{
+		font-size: 22px;
+	}
+}
+@media(min-width:1145px){
+	.disclaimerAlert div.disclaimerAlertBox{
+		margin:15vh 15vw;
+		height:70vh;
+	}
+}
+@media(min-width:1550px){
+	.disclaimerAlert div.disclaimerAlertBox{
+		margin:20vh 25vw;
+		height:60vh;
+	}
+}
 /* gallery */
 @media (max-width: 767px){
 	#gallerySetInfo {
