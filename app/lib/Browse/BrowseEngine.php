@@ -1482,7 +1482,7 @@
 											}
 										} else {
 											$wheres[] = "{$vs_label_table_name}.{$vs_label_display_field} = ?";
-											$params[] = trim($va_labels[$vn_row_id]);
+											$params[] = trim($va_labels[$vn_row_id] ?? null);
 										}	
 									
 										$vs_sql = "
@@ -1494,7 +1494,7 @@
 										//print "$vs_sql [".intval($this->opn_browse_table_num)."]<hr>";
 										$qr_res = $this->opo_db->query($vs_sql, $params);
 									
-										if(!is_array($va_acc[$vn_i] ?? null)) { $va_acc[$vn_i] = []; }
+										if(!is_array($va_acc[$vn_i])) { $va_acc[$vn_i] = []; }
 										$va_acc[$vn_i] = array_merge($va_acc[$vn_i], $qr_res->getAllFieldValues($this->ops_browse_table_name.'.'.$t_item->primaryKey()));
 
 										if (!caGetOption('multiple', $va_facet_info, false)) { $vn_i++; }

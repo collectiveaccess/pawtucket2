@@ -966,7 +966,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				}
 			}	
 			
-			return $subject_ids;
+			return array_map(function($v) { return ['row_id' => $v, 'boost' => 1, 'index_ids' => []]; }, $subject_ids);
 		}
 		return null;	// can't process here - try using search index
 	}
@@ -1471,15 +1471,11 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				}
 			default:
 				$words = preg_split('!'.self::$whitespace_tokenizer_regex.'!u', strip_tags($content));
-				$words = array_map(function($v) {
-					return mb_strtolower(preg_replace('!'.self::$punctuation_tokenizer_regex.'!u', '', html_entity_decode($v, null, 'UTF-8')));
-				}, $words);
 				
-				$words = preg_split('!'.self::$whitespace_tokenizer_regex.'!u', strip_tags($content));
 				$words = array_map(function($v) {
-					$w = preg_replace('!^'.self::$punctuation_tokenizer_regex.'!u', '', html_entity_decode($v, null, 'UTF-8'));
-					$w = preg_replace('!'.self::$punctuation_tokenizer_regex.'$!u', '', $w);
-					$w = preg_replace('!'.self::$separator_tokenizer_regex.'!u', '', $w);
+					$w = preg_replace('!'.self::$punctuation_tokenizer_regex.'!u', '', html_entity_decode($v, null, 'UTF-8'));
+					$w = preg_replace('!^'.self::$separator_tokenizer_regex.'!u', '', $w);
+					$w = preg_replace('!'.self::$separator_tokenizer_regex.'$!u', '', $w);
 					return mb_strtolower($w);
 				}, $words);
 				break;
@@ -1881,7 +1877,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		$res_proc = [];
 		
 		$index_ids = array_unique(array_reduce($res, function($c, $v) {
-			$ids = array_filter($v['index_ids'], 'is_numeric');
+			$ids = array_filter($v['index_ids'] ?? [], 'is_numeric');
 			return array_merge($c, $ids);
 		}, []));
 		

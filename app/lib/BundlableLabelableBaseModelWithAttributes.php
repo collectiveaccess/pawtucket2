@@ -1636,11 +1636,8 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					$pa_options['label'] = $this->getFieldInfo($ps_bundle_name, 'LABEL');
 				}
 				
-				$bundle_code = $this->tableName().".{$bundle_code}";
-						
 				$vs_view_path = (isset($pa_options['viewPath']) && $pa_options['viewPath']) ? $pa_options['viewPath'] : $pa_options['request']->getViewsDirectoryPath();
 				$o_view = new View($pa_options['request'], "{$vs_view_path}/bundles/");
-			
 			
 				$custom_view_exists = ($o_view->viewExists($s = $this->tableName()."_{$ps_bundle_name}.php"));
 					
@@ -1706,12 +1703,14 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				$vs_label = '<span class="formLabelText" id="'.$vs_field_id.'">'.$pa_options['label'].'</span>'; 
 				
 				if ($o_config->get('show_required_field_marker')) {
-					if (($this->getFieldInfo($ps_bundle_name, 'FIELD_TYPE') == FT_TEXT) && is_array($va_bounds =$this->getFieldInfo($ps_bundle_name, 'BOUNDS_LENGTH')) && ($va_bounds[0] > 0)) {
+					if (
+						($this->getFieldInfo($ps_bundle_name, 'FIELD_TYPE') == FT_TEXT) && is_array($va_bounds = $this->getFieldInfo($ps_bundle_name, 'BOUNDS_LENGTH')) && ($va_bounds[0] > 0)
+						||
+						(($this->getProperty('ID_NUMBERING_ID_FIELD') == $bundle_code) && (bool)$this->getAppConfig()->get('require_valid_id_number_for_'.$this->tableName()))
+					) {
 						$vs_label .= ' '.$vs_required_marker;
-					} else {
-						if ((in_array($this->getFieldInfo($ps_bundle_name, 'FIELD_TYPE'), array(FT_NUMBER, FT_HISTORIC_DATERANGE, FT_DATERANGE)) && !$this->getFieldInfo($ps_bundle_name, 'IS_NULL'))) {
-							$vs_label .= ' '.$vs_required_marker;
-						}
+					} elseif ((in_array($this->getFieldInfo($ps_bundle_name, 'FIELD_TYPE'), array(FT_NUMBER, FT_HISTORIC_DATERANGE, FT_DATERANGE)) && !$this->getFieldInfo($ps_bundle_name, 'IS_NULL'))) {
+						$vs_label .= ' '.$vs_required_marker;
 					}
 				}
 				
@@ -4087,10 +4086,10 @@ if (!$vb_batch) {
 			$parent_table = (sizeof($parent_tmp) > 0) ? array_pop($parent_tmp) : $target_table;
 			
 			if(!is_array($multiple_move_selection) || !sizeof($multiple_move_selection)) {
-				$multiple_move_selection = [$vn_parent_id];
+				$multiple_move_selection = [$this->getPrimaryKey()];
 			}
 			
-			if ($this->getPrimaryKey() && $this->HIERARCHY_PARENT_ID_FLD && ($vn_parent_id > 0)) {
+			if ($this->getPrimaryKey() && $this->HIERARCHY_PARENT_ID_FLD && ($vn_parent_id > 0) && ($vn_parent_id !== $this->get($this->HIERARCHY_PARENT_ID_FLD))) {
 				if(sizeof($multiple_move_selection) > 0) {
 					foreach($multiple_move_selection as $t_id) {
 						$target_tmp = explode('-', $t_id);
@@ -4103,8 +4102,13 @@ if (!$vb_batch) {
 						
 						if ($parent_table == $tt) {	
 							if($t = $table::findAsInstance([$this->primaryKey() => $target_id])) {
-								if($t->getPrimaryKey() ==  $this->getPrimaryKey()) { continue; }
+								if($t->getPrimaryKey() ==  $this->getPrimaryKey()) { 
+									$this->set($this->HIERARCHY_PARENT_ID_FLD, $vn_parent_id); 
+									continue; 
+								}
 								if(!$t->isSaveable($po_request)) { continue; }
+								
+								$t->setTransaction($this->getTransaction());
 								
 								$t->set($this->HIERARCHY_PARENT_ID_FLD, $vn_parent_id); 
 								if(!$t->update()) {
@@ -4521,7 +4525,7 @@ if (!$vb_batch) {
 						$vb_allow_existing_rep = (bool)$this->_CONFIG->get($this->tableName().'_allow_relationships_to_existing_representations') && !(bool)caGetOption('dontAllowRelationshipsToExistingRepresentations', $va_bundle_settings, false);
 						$dont_allow_access_to_import_directory = caGetOption('dontAllowAccessToImportDirectory', $va_bundle_settings, false);
 	
-						$import_directory_paths = caGetAvailableMediaUploadPaths($po_request->getUserID());
+						$import_directory_paths = array_map('realpath', caGetAvailableMediaUploadPaths($po_request->getUserID() ?? []));
 						
 						$va_rep_ids_sorted = $va_rep_sort_order = explode(';',$po_request->getParameter($vs_prefix_stub.'ObjectRepresentationBundleList', pString));
 						sort($va_rep_ids_sorted, SORT_NUMERIC);
@@ -4653,13 +4657,13 @@ if (!$vb_batch) {
                                     );
                                 } elseif(preg_match('/^'.$vs_prefix_stub.'media_new_([\d]+)$/', $vs_key, $va_matches)) {
                                     $va_file_list[$vs_key] = array(
-                                        'tmp_name' => escapeshellcmd($vs_value),
+                                        'tmp_name' => $vs_value,
                                         'name' => $vs_value,
                                         'index' => (int)$va_matches[1]
                                     );
                                 } elseif(preg_match('/^'.$vs_prefix_stub.'autocompletenew_([\d]+)$/', $vs_key, $va_matches)){
 									$va_file_list[$vs_key] = array(
-										'tmp_name' => escapeshellcmd($vs_value),
+										'tmp_name' => $vs_value,
 										'name' => $vs_value,
                                         'index' => (int)$va_matches[1]
 									);
@@ -4668,7 +4672,7 @@ if (!$vb_batch) {
 									foreach($files as $f) {
 										if(!$f) { continue; }
 										$va_file_list["{$vs_key}_{$file_index}"] = [		// Add numeric suffix to allow for multiple uploads in a single request
-											'tmp_name' => escapeshellcmd($f),
+											'tmp_name' => $f,
 											'name' => $f,
                                         	'index' => (int)$va_matches[1]
 										];
@@ -4721,17 +4725,17 @@ if (!$vb_batch) {
                                     	// Is remote URL
                                         $va_tmp = explode('/', $vs_path);
                                         $vs_original_name = array_pop($va_tmp);
-                                    } elseif(preg_match("!^".($u = caGetUserDirectoryName($po_request->getUserID()))."/(.*)$!", $va_values['tmp_name'], $m)) {
+                                    } elseif(preg_match("!^".($u = caGetUserDirectoryName($po_request->getUserID()))."/(.*)$!u", $va_values['tmp_name'], $m)) {
                                     	foreach($import_directory_paths as $p) {
-                                    		if(file_exists($vs_path = "{$p}/{$m[1]}")) {
+                                    		if(file_exists($vs_path = caSanitizeRelativeFilepath($m[1], $p))) {
                                     			$vs_original_name = pathinfo($va_values['tmp_name'], PATHINFO_BASENAME);
                                     			break;
                                     		}
                                     	}
                                     } elseif(!$is_form_upload && !$dont_allow_access_to_import_directory && ($vs_key !== 'empty') && sizeof($import_directory_paths) && strlen($va_values['tmp_name'])) {
-                                    	// Is user-selected file from s media import directory
+                                    	// Is user-selected file from media import directory
                                     	foreach($import_directory_paths as $p) {
-											if(file_exists($vs_path = "{$p}/{$va_values['tmp_name']}")) {
+											if(file_exists($vs_path = caSanitizeRelativeFilepath($va_values['tmp_name'], $p))) {
 												$vs_original_name = pathinfo($va_values['name'], PATHINFO_BASENAME);
 												break;
 											}
@@ -8674,6 +8678,7 @@ side. For many self-relations the direction determines the nature and display te
 	 * 		merge = list of data categories to merge. Valid values include 'preferred_labels', 'nonpreferred_labels', 'intrinisics', 'attributes', 'relationships'. If omitted all categories are merged. [Default is null]
 	 *		preferredLabelsMode = Merge mode for preferred labels. [Default is "longest"]
 	 *		intrinsicMode = Merge mode for intrinisic values. [Default is "whenNotSet"]
+	 *		notification = Notification manager object to push merge status messages to. [Default is null]
 	 *
 	 * @return BundlableLabelableBaseModelWithAttributes Instance of merged record
 	 *

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
+ * Copyright 2013-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -356,7 +356,7 @@
 			foreach($pa_attributes as $vs_element_code => $va_attrs) {
 				$vs_prefix = '';
 				$va_prefix_file_list = [];
-
+				
 				// Add details for file and media types.
 				$va_prefix_file_list = [];
 				$media_directories = caGetAvailableMediaUploadPaths();
@@ -433,6 +433,7 @@
 					}
 				}elseif(caIsAssociativeArray($va_attrs)) {
 					// single mapping
+					print_R($va_attrs);
 					foreach($va_attrs as $vs_k => $vs_v) {
 						// BaseRefinery::parsePlaceholder may return an array if the input format supports repeated values (as XML does)
 						
@@ -486,11 +487,12 @@
 						}
 					}
 				} elseif(is_string($va_attrs)) {
-					$va_attr_vals[$vs_element_code] = $va_attrs;
+					$va_attr_vals[$vs_element_code] = BaseRefinery::parsePlaceholder($va_attrs, $pa_source_data, $pa_item, $pn_c, ['returnAsString' => true, 'reader' => $o_reader, 'applyImportItemSettings' => $apply_import_item_settings]);
 				} else {
 					 if ($o_log) { $o_log->logDebug(_t('[importHelpers:caProcessRefineryAttributes] Unhandled refinery %1 attribute %1: value was %2', $ps_refinery_name, $vs_element_code, print_r($va_attrs, true))); }
 				}
 			}
+			
 			return $va_attr_vals;
 		}
 		return null;
@@ -1101,7 +1103,9 @@
 						$vs_item = BaseRefinery::parsePlaceholder($vs_item, $pa_source_data, $pa_item, $pn_value_index, array('reader' => $o_reader, 'returnAsString' => true, 'delimiter' => null, 'applyImportItemSettings' => $apply_import_item_settings));
 						$va_attr_vals_with_parent = array_merge($va_val, array('parent_id' => $va_val['parent_id'] ? $va_val['parent_id'] : $va_val['_parent_id']));						
 						
-						$pa_options = array_merge($pa_options, ['matchOn' => $va_val['_matchOn'] ?? null]); // add matchOn value for lookup
+						if($va_val['_matchOn'] ?? null) {
+							$pa_options = array_merge($pa_options, ['matchOn' => $va_val['_matchOn']]); // add matchOn value for lookup
+						}
 						switch($ps_table) {
 							case 'ca_objects':
 								$vn_item_id = DataMigrationUtils::getObjectID($va_val['preferred_labels'] ? $va_val['preferred_labels'] : $vs_item, $va_val['parent_id'], $va_val['_type'], $g_ui_locale_id, $va_attr_vals_with_parent, $pa_options);
