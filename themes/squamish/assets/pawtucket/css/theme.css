@@ -577,7 +577,7 @@ body.frontContainer #footer{
 	text-align:center;
 	font-size: 24px;
 	color: #000;
-	margin: 70px 0px 120px 0px;
+	margin: 100px 0px 120px 0px;
 	font-family: "Tahoma", sans-serif;
 	font-weight: 300;
 	line-height: 1.8em;
@@ -619,6 +619,7 @@ body.frontContainer #footer{
 }
 .front h2.highlights{
 	padding-bottom:30px;
+	margin-top: 100px;
 }
 
 .front #frontTimelineContainer {
@@ -1323,7 +1324,7 @@ a .relatedObjectsCard img{
 .front #frontTimelineContainer {
     height: 500px;
     margin-top:80px;
-    margin-bottom:80px;
+    margin-bottom:0px;
 }
 .front #frontTimelineContainer h2{
 	text-align:left;

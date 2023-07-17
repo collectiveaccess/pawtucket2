@@ -140,7 +140,7 @@
 
 <?php
 	# --- display galleries as a grid?
-	print $this->render("Front/gallery_grid_html.php");
+	#print $this->render("Front/gallery_grid_html.php");
 	
 	
 	if($vn_timeline_set_id){
