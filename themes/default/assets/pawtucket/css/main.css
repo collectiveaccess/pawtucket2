@@ -1636,6 +1636,7 @@ a.browseRemoveFacet img {
 }
 .detail #repViewerCarousel li{
 	text-align:center;
+	min-height:1px;
 }
 .detail .repViewerCont img{
 	width:100%;
