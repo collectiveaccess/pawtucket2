@@ -1653,6 +1653,8 @@ h2.tl-headline{
 }
 .alphabetNavigationMobile .dropdown-menu{
 	margin-top: 8px;
+	max-height: 400px;
+	overflow-y: scroll;
 }
 @media(max-width:1200px){
 	.alphabetNavigationMobile{
