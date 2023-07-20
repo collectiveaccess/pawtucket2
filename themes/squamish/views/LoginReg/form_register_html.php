@@ -147,7 +147,7 @@
 						<input type="text" name="member_code" maxlength="70" class="form-control" value="<?php print html_entity_decode(strip_tags($this->request->getParameter("member_code", pString))); ?>">
 						
 						<label for="pref_user_profile_band_number" class="control-label"><?php print $va_profile_settings["user_profile_band_number"]["label"]; ?></label>
-						<input type="text" name="pref_user_profile_band_number" maxlength="70" class="form-control" value="<?php print html_entity_decode(strip_tags($this->request->getParameter("pref_user_profile_band_number", pString))); ?>">
+						<div class="profileElement"><?php print $va_profile_settings["user_profile_band_number"]["element"]; ?></div>
 					</div><!-- end col-sm-6 -->
 					<div class="col-sm-6 <?php print (($va_errors["user_profile_staff_jde_number"]) ? " has-error" : ""); ?>">
 						<b>Squamish Nation Staff</b>
@@ -161,7 +161,7 @@
 						<input type="text" name="staff_code" maxlength="70" class="form-control" value="<?php print html_entity_decode(strip_tags($this->request->getParameter("staff_code", pString))); ?>">
 						
 						<label for="pref_user_profile_staff_jde_number" class="control-label"><?php print $va_profile_settings["user_profile_staff_jde_number"]["label"]; ?></label>
-						<input type="text" name="pref_user_profile_staff_jde_number" maxlength="70" class="form-control" value="<?php print html_entity_decode(strip_tags($this->request->getParameter("pref_user_profile_staff_jde_number", pString))); ?>">
+						<div class="profileElement"><?php print $va_profile_settings["user_profile_staff_jde_number"]["element"]; ?></div>
 					</div><!-- end col-sm-6 -->
 				</div>
 			</div>

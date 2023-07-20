@@ -183,6 +183,25 @@ if (!$vb_ajax) {	// !ajax
 			print "</div>";
 		}
 ?>
+	</div>
+	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
+		<div id="bViewButtons">
+<?php
+		if(is_array($va_views) && (sizeof($va_views) > 1)){
+			foreach($va_views as $vs_view => $va_view_info) {
+				if ($vs_current_view === $vs_view) {
+					print '<a href="#" class="active"><span class="glyphicon  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button"></span></a> ';
+				} else {
+					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+				}
+			}
+		}
+?>
+		</div>
+	</div>
+</div>
+<div class="row" style="clear:both;">
+	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 		<form id="setsSelectMultiple">
 		<div class="row">
 			<div id="browseResultsContainer">
@@ -207,19 +226,6 @@ if (!$vb_ajax) {	// !ajax
 		</form>
 	</div><!-- end col-8 -->
 	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
-		<div id="bViewButtons">
-<?php
-		if(is_array($va_views) && (sizeof($va_views) > 1)){
-			foreach($va_views as $vs_view => $va_view_info) {
-				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button"></span></a> ';
-				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
-				}
-			}
-		}
-?>
-		</div>
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
