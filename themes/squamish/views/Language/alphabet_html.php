@@ -63,7 +63,7 @@
 		$qr_alphabet_objects->seek(0);
 ?>
 		
-			<a href="#" class='btn btn-default' data-toggle="dropdown">Alphabet <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+			<div class='ddButton'><a href="#" class='btn btn-default' data-toggle="dropdown">Alphabet <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
 			<ul class="dropdown-menu" role="menu">
 <?php		
 				
@@ -75,7 +75,7 @@
 			#print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$vs_rep."</a>";				
 		}
 ?>
-			</ul>
+			</ul></div>
 		
 <?php
 	}
@@ -86,7 +86,7 @@
 		$qr_vowel_objects->seek(0);
 ?>
 		
-			<a href="#" class='btn btn-default' data-toggle="dropdown">Vowel Combinations <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+			<div class='ddButton'><a href="#" class='btn btn-default' data-toggle="dropdown">Vowel Combinations <i class="fa fa-chevron-down" aria-hidden="true"></i></a>
 			<ul class="dropdown-menu" role="menu">
 <?php		
 
@@ -99,7 +99,7 @@
 				
 		}
 ?>
-			</ul>
+			</ul></div>
 		
 <?php
 	}

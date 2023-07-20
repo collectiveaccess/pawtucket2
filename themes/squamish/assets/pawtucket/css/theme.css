@@ -68,6 +68,12 @@ hr {
 	width:175px;
 	padding-top: 8px;
 }
+@media (max-width:768px){
+	.navbar-form{
+		margin-left:0px;
+		margin-right:0px;
+	}
+}
 @media (min-width:768px){
 	.navbar-brand{
 		width: 200px;
@@ -1341,7 +1347,7 @@ a .relatedObjectsCard img{
 	text-transform: capitalize;
 	color: #000;
 	font-size: 14px;
-	font-family: Tahoma;
+	font-family: "Tahoma", sans-serif;
 }
 .advancedSearch H2{
 	font-size:18px;
@@ -1426,7 +1432,7 @@ h2.tl-headline{
 }
 .tl-slidenav-previous .tl-slidenav-title, .tl-slidenav-next .tl-slidenav-title, .tl-slidenav-previous .tl-slidenav-description, .tl-slidenav-next .tl-slidenav-description{
 	opacity: .8 !important;
-	font-family: Tahoma !important;
+	font-family: "Tahoma", sans-serif !important;
 }
 .tl-headline.tl-headline-fadeout{
 	color:#777777 !important;
@@ -1444,29 +1450,29 @@ h2.tl-headline{
 	color:#999 !important;
 }
 .tl-timeline {
-    font-family: Tahoma !important;
+    font-family: "Tahoma", sans-serif !important;
     font-weight:600;p
 }
 .tl-text-content{
-    font-family: Tahoma !important;
+    font-family: "Tahoma", sans-serif !important;
 }
 .tl-timeline h2, .tl-timeline h3{
-	font-family: Tahoma !important;
+	font-family: "Tahoma", sans-serif !important;
 }
 .tl-text-content, .tl-timeline p, .tl-text p {
-	font-family: Tahoma !important;
+	font-family: "Tahoma", sans-serif !important;
 	color: #000 !important;
 }
 .tl-timeline .tl-caption, .tl-timeline .tl-credit{
-	font-family: Tahoma !important;
+	font-family: "Tahoma", sans-serif !important;
 	color: #000 !important;
 	opacity:1 !Important;
 }
 .tl-timeline em {
-	font-family: Tahoma !important;
+	font-family: "Tahoma", sans-serif !important;
 }
 .tl-timeline .tl-headline-date, .tl-timeline h3.tl-headline-date{
-	font-family: Tahoma !important;
+	font-family: "Tahoma", sans-serif !important;
 	color: #000 !important;
 	font-weight: 600 !important;
 	text-align:left !important;
@@ -1477,6 +1483,9 @@ h2.tl-headline{
 .tl-timemarker .tl-timemarker-content-container{
 	background-color: #fff !important;
 	border:0px !important;
+}
+.gallery #gallerySetInfo .timelineMore{
+	padding-top:10px;
 }
 .gallery #gallerySetInfo .timelineMore a{
 	background-color:#D23929 !important;
@@ -1498,7 +1507,11 @@ h2.tl-headline{
 	text-decoration: none;
 }
 /* User Guide */
-
+@media(max-width:767px){
+	.userGuideBody H1{
+		margin-top:30px;
+	}	
+}
 .userGuideBody H2{
 	clear:both;
 }
@@ -1632,6 +1645,14 @@ h2.tl-headline{
 }
 .alphabetNavigationMobile{
 	display:none;
+}
+.alphabetNavigationMobile .ddButton{
+	display:inline;
+	position:relative;
+	
+}
+.alphabetNavigationMobile .dropdown-menu{
+	margin-top: 8px;
 }
 @media(max-width:1200px){
 	.alphabetNavigationMobile{
