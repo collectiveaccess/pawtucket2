@@ -75,7 +75,7 @@
 				}							
 	
 				if ($vs_inst_access = $t_object->get('ca_objects.856_url')) {
-					print "<div class='unit'><h6>Permanent link to institution record</h6><a href='".$vs_inst_access."' target='_blank'>".$vs_inst_access."</a></div>";
+					print "<div class='unit'><h6><a href='".$vs_inst_access."' target='_blank'>Permanent link to institution record <span class='glyphicon glyphicon-link'></span></a></h6></a></div>";
 				}
 ?>
 				<div style='margin-top:10px;'>{{{map}}}</div>
