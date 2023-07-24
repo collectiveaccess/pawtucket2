@@ -880,6 +880,18 @@ div.caMediaOverlayControls{
 	width:100%;
 	height:auto;
 }
+@media(min-width:500px){
+	#pageArea.staticPage img{
+		width:40%;
+		height:auto;
+		float:right;
+		margin:20px 0px 20px 30px;	
+	}
+}
+#pageArea.staticPage .fullWidth img{
+	width:100%;
+	height:auto;
+}
 .staticPage p, .staticPage .bodytext{
 	font-size:18px;
 }
