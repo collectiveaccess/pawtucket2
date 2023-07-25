@@ -133,7 +133,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
 				if (($va_criterion['facet_name'] != '_search') || (($va_criterion['facet_name'] == '_search') && (strpos($va_criterion['value'], "collection_id") === false))) {
-					if(!$vb_show_filter_panel || ($vb_show_filter_panel && $va_criterion['facet_name'] != 'collection_facet')){
+					if(!$vb_show_filter_panel || ($vb_show_filter_panel && $va_criterion['facet_name'] != 'institution_facet')){
 						print "<strong>".$va_criterion['facet'].':</strong>';
 						if ($va_criterion['facet_name'] != '_search') {
 							if ($va_criterion['facet_name'] == 'ornament_category') {
