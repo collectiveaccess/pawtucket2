@@ -24,7 +24,7 @@
 	}else{
 		print "<H1>"._t("Your Reference Question")."</H1>";	
 	}
-	if(sizeof($va_errors["display_errors"])){
+	if(sizeof($va_errors["display_errors"] ?? [])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>
@@ -40,14 +40,11 @@
 
 				<H2><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>"><?php print $vs_url; ?></a></H2>
 				<br/>
-				<input type="hidden" name="itemId" value="<?php print $t_object->get("ca_objects.idno"); ?>">
-				<input type="hidden" name="itemTitle" value="<?php print $t_object->get("ca_objects.preferred_labels.name"); ?>">
-				<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-sm-10">
-				<div class="form-group<?php print (($va_errors["feedback"]) ? " has-error" : ""); ?>">
+				<div class="form-group<?php print (($va_errors["feedback"] ?? null) ? " has-error" : ""); ?>">
 					<label for="feedback">Your message</label>
 					<textarea class="form-control input-sm" id="sources" name="feedback" rows="5" maxlength="500"><?php print $this->getVar("feedback");?></textarea>
 				</div>
@@ -59,7 +56,7 @@
 ?>
 		<div class="row">
 			<div class="col-sm-10">
-				<div class="form-group<?php print (($va_errors["information"]) ? " has-error" : ""); ?>">
+				<div class="form-group<?php print (($va_errors["information"] ?? null) ? " has-error" : ""); ?>">
 					<label for="information">What information are you seeking?</label>
 					<textarea class="form-control input-sm" id="information" name="information" rows="5"><?php print $this->getVar("information");?></textarea>
 				</div>
@@ -69,7 +66,7 @@
 			<div class="col-md-10">
 				<div class="row">
 					<div class="col-sm-6">
-						<div class="form-group<?php print (($va_errors["reason"]) ? " has-error" : ""); ?>">
+						<div class="form-group<?php print (($va_errors["reason"] ?? null) ? " has-error" : ""); ?>">
 							<label for="reason">What is the reason for your request?<br/><br/></label>
 							<select class="form-control input-sm" id="reason" name="reason">
 								<option value="">Choose...</option>
@@ -82,7 +79,7 @@
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-6">
-						<div class="form-group<?php print (($va_errors["education"]) ? " has-error" : ""); ?>">
+						<div class="form-group<?php print (($va_errors["education"] ?? null) ? " has-error" : ""); ?>">
 							<label for="education">If your research is for a school project or research paper, please indicate your education level?</label>
 							<select class="form-control input-sm" id="education" name="education">
 								<option value="">Choose...</option>
@@ -99,7 +96,7 @@
 		</div><!-- end row -->		
 		<div class="row">
 			<div class="col-sm-10">
-				<div class="form-group<?php print (($va_errors["sources"]) ? " has-error" : ""); ?>">
+				<div class="form-group<?php print (($va_errors["sources"] ?? null) ? " has-error" : ""); ?>">
 					<label for="sources">What sources have you already consulted?</label>
 					<textarea class="form-control input-sm" id="sources" name="sources" rows="5"><?php print $this->getVar("sources");?></textarea>
 					<small>Please list the sources you have already consulted so that we do not repeat your efforts.</small>
@@ -108,7 +105,7 @@
 		</div><!-- end row -->
 		<div class="row">
 			<div class="col-sm-10">
-				<div class="form-group<?php print (($va_errors["deadline"]) ? " has-error" : ""); ?>">
+				<div class="form-group<?php print (($va_errors["deadline"] ?? null) ? " has-error" : ""); ?>">
 					<label for="deadline">When is your deadline for the information?</label>
 					<textarea class="form-control input-sm" id="deadline" name="deadline" rows="2"><?php print $this->getVar("deadline");?></textarea>
 					<small>We will make every effort to meet your deadline, but we cannot guarantee response in fewer than 10 business days.</small>
@@ -127,13 +124,13 @@
 			<div class="col-md-9">
 				<div class="row">
 					<div class="col-sm-6">
-						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
+						<div class="form-group<?php print (($va_errors["name"] ?? null) ? " has-error" : ""); ?>">
 							<label for="name">Name*</label>
 							<input type="text" class="form-control input-sm" id="email" placeholder="Enter name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : $vs_user_name; ?>">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-6">
-						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
+						<div class="form-group<?php print (($va_errors["email"] ?? null) ? " has-error" : ""); ?>">
 							<label for="email">Email address*</label>
 							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $vs_user_email; ?>">
 						</div>
@@ -141,13 +138,13 @@
 				</div><!-- end row -->
 				<div class="row">
 					<div class="col-sm-6">
-						<div class="form-group<?php print (($va_errors["phone"]) ? " has-error" : ""); ?>">
+						<div class="form-group<?php print (($va_errors["phone"] ?? null) ? " has-error" : ""); ?>">
 							<label for="phone">Daytime telephone*</label>
 							<input type="text" class="form-control input-sm" id="phone" placeholder="Enter phone number" name="phone" value="<?php print $this->getVar("phone");?>">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-6">
-						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
+						<div class="form-group<?php print (($va_errors["security"] ?? null) ? " has-error" : ""); ?>">
 							<label for="security">Security Question*</label>
 							<div class='row'>
 								<div class='col-sm-5'>
@@ -163,10 +160,35 @@
 
 			</div><!-- end col -->
 		</div><!-- end row -->
+
+<?php
+	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+        	};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+
+
+			<div class="row">
+				<div class="col-sm-12 col-md-offset-1 col-md-10">
+					<div class='form-group<?php print (($va_errors["recaptcha"] ?? null) ? " has-error" : ""); ?>'>
+						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+					</div>
+				</div>
+			</div><!-- end row -->
+<?php
+	}
+?>
 		<div class="form-group">
 			<button type="submit" class="btn btn-default">Send</button>
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 		<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 		<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+		<input type="hidden" name="itemId" value="<?php print $t_object->get("ca_objects.idno"); ?>">
+		<input type="hidden" name="itemTitle" value="<?php print $t_object->get("ca_objects.preferred_labels.name"); ?>">
+		<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
 	</form>
