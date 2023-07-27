@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf_html.tpl
+ * default/views/mailTemplates/reg_conf_subject.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2010 Whirl-i-Gig
+ * Copyright 2009-2011 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,14 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
-if($this->request->config->get("dont_approve_logins_on_registration")){
-	$vs_active_message = _t("<p>Your account will be activated after review.</p>");
-}
 
-print _t("<p>Thank you for registering for the Squamish Nation Collections database. ".$vs_active_message."</p>
-
-<p>As a member you can comment on items on the site and also use the Project Box to create your own groups of records from the collection.</p>
-");
-
-	print "<p>".$this->request->config->get("site_host")."</p>";
+	print "Squamish Nation Collections database: "._t("Thank you for registering!");
 ?>

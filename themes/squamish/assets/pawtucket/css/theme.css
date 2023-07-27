@@ -21,6 +21,8 @@ H1, h1, h2, H2, H3, h3, H4, h4, H5, h5, #footer a.orgLink{
 .btn-default, .browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active {
 	background-color:#D23929;
 	border-radius: 4px;
+	font-family: 'Tahoma', sans-serif;
+	padding: 4px 7px 5px 7px;
 }
 .btn-default:hover{
 	background-color:#D23929;
@@ -49,6 +51,9 @@ hr {
 /* header */
 .navbar{
 	background-color: #ffffff;
+	position: fixed;
+	width: 100%;
+	top:0px;
 }
 .navbar .formOutline{
 	border-radius:0px;
@@ -212,8 +217,20 @@ hr {
 /* offset needed for fixed footer */
 body{
 	margin-bottom:450px;
+	margin-top: 110px;
 	-moz-osx-font-smoothing: grayscale;
 }
+@media (max-width: 1114px) {
+	body{
+		margin-top: 148px;
+	}
+}
+@media (max-width: 767px) {
+	body{
+		margin-top: 99px;
+	}
+}
+
 
 .bg_beige_eye{
 	background-color: #DBD5CD;
@@ -976,9 +993,10 @@ body.frontContainer #footer{
 	.galleryList{
 		text-align:center;
 	}
-	.gallery H1{
+/*	.gallery H1{
 		text-align:center;
 	}
+*/
 }
 .galleryList{
 	margin-bottom:30px;
