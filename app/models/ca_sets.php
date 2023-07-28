@@ -572,9 +572,9 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		if ($pa_public_access && is_numeric($pa_public_access) && !is_array($pa_public_access)) {
 			$pa_public_access = array($pa_public_access);
 		}
+
 		if (!is_array($pa_public_access)) { $pa_public_access = []; }
-		for($vn_i=0; $vn_i < sizeof($pa_public_access); $vn_i++) { $pa_public_access[$vn_i] = intval($pa_public_access[$vn_i]); }
-		
+		$pa_public_access = array_map(function($v) { return (int)$v; }, $pa_public_access);
 		$vn_table_num = null;
 		if ($pm_table_name_or_num && !($vn_table_num = $this->_getTableNum($pm_table_name_or_num))) { return null; }
 		
