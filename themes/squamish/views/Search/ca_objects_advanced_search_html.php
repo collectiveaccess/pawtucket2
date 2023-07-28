@@ -1,6 +1,6 @@
 
 <div class="row">
-	<div class="col-sm-8 col-lg-7 col-lg-offset-1" style='border-right:1px solid #ddd;'>
+	<div class="col-sm-8 col-lg-7 col-lg-offset-1">
 		<h1><?php _p('Objects Advanced Search') ?></h1>
 
         <p><?php _p("Enter your search terms in the fields below."); ?></p>
@@ -47,7 +47,7 @@
 {{{/form}}}
 
 	</div>
-	<div class="col-sm-4 col-lg-3" >
+	<div class="col-sm-4 col-lg-3 helpText">
 		<h2><?php _p('Helpful Hints') ?></h2>
 		<p>{{{advanced_search}}}</p>
 	</div><!-- end col -->
