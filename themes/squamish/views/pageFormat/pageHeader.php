@@ -177,7 +177,6 @@
 							<li><?php print caNavLink($this->request, _t("How to Use this Database"), "", "", "Guide", ""); ?></li>
 							<li><?php print caNavLink($this->request, _t("Research Guides"), "", "", "Gallery", "Index", array("set_type" => "research_guides")); ?></li>
 							<li><?php print caNavLink($this->request, _t("External Resources"), "", "", "Listing", "Resources"); ?></li>
-							<li><a href="https://collections.squamish.net/findsquamisharchives"><?php print _t("Squamish Materials in Other Archives"); ?></a></li>
 						</ul>
 					</li>
 
