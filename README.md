@@ -33,15 +33,15 @@ NOTE: The update process is relatively safe and rarely, if ever, causes data los
 
 #### Updating from version 1.7 or later
 
-Before attempting to upgrade your Pawtucket2 installation to version 1.7.11 make sure your Providence installation has been updated to 1.7.11. While it is often possible to run an older version of Pawtucket2 with a newer version of Providence, it is not guaranteed. It is usually not possible to run an older version of Providence with a newer version of Pawtucket2.
+Before attempting to upgrade your Pawtucket2 installation to version 2.0, make sure your Providence installation has been updated to 2.0. While it is often possible to run an older version of Pawtucket2 with a newer version of Providence, it is not guaranteed. It is usually not possible to run an older version of Providence with a newer version of Pawtucket2.
 
-To update from a version 1.7.x installation decompress the CollectiveAccess Pawtucket 1.7.11 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory, custom theme (in `themes/your_theme_name_here`) and your setup.php file.
+To update from a version 1.7.x installation, decompress the CollectiveAccess Pawtucket2 2.0 tar.gz or zip file, and replace the files in your existing installation with those in the update. Take care to preserve your media directory, custom theme (in `themes/your_theme_name_here`) and your setup.php file. Note that themes written for use in 1.7 and PHP 7.x may require modifications for use for Pawtucket2 2.0 due to changes in the PHP programming language.
 
 Once the updated files are in place navigate in your web browser to the home page of your Pawtucket2 installation. If you see the home page you're done. If you see this message:
 
 ```"Your database is out-of-date. Please install all schema migrations starting with migration #xxx."```
  
-you have not updated your Providence installation to version 1.7.11.
+you have not updated your Providence installation to version 2.0.
 
 
 #### Updating from version 1.6 or earlier

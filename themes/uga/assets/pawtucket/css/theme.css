@@ -348,10 +348,14 @@ ul#main-menu li a:hover { background-color: lightgray;}
 		width:100px;
 	}
 }
+a.navbar-brand img {
+    height: 150px;
+    width: 738px;
+}
 /* less than 860px, 768px */
 @media (max-width: 768px) {
 	.name { font-size: 1.8em; margin-left: 9em; display: none; }
-	a.navbar-brand img { height: 80px; width: 80px; }
+	a.navbar-brand img { height: 80px; width: 393px; }
 	ul#main-menu {	height: auto; margin-left: auto; margin-top: -30px; }
 }
 
@@ -561,7 +565,6 @@ bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemTex
 .caAudioPlayer {
 	background-color: #000;
 }
-
 .highlightText {
 	background-color: #FBF719;
 	opacity: 0.8;

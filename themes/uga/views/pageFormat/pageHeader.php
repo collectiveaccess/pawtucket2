@@ -124,8 +124,8 @@
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ca_nav_logo300.png'), "navbar-brand", "", "","");
 ?>
-				<div class="name"> The Walter J. Brown Media Archives <br> & Peabody Awards Collection</div>
-			</div>
+				<div class="name"> </div>
+		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->

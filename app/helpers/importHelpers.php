@@ -991,7 +991,6 @@
 									$va_val['_type'] = $pa_item['settings']["{$ps_refinery_name}_{$key_prefix}TypeDefault"];
 								}
 								
-								
 								// Set parents
 								if ($va_parents) {
 									$vn_hier_item_id = caProcessRefineryParents($ps_refinery_name, $ps_table, $va_parents, $pa_source_data, $pa_item, $pn_value_index, array_merge($pa_options, ['refinery' => $po_refinery_instance]));
