@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2018 Whirl-i-Gig
+ * Copyright 2013-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -53,6 +53,7 @@
 				if($vs_representation_viewer){
 					print $vs_representation_viewer;
 ?>			
+					<div>Copy <a class='timecodeLink' id='timecodeLink' href='#' data-code=''>link to current in-point</a></div>
 					<div id="detailAnnotations"></div>
 <?php
 					print "<div class='row'><div class='col-md-12 col-lg-8 col-lg-offset-2'>".$this->getVar('representationViewerThumbnailBar')."</div></div>";
@@ -182,7 +183,17 @@
 							ksort($va_subjects);
 							print "<div class='unit'><label>Topics</label><span class='trimText'>".join(", ", $va_subjects)."</span></div>";
 						}
-									
+								
+								
+					if($robjects = $t_object->getRelatedItems('ca_objects', ['returnAs' => 'searchResult', 'checkAccess' => $va_access_values])) {
+						print "<div class='unit'><H2>Related items</H2>";	
+						
+						$robject_list = [];
+						while($robjects->nextHit()) {
+							$robject_list[] = "<div class='unit'>".$robjects->getWithTemplate('<l>^ca_objects.preferred_labels</l> (^ca_objects.idno)')."</div>";
+						}
+						print join("", $robject_list);
+					}
 						
 #Names [section header]: LC Name Authorities, Non-LOCNA Names, [both of these listed together in alphabetical order with no distinction between the types]
 #locname
@@ -301,6 +312,19 @@
 		$('.trimText').readmore({
 		  speed: 75,
 		  maxHeight: 120
+		});
+		
+		let players = caUI.mediaPlayerManager.getPlayerNames();
+		caUI.mediaPlayerManager.onTimeUpdate(players[0], function(e) {
+			let ct = e.detail.plyr.currentTime;
+			let urlStub = <?= json_encode(caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true])."/start/"); ?>;
+			jQuery('#timecodeLink').data('code', urlStub + ct);
+		});
+		jQuery('.timecodeLink').on('click', function(e) {
+			let code = jQuery(this).data('code');
+			if(!code) { code = jQuery(this).text(); }
+			caUI.utils.copyToClipboard(code, <?= json_encode(_t('Copied link to clipboard')); ?>, { header: <?= json_encode(_t('Notice')); ?>, life: 1000, openDuration: 'fast', closeDuration: 'fast' });
+			e.preventDefault();
 		});
 	});
 </script>

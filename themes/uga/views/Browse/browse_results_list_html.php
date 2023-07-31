@@ -39,6 +39,8 @@
 		$vb_row_id_loaded = true;
 	}
 	
+	$result_desc		= $this->getVar('result_desc');
+	
 	$va_views			= $this->getVar('views');
 	$vs_current_view	= $this->getVar('view');
 	$va_view_icons		= $this->getVar('viewIcons');
@@ -151,20 +153,25 @@
 							<ifdef code="ca_objects.instantiationMediaType"><div><b>Media Type:</b> ^ca_objects.instantiationMediaType</div></ifdef>'); 
 					}
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
+					
+					if($excerpts = caTextExcerptForSearchResult($vn_id, $result_desc, ['maxExcerpts' => 1])) {
+						$excerpts = "<br/>".join("<br/>", $excerpts);
+					}
 
 					$vs_result_output = "
 		<div class='bResultListItemCol col-xs-12'>
 			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
-				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
-					<div class='bResultListItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}".$vs_description."
-					</div><!-- end bResultListItemText -->
-				</div><!-- end bResultListItemContent -->
-				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
-					<hr>
-					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultListItemExpandedInfo -->
+				<div style='position: absolute; right: 25px; top: 10px;'>{$vs_add_to_set_link}</div>
+				<div style='display: flex; flex-direction: row; flex-wrap: nowrap;'>
+					<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
+					<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+					<div class='bResultListItemContent'>
+						<div class='bResultListItemText'>
+							<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_description}{$excerpts}
+							{$vs_expanded_info}
+						</div><!-- end bResultListItemText -->
+					</div><!-- end bResultListItemContent -->
+				</div>
 			</div><!-- end bResultListItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));

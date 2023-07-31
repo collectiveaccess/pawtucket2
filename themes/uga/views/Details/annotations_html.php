@@ -71,6 +71,7 @@ if (sizeof($va_annotations) > 0) {
 	if($default_annotation_id) {
 ?>
 		jQuery('#detailAnnotation<?= $default_annotation_id; ?>').click();
+		jQuery('.detail #detailAnnotations .detailAnnotationList').scrollTo(jQuery('#detailAnnotation<?= $default_annotation_id; ?>'));
 <?php
 	} elseif($start_time) {
 ?>
@@ -78,5 +79,11 @@ if (sizeof($va_annotations) > 0) {
 <?php
 	}
 ?>
+		jQuery('.clipLink').on('click', function(e) {
+			let code = jQuery(this).data('code');
+			if(!code) { code = jQuery(this).text(); }
+			caUI.utils.copyToClipboard(code, <?= json_encode(_t('Copied to clipboard')); ?>, { header: <?= json_encode(_t('Notice')); ?>, life: 1000, openDuration: 'fast', closeDuration: 'fast' });
+			e.preventDefault();
+		});
 	});
 </script>
