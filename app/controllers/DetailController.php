@@ -33,7 +33,6 @@ require_once(__CA_LIB_DIR__.'/ApplicationPluginManager.php');
 require_once(__CA_APP_DIR__."/controllers/FindController.php");
 require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
-require_once(__CA_MODELS_DIR__."/ca_objects.php");
 require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
 require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
 
@@ -644,40 +643,46 @@ class DetailController extends FindController {
 		// Allow plugins to modify object_id list
 		$va_child_ids =  $o_app_plugin_manager->hookDetailDownloadMediaObjectIDs($va_child_ids);
 		$va_child_ids = array_unique($va_child_ids);
-		$t_download_log = new Downloadlog();
-		foreach($va_child_ids as $vn_object_id) {
-			$t_child_object = new ca_objects($vn_object_id);
-			if (!$t_child_object->getPrimaryKey()) { continue; }
+		
+		if(sizeof($va_child_ids) > 0) {
+			$t_download_log = new Downloadlog();
+			foreach($va_child_ids as $vn_object_id) {
+				$t_child_object = new ca_objects($vn_object_id);
+				if (!$t_child_object->getPrimaryKey()) { continue; }
 			
-			$t_download_log->log(array(
-					"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
-					"ip_addr" => RequestHTTP::ip(), 
-					"table_num" => $t_object->TableNum(), 
-					"row_id" => $vn_object_id, 
-					"representation_id" => null, 
-					"download_source" => "pawtucket"
-			));
-			$va_reps = $t_child_object->getRepresentations(array($ps_version), null, array("checkAccess" => $this->opa_access_values));
-			$vs_idno = $t_child_object->get('idno');
+				$t_download_log->log(array(
+						"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
+						"ip_addr" => RequestHTTP::ip(), 
+						"table_num" => $t_object->TableNum(), 
+						"row_id" => $vn_object_id, 
+						"representation_id" => null, 
+						"download_source" => "pawtucket"
+				));
+				$va_reps = $t_child_object->getRepresentations(array($ps_version), null, array("checkAccess" => $this->opa_access_values));
+				$vs_idno = $t_child_object->get('idno');
 			
-			foreach($va_reps as $vn_representation_id => $va_rep) {
-				$va_rep_info = $va_rep['info'][$ps_version];
+				foreach($va_reps as $vn_representation_id => $va_rep) {
+					$va_rep_info = $va_rep['info'][$ps_version];
 				
-				$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
+					$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
 				
-				$va_file_names[$vs_filename] = true;
-				$this->view->setVar('version_download_name', $vs_filename);
+					$va_file_names[$vs_filename] = true;
+					$this->view->setVar('version_download_name', $vs_filename);
 			
-				//
-				// Perform metadata embedding
-				$t_rep = new ca_object_representations($va_rep['representation_id']);
-				if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
-					$vs_path = $t_rep->getMediaPath('media', $ps_version);
+					//
+					// Perform metadata embedding
+					$t_rep = new ca_object_representations($va_rep['representation_id']);
+					if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
+						$vs_path = $t_rep->getMediaPath('media', $ps_version);
+					}
+					$va_file_paths[$vs_path] = $vs_filename;
+				
+					$vn_c++;
 				}
-				$va_file_paths[$vs_path] = $vs_filename;
-				
-				$vn_c++;
 			}
+		} else {
+			$this->response->setHTTPResponseCode("204", "Nothing to download");
+			return;
 		}
 		
 		// Allow plugins to modify file path list
