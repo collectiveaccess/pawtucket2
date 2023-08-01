@@ -397,6 +397,9 @@ body{
 	border:0px;
 	border-radius: 0px;
 	margin-left: -30px;
+	display: inline !important;
+	margin-top: 0px !important;
+	margin-bottom: 0px !important;
 }
 .bSearchWithin, .bSearchWithin:focus {
     width: 80%;
@@ -413,8 +416,8 @@ body{
 	display:inline-block;
 	padding-right: 30px;
 }
-.bSearchWithin:focus, .results .btn-search-refine:focus{
-	border: 1px dashed #999;
+.bSearchWithin:focus, .btn-search-refine:focus{
+	border: 1px dashed #999 !important;
 	border-radius:0px;
 }
 .browseRemoveFacet, .browseRemoveFacet .btn{
@@ -439,6 +442,19 @@ a.browseRemoveFacet .glyphicon{
 #bRefine H2, #bRefine H3{
 	color:#000;
 	text-transform:capitalize;
+}
+#bRefine button{
+	color: #000;
+	text-transform: capitalize;
+	margin-bottom: 8px;
+	margin-top: 20px;
+	padding: 0px;
+	background-color: transparent;
+	border: 0px;
+	font-family: 'Tahoma', sans-serif;
+	font-weight: 600;
+	font-size: 16px;
+	display:block;	
 }
 #bRefine a {
 	color: #000;
@@ -737,6 +753,9 @@ body.frontContainer #footer{
 }
 .front .jcarousel-control-next{
 	padding: 0px 7px 5px 10px;
+}
+.front .jcarousel-pagination a {
+	color: #000;
 }
 .front .jcarousel-pagination a.active {
 	color: #FFF;
@@ -1113,6 +1132,9 @@ body.frontContainer #footer{
 	text-align: center;
 	width: 100%;
 	font-size: 18px;
+}
+#galleryDetailImageGrid #moreLink{
+	color:#000;
 }
 #galleryDetailImageWrapper .galleryPlaceholder{
 	margin-top: 25%;
@@ -1621,6 +1643,10 @@ h2.tl-headline{
 .userGuideBody H3{
 	text-transform:none;
 	clear:both;
+}
+.anchor{
+	position:relative;
+	top:-100px;
 }
 .userGuideBody label{
 	text-transform:none;

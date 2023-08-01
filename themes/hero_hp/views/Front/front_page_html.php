@@ -50,7 +50,7 @@
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 						<div class="formOutline">
 							<div class="form-group">
-								<label for="headerSearchInput" class="sr-only">Search:</label>
+								<label for="heroSearchInput" class="sr-only">Search:</label>
 								<input type="text" class="form-control" id="heroSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
 							</div>
 							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" role="graphics-document" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
