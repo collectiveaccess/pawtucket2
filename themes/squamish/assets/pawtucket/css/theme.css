@@ -1133,7 +1133,7 @@ body.frontContainer #footer{
 	width: 100%;
 	font-size: 18px;
 }
-#galleryDetailImageGrid #moreLink{
+#galleryDetailImageGrid a#moreLink{
 	color:#000;
 }
 #galleryDetailImageWrapper .galleryPlaceholder{
