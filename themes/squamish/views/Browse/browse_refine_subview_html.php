@@ -85,7 +85,7 @@
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 				if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-					print "<H3>".$va_facet_info['label_singular']."</H3>";
+					print "<button class='filterOption'".$va_facet_info['label_singular']."</button>";
 					print "<p>".$va_facet_info['description']."</p>";
 	?>
 						<script type="text/javascript">
@@ -98,7 +98,7 @@
 				} else {				
 					if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 					$c++;
-					print "<button onClick='jQuery(\".facetGroupShowHide\").hide(); jQuery(\"#facetGroup{$vs_facet_name}\").show(); return false;'>".$va_facet_info['label_singular']." <i class='fa fa-chevron-down' aria-hidden='true'></i></button><div id='facetGroup{$vs_facet_name}' class='facetGroupShowHide' ".((($vn_facets_with_content > 1) && ($c > 1)) ? "style='display:none;'" : "").">"; 
+					print "<button class='filterOption' onClick='jQuery(\".facetGroupShowHide\").hide(); jQuery(\"#facetGroup{$vs_facet_name}\").show(); return false;'>".$va_facet_info['label_singular']." <i class='fa fa-chevron-down' aria-hidden='true'></i></button><div id='facetGroup{$vs_facet_name}' class='facetGroupShowHide' ".((($vn_facets_with_content > 1) && ($c > 1)) ? "style='display:none;'" : "").">"; 
 					switch($va_facet_info["group_mode"]){
 						case "alphabetical":
 						case "list":

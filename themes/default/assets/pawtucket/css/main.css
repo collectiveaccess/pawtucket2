@@ -2081,19 +2081,6 @@ a.browseRemoveFacet .glyphicon {
 	padding:0px;
 	color: #666;
 }
-#bRefine button{
-	color: #000;
-	text-transform: uppercase;
-	margin-bottom: 8px;
-	margin-top: 20px;
-	padding: 0px;
-	background-color: transparent;
-	border: 0px;
-	font-family: 'Tahoma', sans-serif;
-	font-weight: 600;
-	font-size: 16px;
-	display:block;	
-}
 #bRefine a {
 	color: #666666;
     font-size: 12px;
