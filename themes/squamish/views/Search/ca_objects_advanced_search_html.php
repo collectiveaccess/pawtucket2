@@ -21,11 +21,11 @@
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_objects.date.dates_value[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records and items by date or date range.') ?>"><?php _p('Dates <i>(e.g. 1923-1950)</i>') ?></label>
+			<label for='ca_objects_date[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records and items by date or date range.') ?>"><?php _p('Dates <i>(e.g. 1923-1950)</i>') ?></label>
 			{{{ca_objects.date%width=200px&height=1px&useDatePicker=0}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_objects_language' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Language(s) associated with an item.') ?>"><?php _p('Language') ?></label>
+			<label for='ca_objects_language[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Language(s) associated with an item.') ?>"><?php _p('Language') ?></label>
 			{{{ca_objects.language%width=210px&id=ca_objects_language&inUse=1}}}
 		</div>
 		

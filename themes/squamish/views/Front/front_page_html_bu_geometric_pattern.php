@@ -62,10 +62,9 @@
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 						<div class="formOutline">
 							<div class="form-group">
-								<label for="heroSearchInput" class="sr-only">Search:</label>
 								<input type="text" class="form-control" id="heroSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
 							</div>
-							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" role="graphics-document" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
+							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
 					</form>
 					<div class="heroSearchAdvancedSearch"><?php print caNavLink($this->request, "Advanced Search", "", "Search", "Advanced", "objects"); ?></div>
@@ -99,40 +98,40 @@
 	}
 ?>
 	<div class="row hpExplore bg_beige">
-		<div class="col-md-12">
-		<H2 class="frontSubHeading text-center">Explore The Collections</H2>
-
-			<div class="row">
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'><div class='hpExploreBoxTitle btn btn-default'>Archives & Oral History</div></div>", "", "", "BrowseAll", "Archives"); ?>
+		<div class="col-sm-12">
+			<div class="container containerExploreBoxGeo">
+				<div class="row">
+					<div class="col-md-4">
+						<div class="hpExploreBoxGeo hpExploreBoxGeo1">
+							<?php print caNavLink($this->request, "Archives &<br/>Oral History", "", "", "BrowseAll", "Archives"); ?>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="hpExploreBoxGeo hpExploreBoxGeo2">
+							<?php print caNavLink($this->request, "Cultural<br/>Collection", "", "", "Browse", "cultural"); ?>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="hpExploreBoxGeo hpExploreBoxGeo3">
+							<?php print caNavLink($this->request, "Reference<br/>Library", "", "", "Browse", "library"); ?>
+						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage2'><div class='hpExploreBoxTitle btn btn-default'>Cultural Collection</div></div>", "", "", "Browse", "cultural"); ?>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="hpExploreBoxGeo hpExploreBoxGeo4">
+							<?php print caNavLink($this->request, "External<br/>Resources", "", "", "Listing", "Resources"); ?>
+						</div>
 					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage3'><div class='hpExploreBoxTitle btn btn-default'>Reference Library</div></div>", "", "", "Browse", "library"); ?>
+					<div class="col-md-4">
+						<div class="hpExploreBoxGeo hpExploreBoxGeo5">
+							<?php print caNavLink($this->request, "Curriculum &<br/>Teaching Materials", "", "", "Browse", "Curriculum"); ?>
+						</div>
 					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage4'><div class='hpExploreBoxTitle btn btn-default'>External Resources</div></div>", "", "", "Listing", "Resources"); ?>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage5'><div class='hpExploreBoxTitle btn btn-default'>Curriculum & Teaching Materials</div></div>", "", "", "Browse", "Curriculum"); ?>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage6'><div class='hpExploreBoxTitle btn btn-default'>Academic Works</div></div>", "", "", "Browse", "academic"); ?>
+					<div class="col-md-4">
+						<div class="hpExploreBoxGeo hpExploreBoxGeo6">
+							<?php print caNavLink($this->request, "Academic<br/>Works", "", "", "Browse", "academic"); ?>
+						</div>
 					</div>
 				</div>
 			</div>

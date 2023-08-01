@@ -44,9 +44,9 @@
 						</div>
 						<div class="col-sm-4">
 							<ul class="list-inline social">
-								<li><a href="https://www.facebook.com/SquamishNation" target="_blank"><i class="fa fa-facebook"></i></a></li>
-								<li><a href="https://www.instagram.com/squamishnation/" target="_blank"><i class="fa fa-instagram"></i></a></li>
-								<li><a href="https://twitter.com/SquamishNation" target="_blank"><i class="fa fa-twitter"></i></a></li>
+								<li><a href="https://www.facebook.com/SquamishNation" target="_blank"><i class="fa fa-facebook" role="graphics-document" aria-label="Facebook"></i></a></li>
+								<li><a href="https://www.instagram.com/squamishnation/" target="_blank"><i class="fa fa-instagram" role="graphics-document" aria-label="Instagram"></i></a></li>
+								<li><a href="https://twitter.com/SquamishNation" target="_blank"><i class="fa fa-twitter" role="graphics-document" aria-label="Twitter"></i></a></li>
 							</ul>
 						</div>
 					</div>
@@ -68,7 +68,7 @@ if((!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time
 ?>
 	<div class="disclaimerAlert">
 		<div class="disclaimerAlertBox">
-			<div class="disclaimerAlertMessage"><H1>Appropriate Use</H1>{{{disclaimer_alert_message}}}<div class="enterButton"><?php print caNavLink($this->request, _t("Accept and Enter"), 'btn btn-default', '', 'Front', 'Index', array('accept_terms' => 1)); ?></div></div>
+			<div class="disclaimerAlertMessage"><H1>Appropriate Use</H1>{{{disclaimer_alert_message}}}<div class="enterButton"><?php print caNavLink($this->request, _t("Accept and Enter"), 'btn btn-default', '', '*', '*', array('accept_terms' => 1)); ?></div></div>
 			
 		</div>
 	</div>
