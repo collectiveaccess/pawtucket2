@@ -60,6 +60,14 @@ h2, H2, h3, H3{
 .container.wideContainer{
 	max-width: 5000px;
 }
+.row.lessGutter{
+	margin-left:-8px;
+	margin-right:-8px;
+}
+.row.lessGutter .col-xs-1, .row.lessGutter .col-xs-2, .row.lessGutter .col-xs-3, .row.lessGutter .col-xs-4, .row.lessGutter .col-xs-5, .row.lessGutter .col-xs-6, .row.lessGutter .col-xs-7, .row.lessGutter .col-xs-8, .row.lessGutter .col-xs-9, .row.lessGutter .col-xs-10, .row.lessGutter .col-xs-11, .row.lessGutter .col-xs-12, .row.lessGutter .col-sm-1, .row.lessGutter .col-sm-2, .row.lessGutter .col-sm-3, .row.lessGutter .col-sm-4, .row.lessGutter .col-sm-5, .row.lessGutter .col-sm-6, .row.lessGutter .col-sm-7, .row.lessGutter .col-sm-8, .row.lessGutter .col-sm-9, .row.lessGutter .col-sm-10, .row.lessGutter .col-sm-11, .row.lessGutter .col-sm-12, .row.lessGutter .col-md-1, .row.lessGutter .col-md-2, .row.lessGutter .col-md-3, .row.lessGutter .col-md-4, .row.lessGutter .col-md-5, .row.lessGutter .col-md-6, .row.lessGutter .col-md-7, .row.lessGutter .col-md-8, .row.lessGutter .col-md-9, .row.lessGutter .col-md-10, .row.lessGutter .col-md-11, .row.lessGutter .col-md-12, .row.lessGutter .col-lg-1, .row.lessGutter .col-lg-2, .row.lessGutter .col-lg-3, .row.lessGutter .col-lg-4, .row.lessGutter .col-lg-5, .row.lessGutter .col-lg-6, .row.lessGutter .col-lg-7, .row.lessGutter .col-lg-8, .row.lessGutter .col-lg-9, .row.lessGutter .col-lg-10, .row.lessGutter .col-lg-11, .row.lessGutter .col-lg-12{
+	padding-left:8px;
+	padding-right:8px;
+}
 .bgLightGray{
 	background-color:#EEE;
 }
@@ -68,6 +76,14 @@ h2, H2, h3, H3{
 }
 .bgWhite{
 	background-color:#FFF;
+}
+.sr-only {
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
 }
 /* header */
 .navbar{
@@ -78,11 +94,13 @@ h2, H2, h3, H3{
 }
 .navbar .formOutline{
 	border-radius:2px;
-	background-color:#D9D9D9;
 	border: 0px;
 }
+.navbar-form .form-group {
+	background-color: #D9D9D9;
+}
 .navbar .formOutline .form-control#headerSearchInput{
-	height:30px;
+	height:32px;
 }
 .headerAdvancedSearch{
 	text-align:right;
@@ -94,10 +112,18 @@ h2, H2, h3, H3{
 	color:#FFF;
 	border-radius:0px 2px 2px 0px;
 	background-color:#000;
-	padding: 5px;
+	padding: 5px 8px 5.5px 8px;
 }
 #headerSearchButton .material-symbols-outlined {
 	font-size: 20px !important;
+}
+#headerSearchButton:focus{
+	background-color: #555555;
+	border-radius: 0px;
+}
+#headerSearchInput:focus{
+	border: 1px dashed #999;
+	border-radius: 0px;
 }
 .navbar-brand{
 	width:175px;
@@ -121,7 +147,7 @@ h2, H2, h3, H3{
 		padding-right:20px;
 	}
 	.navbar-form{
-		margin-top:21px;
+		margin-top:20px;
 	}
 	.nav > li.dropdown > a.icon{
 		padding-top: 23px;
@@ -487,6 +513,10 @@ body{
 	padding-right: 30px;
 	background-color: #EEE;
 }
+.bSearchWithin:focus, .btn-search-refine:focus{
+	border: 1px dashed #555555 !important;
+	border-radius:0px;
+}
 .browseRemoveFacet, .browseRemoveFacet .btn{
 	display:block;
 	width:100%;
@@ -519,6 +549,9 @@ a.browseRemoveFacet .glyphicon{
 .resultTile{
 	margin-bottom:30px;
 	position:relative;
+}
+.lessGutter .resultTile{
+	margin-bottom:16px;
 }
 .resultTile img{
 	width:100%;
@@ -651,13 +684,15 @@ body.frontContainer #footer{
 	background-image: url("../graphics/VideoOutHero.jpg");
 }
 .hero .heroIntroContainer{
-	max-width: 1440px;
+	max-width: 1530px;
 	position: relative;
   	bottom: 0px;
   	margin-right: auto;
   	margin-left: auto;
   	width: 100%;
 	height: 100%;
+	padding-right: 30px;
+	padding-left: 30px;
 }
 .hero .heroIntro {
 	position:absolute;
@@ -671,8 +706,8 @@ body.frontContainer #footer{
 	font-weight:400;
 	text-align:left;
 	bottom:40px;
-	right:40px;
-	width:50%
+	right: 30px;
+	width: 49%;
 }
 .heroIntro H1{
 	color: #FFF;
@@ -686,8 +721,10 @@ body.frontContainer #footer{
 }
 @media(max-width:1024px){
 	.hero .heroIntro {
-		width:75%;
-		font-size:24px;	
+		width: auto;
+		font-size: 24px;
+		left: 30px;
+		right: 30px;	
 	}
 	.heroIntro H1{
 		font-size:32px;
@@ -695,8 +732,10 @@ body.frontContainer #footer{
 }
 @media(max-width:768px){
 	.hero .heroIntro {
-		width:75%;
-		font-size:24px;
+		width: auto;
+		font-size: 24px;
+		left: 30px;
+		right: 30px;
 	}
 	.heroIntro H1{
 		font-size:32px;
@@ -704,14 +743,19 @@ body.frontContainer #footer{
 }
 @media(max-height:420px){
 	.hero .heroIntro {
-		width:100%;
-		font-size:24px;
+		width: auto;
+		font-size: 24px;
+		left: 30px;
+		right: 30px;
 	}
 	.heroIntro H1{
 		font-size:32px;
 	}
 }
-
+.videoout h2{
+	margin-top: 70px;
+	margin-bottom: 30px;
+}
 
 
 #hpScrollBar{
@@ -781,6 +825,11 @@ body.frontContainer #footer{
 }
 
 /* gallery */
+.gallery h2{
+	margin-bottom: 30px;
+	text-transform:none;
+	font-size:24px !Important;
+}
 @media(max-width:768px){
 	.galleryList{
 		text-align:center;
@@ -830,10 +879,37 @@ body.frontContainer #footer{
 .gallery #galleryDetailImageGrid img {
   background-color: #fff;
 }
+.gallery .video-js {
+	min-height: 300px;
+}
+@media (min-width: 768px) {
+  	.gallery .video-js {
+    	min-height: 400px;
+	}
+}
+.gallery .plyr__video-wrapper{
+	min-height:250px;
+	width:auto;
+}
+@media (min-width: 768px) {
+	.gallery .plyr__video-wrapper{
+		height:400px;
+		width:auto;
+	}
+}
+.gallery #galleryDetailImageArea #galleryDetailImageWrapper:hover .detailMediaToolbar {
+  display: none;
+}
 /* collections */
 .highlightImg img{
 	width:100%;
-	height:auto;
+	height: 500px;
+	object-fit: cover;
+}
+@media(max-width:991px){
+	.highlightIntroContainer{
+		padding:0px 20px 20px 20px;
+	}
 }
 .highlightIntro{
 	padding-right:15px;
@@ -872,7 +948,7 @@ body.frontContainer #footer{
 a:hover .imgTile{
 	background-color: #dedede;
 }
-.collections h3{
+.collections h3 {
 	margin-top:50px;
 	margin-bottom:30px;
 }

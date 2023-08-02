@@ -5,7 +5,7 @@
 	</div></div>
 </div>
 <div class="container">
-	<div class="row">
+	<div class="row lessGutter">
 		<div class='col-md-12 col-lg-12'>
 
 			<div class="bgLightGray">
@@ -14,11 +14,11 @@
 						<div class='highlightImg'><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'videoOutHighlight.jpg', array("alt" => "Video Out")), "", "", "Browse",  "videoout"); ?></div>
 					</div>
 					<div class='col-sm-12 col-md-6'>
-						<div class='highlightIntro highlightIntroNoTitle'>{{{video_out_callout}}}</div>
+						<div class="highlightIntroContainer"><div class='highlightIntro highlightIntroNoTitle'>{{{video_out_callout}}}</div>
 <?php
 						print caNavLink($this->request, "Browse Video Out →", "btn btn-default", "", "Browse",  "videoout");
 ?>
-					</div>
+					</div></div>
 				</div>
 			</div>
 
@@ -26,7 +26,7 @@
 <?php
 	$va_access_values = $this->getVar("access_values");
 	$qr_res = $this->getVar('featured_set_items_as_search_result');
-	$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
+	$vs_caption_template = "^ca_objects.preferred_labels.name";
 	$vs_featured_set_name = $this->getVar('featured_set_name');
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 
