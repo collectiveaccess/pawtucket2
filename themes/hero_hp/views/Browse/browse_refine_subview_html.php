@@ -60,7 +60,8 @@
 ?>
 			<div class="bSearchWithinContainer">
 				<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-					<input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within"><button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button>
+					<label for="searchWithinSearchRefine" class="sr-only">Search Within:</label>
+					<input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within"><button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search" role="graphics-document"></span></button>
 					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
 				</form>

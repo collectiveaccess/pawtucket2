@@ -50,7 +50,7 @@
 	
 	if($qr_res && $qr_res->numHits()){
 ?>
-<div class="row"><div class="col-sm-12 col-md-6 col-md-offset-3"><H3 class="featuredItems">Featured Collections</H3>  
+<div class="row"><div class="col-sm-12 col-md-8 col-lg-6 col-md-offset-2 col-lg-offset-3"><H3 class="featuredItems">Featured Collections</H3>  
 		<div class="jcarousel-wrapper featuredItemsSlideShow">
 			<!-- Carousel -->
 			<div class="jcarousel featured featuredItemsSlide">

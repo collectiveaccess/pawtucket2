@@ -13,14 +13,14 @@
 	
 	switch($vs_set_type){
 		case "research_guides":
-			$vs_title = caNavLink($this->request, "<i class='fa fa-angle-left' role='button' aria-label='back'></i> Research Guides", "", "", "Gallery", "Index", array("set_type" => "research_guides"));
+			$vs_title = caNavLink($this->request, "<i class='fa fa-angle-left' role='graphics-document' aria-label='back'></i> Research Guides", "", "", "Gallery", "Index", array("set_type" => "research_guides"));
 			$vs_header_class = "bg_beige_eye dark";
 			
 			#$vs_landing_page_format = "grid";
 		break;
 		# --------------------------------
 		case "highlights":
-			$vs_title = caNavLink($this->request, "<i class='fa fa-angle-left' role='button' aria-label='back'></i> Highlights", "", "", "Gallery", "Index", array("set_type" => "highlights"));
+			$vs_title = caNavLink($this->request, "<i class='fa fa-angle-left' role='graphics-document' aria-label='back'></i> Highlights", "", "", "Gallery", "Index", array("set_type" => "highlights"));
 			$vs_header_class = "bg_dark_eye";
 		break;
 		# --------------------------------

@@ -51,7 +51,7 @@ class SubjectsController extends BasePawtucketController {
 			foreach($va_subjects as $vn_item_id => $va_subject){
 				$va_subject = array_pop($va_subject);
 				$t_list_item->load($vn_item_id);
-				$va_subjects_for_display[$vn_item_id] = array("name" => $va_subject["name_singular"], "image" => $t_list_item->get("ca_list_items.icon.original"));
+				$va_subjects_for_display[$vn_item_id] = array("name" => $va_subject["name_singular"], "image" => $t_list_item->get("ca_list_items.icon.large"));
 			}
 		}
 				
@@ -90,7 +90,7 @@ class SubjectsController extends BasePawtucketController {
 			foreach($va_subjects as $vn_item_id => $va_subject){
 				$va_subject = array_pop($va_subject);
 				$t_list_item->load($vn_item_id);
-				$va_subjects_for_display[$vn_item_id] = array("name" => $va_subject["name_singular"], "image" => $t_list_item->get("ca_list_items.icon.original"), "children" => (($t_list_item->get("ca_list_items.children.item_id")) ? true : false));
+				$va_subjects_for_display[$vn_item_id] = array("name" => $va_subject["name_singular"], "image" => $t_list_item->get("ca_list_items.icon.large"), "children" => (($t_list_item->get("ca_list_items.children.item_id")) ? true : false));
 			}
 		}
 				

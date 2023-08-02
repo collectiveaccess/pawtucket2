@@ -11,7 +11,12 @@
 ?>
 <div class="row bg_dark_eye pageHeaderRow">
 	<div class="col-sm-12">
-		<H1>Sentences and Phrases: <?php print $t_set->get("ca_sets.preferred_labels.name"); ?></H1>
+		<H1><?php print caNavLink($this->request, "<i class='fa fa-angle-left' role='button' aria-label='back'></i> Sentences and Phrases", "", "", "Language", "Sentences"); ?>: <?php print $t_set->get("ca_sets.preferred_labels.name"); ?></H1>
+<?php
+		if($vs_desc = $t_set->get("ca_sets.set_description")){
+			print "<p>".$vs_desc."</p>";
+		}
+?>
 	</div>
 </div>
 <div class='row'>

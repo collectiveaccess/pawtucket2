@@ -96,7 +96,7 @@
 			<div class='col-sm-12 col-md-3'>
 <?php
 				print '<div id="detailTools">';
-				if($this->getVar("representation_id")){
+				if($this->getVar("representation_id") && ($t_object->get('ca_objects.download_for_artestar', ['convertCodesToIdno' => true]) === 'yes') && $this->request->user->hasRole('full_access')){
 					print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Image")."'></span>".caNavLink($this->request, "Download Image", "", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
 				}
 				if ($vn_pdf_enabled) {
