@@ -34,8 +34,8 @@
 <div class="container frontPage">
 	<div class="row">
 		<div class="col-sm-8">
-			<h2>Welcome to ACORN and the collections of The Sterling Morton Library</h2>
-			<p>Explore the collections of The Morton Arboretum through ACORN! Discover more than 40,000 photographs, videos, audio files, publications, artwork, rare books, maps, and other archival materials from the Suzette Morton Davidson Special Collections of the Sterling Morton Library. This searchable database provides access to our digital collections and we're continually expanding it to include more of the Arboretum’s rich resources.</p>
+			<h2>{{{front_page_heading}}}</h2>
+			<p>{{{front_page_intro_text}}}</p>
 		</div><!--end col-sm-8-->
 		<div class="col-sm-4">
 <?php

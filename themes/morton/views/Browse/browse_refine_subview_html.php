@@ -40,7 +40,7 @@
 	if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
-		print "<H3>"._t("Filter by")."</H3>";
+		print "<H3 class='hasTooltip' data-toggle='tooltip' data-placement='bottom' title='Use the filters below to refine your search to results that match certain criteria.'>"._t("Filter by")."</H3>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
@@ -55,7 +55,12 @@
 <?php
 			} else {				
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-				print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+				
+				if($va_facet_info['description']) {
+					print "<H5 class='hasTooltip' data-toggle='tooltip' data-placement='bottom' title=".json_encode($va_facet_info['description']).">".$va_facet_info['label_singular']."</H5>"; 
+				} else {
+					print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+				}
 				switch($va_facet_info["group_mode"]){
 					case "alphabetical":
 					case "list":

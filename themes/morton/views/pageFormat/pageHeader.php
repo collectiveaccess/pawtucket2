@@ -144,10 +144,11 @@
 
 					<ul class="nav navbar-nav navbar-right">
 						<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+						<li <?php print ($this->request->getController() == "Help") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Help"), "", "", "Help", "Index"); ?></li>
 <?php
 							print $this->render("pageFormat/browseMenu.php");
 ?>	
-						<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
+						<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Search"), "", "", "Search", "advanced/objects"); ?></li>
 						<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured"), "", "", "Gallery", "Index"); ?></li>
 						<li <?php print ($this->request->getController() == "Collection") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Finding Aids"), "", "", "FindingAid", "Collection/Index"); ?></li>
 					

@@ -16,7 +16,7 @@
 	print "<div id='galleryDetailImageWrapper'>".caDetailLink($this->request, $this->getVar("rep"), '', 'ca_objects',  $this->getVar("object_id")).$this->getVar("repToolBar")."</div>";	
 	if ($pn_set_item_id) {
 		$t_set_item = new ca_set_items($pn_set_item_id);
-		if ($vs_set_item_title = $t_set_item->get('ca_set_items.preferred_labels')) {
+		if (($vs_set_item_title = $t_set_item->get('ca_set_items.preferred_labels')) && ($vs_set_item_title !== '[BLANK]')) {
 			print "<p class='setItemCaption'>".$vs_set_item_title."</p>";
 		}
 	}
