@@ -45,7 +45,7 @@
 		print "<div class='alert alert-danger'>".$va_errors["general"]."</div>";
 	}
 ?>
-	<form id="ProfileForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "profileSave"); ?>" class="form-horizontal" role="form" method="POST">
+	<form id="ProfileForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "profileSave"); ?>" class="form-horizontal" method="POST">
         <input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 <?php
 		foreach(array("fname", "lname", "email") as $vs_field){

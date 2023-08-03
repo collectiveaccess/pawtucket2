@@ -1014,6 +1014,10 @@ a:hover .imgTile{
 	font-size:15px;
 	font-weight:500;
 }
+.detail a .bgDarkGray small{
+	font-size:14px;
+	font-weight:400;
+}
 .detail a:hover .bgDarkGray{
 	color:#000;
 	background-color:#EEE;

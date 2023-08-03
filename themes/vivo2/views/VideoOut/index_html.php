@@ -49,7 +49,7 @@
 						if($vs_caption){
 							print $vs_caption;
 						}
-						$vs_add_to_set_link = "<a href='#' class='setLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+						$vs_add_to_set_link = "<a href='#' class='setLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array("object_id" => $qr_res->get("ca_objects.object_id")))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 						print "<div class='tools'>".$vs_add_to_set_link."<div class='identifier'>".$qr_res->getWithTemplate("<l>^ca_objects.idno</l>")."</div></div>";
 						print "</div></div>";
 						$vb_item_output = true;

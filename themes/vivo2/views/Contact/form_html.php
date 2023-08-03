@@ -13,7 +13,7 @@
 		$t_item = Datamodel::getInstanceByTableName($ps_table);
 		if($t_item){
 			$t_item->load($pn_id);
-			if($ps_table = "ca_sets"){
+			if($ps_table == "ca_sets"){
 				$vs_name = $t_item->getLabelForDisplay();
 				$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "", "Lightbox", "setDetail", array("set_id" => $pn_id));
 				$vs_admin_url = $this->request->config->get("site_host")."/admin/index.php/manage/sets/SetEditor/Edit/set_id/".$pn_id;

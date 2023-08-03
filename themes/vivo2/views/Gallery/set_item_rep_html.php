@@ -15,14 +15,14 @@
 	$ps_table = $this->getVar("table");
 	$pn_rep_id = $this->getVar("representation_id");
 	if($pn_previous_item_id > 0){
-		print "<a href='#' class='galleryDetailPrevious' onclick='caGalleryNav(\"previous\"); return false;'><i class='fa fa-angle-left' role='button' aria-label='previous'></i></a>";
+		print "<a href='#' class='galleryDetailPrevious' onclick='caGalleryNav(\"previous\"); return false;'><i class='fa fa-angle-left' role='graphics-document' aria-label='previous'></i></a>";
 	}else{
-		print "<a href='#' class='galleryDetailPrevious inactive' onClick='return false;'><i class='fa fa-angle-left' role='button' aria-label='previous'></i></a>";
+		print "<a href='#' class='galleryDetailPrevious inactive' onClick='return false;'><i class='fa fa-angle-left' role='graphics-document' aria-label='previous'></i></a>";
 	}
 	if($pn_next_item_id > 0){
-		print "<a href='#' class='galleryDetailNext' onclick='caGalleryNav(\"next\"); return false;'><i class='fa fa-angle-right' role='button' aria-label='next'></i></a>";
+		print "<a href='#' class='galleryDetailNext' onclick='caGalleryNav(\"next\"); return false;'><i class='fa fa-angle-right' role='graphics-document' aria-label='next'></i></a>";
 	}else{
-		print "<a href='#' class='galleryDetailNext inactive' onClick='return false;'><i class='fa fa-angle-right' role='button' aria-label='next'></i></a>";
+		print "<a href='#' class='galleryDetailNext inactive' onClick='return false;'><i class='fa fa-angle-right' role='graphics-document' aria-label='next'></i></a>";
 	}
 
 	$vs_rep_record_table = $this->getVar("rep_record_table");

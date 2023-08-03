@@ -6,7 +6,8 @@
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
 	if (!($t_instance = Datamodel::getInstanceByTableNum($t_set->get('table_num')))) { throw new ApplicationException(_t('Invalid item')); }
-	
+	$table = Datamodel::getTableName($t_set->get('table_num'));
+	$va_access_values = $this->getVar("access_value");
 ?>
 	<div class="row">
 		<div class="col-sm-12">
@@ -18,16 +19,71 @@
 ?>	
 
 		</div>
-	</div>
+	</div><br/>
+	
+<?php
+	if($t_set->get("ca_sets.set_presentation_type", array("convertCodesToDisplayText" => true)) == "Thumbnail image lists"){
+		$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+		$pa_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("widepreview"), "checkAccess" => $va_access_values)));
+		#print_r($pa_set_items);
+		$vn_col = 0;
+		print '<div class="frontGrid">';
+		foreach($pa_set_items as $pa_set_item){
+			$vs_label = $pa_set_item["set_item_label"];
+			$vs_idno = $pa_set_item["idno"];
+			$vs_rep = $pa_set_item["representation_tag_widepreview"];
+			if (!$vs_rep) {
+				$t_instance->load($pa_set_item["row_id"]);
+					
+ 				$vs_rep = $t_instance->get("ca_object_representations.media.widepreview", array("checkAccess" => $va_access_values));
+ 				if(!$vs_rep){
+ 					# --- if there is no rep and this is not an objects table, try to show a related object rep instead
+ 					$vs_rep = $t_instance->getWithTemplate("<unit relativeTo='ca_objects.related' limit='1'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values));
+ 				}
+ 				if(!$vs_rep){
+ 					$vs_rep = "<div class='placeholderImage'>".caGetThemeGraphic($this->request, 'placeholderWide.jpg', array("alt" => "No media available"))."</div>";
+ 				}
+			}
+			if($vn_col == 0){
+				print "<div class='row lessGutter'>";
+			}
+				
+			print "<div class='col-sm-6 col-md-4'><div class='resultTile'>".caDetailLink($this->request, $vs_rep, "", $table, $pa_set_item["row_id"]);;
+			if($vs_label){
+				print caDetailLink($this->request, "<div class='caption'>".$vs_label."</div>", "", $table, $pa_set_item["row_id"]);
+			}
+			if($table == "ca_objects"){
+				$vs_add_to_set_link = "<a href='#' class='setLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array("object_id" => $pa_set_item["row_id"]))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+			}
+			if($vs_idno){
+				$vs_idno = caDetailLink($this->request, $vs_idno, "", $table, $pa_set_item["row_id"]);
+			}
+			print "<div class='tools'>".$vs_add_to_set_link."<div class='identifier'>".$vs_idno."</div></div>";
+			print "</div></div>";
+			$vb_item_output = true;
+			$vn_col++;
+			if($vn_col == 3){
+				print "</div>";
+				$vn_col = 0;
+			}
+		}
+		if($vn_col > 0){
+			print "</div><!-- end row -->";
+		}
+		print '</div>';
+	}else{
+?>
+	
+	
 	<div class="row">
 		<div class="col-sm-8"><div id="galleryDetailImageArea">
 		</div><!-- end galleryDetailImageArea --></div><!--end col-sm-8-->
 		<div class="col-sm-4" id="galleryDetailObjectInfo"> </div>
 	</div><!-- end row -->
-<div class="galleryDetailBottom row">
-	<div class="col-sm-12">
-		<div id="galleryDetailImageGrid"><div class="container">
-			<div class="row">		
+	<div class="galleryDetailBottom row">
+		<div class="col-sm-12">
+			<div id="galleryDetailImageGrid"><div class="container">
+				<div class="row">		
 <?php
 		$vn_i = 0;
 		foreach($pa_set_items as $pa_set_item){
@@ -73,10 +129,10 @@
 			}
 		}
 ?>
-			</div><!-- end row -->
-		</div></div>
-	</div>
-</div><!-- end row -->
+				</div><!-- end row -->
+			</div></div>
+		</div>
+	</div><!-- end row -->
 <script type='text/javascript'>
 		jQuery(document).ready(function() {		
 			jQuery("#galleryDetailImageArea").load("<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => ($pn_set_item_id) ? $pn_set_item_id : $vn_first_item_id, 'set_id' => $pn_set_id)); ?>");
@@ -88,3 +144,6 @@
 			jQuery("#" + id).addClass("galleryIconActive");
 		}
 </script>
+<?php
+	}
+?>

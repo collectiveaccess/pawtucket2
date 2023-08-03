@@ -55,6 +55,8 @@
  			$this->view->setVar("section_item_name", $section_item_name);
  			caSetPageCSSClasses(array("gallery"));
  			
+ 			$this->view->setVar("access_values", $this->opa_access_values);
+ 			
  			AssetLoadManager::register("panel");
  			AssetLoadManager::register("mediaViewer");
  			AssetLoadManager::register("carousel");
