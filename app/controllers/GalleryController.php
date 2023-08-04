@@ -55,6 +55,8 @@
  			$this->view->setVar("section_item_name", $section_item_name);
  			caSetPageCSSClasses(array("gallery"));
  			
+ 			$this->view->setVar("access_values", $this->opa_access_values);
+ 			
  			AssetLoadManager::register("panel");
  			AssetLoadManager::register("mediaViewer");
  			AssetLoadManager::register("carousel");
@@ -81,7 +83,7 @@
 						$set_opts["table"] = "ca_objects";
 					}
 					$sets = caExtractValuesByUserLocale($t_set->getSets($set_opts));
-					$set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
+					$set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($sets), array("version" => "iconlarge", "checkAccess" => $this->opa_access_values));
 				
 					// Sort by name by default; otherwise sort on rank
 					if($this->config->get('gallery_sort_by') !== 'name') {
@@ -96,13 +98,15 @@
 						$first_item = $set_first_items[$set_id];
 						$first_item = array_shift($first_item);
 						$vn_item_id = $first_item["item_id"];
-						# --- it there isn't a rep and this is not a set of objects, try to get a related object to show something
+						# --- if there isn't a rep and this is not a set of objects, try to get it's rep or a related object to show something
 						if(!$set_first_items[$set_id][$vn_item_id]["representation_tag"]){
 							if(Datamodel::getTableName($va_set['table_num']) != "ca_objects"){
 								if (!($t_instance = Datamodel::getInstanceByTableNum($va_set['table_num']))) { throw new ApplicationException(_t('Invalid item')); }
 								$t_instance->load($first_item["row_id"]);
-								if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $this->opa_access_values))){
- 									$set_first_items[$set_id][$vn_item_id] = array("representation_tag" => $vs_thumbnail);
+								if($vs_thumbnail = $t_instance->getWithTemplate('^ca_object_representations.media.iconlarge', array("checkAccess" => $this->opa_access_values))){
+									$set_first_items[$set_id][$vn_item_id]["representation_tag"] = $vs_thumbnail;
+ 								}elseif($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $this->opa_access_values))){
+ 									$set_first_items[$set_id][$vn_item_id]["representation_tag"] = $vs_thumbnail;
  								}
 							}
 						}
@@ -286,17 +290,37 @@
  			$t_set_item = $this->_getSetItem($set_id, $item_id); // will throw exception if item is not valid for set or publicaly accessible
  			
  			$this->view->setVar("set_item_id", $item_id); 
- 			$t_rep = new ca_object_representations($set_items[$item_id]["representation_id"]);
- 			
-			if(!(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && !in_array($t_rep->get("access"), $this->opa_access_values))){
-				$this->view->setVar("rep_object", $t_rep);
-				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
-				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery', 'set_id' => $set_id]));
-				$this->view->setVar("representation_id", $set_items[$item_id]["representation_id"]);
-			}
  			$this->view->setVar("object_id", $set_items[$item_id]["row_id"]);
  			$this->view->setVar("row_id", $set_items[$item_id]["row_id"]);
  			$this->view->setVar("table", $table);
+ 			
+ 			if(!$set_items[$item_id]["representation_id"] && ($table != "ca_objects")){
+ 				$t_instance = Datamodel::getInstanceByTableName($table);
+				$t_instance->load($set_items[$item_id]["row_id"]);
+				if($vn_rep_id = $t_instance->get("ca_object_representations.representation_id", array("checkAccess" => $this->opa_access_values))){
+					$this->view->setVar("rep_record_table", $table);
+ 					$this->view->setVar("rep_record_row_id", $set_items[$item_id]["row_id"]);
+				}
+				if(!$vn_rep_id){
+					if($vn_rep_id = $t_instance->getWithTemplate("<ifcount code='ca_objects' min='1'><unit relativeTo='ca_objects' limit='1'>^ca_object_representations.representation_id</unit></ifcount>", array("checkAccess" => $this->opa_access_values))){
+						$this->view->setVar("rep_record_table", "ca_objects");
+						$this->view->setVar("rep_record_row_id", $t_instance->getWithTemplate("<ifcount code='ca_objects' min='1'><unit relativeTo='ca_objects' limit='1'><ifdef code='ca_object_representations.representation_id'>^ca_objects.object_id</ifdef></unit></ifcount>"));					
+					}
+				}
+				if($vn_rep_id){
+					$t_rep = new ca_object_representations($vn_rep_id);
+				}
+ 			}else{
+ 				$t_rep = new ca_object_representations($set_items[$item_id]["representation_id"]);
+ 				$this->view->setVar("rep_record_table", "ca_objects");
+ 				$this->view->setVar("rep_record_row_id", $set_items[$item_id]["row_id"]);
+ 			}
+			if($t_rep && !(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && !in_array($t_rep->get("access"), $this->opa_access_values))){
+				$this->view->setVar("rep_object", $t_rep);
+				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
+				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery', 'set_id' => $set_id]));
+				$this->view->setVar("representation_id", $t_rep->get("representation_id"));
+			}
  			
  			$previous_id = $next_id = 0;
  			$set_item_ids = array_keys($set_items);

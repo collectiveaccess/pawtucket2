@@ -144,7 +144,7 @@
 					}
 					$vs_idno = "";
 					if($qr_res->getWithTemplate("<l>^".$vs_table.".idno</l>")){
-						$vs_idno = "<div class='identifier'>".$qr_res->getWithTemplate("<l>^".$vs_table.".idno</l>")."</div>";
+						$vs_idno = "<div class='identifier'>".$qr_res->getWithTemplate("<ifdef code='".$vs_table.".idno'><l>^".$vs_table.".idno</l></ifdef>")."</div>";
 					}
 					$vs_result_output = "
 		<div class='col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>

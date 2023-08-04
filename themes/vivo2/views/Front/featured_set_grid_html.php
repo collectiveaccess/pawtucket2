@@ -46,7 +46,7 @@
 		while($qr_res->nextHit()){
 			if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.widepreview</l>', array("checkAccess" => $va_access_values))){
 				if($vn_col == 0){
-					print "<div class='row'>";
+					print "<div class='row lessGutter'>";
 				}
 					
 				print "<div class='col-sm-6 col-md-4'><div class='resultTile'>".$vs_media;

@@ -32,13 +32,13 @@
 					<div class='col-sm-12 col-md-6'>
 						<div class='highlightImg'><?php print caDetailLink($this->request, $t_sves_collection->get("ca_object_representations.media.page"), "", "ca_collections",  $t_sves_collection->get("ca_collections.collection_id")); ?></div>
 					</div>
-					<div class='col-sm-12 col-md-6'>
+					<div class='col-sm-12 col-md-6'><div class="highlightIntroContainer">
 <?php
 						print caDetailLink($this->request, "<H2>".$t_sves_collection->get("ca_collections.preferred_labels")."</H2>", "", "ca_collections",  $t_sves_collection->get("ca_collections.collection_id"));
 						print "<div class='highlightIntro'>".$this->getVar("SVES_intro")."</div>";
 						print caDetailLink($this->request, "Browse SVES →", "btn btn-default btn-sves", "ca_collections",  $t_sves_collection->get("ca_collections.collection_id"));
 ?>
-					</div>
+					</div></div>
 				</div>
 			</div>
 <?php		

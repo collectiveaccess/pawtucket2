@@ -13,7 +13,7 @@
 		$t_item = Datamodel::getInstanceByTableName($ps_table);
 		if($t_item){
 			$t_item->load($pn_id);
-			if($ps_table = "ca_sets"){
+			if($ps_table == "ca_sets"){
 				$vs_name = $t_item->getLabelForDisplay();
 				$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "", "Lightbox", "setDetail", array("set_id" => $pn_id));
 				$vs_admin_url = $this->request->config->get("site_host")."/admin/index.php/manage/sets/SetEditor/Edit/set_id/".$pn_id;
@@ -79,7 +79,7 @@
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>
-	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" method="post">
 	    <input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 <?php
 	if($pn_id && $t_item->getPrimaryKey()){
@@ -107,8 +107,8 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<div class="form-group<?php print (($va_errors["contactType"]) ? " has-error" : ""); ?>">
-							<label for="name">Contact Type</label>
-							<select name="requestType">
+							<label for="contactType">Contact Type</label>
+							<select name="requestType" id="contactType">
 								<option value="Research Request">Research Request</option>
 								<option value="Reproduction Request">Reproduction Request</option>
 								<option value="General Inquiry">General Inquiry</option>
@@ -133,19 +133,19 @@
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 							<label for="name">Name</label>
-							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}">
+							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
 							<label for="email">Email address</label>
-							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
+							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}" id="email">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["organisation"]) ? " has-error" : ""); ?>">
-							<label for="name">Organisation or project</label>
-							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter organisation" name="organisation" value="{{{organisation}}}">
+							<label for="Organisation">Organisation or project</label>
+							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter organisation" name="organisation" value="{{{organisation}}}" id="Organisation">
 						</div>
 					</div><!-- end col -->
 				</div><!-- end row -->
@@ -157,7 +157,7 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="form-group<?php print (($va_errors["item_info"]) ? " has-error" : ""); ?>">
-					<label for="message">Items</label>
+					<label for="item_info">Items</label>
 					<textarea class="form-control input-sm" id="item_info" name="item_info" rows="5">{{{item_info}}}</textarea>
 				</div>
 			</div><!-- end col -->
@@ -169,8 +169,8 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="form-group<?php print (($va_errors["formats_files"]) ? " has-error" : ""); ?>">
-					<label for="message">Formats / File Sizes</label>
-					<textarea class="form-control input-sm" id="item_info" name="formats_files" rows="5">{{{formats_files}}}</textarea>
+					<label for="formatsFiles">Formats / File Sizes</label>
+					<textarea class="form-control input-sm" id="item_info" name="formats_files" rows="5" id="formatsFiles">{{{formats_files}}}</textarea>
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
@@ -181,8 +181,8 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="form-group<?php print (($va_errors["rental_purchase"]) ? " has-error" : ""); ?>">
-					<label for="message">Rental or Purchase</label>
-					<select name="rental_purchase">
+					<label for="rentalPurchase">Rental or Purchase</label>
+					<select name="rental_purchase" id="rentalPurchase">
 						<option value="Rental">Rental</option>
 						<option value="Purchase">Purchase</option>
 					</select>
@@ -196,7 +196,7 @@
 			<div class="col-md-9">
 				<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
 					<label for="message">Message / Additional Information</label>
-					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
+					<textarea class="form-control input-sm" id="message" name="message" rows="5" id="message">{{{message}}}</textarea>
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->

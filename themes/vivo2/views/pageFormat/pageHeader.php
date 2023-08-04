@@ -151,14 +151,32 @@
 	}
 ?>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
+<?php
+				if($vb_video_out){
+?>
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'videoout'); ?>" aria-label="<?php print _t("Search Video Out"); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
-						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><span class="material-symbols-outlined">search</span></button>
+							<label for="headerSearchInput" class="sr-only">Search Video Out:</label>
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search Video Out"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
+						</div><button type="submit" class="btn-search" id="headerSearchButton"><span class="material-symbols-outlined">search</span></button>
 					</div>
 				</form>
+
+<?php
+				}else{
+?>
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search the Archive"); ?>">
+					<div class="formOutline">
+						<div class="form-group">
+							<label for="headerSearchInput" class="sr-only">Search the Archive:</label>
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search the Archive"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
+						</div><button type="submit" class="btn-search" id="headerSearchButton"><span class="material-symbols-outlined">search</span></button>
+					</div>
+				</form>
+<?php
+				}
+?>
 				<script type="text/javascript">
 					$(document).ready(function(){
 						$('#headerSearchButton').prop('disabled',true);
@@ -195,7 +213,6 @@
 			if($vb_video_out){
 ?>
 				<ul class="nav navbar-nav menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print (strToLower($this->request->getController()) == "videoout") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Video Out"), "", "", "VideoOut", "Index"); ?></li>
 					<li <?php print (strToLower($this->request->getAction()) == "videoout") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "videoout"); ?></li>
 					<li <?php print (strToLower($this->request->getAction()) == "videooutartists") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "videooutartists"); ?></li>
 					<li <?php print ($vs_contact_type == "RentalPurchase") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Rental & Sales"), "", "", "Contact", "form", array("contactType" => "RentalPurchase")); ?></li>
@@ -226,5 +243,5 @@
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
-	<div class="container <?php print (((strToLower($this->request->getController()) == "collections") && (strToLower($this->request->getAction()) == "index")) || in_array(strToLower($this->request->getController()), array("front", "videoout"))) ? "wideContainer" : ""; ?>"><div class="row"><div class="col-xs-12">
+	<div class="container <?php print (((strToLower($this->request->getController()) == "collections") && (strToLower($this->request->getAction()) == "index")) || (in_array(strToLower($this->request->getController()), array("front", "videoout"))) || ((strToLower($this->request->getController()) == "gallery") && (strToLower($this->request->getAction()) == "index"))) ? "wideContainer" : ""; ?>"><div class="row"><div class="col-xs-12">
 		<div role="main" id="main"><div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

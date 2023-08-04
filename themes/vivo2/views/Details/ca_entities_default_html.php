@@ -85,9 +85,6 @@
 					}
 ?>					
 				
-				{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection<ifcount code="ca_collections" min="2">s</ifcount></label><unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-			
-				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="event"><div class="unit"><label>Related programs & events</label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter=", " restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
 				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><label>Related Subject Guides</label><div class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter=", " restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
 				{{{<ifdef code="ca_entities.places"><div class="unit"><label>Related Places</label><unit relativeTo="ca_entities.places" delimiter=", ">^ca_entities.places</unit></div></ifdef>}}}
 
@@ -119,6 +116,107 @@
 ?>					
 		</div><!-- end col -->
 	</div><!-- end row -->
+<?php
+	$va_events = $t_item->get("ca_occurrences", array("restrictToTypes" => array("event"), "returnWithStructure" => 1, "checkAccess" => $va_access_values));
+	if(is_array($va_events) && sizeof($va_events)){
+		$va_rel_events = array();
+		$i = 0;
+		foreach($va_events as $va_event_info){
+			$va_rel_events[$va_event_info["occurrence_id"]] = array("name" => $va_event_info["name"], "relationship_type" => $va_event_info["relationship_typename"]);
+			$i++;
+			if($i == 24){
+				break;
+			}
+		}
+		$qr_events = caMakeSearchResult("ca_occurrences", array_keys($va_rel_events));
+?>
+		<div class="row">
+			<div class="col-sm-12">
+				<H3>Related Programs & Events</H3>
+<?php
+
+				$i = 0;
+				$col = 0;
+				while($qr_events->nextHit()){
+					if($col == 0){
+						print "<div class='row'>";
+					}
+					print "<div class='col-sm-3'>".caDetailLink($this->request, "<div class='bgDarkGray text-center'>".$va_rel_events[$qr_events->get("ca_occurrences.occurrence_id")]["name"]."<br/><small>".$qr_events->getWithTemplate("^ca_occurrences.occurrence_date")."</small></div>", "", "ca_occurrences", $qr_events->get("ca_occurrences.occurrence_id"))."</div>";
+					$col++;
+					if($col == 4){
+						$col = 0;
+						print "</div>";
+					}
+					$i++;
+					if($i == 24){
+						if(sizeof($va_events) > 24){
+							print "<div class='row'><div class='col-sm-12 text-center'>".caNavLink($this->request, "View All →", "btn btn-default", "", "Browse", "Events", array("facet" => "entity_facet", "id" => $t_item->get("ca_entities.entity_id")))."</div></div>";
+						}
+						break;
+					}
+				}
+				if($col > 0){
+					print "</div>";
+				}
+?>			
+			
+			</div>
+		</div>
+<?php
+	}
+
+
+	$va_collections = $t_item->get("ca_collections", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
+	if(is_array($va_collections) && sizeof($va_collections)){
+		$va_rel_collections = array();
+		$i = 0;
+		foreach($va_collections as $va_collection_info){
+			$va_rel_collections[$va_collection_info["collection_id"]] = array("name" => $va_collection_info["name"], "relationship_type" => $va_collection_info["relationship_typename"]);
+			$i++;
+			if($i == 24){
+				break;
+			}
+		}
+		$qr_collections = caMakeSearchResult("ca_collections", array_keys($va_rel_collections));
+?>
+		<div class="row">
+			<div class="col-sm-12">
+				<H3>Related Collections, Series & Files</H3>
+<?php
+
+				$i = 0;
+				$col = 0;
+				while($qr_collections->nextHit()){
+					if($col == 0){
+						print "<div class='row'>";
+					}
+					print "<div class='col-sm-3'>".caDetailLink($this->request, "<div class='bgDarkGray text-center'>".$qr_collections->getWithTemplate("<ifdef code='ca_collections.parent_id'><unit relativeTo='ca_collections.hierarchy' delimiter=' &gt; '><if rule='^ca_collections.type_id =~ /Fond/'>^ca_collections.preferred_labels.name &gt; </if></unit></ifdef>").$va_rel_collections[$qr_collections->get("ca_collections.collection_id")]["name"]."<br/><small>(".$qr_collections->getWithTemplate("^ca_collections.type_id").") (".$va_rel_collections[$qr_collections->get("ca_collections.collection_id")]["relationship_type"].")</small></div>", "", "ca_collections", $qr_collections->get("ca_collections.collection_id"))."</div>";
+					$col++;
+					if($col == 4){
+						$col = 0;
+						print "</div>";
+					}
+					$i++;
+					if($i == 24){
+						if(sizeof($va_collections) > 24){
+							print "<div class='row'><div class='col-sm-12 text-center'>".caNavLink($this->request, "View All →", "btn btn-default", "", "Browse", "Collections", array("facet" => "entity_facet", "id" => $t_item->get("ca_entities.entity_id")))."</div></div>";
+						}
+						break;
+					}
+				}
+				if($col > 0){
+					print "</div>";
+				}
+?>			
+			
+			</div>
+		</div>
+<?php
+	}
+
+?>
+	
+
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class="col-sm-12"><H3>Related Objects</H3></div>

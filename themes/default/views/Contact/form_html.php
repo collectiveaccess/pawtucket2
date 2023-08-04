@@ -28,7 +28,7 @@
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>
-	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" method="post">
 	    <input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 <?php
 	if($pn_id && $t_item->getPrimaryKey()){
@@ -56,7 +56,7 @@
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 							<label for="name"><?php print _t("Name"); ?></label>
-							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}">
+							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
