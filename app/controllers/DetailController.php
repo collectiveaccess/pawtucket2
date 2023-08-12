@@ -325,7 +325,7 @@ class DetailController extends FindController {
 			if($start_timecode = $this->request->getParameter('start', pString)) {
 				// Timecode specified
 			} elseif(
-				($annotation_identifier = $this->request->getParameter('annotation', pString)) &&
+				($annotation_identifier = $this->request->getParameter(['annotation', 'clip'], pString)) &&
 				(($options['annotationIdentifier'] ?? null) && 
 				($t_instance = ca_representation_annotations::findAsInstance([$options['annotationIdentifier'] => $annotation_identifier])))
 			) {

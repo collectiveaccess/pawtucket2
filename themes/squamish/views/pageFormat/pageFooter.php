@@ -59,6 +59,19 @@
 			</div>
 		</footer><!-- end footer -->
 <?php
+if((!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
+	# --- display lightbox alert
+	Session::setVar('visited_time', time());
+
+?>
+	<div class="disclaimerAlert">
+		<div class="disclaimerAlertBox">
+			<div class="disclaimerAlertMessage"><H1>Appropriate Use</H1>{{{disclaimer_alert_message}}}<div class="enterButton"><a href="#" class="btn btn-default"  onclick="$('.disclaimerAlert').remove(); return false;">Accept and Enter</a></div></div>
+			
+		</div>
+	</div>
+<?php
+}
 	//
 	// Output HTML for debug bar
 	//

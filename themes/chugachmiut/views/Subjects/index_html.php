@@ -6,10 +6,10 @@
 		<div class="col-sm-12 col-lg-10 col-lg-offset-1">
 			<H1>Subjects</H1>
 			<div class="row bgTurq">
-				<div class="col-sm-4 col-md-6 subjectsHeaderImage">
+				<div class="col-sm-12 col-md-6 subjectsHeaderImage">
 					<?php print caGetThemeGraphic($this->request, 'BearGutSewing.jpg', array("alt" => "Basket")); ?>
 				</div>
-				<div class="col-sm-8 col-md-6 text-center">
+				<div class="col-sm-12 col-md-6 text-center">
 					<div class="subjectsIntro">{{{subjects_intro}}}</div>
 				</div>
 			</div>
@@ -41,7 +41,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-12 col-md-10 col-lg-offset-1 col-lg-8 col-lg-offset-2">
+		<div class="col-sm-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
 			<div class="subjectsIntroBottom">{{{subjects_intro_bottom}}}</div>
 		</div>
 	</div>

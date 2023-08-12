@@ -228,6 +228,9 @@ hr{
 		padding:0px 15px 0px 15px;
 	}
 }
+.navbar-collapse {
+	max-height: 500px;
+}
 /* footer */
 /* offset needed for fixed footer */
 body{
@@ -246,13 +249,13 @@ body{
 }
 @media(max-width:480px){
 	/* CHANGE - does the footer height need to change for smaller screen sizes? */
-	/*#footer{
-		height:430px;
-	}*/
+	#footer{
+		height:300px;
+	}
 	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
-	/*body{
-		margin-bottom:480px;
-	}*/
+	body{
+		margin-bottom:350px;
+	}
 }
 #footer a{
 	color:#FFF;
@@ -697,6 +700,11 @@ h3.featuredItems{
 	font-family:lato;
 	padding-bottom:10px;
 }
+@media(max-width:768px){
+	.featuredItemsSlide .btn-default{
+		margin-bottom:20px;
+	}
+}
 .collections .featuredItemTitle{
 	font-size: 24px;
 	font-family: lato;
@@ -982,6 +990,15 @@ div.detailAlertClose{
 #caFormOverlay H1{
 	font-size:24px;
 }
+.detailPlaceholder{
+	background-color: #F5F5F5;
+	border: 2px solid #EDEDED;
+	color: #757575;
+	padding: 60px 30px 72px;
+	text-align: center;
+	width: 100%;
+	font-size: 18px;
+}
 /* collections */
 .collectionIntro {
 	font-size: 14px;
@@ -1116,6 +1133,45 @@ a .communitiesTile .title, a .subjectsTile .title, a .repositoryTile .title {
     background-color:#117E9C;
     color:#FFF;
 }
+@media(max-width:700px){
+	.subjectsTile {
+		display: block;
+		text-align: center;
+	}
+	.subjectsTile .titleWithImage{
+		width:100%;
+	}
+	.subjectsTile .title {
+		width:100%;
+	}
+	.subjectsImage{
+		float:none;
+		width:100%;
+		padding-right:0px;
+	}
+	.subjectsFeaturedList img{
+		max-width:none;
+	}
+	.subjectsTile a.subjectsBrowse {
+		float:none;
+		width:100%;
+		text-align:center;
+	}
+}
+@media(min-width:1200px){
+	.subjectsImage{
+		width:45%;
+	}
+	.subjectsImage img {
+		max-width: 350px;
+	}
+	.subjectsTile .titleWithImage {
+		width:55%;
+	}
+	.subjectsTile a.subjectsBrowse{
+		width:23%;
+	}
+}
 h1 i.fa{
 	font-size: 36px;
 }
@@ -1159,6 +1215,11 @@ h1 i.fa{
 	margin-bottom: 0;
 	vertical-align: middle;
 }
+@media(max-width:500px){
+	.peopleSearch .form-group, .collectionSearch .form-group {	
+		width: 300px;
+	}
+}
 .peopleSearch .form-control, .peopleSearch .form-control:focus, .collectionSearch .form-control, .collectionSearch .form-control:focus{
 	border:0px;
 	box-shadow:none;
@@ -1176,9 +1237,19 @@ h1 i.fa{
 	padding: 50px 0px 20px 0px;
 	line-height: 1.8em;
 }
+@media(max-width:1560px){
+	.peopleIntro, .collectionIntro, .subjectsIntro{
+		font-size: 22px;
+	}
+}
 @media(max-width:1400px){
 	.peopleIntro, .collectionIntro, .subjectsIntro{
 		font-size: 18px;
+	}
+}
+@media(max-width:991px){
+	.peopleIntro, .collectionIntro, .subjectsIntro{
+		padding-bottom:50px;
 	}
 }
 .peopleFeaturedList H2, .collectionFeaturedList H2, .subjectsFeaturedList H2 {
@@ -1193,6 +1264,9 @@ h1 i.fa{
 .peopleFeaturedList img, .collectionFeaturedList img, .subjectsFeaturedList img{
 	width:100%;
 	height:auto;
+}
+.peopleFeaturedList img, .collectionFeaturedList img {
+	margin-top:45px;
 }
 .peopleBrowseButton, .collectionBrowseButton, .frontBrowseButton{
 	padding-top:40px;
@@ -1239,6 +1313,14 @@ h1 i.fa{
 	.peopleSlideshow a.jcarousel-control-prev, .peopleSlideshow a.jcarousel-control-next {
 	  color: #000;
 	  text-shadow: 0px 0px 5px #666;
+	}
+}
+@media(max-width:768px){
+	.peopleSlideshow a.jcarousel-control-prev {
+		left:-10px;
+	}
+	.peopleSlideshow a.jcarousel-control-next {
+		right:-10px;
 	}
 }
 .peopleSlideshow .jcarousel-pagination {
@@ -1364,6 +1446,53 @@ h1 i.fa{
 	.subjectsLandingButton3{
 		bottom: -25%;
 		left: 28%;
+	}
+}
+
+@media(max-width:991px){
+	.subjectsSymbolContainer {
+		width:450px;
+	}
+	.subjectsLandingButton{
+		padding:30px;
+		width: 180px;
+		height: 180px;
+	}
+	.subjectsLandingButton .subjectImg{
+		height:100px;
+		width:100px;
+	}
+	.subjectsLandingButton .subjectTerm{
+		font-size: 14px;
+	}
+}
+@media(max-width:690px){
+	.subjectsSymbolContainer {
+		width:323px;
+	}
+	.subjectsLandingButton{
+		padding:30px;
+		width: 150px;
+		height: 150px;
+	}
+	.subjectsLandingButton .subjectImg{
+		height:80px;
+		width:80px;
+	}
+	.subjectsLandingButton .subjectTerm{
+		font-size: 14px;
+	}
+	.subjectsLandingButton1{
+		top: 10%;
+		left: -10%;
+	}
+	.subjectsLandingButton2{
+		top: 10%;
+		right: -10%;
+	}
+	.subjectsLandingButton3{
+		bottom: -25%;
+		left: 25%;
 	}
 }
 .subjectsIntroBottom{
