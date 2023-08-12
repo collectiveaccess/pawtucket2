@@ -3,7 +3,7 @@
 ?>
 <H1><?php print _t("About"); ?></H1>
 <div class="row">
-	<div class="col-sm-8">
+	<div class="col-sm-12">
 		<h3>About ACORN</h3>
         <p>
             ACORN (Arboretum COllections & Resources Nexus) provides online access to the special collections of the Sterling Morton Library and other Arboretum resources like images, videos, and documents. New resources are added to the system on a regular basis as a part of our ongoing cataloguing and digitization efforts.
@@ -27,23 +27,16 @@
 
 <p>Requests typically receive a response within 5 business days, and it may take up to 4 weeks to fulfill your request. Some requests may have a fee associated with them.</p>
 
+	</div>
+</div>
 
-
-<h3>Frequently Asked Questions (and their Answers):</h3>
-        <p><b>How can I use the images I see here?</b></p>
-<p>You can use the digital images in ACORN with proper attribution (see below) for any personal or educational purpose. We make every attempt to ensure that we are abiding by copyright law, but if you use one of these images, you take responsibility for verifying its copyright status. </p>
-
-<p><b>What if I need an image at a higher resolution?</b></p>
-<p>The Arboretum has high resolution (300 dpi) images for nearly all of the images you see online. If the copyright checks out, we will be able to provide you with a digital file for a fee based on your intended use. Fill out the <a href="https://goo.gl/forms/48krJM8nXfFj2jjP2">Image Use Request Form</a> to start this process. Typical turnaround is 2-3 weeks. </p>
-
-<p><b>What if an ACORN record doesn’t have an image?</b></p>
-<p>If you see a record in ACORN that does not have an image, it likely means that it has not yet been digitized as part of our ongoing efforts to make available more images from our collections. You may call the Library to make an appointment to view the physical collections or contact us to request that the item be prioritized for digitization. A fee for staff time and equipment use may be associated with these requests.</p>
-
-<p><b>What if I need an image for another purpose, or I’m not sure whether it’s okay to use the image?</b></p>
-<p>Fill out the <a href="https://goo.gl/forms/48krJM8nXfFj2jjP2">Image Use Request Form</a> with as many details as you can, and we’ll get back to you.</p>
-
-<p><b>What is the proper way to attribute these images?</b></p>
-<p>[Title], [Creator], Courtesy of The Morton Arboretum</p>
-        
+<div class="row">
+	<div class="col-sm-12">
+		<h3>Contact Us</h3>
+			Sterling Morton Library<br/>
+			The Morton Arboretum <br/>
+			4100 IL-53, Lisle, IL 60532<br/><br/>
+			Phone: 630-719-2429<br/>
+			Email: <a href="mailto:library@mortonarb.org">library@mortonarb.org</a>
 	</div>
 </div>

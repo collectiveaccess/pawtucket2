@@ -34,7 +34,7 @@
 					<p>
 						<a href="#" class="orgLink">Chugachmiut Heritage Library & Archive</a>
 						<div class="address">
-							1840 Bragaw St. Ste. 110, Anchorage, AK 99508 | (907)562-4155<br/>
+							1840 Bragaw St. Ste. 110, Anchorage, AK 99508 | (907) 562-4155<br/>
 							&copy; <?php print date("Y"); ?>
 						</div>
 					</p>

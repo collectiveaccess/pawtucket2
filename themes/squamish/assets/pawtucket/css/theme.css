@@ -577,7 +577,7 @@ body.frontContainer #footer{
 	text-align:center;
 	font-size: 24px;
 	color: #000;
-	margin: 70px 0px 120px 0px;
+	margin: 100px 0px 120px 0px;
 	font-family: "Tahoma", sans-serif;
 	font-weight: 300;
 	line-height: 1.8em;
@@ -619,12 +619,16 @@ body.frontContainer #footer{
 }
 .front h2.highlights{
 	padding-bottom:30px;
+	margin-top: 100px;
 }
 
 .front #frontTimelineContainer {
     height: 500px;
     margin-top:80px;
     margin-bottom:80px;
+}
+.frontGrid a{
+	color:#000;
 }
 /* hp explore */
 .bg_side_pattern{
@@ -821,6 +825,73 @@ body.frontContainer #footer{
 	text-decoration:none;
 }
 */
+.disclaimerAlert{
+	position:fixed;
+	bottom:0px;
+	left:0px;
+	background-color:rgba(0, 0, 0, 0.6);
+	width:100%;
+	height:100%;
+	z-index:2000;
+}
+.disclaimerAlert div.disclaimerAlertBox{
+	margin:25vh 25vw;
+	height:50vh;
+	background-color:#FFF;
+	border:2px solid #000;
+	position:relative;	
+}
+.disclaimerAlert div.disclaimerAlertMessage{
+	padding: 60px;
+	font-size: 18px;
+	color: #000;
+	overflow:scroll;
+	text-align:center;
+}
+.disclaimerAlert div.disclaimerAlertMessage H1{
+	margin-bottom:30px;
+	font-size:24px;
+}
+.disclaimerAlert div.disclaimerAlertMessage strong, .disclaimerAlert div.disclaimerAlertMessage b{
+	font-size: 18px;
+}
+.disclaimerAlert .enterButton{
+	text-align:center;
+	margin-top:30px;
+}
+.disclaimerAlert div.disclaimerAlertBox{
+	margin:5vh 5vw;
+	height:90vh;
+}
+.disclaimerAlert div.disclaimerAlertMessage{
+	position: relative;
+	height: 100%;
+	font-size: 13px;
+}
+@media(min-width:768px){
+	.disclaimerAlert div.disclaimerAlertBox{
+		margin:10vh 15vw;
+		max-height:80vh;
+	}
+	.disclaimerAlert div.disclaimerAlertMessage{
+		font-size: 18px;
+	}
+	.disclaimerAlert div.disclaimerAlertMessage strong, .disclaimerAlert div.disclaimerAlertMessage b{
+		font-size: 22px;
+	}
+}
+@media(min-width:1145px){
+	.disclaimerAlert div.disclaimerAlertBox{
+		margin:15vh 15vw;
+		height:70vh;
+	}
+}
+@media(min-width:1550px){
+	.disclaimerAlert div.disclaimerAlertBox{
+		margin:20vh 25vw;
+		height:60vh;
+	}
+}
 /* gallery */
 @media (max-width: 767px){
 	#gallerySetInfo {
@@ -1012,6 +1083,11 @@ body.frontContainer #footer{
 	background-image: url('../graphics/alphabet2.jpg');
 	background-position:left center;
 }
+.landingBox .landingBoxImage.landingBoxImageTalkingDictionary{
+	background-image: url('../graphics/talkingDictionary.jpg');
+	background-position:left center;
+}
+talkingDictionary
 .landingBox .landingBoxDetails {
 	padding: 15px 13px 22px;
 	text-align:center;
@@ -1023,6 +1099,7 @@ body.frontContainer #footer{
 	text-transform:capitalize;
 	margin-bottom:6px;
 	font-family: "Tahoma", sans-serif;
+	margin-top: 8px;
 }
 .landingBox .landingBoxTitle a:hover {
 	text-decoration:none;
@@ -1247,7 +1324,7 @@ a .relatedObjectsCard img{
 .front #frontTimelineContainer {
     height: 500px;
     margin-top:80px;
-    margin-bottom:80px;
+    margin-bottom:0px;
 }
 .front #frontTimelineContainer h2{
 	text-align:left;

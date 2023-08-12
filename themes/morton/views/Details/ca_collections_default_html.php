@@ -154,7 +154,7 @@
 			
 							$va_series_level = $t_top_collection->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'sort' => 'ca_collections.rank'));
 
-							$vs_buf.= "<div>".(sizeof($va_series_level) > 0 ? "<a href='#' onclick='$(\".seriesLevel".$va_top_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_top_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_top_collection->get('ca_collections.collection_id'))."</div>";
+							$vs_buf.= "<div>".((is_array($va_series_level) && sizeof($va_series_level) > 0) ? "<a href='#' onclick='$(\".seriesLevel".$va_top_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_top_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_top_collection->get('ca_collections.collection_id'))."</div>";
 							$vs_buf.= "<div class='seriesLevel".$va_top_level_id."' style='margin-left:20px;'>";
 			
 							foreach($va_series_level as $vn_i2 => $va_series_level_id) {
@@ -163,7 +163,7 @@
 								$va_subseries_level = $t_series_level->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'sort' => 'ca_collections.rank'));
 								#$va_subseries_level = $t_series_level->getHierarchyChildren(null, array("idsOnly" => true));
 				
-								$vs_buf.= "<div>".(sizeof($va_subseries_level) > 0 ? "<a href='#' onclick='$(\".subseriesLevel".$va_series_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_series_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_series_level->get('ca_collections.collection_id'))."</div>";
+								$vs_buf.= "<div>".((is_array($va_subseries_level) && sizeof($va_subseries_level) > 0) ? "<a href='#' onclick='$(\".subseriesLevel".$va_series_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_series_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_series_level->get('ca_collections.collection_id'))."</div>";
 								$vs_buf.= "<div class='subseriesLevel".$va_series_level_id."' style='margin-left:40px;'>";
 				
 								foreach($va_subseries_level as $vn_i3 => $va_subseries_level_id) {
@@ -171,7 +171,7 @@
 									#$va_box_levels = $t_subseries_level->getHierarchyChildren(null, array("idsOnly" => true));
 									$va_box_levels = $t_subseries_level->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'sort' => 'ca_collections.rank'));
 
-									$vs_buf.= "<div>".(sizeof($va_box_levels) > 0 ? "<a href='#' onclick='$(\".boxLevel".$va_subseries_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_subseries_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_subseries_level->get('ca_collections.collection_id'))."</div>";
+									$vs_buf.= "<div>".((is_array($va_box_level) && sizeof($va_box_levels) > 0) ? "<a href='#' onclick='$(\".boxLevel".$va_subseries_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_subseries_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_subseries_level->get('ca_collections.collection_id'))."</div>";
 									$vs_buf.= "<div class='boxLevel".$va_subseries_level_id."' style='margin-left:60px;'>";
 									foreach ($va_box_levels as $vn_i4 => $va_box_level_id) {
 										$t_box_level = new ca_collections($va_box_level_id);
@@ -211,7 +211,7 @@
 						print $vs_finding_aid;
 ?>	
 					<div id="detailTools">
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print is_array($va_comments) ? sizeof($va_comments) : 0; ?>)</a></div><!-- end detailTool -->
 						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 					</div><!-- end detailTools -->				
