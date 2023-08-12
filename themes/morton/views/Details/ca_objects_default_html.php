@@ -4,6 +4,14 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	$t_lists = new ca_lists();
 	$va_publication_types = array($t_lists->getItemIDFromList("object_types", "article"), $t_lists->getItemIDFromList("object_types", "book"), $t_lists->getItemIDFromList("object_types", "serial"), $t_lists->getItemIDFromList("object_types", "catalog"));
+
+	if(!function_exists('_procKeyword')) {
+		function _procKeyword($word) {
+			//return preg_replace("![\-\(\)]!", " ", $word);
+			#$word = trim(preg_replace("![\.]+!", "", $word));
+			return $word; //trim(preg_replace("!\(.*$!", "", $word));
+		}
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -17,9 +25,8 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-6'>
+					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}} &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-comment"></span><?= caNavLink($this->request, _t('Contact us'), '', '', 'Help', 'Index'); ?></div><!-- end detailTool -->
 				{{{representationViewer}}}
-				
-				
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
@@ -28,13 +35,40 @@
 					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
 					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 <?php } ?>
-					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 				</div><!-- end detailTools -->
-				
 <?php
-				if ($vs_copyright_statement = $t_object->get('ca_objects.rights.copyrightStatement')){
-					print "<div class='unit'><h6>Copyright</h6>{$vs_copyright_statement}</div>";
+				$vs_rights_buf = null;
+
+				if (($va_rights_bundle = $t_object->get('ca_objects.rights', array('returnWithStructure' => true))) || ($t_object->get('ca_objects.public_domain', array('convertCodesToDisplayText' => true)) == "yes")) {
+					foreach ($va_rights_bundle as $va_att_key => $va_rights_list) {
+						foreach ($va_rights_list as $va_key => $va_rights) {
+							if ($va_rights['rightsText']) {
+								$vs_rights_buf.= "<div><b>Rights & Restrictions: </b>".$va_rights['rightsText']."</div>";
+							}
+							if ($va_rights['endRestriction']) {
+								$vs_rights_buf.= "<div><b>End of restriction: </b>".$va_rights['endRestriction']."</div>";
+							}
+							if ($va_rights['endRestrictionNotes']) {
+								$vs_rights_buf.= "<div><b>End of restriction notes: </b>".$va_rights['endRestrictionNotes']."</div>";
+							}
+							if ($va_rights['rightsHolder']) {
+								$vs_rights_buf.= "<div><b>Rights Holder: </b>".$va_rights['rightsHolder']."</div>";
+							}
+							if ($va_rights['copyrightStatement']) {
+								$vs_rights_buf.= "<div><b>Copyright statement: </b>".$va_rights['copyrightStatement']."</div>";
+							}																																								
+						}
+					}
+					if ($vs_rights_buf  || ($t_object->get('ca_objects.public_domain', array('convertCodesToDisplayText' => true)) == "yes")) {
+						print "<div class='unit'><h6>Rights & User Restrictions</h6>".$vs_rights_buf."</div>";
+					}
+					if ($t_object->get('ca_objects.public_domain', array('convertCodesToDisplayText' => true)) == "yes") {
+						print "Public Domain";
+					}								
 				}
+				// if ($vs_copyright_statement = $t_object->get('ca_objects.rights.copyrightStatement')){
+// 					print "<div class='unit'><h6>Copyright</h6>{$vs_copyright_statement}</div>";
+// 				}
 ?>
 			</div><!-- end col -->
 			
@@ -181,35 +215,39 @@
 					$va_subjects_list = array();
 					if ($va_subject_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						foreach ($va_subject_terms as $va_term => $va_subject_term) {
+							if (!trim($va_subject_term)) { continue; }
 							$va_subject_term_list = explode('[', $va_subject_term);
-							$va_subjects_list[] = ucfirst($va_subject_term_list[0]);
+							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_term_list[0]), '', '', 'Search', 'objects', ['search' => 'ca_objects.lcsh_terms:"'._procKeyword($va_subject_term_list[0]).'"']);
 						}
 					}
 					if ($va_subject_terms_text = $t_object->get('ca_objects.lcsh_terms_text', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						foreach ($va_subject_terms_text as $va_text => $va_subject_term_text) {
-							$va_subjects_list[] = ucfirst($va_subject_term_text);
+							if (!trim($va_subject_term_text)) { continue; }
+							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_term_text), '', '', 'Search', 'objects', ['search' => 'ca_objects.lcsh_terms_text:"'._procKeyword($va_subject_term_text).'"']);
 						}
 					}
 					if ($va_subject_genres = $t_object->get('ca_objects.lcsh_genres', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						foreach ($va_subject_genres as $va_text => $va_subject_genre) {
-							$va_subjects_list[] = ucfirst($va_subject_genre);
+							if (!trim($va_subject_genre)) { continue; }
+							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_genre), '', '', 'Search', 'objects', ['search' => 'ca_objects.lcsh_genres:"'._procKeyword($va_subject_genre).'"']);
 						}
 					}
 					if ($va_subject_keywords = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
-						foreach ($va_subject_keywords as $va_text => $va_subject_keyword) {
-							$va_subjects_list[] = ucfirst($va_subject_keyword);
+						$idnos = $t_object->get('ca_list_items.idno', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
+						foreach ($va_subject_keywords as $i => $va_subject_keyword) {
+							if (!trim($va_subject_keyword)) { continue; }
+							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_keyword), '', '', 'Search', 'objects', ['search' => 'termid:"'.$idnos[$i].'"']);
 						}
 					}																
 					asort($va_subjects_list);
-					if (sizeof($va_subjects_list) > 1) {
+					if (sizeof($va_subjects_list) > 0) {
 						print "<div class='unit'><h6>Subject - keywords and LC headings</h6>".join("<br/>", $va_subjects_list)."</div>";
 					}																											
-?>								
-				<hr></hr>
+?>
 					<div class="row">
-						<div class="col-sm-12">		
+						<div class="col-sm-12">	
 <?php
-							if ($va_related_entities = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_entities" delimiter="<br/>" excludeRelationshipTypes="author,accession,collected,creator,donor,engraver,draftsmen_surveyor,lithographer,origin,photographer"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>')) {
+							if ($va_related_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="author,accession,collected,creator,donor,engraver,draftsmen_surveyor,lithographer,origin,photographer"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
 								print "<div class='unit'><h6>Related Entities</h6>".$va_related_entities."</div>";
 							}
 							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'excludeRelationshipTypes' => array('appears')))) {
@@ -234,40 +272,13 @@
 								print "<div class='unit'><h6>Credit Line</h6>".$vs_credit_line."</div>";
 							}
 							
-							$vs_rights_buf = null;
-
-							if (($va_rights_bundle = $t_object->get('ca_objects.rights', array('returnWithStructure' => true))) | ($t_object->get('ca_objects.public_domain', array('convertCodesToDisplayText' => true)) == "yes")) {
-								foreach ($va_rights_bundle as $va_att_key => $va_rights_list) {
-									foreach ($va_rights_list as $va_key => $va_rights) {
-										if ($va_rights['rightsText']) {
-											$vs_rights_buf.= "<div><b>Rights & Restrictions: </b>".$va_rights['rightsText']."</div>";
-										}
-										if ($va_rights['endRestriction']) {
-											$vs_rights_buf.= "<div><b>End of restriction: </b>".$va_rights['endRestriction']."</div>";
-										}
-										if ($va_rights['endRestrictionNotes']) {
-											$vs_rights_buf.= "<div><b>End of restriction notes: </b>".$va_rights['endRestrictionNotes']."</div>";
-										}
-										if ($va_rights['rightsHolder']) {
-											$vs_rights_buf.= "<div><b>Rights Holder: </b>".$va_rights['rightsHolder']."</div>";
-										}
-										if ($va_rights['copyrightStatement']) {
-											$vs_rights_buf.= "<div><b>Copyright statement: </b>".$va_rights['copyrightStatement']."</div>";
-										}																																								
-									}
-								}
-								if ($vs_rights_buf  | ($t_object->get('ca_objects.public_domain', array('convertCodesToDisplayText' => true)) == "yes")) {
-									print "<div class='unit'><h6>Rights & User Restrictions</h6>".$vs_rights_buf."</div>";
-								}
-								if ($t_object->get('ca_objects.public_domain', array('convertCodesToDisplayText' => true)) == "yes") {
-									print "Public Domain";
-								}								
-							}
 							#if (($vs_appeared = $t_object->get('ca_objects.appeared_in')) | ($va_appears = $t_object->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>', 'restrictToRelationshipTypes' => array('appears'))))) {
 							#	print "<div class='unit'><h6>Appeared In</h6>".$vs_appeared."<br/>".$va_appears."</div>";
 							#}
 ?>
-						
+							{{{<ifdef code='ca_objects.georeference'><div class='unit'><h6>Location</h6></ifdef>}}}
+							{{{map}}}
+							{{{<ifdef code='ca_objects.georeference'></div></ifdef>}}}
 						</div>
 					</div><!-- end row -->
 			</div><!-- end col -->

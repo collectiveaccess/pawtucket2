@@ -60,7 +60,7 @@
 <?php
 			}else{
 ?>
-				<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+				<H3 class='hasTooltip' data-toggle='tooltip' data-placement='bottom' title='&quot;Collections&quot; represent a group of archival records that are housed (physically or digitally) through the Sterling Morton Library. The results may refer to a collection as a whole or a specific file found within a collection.'><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
 <?php
 			}
 ?>
