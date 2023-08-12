@@ -104,7 +104,8 @@
 		</div>
 
 		<div class="item">
-			<div class="container-scroll" style="height: 419px;">
+			<!-- <div class="container-scroll" style="height: 419px;"> -->
+			<div class="container-scroll" style="overflow-y: auto;">
 				<div class="content-scroll">
 					<div class="size-column">
 

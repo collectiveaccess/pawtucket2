@@ -35,15 +35,12 @@
 	$vn_id =				$t_object->get('ca_objects.object_id');
 ?>
 <div class="row">
-	
 	<main class="flush">
 	<section class="hero-single-collection wrap">
 		<div class="eyebrow text__eyebrow color__gray">
-
-			<!-- <a href="<?= __CFA_WP_SITE__; ?>/collection/view/the-morrison-shearer-collection/"> </a>-->
 			{{{<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels<l></unit>}}}
 
-			<a href="#" class="text__eyebrow share-link" onclick="Copy();">
+			<a href="#" id="sharelink" class="text__eyebrow share-link" onclick="Copy();">
 				Share Link 
 				<span class="icon">
 					<svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -60,37 +57,40 @@
 		<div class="layout grid-flex">
 		<div class="item color__white">
 			{{{representationViewer}}}
-			<div class="item-related-images">
-				<div class="text__eyebrow color__gray col">Related Images:</div>
-				<div class="col">
-					<div class="slider-container module_slideshow slideshow-item-related-images manual-init slideshow-ctrl-init">
-						<div class="slick-slider 1 slick-initialized">
-							<div class="slick-list draggable">
-								<div class="slick-track" style="opacity: 1; width: 15000px; transform: translate3d(0px, 0px, 0px);">
-									
-									<div class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false">
-										<div>
-											<div class="slide-wrap" style="width: 100%; display: inline-block;">
-												<div class="image-sizer enlarge-gallery-wrap" data-enlarge-index="0">
-													<div class="img-wrapper no-background-color cover " data-width="2560" data-height="1914">
-														{{{<l>^ca_object_representations.media.thumbnail<l>}}}
+			{{{<ifdef code="ca_object_representations.media.thumbnail">
+				<div class="item-related-images">
+					<div class="text__eyebrow color__gray">Related Images:</div>
+					<div class="col">
+						<div class="slider-container module_slideshow slideshow-item-related-images manual-init slideshow-ctrl-init">
+							<div class="slick-slider 1 slick-initialized">
+								<div class="slick-list draggable">
+									<div class="slick-track" style="opacity: 1; width: 15000px; transform: translate3d(0px, 0px, 0px);">
+										
+										<div class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false">
+											<div>
+												<div class="slide-wrap" style="width: 100%; display: inline-block;">
+													<div class="image-sizer enlarge-gallery-wrap" data-enlarge-index="0">
+														<div class="img-wrapper no-background-color cover " data-width="2560" data-height="1914">
+															<l>^ca_object_representations.media.thumbnail<l>
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
+										
 									</div>
-									
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			</ifdef>}}}
 		</div>
 
 		<div class="item">
 			<!-- <div class="container-scroll" style="height: 419px;"> -->
-				<!-- <div class="content-scroll"> -->
+			<div class="container-scroll" style="overflow-y: auto;">
+				<div class="content-scroll">
 					<div class="size-column">
 						<?php
 							$metadata = array(
@@ -126,21 +126,22 @@
 
 						{{{<ifcount code="ca_occurrences" min="1">
 							<unit relativeTo="ca_occurrences">
-								<ifcount code="ca_entities" min="1" >
+								<ifcount code="ca_entities" min="1">
 									<div class="max__640 text__eyebrow color__light_gray block-xxxs">Distributor</div>
-									<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="distributor">
-										<div class="max__640 text__body-3 color__white block-sm">^ca_entities.preferred_labels.displayname (^relationship_typename)</div>
+									<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="distributor">
+										<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.displayname</div>
 									</unit>
 								</ifcount>
 							</unit>
 						</ifcount>}}}
 
 						{{{<ifcount code="ca_occurrences" min="1">
+							<br>
 							<unit relativeTo="ca_occurrences">
 								<div class="max__640 text__eyebrow color__light_gray block-xxxs">Paticipants And Performers</div>
 								<ifcount code="ca_entities" min="1">
-									<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="participant, performer">
-										<div class="max__640 text__body-3 color__white block-sm">^ca_entities.preferred_labels.displayname (^relationship_typename)</div>
+									<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="participant, performer">
+										<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.displayname</div>
 									</unit>
 								</ifcount>
 							</unit>
@@ -180,7 +181,7 @@
 						</ifcount>}}} -->
 
 					</div>
-				<!-- </div> -->
+				</div>
 				<!-- content-scroll -->
 			<!-- </div> -->
 			<!-- container-scroll -->
@@ -196,56 +197,51 @@
 		<div class="color__gray text__body-3">If you have more information about this item please contact us at <a href="mailto:info@chicagofilmarchives.com" class="color-link-inverted-orange">info@chicagofilmarchives.com</a>. </div>
 		</div>
 	</section>
-	<section class="section-slideshow-related ">
-		<div class="wrap">
-		<div class="line"></div>
-		</div>
-		<div class="int wrap-not-mobile">
-			
-			<!-- <div> This content is subject to change, Where are these going to be loaded from</div> -->
-			
- 
-		<div class="slider-container module_slideshow slideshow-related manual-init slideshow-ctrl-init">
-			<div class="slick-initialized slick-slider">
-				<div class="slick-list draggable">
-					<div class="slick-track" style="opacity: 1; width: 990px; transform: translate3d(0px, 0px, 0px);">
 
-						{{{<ifcount code="ca_occurrences" min="1">
+	{{{<ifcount code="ca_occurrences" min="1">
+
+		<section class="section-slideshow-related ">
+			<div class="wrap"><div class="line"></div></div>
+			<div class="int wrap-not-mobile">
+				
+			<h4 class="text-align-center text__headline-4 block-small ">Related Content</h4>
+			<div class="slider-container module_slideshow slideshow-related manual-init slideshow-ctrl-init">
+				<div class="slick-initialized slick-slider">
+					<div class="slick-list draggable">
+						<div class="slick-track" style="opacity: 1; width: 990px; transform: translate3d(0px, 0px, 0px); margin:0;">
 							<unit relativeTo="ca_occurrences">
 								<ifcount code="ca_objects" min="1">
 									<div class="unit">
 										<unit relativeTo="ca_objects" delimiter="">
 
 											<div class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false" style="width: 198px;">
-												<div>
+												<!-- <div> -->
 													<div class="sizer" style="width: 100%; display: inline-block;">
 														<div class="item-related item">
 															<a href="" tabindex="0">
-																<div class="img-wrapper block-xxs" data-width="2606" data-height="1948">
-																	<l>^ca_object_representations.media.small<l>
-																</div>
+																<!-- <div class="img-wrapper block-xxs" data-width="2606" data-height="1948"> -->
+																	<div class="bResultItemImg"><l>^ca_object_representations.media.medium<l></div>
+																<!-- </div> -->
 															</a>
 															<div class="text-align-center info">
-																<div class="text__eyebrow color__gray block-xxxs">^ca_collections.preferred_labels</div>
+																<div class="text__eyebrow color__gray block-xxxs"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit></div>
 																<div class="title text__promo-4"><l>^ca_objects.preferred_labels</l></div>
 																<div class="text__eyebrow color__gray block-xxxs"><small>^ca_occurrences.cfaDateProduced<small></div>
 															</div>
 														</div>
 													</div>
-												</div>
+												<!-- </div> -->
 											</div>
 
 										</unit>
 									</div>
 								</ifcount>
 							</unit>
-						</ifcount>}}}
-
+						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="arrows">
+				<div class="arrows">
 				<div class="arrow arrow-left left reveal slick-arrow slick-hidden" style="visibility: visible;" aria-disabled="true" tabindex="-1">
 					<svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
 					<g opacity="0.5" class="color-opacity">
@@ -276,16 +272,18 @@
 					</defs>
 					</svg>
 				</div>
+				</div>
 			</div>
-		</div>
-		</div>
-	</section>
+			</div>
+		</section>
+	</ifcount>}}}
+	
 	</main>
 
 </div><!-- end row -->
 
 <script type='text/javascript'>
-	 function Copy() {
+	function Copy() {
 		var getUrl = document.createElement('input'),
 		text = window.location.href;
 		document.body.appendChild(getUrl);
@@ -293,6 +291,7 @@
 		getUrl.select();
 		document.execCommand('copy');
 		document.body.removeChild(getUrl);
-		setTimeout(function() { alert("Link Copied!"); }, 1000);
+		$.jGrowl("Link Copied!", { life: 2000 });
 	}
+
 </script>

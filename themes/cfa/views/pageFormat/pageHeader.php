@@ -25,50 +25,47 @@
  *
  * ----------------------------------------------------------------------
  */
-	$va_lightboxDisplayName = caGetLightboxDisplayName();
-	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
-	
-	# Collect the user links: they are output twice, once for toggle menu and once for nav
-	$va_user_links = array();
-	if($this->request->isLoggedIn()){
-		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
-		$va_user_links[] = '<li class="divider nav-divider"></li>';
-		if(caDisplayLightbox($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
-		}
-		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-		}
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
-		
-		if ($this->request->config->get('use_submission_interface')) {
-			$va_user_links[] = "<li>".caNavLink($this->request, _t('Submit content'), '', '', 'Contribute', 'List', array())."</li>";
-		}
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
-	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
-	}
-	$vb_has_user_links = (sizeof($va_user_links) > 0);
-	$va_access_values = caGetUserAccessValues($this->request);
+$va_lightboxDisplayName = caGetLightboxDisplayName();
+$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 
+# Collect the user links: they are output twice, once for toggle menu and once for nav
+$va_user_links = array();
+if($this->request->isLoggedIn()){
+	$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
+	$va_user_links[] = '<li class="divider nav-divider"></li>';
+	if(caDisplayLightbox($this->request)){
+		$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
+	}
+	$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
+	
+	if ($this->request->config->get('use_submission_interface')) {
+		$va_user_links[] = "<li>".caNavLink($this->request, _t('Submit content'), '', '', 'Contribute', 'List', array())."</li>";
+	}
+	$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
+} else {	
+	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+}
+$vb_has_user_links = (sizeof($va_user_links) > 0);
+$va_access_values = caGetUserAccessValues($this->request);
 ?><!DOCTYPE html>
 
 <html lang="en" <?php print ((strtoLower($this->request->getController()) == "front")) ? "class='frontContainer'" : ""; ?>>
 
 <head>
 	<meta charset="utf-8">
-	
-	
+		
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
 	
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title>Chicago Film Archives</title>
 
+
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 	<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.8/jquery.jgrowl.min.css" />
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-jgrowl/1.4.8/jquery.jgrowl.min.js"></script>
 
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
 	
@@ -114,8 +111,6 @@
 	<!-- / Yoast SEO plugin. -->
 
 	<link rel="stylesheet" id="style-all-0-css" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/dist/style.css?ver=404" type="text/css" media="all">
-	<script type="text/javascript" src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/dist/jquery-3.6.4.min.js?ver=6.2.2" id="jquery-js"></script>
-	<script type="text/javascript" src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/dist/libs-head.min.js?ver=404" id="script--0-js"></script>
 	<meta name="search-eyebrow" content="Pages">
 	<meta name="search-group" content="Other">
 	<meta name="search-thumbnail" content="https://cfarchives.wpengine.com/wp-content/uploads/2023/05/Image.jpg">
@@ -261,16 +256,17 @@
 		</div>
 	</form>
 </div>
-                    <ul id="menu-main-mobile" class="nav header-nav main"><li id="menu-item-265" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-7 current_page_item menu-item-265"><a href="https://cfarchives.wpengine.com/" aria-current="page">Home</a></li>
-<li id="menu-item-266" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-266"><a href="https://cfarchives.wpengine.com/collections/">Collections</a></li>
-<li id="menu-item-269" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-269"><a href="https://cfarchives.wpengine.com/watch/">Watch</a></li>
-<li id="menu-item-267" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-267"><a href="https://cfarchives.wpengine.com/services/">Services</a></li>
-<li id="menu-item-270" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-270"><a href="https://cfarchives.wpengine.com/preservation/">Preservation</a></li>
-<li id="menu-item-268" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-268"><a href="https://cfarchives.wpengine.com/digital-exhibitions/">Digital Exhibitions</a></li>
-</ul>                    <ul id="menu-extra-1" class="nav header-nav extra"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34"><a href="https://cfarchives.wpengine.com/calendar/">Calendar</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-33"><a href="https://cfarchives.wpengine.com/news/">News</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-36"><a href="https://cfarchives.wpengine.com/about/">About</a></li>
-<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-35"><a href="https://cfarchives.wpengine.com/support/">Support</a></li>
+<ul id="menu-main-mobile" class="nav header-nav main"><li id="menu-item-265" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-7 current_page_item menu-item-265"><a href="https://cfarchives.wpengine.com/" aria-current="page">Home</a></li>
+	<li id="menu-item-266" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-266"><a href="https://cfarchives.wpengine.com/collections/">Collections</a></li>
+	<li id="menu-item-269" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-269"><a href="https://cfarchives.wpengine.com/watch/">Watch</a></li>
+	<li id="menu-item-267" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-267"><a href="https://cfarchives.wpengine.com/services/">Services</a></li>
+	<li id="menu-item-270" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-270"><a href="https://cfarchives.wpengine.com/preservation/">Preservation</a></li>
+	<li id="menu-item-268" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-268"><a href="https://cfarchives.wpengine.com/digital-exhibitions/">Digital Exhibitions</a></li>
+</ul>
+<ul id="menu-extra-1" class="nav header-nav extra"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34"><a href="https://cfarchives.wpengine.com/calendar/">Calendar</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-33"><a href="https://cfarchives.wpengine.com/news/">News</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-36"><a href="https://cfarchives.wpengine.com/about/">About</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-35"><a href="https://cfarchives.wpengine.com/support/">Support</a></li>
 </ul>
                     
 
@@ -301,8 +297,7 @@
 
 <!-- </body> -->
  <div class="loading-container"></div>
- 
-	<div class="container">
+	<div class="container-fluid gx-0">
 		<div class="row">
 			<div class="col-xs-12">
 				<div role="main" id="main">

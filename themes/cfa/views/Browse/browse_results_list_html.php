@@ -59,8 +59,7 @@
 	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
 		$vs_default_placeholder = "<i class='bi bi-card-image'></i>";
 	}
-	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder' style='height:100px;object-fit: contain;
-	width: auto; text-align: center; padding-top: 13%;'><i class='bi bi-card-image' style='font-size:50px;'></i></div>";
+	$vs_default_placeholder_tag = "<div class='bListItemPlaceholder'></div>";
 
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
