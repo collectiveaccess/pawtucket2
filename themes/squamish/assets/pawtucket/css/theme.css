@@ -1955,3 +1955,8 @@ h2.tl-headline{
 .tl-timeline .tl-caption {
   font-family: lato !important;
 }
+
+/* pdf viewer */
+#download.toolbarButton, #secondaryDownload.secondaryToolbarButton{
+	display:none;
+}
