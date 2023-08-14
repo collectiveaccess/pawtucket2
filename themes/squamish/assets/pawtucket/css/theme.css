@@ -1702,8 +1702,8 @@ h2.tl-headline{
 }
 @media(min-width:768px){
 	.userGuideSideNav{
-		position:fixed;
-		width: 15%;
+		position:sticky;
+		top: 95px;
 	}
 }
 .userGuideSideNav{
