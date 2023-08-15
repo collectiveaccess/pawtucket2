@@ -24,13 +24,13 @@
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<label for='ca_entities_ind_gen_role' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search the roles of people and organizations.') ?>"><?php _p('Role') ?></label>
+			<label for='ca_entities_ind_gen_role[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search the roles of people and organizations.') ?>"><?php _p('Role') ?></label>
 			{{{ca_entities.ind_gen_role%width=200px}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<label for='ca_entities_biography_biography_text' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search people and organizations by their biography text.') ?>"><?php _p('Biography') ?></label>
+			<label for='ca_entities_biography_biography_text[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search people and organizations by their biography text.') ?>"><?php _p('Biography') ?></label>
 			{{{ca_entities.biography.biography_text%width=200px&height=1}}}
 		</div>
 	</div>
