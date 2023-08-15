@@ -52,7 +52,7 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" aria-label="list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> | 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" aria-label="list" role="graphics-document"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> | 
 <?php
 				}
 ?>
@@ -71,7 +71,7 @@
 			}
 ?>
 			<div class='blockResults authorityBlock'>
-				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left" aria-label="previous"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right" aria-label="next"></i></div>
+				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left" aria-label="previous" role="graphics-document"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right" aria-label="next" role="graphics-document"></i></div>
 				<div id='{{{block}}}Results' class='multiSearchResults' style="position:relative;">
 					<div class='blockResultsScroller'>
 <?php
