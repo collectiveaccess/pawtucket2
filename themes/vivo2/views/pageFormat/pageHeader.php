@@ -217,6 +217,7 @@
 					<li <?php print (strToLower($this->request->getAction()) == "videooutartists") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "videooutartists"); ?></li>
 					<li <?php print ($vs_contact_type == "RentalPurchase") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Rental & Sales"), "", "", "Contact", "form", array("contactType" => "RentalPurchase")); ?></li>
 					<li <?php print (strToLower($this->request->getController()) == "VideoOutSubmit") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Submit for Distribution"), "", "", "VideoOutSubmit", ""); ?></li>
+					<li class="vidOutArchiveMobileSwitch"><?php print caNavLink($this->request, _t("Archive")." <span class='material-symbols-outlined'>arrow_outward</span>", "", "", "", ""); ?></li>
 				</ul>
 <?php
 			}else{
@@ -235,6 +236,7 @@
 							<li><?php print caNavLink($this->request, _t("Policies"), "", "", "About", "Policies"); ?></li>
 						</ul>
 					</li>					
+					<li class="vidOutArchiveMobileSwitch"><?php print caNavLink($this->request, _t("Video Out")." <span class='material-symbols-outlined'>arrow_outward</span>", "", "", "VideoOut", "Index"); ?></li>
 				</ul>
 <?php
 			}
