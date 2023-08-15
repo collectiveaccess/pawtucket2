@@ -50,7 +50,7 @@
 		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
 	}
 	$vs_sort_direction_control = $this->getVar("sortDirectionControl");
-	$vs_sort_direction_control = str_replace(array('<span class="glyphicon glyphicon-sort-by-alphabet" aria-label="Sort direction"></span>', '<span class="glyphicon glyphicon-sort-by-alphabet-alt" aria-label="Sort direction"></span>'), array('<span class="material-symbols-outlined">north</span>', '<span class="material-symbols-outlined">south</span>'), $vs_sort_direction_control);
+	$vs_sort_direction_control = str_replace(array('<span class="glyphicon glyphicon-sort-by-alphabet" aria-label="Sort direction"></span>', '<span class="glyphicon glyphicon-sort-by-alphabet-alt" aria-label="Sort direction"></span>'), array('<span class="material-symbols-outlined" aria-label="Sort direction" role="graphics-document">north</span>', '<span class="material-symbols-outlined" aria-label="Sort direction" role="graphics-document">south</span>'), $vs_sort_direction_control);
 		
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {

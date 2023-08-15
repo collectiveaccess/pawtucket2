@@ -1287,3 +1287,10 @@ a:hover .imgTile{
 	font-weight: 400;
 	line-height:1.1em;
 }
+.multisearchSort ul li a {
+	text-decoration: underline;
+	color: #000;
+}
+.resultBlock .sortValues a:focus, .resultBlock .sortValues a:focus span, .resultBlock .sortValues a span:focus{
+	color:#333;
+}
