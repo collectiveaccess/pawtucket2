@@ -219,6 +219,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 						
 						foreach($log_entries as $l) {
 							$warnings = array_map(function($filename, $warnings) {
+								if(!is_array($warnings)) { $warnings = [$warnings]; }
 								return [
 									'filename' => $filename,
 									'message' => join("; ", $warnings)
@@ -226,6 +227,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 							}, array_keys($l['warnings']), $l['warnings']);
 						
 							$errors = array_map(function($filename, $errors) {
+								if(!is_array($errors)) { $errors = [$errors]; }
 								return [
 									'filename' => $filename,
 									'message' => join("; ", $errors)
@@ -390,6 +392,7 @@ class ImporterController extends \GraphQLServices\GraphQLServiceController {
 									if(!is_array($data[$k])) { $data[$k] = []; }
 									if(is_array($v)) {
 										foreach($v as $f => $e) {
+											if(!is_array($e)) { $e = [$e]; }
 											$data[$k][] = [
 												'filename' => $f,
 												'message' => join("; ", $e)
