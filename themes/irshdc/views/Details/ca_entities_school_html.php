@@ -221,6 +221,10 @@ if($vs_mode == "map"){
 					}
 					if($t_item->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
 						include("map_html.php");
+?>
+						{{{<ifdef code="ca_places.place_location"><div class="unit"><H6>Location</H6>^ca_places.place_location</div></ifdef>}}}
+						{{{<ifdef code="ca_places.location_credit"><div class="unit"><H6>Location Credit</H6>^ca_places.location_credit</div></ifdef>}}}
+<?php
 					}
 ?>
 				</div>
