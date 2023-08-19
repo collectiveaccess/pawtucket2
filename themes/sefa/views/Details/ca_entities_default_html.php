@@ -7,8 +7,27 @@
 	}
 	# --- object id of related image to cue slideshow to
 	$pn_object_id = $this->request->getParameter("id", pInteger);
+	# --- show images grouped by type?
+	$vb_group_images_by_type = false;
+	if($t_item->get("ca_entities.group_by_type", array("convertCodesToDisplayText" => true)) == "Yes"){
+		$va_type_ids = array_unique($t_item->get("ca_objects.type_id", array("restrictToRelationshipTypes" => array("creator", "creator_website"), "returnWithStructure" => true, "checkAccess" => $va_access_values)));
+		$vb_group_images_by_type = true;
+		$ps_artwork_type = $this->request->getParameter("artworkType", pString);
+		$va_artwork_types = array();
+		foreach($va_type_ids as $vn_type_id){
+			$t_list_item = new ca_list_items($vn_type_id);
+			$va_artwork_types[$t_list_item->get("ca_list_items.idno")] = array("type_id" => $vn_type_id, "idno" => $t_list_item->get("ca_list_items.idno"), "name" => $t_list_item->get("ca_list_item_labels.name_plural"));
+			if(!$ps_artwork_type){
+				$ps_artwork_type = $t_list_item->get("ca_list_items.idno");
+			}
+		}
+	}
 	# --- get related object_ids in array
-	$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator", "creator_website"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
+	if($vb_group_images_by_type && $ps_artwork_type){
+		$va_objects = $t_item->get("ca_objects", array("restrictToTypes" => array($ps_artwork_type), "restrictToRelationshipTypes" => array("creator", "creator_website"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
+	}else{
+		$va_objects = $t_item->get("ca_objects", array("restrictToRelationshipTypes" => array("creator", "creator_website"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
+	}
 	$va_object_ids = array();
 	if(is_array($va_objects) && sizeof($va_objects)){
 		foreach($va_objects as $va_object){
@@ -30,6 +49,23 @@
 		</div>
 			
 		<div class="col-sm-9 subnavOffset">			
+<?php
+		if($vb_group_images_by_type && (($ps_view == "thumbnails") || ($ps_view == "works"))){
+?>
+			<div class="row">
+				<div class="col-sm-12" role="navigation" aria-label="Artwork navigation">
+					<ul class="nav nav-pills">
+<?php
+						foreach($va_artwork_types as $va_artwork_type){
+							print "<li".(($va_artwork_type["idno"] == $ps_artwork_type) ? " class='active'" : "").">".caDetailLink($this->request, $va_artwork_type["name"], "", 'ca_entities', $t_item->get("entity_id"), array("view" => $ps_view, "artworkType" => $va_artwork_type["idno"]), null, array("type_id" => $t_item->get("type_id")))."</li>";
+						}
+?>
+					</ul>			
+				</div>
+			</div>
+<?php
+}
+?>			
 			<div class="row">
 				<div class="col-sm-12">
 <?php			
@@ -67,7 +103,7 @@
 				if(sizeof($va_exhibitions) > 0){
 					foreach($va_exhibitions as $va_exhibition){
 						$t_occurrence->load($va_exhibition["occurrence_id"]);
-						print "<h2>".caDetailLink($this->request, $t_occurrence->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $va_exhibition["occurrence_id"], null, null, array("type_id" => $t_occurrence->get("ca_occurrences.type_id")))."</h2>";
+						print "<h2><i>".caDetailLink($this->request, $t_occurrence->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $va_exhibition["occurrence_id"], null, null, array("type_id" => $t_occurrence->get("ca_occurrences.type_id")))."</i></h2>";
 						if($t_occurrence->get("ca_occurrences.exhibition_subtitle")){
 							print "<h3>".$t_occurrence->get("ca_occurrences.exhibition_subtitle")."</h3>";
 						}
@@ -216,7 +252,7 @@
 				if($q_objects->numHits()){
 					while($q_objects->nextHit()){
 						if($q_objects->get("ca_object_representations.media.thumbnail300square")){
-							$va_images[$q_objects->get("ca_objects.date_created").".".$q_objects->get("ca_objects.object_id")] = "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $q_objects->get("ca_object_representations.media.thumbnail300square"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "works", "id" => $q_objects->get("object_id")), null, array("type_id" => $t_item->get("type_id")))."</div>";
+							$va_images[$q_objects->get("ca_objects.date_created").".".$q_objects->get("ca_objects.object_id")] = "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $q_objects->get("ca_object_representations.media.thumbnail300square"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "works", "id" => $q_objects->get("object_id"), "artworkType" => $ps_artwork_type), null, array("type_id" => $t_item->get("type_id")))."</div>";
 						}
 					}
 					krsort($va_images);
@@ -232,7 +268,7 @@
 ?>
 			<div id="imageNav">
 <?php
-				print caDetailLink($this->request, _t("slideshow"), (($ps_view == "works") ? "active" : ""), 'ca_entities', $t_item->get("entity_id"), array("view" => "works"), null, array("type_id" => $t_item->get("type_id")))." | ".caDetailLink($this->request, _t("thumbnails"), (($ps_view == "thumbnails") ? "active" : ""), 'ca_entities', $t_item->get("entity_id"), array("view" => "thumbnails"), null, array("type_id" => $t_item->get("type_id")));
+				print caDetailLink($this->request, _t("slideshow"), (($ps_view == "works") ? "active" : ""), 'ca_entities', $t_item->get("entity_id"), array("view" => "works", "artworkType" => $ps_artwork_type), null, array("type_id" => $t_item->get("type_id")))." | ".caDetailLink($this->request, _t("thumbnails"), (($ps_view == "thumbnails") ? "active" : ""), 'ca_entities', $t_item->get("entity_id"), array("view" => "thumbnails", "artworkType" => $ps_artwork_type), null, array("type_id" => $t_item->get("type_id")));
 ?>
 			</div>
 <?php

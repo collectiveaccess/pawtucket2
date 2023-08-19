@@ -61,7 +61,7 @@
 					}
 				}
 				$qr_list->seek(0);
-				$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("used_website"), "objectTypes" => array("artwork", "mixed_media", "painting", "photograph", "print", "sculpture", "works_paper"), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
+				$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300square', 'relationshipTypes' => array("used_website"), "objectTypes" => array("artwork", "mixed_media", "painting", "photograph", "print", "sculpture", "works_paper"), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
 			}
 			if(is_array($va_years) && sizeof($va_years) > 1){		
 				arsort($va_years);
@@ -97,7 +97,11 @@
 				}
 				print "<div class='row'>";
 				print "<div class='col-sm-4 exhibitionListing'>".(($va_images[$qr_list->get("occurrence_id")]) ? caDetailLink($this->request, $va_images[$qr_list->get("occurrence_id")], '', 'ca_occurrences', $qr_list->get("occurrence_id"), null, null, array("type_id" => $qr_list->get("type_id"))) : "")."</div>\n";
-				print "<div class='col-sm-8 exhibitionListing'><h1><strong>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</strong></h1>".$qr_list->get("ca_occurrences.opening_closing");
+				print "<div class='col-sm-8 exhibitionListing'><h1><strong>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</strong></h1>";
+				if($qr_list->get("ca_occurrences.exhibition_subtitle")){
+					print "<strong>".$qr_list->get("ca_occurrences.exhibition_subtitle")."</strong><br/>";
+				}
+				print $qr_list->get("ca_occurrences.opening_closing");
 				
 				if($qr_list->get("ca_occurrences.location")){
 					print "<br>".$qr_list->get("ca_occurrences.location", array("convertCodesToDisplayText" => true));
