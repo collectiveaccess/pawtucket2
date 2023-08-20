@@ -29,7 +29,7 @@
 		
 		{{{<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="related">
 			<unit relativeTo="ca_occurrences" delimiter="" restrictToRelationshipTypes="related">
-				<br/><h2><l>^ca_occurrences.preferred_labels.name</l></h2>
+				<br/><h2><i><l>^ca_occurrences.preferred_labels.name</l></i></h2>
 				<ifdef code="ca_occurrences.exhibition_subtitle"><h2>^ca_occurrences.exhibition_subtitle</h2></ifdef>
 				<div class='date'>^ca_occurrences.opening_closing</div>
 			</unit>

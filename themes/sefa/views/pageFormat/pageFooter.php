@@ -32,8 +32,9 @@
 			<div class="row footer" role="contentinfo">
 				<div class="col-sm-12 col-md-4">
 					<b>NEW YORK CITY</b>
-					<br/>46 WEST 90TH STREET, 2ND FLOOR<br/>NEW YORK, NY 10024
-					<br/>TUESDAY-FRIDAY, 11AM-5PM AND BY APPOINTMENT
+					<br/>190 ORCHARD STREET
+					<br/>NEW YORK, NY 10002
+					<br/>TUESDAY-SATURDAY, 11AM-6PM AND BY APPOINTMENT
 					<br/><br/>
 				</div>
 				<div class="col-sm-12 col-md-4 offset-md-1">
