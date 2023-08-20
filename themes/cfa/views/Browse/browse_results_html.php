@@ -66,8 +66,14 @@ $va_export_formats = $this->getVar('export_formats');
 $va_browse_type_info = $o_config->get($va_browse_info["table"]);
 $va_all_facets = $va_browse_type_info["facets"];	
 $va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+
+
+// paging
+$num_pages = ceil($vn_result_size/$vn_hits_per_block);
 	
 if (!$vb_ajax) {	// !ajax
+	$adv_search_view = new View($this->request, $this->request->getViewsDirectoryPath());
+	caSetAdvancedSearchFormInView($adv_search_view, 'objects', 'Browse/ca_objects_more_search_options_html.php', ['request' => $this->request]);
 ?>
 
 <div class="row mx-2" style="clear:both;">
@@ -77,13 +83,15 @@ if (!$vb_ajax) {	// !ajax
 		<!-- <div class="row" style="margin: 10px 5px;">< All watch topics</div> -->
 
 		<div class="row justify-content-center" style="margin: 30px 5px;">
-			<h1 class="text-center">Browse Collections</h1>
+			<h1 class="text-center">
+				Browse <?php print ucwords($va_browse_info["labelPlural"]);?>	
+			</h1>
 		</div>
 
 		<div class="row " style="margin: 10px 5px;">
 			<div class="col text-center">
-				<form id="form" role="search">
-					<input type="search" placeholder="Search Collections by keyword..." aria-label="Search collections" 
+				<?= caFormTag($this->request, 'objects', 'basicSearch', 'Search', 'post', 'multipart/form-data', null, []); ?>
+					<input type="text" name="search" placeholder="Search Collections by keyword..." aria-label="Search collections" 
 						style="border: 1px solid lightgray; border-radius: 30px; padding: 10px 10px 10px 20px; width: 400px; height: 40px">
 					<button type="submit" title="Submit Search" aria-label="Submit Search" 
 						style="background-color: transparent; border: none">
@@ -102,39 +110,7 @@ if (!$vb_ajax) {	// !ajax
 		</div>
 		
 		<div class="collapse" id="advSearchFormCollapse">
-			<form class="g-3 mt-3">
-				<div class="row mb-3 justify-content-center">
-					<div class="col-auto">
-						<input type="text" class="form-control" id="keyword" placeholder="Keyword"
-							style="border: 1px solid lightgray; border-radius: 10px; padding: 10px 10px 10px 20px; width: 400px; height: 40px">
-					</div>
-					<div class="col-auto">
-						<input type="text" class="form-control" id="title" placeholder="Title"
-							style="border: 1px solid lightgray; border-radius: 10px; padding: 10px 10px 10px 20px; width: 400px; height: 40px">
-					</div>
-				</div>
-				<div class="row mb-3 justify-content-center">
-					<div class="col-auto">
-						<input type="text" class="form-control" id="identifier" placeholder="Identifier #"
-							style="border: 1px solid lightgray; border-radius: 10px; padding: 10px 10px 10px 20px; width: 200px; height: 40px">
-					</div>
-					<div class="col-auto">
-						<input type="text" class="form-control" id="date" placeholder="Date of Production"
-							style="border: 1px solid lightgray; border-radius: 10px; padding: 10px 10px 10px 20px; width: 200px; height: 40px">
-					</div>
-					<div class="col-auto">.
-						<select class="adv-search-select" name="type" id="type-select"
-							style="border: 1px solid lightgray; border-radius: 10px; padding: 10px; width: 200px; height: 40px">
-							<option value="">Type</option>
-						</select>
-					</div>
-				</div>
-				<div class="row mb-3 justify-content-end">
-					<div class="col-auto">
-						<button type="submit" class="btn btn-warning mb-3">Search <i class="bi bi-arrow-right-short"></i></button>
-					</div>
-				</div>
-			</form>
+			<?= $adv_search_view->render('Browse/ca_objects_more_search_options_html.php'); ?>
 		</div>
 
 		<div class="row" style="margin: 10px 5px;">
@@ -235,7 +211,11 @@ if (!$vb_ajax) {	// !ajax
 
 					if (!$vb_ajax) {	// !ajax
 					?>
+
 			</div>
+			
+			<?= $this->render("Browse/paging_bar_html.php"); ?>
+
 
 		</div><!-- end col-9 -->
 
@@ -255,9 +235,7 @@ if (!$vb_ajax) {	// !ajax
 				?>
 			</div>
 
-			<?php
-					print $this->render("Browse/browse_refine_subview_html.php");
-			?>			
+			<?=$this->render("Browse/browse_refine_subview_html.php"); ?>		
 		</div><!-- end col-3 -->
 
 	</div>
@@ -267,38 +245,29 @@ if (!$vb_ajax) {	// !ajax
 
 <script type="text/javascript">
 	jQuery(document).ready(function() {
-				// jQuery('#browseResultsContainer').jscroll({
-		// 			autoTrigger: true,
-		// 			loadingHtml: <?= json_encode(caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...'))); ?>,
-		// 			padding: 800,
-		// 			nextSelector: 'a.jscroll-next'
-		// 		});
-		<?php
-				if($vn_row_id){
-		?>
-					window.setTimeout(function() {
-						$("window,body,html").scrollTop( $("#row<?= $vn_row_id; ?>").offset().top);
-					}, 0);
-		<?php
-				}
-				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-		?>
-				jQuery('#setsSelectMultiple').on('submit', function(e){		
-					objIDs = [];
-					jQuery('#setsSelectMultiple input:checkbox:checked').each(function() {
+<?php
+		if($vn_row_id){
+?>
+			window.setTimeout(function() {
+				$("window,body,html").scrollTop( $("#row<?= $vn_row_id; ?>").offset().top);
+			}, 0);
+<?php
+		}
+		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+?>
+			jQuery('#setsSelectMultiple').on('submit', function(e){		
+				objIDs = [];
+				jQuery('#setsSelectMultiple input:checkbox:checked').each(function() {
 					objIDs.push($(this).val());
-					});
-					objIDsAsString = objIDs.join(';');
-					caMediaPanel.showPanel('<?= caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
-					e.preventDefault();
-					return false;
 				});
-		<?php
-				}
-		?>
-
-		46
-
+				objIDsAsString = objIDs.join(';');
+				caMediaPanel.showPanel('<?= caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
+				e.preventDefault();
+				return false;
+			});
+<?php
+		}
+?>
 		$('.browse-collapse-btn').click(function(){
 			var $this = $(this);
 			$this.toggleClass('browse-collapse-btn');
@@ -311,8 +280,6 @@ if (!$vb_ajax) {	// !ajax
     		}, 250);
 		});
 	});
-
-
 </script>
 <?php
 		print $this->render('Browse/browse_panel_subview_html.php');

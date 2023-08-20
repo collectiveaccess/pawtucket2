@@ -57,7 +57,9 @@
 		<div class="layout grid-flex">
 		<div class="item color__white">
 			{{{representationViewer}}}
-			{{{<ifdef code="ca_object_representations.media.thumbnail">
+			{{{
+			<ifdef code="ca_object_representations.media.thumbnail">
+			<!-- <ifcount code="ca_objects" min="1"> -->
 				<div class="item-related-images">
 					<div class="text__eyebrow color__gray">Related Images:</div>
 					<div class="col">
@@ -66,17 +68,21 @@
 								<div class="slick-list draggable">
 									<div class="slick-track" style="opacity: 1; width: 15000px; transform: translate3d(0px, 0px, 0px);">
 										
-										<div class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false">
-											<div>
-												<div class="slide-wrap" style="width: 100%; display: inline-block;">
-													<div class="image-sizer enlarge-gallery-wrap" data-enlarge-index="0">
-														<div class="img-wrapper no-background-color cover " data-width="2560" data-height="1914">
-															<l>^ca_object_representations.media.thumbnail<l>
+										<!-- <div class="unit">
+											<unit relativeTo="ca_objects" delimiter=""> -->
+												<div class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false">
+													<div>
+														<div class="slide-wrap" style="width: 100%; display: inline-block;">
+															<div class="image-sizer enlarge-gallery-wrap" data-enlarge-index="0">
+																<div class="img-wrapper no-background-color cover " data-width="2560" data-height="1914">
+																	<l>^ca_object_representations.media.thumbnail<l>
+																</div>
+															</div>
 														</div>
 													</div>
 												</div>
-											</div>
-										</div>
+											<!-- </unit>
+										</div> -->
 										
 									</div>
 								</div>
@@ -84,7 +90,9 @@
 						</div>
 					</div>
 				</div>
-			</ifdef>}}}
+			<!-- </ifcount> -->
+			</ifdef>
+			}}}
 		</div>
 
 		<div class="item">
@@ -293,5 +301,4 @@
 		document.body.removeChild(getUrl);
 		$.jGrowl("Link Copied!", { life: 2000 });
 	}
-
 </script>

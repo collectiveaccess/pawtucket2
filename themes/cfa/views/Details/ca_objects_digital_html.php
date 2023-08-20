@@ -303,7 +303,7 @@
 </div><!-- end row -->
 
 <script type='text/javascript'>
-	 function Copy() {
+	function Copy() {
 		var getUrl = document.createElement('input'),
 		text = window.location.href;
 		document.body.appendChild(getUrl);
@@ -311,6 +311,6 @@
 		getUrl.select();
 		document.execCommand('copy');
 		document.body.removeChild(getUrl);
-		setTimeout(function() { alert("Link Copied!"); }, 1000);
+		$.jGrowl("Link Copied!", { life: 2000 });
 	}
 </script>
