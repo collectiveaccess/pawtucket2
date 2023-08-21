@@ -14,18 +14,25 @@ $options			= $this->getVar('options');
 $is_ajax			= (bool)$this->request->isAjax();
 
 $num_pages 			= ceil($result_size/$hits_per_block);
+
+
+$prev_button = '<span class="arrow-link" style="transform: scaleX(-1); margin-right: 7px;">
+				<svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M3.62909 5.99999L0.436768 0.666656L9.99999 5.99999L0.436768 11.3333L3.62909 5.99999Z" fill="#767676" class="color-fill"></path>
+				</svg>
+			</span>';
+			
+$next_button = '<span class="arrow-link">
+				<svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M3.62909 5.99999L0.436768 0.666656L9.99999 5.99999L0.436768 11.3333L3.62909 5.99999Z" fill="#767676" class="color-fill"></path>
+				</svg>
+			</span>';
+
 ?>
 
 <div class="row justify-content-center my-5">
 	<div class="col-auto paging">
-
-		<span class="arrow-link" style="transform: scaleX(-1); margin-right: 7px;">
-			<svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<path d="M3.62909 5.99999L0.436768 0.666656L9.99999 5.99999L0.436768 11.3333L3.62909 5.99999Z" fill="#767676" class="color-fill"></path>
-			</svg>
-		</span>
-
-		<?php
+<?php
 			$page_links = [];
 			$current_page = 1;
 			for($p=1; $p <= $num_pages; $p++) {
@@ -68,62 +75,18 @@ $num_pages 			= ceil($result_size/$hits_per_block);
 			}
 
 			$paginatedNumbers = paginateNumbers($page_links, $current_page);
+			
+			if(sizeof($paginatedNumbers) > 1) {
+				if($current_page > 1) {
+					array_unshift($paginatedNumbers, caNavLink($this->request, $prev_button, "pageLink", '*', '*', '*', ['s' => ($current_page - 2) * $hits_per_block, 'key' => $browse_key, '_advanced' => $is_advanced]));
+				}
+				if($current_page < $num_pages) {
+					array_push($paginatedNumbers, caNavLink($this->request, $next_button, "pageLink", '*', '*', '*', ['s' => $current_page * $hits_per_block, 'key' => $browse_key, '_advanced' => $is_advanced]));
+				}
+			
 
-			print join(' ', $paginatedNumbers);
-
-			// $startIndex = max($currentPage - 2, 0);
-			// $endIndex = min($currentPage + 3, $totalPages - 1);
-
-			// // Number of links to display initially
-			// $initialLinks = 4;
-
-			// // Check if there are more than 6 numbers
-			// if (count($page_links) > 6) {
-
-			// 	// if the current page is 4 or greater, start displaying the current page first, then the following 3 pages, then an ellipsis, then the final page number
-			// 	if ($current_page >= 4) {
-
-			// 		for ($i = 4; $i >= $initialLinks; $i++) {
-			// 			echo $page_links[$i] . " ";
-			// 		}
-					
-			// 		// Display ellipsis
-			// 		echo "... ";
-					
-			// 		// Display the last number
-			// 		echo $page_links[count($page_links) - 1];
-
-			// 	}else{
-
-			// 		// Display the first 4 numbers
-			// 		for ($i = 0; $i < $initialLinks; $i++) {
-			// 			echo $page_links[$i] . " ";
-			// 		}
-					
-			// 		// Display ellipsis
-			// 		echo "... ";
-					
-			// 		// Display the last number
-			// 		echo $page_links[count($page_links) - 1];
-				
-			// 	}
-
-			// } else {
-			// 	// Display all numbers if there are 6 or fewer
-			// 	foreach ($page_links as $page) {
-			// 		echo $page . " ";
-			// 	}
-			// }
-
-			// print join(' ', $page_links);
-
+				print join(' ', $paginatedNumbers);
+			}
 		?>
-
-		<span class="arrow-link">
-			<svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<path d="M3.62909 5.99999L0.436768 0.666656L9.99999 5.99999L0.436768 11.3333L3.62909 5.99999Z" fill="#767676" class="color-fill"></path>
-			</svg>
-		</span>
-
 	</div>	
 </div>

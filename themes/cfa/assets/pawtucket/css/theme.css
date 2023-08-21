@@ -1143,4 +1143,25 @@ input.browseMoreSearchOptsField {
 	padding: 10px; width: 200px; 
 	height: 40px;
 }
+
+.carousel-item img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+div.detailNavigation {
+	max-width: 500px;
+}
+
+div.detailNavigation a {
+	padding: 5px;
+	margin: 0px 5px 5px 0px;
+}
+
+.browseMoreSearchOptsField {
+	height: 40px;
+	line-height: 40px;
+	background: #fff;
+	border: 1px solid lightgray !important;
 }

@@ -26,18 +26,19 @@
  * ----------------------------------------------------------------------
  */
  
-	$t_object = 			$this->getVar("item");
-	$va_comments = 			$this->getVar("comments");
-	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	$vn_id =				$t_object->get('ca_objects.object_id');
+$t_object = 			$this->getVar("item");
+$va_comments = 			$this->getVar("comments");
+$va_tags = 				$this->getVar("tags_array");
+$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+$vn_share_enabled = 	$this->getVar("shareEnabled");
+$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+$vn_id =				$t_object->get('ca_objects.object_id');
 ?>
 <div class="row">
 	<main class="flush">
 	<section class="hero-single-collection wrap">
 		<div class="eyebrow text__eyebrow color__gray">
+			<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
 			{{{<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels<l></unit>}}}
 
 			<a href="#" id="sharelink" class="text__eyebrow share-link" onclick="Copy();">
@@ -55,150 +56,110 @@
 		<h1 class="text-align-center color__white text__headline-1 block-sm">{{{^ca_objects.preferred_labels}}}</h1>
 		
 		<div class="layout grid-flex">
-		<div class="item color__white">
-			{{{representationViewer}}}
-			{{{
-			<ifdef code="ca_object_representations.media.thumbnail">
-			<!-- <ifcount code="ca_objects" min="1"> -->
-				<div class="item-related-images">
-					<div class="text__eyebrow color__gray">Related Images:</div>
-					<div class="col">
-						<div class="slider-container module_slideshow slideshow-item-related-images manual-init slideshow-ctrl-init">
-							<div class="slick-slider 1 slick-initialized">
-								<div class="slick-list draggable">
-									<div class="slick-track" style="opacity: 1; width: 15000px; transform: translate3d(0px, 0px, 0px);">
-										
-										<!-- <div class="unit">
-											<unit relativeTo="ca_objects" delimiter=""> -->
-												<div class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false">
-													<div>
-														<div class="slide-wrap" style="width: 100%; display: inline-block;">
-															<div class="image-sizer enlarge-gallery-wrap" data-enlarge-index="0">
-																<div class="img-wrapper no-background-color cover " data-width="2560" data-height="1914">
-																	<l>^ca_object_representations.media.thumbnail<l>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
-											<!-- </unit>
-										</div> -->
-										
-									</div>
-								</div>
-							</div>
+
+			<div class="item color__white">
+				{{{representationViewer}}}
+			</div>
+
+			<div class="item">
+				<div class="container-scroll" style="overflow-y: auto;">
+					<div class="content-scroll">
+						<div class="size-column">
+							<?php
+								$metadata = array(
+									"^ca_objects.idno" => "Film Identifier",
+									"^ca_occurrences.cfaDateProduced" => "Date Of Production",
+									"^ca_occurrences.cfaAbstract" => "Abstract",
+									"^ca_occurrences.cfaDescription" => "Description",
+									"^ca_objects.cfaPreservationSponsor" => "Preservation Sponsor",
+									"^ca_occurrences.cfaShotLog" => "Log",
+									"^ca_objects.cfaFormat" => "Format",
+									"^ca_objects.cfaExtentFilm.extentAmountFilm ^ca_objects.cfaExtentFilm.extent_film" => "Extent",	
+									"^ca_objects.cfaRunTime" => "Run Time",	
+
+									"^ca_objects.cfaFilmElementHierachical" => "Element",
+									"^ca_objects.cfaColor" => "Color",
+									"^ca_objects.cfaSoundFilm" => "Sound",
+									"^ca_objects.cfaPublicObjectNotes" => "Notes",
+									"^ca_occurrences.cfaLanguageMaterials" => "Language Of Materials",	
+									"^ca_objects.cfaYNTransferred" => "Transferred",	
+									"^ca_list_items" => "Genre",
+									"^ca_list_items" => "Form",
+									"^ca_list_items" => "Subject",	
+								);
+								foreach($metadata as $field => $fieldLabel){
+							?>
+									{{{<ifdef code="<?php print $field; ?>">
+										<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+										<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
+									</ifdef>}}}
+							<?php
+								}
+							?>
+
+							{{{<ifcount code="ca_occurrences" min="1">
+								<unit relativeTo="ca_occurrences">
+									<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="distributor">
+										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Distributor</div>
+										<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="distributor">
+											<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.displayname</div>
+										</unit>
+									</ifcount>
+								</unit>
+							</ifcount>}}}
+
+							{{{<ifcount code="ca_occurrences" min="1">
+								<br>
+								<unit relativeTo="ca_occurrences">
+									<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="participant, performer">
+										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Participants And Performers</div>
+										<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="participant, performer">
+											<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.displayname</div>
+										</unit>
+									</ifcount>
+								</unit>
+							</ifcount>}}}
+
+							<!-- {{{<ifcount code="ca_occurrences" min="1">
+								<unit relativeTo="ca_occurrences">
+									<div class="max__640 text__eyebrow color__light_gray block-xxxs">Sponsor/Client</div>
+									<ifcount code="ca_entities" min="1">
+										<unit relativeTo="ca_entities" delimiter="<br/>">
+											<div class="max__640 text__body-3 color__white block-sm">^ca_entities.preferred_labels.displayname (^relationship_typename)</div>
+										</unit>
+									</ifcount>
+								</unit>
+							</ifcount>}}}
+
+							{{{<ifcount code="ca_occurrences" min="1">
+								<unit relativeTo="ca_occurrences">
+									<div class="max__640 text__eyebrow color__light_gray block-xxxs">Main Credits</div>
+									<ifcount code="ca_entities" min="1">
+										<unit relativeTo="ca_entities" delimiter="<br/>">
+											<div class="max__640 text__body-3 color__white block-sm">^ca_entities.preferred_labels.displayname (^relationship_typename)</div>
+										</unit>
+									</ifcount>
+								</unit>
+							</ifcount>}}}
+
+							{{{<ifcount code="ca_occurrences" min="1">
+								<unit relativeTo="ca_occurrences">
+									<div class="max__640 text__eyebrow color__light_gray block-xxxs">Additional Credits</div>
+									<ifcount code="ca_entities" min="1">
+										<unit relativeTo="ca_entities" delimiter="<br/>">
+											<div class="max__640 text__body-3 color__white block-sm">^ca_entities.preferred_labels.displayname (^relationship_typename)</div>
+										</unit>
+									</ifcount>
+								</unit>
+							</ifcount>}}} -->
+
 						</div>
-					</div>
-				</div>
-			<!-- </ifcount> -->
-			</ifdef>
-			}}}
-		</div>
-
-		<div class="item">
-			<!-- <div class="container-scroll" style="height: 419px;"> -->
-			<div class="container-scroll" style="overflow-y: auto;">
-				<div class="content-scroll">
-					<div class="size-column">
-						<?php
-							$metadata = array(
-								"ca_objects.idno" => "Film Identifier",
-								"ca_occurrences.cfaDateProduced" => "Date Of Production",
-								"ca_occurrences.cfaAbstract" => "Abstract",
-								"ca_occurrences.cfaDescription" => "Description",
-								"ca_objects.cfaPreservationSponsor" => "Preservation Sponsor",
-								"ca_occurrences.cfaShotLog" => "Log",
-								"ca_objects.cfaFormat" => "Format",
-								"ca_objects.cfaExtentFilm" => "Extent",	
-								"ca_objects.cfaRunTime" => "Run Time",	
-
-								"ca_objects.cfaFilmElementHierachical" => "Element",
-								"ca_objects.cfaColor" => "Color",
-								"ca_objects.cfaSoundFilm" => "Sound",
-								"ca_objects.cfaPublicObjectNotes" => "Notes",
-								"ca_occurrences.cfaLanguageMaterials" => "Language Of Materials",	
-								"ca_objects.cfaYNTransferred" => "Transferred",	
-								"ca_list_items" => "Genre",
-								"ca_list_items" => "Form",
-								"ca_list_items" => "Subject",	
-							);
-							foreach($metadata as $field => $fieldLabel){
-						?>
-								{{{<ifdef code="<?php print $field; ?>">
-									<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?php print $fieldLabel; ?></div>
-									<div class="max__640 text__body-3 color__white block-sm">^<?php print $field; ?></div>
-								</ifdef>}}}
-						<?php
-							}
-						?>
-
-						{{{<ifcount code="ca_occurrences" min="1">
-							<unit relativeTo="ca_occurrences">
-								<ifcount code="ca_entities" min="1">
-									<div class="max__640 text__eyebrow color__light_gray block-xxxs">Distributor</div>
-									<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="distributor">
-										<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.displayname</div>
-									</unit>
-								</ifcount>
-							</unit>
-						</ifcount>}}}
-
-						{{{<ifcount code="ca_occurrences" min="1">
-							<br>
-							<unit relativeTo="ca_occurrences">
-								<div class="max__640 text__eyebrow color__light_gray block-xxxs">Paticipants And Performers</div>
-								<ifcount code="ca_entities" min="1">
-									<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="participant, performer">
-										<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.displayname</div>
-									</unit>
-								</ifcount>
-							</unit>
-						</ifcount>}}}
-
-						<!-- {{{<ifcount code="ca_occurrences" min="1">
-							<unit relativeTo="ca_occurrences">
-								<div class="max__640 text__eyebrow color__light_gray block-xxxs">Sponsor/Client</div>
-								<ifcount code="ca_entities" min="1">
-									<unit relativeTo="ca_entities" delimiter="<br/>">
-										<div class="max__640 text__body-3 color__white block-sm">^ca_entities.preferred_labels.displayname (^relationship_typename)</div>
-									</unit>
-								</ifcount>
-							</unit>
-						</ifcount>}}}
-
-						{{{<ifcount code="ca_occurrences" min="1">
-							<unit relativeTo="ca_occurrences">
-								<div class="max__640 text__eyebrow color__light_gray block-xxxs">Main Credits</div>
-								<ifcount code="ca_entities" min="1">
-									<unit relativeTo="ca_entities" delimiter="<br/>">
-										<div class="max__640 text__body-3 color__white block-sm">^ca_entities.preferred_labels.displayname (^relationship_typename)</div>
-									</unit>
-								</ifcount>
-							</unit>
-						</ifcount>}}}
-
-						{{{<ifcount code="ca_occurrences" min="1">
-							<unit relativeTo="ca_occurrences">
-								<div class="max__640 text__eyebrow color__light_gray block-xxxs">Additional Credits</div>
-								<ifcount code="ca_entities" min="1">
-									<unit relativeTo="ca_entities" delimiter="<br/>">
-										<div class="max__640 text__body-3 color__white block-sm">^ca_entities.preferred_labels.displayname (^relationship_typename)</div>
-									</unit>
-								</ifcount>
-							</unit>
-						</ifcount>}}} -->
-
-					</div>
-				</div>
-				<!-- content-scroll -->
-			<!-- </div> -->
-			<!-- container-scroll -->
-			<div class="shadow"></div>
-		</div>
-		<!-- item -->
-		</div>
-		<!-- layout -->
+					</div><!-- content-scroll -->
+				</div><!-- container-scroll -->
+			</div><!-- item -->
+		</div><!-- layout -->
 	</section>
+
 	<section class="section-more-about-item">
 		<div class="int wrap text-align-center">
 		<div class="text__nav block-xxs">Do you know more about this item?</div>
@@ -206,7 +167,7 @@
 		</div>
 	</section>
 
-	{{{<ifcount code="ca_occurrences" min="1">
+	{{{<ifcount code="ca_objects.related" min="1">
 
 		<section class="section-slideshow-related ">
 			<div class="wrap"><div class="line"></div></div>
@@ -217,34 +178,24 @@
 				<div class="slick-initialized slick-slider">
 					<div class="slick-list draggable">
 						<div class="slick-track" style="opacity: 1; width: 990px; transform: translate3d(0px, 0px, 0px); margin:0;">
-							<unit relativeTo="ca_occurrences">
-								<ifcount code="ca_objects" min="1">
-									<div class="unit">
-										<unit relativeTo="ca_objects" delimiter="">
-
-											<div class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false" style="width: 198px;">
-												<!-- <div> -->
-													<div class="sizer" style="width: 100%; display: inline-block;">
-														<div class="item-related item">
-															<a href="" tabindex="0">
-																<!-- <div class="img-wrapper block-xxs" data-width="2606" data-height="1948"> -->
-																	<div class="bResultItemImg"><l>^ca_object_representations.media.medium<l></div>
-																<!-- </div> -->
-															</a>
-															<div class="text-align-center info">
-																<div class="text__eyebrow color__gray block-xxxs"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit></div>
-																<div class="title text__promo-4"><l>^ca_objects.preferred_labels</l></div>
-																<div class="text__eyebrow color__gray block-xxxs"><small>^ca_occurrences.cfaDateProduced<small></div>
-															</div>
-														</div>
-													</div>
-												<!-- </div> -->
+							<div class="unit">
+								<unit relativeTo="ca_objects.related" delimiter="">
+									<div class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false" style="width: 198px;">
+										<div class="sizer" style="width: 100%; display: inline-block;">
+											<div class="item-related item">
+												<a href="" tabindex="0">
+													<div class="bResultItemImg"><l>^ca_object_representations.media.medium<l></div>
+												</a>
+												<div class="text-align-center info">
+													<div class="text__eyebrow color__gray block-xxxs"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit></div>
+													<div class="title text__promo-4"><l>^ca_objects.preferred_labels</l></div>
+													<div class="text__eyebrow color__gray block-xxxs"><small>^ca_occurrences.cfaDateProduced<small></div>
+												</div>
 											</div>
-
-										</unit>
+										</div>
 									</div>
-								</ifcount>
-							</unit>
+								</unit>
+							</div>
 						</div>
 					</div>
 				</div>

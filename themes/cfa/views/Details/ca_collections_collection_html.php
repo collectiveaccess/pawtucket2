@@ -41,8 +41,6 @@ if($o_collections_config->get("do_not_display_collection_browser")){
 # --- get the collection hierarchy parent to use for exportin finding aid
 $vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 
-$item_count = $t_item->getRelatedItems('ca_objects', ['returnAs' => 'count', 'checkAccess' => caGetUserAccessValues($this->request)]);
-
 $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' => true]);
 ?>
 <div class="row">
@@ -61,8 +59,8 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 	$active = true;
 	foreach($media as $m) {
 ?>
-                <div class="carousel-item <?= ($active ? 'active' : ''); ?>" style="height: 525px;">
-                  <l><?= $m; ?><l>
+                <div class="carousel-item <?= ($active ? 'active' : ''); ?>" style="height: auto;">
+                  <?= $m; ?>
                 </div>
 <?php
 		$active = false;
@@ -193,6 +191,19 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 
     </ifcount>}}}
 
+<?php
+	$access_values = caGetUserAccessValues($this->request);
+	if($t_item->getRelatedItems('ca_objects', ['checkAccess' => $access_values, 'returnAs' => 'count']) > 0) {
+		$qr_objects = $t_item->getRelatedItems('ca_objects', ['returnAs' => 'searchResult', 'checkAccess' => $access_values]);
+		$item_count = $qr_objects->numHits();
+		$viewable_count = 0;
+		
+		while($qr_objects->nextHit()) {
+			if($qr_objects->get('ca_object_representations.representation_id', ['checkAccess' => $access_values])) {
+				$viewable_count++;
+			}
+		}
+?>
     <section class="collection-grid-items">
       <div class="wrap">
         <div class="int module-tabs">
@@ -204,7 +215,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
             	<ul class="nav nav-tabs" id="myTab" role="tablist" style="border: none;">
                 <li class="nav-item" role="presentation">
                   <button class="nav-link active" id="itemGrid-tab" data-bs-toggle="tab" data-bs-target="#itemGrid-tab-pane" type="button" role="tab" aria-controls="itemGrid-tab-pane" aria-selected="true">
-                    <span class="title text__eyebrow">Viewable Media</span>
+                    <span class="title text__eyebrow">Viewable Media (<?= $viewable_count; ?>)</span>
                     <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="What is Viewable Media?">
                       <div class="trigger-icon color-icon-orange">
                         <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -224,7 +235,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 </li>
 				      </ul>
 
-              <a href="/index.php/Search/advanced/collections" class="text__eyebrow color-class-orange $color__dark_gray">
+              <a href="/Search/advanced/collections" class="text__eyebrow color-class-orange $color__dark_gray">
                 Advanced Collections Search 
                 <span class="arrow-link">
                   <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -242,7 +253,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 <div class="grid-flex grid-1-3-4 margin-bottom collection-grid" id="expando-grid">
 
                   {{{<ifcount code="ca_objects" min="1">
-                      <unit relativeTo="ca_objects" delimiter="">
+                      <unit relativeTo="ca_objects" delimiter="" filter="/<img/">
                         <div class="item-item item">
                           <ifdef code="ca_object_representations.media.small">
                             <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
@@ -345,7 +356,9 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
         </div>
       </div><!-- wrap -->
     </section>
-
+<?php
+	}
+?>
 
     <section id="collection-details" class="collection-details">
       <div class="wrap">
@@ -392,8 +405,8 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 
                   <div class="text__body-3">
                     <div class="unit">
-                      <unit delimiter="<br/>">
-                        <l><span class="link-orange">^ca_list_items</span></l>
+                      <unit relativeTo="ca_list_items" delimiter="<br/>">
+                        <a href="/Search/objects/search/^ca_list_items.preferred_labels.name_plural"><span class="link-orange">^ca_list_items.preferred_labels.name_plural</span></a>
                       </unit>
                     </div>
                   </div>
@@ -498,6 +511,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 </defs>
               </svg>
             </div>
+            
             <div class="arrow arrow-right right slick-arrow" style="visibility: visible;">
               <svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g opacity="0.5" class="color-opacity">
