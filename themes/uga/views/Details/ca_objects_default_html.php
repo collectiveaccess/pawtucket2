@@ -323,7 +323,7 @@
 		jQuery('.timecodeLink').on('click', function(e) {
 			let code = jQuery(this).data('code');
 			if(!code) { code = jQuery(this).text(); }
-			caUI.utils.copyToClipboard(code, <?= json_encode(_t('Copied link to clipboard')); ?>, { header: <?= json_encode(_t('Notice')); ?>, life: 1000, openDuration: 'fast', closeDuration: 'fast' });
+			caUI.utils.copyToClipboard(code, <?= json_encode(_t('Copied link to clipboard')); ?>, { position: 'center', header: <?= json_encode(_t('Notice')); ?>, life: 1000, openDuration: 'fast', closeDuration: 'fast' });
 			e.preventDefault();
 		});
 	});

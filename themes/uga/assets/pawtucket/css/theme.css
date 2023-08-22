@@ -569,3 +569,12 @@ bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemTex
 	background-color: #FBF719;
 	opacity: 0.8;
 }
+
+.timecodeLink {
+	text-decoration: underline !important;
+	color: #000000 !important;
+}
+
+#jGrowl {
+	margin-top: 300px;
+}

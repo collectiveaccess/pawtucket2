@@ -41,7 +41,7 @@
 					
 				<div class="nwidget layout block title-box clearfix " data-additional-classes="" data-title="Search Brown Media Archives">				
 					<h2>Search Brown Media Archives</h2>	
-					 <form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" class="form-inline">
+					 <form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects'); ?>" class="form-inline">
 							<input class="form-control query width100" id="brownSearch" name="search" placeholder="Enter Keywords" type="text">
 							<button class="btn btn-primary space-above" id="searchButton" name="rows" type="submit" value="20">Search</button>
 					</form>				
