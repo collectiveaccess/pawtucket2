@@ -431,11 +431,6 @@ class SearchController extends FindController {
 		$qr_res->doHighlighting($o_search_config->get("do_highlighting"));
 		$this->view->setVar('result', $qr_res);
 		
-		$result_desc = $o_browse->getResultDesc($qr_res->getAllFieldValues($qr_res->primaryKey(true)) ?? []);
-		$this->view->setVar('result_desc', $result_desc);
-		$this->opo_result_context->setResultDescription($result_desc);
-		
-	
 		if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
 			if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
 				$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
@@ -455,6 +450,19 @@ class SearchController extends FindController {
 		if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(5000)); $o_block_result_context->saveContext();}
 
 		$qr_res->seek($vn_start);
+		
+		$c = 0;
+		$hit_ids = [];
+		while(($c <= $pn_hits_per_block) && $qr_res->nextHit()) {
+			$hit_ids[] = $qr_res->get($qr_res->primaryKey(true));
+			$c++;
+		}
+		
+		$qr_res->seek($vn_start);
+		
+		$result_desc = $o_browse->getResultDesc($hit_ids);
+		$this->view->setVar('result_desc', $result_desc);
+		$this->opo_result_context->setResultDescription($result_desc);
 
 		$this->opo_result_context->saveContext();
 		

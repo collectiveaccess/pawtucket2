@@ -1310,4 +1310,11 @@ class SearchEngine extends SearchBase {
 		return $va_fields;
 	}
 	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	public function resolveResultDescData(array $data) {
+		return $this->opo_engine->_resolveHitInformation($data);
+	}
+	# ------------------------------------------------------------------
 }

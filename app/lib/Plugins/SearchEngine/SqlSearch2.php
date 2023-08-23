@@ -1873,7 +1873,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	/**
 	 *
 	 */
-	private function _resolveHitInformation($res) {
+	public function _resolveHitInformation($res) {
 		$res_proc = [];
 		
 		$index_ids = array_unique(array_reduce($res, function($c, $v) {

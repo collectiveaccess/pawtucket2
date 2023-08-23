@@ -8186,8 +8186,18 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 		/**
 		 *
 		 */
-		public function getResultDesc() {
-			return $this->seach_result_desc ?? [];
+		public function getResultDesc(array $hits) {
+			$result_desc = [];
+			
+			foreach($hits as $id) {
+				if(isset($this->seach_result_desc[$id])) {
+					$result_desc[$id] = &$this->seach_result_desc[$id];
+				}
+			}
+			
+			$o_search = new SearchEngine();
+			
+			return $o_search->resolveResultDescData($result_desc);
 		}
 		# ------------------------------------------------------
 	}
