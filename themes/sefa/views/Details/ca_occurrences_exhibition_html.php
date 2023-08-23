@@ -18,9 +18,20 @@
 		}
 		if(in_array($ps_view, array("images", "thumbnails"))){
 			$q_objects = caMakeSearchResult('ca_objects', $va_object_ids);
+			$vs_web_image_order = $t_item->get("ca_occurrences.web_image_order", array("convertCodesToDisplayText" => true));
 			if($q_objects->numHits()){
 				while($q_objects->nextHit()){
-					$va_images[$q_objects->get("ca_entity_labels.surname", array("restrictToRelationshipTypes" => array("creator", "creator_website")))." ".$q_objects->get("ca_objects.preferred_labels.name")." ".$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.large"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
+					switch($vs_web_image_order){
+						case "exhibition":
+							$va_images[] = array("image" => $q_objects->get("ca_object_representations.media.large"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
+						break;
+						# ----------------------------------
+						case "artist":
+						default:
+							$va_images[$q_objects->get("ca_entity_labels.surname", array("restrictToRelationshipTypes" => array("creator", "creator_website")))." ".$q_objects->get("ca_objects.preferred_labels.name")." ".$q_objects->get("object_id")] = array("image" => $q_objects->get("ca_object_representations.media.large"), "thumbnail" => $q_objects->get("ca_object_representations.media.thumbnail300square"), "id" => $q_objects->get("object_id"), "label" => sefaFormatCaption($this->request, $q_objects));
+						break;
+						# ----------------------------------
+					}
 				}
 			}
 		}
@@ -87,7 +98,12 @@
 						}
 						if($vs_pr_link = $t_item->get("ca_occurrences.press_release.original.url")){
 ?>
-							<li><a href="<?php print $vs_pr_link; ?>">press release</a></li>	
+							<li><a href="<?php print $vs_pr_link; ?>" target="_blank">press release</a></li>	
+<?php
+						}
+						if($vs_press_link = $t_item->get("ca_occurrences.featured_press.original.url")){
+?>
+							<li><a href="<?php print $vs_press_link; ?>" target="_blank">featured press</a></li>	
 <?php
 						}
 						if($vn_catalog_id){
@@ -119,7 +135,7 @@
 ?>
 			</div> <!--end thumbnail-->
 				<p>
-					<h1>{{{ca_occurrences.preferred_labels.name}}}</h1>
+					<h1><i>{{{ca_occurrences.preferred_labels.name}}}</i></h1>
 					{{{<ifdef code="ca_occurrences.exhibition_subtitle">
 						<h2>^ca_occurrences.exhibition_subtitle</h2>
 					</ifdef>}}}

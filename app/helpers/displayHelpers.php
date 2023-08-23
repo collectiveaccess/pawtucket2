@@ -1009,7 +1009,7 @@ jQuery(document).ready(function() {
 		} else {
 			if ($vn_item_id) {
 				if(!$po_view->request->config->get("{$vs_priv_table_name}_inspector_disable_headline")) {
-					if($po_view->request->user->canDoAction("can_edit_".$vs_priv_table_name) && (sizeof($t_item->getTypeList()) > 1)){
+					if(!method_exists($t_item, 'isSaveable') || $t_item->isSaveable($po_view->request)) {
 						$vs_buf .= "<strong>"._t("Editing %1", $vs_type_name).": </strong>\n";
 					}else{
 						$vs_buf .= "<strong>"._t("Viewing %1", $vs_type_name).": </strong>\n";
@@ -1538,14 +1538,14 @@ jQuery(document).ready(function() {
 
 					$vs_buf .= '<br/><br/><em>'. ((($vn_c = sizeof($va_nonconforming_objects)) == 1) ? _t('There is %1 object with non-conforming numbering', $vn_c) : _t('There are %1 objects with non-conforming numbering', $vn_c))."</em>\n";
 
-					$vs_buf .= "<a href='#' onclick='jQuery(\"#inspectorNonConformingNumberList\").toggle(250); return false;'>".caNavIcon(__CA_NAV_ICON_ADD__, '18px');
+					$vs_buf .= "<a href='#' onclick='jQuery(\"#inspectorNonConformingNumberList\").toggle(250); return false;'>".caNavIcon(__CA_NAV_ICON_FOLDER_OPEN__, '16px');
 
 					$vs_buf .= "<div id='inspectorNonConformingNumberList' class='inspectorNonConformingNumberList'><div class='inspectorNonConformingNumberListScroll'><ol>\n";
 					foreach($va_nonconforming_objects as $vn_object_id => $va_object_info) {
 						$vs_buf .= '<li>'.caEditorLink($po_view->request, $va_object_info['idno'], '', 'ca_objects', $vn_object_id)."</li>\n";
 					}
 					$vs_buf .= "</ol></div>";
-					$vs_buf .= caNavLink($po_view->request, _t('Re-number objects').' &rsaquo;', 'button', $po_view->request->getModulePath(), $po_view->request->getController(), 'renumberObjects', array('lot_id' => $t_item->getPrimaryKey()));
+					$vs_buf .= caNavLink($po_view->request, caNavIcon(__CA_NAV_ICON_GO__, '16px').' '._t('Re-number objects'), 'button', $po_view->request->getModulePath(), $po_view->request->getController(), 'renumberObjects', array('lot_id' => $t_item->getPrimaryKey()));
 					$vs_buf .= "</div>\n";
 				}
 
@@ -1556,10 +1556,10 @@ jQuery(document).ready(function() {
 					$vs_buf .= "<div class='inspectorLotObjectTypeControls'><form action='#' id='caAddObjectToLotForm'>";
 					if ((bool)$po_view->request->config->get('ca_objects_enforce_strict_type_hierarchy')) {
 						// strict menu
-						$vs_buf .= _t('Add new %1 to lot', $t_object->getTypeListAsHTMLFormElement('type_id', array('id' => 'caAddObjectToLotForm_type_id'), array('childrenOfCurrentTypeOnly' => true, 'directChildrenOnly' => ($po_view->request->config->get('ca_objects_enforce_strict_type_hierarchy') == '~') ? false : true, 'returnHierarchyLevels' => true, 'access' => __CA_BUNDLE_ACCESS_EDIT__)));
+						$vs_buf .= _t('Add new %1', $t_object->getTypeListAsHTMLFormElement('type_id', array('id' => 'caAddObjectToLotForm_type_id'), array('childrenOfCurrentTypeOnly' => true, 'directChildrenOnly' => ($po_view->request->config->get('ca_objects_enforce_strict_type_hierarchy') == '~') ? false : true, 'returnHierarchyLevels' => true, 'access' => __CA_BUNDLE_ACCESS_EDIT__)));
 					} else {
 						// all types
-						$vs_buf .= _t('Add new %1 to lot', $t_object->getTypeListAsHTMLFormElement('type_id', array('id' => 'caAddObjectToLotForm_type_id'), array('access' => __CA_BUNDLE_ACCESS_EDIT__)));
+						$vs_buf .= _t('Add new %1', $t_object->getTypeListAsHTMLFormElement('type_id', array('id' => 'caAddObjectToLotForm_type_id'), array('access' => __CA_BUNDLE_ACCESS_EDIT__)));
 					}
 
 					$vs_buf .= "&nbsp;<a href='#' onclick='caAddObjectToLotForm()'>" . caNavIcon(__CA_NAV_ICON_ADD__, '16px') . '</a>';
@@ -1653,7 +1653,7 @@ jQuery(document).ready(function() {
 							_t('new set') => 'new',
 						));
 						$vs_buf .= caHTMLHiddenInput('set_id', array('value' => $t_item->getPrimaryKey()));
-						$vs_buf .= caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_GO__, "18px"), "button", "caDupeSetItemsForm", null, ['aria-label' => _t('Duplicate items')]);
+						$vs_buf .= caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_GO__, "16px"), "button", "caDupeSetItemsForm", null, ['aria-label' => _t('Duplicate items')]);
 						$vs_buf .= "</form>";
 						$vs_buf .= '<div style="border-top: 1px solid #aaaaaa; margin-top: 5px; font-size: 10px; text-align: right;" ></div>';
 					}
@@ -1742,7 +1742,7 @@ jQuery(document).ready(function() {
 						$vs_buf .= '<div style="border-top: 1px solid #aaaaaa; margin-top: 5px; font-size: 10px;">';
 						$vs_buf .= caFormTag($po_view->request, 'Edit', 'NewChildForm', 'administrate/setup/list_item_editor/ListItemEditor', 'post', 'multipart/form-data', '_top', array('noCSRFToken' => false, 'disableUnsavedChangesWarning' => true));
 						$vs_buf .= _t('Add a %1 to this list', $vs_type_list).caHTMLHiddenInput($t_list_item->primaryKey(), array('value' => '0')).caHTMLHiddenInput('parent_id', array('value' => $t_list_item->getPrimaryKey()));
-						$vs_buf .= caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_ADD__, '18px'), '', 'NewChildForm', null, ['aria-label' => _t('Add a %1 to this list', $vs_type_list)]);
+						$vs_buf .= caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_ADD__, '16px'), '', 'NewChildForm', null, ['aria-label' => _t('Add a %1 to this list', $vs_type_list)]);
 						$vs_buf .= "</form></div>\n";
 					}
 			}
@@ -4128,6 +4128,8 @@ jQuery(document).ready(function() {
 		$start_timecode		 				= caGetOption('startTimecode', $pa_options, null);
 		$ps_display_type		 			= caGetOption('display', $pa_options, false);
 
+		$vs_slides = '';
+		$slide_list = [];
  		
  		$t_instance = Datamodel::getInstanceByTableName($po_data->tableName(), true);
  		
@@ -4218,6 +4220,7 @@ jQuery(document).ready(function() {
 
 				$vn_count = 0;
 
+				$slide_list = [];
 				foreach($va_rep_info as $vn_order => $va_rep){
 					if(sizeof($va_rep_ids) > 1){ 
 						$vs_slides .= "<li id='slide{$va_rep['rep_id']}' class='{$va_rep['rep_id']}'>"; 
@@ -4227,6 +4230,7 @@ jQuery(document).ready(function() {
 					if(sizeof($va_rep_ids) > 1) { 
 						$vs_slides .= "</li>"; 
 					}
+					$slide_list[] = $va_rep["tag"];
 
 					$vn_count++;
 				}
@@ -4260,6 +4264,7 @@ jQuery(document).ready(function() {
 		$o_view->setVar('representation_ids', $va_rep_ids);
 		$o_view->setVar('placeholder', $vs_placeholder);
 		$o_view->setVar('slides', $vs_slides);
+		$o_view->setVar('slide_list', $slide_list);
 		$o_view->setVar('display_annotations', $ps_display_annotations);
 		$o_view->setVar('default_annotation_id', $default_annotation_id);
 		$o_view->setVar('start_timecode', $start_timecode);
@@ -4306,7 +4311,7 @@ jQuery(document).ready(function() {
 		    $vb_show_compare = caGetOption('compare', $va_rep_display_info, false);
 		}
 		if ($vb_show_compare) {
-		   $vs_tool_bar .= "<a href='#' class='compare_link' aria-label='Compare' data-id='representation:{$vn_rep_id}'><i class='fa fa-clone' aria-hidden='true' role='button' aria-label='Compare'></i></a>";
+		   $vs_tool_bar .= "<a href='#' class='compare_link compareButton' aria-label='Compare' data-id='representation:{$vn_rep_id}'><i class='fa fa-clone' aria-hidden='true' role='button' aria-label='Compare'></i></a>";
 		}
 
 		if(($ps_table == "ca_objects") && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
@@ -4314,15 +4319,44 @@ jQuery(document).ready(function() {
 		}
 		if(caObjectsDisplayDownloadLink($po_request, $pn_subject_id, $pt_representation)){
 			# -- get version to download configured in media_display.conf
-			$va_download_display_info = caGetMediaDisplayInfo('download', $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-			$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
+			$vs_download_version = caGetAvailableDownloadVersions($po_request, $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'), ['returnVersionForUser' => true]);
+			
 			if($vs_download_version){
-				$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt' role='button' aria-label='Download'></span>", 'dlButton', 'Detail', 'DownloadRepresentation', '', array('context' => $ps_context, 'representation_id' => $pt_representation->getPrimaryKey(), "id" => $pn_subject_id, "download" => 1, "version" => $vs_download_version), array("aria-label" => _t("Download")));
+				$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt downloadButton' role='button' aria-label='Download'></span>", 'dlButton', 'Detail', 'DownloadRepresentation', '', array('context' => $ps_context, 'representation_id' => $pt_representation->getPrimaryKey(), "id" => $pn_subject_id, "download" => 1, "version" => $vs_download_version), array("aria-label" => _t("Download")));
 			}
 		}
 		$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 
 		return $vs_tool_bar;
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caGetAvailableDownloadVersions(RequestHTTP $request, string $mimetype, ?array $options=null) {
+		$download_display_info = caGetMediaDisplayInfo('download', $mimetype);
+		
+		$download_version = caGetOption(['download_version', 'display_version'], $download_display_info);
+		$download_version_by_role = caGetOption('roles', $download_display_info);
+			
+		$available_versions = [];
+		if($download_version) { $available_versions[] = $download_version; }
+		
+		if($request->isLoggedIn()) {
+			$user_roles = $request->user->getUserRoles(['skipVars' => true]);
+			foreach($user_roles as $role) {
+				if(isset($download_version_by_role[$role['code']])) {
+					$download_version = $download_version_by_role[$role['code']];
+					$available_versions[] = $download_version;
+					break;
+				}
+			}
+		}
+		
+		if(caGetOption('returnVersionForUser', $options, false)) {
+			return $download_version;
+		}
+		return $available_versions;
 	}
 	# ---------------------------------------
 	/**
