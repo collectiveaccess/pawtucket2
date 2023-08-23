@@ -1,13 +1,46 @@
 body {
-	font-family: "open sans", helvetica, sans-serif;	
-	min-width:980px;
+	font-family: "NunitoSans-Regular", sans-serif;	
+	font-size: 16px;
+	/* font-family: "open sans", helvetica, sans-serif;	 */
+	/*min-width:980px;*/
 	background: #fff url('../graphics/bg-content.png') repeat top left;	
 }
-.pageWrapper {
+@font-face {
+    font-family: 'Amiri-Regular';
+    src: url('fonts/Amiri-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+@font-face {
+    font-family: 'NunitoSans-Regular';
+    src: url('fonts/NunitoSans-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'NunitoSans-Bold';
+    src: url('fonts/NunitoSans-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: bold;
+    text-rendering: optimizeLegibility;
+}
+
+@font-face {
+    font-family: 'NunitoSans-Italic';
+    src: url('fonts/NunitoSans-Italic.ttf') format('truetype');
+    font-style: italic;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+/*.pageWrapper {
 	max-width:1280px;
 	margin:0px auto 0px auto;
 	min-width:960px;
-}
+}*/
 h1 {
 	font-weight: 600;
     font-size: 2em;
@@ -16,8 +49,16 @@ h1 {
     line-height: 1.2em;
     text-transform:none;
 }
-h1, h2, h3, h4, h5, h6, h7 {
-	font-family: "open sans", helvetica, sans-serif;
+
+h1, h2, h3, h4, h5, h6 {
+	/* font-family: "open sans", helvetica, sans-serif; */
+	font-family: "Amiri-Regular", sans-serif;
+	/* font-family: "NunitoSans-Bold", sans-serif; */
+	/*font-size: 20px;*/
+}
+
+h1{
+	font-size: 30px;
 }
 h1 small {
 	font-size: 14px;
@@ -76,12 +117,13 @@ a, a:hover {
 	color:#333; 
 }
 #pageArea {
-	width: 960px;
+	/*width: 960px;*/
     margin: 0px auto 0px auto;
     padding:10px;
     padding-top: 20px;
     padding-bottom:40px;
-    background: #fff url('../graphics/bg-content.png') repeat top left;
+   /* background: #fff url('../graphics/bg-content.png') repeat top left;*/
+    background-color:#FFF;
     box-shadow: 0px 0px 20px 0px rgba(0,46,18,0.15);
     min-height:500px;
 }
@@ -93,26 +135,24 @@ a, a:hover {
 	background:none;
 	box-shadow:none;
 }
-@media (max-width: 1024px) {
+/*@media (max-width: 1024px) {
 	#pageArea.front {
 		width:960px;
 	}
-}
+}*/
 
 
 /* Header */
-
+/*
 .navbar {
-	background-image: url('../graphics/headerimg.jpg');
 	background-size: 1280px 112px;
-	height:112px;
 	margin-bottom:0px;
 	box-shadow: 0px 0px 20px 0px rgba(0,46,18,0.3);
-	border-bottom: solid 2px #fff; */
-	min-width: 960px;
+	border-bottom: solid 2px #fff;
+	background-color:#103930;
 }
 .navbar.frontPage  {
-	border-bottom: solid 0px #fff; */
+	border-bottom: solid 0px #fff;
 }
 .navbar-brand {
 	width:152px;
@@ -120,17 +160,16 @@ a, a:hover {
 	padding:0px;
 }
 .navbarContainer {
-	width: 960px;
-    margin: 0px auto 0px auto;
+	margin: 0px auto 0px auto;
 }
 
 .menuWrapper {
     float: right;
     clear: right;
-    margin-top: 35px;
+    margin-top: 30px;
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
-	font-family: "open sans", helvetica, sans-serif;
+	font-family: "Amiri-Regular", sans-serif;
 }
 .navbar-default .navbar-nav > li > a {
 	padding-top: 0px;
@@ -194,6 +233,129 @@ a, a:hover {
 #browse-menu.dropdown-menu {
 	padding-right:10px;
 }
+*/
+
+
+
+
+.navbar{
+	background-color: #103930;
+	margin-bottom: 0px;
+}
+.navbar .formOutline{
+	border-radius:0px;
+	background-color:#fff;
+	border: 1px solid #dedede;
+}
+.headerAdvancedSearch{
+	text-align:right;
+}
+.headerAdvancedSearch a{
+	font-size:13px;
+}
+#headerSearchButton{
+	color:#000000;
+}
+.navbar-brand{
+	width:125px;
+	padding-top: 0px;
+}
+@media (min-width:768px){
+	.navbar-brand{
+		width: 152px;
+		padding-top: 8px;
+	}
+}
+@media (min-width:768px){
+	.navbar-nav > li > a {
+		padding-top: 25px;
+		padding-bottom: 25px;
+	}
+	.navbar-form{
+ 		 margin-top: 38px;
+	}
+	.nav > li.dropdown > a.icon{
+		padding-top: 25px;
+		padding-bottom: 25px;
+	}
+	.navbar-nav{
+		margin:20px 0px 0px 0px;
+	}
+}
+@media (max-width:767px){
+	.navbar-nav{
+		margin:0px;
+	}
+	.navbar .formOutline{
+		border: 1px solid #dedede;
+	}
+}
+@media(max-width:1010px){
+	.yamm .nav.navbar-right.menuItems .dropdown-menu {
+		left: 0;
+		right: auto;
+	}
+}
+
+.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+    font-family: "Amiri-Regular", sans-serif;
+    text-transform:none;
+    font-size:18px;
+}
+.navbar-default .navbar-nav > li > a{
+	color:#FFF;
+	letter-spacing:auto;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
+	background-color:transparent;
+	color:#f6da2e; /* highlight color */
+	/* underline on hover or active */
+	/*text-decoration: underline;
+  	text-decoration-color: #dedede;
+  	text-decoration-thickness: 2px;
+  	text-underline-position: under;*/
+  	/* change background color on hover or active */
+  	/*background-color: #f3f3f3;*/
+}
+.navbar-nav > li > .dropdown-menu{
+	background-color:#103930;
+	border:0px;
+	box-shadow: 1px 3px 3px rgba(0, 0, 0, 0.2);
+}
+.navbar-nav > li > .dropdown-menu a{
+	text-transform:uppercase;
+	letter-spacing:auto;
+	color:#FFF;
+	font-family: "Amiri-Regular", sans-serif;
+}
+.navbar-nav > li > .dropdown-menu a:hover{
+	background-color:#103930;
+	color:#f6da2e; /* highlight color */
+	/* background-color on hover */
+	/*background-color:#efefef;*/
+	
+}
+/* header mobile icons navigation */
+.navbar-default .navbar-toggle{
+	border-color:#FFF;
+	color:#FFF;
+}
+.navbar-default .navbar-toggle .icon-bar{
+	background-color:#FFF;
+}
+.navbar-default .navbar-toggle:hover .icon-bar, .navbar-default .navbar-toggle:focus .icon-bar{
+	background-color:#FFF;
+}
+.navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus{
+	background-color:#000;
+	color:#FFF;
+}
+.navbar-toggle-user {
+	padding: 6px 10px 4px 10px;
+}
+#headerSearchInput{
+	height:34px;
+}
 /* Front */
 
 .front .jcarousel {
@@ -223,7 +385,7 @@ a, a:hover {
 .container.frontPage {
 	background: #fff url('../graphics/bg-content.png') repeat top left;
     box-shadow: 0px 0px 20px 0px rgba(0,46,18,0.15);
-    max-width:960px;
+    /*max-width:960px;*/
     margin:0px auto 0px auto;
     padding:15px;
 }
@@ -248,25 +410,30 @@ h4.entity {
 	color:#666;
 }
 .detail a {
-	color: #000;
+	/* color: #000; */
+	color: #488439;
 }
+.detail a:hover {
+	color: #488439;
+}
+
 /* Footer */
 
 .footerWrapper {
-	width:960px;
-	margin:0px auto 0px auto;
+	/*width:960px;
+	margin:0px auto 0px auto;*/
 }
 #footer {
 	padding-top:15px;
-	border-top:0px;
-	background: #fff url('../graphics/bg-footer.png') repeat top left;
-	color:#fff;
+	/* border-top:0px; */
+	background: #fff url('../graphics/103930.png') repeat top left;
+	/* color:#fff; */
 	margin:0px;
-	height:200px;
+	height:225px;
 	border-top: solid 2px #026127;
-	
 	bottom:-100px;
 }
+
 #footer, #footer a {
 	text-align:center;
 	color:#fff;
@@ -420,7 +587,7 @@ h4.entity {
 }
 .bResultListItem .bResultListItemText a {
 	font-size:13px;
-	font-family: "open sans";
+	font-family: "NunitoSans-Regular";
 }
 .bResultListItem .bResultListItemText h4{
 	margin-top:0px;
@@ -618,7 +785,8 @@ div.advancedSearchFieldTall {
 	color: #026127;
 }
 .collHeader a {
-	font-family:"Open Sans";
+	/* font-family:"Open Sans"; */
+	font-family:"NunitoSans-Regular";
 	color: #666;
 	font-size:14px;
 	font-weight:bold;
@@ -651,6 +819,7 @@ div.advancedSearchFieldTall {
 }
 a.faDownload {
 	float:right;
+	margin-left: 10px;
 	color: #77a22f;
 	font-weight:700;
 	text-transform:uppercase;

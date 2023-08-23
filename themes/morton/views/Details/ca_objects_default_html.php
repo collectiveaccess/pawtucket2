@@ -161,7 +161,7 @@
 								$vs_link_text = $vs_link;
 							}
 							if($vs_link){
-								$va_formatted_links[] = "<a href='".$vs_link."' target='_blank'>".$vs_link_text."</a>";
+								$va_formatted_links[] = "<a style='word-wrap: break-word;' href='".$vs_link."' target='_blank'>".$vs_link_text."</a>";
 							}
 						}
 						if(sizeof($va_formatted_links)){

@@ -1,8 +1,3 @@
-<?php
- 			$o_result_context = new ResultContext($this->request, 'ca_objects', 'multisearch');
- 			$o_result_context->setAsLastFind();
-?> 
-
 <div class="container">
 	<div class="row">
 		<div class="col-sm-8 ">
@@ -51,8 +46,8 @@
 			</div>
 		</div>	
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
-			<div class="advancedSearchField">
-				Has Media (image, video, audio, etc.)<br/>
+			<div class="" style="margin: 10px 0px">
+				Has Media (image, video, audio, etc.) &nbsp 
 				{{{ca_object_representations.md5%render=is_set&label=Has+media}}}
 			</div>
 		</div>		
@@ -94,6 +89,7 @@
 			<p><a href='http://www.mortonarb.org/visit-explore/sterling-morton-library' target='_blank'>Sterling Morton Library Home</a></p>
 <?php			
 	// Load "advanced" search history
+	$o_result_context = new ResultContext($this->request, 'ca_objects', 'multisearch');
 	$o_adv_result_context = new ResultContext($this->request, 'ca_objects', 'search_advanced', $this->request->getActionExtra());
 	
 	// Add it to quick search history

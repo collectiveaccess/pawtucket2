@@ -26,6 +26,11 @@
  * ----------------------------------------------------------------------
  */
 
+	TooltipManager::add('.zoomButton', 'Zoom');
+	TooltipManager::add('.compareButton', 'Add to comparison group');
+	TooltipManager::add('.setsButton', 'Add to lightbox');
+	TooltipManager::add('.downloadButton', 'Download');
+
 	//
 	// Output HTML for debug bar
 	//
@@ -33,34 +38,36 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
-	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+	</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 
 	
-	</div><!-- end pageWrapper -->
 	<div class='container' style='max-width:none;'>
 		<div class='row'>
 			<div id="footer">
-				<div class='footerWrapper'>
-					<div class='upperBlock'>
-						<div class='col-sm-4 col-md-4 col-lg-4'></div>
-						<div class='col-sm-4 col-md-4 col-lg-4'></div>
-						<div class='col-sm-4 col-md-4 col-lg-4 logos'>
-							<div class='footerLogo'>
-								<?php print caGetThemeGraphic($this->request, 'logo-white-trans-bg-footer.png');?>
-							</div>
-							<div class='champion'>
-								<?php print caGetThemeGraphic($this->request, 'champion-1.png');?>
-							</div>
+				<div class='upperBlock'>
+					<div class='col-sm-4 col-md-4 col-lg-4'></div>
+					<div class='col-sm-4 col-md-4 col-lg-4'></div>
+					<div class='col-sm-4 col-md-4 col-lg-4 logos'>
+						<div class='footerLogo'>
+							<?= caGetThemeGraphic($this->request, 'logo-white-trans-bg-footer.png');?>
+						</div>
+						<div class='champion'>
+							<?= caGetThemeGraphic($this->request, 'champion-1.png');?>
 						</div>
 					</div>
-					<div class='lowerBlock'>
-						© 2018 THE MORTON ARBORETUM&nbsp;&nbsp;|&nbsp;&nbsp;4100 ILLINOIS ROUTE 53, LISLE, IL 60532&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://www.mortonarb.org/visit-explore/plan-visit/maps-and-directions'>Map</a>&nbsp;&nbsp;|&nbsp;&nbsp;Phone: 630-968-0074&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://mortonarb.us6.list-manage.com/subscribe?u=04696075b27b6887a368a4b35&id=6b7fbbfdd2' target='_blank'> Subscribe </a>&nbsp;&nbsp;|&nbsp;&nbsp;Email: <a href='mailto:trees@mortonarb.org'>trees@mortonarb.org</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://www.mortonarb.org/privacy-policy' target='_blank'>Privacy Policy&nbsp;&nbsp;</a>  
-					</div>
+				</div>
+				<div class='lowerBlock'>
+					© <?= date('Y'); ?> THE MORTON ARBORETUM&nbsp;&nbsp;|
+					&nbsp;&nbsp;4100 ILLINOIS ROUTE 53, LISLE, IL 60532&nbsp;&nbsp;|
+					&nbsp;&nbsp;<a href='http://www.mortonarb.org/visit-explore/plan-visit/maps-and-directions'>Map</a>&nbsp;&nbsp;|
+					&nbsp;&nbsp;Phone: 630-968-0074&nbsp;&nbsp;|
+					&nbsp;&nbsp;Email: <a href='mailto:trees@mortonarb.org'>trees@mortonarb.org</a>&nbsp;&nbsp;|
+					&nbsp;&nbsp;<a href='http://www.mortonarb.org/privacy-policy' target='_blank'>Privacy Policy&nbsp;&nbsp;</a>  
 				</div>
 			</div><!-- end footer -->	
 		</div><!-- end row-->	
 	</div><!-- end container -->
-    <?php print TooltipManager::getLoadHTML(); ?>
+    <?= TooltipManager::getLoadHTML(); ?>
     <div id="caMediaPanel"> 
         <div id="caMediaPanelContentArea">
         
