@@ -63,8 +63,9 @@
 	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x' aria-label='placeholder image'></i>";
 	}
-	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder' style='height:100px;object-fit: contain;
-	width: auto; text-align: center; padding-top: 13%;'><i class='bi bi-card-image' style='font-size:50px;'></i></div>";
+	// $vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder' style='height:100px;object-fit: contain;
+	// width: auto; text-align: center; padding-top: 13%;'><i class='bi bi-card-image' style='font-size:50px;'></i></div>";
+	$vs_default_placeholder_tag = "<div class='bResultItemPlaceholder'></div>";
 		
 		$vn_col_span = 3;
 		$vn_col_span_sm = 4;
@@ -167,7 +168,7 @@
 				$vn_results_output++;
 			}
 			
-			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
+			//print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
 ?>
 <script type="text/javascript">

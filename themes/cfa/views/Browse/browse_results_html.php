@@ -26,64 +26,72 @@
  * ----------------------------------------------------------------------
  */
 
-	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
-	$va_facets 			= $this->getVar('facets');				// array of available browse facets
-	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
-	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
-	$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
-	$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
-	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
-	$vn_is_advanced		= (int)$this->getVar('is_advanced');
-	$vb_showLetterBar	= (int)$this->getVar('showLetterBar');	
-	$va_letter_bar		= $this->getVar('letterBar');	
-	$vs_letter			= $this->getVar('letter');
-	$vn_row_id 			= $this->request->getParameter('row_id', pInteger);
-	
-	$va_views			= $this->getVar('views');
-	$vs_current_view	= $this->getVar('view');
-	$va_view_icons		= $this->getVar('viewIcons');
-	
-	$vs_current_sort	= $this->getVar('sort');
-	$vs_sort_dir		= $this->getVar('sort_direction');
-	
-	$vs_table 			= $this->getVar('table');
-	$t_instance			= $this->getVar('t_instance');
-	
-	$vb_is_search		= ($this->request->getController() == 'Search');
+$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
+$va_facets 			= $this->getVar('facets');				// array of available browse facets
+$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
+$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
+$va_access_values 	= $this->getVar('access_values');		// list of access values for this user
+$vn_hits_per_block 	= (int)$this->getVar('hits_per_block');	// number of hits to display per block
+$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
+$vn_is_advanced		= (int)$this->getVar('is_advanced');
+$vb_showLetterBar	= (int)$this->getVar('showLetterBar');	
+$va_letter_bar		= $this->getVar('letterBar');	
+$vs_letter			= $this->getVar('letter');
+$vn_row_id 			= $this->request->getParameter('row_id', pInteger);
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
-	
-	
-	$va_options			= $this->getVar('options');
-	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
-	$vb_ajax			= (bool)$this->request->isAjax();
-	$va_browse_info = $this->getVar("browseInfo");
-	$vs_sort_control_type = caGetOption('sortControlType', $va_browse_info, 'dropdown');
-	$o_config = $this->getVar("config");
-	$vs_result_col_class = $o_config->get('result_col_class');
-	$vs_refine_col_class = $o_config->get('refine_col_class');
-	$va_export_formats = $this->getVar('export_formats');
-	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
-	$va_all_facets = $va_browse_type_info["facets"];	
-	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+$va_views			= $this->getVar('views');
+$vs_current_view	= $this->getVar('view');
+$va_view_icons		= $this->getVar('viewIcons');
+
+$vs_current_sort	= $this->getVar('sort');
+$vs_sort_dir		= $this->getVar('sort_direction');
+
+$vs_table 			= $this->getVar('table');
+$t_instance			= $this->getVar('t_instance');
+
+$vb_is_search		= ($this->request->getController() == 'Search');
+
+$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+
+
+$va_options			= $this->getVar('options');
+$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
+$vb_ajax			= (bool)$this->request->isAjax();
+$va_browse_info = $this->getVar("browseInfo");
+$vs_sort_control_type = caGetOption('sortControlType', $va_browse_info, 'dropdown');
+$o_config = $this->getVar("config");
+$vs_result_col_class = $o_config->get('result_col_class');
+$vs_refine_col_class = $o_config->get('refine_col_class');
+$va_export_formats = $this->getVar('export_formats');
+$va_browse_type_info = $o_config->get($va_browse_info["table"]);
+$va_all_facets = $va_browse_type_info["facets"];	
+$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+
+
+// paging
+$num_pages = ceil($vn_result_size/$vn_hits_per_block);
 	
 if (!$vb_ajax) {	// !ajax
+	$adv_search_view = new View($this->request, $this->request->getViewsDirectoryPath());
+	caSetAdvancedSearchFormInView($adv_search_view, 'objects', 'Browse/ca_objects_more_search_options_html.php', ['request' => $this->request]);
 ?>
 
-<div class="row" style="clear:both;">
+<div class="row mx-2" style="clear:both;">
 
-	<div class="container" style="max-width: 1200px !important;">
+	<div class="container">
 
 		<!-- <div class="row" style="margin: 10px 5px;">< All watch topics</div> -->
 
 		<div class="row justify-content-center" style="margin: 30px 5px;">
-			<h1 class="text-center">Browse Collections</h1>
+			<h1 class="text-center">
+				Browse <?php print ucwords($va_browse_info["labelPlural"]);?>	
+			</h1>
 		</div>
 
 		<div class="row " style="margin: 10px 5px;">
 			<div class="col text-center">
-				<form id="form" role="search">
-					<input type="search" placeholder="Search Collections by keyword..." aria-label="Search collections" 
+				<?= caFormTag($this->request, 'objects', 'basicSearch', 'Search', 'post', 'multipart/form-data', null, []); ?>
+					<input type="text" name="search" placeholder="Search Collections by keyword..." aria-label="Search collections" 
 						style="border: 1px solid lightgray; border-radius: 30px; padding: 10px 10px 10px 20px; width: 400px; height: 40px">
 					<button type="submit" title="Submit Search" aria-label="Submit Search" 
 						style="background-color: transparent; border: none">
@@ -95,69 +103,33 @@ if (!$vb_ajax) {	// !ajax
 				</form>
 			</div>
 			<div class="text-end">
-				<button class="btn btn-primary ml-auto" style="background-color: transparent; color: black; border: none" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-					More Search Options +
+				<button class="btn ml-auto browse-collapse-btn" id="btn-coll" type="button" data-bs-toggle="collapse" data-bs-target="#advSearchFormCollapse" aria-expanded="false" aria-controls="advSearchFormCollapse">
+					+ More Search Options
 				</button>
 			</div>
 		</div>
-
-		<!-- <div class="collapse" id="collapseExample"> -->
-			<form class="g-3 mt-3">
-				<div class="row mb-3 justify-content-center">
-					<div class="col-auto">
-						<input type="text" class="form-control" id="keyword" placeholder="Keyword"
-							style="border: 1px solid lightgray; border-radius: 10px; padding: 10px 10px 10px 20px; width: 400px; height: 40px">
-					</div>
-					<div class="col-auto">
-						<input type="text" class="form-control" id="title" placeholder="Title"
-							style="border: 1px solid lightgray; border-radius: 10px; padding: 10px 10px 10px 20px; width: 400px; height: 40px">
-					</div>
-				</div>
-				<div class="row mb-3 justify-content-center">
-					<div class="col-auto">
-						<input type="text" class="form-control" id="identifier" placeholder="Identifier #"
-							style="border: 1px solid lightgray; border-radius: 10px; padding: 10px 10px 10px 20px; width: 200px; height: 40px">
-					</div>
-					<div class="col-auto">
-						<input type="text" class="form-control" id="date" placeholder="Date of Production"
-							style="border: 1px solid lightgray; border-radius: 10px; padding: 10px 10px 10px 20px; width: 200px; height: 40px">
-					</div>
-					<div class="col-auto">.
-						<select class="adv-search-select" name="type" id="type-select"
-							style="border: 1px solid lightgray; border-radius: 10px; padding: 10px; width: 200px; height: 40px">
-							<option value="">Type</option>
-						</select>
-					</div>
-				</div>
-				<div class="row mb-3 justify-content-end">
-					<div class="col-auto">
-						<button type="submit" class="btn btn-warning mb-3">Search <i class="bi bi-arrow-right-short"></i></button>
-					</div>
-				</div>
-			</form>
-
-		<!-- </div> -->
+		
+		<div class="collapse" id="advSearchFormCollapse">
+			<?= $adv_search_view->render('Browse/ca_objects_more_search_options_html.php'); ?>
+		</div>
 
 		<div class="row" style="margin: 10px 5px;">
-			<div class='col-sm-6 d-flex align-items-center'>
+			<div class='col-sm-6 d-flex align-items-center' style="padding-left:0px !important;">
 				<?php
 					print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("result") : _t("results"));	
 				?>	
 			</div>
 
 			<div class="col-sm-6 d-flex justify-content-end align-items-center">
-				<div>View Mode: 
-					<!-- <i class="bi bi-grid-3x3-gap-fill"></i>
-					<i class="bi bi-list-task"></i> -->
-				</div>
+				<div>View Mode: </div>
 
 				<?php
 					if(is_array($va_views) && (sizeof($va_views) > 1)){
 						foreach($va_views as $vs_view => $va_view_info) {
 							if ($vs_current_view === $vs_view) {
-								print '<a href="#" class="browse-view-button active"><i class="bi bi-grid-3x3-gap-fill" '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button" style="font-size:20px;"></i></a> ';
+								print '<a href="#" class="browse-view-button active"><i class="bi bi-grid-3x3-gap-fill" '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button" style="font-size:16px;"></i></a> ';
 							} else {
-								print caNavLink($this->request, '<i class="bi bi-list-task" '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button" style="font-size:20px;"></i>', 'browse-view-button disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+								print caNavLink($this->request, '<i class="bi bi-list-task" '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button" style="font-size:16px;"></i>', 'browse-view-button disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 							}
 						}
 					}
@@ -170,7 +142,7 @@ if (!$vb_ajax) {	// !ajax
 
 	<div class="row justify-content-between">
 
-		<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-9"; ?>'>
+		<div class='<?= ($vs_result_col_class) ? $vs_result_col_class : "col-9"; ?>'>
 
 			<!-- If in list view -->
 			<?php 
@@ -213,6 +185,7 @@ if (!$vb_ajax) {	// !ajax
 							}
 					?>
 
+			<div id="browseResultsContainer">
 					<?php
 					} // !ajax
 
@@ -239,9 +212,14 @@ if (!$vb_ajax) {	// !ajax
 					if (!$vb_ajax) {	// !ajax
 					?>
 
+			</div>
+			
+			<?= $this->render("Browse/paging_bar_html.php"); ?>
+
+
 		</div><!-- end col-9 -->
 
-		<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-3 "; ?>">
+		<div class="<?= ($vs_refine_col_class) ? $vs_refine_col_class : "col-3 "; ?>">
 
 			<div id="bViewButtons">
 				<?php
@@ -257,9 +235,7 @@ if (!$vb_ajax) {	// !ajax
 				?>
 			</div>
 
-			<?php
-					print $this->render("Browse/browse_refine_subview_html.php");
-			?>			
+			<?=$this->render("Browse/browse_refine_subview_html.php"); ?>		
 		</div><!-- end col-3 -->
 
 	</div>
@@ -269,37 +245,41 @@ if (!$vb_ajax) {	// !ajax
 
 <script type="text/javascript">
 	jQuery(document).ready(function() {
-		jQuery('#browseResultsContainer').jscroll({
-			autoTrigger: true,
-			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-			padding: 800,
-			nextSelector: 'a.jscroll-next'
-		});
 <?php
 		if($vn_row_id){
 ?>
 			window.setTimeout(function() {
-				$("window,body,html").scrollTop( $("#row<?php print $vn_row_id; ?>").offset().top);
+				$("window,body,html").scrollTop( $("#row<?= $vn_row_id; ?>").offset().top);
 			}, 0);
 <?php
 		}
 		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 ?>
-		jQuery('#setsSelectMultiple').on('submit', function(e){		
-			objIDs = [];
-			jQuery('#setsSelectMultiple input:checkbox:checked').each(function() {
-			   objIDs.push($(this).val());
+			jQuery('#setsSelectMultiple').on('submit', function(e){		
+				objIDs = [];
+				jQuery('#setsSelectMultiple input:checkbox:checked').each(function() {
+					objIDs.push($(this).val());
+				});
+				objIDsAsString = objIDs.join(';');
+				caMediaPanel.showPanel('<?= caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
+				e.preventDefault();
+				return false;
 			});
-			objIDsAsString = objIDs.join(';');
-			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
-			e.preventDefault();
-			return false;
-		});
 <?php
 		}
 ?>
+		$('.browse-collapse-btn').click(function(){
+			var $this = $(this);
+			$this.toggleClass('browse-collapse-btn');
+			setTimeout(function() { 
+				if($this.hasClass('browse-collapse-btn')){
+					$this.text('+ More Search Options');         
+				} else {
+					$this.text('- Less Search Options');
+				}
+    		}, 250);
+		});
 	});
-
 </script>
 <?php
 		print $this->render('Browse/browse_panel_subview_html.php');

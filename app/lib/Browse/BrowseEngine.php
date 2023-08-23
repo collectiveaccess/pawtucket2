@@ -939,6 +939,7 @@
 		 * @return array()
 		 */
 		public function getFacetList() {
+			global $g_request;
 			if (!is_array($this->opa_browse_settings)) { return null; }
 
 			// Facets can be restricted such that they are applicable only to certain types when browse type restrictions are in effect.
@@ -976,6 +977,12 @@
 							}
 						}
 					}
+					
+					
+					if ($g_request && is_array($va_facet_info['requires_roles'] ?? null)) {
+						$roles = $g_request->isLoggedIn() ? $g_request->user->getUserRoles() : [];
+						print_R($roles); die;
+					}
 					if ($vb_facet_is_meets_requirements) {
 						if (isset($va_facet_info['type_restrictions']) && is_array($va_facet_restrictions = $va_facet_info['type_restrictions']) && sizeof($va_facet_restrictions)) {
 							foreach($va_facet_restrictions as $vs_code) {
@@ -1000,6 +1007,11 @@
 				$va_facets = array();
 
 				foreach($this->opa_browse_settings['facets'] as $vs_facet_name => $va_facet_info) {
+					if ($g_request && is_array($va_facet_info['requires_roles'] ?? null)) {
+						$roles = array_map(function($v) { return $v['code']; }, $g_request->isLoggedIn() ? $g_request->user->getUserRoles(['skipVars' => true]) : []);
+						
+						if(!sizeof(array_intersect($roles, $va_facet_info['requires_roles']))) { continue; }
+					}
 					if (isset($va_facet_info['requires']) && !is_array($va_facet_info['requires']) && $va_facet_info['requires']) { $va_facet_info['requires'] = array($va_facet_info['requires']); }
 					if (isset($va_facet_info['requires']) && is_array($va_facet_info['requires'])) {
 						foreach($va_facet_info['requires'] as $vs_req_facet) {

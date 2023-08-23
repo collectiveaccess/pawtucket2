@@ -62,7 +62,7 @@ a:hover {
 a:active {
 	color:#5A8042;
 }
-h1, .front H1, .front h1 a, .detail h1 {
+h1, h1 i, .front H1, .front H1 i, .front h1 a, .front h1 a i, .detail h1, .detail h1 i {
 	font-family: GillSansMTStd-Light, Helvetica, Arial, sans-serif;
 	font-weight:normal;
 	font-size: 42px;
@@ -163,6 +163,12 @@ strong, b {
 	padding-left:0;
 	margin-left:0;
 	margin-right: 0px;
+}
+.exhibitions .thumbnail > img {
+	display: block;
+	max-width: 100%;
+	max-height: 700px;
+	width: auto;
 }
 div.captionSlideshow{
 	margin-top: 10px;
@@ -438,12 +444,46 @@ div.captionSlideshow{
 .front .hpSpace{
 	height:80px;
 }
+.hp_announcement{
+	padding:20px;
+	background-color:#f4f4f4;
+	margin-bottom:30px;
+	font-size:20px;
+	color:#000;
+	font-family: GillSansMTStd-Light, Helvetica, Arial, sans-serif;
+}
+.announcementTitle{
+	font-size:24px;
+	font-weight:bold;
+	padding-bottom:15px;
+	color:#000;
+	font-family: GillSansMTStd-Light, Helvetica, Arial, sans-serif;
+}
 /* ------ Details -------------- */
 .jcarousel-control-prev{
 	left:0px !important;
 	bottom:45px !important;
 	top:auto !important;
 }
+.jcarousel-control-next{
+	right:0px !important;
+	bottom:45px !important;
+	top:auto !important;
+}
+.detail.ca_occurrences .jcarousel-wrapper, .detail.ca_entities .jcarousel-wrapper{
+	margin-top: 30px;
+}
+.detail.ca_occurrences .jcarousel-control-prev, .detail.ca_entities .jcarousel-control-prev{
+	left:0px !important;
+	top:-30px !important;
+	bottom:auto !important;
+}
+.detail.ca_occurrences .jcarousel-control-next, .detail.ca_entities .jcarousel-control-next{
+	right:0px !important;
+	top:-30px !important;
+	bottom:auto !important;
+}
+
 .jcarousel-control-next{
 	right:0px !important;
 	bottom:45px !important;
@@ -619,6 +659,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 }
 .exhibitionListing H1{
 	font-size:16px;
+	font-style:italic;
 }
 .exhibitionListing H1 strong{
 	font-size:20px;
