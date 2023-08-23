@@ -110,13 +110,6 @@ class SearchEngine extends SearchBase {
 		return $this->opo_engine->getSearchedTerms();
 	}
 	# ------------------------------------------------------------------
-	/**
-	 *
-	 */
-	public function getSearchResultDesc() {
-		return $this->opo_engine->getSearchResultDesc();
-	}
-	# ------------------------------------------------------------------
 	# Search
 	# ------------------------------------------------------------------
 	/**
@@ -232,12 +225,14 @@ class SearchEngine extends SearchBase {
 
 		$o_cache = new SearchCache();
 		$vb_from_cache = false;
+		$result_desc = [];
 
 		if (!$vb_no_cache && ($o_cache->load($vs_cache_key, $this->opn_tablenum, $options))) {
 			$vn_created_on = $o_cache->getParameter('created_on');
 			if((time() - $vn_created_on) < $vn_cache_timeout) {
 				Debug::msg('SEARCH cache hit for '.$vs_cache_key);
 				$va_hits = $o_cache->getResults();
+				$result_desc = $o_cache->getResultDesc();
 				
 				
 				if ($vs_sort != '_natural') {
@@ -245,7 +240,7 @@ class SearchEngine extends SearchBase {
 				} elseif (($vs_sort == '_natural') && ($vs_sort_direction == 'desc')) {
 					$va_hits = array_reverse($va_hits);
 				}
-				$o_res = new WLPlugSearchEngineCachedResult($va_hits, $this->opn_tablenum);
+				$o_res = new WLPlugSearchEngineCachedResult($va_hits, $result_desc, $this->opn_tablenum);
 				$vb_from_cache = true;
 			} else {
 				Debug::msg('SEARCH cache expire for '.$vs_cache_key);
@@ -337,8 +332,8 @@ class SearchEngine extends SearchBase {
 				
 				// cache the results
 				$va_hits = $o_res->getPrimaryKeyValues($vb_do_acl ? null : $vn_limit);
-				
-										
+				$result_desc = $o_res->getResultDesc();
+							
 				if (($options['expandToIncludeParents'] ?? false) && sizeof($va_hits)) {
 					$qr_exp = caMakeSearchResult($this->opn_tablenum, $va_hits);
 					if (!is_array($va_type_ids) || !sizeof($va_type_ids)) { $va_type_ids = null; }
@@ -379,11 +374,11 @@ class SearchEngine extends SearchBase {
 				$va_hits = array_reverse($va_hits);
 			}
 			
-			$o_res = new WLPlugSearchEngineCachedResult($va_hits, $this->opn_tablenum);
+			$o_res = new WLPlugSearchEngineCachedResult($va_hits, $result_desc, $this->opn_tablenum);
 			
 			// cache for later use
 			if(!$vb_no_cache) {
-				$o_cache->save($vs_cache_key, $this->opn_tablenum, $va_hits, array('created_on' => time()), null, $options);
+				$o_cache->save($vs_cache_key, $this->opn_tablenum, $va_hits, $result_desc, ['created_on' => time()], null, $options);
 			}
 
 			// log search
@@ -461,7 +456,7 @@ class SearchEngine extends SearchBase {
 		
 		$va_hits = $qr_res->getAllFieldValues($vs_table_pk);
 		
-		$o_res = new WLPlugSearchEngineCachedResult($va_hits, $this->opn_tablenum);
+		$o_res = new WLPlugSearchEngineCachedResult($va_hits, [], $this->opn_tablenum);
 		
 		if ($po_result) {
 			$po_result->init($o_res, []);

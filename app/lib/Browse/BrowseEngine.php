@@ -2750,7 +2750,7 @@
 										}
 										$qr_res = $o_search->search(join(" AND ", $va_row_ids), $va_options);
 										$this->searched_terms = $o_search->getSearchedTerms();
-										$this->seach_result_desc = $o_search->getSearchResultDesc();
+										$this->seach_result_desc = $qr_res->getResultDesc();
 										
 										$va_acc[$vn_i] = $qr_res->getPrimaryKeyValues();
 										$vn_i++;
@@ -7487,11 +7487,11 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 			if (!is_array($va_results)) { $va_results = array(); }
 
 			if ($po_result) {
-				$po_result->init(new WLPlugSearchEngineBrowseEngine($va_results, $this->opn_browse_table_num), array(), $pa_options);
+				$po_result->init(new WLPlugSearchEngineBrowseEngine($va_results, [], $this->opn_browse_table_num), array(), $pa_options);
 
 				return $po_result;
 			} else {
-				return new WLPlugSearchEngineBrowseEngine($va_results, $this->opn_browse_table_num);
+				return new WLPlugSearchEngineBrowseEngine($va_results, [], $this->opn_browse_table_num);
 			}
 		}
 		# ------------------------------------------------------------------
@@ -8186,7 +8186,7 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 		/**
 		 *
 		 */
-		public function getSearchResultDesc() {
+		public function getResultDesc() {
 			return $this->seach_result_desc ?? [];
 		}
 		# ------------------------------------------------------

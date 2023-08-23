@@ -42,17 +42,20 @@ class WLPlugSearchEngineCachedResult extends WLPlug implements IWLPlugSearchEngi
 	# -------------------------------------------------------
 	private $opo_config;
 	
-	private $opa_hits;
+	private $opa_hits = [];
+	private $result_desc = [];
 	private $opn_current_row;
 	protected $opn_subject_tablenum;
 	protected $ops_subject_pk;
 	# -------------------------------------------------------
-	public function __construct($pa_hits, $pn_table_num) {
+	public function __construct($pa_hits, $result_desc, $pn_table_num) {
 		
 		$this->opn_subject_tablenum = $pn_table_num;
 		
 		$this->ops_subject_pk = Datamodel::primaryKey($pn_table_num);
 		$this->setHits(array_values($pa_hits));
+		
+		$this->result_desc = $result_desc ?? [];
 	}
 	# -------------------------------------------------------
 	public function setHits($pa_hits) {
@@ -107,6 +110,13 @@ class WLPlugSearchEngineCachedResult extends WLPlug implements IWLPlugSearchEngi
 			if (!is_null($vn_limit) && ($vn_c >= $vn_limit)) { break; }
 		}
 		return $va_ids;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function getResultDesc() {
+		return $this->result_desc ?? [];
 	}
 	# -------------------------------------------------------
 }

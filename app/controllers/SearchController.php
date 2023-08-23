@@ -431,7 +431,7 @@ class SearchController extends FindController {
 		$qr_res->doHighlighting($o_search_config->get("do_highlighting"));
 		$this->view->setVar('result', $qr_res);
 		
-		$result_desc = $o_browse->getSearchResultDesc($qr_res->getAllFieldValues($qr_res->primaryKey(true)) ?? []);
+		$result_desc = $o_browse->getResultDesc($qr_res->getAllFieldValues($qr_res->primaryKey(true)) ?? []);
 		$this->view->setVar('result_desc', $result_desc);
 		$this->opo_result_context->setResultDescription($result_desc);
 		

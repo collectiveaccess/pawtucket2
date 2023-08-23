@@ -3916,4 +3916,11 @@ class SearchResult extends BaseObject {
 		return $content;
 	}
 	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	public function getResultDesc() {
+		return $this->opo_engine_result->getResultDesc();
+	}
+	# ------------------------------------------------------------------
 }

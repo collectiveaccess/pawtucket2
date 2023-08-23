@@ -222,12 +222,9 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 		if(!is_array($hits)) { $hits = []; }
 		
 		$hits = caSortArrayByKeyInValue($hits, ['boost'], 'desc', ['mode' => SORT_NUMERIC]); // sort by boost
-
-		// Stash list of hits with matching data
-		$this->seach_result_desc = $this->_resolveHitInformation($hits);
 		
 		// Return list of hits
-		return new WLPlugSearchEngineSqlSearchResult(array_keys($hits), $subject_tablenum);
+		return new WLPlugSearchEngineSqlSearchResult(array_keys($hits), $hits, $subject_tablenum);
 	}
 	# -------------------------------------------------------
 	/**
@@ -1865,7 +1862,10 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 			$hits[$row_id]['index_ids'] = []; 
 	 		}
 	 		$hits[$row_id]['boost'] += ($vals['boost'][$i] ?? 0);
-	 		$hits[$row_id]['index_ids'][] = $vals['index_id'][$i];
+	 		
+	 		if(sizeof($hits[$row_id]['index_ids']) < 3) {	// TODO: make index_id cap configurable
+	 			$hits[$row_id]['index_ids'][] = $vals['index_id'][$i];
+	 		}
 	 	}
 	 	return $hits;
 	}
