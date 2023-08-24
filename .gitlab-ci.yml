@@ -1,0 +1,30 @@
+stages:
+  - deploy
+  - redeploy
+
+
+## Code Deploy
+# Sync the local copy of the code
+deploy_prod:
+  stage: deploy
+  only:
+    - bmac
+  before_script:
+    - cd /app/pawtucket2 && cp $PROD_ENV_FILE .env
+  script:
+    - cd /app/pawtucket2
+    - git pull
+    - source .env
+    - cp $SETUP_PHP_PAWTUCKET setup.php
+    - docker-compose build --build-arg LOCAL_UID=$LOCAL_UID --build-arg SERVERNAME=$SERVERNAME  
+    - docker-compose up -d
+    - docker-compose exec -T pawtucket /bin/bash -c "cd /app/apache2/htdocs && composer install"
+  after_script:
+    - cd /app/pawtucket2 && rm .env
+    - cd /app/pawtucket2 && chown gitlab-runner:daemon setup.php && chmod 640 setup.php
+  environment:
+    name: prod
+    url: https://bmac.libs.uga.edu
+  tags:
+    - brown-hosting-shell
+

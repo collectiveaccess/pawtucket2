@@ -322,7 +322,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 					$acc = [];
 	 					foreach($vals as $row_id) {
 	 						// assume constant boost = 1 here
-	 						$acc[$row_id] = 1;
+	 						$acc[$row_id] = ['boost' => 1, 'index_ids' => []];
 	 					}
 	 				} else {
 	 					$acc = array_diff_key($acc, $hits);	
@@ -369,8 +369,8 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 				}
 	 				break;
 	 			case 'NOT':
-	 				if ($i == 0) {
-	 					// invert set
+	 				if ($i == 0) {	
+						$acc = $hits; // will be negated in _processQueryBoolean()			
 	 				} else {
 	 					$acc = array_diff_key($acc, $hits);	
 	 					foreach($acc as $row_id => $b) {

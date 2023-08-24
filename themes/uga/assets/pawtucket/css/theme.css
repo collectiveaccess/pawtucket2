@@ -186,7 +186,7 @@ a.plyr__control {
     color:#FFF;
 }
 .detail #detailAnnotations .detailAnnotationList {
-    max-height: 500px;
+    max-height: 300px;
     overflow: auto;
 }
 .detailImgPlaceholder {
@@ -502,23 +502,45 @@ div.ugalogo img { width: 160px; padding-left:15px;}
 #objects_sort_direction{
 	color:#757575;
 }
+
+.bResultListItem {
+	height: 100%;
+	margin-bottom: 20px;
+}
+
 .bResultListItemCol {
-    height: 172px;
+	height: 100%;
 }
 .bResultListItemContent {
-    height: 122px;
+    height: 100%;
     overflow: hidden;
 }
-.bResultListItem:hover{
-	height:162px;
-}
+
 .bResultListItem .bResultListItemImg {
-    max-height: 120px;
+    min-height: 120px;
     margin-right: 15px;
+    min-width: 180px;
 }
 .bResultListItem img {
     height: 120px;
 }
+
+.bResultListItem:hover {
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	background-color: #FFFFFF;
+	line-height: 1em;
+	padding: 10px;
+	height:100%;
+	margin-bottom: 20px;
+}
+
+.bResultListItemImg .bResultItemImgPlaceholder {
+	padding: 45px;
+	width: 100%;
+	height: 100%;
+}
+
 bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemText small a {
     color: #787878;
 }
