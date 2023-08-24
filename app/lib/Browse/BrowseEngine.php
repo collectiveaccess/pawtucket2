@@ -30,11 +30,7 @@
  * ----------------------------------------------------------------------
  */
 
- /**
-  *
-  */
  	require_once(__CA_LIB_DIR__.'/BaseFindEngine.php');
- 	require_once(__CA_LIB_DIR__.'/Datamodel.php');
  	require_once(__CA_LIB_DIR__.'/Db.php');
  	require_once(__CA_LIB_DIR__.'/Attributes/Values/AuthorityAttributeValue.php');
 	require_once(__CA_LIB_DIR__.'/Attributes/Values/CollectionsAttributeValue.php');
@@ -53,11 +49,6 @@
  	require_once(__CA_LIB_DIR__.'/Parsers/TimeExpressionParser.php');
  	require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
-
- 	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
-	require_once(__CA_MODELS_DIR__.'/ca_lists.php');
-	require_once(__CA_MODELS_DIR__.'/ca_acl.php');
-	require_once(__CA_MODELS_DIR__.'/ca_relationship_types.php');
 
 	class BrowseEngine extends BaseFindEngine {
 		# ------------------------------------------------------
@@ -981,7 +972,6 @@
 					
 					if ($g_request && is_array($va_facet_info['requires_roles'] ?? null)) {
 						$roles = $g_request->isLoggedIn() ? $g_request->user->getUserRoles() : [];
-						print_R($roles); die;
 					}
 					if ($vb_facet_is_meets_requirements) {
 						if (isset($va_facet_info['type_restrictions']) && is_array($va_facet_restrictions = $va_facet_info['type_restrictions']) && sizeof($va_facet_restrictions)) {
@@ -2750,7 +2740,7 @@
 										}
 										$qr_res = $o_search->search(join(" AND ", $va_row_ids), $va_options);
 										$this->searched_terms = $o_search->getSearchedTerms();
-										$this->seach_result_desc = $qr_res->getResultDesc();
+										$this->seach_result_desc = $qr_res->getRawResultDesc();
 										
 										$va_acc[$vn_i] = $qr_res->getPrimaryKeyValues();
 										$vn_i++;
@@ -7060,7 +7050,6 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 	                    
 	                    $vs_sql .= sizeof($va_orderbys) ? " ORDER BY ".join(', ', $va_orderbys) : '';
 					    
-					    //print "<hr>$vs_sql<hr>\n"; print_R($va_sql_params);
 						$qr_res = $this->opo_db->query($vs_sql, $va_sql_params);
 
 						$va_facet = $va_facet_items = array();
@@ -8177,16 +8166,24 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 	    }
 		# ------------------------------------------------------
 		/**
+		 * Return list of terms searched in _search facet for current browse
 		 *
+		 * @return array
 		 */
-		public function getSearchedTerms() {
+		public function getSearchedTerms() : array {
 			return $this->searched_terms ?? [];
 		}		
 		# ------------------------------------------------------
 		/**
+		 * Return array describing how _search facet matched found records
+		 * To avoid a significant performance hit details are returned only for ids of hits passed in 
+		 * the $hits parameter rather than for the entire result set.
 		 *
+		 * @oaram array $hits List of ids to return matching data for
+		 * 
+		 * @return array
 		 */
-		public function getResultDesc(array $hits) {
+		public function getResultDesc(array $hits) : ?array {
 			$result_desc = [];
 			
 			foreach($hits as $id) {

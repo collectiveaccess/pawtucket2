@@ -147,6 +147,8 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			WLPlugSearchEngineSqlSearch2::$metadata_elements = ca_metadata_elements::getRootElementsAsList();
 		}
 		$this->debug = false;
+		
+		$this->get_result_desc_data = $this->search_config->get('return_search_result_description_data');
 	}
 	# -------------------------------------------------------
 	# Initialization and capabilities
@@ -285,11 +287,13 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 				
 	 				$acc = array_intersect_key($acc, $hits);
 	 				
-	 				foreach($acc as $k => $v) {
-	 					if(isset($hits[$k])) {
-	 						$acc[$k]['index_ids'] = array_unique(array_merge($acc[$k]['index_ids'], $hits[$k]['index_ids']));
-	 					}
-	 				}
+	 				if($this->get_result_desc_data ) {
+						foreach($acc as $k => $v) {
+							if(isset($hits[$k])) {
+								$acc[$k]['index_ids'] = array_unique(array_merge($acc[$k]['index_ids'], $hits[$k]['index_ids']));
+							}
+						}
+					}
 	 				foreach($acc as $row_id => $boost) {
 	 					$acc[$row_id]['boost'] += $hits[$row_id]['boost'];	// add boost
 	 				}
@@ -1863,7 +1867,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 		}
 	 		$hits[$row_id]['boost'] += ($vals['boost'][$i] ?? 0);
 	 		
-	 		if(sizeof($hits[$row_id]['index_ids']) < 3) {	// TODO: make index_id cap configurable
+	 		if(($this->get_result_desc_data  && sizeof($hits[$row_id]['index_ids']) < 3)) {	// TODO: make index_id cap configurable
 	 			$hits[$row_id]['index_ids'][] = $vals['index_id'][$i];
 	 		}
 	 	}
@@ -1875,7 +1879,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 */
 	public function _resolveHitInformation($res) {
 		$res_proc = [];
-		
+		if(!$this->get_result_desc_data) { return []; }
 		$index_ids = array_unique(array_reduce($res, function($c, $v) {
 			$ids = array_filter($v['index_ids'] ?? [], 'is_numeric');
 			return array_merge($c, $ids);

@@ -462,7 +462,7 @@ class SearchController extends FindController {
 		
 		$result_desc = $o_browse->getResultDesc($hit_ids);
 		$this->view->setVar('result_desc', $result_desc);
-		$this->opo_result_context->setResultDescription($result_desc);
+		$this->opo_result_context->setResultDesc($result_desc);
 
 		$this->opo_result_context->saveContext();
 		

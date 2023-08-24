@@ -30,8 +30,12 @@
  * ----------------------------------------------------------------------
  */
 
+require_once(__CA_LIB_DIR__."/ResultDescTrait.php");
+
 class SearchCache {
 	# ------------------------------------------------------
+	use ResultDescTrait;
+	
 	/**
 	 * @var string Cache key for currently loaded browse
 	 */
@@ -102,12 +106,13 @@ class SearchCache {
 		$this->ops_cache_key = $this->generateCacheKey($search, $table_num, $options);
 		$this->opa_search = array(
 			'results' => $results,
-			'result_desc' => $result_desc,		// optional data on how search temrs matched specified rows
 			'search' => $search,
 			'table_num' => $table_num,
 			'params' => $params,
 			'type_restrictions' => $type_restrictions
 		);
+		$this->setRawResultDesc($result_desc);	// optional data on how search temrs matched specified rows
+		
 		return CompositeCache::save($this->ops_cache_key, $this->opa_search, 'SearchCache');
 	}
 	# ------------------------------------------------------
@@ -183,21 +188,6 @@ class SearchCache {
 	 */
 	public function numResults() : int {
 		return is_array($this->opa_search['results']) ? sizeof($this->opa_search['results']) : 0;
-	}
-	# ------------------------------------------------------
-	/**
-	 *
-	 */
-	public function setResultDesc(array $result_desc) : bool {
-		$this->opa_search['result_desc'] = $result_desc;
-		return true;
-	}
-	# ------------------------------------------------------
-	/**
-	 *
-	 */
-	public function getResultDesc() : array {
-		return $this->opa_search['result_desc'] ?? [];
 	}
 	# ------------------------------------------------------
 	/**
