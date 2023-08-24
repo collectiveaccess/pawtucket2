@@ -51,6 +51,35 @@
         {{{^ca_collections.preferred_labels}}}
       </h1>
 
+
+
+          <div class="slider-container module_slideshow slideshow-single-collection over-black autoplay fade-captions slideshow-ctrl-init">
+            <div class="dots-white dots-centered 1 slick-initialized slick-slider slick-dotted">
+              <div class="slick-list draggable">
+                <div class="slick-track" style="opacity: 1; width: 1677px;">
+                  {{{representationViewer}}}
+                </div>
+              </div>
+              <ul class="slick-dots" style="" role="tablist">
+                <li class="" role="presentation">
+                  <button type="button" role="tab" id="slick-slide-control40" aria-controls="slick-slide40" aria-label="1 of 3" tabindex="-1">1</button>
+                </li>
+                <li role="presentation" class="">
+                  <button type="button" role="tab" id="slick-slide-control41" aria-controls="slick-slide41" aria-label="2 of 3" tabindex="-1">2</button>
+                </li>
+                <li role="presentation" class="slick-active">
+                  <button type="button" role="tab" id="slick-slide-control42" aria-controls="slick-slide42" aria-label="3 of 3" tabindex="0" aria-selected="true">3</button>
+                </li>
+              </ul>
+            </div>
+            
+            <ul class="captions text__caption img-caption">
+              <li class="" style="opacity: 1;">{{{^ca_object_representations.caption}}}</li>
+            </ul>
+          </div>
+
+
+
       <div class="layout grid-flex">
         <div class="item color__white">
           <div class="slider-container module_slideshow slideshow-single-collection over-black autoplay fade-captions slideshow-ctrl-init">
@@ -212,6 +241,7 @@
                   </svg>
                 </span>
               </a>
+
             </div>
           </div>
 
@@ -263,21 +293,20 @@
                   </div>
                 </div>
                 <ul class="list columns__text text__body-3" col-num="2">
-x-bbedit-document:///untitled%20text%2030?1687
                     {{{<ifcount code="ca_objects" min="1">
                       <unit relativeTo="ca_objects" delimiter="">
 
                         <li>
                           <a href="" class="color-link-inverted-orange"><l>^ca_objects.preferred_labels</l></a>
                           <small class="color__gray">(^relationship_typename)</small>
-                          <ifdef code="ca_object_representations.media.small">
-                            <span class="viewable-media-icon right">
-                              <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
-                                <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
-                              </svg>
-                            </span>
-                          </ifdef>
+                            <ifdef code="ca_object_representations.media.small">
+                              <span class="viewable-media-icon right">
+                                <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
+                                  <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
+                                </svg>
+                              </span>
+                            </ifdef>
                         </li>
 
                       </unit>

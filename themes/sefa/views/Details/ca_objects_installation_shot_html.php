@@ -146,7 +146,7 @@
 		
 		{{{<ifcount code="ca_occurrences" min="1">
 			<unit relativeTo="ca_occurrences" delimiter=" ">
-				<br/><h2><l><b>^ca_occurrences.preferred_labels.name</l></h2>
+				<br/><h2><l><i><b>^ca_occurrences.preferred_labels.name</b></i></l></h2>
 				<ifdef code="ca_occurrences.exhibition_subtitle"><h2>^ca_occurrences.exhibition_subtitle</h2></ifdef>
 				<div class='date'>^ca_occurrences.opening_closing</div>
 			</unit>

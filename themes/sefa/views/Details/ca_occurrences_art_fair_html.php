@@ -272,7 +272,7 @@
 <?php
 					}
 					if($vs_pr_link = $t_item->get("press_release", array("version" => "original", "return" => "url"))){
-						print "<li><a href='".$vs_pr_link."'>Press Release</a></li>";
+						print "<li><a href='".$vs_pr_link."' target='_blank'>Press Release</a></li>";
 					}
 ?>			
 				</ul>		

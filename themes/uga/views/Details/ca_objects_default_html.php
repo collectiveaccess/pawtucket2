@@ -26,16 +26,12 @@
  * ----------------------------------------------------------------------
  */
  
-	$t_object = 			$this->getVar("item");
-	$va_comments = 			$this->getVar("comments");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$va_access_values = caGetUserAccessValues($this->request);
-	$vs_representation_viewer = trim($this->getVar("representationViewer"));
-	
-	
-	#$t_representation = new ca_object_representations($t_object->get("ca_object_representations.representation_id"));
-	#print_r($t_representation->getMediaInfo("media"));
+$t_object = 			$this->getVar("item");
+$va_comments = 			$this->getVar("comments");
+$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+$vn_share_enabled = 	$this->getVar("shareEnabled");
+$va_access_values = caGetUserAccessValues($this->request);
+$vs_representation_viewer = trim($this->getVar("representationViewer"));
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->

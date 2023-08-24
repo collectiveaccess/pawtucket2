@@ -590,6 +590,32 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 * Remove Attribute with extreme prejudice, don't check required, min, max, etc
+		 *
+		 */
+		public function purgeAttribute($pn_attribute_id, $ps_error_source=null, $pa_extra_info=null, $pa_options=null) {
+			$t_attr = new ca_attributes($pn_attribute_id);
+			$t_attr->purify($this->purify());
+			if (!$t_attr->getPrimaryKey()) { return false; }
+			$vn_element_id = (int)$t_attr->get('element_id');
+
+			if (!$ps_error_source) { $ps_error_source = $this->tableName().'.'.ca_metadata_elements::getElementCodeForId($vn_element_id); }
+
+			if (!($t_element = ca_metadata_elements::getInstance($t_attr->get('element_id')))) { return false; }
+
+			$this->opa_attributes_to_remove[] = array(
+				'attribute_id' => $pn_attribute_id,
+				'error_source' => $ps_error_source,
+				'element_id' => $t_attr->get('element_id')
+			);
+
+			$this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$t_attr->get('element_id')] = true;
+
+			return true;
+		}
+
+		# ------------------------------------------------------------------
+		/**
 		 * remove attribute from current row
 		 */
 		public function _removeAttribute($pn_attribute_id, $po_trans=null, $pa_options=null) {
@@ -642,6 +668,28 @@
 					}
 				}
 			}
+			return $this->update(['queueIndexing' => true]);
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Purges all attributes regardless of element with extreme prejudice.
+		 *
+		 * @param array $pa_options
+		 * @return bool True on success, false on error
+		 */
+		public function purgeAttributes($pa_options=null) {
+			if(!$this->getPrimaryKey()) { return null; }
+
+			if(is_array($va_element_codes = $this->getApplicableElementCodes($this->getTypeID(), false, false))) {
+				foreach($va_element_codes as $vs_element_code) {
+					$va_attributes = $this->getAttributesByElement($vs_element_code);
+
+					foreach($va_attributes as $o_attribute) {
+						$this->purgeAttribute($o_attribute->getAttributeID(), null, null, []);
+					}
+				}
+			}
+
 			return $this->update(['queueIndexing' => true]);
 		}
 		# ------------------------------------------------------------------
@@ -1714,10 +1762,10 @@
 						$ps_field_proc = preg_replace("![\.]+!", "_", $ps_field);
 						if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $pa_options, []))) { $vs_rel_types_proc = "_{$vs_rel_types}"; $vs_rel_types = "/{$vs_rel_types}";  }
 					
-						return $vs_buf.caHTMLTextInput(caGetOption('name', $pa_options, $ps_field).$vs_rel_types.$vs_autocomplete.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'class' => $pa_options['class'], 'id' => caGetOption('id', $pa_options, str_replace('.', '_', caGetOption('name', $pa_options, $ps_field))).$vs_autocomplete), $pa_options);
+						return $vs_buf.caHTMLTextInput(caGetOption('name', $pa_options, $ps_field).$vs_rel_types.$vs_autocomplete.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'placeholder' => $pa_options['placeholder'] ?? null, 'class' => $pa_options['class'], 'id' => caGetOption('id', $pa_options, str_replace('.', '_', caGetOption('name', $pa_options, $ps_field))).$vs_autocomplete), $pa_options);
 					}
 				} else {
-					return caHTMLTextInput(caGetOption('name', $pa_options, $ps_field).$vs_rel_types.$vs_autocomplete.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'class' => $pa_options['class'], 'id' => caGetOption('id', $pa_options, str_replace('.', '_', caGetOption('name', $pa_options, $ps_field)))), $pa_options);
+					return caHTMLTextInput(caGetOption('name', $pa_options, $ps_field).$vs_rel_types.$vs_autocomplete.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'placeholder' => $pa_options['placeholder'] ?? null, 'class' => $pa_options['class'], 'id' => caGetOption('id', $pa_options, str_replace('.', '_', caGetOption('name', $pa_options, $ps_field)))), $pa_options);
 				}
 			}
 			
@@ -1733,7 +1781,8 @@
 								'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 
 								'class' => (isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '',
 								'format' => '^ELEMENT',
-								'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT'
+								'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT',
+								'placeholder' => $pa_options['placeholder'] ?? null
 							)));
 				}
 			}
@@ -1914,7 +1963,7 @@
 			$va_elements_break_by_container = array();
 			
 			$va_element_info = array();
-			// fine element breaks by container
+			// find element breaks by container
 			foreach($va_element_set as $va_element) {
 				if ($va_element['datatype'] == 0) {		// containers are not active form elements
 					if(isset($va_element['settings']) && isset($va_element["settings"]["lineBreakAfterNumberOfElements"])) {

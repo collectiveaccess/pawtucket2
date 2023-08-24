@@ -398,15 +398,59 @@ input::placeholder {
 	margin: 15px 0px;
 }
 
+
+/* Collections */
+
 .collItemImg a img {
 	object-fit: contain;
 	width: 100%;
-	height: 180px;
+	height: 200px;
+	max-height: 300px;
 }
 
 .collItemImgPlaceholder{
 	width: 100%;
-	height: 180px;
+	height: 200px;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link {
+	color: #767676;
+	background-color: transparent;
+	border: none;
+}
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+	color: #000;
+	background-color: transparent;
+	border: none;
+}
+
+.link-orange {
+	border-bottom: 1px solid #E26C2F;
+	transition: color 0.3s ease-out, border-color 0.3s ease-out;
+}
+
+.link-orange:hover {
+	border-bottom: 1px solid transparent;
+	transition: color 0.3s ease-out, border-color 0.3s ease-out;
+}
+
+.collection-grid {
+	height: 280px;
+	overflow: hidden;
+}
+
+.view-more-btn {
+	display: block;
+	cursor: pointer;
+}
+
+.collection-indicators button {
+	width: 6px !important;
+	height: 6px !important;
+	border-radius: 100% !important;
+	background-color: #dedede !important;
+	position: relative !important;
+	bottom: -40px !important;
 }
 
 /* search / browse results */
@@ -1040,4 +1084,84 @@ body.frontContainer #footer{
 	#bMorePanelClose{
 		display:inline;
 	}
+}
+
+
+/* Advanced Search */
+
+.advancedContainer {
+	margin-top: 10px;
+}
+
+.advancedSearchField {
+	margin-bottom: 10px;
+}
+
+.advancedSearchField .formLabel {
+	text-transform: uppercase;
+	color: #454545;
+	font-size: 11px;
+}
+
+.advancedFormSubmit {
+	margin-bottom: 20px;
+	margin-right: 20px;
+}
+
+.advancedFormSubmit a:hover {
+	text-decoration: none;
+	/* color: #fff; */
+}
+
+.advancedFormSubmit span {
+	display: inline-block;
+}
+
+.advancedSearchField input,
+.advancedSearchField textarea,
+.advancedSearchField select {
+	width: 100% !important;
+	resize: none;
+	line-height: 1.5;
+	border-radius: 3px;
+	border: 1px solid #767676 !important;
+	padding: 5px 10px;
+	color: #555555;
+}
+
+.advancedSearchField select {
+	height: 30px;
+}
+
+.advancedSearch table.attributeListItem {
+	width: 100%;
+}
+
+input.browseMoreSearchOptsField {
+	border: 1px solid lightgray !important; 
+	border-radius: 10px; 
+	padding: 10px; width: 200px; 
+	height: 40px;
+}
+
+.carousel-item img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+div.detailNavigation {
+	max-width: 500px;
+}
+
+div.detailNavigation a {
+	padding: 5px;
+	margin: 0px 5px 5px 0px;
+}
+
+.browseMoreSearchOptsField {
+	height: 40px;
+	line-height: 40px;
+	background: #fff;
+	border: 1px solid lightgray !important;
 }

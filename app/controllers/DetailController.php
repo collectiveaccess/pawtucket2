@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/controllers/DetailController.php : controller for object search request handling - processes searches from top search bar
+ * app/controllers/DetailController.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -264,8 +264,7 @@ class DetailController extends FindController {
 		
 		$o_context = ResultContext::getResultContextForLastFind($this->request, $table);
 		
-		
-		$result_desc = $o_context->getResultDescription();
+		$result_desc = $o_context->getResultDesc();
 		$this->view->setVar('resultDesc', $result_desc[$t_subject->getPrimaryKey()] ?? null);
 		
 		if($o_context->findType() === 'multisearch') {
@@ -807,6 +806,11 @@ class DetailController extends FindController {
 		$va_versions = $t_rep->getMediaVersions('media');
 		
 		if (!in_array($ps_version, $va_versions)) { $ps_version = $va_versions[0]; }
+		
+		$available_versions = caGetAvailableDownloadVersions($this->request, $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+		if(!in_array($ps_version, $available_versions, true)) { 
+			return;
+		}
 		$this->view->setVar('version', $ps_version);
 		
 		$va_rep_info = $t_rep->getMediaInfo('media', $ps_version);

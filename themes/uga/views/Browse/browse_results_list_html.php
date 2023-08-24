@@ -49,6 +49,9 @@
 	$t_instance			= $this->getVar('t_instance');
 	$vs_table 			= $this->getVar('table');
 	$vs_pk				= $this->getVar('primaryKey');
+	
+	$result_desc		= $this->getVar('result_desc');
+	
 	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
@@ -152,28 +155,31 @@
                             <ifdef code="ca_objects.instantiationDate.instantiationDateText"><div><b>Date:</b> <unit relativeTo="ca_objects.instantiationDate.instantiationDateText" delimiter="; "><ifdef code="ca_objects.instantiationDate.instantiationDateType">^ca_objects.instantiationDate.instantiationDateType: </ifdef>^ca_objects.instantiationDate.instantiationDateText</unit></div></ifdef>
 							<ifdef code="ca_objects.instantiationMediaType"><div><b>Media Type:</b> ^ca_objects.instantiationMediaType</div></ifdef>'); 
 					}
+					
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 					
 					if($excerpts = caTextExcerptForSearchResult($vn_id, $result_desc, ['maxExcerpts' => 1])) {
 						$excerpts = "<br/>".join("<br/>", $excerpts);
 					}
 
-					$vs_result_output = "
+				$excerpts = caTextExcerptForSearchResult($vn_id, $result_desc, ['maxExcerpts' => 1]);
+				$result_desc_excerpt .= join("<br/>", $excerpts);
+								$vs_result_output = "
 		<div class='bResultListItemCol col-xs-12'>
 			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
-				<div style='position: absolute; right: 25px; top: 10px;'>{$vs_add_to_set_link}</div>
-				<div style='display: flex; flex-direction: row; flex-wrap: nowrap;'>
-					<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-					<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
-					<div class='bResultListItemContent'>
-						<div class='bResultListItemText'>
-							<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_description}{$excerpts}
-							{$vs_expanded_info}
-						</div><!-- end bResultListItemText -->
-					</div><!-- end bResultListItemContent -->
-				</div>
+				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
+				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+					<div class='bResultListItemText'>
+						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}".$vs_description."
+						<br/>{$result_desc_excerpt}
+					</div><!-- end bResultListItemText -->
+				</div><!-- end bResultListItemContent -->
+				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
+					<hr>
+					{$vs_expanded_info}{$vs_add_to_set_link}
+				</div><!-- bResultListItemExpandedInfo -->
 			</div><!-- end bResultListItem -->
-		</div><!-- end col -->";
+		</div><!-- end col -->";	
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				

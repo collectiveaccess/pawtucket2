@@ -30,11 +30,7 @@
  * ----------------------------------------------------------------------
  */
 
- /**
-  *
-  */
  	require_once(__CA_LIB_DIR__.'/BaseFindEngine.php');
- 	require_once(__CA_LIB_DIR__.'/Datamodel.php');
  	require_once(__CA_LIB_DIR__.'/Db.php');
  	require_once(__CA_LIB_DIR__.'/Attributes/Values/AuthorityAttributeValue.php');
 	require_once(__CA_LIB_DIR__.'/Attributes/Values/CollectionsAttributeValue.php');
@@ -53,11 +49,6 @@
  	require_once(__CA_LIB_DIR__.'/Parsers/TimeExpressionParser.php');
  	require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
-
- 	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
-	require_once(__CA_MODELS_DIR__.'/ca_lists.php');
-	require_once(__CA_MODELS_DIR__.'/ca_acl.php');
-	require_once(__CA_MODELS_DIR__.'/ca_relationship_types.php');
 
 	class BrowseEngine extends BaseFindEngine {
 		# ------------------------------------------------------
@@ -939,6 +930,7 @@
 		 * @return array()
 		 */
 		public function getFacetList() {
+			global $g_request;
 			if (!is_array($this->opa_browse_settings)) { return null; }
 
 			// Facets can be restricted such that they are applicable only to certain types when browse type restrictions are in effect.
@@ -976,6 +968,11 @@
 							}
 						}
 					}
+					
+					
+					if ($g_request && is_array($va_facet_info['requires_roles'] ?? null)) {
+						$roles = $g_request->isLoggedIn() ? $g_request->user->getUserRoles() : [];
+					}
 					if ($vb_facet_is_meets_requirements) {
 						if (isset($va_facet_info['type_restrictions']) && is_array($va_facet_restrictions = $va_facet_info['type_restrictions']) && sizeof($va_facet_restrictions)) {
 							foreach($va_facet_restrictions as $vs_code) {
@@ -1000,6 +997,11 @@
 				$va_facets = array();
 
 				foreach($this->opa_browse_settings['facets'] as $vs_facet_name => $va_facet_info) {
+					if ($g_request && is_array($va_facet_info['requires_roles'] ?? null)) {
+						$roles = array_map(function($v) { return $v['code']; }, $g_request->isLoggedIn() ? $g_request->user->getUserRoles(['skipVars' => true]) : []);
+						
+						if(!sizeof(array_intersect($roles, $va_facet_info['requires_roles']))) { continue; }
+					}
 					if (isset($va_facet_info['requires']) && !is_array($va_facet_info['requires']) && $va_facet_info['requires']) { $va_facet_info['requires'] = array($va_facet_info['requires']); }
 					if (isset($va_facet_info['requires']) && is_array($va_facet_info['requires'])) {
 						foreach($va_facet_info['requires'] as $vs_req_facet) {
@@ -2738,7 +2740,7 @@
 										}
 										$qr_res = $o_search->search(join(" AND ", $va_row_ids), $va_options);
 										$this->searched_terms = $o_search->getSearchedTerms();
-										$this->seach_result_desc = $o_search->getSearchResultDesc();
+										$this->seach_result_desc = $qr_res->getRawResultDesc();
 										
 										$va_acc[$vn_i] = $qr_res->getPrimaryKeyValues();
 										$vn_i++;
@@ -7048,7 +7050,6 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 	                    
 	                    $vs_sql .= sizeof($va_orderbys) ? " ORDER BY ".join(', ', $va_orderbys) : '';
 					    
-					    //print "<hr>$vs_sql<hr>\n"; print_R($va_sql_params);
 						$qr_res = $this->opo_db->query($vs_sql, $va_sql_params);
 
 						$va_facet = $va_facet_items = array();
@@ -7475,11 +7476,11 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 			if (!is_array($va_results)) { $va_results = array(); }
 
 			if ($po_result) {
-				$po_result->init(new WLPlugSearchEngineBrowseEngine($va_results, $this->opn_browse_table_num), array(), $pa_options);
+				$po_result->init(new WLPlugSearchEngineBrowseEngine($va_results, [], $this->opn_browse_table_num), array(), $pa_options);
 
 				return $po_result;
 			} else {
-				return new WLPlugSearchEngineBrowseEngine($va_results, $this->opn_browse_table_num);
+				return new WLPlugSearchEngineBrowseEngine($va_results, [], $this->opn_browse_table_num);
 			}
 		}
 		# ------------------------------------------------------------------
@@ -8165,17 +8166,35 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 	    }
 		# ------------------------------------------------------
 		/**
+		 * Return list of terms searched in _search facet for current browse
 		 *
+		 * @return array
 		 */
-		public function getSearchedTerms() {
+		public function getSearchedTerms() : array {
 			return $this->searched_terms ?? [];
 		}		
 		# ------------------------------------------------------
 		/**
+		 * Return array describing how _search facet matched found records
+		 * To avoid a significant performance hit details are returned only for ids of hits passed in 
+		 * the $hits parameter rather than for the entire result set.
 		 *
+		 * @oaram array $hits List of ids to return matching data for
+		 * 
+		 * @return array
 		 */
-		public function getSearchResultDesc() {
-			return $this->seach_result_desc ?? [];
+		public function getResultDesc(array $hits) : ?array {
+			$result_desc = [];
+			
+			foreach($hits as $id) {
+				if(isset($this->seach_result_desc[$id])) {
+					$result_desc[$id] = &$this->seach_result_desc[$id];
+				}
+			}
+			
+			$o_search = new SearchEngine();
+			
+			return $o_search->resolveResultDescData($result_desc);
 		}
 		# ------------------------------------------------------
 	}
