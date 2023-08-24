@@ -52,7 +52,6 @@ if (sizeof($va_annotations) > 0) {
 		var detailAnnotationTimes = <?=  json_encode($va_annotation_times); ?>;
 		jQuery('li.detailAnnotation').on('click', function(e) {
 			var i = jQuery('li.detailAnnotation').index(e.target); 
-			
 			caUI.mediaPlayerManager.seek('<?= $vs_player_name; ?>', detailAnnotationTimes[i][0]);
 		});
 		
