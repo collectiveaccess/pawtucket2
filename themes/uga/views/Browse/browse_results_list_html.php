@@ -39,6 +39,8 @@
 		$vb_row_id_loaded = true;
 	}
 	
+	$result_desc		= $this->getVar('result_desc');
+	
 	$va_views			= $this->getVar('views');
 	$vs_current_view	= $this->getVar('view');
 	$va_view_icons		= $this->getVar('viewIcons');
@@ -155,6 +157,10 @@
 					}
 					
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
+					
+					if($excerpts = caTextExcerptForSearchResult($vn_id, $result_desc, ['maxExcerpts' => 1])) {
+						$excerpts = "<br/>".join("<br/>", $excerpts);
+					}
 
 				$excerpts = caTextExcerptForSearchResult($vn_id, $result_desc, ['maxExcerpts' => 1]);
 				$result_desc_excerpt .= join("<br/>", $excerpts);

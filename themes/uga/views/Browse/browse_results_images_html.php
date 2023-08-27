@@ -153,7 +153,7 @@
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
-				<hr>
+				<hr/>
 				{$vs_expanded_info}{$vs_add_to_set_link}
 			</div><!-- bResultItemExpandedInfo -->
 		</div><!-- end bResultItem -->
