@@ -123,6 +123,11 @@
 			}elseif($o_object->get("availability", array('convertCodesToDisplayText' => true)) == "no longer available"){
 				$vs_available = " <span class='captionNoLongerAvailable'><i class='fa fa-circle' title='No longer available'></i></span>";
 			}
+			# --- additional contributors
+			$vs_contributors = "";
+			if($vs_contributors = $o_object->get("ca_objects.contributors")){
+				$va_caption_parts[] = $vs_contributors;
+			}
 			return implode(", ", $va_caption_parts).$vs_available;
 		}else{
 			return null;
