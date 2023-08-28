@@ -239,4 +239,11 @@ abstract class BaseSearchPlugin extends WLPlug implements IWLPlugSearchEngine {
 		return $this->searched_terms ?? [];
 	}
 	# --------------------------------------------------
+	/**
+	 * 
+	 */
+	public function getSearchResultDesc() : array {
+		return $this->seach_result_desc ?? [];
+	}
+	# --------------------------------------------------
 }

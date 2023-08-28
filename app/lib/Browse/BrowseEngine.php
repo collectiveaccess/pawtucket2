@@ -219,7 +219,7 @@
 					}
 				}
 
-				if(is_array($va_facet_info['label_plural'])) {
+				if(is_array($va_facet_info['label_plural'] ?? null)) {
 					if(isset($va_facet_info['label_plural'][$g_ui_locale])) {
 						$va_facet_info['label_plural'] = $va_facet_info['label_plural'][$g_ui_locale];
 					}
@@ -244,7 +244,7 @@
 								continue;
 							}
 							foreach($e as $t => $c) {
-								if($c['useRelated'] !== 'ca_storage_locations') {
+								if(($c['useRelated'] ?? null) !== 'ca_storage_locations') {
 									break(2);
 								}
 							}
@@ -253,7 +253,7 @@
 						
 						$n = sizeof($location_elements);
 				
-						if (($n > 0) && ($n === sizeof($policy_info['elements']))) {
+						if (($n > 0) && ($n === sizeof($policy_info['elements'] ?? []))) {
 							$va_facet_info['table'] = 'ca_storage_locations';
 						} else {
 							$va_facet_info['group_mode'] = 'none';
@@ -1801,7 +1801,7 @@
 									$vs_normalization = $va_facet_info['normalization'];
 									$o_tep = new TimeExpressionParser();
 
-									if ($va_facet_info['relative_to']) {
+									if ($va_facet_info['relative_to'] ?? null) {
 										if ($va_relative_execute_sql_data = $this->_getRelativeExecuteSQLData($va_facet_info['relative_to'], array_merge($va_facet_info, $pa_options))) {
 											$va_relative_to_join = $va_relative_execute_sql_data['relative_joins'];
 											$vs_relative_to_join = join("\n", $va_relative_to_join);
@@ -1836,7 +1836,7 @@
 										if (
 										    ($va_dates[0] <= (int)$va_dates[0] + 0.01010000000)
 										    &&
-										    ($va_facet_info['treat_before_dates_as_circa'] || $va_facet_info['treat_after_dates_as_circa'])
+										    (($va_facet_info['treat_before_dates_as_circa'] ?? false) || ($va_facet_info['treat_after_dates_as_circa'] ?? null))
 										) {
                                             $va_dates[0] = $va_dates['start'] = (int)$va_dates[0];
                                         }
@@ -7494,7 +7494,10 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 					$this->opo_ca_browse_cache->setResults($va_results);
 					$this->opo_ca_browse_cache->save();
 				}
-				if(($start = caGetOption('start', $pa_options, 0)) || ($limit = caGetOption('limit', $pa_options, null))) {
+				
+				$start = caGetOption('start', $pa_options, 0);
+				$limit = caGetOption('limit', $pa_options, null);
+				if($start || $limit) {
  					$va_results = array_slice($va_results, $start, $limit);
  				}
 			}
@@ -8210,7 +8213,6 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 		 */
 		public function getResultDesc(array $hits) : ?array {
 			$result_desc = [];
-			
 			foreach($hits as $id) {
 				if(isset($this->seach_result_desc[$id])) {
 					$result_desc[$id] = &$this->seach_result_desc[$id];
@@ -8218,7 +8220,6 @@ if (!($va_facet_info['show_all_when_first_facet'] ?? null) || ($this->numCriteri
 			}
 			
 			$o_search = new SearchEngine();
-			
 			return $o_search->resolveResultDescData($result_desc);
 		}
 		# ------------------------------------------------------

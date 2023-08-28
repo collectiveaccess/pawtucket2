@@ -1092,7 +1092,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 			$t_importer->setSetting($vs_k, $vs_v);
 		}
 		if ($source_url = caGetOption('sourceUrl', $pa_options, null)) {
-			$t_importer->setSetting('sourceUrl', $source_url);
+			$t_importer->setSetting('sourceUrl', urldecode($source_url));
 		}
 		$t_importer->insert();
 		
@@ -1722,7 +1722,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 			//
 			// Get data for current row
 			//
-			$va_row = $va_raw_row = array_replace($o_reader->getRow(), $va_environment);
+			$va_row = $va_raw_row = array_replace($o_reader->getRow() ?? [], $va_environment);
 			
 			// replace values (EXPERIMENTAL)
 			$va_row_with_replacements = $va_row;
@@ -4194,7 +4194,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 		$hierarchical_delimiter = caGetOption('hierarchicalDelimiter', $pa_options, null);
 		$pn_lookahead = caGetOption('lookahead', $pa_options, 0, array('castTo' => 'int'));
 		
-		if (preg_match('!^_CONSTANT_:[^:]+:(.*)$!', $pa_item['source'], $va_matches)) {
+		if (preg_match('!^_CONSTANT_:[^:]+:(.*)$!s', $pa_item['source'], $va_matches)) {
 			$vm_value = $va_matches[1];
 		} elseif(isset($pa_environment[$pa_item['source']])) {
 			$vm_value = $pa_environment[$pa_item['source']];
