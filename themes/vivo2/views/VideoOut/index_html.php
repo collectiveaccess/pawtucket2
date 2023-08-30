@@ -44,7 +44,7 @@
 							print "<div class='row'>";
 						}
 					
-						print "<div class='col-sm-6 col-md-4'><div class='resultTile'>".$vs_media;
+						print "<div class='col-sm-4'><div class='resultTile'>".$vs_media;
 						$vs_caption = $qr_res->getWithTemplate("<l><div class='caption'>".$vs_caption_template."</div></l>");
 						if($vs_caption){
 							print $vs_caption;

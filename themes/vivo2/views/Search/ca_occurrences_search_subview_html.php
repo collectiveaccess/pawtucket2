@@ -44,7 +44,7 @@
 	}
 	$va_access_values = caGetUserAccessValues($this->request);
 	$vs_sort_direction_control = $this->getVar("sortDirectionControl");
-	$vs_sort_direction_control = str_replace(array('<span class="glyphicon glyphicon-sort-by-alphabet" role="button" aria-label="Sort direction"></span>', '<span class="glyphicon glyphicon-sort-by-alphabet-alt" role="button" aria-label="Sort direction"></span>'), array('<span class="material-symbols-outlined">north</span>', '<span class="material-symbols-outlined">south</span>'), $vs_sort_direction_control);
+	$vs_sort_direction_control = str_replace(array('<span class="glyphicon glyphicon-sort-by-alphabet" aria-label="Sort direction" role="graphics-document"></span>', '<span class="glyphicon glyphicon-sort-by-alphabet-alt" aria-label="Sort direction" role="graphics-document"></span>'), array('<span class="material-symbols-outlined">north</span>', '<span class="material-symbols-outlined">south</span>'), $vs_sort_direction_control);
 	
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -72,7 +72,7 @@
 			}
 ?>
 			<div class='blockResults authorityBlock'>
-				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious" aria-label="previous" role="link" tabindex="0"><i class="fa fa-angle-left" role="button" aria-label="previous"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext" aria-label="next" role="link" tabindex="0"><i class="fa fa-angle-right" role="button" aria-label="next"></i></div>
+				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious" aria-label="previous" role="link" tabindex="0"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext" aria-label="next" role="link" tabindex="0"><i class="fa fa-angle-right"></i></div>
 				<div id='{{{block}}}Results' class='multiSearchResults'>
 					<div class='blockResultsScroller'>
 <?php

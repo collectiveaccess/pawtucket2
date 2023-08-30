@@ -22,6 +22,14 @@ a:hover{
 	color:#f18e00;
 }
 */
+.sr-only {
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
+}
 H1, h1, h2, H2, H3, h3, H4, h4, H5, h5{
 	text-transform:capitalize;
 }
@@ -87,6 +95,14 @@ hr{
 .navbar-brand{
 	width:175px;
 	padding-top: 0px;
+}
+#headerSearchInput:focus {
+	border: 1px dashed #999;
+	border-radius: 0px;
+}
+#headerSearchButton:focus {
+	border: 1px dashed #999;
+	border-radius: 0px;
 }
 @media (min-width:768px){
 	.navbar-brand{
@@ -385,6 +401,14 @@ body{
 	display: inline-block;
 	display:inline-block;
 }
+.bSearchWithin:focus, .btn-search-refine:focus {
+  border: 1px dashed #999 !important;
+  border-radius: 0px;
+}
+.bSearchWithin:focus, .btn-search-refine:focus {
+  border: 1px dashed #999 !important;
+  border-radius: 0px;
+}
 #bMorePanel{
 	left:0px;
 	right:auto;
@@ -537,6 +561,23 @@ body.frontContainer #footer{
 .front h2.highlights{
 	padding-bottom:30px;
 }
+.front .jcarousel-control-next, .front .jcarousel-control-prev{
+	color: #FFF;
+	background-color: #000;
+	height:auto;
+}
+.front .jcarousel-control-prev{
+	padding: 0px 10px 5px 7px;
+}
+.front .jcarousel-control-next{
+	padding: 0px 7px 5px 10px;
+}
+.front .jcarousel-pagination a {
+	color: #000;
+}
+.front .jcarousel-pagination a.active {
+	color: #FFF;
+}
 /* hp explore */
 .hpExplore{
 	padding-top:45px;
@@ -623,7 +664,7 @@ body.frontContainer #footer{
 .gallery .galleryDetailBottom {
 	border: 0px;
 	background-color: #f0f0f0;
-	margin-top: 30px;
+	margin-top: 50px;
 	padding-top: 30px;
 	padding-bottom: 30px;
 	margin-bottom: 0px;
@@ -838,6 +879,10 @@ body.frontContainer #footer{
 }
 .projectSitePage a{
 	text-decoration:underline;
+}
+.anchor{
+	position:relative;
+	top:-100px;
 }
 /* advanced search */
 @media (min-width:992px){

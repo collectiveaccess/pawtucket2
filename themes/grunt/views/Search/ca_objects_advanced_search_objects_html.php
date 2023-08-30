@@ -33,7 +33,7 @@
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<label for='ca_objects.date_container.date[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records of a particular date or date range.') ?>"><?php _p('Date range <i>(e.g. 1990-1992)</i>') ?></label>
+			<label for='ca_objects_date_container_date[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records of a particular date or date range.') ?>"><?php _p('Date range <i>(e.g. 1990-1992)</i>') ?></label>
 			{{{ca_objects.date_container.date%width=200px&height=1px&useDatePicker=0}}}
 		</div>
 	</div>
@@ -45,7 +45,7 @@
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<label for='ca_occurrence_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records from a particular program.') ?>"><?php _p('Program') ?></label>
+			<label for='ca_occurrences_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records from a particular program.') ?>"><?php _p('Program') ?></label>
 			{{{ca_occurrences.preferred_labels%restrictToTypes=program%width=200px}}}
 		</div>
 	</div>

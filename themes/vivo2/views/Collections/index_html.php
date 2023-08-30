@@ -64,7 +64,7 @@
 			}
 			
 			if ( $vn_i == 0) { print "<div class='row'>"; } 
-			print "<div class='col-sm-6'>".caDetailLink($this->request, "<div class='bgLightGray imgTile'><div class='row'><div class='col-sm-3'>".$vs_image."</div><div class='col-sm-9'><div class='imgTileText'><div class='imgTileTextTitle'>".$qr_collections->get("ca_collections.preferred_labels")."</div>".$vs_lang."</div></div></div></div>", "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";
+			print "<div class='col-sm-6'>".caDetailLink($this->request, "<div class='bgLightGray imgTile'><div class='row'><div class='col-sm-5 col-md-4 col-lg-3'>".$vs_image."</div><div class='col-sm-7 col-md-8 col-lg-9'><div class='imgTileText'><div class='imgTileTextTitle'>".$qr_collections->get("ca_collections.preferred_labels")."</div>".$vs_lang."</div></div></div></div>", "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";
 			$vn_i++;
 			if ($vn_i == 2) {
 				print "</div><!-- end row -->\n";

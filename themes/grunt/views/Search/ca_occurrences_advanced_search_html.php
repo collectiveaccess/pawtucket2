@@ -17,7 +17,7 @@
 	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<label for='ca_occurrence_preferred_labels_name' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to the names of programs, events, and projects.') ?>"><?php _p('Name') ?></label>
+			<label for='ca_occurrences_preferred_labels_name' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to the names of programs, events, and projects.') ?>"><?php _p('Name') ?></label>
 			{{{ca_occurrences.preferred_labels.name%width=220px}}}
 		</div>
 	</div>
@@ -27,17 +27,17 @@
 			{{{ca_occurrences.idno%width=210px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_occurrences_program_type' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to program types.') ?>"><?php _p('Program Type') ?></label>
+			<label for='ca_occurrences_program_type[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to program types.') ?>"><?php _p('Program Type') ?></label>
 			{{{ca_occurrences.program_type%height=1}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_occurrences.occurrence_date' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records of a particular date or date range.') ?>"><?php _p('Date range <i>(e.g. 1990-1992)</i>') ?></label>
+			<label for='ca_occurrences_occurrence_date[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records of a particular date or date range.') ?>"><?php _p('Date range <i>(e.g. 1990-1992)</i>') ?></label>
 			{{{ca_occurrences.occurrence_date%width=200px&height=1px&useDatePicker=0}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_occurrences_language' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to language.') ?>"><?php _p('Language') ?></label>
+			<label for='ca_occurrences_language[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to language.') ?>"><?php _p('Language') ?></label>
 			{{{ca_occurrences.language%height=1}}}
 		</div>
 	</div>
