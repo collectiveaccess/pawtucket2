@@ -97,6 +97,7 @@
 				{{{<ifdef code="ca_objects.date"><div class="unit"><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.date_note"><div class="unit"><label>Date Note</label><unit relativeTo="ca_objects.date_note" delimiter="<br/>">^ca_objects.date_note</unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.GMD"><div class="unit"><label>General Material Designation</label>^ca_objects.GMD%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.phys_desc"><div class="unit"><label>Physical Description</label>^ca_objects.phys_desc%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.oral_history_type"><div class="unit"><label>Oral History Type</label>^ca_objects.oral_history_type%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.theme"><div class="unit"><label>Themes</label>^ca_objects.theme%delimiter=,_</div></ifdef>}}}
 				
