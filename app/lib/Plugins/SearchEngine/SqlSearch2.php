@@ -287,7 +287,7 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 				
 	 				$acc = array_intersect_key($acc, $hits);
 	 				
-	 				if($this->get_result_desc_data ) {
+	 				if($this->get_result_desc_data) {
 						foreach($acc as $k => $v) {
 							if(isset($hits[$k])) {
 								$acc[$k]['index_ids'] = array_unique(array_merge($acc[$k]['index_ids'], $hits[$k]['index_ids']));
@@ -799,12 +799,11 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 				$params[] = $ap['relationship_type_ids'];
 			}
 			$qr_res = $this->db->query("
-				SELECT swi.index_id, swi.row_id, SUM(swi.boost) boost
+				SELECT swi.index_id, swi.row_id, swi.boost
 				FROM ca_sql_search_word_index swi
 				INNER JOIN ca_sql_search_words AS sw ON sw.word_id = swi.word_id
 				WHERE
 					swi.table_num = ? AND swi.field_table_num = ? AND swi.field_num = 'COUNT' AND sw.word BETWEEN ? AND ? {$rel_type_sql}
-				GROUP BY swi.row_id
 			", $params);
 			return $this->_arrayFromDbResult($qr_res);
 		}
@@ -921,6 +920,18 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 			$qr_res = $this->db->query($qinfo['sql'], $params);
 			
 			$row_ids = $this->_arrayFromDbResult($qr_res);
+			unset($ap['element_info']);
+			
+			foreach($row_ids as $row_id => $row_info) {
+				$row_ids[$row_id]['access_point'] = [
+					'ap' => $ap['access_point'],
+					'table' => Datamodel::getTableName($ap['table_num']),
+					'field_row_id' => $row_id,
+					'field_num' => $ap['field_num'],
+					'word' => $text
+				];
+			}
+			
 			if ((int)$ap['table_num'] === (int)$subject_tablenum) {
 				return $row_ids;
 			}
@@ -1867,7 +1878,13 @@ class WLPlugSearchEngineSqlSearch2 extends BaseSearchPlugin implements IWLPlugSe
 	 		}
 	 		$hits[$row_id]['boost'] += ($vals['boost'][$i] ?? 0);
 	 		
-	 		if(($this->get_result_desc_data  && sizeof($hits[$row_id]['index_ids']) < 3)) {	// TODO: make index_id cap configurable
+	 		if(!$vals['index_id'][$i]) { continue; }
+	 		
+	 		if(($max_index_count = (int)$this->search_config->get('search_result_description_maximum_index_matches')) < 1) {
+	 			$max_index_count = 3;
+	 		}
+	 		
+	 		if(($this->get_result_desc_data  && sizeof($hits[$row_id]['index_ids']) < $max_index_count)) {
 	 			$hits[$row_id]['index_ids'][] = $vals['index_id'][$i];
 	 		}
 	 	}

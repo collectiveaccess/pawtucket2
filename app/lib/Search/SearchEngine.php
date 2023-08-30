@@ -43,6 +43,7 @@ require_once(__CA_LIB_DIR__."/Search/Common/Parsers/LuceneSyntaxParser.php");
 class SearchEngine extends SearchBase {
 
 	private $opn_tablenum;
+	protected $ops_tablename;
 	private $opa_tables;
 	// ----
 	
@@ -203,24 +204,26 @@ class SearchEngine extends SearchBase {
 				}
 			}
 		}
-		
+
+		$t_table = Datamodel::getInstanceByTableName($this->ops_tablename, true);
+		$vs_idno_fld = $t_table->getProperty('ID_NUMBERING_ID_FIELD');
+
         if ((is_array($va_idno_regexs = $this->opo_search_config->get('idno_regexes'))) && (!preg_match("/".$this->ops_tablename.".{$vs_idno_fld}/", $ps_search))) {
-			if (isset($va_idno_regexs[$this->ops_tablename]) && is_array($va_idno_regexs[$this->ops_tablename])) { 
+			if (isset($va_idno_regexs[$this->ops_tablename]) && is_array($va_idno_regexs[$this->ops_tablename])) {
 				foreach($va_idno_regexs[$this->ops_tablename] as $vs_idno_regex) {
-					if ((@preg_match("/".caQuoteRegexDelimiter($vs_idno_regex, "/")."/", $ps_search, $va_matches)) && ($t_instance = Datamodel::getInstanceByTableName($this->ops_tablename, true)) && ($vs_idno_fld = $t_instance->getProperty('ID_NUMBERING_ID_FIELD'))) {
+					if (@preg_match( "/" . caQuoteRegexDelimiter( $vs_idno_regex, "/" ) . "/", $ps_search,$va_matches ) && $t_table && $vs_idno_fld) {
 						$ps_search = str_replace($va_matches[0], $this->ops_tablename.".{$vs_idno_fld}:\"".$va_matches[0]."\"", $ps_search);
 					}
 				}
 			}
 		}
-		
+
 		$vb_no_cache = isset($options['no_cache']) ? $options['no_cache'] : false;
 		unset($options['no_cache']);
 
 		$vn_cache_timeout = (int) $this->opo_search_config->get('cache_timeout');
 		if($vn_cache_timeout == 0) { $vb_no_cache = true; } // don't try to cache if cache timeout is 0 (0 means disabled)
-		
-		$t_table = Datamodel::getInstanceByTableName($this->ops_tablename, true);
+
 		$vs_cache_key = md5($ps_search."/".serialize($this->getTypeRestrictionList($options))."/".serialize($this->opa_result_filters));
 
 		$o_cache = new SearchCache();
@@ -1307,6 +1310,26 @@ class SearchEngine extends SearchBase {
 		}
 		
 		return $va_fields;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Return array describing how _search facet matched found records
+	 * To avoid a significant performance hit details are returned only for ids of hits passed in 
+	 * the $hits parameter rather than for the entire result set.
+	 *
+	 * @oaram array $hits List of ids to return matching data for
+	 * 
+	 * @return array
+	 */
+	public function getResultDesc(array $hits) : ?array {
+		$result_desc = [];
+		foreach($hits as $id) {
+			if(isset($this->seach_result_desc[$id])) {
+				$result_desc[$id] = &$this->seach_result_desc[$id];
+			}
+		}
+		
+		return $this->resolveResultDescData($result_desc);
 	}
 	# ------------------------------------------------------------------
 	/**
