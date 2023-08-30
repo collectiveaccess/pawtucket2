@@ -37,7 +37,7 @@
 	<div class="col-sm-3">
 		<H1>Newsfilm Search</H1>
 		<div>
-			<form method="post" action="http://dbsmaint.galib.uga.edu/cgi/news">
+			<form method="post" action="https://newsfilm.libs.uga.edu/cgi/news">
 				<input type="hidden" name="action" value="query">
 				<input type="text" name="term_a" value="" size="28">
 				<div style="height:10px"></div>
@@ -104,7 +104,7 @@
 				<button class="btn btn-primary space-above" id="searchButton" name="rows" type="submit" value="20">Search</button>
 			</form>
 			<div style="height:10px"></div>
-			<p>For more search options, go directly to the <a href="http://dbsmaint.galib.uga.edu/cgi/news">Newsfilm Database</a></p>			
+			<p>For more search options, go directly to the <a href="https://newsfilm.libs.uga.edu/cgi/news">Newsfilm Database</a></p>			
 			<br/>
 			<p><strong>Note:</strong> The WALB-TV Newsfilm Collection is not included in the Newsfilm Database.</p>
 		</div>		

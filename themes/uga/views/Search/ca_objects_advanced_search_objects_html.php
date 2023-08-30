@@ -114,7 +114,7 @@
 			
 			<H2>Newsfilm Database Search</H2>
 			
-			<form method="post" action="http://dbsmaint.galib.uga.edu/cgi/news">
+			<form method="post" action="https://newsfilm.libs.uga.edu/cgi/news">
 			<input type="hidden" name="action" value="query">
 			<input type="text" name="term_a" value="" size="37" placeholder="Enter Keywords">
 			<div style="height:10px"></div>
@@ -177,7 +177,7 @@
 			<option value="_ge">Genre phrase</option>
 			<option value="up">Update Date</option>
 			</select>
-			<h5><a href="http://dbsmaint.galib.uga.edu/cgi/news">Search the Newsfilm Database</a>
+			<h5><a href="https://newsfilm.libs.uga.edu/cgi/news">Search the Newsfilm Database</a>
 			</h5>
 			<div style="height:10px"></div>
 			<button type="submit" class="btn btn-primary">Search</button>

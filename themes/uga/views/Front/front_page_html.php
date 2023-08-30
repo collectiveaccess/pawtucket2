@@ -98,7 +98,7 @@
 					
 				<div class="nwidget layout block title-box clearfix " data-additional-classes="" data-title="Search the News Film Collections">				
 					<h2>Search Newsfilm Collection</h2>	
-					 <form method="post" action="http://dbsmaint.galib.uga.edu/cgi/news">
+					 <form method="post" action="https://newsfilm.libs.uga.edu/cgi/news">
 						<input type="hidden" name="action" value="query">
 						<input type="text" name="term_a" value="" size="30">
 						<div style="height:10px"></div>
