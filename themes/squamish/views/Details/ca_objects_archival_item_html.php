@@ -89,6 +89,7 @@
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.display_date"><div class="unit"><label>Date</label>^ca_objects.display_date%delimiter=,_</div></ifdef>}}}
 				{{{<ifnotdef code="ca_objects.display_date"><ifdef code="ca_objects.date"><div class="unit"><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef></ifnotdef>}}}
+				{{{<ifdef code="ca_objects.date_note"><div class="unit"><label>Date Note</label><unit relativeTo="ca_objects.date_note" delimiter="<br/>">^ca_objects.date_note</unit></div></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.GMD"><div class="unit"><label>General Material Designation</label>^ca_objects.GMD%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.phys_desc"><div class="unit"><label>Physical Description</label>^ca_objects.phys_desc</div></ifdef>}}}
