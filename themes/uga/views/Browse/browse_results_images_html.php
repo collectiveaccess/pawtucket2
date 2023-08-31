@@ -139,9 +139,10 @@
 					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 				}
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
-
-				$excerpts = caTextExcerptForSearchResult($vn_id, $result_desc, ['maxExcerpts' => 1]);
-				$vs_expanded_info .= join("<br/>", $excerpts);
+								
+				if($excerpts = caTextExcerptForSearchResult($vn_id, $result_desc, ['maxExcerpts' => 1])) {
+					$vs_expanded_info .= join("<br/>", $excerpts);
+				}
 
 				print "
 	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
