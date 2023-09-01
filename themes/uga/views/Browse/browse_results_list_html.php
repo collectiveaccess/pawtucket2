@@ -163,7 +163,7 @@
 					}
 
 				$excerpts = caTextExcerptForSearchResult($vn_id, $result_desc, ['maxExcerpts' => 1]);
-				$result_desc_excerpt .= join("<br/>", $excerpts);
+				$result_desc_excerpt = join("<br/>", $excerpts);
 								$vs_result_output = "
 		<div class='bResultListItemCol col-xs-12'>
 			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
