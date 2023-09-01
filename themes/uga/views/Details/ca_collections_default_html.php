@@ -10,7 +10,7 @@
 	$vs_key = $this->getVar('key');
 	$vs_view = $this->getVar('view');
 	
-	$allowed_tags = ['p', 'b', 'i', 'em', 'strong', 'u'];
+	$allowed_tags = ['p', 'b', 'i', 'em', 'strong', 'u', 'a'];
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -84,7 +84,7 @@
 						}
 
 					if ($vs_external = $t_item->get('ca_collections.relatedExternalCollections')) {
-                                                print "<div class='unit'><span class='label'>Extent: </span>".strip_tags($vs_external, $allowed_tags)."</div>";
+                                                print "<div class='unit'><span class='label'>Related External Collections: </span>".strip_tags($vs_external, $allowed_tags)."</div>";
                                         }
 					if ($vs_provenance = $t_item->get('ca_collections.collectionProvenance')) {
                                                 print "<div class='unit'><span class='label'>Provenance: </span>".strip_tags($vs_provenance, $allowed_tags)."</div>";
