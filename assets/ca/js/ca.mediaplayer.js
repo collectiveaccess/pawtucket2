@@ -111,12 +111,15 @@ var caUI = caUI || {};
 						that.isPlaying[playerName] = true;
 						that.players[playerName].play();
 					} else {
+						jQuery("#" + playerName).css("opacity", 0.2);
 						that.players[playerName].on('canplaythrough', (event) => {
 							if(that.isPlaying[playerName]) { return; }
 							that.isPlaying[playerName] = true;
 							
 							that.players[playerName].currentTime = t;
 							that.players[playerName].play();
+							
+							jQuery("#" + playerName).css("opacity", 1.0);
 						});
 					}
 					break;
