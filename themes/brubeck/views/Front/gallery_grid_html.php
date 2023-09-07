@@ -64,7 +64,7 @@
 	if(is_array($va_sets) && sizeof($va_sets)){
 ?>
 
-<div class="row">
+<div class="container"><div class="row">
 	<div class="col-sm-12 col-md-8 col-md-offset-2"> 
 		<H2><?php print $section_name; ?></H2>
 
@@ -77,10 +77,11 @@
 							print "<div class='row'>";
 						}
 						print "<div class='col-sm-3 col-xs-6'>";
-						print caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id);
+						$vs_caption = "";
 						if($va_set["name"]){
-							print "<div class='frontGridCaption'>".caNavLink($this->request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</div>"; 
+							$vs_caption = "<div class='frontGridCaption'>".$va_set["name"]."</div>"; 
 						}
+						print caNavLink($this->request, $va_first_item["representation_tag"].$vs_caption, "", "", "Gallery", $vn_set_id);
 						print "</div>";						
 						$i++;
 						$vn_col++;
@@ -102,7 +103,7 @@
 </div>
 		
 	</div>
-</div>
+</div></div>
 
 <?php
 	}

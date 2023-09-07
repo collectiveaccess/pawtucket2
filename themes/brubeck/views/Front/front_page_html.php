@@ -61,7 +61,7 @@
 <?php
 	}
 ?>
-	<div class="row hpExplore bgLightGray">
+	<div class="container"><div class="row hpExplore bgLightGray">
 		<div class="col-md-12 col-lg-8 col-lg-offset-2">
 		<H2 class="frontSubHeading text-center">Explore The Collection</H2>
 
@@ -92,7 +92,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div></div>
 
 <?php
 

@@ -436,6 +436,9 @@ body.frontContainer #footer{
 .frontSlide .frontSlideCaption{
 	font-weight:300;
 }
+.frontSlide .frontSlideCaption a:hover{
+	color:#FFF;
+}
 .front .jcarousel-control-next, .front .jcarousel-control-prev{
 	background-color: #0a4ba0;
 }
@@ -661,6 +664,12 @@ body.frontContainer #footer{
 	background-repeat:no-repeat;
 	background-position:50%;
 	box-shadow: 0 2px 14px 0 rgba(0,0,0,.3);
+	opacity:1;
+}
+.hpExploreBox a:hover .hpExploreBoxImage {
+	box-shadow: 0 2px 14px 0 rgba(0,0,0,.8);
+	opacity:.9;
+	transition: all .4s;
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage1{
 	background-image: url('../graphics/tours_landing.jpg');
@@ -675,7 +684,7 @@ body.frontContainer #footer{
 	padding: 15px 13px 22px;
 	text-align:center;
 }
-.hpExploreBox .hpExploreBoxTitle, .hpExploreBox .hpExploreBoxTitle a {
+.hpExploreBox .hpExploreBoxTitle, .hpExploreBox .hpExploreBoxTitle a, a .frontGridCaption, .frontGridCaption a {
 	font-size:20px;
 	line-height:28px;
 	color:#000;
@@ -686,7 +695,26 @@ body.frontContainer #footer{
 .hpExploreBox .hpExploreBoxTitle a:hover {
 	text-decoration:none;
 }
-
+.frontGridCaption{
+	text-align:center
+}
+a .frontGridCaption, .frontGridCaption a {
+	font-size:16px;
+	line-height:30px;
+	color:#000;
+	text-transform:none;
+	margin-bottom:6px;
+	font-family: 'Poppins', sans-serif;
+}
+.frontGrid a img{
+	box-shadow: 0 2px 14px 0 rgba(0,0,0,.3);
+	opacity:1;
+}
+.frontGrid a:hover img{
+	box-shadow: 0 2px 14px 0 rgba(0,0,0,.7);
+	opacity:.9;
+	transition: all .4s;
+}
 /* gallery */
 @media(max-width:768px){
 	.galleryList{
@@ -890,9 +918,11 @@ a.readmore-js-toggle {
 	border: 1px solid #999;
 }
 /* Featured Listing */
-.featuredCallOut{
-	display: flex;
-	align-items: center;
+@media(min-width:992px){
+	.featuredCallOut{
+		display: flex;
+		align-items: center;
+	}
 }
 .featuredHeaderImage{
 	padding-left:0px;
@@ -941,6 +971,9 @@ a.readmore-js-toggle {
 	color:#000;
 	font-size: 20px;
 	padding-top:8px;
+	position: relative;
+	right: 0px;
+	top: 0px;
 }
 .featuredIntro{
 	color: #FFF;
@@ -960,6 +993,7 @@ a.readmore-js-toggle {
 @media(max-width:991px){
 	.featuredIntro{
 		padding-bottom:50px;
+		padding-top: 50px;
 	}
 }
 

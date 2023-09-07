@@ -71,7 +71,7 @@
 					<?php print caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id"))); ?>
 <?php					
 					if ($vn_pdf_enabled) {
-						print " ".caDetailLink($this->request, "<span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span> Download as PDF", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
+						print " ".caDetailLink($this->request, "<span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span> Download as PDF", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
 					}
 ?>
 				</div>
