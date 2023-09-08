@@ -77,6 +77,46 @@ function caExportFormatForTemplate(string $table, string $template) : ?string {
 }
 # ----------------------------------------
 /**
+ *
+ */
+function caExportFileInfoForTemplate(string $table, string $template) : ?string {
+	switch(substr($template, 0, 5)) {
+		case '_pdf_':
+			return ['mimetype' => 'application/pdf', 'format' => 'PDF', 'extension' => 'pdf'];
+		case '_tab_':
+			return ['mimetype' => 'text/tab-separated-values', 'format' => 'TAB', 'extension' => 'tab'];
+		case '_csv_':
+			return ['mimetype' => 'text/csv', 'format' => 'CSV', 'extension' => 'csv'];;
+	}
+	switch(substr($template, 0, 6)) {
+		case '_xlsx_':
+			return ['mimetype' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'format' => 'EXCEL', 'extension' => 'xlsx'];
+		case '_docx_':
+			return ['mimetype' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'format' => 'Word', 'extension' => 'docx'];
+	}
+
+	$config = Configuration::load();
+	$export_config = $config->getAssoc('export_formats');
+	
+	if (is_array($export_config) && is_array($export_config[$table]) && is_array($export_config[$table][$template])) {
+		
+		switch($export_config[$table][$template]['type']) {
+			case 'xlsx':
+				return ['mimetype' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'format' => 'EXCEL', 'extension' => 'xlsx'];
+				break;
+			case 'csv':
+				return ['mimetype' => 'text/csv', 'format' => 'CSV', 'extension' => 'csv'];;
+				break;
+			case 'tab':
+				return ['mimetype' => 'text/tab-separated-values', 'format' => 'TAB', 'extension' => 'tab'];
+				break;
+		}
+	}
+	return null;
+}
+
+# ----------------------------------------
+/**
  * Export instance as PDF using template
  * 
  * @param RequestHTTP $request
@@ -234,7 +274,7 @@ function caExportViewAsPDF($view, $template_identifier, $output_filename, $optio
 		$vb_printed_properly = caExportContentAsPDF($vs_content, $template_info, $output_filename, $options);
 	} catch (Exception $e) {
 		$vb_printed_properly = false;
-		throw new ApplicationException(_t("Could not generate PDF"));
+		throw new ApplicationException(_t("Could not generate PDF: %1", $e->getMessage()));
 	}
 	
 	return $vb_printed_properly;
