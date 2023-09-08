@@ -92,6 +92,18 @@
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="interviewee,interviewer,knowledge_sharer"><div class="unit"><label>Speakers</label>
 						<unit relativeTo="ca_entities" restrictToRelationshipTypes="interviewee,interviewer,knowledge_sharer" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>
 					</div></ifcount>}}}
+<?php
+				$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "excludeRelationshipTypes" => array("interviewee", "interviewer", "knowledge_sharer")));
+				if(is_array($va_entities) && sizeof($va_entities)){
+					$va_entities_by_type = array();
+					foreach($va_entities as $va_entity_info){
+						$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
+					}
+					foreach($va_entities_by_type as $vs_type => $va_entity_links){
+						print "<div class='unit'><label>".$vs_type.((sizeof($va_entity_links) > 1) ? "s" : "")."</label>".join(", ", $va_entity_links)."</div>";
+					}
+				}
+?>
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.date"><div class="unit"><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef>}}}
