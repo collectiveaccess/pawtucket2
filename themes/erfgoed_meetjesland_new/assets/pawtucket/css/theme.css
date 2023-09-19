@@ -898,13 +898,17 @@ div.caMediaOverlayControls{
 	object-fit: initial;
 	margin: 0px;
 }
-#pageArea.staticPage .halfWidth img{
-	width:50%;
-	height:auto;
-	max-height: none;
-	object-fit: initial;
-	margin: 0px;
+#pageArea.staticPage .halfWidth{
 	text-align:center;
+}
+@media(min-width:500px){
+	#pageArea.staticPage .halfWidth img{
+		width:50%;
+		height:auto;
+		max-height: none;
+		object-fit: initial;
+		margin: 0px;
+	}
 }
 .staticPage p, .staticPage .bodytext{
 	font-size:18px;
