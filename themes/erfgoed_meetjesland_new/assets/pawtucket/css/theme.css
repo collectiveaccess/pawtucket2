@@ -894,6 +894,17 @@ div.caMediaOverlayControls{
 #pageArea.staticPage .fullWidth img{
 	width:100%;
 	height:auto;
+	max-height: none;
+	object-fit: initial;
+	margin: 0px;
+}
+#pageArea.staticPage .halfWidth img{
+	width:50%;
+	height:auto;
+	max-height: none;
+	object-fit: initial;
+	margin: 0px;
+	text-align:center;
 }
 .staticPage p, .staticPage .bodytext{
 	font-size:18px;
