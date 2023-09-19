@@ -879,13 +879,16 @@ div.caMediaOverlayControls{
 #pageArea.staticPage img{
 	width:100%;
 	height:auto;
+	margin-bottom:30px;
 }
 @media(min-width:500px){
 	#pageArea.staticPage img{
-		width:40%;
-		height:auto;
-		float:right;
-		margin:20px 0px 20px 30px;	
+		width: 40%;
+		height: auto;
+		max-height: 400px;
+		object-fit: contain;
+		margin-right: 4%;
+		margin-left: 4%;
 	}
 }
 #pageArea.staticPage .fullWidth img{
