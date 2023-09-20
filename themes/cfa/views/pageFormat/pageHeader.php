@@ -151,8 +151,11 @@ $va_access_values = caGetUserAccessValues($this->request);
     <div class="layout-fixed-right dim-down">
             <div>
 				<ul id="menu-main" class="nav header-nav horizontal main nav-color">
-					<li id="menu-item-28" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-28">
+					<!-- <li id="menu-item-28" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-28">
 						<a href="http://cfa.whirl-i-gig.com:8084/index.php/Browse/Collections">Collections</a>
+					</li> -->
+					<li id="menu-item-28" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-28">
+						<a href="https://cfarchives.wpengine.com/collections">Collections</a>
 					</li>
 					<li id="menu-item-31" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-31">
 						<a href="http://cfa.whirl-i-gig.com:8084/index.php/Browse/Objects">Watch</a>
