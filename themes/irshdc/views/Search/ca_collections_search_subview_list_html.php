@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Search/ca_entities_search_subview_html.php : 
+ * themes/default/views/Search/ca_collections_search_subview_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -28,6 +28,7 @@
  
 	$qr_results 		= $this->getVar('result');
 	$va_block_info 		= $this->getVar('blockInfo');
+	$va_options 		= $va_block_info["options"];
 	$vs_block 			= $this->getVar('block');
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
@@ -35,22 +36,19 @@
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
-	$o_config = $this->getVar("config");
+	$va_access_values = caGetUserAccessValues($this->request);
 	$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
-
+	$o_config = caGetSearchConfig();
+	
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right sortValues">
 <?php
 				if(in_array($vs_block, $va_browse_types)){
-					$vs_default_view = "images";
-					if($vs_block == "communities"){
-						$vs_default_view = "list";
-					}
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" aria-label="list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search), 'view' => $vs_default_view)); ?></span> | 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list" aria-label="list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search), 'view' => 'images')); ?></span> | 
 <?php
 				}
 ?>
@@ -79,7 +77,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
-				print "<div class='entitiesResult authorityResult'>".$qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true))."</div>";
+				print "<div class='collectionsResult authorityResult'>".$qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true))."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i >= $vn_items_per_column) {
@@ -97,13 +95,9 @@
 					</div><!-- end blockResultsScroller -->
 				</div>
 			</div><!-- end blockResults -->
-<?php
-			if ($qr_results->numHits() > 3) {
-?>			
-				<div class='allLink'><?php print caNavLink($this->request, 'See '.($qr_results->numHits() - 3)." more ".$va_block_info['displayName'].($qr_results->numHits() == 4 ? ' result' : ' results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search));?></div>
-<?php
-			}
-?>			
+		
+			<div class='allLink'><?php print caNavLink($this->request, 'all '.$va_block_info['displayName'].' results', '', '', 'Search', '{{{block}}}', array('search' => $vs_search));?></div>
+			
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery('#{{{block}}}Results').hscroll({
