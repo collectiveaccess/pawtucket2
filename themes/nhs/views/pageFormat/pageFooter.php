@@ -32,10 +32,10 @@
 		<div>
 			<a href="http://newporthistory.org"><?php print caGetThemeGraphic($this->request, 'Stacked_NHS_Tag_White.png'); ?></a>
 			<ul class="list-inline pull-right social">
-				<li><a href="https://www.facebook.com/NewportHistory" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
-				<li><a href="https://twitter.com/newporthistory" target="_blank"><i class="fa fa-twitter"></i></a></li>
-				<li><a href="http://instagram.com/newporthistory/" target="_blank"><i class="fa fa-instagram"></i></a></li>
-				<li><a href="https://www.youtube.com/user/NewportHistory" target="_blank"><i class="fa fa-youtube-play"></i></a></li>
+				<li><a href="https://www.facebook.com/NewportHistory" target="_blank"><i class="fab fa-facebook-square"></i></a></li>
+				<li><a href="https://twitter.com/newporthistory" target="_blank"><i class="fab fa-twitter"></i></a></li>
+				<li><a href="http://instagram.com/newporthistory/" target="_blank"><i class="fab fa-instagram"></i></a></li>
+				<li><a href="https://www.youtube.com/user/NewportHistory" target="_blank"><i class="fab fa-youtube"></i></a></li>
 			</ul>
 			<div class="address">
 				Newport Historical Society

@@ -2590,6 +2590,9 @@ class BaseModel extends BaseObject {
 					case (FT_HISTORIC_DATERANGE):
 						$start_field_name = $va_attr["START"];
 						$end_field_name = $va_attr["END"];
+						
+						if(!isset($this->_FIELD_VALUES[$start_field_name])) { $this->_FIELD_VALUES[$start_field_name] = null; }
+						if(!isset($this->_FIELD_VALUES[$end_field_name])) { $this->_FIELD_VALUES[$end_field_name] = null; }
 
 						if (
 							!$va_attr["IS_NULL"]
@@ -2628,6 +2631,9 @@ class BaseModel extends BaseObject {
 					case (FT_TIMERANGE):
 						$start_field_name = $va_attr["START"];
 						$end_field_name = $va_attr["END"];
+						
+						if(!isset($this->_FIELD_VALUES[$start_field_name])) { $this->_FIELD_VALUES[$start_field_name] = null; }
+						if(!isset($this->_FIELD_VALUES[$end_field_name])) { $this->_FIELD_VALUES[$end_field_name] = null; }
 						
 						if (
 							!$va_attr["IS_NULL"]
@@ -6090,7 +6096,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 					if(in_array($field, ['access', 'status'], true) && !is_numeric($v)) {
 						// transform entries to item values
 						$t_list = Datamodel::getInstance('ca_lists', true);
-						if (($item_id = ca_lists::getItemID($va_attr['LIST'], $v)) || ($item_id = $t_list->getItemIDFromListByLabel($va_attr['LIST'], $v))) { // 
+						if (isset($va_attr['LIST']) && (($item_id = ca_lists::getItemID($va_attr['LIST'], $v)) || ($item_id = $t_list->getItemIDFromListByLabel($va_attr['LIST'], $v)))) { // 
 							$item = $t_list->getItemFromListByItemID($va_attr['LIST'], $item_id);
 							$v = $item['item_value'] ?? null;
 						}
@@ -10831,6 +10837,7 @@ $pa_options["display_form_field_tips"] = true;
 	 * @return bool
 	 */
 	public function changeTagRank($pn_relation_id, $pn_rank) {
+		global $g_request;
 		if (!($vn_row_id = $this->getPrimaryKey())) { return null; }
 		
 		$t_ixt = new ca_items_x_tags($pn_relation_id);
@@ -10847,8 +10854,8 @@ $pa_options["display_form_field_tips"] = true;
 			return false;
 		}
 		
-		if ($pn_user_id) {
-			if ($t_ixt->get('user_id') != $pn_user_id) {
+		if ($g_request && $g_request->isLoggedIn() && ($user_id = $g_request->getUserID())) {
+			if ($t_ixt->get('user_id') != $user_id) {
 				$this->postError(2820, _t('Tag was not created by specified user'), 'BaseModel->changeTagAccess()', 'ca_item_tags');
 				return false;
 			}

@@ -45,7 +45,7 @@
 		</div>
 		<div class="advancedSearchField">
 			Collection <br/>
-			{{{ca_collections.preferred_labels%width=300px}}}
+			{{{collection%width=300px}}}
 		</div>
 	</div>	
 	

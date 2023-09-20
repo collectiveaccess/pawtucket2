@@ -51,7 +51,7 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$vn_result_size 	= $qr_res->numHits();
 	
 	
 	$va_options			= $this->getVar('options');
@@ -95,6 +95,8 @@ if (!$vb_ajax) {	// !ajax
 		<H1>
 <?php
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+			# --- show gear dd?
+			if(($vs_sort_control_type == 'dropdown') || (($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))) || (is_array($va_export_formats) && sizeof($va_export_formats))){
 ?>		
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear"></i></a>
@@ -127,10 +129,6 @@ if (!$vb_ajax) {	// !ajax
 <?php
 						}
 					}
-					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
-						print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-						print "<li class='divider'></li>\n";
-					}
 					if(is_array($va_export_formats) && sizeof($va_export_formats)){
 						// Export as PDF links
 						print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
@@ -144,6 +142,7 @@ if (!$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
+			}
 			if(is_array($va_facets) && sizeof($va_facets)){
 ?>
 			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
@@ -154,32 +153,6 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
-		<H5>
-<?php
-		if (sizeof($va_criteria) > 0) {
-			$i = 0;
-			foreach($va_criteria as $va_criterion) {
-				print "<strong>".$va_criterion['facet'].':</strong>';
-				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
-				}else{
-					print ' '.$va_criterion['value'];
-					$vs_search = $va_criterion['value'];
-				}
-				$i++;
-				if($i < sizeof($va_criteria)){
-					print " ";
-				}
-				$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
-				if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
-					$t_authority_table = new $va_current_facet["table"];
-					$t_authority_table->load($va_criterion['id']);
-					$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
-				}
-			}
-		}
-?>		
-		</H5>
 <?php
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";

@@ -600,13 +600,15 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		$t_instance = null;
 		$vs_table = get_called_class();
 		
+		$include_deleted = caGetOption('includeDeleted', $pa_options, false);
+		
 		$t_instance = new $vs_table;
 		if (!is_array($pa_values)) {
 			if ((int)$pa_values > 0) { 
 				$pa_values = array($t_instance->primaryKey() => (int)$pa_values);
 				if (!isset($pa_options['returnAs'])) { $pa_options['returnAs'] = 'firstModelInstance'; }
 			} elseif($pa_values === '*') {
-				$pa_values = (caGetOption('includeDeleted', $pa_options, false) || !$t_instance->hasField('deleted')) ? [] : ['deleted' => 0];
+				$pa_values = ($include_deleted || !$t_instance->hasField('deleted')) ? [] : ['deleted' => 0];
 			}
 		}
 		
@@ -661,14 +663,14 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 	
 		// Check for intrinsics in value array
 		if (is_array($pa_values) && !sizeof($pa_values)) { 
-			return parent::find($t_instance->hasField('deleted') ? ['deleted' => 0] : '*', $pa_options);
+			return parent::find((!$include_deleted && $t_instance->hasField('deleted')) ? ['deleted' => 0] : '*', $pa_options);
 		}
 		$vb_has_simple_fields = false;
 		foreach ($pa_values as $vs_field => $va_field_values) {
 			foreach ($va_field_values as  $va_field_value) {
 				$vs_op = $va_field_value[0];
 				$vm_value = $va_field_value[1];
-				if ($vm_value === '*') { return parent::find($t_instance->hasField('deleted') ? ['deleted' => 0] : '*', $pa_options); }
+				if ($vm_value === '*') { return parent::find((!$include_deleted && $t_instance->hasField('deleted')) ? ['deleted' => 0] : '*', $pa_options); }
 				if ($t_instance->hasField($vs_field)) { $vb_has_simple_fields = true; break; }
 			}
 		}
@@ -1114,7 +1116,7 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 			$va_sql_params[] = $pa_check_access;
 		}
 					
-		$vs_deleted_sql = ($t_instance->hasField('deleted')) ? "({$vs_table}.deleted = 0)" : '';
+		$vs_deleted_sql = (!$include_deleted && $t_instance->hasField('deleted')) ? "({$vs_table}.deleted = 0)" : '';
 		
 		$va_sql = [];
 		if ($vs_wheres = join(" {$ps_boolean} ", $va_label_sql)) { $va_sql[] = "({$vs_wheres})"; }
@@ -2517,7 +2519,8 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		// generate list of inital form values; the label bundle Javascript call will
 		// use the template to generate the initial form
 		$va_inital_values = array();
-		$va_new_labels_to_force_due_to_error = array();
+		
+		$va_new_labels_to_force_due_to_error = [];
 		
 		if ($this->getPrimaryKey()) {
 			if (is_array($va_labels) && sizeof($va_labels)) {
@@ -2554,7 +2557,17 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 		$o_view->setVar('batch', (bool)(isset($pa_options['batch']) && $pa_options['batch']));
 		
 		$forced_values = caGetOption('forcedValues', $pa_options, null);
-		$o_view->setVar('new_labels', array_merge($va_new_labels_to_force_due_to_error, $forced_values['preferred_labels'] ?? []));
+		
+		foreach($forced_values['preferred_labels'] ?? [] as $fpl) {
+			if(isset($fpl['label_id'])) {
+				$va_inital_values[$fpl['label_id']] = $fpl;
+				unset($fpl['label_id']);
+			} else {
+				$va_new_labels_to_force_due_to_error[] = $fpl;
+			}
+		}
+		
+		$o_view->setVar('new_labels', $va_new_labels_to_force_due_to_error);
 		$o_view->setVar('label_initial_values', $va_inital_values);
 		
 		$bundle_preview = '';
@@ -2653,12 +2666,22 @@ class LabelableBaseModelWithAttributes extends BaseModelWithAttributes implement
 			}
 		}
 		
+		$va_new_labels_to_force_due_to_error = [];
 		if (is_array($this->opa_failed_nonpreferred_label_inserts) && sizeof($this->opa_failed_nonpreferred_label_inserts)) {
 			$va_new_labels_to_force_due_to_error = $this->opa_failed_preferred_label_inserts;
 		}
 		
 		$forced_values = caGetOption('forcedValues', $pa_options, null);
-		$o_view->setVar('new_labels', array_merge($va_new_labels_to_force_due_to_error, $forced_values['nonpreferred_labels'] ?? []));
+		foreach($forced_values['nonpreferred_labels'] ?? [] as $fpl) {
+			if(isset($fpl['label_id'])) {
+				$va_inital_values[$fpl['label_id']] = $fpl;
+				unset($fpl['label_id']);
+			} else {
+				$va_new_labels_to_force_due_to_error[] = $fpl;
+			}
+		}
+		
+		$o_view->setVar('new_labels', $va_new_labels_to_force_due_to_error);
 		$o_view->setVar('label_initial_values', $va_inital_values);
 		$o_view->setVar('batch', (bool)(isset($pa_options['batch']) && $pa_options['batch']));
 		

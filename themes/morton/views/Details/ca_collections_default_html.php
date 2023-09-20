@@ -205,7 +205,7 @@
 					print caNavLink($this->request, 'Download Finding Aid <i class="fa fa-chevron-right"></i>', 'faDownload', 'Detail', 'collections', $vn_id.'/view/pdf/export_format/_pdf_ca_collections_summary');
 
 ?>				
-					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
+					<H4>{{{<unit relativeTo="ca_collections.hierarchy" delimiter=" → "><l>^ca_collections.preferred_labels.name</l></unit>}}}</H4>
 					<h6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.collection_number">, ^ca_collections.collection_number</ifdef>}}}</h6>
 <?php					
 						print $vs_finding_aid;

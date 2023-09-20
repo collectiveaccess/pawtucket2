@@ -32,7 +32,7 @@
 								}
 								$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
 								print "<div class='galleryItem'>
-											<a href='#' onclick='jQuery(\"#gallerySetInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetInfo', array('set_id' => $vn_set_id))."\"); return false;'>
+											<a href='#top' onclick='jQuery(\"#gallerySetInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetInfo', array('set_id' => $vn_set_id))."\"); return false;'>
 												<div class='galleryItemImg'>".$va_first_item["representation_tag"]."</div>
 												<h5>".$va_set["name"]."</h5>
 												<p>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</p>

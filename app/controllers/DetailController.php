@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/controllers/DetailController.php : controller for object search request handling - processes searches from top search bar
+ * app/controllers/DetailController.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -264,8 +264,7 @@ class DetailController extends FindController {
 		
 		$o_context = ResultContext::getResultContextForLastFind($this->request, $table);
 		
-		
-		$result_desc = $o_context->getResultDescription();
+		$result_desc = $o_context->getResultDesc();
 		$this->view->setVar('resultDesc', $result_desc[$t_subject->getPrimaryKey()] ?? null);
 		
 		if($o_context->findType() === 'multisearch') {
@@ -807,6 +806,11 @@ class DetailController extends FindController {
 		$va_versions = $t_rep->getMediaVersions('media');
 		
 		if (!in_array($ps_version, $va_versions)) { $ps_version = $va_versions[0]; }
+		
+		$available_versions = caGetAvailableDownloadVersions($this->request, $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+		if(!in_array($ps_version, $available_versions, true)) { 
+			return;
+		}
 		$this->view->setVar('version', $ps_version);
 		
 		$va_rep_info = $t_rep->getMediaInfo('media', $ps_version);
@@ -1423,7 +1427,7 @@ class DetailController extends FindController {
 	 *		display = The type of media_display.conf display configuration to be used (Eg. "detail", "media_overlay"). [Default is "media_overlay"]
 	 */
 	public function GetMediaOverlay($options=null) {
-		$context = $this->request->getParameter('context', pString);
+		$context = $context_str = $this->request->getParameter('context', pString);
 		
 		if ($context == 'gallery') {
 			$context_info = [
@@ -1444,7 +1448,7 @@ class DetailController extends FindController {
 		
 		if (!($display_type = $this->request->getParameter('display', pString))) { $display_type = 'media_overlay'; }
 		$options['display'] = $display_type;
-		$options['context'] = $this->request->getParameter('context', pString);
+		$options['context'] = $context_str;
 		
 		$local_options = (isset($this->opa_detail_types[$options['context']]['options']) && is_array($this->opa_detail_types[$options['context']]['options'])) ? $this->opa_detail_types[$options['context']]['options'] : array();
 		$options['captionTemplate'] = caGetOption('representationViewerCaptionTemplate', $local_options, false);
@@ -1474,7 +1478,7 @@ class DetailController extends FindController {
 	 * Return media viewer data via AJAX callback for viewers that require it.
 	 */
 	public function GetMediaData() {
-		$context = $this->request->getParameter('context', pString);
+		$context = $context_str = $this->request->getParameter('context', pString);
 		
 		if (!($display_type = $this->request->getParameter('display', pString))) { $display_type = 'media_overlay'; }
 	
@@ -1504,14 +1508,14 @@ class DetailController extends FindController {
 			throw new ApplicationException(_t('Cannot view media'));
 		}
 	
-		$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $context, 'checkAccess' => $this->opa_access_values]));
+		$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $context_str, 'checkAccess' => $this->opa_access_values]));
 	}
 	# -------------------------------------------------------
 	/**
 	 * Provide in-viewer search for those that support it (Eg. UniversalViewer)
 	 */
 	public function SearchMediaData() {
-	   $context = $this->request->getParameter('context', pString);
+	   $context = $context_str = $this->request->getParameter('context', pString);
 		
 		if (!($display_type = $this->request->getParameter('display', pString))) { $display_type = 'media_overlay'; }
 
@@ -1541,7 +1545,7 @@ class DetailController extends FindController {
 			throw new ApplicationException(_t('Cannot view media'));
 		}
 
-		$this->response->addContent(caSearchMediaData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $this->request->getParameter('context', pString)]));
+		$this->response->addContent(caSearchMediaData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $display_type, 'context' => $context_str]));
 	}
 	# -------------------------------------------------------
 	/**

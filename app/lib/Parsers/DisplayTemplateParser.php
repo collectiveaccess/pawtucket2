@@ -477,7 +477,7 @@ class DisplayTemplateParser {
 					$filter_non_primary_reps = self::_setPrimaryRepresentationFiltering($pr_res, caGetOption('filterNonPrimaryRepresentations', $pa_options, $o_node->filterNonPrimaryRepresentations));
 
 					$va_get_options = [
-						'limit' => $vn_limit, 'returnAsCount' => true, 'checkAccess' => $check_access, 
+						'returnAsCount' => true, 'checkAccess' => $check_access, 
 						'restrictToTypes' => $va_restrict_to_types, 'excludeTypes' => $va_exclude_types, 
 						'restrictToRelationshipTypes' => $va_restrict_to_relationship_types, 
 						'excludeRelationshipTypes' => $va_exclude_to_relationship_types,
@@ -1145,7 +1145,7 @@ class DisplayTemplateParser {
 			}
 			
 			if(strlen($pn_index)) {
-				$va_tag_vals = $va_tag_vals[$pn_index];	
+				$va_tag_vals = $va_tag_vals[$pn_index] ?? null;	
 				$vs_relative_to_container = null;
 			}
 		}
@@ -1247,6 +1247,9 @@ class DisplayTemplateParser {
                                 $va_val_list = $pr_res->get($vs_get_spec, $va_opts = array_merge($pa_options, $va_parsed_tag_opts['options'], ['filters' => $va_parsed_tag_opts['filters'], 'returnAsArray' => true, 'returnWithStructure' => false], $va_get_specs[$vs_tag]['isRelated'] ? $va_remove_opts_for_related : []));
                                 if (!is_array($va_val_list)) { $va_val_list = array(); }
                             
+                            	$delimiter = caGetOption('delimiter', $va_parsed_tag_opts['options'], '; ');
+                            	$va_val_list = array_map(function($v) use ($delimiter) { return is_array($v) ? join($delimiter, $v) : $v; }, $va_val_list);
+                          
                                 if (!caGetOption('skipWhen', $pa_options, false)) { 
                                     if ((($vn_start > 0) || ($vn_length > 0)) && ($vn_start < sizeof($va_val_list)) && (!$vn_length || ($vn_start + $vn_length <= sizeof($va_val_list)))) {
                                         $va_val_list = array_slice($va_val_list, $vn_start, ($vn_length > 0) ? $vn_length : null);
@@ -1899,7 +1902,7 @@ class DisplayTemplateParser {
                 
                     $i = $pa_options['tagIndex'] + 1;
                     foreach($t as $z) {
-                        if ($pa_values[$z]) { 
+                        if ($pa_values[$z] ?? null) { 
                             $next_unit = $pa_options['dimensionsUnitMap']['units'][$i] ?? null;  
                             break;
                         } 

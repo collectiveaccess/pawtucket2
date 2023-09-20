@@ -60,7 +60,6 @@
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 
  	$o_result_context = new ResultContext($this->request, 'ca_objects', 'multisearch');
-	$o_result_context->setAsLastFind();
 	
 	
 if (!$vb_ajax) {	// !ajax
