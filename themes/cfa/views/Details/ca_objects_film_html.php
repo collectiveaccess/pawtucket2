@@ -34,7 +34,8 @@ $vn_share_enabled = 	$this->getVar("shareEnabled");
 $vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 $vn_id =				$t_object->get('ca_objects.object_id');
 
-$media = $t_object->get('ca_object_representations.media.small', ['returnAsArray' => true]);
+//$media = $t_object->get('ca_object_representations.media.h264_hi', ['returnAsArray' => true]);
+$reps = $t_object->getRepresentations(['small', 'mp3', 'h264_hi']);
 ?>
 <div class="row">
 	<main class="flush">
@@ -42,14 +43,13 @@ $media = $t_object->get('ca_object_representations.media.small', ['returnAsArray
 		<div class="eyebrow text__eyebrow color__gray">
 			<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div><br>			
 			<div class="row">
-				<div class="col">
-					{{{<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels<l></unit>}}}
-					<!-- {{{<unit relativeTo="ca_collections.hierarchy" delimiter=" > ">
+				<div class="col-10">
+					 {{{<unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">
 						<l>^ca_collections.preferred_labels<l>
-					</unit>}}} -->
+					</unit></unit>}}}
 				</div>
 
-				<div class="col text-end">
+				<div class="col-2 text-end">
 					<a href="#" id="sharelink" class="text__eyebrow share-link" onclick="Copy();">
 						Share Link 
 						<span class="icon">
@@ -63,7 +63,7 @@ $media = $t_object->get('ca_object_representations.media.small', ['returnAsArray
 			</div>
 		</div>
 
-		<h1 class="text-align-center color__white text__headline-1 block-sm">{{{^ca_objects.preferred_labels}}}</h1>
+		<h1 class="text-align-center color__white text__headline-1 block-sm mt-3">{{{^ca_objects.preferred_labels}}}</h1>
 		
 		<div class="layout grid-flex">
 
@@ -73,10 +73,10 @@ $media = $t_object->get('ca_object_representations.media.small', ['returnAsArray
 					<div class="carousel-inner">
 						<?php
 							$active = true;
-							foreach($media as $m) {
+							foreach($reps as $r) {
 						?>
 								<div class="carousel-item <?= ($active ? 'active' : ''); ?>" style="height: auto;">
-									<?= $m; ?>
+									<?= $r['tags']['h264_hi'] ?? $r['tags']['mp3'] ?? $r['tags']['small']; ?>
 								</div>
 						<?php
 								$active = false;

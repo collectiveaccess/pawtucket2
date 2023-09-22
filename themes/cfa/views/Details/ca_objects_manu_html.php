@@ -43,11 +43,13 @@
 		<div class="eyebrow text__eyebrow color__gray">
 			<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div><br>
 			<div class="row">
-				<div class="col">
-					{{{<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels<l></unit>}}}
+				<div class="col-10">
+					 {{{<unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">
+						<l>^ca_collections.preferred_labels<l>
+					</unit></unit>}}}
 				</div>
 
-				<div class="col text-end">
+				<div class="col-2 text-end">
 					<a href="#" id="sharelink" class="text__eyebrow share-link" onclick="Copy();">
 						Share Link 
 						<span class="icon">
@@ -59,10 +61,9 @@
 					</a>
 				</div>	
 			</div>
-
 		</div>
 
-		<h1 class="text-align-center color__white text__headline-1 block-sm">{{{^ca_objects.preferred_labels}}}</h1>
+		<h1 class="text-align-center color__white text__headline-1 block-sm mt-3">{{{^ca_objects.preferred_labels}}}</h1>
 		
 		<div class="layout grid-flex">
 
