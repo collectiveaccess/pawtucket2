@@ -71,7 +71,7 @@
 				$this->view->setVar('set_items_as_search_result', caMakeSearchResult('ca_entities', $va_row_ids));
 			}
 
- 			# --- get all browse facets to list out:
+ 			# --- get entity browse facets to list out:
  			$va_browse_info = caGetInfoForBrowseType("entities");
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			$o_browse = caGetBrowseInstance("ca_entities");
@@ -87,7 +87,25 @@
 					unset($va_facets[$vs_facet_name]);
 				}
 			}
-			$this->view->setVar('facets', $va_facets);
+			$this->view->setVar('entity_facets', $va_facets);
+			
+			# --- get event browse facets to list out:
+ 			$va_browse_info = caGetInfoForBrowseType("events");
+ 			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
+ 			$o_browse = caGetBrowseInstance("ca_occurrences");
+ 			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $va_browse_info, false))); }
+			$o_browse->addCriteria("_search", array("*"));
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true));
+			
+ 			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
+ 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+				if($va_facet_info["include_on_people_landing"]){
+					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request));
+				}else{
+					unset($va_facets[$vs_facet_name]);
+				}
+			}
+			$this->view->setVar('event_facets', $va_facets);
 			$this->render("People/index_html.php");
  		}
  		# -------------------------------------------------------

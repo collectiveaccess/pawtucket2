@@ -43,10 +43,15 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
+				<div class='col-md-8'>
 					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
 					<H2>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef>}}}</H2>
 				</div><!-- end col -->
+				<div class='col-md-4'>
+<?php
+					print "<div id='detailTools'><div class='detailTool'><span class='glyphicon glyphicon-book'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'Form', array('table' => 'ca_occurrences', 'id' => $t_item->get("ca_occurrences.occurrence_id"), 'contactType' => 'askCurator'))."\"); return false;' title='"._t("Ask a Curator")."'>"._t("Ask a Curator")."</a></div><!-- end detailTool --></div>";
+?>
+				</div>
 			</div><!-- end row -->
 			<div class='bgLightGray'><div class="row">			
 				<div class='col-sm-7'>
@@ -68,7 +73,7 @@
 <?php
 
 	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1' excludeTypes='vessel'><unit relativeTo='ca_entities_x_occurrences' delimiter=';;;' excludeTypes='vessel'>^ca_entities.preferred_labels.displayname
-										<ifdef code='ca_entities_x_occurrences.role'><br/><small>Role:  ^ca_entities_x_occurrences.role</small></ifdef><ifdef code='ca_entities_x_occurrences.person_status'><br><small>Person Status:  ^ca_entities_x_occurrences.person_status</small></ifdef><ifdef code='ca_entities_x_occurrences.effective_date'><br/><small>Effective Date: ^ca_entities_x_occurrences.effective_date</small></ifdef><ifdef code='ca_entities_x_occurrences.source_info'><br/><small>Source Information: ^ca_entities_x_occurrences.source_info</small></ifdef>
+										<ifdef code='ca_entities_x_occurrences.role'><br/><small>Role:  ^ca_entities_x_occurrences.role</small></ifdef><ifdef code='ca_entities_x_occurrences.person_status'><br><small>Person Status:  ^ca_entities_x_occurrences.person_status</small></ifdef><ifdef code='ca_entities_x_occurrences.effective_date'><br/><small>Effective Date: ^ca_entities_x_occurrences.effective_date</small></ifdef>
 										</unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
 	if($vs_tmp){
 		$va_entity_text = explode(";;;", $vs_tmp);
@@ -110,7 +115,7 @@
 		}
 	}
 	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1' restrictToTypes='vessel'><unit relativeTo='ca_entities_x_occurrences' delimiter=';;;' restrictToTypes='vessel'>^ca_entities.preferred_labels.displayname
-										<ifdef code='ca_entities_x_occurrences.role'><br/><small>Role:  ^ca_entities_x_occurrences.role</small></ifdef><ifdef code='ca_entities_x_occurrences.person_status'><br><small>Person Status:  ^ca_entities_x_occurrences.person_status</small></ifdef><ifdef code='ca_entities_x_occurrences.effective_date'><br/><small>Effective Date: ^ca_entities_x_occurrences.effective_date</small></ifdef><ifdef code='ca_entities_x_occurrences.source_info'><br/><small>Source Information: ^ca_entities_x_occurrences.source_info</small></ifdef>
+										<ifdef code='ca_entities_x_occurrences.role'><br/><small>Role:  ^ca_entities_x_occurrences.role</small></ifdef><ifdef code='ca_entities_x_occurrences.person_status'><br><small>Person Status:  ^ca_entities_x_occurrences.person_status</small></ifdef><ifdef code='ca_entities_x_occurrences.effective_date'><br/><small>Effective Date: ^ca_entities_x_occurrences.effective_date</small></ifdef>
 										</unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
 	if($vs_tmp){
 		$va_entity_text = explode(";;;", $vs_tmp);

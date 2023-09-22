@@ -43,6 +43,7 @@
 			<div class="jcarousel topSliderCarousel">
 				<ul>
 <?php
+					$i = 0;
 					while($qr_res->nextHit()){
 						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large_watermark</l>', array("checkAccess" => $va_access_values))){
 							print "<li><div class='frontSlide'>".$vs_media;
@@ -52,6 +53,10 @@
 							}
 							print "</div></li>";
 							$vb_item_output = true;
+							$i++;
+							if($i == 20){
+								break;
+							}
 						}
 					}
 ?>

@@ -1,32 +1,34 @@
 <?php
 	$qr_people = $this->getVar("set_items_as_search_result");
 	$va_access_values = $this->getVar("access_values");
-	$va_facets = $this->getVar("facets");
+	$va_entity_facets = $this->getVar("entity_facets");
+	$va_event_facets = $this->getVar("event_facets");
 ?>
 	<div class="row"><div class="col-sm-12">
 		<H1>People</H1>
 	</div></div>
-<div class="container"><div class="row">
-	<div class="col-sm-12">
-		<div class="row bgDarkBlue featuredCallOut">
-			<div class="col-sm-12 col-md-6 featuredHeaderImage">
-				<?php print caGetThemeGraphic($this->request, 'people.jpeg', array("alt" => "People image")); ?>
-			</div>
-			<div class="col-sm-12 col-md-6 text-center">
-				<div class="featuredIntro">{{{people_intro}}}</div>
-				<div class="featuredSearch"><form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'entities'); ?>">
-					<div class="formOutline">
-						<div class="form-group">
-							<input type="text" class="form-control" id="peopleSearchInput" placeholder="<?php print _t("Search All People & Organizations"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="row bgDarkBlue featuredCallOut">
+				<div class="col-sm-12 col-md-6 featuredHeaderImage">
+					<?php print caGetThemeGraphic($this->request, 'people.jpeg', array("alt" => "People image")); ?>
+				</div>
+				<div class="col-sm-12 col-md-6 text-center">
+					<div class="featuredIntro">{{{people_intro}}}</div>
+					<div class="featuredSearch"><form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'entities'); ?>">
+						<div class="formOutline">
+							<div class="form-group">
+								<input type="text" class="form-control" id="peopleSearchInput" placeholder="<?php print _t("Search All People & Organizations"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
+							</div>
+							<button type="submit" class="btn-search" id="featuredSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
-						<button type="submit" class="btn-search" id="featuredSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
-					</div>
-				</form></div>
+					</form></div>
+				</div>
 			</div>
-		</div>
 		
+		</div>
 	</div>
-</div></div>
 	<div class="row">
 		<div class="col-sm-12 col-lg-10 col-lg-offset-1">		
 			<div class="featuredList">
@@ -42,6 +44,11 @@
 	<div class="row">
 		<div class="col-sm-12 col-lg-10 col-lg-offset-1">		
 			<hr/><H2>Featured Stories</H2>
+<?php
+			if($vs_tmp = $this->getVar("people_stories")){
+				print "<p>".$vs_tmp."</p>";
+			}
+?>			
 			<div class="featuredList">	
 	<?php	
 					$vn_i = 0;
@@ -78,12 +85,12 @@
 	<div class="row">
 		<div class="col-sm-12 col-lg-10 col-lg-offset-1 peopleFacets">	
 <?php	
-	$vn_facet_display_length_initial = 10;
-	$vn_facet_display_length_maximum = 60;
-	
-	if(is_array($va_facets) && sizeof($va_facets)){
-		print "<hr/><H3>Explore By</H3>";			
-		foreach($va_facets as $vs_facet_name => $va_facet_info) {
+	if(is_array($va_entity_facets) && sizeof($va_entity_facets)){
+		print "<hr/><H3>Explore People By</H3>";			
+		if($vs_tmp = $this->getVar("people_explore_people")){
+			print "<p>".$vs_tmp."</p>";
+		}			
+		foreach($va_entity_facets as $vs_facet_name => $va_facet_info) {
 			
 			if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 			print "<div class='facetName'>".$va_facet_info['label_singular']."</div>";
@@ -107,3 +114,52 @@
 ?>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-sm-12 col-lg-10 col-lg-offset-1 peopleFacets">	
+<?php	
+	if(is_array($va_event_facets) && sizeof($va_event_facets)){
+		print "<hr/><H3>Explore Events By</H3>";
+		if($vs_tmp = $this->getVar("people_explore_events")){
+			print "<p>".$vs_tmp."</p>";
+		}			
+		foreach($va_event_facets as $vs_facet_name => $va_facet_info) {
+			
+			if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
+			print "<div class='facetName'>".$va_facet_info['label_singular']."</div>";
+			$vn_facet_size = sizeof($va_facet_info['content']);
+			$vn_i = 0;
+			foreach($va_facet_info['content'] as $va_item) {
+				if ( $vn_i == 0) { print "<div class='row'>"; } 
+				print "<div class='col-sm-4'>".caNavLink($this->request, $va_item['label'], 'btn btn-default', '', 'Browse','events', array('facet' => $vs_facet_name, 'id' => $va_item['id']))."</div>";
+				$vn_i++;
+				if ($vn_i == 3) {
+					print "</div><!-- end row -->\n";
+					$vn_i = 0;
+				}
+			}
+			if ($vn_i > 0) {
+				print "</div><!-- end row -->\n";
+			}
+						
+		}
+	}
+?>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12 col-lg-10 col-lg-offset-1">		
+			<div class="featuredList">
+				<div class='col-sm-12 col-md-6 col-md-offset-3'>
+<?php
+				print caNavLink($this->request, "Browse All Events <i class='fa fa-arrow-right'></i>", "btn btn-landing", "", "Browse", "events");
+?>
+				</div>
+						
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12 col-lg-10 col-lg-offset-1"><hr/><p class="text-center">{{{people_page_credit}}}</p><br/></div>
+	</div>
+</div>

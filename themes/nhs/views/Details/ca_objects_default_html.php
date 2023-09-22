@@ -59,7 +59,7 @@
 						
 					print '<div id="detailTools">';
 					#print '<div class="detailTool"><span class="glyphicon glyphicon-book"></span>'.caNavLink($this->request, _t("Ask a Curator / Request an Image"), "", "", "Contact", "Form", array("object_id" => $t_object->get("object_id"), "contactType" => "askCurator")).'</div><!-- end detailTool -->';
-					print "<div class='detailTool'><span class='glyphicon glyphicon-book'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'Form', array('object_id' => $t_object->get("object_id"), 'contactType' => 'askCurator'))."\"); return false;' title='"._t("Ask a Curator / Request an Image")."'>"._t("Ask a Curator / Request an Image")."</a></div><!-- end detailTool -->";
+					print "<div class='detailTool'><span class='glyphicon glyphicon-book'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'Form', array('table' => 'ca_objects', 'id' => $t_object->get("object_id"), 'contactType' => 'askCurator'))."\"); return false;' title='"._t("Ask a Curator / Request an Image")."'>"._t("Ask a Curator / Request an Image")."</a></div><!-- end detailTool -->";
 					if ($vn_comments_enabled) {
 ?>				
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
@@ -81,7 +81,15 @@
 			
 			<div class='col-sm-6 col-md-6'>
 				{{{<ifdef code="ca_objects.preferred_labels.name"><div class="unit"><H4>^ca_objects.preferred_labels.name</H4></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Object number</H6>^ca_objects.idno</div></ifdef>}}}
+<?php
+				$vs_idno = $t_object->get("ca_objects.idno");
+				if(!$vs_idno || $vs_idno == "%"){
+					$vs_idno = $t_object->get("ca_objects.other_number");
+				}
+				if($vs_idno){
+					print '<div class="unit"><H6>Object number</H6>'.$vs_idno.'</div>';
+				}
+?>
 				{{{<ifdef code="ca_objects.nonpreferred_labels.name"><unit relativeTo="ca_objects" delimiter=" "><div class="unit"><H6><if rule='^ca_objects.nonpreferred_labels.type_id%convertCodesToDisplayText=1 =~ /alternate/'>Alternate </if>Title</H6>^ca_objects.nonpreferred_labels.name</div></unit></ifdef>}}}
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><div class="unit"><H6>Creator</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter="<br/>">^ca_entities.preferred_labels</unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.date.dates_value"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.date.dates_value</unit></div></ifdef>}}}
@@ -135,13 +143,96 @@
 				}
 
 ?>
-				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="artist,donor"><div class="unit"><H6>Related People & Organizations</H6><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="artist,donor">^ca_entities.preferred_labels (^relationship_typename)</unit></div></unit>}}}
+				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="artist,donor" excludeTypes="vessel,bipoc_ent"><div class="unit"><H6>Related People & Organizations</H6><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="artist,donor" excludeTypes="vessel,bipoc_ent">^ca_entities.preferred_labels (^relationship_typename)</unit></div></unit>}}}
 				{{{<ifcount code="ca_collections" min="1"><div class="unit"><H6>Collection</H6><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 				
 				{{{map}}}
 						
 			</div><!-- end col -->
-		</div><!-- end row --></div><!-- end container -->
+		</div><!-- end row -->
+		<div class="row">
+			<div class='col-sm-12'>
+<?php
+	$vs_tmp = $t_object->getWithTemplate("<ifcount code='ca_entities' min='1' restrictToTypes='bipoc_ent'><unit relativeTo='ca_entities' min='1' delimiter=';;;' restrictToTypes='bipoc_ent'><l><div class='bgLightBlue text-center'>^ca_entities.preferred_labels.displayname</div></l>
+										</unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
+	if($vs_tmp){
+		$va_entities = explode(";;;", $vs_tmp);
+	
+		if(is_array($va_entities) && sizeof($va_entities)){
+			$va_rel_entities = array();
+			$i = 0;
+?>
+			<div class="row">
+				<div class="col-sm-12">
+					<H3>Related People & Organizations</H3>
+<?php
+
+					$i = 0;
+					$col = 0;
+					foreach($va_entities as $vs_entity_info){
+						if($col == 0){
+							print "<div class='row'>";
+						}
+						print "<div class='col-sm-4'>".$vs_entity_info."</div>";
+						$col++;
+						if($col == 3){
+							$col = 0;
+							print "</div>";
+						}
+						$i++;
+					}
+					if($col > 0){
+						print "</div>";
+					}
+?>			
+			
+				</div>
+			</div>
+<?php
+		}
+	}
+
+	$vs_tmp = $t_object->getWithTemplate("<ifcount code='ca_occurrences.related' min='1' restrictToTypes='event'><unit relativeTo='ca_occurrences' min='1' delimiter=';;;' restrictToTypes='event' sort='ca_occurrences.exhibit_date'><l><div class='bgLightBlue text-center'>^ca_occurrences.preferred_labels.name<ifdef code='ca_occurrences.exhibit_date'>, ^ca_occurrences.exhibit_date</ifdef></div></l>
+										</unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
+	if($vs_tmp){
+		$va_events = explode(";;;", $vs_tmp);
+	
+		if(is_array($va_events) && sizeof($va_events)){
+			$va_rel_events = array();
+			$i = 0;
+?>
+			<div class="row">
+				<div class="col-sm-12">
+					<H3>Events</H3>
+<?php
+
+					$i = 0;
+					$col = 0;
+					foreach($va_events as $vs_event_info){
+						if($col == 0){
+							print "<div class='row'>";
+						}
+						print "<div class='col-sm-4'>".$vs_event_info."</div>";
+						$col++;
+						if($col == 3){
+							$col = 0;
+							print "</div>";
+						}
+						$i++;
+					}
+					if($col > 0){
+						print "</div>";
+					}
+?>			
+			
+				</div>
+			</div>
+<?php
+		}
+	}
+?>		
+			</div>
+		</div></div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">

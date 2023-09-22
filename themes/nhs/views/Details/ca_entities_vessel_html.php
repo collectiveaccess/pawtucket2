@@ -51,16 +51,19 @@
 			
 <?php
 
-	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_occurrences.related' min='1' restrictToTypes='event'><unit relativeTo='ca_entities_x_occurrences' delimiter=';;;'>^ca_occurrences.preferred_labels.name<ifdef code='ca_occurrences.exhibit_date'>, ^ca_occurrences.exhibit_date</ifdef>
-										<ifdef code='ca_entities_x_occurrences.role'><br/><small>Role:  ^ca_entities_x_occurrences.role</small></ifdef><ifdef code='ca_entities_x_occurrences.person_status'><br><small>Person Status:  ^ca_entities_x_occurrences.person_status</small></ifdef><ifdef code='ca_entities_x_occurrences.effective_date'><br/><small>Effective Date: ^ca_entities_x_occurrences.effective_date</small></ifdef><ifdef code='ca_entities_x_occurrences.source_info'><br/><small>Source Information: ^ca_entities_x_occurrences.source_info</small></ifdef>
+	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_occurrences.related' min='1' restrictToTypes='event'><unit relativeTo='ca_entities_x_occurrences' delimiter=';;;' sort='ca_occurrences.exhibit_date'>^ca_occurrences.preferred_labels.name<ifdef code='ca_occurrences.exhibit_date'>, ^ca_occurrences.exhibit_date</ifdef>
+										<ifdef code='ca_entities_x_occurrences.role'><br/><small>Role:  ^ca_entities_x_occurrences.role</small></ifdef><ifdef code='ca_entities_x_occurrences.person_status'><br><small>Person Status:  ^ca_entities_x_occurrences.person_status</small></ifdef><ifdef code='ca_entities_x_occurrences.effective_date'><br/><small>Effective Date: ^ca_entities_x_occurrences.effective_date</small></ifdef>
 										</unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
 	if($vs_tmp){
 		$va_event_text = explode(";;;", $vs_tmp);
-	
-		$va_event_ids = $t_item->get("ca_occurrences.occurrence_id", array("restrictToTypes" => array("event"), "returnAsArray" => 1, "checkAccess" => $va_access_values));
+		
+		$vs_source = $t_item->getWithTemplate("<ifcount code='ca_occurrences.related' min='1' restrictToTypes='event'><unit relativeTo='ca_occurrences' restrictToTypes='event' delimiter=';;;' sort='ca_occurrences.exhibit_date'><ifcount code='ca_objects' min='1'><br/><small>Source: <unit relativeTo='ca_objects' delimiter=', '><l>^ca_objects.preferred_labels.name</l></unit></small></ifcount></unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
+		$va_source_text = explode(";;;", $vs_source);
+		
+		$va_event_ids = $t_item->get("ca_occurrences.occurrence_id", array("returnAsArray" => 1, "checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
 		$va_events = array();
 		foreach($va_event_ids as $vn_i => $vn_event_id){
-			$va_events[] = caDetailLink($this->request, "<div class='bgLightBlue text-center'>".$va_event_text[$vn_i]."</div>", "", "ca_occurrences", $vn_event_id);
+			$va_events[] = "<div class='bgLightBlue text-center'>".caDetailLink($this->request, $va_event_text[$vn_i], "", "ca_occurrences", $vn_event_id).$va_source_text[$vn_i]."</div>";
 		}
 		if(is_array($va_events) && sizeof($va_events)){
 			$va_rel_events = array();
