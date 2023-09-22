@@ -25,12 +25,13 @@
  *
  * ----------------------------------------------------------------------
  */
-
 $t_item = $this->getVar("item");
 $va_comments = $this->getVar("comments");
 $vn_comments_enabled = 	$this->getVar("commentsEnabled");
 $vn_share_enabled = 	$this->getVar("shareEnabled");
 $vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+
+MetaTagManager::setWindowTitle("Chicago Film Archives: ".$t_item->get('ca_collections.preferred_labels.name'));
 
 # --- get collections configuration
 $o_collections_config = caGetCollectionsConfig();
@@ -52,36 +53,41 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
       </h1>
 
       <div class="layout grid-flex">
-        <div class="item color__white">
-            <div id="carouselIndicators" class="carousel slide collection-carousel" data-bs-interval="false">
-              <div class="carousel-inner">
-<?php
-	$active = true;
-	foreach($media as $m) {
-?>
-                <div class="carousel-item <?= ($active ? 'active' : ''); ?>" style="height: auto;">
-                  <?= $m; ?>
-                </div>
-<?php
-		$active = false;
-	}
-?>
-              </div>
-              <div class="carousel-indicators collection-indicators">
-<?php
-	$active = true;
-	$index = 0;
-	foreach($media as $m) {
-?>
-                <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="<?= $index; ?>" class="<?= ($active ? 'active' : ''); ?>" <?= ($active ? 'aria-current="true"' : ''); ?> aria-label="Media <?= $index+ 1; ?>"></button>
-<?php
-		$index++;
-		$active = false;
-	}
-?>
-              </div>
+
+        <div class="item color__white mb-3">
+          <div id="carouselIndicators" class="carousel slide collection-carousel" data-bs-interval="false">
+            <div class="carousel-inner">
+              <?php
+                $active = true;
+                foreach($media as $m) {
+              ?>
+                              <div class="carousel-item <?= ($active ? 'active' : ''); ?>" style="height: auto;">
+                                <?= $m; ?>
+                              </div>
+              <?php
+                  $active = false;
+                }
+              ?>
+                            </div>
+                            <div class="carousel-indicators collection-indicators">
+              <?php
+                $active = true;
+                $index = 0;
+                foreach($media as $m) {
+                    if(count($media) > 1 ){
+              ?>
+                              <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="<?= $index; ?>" class="<?= ($active ? 'active' : ''); ?>" <?= ($active ? 'aria-current="true"' : ''); ?> aria-label="Media <?= $index+ 1; ?>"></button>
+              <?php
+                    }
+                  $index++;
+                  $active = false;
+                }
+              ?>
             </div>
-            
+            {{{<ifdef code="ca_object_representations.caption">
+              <div class="max__640 text__body-3 color__white block-sm text-center">^ca_object_representations.caption</div>
+            </ifdef>}}}
+          </div>  
         </div>
 
         <div class="item">
@@ -94,7 +100,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                   $metadata = array(
                     "ca_collections.cfaInclusiveDates" => "Inclusive Dates",
                     "ca_collections.cfaBulkDates" => "Bulk Dates",
-                    "ca_collections.cfaPreservationSponsor" => "Preservation Sponsors",
                     "ca_collections.cfaAbstract" => "Abstract",
                     "ca_collections.cfaDescription" => "Description",
                   );
@@ -110,12 +115,25 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                   }
                 ?>
 
+                {{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="cfa_sponsor">
+                    <div class="max__640 text__eyebrow color__light_gray block-xxxs">Preservation Sponsor</div>
+                    <unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="cfa_sponsor">
+                      <ifdef code="^ca_entities.file">
+                        <div class="max__640 text__body-3 color__white"><img src="^ca_entities.file" style="max-height: 80px;"></div>
+                      </ifdef>
+                      <ifnotdef code="^ca_entities.file">
+                        <div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.surname</div>
+                      </ifnotdef>
+                    </unit>
+                  <br>
+                </ifcount>}}}
+
               </div>
             </div>
             <!-- content-scroll -->
           </div>
           <!-- container-scroll -->
-          <div class="footer link mt-2">
+          <div class="footer link mt-2 position-static">
             <a href="#collection-details" class="text__eyebrow color-class-orange color__white scroll-to" data-offset="100">view More collection Details <span class="arrow-link down">
                 <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3.62909 5.99999L0.436768 0.666656L9.99999 5.99999L0.436768 11.3333L3.62909 5.99999Z" fill="#767676" class="color-fill"></path>
@@ -130,24 +148,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
       <!-- layout -->
     </section>
 
-    <!-- <div id="carouselIndicators" class="carousel slide m-5 bg-light border collection-carousel" data-bs-interval="false" style="width: 800px; height: 600px;">
-      <div class="carousel-indicators">
-        <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-      </div>
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          {{{<l>^ca_object_representations.media.large<l>}}}
-        </div>
-        <div class="carousel-item">
-          <img src="cfa_logo.png" class="d-block w-100" width="500" height="600" alt="..." />
-        </div>
-        <div class="carousel-item">
-          <img src="hero_1.jpg" class="d-block w-100" width="500" height="600" alt="..." />
-        </div>
-      </div>
-    </div> -->
 
     {{{<ifcount code="ca_collections.children" min="1">
 
@@ -162,9 +162,17 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                   <ifcount code="ca_collections.children" min="1">
                       <div class="unit">
                         <unit relativeTo="ca_collections.children" delimiter="<br><br>" restrictToTypes="series" sort="ca_collections.idno_sort">
-                          <ifdef code="ca_object_representations.media.thumbnail">^ca_object_representations.media.thumbnail</ifdef>
-                          <span class="fw-bold" style="font-size: 15px;"><l>^ca_collections.preferred_labels</l></span>
-                          <ifdef code="ca_collections.cfaInclusiveDates"><div class="text__eyebrow year color__gray">^ca_collections.cfaInclusiveDates</div></ifdef>
+                          <div class="row">
+                            <ifdef code="ca_object_representations.media.thumbnail">
+                              <div class="col-auto">
+                                <span class="series-thumbnail"><l>^ca_object_representations.media.thumbnail</l></span>
+                              </div>
+                            </ifdef>
+                            <div class="col-auto align-self-center">
+                              <span class="fw-bold" style="font-size: 15px;"><l>^ca_collections.preferred_labels</l></span>
+                              <ifdef code="ca_collections.cfaInclusiveDates"><div class="text__eyebrow year color__gray">^ca_collections.cfaInclusiveDates</div></ifdef>
+                            </div>
+                          </div>
                         </unit>
                       </div>
                   </ifcount>
@@ -193,16 +201,25 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 
 <?php
 	$access_values = caGetUserAccessValues($this->request);
-	if($t_item->getRelatedItems('ca_objects', ['checkAccess' => $access_values, 'returnAs' => 'count']) > 0) {
-		$qr_objects = $t_item->getRelatedItems('ca_objects', ['returnAs' => 'searchResult', 'checkAccess' => $access_values]);
-		$item_count = $qr_objects->numHits();
-		$viewable_count = 0;
+	$item_count = $viewable_count = 0;
+	
+	$ids = $t_item->get('ca_collections.branch.collection_id', ['returnAsArray' => true]);
+	
+	while(sizeof($ids)) {
+		$id = array_shift($ids);
+		$t_coll = ca_collections::findAsInstance($id);
 		
-		while($qr_objects->nextHit()) {
-			if($qr_objects->get('ca_object_representations.representation_id', ['checkAccess' => $access_values])) {
-				$viewable_count++;
+		if($t_coll && ($t_coll->getRelatedItems('ca_objects', ['checkAccess' => $access_values, 'returnAs' => 'count']) > 0)) {
+			$qr_objects = $t_coll->getRelatedItems('ca_objects', ['returnAs' => 'searchResult', 'checkAccess' => $access_values]);
+			$item_count += $qr_objects->numHits();
+		
+			while($qr_objects->nextHit()) {
+				if($qr_objects->get('ca_object_representations.representation_id', ['checkAccess' => $access_values])) {
+					$viewable_count++;
+				}
 			}
 		}
+	}
 ?>
     <section class="collection-grid-items">
       <div class="wrap">
@@ -216,7 +233,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 <li class="nav-item" role="presentation">
                   <button class="nav-link active" id="itemGrid-tab" data-bs-toggle="tab" data-bs-target="#itemGrid-tab-pane" type="button" role="tab" aria-controls="itemGrid-tab-pane" aria-selected="true">
                     <span class="title text__eyebrow">Viewable Media (<?= $viewable_count; ?>)</span>
-                    <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="What is Viewable Media?">
+                    <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="What does this mean? Not every object in our collection has been digitized yet. This option shows you only items that can be viewed online now.">
                       <div class="trigger-icon color-icon-orange">
                         <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
@@ -235,7 +252,8 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 </li>
 				      </ul>
 
-              <a href="/Search/advanced/collections" class="text__eyebrow color-class-orange $color__dark_gray">
+              <!-- href="/Search/advanced/collections"-->
+              <a href="/Browse/Objects" class="text__eyebrow color-class-orange $color__dark_gray">
                 Advanced Collections Search 
                 <span class="arrow-link">
                   <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -248,32 +266,26 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
           </div>
 
           <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0">
+            <?php 
+              if($viewable_count == 0) {
+            ?>
+                <div class="tab-pane fade" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0">
+            <?php
+              }else{
+            ?>
+                <div class="tab-pane fade show active" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0">
+            <?php
+              }
+            ?>
+            <!-- <div class="tab-pane fade show active" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0"> -->
               <div class="tab-int">
                 <div class="grid-flex grid-1-3-4 margin-bottom collection-grid" id="expando-grid">
 
-                  {{{<ifcount code="ca_objects" min="1">
-                      <unit relativeTo="ca_objects" delimiter="" filter="/<img/">
-                        <div class="item-item item">
-                          <ifdef code="ca_object_representations.media.small">
-                            <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
-                          </ifdef>
-                          <ifnotdef code="ca_object_representations.media.small">
-                            <div class="collItemImgPlaceholder"><a></a></div>
-                          </ifnotdef>
-                          <div class="text-align-center info ">
-                            <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
-                            <div class="title text__promo-4 block-xxxs"><a href="" class="color-link-orange"><l>^ca_objects.preferred_labels<l></a></div>
-                            <div class="text__eyebrow year color__gray">^ca_occurrences.cfaDateProduced</div>
-                          </div>
-                        </div>
-                      </unit>
-                  </ifcount>}}}
+                  {{{<ifcount code="ca_collections.branch" min="0">
+                      <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_collections.idno_sort" filter="/<img/">
 
-                  {{{<ifcount code="ca_collections.children" min="1">
-                      <unit relativeTo="ca_collections.children" delimiter="" restrictToTypes="series" sort="ca_collections.idno_sort">
                         <ifcount code="ca_objects" min="1">
-                          <unit relativeTo="ca_objects" delimiter="">
+                          <unit relativeTo="ca_objects" delimiter="" filter="/<img/">
                             <div class="item-item item">
 
                               <ifdef code="ca_object_representations.media.small">
@@ -290,35 +302,69 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                             </div>
                           </unit>
                         </ifcount>
+
                       </unit>
                   </ifcount>}}}
 
                 </div>
-<?php 
-	if($item_count > 4) {
-?>
-                <!-- Remove this button if there is 4 or less viewable items -->
-                <div class="text-align-center">
-                  <!-- <a href="" class="button color-gray pill simple-toggle hide-toggle view-more-btn" data-toggle="grid-next-container" data-class-toggle="open">View More Items</a> -->
-                  <span class="button color-gray pill view-more-btn">View More Items</span>
-                </div>
-<?php
-	}
-?>
+
+                <?php 
+                  if($viewable_count > 4) {
+                ?>
+                    <div class="text-align-center">
+                      <span class="button color-gray pill view-more-btn">View More Items</span>
+                    </div>
+                <?php
+                  }
+                ?>
+
               </div>
             </div> <!-- tab-pane -->
-            <div class="tab-pane fade" id="itemList-tab-pane" role="tabpanel" aria-labelledby="itemList-tab" tabindex="0">
+
+            <?php 
+              if($viewable_count == 0) {
+            ?>
+                <div class="tab-pane fade show active" id="itemList-tab-pane" role="tabpanel" aria-labelledby="itemList-tab" tabindex="0">
+            <?php
+              }else{
+            ?>
+                <div class="tab-pane fade" id="itemList-tab-pane" role="tabpanel" aria-labelledby="itemList-tab" tabindex="0">
+            <?php
+              }
+            ?>
+            <!-- <div class="tab-pane fade" id="itemList-tab-pane" role="tabpanel" aria-labelledby="itemList-tab" tabindex="0"> -->
+              <div class="row pb-4 ps-3">
+                <div class="col">
+                  <small class="color__gray">Items that do not link to a record have not yet been cataloged. To request more information about these items, please contact info@chicagofilmarchives.org.</small>
+                </div>
+                <div class="col text-end">
+                  <small class="color__gray">
+                    <span class="viewable-media-icon right">
+                      <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
+                        <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
+                      </svg>
+                    </span>
+                    Items with Viewable Media
+                  </small>
+                </div>
+              </div>
+
               <ul class="list columns__text text__body-3" col-num="2" style="list-style-type: none;">
 
-                {{{<ifcount code="ca_collections.children" min="1">
-                  <div class="unit">
-                    <unit relativeTo="ca_collections.children" delimiter="" restrictToTypes="series" sort="ca_collections.idno_sort">
+                {{{
+                  <ifcount code="ca_collections.branch" min="1">
+                    <unit relativeTo="ca_collections.branch" delimiter=""  sort="ca_collections.preferred_labels.name_sort">
+                        
                       <ifcount code="ca_objects" min="1">
                         <span class="fw-bold"><l>^ca_collections.preferred_labels</l></span>
-                        <unit relativeTo="ca_objects" delimiter="">
+                        <unit relativeTo="ca_objects" delimiter="" sort="ca_objects.preferred_labels">
                           <li>
-                            <span class="link-orange"><l>^ca_objects.preferred_labels</l></span>
-                            <if rule="^ca_objects.type_id =~ /audio/ AND ^ca_objects.type_id =~ /manu/"><small class="color__gray">(^ca_objects.type_id)</small></if>
+                            <case>
+                              <if rule="^ca_objects.access = 'yes'"><span class="link-orange"><l>^ca_objects.preferred_labels</l></span></if>
+                              <span>^ca_objects.preferred_labels</span>
+                            </case>
+                            <if rule="^ca_objects.type_id =~ /audio/i OR ^ca_objects.type_id =~ /manu/i"><small class="color__gray">(^ca_objects.type_id)</small></if>
                             <ifdef code="ca_object_representations.media.small">
                               <span class="viewable-media-icon right">
                                 <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -328,28 +374,13 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                               </span>
                             </ifdef>
                           </li>
-                        </unit><br>
+                        </unit> <br><hr><br>
                       </ifcount>
+                      
                     </unit>
-                  </div>
-                </ifcount>}}}
+                  </ifcount>
+                }}}
 
-                {{{<ifcount code="ca_objects" min="1">
-                  <unit relativeTo="ca_objects" delimiter="">
-                    <li>
-                      <span class="link-orange"><l>^ca_objects.preferred_labels</l></span>
-                      <if rule="^ca_objects.type_id =~ /audio/ AND ^ca_objects.type_id =~ /manu/"><small class="color__gray">(^ca_objects.type_id)</small></if>
-                      <ifdef code="ca_object_representations.media.small">
-                        <span class="viewable-media-icon right">
-                          <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
-                          <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
-                          </svg>
-                        </span>
-                      </ifdef>
-                    </li>
-                  </unit>
-                </ifcount>}}}
               </ul>
             </div> <!-- tab-pane -->
           </div><!-- tab-content -->
@@ -357,7 +388,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
       </div><!-- wrap -->
     </section>
 <?php
-	}
+	//}
 ?>
 
     <section id="collection-details" class="collection-details">
@@ -421,19 +452,20 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                       <unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,complier,source" delimiter="<br/><br/>">
                         <strong><l>^ca_entities.preferred_labels (^relationship_typename)</l></strong>
                         <br/>
-                        ^ca_entities.biography%truncate=250%ellipsis
+                        <span class="trimText">^ca_entities.biography</span>
+                        <!-- ^ca_entities.biography%truncate=250%ellipsis -->
                       </unit>
                     </div>
                   </div>
                 </div>
             </ifcount>}}}
 
-            {{{<ifcount code="ca_collections" min="1">
+            {{{<ifcount code="ca_collections.related" min="1">
                 <div class="paragraph">
                   <div class="text__eyebrow color__gray">Related Collections</div>
                   <div class="text__body-3">
                     <div class="unit">
-                        <unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels</l></unit>
+                        <unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>
                     </div>
                   </div>
                 </div>
@@ -463,7 +495,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
       <div class="int wrap-not-mobile">
 
         <h4 class="text-align-center text__headline-4 block-small ">Related Content</h4>
-
 
         <div class="slider-container module_slideshow slideshow-related manual-init slideshow-ctrl-init">
           <div class="slick-initialized slick-slider">
@@ -546,5 +577,14 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
       	$(".view-more-btn").css("display", "none");
     });
   });
+</script>
+
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 150,
+		  maxHeight: 100
+		});
+	});
 </script>
 <!-- end row -->

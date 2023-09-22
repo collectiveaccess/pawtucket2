@@ -1,9 +1,9 @@
 <form class="g-3 mt-3" action="<?= caNavUrl($this->request, 'search', '', 'objects'); ?>" id="advSearch" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="_advanced" value="1">
 	<div class="row mb-3 justify-content-center">
-		<div class="col-auto">
+		<!-- <div class="col-auto">
 			{{{_fulltext%width=400px&height=1&height=1&placeholder=Keyword&class=browseMoreSearchOptsField%20form-control}}}
-		</div>
+		</div> -->
 		<div class="col-auto">
 			{{{ca_objects.preferred_labels.name%id=title&placeholder=Title&class=browseMoreSearchOptsField%20form-control}}}
 		</div>

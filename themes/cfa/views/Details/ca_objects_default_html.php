@@ -160,7 +160,7 @@
 		</div>
 		<div class="int wrap-not-mobile">
 			
-		<h4 class="text-align-center text__headline-4 block-small ">Related Content</h4>
+		<h4 class="text-align-center text__headline-4 block-small ">Related Items</h4>
 		<div> This content is subject to change, Where are these going to be loaded from</div>
 
 		<div class="slider-container module_slideshow slideshow-related manual-init slideshow-ctrl-init">

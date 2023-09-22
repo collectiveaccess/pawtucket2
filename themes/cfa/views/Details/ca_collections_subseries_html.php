@@ -47,7 +47,8 @@
   <main class="flush">
 
     <div class="eyebrow text__eyebrow color__gray mx-5 my-3">
-			{{{<unit relativeTo="ca_collections.parent"><l>^ca_collections.preferred_labels<l></unit> > <l>^ca_collections.preferred_labels<l>}}}
+			<!-- {{{<unit relativeTo="ca_collections.parent"><l>^ca_collections.preferred_labels<l></unit> > <l>^ca_collections.preferred_labels<l>}}} -->
+			{{{<unit relativeTo="ca_collections.hierarchy" delimiter=" > "><l>^ca_collections.preferred_labels<l></unit>}}}
 		</div>
     <br/>
     <h1 class="text-align-center text__headline-1 block-sm">
@@ -67,7 +68,7 @@
 								"ca_collections.cfaBulkDates" => "Bulk Dates",
 								"ca_collections.idno" => "Series identifier",
 								"ca_collections.cfaDescription" => "Description",	
-								"ca_collections.cfaCollectionExtent" => "Extent of Collection",
+								"ca_collections.cfaExtent" => "Extent of Collection",
 								"ca_collections.cfaAccessRestrictions" => "Access Restrictions",
 								"ca_collections.cfaUseRestrictions" => "Use Restrictions",
 								"ca_collections.cfaRelatedMaterials" => "Related Materials",
@@ -89,19 +90,42 @@
       </div>
     </section>
 
+
+<?php
+	$access_values = caGetUserAccessValues($this->request);
+	$item_count = $viewable_count = 0;
+	
+	$ids = $t_item->get('ca_collections.branch.collection_id', ['returnAsArray' => true]);
+	
+	while(sizeof($ids)) {
+		$id = array_shift($ids);
+		$t_coll = ca_collections::findAsInstance($id);
+		
+		if($t_coll && ($t_coll->getRelatedItems('ca_objects', ['checkAccess' => $access_values, 'returnAs' => 'count']) > 0)) {
+			$qr_objects = $t_coll->getRelatedItems('ca_objects', ['returnAs' => 'searchResult', 'checkAccess' => $access_values]);
+			$item_count += $qr_objects->numHits();
+		
+			while($qr_objects->nextHit()) {
+				if($qr_objects->get('ca_object_representations.representation_id', ['checkAccess' => $access_values])) {
+					$viewable_count++;
+				}
+			}
+		}
+	}
+?>
     <section class="collection-grid-items">
       <div class="wrap">
         <div class="int module-tabs">
 
           <div class="header">
-            <h4 class="text-align-center text__headline-4 title">Sub-series Items</h4>
+            <h4 class="text-align-center text__headline-4 title">Sub-Series Items</h4>
             <div class="filters">
 
             	<ul class="nav nav-tabs" id="myTab" role="tablist" style="border: none;">
                 <li class="nav-item" role="presentation">
                   <button class="nav-link active" id="itemGrid-tab" data-bs-toggle="tab" data-bs-target="#itemGrid-tab-pane" type="button" role="tab" aria-controls="itemGrid-tab-pane" aria-selected="true">
-                    <span class="title text__eyebrow">Viewable Media</span>
-                    <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="What is Viewable Media?">
+                    <span class="title text__eyebrow">Viewable Media (<?= $viewable_count; ?>)</span>
+                    <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="What does this mean? Not every object in our collection has been digitized yet. This option shows you only items that can be viewed online now.">
                       <div class="trigger-icon color-icon-orange">
                         <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
@@ -115,12 +139,13 @@
                 <li class="mt-2" style="color: #767676;"> | </li>
                 <li class="nav-item" role="presentation">
                   <button class="nav-link" id="itemList-tab" data-bs-toggle="tab" data-bs-target="#itemList-tab-pane" type="button" role="tab" aria-controls="itemList-tab-pane" aria-selected="false">
-                    <span class="title text__eyebrow">Item List</span>
+                    <span class="title text__eyebrow">Item List (<?= $item_count; ?>)</span>
                   </button>
                 </li>
 				      </ul>
 
-              <a href="/index.php/Search/advanced/collections" class="text__eyebrow color-class-orange $color__dark_gray">
+              <!-- href="/Search/advanced/collections"-->
+              <a href="/Browse/Objects" class="text__eyebrow color-class-orange $color__dark_gray">
                 Advanced Collections Search 
                 <span class="arrow-link">
                   <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -133,57 +158,130 @@
           </div>
 
           <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0">
+            <?php 
+              if($viewable_count == 0) {
+            ?>
+                <div class="tab-pane fade" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0">
+            <?php
+              }else{
+            ?>
+                <div class="tab-pane fade show active" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0">
+            <?php
+              }
+            ?>
+            <!-- <div class="tab-pane fade show active" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0"> -->
               <div class="tab-int">
-                <div class="grid-flex grid-1-3-4 margin-bottom collection-grid">
-                  {{{<ifcount code="ca_objects" min="1">
-                      <unit relativeTo="ca_objects" delimiter="">
-                        <div class="item-item item">
-                          <ifdef code="ca_object_representations.media.small">
-                            <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
-                          </ifdef>
-                          <ifnotdef code="ca_object_representations.media.small">
-                            <div class="collItemImgPlaceholder"><a></a></div>
-                          </ifnotdef>
-                          <div class="text-align-center info ">
-                            <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
-                            <div class="title text__promo-4 block-xxxs"><a href="" class="color-link-orange"><l>^ca_objects.preferred_labels<l></a></div>
-                            <div class="text__eyebrow year color__gray">^ca_occurrences.cfaDateProduced</div>
-                          </div>
-                        </div>
+                <div class="grid-flex grid-1-3-4 margin-bottom collection-grid" id="expando-grid">
+
+                  {{{<ifcount code="ca_collections.branch" min="0">
+                      <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_collections.idno_sort" filter="/<img/">
+
+                        <ifcount code="ca_objects" min="1">
+                          <unit relativeTo="ca_objects" delimiter="" filter="/<img/">
+                            <div class="item-item item">
+
+                              <ifdef code="ca_object_representations.media.small">
+                                <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
+                              </ifdef>
+                              <ifnotdef code="ca_object_representations.media.small">
+                                <div class="collItemImgPlaceholder"><a></a></div>
+                              </ifnotdef>
+                              <div class="text-align-center info ">
+                                <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
+                                <div class="title text__promo-4 block-xxxs"><a href="" class="color-link-orange"><l>^ca_objects.preferred_labels<l></a></div>
+                                <div class="text__eyebrow year color__gray">^ca_occurrences.cfaDateProduced</div>
+                              </div>
+                            </div>
+                          </unit>
+                        </ifcount>
+
                       </unit>
                   </ifcount>}}}
+
                 </div>
 
-                <div class="text-align-center">
-                  <span class="button color-gray pill view-more-btn">View More Items</span>
-                </div>
+                <?php 
+                  if($viewable_count > 4) {
+                ?>
+                    <div class="text-align-center">
+                      <span class="button color-gray pill view-more-btn">View More Items</span>
+                    </div>
+                <?php
+                  }
+                ?>
+
               </div>
             </div> <!-- tab-pane -->
-            <div class="tab-pane fade" id="itemList-tab-pane" role="tabpanel" aria-labelledby="itemList-tab" tabindex="0">
+
+            <?php 
+              if($viewable_count == 0) {
+            ?>
+                <div class="tab-pane fade show active" id="itemList-tab-pane" role="tabpanel" aria-labelledby="itemList-tab" tabindex="0">
+            <?php
+              }else{
+            ?>
+                <div class="tab-pane fade" id="itemList-tab-pane" role="tabpanel" aria-labelledby="itemList-tab" tabindex="0">
+            <?php
+              }
+            ?>
+            <!-- <div class="tab-pane fade" id="itemList-tab-pane" role="tabpanel" aria-labelledby="itemList-tab" tabindex="0"> -->
+              <div class="row pb-4 ps-3">
+                <div class="col">
+                  <small class="color__gray">Items that do not link to a record have not yet been cataloged. To request more information about these items, please contact info@chicagofilmarchives.org.</small>
+                </div>
+                <div class="col text-end">
+                  <small class="color__gray">
+                    <span class="viewable-media-icon right">
+                      <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
+                        <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
+                      </svg>
+                    </span>
+                    Items with Viewable Media
+                  </small>
+                </div>
+              </div>
+
               <ul class="list columns__text text__body-3" col-num="2" style="list-style-type: none;">
-                {{{<ifcount code="ca_objects" min="1">
-                  <unit relativeTo="ca_objects" delimiter="">
-                    <li>
-                      <span class="link-orange"><l>^ca_objects.preferred_labels</l></span>
-                      <if rule="^ca_objects.type_id =~ /audio/ AND ^ca_objects.type_id =~ /manu/"><small class="color__gray">(^ca_objects.type_id)</small></if>
-                      <ifdef code="ca_object_representations.media.small">
-                        <span class="viewable-media-icon right">
-                          <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
-                          <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
-                          </svg>
-                        </span>
-                      </ifdef>
-                    </li>
-                  </unit>
-                </ifcount>}}}
+
+                {{{
+                  <ifcount code="ca_collections.branch" min="1">
+                    <unit relativeTo="ca_collections.branch" delimiter=""  sort="ca_collections.preferred_labels.name_sort">
+                        
+                      <ifcount code="ca_objects" min="1">
+                        <span class="fw-bold"><l>^ca_collections.preferred_labels</l></span>
+                        <unit relativeTo="ca_objects" delimiter="" sort="ca_objects.preferred_labels">
+                          <li>
+                            <case>
+                              <if rule="^ca_objects.access = 'yes'"><span class="link-orange"><l>^ca_objects.preferred_labels</l></span></if>
+                              <span>^ca_objects.preferred_labels</span>
+                            </case>
+                            <if rule="^ca_objects.type_id =~ /audio/i OR ^ca_objects.type_id =~ /manu/i"><small class="color__gray">(^ca_objects.type_id)</small></if>
+                            <ifdef code="ca_object_representations.media.small">
+                              <span class="viewable-media-icon right">
+                                <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
+                                <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
+                                </svg>
+                              </span>
+                            </ifdef>
+                          </li>
+                        </unit> <br><hr><br>
+                      </ifcount>
+                      
+                    </unit>
+                  </ifcount>
+                }}}
+
               </ul>
             </div> <!-- tab-pane -->
           </div><!-- tab-content -->
         </div>
       </div><!-- wrap -->
     </section>
+<?php
+	//}
+?>
 
   </main>
 </div>
