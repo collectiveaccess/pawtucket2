@@ -92,7 +92,7 @@
 			$t_instance = Datamodel::getInstance($vs_class, true);
  			
  			// Now that table name is known we can set standard view vars
- 			parent::setTableSpecificViewVars();
+ 			parent::setTableSpecificViewVars($va_browse_info);
  			
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			$vb_omit_child_records = caGetOption('omitChildRecords', $va_browse_info, [], array('castTo' => 'bool'));
@@ -199,24 +199,26 @@
 			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 			$show_base_criteria = caGetOption('showBaseCriteria', $va_browse_info, false);
 			
-			if (($o_browse->numCriteria() == 0)) {
-				if (is_array($va_base_criteria) && !$vs_remove_criterion) {
-					foreach($va_base_criteria as $vs_facet => $vs_value) {
-						$o_browse->addCriteria($vs_facet, $vs_value);
-					}
-				} else {
-					$o_browse->addCriteria("_search", array("*"));
-				}
-			}
 			if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			    foreach ($va_facets as $vs_facet_spec) {
 			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
 			        $vs_facet = array_shift($va_tmp);
 			        $o_browse->addCriteria($vs_facet, preg_split("![\|,]+!", join(":", $va_tmp))); 
 			    }
+			
 			} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
 				$o_browse->addCriteria($vs_facet, $p);
-			} 
+			} else { 
+				if (($o_browse->numCriteria() == 0)) {
+					if (is_array($va_base_criteria) && !$vs_remove_criterion) {
+						foreach($va_base_criteria as $vs_facet => $vs_value) {
+							$o_browse->addCriteria($vs_facet, $vs_value);
+						}
+					} else {
+						$o_browse->addCriteria("_search", array("*"));
+					}
+				}
+			}
 			
 			//
 			// Sorting

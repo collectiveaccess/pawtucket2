@@ -110,7 +110,7 @@ class SearchController extends FindController {
 		}
 		
 		// Now that table name is known we can set standard view vars
-		parent::setTableSpecificViewVars();
+		parent::setTableSpecificViewVars($va_browse_info);
 		
 		$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
 		
