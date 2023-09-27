@@ -34,15 +34,18 @@
 	
 	
 	$vs_image = $t_item->getWithTemplate("<ifcount code='ca_objects' max='1'><unit relativeTo='ca_objects'><l>^ca_object_representations.media.large</l><l>^ca_objects.preferred_labels.name</l></unit></ifcount>");
-	$vb_bottom_box = false;
+	$vb_bottom_box = $vb_col_1 = false;
 	if($t_item->get("ca_entities.entity_id", array("checkAccess" => $va_access_values, "excludeRelationshipTypes" => array("record_label")))){
 		$vb_bottom_box = true;
 	}
 	if($t_item->get("ca_occurrences.related.occurrence_id", array("checkAccess" => $va_access_values))){
 		$vb_bottom_box = true;
 	}
+	if($t_item->get("ca_occurrences.related.occurrence_id", array("restrictToTypes" => array("song"), "checkAccess" => $va_access_values))){
+		$vb_col_1 = true;
+	}
 	if($t_item->get("ca_occurrences.track_listing")){
-		$vb_bottom_box = true;
+		$vb_bottom_box = $vb_col_1 = true;
 	}
 ?>
 <div class="row">
@@ -102,16 +105,19 @@
 				<div class="bgLightGray container"><div class="row">
 <?php
 			}
+			if($vb_col_1){
+				print '<div class="col-sm-12 col-md-4">';
 ?>
 				{{{<ifdef code="ca_occurrences.track_listing"><div class="unit"><label>Track Listing</label>^ca_occurrences.track_listing</div></ifdef>}}}
 				{{{<ifcount code="ca_occurrences.related" restrictToTypes="song" min="1">
-					<div class="col-sm-12 col-md-4">
+					
 						<div class="unit trimText"><label>Track Listing</label>
 							<unit relativeTo="ca_occurrences.related" restrictToTypes="song" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>
 						</div>
-					</div>
 				</ifcount>}}}
 <?php
+				print "</div>";
+			}
 				$va_entities = $t_item->get("ca_entities", array("excludeRelationshipTypes" => array("record_label"), "returnWithStructure" => 1, "checkAccess" => $va_access_values));
 				if(is_array($va_entities) && sizeof($va_entities)){
 					print "<div class='col-sm-12 col-md-4'>";
@@ -133,7 +139,7 @@
 						<unit relativeTo="ca_occurrences.related" restrictToTypes="studio_session" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences.related" restrictToTypes="appearance" min="1"><div class="unit"><label>Related Appearance<ifcount code="ca_occurrences.related" restrictToTypes="appearance" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code='ca_occurrences.related' min='1' restrictToTypes='tour'><unit relativeTo='ca_occurrences.related' restrictToTypes='tour'>^ca_occurrences.preferred_labels.name: </unit></ifcount>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					</div>
 				</ifcount>}}}

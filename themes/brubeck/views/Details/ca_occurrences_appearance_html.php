@@ -34,7 +34,10 @@
 	$va_access_values = caGetUserAccessValues($this->request);	
 	
 	
-	$vs_image = $t_item->getWithTemplate("<ifcount code='ca_objects' max='1'><unit relativeTo='ca_objects'><l>^ca_object_representations.media.large</l><l>^ca_objects.preferred_labels.name</l></unit></ifcount>");
+	$vs_image = $t_item->getWithTemplate("^ca_object_representations.media.large", array("checkAccess" => $va_access_values));
+	if(!$vs_image){
+		$vs_image = $t_item->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'><l>^ca_object_representations.media.large</l><l>^ca_objects.preferred_labels.name</l></unit></ifcount>", array("checkAccess" => $va_access_values));
+	}
 	$vb_bottom_box = false;
 	if($t_item->get("ca_entities.entity_id", array("checkAccess" => $va_access_values))){
 		$vb_bottom_box = true;
@@ -122,7 +125,7 @@
 						<unit relativeTo="ca_occurrences.related" restrictToTypes="studio_session" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences.related" restrictToTypes="appearance" min="1"><div class="unit"><label>Related Appearance<ifcount code="ca_occurrences.related" restrictToTypes="appearance" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code='ca_occurrences.related' min='1' restrictToTypes='tour'><unit relativeTo='ca_occurrences.related' restrictToTypes='tour'>^ca_occurrences.preferred_labels.name: </unit></ifcount>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					</div>
 				</ifcount>}}}

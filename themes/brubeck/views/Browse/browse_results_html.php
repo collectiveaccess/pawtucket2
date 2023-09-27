@@ -72,6 +72,11 @@ if (!$vb_ajax) {	// !ajax
 <div class="row" style="clear:both;">
 	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 <?php 
+	# --- show grid of featured content if no search or filter
+	if(($vs_table == "ca_entities") && !sizeof($va_criteria)){
+		print $this->render("Browse/featured_entities_grid_html.php");
+	}
+
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 					print "<div id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
@@ -94,6 +99,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		<H1>
 <?php
+			print (($vs_table == "ca_entities") && !sizeof($va_criteria)) ? "Browse All " : "";
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
 			<div class="btn-group">

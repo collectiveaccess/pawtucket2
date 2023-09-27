@@ -31,6 +31,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -137,7 +138,7 @@
 				<div class="bgLightGray container"><div class="row">
 <?php
 			}
-				$va_entities = $t_item->get("ca_entities");
+				$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
 				if(is_array($va_entities) && sizeof($va_entities)){
 					print "<div class='col-sm-12 col-md-4'>";
 					$va_entities_by_type = array();
@@ -168,7 +169,7 @@
 						<unit relativeTo="ca_occurrences" restrictToTypes="studio_session" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences" restrictToTypes="appearance" min="1"><div class="unit"><label>Related Appearance<ifcount code="ca_occurrences" restrictToTypes="appearance" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="appearance" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code='ca_occurrences.related' min='1' restrictToTypes='tour'><unit relativeTo='ca_occurrences.related' restrictToTypes='tour'>^ca_occurrences.preferred_labels.name: </unit></ifcount>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					</div>
 				</ifcount>}}}
@@ -181,6 +182,19 @@
 
 ?>
 {{{<ifcount code="ca_objects" min="2">
+			<div class="row">
+				<div class="col-sm-6">
+					<label>Related Archival Items</label>
+				</div>
+				<div class="col-sm-6 browseAllLink">
+<?php 
+					$vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values));
+					if($vs_reps){
+						print caNavLink($this->request, _t("View Digitized Media"), "btn btn-default", "", "Browse", "objects", array("facets" => "collection_facet:".$t_item->get("ca_collections.collection_id").";has_media_facet:1"));
+					}
+?>
+				</div>
+			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>

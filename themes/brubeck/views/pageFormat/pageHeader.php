@@ -93,6 +93,7 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+	<link rel="stylesheet" href="https://use.typekit.net/lzb1bct.css">
 </head> 
 
 <body class='<?php print (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
@@ -167,7 +168,14 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+					<li class="dropdown-container<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "Collection"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Guide"), "", "", "About", "Guide"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Plan Your Visit"), "", "", "About", "Visit"); ?></li>
+						</ul>
+					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li class="dropdown-container<?php print (in_array(strToLower($this->request->getController()), array("gallery", "listing"))) ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Featured <i class='fa fa-chevron-down' aria-hidden='true'></i></a>

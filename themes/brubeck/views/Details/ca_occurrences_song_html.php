@@ -68,7 +68,7 @@
 					{{{<ifdef code="ca_occurrences.descriptive_note"><div class="unit"><label>Descriptive Note</label><unit relatativeTo="ca_occurrences.descriptive_note" delimiter="<br/>">^ca_occurrences.descriptive_note</unit></div></ifdef>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
-		{{{<ifcount code="ca_occurrences.related" restrictToTypes="appearance,album,studio_session" min="1">			
+		{{{<if rule="^ca_occurrences.showTimeline =~ /Yes/"><ifcount code="ca_occurrences.related" restrictToTypes="appearance,album,studio_session" min="1">			
 			<div class="row">
 				<div class="col-sm-12">
 					<div id="lbTimelineContainer">
@@ -89,7 +89,7 @@
 					});
 				});
 			</script>			
-		</ifcount>}}}
+		</ifcount></if>}}}
 <?php
 			if($vb_bottom_box){
 ?>
@@ -126,10 +126,10 @@
 				{{{<ifcount code="ca_occurrences.related" restrictToTypes="appearance" min="1">
 					<div class="col-sm-12 col-md-4">
 						<ifcount code="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="included" min="1"><div class="unit trimText"><label>Appearances</label>
-							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="included" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="included" delimiter="<br/>"><l><ifcount code='ca_occurrences.related' min='1' restrictToTypes='tour'><unit relativeTo='ca_occurrences.related' restrictToTypes='tour'>^ca_occurrences.preferred_labels.name: </unit></ifcount>^ca_occurrences.preferred_labels.name</l></unit></div>
 						</ifcount>
 						<ifcount code="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" min="1"><div class="unit"><label>Related Appearance<ifcount code="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" min="2">s</ifcount></label>
-							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" delimiter="<br/>"><l><ifcount code='ca_occurrences.related' min='1' restrictToTypes='tour'><unit relativeTo='ca_occurrences.related' restrictToTypes='tour'>^ca_occurrences.preferred_labels.name: </unit></ifcount>^ca_occurrences.preferred_labels.name</l></unit></div>
 						</ifcount>
 					</div>
 				</ifcount>}}}
@@ -160,8 +160,11 @@
 				
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
-				<div class='col-sm-12'>
+				<div class='col-sm-6'>
 					<label>Related Archival Items</label>
+				</div>
+				<div class='col-sm-6 browseAllLink'>
+					<?php print caNavLink($this->request, _t("Browse All Archival Items"), "btn btn-default", "", "Browse", "objects", array("facet" => "occurrence_facet", "id" => $t_item->get("ca_occurrences.occurrence_id"))); ?>
 				</div>
 			</div>
 			<div class="row">

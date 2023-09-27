@@ -1,5 +1,15 @@
 <?php
+	$va_access_values = $this->getVar("access_values");
 	$qr_songs = $this->getVar("songs_results");
+	$vn_image_object_id = $this->getVar("image_object_id");
+	if($vn_image_object_id){
+		$t_object = new ca_objects($vn_image_object_id);
+		$t_object->get("ca_objects.object_id");
+		$vs_image = $t_object->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values));
+	}
+	if(!$vs_image){
+		$vs_image = caGetThemeGraphic($this->request, 'songs_landing.jpg', array("alt" => "Songs image"));
+	}
 ?>
 <div class="row">
 	<div class="col-sm-12 col-lg-10 col-lg-offset-1">
@@ -10,7 +20,7 @@
 	<div class="col-sm-12 col-lg-10 col-lg-offset-1">
 		<div class="row bgDarkBlue featuredCallOut">
 			<div class="col-sm-12 col-md-6 featuredHeaderImage">
-				<?php print caGetThemeGraphic($this->request, 'songs_landing.jpg', array("alt" => "Songs image")); ?>
+				<?php print $vs_image; ?>
 			</div>
 			<div class="col-sm-12 col-md-6 text-center">
 				<div class="featuredIntro">{{{songs_intro_text}}}</div>

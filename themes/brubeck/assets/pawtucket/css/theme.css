@@ -1,21 +1,21 @@
 /* colors dark blue: #200d45; lighter blue: #0a4ba0; */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,500;0,600;1,400&display=swap');
+/*@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,500;0,600;1,400&display=swap');*/
 
 /* fonts to change */
 
 body, .detail, .gallery, label{
-	font-family: "Poppins", sans-serif;
+	font-family: "urbane-rounded", sans-serif;
 	font-weight:300;
 	color:#000;
 }
 b, strong{
-	font-family: 'Poppins', sans-serif;
+	font-family: 'urbane-rounded', sans-serif;
 	font-weight:500;
 }
 H1, h1, h2, H2, H3, h3, H4, h4, H5, h5, #footer a.orgLink{
 	color:#000;
-	font-family: 'Poppins', sans-serif;
-	font-weight:600;
+	font-family: 'urbane-rounded', sans-serif;
+	font-weight:500;
 }
 H1, h1 {
 	font-size: 30px;
@@ -100,7 +100,7 @@ a:hover{
 }
 .navbar-default .navbar-brand strong{
 	display: block;
-	font-size: 28px;
+	font-size: 27px;
 	font-weight: 600;
 }
 .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
@@ -141,8 +141,8 @@ a:hover{
 }
 
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
-    font-family: 'Poppins', sans-serif;
-    text-transform:uppercase;
+    font-family: 'urbane-rounded', sans-serif;
+    text-transform:capitalize;
 }
 .navbar-default .navbar-nav > li > a{
 	color:#FFF;
@@ -166,10 +166,10 @@ a:hover{
 	box-shadow: 1px 3px 3px rgba(0, 0, 0, 0.2);
 }
 .navbar-nav > li > .dropdown-menu a{
-	text-transform:uppercase;
+	text-transform:capitalize;
 	letter-spacing:normal;
 	color:#FFF;
-	font-family:'Poppins', sans-serif;
+	font-family:'urbane-rounded', sans-serif;
 	font-weight:300;
 	font-size:17px;
 }
@@ -216,23 +216,23 @@ a:hover{
 /* footer */
 /* offset needed for fixed footer */
 body{
-	margin-bottom:180px;
+	margin-bottom:200px;
 }
 #footer{
 	background-color: #200d45;
 	color:#FFF;
-	padding-top:30px;
-	height: 130px;
+	padding-top:35px;
+	height: 140px;
 	border:0px;
 	font-size:14px;
 	font-weight:normal;
 	margin-top:50px;
-	padding-bottom:30px;
+	padding-bottom:15px;
 	line-height: 1.8em;
-	font-family:'Poppins', sans-serif;
+	font-family:'urbane-rounded', sans-serif;
 	font-weight:300;
 }
-@media(max-width:768px){
+@media(max-width:991px){
 	/* CHANGE - does the footer height need to change for smaller screen sizes? */
 	#footer{
 		height:200px;
@@ -255,7 +255,7 @@ body{
 	margin-right:20px;
 }
 #footer a.orgLink{
-	font-family: 'Poppins', sans-serif;
+	font-family: 'urbane-rounded', sans-serif;
 	font-size:26px;
 	color:#FFF;
 	font-weight:300;
@@ -268,7 +268,7 @@ body{
 #footer .text-right{
 	padding-top: 13px;
 }
-@media(max-width: 768px) {
+@media(max-width: 991px) {
 	#footer .text-right{
 		text-align:center;
 	}
@@ -288,7 +288,7 @@ body{
 	color:#FFF;
 }
 #footer ul {
-    margin-top: 10px;
+    margin-top: 5px;
 }
 #footer ul.social li {
   padding: 0px 5px 0px 5px;
@@ -301,6 +301,19 @@ body{
 	width:100%;
 	height:auto;
 	max-width:250px;
+}
+#footer .donorCredit{
+	font-size:12px;
+	text-align:right;
+	padding-right: 17px;
+}
+@media(max-width: 991px) {
+	#footer .donorCredit{
+		text-align:center;
+		padding-right: 0px;
+		line-height: 1.1em;
+  		padding-top: 15px;
+	}
 }
 /* search / browse results */
 #bRefine H5, #bRefine H3, #bRefine H2, #bRefine a{
@@ -531,7 +544,7 @@ body.frontContainer #footer{
 .heroSearch H1 .line1, .heroSearch H1 .line3 {
     font-size: 28px;
     text-transform: none;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'urbane-rounded', sans-serif;
     font-weight:300;
 }
 .heroSearch H1 .line2{
@@ -541,7 +554,7 @@ body.frontContainer #footer{
 	color:#FFF;
 	padding-top:20px;
 	padding-bottom:20px;
-	font-family: 'Poppins', sans-serif;
+	font-family: 'urbane-rounded', sans-serif;
 }
 .heroSearch .formOutline {
 	border: 0px;
@@ -608,7 +621,7 @@ body.frontContainer #footer{
 	font-size: 23px;
 	color: #000;
 	margin: 50px 0px 80px 0px;
-	font-family: 'Poppins', sans-serif;
+	font-family: 'urbane-rounded', sans-serif;
 	font-weight:300;
 	line-height:1.8em;
 }
@@ -617,8 +630,8 @@ body.frontContainer #footer{
 	font-size: 28px;
 	color: #000;
 	margin-bottom:15px;
-	font-family: 'Poppins', sans-serif;
-	font-weight:600;
+	font-family: 'urbane-rounded', sans-serif;
+	font-weight:500;
 }
 @media(max-width:767px){
 	.hpIntro .callout{
@@ -690,7 +703,7 @@ body.frontContainer #footer{
 	color:#000;
 	text-transform:uppercase;
 	margin-bottom:6px;
-	font-family: 'Poppins', sans-serif;
+	font-family: 'urbane-rounded', sans-serif;
 }
 .hpExploreBox .hpExploreBoxTitle a:hover {
 	text-decoration:none;
@@ -704,7 +717,7 @@ a .frontGridCaption, .frontGridCaption a {
 	color:#000;
 	text-transform:none;
 	margin-bottom:6px;
-	font-family: 'Poppins', sans-serif;
+	font-family: 'urbane-rounded', sans-serif;
 }
 .frontGrid a img{
 	box-shadow: 0 2px 14px 0 rgba(0,0,0,.3);
@@ -854,6 +867,7 @@ a.readmore-js-toggle {
 }
 .detail .bgLightGray{
 	margin-top:30px;
+	margin-bottom: 10px;
 }
 .detail.objects .bgLightGray{
 	margin-top:0px;
@@ -866,6 +880,15 @@ a.readmore-js-toggle {
 	text-align: center;
 	width: 100%;
 	font-size: 18px;
+}
+.browseAllLink{
+	text-align:right;
+	margin-top:10px;
+}
+@media(max-width:768px){
+	.browseAllLink{
+		text-align:left;
+	}
 }
 /* storymap */
 .vco-storymap h2.vco-headline-title, .vco-storymap h2 {
@@ -890,7 +913,7 @@ a.readmore-js-toggle {
 	text-transform:none;
 }
 .vco-text-content p, .vco-text-content{
-	font-family: "Poppins", sans-serif;
+	font-family: "urbane-rounded", sans-serif;
 	font-weight:300;
 	font-size:15px !important;	
 }
@@ -927,10 +950,31 @@ a.readmore-js-toggle {
 .featuredHeaderImage{
 	padding-left:0px;
 	padding-right:0px;
+	overflow:hidden;
 }
 .featuredHeaderImage img{
-	width:100%;
-	height:auto;
+	width: 104%; /* this is to try to crop off borders on the images */
+	margin-left:-2%;
+	/*height:auto;*/
+	object-position: center center;
+	object-fit:cover;
+	height:500px;
+}
+@media(max-width:992px){
+	.featuredHeaderImage img{
+		height:400px;
+	}
+}
+
+@media(max-width:768px){
+	.featuredHeaderImage img{
+		height:300px;
+	}
+}
+@media(max-width:500px){
+	.featuredHeaderImage img{
+		height:200px;
+	}
 }
 .featuredSearch .formOutline {
 	border: 0px;
@@ -1001,6 +1045,18 @@ a.readmore-js-toggle {
 
 .featuredList{
 	margin-top:30px;
+}
+.browse .featuredList{
+	margin-top:0px;
+	margin-bottom:30px;
+}
+.featuredListTitle{
+	font-size: 30px;
+	color: #000000;
+	text-transform: capitalize;
+	font-family: 'urbane-rounded', sans-serif;
+	font-weight: 500;
+	margin-bottom: 10px;
 }
 .featuredTile {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);

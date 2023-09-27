@@ -70,6 +70,19 @@ $va_data['storymap']['slides'][] = [
 $vn_c = 0;
 while($qr_appearances->nextHit()) {
 	$vs_georeference = $qr_appearances->getWithTemplate("<unit relativeTo='ca_occurrences.related' restrictToTypes='venue'>^ca_occurrences.georeference</unit>");
+	$vs_image = $qr_appearances->getWithTemplate("^ca_object_representations.media.large.url", array("checkAccess" => $va_access_values));
+	$vs_caption = $vs_credit = "";
+	if(!$vs_image){
+		$vs_image = $qr_appearances->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'>^ca_object_representations.media.large.url</unit></ifcount>", array("checkAccess" => $va_access_values));
+		$vs_caption = $qr_appearances->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'><l>^ca_objects.preferred_labels.name</l></unit></ifcount>", array("checkAccess" => $va_access_values));
+		$vs_credit = $qr_appearances->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'>^ca_objects.credit</unit></ifcount>", array("checkAccess" => $va_access_values));
+	}
+	if(!$vs_image){
+		$vs_image = $qr_appearances->getWithTemplate("<unit relativeTo='ca_objects' limit='1'>^ca_object_representations.media.large.url</unit>", array('checkAccess' => $va_access_values));
+		$vs_caption = $qr_appearances->getWithTemplate("<unit relativeTo='ca_objects' length='1'><l>^ca_objects.preferred_labels.name</l></unit>", array("checkAccess" => $va_access_values));
+		$vs_credit = $qr_appearances->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_objects.credit</unit>", array("checkAccess" => $va_access_values));
+	}
+	
 	if($vs_georeference){
 		$vs_georeference = str_replace(array("[", "]"), array("", ""), $vs_georeference);
 		$va_coordinates = explode(",", $vs_georeference);
@@ -86,9 +99,9 @@ while($qr_appearances->nextHit()) {
 				'text' => $qr_appearances->getWithTemplate('<ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit><br/></ifcount><ifdef code="ca_occurrences.description">^ca_occurrences.description</ifdef>'),
 			],
 			'media' => [
-				'url' => $qr_appearances->getWithTemplate("<unit relativeTo='ca_objects' limit='1'>^ca_object_representations.media.large.url</unit>", array('checkAccess' => $va_access_values)),
-				'credit' => $qr_appearances->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_objects.credit</unit>"),
-				'caption' => $qr_appearances->getWithTemplate("<unit relativeTo='ca_objects' length='1'><l>^ca_objects.preferred_labels.name</l></unit>")
+				'url' => $vs_image,
+				'credit' => $vs_credit,
+				'caption' => $vs_caption
 			]
 		];	
 

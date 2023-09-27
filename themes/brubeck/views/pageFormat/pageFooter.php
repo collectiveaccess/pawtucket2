@@ -30,17 +30,19 @@
 		</div><!-- end pageArea --></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
 			<div class="row">
-				<div class="col-sm-6">
-					<?php print caGetThemeGraphic($this->request, 'Wilton_Logo-COLOR.png', array("alt" => "Wilton Library Logo")); ?><a href="#" class="orgLink">Wilton Library</a>
+				<div class="col-md-6">
+					<a href="https://www.wiltonlibrary.org" target="_blank"><?php print caGetThemeGraphic($this->request, 'Wilton_Logo-COLOR.png', array("alt" => "Wilton Library Logo")); ?></a><a href="https://www.wiltonlibrary.org" target="_blank" class="orgLink">Wilton Library</a>
 					<div class="address">137 Old Ridgefield Road, Wilton CT 06897</div>
 				</div>
-				<div class="col-sm-6 text-right">	
+				<div class="col-md-6 text-right">	
 					<ul class="list-inline">
 						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Site Page"), "", "", "", ""); ?></li>
-						<li><?php print caNavLink($this->request, _t("Site Page"), "", "", "", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Policies"), "", "", "Policies", ""); ?></li>
 					</ul>
 				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12"><div class="donorCredit">{{{footer_donor_credit}}}</div></div>
 			</div>
 		</footer><!-- end footer -->
 <?php

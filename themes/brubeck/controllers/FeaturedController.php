@@ -42,6 +42,7 @@
  		public function Tours() {
  			# --- what is the set code of the featured tours set?
  			$vs_set_code = $this->request->config->get("tours_page_set_code");
+			$vs_images_set_code = $this->request->config->get("tours_page_images_set_code");
 			
 			$t_set = new ca_sets();
 			$t_set->load(array('set_code' => $vs_set_code));
@@ -61,6 +62,16 @@
 				$this->view->setVar('tours_results', caMakeSearchResult('ca_occurrences', $va_row_ids));
 			}
 			
+			$t_set->load(array('set_code' => $vs_images_set_code));
+			# Enforce access control on set
+			if((sizeof($this->opa_access_values) == 0) || (sizeof($this->opa_access_values) && in_array($t_set->get("access"), $this->opa_access_values))){
+				$this->view->setVar('songs_images_set', $t_set);
+				$va_row_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values))) ? $va_tmp : array());
+				if(is_array($va_row_ids) && sizeof($va_row_ids)){
+					$this->view->setVar('image_row_ids', $va_row_ids);
+					$this->view->setVar('image_object_id', $va_row_ids[array_rand($va_row_ids)]);
+				}
+			}
 			
 			$this->render("Featured/tours_html.php");
  		}
@@ -68,6 +79,7 @@
  		public function Songs() {
  			# --- what is the set code of the featured songs set?
  			$vs_set_code = $this->request->config->get("songs_page_set_code");
+ 			$vs_images_set_code = $this->request->config->get("songs_page_images_set_code");
 			
 			$t_set = new ca_sets();
 			$t_set->load(array('set_code' => $vs_set_code));
@@ -87,6 +99,16 @@
 				$this->view->setVar('songs_results', caMakeSearchResult('ca_occurrences', $va_row_ids));
 			}
 			
+			$t_set->load(array('set_code' => $vs_images_set_code));
+			# Enforce access control on set
+			if((sizeof($this->opa_access_values) == 0) || (sizeof($this->opa_access_values) && in_array($t_set->get("access"), $this->opa_access_values))){
+				$this->view->setVar('songs_images_set', $t_set);
+				$va_row_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values))) ? $va_tmp : array());
+				if(is_array($va_row_ids) && sizeof($va_row_ids)){
+					$this->view->setVar('image_row_ids', $va_row_ids);
+					$this->view->setVar('image_object_id', $va_row_ids[array_rand($va_row_ids)]);
+				}
+			}
 			
 			$this->render("Featured/songs_html.php");
  		}
