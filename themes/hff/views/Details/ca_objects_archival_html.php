@@ -78,32 +78,27 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6'>
-				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
+							<H4>{{{ca_objects.preferred_labels.name}}}</H4>
 				{{{<ifdef code="ca_objects.unitdate.dacs_date_text"><div class="unit"><H6>Date</H6>^ca_objects.unitdate.dacs_date_text</div></ifdef>}}}
 				{{{<ifnotdef code="ca_objects.unitdate.dacs_date_text"><ifdef code="ca_objects.unitdate.dacs_date_value"><div class="unit"><H6>Date</H6>^ca_objects.unitdate.dacs_date_value</div></ifdef></ifnotdef>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Identifier</H6>^ca_objects.idno</div></ifdef>}}}
-				{{{<ifdef code='ca_object_representations.artwork_status'><div class="unit red">^ca_object_representations.artwork_status</div></ifdef>}}}
 				{{{<ifdef code='ca_object_representations.use_notice'><div class="unit red">^ca_object_representations.use_notice</div></ifdef>}}}
-				{{{<unit relativeTo="ca_object_representations"><ifdef code="ca_entities.preferred_labels"><div class="unit"><H6>Photographer</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=", ">^ca_entities.preferred_labels</unit></div></ifdef><unit>}}}
 				{{{<ifdef code="ca_object_representations.media_types"><div class="unit"><H6>Media Type</H6>^ca_object_representations.media_types%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_object_representations.caption"><div class="unit"><H6>Preferred Caption</H6>^ca_object_representations.caption</div></ifdef>}}}
-				{{{<ifdef code="ca_object_representations.copyright_credit"><div class="unit"><H6>Copyright Credit</H6>^ca_object_representations.copyright_credit</div></ifdef>}}}
-				{{{<ifdef code="ca_object_representations.copyright_statement"><div class="unit"><H6>Rights</H6>^ca_object_representations.copyright_statement</div></ifdef>}}}
-				{{{<ifcount code="ca_collections" min="1"><div class="unit"><H6>Location in Archives Collection</H6><unit relativeTo="ca_collections" delimiter="<br/><br/>"><l>^ca_collections.hierarchy.preferred_labels%delimiter=_&gt;_</l></unit></div></ifcount>}}}
-
-<?php
-				// {{{<ifdef code="ca_objects.extentDACS.extent_number|ca_objects.extentDACS.extent_type|ca_objects.extentDACS.physical_details|ca_objects.extentDACS.extent_dimensions">
-// 					<div class="unit"><H6>Extent & Medium</H6>
-// 						<unit relativeTo="ca_objects.extentDACS" delimiter="<br/>">
-// 							<ifdef code="ca_objects.extentDACS.extent_number">^ca_objects.extentDACS.extent_number </ifdef>
-// 							<ifdef code="ca_objects.extentDACS.extent_type">^ca_objects.extentDACS.extent_type: </ifdef>
-// 							<ifdef code="ca_objects.extentDACS.physical_details">^ca_objects.extentDACS.physical_details</ifdef><ifdef code="ca_objects.extentDACS.physical_details,ca_objects.extentDACS.extent_dimensions">; </ifdef>
-// 							<ifdef code="ca_objects.extentDACS.extent_dimensions">^ca_objects.extentDACS.extent_dimensions </ifdef>
-// 						</unit>
-// 					</div>
-// 				</ifdef>}}}
-?>
 				
+				{{{<ifdef code="ca_objects.extentDACS.extent_number|ca_objects.extentDACS.extent_type|ca_objects.extentDACS.physical_details|ca_objects.extentDACS.extent_dimensions">
+					<div class="unit"><H6>Extent & Medium</H6>
+						<unit relativeTo="ca_objects.extentDACS" delimiter="<br/>">
+							<ifdef code="ca_objects.extentDACS.extent_number">^ca_objects.extentDACS.extent_number </ifdef>
+							<ifdef code="ca_objects.extentDACS.extent_type">^ca_objects.extentDACS.extent_type: </ifdef>
+							<ifdef code="ca_objects.extentDACS.physical_details">^ca_objects.extentDACS.physical_details</ifdef><ifdef code="ca_objects.extentDACS.physical_details,ca_objects.extentDACS.extent_dimensions">; </ifdef>
+							<ifdef code="ca_objects.extentDACS.extent_dimensions">^ca_objects.extentDACS.extent_dimensions </ifdef>
+						</unit>
+					</div>
+				</ifdef>}}}
+				
+				
+				{{{<ifdef code="ca_object_representations.copyright_statement"><div class="unit"><H6>Rights</H6>^ca_object_representations.copyright_statement</div></ifdef>}}}
 				
 <?php
 				if($va_rel_entities = $t_object->get("ca_entities", array("checkAccess" => $va_access_values, "returnWithStructure" => true))){
@@ -116,7 +111,8 @@
 					}
 				}
 ?>				
-			
+					{{{<ifcount code="ca_collections" min="1"><div class="unit"><H6>Location in Archives Collection</H6><unit relativeTo="ca_collections" delimiter=" > "><l>^ca_collections.hierarchy.preferred_labels</l></unit></div></ifcount>}}}
+
 				
 						
 			</div><!-- end col -->
