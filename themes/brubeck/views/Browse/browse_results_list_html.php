@@ -136,7 +136,8 @@
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' class='bResultItemSetLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
-					if(!in_array(strToLower($qr_res->get($vs_table.".type_id", array("convertCodesToDisplayText" => true))), array("song"))){
+					#if(!in_array(strToLower($qr_res->get($vs_table.".type_id", array("convertCodesToDisplayText" => true))), array("song"))){
+					if($vs_table == "ca_objects"){
 						$vs_rep_link = "<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>";
 					}
 					

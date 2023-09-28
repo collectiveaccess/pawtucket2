@@ -98,6 +98,9 @@
 							$vn_facet_size = sizeof($va_facet_info['content']);
 							$vn_c = 0;
 							foreach($va_facet_info['content'] as $va_item) {
+								if(($vs_facet_name == "has_media_facet") && ($va_item['label'] == "does not have media")){
+									continue;
+								}
 								$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
 								print "<div>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 								$vn_c++;

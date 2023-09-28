@@ -344,7 +344,11 @@ body{
 	font-size: 16px;
 	color: #000;
 }
-.bResultListItemContent{
+.ca_objects .bResultListItemCol .bResultListItemText, .ca_objects .bResultListItem .bResultListItemText a{
+	font-size: 14px;
+	color: #000;
+}
+.ca_occurrences .bResultListItemContent, .ca_entities .bResultListItemContent{
 	display: flex;
 	align-items: center;
 }
@@ -363,6 +367,10 @@ body{
 	height:auto;
 	font-size:12px;
 
+}
+.bResultListItem .bResultItemSetLink {
+	bottom: 35px;
+	right: 20px;
 }
 @media(max-width:768px){
 	.results .bSearchWithinContainer{
@@ -1104,11 +1112,6 @@ a .featuredTile .title {
 	text-decoration:none;
 }
 
-/* Static pages */
-.staticPage{
-	font-size:16px;
-}
-
 /* multisearch */
 .multisearch .authoritySet a {
 	font-size: 12px;
@@ -1117,3 +1120,141 @@ a .featuredTile .title {
 .multisearch H3 a, .multisearch H3 a:hover, .multisearch H2 a, .multisearch H2 a:hover, .multisearchFullResults a {
 	color: #000;
 }
+
+/* Static pages */
+.staticPage{
+	font-size:16px;
+}
+
+@media(max-width:767px){
+	.userGuideBody H1{
+		margin-top:30px;
+	}	
+}
+.userGuideBody H2{
+	clear:both;
+}
+.userGuideBody H3{
+	text-transform:none;
+	clear:both;
+}
+.anchor{
+	position:relative;
+	top:-100px;
+}
+.userGuideBody label{
+	text-transform:none;
+	font-size:18px;
+	font-weight:600;
+}
+.userGuideBody{
+	font-size:16px;
+	border-left:1px solid #dedede;
+	margin-top: -15px;
+	padding-top:15px;
+}
+@media(min-width:1010px){
+	.userGuideBody{
+		padding-left:55px;
+	}
+}
+.userGuideBody ul{
+	line-height:1.8em;
+	font-size:16px;
+}
+.userGuideBody img{
+	height:auto;
+	max-width:80%;
+}
+.userGuideBody .imgSmall, .userGuideBody .imgMed, .userGuideBody .imgLarge, .userGuideBody .imgFull{
+	text-align:center;
+}
+.userGuideBody .imgSmall img{
+	height:auto;
+	width:25%;
+	max-width:100%;
+}
+.userGuideBody .imgMed img{
+	height:auto;
+	width:50%;
+	max-width:100%;
+}
+.userGuideBody .imgLarge img{
+	height:auto;
+	width:75%;
+	max-width:100%;
+}
+.userGuideBody .imgFull img{
+	height:auto;
+	width:100%;
+	max-width:100%;
+}
+@media(min-width:768px){
+	.userGuideSideNav{
+		position:sticky;
+		top: 95px;
+	}
+}
+.userGuideSideNav{
+	margin-top: -15px;
+	padding-top:15px;
+}
+.userGuideSideNav a{
+	font-size:15px;
+	color:#000;
+	text-decoration:none;
+}
+.userGuideSideNav ul{
+	padding-left: 0px;
+	list-style: none;
+}
+.userGuideSideNav ol{
+	padding-left: 15px;
+}
+.userGuideSideNav H2{
+	margin-top: 40px;
+	color:#000;
+}
+.userGuideAnchor{
+	position: relative;
+	top: -95px;
+}
+.userGuideBody .video-js{
+	width:100% !important;
+	height:500px !important;
+}
+
+/* site page About with images */
+.staticTextBlock{
+	padding-bottom:50px;
+	font-size: 17px;
+	line-height: 1.5em;
+}
+@media(min-width:769px){
+	.staticTextBlock{
+		display:flex;
+		align-items:center;
+	}
+}
+
+@media(max-width:768px){
+	.staticTextBlock img{
+		margin-bottom:25px;
+		margin-top:25px;
+	}
+	.staticTextBlock{
+		padding-bottom:25px;
+	}
+}
+.staticTextBlock H1, .staticTextBlock H2, .staticTextBlock H3, .staticTextBlock H4, .staticTextBlock H5, .staticTextBlock H6, .staticTextBlock H7, .staticTextBlock H8, .staticTextBlock H9, .staticTextBlock H10, .staticTextBlock H11 {
+	font-size:24px;
+	width:100%;
+	padding-top:0px;
+	margin-top:0px;
+	text-transform:none;
+}
+.staticTextBlock img{
+	width:100%;
+	height:auto;
+}
+

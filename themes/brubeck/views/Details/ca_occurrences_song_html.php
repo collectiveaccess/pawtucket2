@@ -66,6 +66,7 @@
 					{{{<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence"><div class="unit">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.description"><div class="unit">^ca_occurrences.description</div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.descriptive_note"><div class="unit"><label>Descriptive Note</label><unit relatativeTo="ca_occurrences.descriptive_note" delimiter="<br/>">^ca_occurrences.descriptive_note</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.genre"><div class="unit"><label>Genre</label>^ca_occurrences.genre%delimiter=,_</div></ifdef>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
 		{{{<if rule="^ca_occurrences.showTimeline =~ /Yes/"><ifcount code="ca_occurrences.related" restrictToTypes="appearance,album,studio_session" min="1">			

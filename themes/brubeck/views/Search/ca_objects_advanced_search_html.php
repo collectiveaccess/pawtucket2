@@ -13,18 +13,18 @@
 	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<label for='ca_objects_preferred_labels_name' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to Object Titles only.') ?>"><?php _p('Title') ?></label>
+			<label for='ca_objects_preferred_labels_name' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to Titles only.') ?>"><?php _p('Title') ?></label>
 			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_objects_idno' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search object identifiers.') ?>"><?php _p('Identifier') ?></label>
+			<label for='ca_objects_idno' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search item identifiers.') ?>"><?php _p('Identifier') ?></label>
 			{{{ca_objects.idno%width=210px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_objects_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to object types.') ?>"><?php _p('Type') ?></label>
-			{{{ca_objects.type_id%height=30px&id=ca_objects_type_id}}}
+			<label for='ca_objects_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to archival item types.') ?>"><?php _p('Type') ?></label>
+			{{{ca_objects.type_id%height=1&id=ca_objects_type_id}}}
 		</div>
 	</div>
 	<div class='row'>
@@ -36,7 +36,7 @@
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<label for='ca_collections_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records within a particular collection.') ?>"><?php _p('Collection') ?></label>
-			{{{ca_collections.preferred_labels%width=200px&height=40px}}}
+			{{{ca_collections.preferred_labels%width=200px&restrictToTypes=collection&render=list}}}
 		</div>
 	</div>
 	<br style="clear: both;"/>
