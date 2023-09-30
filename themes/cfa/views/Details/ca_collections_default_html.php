@@ -213,7 +213,7 @@
               </ul>
 
               <div> Needs to link to the advanced search</div>
-              <a href="#" class="text__eyebrow color-class-orange $color__dark_gray">Advanced Collections Search <span class="arrow-link">
+              <a href="#" class="text__eyebrow color-class-orange $color__dark_gray">Advanced Search <span class="arrow-link">
                   <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3.62909 5.99999L0.436768 0.666656L9.99999 5.99999L0.436768 11.3333L3.62909 5.99999Z" fill="#767676" class="color-fill"></path>
                   </svg>

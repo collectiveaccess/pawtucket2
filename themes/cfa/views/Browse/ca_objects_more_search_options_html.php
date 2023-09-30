@@ -8,19 +8,25 @@
 			{{{ca_objects.preferred_labels.name%id=title&placeholder=Title&class=browseMoreSearchOptsField%20form-control}}}
 		</div>
 		<div class="col-auto">
-			{{{ca_collections.collection_id%id=collectiontitle&select=1&placeholder=Collection%20Title&class=browseMoreSearchOptsField%20form-control}}}
-		</div>
-	</div>
-	<div class="row mb-3 justify-content-center">
-		<div class="col-auto">
 			{{{ca_objects.idno%id=identifier&placeholder=Identifier&class=browseMoreSearchOptsField%20form-control}}}
 		</div>
 		<div class="col-auto">
 			{{{ca_occurrences.cfaDateProduced%width=200px&useDatePicker=0&placeholder=Date%20of%20Production&class=browseMoreSearchOptsField%20form-control}}}
 		</div>
-		<div class="col-auto">
-			{{{ca_objects.type_id%width=200px&id=ca_objects_type_id&class=browseMoreSearchOptsField%20form-control%20adv-search-select}}}
+		<!-- <div class="col-auto">
+			{{{ca_collections.collection_id%id=collectiontitle&select=1&placeholder=Collection%20Title&class=browseMoreSearchOptsField%20form-control}}}
+		</div> -->
+	</div>
+	<div class="row mb-3 justify-content-center">
+		<!-- <div class="col-auto">
+			{{{ca_objects.idno%id=identifier&placeholder=Identifier&class=browseMoreSearchOptsField%20form-control}}}
 		</div>
+		<div class="col-auto">
+			{{{ca_occurrences.cfaDateProduced%width=200px&useDatePicker=0&placeholder=Date%20of%20Production&class=browseMoreSearchOptsField%20form-control}}}
+		</div> -->
+		<!-- <div class="col-auto">
+			{{{ca_objects.type_id%width=200px&id=ca_objects_type_id&class=browseMoreSearchOptsField%20form-control%20adv-search-select}}}
+		</div> -->
 	</div>
 	<div class="row mb-3 justify-content-end">
 		<div class="col-auto">

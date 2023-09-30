@@ -37,14 +37,14 @@
 	$vs_current_view	= $this->getVar('view');
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	
-	$vn_facet_display_length_initial = 10;
-	$vn_facet_display_length_maximum = 60;
+	$vn_facet_display_length_initial = 5;
+	$vn_facet_display_length_maximum = 20;
 	$vs_criteria = "";
 	if (sizeof($va_criteria) > 0) {
 		$i = 0;
 		$vb_start_over = false;
 		foreach($va_criteria as $va_criterion) {
-			$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm"><span class="filter-val">'.$va_criterion['value'].'</span><span class="filter-icon" aria-label="Remove filter" role="button">[<i class="bi bi-x"></i>]</span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+			$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm"><span class="filter-val">'.$va_criterion['value'].'</span><span class="filter-icon" aria-label="Remove filter" role="button"><i class="bi bi-x"></i></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 			$vb_start_over = true;
 			$i++;
 		}
@@ -72,6 +72,10 @@
 		if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria)){
 			print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 			print "<H6 class='my-2'>"._t("Filter by")."</H6>";
+
+			 //accordion start
+			print "<div class='accordion' id='accordionExample'>";
+
 			if($vs_criteria){
 				print "<div class='bCriteria'>".$vs_criteria."</div>";
 			}
@@ -88,44 +92,65 @@
 						</script>
 						<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 	<?php
-				} else {				
+				} else {	
 					if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-					print "<div class='filter-border'></div><h6 class='filter-name my-2'>".$va_facet_info['label_singular']."</h6>"; 
-					switch($va_facet_info["group_mode"]){
-						case "alphabetical":
-						case "list":
-						default:
-							$vn_facet_size = sizeof($va_facet_info['content']);
-							$vn_c = 0;
-							foreach($va_facet_info['content'] as $va_item) {
-								$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-								print "<div class='filter-value'>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
-								$vn_c++;
-						
-								if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
-									print "<span id='{$vs_facet_name}_more' style='display: none;'>";
-								} else {
-									if(($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
-										break;
-									}
+	?>
+
+	<?php 
+					print "<div class='accordion-item'>";
+
+						// print "<div class='filter-border'></div>";
+
+						print "<h2 class='accordion-header'>";
+							print "<button class='accordion-button p-1' type='button' data-bs-toggle='collapse' data-bs-target='#$vs_facet_name' aria-expanded='true' aria-controls='$vs_facet_name'>";
+									print "<h6 class='filter-name my-2'>".$va_facet_info['label_singular']."</h6>"; 
+							print "</button>";
+						print "</h2>";
+
+						print "<div id='$vs_facet_name' class='accordion-collapse collapse' aria-labelledby='$vs_facet_name' data-bs-parent='#accordionExample'>";
+							print "<div class='accordion-body'>";
+
+								switch($va_facet_info["group_mode"]){
+									case "alphabetical":
+									case "list":
+									default:
+										$vn_facet_size = sizeof($va_facet_info['content']);
+										$vn_c = 0;
+										foreach($va_facet_info['content'] as $va_item) {
+											$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+											print "<div class='filter-value'>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+											$vn_c++;
+									
+											if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
+												print "<span id='{$vs_facet_name}_more' style='display: none;'>";
+											} else {
+												if(($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
+													break;
+												}
+											}
+										}
+										if (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
+											print "</span>\n";
+									
+											// $vs_link_open_text = _t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial);
+											$vs_link_open_text = _t("View More", $vn_facet_size - $vn_facet_display_length_initial);
+											$vs_link_close_text = _t("close", $vn_facet_size - $vn_facet_display_length_initial);
+											print "<div ><a href='#' class='filter-more' id='{$vs_facet_name}_more_link' onclick='jQuery(\"#{$vs_facet_name}_more\").slideToggle(250, function() { jQuery(this).is(\":visible\") ? jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_close_text)."\") : jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_open_text)."\")}); return false;'><em>{$vs_link_open_text}</em></a></div>";
+										} elseif (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum)) {
+											print "<div><a href='#' class='filter-more' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
+										}
+									break;
+									# ---------------------------------------------
 								}
-							}
-							if (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
-								print "</span>\n";
-						
-								// $vs_link_open_text = _t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial);
-								$vs_link_open_text = _t("View More", $vn_facet_size - $vn_facet_display_length_initial);
-								$vs_link_close_text = _t("close", $vn_facet_size - $vn_facet_display_length_initial);
-								print "<div ><a href='#' class='filter-more' id='{$vs_facet_name}_more_link' onclick='jQuery(\"#{$vs_facet_name}_more\").slideToggle(250, function() { jQuery(this).is(\":visible\") ? jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_close_text)."\") : jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_open_text)."\")}); return false;'><em>{$vs_link_open_text}</em></a></div>";
-							} elseif (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum)) {
-								print "<div><a href='#' class='filter-more' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
-							}
-						break;
-						# ---------------------------------------------
-					}
+
+							print "</div><!-- end accordion-body -->\n";
+						print "</div><!-- end accordion-collapse -->\n";
+					print "</div><!-- end accordion-item -->\n";
 				}
 			}
 		}
+				print "</div><!-- end accordion -->\n";
+
 		print "</div><!-- end bRefine -->\n";
 ?>
 	<script type="text/javascript">

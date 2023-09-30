@@ -69,7 +69,7 @@
 								"ca_collections.cfaBulkDates" => "Bulk Dates",
 								"ca_collections.idno" => "Series identifier",
 								"ca_collections.cfaDescription" => "Description",	
-								"ca_collections.cfaExtent" => "Extent of Collection",
+								// "ca_collections.cfaExtent" => "Extent of Collection",
 								"ca_collections.cfaAccessRestrictions" => "Access Restrictions",
 								"ca_collections.cfaUseRestrictions" => "Use Restrictions",
 								"ca_collections.cfaRelatedMaterials" => "Related Materials",
@@ -86,6 +86,19 @@
 						<?php
 							}
 						?>
+
+            {{{<ifdef code="ca_collections.cfaExtent">
+              <div class="paragraph">
+                <div class="text__eyebrow color__gray">Extent</div>
+                <div class="text__body-3">
+                  <unit delimiter="<br/>">
+                    <ifdef code="ca_collections.cfaExtent.extentAmount">^ca_collections.cfaExtent.extentAmount </ifdef>
+                    <ifdef code="ca_collections.cfaExtent.extentType">^ca_collections.cfaExtent.extentType</ifdef>
+                  </unit>
+                </div>
+              </div>
+            </ifdef>}}}
+
           </div>
         </div>
       </div>
@@ -97,31 +110,30 @@
         <div class="wrap">
           <div class="int module-tabs">
             <div class="header">
-              <h4 class="text-align-center text__headline-4 title">Sub-Series In this Collection</h4>
               
-              <ul class="list columns__text text__body-3" col-num="2" style="list-style-type: none;">
-    
-                <!-- <div class="col-6"> -->
-                  <ifcount code="ca_collections.children" min="1">
-                      <div class="unit">
-                        <unit relativeTo="ca_collections.children" delimiter="<br><br>" restrictToTypes="subseries" sort="ca_collections.idno_sort">
-                          <div class="row">
-                            <ifdef code="ca_object_representations.media.thumbnail">
-                              <div class="col-auto">
-                                <span class="series-thumbnail"><l>^ca_object_representations.media.thumbnail</l></span>
-                              </div>
-                            </ifdef>
-                            <div class="col-auto align-self-center">
-                              <span class="fw-bold" style="font-size: 15px;"><l>^ca_collections.preferred_labels</l></span>
-                              <ifdef code="ca_collections.cfaInclusiveDates"><div class="text__eyebrow year color__gray">^ca_collections.cfaInclusiveDates</div></ifdef>
-                            </div>
-                          </div>
-                        </unit>
+              <h4 class="text-align-center text__headline-4 title mb-3">Sub-Series</h4>
+              <div class="subseries-grid">
+                <ifcount code="ca_collections.children" min="1">
+                  <unit relativeTo="ca_collections.children" delimiter="" restrictToTypes="subseries" sort="ca_collections.idno_sort">
+                    <div class="row subseries-grid-item">
+                      <ifdef code="ca_object_representations.media.thumbnail">
+                        <div class="col-auto">
+                          <span class="series-thumbnail"><l>^ca_object_representations.media.thumbnail</l></span>
+                        </div>
+                      </ifdef>
+                      <ifnotdef code="ca_object_representations.media.thumbnail">
+                        <div class="col-auto">
+                          <div class="subseries-placeholder">No Media</div>
+                        </div>
+                      </ifnotdef>
+                      <div class="col-auto align-self-center">
+                        <span class="fw-bold" style="font-size: 15px;"><l>^ca_collections.preferred_labels</l></span>
+                        <ifdef code="ca_collections.cfaInclusiveDates"><div class="text__eyebrow year color__gray">^ca_collections.cfaInclusiveDates</div></ifdef>
                       </div>
-                  </ifcount>
-                <!-- </div> -->
-                    
-              </ul>
+                    </div>
+                  </unit>
+                </ifcount>
+              </div>      
             </div>
           </div>
         </div>
@@ -129,7 +141,7 @@
     </ifcount>}}}
 
 
-
+  
 <?php
 	$access_values = caGetUserAccessValues($this->request);
 	$item_count = $viewable_count = 0;
@@ -152,7 +164,18 @@
 		}
 	}
 ?>
-    <section class="collection-grid-items">
+    <?php 
+      if($viewable_count == 0 && $item_count == 0) {
+    ?>
+        <section class="collection-grid-items" style="display: none;">
+    <?php
+      }else{
+     ?>
+        <section class="collection-grid-items">
+    <?php
+      }
+    ?>
+    <!-- <section class="collection-grid-items"> -->
       <div class="wrap">
         <div class="int module-tabs">
 
@@ -161,31 +184,48 @@
             <div class="filters">
 
             	<ul class="nav nav-tabs" id="myTab" role="tablist" style="border: none;">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link active" id="itemGrid-tab" data-bs-toggle="tab" data-bs-target="#itemGrid-tab-pane" type="button" role="tab" aria-controls="itemGrid-tab-pane" aria-selected="true">
-                    <span class="title text__eyebrow">Viewable Media (<?= $viewable_count; ?>)</span>
-                    <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="What does this mean? Not every object in our collection has been digitized yet. This option shows you only items that can be viewed online now.">
-                      <div class="trigger-icon color-icon-orange">
-                        <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
-                          <path d="M8.65374 4.68281C8.65374 5.02709 8.51698 5.35727 8.27355 5.60071C8.03012 5.84415 7.69995 5.98092 7.35568 5.98092C7.01141 5.98092 6.68125 5.84415 6.43781 5.60071C6.19438 5.35727 6.05762 5.02709 6.05762 4.68281C6.05762 4.33854 6.19438 4.00836 6.43781 3.76492C6.68125 3.52148 7.01141 3.38471 7.35568 3.38471C7.69995 3.38471 8.03012 3.52148 8.27355 3.76492C8.51698 4.00836 8.65374 4.33854 8.65374 4.68281Z" fill="#767676" class="color-fill"></path>
-                          <path d="M8.73065 11.5724C8.72269 11.8874 8.87038 11.9762 9.22992 12.0131L9.80777 12.0247V12.6154H5.29934V12.0247L5.93431 12.0131C6.31404 12.0016 6.40531 11.8539 6.43358 11.5724V8.01701C6.43761 7.45405 5.70711 7.54244 5.19238 7.55917V6.97371L8.73065 6.84621" fill="#767676" class="color-fill"></path>
-                        </svg>
-                      </div>
-                    </span>
-                  </button>
-                </li>
-                <li class="mt-2" style="color: #767676;"> | </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="itemList-tab" data-bs-toggle="tab" data-bs-target="#itemList-tab-pane" type="button" role="tab" aria-controls="itemList-tab-pane" aria-selected="false">
-                    <span class="title text__eyebrow">Item List (<?= $item_count; ?>)</span>
-                  </button>
-                </li>
+
+                <?php 
+                  if($viewable_count == 0) {
+                ?>
+                  <div style="display: none;"></div>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="itemList-tab" data-bs-toggle="tab" data-bs-target="#itemList-tab-pane" type="button" role="tab" aria-controls="itemList-tab-pane" aria-selected="false">
+                      <span class="title text__eyebrow">Item List (<?= $item_count; ?>)</span>
+                    </button>
+                  </li>
+                <?php
+                  }else{
+                ?>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="itemGrid-tab" data-bs-toggle="tab" data-bs-target="#itemGrid-tab-pane" type="button" role="tab" aria-controls="itemGrid-tab-pane" aria-selected="true">
+                      <span class="title text__eyebrow">Viewable Media (<?= $viewable_count; ?>)</span>
+                      <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="What does this mean? Not every object in our collection has been digitized yet. This option shows you only items that can be viewed online now.">
+                        <div class="trigger-icon color-icon-orange">
+                          <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
+                            <path d="M8.65374 4.68281C8.65374 5.02709 8.51698 5.35727 8.27355 5.60071C8.03012 5.84415 7.69995 5.98092 7.35568 5.98092C7.01141 5.98092 6.68125 5.84415 6.43781 5.60071C6.19438 5.35727 6.05762 5.02709 6.05762 4.68281C6.05762 4.33854 6.19438 4.00836 6.43781 3.76492C6.68125 3.52148 7.01141 3.38471 7.35568 3.38471C7.69995 3.38471 8.03012 3.52148 8.27355 3.76492C8.51698 4.00836 8.65374 4.33854 8.65374 4.68281Z" fill="#767676" class="color-fill"></path>
+                            <path d="M8.73065 11.5724C8.72269 11.8874 8.87038 11.9762 9.22992 12.0131L9.80777 12.0247V12.6154H5.29934V12.0247L5.93431 12.0131C6.31404 12.0016 6.40531 11.8539 6.43358 11.5724V8.01701C6.43761 7.45405 5.70711 7.54244 5.19238 7.55917V6.97371L8.73065 6.84621" fill="#767676" class="color-fill"></path>
+                          </svg>
+                        </div>
+                      </span>
+                    </button>
+                  </li>
+                  <li class="mt-2" style="color: #767676;"> | </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="itemList-tab" data-bs-toggle="tab" data-bs-target="#itemList-tab-pane" type="button" role="tab" aria-controls="itemList-tab-pane" aria-selected="false">
+                      <span class="title text__eyebrow">Item List (<?= $item_count; ?>)</span>
+                    </button>
+                  </li>
+                <?php
+                  }
+                ?>
+
 				      </ul>
 
               <!-- href="/Search/advanced/collections"-->
               <a href="/Browse/Objects" class="text__eyebrow color-class-orange $color__dark_gray">
-                Advanced Collections Search 
+                Advanced Search 
                 <span class="arrow-link">
                   <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3.62909 5.99999L0.436768 0.666656L9.99999 5.99999L0.436768 11.3333L3.62909 5.99999Z" fill="#767676" class="color-fill"></path>
@@ -196,11 +236,12 @@
             </div>
           </div>
 
+
           <div class="tab-content" id="myTabContent">
             <?php 
               if($viewable_count == 0) {
             ?>
-                <div class="tab-pane fade" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0">
+                <div class="tab-pane fade" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0" style="display: none;">
             <?php
               }else{
             ?>
@@ -263,10 +304,11 @@
             <?php
               }
             ?>
+
             <!-- <div class="tab-pane fade" id="itemList-tab-pane" role="tabpanel" aria-labelledby="itemList-tab" tabindex="0"> -->
               <div class="row pb-4 ps-3">
                 <div class="col">
-                  <small class="color__gray">Items that do not link to a record have not yet been cataloged. To request more information about these items, please contact info@chicagofilmarchives.org.</small>
+                  <small class="color__gray">To request more information about the items in this collection, please contact the archive at info@chicagofilmarchives.org.</small>
                 </div>
                 <div class="col text-end">
                   <small class="color__gray">
@@ -291,10 +333,11 @@
                         <span class="fw-bold"><l>^ca_collections.preferred_labels</l></span>
                         <unit relativeTo="ca_objects" delimiter="" sort="ca_objects.preferred_labels">
                           <li>
-                            <case>
+                            <!-- <case>
                               <if rule="^ca_objects.access = 'yes'"><span class="link-orange"><l>^ca_objects.preferred_labels</l></span></if>
                               <span>^ca_objects.preferred_labels</span>
-                            </case>
+                            </case> -->
+                            <span class="link-orange"><l>^ca_objects.preferred_labels</l></span>
                             <if rule="^ca_objects.type_id =~ /audio/i OR ^ca_objects.type_id =~ /manu/i"><small class="color__gray">(^ca_objects.type_id)</small></if>
                             <ifdef code="ca_object_representations.media.small">
                               <span class="viewable-media-icon right">
