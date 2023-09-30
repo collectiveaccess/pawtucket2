@@ -268,6 +268,13 @@
 			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
 				unset($va_criteria['_search']);
 			} 
+			
+			$x = [];
+			foreach($va_criteria as $facet => $values) {
+				$x[] = $facet.":".join("|", array_keys($values));
+			}
+			
+			$this->view->setVar('share_url', caNavUrl($this->request, '*', '*', '*', ['facets' => join(";", $x)], ['absolute' => true]));
 
  			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
  			
