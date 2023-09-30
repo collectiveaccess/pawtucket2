@@ -62,7 +62,8 @@
 	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
-	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+	#$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".caGetThemeGraphic($this->request, "N_Resource.png")."</div>";
 		
 
 		$vn_col_span = 3;
@@ -111,20 +112,28 @@
 				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{			
-					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
+					if($vs_table == "ca_objects"){
+						$vs_idno = $qr_res->get("ca_objects.idno");
+						if(!$vs_idno || $vs_idno == "%"){
+							$vs_idno = $qr_res->get("ca_objects.other_number");
+						}
+						$vs_idno_detail_link 	= caDetailLink($this->request, $vs_idno, '', $vs_table, $vn_id);
+					}else{
+						$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
+					}
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
 					if ($vs_table == 'ca_objects') {
 						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
-							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-							}else{
+							#$t_list_item->load($qr_res->get("type_id"));
+							#$vs_typecode = $t_list_item->get("idno");
+							#if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+							#	$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+							#}else{
 								$vs_thumbnail = $vs_default_placeholder_tag;
-							}
+							#}
 						}
 						$vs_info = null;
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
@@ -147,13 +156,10 @@
 						if($vs_date){
 							$vs_date = "<br/>".$vs_date;
 						}
-						#$vs_description = strip_tags($qr_res->get("ca_objects.description"));
-						#if(mb_strlen($vs_description) > 50){
-						#	$vs_description = mb_substr($vs_description, 0, 47)."...";
-						#}
-						#if($vs_description){
-						#	$vs_description = "<br/>".$vs_description;
-						#}
+						$vs_description = strip_tags($qr_res->getWithTemplate("<ifdef code='ca_objects.description'>^ca_objects.description%length=40&ellipsis=1</ifdef>"));
+						if($vs_description){
+							$vs_description = "<br/>".$vs_description;
+						}
 					}
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 

@@ -231,7 +231,7 @@ class DetailController extends FindController {
 			}
 			// Get current display list
 			$t_display = new ca_bundle_displays();
-			foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $display) {
+			foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('restrictToTypes' => [$t_subject->getTypeCode()], 'table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $display) {
 				$export_options[$display['name']] = "_display_".$display['display_id'];
 			}
 			ksort($export_options);

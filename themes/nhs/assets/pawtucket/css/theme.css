@@ -13,6 +13,9 @@ body{
 b, strong {
     font-family: 'Radley', serif;
 }
+.capitalize{
+	text-transform:capitalize;
+}
 body.initial{
 	padding-top:0px;
 }
@@ -581,6 +584,48 @@ div.browseFacetItem:hover{
 .front .jcarousel-pagination a {
     border-color: #2c85b8;
 }
+/* hp explore */
+h2.frontSubHeading{
+	color: #021d26;
+  	padding-left: 20px;
+  	font-size: 30px;
+}
+.hpExplore{
+	padding-top:30px;
+	margin-bottom: 30px;
+}
+.hpExploreBox{
+	margin-bottom: 45px;
+}
+.hpExploreBox .hpExploreBoxImage {
+	height:240px;
+	background-size:cover;
+	background-repeat:no-repeat;
+	background-position:50%;
+	box-shadow: 0 2px 14px 0 rgba(0,0,0,.3);
+}
+.hpExploreBox .hpExploreBoxImage.hpExploreBoxImage1{
+	background-image: url('../graphics/manuscripts.jpg');
+}
+.hpExploreBox .hpExploreBoxImage.hpExploreBoxImage2{
+	background-image: url('../graphics/people.jpeg');
+}
+.hpExploreBox .hpExploreBoxImage.hpExploreBoxImage3{
+	background-image: url('../graphics/manuscripts.jpg');
+}
+.hpExploreBox .hpExploreBoxDetails {
+	padding: 15px 13px 22px;
+	text-align:center;
+}
+.hpExploreBox .hpExploreBoxTitle, .hpExploreBox .hpExploreBoxTitle a {
+	font-size:20px;
+	line-height:28px;
+	color:#000;
+	margin-bottom:6px;
+}
+.hpExploreBox .hpExploreBoxTitle a:hover {
+	text-decoration:none;
+}
 
 /* browse */
 #bRefine.fixed {
@@ -591,6 +636,7 @@ div.browseFacetItem:hover{
 }
 .bResultItem .bResultItemText {
     font-size: 13px;
+    line-height: 1.1em;
 }
 .bResultItemExpandedInfo{
 	line-height:1.3em;
@@ -647,6 +693,14 @@ div.browseFacetItem:hover{
 .multisearch .multisearchResult {
   line-height: 1em;
   font-size: 13px;
+}
+.bResultItemImgPlaceholder, .multisearchImgPlaceholder{
+	border:0px;
+	background-color:#FFF;
+	padding:20px 0px 0px 0px;
+}
+.bResultItemImgPlaceholder img, .multisearch .multisearchResult .multisearchImgPlaceholder img, .multisearchImgPlaceholder img{
+	width:40%;	
 }
 /* detail */
 .detail {
@@ -731,6 +785,17 @@ div.browseFacetItem:hover{
 .detail .detailImage img{
 	width:100%;
 	height:auto;
+}
+.detail.ca_entities #detailTools, .detail.ca_occurrences #detailTools{
+	margin-top:0px;
+}
+@media (min-width: 992px) {
+	.detail.ca_entities .detailTool, .detail.ca_occurrences .detailTool{
+		text-align:right;
+	}
+	.detail.ca_entities #detailTools, .detail.ca_occurrences #detailTools{
+		margin-top:25px;
+	}
 }
 /* collection list */
 .collections.landing #bSortByList{

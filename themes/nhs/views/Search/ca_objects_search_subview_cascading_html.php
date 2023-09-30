@@ -45,7 +45,9 @@
 	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
-	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
+	#$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
+	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".caGetThemeGraphic($this->request, "N_Resource.png")."</div>";
+	
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 	$va_sorts = $va_search_info["sortBy"];
 
@@ -78,7 +80,12 @@
 		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
 				$vn_id 					= $qr_results->get("ca_objects.object_id");
-				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_results->get("ca_objects.idno"), '', 'ca_objects', $vn_id);
+				$vs_idno = $qr_results->get("ca_objects.idno");
+				if(!$vs_idno || $vs_idno == "%"){
+					$vs_idno = $qr_results->get("ca_objects.other_number");
+				}
+				$vs_idno_detail_link 	= caDetailLink($this->request, $vs_idno, '', 'ca_objects', $vn_id);
+
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_results->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id);
 				$vs_link_text = ($qr_results->get("ca_objects.preferred_labels")) ? "<b>Title: </b>".$qr_results->get("ca_objects.preferred_labels") : $qr_results->get("ca_objects.idno");
 
@@ -89,11 +96,11 @@
 				$vs_typecode = $t_list_item->get("idno");
 				$vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
 				if(!($vs_thumbnail = $qr_results->getMediaTag('ca_object_representations.media', 'small', array("checkAccess" => $va_access_values)))){
-					if($vs_type_placeholder){
-						$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-					}else{
+					#if($vs_type_placeholder){
+					#	$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+					#}else{
 						$vs_thumbnail = $vs_default_placeholder_tag;
-					}
+					#}
 				}
 				
 				if(!$this->request->getParameter("openResultsInOverlay", pInteger)){

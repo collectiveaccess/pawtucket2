@@ -55,7 +55,7 @@
 					<?php print caDetailLink($this->request, "More About ".$t_entity->get("ca_entities.preferred_labels.displayname")." <i class='fa fa-arrow-right'></i>", "btn btn-default", "ca_entities", $t_entity->get("ca_entities.entity_id")); ?>
 <?php
 
-					print $t_entity->getWithTemplate("<ifcount code='ca_occurrences.related' min='1' restrictToTypes='event'><unit relativeTo='ca_occurrences' restrictToTypes='event' delimiter='' sort='ca_occurrences.exhibit_date'><div class='storyEvent'><l><b><ifdef code='ca_occurrences.exhibit_date'>^ca_occurrences.exhibit_date - </ifdef>^ca_occurrences.preferred_labels.name</b></l><ifdef code='ca_occurrences.description'><br/>^ca_occurrences.description</ifdef></div></unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
+					print $t_entity->getWithTemplate("<ifcount code='ca_occurrences.related' min='1' restrictToTypes='event'><unit relativeTo='ca_occurrences' restrictToTypes='event' delimiter='' sort='ca_occurrences.exhibit_date' limit='10'><div class='storyEvent'><l><b><ifdef code='ca_occurrences.exhibit_date'>^ca_occurrences.exhibit_date - </ifdef>^ca_occurrences.preferred_labels.name</b></l><ifdef code='ca_occurrences.description'><br/>^ca_occurrences.description</ifdef></div></unit></ifcount><ifcount code='ca_occurrences.related' min='11' restrictToTypes='event'><l><button class='btn btn-default'>More <i class='fa fa-arrow-right'></i></button></l></div>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
 ?>
 						
 					</div>
