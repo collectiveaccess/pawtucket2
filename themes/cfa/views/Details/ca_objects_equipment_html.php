@@ -41,7 +41,6 @@
 	MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.preferred_labels'));
 	MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
 	MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
-
 ?>
 <div class="row">
 	
@@ -73,22 +72,28 @@
 		<h1 class="text-align-center color__white text__headline-1 block-sm mt-3">{{{^ca_objects.preferred_labels}}}</h1>
 		
 		<div class="layout grid-flex">
+
 			<div class="item color__white">
-				<?= $this->render("Details/detail_media_html.php"); ?>    
+				<?= $this->render("Details/detail_media_html.php"); ?>
 			</div>
 
 			<div class="item object-data-links">
 				<div class="container-scroll" style="overflow-y: auto;">
 					<div class="content-scroll">
 						<div class="size-column">
-				
+					
 							{{{<case>
 								<if rule="^access = 'restricted'">
 									<?php
 										$metadata = array(
 											"^ca_objects.idno" => "Identifier",
-											"^ca_objects.cfaRunTime" => "Run Time",	
-											"^ca_objects.cfaPublicObjectNotes" => "Notes",		
+											"^ca_objects.cfaSpanDates" => "Date Of Production",
+											"^ca_objects.cfaAbstract" => "Abstract",
+											"^ca_objects.cfaDescription" => "Description",
+											"^ca_objects.cfaExtentManu.extentAmountManu ^ca_objects.cfaExtentManu.extent_manu" => "Extent",	
+											"^ca_objects.cfaPublicObjectNotes" => "Notes",
+											"^ca_objects.cfaLanguageMaterials" => "Language Of Materials",	
+											"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
 										);
 										foreach($metadata as $field => $fieldLabel){
 									?>
@@ -102,11 +107,18 @@
 										}
 									?>
 		
-									<ifdef code="^ca_objects.cfaExtentDigital">
+									<ifdef code="ca_objects.cfaDimensions">
 										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Dimensions</div>
 										<div class="max__640 text__body-3 color__white block-sm">
-											<ifdef code="^ca_objects.cfaDimensionsDigital.width">^ca_objects.cfaDimensionsDigital.width px</ifdef>
-											<ifdef code="^ca_objects.cfaDimensionsDigital.height"> x ^ca_objects.cfaDimensionsDigital.height px</ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_length">^ca_objects.cfaDimensions.dimensions_length <small>(l)</small></ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_length, ca_objects.cfaDimensions.dimensions_width"> x </ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_width">^ca_objects.cfaDimensions.dimensions_width <small>(w)</small></ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_width, ca_objects.cfaDimensions.dimensions_height"> x </ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_height">^ca_objects.cfaDimensions.dimensions_height <small>(h)</small></ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_height, ca_objects.cfaDimensions.dimensions_depth"> x </ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_depth">^ca_objects.cfaDimensions.dimensions_depth <small>(d)</small></ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_depth, ca_objects.cfaDimensions.thickness"> x </ifdef>
+											<ifdef code="ca_objects.cfaDimensions.thickness">^ca_objects.cfaDimensions.thickness <small>(thick)</small></ifdef>
 										</div>
 									</ifdef>
 		
@@ -117,22 +129,21 @@
 										</unit>
 										<br>
 									</ifcount>
-		
+
 									<div class="max__640 text__body-3 color__white">This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org</div>
 								</if>
-
+								
 								<if rule="^access = 'yes'">
 									<?php
 										$metadata = array(
 											"^ca_objects.idno" => "Identifier",
-											"^ca_occurrences.cfaDateProduced" => "Date Of Production",
-											"^ca_occurrences.cfaAbstract" => "Abstract",
-											"^ca_occurrences.cfaDescription" => "Description",
-											"^ca_objects.cfaRunTime" => "Run Time",	
-											"^ca_occurrences.cfaShotLog" => "Log",
+											"^ca_objects.cfaSpanDates" => "Date Of Production",
+											"^ca_objects.cfaAbstract" => "Abstract",
+											"^ca_objects.cfaDescription" => "Description",
+											"^ca_objects.cfaExtentManu.extentAmountManu ^ca_objects.cfaExtentManu.extent_manu" => "Extent",	
 											"^ca_objects.cfaPublicObjectNotes" => "Notes",
-											"^ca_occurrences.cfaLanguageMaterials" => "Language Of Materials",	
-		
+											"^ca_objects.cfaLanguageMaterials" => "Language Of Materials",	
+											"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
 										);
 										foreach($metadata as $field => $fieldLabel){
 									?>
@@ -145,12 +156,6 @@
 									<?php
 										}
 										$list_metadata = [
-											"Genre" => [
-												"relationshipType" => "genre"
-											],
-											"Form" => [
-												"relationshipType" => "form"
-											],
 											"Subject" => [
 												"relationshipType" => "subject"
 											]
@@ -159,27 +164,34 @@
 										foreach($list_metadata as $fieldLabel => $field_info){
 									?>
 		
-											<unit relativeTo='ca_occurrences'>
-												<ifcount code="ca_list_items" restrictToRelationshipTypes="<?= $field_info['relationshipType']; ?>" min="1">
-													<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
-													<div class="max__640 text__body-3 color__white block-sm">
-														<unit relativeTo='ca_list_items' delimiter="<br>" restrictToRelationshipTypes='<?= $field_info['relationshipType']; ?>'>
-															<a href="/Search/objects/search/^ca_list_items.preferred_labels.name_plural">^ca_list_items.preferred_labels.name_plural</a>
-														</unit>
-													</div>
-												</ifcount>
-											</unit>
+										<ifdef code="ca_objects.cfaDimensions">
+											<div class="max__640 text__eyebrow color__light_gray block-xxxs">Dimensions</div>
+											<div class="max__640 text__body-3 color__white block-sm">
+												<ifdef code="ca_objects.cfaDimensions.dimensions_length">^ca_objects.cfaDimensions.dimensions_length <small>(l)</small></ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_length, ca_objects.cfaDimensions.dimensions_width"> x </ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_width">^ca_objects.cfaDimensions.dimensions_width <small>(w)</small></ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_width, ca_objects.cfaDimensions.dimensions_height"> x </ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_height">^ca_objects.cfaDimensions.dimensions_height <small>(h)</small></ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_height, ca_objects.cfaDimensions.dimensions_depth"> x </ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_depth">^ca_objects.cfaDimensions.dimensions_depth <small>(d)</small></ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_depth, ca_objects.cfaDimensions.thickness"> x </ifdef>
+												<ifdef code="ca_objects.cfaDimensions.thickness">^ca_objects.cfaDimensions.thickness <small>(thick)</small></ifdef>
+											</div>
+										</ifdef>
+		
+										<unit relativeTo='ca_occurrences'>
+											<ifcount code="ca_list_items" restrictToRelationshipTypes="<?= $field_info['relationshipType']; ?>" min="1">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+												<div class="max__640 text__body-3 color__white block-sm">
+													<unit relativeTo='ca_list_items' delimiter="<br>" restrictToRelationshipTypes='<?= $field_info['relationshipType']; ?>'>
+														<a href="/Search/objects/search/^ca_list_items.preferred_labels.name_plural">^ca_list_items.preferred_labels.name_plural</a>
+													</unit>
+												</div>
+											</ifcount>
+										</unit>
 									<?php
 										}
 									?>
-		
-									<ifdef code="^ca_objects.cfaExtentDigital">
-										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Dimensions</div>
-										<div class="max__640 text__body-3 color__white block-sm">
-											<ifdef code="^ca_objects.cfaDimensionsDigital.width">^ca_objects.cfaDimensionsDigital.width px</ifdef>
-											<ifdef code="^ca_objects.cfaDimensionsDigital.height"> x ^ca_objects.cfaDimensionsDigital.height px</ifdef>
-										</div>
-									</ifdef>
 		
 									<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
 										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
@@ -188,6 +200,18 @@
 										</unit>
 										<br>
 									</ifcount>
+
+									<!-- <ifcount code="ca_occurrences" min="1"> -->
+										<!-- <unit relativeTo="ca_occurrences"> -->
+											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="designer, manufacturer, photographer, creator, compiler, source, distributor, translator, writer, publisher, corporate, contributor">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related People & Organizations</div>
+												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="designer, manufacturer, photographer, creator, compiler, source, distributor, translator, writer, publisher, corporate, contributor">
+													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)</div>
+												</unit>
+												<br>
+											</ifcount>
+										<!-- </unit> -->
+									<!-- </ifcount> -->
 		
 									<ifcount code="ca_occurrences" min="1">
 										<unit relativeTo="ca_occurrences">
@@ -265,16 +289,12 @@
 								</if>
 							</case>}}}
 
+
 						</div>
-					</div>
-					<!-- content-scroll -->
-				</div>
-				<!-- container-scroll -->
-				<!-- <div class="shadow"></div> -->
-			</div>
-			<!-- item -->
-		</div>
-		<!-- layout -->
+					</div><!-- content-scroll -->
+				</div><!-- container-scroll -->
+			</div><!-- item -->
+		</div><!-- layout -->
 	</section>
 
 	<section class="section-more-about-item">
@@ -283,7 +303,7 @@
 		<div class="color__gray text__body-3">If you have more information about this item please contact us at <a href="mailto:info@chicagofilmarchives.com" class="color-link-inverted-orange">info@chicagofilmarchives.com</a>. </div>
 		</div>
 	</section>
-
+	
 	{{{<ifcount code="ca_objects.related" min="1">
 
 		<section class="section-slideshow-related ">

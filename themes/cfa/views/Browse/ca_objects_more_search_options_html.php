@@ -30,7 +30,19 @@
 	</div>
 	<div class="row mb-3 justify-content-end">
 		<div class="col-auto">
-			<button type="submit" class="btn btn-warning mb-3">Search <i class="bi bi-arrow-right-short"></i></button>
+			<button type="submit" class="btn mb-3" style="color: #fff; background-color: #E26C2F; border-radius: 20px; padding: 5px 40px;">
+				<span style="color: #FFF; font-family: Helvetica Neue; font-size: 14px; line-height: 24px; letter-spacing: 1.4px;">SEARCH</span>  
+				<svg xmlns="http://www.w3.org/2000/svg" width="10" height="12" viewBox="0 0 10 12" fill="none">
+					<g clip-path="url(#clip0_854_21104)">
+						<path d="M3.62982 6.00002L0.4375 0.666687L10.0007 6.00002L0.4375 11.3334L3.62982 6.00002Z" fill="white"/>
+					</g>
+					<defs>
+						<clipPath id="clip0_854_21104">
+							<rect width="9.56322" height="10.6667" fill="white" transform="translate(0.4375 0.666687)"/>
+						</clipPath>
+					</defs>
+				</svg>
+			</button>
 		</div>
 	</div>
 {{{/form}}}

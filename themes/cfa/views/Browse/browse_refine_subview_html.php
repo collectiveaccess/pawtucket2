@@ -71,14 +71,15 @@
 		}
 		if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria)){
 			print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
-			print "<H6 class='my-2'>"._t("Filter by")."</H6>";
+			print "<H6 class='my-2 filter-name'>"._t("Filter by")."</H6>";
 
 			 //accordion start
 			print "<div class='accordion' id='accordionExample'>";
 
-			if($vs_criteria){
-				print "<div class='bCriteria'>".$vs_criteria."</div>";
-			}
+			// if($vs_criteria){
+			// 	print "<div class='bCriteria'>".$vs_criteria."</div>";
+			// }
+			
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 				if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {

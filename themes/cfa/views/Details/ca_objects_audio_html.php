@@ -26,20 +26,29 @@
  * ----------------------------------------------------------------------
  */
  
-	$t_object = 			$this->getVar("item");
-	$va_comments = 			$this->getVar("comments");
-	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	$vn_id =				$t_object->get('ca_objects.object_id');
+$t_object = 			$this->getVar("item");
+$va_comments = 			$this->getVar("comments");
+$va_tags = 				$this->getVar("tags_array");
+$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+$vn_share_enabled = 	$this->getVar("shareEnabled");
+$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+$vn_id =				$t_object->get('ca_objects.object_id');
+
+MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels').": ".$t_object->get('ca_objects.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
+
+MetaTagManager::addMeta("search-title", $t_object->get('ca_objects.preferred_labels'));
+MetaTagManager::addMeta("search-group", 'Collection Items');
+MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.preferred_labels'));
+MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
+MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
+
 ?>
 <div class="row">
 	
 	<main class="flush">
 	<section class="hero-single-collection wrap">
 		<div class="eyebrow text__eyebrow color__gray">
-			<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div><br>
+			<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
 			<div class="row">
 				<div class="col-10">
 					 {{{<unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">
@@ -79,10 +88,11 @@
 									<?php
 										$metadata = array(
 											"^ca_objects.cfaRunTime" => "Run Time",	
-											"^ca_objects.cfaAudioFormatHierachical" => "Format/Extent",
+											// "^ca_objects.cfaAudioFormatHierachical" => "Format/Extent",
 											"^ca_objects.idno" => "Identifier",
+											"^ca_objects.cfaReel" => "Reel/Tape Number",
 											"^ca_objects.cfaPublicObjectNotes" => "Notes",
-											"^ca_objects.cfaYNTransferred" => "Has Been Digitized",	
+											"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
 										);
 										foreach($metadata as $field => $fieldLabel){
 									?>
@@ -95,11 +105,20 @@
 									<?php
 										}
 									?>
+
+									<if rule="^ca_objects.cfaAudioFormatHierachical !~ /\-NONE\-/">
+										<ifdef code="ca_objects.cfaAudioFormatHierachical">
+											<unit delimiter=" ➜ ">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Format/Extent</div>
+												<div class="max__640 text__body-3 color__white block-sm">^ca_objects.cfaAudioFormatHierachical.hierarchy.preferred_labels.name_plural</div>
+											</unit>
+										</ifdef>
+									</if>
 			
 									<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
 										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
 										<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="related_to">
-											<div class="max__640 text__body-3 color__white">^ca_collections.preferred_labels</div>
+											<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
 										</unit>
 										<br>
 									</ifcount>
@@ -114,12 +133,13 @@
 											"^ca_occurrences.cfaAbstract" => "Abstract",
 											"^ca_occurrences.cfaDescription" => "Description",
 											"^ca_objects.cfaRunTime" => "Run Time",	
-											"^ca_objects.cfaAudioFormatHierachical" => "Format/Extent",
+											// "^ca_objects.cfaAudioFormatHierachical" => "Format/Extent",
 											"^ca_objects.idno" => "Identifier",
 											"^ca_occurrences.cfaShotLog" => "Log",
 											"^ca_occurrences.cfaLanguageMaterials" => "Language Of Materials",	
+											"^ca_objects.cfaReel" => "Reel/Tape Number",
 											"^ca_objects.cfaPublicObjectNotes" => "Notes",
-											"^ca_objects.cfaYNTransferred" => "Has Been Digitized",	
+											"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
 										);
 										foreach($metadata as $field => $fieldLabel){
 									?>
@@ -131,7 +151,19 @@
 											</ifdef>
 									<?php
 										}
-			
+									?>
+
+									<if rule="^ca_objects.cfaAudioFormatHierachical !~ /\-NONE\-/">
+										<ifdef code="ca_objects.cfaAudioFormatHierachical">
+											<unit delimiter=" ➜ ">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Format/Extent</div>
+												<div class="max__640 text__body-3 color__white block-sm">^ca_objects.cfaAudioFormatHierachical.hierarchy.preferred_labels.name_plural</div>
+											</unit>
+										</ifdef>
+									</if>
+
+									<?php
+		
 										$list_metadata = [
 											"Genre" => [
 												"relationshipType" => "genre"
@@ -163,7 +195,7 @@
 									<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
 										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
 										<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="related_to">
-											<div class="max__640 text__body-3 color__white">^ca_collections.preferred_labels</div>
+											<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
 										</unit>
 										<br>
 									</ifcount>
@@ -172,8 +204,10 @@
 										<unit relativeTo="ca_occurrences">
 											<ifcount code="ca_places" min="1" >
 												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Places</div>
-												<unit relativeTo="ca_places" delimiter="">
-													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_places.preferred_labels">^ca_places.preferred_labels</a></div>
+												<unit relativeTo="ca_places" delimiter=" ➜ ">
+													<div class="max__640 text__body-3 color__white">
+														<a href="/Search/objects/search/^ca_places.preferred_labels">^ca_places.hierarchy.preferred_labels</a>
+													</div>
 												</unit>
 												<br>
 											</ifcount>
@@ -209,7 +243,7 @@
 											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
 												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Main Credits</div>
 												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
-													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a></div>
+													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)</div>
 												</unit>
 												<br>
 											</ifcount>
@@ -221,7 +255,7 @@
 											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
 												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Additional Credits</div>
 												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
-													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a></div>
+													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)</div>
 												</unit>
 												<br>
 											</ifcount>
@@ -233,7 +267,7 @@
 											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
 												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Participants And Performers</div>
 												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
-													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a></div>
+													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)</div>
 												</unit>
 												<br>
 											</ifcount>

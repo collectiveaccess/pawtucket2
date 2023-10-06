@@ -2,13 +2,13 @@
 $t_object = $this->getVar("item");
 $reps = $t_object->getRepresentations(['small', 'mp3', 'h264_hi', 'original'], null, ['checkAccess' => [1]]);
 ?>
-<div id="carouselIndicators" class="carousel slide collection-carousel" data-bs-interval="false">
+<div id="carouselIndicators" class="carousel slide" data-bs-interval="false">
 	<div class="carousel-inner">
 		<?php
 			$active = true;
 			foreach($reps as $r) {
 		?>
-				<div class="carousel-item carousel-object-item <?= ($active ? 'active' : ''); ?>" style="height: auto;">
+				<div class="carousel-item <?= ($active ? 'active' : ''); ?>">
 					<?php
 						switch(caGetMediaClass($r['mimetype'])) {
 							case 'audio':
@@ -48,13 +48,18 @@ $reps = $t_object->getRepresentations(['small', 'mp3', 'h264_hi', 'original'], n
 			if(count($reps) == 0 && count($reps) == 0){
 		?>
 			<div class="d-flex align-items-center p-5" style="height: 400px;">
-				<p>Digitized media for this item is not currently available, please email info@chicagofilmarchives.org to inquire.</p>
+				<p>Digitized media for this item is not currently available online, please email info@chicagofilmarchives.org to inquire.</p>
 			</div>
 		<?php
 			}
 		?>
 	</div>
-	<div class="carousel-indicators collection-indicators">
+
+	{{{<ifdef code="ca_object_representations.caption">
+		<div class="max__640 text__body-3 color__white block-sm text-center">^ca_object_representations.caption</div>
+	</ifdef>}}}
+
+	<div class="carousel-indicators">
 		<?php
 			$active = true;
 			$index = 0;
@@ -83,7 +88,4 @@ $reps = $t_object->getRepresentations(['small', 'mp3', 'h264_hi', 'original'], n
 		}
 	?>
 
-	{{{<ifdef code="ca_object_representations.caption">
-		<div class="max__640 text__body-3 color__white block-sm text-center">^ca_object_representations.caption</div>
-	</ifdef>}}}
 </div>   

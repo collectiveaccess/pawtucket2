@@ -157,8 +157,8 @@
 					$vs_result_output = "
 					<div class='col bListItem'>
 						<div class='row bListItemRow'>
-							<div class='col-auto bListItemImage'>{$vs_rep_detail_link}</div>
-							<div class='col-auto bListItemText'>{$vs_caption}</div>
+							<div class='col-4 bListItemImage'>{$vs_rep_detail_link}</div>
+							<div class='col-8 bListItemText'>{$vs_caption}</div>
 						</div>
 					</div>";
 

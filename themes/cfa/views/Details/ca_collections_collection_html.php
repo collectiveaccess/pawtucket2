@@ -31,7 +31,13 @@ $vn_comments_enabled = 	$this->getVar("commentsEnabled");
 $vn_share_enabled = 	$this->getVar("shareEnabled");
 $vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 
-MetaTagManager::setWindowTitle("Chicago Film Archives: ".$t_item->get('ca_collections.preferred_labels.name'));
+MetaTagManager::setWindowTitle($t_item->get('ca_collections.preferred_labels').": ".$t_item->get('ca_collections.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
+
+MetaTagManager::addMeta("search-title", $t_item->get('ca_collections.preferred_labels'));
+MetaTagManager::addMeta("search-eyebrow", 'Collections');
+MetaTagManager::addMeta("search-group", 'Collections');
+MetaTagManager::addMeta("search-thumbnail", $t_item->get('ca_object_representations.media.small.url'));
+MetaTagManager::addMeta("search-access", ($t_item->get('ca_collections.access') == 2) ? 'restricted' : 'public');
 
 # --- get collections configuration
 $o_collections_config = caGetCollectionsConfig();
@@ -56,14 +62,17 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 
       <div class="layout grid-flex">
 
-        <div class="item color__white mb-3">
-          <div id="carouselIndicators" class="carousel slide collection-carousel" data-bs-interval="false">
-            <div class="carousel-inner mb-2" style="border-radius: 15px;">
+        <div class="item color__white">
+
+          <!-- <?= $this->render("Details/detail_media_html.php"); ?> -->
+
+          <div id="carouselIndicators" class="carousel slide" data-bs-interval="false">
+            <div class="carousel-inner carousel-inner-coll">
               <?php
                 $active = true;
                 foreach($media as $m) {
               ?>
-                <div class="carousel-item carousel-coll-item <?= ($active ? 'active' : ''); ?>" style="height: auto;">
+                <div class="carousel-item carousel-coll-item <?= ($active ? 'active' : ''); ?>" >
                   <?= $m; ?>
                 </div>
               <?php
@@ -74,14 +83,19 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
               <?php
                 if(count($media) == 0 ){
               ?>
-                <div class="d-flex align-items-center p-5" style="height: 700px;">
+                <div class="d-flex align-items-center p-5" style="height: 400px;">
                   <p>Digitized media for this item is not currently available, please email info@chicagofilmarchives.org to inquire.</p>
                 </div>
               <?php
                 }
               ?>
             </div>
-            <div class="carousel-indicators collection-indicators">
+
+            {{{<ifdef code="ca_object_representations.caption">
+              <small class="color__gray text-start">^ca_object_representations.caption</small>
+            </ifdef>}}}
+
+            <div class="carousel-indicators">
               <?php
                 $active = true;
                 $index = 0;
@@ -96,9 +110,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 }
               ?>
             </div>
-            {{{<ifdef code="ca_object_representations.caption">
-              <small class="color__gray text-start">^ca_object_representations.caption</small>
-            </ifdef>}}}
           </div>  
         </div>
 
@@ -107,25 +118,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
           <div class="container-scroll" style="overflow-y: auto;">
             <div class="content-scroll">
               <div class="size-column">
-
-                <!-- <?php
-                  $metadata = array(
-                    "ca_collections.cfaInclusiveDates" => "Inclusive Dates",
-                    "ca_collections.cfaBulkDates" => "Bulk Dates",
-                    "ca_collections.cfaAbstract" => "Abstract",
-                    "ca_collections.cfaDescription" => "Description",
-                  );
-                  foreach($metadata as $field => $fieldLabel){
-                ?>
-                    {{{
-                      <ifdef code="<?php print $field; ?>">
-                        <div class="max__640 text__eyebrow color__light_gray block-xxxs"><?php print $fieldLabel; ?></div>
-                        <div class="max__640 text__body-3 color__white block-sm">^<?php print $field; ?></div>
-                      </ifdef>
-                    }}}
-                <?php
-                  }
-                ?> -->
 
                 {{{
                   <ifdef code="ca_collections.cfaInclusiveDates">
@@ -145,7 +137,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                     <div class="max__640 text__eyebrow color__light_gray block-xxxs">Preservation Sponsor</div>
                     <unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="cfa_sponsor">
                       <ifdef code="^ca_entities.file">
-                        <div class="max__640 text__body-3 color__white"><img src="^ca_entities.file" style="max-height: 80px;"></div>
+                        <div class="max__640 text__body-3 color__white"><img src="^ca_entities.file" style="max-height: 80px; max-width: 450px;"></div>
                       </ifdef>
                       <ifnotdef code="^ca_entities.file">
                         <div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.surname</div>
@@ -167,17 +159,17 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                     <div class="max__640 text__body-3 color__white block-sm">^ca_collections.cfaDescription</div>
                   </ifdef>
                 }}}
-
               </div>
+              <br><br>
             </div>
             <!-- content-scroll -->
           </div>
           <!-- container-scroll -->
-          <div class="footer link mt-2 position-static" style="padding: 10px 0px;">
-            <a href="#collection-details" class="text__eyebrow color-class-orange color__white scroll-to" data-offset="100">view More collection Details <span class="arrow-link down">
-                <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3.62909 5.99999L0.436768 0.666656L9.99999 5.99999L0.436768 11.3333L3.62909 5.99999Z" fill="#767676" class="color-fill"></path>
-                </svg>
+          <div class="footer link" style="padding: 15px 0px 0px 0px;">
+            <a href="#collection-details" class="text__eyebrow color-class-orange color__white scroll-to">
+              View More collection Details 
+              <span class="arrow-link down">
+                <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.62909 5.99999L0.436768 0.666656L9.99999 5.99999L0.436768 11.3333L3.62909 5.99999Z" fill="#767676" class="color-fill"></path></svg>
               </span>
             </a>
           </div>
@@ -201,13 +193,18 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 <div class="col-6">
                   <ifcount code="ca_collections.children" min="1">
                       <div class="unit">
-                        <unit relativeTo="ca_collections.children" delimiter="<br><br>" restrictToTypes="series" sort="ca_collections.idno_sort">
+                        <unit relativeTo="ca_collections.children" delimiter="<br>" restrictToTypes="series" sort="ca_collections.idno_sort">
                           <div class="row">
                             <ifdef code="ca_object_representations.media.thumbnail">
-                              <div class="col-auto">
+                              <div class="col-auto mb-2">
                                 <span class="series-thumbnail"><l>^ca_object_representations.media.thumbnail</l></span>
                               </div>
                             </ifdef>
+                            <ifnotdef code="ca_object_representations.media.thumbnail">
+                              <div class="col-auto mb-2">
+                                <div class="subseries-placeholder"></div>
+                              </div>
+                            </ifnotdef>
                             <div class="col-auto align-self-center">
                               <span class="fw-bold" style="font-size: 15px;"><l>^ca_collections.preferred_labels</l></span>
                               <ifdef code="ca_collections.cfaInclusiveDates"><div class="text__eyebrow year color__gray">^ca_collections.cfaInclusiveDates</div></ifdef>
@@ -318,8 +315,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 <?php
                   }
                 ?>
-
-				      </ul>
+			 </ul>
 
               <!-- href="/Search/advanced/collections"-->
               <a href="/Browse/Objects" class="text__eyebrow color-class-orange $color__dark_gray">
@@ -367,7 +363,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                               <div class="text-align-center info ">
                                 <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
                                 <div class="title text__promo-4 block-xxxs"><a href="" class="color-link-orange"><l>^ca_objects.preferred_labels<l></a></div>
-                                <div class="text__eyebrow year color__gray">^ca_occurrences.cfaDateProduced</div>
+                                <div class="text__eyebrow year color__gray" style="text-transform: none;">^ca_occurrences.cfaDateProduced</div>
                               </div>
                             </div>
                           </unit>
@@ -423,36 +419,80 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 
               <ul class="list columns__text text__body-3" col-num="2" style="list-style-type: none;">
 
-                {{{
-                  <ifcount code="ca_collections.branch" min="1">
-                    <unit relativeTo="ca_collections.branch" delimiter=""  sort="ca_collections.preferred_labels.name_sort">
-                        
-                      <ifcount code="ca_objects" min="1">
-                        <span class="fw-bold"><l>^ca_collections.preferred_labels</l></span>
-                        <unit relativeTo="ca_objects" delimiter="" sort="ca_objects.preferred_labels">
-                          <li>
-                            <!-- <case>
-                              <if rule="^ca_objects.access = 'yes'"><span class="link-orange"><l>^ca_objects.preferred_labels</l></span></if>
-                              <span>^ca_objects.preferred_labels</span>
-                            </case> -->
-                            <span class="link-orange"><l>^ca_objects.preferred_labels</l></span>
-                            <if rule="^ca_objects.type_id =~ /audio/i OR ^ca_objects.type_id =~ /manu/i"><small class="color__gray">(^ca_objects.type_id)</small></if>
-                            <ifdef code="ca_object_representations.media.small">
-                              <span class="viewable-media-icon right">
-                                <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {{{
+                <!-- collection items -->
+                <ifcount code="ca_objects" min="1">
+                  <span class="fw-bold"><l>^ca_collections.preferred_labels</l></span>
+                  <unit relativeTo="ca_objects" delimiter="" sort="ca_objects.preferred_labels">
+                    <li>
+                    <span class="link-orange"><l>^ca_objects.preferred_labels</l></span>
+                    <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
+                      <small class="color__gray">(^ca_objects.type_id)</small>
+                    </if>
+                    <ifdef code="ca_object_representations.media.small">
+                      <span class="viewable-media-icon right">
+                      <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
+                      <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
+                      </svg>
+                      </span>
+                    </ifdef>
+                    </li>
+                  </unit> <br><hr><br>
+                </ifcount>
+
+                <ifcount code="ca_collections.children" min="1">
+                  <!-- series -->
+                  <unit relativeTo="ca_collections.children" delimiter="<br>" sort="ca_collections.preferred_labels.name_sort">
+                    <span class="fw-bold"><l>^ca_collections.preferred_labels</l></span>
+                    <ifcount code="ca_objects" min="0" max="0"><br></ifcount>
+                    <ifcount code="ca_objects" min="1">
+                      <unit relativeTo="ca_objects" delimiter="" sort="ca_objects.preferred_labels">
+                        <li>
+                          <span class="link-orange"><l>^ca_objects.preferred_labels</l></span>
+                          <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
+                            <small class="color__gray">(^ca_objects.type_id)</small>
+                          </if>
+                          <ifdef code="ca_object_representations.media.small">
+                            <span class="viewable-media-icon right">
+                              <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
                                 <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
-                                </svg>
-                              </span>
-                            </ifdef>
-                          </li>
-                        </unit> <br><hr><br>
-                      </ifcount>
-                      
+                              </svg>
+                            </span>
+                          </ifdef>
+                        </li>
+                      </unit> <br>
+                    </ifcount>
+                    
+                    <!-- subseries -->
+                    <unit relativeTo="ca_collections.children" delimiter="" sort="ca_collections.preferred_labels.name_sort">
+                      <div class="ms-3 mt-3 d-inline">
+                        <span class="fw-bold"><l>^ca_collections.preferred_labels</l> <small style="color: #767676;">(^ca_collections.type_id)</small></span>
+                        <ifcount code="ca_objects" min="1">
+                          <unit relativeTo="ca_objects" delimiter="" sort="ca_objects.preferred_labels">
+                            <li class="ms-3">
+                              <span class="link-orange"><l>^ca_objects.preferred_labels</l></span>
+                              <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
+                                <small class="color__gray">(^ca_objects.type_id)</small>
+                              </if>
+                              <ifdef code="ca_object_representations.media.small">
+                                <span class="viewable-media-icon right">
+                                  <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
+                                    <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
+                                  </svg>
+                                </span>
+                              </ifdef>
+                            </li>
+                          </unit> <br>
+                        </ifcount>
+                      </div>
                     </unit>
-                  </ifcount>
-                }}}
 
+                  </unit>
+                </ifcount>
+                }}}
               </ul>
             </div> <!-- tab-pane -->
           </div><!-- tab-content -->
@@ -521,11 +561,15 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                   <div class="text__eyebrow color__gray">Creators</div>
                   <div class="text__body-3">
                     <div class="unit">
-                      <unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,complier,source" delimiter="<br/><br/>">
-                        <strong><l>^ca_entities.preferred_labels (^relationship_typename)</l></strong>
-                        <br/>
+                      <unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,complier,source" delimiter="<br/>">
+                        <span class="link-orange">
+                          <strong>
+                            <a href="/Search/objects/search/^ca_entities.preferred_labels">^ca_entities.preferred_labels</a>
+                          </strong>
+                        </span>
+                        (^relationship_typename)
+                        <!-- <br/> -->
                         <span class="trimText">^ca_entities.biography</span>
-                        <!-- ^ca_entities.biography%truncate=250%ellipsis -->
                       </unit>
                     </div>
                   </div>
@@ -537,7 +581,9 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                   <div class="text__eyebrow color__gray">Related Collections</div>
                   <div class="text__body-3">
                     <div class="unit">
-                        <unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>
+                        <unit relativeTo="ca_collections.related" delimiter="<br/>">
+                          <span class="link-orange"><l>^ca_collections.preferred_labels.name</l></span>
+                        </unit>
                     </div>
                   </div>
                 </div>
@@ -575,22 +621,28 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
               <div class="slick-track" style="opacity: 1; width: 3213px;">
                 
                 <div class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false" style="width: 189px;">
-                  <div>
-                    <div class="sizer" style="width: 100%; display: inline-block;">
-                      <div class="item-related item">
-                        <a href="https://cfarchives.wpengine.com/news/2020/08/the-first-degree/" tabindex="0">
-                          <div class="img-wrapper block-xxs" data-width="468" data-height="340">
-                            <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-srcset="https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383.png 468w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-170x124.png 170w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-80x58.png 80w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-400x291.png 400w" data-sizes="auto" alt="" class=" lazyload-persist lazyautosizes ls-is-cached lazyloaded " data-pin-nopin="true" draggable="false" sizes="169px" srcset="https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383.png 468w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-170x124.png 170w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-80x58.png 80w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-400x291.png 400w">
-                          </div>
-                        </a>
-                        <div class="text-align-center info">
-                          <div class="text__eyebrow color__gray block-xxxs">news</div>
-                          <div class="title text__promo-4">
-                            <a href="https://cfarchives.wpengine.com/news/2020/08/the-first-degree/" class="color-link-bright-blue" tabindex="0">‘Lost’ Film From 1923 Uncovered in CFA Collection</a>
-                          </div>
+                  <div class="sizer" style="width: 100%; display: inline-block;">
+                  
+                    <div class="item-related item">
+                      <a href="https://cfarchives.wpengine.com/news/2020/08/the-first-degree/" tabindex="0">
+                        <div class="img-wrapper block-xxs" data-width="468" data-height="340">
+                          <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-srcset="https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383.png 468w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-170x124.png 170w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-80x58.png 80w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-400x291.png 400w" data-sizes="auto" alt="" class=" lazyload-persist lazyautosizes ls-is-cached lazyloaded " data-pin-nopin="true" draggable="false" sizes="169px" srcset="https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383.png 468w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-170x124.png 170w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-80x58.png 80w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-400x291.png 400w">
                         </div>
+                      </a>
+                      <div class="text-align-center info">
+                        <div class="text__eyebrow color__gray block-xxxs">news</div>
+                        <div class="title text__promo-4">Content goes here</div>
                       </div>
                     </div>
+
+                  </div>
+                </div>
+
+                <div class="slick-slide slick-current" data-slick-index="0" aria-hidden="false" style="width: 189px;">
+                  <div class="sizer" style="width: 100%; display: inline-block;">
+
+                    <div id="related-content"></div>
+
                   </div>
                 </div>
 
@@ -644,19 +696,17 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
     $('[data-toggle="tooltip"]').tooltip();
 
     $(".view-more-btn").click(function(){
-    	let h = jQuery("#expando-grid").prop('scrollHeight');
+    	let h = $("#expando-grid").prop('scrollHeight');
       	$("#expando-grid").animate({height: h}, 500);
       	$(".view-more-btn").css("display", "none");
     });
-  });
-</script>
-
-<script type='text/javascript'>
-	jQuery(document).ready(function() {
-		$('.trimText').readmore({
-		  speed: 150,
-		  maxHeight: 100
-		});
+    
+    $('.trimText').readmore({
+	  speed: 150,
+	  maxHeight: 100
 	});
+	
+	$('#related-content').load('https://cfarchives.wpengine.com/wp-admin/admin-ajax.php?action=ca_related&id=<?= $t_item->get("ca_collections.collection_id"); ?>');
+  });
 </script>
 <!-- end row -->

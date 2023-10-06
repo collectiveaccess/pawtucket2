@@ -60,6 +60,8 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 	<title><?= (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 
+	<!-- Dynamic meta tags -->
+	<?= MetaTagManager::getHTML(); ?>
 
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 	<script defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
@@ -111,9 +113,9 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<!-- / Yoast SEO plugin. -->
 
 	<link rel="stylesheet" id="style-all-0-css" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/dist/style.css?ver=404" type="text/css" media="all">
-	<meta name="search-eyebrow" content="Pages">
+	<!-- <meta name="search-eyebrow" content="Pages">
 	<meta name="search-group" content="Other">
-	<meta name="search-thumbnail" content="https://cfarchives.wpengine.com/wp-content/uploads/2023/05/Image.jpg">
+	<meta name="search-thumbnail" content="https://cfarchives.wpengine.com/wp-content/uploads/2023/05/Image.jpg"> -->
 
 	<style>
 		body {
@@ -129,7 +131,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 
 	<header id="header" style="padding-top: 15px;">
 
-		<div class="row wrap" style="align-items: center;">
+		<div class="row wrap" style="align-items: center; justify-content: space-between;">
 			<a href="https://cfarchives.wpengine.com" id="logo"><img src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo-desktop.svg"></a>
 			<ul id="menu-extra" class="nav header-nav horizontal extra"><li id="menu-item-34" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34"><a href="https://cfarchives.wpengine.com/calendar/">Calendar</a></li>
 	<li id="menu-item-33" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-33"><a href="https://cfarchives.wpengine.com/news/">News</a></li>
@@ -145,7 +147,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 							<a href="https://cfarchives.wpengine.com/collections">Collections</a>
 						</li>
 						<li id="menu-item-31" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-31">
-							<a href="http://cfa.whirl-i-gig.com/index.php/Browse/Objects">Watch</a>
+							<a href="https://cfarchives.wpengine.com/watch/">Watch</a>
 						</li>
 						<li id="menu-item-29" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-29"><a href="https://cfarchives.wpengine.com/services/">Services</a></li>
 						<li id="menu-item-32" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-32"><a href="https://cfarchives.wpengine.com/preservation/">Preservation</a></li>
@@ -224,7 +226,6 @@ $va_access_values = caGetUserAccessValues($this->request);
 			</div>
 		</div>
 	</header>
-
 
 	<section id="mobile-panel" style="height: 968px;">
 		<div class="layout">
