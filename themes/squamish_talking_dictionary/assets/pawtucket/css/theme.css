@@ -410,12 +410,12 @@ body{
 .bResultListItem .bResultListItemText a {
 	line-height: 1.2em;
 	color: #666;
-	font-size: 24px;
+	font-size:18px;
 	color: #000;
 	font-family: "Tahoma", sans-serif;
 }
 .bResultListItem .bResultListItemText{
-	padding-top: 18px;
+	padding-top: 24px;
 }
 .results a .glyphicon, .results a .fa {
 	color: #000 !important;
