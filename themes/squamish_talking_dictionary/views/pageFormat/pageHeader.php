@@ -168,7 +168,7 @@
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<li <?php print ((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) != "contact")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "TalkingDictionary"); ?></li>
-					<li <?php print (strToLower($this->request->getAction()) == "contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "ContactTalkingDictionary", ""); ?></li>
+					<li <?php print (strToLower($this->request->getController()) == "contacttalkingdictionary") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "ContactTalkingDictionary", ""); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "language") && (strToLower($this->request->getAction()) == "alphabet")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Guide To Pronunciation", "", "", "Language", "Alphabet"); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "language") && (strToLower($this->request->getAction()) == "sentences")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Sentences and Phrases", "", "", "Language", "Sentences"); ?></li>
 					<li <?php print (strToLower($this->request->getController()) == "themes") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Themes", "", "", "Themes", "Index"); ?></li>
