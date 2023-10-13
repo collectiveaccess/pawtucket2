@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf_subject.tpl
+ * app/templates/pdfStart.php : top-matter prepended to PDF templates
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,8 +23,20 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name PDF start
+ * @type pageStart
+ *
  * ----------------------------------------------------------------------
  */
-
-	print "Squamish Nation Talking Dictionary: "._t("Thank you for registering!");
+ 
 ?>
+<html>
+	<head>
+		<title><?php print $this->getVar('criteria_summary_truncated'); ?></title>
+		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+		<meta charset="utf-8" />
+	</head>
+	<body>

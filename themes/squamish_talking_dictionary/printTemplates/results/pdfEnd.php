@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf_subject.tpl
+ * app/templates/pdfEnd.php : bottom-matter appended to PDF templates
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,8 +23,14 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name PDF end
+ * @type pageEnd
+ *
  * ----------------------------------------------------------------------
  */
-
-	print "Squamish Nation Talking Dictionary: "._t("Thank you for registering!");
 ?>
+	</body>
+</html>

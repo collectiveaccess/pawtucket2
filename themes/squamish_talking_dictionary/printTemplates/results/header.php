@@ -1,13 +1,13 @@
-<?php
+<?php	
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/reg_conf_subject.tpl
+ * app/templates/header.php : standard PDF report header
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,8 +23,40 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name Header
+ * @type fragment
+ *
  * ----------------------------------------------------------------------
  */
-
-	print "Squamish Nation Talking Dictionary: "._t("Thank you for registering!");
+ 
+ if($this->request->config->get('summary_header_enabled')) {
+	switch($this->getVar('PDFRenderer')) {
+		case 'wkhtmltopdf':
 ?>
+			<!--BEGIN HEADER--><!DOCTYPE html>
+			<html>
+				<head>
+					<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+					<meta charset="utf-8" />
+					<meta charset="utf-8" />
+				</head>
+				<body>	
+					<div id='header'><?= caGetReportLogo(); ?></div>
+			</body>
+			</html><!--END HEADER-->
+<?php
+		break;
+		# ----------------------------------------
+		default:
+?>
+			<div id='headerdompdf'>
+				<?= caGetReportLogo(); ?>
+			</div>
+<?php
+		break;
+		# ----------------------------------------
+	}
+}

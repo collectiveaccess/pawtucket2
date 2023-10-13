@@ -32,6 +32,10 @@
 	background-color:#DBD5CD;
 	color:#000;
 }
+.bgLtBeige{
+	background-color:#EAE7E2;
+	color:#000;
+}
 .bgBorder{
 	height:10px;
 	margin-bottom:50px;
@@ -568,6 +572,9 @@ a.browseRemoveFacet .glyphicon{
 	padding: 4px 7px 5px 7px;
 	margin: 0px 5px 10px 5px;
 	font-weight:normal;
+}
+.bLetterBarDivider{
+	font-size:20px;
 }
 /* front */
 html.frontContainer {
@@ -1418,6 +1425,11 @@ a .relatedObjectsCard img{
 	height:auto;
 	width:70px;
 }
+.audioPlayerContainer{
+	padding: 30px 0px 30px 0px;
+  	margin: 15px;
+  	/*background-color:#EEE;*/
+}
 /* advanced Search */
 .advancedSearchField .formLabel {
 	text-transform: capitalize;
@@ -2030,4 +2042,45 @@ a .themesTile .title {
 }
 .themesTile:hover .popover-content{
 	color:#000;
+}
+
+/* lightbox */
+.lbItemContent {
+	height: 100px;
+}
+.lbItem a{
+	color:#000;
+}
+.caption {
+  font-size: 18px;
+  color:#000;
+}
+.lbItemContainer {
+	min-height: 170px;
+}
+.lbItemContainer .lbItem:hover .lbItemContent {
+	min-height: 100px;
+	height: auto;
+}
+.lbSet h2, .lbSet:hover h2 {
+  text-transform: none;
+  font-size: 24px;
+  margin-top: 0px;
+  height: 1.5em;
+  overflow: hidden;
+}
+.lbSetImg, .lbSetThumbRowContainer{
+	display:none;
+}
+.lbSet, .lbSet:hover {
+  margin: 0px;
+  z-index: 200;
+  position: relative;
+  width: 100%;
+}
+.lbExpandedInfo, .lbSetExpandedInfo {
+  display: inline;
+}
+.lbSetListItemCol{
+	margin-bottom:30px;
 }

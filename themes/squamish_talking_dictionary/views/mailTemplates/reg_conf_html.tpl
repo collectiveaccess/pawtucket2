@@ -29,9 +29,9 @@ if($this->request->config->get("dont_approve_logins_on_registration")){
 	$vs_active_message = _t("<p>Your account will be activated after review.</p>");
 }
 
-print _t("<p>Thank you for registering for the Squamish Nation Collections database. ".$vs_active_message."</p>
+print _t("<p>Thank you for registering for the Squamish Nation Talking Dictionary. ".$vs_active_message."</p>
 
-<p>As a member you can comment on items on the site and also use the Project Box to create your own groups of records from the collection.</p>
+<p>As a member you can use the Project Box to create your own groups of words from the Dictionary.</p>
 ");
 
 	print "<p>".$this->request->config->get("site_host")."</p>";

@@ -75,7 +75,7 @@
 <?php
 		if($vb_image){
 ?>
-			<div class="col-sm-12 col-md-5 detailImage">
+			<div class="col-sm-12 col-md-4 col-md-offset-1 detailImage">
 <?php
 				print implode("<br/><br/>", $va_image_tags);
 ?>			
@@ -83,47 +83,32 @@
 <?php
 		}
 ?>
-			<div class="col-sm-12 <?php print ($vb_image) ? "col-md-5" : "col-md-6 col-md-offset-2"; ?> bg_beige">
+			<div class="col-sm-12 <?php print ($vb_image) ? "col-md-6" : "col-md-10 col-md-offset-1"; ?> bgLtBrown">
 				<div class="detailLanguageInfo">
 					<H1>{{{^ca_objects.preferred_labels.name<ifdef code="ca_objects.meaning"> &mdash; ^ca_objects.meaning</ifdef>}}}</H1>
 					{{{<ifdef code="ca_objects.word_morpheme_type"><div class="unit">Part of speech: ^ca_objects.word_morpheme_type</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.sentence"><div class="unit"><b><unit relativeTo="ca_objects.sentence" delimiter="<br/>">^ca_objects.sentence</unit></b><ifdef code="ca_objects.sentence_translation"><br><unit relativeTo="ca_objects.sentence_translation" delimiter="<br/>">^ca_objects.sentence_translation</unit></div></ifdef>}}}
 				</div>
 			</div>
-			<div class="text-center col-sm-12 <?php print ($vb_image) ? "col-md-2" : "col-md-2"; ?>">
+		</div>
+		<div class="row">
+			<div class="col-sm-12 col-md-10 col-md-offset-1">
+				<div class="row">
 <?php
+			
 			if(is_array($va_audio_files) && sizeof($va_audio_files)){	
-				foreach($va_audio_files as $vn_rep_id => $va_audio_file){			
-
-				print "<div class='unit'><i id='playPronunciation".$vn_rep_id."' class='fa fa-play-circle-o audioButton' aria-hidden='true'></i>";
-				if($va_audio_file["caption"]){
-					print "<br/>".$va_audio_file["caption"];
-				}
-				print "</div>";				
-?>
-				<script type='text/javascript'>
-					$(document).ready(function() {
-						var audioElement<?php print $vn_rep_id; ?> = document.createElement('audio');
-						audioElement<?php print $vn_rep_id; ?>.setAttribute('src', '<?php print $va_audio_file["url"]; ?>');
-						$('#playPronunciation<?php print $vn_rep_id; ?>').click(function() {
-							//return audioElement<?php print $vn_rep_id; ?>.paused ? audioElement<?php print $vn_rep_id; ?>.play() : audioElement<?php print $vn_rep_id; ?>.pause();
-							
-							if(audioElement<?php print $vn_rep_id; ?>.paused){
-								$('#playPronunciation<?php print $vn_rep_id; ?>').removeClass('fa-play-circle-o');
-								$('#playPronunciation<?php print $vn_rep_id; ?>').addClass('fa-pause-circle-o');
-								return audioElement<?php print $vn_rep_id; ?>.play();
-							}else{
-								$('#playPronunciation<?php print $vn_rep_id; ?>').removeClass('fa-pause-circle-o');
-								$('#playPronunciation<?php print $vn_rep_id; ?>').addClass('fa-play-circle-o');
-								return audioElement<?php print $vn_rep_id; ?>.pause();
-							}
-						});
-					});
-				</script>
-<?php
+				foreach($va_audio_files as $vn_rep_id => $va_audio_file){
+					print "<div class='text-center col-sm-6 col-md-4 col-lg-3'>";
+					print "<div class='unit audioPlayerContainer bgLtBeige'><i id='playPronunciationIcon".$vn_rep_id."' onClick='playAudio(\"".$vn_rep_id."\")' class='fa fa-play-circle-o audioButton' aria-hidden='true'></i>";
+					if($va_audio_file["caption"]){
+						print "<br/>".$va_audio_file["caption"];
+					}
+					print "<audio id='playPronunciation".$vn_rep_id."' class='audioPlayer' controls='' onended='audioEnded(".$vn_rep_id.")' style='display: none'><source src='".$va_audio_file["url"]."' type='audio/mp3'>Your browser does not support the audio element.</audio>";
+					print "</div></div>";
 				}
 			}			
 ?>
+				</div>
 			</div>
 		</div><!-- end row -->
 		</div><!-- end container -->
@@ -141,5 +126,40 @@
 		  speed: 75,
 		  maxHeight: 120
 		});
+		
+
+				
 	});
+		
+	function playAudio(audioId) {
+		var audio = document.getElementById("playPronunciation" + audioId);
+		var audios = document.getElementsByTagName('audio');
+		if($(".audioButton").hasClass('fa-stop-circle-o')){
+			$(".audioButton").addClass('fa-play-circle-o');
+			$(".audioButton").removeClass('fa-stop-circle-o');
+		}
+		if(audio.paused){
+			$("#playPronunciationIcon" + audioId).addClass('fa-stop-circle-o');
+			$("#playPronunciationIcon" + audioId).removeClass('fa-play-circle-o');
+			for(var i = 0, len = audios.length; i < len;i++){
+				if(!audios[i].paused){
+					audios[i].pause();
+					audios[i].currentTime = 0;
+				}
+			}
+			audio.play();
+			
+		}else{
+			$("#playPronunciationIcon" + audioId).removeClass('fa-stop-circle-o');
+			$("#playPronunciationIcon" + audioId).addClass('fa-play-circle-o');
+			audio.pause();
+			audio.currentTime = 0;
+		}
+	}
+	function audioEnded(audioId){
+		$("#playPronunciationIcon" + audioId).removeClass('fa-stop-circle-o');
+		$("#playPronunciationIcon" + audioId).addClass('fa-play-circle-o');
+	}
+	
+	
 </script>

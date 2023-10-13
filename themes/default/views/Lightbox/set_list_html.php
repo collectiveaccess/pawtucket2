@@ -57,7 +57,10 @@ $current_sort_dir 					= $this->getVar('direction');
 				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'userGroupList', array()); ?>"); return false;' ><?php print _t("Manage Your User Groups"); ?></a></li>
 <?php
 				}
-
+?>
+				<li class="divider"></li>
+				<li class='dropdown-header'><?= _t("Sort By:"); ?></li>
+<?php
 				foreach(['name' => _t('Name'), 'user_id' => _t('Creator'), 'set_id' => _t('Order created')] as $s => $l) {
 					if ($current_sort === $s) {
 						print "<li><a href='#'><strong><em>{$l}</em></strong></a></li>\n";
