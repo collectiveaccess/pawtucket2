@@ -47,9 +47,9 @@ if($vs_mode == "map"){
 	}elseif(strpos($vs_last_find, "search") !== false){
 		$vs_link_text = "Search";	
 	}elseif(strpos($vs_last_find, "gallery") !== false){
-		$vs_link_text = "Explore Features";	
+		$vs_link_text = "Features";	
 	}elseif(strpos($vs_last_find, "school") !== false){
-		$vs_link_text = "Explore Schools";	
+		$vs_link_text = "Schools";	
 	}elseif(strpos($vs_last_find, "front") !== false){
 		# --- home link is always in breadcrumb trail
 		$vs_link_text = "";	
@@ -79,27 +79,32 @@ if($vs_mode == "map"){
 <?php
 				$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></if></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
-					
+?>
+				<div class='col-sm-12 col-md-5 <?php print ($vs_featured_image) ? "fullWidth" : ""; ?>'>
+<?php					
 				if($vs_featured_image){
-?>
-				<div class='col-sm-12 col-md-5 fullWidth'>
-					<?php print $vs_featured_image; ?>
-				</div><!-- end col -->
-<?php
-				}else{
-					if($vs_representationViewer){
-?>
-					<div class='col-sm-12 col-md-5'>
-						<?php print $vs_representationViewer; ?>				
+					print $vs_featured_image;
+				}elseif($vs_representationViewer){
+					print $vs_representationViewer;
+?>			
 						<div id="detailAnnotations"></div>
 <?php				
 						print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
-?>
-					</div><!-- end col -->
-<?php
+				}else{
+					$o_icons_conf = caGetIconsConfig();
+					$vs_default_placeholder = "<i class='fa fa-picture-o fa-4x'></i>";
+					if($vs_type_placeholder = caGetPlaceholder("school", "placeholder_large_media_icon")){
+						$vs_thumbnail = $vs_type_placeholder;
+					}else{
+						$vs_thumbnail = $vs_default_placeholder_tag;
 					}
+					
+					print "<div class='detailPlaceholderContainer'>".$vs_thumbnail."</div>";
 				}
 ?>
+					{{{<ifdef code="ca_entities.home_community.home_community_text"><div class='unit'><H6>Home Communities of Students</H6><unit delimiter="<br/>"><span data-toggle="popover" title="Source" data-content="^ca_entities.home_community.home_community_source"><div class="trimTextShort">^ca_entities.home_community.home_community_text</div></span></unit></div></ifdef>}}}					
+					{{{<ifdef code="ca_entities.note_community_name"><div class='unit'><H6>Note on Home Communities</H6><div class="trimTextShort">^ca_entities.note_community_name</div></div></ifdef>}}}		
+				</div>
 				<div class='col-sm-12 col-md-<?php print ($vs_featured_image || $vs_representationViewer) ? "5" : "7"; ?>'>
 					<div class="stoneBg">	
 						{{{<ifdef code="ca_entities.preferred_labels.displayname">
@@ -112,7 +117,7 @@ if($vs_mode == "map"){
 								<H6>Dates of Operation</H6>
 								<unit delimiter=" "><div  data-toggle="popover" title="Source" data-content="^ca_entities.school_dates.date_source">
 									<ifdef code="ca_entities.school_dates.school_dates_value">^ca_entities.school_dates.school_dates_value<br/></ifdef>
-									<ifdef code="ca_entities.school_dates.date_narrative"><div class="trimText">^ca_entities.school_dates.date_narrative</div><br/></ifdef>
+									<ifdef code="ca_entities.school_dates.date_narrative"><div class="trimTextShort">^ca_entities.school_dates.date_narrative</div></ifdef>
 								</div></unit>
 							</div>
 						</ifdef>}}}
@@ -138,8 +143,6 @@ if($vs_mode == "map"){
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.denomination"><div class='unit'><H6>Denomination</H6>^ca_entities.denomination%delimiter=,_</div></ifdef>}}}		
-						{{{<ifdef code="ca_entities.home_community.home_community_text"><div class='unit'><H6>Home Communities of Students</H6><unit delimiter="<br/>"><span data-toggle="popover" title="Source" data-content="^ca_entities.home_community.home_community_source"><div class="trimTextShort">^ca_entities.home_community.home_community_text</div></span></unit></div></ifdef>}}}					
-						{{{<ifdef code="ca_entities.note_community_name"><div class='unit'><H6>Note on Home Communities</H6><div class="trimTextShort">^ca_entities.note_community_name</div></div></ifdef>}}}		
 						
 					</div><!-- end stoneBg -->
 <?php
@@ -157,9 +160,9 @@ if($vs_mode == "map"){
 						<div class="collapseBlock">
 							<h3>Location Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 							<div class="collapseContent"><h6></h6>	
-								<ifdef code="ca_places.place_location"><div class="unit"><H6>Location</H6>^ca_places.place_location</div></ifdef>
-								<ifdef code="ca_places.location_credit"><div class="unit"><H6>Location Credit</H6>^ca_places.location_credit</div></ifdef>
-								<ifdef code="ca_places.place_location_source"><div class="unit"><H6>Location Source</H6>^ca_places.place_location_source</div></ifdef>
+								<ifdef code="ca_places.place_location"><div class="unit"><H6>Location</H6><unit relativeTo="ca_places.place_location" delimiter="<br/>">^ca_places.place_location</unit></div></ifdef>
+								<ifdef code="ca_places.location_credit"><div class="unit"><H6>Location Credit</H6><unit relativeTo="ca_places.location_credit" delimiter="<br/>">^ca_places.location_credit</unit></div></ifdef>
+								<ifdef code="ca_places.place_location_source"><div class="unit"><H6>Location Source</H6><unit relativeTo="ca_places.place_location_source" delimiter="<br/>">^ca_places.place_location_source</unit></div></ifdef>
 							
 							</div>
 						</div></ifdef>}}}

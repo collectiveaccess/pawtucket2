@@ -29,6 +29,7 @@
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_collections.php");
  	require_once(__CA_MODELS_DIR__."/ca_entities.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_places.php");
  	require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  	require_once(__CA_LIB_DIR__.'/Search/EntitySearch.php');
@@ -97,12 +98,16 @@
  		}
  		# -------------------------------------------------------
  		public function schools(){
- 			$o_search = new EntitySearch();
- 		 	if(is_array($this->opa_access_values) && sizeof($this->opa_access_values)){
- 		 		$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
+ 			$o_browse = caGetBrowseInstance("ca_entities");
+ 		 	$o_browse->setTypeRestrictions(array("school"));
+ 		 	$t_place = new ca_places(array("idno" => 37));
+			$vn_bc_place_id = "";
+			if($vn_bc_place_id = $t_place->get("ca_places.place_id")){
+				$o_browse->addCriteria("place_facet", $vn_bc_place_id);
 			}
-			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_school_id, array("sort" => "ca_entity_labels.name_sort"));
- 				
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => false));
+			$qr_res = $o_browse->getResults(array("sort" => "ca_entity_labels.name_sort", "sort_direction" => "asc"));
+				
  			$o_map = new GeographicMap('100%', 500, 'map');
 			$va_map_stats = $o_map->mapFrom($qr_res, "ca_places.georeference", array("labelTemplate" => "^ca_entities.preferred_labels%delimiter=; ", "ajaxContentUrl" => caNavUrl($this->request, "", "Explore", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
 			$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));

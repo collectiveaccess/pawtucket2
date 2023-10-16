@@ -40,7 +40,11 @@
 <?php
 						foreach($va_browse_types as $vs_browse_name => $va_browse_type){
 							if(!$va_browse_type["dontShowInBrowseMenu"]){
-								print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), '', '', 'Browse', $vs_browse_name, '')."</li>";
+								$va_options = array();
+								if($vs_browse_name == "schools"){
+									$va_options = array("view" => "images");
+								}
+								print "<li>".caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), '', '', 'Browse', $vs_browse_name, $va_options)."</li>";
 							}
 						}
 ?>

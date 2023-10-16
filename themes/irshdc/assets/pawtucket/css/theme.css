@@ -2372,3 +2372,11 @@ a.digExhDetailPrev, a.digExhDetailNext{
 ::selection {
     background: rgba(0, 112, 255, 0.3);
 }
+
+/* browse */
+.browse.schools #browseResultsContainer #map_map{
+	margin-top:-20px;
+}
+.results .leaflet-popup-content{
+	width:auto !important;
+}

@@ -148,11 +148,12 @@
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
 					<li class="dropdown <?php print ($this->request->getController() == "Explore") ? ' active"' : ''; ?>" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>Explore</span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>Learn</span></a>
 						<ul class="dropdown-menu">
 							<!--<li><?php print caNavLink($this->request, "<span>"._t("Narrative Threads")."</span>", "", "", "Explore", "narrativethreads"); ?></li>-->
 							<li><?php print caNavLink($this->request, "<span>"._t("BC Schools")."</span>", "", "", "Explore", "schools"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Featured")."</span>", "", "", "Gallery", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Map")."</span>", "", "", "Browse", "schools", array("view" => "map")); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Resources")."</span>", "", "", "Listing", "Resources"); ?></li>
 <?php
 	if($this->request->isLoggedIn() && $this->request->user->hasRole("previewDigExh")){

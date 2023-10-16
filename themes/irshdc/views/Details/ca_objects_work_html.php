@@ -50,11 +50,11 @@ if($vs_mode == "map"){
 	}elseif(strpos($vs_last_find, "search") !== false){
 		$vs_link_text = "Search";	
 	}elseif(strpos($vs_last_find, "gallery") !== false){
-		$vs_link_text = "Explore Features";	
+		$vs_link_text = "Features";	
 	}elseif(strpos($vs_last_find, "narrative") !== false){
-		$vs_link_text = "Explore Narrative Threads";	
+		$vs_link_text = "Narrative Threads";	
 	}elseif(strpos($vs_last_find, "listing") !== false){
-		$vs_link_text = "Explore Resources";	
+		$vs_link_text = "Resources";	
 	}
 	if($vs_link_text){
 		$va_params["row_id"] = $t_object->getPrimaryKey();

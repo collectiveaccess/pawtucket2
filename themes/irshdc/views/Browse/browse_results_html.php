@@ -210,6 +210,12 @@ if (!$vb_ajax) {	// !ajax
 		<H1>
 <?php
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+			# --- don't show gear in school map - sort doesn't make sense
+			$vb_show_gear = true;
+			if((strToLower($this->request->getAction()) ==  "schools") && ($vs_current_view == "map")){
+				$vb_show_gear = false;
+			}
+			if($vb_show_gear){
 ?>		
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear"></i></a>
@@ -220,7 +226,7 @@ if (!$vb_ajax) {	// !ajax
 						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
 						print "<li class='divider'></li>";
 					}
-					if($vs_sort_control_type == 'dropdown'){
+					if(($vs_sort_control_type == 'dropdown')){
 						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 							print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
 							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
@@ -257,6 +263,7 @@ if (!$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
+			}
 			if(is_array($va_facets) && sizeof($va_facets)){
 ?>
 			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
