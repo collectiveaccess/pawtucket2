@@ -105,7 +105,7 @@ if($vs_mode == "map"){
 					{{{<ifdef code="ca_entities.home_community.home_community_text"><div class='unit'><H6>Home Communities of Students</H6><unit delimiter="<br/>"><span data-toggle="popover" title="Source" data-content="^ca_entities.home_community.home_community_source"><div class="trimTextShort">^ca_entities.home_community.home_community_text</div></span></unit></div></ifdef>}}}					
 					{{{<ifdef code="ca_entities.note_community_name"><div class='unit'><H6>Note on Home Communities</H6><div class="trimTextShort">^ca_entities.note_community_name</div></div></ifdef>}}}		
 				</div>
-				<div class='col-sm-12 col-md-<?php print ($vs_featured_image || $vs_representationViewer) ? "5" : "7"; ?>'>
+				<div class='col-sm-12 col-md-5'>
 					<div class="stoneBg">	
 						{{{<ifdef code="ca_entities.preferred_labels.displayname">
 							<H4><span data-toggle="popover" title="Source" data-content="^ca_entities.school_name_source">^ca_entities.preferred_labels.displayname</span>
@@ -182,7 +182,7 @@ if($vs_mode == "map"){
 						</div>
 					</div>
 				</div>
-				<div class='col-sm-12 col-md-<?php print ($vs_featured_image || $vs_representationViewer) ? "2" : "5"; ?>'>
+				<div class='col-sm-12 col-md-2'>
 	<?php
 					# Comment and Share Tools
 						
@@ -308,21 +308,11 @@ if($vs_mode == "map"){
 		
 		var options = {
 			placement: function () {
-<?php
-			if($vs_featured_image || $vs_representationViewer){
-?>
 				if ($(window).width() > 992) {
 					return "left";
 				}else{
 					return "auto top";
 				}
-<?php
-			}else{
-?>
-				return "auto top";
-<?php			
-			}
-?>
 			},
 			trigger: "hover",
 			html: "true"
