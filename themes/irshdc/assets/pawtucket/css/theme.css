@@ -930,6 +930,10 @@ a.readmore-js-toggle {
 	width: 100%;
 	font-size: 30px;
 }
+.detail.school .detailPlaceholderContainer{
+	padding: 75px 5px 85px 5px;
+	font-size: 40px;
+}
 .detail .caAudioPlayer{
 	padding-top:0px;
 }
@@ -1522,7 +1526,7 @@ a:hover .galleryIconPlaceholderWrapper .galleryIconPlaceholder, a.galleryIconAct
 	font-family: lato;
 }
 #exploreMapBalloonContainer {
-    max-height: 160px;
+    max-height: 170px;
     width: 400px;
     overflow-y: auto;
 }

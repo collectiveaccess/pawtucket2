@@ -158,7 +158,7 @@ if($vs_mode == "map"){
 					</ifdef>}}}
 					{{{<ifdef code="ca_places.place_location|ca_places.location_credit|ca_places.place_location_source">
 						<div class="collapseBlock">
-							<h3>Location Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+							<h3>Map Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 							<div class="collapseContent"><h6></h6>	
 								<ifdef code="ca_places.place_location"><div class="unit"><H6>Location</H6><unit relativeTo="ca_places.place_location" delimiter="<br/>">^ca_places.place_location</unit></div></ifdef>
 								<ifdef code="ca_places.location_credit"><div class="unit"><H6>Location Credit</H6><unit relativeTo="ca_places.location_credit" delimiter="<br/>">^ca_places.location_credit</unit></div></ifdef>

@@ -5,7 +5,7 @@
 ?>
 	<div class="row tanBg exploreRow exploreSchoolsRow">
 		<div class="col-sm-12">
-			<H1>Explore BC Schools</H1>
+			<H1>BC Schools</H1>
 			<p>
 				Records and stories of Indian Residential Schools in British Columbia reveal a great deal about our history of BC and our histories of Canada. These collections provide a window into a way of knowing how the schools shaped the lives of Survivors, their families and communities. Here you can see the operation of these schools as a nation-wide system as well as very individual and distinct functions of community life in BC. Each school has a distinct set of histories and meaning to these communities. Survivor stories, documents, images, records and objects on the schools provide us a way of knowing stories so integral to the shape of our histories as Canadians and as Indigenous peoples.
 			</p>
