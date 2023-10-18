@@ -34,14 +34,20 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
 
-	$media = $t_object->get('ca_object_representations.media.small', ['returnAsArray' => true]);
+	MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels').": ".$t_object->get('ca_objects.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
+
+	MetaTagManager::addMeta("search-title", $t_object->get('ca_objects.preferred_labels'));
+	MetaTagManager::addMeta("search-group", 'Collection Items');
+	MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.preferred_labels'));
+	MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
+	MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
 ?>
 <div class="row">
 	
 	<main class="flush">
 	<section class="hero-single-collection wrap">
 		<div class="eyebrow text__eyebrow color__gray">
-			<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div><br>
+			<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
 			<div class="row">
 				<div class="col-10">
 					 {{{<unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">
@@ -68,212 +74,221 @@
 		<div class="layout grid-flex">
 
 			<div class="item color__white">
-				<div id="carouselIndicators" class="carousel slide collection-carousel" data-bs-interval="false">
-					<div class="carousel-inner">
-						<?php
-							$active = true;
-							foreach($media as $m) {
-						?>
-								<div class="carousel-item <?= ($active ? 'active' : ''); ?>" style="height: auto;">
-									<?= $m; ?>
-								</div>
-						<?php
-								$active = false;
-							}
-						?>
-
-						<?php
-							if(count($media) == 0 ){
-						?>
-							<div class="d-flex align-items-center p-5" style="height: 400px;">
-								<p>Digitized media for this item is not currently available, please email info@chicagofilmarchives.org to inquire.</p>
-							</div>
-						<?php
-							}
-						?>
-					</div>
-					<div class="carousel-indicators collection-indicators">
-						<?php
-							$active = true;
-							$index = 0;
-							foreach($media as $m) {
-								if(count($media) > 1 ){
-						?>
-									<button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="<?= $index; ?>" class="<?= ($active ? 'active' : ''); ?>" <?= ($active ? 'aria-current="true"' : ''); ?> aria-label="Media <?= $index+ 1; ?>"></button>
-						<?php
-								}
-								$index++;
-								$active = false;
-							}
-						?>
-					</div>
-
-					<?php
-						if(count($media) > 1 ){
-					?>
-							<button type="button" class="carousel-control-prev" data-bs-target="#carouselIndicators" data-bs-slide="prev">
-								<span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="sr-only">Previous</span>
-							</button>
-							<button type="button" class="carousel-control-next" data-bs-target="#carouselIndicators" data-bs-slide="next">
-								<span class="carousel-control-next-icon" aria-hidden="true"></span><span class="sr-only">Next</span>
-							</button>
-					<?php
-						}
-					?>
-
-					{{{<ifdef code="ca_object_representations.caption">
-						<div class="max__640 text__body-3 color__white block-sm text-center">^ca_object_representations.caption</div>
-					</ifdef>}}}
-				</div>   
+				<?= $this->render("Details/detail_media_html.php"); ?>
 			</div>
 
-			<div class="item">
+			<div class="item object-data-links">
 				<div class="container-scroll" style="overflow-y: auto;">
 					<div class="content-scroll">
 						<div class="size-column">
-
-							<?php
-								$metadata = array(
-									"^ca_objects.idno" => "Identifier",
-									"^ca_objects.cfaSpanDates" => "Date Of Production",
-									"^ca_objects.cfaAbstract" => "Abstract",
-									"^ca_objects.cfaDescription" => "Description",
-									"^ca_objects.cfaExtentManu.extentAmountManu ^ca_objects.cfaExtentManu.extent_manu" => "Extent",	
-									"^ca_objects.cfaPublicObjectNotes" => "Notes",
-									"^ca_objects.cfaLanguageMaterials" => "Language Of Materials",	
-									"^ca_objects.cfaYNTransferred" => "Transferred",	
-								);
-								foreach($metadata as $field => $fieldLabel){
-							?>
-									{{{<ifdef code="<?php print $field; ?>">
-										<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?php print $fieldLabel; ?></div>
-										<div class="max__640 text__body-3 color__white block-sm"><?php print $field; ?></div>
-									</ifdef>}}}
-							<?php
-								}
-								$list_metadata = [
-									"Subject" => [
-										"relationshipType" => "subject"
-									]
-								];
-								
-								foreach($list_metadata as $fieldLabel => $field_info){
-							?>
-
-									{{{<ifdef code="^ca_objects.cfaDimensions">
+					
+							{{{<case>
+								<if rule="^access = 'restricted'">
+									<?php
+										$metadata = array(
+											"^ca_objects.idno" => "Identifier",
+											"^ca_objects.cfaSpanDates" => "Date Of Production",
+											"^ca_objects.cfaAbstract" => "Abstract",
+											"^ca_objects.cfaDescription" => "Description",
+											"^ca_objects.cfaExtentManu.extentAmountManu ^ca_objects.cfaExtentManu.extent_manu" => "Extent",	
+											"^ca_objects.cfaPublicObjectNotes" => "Notes",
+											"^ca_objects.cfaLanguageMaterials" => "Language Of Materials",	
+											"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
+										);
+										foreach($metadata as $field => $fieldLabel){
+									?>
+											<ifdef code="<?php print $field; ?>">
+												<unit delimiter="<br>">
+													<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+													<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
+												</unit>
+											</ifdef>
+									<?php
+										}
+									?>
+		
+									<ifdef code="ca_objects.cfaDimensions">
 										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Dimensions</div>
 										<div class="max__640 text__body-3 color__white block-sm">
-											<ifdef code="^ca_objects.cfaDimensions.dimensions_length">^ca_objects.cfaDimensions.dimensions_length</ifdef>
-											<ifdef code="^ca_objects.cfaDimensions.dimensions_width"> x ^ca_objects.cfaDimensions.dimensions_width</ifdef>
-											<ifdef code="^ca_objects.cfaDimensions.dimensions_height"> x ^ca_objects.cfaDimensions.dimensions_height</ifdef>
-											<ifdef code="^ca_objects.cfaDimensions.dimensions_depth"> x ^ca_objects.cfaDimensions.dimensions_depth</ifdef>
-											<ifdef code="^ca_objects.cfaDimensions.thickness"> x ^ca_objects.cfaDimensions.thickness</ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_length">^ca_objects.cfaDimensions.dimensions_length <small>(l)</small></ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_length, ca_objects.cfaDimensions.dimensions_width"> x </ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_width">^ca_objects.cfaDimensions.dimensions_width <small>(w)</small></ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_width, ca_objects.cfaDimensions.dimensions_height"> x </ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_height">^ca_objects.cfaDimensions.dimensions_height <small>(h)</small></ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_height, ca_objects.cfaDimensions.dimensions_depth"> x </ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_depth">^ca_objects.cfaDimensions.dimensions_depth <small>(d)</small></ifdef>
+											<ifdef code="ca_objects.cfaDimensions.dimensions_depth, ca_objects.cfaDimensions.thickness"> x </ifdef>
+											<ifdef code="ca_objects.cfaDimensions.thickness">^ca_objects.cfaDimensions.thickness <small>(thick)</small></ifdef>
 										</div>
-									</ifdef>}}}
+									</ifdef>
+		
+									<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
+										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
+										<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="related_to">
+											<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
+										</unit>
+										<br>
+									</ifcount>
 
-									{{{<unit relativeTo='ca_occurrences'>
-										<ifcount code="ca_list_items" restrictToRelationshipTypes="<?= $field_info['relationshipType']; ?>" min="1">
-											<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
-											<div class="max__640 text__body-3 color__white block-sm">
-												<unit relativeTo='ca_list_items' delimiter="<br>" restrictToRelationshipTypes='<?= $field_info['relationshipType']; ?>'>
-													^ca_list_items.preferred_labels.name_plural
+									<div class="max__640 text__body-3 color__white">This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org</div>
+								</if>
+								
+								<if rule="^access = 'yes'">
+									<?php
+										$metadata = array(
+											"^ca_objects.idno" => "Identifier",
+											"^ca_objects.cfaSpanDates" => "Date Of Production",
+											"^ca_objects.cfaAbstract" => "Abstract",
+											"^ca_objects.cfaDescription" => "Description",
+											"^ca_objects.cfaExtentManu.extentAmountManu ^ca_objects.cfaExtentManu.extent_manu" => "Extent",	
+											"^ca_objects.cfaPublicObjectNotes" => "Notes",
+											"^ca_objects.cfaLanguageMaterials" => "Language Of Materials",	
+											"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
+										);
+										foreach($metadata as $field => $fieldLabel){
+									?>
+											<ifdef code="<?php print $field; ?>">
+												<unit delimiter="<br>">
+													<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+													<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
 												</unit>
+											</ifdef>
+									<?php
+										}
+										$list_metadata = [
+											"Subject" => [
+												"relationshipType" => "subject"
+											]
+										];
+										
+										foreach($list_metadata as $fieldLabel => $field_info){
+									?>
+		
+										<ifdef code="ca_objects.cfaDimensions">
+											<div class="max__640 text__eyebrow color__light_gray block-xxxs">Dimensions</div>
+											<div class="max__640 text__body-3 color__white block-sm">
+												<ifdef code="ca_objects.cfaDimensions.dimensions_length">^ca_objects.cfaDimensions.dimensions_length <small>(l)</small></ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_length, ca_objects.cfaDimensions.dimensions_width"> x </ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_width">^ca_objects.cfaDimensions.dimensions_width <small>(w)</small></ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_width, ca_objects.cfaDimensions.dimensions_height"> x </ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_height">^ca_objects.cfaDimensions.dimensions_height <small>(h)</small></ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_height, ca_objects.cfaDimensions.dimensions_depth"> x </ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_depth">^ca_objects.cfaDimensions.dimensions_depth <small>(d)</small></ifdef>
+												<ifdef code="ca_objects.cfaDimensions.dimensions_depth, ca_objects.cfaDimensions.thickness"> x </ifdef>
+												<ifdef code="ca_objects.cfaDimensions.thickness">^ca_objects.cfaDimensions.thickness <small>(thick)</small></ifdef>
 											</div>
-										</ifcount>
-									</unit>}}}
-							<?php
-								}
-							?>
-
-							{{{<ifcount code="ca_collections" min="1">
-									<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
-									<unit relativeTo="ca_collections" delimiter="">
-										<div class="max__640 text__body-3 color__white">^ca_collections.preferred_labels</div>
-									</unit>
-								<br>
-							</ifcount>}}}
-
-							{{{<ifcount code="ca_entities" min="1">
-									<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related People and Organizations</div>
-									<unit relativeTo="ca_entities" delimiter="">
-										<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels</div>
-									</unit>
-								<br>
-							</ifcount>}}}
-
-							{{{<ifcount code="ca_occurrences" min="1">
-								<unit relativeTo="ca_occurrences">
-									<ifcount code="ca_places" min="1" >
-										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Places</div>
-										<unit relativeTo="ca_places" delimiter="">
-											<div class="max__640 text__body-3 color__white">^ca_places.preferred_labels</div>
+										</ifdef>
+		
+										<unit relativeTo='ca_occurrences'>
+											<ifcount code="ca_list_items" restrictToRelationshipTypes="<?= $field_info['relationshipType']; ?>" min="1">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+												<div class="max__640 text__body-3 color__white block-sm">
+													<unit relativeTo='ca_list_items' delimiter="<br>" restrictToRelationshipTypes='<?= $field_info['relationshipType']; ?>'>
+														<a href="/Search/objects/search/^ca_list_items.preferred_labels.name_plural">^ca_list_items.preferred_labels.name_plural</a>
+													</unit>
+												</div>
+											</ifcount>
+										</unit>
+									<?php
+										}
+									?>
+		
+									<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
+										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
+										<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="related_to">
+											<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
 										</unit>
 										<br>
 									</ifcount>
-								</unit>
-							</ifcount>}}}
 
-							{{{<ifcount code="ca_occurrences" min="1">
-								<unit relativeTo="ca_occurrences">
-									<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="distributor">
-										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Distributor</div>
-										<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="distributor">
-											<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.displayname</div>
+									<!-- <ifcount code="ca_occurrences" min="1"> -->
+										<!-- <unit relativeTo="ca_occurrences"> -->
+											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="designer, manufacturer, photographer, creator, compiler, source, distributor, translator, writer, publisher, corporate, contributor">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related People & Organizations</div>
+												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="designer, manufacturer, photographer, creator, compiler, source, distributor, translator, writer, publisher, corporate, contributor">
+													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)</div>
+												</unit>
+												<br>
+											</ifcount>
+										<!-- </unit> -->
+									<!-- </ifcount> -->
+		
+									<ifcount code="ca_occurrences" min="1">
+										<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_places" min="1" >
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Places</div>
+												<unit relativeTo="ca_places" delimiter=" ➜ ">
+													<div class="max__640 text__body-3 color__white">
+														<a href="/Search/objects/search/^ca_places.preferred_labels">^ca_places.hierarchy.preferred_labels</a>
+													</div>
+												</unit>
+												<br>
+											</ifcount>
 										</unit>
-										<br>
 									</ifcount>
-								</unit>
-							</ifcount>}}}
 
-							{{{<ifcount code="ca_occurrences" min="1">
-								<unit relativeTo="ca_occurrences">
-									<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="corporate">
-										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Sponsor/client</div>
-										<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="corporate">
-											<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.displayname</div>
+									<ifcount code="ca_occurrences" min="1">
+										<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="distributor">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Distributor</div>
+												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="distributor">
+													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a></div>
+												</unit>
+												<br>
+											</ifcount>
 										</unit>
-										<br>
 									</ifcount>
-								</unit>
-							</ifcount>}}}
+		
+									<ifcount code="ca_occurrences" min="1">
+										<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="corporate">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Sponsor/client</div>
+												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="corporate">
+													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a></div>
+												</unit>
+												<br>
+											</ifcount>
+										</unit>
+									</ifcount>
+		
+									<ifcount code="ca_occurrences" min="1">
+										<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Main Credits</div>
+												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
+													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)</div>
+												</unit>
+												<br>
+											</ifcount>
+										</unit>
+									</ifcount>
+		
+									<ifcount code="ca_occurrences" min="1">
+										<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Additional Credits</div>
+												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
+													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)</div>
+												</unit>
+												<br>
+											</ifcount>
+										</unit>
+									</ifcount>
+		
+									<ifcount code="ca_occurrences" min="1">
+										<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Participants And Performers</div>
+												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
+													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)</div>
+												</unit>
+												<br>
+											</ifcount>
+										</unit>
+									</ifcount>
+								</if>
+							</case>}}}
 
-							{{{<ifcount code="ca_occurrences" min="1">
-								<unit relativeTo="ca_occurrences">
-									<ifcount code="ca_entities" min="1" 
-										restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
-										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Main Credits</div>
-										<unit relativeTo="ca_entities" delimiter="" 
-											restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
-											<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.displayname</div>
-										</unit>
-										<br>
-									</ifcount>
-								</unit>
-							</ifcount>}}}
-
-							{{{<ifcount code="ca_occurrences" min="1">
-								<unit relativeTo="ca_occurrences">
-									<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
-										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Additional Credits</div>
-										<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
-											<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.displayname</div>
-										</unit>
-										<br>
-									</ifcount>
-								</unit>
-							</ifcount>}}}
-
-							{{{<ifcount code="ca_occurrences" min="1">
-								<unit relativeTo="ca_occurrences">
-									<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
-										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Participants And Performers</div>
-										<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
-											<div class="max__640 text__body-3 color__white">^ca_entities.preferred_labels.displayname</div>
-										</unit>
-										<br>
-									</ifcount>
-								</unit>
-							</ifcount>}}}
 
 						</div>
 					</div><!-- content-scroll -->

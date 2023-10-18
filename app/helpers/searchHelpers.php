@@ -1766,7 +1766,18 @@
 		
 		if ($pn_display_id > 0) {
             $t_display =  new ca_bundle_displays($pn_display_id); 
-            $va_display_bundles = array_map(function ($v) { return $v['bundle_name']; }, $t_display->getPlacements());	
+            $va_display_bundles = array_map(function ($v) { return $v['bundle_name']; }, $t_display->getPlacements());
+            
+            foreach($va_display_bundles as $id => $bname) {
+            	if(preg_match("!\.history_tracking_current_value$!", $bname)) {
+            		$t_placement = new ca_bundle_display_placements($id);
+            		if(!($policy = $t_placement->getSetting('policy'))) { continue; }
+            		$policy_info = $ps_table::getPolicyConfig($policy);
+            		if(!($label = caExtractSettingValueByLocale($t_placement->get('settings'), 'label', $g_ui_locale) ?? $policy_info['name'] ?? null)) { continue; }
+            		$va_base_fields[$bname.'%policy='.$policy] = $label;
+            	}
+            }
+            
 			$va_base_fields = array_filter($va_base_fields, function($v, $k) use ($va_display_bundles, $config_sorts) { 
 				
 				if (isset($config_sorts[$k])) { return true; }
@@ -2509,6 +2520,9 @@
 			$current_text_loc = null;
 			
 			$whitespace_regex = $o_search_config->get('whitespace_tokenizer_regex');
+			$punctuation_regex = $o_search_config->get('punctuation_tokenizer_regex');
+			$separator_regex = $o_search_config->get('separator_tokenizer_regex');
+			
 			while (@$xml->read()) {
 					switch ($xml->name) {
 						case 'page':		// new page
@@ -2529,16 +2543,22 @@
 								for($i=0; $i < mb_strlen($text_line_content); $i++) {
 									if (preg_match("!{$whitespace_regex}!u", mb_substr($text_line_content, $i, 1))) {
 										// word boundary
-										if ($acc) {
-											$acc = mb_strtolower($acc);
-											$start = $text_line_locs[$start];
-											$end = $text_line_locs[$end];
-											$locations[$acc][] = array(
-												'p' => $current_page,
-												'x1' => $start['x1'], 'y1' => $start['y1'],
-												'x2' => $end['x2'], 'y2' => $end['y2']
-												//'size' => $start['size']
-											);
+										$acc_tokens = caTokenizeString($acc);
+										if (is_array($acc_tokens) && sizeof($acc_tokens)) {
+											foreach($acc_tokens as $acc) {
+												$acc = mb_strtolower($acc);
+												$acc = preg_replace("!{$punctuation_regex}!", "", $acc);
+												$acc = preg_replace("!{$separator_regex}!", "", $acc);
+												
+												$start = $text_line_locs[$start];
+												$end = $text_line_locs[$end];
+												$locations[$acc][] = array(
+													'p' => $current_page,
+													'x1' => $start['x1'], 'y1' => $start['y1'],
+													'x2' => $end['x2'], 'y2' => $end['y2']
+													//'size' => $start['size']
+												);
+											}
 										}
 										$start = $end = null;
 										$acc = '';

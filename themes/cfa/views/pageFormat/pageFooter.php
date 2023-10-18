@@ -33,7 +33,8 @@
 	</div><!-- end row -->
 </div><!-- end container -->
 
-<footer class="wrap-all">
+<footer style="padding: 40px;">
+<!-- <footer class="wrap-all"> -->
 
 	<div class="row top">
 		<div class="col">

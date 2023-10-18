@@ -157,7 +157,7 @@
 					if($va_user_group["description"]){
 						print "<dt>"._t("Description")."</dt><dd>".$va_user_group["description"]."</dd>";
 					}
-					print "<dt>"._t("Url to join group")."</dt><dd><textarea class='form-control'>".$this->request->config->get('site_hostname').caNavUrl($this->request, "", "LoginReg", "joinGroup", array("group_code" => $va_user_group["code"], "section" => "classroom"))."</textarea></dd>";
+					print "<dt>"._t("Url to join group")."</dt><dd><textarea class='form-control'>".$this->request->config->get('site_hostname').caNavUrl($this->request, "", "LoginReg", "joinGroup", array("group_id" => $va_user_group["group_id"], "section" => "classroom"))."</textarea></dd>";
 					print "<dt>"._t("Members")."</dt><dd>";
 					if(is_array($va_user_group["members"]) && sizeof($va_user_group["members"])){
 						print "<ul>";
@@ -205,7 +205,7 @@
 			jQuery('#confirm-delete .btn-delete').data('set_id', set_id);
 		}).find('.btn-delete').on('click', function(e) {
 			var set_id = jQuery(this).data('set_id');
-			jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> }, function(data) {
+			jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id }, function(data) {
 				if(data.status == 'ok') {
 					jQuery("#crSetContainer" + set_id).parent().remove();
 					if (jQuery('.crSetContainer').length == 0) { jQuery('#crSetListPlaceholder').show(); } else { jQuery('#crSetListPlaceholder').hide(); }

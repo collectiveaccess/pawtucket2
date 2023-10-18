@@ -49,7 +49,7 @@
 		print "<H3>"._t("Groups")."</H3>";
 		print "<ul>";
 		foreach($va_user_groups as $va_user_group){
-			print "<li><div class='pull-right'><a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "removeGroupAccess", array("group_id" => $va_user_group["group_id"], 'csrfToken' => caGenerateCSRFToken($this->request)))."\"); return false;'><i class='fa fa-times' title='"._t("remove access")."'></i></a></div>";
+			print "<li><div class='pull-right'><a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "removeGroupAccess", array("group_id" => $va_user_group["group_id"]))."\"); return false;'><i class='fa fa-times' title='"._t("remove access")."'></i></a></div>";
 			print $va_user_group["name"]."</li>";
 		}
 		print "</ul>";
@@ -60,7 +60,7 @@
 		foreach($va_users as $va_user){
 			print "<li>";
 			if(!$va_user["owner"]){
-				print "<div class='pull-right'><a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "removeUserAccess", array("user_id" => $va_user["user_id"], 'csrfToken' => caGenerateCSRFToken($this->request)))."\"); return false;'><i class='fa fa-times' title='"._t("remove access")."'></i></a></div>";
+				print "<div class='pull-right'><a href='#' onClick='jQuery(\"#caMediaPanelContentArea\").load(\"".caNavUrl($this->request, "", "Lightbox", "removeUserAccess", array("user_id" => $va_user["user_id"]))."\"); return false;'><i class='fa fa-times' title='"._t("remove access")."'></i></a></div>";
 			}
 			print $va_user["name"]." (".$va_user["email"].")".(($va_user["owner"]) ? ", <b>"._t("Owner")."</b>" : "");
 			print "</li>";
