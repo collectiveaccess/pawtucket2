@@ -88,7 +88,7 @@
 			$(window).scroll(function(){ 
 				var scrollLimit = 200;
 				var pos = $(window).scrollTop();
-				if(($(window).width() > 850) && (pos > scrollLimit)) {
+				if(($(window).width() > 970) && (pos > scrollLimit)) {
 					$("body").removeClass("initial");
 				}else {
 					if(!$("body").hasClass("initial")){

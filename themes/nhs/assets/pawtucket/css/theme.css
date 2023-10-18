@@ -212,7 +212,7 @@ ul.menuItems{
 		text-align:center;
 	}
 }
-@media (min-width: 768px) and (max-width: 950px) {
+@media (min-width: 768px) and (max-width: 1100px) {
 	.navbar-default .navbar-nav > li, .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li.active > a{
 		font-size:14px;
 	}
@@ -531,7 +531,7 @@ div.browseFacetItem:hover{
 .front h1{
 	color: #021d26;
 	font-family: 'Radley', serif;
-	margin:50px 0px 90px 0px;
+	margin:50px 0px 70px 0px;
 	font-size:28px;
 	line-height:1.5em;
 	text-align: center;
@@ -561,10 +561,14 @@ div.browseFacetItem:hover{
 	padding-left:20px;
 	font-size:24px;
 }
-.front .bgLighterBlue H2{
+.front .bgLighterBlue H2, .front .bgLighterBlue H2 a{
 	color:#021d26;
 	padding-left:20px;
 	font-size:30px;
+	text-decoration:none;
+}
+.front .bgLighterBlue H2 a:hover{
+	text-decoration:underline;
 }
 .front .jcarousel-control-prev.galleryItemsNav, .front .jcarousel-control-next.galleryItemsNav{
 	margin-top: -80px !important;
@@ -605,13 +609,16 @@ h2.frontSubHeading{
 	box-shadow: 0 2px 14px 0 rgba(0,0,0,.3);
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage1{
-	background-image: url('../graphics/manuscripts.jpg');
+	background-image: url('../graphics/library.jpg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage2{
 	background-image: url('../graphics/people.jpeg');
 }
 .hpExploreBox .hpExploreBoxImage.hpExploreBoxImage3{
 	background-image: url('../graphics/manuscripts.jpg');
+}
+.hpExploreBox .hpExploreBoxImage.hpExploreBoxImage4{
+	background-image: url('../graphics/objects.jpg');
 }
 .hpExploreBox .hpExploreBoxDetails {
 	padding: 15px 13px 22px;
@@ -720,9 +727,10 @@ h2.frontSubHeading{
 .detail H4{
 	font-size:24px;
 }
-.detail H6{
+.detail H6, .detail label{
 	font-size:16px;
 	margin-bottom:2px;
+	text-transform:none;
 }
 .detail .unit {
     padding-bottom:10px;
@@ -1092,12 +1100,20 @@ label, .formLabel, .advancedSearchField .formLabel{
 }
 .featuredIntro{
 	color: #FFF;
-	font-size: 24px;
+	font-size: 22px;
+	line-height: 1.8em;
+}
+.featuredIntro .featuredIntroTitle{
+	color: #FFF;
+	font-size: 30px;
 	line-height: 1.8em;
 }
 @media(max-width:1560px){
 	.featuredIntro{
 		font-size: 22px;
+	}
+	.featuredIntro .featuredIntroTitle{
+		font-size: 24px;
 	}
 }
 @media(max-width:1400px){
@@ -1161,6 +1177,13 @@ a .featuredTile .title {
 .featuredList a:hover{
 	text-decoration:none;
 }
+
+@media(max-width:1560px){
+	.featuredTile .title {
+		font-size:20px;
+		line-height:1.1em;
+	}
+}
 .btn-landing{
 	width:100%;
 	padding:15px;
@@ -1171,6 +1194,7 @@ a .featuredTile .title {
 	border-radius:0px;
 	transition: all .4s;
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	white-space:normal;
 }
 .btn-landing:hover, .btn-landing:focus{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
@@ -1272,6 +1296,7 @@ a.browseRemoveFacet .glyphicon{
 	font-size: 18px;
 	margin-bottom: 15px;
 	white-space: normal;
+	line-height: 1.1em;
 }
 /* story */
 .story h1{

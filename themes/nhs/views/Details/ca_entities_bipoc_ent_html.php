@@ -55,7 +55,8 @@
 			</div><!-- end row -->
 			<div class='bgLightGray'><div class="row">			
 				<div class='col-sm-7'>
-
+					{{{<ifdef code="ca_entities.nonpreferred_labels.displayname"><div class="unit"><label>Alternate Name(s)</label><unit relativeTo="ca_entities.nonpreferred_labels.displayname" delimiter="<br/>">^ca_entities.nonpreferred_labels.displayname</unit></div></ifdef>}}}
+				
 <?php
 					if($t_item->get("ca_entities.age_container.age")){
 						$va_age = $t_item->get("ca_entities.age_container.age", array("returnAsArray" => true, "convertCodesToDisplayText" => true));

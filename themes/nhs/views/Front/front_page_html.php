@@ -39,30 +39,34 @@
 			<H1>{{{home_intro_text}}}</H1>
 		</div>
 	</div>
-<?php
-	print $this->render("Front/gallery_slideshow_html.php");
-?>
 	<div class="row hpExplore">
-		<div class="col-md-12 col-lg-8 col-lg-offset-2">
+		<div class="col-md-12 col-lg-10 col-lg-offset-1">
 		<H2 class="frontSubHeading text-center">Explore The Collection</H2>
 
 			<div class="row">
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div><div class='hpExploreBoxDetails'><div class='hpExploreBoxTitle'>Library Resources</div></div>", "", "", "Browse", "library_resources"); ?>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage2'></div><div class='hpExploreBoxDetails'><div class='hpExploreBoxTitle'>People</div></div>", "", "", "People", "Index"); ?>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage3'></div><div class='hpExploreBoxDetails'><div class='hpExploreBoxTitle'>Archives & Manuscripts</div></div>", "", "", "ArchivesManuscripts", "Index"); ?>
-						
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage4'></div><div class='hpExploreBoxDetails'><div class='hpExploreBoxTitle'>Objects</div></div>", "", "", "Browse", "objects"); ?>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+<?php
+	print $this->render("Front/gallery_slideshow_html.php");
+?>
