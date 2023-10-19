@@ -51,7 +51,7 @@
 		
 <?php
 	if($qr_vowel_objects && ($qr_vowel_objects->numHits() > 0)){
-		print "<div><b>Vowel Combinations: </b>";
+		print "<div class='vowelNavigation'><b>Vowel Combinations: </b>";
 		while($qr_vowel_objects->nextHit()){
 			if(!$item_id){
 				$item_id = $va_vowel_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")];

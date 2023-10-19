@@ -1349,7 +1349,20 @@ body.frontContainer #footer{
 	height:auto;
 }
 .detail .detailLanguageInfo{
-	padding:20px;
+	padding: 20px;
+}
+@media(min-width:992px){
+	.detail .detailImage img{
+		width: 100%;
+		height: 300px;
+		object-fit: contain;
+	}
+	.detail .detailLanguageInfo{
+		height:300px;
+	}
+}
+.detail .detailWordTop{
+	padding:30px;
 }
 .detail .unit a.btn{
 	color:#FFF;
@@ -1736,6 +1749,9 @@ h2.tl-headline{
 	margin:0px 5px 10px 5px;
 	font-size: 20px;
 	text-transform: none;
+}
+.alphabetNavigation .vowelNavigation a.btn{
+	background-color: #d0941f;
 }
 .alphabetNavigation a.letterActive{
 	background-color:#FFF;

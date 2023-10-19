@@ -55,7 +55,8 @@
 				$va_audio_files[$va_audio_file["representation_id"]]["url"] = $va_audio_file["urls"]["original"];
 				$vb_audio = true;
 				$t_representation = new ca_object_representations($va_audio_file["representation_id"]);
-				$vs_caption = $t_representation->getWithTemplate("<ifdef code='ca_object_representations.speaker'><unit relativeTo='ca_object_representations.speaker' delimiter='<br>'><ifdef code='ca_object_representations.speaker.speaker_name'>^ca_object_representations.speaker.speaker_name</ifdef><ifdef code='ca_object_representations.speaker.speaker_name,ca_object_representations.speaker.speaker_type'>, </ifdef><ifdef code='ca_object_representations.speaker.speaker_type'>^ca_object_representations.speaker.speaker_type</ifdef></unit></ifdef>");
+				#$vs_caption = $t_representation->getWithTemplate("<ifdef code='ca_object_representations.speaker'><unit relativeTo='ca_object_representations.speaker' delimiter='<br>'><ifdef code='ca_object_representations.speaker.speaker_name'>^ca_object_representations.speaker.speaker_name</ifdef><ifdef code='ca_object_representations.speaker.speaker_name,ca_object_representations.speaker.speaker_type'>, </ifdef><ifdef code='ca_object_representations.speaker.speaker_type'>^ca_object_representations.speaker.speaker_type</ifdef></unit></ifdef>");
+				$vs_caption = $t_representation->getWithTemplate("<ifdef code='ca_object_representations.caption'>^ca_object_representations.caption</ifdef>");
 				$va_audio_files[$va_audio_file["representation_id"]]["caption"] = $vs_caption;
 			}
 		}
@@ -71,11 +72,15 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container"><div class="row">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12 col-md-10 col-md-offset-1">
+					<div class="detailWordTop">
+						<div class="row">
 <?php
 		if($vb_image){
 ?>
-			<div class="col-sm-12 col-md-4 col-md-offset-1 detailImage">
+			<div class="col-sm-12 col-md-5 detailImage">
 <?php
 				print implode("<br/><br/>", $va_image_tags);
 ?>			
@@ -83,22 +88,23 @@
 <?php
 		}
 ?>
-			<div class="col-sm-12 <?php print ($vb_image) ? "col-md-6" : "col-md-10 col-md-offset-1"; ?> bgLtBrown">
-				<div class="detailLanguageInfo">
-					<H1>{{{^ca_objects.preferred_labels.name<ifdef code="ca_objects.meaning"> &mdash; ^ca_objects.meaning</ifdef>}}}</H1>
-					{{{<ifdef code="ca_objects.word_morpheme_type"><div class="unit">Part of speech: ^ca_objects.word_morpheme_type</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.sentence"><div class="unit"><b><unit relativeTo="ca_objects.sentence" delimiter="<br/>">^ca_objects.sentence</unit></b><ifdef code="ca_objects.sentence_translation"><br><unit relativeTo="ca_objects.sentence_translation" delimiter="<br/>">^ca_objects.sentence_translation</unit></div></ifdef>}}}
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12 col-md-10 col-md-offset-1">
-				<div class="row">
+							<div class="col-sm-12 <?php print ($vb_image) ? "col-md-7" : ""; ?>">
+								<div class="detailLanguageInfo bgLtBrown">
+									<H1>{{{^ca_objects.preferred_labels.name<ifdef code="ca_objects.meaning"> &mdash; ^ca_objects.meaning</ifdef>}}}</H1>
+									{{{<ifdef code="ca_objects.word_morpheme_type"><div class="unit">Part of speech: ^ca_objects.word_morpheme_type</div></ifdef>}}}
+									{{{<ifdef code="ca_objects.sentence"><div class="unit"><b><unit relativeTo="ca_objects.sentence" delimiter="<br/>">^ca_objects.sentence</unit></b><ifdef code="ca_objects.sentence_translation"><br><unit relativeTo="ca_objects.sentence_translation" delimiter="<br/>">^ca_objects.sentence_translation</unit></div></ifdef>}}}
+								</div>
+							</div>
+						</div><!-- end row -->
+					</div><!-- end detailWordTop -->
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="row">
 <?php
 			
 			if(is_array($va_audio_files) && sizeof($va_audio_files)){	
 				foreach($va_audio_files as $vn_rep_id => $va_audio_file){
-					print "<div class='text-center col-sm-6 col-md-4 col-lg-3'>";
+					print "<div class='text-center col-sm-6 col-md-4 col-lg-4'>";
 					print "<div class='unit audioPlayerContainer bgLtBeige'><i id='playPronunciationIcon".$vn_rep_id."' onClick='playAudio(\"".$vn_rep_id."\")' class='fa fa-play-circle-o audioButton' aria-hidden='true'></i>";
 					if($va_audio_file["caption"]){
 						print "<br/>".$va_audio_file["caption"];
@@ -108,9 +114,11 @@
 				}
 			}			
 ?>
-				</div>
-			</div>
-		</div><!-- end row -->
+							</div>
+						</div>
+					</div><!-- end row -->
+				</div><!-- end col -->
+			</div><!-- end row -->
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>

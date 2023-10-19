@@ -36,10 +36,9 @@
 							<div class="logo"><a href="https://www.squamish.net/"><?php print caGetThemeGraphic($this->request, 'SN-Logo-white.png', array("alt" => $this->request->config->get("app_display_name"))); ?></a></div>
 						</div>
 						<div class="col-sm-4">
-							<div class="orgLink">Sxwimála-aw̓txw<br/>(Archives & Cultural Collections)</div>
-							Located at the Main Office at<br/>
-							320 Seymour Blvd<br/>
-							North Vancouver, BC, V7L 4J5<br/>
+							<div class="orgLink">Ta na wa Ns7éyx̱nitm ta Snew̓íyelh<br/>(Language & Cultural Affairs)</div>
+							Unit 4, 380 Welch Street<br/>
+							West Vancouver, BC V7P 0A7<br/>
 							604-980-4553
 						</div>
 						<div class="col-sm-4">
