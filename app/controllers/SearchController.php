@@ -422,6 +422,14 @@ class SearchController extends FindController {
 			}
 		}
 		$this->view->setVar('criteria', $va_criteria_for_display);
+		
+		
+		$x = [];
+		foreach($va_criteria as $facet => $values) {
+			$x[] = $facet.":".join("|", array_keys($values));
+		}
+		$this->view->setVar('share_url', caNavUrl($this->request, '*', '*', '*', ['facets' => join(";", $x)], ['absolute' => true]));
+
 	
 		// 
 		// Results

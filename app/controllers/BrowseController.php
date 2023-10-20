@@ -57,6 +57,7 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 			if($this->request->isAjax()) {  return; }
  			if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
@@ -74,6 +75,7 @@
  		 *
  		 */ 
  		public function __call($ps_function, $pa_args) {
+ 			if($this->request->isAjax()) {  return; }
  			$this->view->setVar("config", $this->opo_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
@@ -199,23 +201,25 @@
 			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 			$show_base_criteria = caGetOption('showBaseCriteria', $va_browse_info, false);
 			
-			if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
-			    foreach ($va_facets as $vs_facet_spec) {
-			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
-			        $vs_facet = array_shift($va_tmp);
-			        $o_browse->addCriteria($vs_facet, preg_split("![\|,]+!", join(":", $va_tmp))); 
-			    }
+			if(!$this->request->isAjax()) {
+				if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
+					foreach ($va_facets as $vs_facet_spec) {
+						if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
+						$vs_facet = array_shift($va_tmp);
+						$o_browse->addCriteria($vs_facet, preg_split("![\|,]+!", join(":", $va_tmp))); 
+					}
 			
-			} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
-				$o_browse->addCriteria($vs_facet, $p);
-			} else { 
-				if (($o_browse->numCriteria() == 0)) {
-					if (is_array($va_base_criteria) && !$vs_remove_criterion) {
-						foreach($va_base_criteria as $vs_facet => $vs_value) {
-							$o_browse->addCriteria($vs_facet, $vs_value);
+				} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
+					$o_browse->addCriteria($vs_facet, $p);
+				} else { 
+					if (($o_browse->numCriteria() == 0)) {
+						if (is_array($va_base_criteria) && !$vs_remove_criterion) {
+							foreach($va_base_criteria as $vs_facet => $vs_value) {
+								$o_browse->addCriteria($vs_facet, $vs_value);
+							}
+						} else {
+							$o_browse->addCriteria("_search", array("*"));
 						}
-					} else {
-						$o_browse->addCriteria("_search", array("*"));
 					}
 				}
 			}
@@ -308,8 +312,7 @@
 			$this->view->setVar('facets', $va_facets);
 		
 			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
-			
-			Session::setVar($ps_function.'_last_browse_id', $vs_key);
+			if(!$this->request->isAjax()) { Session::setVar($ps_function.'_last_browse_id', $vs_key); }
 			
 			
 			// remove base criteria from display list
