@@ -38,7 +38,7 @@
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	
 	$vn_facet_display_length_initial = 5;
-	$vn_facet_display_length_maximum = 20;
+	$vn_facet_display_length_maximum = 200;
 	$vs_criteria = "";
 	if (sizeof($va_criteria) > 0) {
 		$i = 0;
@@ -58,20 +58,25 @@
 		print "<div id='bRefine'>";
 		if($qr_res->numHits() > 1){
 ?>
-			<!-- <div class="bSearchWithinContainer">
-				<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-					<input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within">
-					<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button>
-					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
-				</form>
-				<div style="clear:both"></div>
-			</div>	 -->
+
 <?php
 		}
 		if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria)){
 			print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 			print "<H6 class='my-2 filter-name'>"._t("Filter by")."</H6>";
+
+
+
+				if(array_key_exists('has_media', $va_facets)){
+					print "<div class='filter-viewable-media'>";
+					print "<h6 class='filter-name my-2'>Viewable media</h6>"; 
+					$va_facet_info = $va_facets['has_media'];
+					foreach($va_facet_info['content'] as $va_item) {
+						$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+						print "<div class='filter-value'>".caNavLink($this->request, $va_item['label'].'<span>'.$vs_content_count.'</span>', '', '*', '*','*', array('key' => $vs_key, 'facet' => 'has_media', 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+					}
+					print "</div>";
+				}
 
 			 //accordion start
 			print "<div class='accordion' id='accordionExample'>";
@@ -81,6 +86,10 @@
 			// }
 			
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+
+				if($vs_facet_name == 'has_media'){
+					continue;
+				}
 			
 				if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
 					print "<h6>".$va_facet_info['label_singular']."</h6>";
@@ -103,12 +112,12 @@
 						// print "<div class='filter-border'></div>";
 
 						print "<h2 class='accordion-header'>";
-							print "<button class='accordion-button p-1' type='button' data-bs-toggle='collapse' data-bs-target='#$vs_facet_name' aria-expanded='true' aria-controls='$vs_facet_name'>";
+							print "<button class='accordion-button p-1 collapsed' id='control_{$vs_facet_name}' type='button' data-bs-toggle='collapse' data-bs-target='#facet_{$vs_facet_name}' aria-expanded='false' aria-controls='facet_{$vs_facet_name}'>";
 									print "<h6 class='filter-name my-2'>".$va_facet_info['label_singular']."</h6>"; 
 							print "</button>";
 						print "</h2>";
 
-						print "<div id='$vs_facet_name' class='accordion-collapse collapse' aria-labelledby='$vs_facet_name' data-bs-parent='#accordionExample'>";
+						print "<div id='facet_{$vs_facet_name}' class='accordion-collapse collapse' aria-labelledby='control_{$vs_facet_name}' data-bs-parent='#accordionExample'>";
 							print "<div class='accordion-body'>";
 
 								switch($va_facet_info["group_mode"]){
@@ -119,7 +128,7 @@
 										$vn_c = 0;
 										foreach($va_facet_info['content'] as $va_item) {
 											$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-											print "<div class='filter-value'>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+											print "<div class='filter-value'>".caNavLink($this->request, $va_item['label'].'<span>'.$vs_content_count.'</span>', '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 											$vn_c++;
 									
 											if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
@@ -154,7 +163,7 @@
 
 		print "</div><!-- end bRefine -->\n";
 ?>
-	<script type="text/javascript">
+	<!-- <script type="text/javascript">
 		jQuery(document).ready(function() {
             if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
 				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
@@ -171,7 +180,7 @@
 				});
             }
 		});
-	</script>
+	</script> -->
 <?php	
 	}
 ?>

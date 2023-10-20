@@ -68,70 +68,113 @@
       <div class="wrap">
         <div class="int">
 
-          <div class="layout columns__text" col-num="2">
+          {{{
+            <case>
+              <if rule="^access = 'restricted'">
+                <div class="layout columns__text" col-num="2">
+                  <?php
+                    $metadata = array(
+                      "ca_collections.cfaInclusiveDates" => "Inclusive Dates",
+                      "ca_collections.cfaAbstract" => "Abstract",
+                      "ca_collections.idno" => "Series identifier",
+                      "ca_collections.cfaBulkDates" => "Bulk Dates",
+                    );
+                    foreach($metadata as $field => $fieldLabel){
+                  ?>
+                      <ifdef code="<?php print $field; ?>">
+                        <div class="paragraph">
+                          <div class="text__eyebrow color__gray"><?php print $fieldLabel; ?></div>
+                          <div class="text__body-3"><unit delimiter="<br/>">^<?php print $field; ?></unit></div>
+                        </div>
+                      </ifdef>
+                  <?php
+                    }
+                  ?>
 
-          	<?php
-							$metadata = array(
-								"ca_collections.cfaAbstract" => "Abstract",
-								"ca_collections.cfaPreservationSponsor" => "Preservation Sponsor",
-								"ca_collections.cfaInclusiveDates" => "Inclusive Dates",
-								"ca_collections.cfaBulkDates" => "Bulk Dates",
-								"ca_collections.idno" => "Series identifier",
-								"ca_collections.cfaDescription" => "Description",	
-								"ca_collections.cfaAccessRestrictions" => "Access Restrictions",
-								"ca_collections.cfaUseRestrictions" => "Use Restrictions",
-								"ca_collections.cfaRelatedMaterials" => "Related Materials",
-							);
-							foreach($metadata as $field => $fieldLabel){
-						?>
-								{{{<ifdef code="<?php print $field; ?>">
-                  <div class="paragraph">
-                    <div class="text__eyebrow color__gray"><?php print $fieldLabel; ?></div>
-                    <div class="text__body-3"><unit delimiter="<br/>">^<?php print $field; ?></unit></div>
-                  </div>
-								</ifdef>}}}
-						<?php
-							}
-						?>
-
-            {{{<ifdef code="ca_collections.cfaExtent">
-              <div class="paragraph">
-                <div class="text__eyebrow color__gray">Extent</div>
-                <div class="text__body-3">
-                  <unit delimiter="<br/>">
-                    <ifdef code="ca_collections.cfaExtent.extentAmount">^ca_collections.cfaExtent.extentAmount </ifdef>
-                    <ifdef code="ca_collections.cfaExtent.extentType">^ca_collections.cfaExtent.extentType</ifdef>
-                  </unit>
-                </div>
-              </div>
-            </ifdef>}}}
-
-            {{{<ifdef code="ca_list_items">
-                <div class="paragraph">
-                  <div class="text__eyebrow color__gray">
-                    Subject
-                    <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="Subjects">
-                      <div class="trigger-icon color-icon-orange">
-                        <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
-                          <path d="M8.65374 4.68281C8.65374 5.02709 8.51698 5.35727 8.27355 5.60071C8.03012 5.84415 7.69995 5.98092 7.35568 5.98092C7.01141 5.98092 6.68125 5.84415 6.43781 5.60071C6.19438 5.35727 6.05762 5.02709 6.05762 4.68281C6.05762 4.33854 6.19438 4.00836 6.43781 3.76492C6.68125 3.52148 7.01141 3.38471 7.35568 3.38471C7.69995 3.38471 8.03012 3.52148 8.27355 3.76492C8.51698 4.00836 8.65374 4.33854 8.65374 4.68281Z" fill="#767676" class="color-fill"></path>
-                          <path d="M8.73065 11.5724C8.72269 11.8874 8.87038 11.9762 9.22992 12.0131L9.80777 12.0247V12.6154H5.29934V12.0247L5.93431 12.0131C6.31404 12.0016 6.40531 11.8539 6.43358 11.5724V8.01701C6.43761 7.45405 5.70711 7.54244 5.19238 7.55917V6.97371L8.73065 6.84621" fill="#767676" class="color-fill"></path>
-                        </svg>
+                  <ifdef code="ca_collections.cfaExtent">
+                    <div class="paragraph">
+                      <div class="text__eyebrow color__gray">Extent</div>
+                      <div class="text__body-3">
+                        <unit delimiter="<br/>">
+                          <ifdef code="ca_collections.cfaExtent.extentAmount">^ca_collections.cfaExtent.extentAmount </ifdef>
+                          <ifdef code="ca_collections.cfaExtent.extentType">^ca_collections.cfaExtent.extentType</ifdef>
+                        </unit>
                       </div>
-                    </span>
-                  </div>
-
-                  <div class="text__body-3">
-                    <div class="unit">
-                      <unit relativeTo="ca_list_items" delimiter="<br/>">
-                        <a href="/Search/objects/search/^ca_list_items.preferred_labels.name_plural"><span class="link-orange">^ca_list_items.preferred_labels.name_plural</span></a>
-                      </unit>
                     </div>
-                  </div>
-                </div>
-            </ifdef>}}}
+                  </ifdef>
 
-          </div>
+                  <div class="max__640 text__body-3">This series has been accessioned, but has not yet been fully described. 
+                    To inquire about this series, email the archive at info@chicagofilmarchives.org</div>
+                </div>
+              </if>
+
+              <if rule="^access = 'yes'">
+                <div class="layout columns__text" col-num="2">
+                  <?php
+                    $metadata = array(
+                      "ca_collections.cfaAbstract" => "Abstract",
+                      "ca_collections.cfaPreservationSponsor" => "Preservation Sponsor",
+                      "ca_collections.cfaInclusiveDates" => "Inclusive Dates",
+                      "ca_collections.cfaBulkDates" => "Bulk Dates",
+                      "ca_collections.idno" => "Series identifier",
+                      "ca_collections.cfaDescription" => "Description",	
+                      "ca_collections.cfaAccessRestrictions" => "Access Restrictions",
+                      "ca_collections.cfaUseRestrictions" => "Use Restrictions",
+                      "ca_collections.cfaRelatedMaterials" => "Related Materials",
+                    );
+                    foreach($metadata as $field => $fieldLabel){
+                  ?>
+                      <ifdef code="<?php print $field; ?>">
+                        <div class="paragraph">
+                          <div class="text__eyebrow color__gray"><?php print $fieldLabel; ?></div>
+                          <div class="text__body-3"><unit delimiter="<br/>">^<?php print $field; ?></unit></div>
+                        </div>
+                      </ifdef>
+                  <?php
+                    }
+                  ?>
+
+                  <ifdef code="ca_collections.cfaExtent">
+                    <div class="paragraph">
+                      <div class="text__eyebrow color__gray">Extent</div>
+                      <div class="text__body-3">
+                        <unit delimiter="<br/>">
+                          <ifdef code="ca_collections.cfaExtent.extentAmount">^ca_collections.cfaExtent.extentAmount </ifdef>
+                          <ifdef code="ca_collections.cfaExtent.extentType">^ca_collections.cfaExtent.extentType</ifdef>
+                        </unit>
+                      </div>
+                    </div>
+                  </ifdef>
+
+                  <ifdef code="ca_list_items">
+                      <div class="paragraph">
+                        <div class="text__eyebrow color__gray">
+                          Subject
+                          <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="Objects in this collection relate to some of the following subjects.">
+                            <div class="trigger-icon color-icon-orange">
+                              <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
+                                <path d="M8.65374 4.68281C8.65374 5.02709 8.51698 5.35727 8.27355 5.60071C8.03012 5.84415 7.69995 5.98092 7.35568 5.98092C7.01141 5.98092 6.68125 5.84415 6.43781 5.60071C6.19438 5.35727 6.05762 5.02709 6.05762 4.68281C6.05762 4.33854 6.19438 4.00836 6.43781 3.76492C6.68125 3.52148 7.01141 3.38471 7.35568 3.38471C7.69995 3.38471 8.03012 3.52148 8.27355 3.76492C8.51698 4.00836 8.65374 4.33854 8.65374 4.68281Z" fill="#767676" class="color-fill"></path>
+                                <path d="M8.73065 11.5724C8.72269 11.8874 8.87038 11.9762 9.22992 12.0131L9.80777 12.0247V12.6154H5.29934V12.0247L5.93431 12.0131C6.31404 12.0016 6.40531 11.8539 6.43358 11.5724V8.01701C6.43761 7.45405 5.70711 7.54244 5.19238 7.55917V6.97371L8.73065 6.84621" fill="#767676" class="color-fill"></path>
+                              </svg>
+                            </div>
+                          </span>
+                        </div>
+
+                        <div class="text__body-3">
+                          <div class="unit">
+                            <unit relativeTo="ca_list_items" delimiter="<br/>">
+                              <a href="/Search/objects/search/^ca_list_items.preferred_labels.name_plural"><span class="link-orange">^ca_list_items.preferred_labels.name_plural</span></a>
+                            </unit>
+                          </div>
+                        </div>
+                      </div>
+                  </ifdef>
+
+                </div>
+              </if>
+            </case>
+          }}}
         </div>
       </div>
     </section>
@@ -149,13 +192,13 @@
                   <unit relativeTo="ca_collections.children" delimiter="" restrictToTypes="subseries" sort="ca_collections.idno_sort">
                     <div class="row subseries-grid-item">
                       <ifdef code="ca_object_representations.media.thumbnail">
-                        <div class="col-auto">
+                        <div class="col-auto mb-2 me-2">
                           <span class="series-thumbnail"><l>^ca_object_representations.media.thumbnail</l></span>
                         </div>
                       </ifdef>
                       <ifnotdef code="ca_object_representations.media.thumbnail">
-                        <div class="col-auto">
-                          <div class="subseries-placeholder"></div>
+                        <div class="col-auto mb-2 me-2">
+                          <l><div class="subseries-placeholder"></div></l>
                         </div>
                       </ifnotdef>
                       <div class="col-auto align-self-center">

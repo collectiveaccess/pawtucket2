@@ -46,7 +46,7 @@
 	<main class="flush">
 	<section class="hero-single-collection wrap">
 		<div class="eyebrow text__eyebrow color__gray">
-			<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>			
+			<!-- <div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>			 -->
 			<div class="row">
 				<div class="col-10">
 					 {{{<unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">
@@ -84,6 +84,9 @@
 
 							{{{<case>
 								<if rule="^access = 'restricted'">
+									<div class="max__640 text__body-3 color__white">This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org</div>
+									<div class="max__640 text__eyebrow color__light_gray block-xxxs"><br></div>
+
 									<?php
 										$metadata = array(
 											"^ca_objects.idno" => "Identifier",
@@ -130,8 +133,6 @@
 										</unit>
 										<br>
 									</ifcount>
-
-									<div class="max__640 text__body-3 color__white">This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org</div>
 								</if>
 								
 								<if rule="^access = 'yes'">
@@ -217,8 +218,10 @@
 										<unit relativeTo="ca_occurrences">
 											<ifcount code="ca_places" min="1" >
 												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Places</div>
-												<unit relativeTo="ca_places" delimiter="">
-													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_places.preferred_labels">^ca_places.preferred_labels</a></div>
+												<unit relativeTo="ca_places" delimiter=''>
+													<div class="max__640 text__body-3 color__white">
+														<a href="/Search/objects/search/^ca_places.preferred_labels">^ca_places.hierarchy.preferred_labels%delimiter=_➜_</a>
+													</div>
 												</unit>
 												<br>
 											</ifcount>
@@ -292,6 +295,7 @@
 				</div><!-- container-scroll -->
 			</div><!-- item -->
 		</div><!-- layout -->
+		<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
 	</section>
 
 	<section class="section-more-about-item">
@@ -376,6 +380,10 @@
 </div><!-- end row -->
 
 <script type='text/javascript'>
+	$(document).ready(function(){
+    	$('[data-toggle="tooltip"]').tooltip();
+	});
+	
 	function Copy() {
 		var getUrl = document.createElement('input'),
 		text = window.location.href;
