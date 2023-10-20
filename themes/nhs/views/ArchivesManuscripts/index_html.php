@@ -10,7 +10,7 @@
 				<div class="row"><div class='col-sm-12 col-md-6'>
 <?php
 				print caNavLink($this->request, "<div class='featuredTile'>
-													<div class='featuredImage'>".caGetThemeGraphic($this->request, 'manuscripts.jpg', array("alt" => "Collections & Finding Aids image"))."</div>
+													<div class='featuredImage'>".caGetThemeGraphic($this->request, 'FindingAids.jpg', array("alt" => "Collections & Finding Aids image"))."</div>
 													<div class='title'>Collections & Finding Aids</div>
 												</div>", "", "", "Collections", "Index");
 ?>

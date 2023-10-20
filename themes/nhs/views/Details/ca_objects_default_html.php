@@ -91,6 +91,7 @@
 				}
 ?>
 				{{{<ifdef code="ca_objects.nonpreferred_labels.name"><unit relativeTo="ca_objects" delimiter=" "><div class="unit"><H6><if rule='^ca_objects.nonpreferred_labels.type_id%convertCodesToDisplayText=1 =~ /alternate/'>Alternate </if>Title</H6>^ca_objects.nonpreferred_labels.name</div></unit></ifdef>}}}
+				{{{<ifdef code="ca_objects.parent_id"><div class="unit"><H6>Part of</H6><unit relativeTo="ca_objects.parent" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></div></ifdef>}}}
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><div class="unit"><H6>Creator</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter="<br/>">^ca_entities.preferred_labels</unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.date.dates_value"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.date.dates_value</unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.description">
@@ -101,7 +102,8 @@
 				
 				{{{<ifdef code="ca_objects.materials"><div class="unit"><H6>Materials</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.materials</unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.signed.signed_name"><div class="unit"><H6>Inscription</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.signed.signed_name">^ca_objects.signed.signed_name</ifdef><ifdef code="ca_objects.signed.signed_location"> (^ca_objects.signed.signed_location)</ifdef></unit></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.credit_line"><div class="unit"><H6>Credit Line</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.credit_line</unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.credit_line"><div class="unit"><H6>Credit Line</H6><unit relativeTo="ca_objects.credit_line" delimiter="<br/>">^ca_objects.credit_line</unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.doc_type"><div class="unit"><H6>Documentation Type</H6>^ca_objects.doc_type</div></ifdef>}}}
 <?php				
 				$va_types = $t_object->get("ca_objects.aat", array("returnAsArray" => true));
 				$va_types_processed = array();
@@ -230,7 +232,34 @@
 <?php
 		}
 	}
-?>		
+?>	
+
+{{{<ifdef code="ca_objects.children.object_id">
+			<div class="row">
+				<div class="col-sm-12"><H3>Contains</H3></div>
+			</div>
+			<div class="row">
+				<div id="browseResultsContainer">
+					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+				</div><!-- end browseResultsContainer -->
+			</div><!-- end row -->
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_objects.parent_id:^ca_objects.object_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery('#browseResultsContainer').jscroll({
+							autoTrigger: true,
+							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+							padding: 20,
+							nextSelector: 'a.jscroll-next'
+						});
+					});
+					
+					
+				});
+			</script>
+</ifcount>}}}
+
+	
 			</div>
 		</div></div><!-- end container -->
 	</div><!-- end col -->

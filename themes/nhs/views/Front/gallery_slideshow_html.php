@@ -61,7 +61,7 @@
 
 <div class="row bgLighterBlue">
 	<div class="col-sm-12"> 
-		<H2>Featured Galleries</H2>
+		<H2><?php print caNavLink($this->request, _t("Featured Galleries"), "", "", "Gallery", "Index"); ?></H2>
 		<div class="jcarousel-wrapper">
 			<!-- Carousel -->
 			<div class="jcarousel galleryItems">

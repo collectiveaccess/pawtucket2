@@ -154,6 +154,11 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		</H1>
 <?php
+		if(strToLower($this->request->getAction()) == "library_resources"){
+			$vs_library_intro = $this->getVar("library_resources_intro");
+			print "<div class='bFacetDescription'>".$vs_library_intro."</div>";
+		}
+		
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}

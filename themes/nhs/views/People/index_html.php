@@ -15,7 +15,7 @@
 					<?php print caGetThemeGraphic($this->request, 'people.jpeg', array("alt" => "People image")); ?>
 				</div>
 				<div class="col-sm-12 col-md-6 text-center">
-					<div class="featuredIntro">{{{people_intro}}}</div>
+					<div class="featuredIntro"><div class='featuredIntroTitle'>{{{people_intro_title}}}</div>{{{people_intro}}}</div>
 					<div class="featuredSearch"><form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'entities'); ?>">
 						<div class="formOutline">
 							<div class="form-group">
@@ -42,7 +42,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-12 col-lg-10 col-lg-offset-1">		
+		<div class="col-sm-8 col-sm-offset-2 col-md-12 col-md-offset-0 col-lg-10 col-lg-offset-1">		
 			<hr/><H2>Featured Stories</H2>
 <?php
 			if($vs_tmp = $this->getVar("people_stories")){
@@ -55,7 +55,7 @@
 					if($qr_people && $qr_people->numHits()) {
 						while($qr_people->nextHit()) {
 							if ( $vn_i == 0) { print "<div class='row'>"; } 
-							$vs_tmp = "<div class='col-sm-4'>";
+							$vs_tmp = "<div class='col-sm-12 col-md-4'>";
 							$vs_tmp .= "<div class='featuredTile'>";
 							$vs_image = "";
 							if ($vs_image = $qr_people->getWithTemplate("<unit relativeTo='ca_objects' limit='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values))) {
