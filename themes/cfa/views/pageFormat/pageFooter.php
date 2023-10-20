@@ -27,6 +27,7 @@
  */
 ?>
 				</div><!-- end pageArea -->
+				</div>
 			</div><!-- end main -->
 		</div><!-- end col -->
 	
