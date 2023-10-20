@@ -118,6 +118,8 @@
 		$po_request = caGetOption('request', $pa_options, null);
  		$pa_options['label'] = caGetOption('label', $pa_options, null);
  		$pa_options['content'] = caGetOption('content', $pa_options, null);
+ 		$pa_options['excludeRelationshipTypes'] = caGetOption('excludeRelationshipTypes', $pa_options, null);
+ 		$pa_options['ajaxContentUrl'] = caGetOption('ajaxContentUrl', $pa_options, null);
  		$vs_color = caGetOption('color', $pa_options, null);
  		$vb_render_label_as_link = caGetOption('renderLabelAsLink', $pa_options, false);
  		
@@ -164,7 +166,7 @@
  		        
  		        $rel_ids = [];
  		        while($po_data_object->nextHit()) {
-                    if(is_array($rel_ids_for_row = $po_data_object->get("{$vs_rel_table}.relation_id", ['returnAsArray' => true]))) {
+                    if(is_array($rel_ids_for_row = $po_data_object->get("{$vs_rel_table}.relation_id", ['returnAsArray' => true, 'excludeRelationshipTypes' => $pa_options['excludeRelationshipTypes']]))) {
                        $rel_ids = array_merge($rel_ids, $rel_ids_for_row);
                     }
                 }
