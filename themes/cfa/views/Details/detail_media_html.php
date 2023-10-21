@@ -23,7 +23,7 @@
 									'display_type' => 'detail'
 								],
 								[ 
-									'hideOverlayControls' => true
+									'hideAllOverlayControls' => true, 'dontInitPlyr' => true
 								]
 							);
 							$active = false;

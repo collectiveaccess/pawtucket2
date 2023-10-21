@@ -1,52 +1,6 @@
-<?php
-/* ----------------------------------------------------------------------
- * themes/default/views/bundles/ca_objects_default_html.php : 
- * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
- *
- * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
- *
- * For more information visit http://www.CollectiveAccess.org
- *
- * This program is free software; you may redistribute it and/or modify it under
- * the terms of the provided license as published by Whirl-i-Gig
- *
- * CollectiveAccess is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
- *
- * This source code is free and modifiable under the terms of 
- * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
- * the "license.txt" file for details, or visit the CollectiveAccess web site at
- * http://www.CollectiveAccess.org
- *
- * ----------------------------------------------------------------------
- */
- 
-	$t_object = 			$this->getVar("item");
-	$va_comments = 			$this->getVar("comments");
-	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	$vn_id =				$t_object->get('ca_objects.object_id');
 
-	MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels').": ".$t_object->get('ca_objects.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
-
-	MetaTagManager::addMeta("search-title", $t_object->get('ca_objects.preferred_labels'));
-	MetaTagManager::addMeta("search-group", 'Collection Items');
-	MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.preferred_labels'));
-	MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
-	MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
-?>
-<div class="row">
-	<main class="flush">
 	<section class="hero-single-collection wrap">
 		<div class="eyebrow text__eyebrow color__gray">
-			<!-- <div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>			 -->
 			<div class="row">
 				<div class="col-10">
 					 {{{<unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">
@@ -84,16 +38,16 @@
 
 							{{{<case>
 								<if rule="^access = 'restricted'">
+
 									<div class="max__640 text__body-3 color__white">This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org</div>
 									<div class="max__640 text__eyebrow color__light_gray block-xxxs"><br></div>
-
+									
 									<?php
 										$metadata = array(
 											"^ca_objects.idno" => "Identifier",
 											"^ca_objects.cfaRunTime" => "Run Time",	
 											"^ca_objects.cfaFormat" => "Format",
 											"^ca_objects.cfaExtentFilm.extentAmountFilm ^ca_objects.cfaExtentFilm.extent_film" => "Extent",	
-											"^ca_objects.cfaFilmElementHierachical" => "Element",
 											"^ca_objects.cfaColor" => "Color",
 											"^ca_objects.cfaSoundFilm" => "Sound",
 											"^ca_objects.cfaReel" => "Reel/Tape Number",
@@ -102,7 +56,7 @@
 										);
 										foreach($metadata as $field => $fieldLabel){
 									?>
-											<ifdef code="<?php print $field; ?>">
+											<ifdef code="<?= $field; ?>">
 												<unit delimiter="<br>">
 													<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
 													<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
@@ -112,6 +66,15 @@
 										}
 										
 									?>
+
+									<if rule="^ca_objects.cfaFilmElementHierachical !~ /\-NONE\-/">
+										<ifdef code="ca_objects.cfaFilmElementHierachical">
+											<unit delimiter="">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Element</div>
+												<div class="max__640 text__body-3 color__white block-sm">^ca_objects.cfaFilmElementHierachical.hierarchy.preferred_labels.name_plural%maxLevelsFromBottom=1</div>
+											</unit>
+										</ifdef>
+									</if>
 
 									<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="cfa_sponsor">
 										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Preservation Sponsor</div>
@@ -143,10 +106,9 @@
 											"^ca_occurrences.cfaAbstract" => "Abstract",
 											"^ca_occurrences.cfaDescription" => "Description",
 											"^ca_occurrences.cfaShotLog" => "Log",
-											"^ca_objects.cfaRunTime" => "Run Time",	
+											"^ca_objects.cfaRunTime%format=hours_minutes_seconds_long" => "Run Time",	
 											"^ca_objects.cfaFormat" => "Format",
 											"^ca_objects.cfaExtentFilm.extentAmountFilm ^ca_objects.cfaExtentFilm.extent_film" => "Extent",	
-											"^ca_objects.cfaFilmElementHierachical" => "Element",
 											"^ca_objects.cfaColor" => "Color",
 											"^ca_objects.cfaSoundFilm" => "Sound",
 											"^ca_objects.cfaReel" => "Reel/Tape Number",
@@ -156,7 +118,7 @@
 										);
 										foreach($metadata as $field => $fieldLabel){
 									?>
-											<ifdef code="<?php print $field; ?>">
+											<ifdef code="<?= $field; ?>">
 												<unit delimiter="<br>">
 													<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
 													<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
@@ -164,7 +126,18 @@
 											</ifdef>
 									<?php
 										}
-										
+									?>
+
+									<if rule="^ca_objects.cfaFilmElementHierachical !~ /\-NONE\-/">
+										<ifdef code="ca_objects.cfaFilmElementHierachical">
+											<unit delimiter=" ➜ ">
+												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Element</div>
+												<div class="max__640 text__body-3 color__white block-sm">^ca_objects.cfaFilmElementHierachical.hierarchy.preferred_labels.name_plural%maxLevelsFromBottom=1</div>
+											</unit>
+										</ifdef>
+									</if>
+
+									<?php	
 										$list_metadata = [
 											"Genre" => [
 												"relationshipType" => "genre"
@@ -178,10 +151,34 @@
 										];
 										
 										foreach($list_metadata as $fieldLabel => $field_info){
+
+											$title = '';
+											switch ($fieldLabel) {
+												case 'Subject':
+													$title = 'Subjects describe the content of an object, and are derived from Library of Congress Subject Headings.';
+													break;
+												case 'Genre':
+													$title = 'Genres describe the style, conventions, and structure of an object, and are derived from the Library of Congress Moving Image Genre List.';
+													break;
+												case 'Form':
+													$title = "Form describes an object's original exhibition or distribution parameters, distinct from any attributes of the object's content or style. These terms are derived from the Library of Congress's Archival Moving Image Materials: A Cataloging Manual (2nd Edition).";
+													break;
+											}
 									?>
 											<unit relativeTo='ca_occurrences'>
 												<ifcount code="ca_list_items" restrictToRelationshipTypes="<?= $field_info['relationshipType']; ?>" min="1">
-													<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+													<div class="max__640 text__eyebrow color__light_gray block-xxxs">
+														<?= $fieldLabel; ?>
+														<span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="<?= $title; ?>">
+															<div class="trigger-icon color-icon-orange">
+															<svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+																<path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
+																<path d="M8.65374 4.68281C8.65374 5.02709 8.51698 5.35727 8.27355 5.60071C8.03012 5.84415 7.69995 5.98092 7.35568 5.98092C7.01141 5.98092 6.68125 5.84415 6.43781 5.60071C6.19438 5.35727 6.05762 5.02709 6.05762 4.68281C6.05762 4.33854 6.19438 4.00836 6.43781 3.76492C6.68125 3.52148 7.01141 3.38471 7.35568 3.38471C7.69995 3.38471 8.03012 3.52148 8.27355 3.76492C8.51698 4.00836 8.65374 4.33854 8.65374 4.68281Z" fill="#767676" class="color-fill"></path>
+																<path d="M8.73065 11.5724C8.72269 11.8874 8.87038 11.9762 9.22992 12.0131L9.80777 12.0247V12.6154H5.29934V12.0247L5.93431 12.0131C6.31404 12.0016 6.40531 11.8539 6.43358 11.5724V8.01701C6.43761 7.45405 5.70711 7.54244 5.19238 7.55917V6.97371L8.73065 6.84621" fill="#767676" class="color-fill"></path>
+															</svg>
+															</div>
+														</span>
+													</div>
 													<div class="max__640 text__body-3 color__white block-sm">
 														<unit relativeTo='ca_list_items' delimiter="<br>" restrictToRelationshipTypes='<?= $field_info['relationshipType']; ?>'>
 															<a href="/Browse/Objects/facet/<?= $field_info['relationshipType']; ?>/id/^ca_list_items.item_id">^ca_list_items.preferred_labels.name_plural</a>
@@ -295,103 +292,5 @@
 				</div><!-- container-scroll -->
 			</div><!-- item -->
 		</div><!-- layout -->
-		<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
+		<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>			
 	</section>
-
-	<section class="section-more-about-item">
-		<div class="int wrap text-align-center">
-		<div class="text__nav block-xxs">Do you know more about this item?</div>
-		<div class="color__gray text__body-3">If you have more information about this item please contact us at <a href="mailto:info@chicagofilmarchives.com" class="color-link-inverted-orange">info@chicagofilmarchives.com</a>. </div>
-		</div>
-	</section>
-
-	{{{<ifcount code="ca_objects.related" min="1">
-
-		<section class="section-slideshow-related ">
-			<div class="wrap"><div class="line"></div></div>
-			<div class="int wrap-not-mobile">
-				
-			<h4 class="text-align-center text__headline-4 block-small ">Related Items</h4>
-			<div class="slider-container module_slideshow slideshow-related manual-init slideshow-ctrl-init">
-				<div class="slick-initialized slick-slider">
-					<div class="slick-list draggable">
-						<div class="slick-track" style="opacity: 1; width: 990px; transform: translate3d(0px, 0px, 0px); margin:0;">
-							<div class="unit">
-								<unit relativeTo="ca_objects.related" delimiter="">
-									<div class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false">
-										<div class="sizer" style="width: 100%; display: inline-block;">
-											<div class="item-related item" style="max-width: 250px">
-												<a href="" tabindex="0">
-													<div class="related-items-img"><l>^ca_object_representations.media.medium<l></div>
-												</a>
-												<div class="text-align-center info">
-													<div class="text__eyebrow color__gray block-xxxs"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit></div>
-													<div class="title text__promo-4"><l>^ca_objects.preferred_labels</l></div>
-													<div class="text__eyebrow color__gray block-xxxs"><small>^ca_occurrences.cfaDateProduced<small></div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</unit>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="arrows">
-				<div class="arrow arrow-left left reveal slick-arrow slick-hidden" style="visibility: visible;" aria-disabled="true" tabindex="-1">
-					<svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<g opacity="0.5" class="color-opacity">
-						<circle cx="15.373" cy="15" r="14.5" transform="rotate(-180 15.373 15)" stroke="#222222" class="color-stroke"></circle>
-						<g clip-path="url(#clip0_854_22844)">
-						<path d="M16.0647 14.9999L18.459 18.9999L11.2866 14.9999L18.459 10.9999L16.0647 14.9999Z" fill="#222222" class="color-fill"></path>
-						</g>
-					</g>
-					<defs>
-						<clipPath id="clip0_854_22844">
-						<rect width="7.17241" height="8" fill="white" transform="translate(18.459 18.9999) rotate(-180)"></rect>
-						</clipPath>
-					</defs>
-					</svg>
-				</div>
-				<div class="arrow arrow-right right slick-arrow slick-hidden" style="visibility: visible;" aria-disabled="true" tabindex="-1">
-					<svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<g opacity="0.5" class="color-opacity">
-						<circle cx="15.373" cy="15" r="14.5" stroke="#222222" class="color-stroke"></circle>
-						<g clip-path="url(#clip0_854_22839)">
-						<path d="M14.6813 15L12.2871 11L19.4595 15L12.2871 19L14.6813 15Z" fill="#222222" class="color-fill"></path>
-						</g>
-					</g>
-					<defs>
-						<clipPath id="clip0_854_22839">
-						<rect width="7.17241" height="8" fill="white" transform="translate(12.2871 11)"></rect>
-						</clipPath>
-					</defs>
-					</svg>
-				</div>
-				</div>
-			</div>
-			</div>
-		</section>
-	</ifcount>}}}
-	
-	</main>
-
-</div><!-- end row -->
-
-<script type='text/javascript'>
-	$(document).ready(function(){
-    	$('[data-toggle="tooltip"]').tooltip();
-	});
-	
-	function Copy() {
-		var getUrl = document.createElement('input'),
-		text = window.location.href;
-		document.body.appendChild(getUrl);
-		getUrl.value = text;
-		getUrl.select();
-		document.execCommand('copy');
-		document.body.removeChild(getUrl);
-		$.jGrowl("Link Copied!", { life: 2000 });
-	}
-</script>

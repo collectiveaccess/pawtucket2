@@ -80,6 +80,9 @@ if (!$vb_ajax) {	// !ajax
 	caSetAdvancedSearchFormInView($adv_search_view, 'objects', 'Browse/ca_objects_more_search_options_html.php', ['request' => $this->request]);
 ?>
 
+
+<div>
+	
 <div class="wrap browse-results-wrap">
 
 	<div class="container browse-controls-container">
