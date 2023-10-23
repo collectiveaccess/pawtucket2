@@ -156,16 +156,6 @@ if($vs_mode == "map"){
 							</div>
 						</div>
 					</ifdef>}}}
-					{{{<ifdef code="ca_places.place_location|ca_places.location_credit|ca_places.place_location_source">
-						<div class="collapseBlock">
-							<h3>Map Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-							<div class="collapseContent"><h6></h6>	
-								<ifdef code="ca_places.place_location"><div class="unit"><H6>Location</H6><unit relativeTo="ca_places.place_location" delimiter="<br/>">^ca_places.place_location</unit></div></ifdef>
-								<ifdef code="ca_places.location_credit"><div class="unit"><H6>Location Credit</H6><unit relativeTo="ca_places.location_credit" delimiter="<br/>">^ca_places.location_credit</unit></div></ifdef>
-								<ifdef code="ca_places.place_location_source"><div class="unit"><H6>Location Source</H6><unit relativeTo="ca_places.place_location_source" delimiter="<br/>">^ca_places.place_location_source</unit></div></ifdef>
-							
-							</div>
-						</div></ifdef>}}}
 					<div class="collapseBlock">
 						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 						<div class="collapseContent"><h6></h6>	
@@ -181,6 +171,16 @@ if($vs_mode == "map"){
 ?>
 						</div>
 					</div>
+					{{{<ifdef code="ca_places.place_location|ca_places.location_credit|ca_places.place_location_source">
+						<div class="collapseBlock">
+							<h3>Map Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+							<div class="collapseContent"><h6></h6>	
+								<ifdef code="ca_places.place_location"><div class="unit"><H6>Location</H6><unit relativeTo="ca_places.place_location" delimiter="<br/>">^ca_places.place_location</unit></div></ifdef>
+								<ifdef code="ca_places.location_credit"><div class="unit"><H6>Location Credit</H6><unit relativeTo="ca_places.location_credit" delimiter="<br/>">^ca_places.location_credit</unit></div></ifdef>
+								<ifdef code="ca_places.place_location_source"><div class="unit"><H6>Location Source</H6><unit relativeTo="ca_places.place_location_source" delimiter="<br/>">^ca_places.place_location_source</unit></div></ifdef>
+							
+							</div>
+						</div></ifdef>}}}
 				</div>
 				<div class='col-sm-12 col-md-2'>
 	<?php
