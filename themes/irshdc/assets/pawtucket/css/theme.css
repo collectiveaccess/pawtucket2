@@ -2381,6 +2381,6 @@ a.digExhDetailPrev, a.digExhDetailNext{
 .browse.schools #browseResultsContainer #map_map{
 	margin-top:-20px;
 }
-.results .leaflet-popup-content{
+/*.results .leaflet-popup-content{
 	width:auto !important;
-}
+}*/
