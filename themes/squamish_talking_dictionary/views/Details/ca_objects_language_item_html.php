@@ -52,15 +52,17 @@
 	if(is_array($va_audio) && sizeof($va_audio)){
 		foreach($va_audio as $va_audio_file){
 			if(in_array($va_audio_file["access"], $va_access_values)){
-				$va_audio_files[$va_audio_file["representation_id"]]["url"] = $va_audio_file["urls"]["original"];
-				$vb_audio = true;
 				$t_representation = new ca_object_representations($va_audio_file["representation_id"]);
+				$va_audio_files[$t_representation->getWithTemplate("^ca_object_representations.audioType")][$va_audio_file["representation_id"]]["url"] = $va_audio_file["urls"]["original"];
+				$vb_audio = true;
 				#$vs_caption = $t_representation->getWithTemplate("<ifdef code='ca_object_representations.speaker'><unit relativeTo='ca_object_representations.speaker' delimiter='<br>'><ifdef code='ca_object_representations.speaker.speaker_name'>^ca_object_representations.speaker.speaker_name</ifdef><ifdef code='ca_object_representations.speaker.speaker_name,ca_object_representations.speaker.speaker_type'>, </ifdef><ifdef code='ca_object_representations.speaker.speaker_type'>^ca_object_representations.speaker.speaker_type</ifdef></unit></ifdef>");
-				$vs_caption = $t_representation->getWithTemplate("<ifdef code='ca_object_representations.caption'>^ca_object_representations.caption</ifdef>");
-				$va_audio_files[$va_audio_file["representation_id"]]["caption"] = $vs_caption;
+				#$vs_caption = $t_representation->getWithTemplate("<ifdef code='ca_object_representations.caption'>^ca_object_representations.caption</ifdef>");
+				$vs_caption = $t_representation->getWithTemplate("<ifdef code='ca_object_representations.audioType'>^ca_object_representations.audioType </ifdef><ifdef code='ca_object_representations.caption'>^ca_object_representations.caption</ifdef><ifdef code='ca_object_representations.speaker.speaker_type'> (^ca_object_representations.speaker.speaker_type.preferred_labels)</ifdef>");
+				$va_audio_files[$t_representation->getWithTemplate("^ca_object_representations.audioType")][$va_audio_file["representation_id"]]["caption"] = $vs_caption;
 			}
 		}
 	}
+	krsort($va_audio_files);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -99,22 +101,26 @@
 					</div><!-- end detailWordTop -->
 					<div class="row">
 						<div class="col-sm-12">
-							<div class="row">
+							
 <?php
 			
 			if(is_array($va_audio_files) && sizeof($va_audio_files)){	
-				foreach($va_audio_files as $vn_rep_id => $va_audio_file){
-					print "<div class='text-center col-sm-6 col-md-4 col-lg-4'>";
-					print "<div class='unit audioPlayerContainer bgLtBeige'><i id='playPronunciationIcon".$vn_rep_id."' onClick='playAudio(\"".$vn_rep_id."\")' class='fa fa-play-circle-o audioButton' aria-hidden='true'></i>";
-					if($va_audio_file["caption"]){
-						print "<br/>".$va_audio_file["caption"];
+				foreach($va_audio_files as $type => $va_audio_files_by_type){
+					print "<div class='row'>";
+					foreach($va_audio_files_by_type as $vn_rep_id => $va_audio_file){
+						print "<div class='text-center col-sm-6 col-md-4 col-lg-4'>";
+						print "<div class='unit audioPlayerContainer bgLtBeige'><i id='playPronunciationIcon".$vn_rep_id."' onClick='playAudio(\"".$vn_rep_id."\")' class='fa fa-play-circle-o audioButton' aria-hidden='true'></i>";
+						if($va_audio_file["caption"]){
+							print "<br/>".$va_audio_file["caption"];
+						}
+						print "<audio id='playPronunciation".$vn_rep_id."' class='audioPlayer' controls='' onended='audioEnded(".$vn_rep_id.")' style='display: none'><source src='".$va_audio_file["url"]."' type='audio/mp3'>Your browser does not support the audio element.</audio>";
+						print "</div></div>";
 					}
-					print "<audio id='playPronunciation".$vn_rep_id."' class='audioPlayer' controls='' onended='audioEnded(".$vn_rep_id.")' style='display: none'><source src='".$va_audio_file["url"]."' type='audio/mp3'>Your browser does not support the audio element.</audio>";
-					print "</div></div>";
+					print "</div>";
 				}
 			}			
 ?>
-							</div>
+							
 						</div>
 					</div><!-- end row -->
 				</div><!-- end col -->
