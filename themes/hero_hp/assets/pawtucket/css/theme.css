@@ -555,6 +555,19 @@ body.frontContainer #footer{
 .hpExploreBox .hpExploreBoxTitle a:hover {
 	text-decoration:none;
 }
+/* hp slideshow */
+.front .jcarousel-control-next, .front .jcarousel-control-prev{
+	background-color: #666;
+}
+.front .jcarousel-control-next, .front .jcarousel-control-prev{
+	height:58px;
+	background-color: #666;
+	text-shadow:none;
+	padding-top:0px;
+}
+.front .jcarousel-control-next:hover, .front .jcarousel-control-prev:hover{
+	background-color: #000;
+}
 
 /* gallery */
 @media(max-width:768px){

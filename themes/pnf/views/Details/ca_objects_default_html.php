@@ -67,7 +67,7 @@
 					print "<div class='unit'><h6>Comedias Sueltas Database ID#</h6>".$vs_object_id."</div>";
 				}
 				if ($vs_url = $t_object->get('ca_objects.856_electronic')) {
-					print "<div class='unit'><h6>Electronic Access</h6><a href='".$vs_url."' target='_blank'>".$vs_url."</a></div>";
+					print "<div class='unit'><h6><a href='".$vs_url."' target='_blank'>Digitized Copy <span class='glyphicon glyphicon-link'></span></a></H6></div>";
 				}
 
 				if ($va_institutions = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.preferred_labels" relativeTo="ca_collections"><unit delimiter="<br/>" relativeTo="ca_collections"><a href="^ca_collections.collection_website" target="_blank">^ca_collections.preferred_labels</a></unit>')) {
