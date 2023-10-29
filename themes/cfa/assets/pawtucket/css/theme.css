@@ -347,9 +347,30 @@ footer {
 }
 
 .collection-grid {
-	height: 350px;
+	height: 360px;
 	overflow: hidden;
 }
+
+@media screen and (max-width: 768px) {
+	.collection-grid {
+		height: 640px;
+	}
+}
+
+@media screen and (max-width: 576px) {
+	.collection-grid {
+		height: 500px;
+	}
+}
+
+/* 
+	--bs-breakpoint-xs: 0;
+	--bs-breakpoint-sm: 576px;
+	--bs-breakpoint-md: 768px;
+	--bs-breakpoint-lg: 992px;
+	--bs-breakpoint-xl: 1200px;
+	--bs-breakpoint-xxl: 1400px; 
+*/
 
 .view-more-btn {
 	display: block;
@@ -367,12 +388,12 @@ footer {
 
 
 /* Specific to collection media */
-.carousel-inner-coll{ 
+/* .carousel-inner-coll{ 
 	height: unset; 
-}
+} */
 
 /* Specific to collection media */
-.carousel-coll-item img {
+/* .carousel-coll-item img {
 	aspect-ratio: 4/3 !important;
 	border-radius: 20px;
 	height: unset;
@@ -440,7 +461,7 @@ footer {
 }
 .carousel-control-prev{
 	left: 30%;
-}
+} */
 
 
 
@@ -877,16 +898,6 @@ input.browseMoreSearchOptsField {
 
 
 
-
-/* div.detailNavigation {
-	max-width: 500px;
-}
-
-div.detailNavigation a {
-	padding: 5px;
-	margin: 0px 5px 5px 0px;
-} */
-
 div.detailNavigation {
 	display: flex;
 	width: 100%;
@@ -919,18 +930,6 @@ div.detailNavigation a:last-child {
 	background: #fff;
 	border: 1px solid lightgray !important;
 }
-
-
-
-/* @media (min-width: 1720px){
-	 .wrap {
-		padding-right: 40px !important;
-		width: 100% !important;
-		padding-left: 40px !important;
-		margin-left: auto !important;
-		margin-right: auto !important;
-	}
-} */
 
 
 .hero-single-collection .layout .item {

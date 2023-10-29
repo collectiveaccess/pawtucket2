@@ -56,7 +56,6 @@
   <main class="flush">
 
     <div class="eyebrow text__eyebrow color__gray mx-5 my-3">
-			<!-- {{{<unit relativeTo="ca_collections.parent"><l>^ca_collections.preferred_labels<l></unit> > <l>^ca_collections.preferred_labels<l>}}} -->
 			{{{<unit relativeTo="ca_collections.hierarchy" delimiter=" > "><l>^ca_collections.preferred_labels<l></unit>}}}
 		</div>
     <br/>
@@ -163,7 +162,8 @@
                         <div class="text__body-3">
                           <div class="unit">
                             <unit relativeTo="ca_list_items" delimiter="<br/>">
-                              <a href="/Search/objects/search/^ca_list_items.preferred_labels.name_plural"><span class="link-orange">^ca_list_items.preferred_labels.name_plural</span></a>
+                              <!-- <a href="/Search/objects/search/^ca_list_items.preferred_labels.name_plural"><span class="link-orange">^ca_list_items.preferred_labels.name_plural</span></a> -->
+                              <a href="/Browse/Objects/facet/subject//id/^ca_list_items.item_id"><span class="link-orange">^ca_list_items.preferred_labels.name_plural</span></a>
                             </unit>
                           </div>
                         </div>
@@ -213,7 +213,6 @@
     <?php
       }
     ?>
-    <!-- <section class="collection-grid-items"> -->
       <div class="wrap">
         <div class="int module-tabs">
 
@@ -261,7 +260,6 @@
 
 				      </ul>
 
-              <!-- href="/Search/advanced/collections"-->
               <a href="/Browse/Objects" class="text__eyebrow color-class-orange $color__dark_gray">
                 Advanced Search 
                 <span class="arrow-link">
@@ -287,7 +285,6 @@
             <?php
               }
             ?>
-            <!-- <div class="tab-pane fade show active" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0"> -->
               <div class="tab-int">
                 <div class="grid-flex grid-1-3-4 margin-bottom collection-grid" id="expando-grid">
 
@@ -296,20 +293,23 @@
 
                         <ifcount code="ca_objects" min="1">
                           <unit relativeTo="ca_objects" delimiter="" filter="/<img/">
-                            <div class="item-item item">
-
-                              <ifdef code="ca_object_representations.media.small">
-                                <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
-                              </ifdef>
-                              <ifnotdef code="ca_object_representations.media.small">
-                                <div class="collItemImgPlaceholder"><a></a></div>
-                              </ifnotdef>
-                              <div class="text-align-center info ">
-                                <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
-                                <div class="title text__promo-4 block-xxxs"><a href="" class="color-link-orange"><l>^ca_objects.preferred_labels<l></a></div>
-                                <div class="text__eyebrow year color__gray" style="text-transform: none;">^ca_occurrences.cfaDateProduced</div>
-                              </div>
-                            </div>
+                            <if rule="^access = 'yes'">
+                              <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
+                                <div class="item-item item">
+                                  <ifdef code="ca_object_representations.media.small">
+                                    <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
+                                  </ifdef>
+                                  <ifnotdef code="ca_object_representations.media.small">
+                                    <div class="collItemImgPlaceholder"><a></a></div>
+                                  </ifnotdef>
+                                  <div class="text-align-center info ">
+                                    <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
+                                    <div class="title text__promo-4 block-xxxs"><a href="" class="color-link-orange"><l>^ca_objects.preferred_labels<l></a></div>
+                                    <div class="text__body-4 year color__gray" style="text-transform: none;">^ca_occurrences.cfaDateProduced</div>
+                                  </div>
+                                </div>
+                              </if>
+                            </if>
                           </unit>
                         </ifcount>
 
@@ -343,7 +343,6 @@
               }
             ?>
 
-            <!-- <div class="tab-pane fade" id="itemList-tab-pane" role="tabpanel" aria-labelledby="itemList-tab" tabindex="0"> -->
               <div class="row pb-4 ps-3">
                 <div class="col">
                   <small class="color__gray">To request more information about the items in this collection, please contact the archive at info@chicagofilmarchives.org.</small>
@@ -375,14 +374,16 @@
                             <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
                               <small class="color__gray">(^ca_objects.type_id)</small>
                             </if>
-                            <ifdef code="ca_object_representations.media.small">
+                            <if rule="^access = 'yes'">
+                              <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
                               <span class="viewable-media-icon right">
                                 <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
-                                <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
+                                  <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
+                                  <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
                                 </svg>
                               </span>
-                            </ifdef>
+                              </if>
+                            </if>
                           </li>
                         </unit> <br><hr><br>
                       </ifcount>

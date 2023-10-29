@@ -76,16 +76,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                           $active = false;
                         }
                       ?>
-
-                      <?php
-                        if(count($media) == 0 ){
-                      ?>
-                        <div class="d-flex align-items-center p-5" style="height: 400px;">
-                          <p>Digitized media for this item is not currently available, please email info@chicagofilmarchives.org to inquire.</p>
-                        </div>
-                      <?php
-                        }
-                      ?>
                     </div>
                   </div>
                 </div>
@@ -271,8 +261,8 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
             <div class="int module-tabs">
               <div class="header">
                 <h4 class="text-align-center text__headline-4 title">Series In this Collection</h4>
-                <div class="row mt-3">
-                  <div class="col-6">
+                <div class="row row-cols-xs-1 row-cols-sm-1 row-cols-md-2 mt-3">
+                  <div class="col-xs-6 col-sm-6 col-md-6 mb-3">
                     <ifcount code="ca_collections.children" min="1">
                         <div class="unit">
                           <unit relativeTo="ca_collections.children" delimiter="<br>" restrictToTypes="series" sort="ca_collections.idno_sort">
@@ -297,12 +287,12 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                     </ifcount>
                   </div>
 
-                  <div class="col-6"> 
+                  <div class="col-xs-6 col-sm-6 col-md-6"> 
                     <div class="paragraph">
                           <div class="text__eyebrow color__gray">Intellectual organization and arrangement</div>
                           <div class="text__body-3">
                             <div class="unit">
-                                ^ca_collections.cfaIntellectualArrangement
+                                ^ca_collections.cfaIntellectualArrangement%convertLineBreaks=1
                             </div>
                           </div>
                     </div>
@@ -349,7 +339,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
     <?php
       }
     ?>
-    <!-- <section class="collection-grid-items"> -->
       <div class="wrap">
         <div class="int module-tabs">
 
@@ -398,7 +387,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 ?>
 			 </ul>
 
-              <!-- href="/Search/advanced/collections"-->
               <a href="/Browse/Objects" class="text__eyebrow color-class-orange $color__dark_gray">
                 Advanced Search 
                 <span class="arrow-link">
@@ -424,30 +412,36 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
             <?php
               }
             ?>
-            <!-- <div class="tab-pane fade show active" id="itemGrid-tab-pane" role="tabpanel" aria-labelledby="itemGrid-tab" tabindex="0"> -->
               <div class="tab-int">
                 <div class="grid-flex grid-1-3-4 margin-bottom collection-grid" id="expando-grid">
 
                   {{{<ifcount code="ca_collections.branch" min="0">
-                      <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_collections.idno_sort" filter="/<img/">
+                
 
+                      <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_collections.idno_sort">
                         <ifcount code="ca_objects" min="1">
-                          <unit relativeTo="ca_objects" delimiter="" filter="/<img/">
-                            <div class="item-item item">
 
-                              <ifdef code="ca_object_representations.media.small">
-                                <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
-                              </ifdef>
-                              <ifnotdef code="ca_object_representations.media.small">
-                                <div class="collItemImgPlaceholder"><a></a></div>
-                              </ifnotdef>
-                              <div class="text-align-center info ">
-                                <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
-                                <div class="title text__promo-4 block-xxxs"><a href="" class="color-link-orange"><l>^ca_objects.preferred_labels<l></a></div>
-                                <div class="text__eyebrow year color__gray" style="text-transform: none;">^ca_occurrences.cfaDateProduced</div>
-                              </div>
-                            </div>
+                          <unit relativeTo="ca_objects" delimiter="" filter="/<img/">
+                            <if rule="^access = 'yes'">
+                              <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
+                                <div class="item-item item">
+
+                                  <ifdef code="ca_object_representations.media.small">
+                                    <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
+                                  </ifdef>
+                                  <ifnotdef code="ca_object_representations.media.small">
+                                    <div class="collItemImgPlaceholder"><a></a></div>
+                                  </ifnotdef>
+                                  <div class="text-align-center info ">
+                                    <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
+                                    <div class="title text__promo-4 block-xxxs"><a href="" class="color-link-orange"><l>^ca_objects.preferred_labels<l></a></div>
+                                    <div class="text__body-4 year color__gray" style="text-transform: none;">^ca_occurrences.cfaDateProduced</div>
+                                  </div>
+                                </div>
+                              </if>
+                            </if>
                           </unit>
+
                         </ifcount>
 
                       </unit>
@@ -481,7 +475,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
               }
             ?>
 
-            <!-- <div class="tab-pane fade" id="itemList-tab-pane" role="tabpanel" aria-labelledby="itemList-tab" tabindex="0"> -->
               <div class="row pb-4 ps-3">
                 <div class="col">
                   <small class="color__gray">To request more information about the items in this collection, please contact the archive at info@chicagofilmarchives.org.</small>
@@ -504,21 +497,22 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
               {{{
                 <!-- collection items -->
                 <ifcount code="ca_objects" min="1">
-                  <!-- <span class="fw-bold"><l>^ca_collections.preferred_labels</l></span> -->
                   <unit relativeTo="ca_objects" delimiter="" sort="ca_objects.preferred_labels">
                     <li>
                     <span class="link-orange"><l>^ca_objects.preferred_labels</l></span>
                     <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
                       <small class="color__gray">(^ca_objects.type_id)</small>
                     </if>
-                    <ifdef code="ca_object_representations.media.small">
-                      <span class="viewable-media-icon right">
-                      <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
-                      <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
-                      </svg>
-                      </span>
-                    </ifdef>
+                    <if rule="^access = 'yes'">
+                      <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
+                        <span class="viewable-media-icon right">
+                          <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
+                            <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
+                          </svg>
+                        </span>
+                      </if>
+                    </if>
                     </li>
                   </unit> <br><hr><br>
                 </ifcount>
@@ -535,14 +529,16 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                           <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
                             <small class="color__gray">(^ca_objects.type_id)</small>
                           </if>
-                          <ifdef code="ca_object_representations.media.small">
-                            <span class="viewable-media-icon right">
-                              <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
-                                <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
-                              </svg>
-                            </span>
-                          </ifdef>
+                          <if rule="^access = 'yes'">
+                            <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
+                              <span class="viewable-media-icon right">
+                                <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
+                                  <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
+                                </svg>
+                              </span>
+                            </if>
+                          </if>
                         </li>
                       </unit> <br>
                     </ifcount>
@@ -558,14 +554,16 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                               <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
                                 <small class="color__gray">(^ca_objects.type_id)</small>
                               </if>
-                              <ifdef code="ca_object_representations.media.small">
-                                <span class="viewable-media-icon right">
-                                  <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
-                                    <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
-                                  </svg>
-                                </span>
-                              </ifdef>
+                              <if rule="^access = 'yes'">
+                                <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
+                                  <span class="viewable-media-icon right">
+                                    <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                      <rect x="0.5" y="0.5" width="14" height="12" rx="3.5" stroke="#BDBDBD"></rect>
+                                      <path d="M10 6.5L6 10L6 3L10 6.5Z" fill="#E26C2F"></path>
+                                    </svg>
+                                  </span>
+                                </if>
+                              </if>
                             </li>
                           </unit> <br>
                         </ifcount>
@@ -640,7 +638,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                       <div class="text__body-3">
                         <div class="unit">
                           <unit relativeTo="ca_list_items" delimiter="<br/>">
-                            <a href="/Search/objects/search/^ca_list_items.preferred_labels.name_plural"><span class="link-orange">^ca_list_items.preferred_labels.name_plural</span></a>
+                            <a href="/Browse/Objects/facet/subject//id/^ca_list_items.item_id"><span class="link-orange">^ca_list_items.preferred_labels.name_plural</span></a>
                           </unit>
                         </div>
                       </div>
@@ -702,7 +700,8 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                           <unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,complier,source" delimiter="<br/>">
                             <span class="link-orange">
                               <strong>
-                                <a href="/Search/objects/search/^ca_entities.preferred_labels">^ca_entities.preferred_labels</a>
+                                <!-- <a href="/Search/objects/search/^ca_entities.preferred_labels">^ca_entities.preferred_labels</a> -->
+                                <a href="/Browse/Objects/facet/entity/id/^ca_entities.entity_id">^ca_entities.preferred_labels</a>
                               </strong>
                             </span>
                             (^relationship_typename)
@@ -715,17 +714,18 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 </ifcount>
 
                 <ifcount code="ca_collections.children" min="0" max="0">
-                  <div class="paragraph">
-                      <ifdef code="ca_collections.cfaIntellectualArrangement">
-                          <div class="text__eyebrow color__gray">Intellectual organization and arrangement</div>
-                          <div class="text__body-3">
-                            <div class="unit">
-                                ^ca_collections.cfaIntellectualArrangement
-                            </div>
-                          </div>
-                      </ifdef>
+                  <ifdef code="ca_collections.cfaIntellectualArrangement">
+                    <div class="paragraph">
+                      <div class="text__eyebrow color__gray">Intellectual organization and arrangement</div>
+                      <div class="text__body-3">
+                        <div class="unit">
+                          ^ca_collections.cfaIntellectualArrangement
+                        </div>
+                      </div>
                     </div>
+                  </ifdef>
                 </ifcount>
+
               </div>
             </div>
           </div>
@@ -743,25 +743,11 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
         <h4 class="text-align-center text__headline-4 block-small ">Related Content</h4>
 
         <div class="slider-container module_slideshow slideshow-related manual-init">
-          <div class="slick-slider">
-
-            <!-- <div class="sizer">
-              <div class="item-related item">
-                <a href="https://cfarchives.wpengine.com/news/2020/08/the-first-degree/" tabindex="0">
-                  <div class="img-wrapper block-xxs" data-width="468" data-height="340">
-                    <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-srcset="https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383.png 468w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-170x124.png 170w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-80x58.png 80w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-400x291.png 400w" data-sizes="auto" alt="" class=" lazyload-persist lazyautosizes ls-is-cached lazyloaded " data-pin-nopin="true" draggable="false" sizes="169px" srcset="https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383.png 468w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-170x124.png 170w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-80x58.png 80w, https://cfarchives.wpengine.com/wp-content/uploads/2020/08/FirstDegree-e1596223509383-400x291.png 400w">
-                  </div>
-                </a>
-                <div class="text-align-center info">
-                  <div class="text__eyebrow color__gray block-xxxs">news</div>
-                  <div class="title text__promo-4">Content goes here</div>
-                </div>
-              </div>
-            </div> -->
-
+          <!-- <div class="slick-slider">
             <div id="related-content"></div>
+          </div> -->
 
-          </div>
+          <div id="related-content" class="slick-slider"></div>
 
           <div class="arrows">
             <div class="arrow arrow-left left reveal slick-arrow" style="visibility: visible;">
@@ -820,7 +806,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
       maxHeight: 100
     });
 	
-    $('#related-content').load('https://cfarchives.wpengine.com/wp-admin/admin-ajax.php?action=ca_related&id=<?= $t_item->get("ca_collections.collection_id"); ?>', {}, ca_init_slider);
+    $('#related-content').load('https://cfarchives.wpengine.com/wp-admin/admin-ajax.php?action=ca_related&type=collection&id=<?= $t_item->get("ca_collections.collection_id"); ?>', {}, ca_init_slider);
 
     function ca_init_slider(responseText, textStatus, xhr) {
     	if(!responseText || (responseText.length == 0)) {
@@ -829,44 +815,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
     	
     	$('#related-content-div').show();
     	CFA_APP.WIDGETS.initSlideShows( true, $( '.section-slideshow-related' ) );
-      // let $s = $('.slideshow-related');
-//       let args = {
-//           infinite: true,
-//           autoplay: false,
-//           fade: false,
-//           dots: false,
-//           centerMode: false,
-//           variableWidth: false,
-//           slidesToScroll: 1,
-//           slidesToShow: 5,
-//           arrows: true,
-//           prevArrow : $s.find('.arrow.left'),
-//           nextArrow : $s.find('.arrow.right'),        
-//           responsive: [
-//               {
-//                   breakpoint: 1023,
-//                   settings: {
-//                       slidesToScroll: 1,
-//                       slidesToShow: 3,
-//                   }
-//               },
-//               {
-//                   breakpoint: 767,
-//                   settings: {
-//                       arrows: false,
-//                       variableWidth: true,
-//                       centerMode: false,
-//                       slidesToScroll: 1,
-//                       autoplay: false
-//                   }
-//               },
-//           ]
-//       };
-//       new slideshowCtrl({
-//           $el: $s,
-//           customArgs: true,
-//           args: args
-//       });
 	}
 
 
