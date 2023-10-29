@@ -266,21 +266,23 @@ class SearchController extends FindController {
 		//
 		// Add criteria and execute
 		//
-		
-		if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
-			$o_browse->addCriteria("_search", [caMatchOnStem($vs_search_expression)], array($vs_search_expression_for_display));
-		}
-		if ($vs_search_refine = $this->request->getParameter('search_refine', pString, ['forcePurify' => true])) {
-			$o_browse->addCriteria('_search', [caMatchOnStem($vs_search_refine)], array($vs_search_refine));
-		} elseif ($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) {
-			$o_browse->addCriteria($vs_facet, explode("|", $this->request->getParameter('id', pString, ['forcePurify' => true])));
-		} elseif (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
+
+		if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			foreach ($va_facets as $vs_facet_spec) {
 				if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
 				$vs_facet = array_shift($va_tmp);
 				$o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp))); 
 			}
+		} elseif ($vs_search_refine = $this->request->getParameter('search_refine', pString, ['forcePurify' => true])) {
+			$o_browse->addCriteria('_search', [caMatchOnStem($vs_search_refine)], array($vs_search_refine));
+		} elseif ($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) {
+			$o_browse->addCriteria($vs_facet, explode("|", $this->request->getParameter('id', pString, ['forcePurify' => true])));
 		}
+				
+		if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
+			$o_browse->addCriteria("_search", [caMatchOnStem($vs_search_expression)], array($vs_search_expression_for_display));
+		}
+		
 		//
 		// Add additional base criteria if necessary
 		//
