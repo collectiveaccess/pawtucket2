@@ -206,7 +206,9 @@
 					foreach ($va_facets as $vs_facet_spec) {
 						if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
 						$vs_facet = array_shift($va_tmp);
-						$o_browse->addCriteria($vs_facet, preg_split("![\|,]+!", join(":", $va_tmp))); 
+						$o_browse->addCriteria($vs_facet, preg_split("![\|,]+!", join(":", array_map(function($v) { 
+							return urldecode($v);
+						}, $va_tmp)))); 
 					}
 			
 				} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {

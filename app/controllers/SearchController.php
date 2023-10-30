@@ -271,6 +271,9 @@ class SearchController extends FindController {
 			foreach ($va_facets as $vs_facet_spec) {
 				if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
 				$vs_facet = array_shift($va_tmp);
+				$va_tmp = array_map(function($v) { 
+					return urldecode($v);
+				}, $va_tmp);
 				$o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp))); 
 			}
 		} elseif ($vs_search_refine = $this->request->getParameter('search_refine', pString, ['forcePurify' => true])) {
