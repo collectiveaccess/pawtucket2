@@ -1986,7 +1986,7 @@ a.browseRemoveFacet .glyphicon {
 	top:0px;
 	z-index:10;
 }
-.bResultItem:hover .bSetsSelectMultiple{
+.bResultItem:hover .bSetsSelectMultiple, .bResultItem:focus .bSetsSelectMultiple, .bResultItem:active .bSetsSelectMultiple{
 	right:13px;
 	top:20px;
 }
@@ -2000,7 +2000,7 @@ a.browseRemoveFacet .glyphicon {
     height: auto;
     width: 100%;
 }
-.bResultItem:hover {
+.bResultItem:hover, .bResultItem:focus, .bResultItem:active {
     font-size: 12px;
     height: auto;
     margin:-20px -8px 0px -8px;
@@ -2235,7 +2235,7 @@ a.browseRemoveFacet .glyphicon {
 	line-height:1em;
 	padding:10px; /*had commented this out*/
 }
-.bResultListItem:hover{
+.bResultListItem:hover, .bResultListItem:focus, .bResultListItem:active{
 -webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
 	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.2);
 	padding:20px; /*had commented this out*/
@@ -2423,7 +2423,9 @@ a.browseRemoveFacet .glyphicon {
 	margin:7px 0px 10px 0px;
 	width:25px;
 }
-.multisearch .scrollButtonNext:hover, .multisearch .scrollButtonPrevious:hover{
+.multisearch .scrollButtonNext:hover, .multisearch .scrollButtonPrevious:hover,
+.multisearch .scrollButtonNext:active, .multisearch .scrollButtonPrevious:active,
+.multisearch .scrollButtonNext:focus, .multisearch .scrollButtonPrevious:focus{
 	background-color:#dedede;
 	cursor:pointer;
 	color:#000;
@@ -2487,7 +2489,8 @@ a.browseRemoveFacet .glyphicon {
 	padding:5px 10px 5px 10px;
 	overflow:hidden;
 }
-.multisearch .authorityResult:hover{
+.multisearch .authorityResult:hover, .multisearch .authorityResult:focus, .multisearch .authorityResult:active,
+.multisearch .authoritySet a:hover .authorityResult, .multisearch .authoritySet a:focus .authorityResult, .multisearch .authoritySet a:active .authorityResult{
 	background-color:#ebebeb;
 }
 .allLink {
@@ -3357,7 +3360,7 @@ div.caMediaOverlayControls {
 	margin-right:20px;
 	text-align:right;
 }
-.advancedFormSubmit a:hover {
+.advancedFormSubmit a:hover, .advancedFormSubmit a:focus, .advancedFormSubmit a:active  {
 	text-decoration:none;
 	color: #fff;
 }

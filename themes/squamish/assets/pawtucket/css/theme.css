@@ -1771,6 +1771,9 @@ h2.tl-headline{
 	font-size: 20px;
 	text-transform: none;
 }
+.alphabetNavigation .vowelNavigation a.btn{
+	background-color: #d0941f;
+}
 .alphabetNavigation a.letterActive{
 	background-color:#FFF;
 	color:#D23929;

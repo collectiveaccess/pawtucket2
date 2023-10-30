@@ -50,7 +50,7 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_occurrences.description"><label>About</label>^ca_occurrences.description<br/></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.description"><H3>About</H3>^ca_occurrences.description<br/></ifdef>}}}
 					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
 
 <?php
@@ -73,20 +73,20 @@
 					
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_collections" min="1" max="1"><label>Related collection</label></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><label>Related collections</label></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="1" max="1"><H3>Related collection</H3></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="2"><H3>Related collections</H3></ifcount>}}}
 					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit>}}}
 					
-					{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="1" max="1"><H3>Related person</H3></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2"><H3>Related people</H3></ifcount>}}}
 					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
 					
-					{{{<ifcount code="ca_occurrences.related" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
-					{{{<ifcount code="ca_occurrences.related" min="2"><label>Related occurrences</label></ifcount>}}}
+					{{{<ifcount code="ca_occurrences.related" min="1" max="1"><H3>Related occurrence</H3></ifcount>}}}
+					{{{<ifcount code="ca_occurrences.related" min="2"><H3>Related occurrences</H3></ifcount>}}}
 					{{{<unit relativeTo="ca_occurrences.related" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l> (^relationship_typename)</unit>}}}
 					
-					{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
+					{{{<ifcount code="ca_places" min="1" max="1"><H3>Related place</H3></ifcount>}}}
+					{{{<ifcount code="ca_places" min="2"><H3>Related places</H3></ifcount>}}}
 					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}					
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -122,7 +122,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 400,
+		  maxHeight: 407,
 		  moreLink: '<a href="#">More &#8964;</a>'
 		});
 		$('.trimTextShort').readmore({
