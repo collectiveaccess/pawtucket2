@@ -1007,6 +1007,9 @@ body.frontContainer #footer{
 .gallery #galleryDetailImageArea #galleryDetailImageWrapper:hover .detailMediaToolbar {
   display: none;
 }
+.gallery .caAudioPlayer{
+	margin-top: 15%;
+}
 /* collections */
 .highlightImg img{
 	width:100%;
@@ -1044,11 +1047,12 @@ body.frontContainer #footer{
 	font-size:14px;
 	font-weight:400;
 	padding-bottom:15px;
+	padding-right:15px;
 }
 .imgTile .imgTileText .imgTileTextTitle{
 	font-weight:600;
 	font-size:20px;
-	margin-bottom:20px;
+	margin-bottom:10px;
 	line-height: 1.1em;
 }
 .imgTile .imgTileText label{
@@ -1156,7 +1160,7 @@ a:hover .imgTile{
 .detail a:hover .bgDarkGray{
 	color:#000;
 	background-color:#EEE;
-	text-decoration:nonel
+	text-decoration:none;
 }
 .detail a .bgDarkGray .material-symbols-outlined{
 	font-size:18px !important;

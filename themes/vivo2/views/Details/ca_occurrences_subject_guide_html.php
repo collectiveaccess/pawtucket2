@@ -42,6 +42,10 @@
 					{{{<ifdef code="ca_occurrences.acknowledgements"><div class="unit"><label>Acknowledgements</label><div class="trimText">^ca_occurrences.acknowledgements</div></div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.funding_acknowl"><div class="unit"><label>Funding Acknowledgements</label><div class="trimText">^ca_occurrences.funding_acknowl</div></div></ifdef>}}}
 <?php
+					print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media.page"><div class="unit fullWidth">^ca_object_representations.media.page</div></ifdef>', array("checkAccess" => $va_access_values));
+?>
+
+<?php
 		if($this->request->isLoggedIn()){
 ?>
 						{{{<ifdef code="ca_occurrences.catalogue_control.catalogued_by|ca_occurrences.catalogue_control.catalogued_date"><div class="unit"><label>Descriptive Control</label>^ca_occurrences.catalogue_control.catalogued_by<ifdef cde="ca_occurrences.catalogue_control.catalogued_date"> (^ca_occurrences.catalogue_control.catalogued_date)</ifdef></div></ifdef>}}}

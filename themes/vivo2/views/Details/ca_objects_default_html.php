@@ -84,7 +84,6 @@ if($vb_2_col){
 					<H2>{{{^ca_objects.type_id}}}</H2>
 					{{{<ifdef code="ca_objects.title_note"><div class="unit"><label>Title note</label><unit relativeTo="ca_objects.title_note" delimiter="<br>">^ca_objects.title_note</unit></div></ifdef>}}}
 					{{{<ifdef code="ca_objects.alt_title"><div class="unit"><label>Alternate Titles</label><unit relativeTo="ca_objects.alt_title" delimiter="<br>">^ca_objects.alt_title</unit></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.internal_notes"><div class="unit"><label>Archivist Note</label><unit relativeTo="ca_objects.internal_notes" delimiter="<br>">^ca_objects.internal_notes</unit></div></ifdef>}}}
 					{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.custom_extent"><div class="unit"><label>Extent</label>^ca_objects.custom_extent</div></ifdef>}}}
@@ -153,7 +152,13 @@ if($vb_2_col){
 						<ifdef code="ca_objects.physical_analogue_dig.phys_source_analogue_dig"><div class="unit"><i>^ca_objects.physical_analogue_dig.phys_source_analogue_dig</i></div></ifdef>
 					</div></ifdef>}}}
 
-					{{{<ifcount code="ca_collections" min="1"><unit relativeTo="ca_collections" delimiter="<br/>"><div class="unit"><label>Archival Collection</label><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="1">
+						<div class="unit"><label>Part of Collection</label>
+							<unit relativeTo="ca_collections" delimiter="<br/>">
+								<unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit> (^ca_collections.type_id)
+							</unit>
+						</div>
+					</ifcount>}}}
 <?php
 					$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
 					if(is_array($va_entities) && sizeof($va_entities)){
@@ -167,9 +172,7 @@ if($vb_2_col){
 					}
 ?>					
 						{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Objects</label><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></div></ifcount>}}}
-						{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="event"><div class="unit"><label>Related programs & events</label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
-						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><label>Related Subject Guides</label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><label>In Subject Guide<ifcount code="ca_occurrences" min="2" restrictToTypes="subject_guide">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l></unit></div></div></ifcount>}}}
 						{{{<ifdef code="ca_objects.RAD_custodial"><div class="unit"><label>Custodial History</label>^ca_objects.custom_extent</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.places"><div class="unit"><label>Related Places</label><unit relativeTo="ca_objects.places" delimiter=", ">^ca_objects.places</unit></div></ifdef>}}}
 <?php
@@ -195,7 +198,7 @@ if($vb_2_col){
 ?>					
 					
 						{{{<ifcount code="ca_objects.children" min="1"><div class="unit"><label>Formats</label><unit relativeTo="ca_objects.children" delimiter="<br/>">^ca_objects.preferred_labels</unit></div></ifcount>}}}
-						{{{<ifcount code="ca_occurrences" min="1" restrictToType="distribution_contract"><div class="unit"><label>Video Out Status</label><unit relativeTo="ca_occurrences" restrictToType="distribution_contract" delimiter="<br/>">^ca_occurrences.distribution_status</unit></div></ifcount>}}}
+						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="distribution_contract"><div class="unit"><label>Video Out Status</label><unit relativeTo="ca_occurrences" restrictToTypes="distribution_contract" delimiter="<br/>">^ca_occurrences.distribution_status</unit></div></ifcount>}}}
 						{{{<ifdef code="ca_objects.contributors_gratitudes"><div class="unit"><label>Contributors and Gratitudes</label>^ca_objects.contributors_gratitudes%delimiter=,_</div></ifdef>}}}
 						<!-- end video -->
 					
@@ -214,7 +217,13 @@ if($vb_2_col){
 						{{{<ifdef code="ca_objects.equipment_model"><div class="unit"><label>Model</label>^ca_objects.equipment_model</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.dc_description"><div class="unit"><label>Object Description</label>^ca_objects.dc_description</div></ifdef>}}}
 						<!-- end equipment -->				
-					
+<?php
+		if($this->request->isLoggedIn() && $this->request->user->hasRole("Researcher")){
+?>					
+						{{{<ifdef code="ca_objects.internal_notes"><div class="unit"><label>Archivist Note</label><unit relativeTo="ca_objects.internal_notes" delimiter="<br>">^ca_objects.internal_notes</unit></div></ifdef>}}}
+<?php
+		}
+?>										
 					</div>
 
 
@@ -225,17 +234,48 @@ if($vb_2_col){
 						<ifdef code="ca_objects.rightsSummary_asset"><div class="unit"><label>Rights Summary</label>^ca_objects.rightsSummary_asset</div>					
 					</div>
 					</ifdef>}}}
-
-					
-					
-					
-					
-					
-				
-					
-								
-					
 <?php
+
+	$va_events = $t_object->get("ca_occurrences.related", array("restrictToTypes" => array("event"), "returnWithStructure" => 1, "checkAccess" => $va_access_values));
+	if(is_array($va_events) && sizeof($va_events)){
+		$va_rel_events = array();
+		$i = 0;
+		foreach($va_events as $va_event_info){
+			$va_rel_events[$va_event_info["occurrence_id"]] = array("name" => $va_event_info["name"], "relationship_type" => $va_event_info["relationship_typename"]);
+			$i++;
+			if($i == 24){
+				break;
+			}
+		}
+		$qr_events = caMakeSearchResult("ca_occurrences", array_keys($va_rel_events));
+?>
+		<div class="row">
+			<div class="col-sm-12">
+				<H3>Related Programs & Events</H3>
+<?php
+
+				$col = 0;
+				while($qr_events->nextHit()){
+					if($col == 0){
+						print "<div class='row'>";
+					}
+					print "<div class='col-sm-6'>".caDetailLink($this->request, "<div class='bgDarkGray text-center'>".$va_rel_events[$qr_events->get("ca_occurrences.occurrence_id")]["name"]."<br/><small>".$qr_events->getWithTemplate("^ca_occurrences.occurrence_date")."</small></div>", "", "ca_occurrences", $qr_events->get("ca_occurrences.occurrence_id"))."</div>";
+					$col++;
+					if($col == 2){
+						$col = 0;
+						print "</div>";
+					}
+				}
+				if($col > 0){
+					print "</div>";
+				}
+?>			
+			
+			</div>
+		</div>
+<?php
+	}
+
 				if(!$vb_2_col){
 					print "<div id='detailTools'>";
 					print "<div class='detailTool'>".caNavLink($this->request, "Inquire <span class='material-symbols-outlined'>chat</span>", "btn btn-default", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";

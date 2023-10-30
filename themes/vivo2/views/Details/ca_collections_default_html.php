@@ -53,12 +53,11 @@
 					
 <?php
 					if($t_item->get("ca_collections.idno") == "SVES"){
-						print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media.page"><div class="unit fullWidth">^ca_object_representations.media.page</div></ifdef>');
+						print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media.page"><div class="unit fullWidth">^ca_object_representations.media.page</div></ifdef>', array("checkAccess" => $va_access_values));
 					}
 ?>
 					{{{<ifdef code="ca_collections.title_note"><div class="unit"><label>Title Note</label>^ca_collections.title_note</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.RAD_custodial"><div class="unit"><label>Custodial History</label>^ca_collections.RAD_custodial</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.internal_notes"><div class="unit"><label>Archivist Note</label>^ca_collections.internal_notes</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.RAD_scopecontent"><div class="unit"><label>Scope and Content</label><span class="trimText">^ca_collections.RAD_scopecontent</span></div></ifdef>}}}
 					{{{<ifdef code="ca_collections.RAD_admin_hist"><div class="unit"><label>Administrative/Biographical History</label><span class="trimText">^ca_collections.RAD_admin_hist</span></div></ifdef>}}}
 					{{{<ifdef code="ca_collections.date_container.date"><div class="unit"><label>Date</label><unit relativeTo="ca_collections.date_container" delimiter="<br>">^ca_collections.date_container.date<ifdef code="ca_collections.date_container.date_note">, ^ca_collections.date_container.date_note</ifdef></unit></div></ifdef>}}}
@@ -88,9 +87,15 @@
 ?>					
 					
 					
-					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><label>Related Subject Guides</label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><label>Related Subject Guide<ifcount code="ca_occurrences" min="2" restrictToTypes="subject_guide">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l></unit></div></div></ifcount>}}}
 					{{{<ifdef code="ca_collections.places"><div class="unit"><label>Related Places</label><unit relativeTo="ca_collections.places" delimiter=", ">^ca_collections.places</unit></div></ifdef>}}}
-
+<?php
+		if($this->request->isLoggedIn() && $this->request->user->hasRole("Researcher")){
+?>					
+					{{{<ifdef code="ca_collections.internal_notes"><div class="unit"><label>Archivist Note</label>^ca_collections.internal_notes</div></ifdef>}}}
+<?php
+		}
+?>					
 		</div>	
 		<div class="row">
 			<div class="col-sm-4 text-center">
