@@ -43,32 +43,45 @@
 
 	$vs_placeholder = "<div class='placeholderImage'>".caGetThemeGraphic($this->request, 'placeholder.jpg', array("alt" => "Placeholder"))."</div>";
 
+	$vb_2_col = false;
+	if($t_item->get("ca_collections.RAD_scopecontent") || $t_item->get("ca_collections.RAD_admin_hist") || $t_item->get("ca_collections.RAD_arrangement") || $t_item->get("ca_collections.RAD_custodial")){
+		$vb_2_col = true;
+	}
 ?>
 <div class="container"><div class="row">
 	<div class='col-xs-12'>
 		<div class="bgLightGrayDetail">
-					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
-					<H2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H2>
-					
-					
+			<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
+			<div class="typeInfo">{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</div>
+			
+			
 <?php
-					if($t_item->get("ca_collections.idno") == "SVES"){
-						print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media.page"><div class="unit fullWidth">^ca_object_representations.media.page</div></ifdef>', array("checkAccess" => $va_access_values));
-					}
+			if($t_item->get("ca_collections.idno") == "SVES"){
+				print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media.page"><div class="unit fullWidth">^ca_object_representations.media.page</div></ifdef>', array("checkAccess" => $va_access_values));
+			}
+			if($vb_2_col){
 ?>
-					{{{<ifdef code="ca_collections.title_note"><div class="unit"><label>Title Note</label>^ca_collections.title_note</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_custodial"><div class="unit"><label>Custodial History</label>^ca_collections.RAD_custodial</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_scopecontent"><div class="unit"><label>Scope and Content</label><span class="trimText">^ca_collections.RAD_scopecontent</span></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_admin_hist"><div class="unit"><label>Administrative/Biographical History</label><span class="trimText">^ca_collections.RAD_admin_hist</span></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.date_container.date"><div class="unit"><label>Date</label><unit relativeTo="ca_collections.date_container" delimiter="<br>">^ca_collections.date_container.date<ifdef code="ca_collections.date_container.date_note">, ^ca_collections.date_container.date_note</ifdef></unit></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_langMaterial"><div class="unit"><label>Language</label>^ca_collections.RAD_langMaterial%delimiter=;_</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_material"><div class="unit"><label>Related Materials</label>^ca_collections.RAD_material</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_arrangement"><div class="unit"><label>System of Arrangement</label>^ca_collections.RAD_arrangement</div></ifdef>}}}
+				<div class="row">
+					<div class="col-sm-12 col-md-6">
+						{{{<ifdef code="ca_collections.RAD_scopecontent"><div class="unit"><H2>Scope and Content</H2><span class="trimTextShort"><div>^ca_collections.RAD_scopecontent</div></span></div></ifdef>}}}
+						{{{<ifdef code="ca_collections.RAD_admin_hist"><div class="unit"><H2>Administrative/Biographical History</H2><span class="trimTextShort"><div>^ca_collections.RAD_admin_hist</div></span></div></ifdef>}}}
+						{{{<ifdef code="ca_collections.RAD_arrangement"><div class="unit"><H2>System of Arrangement</H2><span class="trimTextShort"><div>^ca_collections.RAD_arrangement</div></span></div></ifdef>}}}
+						{{{<ifdef code="ca_collections.RAD_custodial"><div class="unit"><H2>Custodial History</H2><span class="trimTextShort"><div>^ca_collections.RAD_custodial</div></span></div></ifdef>}}}
+					
+					</div>
+					<div class="col-sm-12 col-md-6">
+<?php
+			}
+?>
+					{{{<ifdef code="ca_collections.title_note"><div class="unit"><H2>Title Note</H2>^ca_collections.title_note</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.date_container.date"><div class="unit"><H2>Date</H2><unit relativeTo="ca_collections.date_container" delimiter="<br>">^ca_collections.date_container.date<ifdef code="ca_collections.date_container.date_note">, ^ca_collections.date_container.date_note</ifdef></unit></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.RAD_langMaterial"><div class="unit"><H2>Language</H2>^ca_collections.RAD_langMaterial%delimiter=;_</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.RAD_material"><div class="unit"><H2>Related Materials</H2>^ca_collections.RAD_material</div></ifdef>}}}
 <?php
 		if($this->request->isLoggedIn()){
 ?>
-					{{{<ifdef code="ca_collections.catalogue_control.catalogued_by|ca_collections.catalogue_control.catalogued_date"><div class="unit"><label>Descriptive Control</label>^ca_collections.catalogue_control.catalogued_by<ifdef cde="ca_collections.catalogue_control.catalogued_date"> (^ca_collections.catalogue_control.catalogued_date)</ifdef></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.acquisition_date"><div class="unit"><label>Date of Acquisition</label>^ca_collections.acquisition_date</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.catalogue_control.catalogued_by|ca_collections.catalogue_control.catalogued_date"><div class="unit"><H2>Descriptive Control</H2>^ca_collections.catalogue_control.catalogued_by<ifdef cde="ca_collections.catalogue_control.catalogued_date"> (^ca_collections.catalogue_control.catalogued_date)</ifdef></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.acquisition_date"><div class="unit"><H2>Date of Acquisition</H2>^ca_collections.acquisition_date</div></ifdef>}}}
 <?php
 		}
 ?>
@@ -81,21 +94,27 @@
 							$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
 						}
 						foreach($va_entities_by_type as $vs_type => $va_entity_links){
-							print "<div class='unit'><label>".$vs_type."</label>".join(", ", $va_entity_links)."</div>";
+							print "<div class='unit'><H2>".$vs_type."</H2>".join(", ", $va_entity_links)."</div>";
 						}
 					}
 ?>					
 					
 					
-					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><label>Related Subject Guide<ifcount code="ca_occurrences" min="2" restrictToTypes="subject_guide">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l></unit></div></div></ifcount>}}}
-					{{{<ifdef code="ca_collections.places"><div class="unit"><label>Related Places</label><unit relativeTo="ca_collections.places" delimiter=", ">^ca_collections.places</unit></div></ifdef>}}}
+					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><H2>Related Subject Guide<ifcount code="ca_occurrences" min="2" restrictToTypes="subject_guide">s</ifcount></H2><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l></unit></div></div></ifcount>}}}
+					{{{<ifdef code="ca_collections.places"><div class="unit"><H2>Related Places</H2><unit relativeTo="ca_collections.places" delimiter=", ">^ca_collections.places</unit></div></ifdef>}}}
 <?php
-		if($this->request->isLoggedIn() && $this->request->user->hasRole("Researcher")){
+		if($this->request->isLoggedIn() && $this->request->user->hasRole("frontendRestricted")){
 ?>					
-					{{{<ifdef code="ca_collections.internal_notes"><div class="unit"><label>Archivist Note</label>^ca_collections.internal_notes</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.internal_notes"><div class="unit"><H2>Archivist Note</H2>^ca_collections.internal_notes</div></ifdef>}}}
 <?php
 		}
-?>					
+		if($vb_2_col){
+?>
+			</div>
+		</div>
+<?php
+		}
+?>
 		</div>	
 		<div class="row">
 			<div class="col-sm-4 text-center">
@@ -140,7 +159,7 @@
 							}
 							$vs_lang = "";
 							if($vs_tmp = $q_child_collections->get("ca_collections.RAD_langMaterial", array("delimiter" => "; "))){
-								$vs_lang = "<div><label>Language</label>".$vs_tmp."</div>";
+								$vs_lang = "<div><H2>Language</H2>".$vs_tmp."</div>";
 							}
 			
 							if ( $vn_i == 0) { print "<div class='row'>"; } 
@@ -305,7 +324,7 @@
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 112,
+		  maxHeight: 118,
 		  moreLink: '<a href="#">More &#8964;</a>'
 		});
 	});

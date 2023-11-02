@@ -525,6 +525,10 @@ body{
 	line-height: 146%;
 	font-weight: 300;
 }
+#bRefine a:hover, #bRefine a:focus, #bRefine a:active {
+	color: #000;
+  	text-decoration:underline;
+}
 .bResultItemSetLink {
 	position: absolute;
 	right: 10px;
@@ -646,13 +650,23 @@ a.browseRemoveFacet .glyphicon{
 	width:100%;
 	height:auto;
 }
+.resultTile a:hover img, .resultTile a:active img, .resultTile a:focus img{
+	opacity:.7;
+}
 .resultTile .caption{
-	height:72px;
+	height:80px;
 	padding:10px;
 	font-size:16px;
 	font-weight:400;
 	line-height:1.2em;
 	background-color:#EEE;
+	overflow: hidden;
+}
+
+@media(max-width:1175px){
+	.resultTile .caption{
+		font-size:14px;
+	}
 }
 .results .resultTile .caption{
 	font-size:14px;
@@ -662,6 +676,9 @@ a.browseRemoveFacet .glyphicon{
 	color:#000;
 	text-decoration:none;
 	font-weight:400;
+}
+.resultTile a:hover .caption, .resultTile a:active .caption, .resultTile a:focus .caption{
+	text-decoration:underline;
 }
 .resultTile .tools{
 	position:absolute;
@@ -711,20 +728,39 @@ a.browseRemoveFacet .glyphicon{
 	font-weight:500;
 	font-size:16px;
 }
+@media(max-width:1175px){
+	.resultListTile .resultListTileText{
+		font-size:14px;
+	}
+}
+@media(max-width:768px){
+	.resultListTile .resultListTileText{
+		font-size:14px;
+		padding:15px;
+	}
+}
 .resultListTile .resultListTileText small{
 	font-size:14px;
 	font-weight:400;
 }
-a:hover .resultListTile{
+a:hover .resultListTile, a:focus .resultListTile, a:active .resultListTile{
 	background-color: #dedede;
+	color:#000;
 }
 .resultListSimple{
-	padding-bottom:10px;
+	margin-bottom: 15px;
+	height: 2.2em;
+	line-height: 1;
+	overflow: hidden;
 }
 .resultListSimple a{
 	font-size:16px;
 	font-family: 'Work Sans', sans-serif;
 	font-weight: 500;
+}
+.resultListSimple a:hover, .resultListSimple a:focus, .resultListSimple a:active{
+	text-decoration:underline;
+	color:#333;
 }
 #bLetterBar{
 	background-color: #FFF;
@@ -752,6 +788,13 @@ a:hover .resultListTile{
   		font-size: 24px;
   	}
 }
+#bLetterBar a:hover, #bLetterBar a:focus, #bLetterBar a:active, #bLetterBar a.selectedLetter {
+  font-weight: bold;
+  background-color: #EDEDED;
+  text-decoration: none;
+  color:#000;
+}
+
 /* front */
 html.frontContainer {
     height: 100%;
@@ -864,7 +907,13 @@ body.frontContainer #footer{
 }
 .videoout h2{
 	margin-top: 70px;
-	margin-bottom: 30px;
+	text-align: left;
+	text-transform: none;
+	font-size: 40px;
+	padding-bottom: 35px;
+	padding-top: 15px;
+	line-height: 1em;
+	font-weight: 400;
 }
 
 
@@ -1117,7 +1166,7 @@ a:hover .imgTile{
 }
 .staticPage .bodyTextCol H2{
 	font-size:18px;
-	margin-top:40px;
+	margin-top:30px;
 }
 .staticPage .bodyTextCol .form-control{
 	border:0px;
@@ -1189,7 +1238,7 @@ a:hover .imgTile{
   		font-size: 24px;
   	}
 }
-.detail H2{
+.detail .typeInfo{
 	font-size:14px;
 	font-weight:500;
 	color:#000;
@@ -1215,13 +1264,14 @@ a:hover .imgTile{
 .detail .unitLessPadding{
 	padding-bottom:15px;
 }
-.detail label{
+.detail label, .detail H2{
 	font-family: 'Work Sans', sans-serif;
 	font-size:16px;
 	font-weight:600;
 	color:#000;
 	text-transform:none;
-	margin: 0px 0px 0px 0px;
+	margin: 0px 0px 3px 0px;
+	line-height:1.4em;
 }
 .detail .unit a{
 	color:#000;
@@ -1253,6 +1303,11 @@ a:hover .imgTile{
 	padding-top: 0px;
 	margin-top: 15px;
 	font-family: 'Work Sans', sans-serif;
+}
+@media(min-width:769px){
+	.wideText{
+		column-count: 2;
+	}
 }
 /* multisearh */
 .multisearch H1{
@@ -1297,4 +1352,26 @@ a:hover .imgTile{
 }
 .resultBlock .sortValues a:focus, .resultBlock .sortValues a:focus span, .resultBlock .sortValues a span:focus{
 	color:#333;
+}
+.multisearch .authoritySet a:hover, .multisearch .authoritySet a:focus, .multisearch .authoritySet a:active{
+	text-decoration:underline;
+}
+.multisearchResult a:hover img, .multisearchResult a:active img, .multisearchResult a:focus img{
+	opacity:.7;
+}
+.multisearchResult .multisearchResultCaption a:hover, .multisearchResult .multisearchResultCaption a:active, .multisearchResult .multisearchResultCaption a:focus{
+	text-decoration:underline;
+	color:#000;
+}
+.multisearch H2 a:hover, .multisearch H2 a:focus, .multisearch H2 a:active,
+.multisearchFullResults a:hover, .multisearchFullResults a:focus, .multisearchFullResults a:active{
+	text-decoration:underline;
+	color:#000;
+}
+.multisearchSort ul li a:hover, .multisearchSort ul li a:active, .multisearchSort ul li a:focus{
+	color:#787878;
+}
+.jumpLinks a:hover, .jumpLinks a:focus, .jumpLinks a:active{
+	text-decoration:underline;
+	color:#000;
 }

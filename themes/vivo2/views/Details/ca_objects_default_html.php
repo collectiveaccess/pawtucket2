@@ -53,7 +53,8 @@ if($vb_2_col){
 				
 					<div id="detailAnnotations"></div>
 				
-					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-2 col-xs-3", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+					{{{<ifdef code="ca_objects.transcript_upload_container.transcript_upload.url"><div class="unit"><unit relativeTo="ca_objects.transcript_upload_container.transcript_upload" delimiter="<br/>"><ifdef code="ca_objects.transcript_upload_container.transcript_upload.url"><a href="^ca_objects.transcript_upload_container.transcript_upload.url%version=original"><span class="glyphicon glyphicon-download-alt" role="button" aria-label="Download"></span></a> <a href="^ca_objects.transcript_upload_container.transcript_upload.url%version=original"><ifdef code="ca_objects.transcript_upload_container.transcript_caption">^ca_objects.transcript_upload_container.transcript_caption</ifdef><ifnotdef code="ca_objects.transcript_upload_container.transcript_caption">Download Transcript</ifnotdef></a></ifdef></unit></div></ifdef>}}}
 				
 	<?php
 					print "<div id='detailTools'>";
@@ -67,7 +68,6 @@ if($vb_2_col){
 	?>
 	
 				
-					{{{<ifdef code="ca_objects.transcript_upload_container.transcript_upload.url"><div class="unit"><unit relativeTo="ca_objects.transcript_upload_container.transcript_upload" delimiter="<br/>"><ifdef code="ca_objects.transcript_upload_container.transcript_upload.url"><a href="^ca_objects.transcript_upload_container.transcript_upload.url%version=original"><span class="glyphicon glyphicon-download-alt" role="button" aria-label="Download"></span></a> <a href="^ca_objects.transcript_upload_container.transcript_upload.url%version=original"><ifdef code="ca_objects.transcript_upload_container.transcript_caption">^ca_objects.transcript_upload_container.transcript_caption</ifdef><ifnotdef code="ca_objects.transcript_upload_container.transcript_caption">Download Transcript</ifnotdef></a></ifdef></unit></div></ifdef>}}}
 					
 				</div><!-- end col -->
 			
@@ -80,17 +80,17 @@ if($vb_2_col){
 }
 ?>				
 					<div class="bgLightGrayDetail">
-					<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
-					<H2>{{{^ca_objects.type_id}}}</H2>
-					{{{<ifdef code="ca_objects.title_note"><div class="unit"><label>Title note</label><unit relativeTo="ca_objects.title_note" delimiter="<br>">^ca_objects.title_note</unit></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.alt_title"><div class="unit"><label>Alternate Titles</label><unit relativeTo="ca_objects.alt_title" delimiter="<br>">^ca_objects.alt_title</unit></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.custom_extent"><div class="unit"><label>Extent</label>^ca_objects.custom_extent</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.date_container.date"><div class="unit"><label>Date</label><unit relativeTo="ca_objects.date_container" delimiter="<br>">^ca_objects.date_container.date<ifdef code="ca_objects.date_container.date_note">, ^ca_objects.date_container.date_note</ifdef></unit></div></ifdef>}}}
+					<H1><?php print ($t_object->get("ca_objects.preferred_labels.name") == "[BLANK]") ? "Title not available" : $t_object->get("ca_objects.preferred_labels.name"); ?></H1>
+					<div class="typeInfo">{{{^ca_objects.type_id}}}</div>
+					{{{<ifdef code="ca_objects.title_note"><div class="unit"><H2>Title note</H2><unit relativeTo="ca_objects.title_note" delimiter="<br>">^ca_objects.title_note</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.alt_title"><div class="unit"><H2>Alternate Titles</H2><unit relativeTo="ca_objects.alt_title" delimiter="<br>">^ca_objects.alt_title</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.language"><div class="unit"><H2>Language</H2>^ca_objects.language%delimiter=,_</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.idno"><div class="unit"><H2>Identifier</H2>^ca_objects.idno</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.custom_extent"><div class="unit"><H2>Extent</H2>^ca_objects.custom_extent</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.date_container.date"><div class="unit"><H2>Date</H2><unit relativeTo="ca_objects.date_container" delimiter="<br>">^ca_objects.date_container.date<ifdef code="ca_objects.date_container.date_note">, ^ca_objects.date_container.date_note</ifdef></unit></div></ifdef>}}}
 					{{{<ifdef code="ca_objects.object_description.description"><unit relativeTo="ca_objects.object_description" delimiter=" ">
 						<div class='unit'>
-							<if rule='^ca_objects.object_description.description_type !~ /other/'><label>^ca_objects.object_description.description_type</label></if>
+							<if rule='^ca_objects.object_description.description_type !~ /other/'><H2>^ca_objects.object_description.description_type</H2></if>
 							<span class="trimText">^ca_objects.object_description.description</span>
 							<ifdef code="ca_objects.object_description.description_source|ca_objects.object_description.description_date|ca_objects.object_description.geographic_coverage"><br/><br/><i>
 								<ifdef code="ca_objects.object_description.description_source">^ca_objects.object_description.description_source<ifdef code="ca_objects.object_description.description_date|ca_objects.object_description.geographic_coverage">, </ifdef></ifdef>
@@ -99,8 +99,9 @@ if($vb_2_col){
 							</i></ifdef>
 						</div>
 					</unit></ifdef>}}}
+					{{{<ifnotdef code="ca_objects.object_description.description"><div class="unit"><H2>Description</H2><?php print $this->getVar("object_description_placeholder"); ?></div></ifnotdef>}}}
 					<!-- lib publication -->
-					{{{<ifdef code="ca_objects.physical_lib"><div class="unit"><label>Physical Description</label>
+					{{{<ifdef code="ca_objects.physical_lib"><div class="unit"><H2>Physical Description</H2>
 						<ifdef code="ca_objects.physical_lib.phys_lib"><div class="unit">^ca_objects.physical_lib.phys_lib</div></ifdef>
 						<ifdef code="ca_objects.physical_lib.phys_spine"><div class="unit">Spine height: ^ca_objects.physical_lib.phys_spine</div></ifdef>
 					
@@ -109,7 +110,7 @@ if($vb_2_col){
 						<ifdef code="ca_objects.physical_lib.phys_source_lib"><div class="unit"><i>^ca_objects.physical_lib.phys_source_lib</i></div></ifdef>
 					</div></ifdef>}}}
 					<!-- document -->
-					{{{<ifdef code="ca_objects.physical_doc"><div class="unit"><label>Physical Description</label>
+					{{{<ifdef code="ca_objects.physical_doc.physical_document|ca_objects.physical_doc.height_doc|ca_objects.physical_doc.width_doc|ca_objects.physical_doc.depth_doc|ca_objects.physical_doc.phys_doc_type|ca_objects.physical_doc.bw_doc|ca_objects.physical_doc.pages|ca_objects.physical_doc.phys_doc_notes"><div class="unit"><H2>Physical Description</H2>
 						<ifdef code="ca_objects.physical_doc.physical_document"><div class="unit">^ca_objects.physical_doc.physical_document</div></ifdef>
 						<ifdef code="ca_objects.physical_doc.height_doc|ca_objects.physical_doc.width_doc|ca_objects.physical_doc.depth_doc"><div class="unit"><ifdef code="ca_objects.physical_doc.height_doc">height: ^ca_objects.physical_doc.height_doc </ifdef><ifdef code="ca_objects.physical_doc.width_doc">width: ^ca_objects.physical_doc.width_doc </ifdef><ifdef code="ca_objects.physical_doc.depth_doc">depth: ^ca_objects.physical_doc.depth_doc </ifdef></div></ifdef>
 					
@@ -123,7 +124,7 @@ if($vb_2_col){
 					</div></ifdef>}}}
 					
 					<!-- image -->
-					{{{<ifdef code="ca_objects.physical_image_analogue"><div class="unit"><label>Physical Description</label>
+					{{{<ifdef code="ca_objects.physical_image_analogue"><div class="unit"><H2>Physical Description</H2>
 						<ifdef code="ca_objects.physical_image_analogue.phys_image_analogue"><div class="unit">^ca_objects.physical_image_analogue.phys_image_analogue</div></ifdef>
 						<ifdef code="ca_objects.physical_image_analogue.height_image_a|ca_objects.physical_image_analogue.width_image_a"><div class="unit"><ifdef code="ca_objects.physical_image_analogue.height_image_a">height: ^ca_objects.physical_image_analogue.height_image_a </ifdef><ifdef code="ca_objects.physical_image_analogue.width_image_a">width: ^ca_objects.physical_image_analogue.width_image_a</ifdef></div></ifdef>
 					
@@ -136,14 +137,14 @@ if($vb_2_col){
 					</div></ifdef>}}}
 					
 					<!-- object > born dig -->
-					{{{<ifdef code="ca_objects.physical_born_dig"><div class="unit"><label>Physical Description</label>
+					{{{<ifdef code="ca_objects.physical_born_dig"><div class="unit"><H2>Physical Description</H2>
 						<ifdef code="ca_objects.physical_born_dig.phys_born_dig"><div class="unit">^ca_objects.physical_born_dig.phys_born_dig</div></ifdef>
 						<ifdef code="ca_objects.physical_born_dig.phys_born_dig_notes"><div class="unit">Notes: ^ca_objects.physical_born_dig.phys_born_dig_notes</div></ifdef>
 						<ifdef code="ca_objects.physical_born_dig.phys_source_born_dig"><div class="unit"><i>^ca_objects.physical_born_dig.phys_source_born_dig</i></div></ifdef>
 					</div></ifdef>}}}
 					
 					<!-- object > physical -->
-					{{{<ifdef code="ca_objects.physical_analogue_dig"><div class="unit"><label>Physical Description</label>
+					{{{<ifdef code="ca_objects.physical_analogue_dig"><div class="unit"><H2>Physical Description</H2>
 						<ifdef code="ca_objects.physical_analogue_dig.phys_analogue_dig_desc"><div class="unit">^ca_objects.physical_analogue_dig.phys_analogue_dig_desc</div></ifdef>
 						<ifdef code="ca_objects.physical_analogue_dig.height_born|ca_objects.physical_analogue_dig.width_born|ca_objects.physical_analogue_dig.depth_born"><div class="unit"><ifdef code="ca_objects.physical_analogue_dig.height_born">height: ^ca_objects.physical_analogue_dig.height_born </ifdef><ifdef code="ca_objects.physical_analogue_dig.width_born">width: ^ca_objects.physical_analogue_dig.width_born </ifdef><ifdef code="ca_objects.physical_analogue_dig.depth_born">depth: ^ca_objects.physical_analogue_dig.depth_born </ifdef></div></ifdef>
 					
@@ -153,7 +154,7 @@ if($vb_2_col){
 					</div></ifdef>}}}
 
 					{{{<ifcount code="ca_collections" min="1">
-						<div class="unit"><label>Part of Collection</label>
+						<div class="unit"><H2>Part of Collection</H2>
 							<unit relativeTo="ca_collections" delimiter="<br/>">
 								<unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit> (^ca_collections.type_id)
 							</unit>
@@ -167,60 +168,65 @@ if($vb_2_col){
 							$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
 						}
 						foreach($va_entities_by_type as $vs_type => $va_entity_links){
-							print "<div class='unit'><label>".$vs_type."</label>".join(", ", $va_entity_links)."</div>";
+							print "<div class='unit'><H2>".$vs_type."</H2>".join(", ", $va_entity_links)."</div>";
 						}
 					}
 ?>					
-						{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Objects</label><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></div></ifcount>}}}
-						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><label>In Subject Guide<ifcount code="ca_occurrences" min="2" restrictToTypes="subject_guide">s</ifcount></label><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l></unit></div></div></ifcount>}}}
-						{{{<ifdef code="ca_objects.RAD_custodial"><div class="unit"><label>Custodial History</label>^ca_objects.custom_extent</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.places"><div class="unit"><label>Related Places</label><unit relativeTo="ca_objects.places" delimiter=", ">^ca_objects.places</unit></div></ifdef>}}}
+						{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><H2>Related Objects</H2><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></div></ifcount>}}}
+						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><H2>In Subject Guide<ifcount code="ca_occurrences" min="2" restrictToTypes="subject_guide">s</ifcount></H2><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l></unit></div></div></ifcount>}}}
+						{{{<ifdef code="ca_objects.RAD_custodial"><div class="unit"><H2>Custodial History</H2>^ca_objects.custom_extent</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.places"><div class="unit"><H2>Related Places</H2><unit relativeTo="ca_objects.places" delimiter=", ">^ca_objects.places</unit></div></ifdef>}}}
 <?php
 		if($this->request->isLoggedIn()){
 ?>
-						{{{<ifdef code="ca_objects.catalogue_control.catalogued_by|ca_objects.catalogue_control.catalogued_date"><div class="unit"><label>Descriptive Control</label>^ca_objects.catalogue_control.catalogued_by<ifdef cde="ca_objects.catalogue_control.catalogued_date"> (^ca_objects.catalogue_control.catalogued_date)</ifdef></div></ifdef>}}}
-						{{{<ifdef code="ca_objects.object_history.bib_ref"><div class="unit"><label>Bibliographic References</label>^ca_objects.object_history.bib_ref</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.object_history.exhibition_hist"><div class="unit"><label>Exhibition History</label>^ca_objects.object_history.exhibition_hist</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.catalogue_control.catalogued_by|ca_objects.catalogue_control.catalogued_date"><div class="unit"><H2>Descriptive Control</H2>^ca_objects.catalogue_control.catalogued_by<ifdef cde="ca_objects.catalogue_control.catalogued_date"> (^ca_objects.catalogue_control.catalogued_date)</ifdef></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.object_history.bib_ref"><div class="unit"><H2>Bibliographic References</H2>^ca_objects.object_history.bib_ref</div></ifdef>}}}
+		}
+		if($this->request->isLoggedIn() && $this->request->user->hasRole("frontendRestricted")){
+?>
+						{{{<ifdef code="ca_objects.object_history.exhibition_hist"><div class="unit"><H2>Exhibition History</H2>^ca_objects.object_history.exhibition_hist</div></ifdef>}}}
 					
 <?php
 		}
 ?>				
 						<!-- video -->
-						{{{<ifdef code="ca_objects.genre"><div class="unit"><label>Genre</label>^ca_objects.genre%delimiter=,_</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.subjects"><div class="unit"><label>Subjects</label>^ca_objects.subjects%delimiter=,_</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.tags"><div class="unit"><label>Tags</label>^ca_objects.tags%delimiter=,_</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.genre"><div class="unit"><H2>Genre</H2>^ca_objects.genre%delimiter=,_</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.subjects"><div class="unit"><H2>Subjects</H2>^ca_objects.subjects%delimiter=,_</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.tags"><div class="unit"><H2>Tags</H2>^ca_objects.tags%delimiter=,_</div></ifdef>}}}
 <?php
-		if($this->request->isLoggedIn()){
+		if($this->request->isLoggedIn() && $this->request->user->hasRole("frontendRestricted")){
 ?>
-						{{{<ifdef code="ca_objects.historic_subject"><div class="unit"><label>Historic Subjects</label>^ca_objects.historic_subject%delimiter=,_</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.historic_subject"><div class="unit"><H2>Historic Subjects</H2>^ca_objects.historic_subject%delimiter=,_</div></ifdef>}}}
 <?php
 		}
 ?>					
 					
-						{{{<ifcount code="ca_objects.children" min="1"><div class="unit"><label>Formats</label><unit relativeTo="ca_objects.children" delimiter="<br/>">^ca_objects.preferred_labels</unit></div></ifcount>}}}
-						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="distribution_contract"><div class="unit"><label>Video Out Status</label><unit relativeTo="ca_occurrences" restrictToTypes="distribution_contract" delimiter="<br/>">^ca_occurrences.distribution_status</unit></div></ifcount>}}}
-						{{{<ifdef code="ca_objects.contributors_gratitudes"><div class="unit"><label>Contributors and Gratitudes</label>^ca_objects.contributors_gratitudes%delimiter=,_</div></ifdef>}}}
+						{{{<ifcount code="ca_objects.children" min="1"><div class="unit"><H2>Formats</H2><unit relativeTo="ca_objects.children" delimiter="<br/>">^ca_objects.preferred_labels</unit></div></ifcount>}}}
+						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="distribution_contract"><div class="unit"><H2>Video Out Status</H2><unit relativeTo="ca_occurrences" restrictToTypes="distribution_contract" delimiter="<br/>">^ca_occurrences.distribution_status</unit></div></ifcount>}}}
+						{{{<ifdef code="ca_objects.contributors_gratitudes"><div class="unit"><H2>Contributors and Gratitudes</H2>^ca_objects.contributors_gratitudes%delimiter=,_</div></ifdef>}}}
 						<!-- end video -->
 					
 						<!-- library publication -->
-						{{{<ifdef code="ca_objects.publication_info"><div class="unit"><label>Place of Publication</label>^ca_objects.publication_info</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.content_description"><div class="unit"><label>Content Description</label>^ca_objects.content_description<ifdef code="ca_objects.content_source"><br/><br/><i>^ca_objects.content_source</i></ifdef></div></ifdef>}}}
-						{{{<ifdef code="ca_objects.series"><div class="unit"><label>Series Statement</label>^ca_objects.series</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.ISBN"><div class="unit"><label>ISBN</label>^ca_objects.ISBN</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.ISSN"><div class="unit"><label>ISSN</label>^ca_objects.ISSN</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.lcshFull"><div class="unit"><label>Subject Headings</label>^ca_objects.lcshFull%delimiter=,_</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.publication_info"><div class="unit"><H2>Place of Publication</H2>^ca_objects.publication_info</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.content_description"><div class="unit"><H2>Content Description</H2>^ca_objects.content_description<ifdef code="ca_objects.content_source"><br/><br/><i>^ca_objects.content_source</i></ifdef></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.series"><div class="unit"><H2>Series Statement</H2>^ca_objects.series</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.ISBN"><div class="unit"><H2>ISBN</H2>^ca_objects.ISBN</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.ISSN"><div class="unit"><H2>ISSN</H2>^ca_objects.ISSN</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.lcshFull"><div class="unit"><H2>Subject Headings</H2>^ca_objects.lcshFull%delimiter=,_</div></ifdef>}}}
 						<!-- end library publication -->
 					
 						<!-- equipment -->
-						{{{<ifdef code="ca_objects.equipment_type"><div class="unit"><label>Type</label>^ca_objects.equipment_type</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.equipment_manufacturer"><div class="unit"><label>Manufacturer</label>^ca_objects.equipment_manufacturer</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.equipment_model"><div class="unit"><label>Model</label>^ca_objects.equipment_model</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.dc_description"><div class="unit"><label>Object Description</label>^ca_objects.dc_description</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.equipment_type"><div class="unit"><H2>Type</H2>^ca_objects.equipment_type</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.equipment_manufacturer"><div class="unit"><H2>Manufacturer</H2>^ca_objects.equipment_manufacturer</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.equipment_model"><div class="unit"><H2>Model</H2>^ca_objects.equipment_model</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.dc_description"><div class="unit"><H2>Object Description</H2>^ca_objects.dc_description</div></ifdef>}}}
 						<!-- end equipment -->				
 <?php
-		if($this->request->isLoggedIn() && $this->request->user->hasRole("Researcher")){
+		if($this->request->isLoggedIn() && $this->request->user->hasRole("frontendRestricted")){
 ?>					
-						{{{<ifdef code="ca_objects.internal_notes"><div class="unit"><label>Archivist Note</label><unit relativeTo="ca_objects.internal_notes" delimiter="<br>">^ca_objects.internal_notes</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.internal_notes"><div class="unit"><H2>Archivist Note</H2><unit relativeTo="ca_objects.internal_notes" delimiter="<br>">^ca_objects.internal_notes</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.condition_container.condition|ca_objects.condition_container.condition_notes"><div class="unit"><H2>Condition</H2><unit relativeTo="ca_objects.condition_container" delimiter="<br>"><ifdef code="ca_objects.condition_container.condition_date">^ca_objects.condition_container.condition_date</ifdef><ifdef code="ca_objects.condition_container.condition_date|ca_objects.condition_container.condition_examiner"> (^ca_objects.condition_container.condition_examiner)</ifdef><ifdef code="ca_objects.condition_container.condition_examiner">: </ifdef><ifdef code="ca_objects.condition_container.condition">^ca_objects.condition_container.condition</ifdef><ifdef code="ca_objects.condition_container.condition,ca_objects.condition_container.condition_notes">, </ifdef><ifdef code="ca_objects.condition_container.condition_notes">^ca_objects.condition_container.condition_notes</ifdef></unit></div></ifdef>}}}
+
 <?php
 		}
 ?>										
@@ -230,8 +236,8 @@ if($vb_2_col){
 					
 					{{{<ifdef code="ca_objects.content_notice|ca_objects.rightsSummary_asset">
 					<div class="bgLightPink">
-						<ifdef code="ca_objects.content_notice"><div class="unit"><label>Content Notice</label>^ca_objects.content_notice</div>
-						<ifdef code="ca_objects.rightsSummary_asset"><div class="unit"><label>Rights Summary</label>^ca_objects.rightsSummary_asset</div>					
+						<ifdef code="ca_objects.content_notice"><div class="unit"><H2>Content Notice</H2>^ca_objects.content_notice</div>
+						<ifdef code="ca_objects.rightsSummary_asset"><div class="unit"><H2>Rights Summary</H2>^ca_objects.rightsSummary_asset</div>					
 					</div>
 					</ifdef>}}}
 <?php
@@ -276,16 +282,6 @@ if($vb_2_col){
 <?php
 	}
 
-				if(!$vb_2_col){
-					print "<div id='detailTools'>";
-					print "<div class='detailTool'>".caNavLink($this->request, "Inquire <span class='material-symbols-outlined'>chat</span>", "btn btn-default", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
-					print "<div class='detailTool'>".caNavLink($this->request, "Feedback <span class='material-symbols-outlined'>add_comment</span>", "btn btn-default", "", "Contact", "Form", array("contactType" => "Feedback", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
-					if($t_object->get("ca_objects.video_out", array("convertCodesToDisplayText" => true)) == "Yes"){
-						print "<div class='detailTool'>".caNavLink($this->request, "Rent or Purchase <span class='material-symbols-outlined'>shopping_bag</span>", "btn btn-default", "", "Contact", "Form", array("contactType" => "RentalPurchase", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
-					}
-					print "</div>";
-
-				}
 ?>
 
 					<div class="row">
@@ -299,6 +295,20 @@ if($vb_2_col){
 							{{{nextLink}}}
 						</div>
 					</div>
+				
+<?php
+				if(!$vb_2_col){
+					print "<div id='detailTools'>";
+					print "<div class='detailTool'>".caNavLink($this->request, "Inquire <span class='material-symbols-outlined'>chat</span>", "btn btn-default", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+					print "<div class='detailTool'>".caNavLink($this->request, "Feedback <span class='material-symbols-outlined'>add_comment</span>", "btn btn-default", "", "Contact", "Form", array("contactType" => "Feedback", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+					if($t_object->get("ca_objects.video_out", array("convertCodesToDisplayText" => true)) == "Yes"){
+						print "<div class='detailTool'>".caNavLink($this->request, "Rent or Purchase <span class='material-symbols-outlined'>shopping_bag</span>", "btn btn-default", "", "Contact", "Form", array("contactType" => "RentalPurchase", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+					}
+					print "</div>";
+
+				}
+?>
+
 				</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
