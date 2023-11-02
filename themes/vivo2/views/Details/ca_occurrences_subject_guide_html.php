@@ -31,20 +31,39 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$va_access_values = caGetUserAccessValues($this->request);	
+
+	$vb_2_col = false;
+	if($t_item->get("ca_occurrences.content_description") || $t_item->get("ca_occurrences.acknowledgements") || $t_item->get("ca_occurrences.funding_acknowl")){
+		$vb_2_col = true;
+	}
+
 ?>
 <div class="container">
 	<div class="row">
 		<div class='col-sm-12'>
 			<div class="bgLightGrayDetail">
 				<H1>{{{^ca_occurrences.preferred_labels}}}</H1>
-				<H2>{{{^ca_occurrences.type_id}}}</H2>
-					{{{<ifdef code="ca_occurrences.content_description"><div class="unit"><label>Description</label><div class="trimText">^ca_occurrences.content_description</div></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.acknowledgements"><div class="unit"><label>Acknowledgements</label><div class="trimText">^ca_occurrences.acknowledgements</div></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.funding_acknowl"><div class="unit"><label>Funding Acknowledgements</label><div class="trimText">^ca_occurrences.funding_acknowl</div></div></ifdef>}}}
+				<div class="typeInfo">{{{^ca_occurrences.type_id}}}</div>
+<?php
+					print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media.page"><div class="unit fullWidth">^ca_object_representations.media.page</div></ifdef>', array("checkAccess" => $va_access_values));
+			if($vb_2_col){
+?>
+				<div class="row">
+					<div class="col-sm-12 col-md-6">
+						{{{<ifdef code="ca_occurrences.content_description"><div class="unit"><H2>Description</H2><span class="trimTextShort"><div>^ca_occurrences.content_description</div></div></span></ifdef>}}}
+						{{{<ifdef code="ca_occurrences.acknowledgements"><div class="unit"><H2>Acknowledgements</H2><span class="trimTextShort"><div>^ca_occurrences.acknowledgements</div></div></span></ifdef>}}}
+						{{{<ifdef code="ca_occurrences.funding_acknowl"><div class="unit"><H2>Funding Acknowledgements</H2><span class="trimTextShort"><div>^ca_occurrences.funding_acknowl</div></div></span></ifdef>}}}
+					</div>
+					<div class="col-sm-12 col-md-6">					
+<?php
+			}
+?>
+
+
 <?php
 		if($this->request->isLoggedIn()){
 ?>
-						{{{<ifdef code="ca_occurrences.catalogue_control.catalogued_by|ca_occurrences.catalogue_control.catalogued_date"><div class="unit"><label>Descriptive Control</label>^ca_occurrences.catalogue_control.catalogued_by<ifdef cde="ca_occurrences.catalogue_control.catalogued_date"> (^ca_occurrences.catalogue_control.catalogued_date)</ifdef></div></ifdef>}}}
+						{{{<ifdef code="ca_occurrences.catalogue_control.catalogued_by|ca_occurrences.catalogue_control.catalogued_date"><div class="unit"><H2>Descriptive Control</H2>^ca_occurrences.catalogue_control.catalogued_by<ifdef cde="ca_occurrences.catalogue_control.catalogued_date"> (^ca_occurrences.catalogue_control.catalogued_date)</ifdef></div></ifdef>}}}
 <?php
 		}
 		$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
@@ -54,13 +73,22 @@
 				$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
 			}
 			foreach($va_entities_by_type as $vs_type => $va_entity_links){
-				print "<div class='unit'><label>".$vs_type."</label>".join(", ", $va_entity_links)."</div>";
+				print "<div class='unit'><H2>".$vs_type."</H2>".join(", ", $va_entity_links)."</div>";
 			}
 		}
 
 ?>					
 				
-				{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="subject_guide"><div class="unit"><label>Related Subject Guides</label><div class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter=", " restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+				{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="subject_guide"><div class="unit"><H2>Related Subject Guides</H2><div class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter=", " restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div></div></ifcount>}}}
+<?php
+			if($vb_2_col){
+?>
+					</div>
+				</div>
+<?php
+			}
+?>
+
 			</div>		
 		</div>
 	</div>
@@ -255,7 +283,7 @@
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
-		  maxHeight: 112,
+		  maxHeight: 118,
 		  moreLink: '<a href="#">More &#8964;</a>'
 		});
 	});

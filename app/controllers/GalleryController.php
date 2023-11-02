@@ -132,7 +132,7 @@
 					$o_context->saveContext();
 				} 				 				
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
- 				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
+ 				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code'), array("delimiter" => "<br/><br/>")));
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
  				
  				$set_item_id = $this->request->getParameter('set_item_id', pInteger);
@@ -197,7 +197,7 @@
  			$this->view->setVar("set", $t_set);
  			$this->view->setVar("set_id", $set_id);
  			$this->view->setVar("label", $t_set->getLabelForDisplay());
- 			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
+ 			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code'), array("delimiter" => "<br/><br/>")));
  			$this->view->setVar("num_items", $t_set->getItemCount(array("checkAccess" => $this->opa_access_values)));
  			
  			$set_item = array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
