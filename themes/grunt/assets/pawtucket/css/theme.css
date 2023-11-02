@@ -698,6 +698,10 @@ body.frontContainer #footer{
 .gallery H2, .gallery H2 a, .gallery H4, .gallery H4 a, .gallery label, .gallery H3 {
 	text-transform:none;
 }
+a.readmore-js-toggle{
+	color:#000;
+	text-decoration:underline;
+}
 /* collections & listing - Subject guides */
 .collectionIntro {
 	font-size: 14px;

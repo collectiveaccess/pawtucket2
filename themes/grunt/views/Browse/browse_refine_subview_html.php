@@ -44,7 +44,11 @@
 		$i = 0;
 		$vb_start_over = false;
 		foreach($va_criteria as $va_criterion) {
-			$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter" role="button"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+			$vs_link_text = $va_criterion['value'];
+			if(in_array($va_criterion['facet'], array("Transcribed", "Captioned", "Video Description"))){
+				$vs_link_text = $va_criterion['facet'];
+			}
+			$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_link_text.' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter" role="button"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 			$vb_start_over = true;
 			$i++;
 		}
