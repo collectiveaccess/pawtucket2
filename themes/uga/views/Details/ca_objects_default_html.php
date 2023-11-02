@@ -305,6 +305,8 @@ $vs_representation_viewer = trim($this->getVar("representationViewer"));
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
+		caUI.initUtils();
+		
 		$('.trimText').readmore({
 		  speed: 75,
 		  maxHeight: 120
