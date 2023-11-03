@@ -57,7 +57,6 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			if($this->request->isAjax()) {  return; }
  			if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
@@ -75,7 +74,6 @@
  		 *
  		 */ 
  		public function __call($ps_function, $pa_args) {
- 			if($this->request->isAjax()) {  return; }
  			$this->view->setVar("config", $this->opo_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
