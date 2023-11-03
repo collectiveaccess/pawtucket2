@@ -26,21 +26,28 @@
  * ----------------------------------------------------------------------
  */
  
-	$t_object = 			$this->getVar("item");
-	$va_comments = 			$this->getVar("comments");
-	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	$vn_id =				$t_object->get('ca_objects.object_id');
+$t_object = 			$this->getVar("item");
+$va_comments = 			$this->getVar("comments");
+$va_tags = 				$this->getVar("tags_array");
+$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+$vn_share_enabled = 	$this->getVar("shareEnabled");
+$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+$vn_id =				$t_object->get('ca_objects.object_id');
 
-	MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels').": ".$t_object->get('ca_objects.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
+MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels').": ".$t_object->get('ca_objects.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
 
-	MetaTagManager::addMeta("search-title", $t_object->get('ca_objects.preferred_labels'));
-	MetaTagManager::addMeta("search-group", 'Collection Items');
-	MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.preferred_labels'));
-	MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
-	MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
+MetaTagManager::addMeta("search-title", $t_object->get('ca_objects.preferred_labels'));
+MetaTagManager::addMeta("search-group", 'Collection Items');
+MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.hierarchy.preferred_labels', ['maxLevelsFromTop' => 1]));
+MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
+MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
+
+MetaTagManager::addMeta("og:title", $t_object->get('ca_objects.preferred_labels'));
+MetaTagManager::addMeta("og:description", $t_object->get('ca_occurrences.cfaAbstract'));
+MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
+MetaTagManager::addMeta("og:image", $t_object->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMeta("og:image:width", $t_object->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representations.media.large.height'));
 ?>
 <div class="row">
 	
@@ -207,7 +214,7 @@
 																<svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 																	<path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
 																	<path d="M8.65374 4.68281C8.65374 5.02709 8.51698 5.35727 8.27355 5.60071C8.03012 5.84415 7.69995 5.98092 7.35568 5.98092C7.01141 5.98092 6.68125 5.84415 6.43781 5.60071C6.19438 5.35727 6.05762 5.02709 6.05762 4.68281C6.05762 4.33854 6.19438 4.00836 6.43781 3.76492C6.68125 3.52148 7.01141 3.38471 7.35568 3.38471C7.69995 3.38471 8.03012 3.52148 8.27355 3.76492C8.51698 4.00836 8.65374 4.33854 8.65374 4.68281Z" fill="#767676" class="color-fill"></path>
-																	<path d="M8.73065 11.5724C8.72269 11.8874 8.87038 11.9762 9.22992 12.0131L9.80777 12.0247V12.6154H5.29934V12.0247L5.93431 12.0131C6.31404 12.0016 6.40531 11.8539 6.43358 11.5724V8.01701C6.43761 7.45405 5.70711 7.54244 5.19238 7.55917V6.97371L8.73065 6.84621" fill="#767676" class="color-fill"></path>
+																	<path d="M8.73065 11.5724C8.72269 11.8874 8.87038 11.9762 9.22992 12.0131L9.80777 12.0247V12.6154H5.29934V12.0247L5.93431 12.0131C6.31404 12.0016 6.40531 11.8539 6.43358 11.5724V8.01701C6.43761 7.45405 5.70711 7.54244 5.19238 7.55917V6.97371L8.7 3065 6.84621" fill="#767676" class="color-fill"></path>
 																</svg>
 																</div>
 															</span>
@@ -432,6 +439,6 @@
 		getUrl.select();
 		document.execCommand('copy');
 		document.body.removeChild(getUrl);
-		$.jGrowl("Link Copied!", { life: 2000 });
+		$.jGrowl("Link copied to clipboard.", { life: 2000 });
 	}
 </script>

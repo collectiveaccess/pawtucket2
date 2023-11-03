@@ -38,7 +38,7 @@
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	
 	$vn_facet_display_length_initial = 5;
-	$vn_facet_display_length_maximum = 200;
+	$vn_facet_display_length_maximum = 100;
 	$vs_criteria = "";
 	if (sizeof($va_criteria) > 0) {
 		$i = 0;

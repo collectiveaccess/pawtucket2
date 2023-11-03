@@ -38,9 +38,16 @@ MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels').": 
 
 MetaTagManager::addMeta("search-title", $t_object->get('ca_objects.preferred_labels'));
 MetaTagManager::addMeta("search-group", 'Collection Items');
-MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.preferred_labels'));
+MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.hierarchy.preferred_labels', ['maxLevelsFromTop' => 1]));
 MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
 MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
+
+MetaTagManager::addMeta("og:title", $t_object->get('ca_objects.preferred_labels'));
+MetaTagManager::addMeta("og:description", $t_object->get('ca_occurrences.cfaAbstract'));
+MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
+MetaTagManager::addMeta("og:image", $t_object->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMeta("og:image:width", $t_object->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representations.media.large.height'));
 
 ?>
 <div class="row">
@@ -51,8 +58,8 @@ MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') ==
 				<div class="eyebrow text__eyebrow color__gray">
     				<div class="breadcrumb">
 						{{{<unit relativeTo="ca_collections">
-							<unit relativeTo="ca_collections.hierarchy" delimiter="<span class='sep'> &gt; </span>">
-								<l>^ca_collections.preferred_labels<l>
+							<unit relativeTo="ca_collections.hierarchy" delimiter="<span class='sep'> &gt;</span>">
+								<l>^ca_collections.preferred_labels</l>
 							</unit>
 						</unit>}}}                
     				</div>
@@ -459,7 +466,7 @@ MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') ==
 		getUrl.select();
 		document.execCommand('copy');
 		document.body.removeChild(getUrl);
-		$.jGrowl("Link Copied!", { life: 2000 });
+		$.jGrowl("Link copied to clipboard.", { life: 2000 });
 	}
 	
 </script>

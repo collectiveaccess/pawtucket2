@@ -38,6 +38,14 @@ MetaTagManager::addMeta("search-eyebrow", 'Collections');
 MetaTagManager::addMeta("search-group", 'Collections');
 MetaTagManager::addMeta("search-thumbnail", $t_item->get('ca_object_representations.media.small.url'));
 MetaTagManager::addMeta("search-access", ($t_item->get('ca_collections.access') == 2) ? 'restricted' : 'public');
+MetaTagManager::addMeta("search-collection-type", 'collection');
+
+MetaTagManager::addMeta("og:title", $t_item->get('ca_collections.preferred_labels'));
+MetaTagManager::addMeta("og:description", $t_item->get('ca_collections.cfaAbstract'));
+MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
+MetaTagManager::addMeta("og:image", $t_item->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMeta("og:image:width", $t_item->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMeta("og:image:height", $t_item->get('ca_object_representations.media.large.height'));
 
 # --- get collections configuration
 $o_collections_config = caGetCollectionsConfig();
@@ -266,21 +274,25 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                     <ifcount code="ca_collections.children" min="1">
                         <div class="unit">
                           <unit relativeTo="ca_collections.children" delimiter="<br>" restrictToTypes="series" sort="ca_collections.idno_sort">
-                            <div class="row">
+                            <div class="row row-cols-xs-1 row-cols-sm-1 row-cols-md-2">
+                              
                               <ifdef code="ca_object_representations.media.thumbnail">
-                                <div class="col-auto mb-2 me-2">
+                                <div class="col-xs-12 col-sm-12 col-md-auto mb-2 me-2">
                                   <span class="series-thumbnail"><l>^ca_object_representations.media.thumbnail</l></span>
                                 </div>
                               </ifdef>
+
                               <ifnotdef code="ca_object_representations.media.thumbnail">
-                                <div class="col-auto mb-2 me-2">
+                                <div class="col-xs-12 col-sm-12 col-md-auto mb-2 me-2">
                                   <l><div class="series-placeholder"></div></l>
                                 </div>
                               </ifnotdef>
-                              <div class="col-auto align-self-center">
+
+                              <div class="col-xs-12 col-sm-12 col-lg-9 align-self-center">
                                 <span class="fw-bold" style="font-size: 15px;"><l>^ca_collections.preferred_labels</l></span>
                                 <ifdef code="ca_collections.cfaInclusiveDates"><div class="text__eyebrow year color__gray">^ca_collections.cfaInclusiveDates</div></ifdef>
                               </div>
+
                             </div>
                           </unit>
                         </div>
@@ -355,6 +367,15 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                   <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="itemList-tab" data-bs-toggle="tab" data-bs-target="#itemList-tab-pane" type="button" role="tab" aria-controls="itemList-tab-pane" aria-selected="false">
                       <span class="title text__eyebrow">Item List (<?= $item_count; ?>)</span>
+                      <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="The item list displays a list of all inventoried items in this collection.">
+                        <div class="trigger-icon color-icon-orange">
+                          <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
+                            <path d="M8.65374 4.68281C8.65374 5.02709 8.51698 5.35727 8.27355 5.60071C8.03012 5.84415 7.69995 5.98092 7.35568 5.98092C7.01141 5.98092 6.68125 5.84415 6.43781 5.60071C6.19438 5.35727 6.05762 5.02709 6.05762 4.68281C6.05762 4.33854 6.19438 4.00836 6.43781 3.76492C6.68125 3.52148 7.01141 3.38471 7.35568 3.38471C7.69995 3.38471 8.03012 3.52148 8.27355 3.76492C8.51698 4.00836 8.65374 4.33854 8.65374 4.68281Z" fill="#767676" class="color-fill"></path>
+                            <path d="M8.73065 11.5724C8.72269 11.8874 8.87038 11.9762 9.22992 12.0131L9.80777 12.0247V12.6154H5.29934V12.0247L5.93431 12.0131C6.31404 12.0016 6.40531 11.8539 6.43358 11.5724V8.01701C6.43761 7.45405 5.70711 7.54244 5.19238 7.55917V6.97371L8.73065 6.84621" fill="#767676" class="color-fill"></path>
+                          </svg>
+                        </div>
+                      </span>
                     </button>
                   </li>
                 <?php
@@ -380,6 +401,15 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                   <li class="nav-item" role="presentation">
                     <button class="nav-link" id="itemList-tab" data-bs-toggle="tab" data-bs-target="#itemList-tab-pane" type="button" role="tab" aria-controls="itemList-tab-pane" aria-selected="false">
                       <span class="title text__eyebrow">Item List (<?= $item_count; ?>)</span>
+                      <span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="The item list displays a list of all inventoried items in this collection.">
+                        <div class="trigger-icon color-icon-orange">
+                          <svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
+                            <path d="M8.65374 4.68281C8.65374 5.02709 8.51698 5.35727 8.27355 5.60071C8.03012 5.84415 7.69995 5.98092 7.35568 5.98092C7.01141 5.98092 6.68125 5.84415 6.43781 5.60071C6.19438 5.35727 6.05762 5.02709 6.05762 4.68281C6.05762 4.33854 6.19438 4.00836 6.43781 3.76492C6.68125 3.52148 7.01141 3.38471 7.35568 3.38471C7.69995 3.38471 8.03012 3.52148 8.27355 3.76492C8.51698 4.00836 8.65374 4.33854 8.65374 4.68281Z" fill="#767676" class="color-fill"></path>
+                            <path d="M8.73065 11.5724C8.72269 11.8874 8.87038 11.9762 9.22992 12.0131L9.80777 12.0247V12.6154H5.29934V12.0247L5.93431 12.0131C6.31404 12.0016 6.40531 11.8539 6.43358 11.5724V8.01701C6.43761 7.45405 5.70711 7.54244 5.19238 7.55917V6.97371L8.73065 6.84621" fill="#767676" class="color-fill"></path>
+                          </svg>
+                        </div>
+                      </span>
                     </button>
                   </li>
                 <?php
@@ -388,7 +418,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 			 </ul>
 
               <a href="/Browse/Objects" class="text__eyebrow color-class-orange $color__dark_gray">
-                Advanced Search 
+                Browse All Objects
                 <span class="arrow-link">
                   <svg width="10" height="12" viewBox="0 0 10 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M3.62909 5.99999L0.436768 0.666656L9.99999 5.99999L0.436768 11.3333L3.62909 5.99999Z" fill="#767676" class="color-fill"></path>
@@ -420,9 +450,11 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 
                       <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_collections.idno_sort">
                         <ifcount code="ca_objects" min="1">
-
-                          <unit relativeTo="ca_objects" delimiter="" filter="/<img/">
-                            <if rule="^access = 'yes'">
+<?php
+	// removed filter="/<img/" from unit below
+?>
+                          <unit relativeTo="ca_objects" delimiter="">
+                            <if rule="^ca_object_representations.access = 'yes'">
                               <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
                                 <div class="item-item item">
 
@@ -503,7 +535,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                     <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
                       <small class="color__gray">(^ca_objects.type_id)</small>
                     </if>
-                    <if rule="^access = 'yes'">
+                    <if rule="^ca_object_representations.access = 'yes'">
                       <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
                         <span class="viewable-media-icon right">
                           <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -540,13 +572,13 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                             </if>
                           </if>
                         </li>
-                      </unit> <br>
+                      </unit>
                     </ifcount>
                     
                     <!-- subseries -->
                     <unit relativeTo="ca_collections.children" delimiter="" sort="ca_collections.preferred_labels.name_sort">
-                      <div class="ms-3 mt-3 d-inline">
-                        <span class="fw-bold"><l>^ca_collections.preferred_labels</l> <small style="color: #767676;">(^ca_collections.type_id)</small></span>
+                      <div class="ms-3 d-inline" style="margin-top: 10px !important;">
+                        <div class="ms-3 fw-bold"><l>^ca_collections.preferred_labels</l></div>
                         <ifcount code="ca_objects" min="1">
                           <unit relativeTo="ca_objects" delimiter="" sort="ca_objects.preferred_labels">
                             <li class="ms-3">
@@ -585,7 +617,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 
 
     {{{<case>
-      
       <if rule="^access = 'restricted'">
         <section id="collection-details" class="collection-details d-none">
           <div class="wrap">
@@ -682,7 +713,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                   );
                   foreach($metadata as $field => $fieldLabel){
                 ?>
-                    <ifdef code="<?php print $field; ?>">
+                    <ifdef code="<?= $field; ?>">
                       <div class="paragraph">
                         <div class="text__eyebrow color__gray"><?php print $fieldLabel; ?></div>
                         <div class="text__body-3"><unit delimiter="<br/>">^<?php print $field; ?></unit></div>
@@ -692,7 +723,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                   }
                 ?>
 
-                <ifcount code="ca_entities" min="1">
+                <ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,complier,source">
                     <div class="paragraph">
                       <div class="text__eyebrow color__gray">Creators</div>
                       <div class="text__body-3">
@@ -700,13 +731,11 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                           <unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,complier,source" delimiter="<br/>">
                             <span class="link-orange">
                               <strong>
-                                <!-- <a href="/Search/objects/search/^ca_entities.preferred_labels">^ca_entities.preferred_labels</a> -->
                                 <a href="/Browse/Objects/facet/entity/id/^ca_entities.entity_id">^ca_entities.preferred_labels</a>
                               </strong>
                             </span>
                             (^relationship_typename)
-                            <!-- <br/> -->
-                            <span class="trimText">^ca_entities.biography</span>
+                            <div class="trimText" id="bio_^ca_entities.entity_id">^ca_entities.biography</div>
                           </unit>
                         </div>
                       </div>
@@ -733,9 +762,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
       </if>
     </case>}}}
 
-
-
-    <!-- TODO: Hide this if there is no related content -->
     <section class="section-slideshow-related " id="related-content-div" style="display: none;">
       <div class="wrap"><div class="line"></div></div>
       <div class="int wrap-not-mobile">
@@ -743,9 +769,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
         <h4 class="text-align-center text__headline-4 block-small ">Related Content</h4>
 
         <div class="slider-container module_slideshow slideshow-related manual-init">
-          <!-- <div class="slick-slider">
-            <div id="related-content"></div>
-          </div> -->
 
           <div id="related-content" class="slick-slider"></div>
 
@@ -803,7 +826,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
     
     $('.trimText').readmore({
       speed: 150,
-      maxHeight: 100
+      collapsedHeight: 200
     });
 	
     $('#related-content').load('https://cfarchives.wpengine.com/wp-admin/admin-ajax.php?action=ca_related&type=collection&id=<?= $t_item->get("ca_collections.collection_id"); ?>', {}, ca_init_slider);
@@ -816,7 +839,17 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
     	$('#related-content-div').show();
     	CFA_APP.WIDGETS.initSlideShows( true, $( '.section-slideshow-related' ) );
 	}
+	
+	function ca_resize_collection_grid() {
+		let h = jQuery('.item-item').first().height();
+		jQuery('.collection-grid').height(h);
+	}
 
+	jQuery(window).on('resize', function(e) {
+		if(jQuery(".view-more-btn:visible").length === 0) { return; }
+		ca_resize_collection_grid();		
+	});
+	ca_resize_collection_grid();
 
   });
 </script>

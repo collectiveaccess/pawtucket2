@@ -11,13 +11,16 @@
 ?>
 <div class="slider-container module_slideshow slideshow-single-collection over-black autoplay fade-captions">
     <div class="slick-slider dots-white dots-centered">
-        <!-- slide -->
-        <div class="slide-wrap">
-            <div class="image-sizer ">
-                <div class="img-wrapper">
 					<?php
 						$active = true;
 						foreach($reps as $r) {
+?>
+        <!-- slide -->
+        <div class="slide-wrap">
+            <div class="image-sizer">
+                <div class="img-wrapper">
+<?php
+							$media_class = caGetMediaClass($r['mimetype']);
 							$t_rep = ca_object_representations::findAsInstance($r['representation_id']);
 							$viewer = MediaViewerManager::getViewerForMimetype('detail', $r['mimetype']);
 						
@@ -34,21 +37,23 @@
 								]
 							);
 							$active = false;
+?>
+				</div>
+            </div>
+        </div>
+        <!-- slide -->
+<?php
 						}
 						
 						if(count($reps) == 0 && count($reps) == 0){
 					?>
-						<div class="d-flex align-items-center p-5" style="height: 400px;">
+						<div class="d-flex align-items-center p-5 no-media-wrapper" style="height: 400px;">
 							<div class="no-media">Digitized media for this item is not currently available online, please email info@chicagofilmarchives.org to inquire.</div>
 						</div>
 					<?php
 						}
 					?>
 				
-				</div>
-            </div>
-        </div>
-        <!-- slide -->
     </div>
     <ul class="captions text__caption img-caption">
 		{{{<ifdef code="ca_object_representations.caption">		

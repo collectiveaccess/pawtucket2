@@ -42,6 +42,13 @@ MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.preferr
 MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
 MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
 
+MetaTagManager::addMeta("og:title", $t_object->get('ca_objects.preferred_labels'));
+MetaTagManager::addMeta("og:description", $t_object->get('ca_occurrences.cfaAbstract'));
+MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
+MetaTagManager::addMeta("og:image", $t_object->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMeta("og:image:width", $t_object->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representations.media.large.height'));
+
 ?>
 <div class="row">
 	<main class="flush">

@@ -99,15 +99,13 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<meta name="description" content="Dedicated to collecting, preserving and providing access to films that represent the Midwest. We hold over 30,000 films and 2,000 audio recordings, including thousands of media items accessible online.">
 	<meta property="og:locale" content="en_US">
 	<meta property="og:type" content="website">
-	<meta property="og:title" content="Chicago Film Archives">
-	<meta property="og:description" content="Dedicated to collecting, preserving and providing access to films that represent the Midwest. We hold over 30,000 films and 2,000 audio recordings, including thousands of media items accessible online.">
-	<meta property="og:url" content="https://cfarchives.wpengine.com/">
 	<meta property="og:site_name" content="Chicago Film Archives">
-	<meta property="article:modified_time" content="2023-06-13T16:03:32+00:00">
-	<meta property="og:image" content="https://cfarchives.wpengine.com/wp-content/uploads/2023/05/Image.jpg">
-	<meta property="og:image:width" content="464">
-	<meta property="og:image:height" content="355">
 	<meta property="og:image:type" content="image/jpeg">
+
+	
+	<!-- <meta property="og:url" content="https://cfarchives.wpengine.com/">
+	<meta property="article:modified_time" content="2023-06-13T16:03:32+00:00"> -->
+
 	<meta name="twitter:card" content="summary_large_image">
 	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://cfarchives.wpengine.com/","url":"https://cfarchives.wpengine.com/","name":"Chicago Film Archives","isPartOf":{"@id":"https://cfarchives.wpengine.com/#website"},"primaryImageOfPage":{"@id":"https://cfarchives.wpengine.com/#primaryimage"},"image":{"@id":"https://cfarchives.wpengine.com/#primaryimage"},"thumbnailUrl":"https://cfarchives.wpengine.com/wp-content/uploads/2023/05/Image.jpg","datePublished":"2023-04-21T13:03:38+00:00","dateModified":"2023-06-13T16:03:32+00:00","description":"Dedicated to collecting, preserving and providing access to films that represent the Midwest. We hold over 30,000 films and 2,000 audio recordings, including thousands of media items accessible online.","breadcrumb":{"@id":"https://cfarchives.wpengine.com/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://cfarchives.wpengine.com/"]}]},{"@type":"ImageObject","inLanguage":"en-US","@id":"https://cfarchives.wpengine.com/#primaryimage","url":"https://cfarchives.wpengine.com/wp-content/uploads/2023/05/Image.jpg","contentUrl":"https://cfarchives.wpengine.com/wp-content/uploads/2023/05/Image.jpg","width":464,"height":355},{"@type":"BreadcrumbList","@id":"https://cfarchives.wpengine.com/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home"}]},{"@type":"WebSite","@id":"https://cfarchives.wpengine.com/#website","url":"https://cfarchives.wpengine.com/","name":"Chicago Film Archives","description":"","potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://cfarchives.wpengine.com/?s={search_term_string}"},"query-input":"required name=search_term_string"}],"inLanguage":"en-US"}]}</script>
 	<!-- / Yoast SEO plugin. -->
@@ -189,13 +187,13 @@ $va_access_values = caGetUserAccessValues($this->request);
                         </div>
                         <div class="module-search-form">
                             <form role="search" aria-label="Search For" method="get" class="search-form"
-                            action="https://cfarchives.wpengine.com/">
+                            action="https://cfarchives.wpengine.com/results/">
                                 <label for="search-form-1" class="visually-hidden">
                                     Search
                                 </label>
                                 <div class="search-container">
                                     <input type="search" id="search-form-1" class="search-field" value=""
-                                    name="s" placeholder="Search" />
+                                    name="search" placeholder="Search" />
                                     <button type="submit" title="Submit Search" aria-label="Submit Search"
                                     class="search-submit icon">
                                         <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -253,13 +251,13 @@ $va_access_values = caGetUserAccessValues($this->request);
                         </div>
                         <div class="module-search-form">
                             <form role="search" aria-label="Search For" method="get" class="search-form"
-                            action="https://cfarchives.wpengine.com/">
+                            action="https://cfarchives.wpengine.com/results/">
                                 <label for="search-form-2" class="visually-hidden">
                                     Search
                                 </label>
                                 <div class="search-container">
                                     <input type="search" id="search-form-2" class="search-field" value=""
-                                    name="s" placeholder="Search" />
+                                    name="search" placeholder="Search" />
                                     <button type="submit" title="Submit Search" aria-label="Submit Search"
                                     class="search-submit icon">
                                         <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">

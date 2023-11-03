@@ -26,21 +26,28 @@
  * ----------------------------------------------------------------------
  */
  
-	$t_object = 			$this->getVar("item");
-	$va_comments = 			$this->getVar("comments");
-	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	$vn_id =				$t_object->get('ca_objects.object_id');
+$t_object = 			$this->getVar("item");
+$va_comments = 			$this->getVar("comments");
+$va_tags = 				$this->getVar("tags_array");
+$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+$vn_share_enabled = 	$this->getVar("shareEnabled");
+$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+$vn_id =				$t_object->get('ca_objects.object_id');
 
-	MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels').": ".$t_object->get('ca_objects.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
+MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels').": ".$t_object->get('ca_objects.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
 
-	MetaTagManager::addMeta("search-title", $t_object->get('ca_objects.preferred_labels'));
-	MetaTagManager::addMeta("search-group", 'Collection Items');
-	MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.preferred_labels'));
-	MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
-	MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
+MetaTagManager::addMeta("search-title", $t_object->get('ca_objects.preferred_labels'));
+MetaTagManager::addMeta("search-group", 'Collection Items');
+MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.hierarchy.preferred_labels', ['maxLevelsFromTop' => 1]));
+MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
+MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
+
+MetaTagManager::addMeta("og:title", $t_object->get('ca_objects.preferred_labels'));
+MetaTagManager::addMeta("og:description", $t_object->get('ca_occurrences.cfaAbstract'));
+MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
+MetaTagManager::addMeta("og:image", $t_object->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMeta("og:image:width", $t_object->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representations.media.large.height'));
 ?>
 <div class="row">
 	
@@ -425,6 +432,6 @@
 		getUrl.select();
 		document.execCommand('copy');
 		document.body.removeChild(getUrl);
-		$.jGrowl("Link Copied!", { life: 2000 });
+		$.jGrowl("Link copied to clipboard.", { life: 2000 });
 	}
 </script>

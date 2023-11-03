@@ -39,7 +39,14 @@ MetaTagManager::addMeta("search-group", 'Collections');
 MetaTagManager::addMeta("search-thumbnail", $t_item->get('ca_object_representations.media.small.url'));
 MetaTagManager::addMeta("search-access", ($t_item->get('ca_collections.access') == 2) ? 'restricted' : 'public');
 
-# --- get collections configuration
+MetaTagManager::addMeta("og:title", $t_item->get('ca_collections.preferred_labels'));
+MetaTagManager::addMeta("og:description", $t_item->get('ca_collections.cfaAbstract'));
+MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
+MetaTagManager::addMeta("og:image", $t_item->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMeta("og:image:width", $t_item->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMeta("og:image:height", $t_item->get('ca_object_representations.media.large.height'));
+
+#--- get collections configuration
 $o_collections_config = caGetCollectionsConfig();
 $vb_show_hierarchy_viewer = true;
 if($o_collections_config->get("do_not_display_collection_browser")){

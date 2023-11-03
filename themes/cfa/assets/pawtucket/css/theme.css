@@ -207,6 +207,10 @@ footer {
 	object-fit: contain;
 	width: 100%;
 	max-width: 160px;
+	margin-right: 5px;
+}
+.bListItemRow .bListItemImage{
+	padding-right: 5px;
 }
 
 .bListItemRow .bListItemText a{
@@ -942,6 +946,10 @@ div.detailNavigation a:last-child {
 	transition: color 0.3s ease-out, border-color 0.3s ease-out !important;
 }
 
+/* .readmore-js-section{
+	line-height: 20px !important;
+} */
+
 .row {
 	--bs-gutter-x: 0 !important;
 }
@@ -968,4 +976,8 @@ div.detailNavigation a:last-child {
 
 div:has(#caMediaOverlayContent) {
 	background-color: #222;
+}
+
+p.trimText {
+	max-height: 200px;
 }
