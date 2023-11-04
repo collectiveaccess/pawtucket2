@@ -1,14 +1,13 @@
 <?php
 	$config = caGetGalleryConfig();
-	switch($config->get("landing_page_format")){
-		case "grid":
-
 	$t_set = new ca_sets();
 	$va_access_values = caGetUserAccessValues($this->request);
  	$va_sets = $this->getVar("sets");
-	if(is_array($va_sets) && sizeof($va_sets)){
-		$va_first_items_from_set = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
-	}
+	$va_first_items_from_set = $this->getVar("first_items_from_sets");
+
+	switch($config->get("landing_page_format")){
+		case "grid":	
+	
 ?>
 
 <div class="row"><div class="col-sm-12">
@@ -31,9 +30,18 @@
 				}
 				print "<div class='col-sm-3'>";
 				$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
-				print "<div class='galleryList'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id).
-							"<label>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $vn_set_id)."</label>
-							<div><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small></div>
+				$vs_img = $va_first_item["representation_tag"];
+				if($vs_img){
+					$alt_pos = stripos($vs_img, "alt");
+					if($alt_pos !== false){
+						$tmp = substr($vs_img, 0, $alt_pos);
+						$vs_img = $tmp."alt='".$va_set["name"]."'>";
+					}
+				}
+				print "<div class='galleryList'>
+							".caNavLink($this->request, $vs_img, '', '', 'Gallery', $vn_set_id)."
+							<div class='galleryTitle'>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $vn_set_id)."</div>
+							<div>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</div>
 						</div>\n";
 				print "</div><!-- end col -->";
 				if($i == 4){
@@ -65,8 +73,6 @@
 		}
 	}
 
-	$va_sets = $this->getVar("sets");
-	$va_first_items_from_set = $this->getVar("first_items_from_sets");
 	if(is_array($va_sets) && sizeof($va_sets)){
 		# --- main area with info about selected set loaded via Ajax
 ?>
