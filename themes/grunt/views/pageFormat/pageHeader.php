@@ -105,7 +105,7 @@
 	if ($vb_has_user_links) {
 ?>
 				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
-					<span class="sr-only"><?php print ($this->request->isLoggedIn()) ? _t("User Options") : _("Create Account"); ?></span>
+					<span class="sr-only"><?php print ($this->request->isLoggedIn()) ? _t("User Options") : _t("Create Account"); ?></span>
 					<span class="glyphicon glyphicon-user"></span>
 				</button>
 <?php
