@@ -273,7 +273,15 @@ if (!$vb_ajax) {	// !ajax
 						}
 				?>
 			</div>
-			<?=$this->render("Browse/browse_refine_subview_html.php"); ?>		
+
+			<button class="btn ps-0 mb-2 filters-collapse-btn" id="filters-collapse-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFilters" aria-expanded="false" aria-controls="collapseFilters">
+				+ View Filters
+			</button>
+
+			<div class="collapse collapse-filters" id="collapseFilters">
+				<?=$this->render("Browse/browse_refine_subview_html.php"); ?>
+			</div>	
+			
 		</div><!-- end grid item-->
 
 	</div><!-- end grid -->
@@ -315,7 +323,19 @@ if (!$vb_ajax) {	// !ajax
 				} else {
 					$this.text('- Less Search Options');
 				}
-    		}, 250);
+    		}, 200);
+		});
+
+		$('.filters-collapse-btn').click(function(){
+			var $this = $(this);
+			$this.toggleClass('filters-collapse-btn');
+			setTimeout(function() { 
+				if($this.hasClass('filters-collapse-btn')){
+					$this.text('+ View Filters');         
+				} else {
+					$this.text('- Hide Filters');
+				}
+    		}, 200);
 		});
 	});
 </script>
