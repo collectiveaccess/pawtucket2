@@ -6,6 +6,20 @@ footer {
 
 /* Browse Page */
 
+
+
+/* Filters Collapse on mobile */
+@media screen and (min-width: 768px) {
+	.filters-collapse-btn{
+		display: none !important;
+	}
+	.collapse-filters:not(.show) {
+		display: block !important;
+		height: auto !important;
+		visibility: visible !important;
+	}
+}
+
 .browse-controls-container{
 	max-width: unset !important;
 	padding: 0 !important;
@@ -127,7 +141,7 @@ footer {
 	content: 'More Search Options +';
 }
 
-.browse-collapse-btn{
+.browse-collapse-btn, #filters-collapse-btn{
 	background-color: transparent;
 	border: none;
 	outline: none;
@@ -315,15 +329,15 @@ footer {
 /* Collections */
 
 .collItemImg a img {
-	object-fit: contain;
+	/* object-fit: contain;
 	width: 100%;
 	height: 200px;
-	max-height: 300px;
+	max-height: 300px; */
 }
 
 .collItemImgPlaceholder{
-	width: 100%;
-	height: 200px;
+	/* width: 100%;
+	height: 200px; */
 }
 
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link {
@@ -355,7 +369,12 @@ footer {
 	overflow: hidden;
 }
 
-@media screen and (max-width: 768px) {
+.collection-grid-items .filters {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+@media screen and (max-width: 767px) {
 	.collection-grid {
 		height: 640px;
 	}
@@ -364,6 +383,9 @@ footer {
 @media screen and (max-width: 576px) {
 	.collection-grid {
 		height: 500px;
+	}
+	.collection-grid-items .filters {
+		display: inline-block !important;
 	}
 }
 
