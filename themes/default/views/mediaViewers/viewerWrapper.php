@@ -31,8 +31,7 @@
  */
 ?>
 <div id="caMediaOverlayContent" ><?php print $this->render($this->getVar('viewer').".php"); ?></div>	
-<?php if ($this->getVar('hideAllOverlayControls')) { ?>
-<?php }elseif ($this->getVar('hideOverlayControls')) { ?>
+<?php if ($this->getVar('hideOverlayControls')) { ?>
 <div class="caMediaOverlayControlsMinimal">
 	<div class='close'><a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close"><i class="fa fa-times" aria-hidden="true"></i></a></div>
 </div>
