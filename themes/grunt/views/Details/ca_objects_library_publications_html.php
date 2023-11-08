@@ -107,7 +107,7 @@ if($vb_2_col){
 
 	?>
 
-					{{{<ifdef code="ca_objects.creative_access_desc"><div class='unit'><label>Creative Access Description</label>^ca_objects.creative_access_desc</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.creative_access_desc"><div class='unit'><H3>Creative Access Description</H3>^ca_objects.creative_access_desc</div></ifdef>}}}
 				</div><!-- end col -->
 			
 				<div class='col-sm-6 col-md-6 col-lg-4'>
@@ -123,20 +123,20 @@ if($vb_2_col){
 							<span class="trimText">^ca_objects.content_description</span>
 						</div>
 					</ifdef>}}}
-					{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.call_number"><div class="unit"><label>Call Number</label>^ca_objects.call_number</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.custom_extent"><div class="unit"><label>Extent</label>^ca_objects.custom_extent</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.language"><div class='unit'><label>Language</label><unnit relativeTo="ca_objects.language" delimiter="<br/>">^ca_objects.language</unit></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.ISBN"><div class="unit"><label>ISBN</label>^ca_objects.ISBN</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.ISSN"><div class="unit"><label>ISSN</label>^ca_objects.ISSN</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.volume"><div class="unit"><label>Volume</label>^ca_objects.volume</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.issue"><div class="unit"><label>Issue</label>^ca_objects.issue</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.edition"><div class="unit"><label>Edition</label>^ca_objects.edition</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.series"><div class="unit"><label>Series Statement</label>^ca_objects.series</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.publication_info"><div class="unit"><label>Place of Publication</label>^ca_objects.publication_info</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.publisher"><div class="unit"><label>Publisher</label>^ca_objects.publisher</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.physical_lib.phys_document_type"><div class="unit"><label>Publication Type</label>^ca_objects.physical_lib.phys_document_type</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.physical_lib.phys_spine"><div class="unit"><label>Spine Height</label>^ca_objects.physical_lib.phys_spine</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.idno"><div class="unit"><H3>Identifier</H3>^ca_objects.idno</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.call_number"><div class="unit"><H3>Call Number</H3>^ca_objects.call_number</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.custom_extent"><div class="unit"><H3>Extent</H3>^ca_objects.custom_extent</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.language"><div class='unit'><H3>Language</H3><unnit relativeTo="ca_objects.language" delimiter="<br/>">^ca_objects.language</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.ISBN"><div class="unit"><H3>ISBN</H3>^ca_objects.ISBN</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.ISSN"><div class="unit"><H3>ISSN</H3>^ca_objects.ISSN</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.volume"><div class="unit"><H3>Volume</H3>^ca_objects.volume</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.issue"><div class="unit"><H3>Issue</H3>^ca_objects.issue</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.edition"><div class="unit"><H3>Edition</H3>^ca_objects.edition</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.series"><div class="unit"><H3>Series Statement</H3>^ca_objects.series</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.publication_info"><div class="unit"><H3>Place of Publication</H3>^ca_objects.publication_info</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.publisher"><div class="unit"><H3>Publisher</H3>^ca_objects.publisher</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.physical_lib.phys_document_type"><div class="unit"><H3>Publication Type</H3>^ca_objects.physical_lib.phys_document_type</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.physical_lib.phys_spine"><div class="unit"><H3>Spine Height</H3>^ca_objects.physical_lib.phys_spine</div></ifdef>}}}
 					
 					
 					
@@ -148,14 +148,14 @@ if($vb_2_col){
 						$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
 					}
 					foreach($va_entities_by_type as $vs_type => $va_entity_links){
-						print "<div class='unit'><label>".$vs_type."</label>".join(", ", $va_entity_links)."</div>";
+						print "<div class='unit'><H3>".$vs_type."</H3>".join(", ", $va_entity_links)."</div>";
 					}
 				}
 ?>					
-					{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToTypes="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
-					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place</label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
+					{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><H3>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></H3><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="1"><div class="unit"><H3>Collection</H3><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="program"><div class="unit"><H3>Related program<ifcount code="ca_occurrences" min="2" restrictToTypes="program">s</ifcount></H3><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><H3>Related place</H3><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
 					
 					
 					{{{<ifdef code="ca_objects.rightsSummary_asset"><div class="unit"><i>^ca_objects.rightsSummary_asset</i></div></ifdef>}}}

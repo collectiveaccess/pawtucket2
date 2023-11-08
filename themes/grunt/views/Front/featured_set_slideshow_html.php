@@ -38,6 +38,7 @@
 	}
 	if($qr_res && $qr_res->numHits()){
 ?>
+		<div class="sr-only">Slideshow of featured Images</div>
 		<div class="jcarousel-wrapper">
 			<!-- Carousel -->
 			<div class="jcarousel featured">
@@ -46,10 +47,10 @@
 					while($qr_res->nextHit()){
 						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
 							print "<li><div class='frontSlide'>".$vs_media;
-							$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
-							if($vs_caption){
-								print "<div class='frontSlideCaption'>".$vs_caption."</div>";
-							}
+							#$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
+							#if($vs_caption){
+							#	print "<div class='frontSlideCaption'>".$vs_caption."</div>";
+							#}
 							print "</div></li>";
 							$vb_item_output = true;
 						}
@@ -61,8 +62,8 @@
 			if($vb_item_output){
 ?>
 			<!-- Prev/next controls -->
-			<a href="#" class="jcarousel-control-prev featured"><i class="fa fa-angle-left"></i></a>
-			<a href="#" class="jcarousel-control-next featured"><i class="fa fa-angle-right"></i></a>
+			<a href="#" class="jcarousel-control-prev featured"><i class="fa fa-angle-left" aria-label="previous" role="graphics-document"></i></a>
+			<a href="#" class="jcarousel-control-next featured"><i class="fa fa-angle-right" aria-label="next" role="graphics-document"></i></a>
 		
 			<!-- Pagination -->
 			<p class="jcarousel-pagination featured">

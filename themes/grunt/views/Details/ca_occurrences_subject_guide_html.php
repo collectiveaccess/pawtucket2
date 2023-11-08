@@ -31,6 +31,19 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$va_access_values = caGetUserAccessValues($this->request);	
+	
+	# --- result context
+	$va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(is_array($va_object_ids) && sizeof($va_object_ids)){
+		$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', $this->request->getAction);
+		#$o_rel_context->setParameter('key', $key);
+		$o_rel_context->setAsLastFind(true);
+		
+		$o_rel_context->setResultList($va_object_ids);
+		
+		$o_rel_context->saveContext();
+	}
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -53,8 +66,8 @@
 			<div class="row">			
 				<div class='col-sm-12'>
 					{{{<ifdef code="ca_occurrences.content_description"><div class="unit"><span class="trimText">^ca_occurrences.content_description</span></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.acknowledgements"><div class="unit"><label>Acknowledgements</label><span class="trimText">^ca_occurrences.acknowledgements</span></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.funding_acknowl"><div class="unit"><label>Funding Acknowledgements</label><span class="trimText">^ca_occurrences.funding_acknowl</span></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.acknowledgements"><div class="unit"><H3>Acknowledgements</H3><span class="trimText">^ca_occurrences.acknowledgements</span></div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.funding_acknowl"><div class="unit"><H3>Funding Acknowledgements</H3><span class="trimText">^ca_occurrences.funding_acknowl</span></div></ifdef>}}}
 
 <?php
 				$va_entities = $t_item->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
@@ -65,11 +78,11 @@
 						$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
 					}
 					foreach($va_entities_by_type as $vs_type => $va_entity_links){
-						print "<div class='unit'><label>".$vs_type."</label>".join(", ", $va_entity_links)."</div>";
+						print "<div class='unit'><H3>".$vs_type."</H3>".join(", ", $va_entity_links)."</div>";
 					}
 				}
 ?>
-				{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences.related" min="2" restrictToTypes="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
+				{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="program"><div class="unit"><H3>Related program<ifcount code="ca_occurrences.related" min="2" restrictToTypes="program">s</ifcount></H3><span class="trimTextShort"><unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					
 <?php
 				# Comment and Share Tools
@@ -95,7 +108,7 @@
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
-				<div class="col-sm-12"><label>Related Archive, Library & Publication Objects</label><HR/></div>
+				<div class="col-sm-12"><H3>Related Archive, Library & Publication Objects</H3><HR/></div>
 			</div>
 			<div class="row">
 				<div id="browseResultsContainerobjects">
@@ -104,7 +117,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainerobjects").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_occurrence', 'id' => '^ca_occurrences.occurrence_id', 'detailNav' => 'occurrence'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainerobjects").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_occurrence', 'id' => '^ca_occurrences.occurrence_id', 'detailNav' => 'occurrence', 'dontSetFind' => true), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainerobjects').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -128,7 +141,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 400,
+		  maxHeight: 407,
 		  moreLink: '<a href="#">More &#8964;</a>'
 		});
 		$('.trimTextShort').readmore({

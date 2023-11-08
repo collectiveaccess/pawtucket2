@@ -42,6 +42,18 @@
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 
+	# --- result context
+	$va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(is_array($va_object_ids) && sizeof($va_object_ids)){
+		$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', $this->request->getAction);
+		#$o_rel_context->setParameter('key', $key);
+		$o_rel_context->setAsLastFind(true);
+		
+		$o_rel_context->setResultList($va_object_ids);
+		
+		$o_rel_context->saveContext();
+	}
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -84,11 +96,11 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-12'>
-					{{{<ifdef code="ca_collections.date_container.date"><div class="unit"><label>Date</label>^ca_collections.date_container.date%delimiter=,_</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_scopecontent"><div class="unit"><label>Scope and Content</label>^ca_collections.RAD_scopecontent</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.RAD_admin_hist"><div class="unit"><label>Administrative/Biographical History</label>^ca_collections.RAD_admin_hist</div></ifdef>}}}					
+					{{{<ifdef code="ca_collections.date_container.date"><div class="unit"><H3>Date</H3>^ca_collections.date_container.date%delimiter=,_</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.RAD_scopecontent"><div class="unit"><H3>Scope and Content</H3>^ca_collections.RAD_scopecontent</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.RAD_admin_hist"><div class="unit"><H3>Administrative/Biographical History</H3>^ca_collections.RAD_admin_hist</div></ifdef>}}}					
 					
-					{{{<ifcount code="ca_collections.related" min="1"><div class="unit"><label>Related Collections</label><unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
+					{{{<ifcount code="ca_collections.related" min="1"><div class="unit"><H3>Related Collections</H3><unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 <?php
 
 				# Comment and Share Tools
@@ -177,7 +189,7 @@
 										</div><!-- end row -->
 										<script type="text/javascript">
 											jQuery(document).ready(function() {
-												jQuery("#browseResultsContainerobjects").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => '^ca_collections.collection_id', 'detailNav' => 'collection'), array('dontURLEncodeParameters' => true)); ?>", function() {
+												jQuery("#browseResultsContainerobjects").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => '^ca_collections.collection_id', 'detailNav' => 'collection', 'dontSetFind' => true), array('dontURLEncodeParameters' => true)); ?>", function() {
 													jQuery('#browseResultsContainerobjects').jscroll({
 														autoTrigger: true,
 														loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -291,7 +303,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 400,
+		  maxHeight: 407,
 		  moreLink: '<a href="#">More &#8964;</a>'
 		});
 		$('.trimTextShort').readmore({
