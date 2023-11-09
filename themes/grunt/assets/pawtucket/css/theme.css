@@ -923,6 +923,11 @@ a.readmore-js-toggle{
 	top:-100px;
 }
 /* advanced search */
+.advancedSearchField .formLabel {
+	text-transform: none;
+	color: #000;
+	font-size: 13px;
+}
 @media (min-width:992px){
 	.advancedSearchNav{
 		text-align:right;
@@ -933,4 +938,8 @@ a.readmore-js-toggle{
 	font-weight: normal;
 	line-height: 1.8em;
 	padding-bottom: 10px;
+}
+.form-group label{
+	text-transform:none;
+	font-size:13px;
 }
