@@ -47,7 +47,7 @@ a, a:hover {
 	text-shadow: none;
 	text-transform:capitalize;
 }
-.btn-default:hover{
+.btn-default:hover, .btn-default:active, .btn-default:focus{
 	background-color:#009BF5;
 	color:#000;
 }
@@ -88,6 +88,9 @@ hr{
 	font-size:13px;
 	color:#000;
 	text-decoration:underline;
+}
+.headerAdvancedSearch a:hover, .headerAdvancedSearch a:focus, .headerAdvancedSearch a:active{
+	color:#0081ca;
 }
 #headerSearchButton{
 	color:#000000;
@@ -326,7 +329,9 @@ body{
 	bottom: 25px;
 	right: 12px;
 }
-.bResultItem:hover .bResultItemSetLink, .bResultListItem:hover .bResultItemSetLink{
+.bResultItem:hover .bResultItemSetLink, .bResultListItem:hover .bResultItemSetLink,
+.bResultItem:active .bResultItemSetLink, .bResultListItem:active .bResultItemSetLink,
+.bResultItem:focus .bResultItemSetLink, .bResultListItem:focus .bResultItemSetLink{
 	display:inline-block;
 }
 .bResultItem:hover .bResultItemText, .bResultListItem:hover .bResultListItemText{
@@ -359,6 +364,9 @@ body{
 }
 #bRefine a{
 	font-size: 13px;
+}
+#bRefine a:focus, #bRefine a:active{
+	text-decoration:underline;
 }
 @media(max-width:768px){
 	.results .bSearchWithinContainer{
@@ -451,12 +459,21 @@ a.browseRemoveFacet:hover .glyphicon{
   font-family: Lato;
   line-height: 1.1em;
 }
+.multisearch .authoritySet a:hover, .multisearch .authoritySet a:focus, .multisearch .authoritySet a:active,
+.multisearch .authorityResult:hover, .multisearch .authorityResult:active, .multisearch .authorityResult:focus,
+.multisearch .multisearchResult a:hover, .multisearch .multisearchResult a:focus, .multisearch .multisearchResult a:active{
+	text-decoration:underline;
+}
 .multisearch .authoritySet small a, .multisearch .multisearchResult small a{
 	font-size: 12px;
 	color:#595959;
 }
 .multisearch .authorityResult.programsResult{
 	height:70px;
+}
+.multisearch .multisearchResult:hover, .multisearch .multisearchResult:focus, .multisearch .multisearchResult:active{
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 .noSearchResults{
 	text-transform:none;
@@ -573,11 +590,12 @@ body.frontContainer #footer{
 	padding: 0px 7px 5px 10px;
 }
 .front .jcarousel-pagination a {
-	color: #000;
+	width: 13px;
+  	height: 13px;
 }
-.front .jcarousel-pagination a.active {
+/*.front .jcarousel-pagination a.active {
 	color: #FFF;
-}
+}*/
 /* hp explore */
 .hpExplore{
 	padding-top:45px;
@@ -635,15 +653,17 @@ body.frontContainer #footer{
 	height:auto;
 	/* max-width:250px; */
 }
-.galleryList label {
+.galleryList label, .galleryList .galleryTitle a {
     display: block;
-    font-size: 15px;
+    font-size: 17px;
     text-transform: none;
     margin-bottom: 0px;
     padding-bottom: 0px;
-    line-height: 1.1em;
+    line-height: 1.2em;
     margin-top: 5px;
     font-weight: bold;
+    color:#000;
+    font-family: lato;
 }
 .galleryList label a{
 	color:#000;
@@ -675,6 +695,13 @@ body.frontContainer #footer{
 .gallery #galleryDetailImageGrid {
 	min-height: auto;
 }
+.gallery H2, .gallery H2 a, .gallery H4, .gallery H4 a, .gallery label, .gallery H3 {
+	text-transform:none;
+}
+a.readmore-js-toggle{
+	color:#000;
+	text-decoration:underline;
+}
 /* collections & listing - Subject guides */
 .collectionIntro {
 	font-size: 14px;
@@ -684,7 +711,8 @@ body.frontContainer #footer{
 .collectionsList a{
 	text-decoration:none;
 }
-.collectionTile:hover{
+.collectionTile:hover, .collectionTile:focus, .collectionTile:active,
+.collectionsList a:hover .collectionTile, .collectionsList a:focus .collectionTile, .collectionsList a:active .collectionTile{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 .subjectGuideIntro{
@@ -722,11 +750,12 @@ body.frontContainer #footer{
   font-size: 16px;
   text-decoration:underline;
 }
-.detail label {
+.detail label, .detail H3, .gallery H3 {
 	font-size: 15px;
 	color: #000;
-	 margin-bottom:0px;
 	text-transform:capitalize;
+	margin: 10px 0px 0px 0px;
+	line-height:1.4em;
 }
 .detail h1 {
 	font-size: 21px;
@@ -770,7 +799,7 @@ body.frontContainer #footer{
 	padding: 7px 7px 7px 7px;
 	font-size: 16px;
 	position: absolute;
-	display: inline-block;
+	display: block;
 	top: 0px;
 	z-index: 200;
 	position: relative;
@@ -889,4 +918,10 @@ body.frontContainer #footer{
 	.advancedSearchNav{
 		text-align:right;
 	}
+}
+.contactIntro {
+	font-size: 16px;
+	font-weight: normal;
+	line-height: 1.8em;
+	padding-bottom: 10px;
 }
