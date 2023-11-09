@@ -70,7 +70,7 @@
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>
 																<div class='hpExploreBoxDetails'>
-																	<div class='hpExploreBoxTitle'>Tours</div>
+																	<div class='hpExploreBoxTitle'>Tours <i class='fa fa-arrow-right'></i></div>
 																</div>", "", "", "Featured", "Tours"); ?>
 					</div>
 				</div>
@@ -78,7 +78,7 @@
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage2'></div>
 																<div class='hpExploreBoxDetails'>
-																	<div class='hpExploreBoxTitle'>Songs</div>
+																	<div class='hpExploreBoxTitle'>Songs <i class='fa fa-arrow-right'></i></div>
 																</div>", "", "", "Featured", "Songs"); ?>
 					</div>
 				</div>
@@ -86,7 +86,7 @@
 					<div class="hpExploreBox">
 						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage3'></div>
 																<div class='hpExploreBoxDetails'>
-																	<div class='hpExploreBoxTitle'>Collections</div>
+																	<div class='hpExploreBoxTitle'>Collections <i class='fa fa-arrow-right'></i></div>
 																</div>", "", "", "Collections", "Index"); ?>
 					</div>
 				</div>

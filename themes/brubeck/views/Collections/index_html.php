@@ -19,7 +19,7 @@
 				<div class="featuredSearch"><form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'collections'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" id="collectionsSearchInput" placeholder="<?php print _t("Search the Collection"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
+							<input type="text" class="form-control" id="collectionsSearchInput" placeholder="<?php print _t("Search for Collections"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
 						</div>
 						<button type="submit" class="btn-search" id="featuredSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 					</div>

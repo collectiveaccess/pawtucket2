@@ -43,7 +43,7 @@
 						if ($vs_image = $qr_tours->getWithTemplate("<unit relativeTo='ca_occurrences.related' restrictToTypes='appearance' restrictToRelationshipTypes='included' limit='1'><unit relativeTo='ca_objects' restrictToTypes='still_image' limit='1'>^ca_object_representations.media.iconlarge</unit></unit>")) {
 							$vs_tmp .= "<div class='featuredImage'>".$vs_image."</div>";
 						}
-						$vs_tmp .= "<div class='title'>".$qr_tours->get("ca_occurrences.preferred_labels")."</div>";	
+						$vs_tmp .= "<div class='title".((!$vs_image) ? " noImage" : "")."'>".$qr_tours->get("ca_occurrences.preferred_labels")."</div>";	
 						$vs_tmp .= "</div>";
 						print caDetailLink($this->request, $vs_tmp, "", "ca_occurrences", $qr_tours->get("ca_occurrences.occurrence_id"));
 
