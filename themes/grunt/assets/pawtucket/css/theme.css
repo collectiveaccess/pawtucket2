@@ -184,7 +184,7 @@ hr{
 }
 .navbar-nav > li.dropdown .fa{
 	position: relative;
-	top: -2px;
+	top: -1px;
 	font-size:10px;
 }
 .navbar-nav > li > .dropdown-menu{
@@ -329,6 +329,10 @@ body{
 	bottom: 25px;
 	right: 12px;
 }
+
+.bResultListItem .bResultListItemText {
+	line-height: 1.15em;
+}
 .bResultItem:hover .bResultItemSetLink, .bResultListItem:hover .bResultItemSetLink,
 .bResultItem:active .bResultItemSetLink, .bResultListItem:active .bResultItemSetLink,
 .bResultItem:focus .bResultItemSetLink, .bResultListItem:focus .bResultItemSetLink{
@@ -361,6 +365,7 @@ body{
 
 #bRefine H2, #bRefine H5, #bRefine H3, #bRefine a{
 	color:#000;
+	text-transform:capitalize;
 }
 #bRefine a{
 	font-size: 13px;
@@ -563,7 +568,7 @@ body.frontContainer #footer{
 	color: #fff;
 	text-align:center;
 	font-size:30px;
-	padding:10px 0px 10px 0px;
+	padding:12px 0px 10px 0px;
 	opacity:.8;
 	left: 0px;
 }
@@ -582,12 +587,13 @@ body.frontContainer #footer{
 	color: #FFF;
 	background-color: #000;
 	height:auto;
+	font-size: 35px;
 }
 .front .jcarousel-control-prev{
-	padding: 0px 10px 5px 7px;
+	padding: 10px 10px 12px 7px;
 }
 .front .jcarousel-control-next{
-	padding: 0px 7px 5px 10px;
+	padding: 10px 7px 12px 10px;
 }
 .front .jcarousel-pagination a {
 	width: 13px;
@@ -740,6 +746,9 @@ a.readmore-js-toggle{
 /* detail */
 .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small, .detail .detailNavBgLeft a, .detail .detailNavBgRight a{
 	color:#000;
+}
+.detail .detailNavBgLeft a .fa, .detail .detailNavBgRight a .fa{
+	font-size:14px;
 }
 .detail, .detail .unit {
   color: #000;

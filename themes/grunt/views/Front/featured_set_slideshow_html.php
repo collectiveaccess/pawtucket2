@@ -62,8 +62,8 @@
 			if($vb_item_output){
 ?>
 			<!-- Prev/next controls -->
-			<a href="#" class="jcarousel-control-prev featured"><i class="fa fa-angle-left" aria-label="previous" role="graphics-document"></i></a>
-			<a href="#" class="jcarousel-control-next featured"><i class="fa fa-angle-right" aria-label="next" role="graphics-document"></i></a>
+			<a href="#" class="jcarousel-control-prev featured"><i class="fa fa-chevron-left" aria-label="previous" role="graphics-document"></i></a>
+			<a href="#" class="jcarousel-control-next featured"><i class="fa fa-chevron-right" aria-label="next" role="graphics-document"></i></a>
 		
 			<!-- Pagination -->
 			<p class="jcarousel-pagination featured">
