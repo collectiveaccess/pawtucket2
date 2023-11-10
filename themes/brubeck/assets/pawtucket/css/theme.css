@@ -29,6 +29,8 @@ H1, h1 {
 }
 .btn-default, .browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active {
 	background-color:#0a4ba0;
+	font-family: "urbane-rounded", sans-serif;
+	font-weight:300;
 }
 .btn-default:hover{
 	background-color:#094088;
@@ -327,6 +329,10 @@ body{
 #bRefine a {
 	font-size: 14px;
 }
+.bDigitizationNote{
+	font-size:14px;
+	padding:20px 0px 20px 0px;
+}
 .bResultItemSetLink {
 	position: absolute;
 	right: 10px;
@@ -361,6 +367,11 @@ body{
 	font-size: 14px;
 	color: #000;
 }
+@media(min-width:1200px) and (max-width:1340px){
+	.ca_objects .bResultListItemCol .bResultListItemText, .ca_objects .bResultListItem .bResultListItemText a{
+		font-size: 12px;
+	}
+}
 .bResultListItemContent{
 	display: flex;
 	align-items: center;
@@ -387,10 +398,23 @@ body{
 	right: 20px;
 }
 .bResultItem .bResultItemText small, .bResultItem .bResultItemText small a {
-	color: #757575;
+	color: #525252;
 	padding-top: 5px;
 	display: block;
 }
+.bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemText small a{
+	color: #525252;
+	padding-top: 5px;
+	display: block;
+	font-size:12px;
+}
+.authorityResult small{
+	color: #525252;
+	padding-top: 5px;
+	display: block;
+	font-size:12px;
+}
+
 @media(max-width:768px){
 	.results .bSearchWithinContainer{
 		display:none;
@@ -910,7 +934,13 @@ a:hover .frontGridCaption{
 	color: #000;
 }
 .detail.objects h2 {
-	margin-bottom:15px;;
+	margin-bottom:15px;
+}
+.detail h3 {
+	font-size:16px;
+	padding: 20px 0px 5px 0px;
+	margin:0px;
+	text-transform:none;
 }
 .detail {
 	color: #000;
@@ -983,7 +1013,7 @@ a.readmore-js-toggle {
 }
 .browseAllLink{
 	text-align:right;
-	margin-top:10px;
+	margin-top:13px;
 }
 @media(max-width:768px){
 	.browseAllLink{
@@ -1039,6 +1069,27 @@ a.readmore-js-toggle {
 #lbTimelineContainer{
 	margin-top:10px;
 	border: 1px solid #999;
+}
+.tl-slidenav-previous .tl-slidenav-title, .tl-slidenav-next .tl-slidenav-title, .tl-slidenav-previous .tl-slidenav-description, .tl-slidenav-next .tl-slidenav-description{
+	opacity:.7 !important;
+}
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline, .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline p{
+	color:#757575 !important;
+}
+.tl-text .tl-headline-date, .tl-text h3.tl-headline-date{
+	color:#000 !important;
+}
+.tl-timeline .tl-headline-date, .tl-timeline h3.tl-headline-date,
+.tl-timeline .tl-timenav-slider,
+.tl-timeline .tl-timenav-slider .tl-timeaxis {
+	font-family: "urbane-rounded", sans-serif !important;
+}
+.tl-text-content .tl-timeline p{
+	font-size:20px !Important;
+}
+.tl-text-content-container h2.tl-headline .occType{
+	font-size:20px !important;
+	color:#757575 !Important;
 }
 /* Featured Listing */
 @media(min-width:992px){
@@ -1359,3 +1410,7 @@ a .featuredTile .title {
 	height:auto;
 }
 
+/* map */
+.vco-map .vco-mapmarker {
+	color: #200d45;
+}

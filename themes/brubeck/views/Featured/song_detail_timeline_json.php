@@ -62,16 +62,31 @@ while($qr_timeline_occs->nextHit()) {
 	if (!$va_date_list[0] || !$va_date_list[1]) continue;
 	$va_timeline_dates = caGetDateRangeForTimelineJS($va_date_list);
 
+	$vs_image = $qr_timeline_occs->getWithTemplate("^ca_object_representations.media.large.url", array("checkAccess" => $va_access_values));
+	$vs_thumbnail = $qr_timeline_occs->getWithTemplate("^ca_object_representations.media.iconlarge.url", array("checkAccess" => $va_access_values));
+	$vs_caption = $vs_credit = "";
+	if(!$vs_image){
+		$vs_image = $qr_timeline_occs->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'>^ca_object_representations.media.large.url</unit></ifcount>", array("checkAccess" => $va_access_values));
+		$vs_thumbnail = $qr_timeline_occs->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'>^ca_object_representations.media.iconlarge.url</unit></ifcount>", array("checkAccess" => $va_access_values));
+		$vs_caption = $qr_timeline_occs->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'><l>^ca_objects.preferred_labels.name</l></unit></ifcount>", array("checkAccess" => $va_access_values));
+		$vs_credit = $qr_timeline_occs->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'>^ca_objects.credit</unit></ifcount>", array("checkAccess" => $va_access_values));
+	}
+	if(!$vs_image){
+		$vs_image = $qr_timeline_occs->getWithTemplate("<unit relativeTo='ca_objects' limit='1'>^ca_object_representations.media.large.url</unit>", array('checkAccess' => $va_access_values));
+		$vs_thumbnail = $qr_timeline_occs->getWithTemplate("<unit relativeTo='ca_objects' limit='1'>^ca_object_representations.media.iconlarge.url</unit>", array('checkAccess' => $va_access_values));
+		$vs_caption = $qr_timeline_occs->getWithTemplate("<unit relativeTo='ca_objects' length='1'><l>^ca_objects.preferred_labels.name</l></unit>", array("checkAccess" => $va_access_values));
+		$vs_credit = $qr_timeline_occs->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_objects.credit</unit>", array("checkAccess" => $va_access_values));
+	}
 	$va_data['events'][] = [
 		'text' => [
-			'headline' => $qr_timeline_occs->getWithTemplate('<b>^ca_occurrences.type_id<ifdef code="^ca_occurrences.appearance_type">, ^ca_occurrences.appearance_type</ifdef></b><br/>^ca_occurrences.preferred_labels.name<ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><br/><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter="<br/>">^ca_occurrences.preferred_labels.name</unit></ifcount>'),
+			'headline' => $qr_timeline_occs->getWithTemplate('<l><div class="occType">^ca_occurrences.type_id<ifdef code="^ca_occurrences.appearance_type">, ^ca_occurrences.appearance_type</ifdef></div><b><ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></b></l>'),
 			'text' => $qr_timeline_occs->getWithTemplate('^ca_occurrences.description'),
 		],
 		'media' => [
-			'url' => $qr_timeline_occs->getWithTemplate("<unit relativeTo='ca_objects' limit='1'>^ca_object_representations.media.large.url</unit>", array('checkAccess' => $va_access_values)),
-			'thumbnail' => $qr_timeline_occs->getWithTemplate("<unit relativeTo='ca_objects' limit='1'>^ca_object_representations.media.iconlarge.url</unit>", array('checkAccess' => $va_access_values)),
-			'credit' => $qr_timeline_occs->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_objects.credit</unit>"),
-			'caption' => $qr_timeline_occs->getWithTemplate("<unit relativeTo='ca_objects' length='1'><l>^ca_objects.preferred_labels.name</l></unit>")
+			'url' => $vs_image,
+			'thumbnail' => $vs_thumbnail,
+			'credit' => $vs_credit,
+			'caption' => $vs_caption
 
 		],
 		'start_date' => $va_timeline_dates['start_date'],

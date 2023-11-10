@@ -59,7 +59,7 @@
 				while($qr_res->nextHit()) {
 					if ( $vn_i == 0) { print "<div class='row'>"; } 
 					print "<div class='col-sm-4'>";
-					print $qr_res->getWithTemplate("<l><div class='featuredTile'><div class='title'>^ca_entities.preferred_labels.displayname</div></div></l>");	
+					print $qr_res->getWithTemplate("<l><div class='featuredTile'><div class='title noImage'>^ca_entities.preferred_labels.displayname</div></div></l>");	
 					print "</div><!-- end col-4 -->";
 					$vn_i++;
 					if ($vn_i == 3) {

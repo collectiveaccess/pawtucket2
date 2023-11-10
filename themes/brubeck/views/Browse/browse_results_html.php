@@ -51,8 +51,8 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
-	
+	#$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$vn_result_size 	= $qr_res->numHits();
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
@@ -159,6 +159,9 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		</H1>
 <?php
+		if(($vs_current_view == "images") && ($vs_table == "ca_objects")){
+			print "<div class='bDigitizationNote'>".$this->getVar("archival_item_browse_digitization_note")."</div>";
+		}
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}

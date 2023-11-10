@@ -127,10 +127,10 @@
 				{{{<ifcount code="ca_occurrences.related" restrictToTypes="appearance" min="1">
 					<div class="col-sm-12 col-md-4">
 						<ifcount code="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="included" min="1"><div class="unit trimText"><label>Itinerary</label>
-							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="included" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
+							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="included" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
 						</ifcount>
 						<ifcount code="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" min="1"><div class="unit"><label>Related Appearance<ifcount code="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" min="2">s</ifcount></label>
-							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
+							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
 						</ifcount>
 					</div>
 				</ifcount>}}}
@@ -162,7 +162,7 @@
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class='col-sm-12'>
-					<label>Related Archival Items</label>
+					<h3>Selected Archival Items</h3>
 				</div>
 			</div>
 			<div class="row">

@@ -68,10 +68,12 @@
 
 		$vn_col_span = 3;
 		$vn_col_span_sm = 4;
+		$vn_col_span_md = 4;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
 			$vn_col_span = 3;
+			$vn_col_span_md = 4;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 6;
 		}
@@ -142,7 +144,7 @@
 					}
 					
 					$vs_result_output = "
-		<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+		<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span_md} col-lg-{$vn_col_span}'>
 			<div class='bResultItem' id='row{$vn_id}'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
