@@ -114,6 +114,22 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<script src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/js/libs/custom/slick-min.js" type="text/javascript"></script>
 	<script type="text/javascript" src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/dist/app.min.esbuild.js?ver=404" id="script-1-0-js"></script>  
 
+    <!-- Matomo -->
+    <script>
+    var _paq = window._paq = window._paq || [];
+    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+        var u="https://chicagofilmarchives.matomo.cloud/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '1']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src='//cdn.matomo.cloud/chicagofilmarchives.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+    })();
+    </script>
+    <!-- End Matomo Code -->
+
 	<style>
 		body {
 			line-height: 1.15 !important;
@@ -132,7 +148,7 @@ $va_access_values = caGetUserAccessValues($this->request);
                     <ul id="menu-extra" class="nav header-nav horizontal extra">
                         <li id="menu-item-34" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34">
                             <a href="https://cfarchives.wpengine.com/calendar/">
-                                Calendar
+                                Events
                             </a>
                         </li>
                         <li id="menu-item-33" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-33">
@@ -356,7 +372,7 @@ $va_access_values = caGetUserAccessValues($this->request);
                         <ul id="menu-extra-1" class="nav header-nav extra">
                             <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34">
                                 <a href="https://cfarchives.wpengine.com/calendar/">
-                                    Calendar
+                                    Events
                                 </a>
                             </li>
                             <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-33">

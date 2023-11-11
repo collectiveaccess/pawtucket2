@@ -88,7 +88,7 @@ if (!$vb_ajax) {	// !ajax
 	<div class="container browse-controls-container">
 
 		<div class="row watch-nav">
-			<a class="col watch-topics" href="https://cfarchives.wpengine.com/watch/">&lt; All watch topics</a>
+			<!-- <a class="col watch-topics" href="https://cfarchives.wpengine.com/watch/">&lt; All watch topics</a> -->
 
 			<a href="#" id="sharelink" class="col browse-share-link text-end" onclick="Copy('<?= $this->getVar('share_url'); ?>');">Share Link 
 				<span class="icon"><svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">

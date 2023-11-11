@@ -464,21 +464,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                           <unit relativeTo="ca_objects" delimiter="">
                             <if rule="^ca_object_representations.access = 'yes'">
                               <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
-                                
-                                <!-- <div class="item-item item">
-                                  <ifdef code="ca_object_representations.media.small">
-                                    <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
-                                  </ifdef>
-                                  <ifnotdef code="ca_object_representations.media.small">
-                                    <div class="collItemImgPlaceholder"><a></a></div>
-                                  </ifnotdef>
-                                  <div class="text-align-center info">
-                                    <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
-                                    <div class="title text__promo-4 block-xxxs"><a href="" class="color-link-orange"><l>^ca_objects.preferred_labels<l></a></div>
-                                    <div class="text__body-4 year color__gray" style="text-transform: none;">^ca_occurrences.cfaDateProduced</div>
-                                  </div>
-                                </div> -->
-
 
                                 <div class="item-item item">
                                   <div class="overlay-image block-xxs">
@@ -762,7 +747,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                               </strong>
                             </span>
                             (^relationship_typename)
-                            <div class="trimText" id="bio_^ca_entities.entity_id">^ca_entities.biography</div>
+                            <div class="trimText" id="bio_^ca_entities.entity_id" style="line-height: 20px;">^ca_entities.biography</div>
                           </unit>
                         </div>
                       </div>

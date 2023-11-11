@@ -57,7 +57,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 			<div class="wrap">
 				<div class="eyebrow text__eyebrow color__gray">
     				<div class="breadcrumb">
-						{{{<unit relativeTo="ca_collections">
+						{{{<unit relativeTo="ca_collections" restrictToRelationshipTypes="part_of">
 							<unit relativeTo="ca_collections.hierarchy" delimiter="<span class='sep'> &gt;</span>">
 								<l>^ca_collections.preferred_labels</l>
 							</unit>
