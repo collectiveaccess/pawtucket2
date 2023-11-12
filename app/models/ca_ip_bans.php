@@ -29,11 +29,6 @@
  * 
  * ----------------------------------------------------------------------
  */
- 
- /**
-   *
-   */
-
 BaseModel::$s_ca_models_definitions['ca_ip_bans'] = array(
  	'NAME_SINGULAR' 	=> _t('IP-based authentication block'),
  	'NAME_PLURAL' 		=> _t('IP-based authentication blocks'),
@@ -183,7 +178,6 @@ class ca_ip_bans extends BaseModel {
 		
 		if (self::isBanned($request)) { return true; }
 		$ban = new ca_ip_bans();
-		$ban->setMode(ACCESS_WRITE);
 		$ban->set('ip_addr', $ip);
 		$ban->set('reason', $reason);
 		$ban->set('expires_on', $ttl ? date('c', time() + $ttl) : null);
