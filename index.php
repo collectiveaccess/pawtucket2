@@ -65,7 +65,7 @@
 		$resp = $app->getResponse();
 		
 		if (!BanHammer::verdict($g_request)) {
-			die("Connection refused");
+			$g_request->setInternalRedirect(['module' => '', 'controller' => 'Ban', 'action' => 'verify']);
 		}
 
 		// TODO: move this into a library so $_, $g_ui_locale_id and $g_ui_locale gets set up automatically
