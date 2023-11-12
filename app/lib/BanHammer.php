@@ -25,9 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
-
-require_once(__CA_MODELS_DIR__."/ca_ip_bans.php");
-
 class BanHammer {
 	# ------------------------------------------------------
 	/**
@@ -83,7 +80,6 @@ class BanHammer {
 		self::init();
 		if (!self::$config->get('enabled')) { return true; }
 		if (ca_ip_bans::isBanned($request)) { return false; }
-		
 		
 		$module = $request->getModulePath();
 		$controller = $request->getController();
