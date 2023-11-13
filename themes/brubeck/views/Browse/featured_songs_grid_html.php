@@ -37,13 +37,13 @@
 	#
 	$vs_title = "";
 	$va_featured_ids = array();
-	if($vs_set_code = $o_config->get("browse_featured_entities_set")){
+	if($vs_set_code = $o_config->get("browse_featured_songs_set")){
 		$t_set = new ca_sets();
 		$t_set->load(array('set_code' => $vs_set_code));
 		# Enforce access control on set
 		if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
 			$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
-			$qr_res = caMakeSearchResult('ca_entities', $va_featured_ids);
+			$qr_res = caMakeSearchResult('ca_occurrences', $va_featured_ids);
 		}
 	}
 	if($qr_res && $qr_res->numHits()){
@@ -52,14 +52,14 @@
 			<div class="col-sm-12">
 				<div class="featuredList">	
 <?php
-	print '<div class="featuredListTitle">Featured People & Groups</div>';
+	print '<div class="featuredListTitle">Selected Songs</div>';
 
 			$vn_i = 0;
 			if($qr_res && $qr_res->numHits()) {
 				while($qr_res->nextHit()) {
 					if ( $vn_i == 0) { print "<div class='row'>"; } 
 					print "<div class='col-sm-4'>";
-					print $qr_res->getWithTemplate("<l><div class='featuredTile'><div class='title noImage'>^ca_entities.preferred_labels.displayname</div></div></l>");	
+					print $qr_res->getWithTemplate("<l><div class='featuredTile'><div class='title noImage'>^ca_occurrences.preferred_labels.name</div></div></l>");	
 					print "</div><!-- end col-4 -->";
 					$vn_i++;
 					if ($vn_i == 3) {
