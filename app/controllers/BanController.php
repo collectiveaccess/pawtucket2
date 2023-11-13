@@ -52,8 +52,9 @@ class BanController extends BasePawtucketController {
 			caVerifyCaptcha($this->request->getParameter("g-recaptcha-response", pString));
 			
 			ca_ip_bans::removeBans(['ip' => RequestHTTP::ip()]);
-			
-			$url = caNavUrl($this->request, '', 'Front', 'Index');
+			if(!($url = Session::getVar('pawtucket2_last_page'))) {
+				$url = caNavUrl($this->request, '', 'Front', 'Index');
+			}
 			$this->response->setRedirect($url);
 		} catch(CaptchaException $e) {
 			$this->view->setVar('errors', [$e->getMessage()]);
