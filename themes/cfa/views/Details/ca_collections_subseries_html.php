@@ -32,6 +32,8 @@ $vn_comments_enabled = 	$this->getVar("commentsEnabled");
 $vn_share_enabled = 	$this->getVar("shareEnabled");
 $vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 
+$t_root = new ca_collections($t_item->get('ca_collections.hier_collection_id'));
+
 MetaTagManager::setWindowTitle($t_item->get('ca_collections.preferred_labels').": ".$t_item->get('ca_collections.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
 
 MetaTagManager::addMeta("search-title", $t_item->get('ca_collections.preferred_labels'));
@@ -44,9 +46,9 @@ MetaTagManager::addMeta("search-collection-type", 'subseries');
 MetaTagManager::addMeta("og:title", $t_item->get('ca_collections.preferred_labels'));
 MetaTagManager::addMeta("og:description", $t_item->get('ca_collections.cfaAbstract'));
 MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
-MetaTagManager::addMeta("og:image", $t_item->get('ca_object_representations.media.large.url'));
-MetaTagManager::addMeta("og:image:width", $t_item->get('ca_object_representations.media.large.width'));
-MetaTagManager::addMeta("og:image:height", $t_item->get('ca_object_representations.media.large.height'));
+MetaTagManager::addMeta("og:image", $t_root->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMeta("og:image:width", $t_root->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representations.media.large.height'));
 
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();

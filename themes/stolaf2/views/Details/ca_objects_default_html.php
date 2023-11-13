@@ -70,9 +70,9 @@
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
-					if($media_url) {
-						print "<p><a href='{$elevator_url}' target='_elevator'><img src='{$media_url}' style='max-width: 435px;'/></a></p>";
-					}
+					// if($media_url) {
+// 						print "<p><a href='{$elevator_url}' target='_elevator'><img src='{$media_url}' style='max-width: 435px;'/></a></p>";
+// 					}
 					print '<div id="detailTools">';
 					if ($vn_comments_enabled) {
 ?>				

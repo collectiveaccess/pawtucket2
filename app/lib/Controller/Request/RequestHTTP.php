@@ -100,6 +100,13 @@ class RequestHTTP extends Request {
 		$this->opo_response = $po_response;
 		parent::__construct();
 		
+		$this->init($pa_options);
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function init($pa_options=null) {
 		global $AUTH_CURRENT_USER_ID;
 		$AUTH_CURRENT_USER_ID = null;
 
@@ -221,6 +228,8 @@ class RequestHTTP extends Request {
 			], 'system');
 		}
 		if (__CA_URL_ROOT__) { $this->ops_path_info = preg_replace("!^".__CA_URL_ROOT__."!", "", $this->ops_path_info); }
+		
+		return true;
 	}
 	# -------------------------------------------------------
 	/** 
@@ -657,12 +666,39 @@ class RequestHTTP extends Request {
 		return $va_params;
 	}
 	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	function setParameter($ps_name, $pm_value, $ps_http_method='GET') {
 		if (in_array($ps_http_method, array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'))) {
 			$this->opa_params[$ps_http_method][$ps_name] = $pm_value;
 			return true;
 		}
 		return false;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	function setInternalRedirect(array $components) : bool {
+		foreach($components as $k => $v) {
+			switch(strtolower($k)) {
+				case 'module':
+					$this->setModulePath($v);
+					break;
+				case 'controller':
+					$this->setController($v);
+					break;
+				case 'action':
+					$this->setAction($v);
+					break;
+				case 'actionextra':
+					$this->setActionExtra($v);
+					break;
+			}
+		}
+		$url = caNavUrl($this, $module, $controller, $action.($action_extra ? '/'.$action_extra : ''));
+		return true;
 	}
 	# -------------------------------------------------------
  	/**
@@ -1034,13 +1070,23 @@ class RequestHTTP extends Request {
 	 * @return string
 	 */
 	public function getHash() {
-		return md5(
-			serialize($this->getParameters(array('POST', 'GET', 'REQUEST'))) .
-			$this->getRawPostData() .
-			$this->getRequestMethod() .
-			$this->getFullUrlPath() .
-			$this->getScriptName() .
+		$params = $this->getParameters(['POST', 'GET', 'REQUEST', 'PATH']);
+		unset($params['noCache']);
+		unset($params['nocache']);
+		ksort($params);
+	
+		$path_elements = [$this->getModulePath(), $this->getController(), $this->getAction(), $this->getActionExtra()];
+		
+		$data = [
+			$this->getRequestMethod(),
+			http_build_query($params),
+			$this->getScriptName(),
+			join('/', $path_elements),
+			$this->getRawPostData(),
 			($this->isLoggedIn() ? $this->getUserID() : '')
+		];
+		return md5(
+			serialize(join('|', $data))
 		);
 	}
 	# ----------------------------------------

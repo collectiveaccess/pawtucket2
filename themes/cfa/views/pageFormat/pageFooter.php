@@ -184,13 +184,13 @@
 										</a>
 										<ul class="sub-menu">
 											<li id="menu-item-41" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-41">
-												<a href="https://cfarchives.wpengine.com/about/mission-history/">
-													Mission &amp; History
+												<a href="https://www.chicagofilmarchives.org/about/story/">
+													Our Story
 												</a>
 											</li>
 											<li id="menu-item-42" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-42">
-												<a href="https://cfarchives.wpengine.com/about/team/">
-													Staff &amp; Board
+												<a href="https://www.chicagofilmarchives.org/about/people/">
+													People
 												</a>
 											</li>
 											<li id="menu-item-43" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-43">

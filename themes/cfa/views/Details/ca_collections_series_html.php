@@ -32,6 +32,7 @@ $vn_comments_enabled = 	$this->getVar("commentsEnabled");
 $vn_share_enabled = 	$this->getVar("shareEnabled");
 $vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 
+$t_root = new ca_collections($t_item->get('ca_collections.hier_collection_id'));
 
 MetaTagManager::setWindowTitle($t_item->get('ca_collections.preferred_labels').": ".$t_item->get('ca_collections.type_id', ['convertCodesToDisplayText' => true]).": Chicago Film Archives");
 
@@ -45,9 +46,9 @@ MetaTagManager::addMeta("search-collection-type", 'series');
 MetaTagManager::addMeta("og:title", $t_item->get('ca_collections.preferred_labels'));
 MetaTagManager::addMeta("og:description", $t_item->get('ca_collections.cfaAbstract'));
 MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
-MetaTagManager::addMeta("og:image", $t_item->get('ca_object_representations.media.large.url'));
-MetaTagManager::addMeta("og:image:width", $t_item->get('ca_object_representations.media.large.width'));
-MetaTagManager::addMeta("og:image:height", $t_item->get('ca_object_representations.media.large.height'));
+MetaTagManager::addMeta("og:image", $t_root->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMeta("og:image:width", $t_root->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representations.media.large.height'));
 
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -446,8 +447,8 @@ MetaTagManager::addMeta("og:image:height", $t_item->get('ca_object_representatio
                     <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_collections.preferred_labels.name_sort">
                         
                       <ifcount code="ca_objects" min="1">
+                        <span class="fw-bold"><l>^ca_collections.preferred_labels</l></span>
                         <unit relativeTo="ca_objects" delimiter="" sort="ca_objects.preferred_labels">
-                          <span class="fw-bold"><l>^ca_collections.preferred_labels</l></span>
                           <li>
                             <span class="link-orange"><l>^ca_objects.preferred_labels</l></span>
                             <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
