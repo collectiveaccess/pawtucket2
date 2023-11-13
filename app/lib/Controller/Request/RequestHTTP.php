@@ -678,7 +678,11 @@ class RequestHTTP extends Request {
 	}
 	# -------------------------------------------------------
 	/**
+	 * Redirect request to specified controller and action, superceding any content genersted by the original controller and action.
 	 *
+	 * @param array $components Array with keys for request routing elements: module, controller, action and actionextra (if required)
+	 *
+	 * @return bool True if redirect is valid
 	 */
 	function setInternalRedirect(array $components) : bool {
 		$app = AppController::getInstance();
@@ -700,11 +704,15 @@ class RequestHTTP extends Request {
 					break;
 			}
 		}
+		if(!$controller || !$action) { return false; }
+		
 		$url = caNavUrl($this, $module, $controller, $action.($action_extra ? '/'.$action_extra : ''));
 		$_SERVER['REQUEST_URI'] = $url;
 		
 		$this->init(['dont_redirect' => true, 'no_authentication' => true]);
-		$app->getDispatcher()->setRequest($this);
+		$dispatcher = $app->getDispatcher();
+		
+		$dispatcher->setRequest($this);
 		
 		return true;
 	}

@@ -224,6 +224,7 @@ class ca_ip_bans extends BaseModel {
 	 * @param array $options Options include:
 	 *		from = Remove all bans created before the specified date. Value is any valid date/time expression. [Default is null]
 	 *		reasons = Clear bans with specific reasons. Value is an array or comma separated list of ban reasons. [Default is null]
+	 *		ip = Clears bans associated with an IP address. [Default is null]
 	 * 
 	 * @return int
 	 */
@@ -258,6 +259,10 @@ class ca_ip_bans extends BaseModel {
 		if($from > 0) {
 			$wheres[] = "(created_on < ?)";
 			$params[] = $from;
+		}
+		if($ip = csGetOption('ip', $options, null)) {
+			$wheres[] = "(ip_addr = ?)";
+			$params[] = $ip;
 		}
 		
 		if($db->query("DELETE FROM ca_ip_bans WHERE ".join(' AND ', $wheres), $params)) {

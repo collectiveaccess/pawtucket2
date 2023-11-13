@@ -40,7 +40,25 @@ class BanController extends BasePawtucketController {
 	}
 	# -------------------------------------------------------
 	public function __call($method, $path) {
+		$this->view->setVar('errors', []);
 		$this->render("Ban/verify_html.php", false);
 	}
-	# ------------------------------------------------------
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function confirm() {
+		try {
+			caVerifyCaptcha($this->request->getParameter("g-recaptcha-response", pString));
+			
+			ca_ip_bans::removeBans(['ip' => RequestHTTP::ip()]);
+			
+			$url = caNavUrl($this->request, '', 'Front', 'Index');
+			$this->response->setRedirect($url);
+		} catch(CaptchaException $e) {
+			$this->view->setVar('errors', [$e->getMessage()]);
+			$this->render("Ban/verify_html.php", false);
+		}
+	}
+	# -------------------------------------------------------
 }
