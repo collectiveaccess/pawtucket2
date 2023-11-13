@@ -64,7 +64,7 @@
 		$g_request = $app->getRequest();
 		$resp = $app->getResponse();
 		
-		if (!BanHammer::verdict($g_request)) {
+		if (($g_request->getController() !== 'Ban') && !BanHammer::verdict($g_request)) {
 			$g_request->setInternalRedirect(['module' => '', 'controller' => 'Ban', 'action' => 'verify']);
 		}
 
