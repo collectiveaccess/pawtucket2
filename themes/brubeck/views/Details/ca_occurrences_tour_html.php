@@ -80,9 +80,8 @@
 							var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Featured', 'getTourInfoAsJSON', array('tour_id' => $t_item->get("ca_occurrences.occurrence_id"), 'download' => 1)); ?>';
 
 							// certain settings must be passed within a separate options object
-							var storymap_options = {
-								//map_type: 'stamen:watercolor'
-							};
+							//  map_type is set in the json file
+							var storymap_options = {};
 
 							var storymap = new VCO.StoryMap('storymapContainer', storymap_data, storymap_options);
 							window.onresize = function(event) {
