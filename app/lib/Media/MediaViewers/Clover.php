@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2022 Whirl-i-Gig
+ * Copyright 2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -44,6 +44,7 @@ class Clover extends BaseMediaViewer implements IMediaViewer {
 	 *
 	 */
 	public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
+		$config = Configuration::load();
 		if ($o_view = BaseMediaViewer::getView($po_request)) {
 			$o_view->setVar('identifier', $ps_identifier);
 			$o_view->setVar('viewer', 'Clover');
@@ -57,9 +58,8 @@ class Clover extends BaseMediaViewer implements IMediaViewer {
 				}
 			}
 			
-			$va_params = ['identifier' => $ps_identifier, 'id' => $t_subject->getPrimaryKey(), 'context' => caGetOption('context', $pa_options, $po_request->getAction()), 'download' => 1];	
-			$o_view->setVar('data_url', caNavUrl($po_request, '*', '*', 'GetMediaData', $va_params, ['absolute' => true]));
-				
+			$o_view->setVar('data_url', $config->get('site_host').$config->get('ca_url_root').'/service/IIIF/manifest/'.$t_subject->tableName().':'.$t_subject->getPrimaryKey());
+			
 			$o_view->setVar('id', $vs_id = 'caMediaOverlayClover_'.$t_instance->getPrimaryKey().'_'.($vs_display_type = caGetOption('display_type', $pa_data, caGetOption('display_version', $pa_data['display'], ''))));
 			
 			if (is_a($t_instance, "ca_object_representations")) {

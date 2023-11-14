@@ -29,12 +29,9 @@
  *
  * ----------------------------------------------------------------------
  */
-//print $this->getVar('viewerHTML');
-print $this->getVar('data_url');
 ?>
-<div id="clover">
-	image goes here
-</div>
+<div id="clover"></div>
+
 <script type="text/javascript">	
     pawtucketUIApps['Clover'] = {
     	id: 'clover',
