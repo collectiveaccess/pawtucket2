@@ -1,0 +1,37 @@
+{
+  "name": "pawtucket2",
+  "version": "2.0.0",
+  "description": "Pawtucket",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/collectiveaccess/pawtucket2.git"
+  },
+  "author": "Seth",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/collectiveaccess/pawtucket2/issues"
+  },
+  "homepage": "https://github.com/collectiveaccess/pawtucket2#readme",
+  "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-react": "^7.23.3",
+    "babel-loader": "^9.1.3",
+    "cloverIIIF": "https://github.com/collectiveaccess/clover-iiif.git",
+    "css-loader": "^6.8.1",
+    "expose-loader": "^4.1.0",
+    "jquery": "^3.7.1",
+    "mini-css-extract-plugin": "^2.7.6",
+    "react": "^18.0",
+    "sass": "^1.69.5",
+    "sass-loader": "^13.3.2",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.50.0",
+    "webpack-cli": "^4.8.0"
+  }
+}

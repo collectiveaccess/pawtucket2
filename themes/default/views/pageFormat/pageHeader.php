@@ -55,6 +55,8 @@ $has_user_links = (sizeof($user_links) > 0);
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
+	
+	<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
 
 	<title><?= (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	
@@ -73,8 +75,14 @@ $has_user_links = (sizeof($user_links) > 0);
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+
+	<script type="text/javascript">
+			let pawtucketUIApps = {};
+	</script>
+    
+
 </head>
-<body>
+<body id="pawtucketApp">
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
