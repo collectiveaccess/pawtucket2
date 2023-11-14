@@ -1,8 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react'
+import { createRoot } from 'react-dom/client';
 import Viewer from "cloverIIIF";
 
-const selector = pawtucketUIApps.Clover.selector;
-const baseUrl = pawtucketUIApps.Clover.selector;
 const appData = pawtucketUIApps.Clover;
 
 const Clover = ({ baseUrl }) => {
@@ -41,9 +40,11 @@ const Clover = ({ baseUrl }) => {
  * app loaders to insert this application into the current view.
  */
 export default function _init() {
-	ReactDOM.render(
+	const container = document.getElementById(appData.id);
+	const root = createRoot(container);
+	root.render(
 			<Clover
 				baseUrl={appData.baseUrl}
-			/>, document.querySelector(selector)
+			/>
 	);
 }

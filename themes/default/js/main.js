@@ -16,7 +16,6 @@ if (!Object.entries)
 
 export default function _initPawtucketApps() {
 	// Loop through configured page apps
-console.log("xxx", Object.entries(pawtucketUIApps));
 	let themeErr = null;
 	Object.entries(pawtucketUIApps).forEach(([key, value]) => {
 		try {
