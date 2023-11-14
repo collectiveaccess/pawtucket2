@@ -40,7 +40,7 @@ $va_data = [
     'calculate_zoom' => true,              // optional; defaults to true.
     'storymap' => [
         'language' => 'en',
-        'map_type' => 'stamen:toner-lite',
+        'map_type' => 'osm:standard',
         'slides' => []
     ]
 ];
