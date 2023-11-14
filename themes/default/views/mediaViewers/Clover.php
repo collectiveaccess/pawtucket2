@@ -37,7 +37,7 @@ print $this->getVar('data_url');
 </div>
 <script type="text/javascript">	
     pawtucketUIApps['Clover'] = {
-    	selector: '#clover',
+    	id: 'clover',
     	url: <?= json_encode($this->getVar('data_url')); ?>
     };
 </script>
