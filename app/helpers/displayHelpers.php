@@ -4593,6 +4593,7 @@ jQuery(document).ready(function() {
 	 * @throws ApplicationException
 	 */
 	function caGetMediaViewerData($po_request, $ps_identifier, $pt_subject, $pa_options=null) {
+		$ps_identifier = urldecode($ps_identifier);
 		if (!($va_identifier = caParseMediaIdentifier($ps_identifier))) {
 			throw new ApplicationException(_t('Invalid identifier %1', $ps_identifier));
 		}
