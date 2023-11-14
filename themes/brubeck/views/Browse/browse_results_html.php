@@ -72,9 +72,15 @@ if (!$vb_ajax) {	// !ajax
 <div class="row" style="clear:both;">
 	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 <?php 
-	# --- show grid of featured content if no search or filter
-	if(($vs_table == "ca_entities") && !sizeof($va_criteria)){
-		print $this->render("Browse/featured_entities_grid_html.php");
+	if(!sizeof($va_criteria)){
+		# --- show grid of featured content if no search or filter
+		if($vs_table == "ca_entities"){
+			print $this->render("Browse/featured_entities_grid_html.php");
+		}
+		# --- show grid of featured content if no search or filter
+		if(strToLower($this->request->getAction()) == "songs"){
+			print $this->render("Browse/featured_songs_grid_html.php");
+		}
 	}
 
 			if($vs_sort_control_type == 'list'){
