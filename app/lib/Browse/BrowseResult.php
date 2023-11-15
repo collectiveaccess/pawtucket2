@@ -31,9 +31,12 @@
  */
 include_once(__CA_LIB_DIR__.'/Plugins/WLPlug.php');
 include_once(__CA_LIB_DIR__.'/Plugins/IWLPlugSearchEngineResult.php');
+include_once(__CA_LIB_DIR__.'/ResultDescTrait.php');
 
 class WLPlugSearchEngineBrowseEngine extends WLPlug implements IWLPlugSearchEngineResult {
 	# -------------------------------------------------------
+	use ResultDescTrait;
+	
 	private $opo_config;
 	
 	private $opa_hits;
@@ -125,18 +128,4 @@ class WLPlugSearchEngineBrowseEngine extends WLPlug implements IWLPlugSearchEngi
 		return false;
 	}
 	# ------------------------------------------------------------------
-	/**
-	 *
-	 */
-	public function setResultDesc(array $result_desc) {
-		$this->result_desc = $result_desc;
-	}
-	# ------------------------------------------------------------------
-	/**
-	 *
-	 */
-	public function getResultDesc() {
-		return $this->result_desc;
-	}
-	# -------------------------------------------------------
 }

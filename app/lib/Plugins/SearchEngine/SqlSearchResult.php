@@ -32,13 +32,15 @@
  
 include_once(__CA_LIB_DIR__.'/Plugins/WLPlug.php');
 include_once(__CA_LIB_DIR__.'/Plugins/IWLPlugSearchEngineResult.php');
+include_once(__CA_LIB_DIR__.'/ResultDescTrait.php');
 
 class WLPlugSearchEngineSqlSearchResult extends WLPlug implements IWLPlugSearchEngineResult {
 	# -------------------------------------------------------
+	use ResultDescTrait;
+	
 	private $opo_config;
 	
 	private $opa_hits = [];
-	private $result_desc = [];
 	private $opn_current_row;
 	private $opo_subject_instance;
 	
@@ -50,7 +52,7 @@ class WLPlugSearchEngineSqlSearchResult extends WLPlug implements IWLPlugSearchE
 		$this->opn_subject_tablenum = $pn_table_num;
 		$this->setHits($pa_hits);
 		
-		$this->result_desc = $result_desc ?? [];
+		$this->setRawResultDesc($result_desc ?? []);
 	}
 	# -------------------------------------------------------
 	/**
@@ -114,22 +116,11 @@ class WLPlugSearchEngineSqlSearchResult extends WLPlug implements IWLPlugSearchE
 		return false;	// false=SqlSearch can't get value; signals to SearchResult::get() that it should try to load the field if it can
 	}
 	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	public function getPrimaryKeyValues($vn_limit=null) {
 		return ($vn_limit > 0) ? array_slice($this->opa_hits, 0, $vn_limit) : $this->opa_hits;
-	}
-	# ------------------------------------------------------------------
-	/**
-	 *
-	 */
-	public function setResultDesc(array $result_desc) {
-		$this->result_desc = $result_desc;
-	}
-	# ------------------------------------------------------------------
-	/**
-	 *
-	 */
-	public function getResultDesc() {
-		return $this->result_desc;
 	}
 	# -------------------------------------------------------
 	/**
