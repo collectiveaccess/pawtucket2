@@ -56,11 +56,11 @@
 <?php
 			if(in_array($vs_block, $va_browse_types)){
 ?>
-				<?php print '<H3>'.caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H3>'; ?>
+				<?php print '<H2>'.caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H2>'; ?>
 <?php
 			}else{
 ?>
-				<H3 class='hasTooltip' data-toggle='tooltip' data-placement='bottom' title='&quot;Collections&quot; represent a group of archival records that are housed (physically or digitally) through the Sterling Morton Library. The results may refer to a collection as a whole or a specific file found within a collection.'><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+				<H2 class='hasTooltip' data-toggle='popover' data-content='&quot;Collections&quot; represent a group of archival records that are housed (physically or digitally) through the Sterling Morton Library. The results may refer to a collection as a whole or a specific file found within a collection.'><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?> <span class="glyphicon glyphicon-info-sign"></span></H2>
 <?php
 			}
 ?>

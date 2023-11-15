@@ -105,7 +105,7 @@
 						}
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
-					$vs_type = "<h7>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</h7>";
+					$vs_type = "<div class='resultRecordType'>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
 					if ($qr_res->get('ca_objects.date_created')){
 						$vs_date = "<p>".$qr_res->get('ca_objects.date_created', array('delimiter' => ', '))."</p>";
 					} else {
@@ -131,7 +131,7 @@
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
-	<div class='bResultItemCol col-xs-4 col-sm-4 col-md-4'>
+	<div class='bResultItemCol col-xs-6 col-sm-4 col-md-4 col-lg-3'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
@@ -149,7 +149,7 @@
 				$vn_c++;
 			}
 			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 		}
 ?>
 <script type="text/javascript">

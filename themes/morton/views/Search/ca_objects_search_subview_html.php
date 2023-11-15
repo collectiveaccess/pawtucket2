@@ -64,11 +64,11 @@
 <?php
 			if(in_array($vs_block, $va_browse_types)){
 ?>
-				<?php print "<H3 class='hasTooltip' data-toggle='tooltip' data-placement='bottom' title='&quot;Objects&quot; represent records for individual materials. There are a variety of object types, including photographs, documents, books, works of art, and other forms of media.'>".caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H3>'; ?>
+				<?php print "<H2 class='hasTooltip' data-toggle='popover' data-content='&quot;Objects&quot; represent records for individual materials. There are a variety of object types, including photographs, documents, books, works of art, and other forms of media.'>".caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).' <span class="glyphicon glyphicon-info-sign"></span></H2>'; ?>
 <?php
 			}else{
 ?>
-				<H3 class='hasTooltip' data-toggle='tooltip' data-placement='bottom' title='&quot;Objects&quot; represent records for individual materials. There are a variety of object types, including photographs, documents, books, works of art, and other forms of media.'><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
+				<H2 class='hasTooltip' data-toggle='popover' data-content='&quot;Objects&quot; represent records for individual materials. There are a variety of object types, including photographs, documents, books, works of art, and other forms of media.'><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?> <span class="glyphicon glyphicon-info-sign"></span></H2>
 <?php
 			}
 ?>
@@ -94,8 +94,8 @@
 					}
 				}
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
-				print "<h7>".$qr_results->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</h7>";
-				print "<p>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</p>";
+				print "<div class='resultRecordType'>".$qr_results->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
+				print "<p>".$qr_results->getWithTemplate('<l>^ca_objects.preferred_labels.name%ellipsis=1&truncate=56</l>')."</p>";
 				print "<p>".$qr_results->get('ca_objects.date_created', array('delimiter' => ', '))."</p>";
 				print "<p>".$qr_results->get('ca_entities.preferred_labels', array("checkAccess" => $va_access_values, 'delimiter' => ', ', 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</p>";
 			
@@ -155,5 +155,5 @@
 		}
 	}
 	
-	TooltipManager::add('#caObjectsFullResults', 'Click here for full results');
+	#TooltipManager::add('#caObjectsFullResults', 'Click here for full results');
 ?>
