@@ -4,15 +4,15 @@
 <H1><?php print _t("About"); ?></H1>
 <div class="row">
 	<div class="col-sm-12">
-		<h3>About ACORN</h3>
+		<h2>About ACORN</h2>
         <p>
             ACORN (Arboretum COllections & Resources Nexus) provides online access to the special collections of the Sterling Morton Library and other Arboretum resources like images, videos, and documents. New resources are added to the system on a regular basis as a part of our ongoing cataloguing and digitization efforts.
         </p>
-        <h3>About the Sterling Morton Library</h3>
+        <h2>About the Sterling Morton Library</h2>
 		<p>
 			The Sterling Morton Library supports the work and mission of The Morton Arboretum. Devoted mainly to the literature of botany and horticulture, especially as it relates to trees and shrubs that can be grown in northern Illinois, the collections of this special library are a unique resource in the Chicago area. Open to all, the Library and its collections present scholarly and general interest information resources about plants.
 		</p>
-        <h3>Rights and Reproductions</h3>
+        <h2>Rights and Reproductions</h2>
         <p>The Sterling Morton Library at The Morton Arboretum is committed to providing access to our collections through ACORN so that everyone can learn from, use, and share our collections.</p>
 
 <p>The Sterling Morton Library and the ACORN database houses items created by individuals who may have retained the copyright for their work. You are responsible for determining the copyright status of an individual work and securing permissions from the copyright holder to create reproductions or otherwise disseminate the work. The Sterling Morton Library does not guarantee the copyright status of any materials not owned by The Morton Arboretum.</p>
@@ -32,7 +32,7 @@
 
 <div class="row">
 	<div class="col-sm-12">
-		<h3>Contact Us</h3>
+		<h2>Contact Us</h2>
 			Sterling Morton Library<br/>
 			The Morton Arboretum <br/>
 			4100 IL-53, Lisle, IL 60532<br/><br/>

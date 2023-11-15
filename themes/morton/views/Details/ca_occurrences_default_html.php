@@ -15,41 +15,42 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_occurrences.preferred_labels.name}}}</H4>
-					<H6>{{{^ca_occurrences.event_type}}}{{{<ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef>}}}</H6>
+					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
+					<H2>{{{^ca_occurrences.event_type}}}{{{<ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef>}}}</H2>
+					<hr/>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
 <?php
 					if ($t_item->get('ca_occurrences.event_date')) {
-						print "<div class='unit'><H6>Event Date</h6>".$t_item->get('ca_occurrences.event_date')."</div>";
+						print "<div class='unit'><label>Event Date</label>".$t_item->get('ca_occurrences.event_date')."</div>";
 					}
 					if ($t_item->get('ca_occurrences.event_length')) {
-						print "<div class='unit'><H6>Length of event</h6>".$t_item->get('ca_occurrences.event_length')."</div>";
+						print "<div class='unit'><label>Length of event</label>".$t_item->get('ca_occurrences.event_length')."</div>";
 					}
 					if ($t_item->get('ca_occurrences.attendees')) {
-						print "<div class='unit'><H6>Number of attendees</h6>".$t_item->get('ca_occurrences.attendees')."</div>";
+						print "<div class='unit'><label>Number of attendees</label>".$t_item->get('ca_occurrences.attendees')."</div>";
 					}
 					if ($t_item->get('ca_occurrences.theme_topic')) {
-						print "<div class='unit'><H6>Theme or topic of event</h6>".$t_item->get('ca_occurrences.theme_topic')."</div>";
+						print "<div class='unit'><label>Theme or topic of event</label>".$t_item->get('ca_occurrences.theme_topic')."</div>";
 					}
 					if ($t_item->get('ca_occurrences.description')) {
-						print "<div class='unit'><H6>Description</h6>".$t_item->get('ca_occurrences.description')."</div>";
+						print "<div class='unit'><label>Description</label>".$t_item->get('ca_occurrences.description')."</div>";
 					}
 					if($t_item->get('ca_entities')){
 						if ($va_participants = $t_item->get('ca_entities', array('template' => ' <unit relativeTo="ca_entities_x_occurrences"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>', 'delimiter' => '<br/>'))) {
-							print "<div class='unit'><H6>Participants</h6>".$va_participants."</div>";
+							print "<div class='unit'><label>Participants</label>".$va_participants."</div>";
 						}
 					}
 					if ($t_item->get('ca_occurrences.event_format')) {
-						print "<div class='unit'><H6>Event Format</h6>".$t_item->get('ca_occurrences.event_format')."</div>";
+						print "<div class='unit'><label>Event Format</label>".$t_item->get('ca_occurrences.event_format')."</div>";
 					}																																			
 ?>	
 					{{{map}}}	
 <?php
 					if ($t_item->get('ca_occurrences.coverageSpatial')) {
-						print "<div class='unit'><H6>Location of Event</h6>".$t_item->get('ca_occurrences.coverageSpatial')."</div>";
+						print "<div class='unit'><label>Location of Event</label>".$t_item->get('ca_occurrences.coverageSpatial')."</div>";
 					}
 					$va_subjects_list = array();
 					if ($va_subject_terms = $t_item->get('ca_collections.lcsh_terms', array('returnAsArray' => true))) {
@@ -70,31 +71,34 @@
 					}											
 					asort($va_subjects_list);
 					if ($va_subjects_list) {
-						print "<div class='unit'><h6>Subject - keywords and LC headings</h6>".join("<br/>", $va_subjects_list)."</div>";
+						print "<div class='unit'><label>Subject - keywords and LC headings</label>".join("<br/>", $va_subjects_list)."</div>";
 					}					
 ?>							
 					<div id="detailTools">
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print is_array($va_comments) ? sizeof($va_comments) : 0; ?>)</a></div><!-- end detailTool -->
 						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 					</div><!-- end detailTools -->
 					
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
+					{{{<ifcount code="ca_collections" min="1"><div class="unit">
+						<ifcount code="ca_collections" min="1" max="1"><label>Related collection</label></ifcount>
+						<ifcount code="ca_collections" min="2"><label>Related collections</label></ifcount>
+						<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>
+					</div></ifcount>}}}
 <?php
 					if ($va_related_entities = $t_item->getWithTemplate('<unit relativeTo="ca_occurrences_x_entities" delimiter="<br/>" ><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>')) {
-						print "<div class='unit'><h6>Related Entities</h6>".$va_related_entities."</div>";
+						print "<div class='unit'><label>Related Entities</label>".$va_related_entities."</div>";
 					}
 ?>
-					{{{<ifcount code="ca_occurrences.related" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-					{{{<ifcount code="ca_occurrences.related" min="2"><H6>Related occurrences</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l></unit>}}}				
+					{{{<ifcount code="ca_occurrences.related" min="1"><div class="unit">
+						<ifcount code="ca_occurrences.related" min="1" max="1"><label>Related occurrence</label></ifcount>}}}
+						<ifcount code="ca_occurrences.related" min="2"><label>Related occurrences</label></ifcount>}}}
+						<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l></unit>
+					</div></ifcount>}}}			
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
