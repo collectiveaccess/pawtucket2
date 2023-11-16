@@ -364,10 +364,10 @@ footer {
 	transition: color 0.3s ease-out, border-color 0.3s ease-out;
 }
 
-/* .collection-grid {
+.collection-grid {
 	height: 360px;
 	overflow: hidden;
-} */
+}
 
 .collection-grid-items .filters {
 	padding-left: 0 !important;
@@ -375,15 +375,15 @@ footer {
 }
 
 @media screen and (max-width: 767px) {
-	/* .collection-grid {
+	.collection-grid {
 		height: 640px;
-	} */
+	}
 }
 
 @media screen and (max-width: 576px) {
-	/* .collection-grid {
+	.collection-grid {
 		height: 500px;
-	} */
+	}
 	.collection-grid-items .filters {
 		display: inline-block !important;
 	}
