@@ -58,7 +58,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 			<div class="eyebrow text__eyebrow color__gray">
 				<div class="breadcrumb">
 					{{{<unit relativeTo="ca_collections" restrictToRelationshipTypes="part_of">
-						<unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">
+						<unit relativeTo="ca_collections.hierarchy" delimiter="<span class='sep'> &gt;</span>">
 							<l>^ca_collections.preferred_labels<l>
 						</unit>
 					</unit>}}}                
@@ -120,9 +120,9 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 											</div>
 										</ifdef>
 			
-										<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
+										<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="part_of">
 											<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
-											<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="related_to">
+											<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="part_of">
 												<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
 											</unit>
 											<br>
@@ -213,9 +213,9 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 											</div>
 										</ifdef>
 			
-										<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
+										<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="part_of">
 											<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
-											<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="related_to">
+											<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="part_of">
 												<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
 											</unit>
 											<br>
@@ -334,7 +334,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 				</div>
 				<div class="int wrap-not-mobile">
 
-					<h4 class="text-align-center text__headline-4 block-small ">Related Content</h4>
+					<h4 class="text-align-center text__headline-4 block-small ">Related Items</h4>
 
 					<div class="slider-container module_slideshow slideshow-related manual-init">
 
@@ -352,7 +352,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 
 										<div class="text-align-center info">
 											<div class="text__eyebrow color__gray block-xxxs">
-												<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>
+												<unit relativeTo='ca_collections.hierarchy' maxLevelsFromTop ='1'><l>^ca_collections.preferred_labels</l></unit>
 											</div>
 											<div class="title text__promo-4">
 												<l>^ca_objects.preferred_labels</l>

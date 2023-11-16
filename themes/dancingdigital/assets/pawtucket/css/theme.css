@@ -1,20 +1,48 @@
-body{
-	margin: 20%;
+/* 
+	BS Grid Sizing:
+
+	xs <576px 
+	sm ≥576px 
+	md ≥768px 
+	lg ≥992px 
+	xl ≥1200px 
+	xxl ≥1400px 
+*/
+
+:root {
+	--bs-breakpoint-xs: 0;
+	--bs-breakpoint-sm: 576px;
+	--bs-breakpoint-md: 768px;
+	--bs-breakpoint-lg: 992px;
+	--bs-breakpoint-xl: 1200px;
+	--bs-breakpoint-xxl: 1400px;
 }
 
-.barba-container{
+body{
+	letter-spacing: .87px;
+	height: 100%;
+	overflow: hidden;
+}
+
+/* ------------------------------------------- */
+/* Necessary to get barba to transition properly */
+/* ------------------------------------------- */
+
+.barba-main-container{
 	position: absolute;
 	width: 100%;
 	height: 100%;
 }
 
-/* Sidebar Styles */
-
+/* ------------------------------------------- */
+/* Sidebar and Mobile Navigation Styles */
+/* ------------------------------------------- */
 .sidebar-container{
 	position: fixed;
 	z-index: 2;
-	width: 280px;
+	/* width: 280px; */
 	margin-top: 0%;
+	padding: 10px 60px 20px 250px;
 	background-color: transparent;
 }
 
@@ -22,6 +50,7 @@ body{
 	height: 430px;
 	overflow-y: scroll;
 	overflow-x: hidden;
+	margin-top: 50px;
 }
 
 .sidebar:after{
@@ -41,72 +70,177 @@ body{
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#ffffff', GradientType=0);
 }
 
+.sidebar li{
+	margin-bottom: 7px;
+}
+
 .sidebar li a{
 	font-family: Forum, sans-serif;
 	font-weight: 200;
 	font-size: 20px;
+	color: #fff;
+	text-decoration: none;
+
+	border: 6px solid transparent;
+	border-width: 2px;
+	border-image-slice: 1;
+	padding: 2px;
+}
+.sidebar li a:hover{
+	color: #fff;
 }
 
-.sidebar a:focus{
+.sidebar li a:focus{
 	border: 6px solid;
 	border-image-slice: 1;
-	border-width: 3px;
+	border-width: 2px;
+	padding: 2px;
 	border-image-source: linear-gradient(to left, #743ad5, #d53a9d);
+	color: #fff;
 }
 
-/* .sidebar .btn-toggle[aria-expanded="true"] i {
-	transform: rotate(180deg);
+@media (max-width: 1600px) {
+	.sidebar-container {
+		padding: 10px 60px 20px 200px;
+	}
+	.general-page {
+		padding-left: 500px !important;
+		padding-right: 200px !important;
+	}
+}
+@media (max-width: 1450px) {
+	.sidebar-container {
+		padding: 10px 60px 20px 150px;
+	}
+	.general-page {
+		padding-left: 450px !important;
+		padding-right: 150px !important;
+	}
+}
+@media (max-width: 1300px) {
+	.sidebar-container {
+		padding: 10px 60px 20px 100px;
+	}
+	.general-page {
+		padding-left: 400px !important;
+		padding-right: 100px !important;
+	}
+}
+@media (max-width: 1150px) {
+	.sidebar-container {
+		padding: 10px 60px 20px 50px;
+	}
+	.general-page {
+		padding-left: 350px !important;
+		padding-right: 50px !important;
+	}
+	.heading-size-1 {
+		font-size: 60px !important;
+	}
+
+	.heading-size-2 {
+		font-size: 50px !important;
+	}
+}
+@media (max-width: 900px) {
+	.sidebar-container {
+		display: none;
+	}
+	.general-page {
+		padding: 80px 20px !important;
+	}
+	.general-page .container {
+		padding: 0 !important;
+	}
 }
 
-.sidebar .collapsed-item a{
-	font-size: 16px;
-} */
 
+/* ------------------------------------------- */
+/* Mobile Navbar Styling */
+/* ------------------------------------------- */
 
-/* .home-navbar{
+.mobile-navbar{
+	display: none !important;
+	position: absolute !important;
 	font-family: Poppins;
 	font-weight: 200;
 	font-size: 16px;
+	background: transparent;
+	box-shadow: none;
+	width: 100%;
+	justify-content: space-between;
 }
 
-.home-navbar .navbar-nav .nav-link{
+.mobile-navbar .container-fluid{
+	width: 100%;
+}
+
+.mobile-navbar .navbar-nav .nav-link{
+	color: #fff;	
+}
+@media (max-width: 900px) {
+	.mobile-navbar {
+		display: flex !important;
+	}
+}
+
+.navbar-collapse{
+	padding: 20px !important;
+	max-height: 100%;
+	background-color: #000;
+}
+
+@media (min-width: 900px) {
+	.navbar-collapse.collapse{
+		display: block !important;
+		height: auto !important;
+		padding-bottom: 0;
+		overflow: visible !important;
+	}
+}
+
+@media (min-width: 768px) {
+	.collapse:not(.show) {
+		display: none !important;
+	}
+}
+
+.mobile-navbar .container-fluid svg{
+	height: 50px;
+	width: 70px;
+}
+
+
+ul.navbar-nav{
+	padding-left: 20px !important;
+}
+
+/* ------------------------------------------- */
+/* General Page Styling */
+/* ------------------------------------------- */
+
+.general-page {
 	color: #fff;
-	padding: 0px 20px !important;
-} */
-
-.about-section {
-	background-image: url("../graphics/home-bg.png");
-	background-position: center center;
-	/* background-repeat: no-repeat; */
-	background-size: cover;
+	padding: 100px 270px 50px 550px;
+	height: 100%;
+	overflow-y: auto;
 }
 
-.choreographers-section{
-	background: linear-gradient(to bottom, rgba(23, 50, 19, 1) 0%, rgba(12, 28, 9, 1) 50%, rgba(2, 11, 1, 1) 100%);
-}
-
-.ourstory-section{
-	background: linear-gradient(to bottom, rgba(26, 8, 40, 1) 0%, rgba(42, 10, 66, 1) 50%, rgba(31, 9, 49, 1) 100%);
-}
-
-
-.page-section{
-	margin-top: 60px !important;
-}
-
-.page-heading{
+.page-heading {
 	font-family: Antic Didone;
 	font-weight: 400;
+	padding-bottom: 50px;
+	text-transform: none;
+}
+
+.heading-size-1 {
 	font-size: 85px;
-	margin-bottom: 50px;
 }
 
-.page-heading2{
-	font-family: Antic Didone;
-	font-weight: 400;
+.heading-size-2 {
 	font-size: 70px;
-	margin-bottom: 50px;
 }
+
 
 .page-content {
 	font-family: Poppins;
@@ -114,10 +248,777 @@ body{
 	font-size: 24px;
 }
 
-.page-content2 {
-	font-family: Poppins;
-	font-weight: 200;
-	font-size: 20px;
+.content-size-1 {
+	font-size: 24px;
+}
+
+.content-size-2 {
+	font-size: 16px;
+}
+
+.browse-link{
+	margin-bottom: 20px;
+}
+
+.browse-link, .browse-link a{
+	font-family: Forum;
+	/* font-size: 20px; */
+	color: #fff;
+	text-decoration: none;
+}
+.browse-link:hover, .browse-link a:hover{
+	text-decoration: underline;
+}
+
+ul{
+	list-style-type: none;
 }
 
 
+
+/* ------------------------------------------- */
+/* Navigation Styling */
+/* ------------------------------------------- */
+
+.navigation-row {
+	padding: 0 0 40px 0;
+}
+.navigation-row div a{
+	color: #FFF;
+	text-decoration: none;
+}
+
+.navigation-row div a:hover{
+	text-decoration: underline;
+}
+
+
+/* ------------------------------------------- */
+/* Page Backgrounds and Specific Styling */
+/* ------------------------------------------- */
+
+.about-section {
+	background-size: cover;
+	background-image: url("../graphics/home-bg.png");
+	background-position: center;
+	background-repeat: repeat;
+	background-color: rgba(42, 10, 66, 1);
+}
+
+.ourstory-section, .gallery-section, .performances-section, .object-detail-section, .browse-section {
+	background: linear-gradient(to bottom, rgba(26, 8, 40, 1) 0%, rgba(42, 10, 66, 1) 50%, rgba(31, 9, 49, 1) 100%);
+}
+
+.performances-links .link-text {
+	font-family: Poppins;
+	font-weight: 300;
+	font-size: 18px;
+	color: #964B00;
+	text-decoration: none;
+}
+
+.journey-section {
+	background: linear-gradient(to bottom, rgba(124, 75, 28, 1) 0%, rgba(78, 56, 31, 1) 50%, rgba(11, 7, 1, 1) 100%);
+}
+
+.journey-links .link-text {
+	font-family: Forum;
+	font-size: 18px;
+	color: #fff;
+	text-decoration: none;
+}
+
+.archives-section {
+	background: linear-gradient(180deg, #1B090D 0%, #360B15 52.54%, #1B090D 100%);
+}
+
+.explore-grid{
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 10px;
+}
+
+.explore-grid-item{
+	width: 190px;
+	margin: 10px;
+	padding: 10px;
+	background-color: #300A13;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #957F82;
+	border-radius: 10px;
+}
+
+.explore-grid-item .explore-icon{
+	margin-bottom: 15px;
+}
+
+.explore-grid-item .explore-text h4, .explore-grid-item a{
+	margin-bottom: 15px;
+	font-family: Poppins;
+	font-size: 18px;
+	color: #FFF;
+	text-decoration: none;
+}
+.explore-grid-item .explore-text p{
+	font-family: Poppins;
+	font-size: 13px;
+	line-height: 24px;
+	font-weight: 300;
+}
+
+
+
+/* ------------------------------------------- */
+/* Choreographic Works Landing Page Styling */
+/* ------------------------------------------- */
+
+.choreoworks-section, .works-detail-section{
+	background: linear-gradient(to bottom, rgba(11, 18, 75, 1) 0%, rgba(14, 17, 39, 1) 50%, rgba(3, 6, 30, 1) 100%);
+}
+
+.works-img img{
+	border-radius: 10px;
+	opacity: .7;
+	transition: .3s;
+}
+.works-img img:hover{
+	opacity: 1;
+	transition: .3s;
+}
+
+.works-caption-title, .works-caption-title a{
+	font-family: Forum, sans-serif;
+	font-size: 20px;
+	color: #fff;
+	text-decoration: none;
+	text-transform: none;
+	display: block;	
+	margin-top: 8px;
+}
+.works-caption-title:hover{
+	color: #fff;
+	text-decoration: none;
+}
+
+.works-caption-date{
+	font-family: Poppins;
+	font-size: 12px;
+	color: #FFFFFF4D;
+	text-decoration: none;
+	text-transform: none;
+}
+
+.works-grid-container {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 10px;
+}
+
+.works-item{
+	margin-bottom: 15px;
+}
+
+
+@media screen and (max-width: 1350px) {
+	.works-grid-container, .choreographer-grid-container, .choreographer-grid-container-odd {
+		grid-template-columns: repeat(3, 1fr) !important;
+	}
+	.choreographer-grid-container-odd {
+		margin-left: 0 !important;
+	}
+}
+@media screen and (max-width: 1070px) {
+	.works-grid-container,.choreographer-grid-container, .choreographer-grid-container-odd {
+		grid-template-columns: repeat(2, 1fr) !important;
+	}
+	.choreographer-grid-container-odd {
+		margin-left: 0 !important;
+	}
+}
+
+
+/* ------------------------------------------- */
+/* Choreographers Page Main Page Styling */
+/* ------------------------------------------- */
+.choreographers-section,
+.entity-detail-section {
+	background: linear-gradient(to bottom, rgba(23, 50, 19, 1) 0%, rgba(12, 28, 9, 1) 50%, rgba(2, 11, 1, 1) 100%);
+}
+
+.choreo-img-container {
+	position: relative;
+	width: 200px;
+}
+
+.choreo-img {
+	width: 120px;
+	height: 120px;
+	opacity: 0.4;
+	transition-duration: 0.3s;
+}
+
+.choreo-img-container:hover .choreo-img {
+	opacity: 1;
+}
+
+.text-overlay {
+	font-family: Forum;
+	font-size: 22px;
+	color: #fff;
+	text-decoration: none;
+	text-align: right;
+	position: absolute;
+	bottom: 30px;
+	right: 40px;
+	width: 80px;
+	text-align: left;
+	line-height: 1.1em;
+}
+
+.text-overlay:hover {
+	color: #fff;
+	text-decoration: none;
+}
+
+.choreographer-grid-container, .choreographer-grid-container-odd {
+	display: grid;
+	grid-template-columns: auto auto auto auto;
+	gap: 10px;
+}
+
+.choreographer-grid-container-odd{
+	margin-left: 100px;
+}
+
+.choreographer-grid-item {
+	padding: 20px;
+}
+
+
+/* ------------------------------------------- */
+/* General Detail Page Styling */
+/* ------------------------------------------- */
+.detail-list{
+	columns: 2;
+	-webkit-columns: 2;
+	-moz-columns: 2;
+}
+.detail-list-item{
+	padding-right: 15px;
+}
+
+/* ------------------------------------------- */
+/* Choreograpic Works Occurrence Detail Styling */
+/* ------------------------------------------- */
+
+
+.occurrence-img img {
+	border-radius: 10px;
+}
+
+.occurrence-info .occurrence-person a{
+	font-family: Poppins;
+	font-size: 16px;
+	font-weight: 300;
+	color: #fff;
+	text-decoration: none;
+	text-transform: none;
+}
+
+.occurrence-info .occurrence-person a span{
+	/* font-family: Poppins;
+	font-size: 16px; */
+	font-weight: 200;
+	color: rgba(255, 255, 255, 0.5);
+	text-transform: uppercase;
+}
+
+.related-item-title:hover {
+	color: #fff;
+	text-decoration: none;
+}
+
+
+/* ------------------------------------------- */
+/* Entity Detail Styling */
+/* ------------------------------------------- */
+
+.entity-name, .entity-data-label {
+	font-family: Forum;
+	font-size: 24px;
+	text-transform: none;
+}
+
+.entity-bio {
+	font-family: Poppins;
+	font-size: 16px;
+	line-height: 1.75;
+}
+
+a.readmore-js-toggle {
+	font-family: Poppins;
+	font-size: 16px;
+	color: #fff;
+}
+
+.works-row, .items-row, .object-data-row{
+	padding-top: 40px !important;
+	padding-bottom: 40px !important;
+	border-top: 1px solid #fff;
+}
+
+.related-items-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 15px;
+}
+
+@media screen and (max-width: 1250px) {
+	.related-items-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+@media screen and (max-width: 923px) {
+	.related-items-grid {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
+
+.related-item {
+	text-align: center;
+}
+
+.related-item-title,
+.related-item-title a, .bResultItemText a{
+	font-family: Forum, sans-serif;
+	font-size: 16px;
+	color: #fff;
+	text-decoration: none;
+	text-transform: none;
+	display: block;
+}
+
+.related-item-title:hover {
+	color: #fff;
+	text-decoration: none;
+}
+
+.related-item-img{
+	height: 180px;
+	position: relative;
+}
+
+.related-item-img a img {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+/* .related-item-img-placeholder {
+	width: 100%;
+	height: 80%;
+	object-fit: contain;
+	background-image: url('/themes/dancingdigital/assets/pawtucket/graphics/grey.png');
+
+	position: absolute;
+	top: 50%;
+	transform: translate(0, -50%);
+} */
+
+.related-item-img-placeholder {
+	width: 250px;
+	height: 100%;
+	object-fit: contain;
+	background-image: url('/themes/dancingdigital/assets/pawtucket/graphics/grey.png');
+	margin: auto;
+}
+
+
+/* ------------------------------------------- */
+/* Object Detail Styling */
+/* ------------------------------------------- */
+
+.object-info{
+	margin-bottom: 20px;
+}
+.object-info-label{
+	font-family: Poppins;
+	font-size: 16px;
+	text-transform: capitalize;
+}
+.object-info .info-text{
+	font-family: Forum;
+	font-size: 16px;
+}
+.object-info .info-text a{
+	font-family: Forum;
+	font-size: 16px;
+	text-decoration: none;
+}
+
+.caVideoPlayer{
+	height: fit-content !important;
+	width: fit-content !important;
+}
+
+.object-rep img{
+	max-height: 400px;
+	max-width: 500px;
+	object-fit: contain;
+}
+
+
+
+/* ------------------------------------------- */
+/* Browse Styling */
+/* ------------------------------------------- */
+
+.browse-page-title{
+	margin-bottom: 40px;
+	font-size: 40px;
+	text-transform: capitalize;
+	font-size: 60px;
+}
+
+@media screen and (max-width: 768px) {
+	.browse-section {
+		.container {
+			max-width: unset;
+		}
+	}
+}
+
+.browseResultsGrid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 20px;
+}
+
+@media screen and (max-width: 1700px) {
+	.browseResultsGrid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media only screen and (min-width: 900px) and (max-width: 1100px) {
+	.browseResultsGrid {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
+
+@media screen and (max-width: 900px) {
+	.browseResultsGrid {
+		grid-template-columns: repeat(1, 1fr);
+	}
+}
+
+.bGridResultItem {
+	text-align: center;
+}
+
+.bResultItemImg {
+	height: 180px;
+	margin: auto;
+	position: relative;
+}
+
+.bResultItemImg a img{
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+}
+
+/* .bResultImgPlaceholder {
+	width: 100%;
+	height: 80%;
+	object-fit: contain;
+	background-image: url('/themes/dancingdigital/assets/pawtucket/graphics/grey.png');
+
+	position: absolute;
+	top: 50%;
+	transform: translate(0, -50%);
+} */
+
+.bResultImgPlaceholder {
+	width: 250px;
+	height: 100%;
+	object-fit: contain;
+	background-image: url('/themes/dancingdigital/assets/pawtucket/graphics/grey.png');
+	margin: auto;
+}
+
+#bSortByList ul, li, strong, a, .bResultsAmount{
+	font-family: Poppins, sans-serif;
+	font-size: 14px;
+	color: #fff !important;
+}
+
+.bResultsAmount{
+	font-size: 18px !important;
+	/* text-transform: none; */
+}
+
+.browse-section h1 {
+	font-family: Forum, sans-serif;
+	font-weight: 200;
+}
+
+.browse-menu-items .dropdown-menu{
+	font-family: Poppins, sans-serif;
+	font-weight: 200;
+	font-size: 12px;
+}
+.browse-menu-items .dropdown-menu .dropdown-header{
+	font-size: 12px;
+}
+
+.bCriteria strong {
+	font-family: Poppins;
+	font-weight: 400;
+	font-size: 12px;
+	color: #fff;
+	text-transform: uppercase;
+}
+
+.bCriteria {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+a.browseRemoveFacet .glyphicon, a.browseRemoveFacet button {
+	padding-left: 5px;
+	font-size: 12px;
+	color: #FFF !important;
+}
+
+a.browseRemoveFacet img {
+	margin-bottom: 3px;
+}
+
+#bViewButtons {
+	text-align: right;
+	font-size: 18px;
+	padding-bottom: 5px;
+}
+#bViewButtons a{
+	color: #fff;
+}
+
+.bViewButtons .disabled {
+	pointer-events: all;
+}
+
+#bRefine {
+	background-color: transparent;
+	/* width: 275px; */
+	line-height: 0.75em;
+	padding: 0px 10px;
+	position: relative;
+	z-index: 10;
+	overflow-y: auto;
+	display: block;
+	color: #fff;
+}
+
+#bRefine H2 {
+	font-family: Forum, sans-serif;
+	font-weight: 200;
+	font-size: 20px;
+	text-transform: capitalize;
+	color: #fff;
+	margin-top: 0px;
+}
+
+#bRefine H5,
+#bRefine H3 {
+	font-family: Forum, sans-serif;
+	font-weight: 200;
+	font-size: 18px;
+	margin-bottom: 8px;
+	margin-top: 20px;
+	text-transform: capitalize;
+	padding: 0px;
+	color: #fff;
+}
+
+#bRefine a {
+	font-family: Poppins;
+	font-weight: 200;
+	color: #fff;
+	font-size: 14px;
+	/* line-height: 146%; */
+	text-decoration: none;
+}
+#bRefine a:hover {
+	text-decoration: underline;
+}
+
+#bRefine a.more {
+	color: #707070;
+	text-decoration: underline;
+}
+
+#bRefine div {
+	margin-bottom: 5px;
+}
+
+@media (min-width: 768px) {
+	#bRefine.fixed {
+		position: fixed;
+		top: 0px;
+		margin-top: 0px;
+	}
+}
+
+#bRefineButton,
+#bRefineClose {
+	display: none;
+}
+
+@media (max-width: 767px) {
+	#bRefine {
+		/* display: none; */
+		/* position: fixed; */
+		z-index: 10000;
+		/* top: 0px;
+		left: 0px;
+		right: 0px; */
+		margin-top: 0px;
+		overflow: auto !important;
+		height: 100% !important;
+		margin: 0px;
+		width: 100%
+	}
+
+	#bRefineButton {
+		display: inline;
+	}
+
+	#bRefineButton .fa {
+		color: #666 !important;
+		top: -2px;
+		position: relative;
+	}
+
+	#bRefineClose {
+		display: block;
+		font-size: 20px !Important;
+	}
+}
+
+
+#bMorePanel {
+	position: fixed;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	background-color: #FFFFFF;
+	-webkit-box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 7px 10px rgba(0, 0, 0, 0.2);
+	padding: 10px;
+	display: none;
+	z-index: 10001;
+	min-width: 450px;
+	color: #000 !important;
+}
+
+#bMorePanel .bFilterCount {
+	color: #000 !important;
+	font-weight: normal;
+	font-size: .8em;
+	padding-left: 10px;
+}
+
+#bMorePanel #bAncestorList {
+	padding: 10px 0px 10px 0px;
+	margin-bottom: 10px;
+	max-width: 400px;
+	color: #000 !important;
+}
+
+#bMorePanel #bAncestorList span {
+	font-size: 7px;
+	color: #000 !important;
+}
+
+#bMorePanel #bAncestorList a {
+	color: #000 !important;
+	padding: 0px 5px 0px 5px;
+	font-weight: bold;
+	font-size: 12px;
+}
+
+#bMorePanel #bAncestorList a span {
+	font-size: 12px;
+	color: #000 !important;
+}
+
+#bMorePanel #bScrollList {
+	overflow-y: auto;
+	padding-left: 10px;
+	height: 95%;
+	float: left;
+	margin-top: 5px;
+	width: 250px;
+	color: #000 !important;
+}
+
+@media (min-width: 992px) {
+	#bMorePanel #bScrollList {
+		width: 350px;
+	}
+}
+
+#bMorePanel #bScrollList.bScrollListHierarchy {
+	height: 85%;
+	padding-left: 25px;
+	color: #000 !important;
+}
+
+#bMorePanel #bScrollList a {
+	color: #000 !important;
+	line-height: 1.1em;
+	font-size: 11px;
+}
+
+#bMorePanel #bScrollList div {
+	padding-bottom: 8px;
+	color: #000 !important;
+}
+
+#bMorePanel #bScrollList div strong {
+	color: #000 !important;
+}
+
+#bMorePanel #bLetterBar {
+	float: right;
+	margin: 0px 40px 0px 10px;
+	text-align: center;
+	color: #000 !important;
+}
+
+#bMorePanel #bLetterBar a {
+	text-decoration: none;
+	font-weight: bold;
+	color: #000 !important;
+}
+
+#bMorePanelClose {
+	display: none;
+}
+
+@media (max-width: 767px) {
+	#bMorePanel {
+		min-width: 100px;
+		left: 0px;
+	}
+
+	#bMorePanel #bScrollList {
+		width: 200px;
+	}
+
+	#bMorePanelClose {
+		display: inline;
+	}
+}

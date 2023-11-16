@@ -30,33 +30,22 @@
  * ----------------------------------------------------------------------
  */
  ?>
- <main data-barba="container" data-barba-namespace="about" class="barba-container about-section" style="background-color: #2a0a42;">
-	<!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
-	<div class="container">
-		<div class="page-section row justify-content-center">
-			<div class="col-auto p-3 text-white">
 
-				<!-- <nav class="navbar navbar-expand-lg home-navbar bg-transparent shadow-none">
-					<div class="container-fluid justify-content-evenly">
-						<div class="navbar-nav">
-							<a class="nav-link" href="#">About</a>
-							<a class="nav-link" href="#">Choreographers</a>
-							<a class="nav-link" href="#">Choreographic Works</a>
-							<a class="nav-link" href="#">Performances</a>
-							<a class="nav-link" href="#">Gesel’s Journey</a>
-							<a class="nav-link" href="#">Archives</a>
-						</div>
-					</div>
-				</nav> -->
-
-				<h1 class="page-heading">The No Boundaries Archive Project</h1>
-				<p class="page-content">
-					Dancing the Visions of Contemporary Black Choreographers
-					<br>
-					A living, breathing archive that uses dance as a vehicle for understanding a distinctly African American theme 
-					of resilience in spite of a history of silencing and erasure.
-				</p>
-			</div> 
-		</div>
+<main data-barba="container" data-barba-namespace="about" class="barba-main-container about-section">
+	<div class="general-page">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-auto">
+					<h1 class="page-heading heading-size-1 ps-0">The No Boundaries Archive Project</h1>
+					<p class="page-content mb-5">
+						<span style="font-size: 30px; font-weight: 700;">Dancing the Visions of Contemporary Black Choreographers</span>
+					</p>
+					<p class="page-content">
+						A living, breathing archive that uses dance as a vehicle for understanding a distinctly African American theme 
+						of resilience in spite of a history of silencing and erasure.
+					</p>
+				</div>
+			</div>
+ 		</div>
 	</div>
 </main>

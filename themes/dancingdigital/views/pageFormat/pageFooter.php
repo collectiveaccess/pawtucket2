@@ -26,6 +26,7 @@
  * ----------------------------------------------------------------------
  */
 ?>
+
 <?php
 	if(false) {
 ?>
@@ -111,6 +112,6 @@
 	print $this->render("Cookies/banner_html.php");	
 ?>
 
-    	<script src="/themes/dancingdigital/assets/pawtucket/js/transitions.js"></script>
+    	<!-- <script src="/themes/dancingdigital/assets/pawtucket/js/transitions.js"></script> -->
 	</body>
 </html>
