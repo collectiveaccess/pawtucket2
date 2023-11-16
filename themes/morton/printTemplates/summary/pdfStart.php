@@ -1,6 +1,6 @@
-<?php	
+<?php
 /* ----------------------------------------------------------------------
- * app/templates/header.php : standard PDF report header
+ * app/templates/pdfStart.php : top-matter prepended to PDF templates
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,37 +26,19 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Header
- * @type fragment
+ * @name PDF start
+ * @type pageStart
  *
  * ----------------------------------------------------------------------
  */
  
- if($this->request->config->get('summary_header_enabled')) {
-	switch($this->getVar('PDFRenderer')) {
-		case 'wkhtmltopdf':
+ $t_item = $this->getVar('t_subject');
+ 
 ?>
-			<!--BEGIN HEADER--><!DOCTYPE html>
-			<html>
-				<head>
-					<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
-					<meta charset="utf-8" />
-					<meta charset="utf-8" />
-				</head>
-				<body>	
-					<div id='header'><?= caGetReportLogo(); ?></div>
-			</body>
-			</html><!--END HEADER-->
-<?php
-		break;
-		# ----------------------------------------
-		default:
-?>
-			<div id='headerdompdf'>
-				<?= caGetReportLogo(); ?>
-			</div>
-<?php
-		break;
-		# ----------------------------------------
-	}
-}
+<html>
+	<head>
+		<title><?php print _t('Summary for %1 (%2)', $t_item->getLabelForDisplay(), $t_item->get($t_item->getProperty('ID_NUMBERING_ID_FIELD'))); ?></title>
+		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+		<meta charset="utf-8" />
+	</head>
+	<body>

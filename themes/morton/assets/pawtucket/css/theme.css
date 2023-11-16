@@ -777,7 +777,7 @@ body{
 	background-color:#77a22f;
 	font-family: "NunitoSans", sans-serif;
 }
-.btn-default:hover, .btn-default:active {
+.btn-default:hover, .btn-default:active, .btn-default:focus {
 	background-color:#f6da2e;
 	font-family: "NunitoSans", sans-serif;
 }
