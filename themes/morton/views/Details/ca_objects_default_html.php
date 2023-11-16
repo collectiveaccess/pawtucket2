@@ -25,7 +25,7 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}} &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-comment"></span><?= caNavLink($this->request, _t('Contact us'), '', '', 'Help', 'Index'); ?></div><!-- end detailTool -->
+					<div class="detailTool"><?= caNavLink($this->request, '<span class="glyphicon glyphicon-comment"></span> '._t('Contact us'), '', '', 'Help', 'Index'); ?></div><!-- end detailTool -->
 				{{{representationViewer}}}
 				<div id="detailAnnotations"></div>
 				
@@ -43,7 +43,7 @@
 					foreach ($va_rights_bundle as $va_att_key => $va_rights_list) {
 						foreach ($va_rights_list as $va_key => $va_rights) {
 							if ($va_rights['rightsText']) {
-								$vs_rights_buf.= "<div><b>Rights & Restrictions: </b>".$va_rights['rightsText']."</div>";
+								$vs_rights_buf.= "<div><label>Rights & Restrictions: </label>".$va_rights['rightsText']."</div>";
 							}
 							if ($va_rights['endRestriction']) {
 								$vs_rights_buf.= "<div><b>End of restriction: </b>".$va_rights['endRestriction']."</div>";
@@ -59,41 +59,43 @@
 							}																																								
 						}
 					}
+					print '<div class="mobileDisplayHide">';
 					if ($vs_rights_buf  || ($t_object->get('ca_objects.public_domain', array('convertCodesToDisplayText' => true)) == "yes")) {
-						print "<div class='unit'><h6>Rights & User Restrictions</h6>".$vs_rights_buf."</div>";
+						print "<div class='unit'><label>Rights & User Restrictions</label>".$vs_rights_buf."</div>";
 					}
 					if ($t_object->get('ca_objects.public_domain', array('convertCodesToDisplayText' => true)) == "yes") {
 						print "Public Domain";
-					}								
+					}	
+					print "</div>";							
 				}
 				// if ($vs_copyright_statement = $t_object->get('ca_objects.rights.copyrightStatement')){
-// 					print "<div class='unit'><h6>Copyright</h6>{$vs_copyright_statement}</div>";
+// 					print "<div class='unit'><label>Copyright</label>{$vs_copyright_statement}</div>";
 // 				}
 ?>
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-				print "<h4 class='entity'>".$t_object->get('ca_entities.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</h4>";
+				print "<div class='entity'>".$t_object->get('ca_entities.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('author', 'collected', 'creator', 'engraver', 'draftsmen_surveyor', 'lithographer', 'photographer')))."</div>";
 ?>			
-				<H4><i>{{{ca_objects.preferred_labels.name}}}</i></H4> 
+				<H1><i>{{{ca_objects.preferred_labels.name}}}</i></H1> 
 				<HR>
 <?php
 					if ($vs_identifier = $t_object->get('ca_objects.idno')){
-						print "<div class='unit'><h6>Identifier</h6>".$vs_identifier."</div>";
+						print "<div class='unit'><label>Identifier</label>".$vs_identifier."</div>";
 					}
 					if ($vs_pub_description = $t_object->get('ca_objects.publication_description')){
-						print "<div class='unit'><h6>Publication Information</h6>".$vs_pub_description."</div>";
+						print "<div class='unit'><label>Publication Information</label>".$vs_pub_description."</div>";
 					}
 					$va_format_buf = null;
 					if ($t_object->get('ca_objects.format')) {
-						$va_format_buf .= "<div class='unit'><h6>Format</h6>".$t_object->get('ca_objects.format')."</div>";
+						$va_format_buf .= "<div class='unit'><label>Format</label>".$t_object->get('ca_objects.format')."</div>";
 					}
 					if (($t_object->get('ca_objects.digitization_info.digital_status') != "-") && $t_object->get('ca_objects.digitization_info.digital_status')) {
-						$va_format_buf .= "<div class='unit'><h6>Digitization Status</h6>".$t_object->get('ca_objects.digitization_info.digital_status', array('convertCodesToDisplayText' => true))."</div>";
+						$va_format_buf .= "<div class='unit'><label>Digitization Status</label>".$t_object->get('ca_objects.digitization_info.digital_status', array('convertCodesToDisplayText' => true))."</div>";
 					}
 					if ($t_object->get('ca_objects.reproduction')) {
-						$va_format_buf .= "<div class='unit'><h6>Reproduction: </h6>".$t_object->get('ca_objects.reproduction', array('convertCodesToDisplayText' => true, 'delimiter' => '<br/>'))."</div>";
+						$va_format_buf .= "<div class='unit'><label>Reproduction: </label>".$t_object->get('ca_objects.reproduction', array('convertCodesToDisplayText' => true, 'delimiter' => '<br/>'))."</div>";
 					}
 					$va_dims_buf = null;
 					if ($t_object->get('ca_objects.dimensions')) {
@@ -126,31 +128,31 @@
 								#}																																								
 							}
 						}
-						$va_format_buf .= "<div class='unit'><h6>Dimensions</h6>".$va_dims_buf."</div>";
+						$va_format_buf .= "<div class='unit'><label>Dimensions</label>".$va_dims_buf."</div>";
 					}
 					if ($t_object->get('ca_objects.scale')) {
-						 $va_format_buf .= "<div class='unit'><h6>Scale</h6>".$t_object->get('ca_objects.scale')."</div>";
+						 $va_format_buf .= "<div class='unit'><label>Scale</label>".$t_object->get('ca_objects.scale')."</div>";
 					}
 					if ($vs_extent = $t_object->get('ca_objects.extent_text')) {
-						$va_format_buf .= "<div class='unit'><h6>Extent</h6>".$vs_extent."</div>";
+						$va_format_buf .= "<div class='unit'><label>Extent</label>".$vs_extent."</div>";
 					}																				
 					if ($va_format_buf) {
 						print "<div class='unit'>".$va_format_buf."</div>";
 					}					
 					#if ($vs_coll_identifier = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true))){
-					#	print "<div class='unit'><h6>Collection Identifier</h6>".$vs_coll_identifier."</div>";
+					#	print "<div class='unit'><label>Collection Identifier</label>".$vs_coll_identifier."</div>";
 					#}					
 					if ($t_object->get('ca_objects.type_id')) {
-						print "<div class='unit'><h6>Type</h6>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
+						print "<div class='unit'><label>Type</label>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
 					}								
 					if ($vs_date = $t_object->get('ca_objects.date_created')){
-						print "<div class='unit'><h6>Date created</h6>".$vs_date."</div>";
+						print "<div class='unit'><label>Date created</label>".$vs_date."</div>";
 					}
 					if ($vs_description = $t_object->get('ca_objects.description.description_text')){
-						print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
+						print "<div class='unit'><label>Description</label>".$vs_description."</div>";
 					}
 					if ($vs_appeared = $t_object->get('ca_objects.appeared_in')){
-						print "<div class='unit'><h6>Appeared In</h6>".$vs_appeared."</div>";
+						print "<div class='unit'><label>Appeared In</label>".$vs_appeared."</div>";
 					}
 					if($va_links = $t_object->get('ca_objects.external_link', array("returnWithStructure" => true))){
 						$va_formatted_links = array();
@@ -165,12 +167,12 @@
 							}
 						}
 						if(sizeof($va_formatted_links)){
-							print "<div class='unit'><h6>URL".((sizeof($va_formatted_links) > 1) ? "s" : "")."</h6>".join(", ", $va_formatted_links)."</div>";
+							print "<div class='unit'><label>URL".((sizeof($va_formatted_links) > 1) ? "s" : "")."</label>".join(", ", $va_formatted_links)."</div>";
 						}
 					}
 					if(in_array($t_object->get("type_id"), $va_publication_types)){
 						if($vs_tmp = $t_object->get('ca_objects.abstract')){
-							print "<div class='unit'><h6>Abstract</h6>".$vs_tmp."</div>";
+							print "<div class='unit'><label>Abstract</label>".$vs_tmp."</div>";
 						}
 						if($va_other_identifiers = $t_object->get('ca_objects.other_identifiers', array("returnWithStructure" => true, "convertCodesToDisplayText" => true))){
 							$va_issn = array();
@@ -184,14 +186,14 @@
 								}
 							}
 							if(sizeof($va_isbn)){
-								print "<div class='unit'><h6>ISBN</h6>".join(", ", $va_isbn)."</div>";
+								print "<div class='unit'><label>ISBN</label>".join(", ", $va_isbn)."</div>";
 							}
 							if(sizeof($va_issn)){
-								print "<div class='unit'><h6>ISSN</h6>".join(", ", $va_issn)."</div>";
+								print "<div class='unit'><label>ISSN</label>".join(", ", $va_issn)."</div>";
 							}
 						}			
 						if($vs_tmp = $t_object->get("ca_objects.alternate_titles.altTitle", array("delimiter" => "<br/>"))){
-							print "<div class='unit'><h6>Alternate Title</h6>".$vs_tmp."</div>";
+							print "<div class='unit'><label>Alternate Title</label>".$vs_tmp."</div>";
 						}
 						$va_tmp = array();
 						$va_tmp_title = array();
@@ -208,79 +210,87 @@
 							$va_tmp_title[] = "Page Number";
 						}
 						if(sizeof($va_tmp)){
-							print "<div class='unit'><H6>".join(", ", $va_tmp_title)."</H6>".join(", ", $va_tmp)."</div>";
+							print "<div class='unit'><label>".join(", ", $va_tmp_title)."</label>".join(", ", $va_tmp)."</div>";
 						}
 
 					}
 					$va_subjects_list = array();
 					if ($va_subject_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						foreach ($va_subject_terms as $va_term => $va_subject_term) {
-							if (!trim($va_subject_term)) { continue; }
+							trim($va_subject_term);
+							if (!$va_subject_term) { continue; }
 							$va_subject_term_list = explode('[', $va_subject_term);
 							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_term_list[0]), '', '', 'Search', 'objects', ['search' => 'ca_objects.lcsh_terms:"'._procKeyword($va_subject_term_list[0]).'"']);
 						}
 					}
 					if ($va_subject_terms_text = $t_object->get('ca_objects.lcsh_terms_text', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						foreach ($va_subject_terms_text as $va_text => $va_subject_term_text) {
-							if (!trim($va_subject_term_text)) { continue; }
+							trim($va_subject_term_text);
+							if (!$va_subject_term_text) { continue; }
 							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_term_text), '', '', 'Search', 'objects', ['search' => 'ca_objects.lcsh_terms_text:"'._procKeyword($va_subject_term_text).'"']);
 						}
 					}
 					if ($va_subject_genres = $t_object->get('ca_objects.lcsh_genres', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						foreach ($va_subject_genres as $va_text => $va_subject_genre) {
-							if (!trim($va_subject_genre)) { continue; }
+							trim($va_subject_genre);
+							if (!$va_subject_genre) { continue; }
 							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_genre), '', '', 'Search', 'objects', ['search' => 'ca_objects.lcsh_genres:"'._procKeyword($va_subject_genre).'"']);
 						}
 					}
 					if ($va_subject_keywords = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						$idnos = $t_object->get('ca_list_items.idno', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 						foreach ($va_subject_keywords as $i => $va_subject_keyword) {
-							if (!trim($va_subject_keyword)) { continue; }
+							trim($va_subject_keyword);
+							if (!$va_subject_keyword) { continue; }
 							$va_subjects_list[] = caNavLink($this->request, ucfirst($va_subject_keyword), '', '', 'Search', 'objects', ['search' => 'termid:"'.$idnos[$i].'"']);
 						}
 					}																
 					asort($va_subjects_list);
 					if (sizeof($va_subjects_list) > 0) {
-						print "<div class='unit'><h6>Subject - keywords and LC headings</h6>".join("<br/>", $va_subjects_list)."</div>";
+						print "<div class='unit'><label>Subject - keywords and LC headings</label>".join("<br/>", $va_subjects_list)."</div>";
 					}																											
-?>
-					<div class="row">
-						<div class="col-sm-12">	
-<?php
 							if ($va_related_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="author,accession,collected,creator,donor,engraver,draftsmen_surveyor,lithographer,origin,photographer"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
-								print "<div class='unit'><h6>Related Entities</h6>".$va_related_entities."</div>";
+								print "<div class='unit'><label>Related Entities</label>".$va_related_entities."</div>";
 							}
 							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'excludeRelationshipTypes' => array('appears')))) {
-								print "<div class='unit'><h6>Related Objects</h6>".$va_related_objects."</div>";
+								print "<div class='unit'><label>Related Objects</label>".$va_related_objects."</div>";
 							}
 							if ($va_related_collections = $t_object->get('ca_collections.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
-								print "<div class='unit'><h6>Related Collections</h6>".$va_related_collections."</div>";
+								print "<div class='unit'><label>Related Collections</label>".$va_related_collections."</div>";
 							}
 							if ($t_object->get('ca_objects.coverageSpatial')) {
-								print "<div class='unit'><h6>Spatial Coverage</h6>".$t_object->get('ca_objects.coverageSpatial')."</div>";
+								print "<div class='unit'><label>Spatial Coverage</label>".$t_object->get('ca_objects.coverageSpatial')."</div>";
 							}
 							if ($t_object->get('ca_objects.coverageDates')) {
-								print "<div class='unit'><h6>Coverage dates</h6>".$t_object->get('ca_objects.coverageDates')."</div>";
+								print "<div class='unit'><label>Coverage dates</label>".$t_object->get('ca_objects.coverageDates')."</div>";
 							}	
 							if ($t_object->get('ca_objects.coverageNotes')) {
-								print "<div class='unit'><h6>Coverage notes</h6>".$t_object->get('ca_objects.coverageNotes')."</div>";
+								print "<div class='unit'><label>Coverage notes</label>".$t_object->get('ca_objects.coverageNotes')."</div>";
 							}					
 							if ($vs_language = $t_object->get('ca_objects.language', array('convertCodesToDisplayText' => true))) {
-								print "<div class='unit'><h6>Language</h6>".$vs_language."</div>";
+								print "<div class='unit'><label>Language</label>".$vs_language."</div>";
 							}
 							if ($vs_credit_line = $t_object->get('ca_objects.credit_line')) {
-								print "<div class='unit'><h6>Credit Line</h6>".$vs_credit_line."</div>";
+								print "<div class='unit'><label>Credit Line</label>".$vs_credit_line."</div>";
 							}
 							
 							#if (($vs_appeared = $t_object->get('ca_objects.appeared_in')) | ($va_appears = $t_object->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>', 'restrictToRelationshipTypes' => array('appears'))))) {
-							#	print "<div class='unit'><h6>Appeared In</h6>".$vs_appeared."<br/>".$va_appears."</div>";
+							#	print "<div class='unit'><label>Appeared In</label>".$vs_appeared."<br/>".$va_appears."</div>";
 							#}
 ?>
-							{{{<ifdef code='ca_objects.georeference'><div class='unit'><h6>Location</h6></ifdef>}}}
+							{{{<ifdef code='ca_objects.georeference'><div class='unit'><label>Location</label></ifdef>}}}
 							{{{map}}}
 							{{{<ifdef code='ca_objects.georeference'></div></ifdef>}}}
-						</div>
-					</div><!-- end row -->
+					<div class="mobileDisplayShow">
+<?php
+					if ($vs_rights_buf  || ($t_object->get('ca_objects.public_domain', array('convertCodesToDisplayText' => true)) == "yes")) {
+						print "<div class='unit'><label>Rights & User Restrictions</label>".$vs_rights_buf."</div>";
+					}
+					if ($t_object->get('ca_objects.public_domain', array('convertCodesToDisplayText' => true)) == "yes") {
+						print "Public Domain";
+					}
+?>
+					</div>
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->

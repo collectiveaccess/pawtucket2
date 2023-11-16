@@ -93,5 +93,6 @@
 </head> 
 
 <body data-barba="wrapper">
-	<?= $this->render("pageFormat/sidebar.php"); ?>
+
+			<?= $this->render("pageFormat/sidebar.php"); ?>
 				

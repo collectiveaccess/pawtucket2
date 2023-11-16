@@ -52,7 +52,7 @@
 			<div class="col-sm-12">
 				<div class="featuredList">	
 <?php
-	print '<div class="featuredListTitle">Featured</div>';
+	print '<div class="featuredListTitle">Featured People & Groups</div>';
 
 			$vn_i = 0;
 			if($qr_res && $qr_res->numHits()) {
