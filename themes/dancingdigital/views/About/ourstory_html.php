@@ -30,24 +30,23 @@
  * ----------------------------------------------------------------------
  */
  ?>
- <main data-barba="container" data-barba-namespace="ourstory" class="barba-container ourstory-section" style="background-color: #2a0a42;">
-	<!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
-	<div class="container">
-		<div class="page-section row justify-content-center">
-			<div class="col-9 p-3 text-white">
-
-				<h1 class="page-heading2">Over 20 Years In The Making</h1>
-				<p class="page-content2">
-					NO BOUNDARIES: Dancing the Visions of Contemporary Black Choreographers began as an evolving repertoire of solos 
-					choreographed by several generations of prominent African American artists and performed by Gesel R. Mason in one 
-					evening. With choreographic works spanning from the 1940’s to the present, the No Boundaries performances delivered 
-					snapshots of and created discussion around the trajectory of Black dance over seven decades.
-				</p>
-				<p class="page-content2">
-					The No Boundaries Archive Project transforms Gesel’s journey into a versatile, digital humanities platform and archival 
-					database that invites you to embark on your own journey, interacting with the stories and legacies of African American choreographers.
-				</p>
-			</div> 
+ <main data-barba="container" data-barba-namespace="ourstory" class="barba-main-container ourstory-section">
+	<div class="general-page">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-auto">
+					<h1 class="page-heading heading-size-2 ps-0">Over 20 Years In The Making</h1>
+					<p class="page-content content-size-2">
+						NO BOUNDARIES: Dancing the Visions of Contemporary Black Choreographers began as an evolving repertoire of solos 
+						choreographed by several generations of prominent African American artists and performed by Gesel R. Mason in one 
+						evening. With choreographic works spanning from the 1940’s to the present, the No Boundaries performances delivered 
+						snapshots of and created discussion around the trajectory of Black dance over seven decades.
+						<br><br>
+						The No Boundaries Archive Project transforms Gesel’s journey into a versatile, digital humanities platform and archival 
+						database that invites you to embark on your own journey, interacting with the stories and legacies of African American choreographers.
+					</p>
+				</div> 
+			</div>
 		</div>
 	</div>
 </main>

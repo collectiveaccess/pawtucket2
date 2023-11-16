@@ -30,3 +30,15 @@
  * ----------------------------------------------------------------------
  */
  ?>
+ <main data-barba="container" data-barba-namespace="gallery" class="barba-main-container gallery-section">
+	<div class="general-page">
+		<div class="container">
+			<div class="row justify-content-center">
+				<h1 class="page-heading heading-size-2 ps-0">Gallery</h1>
+				<div class="col-auto">
+					<p class="page-content content-size-2"></p>
+				</div> 
+			</div>
+		</div>
+	</div>
+</main>
