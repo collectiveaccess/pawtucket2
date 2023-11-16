@@ -1068,7 +1068,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				ob_start();
 ?>
 			<div class="<?= $class; ?> video-responsive" style="width: <?= $width; ?>; height:<?= $height; ?>;">
-				<video preload="metadata" <?= $autoplay ? 'autoplay="1"' : ''; ?> id="<?= $id; ?>" playsinline="1" controls data-poster="<?= $poster_frame_url; ?>" width="<?= $width; ?>" height="<?= $height; ?>" style="object-fit: contain;">
+				<video class="plyr__video-embed" preload="metadata" <?= $autoplay ? 'autoplay="1"' : ''; ?> id="<?= $id; ?>" playsinline="1" controls data-poster="<?= $poster_frame_url; ?>" width="<?= $width; ?>" height="<?= $height; ?>" style="object-fit: contain;">
 				  <source src="<?= $url; ?>" type="<?= $properties["mimetype"]; ?>" />
 <?php
 						if(is_array($captions)) {
@@ -1079,6 +1079,9 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 ?>
 				</video>
 			</div>
+<?php
+				if(!caGetOption("dont_init_plyr", $options, false)) {
+?>
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
 						options = {
@@ -1092,6 +1095,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 					});
 				</script>
 <?php
+				}
 				return ob_get_clean();
 				break;
 			# ------------------------------------------------

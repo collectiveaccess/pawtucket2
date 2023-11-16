@@ -781,7 +781,7 @@ class WLPlugMediaAudio Extends BaseMediaPlugin Implements IWLPlugMedia {
 				if(caGetOption('user_interface', $options, false, ['forceLowercase' => true]) !== 'mediaelement') {
 ?>
 					<div class="<?= $class; ?> audio-responsive" style="width: <?= $width; ?>; height: <?= $height; ?>;">
-						<video id="<?= $id; ?>" playsinline controls data-poster="<?= $poster_frame_url; ?>" width="<?= $width; ?>" height="<?= $height; ?>" >
+						<audio id="<?= $id; ?>" playsinline controls data-poster="<?= $poster_frame_url; ?>" width="<?= $width; ?>" height="<?= $height; ?>" >
 						  <source src="<?= $url; ?>" type="<?= $properties["mimetype"]; ?>" />
 <?php
 								if(is_array($captions)) {
@@ -790,8 +790,11 @@ class WLPlugMediaAudio Extends BaseMediaPlugin Implements IWLPlugMedia {
 									}
 								}
 ?>
-						</video>
+						</audio>
 					</div>
+<?php
+					if(!caGetOption("dont_init_plyr", $options, false)) {
+?>
 					<script type="text/javascript">
 						jQuery(document).ready(function() {
 							options = {
@@ -805,6 +808,7 @@ class WLPlugMediaAudio Extends BaseMediaPlugin Implements IWLPlugMedia {
 						});
 					</script>
 <?php
+					}
 				} else {
 					$poster_style = ($poster_frame_url) ? "style='background-image: url(\"{$poster_frame_url}\");'" : null;
 ?>

@@ -56,10 +56,11 @@
 
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
-	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
-		$vs_default_placeholder = "<i class='bi bi-card-image'></i>";
-	}
-	$vs_default_placeholder_tag = "<div class='bListItemPlaceholder'></div>";
+	// if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+	// 	$vs_default_placeholder = "<i class='bi bi-card-image'></i>";
+	// }
+	// $vs_default_placeholder_tag = "<div class='bListItemPlaceholder'></div>";
+	$vs_default_placeholder_tag = "<img src='/themes/cfa/assets/pawtucket/graphics/placeholder.png'>";
 
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
@@ -86,7 +87,7 @@
 				}
 			
 				$qr_res->seek($vn_start);
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => [1]));
 			} else {
 				$va_images = null;
 			}
@@ -115,17 +116,19 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => [1])) : $va_images[$vn_id];
 				
 					if(!$vs_image){
 						if ($vs_table == 'ca_objects') {
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
-							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-							}else{
-								$vs_image = $vs_default_placeholder_tag;
-							}
+							
+							// if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+							// 	$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+							// }else{
+							// 	$vs_image = $vs_default_placeholder_tag;
+							// }
+							$vs_image = $vs_default_placeholder_tag;
 						}else{
 							$vs_image = $vs_default_placeholder_tag;
 						}
@@ -153,7 +156,7 @@
 
 					$vs_result_output = "
 					<div class='col bListItem'>
-						<div class='row bListItemRow d-flex align-items-center'>
+						<div class='row bListItemRow'>
 							<div class='col-4 bListItemImage'>{$vs_rep_detail_link}</div>
 							<div class='col-8 bListItemText'>{$vs_caption}</div>
 						</div>

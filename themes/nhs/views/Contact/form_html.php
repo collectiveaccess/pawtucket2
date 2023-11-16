@@ -1,25 +1,30 @@
 <?php
+	# --- if a table has been passed this is coming from the Item Inquiry/Ask An Archivist contact form on detail pages
+	$pn_id = $this->request->getParameter("id", pInteger);
+	$ps_table = $this->request->getParameter("table", pString);
 	# --- ask a curator/ contact form
 	$ps_contactType = $this->request->getParameter("contactType", pString);
 	if(!$ps_contactType){
 		$ps_contactType = "contact";
 	}
-	$pn_object_id = $this->request->getParameter("object_id", pInteger);
-	if($pn_object_id){
-		require_once(__CA_MODELS_DIR__."/ca_objects.php");
-		$t_item = new ca_objects($pn_object_id);
-		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_item->get("ca_objects.object_id"));
-		$vs_name = $t_item->get("ca_objects.preferred_labels.name");
-		$vs_idno = $t_item->get("ca_objects.idno");
+	$vs_title = "Contact";
+	if($ps_contactType == "askCurator"){
+		$vs_title = "Ask a Curator";
+		if($vs_table == "ca_objects"){
+			$vs_title .= " / Request an Image";
+		}
 	}
-	$pn_collection_id = $this->request->getParameter("collection_id", pInteger);
-	if($pn_collection_id){
-		require_once(__CA_MODELS_DIR__."/ca_collections.php");
-		$t_item = new ca_collections($pn_collection_id);
-		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "collections", $t_item->get("ca_collections.collection_id"));
-		$vs_name = $t_item->get("ca_collections.preferred_labels.name");
-		$vs_idno = $t_item->get("ca_collections.idno");
+	
+	if($pn_id && $ps_table){
+		$t_item = Datamodel::getInstanceByTableName($ps_table);
+		if($t_item){
+			$t_item->load($pn_id);
+			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
+			$vs_name = $t_item->get($ps_table.".preferred_labels");
+			$vs_idno = $t_item->get($ps_table.".idno");
+		}
 	}
+
 	$va_errors = $this->getVar("errors");
 	$vn_num1 = rand(1,10);
 	$vn_num2 = rand(1,10);
@@ -33,7 +38,7 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12 ">
-			<H1><?php print ($ps_contactType == "askCurator") ? "Ask a Curator / Request an Image" : "Contact"; ?></H1>
+			<H1><?php print $vs_title; ?></H1>
 		</div>
 	</div>
 <?php
@@ -49,7 +54,7 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<hr/>
-				<h2>Do you have a question about this item or wish to request an image?</h2>
+				<h2>Do you have a question about this item<?php print ($vs_table == "ca_objects") ? " or wish to request an image" : ""; ?>?</h2>
 				Complete this form, and NHS collections staff will follow up with you by email.
 				<br/><br/><b>Item title: </b><?php print $vs_name; ?>
 				<br/><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>"><?php print $vs_url; ?></a>
@@ -115,7 +120,7 @@
 	</form>
 	
 <?php
-	if($ps_contactType == "askCurator"){
+	if(($ps_contactType == "askCurator") && ($ps_table == "ca_objects")){
 ?>
 		<div class="row">
 			<div class="col-sm-12 text-center">

@@ -36,7 +36,7 @@
 <?php
 					print '<div id="detailTools">';
 					print "<div class='detailTool'><span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Finding Aid", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
-					print "<div class='detailTool'><span class='glyphicon glyphicon-book'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'Form', array('collection_id' => $t_item->get("collection_id"), 'contactType' => 'askCurator'))."\"); return false;' title='"._t("Ask a Curator")."'>"._t("Ask a Curator")."</a></div><!-- end detailTool -->";
+					print "<div class='detailTool'><span class='glyphicon glyphicon-book'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'Form', array('table' => 'ca_collections', 'id' => $t_item->get("collection_id"), 'contactType' => 'askCurator'))."\"); return false;' title='"._t("Ask a Curator")."'>"._t("Ask a Curator")."</a></div><!-- end detailTool -->";
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}

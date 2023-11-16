@@ -45,14 +45,9 @@
 		<div class='row'>
 			<div id="footer">
 				<div class='upperBlock'>
-					<div class='col-sm-4 col-md-4 col-lg-4'></div>
-					<div class='col-sm-4 col-md-4 col-lg-4'></div>
-					<div class='col-sm-4 col-md-4 col-lg-4 logos'>
+					<div class='col-sm-12 col-md-4 col-md-offset-4'>
 						<div class='footerLogo'>
-							<?= caGetThemeGraphic($this->request, 'logo-white-trans-bg-footer.png');?>
-						</div>
-						<div class='champion'>
-							<?= caGetThemeGraphic($this->request, 'champion-1.png');?>
+							<?= caGetThemeGraphic($this->request, 'ACORN-logo-white-trans.png');?>
 						</div>
 					</div>
 				</div>

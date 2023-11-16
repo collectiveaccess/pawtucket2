@@ -549,9 +549,10 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					} else {
 						$vs_idno_stub = preg_replace("!{$vs_suffix}$!", '', $vs_idno_stub);	
 					}
+					if(strlen($vs_sep) === 0) { $vs_sep = '-'; }
 					do {
 						$vs_suffix = (int)$vs_suffix + 1;
-						$vs_idno = trim($vs_idno_stub).($vs_sep ?? '-').trim($vs_suffix);	// force separator if none defined otherwise you end up with agglutinative numbers
+						$vs_idno = trim($vs_idno_stub).($vs_sep).trim($vs_suffix);	// force separator if none defined otherwise you end up with agglutinative numbers
 					} while($t_lookup->load([$vs_idno_fld => $vs_idno]));
 				} else {
 					$vs_idno = $vs_idno_stub;
@@ -2292,7 +2293,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			case 3:		// table_name.field_name.sub_element	
 				if (!($t_instance = Datamodel::getInstanceByTableName($va_tmp[0], true))) { break; }
 				$vs_prefix = $vs_suffix = $vs_suffix_string = '';
-				if (caGetOption('includeSourceSuffix', $options, true)) { $vs_suffix_string = ' ('._t('from %1', $t_instance->getProperty('NAME_PLURAL')).')'; }
+				if (caGetOption('includeSourceSuffix', $options, false)) { $vs_suffix_string = ' ('._t('from %1', $t_instance->getProperty('NAME_PLURAL')).')'; }
 				if ($va_tmp[0] !== $this->tableName()) {
 					$vs_suffix = $vs_suffix_string;
 				}
@@ -4825,6 +4826,25 @@ if (!$vb_batch) {
                                 }
                             }
 						}
+						// validate related records using metadata dictionary rules
+						try {
+							if(is_array($entry_ids = ca_metadata_dictionary_entries::entryExists('ca_object_representations', ['noCache' => true])) && sizeof($entry_ids)) {
+								foreach($entry_ids as $entry_id) {
+									if($t_entry = ca_metadata_dictionary_entries::findAsInstance($entry_id)) {
+										$rels_to_validate = $this->getRelatedItemsAsSearchResult(Datamodel::getTableName($t_entry->get('table_num')));
+					
+										if($rels_to_validate) {
+											while($rels_to_validate->nextHit()) {
+												$t_to_validate = $rels_to_validate->getInstance();
+												$t_to_validate->validateUsingMetadataDictionaryRules();
+											}
+										}
+									}
+								}
+							}
+						} catch (Exception $e) {
+							$po_request->addActionErrors(array(new ApplicationError(1100, _t('Could not validate related record: %1', $e->getMessage()), "BundlableLabelableBaseModelWithAttributes->saveBundlesForScreen()", 'MetadataDictionary', false,false)), $vs_bundle, 'general');
+						}
 						break;
 					# -------------------------------------
 					case 'ca_entities':
@@ -5878,27 +5898,7 @@ if (!$vb_batch) {
 			// TODO: change to specific exception type to allow user to set the specific bundle where the error occurred
 			$po_request->addActionErrors(array(new ApplicationError(1100, _t('Invalid rule expression: %1', $e->getMessage()), "BundlableLabelableBaseModelWithAttributes->saveBundlesForScreen()", 'MetadataDictionary', false,false)), $vs_bundle, 'general');
 		}
-		
-		// validate related records using metadata dictionary rules
-		try {
-			if(is_array($entry_ids = ca_metadata_dictionary_entries::entryExists($this->tableName(), ['noCache' => true])) && sizeof($entry_ids)) {
-				foreach($entry_ids as $entry_id) {
-					if($t_entry = ca_metadata_dictionary_entries::findAsInstance($entry_id)) {
-						$rels_to_validate = $this->getRelatedItemsAsSearchResult(Datamodel::getTableName($t_entry->get('table_num')));
-					
-						if($rels_to_validate) {
-							while($rels_to_validate->nextHit()) {
-								$t_to_validate = $rels_to_validate->getInstance();
-								$t_to_validate->validateUsingMetadataDictionaryRules();
-							}
-						}
-					}
-				}
-			}
-		} catch (Exception $e) {
-			$po_request->addActionErrors(array(new ApplicationError(1100, _t('Could not validate related record: %1', $e->getMessage()), "BundlableLabelableBaseModelWithAttributes->saveBundlesForScreen()", 'MetadataDictionary', false,false)), $vs_bundle, 'general');
-		}
-		
+			
 		if ($vb_dryrun) { $this->removeTransaction(false); }
 		if ($vb_we_set_transaction) { $this->removeTransaction(true); }
 		
@@ -6422,24 +6422,26 @@ if (!$vb_batch) {
 
 		if ($this->getAppConfig()->get('perform_item_level_access_checking')) {
 			$t_user = new ca_users($vn_user_id);
-			if (is_array($va_groups = $t_user->getUserGroups()) && sizeof($va_groups)) {
-				$va_group_ids = array_keys($va_groups);
-			} else {
-				$va_group_ids = [];
-			}
+			if(!$t_user->canDoAction('is_administrator')) {
+				if (is_array($va_groups = $t_user->getUserGroups()) && sizeof($va_groups)) {
+					$va_group_ids = array_keys($va_groups);
+				} else {
+					$va_group_ids = [];
+				}
 
-			// Join to limit what browse table items are used to generate facet
-			$va_joins_post_add[] = 'LEFT JOIN ca_acl ON '.$vs_related_table_name.'.'.$t_rel_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_rel_item->tableNum()."\n";
-			$va_wheres[] = "(
-				((
-					(ca_acl.user_id = ".(int)$vn_user_id.")
-					".((sizeof($va_group_ids) > 0) ? "OR
-					(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
-					OR
-					(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
-				) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
-				".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
-			)";
+				// Join to limit what browse table items are used to generate facet
+				$va_joins_post_add[] = 'LEFT JOIN ca_acl ON '.$vs_related_table_name.'.'.$t_rel_item->primaryKey().' = ca_acl.row_id AND ca_acl.table_num = '.$t_rel_item->tableNum()."\n";
+				$va_wheres[] = "(
+					((
+						(ca_acl.user_id = ".(int)$vn_user_id.")
+						".((sizeof($va_group_ids) > 0) ? "OR
+						(ca_acl.group_id IN (".join(",", $va_group_ids)."))" : "")."
+						OR
+						(ca_acl.user_id IS NULL and ca_acl.group_id IS NULL)
+					) AND ca_acl.access >= ".__CA_ACL_READONLY_ACCESS__.")
+					".(($vb_show_if_no_acl) ? "OR ca_acl.acl_id IS NULL" : "")."
+				)";
+			}
 		}
 
 		if (is_array($pa_get_where)) {
