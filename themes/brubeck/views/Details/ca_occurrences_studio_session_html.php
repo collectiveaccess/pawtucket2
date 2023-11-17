@@ -126,7 +126,7 @@
 						<unit relativeTo="ca_occurrences.related" restrictToTypes="studio_session" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences.related" restrictToTypes="appearance" min="1"><div class="unit"><label>Related Appearance<ifcount code="ca_occurrences.related" restrictToTypes="appearance" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code='ca_occurrences.related' min='1' restrictToTypes='tour'><unit relativeTo='ca_occurrences.related' restrictToTypes='tour'>^ca_occurrences.preferred_labels.name: </unit></ifcount>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
 					</ifcount>
 					</div>
 				</ifcount>}}}

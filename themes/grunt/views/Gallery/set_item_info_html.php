@@ -24,3 +24,18 @@
 	print "<div class='unit galleryViewRecord'>".caDetailLink($this->request, _t("View Record"), 'btn btn-default', $this->getVar("table"),  $this->getVar("row_id"))."</unit>";
 	
 ?>
+
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 407,
+		  moreLink: '<a href="#">More &#8964;</a>'
+		});
+		$('.trimTextShort').readmore({
+		  speed: 75,
+		  maxHeight: 112,
+		  moreLink: '<a href="#">More &#8964;</a>'
+		});
+	});
+</script>

@@ -47,11 +47,11 @@
 						if ( $vn_i == 0) { print "<div class='row'>"; } 
 						$vs_tmp = "<div class='col-sm-4'>";
 						$vs_tmp .= "<div class='featuredTile'>";
-						$vs_image = "";
-						if ($vs_image = $qr_songs->getWithTemplate("<unit relativeTo='ca_objects' restrictToTypes='still_image' limit='1'>^ca_object_representations.media.iconlarge</unit>")) {
-							$vs_tmp .= "<div class='featuredImage'>".$vs_image."</div>";
-						}
-						$vs_tmp .= "<div class='title'>".$qr_songs->get("ca_occurrences.preferred_labels")."</div>";	
+						#$vs_image = "";
+						#if ($vs_image = $qr_songs->getWithTemplate("<unit relativeTo='ca_objects' restrictToTypes='still_image' limit='1'>^ca_object_representations.media.iconlarge</unit>")) {
+						#	$vs_tmp .= "<div class='featuredImage'>".$vs_image."</div>";
+						#}
+						$vs_tmp .= "<div class='title noImage'>".$qr_songs->get("ca_occurrences.preferred_labels")."</div>";	
 						$vs_tmp .= "</div>";
 						print caDetailLink($this->request, $vs_tmp, "", "ca_occurrences", $qr_songs->get("ca_occurrences.occurrence_id"));
 

@@ -96,6 +96,19 @@
 					{{{<ifdef code="ca_collections.use_reproduction"><div class="unit"><label>Use and Reproduction Conditions</label>^ca_collections.use_reproduction%delimiter=,_</div></ifdef>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
+
+{{{<ifcount code="ca_objects" max="0">
+		<div class="row">
+			<div class="col-sm-12">
+<?php 
+				#$vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values));
+				#if($vs_reps){
+					print caNavLink($this->request, _t("View Digitized Media"), "btn btn-default", "", "Browse", "objects", array("facets" => "collection_facet:".$t_item->get("ca_collections.collection_id").";has_media_facet:1"));
+				#}
+?>
+			</div>
+		</div>
+</ifcount>}}}
 			<div class="row">
 				<div class='col-sm-12'>
 <?php
@@ -169,7 +182,7 @@
 						<unit relativeTo="ca_occurrences" restrictToTypes="studio_session" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences" restrictToTypes="appearance" min="1"><div class="unit"><label>Related Appearance<ifcount code="ca_occurrences" restrictToTypes="appearance" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code='ca_occurrences.related' min='1' restrictToTypes='tour'><unit relativeTo='ca_occurrences.related' restrictToTypes='tour'>^ca_occurrences.preferred_labels.name: </unit></ifcount>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
 					</ifcount>
 					</div>
 				</ifcount>}}}
@@ -181,17 +194,17 @@
 			}
 
 ?>
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class="col-sm-6">
 					<label>Related Archival Items</label>
 				</div>
 				<div class="col-sm-6 browseAllLink">
 <?php 
-					$vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values));
-					if($vs_reps){
+					#$vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values));
+					#if($vs_reps){
 						print caNavLink($this->request, _t("View Digitized Media"), "btn btn-default", "", "Browse", "objects", array("facets" => "collection_facet:".$t_item->get("ca_collections.collection_id").";has_media_facet:1"));
-					}
+					#}
 ?>
 				</div>
 			</div>
