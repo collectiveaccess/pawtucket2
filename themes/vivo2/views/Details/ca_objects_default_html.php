@@ -171,8 +171,10 @@ if($vb_2_col){
 							print "<div class='unit'><H2>".$vs_type."</H2>".join(", ", $va_entity_links)."</div>";
 						}
 					}
+					$vs_rel_objects = str_replace("[BLANK]", "Title not available", $t_object->getWithTemplate('<ifcount code="ca_objects.related" min="1"><div class="unit"><H2>Related Objects</H2><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></div></ifcount>'));
+					print $vs_rel_objects;
 ?>					
-						{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><H2>Related Objects</H2><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></div></ifcount>}}}
+						
 						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="subject_guide"><div class="unit"><H2>In Subject Guide<ifcount code="ca_occurrences" min="2" restrictToTypes="subject_guide">s</ifcount></H2><div class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="subject_guide"><l>^ca_occurrences.preferred_labels.name</l></unit></div></div></ifcount>}}}
 						{{{<ifdef code="ca_objects.RAD_custodial"><div class="unit"><H2>Custodial History</H2>^ca_objects.custom_extent</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.places"><div class="unit"><H2>Related Places</H2><unit relativeTo="ca_objects.places" delimiter=", ">^ca_objects.places</unit></div></ifdef>}}}
