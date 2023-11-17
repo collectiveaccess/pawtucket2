@@ -300,7 +300,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 
                   <div class="col-xs-6 col-sm-6 col-md-6"> 
                     <div class="paragraph">
-                          <div class="text__eyebrow color__gray">Intellectual organization and arrangement</div>
+                          <div class="text__eyebrow color__gray" style="line-height: 26px;">Intellectual organization and arrangement</div>
                           <div class="text__body-3">
                                 ^ca_collections.cfaIntellectualArrangement%convertLineBreaks=1
                           </div>
@@ -328,7 +328,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 		$t_coll = ca_collections::findAsInstance($id);
 		
 		if($t_coll && ($t_coll->getRelatedItems('ca_objects', ['checkAccess' => $access_values, 'returnAs' => 'count']) > 0)) {
-			$qr_objects = $t_coll->getRelatedItems('ca_objects', ['returnAs' => 'searchResult', 'checkAccess' => $access_values]);
+			$qr_objects = $t_coll->getRelatedItems('ca_objects', ['restrictToRelationshipTypes' => ['film'], 'returnAs' => 'searchResult', 'checkAccess' => $access_values]);
 			$item_count += $qr_objects->numHits();
 		
 			while($qr_objects->nextHit()) {
@@ -755,7 +755,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 <ifcount code="ca_collections.children" min="0" max="0">
                   <ifdef code="ca_collections.cfaIntellectualArrangement">
                     <div class="paragraph">
-                      <div class="text__eyebrow color__gray">Intellectual organization and arrangement</div>
+                      <div class="text__eyebrow color__gray" style="line-height: 26px;">Intellectual organization and arrangement</div>
                       <div class="text__body-3">
                           ^ca_collections.cfaIntellectualArrangement
                       </div>
