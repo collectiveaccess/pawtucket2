@@ -328,7 +328,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 		$t_coll = ca_collections::findAsInstance($id);
 		
 		if($t_coll && ($t_coll->getRelatedItems('ca_objects', ['checkAccess' => $access_values, 'returnAs' => 'count']) > 0)) {
-			$qr_objects = $t_coll->getRelatedItems('ca_objects', ['restrictToRelationshipTypes' => ['film'], 'returnAs' => 'searchResult', 'checkAccess' => $access_values]);
+			$qr_objects = $t_coll->getRelatedItems('ca_objects', ['restrictToRelationshipTypes' => ['moving_image'], 'returnAs' => 'searchResult', 'checkAccess' => $access_values]);
 			$item_count += $qr_objects->numHits();
 		
 			while($qr_objects->nextHit()) {
