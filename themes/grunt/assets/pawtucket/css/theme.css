@@ -362,7 +362,12 @@ body{
 	font-size: 13px;
 	color:#595959;
 }
-
+.bResultItem .bResultItemText a:focus, .lbItemContent .caption a:focus, .bResultListItemText a:focus {
+	text-decoration:underline !important;
+}
+.bResultItemImg a:focus img, .bResultListItemImg a:focus img, .multisearchResult a:focus img{
+	opacity:.6;
+}
 #bRefine H2, #bRefine H5, #bRefine H3, #bRefine a{
 	color:#000;
 	text-transform:capitalize;

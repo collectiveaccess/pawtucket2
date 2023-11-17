@@ -89,14 +89,17 @@ class CollectionsController extends ActionController {
 	public function Index() {
 		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
 		
-		$this->opo_result_context = new ResultContext($this->request, "ca_collections", "collections");
-		$this->opo_result_context->setAsLastFind();
-		
 		$t_list = new ca_lists();
 		$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", ($this->opo_config->get("landing_page_collection_type")) ? $this->opo_config->get("landing_page_collection_type") : "collection");
 		$vs_sort = ($this->opo_config->get("landing_page_sort")) ? $this->opo_config->get("landing_page_sort") : "ca_collections.preferred_labels.name";
 		$qr_collections = ca_collections::find(array('type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => $vs_sort));
 		$this->view->setVar("collection_results", $qr_collections);
+				
+		$this->opo_result_context = new ResultContext($this->request, "ca_collections", "collections");
+		$this->opo_result_context->setAsLastFind();
+		$this->opo_result_context->setResultList($qr_collections->getPrimaryKeyValues(1000));
+		$this->opo_result_context->saveContext();
+		
 		caSetPageCSSClasses(array("collections", "landing"));
 		$this->render("Collections/index_html.php");
 	}

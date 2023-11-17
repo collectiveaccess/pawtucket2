@@ -50,8 +50,8 @@
 	
 	<br style="clear: both;"/>
 	<div class='advancedFormSubmit'>
-		<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
-		<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</span>
+		<a href="#" class="caAdvancedSearchFormReset btn btn-default">Reset</a>&nbsp;&nbsp;
+		<a href="#" class="caAdvancedSearchFormSubmit btn btn-default">Search</a>
 	</div>
 </div>	
 
