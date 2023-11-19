@@ -98,8 +98,6 @@
         	};
 		</script>
 		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
-
-
 			<div class="row">
 				<div class="col-sm-12 col-md-offset-1 col-md-10">
 					<div class='form-group<?= (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
