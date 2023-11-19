@@ -29,18 +29,35 @@
  *
  * ----------------------------------------------------------------------
  */
+ ?>
+ <?php
 		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 <div class="container frontPage">
 	<div class="row">
-		<div class="col-sm-8">
-			<h2>{{{front_page_heading}}}</h2>
+		<div class="col-sm-12 col-md-8 col-md-offset-2">
+			<h1>{{{front_page_heading}}}</h1>
 			<p>{{{front_page_intro_text}}}</p>
 		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
+	</div>
+	<div class="row">
+		<div class="col-sm-12">
 <?php
-		print $this->render("Front/gallery_set_links_html.php");
+		print $this->render("Front/gallery_slideshow_html.php");
 ?>
 		</div> <!--end col-sm-4-->	
 	</div><!-- end row -->
 </div> <!--end container-->
+<!--<div class="container frontPage">
+	<div class="row">
+		<div class="col-sm-8">
+			<h1>{{{front_page_heading}}}</h1>
+			<p>{{{front_page_intro_text}}}</p>
+		</div>
+		<div class="col-sm-4">
+<?php
+		print $this->render("Front/gallery_set_links_html.php");
+?>
+		</div>
+	</div>
+</div>-->

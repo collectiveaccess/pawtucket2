@@ -300,11 +300,9 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 
                   <div class="col-xs-6 col-sm-6 col-md-6"> 
                     <div class="paragraph">
-                          <div class="text__eyebrow color__gray">Intellectual organization and arrangement</div>
+                          <div class="text__eyebrow color__gray" style="line-height: 26px;">Intellectual organization and arrangement</div>
                           <div class="text__body-3">
-                            <div class="unit">
                                 ^ca_collections.cfaIntellectualArrangement%convertLineBreaks=1
-                            </div>
                           </div>
                     </div>
                   </div>
@@ -334,7 +332,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 			$item_count += $qr_objects->numHits();
 		
 			while($qr_objects->nextHit()) {
-				if($qr_objects->get('ca_object_representations.representation_id', ['checkAccess' => [1]])) {
+				if($qr_objects->get('ca_object_representations.representation_id', ['restrictToTypes' => ['film', 'audio'], 'checkAccess' => [1]])) {
 					$viewable_count++;
 				}
 			}
@@ -573,7 +571,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                           <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
                             <small class="color__gray">(^ca_objects.type_id)</small>
                           </if>
-                          <if rule="^access = 'yes'">
+                          <if rule="^ca_object_representations.access = 'yes'">
                             <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
                               <span class="viewable-media-icon right">
                                 <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -598,7 +596,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                               <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
                                 <small class="color__gray">(^ca_objects.type_id)</small>
                               </if>
-                              <if rule="^access = 'yes'">
+                              <if rule="^ca_object_representations.access = 'yes'">
                                 <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
                                   <span class="viewable-media-icon right">
                                     <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -739,8 +737,8 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                     <div class="paragraph" style="break-before: column;">
                       <div class="text__eyebrow color__gray">Creators</div>
                       <div class="text__body-3">
-                        <div class="unit">
-                          <unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,complier,source,participant" delimiter="<br/>">
+                        <div class="paragraph">
+                          <unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,complier,source,participant" delimiter="<div style='margin-bottom: 10px;'></div>">
                             <span class="link-orange">
                               <strong>
                                 <a href="/Browse/Objects/facet/entity/id/^ca_entities.entity_id">^ca_entities.preferred_labels</a>
@@ -757,11 +755,9 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 <ifcount code="ca_collections.children" min="0" max="0">
                   <ifdef code="ca_collections.cfaIntellectualArrangement">
                     <div class="paragraph">
-                      <div class="text__eyebrow color__gray">Intellectual organization and arrangement</div>
+                      <div class="text__eyebrow color__gray" style="line-height: 26px;">Intellectual organization and arrangement</div>
                       <div class="text__body-3">
-                        <div class="unit">
                           ^ca_collections.cfaIntellectualArrangement
-                        </div>
                       </div>
                     </div>
                   </ifdef>
@@ -841,7 +837,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
       collapsedHeight: 200
     });
 	
-    $('#related-content').load('https://cfarchives.wpengine.com/wp-admin/admin-ajax.php?action=ca_related&type=collection&id=<?= $t_item->get("ca_collections.collection_id"); ?>', {}, ca_init_slider);
+    $('#related-content').load('https://chicagofilmarchives.org/wp-admin/admin-ajax.php?action=ca_related&type=collection&id=<?= $t_item->get("ca_collections.collection_id"); ?>', {}, ca_init_slider);
 
     function ca_init_slider(responseText, textStatus, xhr) {
     	if(!responseText || (responseText.length == 0)) {
@@ -854,8 +850,13 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 	
 	function ca_resize_collection_grid() {
 		let h = jQuery('.item-item').first().height();
+		
+		if(jQuery(window).width() <= 768) {
+			h = h * 3.25;
+		}
 		jQuery('.collection-grid').height(h);
 	}
+
 
 	jQuery(window).on('resize', function(e) {
 		if(jQuery(".view-more-btn:visible").length === 0) { return; }

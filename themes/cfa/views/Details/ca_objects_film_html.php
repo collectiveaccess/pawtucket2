@@ -142,9 +142,9 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 												<br>
 											</ifcount>
 
-											<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
+											<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="part_of">
 												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
-												<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="related_to">
+												<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="part_of">
 													<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
 												</unit>
 												<br>
@@ -218,8 +218,8 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 															break;
 													}
 											?>
-													<unit relativeTo='ca_occurrences'>
-														<ifcount code="ca_list_items" restrictToRelationshipTypes="<?= $field_info['relationshipType']; ?>" min="1">
+													<unit relativeTo='ca_occurrences' restrictToRelationshipTypes="instantiation">
+														<ifcount code="ca_list_items" restrictToRelationshipTypes="<?= $field_info['relationshipType']; ?>,instantiation" min="1">
 															<div class="max__640 text__eyebrow color__light_gray block-xxxs">
 																<?= $fieldLabel; ?>
 																<span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="<?= $title; ?>">
@@ -256,16 +256,16 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 												<br>
 											</ifcount>
 
-											<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
+											<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="part_of">
 												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
-												<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="related_to">
+												<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="part_of">
 													<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
 												</unit>
 												<br>
 											</ifcount>
 
-											<ifcount code="ca_occurrences" min="1">
-												<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+												<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
 													<ifcount code="ca_places" min="1" >
 														<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Places</div>
 														<unit relativeTo="ca_places" delimiter=''>
@@ -280,8 +280,8 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 												</unit>
 											</ifcount>
 
-											<ifcount code="ca_occurrences" min="1">
-												<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+												<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
 													<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="distributor">
 														<div class="max__640 text__eyebrow color__light_gray block-xxxs">Distributor</div>
 														<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="distributor">
@@ -294,8 +294,8 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 												</unit>
 											</ifcount>
 
-											<ifcount code="ca_occurrences" min="1">
-												<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+												<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
 													<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="corporate">
 														<div class="max__640 text__eyebrow color__light_gray block-xxxs">Sponsor/client</div>
 														<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="corporate">
@@ -308,8 +308,8 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 												</unit>
 											</ifcount>
 
-											<ifcount code="ca_occurrences" min="1">
-												<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+												<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
 													<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
 														<div class="max__640 text__eyebrow color__light_gray block-xxxs">Main Credits</div>
 														<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
@@ -322,8 +322,8 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 												</unit>
 											</ifcount>
 
-											<ifcount code="ca_occurrences" min="1">
-												<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+												<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
 													<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
 														<div class="max__640 text__eyebrow color__light_gray block-xxxs">Additional Credits</div>
 														<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
@@ -336,8 +336,8 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 												</unit>
 											</ifcount>
 
-											<ifcount code="ca_occurrences" min="1">
-												<unit relativeTo="ca_occurrences">
+											<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+												<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
 													<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
 														<div class="max__640 text__eyebrow color__light_gray block-xxxs">Participants And Performers</div>
 														<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
@@ -377,7 +377,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 				</div>
 				<div class="int wrap-not-mobile">
 
-					<h4 class="text-align-center text__headline-4 block-small ">Related Content</h4>
+					<h4 class="text-align-center text__headline-4 block-small ">Related Items</h4>
 
 					<div class="slider-container module_slideshow slideshow-related manual-init">
 
@@ -395,7 +395,11 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 
 										<div class="text-align-center info">
 											<div class="text__eyebrow color__gray block-xxxs">
-												<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>
+												<unit relativeTo="ca_collections">
+													<unit relativeTo="ca_collections.hierarchy" maxLevelsFromTop ='1'>
+														<l>^ca_collections.preferred_labels<l>
+													</unit>
+												</unit>
 											</div>
 											<div class="title text__promo-4">
 												<l>^ca_objects.preferred_labels</l>

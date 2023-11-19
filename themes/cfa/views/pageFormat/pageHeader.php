@@ -73,27 +73,25 @@ $va_access_values = caGetUserAccessValues($this->request);
 	
 	<link rel="stylesheet" href="/themes/cfa/assets/pawtucket/css/theme.css">
 
-	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-57x57.png">
-	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-114x114.png">
-	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-72x72.png">
-	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-144x144.png">
-	<link rel="apple-touch-icon-precomposed" sizes="60x60" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-60x60.png">
-	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-120x120.png">
-	<link rel="apple-touch-icon-precomposed" sizes="76x76" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-76x76.png">
-	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-152x152.png">
-	<link rel="icon" type="image/png" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/favicon-196x196.png" sizes="196x196">
-	<link rel="icon" type="image/png" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/favicon-96x96.png" sizes="96x96">
-	<link rel="icon" type="image/png" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/favicon-32x32.png" sizes="32x32">
-	<link rel="icon" type="image/png" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/favicon-16x16.png" sizes="16x16">
-	<link rel="icon" type="image/png" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/favicon-128.png" sizes="128x128">
+	<link rel="apple-touch-icon-precomposed" sizes="57x57" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-57x57.png">
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-144x144.png">
+	<link rel="apple-touch-icon-precomposed" sizes="60x60" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-60x60.png">
+	<link rel="apple-touch-icon-precomposed" sizes="120x120" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-120x120.png">
+	<link rel="apple-touch-icon-precomposed" sizes="76x76" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-76x76.png">
+	<link rel="apple-touch-icon-precomposed" sizes="152x152" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/apple-touch-icon-152x152.png">
+	<link rel="icon" type="image/png" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/favicon-196x196.png" sizes="196x196">
+	<link rel="icon" type="image/png" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/favicon-96x96.png" sizes="96x96">
+	<link rel="icon" type="image/png" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/favicon-32x32.png" sizes="32x32">
+	<link rel="icon" type="image/png" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/favicon-16x16.png" sizes="16x16">
+	<link rel="icon" type="image/png" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/favicon-128.png" sizes="128x128">
 	<meta name="msapplication-TileColor" content="#000000">
-	<meta name="msapplication-TileImage" content="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-144x144.png">
-	<meta name="msapplication-square70x70logo" content="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-70x70.png">
-	<meta name="msapplication-square150x150logo" content="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-150x150.png">
-	<meta name="msapplication-wide310x150logo" content="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-310x150.png">
-	<meta name="msapplication-square310x310logo" content="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-310x310.png">
-
-	<meta name="robots" content="noindex, nofollow">
+	<meta name="msapplication-TileImage" content="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-144x144.png">
+	<meta name="msapplication-square70x70logo" content="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-70x70.png">
+	<meta name="msapplication-square150x150logo" content="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-150x150.png">
+	<meta name="msapplication-wide310x150logo" content="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-310x150.png">
+	<meta name="msapplication-square310x310logo" content="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/favicon/mstile-310x310.png">
 
 	<!-- This site is optimized with the Yoast SEO plugin v20.9 - https://yoast.com/wordpress/plugins/seo/ -->
 	<meta name="description" content="Dedicated to collecting, preserving and providing access to films that represent the Midwest. We hold over 30,000 films and 2,000 audio recordings, including thousands of media items accessible online.">
@@ -103,38 +101,43 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<meta property="og:image:type" content="image/jpeg">
 
 	
-	<!-- <meta property="og:url" content="https://cfarchives.wpengine.com/">
+	<!-- <meta property="og:url" content="https://chicagofilmarchives.org/">
 	<meta property="article:modified_time" content="2023-06-13T16:03:32+00:00"> -->
 
 	<meta name="twitter:card" content="summary_large_image">
-	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://cfarchives.wpengine.com/","url":"https://cfarchives.wpengine.com/","name":"Chicago Film Archives","isPartOf":{"@id":"https://cfarchives.wpengine.com/#website"},"primaryImageOfPage":{"@id":"https://cfarchives.wpengine.com/#primaryimage"},"image":{"@id":"https://cfarchives.wpengine.com/#primaryimage"},"thumbnailUrl":"https://cfarchives.wpengine.com/wp-content/uploads/2023/05/Image.jpg","datePublished":"2023-04-21T13:03:38+00:00","dateModified":"2023-06-13T16:03:32+00:00","description":"Dedicated to collecting, preserving and providing access to films that represent the Midwest. We hold over 30,000 films and 2,000 audio recordings, including thousands of media items accessible online.","breadcrumb":{"@id":"https://cfarchives.wpengine.com/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://cfarchives.wpengine.com/"]}]},{"@type":"ImageObject","inLanguage":"en-US","@id":"https://cfarchives.wpengine.com/#primaryimage","url":"https://cfarchives.wpengine.com/wp-content/uploads/2023/05/Image.jpg","contentUrl":"https://cfarchives.wpengine.com/wp-content/uploads/2023/05/Image.jpg","width":464,"height":355},{"@type":"BreadcrumbList","@id":"https://cfarchives.wpengine.com/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home"}]},{"@type":"WebSite","@id":"https://cfarchives.wpengine.com/#website","url":"https://cfarchives.wpengine.com/","name":"Chicago Film Archives","description":"","potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://cfarchives.wpengine.com/?s={search_term_string}"},"query-input":"required name=search_term_string"}],"inLanguage":"en-US"}]}</script>
+	<script type="application/ld+json" class="yoast-schema-graph">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://chicagofilmarchives.org/","url":"https://chicagofilmarchives.org/","name":"Chicago Film Archives","isPartOf":{"@id":"https://chicagofilmarchives.org/#website"},"primaryImageOfPage":{"@id":"https://chicagofilmarchives.org/#primaryimage"},"image":{"@id":"https://chicagofilmarchives.org/#primaryimage"},"thumbnailUrl":"https://chicagofilmarchives.org/wp-content/uploads/2023/05/Image.jpg","datePublished":"2023-04-21T13:03:38+00:00","dateModified":"2023-06-13T16:03:32+00:00","description":"Dedicated to collecting, preserving and providing access to films that represent the Midwest. We hold over 30,000 films and 2,000 audio recordings, including thousands of media items accessible online.","breadcrumb":{"@id":"https://chicagofilmarchives.org/#breadcrumb"},"inLanguage":"en-US","potentialAction":[{"@type":"ReadAction","target":["https://chicagofilmarchives.org/"]}]},{"@type":"ImageObject","inLanguage":"en-US","@id":"https://chicagofilmarchives.org/#primaryimage","url":"https://chicagofilmarchives.org/wp-content/uploads/2023/05/Image.jpg","contentUrl":"https://chicagofilmarchives.org/wp-content/uploads/2023/05/Image.jpg","width":464,"height":355},{"@type":"BreadcrumbList","@id":"https://chicagofilmarchives.org/#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home"}]},{"@type":"WebSite","@id":"https://chicagofilmarchives.org/#website","url":"https://chicagofilmarchives.org/","name":"Chicago Film Archives","description":"","potentialAction":[{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://chicagofilmarchives.org/?s={search_term_string}"},"query-input":"required name=search_term_string"}],"inLanguage":"en-US"}]}</script>
 	<!-- / Yoast SEO plugin. -->
 
-	<link rel="stylesheet" id="style-all-0-css" href="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/dist/style.css?ver=404" type="text/css" media="all">
-	<script src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/js/libs/custom/slick-min.js" type="text/javascript"></script>
-	<script type="text/javascript" src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/dist/app.min.esbuild.js?ver=404" id="script-1-0-js"></script>  
+	<link rel="stylesheet" id="style-all-0-css" href="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/dist/style.css?ver=404" type="text/css" media="all">
+	<script src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/js/libs/custom/slick-min.js" type="text/javascript"></script>
+	<script type="text/javascript" src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/dist/app.min.esbuild.js?ver=404" id="script-1-0-js"></script>  
 
     <!-- Matomo -->
-    <script>
-    var _paq = window._paq = window._paq || [];
-    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-    (function() {
-        var u="https://chicagofilmarchives.matomo.cloud/";
-        _paq.push(['setTrackerUrl', u+'matomo.php']);
-        _paq.push(['setSiteId', '1']);
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.async=true; g.src='//cdn.matomo.cloud/chicagofilmarchives.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
-    })();
-    </script>
-    <!-- End Matomo Code -->
+<script> var _paq = window._paq = window._paq || []; /* tracker methods like "setCustomDimension" should be called before "trackPageView" */ _paq.push(["setDomains", [".chicagofilmarchives.matomo.cloud",".chicagofilmarchives.org","*.collections.chicagofilmarchives.org"]]); _paq.push(["enableCrossDomainLinking"]); _paq.push(['trackPageView']); _paq.push(['enableLinkTracking']); (function() { var u="https://chicagofilmarchives0.matomo.cloud/"; _paq.push(['setTrackerUrl', u+'matomo.php']); _paq.push(['setSiteId', '1']); var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.async=true; g.src='//cdn.matomo.cloud/chicagofilmarchives0.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s); })();
+</script>
+<!-- End Matomo Code -->
 
 	<style>
 		body {
 			line-height: 1.15 !important;
 		}
 	</style>
+
+<!-- Matomo -->
+<script>
+  var _paq = window._paq = window._paq || [];
+  /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="https://chicagofilmarchives0.matomo.cloud/";
+    _paq.push(['setTrackerUrl', u+'matomo.php']);
+    _paq.push(['setSiteId', '1']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.async=true; g.src='//cdn.matomo.cloud/chicagofilmarchives0.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<!-- End Matomo Code -->
 </head>
 
 <body class="vsc-initialized collective-access">
@@ -142,27 +145,27 @@ $va_access_values = caGetUserAccessValues($this->request);
         <div class="max__site">
             <div class="row">
                 <div class="wrap">
-                    <a href="https://cfarchives.wpengine.com/" id="logo">
-                        <img src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo-desktop.svg"/>
+                    <a href="https://chicagofilmarchives.org/" id="logo">
+                        <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo-desktop.svg"/>
                     </a>
                     <ul id="menu-extra" class="nav header-nav horizontal extra">
                         <li id="menu-item-34" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34">
-                            <a href="https://cfarchives.wpengine.com/calendar/">
+                            <a href="https://chicagofilmarchives.org/calendar/">
                                 Events
                             </a>
                         </li>
                         <li id="menu-item-33" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-33">
-                            <a href="https://cfarchives.wpengine.com/news/">
+                            <a href="https://chicagofilmarchives.org/news/">
                                 News
                             </a>
                         </li>
                         <li id="menu-item-36" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-36">
-                            <a href="https://cfarchives.wpengine.com/about/">
+                            <a href="https://chicagofilmarchives.org/about/">
                                 About
                             </a>
                         </li>
                         <li id="menu-item-35" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-35">
-                            <a href="https://cfarchives.wpengine.com/support/">
+                            <a href="https://chicagofilmarchives.org/support/">
                                 Support
                             </a>
                         </li>
@@ -175,27 +178,27 @@ $va_access_values = caGetUserAccessValues($this->request);
                         <div>
                             <ul id="menu-main" class="nav header-nav horizontal main nav-color">
                                 <li id="menu-item-28" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-8 current_page_item menu-item-28">
-                                    <a href="https://cfarchives.wpengine.com/collections/" aria-current="page">
+                                    <a href="https://chicagofilmarchives.org/collections/" aria-current="page">
                                         Collections
                                     </a>
                                 </li>
                                 <li id="menu-item-31" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-31">
-                                    <a href="https://cfarchives.wpengine.com/watch/">
+                                    <a href="https://chicagofilmarchives.org/watch/">
                                         Watch
                                     </a>
                                 </li>
                                 <li id="menu-item-29" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-29">
-                                    <a href="https://cfarchives.wpengine.com/services/">
+                                    <a href="https://chicagofilmarchives.org/services/">
                                         Services
                                     </a>
                                 </li>
                                 <li id="menu-item-32" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-32">
-                                    <a href="https://cfarchives.wpengine.com/preservation/">
+                                    <a href="https://chicagofilmarchives.org/preservation/">
                                         Preservation
                                     </a>
                                 </li>
                                 <li id="menu-item-30" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30">
-                                    <a href="https://cfarchives.wpengine.com/digital-exhibitions/">
+                                    <a href="https://chicagofilmarchives.org/digital-exhibitions/">
                                         Digital Exhibitions
                                     </a>
                                 </li>
@@ -203,7 +206,7 @@ $va_access_values = caGetUserAccessValues($this->request);
                         </div>
                         <div class="module-search-form">
                             <form role="search" aria-label="Search For" method="get" class="search-form"
-                            action="https://cfarchives.wpengine.com/results/">
+                            action="https://chicagofilmarchives.org/results/">
                                 <label for="search-form-1" class="visually-hidden">
                                     Search
                                 </label>
@@ -233,33 +236,33 @@ $va_access_values = caGetUserAccessValues($this->request);
                 <div class="max__site">
                     <div class="row layout-fixed-right dim-down">
                         <div>
-                            <a href="https://cfarchives.wpengine.com/" id="compact-logo">
-                                <img src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo.svg"
+                            <a href="https://chicagofilmarchives.org/" id="compact-logo">
+                                <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo.svg"
                                 />
                             </a>
                             <ul id="menu-main-1" class="nav header-nav horizontal main nav-color">
                                 <li class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-8 current_page_item menu-item-28">
-                                    <a href="https://cfarchives.wpengine.com/collections/" aria-current="page">
+                                    <a href="https://chicagofilmarchives.org/collections/" aria-current="page">
                                         Collections
                                     </a>
                                 </li>
                                 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-31">
-                                    <a href="https://cfarchives.wpengine.com/watch/">
+                                    <a href="https://chicagofilmarchives.org/watch/">
                                         Watch
                                     </a>
                                 </li>
                                 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-29">
-                                    <a href="https://cfarchives.wpengine.com/services/">
+                                    <a href="https://chicagofilmarchives.org/services/">
                                         Services
                                     </a>
                                 </li>
                                 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-32">
-                                    <a href="https://cfarchives.wpengine.com/preservation/">
+                                    <a href="https://chicagofilmarchives.org/preservation/">
                                         Preservation
                                     </a>
                                 </li>
                                 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-30">
-                                    <a href="https://cfarchives.wpengine.com/digital-exhibitions/">
+                                    <a href="https://chicagofilmarchives.org/digital-exhibitions/">
                                         Digital Exhibitions
                                     </a>
                                 </li>
@@ -267,7 +270,7 @@ $va_access_values = caGetUserAccessValues($this->request);
                         </div>
                         <div class="module-search-form">
                             <form role="search" aria-label="Search For" method="get" class="search-form"
-                            action="https://cfarchives.wpengine.com/results/">
+                            action="https://chicagofilmarchives.org/results/">
                                 <label for="search-form-2" class="visually-hidden">
                                     Search
                                 </label>
@@ -294,12 +297,12 @@ $va_access_values = caGetUserAccessValues($this->request);
     <header id="mobile-header">
         <div class="int">
             <div class="row wrap">
-                <a href="https://cfarchives.wpengine.com/" id="logo-mobile">
-                    <img src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo-mobile.svg"
+                <a href="https://chicagofilmarchives.org/" id="logo-mobile">
+                    <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/cfa-logo-mobile.svg"
                     />
                 </a>
                 <a href="#" id="burger">
-                    <img src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/burger.svg"
+                    <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/burger.svg"
                     />
                 </a>
             </div>
@@ -309,7 +312,7 @@ $va_access_values = caGetUserAccessValues($this->request);
         <div class="layout">
             <div class="row wrap">
                 <a href="#" id="close-mobile-panel">
-                    <img src="https://cfarchives.wpengine.com/wp-content/themes/Chicago-Film-Archives/assets/img/close-panel-icon.svg"
+                    <img src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/img/close-panel-icon.svg"
                     />
                 </a>
             </div>
@@ -318,7 +321,7 @@ $va_access_values = caGetUserAccessValues($this->request);
                     <div class="wrap">
                         <div class="module-search-form">
                             <form role="search" aria-label="Search For" method="get" class="search-form"
-                            action="https://cfarchives.wpengine.com/">
+                            action="https://chicagofilmarchives.org/">
                                 <label for="search-form-3" class="visually-hidden">
                                     Search
                                 </label>
@@ -339,54 +342,54 @@ $va_access_values = caGetUserAccessValues($this->request);
                         </div>
                         <ul id="menu-main-mobile" class="nav header-nav main">
                             <li id="menu-item-265" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-265">
-                                <a href="https://cfarchives.wpengine.com/">
+                                <a href="https://chicagofilmarchives.org/">
                                     Home
                                 </a>
                             </li>
                             <li id="menu-item-266" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-8 current_page_item menu-item-266">
-                                <a href="https://cfarchives.wpengine.com/collections/" aria-current="page">
+                                <a href="https://chicagofilmarchives.org/collections/" aria-current="page">
                                     Collections
                                 </a>
                             </li>
                             <li id="menu-item-269" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-269">
-                                <a href="https://cfarchives.wpengine.com/watch/">
+                                <a href="https://chicagofilmarchives.org/watch/">
                                     Watch
                                 </a>
                             </li>
                             <li id="menu-item-267" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-267">
-                                <a href="https://cfarchives.wpengine.com/services/">
+                                <a href="https://chicagofilmarchives.org/services/">
                                     Services
                                 </a>
                             </li>
                             <li id="menu-item-270" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-270">
-                                <a href="https://cfarchives.wpengine.com/preservation/">
+                                <a href="https://chicagofilmarchives.org/preservation/">
                                     Preservation
                                 </a>
                             </li>
                             <li id="menu-item-268" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-268">
-                                <a href="https://cfarchives.wpengine.com/digital-exhibitions/">
+                                <a href="https://chicagofilmarchives.org/digital-exhibitions/">
                                     Digital Exhibitions
                                 </a>
                             </li>
                         </ul>
                         <ul id="menu-extra-1" class="nav header-nav extra">
                             <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34">
-                                <a href="https://cfarchives.wpengine.com/calendar/">
+                                <a href="https://chicagofilmarchives.org/calendar/">
                                     Events
                                 </a>
                             </li>
                             <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-33">
-                                <a href="https://cfarchives.wpengine.com/news/">
+                                <a href="https://chicagofilmarchives.org/news/">
                                     News
                                 </a>
                             </li>
                             <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-36">
-                                <a href="https://cfarchives.wpengine.com/about/">
+                                <a href="https://chicagofilmarchives.org/about/">
                                     About
                                 </a>
                             </li>
                             <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-35">
-                                <a href="https://cfarchives.wpengine.com/support/">
+                                <a href="https://chicagofilmarchives.org/support/">
                                     Support
                                 </a>
                             </li>
