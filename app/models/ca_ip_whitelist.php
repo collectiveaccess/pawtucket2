@@ -261,4 +261,11 @@ class ca_ip_whitelist extends BaseModel {
 		return ca_ip_bans::isWhitelisted($options);
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function validReasons() {
+		return ['CAPTCHA'];
+	}
+	# ------------------------------------------------------
 }
