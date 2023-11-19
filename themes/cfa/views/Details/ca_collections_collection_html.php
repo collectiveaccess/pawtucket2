@@ -328,11 +328,11 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 		$t_coll = ca_collections::findAsInstance($id);
 		
 		if($t_coll && ($t_coll->getRelatedItems('ca_objects', ['checkAccess' => $access_values, 'returnAs' => 'count']) > 0)) {
-			$qr_objects = $t_coll->getRelatedItems('ca_objects', ['restrictToRelationshipTypes' => ['moving_image'], 'returnAs' => 'searchResult', 'checkAccess' => $access_values]);
+			$qr_objects = $t_coll->getRelatedItems('ca_objects', ['returnAs' => 'searchResult', 'checkAccess' => $access_values]);
 			$item_count += $qr_objects->numHits();
 		
 			while($qr_objects->nextHit()) {
-				if($qr_objects->get('ca_object_representations.representation_id', ['checkAccess' => [1]])) {
+				if($qr_objects->get('ca_object_representations.representation_id', ['restrictToTypes' => ['film', 'audio'], 'checkAccess' => [1]])) {
 					$viewable_count++;
 				}
 			}
@@ -837,7 +837,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
       collapsedHeight: 200
     });
 	
-    $('#related-content').load('https://cfarchives.wpengine.com/wp-admin/admin-ajax.php?action=ca_related&type=collection&id=<?= $t_item->get("ca_collections.collection_id"); ?>', {}, ca_init_slider);
+    $('#related-content').load('https://chicagofilmarchives.org/wp-admin/admin-ajax.php?action=ca_related&type=collection&id=<?= $t_item->get("ca_collections.collection_id"); ?>', {}, ca_init_slider);
 
     function ca_init_slider(responseText, textStatus, xhr) {
     	if(!responseText || (responseText.length == 0)) {

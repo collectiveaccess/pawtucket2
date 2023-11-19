@@ -1000,6 +1000,10 @@ div:has(#caMediaOverlayContent) {
 	background-color: #222;
 }
 
+div#caMediaOverlayContent {
+	height: 100% !important;
+}
+
 p.trimText {
 	max-height: 200px;
 	line-height: 20px !important;
