@@ -147,7 +147,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 													if (str_contains($field, 'ca_occurrences')) {
 											?>
 														<ifdef code="<?= $field; ?>">
-															<unit delimiter="<br>" restrictToRelationshipTypes="instantiation">
+															<unit delimiter="<br>" relativeTo='ca_occurrences' restrictToRelationshipTypes="instantiation">
 																<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
 																<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
 															</unit>
