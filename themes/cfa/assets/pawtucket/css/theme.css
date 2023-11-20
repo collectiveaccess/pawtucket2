@@ -964,7 +964,7 @@ div.detailNavigation a:last-child {
 
 .readmore-js-toggle {
 	width: fit-content !important;
-	border-bottom: 1px solid #000 !important;
+	/* border-bottom: 1px solid #000 !important; */
 	transition: color 0.3s ease-out, border-color 0.3s ease-out !important;
 }
 
