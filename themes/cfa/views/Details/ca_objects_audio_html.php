@@ -101,7 +101,6 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 										<?php
 											$metadata = array(
 												"^ca_objects.cfaRunTime" => "Run Time",	
-												// "^ca_objects.cfaAudioFormatHierachical" => "Format/Extent",
 												"^ca_objects.idno" => "Identifier",
 												"^ca_objects.cfaReel" => "Reel/Tape Number",
 												"^ca_objects.cfaPublicObjectNotes" => "Notes",
@@ -153,16 +152,29 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 												"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
 											);
 											foreach($metadata as $field => $fieldLabel){
-										?>
-												<ifdef code="<?php print $field; ?>">
-													<unit delimiter="<br>">
-														<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
-														<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
-													</unit>
-												</ifdef>
-										<?php
-											}
-										?>
+
+													if (str_contains($field, 'ca_occurrences')) {
+											?>
+														<ifdef code="<?= $field; ?>">
+															<unit delimiter="<br>" restrictToRelationshipTypes="instantiation">
+																<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+																<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
+															</unit>
+														</ifdef>
+											<?php
+
+													}else{
+											?>
+														<ifdef code="<?= $field; ?>">
+															<unit delimiter="<br>">
+																<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+																<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
+															</unit>
+														</ifdef>
+											<?php
+													}
+												}
+											?>				
 
 										<if rule="^ca_objects.cfaAudioFormatHierachical !~ /\-NONE\-/">
 											<ifdef code="ca_objects.cfaAudioFormatHierachical">
