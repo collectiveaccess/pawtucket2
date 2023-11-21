@@ -49,7 +49,6 @@ class WLPlugBanHammerUserAgent Extends BaseBanHammerPlugIn  {
 				return 1.0;
 			}
 		}
-		return true;
 		
 		return 0;
 	}
