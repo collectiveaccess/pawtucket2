@@ -80,7 +80,7 @@ class BanHammer {
 		self::init();
 		if (!self::$config->get('enabled')) { return true; }
 		if (ca_ip_bans::isBanned($request)) { return false; }
-		if (ca_ip_whitelist::isWhitelisted($request)) { return true; }
+		if (ca_ip_whitelist::isWhitelisted($options)) { return true; }
 		
 		$module = $request->getModulePath();
 		$controller = $request->getController();

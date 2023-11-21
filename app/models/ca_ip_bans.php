@@ -171,7 +171,7 @@ class ca_ip_bans extends BaseModel {
 	/**
 	 *
 	 */
-	static public function ban($request, $ttl=null, $reason=null) {
+	static public function ban(RequestHTTP $request, ?int $ttl=null, ?string $reason=null) {
 		self::init();
 		if (!($ip = RequestHTTP::ip())) { return false; }
 		if (self::isWhitelisted()) { return false; } 
@@ -187,13 +187,16 @@ class ca_ip_bans extends BaseModel {
 	/**
 	 *
 	 */
-	static public function isBanned($request) {
+	static public function isBanned(RequestHTTP $request, ?string $reason=null) {
 		self::init();
 		$ip = RequestHTTP::ip();
-		if(!($entries = self::find(['ip_addr' => $ip, 'expires_on' => null], ['returnAs' => 'count']))) {
-			$entries = self::find(['ip_addr' => $ip, 'expires_on' => ['>', time()]], ['returnAs' => 'count']);
+		if(!($entries = self::find(['ip_addr' => $ip, 'expires_on' => null], ['returnAs' => 'array']))) {
+			$entries = self::find(['ip_addr' => $ip, 'expires_on' => ['>', time()]], ['returnAs' => 'array']);
 		}
-		if($entries > 0) {
+		if(is_array($entries) && (sizeof($entries) > 0)) {
+			if($reason) {
+				return (($entries['reason'] ?? null) === $reason);
+			}
 			return true;
 		}
 		return false;
@@ -206,7 +209,7 @@ class ca_ip_bans extends BaseModel {
 	 * @param array $options Options include:
 	 *		all = Remove all bans. [Default is false]
 	 */
-	static public function clean($options=null) {
+	static public function clean(?array $options=null) {
 		self::init();
 		$db = new Db();
 		if (caGetOption('all', $options, false)) {
@@ -245,7 +248,7 @@ class ca_ip_bans extends BaseModel {
 		}
 		
 		if (!$reasons && !$from) {
-			if($db->query("TRUNCATE TABLE ca_ip_bans")) {
+			if($db->query("DELETE FROM ca_ip_bans")) {
 				return $db->affectedRows();
 			}
 			return null;
@@ -274,7 +277,7 @@ class ca_ip_bans extends BaseModel {
 	/**
 	 *
 	 */
-	static public function isWhitelisted($options=null) {
+	static public function isWhitelisted(?array $options=null) {
 		self::init();
 		if (!is_array($whitelist = self::$config->get('ip_whitelist'))) { $whitelist = []; }
 		

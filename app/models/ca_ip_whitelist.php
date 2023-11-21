@@ -224,7 +224,7 @@ class ca_ip_whitelist extends BaseModel {
 		}
 		if($reasons = caGetOption('reasons', $options, null)) {
 			if(!is_array($reasons)) { $reasons = preg_split('/[;,]/', $reasons); }
-			$valid_reasons = array_map('strtolower', BanHammer::getPluginNames());
+			$valid_reasons = array_map('strtolower', self::validReasons());
 			$reasons = array_filter($reasons, function($v) use ($valid_reasons) {
 				return in_array(strtolower($v), $valid_reasons, true);
 			});
@@ -232,7 +232,7 @@ class ca_ip_whitelist extends BaseModel {
 		}
 		
 		if (!$reasons && !$from) {
-			if($db->query("TRUNCATE TABLE ca_ip_whitelist")) {
+			if($db->query("DELETE FROM ca_ip_whitelist")) {
 				return $db->affectedRows();
 			}
 			return null;

@@ -100,7 +100,7 @@ trait CLIUtilsBanHammer {
 	public static function clear_whitelist($opts=null) {
 		if($reasons = $opts->getOption('reason')) {
 			if(!is_array($reasons)) { $reasons = preg_split('/[;,]/', $reasons); }
-			$valid_reasons = ['CAPTCHA'];
+			$valid_reasons = ca_ip_whitelist::validReasons();
 			$reasons = array_filter($reasons, function($v) use ($valid_reasons) {
 				return in_array(strtolower($v), $valid_reasons, true);
 			});
