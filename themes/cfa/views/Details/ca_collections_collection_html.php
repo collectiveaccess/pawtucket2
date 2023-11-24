@@ -745,7 +745,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                               </strong>
                             </span>
                             (^relationship_typename)
-                            <div class="trimText" id="bio_^ca_entities.entity_id" style="line-height: 20px;">^ca_entities.biography</div>
+                            <div class="trimText" id="bio_^ca_entities.entity_id" style="line-height: 22px;">^ca_entities.biography</div>
                           </unit>
                         </div>
                       </div>

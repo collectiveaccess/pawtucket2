@@ -170,16 +170,29 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 													"^ca_occurrences.cfaLanguageMaterials" => "Language Of Materials",
 												);
 												foreach($metadata as $field => $fieldLabel){
+
+													if (str_contains($field, 'ca_occurrences')) {
 											?>
-													<ifdef code="<?= $field; ?>">
-														<unit delimiter="<br>">
-															<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
-															<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
-														</unit>
-													</ifdef>
+														<ifdef code="<?= $field; ?>">
+															<unit delimiter="<br>" relativeTo='ca_occurrences' restrictToRelationshipTypes="instantiation">
+																<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+																<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
+															</unit>
+														</ifdef>
 											<?php
-												}
+
+													}else{
 											?>
+														<ifdef code="<?= $field; ?>">
+															<unit delimiter="<br>">
+																<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+																<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
+															</unit>
+														</ifdef>
+											<?php
+													}
+												}
+											?>													 
 
 											<if rule="^ca_objects.cfaFilmElementHierachical !~ /\-NONE\-/">
 												<ifdef code="ca_objects.cfaFilmElementHierachical">

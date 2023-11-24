@@ -156,16 +156,29 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 												"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
 											);
 											foreach($metadata as $field => $fieldLabel){
-										?>
-												<ifdef code="<?= $field; ?>">
-													<unit delimiter="<br>">
-														<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
-														<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
-													</unit>
-												</ifdef>
-										<?php
-											}
-										?>
+
+													if (str_contains($field, 'ca_occurrences')) {
+											?>
+														<ifdef code="<?= $field; ?>">
+															<unit delimiter="<br>" relativeTo='ca_occurrences' restrictToRelationshipTypes="instantiation">
+																<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+																<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
+															</unit>
+														</ifdef>
+											<?php
+
+													}else{
+											?>
+														<ifdef code="<?= $field; ?>">
+															<unit delimiter="<br>">
+																<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+																<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
+															</unit>
+														</ifdef>
+											<?php
+													}
+												}
+											?>				
 
 										<if rule="^ca_objects.cfaVideoFormatHierachical !~ /\-NONE\-/">
 											<ifdef code="ca_objects.cfaVideoFormatHierachical">
