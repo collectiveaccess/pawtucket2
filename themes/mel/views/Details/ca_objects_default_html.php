@@ -60,6 +60,7 @@
 			        $va_3dURL = $t_object->get("ca_objects.3D_Scan_URL", array("returnAsArray" => true));
 			        if(is_array($va_3dURL) && sizeof($va_3dURL)){
 			            foreach($va_3dURL as $vs_3dURL){
+			            	if(!$vs_3dURL) { continue; }
 			            	print '<div class="sketchfab-embed-wrapper"><iframe width="100%" height="360" src=" '.$vs_3dURL.'/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe> <p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;"> <a href="'.$vs_3dURL.'?utm_medium=embed&utm_source=website&utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">'.$t_object->get("ca_objects.preferred_labels").' ('.$t_object->get("ca_objects.idno").')</a> by <a href="https://sketchfab.com/mfmaritimemuseum?utm_medium=embed&utm_source=website&utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">The Mel Fisher Maritime Museum</a> on <a href="https://sketchfab.com?utm_medium=embed&utm_source=website&utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a> </p> </div>';
 			        	}
 			        }
