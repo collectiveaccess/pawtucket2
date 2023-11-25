@@ -1,4 +1,5 @@
 <?php
+if($this->request->isAjax()) { return; }
 $errors = $this->getVar('errors');
 
 if(is_array($errors)) {
@@ -54,7 +55,7 @@ if(is_array($errors)) {
 		</div><!-- end row -->
 		
 		<div id='regCaptchaSubmit' class='banContinue'>
-			<span class="btn btn-default"><a href="#" id='banContinueButton'>Click here to continue</a></span>
+			<span class="btn btn-default"><a href="#" id='banContinueButton'><?= _t('Click here to continue'); ?></a></span>
 		</div>
 <?php
 	} else {
