@@ -93,7 +93,7 @@
 							<div class="col-sm-12 <?php print ($vb_image) ? "col-md-7" : ""; ?>">
 								<div class="detailLanguageInfo bgLtBrown">
 									<H1>{{{^ca_objects.preferred_labels.name<ifdef code="ca_objects.meaning"> &mdash; ^ca_objects.meaning</ifdef>}}}</H1>
-									{{{<ifdef code="ca_objects.word_morpheme_type"><div class="unit">Part of speech: ^ca_objects.word_morpheme_type</div></ifdef>}}}
+									{{{<ifdef code="ca_objects.word_morpheme_type"><div class="unit">Part of speech: ^ca_objects.word_morpheme_type%useSingular=1</div></ifdef>}}}
 									{{{<ifdef code="ca_objects.sentence"><div class="unit"><b><unit relativeTo="ca_objects.sentence" delimiter="<br/>">^ca_objects.sentence</unit></b><ifdef code="ca_objects.sentence_translation"><br><unit relativeTo="ca_objects.sentence_translation" delimiter="<br/>">^ca_objects.sentence_translation</unit></div></ifdef>}}}
 								</div>
 							</div>
