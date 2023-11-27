@@ -69,9 +69,12 @@ $va_data['storymap']['slides'][] = [
 // georeference is from the venue related to the appearance
 $vn_c = 0;
 while($qr_appearances->nextHit()) {
+	$vs_image = $vs_caption = $vs_credit = "";
 	$vs_georeference = $qr_appearances->getWithTemplate("<unit relativeTo='ca_occurrences.related' restrictToTypes='venue'>^ca_occurrences.georeference</unit>");
 	$vs_image = $qr_appearances->getWithTemplate("^ca_object_representations.media.large.url", array("checkAccess" => $va_access_values));
-	$vs_caption = $vs_credit = "";
+	if($vs_image){
+		$vs_caption = $qr_appearances->getWithTemplate("^ca_object_representations.preferred_labels", array("checkAccess" => $va_access_values));
+	}
 	if(!$vs_image){
 		$vs_image = $qr_appearances->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'>^ca_object_representations.media.large.url</unit></ifcount>", array("checkAccess" => $va_access_values));
 		$vs_caption = $qr_appearances->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'><l>^ca_objects.preferred_labels.name</l></unit></ifcount>", array("checkAccess" => $va_access_values));
@@ -79,8 +82,8 @@ while($qr_appearances->nextHit()) {
 	}
 	if(!$vs_image){
 		$vs_image = $qr_appearances->getWithTemplate("<unit relativeTo='ca_objects' limit='1'>^ca_object_representations.media.large.url</unit>", array('checkAccess' => $va_access_values));
-		$vs_caption = $qr_appearances->getWithTemplate("<unit relativeTo='ca_objects' length='1'><l>^ca_objects.preferred_labels.name</l></unit>", array("checkAccess" => $va_access_values));
-		$vs_credit = $qr_appearances->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_objects.credit</unit>", array("checkAccess" => $va_access_values));
+		$vs_caption = $qr_appearances->getWithTemplate("<unit relativeTo='ca_objects' limit='1'><ifdef code='ca_object_representations.media'><l>^ca_objects.preferred_labels.name</ifdef></l></unit>", array("checkAccess" => $va_access_values));
+		$vs_credit = $qr_appearances->getWithTemplate("<unit relativeTo='ca_objects' limit='1'><ifdef code='ca_object_representations.media'>^ca_objects.credit</ifdef></unit>", array("checkAccess" => $va_access_values));
 	}
 	
 	if($vs_georeference){
