@@ -98,7 +98,7 @@ while($qr_appearances->nextHit()) {
 				'line' => true
 			],
 			'text' => [
-				'headline' => $qr_appearances->getWithTemplate('<l>^ca_occurrences.preferred_labels.name<br/><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l>'),
+				'headline' => $qr_appearances->getWithTemplate('<l>^ca_occurrences.preferred_labels.name<br/><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence</ifdef></l>'),
 				'text' => $qr_appearances->getWithTemplate('<ifdef code="ca_occurrences.description">^ca_occurrences.description</ifdef>'),
 			],
 			'media' => [
