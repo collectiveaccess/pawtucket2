@@ -39,7 +39,7 @@
 		$vs_image .= $t_item->getWithTemplate("<ifdef code='ca_object_representations.preferred_labels'><div>^ca_object_representations.preferred_labels</div></ifdef>", array("checkAccess" => $va_access_values));
 	}
 	if(!$vs_image){
-		$vs_image = $t_item->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'><l>^ca_object_representations.media.large</l><div><l>^ca_objects.preferred_labels.name</l></div></unit></ifcount>", array("checkAccess" => $va_access_values));
+		$vs_image = $t_item->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><div><l>^ca_objects.preferred_labels.name</l></div></ifdef></unit></ifcount>", array("checkAccess" => $va_access_values));
 	}
 	$vb_bottom_box = false;
 	if($t_item->get("ca_entities.entity_id", array("checkAccess" => $va_access_values))){
