@@ -5,7 +5,7 @@
 	</div></div>
 </div>
 <div class="container">
-	<div class="row lessGutter">
+	<div class="row">
 		<div class='col-md-12 col-lg-12'>
 
 			<div class="bgLightGray">
@@ -32,16 +32,14 @@
 
 	if($qr_res && $qr_res->numHits()){
 ?>
-		<H2><?php print ($vs_featured_set_name) ? $vs_featured_set_name : "New at Video Out"; ?></H2>
-
-			<div class="frontGrid">	
-
+		<div class="frontGrid">	
+			<H2><?php print ($vs_featured_set_name) ? $vs_featured_set_name : "New at Video Out"; ?></H2>
 <?php
 				$i = $vn_col = 0;
 				while($qr_res->nextHit()){
 					if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.widepreview</l>', array("checkAccess" => $va_access_values))){
 						if($vn_col == 0){
-							print "<div class='row'>";
+							print "<div class='row lessGutter'>";
 						}
 					
 						print "<div class='col-sm-4'><div class='resultTile'>".$vs_media;
@@ -50,7 +48,11 @@
 							print $vs_caption;
 						}
 						$vs_add_to_set_link = "<a href='#' class='setLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array("object_id" => $qr_res->get("ca_objects.object_id")))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
-						print "<div class='tools'>".$vs_add_to_set_link."<div class='identifier'>".$qr_res->getWithTemplate("<l>^ca_objects.idno</l>")."</div></div>";
+						$vs_idno_link = "";
+						if($vs_tmp = $qr_res->getWithTemplate("<ifdef code='ca_objects.idno'>^ca_objects.idno%truncate=15&ellipsis=1</ifdef>")){
+							$vs_idno_link = caDetailLink($this->request, $vs_tmp, '', "ca_objects", $qr_res->get("ca_objects.object_id"), array(), array("aria-label" => "Record Identifier"));
+						}
+						print "<div class='tools'>".$vs_add_to_set_link."<div class='identifier'>".$vs_idno_link."</div></div>";
 						print "</div></div>";
 						$vb_item_output = true;
 						$i++;

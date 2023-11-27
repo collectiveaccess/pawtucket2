@@ -143,14 +143,18 @@
 						$vs_add_to_set_link = "<a href='#' class='setLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 					$vs_idno = "";
-					if($qr_res->getWithTemplate("<l>^".$vs_table.".idno</l>")){
-						$vs_idno = "<div class='identifier'>".$qr_res->getWithTemplate("<ifdef code='".$vs_table.".idno'><l>^".$vs_table.".idno</l></ifdef>")."</div>";
+					if($vs_tmp = $qr_res->getWithTemplate("^".$vs_table.".idno%truncate=15&ellipsis=1")){
+						$vs_idno = "<div class='identifier'>".caDetailLink($this->request, $vs_tmp, '', $vs_table, $vn_id, array(), array("aria-label" => "Record Identifier"))."</div>";
+					}
+					$vs_title = $qr_res->getWithTemplate($vs_result_caption_template);
+					if($vs_title == "[BLANK]"){
+						$vs_title = "Title not available";
 					}
 					$vs_result_output = "
 		<div class='col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='resultTile'>
 				{$vs_rep_detail_link}
-				".$qr_res->getWithTemplate("<l><div class='caption'>".$vs_result_caption_template."</div></l>")."
+				".$qr_res->getWithTemplate("<l><div class='caption'>".$vs_title."</div></l>")."
 				<div class='tools'>{$vs_add_to_set_link}{$vs_idno}</div>
 			</div>
 		</div><!-- end col -->";

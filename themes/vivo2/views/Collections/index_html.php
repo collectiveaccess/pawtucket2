@@ -58,13 +58,16 @@
 			if(!$vs_image){
 				$vs_image = $vs_placeholder;
 			}
-			$vs_lang = "";
-			if($vs_tmp = $qr_collections->get("ca_collections.RAD_langMaterial", array("delimiter" => "; "))){
-				$vs_lang = "<div><label>Language</label>".$vs_tmp."</div>";
+			$vs_scope = "";
+			if($vs_tmp = strip_tags($qr_collections->get("ca_collections.RAD_scopecontent"))){
+				if(mb_strlen($vs_tmp) > 100){
+					$vs_tmp = substr($vs_tmp, 0, 100)."...";
+				}
+				$vs_scope = "<div>".$vs_tmp."</div>";
 			}
 			
 			if ( $vn_i == 0) { print "<div class='row'>"; } 
-			print "<div class='col-sm-6'>".caDetailLink($this->request, "<div class='bgLightGray imgTile'><div class='row'><div class='col-sm-5 col-md-4 col-lg-3'>".$vs_image."</div><div class='col-sm-7 col-md-8 col-lg-9'><div class='imgTileText'><div class='imgTileTextTitle'>".$qr_collections->get("ca_collections.preferred_labels")."</div>".$vs_lang."</div></div></div></div>", "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";
+			print "<div class='col-sm-6'>".caDetailLink($this->request, "<div class='bgLightGray imgTile'><div class='row'><div class='col-sm-5 col-md-4 col-lg-3'>".$vs_image."</div><div class='col-sm-7 col-md-8 col-lg-9'><div class='imgTileText'><div class='imgTileTextTitle'>".$qr_collections->get("ca_collections.preferred_labels")."</div>".$vs_scope."</div></div></div></div>", "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";
 			$vn_i++;
 			if ($vn_i == 2) {
 				print "</div><!-- end row -->\n";

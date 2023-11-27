@@ -76,13 +76,13 @@
 						if($vn_col == 0){
 							print "<div class='row'>";
 						}
-						print "<div class='col-sm-3 col-xs-6'>";
+						print "<div class='col-sm-3 col-xs-6'><div class='frontGridBox'>";
 						$vs_caption = "";
 						if($va_set["name"]){
 							$vs_caption = "<div class='frontGridCaption'>".$va_set["name"]."</div>"; 
 						}
 						print caNavLink($this->request, $va_first_item["representation_tag"].$vs_caption, "", "", "Gallery", $vn_set_id);
-						print "</div>";						
+						print "</div></div>";						
 						$i++;
 						$vn_col++;
 						if($vn_col == 4){
