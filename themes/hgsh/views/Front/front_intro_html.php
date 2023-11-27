@@ -73,7 +73,7 @@
         </div>
 		<div class="col-xs-6 col-sm-3">
 			<div class="hpBrowseImage">
-				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/people.jpg')."<div class='hpBrowseTitle'>People</div>", "", "", "Browse", "people"); ?>
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/people.jpg')."<div class='hpBrowseTitle'>People</div>", "", "", "Browse", "people_collections"); ?>
 			</div>
 		</div>	
 		<div class="col-xs-6 col-sm-3">
