@@ -84,7 +84,7 @@
 					});
 					$('.jcarousel.featured').jcarouselAutoscroll({
 					autostart: true,
-					interval: 2000
+					interval: 3000
 				});
 		
 				/*

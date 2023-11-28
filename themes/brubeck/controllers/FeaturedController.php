@@ -124,7 +124,7 @@
 			}
  			$qr_appearances = caMakeSearchResult(
 				"ca_occurrences",
-				$t_tour->get("ca_occurrences.related.occurrence_id", array("returnAsArray" => true, "restrictToTypes" => array("appearance"), "restrictToRelationshipTypes" => array("included"), "checkAccess" => $this->opa_access_values)),
+				$t_tour->get("ca_occurrences.related.occurrence_id", array("sort" => "ca_occurrences.date_occurrence_container.date_occurrence", "returnAsArray" => true, "restrictToTypes" => array("appearance"), "restrictToRelationshipTypes" => array("included"), "checkAccess" => $this->opa_access_values)),
 				['checkAccess' => $this->opa_access_values]
 			);
 

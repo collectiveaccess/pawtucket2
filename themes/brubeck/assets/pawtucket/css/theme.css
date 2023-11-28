@@ -717,11 +717,12 @@ body.frontContainer #footer{
 }
 .hpIntro .calloutTitle{
 	text-align:center;
-	font-size: 32px;
+	font-size: 44px;
 	color: #000;
-	margin-bottom:15px;
+	margin-bottom:60px;
 	font-family: 'urbane-rounded', sans-serif;
 	font-weight:600;
+	padding-top: 40px;
 }
 @media(max-width:767px){
 	.hpIntro .callout{
