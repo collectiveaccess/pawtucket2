@@ -123,7 +123,7 @@ if($vs_mode == "map"){
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.IRSSA_Dates.IRSSA_Dates_date">
 							<div class='unit'>
-								<H6>IRSSA Dates</H6>
+								<H6>Settlement Agreement Dates</H6>
 								<unit delimiter="<br/>" relativeTo="ca_entities.IRSSA_Dates"><div data-toggle="popover" title="Source" data-content="^ca_entities.IRSSA_Dates.IRSSA_Dates_source">
 									<ifdef code="ca_entities.IRSSA_Dates.IRSSA_Dates_date">^ca_entities.IRSSA_Dates.IRSSA_Dates_date</ifdef>
 								</div></unit>
@@ -293,7 +293,7 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 100
+		  maxHeight: 113
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
