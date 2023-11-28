@@ -293,7 +293,7 @@ if($vs_mode == "map"){
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 113
+		  maxHeight: 118
 		});
 		$('.trimTextShort').readmore({
 		  speed: 75,
