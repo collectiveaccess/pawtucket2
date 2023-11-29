@@ -1118,6 +1118,9 @@ h3.popover-title{
 	color: #454545;
 	font-family: latoLight;
 }
+.school .trimText p{
+	margin-bottom:14px;
+}
 /* archival collection browser */
 #collectionsWrapperArchival .collectionsContainer{
 	padding-bottom:20px;
