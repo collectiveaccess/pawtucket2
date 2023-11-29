@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2018 Whirl-i-Gig
+ * Copyright 2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -147,39 +147,39 @@
 							<div class="row center">
 								<ul id="menu-footer" class="menu horizontal main">
 									<li id="menu-item-44" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-44">
-										<a href="https://cfarchives.wpengine.com/services/">
+										<a href="https://www.chicagofilmarchives.org/services/">
 											Services
 										</a>
 										<ul class="sub-menu">
 											<li id="menu-item-45" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-45">
-												<a href="https://cfarchives.wpengine.com/services/archival-footage-licensing/">
+												<a href="https://www.chicagofilmarchives.org/services/archival-footage-licensing/">
 													Archival Footage Licensing
 												</a>
 											</li>
 											<li id="menu-item-46" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-46">
-												<a href="https://cfarchives.wpengine.com/services/collections-management/">
+												<a href="https://www.chicagofilmarchives.org/services/collections-management/">
 													Collections Management
 												</a>
 											</li>
 											<li id="menu-item-47" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-47">
-												<a href="https://cfarchives.wpengine.com/services/film-digitization/">
+												<a href="https://www.chicagofilmarchives.org/services/film-digitization/">
 													Film Digitization
 												</a>
 											</li>
 											<li id="menu-item-48" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-48">
-												<a href="https://cfarchives.wpengine.com/services/film-loans/">
+												<a href="https://www.chicagofilmarchives.org/services/film-loans/">
 													Film Loans
 												</a>
 											</li>
 											<li id="menu-item-49" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-49">
-												<a href="https://cfarchives.wpengine.com/services/vault-rental/">
+												<a href="https://www.chicagofilmarchives.org/services/vault-rental/">
 													Vault Rental
 												</a>
 											</li>
 										</ul>
 									</li>
 									<li id="menu-item-40" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-40">
-										<a href="https://cfarchives.wpengine.com/about/">
+										<a href="https://www.chicagofilmarchives.org/about/">
 											About
 										</a>
 										<ul class="sub-menu">
@@ -194,19 +194,19 @@
 												</a>
 											</li>
 											<li id="menu-item-43" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-43">
-												<a href="https://cfarchives.wpengine.com/about/contact/">
+												<a href="https://www.chicagofilmarchives.org/about/contact/">
 													Contact
 												</a>
 											</li>
 										</ul>
 									</li>
 									<li id="menu-item-37" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-37">
-										<a href="https://cfarchives.wpengine.com/support/">
+										<a href="https://www.chicagofilmarchives.org/support/">
 											Support
 										</a>
 										<ul class="sub-menu">
 											<li id="menu-item-39" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-39">
-												<a href="https://cfarchives.wpengine.com/support/our-supporters/">
+												<a href="https://www.chicagofilmarchives.org/support/our-supporters/">
 													Our Supporters
 												</a>
 											</li>
@@ -238,22 +238,22 @@
 								<div class="col">
 									<ul id="menu-policy-menu" class="menu horizontal policy">
 										<li>
-											<a href="https://cfarchives.wpengine.com/">
+											<a href="https://www.chicagofilmarchives.org/">
 												© 2023 Chicago Film Archives
 											</a>
 										</li>
 										<li id="menu-item-296" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-296">
-											<a href="https://cfarchives.wpengine.com/privacy-policy/">
+											<a href="https://www.chicagofilmarchives.org/privacy-policy/">
 												Privacy Policy
 											</a>
 										</li>
 										<li id="menu-item-297" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-297">
-											<a href="https://cfarchives.wpengine.com/archival-footage-policy/">
+											<a href="https://www.chicagofilmarchives.org/archival-footage-policy/">
 												Archival Footage Policy
 											</a>
 										</li>
 										<li id="menu-item-298" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-298">
-											<a href="https://cfarchives.wpengine.com/accessibility/">
+											<a href="https://www.chicagofilmarchives.org/accessibility/">
 												Accessibility
 											</a>
 										</li>

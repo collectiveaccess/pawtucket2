@@ -2449,7 +2449,7 @@ class BaseModel extends BaseObject {
 					break;
 			}
 			
-			if ($va_parent_info) {
+			if ($va_parent_info && (!defined('__DONT_DO_HIERARCHICAL_INDEXING__') || !__DONT_DO_HIERARCHICAL_INDEXING__)) {
 				$va_hier_indexing = $this->_calcHierarchicalIndexing($va_parent_info);
 			} else {
 				$va_hier_indexing = array('left' => 1, 'right' => pow(2,32));
@@ -3057,7 +3057,7 @@ class BaseModel extends BaseObject {
 				}
 				
 				
-if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetHierarchicalIndexing']) {							
+if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetHierarchicalIndexing']) && (!defined('__DONT_DO_HIERARCHICAL_INDEXING__') || !__DONT_DO_HIERARCHICAL_INDEXING__)) {							
 					if ($va_parent_info) {
 						$va_hier_indexing = $this->_calcHierarchicalIndexing($va_parent_info);
 					} else {
@@ -3367,7 +3367,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 					$this->doSearchIndexing(null, false, $va_index_options);
 				}
 													
-				if (is_array($va_rebuild_hierarchical_index) && (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetHierarchicalIndexing'])) {
+				if ((is_array($va_rebuild_hierarchical_index) && (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetHierarchicalIndexing'])) && (!defined('__DONT_DO_HIERARCHICAL_INDEXING__') || !__DONT_DO_HIERARCHICAL_INDEXING__)) {
 					$t_instance = Datamodel::getInstanceByTableName($this->tableName());
 					if ($this->inTransaction()) { $t_instance->setTransaction($this->getTransaction()); }
 					foreach($va_rebuild_hierarchical_index as $vn_child_id) {
@@ -3666,7 +3666,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		}
 		
 		# cancel and pending queued tasks against this record
-		$tq = new TaskQueue();
+		$tq = new TaskQueue(['transaction' => $this->getTransaction()]);
 		$tq->cancelPendingTasksForRow(join("/", array($this->tableName(), $vn_id)));
 
 		$this->_FILES_CLEAR = array();
@@ -3797,7 +3797,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		$va_volume_info = $this->_MEDIA_VOLUMES->getVolumeInformation($va_media_info[$ps_version]["VOLUME"]);
 		if (!is_array($va_volume_info)) { return null; }
 
-		$o_tq = new TaskQueue();
+		$o_tq = new TaskQueue(['transaction' => $this->getTransaction()]);
 		$vs_row_key = join("/", array($this->tableName(), $this->getPrimaryKey()));
 		$vs_entity_key = join("/", array($this->tableName(), $ps_field, $this->getPrimaryKey(), $ps_version));
 
@@ -4359,7 +4359,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		
 		# if media is mirrored, delete file off of mirrored server
 		if (is_array($va_volume_info["mirrors"] ?? null) && sizeof($va_volume_info["mirrors"]) > 0) {
-			$o_tq = new TaskQueue();
+			$o_tq = new TaskQueue(['transaction' => $this->getTransaction()]);
 			$vs_row_key = join("/", array($this->tableName(), $this->getPrimaryKey()));
 			$vs_entity_key = join("/", array($this->tableName(), $ps_field, $this->getPrimaryKey(), $ps_version));
 
@@ -4435,7 +4435,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 	 	
 		$vb_is_fetched_file = $vb_is_archive = false;
 	 	
-		$o_tq = new TaskQueue();
+		$o_tq = new TaskQueue(['transaction' => $this->getTransaction()]);
 		$o_media_proc_settings = new MediaProcessingSettings($this, $ps_field);
 
 		# only set file if something was uploaded
@@ -10148,7 +10148,7 @@ $pa_options["display_form_field_tips"] = true;
 		// Reindex modified relationships
 		$o_indexer = $this->getSearchIndexer();
 		foreach($to_reindex_relations as $relation_id => $row) {
-			$o_indexer->indexRow($rel_table_num, $relation_id, $row, false, null, [$item_pk => true]);
+			$o_indexer->indexRow($rel_table_num, $relation_id, $row, false, null, [$item_pk => true], ['queueIndexing' => caGetOption('queueIndexing', $options, true)]);
 		}
 		
 		return sizeof($to_reindex_relations);
