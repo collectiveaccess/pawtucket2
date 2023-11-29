@@ -188,7 +188,7 @@
 				if ($va_marketing_keywords = $t_object->get('ca_objects.marketing', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><h6>Marketing Keywords</h6>";
 					foreach ($va_marketing_keywords as $va_p => $va_marketing_keyword) {
-						print caNavLink($this->request, ucwords($va_marketing_keyword), '', '', 'Search', 'objects', array('search' => "ca_objects.marketing:\"".$va_marketing_keyword."\"", [], ['dontURLEncodeParameters' => true]));
+						print caNavLink($this->request, ucwords($va_marketing_keyword), '', '', 'Search', 'objects', array('search' => "ca_objects.marketing:\"".$va_marketing_keyword."\""));
 						if (end($va_marketing_keywords) != $va_marketing_keyword) { print ", ";}
 					}					
 					print "</div>";
