@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2021-2023 Whirl-i-Gig
+ * Copyright 202 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,17 +28,19 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
- */ 
-$t_subject = $this->getVar('t_subject');
-$vn_page = (int)$this->getVar('page');
-
-$vs_width = caParseElementDimension($this->getVar('width'), ['returnAsString' => true, 'default' => '100%']);
-$vs_height = caParseElementDimension($this->getVar('height'), ['returnAsString' => true, 'default' => '100%']);
-
-$url = $this->getVar('media_url');
+ */
+ 
+	$t_subject = $this->getVar('t_subject');
+	$vn_page = (int)$this->getVar('page');
+	
+	$vs_width = caParseElementDimension($this->getVar('width'), ['returnAsString' => true, 'default' => '100%']);
+	$vs_height = caParseElementDimension($this->getVar('height'), ['returnAsString' => true, 'default' => '100%']);
+	
+	$url = $this->getVar('media_url');
+	//print "url=".$this->getVar('media_url');
 ?>
 
-<div id="outerContainer" style="width: <?= $vs_width; ?>; height: <?= $vs_height; ?>;">
+<div id="outerContainer">
   <div id="sidebarContainer">
 	<div id="toolbarSidebar">
 	  <div class="splitToolbarButton toggled">
@@ -385,7 +387,7 @@ $url = $this->getVar('media_url');
 </div> <!-- outerContainer -->
 <div id="printContainer"></div>
 
-<link rel="resource" type="application/l10n" href="<?= $this->request->getBaseUrlPath(); ?>/assets/pdfjs/viewer/locale/locale.properties"/>
+<link rel="resource" type="application/l10n" href="<?= $this->request->getBaseUrlPath(); ?>/assets/pdfjs/viewer/locale/locale.properties">
  <script>
  	// Set viewer config vars
  	window.pdfjsPath = '<?= $this->request->getBaseUrlPath(); ?>/assets';
@@ -395,3 +397,4 @@ $url = $this->getVar('media_url');
  	window.pdfjsDefaultScrollMode = <?= $this->getVar('scroll_mode'); ?>;
  </script>
  <script src="<?= $this->request->getBaseUrlPath(); ?>/assets/pdfjs/viewer/viewer.js"></script>
+ <?= $this->getVar('scroll_mode'); ?>

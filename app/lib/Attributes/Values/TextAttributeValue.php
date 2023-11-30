@@ -29,10 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- /**
-  *
-  */
 define("__CA_ATTRIBUTE_VALUE_TEXT__", 1);
 
 require_once(__CA_LIB_DIR__.'/Attributes/Values/IAttributeValue.php');

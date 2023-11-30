@@ -5,7 +5,7 @@
 
 <div class="row">
 	<div class="col-sm-12">
-		<h3>Contact Us</h3>
+		<h2>Contact Us</h2>
 			Sterling Morton Library<br/>
 			The Morton Arboretum <br/>
 			4100 IL-53, Lisle, IL 60532<br/><br/>
@@ -16,7 +16,7 @@
 
 <div class="row">
 	<div class="col-sm-12">
-		<h3>Search Help Tutorials</h3>
+		<h2>Search Help Tutorials</h2>
 		<p>For help on how to search and how to interpret your search results, follow the links below to view our how-to tutorials: </p>
 
 		<p>
@@ -33,7 +33,7 @@
 
 <div class="row">
 	<div class="col-sm-12">
-		<h3>Further Learning Opportunities</h3>
+		<h2>Further Learning Opportunities</h2>
 		<p>For a more in-depth opportunity to learn about ACORN, take our free, online course: </p>
 
 		<p>
@@ -50,7 +50,7 @@ This online class is self-guided and can be completed wherever you have access t
 <div class="row">
 	<div class="col-sm-12">
     
-<h3>Frequently Asked Questions (and their Answers):</h3>
+<h2>Frequently Asked Questions (and their Answers):</h2>
         <p><b>How can I use the images I see here?</b></p>
 <p>You can use the digital images in ACORN with proper attribution (see below) for any personal or educational purpose. We make every attempt to ensure that we are abiding by copyright law, but if you use one of these images, you take responsibility for verifying its copyright status. </p>
 

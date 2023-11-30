@@ -55,20 +55,21 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			if($vn_level == 1){
 				$vs_output .= "<div class='label'>";
 			}
+			$vs_date = $qr_collections->getWithTemplate('<ifdef code="ca_collections.date_container.date"><unit relativeTo="ca_collections.date_container" delimiter=", "><if rule="^ca_collections.date_container.date_type =~ /Created/">, ^ca_collections.date_container.date</if></unit></ifdef>');
 			if($vb_link){
 				$vs_output .= $vs_icon." ";
 				if($vb_collapse_link){
-					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels')."</a>";
+					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels').$vs_date."</a>";
 				}else{
-					$vs_output .= caDetailLink($po_request, $qr_collections->get('ca_collections.preferred_labels'), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
+					$vs_output .= caDetailLink($po_request, $qr_collections->get('ca_collections.preferred_labels').$vs_date, '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
 				}
 				$vs_output .= " ".caDetailLink($po_request, (($o_config->get("link_out_icon")) ? $o_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
 			}else{
 				$vs_output .= "<span class='nonLinkedCollection'>".$vs_icon." ";
 				if($vb_collapse_link){
-					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels')."</a>";
+					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels').$vs_date."</a>";
 				}else{
-					$vs_output .= $qr_collections->get("ca_collections.preferred_labels");
+					$vs_output .= $qr_collections->get("ca_collections.preferred_labels").$vs_date;
 				}
 				$vs_output .= "</span>";
 			}

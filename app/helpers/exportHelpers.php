@@ -29,10 +29,6 @@
  * 
  * ----------------------------------------------------------------------
  */
-
-/**
-*
-*/
 require_once(__CA_LIB_DIR__."/Print/PDFRenderer.php");
 
 # ----------------------------------------
@@ -129,10 +125,11 @@ function caExportFileInfoForTemplate(string $table, string $template) : ?string 
  * @throws ApplicationException
  */
 function caExportItemAsPDF($request, $pt_subject, $ps_template, $ps_output_filename, $options=null) {
+	caIncrementExportCount();
+	
 	$view = new View($request, $request->getViewsDirectoryPath().'/');
 	
 	$pa_access_values = caGetOption('checkAccess', $options, null);
-	
 	$view->setVar('t_subject', $pt_subject);
 	
 	$vs_template_identifier = null;
@@ -222,6 +219,8 @@ function caExportItemAsPDF($request, $pt_subject, $ps_template, $ps_output_filen
  * @throws ApplicationException
  */
 function caExportViewAsPDF($view, $template_identifier, $output_filename, $options=null) {
+	caIncrementExportCount();
+	
 	if (is_array($template_identifier)) {
 		$template_info = $template_identifier;
 		$template_info['identifier'] = pathinfo($template_info['path'], PATHINFO_FILENAME);
@@ -375,16 +374,21 @@ function caGenerateDownloadFileName(string $ps_template, ?array $options=null) :
  * @throws ApplicationException
  */
 function caExportResult(RequestHTTP $request, $result, string $template, string $output_filename, ?array $options=null) {
+	caIncrementExportCount();
+	
 	$output = caGetOption('output', $options, 'STREAM');
 	
 	$config = Configuration::load();
 	$view = new View($request, $request->getViewsDirectoryPath().'/');
 	
+	if(method_exists($result, 'seek')) { $result->seek(0); }
 	$view->setVar('result', $result);
 	$view->setVar('t_set', caGetOption('set', $options, null));
 	$view->setVar('criteria_summary', caGetOption('criteriaSummary', $options, ''));
 	
 	$table = $result->tableName();
+	
+	$template_type = caGetOption('printTemplateType', $options, 'results');
 	
 	$type = $display_id = null;
 	if($t_display = caGetOption('display', $options, null)) {
@@ -393,7 +397,7 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 	$export_config = $template_info = null;
 	
 	if (!(bool)$config->get('disable_pdf_output') && substr($template, 0, 5) === '_pdf_') {
-		$template_info = caGetPrintTemplateDetails(caGetOption('printTemplateType', $options, 'results'), substr($template, 5));
+		$template_info = caGetPrintTemplateDetails($template_type, substr($template, 5));
 		$type = 'pdf';
 	} elseif (!(bool)$config->get('disable_pdf_output') && (substr($template, 0, 9) === '_display_')) {
 		$display_id = substr($template, 9);
@@ -424,7 +428,7 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 		} else {
 			throw new ApplicationException(_t("Invalid format %1", $template));
 		}
-		$template_info = caGetPrintTemplateDetails(caGetOption('printTemplateType', $options, 'results'), 'display');
+		$template_info = caGetPrintTemplateDetails($template_type, 'display');
 		$type = 'pdf';
 	} elseif(!(bool)$config->get('disable_export_output') && preg_match('!^_([a-z]+)_!', $template, $m)) {
 		switch($m[1]) {
@@ -944,10 +948,10 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 			
 			if($output === 'STREAM') { 
 				$request->isDownload(true);
-				caExportViewAsPDF($view, $template_info, $filename, array_merge($options, ['printTemplateType' => 'results']));
+				caExportViewAsPDF($view, $template_info, $filename, array_merge($options, ['printTemplateType' => $template_type]));
 			} else {
 				$tmp_filename = caGetTempFileName('caExportResult', '');
-				if(!caExportViewAsPDF($view, $template_info, $filename, ['writeToFile' => $tmp_filename, 'printTemplateType' => 'results'])) {
+				if(!caExportViewAsPDF($view, $template_info, $filename, ['writeToFile' => $tmp_filename, 'printTemplateType' => $template_type])) {
 					return null;
 				}
 				return [
@@ -1253,7 +1257,8 @@ function caExportSummary($request, BaseModel $t_instance, string $template, int 
 				if (!$filename_template = $config->get("{$table}_summary_file_naming")) {
 					$filename_template = $view->getVar('filename') ? $filename_template : caGetOption('filename', $template_info, 'print_summary');
 				}
-				if (!($filename = caProcessTemplateForIDs($filename_template, $table, [$subject_id]))) {
+				
+				if (!($filename = caProcessTemplateForIDs($filename_template, $table, [$t_instance->getPrimaryKey()]))) {
 					$filename = 'print_summary';
 				}
 				
@@ -1303,5 +1308,18 @@ function caExportSummary($request, BaseModel $t_instance, string $template, int 
 		$printed_properly = false;
 		return false;
 	}
+}
+# ----------------------------------------
+/**
+ * Log export counts for Pawtucket
+ */
+function caIncrementExportCount() : bool {
+	global $g_request, $g_set_export_count;
+	if(defined('__CA_APP_TYPE__') && (__CA_APP_TYPE__ === 'PAWTUCKET') && $g_request && !$g_set_export_count) {
+		BanHammer::verdict($g_request, ['usePlugin' => 'ExportFrequency']);
+		$g_set_export_count = true;
+		return true;
+	}
+	return false;
 }
 # ----------------------------------------

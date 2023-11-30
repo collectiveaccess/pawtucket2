@@ -200,12 +200,14 @@
 			$show_base_criteria = caGetOption('showBaseCriteria', $va_browse_info, false);
 			
 			if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
-			    foreach ($va_facets as $vs_facet_spec) {
-			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
-			        $vs_facet = array_shift($va_tmp);
-			        $o_browse->addCriteria($vs_facet, preg_split("![\|,]+!", join(":", $va_tmp))); 
-			    }
-			
+				foreach ($va_facets as $vs_facet_spec) {
+					if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
+					$vs_facet = array_shift($va_tmp);
+					$o_browse->addCriteria($vs_facet, preg_split("![\|,]+!", join(":", array_map(function($v) { 
+						return urldecode($v);
+					}, $va_tmp)))); 
+				}
+		
 			} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
 				$o_browse->addCriteria($vs_facet, $p);
 			} else { 
@@ -308,8 +310,7 @@
 			$this->view->setVar('facets', $va_facets);
 		
 			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
-			
-			Session::setVar($ps_function.'_last_browse_id', $vs_key);
+			if(!$this->request->isAjax()) { Session::setVar($ps_function.'_last_browse_id', $vs_key); }
 			
 			
 			// remove base criteria from display list
@@ -429,7 +430,7 @@
  				case 'xlsx':
  				case 'pptx':
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $ps_search_expression)), $this->getCriteriaForDisplay($o_browse));
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $ps_search_expression ?? 'browse')), $this->getCriteriaForDisplay($o_browse));
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');

@@ -65,6 +65,8 @@
 
 	
 	$va_add_to_set_link_info 	= caGetAddToSetInfo($this->request);
+	
+	$id = $this->request->getParameter(['collection_id', 'occurrence_id', 'id'], pInteger);
 
 //
 // BEGIN: GENERATE RESULTS WHEN EMBEDDING RESULTS IN A DETAIL
@@ -122,6 +124,7 @@ if($this->request->getParameter("detailNav", pInteger)){
                     <span class="sortMenu" data-toggle="dropdown"><?php print _t("Sort by"); ?>: <span class="sortValue"><?php print ucfirst($vs_current_sort_display); ?><i class='fa fa-chevron-down'></i></span></span>
                     <ul class="dropdown-menu " role="menu">
 <?php
+
                         if($vs_sort_control_type == 'dropdown'){
                             if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
                                 foreach($va_sorts as $vs_sort => $vs_sort_flds) {
@@ -172,7 +175,6 @@ if($this->request->getParameter("detailNav", pInteger)){
 			if($vb_show_filter && !$vb_is_sketchbook){
 				$va_options = ['collection' => 'all', 'current_collection' => 'current', 'past_collection' => 'previous'];
 				$t_lists = new ca_lists();
-				if (!($vn_collection_id = $this->request->getParameter('collection_id', pInteger))) { $vn_collection_id = $this->request->getParameter('id', pInteger);}
 ?>
 				<div class="btn-group sortResults">
 					<span class="sortMenu" data-toggle="dropdown"><?php print _t('Collection Status'); ?>: <span class="sortValue"><?php print ucfirst($va_options[$vs_current_facet]); ?><i class='fa fa-chevron-down'></i></span></span>
@@ -180,9 +182,9 @@ if($this->request->getParameter("detailNav", pInteger)){
 <?php
 							foreach($va_options as $vs_facet => $vs_label) {
 								if ($vs_facet == $vs_current_facet) {
-									print "<li class='browseResultsCollectionStatusOption' data-collection='{$vn_collection_id}' data-facet='{$vs_facet}'><a href='#'><div class='circleSelected'></div>{$vs_label}</a></li>\n";
+									print "<li class='browseResultsCollectionStatusOption' data-collection='{$id}' data-facet='{$vs_facet}'><a href='#'><div class='circleSelected'></div>{$vs_label}</a></li>\n";
 								} else {
-									print "<li class='browseResultsCollectionStatusOption' data-collection='{$vn_collection_id}' data-facet='{$vs_facet}'><a href='#'><div class='circleSelect'></div>{$vs_label}</a></li>";
+									print "<li class='browseResultsCollectionStatusOption' data-collection='{$id}' data-facet='{$vs_facet}'><a href='#'><div class='circleSelect'></div>{$vs_label}</a></li>";
 								}
 							}
 							
@@ -190,7 +192,7 @@ if($this->request->getParameter("detailNav", pInteger)){
 ?>
 					</ul>
 					
-                    <input type="hidden" id="browseResultsCollectionStatusValue" name='collection_status_id' value="<?php print $vn_collection_id; ?>"/>
+                    <input type="hidden" id="browseResultsCollectionStatusValue" name='collection_status_id' value="<?php print $id; ?>"/>
                     <input type="hidden" id="browseResultsCollectionStatusFacet" name='collection_status_facet' value="<?php print $vs_current_facet; ?>"/>
 				</div><!-- end btn-group -->
 <?php
@@ -524,7 +526,7 @@ if (!$vb_ajax) {	// !ajax
             if ((facet == 'collection') || (facet == 'past_collection') || (facet == 'current_collection')) {
                 url = '<?php print caNavUrl($this->request, '', 'Browse', 'worksInCollection', ['detailNav' => '1', 'view' => $vs_current_view], ['dontURLEncodeParameters' => true]); ?>/facet/' + facet + '/id/' + collection_id + '/sort/' + jQuery('#browseResultsSortValue').val() + '/direction/' + jQuery('#browseResultsSortDirValue').val();
             } else {
-                url = '<?php print caNavUrl($this->request, '*', 'Browse', 'worksInCollection', array('detailNav' => '1', 'key' => $vs_browse_key, 'view' => $vs_current_view, 'id' => $vn_collection_id), ['dontURLEncodeParameters' => true]); ?>/sort/' + jQuery('#browseResultsSortValue').val() + '/direction/' + jQuery('#browseResultsSortDirValue').val();
+                url = '<?php print caNavUrl($this->request, '*', 'Browse', 'worksInCollection', array('detailNav' => '1', 'key' => $vs_browse_key, 'view' => $vs_current_view, 'id' => $id), ['dontURLEncodeParameters' => true]); ?>/sort/' + jQuery('#browseResultsSortValue').val() + '/direction/' + jQuery('#browseResultsSortDirValue').val();
             }
         
             loadResults(url, '');

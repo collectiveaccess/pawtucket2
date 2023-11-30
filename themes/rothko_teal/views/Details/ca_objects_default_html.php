@@ -380,7 +380,7 @@
 					$vs_prov_line.= " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
 				}
 				
-				$vs_provenance_remark = ($t_prov_rel && ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line'))) ? $vs_remark : null;
+				//$vs_provenance_remark = ($t_prov_rel && ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line'))) ? $vs_remark : null;
 				
 				$vs_provenance.= "<div>".caNavLink($this->request, $vs_prov_line, '', '', 'Detail', 'collections/'.$va_provenance_id)." {$vs_provenance_remark} <i class='fa fa-chevron-right'></i><!-- end prov entry --></div>";
 			}

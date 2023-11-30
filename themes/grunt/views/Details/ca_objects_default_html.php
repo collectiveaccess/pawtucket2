@@ -48,7 +48,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-10'>
-					<H1>{{{ca_objects.preferred_labels.name}}}</H1>
+					<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 <?php
 					$vs_object_date = $t_object->get("ca_objects.date_container.date");
 					$vs_artist = $t_object->getWithTemplate("<ifcount code='ca_entities' min='1' restrictToRelationshipTypes='Artist'><unit relativeTo='ca_entities' delimiter=', ' restrictToRelationshipTypes='Artist'><l>^ca_entities.preferred_labels</l></unit></ifcount>", array("checkAccess" => $va_access_values));
@@ -56,7 +56,6 @@
 						print "<H2>".$vs_artist.(($vs_object_date && $vs_artist) ? "<br/>" : "").$vs_object_date."</H2>";
 					}
 ?>
-					{{{<ifdef><H2><ifdef code="ca_objects.date_container.date">^ca_objects.date_container.date</ifdef></H2></ifdef>}}}
 				</div>
 				<div class='col-md-2'>
 <?php
@@ -107,9 +106,9 @@ if($vb_2_col){
 
 	?>
 
-					{{{<ifdef code="ca_objects.transcript_upload_container.transcript_upload.url"><div class="unit"><unit relativeTo="ca_objects.transcript_upload_container.transcript_upload" delimiter="<br/>"><ifdef code="ca_objects.transcript_upload_container.transcript_upload.url"><a href="^ca_objects.transcript_upload_container.transcript_upload.url%version=original"><span class="glyphicon glyphicon-download-alt" role="button" aria-label="Download"></span></a> <a href="^ca_objects.transcript_upload_container.transcript_upload.url%version=original"><ifdef code="ca_objects.transcript_upload_container.transcript_caption">^ca_objects.transcript_upload_container.transcript_caption</ifdef><ifnotdef code="ca_objects.transcript_upload_container.transcript_caption">Download Transcript</ifnotdef></a></ifdef></unit></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.visual_description_container.visual_description_upload.url"><div class="unit"><unit relativeTo="ca_objects.visual_description_container.visual_description_upload" delimiter="<br/>"><ifdef code="ca_objects.visual_description_container.visual_description_upload.url"><a href="^ca_objects.visual_description_container.visual_description_upload.url%version=original"><span class="glyphicon glyphicon-download-alt" role="button" aria-label="Download"></span></a> <a href="^ca_objects.visual_description_container.visual_description_upload.url%version=original"><ifdef code="ca_objects.visual_description_container.visual_description_caption">^ca_objects.visual_description_container.visual_description_caption</ifdef><ifnotdef code="ca_objects.visual_description_container.visual_description_caption">Download Visual Description</ifnotdef></a></ifdef></unit></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.creative_access_desc"><div class='unit'><label>Creative Access Description</label>^ca_objects.creative_access_desc</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.transcript_upload_container.transcript_upload.url"><div class="unit"><unit relativeTo="ca_objects.transcript_upload_container.transcript_upload" delimiter="<br/>"><ifdef code="ca_objects.transcript_upload_container.transcript_upload.url"><a href="^ca_objects.transcript_upload_container.transcript_upload.url%version=original" target="_blank"><span class="glyphicon glyphicon-download-alt" role="button" aria-label="Download"></span></a> <a href="^ca_objects.transcript_upload_container.transcript_upload.url%version=original" target="_blank"><ifdef code="ca_objects.transcript_upload_container.transcript_caption">^ca_objects.transcript_upload_container.transcript_caption</ifdef><ifnotdef code="ca_objects.transcript_upload_container.transcript_caption">Download Transcript</ifnotdef></a></ifdef></unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.visual_description_container.visual_description_upload.url"><div class="unit"><unit relativeTo="ca_objects.visual_description_container.visual_description_upload" delimiter="<br/>"><ifdef code="ca_objects.visual_description_container.visual_description_upload.url"><a href="^ca_objects.visual_description_container.visual_description_upload.url%version=original" target="_blank"><span class="glyphicon glyphicon-download-alt" role="button" aria-label="Download"></span></a> <a href="^ca_objects.visual_description_container.visual_description_upload.url%version=original" target="_blank"><ifdef code="ca_objects.visual_description_container.visual_description_caption">^ca_objects.visual_description_container.visual_description_caption</ifdef><ifnotdef code="ca_objects.visual_description_container.visual_description_caption">Download Visual Description</ifnotdef></a></ifdef></unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.creative_access_desc"><div class='unit'><H3>Creative Access Description</H3><span class="trimText">^ca_objects.creative_access_desc</span></div></ifdef>}}}
 					
 				</div><!-- end col -->
 			
@@ -123,14 +122,14 @@ if($vb_2_col){
 ?>				
 					{{{<ifdef code="ca_objects.dc_description">
 						<div class='unit'>
-							<span class="trimText">^ca_objects.dc_description</span>
+							<H3>Description</H3><span class="trimText">^ca_objects.dc_description</span>
 						</div>
 					</ifdef>}}}
-					{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.custom_extent"><div class="unit"><label>Extent</label>^ca_objects.custom_extent</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.tape_number"><div class="unit"><label>Tape Number</label>^ca_objects.tape_number</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.idno"><div class="unit"><H3>Identifier</H3>^ca_objects.idno</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.custom_extent"><div class="unit"><H3>Extent</H3>^ca_objects.custom_extent</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.tape_number"><div class="unit"><H3>Tape Number</H3>^ca_objects.tape_number</div></ifdef>}}}
 					
-					{{{<ifdef code="ca_objects.language"><div class='unit'><label>Language</label><unnit relativeTo="ca_objects.language" delimiter="<br/>">^ca_objects.language</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.language"><div class='unit'><H3>Language</H3><unnit relativeTo="ca_objects.language" delimiter="<br/>">^ca_objects.language</unit></div></ifdef>}}}
 					
 <?php
 				$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
@@ -140,21 +139,21 @@ if($vb_2_col){
 						$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
 					}
 					foreach($va_entities_by_type as $vs_type => $va_entity_links){
-						print "<div class='unit'><label>".$vs_type."</label>".join(", ", $va_entity_links)."</div>";
+						print "<div class='unit'><H3>".$vs_type."</H3>".join(", ", $va_entity_links)."</div>";
 					}
 				}
 ?>					
-					{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="program"><div class="unit"><label>Related program<ifcount code="ca_occurrences" min="2" restrictToTypes="program">s</ifcount></label><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
+					{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><H3>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></H3><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l> (^relationship_typename)</unit></div></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="1"><div class="unit"><H3>Collection</H3><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="program"><div class="unit"><H3>Related program<ifcount code="ca_occurrences" min="2" restrictToTypes="program">s</ifcount></H3><span class="trimTextShort"><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="program"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 					
 					
-					{{{<ifdef code="ca_objects.object_history.bib_ref"><div class='unit'><label>Bibliography</label>^ca_objects.object_history.bib_ref</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.object_history.exhibition_hist"><div class='unit'><label>Exhibition History</label>^ca_objects.object_history.exhibition_hist</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.object_history.bib_ref"><div class='unit'><H3>Bibliography</H3>^ca_objects.object_history.bib_ref</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.object_history.exhibition_hist"><div class='unit'><H3>Exhibition History</H3>^ca_objects.object_history.exhibition_hist</div></ifdef>}}}
 
 					{{{<ifdef code="ca_objects.rightsSummary_asset"><div class="unit"><i>^ca_objects.rightsSummary_asset</i></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.content_notice"><div class="unit"><label>Contains</label>^ca_objects.content_notice</div></ifdef>}}}
-					{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Related place</label><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
+					{{{<ifdef code="ca_objects.content_notice"><div class="unit"><H3>Contains</H3>^ca_objects.content_notice</div></ifdef>}}}
+					{{{<ifcount code="ca_places" min="1"><div class="unit"><H3>Related place</H3><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
 					
 				</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->

@@ -38,26 +38,37 @@ MetaTagManager::setWindowTitle($t_object->get('ca_objects.preferred_labels').": 
 
 MetaTagManager::addMeta("search-title", $t_object->get('ca_objects.preferred_labels'));
 MetaTagManager::addMeta("search-group", 'Collection Items');
-MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.preferred_labels'));
+MetaTagManager::addMeta("search-eyebrow", $t_object->get('ca_collections.hierarchy.preferred_labels', ['maxLevelsFromTop' => 1]));
 MetaTagManager::addMeta("search-thumbnail", $t_object->get('ca_object_representations.media.small.url'));
 MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') == 2) ? 'restricted' : 'public');
+
+MetaTagManager::addMeta("og:title", $t_object->get('ca_objects.preferred_labels'));
+MetaTagManager::addMeta("og:description", $t_object->get('ca_occurrences.cfaAbstract'));
+MetaTagManager::addMeta("og:url", caNavUrl($this->request, '*', '*', '*', [], ['absolute' => true]));
+MetaTagManager::addMeta("og:image", $t_object->get('ca_object_representations.media.large.url'));
+MetaTagManager::addMeta("og:image:width", $t_object->get('ca_object_representations.media.large.width'));
+MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representations.media.large.height'));
+
+
+
 
 ?>
 <div class="row">
 	
 	<main class="flush">
-	<section class="hero-single-collection wrap">
-		<div class="eyebrow text__eyebrow color__gray">
-			<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
-			<div class="row">
-				<div class="col-10">
-					 {{{<unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">
-						<l>^ca_collections.preferred_labels<l>
-					</unit></unit>}}}
-				</div>
 
-				<div class="col-2 text-end">
-					<a href="#" id="sharelink" class="text__eyebrow share-link" onclick="Copy();">
+	<section class="hero-single-collection single-item">
+		<div class="wrap">
+			<div class="eyebrow text__eyebrow color__gray">
+				<div class="breadcrumb">
+					{{{<unit relativeTo="ca_collections" restrictToRelationshipTypes="part_of">
+						<unit relativeTo="ca_collections.hierarchy" delimiter="<span class='sep'> &gt;</span>">
+							<l>^ca_collections.preferred_labels<l>
+						</unit>
+					</unit>}}}                
+				</div>
+				<div class="action">
+					<a href="#" class="text__eyebrow share-link" id="sharelink" onclick="Copy();">
 						Share Link 
 						<span class="icon">
 							<svg width="12" height="13" viewBox="0 0 12 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -65,305 +76,375 @@ MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') ==
 								<path d="M3.04367 5.47349L1.14924 7.36792C0.792589 7.72457 0.449306 8.07113 0.24744 8.54561C-0.126127 9.41043 -0.0654384 10.4468 0.472888 11.2342C1.00794 12.025 1.90971 12.5196 2.87205 12.4994C3.63595 12.4859 4.33246 12.1596 4.87079 11.6245L6.89982 9.5955C7.35072 9.1446 7.71076 8.61297 7.81171 7.97018C7.96311 7.0347 7.6737 6.06896 6.97048 5.4162C6.76862 5.22772 6.54316 5.06964 6.29413 4.94511C6.04849 4.82399 5.74898 4.88115 5.60429 5.12678C5.47308 5.34882 5.54033 5.69551 5.78596 5.81662C5.98782 5.91755 6.13934 6.01519 6.27724 6.14642C6.3378 6.20357 6.39507 6.26753 6.45222 6.33149C6.55315 6.44251 6.40845 6.25744 6.4926 6.38196C6.52957 6.43583 6.56325 6.48629 6.59693 6.54344C6.64399 6.62419 6.69117 6.70833 6.72485 6.79577C6.68448 6.69824 6.73835 6.83954 6.74163 6.84963C6.75513 6.89341 6.77191 6.93707 6.78201 6.98425C6.8056 7.07508 6.82578 7.16592 6.83916 7.25676C6.82238 7.14233 6.83916 7.29372 6.84256 7.30722C6.84597 7.36778 6.84925 7.43174 6.84925 7.4923C6.84925 7.53936 6.84585 7.58313 6.84256 7.63031C6.84256 7.64381 6.82238 7.7952 6.83916 7.68078C6.82566 7.77161 6.80548 7.86245 6.78201 7.95329C6.76851 7.99706 6.75513 8.04412 6.74163 8.0879C6.73823 8.09799 6.68448 8.23929 6.72485 8.14177C6.68108 8.2427 6.63061 8.34034 6.57006 8.43446C6.47582 8.58586 6.39507 8.67 6.24696 8.8214C5.5975 9.47086 4.95143 10.1169 4.30209 10.7663C4.23484 10.8335 4.17088 10.9009 4.10352 10.9648C4.05646 11.0119 4.00599 11.0557 3.95541 11.0995C3.84439 11.2004 4.02946 11.0557 3.90495 11.1398C3.86457 11.1667 3.82761 11.1937 3.78383 11.2206C3.70309 11.271 3.61894 11.3148 3.53479 11.3552C3.40018 11.4191 3.62223 11.3316 3.48093 11.3754C3.42037 11.3956 3.3631 11.4157 3.30254 11.4325C2.96935 11.5234 2.66996 11.5234 2.33677 11.4325C2.293 11.419 2.24594 11.4056 2.20216 11.3921C2.19207 11.3887 2.05077 11.335 2.14829 11.3754C2.06086 11.3384 1.97671 11.2946 1.89597 11.2474C1.8556 11.2239 1.81523 11.197 1.77486 11.1701C1.77145 11.1667 1.64694 11.0726 1.72099 11.1331C1.64365 11.0726 1.57288 11.0052 1.50223 10.9346C1.28019 10.7024 1.12866 10.4164 1.04794 10.0832C1.03784 10.0395 1.03115 9.9924 1.02106 9.94862C0.990783 9.80392 1.02106 10.0462 1.01437 9.89816C1.01097 9.80732 1.00428 9.71308 1.00768 9.62225C1.00768 9.57519 1.01437 9.53141 1.01437 9.48423C1.02106 9.33612 0.990782 9.57847 1.02106 9.43377C1.04125 9.32603 1.06483 9.22181 1.0984 9.11749C1.17245 8.88535 1.34403 8.60605 1.5426 8.40419L1.78154 8.16524C2.43771 7.50908 3.09387 6.85292 3.75003 6.19676C3.94179 6.00499 3.94179 5.67522 3.75003 5.48345C3.56519 5.27831 3.2388 5.27831 3.04363 5.47348L3.04367 5.47349Z" fill="#767676" class="color-fill"></path>
 							</svg>
 						</span>
-					</a>
-				</div>	
-			</div>
-		</div>
-
-		<h1 class="text-align-center color__white text__headline-1 block-sm mt-3">{{{^ca_objects.preferred_labels}}}</h1>
-		
-		<div class="layout grid-flex">
-			
-			<div class="item color__white">
-				<?= $this->render("Details/detail_media_html.php"); ?>   
+					</a>             
+				</div> 
 			</div>
 
-			<div class="item object-data-links">
-				<div class="container-scroll" style="overflow-y: auto;">
-					<div class="content-scroll">
-						<div class="size-column">
+			<h1 class="text-align-center color__white text__headline-1 block-sm">{{{^ca_objects.preferred_labels}}}</h1>
 
-							{{{<case>
-								<if rule="^access = 'restricted'">
-									<?php
-										$metadata = array(
-											"^ca_objects.cfaRunTime" => "Run Time",	
-											// "^ca_objects.cfaAudioFormatHierachical" => "Format/Extent",
-											"^ca_objects.idno" => "Identifier",
-											"^ca_objects.cfaReel" => "Reel/Tape Number",
-											"^ca_objects.cfaPublicObjectNotes" => "Notes",
-											"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
-										);
-										foreach($metadata as $field => $fieldLabel){
-									?>
-											<ifdef code="<?php print $field; ?>">
-												<unit delimiter="<br>">
-													<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
-													<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
-												</unit>
-											</ifdef>
-									<?php
-										}
-									?>
+			<div class="layout grid-flex">
+				<div class="item color__white">
+					<?= $this->render("Details/detail_media_html.php"); ?>   
+				</div><!-- item -->
 
-									<if rule="^ca_objects.cfaAudioFormatHierachical !~ /\-NONE\-/">
-										<ifdef code="ca_objects.cfaAudioFormatHierachical">
-											<unit delimiter=" ➜ ">
-												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Format/Extent</div>
-												<div class="max__640 text__body-3 color__white block-sm">^ca_objects.cfaAudioFormatHierachical.hierarchy.preferred_labels.name_plural</div>
-											</unit>
-										</ifdef>
-									</if>
-			
-									<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
-										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
-										<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="related_to">
-											<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
-										</unit>
-										<br>
-									</ifcount>
-									
-									<div class="max__640 text__body-3 color__white">This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org</div>
-								</if>
+				<div class="item object-data-links"">
+					<div class="container-scroll">
+						<div class="content-scroll">
+							<div class="size-column">
 
-								<if rule="^access = 'yes'">
-									<?php
-										$metadata = array(
-											"^ca_occurrences.cfaDateProduced" => "Date Of Production",
-											"^ca_occurrences.cfaAbstract" => "Abstract",
-											"^ca_occurrences.cfaDescription" => "Description",
-											"^ca_objects.cfaRunTime" => "Run Time",	
-											// "^ca_objects.cfaAudioFormatHierachical" => "Format/Extent",
-											"^ca_objects.idno" => "Identifier",
-											"^ca_occurrences.cfaShotLog" => "Log",
-											"^ca_occurrences.cfaLanguageMaterials" => "Language Of Materials",	
-											"^ca_objects.cfaReel" => "Reel/Tape Number",
-											"^ca_objects.cfaPublicObjectNotes" => "Notes",
-											"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
-										);
-										foreach($metadata as $field => $fieldLabel){
-									?>
-											<ifdef code="<?php print $field; ?>">
-												<unit delimiter="<br>">
-													<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
-													<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
-												</unit>
-											</ifdef>
-									<?php
-										}
-									?>
+								{{{<case>
+									<if rule="^access = 'restricted'">
 
-									<if rule="^ca_objects.cfaAudioFormatHierachical !~ /\-NONE\-/">
-										<ifdef code="ca_objects.cfaAudioFormatHierachical">
-											<unit delimiter=" ➜ ">
-												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Format/Extent</div>
-												<div class="max__640 text__body-3 color__white block-sm">^ca_objects.cfaAudioFormatHierachical.hierarchy.preferred_labels.name_plural</div>
-											</unit>
-										</ifdef>
-									</if>
-
-									<?php
-		
-										$list_metadata = [
-											"Genre" => [
-												"relationshipType" => "genre"
-											],
-											"Form" => [
-												"relationshipType" => "form"
-											],
-											"Subject" => [
-												"relationshipType" => "subject"
-											]
-										];
+										<div class="max__640 text__body-3 color__white">This object has been inventoried, but has not been fully described. To inquire about this object, email the archive at info@chicagofilmarchives.org</div>
+										<div class="max__640 text__eyebrow color__light_gray block-xxxs"><br></div>
 										
-										foreach($list_metadata as $fieldLabel => $field_info){
-									?>
-											<unit relativeTo='ca_occurrences'>
-												<ifcount code="ca_list_items" restrictToRelationshipTypes="<?= $field_info['relationshipType']; ?>" min="1">
-													<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
-													<div class="max__640 text__body-3 color__white block-sm">
-														<unit relativeTo='ca_list_items' delimiter="<br>" restrictToRelationshipTypes='<?= $field_info['relationshipType']; ?>'>
-															<a href="/Search/objects/search/^ca_list_items.preferred_labels.name_plural">^ca_list_items.preferred_labels.name_plural</a>
-														</unit>
-													</div>
+										<?php
+											$metadata = array(
+												"^ca_objects.cfaRunTime" => "Run Time",	
+												"^ca_objects.idno" => "Identifier",
+												"^ca_objects.cfaReel" => "Reel/Tape Number",
+												"^ca_objects.cfaPublicObjectNotes" => "Notes",
+												"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
+											);
+											foreach($metadata as $field => $fieldLabel){
+										?>
+												<ifdef code="<?php print $field; ?>">
+													<unit delimiter="<br>">
+														<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+														<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
+													</unit>
+												</ifdef>
+										<?php
+											}
+										?>
+
+										<if rule="^ca_objects.cfaAudioFormatHierachical !~ /\-NONE\-/">
+											<ifdef code="ca_objects.cfaAudioFormatHierachical">
+												<unit delimiter=" ➜ ">
+													<div class="max__640 text__eyebrow color__light_gray block-xxxs">Format/Extent</div>
+													<div class="max__640 text__body-3 color__white block-sm">^ca_objects.cfaAudioFormatHierachical.hierarchy.preferred_labels.name_plural</div>
+												</unit>
+											</ifdef>
+										</if>
+				
+										<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="part_of">
+											<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
+											<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="part_of">
+												<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
+											</unit>
+											<br>
+										</ifcount>
+										
+									</if>
+
+									<if rule="^access = 'yes'">
+										<?php
+											$metadata = array(
+												"^ca_occurrences.cfaDateProduced" => "Date Of Production",
+												"^ca_occurrences.cfaAbstract" => "Abstract",
+												"^ca_occurrences.cfaDescription" => "Description",
+												"^ca_objects.cfaRunTime" => "Run Time",	
+												"^ca_objects.idno" => "Identifier",
+												"^ca_occurrences.cfaShotLog" => "Log",
+												"^ca_occurrences.cfaLanguageMaterials" => "Language Of Materials",	
+												"^ca_objects.cfaReel" => "Reel/Tape Number",
+												"^ca_objects.cfaPublicObjectNotes" => "Notes",
+												"^ca_objects.cfaYNTransferred" => "Has Been Digitized?",	
+											);
+											foreach($metadata as $field => $fieldLabel){
+
+													if (str_contains($field, 'ca_occurrences')) {
+											?>
+														<ifdef code="<?= $field; ?>">
+															<unit delimiter="<br>" relativeTo='ca_occurrences' restrictToRelationshipTypes="instantiation">
+																<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+																<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
+															</unit>
+														</ifdef>
+											<?php
+
+													}else{
+											?>
+														<ifdef code="<?= $field; ?>">
+															<unit delimiter="<br>">
+																<div class="max__640 text__eyebrow color__light_gray block-xxxs"><?= $fieldLabel; ?></div>
+																<div class="max__640 text__body-3 color__white block-sm"><?= $field; ?></div>
+															</unit>
+														</ifdef>
+											<?php
+													}
+												}
+											?>				
+
+										<if rule="^ca_objects.cfaAudioFormatHierachical !~ /\-NONE\-/">
+											<ifdef code="ca_objects.cfaAudioFormatHierachical">
+												<unit delimiter=" ➜ ">
+													<div class="max__640 text__eyebrow color__light_gray block-xxxs">Format/Extent</div>
+													<div class="max__640 text__body-3 color__white block-sm">^ca_objects.cfaAudioFormatHierachical.hierarchy.preferred_labels.name_plural</div>
+												</unit>
+											</ifdef>
+										</if>
+
+										<?php
+			
+											$list_metadata = [
+												"Genre" => [
+													"relationshipType" => "genre"
+												],
+												"Form" => [
+													"relationshipType" => "form"
+												],
+												"Subject" => [
+													"relationshipType" => "subject"
+												]
+											];
+											
+											foreach($list_metadata as $fieldLabel => $field_info){
+
+												$title = '';
+												switch ($fieldLabel) {
+													case 'Subject':
+														$title = 'Subjects describe the content of an object, and are derived from Library of Congress Subject Headings.';
+														break;
+													case 'Genre':
+														$title = 'Genres describe the style, conventions, and structure of an object, and are derived from the Library of Congress Moving Image Genre List.';
+														break;
+													case 'Form':
+														$title = "Form describes an object's original exhibition or distribution parameters, distinct from any attributes of the object's content or style. These terms are derived from the Library of Congress's Archival Moving Image Materials: A Cataloging Manual (2nd Edition).";
+														break;
+												}
+										?>
+												<unit relativeTo='ca_occurrences' restrictToRelationshipTypes="instantiation">
+													<ifcount code="ca_list_items" restrictToRelationshipTypes="<?= $field_info['relationshipType']; ?>,instantiation" min="1">
+														<div class="max__640 text__eyebrow color__light_gray block-xxxs">
+															<?= $fieldLabel; ?>
+															<span class="mb-2 info-icon collections-info" data-toggle="tooltip" title="<?= $title; ?>">
+																<div class="trigger-icon color-icon-orange">
+																<svg width="15" height="16" viewBox="0 0 15 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+																	<path d="M7.5 0.5C3.36 0.5 0 3.86 0 8C0 12.14 3.36 15.5 7.5 15.5C11.64 15.5 15 12.14 15 8C15 3.86 11.64 0.5 7.5 0.5ZM7.5 1.65385C11.0031 1.65385 13.8462 4.49692 13.8462 8C13.8462 11.5031 11.0031 14.3462 7.5 14.3462C3.99692 14.3462 1.15385 11.5031 1.15385 8C1.15385 4.49692 3.99692 1.65385 7.5 1.65385Z" fill="#767676" class="color-fill"></path>
+																	<path d="M8.65374 4.68281C8.65374 5.02709 8.51698 5.35727 8.27355 5.60071C8.03012 5.84415 7.69995 5.98092 7.35568 5.98092C7.01141 5.98092 6.68125 5.84415 6.43781 5.60071C6.19438 5.35727 6.05762 5.02709 6.05762 4.68281C6.05762 4.33854 6.19438 4.00836 6.43781 3.76492C6.68125 3.52148 7.01141 3.38471 7.35568 3.38471C7.69995 3.38471 8.03012 3.52148 8.27355 3.76492C8.51698 4.00836 8.65374 4.33854 8.65374 4.68281Z" fill="#767676" class="color-fill"></path>
+																	<path d="M8.73065 11.5724C8.72269 11.8874 8.87038 11.9762 9.22992 12.0131L9.80777 12.0247V12.6154H5.29934V12.0247L5.93431 12.0131C6.31404 12.0016 6.40531 11.8539 6.43358 11.5724V8.01701C6.43761 7.45405 5.70711 7.54244 5.19238 7.55917V6.97371L8.73065 6.84621" fill="#767676" class="color-fill"></path>
+																</svg>
+																</div>
+															</span>
+														</div>
+														<div class="max__640 text__body-3 color__white block-sm">
+															<unit relativeTo='ca_list_items' delimiter="<br>" restrictToRelationshipTypes='<?= $field_info['relationshipType']; ?>'>
+																<a href="/Browse/Objects/facet/<?= $field_info['relationshipType']; ?>/id/^ca_list_items.item_id">^ca_list_items.preferred_labels.name_plural</a>
+															</unit>
+														</div>
+													</ifcount>
+												</unit>
+										<?php
+											}
+										?>
+				
+										<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
+											<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
+											<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="related_to">
+												<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
+											</unit>
+											<br>
+										</ifcount>
+				
+										<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+											<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
+												<ifcount code="ca_places" min="1" >
+													<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Places</div>
+													<unit relativeTo="ca_places" delimiter=''>
+														<div class="max__640 text__body-3 color__white">
+															<unit relativeTo="ca_places.hierarchy" delimiter=' ➜ '>
+																<a href="/Browse/Objects/facet/places/id/^ca_places.place_id">^ca_places.preferred_labels</a>
+															</unit>
+														</div>
+													</unit>
+													<br>
 												</ifcount>
 											</unit>
-									<?php
-										}
-									?>
-			
-									<ifcount code="ca_collections" min="1" restrictToRelationshipTypes="related_to">
-										<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Collections</div>
-										<unit relativeTo="ca_collections" delimiter="" restrictToRelationshipTypes="related_to">
-											<div class="max__640 text__body-3 color__white"><l>^ca_collections.preferred_labels</l></div>
-										</unit>
-										<br>
-									</ifcount>
-			
-									<ifcount code="ca_occurrences" min="1">
-										<unit relativeTo="ca_occurrences">
-											<ifcount code="ca_places" min="1" >
-												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Related Places</div>
-												<unit relativeTo="ca_places" delimiter=" ➜ ">
-													<div class="max__640 text__body-3 color__white">
-														<a href="/Search/objects/search/^ca_places.preferred_labels">^ca_places.hierarchy.preferred_labels</a>
-													</div>
-												</unit>
-												<br>
-											</ifcount>
-										</unit>
-									</ifcount>
-			
-									<ifcount code="ca_occurrences" min="1">
-										<unit relativeTo="ca_occurrences">
-											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="distributor">
-												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Distributor</div>
-												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="distributor">
-													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a></div>
-												</unit>
-												<br>
-											</ifcount>
-										</unit>
-									</ifcount>
-			
-									<ifcount code="ca_occurrences" min="1">
-										<unit relativeTo="ca_occurrences">
-											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="corporate">
-												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Sponsor/client</div>
-												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="corporate">
-													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a></div>
-												</unit>
-												<br>
-											</ifcount>
-										</unit>
-									</ifcount>
-			
-									<ifcount code="ca_occurrences" min="1">
-										<unit relativeTo="ca_occurrences">
-											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
-												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Main Credits</div>
-												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
-													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)</div>
-												</unit>
-												<br>
-											</ifcount>
-										</unit>
-									</ifcount>
-			
-									<ifcount code="ca_occurrences" min="1">
-										<unit relativeTo="ca_occurrences">
-											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
-												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Additional Credits</div>
-												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
-													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)</div>
-												</unit>
-												<br>
-											</ifcount>
-										</unit>
-									</ifcount>
-			
-									<ifcount code="ca_occurrences" min="1">
-										<unit relativeTo="ca_occurrences">
-											<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
-												<div class="max__640 text__eyebrow color__light_gray block-xxxs">Participants And Performers</div>
-												<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
-													<div class="max__640 text__body-3 color__white"><a href="/Search/objects/search/^ca_entities.preferred_labels.displayname">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)</div>
-												</unit>
-												<br>
-											</ifcount>
-										</unit>
-									</ifcount>
-								</if>
-							</case>}}}
+										</ifcount>
 
-						</div>
-					</div><!-- content-scroll -->
-				</div><!-- container-scroll -->
-			</div><!-- item -->
-		</div><!-- layout -->
+										<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+											<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
+												<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="distributor">
+													<div class="max__640 text__eyebrow color__light_gray block-xxxs">Distributor</div>
+													<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="distributor">
+														<div class="max__640 text__body-3 color__white">
+															<a href="/Browse/Objects/facet/entity/id/^ca_entities.entity_id">^ca_entities.preferred_labels.displayname</a>
+														</div>
+													</unit>
+													<br>
+												</ifcount>
+											</unit>
+										</ifcount>
+
+										<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+											<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
+												<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="corporate">
+													<div class="max__640 text__eyebrow color__light_gray block-xxxs">Sponsor/client</div>
+													<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="corporate">
+														<div class="max__640 text__body-3 color__white">
+															<a href="/Browse/Objects/facet/entity/id/^ca_entities.entity_id">^ca_entities.preferred_labels.displayname</a>
+														</div>
+													</unit>
+													<br>
+												</ifcount>
+											</unit>
+										</ifcount>
+
+										<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+											<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
+												<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
+													<div class="max__640 text__eyebrow color__light_gray block-xxxs">Main Credits</div>
+													<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="director, producer, exec_producer, co_producer, production_co, filmmaker, videomaker">
+														<div class="max__640 text__body-3 color__white">
+															<a href="/Browse/Objects/facet/entity/id/^ca_entities.entity_id">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)
+														</div>
+													</unit>
+													<br>
+												</ifcount>
+											</unit>
+										</ifcount>
+
+										<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+											<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
+												<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
+													<div class="max__640 text__eyebrow color__light_gray block-xxxs">Additional Credits</div>
+													<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="animator, writer, editor, composer, sound, music, translator, choreographer, lighting_director, casting, cinematographer, post_prod, contributor, scenic designer, costume designer, camera, asst_director, associate_director, prod_asst, wild_camera">
+														<div class="max__640 text__body-3 color__white">
+															<a href="/Browse/Objects/facet/entity/id/^ca_entities.entity_id">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)
+														</div>
+													</unit>
+													<br>
+												</ifcount>
+											</unit>
+										</ifcount>
+
+										<ifcount code="ca_occurrences" min="1" restrictToRelationshipTypes="instantiation">
+											<unit relativeTo="ca_occurrences" restrictToRelationshipTypes="instantiation">
+												<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
+													<div class="max__640 text__eyebrow color__light_gray block-xxxs">Participants And Performers</div>
+													<unit relativeTo="ca_entities" delimiter="" restrictToRelationshipTypes="participant, performer, actor, narrator, commentator, interviewer, interviewee, musician, vocalist, announcer, panelist, host, moderator, reporter, performing_group">
+														<div class="max__640 text__body-3 color__white">
+															<a href="/Browse/Objects/facet/entity/id/^ca_entities.entity_id">^ca_entities.preferred_labels.displayname</a> (^relationship_typename)
+														</div>
+													</unit>
+													<br>
+												</ifcount>
+											</unit>
+										</ifcount>
+									</if>
+								</case>}}}
+
+							</div>
+						</div><!-- content-scroll -->
+					</div><!-- container-scroll -->
+					<div class="footer link">&nbsp;</div>
+					<div class="shadow"></div>
+				</div><!-- item -->
+			</div><!-- layout -->
+			<div class="detailNavigation">{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
+		</div><!-- wrap -->
 	</section>
+
 	<section class="section-more-about-item">
 		<div class="int wrap text-align-center">
 		<div class="text__nav block-xxs">Do you know more about this item?</div>
 		<div class="color__gray text__body-3">If you have more information about this item please contact us at <a href="mailto:info@chicagofilmarchives.com" class="color-link-inverted-orange">info@chicagofilmarchives.com</a>. </div>
 		</div>
 	</section>
+	
+		{{{<ifcount code="ca_objects.related" min="1">
+			<section class="section-slideshow-related " id="related-content-div">
+				<div class="wrap">
+					<div class="line"></div>
+				</div>
+				<div class="int wrap-not-mobile">
 
-	{{{<ifcount code="ca_objects.related" min="1">
+					<h4 class="text-align-center text__headline-4 block-small ">Related Items</h4>
 
-		<section class="section-slideshow-related ">
-			<div class="wrap"><div class="line"></div></div>
-			<div class="int wrap-not-mobile">
-				
-			<h4 class="text-align-center text__headline-4 block-small ">Related Items</h4>
-			<div class="slider-container module_slideshow slideshow-related manual-init slideshow-ctrl-init">
-				<div class="slick-initialized slick-slider">
-					<div class="slick-list draggable">
-						<div class="slick-track" style="opacity: 1; width: 990px; transform: translate3d(0px, 0px, 0px); margin:0;">
-							<div class="unit">
-								<unit relativeTo="ca_objects.related" delimiter="">
-									<div class="slick-slide slick-current slick-active" data-slick-index="0" aria-hidden="false">
-										<div class="sizer" style="width: 100%; display: inline-block;">
-											<div class="item-related item" style="max-width: 250px">
-												<a href="" tabindex="0">
-													<div class="related-items-img"><l>^ca_object_representations.media.medium<l></div>
-												</a>
-												<div class="text-align-center info">
-													<div class="text__eyebrow color__gray block-xxxs"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit></div>
-													<div class="title text__promo-4"><l>^ca_objects.preferred_labels</l></div>
-													<div class="text__eyebrow color__gray block-xxxs"><small>^ca_occurrences.cfaDateProduced<small></div>
-												</div>
+					<div class="slider-container module_slideshow slideshow-related manual-init">
+
+						<div id="related-content" class="slick-slider">
+
+							<unit relativeTo="ca_objects.related" delimiter="">
+								<div class="sizer">
+									<div class="item-related item">
+										<ifdef code="ca_object_representations.media.thumbnail">
+											<div class="related-items-img"><l>^ca_object_representations.media.medium<l></div>
+										</ifdef>
+										<ifnotdef code="ca_object_representations.media.thumbnail">
+											<div class="related-items-img-placeholder"></div>
+										</ifnotdef>
+
+										<div class="text-align-center info">
+											<div class="text__eyebrow color__gray block-xxxs">
+												<unit relativeTo="ca_collections">
+													<unit relativeTo="ca_collections.hierarchy" maxLevelsFromTop ='1'>
+														<l>^ca_collections.preferred_labels<l>
+													</unit>
+												</unit>
+											</div>
+											<div class="title text__promo-4">
+												<l>^ca_objects.preferred_labels</l>
+											</div>
+											<div class="text__eyebrow color__gray block-xxxs">
+												^ca_occurrences.cfaDateProduced
 											</div>
 										</div>
 									</div>
-								</unit>
-							</div>
-						</div>
-					</div>
-				</div>
+								</div>
+							</unit>
 
-				<div class="arrows">
-				<div class="arrow arrow-left left reveal slick-arrow slick-hidden" style="visibility: visible;" aria-disabled="true" tabindex="-1">
-					<svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<g opacity="0.5" class="color-opacity">
-						<circle cx="15.373" cy="15" r="14.5" transform="rotate(-180 15.373 15)" stroke="#222222" class="color-stroke"></circle>
-						<g clip-path="url(#clip0_854_22844)">
-						<path d="M16.0647 14.9999L18.459 18.9999L11.2866 14.9999L18.459 10.9999L16.0647 14.9999Z" fill="#222222" class="color-fill"></path>
-						</g>
-					</g>
-					<defs>
-						<clipPath id="clip0_854_22844">
-						<rect width="7.17241" height="8" fill="white" transform="translate(18.459 18.9999) rotate(-180)"></rect>
-						</clipPath>
-					</defs>
-					</svg>
+						</div>
+
+						<div class="arrows">
+							<div class="arrow arrow-left left reveal slick-arrow">
+								<svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<g opacity="0.5" class="color-opacity">
+									<circle cx="15.373" cy="15" r="14.5" transform="rotate(-180 15.373 15)" stroke="#222222" class="color-stroke"></circle>
+									<g clip-path="url(#clip0_854_22844)">
+									<path d="M16.0647 14.9999L18.459 18.9999L11.2866 14.9999L18.459 10.9999L16.0647 14.9999Z" fill="#222222" class="color-fill"></path>
+									</g>
+									</g>
+									<defs>
+									<clipPath id="clip0_854_22844">
+									<rect width="7.17241" height="8" fill="white" transform="translate(18.459 18.9999) rotate(-180)"></rect>
+									</clipPath>
+									</defs>
+								</svg>
+							</div>
+
+							<div class="arrow arrow-right right slick-arrow">
+								<svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<g opacity="0.5" class="color-opacity">
+									<circle cx="15.373" cy="15" r="14.5" stroke="#222222" class="color-stroke"></circle>
+									<g clip-path="url(#clip0_854_22839)">
+									<path d="M14.6813 15L12.2871 11L19.4595 15L12.2871 19L14.6813 15Z" fill="#222222" class="color-fill"></path>
+									</g>
+									</g>
+									<defs>
+									<clipPath id="clip0_854_22839">
+									<rect width="7.17241" height="8" fill="white" transform="translate(12.2871 11)"></rect>
+									</clipPath>
+									</defs>
+								</svg>
+							</div>
+						</div><!-- arrows -->
+
+					</div><!-- slider-container -->
 				</div>
-				<div class="arrow arrow-right right slick-arrow slick-hidden" style="visibility: visible;" aria-disabled="true" tabindex="-1">
-					<svg width="31" height="30" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<g opacity="0.5" class="color-opacity">
-						<circle cx="15.373" cy="15" r="14.5" stroke="#222222" class="color-stroke"></circle>
-						<g clip-path="url(#clip0_854_22839)">
-						<path d="M14.6813 15L12.2871 11L19.4595 15L12.2871 19L14.6813 15Z" fill="#222222" class="color-fill"></path>
-						</g>
-					</g>
-					<defs>
-						<clipPath id="clip0_854_22839">
-						<rect width="7.17241" height="8" fill="white" transform="translate(12.2871 11)"></rect>
-						</clipPath>
-					</defs>
-					</svg>
-				</div>
-				</div>
-			</div>
-			</div>
-		</section>
-	</ifcount>}}}
+			</section>
+		</ifcount>}}}
 
 	</main>
 
 </div><!-- end row -->
 
 <script type='text/javascript'>
+	$(document).ready(function(){
+    	$('[data-toggle="tooltip"]').tooltip();
+	});
+	
 	function Copy() {
 		var getUrl = document.createElement('input'),
 		text = window.location.href;
@@ -372,6 +453,6 @@ MetaTagManager::addMeta("search-access", ($t_object->get('ca_objects.access') ==
 		getUrl.select();
 		document.execCommand('copy');
 		document.body.removeChild(getUrl);
-		$.jGrowl("Link Copied!", { life: 2000 });
+		$.jGrowl("Link copied to clipboard.", { life: 2000 });
 	}
 </script>
