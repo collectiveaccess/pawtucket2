@@ -156,7 +156,7 @@
 			<div class='col-sm-12'>
 <?php
 	$vs_tmp = $t_object->getWithTemplate("<ifcount code='ca_entities' min='1' restrictToTypes='bipoc_ent'><unit relativeTo='ca_entities' min='1' delimiter=';;;' restrictToTypes='bipoc_ent'><l><div class='bgLightBlue text-center'>^ca_entities.preferred_labels.displayname</div></l>
-										</unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
+										</unit></ifcount>", array("checkAccess" => $va_access_values));
 	if($vs_tmp){
 		$va_entities = explode(";;;", $vs_tmp);
 	

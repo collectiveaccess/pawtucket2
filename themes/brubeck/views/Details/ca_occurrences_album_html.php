@@ -33,7 +33,7 @@
 	$va_access_values = caGetUserAccessValues($this->request);	
 	
 	
-	$vs_image = $t_item->getWithTemplate("<ifcount code='ca_objects' max='1'><unit relativeTo='ca_objects'><l>^ca_object_representations.media.large</l><l>^ca_objects.preferred_labels.name</l></unit></ifcount>");
+	$vs_image = $t_item->getWithTemplate("<ifcount code='ca_objects' max='1'><unit relativeTo='ca_objects'><l>^ca_object_representations.media.large</l><div><l>^ca_objects.preferred_labels.name</l></div></unit></ifcount>");
 	$vb_bottom_box = $vb_col_1 = false;
 	if($t_item->get("ca_entities.entity_id", array("checkAccess" => $va_access_values, "excludeRelationshipTypes" => array("record_label")))){
 		$vb_bottom_box = true;
@@ -169,7 +169,7 @@
 ?>
 
 				
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class='col-sm-12'>
 					<H3>Selected Archival Items</H3>

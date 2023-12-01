@@ -79,7 +79,7 @@ while($qr_timeline_occs->nextHit()) {
 	}
 	$va_data['events'][] = [
 		'text' => [
-			'headline' => $qr_timeline_occs->getWithTemplate('<l><div class="occType">^ca_occurrences.type_id<ifdef code="^ca_occurrences.appearance_type">, ^ca_occurrences.appearance_type</ifdef></div><b><ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></b></l>'),
+			'headline' => $qr_timeline_occs->getWithTemplate('<l><div class="occType">^ca_occurrences.type_id<ifdef code="^ca_occurrences.appearance_type">, ^ca_occurrences.appearance_type%delimiter=,_</ifdef></div><b><ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount>^ca_occurrences.preferred_labels.name</b></l>'),
 			'text' => $qr_timeline_occs->getWithTemplate('^ca_occurrences.description'),
 		],
 		'media' => [

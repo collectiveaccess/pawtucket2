@@ -13,12 +13,15 @@
 
 		<h2>Jacob’s Pillow Preservation Staff</h2><br/>
 		
-		<p>Norton Owen, Director of Preservation </p>
+    	<p>Norton Owen, Director of Preservation </p>
 		<p><a href='mailto:nowen@jacobspillow.org'>nowen@jacobspillow.org</a></p>		
 		<p>413.243.9919 ext. 150</p>
-        <p>Patsy Gay, Associate Archivist </p>
+	    <p>Patsy Gay, Associate Archivist </p>
 		<p><a href='mailto:pgay@jacobspillow.org'>pgay@jacobspillow.org</a></p>		
 		<p>413.243.9919 ext. 154</p>
+ 		<p>Sumi Matsumoto, Digital Archivist </p>
+		<p><a href='mailto:smatsumoto@jacobspillow.org'>smatsumoto@jacobspillow.org</a></p>		
+		<p>413.243.9919 ext. 156</p>
 		<br>		
 		
 		<h2>Ask an Archivist</h2>

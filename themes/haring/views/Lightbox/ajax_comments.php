@@ -44,15 +44,13 @@
     <div class="lbSetCommentHeader" id="lbSetCommentHeader{{{item_id}}}" <?php print ($vn_num_comments == 0 ? 'style="display: none;"' : ''); ?>><span class="lbSetCommentsCount" id="lbSetCommentHeader{{{item_id}}}Count"><?php print $vn_num_comments." ".(($vn_num_comments == 1) ? _t("comment") : _t("comments")); ?></span></div>
     <div class="lbComments" id="lbSetComments{{{item_id}}}">
 <?php
-		if(sizeof($qr_comments)){
-                while ($qr_comments->nextHit()) {
-                    $this->setVar('comment_id', $qr_comments->get('ca_item_comments.comment_id'));
-                    $this->setVar('comment', $qr_comments->get('ca_item_comments.comment'));
-                    $this->setVar('author', $qr_comments->get('ca_users.fname') . ' ' . $qr_comments->get('ca_users.lname') . ' ' . $qr_comments->get('ca_item_comments.created_on'));
-                    $this->setVar('is_author', $qr_comments->get('ca_item_comments.user_id') == $this->request->user->get("user_id"));
-                    print $this->render("Lightbox/set_comment_html.php");
-                }
-		}
+			while ($qr_comments->nextHit()) {
+				$this->setVar('comment_id', $qr_comments->get('ca_item_comments.comment_id'));
+				$this->setVar('comment', $qr_comments->get('ca_item_comments.comment'));
+				$this->setVar('author', $qr_comments->get('ca_users.fname') . ' ' . $qr_comments->get('ca_users.lname') . ' ' . $qr_comments->get('ca_item_comments.created_on'));
+				$this->setVar('is_author', $qr_comments->get('ca_item_comments.user_id') == $this->request->user->get("user_id"));
+				print $this->render("Lightbox/set_comment_html.php");
+			}
 ?>
         </div>
 	    <div>
