@@ -58,8 +58,9 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 				<div class="eyebrow text__eyebrow color__gray">
     				<div class="breadcrumb">
 						{{{<unit relativeTo="ca_collections" restrictToRelationshipTypes="part_of">
-							<unit relativeTo="ca_collections.hierarchy" delimiter="<span class='sep'> &gt;</span>">
-								<l>^ca_collections.preferred_labels</l>
+							<unit relativeTo="ca_collections.hierarchy" delimiter=''>
+								<l>^ca_collections.preferred_labels <if rule='^index < ^count'><span class='sep'> &gt;</span></if></l>
+							
 							</unit>
 						</unit>}}}                
     				</div>
@@ -417,7 +418,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 											<div class="title text__promo-4">
 												<l>^ca_objects.preferred_labels</l>
 											</div>
-											<div class="text__eyebrow color__gray block-xxxs">
+											<div class="text__eyebrow year color__gray block-xxxs">
 												^ca_occurrences.cfaDateProduced
 											</div>
 										</div>

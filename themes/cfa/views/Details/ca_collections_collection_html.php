@@ -732,6 +732,17 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 <?php
                   }
                 ?>
+
+                <ifcount code="ca_collections.children" min="0" max="0">
+                  <ifdef code="ca_collections.cfaIntellectualArrangement">
+                    <div class="paragraph">
+                      <div class="text__eyebrow color__gray" style="line-height: 26px;">Intellectual organization and arrangement</div>
+                      <div class="text__body-3">
+                          ^ca_collections.cfaIntellectualArrangement
+                      </div>
+                    </div>
+                  </ifdef>
+                </ifcount>
 				
                 <ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,complier,source,participant">
                     <div class="paragraph" style="break-before: column;">
@@ -745,22 +756,11 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                               </strong>
                             </span>
                             (^relationship_typename)
-                            <div class="trimText" id="bio_^ca_entities.entity_id" style="line-height: 22px;">^ca_entities.biography</div>
+                            <div class="trimText" id="bio_^ca_entities.entity_id" style="line-height: 20px;">^ca_entities.biography</div>
                           </unit>
                         </div>
                       </div>
                     </div>
-                </ifcount>
-
-                <ifcount code="ca_collections.children" min="0" max="0">
-                  <ifdef code="ca_collections.cfaIntellectualArrangement">
-                    <div class="paragraph">
-                      <div class="text__eyebrow color__gray" style="line-height: 26px;">Intellectual organization and arrangement</div>
-                      <div class="text__body-3">
-                          ^ca_collections.cfaIntellectualArrangement
-                      </div>
-                    </div>
-                  </ifdef>
                 </ifcount>
 
               </div>
