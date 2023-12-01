@@ -51,6 +51,8 @@
 ?>			
 			<div class="featuredList">	
 	<?php	
+					$vb_show_view_all_stories_link = false;
+					$vn_c = 0;
 					$vn_i = 0;
 					if($qr_people && $qr_people->numHits()) {
 						while($qr_people->nextHit()) {
@@ -71,6 +73,11 @@
 								print "</div><!-- end row -->\n";
 								$vn_i = 0;
 							}
+							$vn_c++;
+							if($vn_c == 9){
+								$vb_show_view_all_stories_link = true;
+								break;
+							}
 						}
 						if ($vn_i > 0) {
 							print "</div><!-- end row -->\n";
@@ -82,6 +89,24 @@
 			</div>
 		</div>
 	</div>
+<?php
+	if($vb_show_view_all_stories_link){
+?>
+	<div class="row">
+		<div class="col-sm-12 col-lg-10 col-lg-offset-1">		
+			<div class="featuredList">
+				<div class='col-sm-12 col-md-6 col-md-offset-3'>
+<?php
+				print caNavLink($this->request, "View All Stories <i class='fa fa-arrow-right'></i>", "btn btn-landing", "", "People", "stories");
+?>
+				</div>
+						
+			</div>
+		</div>
+	</div>
+<?php
+	}
+?>
 	<div class="row">
 		<div class="col-sm-12 col-lg-10 col-lg-offset-1 peopleFacets">	
 <?php	
