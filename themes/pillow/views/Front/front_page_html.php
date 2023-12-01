@@ -38,7 +38,7 @@
 			$t_set->load(array('set_code' => $vs_set_code));
 			$vn_shuffle = 0;
 			# Enforce access control on set
-			if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+			if(is_array($va_access_values) && ((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values)))){
 				$vn_set_id = $t_set->get("set_id");
 				$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
 				$qr_res = caMakeSearchResult('ca_objects', $va_featured_ids);
