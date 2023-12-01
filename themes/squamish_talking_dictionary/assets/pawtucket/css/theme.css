@@ -168,7 +168,7 @@ hr {
 		padding-left:5px;
 	}*/
 }
-@media (min-width: 1115px) {
+@media (min-width: 1170px) {
 	.navbar-nav > li > a {
 		padding-top: 15px;
 		padding-bottom: 15px;
@@ -256,7 +256,7 @@ hr {
 	background-color:#000;
 	color:#FFF;
 }
-@media (max-width: 1115px) {
+@media (max-width: 1170px) {
 	ul.menuItems {
 		width:100%;
 		border-top:solid 1px #ddd;
@@ -288,7 +288,7 @@ body{
 	margin-top: 110px;
 	-moz-osx-font-smoothing: grayscale;
 }
-@media (max-width: 1114px) {
+@media (max-width: 1169px) {
 	body{
 		margin-top: 148px;
 	}
@@ -498,6 +498,9 @@ body{
 }
 a.browseRemoveFacet .glyphicon{
 	color:#fff !important;
+}
+#bRefineButton {
+	display: none;
 }
 #bRefine {
   background-color: #DBD5CD;
@@ -751,6 +754,29 @@ body.frontContainer #footer{
 	font-size: 36px;
   	font-weight: 600;
 }
+
+@media(max-width:1200px){
+
+}
+@media(max-width:990px){
+	.hpIntroTitle{
+		padding-top: 30px;
+  		padding-bottom: 30px;
+		font-size: 30px;
+	}
+	.hpIntroText{
+		padding-top: 0px;
+  		padding-bottom: 40px;
+		font-size: 20px;
+	}
+	.front .heroSearch {
+		margin-top: 60px;
+		margin-bottom:60px;
+	}
+	.hpIntroTitleSearch{
+		font-size: 30px;
+	}
+}
 .intro::before {    
       content: "";
       background-image: url('../graphics/talkingDictionary.jpg');
@@ -777,6 +803,22 @@ body.frontContainer #footer{
 	font-weight: 200;
 	padding-top: 75px;
   	padding-bottom: 75px;
+}
+@media(max-width:990px){
+	.introTitle{
+		padding-top: 30px;
+  		padding-bottom: 30px;
+		font-size: 30px;
+	}
+	.introText{
+		padding-top: 0px;
+  		padding-bottom: 40px;
+	}
+}
+@media(min-width:1201px) AND (max-width:1430px){
+	.introTitle{
+		margin-left: -30px;
+	}
 }
 /*.hpIntro .callout{
 	text-align:center;
@@ -1720,6 +1762,7 @@ h2.tl-headline{
 }
 .staticPage h1{
 	color:#000;
+	clear:both;
 }
 .staticPage img{
 	float: left;
@@ -1984,30 +2027,32 @@ h2.tl-headline{
 }
 .themesTile .title {
 	width:80%;
+	text-decoration:none;
 	font-size:24px;
 	color:#000;
 	font-family:"Tahoma", sans-serif;
 	text-decoration:none;
 	padding:15px;
-	display:block;
 }
 .themesTile .titleWithImage{
 	width:50%;
+	text-decoration:none;
 	font-size:24px;
 	color:#000;
 	font-family:"Tahoma", sans-serif;
 	text-decoration:none;
 	padding:15px;
-	display:block;
 }
 a .themesTile .title {
 	text-decoration:none;
 }
-.themesTile .title a {
+.themesTile .title a, .themesTile .titleWithImage a {
 	text-decoration:none;
-	font-size:18px;
+	font-size:24px;
 	color:#000;
 	font-family:"Tahoma", sans-serif;
+	text-decoration:none;
+	padding:15px;
 	
 }
 .themesTile:hover{
@@ -2064,6 +2109,7 @@ a .themesTile .title {
 }
 .popover-content {
     min-width: 125px;
+    font-size:14px;
 }
 .themesTile:hover .popover-content{
 	color:#000;
@@ -2089,9 +2135,9 @@ a .themesTile .title {
 }
 .lbSet h2, .lbSet:hover h2 {
   text-transform: none;
-  font-size: 24px;
+  font-size: 18px;
   margin-top: 0px;
-  height: 1.5em;
+  height: 3.4em;
   overflow: hidden;
 }
 .lbSetImg, .lbSetThumbRowContainer{

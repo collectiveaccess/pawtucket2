@@ -37,10 +37,10 @@
 				print "<div class='themesImage'>".$va_theme["image"]."</div>";
 			}
 			if($va_theme["children"]){
-				print caNavLink($this->request, $va_theme["name"]." <i class='fa fa-arrow-right'></i>", "title".(($va_theme["image"]) ? "WithImage" : ""), "", "Themes", "Detail", array("theme_id" => $vn_theme_id), array("title" => "", "data-toggle" => "popover", "data-content" => "More Themes", "data-placement" => "left"));
+				print "<div class='title".(($va_theme["image"]) ? "WithImage" : "")."'>".caNavLink($this->request, $va_theme["name"]." <i class='fa fa-arrow-right'></i>", "", "", "Themes", "Detail", array("theme_id" => $vn_theme_id), array("title" => "", "data-toggle" => "popover", "data-content" => "More Themes", "data-placement" => "left"))."</div>";
 			}else{
 				if(in_array($vn_theme_id, $va_theme_ids_with_objects)){
-					print caNavLink($this->request, $va_theme["name"], "title".(($va_theme["image"]) ? "WithImage" : ""), "", "Browse", "dictionary", array("facet" => "themes_facet", "id" => $vn_theme_id), array("title" => "", "data-toggle" => "popover", "data-content" => "Browse the Dictionary", "data-placement" => "left"));
+					print "<div class='title".(($va_theme["image"]) ? "WithImage" : "")."'>".caNavLink($this->request, $va_theme["name"], "", "", "Browse", "dictionary", array("facet" => "themes_facet", "id" => $vn_theme_id), array("title" => "", "data-toggle" => "popover", "data-content" => "Browse the Dictionary", "data-placement" => "left"))."</div>";
 				}else{
 					print "<div class='title'>".$va_theme["name"]."</div>";
 				}
@@ -56,9 +56,7 @@
 				$bg_c++;
 			}
 		}
-	}
-		
-	
+	}	
 ?>		
 			</div>
 		</div>
