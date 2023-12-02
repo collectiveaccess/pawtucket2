@@ -370,7 +370,7 @@ MetaTagManager::addMeta("og:image:height", $t_object->get('ca_object_representat
 											<div class="title text__promo-4">
 												<l>^ca_objects.preferred_labels</l>
 											</div>
-											<div class="text__eyebrow color__gray block-xxxs">
+											<div class="text__eyebrow year color__gray block-xxxs">
 												^ca_occurrences.cfaDateProduced
 											</div>
 										</div>
