@@ -1035,6 +1035,15 @@ a.browseRemoveFacet img {
 	}
 }
 
+.bSetsSelectMultiple button{
+	font-family: Poppins;
+	font-weight: 200;
+	color: #fff;
+	font-size: 14px;
+	border: 1px solid #fff;
+	border-radius: 10px;
+}
+
 /* Lightbox Styles */
 
 
