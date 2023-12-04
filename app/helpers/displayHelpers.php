@@ -2368,9 +2368,21 @@ jQuery(document).ready(function() {
 	 *
 	 * @return
 	 */
+	function caGetMediaDisplayConfig() {
+		$o_config = Configuration::load();
+		return Configuration::load(__CA_APP_DIR__.'/conf/media_display.conf');
+	}
+	# ------------------------------------------------------------------------------------------------
+	/**
+	 *
+	 *
+	 * @param
+	 *
+	 * @return
+	 */
 	function caGetMediaDisplayInfo($ps_context, $ps_mimetype) {
 		$o_config = Configuration::load();
-		$o_media_display_config = Configuration::load(__CA_APP_DIR__.'/conf/media_display.conf');
+		$o_media_display_config = caGetMediaDisplayConfig();
 
 		if (!is_array($va_context = $o_media_display_config->getAssoc($ps_context))) { return null; }
 
@@ -2394,7 +2406,7 @@ jQuery(document).ready(function() {
 	 */
 	function caGetDefaultMediaViewer($ps_mimetype) {
 		$o_config = Configuration::load();
-		$o_media_display_config = Configuration::load(__CA_APP_DIR__.'/conf/media_display.conf');
+		$o_media_display_config = caGetMediaDisplayConfig();
 
 		if (!is_array($va_defaults = $o_media_display_config->getAssoc('default_viewers'))) { return null; }
 
@@ -3254,7 +3266,7 @@ jQuery(document).ready(function() {
 	 */
 	function caGetMediaMimetypeToDisplayClassMap($ps_context) {
 		$o_config = Configuration::load();
-		$o_media_display_config = Configuration::load(__CA_CONF_DIR__.'/media_display.conf');
+		$o_media_display_config = caGetMediaDisplayConfig();
 
 		if (!is_array($va_context = $o_media_display_config->getAssoc($ps_context))) { return null; }
 
@@ -4194,6 +4206,7 @@ jQuery(document).ready(function() {
 		$default_annotation_id		 		= caGetOption('defaultAnnotationID', $pa_options, null);
 		$start_timecode		 				= caGetOption('startTimecode', $pa_options, null);
 		$ps_display_type		 			= caGetOption('display', $pa_options, false);
+		$always_use_clover_viewer		 	= caGetOption('alwaysUseCloverViewer', $pa_options, false);
 
 		$vs_slides = '';
 		$slide_list = [];
@@ -4214,6 +4227,7 @@ jQuery(document).ready(function() {
 		$o_view->setVar('t_subject', $pt_subject);
 		$o_view->setVar('active_representation_class', $ps_active_representation_class);
 		$o_view->setVar('context', ($vs_context = $po_request->getParameter('context', pString)) ? $vs_context : $vs_context = $po_request->getAction());
+ 		$o_view->setVar('alwaysUseCloverViewer', $always_use_clover_viewer);
  	
 		$va_rep_ids = array();
 		if (method_exists($vo_data, 'filterNonPrimaryRepresentations')) { $vo_data->filterNonPrimaryRepresentations(false); }

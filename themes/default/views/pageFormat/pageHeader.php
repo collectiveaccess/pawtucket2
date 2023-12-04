@@ -56,7 +56,8 @@ $has_user_links = (sizeof($user_links) > 0);
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
 	
-	<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
+	<script src="<?= $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
+	<script src="<?= $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
 
 	<title><?= (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	

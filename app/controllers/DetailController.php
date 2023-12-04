@@ -344,6 +344,10 @@ class DetailController extends FindController {
 					}
 				}
 			}
+			
+			$media_display_config = caGetMediaDisplayConfig();
+			$this->view->setVar('alwaysUseCloverViewer', (bool)$media_display_config->get('always_use_clover_viewer'));
+			
 			$this->view->setVar('representationViewerPrimaryOnly', $rep_viewer_primary_only = caGetOption('representationViewerPrimaryOnly', $options, false));
 			$this->view->setVar('representationViewer', 
 				caRepresentationViewer(
@@ -359,7 +363,8 @@ class DetailController extends FindController {
 							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
 							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $options, false), 
 							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $options, false),
-							'checkAccess' => $this->opa_access_values
+							'checkAccess' => $this->opa_access_values,
+							'alwaysUseCloverViewer' => (bool)$media_display_config->get('always_use_clover_viewer')
 						]
 					)
 				)
@@ -367,6 +372,7 @@ class DetailController extends FindController {
 			$this->view->setVar('representationViewerThumbnailBar', 
 				caObjectRepresentationThumbnails($this->request, $this->view->getVar("representation_id"), $t_subject, array_merge($options, ["returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $rep_viewer_primary_only ? 1 : 0]))
 			);
+			
 		}
 		
 		//

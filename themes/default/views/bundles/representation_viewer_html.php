@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2022 Whirl-i-Gig
+ * Copyright 2015-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,15 +25,20 @@
  *
  * ----------------------------------------------------------------------
  */
-	$vn_representation_count 			= $this->getVar('representation_count');
-	$va_representation_ids				= $this->getVar('representation_ids');
-	$vs_show_annotations_mode			= $this->getVar('display_annotations');
-	$vs_context							= $this->getVar('context');
+ 	$always_use_clover = $this->getVar('alwaysUseCloverViewer');
+ 	
+	$representation_count 			= $this->getVar('representation_count');
+	$representation_ids				= $this->getVar('representation_ids');
+	$show_annotations_mode			= $this->getVar('display_annotations');
+	$context						= $this->getVar('context');
 	
-	$t_subject							= $this->getVar('t_subject');
-	$vn_subject_id						= $t_subject->getPrimaryKey();
+	$t_subject						= $this->getVar('t_subject');
+	$subject_id						= $t_subject->getPrimaryKey();
 	
-	if ($vn_representation_count > 1) {
+	if($always_use_clover && ($representation_count > 0)) {
+		$slide_list = $this->getVar('slide_list');
+		print $slide_list[0];	
+	} elseif($representation_count > 1) {
 ?>
 <div class="jcarousel-wrapper">
 	<div class="jcarousel" id="repViewerCarousel">
@@ -52,7 +57,7 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		var caSliderepresentation_ids = <?php print json_encode($va_representation_ids); ?>;
+		var caSliderepresentation_ids = <?php print json_encode($representation_ids); ?>;
 		/* width of li */
 		$('.jcarousel, .jcarousel li, .jcarousel .video-js').width($('.jcarousel').width());	// don't ask
 		$('.jcarousel .video-js').height($('.jcarousel .video-js').width() * .5);
@@ -70,7 +75,7 @@
 				if (!jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html()) {
 					// load media via ajax
 					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
-					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).load('<?php print caNavUrl($this->request, '*', '*', 'GetMediaInline', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/display/detail', function(e) {
+					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).load('<?php print caNavUrl($this->request, '*', '*', 'GetMediaInline', array('context' => $context, 'id' => $subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/display/detail', function(e) {
 						// update carousel height with current slide height after ajax load
 						jQuery(this).find('img').on('load', function() {
 							jQuery('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height());
@@ -83,14 +88,14 @@
 				}
 				if (jQuery('#detailAnnotations').length) {
 					jQuery('#detailAnnotations').html('<?php print addslashes(caBusyIndicatorIcon($this->request)." Loading..."); ?>');
-					jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + current_rep_id);
+					jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $context, 'id' => $subject_id, 'representation_id' => '')); ?>' + current_rep_id);
 				}
 			}else{
 <?php
-	if ($vs_show_annotations_mode == 'div') {
+	if ($show_annotations_mode == 'div') {
 ?>
 			// load annotation list via ajax
-			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[0]); }
+			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $context, 'id' => $subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[0]); }
 <?php
 	}
 ?>
@@ -139,16 +144,16 @@
 	});
 </script>
 <?php
-	} elseif($vn_representation_count == 1) {
+	} elseif($representation_count == 1) {
 		// Just dump the slide list without controls when there is only one representation
 ?>
 		{{{slides}}}
 <?php
-		if ($vs_show_annotations_mode == 'div') {
+		if ($show_annotations_mode == 'div') {
 ?>	
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => $va_representation_ids[0])); ?>'); }
+			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $context, 'id' => $subject_id, 'representation_id' => $representation_ids[0])); ?>'); }
 	});
 </script>
 <?php

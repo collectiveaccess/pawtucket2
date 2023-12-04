@@ -29,12 +29,16 @@
  *
  * ----------------------------------------------------------------------
  */
+ $display_type = $this->getVar('displayType');
 ?>
-<div id="clover"></div>
+<div id="clover<?= $display_type; ?>"></div>
 
 <script type="text/javascript">	
-    pawtucketUIApps['Clover'] = {
-    	id: 'clover',
-    	url: <?= json_encode($this->getVar('data_url')); ?>
-    };
+    window.initApp({
+    	app: 'Clover',
+    	id: 'clover<?= $display_type; ?>',
+    	url: <?= json_encode($this->getVar('data_url')); ?>,
+    	renderAbout: false
+    });
 </script>
+

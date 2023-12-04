@@ -2,21 +2,14 @@ import React, { useEffect, useContext, useState } from 'react'
 import { createRoot } from 'react-dom/client';
 import Viewer from "cloverIIIF";
 
-const appData = pawtucketUIApps.Clover;
-
-const Clover = ({ baseUrl }) => {
-
-// 	useEffect(() => {
-// 		
-// 	}, [id])	
-
+const Clover = ({ manifestId, renderAbout, renderClips, showTitle, showIIIFBadge, showInformationToggle, renderResources }) => {
 		let options = {
-			renderAbout: false,
-			showIIIFBadge: false,
-			showInformationToggle: false,
-			showTitle: false,
-			renderResources: false,
-			renderClips: true,
+			renderAbout: renderAbout,
+			showIIIFBadge: showIIIFBadge,
+			showInformationToggle: showInformationToggle,
+			showTitle: showTitle,
+			renderResources: renderResources,
+			renderClips: renderClips,
 			showPdfToolBar: true,
 			showPdfZoom: true,
 			showPdfRotate: true,
@@ -25,8 +18,6 @@ const Clover = ({ baseUrl }) => {
 			showPdfThumbnails: true,
 			showPdfTwoPageSpread: true
 		};
-		
-		let manifestId = appData.url;
 
 		return(
 			<div>
@@ -39,12 +30,19 @@ const Clover = ({ baseUrl }) => {
  * Initialize browse and render into DOM. This function is exported to allow the Pawtucket
  * app loaders to insert this application into the current view.
  */
-export default function _init() {
+export default function _init(appData) {
 	const container = document.getElementById(appData.id);
+	
 	const root = createRoot(container);
 	root.render(
-			<Clover
-				baseUrl={appData.baseUrl}
-			/>
+		<Clover
+			manifestId={appData.url} 
+			renderAbout={appData.renderAbout ?? false} 
+			renderClips={appData.renderClips ?? true} 
+			showTitle={appData.showTitle ?? false }
+			showIIIFBadge={appData.showIIIFBadge ?? false }
+			showInformationToggle={appData.showInformationToggle ?? false }
+			renderResources={appData.renderResources ?? false }
+		/>
 	);
 }
