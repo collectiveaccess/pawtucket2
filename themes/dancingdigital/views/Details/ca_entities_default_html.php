@@ -50,7 +50,7 @@
 			<div class="row" style="padding-bottom: 40px;">
 				{{{<ifdef code="ca_object_representations.media.original">
 					<div class="col align-self-center">
-						<div class="text-center mb-5">^ca_object_representations.media.original</div>
+						<div class="text-center mb-5">^ca_object_representations.media.medium</div>
 					</div> 
 				</ifdef>}}}		
 				{{{<ifdef code="ca_entities.biography">
@@ -79,7 +79,7 @@
 				<div class="row works-row">
 					<label class="entity-data-label mb-3">Choreographic Works</label>
 					<ul class="detail-list">
-						<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="choreographic_work" sort="ca_occurrences.preferred_labels">
+						<unit relativeTo="ca_entities_x_occurrences" delimiter="" restrictToTypes="choreographic_work" sort="ca_occurrences.preferred_labels">
 							<li class='detail-list-item'>
 								<div class='related-item-title'>
 									<l>
@@ -94,6 +94,7 @@
 					</ul>
 				</div>
 			</ifcount>}}}
+			
 
 			{{{<ifcount code="ca_objects" min="1">
 				<div class="row items-row">

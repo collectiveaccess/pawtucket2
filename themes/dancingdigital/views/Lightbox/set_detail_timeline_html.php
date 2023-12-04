@@ -1,13 +1,13 @@
 <?php
-/** ---------------------------------------------------------------------
- * themes/default/Front/front_page_html : Front page of site 
+/* ----------------------------------------------------------------------
+ * themes/default/views/Sets/set_detail_timeline_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2014-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,24 +23,29 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
- * @package CollectiveAccess
- * @subpackage Core
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
- *
  * ----------------------------------------------------------------------
  */
- ?>
- <main data-barba="container" data-barba-namespace="ourstory" class="barba-main-container ourstory-section">
-	<div class="general-page">
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-auto">
-					<h1 class="page-heading heading-size-2 ps-0">Over 20 Years In The Making</h1>
-					<p class="page-content content-size-2">
-						{{{our_story_text}}}
- 					</p>
-				</div> 
-			</div>
-		</div>
+ 	
+	AssetLoadManager::register('timeline');
+	$vs_browse_key 					= $this->getVar('key');					// cache key for current browse
+	$va_set_items = $this->getVar("set_items");
+	$t_set = $this->getVar("set");
+?>
+	<div id="lbTimelineContainer">
+		<div id="timeline-embed"></div>
 	</div>
-</main>
+	
+	<div style="clear:both;"><!-- empty --></div>
+	
+    <script type="text/javascript">
+		jQuery(document).ready(function() {
+			createStoryJS({
+				type:       'timeline',
+				width:      '100%',
+				height:     '100%',
+				source:     '<?php print caNavUrl($this->request, '', '*', 'setDetail', array('key' => $vs_browse_key, 'download' => 1, 'view' => 'timelineData', 'set_id' => $t_set->get("set_id"))); ?>',
+				embed_id:   'timeline-embed'
+			});
+		});
+	</script>
+
