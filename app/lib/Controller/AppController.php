@@ -81,11 +81,11 @@ class AppController {
 		}
 	}
 	# -------------------------------------------------------
-	public function &getRequest() {
+	public function getRequest() {
 		return $this->request;
 	}
 	# -------------------------------------------------------
-	public function &getResponse() {
+	public function getResponse() {
 		return $this->response;
 	}
 	# -------------------------------------------------------

@@ -22,27 +22,27 @@
 	}
 ?>
 <div class="row"><div class="col-sm-12">
-	<H1><?php print $vs_page_title; ?></H1>
+	<H1><?= $vs_page_title; ?></H1>
 <?php
 	if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>
-	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" method="post">
-	    <input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+	<form id="contactForm" action="<?= caNavUrl($this->request, "", "Contact", "send"); ?>" method="post">
+	    <input type="hidden" name="csrfToken" value="<?= caGenerateCSRFToken($this->request); ?>"/>
 <?php
 	if($pn_id && $t_item->getPrimaryKey()){
 ?>
 		<div class="row">
 			<div class="col-sm-12">
-				<p><b>Title: </b><?php print $vs_name; ?>
-				<br/><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>" class="purpleLink"><?php print $vs_url; ?></a>
+				<p><b>Title: </b><?= $vs_name; ?>
+				<br/><b>Regarding this URL: </b><a href="<?= $vs_url; ?>" class="purpleLink"><?= $vs_url; ?></a>
 				</p>
-				<input type="hidden" name="itemId" value="<?php print $vs_idno; ?>">
-				<input type="hidden" name="itemTitle" value="<?php print $vs_name; ?>">
-				<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
-				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
-				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
+				<input type="hidden" name="itemId" value="<?= $vs_idno; ?>">
+				<input type="hidden" name="itemTitle" value="<?= $vs_name; ?>">
+				<input type="hidden" name="itemURL" value="<?= $vs_url; ?>">
+				<input type="hidden" name="id" value="<?= $pn_id; ?>">
+				<input type="hidden" name="table" value="<?= $ps_table; ?>">
 				<hr/><br/><br/>
 	
 			</div>
@@ -54,23 +54,23 @@
 			<div class="col-md-9">
 				<div class="row">
 					<div class="col-sm-4">
-						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
-							<label for="name"><?php print _t("Name"); ?></label>
+						<div class="form-group<?= (($va_errors["name"]) ? " has-error" : ""); ?>">
+							<label for="name"><?= _t("Name"); ?></label>
 							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
-						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
-							<label for="email"><?php print _t("Email address"); ?></label>
+						<div class="form-group<?= (($va_errors["email"]) ? " has-error" : ""); ?>">
+							<label for="email"><?= _t("Email address"); ?></label>
 							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
-						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-							<label for="security"><?php print _t("Security Question"); ?></label>
+						<div class="form-group<?= (($va_errors["security"]) ? " has-error" : ""); ?>">
+							<label for="security"><?= _t("Security Question"); ?></label>
 							<div class='row'>
 								<div class='col-sm-6'>
-									<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
+									<p class="form-control-static"><?= $vn_num1; ?> + <?= $vn_num2; ?> = </p>
 								</div>
 								<div class='col-sm-6'>
 									<input name="security" value="" id="security" type="text" class="form-control input-sm" />
@@ -83,8 +83,8 @@
 		</div><!-- end row -->
 		<div class="row">
 			<div class="col-md-9">
-				<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-					<label for="message"><?php print _t("Message"); ?></label>
+				<div class="form-group<?= (($va_errors["message"]) ? " has-error" : ""); ?>">
+					<label for="message"><?= _t("Message"); ?></label>
 					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
 				</div>
 			</div><!-- end col -->
@@ -94,15 +94,13 @@
 ?>
 		<script type="text/javascript">
 			var gCaptchaRender = function(){
-                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+                grecaptcha.render('regCaptcha', {'sitekey': '<?= __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
         	};
 		</script>
 		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
-
-
 			<div class="row">
 				<div class="col-sm-12 col-md-offset-1 col-md-10">
-					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+					<div class='form-group<?= (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
 						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
 					</div>
 				</div>
@@ -111,9 +109,9 @@
 	}
 ?>
 		<div class="form-group">
-			<button type="submit" class="btn btn-default"><?php print _t("Send"); ?></button>
+			<button type="submit" class="btn btn-default"><?= _t("Send"); ?></button>
 		</div><!-- end form-group -->
-		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
+		<input type="hidden" name="sum" value="<?= $vn_sum; ?>">
 	</form>
 	
 </div><!-- end col --></div><!-- end row -->

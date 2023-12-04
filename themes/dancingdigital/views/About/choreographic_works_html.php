@@ -35,6 +35,10 @@
 	}
 
 	$rc = $qr->numHits();
+
+	$t_set = ca_sets::findAsInstance(['set_code' => 'choreographic_works'], ['checkAccess' => caGetUserAccessValues($this->request)]);
+	$set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'original', 'template' => '^ca_occurrences.date', 'templateDescription' => 'yyy']) : [];
+
 ?>
 <main data-barba="container" data-barba-namespace="choreoworks" class="barba-main-container choreoworks-section">
 	<div class="general-page">
@@ -56,7 +60,8 @@
 				</div>
 
 				<div class="col-auto">
-					<div class="works-grid-container">
+
+					<!-- <div class="works-grid-container">
 						<?php
 							$count = 1;
 							while($qr->nextHit()) {
@@ -76,7 +81,25 @@
 								$count++;
 							}
 						?>
+					</div> -->
+
+					<div class="works-grid-container">
+						<?php
+							foreach($set_items as $item) {	
+								$item = array_shift($item);
+								// print_R($item);
+						?>			
+								<div class="works-item">
+									<?= caDetailLink($this->request, $item['representation_tag'], 'works-img', 'ca_occurrences', $item['row_id']) ?>
+									<?= caDetailLink($this->request, $item['name'], 'works-caption-title', 'ca_occurrences', $item['row_id']) ?>
+									<div class="works-caption-date"><?= $item['displayTemplate']; ?></div>
+								</div>
+						<?php
+							}
+						?>
 					</div>
+
+
 
 				</div>
 			</div>

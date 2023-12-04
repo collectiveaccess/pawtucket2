@@ -36,8 +36,11 @@ if(!($qr = $s->search("ca_entities_x_occurrences.count/choreographer:[1 to 1000]
 }
 
 $rc = $qr->numHits();
+
+$t_set = ca_sets::findAsInstance(['set_code' => 'choreographers'], ['checkAccess' => caGetUserAccessValues($this->request)]);
+$set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'original']) : [];
  
- ?>
+?>
 <main data-barba="container" data-barba-namespace="choreographers" class="barba-main-container choreographers-section">
 	<div class="general-page">
 		<div class="container">
@@ -59,7 +62,7 @@ $rc = $qr->numHits();
 				
 				<div class="col-auto">
 
-					<div class="choreographer-grid-container">
+					<!-- <div class="choreographer-grid-container">
 						<?php
 							while($qr->nextHit()) {
 							$id = $qr->get('ca_entities.entity_id');
@@ -69,6 +72,21 @@ $rc = $qr->numHits();
 								<div class="choreo-img-container choreographer-grid-item">
 									<?= caDetailLink($this->request, $image, 'choreo-img', 'ca_entities', $id) ?>
 									<?= caDetailLink($this->request, $name, 'text-overlay', 'ca_entities', $id) ?>
+								</div>
+						<?php
+							}
+						?>
+					</div> -->
+
+					<div class="choreographer-grid-container">
+						<?php
+							foreach($set_items as $item) {	
+								$item = array_shift($item);
+								// print_R($item);
+						?>			
+								<div class="choreo-img-container choreographer-grid-item">
+									<?= caDetailLink($this->request, $item['representation_tag'], 'choreo-img', 'ca_entities', $item['row_id']) ?>
+									<?= caDetailLink($this->request, $item['displayname'], 'text-overlay', 'ca_entities', $item['row_id']) ?>
 								</div>
 						<?php
 							}

@@ -72,6 +72,17 @@
 		<li><a href="<?= caNavUrl($this->request, '', 'About', 'performances_html'); ?>" class="btn">Performances</a></li>
 		<li><a href="<?= caNavUrl($this->request, '', 'About', 'journey_html'); ?>" class="btn">Gesel's Journey</a></li>
 		<li><a href="<?= caNavUrl($this->request, '', 'About', 'archives_html'); ?>" class="btn">Explore the Archives</a></li>
+<?php
+	if($this->request->isLoggedIn()){
+		if(caDisplayLightbox($this->request)){
+			print "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Lightbox', 'Index', array())."</li>";
+		}
+		print "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
+	} else {
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+	}
+?>
 	</ul>
 
 </div>

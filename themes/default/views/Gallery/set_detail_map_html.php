@@ -30,8 +30,8 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12">
-			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
-			<?php print ($this->getVar("description")) ? "<p>".$this->getVar("description")."</p>" : ""; ?>
+			<H1><?php print $this->getVar("label")."</H1>"; ?>
+			<?php print ($this->getVar("description")) ? "<div class='setDescription'>".$this->getVar("description")."</div>" : ""; ?>
 		</div>
 	</div>
 	<div class="row">
