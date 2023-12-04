@@ -44,12 +44,12 @@
 ?>
 <div class="hpIntro">
 	<div class="row bgGreen">
-		<div class="col-md-2 col-md-offset-2">
+		<div class="col-md-3 col-md-offset-1 col-lg-2 col-lg-offset-2">
 			<div class='hpIntroTitle'>
 				Talking<br/>Dictionary
 			</div>
 		</div>
-		<div class="col-md-6">
+		<div class="col-md-7 col-lg-6">
 			<div class="hpIntroText">
 				{{{td_hp_intro}}}
 			</div>

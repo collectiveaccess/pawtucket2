@@ -988,6 +988,7 @@ a.browseRemoveFacet img {
 }
 .lbItemContainer .lbItem:hover{
 	position:absolute;
+	width:100%
 }
 .lbItemContainerList .lbItem:hover{
 	width:100%;

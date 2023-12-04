@@ -21,7 +21,7 @@
 <div class="intro">
 <div class="row bgBrown">
 	<div class="col-md-3 col-md-offset-1 col-lg-2 col-lg-offset-2">
-		<div class='introTitle'>
+		<div class='introTitle alphabet'>
 			Guide To<br/>Pronunciation
 		</div>
 	</div>

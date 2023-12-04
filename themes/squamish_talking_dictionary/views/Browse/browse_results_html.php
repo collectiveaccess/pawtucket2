@@ -158,6 +158,7 @@ if (!$vb_ajax) {	// !ajax
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}
+		$vb_showLetterBarFilter = true;
 		if (sizeof($va_criteria) > 0) {
 			foreach($va_criteria as $va_criterion) {
 				#print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['facet'].": ".$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter" role="button"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
@@ -165,27 +166,28 @@ if (!$vb_ajax) {	// !ajax
 				if($va_criterion["facet_name"] == "alphabet_facet"){
 					$vn_current_alphabet_facet = $va_criterion["id"];
 				}else{
-					print '<b>'.$va_criterion['facet'].": ".$va_criterion['value'].'</b>';
-					if($va_criterion["facet_name"] == "themes_facet"){
-						$vb_showLetterBar = false;
-					}
+					print '<p><b>'.$va_criterion['facet'].": ".$va_criterion['value'].'</b></p>';
+					$vb_showLetterBarFilter = false;
 				}
 			}
 		}
 		
-		
-		$o_browse_for_letter_bar = caGetBrowseInstance("ca_objects");
-		$va_alphabet_facet = $o_browse_for_letter_bar->getFacet('alphabet_facet', array('checkAccess' => $va_access_values, 'request' => $this->request));
-		if(is_array($va_alphabet_facet) && sizeof($va_alphabet_facet)){
-			$vn_c = 0;
-			print "<div id='bLetterBar'>";
-			foreach($va_alphabet_facet as $va_alphabet_facet_info) {
-					$vn_c++;
-					print caNavLink($this->request, $va_alphabet_facet_info["label"], 'btn btn-default '.(($vn_current_alphabet_facet == $va_alphabet_facet_info["id"]) ? 'selectedLetter' : ''), '', 'Browse', 'dictionary', array('facet' => 'alphabet_facet', 'id' => $va_alphabet_facet_info["id"]))." ";
+		if($vb_showLetterBarFilter){
+			$o_browse_for_letter_bar = caGetBrowseInstance("ca_objects");
+			$va_alphabet_facet = $o_browse_for_letter_bar->getFacet('alphabet_facet', array('checkAccess' => $va_access_values, 'request' => $this->request));
+			if(is_array($va_alphabet_facet) && sizeof($va_alphabet_facet)){
+				$vn_c = 0;
+				print "<div id='bLetterBar'>";
+				foreach($va_alphabet_facet as $va_alphabet_facet_info) {
+						$vn_c++;
+						print caNavLink($this->request, $va_alphabet_facet_info["label"], 'btn btn-default '.(($vn_current_alphabet_facet == $va_alphabet_facet_info["id"]) ? 'selectedLetter' : ''), '', 'Browse', 'dictionary', array('facet' => 'alphabet_facet', 'id' => $va_alphabet_facet_info["id"]))." ";
 				
+				}
+				print "<span class='bLetterBarDivider'> &mdash; </span>".caNavLink($this->request, _t("All"), 'btn btn-default '.((!$vn_current_alphabet_facet) ? 'selectedLetter' : ''), '', 'Browse', 'dictionary'); 
+				print "</div>";
 			}
-			print "<span class='bLetterBarDivider'> &mdash; </span>".caNavLink($this->request, _t("All"), 'btn btn-default '.((!$vn_current_alphabet_facet) ? 'selectedLetter' : ''), '', 'Browse', 'dictionary'); 
-			print "</div>";
+		}else{
+			print "<div id='bLetterBar'>".caNavLink($this->request, _t("Browse All"), 'btn btn-default '.((!$vn_current_alphabet_facet) ? 'selectedLetter' : ''), '', 'Browse', 'dictionary')."</div>";
 		}
 ?>
 	</div>
