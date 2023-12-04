@@ -80,6 +80,7 @@
 							var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Featured', 'getTourInfoAsJSON', array('tour_id' => $t_item->get("ca_occurrences.occurrence_id"), 'download' => 1)); ?>';
 
 							// certain settings must be passed within a separate options object
+							//  map_type is set in the json file
 							var storymap_options = {};
 
 							var storymap = new VCO.StoryMap('storymapContainer', storymap_data, storymap_options);
@@ -127,10 +128,10 @@
 				{{{<ifcount code="ca_occurrences.related" restrictToTypes="appearance" min="1">
 					<div class="col-sm-12 col-md-4">
 						<ifcount code="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="included" min="1"><div class="unit trimText"><label>Itinerary</label>
-							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="included" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
+							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="included" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount>^ca_occurrences.preferred_labels.name<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">, ^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
 						</ifcount>
 						<ifcount code="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" min="1"><div class="unit"><label>Related Appearance<ifcount code="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" min="2">s</ifcount></label>
-							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
+							<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" restrictToRelationshipTypes="related" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount>^ca_occurrences.preferred_labels.name<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">, ^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
 						</ifcount>
 					</div>
 				</ifcount>}}}
@@ -166,7 +167,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div id="browseResultsContainer">
+				<div id="browseResultsContainer" class="ca_objects">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->

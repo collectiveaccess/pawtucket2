@@ -9,7 +9,7 @@
 		return in_array(caGetMediaClass($v['mimetype']), ['audio', 'video']);
 	})) > 0);	
 ?>
-<div class="slider-container module_slideshow slideshow-single-collection over-black autoplay fade-captions">
+<div class="slider-container module_slideshow slideshow-single-collection over-black fade-captions">
     <div class="slick-slider dots-white dots-centered">
 					<?php
 						$active = true;
@@ -17,29 +17,55 @@
 ?>
         <!-- slide -->
         <div class="slide-wrap">
-            <div class="image-sizer">
-                <div class="img-wrapper">
 <?php
 							$media_class = caGetMediaClass($r['mimetype']);
 							$t_rep = ca_object_representations::findAsInstance($r['representation_id']);
 							$viewer = MediaViewerManager::getViewerForMimetype('detail', $r['mimetype']);
-						
-							print $viewer::getViewerHTML(
-								$this->request, 
-								"representation:".$r['representation_id'], 
-								[
-									't_instance' => $t_rep, 't_subject' => $t_object, 
-									'display' => $display_info = caGetMediaDisplayInfo('detail', $r['mimetype']), 
-									'display_type' => 'detail'
-								],
-								[ 
-									'hideAllOverlayControls' => true, 'dontInitPlyr' => true
-								]
-							);
-							$active = false;
+							
+							$class = caGetMediaClass($r['mimetype']);
+							
+							
+							switch($class) {
+								case 'video':
+?><div class="video-container-black">
+	<div class="video-embed-player is-plyr">
+        <div class="ratio-sizer">
+            <video playsinline="" controls="" class="plyr__video-embed" data-poster="<?= $t_rep->getMediaUrl('media', 'large'); ?>">
+                <source src="<?= $t_rep->getMediaUrl('media', 'original'); ?>" type="video/mp4">
+            </video>
+        </div>
+	</div>
+ </div>
+<?php
+									break;
+								case 'audio':
+?><div class="plyr-container plyr-container-audio audio-plyr-player video-embed-player is-plyr color-class-orange">
+    <audio src="<?= $t_rep->getMediaUrl('media', 'mp3'); ?>" type="audio/mp3" controls="controls" class="audio-plyr"></audio>
+</div><?php
+									break;
+								case 'image':
+?> <div class="sizer">
+        <div class="item">
+            <div style="margin: 0 50% 0 50%;"><?= $t_rep->getMediaTag('media', 'mediumlarge'); ?></div>
+        </div>
+    </div><?php
+									break;
+								case 'document':
+									print "<div style='height: 700px;'>".$viewer::getViewerHTML(
+										$this->request, 
+										"representation:".$r['representation_id'], 
+										[
+											't_instance' => $t_rep, 't_subject' => $t_object, 
+											'display' => $display_info = caGetMediaDisplayInfo('detail', $r['mimetype']), 
+											'display_type' => 'detail'
+										],
+										[ 
+											'hideAllOverlayControls' => true, 'dontInitPlyr' => true
+										]
+									)."</div>"; 
+									break;
+							}
 ?>
-				</div>
-            </div>
         </div>
         <!-- slide -->
 <?php

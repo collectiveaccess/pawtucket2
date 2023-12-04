@@ -30,33 +30,49 @@
  * ----------------------------------------------------------------------
  */
  ?>
- <main data-barba="container" data-barba-namespace="about" class="barba-container about-section" style="background-color: #2a0a42;">
-	<!-- put here the content you wish to change between your pages, like your main content <h1> or <p> -->
-	<div class="container">
-		<div class="page-section row justify-content-center">
-			<div class="col-auto p-3 text-white">
 
-				<!-- <nav class="navbar navbar-expand-lg home-navbar bg-transparent shadow-none">
-					<div class="container-fluid justify-content-evenly">
-						<div class="navbar-nav">
-							<a class="nav-link" href="#">About</a>
-							<a class="nav-link" href="#">Choreographers</a>
-							<a class="nav-link" href="#">Choreographic Works</a>
-							<a class="nav-link" href="#">Performances</a>
-							<a class="nav-link" href="#">Gesel’s Journey</a>
-							<a class="nav-link" href="#">Archives</a>
-						</div>
-					</div>
-				</nav> -->
+<main data-barba="container" data-barba-namespace="about" class="barba-main-container about-section">
+	<div class="general-page">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-auto">
+					<h1 class="page-heading heading-size-1 ps-0">The No Boundaries Archive Project</h1>
+					<p class="page-content mb-5">
+						<span style="font-size: 30px; font-weight: 700;">Dancing the Visions of Contemporary Black Choreographers</span>
+					</p>
+					<p class="page-content">
+						{{{about_page_text}}}
+					</p>
+				</div>
+			</div>
+ 		</div>
+	</div>
+<?php
+if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
+	# --- display lightbox alert
+	if(!CookieOptionsManager::showBanner()){
+		Session::setVar('visited_time', time());
+	}
 
-				<h1 class="page-heading">The No Boundaries Archive Project</h1>
-				<p class="page-content">
-					Dancing the Visions of Contemporary Black Choreographers
-					<br>
-					A living, breathing archive that uses dance as a vehicle for understanding a distinctly African American theme 
-					of resilience in spite of a history of silencing and erasure.
-				</p>
-			</div> 
+?>
+	<div class="frontAlert" onclick="$('.frontAlert').remove(); return false;">
+		<div class="frontAlertBox">
+			<div class="pull-right pointer frontAlertClose" onclick="$('.frontAlert').remove(); return false;">
+				<span class="glyphicon glyphicon-remove-circle"></span>
+			</div>
+			<div class="frontAlertMessage">
+				{{{entry_popup_message}}}
+
+				<div class="btn-group enterButton" role="group" aria-label="buttons">
+					<a href="#" class="btn btn-default" style="background-color: rgba(42, 10, 66, 1); color: #fff;">ENTER THE SPACE</a>
+					<a href="#" class="btn btn-default" style="background-color: #fff ; color: #000 !important; border: 1px solid rgba(42, 10, 66, 1);">I'll come back later</a>
+				</div>
+
+			</div>	
 		</div>
 	</div>
+<?php
+ }
+?>
 </main>
+

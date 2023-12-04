@@ -32,7 +32,10 @@ H1, h1 {
 	font-family: "urbane-rounded", sans-serif;
 	font-weight:300;
 }
-.btn-default:hover{
+.results a.btn-default .fa{
+	color:#FFFF !important;
+}
+.btn-default:hover, .btn-default:active, .btn-default:focus{
 	background-color:#094088;
 }
 a{
@@ -714,11 +717,12 @@ body.frontContainer #footer{
 }
 .hpIntro .calloutTitle{
 	text-align:center;
-	font-size: 32px;
+	font-size: 44px;
 	color: #000;
-	margin-bottom:15px;
+	margin-bottom:60px;
 	font-family: 'urbane-rounded', sans-serif;
 	font-weight:600;
+	padding-top: 40px;
 }
 @media(max-width:767px){
 	.hpIntro .callout{
@@ -1020,6 +1024,16 @@ a.readmore-js-toggle {
 		text-align:left;
 	}
 }
+@media (min-width: 768px) {
+  #bRefine.fixed {
+    padding-top: 150px;
+  }
+}
+@media (min-width: 1011px) {
+  #bRefine.fixed {
+    padding-top: 100px;
+  }
+}
 /* storymap */
 .vco-storymap h2.vco-headline-title, .vco-storymap h2 {
 	font-size: 17px !important;
@@ -1081,8 +1095,8 @@ a.readmore-js-toggle {
 }
 .tl-timeline .tl-headline-date, .tl-timeline h3.tl-headline-date,
 .tl-timeline .tl-timenav-slider,
-.tl-timeline .tl-timenav-slider .tl-timeaxis {
-	font-family: "urbane-rounded", sans-serif !important;
+.tl-timeline .tl-timenav-slider .tl-timeaxis, h3.tl-headline-date {
+	font-family: 'urbane-rounded', sans-serif !important;
 }
 .tl-text-content .tl-timeline p{
 	font-size:20px !Important;
@@ -1090,6 +1104,13 @@ a.readmore-js-toggle {
 .tl-text-content-container h2.tl-headline .occType{
 	font-size:20px !important;
 	color:#757575 !Important;
+}
+.tl-text-content, .tl-text-content-container h2.tl-headline .occType,
+.tl-slidenav-previous .tl-slidenav-title, .tl-slidenav-next .tl-slidenav-title,
+.tl-slidenav-previous .tl-slidenav-description, .tl-slidenav-next .tl-slidenav-description,
+.tl-timeline p,
+.tl-timeline h1, .tl-timeline h2, .tl-timeline h3, .tl-timeline h4, .tl-timeline h5, .tl-timeline h6{
+	font-family: 'urbane-rounded', sans-serif !important;
 }
 /* Featured Listing */
 @media(min-width:992px){
@@ -1200,7 +1221,7 @@ a.readmore-js-toggle {
 }
 .browse .featuredList{
 	margin-top:0px;
-	margin-bottom:30px;
+	margin-bottom:60px;
 }
 .featuredListTitle{
 	font-size: 30px;

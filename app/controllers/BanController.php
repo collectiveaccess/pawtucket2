@@ -40,7 +40,26 @@ class BanController extends BasePawtucketController {
 	}
 	# -------------------------------------------------------
 	public function __call($method, $path) {
+		$this->view->setVar('errors', []);
 		$this->render("Ban/verify_html.php", false);
 	}
-	# ------------------------------------------------------
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function confirm() {
+		try {
+			caVerifyCaptcha($this->request->getParameter("g-recaptcha-response", pString));
+			
+			ca_ip_whitelist::whitelist($this->request, 24*60*60, 'Captcha');	// white list for 24 hours
+			if(!($url = Session::getVar('pawtucket2_last_page'))) {
+				$url = caNavUrl($this->request, '', 'Front', 'Index');
+			}
+			$this->response->setRedirect($url);
+		} catch(CaptchaException $e) {
+			$this->view->setVar('errors', [$e->getMessage()]);
+			$this->render("Ban/verify_html.php", false);
+		}
+	}
+	# -------------------------------------------------------
 }

@@ -243,7 +243,7 @@ if (!$vb_ajax) {	// !ajax
 			if(($vs_table == "ca_objects") || ($vs_sort_control_type == 'dropdown')){
 ?>		
 			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
+				<a href="#" data-toggle="dropdown"><i class="fa fa-cog bGear" aria-label="Result options"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){

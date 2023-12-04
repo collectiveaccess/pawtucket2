@@ -35,8 +35,11 @@
 	
 	
 	$vs_image = $t_item->getWithTemplate("^ca_object_representations.media.large", array("checkAccess" => $va_access_values));
+	if($vs_image){
+		$vs_image .= $t_item->getWithTemplate("<ifdef code='ca_object_representations.preferred_labels'><div>^ca_object_representations.preferred_labels</div></ifdef>", array("checkAccess" => $va_access_values));
+	}
 	if(!$vs_image){
-		$vs_image = $t_item->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'><l>^ca_object_representations.media.large</l><l>^ca_objects.preferred_labels.name</l></unit></ifcount>", array("checkAccess" => $va_access_values));
+		$vs_image = $t_item->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' limit='1'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><div><l>^ca_objects.preferred_labels.name</l></div></ifdef></unit></ifcount>", array("checkAccess" => $va_access_values));
 	}
 	$vb_bottom_box = false;
 	if($t_item->get("ca_entities.entity_id", array("checkAccess" => $va_access_values))){
@@ -59,7 +62,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-sm-12 col-md-10'>
-					<H1>{{{<ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef>}}}</H1>
+					<H1>{{{<ifcount code="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount>^ca_occurrences.preferred_labels.name<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">, ^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef>}}}</H1>
 					<H2>{{{^ca_occurrences.type_id, ^ca_occurrences.appearance_type}}}</H2>
 				</div>
 				<div class='col-sm-12 col-md-2 inquireCol'>
@@ -79,7 +82,6 @@
 <?php				
 				}
 ?>				
-						{{{<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence"><div class="unit">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></div></ifdef>}}}
 						{{{<ifdef code="ca_occurrences.description"><div class="unit">^ca_occurrences.description</div></ifdef>}}}
 						{{{<ifdef code="ca_occurrences.descriptive_note"><div class="unit"><label>Descriptive Note</label><unit relatativeTo="ca_occurrences.descriptive_note" delimiter="<br/>">^ca_occurrences.descriptive_note</unit></div></ifdef>}}}
 						{{{<ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><div class="unit"><label>Venue</label><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifcount>}}}
@@ -125,7 +127,7 @@
 						<unit relativeTo="ca_occurrences.related" restrictToTypes="studio_session" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences.related" restrictToTypes="appearance" min="1"><div class="unit"><label>Related Appearance<ifcount code="ca_occurrences.related" restrictToTypes="appearance" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
+						<unit relativeTo="ca_occurrences.related" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount>^ca_occurrences.preferred_labels.name<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">, ^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
 					</ifcount>
 					</div>
 				</ifcount>}}}
@@ -155,14 +157,14 @@
 ?>
 
 				
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class='col-sm-12'>
 					<h3>Selected Archival Items</h3>
 				</div>
 			</div>
 			<div class="row">
-				<div id="browseResultsContainer">
+				<div id="browseResultsContainer" class="ca_objects">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->

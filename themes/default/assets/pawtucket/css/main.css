@@ -3674,3 +3674,28 @@ input[type='text'].ui-autocomplete-loading {
 	background-color: #FBF719;
 	opacity: 0.8;
 }
+
+
+/* --------------------------------- */
+/* BANS */
+/* --------------------------------- */
+div.banHeadline {
+	text-align: center;
+	margin: 48px 0 8px 0;
+}
+
+div.banHeadline h1 {
+	font-size: 30px;
+}
+
+div.banDescription {
+	text-align: center;
+	margin: 0 0 24px 0;
+	font-size: 18px;
+}
+
+div.banContinue {
+	text-align: center; 
+	display: none;
+	margin: 48px 0 0 0;
+}

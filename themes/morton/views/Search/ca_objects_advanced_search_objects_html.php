@@ -1,6 +1,6 @@
 <div class="container">
 	<div class="row">
-		<div class="col-sm-8 ">
+		<div class="col-sm-8" style='border-right:1px solid #ddd;'>
 			<h1>Objects Advanced Search</h1>
 
 <?php			
@@ -84,7 +84,7 @@
 {{{/form}}}
 
 		</div>
-		<div class="col-sm-4" style='border-left:1px solid #ddd;'>
+		<div class="col-sm-4">
 			<h2>Other Resources</h2>
 			<p><a href='http://www.mortonarb.org/visit-explore/sterling-morton-library' target='_blank'>Sterling Morton Library Home</a></p>
 <?php			

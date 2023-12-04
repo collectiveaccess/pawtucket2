@@ -33,7 +33,7 @@
 	$va_access_values = caGetUserAccessValues($this->request);	
 	
 	
-	$vs_image = $t_item->getWithTemplate("<ifcount code='ca_objects' max='1'><unit relativeTo='ca_objects'><l>^ca_object_representations.media.large</l><l>^ca_objects.preferred_labels.name</l></unit></ifcount>");
+	$vs_image = $t_item->getWithTemplate("<ifcount code='ca_objects' max='1'><unit relativeTo='ca_objects'><l>^ca_object_representations.media.large</l><div><l>^ca_objects.preferred_labels.name</l></div></unit></ifcount>");
 	$vb_bottom_box = false;
 	if($t_item->get("ca_entities.related.entity_id", array("checkAccess" => $va_access_values))){
 		$vb_bottom_box = true;
@@ -119,7 +119,7 @@
 						<unit relativeTo="ca_occurrences" restrictToTypes="studio_session" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences" restrictToTypes="appearance" min="1"><div class="unit"><label>Related Appearance<ifcount code="ca_occurrences" restrictToTypes="appearance" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l> (^relationship_typename)</unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount>^ca_occurrences.preferred_labels.name<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">, ^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
 					</ifcount>
 					</div>
 				</ifcount>}}}
@@ -149,14 +149,14 @@
 ?>
 
 				
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div class='col-sm-12'>
 					<H3>Selected Archival Items</H3>
 				</div>
 			</div>
 			<div class="row">
-				<div id="browseResultsContainer">
+				<div id="browseResultsContainer" class="ca_objects">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->

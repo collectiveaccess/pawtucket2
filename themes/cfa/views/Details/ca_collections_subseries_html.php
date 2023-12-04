@@ -208,7 +208,7 @@ MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representatio
 			$item_count += $qr_objects->numHits();
 		
 			while($qr_objects->nextHit()) {
-				if($qr_objects->get('ca_object_representations.representation_id', ['checkAccess' => $access_values])) {
+				if($qr_objects->get('ca_object_representations.representation_id', ['restrictToTypes' => ['film', 'audio'], 'checkAccess' => [1]])) {
 					$viewable_count++;
 				}
 			}
@@ -328,25 +328,30 @@ MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representatio
                 <div class="grid-flex grid-1-3-4 margin-bottom collection-grid grid-collection-items" id="expando-grid">
 
                   {{{<ifcount code="ca_collections.branch" min="0">
-                      <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_collections.idno_sort" filter="/<img/">
+                      <unit relativeTo="ca_collections.branch" delimiter="" sort="ca_collections.idno_sort">
 
                         <ifcount code="ca_objects" min="1">
-                          <unit relativeTo="ca_objects" delimiter="" filter="/<img/">
-                            <if rule="^access = 'yes'">
+                          <unit relativeTo="ca_objects" delimiter="">
+                            <if rule="^ca_object_representations.access = 'yes'">
                               <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
                                 <div class="item-item item">
-                                  <ifdef code="ca_object_representations.media.small">
-                                    <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
-                                  </ifdef>
-                                  <ifnotdef code="ca_object_representations.media.small">
-                                    <div class="collItemImgPlaceholder"><a></a></div>
-                                  </ifnotdef>
-                                  <div class="text-align-center info ">
-                                    <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
-                                    <div class="title text__promo-4 block-xxxs"><a href="" class="color-link-orange"><l>^ca_objects.preferred_labels<l></a></div>
-                                    <div class="text__body-4 year color__gray" style="text-transform: none;">^ca_occurrences.cfaDateProduced</div>
+                                  <div class="overlay-image block-xxs">
+                                      <div class="img-wrapper">
+                                        <ifdef code="ca_object_representations.media.small">
+                                          <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
+                                        </ifdef>
+                                        <ifnotdef code="ca_object_representations.media.small">
+                                          <div class="collItemImgPlaceholder"><a></a></div>
+                                        </ifnotdef>
+                                      </div>              
+                                  </div>
+                                  <div class="text-align-center info">
+                                      <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
+                                      <div class="title text__promo-4 block-xxxs">^ca_objects.preferred_labels</div>
+                                      <div class="text__eyebrow year color__gray">^ca_occurrences.cfaDateProduced</div>
                                   </div>
                                 </div>
+
                               </if>
                             </if>
                           </unit>
@@ -413,7 +418,7 @@ MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representatio
                             <if rule="^ca_objects.type_id%convertCodesToIdno=1 =~ /(audio|manu|realia|equipment)/i">
                               <small class="color__gray">(^ca_objects.type_id)</small>
                             </if>
-                            <if rule="^access = 'yes'">
+                            <if rule="^ca_object_representations.access = 'yes'">
                               <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
                               <span class="viewable-media-icon right">
                                 <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -455,8 +460,13 @@ MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representatio
     });
     function ca_resize_collection_grid() {
 		let h = jQuery('.item-item').first().height();
+		
+		if(jQuery(window).width() <= 768) {
+			h = h * 3.25;
+		}
 		jQuery('.collection-grid').height(h);
 	}
+
 
 	jQuery(window).on('resize', function(e) {
 		if(jQuery(".view-more-btn:visible").length === 0) { return; }

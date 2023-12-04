@@ -1,4 +1,3 @@
-
 <?php
 /** ---------------------------------------------------------------------
  * themes/default/Lightbox/set_detail_html.php :
@@ -62,7 +61,7 @@
 
 	$qr_comments 					= $this->getVar("comments");
 	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
-
+	$vs_description_attribute 		= $this->getVar("description_attribute");
 
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -89,7 +88,7 @@ if (!$vb_ajax) {	// !ajax
 				}
 			}
 ?>
-			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
+			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left' aria-label='back'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
 			<H1>
 				<?php print "<span id='lbSetName".$t_set->get("set_id")."'>".$t_set->getLabelForDisplay()."</span>"; ?>
 				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$qr_set_items->numHits()."</span> items)</span>"; ?>
@@ -247,7 +246,7 @@ if (!$vb_ajax) {	// !ajax
 							$va_captions = caProcessTemplateForIDs($vs_caption_template, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
 
 							$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'small';
-							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
+							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version), array("checkAccess" => $va_access_values));
 
 							$va_comment_counts = ca_set_items::getNumCommentsForIDs($va_item_ids);
 
@@ -260,12 +259,11 @@ if (!$vb_ajax) {	// !ajax
 								$vn_representation_id = null;
 								if ($vs_tag = $va_representations[$vn_object_id]['tags'][$vs_media_version]) {
 									$vn_representation_id = $va_representations[$vn_object_id]['representation_id'];
-									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg'>{$vs_tag}</div></a>";
-									//$vs_representation = caDetailLink($this->request, "<div class='lbItemImg'>{$vs_tag}</div>", '', 'ca_objects', $vn_object_id);
+									
+									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => caGetDetailForType('ca_objects', null, array('request' => $this->request)), 'id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg'>{$vs_tag}</div></a>";
 								} else {
-									if (!isset($va_placeholders[$vs_type_idno])) { $va_placeholders[$vs_type_idno] = caGetPlaceholder($vs_type_idno, 'placeholder_media_icon'); }
-									$vs_representation = "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>";
-									//$vs_representation = caDetailLink($this->request, "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>", '', 'ca_objects', $vn_object_id);
+									if (!isset($va_placeholders[$va_items[$vn_item_id]['type']])) { $va_placeholders[$va_items[$vn_item_id]['type']] = caGetPlaceholder($va_items[$vn_item_id]['type'], 'placeholder_media_icon'); }
+									$vs_representation = "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$va_items[$vn_item_id]['type']]."</div>";
 								}
 								$this->setVar('representation', $vs_representation);
 								$this->setVar('representation_id', $vn_representation_id);
@@ -307,7 +305,7 @@ if (!$vb_ajax) {    // !ajax
             if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
             }
-            if ($vs_description = $t_set->get("description")) {
+            if ($vs_description = $t_set->get($vs_description_attribute)) {
                 print "<span id='lbSetDescription".$t_set->get("set_id")."'>{$vs_description}</span><hr/>";
             }
 ?>
@@ -315,8 +313,9 @@ if (!$vb_ajax) {    // !ajax
                 <div id="lbSetCommentErrors" style="display: none;" class='alert alert-danger'></div>
                 <form action="#" id="addComment" method="post">
                     <div class="form-group">
+                        <label for="addCommentTextArea">Comment</label>
                         <textarea id="addCommentTextArea" name="comment"
-                                  placeholder="<?php print addslashes(_t("add your research notes")); ?>"
+                                  placeholder="<?php print addslashes(_t("add your comment")); ?>"
                                   class="form-control"></textarea>
                     </div>
                     <!-- end form-group -->
@@ -345,7 +344,7 @@ if (!$vb_ajax) {    // !ajax
             }
             print "</div>";
 
-			#print $this->render("Browse/browse_refine_subview_html.php");
+			print $this->render("Browse/browse_refine_subview_html.php");
 
 ?>
 		</div><!-- end col -->
@@ -356,7 +355,7 @@ if (!$vb_ajax) {    // !ajax
 ?>
     var pageLoadList = [];
     var dataLoading = false;
-    jQuery(window).bind("scroll", function(e) {
+    jQuery(window).on("scroll", function(e) {
         var $e = jQuery("#lbSetResultLoadContainer");
         var _$scroll = jQuery(window),
             borderTopWidth = parseInt($e.css('borderTopWidth')),
@@ -403,7 +402,7 @@ if (!$vb_ajax) {    // !ajax
                 var data = $(this).sortable('serialize');
                 jQuery.ajax({
                     type: 'POST',
-                    url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems"); ?>/row_ids/' + data
+                    url: '<?php print caNavUrl($this->request, "", "Lightbox", "AjaxReorderItems", ['csrfToken' => caGenerateCSRFToken($this->request)]); ?>/row_ids/' + data
                 });
             }
         });

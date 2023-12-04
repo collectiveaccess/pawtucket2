@@ -52,23 +52,34 @@
 			<div class="col-sm-12">
 				<div class="featuredList">	
 <?php
-	print '<div class="featuredListTitle">Featured</div>';
+	print '<div class="featuredListTitle">Featured People & Groups</div>';
 
-			$vn_i = 0;
+			$vn_i = $vn_c = 0;
+			$vb_more = false;
 			if($qr_res && $qr_res->numHits()) {
 				while($qr_res->nextHit()) {
 					if ( $vn_i == 0) { print "<div class='row'>"; } 
-					print "<div class='col-sm-4'>";
+					print "<div class='col-sm-6 col-md-3'>";
 					print $qr_res->getWithTemplate("<l><div class='featuredTile'><div class='title noImage'>^ca_entities.preferred_labels.displayname</div></div></l>");	
-					print "</div><!-- end col-4 -->";
+					print "</div><!-- end col -->";
 					$vn_i++;
-					if ($vn_i == 3) {
+					if ($vn_i == 4) {
 						print "</div><!-- end row -->\n";
 						$vn_i = 0;
+					}
+					$vn_c++;
+					if($vn_c == 12){
+						print "<div class='moreFeatured' style='display:none;'>";
+						$vb_more = true;
 					}
 				}
 				if ($vn_i > 0) {
 					print "</div><!-- end row -->\n";
+				}
+				if($vb_more){
+					print "</div><!-- end moreFeatured -->";
+					print "<div class='row'><div class='col-sm-4 col-sm-offset-4 text-center'><a href='#' onClick='$(\".moreFeatured\").toggle();' class='moreFeatured btn btn-default'>More Featured People & Groups <i class='fa fa-arrow-right'></i></a><a href='#' onClick='$(\".moreFeatured\").toggle();' class='moreFeatured btn btn-default' style='display:none;'>Show Less <i class='fa fa-arrow-right'></i></a></div></div>";
+						
 				}
 			}
 ?>

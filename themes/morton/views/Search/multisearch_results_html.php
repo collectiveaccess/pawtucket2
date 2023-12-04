@@ -36,3 +36,19 @@
 <?php
 	TooltipManager::add('#Block', 'Type of record');
 ?>
+
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		var options = {
+			trigger: "hover",
+			html: "true"
+		};
+		$('[data-toggle="popover"]').each(function() {
+  			if($(this).attr('data-content')){
+  				$(this).popover(options).click(function(e) {
+					$(this).popover('toggle');
+				});
+  			}
+		});
+	});
+</script>
