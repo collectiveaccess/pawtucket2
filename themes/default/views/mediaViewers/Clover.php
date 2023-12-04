@@ -38,7 +38,12 @@
     	app: 'Clover',
     	id: 'clover<?= $display_type; ?>',
     	url: <?= json_encode($this->getVar('data_url')); ?>,
-    	renderAbout: false
+    	renderAbout: false,
+    	renderResources: false,
+    	renderClips: true,
+    	showInformationToggle: false,
+    	backgroundColor: '#000000',
+    	height: '800px'
     });
 </script>
 
