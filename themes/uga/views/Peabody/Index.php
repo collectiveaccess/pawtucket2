@@ -3,7 +3,7 @@
 ?>
 <H1><?php print _t("PEABODY AWARDS COLLECTION"); ?></H1>
 <div class="row">
-    <div class="col-12">
+    <div class="col-sm-8">
         <p>1940-present</p>
         <p>The Peabody Awards Collection consists of almost all of the media submitted to the George Foster Peabody Awards, with new content added annually. Peabody entrants range from local public and commercial television and radio stations to national networks and streaming providers; programming from over twenty-five countries is included in the Collection. Analog formats represented in the Collection include radio transcription discs, audiotape, audiocassettes, 16mm kinescopes and prints, 2" videoreels, and videocassettes in a variety of formats. Many of the programs archived here may be the only surviving copies of the work, especially in the case of local radio and television broadcasting. Brown Media Archives provides access to the Collection via low-resolution streaming screeners when copyright permits; restricted materials can be accessed onsite at the <a href="http://libs.uga.edu/scl" target="_blank">Special Collections Library</a>.</p>
         <br>
