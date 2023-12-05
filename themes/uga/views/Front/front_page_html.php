@@ -47,55 +47,6 @@
 					</form>				
 				</div>
 					
-				<div class="nwidget layout block title-box clearfix " data-additional-classes="" data-title="Search Peabody Collection">				
-					<h2>Search Peabody Awards Collection</h2>	
-					<form method="post" action="https://peabody.libs.uga.edu/cgi-bin/parc.cgi">
-
-						<input type="hidden" name="userid" value="galileo">
-						<input type="hidden" name="action" value="query"> 
-						<input class="form-control query width100" name="term_a" placeholder="Enter Keywords" type="text">
-						<div style="height:10px"></div>
-						<select name="index_a">
-						 <option value="kw" selected>Keyword Anywhere</option>
-						
-						<option value="wi">Winner</option>
-						<option value="ti">Title</option>
-						<option value="yr">Year</option>
-						<option value="cl">Call Number</option>
-						
-						<option value="ec">Entry Category</option>
-						<option value="bs">Broadcasting Station</option>
-						<option value="pp">Producer of Syndicated/Non-Broadcast Program</option>
-						<option value="bl">Broadcast Station Location</option>
-						<option value="bd">Broadcast Date</option>
-						
-						<option value="rt">Run Time</option>
-						<option value="sj">Subject Headings </option>
-						<option value="st">Type of Entry</option>
-						
-						<option value="su">Program Description</option>
-						<option value="wc">Winner Citation</option>
-						<option value="oe">Collection Has Other Episodes</option>
-						<option value="rm">Related Material</option>
-						<option value="gi">Grant Information</option>
-						<option value="pn">Notes</option>
-						
-						<option value="po">Persons Appearing</option>
-						<option value="cp">Producers, Corporate</option>
-						
-						<option value="pc">All Production Credits</option>
-						<option value="ge">Genre(s)</option>
-						<option value="tr">TV, Radio, and/or Web</option>
-						<option value="dc">Digitized Copy Available</option>
-						<option value="uc">User Copy Available</option>
-						<option value="ar">Collection Has Archival Master</option>
-						</select>
-						<div style="height:10px"></div>
-						
-						<button class="btn btn-primary space-above" id="searchButton" name="rows" type="submit" value="20">Search</button>
-					</form>		
-				</div>
-					
 				<div class="nwidget layout block title-box clearfix " data-additional-classes="" data-title="Search the News Film Collections">				
 					<h2>Search Newsfilm Collection</h2>	
 					 <form method="post" action="https://newsfilm.libs.uga.edu/cgi/news">
