@@ -927,6 +927,9 @@ a.readmore-js-toggle{
 	position:relative;
 	top:-100px;
 }
+.policyFileLinks a{
+	margin-top:10px;
+}
 /* advanced search */
 .advancedSearchField .formLabel {
 	text-transform: none;
