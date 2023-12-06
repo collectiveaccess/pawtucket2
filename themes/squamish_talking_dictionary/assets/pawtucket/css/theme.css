@@ -758,7 +758,7 @@ body.frontContainer #footer{
 @media(max-width:1200px){
 
 }
-@media(max-width:990px){
+@media(max-width:991px){
 	.hpIntroTitle{
 		padding-top: 30px;
   		padding-bottom: 30px;
@@ -804,7 +804,7 @@ body.frontContainer #footer{
 	padding-top: 75px;
   	padding-bottom: 75px;
 }
-@media(max-width:990px){
+@media(max-width:991px){
 	.introTitle{
 		padding-top: 30px;
   		padding-bottom: 30px;
