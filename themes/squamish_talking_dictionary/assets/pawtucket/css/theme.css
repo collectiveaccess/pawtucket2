@@ -1805,7 +1805,7 @@ h2.tl-headline{
 .alphabetNavigation .vowelNavigation a.btn{
 	background-color: #d0941f;
 }
-.alphabetNavigation a.letterActive{
+.alphabetNavigation a.letterActive, .alphabetNavigation .vowelNavigation a.letterActive{
 	background-color:#FFF;
 	color:#D23929;
 	box-shadow: 0 0px 6px 0 rgba(0,0,0,.5);
