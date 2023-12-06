@@ -166,11 +166,6 @@ h2, H2, h3, H3{
 		border-radius:2px;
 	}
 }
-@media (max-width:1100px){
-	.navbar-form{
-		margin-right:15px;
-	}
-}
 @media (max-width:767px){
 	.navbar-nav{
 		margin:0px;
@@ -184,6 +179,32 @@ h2, H2, h3, H3{
 	.yamm .nav.navbar-right.menuItems .dropdown-menu {
 		left: 0;
 		right: auto;
+	}
+}
+
+@media (max-width: 1245px) {
+	ul.menuItems {
+		width:100%;
+		border-top:solid 1px #ddd;
+	}
+	.menuItems.navbar-nav > li > a {
+		padding-top:5px;
+		padding-bottom:5px;
+	}
+	.navbar-collapse .navbar-nav.navbar-right:last-child {
+		margin-right:0px;
+	}
+	.container.menuBar {
+		padding:0px;
+	}
+	.navbar > .container .navbar-brand {
+		margin-left:0px;
+	}
+	.menuItems{
+		margin-left:0px;
+	}
+	.navbar-form{
+		margin-right:15px;
 	}
 }
 
@@ -282,7 +303,7 @@ h2, H2, h3, H3{
 		opacity:1;
 	}
 }
-@media(min-width:1100px){
+@media(min-width:1245px){
 	.navbar-nav > li > .dropdown-menu{	
 		top: 0px;
 		left: 0px;
@@ -368,7 +389,7 @@ body{
 		margin-top: 132px; /* offset fixed header */
 	}
 }
-@media (min-width: 1100px){
+@media (min-width: 1245px){
 	body{
 		margin-top: 94px; /* offset fixed header */
 	}
@@ -857,6 +878,14 @@ body.frontContainer #footer{
 	right: 30px;
 	width: 49%;
 }
+.hero .heroIntro a{
+	color:#FFF;
+	text-decoration:underline;
+}
+.hero .heroIntro a:hover{
+	color:#dedede;
+	text-decoration:underline;
+}
 .heroIntro H1{
 	color: #FFF;
 	font-size:32px;
@@ -866,6 +895,12 @@ body.frontContainer #footer{
 	text-transform:none;
 	padding-top:0px;
 	margin-bottom:20px;
+}
+@media(max-width:1370px){
+	.hero .heroIntro {
+		right: 30px;
+		width: 65%;
+	}
 }
 @media(max-width:1024px){
 	.hero .heroIntro {

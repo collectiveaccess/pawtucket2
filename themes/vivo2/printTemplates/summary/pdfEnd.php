@@ -1,6 +1,6 @@
-<?php	
+<?php
 /* ----------------------------------------------------------------------
- * app/templates/header.php : standard PDF report header
+ * app/templates/pdfEnd.php : bottom-matter appended to PDF templates
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,37 +26,11 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Header
- * @type fragment
+ * @name PDF end
+ * @type pageEnd
  *
  * ----------------------------------------------------------------------
  */
- 
- if($this->request->config->get('summary_header_enabled')) {
-	switch($this->getVar('PDFRenderer')) {
-		case 'wkhtmltopdf':
 ?>
-			<!--BEGIN HEADER--><!DOCTYPE html>
-			<html>
-				<head>
-					<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
-					<meta charset="utf-8" />
-					<meta charset="utf-8" />
-				</head>
-				<body>	
-					<div id='header'><?= caGetReportLogo(); ?></div>
-			</body>
-			</html><!--END HEADER-->
-<?php
-		break;
-		# ----------------------------------------
-		default:
-?>
-			<div id='headerdompdf'>
-				<?= caGetReportLogo(); ?>
-			</div>
-<?php
-		break;
-		# ----------------------------------------
-	}
-}
+	</body>
+</html>
