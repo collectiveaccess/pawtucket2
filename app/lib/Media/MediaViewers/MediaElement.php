@@ -47,83 +47,82 @@ class MediaElement extends BaseMediaViewer implements IMediaViewer {
 	/**
 	 *
 	 */
-	public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
+	public static function getViewerHTML($po_request, $identifier, $data=null, $options=null) {
 		if ($o_view = BaseMediaViewer::getView($po_request)) {
-			$o_view->setVar('identifier', $ps_identifier);
+			$o_view->setVar('identifier', $identifier);
 			$o_view->setVar('viewer', 'MediaElement');
 			
-			$t_instance = $pa_data['t_instance'];
-			$t_subject = $pa_data['t_subject'];
+			$t_instance = $data['t_instance'];
+			$t_subject = $data['t_subject'];
 			
-			$o_view->setVar('id', $vs_id = 'caMediaOverlayTimebased_'.$t_instance->getPrimaryKey().'_'.($vs_display_type = caGetOption('display_type', $pa_data, caGetOption('display_version', $pa_data['display'], ''))));
+			$o_view->setVar('id', $id = 'caMediaOverlayTimebased_'.$t_instance->getPrimaryKey().'_'.($display_type = caGetOption('display_type', $data, caGetOption('display_version', $data['display'], ''))));
 			
 			if (is_a($t_instance, "ca_object_representations")) {
-				$va_viewer_opts = [
-					'id' => $vs_id, 'class' => caGetOption('class', $pa_data['display'], null),
-					'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
-					'user_interface' => caGetOption('user_interface', $pa_data['display'], null),
+				$viewer_opts = [
+					'id' => $id, 'class' => caGetOption('class', $data['display'], null),
+					'viewer_width' => caGetOption('viewer_width', $data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $data['display'], '100%'),
+					'user_interface' => caGetOption('user_interface', $data['display'], null),
 					'captions' => $t_instance->getCaptionFileList(),
-					'controls' => caGetOption('controls', $pa_data['display'], null),
-					'dont_init_plyr' => caGetOption('dontInitPlyr', $pa_options, caGetOption('dontInitPlyr', $pa_data['display'], null)),
+					'controls' => caGetOption('controls', $data['display'], null),
+					'dont_init_plyr' => caGetOption('dontInitPlyr', $options, caGetOption('dontInitPlyr', $data['display'], null)),
 				];
 				
-				if (!$t_instance->hasMediaVersion('media', $vs_version = caGetOption('display_version', $pa_data['display'], 'original'))) {
-					if (!$t_instance->hasMediaVersion('media', $vs_version = caGetOption('alt_display_version', $pa_data['display'], 'original'))) {
-						$vs_version = 'original';
+				if (!$t_instance->hasMediaVersion('media', $version = caGetOption('display_version', $data['display'], 'original'))) {
+					if (!$t_instance->hasMediaVersion('media', $version = caGetOption('alt_display_version', $data['display'], 'original'))) {
+						$version = 'original';
 					}
 				}
 				
 				// Image above 
 				$viewer_image = null;
-				if ($image_version = caGetOption('show_image_in_viewer', $pa_data['display'], null)) {
-					$image_reps = $t_subject->findRepresentations(['class' => 'image', 'version' => $image_version, 'checkAccess' => $pa_options['checkAccess']]);
+				if ($image_version = caGetOption('show_image_in_viewer', $data['display'], null)) {
+					$image_reps = $t_subject->findRepresentations(['class' => 'image', 'version' => $image_version, 'checkAccess' => $options['checkAccess']]);
 					
 					$rep = array_filter($image_reps, function($v) { return isset($v['is_primary']) && (bool)$v['is_primary']; });
 					$rep = (!sizeof($rep)) ? array_shift($image_reps) : array_shift($rep);
 					
 					$viewer_image = $rep['urls'][$image_version];
-					$va_viewer_opts['poster_frame_url'] = $viewer_image;
+					$viewer_opts['poster_frame_url'] = $viewer_image;
 				}
 			
 				// HTML for MediaElement
-				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('media', $vs_version, $va_viewer_opts));
+				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('media', $version, $viewer_opts));
 			} elseif (is_a($t_instance, "ca_site_page_media")) {
-				$va_viewer_opts = [
-					'id' => $vs_id, 'class' => caGetOption('class', $pa_data['display'], null),
-					'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
-					'user_interface' => caGetOption('user_interface', $pa_data['display'], null),
-					'controls' => caGetOption('controls', $pa_data['display'], null)
+				$viewer_opts = [
+					'id' => $id, 'class' => caGetOption('class', $data['display'], null),
+					'viewer_width' => caGetOption('viewer_width', $data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $data['display'], '100%'),
+					'user_interface' => caGetOption('user_interface', $data['display'], null),
+					'controls' => caGetOption('controls', $data['display'], null)
 				];
 				
-				if (!$t_instance->hasMediaVersion('media', $vs_version = caGetOption('display_version', $pa_data['display'], 'original'))) {
-					if (!$t_instance->hasMediaVersion('media', $vs_version = caGetOption('alt_display_version', $pa_data['display'], 'original'))) {
-						$vs_version = 'original';
+				if (!$t_instance->hasMediaVersion('media', $version = caGetOption('display_version', $data['display'], 'original'))) {
+					if (!$t_instance->hasMediaVersion('media', $version = caGetOption('alt_display_version', $data['display'], 'original'))) {
+						$version = 'original';
 					}
 				}
 				
 				// HTML for tileviewer
-				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('media', $vs_version, $va_viewer_opts));
+				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('media', $version, $viewer_opts));
 			} else {
-				$va_viewer_opts = [
-					'id' => $vs_id, 'class' => caGetOption('class', $pa_data['display'], null),
-					'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
-					'user_interface' => caGetOption('user_interface', $pa_data['display'], null),
-					'controls' => caGetOption('controls', $pa_data['display'], null)
+				$viewer_opts = [
+					'id' => $id, 'class' => caGetOption('class', $data['display'], null),
+					'viewer_width' => caGetOption('viewer_width', $data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $data['display'], '100%'),
+					'user_interface' => caGetOption('user_interface', $data['display'], null),
+					'controls' => caGetOption('controls', $data['display'], null)
 				];
 				
 				$t_instance->useBlobAsMediaField(true);
-				if (!$t_instance->hasMediaVersion('value_blob', $vs_version = caGetOption('display_version', $pa_data['display'], 'original'))) {
-					if (!$t_instance->hasMediaVersion('value_blob', $vs_version = caGetOption('alt_display_version', $pa_data['display'], 'original'))) {
-						$vs_version = 'original';
+				if (!$t_instance->hasMediaVersion('value_blob', $version = caGetOption('display_version', $data['display'], 'original'))) {
+					if (!$t_instance->hasMediaVersion('value_blob', $version = caGetOption('alt_display_version', $data['display'], 'original'))) {
+						$version = 'original';
 					}
 				}
 				
 				// HTML for MediaElement
-				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('value_blob', $vs_version, $va_viewer_opts));
+				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('value_blob', $version, $viewer_opts));
 			}
-			
 				
-			return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $pa_data, $pa_options);
+			return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $data, $options);
 		}
 		
 		return _t("Could not load viewer");
@@ -132,7 +131,7 @@ class MediaElement extends BaseMediaViewer implements IMediaViewer {
 	/**
 	 *
 	 */
-	public static function getViewerData($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
+	public static function getViewerData($po_request, $identifier, $data=null, $options=null) {
 		return _t("No data");
 	}
 	# -------------------------------------------------------

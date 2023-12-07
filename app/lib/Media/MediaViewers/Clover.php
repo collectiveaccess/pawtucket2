@@ -43,85 +43,85 @@ class Clover extends BaseMediaViewer implements IMediaViewer {
 	/**
 	 *
 	 */
-	public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
+	public static function getViewerHTML($request, $identifier, $data=null, $options=null) {
 		$config = Configuration::load();
-		if ($o_view = BaseMediaViewer::getView($po_request)) {
-			$o_view->setVar('identifier', $ps_identifier);
+		if ($o_view = BaseMediaViewer::getView($request)) {
+			$o_view->setVar('identifier', $identifier);
 			$o_view->setVar('viewer', 'Clover');
 			
-			$t_instance = $pa_data['t_instance'];
-			$t_subject = $pa_data['t_subject'];
+			$t_instance = $data['t_instance'];
+			$t_subject = $data['t_subject'];
 			
-			if (!$t_instance->hasMediaVersion('media', $vs_version = caGetOption('display_version', $pa_data['display'], 'tilepic'))) {
-				if (!$t_instance->hasMediaVersion('media', $vs_version = caGetOption('alt_display_version', $pa_data['display'], 'tilepic'))) {
-					$vs_version = 'original';
+			if (!$t_instance->hasMediaVersion('media', $version = caGetOption('display_version', $data['display'], 'tilepic'))) {
+				if (!$t_instance->hasMediaVersion('media', $version = caGetOption('alt_display_version', $data['display'], 'tilepic'))) {
+					$version = 'original';
 				}
 			}
 			
 			$o_view->setVar('data_url', $config->get('site_host').$config->get('ca_url_root').'/service/IIIF/manifest/'.$t_subject->tableName().':'.$t_subject->getPrimaryKey());
 			
-			$o_view->setVar('id', $vs_id = 'caMediaOverlayClover_'.$t_instance->getPrimaryKey().'_'.($vs_display_type = caGetOption('display_type', $pa_data, caGetOption('display_version', $pa_data['display'], ''))));
+			$o_view->setVar('id', $id = 'caMediaOverlayClover_'.$t_instance->getPrimaryKey().'_'.($display_type = caGetOption('display_type', $data, caGetOption('display_version', $data['display'], ''))));
 			
 			if (is_a($t_instance, "ca_object_representations")) {
-				$va_viewer_opts = [
-					'id' => $vs_id,
-					'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
-					'viewer_base_url' => $po_request->getBaseUrlPath(),
-					'annotation_load_url' => caNavUrl($po_request, '*', '*', 'GetAnnotations', array('csrfToken' => caGenerateCSRFToken($po_request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey())),
-					'annotation_save_url' => caNavUrl($po_request, '*', '*', 'SaveAnnotations', array('csrfToken' => caGenerateCSRFToken($po_request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey())),
-					'download_url' => caNavUrl($po_request, '*', '*', 'DownloadMedia', array('csrfToken' => caGenerateCSRFToken($po_request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'version' => 'original')),
-					'help_load_url' => caNavUrl($po_request, '*', '*', 'ViewerHelp', array()),
+				$viewer_opts = [
+					'id' => $id,
+					'viewer_width' => caGetOption('viewer_width', $data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $data['display'], '100%'),
+					'viewer_base_url' => $request->getBaseUrlPath(),
+					'annotation_load_url' => caNavUrl($request, '*', '*', 'GetAnnotations', array('csrfToken' => caGenerateCSRFToken($request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey())),
+					'annotation_save_url' => caNavUrl($request, '*', '*', 'SaveAnnotations', array('csrfToken' => caGenerateCSRFToken($request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey())),
+					'download_url' => caNavUrl($request, '*', '*', 'DownloadMedia', array('csrfToken' => caGenerateCSRFToken($request), 'representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'version' => 'original')),
+					'help_load_url' => caNavUrl($request, '*', '*', 'ViewerHelp', array()),
 					'annotationEditorPanel' => 'caRepresentationAnnotationEditor',
-					'read_only' => !$po_request->isLoggedIn(),
-					'annotationEditorUrl' => caNavUrl($po_request, 'editor/representation_annotations', 'RepresentationAnnotationQuickAdd', 'Form', array('csrfToken' => caGenerateCSRFToken($po_request), 'representation_id' => (int)$t_instance->getPrimaryKey())),
+					'read_only' => !$request->isLoggedIn(),
+					'annotationEditorUrl' => caNavUrl($request, 'editor/representation_annotations', 'RepresentationAnnotationQuickAdd', 'Form', array('csrfToken' => caGenerateCSRFToken($request), 'representation_id' => (int)$t_instance->getPrimaryKey())),
 					'captions' => $t_instance->getCaptionFileList(), 'progress_id' => 'caMediaOverlayProgress'
 				];
 				
-				$vb_no_overlay = (caGetOption('no_overlay', $pa_data['display'], null) || caGetOption('noOverlay', $pa_options, null));
-				if($vb_no_overlay){
+				$no_overlay = (caGetOption('no_overlay', $data['display'], null) || caGetOption('noOverlay', $options, null));
+				if($no_overlay){
 					// HTML for Clover
-					$o_view->setVar('viewerHTML', $t_instance->getMediaTag('media', $vs_version, $va_viewer_opts));
+					$o_view->setVar('viewerHTML', $t_instance->getMediaTag('media', $version, $viewer_opts));
 				}else{
 					// HTML for Clover
-					$o_view->setVar('viewerHTML', "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('context' => caGetOption('context', $pa_options, null), 'id' => (int)$t_subject->getPrimaryKey(), 'representation_id' => (int)$t_instance->getPrimaryKey(), 'overlay' => 1))."\"); return false;'>".$t_instance->getMediaTag('media', $vs_version, $va_viewer_opts)."</a>");
+					$o_view->setVar('viewerHTML', "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($request, '', 'Detail', 'GetMediaOverlay', array('context' => caGetOption('context', $options, null), 'id' => (int)$t_subject->getPrimaryKey(), 'representation_id' => (int)$t_instance->getPrimaryKey(), 'overlay' => 1))."\"); return false;'>".$t_instance->getMediaTag('media', $version, $viewer_opts)."</a>");
 				}
 			} elseif (is_a($t_instance, "ca_site_page_media")) {
-				$va_viewer_opts = [
-					'id' => $vs_id,
+				$viewer_opts = [
+					'id' => $id,
 					'read_only' => true,
-					'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
-					'viewer_base_url' => $po_request->getBaseUrlPath(),
-					'download_url' => caNavUrl($po_request, '*', '*', 'DownloadMedia', array('media_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'version' => 'original')),
-					'help_load_url' => caNavUrl($po_request, '*', '*', 'ViewerHelp', array())
+					'viewer_width' => caGetOption('viewer_width', $data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $data['display'], '100%'),
+					'viewer_base_url' => $request->getBaseUrlPath(),
+					'download_url' => caNavUrl($request, '*', '*', 'DownloadMedia', array('media_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'version' => 'original')),
+					'help_load_url' => caNavUrl($request, '*', '*', 'ViewerHelp', array())
 				];
 				
 				// HTML for Clover
-				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('media', $vs_version, $va_viewer_opts));
+				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('media', $version, $viewer_opts));
 			} else {
-				$va_viewer_opts = [
+				$viewer_opts = [
 					'id' => 'caMediaOverlayClover',
-					'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
+					'viewer_width' => caGetOption('viewer_width', $data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $data['display'], '100%'),
 					'read_only' => true,
-					'viewer_base_url' => $po_request->getBaseUrlPath(),
-					'download_url' => caNavUrl($po_request, '*', '*', 'DownloadMedia', array('value_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'version' => 'original')),
-					'help_load_url' => caNavUrl($po_request, '*', '*', 'ViewerHelp', array()),
-					'read_only' => !$po_request->isLoggedIn(),
+					'viewer_base_url' => $request->getBaseUrlPath(),
+					'download_url' => caNavUrl($request, '*', '*', 'DownloadMedia', array('value_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'version' => 'original')),
+					'help_load_url' => caNavUrl($request, '*', '*', 'ViewerHelp', array()),
+					'read_only' => !$request->isLoggedIn(),
 					'captions' => null, 'progress_id' => 'caMediaOverlayProgress'
 				];
 				
 				$t_instance->useBlobAsMediaField(true);
-				if (!$t_instance->hasMediaVersion('value_blob', $vs_version = caGetOption('display_version', $pa_data['display'], 'original'))) {
-					if (!$t_instance->hasMediaVersion('value_blob', $vs_version = caGetOption('alt_display_version', $pa_data['display'], 'original'))) {
-						$vs_version = 'original';
+				if (!$t_instance->hasMediaVersion('value_blob', $version = caGetOption('display_version', $data['display'], 'original'))) {
+					if (!$t_instance->hasMediaVersion('value_blob', $version = caGetOption('alt_display_version', $data['display'], 'original'))) {
+						$version = 'original';
 					}
 				}
 				
 				// HTML for Clover
-				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('value_blob', $vs_version, $va_viewer_opts));
+				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('value_blob', $version, $viewer_opts));
 			}
 			
 				
-			return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $pa_data, $pa_options);
+			return BaseMediaViewer::prepareViewerHTML($request, $o_view, $data, $options);
 		}
 		
 		return _t("Could not load viewer");

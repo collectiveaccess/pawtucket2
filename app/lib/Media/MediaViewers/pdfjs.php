@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2020-2021 Whirl-i-Gig
+ * Copyright 2020-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,30 +29,25 @@
  *
  * ----------------------------------------------------------------------
  */
-
-/**
- *
- */
- 
 class pdfjs extends BaseMediaViewer implements IMediaViewer {
 	# -------------------------------------------------------
 	/**
 	 *
 	 */
-	public static function getViewerHTML($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
-		if ($o_view = BaseMediaViewer::getView($po_request)) {
-			$o_view->setVar('identifier', $ps_identifier);
+	public static function getViewerHTML($request, $identifier, $data=null, $options=null) {
+		if ($o_view = BaseMediaViewer::getView($request)) {
+			$o_view->setVar('identifier', $identifier);
 			
-			$va_params = ['identifier' => $ps_identifier, 'context' => caGetOption('context', $pa_options, $po_request->getAction())];
+			$params = ['identifier' => $identifier, 'context' => caGetOption('context', $options, $request->getAction())];
 			
 			// Pass subject key when getting viewer data
-			if ($t_subject = caGetOption('t_subject', $pa_data, null)) { $va_params[$pa_data['t_subject']->primaryKey()] = $pa_data['t_subject']->getPrimaryKey(); }
+			if ($t_subject = caGetOption('t_subject', $data, null)) { $params[$data['t_subject']->primaryKey()] = $data['t_subject']->getPrimaryKey(); }
 			
 			$o_view->setVar('viewer', 'pdfjs');
-			$o_view->setVar('width', caGetOption('width', $pa_data['display'], null));
-			$o_view->setVar('height', caGetOption('height', $pa_data['display'], null));
+			$o_view->setVar('width', caGetOption('width', $data['display'], null));
+			$o_view->setVar('height', caGetOption('height', $data['display'], null));
 			
-			switch($scroll_mode = caGetOption('scroll_mode', $pa_data['display'], "DEFAULT", ['forceUppercase' => true])) {
+			switch($scroll_mode = caGetOption('scroll_mode', $data['display'], "DEFAULT", ['forceUppercase' => true])) {
 				case 'VERTICAL':
 					$scroll_mode_num = 0;
 					break;
@@ -69,13 +64,13 @@ class pdfjs extends BaseMediaViewer implements IMediaViewer {
 			
 			$o_view->setVar('scroll_mode', $scroll_mode_num);
 
-			$t_instance = isset($pa_data['t_instance']) ? $pa_data['t_instance'] : null;
+			$t_instance = isset($data['t_instance']) ? $data['t_instance'] : null;
 			
-			$o_context = $t_subject ? ResultContext::getResultContextForLastFind($po_request, $t_subject->tableName()) : null;
+			$o_context = $t_subject ? ResultContext::getResultContextForLastFind($request, $t_subject->tableName()) : null;
 			$o_view->setVar('search', trim(preg_replace("![\(\)\*\"]+!", "", $o_context ? $o_context->getSearchExpression() : null)));
 		}
 		
-		return BaseMediaViewer::prepareViewerHTML($po_request, $o_view, $pa_data, $pa_options);
+		return BaseMediaViewer::prepareViewerHTML($request, $o_view, $data, $options);
 	}
 	# -------------------------------------------------------
 }
