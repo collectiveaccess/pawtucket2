@@ -29,6 +29,4 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	
-	print $this->getVar('viewerHTML');
+print $this->getVar('viewerHTML');
