@@ -146,7 +146,6 @@ $t_item = $this->getVar("item");
 								print "&nbsp;&nbsp;&nbsp;<a id='bioshow$vn_entity_id' href='#'>&rarr; Biografie anzeigen</a>";
 								print "&nbsp;&nbsp;&nbsp;<a id='biohide$vn_entity_id' style='display:none' href='#'>&larr; Biografie schließen</a>";
 							}
-							print "<br />";
 
 	?>
 	<script type="text/javascript">
