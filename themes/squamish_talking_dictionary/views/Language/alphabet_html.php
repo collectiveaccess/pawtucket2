@@ -21,7 +21,7 @@
 <div class="intro">
 <div class="row bgBrown">
 	<div class="col-md-3 col-md-offset-1 col-lg-2 col-lg-offset-2">
-		<div class='introTitle'>
+		<div class='introTitle alphabet'>
 			Guide To<br/>Pronunciation
 		</div>
 	</div>
@@ -56,7 +56,7 @@
 			if(!$item_id){
 				$item_id = $va_vowel_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")];
 			}
-			print "<a href='#' class='btn btn-default' id='Letter".$va_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")]."' onclick='jQuery(\"#alphabetItemContainer\").load(\"".caNavUrl($this->request, '', 'Language', 'AlphabetItem', array('item_id' => $va_vowel_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")], 'set_id' => $pn_vowel_set_id))."\"); alphabetHighlightLetter(\"Letter".$va_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")]."\"); return false;'>".$qr_vowel_objects->get("ca_objects.preferred_labels.name")."</a>";
+			print "<a href='#' class='btn btn-default' id='Letter".$va_vowel_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")]."' onclick='jQuery(\"#alphabetItemContainer\").load(\"".caNavUrl($this->request, '', 'Language', 'AlphabetItem', array('item_id' => $va_vowel_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")], 'set_id' => $pn_vowel_set_id))."\"); alphabetHighlightLetter(\"Letter".$va_vowel_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")]."\"); return false;'>".$qr_vowel_objects->get("ca_objects.preferred_labels.name")."</a>";
 				
 		}
 		print "</div>";
@@ -101,7 +101,7 @@
 			if(!$item_id){
 				$item_id = $va_vowel_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")];
 			}
-			print "<li role='menuitem'><a href='#' class='' id='Letter".$va_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")]."' onclick='jQuery(\"#alphabetItemContainer\").load(\"".caNavUrl($this->request, '', 'Language', 'AlphabetItem', array('item_id' => $va_vowel_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")], 'set_id' => $pn_vowel_set_id))."\"); alphabetHighlightLetter(\"Letter".$va_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")]."\"); return false;'>".$qr_vowel_objects->get("ca_objects.preferred_labels.name")."</a></li>";
+			print "<li role='menuitem'><a href='#' class='' id='Letter".$va_vowel_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")]."' onclick='jQuery(\"#alphabetItemContainer\").load(\"".caNavUrl($this->request, '', 'Language', 'AlphabetItem', array('item_id' => $va_vowel_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")], 'set_id' => $pn_vowel_set_id))."\"); alphabetHighlightLetter(\"Letter".$va_vowel_row_to_item_ids[$qr_vowel_objects->get("ca_objects.object_id")]."\"); return false;'>".$qr_vowel_objects->get("ca_objects.preferred_labels.name")."</a></li>";
 				
 		}
 ?>

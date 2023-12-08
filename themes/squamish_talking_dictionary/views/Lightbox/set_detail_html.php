@@ -302,6 +302,7 @@ if (!$vb_ajax) {    // !ajax
 ?>
             </div>
             <!-- end lbSetResultLoadContainer -->
+            <div style="clear:both;"></div>
         </div>
         <!-- end col -->
         <div

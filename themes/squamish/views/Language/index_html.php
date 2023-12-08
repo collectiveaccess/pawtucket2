@@ -29,7 +29,7 @@
 					<div class="landingBox">
 						<a href="#"><div class='landingBoxImage landingBoxImageTalkingDictionary'><?php print caGetThemeGraphic($this->request, 'talkingDictionary.jpg', array("alt" => "Talking dictionary")); ?></div></a>
 						<div class="landingBoxDetails">
-							<div class="landingBoxTitle"><a href="#">Talking dictionary <i>(Coming Soon)</i></a></div>
+							<div class="landingBoxTitle"><a href="https://talkingdictionary.squamish.net">Talking dictionary</a></div>
 						</div>
 					</div>
 				</div>

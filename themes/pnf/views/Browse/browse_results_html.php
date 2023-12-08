@@ -64,13 +64,12 @@
 	
 	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
 	if ($vb_show_filter_panel && $vn_start == 0) {
-		$o_context = new ResultContext($this->request, "ca_objects", 'detailrelated');
+		$o_context = new ResultContext($this->request, "ca_objects", 'detailrelated', 'collections');
 		
 		$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 		$qr_res->seek($vn_start);
 		$o_context->saveContext();
 	}
-
 	
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
@@ -311,7 +310,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			$(".catchLinks").on("click", "a", function(event){
 				if(!$(this).hasClass('dontCatch') && $(this).attr('href') != "#"){
 					event.preventDefault();
-					var url = $(this).attr('href') + "/showFilterPanel/1";
+					var url = $(this).attr('href') + "/showFilterPanel/1/dontSetFind/<?php print $this->request->getParameter('dontSetFind', pInteger); ?>";
 					$('#browseResultsDetailContainer').load(url);
 				}
 								

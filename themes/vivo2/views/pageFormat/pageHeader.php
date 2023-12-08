@@ -227,15 +227,15 @@
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Projects"), "", "", "Gallery", "Index"); ?></li>
-					<li class="dropdown <?php print ($this->request->getController() == "About") ? ' active' : ''; ?>">
+					<li class="dropdown <?php print (($this->request->getController() == "About") && in_array($this->request->getAction(), array("Index", "ResearchReproduction", "Policies"))) ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("About"); ?></a>
 						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, _t("The Archive"), "", "", "About", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, _t("How to Use this Site"), "", "", "About", "Guide"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Research & Reproduction"), "", "", "About", "ResearchReproduction"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Policies"), "", "", "About", "Policies"); ?></li>
 						</ul>
-					</li>					
+					</li>
+					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Guide")) ? ' class="active"' : ''; ?>><?php print caNavLink($this->request, _t("User Guide"), "", "", "About", "Guide"); ?></li>				
 					<li class="vidOutArchiveMobileSwitch"><?php print caNavLink($this->request, _t("Video Out")." <span class='material-symbols-outlined'>arrow_outward</span>", "", "", "VideoOut", "Index"); ?></li>
 				</ul>
 <?php

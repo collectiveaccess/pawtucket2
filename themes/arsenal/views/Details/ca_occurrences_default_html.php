@@ -146,7 +146,6 @@ $t_item = $this->getVar("item");
 								print "&nbsp;&nbsp;&nbsp;<a id='bioshow$vn_entity_id' href='#'>&rarr; Biografie anzeigen</a>";
 								print "&nbsp;&nbsp;&nbsp;<a id='biohide$vn_entity_id' style='display:none' href='#'>&larr; Biografie schließen</a>";
 							}
-							print "<br />";
 
 	?>
 	<script type="text/javascript">
@@ -182,10 +181,14 @@ $t_item = $this->getVar("item");
 			
 			// other credits
 			if(is_array($credits = $t_item->getRelatedItems('ca_entities', ['excludeRelationshipTypes' => ['director']]))) {
+				$by_credit = [];
 				foreach($credits as $credit) {
+					$by_credit[$credit['relationship_typename']][] = caNavLink($this->request,$credit['label'],'','','Browse','works',array("facet" => "entity_facet", "id" => $credit['entity_id']));
+				}
+				foreach($by_credit as $credit => $links) {
 ?><div class='unit'>
-	<label><?= ucfirst($credit['relationship_typename']); ?></label>
-	<?= caNavLink($this->request,$credit['label'],'','','Browse','works',array("facet" => "entity_facet", "id" => $credit['entity_id'])); ?>
+	<label><?= ucfirst($credit); ?></label>
+	<?= join("<br/>\n", $links); ?>
 </div><?php
 				}
 			}

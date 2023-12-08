@@ -38,7 +38,7 @@
 				print caNavLink($this->request, $va_theme["name"]." <i class='fa fa-arrow-right'></i>", "title".(($va_theme["image"]) ? "WithImage" : ""), "", "Themes", "Detail", array("theme_id" => $vn_theme_id), array("title" => "", "data-toggle" => "popover", "data-content" => "More Themes"));
 			}else{
 				if(in_array($vn_theme_id, $va_theme_ids_with_objects)){
-					print caNavLink($this->request, $va_theme["name"], "title".(($va_theme["image"]) ? "WithImage" : ""), "", "Browse", "dictionary", array("facet" => "themes_facet", "id" => $vn_theme_id), array("title" => "", "data-toggle" => "popover", "data-content" => "Browse the Dictionary"));
+					print "<div class='title".(($va_theme["image"]) ? "WithImage" : "")."'>".caNavLink($this->request, $va_theme["name"], "", "", "Browse", "dictionary", array("facet" => "themes_facet", "id" => $vn_theme_id), array("title" => "", "data-toggle" => "popover", "data-content" => "Browse the Dictionary"))."</div>";
 				}else{
 					print "<div class='title'>".$va_theme["name"]."</div>";
 				}
@@ -65,7 +65,7 @@
 	jQuery(document).ready(function() {	
 		
 		var options = {
-			placement: "left",
+			placement: "top",
 			trigger: "hover",
 			html: "true"
 		};

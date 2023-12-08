@@ -22,27 +22,42 @@
 					if($vs_caption){
 						print "<div class='unit'><label>Credit</label>".$vs_caption."</div>";
 					}
-					if($vs_rep_url){				
-						print "<div class='unit text-center'><i id='playPronunciation".$vs_rep_id."' class='fa fa-play-circle-o audioButton' aria-hidden='true'></i></div>";				
+					if($vs_rep_url){
+						print "<div class='unit text-center'><i id='playPronunciationIcon".$vs_rep_id."' onClick='playAudio(\"".$vs_rep_id."\")' class='fa fa-play-circle-o audioButton' aria-hidden='true'></i></div>";
+						print "<audio id='playPronunciation".$vs_rep_id."' class='audioPlayer' controls='' onended='audioEnded(".$vs_rep_id.")' style='display: none'><source src='".$vs_rep_url."' type='audio/mp3'>Your browser does not support the audio element.</audio>";				
 ?>
+						
 						<script type='text/javascript'>
-							$(document).ready(function() {
-								var audioElement<?php print $vs_rep_id; ?> = document.createElement('audio');
-								audioElement<?php print $vs_rep_id; ?>.setAttribute('src', '<?php print $vs_rep_url; ?>');
-								$('#playPronunciation<?php print $vs_rep_id; ?>').click(function() {
-									//return audioElement<?php print $vs_rep_id; ?>.paused ? audioElement<?php print $vs_rep_id; ?>.play() : audioElement<?php print $vs_rep_id; ?>.pause();
-							
-									if(audioElement<?php print $vs_rep_id; ?>.paused){
-										$('#playPronunciation<?php print $vs_rep_id; ?>').removeClass('fa-play-circle-o');
-										$('#playPronunciation<?php print $vs_rep_id; ?>').addClass('fa-pause-circle-o');
-										return audioElement<?php print $vs_rep_id; ?>.play();
-									}else{
-										$('#playPronunciation<?php print $vs_rep_id; ?>').removeClass('fa-pause-circle-o');
-										$('#playPronunciation<?php print $vs_rep_id; ?>').addClass('fa-play-circle-o');
-										return audioElement<?php print $vs_rep_id; ?>.pause();
+							function playAudio(audioId) {
+								var audio = document.getElementById("playPronunciation" + audioId);
+								var audios = document.getElementsByTagName('audio');
+								if($(".audioButton").hasClass('fa-stop-circle-o')){
+									$(".audioButton").addClass('fa-play-circle-o');
+									$(".audioButton").removeClass('fa-stop-circle-o');
+								}
+								if(audio.paused){
+									$("#playPronunciationIcon" + audioId).addClass('fa-stop-circle-o');
+									$("#playPronunciationIcon" + audioId).removeClass('fa-play-circle-o');
+									for(var i = 0, len = audios.length; i < len;i++){
+										if(!audios[i].paused){
+											audios[i].pause();
+											audios[i].currentTime = 0;
+										}
 									}
-								});
-							});
+									audio.play();
+		
+								}else{
+									$("#playPronunciationIcon" + audioId).removeClass('fa-stop-circle-o');
+									$("#playPronunciationIcon" + audioId).addClass('fa-play-circle-o');
+									audio.pause();
+									audio.currentTime = 0;
+								}
+							}
+							function audioEnded(audioId){
+								$("#playPronunciationIcon" + audioId).removeClass('fa-stop-circle-o');
+								$("#playPronunciationIcon" + audioId).addClass('fa-play-circle-o');
+							}
+
 						</script>
 <?php
 					}
