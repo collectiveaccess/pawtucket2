@@ -133,13 +133,37 @@
 						#if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
 						#	$vs_catno = "<div class='catno'>cat. ".$vs_catalog_number."</div>";
 						#}
+						
+						$vn_parent_id = $qr_res->get("ca_objects.parent_id");
+						$t_parent = new ca_objects($vn_parent_id);
+						$vs_catno = "";
+						if ($vs_catalog_number = $qr_res->get('ca_objects.institutional_id')) {
+							$vs_catno = "<div class='catno'>".$vs_catalog_number."</div>";
+						}
+					
+						$collection_id = $this->request->getParameter('id', pInteger);
+						$rels = array_filter($t_parent->getRelatedItems('ca_collections', ['returnAs' => 'array']) ?? [], function($v) use ($collection_id) {
+							return $v['collection_id'] == $collection_id;
+						});
+					
+						$tr = null;
+						if(sizeof($rels ?? []) > 0) {
+							$rels = array_shift($rels);
+							$t_rel = new ca_objects_x_collections($rels['relation_id']);
+							$tr = $t_rel->get('ca_objects_x_collections.transaction_remarks');
+						}
+						
 						$vs_info = null;
 						if ($vs_date = $qr_res->get('ca_objects.display_date')) {
-							$vs_info.= "<p>".$vs_date."</p>";
+							$vs_info.= $vs_date;
 						}
 						if ($va_collection = $t_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
-							$vs_info.= "<p>".$va_collection."</p>";
+							$vs_info.= $va_collection;
 						}
+						if($tr = $t_rel->get('ca_objects_x_collections.transaction_remarks')) {
+							$vs_info .= ", {$tr}";
+						}
+						if($vs_info) { $vs_info = "<p>{$vs_info}</p>"; }
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					} else {
 						if($va_images[$vn_id]){
@@ -149,19 +173,7 @@
 						}
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 					}
-					$vn_parent_id = $qr_res->get("ca_objects.parent_id");
-					$t_parent = new ca_objects($vn_parent_id);
-					$vs_catno = "";
-					if ($vs_catalog_number = $qr_res->get('ca_objects.institutional_id')) {
-						$vs_catno = "<div class='catno'>".$vs_catalog_number."</div>";
-					}
-					#$vs_info = null;
-					#if ($vs_date = $qr_res->get('ca_objects.creation_date')) {
-					#	$vs_info.= "<p>".$vs_date."</p>";
-					#}
-					#if ($vs_medium = $qr_res->get('ca_objects.medium.medium_list', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
-					#	$vs_info.= "<p>".caGetListItemByIDForDisplay($vs_medium)."</p>";
-					#}
+					
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 					$vs_compare_link = !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='object:{$vn_id}'><div class='compareIcon' aria-hidden='true'></div></a>" : '';
