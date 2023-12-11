@@ -118,6 +118,19 @@
 					$vs_caption .= $qr_results->get("ca_objects.dimensions.dimensions_height")." X ".$qr_results->get("ca_objects.dimensions.dimensions_width").(($qr_results->get("ca_objects.dimensions.dimensions_length") ? " X ".$qr_results->get("ca_objects.dimensions.dimensions_length") : "")).".";
 					
 				}
+				$vb_removed = false;
+				if(strtolower($qr_results->get("ca_objects.removed.removal_text", array("convertCodesToDisplayText" => true))) == "yes"){
+					$vb_removed = true;
+				}
+				if($qr_results->get("ca_objects.is_deaccessioned")){
+					$vb_removed = true;
+				}
+				if($qr_results->get("ca_entities.entity_id", array("restrictToRelationshipTypes" => array("sold")))){
+					$vb_removed = true;
+				}
+				if($vb_removed){
+					$vs_caption .= "<br/>No longer available";
+				}
 ?>
 				<br/><?php print caDetailLink($this->request, $vs_caption, '', 'ca_objects', $qr_results->get("ca_objects.object_id")); ?>
 			</div><!-- end blockResult -->
