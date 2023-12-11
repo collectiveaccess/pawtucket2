@@ -132,6 +132,19 @@
 					if ($qr_res->get('ca_objects.date')) {
 						$vs_date = "<p>".$qr_res->get('ca_objects.date')."</p>";
 					}
+					$vb_removed = false;
+					if(strtolower($qr_res->get("ca_objects.removed.removal_text", array("convertCodesToDisplayText" => true))) == "yes"){
+						$vb_removed = true;
+					}
+					if($qr_res->get("ca_objects.is_deaccessioned")){
+						$vb_removed = true;
+					}
+					if($qr_res->get("ca_entities.entity_id", array("restrictToRelationshipTypes" => array("sold")))){
+						$vb_removed = true;
+					}
+					if($vb_removed){
+						$vs_caption .= "<br/>No longer available"
+					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);	
 					$vs_label_detail_link 	= caDetailLink($this->request, $vs_caption, '', $vs_table, $vn_id);
 							

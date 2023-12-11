@@ -250,6 +250,20 @@
 							if($q_artworks->get("ca_objects.dimensions")){
 								$vs_caption .= $q_artworks->get("ca_objects.dimensions.dimensions_height")." X ".$q_artworks->get("ca_objects.dimensions.dimensions_width").(($q_artworks->get("ca_objects.dimensions.dimensions_length") ? " X ".$q_artworks->get("ca_objects.dimensions.dimensions_length") : "")).".";
 							}
+							$vb_removed = false;
+							if(strtolower($q_artworks->get("ca_objects.removed.removal_text", array("convertCodesToDisplayText" => true))) == "yes"){
+								$vb_removed = true;
+							}
+							if($q_artworks->get("ca_objects.is_deaccessioned")){
+								$vb_removed = true;
+							}
+							if($q_artworks->get("ca_entities.entity_id", array("restrictToRelationshipTypes" => array("sold")))){
+								$vb_removed = true;
+							}
+					
+							if($vb_removed){
+								$vs_caption .= "<br/>No longer available";
+							}
 							$vs_label_detail_link 	= caDetailLink($this->request, $vs_caption, '', 'ca_objects', $q_artworks->get("ca_objects.object_id"));
 							# --- audio/video related to the work? - yes no values switched so no means yes :|
 							$vs_rel_audio = $q_artworks->getWithTemplate("<ifcount code='ca_objects.related' restrictToTypes='audio' min='1'><unit relativeTo='ca_objects.related' restrictToTypes='audio'><div class='text-center' style='padding-top:5px;'><l><case><if rule='^ca_objects.music_audio =~ /no/'><button class='btn-default music'><i class='fa fa-music' aria-hidden='true'></i></button></if><unit><button class='btn-default'><i class='fa fa-volume-up' aria-hidden='true'></i> AUDIO</button></unit></case></l></div></unit></ifcount>", array("checkAccess" => $va_access_values));
