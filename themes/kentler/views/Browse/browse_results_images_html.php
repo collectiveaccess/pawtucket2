@@ -143,7 +143,7 @@
 						$vb_removed = true;
 					}
 					if($vb_removed){
-						$vs_caption .= "<br/>No longer available"
+						$vs_caption .= "<br/>No longer available";
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);	
 					$vs_label_detail_link 	= caDetailLink($this->request, $vs_caption, '', $vs_table, $vn_id);
