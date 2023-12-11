@@ -20,7 +20,7 @@
         </p>
 
         <H3>RESEARCHING THE COLLECTION</H3>
-        <p>In 2023, BMA merged the Peabody Database into our overall holdings to allow for integrated searching across all collections. We are updating our website to allow for enhanced searching of Peabody Awards Collection materials. Until those updates are complete, the most effective way to work with Peabody in BMA is to perform a search and then filter the results by collection to only include Peabody Awards entries. Archivists are available to help with research.</p>
+        <p>In 2023, BMA merged the Peabody Database into our overall holdings to allow for integrated searching across all collections. We are updating our website to allow for enhanced searching of Peabody Awards Collection materials. Until those updates are complete, the most effective way to work with Peabody in BMA is to use the Advanced Search option on the <a href="https://bmac.libs.uga.edu/index.php/Search/advanced/objects">Search Collections</a> page. Add your search terms to the top field(s) and specify Peabody in the Collection field. You may also perform a simple search and then filter the results by collection to only include Peabody Awards entries. Archivists are available to help with research. </p>
         <br>
         <p>For more information about this collection, please contact Peabody Awards Collection Archivist <a href=mailto:mlmiller@uga.edu>Mary Miller</a></p>
         <br>

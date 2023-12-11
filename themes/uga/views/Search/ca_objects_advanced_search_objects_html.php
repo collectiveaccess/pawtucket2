@@ -3,7 +3,6 @@
 		<div class="col-sm-7">
 			<div class="bmacSearchContainer">				
 					<h2>Search Brown Media Archives</h2>
-					<p>This search does not include Newsfilm or the Peabody Awards Collection.</p>
 					 <form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" class="form-inline">
 							<input class="form-control query" id="brownSearch" name="search" placeholder="Enter Keywords" type="text">
 							<button class="btn btn-primary" id="searchButton" name="rows" type="submit" value="20">Search</button>
