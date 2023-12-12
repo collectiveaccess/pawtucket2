@@ -1102,7 +1102,7 @@ a.readmore-js-toggle {
 	font-size:20px !Important;
 }
 .tl-text-content-container h2.tl-headline .occType{
-	font-size:20px !important;
+	font-size:16px !important;
 	color:#757575 !Important;
 }
 .tl-text-content, .tl-text-content-container h2.tl-headline .occType,
@@ -1111,6 +1111,33 @@ a.readmore-js-toggle {
 .tl-timeline p,
 .tl-timeline h1, .tl-timeline h2, .tl-timeline h3, .tl-timeline h4, .tl-timeline h5, .tl-timeline h6{
 	font-family: 'urbane-rounded', sans-serif !important;
+}
+.tl-timemarker .tl-timemarker-content-container{
+	height:35px !important;
+}
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline{
+	font-size:11px !important;
+}
+
+/* styles for pale blue background on timeline */
+.tl-timenav {
+	background-color: #e4eaf2 !important;
+}
+.tl-timemarker .tl-timemarker-content-container {
+	background-color: #FFF !important;
+}
+.tl-timemarker.tl-timemarker-active .tl-timemarker-content-container {
+	color: #FFF !important;
+	background-color: #200d45 !important;
+}
+.tl-timemarker.tl-timemarker-active .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline{
+	color: #FFF !important;
+}
+.tl-menubar-button{
+	background-color:#FFF !important;
+}
+.tl-menubar-button:hover{
+	color: #200d45 !important;
 }
 /* Featured Listing */
 @media(min-width:992px){
