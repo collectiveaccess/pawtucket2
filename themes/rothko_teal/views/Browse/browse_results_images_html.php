@@ -141,17 +141,17 @@
 							$vs_catno = "<div class='catno'>".$vs_catalog_number."</div>";
 						}
 					
-						$collection_id = $this->request->getParameter('id', pInteger);
-						$rels = array_filter($t_parent->getRelatedItems('ca_collections', ['returnAs' => 'array']) ?? [], function($v) use ($collection_id) {
-							return $v['collection_id'] == $collection_id;
-						});
-					
-						$tr = null;
-						if(sizeof($rels ?? []) > 0) {
-							$rels = array_shift($rels);
-							$t_rel = new ca_objects_x_collections($rels['relation_id']);
-							$tr = $t_rel->get('ca_objects_x_collections.transaction_remarks');
-						}
+						// $collection_id = $this->request->getParameter('id', pInteger);
+// 						$rels = array_filter($t_parent->getRelatedItems('ca_collections', ['returnAs' => 'array']) ?? [], function($v) use ($collection_id) {
+// 							return $v['collection_id'] == $collection_id;
+// 						});
+// 					
+// 						$tr = null;
+// 						if(sizeof($rels ?? []) > 0) {
+// 							$rels = array_shift($rels);
+// 							$t_rel = new ca_objects_x_collections($rels['relation_id']);
+// 							$tr = $t_rel->get('ca_objects_x_collections.transaction_remarks');
+// 						}
 						
 						$vs_info = null;
 						if ($vs_date = $qr_res->get('ca_objects.display_date')) {
@@ -160,9 +160,9 @@
 						if ($va_collection = $t_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
 							$vs_info.= $va_collection;
 						}
-						if($tr = $t_rel->get('ca_objects_x_collections.transaction_remarks')) {
-							$vs_info .= ", {$tr}";
-						}
+						// if($t_rel && ($tr = $t_rel->get('ca_objects_x_collections.transaction_remarks'))) {
+// 							$vs_info .= ", {$tr}";
+// 						}
 						if($vs_info) { $vs_info = "<p>{$vs_info}</p>"; }
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					} else {
