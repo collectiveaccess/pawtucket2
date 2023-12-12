@@ -37,20 +37,10 @@
 				<h1 class="page-heading heading-size-2 ps-0">Gesel’s Journey</h1>
 				<div class="col-auto">
 					<p class="page-content content-size-2">
-						Gesel R. Mason created NO BOUNDARIES: Dancing the Visions of Contemporary Black Choreographers in 2004 in part because 
-						she felt the contributions of Black artists were quickly categorized and limited in ways that diminished the range of work by, 
-						for, and about African Americans.
-						<br><br>
-						She presciently recorded the process as well as the performances themselves. “I would travel to each choreographer 
-						and work with them for about a week or so to learn each of the solos. I also interviewed them and asked why they made 
-						the work they made, what were their influences, what were their challenges.”
-						<br><br>
-						As the project evolved, her body became a living archive of over seven decades of choreographic history, starting with 
-						“Saturday’s Child” created by Donald McKayle in 1948 to “Don’t Explain” choreographed by Kyle Abraham in 2018. “I ended up 
-						immersing myself in dance history…an evolving and living dance history.”
+						{{{gesels_journey_text}}}
 					</p>
 
-					<div class="journey-links d-inline mt-5">
+					<div class="journey-links pt-5">
 						<a href="#" class="link-text" role="button">
 							Behind the Scenes 
 							<span class="ms-3">

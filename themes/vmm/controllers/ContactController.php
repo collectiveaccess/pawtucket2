@@ -51,7 +51,7 @@
  		# ------------------------------------------------------
  		public function Send() {
  		    caValidateCSRFToken($this->request);
- 			$o_purifier = caGetHTMLPurifier();
+ 			$o_purifier = new HTMLPurifier();
  			# --- check for errors
  			$va_errors = array();
  			if($this->config->get("check_security")){

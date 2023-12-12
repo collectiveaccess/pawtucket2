@@ -109,6 +109,35 @@
 			$this->render("People/index_html.php");
  		}
  		# -------------------------------------------------------
+  		public function Stories() {
+ 			caSetPageCSSClasses(array("peopleLanding"));
+ 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$this->view->setVar('access_values', $va_access_values);
+ 			
+ 			# --- what is the set code of the featured people set?
+ 			$vs_set_code = $this->request->config->get("people_page_set_code");
+			
+			$t_set = new ca_sets();
+			$t_set->load(array('set_code' => $vs_set_code));
+			# Enforce access control on set
+			if((sizeof($this->opa_access_values) == 0) || (sizeof($this->opa_access_values) && in_array($t_set->get("access"), $this->opa_access_values))){
+				$this->view->setVar('people_set', $t_set);
+				$va_row_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values))) ? $va_tmp : array());
+				$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("checkAccess" => $this->opa_access_values)));
+				$va_row_to_item_ids = array();
+				foreach($va_set_items as $vn_item_id => $va_item_info){
+					$va_row_to_item_ids[$va_item_info["row_id"]] = $vn_item_id;
+				}
+				$this->view->setVar('set_id', $t_set->get("ca_sets.set_id"));
+				$this->view->setVar('set_items', $va_set_items);
+				$this->view->setVar('row_to_item_ids', $va_row_to_item_ids);
+				$this->view->setVar('set_item_row_ids', $va_row_ids);
+				$this->view->setVar('set_items_as_search_result', caMakeSearchResult('ca_entities', $va_row_ids));
+			}
+
+			$this->render("People/stories_html.php");
+ 		}
+ 		# -------------------------------------------------------
  		public function Story() {
  			caSetPageCSSClasses(array("story", "detail"));
  			$va_access_values = caGetUserAccessValues($this->request);

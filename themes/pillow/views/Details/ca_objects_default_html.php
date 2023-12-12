@@ -52,6 +52,7 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+
 <?php
 				switch($t_object->get("ca_objects.rights.image_rights")){
 					case "788": #own/manage download
@@ -100,6 +101,7 @@
 ?>
 				{{{representationViewer}}}
 				
+				
 <?php print caNavLink($this->request, "<i class='fa fa-envelope'></i> Contact", '', '', 'Contact', 'form'); ?>
 <span style="margin-left: 30px;"><a href="#" onclick="caMediaPanel.showPanel('/index.php/Detail/GetMediaOverlay/context/objects/id/<?php print $t_object->getPrimaryKey(); ?>/representation_id/<?php print $this->getVar("representation_id"); ?>/overlay/1'); return false;" title="Zoom"><span class="glyphicon glyphicon-zoom-in"></span> View full item</a></span>
 				<div id="detailAnnotations"></div>
@@ -123,7 +125,7 @@
 					print "<div class='unit'><h6>Videographer/Filmmaker</h6>".$va_videographer."</div>";
 				}				
 
-				if ($va_date = $t_object->get('ca_objects.date')) {
+				if ($va_date = $t_object->get('ca_objects.date', array('delimiter' => ', '))) {
 					print "<div class='unit'><H6>Date:</H6>".$va_date."</div>";
 				}
 
@@ -180,11 +182,11 @@
 						print "<div class='unit'><h6>Provenance</h6>".$vs_provenance."</div>";
 					}				
 				}	
-				if ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Moving image") {
-					if ($vs_access = $t_object->get('ca_objects.access_format')) {
+				if ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true) ) == "Moving image") {
+					if ($vs_access = $t_object->get('ca_objects.access_format', array('delimiter' => ', '))) {
 						print "<div class='unit'><h6>Access Format</h6>".$vs_access."</div>";
 					}
-					if ($vs_master = $t_object->get('ca_objects.master_format')) {
+					if ($vs_master = $t_object->get('ca_objects.master_format', array('delimiter' => ', '))) {
 						print "<div class='unit'><h6>Master Format</h6>".$vs_master."</div>";
 					}
 					if ($vs_duration = $t_object->get('ca_objects.duration')) {
@@ -199,6 +201,12 @@
 						
 					if ($vs_tech_notes = $t_object->get('ca_objects.technical_notes')) {
 						print "<div class='unit'><h6>Technical Notes</h6>".$vs_tech_notes."</div>";
+					}																				
+					if ($vs_accessibility = $t_object->get('ca_objects.accessibility', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
+						print "<div class='unit'><h6>Accessibility</h6>".$vs_accessibility."</div>";
+					}																				
+					if ($vs_accessibility_notes = $t_object->get('ca_objects.accessibilitynotes')) {
+						print "<div class='unit'><h6>Accessibility Notes</h6>".$vs_accessibility_notes."</div>";
 					}																				
 				}			
 ?>				
@@ -235,7 +243,11 @@
 								}
 							}
 							if (($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Book') && ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Periodical')) {							
-								if ($va_rights = $t_object->getWithTemplate('<unit><ifdef code="ca_objects.rights.rightsStatement"><b>Statement:</b> ^ca_objects.rights.rightsStatement</ifdef><ifdef code="ca_objects.rights.rightsHolder"><br/><b>Rights Holder:</b> ^ca_objects.rights.rightsHolder</ifdef><ifdef code="ca_objects.rights.rightsNotes"><br/><b>Rights Notes:</b> ^ca_objects.rights.rightsNotes</ifdef></unit>')) {
+								if ($va_rights = $t_object->getWithTemplate('<unit>
+																				<ifdef code="ca_objects.rights.rightsStatement"><b>Statement:</b> ^ca_objects.rights.rightsStatement <br/></ifdef>
+																				<ifdef code="ca_objects.rights.rightsHolder"><b>Rights Holder:</b> ^ca_objects.rights.rightsHolder <br/></ifdef>
+																				<ifdef code="ca_objects.rights.rightsNotes"><b>Rights Notes:</b> ^ca_objects.rights.rightsNotes</ifdef>
+																			</unit>')) {
 									print "<div class='unit'><h6>Rights</h6>".$va_rights."</div>";
 								}	
 							}																

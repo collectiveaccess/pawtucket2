@@ -968,9 +968,9 @@ div.detailNavigation a:last-child {
 	transition: color 0.3s ease-out, border-color 0.3s ease-out !important;
 }
 
-.readmore-js-section{
+/* .readmore-js-section{
 	line-height: 20px !important;
-}
+} */
 
 .row {
 	--bs-gutter-x: 0 !important;

@@ -242,17 +242,21 @@ ul.navbar-nav{
 }
 
 
-.page-content {
+.page-content, blockquote {
 	font-family: Poppins;
 	font-weight: 200;
 	font-size: 24px;
+}
+
+blockquote {
+	font-style: italic;
 }
 
 .content-size-1 {
 	font-size: 24px;
 }
 
-.content-size-2 {
+.content-size-2, blockquote {
 	font-size: 16px;
 }
 
@@ -320,7 +324,6 @@ ul{
 .journey-section {
 	background: linear-gradient(to bottom, rgba(124, 75, 28, 1) 0%, rgba(78, 56, 31, 1) 50%, rgba(11, 7, 1, 1) 100%);
 }
-
 .journey-links .link-text {
 	font-family: Forum;
 	font-size: 18px;
@@ -331,6 +334,12 @@ ul{
 .archives-section {
 	background: linear-gradient(180deg, #1B090D 0%, #360B15 52.54%, #1B090D 100%);
 }
+.archive-landing-img img{
+	border-radius: 10px;
+	opacity: 30%;
+	margin-bottom: 30px;
+}
+
 
 .explore-grid{
 	display: grid;
@@ -396,6 +405,14 @@ ul{
 	display: block;	
 	margin-top: 8px;
 }
+
+.works-caption-title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	max-width: 180px;
+}
+
 .works-caption-title:hover{
 	color: #fff;
 	text-decoration: none;
@@ -421,20 +438,16 @@ ul{
 
 
 @media screen and (max-width: 1350px) {
-	.works-grid-container, .choreographer-grid-container, .choreographer-grid-container-odd {
+	.works-grid-container, .choreographer-grid-container {
 		grid-template-columns: repeat(3, 1fr) !important;
 	}
-	.choreographer-grid-container-odd {
-		margin-left: 0 !important;
-	}
+
 }
 @media screen and (max-width: 1070px) {
-	.works-grid-container,.choreographer-grid-container, .choreographer-grid-container-odd {
+	.works-grid-container,.choreographer-grid-container {
 		grid-template-columns: repeat(2, 1fr) !important;
 	}
-	.choreographer-grid-container-odd {
-		margin-left: 0 !important;
-	}
+
 }
 
 
@@ -452,10 +465,14 @@ ul{
 }
 
 .choreo-img {
-	width: 120px;
-	height: 120px;
 	opacity: 0.4;
 	transition-duration: 0.3s;
+}
+.choreo-img img{
+	width: 120px;
+	height: 120px;
+	object-fit: cover;
+	border-radius: 50%;
 }
 
 .choreo-img-container:hover .choreo-img {
@@ -469,9 +486,9 @@ ul{
 	text-decoration: none;
 	text-align: right;
 	position: absolute;
-	bottom: 30px;
-	right: 40px;
-	width: 80px;
+	bottom: 20px;
+	right: 20px;
+	width: 87px;
 	text-align: left;
 	line-height: 1.1em;
 }
@@ -481,15 +498,12 @@ ul{
 	text-decoration: none;
 }
 
-.choreographer-grid-container, .choreographer-grid-container-odd {
+.choreographer-grid-container {
 	display: grid;
 	grid-template-columns: auto auto auto auto;
 	gap: 10px;
 }
 
-.choreographer-grid-container-odd{
-	margin-left: 100px;
-}
 
 .choreographer-grid-item {
 	padding: 20px;
@@ -533,12 +547,6 @@ ul{
 	color: rgba(255, 255, 255, 0.5);
 	text-transform: uppercase;
 }
-
-.related-item-title:hover {
-	color: #fff;
-	text-decoration: none;
-}
-
 
 /* ------------------------------------------- */
 /* Entity Detail Styling */
@@ -590,7 +598,7 @@ a.readmore-js-toggle {
 }
 
 .related-item-title,
-.related-item-title a, .bResultItemText a{
+.related-item-title a, .bResultItemText a, .lb-caption a{
 	font-family: Forum, sans-serif;
 	font-size: 16px;
 	color: #fff;
@@ -689,7 +697,7 @@ a.readmore-js-toggle {
 	}
 }
 
-.browseResultsGrid {
+.browseResultsGrid, .lb-item-grid {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
 	gap: 20px;
@@ -748,7 +756,7 @@ a.readmore-js-toggle {
 	margin: auto;
 }
 
-#bSortByList ul, li, strong, a, .bResultsAmount{
+#bSortByList ul, li, strong, a, .bResultsAmount, .lbSetCount{
 	font-family: Poppins, sans-serif;
 	font-size: 14px;
 	color: #fff !important;
@@ -786,10 +794,11 @@ a.readmore-js-toggle {
 	padding-bottom: 5px;
 }
 
-a.browseRemoveFacet .glyphicon, a.browseRemoveFacet button {
-	padding-left: 5px;
-	font-size: 12px;
+a.browseRemoveFacet .glyphicon, a.browseRemoveFacet button, .comment-save-btn {
+	padding-left: 5px !important;
+	font-size: 12px !important;
 	color: #FFF !important;
+	font-family: Poppins !important;
 }
 
 a.browseRemoveFacet img {
@@ -821,7 +830,7 @@ a.browseRemoveFacet img {
 	color: #fff;
 }
 
-#bRefine H2 {
+#bRefine H2, .comment-label {
 	font-family: Forum, sans-serif;
 	font-weight: 200;
 	font-size: 20px;
@@ -855,8 +864,11 @@ a.browseRemoveFacet img {
 }
 
 #bRefine a.more {
-	color: #707070;
+	color: #fff !important;
 	text-decoration: underline;
+}
+#bRefine a.more em{
+	color: #fff !important;
 }
 
 #bRefine div {
@@ -1020,5 +1032,364 @@ a.browseRemoveFacet img {
 
 	#bMorePanelClose {
 		display: inline;
+	}
+}
+
+.bSetsSelectMultiple button{
+	font-family: Poppins;
+	font-weight: 200;
+	color: #fff;
+	font-size: 14px;
+	border: 1px solid #fff;
+	border-radius: 10px;
+}
+
+/* Lightbox Styles */
+
+
+.lbSetImgPlaceholder {
+	background-color: #F5F5F5;
+	border: 2px solid #EDEDED;
+	color: #858585;
+	padding: 20px 5px;
+	text-align: center;
+	width: 100%;
+}
+
+
+
+
+.lightbox-container{
+
+}
+
+.lightbox-container .btn-group .dropdown-menu li a, .lightbox-ind-container .btn-group .dropdown-menu li a, em, .browse-results .btn-group .dropdown-menu li a{
+	color: #000 !important;
+	font-size: 12px;
+	font-family: Poppins;
+}
+.lightbox-container .btn-group .dropdown-menu li, .lightbox-ind-container .btn-group .dropdown-menu li, em, .browse-results .btn-group .dropdown-menu li {
+	color: #000 !important;
+	font-size: 14px;
+	font-family: Forum, sans-serif;
+}
+
+.lb-activity-col h2{
+	font-size: 24px;
+	font-family: Forum, sans-serif;
+	margin-bottom: 20px;
+}
+
+.lb-activity-col .activitystream .stream-item{
+	font-size: 16px;
+	font-family: Poppins;
+	line-height: 20px;
+}
+.lb-activity-col .activitystream .stream-item a{
+	font-size: 16px;
+	text-transform: capitalize;
+}
+.lb-activity-col .activitystream .stream-item small{
+	font-size: 12px;
+}
+
+.lbItemContainer {
+	min-height: 310px;
+	min-width: 150px;
+	position: relative;
+	border: 1px solid transparent;
+}
+
+.lbItem:hover {
+	/* cursor: move;
+	z-index: 1000; */
+	cursor: unset;
+	z-index: unset;
+}
+
+.lbItemContainer .lbItem:hover {
+	/* position: absolute; */
+	position: unset;
+}
+
+.lbItemContainer .lbItem:hover .lbItemContent {
+	/* min-height: 250px;
+	height: auto; */
+	min-height: unset;
+	height: unset;
+}
+
+.lbItemContainer .lbExpandedInfo,
+.lbSetExpandedInfo {
+	width: 100%;
+	z-index: 100;
+	display: none;
+	color: #757575;
+}
+
+.lbItemContainer .lbSetItemComment {
+	padding-top: 25px;
+}
+
+.lbItemContainer .lbSetItemComment .closecomment {
+	margin-top: -15px;
+}
+
+.lbItemContainer .lbItem:hover .lbSetItemComment .lbComments {
+	max-height: 150px;
+}
+
+
+.lbItem {
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	/* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); */
+	box-shadow: unset;
+	position: relative;
+	padding: 5px;
+	margin-bottom: 30px;
+	background-color: transparent;
+	position: relative;
+	line-height: 1.2em;
+	font-size: 11px;
+}
+
+.lbItem:hover {
+	/* cursor: move;
+	z-index: 1000; */
+	cursor: unset;
+	z-index: unset;
+}
+
+.lbItemContainer .lbItem:hover {
+	/* position: absolute; */
+	position: unset;
+}
+
+
+@media (min-width: 768px) {
+	.lbItemContainer .lbItem:hover {
+		/* padding: 15px;
+		width: 110%;
+		left: -5%;
+		top: -5%; */
+		padding: unset;
+		width: unset;
+		left: unset;
+		top: unset;
+	}
+}
+
+.lbItem:hover .lbExpandedInfo,
+.lbSet:hover .lbSetExpandedInfo {
+	display: inline;
+}
+
+.lbItem:hover .lbItemImg {
+	/* max-height: 600px; */
+	max-height: unset;
+}
+
+
+
+.lbItemContent {
+	/* height: 250px;
+	overflow: hidden; */
+	height: unset;
+	overflow: unset;
+}
+
+.lbItemContainer .lbItem:hover .lbItemContent {
+	/* min-height: 250px;
+	height: auto; */
+	min-height: unset;
+	height: unset;
+}
+
+.lbItemImg {
+	/* max-height: 200px;
+	width: 100%;
+	margin-bottom: 5px;
+	overflow: hidden; */
+	max-height: unset;
+	height: 200px;
+	width: 100%;
+	margin-bottom: 5px;
+	overflow: unset;
+}
+
+.lbItem:hover .lbItemImg {
+	/* max-height: 600px; */
+	max-height: unset;
+}
+
+.lbItemImg img {
+	height: 100%;
+	width: 100%;
+	object-fit: contain;
+}
+
+.lb-caption a{
+	line-height: 20px;
+}
+
+.lbItemContainer .lbExpandedInfo,
+.lbSetExpandedInfo {
+	width: 100%;
+	z-index: 100;
+	display: none;
+	color: #757575;
+	/* padding: 5px; */
+	padding: 0;
+}
+
+.lbItem:hover .lbExpandedInfo,
+.lbSet:hover .lbSetExpandedInfo {
+	display: inline;
+}
+
+.lbExpandedInfo HR,
+.lbSetExpandedInfo HR {
+	margin-bottom: 5px;
+	margin-top: 5px;
+}
+
+
+
+
+
+/* Login Form */
+.login-form h1, .login-form label, .login-form button, .login-form p{
+	font-family: Forum, sans-serif !important;
+}
+
+.login-form a{
+	color: #000 !important;
+}
+
+
+/* Gallery Landing Page */
+.gallery-grid{
+	column-count: 3;
+	column-gap: 8px;
+}
+
+.gallery-item{
+	width: 100%;
+	margin-bottom: 8px;
+}
+
+.gallery-item img {
+	width: 100%;
+	height: auto;
+	border-radius: 10px;
+	opacity: .7;
+	transition: .3s;
+}
+
+.gallery-item img:hover {
+	opacity: 1;
+	transition: .3s;
+}
+
+
+
+
+/* ---------------------------------- */
+/* Front Page Alert Box */
+/* ---------------------------------- */
+
+.frontAlert {
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	background-color: rgba(0, 0, 0, 0.6);
+	width: 100%;
+	height: 100%;
+	z-index: 2000;
+}
+
+.frontAlert div.frontAlertBox {
+	margin: 25vh 25vw;
+	height: 50vh;
+	background-color: #FFF;
+	border: 2px solid #000;
+	position: relative;
+}
+
+.frontAlert div.frontAlertMessage {
+	padding: 60px;
+	font-size: 18px;
+	color: #000 !important;
+	overflow: scroll;
+	text-align: center;
+	font-family: Forum, sans-serif;
+}
+
+.frontAlert div.frontAlertMessage strong,
+.frontAlert div.frontAlertMessage b {
+	font-size: 16px;
+	color: #000 !important;
+	font-family: Forum, sans-serif;
+}
+
+div.frontAlertClose {
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	margin: 0px;
+	font-size: 34px;
+}
+
+.frontAlert .enterButton {
+	text-align: center;
+	margin-top: 30px;
+} 
+
+.frontAlert .enterButton a{
+	/* color: #000 !important; */
+	font-family: Poppins;
+}
+
+.frontAlert div.frontAlertBox {
+	margin: 5vh 5vw;
+	height: 90vh;
+}
+
+.frontAlert div.frontAlertMessage {
+	position: relative;
+	height: 100%;
+	font-size: 13px;
+	color: #000 !important;
+}
+
+@media(min-width:768px) {
+	.frontAlert div.frontAlertBox {
+		margin: 10vh 15vw;
+		max-height: 80vh;
+	}
+
+	.frontAlert div.frontAlertMessage {
+		font-size: 18px;
+		color: #000 !important;
+	}
+
+	.frontAlert div.frontAlertMessage strong,
+	.frontAlert div.frontAlertMessage b {
+		font-size: 20px;
+		color: #000 !important;
+	}
+}
+
+@media(min-width:1145px) {
+	.frontAlert div.frontAlertBox {
+		margin: 15vh 15vw;
+		height: 70vh;
+	}
+}
+
+@media(min-width:1550px) {
+	.frontAlert div.frontAlertBox {
+		margin: 15vh 25vw;
+		height: 70vh;
 	}
 }

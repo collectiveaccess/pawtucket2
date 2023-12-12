@@ -246,8 +246,9 @@ class ca_ip_bans extends BaseModel {
 			});
 			if(!sizeof($reasons)) { return null; }
 		}
+		$ip = caGetOption('ip', $options, null);
 		
-		if (!$reasons && !$from) {
+		if (!$reasons && !$from && !$ip) {
 			if($db->query("DELETE FROM ca_ip_bans")) {
 				return $db->affectedRows();
 			}
@@ -263,7 +264,7 @@ class ca_ip_bans extends BaseModel {
 			$wheres[] = "(created_on < ?)";
 			$params[] = $from;
 		}
-		if($ip = csGetOption('ip', $options, null)) {
+		if($ip) {
 			$wheres[] = "(ip_addr = ?)";
 			$params[] = $ip;
 		}
@@ -284,9 +285,9 @@ class ca_ip_bans extends BaseModel {
 		$ip = RequestHTTP::ip();
 		$ip_long = ip2long($request_ip);
 		
-		foreach($whitelist as $ip) {
-			$ip_s = ip2long(str_replace("*", "0", $ip));
-			$ip_e = ip2long(str_replace("*", "255", $ip));
+		foreach($whitelist as $wip) {
+			$ip_s = ip2long(str_replace("*", "0", $wip));
+			$ip_e = ip2long(str_replace("*", "255", $wip));
 			if (($request_ip_long >= $ip_s) && ($request_ip_long <= $ip_e)) {
 				return true;
 			}
