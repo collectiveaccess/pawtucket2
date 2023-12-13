@@ -81,8 +81,6 @@
 <?php				
 				}
 ?>				
-						{{{<ifdef code="ca_occurrences.parent_id"><div class="unit"><label>Reissue of</label><l>^ca_occurrences.parent.preferred_labels.name</l></div></ifdef>}}}
-						{{{<ifdef code="ca_occurrences.children.occurrence_id"><div class="unit"><label>Reissues</label><unit relativeTo="ca_occurrences.children"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifdef>}}}
 						{{{<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence"><div class="unit">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></div></ifdef>}}}
 						{{{<ifdef code="ca_occurrences.release_note"><div class="unit">^ca_occurrences.release_note</div></ifdef>}}}
 						{{{<ifdef code="ca_occurrences.length"><div class="unit">^ca_occurrences.length</div></ifdef>}}}
@@ -90,6 +88,8 @@
 						{{{<ifdef code="ca_occurrences.descriptive_note"><div class="unit"><label>Descriptive Note</label><unit relatativeTo="ca_occurrences.descriptive_note" delimiter="<br/>">^ca_occurrences.descriptive_note</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_occurrences.liner_notes"><div class="unit"><label>Liner Notes</label>^ca_occurrences.liner_notes</div></ifdef>}}}
 						
+						{{{<ifdef code="ca_occurrences.parent_id"><div class="unit"><label>Reissue of</label><l>^ca_occurrences.parent.preferred_labels.name</l></div></ifdef>}}}
+						{{{<ifdef code="ca_occurrences.children.occurrence_id"><div class="unit"><label>Reissues</label><unit relativeTo="ca_occurrences.children"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifdef>}}}
 						{{{<ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><div class="unit"><label>Tour<ifcount code="ca_occurrences.related" restrictToTypes="tour" min="2">s</ifcount></label>
 							<unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 						</ifcount>}}}
