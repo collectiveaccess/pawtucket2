@@ -40,7 +40,7 @@
 						{{{gesels_journey_text}}}
 					</p>
 
-					<div class="journey-links pt-5">
+					<!-- <div class="journey-links pt-5">
 						<a href="#" class="link-text" role="button">
 							Behind the Scenes 
 							<span class="ms-3">
@@ -65,8 +65,12 @@
 								</svg>
 							</span>
 						</a>
- 					</div>
-					
+ 					</div> -->
+
+					<div class="storymap">
+						<iframe src="https://uploads.knightlab.com/storymapjs/0b74d90fd20a0d334c4cac057d9c9fec/gesels-journey/index.html" frameborder="0" width="100%" height="800"></iframe>
+					</div>
+
 				</div> 
 			</div>
 		</div>

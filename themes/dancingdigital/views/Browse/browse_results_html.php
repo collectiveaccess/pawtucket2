@@ -143,7 +143,7 @@ if (!$vb_ajax) {	// !ajax
 						print "<div>";
 							if($vs_sort_control_type == 'list'){
 								if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-									print "<div style='margin: 4px 0 0 10px' id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
+									print "<div style='margin: 4px 0 0 10px' id='bSortByList'><ul><li><strong style='color:#fff;'>"._t("Sort by:")."</strong></li>\n";
 									$i = 0;
 									foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 										$i++;

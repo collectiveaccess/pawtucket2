@@ -39,7 +39,7 @@
 			<div class="row justify-content-center">
 				<h1 class="page-heading heading-size-2 ps-0">Performances</h1>
 				<div class="col-auto">
-					<p class="page-content content-size-2">
+					<p class="page-content content-size-2 mb-5">
 						<?= $t_set->get('ca_sets.set_description'); ?>
 					</p>
 <?php
