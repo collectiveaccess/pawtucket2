@@ -478,7 +478,8 @@ ul#mainMenu .filterMenuFacetList li  {
   text-indent: -9999px;
   width: 97px;
   height: 95px;
-  background: url('https://www.nysoclib.org/sites/all/themes/nysoclib/images/nysoclib-logo@2x.png') no-repeat;
+  /* background: url('https://www.nysoclib.org/sites/all/themes/nysoclib/images/nysoclib-logo@2x.png') no-repeat; */
+  background: url('/themes/nysoc/assets/pawtucket/graphics/270th_logo.jpg') no-repeat;
   background-size: 97px 95px;
 }
 #columnRight {
