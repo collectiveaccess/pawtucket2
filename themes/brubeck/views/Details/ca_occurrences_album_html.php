@@ -81,6 +81,8 @@
 <?php				
 				}
 ?>				
+						{{{<ifdef code="ca_occurrences.parent_id"><div class="unit"><label>Reissue of</label><l>^ca_occurrences.parent.preferred_labels.name</l></div></ifdef>}}}
+						{{{<ifdef code="ca_occurrences.children.occurrence_id"><div class="unit"><label>Reissues</label><unit relativeTo="ca_occurrences.children"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifdef>}}}
 						{{{<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence"><div class="unit">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></div></ifdef>}}}
 						{{{<ifdef code="ca_occurrences.release_note"><div class="unit">^ca_occurrences.release_note</div></ifdef>}}}
 						{{{<ifdef code="ca_occurrences.length"><div class="unit">^ca_occurrences.length</div></ifdef>}}}
