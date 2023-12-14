@@ -40,7 +40,7 @@
 		$vb_show_hierarchy_viewer = false;	
 	}
 	# --- get the collection hierarchy parent to use for exportin finding aid
-	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
+	#$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	
 	$vb_bottom_box = false;
 	if($t_item->get("ca_entities.entity_id", array("checkAccess" => $va_access_values))){
@@ -72,7 +72,7 @@
 					<?php print caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id"))); ?>
 <?php					
 					if ($vn_pdf_enabled) {
-						print " ".caDetailLink($this->request, "<span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span> Download as PDF", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
+						print " ".caDetailLink($this->request, "<span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span> Download as PDF", "btn btn-default", "ca_collections",  $t_item->get("ca_collections.collection_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
 					}
 ?>
 				</div>
