@@ -166,23 +166,23 @@
 ?>
 				{{{<ifcount code="ca_occurrences" restrictToTypes="album,song" min="1"><div class="col-sm-12 col-md-4">
 					<ifcount code="ca_occurrences" restrictToTypes="album" min="1"><div class="unit"><label>Album<ifcount code="ca_occurrences" restrictToTypes="album" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="album" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="album" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences" restrictToTypes="song" min="1"><div class="unit"><label>Song<ifcount code="ca_occurrences" restrictToTypes="song" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="song" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="song" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					</div>
 				</ifcount>}}}
 
 				{{{<ifcount code="ca_occurrences" restrictToTypes="tour,studio_session,appearance" min="1"><div class="col-sm-12 col-md-4">
 					<ifcount code="ca_occurrences" restrictToTypes="tour" min="1"><div class="unit"><label>Tour<ifcount code="ca_occurrences" restrictToTypes="tour" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="tour" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="tour" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences" restrictToTypes="studio_session" min="1"><div class="unit"><label>Studio Session<ifcount code="ca_occurrences" restrictToTypes="studio_session" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="studio_session" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="studio_session" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences" restrictToTypes="appearance" min="1"><div class="unit"><label>Related Appearance<ifcount code="ca_occurrences" restrictToTypes="appearance" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount>^ca_occurrences.preferred_labels.name<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">, ^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="appearance" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount>^ca_occurrences.preferred_labels.name<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">, ^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
 					</ifcount>
 					</div>
 				</ifcount>}}}

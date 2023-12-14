@@ -73,6 +73,7 @@ a:hover{
 		position: fixed;
 		width: 100%;
 		top: 0px;
+		z-index: 10000;
 	}
 }
 @media (min-width: 1011px){
@@ -148,7 +149,12 @@ a:hover{
 		right: auto;
 	}
 }
-
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+    color: #FFF;
+    background-color: #0a4ba0;
+  }
+}
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
     font-family: 'urbane-rounded', sans-serif;
     text-transform:capitalize;
@@ -158,7 +164,8 @@ a:hover{
 	letter-spacing:normal;
 	font-size: 17px;
 }
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus,
+.dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus{
 	background-color:transparent;
 	color:#FFF;  /*highlight color */
 	/* underline on hover or active 
@@ -209,7 +216,7 @@ a:hover{
 	background-color:#0a4ba0;
 	color:#FFF;
 }
-@media (max-width: 1010px){
+@media (max-width: 768px){
 	ul.menuItems {
 		border-top: 0px;
 	}
@@ -244,11 +251,11 @@ body{
 @media(max-width:991px){
 	/* CHANGE - does the footer height need to change for smaller screen sizes? */
 	#footer{
-		height:200px;
+		height:250px;
 	}
 	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
 	body{
-		margin-bottom:250px;
+		margin-bottom:300px;
 	}
 }
 #footer a{
@@ -729,7 +736,7 @@ body.frontContainer #footer{
 		font-size: 22px;
 	}
 	.hpIntro .calloutTitle{
-		font-size: 26px;
+		font-size: 32px;
 	}
 }
 
@@ -1078,7 +1085,49 @@ a.readmore-js-toggle {
 .vco-text p{
 	color:#000;
 }
-
+@media(max-width:810px){
+	/* 2 col
+	.vco-skinny .vco-slide .vco-slide-content-container .vco-slide-content .vco-media {
+		width:25%;
+		min-width:25%;
+		margin-right:5%;
+		float:left;
+	}
+	.vco-skinny .vco-media .vco-media-content-container .vco-caption {
+		width: 100% !important;
+	}
+	.vco-skinny .vco-slide .vco-slide-content-container .vco-slide-content .vco-text{
+		float:left;
+		width:70%;
+	}
+	*/
+	.vco-media .vco-media-content-container .vco-media-content {
+		width:40%;
+		min-width:40%;
+		padding-left:30%;
+		text-align:center;
+	}
+	.vco-skinny .vco-slide .vco-slide-content-container .vco-slide-content .vco-media img{
+		height:120px;
+		width:auto;
+	}
+	.vco-skinny .vco-media .vco-media-content-container .vco-caption {
+		width: 100% !important;
+		text-align:center;
+		padding-left: 0px;
+	}
+	.vco-headline-date, .vco-text h3.vco-headline-date, .vco-text h2.vco-headline{
+		padding-top:0px;
+		margin-bottom:5px;
+		font-size:14px !important;
+	}
+	.vco-text-content p, .vco-text-content{
+		font-size:14px !important;
+	}
+	.vco-skinny .vco-slide .vco-slide-content-container .vco-slide-content .vco-text{
+		margin-top:0px;
+	}
+}
 /* song timeline */
 #lbTimelineContainer{
 	margin-top:10px;
@@ -1102,7 +1151,7 @@ a.readmore-js-toggle {
 	font-size:20px !Important;
 }
 .tl-text-content-container h2.tl-headline .occType{
-	font-size:20px !important;
+	font-size:16px !important;
 	color:#757575 !Important;
 }
 .tl-text-content, .tl-text-content-container h2.tl-headline .occType,
@@ -1111,6 +1160,38 @@ a.readmore-js-toggle {
 .tl-timeline p,
 .tl-timeline h1, .tl-timeline h2, .tl-timeline h3, .tl-timeline h4, .tl-timeline h5, .tl-timeline h6{
 	font-family: 'urbane-rounded', sans-serif !important;
+}
+.tl-timemarker .tl-timemarker-content-container{
+	height:35px !important;
+}
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline{
+	font-size:11px !important;
+}
+@media(max-width:1145px){
+	.tl-text-content-container h2.tl-headline {
+		font-size: 20px !important;
+		line-height: 20px !important;
+	}
+}
+/* styles for pale blue background on timeline */
+.tl-timenav {
+	background-color: #e4eaf2 !important;
+}
+.tl-timemarker .tl-timemarker-content-container {
+	background-color: #FFF !important;
+}
+.tl-timemarker.tl-timemarker-active .tl-timemarker-content-container {
+	color: #FFF !important;
+	background-color: #200d45 !important;
+}
+.tl-timemarker.tl-timemarker-active .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline{
+	color: #FFF !important;
+}
+.tl-menubar-button{
+	background-color:#FFF !important;
+}
+.tl-menubar-button:hover{
+	color: #200d45 !important;
 }
 /* Featured Listing */
 @media(min-width:992px){
@@ -1174,7 +1255,7 @@ a.readmore-js-toggle {
 }
 @media(max-width:500px){
 	.featuredSearch .form-group {	
-		width: 300px;
+		width: 270px;
 	}
 }
 .featuredSearch .form-control, .featuredSearch .form-control:focus{
