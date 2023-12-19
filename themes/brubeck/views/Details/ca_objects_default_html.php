@@ -178,6 +178,9 @@
 					<ifcount code="ca_occurrences" restrictToTypes="album" min="1"><div class="unit"><label>Album<ifcount code="ca_occurrences" restrictToTypes="album" min="2">s</ifcount></label>
 						<unit relativeTo="ca_occurrences" restrictToTypes="album" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
+					<ifcount code="ca_occurrences" restrictToTypes="reissue" min="1"><div class="unit"><label>Reissue<ifcount code="ca_occurrences" restrictToTypes="reissue" min="2">s</ifcount></label>
+						<unit relativeTo="ca_occurrences" restrictToTypes="reissue" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+					</ifcount>
 					<ifcount code="ca_occurrences" restrictToTypes="studio_session" min="1"><div class="unit"><label>Studio Session<ifcount code="ca_occurrences" restrictToTypes="studio_session" min="2">s</ifcount></label>
 						<unit relativeTo="ca_occurrences" restrictToTypes="studio_session" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>}}}

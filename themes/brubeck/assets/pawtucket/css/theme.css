@@ -1065,6 +1065,26 @@ a.readmore-js-toggle {
 	background-color:#0a4ba0;
 	text-decoration:none;
 }
+.caAudioPlayer.audio-responsive{
+	padding-top:20px;
+}
+.detail .detailMediaToolbar, .gallery .detailMediaToolbar {
+	background-color: #ebebeb;
+	padding: 7px 7px 7px 7px;
+	font-size: 16px;
+	position: absolute;
+	display: block;
+	top: 0px;
+	z-index: 200;
+	position: relative;
+	text-align: center;
+	width: 100%;
+	background-color: #FFF;
+}
+.detail .detailMediaToolbar a, .gallery .detailMediaToolbar a{
+	padding-right: 5px;
+	padding-left: 5px;
+}
 /* storymap */
 .vco-storymap h2.vco-headline-title, .vco-storymap h2 {
 	font-size: 17px !important;

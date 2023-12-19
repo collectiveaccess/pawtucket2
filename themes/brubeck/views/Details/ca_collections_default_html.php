@@ -164,9 +164,12 @@
 					print "</div>";
 				}
 ?>
-				{{{<ifcount code="ca_occurrences" restrictToTypes="album,song" min="1"><div class="col-sm-12 col-md-4">
+				{{{<ifcount code="ca_occurrences" restrictToTypes="album,reissue,song" min="1"><div class="col-sm-12 col-md-4">
 					<ifcount code="ca_occurrences" restrictToTypes="album" min="1"><div class="unit"><label>Album<ifcount code="ca_occurrences" restrictToTypes="album" min="2">s</ifcount></label>
 						<unit relativeTo="ca_occurrences" restrictToTypes="album" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+					</ifcount>
+					<ifcount code="ca_occurrences" restrictToTypes="reissue" min="1"><div class="unit"><label>Reissue<ifcount code="ca_occurrences" restrictToTypes="reissue" min="2">s</ifcount></label>
+						<unit relativeTo="ca_occurrences" restrictToTypes="reissue" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences" restrictToTypes="song" min="1"><div class="unit"><label>Song<ifcount code="ca_occurrences" restrictToTypes="song" min="2">s</ifcount></label>
 						<unit relativeTo="ca_occurrences" restrictToTypes="song" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
