@@ -82,7 +82,7 @@
 			#
 			# --- no configured set/items in set so grab random objects with media
 			#
-			if(sizeof($va_featured_ids) == 0){
+			if(!is_array($va_featured_ids) || (sizeof($va_featured_ids) == 0)){
 				$t_object = new ca_objects();
 				$va_featured_ids = array_keys($t_object->getRandomItems(12, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1, 'restrictByIntrinsic' => array("type_id" => $vn_type_id))));
 				$this->view->setVar('type_item_ids', $va_featured_ids);

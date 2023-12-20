@@ -43,7 +43,7 @@
 						if ($vs_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' restrictToTypes='still_image' limit='1'>^ca_object_representations.media.iconlarge</unit>")) {
 							$vs_tmp .= "<div class='featuredImage'>".$vs_image."</div>";
 						}
-						$vs_tmp .= "<div class='title'>".$qr_collections->get("ca_collections.preferred_labels.name")."</div>";	
+						$vs_tmp .= "<div class='title ".((!$vs_image) ?  "noImage" : "")."'>".$qr_collections->get("ca_collections.preferred_labels.name")."</div>";	
 						if (($o_collections_config->get("description_template")) && ($vs_scope = $qr_collections->getWithTemplate($o_collections_config->get("description_template")))) {
 							$vs_tmp .= "<div>".$vs_scope."</div>";
 						}

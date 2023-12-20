@@ -145,8 +145,12 @@
 
 					$vs_result_output = "
 						<div class='bGridResultItem'>
+							<div class='bSetsSelectMultiple text-start'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 							<div class='bResultItemImg'>{$vs_rep_detail_link}</div>
 							<div class='bResultItemText'>{$vs_label_detail_link}</div>
+							<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
+								<hr>{$vs_expanded_info}{$vs_add_to_set_link}
+							</div>
 						</div><!-- end bResultItem -->
 					";
 

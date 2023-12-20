@@ -73,7 +73,7 @@
 ?>
 			<div class="thumbnail" style="left: <?php print $vn_left; ?>px; top: <?php print $vn_top; ?>px;">
 				<?php print "<div class='imgThumb'><img src='".$vo_result->getMediaPath('ca_object_representations.media', 'preview170')."'/></div>"; ?>
-				<?php print "<div class='caption'>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name (^ca_objects.idno)')."</div>"; ?>
+				<?php print "<div class='caption'>".$vo_result->getWithTemplate("^ca_objects.preferred_labels%ellipsis=1&truncate=70<ifdef code='ca_objects.date_container.date'>, <unit relativeTo='ca_objects.date_container' delimiter='<br/>'>^ca_objects.date_container.date</unit></ifdef><br/><small>^ca_objects.type_id, ^ca_objects.idno</small>")."</div>"; ?>
 			</div>
 <?php
 

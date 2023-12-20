@@ -86,17 +86,18 @@
 				</div> 
 			</div>
 
-			{{{<ifcount code="ca_entities" min="1" restrictToTypes="individual">
+			{{{<ifcount code="ca_objects_x_entities" min="1" restrictToTypes="individual">
 				<div class="row works-row">
 					<label class="entity-data-label mb-3">Related People</label>
 					<ul class="detail-list">
-						<unit relativeTo="ca_entities" delimiter="" restrictToTypes="individual" sort="ca_entities.preferred_labels.displayname">
+						<unit relativeTo="ca_objects_x_entities" delimiter="" restrictToTypes="individual" sort="ca_entities.preferred_labels.displayname">
 							<li class='detail-list-item'>
 								<div class='related-item-title'>
-									<l>^ca_entities.preferred_labels.displayname 
-									<span style="color: rgba(255, 255, 255, 0.5); font-size: 16px;">
-										(^relationship_typename)
-									</span></l>
+									<l>^ca_entities.preferred_labels 
+										<span style="color: rgba(255, 255, 255, 0.5); font-size: 16px;">
+											(^relationship_typename)
+										</span>
+									</l>
 								</div>
 							</li>
 						</unit>
@@ -104,13 +105,15 @@
 				</div>
 			</ifcount>}}}
 
-			{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="choreographic_work">
+			{{{<ifcount code="ca_objects_x_occurrences" min="1" restrictToTypes="choreographic_work">
 				<div class="row works-row">
 					<label class="entity-data-label mb-3">Choreographic Works</label>
 					<ul class="detail-list">
-						<unit relativeTo="ca_occurrences" delimiter="" restrictToTypes="choreographic_work" sort="ca_occurrences.preferred_labels">
+						<unit relativeTo="ca_objects_x_occurrences" delimiter="" restrictToTypes="choreographic_work" sort="ca_occurrences.preferred_labels">
 							<li class='detail-list-item'>
-								<div class='related-item-title'><l>^ca_occurrences.preferred_labels <ifdef code="relationship_typename">(^relationship_typename)</ifdef></l></div>
+								<div class='related-item-title'>
+									<l>^ca_occurrences.preferred_labels</l>
+								</div>
 							</li>
 						</unit>
 					</ul>

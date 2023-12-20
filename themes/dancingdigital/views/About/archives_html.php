@@ -29,6 +29,8 @@
  *
  * ----------------------------------------------------------------------
  */
+ $t_set = ca_sets::findAsInstance(['set_code' => 'archives_landing'], ['checkAccess' => caGetUserAccessValues($this->request)]);
+ $set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'medium']) : [];
  ?>
 <main data-barba="container" data-barba-namespace="archives" class="barba-main-container archives-section">
 	<div class="general-page">
@@ -117,7 +119,23 @@
 					</div>
 
 				</div> 
+
+				<div class="col-auto" style="position: fixed; right: -40px; top: 50px;">
+					<?php
+						foreach($set_items as $item) {	
+							$item = array_shift($item);
+							//print_R($item);
+					?>
+						<div class='archive-landing-img'>
+							<?= $item['representation_tag']; ?>
+						</div>
+					<?php
+						}
+					?>
+				</div>
+
 			</div>
+
 		</div>
 	</div>
 </main>

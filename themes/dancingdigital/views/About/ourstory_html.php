@@ -37,14 +37,8 @@
 				<div class="col-auto">
 					<h1 class="page-heading heading-size-2 ps-0">Over 20 Years In The Making</h1>
 					<p class="page-content content-size-2">
-						NO BOUNDARIES: Dancing the Visions of Contemporary Black Choreographers began as an evolving repertoire of solos 
-						choreographed by several generations of prominent African American artists and performed by Gesel R. Mason in one 
-						evening. With choreographic works spanning from the 1940’s to the present, the No Boundaries performances delivered 
-						snapshots of and created discussion around the trajectory of Black dance over seven decades.
-						<br><br>
-						The No Boundaries Archive Project transforms Gesel’s journey into a versatile, digital humanities platform and archival 
-						database that invites you to embark on your own journey, interacting with the stories and legacies of African American choreographers.
-					</p>
+						{{{our_story_text}}}
+ 					</p>
 				</div> 
 			</div>
 		</div>
