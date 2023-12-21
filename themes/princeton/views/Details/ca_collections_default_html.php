@@ -31,6 +31,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$va_access_values = $this->getVar("access_values");
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -76,7 +77,6 @@
 					}
 ?>
 					{{{<ifdef code="ca_collections.idno"><div class="unit"><label>Identifier</label>^ca_collections.idno</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.VR_ID_container.VR_ID"><div class="unit"><label>VR Identifier</label>^ca_collections.VR_ID_container.VR_ID<ifdef code="ca_collections.VR_ID_container.VR_source"> ^ca_collections.VR_ID_container.VR_source</ifdef></div></ifdef>}}}
 					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="contributor,creator">
 						<div class="unit"><label>Creator<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="contributor,creator">s</ifcount></label>
 						<unit relativeTo="ca_entities" restrictToRelationshipTypes="contributor,creator" delimiter="<br/>">
@@ -96,11 +96,9 @@
 							<span class="trimText">^ca_collections.description</span>
 						</div>
 					</ifdef>}}}
-					{{{<ifdef code="ca_collections.language"><div class="unit"><label>Language</label>^ca_collections.language%delimiter=,_</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.rights_container.rights|ca_collections.rights_container.access_conditions|ca_collections.rights_container.use_reproduction|ca_collections.credit|ca_collections.exhibition_publication">
 						<hr/>
 						<ifdef code="ca_collections.rights_container.rights"><div class="unit"><label>Rights Statement</label>^ca_collections.rights_container.rights</div></ifdef>
-						<ifdef code="ca_collections.rights_container.access_conditions"><div class="unit"><label>Access Conditions</label>^ca_collections.rights_container.access_conditions</div></ifdef>
 						<ifdef code="ca_collections.rights_container.use_reproduction"><div class="unit"><label>Use and Reproduction Conditions</label>^ca_collections.rights_container.use_reproduction</div></ifdef>
 						<ifdef code="ca_collections.credit"><div class="unit"><label>Credit</label>^ca_collections.credit</div></ifdef>
 						<ifdef code="ca_collections.exhibition_publication"><div class="unit"><label>Exhibition and Publication History</label>^ca_collections.exhibition_publication</div></ifdef>
@@ -156,32 +154,41 @@
 					
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="1">
+
+<?php
+		$va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("featured"), "limit" => 8));
+		if(!$va_object_ids){
+			$va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "limit" => 8));
+		}
+		if(is_array($va_object_ids) && sizeof($va_object_ids)){
+			$qr_objects = caMakeSearchResult("ca_objects", $va_object_ids);
+			if($qr_objects->numHits()){
+?>
+				<div class="row">
+					<div class="col-sm-12">
+						<br/><H2>Featured Object<ifcount code="ca_objects" min="2">s</ifcount></H2>
+						<hr/>
+					</div>
+				</div>
+				<div class="row featuredObjects">
+<?php
+				while($qr_objects->nextHit()){
+					print "<div class='col-sm-3'>".$qr_objects->getWithTemplate("<l><div class='featuredObject'><div class='featuredObjectImage'>^ca_object_representations.media.medium</div><div class='featuredObjectsCaption'><small>^ca_objects.idno</small><br/>^ca_objects.preferred_labels<ifdef code='ca_objects.date.date_display|ca_objects.date.sort_date'><br/><ifdef code='ca_objects.date.date_display'>^ca_objects.date.date_display</ifdef><ifnotdef code='ca_objects.date.date_display'>^ca_objects.date.sort_date</ifnotdef></ifdef></div></l></div>")."</div>";
+				}
+?>					
+				</div>
+<?php
+			}
+		}
+?>
+
+
+{{{<ifcount code="ca_objects" min="9">
 			<div class="row">
-				<div class="col-sm-12">
-					<H2>Collection Objects</H2>
-					<hr/>
+				<div class="col-sm-12 text-center">
+					<?php print caNavLink($this->request, "Browse All Collection Objects", "btn btn-default", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>
 				</div>
 			</div>
-			<div class="row">
-				<div id="browseResultsContainerobjects">
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainerobjects").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => '^ca_collections.collection_id', 'detailNav' => 'collections'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainerobjects').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
 </ifcount>}}}
 		</div><!-- end container -->
 	</div><!-- end col -->

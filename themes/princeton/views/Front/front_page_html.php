@@ -32,7 +32,7 @@
 	$va_access_values = $this->getVar("access_values");
 	$vs_hero = $this->request->getParameter("hero", pString);
 	if(!$vs_hero){
- 		$vs_hero = rand(1, 3);
+ 		$vs_hero = rand(1, 5);
 	}
 ?>
 
@@ -44,7 +44,7 @@
 				<div class="heroSearch">
 					<H1>
 						<div class="line1">Welcome to the</div>
-						<div class="line2">Visual Resource Collections</div>
+						<div class="line2">Visual Resources Collections</div>
 						<div class="line3">{{{hp_search_text}}}</div>
 					</H1>
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
@@ -86,30 +86,38 @@
 ?>
 	<div class="row hpExplore bgLightGray">
 		<div class="col-md-12 col-lg-8 col-lg-offset-2">
-		<H2 class="frontSubHeading text-center">Explore</H2>
+		<H2 class="frontSubHeading text-center">Explore By</H2>
 
 			<div class="row">
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "Collections", "Index"); ?>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Collections", "", "", "Collections", "Index"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Places", "", "", "", ""); ?></div>
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage2'></div>", "", "", "Browse", "objects"); ?>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage2'></div>", "", "", "Browse", "people"); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Objects", "", "", "Browse", "objects"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "People", "", "", "Browse", "people"); ?></div>
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage3'></div>", "", "", "Gallery", "Index"); ?>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage3'></div>", "", "", "Explore", "Types"); ?>
 						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Galleries", "", "", "Gallery", "Index"); ?></div>
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Types", "", "", "Explore", "Types"); ?></div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage4'></div>", "", "", "Browse", "Works"); ?>
+						<div class="hpExploreBoxDetails">
+							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Works", "", "", "Browse", "Works"); ?></div>
 						</div>
 					</div>
 				</div>

@@ -118,7 +118,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print "<div class='departmentLogo'><a href='https://artandarchaeology.princeton.edu/' target='_blank'>".caGetThemeGraphic($this->request, 'A&A_logo_noText.png', array("alt" => "Department of Art & Archaeology", "role" => "banner"))."</a></div>";
+				print "<div class='departmentLogo'><a href='https://visualresources.princeton.edu/' target='_blank'>".caGetThemeGraphic($this->request, 'VR_LOGO.png', array("alt" => "Department of Art & Archaeology", "role" => "banner"))."</a></div>";
 				print caNavLink($this->request, "Visual Resources Collections", "navbar-brand", "", "","");
 ?>
 			</div>
@@ -167,10 +167,19 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "index"); ?></li>					
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "explore")) ? ' active' : ''; ?>">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Explore <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("Places"), "", "", "", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Types"), "", "", "Explore", "types"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Works"), "", "", "Browse", "works"); ?></li>
+						</ul>
+					</li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li><a href="https://visualresources.princeton.edu/" target="_blank">Visual Resources Home <i class="fa fa-external-link-alt"></i></a></li>
+					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
