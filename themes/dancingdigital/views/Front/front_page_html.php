@@ -65,7 +65,7 @@ if(!$this->request->isLoggedIn() && (!Session::getVar('visited_time') || (Sessio
 
 				<div class="btn-group enterButton" role="group" aria-label="buttons">
 					<a href="#" class="btn btn-default btn-lg" style="background-color: rgba(42, 10, 66, 1); color: #fff;">ENTER THE SPACE</a>
-					<a href="#" class="btn btn-default btn-lg" style="background-color: #fff ; color: #000 !important; border: 1px solid rgba(42, 10, 66, 1);">I'll come back later</a>
+					<!-- <a href="#" class="btn btn-default btn-lg" style="background-color: #fff ; color: #000 !important; border: 1px solid rgba(42, 10, 66, 1);">I'll come back later</a> -->
 				</div>
 
 			</div>	

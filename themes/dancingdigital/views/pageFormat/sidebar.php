@@ -30,7 +30,7 @@
 				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'choreographers_html'); ?>">Choreographers</a></li>
 				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'choreographic_works_html'); ?>">Choreographic Works</a></li>
 				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'performances_html'); ?>">Performances</a></li>
-				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'journey_html'); ?>">Gesel’s Journey</a></li>
+				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'Detail', 'journey/1'); ?>">Gesel’s Journey</a></li>
 				<li class="nav-item"><a class="nav-link" href="<?= caNavUrl($this->request, '', 'About', 'archives_html'); ?>">Archives</a></li>
 				<form class="navbar-form" role="search" action="<?= caNavUrl($this->request, '', 'search/objects', 'Index'); ?>" aria-label="<?= _t("Search"); ?>">
 					<div class="formOutline m-0 border-0" style='width:180px;'>

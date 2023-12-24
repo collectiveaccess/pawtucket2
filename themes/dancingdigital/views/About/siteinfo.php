@@ -39,7 +39,9 @@
 					<p class="page-content content-size-2">
 						{{{funders}}}
 						<br><br>
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'ut_austin_logo.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "funder-logo", "", "",""); ?>
+						<div class="div p-3" style="background-color:#fff; width:fit-content;">
+							<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'ut_austin_logo.png', array("alt" => $this->request->config->get("app_display_name"), "role" => "banner")), "funder-logo", "", "",""); ?>
+						</div>
 						<br><br>
 						{{{accessibility_statement}}}
 					</p>					
