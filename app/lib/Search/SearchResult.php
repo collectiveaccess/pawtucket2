@@ -1737,7 +1737,7 @@ class SearchResult extends BaseObject {
 						$this->prefetch($va_path_components['table_name'], $this->opo_engine_result->currentRow(), $this->getOption('prefetch'), $pa_options);	
 					}
 					
-					$vm_val = $t_instance->renderBundleForDisplay($va_path_components['field_name'], $vn_row_id, self::$s_prefetch_cache[$va_path_components['table_name']][$vn_row_id][$vs_opt_md5], $va_val_opts);
+					$vm_val = $t_instance->renderBundleForDisplay($va_path_components['field_name'].($va_path_components['subfield_name'] ? '.'.$va_path_components['subfield_name'] : ''), $vn_row_id, self::$s_prefetch_cache[$va_path_components['table_name']][$vn_row_id][$vs_opt_md5], $va_val_opts);
 					
 					if ($pa_options['returnWithStructure'] ?? null) { 
 						if ($pa_options['returnAllLocales'] ?? null) { 
@@ -2289,7 +2289,7 @@ class SearchResult extends BaseObject {
 					$vb_dont_return_value = false;
 					$vs_element_code = $o_value->getElementCode();
 					
-					if ($vb_return_value_id) {
+					if ($vb_return_value_id && (!$va_path_components['subfield_name'] || ($va_path_components['subfield_name'] === $vs_element_code))) {
 						$va_return_values[(int)$vn_id][] = $o_value->getValueID();
 						continue;
 					}

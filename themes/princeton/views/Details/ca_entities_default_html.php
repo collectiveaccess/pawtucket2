@@ -30,6 +30,8 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vs_rep_viewer = 	trim($this->getVar("representationViewer"));
+	$va_access_values = $this->getVar("access_values");
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -48,9 +50,21 @@
 					<HR/>
 				</div><!-- end col -->
 			</div><!-- end row -->
-			<div class="row">			
+			<div class="row">
+<?php
+			if($vs_rep_viewer){
+?>
+				<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+					{{{representationViewer}}}
+				</div>
+				<div class='col-sm-6 col-md-6 col-lg-5'>
+				
+<?php
+			}else{
+?>
 				<div class='col-sm-12'>
 <?php
+			}
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
 						
@@ -100,32 +114,40 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			
-{{{<ifcount code="ca_objects" min="1">
+<?php
+		$va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("featured"), "limit" => 8));
+		if(!$va_object_ids){
+			$va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "limit" => 8));
+		}
+		if(is_array($va_object_ids) && sizeof($va_object_ids)){
+			$qr_objects = caMakeSearchResult("ca_objects", $va_object_ids);
+			if($qr_objects->numHits()){
+?>
+				<div class="row">
+					<div class="col-sm-12">
+						<br/><H2>Featured Object<ifcount code="ca_objects" min="2">s</ifcount></H2>
+						<hr/>
+					</div>
+				</div>
+				<div class="row featuredObjects">
+<?php
+				while($qr_objects->nextHit()){
+					print "<div class='col-sm-3'>".$qr_objects->getWithTemplate("<l><div class='featuredObject'><div class='featuredObjectImage'>^ca_object_representations.media.medium</div><div class='featuredObjectsCaption'><small>^ca_objects.idno</small><br/>^ca_objects.preferred_labels<ifdef code='ca_objects.date.date_display|ca_objects.date.sort_date'><br/><ifdef code='ca_objects.date.date_display'>^ca_objects.date.date_display</ifdef><ifnotdef code='ca_objects.date.date_display'>^ca_objects.date.sort_date</ifnotdef></ifdef></div></l></div>")."</div>";
+				}
+?>					
+				</div>
+<?php
+			}
+		}
+?>
+
+
+{{{<ifcount code="ca_objects" min="9">
 			<div class="row">
-				<div class="col-sm-12">
-					<H2>Related Object<ifcount code="ca_objects" min="2">s</ifcount></H2>
-					<hr/>
+				<div class="col-sm-12 text-center">
+					<?php print caNavLink($this->request, "Browse All Related Objects", "btn btn-default", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $t_item->get("ca_entities.entity_id"))); ?>
 				</div>
 			</div>
-			<div class="row">
-				<div id="browseResultsContainer">
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
 </ifcount>}}}
 		</div><!-- end container -->
 	</div><!-- end col -->
@@ -139,7 +161,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 130
 		});
 	});
 </script>

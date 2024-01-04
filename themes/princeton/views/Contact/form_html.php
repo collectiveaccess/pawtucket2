@@ -80,6 +80,24 @@
 						</div><!-- end form-group -->
 					</div><!-- end col -->
 				</div><!-- end row -->
+<?php
+	if($pn_id && $t_item->getPrimaryKey()){
+?>
+				<div class="row">
+					<div class="col-sm-4">
+						<div class="form-group<?php print (($va_errors["request_type"]) ? " has-error" : ""); ?>">
+							<label for="name">Request Type</label>
+							<select class="form-control input-sm" id="request_type" name="request_type">
+								<option value=''>Please choose an option</option>
+								<option value='Researh' <?php print ($this->getVar("request_type") == "Research") ? "selected" : ""; ?>>Research</option>
+								<option value='Publication' <?php print ($this->getVar("request_type") == "Publication") ? "selected" : ""; ?>>Publication</option>
+							</select>
+						</div>
+					</div>
+				</div>
+<?php
+	}
+?>
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row">
