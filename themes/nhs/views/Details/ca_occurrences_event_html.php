@@ -72,13 +72,13 @@
 			
 <?php
 
-	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1' excludeTypes='vessel'><unit relativeTo='ca_entities_x_occurrences' delimiter=';;;' excludeTypes='vessel'>^ca_entities.preferred_labels.displayname
+	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1' excludeTypes='vessel'><unit relativeTo='ca_entities_x_occurrences' delimiter=';;;' excludeTypes='vessel' sort='ca_entities_x_occurrences.rank'>^ca_entities.preferred_labels.displayname
 										<ifdef code='ca_entities_x_occurrences.role'><br/><small>Role:  ^ca_entities_x_occurrences.role</small></ifdef><ifdef code='ca_entities_x_occurrences.person_status'><br><small>Person Status:  ^ca_entities_x_occurrences.person_status</small></ifdef><ifdef code='ca_entities_x_occurrences.effective_date'><br/><small>Effective Date: ^ca_entities_x_occurrences.effective_date</small></ifdef>
-										</unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
+										</unit></ifcount>", array("checkAccess" => $va_access_values));
 	if($vs_tmp){
 		$va_entity_text = explode(";;;", $vs_tmp);
 	
-		$va_entity_ids = $t_item->get("ca_entities.entity_id", array("excludeTypes" => array("vessel"), "returnAsArray" => 1, "checkAccess" => $va_access_values));
+		$va_entity_ids = $t_item->get("ca_entities_x_occurrences.entity_id", array("excludeTypes" => array("vessel"), "returnAsArray" => 1, "checkAccess" => $va_access_values, "sort" => "ca_entities_x_occurrences.rank"));
 		$va_entities = array();
 		foreach($va_entity_ids as $vn_i => $vn_entity_id){
 			$va_entities[] = caDetailLink($this->request, "<div class='bgLightBlue text-center'>".$va_entity_text[$vn_i]."</div>", "", "ca_entities", $vn_entity_id);
@@ -114,13 +114,13 @@
 <?php
 		}
 	}
-	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1' restrictToTypes='vessel'><unit relativeTo='ca_entities_x_occurrences' delimiter=';;;' restrictToTypes='vessel'>^ca_entities.preferred_labels.displayname
+	$vs_tmp = $t_item->getWithTemplate("<ifcount code='ca_entities.related' min='1' restrictToTypes='vessel'><unit relativeTo='ca_entities_x_occurrences' delimiter=';;;' restrictToTypes='vessel' sort='ca_entities_x_occurrences.rank'>^ca_entities.preferred_labels.displayname
 										<ifdef code='ca_entities_x_occurrences.role'><br/><small>Role:  ^ca_entities_x_occurrences.role</small></ifdef><ifdef code='ca_entities_x_occurrences.person_status'><br><small>Person Status:  ^ca_entities_x_occurrences.person_status</small></ifdef><ifdef code='ca_entities_x_occurrences.effective_date'><br/><small>Effective Date: ^ca_entities_x_occurrences.effective_date</small></ifdef>
-										</unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
+										</unit></ifcount>", array("checkAccess" => $va_access_values));
 	if($vs_tmp){
 		$va_entity_text = explode(";;;", $vs_tmp);
 	
-		$va_entity_ids = $t_item->get("ca_entities.entity_id", array("restrictToTypes" => array("vessel"), "returnAsArray" => 1, "checkAccess" => $va_access_values));
+		$va_entity_ids = $t_item->get("ca_entities_x_occurrences.entity_id", array("restrictToTypes" => array("vessel"), "returnAsArray" => 1, "checkAccess" => $va_access_values, "sort" => "ca_entities_x_occurrences.rank"));
 		$va_entities = array();
 		foreach($va_entity_ids as $vn_i => $vn_entity_id){
 			$va_entities[] = caDetailLink($this->request, "<div class='bgLightBlue text-center'>".$va_entity_text[$vn_i]."</div>", "", "ca_entities", $vn_entity_id);

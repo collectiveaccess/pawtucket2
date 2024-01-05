@@ -75,7 +75,27 @@
 ?>			
 				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+<?php 
+				if(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))) == "audio"){
+					$va_rep_icons = caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "array", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+					if($va_rep_icons && sizeof($va_rep_icons)){
+						print "<label>Track List</label><div id='detailRepresentationThumbnails'>";
+						foreach($va_rep_icons as $vn_icon_rep_id => $vs_icon_link){
+							$vs_caption = "";
+							$t_icon_rep = new ca_object_representations($vn_icon_rep_id);
+							$vs_caption = $t_icon_rep->get("ca_object_representations.preferred_labels.name");
+							if(!$vs_caption || $vs_caption == "[BLANK]"){
+								$vs_caption = "Untitled";
+							}
+							$vs_icon_link = str_replace("</a>", " ".$vs_caption."</a>", $vs_icon_link);
+							print "<div id='detailRepresentationThumbnail".$vn_icon_rep_id."' class='repThumbnailAudioLinks'>".$vs_icon_link."</div>";
+						}
+						print "</div>";
+					}		
+				}else{
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+				}
+?>
 				
 <?php
 				# Comment and Share Tools
@@ -150,21 +170,24 @@
 				}
 ?>
 				{{{<ifcount code="ca_occurrences" restrictToTypes="tour" min="1"><div class="unit"><label>Tour<ifcount code="ca_occurrences" restrictToTypes="tour" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="tour" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="tour" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences" restrictToTypes="appearance" min="1"><div class="unit"><label>Appearance<ifcount code="ca_occurrences" restrictToTypes="appearance" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="appearance" delimiter="<br/>"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount><ifcount code="ca_occurrences.related" restrictToTypes="venue" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="venue" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>, </ifcount><ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="appearance" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l><ifcount code="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" min="1"><unit relativeTo="ca_occurrences.related" restrictToTypes="tour" restrictToRelationshipTypes="included" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>: </ifcount>^ca_occurrences.preferred_labels.name<ifdef code="ca_occurrences.date_occurrence_container.date_occurrence">, ^ca_occurrences.date_occurrence_container.date_occurrence<ifdef code="ca_occurrences.date_occurrence_container.date_note_occurrence"> (^ca_occurrences.date_occurrence_container.date_note_occurrence)</ifdef></ifdef></l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences" restrictToTypes="album" min="1"><div class="unit"><label>Album<ifcount code="ca_occurrences" restrictToTypes="album" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="album" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="album" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+					</ifcount>
+					<ifcount code="ca_occurrences" restrictToTypes="reissue" min="1"><div class="unit"><label>Reissue<ifcount code="ca_occurrences" restrictToTypes="reissue" min="2">s</ifcount></label>
+						<unit relativeTo="ca_occurrences" restrictToTypes="reissue" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>
 					<ifcount code="ca_occurrences" restrictToTypes="studio_session" min="1"><div class="unit"><label>Studio Session<ifcount code="ca_occurrences" restrictToTypes="studio_session" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="studio_session" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
+						<unit relativeTo="ca_occurrences" restrictToTypes="studio_session" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit></div>
 					</ifcount>}}}
 
 				{{{<ifcount code="ca_occurrences" restrictToTypes="song" min="1">
 					<div class="unit trimText"><label>Song<ifcount code="ca_occurrences" restrictToTypes="song" min="2">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="song" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>
+						<unit relativeTo="ca_occurrences" restrictToTypes="song" delimiter="<br/>" sort="ca_occurrences.date_occurrence_container.date_occurrence"><l>^ca_occurrences.preferred_labels.name</l></unit>
 					</div>
 				</ifcount>}}}
 									

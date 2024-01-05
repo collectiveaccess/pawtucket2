@@ -37,46 +37,13 @@
 				<h1 class="page-heading heading-size-2 ps-0">Gesel’s Journey</h1>
 				<div class="col-auto">
 					<p class="page-content content-size-2">
-						Gesel R. Mason created NO BOUNDARIES: Dancing the Visions of Contemporary Black Choreographers in 2004 in part because 
-						she felt the contributions of Black artists were quickly categorized and limited in ways that diminished the range of work by, 
-						for, and about African Americans.
-						<br><br>
-						She presciently recorded the process as well as the performances themselves. “I would travel to each choreographer 
-						and work with them for about a week or so to learn each of the solos. I also interviewed them and asked why they made 
-						the work they made, what were their influences, what were their challenges.”
-						<br><br>
-						As the project evolved, her body became a living archive of over seven decades of choreographic history, starting with 
-						“Saturday’s Child” created by Donald McKayle in 1948 to “Don’t Explain” choreographed by Kyle Abraham in 2018. “I ended up 
-						immersing myself in dance history…an evolving and living dance history.”
+						{{{gesels_journey_text}}}
 					</p>
 
-					<div class="journey-links d-inline mt-5">
-						<a href="#" class="link-text" role="button">
-							Behind the Scenes 
-							<span class="ms-3">
-								<svg xmlns="http://www.w3.org/2000/svg" width="37" height="8" viewBox="0 0 37 8" fill="none">
-									<path d="M36.5735 4.12211C36.7688 3.92685 36.7688 3.61027 36.5735 3.415L33.3916 0.233024C33.1963 0.0377615 32.8797 0.0377615 32.6845 0.233024C32.4892 0.428286 32.4892 0.744868 32.6845 0.94013L35.5129 3.76856L32.6845 6.59698C32.4892 6.79225 32.4892 7.10883 32.6845 7.30409C32.8797 7.49935 33.1963 7.49935 33.3916 7.30409L36.5735 4.12211ZM0.109985 4.26855L36.22 4.26856L36.22 3.26856L0.109985 3.26855L0.109985 4.26855Z" fill="white"></path>
-								</svg>
-							</span>
-						</a>
-						<a href="#" class="link-text ms-5" role="button">
-							Photos
-							<span class="ms-3">
-								<svg xmlns="http://www.w3.org/2000/svg" width="37" height="8" viewBox="0 0 37 8" fill="none">
-									<path d="M36.5735 4.12211C36.7688 3.92685 36.7688 3.61027 36.5735 3.415L33.3916 0.233024C33.1963 0.0377615 32.8797 0.0377615 32.6845 0.233024C32.4892 0.428286 32.4892 0.744868 32.6845 0.94013L35.5129 3.76856L32.6845 6.59698C32.4892 6.79225 32.4892 7.10883 32.6845 7.30409C32.8797 7.49935 33.1963 7.49935 33.3916 7.30409L36.5735 4.12211ZM0.109985 4.26855L36.22 4.26856L36.22 3.26856L0.109985 3.26855L0.109985 4.26855Z" fill="white"></path>
-								</svg>
-							</span>
-						</a>
-						<a href="#" class="link-text ms-5" role="button">
-							Notes
-							<span class="ms-3">
-								<svg xmlns="http://www.w3.org/2000/svg" width="37" height="8" viewBox="0 0 37 8" fill="none">
-									<path d="M36.5735 4.12211C36.7688 3.92685 36.7688 3.61027 36.5735 3.415L33.3916 0.233024C33.1963 0.0377615 32.8797 0.0377615 32.6845 0.233024C32.4892 0.428286 32.4892 0.744868 32.6845 0.94013L35.5129 3.76856L32.6845 6.59698C32.4892 6.79225 32.4892 7.10883 32.6845 7.30409C32.8797 7.49935 33.1963 7.49935 33.3916 7.30409L36.5735 4.12211ZM0.109985 4.26855L36.22 4.26856L36.22 3.26856L0.109985 3.26855L0.109985 4.26855Z" fill="white"></path>
-								</svg>
-							</span>
-						</a>
- 					</div>
-					
+					<div class="storymap">
+						<iframe src="https://uploads.knightlab.com/storymapjs/0b74d90fd20a0d334c4cac057d9c9fec/gesels-journey/index.html" frameborder="0" width="100%" height="800"></iframe>
+					</div>
+
 				</div> 
 			</div>
 		</div>

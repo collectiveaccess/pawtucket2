@@ -68,20 +68,29 @@
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
 if (!$vb_ajax) {	// !ajax
+	if((!sizeof($va_criteria)) && (($vs_table == "ca_entities") || (strToLower($this->request->getAction()) == "songs"))){
+?>
+		<div class="row" style="clear:both;">
+			<div class='col-sm-12'>
+<?php 
+
+			# --- show grid of featured content if no search or filter
+			if($vs_table == "ca_entities"){
+				print $this->render("Browse/featured_entities_grid_html.php");
+			}
+			# --- show grid of featured content if no search or filter
+			if(strToLower($this->request->getAction()) == "songs"){
+				print $this->render("Browse/featured_songs_grid_html.php");
+			}
+?>	
+			</div>
+		</div>
+<?php
+	}
 ?>
 <div class="row" style="clear:both;">
 	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
-<?php 
-	if(!sizeof($va_criteria)){
-		# --- show grid of featured content if no search or filter
-		if($vs_table == "ca_entities"){
-			print $this->render("Browse/featured_entities_grid_html.php");
-		}
-		# --- show grid of featured content if no search or filter
-		if(strToLower($this->request->getAction()) == "songs"){
-			print $this->render("Browse/featured_songs_grid_html.php");
-		}
-	}
+<?php
 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -109,7 +118,7 @@ if (!$vb_ajax) {	// !ajax
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
 			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options" role="graphics-document"></i></a>
+				<a href="#" data-toggle="dropdown"><i class="fa fa-cog bGear" aria-label="Result options" role="graphics-document"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){

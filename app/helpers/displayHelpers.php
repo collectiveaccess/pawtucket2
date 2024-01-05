@@ -1579,12 +1579,24 @@ jQuery(document).ready(function() {
 			//
 			// Output related counts
 			//
-			if (is_array($va_show_counts_for = $po_view->request->config->getList($t_item->tableName().'_show_related_counts_in_inspector_for')) && sizeof($va_show_counts_for)) {
-				foreach($va_show_counts_for as $vs_rel_table) {
-					if (($vn_count = (int)$t_item->getRelatedItems($vs_rel_table, ['returnAs' => 'count', 'limit' => 100000])) > 0) {
-						$vs_buf .= caSearchLink($po_view->request, _t('%1 related %2', $vn_count, Datamodel::getTableProperty($vs_rel_table, ($vn_count === 1) ? 'NAME_SINGULAR' : 'NAME_PLURAL')), '', $vs_rel_table, $t_item->primaryKey(true).":".$t_item->getPrimaryKey())."<br/>\n";
-					}
+			if (is_array($show_counts_for = $po_view->request->config->getList($t_item->tableName().'_show_related_counts_in_inspector_for')) && sizeof($show_counts_for)) {
+				$links = [];
+				foreach($show_counts_for as $rel_table) {
+					$show_counts_config = caParseTableTypesFromSpecification($t_item->tableName(), $rel_table);
+					if(is_array($show_counts_config) && sizeof($show_counts_config)) {
+						if(sizeof($show_counts_config['types']) > 0) {
+							foreach($show_counts_config['types'] as $type_id => $type_info) {
+								if(($count = (int)$t_item->getRelatedItems($show_counts_config['table'], ['returnAs' => 'count', 'limit' => 100000, 'restrictToTypes' => [$type_id]])) > 0) {
+									$links[$show_counts_config['table'].'/'.$type_info['idno']] = caSearchLink($po_view->request, _t('%1 related %2', $count, ($count === 1) ? $type_info['name_singular'] : $type_info['name_plural']), '', $show_counts_config['table'], $t_item->primaryKey(true).":".$t_item->getPrimaryKey(), ['type_id' => $type_id]);
+								}
+							}
+						} elseif (($count = (int)$t_item->getRelatedItems($show_counts_config['table'], ['returnAs' => 'count', 'limit' => 100000])) > 0) {
+							$links[$show_counts_config['table']] = caSearchLink($po_view->request, _t('%1 related %2', $count, Datamodel::getTableProperty($show_counts_config['table'], ($count === 1) ? 'NAME_SINGULAR' : 'NAME_PLURAL')), '', $show_counts_config['table'], $t_item->primaryKey(true).":".$t_item->getPrimaryKey());
+						}
+					} 
 				}
+				ksort($links, SORT_NATURAL|SORT_FLAG_CASE);
+				$vs_buf .= join("<br/>\n", $links);
 			}
 
 			//
@@ -2041,6 +2053,59 @@ jQuery(document).ready(function() {
         }
 
         return $vs_buf;
+	}
+	# ------------------------------------------------------------------------------------------------
+	/**
+	 * Parse table and types from specifier
+	 *
+	 * @pram string $table Table for which related values are to be fetched
+	 * @param string $spec Related table specification
+	 * @param array $options Options include:
+	 *		None available yes
+	 *
+	 * @return array|null
+	 */
+	function caParseTableTypesFromSpecification(string $table, string $spec, ?array $options=null) : ?array {
+		$config = Configuration::load();
+		$tmp = explode('/', $spec);
+		
+		$rel_table = $types = null;
+		switch(sizeof($tmp)) {
+			case 1:
+				$rel_table = $spec;
+				break;
+			case 2:
+			default:
+				$rel_table = $tmp[0];
+				$types = preg_split('![;,]+!', $tmp[1]);
+				break;
+		}
+		
+		if(!($t_rel_instance = Datamodel::getInstance($rel_table, true))) {
+			return null;
+		}
+		$by_type = (bool)$config->get($rel_table.'_breakout_find_by_type_in_menu');
+		$dont_expand_hierarchically = $config->getList($rel_table.'_find_dont_expand_hierarchically') ?? [];
+		
+		if($by_type && !$types) { $types = ['*']; }
+		
+		$types_proc = [];
+		if(is_array($types)) {
+			$type_list = $t_rel_instance->getTypeList();
+			if($types[0] === '*') {
+				$types_proc = $type_list;
+			} else {
+				$type_ids = [];
+				foreach($types as $type) {
+					$type_ids = array_merge($type_ids, caMakeTypeIDList($rel_table, $type, ['dontIncludeSubtypesInTypeRestriction' => in_array($type, $dont_expand_hierarchically)]) ?? []);
+				}
+				foreach($type_ids as $type_id) {
+					if(!($type_list[$type_id] ?? null)) { continue; }
+					$types_proc[$type_id] = $type_list[$type_id];
+				}
+			}
+		}
+		return ['table' => $rel_table, 'types' => $types_proc];
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -4248,9 +4313,9 @@ jQuery(document).ready(function() {
 					$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 					$vs_tool_bar = "<div id='detailMediaToolbar'>";
 					if ($po_request->isLoggedIn()) {
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Lightbox', 'addItemForm', array($pt_subject->primaryKey() => $pt_subject->getPrimaryKey()))."\"); return false;' aria-label='"._t("Add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Lightbox', 'addItemForm', array($pt_subject->primaryKey() => $pt_subject->getPrimaryKey()))."\"); return false;' aria-label='"._t("Add item to %1", $vs_lightbox_displayname)."' title='"._t("Add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
 					}else{
-						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' aria-label='"._t("Login to add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
+						$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' aria-label='"._t("Login to add item to %1", $vs_lightbox_displayname)."' title='"._t("Login to add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
 					}
 					$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 				}
@@ -4306,25 +4371,25 @@ jQuery(document).ready(function() {
 		$va_detail_type_config = caGetDetailTypeConfig($ps_context);
 
 		if (!caGetOption(['no_overlay'], $va_rep_display_info, false)) {
-			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('context' => $ps_context, 'id' => $pn_subject_id, 'representation_id' => $vn_rep_id, 'set_id' => caGetOption('set_id', $pa_options, 0), 'overlay' => 1))."\", function() { var url = jQuery(\"#\" + caMediaPanel.getPanelID()).data(\"reloadUrl\"); if(url) { window.location = url; } }); return false;' aria-label='"._t("Open Media View")."'><span class='glyphicon glyphicon-zoom-in' role='graphics-document' aria-label='Open Media View'></span></a>\n";
+			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('context' => $ps_context, 'id' => $pn_subject_id, 'representation_id' => $vn_rep_id, 'set_id' => caGetOption('set_id', $pa_options, 0), 'overlay' => 1))."\", function() { var url = jQuery(\"#\" + caMediaPanel.getPanelID()).data(\"reloadUrl\"); if(url) { window.location = url; } }); return false;' aria-label='"._t("Open Media View")."' title='"._t("Open Media View")."'><span class='glyphicon glyphicon-zoom-in' role='graphics-document' aria-label='Open Media View'></span></a>\n";
 		}
 
 		if (is_null($vb_show_compare = caGetOption('compare', $va_detail_type_config['options'], null))) {
 		    $vb_show_compare = caGetOption('compare', $va_rep_display_info, false);
 		}
 		if ($vb_show_compare) {
-		   $vs_tool_bar .= "<a href='#' class='compare_link' aria-label='Compare' data-id='representation:{$vn_rep_id}'><i class='fa fa-clone' aria-hidden='true' role='graphics-document' aria-label='Compare'></i></a>";
+		   $vs_tool_bar .= "<a href='#' class='compare_link' aria-label='Compare' data-id='representation:{$vn_rep_id}'><i class='fa fa-clone' aria-hidden='true' role='graphics-document' aria-label='Compare' title='Compare'></i></a>";
 		}
 
 		if(($ps_table == "ca_objects") && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-			$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array('context' => $ps_context, (is_object($pt_subject) && $pt_subject->primaryKey()) ? $pt_subject->primaryKey() : "object_id" => $pn_subject_id))."\"); return false;' aria-label='".$va_add_to_set_link_info['link_text']."'>".$va_add_to_set_link_info['icon']."</a>\n";
+			$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array('context' => $ps_context, (is_object($pt_subject) && $pt_subject->primaryKey()) ? $pt_subject->primaryKey() : "object_id" => $pn_subject_id))."\"); return false;' aria-label='".$va_add_to_set_link_info['link_text']."' title='".$va_add_to_set_link_info['link_text']."'>".$va_add_to_set_link_info['icon']."</a>\n";
 		}
 		if(caObjectsDisplayDownloadLink($po_request, $pn_subject_id, $pt_representation)){
 			# -- get version to download configured in media_display.conf
 			$vs_download_version = caGetAvailableDownloadVersions($po_request, $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'), ['returnVersionForUser' => true]);
 			
 			if($vs_download_version){
-				$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt' role='graphics-document' aria-label='Download'></span>", 'dlButton', 'Detail', 'DownloadRepresentation', '', array('context' => $ps_context, 'representation_id' => $pt_representation->getPrimaryKey(), "id" => $pn_subject_id, "download" => 1, "version" => $vs_download_version), array("aria-label" => _t("Download")));
+				$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt' role='graphics-document' aria-label='Download' title='Download'></span>", 'dlButton', 'Detail', 'DownloadRepresentation', '', array('context' => $ps_context, 'representation_id' => $pt_representation->getPrimaryKey(), "id" => $pn_subject_id, "download" => 1, "version" => $vs_download_version), array("aria-label" => _t("Download")));
 			}
 		}
 		$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
@@ -4335,7 +4400,7 @@ jQuery(document).ready(function() {
 	/**
 	 *
 	 */
-	function caGetAvailableDownloadVersions(RequestHTTP $request, string $mimetype, ?array $options=null) {
+	function caGetAvailableDownloadVersions(RequestHTTP $request, ?string $mimetype, ?array $options=null) {
 		$download_display_info = caGetMediaDisplayInfo('download', $mimetype);
 		
 		$download_version = caGetOption(['download_version', 'display_version'], $download_display_info);

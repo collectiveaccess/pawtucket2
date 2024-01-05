@@ -300,7 +300,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 
                   <div class="col-xs-6 col-sm-6 col-md-6"> 
                     <div class="paragraph">
-                          <div class="text__eyebrow color__gray">Intellectual organization and arrangement</div>
+                          <div class="text__eyebrow color__gray" style="line-height: 26px;">Intellectual organization and arrangement</div>
                           <div class="text__body-3">
                                 ^ca_collections.cfaIntellectualArrangement%convertLineBreaks=1
                           </div>
@@ -332,7 +332,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
 			$item_count += $qr_objects->numHits();
 		
 			while($qr_objects->nextHit()) {
-				if($qr_objects->get('ca_object_representations.representation_id', ['checkAccess' => [1]])) {
+				if($qr_objects->get('ca_object_representations.representation_id', ['restrictToTypes' => ['film', 'audio'], 'checkAccess' => [1]])) {
 					$viewable_count++;
 				}
 			}
@@ -732,6 +732,17 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                 <?php
                   }
                 ?>
+
+                <ifcount code="ca_collections.children" min="0" max="0">
+                  <ifdef code="ca_collections.cfaIntellectualArrangement">
+                    <div class="paragraph">
+                      <div class="text__eyebrow color__gray" style="line-height: 26px;">Intellectual organization and arrangement</div>
+                      <div class="text__body-3">
+                          ^ca_collections.cfaIntellectualArrangement
+                      </div>
+                    </div>
+                  </ifdef>
+                </ifcount>
 				
                 <ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,complier,source,participant">
                     <div class="paragraph" style="break-before: column;">
@@ -750,17 +761,6 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
                         </div>
                       </div>
                     </div>
-                </ifcount>
-
-                <ifcount code="ca_collections.children" min="0" max="0">
-                  <ifdef code="ca_collections.cfaIntellectualArrangement">
-                    <div class="paragraph">
-                      <div class="text__eyebrow color__gray">Intellectual organization and arrangement</div>
-                      <div class="text__body-3">
-                          ^ca_collections.cfaIntellectualArrangement
-                      </div>
-                    </div>
-                  </ifdef>
                 </ifcount>
 
               </div>
@@ -837,7 +837,7 @@ $media = $t_item->get('ca_object_representations.media.large', ['returnAsArray' 
       collapsedHeight: 200
     });
 	
-    $('#related-content').load('https://cfarchives.wpengine.com/wp-admin/admin-ajax.php?action=ca_related&type=collection&id=<?= $t_item->get("ca_collections.collection_id"); ?>', {}, ca_init_slider);
+    $('#related-content').load('https://chicagofilmarchives.org/wp-admin/admin-ajax.php?action=ca_related&type=collection&id=<?= $t_item->get("ca_collections.collection_id"); ?>', {}, ca_init_slider);
 
     function ca_init_slider(responseText, textStatus, xhr) {
     	if(!responseText || (responseText.length == 0)) {

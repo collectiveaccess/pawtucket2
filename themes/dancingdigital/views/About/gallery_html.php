@@ -29,6 +29,8 @@
  *
  * ----------------------------------------------------------------------
  */
+ $t_set = ca_sets::findAsInstance(['set_code' => 'gallery'], ['checkAccess' => caGetUserAccessValues($this->request)]);
+ $set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'small']) : [];
  ?>
  <main data-barba="container" data-barba-namespace="gallery" class="barba-main-container gallery-section">
 	<div class="general-page">
@@ -36,9 +38,33 @@
 			<div class="row justify-content-center">
 				<h1 class="page-heading heading-size-2 ps-0">Gallery</h1>
 				<div class="col-auto">
-					<p class="page-content content-size-2"></p>
+					<p class="page-content content-size-2">
+						<?= $t_set->get('ca_sets.set_description'); ?>
+					</p>
+
+					<div class="gallery-grid z-3">
+						<?php
+							foreach($set_items as $item) {	
+								$item = array_shift($item);
+								//print_R($item);
+						?>
+							<div class="gallery-item">
+								<!-- <?= $item['representation_tag']; ?> -->
+								<?= caDetailLink($this->request, $item['representation_tag'], 'link-text', 'ca_objects', $item['row_id']); ?>
+								<!-- <?= caDetailLink($this->request, $item['name'], 'link-text', 'ca_objects', $item['row_id']); ?> -->
+							</div>
+						<?php
+							}
+						?>
+					</div>
+
 				</div> 
 			</div>
+		</div>
+		<div class="nb-graphic position-fixed z-1" style="left:-80px;top:600px;transform: rotate(-250deg);">
+			<svg width="475" height="495" viewBox="0 0 475 495" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<circle opacity="0.7" cx="268" cy="268" r="267" stroke="white" stroke-opacity="0.07" stroke-width="2"/>
+			</svg>
 		</div>
 	</div>
 </main>

@@ -76,7 +76,7 @@
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
+	<title><?php print strip_tags((MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name")); ?></title>
 	
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -105,7 +105,7 @@
 	if ($vb_has_user_links) {
 ?>
 				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
-					<span class="sr-only"><?php print ($this->request->isLoggedIn()) ? _t("User Options") : _t("Create Account"); ?></span>
+					<span class="sr-only"><?php print ($this->request->isLoggedIn()) ? _t("User Options") : _t("Login"); ?></span>
 					<span class="glyphicon glyphicon-user"></span>
 				</button>
 <?php
@@ -141,7 +141,7 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" role="graphics-document" aria-label="<?php print ($this->request->isLoggedIn()) ? _t("User Options") : _t("Create Account"); ?>"></span></a>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" role="graphics-document" aria-label="<?php print ($this->request->isLoggedIn()) ? _t("User Options") : _t("Login"); ?>"></span></a>
 						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
@@ -170,7 +170,7 @@
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?> role="menuitem" tabindex="0"><?php print caNavLink($this->request, _t("About the Archive"), "", "", "About", ""); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?> role="menuitem" tabindex="0"><?php print caNavLink($this->request, _t("Galleries"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Listing") ? 'class="active"' : ''; ?> role="menuitem" tabindex="0"><?php print caNavLink($this->request, _t("Subject Guides"), "", "", "Listing", "subject_guides"); ?></li>
+					<li <?php print ($this->request->getController() == "Listing") ? 'class="active"' : ''; ?> role="menuitem" tabindex="0"><?php print caNavLink($this->request, _t("Projects"), "", "", "Listing", "projects"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

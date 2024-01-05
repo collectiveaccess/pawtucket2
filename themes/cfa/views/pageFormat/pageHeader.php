@@ -113,20 +113,9 @@ $va_access_values = caGetUserAccessValues($this->request);
 	<script type="text/javascript" src="https://chicagofilmarchives.org/wp-content/themes/Chicago-Film-Archives/assets/dist/app.min.esbuild.js?ver=404" id="script-1-0-js"></script>  
 
     <!-- Matomo -->
-    <script>
-    var _paq = window._paq = window._paq || [];
-    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-    (function() {
-        var u="https://chicagofilmarchives.matomo.cloud/";
-        _paq.push(['setTrackerUrl', u+'matomo.php']);
-        _paq.push(['setSiteId', '1']);
-        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.async=true; g.src='//cdn.matomo.cloud/chicagofilmarchives.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s);
-    })();
-    </script>
-    <!-- End Matomo Code -->
+<script> var _paq = window._paq = window._paq || []; /* tracker methods like "setCustomDimension" should be called before "trackPageView" */ _paq.push(["setDomains", [".chicagofilmarchives.matomo.cloud",".chicagofilmarchives.org","*.collections.chicagofilmarchives.org"]]); _paq.push(["enableCrossDomainLinking"]); _paq.push(['trackPageView']); _paq.push(['enableLinkTracking']); (function() { var u="https://chicagofilmarchives0.matomo.cloud/"; _paq.push(['setTrackerUrl', u+'matomo.php']); _paq.push(['setSiteId', '1']); var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.async=true; g.src='//cdn.matomo.cloud/chicagofilmarchives0.matomo.cloud/matomo.js'; s.parentNode.insertBefore(g,s); })();
+</script>
+<!-- End Matomo Code -->
 
 	<style>
 		body {

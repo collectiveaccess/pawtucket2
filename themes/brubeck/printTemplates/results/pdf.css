@@ -29,7 +29,7 @@ body{ font: "helvetica, sans-serif"; }
 .imageTinyPlaceholder { width: 120px; height: 100px; border: 1px solid #eee; background-color: #eee; margin: 0 5px 0 0; border-radius: 5px;}
 .displayHeader {border-bottom:1px solid #666; color:#666; font-weight:bold;}
 .displayValue {}
-.title {font-weight:bold; font-size: 12px;}
+.title {font-weight:normal; font-size: 12px;}
 .metadata {line-height:1.1em;}
 .metaBlock {margin-left:0px; margin-left:0px; height:auto; width:400px;}
 

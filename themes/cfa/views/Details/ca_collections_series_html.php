@@ -176,7 +176,6 @@ MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representatio
                       <div class="text__body-3">
                         <div class="unit">
                           <unit relativeTo="ca_list_items" delimiter="<br/>">
-                            <!-- <a href="/Search/objects/search/^ca_list_items.preferred_labels.name_plural"><span class="link-orange">^ca_list_items.preferred_labels.name_plural</span></a> -->
                             <a href="/Browse/Objects/facet/subject//id/^ca_list_items.item_id"><span class="link-orange">^ca_list_items.preferred_labels.name_plural</span></a>
                           </unit>
                         </div>
@@ -199,7 +198,7 @@ MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representatio
           <div class="int module-tabs">
             <div class="header">
               
-              <h4 class="text-align-center text__headline-4 title mb-3">Sub-Series</h4>
+              <h4 class="text-align-center text__headline-4 title mb-3">Subseries</h4>
               <div class="subseries-grid">
                 <ifcount code="ca_collections.children" min="1">
                   <unit relativeTo="ca_collections.children" delimiter="" restrictToTypes="subseries" sort="ca_collections.idno_sort">
@@ -249,7 +248,7 @@ MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representatio
 			$item_count += $qr_objects->numHits();
 		
 			while($qr_objects->nextHit()) {
-				if($qr_objects->get('ca_object_representations.representation_id', ['checkAccess' => [1]])) {
+				if($qr_objects->get('ca_object_representations.representation_id', ['restrictToTypes' => ['film', 'audio'], 'checkAccess' => [1]])) {
 					$viewable_count++;
 				}
 			}
@@ -375,21 +374,6 @@ MetaTagManager::addMeta("og:image:height", $t_root->get('ca_object_representatio
                           <unit relativeTo="ca_objects" delimiter="">
                             <if rule="^ca_object_representations.access = 'yes'">
                               <if rule="^ca_object_representations.type_id%convertCodesToIdno=1 =~ /(audio|film|3d_object|back|front|document)/i">
-
-                                <!-- <div class="item-item item">
-                                  <ifdef code="ca_object_representations.media.small">
-                                    <div class="collItemImg"><l>^ca_object_representations.media.large<l></div>
-                                  </ifdef>
-                                  <ifnotdef code="ca_object_representations.media.small">
-                                    <div class="collItemImgPlaceholder"><a></a></div>
-                                  </ifnotdef>
-                                  <div class="text-align-center info ">
-                                    <div class="text__eyebrow color__gray format block-xxxs">^ca_objects.type_id</div>
-                                    <div class="title text__promo-4 block-xxxs"><a href="" class="color-link-orange"><l>^ca_objects.preferred_labels<l></a></div>
-                                    <div class="text__body-4 year color__gray" style="text-transform: none;">^ca_occurrences.cfaDateProduced</div>
-                                  </div>
-                                </div> -->
-
                                 <div class="item-item item">
                                   <div class="overlay-image block-xxs">
                                       <div class="img-wrapper">
