@@ -29,11 +29,6 @@
  * 
  * ----------------------------------------------------------------------
  */
- 
- /**
-   *
-   */
-
 require_once(__CA_LIB_DIR__."/IBundleProvider.php");
 require_once(__CA_LIB_DIR__."/BundlableLabelableBaseModelWithAttributes.php");
 require_once(__CA_LIB_DIR__.'/SetUniqueIdnoTrait.php'); 
@@ -1788,7 +1783,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 * @param array $options Options are passed through to caMakeSearchResult()
 	 * @seealso caMakeSearchResult()
 	 */
-	public function getItemsAsSearchResult($pa_options=null) {
+	public function getItemsAsSearchResult($options=null) {
 		if(!$this->isLoaded()) { return null; }
 		$ids = $this->getItems(['idsOnly' => true]);
 
