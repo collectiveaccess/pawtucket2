@@ -713,7 +713,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 					$va_restrict_to_type_ids[] = (int)$vm_type;
 				} else {
 					# --- look up code of set type
-					$vn_type_id = caGetListItemID('set_types', $pm_type);
+					$vn_type_id = caGetListItemID('set_types', $vm_type);
 					if($vn_type_id){
 						$va_restrict_to_type_ids[] = (int) $vn_type_id;
 					}
