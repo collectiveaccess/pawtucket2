@@ -29,11 +29,6 @@
  * 
  * ----------------------------------------------------------------------
  */
- 
- /**
-   *
-   */
-
 require_once(__CA_LIB_DIR__."/IBundleProvider.php");
 require_once(__CA_LIB_DIR__."/BundlableLabelableBaseModelWithAttributes.php");
 require_once(__CA_LIB_DIR__.'/SetUniqueIdnoTrait.php'); 
@@ -713,7 +708,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 					$va_restrict_to_type_ids[] = (int)$vm_type;
 				} else {
 					# --- look up code of set type
-					$vn_type_id = caGetListItemID('set_types', $pm_type);
+					$vn_type_id = caGetListItemID('set_types', $vm_type);
 					if($vn_type_id){
 						$va_restrict_to_type_ids[] = (int) $vn_type_id;
 					}
@@ -1788,7 +1783,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 * @param array $options Options are passed through to caMakeSearchResult()
 	 * @seealso caMakeSearchResult()
 	 */
-	public function getItemsAsSearchResult($pa_options=null) {
+	public function getItemsAsSearchResult($options=null) {
 		if(!$this->isLoaded()) { return null; }
 		$ids = $this->getItems(['idsOnly' => true]);
 
