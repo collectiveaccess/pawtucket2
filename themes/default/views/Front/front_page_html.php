@@ -29,15 +29,47 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
+
+	// print $this->render("Front/featured_set_slideshow_html.php");
+
+	$va_access_values = $this->getVar("access_values");
+	$vs_hero = $this->request->getParameter("hero", pString);
+	if(!$vs_hero){
+ 		$vs_hero = rand(1, 3);
+	}
 ?>
+
+<div class="parallax hero<?php print $vs_hero; ?>">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-auto">
+				<div class="heroSearch">
+					<h1>
+						<div class="line1">Welcome to</div>
+						<div class="line2">Site Name</div>
+						<div class="line3">{{{hp_search_text}}}</div>
+					</h1>
+
+					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+						<div class="input-group mb-3">
+							<input type="text" class="form-control" id="heroSearchInput" placeholder="Search" aria-label="Search" aria-describedby="Search bar">
+							<button type="submit" class="btn btn-secondary" id="heroSearchButton"><i class="bi bi-search"></i></button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
 	<div class="row">
 		<div class="col-sm-8">
-			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
+			<!-- <H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1> -->
 		</div><!--end col-sm-8-->
 		<div class="col-sm-4">
-<?php
-		print $this->render("Front/gallery_set_links_html.php");
-?>
+			<?php
+				// print $this->render("Front/gallery_set_links_html.php");
+			?>
 		</div> <!--end col-sm-4-->	
 	</div><!-- end row -->

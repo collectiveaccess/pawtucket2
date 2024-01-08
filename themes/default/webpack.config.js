@@ -11,7 +11,7 @@ module.exports = {
 	},
 
 	output: {
-	  path: path.resolve(__dirname, 'assets'),
+	  path: path.resolve(__dirname, 'assets/npm'),
 	  filename: '[name].js',
 		libraryTarget: 'var',
 		library: '_initPawtucketApps'
@@ -75,19 +75,17 @@ module.exports = {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader']
       },
-      { test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/, 
+      { 
+      	test: /\.(png|eot|ttf|svg|otf|gif)$/, 
         use: [{
             loader: "url-loader",
             options: { "limit": 100000 }
         }]
-       },
-       {
-        test: require.resolve('jquery'),
-        use: [{
-            loader: 'expose-loader',
-            options: '$'
-        }]
-    }
+      },
+      {
+		test: /\.(woff|woff2|eot|ttf|otf)$/i,
+		type: "asset/inline",
+      },
     ]
   },
   plugins: [
