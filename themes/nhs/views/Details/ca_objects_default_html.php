@@ -155,6 +155,45 @@
 		<div class="row">
 			<div class='col-sm-12'>
 <?php
+	$vs_tmp = $t_object->getWithTemplate("<ifcount code='ca_occurrences.related' min='1' restrictToTypes='event'><unit relativeTo='ca_occurrences' min='1' delimiter=';;;' restrictToTypes='event' sort='ca_occurrences.exhibit_date'><l><div class='bgLightBlue text-center'>^ca_occurrences.preferred_labels.name<ifdef code='ca_occurrences.exhibit_date'>, ^ca_occurrences.exhibit_date</ifdef></div></l>
+										</unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
+	if($vs_tmp){
+		$va_events = explode(";;;", $vs_tmp);
+	
+		if(is_array($va_events) && sizeof($va_events)){
+			$va_rel_events = array();
+			$i = 0;
+?>
+			<div class="row">
+				<div class="col-sm-12">
+					<H3>Events</H3>
+<?php
+
+					$i = 0;
+					$col = 0;
+					foreach($va_events as $vs_event_info){
+						if($col == 0){
+							print "<div class='row'>";
+						}
+						print "<div class='col-sm-4'>".$vs_event_info."</div>";
+						$col++;
+						if($col == 3){
+							$col = 0;
+							print "</div>";
+						}
+						$i++;
+					}
+					if($col > 0){
+						print "</div>";
+					}
+?>			
+			
+				</div>
+			</div>
+<?php
+		}
+	}
+
 	$vs_tmp = $t_object->getWithTemplate("<ifcount code='ca_entities' min='1' restrictToTypes='bipoc_ent'><unit relativeTo='ca_entities' min='1' delimiter=';;;' restrictToTypes='bipoc_ent'><l><div class='bgLightBlue text-center'>^ca_entities.preferred_labels.displayname</div></l>
 										</unit></ifcount>", array("checkAccess" => $va_access_values));
 	if($vs_tmp){
@@ -194,44 +233,6 @@
 		}
 	}
 
-	$vs_tmp = $t_object->getWithTemplate("<ifcount code='ca_occurrences.related' min='1' restrictToTypes='event'><unit relativeTo='ca_occurrences' min='1' delimiter=';;;' restrictToTypes='event' sort='ca_occurrences.exhibit_date'><l><div class='bgLightBlue text-center'>^ca_occurrences.preferred_labels.name<ifdef code='ca_occurrences.exhibit_date'>, ^ca_occurrences.exhibit_date</ifdef></div></l>
-										</unit></ifcount>", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibit_date"));
-	if($vs_tmp){
-		$va_events = explode(";;;", $vs_tmp);
-	
-		if(is_array($va_events) && sizeof($va_events)){
-			$va_rel_events = array();
-			$i = 0;
-?>
-			<div class="row">
-				<div class="col-sm-12">
-					<H3>Events</H3>
-<?php
-
-					$i = 0;
-					$col = 0;
-					foreach($va_events as $vs_event_info){
-						if($col == 0){
-							print "<div class='row'>";
-						}
-						print "<div class='col-sm-4'>".$vs_event_info."</div>";
-						$col++;
-						if($col == 3){
-							$col = 0;
-							print "</div>";
-						}
-						$i++;
-					}
-					if($col > 0){
-						print "</div>";
-					}
-?>			
-			
-				</div>
-			</div>
-<?php
-		}
-	}
 ?>	
 
 {{{<ifdef code="ca_objects.children.object_id">
