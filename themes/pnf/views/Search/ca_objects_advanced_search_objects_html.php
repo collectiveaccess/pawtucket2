@@ -28,12 +28,8 @@
 
 	</div>	
 	<div class='row'>
-		<div class="col-sm-6 field">
-			<?php print _t("Title"); ?><br/>
-			{{{ca_objects.preferred_labels.name%width=220px}}}
-		</div>
-		<div class="col-sm-6 field">
-			<?php print _t("CCSSUSA Uniform Title"); ?><br/>
+		<div class="col-sm-12 field">
+			<?php print _t("Uniform Title"); ?><br/>
 			{{{ca_objects.CCSSUSA_Uniform}}}
 		</div>			
 			
