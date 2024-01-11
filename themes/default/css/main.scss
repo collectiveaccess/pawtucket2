@@ -1,4 +1,11 @@
 @import "bootstrap/scss/bootstrap";
+
+$white: #fff;
+$black: #000;
+$header-color: #F8F9FA;
+$footer-color: #F8F9FA;
+$detail-link-color: #000;
+
 /* ------------------------- Header ------------------------- */ 
 .navbar{
     .navbar-nav{
@@ -13,14 +20,14 @@
             border-right: 0;
         }
         #nav-search-btn{
-            background-color: #FFF;
-            color: #000;
+            background-color: $white;
+            color: $black;
         }
         ul.dropdown-menu {
             border: 0px;
             border-radius: 0;
             box-shadow: none;
-            background-color: #F8F9FA;
+            background-color: $header-color;
             width: -webkit-fill-available;
             position: fixed !important;
             top: 0px;
@@ -42,7 +49,7 @@
 
 /* ------------------------- Footer ------------------------- */
 footer{
-    background-color: #F8F9FA;
+    background-color: $footer-color
 }
 
 
@@ -77,7 +84,7 @@ footer{
         box-shadow: 0 2px 14px 0 rgba(0, 0, 0, .3);
 
         H1 {
-            color: #FFF;
+            color: $white;
             text-align: center;
             line-height: 1.1em;
             margin: 0px;
@@ -131,8 +138,8 @@ footer{
                 button{
                     border: 0px;
                     border-radius: 0px;
-                    background-color: #FFF;
-                    color: #000;
+                    background-color: $white;
+                    color: $black;
                 }
             }
         }
@@ -166,5 +173,31 @@ footer{
     /* ipad and mobile disable background-attachment: fixed; fallback to no parallax so at least see image */
     .parallax {
         background-attachment: scroll;
+    }
+}
+
+
+/* ------------------------- Details ------------------------- */
+
+.detail-container{
+    margin-top: 20px;
+
+    a{
+        color: $detail-link-color !important;
+        text-decoration: none;
+    }
+    div.unit{
+        margin-bottom: 15px;
+    }
+    
+    .partial-collapse.collapse{
+        overflow: hidden;
+        height: 100%;
+        max-height: 80px;
+    }
+    .partial-collapse.collapse.show {
+        overflow: unset;
+        max-height: unset;
+        height: 100%;
     }
 }

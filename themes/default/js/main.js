@@ -1,6 +1,7 @@
 'use strict';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as bootstrap from 'bootstrap';
 require('bootstrap-icons/font/bootstrap-icons.css');
 
 const domContainer = document.querySelector("#pawtucketApp");
