@@ -25,3 +25,4 @@ setup.php
 *node_modules*
 themes/default/assets/npm
 package-lock.json
+test.php
