@@ -190,14 +190,24 @@ footer{
         margin-bottom: 15px;
     }
     
-    .partial-collapse.collapse{
+    .trim.collapse{
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 10;
         overflow: hidden;
-        height: 100%;
-        max-height: 80px;
     }
-    .partial-collapse.collapse.show {
+    .trim.collapse.show{
+        display: block;
+        -webkit-line-clamp: unset;
         overflow: unset;
-        max-height: unset;
-        height: 100%;
+    }
+    .collapsing{
+        transition: 2.5s;
+    }
+    .read-more-btn[aria-expanded="false"]{
+        content: '+ Read More';
+    }
+    .read-more-btn[aria-expanded="true"]{
+        content: '- Read Less';
     }
 }

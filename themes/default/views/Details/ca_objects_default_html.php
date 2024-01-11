@@ -111,10 +111,10 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 			{{{<ifdef code="ca_objects.work_description">
 				<div class='unit'>
 					<h6><?= _t('Description'); ?></h6>
-					<div class="partial-collapse" id="partialCollapse">
+					<div class="trim collapse" id="collapseExample">
 						^ca_objects.work_description
 					</div>
-					<button class="btn btn-light mt-2" type="button" data-bs-toggle="partial-collapse" data-bs-target="#partialCollapse" aria-expanded="false" aria-controls="partialCollapse">
+					<button class="btn btn-light mt-2 read-more-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
 						Read More
 					</button>
 				</div>
