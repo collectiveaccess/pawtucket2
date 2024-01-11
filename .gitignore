@@ -22,3 +22,6 @@ setup.php
 /support/scripts/*.php
 /support/scripts/*.sh
 /vendor/
+*node_modules*
+themes/default/assets/npm
+package-lock.json
