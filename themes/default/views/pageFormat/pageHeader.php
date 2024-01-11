@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2022 Whirl-i-Gig
+ * Copyright 2014-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,18 +33,17 @@
 	<?= MetaTagManager::getHTML(); ?>
 	<?= AssetLoadManager::getLoadHTML($this->request); ?>
 	
-	<title><?= (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
+	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 
 	<script type="text/javascript">
 		let pawtucketUIApps = {};
 	</script>
 </head>
-
 <body id="pawtucketApp">
 	
 	<nav class="navbar navbar-expand-lg bg-body-tertiary">
 		<div class="container-fluid">
-			<a class="navbar-brand" href="#">
+			<a class="navbar-brand" href="/Front">
 				<img src="/themes/default/assets/logo.svg" alt="Logo" width="210" height="20" class="d-inline-block align-text-top">
 			</a>
 			
@@ -55,30 +54,31 @@
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">
 					<li class="nav-item">
-						<a class="nav-link" href="#">About</a>
+						<a class="nav-link" href="/About"><?= _t('About'); ?></a>
 					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							Browse
+							<?= _t('Browse'); ?>
 						</a>
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="#">Photos</a></li>
-							<li><a class="dropdown-item" href="#">Videos</a></li>
-							<li><a class="dropdown-item" href="#">Postcards</a></li>
+							<li><a class="dropdown-item" href="/Browse/objects"><?= _t('Objects'); ?></a></li>
+							<li><a class="dropdown-item" href="/Browse/entities"><?= _t('Entities'); ?></a></li>
+							<li><a class="dropdown-item" href="/Browse/occurrences"><?= _t('Occurrences'); ?></a></li>
+							<li><a class="dropdown-item" href="/Browse/places"><?= _t('Places'); ?></a></li>
 						</ul>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#">Collections</a>
+						<a class="nav-link" href="/Browse/Collections"><?= _t('Collections'); ?></a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#">Contact</a>
+						<a class="nav-link" href="/Contact"><?= _t('Contact'); ?></a>
 					</li>
 					<li class="nav-item dropdown">
 						<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						Login
+							<?= _t('Login'); ?>
 						</a>
 						<div class="dropdown-menu p-2">
-							<form action="">
+							<form action="<?= caNavUrl($this->request, '', 'LoginReg', 'login'); ?>">
 								<div class="form-group my-1">
 									<input type="text" name="username" class="form-control form-control-sm" placeholder="Username">
 								</div>
@@ -87,14 +87,14 @@
 									<button class="btn btn-secondary btn-sm" type="submit"><i class="bi bi-arrow-right-circle-fill"></i></button>
 								</div>
 							</form>
-							<a href="" class="dropdown-item p-2">Forgot Password?</a>
-							<a href="" class="dropdown-item p-2">Register</a>
+							<a href="" class="dropdown-item p-2"><?= _t('Forgot Password'); ?></a>
+							<a href="" class="dropdown-item p-2"><?= _t('Register'); ?></a>
 						</div>
 					</li>
 				</ul>
-				<form role="search">
+				<form action="<?= caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" role="search">
 					<div class="input-group">
-						<input type="text" class="form-control rounded-0" id="nav-search-input" placeholder="Search" aria-label="Search">
+						<input type="text" name="search" class="form-control rounded-0" id="nav-search-input" placeholder="Search" aria-label="Search">
 						<button type="submit" class="btn rounded-0" id="nav-search-btn"><i class="bi bi-search"></i></button>
 					</div>
 				</form>
