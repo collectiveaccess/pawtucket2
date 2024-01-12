@@ -38,36 +38,46 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 
 <div class="container detail-container">
 
-	<div class="row border-bottom mb-3">
+	<div class="row border-bottom">
 		<div class="col">
 			<H1>{{{<l>^ca_objects.preferred_labels.name</l>}}}</H1>
 		</div>
 	</div>
 
-	<div class="row mb-3">
-		<div class="col-1 mb-2">
-			{{{previousLink}}} {{{resultsLink}}}
+	<div class="row justify-content-between">
+		<div class="col-auto">
+			{{{previousLink}}}
 		</div>
+		<div class="col-auto">
+			{{{resultsLink}}}
+		</div>
+		<div class="col-auto">
+			{{{nextLink}}}
+		</div>
+	</div>
 
-		<div class="col-10">
-			<?php
-				if ($vn_share_enabled | $vn_pdf_enabled) {	
-			?>
-				<div class='row mb-2'>
-			<?php
-					if ($vn_share_enabled) {
-						print '<div class="col-auto"><button class="btn btn-sm btn-light"><i class="bi bi-share me-1"></i> <?= _t("Share"); ?>'.$this->getVar("shareLink")."</button></div>";
-					}
-					if ($vn_pdf_enabled) {
-						print "<div class='col-auto'><button class='btn btn-sm btn-light'><i class='bi bi-download me-1'></i> <?= _t('Download'); ?>".caDetailLink($this->request, "Download as PDF", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</button></div>";
-					}
-			?>
-					<div class='col-auto'><button class="btn btn-sm btn-light" onclick="copyURL()"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button></div>
-				</div>
-			<?php
-				}				
-			?>
+	<div class="row justify-content-center">
+		<?php
+			if ($vn_share_enabled | $vn_pdf_enabled) {	
+		?>
+			<!-- <div class='row'> -->
+		<?php
+				if ($vn_share_enabled) {
+					print '<div class="col-auto"><button class="btn btn-sm btn-light"><i class="bi bi-share me-1"></i> <?= _t("Share"); ?>'.$this->getVar("shareLink")."</button></div>";
+				}
+				if ($vn_pdf_enabled) {
+					print "<div class='col-auto'><button class='btn btn-sm btn-light'><i class='bi bi-download me-1'></i> <?= _t('Download'); ?>".caDetailLink($this->request, "Download as PDF", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</button></div>";
+				}
+		?>
+				<div class='col-auto'><button class="btn btn-sm btn-light"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button></div>
+			<!-- </div> -->
+		<?php
+			}				
+		?>
+	</div>
 
+	<div class="row justify-content-center">
+		<div class="col-auto">
 			<!-- {{{representationViewer}}} -->
 			{{{<ifdef code="ca_object_representations.media.large">
 				<div class="unit">
@@ -80,15 +90,11 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 			</ifnotdef>}}}
 			
 		</div>
-
-		<div class="col-1">
-			{{{nextLink}}}
-		</div>
 	</div>
 
-	<div class="row row-cols-sm-1 row-cols-md-2 mt-5 justify-content-center">
+	<div class="row row-cols-sm-1 row-cols-md-2 justify-content-center">
 
-		<div class="col-sm-5 col-md-5">						
+		<div class="col-auto">						
 			{{{<div class="unit">
 				<h6><?= _t('Type Id'); ?></h6>
 				^ca_objects.type_id
@@ -100,13 +106,6 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 					^ca_objects.idno
 				</div>
 			</ifdef>}}}
-			
-			<!-- {{{<ifdef code="ca_objects.work_description">
-				<div class='unit'>
-					<h6><?= _t('Description'); ?></h6>
-					<span class="trimText">^ca_objects.work_description</span>
-				</div>
-			</ifdef>}}} -->
 
 			{{{<ifdef code="ca_objects.work_description">
 				<div class='unit'>
@@ -114,14 +113,14 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 					<div class="trim collapse" id="collapseExample">
 						^ca_objects.work_description
 					</div>
-					<button class="btn btn-light mt-2 read-more-btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-						Read More
-					</button>
+					<a class="btn btn-light btn-sm mt-2 read-more-btn" role="button" data-bs-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+						
+					</a>
 				</div>
 			</ifdef>}}}
 		</div>
 
-		<div class="col-sm-5 col-md-5">
+		<div class="col-auto">
 			{{{<ifcount code="ca_entities" min="1"><div class="unit">
 				<ifcount code="ca_entities" min="1" max="1"><h6><?= _t('Related person'); ?></h6></ifcount>
 				<ifcount code="ca_entities" min="2"><h6><?= _t('Related people'); ?></h6></ifcount>
@@ -149,18 +148,5 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 	</div>
 
 </div>
-
-<script type='text/javascript'>
-	function copyURL() {
-		navigator.clipboard.writeText(window.location.href);
-	}
-
-	jQuery(document).ready(function() {
-		$('.trimText').readmore({
-		  speed: 75,
-		  maxHeight: 120
-		});
-	});
-</script>
 
 </div>

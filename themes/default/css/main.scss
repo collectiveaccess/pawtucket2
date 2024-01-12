@@ -182,6 +182,13 @@ footer{
 .detail-container{
     margin-top: 20px;
 
+    .row{
+        margin-bottom: 20px;
+    }
+    .col-auto{
+        margin-bottom: 10px;
+    }
+
     a{
         color: $detail-link-color !important;
         text-decoration: none;
@@ -191,23 +198,29 @@ footer{
     }
     
     .trim.collapse{
+        height: 200px;
         display: -webkit-box;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 10;
+        // -webkit-line-clamp: 5;
         overflow: hidden;
     }
     .trim.collapse.show{
+        height: 100%;
         display: block;
         -webkit-line-clamp: unset;
         overflow: unset;
     }
-    .collapsing{
-        transition: 2.5s;
+    .trim.collapsing{
+        transition: .5s;
     }
-    .read-more-btn[aria-expanded="false"]{
+    .trim.collapsing[aria-expanded="false"] {
+        transition: .5s;
+        height: 200px;
+    }
+    .read-more-btn.collapsed:after{
         content: '+ Read More';
     }
-    .read-more-btn[aria-expanded="true"]{
+    .read-more-btn:not(.collapsed):after{
         content: '- Read Less';
     }
 }
