@@ -125,7 +125,7 @@
 				<div class='col-sm-5'>
 					<div class='repViewerCont text-center'>
 						{{{<ifcount code="ca_objects" min="1">
-							<unit relativeTo="ca_objects" limit="1"><l><ifdef code="ca_object_representations.media.large">^ca_object_representations.media.large</ifdef><br/>^ca_objects.preferred_labels</l></unit>
+							<unit relativeTo="ca_objects" limit="1"><l><ifdef code="ca_object_representations.media.large">^ca_object_representations.media.large</ifdef><div class="sourceCaption">Click to explore full record:<br/>^ca_objects.preferred_labels</div></l></unit>
 						</ifcount>}}}
 					</div>
 				</div>
