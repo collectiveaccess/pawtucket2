@@ -39,41 +39,34 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 <div class="container detail-container">
 
 	<div class="row border-bottom">
-		<div class="col">
+		<div class="col-auto">
 			<H1>{{{<l>^ca_objects.preferred_labels.name</l>}}}</H1>
 		</div>
 	</div>
 
 	<div class="row justify-content-between">
-		<div class="col-auto">
-			{{{previousLink}}}
-		</div>
-		<div class="col-auto">
-			{{{resultsLink}}}
-		</div>
-		<div class="col-auto">
-			{{{nextLink}}}
-		</div>
-	</div>
-
-	<div class="row justify-content-center">
 		<?php
 			if ($vn_share_enabled | $vn_pdf_enabled) {	
 		?>
-			<!-- <div class='row'> -->
+			<div class="col-auto">
+				<div class="btn-group" role="group" aria-label="Detail Controls">
 		<?php
 				if ($vn_share_enabled) {
-					print '<div class="col-auto"><button class="btn btn-sm btn-light"><i class="bi bi-share me-1"></i> <?= _t("Share"); ?>'.$this->getVar("shareLink")."</button></div>";
+					print '<button type="button" class="btn btn-sm btn-light"><i class="bi bi-share me-1"></i> <?= _t("Share"); ?>'.$this->getVar("shareLink")."</button>";
 				}
 				if ($vn_pdf_enabled) {
-					print "<div class='col-auto'><button class='btn btn-sm btn-light'><i class='bi bi-download me-1'></i> <?= _t('Download'); ?>".caDetailLink($this->request, "Download as PDF", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</button></div>";
+					print "<button type='button' class='btn btn-sm btn-light'><i class='bi bi-download me-1'></i> <?= _t('Download'); ?>".caDetailLink($this->request, "Download as PDF", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</button>";
 				}
 		?>
-				<div class='col-auto'><button class="btn btn-sm btn-light"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button></div>
-			<!-- </div> -->
+					<button type="button" class="btn btn-sm btn-light"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
+				</div>
+			</div>
 		<?php
 			}				
 		?>
+		<div class="col-auto">
+			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+		</div>
 	</div>
 
 	<div class="row justify-content-center">
@@ -92,7 +85,7 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 		</div>
 	</div>
 
-	<div class="row row-cols-sm-1 row-cols-md-2 justify-content-center">
+	<div class="row row-cols-sm-1 row-cols-md-2">
 
 		<div class="col-auto">						
 			{{{<div class="unit">
