@@ -38,36 +38,39 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 
 <div class="container detail-container">
 
-	<div class="row border-bottom mb-3">
-		<div class="col">
+	<div class="row border-bottom">
+		<div class="col-auto">
 			<H1>{{{<l>^ca_objects.preferred_labels.name</l>}}}</H1>
 		</div>
 	</div>
 
-	<div class="row mb-3">
-		<div class="col-1 mb-2">
-			{{{previousLink}}} {{{resultsLink}}}
-		</div>
-
-		<div class="col-10">
-			<?php
-				if ($vn_share_enabled | $vn_pdf_enabled) {	
-			?>
-				<div class='row mb-2'>
-			<?php
-					if ($vn_share_enabled) {
-						print '<div class="col-auto"><button class="btn btn-sm btn-light"><i class="bi bi-share me-1"></i> <?= _t("Share"); ?>'.$this->getVar("shareLink")."</button></div>";
-					}
-					if ($vn_pdf_enabled) {
-						print "<div class='col-auto'><button class='btn btn-sm btn-light'><i class='bi bi-download me-1'></i> <?= _t('Download'); ?>".caDetailLink($this->request, "Download as PDF", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</button></div>";
-					}
-			?>
-					<div class='col-auto'><button class="btn btn-sm btn-light" onclick="copyURL()"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button></div>
+	<div class="row justify-content-between">
+		<?php
+			if ($vn_share_enabled | $vn_pdf_enabled) {	
+		?>
+			<div class="col-auto">
+				<div class="btn-group" role="group" aria-label="Detail Controls">
+		<?php
+				if ($vn_share_enabled) {
+					print '<button type="button" class="btn btn-sm btn-light"><i class="bi bi-share me-1"></i> <?= _t("Share"); ?>'.$this->getVar("shareLink")."</button>";
+				}
+				if ($vn_pdf_enabled) {
+					print "<button type='button' class='btn btn-sm btn-light'><i class='bi bi-download me-1'></i> <?= _t('Download'); ?>".caDetailLink($this->request, "Download as PDF", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</button>";
+				}
+		?>
+					<button type="button" class="btn btn-sm btn-light"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
 				</div>
-			<?php
-				}				
-			?>
+			</div>
+		<?php
+			}				
+		?>
+		<div class="col-auto">
+			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+		</div>
+	</div>
 
+	<div class="row justify-content-center">
+		<div class="col-auto">
 			<!-- {{{representationViewer}}} -->
 			{{{<ifdef code="ca_object_representations.media.large">
 				<div class="unit">
@@ -80,15 +83,10 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 			</ifnotdef>}}}
 			
 		</div>
-
-		<div class="col-1">
-			{{{nextLink}}}
-		</div>
 	</div>
 
-	<div class="row row-cols-sm-1 row-cols-md-2 mt-5 justify-content-center">
-
-		<div class="col-sm-5 col-md-5">						
+	<div class="row row-cols-sm-1 row-cols-md-2">
+		<div class="col-auto">						
 			{{{<dl>
 				<ifdef code="ca_objects.type_id">
 					<dt><?= _t('Type Id'); ?></dt>
@@ -107,9 +105,21 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 					</dd>
 				</ifdef>
 			</dl>}}}
+
+			{{{<ifdef code="ca_objects.work_description">
+				<div class='unit'>
+					<h6><?= _t('Description'); ?></h6>
+					<div class="trim collapse" id="collapseExample">
+						^ca_objects.work_description
+					</div>
+					<a class="btn btn-light btn-sm mt-2 read-more-btn" role="button" data-bs-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+						
+					</a>
+				</div>
+			</ifdef>}}}
 		</div>
 
-		<div class="col-sm-5 col-md-5">
+		<div class="col-auto">
 			{{{<ifcount code="ca_entities" min="1"><div class="unit">
 				<ifcount code="ca_entities" min="1" max="1"><h6><?= _t('Related person'); ?></h6></ifcount>
 				<ifcount code="ca_entities" min="2"><h6><?= _t('Related people'); ?></h6></ifcount>
@@ -144,5 +154,4 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 	}
 
 </script>
-
 </div>

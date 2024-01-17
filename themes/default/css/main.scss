@@ -9,10 +9,17 @@ $detail-link-color: #000;
 $navbar-light-color: red !important;
 $navbar-brand-height: 200px;
 
-
 .img-fluid img{
 	width:100%;
 	height:auto;
+}
+/* THESE SHOULD BE REMOVED AND DONE IN _bs_variables.scss */
+h1{
+   font-size: 36px; 
+   margin-bottom: 0;
+}
+h2{
+    font-size: 20px;
 }
 /* ------------------------- Header ------------------------- */ 
 /*.navbar{
@@ -98,6 +105,13 @@ $navbar-brand-height: 200px;
 .detail-container{
     margin-top: 20px;
 
+    .row{
+        margin-bottom: 20px;
+    }
+    .col-auto{
+        margin-bottom: 10px;
+    }
+
     a{
         color: $detail-link-color !important;
         text-decoration: none;
@@ -106,14 +120,30 @@ $navbar-brand-height: 200px;
         margin-bottom: 15px;
     }
     
-    .partial-collapse.collapse{
+    .trim.collapse{
+        height: 200px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        // -webkit-line-clamp: 5;
         overflow: hidden;
-        height: 100%;
-        max-height: 80px;
     }
-    .partial-collapse.collapse.show {
-        overflow: unset;
-        max-height: unset;
+    .trim.collapse.show{
         height: 100%;
+        display: block;
+        -webkit-line-clamp: unset;
+        overflow: unset;
+    }
+    .trim.collapsing{
+        transition: .5s;
+    }
+    .trim.collapsing[aria-expanded="false"] {
+        transition: .5s;
+        height: 200px;
+    }
+    .read-more-btn.collapsed:after{
+        content: '+ Read More';
+    }
+    .read-more-btn:not(.collapsed):after{
+        content: '- Read Less';
     }
 }
