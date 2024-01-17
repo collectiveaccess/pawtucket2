@@ -45,34 +45,34 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 	</div>
 
 	<div class="row row-cols-sm-1 row-cols-md-2">
-		<?php
-			if ($vn_share_enabled | $vn_pdf_enabled) {	
-		?>
-			<div class="col-sm-12 col-md-6">
-				<div class="btn-group" role="group" aria-label="Detail Controls">
-		<?php
-				if ($vn_share_enabled) {
-					print '<button type="button" class="btn btn-sm btn-light"><i class="bi bi-share me-1"></i> <?= _t("Share"); ?>'.$this->getVar("shareLink")."</button>";
-				}
-				if ($vn_pdf_enabled) {
-					print "<button type='button' class='btn btn-sm btn-light'><i class='bi bi-download me-1'></i> <?= _t('Download'); ?>".caDetailLink($this->request, "Download as PDF", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</button>";
-				}
-		?>
-					<button type="button" class="btn btn-sm btn-light"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-				</div>
-			</div>
-		<?php
-			}				
-		?>
+		<div class="col-sm-12 col-md-6">
+			<?php
+				if ($vn_share_enabled | $vn_pdf_enabled) {	
+			?>
+					<div class="btn-group" role="group" aria-label="Detail Controls">
+			<?php
+					if ($vn_share_enabled) {
+						print '<button type="button" class="btn btn-sm btn-light"><i class="bi bi-share me-1"></i> <?= _t("Share"); ?>'.$this->getVar("shareLink")."</button>";
+					}
+					if ($vn_pdf_enabled) {
+						print "<button type='button' class='btn btn-sm btn-light'><i class='bi bi-download me-1'></i> <?= _t('Download'); ?>".caDetailLink($this->request, "Download as PDF", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</button>";
+					}
+			?>
+						<button type="button" class="btn btn-sm btn-light"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
+					</div>
+			<?php
+				}				
+			?>
+		</div>
 		<div class="col-sm-12 col-md-6 d-flex justify-content-md-end">
 			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 		</div>
 	</div>
 
 	<div class="row justify-content-center">
-		<div class="col">
+		<div class="col-sm-12 col-md-8">
 			{{{<ifdef code="ca_object_representations.media.large">
-				<div class="unit img-fluid">
+				<div class="img-fluid">
 					^ca_object_representations.media.large
 				</div>
 			</ifdef>}}}

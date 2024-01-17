@@ -14,15 +14,6 @@ $navbar-brand-height: 200px;
 	height:auto;
 }
 
-/* THESE SHOULD BE REMOVED AND DONE IN _bs_variables.scss */
-h1{
-   font-size: $h1-font-size; 
-}
-
-h2{
-    font-size: $h2-font-size;
-}
-
 /* ------------------------- Header ------------------------- */ 
 /*.navbar{
     .navbar-nav{
@@ -105,20 +96,10 @@ h2{
 /* ------------------------- Details ------------------------- */
 
 .detail-container{
-
     margin-top: 20px;
 
     .row{
         margin-bottom: 20px;
-    }
-
-    a{
-        color: $link-color;
-        text-decoration: $link-decoration;
-    }
-
-    div.unit{
-        margin-bottom: 15px;
     }
 
     // trial clamping
