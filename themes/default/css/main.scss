@@ -13,14 +13,16 @@ $navbar-brand-height: 200px;
 	width:100%;
 	height:auto;
 }
+
 /* THESE SHOULD BE REMOVED AND DONE IN _bs_variables.scss */
 h1{
-   font-size: 36px; 
-   margin-bottom: 0;
+   font-size: $h1-font-size; 
 }
+
 h2{
-    font-size: 20px;
+    font-size: $h2-font-size;
 }
+
 /* ------------------------- Header ------------------------- */ 
 /*.navbar{
     .navbar-nav{
@@ -104,28 +106,22 @@ h2{
 
 .detail-container{
 
-    .img-rep img{
-        max-width: 100%;
-        height: auto;
-    }
-
     margin-top: 20px;
 
     .row{
         margin-bottom: 20px;
     }
-    .col-auto{
-        margin-bottom: 10px;
-    }
 
     a{
-        color: $detail-link-color !important;
-        text-decoration: none;
+        color: $link-color;
+        text-decoration: $link-decoration;
     }
+
     div.unit{
         margin-bottom: 15px;
     }
-    
+
+    // trial clamping
     .trim.collapse{
         height: 200px;
         display: -webkit-box;
