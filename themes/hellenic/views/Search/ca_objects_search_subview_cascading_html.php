@@ -98,7 +98,7 @@
 							$va_tmp[] = $vs_date;
 						}
 					}
-					$vs_description = "<div>".join($va_tmp, ", ")."</div>";
+					$vs_description = "<div>".join(", ", $va_tmp)."</div>";
 				}
 				if ($vs_collection = $qr_results->get("ca_collections.preferred_labels", array('delimiter' => ', '))){
 					$vs_collection = "<div>".$vs_collection."</div>";
