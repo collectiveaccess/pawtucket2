@@ -39,16 +39,16 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 <div class="container detail-container">
 
 	<div class="row border-bottom">
-		<div class="col-auto">
-			<H1>{{{<l>^ca_objects.preferred_labels.name</l>}}}</H1>
+		<div class="col">
+			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 		</div>
 	</div>
 
-	<div class="row justify-content-between">
+	<div class="row row-cols-sm-1 row-cols-md-2">
 		<?php
 			if ($vn_share_enabled | $vn_pdf_enabled) {	
 		?>
-			<div class="col-sm-6">
+			<div class="col-sm-12 col-md-6">
 				<div class="btn-group" role="group" aria-label="Detail Controls">
 		<?php
 				if ($vn_share_enabled) {
@@ -64,27 +64,23 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 		<?php
 			}				
 		?>
-		<div class="col-auto">
+		<div class="col-sm-12 col-md-6 d-flex justify-content-md-end">
 			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 		</div>
 	</div>
 
 	<div class="row justify-content-center">
-		<div class="col-auto">
+		<div class="col">
 			{{{<ifdef code="ca_object_representations.media.large">
-				<div class="unit .img-rep">
+				<div class="unit img-fluid">
 					^ca_object_representations.media.large
 				</div>
 			</ifdef>}}}
-			
-			{{{<ifnotdef code="ca_object_representations.media.large">
-				<div class='mt-4' style="width: 800px; height: 600px; border: 1px solid lightgrey"></div>
-			</ifnotdef>}}}
 		</div>
 	</div>
 
 	<div class="row row-cols-sm-1 row-cols-md-2">
-		<div class="col-auto">						
+		<div class="col-sm-12 col-md-6">						
 			{{{<dl>
 				<ifdef code="ca_objects.type_id">
 					<dt><?= _t('Type Id'); ?></dt>
@@ -117,30 +113,44 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 			</ifdef>}}} -->
 		</div>
 
-		<div class="col-sm-6">
-			{{{<ifcount code="ca_entities" min="1"><div class="unit">
-				<ifcount code="ca_entities" min="1" max="1"><h6><?= _t('Related person'); ?></h6></ifcount>
-				<ifcount code="ca_entities" min="2"><h6><?= _t('Related people'); ?></h6></ifcount>
-				<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
-			</div></ifcount>}}}
-			
-			{{{<ifcount code="ca_occurrences" min="1"><div class="unit">
-				<ifcount code="ca_occurrences" min="1" max="1"><h6><?= _t('Related occurrence'); ?></h6></ifcount>
-				<ifcount code="ca_occurrences" min="2"><h6><?= _t('Related occurrences'); ?></h6></ifcount>
-				<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</unit>
-			</div></ifcount>}}}
-			
-			{{{<ifcount code="ca_places" min="1"><div class="unit">
-				<ifcount code="ca_places" min="1" max="1"><h6><?= _t('Related place'); ?></h6></ifcount>
-				<ifcount code="ca_places" min="2"><h6><?= _t('Related places'); ?></h6></ifcount>
-				<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>
-			</div></ifcount>}}}
-			
-			{{{<ifcount code="ca_collections" min="1"><div class="unit">
-				<ifcount code="ca_collections" min="1" max="1"><h6><?= _t('Related Collection'); ?></h6></ifcount>
-				<ifcount code="ca_collections" min="2"><h6><?= _t('Related Collections'); ?></h6></ifcount>
-				<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit>
-			</div></ifcount>}}}
+		<div class="col-sm-12 col-md-6">
+
+			{{{<dl>
+
+				<ifcount code="ca_entities" min="1">
+					<div class="unit">
+						<ifcount code="ca_entities" min="1" max="1"><dt><?= _t('Related person'); ?></dt></ifcount>
+						<ifcount code="ca_entities" min="2"><dt><?= _t('Related people'); ?></dt></ifcount>
+						<unit relativeTo="ca_entities" delimiter="<br/>"><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
+					</div>
+				</ifcount>
+
+				<ifcount code="ca_occurrences" min="1">
+					<div class="unit">
+						<ifcount code="ca_occurrences" min="1" max="1"><dt><?= _t('Related occurrence'); ?></dt></ifcount>
+						<ifcount code="ca_occurrences" min="2"><dt><?= _t('Related occurrences'); ?></dt></ifcount>
+						<unit relativeTo="ca_occurrences" delimiter="<br/>"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
+					</div>
+				</ifcount>
+
+				<ifcount code="ca_places" min="1">
+					<div class="unit">
+						<ifcount code="ca_places" min="1" max="1"><dt><?= _t('Related place'); ?></dt></ifcount>
+						<ifcount code="ca_places" min="2"><dt><?= _t('Related places'); ?></dt></ifcount>
+						<unit relativeTo="ca_places" delimiter="<br/>"><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
+					</div>
+				</ifcount>
+
+				<ifcount code="ca_collections" min="1">
+					<div class="unit">
+						<ifcount code="ca_collections" min="1" max="1"><dt><?= _t('Related Collection'); ?></dt></ifcount>
+						<ifcount code="ca_collections" min="2"><dt><?= _t('Related Collections'); ?></dt></ifcount>
+						<unit relativeTo="ca_collections" delimiter="<br/>"><dd><l>^ca_collections.preferred_labels</l> (^relationship_typename)</dd></unit>
+					</div>
+				</ifcount>
+
+			</dl>}}}
+
 		</div>
 	</div>
 
