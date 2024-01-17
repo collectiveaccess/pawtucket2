@@ -114,9 +114,7 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 		</div>
 
 		<div class="col-sm-12 col-md-6">
-
 			{{{<dl>
-
 				<ifcount code="ca_entities" min="1">
 					<div class="unit">
 						<ifcount code="ca_entities" min="1" max="1"><dt><?= _t('Related person'); ?></dt></ifcount>
@@ -148,9 +146,7 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 						<unit relativeTo="ca_collections" delimiter="<br/>"><dd><l>^ca_collections.preferred_labels</l> (^relationship_typename)</dd></unit>
 					</div>
 				</ifcount>
-
 			</dl>}}}
-
 		</div>
 	</div>
 
