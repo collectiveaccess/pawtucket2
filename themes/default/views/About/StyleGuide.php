@@ -44,6 +44,10 @@
 			<div class="bg-body-primary p-5 my-5">.bg-body-primary</div>
 			<div class="bg-body-secondary p-5 my-5">.bg-body-secondary</div>
 			<div class="bg-body-tertiary p-5 my-5">.bg-body-tertiary</div>
+			<hr/>
+			<div class="shadow p-5 my-5">.shadow</div>
+			<div class="shadow-sm p-5 my-5">.shadow-sm</div>
+			<div class="shadow-lg p-5 my-5">.shadow-lg</div>
 		</div>
 	</div>
 </div>

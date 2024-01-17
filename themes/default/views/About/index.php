@@ -1,5 +1,5 @@
 <?php
-	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
+//	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 ?>
 
 	<div class="row">
