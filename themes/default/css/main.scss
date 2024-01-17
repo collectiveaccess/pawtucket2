@@ -95,23 +95,23 @@ $navbar-brand-height: 200px;
 /* ------------------------- Details ------------------------- */
 
 .detail-container{
+
     margin-top: 20px;
 
     .row{
         margin-bottom: 20px;
     }
-    .col-auto{
-        margin-bottom: 10px;
-    }
 
     a{
-        color: $detail-link-color !important;
-        text-decoration: none;
+        color: $link-color;
+        text-decoration: $link-decoration;
     }
+
     div.unit{
         margin-bottom: 15px;
     }
-    
+
+    // trial clamping
     .trim.collapse{
         height: 200px;
         display: -webkit-box;
