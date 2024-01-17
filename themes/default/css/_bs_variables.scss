@@ -3,12 +3,12 @@ $gray-200: #dee2e6 !default;
 $gray-300: #d0d3d5 !default;
 $gray-400: #ced4da !default;
 $gray-500: #adb5bd !default;
-$gray-600: #000 !default;
+$gray-600: #666 !default;
 $gray-700: #495057 !default;
 $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
 
-$primary:       #000 !default;
+$primary:       #085f6c !default;
 $secondary:     $gray-600 !default;
 $light:         #FFF !default;
 $dark:          $gray-700 !default; /* used for .bg-dark style */
@@ -86,7 +86,7 @@ $body-tertiary-bg:          $gray-100 !default; /* used for .bg-body-tertiary */
 
 
 /* links */
-$link-color: $gray-600 !default;
+$link-color: $primary !default;
 $link-decoration: underline !default;
 $link-shade-percentage: 20% !default;
 $link-hover-color: #000 !default;
@@ -100,3 +100,11 @@ $nav-link-font-size: 16px;
 $navbar-nav-link-padding-x: 1rem !default;
 $nav-link-padding-y: 2rem !default;
 
+/* buttons */
+$input-btn-font-family:       null !default;
+$input-btn-font-size:         $font-size-base !default;
+
+
+$btn-border-radius:           0 !default;
+$btn-border-radius-sm:        0 !default;
+$btn-border-radius-lg:        0 !default;

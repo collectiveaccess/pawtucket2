@@ -51,10 +51,10 @@
 					<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">
 <!--- set aria-current -> page for the current page -->						
 						<li class="nav-item">
-							<?php print caNavlink($this->request, _t('Home'), "nav-link active", "", "", "", "", array("aria-current" => "page")); ?></a>
+							<?php print caNavlink($this->request, _t('Home'), "nav-link".((strToLower($this->request->getController()) == "front") ? " active" : ""), "", "Front", "Index", "", ((strToLower($this->request->getController()) == "front") ? array("aria-current" => "page") : null)); ?>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="/About"><?= _t('About'); ?></a>
+							<?php print caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 						</li>
 						<li class="nav-item dropdown">
 							<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -68,10 +68,10 @@
 							</ul>
 						</li>
 						<li class="nav-item">
-							<?php print caNavLink($this->request, _t('Collections'), "nav-link", "", "Collections", "Index"); ?>
+							<?php print caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "collections") ? " active" : ""), "", "Collections", "Index", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="/Contact"><?= _t('Contact'); ?></a>
+							<?php print caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 						</li>
 						<li class="nav-item dropdown">
 							<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -87,16 +87,20 @@
 										<button class="btn btn-secondary btn-sm" type="submit"><i class="bi bi-arrow-right-circle-fill"></i></button>
 									</div>
 								</form>
-								<a href="" class="dropdown-item p-2"><?= _t('Forgot Password'); ?></a>
-								<a href="" class="dropdown-item p-2"><?= _t('Register'); ?></a>
+<?php
+								print caNavlink($this->request, _t('Forgot Password'), "small", "", "LoginReg", "resetForm")."<br/>";
+								print caNavlink($this->request, _t('Register'), "small", "", "LoginReg", "register");
+?>
 							</div>
 						</li>
 					</ul>
 					<form action="<?= caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" role="search">
-						<div class="input-group">
+						<div class="input-group mt-4">
 							<input type="text" name="search" class="form-control rounded-0" id="nav-search-input" placeholder="Search" aria-label="Search">
 							<button type="submit" class="btn rounded-0" id="nav-search-btn"><i class="bi bi-search"></i></button>
 						</div>
+						<div class="form-text"><?php print caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
+				
 					</form>
 				</div>
 			</div>
