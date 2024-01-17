@@ -1,0 +1,102 @@
+$gray-100: #ecedee !default;
+$gray-200: #dee2e6 !default;
+$gray-300: #d0d3d5 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #000 !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+
+$primary:       #000 !default;
+$secondary:     $gray-600 !default;
+$light:         #FFF !default;
+$dark:          $gray-700 !default; /* used for .bg-dark style */
+
+// scss-docs-start spacer-variables-maps
+$spacer: 1rem !default;
+$spacers: (
+  0: 0,
+  1: $spacer * .25,
+  2: $spacer * .5,
+  3: $spacer,
+  4: $spacer * 1.5,
+  5: $spacer * 3,
+) !default;
+
+/* font */
+// $font-size-root affects the value of `rem`, which is used for as well font sizes, paddings, and margins
+// $font-size-base affects the font size of the body text
+$font-size-root:              16px !default;
+$font-size-base:              1rem !default; // Assumes the browser default, typically `16px`
+$font-size-sm:                $font-size-base * .875 !default;
+$font-size-lg:                $font-size-base * 1.25 !default;
+
+$font-family-sans-serif: "Noto Sans", "Helvetica Neue" !default;
+
+$h1-font-size:                $font-size-base * 2.5 !default;
+$h2-font-size:                $font-size-base * 2 !default;
+$h3-font-size:                $font-size-base * 1.75 !default;
+$h4-font-size:                $font-size-base * 1.5 !default;
+$h5-font-size:                $font-size-base * 1.25 !default;
+$h6-font-size:                $font-size-base !default;
+// scss-docs-end font-sizes
+
+// scss-docs-start headings-variables
+$headings-margin-bottom:      $spacer * .5 !default;
+$headings-font-family:        null !default;
+$headings-font-style:         null !default;
+$headings-font-weight:        500 !default;
+$headings-line-height:        1.2 !default;
+$headings-color:              inherit !default;
+// scss-docs-end headings-variables
+
+// scss-docs-start display-headings
+$display-font-sizes: (
+  1: 4rem,
+  2: 3.5rem,
+  3: 3rem,
+  4: 2.5rem,
+  5: 2rem,
+  6: 1.5rem
+) !default;
+
+$display-font-family: null !default;
+$display-font-style:  null !default;
+$display-font-weight: 300 !default;
+$display-line-height: $headings-line-height !default;
+// scss-docs-end display-headings
+
+// scss-docs-start font-sizes
+$font-sizes: (
+  1: $h1-font-size,
+  2: $h2-font-size,
+  3: $h3-font-size,
+  4: $h4-font-size,
+  5: $h5-font-size,
+  6: $h6-font-size
+) !default;
+
+$body-color: #000 !default;
+$body-secondary-color:      rgba($body-color, .75) !default;
+$body-secondary-bg:         $gray-300 !default; /* used for .bg-body-secondary */
+
+$body-tertiary-color:       rgba($body-color, .5) !default;
+$body-tertiary-bg:          $gray-100 !default; /* used for .bg-body-tertiary */
+
+
+/* links */
+$link-color: $gray-600 !default;
+$link-decoration: underline !default;
+$link-shade-percentage: 20% !default;
+$link-hover-color: #000 !default;
+$link-hover-decoration: null !default;
+
+
+/* nav bar */
+$navbar-light-color: #000;
+$navbar-light-active-color: #414141;
+$nav-link-font-size: 16px;
+$navbar-nav-link-padding-x: 1rem !default;
+$nav-link-padding-y: 2rem !default;
+

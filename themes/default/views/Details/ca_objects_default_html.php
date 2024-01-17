@@ -89,36 +89,24 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 	<div class="row row-cols-sm-1 row-cols-md-2 mt-5 justify-content-center">
 
 		<div class="col-sm-5 col-md-5">						
-			{{{<div class="unit">
-				<h6><?= _t('Type Id'); ?></h6>
-				^ca_objects.type_id
-			</div>}}}
-
-			{{{<ifdef code="ca_objects.idno">
-				<div class="unit">
-					<h6><?= _t('Identifier'); ?></h6>
-					^ca_objects.idno
-				</div>
-			</ifdef>}}}
+			{{{<dl>
+				<ifdef code="ca_objects.type_id">
+					<dt><?= _t('Type Id'); ?></dt>
+					<dd>^ca_objects.type_id</dd>
+				</ifdef>
 			
-			<!-- {{{<ifdef code="ca_objects.work_description">
-				<div class='unit'>
-					<h6><?= _t('Description'); ?></h6>
-					<span class="trimText">^ca_objects.work_description</span>
-				</div>
-			</ifdef>}}} -->
-
-			{{{<ifdef code="ca_objects.work_description">
-				<div class='unit'>
-					<h6><?= _t('Description'); ?></h6>
-					<div class="partial-collapse" id="partialCollapse">
+				<ifdef code="ca_objects.idno">
+					<dt><?= _t('Identifier'); ?></dt>
+					<dd>^ca_objects.idno</dd>
+				</ifdef>
+			
+				<ifdef code="ca_objects.work_description">
+					<dt><?= _t('Description'); ?></dt>
+					<dd>
 						^ca_objects.work_description
-					</div>
-					<button class="btn btn-light mt-2" type="button" data-bs-toggle="partial-collapse" data-bs-target="#partialCollapse" aria-expanded="false" aria-controls="partialCollapse">
-						Read More
-					</button>
-				</div>
-			</ifdef>}}}
+					</dd>
+				</ifdef>
+			</dl>}}}
 		</div>
 
 		<div class="col-sm-5 col-md-5">
@@ -155,12 +143,6 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 		navigator.clipboard.writeText(window.location.href);
 	}
 
-	jQuery(document).ready(function() {
-		$('.trimText').readmore({
-		  speed: 75,
-		  maxHeight: 120
-		});
-	});
 </script>
 
 </div>

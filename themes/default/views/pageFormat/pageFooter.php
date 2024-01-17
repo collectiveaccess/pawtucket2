@@ -27,16 +27,23 @@
  */
 ?>
 
-		<footer id="footer" class="p-5 text-center">
-			<div>Footer text here</div>
-			<ul class="list-inline">
-				<li><a href="#">Link</a></li>
-				<li><a href="#">Link</a></li>
-			</ul>
-			<div><small>&copy; <a href="https://www.collectiveaccess.org">CollectiveAccess 2024</a></small></div>
+		</main>
+		<footer id="footer" class="p-5 text-center mt-auto bg-dark text-bg-dark">
+			<div class="container">
+				<div class="display-4">CollectiveAccess</div>
+				<ul class="list-inline pt-3">
+  					<li class="list-inline-item text-bg-dark small">&copy; 2024</li>
+					<li class="list-inline-item"><a href="#" class="text-bg-dark small">Link</a></li>
+					<li class="list-inline-item"><a href="#" class="text-bg-dark small">Link</a></li>
+				</ul>
+				<ul class="list-inline pt-3">
+  					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark"><i class="bi bi-facebook"></i></a></li>
+					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark"><i class="bi bi-instagram"></i></a></li>
+					<li class="list-inline-item fs-4"><a href="#" class="text-bg-dark"><i class="bi bi-twitter"></i></a></li>
+				</ul>
+			</div>
 		</footer><!-- end footer -->
 
 
-		</div>
 	</body>
 </html>
