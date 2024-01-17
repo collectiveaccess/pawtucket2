@@ -1,11 +1,19 @@
-@import "bootstrap/scss/bootstrap";
+@import  "_bs_variables";
+@import "~bootstrap/scss/bootstrap";
 
 $white: #fff;
 $black: #000;
 $header-color: #F8F9FA;
 $footer-color: #F8F9FA;
 $detail-link-color: #000;
+$navbar-light-color: red !important;
+$navbar-brand-height: 200px;
 
+.img-fluid img{
+	width:100%;
+	height:auto;
+}
+/* THESE SHOULD BE REMOVED AND DONE IN _bs_variables.scss */
 h1{
    font-size: 36px; 
    margin-bottom: 0;
@@ -13,21 +21,8 @@ h1{
 h2{
     font-size: 20px;
 }
-h3{
-
-}
-h4{
-
-}
-h5{
-
-}
-h6{
-
-}
-
 /* ------------------------- Header ------------------------- */ 
-.navbar{
+/*.navbar{
     .navbar-nav{
         a.nav-link, a.dropdown-item{
             font-size: 14px;
@@ -64,14 +59,14 @@ h6{
             display: inline-block;
         }
     }
-}
+}*/
 
 
 /* ------------------------- Footer ------------------------- */
-footer{
+/*footer{
     background-color: $footer-color
 }
-
+*/
 
 /* ------------------------- Front ------------------------- */
 .parallax {
@@ -87,106 +82,14 @@ footer{
     background-repeat: no-repeat;
     background-size: cover;
 
-    margin-left: -15px;
-    margin-right: -15px;
-
     .hero1, .hero2, .hero3 {
         background-image: url("../assets/graphics/hero_1.jpg");
     }
-
-    .heroSearch {
-        position: relative;
-        text-align: center;
-        margin-top: 18vh;
-        padding: 50px;
-        text-shadow: 0px 0px 3px #000000;
-        background-color: rgb(36, 36, 36, .9);
-        box-shadow: 0 2px 14px 0 rgba(0, 0, 0, .3);
-
-        H1 {
-            color: $white;
-            text-align: center;
-            line-height: 1.1em;
-            margin: 0px;
-            padding: 0px 15px 0px 15px;
-
-            .line1, .line3 {
-                font-size: 28px;
-                text-transform: none;
-                font-family: latolight;
-            }
-            .line2 {
-                font-size: 43px;
-                font-weight: 500;
-                text-transform: none;
-                color: #FFF;
-                padding-top: 20px;
-                padding-bottom: 20px;
-                font-family: "Lato";
-            }
-
-            @media(max-width: 1355px) {
-                .line1, .line3 {
-                    font-size: 24px;
-                }
-                .line2 {
-                    font-size: 35px;
-                }
-            }
-
-            @media(max-width: 570px) {
-                .line1, .line3 {
-                    font-size: 20px;
-                }
-                .line2 {
-                    font-size: 25px;
-                    padding-top: 10px;
-                    padding-bottom: 15px;
-                    line-height: 1.3em;
-                }
-            }
-        }
-
-        form{
-            margin-top: 20px;
-
-            .input-group {
-                .form-control, .form-control:focus {
-                    border: 0px;
-                    border-radius: 0px;
-                }
-                button{
-                    border: 0px;
-                    border-radius: 0px;
-                    background-color: $white;
-                    color: $black;
-                }
-            }
-        }
-    }
-
-    @media(max-width:420px), (max-height:420px) {
-        .heroSearch .input-group {
-            width: 300px;
-        }
-    }
-    @media(max-width:1024px) {
-        .heroSearch {
-            margin-top: 17vh;
-        }
-    }
-
-    @media(max-width:768px) {
-        .heroSearch {
-            margin-top: 10vh;
-        }
-    }
-
-    @media(max-height:420px) {
-        .heroSearch {
-            margin-top: 10vh;
-        }
-    }
+}
+.hpExplore{
+	img{
+		height:250px;
+	}
 }
 
 @media (max-device-width:1024px) {

@@ -83,21 +83,28 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-sm-6">						
-			{{{<div class="unit">
-				<h6><?= _t('Type Id'); ?></h6>
-				^ca_objects.type_id
-			</div>}}}
+	<div class="row row-cols-sm-1 row-cols-md-2">
+		<div class="col-auto">						
+			{{{<dl>
+				<ifdef code="ca_objects.type_id">
+					<dt><?= _t('Type Id'); ?></dt>
+					<dd>^ca_objects.type_id</dd>
+				</ifdef>
+			
+				<ifdef code="ca_objects.idno">
+					<dt><?= _t('Identifier'); ?></dt>
+					<dd>^ca_objects.idno</dd>
+				</ifdef>
+			
+				<ifdef code="ca_objects.work_description">
+					<dt><?= _t('Description'); ?></dt>
+					<dd>
+						^ca_objects.work_description
+					</dd>
+				</ifdef>
+			</dl>}}}
 
-			{{{<ifdef code="ca_objects.idno">
-				<div class="unit">
-					<h6><?= _t('Identifier'); ?></h6>
-					^ca_objects.idno
-				</div>
-			</ifdef>}}}
-
-			{{{<ifdef code="ca_objects.work_description">
+			<!-- {{{<ifdef code="ca_objects.work_description">
 				<div class='unit'>
 					<h6><?= _t('Description'); ?></h6>
 					<div class="trim collapse" id="collapseExample">
@@ -107,7 +114,7 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 						
 					</a>
 				</div>
-			</ifdef>}}}
+			</ifdef>}}} -->
 		</div>
 
 		<div class="col-sm-6">

@@ -37,99 +37,54 @@
 		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
 	}
 	if($qr_res && $qr_res->numHits()){
-?>   
-		<div class="jcarousel-wrapper">
-			<!-- Carousel -->
-			<div class="jcarousel">
-				<ul>
+?>
+<div class="container">
+	<div class="row justify-content-center">
+		<div class="col-md-10 my-5 py-5">
+			<H2 class="mb-3"><?php print _t("Highlights"); ?></H2>  
+
+			
+			
+			
+			
+			
+			<div id="carouselFeaturedSet" class="carousel slide">
+				<div class="carousel-inner">
 <?php
-					while($qr_res->nextHit()){
-						if($qr_res->get("ca_object_representations.media.large")){
-							if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
-								print "<li><div class='frontSlide'>".$vs_media;
+						$active = true;
+						while($qr_res->nextHit()){
+							if($vs_media = $qr_res->getWithTemplate('<l><img src="^ca_object_representations.media.large.url" class="d-block w-100"></l>', array("checkAccess" => $va_access_values))){
+								print "<div class='carousel-item".(($active) ? " active" : "")."'>".$vs_media;
 								$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
 								if($vs_caption){
-									#print "<div class='frontSlideCaption'>".$vs_caption."</div>";
+									print "<div class='carousel-caption d-none d-md-block'>".$vs_caption."</div>";
 								}
-								print "</div></li>";
+								print "</div>";
 								$vb_item_output = true;
+								$active = false;
 							}
 						}
-					}
 ?>
-				</ul>
-			</div><!-- end jcarousel -->
+				</div><!-- end jcarousel-inner -->
 <?php
 			if($vb_item_output){
 ?>
-			<!-- Prev/next controls -->
-			<a href="#" class="jcarousel-control-prev"><i class="fa fa-angle-left" aria-label="<?php print _t("Previous"); ?>"></i></a>
-			<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right" aria-label="<?php print _t("Next"); ?>"></i></a>
-		
-			<!-- Pagination -->
-			<p class="jcarousel-pagination">
-			<!-- Pagination items will be generated in here -->
-			</p>
+				<button class="carousel-control-prev" type="button" data-bs-target="#carouselFeaturedSet" data-bs-slide="prev">
+					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+					<span class="visually-hidden"><?php print _t("Previous"); ?></span>
+				</button>
+				<button class="carousel-control-next" type="button" data-bs-target="#carouselFeaturedSet" data-bs-slide="next">
+					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+					<span class="visually-hidden"><?php print _t("Next"); ?></span>
+				</button>
 <?php
 			}
 ?>
-		</div><!-- end jcarousel-wrapper -->
-		<script type='text/javascript'>
-			jQuery(document).ready(function() {
-				/*
-				Carousel initialization
-				*/
-				$('.jcarousel')
-					.jcarousel({
-						// Options go here
-						wrap:'circular'
-					});
-		
-				/*
-				 Prev control initialization
-				 */
-				$('.jcarousel-control-prev')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '-=1'
-					});
-		
-				/*
-				 Next control initialization
-				 */
-				$('.jcarousel-control-next')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '+=1'
-					});
-		
-				/*
-				 Pagination initialization
-				 */
-				$('.jcarousel-pagination')
-					.on('jcarouselpagination:active', 'a', function() {
-						$(this).addClass('active');
-					})
-					.on('jcarouselpagination:inactive', 'a', function() {
-						$(this).removeClass('active');
-					})
-					.jcarouselPagination({
-						// Options go here
-					});
-			});
-		</script>
+			</div><!-- end carousel -->
+		</div>
+	</div>
+</div>
+
 <?php
 	}
 ?>
