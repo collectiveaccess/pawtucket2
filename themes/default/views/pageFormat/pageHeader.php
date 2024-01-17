@@ -107,3 +107,8 @@
 		</nav>	
 
 	<main role="main">
+<?php
+	if(strToLower($this->request->getController()) != "front"){
+		print "<div class='container'>";
+	}
+?>

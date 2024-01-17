@@ -28,6 +28,11 @@
 ?>
 
 		</main>
+<?php
+	if(strToLower($this->request->getController()) != "front"){
+		print "</div> <!-- end container -->";
+	}
+?>
 		<footer id="footer" class="p-5 text-center mt-auto bg-dark text-bg-dark">
 			<div class="container">
 				<div class="display-4">CollectiveAccess</div>
