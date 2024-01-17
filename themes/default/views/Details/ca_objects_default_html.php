@@ -48,7 +48,7 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 		<?php
 			if ($vn_share_enabled | $vn_pdf_enabled) {	
 		?>
-			<div class="col-auto">
+			<div class="col-sm-6">
 				<div class="btn-group" role="group" aria-label="Detail Controls">
 		<?php
 				if ($vn_share_enabled) {
@@ -71,9 +71,8 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 
 	<div class="row justify-content-center">
 		<div class="col-auto">
-			<!-- {{{representationViewer}}} -->
 			{{{<ifdef code="ca_object_representations.media.large">
-				<div class="unit">
+				<div class="unit .img-rep">
 					^ca_object_representations.media.large
 				</div>
 			</ifdef>}}}
@@ -81,13 +80,11 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 			{{{<ifnotdef code="ca_object_representations.media.large">
 				<div class='mt-4' style="width: 800px; height: 600px; border: 1px solid lightgrey"></div>
 			</ifnotdef>}}}
-			
 		</div>
 	</div>
 
-	<div class="row row-cols-sm-1 row-cols-md-2">
-
-		<div class="col-auto">						
+	<div class="row">
+		<div class="col-sm-6">						
 			{{{<div class="unit">
 				<h6><?= _t('Type Id'); ?></h6>
 				^ca_objects.type_id
@@ -113,7 +110,7 @@ $vn_id =				$t_object->get('ca_objects.object_id');
 			</ifdef>}}}
 		</div>
 
-		<div class="col-auto">
+		<div class="col-sm-6">
 			{{{<ifcount code="ca_entities" min="1"><div class="unit">
 				<ifcount code="ca_entities" min="1" max="1"><h6><?= _t('Related person'); ?></h6></ifcount>
 				<ifcount code="ca_entities" min="2"><h6><?= _t('Related people'); ?></h6></ifcount>

@@ -200,6 +200,12 @@ footer{
 /* ------------------------- Details ------------------------- */
 
 .detail-container{
+
+    .img-rep img{
+        max-width: 100%;
+        height: auto;
+    }
+
     margin-top: 20px;
 
     .row{
