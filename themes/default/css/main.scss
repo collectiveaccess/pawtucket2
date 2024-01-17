@@ -95,47 +95,37 @@ $navbar-brand-height: 200px;
 /* ------------------------- Details ------------------------- */
 
 .detail-container{
-
     margin-top: 20px;
 
     .row{
         margin-bottom: 20px;
     }
 
-    a{
-        color: $link-color;
-        text-decoration: $link-decoration;
-    }
-
-    div.unit{
-        margin-bottom: 15px;
-    }
-
     // trial clamping
-    .trim.collapse{
-        height: 200px;
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        // -webkit-line-clamp: 5;
-        overflow: hidden;
-    }
-    .trim.collapse.show{
-        height: 100%;
-        display: block;
-        -webkit-line-clamp: unset;
-        overflow: unset;
-    }
-    .trim.collapsing{
-        transition: .5s;
-    }
-    .trim.collapsing[aria-expanded="false"] {
-        transition: .5s;
-        height: 200px;
-    }
-    .read-more-btn.collapsed:after{
-        content: '+ Read More';
-    }
-    .read-more-btn:not(.collapsed):after{
-        content: '- Read Less';
-    }
+    // .trim.collapse{
+    //     height: 200px;
+    //     display: -webkit-box;
+    //     -webkit-box-orient: vertical;
+    //     // -webkit-line-clamp: 5;
+    //     overflow: hidden;
+    // }
+    // .trim.collapse.show{
+    //     height: 100%;
+    //     display: block;
+    //     -webkit-line-clamp: unset;
+    //     overflow: unset;
+    // }
+    // .trim.collapsing{
+    //     transition: .5s;
+    // }
+    // .trim.collapsing[aria-expanded="false"] {
+    //     transition: .5s;
+    //     height: 200px;
+    // }
+    // .read-more-btn.collapsed:after{
+    //     content: '+ Read More';
+    // }
+    // .read-more-btn:not(.collapsed):after{
+    //     content: '- Read Less';
+    // }
 }

@@ -52,35 +52,35 @@
 		</div>
 	</div>
 
-	<div class="row justify-content-between">
-		<?php
-			if ($vn_share_enabled | $vn_pdf_enabled) {	
-		?>
-			<div class="col-sm-6">
-				<div class="btn-group" role="group" aria-label="Detail Controls">
-		<?php
-				if ($vn_share_enabled) {
-					print '<button type="button" class="btn btn-sm btn-light"><i class="bi bi-share me-1"></i> <?= _t("Share"); ?>'.$this->getVar("shareLink")."</button>";
-				}
-				if ($vn_pdf_enabled) {
-					print "<button type='button' class='btn btn-sm btn-light'><i class='bi bi-download me-1'></i> <?= _t('Download'); ?>".caDetailLink($this->request, "Download as PDF", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</button>";
-				}
-		?>
-					<button type="button" class="btn btn-sm btn-light"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-				</div>
-			</div>
-		<?php
-			}				
-		?>
-		<div class="col-auto">
+	<div class="row row-cols-sm-1 row-cols-md-2">
+		<div class="col-sm-12 col-md-6">
+			<?php
+				if ($vn_share_enabled | $vn_pdf_enabled) {	
+			?>
+					<div class="btn-group" role="group" aria-label="Detail Controls">
+			<?php
+					if ($vn_share_enabled) {
+						print '<button type="button" class="btn btn-sm btn-light"><i class="bi bi-share me-1"></i> <?= _t("Share"); ?>'.$this->getVar("shareLink")."</button>";
+					}
+					if ($vn_pdf_enabled) {
+						print "<button type='button' class='btn btn-sm btn-light'><i class='bi bi-download me-1'></i> <?= _t('Download'); ?>".caDetailLink($this->request, "Download as PDF", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</button>";
+					}
+			?>
+						<button type="button" class="btn btn-sm btn-light"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
+					</div>
+			<?php
+				}				
+			?>
+		</div>
+		<div class="col-sm-12 col-md-6 d-flex justify-content-md-end">
 			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 		</div>
 	</div>
 
 	<div class="row justify-content-center">
-		<div class="col-auto">
+		<div class="col-sm-12 col-md-8">
 			{{{<ifcount code="ca_objects" min="1">
-				<div class='unit img-rep'>
+				<div class='img-fluid'>
 					<unit relativeTo="ca_objects" delimiter=" " length="1">
 						<l>^ca_object_representations.media.large</l>
 						<div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div>
@@ -90,52 +90,60 @@
 		</div>
 	</div>
 
-	<div class="row">
-		<div class="col-sm-6">						
-			{{{<div class="unit">
-				<h6><?= _t('Type Id'); ?></h6>
-				^ca_collections.type_id
-			</div>}}}
-
-			{{{<ifdef code="ca_objects.idno">
-				<div class="unit">
-					<h6><?= _t('Identifier'); ?></h6>
-					^ca_collections.idno
-				</div>
-			</ifdef>}}}
+	<div class="row row-cols-sm-1 row-cols-md-2">
+		<div class="col-sm-12 col-md-6">
+			{{{<dl>
+				<ifdef code="ca_collections.type_id">
+					<dt><?= _t('Type Id'); ?></dt>
+					<dd>^ca_collections.type_id</dd>
+				</ifdef>
 			
-			{{{<ifdef code="ca_collections.description">
-				<div class='unit'>
-					<h6><?= _t('Description'); ?></h6>
-					<span class="trimText">^ca_collections.description</span>
-				</div>
-			</ifdef>}}}
+				<ifdef code="ca_collections.idno">
+					<dt><?= _t('Identifier'); ?></dt>
+					<dd>^ca_collections.idno</dd>
+				</ifdef>
+			
+				<ifdef code="ca_collections.description">
+					<dt><?= _t('Description'); ?></dt>
+					<dd>^ca_collections.description</dd>
+				</ifdef>
+			</dl>}}}
 		</div>
 
 		<div class="col-sm-6">
-			{{{<ifcount code="ca_entities" min="1"><div class="unit">
-				<ifcount code="ca_entities" min="1" max="1"><h6><?= _t('Related person'); ?></h6></ifcount>
-				<ifcount code="ca_entities" min="2"><h6><?= _t('Related people'); ?></h6></ifcount>
-				<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
-			</div></ifcount>}}}
-			
-			{{{<ifcount code="ca_occurrences" min="1"><div class="unit">
-				<ifcount code="ca_occurrences" min="1" max="1"><h6><?= _t('Related occurrence'); ?></h6></ifcount>
-				<ifcount code="ca_occurrences" min="2"><h6><?= _t('Related occurrences'); ?></h6></ifcount>
-				<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</unit>
-			</div></ifcount>}}}
-			
-			{{{<ifcount code="ca_places" min="1"><div class="unit">
-				<ifcount code="ca_places" min="1" max="1"><h6><?= _t('Related place'); ?></h6></ifcount>
-				<ifcount code="ca_places" min="2"><h6><?= _t('Related places'); ?></h6></ifcount>
-				<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>
-			</div></ifcount>}}}
-			
-			{{{<ifcount code="ca_collections.related" min="1"><div class="unit">
-				<ifcount code="ca_collections.related" min="1" max="1"><h6><?= _t('Related Collection'); ?></h6></ifcount>
-				<ifcount code="ca_collections.related" min="2"><h6><?= _t('Related Collections'); ?></h6></ifcount>
-				<unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit>
-			</div></ifcount>}}}
+			{{{<dl>
+				<ifcount code="ca_entities" min="1">
+					<div class="unit">
+						<ifcount code="ca_entities" min="1" max="1"><dt><?= _t('Related person'); ?></dt></ifcount>
+						<ifcount code="ca_entities" min="2"><dt><?= _t('Related people'); ?></dt></ifcount>
+						<unit relativeTo="ca_entities" delimiter="<br/>"><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
+					</div>
+				</ifcount>
+
+				<ifcount code="ca_occurrences" min="1">
+					<div class="unit">
+						<ifcount code="ca_occurrences" min="1" max="1"><dt><?= _t('Related occurrence'); ?></dt></ifcount>
+						<ifcount code="ca_occurrences" min="2"><dt><?= _t('Related occurrences'); ?></dt></ifcount>
+						<unit relativeTo="ca_occurrences" delimiter="<br/>"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
+					</div>
+				</ifcount>
+
+				<ifcount code="ca_places" min="1">
+					<div class="unit">
+						<ifcount code="ca_places" min="1" max="1"><dt><?= _t('Related place'); ?></dt></ifcount>
+						<ifcount code="ca_places" min="2"><dt><?= _t('Related places'); ?></dt></ifcount>
+						<unit relativeTo="ca_places" delimiter="<br/>"><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
+					</div>
+				</ifcount>
+
+				<ifcount code="ca_collections.related" min="1">
+					<div class="unit">
+						<ifcount code="ca_collections.related" min="1" max="1"><dt><?= _t('Related Collection'); ?></dt></ifcount>
+						<ifcount code="ca_collections.related" min="2"><dt><?= _t('Related Collections'); ?></dt></ifcount>
+						<unit relativeTo="ca_collections.related" delimiter="<br/>"><dd><l>^ca_collections.preferred_labels</l> (^relationship_typename)</dd></unit>
+					</div>
+				</ifcount>
+			</dl>}}}
 		</div>
 	</div>
 </div>
