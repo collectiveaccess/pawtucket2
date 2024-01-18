@@ -1,64 +1,18 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,400&display=swap');
+
 @import  "_bs_variables";
 @import "~bootstrap/scss/bootstrap";
 
-$white: #fff;
-$black: #000;
-$header-color: #F8F9FA;
-$footer-color: #F8F9FA;
-$detail-link-color: #000;
-$navbar-light-color: red !important;
-$navbar-brand-height: 200px;
+a{
+	text-underline-offset: .25rem;
+}
 
 .img-fluid img{
 	width:100%;
 	height:auto;
 }
-/* ------------------------- Header ------------------------- */ 
-/*.navbar{
-    .navbar-nav{
-        a.nav-link, a.dropdown-item{
-            font-size: 14px;
-            padding: 15px 10px;
-        }
-        a.nav-link:hover, a.nav-link:focus {
-            text-decoration: none;
-        }
-        #nav-search-input{
-            border-right: 0;
-        }
-        #nav-search-btn{
-            background-color: $white;
-            color: $black;
-        }
-        ul.dropdown-menu {
-            border: 0px;
-            border-radius: 0;
-            box-shadow: none;
-            background-color: $header-color;
-            width: -webkit-fill-available;
-            position: fixed !important;
-            top: 0px;
-            left: 0px;
-            padding: 0 25% 0 0;
-            text-align: right;
-            margin-top: 64px;
-        
-            -webkit-transition: all .4s;
-            -o-transition: all .4s;
-            transition: all .4s;
-        }
-        ul.dropdown-menu li {
-            display: inline-block;
-        }
-    }
-}*/
 
-
-/* ------------------------- Footer ------------------------- */
-/*footer{
-    background-color: $footer-color
-}
-*/
 
 /* ------------------------- Front ------------------------- */
 .parallax {
@@ -128,4 +82,14 @@ $navbar-brand-height: 200px;
     // .read-more-btn:not(.collapsed):after{
     //     content: '- Read Less';
     // }
+}
+
+/* ------------------------- browse results ------------------------- */
+#browseResultsContainer{
+	.card{
+		img{
+			max-height:200px;
+			object-position:top center;
+		}
+	}
 }

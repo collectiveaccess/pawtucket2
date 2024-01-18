@@ -50,7 +50,7 @@
 	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
-	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
+	$va_view_info 		= $va_views[$vs_current_view];
 
 	$vb_ajax			= (bool)$this->request->isAjax();
 
@@ -111,8 +111,7 @@
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
 				
-					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$vs_caption 	= $qr_res->getWithTemplate(caGetOption('result_caption', $va_view_info, null), array("checkAccess" => $va_access_values));
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
@@ -135,24 +134,20 @@
 				
 					$vs_add_to_set_link = "";
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+						$vs_add_to_set_link = "<a href='#' class='bResultItemSetLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 				
-					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
-
+					
 					$vs_result_output = "
 		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultListItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+						{$vs_caption}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
-				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
-					<hr>
-					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultListItemExpandedInfo -->
+				{$vs_add_to_set_link}
 			</div><!-- end bResultListItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));

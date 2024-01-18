@@ -69,8 +69,9 @@
 	
 if (!$vb_ajax) {	// !ajax
 ?>
+
 <div class="row" style="clear:both;">
-	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
+	<div class='col-sm-8'>
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -97,7 +98,7 @@ if (!$vb_ajax) {	// !ajax
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
 			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-cog bGear" aria-label="Result options"></i></a>
+				<a href="#" data-toggle="dropdown" class="fs-5"><i class="bi bi-gear-fill" aria-label="Result options"></i></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
@@ -152,32 +153,6 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
-		<div class='bCriteria'>
-<?php
-		if (sizeof($va_criteria) > 0) {
-			$i = 0;
-			foreach($va_criteria as $va_criterion) {
-				print "<strong>".$va_criterion['facet'].':</strong>';
-				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter" role="button"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
-				}else{
-					print ' '.$va_criterion['value'];
-					$vs_search = $va_criterion['value'];
-				}
-				$i++;
-				if($i < sizeof($va_criteria)){
-					print " ";
-				}
-				$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
-				if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
-					$t_authority_table = new $va_current_facet["table"];
-					$t_authority_table->load($va_criterion['id']);
-					$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
-				}
-			}
-		}
-?>		
-		</div>
 <?php
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
@@ -195,8 +170,8 @@ if (!$vb_ajax) {	// !ajax
 		}
 ?>
 		<form id="setsSelectMultiple">
-		<div class="row">
 			<div id="browseResultsContainer">
+				<div class="row">
 <?php
 } // !ajax
 
@@ -213,11 +188,13 @@ if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_ke
 
 if (!$vb_ajax) {	// !ajax
 ?>
-			</div><!-- end browseResultsContainer -->
-		</div><!-- end row -->
+			
+			</div><!-- end row -->
+		</div><!-- end browseResultsContainer -->
 		</form>
 	</div><!-- end col-8 -->
-	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
+	
+	<div class="col-sm-4 col-md-3 offset-md-1">
 		<div id="bViewButtons">
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
@@ -239,7 +216,7 @@ if (!$vb_ajax) {	// !ajax
 	
 </div><!-- end row -->
 
-<script type="text/javascript">
+<!--<script type="text/javascript">
 	jQuery(document).ready(function() {
 		jQuery('#browseResultsContainer').jscroll({
 			autoTrigger: true,
@@ -270,7 +247,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		}
 ?>
-	});
+	});-->
 
 </script>
 <?php

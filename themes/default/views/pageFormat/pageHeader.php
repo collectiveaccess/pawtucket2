@@ -96,7 +96,7 @@
 					</ul>
 					<form action="<?= caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" role="search">
 						<div class="input-group mt-4">
-							<input type="text" name="search" class="form-control rounded-0" id="nav-search-input" placeholder="Search" aria-label="Search">
+							<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search" aria-label="Search">
 							<button type="submit" class="btn rounded-0" id="nav-search-btn"><i class="bi bi-search"></i></button>
 						</div>
 						<div class="form-text"><?php print caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
@@ -109,6 +109,6 @@
 	<main role="main">
 <?php
 	if(strToLower($this->request->getController()) != "front"){
-		print "<div class='container'>";
+		print "<div class='container pt-4'>";
 	}
 ?>

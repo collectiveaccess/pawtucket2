@@ -24,6 +24,8 @@ $spacers: (
   5: $spacer * 3,
 ) !default;
 
+$border-color: $gray-300 !default;
+
 /* font */
 // $font-size-root affects the value of `rem`, which is used for as well font sizes, paddings, and margins
 // $font-size-base affects the font size of the body text
@@ -32,7 +34,17 @@ $font-size-base:              1rem !default; // Assumes the browser default, typ
 $font-size-sm:                $font-size-base * .875 !default;
 $font-size-lg:                $font-size-base * 1.25 !default;
 
-$font-family-sans-serif: "Noto Sans", "Helvetica Neue" !default;
+$font-family-sans-serif: "Lato", "Noto Sans" !default;
+
+$font-weight-lighter:         lighter !default;
+$font-weight-light:           300 !default;
+$font-weight-normal:          300 !default;
+$font-weight-medium:          400 !default;
+$font-weight-semibold:        600 !default; /* lato doesn't have 600 */
+$font-weight-bold:            700 !default;
+$font-weight-bolder:          bolder !default;
+
+$font-weight-base:            $font-weight-normal !default;
 
 $h1-font-size:                $font-size-base * 2.5 !default;
 $h2-font-size:                $font-size-base * 2 !default;
@@ -46,7 +58,7 @@ $h6-font-size:                $font-size-base !default;
 $headings-margin-bottom:      $spacer * .5 !default;
 $headings-font-family:        null !default;
 $headings-font-style:         null !default;
-$headings-font-weight:        500 !default;
+$headings-font-weight:        400 !default;
 $headings-line-height:        1.2 !default;
 $headings-color:              inherit !default;
 // scss-docs-end headings-variables
@@ -87,18 +99,28 @@ $body-tertiary-bg:          $gray-100 !default; /* used for .bg-body-tertiary */
 
 /* links */
 $link-color: $primary !default;
-$link-decoration: underline !default;
+$link-decoration: underline solid .5px  !default;
+/* text-underline-offset: .25rem;
+  text-decoration-thickness: .5px;*/
 $link-shade-percentage: 20% !default;
 $link-hover-color: #000 !default;
 $link-hover-decoration: null !default;
 
 
 /* nav bar */
-$navbar-light-color: #000;
-$navbar-light-active-color: #414141;
-$nav-link-font-size: 16px;
-$navbar-nav-link-padding-x: 1rem !default;
+
 $nav-link-padding-y: 2rem !default;
+$navbar-nav-link-padding-x: 1rem !default;
+$nav-link-font-size: 16px;
+$nav-link-font-weight: $font-weight-medium !default;
+$nav-link-color:                    $body-color !default;
+$nav-link-hover-color:              $primary !default;
+$nav-link-transition:               color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out !default;
+
+$navbar-light-color: #000;
+$navbar-light-active-color: $primary;
+$nav-underline-link-active-color:   red !default;
+
 
 /* buttons */
 $input-btn-font-family:       null !default;
