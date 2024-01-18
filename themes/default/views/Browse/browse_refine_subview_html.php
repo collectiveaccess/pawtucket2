@@ -55,41 +55,49 @@
 	
 	if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->numHits() > 1)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
-		print "<div id='bRefine'>";
+		print "<div id='bRefine' class='bg-light sticky-top vh-100'>";
 		if($qr_res->numHits() > 1){
 ?>
-			<div class="bSearchWithinContainer">
-				<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-					<input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within"><button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button>
-					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
-				</form>
-				<div style="clear:both"></div>
-			</div>	
+			<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+				<div class="input-group p-3">
+					<input name="search_refine" type="text" class="form-control rounded-0  border-0" placeholder="<?php print _t("Search within..."); ?>" aria-label="<?php print _t("Search within"); ?>" aria-describedby="Search bar">
+					<button type="submit" class="btn rounded-0 bg-white"><i class="bi bi-search"></i></button>
+				</div>
+			</form>
 <?php
 		}
 		if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria)){
 			print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
-			print "<H2>"._t("Filter by")."</H2>";
+			print "<H2 class='fs-4 px-3 py-2'>"._t("Filter by")."</H2>";
+			
 			if($vs_criteria){
 				print "<div class='bCriteria'>".$vs_criteria."</div>";
 			}
+			print '<div class="accordion accordion-flush" id="browseRefineFacets">';
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+				print "<div class='accordion-item'>";
 			
 				if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-					print "<H3>".$va_facet_info['label_singular']."</H3>";
-					print "<p>".$va_facet_info['description']."</p>";
-	?>
+					print "<div class='accordion-header' id='heading".$vs_facet_name."'><button class='accordion-button collapsed fw-medium text-capitalize ' type='button' data-bs-toggle='collapse' data-bs-target='#".$vs_facet_name."' aria-expanded='false' aria-controls='".$vs_facet_name."'>".$va_facet_info['label_singular']."</button></div>";
+
+					print "<div id='".$vs_facet_name."' class='accordion-collapse collapse' aria-labelledby='heading".$vs_facet_name."' data-bs-parent='#browseRefineFacets'>
+      					<div class='accordion-body '>";
+					
+?>
 						<script type="text/javascript">
 							jQuery(document).ready(function() {
 								jQuery("#bHierarchyList_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'linkTo' => 'morePanel')); ?>");
 							});
 						</script>
 						<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-	<?php
+<?php
+					print "</div></div>";
 				} else {				
 					if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-					print "<h3>".$va_facet_info['label_singular']."</h3>"; 
+					print "<div class='accordion-header' id='heading".$vs_facet_name."'><button class='accordion-button collapsed fw-medium text-capitalize ' type='button' data-bs-toggle='collapse' data-bs-target='#".$vs_facet_name."' aria-expanded='false' aria-controls='".$vs_facet_name."'>".$va_facet_info['label_singular']."</button></div>";
+
+					print "<div id='".$vs_facet_name."' class='accordion-collapse collapse' aria-labelledby='heading".$vs_facet_name."' data-bs-parent='#browseRefineFacets'>
+      					<div class='accordion-body '>";
 					switch($va_facet_info["group_mode"]){
 						case "alphabetical":
 						case "list":
@@ -121,8 +129,11 @@
 						break;
 						# ---------------------------------------------
 					}
+					print "</div></div>";
 				}
+				print "</div><!-- end accordion-item -->";
 			}
+			print "</div><!-- end accordian browseRefineFacets -->";
 		}
 		print "</div><!-- end bRefine -->\n";
 ?>

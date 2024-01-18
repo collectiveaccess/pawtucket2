@@ -1,5 +1,5 @@
-$gray-100: #ecedee !default;
-$gray-200: #dee2e6 !default;
+$gray-100: #f5f5f5 !default;
+$gray-200: #ecedee !default;
 $gray-300: #d0d3d5 !default;
 $gray-400: #ced4da !default;
 $gray-500: #adb5bd !default;
@@ -10,7 +10,7 @@ $gray-900: #212529 !default;
 
 $primary:       #085f6c !default;
 $secondary:     $gray-600 !default;
-$light:         #FFF !default;
+$light:         $gray-100 !default;
 $dark:          $gray-700 !default; /* used for .bg-dark style */
 
 // scss-docs-start spacer-variables-maps
@@ -47,11 +47,11 @@ $font-weight-bolder:          bolder !default;
 $font-weight-base:            $font-weight-normal !default;
 
 $h1-font-size:                $font-size-base * 2 !default;
-$h2-font-size:                $font-size-base * 1.5 !default;
-$h3-font-size:                $font-size-base * 1.25 !default;
-$h4-font-size:                $font-size-base * 1 !default;
+$h2-font-size:                $font-size-base * 1.75 !default;
+$h3-font-size:                $font-size-base * 1.5 !default;
+$h4-font-size:                $font-size-base * 1.25 !default;
 $h5-font-size:                $font-size-base * 1 !default;
-$h6-font-size:                $font-size-base !default;
+$h6-font-size:                $font-size-base * .75 !default;
 // scss-docs-end font-sizes
 
 // scss-docs-start headings-variables
@@ -94,8 +94,12 @@ $body-secondary-color:      rgba($body-color, .75) !default;
 $body-secondary-bg:         $gray-300 !default; /* used for .bg-body-secondary */
 
 $body-tertiary-color:       rgba($body-color, .5) !default;
-$body-tertiary-bg:          $gray-100 !default; /* used for .bg-body-tertiary */
+$body-tertiary-bg:          $gray-200 !default; /* used for .bg-body-tertiary */
 
+$light-bg-subtle:         mix($gray-100, #FFF) !default;
+$dark-bg-subtle:          $gray-400 !default;
+
+$box-shadow:                  0 1px 8px rgba(#000, .15) !default;
 
 /* links */
 $link-color: $primary !default;
@@ -130,3 +134,16 @@ $input-btn-font-size:         $font-size-base !default;
 $btn-border-radius:           0 !default;
 $btn-border-radius-sm:        0 !default;
 $btn-border-radius-lg:        0 !default;
+
+
+// scss-docs-start focus-ring-variables --- used with accordion and input focus states
+$focus-ring-width:      2px !default;
+$focus-ring-opacity:    .1 !default;
+$focus-ring-color:      rgba($secondary, $focus-ring-opacity) !default;
+$focus-ring-blur:       2px !default;
+$focus-ring-box-shadow: 0 0 $focus-ring-blur $focus-ring-width $focus-ring-color !default;
+// scss-docs-end focus-ring-variables
+
+$accordion-bg: $light-bg-subtle !default;
+$accordion-button-bg: $light !default;
+$accordion-button-active-bg: $light-bg-subtle !default;

@@ -142,7 +142,7 @@
 					}
 					$vs_detail_button_link = caDetailLink($this->request, "<i class='bi bi-arrow-right-square' aria-label='"._t("View Record")."'></i>", 'link-dark mx-1', $vs_table, $vn_id);
 					$vs_result_output = "
-		<div class='col-sm-6 col-md-4'>
+		<div class='col-md-6 col-lg-4'>
 			<div id='row{$vn_id}'>
 				<div class='card width-100 rounded-0 shadow border-0 mb-4'>
 				  {$vs_rep_detail_link}

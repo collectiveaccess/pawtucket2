@@ -53,7 +53,7 @@
 									if(mb_strlen($vs_desc) > 400){
 										$vs_desc = mb_substr($vs_desc, 0, 400)."...";						
 									}
-									print "<div class='py-2 fs-5'>".$vs_desc."</div>";
+									print "<div class='py-2 fs-4'>".$vs_desc."</div>";
 								}
 								print "<div class='text-center py-2'>".caNavLink($this->request, "View All ".ucwords($gallery_plural_name)." <i class='bi bi-arrow-right'></i>", "btn btn-primary", "", "Gallery", "Index")."</div>";
 								print "</div>";

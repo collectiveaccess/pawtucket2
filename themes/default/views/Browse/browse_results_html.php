@@ -71,7 +71,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 
 <div class="row" style="clear:both;">
-	<div class='col-sm-8'>
+	<div class='col-sm-8 col-md-9 col-lg-9 col-xl-8'>
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -93,7 +93,7 @@ if (!$vb_ajax) {	// !ajax
 				}
 			}
 ?>
-		<H1>
+		<H1 class="text-capitalize">
 <?php
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
@@ -148,9 +148,10 @@ if (!$vb_ajax) {	// !ajax
 			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
 <?php
 			}
-			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
-			}
+### -----------------  NEED TO FIX ADD TO LIGHTBOX TOOLS
+			#if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+				#print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
+			#}
 ?>
 		</H1>
 <?php
@@ -194,7 +195,7 @@ if (!$vb_ajax) {	// !ajax
 		</form>
 	</div><!-- end col-8 -->
 	
-	<div class="col-sm-4 col-md-3 offset-md-1">
+	<div class="col-sm-4 col-md-3 col-lg-3 col-xl-3 offset-xl-1">
 		<div id="bViewButtons">
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
