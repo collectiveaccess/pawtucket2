@@ -21,97 +21,87 @@
 		}
 	}
 ?>
-<div class="row"><div class="col-sm-12">
-	<H1><?= $vs_page_title; ?></H1>
-<?php
-	if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
-		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
-	}
-?>
-	<form id="contactForm" action="<?= caNavUrl($this->request, "", "Contact", "send"); ?>" method="post">
-	    <input type="hidden" name="csrfToken" value="<?= caGenerateCSRFToken($this->request); ?>"/>
-<?php
-	if($pn_id && $t_item->getPrimaryKey()){
-?>
-		<div class="row">
-			<div class="col-sm-12">
-				<p><b>Title: </b><?= $vs_name; ?>
-				<br/><b>Regarding this URL: </b><a href="<?= $vs_url; ?>" class="purpleLink"><?= $vs_url; ?></a>
-				</p>
-				<input type="hidden" name="itemId" value="<?= $vs_idno; ?>">
-				<input type="hidden" name="itemTitle" value="<?= $vs_name; ?>">
-				<input type="hidden" name="itemURL" value="<?= $vs_url; ?>">
-				<input type="hidden" name="id" value="<?= $pn_id; ?>">
-				<input type="hidden" name="table" value="<?= $ps_table; ?>">
-				<hr/><br/><br/>
-	
-			</div>
-		</div>
-<?php
-	}
-?>
-		<div class="row">
-			<div class="col-md-9">
-				<div class="row">
-					<div class="col-sm-4">
-						<div class="form-group<?= (($va_errors["name"]) ? " has-error" : ""); ?>">
-							<label for="name"><?= _t("Name"); ?></label>
-							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
+
+<div class="row">
+	<div class="col mb-5">
+
+		<h1><?= $vs_page_title; ?></h1>
+
+		<?php
+			if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
+				print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
+			}
+		?>
+
+		<form class="row g-3" action="<?= caNavUrl($this->request, "", "Contact", "send"); ?>" method="post">
+
+			<input type="hidden" name="csrfToken" value="<?= caGenerateCSRFToken($this->request); ?>"/>
+
+			<!-- What is this for? -->
+			<?php
+				if($pn_id && $t_item->getPrimaryKey()){
+			?>
+					<div class="row">
+						<div class="col-sm-12">
+							<p><b>Title: </b><?= $vs_name; ?>
+							<br/><b>Regarding this URL: </b><a href="<?= $vs_url; ?>" class="purpleLink"><?= $vs_url; ?></a>
+							</p>
+							<input type="hidden" name="itemId" value="<?= $vs_idno; ?>">
+							<input type="hidden" name="itemTitle" value="<?= $vs_name; ?>">
+							<input type="hidden" name="itemURL" value="<?= $vs_url; ?>">
+							<input type="hidden" name="id" value="<?= $pn_id; ?>">
+							<input type="hidden" name="table" value="<?= $ps_table; ?>">
+							<hr/><br/><br/>
+				
 						</div>
-					</div><!-- end col -->
-					<div class="col-sm-4">
-						<div class="form-group<?= (($va_errors["email"]) ? " has-error" : ""); ?>">
-							<label for="email"><?= _t("Email address"); ?></label>
-							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
-						</div>
-					</div><!-- end col -->
-					<div class="col-sm-4">
-						<div class="form-group<?= (($va_errors["security"]) ? " has-error" : ""); ?>">
-							<label for="security"><?= _t("Security Question"); ?></label>
-							<div class='row'>
-								<div class='col-sm-6'>
-									<p class="form-control-static"><?= $vn_num1; ?> + <?= $vn_num2; ?> = </p>
-								</div>
-								<div class='col-sm-6'>
-									<input name="security" value="" id="security" type="text" class="form-control input-sm" />
-								</div>
-							</div><!--end row-->	
-						</div><!-- end form-group -->
-					</div><!-- end col -->
-				</div><!-- end row -->
-			</div><!-- end col -->
-		</div><!-- end row -->
-		<div class="row">
-			<div class="col-md-9">
-				<div class="form-group<?= (($va_errors["message"]) ? " has-error" : ""); ?>">
-					<label for="message"><?= _t("Message"); ?></label>
-					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
-				</div>
-			</div><!-- end col -->
-		</div><!-- end row -->
-<?php
-	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
-?>
-		<script type="text/javascript">
-			var gCaptchaRender = function(){
-                grecaptcha.render('regCaptcha', {'sitekey': '<?= __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
-        	};
-		</script>
-		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
-			<div class="row">
-				<div class="col-sm-12 col-md-offset-1 col-md-10">
-					<div class='form-group<?= (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
-						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
 					</div>
-				</div>
-			</div><!-- end row -->
-<?php
-	}
-?>
-		<div class="form-group">
-			<button type="submit" class="btn btn-default"><?= _t("Send"); ?></button>
-		</div><!-- end form-group -->
-		<input type="hidden" name="sum" value="<?= $vn_sum; ?>">
-	</form>
-	
-</div><!-- end col --></div><!-- end row -->
+			<?php
+				}
+			?>
+
+			<div class="col-md-4">
+				<label for="inputName" class="form-label"><?= _t("Name"); ?></label>
+				<input type="text" class="form-control" id="inputName" aria-label="enter name" placeholder="Enter name" required>
+			</div>
+			<div class="col-md-4">
+				<label for="inputEmail" class="form-label"><?= _t("Email"); ?></label>
+				<input type="email" class="form-control" id="inputEmail" aria-label="enter email" placeholder="Enter email" required>
+			</div>
+			<div class="col-md-6">
+				<label for="securityQuestion" class="form-label"><?= _t("Security Question"); ?></label>
+				<div id="securityQuestionBlock" class="form-text mb-2"><?= $vn_num1; ?> + <?= $vn_num2; ?> = </div>
+				<input type="text" class="form-control" id="securityQuestion" aria-label="enter answer" aria-describedby="securityQuestionBlock" required>
+			</div>
+			<div class="col-md-9">
+				<label for="message" class="form-label"><?= _t("Message"); ?></label>
+  				<textarea class="form-control" id="message" rows="5" aria-label="enter message" required>{{{message}}}</textarea>
+			</div>
+
+			<!-- TODO: This Is Broken -->
+			<?php
+				if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+			?>
+					<script type="text/javascript">
+						var gCaptchaRender = function(){
+							grecaptcha.render('regCaptcha', {'sitekey': '<?= __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+						};
+					</script>
+
+					<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+
+					<div class="col-md-9">
+						<div class='form-group<?= (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+							<div id="regCaptcha" class=""></div>
+						</div>
+					</div>
+			<?php
+				}
+			?>
+
+			<div class="col-12">
+				<button type="submit" class="btn btn-primary"><?= _t("Send"); ?></button>
+			</div>
+		</form>
+
+	</div><!-- end col -->
+</div><!-- end row -->
