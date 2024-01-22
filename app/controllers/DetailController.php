@@ -606,9 +606,36 @@ class DetailController extends FindController {
 			$qr_annotations->seek(0);
 		}
 		
+		if (!($vs_template = $detail_options['displayUserAnnotationTemplate'])) { $vs_template = '^ca_user_representation_annotations.preferred_labels.name'; }
+		
+		
+		$user_annotation_list = $user_annotation_times = [];
+		if($this->request->isLoggedIn()) {
+			$t_rep->annotationMode('user');
+			if (
+				is_array($user_annotations = $t_rep->getAnnotations(array('user_id' => $this->request->getUserID(), 'idsOnly' => true))) //$t_rep->get('ca_representation_annotations.annotation_id', array('returnAsArray' => true))) 
+				&& 
+				sizeof($user_annotations)
+				&&
+				($qr_annotations = caMakeSearchResult('ca_user_representation_annotations', $user_annotations))
+			) {
+				while($qr_annotations->nextHit()) {
+					if (!preg_match('!^TimeBased!', $x=$qr_annotations->getAnnotationType())) { continue; }
+					$user_annotation_list[$qr_annotations->getPrimaryKey()] = $qr_annotations->getWithTemplate($vs_template);
+					$user_annotation_times[] = array((float)$qr_annotations->getPropertyValue('startTimecode', true) - (float)$props['timecode_offset'], (float)$qr_annotations->getPropertyValue('endTimecode', true) - (float)$props['timecode_offset']);
+				}
+				$qr_annotations->seek(0);
+			}
+		}
+		
+		$this->view->setVar('representation', $t_rep);
+		$this->view->setVar('id', $id);
+		$this->view->setVar('context', $detail_type);
 		$this->view->setVar('representation_id', $representation_id);
 		$this->view->setVar('annotation_list', $annotation_list);
 		$this->view->setVar('annotation_times', $annotation_times);
+		$this->view->setVar('user_annotation_list', $user_annotation_list);
+		$this->view->setVar('user_annotation_times', $user_annotation_times);
 		$this->view->setVar('default_annotation_id', $default_annotation_id);
 		$this->view->setVar('start_time', $start_time);
 		$this->view->setVar('annotations_search_results', $qr_annotations);
@@ -1465,6 +1492,7 @@ class DetailController extends FindController {
 			$merged_options['noOverlay'] = false;
 		}
 		
+		$merged_options['item_id'] = $this->request->getParameter('item_id', pInteger);
 		$merged_options['resultList'] = $o_context->getResultList();
 		
 		$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, $merged_options));

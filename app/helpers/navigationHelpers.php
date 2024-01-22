@@ -110,6 +110,8 @@
  	define('__CA_NAV_ICON_CROSSHAIRS__', 68);
  	define('__CA_NAV_ICON_UPLOAD__', 69);
  	define('__CA_NAV_ICON_COPY__', 70);
+ 	define('__CA_NAV_ICON_SUITCASE__', 71);
+ 	define('__CA_NAV_ICON_TRASH__', 72);
  	
  	/**
  	 * Icon position constants
@@ -899,7 +901,13 @@
 				break;	
 			case __CA_NAV_ICON_COPY__:
 				$vs_fa_class = 'fa fa-clipboard';
-				break;																					
+				break;							
+			case __CA_NAV_ICON_SUITCASE__:
+				$vs_fa_class = 'fa fa-suitcase';
+				break;						
+			case __CA_NAV_ICON_TRASH__:
+				$vs_fa_class = 'fa fa-trash';
+				break;																				
 			default:
 				print "INVALID CONSTANT $pn_type<br>\n";
 				return null;

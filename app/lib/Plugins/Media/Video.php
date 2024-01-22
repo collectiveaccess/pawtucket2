@@ -1040,7 +1040,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		foreach([
 			'name', 'show_controls', 'url', 'text_only', 'viewer_width', 'viewer_height', 'id',
 			'poster_frame_url', 'viewer_parameters', 'viewer_base_url', 'width', 'height',
-			'vspace', 'hspace', 'alt', 'title', 'usemap', 'align', 'border', 'class', 'style'
+			'vspace', 'hspace', 'alt', 'title', 'usemap', 'align', 'border', 'class', 'style', 'start'
 		] as $k) {
 			if (!isset($options[$k])) { $options[$k] = null; }
 		}
@@ -1050,6 +1050,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		$id 	= 	$options["id"] ?? "video_player";
 		$name 	= 	$options["name"] ?? $id;
 		$class 	= 	$options["class"] ?? "caVideoPlayer";
+		$start 	= 	caGetOption('start', $options, 0);
 		
 		switch($properties["mimetype"]) {
 			# ------------------------------------------------
@@ -1063,7 +1064,6 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 
 				$captions = 		caGetOption("captions", $options, [], array('castTo' => 'array'));	
 				$controls = 		caGetOption("controls", $options, ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'fullscreen'], ['castTo' => 'array']);
-				
 				$autoplay =			caGetOption("autoplay", $options, false);
 				ob_start();
 ?>
@@ -1091,7 +1091,13 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 						};
 						const player = new Plyr('#<?= $id; ?>', options);
 						jQuery('#<?= $id; ?>').data('player', player);
-						if (caUI.mediaPlayerManager) { caUI.mediaPlayerManager.register("<?= $id; ?>", player, 'Plyr'); }
+						if (caUI.mediaPlayerManager) { 
+							caUI.mediaPlayerManager.register("<?= $id; ?>", player, 'Plyr'); 
+							if(<?= (int)$start; ?> > 0) {
+								caUI.mediaPlayerManager.play("<?= $id; ?>");
+								caUI.mediaPlayerManager.seek("<?= $id; ?>", <?= (int)$start; ?>);
+							}
+						}
 					});
 				</script>
 <?php

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,17 +29,17 @@
  *
  * ----------------------------------------------------------------------
  */
-	$t_set = $this->getVar("set");
-	$va_write_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2));
- 	$va_errors = $this->getVar("errors");
-	$vs_display_name = $this->getVar("display_name");
-	$vs_description_attribute 		= $this->getVar("description_attribute");
-	$vs_set_name = $this->getVar("set_name");
-	$vs_set_description = $this->getVar("set_description");
-	$vn_last_set_id = $this->getVar("lightboxLastSetId");
+$t_set = $this->getVar("set");
+$va_write_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2));
+$va_errors = $this->getVar("errors");
+$vs_display_name = $this->getVar("display_name");
+$vs_description_attribute 		= $this->getVar("description_attribute");
+$vs_set_name = $this->getVar("set_name");
+$vs_set_description = $this->getVar("set_description");
+$vn_last_set_id = $this->getVar("lightboxLastSetId");
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<H1><?php print _t("Add item to %1", $vs_display_name); ?></H1>
+<H1><?= _t("Add item to %1", $vs_display_name); ?></H1>
 <?php
 	if($va_errors["general"]){
 		print "<div class='alert alert-danger'>".$va_errors["general"]."</div>";
@@ -61,18 +61,20 @@
 			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><H2 class='uppercase'>"._t("OR Create a New %1", ucfirst($vs_display_name))."</H2></div></div><!-- end form-group -->\n";
 		}
 		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' id='name' placeholder='"._t("Your %1", $vs_display_name)."' class='form-control' value='".$vs_set_name."'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
-		#print $t_set->htmlFormElement("access","<div class='form-group'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7' class='form-control'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
 		print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' id='description' class='form-control' rows='3'>".$vs_set_description."</textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
-
 ?>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
-				<button type="submit" class="btn btn-default"><?php print _t("Save"); ?></button>
+				<button type="submit" class="btn btn-default"><?= _t("Save"); ?></button>
 			</div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
-		<input type="hidden" name="object_id" value="<?php print $this->getVar("object_id"); ?>">
-		<input type="hidden" name="object_ids" value="<?php print $this->getVar("object_ids"); ?>">
-		<input type="hidden" name="saveLastResults" value="<?php print $this->getVar("saveLastResults"); ?>">
+		<input type="hidden" name="object_id" value="<?= $this->getVar("object_id"); ?>">
+		<input type="hidden" name="object_ids" value="<?= $this->getVar("object_ids"); ?>">
+		
+		<input type="hidden" name="representation_id" value="<?= $this->getVar("representation_id"); ?>">
+		<input type="hidden" name="annotation_id" value="<?= $this->getVar("annotation_id"); ?>">
+		
+		<input type="hidden" name="saveLastResults" value="<?= $this->getVar("saveLastResults"); ?>">
 	</form>
 </div>
 
@@ -80,7 +82,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#AddItemForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddItem', null); ?>',
+				'<?= caNavUrl($this->request, '', 'Lightbox', 'AjaxAddItem', null); ?>',
 				jQuery('#AddItemForm').serialize()
 			);
 			e.preventDefault();

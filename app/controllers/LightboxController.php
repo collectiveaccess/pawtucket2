@@ -1205,7 +1205,6 @@ class LightboxController extends FindController {
 			$t_object->purify(true);
 			
 			$vn_object_table_num = $t_object->tableNum();
-			$t_set->setMode(ACCESS_WRITE);
 			$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
 			$t_set->set('table_num', $vn_object_table_num);
 			$t_set->set('type_id', $vn_set_type_user);
@@ -1231,20 +1230,12 @@ class LightboxController extends FindController {
 		}
 		if($t_set){
 			$pn_item_id = null;
-			$pn_object_id = $this->request->getParameter('id', pInteger);
+			$pn_object_id = $this->request->getParameter(['id', 'object_id'], pInteger);
 			if($pn_object_id){
-				if(!$t_set->isInSet("ca_objects", $pn_object_id, $t_set->get("set_id"))){
-					if ($pn_item_id = $t_set->addItem($pn_object_id, array(), $this->request->getUserID())) {
-						//
-						// Select primary representation
-						//
-						$t_object = new ca_objects($pn_object_id);
-						$vn_rep_id = $t_object->getPrimaryRepresentationID();	// get representation_id for primary
-						
-						$t_item = new ca_set_items($pn_item_id);
-						$t_item->addSelectedRepresentation($vn_rep_id);			// flag as selected in item vars
-						$t_item->update();
-						
+				if(true) { //!$t_set->isInSet("ca_objects", $pn_object_id, $t_set->get("set_id"))){
+					$representation_id = $this->request->getParameter('representation_id', pInteger);
+					$annotation_id = $this->request->getParameter('annotation_id', pInteger);
+					if ($pn_item_id = $t_set->addItem($pn_object_id, [], $this->request->getUserID(), null, ['representation_id' => $representation_id, 'annotation_id' => $annotation_id])) {
 						$va_errors = array();
 						$this->view->setVar('message', _t("Successfully added item."));
 						$this->render("Form/reload_html.php");
@@ -1300,6 +1291,8 @@ class LightboxController extends FindController {
 		$this->view->setvar("set", new ca_Sets());
 		$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
 		$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
+		$this->view->setvar("representation_id", $this->request->getParameter('representation_id', pInteger));
+		$this->view->setvar("annotation_id", $this->request->getParameter('annotation_id', pInteger));
 		$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
 		if(($pn_object_id = $this->request->getParameter('object_id', pInteger)) || ($pn_save_last_results = $this->request->getParameter('saveLastResults', pInteger)) || ($pa_object_ids = sizeof(explode(";", $this->request->getParameter('object_ids', pString))))){
 			$this->render("Lightbox/form_add_set_item_html.php");
@@ -1451,6 +1444,38 @@ class LightboxController extends FindController {
 		}
 
 		return $this->Index();
+	}
+	
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function compare() {
+		$item_ids = explode(';', $this->request->getParameter('item_ids', pString));
+		
+		$items = ca_set_items::find(['item_id' => ['IN', $item_ids]], ['returnAs' => 'arrays']);
+		
+		$representations = $start_times =[];
+		foreach($items as $item) {
+			if($rep_id = $item['representation_id']) {
+				$t_rep = new ca_object_representations($rep_id);
+			} else {
+				$t_object = new ca_objects($item['row_id']);
+				$t_rep = $t_object->getPrimaryRepresentationInstance();
+			}
+			$start = null;
+			if($annotation_id = $item['annotation_id']) {
+				$t_anno = new ca_user_representation_annotations($annotation_id);
+			 	$start = $t_anno->getPropertyValue('startTimecode', ['format' => 'seconds']);
+			}
+			$representations[] = $t_rep;
+			$start_times[] = $start;
+		}
+		
+		$this->view->setVar('representations', $representations);
+		$this->view->setVar('startTimes', $start_times);
+		
+		$this->render('Lightbox/compare_html.php');
 	}
 	# -------------------------------------------------------
 	

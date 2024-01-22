@@ -4531,6 +4531,7 @@ jQuery(document).ready(function() {
 		$pb_hide_overlay_controls			= (bool)caGetOption('hideOverlayControls.', $pa_options, false);
 		$pa_check_acccess 					= caGetOption('checkAccess', $pa_options, null);
 		$pb_no_overlay						= (bool)caGetOption('noOverlay', $pa_options, false);
+		$item_id							= (int)caGetOption('item_id', $pa_options, null);
 
 		$vs_caption = $vs_tool_bar = '';
 
@@ -4591,7 +4592,7 @@ jQuery(document).ready(function() {
 					"representation:{$pn_representation_id}", 
 					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
 					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 
-					'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 
+					'noOverlay' => $pb_no_overlay, 'checkAccess' => $pa_check_acccess, 'item_id' => $item_id,
 					'resultList' => caGetOption('resultList', $pa_options, null), 'showRepresentationViewerNextPreviousLinks' => (bool)caGetOption('showRepresentationViewerNextPreviousLinks', $pa_options, false)]
 				);
 

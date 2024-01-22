@@ -53,12 +53,25 @@ class VideoJS extends BaseMediaViewer implements IMediaViewer {
 			$o_view->setVar('id', $vs_id = 'caMediaOverlayTimebased_'.$t_instance->getPrimaryKey().'_'.($vs_display_type = caGetOption('display_type', $pa_data, caGetOption('display_version', $pa_data['display'], ''))));
 			
 			if (is_a($t_instance, "ca_object_representations")) {
+				$annotation_id = $start = $start_seconds = null;
+				if($item_id = caGetOption('item_id', $pa_options, null)) {
+					$t_set_item = new ca_set_items($item_id);
+					if($t_set_item->get('representation_id') == $t_instance->getPrimaryKey()) {
+						if($annotation_id = $t_set_item->get('ca_set_items.annotation_id')) {
+							$t_anno = new ca_user_representation_annotations($annotation_id);
+							$start = $t_anno->getPropertyValue('startTimecode');
+							$tc = new TimecodeParser($start);
+							$start_seconds = $tc->getSeconds();
+						}
+					}
+				}
+				
 				$poster = $t_instance->getMediaUrl('media', caGetOption('viewer_poster_version', $pa_data['display'], 'small'));
 				$va_viewer_opts = [
 					'id' => $vs_id, 'class' => caGetOption('class', $pa_data['display'], null),
 					'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
 					'poster_frame_url' => $poster, 'captions' => $t_instance->getCaptionFileList(), 'autoplay' => caGetOption('autoplay', $pa_data['display'], false),
-					'controls' => caGetOption('controls', $pa_data['display'], null),
+					'controls' => caGetOption('controls', $pa_data['display'], null), 'start' => $start_seconds,
 					'dont_init_plyr' => caGetOption('dontInitPlyr', $pa_options, caGetOption('dontInitPlyr', $pa_data['display'], null)),
 				];
 				

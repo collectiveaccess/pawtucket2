@@ -123,7 +123,7 @@
 					$o_timecode_parser = new TimecodeParser();
 					$o_timecode_parser->setParsedValueInSeconds($this->opa_property_values[$ps_property]);
 					
-					return $o_timecode_parser->getText(caGetOption($options, 'vtt', false) ? 'VTT' : 'COLON_DELIMITED');
+					return $o_timecode_parser->getText(caGetOption($options, 'vtt', false) ? 'VTT' : caGetOption('format', $options, 'COLON_DELIMITED'));
 					break;
 				default:
 					// unsupported property?
