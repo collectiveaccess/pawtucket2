@@ -691,11 +691,6 @@ a.readmore-js-toggle {
 	text-decoration: none;
 }
 
-.caVideoPlayer{
-	height: fit-content !important;
-	width: fit-content !important;
-}
-
 .object-rep img{
 	max-height: 400px;
 	max-width: 500px;
@@ -1146,17 +1141,7 @@ a.browseRemoveFacet img {
 	z-index: unset;
 }
 
-.lbItemContainer .lbItem:hover {
-	/* position: absolute; */
-	position: unset;
-}
 
-.lbItemContainer .lbItem:hover .lbItemContent {
-	/* min-height: 250px;
-	height: auto; */
-	min-height: unset;
-	height: unset;
-}
 
 .lbItemContainer .lbExpandedInfo,
 .lbSetExpandedInfo {
@@ -1174,9 +1159,6 @@ a.browseRemoveFacet img {
 	margin-top: -15px;
 }
 
-.lbItemContainer .lbItem:hover .lbSetItemComment .lbComments {
-	max-height: 150px;
-}
 
 
 .lbItem {
@@ -1192,41 +1174,8 @@ a.browseRemoveFacet img {
 	font-size: 11px;
 }
 
-.lbItem:hover {
-	/* cursor: move;
-	z-index: 1000; */
-	cursor: unset;
-	z-index: unset;
-}
-
-.lbItemContainer .lbItem:hover {
-	/* position: absolute; */
-	position: unset;
-}
 
 
-@media (min-width: 768px) {
-	.lbItemContainer .lbItem:hover {
-		/* padding: 15px;
-		width: 110%;
-		left: -5%;
-		top: -5%; */
-		padding: unset;
-		width: unset;
-		left: unset;
-		top: unset;
-	}
-}
-
-.lbItem:hover .lbExpandedInfo,
-.lbSet:hover .lbSetExpandedInfo {
-	display: inline;
-}
-
-.lbItem:hover .lbItemImg {
-	/* max-height: 600px; */
-	max-height: unset;
-}
 
 
 
@@ -1235,13 +1184,6 @@ a.browseRemoveFacet img {
 	overflow: hidden; */
 	height: unset;
 	overflow: unset;
-}
-
-.lbItemContainer .lbItem:hover .lbItemContent {
-	/* min-height: 250px;
-	height: auto; */
-	min-height: unset;
-	height: unset;
 }
 
 .lbItemImg {
@@ -1256,10 +1198,6 @@ a.browseRemoveFacet img {
 	overflow: unset;
 }
 
-.lbItem:hover .lbItemImg {
-	/* max-height: 600px; */
-	max-height: unset;
-}
 
 .lbItemImg img {
 	height: 100%;
@@ -1279,11 +1217,6 @@ a.browseRemoveFacet img {
 	color: #757575;
 	/* padding: 5px; */
 	padding: 0;
-}
-
-.lbItem:hover .lbExpandedInfo,
-.lbSet:hover .lbSetExpandedInfo {
-	display: inline;
 }
 
 .lbExpandedInfo HR,
@@ -1475,4 +1408,31 @@ div.frontAlertClose {
 
 .funder-logo img{
 	width: 250px;
+}
+
+
+h6 {
+	font-family: Poppins;
+	font-weight: 200;
+	font-size: 14px !important;
+}
+
+#clipLabel {
+	padding-right: 10px;
+}
+
+.detailAnnotation, .clipTitle {
+	cursor: pointer;
+}
+
+.detailAnnotation:hover, .clipTitle:hover {
+	color: #cc0000;
+}
+
+.detailUserAnnotationList {
+	margin-top: 15px;
+}
+
+#caMediaPanel {
+	background-color: #000;
 }

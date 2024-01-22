@@ -51,6 +51,9 @@
 				<div class="row justify-content-center" style="padding-top: 20px; padding-bottom: 20px;">
 					<div class="col text-center object-rep">
 						{{{representationViewer}}}
+					</div>
+					<div id='detailAnnotations'>
+						
 					</div> 
 				</div>
 

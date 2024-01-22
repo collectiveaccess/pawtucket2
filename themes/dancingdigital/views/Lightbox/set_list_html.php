@@ -220,7 +220,7 @@ $current_sort_dir 					= $this->getVar('direction');
 				
 			</div>
 			<div class="modal-footer">
-				<a class="btn btn-ok btn-delete"><span class="glyphicon glyphicon-trash"></span> <?= _t('Delete'); ?></a>
+				<a class="btn btn-ok btn-delete"><?= caNavIcon(__CA_NAV_ICON_TRASH__, '12px'); ?> <?= _t('Delete'); ?></a>
 				<a class="btn" data-dismiss="modal"><?= _t('Cancel'); ?></a>
 			</div>
 		</div>

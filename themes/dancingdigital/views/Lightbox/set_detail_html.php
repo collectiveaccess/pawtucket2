@@ -29,39 +29,47 @@
  *
  * ----------------------------------------------------------------------
  */
-	$o_lightbox_config 				= $this->getVar("set_config");
-	$qr_set_items 					= $this->getVar("result");
-	$t_set 							= $this->getVar("set");
-	$vn_set_id						= $t_set->get("set_id");
-	$va_set_item_info           	= $this->getVar("setItemInfo");
-	$vb_write_access 				= $this->getVar("write_access");
-	$va_access_values 				= caGetUserAccessValues($this->request);
+$o_lightbox_config 				= $this->getVar("set_config");
+$qr_set_items 					= $this->getVar("result");
+$t_set 							= $this->getVar("set");
+$vn_set_id						= $t_set->get("set_id");
+$va_set_item_info           	= $this->getVar("setItemInfo");
+$vb_write_access 				= $this->getVar("write_access");
+$va_access_values 				= caGetUserAccessValues($this->request);
 
-	$va_views						= $this->getVar('views');
-	$vs_current_view				= $this->getVar('view');
-	$va_criteria					= $this->getVar('criteria');
+$va_views						= $this->getVar('views');
+$vs_current_view				= $this->getVar('view');
+$va_criteria					= $this->getVar('criteria');
 
-	$vs_current_sort				= $this->getVar('sort');
-	$vs_current_secondary_sort		= $this->getVar('secondarySort');
-	$vs_sort_dir					= $this->getVar('sortDirection');
-	$vs_sort_control_type 			= $o_lightbox_config->get("sortControlType");
-	if(!$vs_sort_control_type) { $vs_sort_control_type = "dropdown"; }
+$vs_current_sort				= $this->getVar('sort');
+$vs_current_secondary_sort		= $this->getVar('secondarySort');
+$vs_sort_dir					= $this->getVar('sortDirection');
+$vs_sort_control_type 			= $o_lightbox_config->get("sortControlType");
+if(!$vs_sort_control_type) { $vs_sort_control_type = "dropdown"; }
 
-	$va_export_formats 				= $this->getVar('export_formats');
-	$va_lightboxDisplayName 		= caGetLightboxDisplayName();
-	$vs_lightbox_displayname 		= $va_lightboxDisplayName["singular"];
-	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
-	$vs_browse_key 					= $this->getVar('key');
-	$vn_hits_per_block 	            = (int)$this->getVar('hits_per_block');	// number of hits to display per block
-	$vn_start		 	            = (int)$this->getVar('start');			// offset to seek to before outputting results
-	$vb_ajax			            = (bool)$this->request->isAjax();
+$va_export_formats 				= $this->getVar('export_formats');
+$va_lightboxDisplayName 		= caGetLightboxDisplayName();
+$vs_lightbox_displayname 		= $va_lightboxDisplayName["singular"];
+$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
+$vs_browse_key 					= $this->getVar('key');
+$vn_hits_per_block 	            = (int)$this->getVar('hits_per_block');	// number of hits to display per block
+$vn_start		 	            = (int)$this->getVar('start');			// offset to seek to before outputting results
+$vb_ajax			            = (bool)$this->request->isAjax();
 
-	$t_object 						= new ca_objects();		// ca_objects instance we need to pull representations
-	$vs_caption_template = 			$o_lightbox_config->get("caption_template");
+$t_object 						= new ca_objects();		// ca_objects instance we need to pull representations
+$vs_caption_template = 			$o_lightbox_config->get("caption_template");
 
-	$qr_comments 					= $this->getVar("comments");
-	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
-	$vs_description_attribute 		= $this->getVar("description_attribute");
+$qr_comments 					= $this->getVar("comments");
+$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
+$vs_description_attribute 		= $this->getVar("description_attribute");
+
+
+$set_item_list = caExtractValuesByUserLocale($t_set->getItems(['checkAccess' => $va_access_values]));
+// 
+// $item_info = [];
+// foreach($set_item_list as $item_id => $item) {
+// 	$item_info[$item['object_id']][] = $item;
+// }
 
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -72,7 +80,6 @@ if (!$vb_ajax) {	// !ajax
 		<div class="container lightbox-ind-container">
 
 	<div class="row">
-		<!-- <div class="<?php print ($vs_left_col_class = $o_lightbox_config->get("setDetailLeftColClass")) ? $vs_left_col_class : "col-sm-9 col-md-9 col-lg-8"; ?>"> -->
 		<div class="col-sm-12">
 <?php
 			if($vs_sort_control_type == 'list'){
@@ -97,14 +104,13 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			<H1>
 				<?php print "<span class='browse-page-title' id='lbSetName".$t_set->get("set_id")."'>".$t_set->getLabelForDisplay()."</span>"; ?>
-				<!-- <?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$qr_set_items->numHits()."</span> items)</span>"; ?> -->
 <?php
     //
     // Gear menu
     //
 ?>
 				<div class="btn-group" style="font-size: 20px;">
-					<span class="glyphicon glyphicon-cog bGear" data-toggle="dropdown"></span>
+					<?= caNavIcon(__CA_NAV_ICON_SETTINGS__, '24px', ['data-toggle' => 'dropdown', 'class' => 'bGear']); ?>
 					<ul class="dropdown-menu" role="menu">
 <?php
 						if(($vs_sort_control_type == "dropdown") && is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
@@ -171,6 +177,8 @@ if (!$vb_ajax) {	// !ajax
 ?>
 					</ul>
 				</div><!-- end btn-group -->
+				
+				<a href="#" id="lbCompareSelectedButton" style='text-decoration: none; color: #fff;'><?= caNavIcon(__CA_NAV_ICON_SPREADSHEET__, '24px'); ?> <?= _t('Compare'); ?></a>
 			</H1>
 
 			<div class="row mb-5">
@@ -259,7 +267,9 @@ if (!$vb_ajax) {	// !ajax
 										$va_items[$va_item_info['item_id']] = array(
 											'object_id' => $vn_object_id,
 											'type_id' => $vn_type_id = $qr_set_items->get('ca_objects.type_id'),
-											'type' => $vs_type_idno = caGetListItemIdno($vn_type_id)
+											'type' => $vs_type_idno = caGetListItemIdno($vn_type_id),
+											'representation_id' => $set_item_list[$va_item_info['item_id']]['representation_id'],
+											'annotation_id' => $set_item_list[$va_item_info['item_id']]['annotation_id'],
 										);
 									}
 								}
@@ -282,10 +292,13 @@ if (!$vb_ajax) {	// !ajax
 								$this->setVar('caption', $va_captions[$vn_i]);
 								$this->setVar('commentCount', (int)$va_comment_counts[$vn_item_id]);
 			
-								$vn_representation_id = null;
-								if ($vs_tag = $va_representations[$vn_object_id]['tags'][$vs_media_version]) {
+								if(!($vn_representation_id = $va_items[$vn_item_id]['representation_id'])) {
 									$vn_representation_id = $va_representations[$vn_object_id]['representation_id'];
-									
+								}
+								
+								$t_rep = ca_object_representations::findAsInstance(['representation_id' => $vn_representation_id]);
+								
+								if ($t_rep && ($vs_tag = $t_rep->get("ca_object_representations.media.{$vs_media_version}.tag"))) {
 									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => caGetDetailForType('ca_objects', null, array('request' => $this->request)), 'id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg'>{$vs_tag}</div></a>";
 								} else {
 									if (!isset($va_placeholders[$va_items[$vn_item_id]['type']])) { $va_placeholders[$va_items[$vn_item_id]['type']] = caGetPlaceholder($va_items[$vn_item_id]['type'], 'placeholder_media_icon'); }
@@ -293,13 +306,24 @@ if (!$vb_ajax) {	// !ajax
 								}
 								$this->setVar('representation', $vs_representation);
 								$this->setVar('representation_id', $vn_representation_id);
+								$this->setVar('annotation_id', $annotation_id = $va_items[$vn_item_id]['annotation_id'] ?? null);
+								
+								$start = $end = null;
+								if($annotation_id) {
+									$t_anno = new ca_user_representation_annotations($annotation_id);
+									$start = $t_anno->getPropertyValue('startTimecode', ['format' => 'hms']);
+									$end = $t_anno->getPropertyValue('endTimecode', ['format' => 'hms']);
+								}
+								$this->setVar('startTimecode', $start);
+								$this->setVar('endTimecode', $end);
+								
+								
 								switch($vs_current_view) {
 									case 'list':
 										print "<div class='col-xs-12 col-sm-4 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
 										break;
 									default:
 										print "<div class='col-xs-6 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
-										// print "<div class='lb-grid-item' lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
 										break;
 								}
 								print $this->render("Lightbox/set_detail_item_html.php");
@@ -488,6 +512,27 @@ if (!$vb_ajax) {    // !ajax
                 });
             }
         });
+        
+        jQuery("input.lbCompareCheckbox").on('change', function(e) {
+        	let l = jQuery("input.lbCompareCheckbox:checked").length;
+        	if(l > 1) {
+        		 jQuery("#lbCompareSelectedButton").show();
+        	} else {
+        		 jQuery("#lbCompareSelectedButton").hide();
+        	}
+        });
+        jQuery("#lbCompareSelectedButton").on('click', function(e) {
+        	let ids = [];
+        	jQuery("input.lbCompareCheckbox:checked").each(function(k, v) {
+        		ids.push(jQuery(v).val());
+        	});
+        	
+        	if(ids.length > 4) { ids.length = 4; }
+        	if(ids.length > 1) {
+        		caMediaPanel.showPanel('<?= caNavUrl($this->request, '', 'Lightbox', 'Compare', ['context' => 'objects', 'overlay' => 1]); ?>/item_ids/' + ids.join(';'));
+        	}
+        });
+        jQuery('#lbCompareSelectedButton').hide();
     });
 <?php
 	}
