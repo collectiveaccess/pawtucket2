@@ -839,6 +839,8 @@ div.caMediaOverlayControls{
 }
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a{
 	font-size:20px;
+	display:inline-block;
+	width: 100%;
 }
 .detail .detailNavBgLeft, .detail .detailNavBgRight{
 	padding-top:10px;
@@ -877,6 +879,36 @@ div.caMediaOverlayControls{
 #pageArea.staticPage img{
 	width:100%;
 	height:auto;
+	margin-bottom:30px;
+}
+@media(min-width:500px){
+	#pageArea.staticPage img{
+		width: 40%;
+		height: auto;
+		max-height: 400px;
+		object-fit: contain;
+		margin-right: 4%;
+		margin-left: 4%;
+	}
+}
+#pageArea.staticPage .fullWidth img{
+	width:100%;
+	height:auto;
+	max-height: none;
+	object-fit: initial;
+	margin: 0px;
+}
+#pageArea.staticPage .halfWidth{
+	text-align:center;
+}
+@media(min-width:500px){
+	#pageArea.staticPage .halfWidth img{
+		width:50%;
+		height:auto;
+		max-height: none;
+		object-fit: initial;
+		margin: 0px;
+	}
 }
 .staticPage p, .staticPage .bodytext{
 	font-size:18px;
