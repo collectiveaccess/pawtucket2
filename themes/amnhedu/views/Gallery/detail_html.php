@@ -8,7 +8,8 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12">
-			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
+			<?= caNavLink($this->request, _t('Borrow'), 'btn btn-default pull-left', 'Library', 'CheckOut', 'Set', ['id' => $pn_set_id], ['style' => 'margin-right: 10px;']); ?>
+			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label"); ?></H1>
 		</div>
 	</div>
 	<div class="row">

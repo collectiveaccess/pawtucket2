@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/library_coming_due.tpl
+ * library/checkin/widget_checkin_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
- * Open-source collections management software
+ * Open-source places management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2022 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,10 +25,9 @@
  *
  * ----------------------------------------------------------------------
  */
-$items = $this->getVar('items');
 ?>
-The following borrowed item(s) will be due on the dates specified below: 
-
-<?= print join("\n", array_map(function($v) { return $v['_display']; }, $items)); ?>
-
-Please return them on or before the listed dates. Thank you!
+	<h3 class='libraryCheckIn'><?php print _t('Library check in'); ?>:
+	<div><?php
+		print _t('Outstanding items: %1', ca_object_checkouts::numOutstandingCheckouts())."<br/>\n";
+	?></div>
+	</h3>

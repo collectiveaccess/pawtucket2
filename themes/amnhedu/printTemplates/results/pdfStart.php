@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/library_coming_due.tpl
+ * app/templates/pdfStart.php : top-matter prepended to PDF templates
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2022 Whirl-i-Gig
+ * Copyright 2014-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,12 +23,22 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name PDF start
+ * @type pageStart
+ *
  * ----------------------------------------------------------------------
  */
-$items = $this->getVar('items');
 ?>
-The following borrowed item(s) will be due on the dates specified below: 
-
-<?= print join("\n", array_map(function($v) { return $v['_display']; }, $items)); ?>
-
-Please return them on or before the listed dates. Thank you!
+<html>
+	<head>
+		<title><?php print $this->getVar('criteria_summary_truncated'); ?></title>
+		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+		<meta charset="utf-8" />
+		<style type="text/css">
+			@page { margin: {{{marginTop}}} {{{marginRight}}} {{{marginBottom}}} {{{marginLeft}}}; }
+		</style>
+	</head>
+	<body>

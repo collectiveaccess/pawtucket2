@@ -34,6 +34,9 @@
  	$va_errors = $this->getVar("errors");
 	$vs_display_name = $this->getVar("display_name");
 	$vs_description_attribute 		= $this->getVar("description_attribute");
+	$vs_set_name = $this->getVar("set_name");
+	$vs_set_description = $this->getVar("set_description");
+	$vn_last_set_id = $this->getVar("lightboxLastSetId");
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
 <H1><?php print _t("Add item to %1", $vs_display_name); ?></H1>
@@ -44,21 +47,22 @@
 ?>
 	<form id="AddItemForm" action="#" class="form-horizontal" role="form">
 <?php
+		print caHTMLHiddenInput('csrfToken', array('value' => caGenerateCSRFToken($this->request)));
 		if(is_array($va_write_sets) && sizeof($va_write_sets)){
 			$t_write_set = new ca_sets();
-			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><select name='set_id' class='form-control'>";
+			print "<div class='form-group'><label for='set' class='col-sm-4 control-label'>".$vs_display_name."</label><div class='col-sm-7'><select name='set_id' id='set' class='form-control'>";
 			print "<option value=''>"._t("Select a %1", $vs_display_name)."</option>\n";
 			foreach($va_write_sets as $va_write_set){
 				$t_write_set->load($va_write_set["set_id"]);
-				print "<option value='".$va_write_set["set_id"]."'>".$t_write_set->getLabelForDisplay()."</option>\n";
+				print "<option value='".$va_write_set["set_id"]."'".(($vn_last_set_id == $va_write_set["set_id"]) ? " selected" : "").">".$t_write_set->getLabelForDisplay()."</option>\n";
 			}
 			print "</select>\n";
 			print "</div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
-			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><H3>"._t("OR<br/>Create a New %1", ucfirst($vs_display_name))."</H3></div></div><!-- end form-group -->\n";
+			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><H2 class='uppercase'>"._t("OR Create a New %1", ucfirst($vs_display_name))."</H2></div></div><!-- end form-group -->\n";
 		}
-		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' placeholder='"._t("Your %1", $vs_display_name)."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' id='name' placeholder='"._t("Your %1", $vs_display_name)."' class='form-control' value='".$vs_set_name."'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		#print $t_set->htmlFormElement("access","<div class='form-group'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7' class='form-control'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
-		print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' class='form-control' rows='3'></textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' id='description' class='form-control' rows='3'>".$vs_set_description."</textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 
 ?>
 		<div class="form-group">
