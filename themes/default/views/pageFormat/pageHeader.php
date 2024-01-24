@@ -42,7 +42,7 @@
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	
 		<nav class="navbar navbar-expand-lg shadow-sm">
-			<div class="container">
+			<div class="container-xl">
 				<?php print caNavlink($this->request, caGetThemeGraphic($this->request, 'logo.svg', array("alt" => "Logo", "role" => "banner")), "navbar-brand", "", "", ""); ?>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				  <span class="navbar-toggler-icon"></span>
@@ -109,6 +109,6 @@
 	<main role="main">
 <?php
 	if(strToLower($this->request->getController()) != "front"){
-		print "<div class='container pt-4'>";
+		print "<div class='container-xl pt-4'>";
 	}
 ?>

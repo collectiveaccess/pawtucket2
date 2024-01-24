@@ -58,7 +58,6 @@
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 	$vb_ajax			= (bool)$this->request->isAjax();
 	$va_browse_info = $this->getVar("browseInfo");
-	$vs_sort_control_type = caGetOption('sortControlType', $va_browse_info, 'dropdown');
 	$o_config = $this->getVar("config");
 	$vs_result_col_class = $o_config->get('result_col_class');
 	$vs_refine_col_class = $o_config->get('refine_col_class');
@@ -71,92 +70,86 @@ if (!$vb_ajax) {	// !ajax
 ?>
 
 <div class="row" style="clear:both;">
-	<div class='col-sm-8 col-md-9 col-lg-9 col-xl-8'>
-<?php 
-			if($vs_sort_control_type == 'list'){
+	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'>
+		<div class="row">
+			<div class="col-md-12 col-lg-5">
+				<H1 class="text-capitalize">
+<?php
+					print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+?>		
+				</H1>
+			</div>
+			<div class="col-md-12 col-lg-7 text-lg-end">
+				<ul class="list-group list-group-horizontal justify-content-lg-end mt-2 small">
+ 					
+
+<?php
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-					print "<div id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
+					print "<li class='list-group-item border-0 px-0 pt-1'>\n";
+					print "<ul class='list-inline p-0 me-2'><li class='list-inline-item fw-medium text-uppercase me-1'>"._t("Sort by:")."</li>\n";
 					$i = 0;
 					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 						$i++;
 						if ($vs_current_sort === $vs_sort) {
-							print "<li class='selectedSort'>{$vs_sort}</li>\n";
+							print "<li class='list-inline-item me-1'>{$vs_sort}</li>\n";
 						} else {
-							print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
+							print "<li class='list-inline-item me-1'>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
 						}
 						if($i < sizeof($va_sorts)){
-							print "<li class='divide'>&nbsp;</li>";
+							print "<li class='list-inline-item me-2'>|</li>";
 						}
 					}
-					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction" role="button"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-					print "</ul></div>\n";
+					print "<li class='list-inline-item'>".caNavLink($this->request, '<i class=bi bi-sort-down'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction" role="button"></i>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+					print "</ul>\n";
+					print "</li>\n";
 				}
-			}
-?>
-		<H1 class="text-capitalize">
-<?php
-			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
-?>		
-			<div class="btn-group">
-				<a href="#" data-toggle="dropdown" class="fs-5"><i class="bi bi-gear-fill" aria-label="Result options"></i></i></a>
-				<ul class="dropdown-menu" role="menu">
-<?php
-					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
-						print "<li role='menuitem'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
-						print "<li role='menuitem'><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
-						print "<li class='divider' role='menuitem'></li>";
+
+				if(is_array($va_views) && (sizeof($va_views) > 1)){
+					print "<li class='list-group-item border-0 px-0 pt-0'>\n";
+					print "<ul class='list-inline p-0 me-2'>\n";
+					foreach($va_views as $vs_view => $va_view_info) {
+						print "<li class='list-inline-item me-1'>";
+						if ($vs_current_view === $vs_view) {
+							print '<button class="btn btn-dark btn-sm disabled" aria-label="'.$vs_view.'"  title="'.$vs_view.'"><i class="bi '.$va_view_icons[$vs_view]['icon'].'"></i></button>';
+						} else {
+							print caNavLink($this->request, '<i class="bi '.$va_view_icons[$vs_view]['icon'].'"></i>', 'btn btn-light btn-sm', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key), array("title" => $vs_view, "aria-label" => $vs_view, "role" => "button"));
+						}
+						print "</li>\n";
 					}
-					if($vs_sort_control_type == 'dropdown'){
-						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-							print "<li class='dropdown-header' role='menuitem'>"._t("Sort by:")."</li>\n";
-							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-								if ($vs_current_sort === $vs_sort) {
-									print "<li role='menuitem'><a href='#'><em>{$vs_sort}</em></a></li>\n";
-								} else {
-									print "<li role='menuitem'>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
-								}
+					print "</ul>\n";
+					print "</li>\n";
+				}
+				if(is_array($va_export_formats) && sizeof($va_export_formats)){
+?>
+					<li class='list-group-item border-0 px-0 pt-0'>
+						<div class="dropdown inline w-auto">
+							<button class="btn btn-light btn-sm dropdown-toggle small" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="<?php print _t("Export Results"); ?>">
+								<i class="bi bi-download"></i>
+							</button>
+							<ul class="dropdown-menu">
+<?php
+							foreach($va_export_formats as $va_export_format){
+								print "<li class='dropdown-item' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
 							}
-							print "<li class='divider' role='menuitem'></li>\n";
-							print "<li class='dropdown-header' role='menuitem'>"._t("Sort order:")."</li>\n";
-							print "<li role='menuitem'>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-							print "<li role='menuitem'>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-						}
-						
-						if ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts)) {
 ?>
-						<li class="divider" role='menuitem'></li>
+							</ul>
+						</div>
+					</li>
 <?php
-						}
-					}
-					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
-						print "<li role='menuitem'>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-					}
-					if(is_array($va_export_formats) && sizeof($va_export_formats)){
-						// Export as PDF links
-						print "<li class='divider' role='menuitem'></li>\n";
-						print "<li class='dropdown-header' role='menuitem'>"._t("Download results as:")."</li>\n";
-						foreach($va_export_formats as $va_export_format){
-							print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
-						}
-					}
+				}
+
+				if(is_array($va_all_facets) && sizeof($va_all_facets)){
+?>
+					<li class='list-group-item border-0 px-0 pt-0 d-md-none'><button class="btn btn-light btn-sm small ms-1" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine" title="<?php print _t("Filter Results"); ?>"><i class="bi bi-sliders"></i></button></li>
+<?php
+				}
 ?>
 				</ul>
-			</div><!-- end btn-group -->
-<?php
-			if(is_array($va_facets) && sizeof($va_facets)){
-?>
-			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
-<?php
-			}
-### -----------------  NEED TO FIX ADD TO LIGHTBOX TOOLS
-			#if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-				#print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
-			#}
-?>
-		</H1>
-<?php
+			</div>
+		</div>
+<?php				
 		if($vs_facet_description){
-			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
+			print "<div class='py-3'>".$vs_facet_description."</div>";
 		}
 
 		if($vb_showLetterBar){
@@ -170,7 +163,6 @@ if (!$vb_ajax) {	// !ajax
 			print "</div>";
 		}
 ?>
-		<form id="setsSelectMultiple">
 			<div id="browseResultsContainer">
 				<div class="row">
 <?php
@@ -192,23 +184,9 @@ if (!$vb_ajax) {	// !ajax
 			
 			</div><!-- end row -->
 		</div><!-- end browseResultsContainer -->
-		</form>
 	</div><!-- end col-8 -->
 	
-	<div class="col-sm-4 col-md-3 col-lg-3 col-xl-3 offset-xl-1">
-		<div id="bViewButtons">
-<?php
-		if(is_array($va_views) && (sizeof($va_views) > 1)){
-			foreach($va_views as $vs_view => $va_view_info) {
-				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button"></span></a> ';
-				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
-				}
-			}
-		}
-?>
-		</div>
+	<div class="col-sm-12 col-md-4 col-lg-3 col-xl-3 offset-xl-1">
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
@@ -217,40 +195,6 @@ if (!$vb_ajax) {	// !ajax
 	
 </div><!-- end row -->
 
-<!--<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('#browseResultsContainer').jscroll({
-			autoTrigger: true,
-			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-			padding: 800,
-			nextSelector: 'a.jscroll-next'
-		});
-<?php
-		if($vn_row_id){
-?>
-			window.setTimeout(function() {
-				$("window,body,html").scrollTop( $("#row<?php print $vn_row_id; ?>").offset().top);
-			}, 0);
-<?php
-		}
-		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-?>
-		jQuery('#setsSelectMultiple').on('submit', function(e){		
-			objIDs = [];
-			jQuery('#setsSelectMultiple input:checkbox:checked').each(function() {
-			   objIDs.push($(this).val());
-			});
-			objIDsAsString = objIDs.join(';');
-			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
-			e.preventDefault();
-			return false;
-		});
-<?php
-		}
-?>
-	});-->
-
-</script>
 <?php
 		print $this->render('Browse/browse_panel_subview_html.php');
 } //!ajax

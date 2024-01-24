@@ -2,6 +2,23 @@
 //	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 ?>
 
+<button 
+    hx-get="/LoginReg/loginForm" 
+    hx-target="#modals-here" 
+    hx-trigger="click" 
+    data-bs-toggle="modal" 
+    data-bs-target="#modals-here"
+    class="btn btn-primary">Open Modal</button>
+
+<div id="modals-here"
+    class="modal modal-blur fade"
+    style="display: none; background-color: white; border: 1px solid #000;"
+    aria-hidden="false"
+    tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content"></div>
+    </div>
+</div>
 	<div class="row">
 		<div class="col-sm-12">
 			<H1><?php print _t("About"); ?></H1>
