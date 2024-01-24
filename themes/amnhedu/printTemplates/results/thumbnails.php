@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/templates/checklist.php
+ * app/templates/thumbnails.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,16 +26,17 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Checklist
- * @filename Checklist
+ * @name Thumbnail images
+ * @filename Thumbnails
  * @type page
  * @pageSize letter
- * @pageOrientation portrait
+ * @pageOrientation landscape
  * @tables ca_objects
- * @marginTop 1.0in
+ * @marginTop 1in
  * @marginLeft 0.5in
  * @marginRight 0.5in
  * @marginBottom 0.5in
+ *
  * ----------------------------------------------------------------------
  */
 
@@ -50,13 +51,6 @@
 	$vn_num_items			= (int)$vo_result->numHits();
 	
 	$vn_start 				= 0;
-	
-	$t_instance = new ca_objects();
-	
-	if(!$t_display || !$t_display->isLoaded()) {
-		$t_display = ca_bundle_displays::findAsInstance(['display_code' => 'export']);
-		$va_display_list = $t_display->getPlacements();	
-	}
 
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
@@ -67,47 +61,42 @@
 
 		$vo_result->seek(0);
 		
-		$vn_line_count = 0;
+		$vn_lines_on_page = 0;
+		$vn_items_in_line = 0;
+		
+		$vn_left = $vn_top = 0;
 		while($vo_result->nextHit()) {
+			if($vn_lines_on_page == 0){
+				print "<div class='pageContainer'>";
+			}
 			$vn_object_id = $vo_result->get('ca_objects.object_id');		
 ?>
-			<div class="row">
-			<table>
-			<tr>
-				<td>
-<?php 
-					if ($vs_path = $vo_result->getMediaPath('ca_object_representations.media', 'thumbnail')) {
-						print "<div class=\"imageTiny\"><img src='{$vs_path}'/></div>";
-					} else {
-?>
-						<div class="imageTinyPlaceholder">&nbsp;</div>
-<?php					
-					}	
-?>								
-
-				</td><td>
-					<div class="metaBlock">
-<?php				
-					print "<div class='title'>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name (^ca_objects.idno)')."</div>"; 
-					if(is_array($va_display_list) && sizeof($va_display_list)){
-						foreach($va_display_list as $vn_placement_id => $va_display_item) {
-							if(preg_match("!^ca_objects.preferred_labels!", $va_display_item['bundle_name'])) { continue; }
-							if(preg_match("!^ca_object_representations.media!", $va_display_item['bundle_name'])) { continue; }
-							if(!strlen($vs_display_value = $t_display->getDisplayValue($vo_result, $vn_placement_id, array('forReport' => true, 'purify' => true)))) { continue; }
-							
-							$vs_display_value = str_replace("➜", "&gt;", $vs_display_value);
-							
-							print "<div class='metadata'><span class='displayHeader'>".$t_instance->getDisplayLabel($va_display_item['bundle_name'])."</span>: <span class='displayValue'>".strip_tags(substr($vs_display_value, 0, 1197))."</span></div>";		
-						}							
-					}
-					print "<div class='barcode'>".caGenerateBarcode($vo_result->get('ca_objects.idno'), ['type' => 'code128', 'height' => '36px'])."</div>";
-?>
-					</div>				
-				</td>	
-			</tr>
-			</table>	
+			<div class="thumbnail" style="left: <?php print $vn_left; ?>px; top: <?php print $vn_top; ?>px;">
+				<?= "<div class='imgThumb'><img src='".$vo_result->getMediaPath('ca_object_representations.media', 'preview170')."' style='height: 65%;'/></div>"; ?>
+				<?= "<div class='caption'>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name (^ca_objects.idno)')."</div>"; ?>
+				<?= "<div class='barcode' style='text-align:center; width: 100%; margin-left: 25%;'>".caGenerateBarcode($vo_result->get('ca_objects.idno'), ['type' => 'code128', 'height' => '36px'])."</div>"; ?>
 			</div>
 <?php
+
+			$vn_items_in_line++;
+			$vn_left += 220;
+			if ($vn_items_in_line >= 4) {
+				$vn_items_in_line = 0;
+				$vn_left = 0;
+				$vn_top += 225;
+				$vn_lines_on_page++;
+				print "<div class=\"clear\"/></div>\n";
+			}
+			
+			if ($vn_lines_on_page >= 3) { 
+				$vn_lines_on_page = 0;
+				$vn_left = $vn_top = 0;
+				print "</div><!-- end pageContainer -->";
+				print "<div class=\"pageBreak\">&nbsp;</div>\n";
+			}
+		}
+		if($vn_lines_on_page > 0){
+			print "</div><!-- end pageContainer -->";
 		}
 ?>
 		</div>

@@ -52,7 +52,7 @@
 				{{{<ifdef code="ca_objects.idno"><p><b>Identifier: </b>^ca_objects.idno</p></ifdef>}}}
 				{{{<ifdef code="ca_objects.additional_idnos"><p><b>Alternate Identifier: </b>^ca_objects.additional_idnos</p></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.division"><p><b>Divison: </b>^ca_objects.division</p></ifdef>}}}
+				{{{<ifdef code="ca_objects.division"><p><b>Division: </b>^ca_objects.division</p></ifdef>}}}
 				{{{<ifdef code="ca_objects.access_restrictions"><p><b>Access restrictions: </b>^ca_objects.access_restrictions</p></ifdef>}}}
 				{{{<ifdef code="ca_objects.user_handling_notes"><p><b>User handling guidelines: </b>^ca_objects.user_handling_notes</p></ifdef>}}}
 				{{{<ifdef code="ca_objects.description"><p><b>Description: </b><span class="trimText">^ca_objects.description</span><br/></p></ifdef>}}}				

@@ -27,7 +27,7 @@
  */
 $items = $this->getVar('items');
 ?>
-The following borrowed item(s) will be due on the dates specified bellow: 
+The following borrowed item(s) will be due on the dates specified below: 
 
 <?= print join("\n", array_map(function($v) { return $v['_display']; }, $items)); ?>
 
