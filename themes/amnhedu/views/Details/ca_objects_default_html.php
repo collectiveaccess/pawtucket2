@@ -62,8 +62,26 @@
 				
 				{{{<ifdef code="ca_objects.anthro_state_province"><p><b>State/Province: </b>^ca_objects.anthro_state_province<br/></p></ifdef>}}}	
 				{{{<ifdef code="ca_objects.anthro_country"><p><b>Country: </b>^ca_objects.anthro_country<br/></p></ifdef>}}}	
-				
-				{{{<ifdef code="ca_objects.history_tracking_current_value%policy=current_location"><p><b>Storage Location: </b>^ca_objects.history_tracking_current_value%policy=current_location%stripTags=1<br/></p></ifdef>}}}				
+<?php
+
+				$inputString = $t_object->get('ca_objects.history_tracking_current_value');
+				$strippedString = preg_replace("/<a(.*?)>(.*?)<\/a>/i", "$2", $inputString);
+				$inputString = $strippedString;
+
+				$pattern = "/Old locations/";
+
+				if (preg_match($pattern, $inputString)) {
+					print '<p><strong>Last Known Location: </strong>' . $inputString . '<br/></p>' ;
+				} else {
+?>
+					{{{<ifdef code="ca_objects.history_tracking_current_value%policy=current_location">
+						<p><strong>Current Storage Location: </strong>
+							^ca_objects.history_tracking_current_value%policy=current_location%stripTags=1
+						<br/></p>
+					</ifdef>}}}	
+<?php
+				}
+?>			
 
 <?php
 				if ($t_object->getCheckoutStatus() == 1) {
@@ -101,28 +119,6 @@
 				
 				{{{<ifdef code="ca_objects.anthro_state_province"><p><b>State/Province: </b>^ca_objects.anthro_state_province<br/></p></ifdef>}}}	
 				{{{<ifdef code="ca_objects.anthro_country"><p><b>Country: </b>^ca_objects.anthro_country<br/></p></ifdef>}}}	
-
-
-<?php
-
-				$inputString = $t_object->get('ca_objects.history_tracking_current_value');
-				$strippedString = preg_replace("/<a(.*?)>(.*?)<\/a>/i", "$2", $inputString);
-				$inputString = $strippedString;
-
-				$pattern = "/Old locations/";
-
-				if (preg_match($pattern, $inputString)) {
-					print '<p><strong>Last Known Location: </strong>' . $inputString . '<br/></p>' ;
-				} else {
-?>
-					{{{<ifdef code="ca_objects.history_tracking_current_value%policy=current_location">
-						<p><strong>Current Storage Location: </strong>
-							^ca_objects.history_tracking_current_value%policy=current_location%stripTags=1
-						<br/></p>
-					</ifdef>}}}	
-<?php
-				}
-?>
 				
 				<!-- {{{<ifdef code="ca_objects.history_tracking_current_value%policy=current_location"><p><b>Current Storage Location: </b>^ca_objects.history_tracking_current_value%policy=current_location%stripTags=1<br/></p></ifdef>}}}	 -->
 				
