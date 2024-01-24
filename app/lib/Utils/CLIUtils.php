@@ -54,7 +54,7 @@ class CLIUtils extends CLIBaseUtils {
 	use CLIUtilsSearch;
 	use CLIUtilsConfiguration;
 	use CLIUtilsImportExport;
-	use CLIUtilsReplication;
+//	use CLIUtilsReplication;
 	use CLIUtilsContentManagement;
 	use CLIUtilsCron;
 	use CLIUtilsPerformance;
