@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2023 Whirl-i-Gig
+ * Copyright 2014-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -578,7 +578,7 @@ class ca_metadata_dictionary_entries extends BundlableLabelableBaseModelWithAttr
 
 		$o_view->setVar('table_num', $vn_table_num);
 
-		$t_rule = new ca_metadata_dictionary_rules($vn_rule_id);
+		$t_rule = new ca_metadata_dictionary_rules();
 		
 		$o_view->setVar('rules', $this->getRules(['forEditingForm' => true]));
 		
