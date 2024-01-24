@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/controllers/DetailController.php : controller for object search request handling - processes searches from top search bar
+ * app/controllers/DetailController.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -348,7 +348,11 @@ class DetailController extends FindController {
 		$this->view->setVar("map", "");
 		if(is_array($map_attributes) && sizeof($map_attributes)) {
 			$o_map = new GeographicMap((($vn_width = caGetOption(['mapWidth', 'map_width'], $options, false)) ? $vn_width : 285), (($vn_height = caGetOption(['mapHeight', 'map_height'], $options, false)) ? $vn_height : 200), 'map');
-				
+			
+			$qr_relative_to = null;
+			if($map_relative_to = caGetOption('map_relative_to', $options, null)) {
+				$qr_relative_to = $t_subject->getRelatedItems($map_relative_to, ['returnAs' => 'searchResult']);
+			}
 			$vn_mapped_count = 0;	
 			foreach($map_attributes as $map_attribute) {
 				if ($t_subject->get($map_attribute)){
@@ -361,7 +365,7 @@ class DetailController extends FindController {
 					} else{
 						$map_fuzz_level = $map_fuzz_config;
 					}
-					$ret = $o_map->mapFrom($t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => (int)$map_fuzz_level));
+					$ret = $o_map->mapFrom($qr_relative_to ? $qr_relative_to : $t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => (int)$map_fuzz_level));
 					$vn_mapped_count += $ret['items'];
 				}
 			}
