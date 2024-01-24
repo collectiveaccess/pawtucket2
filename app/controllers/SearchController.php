@@ -556,10 +556,28 @@ class SearchController extends FindController {
 	 * as an array of path components.
 	 */
 	public static function getReturnToResultsUrl($po_request) {
+		$browse = $po_request->getAction();
+		$browse_types = caGetBrowseConfig()->get('browseTypes');
+		if(is_array($browse_types[$browse])) {
+			$table = $browse_types[$browse]['table'] ?? null;
+			$find = ResultContext::getLastFind($po_request, $table);
+			$tmp = explode('/', $find);
+			if((sizeof($tmp) > 1) && ($tmp[0] === 'search_advanced')) {
+				return array(
+					'module_path' => '',
+					'controller' => 'Search/advanced',
+					'action' => $browse,
+					'params' => array(
+						'key'
+					)
+				);
+				
+			}
+		}
 		$va_ret = array(
 			'module_path' => '',
 			'controller' => 'Search',
-			'action' => $po_request->getAction(),
+			'action' => $browse,
 			'params' => array(
 				'key'
 			)
