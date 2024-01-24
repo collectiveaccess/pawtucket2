@@ -1,0 +1,252 @@
+.container {
+  font-family: "Montserrat", Sans-serif;
+}
+
+/* ---------- Collections Search Bar (located in header) ---------- */
+.container form .formOutline button{
+  padding: 5px 12px;
+  border: 0;
+  font-size: 14px;
+  cursor: pointer;
+}
+.container .navbar-form{
+  width: 254px;
+  padding: 0;
+  margin-left: 20px;
+}
+.container .navbar-form .form-group {
+  width: 210px;
+}
+
+.fullWidthImg img, .fullWidthImg video{
+	width:100%;
+	height:auto;
+}
+
+/* ---------- Browse Results List ---------- */
+/* .bResultListItemContent{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} */
+
+.bResultListItem .bResultListItemText {
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+  /* display: flex;
+  align-items: center; */
+}
+.bResultListItem .bResultListItemText a {
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+  /* text-align: center; */
+  /* margin-bottom: 2px; */
+}
+.bResultListItem .bResultListItemText .listResultDescription {
+  color: #000;
+  font-size: 12px;
+  /* font-weight: 600; */
+  font-weight: 400;
+  margin-top: 5px;
+}
+
+.collection .bResultListItemCol {
+  height: 90px;
+}
+.collection .bResultListItemContent {
+  height: 60px;
+  overflow: hidden;
+}
+
+/* ---------- Browse Refine Subview ---------- */
+#bRefine h1 {
+  font-size: 30px;
+  text-transform: uppercase;
+  color: #666;
+  margin-top: 0px;
+  /* margin-bottom: 10px; */
+  font-weight: 500;
+}
+
+#bRefine H2 {
+  font-size: 18px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: #666;
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+/* ---------- Search Within -------------------- */
+@media(max-width:768px){
+	.results .bSearchWithinContainer{
+		display:none;
+	}
+}
+.results .bSearchWithinContainer{
+	clear:both;
+	margin-top:15px;
+	padding:10px 10px 0px 5px;	
+	background-color: #f5f5f5;
+}
+.results .btn-search-refine, .results .btn-search-refine:hover{	
+	float: right;
+	padding: 2px 12px 3px 12px;
+	border: 0;
+	font-size: 14px;
+	cursor: pointer;
+	background-color: rgb(94, 83, 80);
+	font-size: 14px;
+	line-height:1.5em;
+	padding-top: 0px 0px 0px 0px;
+	
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	outline: 0;
+	border:0px;
+	border-radius: 50px 50px 50px 50px;
+}
+.results .btn-search-refine:hover{
+	background-color:#FFF;
+}
+.results .btn-search-refine .glyphicon{
+	margin-top:5px;
+}
+.bSearchWithin, .bSearchWithin:focus {
+    float: left;
+    width: 75%;
+    box-shadow: none;
+    border: 0px;
+    border: 1px solid #989697;
+    border-radius: 0px;
+    height: 30px;
+    font-size: 14px;
+    line-height: 26px;
+    background-color: transparent;
+    margin: 0px 5px 0px 10px;
+    font-size: 12px;
+}
+
+/* ---------- Collection detail pages ---------- */
+
+.detail .detailNavBgLeft,
+.detail .detailNavBgRight {
+  margin-top: 0px;
+  background-color: #EBEBEB;
+  width: 45px;
+  height: 120px;
+  text-transform: uppercase;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.detail h1 {
+  font-size: 40px;
+  color: #262626;
+  line-height: 135%;
+  text-transform: none;
+}
+
+.detail .unit div.plyr button{
+  padding: 5px 12px;
+}
+
+.detail .unit {
+  margin-bottom: 20px;
+}
+
+.detail label {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  color: #000;
+  text-transform: uppercase;
+  padding-bottom: 0px;
+  margin: 10px 0px 5px 0px;
+}
+
+.detail {
+  font-family: "Montserrat", Sans-serif;
+  color: #000;
+  font-size: 17px;
+}
+
+.detail .imageCaption {
+  font-size: 13px;
+}
+
+.caption {
+  font-size: 17px;
+  color: #000;
+  padding-top: 5px;
+}
+.detail ol, .detail ul {
+  margin: 0 0 1.5em 1em;
+}
+
+/* ---------- Collection Nav bar styles ---------- */
+.collection-nav-container{
+	max-width: 1140px;
+	margin-bottom: 10px;
+	text-align:center;
+	border-bottom:1px solid #dedede;
+	margin-bottom:20px;
+}
+.collection-nav{
+  margin-left: auto;
+  margin-right: auto;
+  float:left;
+}
+.navbar-form{
+	float:left;
+}
+.collection-menu{
+  list-style: none;
+  margin: 0;
+/*  margin-bottom: 20px; */
+  padding: 0;
+  overflow: hidden;
+}
+
+.collection-menu .coll-menu-item {
+  float: left;
+}
+
+.collection-menu .coll-menu-item a {
+  display: block;
+  color: #000;
+  text-align: center;
+  padding: 16px;
+  text-decoration: none;
+  font-family: inherit;
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 16px;
+}
+
+.coll-menu-item a:hover {
+  background-color: #3B3533;
+  color: #fff;
+}
+
+
+.bCriteria a .btn{
+  background-color: #5E5350;
+  font-size: 14px !important;
+  padding: 5px 15px 3px 15px;
+  margin-left: 10px;
+}
+
+.bCriteria a .btn:hover .glyphicon {
+  color: #5E5350 !important;
+}
+
+#bLetterBar a{
+  color: #000;
+}
+

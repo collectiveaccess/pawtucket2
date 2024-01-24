@@ -82,10 +82,14 @@
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="depicts" min="1"><div class='unit trimText'><label>Depicts</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="depicts" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="described" min="1"><div class='unit trimText'><label>Describes</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="described" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifdef code="ca_objects.av_camera_angle_type"><div class='unit trimText'><label>Camera Angle</label>^ca_objects.av_camera_angle_type</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.format_av_analog"><div class='unit trimText'><label>Original media format</label>^ca_objects.format_av_analog</div></ifdef>}}}
+					
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="photographer" min="1"><div class='unit trimText'><label>Photographer<ifcount code="ca_entities" restrictToRelationshipTypes="photographer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="videographer" min="1"><div class='unit trimText'><label>Videographer<ifcount code="ca_entities" restrictToRelationshipTypes="videographer" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="videographer" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><div class='unit trimText'><label>Creator<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="presenter" min="1"><div class='unit trimText'><label>Presenter<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="2">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="presenter" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></ifcount>}}}
+					{{{<ifdef code="ca_objects.language"><div class='unit trimText'><label>Language</label>^ca_objects.language</div></ifdef>}}}
+					
 <?php
 
 					if(in_array(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => "true"))), array("program", "programs"))){

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2021 Whirl-i-Gig
+ * Copyright 2008-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -92,6 +92,13 @@ BaseModel::$s_ca_models_definitions['ca_object_representations'] = array(
 			'LABEL' => 'Sortable representation identifier', 'DESCRIPTION' => 'Value used for sorting representations on identifier value.',
 			'BOUNDS_LENGTH' => array(0,255)
 		),
+		'idno_sort_num' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
+			'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => false, 
+			'DEFAULT' => '',
+			'LABEL' => 'Sortable object identifier as integer', 'DESCRIPTION' => 'Integer value used for sorting objects; used for idno range query.'
+		),
 		'media' => array(
 			'FIELD_TYPE' => FT_MEDIA, 'DISPLAY_TYPE' => DT_FIELD, 
 			'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
@@ -157,6 +164,17 @@ BaseModel::$s_ca_models_definitions['ca_object_representations'] = array(
 			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
 			
 			'LABEL' => _t('Original MIME type'), 'DESCRIPTION' => _t('The MIME type of the media at the time of upload.'),
+			'BOUNDS_LENGTH' => array(0,255)
+		),
+		'media_class' => array(
+			'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_OMIT, 
+			'DISPLAY_WIDTH' => 90, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => true, 
+			'DEFAULT' => '',
+			
+			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
+			
+			'LABEL' => _t('Media class'), 'DESCRIPTION' => _t('The type of media uploaded (image, video, audio, document).'),
 			'BOUNDS_LENGTH' => array(0,255)
 		),
 		'is_transcribable' => array(
@@ -240,7 +258,7 @@ BaseModel::$s_ca_models_definitions['ca_object_representations'] = array(
 			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 			'IS_NULL' => false, 
 			'DEFAULT' => '',
-			'LABEL' => 'View count', 'DESCRIPTION' => 'Number of views for this record.'
+			'LABEL' => 'View count', 'DESCRIPTION' => _t('Number of views for this record.')
 		),
 		'submission_user_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT,
@@ -248,7 +266,7 @@ BaseModel::$s_ca_models_definitions['ca_object_representations'] = array(
 			'IS_NULL' => true, 
 			'DEFAULT' => null,
 			'DONT_ALLOW_IN_UI' => true,
-			'LABEL' => _t('Submitted by user'), 'DESCRIPTION' => _t('User submitting this object')
+			'LABEL' => _t('Submitted by user'), 'DESCRIPTION' => _t('User submitting this object representation')
 		),
 		'submission_group_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT,
@@ -256,7 +274,7 @@ BaseModel::$s_ca_models_definitions['ca_object_representations'] = array(
 			'IS_NULL' => true, 
 			'DEFAULT' => null,
 			'DONT_ALLOW_IN_UI' => true,
-			'LABEL' => _t('Submitted for group'), 'DESCRIPTION' => _t('Group this object was submitted under')
+			'LABEL' => _t('Submitted for group'), 'DESCRIPTION' => _t('Group this object representation was submitted under')
 		),
 		'submission_status_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT,
@@ -265,7 +283,7 @@ BaseModel::$s_ca_models_definitions['ca_object_representations'] = array(
 			'DEFAULT' => null,
 			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
 			'LIST_CODE' => 'submission_statuses',
-			'LABEL' => _t('Submission status'), 'DESCRIPTION' => _t('Indicates submission status of the object.')
+			'LABEL' => _t('Submission status'), 'DESCRIPTION' => _t('Indicates submission status')
 		),
 		'submission_via_form' => array(
 			'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_OMIT,
@@ -273,7 +291,15 @@ BaseModel::$s_ca_models_definitions['ca_object_representations'] = array(
 			'IS_NULL' => true,
 			'DEFAULT' => null,
 			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
-			'LABEL' => _t('Submission via form'), 'DESCRIPTION' => _t('Indicates what contribute form was used to create the submission.')
+			'LABEL' => _t('Submission via form'), 'DESCRIPTION' => _t('Indicates what contribute form was used to create the submission')
+		),
+		'submission_session_id' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT,
+			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => true,
+			'DEFAULT' => null,
+			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
+			'LABEL' => _t('Submission session'), 'DESCRIPTION' => _t('Indicates submission session')
 		)
  	)
 );
@@ -404,20 +430,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	
 	protected $ANNOTATION_MODE = 'cataloguer'; 
 	
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
+
 	# ------------------------------------------------------
 	protected function initLabelDefinitions($options=null) {
 		parent::initLabelDefinitions($options);
@@ -477,23 +490,41 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		$this->BUNDLES['history_tracking_current_date'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Current history tracking date'), 'displayOnly' => true);
 		$this->BUNDLES['history_tracking_chronology'] = array('type' => 'special', 'repeating' => false, 'label' => _t('History'));
 		$this->BUNDLES['history_tracking_current_contents'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Current contents'));
+		
+		$this->BUNDLES['generic'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Display template'));
 	}
 	# ------------------------------------------------------
 	/**
 	 *
 	 */
 	public function insert($options=null) {
+		if(!is_array($options)) { $options = []; }
 		// reject if media is empty
 		if ($this->mediaIsEmpty() && !(bool)$this->getAppConfig()->get('allow_representations_without_media')) {
 			$this->postError(2710, _t('No media was specified'), 'ca_object_representations->insert()');
 			return false;
 		}
 		
+		// does media already exist?
+		if(!caGetOption('force', $options, false)) {
+			if (!($media_path = $this->getMediaPath('media', 'original'))) {
+				if(!($media_path = $this->getOriginalMediaPath('media'))) {
+					$media_path = array_shift($this->get('media', ['returnWithStructure' => true]));
+				}
+			}
+			if($media_path && !$this->getAppConfig()->get('allow_representations_duplicate_media') && ($t_existing_rep = ca_object_representations::mediaExists($media_path))) {
+				throw new MediaExistsException(_t('Media already exists'), $t_existing_rep);
+			}
+		}
+		
 		// do insert
+		$reader = ($media_path && !isUrl($media_path)) ? $this->_readEmbeddedMetadata($media_path) : null;
+		
 		if ($vn_rc = parent::insert($options)) {
-			if (is_array($va_media_info = $this->getMediaInfo('media', 'original'))) {
-				$this->set('md5', $va_media_info['MD5']);
-				$this->set('mimetype', $media_mimetype = $va_media_info['MIMETYPE']);
+			if (is_array($va_media_info = $this->getMediaInfo('media'))) {
+				$this->set('md5', $va_media_info['INPUT']['MD5']);
+				$this->set('mimetype', $media_mimetype = $va_media_info['INPUT']['MIMETYPE']);
+				$this->set('media_class', caGetMediaClass($va_media_info['INPUT']['MIMETYPE']));
 				
 				if(is_array($type_defaults = $this->getAppConfig()->get('object_representation_media_based_type_defaults')) && sizeof($type_defaults)) {
 					foreach($type_defaults as $m => $default_type) {
@@ -507,7 +538,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 					}	
 				}
 			
-				if(is_array($va_media_info = $this->getMediaInfo('media')) && isset($va_media_info['ORIGINAL_FILENAME']) && strlen($va_media_info['ORIGINAL_FILENAME'])) {
+				if(isset($va_media_info['ORIGINAL_FILENAME']) && strlen($va_media_info['ORIGINAL_FILENAME'])) {
 					$this->set('original_filename', $va_media_info['ORIGINAL_FILENAME']);
 				}
 			}
@@ -515,7 +546,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			caExtractEmbeddedMetadata($this, $va_metadata, $this->get('locale_id'));	// TODO: deprecate in favor of import mapping based system below?
 			
 			// Extract metadata mapping with configured mappings
-			$this->_importEmbeddedMetadata($options);
+			$this->_importEmbeddedMetadata(array_merge($options, ['path' => !isUrl($media_path) ? $media_path : null, 'reader' => $reader]));
 			
 			$vn_rc = parent::update($options);
 
@@ -528,11 +559,30 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	 *
 	 */
 	public function update($options=null) {
-		$vb_media_has_changed = $this->changed('media');
+		$media_path = null;
+		if(!is_array($options)) { $options = []; }
+		if($vb_media_has_changed = $this->changed('media')) {
+		
+			if(!caGetOption('force', $options, false)) {
+				// does media already exist?
+				//if(!($media_path = array_shift($this->get('media', ['returnWithStructure' => true])))) {
+					if (!($media_path = $this->getMediaPath('media', 'original'))) {
+						$media_path = $this->getOriginalMediaPath('media');
+					}
+				//}
+				if(!$this->getAppConfig()->get('allow_representations_duplicate_media') && ($t_existing_rep = ca_object_representations::mediaExists($media_path, $this->getPrimaryKey()))) {
+					throw new MediaExistsException(_t('Media already exists'), $t_existing_rep);
+				}
+			}
+		}
+		
+		$reader = $media_path ? $this->_readEmbeddedMetadata($media_path) : null;
+		
 		if ($vn_rc = parent::update($options)) {
-			if(is_array($va_media_info = $this->getMediaInfo('media', 'original'))) {
-				$this->set('md5', $va_media_info['MD5']);
-				$this->set('mimetype', $va_media_info['MIMETYPE']);
+			if(is_array($va_media_info = $this->getMediaInfo('media'))) {
+				$this->set('md5', $va_media_info['INPUT']['MD5']);
+				$this->set('mimetype', $media_mimetype = $va_media_info['INPUT']['MIMETYPE']);
+				$this->set('media_class', caGetMediaClass($va_media_info['INPUT']['MIMETYPE']));
 				
 				if(is_array($type_defaults = $this->getAppConfig()->get('object_representation_media_based_type_defaults')) && sizeof($type_defaults)) {
 					foreach($type_defaults as $m => $default_type) {
@@ -546,7 +596,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 					}	
 				}
 				
-				if (is_array($va_media_info = $this->getMediaInfo('media')) && isset($va_media_info['ORIGINAL_FILENAME']) && strlen($va_media_info['ORIGINAL_FILENAME'])) {
+				if (isset($va_media_info['ORIGINAL_FILENAME']) && strlen($va_media_info['ORIGINAL_FILENAME'])) {
 					$this->set('original_filename', $va_media_info['ORIGINAL_FILENAME']);
 				}
 			}
@@ -555,7 +605,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 				caExtractEmbeddedMetadata($this, $va_metadata, $this->get('locale_id'));	// TODO: deprecate in favor of import mapping based system below?
 								
 				// Extract metadata mapping with configured mappings
-				$this->_importEmbeddedMetadata($options);
+				$this->_importEmbeddedMetadata(array_merge($options, ['path' => !isUrl($media_path) ? $media_path : null, 'reader' => $reader]));
 			}
 			
 			$vn_rc = parent::update($options);
@@ -569,13 +619,67 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	/**
 	 *
 	 */
+	private function _readEmbeddedMetadata(string $media_path, ?array $options=null) {
+		$t_mapping = new ca_data_importers();
+		$m = new Media();
+		$mimetype = $m->divineFileFormat($media_path);
+		
+		$type = 'EXIF';
+		if ($object_representation_mapping_id = $this->_getEmbeddedMetadataMappingID(['mimetype' => $mimetype])) {
+			$t_mapping = ca_data_importers::find(['importer_id' => $object_representation_mapping_id], ['returnAs' => 'firstModelInstance']);
+			$formats = $t_mapping->getSetting('inputFormats');
+			if(is_array($formats) && sizeof($formats)) {
+				$type = array_shift($formats);
+			}
+		}
+		if (!($reader = $t_mapping->getDataReader(null, $type))) { return null; }
+		$reader->read($media_path);
+		
+		return $reader;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
 	private function _importEmbeddedMetadata($options=null) {
-		$object_representation_mapping_id = caGetOption('mapping_id', $options, null);
+		if(!($path = caGetOption('path', $options, $this->getMediaPath('media', 'original')))) {
+			$path = $this->getOriginalMediaPath('media');
+		}
+		
 		$log = caGetImportLogger(['logLevel' => $this->_CONFIG->get('embedded_metadata_extraction_mapping_log_level')]);
-		if(!$object_representation_mapping_id && is_array($media_metadata_extraction_defaults = $this->_CONFIG->getAssoc('embedded_metadata_extraction_mapping_defaults'))) {
-			$media_mimetype = $this->get('mimetype');
+		if(!($object_representation_mapping_id = caGetOption('mapping_id', $options, null))) {
+			$object_representation_mapping_id = $this->_getEmbeddedMetadataMappingID(['log' => $log]);
+		}
+		
+		if ($object_representation_mapping_id && ($t_mapping = ca_data_importers::find(['importer_id' => $object_representation_mapping_id], ['returnAs' => 'firstModelInstance']))) {
+			$format = $t_mapping->getSetting('inputFormats');
+			if(is_array($format)) { $format = array_shift($format); }
+			if ($log) { $log->logDebug(_t('Using embedded media mapping %1 with path %3 (format %2)', $t_mapping->get('importer_code'), $format, $path)); }
+			
+			$va_media_info = $this->getMediaInfo('media');
+			return $t_mapping->importDataFromSource($path, $object_representation_mapping_id, [
+				'logLevel' => $this->_CONFIG->get('embedded_metadata_extraction_mapping_log_level'), 
+				'format' => $format, 'forceImportForPrimaryKeys' => [$this->getPrimaryKey(), 
+				'transaction' => $this->getTransaction()],
+				'reader' => caGetOption('reader', $options, null),
+				'environment' => ['original_filename' => $va_media_info['ORIGINAL_FILENAME'], '/original_filename' => $va_media_info['ORIGINAL_FILENAME']]
+			]); 
+		}
+		return false;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	private function _getEmbeddedMetadataMappingID(?array $options=null) : ?int {
+		$object_representation_mapping_id = null;
+		
+		$log = caGetOption('log', $options, null);
+		if(is_array($media_metadata_extraction_defaults = $this->_CONFIG->getAssoc('embedded_metadata_extraction_mapping_defaults'))) {
+			$media_mimetype = caGetOption('mimetype', $options, $this->get('mimetype'));
 			
 			foreach($media_metadata_extraction_defaults as $m => $importer_code) {
+				if(!trim($importer_code)) { continue; }
 				if(caCompareMimetypes($media_mimetype, $m)) {
 					if (!($object_representation_mapping_id = ca_data_importers::find(['importer_code' => $importer_code], ['returnAs' => 'firstId']))) {
 						if ($log) { $log->logInfo(_t('Could not find embedded metadata importer with code %1', $importer_code)); }
@@ -584,22 +688,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 				}
 			}
 		}
-		
-		if ($object_representation_mapping_id && ($t_mapping = ca_data_importers::find(['importer_id' => $object_representation_mapping_id], ['returnAs' => 'firstModelInstance']))) {
-			$format = $t_mapping->getSetting('inputFormats');
-			if(is_array($format)) { $format = array_shift($format); }
-			if ($log) { $log->logDebug(_t('Using embedded media mapping %1 (format %2)', $t_mapping->get('importer_code'), $format)); }
-			
-			$va_media_info = $this->getMediaInfo('media');
-			$t_importer = new ca_data_importers();
-			return $t_importer->importDataFromSource($this->getMediaPath('media', 'original'), $object_representation_mapping_id, [
-				'logLevel' => $this->_CONFIG->get('embedded_metadata_extraction_mapping_log_level'), 
-				'format' => $format, 'forceImportForPrimaryKeys' => [$this->getPrimaryKey(), 
-				'transaction' => $this->getTransaction()],
-				'environment' => ['original_filename' => $va_media_info['ORIGINAL_FILENAME'], '/original_filename' => $va_media_info['ORIGINAL_FILENAME']]
-			]); 
-		}
-		return false;
+		return $object_representation_mapping_id;
 	}
 	# ------------------------------------------------------
 	/**
@@ -613,70 +702,37 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	 *
 	 * @return bool
 	 */
-	public function delete($pb_delete_related=false, $options=null, $pa_fields=null, $pa_table_list=null) {
-		if (!isset($options['dontCheckPrimaryValue']) && !$options['dontCheckPrimaryValue']) {
-			// make some other row primary
-			$o_db = $this->getDb();
-			if ($vn_representation_id = $this->getPrimaryKey()) {
-				$qr_res = $o_db->query("
-					SELECT oxor.relation_id
-					FROM ca_objects_x_object_representations oxor
-					INNER JOIN ca_object_representations AS o_r ON o_r.representation_id = oxor.representation_id
-					WHERE
-						oxor.representation_id = ? AND oxor.is_primary = 1 AND o_r.deleted = 0
-					ORDER BY
-						oxor.`rank`, oxor.relation_id
-				", (int)$vn_representation_id);
-				while($qr_res->nextRow()) {
-					// nope - force this one to be primary
-					$t_rep_link = new ca_objects_x_object_representations();
-					$t_rep_link->setTransaction($this->getTransaction());
-					if ($t_rep_link->load($qr_res->get('relation_id'))) {
-						$t_rep_link->setMode(ACCESS_WRITE);
-						$t_rep_link->set('is_primary', 0);
-						$t_rep_link->update();
-			
-						if ($t_rep_link->numErrors()) {
-							$this->postError(2700, _t('Could not update primary flag for representation: %1', join('; ', $t_rep_link->getErrors())), 'ca_objects_x_object_representations->delete()');
-							return false;
-						}
-					} else {
-						$this->postError(2700, _t('Could not load object-representation link'), 'ca_objects_x_object_representations->delete()');
-						return false;
-					}				
-				}
-			}
-		}
-
-		CompositeCache::delete('representation:'.$vn_representation_id, 'IIIFMediaInfo');
-		CompositeCache::delete('representation:'.$this->getPrimaryKey(), 'IIIFTileCounts');
-		return parent::delete($pb_delete_related, $options, $pa_fields, $pa_table_list);
+	public function delete($delete_related=false, $options=null, $fields=null, $table_list=null) {
+		$representation_id = $this->getPrimaryKey();
+		
+		CompositeCache::delete("representation:{$representation_id}", 'IIIFMediaInfo');
+		CompositeCache::delete("representation:{$representation_id}", 'IIIFTileCounts');
+		return parent::delete($delete_related, $options, $fields, $table_list);
 	}
 	# ------------------------------------------------------
 	/**
 	 * Returns true if the media field is set to a non-empty file
 	 **/
 	public function mediaIsEmpty() {
-		if (!($vs_media_path = $this->getMediaPath('media', 'original'))) {
-			$vs_media_path = array_shift($this->get('media', array('returnWithStructure' => true)));
+		if (!($media_path = $this->getMediaPath('media', 'original'))) {
+			$media_path = array_shift($this->get('media', array('returnWithStructure' => true)));
 		}
-		if ($vs_media_path) {
-			if (file_exists($vs_media_path) && (abs(filesize($vs_media_path)) > 0)) {
+		if ($media_path) {
+			if (file_exists($media_path) && (abs(filesize($media_path)) > 0)) {
 				return false;
 			}
 		}
 		// is it a URL?
 		if ($this->_CONFIG->get('allow_fetching_of_media_from_remote_urls')) {
-			if  (isURL($vs_media_path)) {
+			if  (isURL($media_path)) {
 				return false;
 			}
 		}
 		// is it a userMedia?
-		if (!is_writeable($vs_tmp_directory = $this->getAppConfig()->get('ajax_media_upload_tmp_directory'))) {
-			$vs_tmp_directory = caGetTempDirPath();
-		}
-		if(preg_match("!^userMedia[\d]+/!", $vs_media_path) && file_exists("{$vs_tmp_directory}/{$vs_media_path}")) {
-			return false;
+		if (is_readable($tmp_directory = $this->getAppConfig()->get('media_uploader_root_directory'))) {
+			if(preg_match("!^".caGetUserDirectoryName()."/!", $media_path) && file_exists("{$tmp_directory}/{$media_path}")) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -1502,16 +1558,18 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  			
  			if ($return_all_versions) { $versions = $qr_res->getMediaVersions('media'); }
  			
- 			foreach($versions as $vn_i => $vs_version) {
- 				$va_files[$vn_multifile_id][$vs_version.'_path'] = $qr_res->getMediaPath('media', $vs_version);
- 				$va_files[$vn_multifile_id][$vs_version.'_tag'] = $qr_res->getMediaTag('media', $vs_version);
- 				$va_files[$vn_multifile_id][$vs_version.'_url'] = $qr_res->getMediaUrl('media', $vs_version);
- 				
- 				$va_info = $qr_res->getMediaInfo('media', $vs_version);
- 				$va_files[$vn_multifile_id][$vs_version.'_width'] = $va_info['WIDTH'];
- 				$va_files[$vn_multifile_id][$vs_version.'_height'] = $va_info['HEIGHT'];
- 				$va_files[$vn_multifile_id][$vs_version.'_mimetype'] = $va_info['MIMETYPE'];
- 			}
+ 			if(is_array($versions)) {
+				foreach($versions as $vn_i => $vs_version) {
+					$va_files[$vn_multifile_id][$vs_version.'_path'] = $qr_res->getMediaPath('media', $vs_version);
+					$va_files[$vn_multifile_id][$vs_version.'_tag'] = $qr_res->getMediaTag('media', $vs_version);
+					$va_files[$vn_multifile_id][$vs_version.'_url'] = $qr_res->getMediaUrl('media', $vs_version);
+				
+					$va_info = $qr_res->getMediaInfo('media', $vs_version);
+					$va_files[$vn_multifile_id][$vs_version.'_width'] = $va_info['WIDTH'];
+					$va_files[$vn_multifile_id][$vs_version.'_height'] = $va_info['HEIGHT'];
+					$va_files[$vn_multifile_id][$vs_version.'_mimetype'] = $va_info['MIMETYPE'];
+				}
+			}
  		}
  		return $va_files;
  	}
@@ -2238,14 +2296,19 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	/** 
 	 * Check if a file already exists in the database as a representation
 	 *
-	 * @param string $ps_filepath The full path to the file
+	 * @param string $filepath The full path to the file
+	 * @param int $representation_id Optional representation_id to ignore when checking for duplicated. [Default is null]
 	 * @return mixed ca_object_representations instance representing the first representation that contains the file, if representation exists with this file, false if the file does not yet exist
 	 */
-	static function mediaExists($ps_filepath) {
-		if (!file_exists($ps_filepath) || !is_readable($ps_filepath)) { return null; }
-		$vs_md5 = @md5_file($ps_filepath);
-		$t_rep = new ca_object_representations();
-		if ($vs_md5 && ($t_rep->load(array('md5' => $vs_md5, 'deleted' => 0)))) { 
+	static function mediaExists(?string $filepath, ?int $representation_id=null) {
+		if (!file_exists($filepath) || !is_readable($filepath)) { return null; }
+		$md5 = @md5_file($filepath);
+		
+		$criteria = ['md5' => $md5];
+		if($representation_id > 0) {
+			$criteria['representation_id'] = ['<>', $representation_id];
+		}
+		if ($md5 && ($t_rep = ca_object_representations::find($criteria, ['returnAs' => 'firstModelInstance']))) { 
 			return $t_rep;
 		}
 		
@@ -2723,7 +2786,10 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 				if (($qr = caMakeSearchResult('ca_object_representations', [$row_id])) && $qr->nextHit()) {
 					$info = $qr->getMediaInfo('media');
 					$version = caGetOption('version', $options, 'original');
-					
+					if(!isset($info[$version])) {
+						$version = array_keys($info); 
+						$version = array_pop($version);
+					}
 					switch($bundle_name) {
 						case 'media_dimensions':
 							if (($w = $info[$version]['WIDTH']) && ($h = $info[$version]['HEIGHT'])) {

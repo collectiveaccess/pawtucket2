@@ -31,6 +31,7 @@
  * @pageSize letter
  * @pageOrientation portrait
  * @tables ca_objects
+ * @disabled true
  *
  * ----------------------------------------------------------------------
  */

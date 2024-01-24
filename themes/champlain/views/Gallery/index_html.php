@@ -4,6 +4,7 @@
 	$va_sets = $this->getVar("sets");
 	$va_first_items_from_set = $this->getVar("first_items_from_sets");
 	if(is_array($va_sets) && sizeof($va_sets)){
+		$qr_sets = caMakeSearchResult('ca_sets', array_map(function($v) { return $v['set_id']; }, $va_sets));
 		# --- main area with info about selected set loaded via Ajax
 ?>
 		<div class="container">
@@ -22,19 +23,26 @@
 						<div class="jcarousel"><ul>
 <?php
 							$i = 0;
-							foreach($va_sets as $vn_set_id => $va_set){
+							//foreach($va_sets as $vn_set_id => $va_set){
+							while($qr_sets->nextHit()) {
+								$vn_set_id = $qr_sets->getPrimaryKey();
 								if(!$vn_first_set_id){
 									$vn_first_set_id = $vn_set_id;
 								}
 								if($i == 0){
 									print "<li>";
 								}
-								$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
+								if(!($set_image = $qr_sets->get('ca_sets.set_cover_image'))) {
+									$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
+									$set_image = $va_first_item["representation_tag"];
+								}
+								
+								
 								print "<div class='galleryItem'>
 											<a href='#' onclick='jQuery(\"#gallerySetInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetInfo', array('set_id' => $vn_set_id))."\"); return false;'>
-												<div class='galleryItemImg'>".$va_first_item["representation_tag"]."</div>
-												<h5>".$va_set["name"]."</h5>
-												<p><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small></p>
+												<div class='galleryItemImg'>{$set_image}</div>
+												<h5>".$va_sets[$vn_set_id]["name"]."</h5>
+												<p><small class='uppercase'>".$va_sets[$vn_set_id]["item_count"]." ".(($va_sets[$vn_set_id]["item_count"] == 1) ? _t("item") : _t("items"))."</small></p>
 											</a>
 											<div style='clear:both;'><!-- empty --></div>
 										</div>\n";

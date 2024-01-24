@@ -386,6 +386,12 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6 {
 	width:100%;
 	height:auto;
 }
+.object-info-col{
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+
 /* gallery */
 .gallery .unit{
 	margin-bottom:15px;

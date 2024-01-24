@@ -1,0 +1,417 @@
+/*
+ Theme Name:   Northeast Historic Film
+ Theme URI:    https://www.neilarnold.com
+ Description:  Child Theme for OldFilm.org
+ Author:       Neil Arnold
+ Author URI:   https://www.neilarnold.com
+ Template:     generatepress
+ Version:      0.1
+*/
+section.equal-height div.elementor-widget-wrap > div {
+  display: flex;
+  height: 100%;
+}
+section.equal-height div.elementor-widget-wrap > div .elementor-widget-container {
+  width: 100%;
+}
+section.equal-height div.elementor-widget-wrap > div div.elementor-cta, section.equal-height div.elementor-widget-wrap > div a.elementor-cta {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  -webkit-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: 100%;
+}
+section.equal-height div.elementor-widget-wrap > div div.elementor-cta:hover, section.equal-height div.elementor-widget-wrap > div a.elementor-cta:hover {
+  text-decoration: none;
+}
+section.equal-height div.elementor-widget-wrap > div div.elementor-cta .elementor-cta__content, section.equal-height div.elementor-widget-wrap > div a.elementor-cta .elementor-cta__content {
+  flex-grow: 1;
+  align-content: flex-start;
+}
+.elementor-widget-text-editor hr {
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 10px 0;
+}
+.elementor-widget-text-editor p:last-child {
+  margin-bottom: 0;
+}
+.elementor-widget-text-editor ul, .elementor-widget-text-editor ol {
+  margin-bottom: 10px;
+}
+a.image-hover, a .image-hover {
+  overflow: hidden;
+  display: block;
+}
+a.image-hover img, a .image-hover img {
+  -webkit-transition: all 0.25s ease-in-out;
+  -moz-transition: all 0.25s ease-in-out;
+  -ms-transition: all 0.25s ease-in-out;
+  -o-transition: all 0.25s ease-in-out;
+  -transition: all 0.25s ease-in-out;
+  transition: all 0.25s ease-in-out;
+  display: block;
+}
+a:hover.image-hover img, a:hover .image-hover img {
+  -moz-transform: scale(1.1);
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
+}
+.navigation-branding .site-logo, .site-logo.mobile-header-logo .site-logo {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+.navigation-branding .site-logo img, .site-logo.mobile-header-logo .site-logo img {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+form.navigation-search {
+  box-shadow: 0 0 5px #333333;
+  border: solid 1px #5e5350;
+  top: -1px;
+}
+.site-header {
+  z-index: 2;
+  min-height: 143px;
+  padding: 20px 0;
+}
+.site-header:before {
+  content: '';
+  height: 100%;
+  width: 100%;
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  background: #333333;
+  background: linear-gradient(0deg, rgba(51, 51, 51, 0) 0%, #333 100%);
+  z-index: 1;
+}
+.site-header .inside-header {
+  min-height: 143px;
+  z-index: 2;
+}
+.site-header .inside-header > * {
+  z-index: 2;
+}
+@media (max-width: 767px) {
+  .site-header .header-image {
+    width: 150px;
+  }
+}
+@media (max-width: 767px) {
+  .top-bar .inside-top-bar {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+.top-bar ul.menu li a {
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.top-bar ul.menu li a:hover {
+  text-decoration: underline;
+  color: #ffffff;
+}
+.top-bar .wp-block-social-links li.wp-social-link {
+  margin: 0;
+  padding: 4px 0;
+}
+.page-banner .elementor-widget-container {
+  position: relative;
+  z-index: 2;
+}
+.page-banner:after {
+  content: '';
+  height: 90px;
+  width: 100%;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  background: black;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 100%);
+}
+/* Center The Logo */
+@media (min-width: 1025px) {
+  /* Change nth-child(#) to first item to right */
+  .inside-header > .site-branding, .inside-header > .navigation-branding, .inside-header > .site-logo, .site-branding-container, #site-navigation .navigation-branding .site-logo, #sticky-navigation .navigation-branding {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+  }
+  #site-navigation {
+    margin-left: unset !important;
+    display: flex;
+  }
+  .site-header .main-navigation:not(#sticky-navigation) .inside-navigation {
+    margin: unset;
+  }
+  #site-navigation, #primary-menu, .main-navigation .inside-navigation {
+    flex: 1;
+  }
+  .main-navigation .main-nav > ul {
+    justify-content: space-between;
+  }
+  .main-navigation ul li:nth-child(5) {
+    margin-left: auto;
+  }
+}
+/* END - Center The Logo */
+@media (min-width: 769px) {
+  .menu-item-has-children .dropdown-menu-toggle {
+    display: none;
+  }
+  .main-navigation .main-nav ul li.menu-item-has-children > a {
+    padding-right: 10px;
+  }
+}
+table {
+  margin: 10px 0 10px 0;
+}
+table tr:nth-child(odd) {
+  background-color: #efefef;
+}
+table tr td strong {
+  color: #5e5350;
+}
+.elementor-posts--thumbnail-top .elementor-posts .elementor-post {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.elementor-posts--thumbnail-top .elementor-posts .elementor-post__text {
+  padding-left: 20px;
+  padding-right: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-direction: normal;
+  -webkit-box-orient: vertical;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+.elementor-posts--thumbnail-top .elementor-posts .elementor-post__text .elementor-post__excerpt {
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+.elementor-posts--thumbnail-top .elementor-posts .elementor-post__text .elementor-post__excerpt p {
+  font-size: 15px;
+  line-height: 1.7em;
+}
+.elementor-posts--thumbnail-top .elementor-posts .elementor-post__text .elementor-post__excerpt p:after {
+  content: "...";
+}
+.elementor-posts--thumbnail-top .elementor-posts .elementor-post__read-more {
+  margin: 0 auto;
+}
+.elementor-pagination {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.elementor-widget-testimonial-carousel .elementor-testimonial__image img {
+  width: auto !important;
+}
+.elementor-widget-call-to-action.border .elementor-cta__bg-wrapper {
+  border: solid 3px #ffffff;
+}
+.elementor-widget-call-to-action.image-padding .elementor-cta {
+  background-color: #ddd6c9;
+}
+.elementor-widget-call-to-action.image-padding .elementor-cta__bg-wrapper {
+  border: solid 3px #ffffff;
+  margin: 20px;
+  width: calc(100% - 40px);
+}
+.elementor-widget-call-to-action.add-underline .elementor-cta__content h2 {
+  border-bottom: solid 1px #333333;
+  padding-bottom: 10px;
+}
+section.gradient > .elementor-container {
+  z-index: 2;
+}
+section.gradient:after {
+  content: '';
+  width: 100%;
+  height: 100px;
+  position: absolute;
+  bottom: 0;
+  background: #1670B7;
+  background: linear-gradient(0deg, #1670b7 0%, rgba(22, 112, 183, 0) 100%);
+}
+.elementor-widget-heading.header-line h1, .elementor-widget-heading.header-line h2, .elementor-widget-heading.header-line h3, .elementor-widget-heading.header-line h4, .elementor-widget-heading.header-line h5 {
+  overflow: hidden;
+  line-height: 1.3em;
+}
+.elementor-widget-heading.header-line h1:before, .elementor-widget-heading.header-line h2:before, .elementor-widget-heading.header-line h3:before, .elementor-widget-heading.header-line h4:before, .elementor-widget-heading.header-line h5:before {
+  content: '';
+  position: relative;
+  right: 10px;
+  display: inline-block;
+  height: 0.7em;
+  vertical-align: bottom;
+  width: 100%;
+  margin-left: -100%;
+  border-top: 4px dotted #9f7e74;
+}
+.elementor-widget-heading.header-line h1:after, .elementor-widget-heading.header-line h2:after, .elementor-widget-heading.header-line h3:after, .elementor-widget-heading.header-line h4:after, .elementor-widget-heading.header-line h5:after {
+  content: '';
+  display: inline-block;
+  position: relative;
+  left: 10px;
+  height: 0.7em;
+  vertical-align: bottom;
+  width: 100%;
+  margin-right: -100%;
+  border-top: 4px dotted #9f7e74;
+}
+.gform_wrapper .gfield_checkbox li input, .gform_wrapper .gfield_checkbox li input[type=checkbox], .gform_wrapper .gfield_radio li input[type=radio] {
+  margin-top: 1px !important;
+}
+.xxx-search-form {
+  margin: 0 0 40px 0;
+}
+.xxx-search-form h3 {
+  padding-bottom: 6px;
+  padding-right: 4em;
+  margin-bottom: 20px;
+  border-bottom: solid 1px #e1e1e1;
+  font-size: 29px;
+  font-weight: normal;
+  position: relative;
+}
+.xxx-search-form h3.no-link {
+  padding-right: 0;
+}
+.xxx-search-form form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -ms-grid-row-align: center;
+  align-items: center;
+  margin: 0px -10px 20px -10px;
+}
+@media (max-width: 767px) {
+  .xxx-search-form form {
+    -webkit-box-direction: normal;
+    -webkit-box-orient: vertical;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    margin: 0 0 20px 0;
+  }
+}
+.xxx-search-form form > div {
+  margin: 0 10px;
+  height: 50px;
+}
+.xxx-search-form form > div:first-of-type {
+  -webkit-box-flex: 1;
+  -ms-flex-positive: 1;
+  flex-grow: 1;
+}
+@media (max-width: 767px) {
+  .xxx-search-form form > div {
+    margin: 0 0 10px 0;
+    width: 100%;
+  }
+}
+.xxx-search-form form select {
+  height: 100%;
+  outline: none;
+  border: solid 1px #dddddd;
+}
+@media (max-width: 767px) {
+  .xxx-search-form form select {
+    margin: 0 0 10px 0;
+  }
+}
+.xxx-search-form form input[type=text] {
+  width: 100%;
+  height: 100%;
+  border: solid 1px #dddddd;
+}
+.xxx-search-form form button, .xxx-search-form form input[type=submit] {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  border-radius: 2px;
+  position: relative;
+  display: inline-block;
+  background-color: #5e5350;
+  border: solid 1px #5e5350;
+  padding: 10px 20px;
+  line-height: 1em;
+  color: #ffffff;
+  text-transform: uppercase;
+  font-weight: normal;
+  transition: all 250ms ease-in-out;
+  width: 100%;
+  height: 100%;
+}
+@media (min-width: 768px) and (max-width: 970px) {
+  .xxx-search-form form button, .xxx-search-form form input[type=submit] {
+    padding: 8px 20px;
+  }
+}
+@media (max-width: 767px) {
+  .xxx-search-form form button, .xxx-search-form form input[type=submit] {
+    padding: 8px 12px;
+  }
+}
+.xxx-search-form form button:visited, .xxx-search-form form input[type=submit]:visited {
+  color: #ffffff;
+}
+.xxx-search-form form button:hover, .xxx-search-form form input[type=submit]:hover {
+  text-decoration: none;
+  background-color: #ffffff;
+  border: solid 1px #5e5350;
+  color: #5e5350;
+}
+.pagination {
+  text-align: center;
+}
+.pagination ul.page-numbers {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  list-style: none;
+  text-align: center;
+  margin: 2em -2px 1em;
+}
+.pagination ul.page-numbers li {
+  display: inline-block;
+  margin: 2px;
+  min-width: 3em;
+}
+.pagination ul.page-numbers li a, .pagination ul.page-numbers li span {
+  padding: 0.5em 1.25em;
+  display: block;
+  border: solid 1px #dddddd;
+  transition: all 250ms ease-in-out;
+}
+.pagination ul.page-numbers li a.page-numbers, .pagination ul.page-numbers li span.page-numbers {
+  color: #333333;
+}
+.pagination ul.page-numbers li a:hover, .pagination ul.page-numbers li a.current, .pagination ul.page-numbers li span:hover, .pagination ul.page-numbers li span.current {
+  color: #5e5350;
+  border: solid 1px #5e5350;
+  background-color: #eee;
+}
+/*# sourceMappingURL=data:application/json,%7B%22version%22%3A3%2C%22sourceRoot%22%3A%22https%3A%2F%2Fcollection.oldfilm.org%2F%22%2C%22sources%22%3A%5B%22wp-content%2Fthemes%2Foldfilm%2Fscss%2Fstyle.scss%22%2C%22wp-content%2Fthemes%2Foldfilm%2Fscss%2Felements%2F_e_fixes.scss%22%2C%22wp-content%2Fthemes%2Foldfilm%2Fscss%2Felements%2F_media.scss%22%2C%22wp-content%2Fthemes%2Foldfilm%2Fscss%2Felements%2F_header.scss%22%2C%22wp-content%2Fthemes%2Foldfilm%2Fscss%2Felements%2F_page.scss%22%2C%22wp-content%2Fthemes%2Foldfilm%2Fscss%2Felements%2F_news.scss%22%2C%22wp-content%2Fthemes%2Foldfilm%2Fscss%2Felements%2F_widgets.scss%22%2C%22wp-content%2Fthemes%2Foldfilm%2Fscss%2Felements%2F_forms.scss%22%2C%22wp-content%2Fthemes%2Foldfilm%2Fscss%2Fvariables%2F_mixins.scss%22%2C%22wp-content%2Fthemes%2Foldfilm%2Fscss%2Felements%2F_pagination.scss%22%5D%2C%22names%22%3A%5B%5D%2C%22mappings%22%3A%22AAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BACAA%3BAAAA%3BAAAA%3BAAAA%3BAAGC%3BAAAA%3BAAAA%3BAAGG%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAKI%3BAAAA%3BAAAA%3BAAGA%3BAAAA%3BAAAA%3BAAAA%3BAAWJ%3BAAAA%3BAAAA%3BAAAA%3BAAIA%3BAAAA%3BAAAA%3BAAGA%3BAAAA%3BAAAA%3BAC9BH%3BAAAA%3BAAAA%3BAAAA%3BAAIC%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAQC%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BACVC%3BAAAA%3BAAAA%3BAAAA%3BAAGI%3BAAAA%3BAAAA%3BAAAA%3BAAQR%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAASA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAQI%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAYA%3BAAAA%3BAAAA%3BAAAA%3BAAGI%3BAAAA%3BAAAA%3BAASA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAASA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAQI%3BAAAA%3BAAAA%3BAAAA%3BAAGI%3BAAAA%3BAAAA%3BAAAA%3BAAOZ%3BAAAA%3BAAAA%3BAAAA%3BAAWA%3BAAAA%3BAAAA%3BAAAA%3BAAIA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAHlGJ%3BAG%2BGA%3BAAAA%3BAACI%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAYA%3BAAAA%3BAAAA%3BAAAA%3BAAKA%3BAAAA%3BAAAA%3BAAIA%3BAAAA%3BAAAA%3BAAMA%3BAAAA%3BAAAA%3BAAKA%3BAAAA%3BAAAA%3BAAAA%3BAHhJJ%3BAGyJA%3BAACI%3BAAAA%3BAAAA%3BAAIA%3BAAAA%3BAAAA%3BAAAA%3BACtJJ%3BAAAA%3BAAAA%3BAAGE%3BAAAA%3BAAAA%3BAAIC%3BAAAA%3BAAAA%3BACbC%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAGI%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAKI%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAEI%3BAAAA%3BAAAA%3BAAAA%3BAAGI%3BAAAA%3BAAAA%3BAAMZ%3BAAAA%3BAAAA%3BAAMR%3BAAAA%3BAAAA%3BAAAA%3BACxBQ%3BAAAA%3BAAAA%3BAASL%3BAAAA%3BAAAA%3BAAMK%3BAAAA%3BAAAA%3BAAEL%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAUG%3BAAAA%3BAAAA%3BAAAA%3BAASF%3BAAAA%3BAAAA%3BAAGA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAaA%3BAAAA%3BAAAA%3BAAAA%3BAAGI%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAWA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAC9DP%3BAAAA%3BAAAA%3BAAOD%3BAAAA%3BAAAA%3BAAEI%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAQI%3BAAAA%3BAAAA%3BAAIJ%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAMI%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAIA%3BAAAA%3BAAAA%3BAAAA%3BAAGI%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAGA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAKJ%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAII%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAIJ%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAKA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BACoOJ%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAGA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAGA%3BAAAA%3BAAAA%3BAAGA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAC1SJ%3BAAAA%3BAAAA%3BAAEI%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAOF%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAIC%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%3BAAKC%3BAAAA%3BAAAA%3BAAGA%3BAAAA%3BAAAA%3BAAAA%3BAAAA%22%7D */

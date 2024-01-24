@@ -52,29 +52,33 @@
  			$va_access_values = caGetUserAccessValues($this->request);
  			$this->view->setVar('access_values', $va_access_values);
 			$ps_section_idno = strtolower($ps_function);
-			$t_section = new ca_occurrences(array("idno" => $ps_section_idno));
-			if(!$t_section->get("ca_occurrences.occurrence_id")){
-				throw new ApplicationException("Invalid id");
-			}
-			if((is_array($va_access_values) && sizeof($va_access_values)) && !in_array($t_section->get("ca_occurrences.access"), $va_access_values)){
-				throw new ApplicationException("Section not available to the public");
-			}
-			$this->view->setVar('current_section', $ps_section_idno);
-			$this->view->setVar('section', $t_section);
-			$this->view->setVar('section_title', $t_section->get("ca_occurrences.preferred_labels.name"));
-			$this->view->setVar('section_text', $t_section->get("ca_occurrences.description"));
-			$va_related_object_ids = $t_section->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToTypes" => array("paratext_illustration")));
-			if(is_array($va_related_object_ids) && sizeof($va_related_object_ids)){
-				$this->view->setVar('illustration_ids', $va_related_object_ids);
-				$q_objects_as_search_result = caMakeSearchResult('ca_objects', $va_related_object_ids);
-				$this->view->setVar('illustrations_as_search_result', $q_objects_as_search_result);
-				if($this->request->getParameter("view", pString) == "grid"){
-					$this->render("Section/section_media_grid_html.php");	
-				}else{
-					$this->render("Section/section_media_html.php");
-				}
+			if(strToLower($ps_section_idno) == "exhibition"){
+				$this->render("Section/exhibition_landing_html.php");
 			}else{
-				$this->render("Section/section_html.php");
+				$t_section = new ca_occurrences(array("idno" => $ps_section_idno));
+				if(!$t_section->get("ca_occurrences.occurrence_id")){
+					throw new ApplicationException("Invalid id");
+				}
+				if((is_array($va_access_values) && sizeof($va_access_values)) && !in_array($t_section->get("ca_occurrences.access"), $va_access_values)){
+					throw new ApplicationException("Section not available to the public");
+				}
+				$this->view->setVar('current_section', $ps_section_idno);
+				$this->view->setVar('section', $t_section);
+				$this->view->setVar('section_title', $t_section->get("ca_occurrences.preferred_labels.name"));
+				$this->view->setVar('section_text', $t_section->get("ca_occurrences.description"));
+				$va_related_object_ids = $t_section->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToTypes" => array("paratext_illustration")));
+				if(is_array($va_related_object_ids) && sizeof($va_related_object_ids)){
+					$this->view->setVar('illustration_ids', $va_related_object_ids);
+					$q_objects_as_search_result = caMakeSearchResult('ca_objects', $va_related_object_ids);
+					$this->view->setVar('illustrations_as_search_result', $q_objects_as_search_result);
+					if($this->request->getParameter("view", pString) == "grid"){
+						$this->render("Section/section_media_grid_html.php");	
+					}else{
+						$this->render("Section/section_media_html.php");
+					}
+				}else{
+					$this->render("Section/section_html.php");
+				}
 			}
 		}
  		# -------------------------------------------------------

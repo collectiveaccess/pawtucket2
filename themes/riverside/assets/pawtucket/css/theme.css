@@ -1336,8 +1336,11 @@ a.facetApply {
     margin-bottom: 25px;
 }
 .staticPage img{
-	max-width:100%;
+	max-width:50%;
 	height:auto;
+	display:block;
+	margin-left: auto;
+	margin-right: auto;
 }
 .staticPage{
 	line-height: 1.6em;
@@ -1347,4 +1350,7 @@ a.facetApply {
 }
 .staticPage .btn-default{
     text-decoration:none;
+}
+.staticPage .policyFileLinks .btn-default{
+	margin: 10px 10px 0px 0px;
 }

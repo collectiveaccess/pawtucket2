@@ -152,7 +152,6 @@ Please note that all requests for teaching volunteers to provide cart facilitati
     The prefix TC stands for Teaching Collection. This is the core collection that lives in the main storage area. 
 The prefix DR stands for Discovery Room. Objects with DR prefixes live in the Discovery Room and need to be requested separately from TC objects.
 The prefix TV stands for Teaching Volunteer. TV objects are objects that belong with the interactive teaching carts and are mainly used by the Teaching Volunteers during the school year. 
-
     </p>
   </div>
 </div>

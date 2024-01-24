@@ -250,16 +250,13 @@
 	<div class="row">
 		<div class="col-xs-12 col-sm-12">
 			<div class="row collectionLinks">
-				<div class="col-xs-12 col-sm-3">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'COVID_Stories.jpg'), "", "", "Detail", "collections/383", []); ?>
-				</div>
-				<div class="col-xs-12 col-sm-3">
+				<div class="col-xs-12 col-sm-4">
 					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'Collections_Culture_620X620.jpg'), "", "", "Browse", "collections", array("facet" => "type_facet", "id" => 208)); ?>
 				</div>
-				<div class="col-xs-12 col-sm-3">
+				<div class="col-xs-12 col-sm-4">
 					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'Collections_History_620X620.jpg'), "", "", "Browse", "collections", array("facet" => "type_facet", "id" => 88)); ?>
 				</div>
-				<div class="col-xs-12 col-sm-3">
+				<div class="col-xs-12 col-sm-4">
 					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'Collections_Science_620X620.jpg'), "", "", "Browse", "collections", array("facet" => "type_facet", "id" => 207)); ?>
 				</div>
 			</div>

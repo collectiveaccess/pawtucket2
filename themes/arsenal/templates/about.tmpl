@@ -1,0 +1,68 @@
+<?php
+	global $g_ui_locale;
+	#print $g_ui_locale;
+	$vs_subtitle_de = $this->getVar("subtitle_de");
+	$vs_subtitle_en = $this->getVar("subtitle_en");
+	
+	if($g_ui_locale == "de_DE"){
+?>
+	<div class="row">
+		<div class="col-sm-9 col-sm-offset-3">
+			<H1>{{{title_de}}}</H1>
+<?php
+			if($vs_subtitle_de){
+?>
+				<h2>{{{subtitle_de}}}</h2>
+<?php
+			}
+?>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="aboutSideNav">
+				<ul>
+					<li><a href="/pawtucket/About/collection">Filmarchiv und Distribution</a></li>	
+					<li><a href="/pawtucket/About/history">Geschichte</a></li>
+					<li><a href="/pawtucket/About/terms">Verleihbedingungen</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			{{{bodytext_de}}}
+		</div>
+</div>
+
+<?php
+	}else{
+?>
+
+	<div class="row">
+		<div class="col-sm-9 col-sm-offset-3">
+			<H1>{{{title_en}}}</H1>
+<?php
+			if($vs_subtitle_en){
+?>
+				<h2>{{{subtitle_en}}}</h2>
+<?php
+			}
+?>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-3">
+			<div class="aboutSideNav">
+				<ul>
+					<li><a href="/pawtucket/About/collection">Film Archive & Distribution</a></li>
+					<li><a href="/pawtucket/About/history">Background</a></li>
+					<li><a href="/pawtucket/About/terms">Distribution Terms and Conditions</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-sm-9">
+			{{{bodytext_en}}}
+		</div>
+	</div>
+<?php
+	}
+?>

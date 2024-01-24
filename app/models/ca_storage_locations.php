@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2019 Whirl-i-Gig
+ * Copyright 2008-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -83,6 +83,13 @@ BaseModel::$s_ca_models_definitions['ca_storage_locations'] = array(
 				'LABEL' => 'Sortable location identifier', 'DESCRIPTION' => 'Value used for sorting locations on identifier value.',
 				'BOUNDS_LENGTH' => array(0,255)
 		),
+		'idno_sort_num' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
+				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => false, 
+				'DEFAULT' => '',
+				'LABEL' => 'Sortable object identifier as integer', 'DESCRIPTION' => 'Integer value used for sorting objects; used for idno range query.'
+		),
 		'source_id' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
@@ -148,7 +155,8 @@ BaseModel::$s_ca_models_definitions['ca_storage_locations'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => 0,
 				'LABEL' => _t('Is deleted?'), 'DESCRIPTION' => _t('Indicates if the storage location is deleted or not.'),
-				'BOUNDS_VALUE' => array(0,1)
+				'BOUNDS_VALUE' => array(0,1),
+				'DONT_INCLUDE_IN_SEARCH_FORM' => true
 		),
 		'rank' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
@@ -185,7 +193,7 @@ BaseModel::$s_ca_models_definitions['ca_storage_locations'] = array(
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => 'View count', 'DESCRIPTION' => 'Number of views for this record.'
+				'LABEL' => 'View count', 'DESCRIPTION' => _t('Number of views for this record.')
 		),
 		'submission_user_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT,
@@ -193,7 +201,7 @@ BaseModel::$s_ca_models_definitions['ca_storage_locations'] = array(
 			'IS_NULL' => true, 
 			'DEFAULT' => null,
 			'DONT_ALLOW_IN_UI' => true,
-			'LABEL' => _t('Submitted by user'), 'DESCRIPTION' => _t('User submitting this object')
+			'LABEL' => _t('Submitted by user'), 'DESCRIPTION' => _t('User submitting this location')
 		),
 		'submission_group_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT,
@@ -201,7 +209,7 @@ BaseModel::$s_ca_models_definitions['ca_storage_locations'] = array(
 			'IS_NULL' => true, 
 			'DEFAULT' => null,
 			'DONT_ALLOW_IN_UI' => true,
-			'LABEL' => _t('Submitted for group'), 'DESCRIPTION' => _t('Group this object was submitted under')
+			'LABEL' => _t('Submitted for group'), 'DESCRIPTION' => _t('Group this location was submitted under')
 		),
 		'submission_status_id' => array(
 			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT,
@@ -210,7 +218,15 @@ BaseModel::$s_ca_models_definitions['ca_storage_locations'] = array(
 			'DEFAULT' => null,
 			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
 			'LIST_CODE' => 'submission_statuses',
-			'LABEL' => _t('Submission status'), 'DESCRIPTION' => _t('Indicates submission status of the object.')
+			'LABEL' => _t('Submission status'), 'DESCRIPTION' => _t('Indicates submission status')
+		),
+		'submission_session_id' => array(
+			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT,
+			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => true,
+			'DEFAULT' => null,
+			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
+			'LABEL' => _t('Submission session'), 'DESCRIPTION' => _t('Indicates submission session')
 		)
  	)
 );
@@ -337,20 +353,7 @@ class ca_storage_locations extends RepresentableBaseModel implements IBundleProv
 
 	protected $FIELDS;
 	
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
+
 	# ------------------------------------------------------
 	protected function initLabelDefinitions($pa_options=null) {
 		parent::initLabelDefinitions($pa_options);
@@ -393,6 +396,8 @@ class ca_storage_locations extends RepresentableBaseModel implements IBundleProv
 		$this->BUNDLES['history_tracking_current_date'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Current history tracking date'), 'displayOnly' => true);
 		$this->BUNDLES['history_tracking_chronology'] = array('type' => 'special', 'repeating' => false, 'label' => _t('History'));
 		$this->BUNDLES['history_tracking_current_contents'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Current contents'));
+		
+		$this->BUNDLES['generic'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Display template'));
 	}
 	# ------------------------------------------------------
 	public function insert($pa_options=null) {
@@ -449,45 +454,132 @@ class ca_storage_locations extends RepresentableBaseModel implements IBundleProv
 	 * Override BundleableLabelableBaseModelWithAttributes::saveBundlesForScreen() to create
 	 * related movement record when storage location is moved
 	 */
-	public function saveBundlesForScreen($pm_screen, $po_request, &$pa_options) {
-		$vb_parent_changed = (parent::saveBundlesForScreenWillChangeParent($pm_screen, $po_request, $pa_options) == __CA_PARENT_CHANGED__); 
-		if (($vn_rc = parent::saveBundlesForScreen($pm_screen, $po_request, $pa_options)) && $vb_parent_changed) {
-			unset($pa_options['ui_instance']);
-	
-			// get list of objects currently associated with this storage location
-			// $va_object_ids = $this->getCurrentObjectIDs();
-// 
-// 			$vs_movement_storage_location_relationship_type = $this->getAppConfig()->get('movement_storage_location_tracking_relationship_type');
-// 			$vs_movement_object_relationship_type = $this->getAppConfig()->get('movement_object_tracking_relationship_type');
-// 			
-// 			foreach($_REQUEST as $vs_key => $vs_val) {
-// 				if (preg_match('!^(.*)_movement_form_name$!', $vs_key, $va_matches)) {
-// 					$vs_form_name = $po_request->getParameter($va_matches[1].'_movement_form_name', pString);
-// 					$vs_screen = $po_request->getParameter($va_matches[1].'_movement_screen', pString);
-// 					
-// 					if (is_array($va_object_ids) && sizeof($va_object_ids)) {
-// 						$t_movement = new ca_movements();
-// 						
-// 						if($this->inTransaction()) { $t_movement->setTransaction($this->getTransaction()); }
-// 						$t_movement->set('type_id', $t_movement->getDefaultTypeID());
-// 						
-// 						$va_movement_opts = array_merge($pa_options, array('formName' => $vs_form_name));
-// 						$t_movement->saveBundlesForScreen($vs_screen, $po_request, $va_movement_opts);
-// 		
-// 						if ($vs_movement_storage_location_relationship_type) {
-// 							$t_movement->addRelationship('ca_storage_locations', $this->getPrimaryKey(), $vs_movement_storage_location_relationship_type);
-// 						}
-// 						
-// 						if ($vs_movement_object_relationship_type) {
-// 							foreach($va_object_ids as $vn_object_id) {
-// 								$t_movement->addRelationship('ca_objects', $vn_object_id, $vs_movement_object_relationship_type);
-// 							}
-// 						}
-// 					}
-// 				}
-// 			}
+	public function saveBundlesForScreen($screen, $request, &$options) {
+		$parent_changed = (parent::saveBundlesForScreenWillChangeParent($screen, $request, $options) == __CA_PARENT_CHANGED__); 
+		
+		$old_parent_id = (int)$this->get('ca_storage_locations.parent_id');
+		if (!$this->getPrimaryKey() && ($old_parent_id <= 0)) {   // For new records zero or negative parent_id means root
+		    $request->setParameter('parent_id', $this->getHierarchyRootID());
 		}
-		return $vn_rc;
+		
+		$we_set_transaction = false;
+		if ($parent_changed && !$this->inTransaction()) {
+			$this->setTransaction(new Transaction($this->getDb()));
+			$we_set_transaction = true;
+		}
+		if (($rc = parent::saveBundlesForScreen($screen, $request, $options)) && $parent_changed) {
+			$new_parent_id = (int)$this->get('ca_storage_locations.parent_id');
+			
+			if ($old_parent_id === $new_parent_id) { return $rc; }	// don't track if there's no actual movement
+				
+			unset($options['ui_instance']);
+	
+			// Get list of policies that involve movements – we'll  need to generate movement records for these policies if they are so configured.
+			if (!is_array($policies = ca_movements::getDependentHistoryTrackingCurrentValuePolicies('ca_movements'))) { return $rc; }
+			
+			// Look for incoming movement form attached to hierarcy_location bundle
+			$movement_form_name = $movemenr_form_screen = null;
+			foreach($_REQUEST as $key => $val) {
+				if (preg_match('!^(.*)_movement_form_name$!', $key, $matches)) {
+					$movement_form_name = $request->getParameter($matches[1].'_movement_form_name', pString);
+					$movement_form_screen = $request->getParameter($matches[1].'_movement_screen', pString); 					
+				
+					break;
+				}
+			}
+			
+			if ($movement_form_name && $movement_form_screen) {
+				foreach($policies as $policy_code => $policy) {
+					if (!is_array($policy_elements = caGetOption('elements', $policy, null))) { continue; }
+				
+					if(isset($policy_elements['ca_movements'])) {
+						// Get movement config for this policy
+						$policy_config = null;
+						foreach($policy_elements['ca_movements'] as $mt => $mi) {
+							if($mi['useRelatedRelationshipType'] && $mi['useRelated']) {
+								$movement_type = ($mt === '__default__') ? null : $mt;
+								$policy_config = $mi;
+								break;
+							}	
+						}
+						if(!$policy_config) { continue; }	// movements are not configured for storage location tracking 
+															// (useRelated and useRelatedRelationshipType options must be set)
+															
+					
+						// Create new movement record for changing in parent of this location
+						$t_movement = new ca_movements();
+						
+						// Check movement type
+						if (!$movement_type || !$t_movement->getTypeIDForCode($movement_type)) { $movement_type = $t_movement->getDefaultTypeID(); }	
+						
+						if($this->inTransaction()) { $t_movement->setTransaction($this->getTransaction()); }
+						$t_movement->set('type_id', $movement_type);
+					
+						// Save movement
+						$movement_opts = array_merge($options, ['formName' => $movement_form_name]);
+						if(!$t_movement->saveBundlesForScreen($movement_form_screen, $request, $movement_opts)) {
+							if($this->inTransaction()) { $this->removeTransaction(false); }
+							
+							$this->postError(3600, _t('Could not create movement: %1', join("; ", $t_movement->getErrors())), 'ca_storage_locations::saveBundlesForScreen()');
+							return false;
+						}
+						
+						// Link movement to storage location
+						if (!$t_movement->addRelationship('ca_storage_locations', $this->getPrimaryKey(), $policy_config['useRelatedRelationshipType'])) {
+							if($this->inTransaction()) { $this->removeTransaction(false); }
+							$this->postError(3605, _t('Could not create storage location - movement relationship for history tracking: %1', join($t_movement->getErrors())), 'ca_storage_locations::saveBundlesForScreen()');
+							return false;
+						}
+						
+						// Link movement to old parent location and new parent location
+						if(isset($policy_config['originalLocationTrackingRelationshipType'])) {
+							if (!$t_movement->addRelationship('ca_storage_locations', $old_parent_id, $policy_config['originalLocationTrackingRelationshipType'])) {
+								if($this->inTransaction()) { $this->removeTransaction(false); }
+								$this->postError(3610, _t('Could not create storage location - movement original parent relationship for history tracking: %1', join($t_movement->getErrors())), 'ca_storage_locations::saveBundlesForScreen()');
+								return false;
+							}
+						}
+						if(isset($policy_config['newLocationTrackingRelationshipType'])) {
+							if (!$t_movement->addRelationship('ca_storage_locations', $new_parent_id, $policy_config['newLocationTrackingRelationshipType'])) {
+								if($this->inTransaction()) { $this->removeTransaction(false); }
+								$this->postError(3615, _t('Could not create storage location - movement new parent relationship for history tracking: %1', join($t_movement->getErrors())), 'ca_storage_locations::saveBundlesForScreen()');
+								return false;
+							}
+						}
+						
+						// Link movement to all sub-locations of the current location, if sublocation rel type is configured
+						if(!is_array($sub_location_ids = $this->getHierarchyIDs($this->getPrimaryKey()))) { $sub_location_ids = []; }
+						
+						if($policy_config['subLocationTrackingRelationshipType']) {
+							foreach($sub_location_ids as $sub_location_id) {
+								if (!$t_movement->addRelationship('ca_storage_locations', $sub_location_id, $policy_config['subLocationTrackingRelationshipType'])) {
+									if($this->inTransaction()) { $this->removeTransaction(false); }
+									$this->postError(3620, _t('Could not create storage location - movement new sub-location relationship for history tracking: %1', join($t_movement->getErrors())), 'ca_storage_locations::saveBundlesForScreen()');
+									return false;
+								}
+							}
+						}
+						
+						// Link movement to objects currently linked to this location, or any sub-location, via the current policy 
+						$location_ids = array_unique(array_merge([$this->getPrimaryKey()], $sub_location_ids));
+						
+						$content_ids = array_unique($this->getContentsForIDs($policy_code, $location_ids, ['idsOnly' => true]));
+				
+						foreach($content_ids as $content_id) {
+							if(!$t_movement->addRelationship($policy['table'], $content_id, $policy_config['trackingRelationshipType'])) {
+								if($this->inTransaction()) { $this->removeTransaction(false); }
+								$this->postError(3625, _t('Could not create movement - %1 relationship for history tracking: %2', Datamodel::getTableProperty($policy['table'], 'NAME_SINGULAR'), join($t_movement->getErrors())), 'ca_storage_locations::saveBundlesForScreen()');
+								return false;
+							}
+						}
+					}
+			
+				}
+			}
+		}
+		
+		if($we_set_transaction) { $this->removeTransaction(true); }
+		return true;
 	}
 	# ------------------------------------------------------
 }

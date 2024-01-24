@@ -2,6 +2,11 @@ body {
 	font-family: 'Source Sans Pro', sans-serif;
 	color: #414151;
 }
+
+b,strong {
+	font-family: 'Source Sans Pro', sans-serif;
+}
+
 H1 {
 	font-family: 'Source Sans Pro', sans-serif;
 	color: #414151;
@@ -41,6 +46,16 @@ H6 {
 	font-weight: 800;
 	margin:15px 0px 10px 0px;
 }
+
+H6.artistDates {
+	font-family: 'Source Sans Pro', sans-serif;
+	color: #414151;
+	font-size: 13px;
+	font-weight: 500;
+	margin:15px 0px 10px 0px;
+	text-transform: none;
+}
+
 a {
 	color: #333;
 }
@@ -110,9 +125,11 @@ a:hover {
 .navbar .formOutline .form-control{
 	height:28px;
 }
+
 .navbar .form-control {
 	background-color:#ddd;
 	border-radius:0px;
+	font-family: 'Source Sans Pro', sans-serif;
 }
 .navbar .formOutline .btn-search{
 	display:none;
@@ -252,6 +269,7 @@ a:hover {
 
 #footer {
 	border-top:1px solid #ddd;
+	font-family: 'Source Sans Pro', sans-serif;
 }
 #footer ul a {
 	color:#474747;
@@ -260,7 +278,7 @@ a:hover {
 
 @media (min-width: 768px) {
 	#footer {
-		margin: 40px 0px 25px 0px;
+		margin: 40px 0px 10px 0px;
 	}
 }
 
@@ -271,6 +289,7 @@ a:hover {
 }
 .front H1 {
 	font-weight:200;
+	font-family: 'Source Sans Pro', sans-serif;
 }
 .front H1 small{
 	font-size:12px;
@@ -478,6 +497,10 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	width: 100%;
 	overflow-y: hidden;
 	position: relative;
+}
+
+.multisearch .pull-right {
+	font-family: 'Source Sans Pro', sans-serif;
 }
 
 .multisearch #libraryBlock .scrollButtonNext {
@@ -1044,6 +1067,12 @@ p.bookTitle {
 	/*width:100%;*/
 	height:auto;
 }
+
+.loans .unit img {
+	/*width:100%;*/
+	width:auto;
+	height:auto;
+}
 .loans.detail .attributeMediaThumbnail img{
 	width:auto;
 }
@@ -1082,7 +1111,7 @@ p.bookTitle {
 .tabdiv {
 	clear:both;
 	width:100%;
-	height:60px;
+	height:auto;
 	min-width:330px;
 }
 .toggle a{
@@ -1136,6 +1165,12 @@ p.bookTitle {
 	display: inline-block;
 	font-size:12px;
 }
+
+.detail .unit img {
+	width: auto;
+	height: auto;
+}
+
 .detail #detailRelatedArchives, .detail #detailRelatedLibrary {
 	border-bottom: 1px solid #dddddd;
 	padding: 10px 0px 10px 0px;

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2022 Whirl-i-Gig
+ * Copyright 2014-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -62,7 +62,7 @@ class CheckInController extends ActionController {
 			throw new ApplicationException(_t('Invalid checkout'));
 		}
 		$user_id = $t_checkout->get('user_id');
-		if($user_id != $this->request->getUserID()) {
+		if(!$this->request->user->canDoAction('can_do_library_checkinout_for_anyone') && ($user_id != $this->request->getUserID())) {
 			throw new ApplicationException(_t('Checkout is not by current user'));
 		}
 		if(!($t_object = ca_objects::find(['object_id' => $t_checkout->get('object_id')], ['returnAs' => 'firstModelInstance']))) {
@@ -139,7 +139,7 @@ class CheckInController extends ActionController {
 			if($library_config->get('send_item_checkin_receipts') && (sizeof($checked_in_items) > 0) && ($user_email = $this->request->user->get('ca_users.email'))) {
 				if (!caSendMessageUsingView(null, $user_email, $sender_email, "[{$app_name}] {$subject}", "library_checkin_receipt.tpl", ['subject' => $subject, 'from_user_id' => $user_id, 'sender_name' => $sender_name, 'sender_email' => $sender_email, 'sent_on' => time(), 'checkin_date' => caGetLocalizedDate(), 'checkins' => $checked_in_items], null, [], ['source' => 'Library checkin receipt'])) {
 					global $g_last_email_error;
-					$ret['errors'][] = _t('Could send receipt: %1', $g_last_email_error);
+					$ret['errors'][] = _t('Could not send receipt: %1', $g_last_email_error);
 				}
 			}
 		}

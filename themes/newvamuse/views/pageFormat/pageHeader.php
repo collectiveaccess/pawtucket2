@@ -30,6 +30,9 @@
 	$va_classroomDisplayName = caGetClassroomDisplayName();
 	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
+	global $g_ui_locale;
+	$cur_locale = str_replace("_CA", "", $g_ui_locale);
+	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
 		if(caDisplayLightbox($this->request)){
@@ -65,18 +68,18 @@
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
-	<meta property="og:image" content="<?php print $va_og_tag;?>"/>
-	<meta property="og:url" content="<?php print $va_og_url;?>"/>
-	<meta property="og:title" content="<?php print $va_og_title;?>"/>
+	<meta property="og:image" content="<?= $va_og_tag;?>"/>
+	<meta property="og:url" content="<?= $va_og_url;?>"/>
+	<meta property="og:title" content="<?= $va_og_title;?>"/>
 	<meta property="og:site_name" content="Novamuse"/>
 	<meta property="og:type" content="website"/> 	
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<link rel="shortcut icon" href="/favicon.png">
-	<?php print MetaTagManager::getHTML(); ?>
-	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
+	<?= MetaTagManager::getHTML(); ?>
+	<?= AssetLoadManager::getLoadHTML($this->request); ?>
 
-	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
+	<title><?= (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -103,7 +106,7 @@
 		$vs_class_logo = "frontNav";
 	}
 ?>	
-	<nav class="navbar navbar-default yamm <?php print $vs_class_logo;?> " role="navigation">
+	<nav class="navbar navbar-default yamm <?= $vs_class_logo;?> " role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -132,7 +135,7 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
-				<!--<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<!--<form class="navbar-form navbar-right" role="search" action="<?= caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Search" name="search">
@@ -141,34 +144,45 @@
 					</div>
 				</form>-->
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li class="<?php print (($this->request->getController() == "About")  && (($this->request->getAction() == "Index") | ($this->request->getAction() == "support")))? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
+					<li class="<?= (($this->request->getController() == "About")  && (($this->request->getAction() == "Index") | ($this->request->getAction() == "support")))? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= _t('About'); ?></a>
 						<ul class='dropdown-menu'>
-							<li><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Support Us"), "", "", "About", "support"); ?></li>
+							<li><?= caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+							<li><?= caNavLink($this->request, _t("Land Acknowledgement"), "", "", "About", "land"); ?></li>
+							<li><?= caNavLink($this->request, _t("Land Acknowledgement (Mi'kmaq)"), "", "", "About", "landmi"); ?></li>
+							<li><?= caNavLink($this->request, _t("Land Acknowledgement (Gaelic)"), "", "", "About", "landgael"); ?></li>
+							<li><?= caNavLink($this->request, _t("Support Us"), "", "", "About", "support"); ?></li>
 						</ul>
 					</li>
-					<li <?php print ($this->request->getController() == 'MemberMap') ? 'class="active"' : ""; ?>><?php print caNavLink($this->request, _t("Contributors"), "", "NovaMuse", "MemberMap", "Index"); ?></li>
-					<li class="<?php print (($this->request->getController() == "Browse")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Explore</a>
+					<li <?= ($this->request->getController() == 'MemberMap') ? 'class="active"' : ""; ?>><?= caNavLink($this->request, _t("Contributors"), "", "NovaMuse", "MemberMap", "Index"); ?></li>
+					<li class="<?= (($this->request->getController() == "Browse")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= _t('Explore'); ?></a>
 						<ul class='dropdown-menu'>
-							<li><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Made in Nova Scotia"), "", "", "Browse", "entities"); ?></li>
+							<li><?= caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
+							<li><?= caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
+							<li><?= caNavLink($this->request, _t("Made in Nova Scotia"), "", "", "Browse", "entities"); ?></li>
+							<li><?= caNavLink($this->request, _t("Nova Scotia Place Names"), "", "NovaMuse", "PlaceNames", "Index"); ?></li>
 						</ul>
 					</li>
-					<li <?php print ($this->request->getController() == "Transcribe") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Transcribe"), "", "", "Transcribe", "Index"); ?></li>
-					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "teachers")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("For Teachers"), "", "", "EducationalResources", "Index"); ?></li>
-					<li class="<?php print (($this->request->getController() == "About") && ($this->request->getAction() != "teachers") && ($this->request->getAction() != "support") && ($this->request->getAction() != "Index")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help</a>
+					<li <?= ($this->request->getController() == "Transcribe") ? 'class="active"' : ''; ?>><?= caNavLink($this->request, _t("Transcribe"), "", "", "Transcribe", "Index"); ?></li>
+					<li <?= (($this->request->getController() == "About") && ($this->request->getAction() == "teachers")) ? 'class="active"' : ''; ?>><?= caNavLink($this->request, _t("For Teachers"), "", "", "EducationalResources", "Index"); ?></li>
+					<li class="<?= (($this->request->getController() == "About") && ($this->request->getAction() != "teachers") && ($this->request->getAction() != "support") && ($this->request->getAction() != "Index")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= _t('Help'); ?></a>
 						<ul class='dropdown-menu'>
-							<li><?php print caNavLink($this->request, _t("Guide"), "", "", "About", "guide"); ?></li>
-							<li><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "questions"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "About", "termsou"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Plan Your Visit"), "", "", "About", "planyv"); ?></li>
+							<li><?= caNavLink($this->request, _t("Guide"), "", "", "About", "guide"); ?></li>
+							<li><?= caNavLink($this->request, _t("FAQ"), "", "", "About", "questions"); ?></li>
+							<li><?= caNavLink($this->request, _t("Terms of Use"), "", "", "About", "termsou"); ?></li>
+							<li><?= caNavLink($this->request, _t("Plan Your Visit"), "", "", "About", "planyv"); ?></li>
 						</ul>
 					</li>
-					<li class="<?php print (($this->request->getController() == "Gallery")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span style='text-transform:lowercase;'>my</span>Novamuse</a>
+					<li class="<?= (($this->request->getController() == "Gallery")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span style='text-transform:lowercase;'>my</span>Novamuse</a>
 						<ul class='dropdown-menu'>
-							<li><?php print caNavLink($this->request, _t("Featured Galleries"), "", "", "Gallery", "Index"); ?></li>
-							<?php print join("\n", $va_user_links); ?>
+							<li><?= caNavLink($this->request, _t("Featured Galleries"), "", "", "Gallery", "Index"); ?></li>
+							<?= join("\n", $va_user_links); ?>
+						</ul>
+					</li>
+					
+					<li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= $cur_locale; ?></a>
+						<ul class='dropdown-menu'>
+							<li class="<?= ($g_ui_locale === 'en_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, "EN", "", "*", "*", "*", ['lang' => 'en_CA']); ?></li>
+							<li class="<?= ($g_ui_locale === 'fr_CA') ? 'active' : ''; ?>"><?= caNavLink($this->request, "FR", "", "*", "*", "*", ['lang' => 'fr_CA']); ?></li>
 						</ul>
 					</li>
 <?php
@@ -178,18 +192,17 @@
 <?php
 						$vs_class = "notFront";
 					}
-?>				
-											
+?>						
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
 	<div class="container"><div class="row"><div class="col-xs-12">
-		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
-			<form class="navbar-form big <?php print $vs_class; ?>" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+		<div id="pageArea" <?= caGetPageCSSClasses(); ?>>
+			<form class="navbar-form big <?= $vs_class; ?>" role="search" action="<?= caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 				<div class="formOutline">
 					<div class="form-group">
-						<input type="text" class="form-control" placeholder="Search our collections" name="search">
+						<input type="text" class="form-control" placeholder="<?= _t('Search our collections'); ?>" name="search">
 					</div>
 					<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 				</div>

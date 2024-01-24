@@ -58,6 +58,7 @@
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
+	<link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
 	
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -144,6 +145,7 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
+					<li><?= caNavLink($this->request, _t("Home"), "", "", "Front", "Index"); ?></il>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>

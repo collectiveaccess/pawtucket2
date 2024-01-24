@@ -35,7 +35,7 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2">
-			<div class='frontIntro'>The primary purpose of the Carleton College Archives is to gather, preserve, and make available for institutional reference and public research use documentation and information pertaining to the work, history, and development of Carleton College, or about programs, policies, activities, events, persons, or groups associated with the College.</div>
+			<div class='frontIntro'>{{{home_page_intro}}}</div>
 		</div><!--end col-sm-8-->	
 	</div><!-- end row -->
 	<div class="row">

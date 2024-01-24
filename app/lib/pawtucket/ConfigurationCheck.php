@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2017 Whirl-i-Gig
+ * Copyright 2010-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -161,9 +161,9 @@ final class ConfigurationCheck {
 	 */
 	public static function DBOutOfDateQuickCheck() {
 		if (!in_array('ca_schema_updates', self::$opo_db->getTables())) {
-			self::addError(_t("Your database is extremely out-of-date. Please install all database migrations starting with migration #1 or contact support@collectiveaccess.org for assistance. See the <a href=\"http://docs.collectiveaccess.org/wiki/Applying_Database_Updates\">update HOW-TO</a> for instructions on applying database updates manually."));
+			self::addError(_t("Your database is extremely out-of-date. Please install all database migrations starting with migration #1 or contact support@collectiveaccess.org for assistance."));
 		} else if (($vn_schema_revision = self::getSchemaVersion()) < __CollectiveAccess_Schema_Rev__) {
-			self::addError(_t("Your database is out-of-date. Please install all schema migrations starting with migration #%1. See <a href=\"http://wiki.collectiveaccess.org/index.php?title=Upgrade\">http://wiki.collectiveaccess.org/index.php?title=Upgrade</a> for migration instructions.",($vn_schema_revision + 1)));
+			self::addError(_t("Your database is out-of-date. Please install all schema migrations starting with migration #%1. See <a href=\"https://manual.collectiveaccess.org/providence/user/setup/installation.html\">https://manual.collectiveaccess.org/providence/user/setup/installation.html</a> for migration instructions.",($vn_schema_revision + 1)));
 		}
 		return true;
 	}

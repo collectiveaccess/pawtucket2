@@ -94,7 +94,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'uag_logo.jpg'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'uag_logo.png'), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -147,7 +147,8 @@
 					print "<li>".caNavLink($this->request, 'Contact', '', '', 'About', 'contact')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Location', '', '', 'About', 'location')."</li>\n"; 					
 					print "<li>".caNavLink($this->request, 'Staff', '', '', 'About', 'staff')."</li>\n"; 					
-					print "<li>".caNavLink($this->request, 'Reservations', '', '', 'About', 'reservations')."</li>\n"; 										
+					print "<li>".caNavLink($this->request, 'Reservations', '', '', 'About', 'reservations')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'UAG\'s Response to COVID-19', '', '', 'About', 'covidresponse')."</li>\n";				
 					print "<li>".caNavLink($this->request, 'Hours of operation', '', '', 'About', 'hours')."</li>\n"; 					
 					print "</ul></li>";	
 					

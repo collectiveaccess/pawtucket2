@@ -40,7 +40,7 @@
 	$va_placements = $this->getVar("placements");
 
 	print $this->render("pdfStart.php");
-	print $this->render("header_nologo.php");
+	print $this->render("header.php");
 	print $this->render("footer.php");	
 	
 	$va_access_values = caGetUserAccessValues($this->request);
@@ -49,7 +49,7 @@
 		
 <?php
 	#print $t_item->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px'));
-	$va_rep = $t_item->getPrimaryRepresentation(array('page'), null, array('return_with_access' => $va_access_values, 'scaleCSSWidthTo' => '620px', 'scaleCSSHeightTo' => '720px'));
+	$va_rep = $t_item->getPrimaryRepresentation(array('page'), null, array('return_with_access' => $va_access_values, 'scaleCSSWidthTo' => '620px', 'scaleCSSHeightTo' => '480px'));
 	print $va_rep['tags']['page'];
 #	foreach($va_reps as $va_rep) {
 #		if(sizeof($va_reps) > 1){
@@ -77,7 +77,8 @@
 		}
 		print "</div>";
 	} elseif ($t_item->get('ca_objects.edition.ap_number')) {
-		print "<div class='unit'>AP ".(count($t_item->get('ca_objects.edition.ap_total')) >= 2 ? $t_item->get('ca_objects.edition.ap_number') : "")." from an edition of ".$t_item->get('ca_objects.edition.edition_total')." + ".$t_item->get('ca_objects.edition.ap_total')." AP";
+		$ap_total = $t_item->get('ca_objects.edition.ap_total');
+		print "<div class='unit'>AP ".((is_array($ap_total) && (sizeof($ap_total) >= 2)) ? $t_item->get('ca_objects.edition.ap_number') : "")." from an edition of ".$t_item->get('ca_objects.edition.edition_total')." + ".$t_item->get('ca_objects.edition.ap_total')." AP";
 		print "</div>";					
 	}
 	if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){

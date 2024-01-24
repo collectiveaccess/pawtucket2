@@ -94,8 +94,11 @@
 			<h2>Item Details</h2>
 
 				{{{<ifdef min="1" code="ca_objects.idno"><div class="unit"><span class='metaTitle'>ID: </span><span class='meta'>^ca_objects.idno</span></div></ifdef>}}}				
-				{{{<ifcount min="1" code="ca_storage_locations.preferred_labels"><div class='unit'><span class='metaTitle'>Storage Location </span><span class='meta'><unit delimiter="<br/>">^ca_storage_locations.preferred_labels</unit></span></div></ifcount>}}}
-			
+<?php
+	if(is_array($cur_loc = $t_object->getCurrentValue())) {
+		print "<div class='unit'><span class='metaTitle'>Storage Location </span><span class='meta'>".strip_tags($cur_loc['display'])."</span></div>";
+	}
+?>			
 				{{{<ifcount min="1" relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToRelationshipTypes="creator"><div class='unit'><span class='metaTitle'>Creator: </span><span class='meta'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels</l></unit></span></div></ifcount>}}}
 				{{{<ifcount min="1" relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToRelationshipTypes="publisher"><div class='unit'><span class='metaTitle'>Publisher: </span><span class='meta'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="publisher"><l>^ca_entities.preferred_labels</l></unit></span></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.object_dates.object_date"><div class='unit'><span class='metaTitle'>Date: </span><span class='meta'>^ca_objects.object_dates.object_date</span></div></ifdef>}}}
@@ -218,7 +221,7 @@
 </div>	<!-- end row -->
 <?php
 	}
-		if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork')))) {
+		if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork', 'incoming_artwork_loan')))) {
 ?>	
 <div class="row" style="clear:both;">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
@@ -230,7 +233,7 @@
 				<div id='artworksResults' class='scrollBlock'>
 					<div class='blockResultsScroller'>
 <?php
-					$va_artwork_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('artwork')));
+					$va_artwork_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('artwork', 'incoming_artwork_loan')));
 					foreach ($va_artwork_ids as $obj_key => $vn_object_id) {
 						$t_artwork = new ca_objects($vn_object_id);
 						print "<div class='artworksResult'>";

@@ -62,7 +62,7 @@
 			</div>
 		</div>
 		<div class="col-sm-10">
-			<h1><a href="/About/Teachers">For Teachers</a> &gt; <a href="/EducationalResources/Index">Educational Resources</a> &gt; <?= $t_resource->get('ca_occurrences.preferred_labels.name'); ?></H1>
+			<h1><a href="/About/Teachers"><?= _t('For Teachers'); ?></a> &gt; <a href="/EducationalResources/Index"><?= _t('Educational Resources'); ?></a> &gt; <?= $t_resource->get('ca_occurrences.preferred_labels.name'); ?></H1>
 			<p>
 				
 				<h4><?php print caDetailLink($this->request, $t_resource->get('ca_occurrences.preferred_labels.name')." (".$t_resource->get('ca_occurrences.idno').")", '' ,$t_resource->tableName(), $t_resource->getPrimaryKey()); ?></h4>
@@ -84,7 +84,7 @@
 ?>
 		<div class='otherRepresentations'>
 			<div class="unit">
-				<span class="name">Files:</span>
+				<span class="name"><?= _t('Files'); ?>:</span>
 				<span class="data">
 					<br/>
 <?php
@@ -109,7 +109,7 @@
 	$grade_level_ids = $t_resource->get('ca_occurrences.grade_level', ['returnAsArray' => true]);
 	if (is_array($grade_levels) && sizeof($grade_levels)) {
 ?>
-						<div class='unit'><span class='name'>Grade level</span><span class='data'>
+						<div class='unit'><span class='name'><?= _t('Grade level'); ?></span><span class='data'>
 							<?php 
 								$links = [];
 								foreach($grade_levels as $i => $g) { 
@@ -127,7 +127,7 @@
 	if(is_array($regions = $t_resource->get('ca_occurrences.mem_inst_region', ['convertCodesToDisplayText' => true, 'returnAsArray' => true])) && sizeof($regions)) {
 		$region_ids = $t_resource->get('ca_occurrences.mem_inst_region', ['returnAsArray' => true]);
 ?>
-						<div class='unit'><span class='name'>Region</span><span class='data'>
+						<div class='unit'><span class='name'><?= _t('Region'); ?></span><span class='data'>
 							<?php 
 								$links = [];
 								foreach($regions as $i => $c) { 
@@ -145,7 +145,7 @@
 	if(is_array($counties = $t_resource->get('ca_occurrences.counties', ['convertCodesToDisplayText' => true, 'returnAsArray' => true])) && sizeof($counties)) {
 		$county_ids = $t_resource->get('ca_occurrences.counties', ['returnAsArray' => true]);
 ?>
-						<div class='unit'><span class='name'>County</span><span class='data'>
+						<div class='unit'><span class='name'><?= _t('County'); ?></span><span class='data'>
 							<?php 
 								$links = [];
 								foreach($counties as $i => $c) { 
@@ -163,7 +163,7 @@
 	if(is_array($activity_types = $t_resource->get('ca_occurrences.activity_type', ['convertCodesToDisplayText' => true, 'returnAsArray' => true])) && sizeof($activity_types)) {
 		$activity_type_ids = $t_resource->get('ca_occurrences.activity_type', ['returnAsArray' => true]);
 ?>
-						<div class='unit'><span class='name'>Activity</span><span class='data'>
+						<div class='unit'><span class='name'><?= _t('Activity'); ?></span><span class='data'>
 							<?php 
 								$links = [];
 								foreach($activity_types as $i => $c) { 
@@ -181,7 +181,7 @@
 	if(is_array($cultures = $t_resource->get('ca_occurrences.culture', ['convertCodesToDisplayText' => true, 'returnAsArray' => true])) && sizeof($cultures)) {
 		$culture_ids = $t_resource->get('ca_occurrences.culture', ['returnAsArray' => true]);
 ?>
-						<div class='unit'><span class='name'>Culture</span><span class='data'>
+						<div class='unit'><span class='name'><?= _t('Culture'); ?></span><span class='data'>
 							<?php 
 								$links = [];
 								foreach($cultures as $i => $c) { 
@@ -199,7 +199,7 @@
 	if(is_array($subjects = $t_resource->get('ca_occurrences.subjects', ['convertCodesToDisplayText' => true, 'returnAsArray' => true])) && sizeof($subjects)) {
 		$subject_ids = $t_resource->get('ca_occurrences.subjects', ['returnAsArray' => true]);
 ?>
-						<div class='unit'><span class='name'>Subjects</span><span class='data'>
+						<div class='unit'><span class='name'><?= _t('Subjects'); ?></span><span class='data'>
 							<?php 
 								$links = [];
 								foreach($subjects as $i => $c) { 
@@ -216,12 +216,12 @@
 	
 	if($date_added = $t_resource->get('ca_occurrences.date_added')) {
 ?>
-		<div class='unit'><span class='name'>Date added</span><span class='data'> <?= $date_added; ?></div>
+		<div class='unit'><span class='name'><?= _t('Date added'); ?></span><span class='data'> <?= $date_added; ?></div>
 <?php
 	}
 ?>
 
-						<h2>Download</h2>
+						<h2><?= _t('Download'); ?></h2>
 						
 						<ul class="educationalResourcesDownloadList">
 <?php
@@ -236,13 +236,13 @@
 				$fetched_from = preg_replace("!/export[A-Za-z\?=]+$!", "", $fetched_from);
 				
 ?>
-				<?= "<li><a href='{$fetched_from}'>Open</a> {$file_label} in GoogleDrive ({$filesize})</li>\n"; ?>
+				<li><?= _t('<a href="%1">Open</a> %2 in GoogleDrive (%3)', $fetched_from, $file_label, $filesize); ?></li>
 <?php
-			} else {
+			} 
 ?>
-				<?= "<li>".caNavLink($this->request, 'Download', '', '*', '*', 'Download', ['id' => $t_resource->getPrimaryKey(), 'representation_id' => $r['representation_id']])." {$file_label} from NovaMuse ({$filesize})</li>\n"; ?>
+			<?= "<li>".caNavLink($this->request, _t('Download'), '', '*', '*', 'Download', ['id' => $t_resource->getPrimaryKey(), 'representation_id' => $r['representation_id']])." {$file_label} from NovaMuse ({$filesize})</li>\n"; ?>
 <?php
-			}
+			
 		}
 		
 		if ($n > 1) {
@@ -262,7 +262,7 @@
 ?>
 				<div class="row">
 					<div class="col-md-12">
-						<h2>Related collection objects</h2>
+						<h2><?= _t('Related collection objects'); ?></h2>
 <?php
 	while($related_objects->nextHit()) {
 		$id = $related_objects->get('ca_objects.object_id');

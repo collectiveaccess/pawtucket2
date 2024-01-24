@@ -5,6 +5,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$va_access_values = caGetUserAccessValues($this->request);
+	$vs_mode = $this->request->getParameter("mode", pString);
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -19,17 +20,17 @@
 		"Classification" => "^ca_collections.col_classification%delimiter=,_",
 		#"Unit ID" => "^ca_collections.unit_id%delimiter=,_",
 		"Container ID" => "^ca_collections.container_id",
-		"Dates" => "<ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef><ifnotdef code='ca_collections.inclusive_dates'>^ca_collections.display_date%delimiter=,_</ifnotdef>",
+		"Dates" => "<ifdef code='ca_collections.display_date'>^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef>",
 		"Additional Date Information" => "^ca_collections.date_info",
 		"Material Type" => "^ca_collections.material_type%delimiter=,_",
 		"Format" => "^ca_collections.format%delimiter=,_",
 		"Contains Object Type" => "^ca_collections.contains_object_type%delimiter=,_",
 		"Extent" => "<ifdef code='ca_collections.item_extent.extent_value'>^ca_collections.item_extent.extent_value </ifdef>^ca_collections.item_extent.extent_unit<ifdef code='ca_collections.item_extent.extent_value|ca_collections.item_extent.extent_unit'><br/></ifdef>^ca_collections.item_extent.extent_note",
 		"Finding Aid Author" => "^ca_collections.finding_aid_author",
-		"Related Creators" => "<ifcount code='ca_entities' restrictToRelationshipTypes='creator,primary_creator'><unit relativeTo='ca_entities' restrictToRelationshipTypes='creator,primary_creator' delimiter='<br/>'>^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>",
-		"Related People and Organizations" => "<ifcount code='ca_entities' restrictToRelationshipTypes='photographers,related,contributor'><unit relativeTo='ca_entities' restrictToRelationshipTypes='photographers,related,contributor' delimiter='<br/>'>^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>",
-		"Related Collections" => "<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections.related' delimiter='<br/>'>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates</ifdef></unit></ifcount>",
-		"URL" => "<unit relativeTo='ca_collections.url' delimiter='<br/>'><a href='^ca_collections.url.link_url' target='_blank'><ifdef code='ca_collections.url.link_text'>^ca_collections.url.link_text</ifdef><ifnotdef code='ca_collections.url.link_text'>^ca_collections.url.link_url</ifnotdef></a></unit>",
+		"Related Creators" => "<ifcount code='ca_entities' restrictToRelationshipTypes='creator,primary_creator'><unit relativeTo='ca_entities' restrictToRelationshipTypes='creator,primary_creator' delimiter='<br/>'><if rule='^ca_entities.added_on_import =~ /Yes/'>^ca_entities.preferred_labels.displayname (^relationship_typename)</if><if rule='^ca_entities.added_on_import !~ /Yes/'><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></if></unit></ifcount>",
+		"Related People and Organizations" => "<ifcount code='ca_entities' restrictToRelationshipTypes='photographers,related,contributor'><unit relativeTo='ca_entities' restrictToRelationshipTypes='photographers,related,contributor' delimiter='<br/>'><if rule='^ca_entities.added_on_import =~ /Yes/'>^ca_entities.preferred_labels.displayname (^relationship_typename)</if><if rule='^ca_entities.added_on_import !~ /Yes/'><l>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></if></unit></ifcount>",
+		"Related Collections" => "<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections.related' delimiter='<br/>'>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef></unit></ifcount>",
+		"URL" => "<ifdef code='ca_collections.url.link_url'><unit relativeTo='ca_collections.url' delimiter='<br/>'><a href='^ca_collections.url.link_url' target='_blank'><ifdef code='ca_collections.url.link_text'>^ca_collections.url.link_text</ifdef><ifnotdef code='ca_collections.url.link_text'>^ca_collections.url.link_url</ifnotdef></a></unit></ifdef>",
 		"Notes" => "^ca_collections.notes%delimiter=,_",
 		"Scope and Content" => "<ifdef code='ca_collections.scope_content'><span class='trimText'>^ca_collections.scope_content</span></ifdef>",
 		"System of Arrangement" => "^ca_collections.arrangement",
@@ -54,6 +55,10 @@
 		"Subjects" => "^ca_collections.local_subjects%delimiter=,_",
 		"People Depicted" => "^ca_collections.people_depicted"
 	);
+	if($this->request->isLoggedIn()){
+		$va_fields["Unit ID"] = "^ca_collections.unit_id%delimiter=,_";
+		$va_fields["Storage Location"] = "<ifcount code='ca_storage_locations' min='1'><unit relativeTo='ca_collections_x_storage_locations' delimiter='<br/><br/>'>^ca_storage_locations.hierarchy.preferred_labels.name%delimiter=_➜_<ifdef code='ca_collections_x_storage_locations.effective_date'><br>Location Date: ^ca_collections_x_storage_locations.effective_date</ifdef><ifdef code='ca_collections_x_storage_locations.staff'><br>Staff: ^ca_collections_x_storage_locations.staff</ifdef><ifdef code='ca_collections_x_storage_locations.description'><br>Content: ^ca_collections_x_storage_locations.description</ifdef><ifdef code='ca_collections_x_storage_locations.item_extent.extent_value'><br>Extent: ^ca_collections_x_storage_locations.item_extent.extent_value ^ca_collections_x_storage_locations.item_extent.extent_unit<ifdef code='ca_collections_x_storage_locations.item_extent.extent_note'><br/>^ca_collections_x_storage_locations.item_extent.extent_note</ifdef></ifdef></unit></ifcount>";
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -68,9 +73,11 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H1>{{{^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef>}}}</H1>
-					{{{<ifdef code="ca_collections.parent_id"><div class="unit">Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></l></unit></div></ifdef>}}}
+					<H1>{{{^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef>}}}</H1>
+					{{{<ifdef code="ca_collections.parent_id"><div class="collectionHierarchyPath"><b>Part of:</b> <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.type_id ^ca_collections.id_number<if rule='^ca_collections.preferred_labels.name !~ /BLANK/'>: ^ca_collections.preferred_labels</if><ifdef code='ca_collections.display_date'>, ^ca_collections.display_date%delimiter=,_</ifdef><ifnotdef code='ca_collections.display_date'><ifdef code='ca_collections.inclusive_dates'>, ^ca_collections.inclusive_dates%delimiter=,_</ifdef></ifnotdef></l></unit></div></ifdef>}}}
 <?php
+					print "<div class='pull-right text-right'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default btn-small", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";
+
 					foreach($va_fields as $vs_label => $vs_template){
 						if($vs_tmp = $t_item->getWithTemplate($vs_template, array("checkAccess" => $va_access_values))){
 							print "<div class='unit'><label>".$vs_label."</label>".caConvertLineBreaks($vs_tmp)."</div>";
@@ -86,16 +93,89 @@
 			<div class="row">
 				<div class='col-sm-12'>
 <?php
-			if ($vb_show_hierarchy_viewer) {	
+			# --- are there sub records?
+			$va_children = $t_item->get("ca_collections.children.collection_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values));
+			if(is_array($va_children) && sizeof($va_children)){	
+#if($x){
 ?>
-				<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-				<script>
-					$(document).ready(function(){
-						$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
-					})
-				</script>
+						<div class="collection-form">
+							<div class="formOutline" style="position:relative;">
+								<div class="form-group">
+									<input type="text" id="searchfield" class="form-control" placeholder="Search within this collection" >
+								</div>
+								<button id="collectionSubmit" type="submit" class="btn-search"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
+							</div>
+						</div>
+					
+						<div id='collectionSearch'></div>
+					
+						<script type="text/javascript">
+							jQuery(document).ready(function() {
+								jQuery("#collectionSubmit").click(function() {
+									var searchstring = $('#searchfield');
+									searchstring.focus();
+									$("#collectionSearch").slideDown("200", function () {
+										$('#collectionSearch').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
+										var s = escape("ca_collections.collection_id:<?php print $t_item->get("ca_collections.collection_id"); ?> AND " + searchstring.val());
+										jQuery("#collectionSearch").load("<?php print caNavUrl($this->request, '', 'Search', 'collections_all', null, array('dontURLEncodeParameters' => false)); ?>", { search: s }, function() {
+											jQuery("#collectionSearch").jscroll({
+												autoTrigger: true,
+												loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+												padding: 20,
+												nextSelector: "a.jscroll-next"
+											});
+										});
+									});
+								});
+								$("#searchfield").keypress(function(e) {
+									if(e.which == 13) {
+									var searchstring = $('#searchfield');
+									searchstring.focus();
+										$("#collectionSearch").slideDown("200", function () {
+											$('#collectionSearch').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
+											var s = escape("ca_collections.collection_id:<?php print $t_item->get("ca_collections.collection_id"); ?> AND " + searchstring.val());
+											jQuery("#collectionSearch").load("<?php print caNavUrl($this->request, '', 'Search', 'collections_all', null, array('dontURLEncodeParameters' => false)); ?>", { search: s }, function() {
+												jQuery("#collectionSearch").jscroll({
+													autoTrigger: true,
+													loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+													padding: 20,
+													nextSelector: "a.jscroll-next"
+												});
+											});
+										});
+									}
+								});
+								return false;
+							});
+						</script>
+						<div class='clearfix'></div>					
+<?php
+#}
+
+				if($vs_mode == "list"){
+?>
+					<div class='text-left'><?php print caDetailLink($this->request, "Show Collection Browser &gt;", "showHide", "ca_collections", $t_item->get("ca_collections.collection_id"), array("mode" => "browser")); ?></div>
+						<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+						<script>
+							$(document).ready(function(){
+								$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'CollectionHierarchyList', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
+							})
+						</script>
+<?php
+				}else{
+					if ($vb_show_hierarchy_viewer) {	
+?>
+						<div class='text-left'><?php print caDetailLink($this->request, "Show Full Collection Hierarchy &gt;", "showHide", "ca_collections", $t_item->get("ca_collections.collection_id"), array("mode" => "list")); ?></div>
+						<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+						<script>
+							$(document).ready(function(){
+								$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
+							})
+						</script>
 <?php				
-			}									
+					}
+				}
+			}								
 ?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -120,27 +200,7 @@
 ?>
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="1">
-			<div class="row">
-				<div id="browseResultsContainer">
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
-</ifcount>}}}
+
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>

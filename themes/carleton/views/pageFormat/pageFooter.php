@@ -32,6 +32,15 @@
 			<div>
 				<?php print caGetThemeGraphic($this->request, 'carleton-logo-c-ray-left.png'); ?><br/>
 				<div class="libraryTitle">Laurence McKinley Gould Library</div>
+				<div class="footerLogin">
+<?php
+if($this->request->isLoggedIn()){
+	print caNavLink($this->request, _t('Logout')." ".trim($this->request->user->get("fname")." ".$this->request->user->get("lname")), '', '', 'LoginReg', 'Logout', array());
+}else{
+	print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a>";
+}
+?>
+				</div>
 			</div>
 		</footer><!-- end footer -->
 <?php

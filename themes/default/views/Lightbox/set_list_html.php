@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,18 +29,19 @@
  *
  * ----------------------------------------------------------------------
  */
-	$t_set 								= new ca_sets();
-	$va_write_sets 						= $this->getVar("write_sets");
-	$va_read_sets 						= $this->getVar("read_sets");
-	$va_set_ids 						= $this->getVar("set_ids");
-	$va_access_values 					= $this->getVar("access_values");
-	$va_activity_stream 				= $this->getVar("activity");
-	$va_lightboxDisplayName 			= caGetLightboxDisplayName();
-	$vs_lightbox_displayname 			= $va_lightboxDisplayName["singular"];
-	$vs_lightbox_displayname_plural 	= $va_lightboxDisplayName["plural"];
-	$vs_lightbox_section_heading		= $va_lightboxDisplayName["section_heading"];
-	$o_lightbox_config 					= $this->getVar("set_config");
-
+$t_set 								= new ca_sets();
+$va_write_sets 						= $this->getVar("write_sets");
+$va_read_sets 						= $this->getVar("read_sets");
+$va_set_ids 						= $this->getVar("set_ids");
+$va_access_values 					= $this->getVar("access_values");
+$va_activity_stream 				= $this->getVar("activity");
+$va_lightboxDisplayName 			= caGetLightboxDisplayName();
+$vs_lightbox_displayname 			= $va_lightboxDisplayName["singular"];
+$vs_lightbox_displayname_plural 	= $va_lightboxDisplayName["plural"];
+$vs_lightbox_section_heading		= $va_lightboxDisplayName["section_heading"];
+$o_lightbox_config 					= $this->getVar("set_config");
+$current_sort 						= $this->getVar('sort');
+$current_sort_dir 					= $this->getVar('direction');
 ?>
 	<h1>
 		<?php print ucfirst($vs_lightbox_section_heading); ?>
@@ -56,6 +57,21 @@
 				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'userGroupList', array()); ?>"); return false;' ><?php print _t("Manage Your User Groups"); ?></a></li>
 <?php
 				}
+
+				foreach(['name' => _t('Name'), 'user_id' => _t('Creator'), 'set_id' => _('Order created')] as $s => $l) {
+					if ($current_sort === $s) {
+						print "<li><a href='#'><strong><em>{$l}</em></strong></a></li>\n";
+					} else {
+						print "<li>".caNavLink($this->request, $l, '', '*', '*', '*', array('sort' => $s))."</li>\n";
+					}
+				}
+?>
+				<li class="divider"></li>
+				<li class='dropdown-header'><?= _t("Sort order:"); ?></li>
+<?php
+				print "<li>".caNavLink($this->request, (($current_sort_dir == 'asc') ? '<strong><em>' : '')._t("Ascending").(($current_sort_dir == 'asc') ? '</em></strong>' : ''), '', '*', '*', '*', array('direction' => 'asc'))."</li>";
+				print "<li>".caNavLink($this->request, (($current_sort_dir == 'desc') ? '<strong><em>' : '')._t("Descending").(($current_sort_dir == 'desc') ? '</em></strong>' : ''), '', '*', '*', '*', array('direction' => 'desc'))."</li>";
+							
 ?>
 			</ul>
 		</div><!-- end btn-group -->

@@ -1,11 +1,9 @@
 <?php
 
 require_once(__CA_MODELS_DIR__."/ca_sets.php");
-include_once(__CA_MODELS_DIR__."/ca_occurrences.php");
-// include_once(__CA_LIB_DIR__."/ca/Search/OccurrenceSearch.php");
-// include_once(__CA_LIB_DIR__."/ca/Search/ObjectSearch.php");
 include_once(__CA_LIB_DIR__."/Search/OccurrenceSearch.php");
 include_once(__CA_LIB_DIR__."/Search/ObjectSearch.php");
+include_once(__CA_MODELS_DIR__."/ca_occurrences.php");
 
 $va_access_values = caGetUserAccessValues($this->request);
 
@@ -100,7 +98,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 			print "<ul id='pavilionList' class='exhibitionList'>\n";
 			foreach($pavilion_contents as $p) {
 				print "<li class='exhibitionListItem pavilionRoom' data-list_id='pavilionRoom{$p['id']}'><a href='#'>".$p['display']."</a></li>\n";
-				if ($q_pavilion_exh = ca_occurrences::find(['exhibition_location' => $p['id'], 'type_id' => 'exhibition'], ['returnAs' => 'searchResult', 'sort' => 'ca_occurrences.exh_dates', 'sortDirection' => 'DESC'])) {
+				if ($q_pavilion_exh = ca_occurrences::find(['exhibition_location' => $p['id'], 'type_id' => 'exhibition'], ['returnAs' => 'searchResult', 'sort' => 'ca_occurrences.exh_dates', 'sortDirection' => 'DESC', 'checkAccess' => $va_access_values])) {
 					print "<ul id='pavilionRoom{$p['id']}' class='exhibitionList'>\n";
 					while($q_pavilion_exh->nextHit()) {
 						print "<li class='exhibitionListItem'>".caDetailLink($this->request, $q_pavilion_exh->get('ca_occurrences.preferred_labels.name'), '', 'ca_occurrences', $q_pavilion_exh->get('ca_occurrences.occurrence_id'))."</li>";
@@ -121,8 +119,6 @@ $va_access_values = caGetUserAccessValues($this->request);
 		}
 		print "</ul>\n";
 	}
-	
-	outdoor
 ?>			
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
@@ -170,7 +166,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 				foreach ($va_artworks as $vn_artwork_key => $va_artwork) {
 					$vn_artwork_id = $va_artwork['object_id'];
 					$vn_type_id = $va_artwork['item_type_id'];
-					if ($vn_type_id == 28){ $vb_has_artwork = true;}
+					if (in_array((int)$vn_type_id, [28, 234724])){ $vb_has_artwork = true;}
 				}
 				if ($vb_has_artwork == true) {
 					$va_first_letter = substr(ucfirst($qr_artists->get('ca_entities.preferred_labels.surname')), 0, 1);

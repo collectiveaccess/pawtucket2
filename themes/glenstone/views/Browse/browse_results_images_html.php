@@ -105,7 +105,7 @@
 					$vs_idno_detail_link 	= "";
 					$vs_label_detail_link = "";
 					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;				
-				} elseif ($qr_res->get('ca_objects.type_id') == 28) {
+				} elseif (in_array((int)$qr_res->get('ca_objects.type_id'), [28, 234724])) {
 					$vs_label_artist	 	= "<p class='artist lower'>".caDetailLink($this->request, $qr_res->get("ca_entities.preferred_labels", array('restrictToRelationshipTypes' => 'artist')), '', $vs_table, $vn_id)."</p>";
 					$vs_label_detail_link 	= "<p><i>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id)."</i>, ".$qr_res->get("ca_objects.creation_date_display")."</p>";
 					if ($qr_res->get('is_deaccessioned') && ($qr_res->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {

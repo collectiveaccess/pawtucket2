@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018 Whirl-i-Gig
+ * Copyright 2018-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -112,87 +112,93 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 		
 		$points = $paths = $circles = [];
 		foreach($va_map_items as $o_map_item) {
+			if(is_null($group = $o_map_item->getGroup())) { $group = '_default_'; }
 			$va_coords = $o_map_item->getCoordinates();
 			if (sizeof($va_coords) > 1) {
 				// path
-				$paths[] = ['path' => $va_coords, 'label' => $o_map_item->getLabel(), 'content' => $o_map_item->getContent(), 'ajaxContentUrl' => $o_map_item->getAjaxContentUrl(), 'ajaxContentID' => $o_map_item->getAjaxContentID()];
+				$paths[$group][] = ['path' => $va_coords, 'label' => $o_map_item->getLabel(), 'content' => $o_map_item->getContent(), 'ajaxContentUrl' => $o_map_item->getAjaxContentUrl(), 'ajaxContentID' => $o_map_item->getAjaxContentID()];
 			} elseif($va_coords[0]['radius'] > 0) { // circle
 				$va_coord = array_shift($va_coords);
 				$r = (float)$va_coord['radius'];
 				
-				$circles[$va_coord['latitude']][$va_coord['longitude']][] =['radius' => $r, 'label' => $o_map_item->getLabel(), 'content' => $o_map_item->getContent(), 'ajaxContentUrl' => $o_map_item->getAjaxContentUrl(), 'ajaxContentID' => $o_map_item->getAjaxContentID()];
+				$circles[$group][$va_coord['latitude']][$va_coord['longitude']][] = ['radius' => $r, 'label' => $o_map_item->getLabel(), 'content' => $o_map_item->getContent(), 'ajaxContentUrl' => $o_map_item->getAjaxContentUrl(), 'ajaxContentID' => $o_map_item->getAjaxContentID()];
 			} else {
 				// point
 				$va_coord = array_shift($va_coords);
 				$angle = isset($va_coord['angle']) ? (float)$va_coord['angle'] : null;
-				$points[$va_coord['latitude']][$va_coord['longitude']][] = ['label' => $o_map_item->getLabel(), 'content' => $o_map_item->getContent(), 'ajaxContentUrl' => $o_map_item->getAjaxContentUrl(), 'ajaxContentID' => $o_map_item->getAjaxContentID(), 'angle' => $angle];
+				$points[$group][$va_coord['latitude']][$va_coord['longitude']][] = ['label' => $o_map_item->getLabel(), 'content' => $o_map_item->getContent(), 'ajaxContentUrl' => $o_map_item->getAjaxContentUrl(), 'ajaxContentID' => $o_map_item->getAjaxContentID(), 'angle' => $angle];
 			}
 		}
 		
 		$vn_c = 0;
 		
 		$pointList = [];
-		foreach($points as $lat => $va_locs_by_longitude) {
-			foreach($va_locs_by_longitude as $lng => $content_items) {
-				$va_buf = $va_ajax_ids = [];
-				$vs_label = $vs_ajax_content_url = '';
+		foreach($points as $group => $points_by_group) {
+			foreach($points_by_group as $lat => $va_locs_by_longitude) {
+				foreach($va_locs_by_longitude as $lng => $content_items) {
+					$va_buf = $va_ajax_ids = [];
+					$vs_label = $vs_ajax_content_url = '';
 				
-				foreach($content_items as $content_item) {
-					if (!$vs_label) {
-						$vs_label = $content_item['label'];
-					} else { // if there are multiple items in one location, we want to add the labels of the 2nd and all following items to the 'content' part of the overlay, while still not duplicating content (hence, md5)
-						$va_buf[md5($content_item['label'])] = $content_item['label'];
-					}
-					if (!$vs_ajax_content_url) { $vs_ajax_content_url = $content_item['ajaxContentUrl']; }
-					$va_ajax_ids[] = $content_item['ajaxContentID'];
-					$va_buf[md5($content_item['content'])] = $content_item['content'];	// md5 is to ensure there is no duplicate content (eg. if something is mapped to the same location twice)
-				}	
+					foreach($content_items as $content_item) {
+						if (!$vs_label) {
+							$vs_label = $content_item['label'];
+						} else { // if there are multiple items in one location, we want to add the labels of the 2nd and all following items to the 'content' part of the overlay, while still not duplicating content (hence, md5)
+							$va_buf[md5($content_item['label'])] = $content_item['label'];
+						}
+						if (!$vs_ajax_content_url) { $vs_ajax_content_url = $content_item['ajaxContentUrl']; }
+						$va_ajax_ids[] = $content_item['ajaxContentID'];
+						$va_buf[md5($content_item['content'])] = $content_item['content'];	// md5 is to ensure there is no duplicate content (eg. if something is mapped to the same location twice)
+					}	
 				
-				if (!($lat && $lng)) { continue; }
-				if (($lat < -90) || ($lat > 90)) { continue; }
-				if (($lng < -180) || ($lng > 180)) { continue; }
+					if (!($lat && $lng)) { continue; }
+					if (($lat < -90) || ($lat > 90)) { continue; }
+					if (($lng < -180) || ($lng > 180)) { continue; }
 				
-				$vn_angle = isset($content_item['angle']) ? (float)$content_item['angle'] : null;
-				$vs_label = preg_replace("![\n\r]+!", " ", $vs_label);
-				$vs_content = preg_replace("![\n\r]+!", " ", join($vs_delimiter, $va_buf));
-				$vs_ajax_url = preg_replace("![\n\r]+!", " ", ($vs_ajax_content_url ? ($vs_ajax_content_url."/id/".join(';', $va_ajax_ids)) : ''));
+					$vn_angle = isset($content_item['angle']) ? (float)$content_item['angle'] : null;
+					$vs_label = preg_replace("![\n\r]+!", " ", $vs_label);
+					$vs_content = preg_replace("![\n\r]+!", " ", join($vs_delimiter, $va_buf));
+					$vs_ajax_url = preg_replace("![\n\r]+!", " ", ($vs_ajax_content_url ? ($vs_ajax_content_url."/id/".join(';', $va_ajax_ids)) : ''));
 				
-        		$l = ['lat' => $lat, 'lng' => $lng, 'label' => $vs_label, 'content' => $vs_content];
-        		if ($vn_angle !== 0) { $l['angle'] = $vn_angle; }
-        		if ($vs_ajax_url) { $l['ajaxUrl'] = $vs_ajax_url; } else { $l['content'] = $vs_content; }
-        		$pointList[] = $l;
+					$l = ['lat' => $lat, 'lng' => $lng, 'label' => $vs_label, 'content' => $vs_content];
+					if ($vn_angle !== 0) { $l['angle'] = $vn_angle; }
+					if ($vs_ajax_url) { $l['ajaxUrl'] = $vs_ajax_url; } else { $l['content'] = $vs_content; }
+					$pointList[$group][] = $l;
+				}
+				$vn_c++;
 			}
-			$vn_c++;
 		}
 		
 		$circleList = [];
-		foreach($circles as $lat => $va_locs_by_longitude) {
-			foreach($va_locs_by_longitude as $lng => $content_items) {
-				$va_buf = $va_ajax_ids = [];
-				$vs_label = $vs_ajax_content_url = ''; $vn_radius = null;
+		foreach($circles as $group => $circles_by_group) {
+			foreach($circles_by_group as $lat => $va_locs_by_longitude) {
+				foreach($va_locs_by_longitude as $lng => $content_items) {
+					$va_buf = $va_ajax_ids = [];
+					$vs_label = $vs_ajax_content_url = ''; $vn_radius = null;
 				
-				foreach($content_items as $content_item) {
-					if (!$vn_radius) { $vn_radius = $content_item['radius']; }
-					if (!$vs_label) {
-						$vs_label = $content_item['label'];
-					} else { // if there are multiple items in one location, we want to add the labels of the 2nd and all following items to the 'content' part of the overlay, while still not duplicating content (hence, md5)
-						$va_buf[md5($content_item['label'])] = $content_item['label'];
-					}
-					if (!$vs_ajax_content_url) { $vs_ajax_content_url = $content_item['ajaxContentUrl']; }
-					$va_ajax_ids[] = $content_item['ajaxContentID'];
-					$va_buf[md5($content_item['content'])] = $content_item['content'];	// md5 is to ensure there is no duplicate content (eg. if something is mapped to the same location twice)
-				}	
+					foreach($content_items as $content_item) {
+						if (!$vn_radius) { $vn_radius = $content_item['radius']; }
+						if (!$vs_label) {
+							$vs_label = $content_item['label'];
+						} else { // if there are multiple items in one location, we want to add the labels of the 2nd and all following items to the 'content' part of the overlay, while still not duplicating content (hence, md5)
+							$va_buf[md5($content_item['label'])] = $content_item['label'];
+						}
+						if (!$vs_ajax_content_url) { $vs_ajax_content_url = $content_item['ajaxContentUrl']; }
+						$va_ajax_ids[] = $content_item['ajaxContentID'];
+						$va_buf[md5($content_item['content'])] = $content_item['content'];	// md5 is to ensure there is no duplicate content (eg. if something is mapped to the same location twice)
+					}	
 				
-				if (!($lat && $lng)) { continue; }
-				$vs_label = preg_replace("![\n\r]+!", " ", $vs_label);
-				$vs_content = preg_replace("![\n\r]+!", " ", join($vs_delimiter, $va_buf));
-				$vs_ajax_url = preg_replace("![\n\r]+!", " ", ($vs_ajax_content_url ? ($vs_ajax_content_url."/id/".join(';', $va_ajax_ids)) : ''));
+					if (!($lat && $lng)) { continue; }
+					$vs_label = preg_replace("![\n\r]+!", " ", $vs_label);
+					$vs_content = preg_replace("![\n\r]+!", " ", join($vs_delimiter, $va_buf));
+					$vs_ajax_url = preg_replace("![\n\r]+!", " ", ($vs_ajax_content_url ? ($vs_ajax_content_url."/id/".join(';', $va_ajax_ids)) : ''));
 				
-        		$l = ['lat' => $lat, 'lng' => $lng, 'label' => $vs_label,  'content' => $vs_content, 'radius' => $vn_radius];
-        		if ($vs_ajax_url) { $l['ajaxUrl'] = $vs_ajax_url; } else { $l['content'] = $vs_content; }
-        		$circleList[] = $l;
+					$l = ['lat' => $lat, 'lng' => $lng, 'label' => $vs_label,  'content' => $vs_content, 'radius' => $vn_radius];
+
+					if ($vs_ajax_url) { $l['ajaxUrl'] = $vs_ajax_url; } else { $l['content'] = $vs_content; }
+					$circleList[$group][] = $l;
+				}
+				$vn_c++;
 			}
-			$vn_c++;
 		}
 		
 		switch(strtoupper($ps_format)) {
@@ -210,7 +216,6 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 					$vn_height = $vn_height."px";
 				}
 				
-				
 				$vs_buf = "<div style='width:{$vs_width}; height:{$vs_height}' id='map_{$vs_id}'> </div>\n
 <script type='text/javascript'>
 		var arrowIcon = L.icon({
@@ -226,53 +231,71 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 		var map = L.map('map_{$vs_id}', { zoomControl: ".($vb_show_scale_controls ? "true" : "false").", attributionControl: false, minZoom: {$vn_min_zoom_level}, maxZoom: {$vn_max_zoom_level} }).setView([0, 0], {$vn_zoom_level});
 		var b = L.tileLayer('{$base_map_url}', {noWrap: ".($vb_no_wrap ? "true" : "false")."}).addTo(map);	
 		var g = new L.featureGroup();
+		var itemGroups{$vs_id} = {};
 		g.addTo(map);
 		
-		jQuery(pointList{$vs_id}).each(function(k, v) {
-			var opts = { title: jQuery('<div>').html(v.label).text() };
-			if (v.angle != 0) { opts['icon'] = arrowIcon; }
-			var m = L.marker([v.lat, v.lng], opts);
-			
-			if (v.angle != 0) { m.setRotationAngle(v.angle); }
-			if (v.label || v.content) { 
-			    if (v.ajaxUrl) {
-			        var ajaxUrl = v.ajaxUrl;
-                    m.bindPopup(
-                        (layer)=>{
-                            var el = document.createElement('div');
-                            $.get(ajaxUrl,function(data){
-                                el.innerHTML = data + '<br/>';
-                            });
-
-                            return el;
-                        }, { minWidth: 400, maxWidth : 560 });
-			    } else {
-			        m.bindPopup(v.label + v.content); 
-			    }
+		for(let group in pointList{$vs_id}) {
+			let points = pointList{$vs_id}[group];
+			if(!itemGroups{$vs_id}[group]) {
+				itemGroups{$vs_id}[group] = new L.featureGroup();
 			}
-			m.addTo(g);
-		});
+			for(let k in points) {
+				let v = points[k];
+				var opts = { title: jQuery('<div>').html(v.label).text() };
+				if (v.angle != 0) { opts['icon'] = arrowIcon; }
+				var m = L.marker([v.lat, v.lng], opts);
+				if (v.angle != 0) { m.setRotationAngle(v.angle); }
+				if (v.label || v.content) { 
+					if (v.ajaxUrl) {
+						let ajaxUrl = v.ajaxUrl;
+						m.bindPopup(
+							(layer)=>{
+								var el = document.createElement('div');
+								$.get(ajaxUrl,function(data){
+									el.innerHTML = data + '<br/>';
+								});
+
+								return el;
+							}, { minWidth: 400, maxWidth : 560 });
+					} else {
+						m.bindPopup(v.label + v.content); 
+					}
+				}
+				m.addTo(itemGroups{$vs_id}[group]);
+			}
+		}
 		
-		jQuery(circleList{$vs_id}).each(function(k, v) {
-			var m = L.circle([v.lat, v.lng], { radius: v.radius, color: '{$vs_path_color}', weight: '{$vn_path_weight}', opacity: '{$vn_path_opacity}', fillColor: '{$vs_fill_color}', fillOpacity: '{$vn_fill_opacity}' });
-			if (v.label || v.content) { 
-			    if (v.ajaxUrl) {
-			        var ajaxUrl = v.ajaxUrl;
-                    m.bindPopup(
-                        (layer)=>{
-                            var el = document.createElement('div');
-                            $.get(ajaxUrl,function(data){
-                                el.innerHTML = data + '<br/>';
-                            });
-
-                            return el;
-                        }, { minWidth: 400, maxWidth : 560 });
-			    } else {
-			        m.bindPopup(v.label + v.content); 
-			    }
+		for(let group in circleList{$vs_id}) {
+			let circles = circleList{$vs_id}[group];
+			if(!itemGroups{$vs_id}[group]) {
+				itemGroups{$vs_id}[group] = new L.featureGroup();
 			}
-			m.addTo(g);
-		});
+			for(let k in circles) {
+				let v = circles[k];
+				var m = L.circle([v.lat, v.lng], { radius: v.radius, color: '{$vs_path_color}', weight: '{$vn_path_weight}', opacity: '{$vn_path_opacity}', fillColor: '{$vs_fill_color}', fillOpacity: '{$vn_fill_opacity}' });
+				if (v.label || v.content) { 
+					if (v.ajaxUrl) {
+						let ajaxUrl = v.ajaxUrl;
+						m.bindPopup(
+							(layer)=>{
+								var el = document.createElement('div');
+								$.get(ajaxUrl,function(data){
+									el.innerHTML = data + '<br/>';
+								});
+
+								return el;
+							}, { minWidth: 400, maxWidth : 560 });
+					} else {
+						m.bindPopup(v.label + v.content); 
+					}
+				}
+				m.addTo(itemGroups{$vs_id}[group]);
+			}
+		}
+		
+		for(let group in itemGroups{$vs_id}) {
+			itemGroups{$vs_id}[group].addTo(g);
+		}
 		
 		jQuery(pathList{$vs_id}).each(function(k, v) {
 			var splitPts = v.path.map(c => { return [c.latitude, c.longitude] });
@@ -308,17 +331,40 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 	# ------------------------------------------------
 	/**
 	 *
+	 * @param array $pa_element_info
+	 * @param array $pa_options Options include:
+	 *		hideCoordinatesDisplay = don't show coordinate display text entry. [Default is false]
+	 *		hideGeocodeUI = Don't show geocoding search box. [Default is false]
+	 *		hideTools = Don't show drawing tools. [Default is false]
+	 *		mapWidth = Width of map, in pixels. [Default is 695px]
+	 *		mapHeight = Height of map, in pixels. [Default is 400px]
+	 *
+	 * @return string HTML for bundle
 	 */
 	public function getAttributeBundleHTML($pa_element_info, $pa_options=null) {
  		AssetLoadManager::register('leaflet');
 		
-		$va_element_width = caParseFormElementDimension($pa_element_info['settings']['fieldWidth']);
-		$vn_element_width = $va_element_width['dimension'];
-		$va_element_height = caParseFormElementDimension($pa_element_info['settings']['fieldHeight']);
-		$vn_element_height = $va_element_height['dimension'];
+		$va_element_width = caParseFormElementDimension($pa_element_info['settings']['fieldWidth'] ?? null);
+		$vn_element_width = $va_element_width['dimension'] ?? null;
+		$va_element_height = caParseFormElementDimension($pa_element_info['settings']['fieldHeight'] ?? null);
+		$vn_element_height = $va_element_height['dimension'] ?? null;
 		
+		$map_width_info = caParseFormElementDimension(caGetOption('mapWidth', $pa_options, '695px'));
+		$map_width = $map_width_info['dimension'].'px';
+		$map_height_info = caParseFormElementDimension(caGetOption('mapHeight', $pa_options, '400px'));
+		$map_height = $map_height_info['dimension'].'px';
 		
-		$points_are_directional = (bool)$pa_element_info['settings']['pointsAreDirectional'] ? 1 : 0;
+		$min_zoom_level = (int)caGetOption('minZoomLevel', $pa_element_info['settings'], 0);
+		$max_zoom_level = (int)caGetOption('maxZoomLevel', $pa_element_info['settings'], 18);
+		$default_zoom = (int)caGetOption('defaultZoomLevel', $pa_element_info['settings'], -1);
+		$default_zoom_level = ($default_zoom === -1) ? 0 : $default_zoom;
+		
+		if($default_location = caGetOption('defaultLocation', $pa_element_info['settings'], null)) {
+			if(!caParseGISSearch($default_location)) { $default_location = null; }
+		}
+		
+		$points_are_directional = (bool)($pa_element_info['settings']['pointsAreDirectional'] ?? false) ? 1 : 0;
+		$autoDropPin = (bool)($pa_element_info['settings']['autoDropPin'] ?? false) ? 1 : 0;
  		
  		$element_id = (int)$pa_element_info['element_id'];
  		$vs_id = $pa_element_info['element_id']."_{n}";
@@ -333,7 +379,7 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
  		}
 		$vs_element = 	"
 <div id='mapholder_{$element_id}_{n}' class='mapholder' style='z-index:0;'>
-	 <div class='map' style='width:695px; height:400px;'></div>
+	 <div class='map' style='width:{$map_width}; height:{$map_height};'></div>
 </div>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
@@ -341,6 +387,7 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 		var map_{$vs_id}_points_are_directional = {$points_are_directional};
 		var map_{$vs_id}_rotation_in_progress = null;
 		var map_{$vs_id}_loc_str = '{{{$element_id}}}';
+		var g = new L.featureGroup();
 		
 		var arrowIcon = L.icon({
 			iconUrl: '{$base_path}/assets/leaflet/images/arrow-icon.png',
@@ -354,42 +401,62 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 
 		var map_{$vs_id}_loc_label = jQuery.trim(map_{$vs_id}_loc_str.match(/^[^\[]+/));
 		
-		var map = L.map('mapholder_{$element_id}_{n}', { attributionControl: false, maxZoom: 18 }).setView([0, 0], 8);
+		var map = L.map('mapholder_{$element_id}_{n}', { attributionControl: false, minZoom: {$min_zoom_level}, maxZoom: {$max_zoom_level} }).setView([0, 0], 8);
+		jQuery('#mapholder_{$element_id}_{n}').data('map', map); // stash map reference in <div> to allow redraw by bundle visibility manager
 		var b = L.tileLayer('{$base_map_url}').addTo(map);	
-		map.addControl(new L.Control.OSMGeocoder({ text: '"._t('Go')."', 'collapsed': false }));
-		
-		var g = new L.featureGroup();
-		
-		var map_{$vs_id}_update_coord_list = function (e) {
-			var label = jQuery.trim(map_{$vs_id}_loc_str.match(/^[^\[]+/));
-			var objs = [];
-			g.eachLayer(function (layer) {
-				if (layer.getRadius) { // circle
-					var c = layer.getLatLng();
-					objs.push(c.lat + ',' + c.lng + '~' + layer.getRadius());
-				} else if (layer.getLatLngs) { // path
-					var cs = layer.getLatLngs()[0].map(c => { return c.lat + ',' + c.lng});
-					objs.push(cs.join(';'));
-				} else if (layer.getLatLng) { // marker
-					var c = layer.getLatLng();
-					
-					if (layer.options.rotationAngle !== 0) {
-						objs.push(c.lat + ',' + c.lng + '*' + layer.options.rotationAngle);
-					} else {
-						objs.push(c.lat + ',' + c.lng);
+";
+
+		if(!caGetOption('hideGeocodeUI', $pa_options, false)) {
+			$vs_element .= 	"
+				map.addControl(new L.Control.OSMGeocoder({ text: '"._t('Go')."', 'collapsed': false, callback: function(results) {
+					var bbox = results[0].boundingbox,
+						mid = new L.LatLng((parseFloat(bbox[0]) + parseFloat(bbox[1]))/2, (parseFloat(bbox[2]) + parseFloat(bbox[3]))/2),
+						bounds = new L.LatLngBounds([new L.LatLng(bbox[0], bbox[2]), new L.LatLng(bbox[1], bbox[3])]);
+					if({$autoDropPin}) {	// drop pin at center of search location if option is set
+						var marker = L.marker(mid);
+						g.addLayer(marker);
+						map_{$vs_id}_update_coord_list();
 					}
-				}
-			});
-			var coords = objs.join(':');
-			jQuery('#{fieldNamePrefix}{$element_id}_{n}').val((label ? label : '') + (coords ? (label ? ' ' : '') + '[' + coords + ']' : ''));
-		};
+					this._map.fitBounds(bounds);
+				}}));
+			";
+		}
 		
-		var drawControl = new L.Control.Draw({
-			edit: { featureGroup: g, edit: true },
-			draw: { circlemarker: false }
-		});
-		map.addControl(drawControl);
+		$vs_element .= 	"	
+			var map_{$vs_id}_update_coord_list = function (e) {
+				var label = jQuery.trim(map_{$vs_id}_loc_str.match(/^[^\[]+/));
+				var objs = [];
+				g.eachLayer(function (layer) {
+					if (layer.getRadius) { // circle
+						var c = layer.getLatLng().wrap();
+						objs.push(c.lat + ',' + c.lng + '~' + layer.getRadius());
+					} else if (layer.getLatLngs) { // path
+						var cs = layer.getLatLngs()[0].map(c => { c.wrap(); return c.lat + ',' + c.lng});
+						objs.push(cs.join(';'));
+					} else if (layer.getLatLng) { // marker
+						var c = layer.getLatLng().wrap();
+						if (layer.options.rotationAngle !== 0) {
+							objs.push(c.lat + ',' + c.lng + '*' + layer.options.rotationAngle);
+						} else {
+							objs.push(c.lat + ',' + c.lng);
+						}
+					}
+				});
+				var coords = objs.join(':');
+				jQuery('#{fieldNamePrefix}{$element_id}_{n}').val((label ? label : '') + (coords ? (label ? ' ' : '') + '[' + coords + ']' : ''));
+			};
+		";
 		
+		if(!caGetOption('hideTools', $pa_options, false)) {
+			$vs_element .= 	"	
+				var drawControl = new L.Control.Draw({
+					edit: { featureGroup: g, edit: true },
+					draw: { circlemarker: false }
+				});
+				map.addControl(drawControl);
+			";
+		}
+		$vs_element .= 	"	
 		var map_{$vs_id}_set_rotation_guide = function(layer, angle) {
 			var transformation = new L.Transformation(
 				1, Math.sin(angle*Math.PI / 180)*100,
@@ -534,22 +601,23 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 				}
 			});
 		} else {
-			var c = localStorage.getItem('leafletLastPos');
+			var c = ".($default_location ? "'{$default_location}'" : "localStorage.getItem('leafletLastPos')").";
 			if (c) {
 				var coord = c.split(/,/);
-				map.setView(coord, 16, {animate: false});
-			} else {
-				map.setZoom(2, {animate: false});
+				map.setView(coord, {$default_zoom_level}, {animate: false});
 			}
 		}
 		
 		g.addTo(map);
 		var bounds = g.getBounds();
-		if (bounds.isValid()) { map.fitBounds(bounds); }
+		if (bounds.isValid()) { map.fitBounds(bounds); };
+		".(($default_zoom >= 0) ? "map.setZoom({$default_zoom_level}, {animate: false});" : '')."
 	});
 </script>
-	<input class='coordinates mapCoordinateDisplay' type='text' name='{fieldNamePrefix}{$element_id}_{n}' id='{fieldNamePrefix}{$element_id}_{n}' size='80' value='{{$element_id}}'/>
 ";
+		if(!caGetOption('hideCoordinatesDisplay', $pa_options, false)) {
+			$vs_element .= "<input class='coordinates mapCoordinateDisplay' type='text' name='{fieldNamePrefix}{$element_id}_{n}' id='{fieldNamePrefix}{$element_id}_{n}' size='80' value='{{$element_id}}'/>\n";
+		}
 		return $vs_element;
 	}
 	# ------------------------------------------------

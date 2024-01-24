@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2018 Whirl-i-Gig
+ * Copyright 2010-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -112,6 +112,8 @@
  	 *			viewPath - path to views; will use standard system view path if not defined
  	 *			request = current request; required for generation of editor links
  	 *			color = hex color to use for item marker; can include bundle display template tags for inclusion of colors stored in metadata elements
+ 	 *			group = group item belongs to. Items will be output in feature group layers corresponding to each group code.
+ 	 *			fuzz = distort coordinates by rounding to the specified number of decimal places. Only applied to point locations. Larger numbers return more precision and less distortion. Paths are never distorted. [Default is null; no distortion]
  	 * @return array Returns an array with two keys: 'points' = number of unique markers added to map; 'items' = number of result hits than were plotted at least once on the map
  	 */
  	public function mapFrom($po_data_object, $ps_georeference_field_name, $pa_options=null) {
@@ -119,8 +121,10 @@
  		$pa_options['label'] = caGetOption('label', $pa_options, null);
  		$pa_options['content'] = caGetOption('content', $pa_options, null);
  		$vs_color = caGetOption('color', $pa_options, null);
+ 		$vs_group = caGetOption('group', $pa_options, null);
  		$vb_render_label_as_link = caGetOption('renderLabelAsLink', $pa_options, false);
  		
+ 		$fuzz = caGetOption('fuzz', $pa_options, null, ['castTo' => 'int']);
  		
  		$vn_point_count = 0;
  		$vn_item_count = 0;
@@ -155,21 +159,19 @@
  		                
             $t_instance = $po_data_object->getResultTableInstance();
             $vs_table = $t_instance->tableName();
-            $va_rel_table = null;
             $vs_pk = $t_instance->primaryKey();
  		   
  		    if($is_related && is_array($path = Datamodel::getPath($t_georef_instance->tableName(), $po_data_object->tableName())) && (sizeof($path) === 3)) {
  		        $path = array_keys($path);
- 		        $vs_rel_table = $path[1];
  		        
  		        $rel_ids = [];
  		        while($po_data_object->nextHit()) {
-                    if(is_array($rel_ids_for_row = $po_data_object->get("{$vs_rel_table}.relation_id", ['returnAsArray' => true]))) {
+                    if(is_array($rel_ids_for_row = $po_data_object->get($path[1].".relation_id", ['returnAsArray' => true]))) {
                        $rel_ids = array_merge($rel_ids, $rel_ids_for_row);
                     }
                 }
                 if (sizeof($rel_ids)) {
-                    $po_data_object = caMakeSearchResult($vs_rel_table, $rel_ids);
+                    $po_data_object = caMakeSearchResult($path[1], $rel_ids);
                 }
  		    }
  		    
@@ -186,7 +188,6 @@
 				}
  				if ($va_coordinates = $po_data_object->get($ps_georeference_field_name, array('coordinates' => true, 'returnWithStructure' => true, 'returnAllLocales' => false))) {
  					$vn_id = $po_data_object->get("{$vs_table}.{$vs_pk}");
- 					$vn_rel_id = $vs_rel_table ? $po_data_object->get("{$vs_rel_table}.relation_id") : null;
  					
  					foreach($va_coordinates as $vn_element_id => $va_coord_list) {
                         foreach($va_coord_list as $vn_attribute_id => $va_geoname) {
@@ -199,22 +200,19 @@
                             }
                         
                             $vs_label = $vs_content = $vs_ajax_content = null;
-                
                             
-                            if (!is_null($pa_options['labelTemplate'])) {
-                                $vs_label = caProcessTemplateForIDs($pa_options['labelTemplate'], $vs_rel_table ? $vs_rel_table : $vs_table, [$vs_rel_table ? $vn_rel_id : $vn_id], []);
-                            } else {
-                                if (!is_null($pa_options['label'])) {
-                                    $vs_label = $po_data_object->get($pa_options['label'], array('returnAsLink' => $vb_render_label_as_link || (strpos($pa_options['contentTemplate'], "<l>") !== false)));
-                                } elseif($va_coordinate['label']) {
-                                    $vs_label = $va_coordinate['label'];
-                                } else {
-                                    $vs_label = $va_coordinate['path'];
-                                }
-                            } 
+                            if (strlen($label_template = caGetOption('labelTemplate', $pa_options, null))) {
+                                $vs_label = caProcessTemplateForIDs($label_template, $vs_table, array($vn_id), array());
+                            } elseif (strlen($label = caGetOption('label', $pa_options, null))) {
+								$vs_label = $po_data_object->get($label, array('returnAsLink' => $vb_render_label_as_link || (strpos($pa_options['contentTemplate'], "<l>") !== false)));
+							} elseif(strlen($va_coordinate['label'])) {
+								$vs_label = $va_coordinate['label'];
+							} else {
+								$vs_label = $va_coordinate['path'];
+							}
                             
                             if (!is_null($vs_color) && $vs_color && (strpos($vs_color, '^') !== false)) {
-                                $vs_color = caProcessTemplateForIDs($pa_options['color'], $vs_rel_table ? $vs_rel_table : $vs_table, [$vs_rel_table ? $vn_rel_id : $vn_id], ['returnAsLink' => false]);
+                                $vs_color = caProcessTemplateForIDs($pa_options['color'], $vs_table, [$vn_id], ['returnAsLink' => false]);
                             } 
                             
                             if (isset($pa_options['ajaxContentUrl']) && $pa_options['ajaxContentUrl']) {
@@ -227,7 +225,7 @@
                                     $vs_content = $o_view->render($pa_options['contentView']);
                                 } else {
                                     if (!is_null($pa_options['contentTemplate'])) {
-                                        $vs_content = caProcessTemplateForIDs($pa_options['contentTemplate'], $vs_rel_table ? $vs_rel_table : $vs_table, [$vs_rel_table ? $vn_rel_id : $vn_id], []);
+                                        $vs_content = caProcessTemplateForIDs($pa_options['contentTemplate'], $vs_table, [$vn_id], []);
                                     } else {
                                         if (!is_null($pa_options['content'])) {
                                             if ($pa_options['content']){ 
@@ -253,12 +251,15 @@
                                         $va_pair = explode(',', $vs_pair);
                                         $va_coordinate_pairs[] = ['latitude' => $va_pair[0], 'longitude' => $va_pair[1]];
                                     }
-                                    $this->addMapItem(new GeographicMapItem(['coordinates' => $va_coordinate_pairs, 'label' => $vs_label, 'content' => $vs_content, 'ajaxContentUrl' => $vs_ajax_content, 'ajaxContentID' => $vn_id, 'color' => $vs_color]));
+                                    $this->addMapItem(new GeographicMapItem(['coordinates' => $va_coordinate_pairs, 'label' => $vs_label, 'content' => $vs_content, 'ajaxContentUrl' => $vs_ajax_content, 'ajaxContentID' => $vn_id, 'color' => $vs_color, 'group' => $vs_group]));
                                 } else {
                                     $va_coord = explode(',', $va_path[0]);
                                     list($lng, $radius) = explode('~', $va_coord[1]);
                                     if (!$radius) { list($lng, $angle) = explode('*', $va_coord[1]); }
-                                    $d = ['latitude' => $va_coord[0], 'longitude' => $lng, 'label' => $vs_label, 'content' => $vs_content, 'ajaxContentUrl' => $vs_ajax_content, 'ajaxContentID' => $vn_id, 'color' => $vs_color];
+                                    
+                                    if($fuzz > 0) { $va_coord[0] = ''.round($va_coord[0], $fuzz); $lng = ''.round($lng, $fuzz); }
+                             
+                                    $d = ['latitude' => $va_coord[0], 'longitude' => $lng, 'label' => $vs_label, 'content' => $vs_content, 'ajaxContentUrl' => $vs_ajax_content, 'ajaxContentID' => $vn_id, 'color' => $vs_color, 'group' => $vs_group];
                                     if ($radius) { $d['radius'] = $radius; }
                                     if ($angle) { $d['angle'] = $angle; }
                                     $this->addMapItem(new GeographicMapItem($d));

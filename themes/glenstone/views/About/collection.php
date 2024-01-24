@@ -1,7 +1,7 @@
 <?php
 
 require_once(__CA_MODELS_DIR__."/ca_sets.php");
-include_once(__CA_LIB_DIR__."/ca/Search/OccurrenceSearch.php");
+include_once(__CA_LIB_DIR__."/Search/OccurrenceSearch.php");
 include_once(__CA_MODELS_DIR__."/ca_occurrences.php");
 
 $va_access_values = caGetUserAccessValues($this->request);

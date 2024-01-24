@@ -152,8 +152,8 @@
 	font-size:13px;
 }
 .detail #detailAnnotations li.active, .detail #detailAnnotations ul li:hover {
-    background-color: #96b0ba;
-    color:#000;
+    background-color: #435c66;
+	color: #fff;
 }
 .detail #detailAnnotations li .annotation_description {
 	display:none;

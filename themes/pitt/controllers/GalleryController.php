@@ -28,6 +28,7 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
+ 	require_once(__CA_LIB_DIR__."/Media/MediaViewerManager.php");
  	
  	class GalleryController extends ActionController {
  		# -------------------------------------------------------
@@ -173,6 +174,12 @@
  				$this->view->setVar("set_id", $ps_set_id);
  				$t_set->load($ps_set_id);
  				$this->view->setVar("set", $t_set);
+ 				
+ 				$o_context = new ResultContext($this->request, 'ca_objects', 'gallery');
+ 				$o_context->setAsLastFind();
+ 				$o_context->setResultList(array_keys($t_set->getItemRowIDs()));
+ 				$o_context->saveContext();
+ 				
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
  				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
@@ -180,6 +187,7 @@
  				if(!in_array($pn_set_item_id, array_keys($t_set->getItemIDs()))){
  					$pn_set_item_id = "";	
  				}
+ 				
  				$this->view->setVar("set_item_id", $pn_set_item_id);
  				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
  				$this->render("Gallery/detail_html.php");
@@ -276,6 +284,48 @@
  			
  			$this->render("Gallery/set_item_info_html.php");
  		}
+ 		# -------------------------------------------------------
+ 		/**
+		 * Returns content for overlay containing details for object representation or attribute values of type "media"
+		 *
+		 *	Optional parameters:
+		 *		display = The type of media_display.conf display configuration to be used (Eg. "detail", "media_overlay"). [Default is "media_overlay"]
+		 */
+		public function GetMediaOverlay($pa_options=null) {
+			
+			$ps_context = 'gallery';			
+            $va_context = [
+                'table' => 'ca_objects'
+            ];
+			
+			if (!($pt_subject = Datamodel::getInstance($vs_subject = $va_context['table']))) {
+				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
+			}
+			if (!($pn_subject_id = $this->request->getParameter('id', pInteger))) { $pn_subject_id = $this->request->getParameter($pt_subject->primaryKey(), pInteger); }
+			if (!$pt_subject->load($pn_subject_id)) { 
+				throw new ApplicationException(_t('Invalid id %1', $pn_subject_id));
+			}
+			
+			if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
+			$pa_options['display'] = $ps_display_type;
+			$pa_options['context'] = $this->request->getParameter('context', pString);
+			
+			$va_options = (isset($this->opa_detail_types[$pa_options['context']]['options']) && is_array($this->opa_detail_types[$pa_options['context']]['options'])) ? $this->opa_detail_types[$pa_options['context']]['options'] : array();
+			$pa_options['captionTemplate'] = caGetOption('representationViewerCaptionTemplate', $va_options, false);
+			
+			if (!$pt_subject->isReadable($this->request)) { 
+				throw new ApplicationException(_t('Cannot view media'));
+			}
+		
+			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($va_options, $pa_options, ['showAnnotations' => true])));
+		}
+ 		# -------------------------------------------------------
+		/** 
+		 * Return media viewer HTML for use inline on a detail.
+		 */
+		public function GetMediaInline() {
+			$this->GetMediaOverlay(['inline' => true]);
+		}
  		# -------------------------------------------------------
 	}
  ?>

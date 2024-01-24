@@ -47,7 +47,7 @@
 					
 			<!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork'), 'returnWithStructure' => true, 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork', 'incoming_artwork_loan'), 'returnWithStructure' => true, 'returnAsArray' => true))) {	
 
 ?>		
 			<div id="detailRelatedObjects">

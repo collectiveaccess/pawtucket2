@@ -91,7 +91,9 @@
 					print "<div class='detailTool'><i class='material-icons inline'>bookmark</i><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
-						$vs_mimetype = $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE');
+						if($t_representation){
+							$vs_mimetype = $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE');
+						}
 						$vs_use_statement = trim($t_object->get("ca_objects.use_statement"));
 						if(!$vs_use_statement){
 							$vs_use_statement = $this->getVar("use_statement");
@@ -242,7 +244,7 @@
 					$va_collection_hier_ids = array_pop($t_object->get("ca_collections.hierarchy.collection_id", array("returnAsArray" => true)));
 					$vs_collection_hier = "";
 					if($vs_tmp = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.related"><unit relativeTo="ca_collections.related"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></unit></ifcount>', array("checkAccess" => $va_access_values))){
-						$vs_collection_hier = caDetailLink($this->request, $vs_tmp, '', 'ca_collections', $va_collection_hier_ids[0]);	
+						$vs_collection_hier = caDetailLink($this->request, $vs_tmp, '', 'ca_collections', $va_collection_hier_ids[0], array("last_tab" => "guide", "row_id" => $t_object->get("ca_objects.object_id")));	
 					}
 					if ($vn_parent_object_id = $t_object->get('ca_objects.parent_id', array("checkAccess" => $va_access_values))) {
 						$t_parent = new ca_objects($vn_parent_object_id);

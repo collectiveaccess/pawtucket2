@@ -30,7 +30,7 @@
  * ----------------------------------------------------------------------
  */
 ?>
-			<h2>Browse Featured Exhibitions:</h2>
+			<h2>Browse Featured Exhibitions</h2>
 <?php
 		$o_config = caGetGalleryConfig();
 		$va_access_values = caGetUserAccessValues($this->request);

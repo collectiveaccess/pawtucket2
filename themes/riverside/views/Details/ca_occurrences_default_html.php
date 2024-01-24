@@ -245,7 +245,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects_non_audio_video', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects_non_audio_video', array('facet' => 'occurrence_facet_114', 'id' => '^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

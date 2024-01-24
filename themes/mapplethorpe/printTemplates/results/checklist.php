@@ -71,7 +71,7 @@
 			<tr>
 				<td>
 <?php 
-					if ($vs_path = $vo_result->getMediaUrl('ca_object_representations.media', 'small')) {
+					if ($vs_path = $vo_result->getMediaPath('ca_object_representations.media', 'small')) {
 						print "<div class=\"checklistImage\"><img src='{$vs_path}'/></div>";
 					} else {
 ?>

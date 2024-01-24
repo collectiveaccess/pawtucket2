@@ -18,7 +18,7 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12 col-md-8">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search Collections currently holding Manuscripts.">Institutions</span>
-				{{{ca_collections.collection_id%width=220px}}}
+				<span style='display:none;'>{{{ca_collections.collection_id%width=220px}}}</span>
 				<select name="ca_collections.collection_id" id="ca_collection_id_2">
 					<option value="">-</option>
 <?php

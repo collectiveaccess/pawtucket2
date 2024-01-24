@@ -33,7 +33,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-6">
-						<span class="footerHighlight">The Shaw-Olson Center for College History</span>
+						<span class="footerHighlight">St. Olaf College Archives</span>
 						<br/>Rølvaag Memorial Library
 						<br/>Special Collections and Archives
 						<br/>1510 St. Olaf Avenue

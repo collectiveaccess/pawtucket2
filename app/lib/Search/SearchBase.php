@@ -54,6 +54,8 @@ class SearchBase extends BaseFindEngine {
 	 * @param bool $pb_load_engine if set to true (default is false) we don't attempt to load an engine instance. this is useful if you just want to use SearchBase for the utility methods
 	 */
 	public function __construct($po_db=null, $ps_engine=null, $pb_load_engine=true) {
+		parent::__construct($po_db);
+		
 		$this->opo_app_config = Configuration::load();
 		$this->opo_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
 		$this->opo_search_indexing_config = Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');			
@@ -153,7 +155,7 @@ class SearchBase extends BaseFindEngine {
 			self::clearCache();
 		}
 
-		$vs_key = caMakeCacheKeyFromOptions($pa_options);
+		$vs_key = caMakeCacheKeyFromOptions($pa_options ?? []);
 		if (isset(SearchBase::$s_fields_to_index_cache[$pm_subject_table.'/'.$pm_content_table.'/'.$vs_key])) {
 			return SearchBase::$s_fields_to_index_cache[$pm_subject_table.'/'.$pm_content_table.'/'.$vs_key];
 		}
@@ -177,9 +179,9 @@ class SearchBase extends BaseFindEngine {
 		}
 
 		if ($current_value_fields_only = caGetOption('currentValueFields', $pa_options, false)) {
-			$va_fields_to_index = is_array($va_info[$vs_content_table]['current_values']) ? $va_info[$vs_content_table]['current_values'] : [];
+			$va_fields_to_index = is_array($va_info[$vs_content_table]['current_values'] ?? null) ? $va_info[$vs_content_table]['current_values'] : [];
 		} else {
-			$va_fields_to_index = [0 => $va_info[$vs_content_table]['fields']];
+			$va_fields_to_index = [0 => $va_info[$vs_content_table]['fields'] ?? null];
 		}
 		$t_subject = Datamodel::getInstanceByTableName(preg_replace("!\.related$!", "", $vs_content_table), false);
 		
@@ -189,14 +191,13 @@ class SearchBase extends BaseFindEngine {
 				foreach($field_list as $vs_f => $va_data) {
 					if (substr($vs_f, 0, 14) === '_ca_attribute_') { unset($field_list[$vs_f]); continue; }
 					if (!$t_subject->hasField($vs_f)) { unset($field_list[$vs_f]); continue; }
-					if (($vs_start = $t_subject->getFieldInfo($vs_f, 'START') && ($vs_end = $t_subject->getFieldInfo($vs_f, 'END')))) {
+					if (($vs_start = $t_subject->getFieldInfo($vs_f, 'START')) && ($vs_end = $t_subject->getFieldInfo($vs_f, 'END'))) {
 						$field_list[$vs_start] = $va_data;
 						$field_list[$vs_end] = $va_data;
 						unset($field_list[$vs_f]);
 					
 					}
 				}
-			
 				return $field_list;
 			}
 		
@@ -335,7 +336,7 @@ class SearchBase extends BaseFindEngine {
 	 * @return array
 	 */
 	public function getFieldOptions($pm_subject_table, $pm_content_table, $ps_fieldname) {
-		if (is_nuxsmeric($pm_subject_table)) {
+		if (is_numeric($pm_subject_table)) {
 			$pm_subject_table = Datamodel::getTableName($pm_subject_table);
 		}
 		if (is_numeric($pm_content_table)) {

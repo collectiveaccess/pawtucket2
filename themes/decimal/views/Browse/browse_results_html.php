@@ -172,7 +172,7 @@ if (!$vb_ajax) {	// !ajax
 					$t_authority_table->load($va_criterion['id']);
 					$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
 				}
-				if ($va_criterion['facet_name'] == "collection_facet" ) {
+				if ($va_criterion['facet_name'] == "collection" ) {
 					$vn_collection_id = $va_criterion['id'];
 				}
 			}

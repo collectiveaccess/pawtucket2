@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2018 Whirl-i-Gig
+ * Copyright 2011-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -322,7 +322,7 @@ class OAIPMHService extends BaseService {
 	private function getRecord($oaiData) {
 		if($ps_identifier = $this->opo_request->getParameter('identifier', pString)) {
 			if(!($vs_item_id = OaiIdentifier::oaiIdToItem($ps_identifier))) {
-				$this->throwError(self::OAI_ERR_ID_DOES_NOT_EXIST, _t('Identifier is empty'));
+				$this->throwError(self::OAI_ERR_ID_DOES_NOT_EXIST, strlen($ps_identifier) ? _t('Identifier %1 does not exist', $ps_identifier) : _t('Identifier %1 is empty'));
 				return false;
 			}
 		}
@@ -378,6 +378,65 @@ class OAIPMHService extends BaseService {
 	}
 	# -------------------------------------------------------
 	/**
+	 *
+	 */
+	private function useIdnoForFacet($facet_name, $facet) {
+		$o_browse = caGetBrowseInstance($this->table);
+		if (!is_array($facet_info = $o_browse->getInfoForFacet($facet_name))) { return null; }
+		
+		switch($facet_info['type']) {
+			case 'authority':
+				if (!($t_instance = Datamodel::getInstance($facet_info['table'], true))) {
+					$this->throwError(self::OAI_ERR_NO_SET_HIERARCHY, _t('Invalid set facet'));
+				}
+				if((bool)$this->opa_provider_info['useIdentifiersForSets']) {
+					return $t_instance->getFieldValuesForIDs(array_map(function($v) { return $v['id']; }, $facet), [Datamodel::getTableProperty($this->table, 'ID_NUMBERING_ID_FIELD')]);
+				}
+				break;
+			case 'fieldList':
+				$t_instance = Datamodel::getInstance($this->table, true);
+				if((bool)$this->opa_provider_info['useIdentifiersForSets'] && ($facet_info['field'] === 'type_id')) {
+					return array_map(function($v) { return $v['idno']; }, $t_instance->getTypeList());
+				}
+				break;
+		}
+		
+		return false;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	private function getIdForIdno($facet_name, $idno) {
+		if(!(bool)$this->opa_provider_info['useIdentifiersForSets']) { return null; }
+		
+		$o_browse = caGetBrowseInstance($this->table);
+		if (!is_array($facet_info = $o_browse->getInfoForFacet($facet_name))) { print "blah"; return null; }
+		
+		switch($facet_info['type']) {
+			case 'authority':
+				$t = $facet_info['table'];
+				if(!Datamodel::tableExists($t)) { 
+					$this->throwError(self::OAI_ERR_NO_RECORDS_MATCH, _t('Invalid set facet'));
+				}
+				if ($id = $t::find([Datamodel::getTableProperty($t, 'ID_NUMBERING_ID_FIELD') => $idno], ['returnAs' => 'firstId'])) {
+					return $id;
+				} else {
+					$this->throwError(self::OAI_ERR_NO_RECORDS_MATCH, _t('Invalid set'));
+					return;
+				}
+				break;
+			case 'fieldList':
+				if($facet_info['field'] === 'type_id') {
+					$t_instance = Datamodel::getInstance($this->table, true);
+					return $t_instance->getTypeIDForCode($idno);
+				}
+				break;
+		}
+		return null;
+	}
+	# -------------------------------------------------------
+	/**
 	 * Responds to ListSets OAI verb
 	 */
 	private function listSets($oaiData) {
@@ -395,13 +454,16 @@ class OAIPMHService extends BaseService {
 			$o_browse->execute(array('no_cache' => $vb_dont_cache, 'showDeleted' => $vb_show_deleted, 'checkAccess' => $vb_dont_enforce_access_settings ? null : $va_access_values));
 			$va_facet = $o_browse->getFacet($vs_facet_name,array('checkAccess' => ($vb_dont_enforce_access_settings ? null : $va_access_values)));
 	
+			
+			$idnos = $this->useIdnoForFacet($vs_facet_name, $va_facet);
+
 			 if (is_array($va_facet)) {
 				$listSets = $oaiData->createElement('ListSets');
 				$oaiData->documentElement->appendChild($listSets);
 				foreach($va_facet as $vn_id => $va_info) {
 						$elements = array(
-								'setSpec' => $va_info['id'],
-								'setName' => caEscapeForXml($va_info['label'])
+							'setSpec' => is_array($idnos) ? $idnos[$va_info['id']] : $va_info['id'],
+							'setName' => caEscapeForXml($va_info['label'])
 						);
 						$this->createElementWithChildren($this->oaiData, $listSets, 'set', $elements);
 				}
@@ -475,6 +537,7 @@ class OAIPMHService extends BaseService {
 	 * @uses createResumptionToken()
 	 */
 	private function listResponse($oaiData, $verb, $metadataPrefix, $cursor, $set, $from, $until) {
+		$set_value = null;
 		$listLimit = $this->_listLimit;
 		// by this point, the mapping code was checked to be valid
 		$t_instance = Datamodel::getInstanceByTableName($this->table, true);
@@ -495,22 +558,62 @@ class OAIPMHService extends BaseService {
 		$o_tep = new TimeExpressionParser();
 		$o_lang_settings = $o_tep->getLanguageSettings();
 		$vs_conj = array_shift($o_lang_settings->getList("rangeConjunctions"));
-		$vs_range = ($from && $until) ? "{$from} {$vs_conj} {$until}" : '';
-   
-		if (($set && $this->opa_provider_info['setFacet']) || $vs_range) {
-			$o_browse = caGetBrowseInstance($this->table);
-		
-			if ($vs_query = $this->opa_provider_info['query']) {
-				$o_browse->addCriteria("_search", $vs_query);
-			}
-			
-			if ($this->opa_provider_info['setFacet'] && $set) {
-				$o_browse->addCriteria($this->opa_provider_info['setFacet'], $set);
-			}
-			$o_browse->execute(array('showDeleted' => $vb_show_deleted, 'no_cache' => $vb_dont_cache, 'limitToModifiedOn' => $vs_range, 'checkAccess' => $vb_dont_enforce_access_settings ? null : $va_access_values));
-			$qr_res = $o_browse->getResults();
+		$vs_present = array_shift($o_lang_settings->getList("presentDate"));
+		if ($from && $until) {
+			$vs_range = "{$from} {$vs_conj} {$until}";
+		} elseif($from) {
+			$vs_range = "{$from} {$vs_conj} {$vs_present}";
 		} else {
-			$qr_res = $o_search->search(strlen($this->opa_provider_info['query']) ? $this->opa_provider_info['query'] : "*", array('no_cache' => $vb_dont_cache, 'limitToModifiedOn' => $vs_range, 'showDeleted' => $vb_show_deleted, 'checkAccess' => $vb_dont_enforce_access_settings ? null : $va_access_values));
+			$vs_range = null;
+		}
+		
+		$vs_query = $this->opa_provider_info['query'];
+		if (($set && $this->opa_provider_info['setFacet']) || $vs_range) {
+			if($vs_query === '*') {
+				$o_search = caGetSearchInstance($this->table);
+				
+				if(is_array($type_res = caGetOption('restrictToTypes', $this->opa_provider_info, null)) && sizeof($type_res)) {
+					$o_search->setTypeRestrictions($type_res);
+				} elseif(is_array($type_exclusion = caGetOption('excludeTypes', $this->opa_provider_info, null)) && sizeof($type_exclusion)) {
+					$o_search->setTypeExclusions($type_exclusion);
+				}
+				$qr_res = $o_search->search($vs_range ? 'modified:"'.$vs_range.'"' : '*', array('showDeleted' => $vb_show_deleted, 'no_cache' => $vb_dont_cache, 'checkAccess' => ($vb_dont_enforce_access_settings || $vb_show_deleted) ? null : $va_access_values, 'dontFilterByACL' => $this->opa_provider_info['dontFilterByACL']));
+			} else {
+				$o_browse = caGetBrowseInstance($this->table);
+		
+				if ($vs_query) {
+					$o_browse->addCriteria("_search", $vs_query);
+				}
+				
+				if(is_array($type_res = caGetOption('restrictToTypes', $this->opa_provider_info, null)) && sizeof($type_res)) {
+					$o_browse->setTypeRestrictions($type_res);
+				} elseif(is_array($type_exclusion = caGetOption('excludeTypes', $this->opa_provider_info, null)) && sizeof($type_exclusion)) {
+					$o_browse->setTypeExclusions($type_exclusion);
+				}
+			
+				if ($this->opa_provider_info['setFacet'] && $set) {
+					if (!empty($id = $this->getIdForIdno($this->opa_provider_info['setFacet'], $set))) {
+						$set_value = $id;
+						$o_browse->addCriteria($this->opa_provider_info['setFacet'], $set_value);
+					}
+				}
+				$o_browse->execute(array('showDeleted' => $vb_show_deleted, 'no_cache' => $vb_dont_cache, 'limitToModifiedOn' => $vs_range, 'checkAccess' => ($vb_dont_enforce_access_settings || $vb_show_deleted) ? null : $va_access_values, 'dontFilterByACL' => $this->opa_provider_info['dontFilterByACL']));
+				$qr_res = $o_browse->getResults();
+			}
+		} else {
+			$q = strlen($this->opa_provider_info['query']) ? $this->opa_provider_info['query'] : "*";
+			
+			if($q === '*') {
+				$table = $this->table;
+				$qr_res = $table::findAsSearchResult('*', ['includeDeleted' => $vb_show_deleted, 'checkAccess' => $vb_dont_enforce_access_settings ? null : $va_access_values, 'dontFilterByACL' => $this->opa_provider_info['dontFilterByACL'], 'restrictToTypes' => caGetOption('restrictToTypes', $this->opa_provider_info, null), 'excludeTypes' => caGetOption('excludeTypes', $this->opa_provider_info, null)]);
+			} else {
+				if(is_array($type_res = caGetOption('restrictToTypes', $this->opa_provider_info, null)) && sizeof($type_res)) {
+					$o_search->setTypeRestrictions($type_res);
+				} elseif(is_array($type_exclusion = caGetOption('excludeTypes', $this->opa_provider_info, null)) && sizeof($type_exclusion)) {
+					$o_search->setTypeExclusions($type_exclusion);
+				}
+				$qr_res = $o_search->search($q, array('no_cache' => $vb_dont_cache, 'limitToModifiedOn' => $vs_range, 'showDeleted' => $vb_show_deleted, 'checkAccess' => ($vb_dont_enforce_access_settings || $vb_show_deleted) ? null : $va_access_values, 'dontFilterByACL' => $this->opa_provider_info['dontFilterByACL']));
+			}
 		}
 
 		if (!$qr_res) {
@@ -536,12 +639,13 @@ class OAIPMHService extends BaseService {
 				$vn_c = 0;
 				$va_get_deleted_timestamps_for = array();
 				while($qr_res->nextHit()) {
-					if ((bool)$qr_res->get("{$vs_table}.deleted")) {
+					$deleted = $qr_res->get("{$vs_table}.deleted");
+					if ((bool)$deleted || is_null($deleted)) {
 						$va_deleted_items[$vs_pk_val = (int)$qr_res->get("{$vs_table}.{$vs_pk}")] = true;
 						$va_get_deleted_timestamps_for[$vs_pk_val] = true;
 					} else {
 						$vn_access = (int)$qr_res->get("{$vs_table}.access");
-						if (!in_array($vn_access, $va_access_values)) {
+						if (is_array($va_access_values) && sizeof($va_access_values) && !in_array($vn_access, $va_access_values)) {
 							$va_deleted_items[(int)$qr_res->get("{$vs_table}.{$vs_pk}")] = true;
 						}
 					}
@@ -552,13 +656,12 @@ class OAIPMHService extends BaseService {
 				$qr_res->seek(0);
 				$va_deleted_timestamps = $t_change_log->getDeleteOnTimestampsForIDs($vs_table, array_keys($va_get_deleted_timestamps_for));
 			}
-		
 			// Export data using metadata mapping
-			$va_items = ca_data_exporters::exportRecordsFromSearchResultToArray($this->getMappingCode($metadataPrefix), $qr_res, array('start' => $cursor, 'limit' => $listLimit));
+			$va_items = ca_data_exporters::exportRecordsFromSearchResultToArray($this->getMappingCode($metadataPrefix), $qr_res, array('includeDeleted' => $vb_show_deleted, 'start' => $cursor, 'limit' => $listLimit, 'dontFilterByACL' => $this->opa_provider_info['dontFilterByACL']));
 			if (is_array($va_items) && sizeof($va_items)) {
 				$va_timestamps = $t_change_log->getLastChangeTimestampsForIDs($vs_table, array_keys($va_items));
 				foreach($va_items as $vn_id => $vs_item_xml) {
-				
+					if(!$vs_item_xml) { continue; }
 					if ($vb_show_deleted && $va_deleted_items[$vn_id]) {
 						$headerData = array(
 							'identifier' => OaiIdentifier::itemToOaiId($vn_id),
@@ -580,6 +683,9 @@ class OAIPMHService extends BaseService {
 							'identifier' => OaiIdentifier::itemToOaiId($vn_id),
 							'datestamp' => self::unixToUtc($va_timestamps[$vn_id]['timestamp'])
 						);
+						if ($this->opa_provider_info['setFacet']) { 
+							$headerData['setSpec'] = $set;
+						}
 						if ($verb == 'ListIdentifiers') {
 							$this->createElementWithChildren($oaiData, $verbElement, 'header', $headerData);
 						} else {

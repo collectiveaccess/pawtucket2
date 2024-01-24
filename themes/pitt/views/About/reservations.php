@@ -7,7 +7,13 @@
 	<div class="col-sm-10">
 		<H1><?php print _t("Reservations"); ?></H1>
 		
-		<p>The UAG is not responsible for scheduling outside events and room reservations in the Frick Fine Arts Building. Questions should be addressed to the <a href='http://www.registrar.pitt.edu/classroom_scheduling.html' target='_blank'>Office of the University Registrar's Classroom Scheduling</a> at 412-624-7640.</p>				
+		<p>Thank you for your interest in visiting the UAG. We are open during the academic year Tuesdays-Fridays 12-4, Thursdays 12-7, and by appointment.</p>
+		
+		<p>If you are not currently a member of the Pitt community but would like to visit, please email us at <a href="mailto:uag@pitt.edu">uag@pitt.edu</a> with your first and last name, including the date and time you would like to stop by.</p>
+		
+		<p>Please note that per University guidelines, all visitors must wear masks regardless of vaccination status. More information regarding the University’s COVID-19 procedures may be found <a href="https://www.coronavirus.pitt.edu/healthy-community/pitts-health-rules">at this link</a>.</p>
+		
+		<p>We look forward to welcoming you back to the UAG!</p>				
 	</div>
 	<div class="col-sm-1"></div>
 </div>

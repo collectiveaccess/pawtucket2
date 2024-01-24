@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2019 Whirl-i-Gig
+ * Copyright 2007-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -137,13 +137,18 @@ class RequestHTTP extends Request {
 		# figure out script name
 		$va_tmp = (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME']) ? explode('/', $_SERVER['SCRIPT_NAME']) : array();
 		$this->ops_script_name = '';
-		while((!$this->ops_script_name) && (sizeof($va_tmp) > 0)) {
-			$this->ops_script_name = array_pop($va_tmp);
+		
+		// Look for .php element. we can rely upon $_SERVER['SCRIPT_NAME'] to be the actual path to the 
+		// executing script due to a PHP bug present in several 7.x versions (see https://bugs.php.net/bug.php?id=74129) 
+		while((!preg_match('!\.php$!', $this->ops_script_name)) && (sizeof($va_tmp) > 0)) {
+			$this->ops_script_name = trim(array_pop($va_tmp));
 		}
 
 		# create session
 		$vs_app_name = $this->config->get("app_name");
 
+		// @todo: REMOVE IN FUTURE VERSION
+		// JSON API (deprecated)
 		// restore session from token for service requests
 		if(($this->ops_script_name=="service.php") && isset($_GET['authToken']) && (strlen($_GET['authToken']) > 0)) {
 			$vs_token = preg_replace("/[^a-f0-9]/", "", $_GET['authToken']); // sanitize
@@ -175,6 +180,8 @@ class RequestHTTP extends Request {
 		
 		$this->ops_request_method = (isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"] : null);
 		
+		// @todo: REMOVE IN FUTURE VERSION
+		// JSON API (deprecated)
 		/* allow authentication via URL for web service API like so: http://user:pw@example.com/ */
 		if($this->ops_script_name=="service.php") {
 			$this->ops_raw_post_data = file_get_contents("php://input");
@@ -194,10 +201,19 @@ class RequestHTTP extends Request {
 		$this->ops_base_path = join('/', $va_tmp);
 		$this->ops_full_path = $_SERVER['REQUEST_URI'];
 		if (!caUseCleanUrls() && !preg_match("!/index.php!", $this->ops_full_path) && !preg_match("!/service.php!", $this->ops_full_path)) { $this->ops_full_path = rtrim($this->ops_full_path, "/")."/index.php"; }
-		$vs_path_info = str_replace($_SERVER['SCRIPT_NAME'], "", str_replace("?".$_SERVER['QUERY_STRING'], "", $this->ops_full_path));
+		$this->ops_full_path = preg_replace("![/]+!", "/", $this->ops_full_path);
+		$vs_path_info = str_replace($this->ops_script_name, "", str_replace("?".$_SERVER['QUERY_STRING'], "", $this->ops_full_path));
 		
-		$this->ops_path_info = $vs_path_info ? $vs_path_info : (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '');
-		if (__CA_URL_ROOT__) { $this->ops_path_info = preg_replace("!^".__CA_URL_ROOT__."/!", "", $this->ops_path_info); }
+		$this->ops_path_info = preg_replace("![/]+!", "/", $vs_path_info ? "/{$vs_path_info}" : (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : ''));
+		
+		if(!caIsRunFromCLI() && defined('__CA_SITE_HOSTNAME__') && !ExternalCache::contains('system_url', 'system')) {
+			ExternalCache::save('system_url', [
+				'protocol' => __CA_SITE_PROTOCOL__,
+				'hostname' => __CA_SITE_HOSTNAME__,
+				'url_root' => __CA_URL_ROOT__
+			], 'system');
+		}
+		if (__CA_URL_ROOT__) { $this->ops_path_info = preg_replace("!^".__CA_URL_ROOT__."!", "", $this->ops_path_info); }
 	}
 	# -------------------------------------------------------
 	/** 
@@ -239,8 +255,8 @@ class RequestHTTP extends Request {
 		return $va_locale_ids;
 	}
 	# -------------------------------------------------------
-	function isAjax() {
-		return ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest") || (isset($_REQUEST['_isFlex']) && $_REQUEST['_isFlex']));
+	public static function isAjax() {
+		return ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest"));
 	}
 	# -------------------------------------------------------
 	function isDownload($pb_set_download=null) {
@@ -288,6 +304,17 @@ class RequestHTTP extends Request {
 	# -------------------------------------------------------
 	public function getUser() {
 		return $this->user;
+	}
+	# -------------------------------------------------------
+	/**
+	 * Set current user
+	 *
+	 * @param ca_users $user
+	 *
+	 * @return void
+	 */
+	public function setUser(ca_users $user) : void {
+		$this->user = $user;
 	}
 	# -------------------------------------------------------
 	public function getThemeUrlPath($pb_use_default=false) {
@@ -345,15 +372,11 @@ class RequestHTTP extends Request {
 	 */
 	public function getViewsDirectoryPath($pb_use_default=false) {
 		if ($this->config->get('always_use_default_theme')) { $pb_use_default = true; }
-		switch($this->getScriptName()){
-			case "service.php":
-				return $this->getServiceViewPath();
-				break;
-			case "index.php":
-			default:
-				return $this->getThemeDirectoryPath($pb_use_default).'/views';
-				break;
-		}
+		
+		if(defined('__CA_IS_SERVICE_REQUEST__') && __CA_IS_SERVICE_REQUEST__) {
+			return $this->getServiceViewPath();
+		} 
+		return $this->getThemeDirectoryPath($pb_use_default).'/views';
 	}
 	# -------------------------------------------------------
 	/**
@@ -521,33 +544,57 @@ class RequestHTTP extends Request {
 	 * @return HTMLPurifier Returns instance
 	 */
 	static public function getPurifier() {
-		if (!RequestHTTP::$html_purifier) { RequestHTTP::$html_purifier = caGetHTMLPurifier(); }
+		if (!RequestHTTP::$html_purifier) { 
+			RequestHTTP::$html_purifier = caGetHTMLPurifier(); 
+		}
 		return RequestHTTP::$html_purifier;
 	}
 	# -------------------------------------------------------
-	public function getParameter($ps_name, $pn_type, $ps_http_method=null, $pa_options=array()) {
-		if (in_array($ps_http_method, array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'))) {
-			$vm_val = $this->opa_params[$ps_http_method][$ps_name];
-		} else {
-			foreach(array('GET', 'POST', 'PATH', 'COOKIE', 'REQUEST') as $vs_http_method) {
-				$vm_val = (isset($this->opa_params[$vs_http_method]) && isset($this->opa_params[$vs_http_method][$ps_name])) ? $this->opa_params[$vs_http_method][$ps_name] : null;
-				if (isset($vm_val)) {
-					break;
+	/**
+	 *
+	 */
+	public function parameterExists($pa_name, $ps_http_method=null, $pa_options=array()) {
+		if(!is_array($pa_name)) { $pa_name = [$pa_name]; }
+		
+		$vm_val = null;
+		foreach($pa_name as $ps_name) {
+			if (in_array($ps_http_method, array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'))) {
+				$vm_val = $this->opa_params[$ps_http_method][$ps_name];
+			} else {
+				foreach(array('GET', 'POST', 'PATH', 'COOKIE', 'REQUEST') as $http_method) {
+					$vm_val = (array_key_exists($http_method, $this->opa_params) && array_key_exists($ps_name, $this->opa_params[$http_method])) ? $this->opa_params[$http_method][$ps_name] : null;
+					if (isset($vm_val)) {
+						break;
+					}
 				}
 			}
+			
+			if (is_array($vm_val) || (strlen($vm_val) > 0)) { break; } 
 		}
+		
+		return $vm_val;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function getParameter($pa_name, $pn_type, $ps_http_method=null, $pa_options=array()) {
+		$vm_val = $this->parameterExists($pa_name, $ps_http_method, $pa_options);
 		if (!isset($vm_val)) { return ""; }
 		
-		$vm_val = str_replace("\0", '', $vm_val);
+		if(!is_array($vm_val)) { $vm_val = str_replace("\0", '', $vm_val); }
+		
+		$purified = false;
 		if((caGetOption('purify', $pa_options, true) && $this->config->get('purify_all_text_input')) || caGetOption('forcePurify', $pa_options, false)) {
 		    if(is_array($vm_val)) {
 		        $vm_val = array_map(function($v) { return is_array($v) ? $v : str_replace("&amp;", "&", RequestHTTP::getPurifier()->purify(rawurldecode($v))); }, $vm_val);
 		    } else {
 		        $vm_val = str_replace("&amp;", "&", RequestHTTP::getPurifier()->purify(rawurldecode($vm_val)));
 		    }
+		    $purified = true;
 		}
 		
-		if ($vm_val == "") { return ""; }
+		if ($vm_val == "") { return ($pn_type == pArray) ? [] : ''; }
 		
 		switch($pn_type) {
 			# -----------------------------------------
@@ -567,10 +614,9 @@ class RequestHTTP extends Request {
 			# -----------------------------------------
 			case pString:
 				if (is_string($vm_val)) {
-					if(caGetOption('retainBackslashes', $pa_options, true)) {
-						$vm_val = str_replace("\\", "\\\\", $vm_val);	// retain backslashes for some strange people desire them as valid input
+					if(!$purified && caGetOption('urldecode', $pa_options, true)) {
+						$vm_val = rawurldecode($vm_val);
 					}
-					$vm_val = rawurldecode($vm_val);
 					return $vm_val;
 				}
 				break;
@@ -578,6 +624,8 @@ class RequestHTTP extends Request {
 			case pArray:
 				if (is_array($vm_val)) {
 					return $vm_val;
+				} elseif(is_string($vm_val) || is_numeric($vm_val)) {
+					return [$vm_val];
 				}
 				break;
 			# -----------------------------------------
@@ -594,9 +642,9 @@ class RequestHTTP extends Request {
 		if($pa_http_methods && !is_array($pa_http_methods)) { $pa_http_methods = array($pa_http_methods); }
 		$va_params = array();
 		if (!is_array($pa_http_methods)) { $pa_http_methods = array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'); }
-		foreach($pa_http_methods as $vs_http_method) {
-			if (isset($this->opa_params[$vs_http_method]) && is_array($this->opa_params[$vs_http_method])) {
-				$va_params = array_merge($va_params, $this->opa_params[$vs_http_method]);
+		foreach($pa_http_methods as $http_method) {
+			if (isset($this->opa_params[$http_method]) && is_array($this->opa_params[$http_method])) {
+				$va_params = array_merge($va_params, $this->opa_params[$http_method]);
 			}
 		}
 		return $va_params;
@@ -623,46 +671,62 @@ class RequestHTTP extends Request {
 		}
 
 		if(defined('__CA_SITE_HOSTNAME__') && strlen(__CA_SITE_HOSTNAME__) > 0) {
+			$host_without_port = __CA_SITE_HOSTNAME__;
+			$host_port = null;
+		    if(preg_match("/:([\d]+)$/", $host_without_port, $m)) {
+		    	$host_without_port = preg_replace("/:[\d]+$/", '', $host_without_port);
+		    	$host_port = (int)$m[1];
+		    } 
 		    
 			if (
-			    !($vn_port = (int)$this->getAppConfig()->get('out_of_process_search_indexing_port'))
+			    !($port = (int)$this->getAppConfig()->get('out_of_process_search_indexing_port'))
 			    && 
-			    !($vn_port = (int)getenv('CA_OUT_OF_PROCESS_SEARCH_INDEXING_PORT'))
+			    !($port = (int)getenv('CA_OUT_OF_PROCESS_SEARCH_INDEXING_PORT'))
 			) {
                 if(__CA_SITE_PROTOCOL__ == 'https') { 
-                    $vn_port = 443;	
+                    $port = $host_port ?? 443;	
                 } elseif(isset($_SERVER['SERVER_PORT']) &&  $_SERVER['SERVER_PORT']) {
-                    $vn_port = $_SERVER['SERVER_PORT'];
+                    $port = $_SERVER['SERVER_PORT'];
                 } else {
-                    $vn_port = 80;
+                    $port = $host_port ?? 80;
                 }
             }
 			
 			if (
-			    !($vs_proto = trim($this->getAppConfig()->get('out_of_process_search_indexing_protocol')))
+			    !($proto = trim($this->getAppConfig()->get('out_of_process_search_indexing_protocol')))
 			    && 
-			    !($vs_proto = getenv('CA_OUT_OF_PROCESS_SEARCH_INDEXING_PROTOCOL'))
+			    !($proto = getenv('CA_OUT_OF_PROCESS_SEARCH_INDEXING_PROTOCOL'))
 			) {
-			    $vs_proto = (($vn_port == 443) || (__CA_SITE_PROTOCOL__ == 'https')) ? 'tls' : 'tcp';
+			    $proto = (($port == 443) || (__CA_SITE_PROTOCOL__ == 'https')) ? 'ssl' : 'tcp';
 			}
 			
 			if (
-			    !($vs_indexing_hostname = trim($this->getAppConfig()->get('out_of_process_search_indexing_hostname')))
+			    !($indexing_hostname = trim($this->getAppConfig()->get('out_of_process_search_indexing_hostname')))
 			    && 
-			    !($vs_indexing_hostname = getenv('CA_OUT_OF_PROCESS_SEARCH_INDEXING_HOSTNAME'))
+			    !($indexing_hostname = getenv('CA_OUT_OF_PROCESS_SEARCH_INDEXING_HOSTNAME'))
 			) {
-			    $vs_indexing_hostname = __CA_SITE_HOSTNAME__;
+			    $indexing_hostname = $host_without_port;
 			}
+			
 			// trigger async search indexing
 			if((__CA_APP_TYPE__ === 'PROVIDENCE') && !$this->getAppConfig()->get('disable_out_of_process_search_indexing')) {
                 require_once(__CA_MODELS_DIR__."/ca_search_indexing_queue.php");
                 if (!ca_search_indexing_queue::lockExists()) {
-                    $r_socket = fsockopen($vs_proto . '://'. $vs_indexing_hostname, $vn_port, $errno, $err, 3);
+                	$dont_verify_ssl_cert = (bool)$this->getAppConfig()->get('out_of_process_search_indexing_dont_verify_ssl_cert');
+                    $context = stream_context_create([
+						'ssl' => [
+							'verify_peer' => !$dont_verify_ssl_cert,
+							'verify_peer_name' => !$dont_verify_ssl_cert
+						]
+					]);
+
+					$r_socket = stream_socket_client($proto . '://'. $indexing_hostname.':'.$port, $errno, $errstr, ini_get("default_socket_timeout"), STREAM_CLIENT_CONNECT, $context);
+
                     if ($r_socket) {
-                        $vs_http  = "GET ".$this->getBaseUrlPath()."/index.php?processIndexingQueue=1 HTTP/1.1\r\n";
-                        $vs_http .= "Host: ".__CA_SITE_HOSTNAME__."\r\n";
-                        $vs_http .= "Connection: Close\r\n\r\n";
-                        fwrite($r_socket, $vs_http);
+                        $http  = "GET ".$this->getBaseUrlPath()."/index.php?processIndexingQueue=1 HTTP/1.1\r\n";
+                        $http .= "Host: ".__CA_SITE_HOSTNAME__."\r\n";
+                        $http .= "Connection: Close\r\n\r\n";
+                        fwrite($r_socket, $http);
                         fclose($r_socket);
                     }
                 }
@@ -818,7 +882,11 @@ class RequestHTTP extends Request {
                 } else {
                 	// Redirect to external auth?
                 	try {
-                		return $this->user->authenticate($vs_tmp1, $vs_tmp2, $pa_options["options"]);
+                		if($rc = $this->user->authenticate($vs_tmp1, $vs_tmp2, $pa_options["options"])) {
+                			$vn_auth_type = ($rc == 2) ? 2 : 1;
+                			$vn_user_id = $this->user->getPrimaryKey();
+                			$vb_login_successful = true;
+                		}
                 	} catch (Exception $e) {
                 		$o_event_log->log(array("CODE" => "LOGF", "SOURCE" => "Auth", "MESSAGE" => "Failed login with exception '".$e->getMessage()." (".$_SERVER['REQUEST_URI']."); IP=".$_SERVER["REMOTE_ADDR"]."; user agent='".$_SERVER["HTTP_USER_AGENT"]."'"));
                 		$this->opo_response->addHeader("Location", $vs_auth_login_url);
@@ -925,6 +993,7 @@ class RequestHTTP extends Request {
 	 * @access public
 	 */
 	public function isServiceAuthRequest() {
+		if(defined('__CA_IS_SERVICE_REQUEST__') && __CA_IS_SERVICE_REQUEST__) { return true; }
 		if($this->getParameter("method",pString)=="auth") {
 			return true;
 		}
@@ -971,7 +1040,7 @@ class RequestHTTP extends Request {
 	static public function ip() {
 		if (isset($_SERVER['HTTP_X_REAL_IP']) && $_SERVER['HTTP_X_REAL_IP']) { return $_SERVER['HTTP_X_REAL_IP']; }
 		if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']) { return $_SERVER['HTTP_X_FORWARDED_FOR']; }
-		return $_SERVER['REMOTE_ADDR'];
+		return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
 	}
 	# ----------------------------------------
 }

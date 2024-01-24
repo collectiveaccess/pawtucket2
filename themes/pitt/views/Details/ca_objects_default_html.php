@@ -17,8 +17,13 @@
 				{{{representationViewer}}}
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+<?php
+				if ($va_credit_line = $t_object->get('ca_objects.credit_line')) {
+					print "<div class='creditLine'>".$va_credit_line."</div>";
+				}	
+?>
 				<div id="detailTools">
-					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments</a></div><!-- end detailTool -->
 					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 				</div><!-- end detailTools -->
@@ -26,9 +31,24 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H6>{{{<ifdef code="ca_objects.idno">^ca_objects.idno</ifdef>}}}</H6>
-				{{{<ifcount code="ca_entities.preferred_labels" relativeTo="ca_entities" restrictToRelationshipTypes="creator" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels</l></unit></ifcount>}}}				
+				{{{					
+					<ifcount code="ca_entities.preferred_labels" relativeTo="ca_entities" restrictToRelationshipTypes="creator" min="1">
+				
+					<unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter="<br />">			
+				
+					<l>^ca_entities.preferred_labels</l></unit></ifcount>
+				}}}		
+
+				{{{					
+					<ifcount code="ca_entities.preferred_labels" relativeTo="ca_entities" restrictToRelationshipTypes="after" min="1">
+				
+					<unit relativeTo="ca_entities" restrictToRelationshipTypes="after" delimiter="<br />">			
+				
+					<br /><l>after ^ca_entities.preferred_labels</l></unit></ifcount>
+				}}}					
+				
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				{{{<ifcount code="ca_objects.date.date_value" min="1"><unit delimiter="<br/>">^ca_objects.date.date_value ^ca_objects.date.date_types</unit></ifcount>}}}
+				{{{<ifcount code="ca_objects.date.date_value" min="1"><unit delimiter="<br/>">^ca_objects.date.date_value (^ca_objects.date.date_types)</unit></ifcount>}}}
 				
 				<HR>
 				{{{<ifdef code="ca_objects.medium"><h6>Medium</h6>^ca_objects.medium</ifdef>}}}
@@ -45,7 +65,7 @@
 					<ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height H</ifdef>
 					<ifdef code="ca_objects.dimensions.dimensions_height,ca_objects.dimensions.dimensions_depth"> x </ifdef>
 					<ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth D</ifdef>
-					<ifdef code="ca_objects.dimensions.measurement_type">(^ca_objects.dimensions.measurement_type%useSingular=1)</ifdef>	 				
+					<ifdef code="ca_objects.dimensions.measurement_type">(^ca_objects.dimensions.measurement_type%useSingular=1</ifdef><ifdef code="ca_objects.dimensions.measurement_type">)</ifdef> 	 				
 					<ifdef code="ca_objects.dimensions.measurement_notes"><br/>Notes: ^ca_objects.dimensions.measurement_notes</ifdef>
 				</unit>
 				</ifcount>}}}

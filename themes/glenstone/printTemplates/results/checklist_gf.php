@@ -72,7 +72,7 @@
 			$vn_object_id = $vo_result->get('ca_objects.object_id');		
 ?>
 			<div class="row">
-			<table style="height:120px;">
+			<table>
 			<tr>
 				<td width="170px" >
 <?php 
@@ -91,7 +91,7 @@
 <?php
 				if(in_array($vo_result->get('ca_objects.type_id'), $va_library_type_ids)){
 					# --- library
-					# --- Chicago style -> Pollan, Michael. The Omnivore�s Dilemma: A Natural History of Four Meals. New York: Penguin, 2006.
+					# --- Chicago style -> Pollan, Michael. The Omnivore's Dilemma: A Natural History of Four Meals. New York: Penguin, 2006.
 					$vs_author = $vo_result->get('ca_entities.preferred_labels', array('delimiter' => ", ", 'restrictToRelationshipTypes' => array('author'), 'template' => '^ca_entities.preferred_labels.forename ^ca_entities.preferred_labels.middlename ^ca_entities.preferred_labels.surname')).". ";
 					$vs_publisher = $vo_result->get("ca_objects.publication_description");
 					print $vs_author."<i>".$vo_result->get("ca_objects.preferred_labels.name").". </i>".$vs_publisher;
@@ -126,16 +126,23 @@
 							print " + ".$vo_result->get('ca_objects.edition.ap_total')." AP";
 						}
 						print "</div>";
-					} elseif ($vo_result->get('ca_objects.edition.ap_number')) {
-						print "<div class='unit'>AP ".(count($vo_result->get('ca_objects.edition.ap_total')) >= 2 ? $vo_result->get('ca_objects.edition.ap_number') : "")." from an edition of ".$vo_result->get('ca_objects.edition.edition_total')." + ".$vo_result->get('ca_objects.edition.ap_total')." AP";
+					} elseif (strlen($c=$vo_result->get('ca_objects.edition.ap_number'))) {
+						$etotal = $vo_result->get('ca_objects.edition.edition_total');
+						print "<div class='unit'>AP ".$vo_result->get('ca_objects.edition.ap_number')." from an edition of ".$etotal.($etotal ? " + " : '').$vo_result->get('ca_objects.edition.ap_total')." AP";
 						print "</div>";					
 					}
-				if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
-					if ($vs_idno = $vo_result->get('ca_objects.idno')) {
-						print "<div class='unit'>".$vs_idno."</div>\n";
-					}																					
-				}					
-				if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
+					
+					if(!($credit_line = trim($vo_result->get('ca_objects.lender.lender_credit_line', array('delimiter' => '; '))))) {
+						$credit_line = "Glenstone Museum, Potomac, Maryland";
+					}
+					print "<div>{$credit_line}</div>"; 	
+					
+					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
+						if ($vs_idno = $vo_result->get('ca_objects.idno')) {
+							print "<div class='unit'>".$vs_idno."</div>\n";
+						}																					
+					}					
+					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 						if ($vo_result->get('is_deaccessioned') && ($vo_result->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
 							print "<div style='font-style:italic; font-size:10px; color:red;'>"._t('Deaccessioned %1', $vo_result->get('deaccession_date'))."</div>\n";
 						}						

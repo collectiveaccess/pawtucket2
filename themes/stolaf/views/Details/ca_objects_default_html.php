@@ -33,7 +33,20 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
-?>
+	
+	
+	require_once(__CA_THEMES_DIR__."/stolaf/lib/elevatorAPI.php");
+	
+	$media_url = null;
+	if(($elevator_url = $t_object->get('ca_objects.url')) && preg_match("!viewAsset/([a-z0-9]{24})[/]?$!", $elevator_url, $m)) {
+		$elevator_id = $m[1];
+		$e = new elevatorAPI("https://elevator.stolaf.edu/archives/api/v1/", __ELEVATOR_KEY__, __ELEVATOR_SECRET__);
+		$children = $e->getAssetChildren($elevator_id);
+		if(is_array($children) && is_array($children['matches'])  && is_array($children['matches'][0])) {
+			$media_url = $children['matches'][0]['primaryHandlerThumbnail2x'];
+		}
+	}
+	?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
@@ -57,6 +70,9 @@
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
+					if($media_url) {
+						print "<p><a href='{$elevator_url}' target='_elevator'><img src='{$media_url}' style='max-width: 435px;'/></a></p>";
+					}
 					print '<div id="detailTools">';
 					if ($vn_comments_enabled) {
 ?>				
@@ -70,11 +86,13 @@
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
+?>
+					<div class='detailTool'><a href='#' onclick='caMediaPanel.showPanel("<?= caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array('object_id' => $vn_id)); ?>"); return false;' title='Add to lightbox'><span class='fa fa-suitcase'></span><?= _t('Add to favorites'); ?></a></div>
+<?php
 					print '</div><!-- end detailTools -->';
 				}				
 
 ?>
-
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6'>
@@ -97,7 +115,7 @@
 						</unit>
 					</div>
 				</ifdef>}}}
-				{{{<ifdef code="ca_objects.url"><div class="unit"><label>Url To External Media</label><a href="^ca_objects.url" target="_blank">^ca_objects.url</a></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.url"><div class="unit"><label>Url To External Media</label><a href="^ca_objects.url" target="_blank" class="url">^ca_objects.url</a></div></ifdef>}}}
 				{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location</label>
 					<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
 				</div></ifcount>}}}

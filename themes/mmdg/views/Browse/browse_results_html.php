@@ -184,6 +184,9 @@ if($enableGearDD){
 ?>		
 		</div>
 <?php
+		if($vs_intro = $this->getVar("browse_intro_".strToLower($this->request->getAction()))){
+			print "<div class='bBrowseIntro'>".$vs_intro."</div>";
+		}
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}
@@ -207,7 +210,7 @@ if($enableGearDD){
 
 # --- check if this result page has been cached
 # --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
-$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);
+$vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id.$vs_letter);
 if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
 	print ExternalCache::fetch($vs_cache_key, 'browse_results');
 }else{

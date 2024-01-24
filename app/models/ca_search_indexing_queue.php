@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2018 Whirl-i-Gig
+ * Copyright 2015-2022 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -36,6 +36,7 @@
 
 require_once(__CA_LIB_DIR__.'/Db.php');
 require_once(__CA_LIB_DIR__.'/Search/SearchIndexer.php');
+require_once(__CA_LIB_DIR__.'/Utils/LockingTrait.php');
 
 
 BaseModel::$s_ca_models_definitions['ca_search_indexing_queue'] = array(
@@ -123,12 +124,14 @@ BaseModel::$s_ca_models_definitions['ca_search_indexing_queue'] = array(
             'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
             'IS_NULL' => true, 
             'DEFAULT' => '',
-            'LABEL' => _t('Stared on'), 'DESCRIPTION' => _t('Started on')
+            'LABEL' => _t('Started on'), 'DESCRIPTION' => _t('Started on')
 		)
 	)
 );
 
 class ca_search_indexing_queue extends BaseModel {
+	use LockingTrait;
+	
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -213,51 +216,19 @@ class ca_search_indexing_queue extends BaseModel {
 	# are listed here is the order in which they will be returned using getFields()
 
 	protected $FIELDS;
-
-	/**
-	 * @var resource|null
-	 */
-	static $s_lock_resource = null;
 	
-	/**
-	 * Path to lock file
-	 */
-	static $s_lock_filepath = __CA_APP_DIR__ . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . __CA_APP_NAME__.'_search_indexing_queue.lock';
-
-    /**
-     * Lock time out. Locks older than this will be removed.
-     */
-    static $s_lock_timeout = 3 * 60 * 60;   // in seconds
-
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	/**
-	 *
-	 */
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
 	# ------------------------------------------------------
 	/**
 	 *
 	 */
 	static public function process() {
 		if(self::lockAcquire()) {
-		    set_time_limit(self::$s_lock_timeout);
+		    set_time_limit(self::lockTimeout());
 			$o_db = new Db();
 			
 			do {
 				$num_entries = 0;
-				if ($o_result = $o_db->query("SELECT * FROM ca_search_indexing_queue WHERE started_on IS NULL ORDER BY entry_id LIMIT 1000")) {
+				if ($o_result = $o_db->query("SELECT * FROM ca_search_indexing_queue WHERE started_on IS NULL ORDER BY entry_id LIMIT 10")) {
 					$num_entries = (int)$o_result->numRows();
 					if($num_entries > 0) {
 						$o_si = new SearchIndexer($o_db);
@@ -287,56 +258,6 @@ class ca_search_indexing_queue extends BaseModel {
 
 			self::lockRelease();
 		}
-	}
-	# ------------------------------------------------------
-	/**
-	 * 
-	 */
-	static public function lockAcquire() {
-		// @todo: is fopen(... , 'x') thread safe? or at least "process safe"?
-		$vb_got_lock = (bool) (self::$s_lock_resource = @fopen(self::$s_lock_filepath, 'x'));
-
-		if($vb_got_lock) {
-			// make absolutely sure the lock is released, even if a PHP error occurrs during script execution
-			register_shutdown_function('ca_search_indexing_queue::lockRelease');
-		}
-
-		// if we couldn't get the lock, check if the lock file is old (i.e. older than 120 minutes)
-		// if that's the case, it's likely something went wrong and the lock hangs.
-		// so we just kill it and try to re-acquire
-		if(!$vb_got_lock && file_exists(self::$s_lock_filepath)) {
-			if((time() - caGetFileMTime(self::$s_lock_filepath)) > self::$s_lock_timeout) {
-				self::lockRelease();
-				return self::lockAcquire();
-			}
-		}
-
-		return $vb_got_lock;
-	}
-	# ------------------------------------------------------
-    /**
-	 *
-	 */
-	static public function lockRelease() {
-		if(is_resource(self::$s_lock_resource)) {
-			@fclose(self::$s_lock_resource);
-		}
-
-		@unlink(self::$s_lock_filepath);
-	}
-	# ------------------------------------------------------
-	/**
-	 *
-	 */
-	static public function lockExists() {
-	    return file_exists(self::$s_lock_filepath);
-	}
-	# ------------------------------------------------------
-	/**
-	 *
-	 */
-	static public function lockCanBeRemoved() {
-	    return is_writable(self::$s_lock_filepath);
 	}
 	# ------------------------------------------------------
 	/**

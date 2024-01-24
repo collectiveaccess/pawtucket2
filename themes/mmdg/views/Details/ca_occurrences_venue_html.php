@@ -97,7 +97,7 @@
 					if ($va_entities = $t_item->get('ca_entities', array('sort' => 'ca_entities.surname', 'returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 						$va_related_list = array();
 						$vb_show_view_all = false;
-						print "<div class='unit'><H3>Presenter/Presenters</H3><div class='unit detailLinksGrid'>";
+						print "<div class='unit'><H3>Presenter".((sizeof($va_entities) > 1) ? "s" : "")."</H3><div class='unit detailLinksGrid'>";
 						$i = 0;
 						$c = 0;
 						if(sizeof($va_entities) > 18){

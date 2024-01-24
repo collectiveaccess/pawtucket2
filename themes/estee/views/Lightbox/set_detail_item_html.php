@@ -42,6 +42,17 @@
     $vn_representation_id = $this->getVar('representation_id');
     $vs_representation = $this->getVar('representation');
     $vs_placeholder = $this->getVar('placeholder');
+    $t_set = $this->getVar("set");
+	$o_lightbox_config 				= $this->getVar("set_config");
+	$vn_download_access				= ($o_lightbox_config->get("lightbox_download_access")) ? $o_lightbox_config->get("lightbox_download_access") : 2;
+	$vb_download = false;
+	if($t_set->get("ca_sets.access") == $vn_download_access){
+		$t_rep = new ca_object_representations($vn_representation_id);
+		$vs_mimetype = $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE');
+		$va_download_display_info = caGetMediaDisplayInfo('download_high_res', $vs_mimetype);
+		$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
+		$vb_download = true;
+	}
 ?>
 <div class='lbItem'>
 	<div class='lbItemContent'>
@@ -72,6 +83,13 @@
 ?>
 			&nbsp;&nbsp;<a href='#' title='Comments' onclick='jQuery(".lbSetItemComment").hide(); jQuery("#comment{{{item_id}}}").load("<?php print caNavUrl($this->request, '', '*', 'AjaxListComments', array()); ?>", {item_id: <?php print (int)$vn_item_id; ?>, type: "ca_set_items", set_id: <?php print (int)$vn_set_id; ?>}, function(){jQuery("#comment{{{item_id}}}").show();}); return false;'><span class='glyphicon glyphicon-comment'></span> <small id="lbSetCommentCount{{{item_id}}}">{{{commentCount}}}</small></a>
 			&nbsp;&nbsp;<?php print caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span>", "", "", "contact", "form", array('object_id' => $vn_object_id, 'contactType' => 'inquiry'), array("title" => _t("Inquire about this item"))); ?>
+<?php
+			if($vb_download){
+?>
+				&nbsp;&nbsp;<?php print caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span>", "", "", "Detail", "DownloadMedia", array('context' => 'products', 'object_id' => $vn_object_id, 'download' => 1, 'version' => $vs_download_version), array("title" => _t("Download"))); ?>
+<?php
+			}
+?>
 			</div>
 	</div><!-- end lbExpandedInfo -->
 </div><!-- end lbItem -->

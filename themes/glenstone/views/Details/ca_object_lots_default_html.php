@@ -50,7 +50,7 @@
 					print "<p>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'))), '', '', 'Detail', 'artworks/'.$va_related_artwork)."</p>";
 					print "<p>".caNavLink($this->request, "<i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date_display'), '', '', 'Detail', 'artworks/'.$va_related_artwork)."</p>";
 					print "<p>".$t_object->get('ca_objects.medium')."</p>";
-					print "<p>".$t_object->get('ca_objects.dimensions.display_dimensions')."</p>";
+					print "<p>".$t_object->get('ca_objects.dimensions.display_dimensions', ['delimiter' => '<br/>'])."</p>";
 					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 						print "<p>".$t_object->get('ca_objects.idno')."</p>";
 					}
@@ -88,17 +88,19 @@
 					print "<div class='unit'><span class='metaTitle'>Payment Terms: </span><span class='meta'>".$va_terms."</span></div>";
 				}
 				if ((trim($t_object->get('ca_objects.payment_details.payment_amount')) != ".00") && $va_payment = $t_object->get('ca_objects.payment_details', array('returnAsArray' => true, 'returnWithStructure' => true, 'convertCodesToDisplayText' => true, 'rawDate' => 1))) {
-					print "<div class='unit'><span class='metaTitle'>Payment Details: </span><span class='meta'>";
+					
+					$payment_details = [];
 					foreach ($va_payment as $va_key => $va_payment_details) {
-						if ($va_payment_details['payment_amount']) {print "<b>Payment Amount:</b> ".$va_payment_details['payment_amount']."<br/>";}
-						if ($va_payment_details['payment_date'] && ($vs_payment_date = caGetLocalizedHistoricDate($va_payment_details['payment_date']['start']))) {print "<b>Payment Date:</b> {$vs_payment_date}<br/>";}
-						if ($va_payment_details['payment_quarter'] != " ") {print "<b>Payment Quarter:</b> ".$va_payment_details['payment_quarter']." ".substr($va_payment_details['payment_date']['start'], 0, 4)."<br/>";}
-						if ($va_payment_details['payment_installment']) {print "<b>Installment:</b> ".$va_payment_details['payment_installment']."<br/>";}
-						if ($va_payment_details['payment_notes']) {print "<b>Payment Notes:</b> ".$va_payment_details['payment_notes']."<br/>";}
-						print "<hr>";
+						if ($va_payment_details['payment_amount']) {$payment_details[] = "<b>Payment Amount:</b> ".$va_payment_details['payment_amount']."<br/><hr/>";}
+						if ($va_payment_details['payment_date'] && ($vs_payment_date = caGetLocalizedHistoricDate($va_payment_details['payment_date']['start']))) {$payment_details[] = "<b>Payment Date:</b> {$vs_payment_date}<br/><hr/>";}
+						if (trim($va_payment_details['payment_quarter']) != "") {$payment_details[] = "<b>Payment Quarter:</b> ".$va_payment_details['payment_quarter']." ".substr($va_payment_details['payment_date']['start'], 0, 4)."<br/>";}
+						if ($va_payment_details['payment_installment']) {$payment_details[] = "<b>Installment:</b> ".$va_payment_details['payment_installment']."<br/><hr/>";}
+						if ($va_payment_details['payment_notes']) {$payment_details[] = "<b>Payment Notes:</b> ".$va_payment_details['payment_notes']."<br/><hr/>";}
 					}
 					
-					print "</span></div>";
+					if(sizeof($payment_details)) {
+						print "<div class='unit'><span class='metaTitle'>Payment Details: </span><span class='meta'>".join("\n", $payment_details)."</span></div>";
+					}
 				}				
 				if ($va_final = $t_item->get('ca_object_lots.final_payment_date')) {
 					print "<div class='unit'><span class='metaTitle'>Final Payment Date: </span><span class='meta'>".$va_final."</span></div>";

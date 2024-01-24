@@ -46,7 +46,18 @@ class CheckOutController extends ActionController {
 	 * Checkout items screen
 	 */
 	public function Index() {
-		$user_id = $this->request->getUserID();
+		if($this->request->user->canDoAction('can_do_library_checkinout_for_anyone')) {
+			$this->render('checkout/find_user_html.php');
+		} else {
+			$this->Items();
+		}
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function Items() {
+		$user_id = $this->request->user->canDoAction('can_do_library_checkinout_for_anyone') ? $this->request->getParameter('user_id', pInteger) : $this->request->getUserID();
 		
 		$this->view->setVar('user_id', $user_id);
 		$this->view->setVar('checkout_types', ca_object_checkouts::getObjectCheckoutTypes());
@@ -61,104 +72,120 @@ class CheckOutController extends ActionController {
 	public function GetObjectInfo() {
 		$user_id = $this->request->getParameter('user_id', pInteger);
 		$object_id = $this->request->getParameter('object_id', pInteger);
+		$object_ids = $this->request->getParameter('object_ids', pArray);
 		
-		$t_object = new ca_objects($object_id);
-		
-		$current_user_id = $current_user = $current_user_checkout_date = $reservation_list = null;		// user_id of current holder of item
-		
-		$vb_is_reserved_by_current_user = false;
-		switch($status = $t_object->getCheckoutStatus()) {
-			case __CA_OBJECTS_CHECKOUT_STATUS_AVAILABLE__:
-				$status_display = _t('Available');
-				break;
-			case __CA_OBJECTS_CHECKOUT_STATUS_OUT__:
-				$t_checkout = ca_object_checkouts::getCurrentCheckoutInstance($object_id);
-				$current_user_id = $t_checkout->get('user_id');
-				
-				$status_display = ($current_user_id == $user_id) ? _t('Out with this user') : _t('Out');
-				$current_user_checkout_date = $t_checkout->get('checkout_date', array('timeOmit' => true));
-				
-				break;
-			case __CA_OBJECTS_CHECKOUT_STATUS_OUT_WITH_RESERVATIONS__:
-				$t_checkout = ca_object_checkouts::getCurrentCheckoutInstance($object_id);
-				$current_user_id = $t_checkout->get('user_id');
-				$reservations = $t_object->getCheckoutReservations();
-				$num_reservations = is_array($reservations) ? sizeof($reservations) : 0;
-				
-				$current_user_checkout_date = $t_checkout->get('checkout_date', array('timeOmit' => true));
-				
-				$status_display = ($num_reservations == 1) ? _t('Out with %1 reservation', $num_reservations) : _t('Out with %1 reservations', $num_reservations);
-				break;
-			case __CA_OBJECTS_CHECKOUT_STATUS_RESERVED__:
-				// get reservations list
-				$reservations = $t_object->getCheckoutReservations();
-				$num_reservations = is_array($reservations) ? sizeof($reservations) : 0;
-				$t_checkout = ca_object_checkouts::getCurrentCheckoutInstance($object_id);
-				$current_user_checkout_date = $t_checkout->get('created_on', array('timeOmit' => true));
-				
-				$status_display = ($num_reservations == 1) ? _t('Reserved') : _t('Available with %1 reservations', $num_reservations);
-				
-				break;
-		}
-		
-		$vb_is_held_by_current_user = ($user_id == $current_user_id);
-		
-		if (is_array($reservations)) {
-			$tmp = array();
-			foreach($reservations as $reservation) {
-				$vb_is_reserved_by_current_user = ($reservation['user_id'] == $user_id);
-				$t_user = new ca_users($reservation['user_id']);
-				$tmp[] = $t_user->get('fname').' '.$t_user->get('lname').(($email = $t_user->get('email')) ? " ({$email})" : "");
+		if(!is_array($object_ids) || !sizeof($object_ids)) {
+			if($object_id > 0) { 
+				$object_ids = [$object_id]; 
+			} else {
+				throw new ApplicationException(_t('No id specified'));
 			}
-			$reservation_list = join(", ", $tmp);
 		}
 		
-		if ($current_user_id) {
-			$t_user = new ca_users($current_user_id);
-			$current_user = $t_user->get('fname').' '.$t_user->get('lname');
-		}
+		$infos = [];
+		foreach($object_ids as $object_id) {
+			$t_object = new ca_objects($object_id);
+		
+			$current_user_id = $current_user = $current_user_checkout_date = $reservation_list = null;		// user_id of current holder of item
+		
+			$vb_is_reserved_by_current_user = false;
+			switch($status = $t_object->getCheckoutStatus()) {
+				case __CA_OBJECTS_CHECKOUT_STATUS_AVAILABLE__:
+					$status_display = _t('Available');
+					break;
+				case __CA_OBJECTS_CHECKOUT_STATUS_RETURNED_PENDING_CONFIRMATION__:
+					$status_display = _t('Unavailable pending confirmation of return');
+					break;
+					break;
+				case __CA_OBJECTS_CHECKOUT_STATUS_OUT__:
+					$t_checkout = ca_object_checkouts::getCurrentCheckoutInstance($object_id);
+					$current_user_id = $t_checkout->get('user_id');
+				
+					$status_display = ($current_user_id == $user_id) ? _t('Out with this user') : _t('Out');
+					$current_user_checkout_date = $t_checkout->get('checkout_date', array('timeOmit' => true));
+				
+					break;
+				case __CA_OBJECTS_CHECKOUT_STATUS_OUT_WITH_RESERVATIONS__:
+					$t_checkout = ca_object_checkouts::getCurrentCheckoutInstance($object_id);
+					$current_user_id = $t_checkout->get('user_id');
+					$reservations = $t_object->getCheckoutReservations();
+					$num_reservations = is_array($reservations) ? sizeof($reservations) : 0;
+				
+					$current_user_checkout_date = $t_checkout->get('checkout_date', array('timeOmit' => true));
+				
+					$status_display = ($num_reservations == 1) ? _t('Out with %1 reservation', $num_reservations) : _t('Out with %1 reservations', $num_reservations);
+					break;
+				case __CA_OBJECTS_CHECKOUT_STATUS_RESERVED__:
+					// get reservations list
+					$reservations = $t_object->getCheckoutReservations();
+					$num_reservations = is_array($reservations) ? sizeof($reservations) : 0;
+					$t_checkout = ca_object_checkouts::getCurrentCheckoutInstance($object_id);
+					$current_user_checkout_date = $t_checkout->get('created_on', array('timeOmit' => true));
+				
+					$status_display = ($num_reservations == 1) ? _t('Reserved') : _t('Available with %1 reservations', $num_reservations);
+				
+					break;
+			}
+		
+			$vb_is_held_by_current_user = ($user_id == $current_user_id);
+		
+			if (is_array($reservations)) {
+				$tmp = array();
+				foreach($reservations as $reservation) {
+					$vb_is_reserved_by_current_user = ($reservation['user_id'] == $user_id);
+					$t_user = new ca_users($reservation['user_id']);
+					$tmp[] = $t_user->get('fname').' '.$t_user->get('lname').(($email = $t_user->get('email')) ? " ({$email})" : "");
+				}
+				$reservation_list = join(", ", $tmp);
+			}
+		
+			if ($current_user_id) {
+				$t_user = new ca_users($current_user_id);
+				$current_user = $t_user->get('fname').' '.$t_user->get('lname');
+			}
 	
 		
-		$checkout_config = ca_object_checkouts::getObjectCheckoutConfigForType($t_object->getTypeCode());
+			$checkout_config = ca_object_checkouts::getObjectCheckoutConfigForType($t_object->getTypeCode());
 		
-		$holder_display_label = '';
-		if ($vb_is_held_by_current_user) {
-			$status_display = _t('The user currently has this item');
-		} elseif($vb_is_reserved_by_current_user) {
-			$status_display = _t('The user has reserved this item');
-		} else {
-			$reserve_display_label = ($status == 3) ? _t('Currently reserved by %1', $reservation_list) : _t('Will reserve');
+			$holder_display_label = '';
+			if ($vb_is_held_by_current_user) {
+				$status_display = _t('The user currently has this item');
+			} elseif($vb_is_reserved_by_current_user) {
+				$status_display = _t('The user has reserved this item');
+			} else {
+				$reserve_display_label = ($status == 3) ? _t('Currently reserved by %1', $reservation_list) : _t('Will reserve');
 			
-			if (in_array($status, array(1, 2))) {
-				$holder_display_label = _t('held by %1 since %2', $current_user, $current_user_checkout_date);
+				if (in_array($status, array(1, 2))) {
+					$holder_display_label = _t('held by %1 since %2', $current_user, $current_user_checkout_date);
+				}
 			}
+			$info = array(
+				'object_id' => $t_object->getPrimaryKey(),
+				'idno' => $t_object->get('idno'),
+				'name' => $t_object->get('ca_objects.preferred_labels.name'),
+				'media' => $t_object->getWithTemplate('^ca_object_representations.media.icon%filterNonPrimaryRepresentations=1'),
+				'status' => $status,
+				'status_display' => $status_display,
+				'numReservations' => is_array($reservations) ? sizeof($reservations) : 0,
+				'reservations' => $reservations,
+				'config' => $checkout_config,
+				'current_user_id' => $current_user_id,
+				'current_user' => $current_user,
+				'current_user_checkout_date' => $current_user_checkout_date,
+				'isOutWithCurrentUser' => ($user_id == $current_user_id),
+				'isReservedByCurrentUser' => $vb_is_reserved_by_current_user,			
+				'reserve_display_label' => $reserve_display_label,
+				'due_on_display_label' => _t('Due on'),
+				'notes_display_label' => _t('Notes'),
+				'holder_display_label' => $holder_display_label
+			);
+			$info['title'] = $info['name']." (".$info['idno'].")";
+		
+			$info['storage_location'] = $t_object->getWithTemplate($checkout_config['show_storage_location_template']);
+		
+			$infos[] = $info;
 		}
-		$info = array(
-			'object_id' => $t_object->getPrimaryKey(),
-			'idno' => $t_object->get('idno'),
-			'name' => $t_object->get('ca_objects.preferred_labels.name'),
-			'media' => $t_object->getWithTemplate('^ca_object_representations.media.icon%filterNonPrimaryRepresentations=1'),
-			'status' => $status,
-			'status_display' => $status_display,
-			'numReservations' => is_array($reservations) ? sizeof($reservations) : 0,
-			'reservations' => $reservations,
-			'config' => $checkout_config,
-			'current_user_id' => $current_user_id,
-			'current_user' => $current_user,
-			'current_user_checkout_date' => $current_user_checkout_date,
-			'isOutWithCurrentUser' => ($user_id == $current_user_id),
-			'isReservedByCurrentUser' => $vb_is_reserved_by_current_user,
-			
-			'reserve_display_label' => $reserve_display_label,
-			'due_on_display_label' => _t('Due on'),
-			'notes_display_label' => _t('Notes'),
-			'holder_display_label' => $holder_display_label
-		);
-		$info['title'] = $info['name']." (".$info['idno'].")";
-		
-		$info['storage_location'] = $t_object->getWithTemplate($checkout_config['show_storage_location_template']);
-		
-		$this->view->setVar('data', $info);
+		$this->view->setVar('data', $infos);
 		$this->render('checkout/ajax_data_json.php');
 	}
 	# -------------------------------------------------------
@@ -222,7 +249,11 @@ class CheckOutController extends ActionController {
 						$vb_res = $t_checkout->checkout($item['object_id'], $user_id, $item['note'], $item['due_date'], array('request' => $this->request));
 			
 						if ($vb_res) {
-							$ret['checkouts'][$item['object_id']] = _t('Checked out <em>%1</em>; due date is %2', $name, $item['due_date']);
+							if($item['due_date'] ?? null) {
+								$ret['checkouts'][$item['object_id']] = _t('Checked out <em>%1</em>; due date is %2', $name, $item['due_date']);
+							} else {
+								$ret['checkouts'][$item['object_id']] = _t('Checked out <em>%1</em>', $name);
+							}
 							$item['_display'] = $t_checkout->getWithTemplate($checkout_template);
 							$checked_out_items[] = $item;
 						} else {
@@ -236,7 +267,7 @@ class CheckOutController extends ActionController {
 			if($library_config->get('send_item_checkout_receipts') && ((sizeof($checked_out_items) > 0) || (sizeof($reserved_items) > 0)) && ($user_email = $this->request->user->get('ca_users.email'))) {
 				if (!caSendMessageUsingView(null, $user_email, $sender_email, "[{$app_name}] {$subject}", "library_checkout_receipt.tpl", ['subject' => $subject, 'from_user_id' => $user_id, 'sender_name' => $sender_name, 'sender_email' => $sender_email, 'sent_on' => time(), 'checkout_date' => caGetLocalizedDate(), 'checkouts' => $checked_out_items, 'reservations' => $reserved_items], null, [], ['source' => 'Library checkout receipt'])) {
 					global $g_last_email_error;
-					$va_ret['errors'][] = _t('Could send receipt: %1', $g_last_email_error);
+					$va_ret['errors'][] = _t('Could not send receipt: %1', $g_last_email_error);
 				}
 			}
 		}
@@ -246,7 +277,7 @@ class CheckOutController extends ActionController {
 	}
 	# -------------------------------------------------------
 	/**
-	 * Return on current user's borrowings
+	 * Show list of current user's borrowings
 	 */
 	public function MyLoans() {
 		$checkouts = ca_object_checkouts::getOutstandingCheckoutsForUser($this->request->getUserID(), "<unit relativeTo='ca_objects'><l>^ca_objects.preferred_labels.name</l> (^ca_objects.idno)</unit>");
@@ -258,7 +289,7 @@ class CheckOutController extends ActionController {
 	}
 	# -------------------------------------------------------
 	/**
-	 * Return on current user's borrowings
+	 * Return current user's borrowings
 	 */
 	public function Return() {
 		$library_config = Configuration::load(__CA_CONF_DIR__."/library_services.conf");
@@ -289,7 +320,7 @@ class CheckOutController extends ActionController {
 							
 							if (!caSendMessageUsingView(null, $user_email, $sender_email, "[{$app_name}] {$subject}", "library_checkin_receipt.tpl", ['subject' => $subject, 'from_user_id' => $user_id, 'sender_name' => $sender_name, 'sender_email' => $sender_email, 'sent_on' => time(), 'checkin_date' => caGetLocalizedDate(), 'checkins' => [['_display' => $t_checkout->getWithTemplate($display_template)]]], null, [], ['source' => 'Library checkin receipt'])) {
 								global $g_last_email_error;
-								$ret['errors'][] = _t('Could send receipt: %1', $g_last_email_error);
+								$ret['errors'][] = _t('Could not send receipt: %1', $g_last_email_error);
 							}
 						}
 					} else {
@@ -306,6 +337,25 @@ class CheckOutController extends ActionController {
 			}
 		}
 		$this->MyLoans();
+	}
+	
+	# -------------------------------------------------------
+	/**
+	 * Check out entire set
+	 */
+	public function Set() {
+		$set_id = $this->request->getParameter('id', pInteger);
+		
+		$t_set = new ca_sets($set_id);
+		if(!$t_set->isLoaded()) {
+			throw new ApplicationException(_t('Invalid set id'));
+		}
+		if(!$t_set->isReadable($this->request)) {
+			throw new ApplicationException(_t('Access denied'));
+		}
+		$this->view->setVar('initialValueList', $t_set->getItems(['idsOnly' => true]));
+		
+		return $this->Index();
 	}
 	# -------------------------------------------------------
 }

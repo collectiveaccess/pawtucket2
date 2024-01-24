@@ -8,7 +8,7 @@
 ?>
 
 	<H1><?php print $this->getVar("section_name"); ?></H1>
-
+		<div class="galleryIntro">{{{exhibits_intro}}}</div>
 				<div class="row galleryGrid">
 <?php
 					$i = 0;

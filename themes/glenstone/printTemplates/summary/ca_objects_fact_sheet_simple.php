@@ -83,7 +83,8 @@
 		}
 		print "</div>";
 	} elseif ($t_item->get('ca_objects.edition.ap_number')) {
-		print "<div class='unit'>AP ".(count($t_item->get('ca_objects.edition.ap_total')) >= 2 ? $t_item->get('ca_objects.edition.ap_number') : "")." from an edition of ".$t_item->get('ca_objects.edition.edition_total')." + ".$t_item->get('ca_objects.edition.ap_total')." AP";
+		$ap_total = $t_item->get('ca_objects.edition.ap_total');
+		print "<div class='unit'>AP ".((is_array($ap_total) && (sizeof($ap_total) >= 2)) ? $t_item->get('ca_objects.edition.ap_number') : "")." from an edition of ".$t_item->get('ca_objects.edition.edition_total')." + ".$t_item->get('ca_objects.edition.ap_total')." AP";
 		print "</div>";					
 	}
 	if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
@@ -105,9 +106,9 @@
 		foreach ($va_exhibition_history as $ex_key => $va_exhibition_t) {
 			foreach ($va_exhibition_t as $ex_key => $va_exhibition) {
 				$vs_tag = ($vn_i) ? "p" : "div";
-				if ($va_exhibition['related_loan']) {
+				if (trim($va_exhibition['related_loan'])) {
 					print "<{$vs_tag} class='exh'>".caNavLink($this->request, $va_exhibition['exhibition_name'], '', '', 'Detail', 'loans/'.$va_exhibition['related_loan'])."</{$vs_tag}>";
-				} else {
+				} else if(trim($va_exhibition['exhibition_name'])) {
 					print "<{$vs_tag} class='exh'>".$va_exhibition['exhibition_name']."</{$vs_tag}>";
 				}
 				$vn_i++;
@@ -115,10 +116,20 @@
 		}
 		print "</div>";
 	}
-	if ($va_literature = $t_item->get('ca_objects.literature')) {
-			print "<br/>";
-			print "<div class='fact'><span style='font-weight: bold;'>Literature</span> <br/>".$va_literature."</div>";
-	}			
+	if ($va_literature = array_filter($t_item->get('ca_objects.literature', ['returnAsArray' => true]), function($v) { return (bool)strlen(trim($v)); })) {
+		print "<br/>";
+		print "<div class='fact'><span style='font-weight: bold;'>Literature</span> <br/>";
+		
+		$vn_i = 0;
+		foreach($va_literature as $l) {
+			if(!trim($l)) { continue; }
+			$vs_tag = ($vn_i) ? "p" : "div";
+			print  "<{$vs_tag} class='exh'>{$l}</{$vs_tag}>\n";
+			
+			$vn_i++;
+		}
+		print "</div>";
+	}		
 ?>	
 	</div>
 <?php						

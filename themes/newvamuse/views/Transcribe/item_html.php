@@ -30,29 +30,29 @@
  * ----------------------------------------------------------------------
  */
  
-	$t_item = $this->getVar('item');
-	$t_rep = $this->getVar('representation');
-	$representation_id = $t_rep->getPrimaryKey();
-	
-	$transcription = $this->getVar('transcription'); 
-	
-	$previous_id = $this->getVar('previousID');
-	$next_id = $this->getVar('nextID');
-	
-	$access_values = caGetUserAccessValues($this->request);
-	
-	$set = $this->getVar('set');
+$t_item = $this->getVar('item');
+$t_rep = $this->getVar('representation');
+$representation_id = $t_rep->getPrimaryKey();
+
+$transcription = $this->getVar('transcription'); 
+
+$previous_id = $this->getVar('previousID');
+$next_id = $this->getVar('nextID');
+
+$access_values = caGetUserAccessValues($this->request);
+
+$set = $this->getVar('set');
 ?>
 <div class="transcription container textContent">
 	<div class="row">
 		<div class="col-sm-1">
 			<div class="setsBack">
-				<?php print $previous_id ? caNavLink($this->request, '<i class="fa fa-angle-left" aria-label="back"></i><div class="small">Previous</div>', '', '*', 'Transcribe', 'Item', ['id' => $previous_id]) : ''; ?>
-				<?php print $set['set_id'] ? caNavLink($this->request, '<i class="fa fa-angle-double-left" aria-label="back"></i><div class="small">Back</div>', '', '*', 'Transcribe', 'Collection/'.$set['set_id']) : ''; ?>
+				<?php print $previous_id ? caNavLink($this->request, '<i class="fa fa-angle-left" aria-label="back"></i><div class="small">'._t('Previous').'</div>', '', '*', 'Transcribe', 'Item', ['id' => $previous_id]) : ''; ?>
+				<?php print $set['set_id'] ? caNavLink($this->request, '<i class="fa fa-angle-double-left" aria-label="back"></i><div class="small">'._t('Back').'</div>', '', '*', 'Transcribe', 'Collection/'.$set['set_id']) : ''; ?>
 			</div>
 		</div>
 		<div class="col-sm-10">
-			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; <?php print is_array($set) ? caNavLink($this->request, $set['name'], '', '*', 'Transcribe', 'Collection/'.$set['set_id'])." &gt; " : ""; ?><?php print $t_item->get('ca_objects.preferred_labels.name'); ?></H1>
+			<h1><a href="/Transcribe/Index"><?= _t('Transcribe'); ?></a> &gt; <?php print is_array($set) ? caNavLink($this->request, $set['name'], '', '*', 'Transcribe', 'Collection/'.$set['set_id'])." &gt; " : ""; ?><?php print $t_item->get('ca_objects.preferred_labels.name'); ?></H1>
 			<p >
 				
 				<h4><?php print caDetailLink($this->request, $t_item->get('ca_objects.preferred_labels.name')." (".$t_item->get('ca_objects.idno').")", '' ,$t_item->tableName(), $t_item->getPrimaryKey()); ?></h4>
@@ -73,7 +73,7 @@
 ?>
 		<div class='otherRepresentations'>
 			<div class="unit">
-				<span class="name">Additional pages:</span>
+				<span class="name"><?= _t('Additional pages'); ?>:</span>
 				<span class="data">
 					<br/>
 <?php
@@ -95,7 +95,7 @@
 					<div class="col-sm-5">
 						<?php print caFormTag($this->request, 'SaveTranscription', 'transcript', null, 'post', 'multipart/form-data', '_top', ['disableUnsavedChangesWarning' => true]); ?>
 							<div class="unit">
-								<span class="name">Transcription: </span>
+								<span class="name"><?= _t('Transcription'); ?>: </span>
 
 <?php
 	if($transcription->isComplete()) {
@@ -104,7 +104,7 @@
 		<?php print $transcription->get('transcription'); ?>
 		
 		<div class='saveControls'> 
-			<button class='btn btn-lg btn-danger'>Edit this transcription</button>
+			<button class='btn btn-lg btn-danger'><?= _t('Edit this transcription'); ?></button>
 		</div>
 		
 		<?php print caHTMLHiddenInput('id', ['value' => $t_item->getPrimaryKey()]); ?>
@@ -121,11 +121,11 @@
 							<?php print caHTMLHiddenInput('representation_id', ['value' => $representation_id]); ?>
 <?php
 	if ($start_date = $transcription->get('ca_representation_transcriptions.created_on')) {
-		print "<div class='startTime'>(Started {$start_date})</div>";
+		print "<div class='startTime'>("._t('Started %1', $start_date).")</div>";
 	}
 ?>
 							<div class='saveControls'> 
-								<button class='btn btn-lg btn-danger'>Save transcription</button>
+								<button class='btn btn-lg btn-danger'><?= _t('Save transcription'); ?></button>
 								<?php print caHTMLCheckboxInput('complete', ['value' => 1]); ?> Completed?
 							</div>
 <?php
@@ -137,20 +137,19 @@
 	if($transcription->isComplete()) {
 ?>
 		<div class='completedMessage'>
-			Transcription was completed on <?php print $transcription->get('completed_on'); ?>
+			<?= _t('Transcription was completed on %1', $transcription->get('completed_on')); ?>
 		</div>
 <?php
 	} else {
 ?>
 						<div>
 							<ul>
-								<li>If you cannot read a word, enter [illegible]. If you are making an educated guess, enter the word in square brackets with a question mark, ie [shipyard?]</li>
-								<li>Save your work often</li>
-								<li>Some records may include spelling mistakes and/or abbreviations. Please do not correct spelling or expand abbreviations, but simply transcribe the record as it appears. If a word has been misspelled, put (sic) afterwards so it is clear this is not a transcription error. If words have been crossed out, they should not be included in the transcription.
-</li>
-								<li>Focus on the text rather than formatting. No need for adding line or paragraph breaks or noting that words are underlined, bolded, etc.; the goal is to make the text searchable and easy to read. </li>
-								<li>When you finish a transcription, check the completed box. For multi-page documents, you will need to do this for each page.</li>
-								<li>View <a href="/TranscriptionTips/Index" target="_new">Transcription Tips</a></li>
+								<li><?= _t('If you cannot read a word, enter [illegible]. If you are making an educated guess, enter the word in square brackets with a question mark, ie [shipyard?]'); ?></li>
+								<li><?= _t('Save your work often'); ?></li>
+								<li><?= _t('Some records may include spelling mistakes and/or abbreviations. Please do not correct spelling or expand abbreviations, but simply transcribe the record as it appears. If a word has been misspelled, put (sic) afterwards so it is clear this is not a transcription error. If words have been crossed out, they should not be included in the transcription.'); ?></li>
+								<li><?= _t('Focus on the text rather than formatting. No need for adding line or paragraph breaks or noting that words are underlined, bolded, etc.; the goal is to make the text searchable and easy to read.'); ?></li>
+								<li><?= _t('When you finish a transcription, check the completed box. For multi-page documents, you will need to do this for each page.'); ?></li>
+								<li><?= _t('View <a href="/TranscriptionTips/Index" target="_new">Transcription Tips</a>'); ?></li>
 							</ul>
 							
 						</div>
@@ -163,7 +162,7 @@
 		</div>	
 	<div class="col-sm-1">
 		<div class="setsBack">
-			<?php print $next_id ? caNavLink($this->request, '<i class="fa fa-angle-right" aria-label="back"></i><div class="small">Next</div>', '', '*', 'Transcribe', 'Item', ['id' => $next_id]) : ''; ?>
+			<?php print $next_id ? caNavLink($this->request, '<i class="fa fa-angle-right" aria-label="back"></i><div class="small">'._t('Next').'</div>', '', '*', 'Transcribe', 'Item', ['id' => $next_id]) : ''; ?>
 		</div>
 	</div>
 	</div>

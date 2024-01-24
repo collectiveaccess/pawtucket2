@@ -94,7 +94,10 @@ if (!is_array($types = $this->getVar('checkout_types'))) { $types = []; }
 			saveTransactionURL: '<?= caNavUrl($this->request, '*', '*', 'SaveTransaction', array()); ?>',
 			loadWidgetURL: '<?= caNavUrl($this->request, '*', '*', 'Info', array()); ?>',
 
-			removeButtonIcon: '<?= addslashes(caNavIcon(__CA_NAV_ICON_DELETE__, 1)); ?>'
+			removeButtonIcon: '<?= addslashes(caNavIcon(__CA_NAV_ICON_DELETE__, 1)); ?>',
+			initialValueList: <?= json_encode($this->getVar('initialValueList')); ?>
 		});
+		
+		jQuery("#objectAutocomplete").focus();
 	});
 </script>

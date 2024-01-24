@@ -9,6 +9,7 @@
 	$t_object = new ca_objects($pn_object_id);
 	$vs_rep_id = $this->getVar("representation_id");
 	$t_representation = new ca_object_representations($vs_rep_id);
+	$va_access_values = caGetUserAccessValues($this->request);
 	
 	$t_set_item = new ca_set_items($pn_set_item_id);
 	$vs_title = $t_set_item->get('ca_set_items.preferred_labels');
@@ -54,22 +55,40 @@
 		print "<div class='container objectSlide'><div class='row'><div class='col-sm-9' style='margin-left:-15px;'>";
 	
 		print "<div id='galleryDetailImageWrapper'>";
+		$va_options = array();
 		$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
-		print caObjectDetailMedia($this->request, $object_id, $t_representation, $t_object, array_merge($va_media_display_info, array("primaryOnly" => true)));		
+		#print caObjectDetailMedia($this->request, $object_id, $t_representation, $t_object, array_merge($va_media_display_info, array("primaryOnly" => true)));		
+		require_once(__CA_LIB_DIR__."/Media/MediaViewerManager.php");
+		print caRepresentationViewer($this->request, $t_object, $t_object, array_merge($va_options, $va_media_display_info, 
+							array(
+								'display' => 'detail',
+								'showAnnotations' => true, 
+								'primaryOnly' => false, 
+								'dontShowPlaceholder' => true, 
+								'captionTemplate' => ''
+							)
+						)
+					);		
+		
 		print "</div>";	
+	
+		print "</div><!-- end col -->";
+		print "<div class='col-sm-3' style='padding-bottom:60px;'>";
+		print "<div class='galleryTextArea' style='margin-right:-15px;'>";	
+		print "<h2 {$vs_color}>".$vs_title."</h2>";
+		print "<div {$vs_color}>".$vs_description."</div>";
+		print "</div>";
+				
 		print "<div class='galleryThumbnail'>";
 		#print "<div class='image'>".$t_object->get('ca_object_representations.media.icon')."</div>";
 		print "<div class='text'>";
 		print "<p>".$t_object->get('ca_objects.preferred_labels')."</p>";
-		print "<p>".$t_object->get('ca_objects.description')."</p>";
-		print "<p>".$t_object->get('ca_entities.preferred_labels', array('delimiter' => ', ', 'returnAsLink' => true))."</p>";
+		#print "<p>".$t_object->get('ca_objects.description')."</p>";
+		print "<p>".$t_object->get('ca_entities.preferred_labels', array('delimiter' => ', ', 'returnAsLink' => true, 'excludeRelationshipTypes' => array('donor'), 'checkAccess' => $va_access_values))."</p>"; 
+
 		print "</div>";
-		print "</div>";
-	
-		print "</div><!-- end col -->";
-		print "<div class='col-sm-3 galleryTextArea' style='margin-right:-15px;'>";	
-		print "<h2 {$vs_color}>".$vs_title."</h2>";
-		print "<div {$vs_color}>".$vs_description."</div>";
+		print "</div>";	
+			
 		print "</div><!-- end col --></div><!-- end row --></div><!-- end container -->";
 	}
 ?>

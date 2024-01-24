@@ -10,12 +10,12 @@
 	$va_collection_type_icons = $this->getVar("collection_type_icons");
 	$vb_has_children = false;
 	$vb_has_grandchildren = false;
-	if($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.id_number'))){
+	if($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => array("ca_collections.type_id", "ca_collections.id_number")))){
 		$vb_has_children = true;
 		$qr_collection_children = caMakeSearchResult("ca_collections", $va_collection_children);
 		if($qr_collection_children->numHits()){
 			while($qr_collection_children->nextHit()){
-				if($qr_collection_children->get("ca_collections.children.collection_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.id_number'))){
+				if($qr_collection_children->get("ca_collections.children.collection_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => array("ca_collections.type_id", "ca_collections.id_number")))){
 					$vb_has_grandchildren = true;
 				}
 			}
@@ -24,7 +24,6 @@
 	}
 	if($vb_has_children){
 ?>					
-			<div class='text-right'><a href='#' onclick='$("#collectionsWrapper").toggle(300);return false;' class='showHide'>Show/Hide Collection Browser</a></div>
 				<div class="row" id="collectionsWrapper" <?php print ($o_collections_config->get("browser_closed")) ? "style='display:none;'" : ""; ?>>			
 					<div class='col-sm-12'>
 					
@@ -51,13 +50,22 @@
 							if(sizeof($va_grand_children_type_ids)){
 								$vb_link_sublist = true;
 							}
-							$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values)));
+							$vn_rel_item_count = sizeof($qr_collection_children->get("ca_collections.children.collection_id", array("restrictToTypes" => array("item"), "returnAsArray" => true, 'checkAccess' => $va_access_values)));
 							$vs_record_count = "";
-							if($vn_rel_object_count){
-								$vs_record_count = "<br/><small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+							#if($vn_rel_item_count){
+							#	$vs_record_count = "<br/><small>(".$vn_rel_item_count." item".(($vn_rel_item_count == 1) ? "" : "s").")</small>";
+							#}
+							$va_child_media = array();
+							$vs_child_media = $qr_collection_children->getWithTemplate("<unit relativeTo='ca_collections.children' delimiter=';'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values));
+							if($vs_child_media){
+								$va_child_media = explode(";", $vs_child_media);
 							}
 							if($vb_link_sublist){
-								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->getWithTemplate($vs_label_template).$vs_record_count."</a>";
+								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->getWithTemplate($vs_label_template).$vs_record_count;
+								if(is_array($va_child_media) && sizeof($va_child_media)){
+									print "<br/><i class='fa fa-image'></i> ".sizeof($va_child_media)." item".((sizeof($va_child_media) > 1) ? "s" : "")." with media";
+								}
+								print "</a>";
 							}else{
 								# --- there are no grandchildren to show in browser, so check if we should link to detail page instead
 								$vb_link_to_detail = true;
@@ -65,7 +73,7 @@
 									$vb_link_to_detail = false;
 								}
 								if(!$o_collections_config->get("always_link_to_detail")){
-									if(!sizeof($va_grand_children_type_ids) && !$vn_rel_object_count){
+									if(!sizeof($va_grand_children_type_ids) && !$vn_rel_item_count){
 										$vb_link_to_detail = false;
 									}
 								}

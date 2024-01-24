@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2021 Whirl-i-Gig
+ * Copyright 2013-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -121,6 +121,20 @@ class LightboxController extends FindController {
 	 */
 	function index($pa_options = null) {
 		if($this->opb_is_login_redirect) { return; }
+		
+		$sort = $this->request->getParameter('sort', pString);
+		$sort_direction = $this->request->getParameter('direction', pString);
+		
+		if($sort) {
+			Session::setVar('lightbox_list_sort', $sort);
+		} else {
+			$sort = Session::getVar('lightbox_list_sort');
+		}
+		if($sort_direction) {
+			Session::setVar('lightbox_list_sort_direction', $sort_direction);
+		} else {
+			$sort_direction = Session::getVar('lightbox_list_sort_direction');
+		}
 
 		
 		$va_lightbox_displayname = caGetLightboxDisplayName();
@@ -129,14 +143,17 @@ class LightboxController extends FindController {
 
 		# Get sets for display
 		$t_sets = new ca_sets();
-		$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
-		$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
+		$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true, 'sort' => $sort, 'sortDirection' => $sort_direction));
+		$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true, 'sort' => $sort, 'sortDirection' => $sort_direction));
 
 		# Remove write sets from the read array
 		$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
 
 		$this->view->setVar("read_sets", $va_read_sets);
 		$this->view->setVar("write_sets", $va_write_sets);
+		
+		$this->view->setVar('sort', $sort);
+		$this->view->setVar('direction', $sort_direction);
 
 		$va_set_ids = array_merge(array_keys($va_read_sets), array_keys($va_write_sets));
 		$this->view->setVar("set_ids", $va_set_ids);
@@ -163,7 +180,7 @@ class LightboxController extends FindController {
 
 		AssetLoadManager::register("mediaViewer");
 	
-		$o_context = new ResultContext($this->request, 'ca_objects', 'sets', 'lightbox');
+		$o_context = new ResultContext($this->request, 'ca_objects', 'lightbox');
 		$o_context->setAsLastFind();
 
 		$this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
@@ -370,10 +387,14 @@ class LightboxController extends FindController {
 		
 		$o_context->setParameter('key', $vs_key);
 		
-		if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
+		if (($max_result_count = $this->request->config->get('maximum_find_result_list_values')) < 10) {
+			$max_result_count = 1000;
+		}
+		
+		if (($vn_key_start = (int)$vn_start - $max_result_count) < 0) { $vn_key_start = 0; }
 		$qr_res->seek($vn_key_start);
-		$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
-		//if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
+		$o_context->setResultList($qr_res->getPrimaryKeyValues($max_result_count));
+		
 		$qr_res->seek($vn_start);
 		
 		$o_context->saveContext();

@@ -223,20 +223,7 @@ class ca_user_groups extends BaseModel {
 
 	protected $FIELDS;
 	
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
+
 	# ------------------------------------------------------
 	/**
 	 * Override insert to set code field
@@ -530,11 +517,11 @@ class ca_user_groups extends BaseModel {
 		if ($vn_group_id = $this->getPrimaryKey()) {
 			$o_db = $this->getDb();
 			$qr_res = $o_db->query("
-				SELECT wur.role_id, wur.name, wur.code, wur.description, wur.rank
+				SELECT wur.role_id, wur.name, wur.code, wur.description, wur.`rank`
 				FROM ca_user_roles wur
 				INNER JOIN ca_groups_x_roles AS wgxr ON wgxr.role_id = wur.role_id
 				WHERE wgxr.group_id = ?
-				ORDER BY wur.rank
+				ORDER BY wur.`rank`
 			", (int)$vn_group_id);
 			
 			$va_roles = array();

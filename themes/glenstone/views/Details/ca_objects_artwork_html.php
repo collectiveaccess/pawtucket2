@@ -59,6 +59,51 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 				<H4>{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist|creator"><l>^ca_entities.preferred_labels</l></unit>}}}</H4>
 				<H5><i>{{{ca_objects.preferred_labels.name}}}</i>, {{{ca_objects.creation_date_display}}}</H5> 
 <?php
+				// Artist life dates
+				if (is_array($artist_dates = $t_object->get('ca_entities.entity_date_container', ['convertCodesToIdno' => true, 'restrictToRelationshipTypes' => ['artist', 'creator'], 'returnWithStructure' => true]))) {
+					//entity_birth_date
+					$birth_date = $death_date = null;
+					$artist_dates = array_shift($artist_dates);
+					
+					if(is_array($artist_dates)) {
+						foreach($artist_dates as $d) {
+							switch($d['date_type']) {
+								case 'entity_birth_date':
+									$birth_date = $d['date_value'];
+									break;
+								case 'entity_death_date':
+									$death_date = $d['date_value'];
+									break;
+							}
+						}
+					}
+					
+					$birth_location = $date_location = null;
+					if (is_array($locations = $t_object->get('ca_entities.locations', ['convertCodesToIdno' => true, 'restrictToRelationshipTypes' => ['artist', 'creator'], 'returnWithStructure' => true]))) {
+						$locations = array_shift($locations);
+					
+						if(is_array($locations)) {
+							foreach($locations as $d) {
+								switch($d['location_type']) {
+									case 'birthplace':
+										$birth_location = ", ".$d['location_description'];
+										break;
+									case 'deathplace':
+										$death_location = ", ".$d['location_description'];
+										break;
+								}
+							}
+						}
+					}
+					if ($birth_date) { 
+						print "<h6 class='artistDates'>b. {$birth_date}{$birth_location}";
+					
+						if ($death_date) { 
+							print "; d. {$death_date}{$death_location}";
+						}
+						print "</h6>\n";
+					}
+				}
 				if ($t_object->hasField('is_deaccessioned') && $t_object->get('is_deaccessioned') && ($t_object->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
 					// If currently deaccessioned then display deaccession message
 					print "<div class='artworkDeaccessioned'>"._t('Deaccessioned %1', $t_object->get('deaccession_date'))."</div>\n";
@@ -148,7 +193,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					<div class='toggle'><a href='#' onclick="$('.infoBlock').hide(); $('#Description').fadeIn(100);">Description</a></div>
 				</div>
 				
-					<hr>
+				<hr style="clear: both; margin: 0 0 10px 0;"/>
 				
 				<div id="artworkInfo" class="infoBlock">
 					{{{<div class='unit'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist|creator"><l>^ca_entities.preferred_labels</l></unit></div>}}}
@@ -156,14 +201,18 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					{{{<ifdef code="ca_objects.medium"><div class='unit'>^ca_objects.medium</div></ifdef>}}}
 					{{{<ifcount min="1" code="ca_objects.dimensions.display_dimensions"><div class='unit'><unit delimiter="<br/>">^ca_objects.dimensions.display_dimensions</unit></div></ifcount>}}}
 <?php
+					if(!($credit_line = trim($t_object->get('ca_objects.lender.lender_credit_line', array('delimiter' => ';'))))) {
+						$credit_line = ''; //"Glenstone Museum, Potomac, Maryland";
+					}
+					print "<div>{$credit_line}</div>"; 
 					if ($t_object->get('ca_objects.edition.edition_number')) {
 						print "<div class='unit'>Edition ".$t_object->get('ca_objects.edition.edition_number')." / ".$t_object->get('ca_objects.edition.edition_total');
 						if ($t_object->get('ca_objects.edition.ap_total')) {
 							print " + ".$t_object->get('ca_objects.edition.ap_total')." AP";
 						}
 						print "</div>";
-					} elseif ($t_object->get('ca_objects.edition.ap_number')) {
-						print "<div class='unit'>AP ".(count($t_object->get('ca_objects.edition.ap_total')) >= 2 ? $t_object->get('ca_objects.edition.ap_number') : "")." from an edition of ".$t_object->get('ca_objects.edition.edition_total')." + ".$t_object->get('ca_objects.edition.ap_total')." AP";
+					} elseif ($ap_total = $t_object->get('ca_objects.edition.ap_number')) {
+						print "<div class='unit'>AP ".($ap_total >= 2 ? $t_object->get('ca_objects.edition.ap_number') : "")." from an edition of ".$t_object->get('ca_objects.edition.edition_total')." + ".$ap_total." AP";
 						print "</div>";					
 					}
 					if ($t_object->get('ca_objects.signed.signed_yn') == "No") {
@@ -212,33 +261,8 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 						// If currently deaccessioned then display deaccession message
 						print "<br/><div class='inspectorDeaccessioned'>"._t('Deaccessioned %1', $t_object->get('deaccession_date'))."</div>\n";
 					} else {
-						$t_ui = ca_editor_uis::loadDefaultUI('ca_objects', $this->request);
-						if (($t_ui && method_exists($t_object, "getObjectHistory")) && (is_array($va_placements = $t_ui->getPlacementsForBundle('ca_objects_history')) && (sizeof($va_placements) > 0))) {
-							//
-							// Output current "location" of object in life cycle. Configuration is taken from a ca_objects_history bundle configured for the current editor
-							//
-							$va_placement = array_shift($va_placements);
-							$va_bundle_settings = $va_placement['settings'];
-							
-							// Rewrite back-end display settings to remove link tags
-							// since the referenced details don't exist on the front-end
-							foreach($va_bundle_settings as $vs_key => $vm_val) {
-								if (preg_match("!displayTemplate$!", $vs_key)) {
-									$va_bundle_settings[$vs_key] = str_ireplace("<l>", "", str_ireplace("</l>", "", $vm_val));
-								}
-							} 
-							if (is_array($va_history = $t_object->getObjectHistory($va_bundle_settings, array('displayLabelOnly' => false, 'limit' => 1, 'currentOnly' => true))) && (sizeof($va_history) > 0)) {
-								$va_current_location = array_shift(array_shift($va_history));
-								if ($va_current_location['display']) { print "<div class='inspectorCurrentLocation unit'><span class='metaTitle'>"._t('Current')."</span><span class='meta'>".$va_current_location['display']."</span></div>"; }
-							}
-						} elseif (method_exists($t_object, "getLastLocationForDisplay")) {
-							// If no ca_objects_history bundle is configured then display the last storage location
-							if ($vs_current_location = $t_object->getLastLocationForDisplay("<ifdef code='ca_storage_locations.parent.preferred_labels'>^ca_storage_locations.parent.preferred_labels ➜ </ifdef>^ca_storage_locations.preferred_labels.name")) {
-								print "<br/><div class='inspectorCurrentLocation'>"._t('Location: %1', $vs_current_location)."</div>\n";
-								$vs_full_location_hierarchy = $t_object->getLastLocationForDisplay("^ca_storage_locations.hierarchy.preferred_labels.name%delimiter=_➜_");
-								if ($vs_full_location_hierarchy !== $vs_current_location) { TooltipManager::add(".inspectorCurrentLocation", $vs_full_location_hierarchy); }
-							}
-						}
+						$cur_location = $t_object->getCurrentValueForDisplay();
+						if ($cur_location) { print "<div class='inspectorCurrentLocation unit'><span class='metaTitle'>"._t('Current')."</span><span class='meta'>".strip_tags($cur_location, '<br><a>')."</span></div>"; }
 					}
 					
 					#Loan Status
@@ -567,7 +591,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 				<div id="Description" class="infoBlock">
 					{{{<ifcount min="1" code="ca_objects.object_dates.object_date"><ifdef code="ca_objects.object_dates.object_date"><div class='unit wide'><span class='metaHeader'>Date: </span><span ><unit delimiter="<br/>">^ca_objects.object_dates.object_date <ifdef code="ca_objects.object_dates.date_note">(^ca_objects.object_dates.date_note)</ifdef></unit></span></div></ifdef></ifcount>}}}
 					{{{<ifcount min="1" code="ca_objects.child.preferred_labels"><div class='unit wide'><span class='metaHeader'>Elements </span><span ><unit delimiter="<br/>"><l>^ca_objects.child.preferred_labels</l></unit></span></div></ifcount>}}}
-					{{{<ifdef code="ca_objects.category"><div class='unit wide'><span class='metaHeader'>Category: </span><span >^ca_objects.category</span></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.category"><div class='unit wide'><span class='metaHeader'>Category: </span><span >^ca_objects.category%delimiter=;_</span></div></ifdef>}}}
 <?php
 					if ($t_object->get('ca_objects.signed.signed_yn') == "Yes") {
 						print "<div class='unit wide'><span class='metaHeader'>Signed: </span><span>".ucfirst($t_object->get('ca_objects.signed.signature_details'))."</span></div>";
@@ -593,8 +617,8 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 // 						print "<div class='unit wide'><span class='metaHeader'>Object weight: </span><span>{$object_weight}</span></div>";
 // 					}								
 ?>
-					{{{<ifcount min="1" code="ca_objects.inscription"><div class='unit wide'><span class='metaHeader'>Inscription: </span><span><unit delimiter="<br/>">^ca_objects.inscription.inscription_position1 ^ca_objects.inscription.inscription_position2 ^ca_objects.inscription.inscription_position3 ^ca_objects.inscription.inscription_material - ^ca_objects.inscription.inscription_text</unit></span></div></ifcount>}}}
-					{{{<ifcount min="1" code="ca_objects.sticker_label"><ifdef code="ca_objects.sticker_label"><div class='unit wide'><span class='metaHeader'>Label Details </span><span><unit delimiter="<br/>">^ca_objects.sticker_label</unit></span></div></ifdef></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.inscription"><div class='unit wide'><span class='metaHeader'>Inscription: </span><span><unit relativeTo="ca_objects.inscription.inscription_position1" delimiter="<br/>">^ca_objects.inscription.inscription_position1 ^ca_objects.inscription.inscription_position2 ^ca_objects.inscription.inscription_position3 ^ca_objects.inscription.inscription_material - ^ca_objects.inscription.inscription_text</unit></span></div></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.sticker_label"><ifdef code="ca_objects.sticker_label"><div class='unit wide'><span class='metaHeader'>Label Details: </span><span><unit delimiter="<br/>">^ca_objects.sticker_label</unit></span></div></ifdef></ifcount>}}}
 <?php
 					if ($t_object->get('ca_objects.inscription_uploads.inscription_uploads_media')){
 						$va_inscription_images = $t_object->get('ca_objects.inscription_uploads', array('returnWithStructure' => true, 'ignoreLocale' => true, 'version' => 'icon')); 
@@ -612,13 +636,13 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 							}
 						}
 						if ($vs_media_buf != "") {
-							print '<div class="unit wide"><span class="metaHeader">Inscription Uploads</span><span>';
+							print '<div class="unit wide"><span class="metaHeader">Inscription Uploads:</span><span>';
 							print $vs_media_buf;
 							print "</span><div class='clearfix'></div></div>";
 						}	
 					}
 					
-					if(is_array($artwork_docs = $t_object->get('ca_objects.artwork_documents', ['returnWithStructure' => true])) && sizeof($artwork_docs)) {
+					if(is_array($artwork_docs = $t_object->get('ca_objects.artwork_documents', ['version' => 'thumbnail', 'returnWithStructure' => true])) && sizeof($artwork_docs)) {
 					   $artwork_docs = array_shift($artwork_docs);
 					   $artwork_docs = array_filter($artwork_docs, function($v) { return $v['artwork_documents_primary'] == 162; });
 					   
@@ -638,13 +662,13 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					   		return in_array($v['artwork_document_access'], $accesses);
 					   });
 					   if (sizeof($artwork_docs) > 0) {
-                           print '<div class="unit wide"><span class="metaHeader">Artwork Documents</span><span>';
+                           print '<div class="unit wide"><span class="metaHeader">Artwork Documents:</span><span>';
                            $vn_media_element_id = ca_metadata_elements::getElementID('artwork_documents_media');
                            foreach($artwork_docs as $attr_id => $artwork_doc) {
                             
                                 $qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($attr_id, $vn_media_element_id)) ;
                                 if ($qr_res->nextRow()) {
-                                    print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail/artworks', 'GetMediaOverlay', array('context' => 'artworks', 'overlay' => 1, 'overlay' => 1, 'id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$artwork_doc['artwork_documents_media']."</a>";
+                                    print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail/artworks', 'GetMediaOverlay', array('context' => 'artworks', 'overlay' => 1, 'overlay' => 1, 'id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$artwork_doc['artwork_documents_media']."</a><br/>";
                                 }
                             
                                 print ($artwork_doc['artwork_documents_date'] ? $artwork_doc['artwork_documents_date'].": " : "").$artwork_doc['description_document']."<br/>\n";
@@ -655,7 +679,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					}
 					
 ?>
-					{{{<ifcount min="1" code="ca_objects.nonpreferred_labels"><div class='unit wide'><span class='metaHeader'>Other Titles </span><span><unit delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></span></div></ifcount>}}}
+					{{{<ifcount min="1" code="ca_objects.nonpreferred_labels"><div class='unit wide'><span class='metaHeader'>Other Titles: </span><span><unit delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></span></div></ifcount>}}}
 					{{{<ifdef code="ca_objects.legacy_description"><div class='unit wide'><span class='metaHeader'>Description (Legacy): </span><span>^ca_objects.legacy_description</span></div></ifdef>}}}
 					{{{<ifdef code="ca_objects.legacy_comments"><div class='unit wide'><span class='metaHeader'>Comments (Legacy): </span><span>^ca_objects.legacy_comments</span></div></ifdef>}}}
 <?php
@@ -892,7 +916,7 @@ if ($this->request->user->hasUserRole("founders_new")) {
 <?php
 	}	
 	
-	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork')))) {
+	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork', 'incoming_artwork_loan')))) {
 ?>	
 <div class="row" style="clear:both;">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
@@ -904,7 +928,7 @@ if ($this->request->user->hasUserRole("founders_new")) {
 				<div id='artworksResults' class='scrollBlock'>
 					<div class='blockResultsScroller'>
 <?php
-			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'returnWithStructure' => true, 'restrictToTypes' => array('artwork')));
+			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'returnWithStructure' => true, 'restrictToTypes' => array('artwork', 'incoming_artwork_loan')));
 			
 			if (is_array($va_object_ids) && sizeof($va_object_ids)) {
 				$qr_res = caMakeSearchResult('ca_objects', $va_object_ids);

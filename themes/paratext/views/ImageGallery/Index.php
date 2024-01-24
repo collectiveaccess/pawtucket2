@@ -99,6 +99,9 @@ $images = array(
 );
 ?>
 
+<div class="page_title">
+    <h1>Gallery</h1>
+</div>
 <div class="swiper-container gallery_main">
     <div class="swiper-wrapper main">
 

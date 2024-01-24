@@ -108,7 +108,7 @@
 					<div href="#" class="indiv-blog">
 						<div class="post-image hpBgImgGallery"></div>
 						<div class="post-details">
-							<h4 class="post-title"><?php print caNavLink($this->request, "Gallery", "", "", "Gallery", "index"); ?></h4>
+							<h4 class="post-title"><?php print caNavLink($this->request, "Galleries", "", "", "Gallery", "index"); ?></h4>
 							<p class="post-excerpt">{{{home_gallery_intro}}}</p>
 							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Gallery", "index"); ?>">More</a>
 						</div>

@@ -35,7 +35,7 @@
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-
+	$va_options = $this->getVar("config_options");
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -62,13 +62,11 @@
 			<div class="row text-center">			
 				<div class='col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3'>
 <?php
-				$vs_rep_viewer = trim($this->getVar("representationViewer"));
-				if($vs_rep_viewer){			
+				if($vs_rep_viewer = trim($this->getVar("representationViewer"))){			
 					print $vs_rep_viewer;
 					print '<div id="detailAnnotations"></div>';
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-2 col-xs-2", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
 				}
-				
 				if($t_object->get("ca_object_representations.representation_id", array("checkAccess" => array(0)))){
 ?>
 					<div class="unit">
@@ -76,6 +74,9 @@
 					</div>
 <?php
 				}
+				if($vs_rep_viewer && $this->request->user->hasRole("staff")){
+					print '<br/><div class="unit">'.caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> "._t("Download High Resolution Media"), "btn-default", "", "Detail", "DownloadMedia", array("object_id" => $t_object->get("object_id"), "download" => 1, "version" => "original")).'</div>';
+				}		 				
 				
 
 				# Comment and Share Tools
@@ -99,8 +100,8 @@
 
 ?>
 				{{{<ifdef code="ca_objects.date"><div class="unit"><unit relativeTo="ca_objects.date" delimiter=", ">^ca_objects.date.date_value <ifdef code="ca_objects.date.date_types">(^ca_objects.date.date_types)</ifdef></unit></div></ifdef>}}}
-				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="Dedicated,Related,Publisher"><div class="unit"><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="Dedicated,Related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.material_techniques"><div class="unit">^ca_objects.material_techniques%,_</div></ifdef>}}}
+				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="Dedicated,Related,Publisher,Donor,Subject,Depicted"><div class="unit"><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="Dedicated,Related,Publisher,Donor,Subject,Depicted"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+				{{{<ifdef code="ca_objects.material_techniques"><div class="unit">^ca_objects.material_techniques%delimiter=,_</div></ifdef>}}}
 				
 
 				</div>
@@ -133,8 +134,27 @@
 							{{{<ifdef code="ca_objects.volume_number"><div class="unit"><label>Volume Number</label>^ca_objects.volume_number</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.issue_number"><div class="unit"><label>Issue Number</label>^ca_objects.issue_number</div></ifdef>}}}
 				
+							<!-- Format tab: Photo/Artifact/Art_arch -->
+							{{{<ifdef code="ca_objects.dimensions.dimensions_length|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_depth|ca_objects.dimensions.dimensions_weight|ca_objects.dimensions.dimension_notes"><div class="unit"><label>Dimensions</label>
+								<unit relativeTo="ca_objects.dimensions" delimiter="<br/>">
+									<ifdef code="ca_objects.dimensions.dimensions_length">Length: ^ca_objects.dimensions.dimensions_length<br/></ifdef>
+									<ifdef code="ca_objects.dimensions.dimensions_width">Width: ^ca_objects.dimensions.dimensions_width<br/></ifdef>
+									<ifdef code="ca_objects.dimensions.dimensions_height">Height: ^ca_objects.dimensions.dimensions_height<br/></ifdef>
+									<ifdef code="ca_objects.dimensions.dimensions_depth">Depth: ^ca_objects.dimensions.dimensions_depth<br/></ifdef>
+									<ifdef code="ca_objects.dimensions.dimensions_weight">Weight: ^ca_objects.dimensions.dimensions_weight<br/></ifdef>
+									<ifdef code="ca_objects.dimensions.dimension_notes">Notes: ^ca_objects.dimensions.dimension_notes<br/></ifdef>
+								</unit>
+							</ifdef>}}}
+							{{{<ifdef code="ca_objects.photograph_format"><div class="unit"><label>Photograph Format (AAT)</label>^ca_objects.photograph_format%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.object_work_type"><div class="unit"><label>Object Work/Type (AAT)</label>^ca_objects.object_work_type%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.components_parts"><div class="unit"><label>Components/Parts</label>^ca_objects.components_parts%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.classification"><div class="unit"><label>Classification (AAT)</label>^ca_objects.classification%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.style"><div class="unit"><label>Style</label>^ca_objects.style%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.inscriptions"><div class="unit"><label>Inscriptions & Markings</label>^ca_objects.inscriptions%delimiter=,_&convertLineBreaks=1</div></ifdef>}}}
+						</div>
+						<div class='col-sm-12 col-md-6'>
 							<!-- Library fields -->
-							{{{<if rule='(^ca_objects.rare_book =~ /Yes/)'><ifdef code="ca_objects.rare_book"><div class="unit"><label>Rare Book</label>^ca_objects.rare_book</div></ifdef>
+							{{{<if rule='(^ca_objects.rare_book =~ /Yes/)'>
 								<ifdef code="ca_objects.rare_book_info"><div class="unit"><label>Rare Book Cataloging</label>
 								<ifdef code="ca_objects.rare_book_info.binding"><b>Binding</b><br/>^ca_objects.rare_book_info.binding<br/><br/></ifdef>
 								<ifdef code="ca_objects.rare_book_info.rarebook_transcription"><b>Transcription of the Title</b><br/>^ca_objects.rare_book_info.rarebook_transcription<br/><br/></ifdef>
@@ -143,38 +163,24 @@
 								<ifdef code="ca_objects.rare_book_info.rarebook_provenance"><b>Provenance</b><br/>^ca_objects.rare_book_info.rarebook_provenance<br/><br/></ifdef>
 							</div></ifdef></if>}}}
 							<!-- end Library fields -->
-							<!-- Format tab: Photo/Artifact/Art_arch -->
-							{{{<ifdef code="ca_objects.dimensions"><div class="unit"><label>Dimensions</label>
-								<ifdef code="ca_objects.dimensions.dimensions_length">Length: ^ca_objects.dimensions.dimensions_length<br/></div>
-								<ifdef code="ca_objects.dimensions.dimensions_width">Width: ^ca_objects.dimensions.dimensions_width<br/></div>
-								<ifdef code="ca_objects.dimensions.dimensions_height">Height: ^ca_objects.dimensions.dimensions_height<br/></div>
-								<ifdef code="ca_objects.dimensions.dimensions_depth">Depth: ^ca_objects.dimensions.dimensions_depth<br/></div>
-								<ifdef code="ca_objects.dimensions.dimensions_weight">Weight: ^ca_objects.dimensions.dimensions_weight<br/></div>
-								<ifdef code="ca_objects.dimensions.dimension_notes">Notes: ^ca_objects.dimensions.dimension_notes<br/></div>
-							</ifdef>}}}
-							{{{<ifdef code="ca_objects.photograph_format"><div class="unit"><label>Photograph Format (AAT)</label>^ca_objects.photograph_format%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.object_work_type"><div class="unit"><label>Object Work/Type (AAT)</label>^ca_objects.object_work_type%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.components_parts"><div class="unit"><label>Components/Parts</label>^ca_objects.components_parts%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.classification"><div class="unit"><label>Classification (AAT)</label>^ca_objects.classification%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.style"><div class="unit"><label>Style</label>^ca_objects.style%,_</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.inscriptions"><div class="unit"><label>Inscriptions & Markings</label>^ca_objects.inscriptions%,_</div></ifdef>}}}
-						</div>
-						<div class='col-sm-12 col-md-6'>
 							{{{<ifdef code="ca_objects.url.link_url"><div class="unit"><label>External Link</label><unit delimiter="<br/>"><a href="^ca_objects.url.link_url" target="_blank"><ifdef code="ca_objects.url.link_text">^ca_objects.url.link_text</ifdef><ifnotdef code="ca_objects.url.link_text">^ca_objects.url.link_url</ifnotdef></a></div></ifdef>}}}
 							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Dedicated,Related"><div class="unit"><label>Related People & Organizations</label><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="Dedicated,Related"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
 							{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount>/Broadcast<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifcount>}}}
 				
 		<?php
 							$va_all_subjects = array();
-							$va_LcshSubjects = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
+							#$va_LcshSubjects = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
+							$va_LcshSubjects = $t_object->get('ca_objects.lcsh_terms', ['includeValueIDs' => true, 'returnWithStructure' => true]);
+							$va_LcshSubjects = $va_LcshSubjects[$t_object->get("ca_objects.object_id")];
 							$va_LcshSubjects_processed = array();
 							if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
-								foreach($va_LcshSubjects as $vs_LcshSubjects){
-									$vs_lcsh_subject = "";
+								foreach($va_LcshSubjects as $vs_LcshSubject_info){
+									$vs_LcshSubject = "";
+									$vs_LcshSubjects = $vs_LcshSubject_info["lcsh_terms"];
 									if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
-										$vs_LcshSubjects = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
+										$vs_LcshSubject = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
 									}
-									$va_all_subjects[$vs_LcshSubjects] = caNavLink($this->request, $vs_LcshSubjects, "", "", "Search", "objects", array("search" => "ca_objects.lcsh_terms: ".$vs_LcshSubjects));
+									$va_all_subjects[strToLower($vs_LcshSubject)] = caNavLink($this->request, $vs_LcshSubject, "", "", "Browse", "objects", array("facet" => "lcsh_terms_facet", "id" => $vs_LcshSubject_info["lcsh_terms_value_id"]));
 						
 								}
 								#$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
@@ -185,30 +191,46 @@
 								$va_keyword_links = array();
 								foreach($va_keywords as $vn_kw_id){
 									$t_list_item->load($vn_kw_id);
-									$va_all_subjects[] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
+									#$va_all_subjects[strToLower($t_list_item->get("ca_list_item_labels.name_singular"))] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Search", "objects", array("search" => $t_list_item->get("ca_list_item_labels.name_singular")));
+									$va_all_subjects[strToLower($t_list_item->get("ca_list_item_labels.name_singular"))] = caNavLink($this->request, $t_list_item->get("ca_list_item_labels.name_singular"), "", "", "Browse", "objects", array("facet" => "keyword_facet", "id" => $vn_kw_id));
 								}
 								#$vs_keyword_links = join("<br/>", $va_keyword_links);
 							}
 							
-							$va_lc_names = $t_object->get("ca_objects.lc_names", array("returnAsArray" => true));
+							#$va_lc_names = $t_object->get("ca_objects.lc_names", array("returnAsArray" => true));
+							$va_lc_names = $t_object->get('ca_objects.lc_names', ['includeValueIDs' => true, 'returnWithStructure' => true]);
+							$va_lc_names = $va_lc_names[$t_object->get("ca_objects.object_id")];
 							$va_lc_names_processed = array();
 							if(is_array($va_lc_names) && sizeof($va_lc_names)){
-								foreach($va_lc_names as $vs_lc_names){
+								foreach($va_lc_names as $vs_lc_names_info){
 									$vs_lc_name = "";
+									$vs_lc_names = $vs_lc_names_info["lc_names"];
 									if($vs_lc_names && (strpos($vs_lc_names, " [") !== false)){
 										$vs_lc_name = mb_substr($vs_lc_names, 0, strpos($vs_lc_names, " ["));
 									}
-									$va_all_subjects[] = caNavLink($this->request, $vs_lc_name, "", "", "Search", "objects", array("search" => "ca_objects.lc_names: ".$vs_lc_name));
+									$va_all_subjects[strToLower($vs_lc_name)] = caNavLink($this->request, $vs_lc_name, "", "", "Browse", "objects", array("facet" => "loc_names_facet", "id" => $vs_lc_names_info["lc_names_value_id"]));
 						
 								}
 								#$vs_lc_names = join("<br/>", $va_lc_names_processed);
 							}
-					
+							$va_entities = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("Subject","Depicted"), "returnWithStructure" => true, "checkAccess" => $va_access_values));
+							$va_entities_processed = array();
+							if(is_array($va_entities) && sizeof($va_entities)){
+								foreach($va_entities as $va_entity){
+									$va_all_subjects[strToLower($va_entity["displayname"])] = caDetailLink($this->request, $va_entity["displayname"], "", "ca_entities", $va_entity["entity_id"]);
+						
+								}
+							}
 							if(is_array($va_all_subjects) && sizeof($va_all_subjects)){
 								ksort($va_all_subjects);
 								$vs_subjects = join("<br/>", $va_all_subjects);
 								print "<div class='unit'><label>Subjects/Keywords</label>".$vs_subjects."</div>";	
 							}
+?>
+							{{{<ifdef code="ca_objects.rights.copyrightStatement"><div class="unit"><label>Copyright Statement</label>^ca_objects.rights.copyrightStatement</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.credit_line"><div class="unit"><label>Credit</label>^ca_objects.credit_line</div></ifdef>}}}
+
+<?php
 							if($vs_rep_viewer){
 ?>
 								<div class="unit"><label>Rights and Restrictions</label>
@@ -217,6 +239,7 @@
 <?php				
 							}
 ?>
+
 						</div>
 					</div></div><!-- end bgOffWhiteLight -->
 				</div>

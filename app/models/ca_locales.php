@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2019 Whirl-i-Gig
+ * Copyright 2008-2023 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -176,20 +176,7 @@ class ca_locales extends BaseModel {
 
 	protected $FIELDS;
 	
-	# ------------------------------------------------------
-	# --- Constructor
-	#
-	# This is a function called when a new instance of this object is created. This
-	# standard constructor supports three calling modes:
-	#
-	# 1. If called without parameters, simply creates a new, empty objects object
-	# 2. If called with a single, valid primary key value, creates a new objects object and loads
-	#    the record identified by the primary key value
-	#
-	# ------------------------------------------------------
-	public function __construct($pn_id=null) {
-		parent::__construct($pn_id);	# call superclass constructor
-	}
+
 	# ------------------------------------------------------
 	public function insert($pa_options=null) {
 		$vm_rc = parent::insert($pa_options);
@@ -231,15 +218,19 @@ class ca_locales extends BaseModel {
 	}
 	# ------------------------------------------------------
 	/**
+	 * Return numeric locale_id for system default locale
 	 *
+	 * @return int
 	 */
 	static public function getDefaultCataloguingLocaleID() {
-		if(MemoryCache::contains('default_locale_id')) {
-			return MemoryCache::fetch('default_locale_id');
+		if(MemoryCache::contains('default_locale_id') && ($locale_id = MemoryCache::fetch('default_locale_id'))) {
+			return $locale_id;
 		}
 		global $g_ui_locale_id;
 		
-		$va_locale_list = ca_locales::getLocaleList(array('available_for_cataloguing_only' => true));
+		if(!is_array($va_locale_list = ca_locales::getLocaleList(array('available_for_cataloguing_only' => true))) || !sizeof($va_locale_list)) {
+			$va_locale_list = ca_locales::getLocaleList();
+		}
 		
 		$vn_default_id = null;
 		if (isset($va_locale_list[$g_ui_locale_id])) { 
@@ -251,6 +242,15 @@ class ca_locales extends BaseModel {
 
 		MemoryCache::save('default_locale_id', $vn_default_id);
 		return $vn_default_id;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Return locale code (Eg. en_US) for system default locale
+	 *
+	 * @return string
+	 */
+	static public function getDefaultCataloguingLocale() {
+		return self::IDToCode(self::getDefaultCataloguingLocaleID());
 	}
 	# ------------------------------------------------------
 	/**
@@ -280,7 +280,7 @@ class ca_locales extends BaseModel {
 				foreach($va_locales as $va_locale) {
 					if ($vb_available_for_cataloguing_only && $va_locale['dont_use_for_cataloguing']) { continue; }
 
-					MemoryCache::save($va_locale['language'].'_'.$va_locale['country'], $va_locale['locale_id'], 'LocaleCodeToId');
+					MemoryCache::save(mb_strtolower($va_locale['language'].'_'.$va_locale['country']), $va_locale['locale_id'], 'LocaleCodeToId');
 					MemoryCache::save($va_locale['locale_id'], $va_locale['language'].'_'.$va_locale['country'], 'LocaleIdToCode');
 					MemoryCache::save($va_locale['locale_id'], $va_locale['name'], 'LocaleIdToName');
 				}
@@ -319,7 +319,7 @@ class ca_locales extends BaseModel {
  				$va_locales[$vn_id] = $vm_val;
  			}
 
-			MemoryCache::save($vs_code, $vn_id, 'LocaleCodeToId');
+			MemoryCache::save(mb_strtolower($vs_code), $vn_id, 'LocaleCodeToId');
 			MemoryCache::save($vn_id, $vs_code, 'LocaleIdToCode');
 			MemoryCache::save($vn_id, $vs_name, 'LocaleIdToName');
  		}
@@ -408,6 +408,7 @@ class ca_locales extends BaseModel {
 	 * @return int The locale_id of the locale, or null if the code is invalid
 	 */
 	public function loadLocaleByCode($ps_code) {
+		$ps_code = mb_strtolower($ps_code);
 		if (!MemoryCache::contains($ps_code, 'LocaleCodeToId')){
 			ca_locales::getLocaleList(array('index_by_code' => true));
 		}
@@ -438,6 +439,7 @@ class ca_locales extends BaseModel {
 	 */
 	static public function codeToID($ps_code) {
 		if (strlen($ps_code) == 0) { return null; }
+		$ps_code = mb_strtolower($ps_code);
 		if (!MemoryCache::contains($ps_code, 'LocaleCodeToId')){
 			ca_locales::getLocaleList(array('index_by_code' => true));
 		}
@@ -520,6 +522,21 @@ class ca_locales extends BaseModel {
 	    }
 	    
 		return $pb_codes_only ? array_keys($va_locales) : $va_locales;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Text direction for locale, either "ltr" for left-to-right or "rtl" for right-to-left
+	 *
+	 * @param string $locale
+	 *
+	 * @return string 'rtl' or 'ltr'
+	 */
+	static function directionForLocale(string $locale) : string {
+		$locale_data = Zend_Locale_Data::getList($locale, 'layout');
+		if($locale_data['characterOrder'] === 'right-to-left') {
+			return 'rtl';
+		}
+		return 'ltr';
 	}
 	# ------------------------------------------------------
 }

@@ -81,7 +81,7 @@
 
  			caSetPageCSSClasses(array("sets", "transcribe"));
  			
-			$this->purifier = caGetHTMLPurifier();
+			$this->purifier = new HTMLPurifier();
 			
  			parent::setTableSpecificViewVars();
  		}
@@ -520,15 +520,15 @@
 			switch($transcription_status[$key][$id]['status']) {
 				case __CA_TRANSCRIPTION_STATUS_NOT_STARTED__:
 				default:
-					$status =  "Not started";
+					$status =  _t("Not started");
 					$status_color = 'success';
 					break;
 				case __CA_TRANSCRIPTION_STATUS_IN_PROGRESS__:
-					$status = "In progress";
+					$status = _t("In progress");
 					$status_color = 'warning';
 					break;
 				case __CA_TRANSCRIPTION_STATUS_COMPLETED__:
-					$status = "Completed";
+					$status = _t("Completed");
 					$status_color = 'danger';
 					break;
 			}

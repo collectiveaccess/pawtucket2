@@ -308,7 +308,7 @@ h1 i {
 	color:#cccccc;
 }
 .navbar-brand img {
-  	width:100%;
+  	width: 100%;
 }
 .navbar-brand {
 	width:200px;
@@ -2881,6 +2881,7 @@ a.browseRemoveFacet .glyphicon {
 #caMediaPanelContentArea {
 	width: 100%; 
 	height: 100%;
+	margin-top: 40px;
 }
 
 #caMediaOverlayContent {
@@ -2892,7 +2893,7 @@ a.browseRemoveFacet .glyphicon {
 }
 
 div.caMediaOverlayControls {
-	background-color: #000;
+	background-color: rgba(0,0,0,.5);
 	color:#FFF;
 	font-size: 11px;
 	text-align:center;
@@ -2902,7 +2903,7 @@ div.caMediaOverlayControls {
 	bottom:0px;
 	left:0px;
 	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
-	opacity:.5;	
+	opacity:1;	
 }
 
 div.caMediaOverlayControlsMinimal {
@@ -2935,9 +2936,14 @@ div.caMediaOverlayControls .close{
 	float:right;
 	margin: 0px 10px 0px 20px;
 	font-size: 22px;
-	opacity: 0.9;
+	text-shadow: 0 1px 0 #000000;
+	opacity: 1;
 }
-
+div.caMediaOverlayControls .close a .fa{
+	color:red;
+	font-size: 24px;
+	opacity: 1;
+}
 div.caMediaOverlayControls .nextPreviousLinks{
 	float:right;
 	margin: 0px 10px 0px 20px;
@@ -3017,6 +3023,74 @@ div.caMediaOverlayRepThumbs img{
 }
 div.caMediaOverlayRepThumbs a.selectedRep img{
 	border:1px solid #FFF;
+}
+
+.caAudioPlayer {
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0px;
+}
+
+.caAudioPlayerEmbedded {
+	position: absolute;
+	bottom: 0;
+	left:0;
+	right:0;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0px;
+	width: 100%;
+	height: 40px;
+}
+
+#caMediaOverlayContent {
+	margin: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	text-align: center;
+	background-color: #000;
+}
+
+div.caMediaOverlayControls {
+	background-color: rgba(0,0,0,.5);
+	color:#FFF;
+	font-size: 11px;
+	text-align:center;
+	position:absolute;
+	padding: 10px 0px 10px 0px;
+	width:100%;
+	height: 40px;
+	top:0px;
+	left:0px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:1;	
+}
+
+.plyr {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
+.plyr .plyr__video-wrapper {
+	width: 100%;
+	height: 100%;
+}
+.plyr video {
+	height: 100%;
+	width: 100%;
+	object-fit: fill;
+}
+.plyr__poster {
+	background-size: contain;
+}
+.video-responsive {
+	position: relative;
+	width: 100%;
+	height: 100%;
 }
 
 
@@ -3632,7 +3706,7 @@ div.caLibraryTransactionListItemContainer {
     -moz-border-radius-: 4px;
     -webkit-border-radius: 4px;
     
-	margin: 5px 0 0 0;
+	margin: -20px 0 0 0;
 }
 
 div.caLibraryTransactionListItemMedia {
@@ -3706,4 +3780,8 @@ table.caLibraryHistory, tr.caLibraryHistory, th.caLibraryHistory, td.caLibraryHi
 a.form-button, span.form-button {
 	text-decoration: none;
 	cursor: pointer;	
+
+.highlightText {
+	background-color: #FBF719;
+	opacity: 0.8;
 }

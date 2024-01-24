@@ -294,4 +294,18 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		print $this->render('Browse/browse_panel_subview_html.php');
 } //!ajax
+
+
+if(($this->request->getAction() == 'Contributors') && ($qr = ca_entities::findAsSearchResult(['type_id' => 'member'], ['sort' => 'ca_entities.preferred_labels.displayname']))) {
 ?>
+	<h2>Contributors</h2>
+	
+	<div class="members row">
+<?php
+	while($qr->nextHit()) {
+		print "<div class='col-6 col-sm-4 col-md-3 col-lg-3 col-xl-3 text-center' style='height: 300px;'>".$qr->getWithTemplate('<div class="memberImage"><l>^ca_object_representations.media.iconlarge</l></div><div class="memberCaption"><l>^ca_entities.preferred_labels.displayname</l></div>')."<br style='clear: both;'/></div>\n";
+	}
+?>
+	</div>
+<?php
+}

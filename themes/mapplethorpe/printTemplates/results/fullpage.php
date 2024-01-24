@@ -71,7 +71,7 @@
 			<div class="fullpageRepresentationList">
 		
 <?php
-				if($vs_path = $vo_result->getMediaUrl('ca_object_representations.media', 'mediumcontain')){
+				if($vs_path = $vo_result->getMediaPath('ca_object_representations.media', 'mediumcontain')){
 					print "<div class='fullpageRepresentationListLargeImage'><img src='".$vs_path."'/></div>\n";
 				
 				}
