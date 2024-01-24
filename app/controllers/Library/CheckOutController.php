@@ -25,10 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
-
 require_once(__CA_APP_DIR__.'/helpers/libraryServicesHelpers.php');
 require_once(__CA_LIB_DIR__.'/Search/ObjectSearch.php');
-require_once(__CA_MODELS_DIR__.'/ca_object_checkouts.php');
 require_once(__CA_LIB_DIR__.'/ResultContext.php');
 
 class CheckOutController extends ActionController {
@@ -63,6 +61,7 @@ class CheckOutController extends ActionController {
 		
 		$this->view->setVar('user_id', $user_id);
 		$this->view->setVar('checkout_types', ca_object_checkouts::getObjectCheckoutTypes());
+		$this->view->setVar('config', Configuration::load(__CA_CONF_DIR__."/library_services.conf"));
 		
 		$this->render('checkout/items_html.php');
 	}
@@ -164,7 +163,7 @@ class CheckOutController extends ActionController {
 				'object_id' => $t_object->getPrimaryKey(),
 				'idno' => $t_object->get('idno'),
 				'name' => $t_object->get('ca_objects.preferred_labels.name'),
-				'media' => $t_object->getWithTemplate('^ca_object_representations.media.icon'),
+				'media' => $t_object->getWithTemplate('^ca_object_representations.media.icon%filterNonPrimaryRepresentations=1'),
 				'status' => $status,
 				'status_display' => $status_display,
 				'numReservations' => is_array($reservations) ? sizeof($reservations) : 0,
@@ -174,8 +173,7 @@ class CheckOutController extends ActionController {
 				'current_user' => $current_user,
 				'current_user_checkout_date' => $current_user_checkout_date,
 				'isOutWithCurrentUser' => ($user_id == $current_user_id),
-				'isReservedByCurrentUser' => $vb_is_reserved_by_current_user,
-			
+				'isReservedByCurrentUser' => $vb_is_reserved_by_current_user,			
 				'reserve_display_label' => $reserve_display_label,
 				'due_on_display_label' => _t('Due on'),
 				'notes_display_label' => _t('Notes'),
@@ -213,11 +211,20 @@ class CheckOutController extends ActionController {
 			$sender_name = $library_config->get('notification_sender_name');
 			$subject = _t('Receipt for check out');
 			
+			$per_transaction_checkout_notes_and_due_date = $library_config->get('per_transaction_checkout_notes_and_due_date');
+			$transaction_notes = $this->request->getParameter('transaction_notes', pString);
+			$transaction_due_date = $this->request->getParameter('transaction_due_date', pString);
+			
 			$checked_out_items = $reserved_items = [];
 			$t_object = new ca_objects();
 			foreach($item_list as $i => $item) {
 				if (!$t_object->load(array('object_id' => $item['object_id'], 'deleted' => 0))) { continue; }
 			
+				if($per_transaction_checkout_notes_and_due_date) {
+					$item['note'] = $transaction_notes;
+					$item['due_date'] = $transaction_due_date;
+				}
+				
 				$name = $t_object->getWithTemplate("^ca_objects.preferred_labels.name (^ca_objects.idno)");
 				if ($checkout_info = $t_checkout->objectIsOut($item['object_id'])) {
 					if ($checkout_info['user_id'] == $user_id) {

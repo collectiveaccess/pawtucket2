@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * library/checkin/widget_checkout_html.php : 
+ * library/checkin/widget_checkin_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source places management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2023 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,33 +25,9 @@
  *
  * ----------------------------------------------------------------------
  */
-$user_id = $this->getVar('user_id');
-$t_user = $this->getVar('t_user');
 ?>
-	<h3 class='libraryCheckOut'><?= _t('Library check out'); ?>:
-	<div>
-<?php
-	if ($t_user->getPrimaryKey()) {
-		print _t('Checkout for %1 (%2)', trim($t_user->get('fname').' '.$t_user->get('lname')),  $t_user->get('email'));
-		
-		if(
-			is_array($checkouts = ca_object_checkouts::getOutstandingCheckoutsForUser($user_id, "<unit relativeTo='ca_objects'><l>^ca_objects.preferred_labels.name</l> (^ca_objects.idno)</unit> <em>Due ^ca_object_checkouts.due_date%timeOmit=1</em>"))
-			&&
-			(sizeof($checkouts) > 0)
-		) {
-			print "<div class='caLibraryCheckoutList'>\n";
-			print "<h4>"._t('User holds:')."</h4>\n";
-			print "<ul class='caLibraryCheckoutList'>\n";
-			foreach($checkouts as $checkout) {
-				print "<li>".$checkout['_display']."</li>\n";
-			}
-			print "</ul>\n";
-			print "</div>\n";
-		}
-	} else {
-		// User not selected yet
-		print _t('Items out (all users): %1', ca_object_checkouts::numOutstandingCheckouts())."<br/>\n";
-	}
-?>
-	</div>
+	<h3 class='libraryCheckIn'><?php print _t('Library check in'); ?>:
+	<div><?php
+		print _t('Outstanding items: %1', ca_object_checkouts::numOutstandingCheckouts())."<br/>\n";
+	?></div>
 	</h3>

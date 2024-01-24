@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * library/checkout/ajax_data_json.php :
+ * library/checkin/ajax_data_json.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -25,4 +25,4 @@
  *
  * ----------------------------------------------------------------------
  */
-print json_encode($this->getVar('data'));
+	print json_encode($this->getVar('data'));

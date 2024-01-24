@@ -48,6 +48,8 @@
 
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<br/><h1>{{{^ca_objects.object_types}}}{{{ca_objects.preferred_labels.name}}}</h1><br/><br/>
+
+
 				{{{<ifdef code="ca_objects.taxonomic_name"><p><b>Taxonomic name: </b>^ca_objects.taxonomic_name</p></ifdef>}}}
 				{{{<ifdef code="ca_objects.idno"><p><b>Identifier: </b>^ca_objects.idno</p></ifdef>}}}
 				{{{<ifdef code="ca_objects.additional_idnos"><p><b>Alternate Identifier: </b>^ca_objects.additional_idnos</p></ifdef>}}}
@@ -64,7 +66,15 @@
 				{{{<ifdef code="ca_objects.history_tracking_current_value%policy=current_location"><p><b>Storage Location: </b>^ca_objects.history_tracking_current_value%policy=current_location%stripTags=1<br/></p></ifdef>}}}				
 
 <?php
-				print "<p><b>Lending status: </b> ".$t_object->getCheckoutStatus(['returnAsText' => true]);
+				if ($t_object->getCheckoutStatus() == 1) {
+					print "<p><b>Lending status: </b> <span style='font-size: 17px; color: red; font-weight:bolder;'>Item is ".$t_object->getCheckoutStatus(['returnAsText' => true])."</span>";
+				}elseif($t_object->getCheckoutStatus() == 0){
+					print "<p><b>Lending status: </b> <span style='font-size: 17px; color: green; font-weight:bolder;'>Item is ".$t_object->getCheckoutStatus(['returnAsText' => true])."</span>";
+				}
+				
+				// out 1
+				// available 0
+				
 				$checkout_info = $t_object->getCheckoutStatus(['returnAsArray' => true]);
 				
 				switch($checkout_status = $t_object->getCheckoutStatus()) {
@@ -77,10 +87,45 @@
 					default:
 						break;
 				}
-				print "</p>\n";
+				print "</p>\n";			
+?>
+
+				{{{<ifdef code="ca_objects.idno"><p><b>Identifier: </b>^ca_objects.idno</p></ifdef>}}}
+				{{{<ifdef code="ca_objects.additional_idnos"><p><b>Alternate Identifier: </b>^ca_objects.additional_idnos</p></ifdef>}}}
+
+				{{{<ifdef code="ca_objects.division"><p><b>Division: </b>^ca_objects.division</p></ifdef>}}}
+				{{{<ifdef code="ca_objects.access_restrictions"><p><b>Access restrictions: </b>^ca_objects.access_restrictions</p></ifdef>}}}
+				{{{<ifdef code="ca_objects.user_handling_notes"><p><b>User handling guidelines: </b>^ca_objects.user_handling_notes</p></ifdef>}}}
+				{{{<ifdef code="ca_objects.description"><p><b>Description: </b><span class="trimText">^ca_objects.description</span><br/></p></ifdef>}}}				
+				{{{<ifdef code="ca_objects.anthro_locale"><p><b>Locale: </b>^ca_objects.anthro_locale</p></ifdef>}}}
 				
-				//print_R();
-?>				
+				{{{<ifdef code="ca_objects.anthro_state_province"><p><b>State/Province: </b>^ca_objects.anthro_state_province<br/></p></ifdef>}}}	
+				{{{<ifdef code="ca_objects.anthro_country"><p><b>Country: </b>^ca_objects.anthro_country<br/></p></ifdef>}}}	
+
+
+<?php
+
+				$inputString = $t_object->get('ca_objects.history_tracking_current_value');
+				$strippedString = preg_replace("/<a(.*?)>(.*?)<\/a>/i", "$2", $inputString);
+				$inputString = $strippedString;
+
+				$pattern = "/Old locations/";
+
+				if (preg_match($pattern, $inputString)) {
+					print '<p><strong>Last Known Location: </strong>' . $inputString . '<br/></p>' ;
+				} else {
+?>
+					{{{<ifdef code="ca_objects.history_tracking_current_value%policy=current_location">
+						<p><strong>Current Storage Location: </strong>
+							^ca_objects.history_tracking_current_value%policy=current_location%stripTags=1
+						<br/></p>
+					</ifdef>}}}	
+<?php
+				}
+?>
+				
+				<!-- {{{<ifdef code="ca_objects.history_tracking_current_value%policy=current_location"><p><b>Current Storage Location: </b>^ca_objects.history_tracking_current_value%policy=current_location%stripTags=1<br/></p></ifdef>}}}	 -->
+				
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-6">		
