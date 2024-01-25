@@ -13,7 +13,6 @@ a{
 	height:auto;
 }
 
-
 /* ------------------------- Front ------------------------- */
 .parallax {
     position: relative;
@@ -87,9 +86,32 @@ a{
 /* ------------------------- browse results ------------------------- */
 #browseResultsContainer{
 	.card{
-		img{
-			max-height:200px;
+		img.object-fit-cover{
 			object-position:top center;
 		}
+		img, .ca-placeholder{
+			height:200px;
+			width:100%
+		}
+	}
+}
+#bRefine{
+	z-index:999;
+}
+@media(max-width:767px) {
+	#bRefine{
+		position:fixed;
+		top: 0px;
+		width: 100%;
+		left: 0px;
+		display:none;
+	}	
+	#bRefine.show{
+		display:block !important;
+	}
+}
+@media(min-width:768px) {
+	#bRefine{
+		display:block !important;
 	}
 }

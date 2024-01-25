@@ -18,6 +18,7 @@ setup.php
 /app/log/log*.txt
 /app/log/*.log
 /themes/default/css/local.css
+/themes/default/node_modules/*
 /themes/default/views/bundles/inspector_info.php
 /support/scripts/*.php
 /support/scripts/*.sh
