@@ -249,5 +249,18 @@ $current_sort_dir 					= $this->getVar('direction');
 			});
 		
 		});
+		
+		jQuery('.setDelete').on('click', function(e) {
+			var set_id = jQuery(this).data('set_id');
+			jQuery.getJSON('<?= caNavUrl($this->request, '*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id, 'csrfToken': <?= json_encode(caGenerateCSRFToken($this->request)); ?> }, function(data) {
+				if(data.status == 'ok') {
+					jQuery("#lbSetContainer" + set_id).parent().remove();
+					if (jQuery('.lbSetContainer').length == 0) { jQuery('#lbSetListPlaceholder').show(); } else { jQuery('#lbSetListPlaceholder').hide(); }
+					jQuery("#lbSetListErrors").hide();
+				} else {
+					jQuery("#lbSetListErrors").html(data.errors.join(';')).show();
+				}
+			});
+		});
 	});
 </script>

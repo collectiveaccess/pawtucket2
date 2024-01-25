@@ -1463,17 +1463,20 @@ class LightboxController extends FindController {
 				$t_object = new ca_objects($item['row_id']);
 				$t_rep = $t_object->getPrimaryRepresentationInstance();
 			}
-			$start = null;
+			$start = $ned = null;
 			if($annotation_id = $item['annotation_id']) {
 				$t_anno = new ca_user_representation_annotations($annotation_id);
-			 	$start = $t_anno->getPropertyValue('startTimecode', ['format' => 'seconds']);
+			 	$start = $t_anno->getPropertyValue('startTimecode', ['format' => 'seraconds']);
+			 	$end = $t_anno->getPropertyValue('endTimecode', ['format' => 'seconds']);
 			}
 			$representations[] = $t_rep;
-			$start_times[] = $start;
+			$start_times[] = (int)$start;
+			$end_times[] = (int)$end;
 		}
 		
 		$this->view->setVar('representations', $representations);
 		$this->view->setVar('startTimes', $start_times);
+		$this->view->setVar('endTimes', $end_times);
 		
 		$this->render('Lightbox/compare_html.php');
 	}

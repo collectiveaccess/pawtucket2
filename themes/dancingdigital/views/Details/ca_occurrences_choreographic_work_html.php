@@ -55,7 +55,25 @@
 			<div class="row justify-content-center" style="padding-top: 20px; padding-bottom: 40px;">
 				{{{<ifdef code="ca_object_representations.media.medium">
 					<div class="col occurrence-img align-self-center mb-4">
-						<l>^ca_object_representations.media.medium</l>
+<?php
+	$media = null;
+	if(($objects = $t_item->getRelatedItems('ca_objects', ['restrictToRelationshipTypes' => ['featured'], 'returnAs' => 'searchResult'])) && $objects->nextHit()) {
+		$t_object = $objects->getInstance();
+		$rep = $t_object->getPrimaryRepresentationInstance();
+		
+		if(caGetMediaClass($rep->get('ca_object_representations.mimetype')) === 'video') {
+			$media = $rep->get('ca_object_representations.media.original');
+		}
+	}
+
+	if($media) {
+		print $media;
+	} else {
+?>
+		<l>^ca_object_representations.media.medium</l>
+<?php
+	}
+?>
 					</div> 
 				</ifdef>}}}
 				<div class="col align-self-center">

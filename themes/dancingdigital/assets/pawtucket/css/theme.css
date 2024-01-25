@@ -1151,6 +1151,10 @@ a.browseRemoveFacet img {
 	color: #757575;
 }
 
+.lbSetExpandedInfo div a {
+	color: #000 !important;
+}
+
 .lbItemContainer .lbSetItemComment {
 	padding-top: 25px;
 }

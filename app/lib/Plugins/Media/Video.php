@@ -1051,7 +1051,7 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 		$name 	= 	$options["name"] ?? $id;
 		$class 	= 	$options["class"] ?? "caVideoPlayer";
 		$start 	= 	caGetOption('start', $options, 0);
-		
+		$end 	= 	caGetOption('end', $options, 0);
 		switch($properties["mimetype"]) {
 			# ------------------------------------------------
 			case "video/x-flv":
@@ -1090,12 +1090,22 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 							controls: [<?= join(',', array_map(function($v) { return "'".addslashes(preg_replace("![\"']+!", '', $v))."'"; }, $controls)); ?>],
 						};
 						const player = new Plyr('#<?= $id; ?>', options);
+						let autostopped = false;
 						jQuery('#<?= $id; ?>').data('player', player);
 						if (caUI.mediaPlayerManager) { 
 							caUI.mediaPlayerManager.register("<?= $id; ?>", player, 'Plyr'); 
 							if(<?= (int)$start; ?> > 0) {
 								caUI.mediaPlayerManager.play("<?= $id; ?>");
 								caUI.mediaPlayerManager.seek("<?= $id; ?>", <?= (int)$start; ?>);
+							}
+							if((<?= (int)$end; ?> > 0) && !autostopped) {
+								caUI.mediaPlayerManager.onTimeUpdate('<?= $id; ?>', function() {
+									var ct = caUI.mediaPlayerManager.currentTime('<?= $id; ?>');
+									if((ct > <?= $end; ?>) && !autostopped) {
+										caUI.mediaPlayerManager.stop("<?= $id; ?>");
+										autostopped = true;
+									}
+								});
 							}
 						}
 					});

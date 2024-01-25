@@ -675,7 +675,7 @@ function caLightboxSetListItem($po_request, $t_set, $va_check_access = array(), 
 	$vs_set_display .= "<div class='lbSetExpandedInfo' id='lbExpandedInfo{$vn_set_id}'>\n<hr><div>created by: ".trim($t_set->get("ca_users.fname")." ".$t_set->get("ca_users.lname"))."</div>\n";
 	$vs_set_display .= "<div>"._t("Items: %1", $t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access)))."</div>\n";
 	if($vb_write_access){
-		$vs_set_display .= "<div class='pull-right'><a href='#' data-set_id=\"".(int)$t_set->get('set_id')."\" data-set_name=\"".addslashes($t_set->get('ca_sets.preferred_labels.name'))."\" data-toggle='modal' data-target='#confirm-delete'><span class='glyphicon glyphicon-trash'></span></a></div>\n";
+		$vs_set_display .= "<div class='pull-right'><a href='#' data-set_id=\"".(int)$t_set->get('set_id')."\" data-set_name=\"".addslashes($t_set->get('ca_sets.preferred_labels.name'))."\" data-toggle='modal' data-target='#confirm-delete' class='setDelete'><span class='glyphicon glyphicon-trash'></span></a></div>\n";
 	}
 	$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment{$vn_set_id}\").load(\"".caNavUrl($po_request, '', 'Lightbox', 'AjaxListComments', array('type' => 'ca_sets', 'set_id' => $vn_set_id))."\", function(){jQuery(\"#lbSetThumbRow{$vn_set_id}\").hide(); jQuery(\"#comment{$vn_set_id}\").show();}); return false;' title='"._t("Comments")."'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getNumComments()."</small></a>";
 	if($vb_write_access){
@@ -746,7 +746,7 @@ function caClassroomSetListItem($po_request, $t_set, $va_check_access = array(),
 			$vs_set_display .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', '*', 'setAccess', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Manage %1 Access", ucfirst($vs_classroom_displayname))."'><span class='glyphicon glyphicon-user'></span></a>&nbsp;&nbsp;\n";
 		}
 		$vs_set_display .= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Classroom', 'setForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>&nbsp;&nbsp;\n";
-		$vs_set_display .= "<a href='#' title='"._t("Delete")."' data-set_id=\"".(int)$t_set->get('set_id')."\" data-set_name=\"".addslashes($t_set->get('ca_sets.preferred_labels.name'))."\" data-toggle='modal' data-target='#confirm-delete'><span class='glyphicon glyphicon-trash'></span></a></div>\n";
+		$vs_set_display .= "<a href='#' title='"._t("Delete")."' data-set_id=\"".(int)$t_set->get('set_id')."\" data-set_name=\"".addslashes($t_set->get('ca_sets.preferred_labels.name'))."\" data-toggle='modal' data-target='#confirm-delete'  class='setDelete'><span class='glyphicon glyphicon-trash'></span></a></div>\n";
 	}
 
 	$vs_set_display .= "<small>"._t("Items: %1", $t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access)))."&nbsp;&nbsp;&nbsp;"._t("Comments: %1", $t_set->getNumComments());

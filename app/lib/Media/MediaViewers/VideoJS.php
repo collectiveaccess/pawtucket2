@@ -62,6 +62,10 @@ class VideoJS extends BaseMediaViewer implements IMediaViewer {
 							$start = $t_anno->getPropertyValue('startTimecode');
 							$tc = new TimecodeParser($start);
 							$start_seconds = $tc->getSeconds();
+							
+							$end= $t_anno->getPropertyValue('endTimecode');
+							$tc = new TimecodeParser($end);
+							$end_seconds = $tc->getSeconds();
 						}
 					}
 				}
@@ -71,7 +75,7 @@ class VideoJS extends BaseMediaViewer implements IMediaViewer {
 					'id' => $vs_id, 'class' => caGetOption('class', $pa_data['display'], null),
 					'viewer_width' => caGetOption('viewer_width', $pa_data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $pa_data['display'], '100%'),
 					'poster_frame_url' => $poster, 'captions' => $t_instance->getCaptionFileList(), 'autoplay' => caGetOption('autoplay', $pa_data['display'], false),
-					'controls' => caGetOption('controls', $pa_data['display'], null), 'start' => $start_seconds,
+					'controls' => caGetOption('controls', $pa_data['display'], null), 'start' => $start_seconds, 'end' => $end_seconds,
 					'dont_init_plyr' => caGetOption('dontInitPlyr', $pa_options, caGetOption('dontInitPlyr', $pa_data['display'], null)),
 				];
 				
