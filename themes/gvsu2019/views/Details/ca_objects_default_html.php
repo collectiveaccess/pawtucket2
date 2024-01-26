@@ -128,7 +128,7 @@
 								}
 								ksort($va_subjects_sorted);
 								print "<H6>Getty Art and Architecture Thesaurus Term".((sizeof($va_subjects) > 1) ? "s" : "").":</H6>";
-								print join($va_subjects_sorted, "<br/>");
+								print join("<br/>", $va_subjects_sorted);
 							}
 							print '</div>
 								<div class="col-sm-6">';
