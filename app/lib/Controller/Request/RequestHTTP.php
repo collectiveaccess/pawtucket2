@@ -272,7 +272,13 @@ class RequestHTTP extends Request {
 	}
 	# -------------------------------------------------------
 	public static function isAjax() {
-		return ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest"));
+		if((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest")) {
+			return true;
+		}
+		if((isset($_SERVER['HTTP_HX_REQUEST']) && (bool)$_SERVER['HTTP_HX_REQUEST'])) {
+			return true;
+		}
+		return false;
 	}
 	# -------------------------------------------------------
 	function isDownload($pb_set_download=null) {

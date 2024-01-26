@@ -13,6 +13,10 @@ a{
 	height:auto;
 }
 
+.dropdown-menu{
+	box-shadow: 0 .35rem .25rem rgba(#000, .075);
+}
+
 /* ------------------------- Front ------------------------- */
 .parallax {
     position: relative;
@@ -87,7 +91,7 @@ a{
 #browseResultsContainer{
 	.card{
 		img.object-fit-cover{
-			object-position:top center;
+			object-position:middle center;
 		}
 		img, .ca-placeholder{
 			height:200px;
@@ -113,5 +117,30 @@ a{
 @media(min-width:768px) {
 	#bRefine{
 		display:block !important;
+	}
+}
+
+/* ------------------------- Collections ------------------------- */
+.collections{
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img{
+			height:200px;
+			width:100%
+		}
+	}
+}
+/* ------------------------- Collections ------------------------- */
+.gallery{
+	.card{
+		img.object-fit-cover{
+			object-position:middle center;
+		}
+		img{
+			height:200px;
+			width:100%
+		}
 	}
 }

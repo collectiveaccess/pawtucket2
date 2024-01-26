@@ -56,19 +56,12 @@
 						<li class="nav-item">
 							<?php print caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 						</li>
-						<li class="nav-item dropdown">
-							<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								<?= _t('Browse'); ?>
-							</a>
-							<ul class="dropdown-menu">
-								<li><a class="dropdown-item" href="/Browse/objects"><?= _t('Objects'); ?></a></li>
-								<li><a class="dropdown-item" href="/Browse/entities"><?= _t('Entities'); ?></a></li>
-								<li><a class="dropdown-item" href="/Browse/occurrences"><?= _t('Occurrences'); ?></a></li>
-								<li><a class="dropdown-item" href="/Browse/places"><?= _t('Places'); ?></a></li>
-							</ul>
-						</li>
+						<?= $this->render("pageFormat/browseMenu.php"); ?>	
 						<li class="nav-item">
 							<?php print caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "collections") ? " active" : ""), "", "Collections", "Index", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>
+						</li>
+						<li class="nav-item">
+							<?php print caNavlink($this->request, _t('Gallery'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
 						</li>
 						<li class="nav-item">
 							<?php print caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
@@ -106,7 +99,7 @@
 			</div>
 		</nav>	
 
-	<main role="main">
+	<main role="main" <?php print caGetPageCSSClasses(); ?>>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
 		print "<div class='container-xl pt-4'>";

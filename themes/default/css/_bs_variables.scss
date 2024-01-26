@@ -1,3 +1,26 @@
+// Quickly modify global styling by enabling or disabling optional features.
+
+$enable-caret:                true !default;
+$enable-rounded:              true !default;
+$enable-shadows:              false !default;
+$enable-gradients:            false !default;
+$enable-transitions:          true !default;
+$enable-reduced-motion:       true !default;
+$enable-smooth-scroll:        true !default;
+$enable-grid-classes:         true !default;
+$enable-container-classes:    true !default;
+$enable-cssgrid:              false !default;
+$enable-button-pointers:      true !default;
+$enable-rfs:                  true !default;
+$enable-validation-icons:     true !default;
+$enable-negative-margins:     false !default;
+$enable-deprecation-messages: true !default;
+$enable-important-utilities:  true !default;
+
+$enable-dark-mode:            true !default;
+$color-mode-type:             data !default; // `data` or `media-query`
+
+
 $gray-100: #f5f5f5 !default;
 $gray-200: #ecedee !default;
 $gray-300: #d0d3d5 !default;
@@ -101,6 +124,9 @@ $dark-bg-subtle:          $gray-400 !default;
 
 $box-shadow:                  0 1px 8px rgba(#000, .15) !default;
 
+// scss-docs-start border-radius-variables
+$border-radius:	0 !default;
+
 /* links */
 $link-color: $primary !default;
 $link-decoration: underline solid .5px  !default;
@@ -147,3 +173,7 @@ $focus-ring-box-shadow: 0 0 $focus-ring-blur $focus-ring-width $focus-ring-color
 $accordion-bg: $light-bg-subtle !default;
 $accordion-button-bg: $light !default;
 $accordion-button-active-bg: $light-bg-subtle !default;
+
+/* dropdowns */
+$dropdown-border-width:             0px !default;
+$dropdown-box-shadow:               0 .25rem .25rem rgba(#000, .075) !default; // --- this is only used when shadows are enabled so shadow is set in main.scss
