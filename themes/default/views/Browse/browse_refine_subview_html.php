@@ -37,25 +37,27 @@
 	$vs_current_view	= $this->getVar('view');
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	
-	$vn_facet_display_length_initial = 10;
 	$vn_facet_display_length_maximum = 60;
 	$vs_criteria = "";
 	if (sizeof($va_criteria) > 0) {
 		$i = 0;
 		$vb_start_over = false;
 		foreach($va_criteria as $va_criterion) {
-			$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter" role="button"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+			$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-secondary btn-sm w-100 mb-2" aria-label="'._t("Remove Filter").'">'.$va_criterion['value'].' <i class="bi bi-x-circle-fill ms-1"></i></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 			$vb_start_over = true;
 			$i++;
 		}
 		if($vb_start_over){
-			$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'._t("Start Over").'</button>', 'browseRemoveFacet', '', 'Browse', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0));
+			$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-secondary btn-sm w-100 mb-2">'._t("Start Over").'</button>', 'browseRemoveFacet', '', 'Browse', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0));
 		}
 	}
 	
 	if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->numHits() > 1)){
-		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
-		print "<div id='bRefine' class='bg-light sticky-top vh-100'>";
+?>
+		<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>
+		<div id='bRefine' class='bg-light sticky-md-top vh-100 collapse'>
+			<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
+<?php
 		if($qr_res->numHits() > 1){
 ?>
 			<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
@@ -67,11 +69,10 @@
 <?php
 		}
 		if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria)){
-			print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 			print "<H2 class='fs-4 px-3 py-2'>"._t("Filter by")."</H2>";
 			
 			if($vs_criteria){
-				print "<div class='bCriteria'>".$vs_criteria."</div>";
+				print "<div class='p-3'>".$vs_criteria."</div>";
 			}
 			print '<div class="accordion accordion-flush" id="browseRefineFacets">';
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
@@ -97,7 +98,7 @@
 					print "<div class='accordion-header' id='heading".$vs_facet_name."'><button class='accordion-button collapsed fw-medium text-capitalize ' type='button' data-bs-toggle='collapse' data-bs-target='#".$vs_facet_name."' aria-expanded='false' aria-controls='".$vs_facet_name."'>".$va_facet_info['label_singular']."</button></div>";
 
 					print "<div id='".$vs_facet_name."' class='accordion-collapse collapse' aria-labelledby='heading".$vs_facet_name."' data-bs-parent='#browseRefineFacets'>
-      					<div class='accordion-body '>";
+      					<div class='accordion-body small'>";
 					switch($va_facet_info["group_mode"]){
 						case "alphabetical":
 						case "list":
@@ -106,26 +107,16 @@
 							$vn_c = 0;
 							foreach($va_facet_info['content'] as $va_item) {
 								$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-								print "<div>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+								print "<div class='mb-1'>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 								$vn_c++;
 						
-								if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
-									print "<span id='{$vs_facet_name}_more' style='display: none;'>";
-								} else {
-									if(($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
-										break;
-									}
+								if(($vn_c == $vn_facet_display_length_maximum))  {
+### --- JS needs to be updated here to work
+									print "<div><a href='#' class='more' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'><em>CHANGE ME TO OPEN IN A PANEL"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
+									break;
 								}
 							}
-							if (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
-								print "</span>\n";
-						
-								$vs_link_open_text = _t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial);
-								$vs_link_close_text = _t("close", $vn_facet_size - $vn_facet_display_length_initial);
-								print "<div><a href='#' class='more' id='{$vs_facet_name}_more_link' onclick='jQuery(\"#{$vs_facet_name}_more\").slideToggle(250, function() { jQuery(this).is(\":visible\") ? jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_close_text)."\") : jQuery(\"#{$vs_facet_name}_more_link\").text(\"".addslashes($vs_link_open_text)."\")}); return false;'><em>{$vs_link_open_text}</em></a></div>";
-							} elseif (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum)) {
-								print "<div><a href='#' class='more' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'><em>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
-							}
+							
 						break;
 						# ---------------------------------------------
 					}
@@ -137,24 +128,6 @@
 		}
 		print "</div><!-- end bRefine -->\n";
 ?>
-	<script type="text/javascript">
-		jQuery(document).ready(function() {
-            if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
-				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
-				var panelWidth = jQuery('#bRefine').width();
-				jQuery(window).scroll(function () {
-					var scrollTop = $(window).scrollTop();
-					// check the visible top of the browser
-					if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height()) > scrollTop)) {
-						jQuery('#bRefine').addClass('fixed');
-						jQuery('#bRefine').width(panelWidth);
-					} else {
-						jQuery('#bRefine').removeClass('fixed');
-					}
-				});
-            }
-		});
-	</script>
 <?php	
 	}
 ?>

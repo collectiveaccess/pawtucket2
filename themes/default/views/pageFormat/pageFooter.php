@@ -34,7 +34,7 @@
 	}
 ?>
 		<footer id="footer" class="p-5 text-center mt-auto bg-dark text-bg-dark">
-			<div class="container">
+			<div class="container-xl">
 				<div class="display-4">CollectiveAccess</div>
 				<ul class="list-inline pt-3 fw-medium">
   					<li class="list-inline-item text-bg-dark small">&copy; 2024</li>
