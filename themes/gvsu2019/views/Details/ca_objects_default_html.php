@@ -148,7 +148,7 @@
 									$va_terms[] = caNavLink($this->request, $vs_lcsh_term, "", "", "MultiSearch", "Index", array("search" => urlencode($vs_lcsh_term)));
 								}
 							}
-							print join($va_terms, "<br/>");
+							print join("<br/>", $va_terms);
 						}
 				
 ?>				
