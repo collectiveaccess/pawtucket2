@@ -1730,6 +1730,7 @@
 		  *		autocomplete = 
 		  *		value = 
 		  *		values = 
+		  *		attributes = 
 		  *		
 		  * @return string HTML text of form element. Will return null (from superclass) if it is not possible to generate an HTML form widget for the bundle.
 		  */
@@ -1742,13 +1743,16 @@
 				return $this->getTypeListAsHTMLFormElement($ps_field.$vs_rel_types, array('id' => str_replace('.', '_', $ps_field), 'class' => caGetOption('class', $pa_options, null)), array_merge($pa_options, array('nullOption' => '-')));
 			}
 			
+			$attributes = caGetOption('attributes', $pa_options, null);
+			if(!is_array($attributes)) { $attributes = []; }
+			
 			if ($ps_render = caGetOption('render', $pa_options, null)) {
 				switch($ps_render) {
 					case 'is_set':
-						return caHTMLCheckboxInput($ps_field.$vs_rel_types, array('value' => '['._t('SET').']'));
+						return caHTMLCheckboxInput($ps_field.$vs_rel_types, array_merge($attributes, ['value' => '['._t('SET').']']));
 						break;
 					case 'is':
-						return caHTMLCheckboxInput($ps_field.$vs_rel_types, array('value' => caGetOption('value', $pa_options, null)));
+						return caHTMLCheckboxInput($ps_field.$vs_rel_types, array_merge($attributes, ['value' => caGetOption('value', $pa_options, null)]));
 						break;
 				}
 			}
@@ -1783,7 +1787,8 @@
 								'class' => (isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '',
 								'format' => '^ELEMENT',
 								'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT',
-								'placeholder' => $pa_options['placeholder'] ?? null
+								'placeholder' => $pa_options['placeholder'] ?? null,
+								'attributes' => $attributes
 							)));
 				}
 			}
@@ -1820,6 +1825,10 @@
 				return $this->getTypeListAsHTMLFormElement($ps_field, ($use_current_row_value ? ['value' => $this->get($this->getTypeFieldName())] : null), $pa_options);
 			}
 			
+			$attributes = caGetOption('attributes', $pa_options, null);
+			if(!is_array($attributes)) { $attributes = []; }
+			
+			
 			if ($va_tmp[0] != $this->tableName()) { return null; }
 			if (!$this->hasField($va_tmp[1])) {
 				$va_tmp[1] = preg_replace('!^ca_attribute_!', '', $va_tmp[1]);	// if field space is a bundle placement-style bundlename (eg. ca_attribute_<element_code>) then strip it before trying to pull label
@@ -1834,7 +1843,8 @@
 							'id' => (isset($pa_options['id']) && $pa_options['id']) ? $pa_options['id'] : null,
 							'format' => '^ELEMENT',
 							'forSimpleForm' => true,
-							'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT'
+							'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT',
+							'attributes' => $attributes
 						)));
 			}
 			return parent::htmlFormElementForSimpleForm($po_request, $ps_field, array_merge($pa_options, array('view' => caGetOption('view', $pa_options, 'ca_simple_form_attributes.php'))));
@@ -2183,6 +2193,9 @@
 				return false;
 			}
 			
+			$attributes = caGetOption('attributes', $pa_options, null);
+			if(!is_array($attributes)) { $attributes = []; }
+			
 			$use_current_row_value = caGetOption('useCurrentRowValueAsDefault', $pa_options, false);
 			
 			$policy = caGetOption('policy', $pa_options, null);     // current value policy
@@ -2250,7 +2263,7 @@
 				    }
 				}
 			
-				$va_element_opts = array_merge(array(
+				$va_element_opts = array_merge([
 					'label' => $va_label['name'] ?? null,
 					'description' => $va_label['description'] ?? null,
 					't_subject' => $this,
@@ -2261,8 +2274,9 @@
 					'value' => $vm_values,
 					'forSearch' => true,
 					'textAreaTagName' => caGetOption('textAreaTagName', $pa_options, null),
-					'render' => $va_element['settings']['render'] ?? null
-				), array_merge($pa_options, $va_override_options));
+					'render' => $va_element['settings']['render'] ?? null,
+					'attributes' => $attributes
+				], array_merge($pa_options, $va_override_options));
 				
 				if (caGetOption('forSimpleForm', $pa_options, false)) { 
 					unset($va_element_opts['nullOption']);
@@ -2282,7 +2296,7 @@
 				if (caGetOption('asArrayElement', $pa_options, false)) { $vs_fld_name .= "[]"; } 
 				
 				if ($vs_force_value = caGetOption('force', $pa_options, false)) {
-					$vs_form_element = caHTMLHiddenInput($vs_fld_name, array('value' =>$vs_force_value));
+					$vs_form_element = caHTMLHiddenInput($vs_fld_name, array('value' => $vs_force_value));
 				} else {
 					$vs_form_element = ca_attributes::attributeHtmlFormElement($va_element, $va_element_opts);
 					//
@@ -2319,7 +2333,7 @@
 			}
 			
 			$vs_view_path = (isset($pa_options['viewPath']) && $pa_options['viewPath']) ? $pa_options['viewPath'] : $po_request->getViewsDirectoryPath();
-			$o_view = new View($po_request, "{$vs_view_path}/bundles/");
+			$o_view = new View($po_request, "{$vs_view_path}/Search/");
 			
 			$o_view->setVar('request', $po_request);
 			$o_view->setVar('elements', $va_elements_by_container);

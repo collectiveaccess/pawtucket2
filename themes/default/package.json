@@ -27,6 +27,7 @@
     "bootstrap-icons": "^1.11.3",
     "cloverIIIF": "https://github.com/collectiveaccess/clover-iiif.git",
     "expose-loader": "^4.1.0",
+    "htmx.org": "^1.9.10",
     "jquery": "^3.7.1",
     "mini-css-extract-plugin": "^2.7.6",
     "react": "^18.0",

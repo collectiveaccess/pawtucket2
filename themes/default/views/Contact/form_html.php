@@ -37,7 +37,6 @@
 
 			<input type="hidden" name="csrfToken" value="<?= caGenerateCSRFToken($this->request); ?>"/>
 
-			<!-- What is this for? -->
 			<?php
 				if($pn_id && $t_item->getPrimaryKey()){
 			?>
@@ -73,7 +72,6 @@
   				<textarea class="form-control" id="message" rows="5" name="message" aria-label="enter message" required>{{{message}}}</textarea>
 			</div>
 
-			<!-- TODO: This Is Broken -->
 			<?php
 				if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
 			?>

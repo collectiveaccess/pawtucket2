@@ -361,7 +361,6 @@ class TextAttributeValue extends AttributeValue implements IAttributeValue {
 		$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '');
 		$vs_element = '';
 		
-		
 		if (!preg_match("!^[\d\.]+px$!i", $vs_width)) {
 			$vs_width = ((int)$vs_width * 6)."px";
 		}
@@ -412,6 +411,12 @@ class TextAttributeValue extends AttributeValue implements IAttributeValue {
 				'class' => $vs_class,
 				'id' => '{fieldNamePrefix}'.$pa_element_info['element_id'].'_{n}', 'class' => "{$vs_class}".(($va_settings['usewysiwygeditor'] ?? null) ? " ckeditor-element" : '')
 			);
+		
+		$attributes = caGetOption('attributes', $pa_options, null);
+		if(is_array($attributes)) { 
+			$va_opts = array_merge($attributes, $va_opts);
+		}
+			
 		if (caGetOption('readonly', $pa_options, false)) { 
 			$va_opts['disabled'] = 1;
 		}

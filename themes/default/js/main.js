@@ -2,7 +2,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as bootstrap from 'bootstrap';
+import 'htmx.org';
 require('bootstrap-icons/font/bootstrap-icons.css');
+
+window.htmx = require('htmx.org');
 
 const domContainer = document.querySelector("#pawtucketApp");
 if (!Object.entries)
