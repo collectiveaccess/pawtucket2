@@ -37,7 +37,6 @@
 
 			<input type="hidden" name="csrfToken" value="<?= caGenerateCSRFToken($this->request); ?>"/>
 
-			<!-- What is this for? -->
 			<?php
 				if($pn_id && $t_item->getPrimaryKey()){
 			?>
@@ -61,23 +60,18 @@
 
 			<div class="col-md-4">
 				<label for="inputName" class="form-label"><?= _t("Name"); ?></label>
-				<input type="text" class="form-control" id="inputName" aria-label="enter name" placeholder="Enter name" required>
+				<input type="text" class="form-control" id="inputName" name="name" aria-label="enter name" placeholder="Enter name" required>
 			</div>
 			<div class="col-md-4">
 				<label for="inputEmail" class="form-label"><?= _t("Email"); ?></label>
-				<input type="email" class="form-control" id="inputEmail" aria-label="enter email" placeholder="Enter email" required>
-			</div>
-			<div class="col-md-6">
-				<label for="securityQuestion" class="form-label"><?= _t("Security Question"); ?></label>
-				<div id="securityQuestionBlock" class="form-text mb-2"><?= $vn_num1; ?> + <?= $vn_num2; ?> = </div>
-				<input type="text" class="form-control" id="securityQuestion" aria-label="enter answer" aria-describedby="securityQuestionBlock" required>
-			</div>
-			<div class="col-md-9">
-				<label for="message" class="form-label"><?= _t("Message"); ?></label>
-  				<textarea class="form-control" id="message" rows="5" aria-label="enter message" required>{{{message}}}</textarea>
+				<input type="email" class="form-control" id="inputEmail" name="email" aria-label="enter email" placeholder="Enter email" required>
 			</div>
 
-			<!-- TODO: This Is Broken -->
+			<div class="col-md-9">
+				<label for="message" class="form-label"><?= _t("Message"); ?></label>
+  				<textarea class="form-control" id="message" rows="5" name="message" aria-label="enter message" required>{{{message}}}</textarea>
+			</div>
+
 			<?php
 				if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
 			?>
