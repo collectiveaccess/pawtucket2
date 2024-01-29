@@ -423,6 +423,17 @@ div.browseFacetItem:hover{
 	clear:left;
 	margin-top:25px;
 }
+#footer ul.social svg{
+	width:25px;
+	height:auto;
+	padding: 0px;
+  	margin: 0px;
+  	top: 3px;
+  	position: relative;
+}
+#footer ul.social svg path{
+	fill: #6fb1c8;	
+}
 @media (min-width:768px){
 	#footer .address{
 		clear:right;
