@@ -12,6 +12,9 @@ a{
 	width:100%;
 	height:auto;
 }
+.object-fit-contain img{
+	object-fit: contain !important;
+}
 
 .dropdown-menu{
 	box-shadow: 0 .35rem .25rem rgba(#000, .075);
@@ -132,7 +135,7 @@ a{
 		}
 	}
 }
-/* ------------------------- Collections ------------------------- */
+/* ------------------------- Gallery ------------------------- */
 .gallery{
 	.card{
 		img.object-fit-cover{
@@ -141,6 +144,12 @@ a{
 		img{
 			height:200px;
 			width:100%
+		}
+	}
+	#galleryDetailImageWrapper{
+		img{
+			height:450px;
+			width:100%;
 		}
 	}
 }

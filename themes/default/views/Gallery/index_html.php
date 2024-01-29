@@ -18,9 +18,7 @@
 	$vs_description_element_code = $o_gallery_config->get("gallery_set_description_element_code");
  	$vb_landing_page_show_featured_gallery = ($o_gallery_config->get("landing_page_dont_show_featured_gallery") > 0) ? ($vb_landing_page_show_featured_gallery = false) : ($vb_landing_page_show_featured_gallery = true);
  	$va_sets = $this->getVar("sets");
-	if(is_array($va_sets) && sizeof($va_sets)){
-		$va_first_items_from_set = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "medium", "checkAccess" => $va_access_values));
-	}
+ 	$va_first_items_from_set = $this->getVar("first_items_from_sets");
 ?>
 
 <div class="row">
@@ -45,9 +43,8 @@
 						$vn_featured_set_id = array_rand($va_sets);
 						$va_set = $va_sets[$vn_featured_set_id];
 						$t_set = new ca_sets();
-						$va_set_first_items = $t_set->getPrimaryItemsFromSets(array($vn_featured_set_id), array("version" => "large", "checkAccess" => $va_access_values));
+						$va_first_item = array_shift($va_first_items_from_set[$vn_featured_set_id]);
 						$t_set->load($vn_featured_set_id);
-						$va_first_item = array_shift($va_set_first_items[$vn_featured_set_id]);
 						print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_featured_set_id)."</div>";
 						print "<div class='col-sm-6'>".caNavLink($this->request, $va_set["name"], "fs-4 fw-medium", "", "Gallery", $vn_featured_set_id);
 						if($vs_desc = $t_set->get("ca_sets.".$vs_description_element_code)){
