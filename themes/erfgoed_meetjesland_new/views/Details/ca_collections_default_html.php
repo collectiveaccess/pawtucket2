@@ -15,6 +15,18 @@
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	$vs_map = trim($this->getVar("map"));
+	
+	
+	$o_browse = caGetBrowseInstance('ca_objects');
+	$o_browse->addCriteria("collection_field_facet", $t_item->get("ca_collections.collection_id"));
+	$o_browse->execute(array('checkAccess' => $va_access_values, 'request' => $this->request));
+	$qr_res = $o_browse->getResults();
+	if($qr_res->numHits()){
+		$o_rel_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', 'collections');
+		$o_rel_context->setAsLastFind(true);
+		$o_rel_context->setResultList($qr_res->getAllFieldValues('ca_objects.object_id'));
+		$o_rel_context->saveContext();
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -114,7 +126,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => 'ca_collections.parent_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collections', array('search' => 'ca_collections.parent_id:^ca_collections.collection_id', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsCollectionContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -129,7 +141,6 @@
 		</ifdef>
 }}}
 {{{
-		
 			<div class="row">
 				<div class="col-sm-12"><H2>Objecten</H2></div>
 			</div>
@@ -140,7 +151,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_field_facet', 'id' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_field_facet', 'id' => '^ca_collections.collection_id', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

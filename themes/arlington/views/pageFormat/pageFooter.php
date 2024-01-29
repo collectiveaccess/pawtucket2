@@ -120,5 +120,29 @@
 <?php
 	print $this->render("Cookies/banner_html.php");	
 ?>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-10610764-32"></script>
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){window.dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	// CLH Library Archives UA property ID
+	gtag('config', 'UA-10610764-32');
+	// CLH Library Archives GA4 property ID
+	gtag('config', 'G-G66K0NMWQY');
+	// cross-domain UA property ID
+	gtag('config', 'UA-10610764-25', {
+		'linker': {
+			'domains': ['library.arlingtonva.us', 'libcat.arlingtonva.us', 'libsys.arlingtonva.us', 'library.arlingtonva.libguides.com', 'arlingtonva.libcal.com', 'libraryarchives.arlingtonva.us', 'projectdaps.org', 'arlingtonwomenshistory.org']
+		}
+	});
+	// cross-domain GA4 property ID
+	gtag('config', 'G-Z2ECWWH16V', {
+		'linker': {
+			'domains': ['library.arlingtonva.us', 'libcat.arlingtonva.us', 'libsys.arlingtonva.us', 'library.arlingtonva.libguides.com', 'arlingtonva.libcal.com', 'libraryarchives.arlingtonva.us', 'projectdaps.org', 'arlingtonwomenshistory.org']
+		}
+	});
+</script>
 	</body>
 </html>

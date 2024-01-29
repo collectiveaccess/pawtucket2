@@ -375,6 +375,26 @@ a.readmore-js-toggle {
 .detail #detailComments button.translatedButton{
 	display:inline;
 }
+.detail .unit .copyrightLogo img{
+	height:50px !important;
+	width:auto !important;
+}
+.detail .unit .copyrightLogoBg img{
+	height:30px !important;
+	width:auto !important;
+}
+.copyrightLogo {
+	display: inline-block;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.copyrightLogoBg {
+	background-color: #318ac7;
+	padding: 10px;
+	display: inline-block;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
 /* cookie notice */
 #cookieNotice{
 	position: fixed;
