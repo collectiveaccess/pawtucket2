@@ -42,7 +42,7 @@
 						<?= $t_set->get('ca_sets.set_description'); ?>
 					</p>
 
-					<div class="gallery-grid">
+					<div class="gallery-grid z-3">
 						<?php
 							foreach($set_items as $item) {	
 								$item = array_shift($item);
@@ -60,6 +60,11 @@
 
 				</div> 
 			</div>
+		</div>
+		<div class="nb-graphic position-fixed z-1" style="left:-80px;top:600px;transform: rotate(-250deg);">
+			<svg width="475" height="495" viewBox="0 0 475 495" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<circle opacity="0.7" cx="268" cy="268" r="267" stroke="white" stroke-opacity="0.07" stroke-width="2"/>
+			</svg>
 		</div>
 	</div>
 </main>

@@ -48,13 +48,11 @@
 				<div class="col text-end">{{{nextLink}}}</div>
 			</div>
 
-			{{{<ifdef code="ca_object_representations.media.original">
 				<div class="row justify-content-center" style="padding-top: 20px; padding-bottom: 20px;">
 					<div class="col text-center object-rep">
-						^ca_object_representations.media.original
+						{{{representationViewer}}}
 					</div> 
 				</div>
-			</ifdef>}}}
 
 			<div class="row object-data-row border-0">
 				<div class="col">

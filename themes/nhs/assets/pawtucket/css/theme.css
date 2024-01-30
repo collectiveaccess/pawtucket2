@@ -423,6 +423,17 @@ div.browseFacetItem:hover{
 	clear:left;
 	margin-top:25px;
 }
+#footer ul.social svg{
+	width:25px;
+	height:auto;
+	padding: 0px;
+  	margin: 0px;
+  	top: 3px;
+  	position: relative;
+}
+#footer ul.social svg path{
+	fill: #6fb1c8;	
+}
 @media (min-width:768px){
 	#footer .address{
 		clear:right;
@@ -1284,12 +1295,16 @@ a.browseRemoveFacet .glyphicon{
 	margin-bottom:10px;
 	font-style:normal;
 }
-.peopleFacets .facetName{
+.facetsContainer{
+	background-color:#aad2df;
+	padding-top:15px;
+}
+.peopleFacets .facetName, .eventsFacets .facetName{
 	font-size: 22px;
 	margin-top:15px;
 	margin-bottom:5px;
 }
-.peopleFacets .btn-default{
+.peopleFacets .btn-default, .eventsFacets .btn-default{
 	text-decoration: none;
 	width: 100%;
 	text-transform: none;
@@ -1297,6 +1312,48 @@ a.browseRemoveFacet .glyphicon{
 	margin-bottom: 15px;
 	white-space: normal;
 	line-height: 1.1em;
+}
+.peopleFacets .btn-default{
+	background-color:#6fb1c8;
+	color:#FFF;
+}
+.peopleFacets .btn-default:hover{
+	background-color:#FFF;
+	color:#2c85b8;
+}
+.peopleLanding p{
+	font-size:18px;
+}
+
+.peopleLanding .jcarousel-control-prev {
+    left: 0px !important;
+}
+.peopleLanding .jcarousel-control-next {
+    right:0px !important;
+}
+.peopleLanding .jcarousel-control-next,
+.peopleLanding .jcarousel-control-prev {
+	background-color:transparent;
+	height: 45px;
+	top: 45%;
+	padding-bottom: 20px;
+	padding-top: 10px;
+	text-align: center;
+	text-transform: uppercase;
+	font-size:55px;
+	width: 45px;
+	border-radius: 0px;
+	box-shadow: 0 0 0px #999999;
+	text-shadow: 0px 0px 10px #000000;
+}
+.peopleLanding .jcarousel-control-next:hover,
+.peopleLanding .jcarousel-control-prev:hover,
+.peopleLanding .jcarousel-control-next:active,
+.peopleLanding .jcarousel-control-prev:active,
+.peopleLanding .jcarousel-control-next:focus,
+.peopleLanding .jcarousel-control-prev:focus {
+	color:#FFF;
+	background-color:transparent;
 }
 /* story */
 .story h1{
@@ -1321,4 +1378,10 @@ a.browseRemoveFacet .glyphicon{
 .storyEvent a:hover, .storyEvent a:focus{
 	color:#2c85b8;
 	text-decoration:underline;
+}
+
+.sourceCaption{
+	font-size:16px;
+	padding-top:3px;
+	line-height:1.1em;
 }
