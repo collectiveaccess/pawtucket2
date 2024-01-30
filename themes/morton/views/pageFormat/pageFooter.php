@@ -26,11 +26,11 @@
  * ----------------------------------------------------------------------
  */
 
-	TooltipManager::add('.zoomButton', 'Zoom');
+	TooltipManager::add('.detailMediaToolbar .zoomButton', 'Zoom');
 	TooltipManager::add('.compareButton', 'Add to comparison group');
 	TooltipManager::add('.setsButton', 'Add to lightbox');
-	TooltipManager::add('.downloadButton', 'Download');
-
+	TooltipManager::add('.dlButton', 'Download');
+	
 	//
 	// Output HTML for debug bar
 	//

@@ -46,6 +46,7 @@
  		 *
  		 */ 
  		public function Index() {
+ 			AssetLoadManager::register("carousel");
  			caSetPageCSSClasses(array("peopleLanding"));
  			$va_access_values = caGetUserAccessValues($this->request);
  			$this->view->setVar('access_values', $va_access_values);

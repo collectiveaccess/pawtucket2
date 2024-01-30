@@ -3,16 +3,89 @@
 	$va_access_values = $this->getVar("access_values");
 	$va_entity_facets = $this->getVar("entity_facets");
 	$va_event_facets = $this->getVar("event_facets");
+
 ?>
 	<div class="row"><div class="col-sm-12">
 		<H1>People</H1>
 	</div></div>
+
+
+
+
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="row bgDarkBlue featuredCallOut">
 				<div class="col-sm-12 col-md-6 featuredHeaderImage">
-					<?php print caGetThemeGraphic($this->request, 'people.jpeg', array("alt" => "People image")); ?>
+					<?php #print caGetThemeGraphic($this->request, 'people.jpeg', array("alt" => "People image")); ?>
+					
+		<div class="jcarousel-wrapper">
+			<!-- Carousel -->
+			<div class="jcarousel peopleSlideshow">
+				<ul>
+<?php
+						print "<li>".caGetThemeGraphic($this->request, 'people.jpeg', array("alt" => "Manuscript image"))."</li>";
+						print "<li>".caGetThemeGraphic($this->request, 'peopleSlideshow/1674B_0004.jpg', array("alt" => "Vol.1674B, p. 4"))."</li>";
+						print "<li>".caGetThemeGraphic($this->request, 'peopleSlideshow/1674B_0013.jpg', array("alt" => "Vol.1674B, p. 13"))."</li>";
+						print "<li>".caGetThemeGraphic($this->request, 'peopleSlideshow/B43A_F26_nn48_Mereah_Brenton_Coggeshall.jpg', array("alt" => "Box 43A, Folder 26, Item 48 Mereah Brenton Coggeshall"))."</li>";
+						print "<li>".caGetThemeGraphic($this->request, 'peopleSlideshow/FriendsRecords_Vol821_p28.jpg', array("alt" => "Vol.821, p. 28"))."</li>";
+						print "<li>".caGetThemeGraphic($this->request, 'peopleSlideshow/Vol_1660_Marriages_1792_1829.jpg', array("alt" => "Vol. 1660, Marriages,1792-1829"))."</li>";
+
+?>
+				</ul>
+			</div><!-- end jcarousel -->
+			<!-- Prev/next controls -->
+			<a href="#" class="jcarousel-control-prev peopleSlideshowNav"><i class="fa fa-angle-left"></i></a>
+			<a href="#" class="jcarousel-control-next peopleSlideshowNav"><i class="fa fa-angle-right"></i></a>
+
+		</div><!-- end jcarousel-wrapper -->
+		<script type='text/javascript'>
+			jQuery(document).ready(function() {
+				/*
+				Carousel initialization
+				*/
+				$('.peopleSlideshow')
+					.jcarousel({
+						// Options go here
+						wrap:'circular'
+					});
+				$('.peopleSlideshow li').width($('.peopleSlideshow').width() + "px");
+				$( window ).resize(function() {
+					$('.peopleSlideshow li').width($('.peopleSlideshow').width() + "px");
+				});
+				/*
+				 Prev control initialization
+				 */
+				$('.jcarousel-control-prev.peopleSlideshowNav')
+					.on('jcarouselcontrol:active', function() {
+						$(this).removeClass('inactive');
+					})
+					.on('jcarouselcontrol:inactive', function() {
+						$(this).addClass('inactive');
+					})
+					.jcarouselControl({
+						// Options go here
+						target: '-=1'
+					});
+		
+				/*
+				 Next control initialization
+				 */
+				$('.jcarousel-control-next.peopleSlideshowNav')
+					.on('jcarouselcontrol:active', function() {
+						$(this).removeClass('inactive');
+					})
+					.on('jcarouselcontrol:inactive', function() {
+						$(this).addClass('inactive');
+					})
+					.jcarouselControl({
+						// Options go here
+						target: '+=1'
+					});
+		
+				
+			});
+		</script>
 				</div>
 				<div class="col-sm-12 col-md-6 text-center">
 					<div class="featuredIntro"><div class='featuredIntroTitle'>{{{people_intro_title}}}</div>{{{people_intro}}}</div>
@@ -74,7 +147,7 @@
 								$vn_i = 0;
 							}
 							$vn_c++;
-							if($vn_c == 9){
+							if($vn_c == 6){
 								$vb_show_view_all_stories_link = true;
 								break;
 							}
@@ -121,6 +194,7 @@
 			print "<div class='facetName'>".$va_facet_info['label_singular']."</div>";
 			$vn_facet_size = sizeof($va_facet_info['content']);
 			$vn_i = 0;
+			print "<div class='container facetsContainer'>";
 			foreach($va_facet_info['content'] as $va_item) {
 				if ( $vn_i == 0) { print "<div class='row'>"; } 
 				print "<div class='col-sm-4'>".caNavLink($this->request, $va_item['label'], 'btn btn-default', '', 'Browse','entities', array('facet' => $vs_facet_name, 'id' => $va_item['id']))."</div>";
@@ -133,6 +207,7 @@
 			if ($vn_i > 0) {
 				print "</div><!-- end row -->\n";
 			}
+			print "</div>";
 						
 		}
 	}
@@ -140,7 +215,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-12 col-lg-10 col-lg-offset-1 peopleFacets">	
+		<div class="col-sm-12 col-lg-10 col-lg-offset-1 eventsFacets">	
 <?php	
 	if(is_array($va_event_facets) && sizeof($va_event_facets)){
 		print "<hr/><H3>Explore Events By</H3>";
@@ -151,6 +226,7 @@
 			
 			if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 			print "<div class='facetName'>".$va_facet_info['label_singular']."</div>";
+			print "<div class='container facetsContainer'>";
 			$vn_facet_size = sizeof($va_facet_info['content']);
 			$vn_i = 0;
 			foreach($va_facet_info['content'] as $va_item) {
@@ -165,6 +241,7 @@
 			if ($vn_i > 0) {
 				print "</div><!-- end row -->\n";
 			}
+			print "</div>";
 						
 		}
 	}
@@ -184,6 +261,27 @@
 			</div>
 		</div>
 	</div>
+	<div class="row">
+		<div class="col-sm-12 col-lg-10 col-lg-offset-1">	
+<?php
+			print "<hr/><H3>About This Project</H3>";
+			if($vs_tmp = $this->getVar("people_about_project")){
+				print "<p>".$vs_tmp."</p>";
+			}
+?>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-sm-12 col-lg-10 col-lg-offset-1">		
+			<div class="featuredList">
+				<div class='col-sm-12 col-md-6 col-md-offset-3'>
+					<a href="https://newporthistory.org/wp-content/uploads/2024/01/Voices-from-the-NHS-Archives-Guide_V1.pdf" class="btn btn-landing" target="_blank">Project & Database Guide <i class='fa fa-download'></i></a>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<div class="row">
 		<div class="col-sm-12 col-lg-10 col-lg-offset-1"><hr/><p class="text-center">{{{people_page_credit}}}</p><br/></div>
 	</div>

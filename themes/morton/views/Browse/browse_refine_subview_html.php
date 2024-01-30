@@ -41,7 +41,9 @@
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
-		print "<H2><span class='hasTooltip' data-toggle='popover' data-content='Use the filters below to refine your search to results that match certain criteria.'>"._t("Filter by")." <span class='glyphicon glyphicon-info-sign'></span></span></H2>";
+		print "<H2><span class='hasTooltip hasTooltipFilterBy' data-toggle='popover' data-content=''>"._t("Filter by")." <span class='glyphicon glyphicon-info-sign'></span></span></H2>";
+		TooltipManager::add('.hasTooltipFilterBy', 'Use the filters below to refine your search to results that match certain criteria.');
+
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
@@ -58,7 +60,10 @@
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 				
 				if($va_facet_info['description']) {
-					print "<H3><span class='hasTooltip' data-toggle='popover' data-content=".json_encode($va_facet_info['description']).">".$va_facet_info['label_singular']." <span class='glyphicon glyphicon-info-sign'></span></span></H3>"; 
+					print "<H3><span class='hasTooltip hasTooltip".$vs_facet_name."'>".$va_facet_info['label_singular']." <span class='glyphicon glyphicon-info-sign'></span></span></H3>"; 
+
+					TooltipManager::add('.hasTooltip'.$vs_facet_name, $va_facet_info['description']);
+
 				} else {
 					print "<H3>".$va_facet_info['label_singular']."</H3>"; 
 				}
