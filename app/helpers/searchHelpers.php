@@ -2490,7 +2490,7 @@ function caFieldNumToBundleCode($table_name_or_num, string $field_num) : ?string
 }
 # ---------------------------------------
 /**
-	Try to extract positions of text using PDFMiner (http://www.unixuser.org/~euske/python/pdfminer/index.html)
+ * Try to extract positions of text using PDFMiner (http://www.unixuser.org/~euske/python/pdfminer/index.html)
  */
 function caExtractTextFromPDF(string $filepath) : ?array {
 	if ($miner_path = caPDFMinerInstalled()) {

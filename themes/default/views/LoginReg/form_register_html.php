@@ -83,12 +83,6 @@
 				<input type="text" class="form-control" id="inputCode">
 			</div>
 
-			<div class="col-md-4">
-				<label for="securityQuestion" class="form-label"><?= _t("Security Question"); ?></label>
-				<div id="securityQuestionBlock" class="form-text mb-2"><?= $vn_num1; ?> + <?= $vn_num2; ?> = </div>
-				<input type="text" class="form-control" id="securityQuestion" aria-label="enter answer" aria-describedby="securityQuestionBlock" required>
-			</div>
-
 			<div class="col-12">
 				<button type="submit" class="btn btn-dark"><?= _t("Register"); ?></button>
 			</div>

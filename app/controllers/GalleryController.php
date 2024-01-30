@@ -83,7 +83,7 @@
 						$set_opts["table"] = "ca_objects";
 					}
 					$sets = caExtractValuesByUserLocale($t_set->getSets($set_opts));
-					$set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($sets), array("version" => "iconlarge", "checkAccess" => $this->opa_access_values));
+					$set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($sets), array("version" => "large", "checkAccess" => $this->opa_access_values));
 				
 					// Sort by name by default; otherwise sort on rank
 					if($this->config->get('gallery_sort_by') !== 'name') {
@@ -103,10 +103,12 @@
 							if(Datamodel::getTableName($va_set['table_num']) != "ca_objects"){
 								if (!($t_instance = Datamodel::getInstanceByTableNum($va_set['table_num']))) { throw new ApplicationException(_t('Invalid item')); }
 								$t_instance->load($first_item["row_id"]);
-								if($vs_thumbnail = $t_instance->getWithTemplate('^ca_object_representations.media.iconlarge', array("checkAccess" => $this->opa_access_values))){
+								if($vs_thumbnail = $t_instance->getWithTemplate('^ca_object_representations.media.large', array("checkAccess" => $this->opa_access_values))){
 									$set_first_items[$set_id][$vn_item_id]["representation_tag"] = $vs_thumbnail;
- 								}elseif($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $this->opa_access_values))){
+ 									$set_first_items[$set_id][$vn_item_id]["representation_url"] = $t_instance->getWithTemplate('^ca_object_representations.media.large.url', array("checkAccess" => $this->opa_access_values));
+ 								}elseif($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects" length="1">^ca_object_representations.media.large</unit>', array("checkAccess" => $this->opa_access_values))){
  									$set_first_items[$set_id][$vn_item_id]["representation_tag"] = $vs_thumbnail;
+ 									$set_first_items[$set_id][$vn_item_id]["representation_url"] = $t_instance->getWithTemplate('<unit relativeTo="ca_objects" length="1">^ca_object_representations.media.large.url</unit>', array("checkAccess" => $this->opa_access_values));
  								}
 							}
 						}
@@ -123,7 +125,8 @@
  				
  				$this->view->setVar("set_id", $set_id);
  				$this->view->setVar("set", $t_set);
- 				
+ 				$this->view->setVar("table", $table);
+ 				$this->view->setVar("instance", Datamodel::getInstanceByTableNum($t_set->get('table_num')));
 				# Don't save the gallery context when loaded via ajax
 				if (!$this->request->isAjax()){
 					$o_context = new ResultContext($this->request, $table, 'gallery');
@@ -186,38 +189,6 @@
 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
  			}
  		}
- 		# -------------------------------------------------------
- 		/**
- 		 *
- 		 */ 
- 		public function getSetInfo() {
- 			$set_id = $this->request->getParameter('set_id', pInteger);
- 			$t_set = $this->_getSet($set_id);
- 			
- 			$this->view->setVar("set", $t_set);
- 			$this->view->setVar("set_id", $set_id);
- 			$this->view->setVar("label", $t_set->getLabelForDisplay());
- 			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code'), array("delimiter" => "<br/><br/>")));
- 			$this->view->setVar("num_items", $t_set->getItemCount(array("checkAccess" => $this->opa_access_values)));
- 			
- 			$set_item = array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
- 			if(!$set_item){
- 				$set_item = array_shift(array_shift($t_set->getFirstItemsFromSets(array($set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
- 			}
- 			if(is_array($set_item) && !$set_item["representation_tag"]){
-				if(Datamodel::getTableName($t_set->get('table_num')) != "ca_objects"){
-					if (!($t_instance = Datamodel::getInstanceByTableNum($t_set->get('table_num')))) { throw new ApplicationException(_t('Invalid item')); }
-					
-					$t_instance->load($set_item["row_id"]);
-						if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.large</unit>', array("checkAccess" => $this->opa_access_values))){
-							$set_item["representation_tag"] = $vs_thumbnail;
-							$set_item["representation_id"] = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.representation_id</unit>', array("checkAccess" => $this->opa_access_values));
-						}
-					}
- 			}
- 			$this->view->setVar("set_item", $set_item);
- 			$this->render("Gallery/set_info_html.php");
- 		}
 		# -------------------------------------------------------
 		/**
  		 *
@@ -277,7 +248,7 @@
  		/**
  		 *
  		 */ 
- 		public function getSetItemRep(){
+ 		public function getSetItemInfo(){
  			$set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = $this->_getSet($set_id);
  			
@@ -338,14 +309,71 @@
  			$this->view->setVar("previous_row_id", $set_items[$previous_id]["row_id"]);
  			$this->view->setVar("next_representation_id", $set_items[$next_id]["representation_id"]);
  			$this->view->setVar("previous_representation_id", $set_items[$previous_id]["representation_id"]);
+
+
+# ------
+ 			$item_id = $this->request->getParameter('item_id', pInteger);
+ 			$set_id = $this->request->getParameter('set_id', pInteger);
  			
- 			$this->render("Gallery/set_item_rep_html.php");
+ 			$t_set = $this->_getSet($set_id);
+ 			$t_set_item = $this->_getSetItem($set_id, $item_id);
+ 			
+			if (!($t_instance = Datamodel::getInstanceByTableNum($t_set->get("table_num")))) { throw new ApplicationException(_t('Invalid set type')); }
+			if (!($table = Datamodel::getTableName($t_set_item->get('table_num')))) { throw new ApplicationException(_t('Invalid set type')); }
+			if (!$t_instance->load($t_set_item->get("row_id"))) { throw new ApplicationException(_t('Invalid item')); }
+			
+ 			$set_item_ids = array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values)));
+ 			$this->view->setVar("item_id", $item_id);
+ 			$this->view->setVar("set_num_items", sizeof($set_item_ids));
+ 			$this->view->setVar("set_item_num", (array_search($item_id, $set_item_ids) + 1));
+ 			
+ 			$this->view->setVar("set_item", $t_set_item);
+ 			$this->view->setVar("object", $t_instance);
+ 			$this->view->setVar("instance", $t_instance);
+ 			$this->view->setVar("object_id", $t_set_item->get("row_id"));
+ 			$this->view->setVar("row_id", $t_set_item->get("row_id"));
+ 			$this->view->setVar("label", $t_instance->getLabelForDisplay());
+ 			$this->view->setVar("table", $table);
+ 			$this->view->setVar("config", $this->config);
+ 			
+ 			Session::setVar("last_item_for_set_{$set_id}", $item_id);
+ 			Session::save();
+ 			
+ 			//
+ 			// Tag substitution
+ 			//
+ 			// Views can contain tags in the form {{{tagname}}}. Some tags, such as "label" are defined by
+ 			// this controller. More usefully, you can pull data from the item being detailed by using a valid "get" expression
+ 			// as a tag (Eg. {{{ca_objects.idno}}}. Even more usefully for some, you can also use a valid bundle display template
+ 			// (see http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates) as a tag. The template will be evaluated in the 
+ 			// context of the item being detailed.
+ 			//
+ 			$va_defined_vars = array_keys($this->view->getAllVars());		// get list defined vars (we don't want to copy over them)
+ 			$va_tag_list = $this->getTagListForView("Gallery/set_item_info_html.php");				// get list of tags in view
+ 			foreach($va_tag_list as $vs_tag) {
+ 				if (in_array($vs_tag, $va_defined_vars)) { continue; }
+ 				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
+ 					$this->view->setVar($vs_tag, $t_instance->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
+ 				} elseif (strpos($vs_tag, ".") !== false) {
+ 					if(!strlen($v = $t_set_item->get($vs_tag, array('checkAccess' => $this->opa_access_values)))) {
+ 						$v = $t_instance->get($vs_tag, array('checkAccess' => $this->opa_access_values));
+ 					}
+ 					$this->view->setVar($vs_tag, $v);
+ 				} else {
+ 					$this->view->setVar($vs_tag, "?{$vs_tag}");
+ 				}
+ 			}
+
+
+
+ 			
+ 			$this->render("Gallery/detail_item_info_html.php");
  		}
  		# -------------------------------------------------------
  	 	/**
  		 *
  		 */ 
- 		public function getSetItemInfo(){
+ 		public function xxxgetSetItemInfo(){
  			$item_id = $this->request->getParameter('item_id', pInteger);
  			$set_id = $this->request->getParameter('set_id', pInteger);
  			

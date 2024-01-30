@@ -53,6 +53,11 @@ class ActionController extends BaseObject {
 	 * @var NotificationManager
 	 */
 	protected $opo_notification_manager;
+	
+	/**
+	 *
+	 */
+	protected $view_class = 'View';
 	# -------------------------------------------------------
 	/**
 	 * @param RequestHTTP $po_request
@@ -109,7 +114,7 @@ class ActionController extends BaseObject {
 	 * @return View
 	 */
 	public function initView() {
-		$this->opo_view = new View($this->opo_request, $this->opa_view_paths);
+		$this->opo_view = new $this->view_class($this->opo_request, $this->opa_view_paths);
 		$this->opo_view->setVar('request', $this->getRequest());
 		$this->opo_view->setVar('controller', $this);
 		

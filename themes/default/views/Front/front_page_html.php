@@ -148,3 +148,6 @@
 		</div>
 	</div>
 </div>
+<div class="container-flex">
+	<div class="bg-black bg-opacity-25 text-bg-dark p-3 text-center shadow w-100 fixed-bottom display-4"><i class="bi bi-chevron-down"></i></div>
+</div>

@@ -26,7 +26,6 @@
  * ----------------------------------------------------------------------
  */
 require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
-require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
 require_once(__CA_APP_DIR__."/controllers/FindController.php");
 
 class SearchController extends FindController {
@@ -51,6 +50,8 @@ class SearchController extends FindController {
 	 *
 	 */
 	public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+		$this->view_class = 'AdvancedSearchView';
+		
 		parent::__construct($po_request, $po_response, $pa_view_paths);
 
 		if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
@@ -541,12 +542,7 @@ class SearchController extends FindController {
 		$this->view->setVar('searchInfo', $va_search_info);
 		$this->view->setVar('options', caGetOption('options', $va_search_info, array(), array('castTo' => 'array')));
 		
-		$va_default_form_values = $this->opo_result_context->getParameter("pawtucketAdvancedSearchFormContent_{$ps_function}", ['forcePurify' => true]);
-		$va_default_form_booleans = $this->opo_result_context->getParameter("pawtucketAdvancedSearchFormBooleans_{$ps_function}", ['forcePurify' => true]);
-		
 		$this->opo_result_context->saveContext();
-		
-		caSetAdvancedSearchFormInView($this->view, $ps_function, $va_search_info['view'], array('request' => $this->request));
 		
 		$this->render($va_search_info['view']);
 	}

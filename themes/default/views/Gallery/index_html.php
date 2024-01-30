@@ -1,127 +1,104 @@
-<div class="row"><div class="col-sm-12">
-	<H1><?php print $this->getVar("section_name"); ?></H1>
 <?php
-	$va_sets = $this->getVar("sets");
-	$va_first_items_from_set = $this->getVar("first_items_from_sets");
-	if(is_array($va_sets) && sizeof($va_sets)){
-		# --- main area with info about selected set loaded via Ajax
-?>
-		<div class="container">
-			<div class="row">
-				<div class='col-sm-8'>
-					<div id="gallerySetInfo">
-						set info here
-					</div><!-- end gallerySetInfo -->
-				</div><!-- end col -->
-<?php
-				if(sizeof($va_sets) > 1){
-?>
-				<div class='col-sm-4'>
-					<div class="jcarousel-wrapper">
-						<!-- Carousel -->
-						<div class="jcarousel"><ul>
-<?php
-							$i = 0;
-							foreach($va_sets as $vn_set_id => $va_set){
-								if(!$vn_first_set_id){
-									$vn_first_set_id = $vn_set_id;
-								}
-								if($i == 0){
-									print "<li>";
-								}
-								$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
+	$o_gallery_config = caGetGalleryConfig();
 
-								print "<div class='galleryItem'>
-											<a href='#' class='galleryItemSetInfoLink' onclick='jQuery(\"#gallerySetInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetInfo', array('set_id' => $vn_set_id))."\"); return false;'>
-												<div class='galleryItemImg'>".$va_first_item["representation_tag"]."</div>
-												<h3>".$va_set["name"]."</h3>
-												<p><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small></p>
-											</a>
-												".caNavLink($this->request, "<span class='glyphicon glyphicon-th-large' aria-label='View gallery'></span> "._t("view %1", $this->getVar("section_item_name")), "btn btn-default", "", "Gallery", $vn_set_id)."
-											<div style='clear:both;'><!-- empty --></div>
-										</div>\n";
-								$i++;
-								if($i == 4){
-									print "</li>";
-									$i = 0;
-								}
-							}
-							if($i){
-								print "</li>";
-							}
+	$t_set = new ca_sets();
+	$va_access_values = caGetUserAccessValues($this->request);
+ 	$vs_image_format = ($o_gallery_config->get("landing_page_item_image_format")) ? $o_gallery_config->get("landing_page_item_image_format"): "cover";
+	$vs_image_class = "";
+	switch($vs_image_format){
+		case "contain":
+			$vs_image_class = "card-img-top object-fit-contain px-3 pt-3 rounded-0";
+		break;
+		# --------------------
+		case "cover":
+			$vs_image_class = "card-img-top object-fit-cover rounded-0";
+		break;
+		# --------------------
+	}
+	$vs_description_element_code = $o_gallery_config->get("gallery_set_description_element_code");
+ 	$vb_landing_page_show_featured_gallery = ($o_gallery_config->get("landing_page_dont_show_featured_gallery") > 0) ? ($vb_landing_page_show_featured_gallery = false) : ($vb_landing_page_show_featured_gallery = true);
+ 	$va_sets = $this->getVar("sets");
+ 	$va_first_items_from_set = $this->getVar("first_items_from_sets");
 ?>
-						</ul></div><!-- end jcarousel -->
+
+<div class="row">
+	<div class='col-12'>
+		<h1><?php print $this->getVar("section_name"); ?></h1>
 <?php
-						if(sizeof($va_sets) > 4){
+	if($vs_intro_global_value = $o_gallery_config->get("landing_page_intro_text_global_value")){
+		if($vs_tmp = $this->getVar($vs_intro_global_value)){
+			print "<div class='mb-4 mt-3 fs-4'>".$vs_tmp."</div>";
+		}
+	}
+	if(is_array($va_sets) && sizeof($va_sets)){
+		if($vb_landing_page_show_featured_gallery){
 ?>
-							<!-- Prev/next controls -->
-							<a href="#" class="galleryPrevious"><i class="fa fa-angle-left" aria-label="previous"></i></a>
-							<a href="#" class="galleryNext"><i class="fa fa-angle-right" aria-label="next"></i></a>
+		<div class="bg-body-tertiary mb-5 py-3">
+			<div class="row justify-content-center pt-3 pb-4 px-5">
+				<div class="col">
+					
+					<H2><?php print $o_gallery_config->get("landing_page_featured_heading"); ?></H2>
+					<div class="row">
 <?php
+						$vn_featured_set_id = array_rand($va_sets);
+						$va_set = $va_sets[$vn_featured_set_id];
+						$t_set = new ca_sets();
+						$va_first_item = array_shift($va_first_items_from_set[$vn_featured_set_id]);
+						$t_set->load($vn_featured_set_id);
+						print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_featured_set_id)."</div>";
+						print "<div class='col-sm-6'>".caNavLink($this->request, $va_set["name"], "fs-4 fw-medium", "", "Gallery", $vn_featured_set_id);
+						if($vs_desc = $t_set->get("ca_sets.".$vs_description_element_code)){
+							if(mb_strlen($vs_desc) > 400){
+								$vs_desc = mb_substr($vs_desc, 0, 400)."...";						
+							}
+							print "<div class='py-2 fs-4'>".$vs_desc."</div>";
 						}
+						print "<div class='text-center py-2 text-capitalize'>".caNavLink($this->request, _t("View ").$o_gallery_config->get("gallery_section_item_name")." <i class='bi bi-arrow-right'></i>", "btn btn-primary", "", "Gallery", $vn_featured_set_id)."</div>";
+						print "</div>";
+						
 ?>
-					</div><!-- end jcarousel-wrapper -->
-					<script type='text/javascript'>
-						jQuery(document).ready(function() {		
-							/* width of li */
-							$('.jcarousel li').width($('.jcarousel').width());
-							$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
-							/*
-							Carousel initialization
-							*/
-							$('.jcarousel')
-								.jcarousel({
-									// Options go here
-								});
-					
-							/*
-							 Prev control initialization
-							 */
-							$('.galleryPrevious')
-								.on('jcarouselcontrol:active', function() {
-									$(this).removeClass('inactive');
-								})
-								.on('jcarouselcontrol:inactive', function() {
-									$(this).addClass('inactive');
-								})
-								.jcarouselControl({
-									// Options go here
-									target: '-=1'
-								});
-					
-							/*
-							 Next control initialization
-							 */
-							$('.galleryNext')
-								.on('jcarouselcontrol:active', function() {
-									$(this).removeClass('inactive');
-								})
-								.on('jcarouselcontrol:inactive', function() {
-									$(this).addClass('inactive');
-								})
-								.jcarouselControl({
-									// Options go here
-									target: '+=1'
-								});
-								
-							
-						});
-					</script>
-				</div><!-- end col -->
+					</div>
+						
+				</div>
+			</div>
+		</div>		
+		<div class="row">
+			<div class='col-12'>
+				<h3 class="text-capitalize"><?php print _t("More ").$o_gallery_config->get("gallery_section_item_name_plural"); ?>
+			</div>
+		</div>
 <?php
-				}else{
-					$va_first_set = array_shift($va_sets);
-					$vn_first_set_id = $va_first_set["set_id"];
-				}
+		}
 ?>
-			</div><!-- end row -->
-		</div><!-- end container -->
-		<script type='text/javascript'>
-			jQuery(document).ready(function() {		
-				jQuery("#gallerySetInfo").load("<?php print caNavUrl($this->request, '*', 'Gallery', 'getSetInfo', array('set_id' => $vn_first_set_id)); ?>");
-			});
-		</script>
+		<div class="row">
+<?php
+		foreach($va_sets as $vn_set_id => $va_set){
+			if($vn_set_id == $vn_featured_set_id){
+				continue;
+			}
+			$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
+			print "<div class='col-sm-6 col-lg-4 d-flex'>";
+			$vs_tmp = "<div class='card flex-grow-1 width-100 rounded-0 shadow border-0 mb-4'><img src='".$va_first_item["representation_url"]."' class='".$vs_image_class."' alt=''>
+							<div class='card-body'>
+								<div class='card-title fw-medium lh-sm fs-4 text-decoration-underline'>".$va_set["name"]."</div>
+								<div class='card-text small text-body-secondary'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</div>
+							</div>
+							<div class='card-footer text-end bg-transparent border-0'>
+								<button class='btn btn-primary'>View <i class='bi bi-arrow-right small'></i></button>
+							</div>
+						</div>";
+			print caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", $vn_set_id);
+			print "</div>";
+		}
+?>
+		</div>
 <?php
 	}
+	
+	
+	
+	
+	
 ?>
-</div><!-- end col --></div><!-- end row -->
+	</div><!-- end col -->
+</div><!-- end row -->
