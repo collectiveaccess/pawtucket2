@@ -55,6 +55,28 @@
 			}
 ?>
 			<p>{{{collections_intro_text}}}</p>
+<?php
+			$vs_xls = $this->getVar("collections_inventory_xls");
+			$vs_pdf = $this->getVar("collections_inventory_pdf");
+			if($vs_xls || $vs_pdf){
+?>
+				<p class="text-center">
+<?php
+				if($vs_xls){
+?>
+					<span class="inventoryDownloadLink">&nbsp;<a href="<?php print $vs_xls; ?>" class="btn-default">Download Inventory (Excel)</a>&nbsp;</span>
+<?php
+				}
+				if($vs_pdf){
+?>
+					<span class="inventoryDownloadLink">&nbsp;<a href="<?php print $vs_pdf; ?>" class="btn-default">Download Inventory (PDF)</a>&nbsp;</span>
+<?php
+				}
+?>
+				</p>
+<?php
+			}
+?>
 		</div>
 	</div>
 	<div class="row">
