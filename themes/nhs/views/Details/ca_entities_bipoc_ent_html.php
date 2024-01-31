@@ -70,7 +70,7 @@
 							}
 							$va_tmp[] = $vs_age.(($vs_tmp) ? ", Source: ".$vs_tmp : "");
 						}
-						print "<div class='unit'><label>Age</label>".join($va_tmp, "<br/>")."</div>";
+						print "<div class='unit'><label>Age</label>".implode("<br/>", $va_tmp)."</div>";
 					}
 					if($t_item->get("ca_entities.birth_container.birth_date")){
 						$va_date = $t_item->get("ca_entities.birth_container.birth_date", array("returnAsArray" => true, "convertCodesToDisplayText" => true));

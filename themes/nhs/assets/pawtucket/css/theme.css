@@ -1116,7 +1116,7 @@ label, .formLabel, .advancedSearchField .formLabel{
 }
 .featuredIntro .featuredIntroTitle{
 	color: #FFF;
-	font-size: 30px;
+	font-size: 33px;
 	line-height: 1.25em;
 }
 @media(max-width:1560px){
