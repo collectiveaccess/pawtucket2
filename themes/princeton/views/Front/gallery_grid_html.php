@@ -53,6 +53,12 @@
 		foreach($va_sets as $vn_set_id => $va_set) {
 			if ($vb_omit_front_page_set && $va_set['set_code'] == $vs_front_page_set) { 
 				unset($va_sets[$vn_set_id]); 
+				continue;
+			}
+			$t_set->load($vn_set_id);
+			if($t_set->get("ca_sets.featured_set", array("convertCodesToDisplayText" => true)) != "Yes"){
+				unset($va_sets[$vn_set_id]); 
+				continue;
 			}
 			$va_first_item = $va_set_first_items[$vn_set_id];
 			$va_first_item = array_shift($va_first_item);
@@ -77,10 +83,12 @@
 							print "<div class='row'>";
 						}
 						print "<div class='col-sm-3 col-xs-6'>";
-						print caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id);
+						$vs_name = "";
 						if($va_set["name"]){
-							print "<div class='frontGridCaption'>".caNavLink($this->request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</div>"; 
+							$vs_name = "<div class='frontGridCaption'>".$va_set["name"]."</div>"; 
 						}
+						print caNavLink($this->request, $va_first_item["representation_tag"].$vs_name, "", "", "Gallery", $vn_set_id);
+						
 						print "</div>";						
 						$i++;
 						$vn_col++;
@@ -95,9 +103,7 @@
 					if($vn_col > 0){
 						print "</div><!-- end row -->";
 					}
-					if(sizeof($va_sets) > 4){
-						print "<div class='text-center'>".caNavLink($this->request, _t("View All"), "btn-default", "", "Gallery", "Index")."</div>";
-					}
+					print "<div class='text-center'>".caNavLink($this->request, _t("View All"), "btn-default", "", "Gallery", "Index")."</div>";
 ?>
 </div>
 		
