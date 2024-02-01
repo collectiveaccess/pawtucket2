@@ -1,4 +1,4 @@
-/* orange: #EE7F2D; */
+/* orange: #E77500; */
 /* fonts to change */
 /*
 body, .detail, .gallery, label, b, strong{
@@ -18,24 +18,26 @@ H1, h1, h2, H2, H3, h3, H4, h4, H5, h5, #footer a.orgLink{
 body{
 	color: #000;
 }
+a{
+	color: #000;
+}
+a:hover{
+	color:#E77500;
+}
 .btn-default, .browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active {
 	background-color:#595959;
+	text-decoration: none;
 }
 .btn-default:hover{
 	background-color:#777;
-}
-a{
-	color: #595959;
-}
-a:hover{
-	color:#EE7F2D;
+	text-decoration: none;
 }
 .bgLightGray{
 	background-color:#f2f2f2;
 }
 /* header */
 .menuBar{
-	border-top:2px solid #EE7F2D;
+	border-top:2px solid #E77500;
 }
 .navbar{
 	background-color: #ffffff;
@@ -79,6 +81,7 @@ a:hover{
 	margin-top: 15px;
 	padding-bottom: 12px;
 	text-transform: uppercase;
+	text-decoration: none;
 }
 .navbar-brand span{
 	text-transform: uppercase;
@@ -142,13 +145,14 @@ a:hover{
 .navbar-default .navbar-nav > li > a{
 	color:#595959;
 	letter-spacing:1px;
+	text-decoration: none;
 }
 .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:active, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus{
 	background-color:transparent;
 	color:#595959; /* highlight color */
 	/* underline on hover or active */
 	text-decoration: underline;
-  	text-decoration-color: #EE7F2D;
+  	text-decoration-color: #E77500;
   	text-decoration-thickness: 2px;
   	text-underline-position: under;
   	/* change background color on hover or active */
@@ -163,6 +167,7 @@ a:hover{
 	letter-spacing:1px;
 	color:#595959;
 	font-family:lato;
+	text-decoration: none;
 }
 .navbar-nav > li > .dropdown-menu a:hover{
 	background-color:#fff;
@@ -195,7 +200,7 @@ body{
 	margin-bottom:210px;
 }
 #footer{
-	border-top:2px solid #EE7F2D;
+	border-top:2px solid #E77500;
 	background-color: #fff;
 	color:#000;
 	padding-top:30px;
@@ -594,7 +599,7 @@ body.frontContainer #footer{
 	bottom:0px;
 	width:100%;
 	background-color: rgba(66, 66, 66, 0.3);
-	color:#EE7F2D;
+	color:#E77500;
 	text-align:center;
 	font-size:30px;
 	padding:10px 0px 10px 0px;
@@ -606,6 +611,14 @@ body.frontContainer #footer{
 	text-transform:capitalize;
 	font-size:24px;
 	padding-bottom:15px;
+}
+.front h2 a{
+	color: #000;
+	text-decoration:underline;
+}
+.front h2 a:hover{
+	color: #E77500;
+	text-decoration:underline;
 }
 .front h2.highlights{
 	padding-bottom:30px;
@@ -647,6 +660,7 @@ body.frontContainer #footer{
 	color:#000;
 	margin-bottom:6px;
 	font-family: Lato;
+	text-decoration: none;
 }
 .hpExploreBox .hpExploreBoxTitle a:hover {
 	text-decoration:none;
@@ -679,6 +693,9 @@ body.frontContainer #footer{
     margin-top: 5px;
     font-weight: bold;
 }
+.galleryList label a{
+    text-decoration: none;
+}
 .gallery .setDescription {
 	font-size: 16px;
 	font-weight: normal;
@@ -688,6 +705,12 @@ body.frontContainer #footer{
 .gallery .unit{
 	margin-bottom: 12px;
 	font-size:14px;
+}
+.gallery .unit a {
+	color: #000;
+	font-size: 15px;
+	text-decoration:underline;
+	text-decoration-color: #E77500;
 }
 .gallery .galleryViewRecord{
 	padding-top:15px;
@@ -747,10 +770,14 @@ body.frontContainer #footer{
 	width: 80%;
 	text-align: center;
 }
-.frontGridCaption a{
+.frontGrid a{
+	text-decoration: none;
+}
+a .frontGridCaption{
 	color:#000;
 	font-size:15px;
 	font-family: lato;
+	text-decoration: none;
 }
 
 /* detail */
@@ -772,9 +799,10 @@ body.frontContainer #footer{
 	font-size: 15px;
 }
 .detail .unit a {
-	color: #595959;
+	color: #000;
 	font-size: 15px;
 	text-decoration:underline;
+	text-decoration-color: #E77500;
 }
 .detail label {
 	display: block;
@@ -794,6 +822,9 @@ body.frontContainer #footer{
 	.inquireCol{
 		margin-bottom:15px;	
 	}
+}
+.copyRightIcon{
+	width:100px;
 }
 .featuredObject{
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
@@ -955,7 +986,14 @@ a .typesTile .title {
 .staticPage{
 	font-size:16px;
 }
-
+.staticPage a{	
+	color:#000;
+	text-decoration:underline;
+	text-decoration-color: #E77500;
+}
+.staticPage a:hover{	
+	text-decoration-color: #E77500;
+}
 @media(max-width:767px){
 	.userGuideBody H1{
 		margin-top:30px;
