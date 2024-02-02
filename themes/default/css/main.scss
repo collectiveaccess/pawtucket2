@@ -19,7 +19,16 @@ a{
 .dropdown-menu{
 	box-shadow: 0 .35rem .25rem rgba(#000, .075);
 }
-
+a.bg-body-tertiary:hover {
+    filter: brightness(95%);
+}
+.btn-white{
+	color: $primary;
+	background-color:#FFF;
+}
+.btn-white:hover{
+	text-decoration:underline;
+}
 /* ------------------------- Front ------------------------- */
 .parallax {
     position: relative;
@@ -53,13 +62,20 @@ a{
 
 
 /* ------------------------- Details ------------------------- */
+.detail{
+	.detailPrimaryImage{
+		img{
+			height:450px;
+			width:100%;
+		}
+	}
+}
+//.detail-container{
+  //  margin-top: 20px;
 
-.detail-container{
-    margin-top: 20px;
-
-    .row{
-        margin-bottom: 20px;
-    }
+    //.row{
+    //    margin-bottom: 20px;
+    //}
 
     // trial clamping
     // .trim.collapse{
@@ -88,7 +104,7 @@ a{
     // .read-more-btn:not(.collapsed):after{
     //     content: '- Read Less';
     // }
-}
+//}
 
 /* ------------------------- browse results ------------------------- */
 #browseResultsContainer{
@@ -146,10 +162,13 @@ a{
 			width:100%
 		}
 	}
-	#galleryDetailImageWrapper{
-		img{
-			height:450px;
-			width:100%;
+	#galleryDetailItemInfo{
+		min-height:450px;
+		#galleryDetailImageWrapper{
+			img{
+				height:450px;
+				width:100%;
+			}
 		}
 	}
 }

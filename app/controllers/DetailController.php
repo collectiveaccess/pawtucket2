@@ -86,6 +86,8 @@ class DetailController extends FindController {
 			}
 		}
 		
+		$this->view->setVar("access_values", $this->opa_access_values);
+ 			
 		$this->config = caGetDetailConfig();
 		$this->opa_detail_types = $this->config->getAssoc('detailTypes');
 		
@@ -291,12 +293,12 @@ class DetailController extends FindController {
 		$this->view->setVar('previousURL', caDetailUrl($this->request, $table, $vn_previous_id));
 		$this->view->setVar('nextURL', caDetailUrl($this->request, $table, $vn_next_id));
 		
-		$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $options, _t('Previous')), '', $table, $vn_previous_id, [], ['aria-label' => _t('Previous')]) : '');
-		$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $options, _t('Next')), '', $table, $vn_next_id, [], ['aria-label' => _t('Next')]) : '');
+		$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $options, _t('Previous')), caGetOption('detailNavLinkClass', $options, ''), $table, $vn_previous_id, [], ['aria-label' => _t('Previous')]) : '');
+		$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $options, _t('Next')), caGetOption('detailNavLinkClass', $options, ''), $table, $vn_next_id, [], ['aria-label' => _t('Next')]) : '');
 		
 		$params = [];
 		$params["row_id"] = $t_subject->getPrimaryKey(); # --- used to jump to the last viewed item in the search/browse results
-		$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $table, caGetOption('resultsLink', $options, _t('Back')), null, $params, ['aria-label' => _t('Back')]));
+		$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $table, caGetOption('resultsLink', $options, _t('Back')), caGetOption('detailNavLinkClass', $options, ''), $params, ['aria-label' => _t('Back')]));
 		$this->view->setVar('resultsURL', ResultContext::getResultsUrlForLastFind($this->request, $table, $params));
 		
 		

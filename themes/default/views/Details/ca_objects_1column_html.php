@@ -26,7 +26,6 @@
  * ----------------------------------------------------------------------
  */
 	$t_object = 			$this->getVar("item");
-	$va_access_values = 	$this->getVar("access_values");
 	$va_options = 			$this->getVar("config_options");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -68,16 +67,17 @@
 			</div>
 		</div>
 	</div>
-
-	<div class="row">
 {{{<ifdef code="ca_object_representations.media.large">
-		<div class="col-md-6 justify-content-center">
+	<div class="row justify-content-center mb-3">
+		<div class="col">
 			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
 		</div>
+	</div>
 </ifdef>}}}
-		<div class="col-md-6">
+	<div class="row">
+		<div class="col">
 			<div class="bg-body-tertiary py-3 px-4 mb-3">
-				<div class="row">
+				<div class="row row-cols-1 row-cols-md-3 gx-5">
 					<div class="col">				
 						{{{<dl class="mb-0">
 							<ifdef code="ca_objects.date">
@@ -100,6 +100,19 @@
 								</dd>
 							</ifdef>
 						</dl>}}}
+						<!-- {{{<ifdef code="ca_objects.work_description">
+							<div class='unit'>
+								<h6><?= _t('Description'); ?></h6>
+								<div class="trim collapse" id="collapseExample">
+									^ca_objects.work_description
+								</div>
+								<a class="btn btn-light btn-sm mt-2 read-more-btn" role="button" data-bs-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+					
+								</a>
+							</div>
+						</ifdef>}}} -->
+					</div>
+					<div class="col">
 <?php
 						print $this->render("Details/snippets/related_entities_by_rel_type_html.php");
 ?>
@@ -127,8 +140,10 @@
 									<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
 								</div>
 							</ifcount>
-						</dl>}}}
-						Map would go here
+						</dl>}}}					
+					</div>
+					<div class="col">
+						Map would go here {{{map}}}
 					</div>
 				</div>
 			</div>
