@@ -4010,7 +4010,7 @@ if ((!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSet
 		if (!is_array($va_media_info[$ps_version] ?? null)) { return null; }
 
         if (($alt_text_template = Configuration::load()->get($this->tableName()."_alt_text_template")) && method_exists($this, 'getWithTemplate')) { 
-		    $alt_text = self::getWithTemplate($alt_text_template, ['highlighting' => false]);
+		    $alt_text = $this->getWithTemplate($alt_text_template, ['highlighting' => false]);
 		} elseif(is_a($this, "LabelableBaseModelWithAttributes")) {
 		    $alt_text = $this->get($this->tableName().".preferred_labels", ['highlighting' => false]);
 		} else {
