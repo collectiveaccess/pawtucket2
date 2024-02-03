@@ -3348,6 +3348,7 @@ jQuery(document).ready(function() {
 	 * 		addRelParameter =
 	 *      absolute = Return absolute urls [Default is false]
 	 *		bundle = When generating an editor link, will cause link to be to screen containing the specified bundle. If omitted or the bundle does not exist in the editor the default screen will be shown. [Default is null]
+	 *		attributes = array of attributes to set on returned link tags. [Default is null]
 	 *
 	 * @return array A list of HTML links
 	 */
@@ -3385,7 +3386,9 @@ jQuery(document).ready(function() {
 				$vs_content = preg_replace("!^<[^\>]+>!", "", $vs_html);
 				$vs_content = preg_replace("!<[^\>]+>$!", "", $vs_content);
 
-				$va_l_tags[] = array('directive' => html_entity_decode($vs_html), 'content' => $vs_content);	//html_entity_decode
+				$link_attributes = $o_link->attributes ?? [];
+				unset($link_attributes['relativeTo']);
+				$va_l_tags[] = ['directive' => html_entity_decode($vs_html), 'content' => $vs_content, 'attributes' => $link_attributes];
 			}
 
 			if (sizeof($va_l_tags)) {
@@ -3399,10 +3402,10 @@ jQuery(document).ready(function() {
 					} else {
 						switch(__CA_APP_TYPE__) {
 							case 'PROVIDENCE':
-								$vs_link_text= caEditorLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i], ($pb_add_rel ? array('rel' => true) : array()), null, $va_link_opts);
+								$vs_link_text= caEditorLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i], ($pb_add_rel ? array('rel' => true) : []), $va_l['attributes'], $va_link_opts);
 								break;
 							case 'PAWTUCKET':
-								$vs_link_text= caDetailLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i], null, null, $va_link_opts);
+								$vs_link_text= caDetailLink($g_request, $va_l['content'], $ps_class, $ps_table_name, $pa_row_ids[$vn_i], null, $va_l['attributes'], $va_link_opts);
 								break;
 						}
 					}
@@ -3424,12 +3427,13 @@ jQuery(document).ready(function() {
 					$va_params = $o_app_plugin_manager->hookGetAsLink($va_params);
 					$va_links[$vn_i]  = $va_params['tag'];
 				} else {
+					$link_attributes = caGetOption('attributes', $pa_options, null);
 					switch(__CA_APP_TYPE__) {
 						case 'PROVIDENCE':
-							$va_links[$vn_i] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], ($pb_add_rel ? array('rel' => true) : array()), null, $va_link_opts)) ? $vs_link : $vs_text;
+							$va_links[$vn_i] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], ($pb_add_rel ? ['rel' => true] : []), $link_attributes, $va_link_opts)) ? $vs_link : $vs_text;
 							break;
 						case 'PAWTUCKET':
-							$va_links[$vn_i] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], null, null, $va_link_opts)) ? $vs_link : $vs_text;
+							$va_links[$vn_i] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], null, $link_attributes, $va_link_opts)) ? $vs_link : $vs_text;
 							break;
 						default:
 							$va_links[$vn_i] = $vs_text;
