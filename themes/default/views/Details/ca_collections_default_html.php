@@ -29,9 +29,7 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
 	$vb_show_hierarchy_viewer = true;
@@ -41,112 +39,103 @@
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 
+
+	if($vb_show_nav){
 ?>
-
-
-<div class="container detail-container">
-
-	<div class="row border-bottom">
-		<div class="col">
-			<H1>{{{<l>^ca_collections.preferred_labels.name</l>}}}</H1>
-		</div>
-	</div>
-
-	<div class="row row-cols-sm-1 row-cols-md-2">
-		<div class="col-sm-12 col-md-6">
-			<?php
-				if ($vn_share_enabled | $vn_pdf_enabled) {	
-			?>
-					<div class="btn-group" role="group" aria-label="Detail Controls">
-			<?php
-					if ($vn_share_enabled) {
-						print '<button type="button" class="btn btn-sm btn-light"><i class="bi bi-share me-1"></i> <?= _t("Share"); ?>'.$this->getVar("shareLink")."</button>";
-					}
-					if ($vn_pdf_enabled) {
-						print "<button type='button' class='btn btn-sm btn-light'><i class='bi bi-download me-1'></i> <?= _t('Download'); ?>".caDetailLink($this->request, "Download as PDF", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</button>";
-					}
-			?>
-						<button type="button" class="btn btn-sm btn-light"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
-					</div>
-			<?php
-				}				
-			?>
-		</div>
-		<div class="col-sm-12 col-md-6 d-flex justify-content-md-end">
+	<div class="row mt-n3">
+		<div class="col text-center text-md-end">
 			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 		</div>
 	</div>
-
-	<div class="row justify-content-center">
-		<div class="col-sm-12 col-md-8">
-			{{{<ifcount code="ca_objects" min="1">
-				<div class='img-fluid'>
-					<unit relativeTo="ca_objects" delimiter=" " length="1">
-						<l>^ca_object_representations.media.large</l>
-						<div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div>
-					</unit>
-				</div>
-			</ifcount>}}}		
+<?php
+	}
+?>
+	<div class="row<?php print ($vb_show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+		<div class="col-md-12">
+			<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
+			{{{<ifdef code="ca_collections.type_id|ca_collections.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_collections.type_id">^ca_collections.type_id</ifdef><ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>
+				<ifdef code="ca_collections.parent_id"><div>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>
+			</div></ifdef>}}}
+			<hr class="mb-0"/>
 		</div>
 	</div>
-
-	<div class="row row-cols-sm-1 row-cols-md-2">
-		<div class="col-sm-12 col-md-6">
-			{{{<dl>
-				<ifdef code="ca_collections.type_id">
-					<dt><?= _t('Type Id'); ?></dt>
-					<dd>^ca_collections.type_id</dd>
-				</ifdef>
-			
+	<div class="row">
+		<div class="col text-center text-md-end">
+			<div class="btn-group" role="group" aria-label="Detail Controls">
+<?php
+				print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")));
+				if ($vn_pdf_enabled) {
+					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_collections", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
+				}
+?>
+				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
+			</div>
+		</div>
+	</div>
+{{{<ifdef code="ca_object_representations.media.large">
+	<div class="row justify-content-center mb-3">
+		<div class="col">
+			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
+		</div>
+	</div>
+</ifdef>}}}
+	<div class="row row-cols-1 row-cols-md-2">
+		<div class="col">				
+			{{{<dl class="mb-0">
 				<ifdef code="ca_collections.idno">
 					<dt><?= _t('Identifier'); ?></dt>
-					<dd>^ca_collections.idno</dd>
+					<dd>
+						^ca_collections.idno
+					</dd>
 				</ifdef>
-			
-				<ifdef code="ca_collections.description">
-					<dt><?= _t('Description'); ?></dt>
-					<dd>^ca_collections.description</dd>
+				<ifdef code="ca_collections.adminbiohist">
+					<dt><?= _t('Admin bio History'); ?></dt>
+					<dd>
+						^ca_collections.adminbiohist
+					</dd>
 				</ifdef>
 			</dl>}}}
 		</div>
-
-		<div class="col-sm-6">
-			{{{<dl>
+		<div class="col">
+			{{{<dl class="mb-0">
+				<ifcount code="ca_collections.related" min="1">
+					<dt><ifcount code="ca_collections.related" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections.related" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
+					<unit relativeTo="ca_collections.related" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
+				</ifcount>
 				<ifcount code="ca_entities" min="1">
-					<div class="unit">
-						<ifcount code="ca_entities" min="1" max="1"><dt><?= _t('Related person'); ?></dt></ifcount>
-						<ifcount code="ca_entities" min="2"><dt><?= _t('Related people'); ?></dt></ifcount>
-						<unit relativeTo="ca_entities" delimiter="<br/>"><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
-					</div>
+					<dt><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
+					<unit relativeTo="ca_entities" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
 				</ifcount>
 
 				<ifcount code="ca_occurrences" min="1">
 					<div class="unit">
-						<ifcount code="ca_occurrences" min="1" max="1"><dt><?= _t('Related occurrence'); ?></dt></ifcount>
-						<ifcount code="ca_occurrences" min="2"><dt><?= _t('Related occurrences'); ?></dt></ifcount>
-						<unit relativeTo="ca_occurrences" delimiter="<br/>"><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
+						<dt><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
+						<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
 					</div>
 				</ifcount>
 
 				<ifcount code="ca_places" min="1">
 					<div class="unit">
-						<ifcount code="ca_places" min="1" max="1"><dt><?= _t('Related place'); ?></dt></ifcount>
-						<ifcount code="ca_places" min="2"><dt><?= _t('Related places'); ?></dt></ifcount>
-						<unit relativeTo="ca_places" delimiter="<br/>"><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
+						<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
+						<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
 					</div>
 				</ifcount>
-
-				<ifcount code="ca_collections.related" min="1">
-					<div class="unit">
-						<ifcount code="ca_collections.related" min="1" max="1"><dt><?= _t('Related Collection'); ?></dt></ifcount>
-						<ifcount code="ca_collections.related" min="2"><dt><?= _t('Related Collections'); ?></dt></ifcount>
-						<unit relativeTo="ca_collections.related" delimiter="<br/>"><dd><l>^ca_collections.preferred_labels</l> (^relationship_typename)</dd></unit>
-					</div>
-				</ifcount>
-			</dl>}}}
+			</dl>}}}					
 		</div>
 	</div>
-</div>
-
-</div>
-
+	{{{<dl class="row">
+		<ifcount code="ca_entities.related" min="1">
+			<dt class="col-12 mt-3 mb-2">These links need to be changed to have classes passed in <l><ifcount code="ca_entities" min="1" max="1"><?= _t('Related person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related people'); ?></ifcount></dt>
+			<unit relativeTo="ca_entities.related" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_entities.preferred_labels<br/>^relationship_typename</a></dd></unit>
+		</ifcount>
+	</dl>}}}
+{{{<ifcount code="ca_objects" min="1">
+	<div class="row">
+		<div class="col"><h2>Related Objects</h2><hr/></div>
+	</div>
+	<div class="row">	
+		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_collections.collection_id:'.$t_item->get("ca_collections.collection_id"))); ?>">
+			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
+		</div>
+	</div>
+</ifcount>}}}
