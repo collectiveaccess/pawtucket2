@@ -13,7 +13,7 @@ $enable-cssgrid:              false !default;
 $enable-button-pointers:      true !default;
 $enable-rfs:                  true !default;
 $enable-validation-icons:     true !default;
-$enable-negative-margins:     false !default;
+$enable-negative-margins:     true !default;
 $enable-deprecation-messages: true !default;
 $enable-important-utilities:  true !default;
 
@@ -133,7 +133,7 @@ $link-decoration: underline solid .5px  !default;
 /* text-underline-offset: .25rem;
   text-decoration-thickness: .5px;*/
 $link-shade-percentage: 20% !default;
-$link-hover-color: #000 !default;
+/*$link-hover-color: #000 !default;*/
 $link-hover-decoration: null !default;
 
 

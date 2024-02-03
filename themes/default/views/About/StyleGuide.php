@@ -28,6 +28,16 @@
 			<div class="fs-4">fs-4 text</div>
 			<div class="fs-5">fs-5 text</div>
 			<div class="fs-6">fs-6 text</div>
+			<hr/>
+			<p class="fw-bold">.fw-bold Bold text.</p>
+			<p class="fw-bolder">.fw-bolder Bolder weight text (relative to the parent element).</p>
+			<p class="fw-semibold">.fw-semibold Semibold weight text.</p>
+			<p class="fw-medium">.fw-medium Medium weight text.</p>
+			<p class="fw-normal">Normal weight text.</p>
+			<p class="fw-light">.fw-light Light weight text.</p>
+			<p class="fw-lighter">.fw-lighter Lighter weight text (relative to the parent element).</p>
+			<p class="fst-italic">.fst-italic Italic text.</p>
+			<p class="fst-normal">.fst-normal Text with normal font style</p>
 		</div>
 		<div class="col-4">
 			<h2>Links</h2>
@@ -48,6 +58,26 @@
 			<div class="shadow p-5 my-5">.shadow</div>
 			<div class="shadow-sm p-5 my-5">.shadow-sm</div>
 			<div class="shadow-lg p-5 my-5">.shadow-lg</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col">
+			<hr/>
+			<H2>Description List with vertical centered link text</H2>
+			<dl class="row">
+				<dt class="col-12 mt-3 mb-2">Related People</dt>
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person</a></dd>
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person</a></dd>
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person<br/>second link</a></dd>
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person</a></dd>
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person</a></dd>
+				<dt class="col-12 mt-3 mb-2">Related People</dt>
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person</a></dd>
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person</a></dd>
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person<br/>second link</a></dd>
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person</a></dd>
+					<dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">Person</a></dd> 	
+			</dl>
 		</div>
 	</div>
 </div>

@@ -22,7 +22,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col" id="galleryDetailItemInfo"><!-- load gallery item information here --></div>
+		<div class="col" id="galleryDetailItemInfo"><!-- load gallery item information here --><div class='spinner-border htmx-indicator m-3' role='status'><span class='visually-hidden'>Loading...</span></div></div>
 	</div>
 	<div class="row">
 		<div class="col bg-body-tertiary my-5 py-3">
