@@ -106,12 +106,6 @@ class DetailController extends FindController {
 	 *
 	 */ 
 	public function __call($function, $args) {
-		AssetLoadManager::register("panel");
-		AssetLoadManager::register("mediaViewer");
-		AssetLoadManager::register("carousel");
-		AssetLoadManager::register("readmore");
-		AssetLoadManager::register("maps");
-		
 		$o_search_config = caGetSearchConfig();
 		
 		$options = (isset($this->opa_detail_types[$function]['options']) && is_array($this->opa_detail_types[$function]['options'])) ? $this->opa_detail_types[$function]['options'] : array();
@@ -377,39 +371,39 @@ class DetailController extends FindController {
 		}
 		
 		//
-		// map
+		// Map
 		//
+		$this->view->setVar("showMap", false);
 		if (!is_array($map_attributes = caGetOption(['mapAttributes', 'map_attributes'], $options, array())) || !sizeof($map_attributes)) {
 			if ($map_attribute = caGetOption(['mapAttribute', 'map_attribute'], $options, false)) { $map_attributes = array($map_attribute); }
 		}
 		
-		$this->view->setVar("map", "");
 		if(is_array($map_attributes) && sizeof($map_attributes)) {
-			$o_map = new GeographicMap((($vn_width = caGetOption(['mapWidth', 'map_width'], $options, false)) ? $vn_width : 285), (($vn_height = caGetOption(['mapHeight', 'map_height'], $options, false)) ? $vn_height : 200), 'map');
+			$map_options = [
+				'width' => caGetOption(['mapWidth', 'map_width'], $options, 300),
+				'width' => caGetOption(['mapHeight', 'map_height'], $options, 300),
+				'zoom' => caGetOption(['mapZoomLevel', 'zoom_level'], $options, 5), 
+				'minZoomLevel' => caGetOption(['mapMinZoomLevel'], $options, 1), 
+				'maxZoomLevel' => caGetOption(['mapMaxZoomLevel'], $options, 15),
+				'themePath' => __CA_THEME_URL__
+			];
+			$this->view->setVar('mapOptions', $map_options);
 			
 			$qr_relative_to = null;
-			if($map_relative_to = caGetOption('map_relative_to', $options, null)) {
+			if($map_relative_to = caGetOption(['mapRelativeTo', 'map_relative_to'], $options, null)) {
 				$qr_relative_to = $t_subject->getRelatedItems($map_relative_to, ['returnAs' => 'searchResult']);
 			}
-			$vn_mapped_count = 0;	
+			$map_data = [];
 			foreach($map_attributes as $map_attribute) {
-				if ($t_subject->get($map_attribute)){
-					$map_fuzz_level = null;
-					if(is_array($map_fuzz_config = caGetOption('mapFuzz', $options, null))) {
-						$when = $map_fuzz_config['when'] ?? null;
-						if(($when && $t_subject->evaluateExpression($map_fuzz_config['when'])) || !$when) {
-							$map_fuzz_level = $map_fuzz_config['level'] ?? null;
-						}
-					} else{
-						$map_fuzz_level = $map_fuzz_config;
-					}
-					$ret = $o_map->mapFrom($qr_relative_to ? $qr_relative_to : $t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => (int)$map_fuzz_level));
-					$vn_mapped_count += $ret['items'];
-				}
+				$adata = caGetCoordinateDataFromResult($qr_relative_to ?? $t_subject, $map_attribute, []);
+				$map_data['points'] = array_merge($map_data['points'] ?? [], $adata['points'] ?? []);
+				$map_data['paths'] = array_merge($map_data['paths'] ?? [], $adata['paths'] ?? []);
 			}
-			
-			if ($vn_mapped_count > 0) { 
-				$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption(['mapZoomLevel', 'zoom_level'], $options, null), 'minZoomLevel' => caGetOption(['mapMinZoomLevel'], $options, null), 'maxZoomLevel' => caGetOption(['mapMaxZoomLevel'], $options, null))));
+			if ((sizeof($map_data['points'] ?? []) > 0) || (sizeof($map_data['paths'] ?? []) > 0)) { 
+				$this->view->setVar("showMap", true);
+				$this->view->setVar('mapData', $map_data);
+				$map_options['data'] = $map_data;
+				$this->view->setVar('mapOptions', $map_options);
 			}
 		}
 		

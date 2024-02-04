@@ -1,8 +1,0 @@
-{
-  "devDependencies": {
-    "webpack-cli": "^5.1.4"
-  },
-  "dependencies": {
-    "htmx.org": "^1.9.10"
-  }
-}

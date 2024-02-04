@@ -1,6 +1,4 @@
 'use strict';
-import React from 'react';
-import ReactDOM from 'react-dom';
 import 'htmx.org';
 import * as bootstrap from 'bootstrap';
 import 'htmx.org';
@@ -43,5 +41,5 @@ function initPawtucketApps(app=null) {
 	});
 }
 window.initApp = initPawtucketApps;
-
 export default initPawtucketApps;
+
