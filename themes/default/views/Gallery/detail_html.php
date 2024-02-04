@@ -55,5 +55,5 @@
 			</div><!-- end row -->
 		</div>
 	</div>
-	<div hx-target="#galleryDetailItemInfo" hx-trigger="load" hx-get=" <?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $vn_first_item_id, 'set_id' => $pn_set_id)); ?>"  ></div>
+	<div hx-target="#galleryDetailItemInfo" hx-trigger="load" hx-get="<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $vn_first_item_id, 'set_id' => $pn_set_id)); ?>"  ></div>
 				

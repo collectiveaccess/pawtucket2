@@ -53,9 +53,7 @@
 	<div class="row<?php print ($vb_show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
 		<div class="col-md-12">
 			<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
-			{{{<ifdef code="ca_collections.type_id|ca_collections.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_collections.type_id">^ca_collections.type_id</ifdef><ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>
-				<ifdef code="ca_collections.parent_id"><div>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>
-			</div></ifdef>}}}
+			{{{<ifdef code="ca_collections.type_id|ca_collections.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_collections.type_id">^ca_collections.type_id</ifdef><ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef></div></ifdef>}}}
 			<hr class="mb-0"/>
 		</div>
 	</div>
@@ -82,6 +80,10 @@
 	<div class="row row-cols-1 row-cols-md-2">
 		<div class="col">				
 			{{{<dl class="mb-0">
+				<ifdef code="ca_collections.parent_id">
+					<dt>Part of</dt>
+					<dd><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt;"><l>^ca_collections.preferred_labels.name</l></unit></dd>
+				</ifdef>
 				<ifdef code="ca_collections.idno">
 					<dt><?= _t('Identifier'); ?></dt>
 					<dd>
@@ -123,6 +125,14 @@
 			</dl>}}}					
 		</div>
 	</div>
+<?php
+			if ($vb_show_hierarchy_viewer) {	
+?>
+				<div hx-trigger="load" hx-get="<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"  ></div>
+<?php				
+			}									
+?>				
+
 	{{{<dl class="row">
 		<ifcount code="ca_entities.related" min="1">
 			<dt class="col-12 mt-3 mb-2">These links need to be changed to have classes passed in <l><ifcount code="ca_entities" min="1" max="1"><?= _t('Related person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related people'); ?></ifcount></dt>
