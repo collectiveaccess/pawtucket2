@@ -1,4 +1,4 @@
-import L from 'Leaflet';
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 const defaultTileServerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
