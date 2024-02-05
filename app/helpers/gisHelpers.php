@@ -705,12 +705,12 @@ function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=nu
 			$access_values = $options['checkAccess'];
 		}
 		
-		$points = $paths = [];
+		$georef_list = [];
 		while($data->nextHit()) {
 			if (is_array($access_values) && !in_array($data->get($chk_related_for_access ? $chk_related_for_access : "{$table}.access"), $access_values)) {
 				continue;
 			}
-			if ($coordinates = $data->get($bundle, array('coordinates' => true, 'returnWithStructure' => true, 'returnAllLocales' => false))) {
+			if ($coordinates = $data->get($bundle, ['coordinates' => true, 'returnWithStructure' => true, 'returnAllLocales' => false])) {
 				$id = $data->get("{$table}.{$pk}");
 				
 				foreach($coordinates as $element_id => $coord_list) {
@@ -725,43 +725,14 @@ function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=nu
 					
 						$label = $content = $ajax_content = null;
 						
-						if (strlen($label_template = caGetOption('labelTemplate', $options, null))) {
-							$label = caProcessTemplateForIDs($label_template, $table, array($id), array());
-						} elseif (strlen($label = caGetOption('label', $options, null))) {
-							$label = $data->get($label, array('returnAsLink' => $vb_render_label_as_link || (strpos($options['contentTemplate'], "<l>") !== false)));
-						} elseif(strlen($coordinate['label'])) {
-							$label = $coordinate['label'];
+						if (strlen($info_template = caGetOption('infoTemplate', $options, null))) {
+							$info = caProcessTemplateForIDs($info_template, $table, [$id], []);
 						} else {
-							$label = $coordinate['path'];
+							$info = '';
 						}
 						
-						if (!is_null($color) && $color && (strpos($color, '^') !== false)) {
-							$color = caProcessTemplateForIDs($options['color'], $table, [$id], ['returnAsLink' => false]);
-						} 
-						
-						if (isset($options['ajaxContentUrl']) && $options['ajaxContentUrl']) {
-							$ajax_content = $options['ajaxContentUrl'];
-						} else {
-							if (!is_null($options['contentView']) && $options['request']) {	
-								$o_view = new View($options['request'], (isset($options['viewPath']) && $options['viewPath']) ? $options['viewPath'] : $options['request']->getViewsDirectoryPath());
-								$o_view->setVar('data', $data);
-								$o_view->setVar('access_values', $options['checkAccess']);
-								$content = $o_view->render($options['contentView']);
-							} else {
-								if (!is_null($options['contentTemplate'])) {
-									$content = caProcessTemplateForIDs($options['contentTemplate'], $table, [$id], []);
-								} else {
-									if (!is_null($options['content'])) {
-										if ($options['content']){ 
-											$content = $data->get($options['content']);
-										}
-									} else {
-										$content = $coordinate['label'];
-									}
-								}
-							}
-						}
-				
+						$ajax_content = null; // @TODO
+									
 						$path_items = preg_split("/[:]/", $coordinate['path']);
 					
 						foreach($path_items as $path_item) {
@@ -774,8 +745,8 @@ function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=nu
 									$pair = explode(',', $pair);
 									$coordinate_pairs[] = ['latitude' => $pair[0], 'longitude' => $pair[1]];
 								}
-							   // $this->addMapItem(new GeographicMapItem(['coordinates' => $coordinate_pairs, 'label' => $label, 'content' => $content, 'ajaxContentUrl' => $ajax_content, 'ajaxContentID' => $id, 'color' => $color, 'group' => $group]));
-								$paths[] = ['coordinates' => $coordinate_pairs, 'label' => $label, 'content' => $content, 'ajaxContentUrl' => $ajax_content, 'ajaxContentID' => $id, 'color' => $color, 'group' => $group];
+							   
+								$georef_list[] = ['coordinates' => $coordinate_pairs, 'info' => $info, 'ajaxContentUrl' => $ajax_content, 'ajaxContentID' => $id,  'group' => $group];
 							} else {
 								$coord = explode(',', $path[0]);
 								list($lng, $radius) = explode('~', $coord[1]);
@@ -783,11 +754,10 @@ function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=nu
 								
 								if($fuzz > 0) { $coord[0] = ''.round($coord[0], $fuzz); $lng = ''.round($lng, $fuzz); }
 						 
-								$d = ['latitude' => $coord[0], 'longitude' => $lng, 'label' => $label, 'content' => $content, 'ajaxContentUrl' => $ajax_content, 'ajaxContentID' => $id, 'color' => $color, 'group' => $group];
+								$d = ['latitude' => $coord[0], 'longitude' => $lng, 'info' => $info, 'ajaxContentUrl' => $ajax_content, 'ajaxContentID' => $id, 'group' => $group];
 								if ($radius) { $d['radius'] = $radius; }
 								if ($angle) { $d['angle'] = $angle; }
-							   // $this->addMapItem(new GeographicMapItem($d));
-							   $points[] = $d;
+							   $georef_list[] = $d;
 							}
 						}
 					}
@@ -795,7 +765,7 @@ function caGetCoordinateDataFromResult($data, string $bundle, ?array $options=nu
 				}
 			}
 		}	
-		return ['points' => $points, 'paths' => $paths];
+		return ['coordinates' => $georef_list];
 	}
 	return null;
 }

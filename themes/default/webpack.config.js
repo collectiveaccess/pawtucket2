@@ -2,7 +2,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-	mode: "development",
+	mode: "production",
 	watch: true,
 	
 	entry: { 
@@ -32,33 +32,6 @@ module.exports = {
   	},
   module: {
     rules: [
-	  {
-		test: require.resolve('react'),
-		use: [{
-			loader: 'expose-loader',
-			
-			options: {
-				exposes: "React",
-			}
-	  	}],
-	  },
-	  {
-		test: require.resolve('react-dom'),
-		use: [{
-			loader: 'expose-loader',
-			options: {
-				exposes: 'ReactDOM'
-			}
-	  	}],
-	  },
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: [{
-          loader: "babel-loader",
-          options: { "presets": ["@babel/preset-env", "@babel/preset-react"], "plugins": ["@babel/plugin-proposal-class-properties"] }
-        }]
-      },
       {
         test: /\.html$/,
         use: [

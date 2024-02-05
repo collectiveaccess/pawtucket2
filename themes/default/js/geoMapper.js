@@ -1,10 +1,11 @@
 import L from 'Leaflet';
 import 'leaflet/dist/leaflet.css';
 
+const defaultTileServerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+	
 function makeMap(options) {
 	let id = options.id ?? 'map';
 	let mapElement = document.getElementById(id);
-	let defaultTileServerUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
 	L.Icon.Default.mergeOptions({
 	  iconRetinaUrl: options.themePath + '/node_modules/leaflet/dist/images/marker-icon-2x.png',
@@ -24,11 +25,20 @@ function makeMap(options) {
 	g.addTo(map);
 	
 	let data = options.data;
-	if(data && ((data['points'] && (data['points'].length > 0)) || (data['paths'] && (data['paths'].length > 0)))) {
-		for(let index in data['points']) {
-			let point = data['points'][index];
-			let opts = {  };
-			let m = L.marker([parseFloat(point.latitude), parseFloat(point.longitude)], opts).addTo(g);
+	console.log(data);
+	if(data && (data.length > 0)) {
+		for(let index in data) {
+			let m = null, c = data[index], opts = { };
+			if(c.coordinates) {
+				let pts = c.coordinates.map(c => { return [c.latitude, c.longitude]; });
+				m = L.polygon(pts).addTo(g);
+			} else if(c.radius) {
+				m = L.circle([parseFloat(c.latitude), parseFloat(c.longitude)], {radius: c.radius}).addTo(g);
+			} else {
+				m = L.marker([parseFloat(c.latitude), parseFloat(c.longitude)], opts).addTo(g);
+			}
+			
+			if(c.info) { m.bindPopup(c.info); }
 		}
 		mapElement.style.display = 'block';
 	} else {
@@ -36,6 +46,7 @@ function makeMap(options) {
 	}
 	let bounds = g.getBounds();
 	if (bounds.isValid()) { map.fitBounds(bounds); };
+	if(options.zoom) { map.setZoom(options.zoom); }
 }
 
 

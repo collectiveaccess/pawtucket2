@@ -383,8 +383,9 @@ class DetailController extends FindController {
 				'width' => caGetOption(['mapWidth', 'map_width'], $options, 300),
 				'width' => caGetOption(['mapHeight', 'map_height'], $options, 300),
 				'zoom' => caGetOption(['mapZoomLevel', 'zoom_level'], $options, 5), 
-				'minZoomLevel' => caGetOption(['mapMinZoomLevel'], $options, 1), 
-				'maxZoomLevel' => caGetOption(['mapMaxZoomLevel'], $options, 15),
+				'minZoom' => caGetOption(['mapMinZoomLevel'], $options, 1), 
+				'maxZoom' => caGetOption(['mapMaxZoomLevel'], $options, 15),
+				'infoTemplate' => caGetOption(['mapItemInfoTemplate'], $options, ''),
 				'themePath' => __CA_THEME_URL__
 			];
 			$this->view->setVar('mapOptions', $map_options);
@@ -395,11 +396,10 @@ class DetailController extends FindController {
 			}
 			$map_data = [];
 			foreach($map_attributes as $map_attribute) {
-				$adata = caGetCoordinateDataFromResult($qr_relative_to ?? $t_subject, $map_attribute, []);
-				$map_data['points'] = array_merge($map_data['points'] ?? [], $adata['points'] ?? []);
-				$map_data['paths'] = array_merge($map_data['paths'] ?? [], $adata['paths'] ?? []);
+				$adata = caGetCoordinateDataFromResult($qr_relative_to ?? $t_subject, $map_attribute, $map_options);
+				$map_data = array_merge($map_data ?? [], $adata['coordinates'] ?? []);
 			}
-			if ((sizeof($map_data['points'] ?? []) > 0) || (sizeof($map_data['paths'] ?? []) > 0)) { 
+			if (sizeof($map_data ?? []) > 0) {
 				$this->view->setVar("showMap", true);
 				$this->view->setVar('mapData', $map_data);
 				$map_options['data'] = $map_data;
