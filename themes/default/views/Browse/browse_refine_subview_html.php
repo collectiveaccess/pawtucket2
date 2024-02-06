@@ -56,14 +56,14 @@
 ?>
 		<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>
 		<div id='bRefine' class='bg-light sticky-md-top vh-100 collapse'>
-			<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
+			<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine" aria-label="remove"><i class="bi bi-x-circle-fill"></i></button></div>
 <?php
 		if($qr_res->numHits() > 1){
 ?>
 			<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
 				<div class="input-group p-3">
-					<input name="search_refine" type="text" class="form-control rounded-0  border-0" placeholder="<?php print _t("Search within..."); ?>" aria-label="<?php print _t("Search within"); ?>" aria-describedby="Search bar">
-					<button type="submit" class="btn rounded-0 bg-white"><i class="bi bi-search"></i></button>
+					<input name="search_refine" type="text" class="form-control rounded-0  border-0" placeholder="<?php print _t("Search within..."); ?>" aria-label="<?php print _t("Search within"); ?>">
+					<button type="submit" class="btn rounded-0 bg-white" aria-label="search submit"><i class="bi bi-search"></i></button>
 				</div>
 			</form>
 <?php

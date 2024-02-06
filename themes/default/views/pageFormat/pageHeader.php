@@ -43,7 +43,7 @@
 	
 		<nav class="navbar navbar-expand-lg shadow-sm">
 			<div class="container-xl">
-				<?php print caNavlink($this->request, caGetThemeGraphic($this->request, 'logo.svg', array("alt" => "Logo", "role" => "banner")), "navbar-brand", "", "", ""); ?>
+				<?php print caNavlink($this->request, caGetThemeGraphic($this->request, 'logo.svg', array("alt" => "Site Logo", "role" => "banner")), "navbar-brand", "", "", ""); ?>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				  <span class="navbar-toggler-icon"></span>
 				</button>
@@ -73,11 +73,11 @@
 							<div class="dropdown-menu p-2">
 								<form action="<?= caNavUrl($this->request, '', 'LoginReg', 'login'); ?>">
 									<div class="form-group my-1">
-										<input type="text" name="username" class="form-control form-control-sm" placeholder="Username">
+										<input type="text" name="username" class="form-control form-control-sm" placeholder="Username" aria-label="Username Input">
 									</div>
 									<div class="input-group">
-										<input type="password" name="password" class="form-control form-control-sm" placeholder="Password">
-										<button class="btn btn-secondary btn-sm" type="submit"><i class="bi bi-arrow-right-circle-fill"></i></button>
+										<input type="password" name="password" class="form-control form-control-sm" placeholder="Password" aria-label="Password Input">
+										<button class="btn btn-secondary btn-sm" type="submit" aria-label="Login Button"><i class="bi bi-arrow-right-circle-fill"></i></button>
 									</div>
 								</form>
 <?php
@@ -90,7 +90,7 @@
 					<form action="<?= caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" role="search">
 						<div class="input-group mt-4">
 							<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search" aria-label="Search">
-							<button type="submit" class="btn rounded-0" id="nav-search-btn"><i class="bi bi-search"></i></button>
+							<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Search button"><i class="bi bi-search"></i></button>
 						</div>
 						<div class="form-text"><?php print caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
 				
