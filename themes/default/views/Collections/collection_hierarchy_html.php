@@ -24,14 +24,10 @@
 	if($vb_has_children){
 ?>					
 				<hr/>
-				<div class="row" id="collectionsWrapper">			
-					<div class='col-sm-12'>
-					
-					
-						<div class='row'>
-							<div class='col-12<?php print ($vb_has_grandchildren) ? " col-sm-4" : ""; ?>'>
-								<div class='mx-3'>
-									<div class='fw-medium fs-3'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
+				<div class="row" id="collectionsWrapper">
+					<div class='h-100 overflow-y-auto col-12<?php print ($vb_has_grandchildren) ? " col-sm-4" : ""; ?>'>
+						<div class='mx-3'>
+							<div class='fw-medium fs-3'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
 <?php
 					if($qr_collection_children->numHits()){
 						while($qr_collection_children->nextHit()) {
@@ -39,8 +35,8 @@
 							if(is_array($va_collection_type_icons)){
 								$vs_icon = $va_collection_type_icons[$qr_collection_children->get("ca_collections.type_id")];
 							}
-							print "<div class='mt-2 bg-body-tertiary text-black p-3'>";
-							# --- link open in panel or to detail
+							print "<div class='mt-2'>";
+							# --- link open in panel or link to detail
 							$va_grand_children_type_ids = $qr_collection_children->get("ca_collections.children.type_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 							$vb_link_sublist = false;
 							if(sizeof($va_grand_children_type_ids)){
@@ -52,7 +48,7 @@
 								$vs_record_count = "<br/><small class='ms-2 fw-normal'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 							}
 							if($vb_link_sublist){
-								print "<a href='#' class='fw-medium' hx-target='#collectionLoad' hx-get='".caNavUrl($this->request, '', 'Collections', 'childList', array('collection_id' => $qr_collection_children->get("ca_collections.collection_id")))."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</a>";
+								print "<a href='#' class='p-3 d-block bg-body-tertiary text-black fw-medium' hx-target='#collectionLoad' hx-get='".caNavUrl($this->request, '', 'Collections', 'childList', array('collection_id' => $qr_collection_children->get("ca_collections.collection_id")))."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</a>";
 							}else{
 								# --- there are no grandchildren to show in browser, so check if we should link to detail page instead
 								$vb_link_to_detail = true;
@@ -66,9 +62,9 @@
 								}
 			
 								if($vb_link_to_detail){
-									print caDetailLink($this->request, $vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels')." ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : ""), 'fw-medium', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id")).$vs_record_count;
+									print caDetailLink($this->request, $vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels')." ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : ""), 'p-3 d-block bg-body-tertiary text-black fw-medium', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id")).$vs_record_count;
 								}else{
-									print "<div class='fw-medium'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</div>";
+									print "<div class='p-3 d-block bg-body-tertiary fw-medium'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</div>";
 								}
 							}
 							print "</div>";	
@@ -81,16 +77,13 @@
 <?php
 					if($vb_has_grandchildren){
 ?>
-							<div class='col-xs-12 col-sm-8 border-start'><div id='collectionLoad' class='mx-3'>
+							<div class='h-100 overflow-y-auto col-xs-12 col-sm-8 border-start'><div id='collectionLoad' class='mx-3'>
 								<i class="bi bi-arrow-left"></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container to the left to see its contents.
 							</div></div>
 <?php
 					}
 ?>
-						</div><!--end row -->	
-				
-					</div><!-- end col -->
-				</div><!-- end row -->	
+						</div><!--end row -->
 				<hr/>					
 <?php
 	}

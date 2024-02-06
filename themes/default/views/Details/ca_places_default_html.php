@@ -25,13 +25,25 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	$t_item = $this->getVar("item");
-	$va_comments = $this->getVar("comments");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vb_show_nav = ($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
-	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	if($vb_show_nav){
+$t_item = 		$this->getVar("item");
+$access_values = 	$this->getVar("access_values");
+$options = 			$this->getVar("config_options");
+$comments = 		$this->getVar("comments");
+$tags = 			$this->getVar("tags_array");
+$comments_enabled = $this->getVar("commentsEnabled");
+$pdf_enabled = 		$this->getVar("pdfEnabled");
+$inquire_enabled = 	$this->getVar("inquireEnabled");
+$copy_link_enabled = 	$this->getVar("copyLinkEnabled");
+$id =				$t_item->get('ca_places.place_id');
+$show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
+$map_options = $this->getVar('mapOptions') ?? [];
+?>
+<script type="text/javascript">
+	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
+</script>
+
+<?php
+	if($show_nav){
 ?>
 	<div class="row mt-n3">
 		<div class="col text-center text-md-end">
@@ -48,19 +60,31 @@
 			<hr class="mb-0"/>
 		</div>
 	</div>
+<?php
+	if($inquire_enabled || $pdf_enabled || $copy_link_enabled){
+?>
 	<div class="row">
 		<div class="col text-center text-md-end">
 			<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
-				print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_places", "id" => $t_item->get("ca_places.place_id")));
-				if ($vn_pdf_enabled) {
-					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_places", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_places_summary'));
+				if($inquire_enabled) {
+					print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_places", "id" => $id));
 				}
+				if($pdf_enabled) {
+					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_places", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_places_summary'));
+				}
+				if($copy_link_enabled){
 ?>
 				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
+<?php
+				}
+?>
 			</div>
 		</div>
 	</div>
+<?php
+	}
+?>
 {{{<ifdef code="ca_object_representations.media.large">
 	<div class="row justify-content-center mb-3">
 		<div class="col">
@@ -68,7 +92,7 @@
 		</div>
 	</div>
 </ifdef>}}}
-	<div class="row row-cols-1 row-cols-md-2">
+	<div class="row row-cols-1 row-cols-md-3">
 		<div class="col">				
 			{{{<dl class="mb-0">
 				<ifdef code="ca_places.idno">
@@ -111,13 +135,28 @@
 				</ifcount>
 			</dl>}}}					
 		</div>
+		<div class="col">
+			<div id="map" class="py-3">{{{map}}}</div>
+		</div>
 	</div>
-	{{{<dl class="row">
-		<ifcount code="ca_entities" min="1">
-			<dt class="col-12 mt-3 mb-2">These links need to be changed to have classes passed in <l><ifcount code="ca_entities" min="1" max="1"><?= _t('Related person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related people'); ?></ifcount></dt>
-			<unit relativeTo="ca_entities" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><a href="#" class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_entities.preferred_labels<br/>^relationship_typename</a></dd></unit>
-		</ifcount>
-	</dl>}}}
+	{{{<ifcount code="ca_entities" min="1">
+		<dl class="row">
+			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
+			<unit relativeTo="ca_entities" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_entities.preferred_labels<br/>^relationship_typename</l></dd></unit>
+		</dl>
+	</ifcount>}}}
+	{{{<ifcount code="ca_occurrences" min="1">
+		<dl class="row">
+			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
+			<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br/>^relationship_typename</l></dd></unit>
+		</dl>
+	</ifcount>}}}
+	{{{<ifcount code="ca_places.related" min="1">
+		<dl class="row">
+			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_places.related" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places.related" min="2"><?= _t('Related Places'); ?></ifcount></dt>
+			<unit relativeTo="ca_places.related" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_places.preferred_labels<br/>^relationship_typename</l></dd></unit>
+		</dl>
+	</ifcount>}}}
 {{{<ifcount code="ca_objects" min="1">
 	<div class="row">
 		<div class="col"><h2>Related Objects</h2><hr/></div>

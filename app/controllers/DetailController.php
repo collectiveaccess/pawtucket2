@@ -527,16 +527,6 @@ class DetailController extends FindController {
 		$this->view->setVar('id', $id);
 		$this->view->setVar($t_subject->primaryKey(), $id);
 		
-		
-		//
-		// share link
-		//
-		$this->view->setVar('shareEnabled', (bool)$options['enableShare']);
-		
-		$options['shareLabel'] ? $ps_label = $options['shareLabel'] : $ps_label = 'Share';
-
-		$this->view->setVar("shareLink", "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'ShareForm', array("tablename" => $t_subject->tableName(), "item_id" => $t_subject->getPrimaryKey()))."\"); return false;'>".$ps_label."</a>");
-
 		// find view
 		//		first look for type-specific view
 		$path = "Details/{$table}_default_html.php";		// If no type specific view use the default
@@ -553,6 +543,8 @@ class DetailController extends FindController {
 		}
 
 		$this->view->setVar('pdfEnabled', (bool)$options['enablePDF']);
+		$this->view->setVar('inquireEnabled', (bool)$options['enableInquire']);
+		$this->view->setVar('copyLinkEnabled', (bool)$options['enableCopyLink']);
 		caDoTemplateTagSubstitution($this->view, $t_subject, $path, ['checkAccess' => $this->opa_access_values]);
 		$this->render($path);
 	}

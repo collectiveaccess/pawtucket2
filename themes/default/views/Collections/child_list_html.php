@@ -53,40 +53,40 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				$vb_collapse_link = false;
 			}
 			if($vn_level == 1){
-				$vs_output .= "<div class='label'>";
+				$vs_output .= "<div class='fw-medium fs-3'>";
+			}else{
+				$vs_output .= "<div class='fw-medium'>";
 			}
-			$vs_date = $qr_collections->getWithTemplate('<ifdef code="ca_collections.date_container.date"><unit relativeTo="ca_collections.date_container" delimiter=", "><if rule="^ca_collections.date_container.date_type =~ /Created/">, ^ca_collections.date_container.date</if></unit></ifdef>');
 			if($vb_link){
 				$vs_output .= $vs_icon." ";
 				if($vb_collapse_link){
-					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels').$vs_date."</a>";
+					$vs_output .= "<a data-bs-toggle='collapse' href='#level".$qr_collections->get('ca_collections.collection_id')."' role='button' aria-expanded='false' aria-controls='level".$qr_collections->get('ca_collections.collection_id')."'>".$qr_collections->get('ca_collections.preferred_labels')."</a>";
 				}else{
-					$vs_output .= caDetailLink($po_request, $qr_collections->get('ca_collections.preferred_labels').$vs_date, '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
+					$vs_output .= caDetailLink($po_request, $qr_collections->get('ca_collections.preferred_labels'), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
 				}
 				$vs_output .= " ".caDetailLink($po_request, (($o_config->get("link_out_icon")) ? $o_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
 			}else{
 				$vs_output .= "<span class='nonLinkedCollection'>".$vs_icon." ";
 				if($vb_collapse_link){
-					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels').$vs_date."</a>";
+					$vs_output .= "<a data-bs-toggle='collapse' href='#level".$qr_collections->get('ca_collections.collection_id')."' role='button' aria-expanded='false' aria-controls='level".$qr_collections->get('ca_collections.collection_id')."'>".$qr_collections->get('ca_collections.preferred_labels')."</a>";
 				}else{
-					$vs_output .= $qr_collections->get("ca_collections.preferred_labels").$vs_date;
+					$vs_output .= $qr_collections->get("ca_collections.preferred_labels");
 				}
 				$vs_output .= "</span>";
 			}
 			if($vn_rel_object_count){
-				$vs_output .= " <small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+				$vs_output .= " <small class='fw-normal'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 			}
-			if($vn_level == 1){
-				$vs_output .= "</div>";
-			}
+			$vs_output .= "</div>";
+			
 			$vs_desc = "";
 			if($vs_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_desc_template))){
-				$vs_output .= "<p>".$vs_desc."</p>";
+				$vs_output .= "<div>".$vs_desc."</div>";
 			}
 			$vs_output .= "</div>";
 			if(sizeof($va_child_ids)) {
 				if($vb_collapse_link){
-					$vs_output .= "<div id='level".$qr_collections->get("ca_collections.collection_id")."' style='display:none;'>";
+					$vs_output .= "<div id='level".$qr_collections->get("ca_collections.collection_id")."' class='collapse'>";
 				}
 				$vs_output .=  printLevel($po_request, $va_child_ids, $o_config, $vn_level + 1, $va_options);
 				if($vb_collapse_link){
