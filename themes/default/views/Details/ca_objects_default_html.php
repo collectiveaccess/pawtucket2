@@ -25,20 +25,22 @@
  *
  * ----------------------------------------------------------------------
  */
-	$t_object = 			$this->getVar("item");
-	$va_access_values = 	$this->getVar("access_values");
-	$va_options = 			$this->getVar("config_options");
-	$va_comments = 			$this->getVar("comments");
-	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	$vn_id =				$t_object->get('ca_objects.object_id');
-	$vb_show_nav = ($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
+$t_object = 		$this->getVar("item");
+$access_values = 	$this->getVar("access_values");
+$options = 			$this->getVar("config_options");
+$comments = 		$this->getVar("comments");
+$tags = 			$this->getVar("tags_array");
+$comments_enabled = $this->getVar("commentsEnabled");
+$pdf_enabled = 		$this->getVar("pdfEnabled");
+$id =				$t_object->get('ca_objects.object_id');
+$show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
+$map_options = $this->getVar('mapOptions') ?? [];
 ?>
-
-
+<script type="text/javascript">
+	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
+</script>
 <?php
-	if($vb_show_nav){
+if($show_nav){
 ?>
 	<div class="row mt-n3">
 		<div class="col text-center text-md-end">
@@ -46,9 +48,9 @@
 		</div>
 	</div>
 <?php
-	}
+}
 ?>
-	<div class="row<?php print ($vb_show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
+	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
 		<div class="col-md-12">
 			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_objects.type_id|ca_objects.idno"><div class="fw-medium mb-3"><ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef><ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef></div></ifdef>}}}
@@ -60,8 +62,8 @@
 			<div class="btn-group" role="group" aria-label="Detail Controls">
 <?php
 				print caNavLink($this->request, "<i class='bi bi-envelope me-1'></i> "._t("Inquire"), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")));
-				if ($vn_pdf_enabled) {
-					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
+				if ($pdf_enabled) {
+					print caDetailLink($this->request, "<i class='bi bi-download me-1'></i> "._t('Download as PDF'), "btn btn-sm btn-white ps-3 pe-0 fw-medium", "ca_objects", $id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'));
 				}
 ?>
 				<button type="button" class="btn btn-sm btn-white ps-3 pe-0 fw-medium"><i class="bi bi-copy"></i> <?= _t('Copy Link'); ?></button>
@@ -100,9 +102,9 @@
 								</dd>
 							</ifdef>
 						</dl>}}}
-<?php
-						print $this->render("Details/snippets/related_entities_by_rel_type_html.php");
-?>
+						
+						<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
+
 						{{{<dl class="mb-0">
 							<ifcount code="ca_collections" min="1">
 								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
@@ -115,20 +117,17 @@
 							</ifcount>
 
 							<ifcount code="ca_occurrences" min="1">
-								<div class="unit">
-									<dt><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-									<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-								</div>
+								<dt><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
+								<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
 							</ifcount>
 
 							<ifcount code="ca_places" min="1">
-								<div class="unit">
-									<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-									<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
-								</div>
+								<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
+								<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
 							</ifcount>
 						</dl>}}}
-						Map would go here
+						
+						<div id='map' style='width: 500px; height: 300px;'>Map here</div>
 					</div>
 				</div>
 			</div>

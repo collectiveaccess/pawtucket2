@@ -42,6 +42,8 @@ class ContactController extends BasePawtucketController {
 	}
 	# -------------------------------------------------------
 	public function Form() {
+		$fields = $this->config->get("contact_form_elements");
+		$this->view->setVar("contact_form_elements", $fields);
 		$this->render("Contact/form_html.php");
 	}
 	# ------------------------------------------------------

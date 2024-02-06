@@ -447,9 +447,6 @@ class DateRangeAttributeValue extends AttributeValue implements IAttributeValue 
 			$va_settings['useDatePicker'] = $pa_options['useDatePicker'];
 		}
 		$attributes = caGetOption('attributes', $pa_options, null);
-		if(is_array($attributes)) { 
-			$va_opts = array_merge($attributes, $va_opts);
-		}
 
 		$vn_max_length = 255;
 		$vs_element = caHTMLTextInput(

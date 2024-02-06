@@ -45,10 +45,10 @@
 			<div class="row justify-content-center h-100">
 				<div class="col-md-9 col-lg-6 col-xl-5 d-flex h-100 align-items-center">
 					<div class="bg-black bg-opacity-75 text-bg-dark p-5 text-center shadow w-100">
-						<h1 class="pt-3">
-							<div class="fs-2 fw-light">Welcome to</div>
+						<div class="py-3">
+							<div class="fs-2 fw-light ">Welcome to</div>
 							<div class="pt-2 display-3 fw-medium">Site Name</div>
-						</h1>
+						</div>
 						<div class="fs-4 pt-1">{{{hp_search_text}}}</div>
 						<form role="search" action="<?= caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 							<div class="input-group pb-3">

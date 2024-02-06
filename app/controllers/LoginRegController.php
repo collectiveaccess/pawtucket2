@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2022 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,11 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
-
 require_once(__CA_LIB_DIR__."/ApplicationError.php");
 require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
-require_once(__CA_MODELS_DIR__."/ca_users.php");
-require_once(__CA_MODELS_DIR__."/ca_user_groups.php");
 require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
 
 class LoginRegController extends BasePawtucketController {
@@ -774,7 +771,7 @@ class LoginRegController extends BasePawtucketController {
 	/**
 	 *
 	 */
-	private function _validateGroup(string $group) {
+	private function _validateGroup(string $group) : ca_user_groups {
 		$group = preg_replace('![^A-Za-z0-9_]+!u', '', $group);
 		if(!strlen($group)) {
 			$this->view->setVar("message", _t("Group code is empty"));

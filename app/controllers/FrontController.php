@@ -25,98 +25,91 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	require_once(__CA_LIB_DIR__."/ApplicationError.php");
- 	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
-	require_once(__CA_MODELS_DIR__."/ca_sets.php");
-	require_once(__CA_MODELS_DIR__."/ca_objects.php");
-	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
- 
- 	class FrontController extends BasePawtucketController {
- 		# -------------------------------------------------------
- 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			$this->config = caGetFrontConfig();
- 			caSetPageCSSClasses(array("front"));
- 			
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name"));
- 		}
- 		# -------------------------------------------------------
- 		/**
- 		 *
- 		 */ 
- 		public function __call($ps_function, $pa_args) {
- 			AssetLoadManager::register("carousel");
- 			$va_access_values = caGetUserAccessValues($this->request);
- 			$this->view->setVar('access_values', $va_access_values);
+require_once(__CA_LIB_DIR__."/ApplicationError.php");
+require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
+require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
 
- 			#
- 			# --- if there is a set configured to show on the front page, load it now
- 			#
- 			$va_featured_ids = array();
- 			if($vs_set_code = $this->config->get("front_page_set_code")){
- 				$t_set = new ca_sets();
- 				$t_set->load(array('set_code' => $vs_set_code));
- 				$vn_shuffle = 0;
- 				if($this->config->get("front_page_set_random")){
- 					$vn_shuffle = 1;
- 				}
-				# Enforce access control on set
-				if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
-					$this->view->setVar('featured_set_id', $t_set->get("set_id"));
-					$this->view->setVar('featured_set', $t_set);
-					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
-					$this->view->setVar('featured_set_item_ids', $va_featured_ids);
-					$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
+class FrontController extends BasePawtucketController {
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function __construct($request, $response, $view_paths=null) {
+		parent::__construct($request, $response, $view_paths);
+		
+		$this->config = caGetFrontConfig();
+		caSetPageCSSClasses(['front']);
+		
+		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name"));
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */ 
+	public function __call($function, $args) {
+		$access_values = caGetUserAccessValues($this->request);
+		$this->view->setVar('access_values', $access_values);
+
+		// If there is a set configured to show on the front page, load it now
+		$t_set = null;
+		$featured_ids = [];
+		if($set_code = $this->config->get("set_code")){
+			$t_set = new ca_sets();
+			$t_set->load(['set_code' => $set_code]);
+			$shuffle = (bool)$this->config->get("set_random");
+			
+			// Enforce access control on set
+			if((sizeof($access_values) == 0) || (sizeof($access_values) && in_array($t_set->get("access"), $access_values))){
+				$featured_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => $shuffle])) ? $tmp : []);
+			}
+		}
+		// No configured set/items in set so grab random objects with media
+		if(sizeof($featured_ids) == 0){
+			$t_object = new ca_objects();
+			if($intrinsic_values = $this->config->get("intrinsic_filter")){
+				foreach($intrinsic_values as $instrinsic_field => $intrinsic_value){
+					$intrinsic_restrictions[$instrinsic_field] = $intrinsic_value;
 				}
- 			}
- 			#
- 			# --- no configured set/items in set so grab random objects with media
- 			#
- 			if(sizeof($va_featured_ids) == 0){
- 				$t_object = new ca_objects();
- 				if($va_intrinsic_values = $this->config->get("front_page_intrinsic_filter")){
- 					foreach($va_intrinsic_values as $vs_instrinsic_field => $vs_intrinsic_value){
- 						$va_intrinsic_restrictions[$vs_instrinsic_field] = $vs_intrinsic_value;
- 					}
- 				}
- 				$va_featured_ids = array_keys($t_object->getRandomItems(200, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1, 'restrictByIntrinsic' => $va_intrinsic_restrictions)));
- 				shuffle($va_featured_ids);
- 				$va_featured_ids = array_slice($va_featured_ids, 0, 10);
- 				$this->view->setVar('featured_set_item_ids', $va_featured_ids);
-				$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
- 			}
- 			
- 			$this->view->setVar('config', $this->config);
- 			
- 			$o_result_context = new ResultContext($this->request, 'ca_objects', 'front');
- 			$this->view->setVar('result_context', $o_result_context);
- 			$o_result_context->setAsLastFind();
- 			
- 			//
- 			// Try to load selected page if it exists in Front/, otherwise load default Front/front_page_html.php
- 			//
- 			$ps_function = preg_replace("![^A-Za-z0-9_\-]+!", "", $ps_function);
- 			$vs_path = "Front/{$ps_function}_html.php";
- 			if (!file_exists(__CA_THEME_DIR__."/views/{$vs_path}")) {
- 				$vs_path = "Front/front_page_html.php";
- 			}
- 			
- 			$this->render($vs_path);
- 		}
- 		# -------------------------------------------------------
-		/** 
-		 * Generate the URL for the "back to results" link from a browse result item
-		 * as an array of path components.
-		 */
- 		public static function getReturnToResultsUrl($po_request) {
- 			$va_ret = array(
- 				'module_path' => '',
- 				'controller' => 'Front',
- 				'action' => 'Index',
- 				'params' => array()
- 			);
-			return $va_ret;
- 		}
- 		# ------------------------------------------------------
- 	}
+			}
+			$featured_ids = array_keys($t_object->getRandomItems(200, ['checkAccess' => $access_values, 'hasRepresentations' => 1, 'restrictByIntrinsic' => $intrinsic_restrictions]));
+			shuffle($featured_ids);
+			$featured_ids = array_slice($featured_ids, 0, 10);
+		}
+		
+		$o_result_context = new ResultContext($this->request, 'ca_objects', 'front');
+		$o_result_context->setAsLastFind();
+		
+		//
+		// Try to load selected page if it exists in Front/, otherwise load default Front/front_page_html.php
+		//
+		$function = preg_replace("![^A-Za-z0-9_\-]+!", "", $function);
+		$path = "Front/{$function}_html.php";
+		if (!file_exists(__CA_THEME_DIR__."/views/{$path}")) {
+			$path = "Front/front_page_html.php";
+		}
+		
+		$this->view->setVar('config', $this->config);
+		$this->view->setVar('featured_set', $t_set);
+		$this->view->setVar('featured_set_id', $t_set ? $t_set->get("set_id") : null);
+		$this->view->setVar('featured_set_item_ids', $featured_ids);
+		$this->view->setVar('featured_set_items_as_search_result', sizeof($featured_ids) ? caMakeSearchResult('ca_objects', $featured_ids) : null);
+		$this->view->setVar('result_context', $o_result_context);
+		
+		$this->render($path);
+	}
+	# -------------------------------------------------------
+	/** 
+	 * Generate the URL for the "back to results" link from a browse result item
+	 * as an array of path components.
+	 */
+	public static function getReturnToResultsUrl($request) {
+		$ret = [
+			'module_path' => '',
+			'controller' => 'Front',
+			'action' => 'Index',
+			'params' => []
+		];
+		return $ret;
+	}
+	# ------------------------------------------------------
+}

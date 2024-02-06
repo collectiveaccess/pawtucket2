@@ -33,7 +33,6 @@ require_once(__CA_LIB_DIR__.'/ApplicationPluginManager.php');
 require_once(__CA_APP_DIR__."/controllers/FindController.php");
 require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
-require_once(__CA_MODELS_DIR__."/ca_objects.php");
 require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
 require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
 
@@ -107,12 +106,6 @@ class DetailController extends FindController {
 	 *
 	 */ 
 	public function __call($function, $args) {
-		AssetLoadManager::register("panel");
-		AssetLoadManager::register("mediaViewer");
-		AssetLoadManager::register("carousel");
-		AssetLoadManager::register("readmore");
-		AssetLoadManager::register("maps");
-		
 		$o_search_config = caGetSearchConfig();
 		
 		$options = (isset($this->opa_detail_types[$function]['options']) && is_array($this->opa_detail_types[$function]['options'])) ? $this->opa_detail_types[$function]['options'] : array();
@@ -378,35 +371,39 @@ class DetailController extends FindController {
 		}
 		
 		//
-		// map
+		// Map
 		//
+		$this->view->setVar("showMap", false);
 		if (!is_array($map_attributes = caGetOption(['mapAttributes', 'map_attributes'], $options, array())) || !sizeof($map_attributes)) {
 			if ($map_attribute = caGetOption(['mapAttribute', 'map_attribute'], $options, false)) { $map_attributes = array($map_attribute); }
 		}
 		
-		$this->view->setVar("map", "");
 		if(is_array($map_attributes) && sizeof($map_attributes)) {
-			$o_map = new GeographicMap((($vn_width = caGetOption(['mapWidth', 'map_width'], $options, false)) ? $vn_width : 285), (($vn_height = caGetOption(['mapHeight', 'map_height'], $options, false)) ? $vn_height : 200), 'map');
-				
-			$vn_mapped_count = 0;	
-			foreach($map_attributes as $map_attribute) {
-				if ($t_subject->get($map_attribute)){
-					$map_fuzz_level = null;
-					if(is_array($map_fuzz_config = caGetOption('mapFuzz', $options, null))) {
-						$when = $map_fuzz_config['when'] ?? null;
-						if(($when && $t_subject->evaluateExpression($map_fuzz_config['when'])) || !$when) {
-							$map_fuzz_level = $map_fuzz_config['level'] ?? null;
-						}
-					} else{
-						$map_fuzz_level = $map_fuzz_config;
-					}
-					$ret = $o_map->mapFrom($t_subject, $map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $options, false), 'fuzz' => (int)$map_fuzz_level));
-					$vn_mapped_count += $ret['items'];
-				}
-			}
+			$map_options = [
+				'width' => caGetOption(['mapWidth', 'map_width'], $options, 300),
+				'width' => caGetOption(['mapHeight', 'map_height'], $options, 300),
+				'zoom' => caGetOption(['mapZoomLevel', 'zoom_level'], $options, 5), 
+				'minZoom' => caGetOption(['mapMinZoomLevel'], $options, 1), 
+				'maxZoom' => caGetOption(['mapMaxZoomLevel'], $options, 15),
+				'infoTemplate' => caGetOption(['mapItemInfoTemplate'], $options, ''),
+				'themePath' => __CA_THEME_URL__
+			];
+			$this->view->setVar('mapOptions', $map_options);
 			
-			if ($vn_mapped_count > 0) { 
-				$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption(['mapZoomLevel', 'zoom_level'], $options, null), 'minZoomLevel' => caGetOption(['mapMinZoomLevel'], $options, null), 'maxZoomLevel' => caGetOption(['mapMaxZoomLevel'], $options, null))));
+			$qr_relative_to = null;
+			if($map_relative_to = caGetOption(['mapRelativeTo', 'map_relative_to'], $options, null)) {
+				$qr_relative_to = $t_subject->getRelatedItems($map_relative_to, ['returnAs' => 'searchResult']);
+			}
+			$map_data = [];
+			foreach($map_attributes as $map_attribute) {
+				$adata = caGetCoordinateDataFromResult($qr_relative_to ?? $t_subject, $map_attribute, $map_options);
+				$map_data = array_merge($map_data ?? [], $adata['coordinates'] ?? []);
+			}
+			if (sizeof($map_data ?? []) > 0) {
+				$this->view->setVar("showMap", true);
+				$this->view->setVar('mapData', $map_data);
+				$map_options['data'] = $map_data;
+				$this->view->setVar('mapOptions', $map_options);
 			}
 		}
 		

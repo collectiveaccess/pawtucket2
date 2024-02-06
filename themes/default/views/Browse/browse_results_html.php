@@ -126,7 +126,7 @@ if (!$vb_ajax) {	// !ajax
 							<button class="btn btn-light btn-sm dropdown-toggle small" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="<?php print _t("Export Results"); ?>">
 								<i class="bi bi-download"></i>
 							</button>
-							<ul class="dropdown-menu">
+							<ul class="dropdown-menu" role='menu'>
 <?php
 							foreach($va_export_formats as $va_export_format){
 								print "<li class='dropdown-item' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
