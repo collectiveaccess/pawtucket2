@@ -271,17 +271,21 @@
 ?>
 		</div>
 	</div>
-
+<?php
+	if($vs_people_project_guide_link = $this->getVar("people_project_guide_link")){
+?>
 	<div class="row">
 		<div class="col-sm-12 col-lg-10 col-lg-offset-1">		
 			<div class="featuredList">
 				<div class='col-sm-12 col-md-6 col-md-offset-3'>
-					<a href="https://newporthistory.org/wp-content/uploads/2024/01/Voices-from-the-NHS-Archives-Guide_V1.pdf" class="btn btn-landing" target="_blank">Project & Database Guide <i class='fa fa-download'></i></a>
+					<a href="<?php print $vs_people_project_guide_link; ?>" class="btn btn-landing" target="_blank">Project & Database Guide <i class='fa fa-download'></i></a>
 				</div>
 			</div>
 		</div>
 	</div>
-
+<?php
+	}
+?>
 	<div class="row">
 		<div class="col-sm-12 col-lg-10 col-lg-offset-1"><hr/><p class="text-center">{{{people_page_credit}}}</p><br/></div>
 	</div>
