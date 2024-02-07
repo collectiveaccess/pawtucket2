@@ -111,25 +111,6 @@
 				</div>
 			</div><!-- end row -->
 <?php
-	}else{
-?>
-
-		<div class="row">
-			<div class="col-sm-4">
-					<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-						<label for="security">Security Question</label>
-						<div class='row'>
-							<div class='col-sm-4'>
-								<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-							</div>
-							<div class='col-sm-4'>
-								<input name="security" value="" id="security" type="text" class="form-control input-sm" />
-							</div>
-						</div><!--end row -->	
-					</div>
-			</div><!-- end col -->
-		</div><!-- end row -->
-<?php
 	}
 ?>				
 		<div class="form-group">
