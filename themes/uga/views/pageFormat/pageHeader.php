@@ -187,7 +187,7 @@
 					  </ul>
 					</li>
 					<li <?php print ($this->request->getController() == "Peabody") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Peabody"), "", "", "Peabody", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Newsfilm") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Newsfilm"), "", "", "Newsfilm", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Newsfilm") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("News Content"), "", "", "Newsfilm", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Licensing") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Licensing"), "", "", "Licensing", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Donate") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Donate"), "", "", "Donate", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
