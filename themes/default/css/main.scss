@@ -19,7 +19,7 @@ a{
 .dropdown-menu{
 	box-shadow: 0 .35rem .25rem rgba(#000, .075);
 }
-a.bg-body-tertiary:hover {
+a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
     filter: brightness(95%);
 }
 .btn-white{
@@ -68,6 +68,9 @@ a.bg-body-tertiary:hover {
 			height:450px;
 			width:100%;
 		}
+	}
+	#map{
+		height:250px;
 	}
 }
 //.detail-container{
@@ -150,6 +153,9 @@ a.bg-body-tertiary:hover {
 			width:100%
 		}
 	}
+}
+#collectionsWrapper{
+	height:300px;
 }
 /* ------------------------- Gallery ------------------------- */
 .gallery{
