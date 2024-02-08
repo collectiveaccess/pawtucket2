@@ -63,6 +63,14 @@
 		</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	
+	
+	<script type="text/javascript">
+			let pawtucketUIApps = {};
+	</script>
+	
+	<script src="<?= $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
+	<script src="<?= $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
 
 <!-- code to set open graph tags (primarily for facebook sharing) -->
 <meta property="og:url" content="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" />

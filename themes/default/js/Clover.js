@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react'
 import { createRoot } from 'react-dom/client';
-import Viewer from "cloverIIIF";
+import Viewer from "@samvera/cloverIIIF/viewer";
 
 const Clover = ({ manifestId, renderAbout, renderClips, showTitle, showIIIFBadge, showInformationToggle, renderResources, backgroundColor, height }) => {
 		let options = {

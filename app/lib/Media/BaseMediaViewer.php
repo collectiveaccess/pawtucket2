@@ -182,7 +182,8 @@ class BaseMediaViewer {
 		$o_view->setVar('hideOverlayControls', caGetOption('hideOverlayControls', $options, false));
 		$o_view->setVar('controls', $controls);
 		$o_view->setVar('displayType', $display_type);
-	
+		$o_view->setVar('displayInfo', $data['display']);
+		
 		return $o_view->render(caGetOption('viewerWrapper', $options, 'viewerWrapper').'.php');
 	}
 	# -------------------------------------------------------

@@ -492,3 +492,21 @@ div.caMediaOverlayControlsMinimal {
 div.caMediaOverlayControls .close {
 	margin: -5px 10px 0px 20px
 }
+
+
+/* Clover viewer overrides */
+.c-YcJWa {
+	display: flex;
+	flex-grow: 1;
+	flex-shrink: 0;
+	width: 10% !important;
+	max-height: 100% ;
+}
+
+.c-bwRbCV {
+	display: none !important;
+}
+
+.c-gKYThq {
+	flex-direction: column-reverse !important;
+}
