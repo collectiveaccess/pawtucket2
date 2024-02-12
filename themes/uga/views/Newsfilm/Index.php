@@ -19,6 +19,7 @@
 		<ul>
 		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/63">Telenews Collection</a></li>
 		<li><a href="https://bmac.libs.uga.edu/index.php/MultiSearch/Index?search=Southeast+Regional+Emmys&rows=20">Southeast Regional Emmys</a></li>
+		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/157">WALB-TV Newsfilm Collection</a></li>
 		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/3657">WALB-TV Videotape Collection</a></li>
 		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/3422">WJBF-TV Film and Videotape Collection</a></li>
 		<li><a href="https://bmac.libs.uga.edu/index.php/Detail/collections/3517">WRDW-TV News Videotape Collection</a></li>
