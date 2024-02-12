@@ -89,7 +89,7 @@ a:hover{
 .headerAdvancedSearch{
 	text-align:right;
 }
-.headerAdvancedSearch a{
+.headerAdvancedSearch a, div.headerAdvancedSearch {
 	font-size:12px;
 	color:#FFF;
 }
