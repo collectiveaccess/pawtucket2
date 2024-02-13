@@ -115,7 +115,7 @@
 			<div class='allLink'><?php print caNavLink($this->request, 'all '.$va_block_info['displayName'].' results', '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search)));?></div>
 
 
-			<script type="text/javascript">
+			<script>
 				jQuery(document).ready(function() {
 					jQuery('#{{{block}}}Results').hscroll({
 						name: '{{{block}}}',
@@ -145,13 +145,13 @@
 			# --- need to change sort direction to catch default setting for direction when sort order has changed
 			if($this->getVar("sortDirection") == "desc"){
 ?>
-				<script type="text/javascript">
+				<script>
 					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet').addClass('glyphicon-sort-by-alphabet-alt');
 				</script>
 <?php
 			}else{
 ?>
-				<script type="text/javascript">
+				<script>
 					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet-alt').addClass('glyphicon-sort-by-alphabet');
 				</script>
 <?php

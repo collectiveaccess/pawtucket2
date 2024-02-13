@@ -66,7 +66,7 @@
 		if ($vn_start == 0) {
 ?>
 			</div>
-			<script type="text/javascript">
+			<script>
 				jQuery(document).ready(function() {
 					jQuery("#panel_<?php print $vs_facet_name; ?>").jscroll({
 						loadingHtml: "<div class='browseFacetItem col-sm-4 col-md-3'><a href='#'><?php print addslashes(caBusyIndicatorIcon($this->request).' '._t('Loading...')); ?></a></div>",
@@ -115,7 +115,7 @@
 		print "<div style='clear:both;'></div>";
 		if($va_facet_info["group_mode"]== "alphabetical"){
 ?>
-		<script type="text/javascript">		
+		<script>		
 			function jumpToLetter(jumpToItemID){
 				jQuery("#bScrollList").scrollTop(0);
 				var position = jQuery("#" + jumpToItemID).position();

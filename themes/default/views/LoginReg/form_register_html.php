@@ -42,7 +42,7 @@
 	if($this->request->isAjax()){}
 ?>
 
-<script type="text/javascript">
+<script>
 	// initialize CA Utils
 	caUI.initUtils();
 </script>

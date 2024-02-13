@@ -62,7 +62,8 @@
 ?>
 			<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
 				<div class="input-group p-3">
-					<input name="search_refine" type="text" class="form-control rounded-0  border-0" placeholder="<?php print _t("Search within..."); ?>" aria-label="<?php print _t("Search within"); ?>">
+					<label for="search-within" class="form-label visually-hidden">Search within</label>
+					<input name="search_refine" id="search-within" type="text" class="form-control rounded-0  border-0" placeholder="<?php print _t("Search within..."); ?>" aria-label="<?php print _t("Search within"); ?>">
 					<button type="submit" class="btn rounded-0 bg-white" aria-label="search submit"><i class="bi bi-search"></i></button>
 				</div>
 			</form>
@@ -85,7 +86,7 @@
       					<div class='accordion-body '>";
 					
 ?>
-						<script type="text/javascript">
+						<script>
 							jQuery(document).ready(function() {
 								jQuery("#bHierarchyList_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'linkTo' => 'morePanel')); ?>");
 							});

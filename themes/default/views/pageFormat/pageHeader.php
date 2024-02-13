@@ -35,7 +35,7 @@
 	
 	<title><?= (MetaTagManager::getWindowTitle()) ?: $this->request->config->get("app_display_name"); ?></title>
 
-	<script type="text/javascript">
+	<script>
 		let pawtucketUIApps = {};
 	</script>
 </head>
@@ -89,17 +89,17 @@
 				</ul>
 				<form action="<?= caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" role="search">
 					<div class="input-group mt-4">
+						<label for="nav-search-input" class="form-label visually-hidden">Search</label>
 						<input type="text" name="search" class="form-control rounded-0 border-black" id="nav-search-input" placeholder="Search" aria-label="Search">
 						<button type="submit" class="btn rounded-0" id="nav-search-btn" aria-label="Submit Search"><i class="bi bi-search"></i></button>
 					</div>
 					<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
-			
 				</form>
 			</div>
 		</div>
 	</nav>	
 
-	<main role="main" <?= caGetPageCSSClasses(); ?>>
+	<main <?= caGetPageCSSClasses(); ?>>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
 		print "<div class='container-xl pt-4'>";

@@ -87,7 +87,7 @@
 	if($this->request->isAjax()){
 ?>
 		</div><!-- end caFormOverlay -->
-<script type='text/javascript'>
+<script >
 	jQuery(document).ready(function() {
 		jQuery('#LoginForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(

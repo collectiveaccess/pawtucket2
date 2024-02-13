@@ -38,7 +38,7 @@ $id =				$t_item->get('ca_places.place_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
 ?>
-<script type="text/javascript">
+<script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 
@@ -57,7 +57,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 		<div class="col-md-12">
 			<H1>{{{^ca_places.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_places.type_id|ca_places.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_places.type_id">^ca_places.type_id</ifdef><ifdef code="ca_places.idno">, ^ca_places.idno</ifdef></div></ifdef>}}}
-			<hr class="mb-0"/>
+			<hr class="mb-0">
 		</div>
 	</div>
 <?php
@@ -138,24 +138,24 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	{{{<ifcount code="ca_entities" min="1">
 		<dl class="row">
 			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
-			<unit relativeTo="ca_entities" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_entities.preferred_labels<br/>^relationship_typename</l></dd></unit>
+			<unit relativeTo="ca_entities" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_entities.preferred_labels<br>^relationship_typename</l></dd></unit>
 		</dl>
 	</ifcount>}}}
 	{{{<ifcount code="ca_occurrences" min="1">
 		<dl class="row">
 			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-			<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br/>^relationship_typename</l></dd></unit>
+			<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br>^relationship_typename</l></dd></unit>
 		</dl>
 	</ifcount>}}}
 	{{{<ifcount code="ca_places.related" min="1">
 		<dl class="row">
 			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_places.related" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places.related" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-			<unit relativeTo="ca_places.related" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_places.preferred_labels<br/>^relationship_typename</l></dd></unit>
+			<unit relativeTo="ca_places.related" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_places.preferred_labels<br>^relationship_typename</l></dd></unit>
 		</dl>
 	</ifcount>}}}
 {{{<ifcount code="ca_objects" min="1">
 	<div class="row">
-		<div class="col"><h2>Related Objects</h2><hr/></div>
+		<div class="col"><h2>Related Objects</h2><hr></div>
 	</div>
 	<div class="row">	
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_places.place_id:'.$t_item->get("ca_places.place_id"))); ?>">

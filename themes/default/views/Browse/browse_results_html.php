@@ -99,7 +99,7 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='list-inline-item me-2'>|</li>";
 						}
 					}
-					print "<li class='list-inline-item'>".caNavLink($this->request, '<i class=bi bi-sort-down'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction" role="button"></i>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+					print "<li class='list-inline-item'>".caNavLink($this->request, '<i class="bi bi-sort-down"'.(($vs_sort_dir == 'asc') ? '' : '-alt').' aria-label="direction" role="button"></i>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 					print "</ul>\n";
 					print "</li>\n";
 				}

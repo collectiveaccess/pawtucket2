@@ -35,7 +35,7 @@
 
 		<form class="row g-3" action="<?= caNavUrl($this->request, "", "Contact", "send"); ?>" method="post">
 
-			<input type="hidden" name="csrfToken" value="<?= caGenerateCSRFToken($this->request); ?>"/>
+			<input type="hidden" name="csrfToken" value="<?= caGenerateCSRFToken($this->request); ?>">
 
 			<?php
 				if($pn_id && $t_item->getPrimaryKey()){
@@ -75,7 +75,7 @@
 			<?php
 				if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
 			?>
-					<script type="text/javascript">
+					<script>
 						var gCaptchaRender = function(){
 							grecaptcha.render('regCaptcha', {'sitekey': '<?= __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
 						};

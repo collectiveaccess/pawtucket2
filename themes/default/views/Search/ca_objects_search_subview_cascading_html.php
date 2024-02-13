@@ -64,7 +64,7 @@
 				}
 ?>
 				
-				<!--<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
+				<!--<div class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</div>
 				{{{sortDirectionControl}}}-->
 			</small>
 			<H2><?php print caNavLink($this->request, $va_block_info['displayName']."&nbsp;&nbsp;<span class='highlight'>(".$qr_results->numHits().")</span>", '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></H2>
@@ -137,7 +137,7 @@
 		if (!$this->request->isAjax()) {
 ?>
 					</div><!-- end browseResultsContainer -->
-<script type="text/javascript">
+<script>
 	jQuery(document).ready(function() {
 		jQuery('#browseResultsContainer').jscroll({
 			autoTrigger: true,
