@@ -45,6 +45,39 @@ class LoginRegController extends BasePawtucketController {
 		$this->render("LoginReg/form_login_html.php");
 	}
 	# ------------------------------------------------------
+	function loginRegisterForm($t_user = "") {
+		if ($this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
+			$this->notification->addNotification(_t("Login is not enabled"), __NOTIFICATION_TYPE_ERROR__);
+			$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+			return;
+		}
+		if ($this->request->config->get('dontAllowRegistration')) {
+			$this->view->setVar("show_register_form", false);
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Login"));		
+		}else{
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Login or Register"));
+			if(!is_object($t_user)){
+				$t_user = new ca_users();
+			}
+			if(!is_object($t_user)){
+				$t_user = new ca_users();
+			}
+			$this->view->setVar("t_user", $t_user);
+
+			$va_profile_prefs = $t_user->getValidPreferences('profile');
+			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
+				$va_elements = array();
+				foreach($va_profile_prefs as $vs_pref) {
+					$va_pref_info = $t_user->getPreferenceInfo($vs_pref);
+					$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label class='form-label' for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
+				}
+
+				$this->view->setVar("profile_settings", $va_elements);
+			}
+		}
+		$this->render("LoginReg/form_login_register_html.php");
+	}
+	# ------------------------------------------------------
 	function registerForm($t_user = "") {
 		if (
 			$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
@@ -66,7 +99,7 @@ class LoginRegController extends BasePawtucketController {
 			$va_elements = array();
 			foreach($va_profile_prefs as $vs_pref) {
 				$va_pref_info = $t_user->getPreferenceInfo($vs_pref);
-				$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<div><b>".$va_pref_info['label']."</b><br/>^ELEMENT</div>"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='pref_{$vs_pref}' class='col-sm-4 control-label'>".$va_pref_info['label']."</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 -->\n", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
+				$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label class='form-label' for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
 			}
 
 			$this->view->setVar("profile_settings", $va_elements);
@@ -99,7 +132,7 @@ class LoginRegController extends BasePawtucketController {
 			$va_elements = array();
 			foreach($va_profile_prefs as $vs_pref) {
 				$va_pref_info = $t_user->getPreferenceInfo($vs_pref);
-				$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<div><b>".$va_pref_info['label']."</b><br/>^ELEMENT</div>"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='".$vs_pref."' class='col-sm-4 control-label'>".$va_pref_info['label']."</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 -->\n", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
+				$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label class='form-label' for='pref_".$vs_pref."'>".$va_pref_info['label']."</label>^ELEMENT", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
 			}
 
 			$this->view->setVar("profile_settings", $va_elements);
@@ -264,24 +297,20 @@ class LoginRegController extends BasePawtucketController {
 				}
 				Session::setVar('join_user_group_id', '');
 			}
-			if($this->request->isAjax()){
-				$this->view->setVar("message", _t("You are now logged in"));
-				$this->render("Form/reload_html.php");
-			}else{
-				$vs_controller = $vs_module_path = '';
-				if ($vs_default_action = $this->request->config->get('default_action')) {
-					$va_tmp = explode('/', $vs_default_action);
-					$vs_action = array_pop($va_tmp);
-					if (sizeof($va_tmp)) { $vs_controller = array_pop($va_tmp); }
-					if (sizeof($va_tmp)) { $vs_module_path = join('/', $va_tmp); }
-				} else {
-					$vs_controller = 'Splash';
-					$vs_action = 'Index';
-				}
-				$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
-				$this->notification->addNotification(_t("You have been logged in").($vs_group_message ? "<br/>{$vs_group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
-				$this->response->setRedirect($vs_url);
+			
+			$vs_controller = $vs_module_path = '';
+			if ($vs_default_action = $this->request->config->get('default_action')) {
+				$va_tmp = explode('/', $vs_default_action);
+				$vs_action = array_pop($va_tmp);
+				if (sizeof($va_tmp)) { $vs_controller = array_pop($va_tmp); }
+				if (sizeof($va_tmp)) { $vs_module_path = join('/', $va_tmp); }
+			} else {
+				$vs_controller = 'Front';
+				$vs_action = 'Index';
 			}
+			$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
+			$this->notification->addNotification(_t("You have been logged in").($vs_group_message ? "<br/>{$vs_group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
+			$this->response->setRedirect($vs_url);
 		}
 	}
 	# -------------------------------------------------------
@@ -369,7 +398,7 @@ class LoginRegController extends BasePawtucketController {
 		if($co_security == 'captcha'){
 			if(!(defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") && __CA_GOOGLE_RECAPTCHA_SECRET_KEY__) || !(defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__)){
 			//Then the captcha will not work and should not be implemenented.
-					$co_security = 'equation_sum';
+					$co_security = '';
 			}
 		}
 		if($co_security == 'captcha'){
@@ -387,14 +416,6 @@ class LoginRegController extends BasePawtucketController {
 				$captcha_json = json_decode($va_captcha_resp, true);
 				if(!$captcha_json['success']){
 						$va_errors["recaptcha"] = _t("Your Captcha was rejected, please try again");
-				}
-			}
-		} else {
-			if ((!$ps_security)) {
-				$va_errors["security"] = _t("Please answer the security question.");
-			}else{
-				if($ps_security != $_REQUEST["sum"]){
-					$va_errors["security"] = _t("Your answer was incorrect, please try again");
 				}
 			}
 		}
@@ -557,7 +578,7 @@ class LoginRegController extends BasePawtucketController {
 					if (sizeof($va_tmp)) { $vs_controller = array_pop($va_tmp); }
 					if (sizeof($va_tmp)) { $vs_module_path = join('/', $va_tmp); }
 				} else {
-					$vs_controller = 'Splash';
+					$vs_controller = 'Front';
 					$vs_action = 'Index';
 				}
 				$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
@@ -566,27 +587,15 @@ class LoginRegController extends BasePawtucketController {
 					$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $ps_email, 'password' => $ps_password));
 
 					if($this->request->isLoggedIn()){
-						if($this->request->isAjax()){
-							$this->view->setVar("message", _t('Thank you for registering!  You are now logged in.').$vs_group_message);
-							$this->render("Form/reload_html.php");
-							return;
-						}else{
-							$this->notification->addNotification(_t('Thank you for registering!  You are now logged in.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
-							$this->response->setRedirect($vs_url);
-						}
+						$this->notification->addNotification(_t('Thank you for registering!  You are now logged in.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
+						$this->response->setRedirect($vs_url);
 					}else{
 						$va_errors["register"] = _t("Login failed.");
 					}
 				}else{
 					# --- registration needs approval
-					if($this->request->isAjax()){
-						$this->view->setVar("message", _t('Thank you for registering!  Your account will be activated after review.').$vs_group_message);
-						$this->render("Form/reload_html.php");
-						return;
-					}else{
-						$this->notification->addNotification(_t('Thank you for registering!  Your account will be activated after review.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
-						$this->response->setRedirect($vs_url);
-					}
+					$this->notification->addNotification(_t('Thank you for registering!  Your account will be activated after review.').$vs_group_message, __NOTIFICATION_TYPE_INFO__);
+					$this->response->setRedirect($vs_url);
 				}
 			}
 		}

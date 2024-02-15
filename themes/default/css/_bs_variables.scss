@@ -177,3 +177,16 @@ $accordion-button-active-bg: $light-bg-subtle !default;
 /* dropdowns */
 $dropdown-border-width:             0px !default;
 $dropdown-box-shadow:               0 .25rem .25rem rgba(#000, .075) !default; // --- this is only used when shadows are enabled so shadow is set in main.scss
+
+// Forms
+
+// scss-docs-start form-label-variables
+$form-label-margin-bottom:              .5rem !default;
+$form-label-font-size:                  null !default;
+$form-label-font-style:                 null !default;
+$form-label-font-weight:                $font-weight-medium !default;
+$form-label-color:                      null !default;
+
+$input-focus-border-color:              #000 !default;
+
+// scss-docs-end form-label-variables

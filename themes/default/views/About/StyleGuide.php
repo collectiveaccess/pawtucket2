@@ -42,6 +42,8 @@
 		<div class="col-4">
 			<h2>Links</h2>
 			<hr/>
+			<a href="#">Text Link</a>
+			<hr/>
 			<button type="button" class="btn btn-primary">Primary</button>
 			<button type="button" class="btn btn-secondary">Secondary</button>
 			<button type="button" class="btn btn-light">Light</button>
@@ -54,6 +56,8 @@
 			<div class="bg-body-primary p-5 my-5">.bg-body-primary</div>
 			<div class="bg-body-secondary p-5 my-5">.bg-body-secondary</div>
 			<div class="bg-body-tertiary p-5 my-5">.bg-body-tertiary</div>
+			<div class="bg-dark text-light p-5 my-5">.bg-dark</div>
+			<div class="bg-light p-5 my-5">.bg-light</div>
 			<hr/>
 			<div class="shadow p-5 my-5">.shadow</div>
 			<div class="shadow-sm p-5 my-5">.shadow-sm</div>
