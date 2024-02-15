@@ -30,12 +30,6 @@
 	if($this->request->config->get("dont_approve_logins_on_registration")){
 		print _t("Please login and navigate to Manage > Access Control to approve the registration.");
 	}
-	print _t("
-	
-	Regards,
-	the Staff
-	
-	");
 
 	print "<p>".$this->request->config->get("site_host")."</p>";
 ?>
