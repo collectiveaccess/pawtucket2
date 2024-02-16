@@ -38,7 +38,7 @@
 		</div>
 	</div>
 	<div class="row flex">
-		<div class="col-sm-3 fullWidthImg unit">
+		<div class="col-sm-3 fullWidthImg maxWidth unit text-center">
 			<?php print caGetThemeGraphic($this->request, 'AWOTWlogo.jpg', array("alt" => "Alutiiq Word of the Week")); ?>
 		</div>
 		<div class="col-sm-9 wordCallout">
@@ -65,12 +65,23 @@
 
 <?php
  				while($qr_res->nextHit()){
+ 					$t_occurrence = new ca_occurrences($qr_res->get("ca_occurrences.occurrence_id"));
  ?>
  
 			<div class="wordFeaturedLesson">
 				<div class="row flex">
 					<div class="col-sm-5">
-						<?php print $qr_res->getWithTemplate("<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='1' length='1' sort='is_primary' sortDirection='desc' delimiter='<br/>'><ifdef code='ca_object_representations.media.large'><div class='unit fullWidthImg'>^ca_object_representations.media.large<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-left'>^ca_object_representations.preferred_labels.name</div></if></div></ifdef><unit>"); ?>
+<?php						
+						if($va_images = $t_occurrence->representationsWithMimeType(array('image/jpeg', 'image/tiff', 'image/png', 'image/x-dcraw', 'image/x-psd', 'image/x-dpx', 'image/jp2', 'image/x-adobe-dng', 'image/bmp', 'image/x-bmp'), array('versions' => array('large'), 'return_with_access' => $va_access_values))){
+							foreach($va_images as $vn_rep_id => $va_image_info){
+								$t_rep = new ca_object_representations($va_image_info["representation_id"]);
+								print "<div class='unit fullWidthImg'>".$va_image_info["tags"]["large"];
+								print $t_rep->getWithTemplate("<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-left'>^ca_object_representations.preferred_labels.name</div></if>");
+								print "</div>";
+							}
+						}							
+?>
+						<?php #print $qr_res->getWithTemplate("<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='1' length='1' sort='is_primary' sortDirection='desc' delimiter='<br/>'><ifdef code='ca_object_representations.media.large'><div class='unit fullWidthImg'>^ca_object_representations.media.large<if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='small text-left'>^ca_object_representations.preferred_labels.name</div></if></div></ifdef><unit>"); ?>
 					</div>
 					<div class='col-sm-7'>
 						<div class='wordFeaturedLessonTitle'><?php print $qr_res->getWithTemplate("<l>^ca_occurrences.preferred_labels.name &mdash; ^ca_occurrences.alutiiq_word</l> <ifdef code='ca_occurrences.pronunciation_audio_clip'> <i id='playPronunciation' class='fa fa-volume-up' aria-hidden='true'></i></ifdef>"); ?></div>
@@ -113,13 +124,25 @@
 	<div class="row">
 		<div class="col-sm-12 text-center">
 			<H3>Word of the Week Archive</H3>
-			<div class="wordCallout">{{{word_archive}}}</div>
-			<?php print caNavLink($this->request, "<div class='wordFindBox'>"._t("Search the Archive")."</div>", "", "", "browse", "words"); ?>
+			<div class="row">
+				<div class="col-sm-12 col-md-6 col-md-offset-3 text-center">
+					<form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'words'); ?>">
+						<div class="formOutline">
+							<div class="form-group">
+								<input type="text" class="form-control" id="heroSearchInput" placeholder="Search the Archive" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
+							</div>
+							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="wordCallout">{{{word_archive_home}}}</div>
+			<?php print caNavLink($this->request, "<div class='wordFindBox'>"._t("Browse the Archive")."</div>", "", "", "browse", "words"); ?>
 		</div>		
 	</div>
 	<div class="container">
 		<div class="row hpIntroTop flex bg_gray">
-			<div class="col-sm-12 col-md-4 col-lg-4 fullWidthImg">
+			<div class="col-sm-12 col-md-4 col-lg-4 fullWidthImg maxWidth text-center">
 				<?php print caGetThemeGraphic($this->request, 'AWOTWlogo.jpg', array("alt" => "Alutiiq Word of the Week")); ?>
 			</div>
 			<div class="col-sm-12 col-md-6 col-lg-6 col-md-offset-1">
