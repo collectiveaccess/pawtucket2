@@ -37,7 +37,7 @@
 	$vs_current_view	= $this->getVar('view');
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	
-	$vn_facet_display_length_maximum = 60;
+	$vn_facet_display_length_maximum = 5;
 	$vs_criteria = "";
 	if (sizeof($va_criteria) > 0) {
 		$i = 0;
@@ -54,8 +54,9 @@
 	
 	if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->numHits() > 1)){
 ?>
-		<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>
+		
 		<div id='bRefine' class='bg-light sticky-md-top vh-100 collapse'>
+			<div id='bMorePanel' class='position-absolute w-100 z-3 bg-light h-100 collapse'><!-- long lists of facets are loaded here --></div>
 			<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
 <?php
 		if($qr_res->numHits() > 1){
@@ -76,6 +77,7 @@
 			}
 			print '<div class="accordion accordion-flush" id="browseRefineFacets">';
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
+				$vs_more_link = "";
 				print "<div class='accordion-item'>";
 			
 				if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
@@ -98,29 +100,21 @@
 					print "<div class='accordion-header' id='heading".$vs_facet_name."'><button class='accordion-button collapsed fw-medium text-capitalize ' type='button' data-bs-toggle='collapse' data-bs-target='#".$vs_facet_name."' aria-expanded='false' aria-controls='".$vs_facet_name."'>".$va_facet_info['label_singular']."</button></div>";
 
 					print "<div id='".$vs_facet_name."' class='accordion-collapse collapse' aria-labelledby='heading".$vs_facet_name."' data-bs-parent='#browseRefineFacets'>
-      					<div class='accordion-body small'>";
-					switch($va_facet_info["group_mode"]){
-						case "alphabetical":
-						case "list":
-						default:
+      					<div class='accordion-body small'><dl>";
 							$vn_facet_size = sizeof($va_facet_info['content']);
 							$vn_c = 0;
 							foreach($va_facet_info['content'] as $va_item) {
 								$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-								print "<div class='mb-1'>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+								print "<dd>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</dd>";
 								$vn_c++;
 						
-								if(($vn_c == $vn_facet_display_length_maximum))  {
-### --- JS needs to be updated here to work
-									print "<div><a href='#' class='more' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'><em>CHANGE ME TO OPEN IN A PANEL"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial)."</em></a></div>";
+								if(($vn_c == $vn_facet_display_length_maximum) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
+									$vs_more_link = "<div><button class='btn btn-sm btn-secondary' hx-trigger='click' hx-target='#bMorePanel' hx-get='".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."' type='button' aria-label='"._t("View More")."' data-bs-toggle='collapse' data-bs-target='#bMorePanel' aria-controls='bMorePanel'>"._t("and %1 more", $vn_facet_size - $vn_facet_display_length_maximum)."</button></div>";
 									break;
 								}
 							}
-							
-						break;
-						# ---------------------------------------------
-					}
-					print "</div></div>";
+
+					print "</dl>".$vs_more_link."</div></div>";
 				}
 				print "</div><!-- end accordion-item -->";
 			}
