@@ -860,6 +860,25 @@ a:hover .featuredObjectsCaption, a:focus .featuredObjectsCaption{
 	color:#FFF;
 	text-decoration:none;
 }
+/* explore places */
+.placesIntro {
+	font-size: 16px;
+	font-weight: normal;
+	line-height: 1.5em;
+	margin-bottom: 30px;
+}
+.mapImage{
+	float:left;
+	margin-right:30px;
+	width:120px;
+}
+.mapImage img{
+	width:100%;
+	height:auto;
+}
+.exploreMapBalloonContainer a.btn{
+	color:#FFF;
+}
 
 /* types */
 .typesIntro {
@@ -1090,4 +1109,14 @@ a .typesTile .title {
 .userGuideBody .video-js{
 	width:100% !important;
 	height:500px !important;
+}
+/* advanced search */
+@media(min-width:992px){
+	.searchTips{
+		border-left:1px solid #828282;
+		padding-left:30px;
+	}
+}
+.searchTips H3{
+	text-transform:none;
 }

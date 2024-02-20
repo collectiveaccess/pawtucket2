@@ -172,7 +172,7 @@
 					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "explore")) ? ' active' : ''; ?>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Explore <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("Places"), "", "", "", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("Places"), "", "", "Explore", "places"); ?></li>
 							<li><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Types"), "", "", "Explore", "types"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Works"), "", "", "Browse", "works"); ?></li>

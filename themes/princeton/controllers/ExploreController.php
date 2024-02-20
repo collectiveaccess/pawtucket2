@@ -40,7 +40,7 @@ class ExploreController extends BasePawtucketController {
 	}
 	# -------------------------------------------------------
 	public function Types() {
-		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")."Explore");
+		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")."Explore Types");
 
 		$t_list = new ca_lists();
 		
@@ -61,7 +61,7 @@ class ExploreController extends BasePawtucketController {
 	}
 	# -------------------------------------------------------
 	public function TypesDetail() {
-		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")."Types");
+		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")."Explore Types");
 
 		$t_list = new ca_lists();
 		
@@ -100,5 +100,41 @@ class ExploreController extends BasePawtucketController {
 		caSetPageCSSClasses(array("types"));
 		$this->render("Explore/types_detail_html.php");
 	}
+	# -------------------------------------------------------
+	public function Places() {
+		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")."Explore Places");
+		AssetLoadManager::register("maps");
+		$vs_set_code = $this->request->config->get("explore_places_set_code");
+		if($vs_set_code){
+			$t_set = new ca_sets();
+ 			$t_set->load(array('set_code' => $vs_set_code));
+ 			# Enforce access control on set
+			if((sizeof($this->opa_access_values) == 0) || (sizeof($this->opa_access_values) && in_array($t_set->get("access"), $this->opa_access_values))){
+				$this->view->setVar("set", $t_set);
+				$o_res = caMakeSearchResult(
+					$t_set->get('table_num'),
+					array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))),
+					['checkAccess' => $this->opa_access_values]
+				);
+				
+				$o_map = new GeographicMap('100%', 500, 'map');
+				$va_map_stats = $o_map->mapFrom($o_res, "ca_places.georeference", array("labelTemplate" => "^ca_places.preferred_labels%delimiter=; ", "ajaxContentUrl" => caNavUrl($this->request, "", "Explore", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
+				$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));	
+			}
+		}
+		
+		
+		caSetPageCSSClasses(array("places", "landing"));
+		$this->render("Explore/places_index_html.php");
+	}
+	# -------------------------------------------------------
+	public function getMapItemInfo() {
+		$pa_place_ids = explode(';', $this->request->getParameter('id', pString));
+		
+		$this->view->setVar('place_ids', $pa_place_ids);
+		$this->view->setVar('access_values', $this->opa_access_values);
+		
+		$this->render("Explore/map_balloon_html.php");		
+	}	
 	# -------------------------------------------------------
 }
