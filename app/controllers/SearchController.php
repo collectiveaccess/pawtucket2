@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2023 Whirl-i-Gig
+ * Copyright 2014-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -267,6 +267,10 @@ class SearchController extends FindController {
 		// Add criteria and execute
 		//
 
+				
+		if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
+			$o_browse->addCriteria("_search", [caMatchOnStem($vs_search_expression)], array($vs_search_expression_for_display));
+		}
 		if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			foreach ($va_facets as $vs_facet_spec) {
 				if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
@@ -280,10 +284,6 @@ class SearchController extends FindController {
 			$o_browse->addCriteria('_search', [caMatchOnStem($vs_search_refine)], array($vs_search_refine));
 		} elseif ($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) {
 			$o_browse->addCriteria($vs_facet, explode("|", $this->request->getParameter('id', pString, ['forcePurify' => true])));
-		}
-				
-		if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
-			$o_browse->addCriteria("_search", [caMatchOnStem($vs_search_expression)], array($vs_search_expression_for_display));
 		}
 		
 		//
@@ -556,10 +556,28 @@ class SearchController extends FindController {
 	 * as an array of path components.
 	 */
 	public static function getReturnToResultsUrl($po_request) {
+		$browse = $po_request->getAction();
+		$browse_types = caGetBrowseConfig()->get('browseTypes');
+		if(is_array($browse_types[$browse])) {
+			$table = $browse_types[$browse]['table'] ?? null;
+			$find = ResultContext::getLastFind($po_request, $table);
+			$tmp = explode('/', $find);
+			if((sizeof($tmp) > 1) && ($tmp[0] === 'search_advanced')) {
+				return array(
+					'module_path' => '',
+					'controller' => 'Search/advanced',
+					'action' => $browse,
+					'params' => array(
+						'key'
+					)
+				);
+				
+			}
+		}
 		$va_ret = array(
 			'module_path' => '',
 			'controller' => 'Search',
-			'action' => $po_request->getAction(),
+			'action' => $browse,
 			'params' => array(
 				'key'
 			)
