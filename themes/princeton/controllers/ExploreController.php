@@ -108,18 +108,23 @@ class ExploreController extends BasePawtucketController {
 		if($vs_set_code){
 			$t_set = new ca_sets();
  			$t_set->load(array('set_code' => $vs_set_code));
- 			# Enforce access control on set
-			if((sizeof($this->opa_access_values) == 0) || (sizeof($this->opa_access_values) && in_array($t_set->get("access"), $this->opa_access_values))){
-				$this->view->setVar("set", $t_set);
-				$o_res = caMakeSearchResult(
-					$t_set->get('table_num'),
-					array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))),
-					['checkAccess' => $this->opa_access_values]
-				);
+ 			if($t_set->get("ca_sets.set_id")){
+				# Enforce access control on set
+				if((sizeof($this->opa_access_values) == 0) || (sizeof($this->opa_access_values) && in_array($t_set->get("access"), $this->opa_access_values))){
+					$va_set_items = $t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values));
+					if(is_array($va_set_items) && sizeof($va_set_items)){
+						$this->view->setVar("set", $t_set);
+							$o_res = caMakeSearchResult(
+								$t_set->get('table_num'),
+								array_keys($va_set_items),
+								['checkAccess' => $this->opa_access_values]
+							);
 				
-				$o_map = new GeographicMap('100%', 500, 'map');
-				$va_map_stats = $o_map->mapFrom($o_res, "ca_places.georeference", array("labelTemplate" => "^ca_places.preferred_labels%delimiter=; ", "ajaxContentUrl" => caNavUrl($this->request, "", "Explore", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
-				$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));	
+						$o_map = new GeographicMap('100%', 500, 'map');
+						$va_map_stats = $o_map->mapFrom($o_res, "ca_places.georeference", array("labelTemplate" => "^ca_places.preferred_labels%delimiter=; ", "ajaxContentUrl" => caNavUrl($this->request, "", "Explore", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
+						$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));	
+					}
+				}
 			}
 		}
 		
