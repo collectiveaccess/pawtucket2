@@ -37,6 +37,7 @@
  * @marginBottom 0.5in
  * @marginRight 0.25in
  * @disabled 1
+ * @restrictToTypes artwork
  *
  * ----------------------------------------------------------------------
  */

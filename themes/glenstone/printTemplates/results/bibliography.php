@@ -29,6 +29,7 @@
  * @name Bibliography (Library)
  * @type page
  * @pageSize letter
+ * @restrictToTypes book
  * @pageOrientation portrait
  * @tables ca_objects
  *

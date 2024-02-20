@@ -217,33 +217,8 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 						// If currently deaccessioned then display deaccession message
 						print "<br/><div class='inspectorDeaccessioned'>"._t('Deaccessioned %1', $t_object->get('deaccession_date'))."</div>\n";
 					} else {
-						$t_ui = ca_editor_uis::loadDefaultUI('ca_objects', $this->request);
-						if (($t_ui && method_exists($t_object, "getObjectHistory")) && (is_array($va_placements = $t_ui->getPlacementsForBundle('ca_objects_history')) && (sizeof($va_placements) > 0))) {
-							//
-							// Output current "location" of object in life cycle. Configuration is taken from a ca_objects_history bundle configured for the current editor
-							//
-							$va_placement = array_shift($va_placements);
-							$va_bundle_settings = $va_placement['settings'];
-							
-							// Rewrite back-end display settings to remove link tags
-							// since the referenced details don't exist on the front-end
-							foreach($va_bundle_settings as $vs_key => $vm_val) {
-								if (preg_match("!displayTemplate$!", $vs_key)) {
-									$va_bundle_settings[$vs_key] = str_ireplace("<l>", "", str_ireplace("</l>", "", $vm_val));
-								}
-							} 
-							if (is_array($va_history = $t_object->getObjectHistory($va_bundle_settings, array('displayLabelOnly' => false, 'limit' => 1, 'currentOnly' => true))) && (sizeof($va_history) > 0)) {
-								$va_current_location = array_shift(array_shift($va_history));
-								if ($va_current_location['display']) { print "<div class='inspectorCurrentLocation unit'><span class='metaTitle'>"._t('Current')."</span><span class='meta'>".$va_current_location['display']."</span></div>"; }
-							}
-						} elseif (method_exists($t_object, "getLastLocationForDisplay")) {
-							// If no ca_objects_history bundle is configured then display the last storage location
-							if ($vs_current_location = $t_object->getLastLocationForDisplay("<ifdef code='ca_storage_locations.parent.preferred_labels'>^ca_storage_locations.parent.preferred_labels ➜ </ifdef>^ca_storage_locations.preferred_labels.name")) {
-								print "<br/><div class='inspectorCurrentLocation'>"._t('Location: %1', $vs_current_location)."</div>\n";
-								$vs_full_location_hierarchy = $t_object->getLastLocationForDisplay("^ca_storage_locations.hierarchy.preferred_labels.name%delimiter=_➜_");
-								if ($vs_full_location_hierarchy !== $vs_current_location) { TooltipManager::add(".inspectorCurrentLocation", $vs_full_location_hierarchy); }
-							}
-						}
+						$cur_location = $t_object->getCurrentValueForDisplay();
+						if ($cur_location) { print "<div class='inspectorCurrentLocation unit'><span class='metaTitle'>"._t('Current')."</span><span class='meta'>".strip_tags($cur_location, '<br><a>')."</span></div>"; }
 					}
 					
 					#Loan Status

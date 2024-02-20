@@ -1,0 +1,12 @@
+{
+    "georgia": {
+        "normal": "georgia",
+        "bold": "georgia_bold",
+        "italic": "georgia_italic",
+        "bold_italic": "georgia"
+    },
+    "sourcesans": {
+        "normal": "\/var\/www\/html\/themes\/glenstone\/fonts\/sourcesans_normal_923d61203197e14b4e7e4f803bd1372b",
+        "italic": "sourcesans_italic_f83588182ebb5a95f2cc7d151a273e34"
+    }
+}

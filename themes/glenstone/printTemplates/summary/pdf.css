@@ -1,37 +1,95 @@
-/* Stylesheet used by DOMPDF to format PDF summary output */
+@font-face {
+	font-family: SourceSans;
+	font-style: normal;
+	font-weight: normal;
+	src: url('../../fonts/Source_Sans/SourceSans3-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: SourceSans;
+	font-style: italic;
+	font-weight: normal;
+	src: url('../../fonts/Source_Sans/SourceSans3-Italic.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: SourceSans;
+	font-style: normal;
+	font-weight: bold;
+	src: url('../../fonts/Source_Sans/SourceSans3-Bold.ttf ') format('truetype');
+}
+
+@font-face {
+	font-family: SourceSans;
+	font-style: italic;
+	font-weight: bold;
+	src: url('../../fonts/Source_Sans/SourceSans3-BoldItalic.ttf ') format('truetype');
+}
 
 @page { margin: 55px 66px; }
-#header { position: fixed; left: -30px; top: -40px; right: 0px; height: 55px;  text-align: left; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
+#header { position: fixed; left: -30px; top: -40px; right: 0px; height: 65px;  text-align: left; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
 #footer { position: fixed; left: 0px; bottom: -50px; right: 0px; height: 20px; text-align: center; vertical-align: bottom; margin: 0px 5px 10px 5px; padding: 3px 5px 2px 10px; }
 #header .pagingText:after { content: counter(page, decimal); }
 #body { z-index: 30000; }
 a {color: #000; text-decoration:none;}
-h5 {font: "Georgia"; font-size: 12px; text-transform: uppercase; text-align: center; font-weight:bold; border-bottom: 1px solid #eee;}
+h5 {font-family: "SourceSans"; font-size: 12px; text-transform: uppercase; text-align: center; font-weight:bold; border-bottom: 1px solid #eee;}
 h5.notes { text-align:left; border-bottom:0px;}
 
-#header img { width:121px;height:21px; }
-.headerText { font: "Georgia"; font-size: 11px; margin: -5px 0px 10px 25px; }
-.pagingText { position: absolute; top: 10px; right: 10px; font: "Georgia"; font-size: 11px; text-align: right;  margin: -5px 0px 10px 25px; }
-.footerText { font: "Georgia"; font-size: 11px; margin: -5px 0px 0px 0px;  }
+/* wkhtmltopdf header container */
+body#headerContainer {
+	padding-bottom: 20px;
+}
+
+.headerText { 
+	font-family: "SourceSans"; 
+	font-size: 11px; 
+	margin: -5px 0px 10px 25px; 
+}
+
+img.headerImg {
+	height: 45px;
+}
+
+.pagingText { 
+	position: absolute; 
+	top: 10px; 
+	right: 10px;
+	font-family: "SourceSans"; 
+	font-size: 11px; 
+	text-align: right;  
+	margin: -5px 0px 10px 25px; 
+	width: 200px;
+}
+
+.footerText { font-family: "SourceSans"; font-size: 11px; margin: -5px 0px 0px 0px;  }
 
 table#displayValues {margin-left:-20px;}
-td.label { font: "Georgia"; font-size: 11px; text-transform: uppercase; text-align: left; width: 100px; max-width: 100px;font-weight:bold; padding-top:2px; padding-bottom:2px; border-bottom: 1px solid #eee;}
-td.value { font: "Georgia"; font-size: 11px; width: 370px; max-width: 400px; padding-top:2px; padding-bottom:2px; margin-left:-3px;}
+td.label { font-family: "SourceSans"; font-size: 11px; text-transform: uppercase; text-align: left; width: 100px; max-width: 100px;font-weight:bold; padding-top:2px; padding-bottom:2px; border-bottom: 1px solid #eee;}
+td.value { font-family: "SourceSans"; font-size: 11px; width: 370px; max-width: 400px; padding-top:2px; padding-bottom:2px; margin-left:-3px;}
 td.value.tombstone { padding-top:0px; padding-bottom:0px;}
 td.value.tombstone.condition { width: 500px;  }
-tr.data { font: "Georgia"; font-size: 11px; border-bottom: 1px solid #eee; }
-.title { font: "Georgia"; font-size: 14px; width:100%; margin-top:0px; text-align: center; font-style:italic;}
-.representationList { width: 100%; margin-top:10px; margin-bottom:20px;text-align:center; }
+tr.data { font-family: "SourceSans"; font-size: 11px; border-bottom: 1px solid #eee; }
+.title { font-family: "SourceSans"; font-size: 14px; width:100%; margin-top:0px; text-align: center; font-style:italic;}
+
+.representationList { 
+	width: 100%; 
+	text-align:center; 
+	position: relative;
+	top: 50px;
+}
 
 .packingDocs { margin-left:-30px;}
-.packing { font: "Georgia"; font-size: 11px; text-align:center; padding:5px;}
+.packing { font-family: "SourceSans"; font-size: 11px; text-align:center; padding:5px;}
 
-.thumbnail { font: "arial, helvetica, sans-serif"; font-size: 11px; border: 1px solid #999; width: 200px; height: 160px; float: left; text-align: center; margin-left: 10px; padding: 5px; overflow: none;}	
+.thumbnail { font-family: "SourceSans"; font-size: 11px; border: 1px solid #999; width: 200px; height: 160px; float: left; text-align: center; margin-left: 10px; padding: 5px; overflow: none;}	
 .clear { clear: both; }
-.pageBreak { page-break-before: always; } 
+.pageBreak { 
+	page-break-after: always;
+  	position: relative;
+} 
 
 .tombstone {
-	font: "Georgia";
+	font-family: "SourceSans";
 	font-size: 12px;
 	line-height: 1.15em; 
 }
@@ -39,13 +97,13 @@ tr.data { font: "Georgia"; font-size: 11px; border-bottom: 1px solid #eee; }
 .fullpageTombstone {
 	position: absolute;
 	left: 0px;
-	bottom: 0px;
+	bottom: 10px;
 }
 
-.tombstone.factsheet, .fullpage .tombstone{
-	font: "Georgia";
+.tombstone.factsheet, .tombstone.fullpage {
+	font-family: "SourceSans";
 	font-size:12px;
-	margin-top:150px;
+	margin-top:120px;
 }
 
 .representationListFullpage {
@@ -55,11 +113,11 @@ tr.data { font: "Georgia"; font-size: 11px; border-bottom: 1px solid #eee; }
 
 table.displayValues {margin-left:-20px;}
 div.displayValues {margin-left:-20px;}
-div.label { font: "Georgia"; font-size: 11px; text-divansform: uppercase; text-align: left; width: 70px; font-weight:bold; padding-top:2px; padding-bottom:2px; border-bottom: 1px solid #eee;}
-div.value { font: "Georgia"; font-size: 11px; width: 400px; max-width: 400px; padding-top:2px; padding-bottom:2px; margin-left:-3px;}
+div.label { font-family: "SourceSans"; font-size: 11px; text-transform: uppercase; text-align: left; width: 70px; font-weight:bold; padding-top:2px; padding-bottom:2px; border-bottom: 1px solid #eee;}
+div.value { font-family: "SourceSans"; font-size: 11px; width: 400px; max-width: 400px; padding-top:2px; padding-bottom:2px; margin-left:-3px;}
 div.value.tombstone { padding-top:0px; padding-bottom:0px;}
 div.value.tombstone.condition { width: 500px;  }
-div.data { font: "Georgia"; font-size: 11px; border-bottom: 1px solid #eee; }
+div.data { font-family: "SourceSans"; font-size: 11px; border-bottom: 1px solid #eee; }
 
 .conditionTable {width:100%;}
 .conditionTable img { max-width:350px; max-height:400px;}

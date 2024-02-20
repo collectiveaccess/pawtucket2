@@ -30,7 +30,12 @@
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
+ * @marginLeft 1 in
+ * @marginRight 1 in
+ * @marginTop 1 in
+ * @marginBottom 1 in
  * @tables ca_objects
+ * @restrictToTypes artwork
  *
  * ----------------------------------------------------------------------
  */
@@ -58,9 +63,9 @@
 		<div class="criteria"><?php print $this->getVar('title'); ?></div>
 		<div id='body'>
 <?php
-		if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
-			print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
-		}
+		// if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
+// 			print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
+// 		}
 		if($this->request->config->get('report_show_search_term')) {
 			print "<span class='footerText'>".$this->getVar('criteria_summary_truncated')."</span>";
 		}
@@ -73,7 +78,7 @@
 ?>
 			<div class="row">
 			<table>
-			<tr>
+			<tr valign="top">
 				<td width="170px" >
 <?php 
 					if ($vs_tag = $vo_result->get('ca_object_representations.media.medium', array('scaleCSSWidthTo' => '120px', 'scaleCSSHeightTo' => '120px'))) {
@@ -160,5 +165,4 @@
 ?>
 		</div>
 <?php
-	print $this->render("../pdfEnd.php");
-?>
+	print $this->render("pdfEnd.php");

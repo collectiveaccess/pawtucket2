@@ -30,6 +30,10 @@
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
+ * @marginLeft 1 in
+ * @marginRight 1 in
+ * @marginTop 1 in
+ * @marginBottom 1 in
  * @tables ca_objects
  *
  * ----------------------------------------------------------------------
@@ -48,8 +52,8 @@
 	$vn_start 				= 0;
 
 	print $this->render("pdfStart.php");
-	print $this->render("fullheader.php");
-	print $this->render("../footer.php");
+	print $this->render("header.php");
+	print $this->render("footer.php");
 	$t_list = new ca_lists();
 	$va_artwork_type_ids = array($t_list->getItemIDFromList("object_types", "artwork"), $t_list->getItemIDFromList("object_types", "element"));
 ?>
@@ -81,7 +85,7 @@
 				}
 				print "</div>";
 			} elseif ($vo_result->get('ca_objects.edition.ap_number')) {
-				print "<div class='unit'>AP ".(count($vo_result->get('ca_objects.edition.ap_total')) >= 2 ? $vo_result->get('ca_objects.edition.ap_number') : "")." from an edition of ".$vo_result->get('ca_objects.edition.edition_total')." + ".$vo_result->get('ca_objects.edition.ap_total')." AP";
+				print "<div class='unit'>AP ".(sizeof($vo_result->get('ca_objects.edition.ap_total', ['returnAsArray' => true]) ?? []) >= 2 ? $vo_result->get('ca_objects.edition.ap_number') : "")." from an edition of ".$vo_result->get('ca_objects.edition.edition_total')." + ".$vo_result->get('ca_objects.edition.ap_total')." AP";
 				print "</div>";					
 			}							
 	
@@ -141,6 +145,4 @@
 ?>			
 		</div>
 <?php
-		
-	print $this->render("../pdfEnd.php");
-?>
+	print $this->render("pdfEnd.php");

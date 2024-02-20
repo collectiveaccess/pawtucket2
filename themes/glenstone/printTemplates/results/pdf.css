@@ -1,6 +1,48 @@
-/* Stylesheet used by DOMPDF to format PDF report output */
+@font-face {
+	font-family: SourceSans;
+	font-style: normal;
+	font-weight: normal;
+	src: url('../../fonts/Source_Sans/SourceSans3-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: SourceSans;
+	font-style: italic;
+	font-weight: normal;
+	src: url('../../fonts/Source_Sans/SourceSans3-Italic.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: SourceSans;
+	font-style: normal;
+	font-weight: bold;
+	src: url('../../fonts/Source_Sans/SourceSans3-Bold.ttf ') format('truetype');
+}
+
+@font-face {
+	font-family: SourceSans;
+	font-style: italic;
+	font-weight: bold;
+	src: url('../../fonts/Source_Sans/SourceSans3-BoldItalic.ttf ') format('truetype');
+}
 
 @page { margin: 55px 66px; }
+
+/* wkhtmltopdf header container */
+body#headerContainer {
+	padding-bottom: 20px;
+}
+
+.headerText { 
+	font-family: "SourceSans"; 
+	font-size: 11px; 
+	margin: -5px 0px 10px 25px; 
+}
+
+img.headerImg {
+	height: 45px;
+}
+
 
 #header { position: fixed; left: 0px; top: -25px; left:-15px; right: 0px; height: 55px;  text-align: left; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
 #footer { position: fixed; left: 0px; bottom: -30px; right: 0px; height: 10px; text-align: center; vertical-align: bottom; margin: 0px 5px 10px 5px; padding: 3px 5px 2px 10px; }
@@ -8,20 +50,19 @@
 #body { z-index: 30000; }
 a {color:#333; text-decoration:none;}
 .instDate {line-height:14px; padding:0px; margin:0px;}
-.td {border:1px solid #333; padding:3px; font-size:9px; word-wrap:break-word; font: "Georgia"; color:#333;}
+.td {border:1px solid #333; padding:3px; font-size:9px; word-wrap:break-word; font-family: "SourceSans"; color:#333;}
 .conservation .td {width:170px;}
 .conservation .td.header {width:80px;}
 
-img.headerImg {width:121px;height:21px;}
-.headerText { font: "Georgia"; font-size: 9px; margin: 0px 0px 10px 25px; }
-.pagingText { position: absolute; top: 0px; right: 10px; font: "Georgia"; font-size: 9px; text-align: right;  margin: 0px 0px 10px 25px; }
-.footerText { font: "Georgia"; font-size: 9px;  margin: -5px 0px 0px 45px;  }  
+.headerText { font-family: "SourceSans"; font-size: 9px; margin: 0px 0px 10px 25px; }
+.pagingText { position: absolute; top: 0px; right: 10px; font-family: "SourceSans"; font-size: 9px; text-align: right;  margin: 0px 0px 10px 25px; }
+.footerText { font-family: "SourceSans"; font-size: 9px;  margin: -5px 0px 0px 45px;  }  
 
-.thumbnail { font: "Georgia"; font-size: 9px; width: 200px; height: 235px; float: left; text-align: center; margin-left: 10px; padding: 3px; overflow: none; line-height:11px;}	
+.thumbnail { font-family: "SourceSans"; font-size: 9px; width: 200px; height: 235px; float: left; text-align: center; margin-left: 10px; padding: 3px; overflow: none; line-height:11px;}	
 .imgThumb {width:194px; height:170px;}
 .caption {font-size:11px; color:#333; display:block;}
 
-.row { font: "Georgia"; font-size: 9px; width: 100%; height: auto; margin: 5px 0 0 0; padding: 3px 0px 5px 0px; overflow: none}	
+.row { font-family: "SourceSans"; font-size: 9px; width: 100%; height: auto; margin: 5px 0 0 0; padding: 3px 0px 5px 0px; overflow: none}	
 .imageTiny { width: 120px; margin: 0 5px 0 0; border-radius: 5px; text-align:center;}
 .imageTinyPlaceholder { width: 120px; height: 100px; border: 1px solid #eee; background-color: #eee; margin: 0 5px 0 0; border-radius: 5px;}
 .displayHeader {border-bottom:1px solid #666; color:#333; font-weight:bold; font-family: "Georgia";}
@@ -30,35 +71,56 @@ img.headerImg {width:121px;height:21px;}
 .metadata {line-height:1.1em;}
 .metaBlock {margin-left:0px; margin-left:0px; height:auto; width:400px;}
 
-.pageBreak { page-break-before: always; }
+.pageBreak { 
+	page-break-after: always;
+  	position: relative;
+  	clear: both;
+} 
+
+.page {
+	position: relative;
+	width: 100%;
+	height: 98%;
+}
+
 .clear { clear: both; line-height: 5px; }
 
-.summary td { padding:5px; font: "Georgia"; font-size: 9px; border:1px solid #ccc;}
+.summary td { padding:5px; font-family: "SourceSans"; font-size: 9px; border:1px solid #ccc;}
 table.summary { border: 1px solid #ccc; margin-top:10px;}
 .summary .label { width:80px; }
 hr { border: 1px solid #fff; border-top:1px solid #ccc; height:1px; margin-top:-3px; }
 
 .tombstone {
 	margin-top:100px;
-	font: "Georgia";
+	font-family: "SourceSans";
+	font-size: 12px;
+	line-height: 1.15em; 
 }
-.tombstone.factsheet, .fullpage .tombstone{
-	font: "Georgia";
-	font-size:12px;
+.tombstone.factsheet, .tombstone.fullpage{
+	font-family: "SourceSans";
+	font-size: 12px;
+	line-height: 1.15em; 
 	margin-top:150px;
 }
-.representationList.factsheet, .fullpage .representationList {
+.representationList.factsheet, .representationList.fullpage {
 	text-align:center;
+	position: relative;
+	top: 50px;
 }
 
 .fullpageTombstone {
 	position: absolute;
 	left: 0px;
-	bottom: 0px;
+	bottom: 10px;
 }
 .representationListFullpage {
 	position: absolute;
 	top: 100px;
 }
 
-.representationList { width: 100%; margin-top:10px; margin-bottom:20px;text-align:center; }
+.representationList { 
+	width: 100%; 
+	text-align:center; 
+	position: relative;
+	top: 50px;
+}

@@ -1,23 +1,30 @@
 <?php
-
 require_once(__CA_MODELS_DIR__."/ca_sets.php");
 $va_access_values = caGetUserAccessValues($this->request);
 
-	if($vs_set_code = $this->request->config->get("featured_library_set")){
-	 	AssetLoadManager::register("carousel");
-		$t_set = new ca_sets();
-		$t_set->load(array('set_code' => $vs_set_code));
-		# Enforce access control on set
-		if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
-			$va_item_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 0))) ? $va_tmp : array());
-		}
-		if(is_array($va_item_ids) && sizeof($va_item_ids)){
-			$t_object = new ca_objects();
-			$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("slideshowsmall"), array('checkAccess' => caGetUserAccessValues($this->request)));
-		}
-	}	
-	$vs_library_set_code = $this->request->config->get("new_library_set");
-	$vs_library_code = ca_sets::find(array('set_code' => $vs_library_set_code), array('returnAs' => 'firstId'));
+$can_do_library_checkin = $can_do_library_checkout = $library_services_enabled = $is_general_library_login = false;
+if($this->request->isLoggedIn()) {
+	$can_do_library_checkin = $this->request->user->canDoAction('can_do_library_checkin');
+	$can_do_library_checkout = $this->request->user->canDoAction('can_do_library_checkout');
+	$library_services_enabled = $this->request->config->get('enable_library_services');
+	$is_general_library_login = $this->request->user->canDoAction('can_do_library_checkinout_for_anyone');
+}
+
+if($vs_set_code = $this->request->config->get("featured_library_set")){
+	AssetLoadManager::register("carousel");
+	$t_set = new ca_sets();
+	$t_set->load(array('set_code' => $vs_set_code));
+	# Enforce access control on set
+	if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+		$va_item_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 0))) ? $va_tmp : array());
+	}
+	if(is_array($va_item_ids) && sizeof($va_item_ids)){
+		$t_object = new ca_objects();
+		$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("slideshowsmall"), array('checkAccess' => caGetUserAccessValues($this->request)));
+	}
+}	
+$vs_library_set_code = $this->request->config->get("new_library_set");
+$vs_library_code = ca_sets::find(array('set_code' => $vs_library_set_code), array('returnAs' => 'firstId'));
 ?>
 <div class="container">
 	<div class="row">
@@ -60,7 +67,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 			{{{/form}}}				
 		</div>
 		<div class="col-sm-4" style='border-left:1px solid #ddd;'>
-			<h1>Glenstone Library Resources</h1>
+			<!--<h1>Glenstone Library Resources</h1>
 			<h3><?php print caNavLink($this->request, 'New Library Acquisitions', '', '', 'Lightbox', 'setDetail', array('set_id' => 61)); ?></h3>
 			<p><?php print caNavLink($this->request, 'Digital Video Collection', '', '', 'Lightbox', 'setDetail', array('set_id' => 3406)); ?></p>
 			<h3>Library Databases</h3>
@@ -71,7 +78,18 @@ $va_access_values = caGetUserAccessValues($this->request);
 			<p><a href='http://library.phillipscollection.org:8080/?Config=ysm&section=search&term=#section=home' target="_blank">Phillips Collection</a></p>
 			<p><a href='http://library.si.edu/research' target="_blank">Smithsonian Libraries</a></p>
 			<p><a href='http://arcade.nyarc.org/' target="_blank">New York Art Resources Consortium</a></p>
-			<p><a href='http://primo.getty.edu/primo_library/libweb/action/search.do?vid=GRI' target="_blank">Getty Research Institute</a></p>
+			<p><a href='http://primo.getty.edu/primo_library/libweb/action/search.do?vid=GRI' target="_blank">Getty Research Institute</a></p>-->
+			{{{library_landing_text}}}
+<?php
+	if($library_services_enabled && ($can_do_library_checkin || $can_do_library_checkout)) {
+?>
+			<h3>Self-Checkout</h3>
+			<?php if($can_do_library_checkout) { ?><p><?= caNavLink($this->request, _t("Borrow"), "", "Library", "CheckOut", "Index"); ?></p><?php } ?>
+			<?php if($can_do_library_checkin) { ?><p><?= caNavLink($this->request, _t("Return"), "", "Library", "CheckIn", "Index"); ?></p><?php } ?>
+			<?php if(!$is_general_library_login) { ?> <p><?= caNavLink($this->request, _t('My Loans'), '', 'Library', 'CheckOut', 'MyLoans', []); ?></p><?php } ?>
+<?php
+	}
+?>
 		</div>
 	</div>
 </div> <!--end container-->

@@ -31,7 +31,7 @@
 			<div id="detailRelatedObjects">
 				<H6>
 					Related Artworks 
-					<?php print caNavLink($this->request, _t('Full results &gt;'), 'fullResult', '', 'Search', 'artworks', array('search' => "ca_occurrences.occurrence_id:".$t_occurrence->getPrimaryKey(), 'source' => 'detail')); ?> 
+					<?php print caNavLink($this->request, _t('Full results &gt;'), 'fullResult', '', 'Search', 'artworks', array('search' => "ca_occurrences.occurrence_id:".$t_occurrence->getPrimaryKey(), '_advanced' => 0, 'source' => 'detail')); ?> 
 				</h6>
 				<div class="jcarousel-wrapper">
 					<div id="detailScrollButtonNext"><i class="fa fa-angle-right"></i></div>

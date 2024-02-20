@@ -32,14 +32,58 @@
  * ----------------------------------------------------------------------
  */
  
-	if($this->request->config->get('report_header_enabled')) {
+ 	$t_display = $this->getVar('t_display');
+		switch($this->getVar('PDFRenderer')) {
+			case 'domPDF':
 ?>
 <div id='header'>
 <?php
+	if(file_exists($this->request->getThemeDirectoryPath()."/graphics/logos/".$this->request->config->get('report_img'))){
+		print '<img src="'.$this->request->getThemeDirectoryPath().'/graphics/logos/'.$this->request->config->get('report_img').'" class="headerImg"/>';
+	}
+		if($t_display && ($t_display->get('display_code') != "condition_report_pg1") && ($t_display->get('display_code') != "condition_report_pg2") && ($t_display->get('display_code') != "condition_report_pg3")){
 
-	//print "<div class='pagingText'>"._t('Page')." </div>";
+			print "<div class='pagingText'>"._t('Page')." </div>";
+		}
 ?>
 </div>
 <?php
-	}
+			break;
+			
+		case 'wkhtmltopdf':
 ?>
+<!--BEGIN HEADER--><!DOCTYPE html>
+<html>
+<head>
+	<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+</head>
+<body onload='dynvar();' id="headerContainer">
+<?php
+	if(file_exists($this->request->getThemeDirectoryPath()."/graphics/logos/".$this->request->config->get('report_img'))){
+		print '<img src="'.$this->request->getThemeDirectoryPath().'/graphics/logos/'.$this->request->config->get('report_img').'" class="headerImg"/>';
+	}
+	//print "<div class='pagingText' id='pagingText' style='position: absolute; top: 0px; right: 0px;'> </div>";
+?>
+
+	<script>
+		function dynvar() {
+			var vars = {};
+			var x = document.location.search.substring(1).split('&');
+	
+			for (var i in x) {
+				var z = x[i].split('=',2);
+	
+				if (!vars[z[0]]) {
+					vars[z[0]] = unescape(z[1]);
+				}
+			}
+	
+			document.getElementById('pagingText').innerHTML = 'page ' + vars.page; // + ' of ' + vars.topage
+		}
+  		
+	</script>
+</body>
+</html>
+<!--END HEADER-->
+<?php
+	}

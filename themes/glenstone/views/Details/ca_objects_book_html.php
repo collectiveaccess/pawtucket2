@@ -137,8 +137,10 @@
 						if ($va_call_number = $t_copy->get('ca_objects.call_number')) {
 							print "<div class='unit'><span class='metaTitle'>Call Number </span><span class='meta'>".$va_call_number."</span></div>";
 						}
-						if ($va_copy_location = $t_copy->get('ca_storage_locations.hierarchy.preferred_labels', array('delimiter' => ' > '))) {
-							print "<div class='unit'><span class='metaTitle'>Location </span><span class='meta'>".caNavLink($this->request, substr($va_copy_location, 4), '', '', 'Browse', 'copy/facet/current_location/id/'.$t_copy->get('ca_storage_locations.location_id'))."</span></div>";
+						//if ($va_copy_location = $t_copy->get('ca_storage_locations.hierarchy.preferred_labels', array('delimiter' => ' > '))) {
+						if($cur_location = $t_copy->getCurrentValueForDisplay()) {
+							$cur_location_data = $t_copy->getCurrentValue();
+							print "<div class='unit'><span class='metaTitle'>Location </span><span class='meta'>".caNavLink($this->request, strip_tags($cur_location), '', '', 'Browse', 'copy/facet/current_location/id/'.$cur_location_data['id'])."</span></div>";
 						}
 						//if ($va_status = $t_copy->get('ca_objects.purchase_status', array('convertCodesToDisplayText' => true))) {
 						if ($va_status = $t_copy->getCheckoutStatus(['returnAsText' => true])) {

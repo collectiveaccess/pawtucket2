@@ -30,7 +30,12 @@
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
+ * @marginLeft 1 in
+ * @marginRight 1 in
+ * @marginTop 1 in
+ * @marginBottom 1 in
  * @tables ca_objects
+ * @restrictToTypes artwork
  *
  * ----------------------------------------------------------------------
  */
@@ -50,8 +55,8 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 
 	print $this->render("pdfStart.php");
-	print $this->render("fullheader.php");
-	print $this->render("../footer.php");
+	print $this->render("header.php");
+	print $this->render("footer.php");
 	
 	$t_list = new ca_lists();
 	$va_library_type_ids = array($t_list->getItemIDFromList("object_types", "book"), $t_list->getItemIDFromList("object_types", "copy"));
@@ -63,6 +68,7 @@
 		$t_collection = new ca_collections();
 		while($vo_result->nextHit()) {
 ?>
+	<div class="page">
 			<div class="representationList representationListFullpage">
 <?php		
 			print $vo_result->get('ca_object_representations.media.page', array('return_with_access' => $va_access_values, 'scaleCSSWidthTo' => '620px', 'scaleCSSHeightTo' => '480px'));
@@ -106,7 +112,7 @@
 					}
 					print "</div>";
 				} elseif ($vo_result->get('ca_objects.edition.ap_number')) {
-					print "<div class='unit'>AP ".(count($vo_result->get('ca_objects.edition.ap_total')) >= 2 ? $vo_result->get('ca_objects.edition.ap_number') : "")." from an edition of ".$vo_result->get('ca_objects.edition.edition_total')." + ".$vo_result->get('ca_objects.edition.ap_total')." AP";
+					print "<div class='unit'>AP ".(sizeof($vo_result->get('ca_objects.edition.ap_total', ['returnAsArray' => true]) ?? []) >= 2 ? $vo_result->get('ca_objects.edition.ap_number') : "")." from an edition of ".$vo_result->get('ca_objects.edition.edition_total')." + ".$vo_result->get('ca_objects.edition.ap_total')." AP";
 					print "</div>";					
 				}
 			if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
@@ -117,6 +123,7 @@
 			}
 ?>	
 			</div>
+		</div>
 <?php
 			if (!$vo_result->isLastHit()) {
 ?>
@@ -127,6 +134,4 @@
 ?>			
 		</div>
 <?php
-		
-	print $this->render("../pdfEnd.php");
-?>
+	print $this->render("pdfEnd.php");

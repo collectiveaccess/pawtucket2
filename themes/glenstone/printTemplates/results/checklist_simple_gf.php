@@ -30,7 +30,12 @@
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
+ * @marginLeft 1 in
+ * @marginRight 1 in
+ * @marginTop 1 in
+ * @marginBottom 1 in
  * @tables ca_objects
+ * @restrictToTypes artwork
  *
  * ----------------------------------------------------------------------
  */
@@ -58,9 +63,9 @@
 		<div class="criteria"><?php print $this->getVar('title'); ?></div>
 		<div id='body'>
 <?php
-		if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
-			print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
-		}
+		// if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
+// 			print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
+// 		}
 		if($this->request->config->get('report_show_search_term')) {
 			print "<span class='footerText'>".$this->getVar('criteria_summary_truncated')."</span>";
 		}
@@ -133,7 +138,7 @@
 						}
 						print "</div>";
 					} elseif ($vo_result->get('ca_objects.edition.ap_number')) {
-						print "<div class='unit'>AP ".(count($vo_result->get('ca_objects.edition.ap_total')) >= 2 ? $vo_result->get('ca_objects.edition.ap_number') : "")." from an edition of ".$vo_result->get('ca_objects.edition.edition_total')." + ".$vo_result->get('ca_objects.edition.ap_total')." AP";
+						print "<div class='unit'>AP ".(sizeof($vo_result->get('ca_objects.edition.ap_total', ['returnAsArray' => true]) ?? []) >= 2 ? $vo_result->get('ca_objects.edition.ap_number') : "")." from an edition of ".$vo_result->get('ca_objects.edition.edition_total')." + ".$vo_result->get('ca_objects.edition.ap_total')." AP";
 						print "</div>";					
 					}
 				if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){

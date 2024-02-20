@@ -316,7 +316,6 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 				}
 					
 ?>
-					<!--{{{<ifcount min="1" code="ca_objects.legacy_locations.legacy_location"><div class='unit wide'><span class='metaHeader'>Legacy Locations</span><unit delimiter="<br/>">^ca_objects.legacy_locations.legacy_location <ifdef code="ca_objects.legacy_locations.sublocation">- ^ca_objects.legacy_locations.sublocation</ifdef> <ifdef code="ca_objects.legacy_locations.via">(via ^ca_objects.legacy_locations.via)</ifdef><ifdef code="ca_objects.legacy_locations.legacy_location_date"> as of ^ca_objects.legacy_locations.legacy_location_date</ifdef></unit></div></ifcount>}}}-->
 				</div>
 				
 				<div id="Financial" class="infoBlock">
@@ -680,8 +679,10 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					
 ?>
 					{{{<ifcount min="1" code="ca_objects.nonpreferred_labels"><div class='unit wide'><span class='metaHeader'>Other Titles: </span><span><unit delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></span></div></ifcount>}}}
-					{{{<ifdef code="ca_objects.legacy_description"><div class='unit wide'><span class='metaHeader'>Description (Legacy): </span><span>^ca_objects.legacy_description</span></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.legacy_comments"><div class='unit wide'><span class='metaHeader'>Comments (Legacy): </span><span>^ca_objects.legacy_comments</span></div></ifdef>}}}
+<?php
+//					{{{<ifdef code="ca_objects.legacy_description"><div class='unit wide'><span class='metaHeader'>Description (Legacy): </span><span>^ca_objects.legacy_description</span></div></ifdef>}}}
+//					{{{<ifdef code="ca_objects.legacy_comments"><div class='unit wide'><span class='metaHeader'>Comments (Legacy): </span><span>^ca_objects.legacy_comments</span></div></ifdef>}}}
+?>
 <?php
 #					if ($va_certificate = $t_object->get('ca_objects.certificate_auth', array('returnAsArray' => true, 'returnWithStructure' => true))) {
 #						foreach ($va_certificate as $cert_key => $va_cert){

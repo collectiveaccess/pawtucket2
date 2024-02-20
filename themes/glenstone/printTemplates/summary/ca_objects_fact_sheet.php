@@ -37,15 +37,14 @@
  * @tables ca_objects
  *
  * ----------------------------------------------------------------------
- */
- 
- 	$t_item = $this->getVar('t_subject');
-	$t_display = $this->getVar('t_display');
-	$va_placements = $this->getVar("placements");
+ */ 
+$t_item = $this->getVar('t_subject');
+$t_display = $this->getVar('t_display');
+$va_placements = $this->getVar("placements");
 
-	print $this->render("pdfStart.php");
-	print $this->render("header_nologo.php");
-	print $this->render("footer.php");	
+print $this->render("pdfStart.php");
+print $this->render("header.php");
+print $this->render("footer.php");	
 ?>
 
 	<div class="representationList factsheet">

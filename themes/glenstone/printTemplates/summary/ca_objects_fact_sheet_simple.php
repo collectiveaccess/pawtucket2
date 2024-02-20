@@ -44,7 +44,7 @@
 	$va_placements = $this->getVar("placements");
 
 	print $this->render("pdfStart.php");
-	print $this->render("header_nologo.php");
+	print $this->render("header.php");
 	print $this->render("footer.php");	
 ?>
 

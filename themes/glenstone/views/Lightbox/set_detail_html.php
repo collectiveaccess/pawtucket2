@@ -98,7 +98,7 @@ if (!$vb_ajax) {	// !ajax
     //
 ?>
 				<div class="btn-group">
-					<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
+					<i class="fa fa-cog bGear" data-toggle="dropdown"></i>
 					<ul class="dropdown-menu" role="menu">
 <?php
 						if(($vs_sort_control_type == "dropdown") && is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {

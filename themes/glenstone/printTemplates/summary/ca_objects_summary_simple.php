@@ -30,6 +30,10 @@
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
+ * @marginLeft 1 in
+ * @marginRight 1 in
+ * @marginTop 1 in
+ * @marginBottom 1 in
  * @tables ca_objects
  *
  * ----------------------------------------------------------------------

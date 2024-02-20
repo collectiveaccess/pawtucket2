@@ -93,7 +93,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 	}
 ?>		
 	<div class="btn-group">
-		<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
+		<i class="fa fa-cog bGear" data-toggle="dropdown"></i>
 		<ul class="dropdown-menu" role="menu">
 <?php
 			if($qr_res->numHits()){

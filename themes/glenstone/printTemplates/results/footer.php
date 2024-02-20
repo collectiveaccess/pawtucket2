@@ -41,7 +41,7 @@
 <div id='footer'>
 <?php
 	if($this->request->config->get('report_show_search_term')) {
-		print "<span class='footerText'>".$this->getVar('criteria_summary')."</span>";
+	//	print "<span class='footerText'>".$this->getVar('criteria_summary')."</span>";
 	}
 	
 	if($this->request->config->get('report_show_number_results')) {

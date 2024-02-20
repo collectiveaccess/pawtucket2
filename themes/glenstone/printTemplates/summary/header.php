@@ -55,12 +55,14 @@
 <!--BEGIN HEADER--><!DOCTYPE html>
 <html>
 <head>
-	<link type="text/css" href="pdf.css" rel="stylesheet" />
+	<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+</head>
+<body onload='dynvar();' id="headerContainer">
 <?php
 	if(file_exists($this->request->getThemeDirectoryPath()."/graphics/logos/".$this->request->config->get('report_img'))){
 		print '<img src="'.$this->request->getThemeDirectoryPath().'/graphics/logos/'.$this->request->config->get('report_img').'" class="headerImg"/>';
 	}
-	print "<div class='pagingText' id='pagingText' style='position: absolute; top: 0px; right: 0px;'> </div>";
+	//print "<div class='pagingText' id='pagingText' style='position: absolute; top: 0px; right: 0px;'> </div>";
 ?>
 
 	<script>
@@ -80,8 +82,6 @@
 		}
   		
 	</script>
-</head>
-<body onload='dynvar();'>
 </body>
 </html>
 <!--END HEADER-->
