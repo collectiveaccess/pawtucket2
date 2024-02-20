@@ -43,7 +43,7 @@
 		if($vs_image){
 			print "<div class='mapImage'>".caDetailLink($this->request, $vs_image, '', 'ca_places', $t_place->get("place_id"))."</div>";
 		}
-		print "<H1>".caDetailLink($this->request, $t_place->getLabelForDisplay(), '', 'ca_places', $t_place->get("ca_places.place_id"))."</H1>";
+		print "<H1>".$t_place->getLabelForDisplay()."</H1>";
 
 		print "<div>".caNavLink($this->request, _t("Browse All Objects"), 'btn btn-default btn-sm', '', 'Browse', 'objects', array("facet" => "place_facet", "id" => $t_place->get("ca_places.place_id")))."</div>";
 		print "<div style='clear:both;'></div>";
