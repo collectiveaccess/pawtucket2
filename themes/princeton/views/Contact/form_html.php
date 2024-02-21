@@ -66,6 +66,26 @@
 							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
 						</div>
 					</div><!-- end col -->
+<?php
+	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+        	};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+
+
+				<div class="col-sm-4">
+					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+					</div>
+				</div>
+<?php
+	}else{
+?>
+
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
 							<label for="security"><?php print _t("Security Question"); ?></label>
@@ -79,6 +99,9 @@
 							</div><!--end row-->	
 						</div><!-- end form-group -->
 					</div><!-- end col -->
+<?php
+	}
+?>
 				</div><!-- end row -->
 <?php
 	if($pn_id && $t_item->getPrimaryKey()){
@@ -108,27 +131,6 @@
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
-<?php
-	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
-?>
-		<script type="text/javascript">
-			var gCaptchaRender = function(){
-                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
-        	};
-		</script>
-		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
-
-
-			<div class="row">
-				<div class="col-sm-12 col-md-offset-1 col-md-10">
-					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
-						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
-					</div>
-				</div>
-			</div><!-- end row -->
-<?php
-	}
-?>
 		<div class="form-group">
 			<button type="submit" class="btn btn-default"><?php print _t("Send"); ?></button>
 		</div><!-- end form-group -->

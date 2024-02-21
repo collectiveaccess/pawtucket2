@@ -104,9 +104,8 @@
 				<li class="uk-parent" data-uk-dropdown="{'preventflip':'y'}" aria-haspopup="true" aria-expanded="false"><a href="#">LEARN</a>
 					<div class="uk-dropdown uk-dropdown-navbar uk-dropdown-width-1 uk-dropdown-center"><div class="uk-grid uk-dropdown-grid"><div class="uk-width-1-1">
 						<ul class="uk-nav uk-nav-navbar"><li><a href="https://alutiiqmuseum.org/learn/the-alutiiq-sugpiaq-people">Alutiiq / Sugpiaq People</a></li><li><a href="https://alutiiqmuseum.org/learn/plant-gallery">Plant Gallery</a></li><li><a href="https://alutiiqmuseum.org/learn/contest">Coloring Alutiiq</a></li>
-							<!--<li><a href="https://alutiiqmuseum.org/learn/alutiiq-word-of-the-week">Alutiiq Word of the Week</a></li>
-							<li><a href="https://alutiiqmuseum.org/learn/word-of-the-week-archive">Word of the Week Archive</a></li>-->
 							<li><?php print caNavLink($this->request, "Alutiiq Word of the Week", "", "", "Word", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, "Word of the Week Archive", "", "", "browse", "words"); ?></li>
 							<li><a href="https://alutiiqmuseum.org/teachers">For Teachers</a></li><li><a href="https://alutiiqmuseum.org/learn/history-of-the-alutiiq-museum">Museum History</a></li><li><a href="https://alutiiqmuseum.org/learn/ask-a-question">Ask A Question</a></li>
 						</ul>
 					</div></div></div>

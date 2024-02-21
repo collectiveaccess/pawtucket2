@@ -1,6 +1,6 @@
 
 <div class="row">
-		<div class="col-md-12 col-lg-10 col-md-offset-1">
+		<div class="col-md-8">
 		<h1><?php _p('Objects Advanced Search') ?></h1>
 
         <p><?php _p("Enter your search terms in the fields below."); ?></p>
@@ -30,13 +30,13 @@
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_objects_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to object types.') ?>"><?php _p('Type') ?></label>
-			{{{ca_objects.item_type%height=30px&id=ca_objects_item_type}}}
+			{{{ca_objects.item_type%height=30px&id=ca_objects_item_type&inUse=1}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_collections_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records within a particular collection.') ?>"><?php _p('Collection') ?></label>
-			{{{ca_collections.preferred_labels%restrictToTypes=collection%width=200px&height=1}}}
+			{{{ca_collections.preferred_labels%restrictToTypes=collection%width=200px&height=1&autocomplete=1}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_occurrences_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records associated with a work.') ?>"><?php _p('Work') ?></label>
@@ -52,6 +52,12 @@
 
 {{{/form}}}
 
+	</div>
+	<div class="col-md-4">
+		<div class="searchTips">
+			<h2>Search Tips</h2>
+			{{{advanced_search_tips}}}
+		</div>
 	</div>
 </div><!-- end row -->
 

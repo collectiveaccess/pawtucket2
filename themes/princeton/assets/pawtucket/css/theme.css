@@ -68,7 +68,19 @@ a:hover{
 }
 @media (max-width:1350px){
 	.departmentLogo{
-		margin-left:10px;
+		margin-left:0px;
+	}
+}
+@media (max-width:767px){
+	.departmentLogo img{
+		width: 60px;
+		height: auto;
+	}
+}
+@media (max-width:430px){
+	.departmentLogo img{
+		width: 50px;
+		height: auto;
 	}
 }
 .navbar-default .navbar-brand{
@@ -86,6 +98,25 @@ a:hover{
 .navbar-brand span{
 	text-transform: uppercase;
 	font-size: 22px;
+}
+@media (max-width:767px){
+	.navbar-default .navbar-brand{
+		font-size: 20px;
+		margin-top: 5px;
+		margin-left: 10px !Important;
+	}
+}
+@media (max-width:540px){
+	.navbar-default .navbar-brand{
+		font-size: 16px;
+		margin-left: 5px !Important;
+	}
+}
+@media (max-width:430px){
+	.navbar-default .navbar-brand{
+		font-size: 12px;
+		margin-left: 0px !Important;
+	}
 }
 @media (min-width:768px){
 	.navbar-brand{
@@ -113,6 +144,10 @@ a:hover{
 	.navbar .formOutline{
 		border: 1px solid #dedede;
 	}
+	.navbar-form {
+		margin-left:15px;
+		margin-right:15px;
+	}
 }
 @media(max-width:1010px){
 	.yamm .nav.navbar-right.menuItems .dropdown-menu {
@@ -137,6 +172,12 @@ a:hover{
 	}
 	.navbar > .container .navbar-brand {
 		margin-left:0px;
+	}
+}
+@media (max-width: 767px) {
+	.container.menuBar {
+		padding-left: 15px;
+		padding-right: 15px;
 	}
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
@@ -193,6 +234,9 @@ a:hover{
 .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus{
 	background-color:#000;
 	color:#FFF;
+}
+.navbar-toggle{
+	margin-top:15px;
 }
 /* footer */
 /* offset needed for fixed footer */
@@ -671,9 +715,6 @@ body.frontContainer #footer{
 	.galleryList{
 		text-align:center;
 	}
-	.gallery H1{
-		text-align:center;
-	}
 }
 .galleryList{
 	margin-bottom:30px;
@@ -681,7 +722,11 @@ body.frontContainer #footer{
 .galleryList img{
 	width:100%;
 	height:auto;
-/*	max-width:250px;*/
+}
+@media(max-width:1200px){
+	.galleryList img{
+		max-width:250px;
+	}
 }
 .galleryList label {
     display: block;
@@ -779,6 +824,9 @@ a .frontGridCaption{
 	font-family: lato;
 	text-decoration: none;
 }
+.frontGrid img{
+	max-width:240px;
+}
 
 /* detail */
 .detailFilter{
@@ -859,6 +907,25 @@ a:hover .featuredObjectsCaption, a:focus .featuredObjectsCaption{
 .detail a.btn, .detail a.btn:hover{
 	color:#FFF;
 	text-decoration:none;
+}
+/* explore places */
+.placesIntro {
+	font-size: 16px;
+	font-weight: normal;
+	line-height: 1.5em;
+	margin-bottom: 30px;
+}
+.mapImage{
+	float:left;
+	margin-right:30px;
+	width:120px;
+}
+.mapImage img{
+	width:100%;
+	height:auto;
+}
+.exploreMapBalloonContainer a.btn{
+	color:#FFF;
 }
 
 /* types */
@@ -1090,4 +1157,14 @@ a .typesTile .title {
 .userGuideBody .video-js{
 	width:100% !important;
 	height:500px !important;
+}
+/* advanced search */
+@media(min-width:992px){
+	.searchTips{
+		border-left:1px solid #828282;
+		padding-left:30px;
+	}
+}
+.searchTips H3{
+	text-transform:none;
 }
