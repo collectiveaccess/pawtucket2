@@ -32,7 +32,6 @@ $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
 
 $primary:       #085f6c !default;
-
 $secondary:     $gray-600 !default;
 $light:         $gray-100 !default;
 $dark:          $gray-700 !default; /* used for .bg-dark style */
@@ -147,7 +146,7 @@ $line-height-base:            		1.5 !default;
 $navbar-nav-link-padding-x: 		1rem !default;
 $nav-link-font-size: 				$font-size-base;
 $nav-link-font-weight: 				$font-weight-medium !default;
-$nav-link-color:                    red !default;
+$nav-link-color:                    $link-color !default;
 $nav-link-transition:               color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out !default;
 
 $navbar-light-color: 				$body-color;
@@ -185,6 +184,7 @@ $input-btn-font-size:         $font-size-base !default;
 $btn-border-radius:           0 !default;
 $btn-border-radius-sm:        0 !default;
 $btn-border-radius-lg:        0 !default;
+
 
 // scss-docs-start focus-ring-variables --- used with accordion and input focus states
 $focus-ring-width:      2px !default;
