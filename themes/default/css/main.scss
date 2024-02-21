@@ -29,6 +29,29 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 .btn-white:hover{
 	text-decoration:underline;
 }
+/* ------------------------- Navbar ------------------------- */
+@media(max-width:991px){
+	.navbar-expand-lg .dropdown-menu{
+		box-shadow: none;
+		border:0px;
+	}
+}
+@media(min-width:992px){
+	.navbar-expand-lg .dropdown-menu{
+		top:4.3em;
+	}
+}
+@media(max-width:1199px){
+	.navbar-expand-xl .dropdown-menu{
+		box-shadow: none;
+		border:0px;
+	}
+}
+@media(min-width:1200px){
+	.navbar-expand-xl .dropdown-menu{
+		top:4.3em;
+	}
+}
 /* ------------------------- Front ------------------------- */
 .parallax {
     position: relative;
@@ -73,41 +96,6 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 		height:250px;
 	}
 }
-//.detail-container{
-  //  margin-top: 20px;
-
-    //.row{
-    //    margin-bottom: 20px;
-    //}
-
-    // trial clamping
-    // .trim.collapse{
-    //     height: 200px;
-    //     display: -webkit-box;
-    //     -webkit-box-orient: vertical;
-    //     // -webkit-line-clamp: 5;
-    //     overflow: hidden;
-    // }
-    // .trim.collapse.show{
-    //     height: 100%;
-    //     display: block;
-    //     -webkit-line-clamp: unset;
-    //     overflow: unset;
-    // }
-    // .trim.collapsing{
-    //     transition: .5s;
-    // }
-    // .trim.collapsing[aria-expanded="false"] {
-    //     transition: .5s;
-    //     height: 200px;
-    // }
-    // .read-more-btn.collapsed:after{
-    //     content: '+ Read More';
-    // }
-    // .read-more-btn:not(.collapsed):after{
-    //     content: '- Read Less';
-    // }
-//}
 
 /* ------------------------- browse results ------------------------- */
 #browseResultsContainer{

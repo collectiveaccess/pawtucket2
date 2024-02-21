@@ -76,9 +76,6 @@ if($this->request->isLoggedIn()){
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">
 <!--- set aria-current -> page for the current page -->						
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Home'), "nav-link".((strToLower($this->request->getController()) == "front") ? " active" : ""), "", "Front", "Index", "", ((strToLower($this->request->getController()) == "front") ? array("aria-current" => "page") : null)); ?>
-					</li>
-					<li class="nav-item">
 						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	

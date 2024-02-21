@@ -6,6 +6,17 @@
 		</div>
 	</div>
 	<div class="row">
+		<div class="col mb-2">
+		<h2>Variables</h2>
+		$primary is used for the navbar hover and active color, link color and btn-primary background color.  You can set these individually using the following variables:
+		<br>$navbar-light-hover-color
+		<br/>$navbar-light-active-color
+		<br>$link-color
+		<br>
+		<hr/>
+		</div>
+	</div>
+	<div class="row">
 		<div class="col-4">
 			<h2>Text</h2>
 			<hr/>

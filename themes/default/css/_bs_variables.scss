@@ -32,6 +32,7 @@ $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
 
 $primary:       #085f6c !default;
+
 $secondary:     $gray-600 !default;
 $light:         $gray-100 !default;
 $dark:          $gray-700 !default; /* used for .bg-dark style */
@@ -139,18 +140,42 @@ $link-hover-decoration: null !default;
 
 /* nav bar */
 
-$nav-link-padding-y: 2rem !default;
-$navbar-nav-link-padding-x: 1rem !default;
-$nav-link-font-size: 16px;
-$nav-link-font-weight: $font-weight-medium !default;
-$nav-link-color:                    $body-color !default;
-$nav-link-hover-color:              $primary !default;
+$nav-link-padding-y:                .5rem !default;
+$nav-link-padding-x:                1rem !default;
+$line-height-base:            		1.5 !default;
+
+$navbar-nav-link-padding-x: 		1rem !default;
+$nav-link-font-size: 				$font-size-base;
+$nav-link-font-weight: 				$font-weight-medium !default;
+$nav-link-color:                    red !default;
 $nav-link-transition:               color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out !default;
 
-$navbar-light-color: #000;
-$navbar-light-active-color: $primary;
-$nav-underline-link-active-color:   red !default;
+$navbar-light-color: 				$body-color;
+$navbar-light-hover-color: 			$primary !default;
+$navbar-light-active-color: 		$primary;
 
+
+// scss-docs-start navbar-variables
+$navbar-padding-y:                  $spacer * .5 !default;
+$navbar-padding-x:                  null !default;
+
+$navbar-nav-link-padding-x:         .5rem !default;
+
+$navbar-brand-font-size:            $font-size-lg !default;
+// Compute the navbar-brand padding-y so the navbar-brand will have the same height as navbar-text and nav-link
+$nav-link-height:                   $nav-link-font-size * $line-height-base + $nav-link-padding-y * 2 !default;
+$navbar-brand-height:               $navbar-brand-font-size * $line-height-base !default;
+$navbar-brand-padding-y:            ($nav-link-height - $navbar-brand-height) * .5 !default;
+$navbar-brand-margin-end:           1rem !default;
+
+
+/* add class .nav-underline to ul in nav to underline .active nav item */
+$nav-underline-gap:                 1rem !default;
+$nav-underline-border-width:        .125rem !default;
+
+/* add nav-pills to navbar to have background color added to .active nav items */
+$nav-pills-link-active-bg: $light;
+$nav-pills-link-active-color: $navbar-light-active-color; /* note this is over ridden by $navbar-light-active-color so set the color there instead */
 
 /* buttons */
 $input-btn-font-family:       null !default;
@@ -160,7 +185,6 @@ $input-btn-font-size:         $font-size-base !default;
 $btn-border-radius:           0 !default;
 $btn-border-radius-sm:        0 !default;
 $btn-border-radius-lg:        0 !default;
-
 
 // scss-docs-start focus-ring-variables --- used with accordion and input focus states
 $focus-ring-width:      2px !default;
@@ -175,9 +199,10 @@ $accordion-button-bg: $light !default;
 $accordion-button-active-bg: $light-bg-subtle !default;
 
 /* dropdowns */
-$dropdown-border-width:             0px !default;
+/*$dropdown-border-width:             0px !default;
 $dropdown-box-shadow:               0 .25rem .25rem rgba(#000, .075) !default; // --- this is only used when shadows are enabled so shadow is set in main.scss
-
+*/
+$dropdown-border-color:             $gray-200 !default;
 // Forms
 
 // scss-docs-start form-label-variables
