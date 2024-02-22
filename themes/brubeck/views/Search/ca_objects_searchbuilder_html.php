@@ -31,7 +31,7 @@ $vo_result_context 		= $this->getVar('result_context');
  if(!$this->request->isAjax()) {
  ?>
 <div class="row">
-	<div class="col-sm-8">
+	<div class="col-sm-12 col-lg-10 col-lg-offset-1">
 		<h1><?php _p('Search Builder') ?></h1>
 		<div class="searchBuilderContainer">
 			<?= $this->render('Search/search_builder_controls_html.php'); ?>

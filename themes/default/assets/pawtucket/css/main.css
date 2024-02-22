@@ -3699,3 +3699,42 @@ div.banContinue {
 	display: none;
 	margin: 48px 0 0 0;
 }
+
+/* --------------------------------- */
+/* SEARCH BUILDER */
+/* --------------------------------- */
+.searchBuilderSubmit{
+	margin-top:20px;
+}
+.searchBuilderSubmit a.form-button{
+	/* below are the styles used for btn-default */
+	background: none;
+    border: 0px;
+    color: #666;
+    text-shadow: 0 0px 0 #FFFFFF;
+    font-size: 13px;
+    text-transform: uppercase;
+    padding: 6px 7px 5px 7px;
+    box-shadow: 0 0px 0 rgba(255, 255, 255, 0.15) inset, 0 0px 0px rgba(0, 0, 0, 0.075);
+    background-color: #11808D;
+    border-radius: 0px;
+    letter-spacing: 1px;
+    color: #fff;
+    font-family:Lato;
+	
+}
+.searchBuilderSubmit .caIcon{
+	font-size: 1em;
+}
+.query-builder .rules-group-container{
+	background-color: #efefef !important;
+	border-radius: 0px !important;
+	border-color: #ccc !important;
+	padding: 30px !important;
+}
+.query-builder .btn-xs, .query-builder .form-control, .query-builder .rule-container{
+	border-radius:0px !important;
+}
+.query-builder .rule-container{
+	padding:10px !important;
+}

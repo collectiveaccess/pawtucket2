@@ -159,8 +159,6 @@
 					</div>
 					<div class="headerAdvancedSearch">
 						<?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?>
-						|
-						<?= caNavLink($this->request, _t("Search builder"), "", "", "Search", "builder/objects"); ?>
 					</div>
 				</form>
 				<script type="text/javascript">
