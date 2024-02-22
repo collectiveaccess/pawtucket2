@@ -58,10 +58,10 @@ class DownloadPlugin extends BaseApplicationPlugin {
 	static public function hookDetailDownloadMediaObjectIDs(&$pa_params) {
 		global $g_request;
 		$valid_ids = [];
-		if ($g_request) {
+		if ($g_request && $g_request->user->hasUserRole('limited_access')) {
 			foreach($pa_params as $object_id) {
 				if($t_object = ca_objects::findAsInstance(['object_id' => $object_id])) {
-					if(($t_object->get('ca_objects.download_for_artestar', ['convertCodesToIdno' => true]) === 'yes') && $g_request->user->hasRole('full_access')) {
+					if(($t_object->get('ca_objects.download_for_artestar', ['convertCodesToIdno' => true]) === 'yes') && $g_request->user->hasRole('limited_access')) {
 						$valid_ids[] = $object_id;
 					}
 				}
