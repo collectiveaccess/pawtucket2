@@ -2,6 +2,7 @@
 <div class="row">
 	<div class="col-sm-12 col-lg-10 col-lg-offset-1">
 		<h1><?php _p('Objects Advanced Search') ?></h1>
+		<div class="searchIntro">For additional search options including more extensive field level searching and boolean logic use the <?= caNavLink($this->request, _t("Search Builder"), "", "", "Search", "builder/objects"); ?>.</div>
 {{{form}}}
 
 <div class='advancedContainer'>
@@ -23,8 +24,8 @@
 			{{{ca_objects.idno%width=210px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_objects_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to archival item types.') ?>"><?php _p('Type') ?></label>
-			{{{ca_objects.type_id%height=1&id=ca_objects_type_id}}}
+			<label for='ca_objects_type_id[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to archival item types.') ?>"><?php _p('Type') ?></label>
+			{{{ca_objects.type_id%id=ca_objects_type_id&inUse=1}}}
 		</div>
 	</div>
 	<div class='row'>
@@ -35,8 +36,8 @@
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<label for='ca_collections_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records within a particular collection.') ?>"><?php _p('Collection') ?></label>
-			{{{ca_collections.preferred_labels%width=200px&restrictToTypes=collection&render=list}}}
+			<label for='ca_objects.material_type' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records within a particular material.') ?>"><?php _p('Material') ?></label>
+			{{{ca_objects.material_type%render=list}}}
 		</div>
 	</div>
 	<br style="clear: both;"/>

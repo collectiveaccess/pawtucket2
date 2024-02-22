@@ -738,6 +738,23 @@ function caGetInfoForAdvancedSearchType($ps_search_type) {
 }
 # ---------------------------------------
 /**
+ * 
+ *
+ * @return array 
+ */
+function caGetInfoForSearchBuilderType($ps_search_type) {
+	$o_search_config = caGetSearchConfig();
+	
+	$va_search_types = $o_search_config->getAssoc('searchBuilderTypes');
+	$ps_search_type = strtolower($ps_search_type);
+	
+	if (isset($va_search_types[$ps_search_type])) {
+		return $va_search_types[$ps_search_type];
+	}
+	return null;
+}
+# ---------------------------------------
+/**
  *
  */
 function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) {
@@ -978,7 +995,8 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 				if ($id) { $va_query[] = 'OR'; }
 			}
 		}
-		switch(get_class($subquery)) {
+		$c=get_class($subquery);
+		switch($c) {
 			case 'Zend_Search_Lucene_Search_Query_Phrase':
 				$vs_field = null;
 				$va_terms = [];
@@ -1016,7 +1034,8 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
  *
  */
 function caGetSubQueries($po_parsed_query) {
-	switch(get_class($po_parsed_query)) {
+	$c = get_class($po_parsed_query);
+	switch($c) {
 		case 'Zend_Search_Lucene_Search_Query_Boolean':
 			$va_items = $va_signs = [];
 			foreach($po_parsed_query->getSubqueries() as $o_q) {
@@ -1028,6 +1047,10 @@ function caGetSubQueries($po_parsed_query) {
 		case 'Zend_Search_Lucene_Search_Query_MultiTerm':
 			$va_items = $po_parsed_query->getTerms();
 			$va_signs = $po_parsed_query->getSigns();
+			break;
+		case 'Zend_Search_Lucene_Search_Query_Term':
+			$va_items = [$po_parsed_query];
+			$va_signs = [null];
 			break;
 		case 'Zend_Search_Lucene_Search_Query_Phrase':
 		case 'Zend_Search_Lucene_Search_Query_Range':
@@ -1968,7 +1991,7 @@ function caGetBundleNameForSearchSearchBuilder($ps_name) {
  */
 function caGetSearchBuilderFilters(BaseModel $t_subject, Configuration $po_query_builder_config) {
 	$key = 'filters_'.$t_subject->tableName();
-	if (CompositeCache::contains($key, 'SearchBuilder') && is_array($cached_data = CompositeCache::fetch($key, 'SearchBuilder'))) { return $cached_data; }
+	//if (CompositeCache::contains($key, 'SearchBuilder') && is_array($cached_data = CompositeCache::fetch($key, 'SearchBuilder'))) { return $cached_data; }
 	
 	$vs_table = $t_subject->tableName();
 	$t_search_form = new ca_search_forms();
@@ -1978,10 +2001,18 @@ function caGetSearchBuilderFilters(BaseModel $t_subject, Configuration $po_query
 		},
 		caFlattenContainers($t_search_form, $vs_table, ['useDisambiguationLabels' => true])
 	));
+	$va_include= $po_query_builder_config->get('query_builder_include_' . $vs_table);
 	$va_exclude = $po_query_builder_config->get('query_builder_exclude_' . $vs_table);
-	$filters = array_filter($filters, function ($vo_filter) use ($va_exclude) {
-		return array_search($vo_filter['id'], $va_exclude) === false;
-	});
+	if(is_array($va_exclude) && sizeof($va_exclude)) {
+		$filters = array_filter($filters, function ($vo_filter) use ($va_exclude) {
+			return array_search($vo_filter['id'], $va_exclude) === false;
+		});
+	}
+	if(is_array($va_include) && sizeof($va_include)) {
+		$filters = array_filter($filters, function ($vo_filter) use ($va_include) {
+			return array_search($vo_filter['id'], $va_include) !== false;
+		});
+	}
 	$va_priority = $po_query_builder_config->get('query_builder_priority_' . $vs_table);
 
 	usort($filters, function ($pa_a, $pa_b) use ($va_priority, $vs_table) {
