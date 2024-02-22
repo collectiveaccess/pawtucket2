@@ -1168,3 +1168,10 @@ a .typesTile .title {
 .searchTips H3{
 	text-transform:none;
 }
+.multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious, .multisearch .scrollButtonNext:focus, .multisearch .scrollButtonPrevious:focus {
+	background-color: #c8c8c8;
+}
+/* lightbox */
+#setInquire .btn .glyphicon{
+	color:#FFF;
+}

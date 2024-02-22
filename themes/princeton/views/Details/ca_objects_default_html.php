@@ -161,7 +161,7 @@
 						}
 					}
 					if(is_array($va_subjects_formatted) && sizeof($va_subjects_formatted)){
-						print "<div class='unit'><label>Subjects</label>".join($va_subjects_formatted, ", ")."</div>";
+						print "<div class='unit'><label>Subjects</label>".join(", ", $va_subjects_formatted)."</div>";
 					}
 				}
 ?>

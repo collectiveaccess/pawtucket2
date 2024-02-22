@@ -14,10 +14,18 @@
 		$t_item = Datamodel::getInstanceByTableName($ps_table);
 		if($t_item){
 			$t_item->load($pn_id);
-			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
-			$vs_name = $t_item->get($ps_table.".preferred_labels");
-			$vs_idno = $t_item->get($ps_table.".idno");
 			$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
+			if($ps_table == "ca_sets"){
+				# --- what url will we use for sets?
+				$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "", "Lightbox", "setDetail", array("set_id" => $pn_id));
+				$vs_admin_url = $this->request->config->get("site_host")."/index.php/manage/sets/SetEditor/Edit/set_id/".$pn_id;
+				$vs_name = $t_item->getLabelForDisplay();
+				$vs_idno = "";
+			}else{
+				$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
+				$vs_name = $t_item->get($ps_table.".preferred_labels");
+				$vs_idno = $t_item->get($ps_table.".idno");
+			}
 		}
 	}
 ?>
@@ -41,10 +49,10 @@
 				</p>
 				<input type="hidden" name="itemId" value="<?php print $vs_idno; ?>">
 				<input type="hidden" name="itemTitle" value="<?php print $vs_name; ?>">
-				<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
+				<input type="hidden" name="itemURL" value="<?php print ($vs_admin_url) ? $vs_admin_url : $vs_url; ?>">
 				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
-				<hr/><br/><br/>
+				<hr/><br/>
 	
 			</div>
 		</div>

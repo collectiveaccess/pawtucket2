@@ -34,17 +34,15 @@
 	foreach($va_place_ids as $vn_place_id){
 		print "<div class='mapItem'>";
 		$t_place->load($vn_place_id);
-		$vs_image = $t_place->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
-								
-		
-		if(!$vs_image){
-			$vs_image = $t_place->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values, "limit" => 1));
-		}
+		$vs_image = $t_place->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values, "limit" => 1));
 		if($vs_image){
 			print "<div class='mapImage'>".caDetailLink($this->request, $vs_image, '', 'ca_places', $t_place->get("place_id"))."</div>";
 		}
-		print "<H1>".$t_place->getLabelForDisplay()."</H1>";
-
+		print "<H1>".$t_place->getWithTemplate("<l>^ca_places.preferred_labels.name</l>")."</H1>";
+		$desc = $t_place->get("ca_places.description");
+		if($desc){
+			print "<p>".$desc."</p>";
+		}
 		print "<div>".caNavLink($this->request, _t("Browse All Objects"), 'btn btn-default btn-sm', '', 'Browse', 'objects', array("facet" => "place_facet", "id" => $t_place->get("ca_places.place_id")))."</div>";
 		print "<div style='clear:both;'></div>";
 		print "</div><!-- end mapItem -->";
