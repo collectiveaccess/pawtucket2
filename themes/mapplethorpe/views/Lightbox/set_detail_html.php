@@ -148,6 +148,10 @@ if (!$vb_ajax) {	// !ajax
 								print "<li>".caNavLink($this->request, $va_export_format["name"], "", "", "Lightbox", "setDetail", array("view" => $va_export_format['type'], "download" => true, "export_format" => $va_export_format["code"]))."</li>";
 							}
 						}
+						
+						if($this->request->user->hasRole('full_access')) {
+							print "<li>".caNavLink($this->request, "<span class='glyphicon glyphicon-file'></span> "._t('Media files'), "", "", "Lightbox", "getLightboxMedia", array("set_id" => $t_set->get("set_id"), "download" => true))."</li>";
+						}
 ?>
 						<li class="divider"></li>
 						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
