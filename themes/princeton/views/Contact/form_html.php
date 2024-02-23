@@ -75,7 +75,8 @@
 						</div>
 					</div><!-- end col -->
 <?php
-	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+	if(!$this->request->isLoggedIn()){
+		if(defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
 ?>
 		<script type="text/javascript">
 			var gCaptchaRender = function(){
@@ -87,11 +88,11 @@
 
 				<div class="col-sm-4">
 					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
-						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+						<div id="regCaptcha"></div>
 					</div>
 				</div>
 <?php
-	}else{
+		}else{
 ?>
 
 					<div class="col-sm-4">
@@ -108,6 +109,7 @@
 						</div><!-- end form-group -->
 					</div><!-- end col -->
 <?php
+		}
 	}
 ?>
 				</div><!-- end row -->
