@@ -31,7 +31,7 @@ if($this->request->config->get("dont_approve_logins_on_registration")){
 
 print _t("<p>Thank you for registering for \"%1\". ".$vs_active_message."</p>
 
-<p>As a registered user you can  create your own sets from the collection.</p>
+<p>As a registered user you can create your own lightboxes from the collection.</p>
 
 ", $this->request->config->get("app_display_name"));
 
