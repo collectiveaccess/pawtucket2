@@ -37,7 +37,7 @@
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_collections_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records within a particular collection.') ?>"><?php _p('Collection') ?></label>
 			<div class="help-block">Collection names will be suggested as you start typing.  You must select an option from the list to search.</div>
-			{{{ca_collections.preferred_labels%restrictToTypes=collection%width=200px&height=1&autocomplete=1}}}
+			{{{ca_collections.preferred_labels%restrictToTypes=collection%width=200px&height=1&autocomplete=1&inUse=1}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_occurrences_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records associated with a work.') ?>"><?php _p('Work') ?></label>
