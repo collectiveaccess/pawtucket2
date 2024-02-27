@@ -4381,10 +4381,6 @@ function caRepToolbar($po_request, $pt_representation, $pt_subject, $pa_options=
 	$ps_context 			= caGetOption('context', $pa_options, null);
 	$o_media_display_config = caGetMediaDisplayConfig();
 
-        $compare_icon = $o_media_display_config->get('compare_icon');	
-	#$compare_icon = caGetOption('');
-
-
 	$ps_table = is_object($pt_subject) ? $pt_subject->tablename() : "ca_objects";
 	$pn_subject_id = is_object($pt_subject) ? $pt_subject->getPrimaryKey() : (int)$pt_subject;
 
