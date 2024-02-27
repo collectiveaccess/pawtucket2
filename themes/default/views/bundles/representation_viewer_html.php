@@ -61,25 +61,63 @@
 		/* Carousel initialization */
 		$('.jcarousel').on('jcarousel:animate', function (event, carousel) {
 			$(carousel._element.context).find('li').hide().fadeIn(500);
-		}).on('jcarousel:scrollend', function(event, carousel) {
-			var current_rep_id = parseInt($('.jcarousel').jcarousel('target').attr('id').replace('slide', ''));
-			var i = caSliderepresentation_ids.indexOf(current_rep_id);
-			console.log("current", current_rep_id, i, jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html());
-
-			if (!jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html()) {
-				// load media via ajax
-				jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
-				jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).load('<?php print caNavUrl($this->request, '*', '*', 'GetMediaInline', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/display/detail', function(e) {
-					// update carousel height with current slide height after ajax load
-					jQuery(this).find('img').bind('load', function() {
-						jQuery('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height());
-					});
-				});
+		}).on('jcarousel:scroll', function(event, carousel, target, animate) {
+			if (typeof target == 'object') {
+				var current_rep_id = parseInt(target.attr('id').replace('slide', ''));
 			} else {
-				// update carousel height with current slide height
-				var h = $('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height();
-				if (h > 0) $('.jcarousel').height(h);
+				var current_rep_id = parseInt($('.jcarousel').jcarousel('target').attr('id').replace('slide', ''));
+			}
+			var i = caSliderepresentation_ids.indexOf(current_rep_id);
+			if (typeof target != 'object') {
+				if (target == '-=1') {
+					if (i == 0) {
+						i = caSliderepresentation_ids.length - 1;
+					} else {
+						i--;
+					}
+				} else {
+					if ( i == caSliderepresentation_ids.length - 1 ) {
+						i = 0;
+					} else {
+						i++;
+					}
+				}
+			}
+			let selection = '#slide' + caSliderepresentation_ids[i] + ' #slideContent' + caSliderepresentation_ids[i];
+			console.log("current", current_rep_id, i, jQuery(selection).html());
 
+			// When the last slide is requested, first ensure the 2nd-to-last slide is loaded, then load the last slide.
+			let extra_pass_needed = i > 0 && i == caSliderepresentation_ids.length - 1;
+			let done = false;
+			while (!done) {
+				if (extra_pass_needed) i--;
+				selection = '#slide' + caSliderepresentation_ids[i] + ' #slideContent' + caSliderepresentation_ids[i];
+				if (!jQuery(selection).html()) {
+					// load media via ajax
+					jQuery(selection).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
+					if (extra_pass_needed) {
+						jQuery(selection).load('<?php print caNavUrl($this->request, '*', '*', 'GetMediaInline', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/display/detail', function(e) {
+							// don't update carousel height this time, it only causes race problems.
+						});
+					} else {
+						jQuery(selection).load('<?php print caNavUrl($this->request, '*', '*', 'GetMediaInline', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/display/detail', function(e) {
+							// update carousel height with current slide height after ajax load
+							jQuery(this).find('img').bind('load', function() {
+								jQuery('.jcarousel').height($(selection).height());
+							});
+						});
+					}
+				} else if (!extra_pass_needed) {
+					// update carousel height with current slide height
+					var h = $(selection).height();
+					if (h > 0) $('.jcarousel').height(h);
+				}
+				if (extra_pass_needed) {
+					i++;
+					extra_pass_needed = false;
+				} else {
+					done = true;
+				}
 			}
 		}).on('jcarousel:createend jcarousel:animateend', function(event, carousel) {
 <?php
