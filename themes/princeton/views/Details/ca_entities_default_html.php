@@ -54,10 +54,10 @@
 <?php
 			if($vs_rep_viewer){
 ?>
-				<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+				<div class='col-sm-6 col-md-6 col-lg-5'>
 					{{{representationViewer}}}
 				</div>
-				<div class='col-sm-6 col-md-6 col-lg-5'>
+				<div class='col-sm-6 col-md-6 col-lg-7'>
 				
 <?php
 			}else{

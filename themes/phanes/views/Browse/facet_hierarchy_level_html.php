@@ -57,6 +57,6 @@
 
 	if(sizeof($va_links)){
 		ksort($va_links);
-		print join($va_links, "\n");
+		print join("\n", $va_links);
 	}
 ?>

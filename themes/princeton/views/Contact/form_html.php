@@ -14,10 +14,18 @@
 		$t_item = Datamodel::getInstanceByTableName($ps_table);
 		if($t_item){
 			$t_item->load($pn_id);
-			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
-			$vs_name = $t_item->get($ps_table.".preferred_labels");
-			$vs_idno = $t_item->get($ps_table.".idno");
 			$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
+			if($ps_table == "ca_sets"){
+				# --- what url will we use for sets?
+				$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "", "Lightbox", "setDetail", array("set_id" => $pn_id));
+				$vs_admin_url = $this->request->config->get("site_host")."/admin/manage/sets/SetEditor/Edit/set_id/".$pn_id;
+				$vs_name = $t_item->getLabelForDisplay();
+				$vs_idno = "";
+			}else{
+				$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
+				$vs_name = $t_item->get($ps_table.".preferred_labels");
+				$vs_idno = $t_item->get($ps_table.".idno");
+			}
 		}
 	}
 ?>
@@ -41,10 +49,10 @@
 				</p>
 				<input type="hidden" name="itemId" value="<?php print $vs_idno; ?>">
 				<input type="hidden" name="itemTitle" value="<?php print $vs_name; ?>">
-				<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
+				<input type="hidden" name="itemURL" value="<?php print ($vs_admin_url) ? $vs_admin_url : $vs_url; ?>">
 				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
-				<hr/><br/><br/>
+				<hr/><br/>
 	
 			</div>
 		</div>
@@ -54,19 +62,56 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="row">
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 							<label for="name"><?php print _t("Name"); ?></label>
 							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}" id="name">
 						</div>
 					</div><!-- end col -->
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
 							<label for="email"><?php print _t("Email address"); ?></label>
 							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
 						</div>
 					</div><!-- end col -->
-					<div class="col-sm-4">
+<?php
+
+	if($pn_id && $t_item->getPrimaryKey()){
+?>
+					<div class="col-sm-6">
+						<div class="form-group<?php print (($va_errors["request_type"]) ? " has-error" : ""); ?>">
+							<label for="name">Request Type</label>
+							<select class="form-control input-sm" id="request_type" name="request_type">
+								<option value=''>Please choose an option</option>
+								<option value='Researh' <?php print ($this->getVar("request_type") == "Research") ? "selected" : ""; ?>>Research</option>
+								<option value='Publication' <?php print ($this->getVar("request_type") == "Publication") ? "selected" : ""; ?>>Publication</option>
+							</select>
+						</div>
+					</div>
+<?php
+	}
+
+	if(!$this->request->isLoggedIn()){
+		if(defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+        	};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+
+
+				<div class="col-sm-6">
+					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+						<div id="regCaptcha"></div>
+					</div>
+				</div>
+<?php
+		}else{
+?>
+
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
 							<label for="security"><?php print _t("Security Question"); ?></label>
 							<div class='row'>
@@ -79,25 +124,11 @@
 							</div><!--end row-->	
 						</div><!-- end form-group -->
 					</div><!-- end col -->
-				</div><!-- end row -->
 <?php
-	if($pn_id && $t_item->getPrimaryKey()){
-?>
-				<div class="row">
-					<div class="col-sm-4">
-						<div class="form-group<?php print (($va_errors["request_type"]) ? " has-error" : ""); ?>">
-							<label for="name">Request Type</label>
-							<select class="form-control input-sm" id="request_type" name="request_type">
-								<option value=''>Please choose an option</option>
-								<option value='Researh' <?php print ($this->getVar("request_type") == "Research") ? "selected" : ""; ?>>Research</option>
-								<option value='Publication' <?php print ($this->getVar("request_type") == "Publication") ? "selected" : ""; ?>>Publication</option>
-							</select>
-						</div>
-					</div>
-				</div>
-<?php
+		}
 	}
 ?>
+				</div><!-- end row -->
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row">
@@ -108,27 +139,6 @@
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
-<?php
-	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
-?>
-		<script type="text/javascript">
-			var gCaptchaRender = function(){
-                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
-        	};
-		</script>
-		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
-
-
-			<div class="row">
-				<div class="col-sm-12 col-md-offset-1 col-md-10">
-					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
-						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
-					</div>
-				</div>
-			</div><!-- end row -->
-<?php
-	}
-?>
 		<div class="form-group">
 			<button type="submit" class="btn btn-default"><?php print _t("Send"); ?></button>
 		</div><!-- end form-group -->
