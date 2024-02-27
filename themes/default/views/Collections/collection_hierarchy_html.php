@@ -62,7 +62,7 @@
 								}
 			
 								if($vb_link_to_detail){
-									print caDetailLink($this->request, $vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels')." ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : ""), 'p-3 d-block bg-body-tertiary text-black fw-medium', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id")).$vs_record_count;
+									print caDetailLink($this->request, $vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels')." ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : "").$vs_record_count, 'p-3 d-block bg-body-tertiary text-black fw-medium', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id"));
 								}else{
 									print "<div class='p-3 d-block bg-body-tertiary fw-medium'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</div>";
 								}

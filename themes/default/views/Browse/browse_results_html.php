@@ -59,8 +59,6 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	$va_browse_info = $this->getVar("browseInfo");
 	$o_config = $this->getVar("config");
-	$vs_result_col_class = $o_config->get('result_col_class');
-	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
 	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
 	$va_all_facets = $va_browse_type_info["facets"];	
@@ -73,14 +71,14 @@ if (!$vb_ajax) {	// !ajax
 	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-8'>
 		<div class="row">
 			<div class="col-md-12 col-lg-5">
-				<H1 class="text-capitalize">
+				<H1 class="text-capitalize fs-3">
 <?php
-					print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+					print _t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? (($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_PLURAL')) : (($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL')));	
 ?>		
 				</H1>
 			</div>
 			<div class="col-md-12 col-lg-7 text-lg-end">
-				<ul class="list-group list-group-horizontal justify-content-lg-end mt-2 small">
+				<ul class="list-group list-group-horizontal justify-content-lg-end small">
  					
 
 <?php

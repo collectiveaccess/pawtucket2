@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* ------------------------- Navbar ------------------------- */
+@media(min-width:1200px){
+	.navbar{
+		padding-left:33px;
+		padding-right:33px;
+	}
+}
+@media(min-width:992px){
+	.navbar{
+		padding-top:20px;
+		padding-bottom:20px;
+	}
+}
+.navbar-brand{
+	width:300px;
+}
+
+/* ------------------------- Front ------------------------- */
+.parallax {
+    position: relative;
+    background-image: url("../assets/graphics/2018.2.01_172.jpg");
+    background-image: linear-gradient(to bottom, rgba(12, 63, 85, .7), rgba(12, 63, 85, .7)), url("../assets/graphics/2018.2.01_172.jpg");
+
+
+    /* Full height */
+    height: 100vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/2018.2.01_172.jpg");
+    }
+}
+
+.footerSocial svg{
+	width:31px;
+	height:auto;
+	color:#FFF;
+}

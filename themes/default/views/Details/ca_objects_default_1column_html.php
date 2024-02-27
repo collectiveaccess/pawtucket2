@@ -55,7 +55,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 ?>
 	<div class="row<?php print ($show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
 		<div class="col-md-12">
-			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
+			<H1 class="fs-3">{{{^ca_objects.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_objects.type_id|ca_objects.idno"><div class="fw-medium mb-3"><ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef><ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef></div></ifdef>}}}
 			<hr class="mb-0"/>
 		</div>
@@ -95,7 +95,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 </ifdef>}}}
 	<div class="row">
 		<div class="col">
-			<div class="bg-body-tertiary py-3 px-4 mb-3">
+			<div class="bg-body-light py-3 px-4 mb-3">
 				<div class="row row-cols-1 row-cols-md-3 gx-5">
 					<div class="col">				
 						{{{<dl class="mb-0">

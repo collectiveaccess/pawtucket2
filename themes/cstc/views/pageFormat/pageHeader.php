@@ -67,8 +67,8 @@ if($this->request->isLoggedIn()){
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	
 	<nav class="navbar navbar-expand-lg shadow-sm">
-		<div class="container-xl">
-			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'logo.svg', array("alt" => "Logo", "role" => "banner")), "navbar-brand  img-fluid", "", "", ""); ?>
+		<div class="container-fluid">
+			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'CSTC_LOGO.png', array("alt" => "Carrier Sekani Tribal Council Logo", "role" => "banner")), "navbar-brand img-fluid", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 			  <span class="navbar-toggler-icon"></span>
 			</button>
@@ -76,17 +76,30 @@ if($this->request->isLoggedIn()){
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 me-4">
 <!--- set aria-current -> page for the current page -->						
 					<li class="nav-item">
+						<?= caNavlink($this->request, _t('Library'), "nav-link".(((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "library")) ? " active" : ""), "", "Browse", "Library", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>
+					</li>
+				<li class="nav-item dropdown">
+					<a class="text-nowrap nav-link<?php print (((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "archives")) ? " active" : "") ? ' active' : ''; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						<?= _t('Archives'); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
+					</a>
+					<ul class="dropdown-menu">
+<?php
+					print "<li>".caNavLink($this->request, _t("Textual"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "426"))."</li>";
+					print "<li>".caNavLink($this->request, _t("Photo"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "430"))."</li>";
+					print "<li>".caNavLink($this->request, _t("Sound"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "431"))."</li>";
+					print "<li>".caNavLink($this->request, _t("Video"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "432"))."</li>";
+					print "<li>".caNavLink($this->request, _t("Maps"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "472"))."</li>";
+					print "<li>".caNavLink($this->request, _t("Collections"), 'dropdown-item', '', 'Collections', 'Index')."</li>";
+
+?>
+					</ul>	
+				</li>
+
+					<li class="nav-item">
+						<?= caNavlink($this->request, _t('Exhibits'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
+					</li>
+					<li class="nav-item">
 						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
-					</li>
-					<?= $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Collections'), "nav-link".((strToLower($this->request->getController()) == "collections") ? " active" : ""), "", "Collections", "Index", "", ((strToLower($this->request->getController()) == "collections") ? array("aria-current" => "page") : null)); ?>
-					</li>
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Gallery'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
-					</li>
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('Contact'), "nav-link".((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 					</li>
 <?php
 				if($user_links){
