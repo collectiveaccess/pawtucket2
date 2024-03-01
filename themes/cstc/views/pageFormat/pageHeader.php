@@ -90,7 +90,6 @@ if($this->request->isLoggedIn()){
 					print "<li>".caNavLink($this->request, _t("Video"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "432"))."</li>";
 					print "<li>".caNavLink($this->request, _t("Maps"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "472"))."</li>";
 					print "<li>".caNavLink($this->request, _t("Collections"), 'dropdown-item', '', 'Collections', 'Index')."</li>";
-
 ?>
 					</ul>	
 				</li>
@@ -98,8 +97,20 @@ if($this->request->isLoggedIn()){
 					<li class="nav-item">
 						<?= caNavlink($this->request, _t('Exhibits'), "nav-link".((strToLower($this->request->getController()) == "gallery") ? " active" : ""), "", "Gallery", "Index", "", ((strToLower($this->request->getController()) == "gallery") ? array("aria-current" => "page") : null)); ?>
 					</li>
-					<li class="nav-item">
-						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
+					<li class="nav-item dropdown">
+						<a class="text-nowrap nav-link<?php print ((strToLower($this->request->getController()) == "about") ? " active" : "") ? ' active' : ''; ?>" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<?= _t('About'); ?><i class="bi bi-chevron-down ms-2 fs-6"></i>
+						</a>
+						<ul class="dropdown-menu">
+<?php
+						print "<li>".caNavLink($this->request, _t("Background"), 'dropdown-item', '', 'About', 'Background')."</li>";
+						print "<li>".caNavLink($this->request, _t("Collection"), 'dropdown-item', '', 'About', 'Collection')."</li>";
+						print "<li>".caNavLink($this->request, _t("Resources"), 'dropdown-item', '', 'About', 'Resources')."</li>";
+						print "<li>".caNavLink($this->request, _t("Permissions"), 'dropdown-item', '', 'About', 'Permissions')."</li>";
+						print "<li>".caNavLink($this->request, _t("Contact"), 'dropdown-item', '', 'About', 'Contact')."</li>";
+						print "<li>".caNavLink($this->request, _t("FAQ"), 'dropdown-item', '', 'About', 'FAQ')."</li>";
+?>
+						</ul>	
 					</li>
 <?php
 				if($user_links){

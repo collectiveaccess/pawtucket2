@@ -45,7 +45,7 @@
 	
 	$vn_c = 0;
 ?>
-	<div class="h-100 position:relative p-3">
+	<div class="h-100 position:relative p-3 overflow-y-hidden">
 <?php	
 
 		foreach($va_facet_content as $vn_id => $va_item) {

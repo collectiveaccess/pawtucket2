@@ -95,19 +95,15 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<div class="row row-cols-1 row-cols-md-2">
 		<div class="col">				
 			{{{<dl class="mb-0">
-				<ifdef code="ca_entities.idno">
-					<dt><?= _t('Identifier'); ?></dt>
+				<ifdef code="ca_entities.bioghist">
+					<dt><?= _t('Administrative/Biographical History'); ?></dt>
 					<dd>
-						^ca_entities.idno
-					</dd>
-				</ifdef>
-				<ifdef code="ca_entities.biography">
-					<dt><?= _t('Biography'); ?></dt>
-					<dd>
-						^ca_entities.biography
+						^ca_entities.bioghist
 					</dd>
 				</ifdef>
 			</dl>}}}
+<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>						
+
 		</div>
 		<div class="col">
 			{{{<dl class="mb-0">
@@ -115,48 +111,18 @@ $map_options = $this->getVar('mapOptions') ?? [];
 					<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
 					<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 				</ifcount>
-				<ifcount code="ca_entities" min="1">
-					<dt><ifcount code="ca_entities.related" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities.related" min="2"><?= _t('Related People'); ?></ifcount></dt>
-					<unit relativeTo="ca_entities.related" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-
-				<ifcount code="ca_occurrences" min="1">
-					<div class="unit">
-						<dt><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-						<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-					</div>
-				</ifcount>
-
 				<ifcount code="ca_places" min="1">
 					<div class="unit">
 						<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-						<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
+						<unit relativeTo="ca_places" delimiter=""><dd>^ca_places.preferred_labels (^relationship_typename)</dd></unit>
 					</div>
 				</ifcount>
 			</dl>}}}					
 		</div>
 	</div>
-	{{{<ifcount code="ca_entities.related" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities.related" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities.related" min="2"><?= _t('Related People'); ?></ifcount></dt>
-			<unit relativeTo="ca_entities.related" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_entities.preferred_labels<br/>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}}
-	{{{<ifcount code="ca_occurrences" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-			<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br/>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}}
-	{{{<ifcount code="ca_places" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-			<unit relativeTo="ca_places" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_places.preferred_labels<br/>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}}
 {{{<ifcount code="ca_objects" min="1">
 	<div class="row">
-		<div class="col"><h2>Related Objects</h2><hr/></div>
+		<div class="col"><h2>Related Items</h2><hr/></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_entities.entity_id:'.$t_item->get("ca_entities.entity_id"))); ?>">

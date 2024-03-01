@@ -108,38 +108,83 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 					<dt>Part of</dt>
 					<dd><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></dd>
 				</ifdef>
-				<ifdef code="ca_collections.idno">
-					<dt><?= _t('Identifier'); ?></dt>
+				<ifdef code="ca_collections.display_date">
+					<dt><?= _t('Date'); ?></dt>
 					<dd>
-						^ca_collections.idno
+						^ca_collections.display_date%delimiter=,_
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.extent_text">
+					<dt><?= _t('Extent and Medium'); ?></dt>
+					<dd>
+						^ca_collections.extent_text
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.material_designations">
+					<dt><?= _t('Material Designation'); ?></dt>
+					<dd>
+						^ca_collections.material_designations%delimiter=,_
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.scopecontent">
+					<dt><?= _t('Scope and Content'); ?></dt>
+					<dd>
+						^ca_collections.scopecontent
 					</dd>
 				</ifdef>
 				<ifdef code="ca_collections.adminbiohist">
-					<dt><?= _t('Admin bio History'); ?></dt>
+					<dt><?= _t('Administrative/Biographical History'); ?></dt>
 					<dd>
 						^ca_collections.adminbiohist
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.arrangement">
+					<dt><?= _t('System of Arrangement'); ?></dt>
+					<dd>
+						^ca_collections.arrangement
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.accessrestrict">
+					<dt><?= _t('Conditions Governing Access'); ?></dt>
+					<dd>
+						^ca_collections.accessrestrict
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.physaccessrestrict">
+					<dt><?= _t('Physical and Technical Access Notes'); ?></dt>
+					<dd>
+						^ca_collections.physaccessrestrict
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.reproduction">
+					<dt><?= _t('Conditions Governing Reproduction'); ?></dt>
+					<dd>
+						^ca_collections.reproduction
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.langmaterial">
+					<dt><?= _t('Language'); ?></dt>
+					<dd>
+						^ca_collections.langmaterial
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.themes">
+					<dt><?= _t('Themes'); ?></dt>
+					<dd>
+						^ca_collections.themes%delimiter=",_"
+					</dd>
+				</ifdef>
+				<ifdef code="ca_collections.keywords_text">
+					<dt><?= _t('Keywords'); ?></dt>
+					<dd>
+						^ca_collections.keywords_text%delimiter=",_"
 					</dd>
 				</ifdef>
 			</dl>}}}
 		</div>
 		<div class="col">
+<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>						
 			{{{<dl class="mb-0">
-				<ifcount code="ca_collections.related" min="1">
-					<dt><ifcount code="ca_collections.related" min="1" max="1"><?= _t('Related Collections'); ?></ifcount><ifcount code="ca_collections.related" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
-					<unit relativeTo="ca_collections.related" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
-				</ifcount>
-				<ifcount code="ca_entities" min="1">
-					<dt><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
-					<unit relativeTo="ca_entities" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
-				</ifcount>
-
-				<ifcount code="ca_occurrences" min="1">
-					<div class="unit">
-						<dt><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-						<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-					</div>
-				</ifcount>
-
 				<ifcount code="ca_places" min="1">
 					<div class="unit">
 						<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
@@ -157,27 +202,9 @@ $top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.co
 			}									
 ?>				
 
-	{{{<ifcount code="ca_entities" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
-			<unit relativeTo="ca_entities" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_entities.preferred_labels<br/>^relationship_typename</l></dd></unit>		
-		</dl>
-	</ifcount>}}}
-	{{{<ifcount code="ca_occurrences" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-			<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br/>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}}
-	{{{<ifcount code="ca_places" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-			<unit relativeTo="ca_places" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_places.preferred_labels<br/>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}}
 	{{{<ifcount code="ca_objects" min="1">
 	<div class="row">
-		<div class="col"><h2>Related Objects</h2><hr/></div>
+		<div class="col"><h2>Related Items</h2><hr/></div>
 	</div>
 	<div class="row" id="browseResultsContainer">	
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_collections.collection_id:'.$t_item->get("ca_collections.collection_id"))); ?>">

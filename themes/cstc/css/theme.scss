@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Aleo:ital,wght@0,100..900;1,100..900&display=swap');
 
+$dark:          #0c3f55; /* dark blue */
+
+.aleo{
+	font-family: "Aleo";
+}
 /* ------------------------- Navbar ------------------------- */
 @media(min-width:1200px){
 	.navbar{
@@ -20,7 +26,6 @@
 /* ------------------------- Front ------------------------- */
 .parallax {
     position: relative;
-    background-image: url("../assets/graphics/2018.2.01_172.jpg");
     background-image: linear-gradient(to bottom, rgba(12, 63, 85, .7), rgba(12, 63, 85, .7)), url("../assets/graphics/2018.2.01_172.jpg");
 
 
@@ -38,8 +43,60 @@
     }
 }
 
+.hpBoxes{
+	.hpBox{
+		img{
+			height:350px;
+		}
+		div{
+			text-shadow: 0px 0px 5px #000;
+			padding-top:45%;
+			background: rgba(12, 63, 85, .5);
+			transition: all 300ms linear;
+		}
+		div:hover{
+			background: rgba(12, 63, 85, .9);
+		}
+	}
+}
+.hpExploreBoxes{
+	.hpExploreBox{
+		margin-bottom:30px;
+		img{
+			height:250px;
+		}
+		div{
+			text-shadow: 0px 0px 5px #000;
+			padding-top:40%;
+			background: rgba(12, 63, 85, .5);
+			transition: all 300ms linear;
+		}
+		div:hover{
+			background: rgba(12, 63, 85, .9);
+		}
+	}
+	.hpExploreBoxLg{
+		img{
+			height:530px;
+		}
+		div{
+			padding-top:45%;
+		}
+	}
+}
+/* ------------------------- Front ------------------------- */
 .footerSocial svg{
-	width:31px;
+	height:50px;
+	width:auto;
+}
+#footer img{
+	width:95px;
 	height:auto;
-	color:#FFF;
+}
+/* ------------------------- Gallery ------------------------- */
+.gallery{
+	H2{
+		color: $dark;
+		font-weight:bold;
+	}
 }

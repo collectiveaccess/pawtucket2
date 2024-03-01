@@ -37,7 +37,7 @@
 	$vs_current_view	= $this->getVar('view');
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	
-	$vn_facet_display_length_maximum = 5;
+	$vn_facet_display_length_maximum = 12;
 	$vs_criteria = "";
 	if (sizeof($va_criteria) > 0) {
 		$i = 0;
@@ -55,7 +55,7 @@
 	if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->numHits() > 1)){
 ?>
 		
-		<div id='bRefine' class='bg-light sticky-md-top vh-100 collapse'>
+		<div id='bRefine' class='bg-light sticky-md-top vh-100 collapse overflow-y-auto'>
 			<div id='bMorePanel' class='position-absolute w-100 z-3 bg-light h-100 collapse'><!-- long lists of facets are loaded here --></div>
 			<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
 <?php

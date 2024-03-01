@@ -80,6 +80,25 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
     }
 }
 
+.fade-out {
+  opacity: 1;
+  animation-name: fade-out;
+  animation-duration: 3s;
+  animation-timing-function: linear;
+  animation-delay: 4s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  animation-direction: forwards;
+}
+
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
 
 /* ------------------------- Details ------------------------- */
 .detail{
@@ -144,6 +163,11 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 }
 /* ------------------------- Gallery ------------------------- */
 .gallery{
+	#galleryLandingFeatured{
+		img{
+			height:400px;
+		}
+	}
 	.card{
 		img.object-fit-cover{
 			object-position:middle center;

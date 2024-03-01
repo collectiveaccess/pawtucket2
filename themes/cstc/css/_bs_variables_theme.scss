@@ -60,7 +60,7 @@ $dark:          #0c3f55; /* used for .bg-dark style */
 		$font-size-lg:                $font-size-base * 1.25 !default;
 
 $font-family-sans-serif: "Montserrat", "Noto Sans";
-
+//$font-family-sans-serif: "Aleo";
 		$font-weight-lighter:         lighter !default;
 		$font-weight-light:           300 !default;
 		$font-weight-normal:          300 !default;
@@ -70,6 +70,7 @@ $font-family-sans-serif: "Montserrat", "Noto Sans";
 $font-weight-bolder:          900;
 
 		$font-weight-base:            $font-weight-normal !default;
+$headings-font-family:        "Montserrat", "Noto Sans";
 
 		$h1-font-size:                $font-size-base * 2 !default;
 		$h2-font-size:                $font-size-base * 1.75 !default;
