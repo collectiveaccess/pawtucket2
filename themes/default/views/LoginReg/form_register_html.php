@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2019 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -24,70 +24,92 @@
  * http://www.CollectiveAccess.org
  *
  * ----------------------------------------------------------------------
- */
- 
-	$va_errors = $this->getVar("errors");
-	$t_user = $this->getVar("t_user");
-	$co_security = $this->request->config->get('registration_security');
-	if($co_security == 'captcha'){
-		if((!defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") || !__CA_GOOGLE_RECAPTCHA_SECRET_KEY__) || (!defined("__CA_GOOGLE_RECAPTCHA_KEY__") || !__CA_GOOGLE_RECAPTCHA_KEY__)){
-			//Then the captcha will not work and should not be implemenented. Alert the user in the console
-			print "<script>console.log('reCaptcha disabled, please provide a valid site_key and secret_key to enable it.');</script>";
-			$co_security = 'equation_sum';
-		}
+ */ 
+$errors = $this->getVar("errors");
+$t_user = $this->getVar("t_user");
+$show_group_code = $this->request->config->get('registration_show_group_code');
+$co_security = $this->request->config->get('registration_security');
+$co_security = $this->request->config->get('registration_security');
+if($co_security == 'captcha'){
+	if((!defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") || !__CA_GOOGLE_RECAPTCHA_SECRET_KEY__) || (!defined("__CA_GOOGLE_RECAPTCHA_KEY__") || !__CA_GOOGLE_RECAPTCHA_KEY__)){
+		// Then the captcha will not work and should not be implemenented. Alert the user in the console
+		print "<script>console.log('reCaptcha disabled, please provide a valid site_key and secret_key to enable it.');</script>";
+		$co_security = '';
 	}
-	$vn_num1 = rand(1,10);
-	$vn_num2 = rand(1,10);
-	$vn_sum = $vn_num1 + $vn_num2;
-	if($this->request->isAjax()){}
+}
 ?>
+<h1><?= _t("Register"); ?></h1>
 
-<script>
-	// initialize CA Utils
-	caUI.initUtils();
-</script>
-
-<div class="row">
-	<div class="col">
-
-		<h1><?= _t("Register"); ?></h1>
-
-		<form class="row g-3 my-2" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" method="POST">
-			<div class="col-md-4">
-				<label for="inputFirstName" class="form-label"><?= _t("First Name"); ?></label>
-				<input type="text" class="form-control" id="inputFirstName" aria-label="enter name" placeholder="Enter first name" required>
-			</div>
-
-			<div class="col-md-4">
-				<label for="inputLastName" class="form-label"><?= _t("Last Name"); ?></label>
-				<input type="text" class="form-control" id="inputLastName" aria-label="enter name" placeholder="Enter last name" required>
-			</div>
-
-			<div class="col-md-4">
-				<label for="inputEmail" class="form-label"><?= _t("Email"); ?></label>
-				<input type="email" class="form-control" id="inputEmail" aria-label="enter email" placeholder="Enter email" required>
-			</div>
-
-			<div class="col-md-4">
-				<label for="inputPassword" class="form-label"><?= _t("Password"); ?></label>
-				<input type="password" class="form-control" id="inputPassword" required>
-			</div>
-
-			<div class="col-md-4">
-				<label for="inputPassword2" class="form-label"><?= _t("Re-Type Password"); ?></label>
-				<input type="password" class="form-control" id="inputPassword2" required>
-			</div>
-
-			<div class="col-md-4">
-				<label for="inputCode" class="form-label"><?= _t("Group Code (optional)"); ?></label>
-				<input type="text" class="form-control" id="inputCode">
-			</div>
-
-			<div class="col-12">
-				<button type="submit" class="btn btn-dark"><?= _t("Register"); ?></button>
-			</div>
-		</form>
-
+<form action="<?= caNavUrl($this->request, "", "LoginReg", "register"); ?>" method="POST">
+	<div class="bg-light px-4 pt-4 pb-2 mb-4">	
+		<div class="row my-2">
+<?php
+		foreach(array("fname", "lname", "email") as $field){
+			print "<div class='col-md-4 mb-4'>";
+			print $t_user->htmlFormElement($field,"<label for='".$field."' class='form-label'>^LABEL</label>^ELEMENT\n", array("classname" => "form-control".(($errors[$field]) ? " is-invalid" : "")));
+			if($errors[$field]){
+				print "<div class='invalid-feedback'>".$errors[$field]."</div>";
+			}	
+			print "</div>";
+		}
+		$profile_settings = $this->getVar("profile_settings");
+		if(is_array($profile_settings) and sizeof($profile_settings)){
+			foreach($profile_settings as $field => $profile_element){
+				if($errors[$field]){
+					print "<div class='alert alert-danger'>".$errors[$field]."</div>";
+				}
+				print "<div class='col-md-4 mb-4'>";
+				print $profile_element["bs_formatted_element"];
+				print "</div>";
+			}
+		}
+		
+		print "<div class='col-md-4 mb-4'>";
+		print $t_user->htmlFormElement("password", "<label for='password' class='form-label'>^LABEL</label>^ELEMENT\n", array("classname" => "form-control".(($errors["password"]) ? " is-invalid" : "")));
+		if($errors["password"]){
+			print "<div class='invalid-feedback'>".$errors["password"]."</div>";
+		}
+?>
 	</div>
-</div>
-
+	<div class='col-md-4 mb-4'>
+		<label for='password2' class='form-label'><?= _t('Re-Type password'); ?></label>
+		<input type="password" name="password2" id="password2" class="form-control<?= (($errors["password"]) ? " is-invalid" : ""); ?>"  autocomplete="off" />
+	</div>
+<?php	
+	if($show_group_code){
+		print "<div class='col-md-4 mb-4'>";
+		print "<label for='registrationGroupCode' class='form-label'>"._t("Group code (optional)")."</label>".caHTMLTextInput("group_code", ['class' => 'form-control'.(($errors["group_code"]) ? " is-invalid" : ""), 'id' => 'registrationGroupCode'], [])."\n";
+		if($errors["group_code"]){
+			print "<div class='invalid-feedback'>".$errors["group_code"]."</div>";
+		}
+		print "</div>";
+	}
+	if($co_security == "captcha"){
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+				grecaptcha.render('regCaptcha', {'sitekey': '<?= __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+			};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+		<div class='col-md-4 mb-4'>
+			<div id="regCaptcha"></div>
+<?php
+			if(($errors["recaptcha"])){
+				print "<div class='invalid-feedback d-block'>".$errors["recaptcha"]."</div>";
+			}
+?>
+		</div>
+<?php
+	}
+?>
+		</div>
+	</div>
+	<div class="row mb-4">
+		<div class="col-12 mb-4">
+			<button type="submit" class="btn btn-primary"><?= _t("Register"); ?></button>
+		</div>
+		
+		<input type="hidden" name="csrfToken" value="<?= caGenerateCSRFToken($this->request); ?>"/>
+	</div>
+</form>

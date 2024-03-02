@@ -55,7 +55,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 ?>
 	<div class="row<?php print ($vb_show_nav) ? " mt-2 mt-md-n3" : ""; ?>">
 		<div class="col-md-12">
-			<H1>{{{^ca_places.preferred_labels.name}}}</H1>
+			<H1 class="fs-3">{{{^ca_places.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_places.type_id|ca_places.idno"><div class="fw-medium mb-3 text-capitalize"><ifdef code="ca_places.type_id">^ca_places.type_id</ifdef><ifdef code="ca_places.idno">, ^ca_places.idno</ifdef></div></ifdef>}}}
 			<hr class="mb-0">
 		</div>
@@ -157,7 +157,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<div class="row">
 		<div class="col"><h2>Related Objects</h2><hr></div>
 	</div>
-	<div class="row">	
+	<div class="row" id="browseResultsContainer">	
 		<div hx-trigger='load' hx-swap='outerHTML' hx-get="<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_places.place_id:'.$t_item->get("ca_places.place_id"))); ?>">
 			<div class="spinner-border htmx-indicator m-3" role="status" class="text-center"><span class="visually-hidden">Loading...</span></div>
 		</div>

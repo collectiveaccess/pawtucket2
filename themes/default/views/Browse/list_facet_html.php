@@ -25,105 +25,55 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	# -----------------------------------------------------------
-	# --- facet view for group_mode = alphabetical, none
-	# -----------------------------------------------------------
+$va_facet_content = 	$this->getVar('facet_content');
+$vs_facet_name = 		$this->getVar('facet_name');
+$vs_view = 				$this->getVar('view');
+$vs_key = 				$this->getVar('key');
+$va_facet_info = 		$this->getVar("facet_info");
+$vb_is_nav = 			(bool)$this->getVar('isNav');
+$vn_start =				$this->getVar('start');
+$vn_items_per_page =	$this->getVar('limit');
+$vn_facet_size =		$this->getVar('facet_size');
 
-	$va_facet_content = 	$this->getVar('facet_content');
-	$vs_facet_name = 		$this->getVar('facet_name');
-	$vs_view = 				$this->getVar('view');
-	$vs_key = 				$this->getVar('key');
-	$va_facet_info = 		$this->getVar("facet_info");
-	$vb_is_nav = 			(bool)$this->getVar('isNav');
-	$vn_start =				$this->getVar('start');
-	$vn_items_per_page =	$this->getVar('limit');
-	$vn_facet_size =		$this->getVar('facet_size');
-	
-	$va_letter_bar = array();
-	$vs_facet_list = "";	
-	
-	$vn_c = 0;
-	
+$va_letter_bar = array();
+$vs_facet_list = "";	
 
-	if($vb_is_nav){
-		if ($vn_start == 0) {
+$vn_c = 0;
 ?>
-			<div id="panel_<?php print $vs_facet_name; ?>" class="row">
-<?php
+<div class="h-100 position:relative p-3 overflow-y-hidden">
+<?php	
+foreach($va_facet_content as $vn_id => $va_item) {
+	$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+	
+	if($va_facet_info["group_mode"]== "alphabetical"){
+		$vs_first_letter = "";
+		if(is_array($va_facet_info["order_by_label_fields"]) && sizeof($va_facet_info["order_by_label_fields"])){
+			$vs_first_letter = mb_strtoupper(mb_substr($va_item[$va_facet_info["order_by_label_fields"][0]], 0, 1));
 		}
-		foreach($va_facet_content as $vn_id => $va_item) {
-		    $vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-			print "<div class='browseFacetItem col-sm-4 col-md-3'>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*', '*', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key))."</div>";
-			$vn_c++;
-			
-			if ($vn_c >= $vn_items_per_page) { break; }
+		if(!$vs_first_letter){
+			$vs_first_letter = mb_strtoupper(mb_substr($va_item['label_sort_'], 0, 1));
 		}
-		
-		if ((int)$vn_facet_size >= ((int)$vn_start + (int)$vn_items_per_page)) {
-			print caNavLink($this->request, caBusyIndicatorIcon($this->request).' '._t('Loading'), 'caNextPage', '*', '*', '*', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0, 's' => (int)$vn_start + (int)$vn_items_per_page));
+		if(!$vs_first_letter){
+			$vs_first_letter = mb_strtoupper(mb_substr($va_item["label"], 0, 1));
 		}
-		if ($vn_start == 0) {
-?>
-			</div>
-			<script>
-				jQuery(document).ready(function() {
-					jQuery("#panel_<?php print $vs_facet_name; ?>").jscroll({
-						loadingHtml: "<div class='browseFacetItem col-sm-4 col-md-3'><a href='#'><?php print addslashes(caBusyIndicatorIcon($this->request).' '._t('Loading...')); ?></a></div>",
-						padding: 1000,
-						nextSelector: '.caNextPage',
-						debug: true
-					});
-				});	
-			</script>
-<?php
+		if(!in_array($vs_first_letter, $va_letter_bar)){
+			$va_letter_bar[$vs_first_letter] = $vs_first_letter;
+			$vs_facet_list .= "<dt id='facetList".$vs_first_letter."'>".$vs_first_letter."</dt>";
 		}
-		
-	} else {
-		foreach($va_facet_content as $vn_id => $va_item) {
-		    $vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-			
-			if($va_facet_info["group_mode"]== "alphabetical"){
-				$vs_first_letter = "";
-				if(is_array($va_facet_info["order_by_label_fields"]) && sizeof($va_facet_info["order_by_label_fields"])){
-					$vs_first_letter = mb_strtoupper(mb_substr($va_item[$va_facet_info["order_by_label_fields"][0]], 0, 1));
-				}
-				if(!$vs_first_letter){
-					$vs_first_letter = mb_strtoupper(mb_substr($va_item['label_sort_'], 0, 1));
-				}
-				if(!$vs_first_letter){
-					$vs_first_letter = mb_strtoupper(mb_substr($va_item["label"], 0, 1));
-				}
-				if(!in_array($vs_first_letter, $va_letter_bar)){
-					$va_letter_bar[$vs_first_letter] = $vs_first_letter;
-					$vs_facet_list .= "<div id='facetList".$vs_first_letter."'><strong>".$vs_first_letter."</strong></div>";
-				}
-			}			
-			$vs_facet_list .= "<div>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*', '*', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key))."</div>\n";
-			$vn_c++;
-		}
-		print "<a href='#' class='pull-right' id='bMorePanelClose' onclick='jQuery(\"#bMorePanel\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
-		print "<H1 id='bScrollListLabel'>".$va_facet_info["label_plural"]."<span class='bFilterCount'> (".sizeof($va_facet_content)." total)</span></H1>";
-		if($va_facet_info["group_mode"]== "alphabetical"){
-			print "<div id='bLetterBar'>";
-			foreach($va_letter_bar as $vs_letter){
-				print "<a href='#' onclick='jumpToLetter(\"facetList".$vs_letter."\"); return false;'>".$vs_letter."</a><br/>";
-			}
-			print "</div><!-- end bLetterBar -->";
-		}
-		print "<div id='bScrollList'>".$vs_facet_list."</div><!-- end bScrollList -->";
-		print "<div style='clear:both;'></div>";
-		if($va_facet_info["group_mode"]== "alphabetical"){
-?>
-		<script>		
-			function jumpToLetter(jumpToItemID){
-				jQuery("#bScrollList").scrollTop(0);
-				var position = jQuery("#" + jumpToItemID).position();
-				var scrollListPosition = jQuery("#bScrollList").position();
-				jQuery("#bScrollList").scrollTop(position.top - scrollListPosition.top - 5);
-			}
-		</script>
-<?php
-		}
+	}			
+	$vs_facet_list .= "<dd>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*', '*', array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key))."</dd>\n";
+	$vn_c++;
+}
+print '<div class="position-absolute end-0 w-auto pe-3"><button type="button" class="btn-close" aria-label="'._t("Close").'" data-bs-toggle="collapse" data-bs-target="#bMorePanel" aria-controls="bMorePanel"></button></div>';
+print "<div class='fw-semibold fs-4 text-capitalize'>".$va_facet_info["label_plural"]."<span class='fw-normal  fs-5'> (".sizeof($va_facet_content)." total)</span></div>";
+if($va_facet_info["group_mode"]== "alphabetical"){
+	print "<div class='position-absolute end-0 w-auto p-3 text-center'><nav class='nav nav-pills flex-column' id='bRefineLetterBar'>";
+	foreach($va_letter_bar as $vs_letter){
+		print "<a href='#facetList".$vs_letter."' class='nav-link py-1 px-1'>".$vs_letter."</a>";
 	}
+	print "</nav></div><!-- end bRefineLetterBar -->";
+}
+print "<div class='pt-3 pe-1 me-4 overflow-y-scroll h-100 mb-5 pb-5' data-bs-spy='scroll' data-bs-target='#bRefineLetterBar' data-bs-smooth-scroll='true'><dl>".$vs_facet_list."</dl></div><!-- end bScrollList -->";
+print "<div style='clear:both;'></div>";
 ?>
+</div>

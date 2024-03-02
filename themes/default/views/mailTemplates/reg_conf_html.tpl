@@ -31,11 +31,7 @@ if($this->request->config->get("dont_approve_logins_on_registration")){
 
 print _t("<p>Thank you for registering for \"%1\". ".$vs_active_message."</p>
 
-<p>As a member you can comment and tag items on the site.  You can also create your own sets from the collection and share your slide-shows with friends and colleagues.</p>
-
-<p>Regards,<br/>
-the Staff</p>
-
+<p>As a member you gain access to additional site tools.</p>
 ", $this->request->config->get("app_display_name"));
 
 	print "<p>".$this->request->config->get("site_host")."</p>";

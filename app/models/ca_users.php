@@ -2046,9 +2046,9 @@ class ca_users extends BaseModel {
 					}
 					
 					if ($vn_display_height > 1) {
-						$vs_output = "<textarea name='pref_$ps_pref' rows='".$vn_display_height."' cols='".$vn_display_width."'>".htmlspecialchars($vs_current_value, ENT_QUOTES, 'UTF-8')."</textarea>\n";
+						$vs_output = "<textarea name='pref_$ps_pref' id='pref_$ps_pref' rows='".$vn_display_height."' cols='".$vn_display_width."'>".htmlspecialchars($vs_current_value, ENT_QUOTES, 'UTF-8')."</textarea>\n";
 					} else {
-						$vs_output = "<input type='text' name='pref_$ps_pref' size='$vn_display_width' maxlength='$vn_max_input_length'".$vs_class." value='".htmlspecialchars($vs_current_value, ENT_QUOTES, 'UTF-8')."'/>\n";
+						$vs_output = "<input type='text' name='pref_$ps_pref' id='pref_$ps_pref' size='$vn_display_width' maxlength='$vn_max_input_length'".$vs_class." value='".htmlspecialchars($vs_current_value, ENT_QUOTES, 'UTF-8')."'/>\n";
 					}
 					break;
 				# ---------------------------------

@@ -48,7 +48,7 @@
  				
 			}
 			print "<div class='smallpadding col-3 col-sm-2 col-md-1 img-fluid'>";
-			print "<div class='bg-white p-1 shadow-sm' hx-trigger='click' hx-target='#galleryDetailItemInfo' hx-get='".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."'>".$vs_rep."</div>";
+			print "<a href='#' hx-trigger='click' hx-target='#galleryDetailItemInfo' hx-get='".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."'><div class='bg-white p-1 shadow-sm'>".$vs_rep."</div></a>";
 			print "</div>\n";
 		}
 ?>

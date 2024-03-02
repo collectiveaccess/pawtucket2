@@ -546,6 +546,92 @@ class SearchController extends FindController {
 		
 		$this->render($va_search_info['view']);
 	}
+	# ------------------------------------------------------- 
+	public function generalSearch($pa_options=null) {
+
+		$this->config = Configuration::load(__CA_THEME_DIR__.'/conf/browse.conf');
+		$va_search_blocks = $this->config->getList('generalSearchTargets');
+		$va_browse_blocks = $this->config->getAssoc('browseTypes');
+		$va_general_search_options = $this->config->getAssoc('generalSearchOptions');
+		foreach($va_search_blocks as $vs_block_name){
+			if($va_browse_blocks[$vs_block_name]){
+				$va_search_blocks[$vs_block_name] = $va_browse_blocks[$vs_block_name];
+			}
+		}
+		$vs_find_type = "generalsearch";
+		$va_result_contexts = array();
+		
+		// Create result context for each block
+		$va_tables = array();
+		foreach($va_search_blocks as $vs_block => $va_block_info) {
+			$va_tables[$va_block_info['table']] = 1;
+			$va_result_contexts[$vs_block] = new ResultContext($this->request, $va_block_info['table'], $vs_find_type, $vs_block);
+			$va_result_contexts[$vs_block]->setAsLastFind(false);
+		}
+		
+		// Create generic contexts for each table in generalsearch (no specific block); used to house search history and overall counts
+		// when there is more than one block for a given table
+		foreach(array_keys($va_tables) as $vs_table) {
+			$va_result_contexts["_generalsearch_{$vs_table}"] = new ResultContext($po_request, $vs_table, $vs_find_type);
+		}
+		
+		
+		if (!is_array($va_result_contexts) || !sizeof($va_result_contexts)) { 
+			// TODO: throw error - no searches are defined
+			return false;
+		}
+		
+		$o_first_result_context = array_shift(array_values($va_result_contexts));
+		
+		$vs_search = $o_first_result_context->getSearchExpression();
+		
+		if ($ps_label = $this->request->getParameter('label', pString, ['forcePurify' => true])) {
+			$o_first_result_context->setSearchExpressionForDisplay("{$ps_label}: ".caGetDisplayStringForSearch($vs_search, ['omitFieldNames' => true]));
+		} else {
+			$o_first_result_context->setSearchExpressionForDisplay(caGetDisplayStringForSearch($vs_search)); 
+		}
+		$vs_search_display = $o_first_result_context->getSearchExpressionForDisplay();
+		
+		$this->view->setVar('search', $vs_search);
+		$this->view->setVar('searchForDisplay', $vs_search_display);
+		$this->view->setVar("config", $this->config);
+		$this->view->setVar('blocks', $va_search_blocks);
+		$this->view->setVar('blockNames', array_keys($va_search_blocks));
+		$this->view->setVar('results', $va_results = caGeneralSearch($this->request, $vs_search, $va_search_blocks, array('access' => $this->opa_access_values, 'contexts' => $va_result_contexts, 'matchOnStem' => (bool)$this->config->get('matchOnStem'))));
+		$vn_result_count = 0;
+		$vs_redirect_to_only_result = null;
+		
+		$va_context_list = [];
+		foreach($va_result_contexts as $vs_block => $o_context) {
+			$o_context->setParameter('search', $vs_search);
+			$va_context_list[$o_context->tableName()][$o_context->findType()] = $vs_search;
+			if (!isset($va_results[$vs_block]['ids']) || !is_array($va_results[$vs_block]['ids'])) { continue; }
+			$o_context->setResultList(is_array($va_results[$vs_block]['ids']) ? $va_results[$vs_block]['ids'] : array());
+			if($va_results[$vs_block]['sort']) { $o_context->setCurrentSort($va_results[$vs_block]['sort']); }
+			if (isset($va_results[$vs_block]['sortDirection'])) { $o_context->setCurrentSortDirection($va_results[$vs_block]['sortDirection']); }
+			$o_context->saveContext();
+			
+			$vn_result_count += sizeof($va_results[$vs_block]['ids']);
+			
+			if ((sizeof($va_results[$vs_block]['ids']) == 1) && ($vn_result_count == 1) && (!$this->config->get('dont_redirect_to_single_search_result'))) {
+				$vs_redirect_to_only_result = caDetailUrl($this->request, $va_results[$vs_block]['table'], $va_results[$vs_block]['ids'][0], false);
+			}
+		}
+		
+		foreach($va_context_list as $table => $l) {
+			foreach($l as $type => $s) {
+				$o_context = new ResultContext($this->request, $table, $type);
+				$o_context->setParameter('search', $s);
+				$o_context->saveContext();
+			}
+		}
+		
+		if (($vn_result_count == 1) && ($vs_redirect_to_only_result)) {
+			$this->response->setRedirect($vs_redirect_to_only_result);
+			return;
+		}		
+		$this->render('Search/general_results_html.php');
+	}
 	# -------------------------------------------------------
 	/** 
 	 * Generate the URL for the "back to results" link from a browse result item
@@ -568,6 +654,15 @@ class SearchController extends FindController {
 					)
 				);
 				
+			}elseif((sizeof($tmp) > 1) && ($tmp[0] === 'generalsearch')){
+				return array(
+					'module_path' => '',
+					'controller' => 'Search',
+					'action' => 'GeneralSearch',
+					'params' => array(
+						'search'
+					)
+				);
 			}
 		}
 		$va_ret = array(
