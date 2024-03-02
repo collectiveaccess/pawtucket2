@@ -995,8 +995,7 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 				if ($id) { $va_query[] = 'OR'; }
 			}
 		}
-		$c=get_class($subquery);
-		switch($c) {
+		switch(get_class($subquery)) {
 			case 'Zend_Search_Lucene_Search_Query_Phrase':
 				$vs_field = null;
 				$va_terms = [];
@@ -1034,8 +1033,7 @@ function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
  *
  */
 function caGetSubQueries($po_parsed_query) {
-	$c = get_class($po_parsed_query);
-	switch($c) {
+	switch(get_class($po_parsed_query)) {
 		case 'Zend_Search_Lucene_Search_Query_Boolean':
 			$va_items = $va_signs = [];
 			foreach($po_parsed_query->getSubqueries() as $o_q) {
@@ -1047,10 +1045,6 @@ function caGetSubQueries($po_parsed_query) {
 		case 'Zend_Search_Lucene_Search_Query_MultiTerm':
 			$va_items = $po_parsed_query->getTerms();
 			$va_signs = $po_parsed_query->getSigns();
-			break;
-		case 'Zend_Search_Lucene_Search_Query_Term':
-			$va_items = [$po_parsed_query];
-			$va_signs = [null];
 			break;
 		case 'Zend_Search_Lucene_Search_Query_Phrase':
 		case 'Zend_Search_Lucene_Search_Query_Range':
@@ -1991,7 +1985,7 @@ function caGetBundleNameForSearchSearchBuilder($ps_name) {
  */
 function caGetSearchBuilderFilters(BaseModel $t_subject, Configuration $po_query_builder_config) {
 	$key = 'filters_'.$t_subject->tableName();
-	//if (CompositeCache::contains($key, 'SearchBuilder') && is_array($cached_data = CompositeCache::fetch($key, 'SearchBuilder'))) { return $cached_data; }
+	if (CompositeCache::contains($key, 'SearchBuilder') && is_array($cached_data = CompositeCache::fetch($key, 'SearchBuilder'))) { return $cached_data; }
 	
 	$vs_table = $t_subject->tableName();
 	$t_search_form = new ca_search_forms();

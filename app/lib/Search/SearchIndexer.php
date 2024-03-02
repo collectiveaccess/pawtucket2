@@ -50,6 +50,8 @@ class SearchIndexer extends SearchBase {
 	static $s_search_indexing_queue_inserts = [];
 	static $s_search_unindexing_queue_inserts = [];
 	
+	static $queued_entry_count = 0;
+	
 	/**
 	 *
 	 */
@@ -73,7 +75,8 @@ class SearchIndexer extends SearchBase {
 	# -------------------------------------------------------
 	public function __destruct() {
 		$o_db = new Db();
-		if(sizeof(self::$s_search_indexing_queue_inserts) > 0) {
+		if(($c = sizeof(self::$s_search_indexing_queue_inserts)) > 0) {
+			SearchIndexer::$queued_entry_count += $c;
 			$va_insert_segments = array();
 			foreach (self::$s_search_indexing_queue_inserts as $va_insert_data) {
 				$va_insert_segments[] = "('" . join("','", $va_insert_data) . "')";
@@ -84,7 +87,8 @@ class SearchIndexer extends SearchBase {
             }
 		}
 
-		if(sizeof(self::$s_search_unindexing_queue_inserts) > 0) {
+		if(($c = sizeof(self::$s_search_unindexing_queue_inserts)) > 0) {
+			SearchIndexer::$queued_entry_count += $c;
 			$va_insert_segments = array();
 			foreach (self::$s_search_unindexing_queue_inserts as $va_insert_data) {
 				$va_insert_segments[] = "('" . join("','", $va_insert_data) . "')";

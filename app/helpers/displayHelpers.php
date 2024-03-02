@@ -3437,7 +3437,6 @@ function caCreateLinksFromText($pa_text, $ps_table_name, $pa_row_ids, $ps_class=
 			}
 		}
 	}
-
 	return $va_links;
 }
 # ------------------------------------------------------------------
@@ -3798,7 +3797,6 @@ function caReturnToHomeLocationControlForRelatedBundle($po_request, $ps_id_prefi
 			function caReturnToHomeLocationToggleForm{$ps_id_prefix}() {
 				jQuery('#{$ps_id_prefix}_editor_bundle_return_to_home_controls').slideToggle(250);
 			}
-
 			function caReturnToHomeLocation{$ps_id_prefix}() {
 				var interstitials = ".json_encode($interstitials).";
 				var data = { 'table': '{$primary_table}', 'id': {$primary_id}, 'policy': '{$ps_policy}', 'target': '{$target}'};
