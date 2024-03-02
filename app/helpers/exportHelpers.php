@@ -386,7 +386,7 @@ function caExportResult(RequestHTTP $request, $result, string $template, string 
 	if(method_exists($result, 'seek')) { $result->seek(0); }
 	$view->setVar('result', $result);
 	$view->setVar('t_set', caGetOption('set', $options, null));
-	$view->setVar('criteria_summary', caGetOption('criteriaSummary', $options, ''));
+	$view->setVar('criteria_summary', $criteria_summary);
 	
 	$table = $result->tableName();
 	
