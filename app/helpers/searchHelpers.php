@@ -415,155 +415,157 @@ function caSearchGetTablesForAccessPoints($pa_access_points) {
 }
 # ---------------------------------------
 /**
- * Performs search using expression for each provided search "block." A block defines a
+ * Performs search using expression for each provided search "target." A target defines a
  * search on a specific item (Eg. ca_objects, ca_entities), with or without type restriction, with
  * results rendered using a provided view. The results for all blocks are returned in an array.
  * 
  * Used by Search -> GeneralSearch to generate results.
  *
- * @param RequestHTTP $po_request
- * @param string $ps_search_expression
- * @param array $pa_blocks
- * @param array $pa_options
+ * @param RequestHTTP $request
+ * @param string $search_expression
+ * @param array $targets
+ * @param array $options
  *			generalNumItemsToShow =
  *			contexts =
  *			... any other options passed through as-is to SearchEngine::search()
  *
  * @return array|string
  */
-function caGeneralSearch($po_request, $ps_search_expression, $pa_blocks, $pa_options=null) {
-	$o_browse_config = caGetBrowseConfig();
+function caGeneralSearch(RequestHTTP $request, string $search_expression, array $targets, ?array $options=null) {
+	if (!is_array($options)) { $options = []; }
 	
-	if (!is_array($pa_options)) { $pa_options = array(); }
-	$va_access_values = caGetUserAccessValues($po_request);
-	if(is_array($va_access_values ?? null) && sizeof($va_access_values)){
-		$pa_options["checkAccess"] = $va_access_values;
+	$config = caGetBrowseConfig();
+	$browse_types = $config->getAssoc('browseTypes');
+		
+	$access_values = caGetUserAccessValues($request);
+	if(is_array($access_values ?? null) && sizeof($access_values)){
+		$options["checkAccess"] = $access_values;
 	}	
-	$vn_items_to_show_default = caGetOption('generalNumItemsToShow', $pa_options, 7);
+	$items_to_show_default = caGetOption('generalNumItemsToShow', $options, 7);
 	
-	$va_contexts = caGetOption('contexts', $pa_options, array(), array('castTo' => 'array'));
-	unset($pa_options['contexts']);
+	$contexts = caGetOption('contexts', $options, [], ['castTo' => 'array']);
+	unset($options['contexts']);
 	
-	if ($purifier = RequestHTTP::getPurifier()) { $ps_search_expression = $purifier->purify($ps_search_expression); }
+	if ($purifier = RequestHTTP::getPurifier()) { $search_expression = $purifier->purify($search_expression); }
 	
-	$va_ret = array();
-	$vn_i = 0;
-	$vn_total_cnt = 0;
+	$ret = $table_counts = [];
+	$i = $total_cnt = 0;
 	
-	$va_table_counts = array();
-	foreach($pa_blocks as $vs_block => $va_block_info) {
-		if (!($o_search = caGetSearchInstance($va_block_info['table'] ?? null))) { continue; }
-		$va_general_search_options = $va_block_info['generalSearchOptions'];
+	foreach($targets as $target) {
+		if(!is_array($target_info = $browse_types[$target] ?? null)) { continue; }
+		if (!($o_search = caGetSearchInstance($target_info['table'] ?? null))) { continue; }
+		$general_search_options = $target_info['generalSearchOptions'];
 	
-		if (!is_array($va_block_info['options'])) { $va_block_info['options'] = array(); }
-		$va_options = array_merge($pa_options, $va_block_info['options']);
+		if (!is_array($target_info['options'])) { $target_info['options'] = []; }
+		$target_options = array_merge($options, $target_info['options']);
 		
-		$ps_sort = caGetOption('sortBy', $va_general_search_options, null);
-		$va_contexts[$vs_block]->setCurrentSort($ps_sort); 
-		$ps_sort_direction = caGetOption('sortDirection', $va_general_search_options, 'asc');
-		if(!in_array($ps_sort_direction, ['asc', 'desc'])) {  $ps_sort_direction = 'asc'; }
-		$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction);
+		$sort = caGetOption('sortBy', $general_search_options, null);
+		$contexts[$target]->setCurrentSort($sort); 
 		
-		$search_expression_for_display = $va_contexts[$vs_block]->getSearchExpressionForDisplay($ps_search_expression);
+		$sort_direction = caGetOption('sortDirection', $general_search_options, 'asc');
+		if(!in_array($sort_direction, ['asc', 'desc'])) {  $sort_direction = 'asc'; }
+		$contexts[$target]->setCurrentSortDirection($sort_direction);
 		
-		$va_options['sort'] = $ps_sort;
-		$va_options['sort_direction'] = $ps_sort_direction;
+		$search_expression_for_display = $contexts[$target]->getSearchExpressionForDisplay($search_expression);
 		
-		$va_types = caGetOption('restrictToTypes', $va_block_info, array(), array('castTo' => 'array'));
+		$target_options = [
+			'sort' => $sort,
+			'sort_direction' => $sort_direction,
+			'restrictSearchToFields' => caGetOption('restrictSearchToFields', $target_info, null),
+			'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $target_info, null),
+			'rootRecordsOnly' => caGetOption('omitChildRecords', $target_info, null)
+		];
+		
+		$va_types = caGetOption('restrictToTypes', $target_info, array(), array('castTo' => 'array'));
 	
-		if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types, $va_block_info); }
-		$va_options['restrictSearchToFields'] = caGetOption('restrictSearchToFields', $va_block_info, null);
-		$va_options['excludeFieldsFromSearch'] = caGetOption('excludeFieldsFromSearch', $va_block_info, null);
-		$va_options['rootRecordsOnly'] = caGetOption('omitChildRecords', $va_block_info, null);
+		if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types, $target_info); }
 		
-		$base_criteria = caGetOption('baseCriteria', $va_block_info, null);
 		
-		if (caGetOption('dontShowChildren', $va_block_info, false)) {
-			$o_search->addResultFilter('ca_objects.parent_id', 'is', 'null');	
+		$base_criteria = caGetOption('baseCriteria', $target_info, null);
+		
+		if (caGetOption('dontShowChildren', $target_info, false)) {
+			$o_search->addResultFilter('ca_objects.parent_id', 'IS', 'null');	
 		}
 		
 		if(is_array($base_criteria)) {
-			if (!($o_browse = caGetBrowseInstance($va_block_info['table']))) { continue; }
+			if (!($o_browse = caGetBrowseInstance($target_info['table']))) { continue; }
 			foreach($base_criteria as $facet => $value){
 				$o_browse->addCriteria($facet, $value);
 			}
-			$o_browse->addCriteria("_search", [caMatchOnStem($ps_search_expression)], [$search_expression_for_display]);
-			$o_browse->execute($va_options);
-
-			$qr_res = $o_browse->getResults($va_options);
+			$o_browse->addCriteria("_search", [caMatchOnStem($search_expression)], [$search_expression_for_display]);
+			$o_browse->execute($target_options);
+			$qr_res = $o_browse->getResults($target_options);
 			
-			if($vn_i == 0) { MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $ps_search_expression); }
+			if($i == 0) { MetaTagManager::setHighlightText($o_browse->getSearchedTerms() ?? $search_expression); }
 		} else {
-			$qr_res = $o_search->search(caMatchOnStem($ps_search_expression), $va_options);
+			$qr_res = $o_search->search(caMatchOnStem($search_expression), $target_options);
 			
-			if($vn_i == 0) { MetaTagManager::setHighlightText($o_search->getSearchedTerms() ?? $ps_search_expression); }
+			if($i == 0) { MetaTagManager::setHighlightText($o_search->getSearchedTerms() ?? $search_expression); }
 		}
 		
-		$qr_res->doHighlighting($o_browse_config->get('do_highlighting'));
-		$va_contexts[$vs_block]->setSearchExpression($ps_search_expression);
-		$va_contexts[$vs_block]->setResultList($qr_res->getPrimaryKeyValues());
+		$qr_res->doHighlighting($config->get('do_highlighting'));
+		$contexts[$target]->setSearchExpression($search_expression);
+		$contexts[$target]->setResultList($qr_res->getPrimaryKeyValues());
 		
-		$va_contexts[$vs_block]->setParameter('start', 0);
-		$va_contexts[$vs_block]->saveContext();
+		$contexts[$target]->setParameter('start', 0);
+		$contexts[$target]->saveContext();
 		
 		
-		$vn_items_to_show = caGetOption('numItemsToShow', $va_general_search_options, $vn_items_to_show_default);
+		$items_to_show = caGetOption('numItemsToShow', $general_search_options, $items_to_show_default);
 		
-		$vn_count = $qr_res->numHits();
+		$count = $qr_res->numHits();
 		
-		$o_view = new View($po_request, $po_request->getViewsDirectoryPath());
+		$o_view = new View($request, $request->getViewsDirectoryPath());
 		
-		$qr_res->doHighlighting($o_browse_config->get("do_highlighting"));
+		$qr_res->doHighlighting($config->get("do_highlighting"));
 		$o_view->setVar('result', $qr_res);
-		$o_view->setVar('count', $vn_count);
-		$o_view->setVar('block', $vs_block);
-		$o_view->setVar('blockInfo', $va_block_info);
-		$o_view->setVar('blockIndex', $vn_i);
-		$o_view->setVar('numItemsToShow', $vn_items_to_show);
-		$o_view->setVar('resultCaption', caGetOption('resultCaption', $va_general_search_options, "<l>^".$va_block_info['table'].".preferred_labels</l>"));
-		$o_view->setVar('imageFormat', caGetOption('imageFormat', $va_general_search_options, "cover"));
-		$o_view->setVar('sort', $ps_sort);
-		$o_view->setVar('accessValues', $va_access_values);
-		$o_view->setVar('table', $va_block_info['table']);
-		$t_instance = Datamodel::getInstance($va_block_info['table'], true);
+		$o_view->setVar('count', $count);
+		$o_view->setVar('block', $target);
+		$o_view->setVar('blockInfo', $target_info);
+		$o_view->setVar('blockIndex', $i);
+		$o_view->setVar('numItemsToShow', $items_to_show);
+		$o_view->setVar('resultCaption', caGetOption('resultCaption', $general_search_options, "<l>^".$target_info['table'].".preferred_labels</l>"));
+		$o_view->setVar('imageFormat', caGetOption('imageFormat', $general_search_options, "cover"));
+		$o_view->setVar('sort', $sort);
+		$o_view->setVar('accessValues', $access_values);
+		$o_view->setVar('table', $target_info['table']);
+		$t_instance = Datamodel::getInstance($target_info['table'], true);
 		$o_view->setVar('primaryKey', $t_instance->primaryKey());
 	
 		
-		$o_view->setVar('sortDirection', $ps_sort_direction);
+		$o_view->setVar('sortDirection', $sort_direction);
 		
+		$o_view->setVar('search', $search_expression);
+		$o_view->setVar('cacheKey', md5($search_expression));
 		
-		$o_view->setVar('search', $ps_search_expression);
-		$o_view->setVar('cacheKey', md5($ps_search_expression));
-		
-		$vs_html = $o_view->render("Search/".$va_general_search_options["searchView"]);
-		$va_ret[$vs_block] = array(
-			'table' => $va_block_info['table'],
-			'count' => $vn_count,
-			'html' => $vs_html,
-			'displayName' => $va_block_info['displayName'],
+		$html = $o_view->render("Search/{$general_search_options['searchView']}");
+		$ret[$target] = array(
+			'table' => $target_info['table'],
+			'count' => $count,
+			'html' => $html,
+			'displayName' => $target_info['displayName'],
 			'ids' => $qr_res->getPrimaryKeyValues(),
-			'sort' => $ps_sort,
-			'sortDirection' => $ps_sort_direction
+			'sort' => $sort,
+			'sortDirection' => $sort_direction
 		);
-		$va_table_counts[$va_block_info['table']] += $vn_count;
-		$vn_total_cnt += $vn_count;
-		$vn_i++;
+		$table_counts[$target_info['table']] += $count;
+		$total_cnt += $count;
+		$i++;
 	}
-	$va_ret['_info_'] = array(
-		'totalCount' => $vn_total_cnt
+	$ret['_info_'] = array(
+		'totalCount' => $total_cnt
 	);
 	
 	// Set generic contexts for each table in generalsearch (no specific block); 
 	// used to house search history and overall counts when there is more than one block for a given table
 	foreach($va_table_counts as $vs_table => $vn_count) {
-		#$va_contexts["_generalsearch_{$vs_table}"]->setSearchExpression($ps_search_expression);
-		#$va_contexts["_generalsearch_{$vs_table}"]->setSearchHistory($vn_count);
-		#$va_contexts["_generalsearch_{$vs_table}"]->saveContext();
+		$contexts["_generalsearch_{$vs_table}"]->setSearchExpression($search_expression);
+		$contexts["_generalsearch_{$vs_table}"]->setSearchHistory($vn_count);
+		$contexts["_generalsearch_{$vs_table}"]->saveContext();
 	}
-	return $va_ret;
+	return $ret;
 }
 # ---------------------------------------
-
 /**
  * 
  *
