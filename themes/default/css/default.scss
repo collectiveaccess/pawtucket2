@@ -81,14 +81,14 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 }
 
 .fade-out {
-  opacity: 1;
-  animation-name: fade-out;
-  animation-duration: 3s;
-  animation-timing-function: linear;
-  animation-delay: 4s;
-  animation-iteration-count: 1;
-  animation-fill-mode: forwards;
-  animation-direction: forwards;
+	opacity: 1;
+	animation-name: fade-out;
+	animation-duration: 3s;
+	animation-timing-function: linear;
+	animation-delay: 4s;
+	animation-iteration-count: 1;
+	animation-fill-mode: forwards;
+	animation-direction: forwards;
 }
 
 @keyframes fade-out {
