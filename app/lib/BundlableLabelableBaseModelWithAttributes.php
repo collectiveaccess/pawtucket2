@@ -1004,6 +1004,10 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 	function isReadable($po_request, $ps_bundle_name=null) {
  		$t_user = is_a($po_request, 'ca_users') ? $po_request : $po_request->user;
  		
+ 		if($this->hasField('submission_user_id') && $t_user && ($t_user->getPrimaryKey() == $this->get('submission_user_id'))) {
+			return true;
+		}
+		
 		// Check type restrictions
  		if ((bool)$this->getAppConfig()->get('perform_type_access_checking')) {
 			$vn_type_access = $t_user->getTypeAccessLevel($this->tableName(), $this->getTypeID());
@@ -1051,6 +1055,10 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
  		$t_user = is_a($po_request, 'ca_users') ? $po_request : $po_request->user;
  		if (!$t_user) { return false; }
  		
+ 		if($this->hasField('submission_user_id') && $t_user && ($t_user->getPrimaryKey() == $this->get('submission_user_id'))) {
+			return true;
+		}
+		
  		// Check type restrictions
  		if ((bool)$this->getAppConfig()->get('perform_type_access_checking')) {
 			$vn_type_access = $t_user->getTypeAccessLevel($this->tableName(), $this->getTypeID());

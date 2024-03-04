@@ -2578,7 +2578,13 @@
 
 						}
 						if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_item->hasField('access')) {
-							$va_wheres[] = "(".$this->ops_browse_table_name.".access IN (".join(',', $pa_options['checkAccess'])."))";
+							$where = "(".$this->ops_browse_table_name.".access IN (".join(',', $pa_options['checkAccess']).")";
+							if($t_item->hasField('submission_user_id') && ($AUTH_CURRENT_USER_ID > 0)) {
+								$where .= " OR (".$this->ops_browse_table_name.".submission_user_id = ".(int)$AUTH_CURRENT_USER_ID.")";
+							}
+							$where .= ")";
+							
+							$va_wheres[] = $where;
 						}
 
 						if ((!isset($pa_options['showDeleted']) || !$pa_options['showDeleted']) && $t_item->hasField('deleted')) {

@@ -191,6 +191,9 @@ class LightboxController extends \GraphQLServices\GraphQLServiceController {
 						
 						$sort_opts = [];
 						foreach($sorts as $label => $sort) {
+							if(!$args['sort']) {
+								$args['sort'] = $sort;
+							}
 							$sort_opts[] = [
 								'label' => $label,
 								'sort' => $sort

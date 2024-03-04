@@ -571,8 +571,9 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 	 *
 	 */
 	private static function getResultsForResponse(BrowseEngine $browse, SearchResult $qr, array $browse_info, array $args) {
+		global $AUTH_CURRENT_USER_ID;
 		$ret = [];
-		
+		die("XXX");
 		$table = $browse_info['table'];
 		
 		$start = caGetOption('start', $args, 0);
@@ -608,14 +609,19 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 			
 			$data = [];
 			
+			$access_values = $user_access_values;
+			if(($submission_user_id = $qr->get('submission_user_id')) && ($submission_user_id == $AUTH_CURRENT_USER_ID)) {
+				$access_values = null;
+			}
+			
 			// TODO: only execute this if 'data' is in the query
 			if(is_array($browse_info['additionalData'])) {
 				foreach($browse_info['additionalData'] as $k => $f) {
 					if (strpos($f, '^') !== false) {
-						$v = $qr->getWithTemplate($f, ['checkAccess' => $user_access_values]);
+						$v = $qr->getWithTemplate($f, ['checkAccess' => $access_values]);
 					} else {
 						$t = caParseTagOptions($f);
-						$v = $qr->get($t['tag'], array_merge($t['options'], ['checkAccess' => $user_access_values]));
+						$v = $qr->get($t['tag'], array_merge($t['options'], ['checkAccess' => $access_values]));
 					}
 					$data[] = ['name' => $k, 'value' => $v];
 				}
@@ -644,7 +650,7 @@ class BrowseController extends \GraphQLServices\GraphQLServiceController {
 			unset($m[$id]['iiif']);
 			$ret[] = [
 				'id' => $id,
-				'title' => $qr->get("{$table}.preferred_labels", ['checkAccess' => $user_access_values]),
+				'title' => $qr->get("{$table}.preferred_labels", ['checkAccess' => $access_values]),
 				'detailUrl' => caDetailUrl($table, $id),
 				'viewerUrl' => $viewer_url,
 				'viewerClass' => $viewer_class,

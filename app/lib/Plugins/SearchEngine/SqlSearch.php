@@ -143,7 +143,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		);
 		
 		if (defined('__CA_SEARCH_IS_FOR_PUBLIC_DISPLAY__')) {
-			$this->setOption('omitPrivateIndexing', true); 
+	#		$this->setOption('omitPrivateIndexing', true); 
 		}
 	}
 	# -------------------------------------------------------
@@ -268,6 +268,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 	 *
 	 */
 	public function search($pn_subject_tablenum, $ps_search_expression, $pa_filters=array(), $po_rewritten_query=null) {
+		global $AUTH_CURRENT_USER_ID;;
 		$t = new Timer();
 		$this->_setMode('search');
 		$this->opa_filters = $pa_filters;
@@ -328,6 +329,11 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 					} else {
 						// join in primary table
 						$vs_where = "(".$va_filter['field']." ".$va_filter['operator']." ".$this->_filterValueToQueryValue($va_filter).")";
+						
+						$tmp = explode('.', $va_filter['field']);
+						if(isset($tmp[1]) && ($tmp[1] === 'access') && $AUTH_CURRENT_USER_ID && $t_instance->hasField('submission_user_id')) { 
+							$vs_where = "({$vs_where} OR ({$tmp[0]}.submission_user_id = ".((int)$AUTH_CURRENT_USER_ID)."))";
+						} 
 					}
 					
 					if (in_array('NULL', $va_filter, true)) {
@@ -408,6 +414,11 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 							$va_joins[$va_tmp[0]] = "INNER JOIN ".$va_tmp[0]." ON ".$va_tmp[0].".".$t_table->primaryKey()." = ca_sql_search_search_final.row_id";
 						}
 						$vs_where = "(".$va_filter['field']." ".$va_filter['operator']." ".$this->_filterValueToQueryValue($va_filter).")";
+					
+						$tmp = explode('.', $va_filter['field']);
+						if(isset($tmp[1]) && ($tmp[1] === 'access') && $AUTH_CURRENT_USER_ID && $t_instance->hasField('submission_user_id')) { 
+							$vs_where = "({$vs_where} OR ({$tmp[0]}.submission_user_id = ".((int)$AUTH_CURRENT_USER_ID)."))";
+						} 
 					}
 					
 					switch($va_filter['operator']) {

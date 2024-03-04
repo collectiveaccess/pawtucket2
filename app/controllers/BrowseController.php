@@ -71,6 +71,8 @@
  			$this->view->setVar("config", $this->opo_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
+ 			
+ 			$user_id = $this->request->isLoggedIn() ? $this->request->getUserID() : null;
 
  			if (!($va_browse_info = caGetOption('browseInfo', $pa_args, caGetInfoForBrowseType($ps_function)))) {
  				// invalid browse type – throw error
@@ -418,15 +420,17 @@
 							'idno' => $qr_res->get($idno_fld),
 							'detailUrl' => caDetailUrl($table, $id)
 						];
+						
+						$submitter_id = $qr_res->get('submission_user_id');
 
 						// TODO: this is hardcoded to use view "images" until we add support for multiple view types
 						if(is_array($va_browse_info['views']['images'])) {
 							foreach($va_browse_info['views']['images'] as $k => $tmpl) {
-								$d[$k] = $qr_res->getWithTemplate($tmpl, ['checkAccess' => $this->opa_access_values]);
+								$d[$k] = $qr_res->getWithTemplate($tmpl, ['checkAccess' => (($submitter_id > 0) && ($submitter_id == $user_id)) ? null : $this->opa_access_values]);
 							}
 						}
 
-						$data['hits'][] =$d;
+						$data['hits'][] = $d;
 						$c++;
 						if ($c >= $items_per_page) { break; }
 					}

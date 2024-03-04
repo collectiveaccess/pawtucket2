@@ -93,9 +93,10 @@ class DetailController extends FindController {
 		AssetLoadManager::register("maps");
 		
 		
-		
+		$user_id = null;
 		if($this->request->isLoggedIn()) {
 			$this->view->setVar('key', GraphQLServices\GraphQLServiceController::encodeJWTRefresh(['id' => $this->request->user->getPrimaryKey()]));
+			$user_id = $this->request->getUserID();
 		}
 		
 		//
@@ -205,7 +206,8 @@ class DetailController extends FindController {
 		#
 		# Enforce access control
 		#
-		if(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
+		$user_is_submitter = ($user_id && $t_subject->hasField('submission_user_id') && $t_subject->get('submission_user_id') == $user_id);
+		if(!$user_is_submitter && is_array($this->opa_access_values) && sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
 			$this->notification->addNotification(_t("This item is not available for view"), "message");
 			$this->response->setRedirect(caNavUrl("", "", "", ""));
 			return;
@@ -255,7 +257,7 @@ class DetailController extends FindController {
 				$t_representation = Datamodel::getInstance("ca_object_representations", true);
 				$t_representation->load($pn_representation_id);
 			}else{
-				$t_representation = $t_subject->getPrimaryRepresentationInstance(array("checkAccess" => $this->opa_access_values));
+				$t_representation = $t_subject->getPrimaryRepresentationInstance(array("checkAccess" => $user_is_submitter ? null : $this->opa_access_values));
 			}
 			if ($t_representation) {
 				$this->view->setVar("t_representation", $t_representation);
@@ -278,7 +280,7 @@ class DetailController extends FindController {
 			}
 		
 # --- PASS ALL REPS
-			$va_rep_ids = $t_subject->get("ca_object_representations.representation_id", array("returnAsArray" => true, "checkAccess" => $this->opa_access_values, "filterNonPrimaryRepresentations" => false));
+			$va_rep_ids = $t_subject->get("ca_object_representations.representation_id", array("returnAsArray" => true, "checkAccess" => $user_is_submitter ? null : $this->opa_access_values, "filterNonPrimaryRepresentations" => false));
 			$va_reps = array();
 			if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
 				$qr_reps = ca_object_representations::createResultSet($va_rep_ids);
@@ -516,7 +518,7 @@ class DetailController extends FindController {
 				break;
 			default:
 				Session::setVar($t_subject->tableName()."_last_detail_id", $t_subject->getPrimaryKey());
-				caDoTemplateTagSubstitution($this->view, $t_subject, $vs_path, ['checkAccess' => $this->opa_access_values]);
+				caDoTemplateTagSubstitution($this->view, $t_subject, $vs_path, ['checkAccess' => $user_is_submitter ? null : $this->opa_access_values]);
 				$this->render($vs_path);
 				break;
 		}
