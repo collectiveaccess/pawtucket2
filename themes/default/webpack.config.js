@@ -49,7 +49,7 @@ module.exports = {
         use: ['style-loader', 'css-loader', 'sass-loader']
       },
       { 
-      	test: /\.(png|eot|ttf|svg|otf|gif)$/, 
+      	test: /\.(png|svg|gif)$/, 
         use: [{
             loader: "url-loader",
             options: { "limit": 100000 }
