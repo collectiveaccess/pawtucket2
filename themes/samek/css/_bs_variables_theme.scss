@@ -1,0 +1,26 @@
+// Quickly modify global styling by enabling or disabling optional features.
+
+$primary:       $gray-900;
+$secondary:     $gray-600 !default;
+$light:         $gray-100 !default;
+$dark:          $gray-700 !default; /* used for .bg-dark style */
+
+$samek-accent: #FFA300;
+$samek-cool-gray: #D9D9D6;
+$samek-dark-cool-gray: #A7A8AA;
+
+$bucknell-blue: #003865;
+$bucknell-orange: #E87513;
+$bucknell-secondary-blue: #007AAE;
+$bucknell-secondary-blue-2: #59CBE8;
+
+
+/* font */
+$font-family-sans-serif: "Lato", "Noto Sans" !default;
+
+/* links */
+$link-color: $primary;
+
+/* nav bar */
+$navbar-light-hover-color: $primary;
+$navbar-light-active-color: $primary;
