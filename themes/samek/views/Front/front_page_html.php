@@ -42,7 +42,34 @@
  	$set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'medium']) : [];
 ?>
 
-<div class="container-xl">
+<div class="">
+	<form class="pb-3" role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
+		<label for="heroSearchInput" class="form-label display-6">Search the Collection</label>
+		<div class="input-group pb-2">
+			<input name="search" type="text" class="form-control me-1" id="heroSearchInput" placeholder="Search" aria-label="Search" aria-label="Search Bar">
+			<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
+		</div>
+	</form>
+
+	<div class="row">
+		<div class="masonry-container">
+			<?php
+				foreach($set_items as $item) {	
+					$item = array_shift($item);
+					// print_R($item);
+			?>
+				<div class="masonry-item">
+					<?= caDetailLink($this->request, $item['representation_tag'], 'link-text', 'ca_objects', $item['row_id']); ?>
+					<?= caDetailLink($this->request, $item['name'], 'item-overlay-text', 'ca_objects', $item['row_id']); ?>
+				</div>
+			<?php
+				}
+			?>
+		</div>
+	</div>
+</div>
+
+<!-- <div class="container-xl">
 	<form class="pb-3" role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
 		<div class="input-group pb-1">
 			<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
@@ -51,7 +78,7 @@
 		</div>
 		<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
 	</form>
-</div>
+</div> -->
 
 
 <!-- <div class="container-flex">
@@ -109,25 +136,6 @@
 	// print $this->render("Front/featured_gallery_html.php");
 
 ?>
-
-<div class="container-xl">
-	<div class="row">
-		<div class="masonry-container">
-			<?php
-				foreach($set_items as $item) {	
-					$item = array_shift($item);
-					// print_R($item);
-			?>
-				<div class="masonry-item">
-					<?= caDetailLink($this->request, $item['representation_tag'], 'link-text', 'ca_objects', $item['row_id']); ?>
-					<?= caDetailLink($this->request, $item['name'], 'item-overlay-text', 'ca_objects', $item['row_id']); ?>
-				</div>
-			<?php
-				}
-			?>
-		</div>
-	</div>
-</div>
 
 <!-- <div class="container">
 	<div class="row justify-content-center text-center">
