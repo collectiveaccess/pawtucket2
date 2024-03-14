@@ -1,0 +1,133 @@
+// @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@200..700&display=swap');
+
+$samek-accent: #FFA300;
+
+/* General */
+h2, h3, h4, h5, h6 {
+ color: $samek-accent;
+}
+
+/* ------------------------- Front ------------------------- */
+.parallax {
+    position: relative;
+    background-image: url("../assets/graphics/parallax_img.jpg");
+
+    /* Full height */
+    height: 90vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: url("../assets/graphics/parallax_img.jpg");
+    }
+}
+
+.carousel-item a img{
+    height: 500px !important;
+    object-fit: contain;
+}
+.carousel-caption{
+    position: unset;
+}
+
+
+nav{
+    min-height: 154px;
+    height: 100%;
+
+    .dropdown-toggle::after{
+        display: none;
+    }
+
+    .dropdown-menu{
+        width: 200px;
+        border: 1px solid #000;
+        padding: 0;
+    }
+
+    .dropdown-item{
+        padding: 20px;
+        white-space: normal;
+        border-bottom: 1px solid #000;
+    }
+
+    .nav-link, .dropdown-item a{
+        font-size: 21.42px !important;
+        font-weight: 300;
+        line-height: 21.42px;
+        text-decoration: none;
+    }
+}
+
+
+.subnav{
+    min-height: 80px !important;
+    height: 80px !important;
+
+    .nav-link, .dropdown-item a {
+        padding: 20px;
+        font-size: 18px !important;
+        font-weight: 300;
+        line-height: 21.42px;
+        text-decoration: none;
+    }
+
+    .dropdown-header{
+        white-space: normal;
+        border-bottom: 1px solid #000;
+    }
+
+    .home-link{
+        padding-left: 0 !important;
+    }
+}
+
+
+.masonry-container {
+    column-count: 4;
+    column-gap: 16px;
+
+    position: relative;
+    overflow: hidden;
+}
+
+.masonry-item {
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 16px;
+}
+
+.masonry-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+// .item-overlay-text {
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+//     background: rgba(0, 0, 0, 0.5);
+//     /* Semi-transparent background, adjust as needed */
+//     color: #fff;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     opacity: 0;
+//     /* Start fully transparent */
+//     transition: opacity 0.5s ease;
+//     /* Transition effect for fading in */
+// }
+
+// .masonry-item:hover .item-overlay-text {
+//     opacity: 1;
+//     /* Fade in on hover */
+// }
