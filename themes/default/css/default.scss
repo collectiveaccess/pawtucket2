@@ -95,8 +95,13 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
   0% {
     opacity: 1;
   }
+  95% {
+    opacity: 0;
+  }
   100% {
     opacity: 0;
+    height: 0px;
+    padding:0px !important;
   }
 }
 
@@ -114,7 +119,7 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 }
 
 /* ------------------------- browse results ------------------------- */
-#browseResultsContainer{
+#browseResultsContainer, .resultBlock{
 	.card{
 		img.object-fit-cover{
 			object-position:middle center;

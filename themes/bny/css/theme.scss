@@ -1,0 +1,99 @@
+@font-face {
+  font-family:BourtonHand;
+  src:url("fonts/BourtonHandBase.otf") format("opentype");
+}
+@font-face {
+  font-family:GTPressuraRegular;
+  src:url("fonts/GT-Pressura-Regular.woff"),
+  	url("fonts/GT-Pressura-Regular.otf") format("opentype");
+}
+@font-face {
+  font-family:GTPressuraLight;
+  src:url("fonts/GT-Pressura-Light.woff"),
+  	url("fonts/GT-Pressura-Light.woff") format("opentype");
+}
+@font-face {
+  font-family:GTPressuraMonoRegular;
+  src:url("fonts/GT-Pressura-Mono-Regular.woff"),
+  	url("fonts/GT-Pressura-Mono-Regular.otf") format("opentype");
+}
+//@font-face {
+//  font-family:GTPressuraMonoLight;
+//  src:url("fonts/GTPressuraMonoLight.2692ab.otf") format("opentype")
+//}
+a{
+	text-underline-offset: auto;
+}
+$body-bg: #F9F9F7;
+$primary: #f43f43; /* red */
+$dark: #213140; /* navy */
+
+.btn-primary, .btn-primary:hover{
+	color:#FFF;
+	text-transform:uppercase;
+	letter-spacing: .0625rem;
+}
+.fw-medium{
+	font-family:"GTPressuraRegular";
+}
+.bg-body-tertiary, .bg-body-tertiary a, a.bg-body-tertiary{
+	color:#FFF !important;
+}
+a.text-light:hover{
+	color:#f43f43 !important;
+}
+/* ------------------------- Navbar ------------------------- */
+nav{
+	.navbar-brand{
+		width:248px;
+	}
+
+	.nav-link{
+		font-family: "GTPressuraMonoRegular";
+		text-transform:uppercase;
+		letter-spacing: .001em;
+	}
+}
+/* ------------------------- Footer ------------------------- */
+footer{
+	img{
+		width:248px;
+		height:auto;
+	}
+	border-bottom: 1.0625rem solid #f43;
+}
+/* ------------------------- Front ------------------------- */
+.parallax {
+    position: relative;
+    background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, .3)), url("../assets/graphics/front.jpeg");
+
+    /* Full height */
+    height: 100vh;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .hero1, .hero2, .hero3 {
+        background-image: linear-gradient(to bottom, rgba(0, 0, 0, .3), rgba(0, 0, 0, .3)), url("../assets/graphics/front.jpeg");
+    }
+}
+
+.detail{
+	.btn-white{
+		background-color:$body-bg;
+	}
+}
+/* ------------------------- Detail ------------------------- */
+.detail{
+	dt{
+		margin-top: 1rem;
+  		font-size: 1.125rem;
+	}
+	dd{
+		line-height:1.25rem;
+		margin-bottom:.25rem;
+	}
+}

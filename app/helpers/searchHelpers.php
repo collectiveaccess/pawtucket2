@@ -456,8 +456,6 @@ function caGeneralSearch(RequestHTTP $request, string $search_expression, array 
 		if (!($o_search = caGetSearchInstance($target_info['table'] ?? null))) { continue; }
 		$general_search_options = $target_info['generalSearchOptions'];
 	
-		if (!is_array($target_info['options'])) { $target_info['options'] = []; }
-		$target_options = array_merge($options, $target_info['options']);
 		
 		$sort = caGetOption('sortBy', $general_search_options, null);
 		$contexts[$target]->setCurrentSort($sort); 
@@ -475,7 +473,8 @@ function caGeneralSearch(RequestHTTP $request, string $search_expression, array 
 			'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $target_info, null),
 			'rootRecordsOnly' => caGetOption('omitChildRecords', $target_info, null)
 		];
-		
+		$target_options = array_merge($options, $target_options);
+			
 		$va_types = caGetOption('restrictToTypes', $target_info, array(), array('castTo' => 'array'));
 	
 		if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types, $target_info); }

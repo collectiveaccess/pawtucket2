@@ -54,7 +54,7 @@ if($show_nav){
 ?>
 	<div class="row">
 		<div class="col-md-12">
-			<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
+			<H1 class="fs-3 fw-medium text-transform-none">{{{^ca_objects.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_objects.type_id|ca_objects.idno"><div class="fw-medium mb-3"><ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef><ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef></div></ifdef>}}}
 			<hr class="mb-0">
 		</div>
@@ -85,61 +85,107 @@ if($show_nav){
 	}
 ?>
 
-	<div class="row">
+	<div class="row mb-5">
 {{{<ifdef code="ca_object_representations.media.large">
 		<div class="col-md-6 justify-content-center">
 			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
 		</div>
 </ifdef>}}}
 		<div class="col-md-6">
-			<div class="bg-light py-3 px-4 mb-3">
+			<div class="bg-light pt-1 pb-3 px-4 mb-3">
 				<div class="row">
 					<div class="col">				
 						{{{<dl class="mb-0">
-							<ifdef code="ca_objects.date">
+							<ifdef code="ca_objects.creation_date">
 								<dt><?= _t('Date'); ?></dt>
-								<dd>^ca_objects.date.dates_value (^ca_objects.date.dates_type)</dd>
+								<dd>^ca_objects.creation_date</dd>
 							</ifdef>
-		
-							<ifdef code="ca_objects.colorType">
-								<dt><?= _t('Color'); ?></dt>
-								<dd>^ca_objects.colorType</dd>
+							<ifdef code="ca_objects.plan">
+								<dt><?= _t('Plan Type'); ?></dt>
+								<dd>^ca_objects.plan</dd>
 							</ifdef>
-							<ifdef code="ca_objects.inscription">
-								<dt><?= _t('Inscription'); ?></dt>
-								<dd>^ca_objects.inscription</dd>
-							</ifdef>
-							<ifdef code="ca_objects.work_description">
-								<dt><?= _t('Description'); ?></dt>
-								<dd>
-									^ca_objects.work_description
-								</dd>
-							</ifdef>
-						</dl>}}}
-						
-						<?= $this->render("Details/snippets/related_entities_by_rel_type_html.php"); ?>
+							</dl>}}}
+<?php
+							$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => 1, "checkAccess" => $va_access_values));
+							if(is_array($va_entities) && sizeof($va_entities)){
+?>
+								<dl class="mb-0">
+<?php
+								$va_entities_by_type = array();
+								foreach($va_entities as $va_entity_info){
+									$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caNavLink($this->request, $va_entity_info["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_entity_info["entity_id"]));
+								}
+								foreach($va_entities_by_type as $vs_type => $va_entity_links){
+									print "<dt class='text-capitalize'>".$vs_type."</dt><dd>".join(", ", $va_entity_links)."</dd>";
+								}
+?>
+								</dl>
+<?php
+							}
 
+?>						
 						{{{<dl class="mb-0">
+							<ifdef code="ca_objects.description">
+								<dt><?= _t('Description'); ?></dt>
+								<dd>^ca_objects.description</dd>
+							</ifdef>
 							<ifcount code="ca_collections" min="1">
 								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
 								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
 							</ifcount>
-				
-							<ifcount code="ca_entities" min="1">
-								<dt><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
-								<unit relativeTo="ca_entities" delimiter=""><dd><l>^ca_entities.preferred_labels</l> (^relationship_typename)</dd></unit>
-							</ifcount>
-
-							<ifcount code="ca_occurrences" min="1">
-								<dt><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-								<unit relativeTo="ca_occurrences" delimiter=""><dd><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</dd></unit>
-							</ifcount>
-
-							<ifcount code="ca_places" min="1">
-								<dt><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-								<unit relativeTo="ca_places" delimiter=""><dd><l>^ca_places.preferred_labels</l> (^relationship_typename)</dd></unit>
-							</ifcount>
+							<ifdef code="ca_objects.navalClassification">
+								<dt><?= _t('Naval ID'); ?></dt>
+								<dd>^ca_objects.navalClassification.navalClassNumber</dd>
+							</ifdef>
+							<ifdef code="ca_objects.photographer">
+								<dt><?= _t('Photographer'); ?></dt>
+								<dd>^ca_objects.photographer</dd>
+							</ifdef>
+							<ifdef code="ca_objects.yardBusiness">
+								<dt><?= _t('Yard Business'); ?></dt>
+								<dd>^ca_objects.yardBusiness</dd>
+							</ifdef>
+							<ifdef code="ca_objects.copyright">
+								<dt><?= _t('Copyright'); ?></dt>
+								<dd>^ca_objects.copyright</dd>
+							</ifdef>
+							<ifdef code="ca_objects.use">
+								<dt><?= _t('Use'); ?></dt>
+								<dd>^ca_objects.use</dd>
+							</ifdef>
 						</dl>}}}
+				<?php
+					if($t_object->get("ca_objects.discipline")){
+						if($links = caGetBrowseLinks($t_object, 'ca_objects.discipline', ['template' => '<l>^ca_objects.discipline</l>', 'linkTemplate' => '^LINK'])) {
+				?>
+							<dl class="mb-0">
+								<dt>Keywords</dt>
+								<dd><?= join(", ", $links); ?></dd>
+							</dl>
+				<?php
+						}
+					}
+					if($t_object->get("ca_list_items")){
+						if($links = caGetBrowseLinks($t_object, 'ca_list_items', ['template' => '<l>^ca_list_items.preferred_labels</l>', 'linkTemplate' => '^LINK'])) {
+				?>
+							<dl class="mb-0">
+								<dt>Subject<?= (sizeof($links) > 1 ) ? "s" : ""; ?></dt>
+								<dd><?= join(", ", $links); ?></dd>
+							</dl>
+				<?php
+						}
+					}
+					if($t_object->get("ca_places", array("restrictToRelationshipTypes" => "building"))){
+						if($links = caGetBrowseLinks($t_object, 'ca_places', ['restrictToRelationshipTypes' => 'building', 'template' => '<l>^ca_places.preferred_labels</l>', 'linkTemplate' => '^LINK'])) {
+				?>
+							<dl class="mb-0">
+								<dt>Building<?= (sizeof($links) > 1 ) ? "s" : ""; ?></dt>
+								<dd><?= join(", ", $links); ?></dd>
+							</dl>
+				<?php
+						}
+					}
+				?>
 						
 					</div>
 				</div>
@@ -147,21 +193,3 @@ if($show_nav){
 			<div id="map" class="py-3">{{{map}}}</div>
 		</div>
 	</div>
-	{{{<ifcount code="ca_entities" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_entities" min="1" max="1"><?= _t('Related Person'); ?></ifcount><ifcount code="ca_entities" min="2"><?= _t('Related People'); ?></ifcount></dt>
-			<unit relativeTo="ca_entities" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 px-3 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_entities.preferred_labels<br>^relationship_typename</l></dd></unit>		
-		</dl>
-	</ifcount>}}}
-	{{{<ifcount code="ca_occurrences" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_occurrences" min="1" max="1"><?= _t('Related Occurrence'); ?></ifcount><ifcount code="ca_occurrences" min="2"><?= _t('Related Occurrences'); ?></ifcount></dt>
-			<unit relativeTo="ca_occurrences" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 px-3 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_occurrences.preferred_labels<br>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}}
-	{{{<ifcount code="ca_places" min="1">
-		<dl class="row">
-			<dt class="col-12 mt-3 mb-2"><ifcount code="ca_places" min="1" max="1"><?= _t('Related Place'); ?></ifcount><ifcount code="ca_places" min="2"><?= _t('Related Places'); ?></ifcount></dt>
-			<unit relativeTo="ca_places" delimiter=""><dd class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4 text-center"><l class="pt-3 pb-4 px-3 d-flex align-items-center justify-content-center bg-body-tertiary h-100 w-100 text-black">^ca_places.preferred_labels<br>^relationship_typename</l></dd></unit>
-		</dl>
-	</ifcount>}}}
