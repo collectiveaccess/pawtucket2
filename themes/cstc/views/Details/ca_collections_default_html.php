@@ -34,7 +34,7 @@ $comments_enabled = $this->getVar("commentsEnabled");
 $pdf_enabled = 		$this->getVar("pdfEnabled");
 $inquire_enabled = 	$this->getVar("inquireEnabled");
 $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
-$id =				$t_item->get('ca_places.place_id');
+$id =				$t_item->get('ca_collections.collection_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
 

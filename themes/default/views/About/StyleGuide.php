@@ -95,4 +95,13 @@
 			</dl>
 		</div>
 	</div>
+	<div class="row align-items-center mb-5">
+		<div class="col-md-6">
+			<H2>Vertically centered columns</H2>
+			Assign row class .align-items-center
+		</div>
+		<div class="col-md-6 img-fluid">
+			<?= caGetThemeGraphic($this->request, 'hero_1.jpg', array("alt" => "example image")); ?>
+		</div>
+	</div>
 </div>

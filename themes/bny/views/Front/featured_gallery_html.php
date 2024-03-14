@@ -38,24 +38,24 @@
 			<div class="col">
 				<div class="container">
 					<div class="row justify-content-center">
-						<div class="col-sm-12 col-md-10"> 
+						<div class="col-sm-12"> 
 							<H2><?php print $section_name; ?></H2>
-							<div class="row">
+							<div class="row gx-5 align-items-center">
 	<?php
 								$va_set = $va_sets[0];
 								$vn_set_id = $va_set["set_id"];
 								$va_set_first_items = $t_set->getPrimaryItemsFromSets(array($vn_set_id), array("version" => "large", "checkAccess" => $va_access_values));
 								$t_set->load($vn_set_id);
 								$va_first_item = array_shift($va_set_first_items[$vn_set_id]);
-								print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id)."</div>";
-								print "<div class='col-sm-6'>".caNavLink($this->request, $va_set["name"], "fs-4 fw-medium", "", "Gallery", $vn_set_id);
+								print "<div class='col-sm-5 img-fluid'>".caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id)."</div>";
+								print "<div class='col-sm-7'>".caNavLink($this->request, $va_set["name"], "fs-4 fw-medium", "", "Gallery", $vn_set_id);
 								if($vs_desc = $t_set->get("ca_sets.set_description")){
 									if(mb_strlen($vs_desc) > 400){
 										$vs_desc = mb_substr($vs_desc, 0, 400)."...";						
 									}
 									print "<div class='py-2 fs-4'>".$vs_desc."</div>";
 								}
-								print "<div class='text-center py-2'>".caNavLink($this->request, "View All ".ucwords($gallery_plural_name)." <i class='bi bi-arrow-right'></i>", "btn btn-primary", "", "Gallery", "Index")."</div>";
+								print "<div class='text-center py-2'>".caNavLink($this->request, "All ".ucwords($gallery_plural_name), "btn btn-primary", "", "Gallery", "Index")."</div>";
 								print "</div>";
 								
 	?>
