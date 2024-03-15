@@ -47,7 +47,7 @@ if($this->request->isLoggedIn()){
 	$user_links .= "<li>".caNavLink($this->request, _t('Logout'), 'dropdown-item', '', 'LoginReg', 'Logout', array())."</li>";
 	$user_links .= "</ul></li>";
 } else {	
-	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $user_links = "<li class='nav-item'>".caNavlink($this->request, _t('Login'), "nav-link".((strToLower($this->request->getController()) == "loginreg") ? " active" : ""), "", "LoginReg", "LoginForm", "", ((strToLower($this->request->getController()) == "loginreg") ? array("aria-current" => "page") : null))."</li>"; }
+	if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $user_links = "<li class='dropdown-item'>".caNavlink($this->request, _t('Login'), ((strToLower($this->request->getController()) == "loginreg") ? " active" : ""), "", "LoginReg", "LoginForm", "", ((strToLower($this->request->getController()) == "loginreg") ? array("aria-current" => "page") : null))."</li>"; }
 }
 
 ?><!DOCTYPE html>
@@ -67,31 +67,35 @@ if($this->request->isLoggedIn()){
 
 <body id="pawtucketApp" class="d-flex flex-column h-100">
 	
-	<nav class="navbar navbar-expand-sm">
-		<div class="container">
-			<a class="me-5" href="https://museum.bucknell.edu/"><?= caGetThemeGraphic($this->request, 'samek_logo.png', array("alt" => "Logo", "role" => "banner")) ?></a>
+	<div class="container">
+	
+		<nav class="navbar navbar-expand-lg">
+		
+			<a class="navbar-brand  img-fluid" href="https://museum.bucknell.edu/"><?= caGetThemeGraphic($this->request, 'samek_logo.png', array("alt" => "Logo", "role" => "banner")) ?></a>
 
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 
 			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-flex flex-wrap">
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visit</a>
+						<a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Visit</a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/plan-a-visit/">Plan A Visit</a></li>
-							<ul class="dropdown-menu"><a>About</a>
-								<li class="dropdown-item"><a href="https://museum.bucknell.edu/about/about-us/">Mission</a></li>
-								<li class="dropdown-item"><a href="https://museum.bucknell.edu/our-spaces/">Our Spaces</a></li>
-								<li class="dropdown-item"><a href="https://museum.bucknell.edu/contact-and-staff/">Contact and Staff</a></li>
-							</ul>
+							<li class="dropdown-item dropdown position-relative"><a class="secondary">About</a>
+								<ul class="dropdown-menu dropdown-menu-sub">
+									<li class="dropdown-item"><a href="https://museum.bucknell.edu/about/about-us/">Mission</a></li>
+									<li class="dropdown-item"><a href="https://museum.bucknell.edu/our-spaces/">Our Spaces</a></li>
+									<li class="dropdown-item"><a href="https://museum.bucknell.edu/contact-and-staff/">Contact and Staff</a></li>
+								</ul>
+							</li>
 						</ul>
 					</li>
 
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Exhibitions</a>
+						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Exhibitions</a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/category/upcoming-exhibitions/">Upcoming Exhibitions</a></li>
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/category/current-exhibitions/">Current Exhibitions</a></li>
@@ -101,13 +105,14 @@ if($this->request->isLoggedIn()){
 					</li>
 
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Collection</a>
+						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Collection</a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item">
-								<?= caNavlink($this->request, _t('Search The Collection'), ((strToLower($this->request->getController()) == "") ? " active" : ""), "", "", "", "", ((strToLower($this->request->getController()) == "") ? array("aria-current" => "page") : null)); ?>
+								<?= caNavlink($this->request, _t('Search the Collection'), ((strToLower($this->request->getController()) == "") ? " active" : ""), "", "", "", "", ((strToLower($this->request->getController()) == "") ? array("aria-current" => "page") : null)); ?>
 							</li>
 							<li class="dropdown-item">
-								<?= caNavlink($this->request, _t('About the Collection'), ((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
+								<a href="https://museum.bucknell.edu/collection-2/">About the Collection</a>
+								<?php #print caNavlink($this->request, _t('About the Collection'), ((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 							</li>
 							<li class="dropdown-item">
 								<?= caNavlink($this->request, _t('Browse'), ((strToLower($this->request->getController()) == "browse") ? " active" : ""), "", "Browse", "objects", "", ((strToLower($this->request->getController()) == "browse") ? array("aria-current" => "page") : null)); ?>
@@ -119,7 +124,7 @@ if($this->request->isLoggedIn()){
 								<?= caNavlink($this->request, _t('Contact'), ((strToLower($this->request->getController()) == "contact") ? " active" : ""), "", "Contact", "Form", "", ((strToLower($this->request->getController()) == "contact") ? array("aria-current" => "page") : null)); ?>
 							</li>
 							<li class="dropdown-item">
-								<?= caNavlink($this->request, _t('Advanced search'), ((strToLower($this->request->getController()) == "Search") ? " active" : ""), "", "Search", "advanced/objects", "", ((strToLower($this->request->getController()) == "Search") ? array("aria-current" => "page") : null)); ?>
+								<?= caNavlink($this->request, _t('Advanced Search'), ((strToLower($this->request->getController()) == "Search") ? " active" : ""), "", "Search", "advanced/objects", "", ((strToLower($this->request->getController()) == "Search") ? array("aria-current" => "page") : null)); ?>
 							</li>
 
 							<?php
@@ -131,7 +136,7 @@ if($this->request->isLoggedIn()){
 					</li>
 
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Events</a>
+						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Events</a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/category/upcoming-events/">Upcoming Events</a></li>
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/category/past-events/">Past Events</a></li>
@@ -141,7 +146,7 @@ if($this->request->isLoggedIn()){
 					</li>
 
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Engage</a>
+						<a class="nav-link dropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Engage</a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/category/samek-news/">Samek Voices</a></li>
 							<li class="dropdown-item"><a href="https://museum.bucknell.edu/2020/03/27/bucknell-community-art-wall-2/">Community Art Wall</a></li>
@@ -152,13 +157,13 @@ if($this->request->isLoggedIn()){
 					</li>
 				</ul>
 			</div>
-		</div>
-	</nav>
+		</nav>
+	</div>
 
 	<main <?= caGetPageCSSClasses(); ?>>
 
 <?php
 	if(strToLower($this->request->getController()) != "front"){
-		print "<div class='container-xl pt-4'>";
+		print "<div class='container'>";
 	}
 ?>
