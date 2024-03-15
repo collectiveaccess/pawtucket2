@@ -56,7 +56,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
 	
-	<meta property="og:url" content="<?php print $this->request->config->get("site_host").$_SERVER[REQUEST_URI]; ?>" />
+	<meta property="og:url" content="<?php print $this->request->config->get("site_host").$_SERVER['REQUEST_URI']; ?>" />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content="<?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?>" />
 	<meta property="og:description" content="" />
