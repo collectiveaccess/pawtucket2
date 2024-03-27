@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2023 Whirl-i-Gig
+ * Copyright 2013-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -37,9 +37,16 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_object->get('ca_objects.object_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+$media_options = $this->getVar('media_options') ?? [];
+
+$media_options = array_merge($media_options, [
+	'id' => 'mediaviewer',
+	'urlPath' => $this->request->getThemeUrlPath()
+]);
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
+	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
 <?php
 if($show_nav){
@@ -86,11 +93,11 @@ if($show_nav){
 ?>
 
 	<div class="row">
-{{{<ifdef code="ca_object_representations.media.large">
 		<div class="col-md-6 justify-content-center">
-			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
+			<div class='object-fit-contain'>
+				{{{media_viewer}}}
+			</div>
 		</div>
-</ifdef>}}}
 		<div class="col-md-6">
 			<div class="bg-light py-3 px-4 mb-3">
 				<div class="row">
@@ -144,7 +151,7 @@ if($show_nav){
 					</div>
 				</div>
 			</div>
-			<div id="map" class="py-3">{{{map}}}</div>
+			<div id="map" class="map py-3">{{{map}}}</div>
 		</div>
 	</div>
 	{{{<ifcount code="ca_entities" min="1">

@@ -1,13 +1,13 @@
 <?php
-/** ---------------------------------------------------------------------
- * app/lib/Media/IMediaViewer.php :
+/* ----------------------------------------------------------------------
+ * themes/default/views/Details/representation_viewer_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2024 Whirl-i-Gig
+ * Copyright 2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,14 +23,16 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
- * @package CollectiveAccess
- * @subpackage Media
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
- *
  * ----------------------------------------------------------------------
  */
-namespace CA\MediaViewers;
-
-interface IMediaViewer {
-	static public function getViewerHTML(\RequestHTTP $request, string $identifier, ?array $data=null, ?array $options=null);
-}
+$media_list = $this->getVar('media_list');
+$media_viewer = $this->getVar('media_viewer');
+?>
+<?= $media_viewer; ?>
+<?php
+	$media_icons = [];
+	foreach($media_list as $i => $m) {
+		$media_icons[] = "$i<a href='#' onclick='window.mediaViewerManager.render(\"mediaviewer\", {$i});'>".caHTMLImage($m['icon'], ['width' => '72', 'height' => '72', 'class' => 'mediaIcon']).'</a>';
+	}
+?>
+<div class='mediaSelector' style="width: 500px; height: 72px;"><?= join(" ", $media_icons); ?></div>

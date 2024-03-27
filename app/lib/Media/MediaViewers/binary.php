@@ -1,6 +1,6 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/lib/Media/MediaViewers/ThreeJS.php :
+ * app/lib/Media/MediaViewers/Binary.php :
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -29,10 +29,12 @@
  *
  * ----------------------------------------------------------------------
  */
+namespace CA\MediaViewers;
+
 require_once(__CA_LIB_DIR__.'/Media/IMediaViewer.php');
 require_once(__CA_LIB_DIR__.'/Media/BaseMediaViewer.php');
 
-class ThreeJS extends BaseMediaViewer implements IMediaViewer {
+class Binary extends BaseMediaViewer implements IMediaViewer {
 	# -------------------------------------------------------
 	/**
 	 *

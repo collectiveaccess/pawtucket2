@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2017 Whirl-i-Gig
+ * Copyright 2011-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
-include_once(__CA_LIB_DIR__."/Search/BaseSearchResult.php");
+require_once(__CA_LIB_DIR__."/Search/BaseSearchResult.php");
 
 class ObjectRepresentationSearchResult extends BaseSearchResult {
 	# -------------------------------------
@@ -44,31 +44,6 @@ class ObjectRepresentationSearchResult extends BaseSearchResult {
 	public function __construct() {
 		parent::__construct();
 	}
-	
- 	# ------------------------------------------------------
- 	/**
- 	 * 
- 	 *
- 	 * @param RequestHTTP $po_request
- 	 * @param array $pa_options
- 	 * @param array $pa_additional_display_options
- 	 * @return string HTML output
- 	 */
- 	public function getRepresentationViewerHTMLBundle($po_request, $pa_options=null, $pa_additional_display_options=null) {
- 		return caRepresentationViewerHTMLBundle($this, $po_request, $pa_options, $pa_additional_display_options);
- 	}
- 	# ------------------------------------------------------
- 	/**
- 	 * 
- 	 *
- 	 * @param RequestHTTP $po_request The current request
- 	 * @param RepresentableBaseModel $pt_subject A model instance loaded with the subject (the record the media is shown in the context of. Eg. if a representation is shown for an object this is an instance for that object record)
- 	 * @param array $pa_options See caRepresentationViewerHTMLBundles in DisplayHelpers
- 	 * @return string HTML output
- 	 */
- 	public function getRepresentationViewerHTMLBundles($po_request, $pt_subject, $pa_options=null) {
- 		return caRepresentationViewerHTMLBundles($po_request, $this, $pt_subject, $pa_options);
- 	}
  	# ------------------------------------------------------
  	# Multifiles
  	# ------------------------------------------------------
@@ -159,7 +134,6 @@ class ObjectRepresentationSearchResult extends BaseSearchResult {
  		}
  		return 0;
  	}
- 	
 	# ------------------------------------------------------------------
 	/**
 	 * Checks if currently loaded representation is of specified media class. Valid media classes are 'image', 'audio', 'video' and 'document'

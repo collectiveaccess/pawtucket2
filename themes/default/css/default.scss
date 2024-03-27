@@ -135,8 +135,13 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 			width:100%;
 		}
 	}
-	#map{
-		height:250px;
+	.map{
+		height:300px;
+	}
+	
+	.mediaIcon {
+		width: 72px;
+		height: 72px;
 	}
 }
 
