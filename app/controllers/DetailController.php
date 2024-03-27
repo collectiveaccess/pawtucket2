@@ -341,32 +341,39 @@ class DetailController extends FindController {
 			}
 			
 			$media_display_config = caGetMediaDisplayConfig();
-			$this->view->setVar('alwaysUseCloverViewer', (bool)$media_display_config->get('always_use_clover_viewer'));
 			
-			$this->view->setVar('representationViewerPrimaryOnly', $rep_viewer_primary_only = caGetOption('representationViewerPrimaryOnly', $options, false));
-			$this->view->setVar('representationViewer', 
-				caRepresentationViewer(
-					$this->request, 
-					$t_subject, 
-					$t_subject,
-					array_merge($options, $media_display_info, 
-						[
-							'display' => 'detail',
-							'showAnnotations' => true, 
-							'defaultAnnotationID' => $default_annotation_id,	// jump to specific annotation?
-							'startTimecode' => $start_timecode,				// jump to specific time?
-							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
-							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $options, false), 
-							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $options, false),
-							'checkAccess' => $this->opa_access_values,
-							'alwaysUseCloverViewer' => (bool)$media_display_config->get('always_use_clover_viewer')
-						]
-					)
-				)
-			);
-			$this->view->setVar('representationViewerThumbnailBar', 
-				caObjectRepresentationThumbnails($this->request, $this->view->getVar("representation_id"), $t_subject, array_merge($options, ["returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $rep_viewer_primary_only ? 1 : 0]))
-			);
+			$this->view->setVar('media_list', $l = caRepresentationList($this->request, $t_subject, []));
+			
+			$this->view->setVar('media_viewer', $z=caRepresentationViewer($this->request, $t_subject, ['display' => 'detail']));
+			
+			$this->view->setVar('media_options', [
+				'media_list' => $l
+			]);
+			//$this->view->setVar('alwaysUseCloverViewer', (bool)$media_display_config->get('always_use_clover_viewer'));
+			
+			//$this->view->setVar('representationViewerPrimaryOnly', $rep_viewer_primary_only = caGetOption('representationViewerPrimaryOnly', $options, false));
+			// $this->view->setVar('representationViewer', 
+// 				caRepresentationViewer(
+// 					$this->request, 
+// 					$t_subject,
+// 					array_merge($options, $media_display_info, 
+// 						[
+// 							'display' => 'detail',
+// 							'showAnnotations' => true, 
+// 							'defaultAnnotationID' => $default_annotation_id,	// jump to specific annotation?
+// 							'startTimecode' => $start_timecode,				// jump to specific time?
+// 							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
+// 							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $options, false), 
+// 							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $options, false),
+// 							'checkAccess' => $this->opa_access_values,
+// 							'alwaysUseCloverViewer' => (bool)$media_display_config->get('always_use_clover_viewer')
+// 						]
+// 					)
+// 				)
+// 			);
+			// $this->view->setVar('representationViewerThumbnailBar', 
+// 				caObjectRepresentationThumbnails($this->request, $this->view->getVar("representation_id"), $t_subject, array_merge($options, ["returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $rep_viewer_primary_only ? 1 : 0]))
+// 			);
 			
 		}
 		

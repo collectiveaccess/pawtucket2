@@ -25,7 +25,6 @@ function makeMap(options) {
 	g.addTo(map);
 	
 	let data = options.data;
-	console.log(data);
 	if(data && (data.length > 0)) {
 		for(let index in data) {
 			let m = null, c = data[index], opts = { };

@@ -162,7 +162,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 						</dl>}}}					
 					</div>
 					<div class="col">
-						<div id="map" class="py-3">{{{map}}}</div>
+						<div id="map" class="map py-3">{{{map}}}</div>
 					</div>
 				</div>
 			</div>

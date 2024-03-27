@@ -1,7 +1,6 @@
 'use strict';
 import 'htmx.org';
 import * as bootstrap from 'bootstrap';
-import 'htmx.org';
 require('bootstrap-icons/font/bootstrap-icons.css');
 
 window.htmx = require('htmx.org');
@@ -40,6 +39,9 @@ function initPawtucketApps(app=null) {
 		}
 	});
 }
+
 window.initApp = initPawtucketApps;
+
 export default initPawtucketApps;
+
 

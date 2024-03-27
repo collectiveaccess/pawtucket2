@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016-2023 Whirl-i-Gig
+ * Copyright 2016-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,6 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
+use CA\MediaViewers;
 
 class MediaViewerManager {
 	# -------------------------------------------------------
@@ -102,16 +103,19 @@ class MediaViewerManager {
 	 */
 	public static function getViewerForMimetype(string $context, string $mimetype) {
 		$config = Configuration::load(__CA_CONF_DIR__.'/media_display.conf');
-		if((bool)$config->get('always_use_clover_viewer')) {
-			$viewer = 'Clover';
-		} else {
-			$info = caGetMediaDisplayInfo($context, $mimetype);
-			if (!isset($info['viewer']) || !($viewer = $info['viewer'])) { 
-				$viewer = caGetDefaultMediaViewer($mimetype);
-			}
-			if (!$viewer) { return null; }
+		
+		$info = caGetMediaDisplayInfo($context, $mimetype);
+		$viewer_name = null;
+		if (!isset($info['viewer']) || !($viewer_name = $info['viewer'])) { 
+			$viewer_name = caGetDefaultMediaViewer($mimetype);
 		}
-		return MediaViewerManager::viewerIsAvailable($viewer) ? $viewer : null;
+		if (!$viewer_name) { return null; }
+		if(MediaViewerManager::viewerIsAvailable($viewer_name)) {
+			require_once(__CA_LIB_DIR__."/Media/MediaViewers/{$viewer_name}.php");
+			$viewer_name = "CA\\MediaViewers\\{$viewer_name}";
+			return new $viewer_name();
+		}
+		return null;
 	} 
 	# ----------------------------------------------------------
 }
