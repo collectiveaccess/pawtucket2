@@ -54,8 +54,9 @@
 						<div class="fs-4 pt-1 text-white">{{{hp_search_text}}}</div>
 						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
 							<div class="input-group pb-3">
-								<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search" aria-describedby="Search bar">
-								<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton"><i class="bi bi-search"></i></button>
+								<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
+								<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search Bar">
+								<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
 							</div>
 						</form>
 					</div>

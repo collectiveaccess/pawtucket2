@@ -57,7 +57,7 @@
 			</div>
 		</footer><!-- end footer -->
 		
-		<script type="text/javascript">
+		<script>
 			window.initApp();
 		</script>
 	</body>

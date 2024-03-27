@@ -38,7 +38,7 @@ $id =				$t_object->get('ca_objects.object_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
 ?>
-<script type="text/javascript">
+<script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
 </script>
 <?php
@@ -56,7 +56,7 @@ if($show_nav){
 		<div class="col-md-12">
 			<H1 class="fs-3">{{{^ca_objects.preferred_labels.name}}}</H1>
 			{{{<ifdef code="ca_objects.type_id|ca_objects.idno"><div class="fw-medium mb-3"><ifdef code="ca_objects.type_id">^ca_objects.type_id</ifdef><ifdef code="ca_objects.idno">, ^ca_objects.idno</ifdef></div></ifdef>}}}
-			<hr class="mb-0"/>
+			<hr class="mb-0">
 		</div>
 	</div>
 <?php

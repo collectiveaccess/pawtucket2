@@ -110,4 +110,4 @@ if($this->request->isLoggedIn()){
 	if(strToLower($this->request->getController()) != "front"){
 		print "<div class='container-xl pt-4'>";
 	}
-	
+?>

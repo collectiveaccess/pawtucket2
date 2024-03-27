@@ -1,6 +1,6 @@
 <?php
 	# --- which type of set is configured for display in gallery section
- 	
+ 	$va_access_values = $this->getVar("access_values");
 	$o_config = caGetGalleryConfig();
 	$t_list = new ca_lists();
  	$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 			
