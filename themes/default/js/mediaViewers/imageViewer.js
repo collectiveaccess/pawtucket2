@@ -18,7 +18,7 @@ let imageViewer = {
 	//
 	load: function(id, source, options={}) {
 		imageViewer.destroy(id);
-		imageViewer.viewers[id] = OpenSeadragon({
+		return imageViewer.viewers[id] = OpenSeadragon({
 			id: id,
 			preserveViewport: true,
 			visibilityRatio:    options['visibilityRatio'] ?? 1,
@@ -35,8 +35,6 @@ let imageViewer = {
 	//
 	destroy: function(id) {
 		if(imageViewer.viewers[id]) { 
-			console.log('destroy', id, imageViewer.viewers);
-			
 			imageViewer.viewers[id].destroy(); 
 			imageViewer.viewers[id] = null;
 			

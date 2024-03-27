@@ -72,14 +72,12 @@ let mediaViewerManager = {
 		switch(viewer_class) {
 			case 'image':
 				iv = require('mediaViewers/imageViewer.js') ;
-				viewer = iv.default(options);
 				break;
 			case 'audio':
-				alert('audio not implemented (yet)');
+				iv = require('mediaViewers/audioViewer.js') ;
 				break;
 			case 'video':
 				iv = require('mediaViewers/videoViewer.js') ;
-				viewer = iv.default(options);
 				break;
 			case 'document':
 				alert('document not implemented (yet)');
@@ -91,6 +89,7 @@ let mediaViewerManager = {
 				console.log('[mediaViewerManager::ERROR] Invalid media class ' + m.media_class);
 				return;
 		}
+		viewer = iv.default(options);
 		return viewer;
 	}
   

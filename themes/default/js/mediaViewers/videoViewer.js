@@ -22,10 +22,10 @@ let videoViewer = {
 		
 		//
 		let e = document.getElementById(id);
-		e.innerHTML = "<div data-plyr-provider='html5'><video class='plyr__video-embed' preload='metadata' id='" + id + "_plyr' playsinline='1' controls data-poster='" + source.small + "' width='400' height='400'><source src='" + source.url + "' type='video/mp4' /></video></div>";
+		e.innerHTML = "<div data-plyr-provider='html5'><video class='plyr__video-embed' preload='metadata' id='" + id + "_plyr' playsinline='1' controls data-poster='" + source.small + "' width='400' height='400'><source src='" + source.url + "' type='" + source.mimetype+ "' /></video></div>";
 		
 		let poptions = {
-			debug: true,
+			debug: false,
 			autoplay: false,
 			fullscreen: {
 				enabeled: true
@@ -34,7 +34,7 @@ let videoViewer = {
 				active: true 
 			}
 		};
-		videoViewer.viewers[id] = new Plyr('#' + id + '_plyr', poptions);
+		return videoViewer.viewers[id] = new Plyr('#' + id + '_plyr', poptions);
 	},
 	
 	//
@@ -42,7 +42,6 @@ let videoViewer = {
 	//
 	destroy: function(id) {
 		if(videoViewer.viewers[id]) { 
-			console.log('destroy', id, videoViewer.viewers);
 			videoViewer.viewers[id].destroy(); 
 			videoViewer.viewers[id] = null;
 			let e = document.getElementById(id);
