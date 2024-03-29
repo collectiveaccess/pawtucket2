@@ -44,16 +44,9 @@ class Images extends BaseMediaViewer implements IMediaViewer {
 	/**
 	 *
 	 */
-	public static function getViewerHTML(\RequestHTTP $request, string $identifier, ?array $data=null, ?array $options=null) {
-		$o_view = self::getView($request);
+	public static function getViewerHTML(\RequestHTTP $request, ?array $options=null) {
+		$o_view = self::getView($request, $options);
 		return $o_view->render('images.php');
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function getViewerData(\RequestHTTP $request, string$identifier, ?array $data=null, ?array $options=null) {
-		return _t("No data");
 	}
 	# -------------------------------------------------------
 }

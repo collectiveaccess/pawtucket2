@@ -26,13 +26,29 @@
  * ----------------------------------------------------------------------
  */
 $media_list = $this->getVar('media_list');
-$media_viewer = $this->getVar('media_viewer');
+$media_viewers = $this->getVar('media_viewers');
 ?>
-<?= $media_viewer; ?>
+<div id="mediaViewer">
+<?php 
+	foreach($media_viewers as $display_class => $media_viewer) {
+?>
+	<div id="mediaviewer_<?= $display_class; ?>" style="display: none;"><?= $media_viewer; ?></div>
+<?php
+	}
+?>
+</div>
 <?php
 	$media_icons = [];
 	foreach($media_list as $i => $m) {
-		$media_icons[] = "$i<a href='#' onclick='window.mediaViewerManager.render(\"mediaviewer\", {$i});'>".caHTMLImage($m['icon'], ['width' => '72', 'height' => '72', 'class' => 'mediaIcon']).'</a>';
+		$media_icons[] = "<a href='#' onclick='window.mediaViewerManager.render(\"mediaviewer\", {$i});'>".caHTMLImage($m['icon'], ['width' => '72', 'height' => '72', 'class' => 'mediaIcon']).'</a>';
 	}
 ?>
 <div class='mediaSelector' style="width: 500px; height: 72px;"><?= join(" ", $media_icons); ?></div>
+
+<script>
+	document.onreadystatechange = function() {
+		  if (document.readyState === "complete") {
+			window.mediaViewerManager.render('mediaviewer', 0);
+		  }
+		};
+</script>

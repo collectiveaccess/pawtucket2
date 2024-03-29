@@ -32,5 +32,5 @@
 namespace CA\MediaViewers;
 
 interface IMediaViewer {
-	static public function getViewerHTML(\RequestHTTP $request, string $identifier, ?array $data=null, ?array $options=null);
+	static public function getViewerHTML(\RequestHTTP $request, ?array $options=null);
 }

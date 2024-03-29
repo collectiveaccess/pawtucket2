@@ -40,15 +40,8 @@ class Document extends BaseMediaViewer implements IMediaViewer {
 	/**
 	 *
 	 */
-	public static function getViewerHTML(\RequestHTTP $request, string $identifier, ?array $data=null, ?array $options=null) {
+	public static function getViewerHTML(\RequestHTTP $request,  ?array $options=null) {
 		return "Document viewer";
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function getViewerData(\RequestHTTP $request, string$identifier, ?array $data=null, ?array $options=null) {
-		return _t("No data");
 	}
 	# -------------------------------------------------------
 }

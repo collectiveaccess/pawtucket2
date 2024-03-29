@@ -312,7 +312,7 @@ class DetailController extends FindController {
 				$t_representation = Datamodel::getInstance("ca_object_representations", true);
 				$this->view->setVar("representation_id", null);
 			}
-			if(!is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
+			if(!is_array($media_display_info = caGetMediaDisplayInfoForMimetype('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
 			
 			$default_annotation_id = $start_timecode = null;
 			

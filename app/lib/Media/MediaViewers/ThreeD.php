@@ -44,84 +44,8 @@ class ThreeD extends BaseMediaViewer implements IMediaViewer {
 	/**
 	 *
 	 */
-	public static function getViewerHTML($request, $identifier, $data=null, $options=null) {
-		if ($o_view = BaseMediaViewer::getView($request)) {
-			$o_view->setVar('identifier', $identifier);
-			$o_view->setVar('viewer', 'ThreeJS');
-			
-			$t_instance = $data['t_instance'];
-			$t_subject = $data['t_subject'];
-			
-			$o_view->setVar('id', 'caMediaOverlayThreeJS_'.$t_instance->getPrimaryKey().'_'.($display_type = caGetOption('display_type', $data, caGetOption('display_version', $data['display'], ''))));
-			
-			$viewer_opts = ['background_color' => caGetOption('background_color', $data['display'], null)];
-			
-			if (is_a($t_instance, "ca_object_representations")) {
-				if (is_array($textures = $t_instance->getSidecarFileList(null, ['text/prs.wavefront-mtl']))) {
-					foreach($textures as $sid => $sf) {
-						$viewer_opts['texture'] = caNavUrl($request, '*', '*', 'getMediaSidecarData', ['sidecar_id' => $sid], ['absolute' => true]).'/filename/'.$sf['original_filename'];
-						break;
-					}
-				}
-				if(is_array($texture_image_list = $t_instance->getSidecarFileList(null, ['image/*', 'application/octet-stream']))) {
-					$viewer_opts['textureImages'] = array_map(function($v) use ($request) { 
-						return caNavUrl($request, '*', '*', 'GetMediaSidecarData', ['sidecar_id' => $v['sidecar_id'], 'filename' => $v['original_filename']]);
-					}, $texture_image_list);
-				}
-				
-				$viewer_opts = array_merge($viewer_opts, [
-					'id' => $identifier, 'viewer_width' => caGetOption('viewer_width', $data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $data['display'], '100%')
-				]);
-				
-				if (!$t_instance->hasMediaVersion('media', $version = caGetOption('display_version', $data['display'], 'original'))) {
-					if (!$t_instance->hasMediaVersion('media', $version = caGetOption('alt_display_version', $data['display'], 'original'))) {
-						$version = 'original';
-					}
-				}
-				
-				// HTML for 3d viewer
-				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('media', $version, $viewer_opts));
-			} elseif (is_a($t_instance, "ca_site_page_media")) {
-				$viewer_opts = array_merge($viewer_opts, [
-					'id' => $identifier, 'viewer_width' => caGetOption('viewer_width', $data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $data['display'], '100%')
-				]);
-				
-				if (!$t_instance->hasMediaVersion('media', $version = caGetOption('display_version', $data['display'], 'original'))) {
-					if (!$t_instance->hasMediaVersion('media', $version = caGetOption('alt_display_version', $data['display'], 'original'))) {
-						$version = 'original';
-					}
-				}
-				
-				// HTML for tileviewer
-				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('media', $version, $viewer_opts));
-			} else {
-				$viewer_opts = array_merge($viewer_opts, [
-					'id' => 'caMediaOverlayThreeJS', 'viewer_width' => caGetOption('viewer_width', $data['display'], '100%'), 'viewer_height' => caGetOption('viewer_height', $data['display'], '100%')
-				]);
-				
-				$t_instance->useBlobAsMediaField(true);
-				if (!$t_instance->hasMediaVersion('value_blob', $version = caGetOption('display_version', $data['display'], 'original'))) {
-					if (!$t_instance->hasMediaVersion('value_blob', $version = caGetOption('alt_display_version', $data['display'], 'original'))) {
-						$version = 'original';
-					}
-				}
-				
-				// HTML for 3d viewer
-				$o_view->setVar('viewerHTML', $t_instance->getMediaTag('value_blob', $version, $viewer_opts));
-			}
-			
-				
-			return BaseMediaViewer::prepareViewerHTML($request, $o_view, $data, $options);
-		}
-		
+	public static function getViewerHTML($request, $options=null) {
 		return _t("Could not load viewer");
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function getViewerData($request, $identifier, $data=null, $options=null) {
-		return _t("No data");
 	}
 	# -------------------------------------------------------
 }

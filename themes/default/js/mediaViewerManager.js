@@ -49,6 +49,17 @@ let mediaViewerManager = {
 		if(media_list === undefined) { return false; }
 		
 		let m = media_list[index];
+		
+		let display_classes = [];
+		for(let i in media_list) {
+		  if (media_list[i] && media_list[i].display_class) {
+			if (!display_classes.includes(media_list[i].display_class)) { display_classes.push(media_list[i].display_class); }
+		  }
+		}
+		
+		for(let d in display_classes) {
+			document.getElementById(id + '_' + display_classes[d]).style.display = (display_classes[d] === m.display_class) ? 'block' : 'none';
+		}
 		if(m === undefined) {
 			console.log('[mediaViewerManager::ERROR] Index ' + m + ' does not exist');
 			return false;

@@ -43,8 +43,14 @@ class BaseMediaViewer {
 	/**
 	 *
 	 */
-	static public function getView($request) {
-		return new \View($request, $request->getViewsDirectoryPath()."/mediaViewers");
+	static public function getView($request, ?array $options=null) {
+		$o_view = new \View($request, $request->getViewsDirectoryPath()."/mediaViewers");
+		
+		foreach(['displayClass', 'id'] as $opt) {
+			$o_view->setVar($opt, caGetOption($opt, $options, null));
+		}
+		
+		return $o_view;
 	}
 	# -------------------------------------------------------
 	/**
