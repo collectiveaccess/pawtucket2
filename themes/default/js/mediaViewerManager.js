@@ -82,16 +82,16 @@ let mediaViewerManager = {
 		let iv;
 		switch(viewer_class) {
 			case 'image':
-				iv = require('mediaViewers/imageViewer.js') ;
+				iv = require('mediaViewers/image.js') ;
 				break;
 			case 'audio':
-				iv = require('mediaViewers/audioViewer.js') ;
+				iv = require('mediaViewers/audio.js') ;
 				break;
 			case 'video':
-				iv = require('mediaViewers/videoViewer.js') ;
+				iv = require('mediaViewers/video.js') ;
 				break;
 			case 'document':
-				alert('document not implemented (yet)');
+				iv = require('mediaViewers/document.js') ;
 				break;
 			case '3d':
 				alert('3d not implemented (yet)');

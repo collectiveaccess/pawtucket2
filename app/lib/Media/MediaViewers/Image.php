@@ -34,7 +34,7 @@ namespace CA\MediaViewers;
 require_once(__CA_LIB_DIR__.'/Media/IMediaViewer.php');
 require_once(__CA_LIB_DIR__.'/Media/BaseMediaViewer.php');
 
-class Images extends BaseMediaViewer implements IMediaViewer {
+class Image extends BaseMediaViewer implements IMediaViewer {
 	# -------------------------------------------------------
 	/**
 	 *
@@ -46,7 +46,7 @@ class Images extends BaseMediaViewer implements IMediaViewer {
 	 */
 	public static function getViewerHTML(\RequestHTTP $request, ?array $options=null) {
 		$o_view = self::getView($request, $options);
-		return $o_view->render('images.php');
+		return $o_view->render('image.php');
 	}
 	# -------------------------------------------------------
 }

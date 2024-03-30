@@ -4251,6 +4251,19 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 			'iiifUrl' => $iiif_url
 		];
 		
+		if(is_array($file_list = $qr->getFileList()) && sizeof($file_list)) {
+			$pages = array_map(function($v) {
+				return $v['preview_url'];
+			}, $file_list);	
+			$rep['pages_previews'] = array_values($pages);
+			
+			$rep['pages'] = [];
+			foreach($rep['pages_previews'] as $i => $p) {
+				$rep['pages'][] = $request->getBaseUrlPath().'/service/IIIF/representation:'.$rep_id.':'.($i+1).'/info.json';
+			}
+		}
+		
+		
 		if(!($display_info = caGetMediaDisplayInfoForMimetype($display_type, $mimetype))) {
 			continue;
 		}
