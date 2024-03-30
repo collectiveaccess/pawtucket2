@@ -65,10 +65,10 @@ let mediaViewerManager = {
 			return false;
 		}
 		
-		if(mediaViewerManager.viewers[id]['viewer']) { mediaViewerManager.viewers[id]['viewer'].destroy(id); }
+		if(mediaViewerManager.viewers[id]['viewer']) { mediaViewerManager.viewers[id]['viewer'].destroy(m); }
 		
-		let viewer = mediaViewerManager.getViewer(m.media_class, mediaViewerManager.options);
-		viewer.load(id, m);
+		let viewer = mediaViewerManager.getViewer(id, m.media_class, mediaViewerManager.options);
+		viewer.load(m);
 	
 		mediaViewerManager.viewers[id]['viewer'] = viewer;
 		return true;
@@ -77,7 +77,7 @@ let mediaViewerManager = {
 	//
 	//
 	//
-	getViewer: function(viewer_class, options={}) {
+	getViewer: function(id, viewer_class, options={}) {
 		let viewer = null;
 		let iv;
 		switch(viewer_class) {
@@ -100,8 +100,8 @@ let mediaViewerManager = {
 				console.log('[mediaViewerManager::ERROR] Invalid media class ' + m.media_class);
 				return;
 		}
-		viewer = iv.default(options);
-		return viewer;
+		let v = iv.default(options);
+		return v.init(id, options);
 	}
   
 };

@@ -32,7 +32,7 @@ $media_viewers = $this->getVar('media_viewers');
 <?php 
 	foreach($media_viewers as $display_class => $media_viewer) {
 ?>
-	<div id="mediaviewer_<?= $display_class; ?>" style="display: none;"><?= $media_viewer; ?></div>
+		<div id="mediaviewer_<?= $display_class; ?>" style="display: none;"><?= $media_viewer; ?></div>
 <?php
 	}
 ?>
@@ -40,15 +40,15 @@ $media_viewers = $this->getVar('media_viewers');
 <?php
 	$media_icons = [];
 	foreach($media_list as $i => $m) {
-		$media_icons[] = "<a href='#' onclick='window.mediaViewerManager.render(\"mediaviewer\", {$i});'>".caHTMLImage($m['icon'], ['width' => '72', 'height' => '72', 'class' => 'mediaIcon']).'</a>';
+		$media_icons[] = "<a href='#' style='padding-right: 5px;' onclick='window.mediaViewerManager.render(\"mediaviewer\", {$i});'>".caHTMLImage($m['icon'], ['width' => '72', 'height' => '72', 'class' => 'mediaIcon']).'</a>';
 	}
 ?>
-<div class='mediaSelector' style="width: 500px; height: 72px;"><?= join(" ", $media_icons); ?></div>
+<div class='mediaSelector' style="width: 500px; height: 72px; margin-top: 10px;"><?= join(" ", $media_icons); ?></div>
 
 <script>
 	document.onreadystatechange = function() {
-		  if (document.readyState === "complete") {
+		if (document.readyState === "complete") {
 			window.mediaViewerManager.render('mediaviewer', 0);
-		  }
-		};
+		}
+	};
 </script>

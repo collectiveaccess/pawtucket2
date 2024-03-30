@@ -2,79 +2,76 @@ import baseViewer from "./baseViewer.js";
 import Plyr from 'plyr';
 require('plyr/dist/plyr.css');
 
-
-let videoViewer = {
-	// Properties
-	viewers: {},
-	urlPath: null,
-	containers: {},
-	
-	// Methods
-	//
-	//
-	//
-	init: function(options) {
-		baseViewer(videoViewer);
-		return videoViewer;
-	},
-	
-	//
-	//
-	//
-	load: function(id, source, options={}) {
-		videoViewer.containers[id] = videoViewer.containerDivs(id, source);
-		let c = videoViewer.containers[id];
-		videoViewer.destroy(id);
+let videoViewer = function(id, options=null) {
+	let that = {
+		// Properties
+		id: null,
+		viewer: null,
+		options: null,
 		
+		// Methods
+		//
+		//
+		//
+		init: function(id, options=null) {
+			baseViewer(that);
+			that.id = id;
+			that.options = options;
+			return that;
+		},
 		
-		let e = c['viewer'];
-		e.innerHTML = "<div data-plyr-provider='html5'><video class='plyr__video-embed' preload='metadata' id='" + id + '_' + source.display_class + "_plyr' playsinline='1' controls data-poster='" + source.small + "' width='400' height='400'></video></div>";
-
-		let poptions = {
-			debug: false,
-			autoplay: false,
-			fullscreen: {
-				enabeled: true
-			},
-			loop: { 
-				active: true 
-			}
-		};
-		let viewer = videoViewer.viewers[id] = new Plyr('#' + id + '_' + source.display_class + '_plyr', poptions);
+		//
+		//
+		//
+		load: function(source, options={}) {
+			let c = that.containerDivs(that.id, source);
+			if(that.viewer) { that.viewer.destroy(source); }
+			
+			let e = c['viewer'];
+			e.innerHTML = "<div data-plyr-provider='html5'><video class='plyr__video-embed' preload='metadata' id='" + that.id + '_' + source.display_class + "_plyr' playsinline='1' controls data-poster='" + source.small + "' width='400' height='400'></video></div>";
 	
-		viewer.source = {
-			  type: 'video',
-			  title: 'Track',
-			  sources: [
-				{
-				  src: source.url,
-				  type: source.mimetype,
+			let poptions = {
+				debug: false,
+				autoplay: false,
+				fullscreen: {
+					enabeled: true
+				},
+				loop: { 
+					active: true 
 				}
-			  ],
-			  poster: source.small
 			};
-		return viewer;
-	},
-	
-	//
-	//
-	//
-	destroy: function(id) {
-		let c = videoViewer.containers[id];
+			that.viewer = new Plyr('#' + that.id + '_' + source.display_class + '_plyr', poptions);
 		
-		if(videoViewer.viewers[id]) { 
-			videoViewer.viewers[id].destroy(); 
-			videoViewer.viewers[id] = null;
-			c['viewer'].innerHTML = "";
+			that.viewer.source = {
+				  type: 'video',
+				  title: 'Track',
+				  sources: [
+					{
+					  src: source.url,
+					  type: source.mimetype,
+					}
+				  ],
+				  poster: source.small
+				};
+			return that.viewer;
+		},
+		
+		//
+		//
+		//
+		destroy: function(source) {
+			let c = that.containerDivs(that.id, source);
+			
+			if(that.viewer) { 
+				that.viewer.destroy(); 
+				that.viewer = null;
+				c['viewer'].innerHTML = "";
+			}
 		}
-	}
-};
-
-function init(options) {
-	videoViewer.options = options;
+	};
 	
-	window.videoViewer = videoViewer;
-	return videoViewer.init(options);
+	that.init(id, options);
+	return that;
 };
 
-export default init;
+export default videoViewer;

@@ -2,82 +2,80 @@ import baseViewer from "./baseViewer.js";
 import Plyr from 'plyr';
 require('plyr/dist/plyr.css');
 
-let audioViewer = {
-	// Properties
-	viewers: {},
-	urlPath: null,
-	containers: {},
+let audioViewer = function(id, options=null) {
+	let that = {
+		// Properties
+		id: null,
+		viewer: null,
+		options: null,
 	
-	// Methods
-	//
-	//
-	//
-	init: function(options) {
-		baseViewer(audioViewer);
-		return audioViewer;
-	},
-	
-	//
-	//
-	//
-	load: function(id, source, options={}) {
-		audioViewer.containers[id] = audioViewer.containerDivs(id, source);
-		let c = audioViewer.containers[id];
-		
-		audioViewer.destroy(id);
+		// Methods
+		//
+		//
+		//
+		init: function(id, options) {
+			baseViewer(that);
+			that.id = id;
+			that.options = options;
+			return that;
+		},
 		
 		//
-		let e = c['viewer'];
-		e.innerHTML = "<div data-plyr-provider='html5'><audio class='plyr__audio-embed' id='" + id + '_' + source.display_class + "_plyr' controls width='100%' height='100%'></audio></div>";
-		
-		let poptions = {
-			debug: false,
-			autoplay: false,
-			fullscreen: {
-				enabeled: true
-			},
-			loop: { 
-				active: true 
-			}
-		};
-	
-		let viewer = audioViewer.viewers[id] = new Plyr('#' + id + '_' + source.display_class + '_plyr', poptions);
-		
-		viewer.source = {
-			  type: 'audio',
-			  title: 'Track',
-			  sources: [
-				{
-				  src: source.url,
-				  type: source.mimetype,
+		//
+		//
+		load: function(source, options={}) {
+			let c = that.containerDivs(that.id, source);
+			if(that.viewer) { that.viewer.destroy(source); }
+			
+			//
+			let e = c['viewer'];
+			e.innerHTML = "<div data-plyr-provider='html5'><audio class='plyr__audio-embed' id='" + that.id + '_' + source.display_class + "_plyr' controls width='100%' height='100%'></audio></div>";
+			
+			let poptions = {
+				debug: false,
+				autoplay: false,
+				fullscreen: {
+					enabeled: true
+				},
+				loop: { 
+					active: true 
 				}
-			  ],
-			  poster: source.small
 			};
-			
-		return viewer;
-	},
-	
-	//
-	//
-	//
-	destroy: function(id) {
-		let c = audioViewer.containers[id];
 		
-		if(audioViewer.viewers[id]) { 
-			audioViewer.viewers[id].destroy(); 
-			audioViewer.viewers[id] = null;
+			that.viewer = new Plyr('#' + that.id + '_' + source.display_class + '_plyr', poptions);
 			
-			c['viewer'].innerHTML = "";
+			that.viewer.source = {
+				  type: 'audio',
+				  title: 'Track',
+				  sources: [
+					{
+					  src: source.url,
+					  type: source.mimetype,
+					}
+				  ],
+				  poster: source.small
+				};
+				
+			return that.viewer;
+		},
+		
+		//
+		//
+		//
+		destroy: function(source) {
+			let c = that.containerDivs(that.id, source);
+			
+			if(that.viewer) { 
+				that.viewer.destroy(); 
+				that.viewer = null;
+				
+				c['viewer'].innerHTML = "";
+			}
 		}
-	}
-};
-
-function init(options) {
-	audioViewer.options = options;
+	};
+	that.init(id, options);
 	
-	window.audioViewer = audioViewer;
-	return audioViewer.init(options);
+	return that;
 };
 
-export default init;
+export default audioViewer;
