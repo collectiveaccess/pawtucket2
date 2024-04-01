@@ -83,9 +83,9 @@ BaseModel::$s_ca_models_definitions['ca_site_pages'] = array(
 				'LABEL' => _t('Locale'), 'DESCRIPTION' => _t('Locale of page'),
 		),
 		'rank' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD,
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => false, 
+				'IS_NULL' => false,
 				'DEFAULT' => '',
 				'LABEL' => _t('Sort order'), 'DESCRIPTION' => _t('Sort order'),
 		),
@@ -259,7 +259,7 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 				break;
 		}
 		
-		$pages = ca_site_pages::find($criteria, ['returnAs' => 'arrays', 'allowWildcards' => true]);
+		$pages = ca_site_pages::find($criteria, ['returnAs' => 'arrays', 'sort' => 'rank', 'allowWildcards' => true]);
 		
 		$templates_by_id = [];
 		foreach(ca_site_templates::find('*', ['returnAs' => 'arrays']) as $template) {

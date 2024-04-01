@@ -71,7 +71,7 @@
 ?>
 
 <div class="row">
-	<div class="col-sm-12 col-md-8 col-md-offset-2"> 
+	<div class="col-md-12 col-lg-8 col-lg-offset-2">
 		<H2><?php print $section_name; ?></H2>
 
 <div class="frontGrid">	
@@ -82,7 +82,7 @@
 						if($vn_col == 0){
 							print "<div class='row'>";
 						}
-						print "<div class='col-sm-3 col-xs-6'>";
+						print "<div class='col-md-3 col-sm-12 text-center'>";
 						$vs_name = "";
 						if($va_set["name"]){
 							$vs_name = "<div class='frontGridCaption'>".$va_set["name"]."</div>"; 

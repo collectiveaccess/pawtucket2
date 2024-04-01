@@ -89,7 +89,7 @@ a:hover{
 .headerAdvancedSearch{
 	text-align:right;
 }
-.headerAdvancedSearch a{
+.headerAdvancedSearch a, div.headerAdvancedSearch {
 	font-size:12px;
 	color:#FFF;
 }
@@ -319,9 +319,10 @@ body{
 	max-width:250px;
 }
 #footer .donorCredit{
-	font-size:12px;
-	text-align:right;
-	padding-right: 17px;
+	font-size: 15px;
+  	text-align: right;
+ 	padding-right: 17px;
+  	font-weight: 500;
 }
 @media(max-width: 991px) {
 	#footer .donorCredit{
@@ -918,6 +919,11 @@ a:hover .frontGridCaption{
 .gallery #galleryDetailImageGrid img {
   background-color: #fff;
 }
+@media (min-width: 768px) {
+  .gallery #galleryDetailImageArea{
+    height: 460px;
+  }
+}
 /* collections */
 .collectionIntro {
 	font-size: 14px;
@@ -1128,6 +1134,9 @@ a.readmore-js-toggle {
 }
 .vco-text p{
 	color:#000;
+}
+.vco-media .vco-media-content-container .vco-media-content img{
+	margin-top:10px;
 }
 @media(max-width:810px){
 	/* 2 col
@@ -1559,4 +1568,21 @@ a .featuredTile .title {
 /* map */
 .vco-map .vco-mapmarker {
 	color: #200d45;
+}
+/* --------------------------------- */
+/* SEARCH BUILDER */
+/* --------------------------------- */
+.searchIntro{
+	font-size: 17px;
+	padding: 20px 0px 20px 0px;
+}
+.searchBuilderSubmit{
+	margin-top:20px;
+}
+.searchBuilderSubmit a.form-button{
+	/* below are the styles used for btn-default */
+	background-color:#0a4ba0;
+	font-family: "urbane-rounded", sans-serif;
+	font-weight:300;
+	
 }

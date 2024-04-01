@@ -895,9 +895,11 @@ a.readmore-js-toggle{
 .staticPage{
 	font-size:18px;
 }
-.aboutSideNav{
-	position: fixed;
-	width: 23%;
+@media(min-width:768px){
+	.aboutSideNav{
+		position: fixed;
+		width: 23%;
+	}
 }
 .aboutSideNav ul{
 	padding-left: 0px;

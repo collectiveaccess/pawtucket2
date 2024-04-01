@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2023 Whirl-i-Gig
+ * Copyright 2014-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -267,6 +267,10 @@ class SearchController extends FindController {
 		// Add criteria and execute
 		//
 
+				
+		if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
+			$o_browse->addCriteria("_search", [caMatchOnStem($vs_search_expression)], array($vs_search_expression_for_display));
+		}
 		if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			foreach ($va_facets as $vs_facet_spec) {
 				if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
@@ -280,10 +284,6 @@ class SearchController extends FindController {
 			$o_browse->addCriteria('_search', [caMatchOnStem($vs_search_refine)], array($vs_search_refine));
 		} elseif ($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) {
 			$o_browse->addCriteria($vs_facet, explode("|", $this->request->getParameter('id', pString, ['forcePurify' => true])));
-		}
-				
-		if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
-			$o_browse->addCriteria("_search", [caMatchOnStem($vs_search_expression)], array($vs_search_expression_for_display));
 		}
 		
 		//
@@ -412,6 +412,13 @@ class SearchController extends FindController {
 		if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
 			unset($va_criteria['_search']['*']);
 		}
+		if(isset($va_criteria['_search']) && is_array($va_criteria['_search'])) {
+			foreach($va_criteria['_search'] as $k => $v) {
+				unset($va_criteria['_search'][$k]);
+				$va_criteria['_search'][$k] = caGetDisplayStringForSearch($k);
+			}
+		}
+		
 		// remove base criteria from display list
 		
 		if (is_array($va_table_criteria)) {
@@ -552,6 +559,52 @@ class SearchController extends FindController {
 	}
 	# -------------------------------------------------------
 	/** 
+	 * 
+	 */
+	public function builder() {
+		AssetLoadManager::register("searchbuilder");
+		
+		$ps_function = strtolower($this->request->getActionExtra());
+		
+		if (!($va_search_info = caGetInfoForSearchBuilderType($ps_function))) {
+			// invalid search type – throw error
+			throw new ApplicationException("Invalid search builder type");
+		}
+		caSetPageCSSClasses(array("search results searchBuilder"));
+		
+		$search_builder_config = Configuration::load(__CA_CONF_DIR__.'/search_query_builder.conf');
+
+		$vs_class = $va_search_info['table'];
+		
+		$t_model = Datamodel::getInstanceByTableName($vs_class, true);
+		$va_access_values = caGetUserAccessValues($this->request);
+		
+		$this->view->setVar('show_search_builder_query', $search_builder_config->get('show_search_builder_query'));
+		
+		$this->view->setVar('table', $vs_class);
+		$va_types = caGetOption('restrictToTypes', $va_search_info, array(), array('castTo' => 'array'));
+		
+		$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_builder', $ps_function);
+		$this->opo_result_context->setAsLastFind();
+		
+		MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_search_info["displayName"]));
+		$this->view->setVar('searchInfo', $va_search_info);
+		$this->view->setVar('options', caGetOption('options', $va_search_info, array(), array('castTo' => 'array')));
+		
+		$this->opo_result_context->saveContext();
+		
+		$search_builder_config = Configuration::load(__CA_CONF_DIR__.'/search_query_builder.conf');
+		$builder_options = [
+			'filters' => caGetSearchBuilderFilters($t_model, $search_builder_config),
+			'icons' => $search_builder_config->getAssoc('query_builder_icons'),
+			'sort_filters' => false
+		];
+		$this->view->setVar('form_options', $builder_options);
+		
+		$this->render($va_search_info['view']);
+	}
+	# -------------------------------------------------------
+	/** 
 	 * Generate the URL for the "back to results" link from a browse result item
 	 * as an array of path components.
 	 */
@@ -572,7 +625,17 @@ class SearchController extends FindController {
 					)
 				);
 				
-			}
+			} elseif((sizeof($tmp) > 1) && ($tmp[0] === 'search_advanced')) {
+				return array(
+					'module_path' => '',
+					'controller' => 'Search/builder',
+					'action' => $browse,
+					'params' => array(
+						'key'
+					)
+				);
+				
+			} 
 		}
 		$va_ret = array(
 			'module_path' => '',
