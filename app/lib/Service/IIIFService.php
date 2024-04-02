@@ -55,6 +55,10 @@ class IIIFService {
 		// INFO: 		{scheme}://{server}{/prefix}/{identifier}/info.json
 		// IMAGE:		{scheme}://{server}{/prefix}/{identifier}/{region}/{size}/{rotation}/{quality}.{format}
 		
+		if(((sizeof($va_path) > 1) && ($va_path[0] === 'info.json'))) {
+			array_shift($va_path);
+		}
+		
 		if (sizeof($va_path) == 0) { 
 			$response->setRedirect($request->getFullUrlPath()."/info.json");
 			return;
