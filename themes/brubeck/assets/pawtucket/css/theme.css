@@ -232,13 +232,13 @@ a:hover{
 /* footer */
 /* offset needed for fixed footer */
 body{
-	margin-bottom:200px;
+	margin-bottom:250px;
 }
 #footer{
 	background-color: #200d45;
 	color:#FFF;
 	padding-top:35px;
-	height: 140px;
+	height: 190px;
 	border:0px;
 	font-size:14px;
 	font-weight:normal;
@@ -251,11 +251,11 @@ body{
 @media(max-width:991px){
 	/* CHANGE - does the footer height need to change for smaller screen sizes? */
 	#footer{
-		height:250px;
+		height:300px;
 	}
 	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
 	body{
-		margin-bottom:300px;
+		margin-bottom:350px;
 	}
 }
 #footer a{
@@ -280,6 +280,8 @@ body{
 }
 #footer .address{
 	font-size: 14px;
+	padding-top: 3px;
+  	line-height: 1.5em;
 }
 #footer .text-right{
 	padding-top: 13px;
@@ -320,9 +322,11 @@ body{
 }
 #footer .donorCredit{
 	font-size: 15px;
-  	text-align: right;
- 	padding-right: 17px;
+  	text-align: center;
+ 	/*text-align: right;
+ 	padding-right: 17px;*/
   	font-weight: 500;
+  	padding-top: 25px;
 }
 @media(max-width: 991px) {
 	#footer .donorCredit{

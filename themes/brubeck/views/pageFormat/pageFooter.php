@@ -32,7 +32,7 @@
 			<div class="row">
 				<div class="col-md-6">
 					<a href="https://www.wiltonlibrary.org" target="_blank"><?php print caGetThemeGraphic($this->request, 'Wilton_Logo-COLOR.png', array("alt" => "Wilton Library Logo")); ?></a><a href="https://www.wiltonlibrary.org" target="_blank" class="orgLink">Wilton Library</a>
-					<div class="address">137 Old Ridgefield Road, Wilton CT 06897</div>
+					<div class="address">137 Old Ridgefield Road, Wilton CT 06897<br>&copy; <?php print time("Y"); ?> The Brubeck Collection. All rights reserved.</div>
 				</div>
 				<div class="col-md-6 text-right">	
 					<ul class="list-inline">

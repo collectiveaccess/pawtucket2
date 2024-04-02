@@ -91,7 +91,10 @@
 							print "<div id='detailRepresentationThumbnail".$vn_icon_rep_id."' class='repThumbnailAudioLinks'>".$vs_icon_link."</div>";
 						}
 						print "</div>";
-					}		
+					}	
+					if($tmp = $this->getVar("audio_full_track_message")){
+						print "<div class='unit'>".$tmp."</div>";	
+					}
 				}else{
 					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
 				}
