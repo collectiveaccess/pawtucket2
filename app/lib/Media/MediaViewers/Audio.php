@@ -54,4 +54,12 @@ class Audio extends BaseMediaViewer implements IMediaViewer {
 		return $o_view->render('audio.php');
 	}
 	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function getViewerOverlayHTML(\RequestHTTP $request, ?array $options=null) {
+		$o_view = self::getView($request, $options);
+		return $o_view->render('audio_overlay.php');
+	}
+	# -------------------------------------------------------
 }

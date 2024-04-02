@@ -49,4 +49,12 @@ class Video extends BaseMediaViewer implements IMediaViewer {
 		return $o_view->render('video.php');
 	}
 	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function getViewerOverlayHTML(\RequestHTTP $request, ?array $options=null) {
+		$o_view = self::getView($request, $options);
+		return $o_view->render('video_overlay.php');
+	}
+	# -------------------------------------------------------
 }

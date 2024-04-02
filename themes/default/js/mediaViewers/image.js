@@ -6,6 +6,7 @@ let imageViewer = function(id, options=null) {
 		// Properties
 		id: null,
 		viewer: null,
+		viewer_overlay: null,
 		options: null,
 		
 		// Methods
@@ -23,35 +24,51 @@ let imageViewer = function(id, options=null) {
 		//
 		//
 		load: function(source, options={}) {
-			let c = that.containerDivs(that.id, source);
-			if(that.viewer) { thar.viewer.destroy(source); }
+			let c = that.containerDivs(that.id, source, options);
+			if(that.viewer && !options['overlay']) { that.destroy(source, options); }
 			
-			return that.viewer = OpenSeadragon({
-				element: c['viewer'],
-				preserveViewport: true,
-				visibilityRatio:    options['visibilityRatio'] ?? 1,
-				minZoomLevel:       options['minZoomLevel'] ?? 1,
-				maxZoomLevel:       options['maxZoomLevel'] ?? 15,
-				defaultZoomLevel:   options['defaultZoomLevel'] ?? 1,
-				sequenceMode:       false,
-				prefixUrl: (that.options['urlPath'] ?? '') + '/node_modules/openseadragon/build/openseadragon/images/',
-				tileSources:  [source.iiifUrl],
-				zoomInButton:   "imageviewer-zoom-in",
-				zoomOutButton:  "imageviewer-zoom-out",
-				homeButton:     "imageviewer-home",
-				fullPageButton: "imageviewer-full-page",
-				nextButton:     "imageviewer-next",
-				previousButton: "imageviewer-previous"
-			});
+			let e = options['overlay'] ? c['overlay_display'] : c['viewer'];
+			let overlay_ext = options['overlay'] ? '_overlay' : '';
+			let k = options['overlay'] ? 'viewer_overlay' : 'viewer';
+			
+			if(parseInt(source[options['overlay'] ? 'overlay_options' : 'options'].zoom) > 0) {
+				return that[k] = OpenSeadragon({
+					element: e,
+					preserveViewport: true,
+					visibilityRatio:    options['visibilityRatio'] ?? 1,
+					minZoomLevel:       options['minZoomLevel'] ?? 1,
+					maxZoomLevel:       options['maxZoomLevel'] ?? 15,
+					defaultZoomLevel:   options['defaultZoomLevel'] ?? 1,
+					sequenceMode:       false,
+					prefixUrl: (that.options['urlPath'] ?? '') + '/node_modules/openseadragon/build/openseadragon/images/',
+					tileSources:  [source.iiifUrl],					
+					minZoomImageRatio: 0.4,
+					maxZoomPixelRatio: 4,
+					zoomInButton:   options['overlay'] ? "imageviewer-overlay-zoom-in" : "imageviewer-zoom-in",
+					zoomOutButton:  options['overlay'] ? "imageviewer-overlay-zoom-out" : "imageviewer-zoom-out",
+					homeButton:     options['overlay'] ? "imageviewer-overlay-home" : "imageviewer-home",
+					fullPageButton: options['overlay'] ? "imageviewer-overlay-full-page" : "imageviewer-full-page",
+					nextButton:     options['overlay'] ? "imageviewer-overlay-next" : "imageviewer-next",
+					previousButton: options['overlay'] ? "imageviewer-overlay-previous" : "imageviewer-previous"
+				});
+			} else {
+				that[k] = null;
+				e.innerHTML = source.tag;
+			}
 		},
 		
 		//
 		//
 		//
-		destroy: function(source) {
-			let c = that.containerDivs(that.id, source);
-			
-			if(that.viewer) { 
+		destroy: function(source, options={}) {
+			let c = that.containerDivs(that.id, source, options);
+			if(that.viewer_overlay && c['overlay_display']) {
+				that.viewer_overlay.destroy(); 
+				that.viewer_overlay = null;
+				
+				c['overlay_display'].innerHTML = "";
+			}
+			if(!options['overlay'] && that.viewer && c['viewer']) { 
 				that.viewer.destroy(); 
 				that.viewer = null;
 				

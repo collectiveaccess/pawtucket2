@@ -7,6 +7,7 @@ let audioViewer = function(id, options=null) {
 		// Properties
 		id: null,
 		viewer: null,
+		viewer_overlay: null,
 		options: null,
 	
 		// Methods
@@ -24,12 +25,14 @@ let audioViewer = function(id, options=null) {
 		//
 		//
 		load: function(source, options={}) {
-			let c = that.containerDivs(that.id, source);
-			if(that.viewer) { that.viewer.destroy(source); }
+			let c = that.containerDivs(that.id, source, options);
+			if(that.viewer && !options['overlay']) { that.destroy(source, options); }
 			
-			//
-			let e = c['viewer'];
-			e.innerHTML = "<div data-plyr-provider='html5'><audio class='plyr__audio-embed' id='" + that.id + '_' + source.display_class + "_plyr' controls width='100%' height='100%'></audio></div>";
+			let e = options['overlay'] ? c['overlay_display'] : c['viewer'];
+			let overlay_ext = options['overlay'] ? '_overlay' : '';
+			let k = options['overlay'] ? 'viewer_overlay' : 'viewer';
+			
+			e.innerHTML = "<div data-plyr-provider='html5'><audio class='plyr__audio-embed' id='" + that.id + '_' + source.display_class + overlay_ext + "_plyr' controls width='100%' height='100%'></audio></div>";
 			
 			let poptions = {
 				debug: false,
@@ -42,9 +45,9 @@ let audioViewer = function(id, options=null) {
 				}
 			};
 		
-			that.viewer = new Plyr('#' + that.id + '_' + source.display_class + '_plyr', poptions);
+			that[k] = new Plyr('#' + that.id + '_' + source.display_class + overlay_ext + '_plyr', poptions);
 			
-			that.viewer.source = {
+			that[k].source = {
 				  type: 'audio',
 				  title: 'Track',
 				  sources: [
@@ -62,10 +65,24 @@ let audioViewer = function(id, options=null) {
 		//
 		//
 		//
-		destroy: function(source) {
-			let c = that.containerDivs(that.id, source);
-			
-			if(that.viewer) { 
+		onShowOverlay: function() {
+			if(that.viewer) {
+				that.viewer.stop();
+			}
+		},
+		
+		//
+		//
+		//
+		destroy: function(source, options={}) {
+			let c = that.containerDivs(that.id, source, options);
+			if(that.viewer_overlay && c['overlay_display']) {
+				that.viewer_overlay.destroy(); 
+				that.viewer_overlay = null;
+				
+				c['overlay_display'].innerHTML = "";
+			}
+			if(!options['overlay'] && that.viewer && c['viewer']) { 
 				that.viewer.destroy(); 
 				that.viewer = null;
 				

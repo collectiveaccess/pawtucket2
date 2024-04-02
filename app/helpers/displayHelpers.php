@@ -4240,14 +4240,24 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 	$reps = [];
 	while($qr->nextHit()) {
 		$rep_id = $qr->get('ca_object_representations.representation_id');
+		$mimetype = $qr->get('ca_object_representations.mimetype');
+		
+		if(!($display_info = caGetMediaDisplayInfoForMimetype($display_type, $mimetype))) {
+			continue;
+		}
+		
+		$display_version = $display_info['display_version'] ?? null;
 		
 		$iiif_url = $request->getBaseUrlPath().'/service/IIIF/representation:'.$rep_id.'/info.json';
 		
 		$rep = [
 			'representation_id' => $rep_id,
-			'mimetype' => $mimetype = $qr->get('ca_object_representations.mimetype'),
+			'mimetype' => $mimetype,
 			'media_class' => $qr->get('ca_object_representations.media_class'),
-			'url' => $qr->get('ca_object_representations.media.original.url'),
+			'original_url' => $qr->get("ca_object_representations.media.original.url"),
+			'url' => $qr->get("ca_object_representations.media.{$display_version}.url"),
+			'original_tag' => $qr->get("ca_object_representations.media.original.tag"),
+			'tag' => $qr->get("ca_object_representations.media.{$display_version}.tag"),
 			'iiifUrl' => $iiif_url
 		];
 		
@@ -4264,10 +4274,14 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 		}
 		
 		
-		if(!($display_info = caGetMediaDisplayInfoForMimetype($display_type, $mimetype))) {
-			continue;
-		}
-		$rep['display_class'] = $display_info['display_class'];
+		$rep['display_class'] = $display_info['display_class'] ?? null;
+		
+		$opts = MediaViewerManager::viewerOptionsForDisplayClass($display_type, $display_info['display_class']);
+		$rep['options'] = $opts;
+		
+		$opts = MediaViewerManager::viewerOptionsForDisplayClass('overlay', $display_info['display_class']);
+		$rep['overlay_options'] = $opts;
+		
 		
 		if(is_array($versions)) {
 			foreach($versions as $version) {
@@ -4340,17 +4354,26 @@ function caRepresentationViewer($request, $subject, ?array $options=null) {
 	
 	$display_classes = array_unique(array_map(function($v) { return ($v['display_class']); }, $media_list));
 	
-	$viewer_html = [];
+	$viewer_html = $viewer_overlay_html = [];
 	foreach($display_classes as $display_class) {
 		$o_viewer = MediaViewerManager::getViewerByDisplayClass($display_type, $display_class);
+		$opts = MediaViewerManager::viewerOptionsForDisplayClass($display_type, $display_class);
 		
 		$viewer_html[$display_class] = $o_viewer->getViewerHTML(
 			$request,
-			['displayClass' => $display_class, 'id' => 'mediaviewer']
+			array_merge(['displayClass' => $display_class, 'id' => 'mediaviewer'], $opts)
+		);
+		
+		$o_viewer = MediaViewerManager::getViewerByDisplayClass('overlay', $display_class);
+		$opts = MediaViewerManager::viewerOptionsForDisplayClass('overlay', $display_class);
+		$viewer_overlay_html[$display_class] = $o_viewer->getViewerOverlayHTML(
+			$request,
+			array_merge(['displayClass' => $display_class, 'id' => 'mediaviewer'], $opts)
 		);
 	}
 	
 	$o_view->setVar('media_viewers', $viewer_html);
+	$o_view->setVar('media_viewer_overlays', $viewer_overlay_html);
 
 	return $o_view->render('representation_viewer_html.php');
 }

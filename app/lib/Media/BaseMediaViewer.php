@@ -49,6 +49,26 @@ class BaseMediaViewer {
 		foreach(['displayClass', 'id'] as $opt) {
 			$o_view->setVar($opt, caGetOption($opt, $options, null));
 		}
+		$class = get_called_class();
+		$opt_list = $class::viewerOptions();
+		$filtered_opts = [];
+		foreach($opt_list as $opt) {
+			switch($opt) {
+				case 'width':
+				case 'height':
+					if(!is_array($dim = caParseFormElementDimension($options[$opt] ?? null))) { break; }
+					if($dim['type'] === 'percentage') {
+						$filtered_opts[$opt] = $dim['dimension'].'%';
+					} else {
+						$filtered_opts[$opt] = $dim['dimension'].'px';
+					}
+					break;
+				default:
+					$filtered_opts[$opt] = $options[$opt] ?? null;
+					break;
+			}
+		}
+		$o_view->setVar('options', $filtered_opts);
 		
 		return $o_view;
 	}
@@ -56,15 +76,8 @@ class BaseMediaViewer {
 	/**
 	 *
 	 */
-	public static function searchViewerData($request, $identifier, $data=null, $options=null) {
-		throw new ApplicationException(_t('Media search is not available'));
-	}
-	# -------------------------------------------------------
-	/**
-	 *
-	 */
-	public static function autocomplete($request, $identifier, $data=null, $options=null) {
-		throw new ApplicationException(_t('Media search autocomplete is not available'));
+	public static function viewerOptions() : ?array {
+		return ['display_version', 'width', 'height', 'no_overlay'];
 	}
 	# -------------------------------------------------------
 }

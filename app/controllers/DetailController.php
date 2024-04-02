@@ -347,7 +347,11 @@ class DetailController extends FindController {
 			$this->view->setVar('media_viewer', $z=caRepresentationViewer($this->request, $t_subject, ['display' => 'detail']));
 			
 			$this->view->setVar('media_options', [
-				'media_list' => $l
+				'media_list' => $l,
+				'next_button_id' => 'mediaviewer-next',
+				'previous_button_id' => 'mediaviewer-previous',
+				'media_overlay_id' => 'mediaviewer-overlay',
+				'media_overlay_content_id' => 'mediaviewer-overlay-content',
 			]);
 			//$this->view->setVar('alwaysUseCloverViewer', (bool)$media_display_config->get('always_use_clover_viewer'));
 			

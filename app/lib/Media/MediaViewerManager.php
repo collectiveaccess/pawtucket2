@@ -48,6 +48,11 @@ class MediaViewerManager {
 	 */
 	static $s_media_viewers = [];
 	
+	/** 
+	 * 
+	 */
+	static $s_viewer_options = [];
+	
 	# -------------------------------------------------------
 	#
 	# -------------------------------------------------------
@@ -129,7 +134,7 @@ class MediaViewerManager {
 		
 		$viewer_name = null;
 		if (!isset($info['viewer']) || !($viewer_name = $info['viewer'])) { 
-			$viewer_name = caGetDefaultMediaViewer($mimetype);
+			return null;
 		}
 		if (!$viewer_name) { return null; }
 		if(MediaViewerManager::viewerIsAvailable($viewer_name)) {
@@ -138,6 +143,32 @@ class MediaViewerManager {
 			return new $viewer_name();
 		}
 		return null;
+	}
+	# ----------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function viewerOptionsForDisplayClass(string $context, string $display_class) : ?array {
+		if(self::$s_viewer_options["{$context}/{$display_class}"] ?? null) {
+			return self::$s_viewer_options["{$context}/{$display_class}"];
+		}
+		$config = Configuration::load(__CA_CONF_DIR__.'/media_display.conf');
+		
+		$info = caGetMediaDisplayInfoForDisplayClass($context, $display_class);
+		
+		$viewer_name = null;
+		if (!isset($info['viewer']) || !($viewer_name = $info['viewer'])) { 
+			$viewer_name = caGetDefaultMediaViewer($mimetype);
+		}
+		if (!$viewer_name) { return null; }
+		require_once(__CA_LIB_DIR__."/Media/MediaViewers/{$viewer_name}.php");
+		$viewer_name = "CA\\MediaViewers\\{$viewer_name}";
+		
+		$opt_values = [];
+		foreach($viewer_name::viewerOptions() as $opt) {
+			$opt_values[$opt] = $info[$opt] ?? null;
+		}
+		return self::$s_viewer_options["{$context}/{$display_class}"] = $opt_values;
 	} 
 	# ----------------------------------------------------------
 }

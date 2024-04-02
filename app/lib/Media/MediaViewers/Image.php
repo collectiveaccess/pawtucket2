@@ -46,7 +46,24 @@ class Image extends BaseMediaViewer implements IMediaViewer {
 	 */
 	public static function getViewerHTML(\RequestHTTP $request, ?array $options=null) {
 		$o_view = self::getView($request, $options);
+		
 		return $o_view->render('image.php');
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function getViewerOverlayHTML(\RequestHTTP $request, ?array $options=null) {
+		$o_view = self::getView($request, $options);
+		
+		return $o_view->render('image_overlay.php');
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function viewerOptions() : ?array {
+		return ['display_version', 'zoom', 'width', 'height', 'no_overlay'];
 	}
 	# -------------------------------------------------------
 }
