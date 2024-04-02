@@ -24,12 +24,14 @@ let documentViewer = function(id, options=null) {
 		//
 		//
 		load: function(source, options={}) {
+			let is_overlay = options['overlay'] ?? false;
 			let c = that.containerDivs(that.id, source, options);
-			if(that.viewer && !options['overlay']) { that.destroy(source, options); }
+			if(that.viewer && !is_overlay) { that.destroy(source, options); }
 			
-			let e = options['overlay'] ? c['overlay_display'] : c['viewer'];
-			let overlay_ext = options['overlay'] ? '_overlay' : '';
-			let k = options['overlay'] ? 'viewer_overlay' : 'viewer';
+			
+			let e = is_overlay ? c['overlay_display'] : c['viewer'];
+			let overlay_ext = is_overlay ? '_overlay' : '';
+			let k = is_overlay ? 'viewer_overlay' : 'viewer';
 			
 			
 			that[k] = OpenSeadragon({
@@ -44,17 +46,18 @@ let documentViewer = function(id, options=null) {
 				sequenceMode:       true,
 				prefixUrl: (that.options['urlPath'] ?? '') + '/node_modules/openseadragon/build/openseadragon/images/',
 				tileSources:  source.pages,
-				zoomInButton:   options['overlay'] ? "documentviewer-overlay-zoom-in" : "documentviewer-zoom-in",
-				zoomOutButton:  options['overlay'] ? "documentviewer-overlay-zoom-out" : "documentviewer-zoom-out",
-				homeButton:     options['overlay'] ? "documentviewer-overlay-home" : "documentviewer-home",
-				fullPageButton: options['overlay'] ? "documentviewer-overlay-full-page" : "documentviewer-full-page",
-				nextButton:     options['overlay'] ? "documentviewer-overlay-next" : "documentviewer-next",
-				previousButton: options['overlay'] ? "documentviewer-overlay-previous" : "documentviewer-previous"
+				zoomInButton:   is_overlay ? "documentviewer-overlay-zoom-in" : "documentviewer-zoom-in",
+				zoomOutButton:  is_overlay ? "documentviewer-overlay-zoom-out" : "documentviewer-zoom-out",
+				homeButton:     is_overlay ? "documentviewer-overlay-home" : "documentviewer-home",
+				fullPageButton: is_overlay ? "documentviewer-overlay-full-page" : "documentviewer-full-page",
+				nextButton:     is_overlay ? "documentviewer-overlay-next" : "documentviewer-next",
+				previousButton: is_overlay ? "documentviewer-overlay-previous" : "documentviewer-previous"
 			});
 			
-			document.getElementById(options['overlay'] ? "documentviewer-overlay-currentpage" : "documentviewer-currentpage").innerHTML = "1/" + source.pages.length;
-			that.viewer.addHandler("page", function (data) {
-				document.getElementById(options['overlay'] ? "documentviewer-overlay-currentpage" : "documentviewer-currentpage").innerHTML = ( data.page + 1 ) + "/" + source.pages.length;
+			document.getElementById(is_overlay ? "documentviewer-overlay-currentpage" : "documentviewer-currentpage").innerHTML = "1/" + source.pages.length;
+			
+			that[k].addHandler("page", function (data) {
+				document.getElementById(is_overlay ? "documentviewer-overlay-currentpage" : "documentviewer-currentpage").innerHTML = ( data.page + 1 ) + "/" + source.pages.length;
 			});
 			
 			return that[k];
