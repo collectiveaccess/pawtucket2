@@ -38,7 +38,7 @@ let videoViewer = function(id, options=null) {
 				debug: false,
 				autoplay: false,
 				fullscreen: {
-					enabeled: true
+					enabled: false
 				},
 				loop: { 
 					active: true 
