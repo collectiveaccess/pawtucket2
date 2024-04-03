@@ -346,20 +346,25 @@ class DetailController extends FindController {
 				$options,
 				['checkAccess' => $this->opa_access_values]
 			);
-			$this->view->setVar('media_list', $l = caRepresentationList($this->request, $t_subject, $media_opts));
+			$this->view->setVar('media_list', $media_list = caRepresentationList($this->request, $t_subject, $media_opts));
 			$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail'])));
 			$this->view->setVar('media_options', [
-				'media_list' => $l,
+				'media_list' => $media_list,
+				
 				'next_button_id' => 'mediaviewer-next',
 				'previous_button_id' => 'mediaviewer-previous',
 				'show_overlay_button_id' => 'mediaviewer-show-overlay',
+				'download_button_id' => 'mediaviewer-download',
 				'media_overlay_id' => 'mediaviewer-overlay',
 				'media_overlay_content_id' => 'mediaviewer-overlay-content',
 				'media_caption_id' => 'mediaviewer-caption',
 				'media_overlay_caption_id' => 'mediaviewer-overlay-caption',
 				'media_selector_id' => 'mediaviewer-selector',
 				'media_selector_item_class' => 'mediaviewer-selector-control',
-				'media_selector_item_class_active' => 'mediaviewer-selector-control-active'
+				'media_selector_item_class_active' => 'mediaviewer-selector-control-active',
+				
+				'base_url' => $this->request->getThemeUrlPath(),
+				'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}"
 			]);
 		}
 		
@@ -763,16 +768,9 @@ class DetailController extends FindController {
 		}
 		
 		
-		if (!($vn_object_id = $this->request->getParameter('object_id', pInteger))) {
-			$vn_object_id = $this->request->getParameter('id', pInteger);
-		}
-		$t_instance->load($vn_object_id);
-		if (!$t_instance->isLoaded()) {
-			throw new ApplicationException(_t('Cannot download media'));
-		}
-		if(sizeof($this->opa_access_values) && (!in_array($t_instance->get("access"), $this->opa_access_values))){
-			return;
-		}
+		// if(sizeof($this->opa_access_values) && (!in_array($t_instance->get("access"), $this->opa_access_values))){
+// 			return;
+// 		}
 		$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
 		$ps_version = $this->request->getParameter('version', pString);
 		
@@ -781,26 +779,35 @@ class DetailController extends FindController {
 		if(sizeof($this->opa_access_values) && (!in_array($t_rep->get("access"), $this->opa_access_values))){
 			return;
 		}
+		
+		// TODO : check object accessibility
+		// if (!($vn_object_id = $this->request->getParameter('object_id', pInteger))) {
+// 			$vn_object_id = $this->request->getParameter('id', pInteger);
+// 		}
+// 		$t_instance->load($vn_object_id);
+// 		if (!$t_instance->isLoaded()) {
+// 			throw new ApplicationException(_t('Cannot download media'));
+// 		}
 		$this->view->setVar('t_object_representation', $t_rep);
 		
-		$t_download_log = new Downloadlog();
-		$t_download_log->log(array(
-				"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
-				"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
-				"table_num" => $t_instance->tableNum(), 
-				"row_id" => $vn_object_id, 
-				"representation_id" => $pn_representation_id, 
-				"download_source" => "pawtucket"
-		));
-			
+		// $t_download_log = new Downloadlog();
+// 		$t_download_log->log(array(
+// 				"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
+// 				"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+// 				"table_num" => $t_instance->tableNum(), 
+// 				"row_id" => $vn_object_id, 
+// 				"representation_id" => $pn_representation_id, 
+// 				"download_source" => "pawtucket"
+// 		));
+// 			
 		$va_versions = $t_rep->getMediaVersions('media');
 		
 		if (!in_array($ps_version, $va_versions)) { $ps_version = $va_versions[0]; }
 		
-		$available_versions = caGetAvailableDownloadVersions($this->request, $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-		if(!in_array($ps_version, $available_versions, true)) { 
-			return;
-		}
+		// $available_versions = caGetAvailableDownloadVersions($this->request, $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+// 		if(!in_array($ps_version, $available_versions, true)) { 
+// 			return;
+// 		}
 		$this->view->setVar('version', $ps_version);
 		
 		$va_rep_info = $t_rep->getMediaInfo('media', $ps_version);

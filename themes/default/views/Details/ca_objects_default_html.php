@@ -40,8 +40,7 @@ $map_options = $this->getVar('mapOptions') ?? [];
 $media_options = $this->getVar('media_options') ?? [];
 
 $media_options = array_merge($media_options, [
-	'id' => 'mediaviewer',
-	'urlPath' => $this->request->getThemeUrlPath()
+	'id' => 'mediaviewer'
 ]);
 ?>
 <script>

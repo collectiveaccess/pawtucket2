@@ -4215,16 +4215,35 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 	$detail_config = caGetDetailConfig()->get($subject->tableName());
 	$access_values = caGetUserAccessValues($request);
 	
+	$show_only_media_types = caGetOption('showOnlyMediaTypes', $options, null);
+	
+	$allow_download = caGetOption('allowMediaDownload', $options, false);
+	if(caGetOption('requireLoginForMediaDownload', $options, false) && !$request->isLoggedIn()) { 
+		$allow_download = false;
+	} else {
+		$require_roles_for_download = caGetOption('requireRoleForMediaDownload', $options, null);
+		if(is_array($require_roles_for_download) && sizeof($require_roles_for_download)) {
+			$allow_download = false;
+			if($request->isLoggedIn()) {
+				foreach($require_roles_for_download as $rrole) {
+					if($request->user->hasUserRole($rrole)) {
+						$allow_download = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+	
 	// options
-	$primary_only = caGetOption('primaryOnly', $options, false);
 	$versions = caGetOption('versions', $options, ['icon', 'small']);
 	$display_type = caGetOption('display', $options, 'detail');
 	
 	if($show_only_media_types && !is_array($show_only_media_types)) { $show_only_media_types = [$show_only_media_types]; }
+	if(is_array($show_only_media_types)) {
+		$show_only_media_types = array_map('strtolower', $show_only_media_types);
+	}
 	
-	$show_only_media_types_when_present = caGetOption('representationViewerShowOnlyMediaTypesWhenPresent', $options, null);
-	if($show_only_media_types_when_present && !is_array($show_only_media_types_when_present)) { $show_only_media_types_when_present = [$show_only_media_types_when_present]; }
-
 	$t_instance = null;
 	if(is_a($subject, 'RepresentableBaseModel')) {
 		$t_instance = $subject;
@@ -4248,6 +4267,10 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 		if(!($display_info = caGetMediaDisplayInfoForMimetype($display_type, $mimetype))) {
 			continue;
 		}
+		$download_info = caGetMediaDisplayInfoForMimetype('download', $mimetype);
+		if(is_array($show_only_media_types) && sizeof($show_only_media_types) && !in_array(strtolower($display_info['viewer']), $show_only_media_types)) {
+			continue;
+		}
 		
 		$display_version = $display_info['display_version'] ?? null;
 		
@@ -4265,7 +4288,6 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 				];
 			}
 		}
-		
 		$rep = [
 			'representation_id' => $rep_id,
 			'mimetype' => $mimetype,
@@ -4277,7 +4299,8 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 			'iiifUrl' => $iiif_url,
 			'no_overlay' => (bool)($display_info['no_overlay'] ?? false),
 			'caption' => caProcessTemplateForIDs($caption_template, $qr->tableName(), [$rep_id]),
-			'vttCaptions' => $vtt_captions
+			'vttCaptions' => $vtt_captions,
+			'download_version' => $allow_download ? caGetOption('download_version', $download_info, null) : null
 		];
 		
 		if(is_array($file_list = $qr->getFileList()) && sizeof($file_list)) {
@@ -4346,19 +4369,8 @@ function caRepresentationViewer($request, $subject, ?array $options=null) {
 	if (method_exists($t_instance, 'filterNonPrimaryRepresentations')) { $t_instance->filterNonPrimaryRepresentations(false); }
 
 	// options
-	$index 					= caGetOption('index', $options, null);
-	
-	$show_only_media_types 			= caGetOption('representationViewerShowOnlyMediaTypes', $options, null);
-	if(($show_only_media_types) && !is_array($show_only_media_types)) { $show_only_media_types = [$show_only_media_types]; }
-	
-	$show_only_media_types_when_present = caGetOption('representationViewerShowOnlyMediaTypesWhenPresent', $options, null);
-	if(($show_only_media_types_when_present) && !is_array($show_only_media_types_when_present)) { $show_only_media_types_when_present = [$show_only_media_types_when_present]; }
-
-	$display_annotations	 		= caGetOption('displayAnnotations', $options, false);
-	$annotation_display_template 	= caGetOption('displayAnnotationTemplate', $options, caGetOption('displayAnnotationTemplate', $va_detail_config['options'], '^ca_representation_annotations.preferred_labels.name'));
-	$default_annotation_id		 	= caGetOption('defaultAnnotationID', $options, null);
-	$start_timecode		 			= caGetOption('startTimecode', $options, null);
-	$display_type		 			= caGetOption('display', $options, 'detail');
+	$index = caGetOption('index', $options, null);
+	$display_type = caGetOption('display', $options, 'detail');
 
 	$media_list = caRepresentationList($request, $t_instance, $options);
 

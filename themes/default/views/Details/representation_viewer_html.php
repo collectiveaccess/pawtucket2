@@ -137,7 +137,8 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 <a href="#" id="mediaviewer-previous" class="mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();'><i class="bi bi-arrow-left"></i></a>
 <a href="#" id="mediaviewer-next" class="mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext();'><i class="bi bi-arrow-right"></i></a>
 <a href="#" id="mediaviewer-show-overlay" class="mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].showOverlay();'><i class="bi bi-window-fullscreen"></i></i></a>
-<span id="mediaviewer-caption">...</span>
+<a href="#" id="mediaviewer-download" class="mediaviewer-control"><i class="bi bi-download"></i></i></a>
+<span id="mediaviewer-caption"></span>
 <!-- END: Media viewer controls -->
 
 <!-- START: Media selector bar -->

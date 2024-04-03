@@ -32,11 +32,12 @@ let threedViewer = function(id, options=null) {
 			let k = options['overlay'] ? 'viewer_overlay' : 'viewer';
 			if(parseInt(source[options['overlay'] ? 'overlay_options' : 'options'].zoom) > 0) {
 				that[k] = null;
-				e.innerHTML = "viewer goes here";
+				e.innerHTML = "<div class='online_3d_viewer threedViewer-viz' model='" + source.original_url + "'></div>";
+				OV.Init3DViewerElements();
 			} else {
 				that[k] = null;
-				e.innerHTML = "<div class='online_3d_viewer' model='" + source.original_url + "'></div>";
-				OV.Init3DViewerElements();
+				e.innerHTML = source.tag;
+				e.onclick = function() { options.mediaViewer.showOverlay(); };
 			}
 			return that[k];
 		},

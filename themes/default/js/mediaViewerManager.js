@@ -177,6 +177,7 @@ let mediaViewerManager = function(options=null) {
 			let previous_button_class = that.options['previous_button_classname'];
 			
 			let show_overlay_button_id = that.options['show_overlay_button_id'];
+			let download_button_id = that.options['download_button_id'];
 			
 			let index = parseInt(that.index);
 			
@@ -187,6 +188,15 @@ let mediaViewerManager = function(options=null) {
 					
 				}
 			}
+			
+			if(download_button_id) {
+				e = document.getElementById(download_button_id);
+				if(e) {
+					e.style.display = (media_list[index] && media_list[index]['download_version']) ? 'inline' : 'none';
+					e.href = that.options.media_download_url + "&version=" + media_list[index]['download_version'] + "&representation_id=" + media_list[index]['representation_id'];
+				}
+			}
+			
 			
 			if(next_button_id) { 
 				e = document.getElementById(next_button_id);	
@@ -287,6 +297,7 @@ let mediaViewerManager = function(options=null) {
 					console.log('[mediaViewerManager::ERROR] Invalid media class ' + m.media_class);
 					return;
 			}
+			options['mediaViewer'] = that;
 			let v = iv.default(options);
 			return v.init(that.id, options);
 		}

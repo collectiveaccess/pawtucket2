@@ -63,6 +63,7 @@ let documentViewer = function(id, options=null) {
 			} else {
 				that[k] = null;
 				e.innerHTML = source.tag;
+				e.onclick = function() { options.mediaViewer.showOverlay(); };
 			}
 				
 			return that[k];
