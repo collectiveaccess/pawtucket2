@@ -39,13 +39,17 @@ class ThreeD extends BaseMediaViewer implements IMediaViewer {
 	/**
 	 *
 	 */
-	protected static $s_callbacks = [];
+	public static function getViewerHTML(\RequestHTTP $request, ?array $options=null) {
+		$o_view = self::getView($request, $options);
+		return $o_view->render('threed.php');
+	}
 	# -------------------------------------------------------
 	/**
 	 *
 	 */
-	public static function getViewerHTML($request, $options=null) {
-		return _t("Could not load viewer");
+	public static function getViewerOverlayHTML(\RequestHTTP $request, ?array $options=null) {
+		$o_view = self::getView($request, $options);
+		return $o_view->render('threed_overlay.php');
 	}
 	# -------------------------------------------------------
 }

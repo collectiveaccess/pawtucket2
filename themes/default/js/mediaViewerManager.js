@@ -281,7 +281,7 @@ let mediaViewerManager = function(options=null) {
 					iv = require('mediaViewers/document.js') ;
 					break;
 				case '3d':
-					alert('3d not implemented (yet)');
+					iv = require('mediaViewers/threed.js') ;
 					break;
 				default:
 					console.log('[mediaViewerManager::ERROR] Invalid media class ' + m.media_class);

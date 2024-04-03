@@ -1,7 +1,7 @@
 import baseViewer from "./baseViewer.js";
-let OpenSeadragon = require('openseadragon');
+import * as OV from 'online-3d-viewer';
 
-let imageViewer = function(id, options=null) {
+let threedViewer = function(id, options=null) {
 	let that = {
 		// Properties
 		id: null,
@@ -30,30 +30,13 @@ let imageViewer = function(id, options=null) {
 			let e = options['overlay'] ? c['overlay_display'] : c['viewer'];
 			let overlay_ext = options['overlay'] ? '_overlay' : '';
 			let k = options['overlay'] ? 'viewer_overlay' : 'viewer';
-			
 			if(parseInt(source[options['overlay'] ? 'overlay_options' : 'options'].zoom) > 0) {
-				that[k] = OpenSeadragon({
-					element: e,
-					preserveViewport: true,
-					visibilityRatio:    options['visibilityRatio'] ?? 1,
-					minZoomLevel:       options['minZoomLevel'] ?? 0,
-					maxZoomLevel:       options['maxZoomLevel'] ?? 15,
-					defaultZoomLevel:   options['defaultZoomLevel'] ?? 0,
-					sequenceMode:       false,
-					prefixUrl: (that.options['urlPath'] ?? '') + '/node_modules/openseadragon/build/openseadragon/images/',
-					tileSources:  [source.iiifUrl],					
-					minZoomImageRatio: 0.4,
-					maxZoomPixelRatio: 4,
-					zoomInButton:   options['overlay'] ? "imageviewer-overlay-zoom-in" : "imageviewer-zoom-in",
-					zoomOutButton:  options['overlay'] ? "imageviewer-overlay-zoom-out" : "imageviewer-zoom-out",
-					homeButton:     options['overlay'] ? "imageviewer-overlay-home" : "imageviewer-home",
-					fullPageButton: options['overlay'] ? "imageviewer-overlay-full-page" : "imageviewer-full-page",
-					nextButton:     options['overlay'] ? "imageviewer-overlay-next" : "imageviewer-next",
-					previousButton: options['overlay'] ? "imageviewer-overlay-previous" : "imageviewer-previous"
-				});
+				that[k] = null;
+				e.innerHTML = "viewer goes here";
 			} else {
 				that[k] = null;
-				e.innerHTML = source.tag;
+				e.innerHTML = "<div class='online_3d_viewer' model='" + source.original_url + "'></div>";
+				OV.Init3DViewerElements();
 			}
 			return that[k];
 		},
@@ -82,4 +65,4 @@ let imageViewer = function(id, options=null) {
 	return that;
 };
 
-export default imageViewer;
+export default threedViewer;
