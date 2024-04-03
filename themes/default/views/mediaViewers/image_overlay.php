@@ -1,5 +1,4 @@
 <?php
-$id = $this->getVar('id').'_'.$this->getVar('displayClass').'_overlay';
 $options = $this->getVar('options');
 ?>
 <style>
@@ -18,7 +17,7 @@ $options = $this->getVar('options');
 		display: flex;
 		flex-direction: row;
 		justify-content: space-evenly;
-		margin: 10px 0 10px 0;
+		padding: 10px 0 10px 0;
 	}
 	
 	div.mediaviewer-image-overlay-container img {
@@ -34,7 +33,6 @@ $options = $this->getVar('options');
 	<a href="#" id="imageviewer-overlay-zoom-in" class="imageviewer-control"><i class="bi bi-zoom-in"></i></a>
 	<a href="#" id="imageviewer-overlay-zoom-out" class="imageviewer-control"><i class="bi bi-zoom-out"></i></a>
 	<a href="#" id="imageviewer-overlay-home" class="imageviewer-control"><i class="bi bi-house"></i></a>
-	<!--<a href="#" id="imageviewer-overlay-full-page" class="imageviewer-control"><i class="bi bi-fullscreen"></i></a>-->
 </div>
 <?php
 	}

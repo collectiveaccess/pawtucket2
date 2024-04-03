@@ -4237,7 +4237,10 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 	
 	$qr = $t_instance->getRepresentationsAsSearchResult($options);
 	
+	$t_rep = new ca_object_representations();
 	$reps = [];
+	
+	$caption_template = caGetOption('mediaCaptionTemplate', $options, '???');
 	while($qr->nextHit()) {
 		$rep_id = $qr->get('ca_object_representations.representation_id');
 		$mimetype = $qr->get('ca_object_representations.mimetype');
@@ -4250,6 +4253,19 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 		
 		$iiif_url = $request->getBaseUrlPath().'/service/IIIF/representation:'.$rep_id.'/info.json';
 		
+		$vtt_captions = null;
+		if(is_array($vtt_caption_list = $t_rep->getCaptionFileList($rep_id))) {
+			$vtt_captions = [];
+			foreach($vtt_caption_list as $vtt_caption) {
+				$vtt_captions[] = [
+					'url' => $vtt_caption['url'],
+					'locale' => $vtt_caption['locale'],
+					'language' => substr($vtt_caption['locale_code'], 0, 2),
+					'locale_code' => $vtt_caption['locale_code']
+				];
+			}
+		}
+		
 		$rep = [
 			'representation_id' => $rep_id,
 			'mimetype' => $mimetype,
@@ -4258,7 +4274,10 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 			'url' => $qr->get("ca_object_representations.media.{$display_version}.url"),
 			'original_tag' => $qr->get("ca_object_representations.media.original.tag"),
 			'tag' => $qr->get("ca_object_representations.media.{$display_version}.tag"),
-			'iiifUrl' => $iiif_url
+			'iiifUrl' => $iiif_url,
+			'no_overlay' => (bool)($display_info['no_overlay'] ?? false),
+			'caption' => caProcessTemplateForIDs($caption_template, $qr->tableName(), [$rep_id]),
+			'vttCaptions' => $vtt_captions
 		];
 		
 		if(is_array($file_list = $qr->getFileList()) && sizeof($file_list)) {

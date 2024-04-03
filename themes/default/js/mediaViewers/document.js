@@ -34,32 +34,37 @@ let documentViewer = function(id, options=null) {
 			let k = is_overlay ? 'viewer_overlay' : 'viewer';
 			
 			
-			that[k] = OpenSeadragon({
-				element: e,
-				preserveViewport: true,
-				visibilityRatio:    options['visibilityRatio'] ?? 1,
-				minZoomLevel:       options['minZoomLevel'] ?? 0,
-				maxZoomLevel:       options['maxZoomLevel'] ?? 15,
-				defaultZoomLevel:   options['defaultZoomLevel'] ?? 0,
-				minZoomImageRatio: 0.4,
-				maxZoomPixelRatio: 4,
-				sequenceMode:       true,
-				prefixUrl: (that.options['urlPath'] ?? '') + '/node_modules/openseadragon/build/openseadragon/images/',
-				tileSources:  source.pages,
-				zoomInButton:   is_overlay ? "documentviewer-overlay-zoom-in" : "documentviewer-zoom-in",
-				zoomOutButton:  is_overlay ? "documentviewer-overlay-zoom-out" : "documentviewer-zoom-out",
-				homeButton:     is_overlay ? "documentviewer-overlay-home" : "documentviewer-home",
-				fullPageButton: is_overlay ? "documentviewer-overlay-full-page" : "documentviewer-full-page",
-				nextButton:     is_overlay ? "documentviewer-overlay-next" : "documentviewer-next",
-				previousButton: is_overlay ? "documentviewer-overlay-previous" : "documentviewer-previous"
-			});
-			
-			document.getElementById(is_overlay ? "documentviewer-overlay-currentpage" : "documentviewer-currentpage").innerHTML = "1/" + source.pages.length;
-			
-			that[k].addHandler("page", function (data) {
-				document.getElementById(is_overlay ? "documentviewer-overlay-currentpage" : "documentviewer-currentpage").innerHTML = ( data.page + 1 ) + "/" + source.pages.length;
-			});
-			
+			if(parseInt(source[options['overlay'] ? 'overlay_options' : 'options'].zoom) > 0) {
+				that[k] = OpenSeadragon({
+					element: e,
+					preserveViewport: true,
+					visibilityRatio:    options['visibilityRatio'] ?? 1,
+					minZoomLevel:       options['minZoomLevel'] ?? 0,
+					maxZoomLevel:       options['maxZoomLevel'] ?? 15,
+					defaultZoomLevel:   options['defaultZoomLevel'] ?? 0,
+					minZoomImageRatio: 0.4,
+					maxZoomPixelRatio: 4,
+					sequenceMode:       true,
+					prefixUrl: (that.options['urlPath'] ?? '') + '/node_modules/openseadragon/build/openseadragon/images/',
+					tileSources:  source.pages,
+					zoomInButton:   is_overlay ? "documentviewer-overlay-zoom-in" : "documentviewer-zoom-in",
+					zoomOutButton:  is_overlay ? "documentviewer-overlay-zoom-out" : "documentviewer-zoom-out",
+					homeButton:     is_overlay ? "documentviewer-overlay-home" : "documentviewer-home",
+					fullPageButton: is_overlay ? "documentviewer-overlay-full-page" : "documentviewer-full-page",
+					nextButton:     is_overlay ? "documentviewer-overlay-next" : "documentviewer-next",
+					previousButton: is_overlay ? "documentviewer-overlay-previous" : "documentviewer-previous"
+				});
+				
+				document.getElementById(is_overlay ? "documentviewer-overlay-currentpage" : "documentviewer-currentpage").innerHTML = "1/" + source.pages.length;
+				
+				that[k].addHandler("page", function (data) {
+					document.getElementById(is_overlay ? "documentviewer-overlay-currentpage" : "documentviewer-currentpage").innerHTML = ( data.page + 1 ) + "/" + source.pages.length;
+				});
+			} else {
+				that[k] = null;
+				e.innerHTML = source.tag;
+			}
+				
 			return that[k];
 		},
 		

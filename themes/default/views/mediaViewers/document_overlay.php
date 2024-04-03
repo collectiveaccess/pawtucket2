@@ -1,5 +1,4 @@
 <?php
-$id = $this->getVar('id').'_'.$this->getVar('displayClass').'_overlay';
 $options = $this->getVar('options');
 ?>
 <style>
@@ -18,7 +17,7 @@ $options = $this->getVar('options');
 		display: flex;
 		flex-direction: row;
 		justify-content: space-evenly;
-		margin: 10px 0 10px 0;
+		padding: 10px 0 10px 0;
 	}
 </style>
 
@@ -30,7 +29,6 @@ $options = $this->getVar('options');
 	<a href="#" id="documentviewer-overlay-zoom-in" class="documentviewer-control"><i class="bi bi-zoom-in"></i></a>
 	<a href="#" id="documentviewer-overlay-zoom-out" class="documentviewer-control"><i class="bi bi-zoom-out"></i></a>
 	<a href="#" id="documentviewer-overlay-home" class="documentviewer-control"><i class="bi bi-house"></i></a>
-	<!--<a href="#" id="documentviewer-overlay-full-page" class="documentviewer-control"><i class="bi bi-fullscreen"></i></a>-->
 	
 	<a href="#" id="documentviewer-overlay-previous" class="documentviewer-control"><i class="bi bi-arrow-left"></i></a>
 	<a href="#" id="documentviewer-overlay-next" class="documentviewer-control"><i class="bi bi-arrow-right"></i></a>

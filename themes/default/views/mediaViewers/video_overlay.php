@@ -1,5 +1,4 @@
 <?php	
-$id = $this->getVar('id').'_'.$this->getVar('displayClass').'_overlay';
 $options = $this->getVar('options');
 ?>
 <style>

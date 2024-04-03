@@ -32,23 +32,40 @@ let audioViewer = function(id, options=null) {
 			let overlay_ext = options['overlay'] ? '_overlay' : '';
 			let k = options['overlay'] ? 'viewer_overlay' : 'viewer';
 			
-			e.innerHTML = "<div data-plyr-provider='html5'><audio class='plyr__audio-embed' id='" + that.id + '_' + source.display_class + overlay_ext + "_plyr' controls width='100%' height='100%'></audio></div>";
-			
+			let tracks = [];
+			if(source.vttCaptions) {
+				for(let i in source.vttCaptions) {
+					let c = source.vttCaptions[i];
+					tracks.push({
+						'kind': 'captions',
+      					'label': c['locale'],
+      					'srclang': c['language'],
+      					'src': c['url'],
+     					'default': true
+					});
+				}
+			}
+			if(tracks.length > 0) {
+				e.innerHTML = "<div data-plyr-provider='html5' style='width: " + (source.options['width'] ?? '100%') + "; height: " + (source.options['height'] ?? '100%') + ";'><video class='plyr__video-embed' id='" + that.id + '_' + source.display_class + overlay_ext + "_plyr' controls></video></div>";
+			} else {
+				e.innerHTML = "<div data-plyr-provider='html5'><audio class='plyr__audio-embed' id='" + that.id + '_' + source.display_class + overlay_ext + "_plyr' controls></audio></div>";
+			}
 			let poptions = {
 				debug: false,
 				autoplay: false,
 				fullscreen: {
-					enabeled: true
+					enabled: false
 				},
 				loop: { 
 					active: true 
-				}
+				},
+				controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings']
 			};
 		
 			that[k] = new Plyr('#' + that.id + '_' + source.display_class + overlay_ext + '_plyr', poptions);
 			
 			that[k].source = {
-				  type: 'audio',
+				  type: (tracks.length > 0) ? 'video' : 'audio',
 				  title: 'Track',
 				  sources: [
 					{
@@ -56,6 +73,7 @@ let audioViewer = function(id, options=null) {
 					  type: source.mimetype,
 					}
 				  ],
+				  tracks: tracks,
 				  poster: source.small
 				};
 				

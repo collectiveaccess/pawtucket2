@@ -32,7 +32,21 @@ let videoViewer = function(id, options=null) {
 			let overlay_ext = options['overlay'] ? '_overlay' : '';
 			let k = options['overlay'] ? 'viewer_overlay' : 'viewer';
 			
-			e.innerHTML = "<div data-plyr-provider='html5'><video class='plyr__video-embed' preload='metadata' id='" + that.id + '_' + source.display_class + overlay_ext + "_plyr' playsinline='1' controls data-poster='" + source.small + "' width='400' height='400'></video></div>";
+			let tracks = [];
+			if(source.vttCaptions) {
+				for(let i in source.vttCaptions) {
+					let c = source.vttCaptions[i];
+					tracks.push({
+						'kind': 'captions',
+      					'label': c['locale'],
+      					'srclang': c['language'],
+      					'src': c['url'],
+     					 'default': true
+					});
+				}
+			}
+			
+			e.innerHTML = "<div data-plyr-provider='html5'><video class='plyr__video-embed' preload='metadata' id='" + that.id + '_' + source.display_class + overlay_ext + "_plyr' playsinline='1' controls data-poster='" + source.small + "' width='400' height='400'>" + tracks + "</video></div>";
 	
 			let poptions = {
 				debug: false,
@@ -42,7 +56,8 @@ let videoViewer = function(id, options=null) {
 				},
 				loop: { 
 					active: true 
-				}
+				},
+				controls: ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings']
 			};
 			
 			
@@ -57,6 +72,7 @@ let videoViewer = function(id, options=null) {
 					  type: source.mimetype,
 					}
 				  ],
+				  tracks: tracks,
 				  poster: source.small
 				};
 			return that[k];

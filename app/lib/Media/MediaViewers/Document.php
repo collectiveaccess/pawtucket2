@@ -57,4 +57,11 @@ class Document extends BaseMediaViewer implements IMediaViewer {
 		return $o_view->render('document_overlay.php');
 	}
 	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function viewerOptions() : ?array {
+		return ['display_version', 'zoom', 'width', 'height', 'no_overlay'];
+	}
+	# -------------------------------------------------------
 }

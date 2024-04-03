@@ -1,5 +1,4 @@
 <?php
-$id = $this->getVar('id').'_'.$this->getVar('displayClass');
 $options = $this->getVar('options');
 ?>
 <style>
