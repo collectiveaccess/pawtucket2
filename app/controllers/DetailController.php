@@ -312,61 +312,67 @@ class DetailController extends FindController {
 				$t_representation = Datamodel::getInstance("ca_object_representations", true);
 				$this->view->setVar("representation_id", null);
 			}
-			if(!is_array($media_display_info = caGetMediaDisplayInfoForMimetype('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
-			
-			$default_annotation_id = $start_timecode = null;
-			
-			if($start_timecode = $this->request->getParameter('start', pString)) {
-				// Timecode specified
-			} elseif(
-				($annotation_identifier = $this->request->getParameter(['annotation', 'clip'], pString)) &&
-				(($options['annotationIdentifier'] ?? null) && 
-				($t_instance = ca_representation_annotations::findAsInstance([$options['annotationIdentifier'] => $annotation_identifier])))
-			) {
-				$default_annotation_id = $t_instance->get('ca_representation_annotations.annotation_id');
-			} elseif($item_match_desc = $result_desc[$t_subject->getPrimaryKey()] ?? null) {
-				// Search matched annotation?
-				foreach($item_match_desc['desc'] as $m) {
-					if($m['table'] === 'ca_representation_annotations') {
-						$default_annotation_id = $m['field_row_id'];
-						break;
-					}
-					if($m['table'] === 'ca_representation_annotation_labels') {
-						if($t_instance = ca_representation_annotation_labels::findAsInstance($m['field_row_id'])) {
-							$default_annotation_id = $t_instance->get('ca_representation_annotation_labels.annotation_id');
+			if($t_representation->isLoaded()) {
+				if(!is_array($media_display_info = caGetMediaDisplayInfoForMimetype('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
+				
+				$default_annotation_id = $start_timecode = null;
+				
+				if($start_timecode = $this->request->getParameter('start', pString)) {
+					// Timecode specified
+				} elseif(
+					($annotation_identifier = $this->request->getParameter(['annotation', 'clip'], pString)) &&
+					(($options['annotationIdentifier'] ?? null) && 
+					($t_instance = ca_representation_annotations::findAsInstance([$options['annotationIdentifier'] => $annotation_identifier])))
+				) {
+					$default_annotation_id = $t_instance->get('ca_representation_annotations.annotation_id');
+				} elseif($item_match_desc = $result_desc[$t_subject->getPrimaryKey()] ?? null) {
+					// Search matched annotation?
+					foreach($item_match_desc['desc'] as $m) {
+						if($m['table'] === 'ca_representation_annotations') {
+							$default_annotation_id = $m['field_row_id'];
 							break;
+						}
+						if($m['table'] === 'ca_representation_annotation_labels') {
+							if($t_instance = ca_representation_annotation_labels::findAsInstance($m['field_row_id'])) {
+								$default_annotation_id = $t_instance->get('ca_representation_annotation_labels.annotation_id');
+								break;
+							}
 						}
 					}
 				}
+				
+				$media_display_config = caGetMediaDisplayConfig();
+				
+				$media_opts = array_merge(
+					$options,
+					['checkAccess' => $this->opa_access_values]
+				);
+				$this->view->setVar('media_list', $media_list = caRepresentationList($this->request, $t_subject, $media_opts));
+				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail'])));
+				$this->view->setVar('media_options', [
+					'media_list' => $media_list,
+					
+					'next_button_id' => 'mediaviewer-next',
+					'previous_button_id' => 'mediaviewer-previous',
+					'show_overlay_button_id' => 'mediaviewer-show-overlay',
+					'download_button_id' => 'mediaviewer-download',
+					'media_overlay_id' => 'mediaviewer-overlay',
+					'media_overlay_content_id' => 'mediaviewer-overlay-content',
+					'media_caption_id' => 'mediaviewer-caption',
+					'media_overlay_caption_id' => 'mediaviewer-overlay-caption',
+					'media_selector_id' => 'mediaviewer-selector',
+					'media_selector_item_class' => 'mediaviewer-selector-control',
+					'media_selector_item_class_active' => 'mediaviewer-selector-control-active',
+					
+					'base_url' => $this->request->getThemeUrlPath(),
+					'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}"
+				]);
+			} else {
+				$this->view->setVar('media_list', null);
+				$this->view->setVar('media_viewer', null);
+				$this->view->setVar('media_options', []);
 			}
-			
-			$media_display_config = caGetMediaDisplayConfig();
-			
-			$media_opts = array_merge(
-				$options,
-				['checkAccess' => $this->opa_access_values]
-			);
-			$this->view->setVar('media_list', $media_list = caRepresentationList($this->request, $t_subject, $media_opts));
-			$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail'])));
-			$this->view->setVar('media_options', [
-				'media_list' => $media_list,
-				
-				'next_button_id' => 'mediaviewer-next',
-				'previous_button_id' => 'mediaviewer-previous',
-				'show_overlay_button_id' => 'mediaviewer-show-overlay',
-				'download_button_id' => 'mediaviewer-download',
-				'media_overlay_id' => 'mediaviewer-overlay',
-				'media_overlay_content_id' => 'mediaviewer-overlay-content',
-				'media_caption_id' => 'mediaviewer-caption',
-				'media_overlay_caption_id' => 'mediaviewer-overlay-caption',
-				'media_selector_id' => 'mediaviewer-selector',
-				'media_selector_item_class' => 'mediaviewer-selector-control',
-				'media_selector_item_class_active' => 'mediaviewer-selector-control-active',
-				
-				'base_url' => $this->request->getThemeUrlPath(),
-				'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}"
-			]);
-		}
+		} 
 		
 		//
 		// Map
