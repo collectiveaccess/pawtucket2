@@ -41,6 +41,19 @@ let mediaViewerManager = function(options=null) {
 				}
 			}
 			
+			button_id = that.options['overlay_previous_button_id'];
+			if(button_id) {
+				if(e = document.getElementById(button_id)) {
+					options.overlay_previous_button_classname = e.className;
+				}
+			}
+			button_id = that.options['overlay_next_button_id'];
+			if(button_id) {
+				if(e = document.getElementById(button_id)) {
+					options.overlay_next_button_classname = e.className;
+				}
+			}
+			
 			button_id = that.options['show_overlay_button_id'];
 			if(button_id) {
 				if(e = document.getElementById(button_id)) {
@@ -144,8 +157,10 @@ let mediaViewerManager = function(options=null) {
 			let index = that.index;
 			if(index > 0) {
 				that.render(index-1);
-			} 
-			if(overlay) { that.showOverlay(); }
+				if(overlay) { that.showOverlay(); }
+			} else {
+				return;
+			}
 			that.updateNextPreviousNavigation();
 		},
 		
@@ -158,8 +173,10 @@ let mediaViewerManager = function(options=null) {
 			
 			if((index + 1) < media_list.length) {
 				that.render(index+1);
+				if(overlay) { that.showOverlay(); }
+			} else {
+				return
 			}
-			if(overlay) { that.showOverlay(); }
 			that.updateNextPreviousNavigation();
 		},
 		
@@ -175,6 +192,11 @@ let mediaViewerManager = function(options=null) {
 			let next_button_class = that.options['next_button_classname'];
 			let previous_button_id = that.options['previous_button_id'];
 			let previous_button_class = that.options['previous_button_classname'];
+			
+			let overlay_next_button_id = that.options['overlay_next_button_id'];
+			let overlay_next_button_class = that.options['overlay_next_button_classname'];
+			let overlay_previous_button_id = that.options['overlay_previous_button_id'];
+			let overlay_previous_button_class = that.options['overlay_previous_button_classname'];
 			
 			let show_overlay_button_id = that.options['show_overlay_button_id'];
 			let download_button_id = that.options['download_button_id'];
@@ -201,14 +223,44 @@ let mediaViewerManager = function(options=null) {
 			if(next_button_id) { 
 				e = document.getElementById(next_button_id);	
 				if(e) {
-					e.className = next_button_class + ((media_count <= 1) || (((index + 1) >= media_list.length)) ? '-disabled' : '');
+					if (media_count <= 1) {
+						e.style.display = 'none';
+					} else {
+						e.className = next_button_class + ((((index + 1) >= media_list.length)) ? '-disabled' : '');
+					}
 				}
 			}
 			
 			if(previous_button_id) { 
 				e = document.getElementById(previous_button_id);
 				if(e) {
-					e.className = previous_button_class + ((media_count <= 1) || (((index - 1) < 0)) ? '-disabled' : '');
+					if (media_count <= 1) {
+						e.style.display = 'none';
+					} else {
+						e.className = previous_button_class + ((((index - 1) < 0)) ? '-disabled' : '');
+					}
+				}
+			}
+			
+			if(overlay_next_button_id) { 
+				e = document.getElementById(overlay_next_button_id);	
+				if(e) {
+					if (media_count <= 1) {
+						e.style.display = 'none';
+					} else {
+						e.className = overlay_next_button_class + ((((index + 1) >= media_list.length)) ? '-disabled' : '');
+					}
+				}
+			}
+			
+			if(overlay_previous_button_id) { 
+				e = document.getElementById(overlay_previous_button_id);
+				if(e) {
+					if (media_count <= 1) {
+						e.style.display = 'none';
+					} else {
+						e.className = overlay_previous_button_class + ((((index - 1) < 0)) ? '-disabled' : '');
+					}
 				}
 			}
 			if(that.options.media_selector_id && that.options.media_selector_item_class) {
@@ -241,7 +293,6 @@ let mediaViewerManager = function(options=null) {
 				
 				let c = document.getElementById(c_id);
 				let cc = c.children;
-				console.log('xxx', c_id, cc);
 				for (let i = 0; i < cc.length; i++) {
 				   cc[i].style.display = 'none';
 				}

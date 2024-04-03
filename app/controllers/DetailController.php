@@ -354,6 +354,8 @@ class DetailController extends FindController {
 					
 					'next_button_id' => 'mediaviewer-next',
 					'previous_button_id' => 'mediaviewer-previous',
+					'overlay_next_button_id' => 'mediaviewer-overlay-next',
+					'overlay_previous_button_id' => 'mediaviewer-overlay-previous',
 					'show_overlay_button_id' => 'mediaviewer-show-overlay',
 					'download_button_id' => 'mediaviewer-download',
 					'media_overlay_id' => 'mediaviewer-overlay',
