@@ -30,37 +30,15 @@ $media_viewers = $this->getVar('media_viewers');
 $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 ?>
 <style>
-	.mediaviewer-control {
-		opacity: 1.0;	
-	}
-	.mediaviewer-control-disabled {
-		opacity: 0.5;
-	}
-	
-	.mediaviewer-selector-control {
-		padding-right: 5px;
-	}
-	
 	.mediaviewer-selector-control-active img {
-		border: 2px solid #cc0000;
+		border: 2px solid #000 !important;
 	}
 	
 	div.mediaviewer-overlay {
-		position: fixed;
-		left: 0px;
-		top: 0px;
-		width: 100%;
-		height: 100%;
-		background: #fff;
-		opacity: 1.0;
 		z-index: 50000;	
 	}
 	
 	div.mediaviewer-overlay-display {
-		width: 100%;
-		height: 100%;
-		background-color: #aaa;
-		display: none;
 	}
 	
 	div.mediaviewer-overlay-controls {
@@ -106,13 +84,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	
 	#mediaviewer-container {
 		width: 100%;
-		height: 400px;
-	}
-	
-	div.mediaviewer-selector {
-		width: 100%; 
-		height: 72px; 
-		margin-top: 10px;
+		height: 100%;
 	}
 	
 	div.mediaviewer-caption {
@@ -122,7 +94,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 </style>
 
 <!-- START: Primary media display <div>'s -->
-<div id="mediaviewer-container">
+<div id="mediaviewer-container" class="w-100 h-100">
 <?php 
 	foreach($media_viewers as $display_class => $media_viewer) {
 ?>
@@ -132,13 +104,20 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 ?>
 </div>
 <!-- END: Primary media display <div>'s -->
-
+<!-- START: Media viewer caption -->
+<div id="mediaviewer-caption"></div>
+<!-- END: Media viewer caption -->
 <!-- START: Media viewer controls -->
-<a href="#" id="mediaviewer-previous" class="mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();'><i class="bi bi-arrow-left"></i></a>
-<a href="#" id="mediaviewer-next" class="mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext();'><i class="bi bi-arrow-right"></i></a>
-<a href="#" id="mediaviewer-show-overlay" class="mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].showOverlay();'><i class="bi bi-window-fullscreen"></i></i></a>
-<a href="#" id="mediaviewer-download" class="mediaviewer-control"><i class="bi bi-download"></i></i></a>
-<span id="mediaviewer-caption"></span>
+<div class="row">
+	<div class="col-6">
+		<button class='btn btn-md btn-white ps-0 ms-0 pe-2 me-1 mediaviewer-control' id="mediaviewer-show-overlay" hx-on:click='window.mediaViewerManagers["mediaviewer"].showOverlay();'><i class="bi bi-zoom-in"></i></button>
+		<button class='btn btn-md btn-white ps-0 ms-0 mediaviewer-control' id="mediaviewer-download"><i class="bi bi-download"></i></button>
+	</div>
+	<div class="col-6 text-end">
+		<button class='btn btn-lg btn-white ms-0 ps-0 pe-1 me-0 mediaviewer-control' id="mediaviewer-previous" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious();'><i class="bi bi-arrow-left"></i></button>
+		<button class='btn btn-lg btn-white ps-1 ms-0 pe-0 me-0 mediaviewer-control' id="mediaviewer-next" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext();'><i class="bi bi-arrow-right"></i></button>
+	</div>
+</div>
 <!-- END: Media viewer controls -->
 
 <!-- START: Media selector bar -->
@@ -146,32 +125,32 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	if(sizeof($media_list) > 1) {
 		$media_icons = [];
 		foreach($media_list as $i => $m) {
-			$media_icons[] = "<a class='mediaviewer-selector-control' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".caHTMLImage($m['icon'], ['width' => '72', 'height' => '72', 'class' => 'mediaIcon']).'</a>';
+			$media_icons[] = "<div class='col-2 img-fluid'><a class='mediaviewer-selector-control' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".caHTMLImage($m['icon'], ['class' => 'mediaIcon border border-white border-2']).'</a></div>';
 		}
 ?>
-<div id="mediaviewer-selector" class='mediaviewer-selector'><?= join(" ", $media_icons); ?></div>
+<div id="mediaviewer-selector" class='row my-3 gx-3 justify-content-center'><?= join(" ", $media_icons); ?></div>
 <?php
 	}
 ?>
 <!-- END: Media selector bar -->
 
 <!-- START: Full-window media overlay display <div>'s -->
-<div id="mediaviewer-overlay" class="mediaviewer-overlay">
-	<div class="mediaviewer-overlay-controls">
+<div id="mediaviewer-overlay" class="mediaviewer-overlay position-fixed w-100 h-100 top-0 start-0 bg-white bg-opacity-75">
+	<div class="mediaviewer-overlay-controls bg-dark">
 		<div class="mediaviewer-overlay-navigation">
-			<a href="#" id="mediaviewer-overlay-previous" class="mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious(true);'><i class="bi bi-arrow-left"></i></a>
-			<a href="#" id="mediaviewer-overlay-next" class="mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext(true);'><i class="bi bi-arrow-right"></i></a>
+			<a href="#" id="mediaviewer-overlay-previous" class="text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderPrevious(true);'><i class="bi bi-arrow-left"></i></a>
+			<a href="#" id="mediaviewer-overlay-next" class="text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext(true);'><i class="bi bi-arrow-right"></i></a>
 		</div>
 		<div id="mediaviewer-overlay-caption" class="mediaviewer-caption"></div>
 		<div class="mediaviewer-overlay-close">
-			<a href="#" hx-on:click='window.mediaViewerManagers["mediaviewer"].hideOverlay();'><i class="bi bi-x-lg"></i></a>
+			<a href="#" class="text-light" hx-on:click='window.mediaViewerManagers["mediaviewer"].hideOverlay();'><i class="bi bi-x-lg"></i></a>
 		</div>
 	</div>
 	<div id="mediaviewer-overlay-content" class="mediaviewer-overlay-content">
 <?php 
 	foreach($media_viewer_overlays as $display_class => $media_viewer_overlay) {
 ?>
-		<div id="mediaviewer-overlay-<?= $display_class; ?>" class="mediaviewer-overlay-display"><?= $media_viewer_overlay; ?></div>
+		<div id="mediaviewer-overlay-<?= $display_class; ?>" class="mediaviewer-overlay-display w-100 h-100 display-none"><?= $media_viewer_overlay; ?></div>
 <?php
 	}
 ?>		

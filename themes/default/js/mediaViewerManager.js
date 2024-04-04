@@ -226,7 +226,7 @@ let mediaViewerManager = function(options=null) {
 					if (media_count <= 1) {
 						e.style.display = 'none';
 					} else {
-						e.className = next_button_class + ((((index + 1) >= media_list.length)) ? '-disabled' : '');
+						e.className = next_button_class + ((((index + 1) >= media_list.length)) ? ' disabled' : '');
 					}
 				}
 			}
@@ -237,7 +237,7 @@ let mediaViewerManager = function(options=null) {
 					if (media_count <= 1) {
 						e.style.display = 'none';
 					} else {
-						e.className = previous_button_class + ((((index - 1) < 0)) ? '-disabled' : '');
+						e.className = previous_button_class + ((((index - 1) < 0)) ? ' disabled' : '');
 					}
 				}
 			}
@@ -248,7 +248,7 @@ let mediaViewerManager = function(options=null) {
 					if (media_count <= 1) {
 						e.style.display = 'none';
 					} else {
-						e.className = overlay_next_button_class + ((((index + 1) >= media_list.length)) ? '-disabled' : '');
+						e.className = overlay_next_button_class + ((((index + 1) >= media_list.length)) ? ' disabled' : '');
 					}
 				}
 			}
@@ -259,7 +259,7 @@ let mediaViewerManager = function(options=null) {
 					if (media_count <= 1) {
 						e.style.display = 'none';
 					} else {
-						e.className = overlay_previous_button_class + ((((index - 1) < 0)) ? '-disabled' : '');
+						e.className = overlay_previous_button_class + ((((index - 1) < 0)) ? ' disabled' : '');
 					}
 				}
 			}

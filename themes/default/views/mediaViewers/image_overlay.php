@@ -7,21 +7,13 @@ $options = $this->getVar('options');
 		height: <?= caGetOption('height', $options, '100%'); ?>;
 		
 		overflow: clip;
-		
-		display: flex;
-  		align-items: center;
-  		justify-content: center;
 	}
 	
 	div.mediaviewer-image-overlay-control-bar {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-evenly;
-		padding: 10px 0 10px 0;
+		
 	}
 	
 	div.mediaviewer-image-overlay-container img {
-		object-fit: contain;
 		width: 100%;
 		height: 100%;
 	}
@@ -29,10 +21,12 @@ $options = $this->getVar('options');
 <?php
 	if($options['zoom'] ?? false) {
 ?>
-<div class="mediaviewer-image-overlay-control-bar">
-	<a href="#" id="imageviewer-overlay-zoom-in" class="imageviewer-control"><i class="bi bi-zoom-in"></i></a>
-	<a href="#" id="imageviewer-overlay-zoom-out" class="imageviewer-control"><i class="bi bi-zoom-out"></i></a>
-	<a href="#" id="imageviewer-overlay-home" class="imageviewer-control"><i class="bi bi-house"></i></a>
+<div class="mediaviewer-image-overlay-control-bar text-center bg-white py-2">
+	<div class="btn-group" role="group" aria-label="Viewer Controls">
+		<a href="#" id="imageviewer-overlay-zoom-in" class="btn btn-white imageviewer-control"><i class="bi bi-zoom-in" aria-label="zoom in"></i></a>
+		<a href="#" id="imageviewer-overlay-zoom-out" class="btn btn-white imageviewer-control"><i class="bi bi-zoom-out" aria-label="zoom out"></i></a>
+		<a href="#" id="imageviewer-overlay-home" class="btn btn-white imageviewer-control"><i class="bi bi-arrows-angle-contract" aria-label="fit"></i></a>
+	</div>
 </div>
 <?php
 	}
