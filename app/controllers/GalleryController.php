@@ -289,7 +289,7 @@
 			if($t_rep && !(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && !in_array($t_rep->get("access"), $this->opa_access_values))){
 				$this->view->setVar("rep_object", $t_rep);
 				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
-				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery', 'set_id' => $set_id]));
+				#$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery', 'set_id' => $set_id]));
 				$this->view->setVar("representation_id", $t_rep->get("representation_id"));
 			}
  			
