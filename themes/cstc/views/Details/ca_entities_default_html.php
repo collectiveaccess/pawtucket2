@@ -95,6 +95,12 @@ $map_options = $this->getVar('mapOptions') ?? [];
 	<div class="row row-cols-1 row-cols-md-2">
 		<div class="col">				
 			{{{<dl class="mb-0">
+				<ifdef code="ca_entities.nonpreferred_labels">
+					<dt><?= _t('Other Names'); ?></dt>
+					<dd>
+						<unit relativeTo="ca_entities.nonpreferred_labels" delimiter="<br>">^ca_entities.nonpreferred_label.displayname</unit>
+					</dd>
+				</ifdef>
 				<ifdef code="ca_entities.bioghist">
 					<dt><?= _t('Administrative/Biographical History'); ?></dt>
 					<dd>

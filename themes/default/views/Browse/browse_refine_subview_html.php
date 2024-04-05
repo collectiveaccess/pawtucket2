@@ -63,6 +63,7 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($vs_criteria) || ($qr_res->n
 			<div class="input-group p-3">
 				<label for="search-within" class="form-label visually-hidden">Search within</label>
 				<input name="search_refine" id="search-within" type="text" class="bg-white form-control rounded-0  border-0" placeholder="<?php print _t("Search within..."); ?>" aria-label="<?php print _t("Search within"); ?>">
+				<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 				<button type="submit" class="btn rounded-0 bg-white" aria-label="search submit"><i class="bi bi-search"></i></button>
 			</div>
 		</form>

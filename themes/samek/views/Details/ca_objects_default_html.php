@@ -96,10 +96,13 @@ if($show_nav){
 				<div class="row">
 					<div class="col">				
 						{{{<dl class="mb-0">
-							<ifdef code="ca_objects.creation_date_display">
-								<dt><?= _t('Date'); ?></dt>
-								<dd>^ca_objects.creation_date_display</dd>
-							</ifdef>
+
+							<if rule="^ca_objects.creation_date_display !~ /-/">
+								<ifdef code="ca_objects.creation_date_display">
+									<dt><?= _t('Date'); ?></dt>
+									<dd>^ca_objects.creation_date_display</dd>
+								</ifdef>
+							</if>
 		
 							<ifdef code="ca_objects.medium_container.display_medium_support">
 								<dt><?= _t('Medium and Support'); ?></dt>

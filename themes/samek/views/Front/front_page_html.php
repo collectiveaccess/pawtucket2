@@ -42,42 +42,32 @@
  	$set_items = $t_set ? $t_set->getItems(['thumbnailVersion' => 'medium']) : [];
 ?>
 
-<div class="container-xl">
-	<form class="pb-3" role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
-		<div class="input-group pb-1">
-			<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
+<div class="container">
+	<form class="pb-3" role="search" action="<?= caNavUrl($this->request, '', 'Search', 'objects'); ?>">
+		<label for="heroSearchInput" class="form-label display-5 text-secondary">Search the Collection</label>
+		<div class="input-group pb-2">
 			<input name="search" type="text" class="form-control me-1" id="heroSearchInput" placeholder="Search" aria-label="Search" aria-label="Search Bar">
 			<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
 		</div>
-		<div class="form-text"><?= caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
 	</form>
-</div>
 
-
-<!-- <div class="container-flex">
-	<div class="parallax hero<?php print $vs_hero; ?>">
-		<div class="container h-75">
-			<div class="row justify-content-center h-100">
-				<div class="col-md-9 col-lg-6 col-xl-5 d-flex h-100 align-items-center">
-					<div class="bg-black bg-opacity-75 text-bg-dark p-5 text-center shadow w-100">
-						<div class="pt-3">
-							<div class="fs-2 fw-light">Welcome to the</div>
-							<div class="pt-2 display-3 fw-medium">Samek Collection</div>
-						</div>
-						<div class="fs-4 pt-1">{{{hp_search_text}}}</div>
-						<form role="search" action="<?= caNavUrl($this->request, '', 'Search', 'GeneralSearch'); ?>">
-							<div class="input-group pb-3">
-								<label for="heroSearchInput" class="form-label visually-hidden">Search</label>
-								<input name="search" type="text" class="form-control rounded-0 border-0" id="heroSearchInput" placeholder="Search" aria-label="Search" aria-label="Search Bar">
-								<button type="submit" class="btn rounded-0 bg-white" id="heroSearchButton" aria-label="Search button"><i class="bi bi-search"></i></button>
-							</div>
-						</form>
-					</div>
+	<div class="row">
+		<div class="masonry-container">
+			<?php
+				foreach($set_items as $item) {	
+					$item = array_shift($item);
+					// print_R($item);
+			?>
+				<div class="masonry-item">
+					<?= caDetailLink($this->request, $item['representation_tag'], 'link-text', 'ca_objects', $item['row_id']); ?>
+					<?= caDetailLink($this->request, $item['name'], 'item-overlay-text', 'ca_objects', $item['row_id']); ?>
 				</div>
-			</div>
+			<?php
+				}
+			?>
 		</div>
 	</div>
-</div> -->
+</div>
 
 <?php
 	$vs_hp_intro_title = $this->getVar("hp_intro_title");
@@ -100,91 +90,9 @@
 		</div>
 <?php
 	}
-
-	# --- display galleries as a grid?
-	#print $this->render("Front/gallery_grid_html.php");
-	# --- display galleries as a slideshow?
-	#print $this->render("Front/gallery_slideshow_html.php");
-	# --- display 1 featured gallery
-	// print $this->render("Front/featured_gallery_html.php");
-
 ?>
 
-<div class="container-xl">
-	<div class="row">
-		<div class="masonry-container">
-			<?php
-				foreach($set_items as $item) {	
-					$item = array_shift($item);
-					// print_R($item);
-			?>
-				<div class="masonry-item">
-					<?= caDetailLink($this->request, $item['representation_tag'], 'link-text', 'ca_objects', $item['row_id']); ?>
-					<?= caDetailLink($this->request, $item['name'], 'item-overlay-text', 'ca_objects', $item['row_id']); ?>
-				</div>
-			<?php
-				}
-			?>
-		</div>
-	</div>
-</div>
 
-<!-- <div class="container">
-	<div class="row justify-content-center text-center">
-		<div class="col-md-10 hpExplore mt-5 py-5">
-			<H2 class="mb-3">Explore The Archive</H2>
-			<div class="row">
-				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "object.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Browse Objects</div></div>", "", "", "Browse", "objects"); ?>
-				</div>
-				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "exhibition.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Exhibitions</div></div>", "", "", "Browse", "work"); ?>
-				</div>
-				<div class="col-md-4">
-					<?php print caNavLink($this->request, "<div>".caGetThemeGraphic($this->request, "collection.jpg", array("alt" => "explore image", "class" => "object-fit-cover w-100 shadow"))."<div class='fw-medium fs-4 pt-1'>Collections</div></div>", "", "", "Collections", "Index"); ?>
-				</div>
-			</div>
-		</div>
-	</div>
-</div> -->
-
-
-<?php
-	# --- display slideshow of random images
-	// print $this->render("Front/featured_set_slideshow_html.php");
-?>
-<!-- <div class="container">
-	<div class="row justify-content-center my-5">
-		<div class="col-10">
-			<div id="carouselExampleIndicators" class="carousel slide">
-				<div class="carousel-indicators">
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-					<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-				</div>
-				<div class="carousel-inner">
-					<div class="carousel-item active">
-						<?php print caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "d-block w-100")); ?>
-					</div>
-					<div class="carousel-item">
-						<?php print caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "d-block w-100")); ?>
-					</div>
-					<div class="carousel-item">
-						<?php print caGetThemeGraphic($this->request, "hero_1.jpg", array("alt" => "explore image", "class" => "d-block w-100")); ?>
-					</div>
-				</div>
-				<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-					<span class="visually-hidden">Previous</span>
-				</button>
-				<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
-					<span class="visually-hidden">Next</span>
-				</button>
-			</div>
-		</div>
-	</div>
-</div> -->
 
 <div class="container-flex">
 	<div class="fade-out bg-black bg-opacity-25 text-bg-dark p-3 text-center shadow w-100 fixed-bottom display-4"><i class="bi bi-chevron-down"></i></div>
