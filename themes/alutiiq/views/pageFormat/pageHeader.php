@@ -326,6 +326,36 @@
 				</div>
 			</div>                
 		</div>
+		<div class="uk-section-muted uk-section">           
+			<div class="uk-container">                
+				<div class="uk-grid tm-grid-expand uk-child-width-1-1 uk-grid-margin">
+					<div class="uk-width-1-1">
+						<nav class="uk-text-center">
+							<ul class="uk-margin-remove-bottom uk-subnav  uk-subnav-divider uk-flex-center" uk-margin="">        <li class="el-item uk-first-column">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/holdings/">Holdings</a></li>
+								<li class="el-item ">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/amutat/">Amutat Databse</a></li>
+								<li class="el-item ">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/#research" uk-scroll="" target="_blank">Research</a></li>
+								<li class="el-item ">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/alutiiq-technological-inventory/">Alutiiq Tools</a></li>
+								<li class="el-item ">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/contributing/">Contributing</a></li>
+								<li class="el-item">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/facilities/">Facilities &amp; Policies</a></li>
+								</ul>
+						</nav> 
+					</div>
+				</div>
+            </div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="subNavJumpTo">Jump to Amutat: <a href="https://alutiiqmuseum.org/museum/collections/amutat/">Home</a> | <?php print caNavLink($this->request, "Institutions", "", "", "browse", "institutions")." | ".caNavLink($this->request, "Objects", "", "", "browse", "amutatObjects"); ?></div>
+				</div>
+			</div>
+		</div>
 <?php
 	}
 ?>

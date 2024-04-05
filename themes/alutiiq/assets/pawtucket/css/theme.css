@@ -91,7 +91,7 @@ h1, .front h1{
 	padding-top:12px;
 }
 .subNavJumpTo{
-	margin-bottom:20px;
+	margin-top:5px;
 }
 @media(min-width:600px) and (max-width:767px){
 	.subNavJumpTo{
@@ -104,7 +104,7 @@ h1, .front h1{
 	}
 }
 .subNavJumpTo a, .uk-breadcrumb a{
-	color: #ad655f;
+	color: #497b94;
 }
 /* home page */
 .hpIntroTop{
@@ -298,6 +298,9 @@ a.browseRemoveFacet .glyphicon {
 	margin-top: -30px;
 	background-color: #f2f4f5;
 	height:auto;
+}
+.detail.external .detailNavBgLeft, .detail.external .detailNavBgRight, .detail.institution .detailNavBgLeft, .detail.institution .detailNavBgRight {
+	margin-top: -63px;
 }
 .detail .detailNavBgRight{
 	right:15px;
