@@ -63,7 +63,9 @@
 		</div>
 		<div class="col-sm-7">
 			<h2 class="uk-h1">Lessons in Language and Culture</h2>
-			{{{word_intro}}}
+			<p>{{{word_intro}}}</p>
+			<div class="unit text-center"><?php print caNavLink($this->request, _t("Visit the Archive")." <span class='uk-margin-small-left uk-icon' uk-icon='arrow-right'><svg width='20' height='20' viewBox='0 0 20 20'><polyline fill='none' stroke='#000' points='10 5 15 9.5 10 14'></polyline><line fill='none' stroke='#000' x1='4' y1='9.5' x2='15' y2='9.5'></line></svg></span>", "uk-button uk-button-default", "", "browse", "words"); ?></div>
+					
 		</div>
 	</div><!-- end row -->
 <?php
@@ -107,7 +109,7 @@
 						<?php print $qr_res->getWithTemplate("<ifdef code='ca_occurrences.sentence'><br/>^ca_occurrences.sentence</ifdef>"); ?></div>
 					
 						<?php print $qr_res->getWithTemplate("<ifdef code='ca_occurrences.description'><div class='uk-panel uk-margin'>^ca_occurrences.description%length=300&ellipsis=1</uk-panel uk-margin></ifdef>"); ?>
-						<div class="unit text-center"><?php print caDetailLink($this->request, 'View Lesson ', 'uk-button uk-button-default', 'ca_occurrences', $qr_res->get("ca_occurrences.occurrence_id")); ?></div>
+						<div class="unit text-center"><?php print caDetailLink($this->request, 'View Lesson  <span class="uk-margin-small-left uk-icon" uk-icon="arrow-right"><svg width="20" height="20" viewBox="0 0 20 20"><polyline fill="none" stroke="#000" points="10 5 15 9.5 10 14"></polyline><line fill="none" stroke="#000" x1="4" y1="9.5" x2="15" y2="9.5"></line></svg></span>', 'uk-button uk-button-default', 'ca_occurrences', $qr_res->get("ca_occurrences.occurrence_id")); ?></div>
 					
 					</div><!-- end col -->
 				</div><!-- end row -->
@@ -145,7 +147,7 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<hr class="uk-divider-small">
-				<div class="uk-h2">Word of the Week Archive</div>
+				<div class="uk-h2"><?php print caNavLink($this->request, _t("Word of the Week Archive"), "", "", "browse", "words"); ?></div>
 				<div class="fullWidthImg text-center">
 					<?php print caGetThemeGraphic($this->request, 'archive.jpg', array("alt" => "Word of the week voices and advisors")); ?>			
 					<div class="small unit">From left, April Counceller, Florence Pestrikof, Sophie Shepherd, and Nick Alokli, word of the week voices and advisors, sign copies of the Alutiiq Word of the Week book, 2012.</div>
@@ -169,7 +171,7 @@
 			<hr class="uk-divider-small">
 				<div class="uk-h2">{{{word_signup_title}}}</div>
 				{{{word_signup}}}
-				<div class="unit"><a href="https://publ.maillist-manage.com/ua/Optin?od=11287ecad08ab5&zx=12e31dbf&lD=16b23678355481cf&n=11699f74cec564d&sD=16b236783555c601" target="_blank" class="uk-button uk-button-default"><span class="uk-margin-small-right uk-icon" uk-icon="mail"><svg width="20" height="20" viewBox="0 0 20 20"><polyline fill="none" stroke="#000" points="1.4,6.5 10,11 18.6,6.5"></polyline><path d="M 1,4 1,16 19,16 19,4 1,4 Z M 18,15 2,15 2,5 18,5 18,15 Z"></path></svg></span> Sign Me Up!</a></div>
+				<div class="unit"><a href="mailto:dehrich@alutiiqmuseum.org" target="_blank" class="uk-button uk-button-default"><span class="uk-margin-small-right uk-icon" uk-icon="mail"><svg width="20" height="20" viewBox="0 0 20 20"><polyline fill="none" stroke="#000" points="1.4,6.5 10,11 18.6,6.5"></polyline><path d="M 1,4 1,16 19,16 19,4 1,4 Z M 18,15 2,15 2,5 18,5 18,15 Z"></path></svg></span> Sign Me Up!</a></div>
 		</div>
 	</div>
 	<div class="row unitLarge">
