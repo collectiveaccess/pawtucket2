@@ -57,7 +57,12 @@ class DefaultController extends BasePawtucketController {
 			$this->response->addContent($content);
 			return;
 		}
-		$this->render(join("/", $path[0]).".php", false);
+		
+		if($this->viewExists($v = join("/", $path[0]).".php")) {
+			$this->render($v, false);
+		} else {
+			$this->response->addContent(_t('Page is not available'));
+		}
 	}
 	# ------------------------------------------------------
 }
