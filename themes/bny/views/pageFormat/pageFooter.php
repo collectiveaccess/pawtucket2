@@ -54,11 +54,11 @@ if($this->request->isLoggedIn()){
 				<div class="row">
 					<div class="col-sm-12 col-md-6 text-md-start">
 						<a href="www.brooklynnavyyard.org" target="_blank"><?= caGetThemeGraphic($this->request, 'BNY-logo-White.png', array("alt" => "Brooklyn Navy Yard Logo")); ?></a>
-						<div class="pt-5"><a href="www.brooklynnavyyard.org" target="_blank" class="text-light text-decoration-none">brooklynnavyyard.org <i class="bi bi-box-arrow-up-right"></i></a></div>
+						<div class="pt-5 text-md-start"><a href="www.brooklynnavyyard.org" target="_blank" class="text-light text-decoration-none">brooklynnavyyard.org <i class="bi bi-box-arrow-up-right"></i></a></div>
 					</div>
 <?php
 					if($user_links){
-						print "<div class='col-sm-12 col-md-2 text-start'>".$user_links."</div>";
+						print "<div class='col-sm-12 col-md-2 text-md-start pt-4 pt-md-0'>".$user_links."</div>";
 					}
 ?>
 					<div class="col-sm-12 col-md-2 text-md-start">
@@ -72,7 +72,7 @@ if($this->request->isLoggedIn()){
 							718-643-9296 (fax)</p>
 						</div>
 					</div>
-					<div class="col-sm-12 col-md-2 text-start">
+					<div class="col-sm-12 col-md-2 text-md-start">
 						<div class="fw-medium text-uppercase pb-2">Connect</div>
 						<div class="fs-6"><a href="https://www.instagram.com/bklynnavyyard/" target="_blank" aria-label="Visit us on Instagram" class="text-light text-decoration-none"><i class="bi bi-instagram text-secondary fs-5 me-1 align-middle"></i> <span class="align-middle">@bklynnavyyard</span></a></div>
 						<div class="fs-6"><a href="https://twitter.com/bklynnavyyard" target="_blank" aria-label="Visit us on Twitter" class="text-light text-decoration-none"><i class="bi bi-twitter text-secondary fs-5 me-1 align-middle"></i> <span class="align-middle">@bklynnavyyard</span></a></div>
