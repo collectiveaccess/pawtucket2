@@ -23,7 +23,7 @@
     "@babel/preset-react": "^7.23.3",
     "@radix-ui/react-select": "^2.0.0",
     "babel-loader": "^9.1.3",
-    "@samvera/cloverIIIF": "https://github.com/wykhuh/clover-iiif.git#feature/newspaper-viewer-search",
+    "@samvera/cloverIIIF": "https://github.com/wykhuh/clover-iiif.git#feature/search-and-clipping-dist",
     "css-loader": "^6.8.1",
     "expose-loader": "^4.1.0",
     "jquery": "^3.7.1",

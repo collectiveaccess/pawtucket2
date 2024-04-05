@@ -73,7 +73,11 @@ export default function _init(appData) {
 			iiifContent={appData.url} 
 			iiifContentSearch={appData.searchUrl} 
 			options={{
-				informationPanel: { open: false, renderAbout: true, renderToggle: true },
+				informationPanel: {
+				  open: false, 
+				  renderAbout: true, 
+				  renderToggle: true
+				},
 				showIIIFBadge: false,
 				showTitle: false,
 				canvasHeight: "640px",

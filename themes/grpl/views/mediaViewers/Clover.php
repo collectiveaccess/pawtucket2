@@ -40,6 +40,7 @@ $display_info = $this->getVar('displayInfo');
     	id: 'clover<?= $display_type; ?>',
     	url: <?= json_encode($this->getVar('data_url').'/render/Newspaper'); ?>,
     	searchUrl: <?= json_encode($this->getVar('search_url').'?q=injured+teacher'); ?>,
+    	annotationUrl: <?= json_encode($this->getVar('data_url').'render/Annotations'); ?>,
     	renderAbout: false,
     	renderResources: false,
     	renderClips: true,   	
