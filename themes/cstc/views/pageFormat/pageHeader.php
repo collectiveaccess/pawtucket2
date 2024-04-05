@@ -88,7 +88,7 @@ if($this->request->isLoggedIn()){
 					print "<li>".caNavLink($this->request, _t("Photo"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "430"))."</li>";
 					print "<li>".caNavLink($this->request, _t("Sound"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "431"))."</li>";
 					print "<li>".caNavLink($this->request, _t("Video"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "432"))."</li>";
-					print "<li>".caNavLink($this->request, _t("Maps"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "472"))."</li>";
+					print "<li>".caNavLink($this->request, _t("Maps"), 'dropdown-item', '', 'Browse', 'Archives', array("facet" => "material_designations_facet", "id" => "427"))."</li>";
 					print "<li>".caNavLink($this->request, _t("Collections"), 'dropdown-item', '', 'Collections', 'Index')."</li>";
 ?>
 					</ul>	

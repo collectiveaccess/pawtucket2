@@ -2,7 +2,7 @@ const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
-	mode: "development",
+	mode: "production",
 	watch: true,
 	
 	entry: { 
@@ -49,7 +49,7 @@ module.exports = {
         use: ['style-loader', 'css-loader', 'sass-loader']
       },
       { 
-      	test: /\.(png|eot|ttf|svg|otf|gif)$/, 
+      	test: /\.(png|svg|gif)$/, 
         use: [{
             loader: "url-loader",
             options: { "limit": 100000 }
@@ -58,7 +58,7 @@ module.exports = {
       {
 		test: /\.(woff|woff2|eot|ttf|otf)$/i,
 		type: "asset/inline",
-      },
+      }
     ]
   },
   plugins: [

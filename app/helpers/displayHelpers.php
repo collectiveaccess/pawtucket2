@@ -4395,7 +4395,9 @@ function caRepresentationViewer($request, $subject, ?array $options=null) {
 			array_merge(['displayClass' => $display_class, 'id' => 'mediaviewer'], $opts)
 		);
 		
-		$o_viewer = MediaViewerManager::getViewerByDisplayClass('overlay', $display_class);
+		if(!($o_viewer = MediaViewerManager::getViewerByDisplayClass('overlay', $display_class))) {
+			continue;
+		}
 		$opts = MediaViewerManager::viewerOptionsForDisplayClass('overlay', $display_class);
 		$viewer_overlay_html[$display_class] = $o_viewer->getViewerOverlayHTML(
 			$request,

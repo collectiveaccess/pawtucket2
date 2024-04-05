@@ -158,7 +158,7 @@ class MediaViewerManager {
 		
 		$viewer_name = null;
 		if (!isset($info['viewer']) || !($viewer_name = $info['viewer'])) { 
-			$viewer_name = caGetDefaultMediaViewer($mimetype);
+			return null;
 		}
 		if (!$viewer_name) { return null; }
 		require_once(__CA_LIB_DIR__."/Media/MediaViewers/{$viewer_name}.php");

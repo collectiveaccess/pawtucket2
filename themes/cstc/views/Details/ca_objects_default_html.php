@@ -37,9 +37,15 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_object->get('ca_objects.object_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+$media_options = $this->getVar('media_options') ?? [];
+
+$media_options = array_merge($media_options, [
+	'id' => 'mediaviewer'
+]);
 ?>
-<script type="text/javascript">
+<script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
+	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
 <?php
 if($show_nav){
@@ -86,13 +92,11 @@ if($show_nav){
 ?>
 
 	<div class="row">
-{{{<ifdef code="ca_object_representations.media.large">
-		<div class="col-md-6 justify-content-center">
-			<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
-		</div>
-</ifdef>}}}
 		<div class="col-md-6">
-			<div class="bg-light py-3 px-4 mb-3">
+			{{{media_viewer}}}
+		</div>
+		<div class="col-md-6">
+			<div class="bg-light py-3 px-4 mb-3 h-100">
 				<div class="row">
 					<div class="col">				
 						{{{<dl class="mb-0">

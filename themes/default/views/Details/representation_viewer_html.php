@@ -52,6 +52,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 		background-color: #000;
 		
 		padding: 7px 10px; 7px 10px;
+		z-index:1;
 	}
 	
 	div.mediaviewer-overlay-content {
@@ -83,8 +84,8 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	}
 	
 	#mediaviewer-container {
-		width: 100%;
-		height: 100%;
+		/*width: 100%;
+		height: 100%;*/
 	}
 	
 	div.mediaviewer-caption {
@@ -94,7 +95,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 </style>
 
 <!-- START: Primary media display <div>'s -->
-<div id="mediaviewer-container" class="w-100 h-100">
+<div id="mediaviewer-container" class="w-100">
 <?php 
 	foreach($media_viewers as $display_class => $media_viewer) {
 ?>
@@ -125,7 +126,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 	if(sizeof($media_list) > 1) {
 		$media_icons = [];
 		foreach($media_list as $i => $m) {
-			$media_icons[] = "<div class='col-2 img-fluid'><a class='mediaviewer-selector-control' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".caHTMLImage($m['icon'], ['class' => 'mediaIcon border border-white border-2']).'</a></div>';
+			$media_icons[] = "<div class='col-2 img-fluid mb-3'><a class='mediaviewer-selector-control' hx-on:click='window.mediaViewerManagers[\"mediaviewer\"].render({$i});'>".caHTMLImage($m['icon'], ['class' => 'mediaIcon border border-white border-2']).'</a></div>';
 		}
 ?>
 <div id="mediaviewer-selector" class='row my-3 gx-3 justify-content-center'><?= join(" ", $media_icons); ?></div>
@@ -142,7 +143,7 @@ $media_viewer_overlays = $this->getVar('media_viewer_overlays');
 			<a href="#" id="mediaviewer-overlay-next" class="text-light mediaviewer-control" hx-on:click='window.mediaViewerManagers["mediaviewer"].renderNext(true);'><i class="bi bi-arrow-right"></i></a>
 		</div>
 		<div id="mediaviewer-overlay-caption" class="mediaviewer-caption"></div>
-		<div class="mediaviewer-overlay-close">
+		<div class="mediaviewer-overlay-close pt-1">
 			<a href="#" class="text-light" hx-on:click='window.mediaViewerManagers["mediaviewer"].hideOverlay();'><i class="bi bi-x-lg"></i></a>
 		</div>
 	</div>

@@ -7,12 +7,10 @@ $options = $this->getVar('options');
 		height: <?= caGetOption('height', $options, '100%'); ?>;
 		
 		overflow: clip;
-		
-		display: flex;
-  		align-items: center;
-  		justify-content: center;
+	}
+	div.mediaviewer-video-container > div{
+		width:100%; /* makes the preview full width while loading the video */
 	}
 </style>
-<div class="mediaviewer mediaviewer-video-container">
-	<div data-plyr-provider='html5'></div>
+<div class="mediaviewer mediaviewer-video-container d-flex justify-content-center align-items-center">
 </div>

@@ -7,31 +7,22 @@ $options = $this->getVar('options');
 		height: <?= caGetOption('height', $options, '100%'); ?>;
 		
 		overflow: clip;
-		
-		display: flex;
-  		align-items: center;
-  		justify-content: center;
-	}
-	
-	div.mediaviewer-document-overlay-control-bar {
-		display: flex;
-		flex-direction: row;
-		justify-content: space-evenly;
-		padding: 10px 0 10px 0;
 	}
 </style>
 
 
 </style>
 
-<div class="mediaviewer-document-overlay-control-bar">
-	<div id="documentviewer-overlay-currentpage"></div>
-	<a href="#" id="documentviewer-overlay-zoom-in" class="documentviewer-control"><i class="bi bi-zoom-in"></i></a>
-	<a href="#" id="documentviewer-overlay-zoom-out" class="documentviewer-control"><i class="bi bi-zoom-out"></i></a>
-	<a href="#" id="documentviewer-overlay-home" class="documentviewer-control"><i class="bi bi-house"></i></a>
+<div class="mediaviewer-document-overlay-control-bar text-center bg-white py-2">
+	<div class="btn-group align-items-center" role="group" aria-label="Viewer Controls">
+		<a href="#" id="documentviewer-overlay-zoom-in" class="btn btn-white documentviewer-control"><i class="bi bi-zoom-in" aria-label="Zoom in"></i></a>
+		<a href="#" id="documentviewer-overlay-zoom-out" class="btn btn-white documentviewer-control"><i class="bi bi-zoom-out" aria-label="Zoom out"></i></a>
+		<a href="#" id="documentviewer-overlay-home" class="btn btn-white documentviewer-control"><i class="bi bi-arrows-angle-contract" aria-label="Fit"></i></a>
 	
-	<a href="#" id="documentviewer-overlay-previous" class="documentviewer-control"><i class="bi bi-arrow-left"></i></a>
-	<a href="#" id="documentviewer-overlay-next" class="documentviewer-control"><i class="bi bi-arrow-right"></i></a>
+		<a href="#" id="documentviewer-overlay-previous" class="btn btn-white documentviewer-control"><i class="bi bi-arrow-left" aria-label="Previous page"></i></a>
+		<span id="documentviewer-overlay-currentpage"></span>
+		<a href="#" id="documentviewer-overlay-next" class="btn btn-white documentviewer-control"><i class="bi bi-arrow-right" aria-label="Next Page"></i></a>
+	</div>
 </div>
 
 <div class="mediaviewer mediaviewer-document-overlay-container"></div>

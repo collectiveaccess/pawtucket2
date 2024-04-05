@@ -7,10 +7,6 @@ $options = $this->getVar('options');
 		height: <?= caGetOption('height', $options, '100%'); ?>;
 		
 		overflow: clip;
-		
-		display: flex;
-  		align-items: center;
-  		justify-content: center;
 	}
 	
 	div.mediaviewer-audio {
@@ -19,6 +15,6 @@ $options = $this->getVar('options');
   	}
 </style>
 
-<div class="mediaviewer mediaviewer-audio-container">
-	<div class="mediaviewer-audio" data-plyr-provider='html5'></div>
+<div class="mediaviewer mediaviewer-audio-container d-flex justify-content-center align-items-center">
+	<div class="mediaviewer-audio w-100 h-100" data-plyr-provider='html5'></div>
 </div>
