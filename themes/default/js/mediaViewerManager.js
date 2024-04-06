@@ -98,7 +98,7 @@ let mediaViewerManager = function(options=null) {
 		render: function(index, options={}) {
 			let media_list = that.media_list;
 			if(media_list === undefined) { return false; }
-			
+			console.log("xxx", media_list);
 			let m = media_list[index];
 			
 			let display_classes = [];
@@ -345,7 +345,7 @@ let mediaViewerManager = function(options=null) {
 					iv = require('mediaViewers/threed.js') ;
 					break;
 				default:
-					console.log('[mediaViewerManager::ERROR] Invalid media class ' + m.media_class);
+					console.log('[mediaViewerManager::ERROR] Invalid media class ' + viewer_class);
 					return;
 			}
 			options['mediaViewer'] = that;
