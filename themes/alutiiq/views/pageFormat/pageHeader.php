@@ -334,7 +334,7 @@
 							<ul class="uk-margin-remove-bottom uk-subnav  uk-subnav-divider uk-flex-center" uk-margin="">        <li class="el-item uk-first-column">
 							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/holdings/">Holdings</a></li>
 								<li class="el-item ">
-							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/amutat/">Amutat Databse</a></li>
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/amutat/">Amutat Database</a></li>
 								<li class="el-item ">
 							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/#research" uk-scroll="" target="_blank">Research</a></li>
 								<li class="el-item ">
