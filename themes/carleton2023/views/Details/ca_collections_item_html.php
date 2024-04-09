@@ -26,7 +26,8 @@
  * ----------------------------------------------------------------------
  */
  
-	$t_item = 			$this->getVar("item");
+	$t_item = 				$this->getVar("item");
+	$collection_id = 		$t_item->getPrimaryKey();
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -91,6 +92,39 @@
 		$edit_link = "https://archive.carleton.edu/admin/editor/collections/CollectionEditor/Edit/collection_id/" . "^ca_collections.collection_id";
 		$va_fields["Edit record"] = "<a href='" . $edit_link . "'target=\"_blank\">Click here to edit this record</a>";
 	}
+	
+	// Calculate next/prev in container
+	if(($parent_id = $t_item->get('ca_collections.parent_id')) && ($t_parent = ca_collections::findAsInstance($parent_id))) {
+		if(is_array($child_ids = $t_parent->getHierarchyChildren(null, ['idsOnly' => true])) && sizeof($child_ids)) {
+			if($qr_siblings = caMakeSearchResult('ca_collections', $child_ids, ['sort' => 'ca_collections.id_number'])) {
+				
+				$prev_id = $next_id = null;
+				$child_ids = $qr_siblings->getAllFieldValues('ca_collections.collection_id');
+				if(($i = array_search($collection_id, $child_ids)) !== false) {
+					$prev_id = ($i > 0) ? $child_ids[$i - 1] : null;
+					$next_id = ($i < sizeof($child_ids) -1) ? $child_ids[$i + 1] : null;
+				}
+				
+				if($prev_id || $next_id) {
+?>
+					<div style="text-align: center;">
+<?php
+					if($prev_id) {
+						print caNavLink($this->request, "&lt; Previous in container", "btn btn-default btn-small", "", "*", "collections/{$prev_id}", []);
+					}
+					if($prev_id && $next_id) {
+						print " | ";
+					}
+					if($next_id) {
+						print caNavLink($this->request, "Next in container &gt;", "btn btn-default btn-small", "", "*", "collections/{$next_id}", []);
+					}
+?>
+					</div>
+<?php
+				}
+			}	
+		}
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -124,7 +158,7 @@
 				
 				<div id="detailAnnotations"></div>
 				
-				<?= caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-xs-3 col-sm-3 col-md-2", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+				<?= caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "basic", "bsColClasses" => "smallpadding col-xs-3 col-sm-3 col-md-2", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 			</div><!-- end col -->
 			<div class='col-sm-6 col-md-6'>
 <?php
