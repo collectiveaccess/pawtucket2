@@ -55,6 +55,10 @@ class IIIFService {
 		// INFO: 		{scheme}://{server}{/prefix}/{identifier}/info.json
 		// IMAGE:		{scheme}://{server}{/prefix}/{identifier}/{region}/{size}/{rotation}/{quality}.{format}
 		
+		if(((sizeof($va_path) > 1) && ($va_path[0] === 'info.json'))) {
+			array_shift($va_path);
+		}
+		
 		if (sizeof($va_path) == 0) { 
 			$response->setRedirect($request->getFullUrlPath()."/info.json");
 			return;
@@ -76,7 +80,7 @@ class IIIFService {
 		list($ps_type, $pn_id, $pn_page) = self::parseIdentifier($identifier);
 		
 		$vs_image_path = null;
-		
+		$vb_cache = false;
 		if ($vb_cache && CompositeCache::contains($identifier, 'IIIFMediaInfo')) {
 			$va_cache = CompositeCache::fetch($identifier,'IIIFMediaInfo');
 			$va_sizes = $va_cache['sizes'];

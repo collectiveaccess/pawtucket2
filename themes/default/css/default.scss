@@ -23,6 +23,9 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 .btn-white:hover{
 	text-decoration:underline;
 }
+.btn.disabled{
+	border-color:transparent;
+}
 /* ------------------------- Navbar ------------------------- */
 .navbar-brand{
 	width:200px;
@@ -137,11 +140,6 @@ a.bg-body-tertiary:hover, a.bg-body-tertiary:focus, a.bg-body-tertiary:active {
 	}
 	.map{
 		height:300px;
-	}
-	
-	.mediaIcon {
-		width: 72px;
-		height: 72px;
 	}
 }
 

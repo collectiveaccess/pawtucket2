@@ -2376,18 +2376,19 @@ function caGetMediaDisplayConfig() {
  *
  * @return
  */
-function caGetMediaDisplayInfo($ps_context, $ps_mimetype) {
+function caGetMediaDisplayInfoForMimetype(string $context, string $mimetype) : ?array {
 	$o_config = Configuration::load();
 	$o_media_display_config = caGetMediaDisplayConfig();
 
-	if (!is_array($va_context = $o_media_display_config->getAssoc($ps_context))) { return null; }
+	if (!is_array($context = $o_media_display_config->getAssoc($context))) { return null; }
 
-	if (!$ps_mimetype) { return $va_context; }
-	foreach($va_context as $vs_media_class => $va_media_class_info) {
-		if (!is_array($va_mimetypes = $va_media_class_info['mimetypes'])) { continue; }
+	if (!$mimetype) { return $context; }
+	foreach($context as $display_class => $display_class_info) {
+		if (!is_array($mimetypes = $display_class_info['mimetypes'])) { continue; }
 
-		if (in_array($ps_mimetype, $va_mimetypes)) {
-			return $va_media_class_info;
+		if (in_array($mimetype, $mimetypes)) {
+			$display_class_info['display_class'] = $display_class;
+			return $display_class_info;
 		}
 	}
 	return null;
@@ -2400,17 +2401,37 @@ function caGetMediaDisplayInfo($ps_context, $ps_mimetype) {
  *
  * @return
  */
-function caGetDefaultMediaViewer($ps_mimetype) {
+function caGetMediaDisplayInfoForDisplayClass(string $context, string $display_class) : ?array {
 	$o_config = Configuration::load();
 	$o_media_display_config = caGetMediaDisplayConfig();
 
-	if (!is_array($va_defaults = $o_media_display_config->getAssoc('default_viewers'))) { return null; }
+	if (!is_array($context = $o_media_display_config->getAssoc($context))) { return null; }
 
-	foreach($va_defaults as $vs_media_class => $va_info) {
-		if (!is_array($va_mimetypes = $va_info['mimetypes'])) { continue; }
+	if(!$display_class) { return $context; }
+	if(isset($context[$display_class]) && is_array($context[$display_class])) {
+		return $context[$display_class];
+	}
+	return null;
+}
+# ------------------------------------------------------------------------------------------------
+/**
+ *
+ *
+ * @param
+ *
+ * @return
+ */
+function caGetDefaultMediaViewer(string $mimetype) : ?string {
+	$o_config = Configuration::load();
+	$o_media_display_config = caGetMediaDisplayConfig();
 
-		if (in_array($ps_mimetype, $va_mimetypes)) {
-			return $va_info['viewer'];
+	if (!is_array($defaults = $o_media_display_config->getAssoc('default_viewers'))) { return null; }
+
+	foreach($defaults as $media_class => $info) {
+		if (!is_array($mimetypes = $info['mimetypes'])) { continue; }
+
+		if (in_array($mimetype, $mimetypes)) {
+			return $info['viewer'];
 		}
 	}
 	return null;
@@ -4194,14 +4215,35 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 	$detail_config = caGetDetailConfig()->get($subject->tableName());
 	$access_values = caGetUserAccessValues($request);
 	
-	// options
-	$primary_only = caGetOption('primaryOnly', $options, false);
-	$versions = caGetOption('versions', $options, ['icon', 'small']);
-	if($show_only_media_types && !is_array($show_only_media_types)) { $show_only_media_types = [$show_only_media_types]; }
+	$show_only_media_types = caGetOption('showOnlyMediaTypes', $options, null);
 	
-	$show_only_media_types_when_present = caGetOption('representationViewerShowOnlyMediaTypesWhenPresent', $options, null);
-	if($show_only_media_types_when_present && !is_array($show_only_media_types_when_present)) { $show_only_media_types_when_present = [$show_only_media_types_when_present]; }
-
+	$allow_download = caGetOption('allowMediaDownload', $options, false);
+	if(caGetOption('requireLoginForMediaDownload', $options, false) && !$request->isLoggedIn()) { 
+		$allow_download = false;
+	} else {
+		$require_roles_for_download = caGetOption('requireRoleForMediaDownload', $options, null);
+		if(is_array($require_roles_for_download) && sizeof($require_roles_for_download)) {
+			$allow_download = false;
+			if($request->isLoggedIn()) {
+				foreach($require_roles_for_download as $rrole) {
+					if($request->user->hasUserRole($rrole)) {
+						$allow_download = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	// options
+	$versions = caGetOption('versions', $options, ['icon', 'small']);
+	$display_type = caGetOption('display', $options, 'detail');
+	
+	if($show_only_media_types && !is_array($show_only_media_types)) { $show_only_media_types = [$show_only_media_types]; }
+	if(is_array($show_only_media_types)) {
+		$show_only_media_types = array_map('strtolower', $show_only_media_types);
+	}
+	
 	$t_instance = null;
 	if(is_a($subject, 'RepresentableBaseModel')) {
 		$t_instance = $subject;
@@ -4214,19 +4256,74 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 	
 	$qr = $t_instance->getRepresentationsAsSearchResult($options);
 	
+	$t_rep = new ca_object_representations();
 	$reps = [];
+	
+	$caption_template = caGetOption('mediaCaptionTemplate', $options, '???');
 	while($qr->nextHit()) {
 		$rep_id = $qr->get('ca_object_representations.representation_id');
+		$mimetype = $qr->get('ca_object_representations.mimetype');
+		
+		if(!($display_info = caGetMediaDisplayInfoForMimetype($display_type, $mimetype))) {
+			continue;
+		}
+		$download_info = caGetMediaDisplayInfoForMimetype('download', $mimetype);
+		if(is_array($show_only_media_types) && sizeof($show_only_media_types) && !in_array(strtolower($display_info['viewer']), $show_only_media_types)) {
+			continue;
+		}
+		
+		$display_version = $display_info['display_version'] ?? null;
 		
 		$iiif_url = $request->getBaseUrlPath().'/service/IIIF/representation:'.$rep_id.'/info.json';
 		
+		$vtt_captions = null;
+		if(is_array($vtt_caption_list = $t_rep->getCaptionFileList($rep_id))) {
+			$vtt_captions = [];
+			foreach($vtt_caption_list as $vtt_caption) {
+				$vtt_captions[] = [
+					'url' => $vtt_caption['url'],
+					'locale' => $vtt_caption['locale'],
+					'language' => substr($vtt_caption['locale_code'], 0, 2),
+					'locale_code' => $vtt_caption['locale_code']
+				];
+			}
+		}
 		$rep = [
 			'representation_id' => $rep_id,
-			'mimetype' => $qr->get('ca_object_representations.mimetype'),
-			'media_class' => $qr->get('ca_object_representations.media_class'),
-			'url' => $qr->get('ca_object_representations.media.original.url'),
-			'iiifUrl' => $iiif_url
+			'mimetype' => $mimetype,
+			'media_class' => caGetMediaClass($qr->get('ca_object_representations.mimetype')),
+			'original_url' => $qr->get("ca_object_representations.media.original.url"),
+			'url' => $qr->get("ca_object_representations.media.{$display_version}.url"),
+			'original_tag' => $qr->get("ca_object_representations.media.original.tag"),
+			'tag' => $qr->get("ca_object_representations.media.{$display_version}.tag"),
+			'iiifUrl' => $iiif_url,
+			'no_overlay' => (bool)($display_info['no_overlay'] ?? false),
+			'caption' => caProcessTemplateForIDs($caption_template, $qr->tableName(), [$rep_id]),
+			'vttCaptions' => $vtt_captions,
+			'download_version' => $allow_download ? caGetOption('download_version', $download_info, null) : null
 		];
+		
+		if(is_array($file_list = $qr->getFileList()) && sizeof($file_list)) {
+			$pages = array_map(function($v) {
+				return $v['preview_url'];
+			}, $file_list);	
+			$rep['pages_previews'] = array_values($pages);
+			
+			$rep['pages'] = [];
+			foreach($rep['pages_previews'] as $i => $p) {
+				$rep['pages'][] = $request->getBaseUrlPath().'/service/IIIF/representation:'.$rep_id.':'.($i+1).'/info.json';
+			}
+		}
+		
+		
+		$rep['display_class'] = $display_info['display_class'] ?? null;
+		
+		$opts = MediaViewerManager::viewerOptionsForDisplayClass($display_type, $display_info['display_class']);
+		$rep['options'] = $opts;
+		
+		$opts = MediaViewerManager::viewerOptionsForDisplayClass('overlay', $display_info['display_class']);
+		$rep['overlay_options'] = $opts;
+		
 		
 		if(is_array($versions)) {
 			foreach($versions as $version) {
@@ -4272,21 +4369,9 @@ function caRepresentationViewer($request, $subject, ?array $options=null) {
 	if (method_exists($t_instance, 'filterNonPrimaryRepresentations')) { $t_instance->filterNonPrimaryRepresentations(false); }
 
 	// options
-	$index 					= caGetOption('index', $options, null);
-	
-	$show_only_media_types 			= caGetOption('representationViewerShowOnlyMediaTypes', $options, null);
-	if(($show_only_media_types) && !is_array($show_only_media_types)) { $show_only_media_types = [$show_only_media_types]; }
-	
-	$show_only_media_types_when_present = caGetOption('representationViewerShowOnlyMediaTypesWhenPresent', $options, null);
-	if(($show_only_media_types_when_present) && !is_array($show_only_media_types_when_present)) { $show_only_media_types_when_present = [$show_only_media_types_when_present]; }
+	$index = caGetOption('index', $options, null);
+	$display_type = caGetOption('display', $options, 'detail');
 
-	$display_annotations	 		= caGetOption('displayAnnotations', $options, false);
-	$annotation_display_template 	= caGetOption('displayAnnotationTemplate', $options, caGetOption('displayAnnotationTemplate', $va_detail_config['options'], '^ca_representation_annotations.preferred_labels.name'));
-	$default_annotation_id		 	= caGetOption('defaultAnnotationID', $options, null);
-	$start_timecode		 			= caGetOption('startTimecode', $options, null);
-	$display_type		 			= caGetOption('display', $options, 'detail');
-
-	
 	$media_list = caRepresentationList($request, $t_instance, $options);
 
 	$o_view->setVar('media_list', $media_list);
@@ -4298,20 +4383,30 @@ function caRepresentationViewer($request, $subject, ?array $options=null) {
 		$t_rep = ca_object_representations::findAsInstance(['representation_id' => $rep_info['representation_id']]);
 	}
 	
-	$mimetype = $t_rep->get('ca_object_representations.mimetype');
+	$display_classes = array_unique(array_map(function($v) { return ($v['display_class']); }, $media_list));
 	
-	$o_viewer = MediaViewerManager::getViewerForMimetype($display_type, $mimetype);
+	$viewer_html = $viewer_overlay_html = [];
+	foreach($display_classes as $display_class) {
+		$o_viewer = MediaViewerManager::getViewerByDisplayClass($display_type, $display_class);
+		$opts = MediaViewerManager::viewerOptionsForDisplayClass($display_type, $display_class);
+		
+		$viewer_html[$display_class] = $o_viewer->getViewerHTML(
+			$request,
+			array_merge(['displayClass' => $display_class, 'id' => 'mediaviewer'], $opts)
+		);
+		
+		if(!($o_viewer = MediaViewerManager::getViewerByDisplayClass('overlay', $display_class))) {
+			continue;
+		}
+		$opts = MediaViewerManager::viewerOptionsForDisplayClass('overlay', $display_class);
+		$viewer_overlay_html[$display_class] = $o_viewer->getViewerOverlayHTML(
+			$request,
+			array_merge(['displayClass' => $display_class, 'id' => 'mediaviewer'], $opts)
+		);
+	}
 	
-	$display_info = caGetMediaDisplayInfo($display_type, $mimetype);
-	
-	$viewer_html = $o_viewer->getViewerHTML(
-		$request, 
-		"representation:".$t_rep->getPrimaryKey(), 
-		[], 
-		['checkAccess' => caGetOption('checkAccess', $options, null)]
-	);
-	
-	$o_view->setVar('media_viewer', $viewer_html);
+	$o_view->setVar('media_viewers', $viewer_html);
+	$o_view->setVar('media_viewer_overlays', $viewer_overlay_html);
 
 	return $o_view->render('representation_viewer_html.php');
 }
@@ -4320,7 +4415,7 @@ function caRepresentationViewer($request, $subject, ?array $options=null) {
  *
  */
 function caGetAvailableDownloadVersions(RequestHTTP $request, ?string $mimetype, ?array $options=null) {
-	$download_display_info = caGetMediaDisplayInfo('download', $mimetype);
+	$download_display_info = caGetMediaDisplayInfoForMimetype('download', $mimetype);
 	
 	$download_version = caGetOption(['download_version', 'display_version'], $download_display_info);
 	$download_version_by_role = caGetOption('roles', $download_display_info);

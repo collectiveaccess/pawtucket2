@@ -76,7 +76,7 @@
 					if($vs_hp_intro){
 						print "<div class='display-6 lh-base'>".$vs_hp_intro."</div>";
 					}
-					print "<div class='pt-4'>".caNavLink($this->request, "Browse Objects", "btn btn-primary", "", "Browse", "objects")."</div>";
+					print "<div class='pt-4 mb-5 mb-md-0 text-center text-md-start'>".caNavLink($this->request, "Browse Objects", "btn btn-primary", "", "Browse", "objects")."</div>";
 				
 ?>		
 				</div>

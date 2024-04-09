@@ -31,24 +31,37 @@
  */
 namespace CA\MediaViewers;
 
+require_once(__CA_LIB_DIR__.'/Media/IMediaViewer.php');
+require_once(__CA_LIB_DIR__.'/Media/BaseMediaViewer.php');
+
 class Document extends BaseMediaViewer implements IMediaViewer {
 	# -------------------------------------------------------
 	/**
 	 *
 	 */
+	protected static $s_callbacks = [];
 	# -------------------------------------------------------
 	/**
 	 *
 	 */
-	public static function getViewerHTML(\RequestHTTP $request, string $identifier, ?array $data=null, ?array $options=null) {
-		return "Document viewer";
+	public static function getViewerHTML(\RequestHTTP $request, ?array $options=null) {
+		$o_view = self::getView($request, $options);
+		return $o_view->render('document.php');
 	}
 	# -------------------------------------------------------
 	/**
 	 *
 	 */
-	public static function getViewerData(\RequestHTTP $request, string$identifier, ?array $data=null, ?array $options=null) {
-		return _t("No data");
+	public static function getViewerOverlayHTML(\RequestHTTP $request, ?array $options=null) {
+		$o_view = self::getView($request, $options);
+		return $o_view->render('document_overlay.php');
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function viewerOptions() : ?array {
+		return ['display_version', 'zoom', 'width', 'height', 'no_overlay'];
 	}
 	# -------------------------------------------------------
 }

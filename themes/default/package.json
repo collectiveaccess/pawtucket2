@@ -29,6 +29,7 @@
     "htmx.org": "^1.9.10",
     "leaflet": "^1.9.4",
     "mini-css-extract-plugin": "^2.7.6",
+    "online-3d-viewer": "^0.12.0",
     "openseadragon": "^4.1.0",
     "plyr": "^3.7.8",
     "webpack": "^5.89.0",

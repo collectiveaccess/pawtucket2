@@ -312,70 +312,69 @@ class DetailController extends FindController {
 				$t_representation = Datamodel::getInstance("ca_object_representations", true);
 				$this->view->setVar("representation_id", null);
 			}
-			if(!is_array($media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
-			
-			$default_annotation_id = $start_timecode = null;
-			
-			if($start_timecode = $this->request->getParameter('start', pString)) {
-				// Timecode specified
-			} elseif(
-				($annotation_identifier = $this->request->getParameter(['annotation', 'clip'], pString)) &&
-				(($options['annotationIdentifier'] ?? null) && 
-				($t_instance = ca_representation_annotations::findAsInstance([$options['annotationIdentifier'] => $annotation_identifier])))
-			) {
-				$default_annotation_id = $t_instance->get('ca_representation_annotations.annotation_id');
-			} elseif($item_match_desc = $result_desc[$t_subject->getPrimaryKey()] ?? null) {
-				// Search matched annotation?
-				foreach($item_match_desc['desc'] as $m) {
-					if($m['table'] === 'ca_representation_annotations') {
-						$default_annotation_id = $m['field_row_id'];
-						break;
-					}
-					if($m['table'] === 'ca_representation_annotation_labels') {
-						if($t_instance = ca_representation_annotation_labels::findAsInstance($m['field_row_id'])) {
-							$default_annotation_id = $t_instance->get('ca_representation_annotation_labels.annotation_id');
+			if($t_representation->isLoaded()) {
+				if(!is_array($media_display_info = caGetMediaDisplayInfoForMimetype('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $media_display_info = []; }
+				
+				$default_annotation_id = $start_timecode = null;
+				
+				if($start_timecode = $this->request->getParameter('start', pString)) {
+					// Timecode specified
+				} elseif(
+					($annotation_identifier = $this->request->getParameter(['annotation', 'clip'], pString)) &&
+					(($options['annotationIdentifier'] ?? null) && 
+					($t_instance = ca_representation_annotations::findAsInstance([$options['annotationIdentifier'] => $annotation_identifier])))
+				) {
+					$default_annotation_id = $t_instance->get('ca_representation_annotations.annotation_id');
+				} elseif($item_match_desc = $result_desc[$t_subject->getPrimaryKey()] ?? null) {
+					// Search matched annotation?
+					foreach($item_match_desc['desc'] as $m) {
+						if($m['table'] === 'ca_representation_annotations') {
+							$default_annotation_id = $m['field_row_id'];
 							break;
+						}
+						if($m['table'] === 'ca_representation_annotation_labels') {
+							if($t_instance = ca_representation_annotation_labels::findAsInstance($m['field_row_id'])) {
+								$default_annotation_id = $t_instance->get('ca_representation_annotation_labels.annotation_id');
+								break;
+							}
 						}
 					}
 				}
+				
+				$media_display_config = caGetMediaDisplayConfig();
+				
+				$media_opts = array_merge(
+					$options,
+					['checkAccess' => $this->opa_access_values]
+				);
+				$this->view->setVar('media_list', $media_list = caRepresentationList($this->request, $t_subject, $media_opts));
+				$this->view->setVar('media_viewer', caRepresentationViewer($this->request, $t_subject, array_merge($media_opts, ['display' => 'detail'])));
+				$this->view->setVar('media_options', [
+					'media_list' => $media_list,
+					
+					'next_button_id' => 'mediaviewer-next',
+					'previous_button_id' => 'mediaviewer-previous',
+					'overlay_next_button_id' => 'mediaviewer-overlay-next',
+					'overlay_previous_button_id' => 'mediaviewer-overlay-previous',
+					'show_overlay_button_id' => 'mediaviewer-show-overlay',
+					'download_button_id' => 'mediaviewer-download',
+					'media_overlay_id' => 'mediaviewer-overlay',
+					'media_overlay_content_id' => 'mediaviewer-overlay-content',
+					'media_caption_id' => 'mediaviewer-caption',
+					'media_overlay_caption_id' => 'mediaviewer-overlay-caption',
+					'media_selector_id' => 'mediaviewer-selector',
+					'media_selector_item_class' => 'mediaviewer-selector-control',
+					'media_selector_item_class_active' => 'mediaviewer-selector-control-active',
+					
+					'base_url' => $this->request->getThemeUrlPath(),
+					'media_download_url' => $this->request->getBaseUrlPath()."/Detail/DownloadRepresentation?context={$function}"
+				]);
+			} else {
+				$this->view->setVar('media_list', null);
+				$this->view->setVar('media_viewer', null);
+				$this->view->setVar('media_options', []);
 			}
-			
-			$media_display_config = caGetMediaDisplayConfig();
-			
-			$this->view->setVar('media_list', $l = caRepresentationList($this->request, $t_subject, []));
-			
-			$this->view->setVar('media_viewer', $z=caRepresentationViewer($this->request, $t_subject, ['display' => 'detail']));
-			
-			$this->view->setVar('media_options', [
-				'media_list' => $l
-			]);
-			//$this->view->setVar('alwaysUseCloverViewer', (bool)$media_display_config->get('always_use_clover_viewer'));
-			
-			//$this->view->setVar('representationViewerPrimaryOnly', $rep_viewer_primary_only = caGetOption('representationViewerPrimaryOnly', $options, false));
-			// $this->view->setVar('representationViewer', 
-// 				caRepresentationViewer(
-// 					$this->request, 
-// 					$t_subject,
-// 					array_merge($options, $media_display_info, 
-// 						[
-// 							'display' => 'detail',
-// 							'showAnnotations' => true, 
-// 							'defaultAnnotationID' => $default_annotation_id,	// jump to specific annotation?
-// 							'startTimecode' => $start_timecode,				// jump to specific time?
-// 							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
-// 							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $options, false), 
-// 							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $options, false),
-// 							'checkAccess' => $this->opa_access_values,
-// 							'alwaysUseCloverViewer' => (bool)$media_display_config->get('always_use_clover_viewer')
-// 						]
-// 					)
-// 				)
-// 			);
-			// $this->view->setVar('representationViewerThumbnailBar', 
-// 				caObjectRepresentationThumbnails($this->request, $this->view->getVar("representation_id"), $t_subject, array_merge($options, ["returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $rep_viewer_primary_only ? 1 : 0]))
-// 			);
-			
-		}
+		} 
 		
 		//
 		// Map
@@ -777,16 +776,9 @@ class DetailController extends FindController {
 		}
 		
 		
-		if (!($vn_object_id = $this->request->getParameter('object_id', pInteger))) {
-			$vn_object_id = $this->request->getParameter('id', pInteger);
-		}
-		$t_instance->load($vn_object_id);
-		if (!$t_instance->isLoaded()) {
-			throw new ApplicationException(_t('Cannot download media'));
-		}
-		if(sizeof($this->opa_access_values) && (!in_array($t_instance->get("access"), $this->opa_access_values))){
-			return;
-		}
+		// if(sizeof($this->opa_access_values) && (!in_array($t_instance->get("access"), $this->opa_access_values))){
+// 			return;
+// 		}
 		$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
 		$ps_version = $this->request->getParameter('version', pString);
 		
@@ -795,26 +787,35 @@ class DetailController extends FindController {
 		if(sizeof($this->opa_access_values) && (!in_array($t_rep->get("access"), $this->opa_access_values))){
 			return;
 		}
+		
+		// TODO : check object accessibility
+		// if (!($vn_object_id = $this->request->getParameter('object_id', pInteger))) {
+// 			$vn_object_id = $this->request->getParameter('id', pInteger);
+// 		}
+// 		$t_instance->load($vn_object_id);
+// 		if (!$t_instance->isLoaded()) {
+// 			throw new ApplicationException(_t('Cannot download media'));
+// 		}
 		$this->view->setVar('t_object_representation', $t_rep);
 		
-		$t_download_log = new Downloadlog();
-		$t_download_log->log(array(
-				"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
-				"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
-				"table_num" => $t_instance->tableNum(), 
-				"row_id" => $vn_object_id, 
-				"representation_id" => $pn_representation_id, 
-				"download_source" => "pawtucket"
-		));
-			
+		// $t_download_log = new Downloadlog();
+// 		$t_download_log->log(array(
+// 				"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
+// 				"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+// 				"table_num" => $t_instance->tableNum(), 
+// 				"row_id" => $vn_object_id, 
+// 				"representation_id" => $pn_representation_id, 
+// 				"download_source" => "pawtucket"
+// 		));
+// 			
 		$va_versions = $t_rep->getMediaVersions('media');
 		
 		if (!in_array($ps_version, $va_versions)) { $ps_version = $va_versions[0]; }
 		
-		$available_versions = caGetAvailableDownloadVersions($this->request, $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-		if(!in_array($ps_version, $available_versions, true)) { 
-			return;
-		}
+		// $available_versions = caGetAvailableDownloadVersions($this->request, $t_rep->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+// 		if(!in_array($ps_version, $available_versions, true)) { 
+// 			return;
+// 		}
 		$this->view->setVar('version', $ps_version);
 		
 		$va_rep_info = $t_rep->getMediaInfo('media', $ps_version);
