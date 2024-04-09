@@ -483,7 +483,7 @@ function caObjectRepresentationThumbnails($po_request, $pn_representation_id, $p
 	}
 	$va_links = array();
 	$vn_primary_id = "";
-	foreach($va_reps as $va_rep){
+	foreach($va_reps as $i => $va_rep){
 		if(!isset($va_rep['media']) || !strlen((string)$va_rep['media'])) { continue; }
 		$vn_rep_id = $va_rep["representation_id"];
 		$vs_class = "";
@@ -510,6 +510,10 @@ function caObjectRepresentationThumbnails($po_request, $pn_representation_id, $p
 			# -------------------------------
 			case "carousel":
 				$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".{$ps_current_rep_class}\").removeClass(\"{$ps_current_rep_class}\"); $(this).parent().addClass(\"{$ps_current_rep_class}\"); $(this).addClass(\"{$ps_current_rep_class}\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb.$vs_rep_label."</a>\n";
+				break;
+			# -------------------------------
+			case "basic":
+				$va_links[$vn_rep_id] = "<a href='#' id='repThumb_{$i}' onclick='return setItem({$i});' class='repThumb'>".$vs_thumb.$vs_rep_label."</a>\n";
 				break;
 			# -------------------------------
 			default:
