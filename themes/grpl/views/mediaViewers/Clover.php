@@ -31,6 +31,15 @@
  */
 $display_type = $this->getVar('displayType');
 $display_info = $this->getVar('displayInfo');
+
+$q = ($rc = ResultContext::getResultContextForLastFind($this->request, 'ca_objects')) ? $rc->getSearchExpression() : '';
+$terms = caExtractTermsForSearch($q);
+$terms = array_map(function($v) {
+	$v = preg_replace('!["\']+!', '', $v);
+	$v = preg_replace('![^A-Za-z0-9]+[0-9]*!', '', $v);
+	return $v;
+}, $terms);
+
 ?>
 <div id="clover<?= $display_type; ?>"></div>
 
@@ -39,7 +48,7 @@ $display_info = $this->getVar('displayInfo');
     	app: 'Clover',
     	id: 'clover<?= $display_type; ?>',
     	url: <?= json_encode($this->getVar('data_url').'/render/Newspaper'); ?>,
-    	searchUrl: <?= json_encode($this->getVar('search_url').'?q=injured+teacher'); ?>,
+    	searchUrl: <?= json_encode($this->getVar('search_url').'?q='.urlencode(join(' ', $terms))); ?>,
     	annotationUrl: <?= json_encode($this->getVar('data_url').'render/Annotations'); ?>,
     	renderAbout: false,
     	renderResources: false,

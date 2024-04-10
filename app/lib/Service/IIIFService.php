@@ -650,6 +650,7 @@ class IIIFService {
 		$q = caGetOption('q', $options, null);
 	
 		$tokens = self::_tokenize($q);
+		$token_count = sizeof($tokens);
 		
 		// Do in-page search
 		$page_data_files = caGetDirectoryContentsAsList(__CA_BASE_DIR__.'/newspaper_data/'.$media['instance']->getPrimaryKey());
@@ -665,17 +666,71 @@ class IIIFService {
 			
 			$sw = $file_info['original_width'];
 			$sh = $file_info['original_height'];
-			foreach($tokens as $t) {
+			
+			$offset = 0;
+			foreach($tokens as $tindex => $t) {
 				if(isset($locations[$t])) {
 					foreach($locations[$t] as $c) {
-						$data[$p+1][] = [
-							'value' => $t,
-							'x' => (int)($c['x'] * $sw),
-							'y' => (int)($c['y'] * $sh),
-							'width' => (int)($c['w'] * $sw),
-							'height' => (int)($c['h'] * $sh)
-						];
+						$is_ok = true;
+						if(($tindex > 0) && (!isset($data[$p+1][$c['i']-$tindex]))) { 
+							$is_ok = false;
+						} elseif($tindex < ($token_count - 1)){
+							$is_ok = false;
+							$ft = $tokens[$tindex + 1];
+							if(is_array($locations[$ft])) {
+								foreach($locations[$ft] as $fl) {
+									if($fl['i'] == ($c['i'] + 1)) {
+										$is_ok = true;
+										break;
+									}
+								}
+							} else {
+								$is_ok = false;
+							}
+						}
+						if(!$is_ok) { continue; }
+						
+						if($tindex > 0) {
+							if(isset($data[$p+1][$c['i']-($tindex-$offset)])) {
+								if(abs(((int)($c['y'] * $sh)) - $data[$p+1][$c['i'] - ($tindex-$offset)]['y']) < 8) {
+									$data[$p+1][$c['i'] - ($tindex - $offset)]['width'] = (int)(($c['x'] + $c['w']) * $sw) - $data[$p+1][$c['i'] - ($tindex - $offset)]['x'];
+									$data[$p+1][$c['i'] - ($tindex - $offset)]['value'] .= ' '.$t;
+									$data[$p+1][$c['i'] - ($tindex - $offset)]['c']++;
+								} else {
+									// new line
+									//print "new";
+									$data[$p+1][$c['i']] = [
+										'value' => $t,
+										'x' => (int)($c['x'] * $sw),
+										'y' => (int)($c['y'] * $sh),
+										'width' => (int)($c['w'] * $sw),
+										'height' => (int)($c['h'] * $sh),
+										'c' => 0,
+										'partial' => true
+									];
+									$data[$p+1][$c['i'] - $tindex]['partial'] = true;
+									$offset = $tindex;
+								}
+							}
+						} else {
+							$data[$p+1][$c['i']] = [
+								'value' => $t,
+								'x' => (int)($c['x'] * $sw),
+								'y' => (int)($c['y'] * $sh),
+								'width' => (int)($c['w'] * $sw),
+								'height' => (int)($c['h'] * $sh),
+								'c' => 0,
+								'partial' => false
+							];
+						}
 					}	
+				}
+			}
+			if($token_count > 1) {
+				foreach($data as $p => $pdata){
+					$data[$p] = array_filter($pdata, function($v) use($token_count){
+						return (($v['partial']) || ($v['c'] === ($token_count - 1)));
+					});
 				}
 			}
 		}

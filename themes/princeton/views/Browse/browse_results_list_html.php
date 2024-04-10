@@ -57,7 +57,7 @@
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
 	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
-		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+		$vs_default_placeholder = "<i class='fa fa-image fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
 
@@ -127,7 +127,7 @@
 								$vs_image = $vs_default_placeholder_tag;
 							}
 						}else{
-							$vs_image = $vs_default_placeholder_tag;
+							$vs_image = "";
 						}
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
@@ -142,7 +142,7 @@
 		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+				<div class='bResultListItemContent'>".(($vs_rep_detail_link) ? "<div class='text-center bResultListItemImg'>".$vs_rep_detail_link."</div>" : "")."
 					<div class='bResultListItemText'>
 						{$vs_caption}
 					</div><!-- end bResultListItemText -->

@@ -499,7 +499,7 @@ div.caMediaOverlayControls .close {
 	display: flex;
 	flex-grow: 1;
 	flex-shrink: 0;
-	width: 10% !important;
+	width: 100px !important;
 	max-height: 100% ;
 }
 
@@ -508,5 +508,45 @@ div.caMediaOverlayControls .close {
 }
 
 .c-gKYThq {
-	flex-direction: column-reverse !important;
+	flex-direction: column !important;
+}
+
+.c-essvYL {
+	margin: 0px !important;
+	padding: 0px !important;
+}
+
+.c-loOuxq {
+	margin: 0px !important;
+	padding: 0px !important;
+}
+
+#pageArea {
+	margin-top: 3px !important;
+}
+
+.c-bpZFkk {
+	height: 100%;
+}
+
+/* Clover viewer title */
+.c-PJLV.label {
+	color: #000;
+	font-size: 18px;
+	font-weight: normal;
+	margin: 0px;
+	padding: 0px;
+}
+
+.container.newspapers {
+	width: 100% !important;
+	max-width: unset;
+}
+
+#newspaper-container {
+	padding:0 34px 0 34px;
+}
+
+.newspaper-metadata-container {
+	margin-top: 10px;
 }

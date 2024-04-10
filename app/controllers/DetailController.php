@@ -345,9 +345,12 @@ class DetailController extends FindController {
 			}
 			
 			$media_display_config = caGetMediaDisplayConfig();
-			$this->view->setVar('alwaysUseCloverViewer', (bool)$media_display_config->get('always_use_clover_viewer'));
+			$always_use_clover = caGetOption('alwaysUseCloverViewer', $options, (bool)$media_display_config->get('always_use_clover_viewer'));
+			
+			$this->view->setVar('alwaysUseCloverViewer', $always_use_clover);
 			
 			$this->view->setVar('representationViewerPrimaryOnly', $rep_viewer_primary_only = caGetOption('representationViewerPrimaryOnly', $options, false));
+			
 			$this->view->setVar('representationViewer', 
 				caRepresentationViewer(
 					$this->request, 
@@ -359,11 +362,11 @@ class DetailController extends FindController {
 							'showAnnotations' => true, 
 							'defaultAnnotationID' => $default_annotation_id,	// jump to specific annotation?
 							'startTimecode' => $start_timecode,				// jump to specific time?
+							'alwaysUseCloverViewer' => $always_use_clover,
 							'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $options, false), 
 							'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $options, false), 
 							'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $options, false),
 							'checkAccess' => $this->opa_access_values,
-							'alwaysUseCloverViewer' => (bool)$media_display_config->get('always_use_clover_viewer')
 						]
 					)
 				)

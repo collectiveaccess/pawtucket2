@@ -70,6 +70,7 @@ class Search extends BaseIIIFResponse {
 							'id' => "{$target}-content-{$i}-{$x}",
 							'type' => 'Annotation',
 							'motivation' => 'highlighting',
+							'label' => ['en' => [_t('Page %1', $pagenum)]],
 							'body' => [
 								'type' => 'TextualBody',
 								'value' => $d['value'],

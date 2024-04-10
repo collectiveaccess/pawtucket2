@@ -42,8 +42,7 @@
     	renderResources: false,
     	renderClips: true,
     	showInformationToggle: false,
-    	backgroundColor: '#000000',
-    	height: '800px'
+    	backgroundColor: '#000000'
     });
 </script>
 

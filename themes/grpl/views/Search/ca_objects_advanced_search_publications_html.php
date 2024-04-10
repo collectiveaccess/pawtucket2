@@ -13,7 +13,7 @@ print "<p>Enter your search terms in the fields below</p>";
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields including publication contents">Full Text</span>
-			{{{_fulltext%height=1}}}
+			{{{metsalto%height=1}}}
 		</div>
 	</div>
 <!--	<div class='row'>

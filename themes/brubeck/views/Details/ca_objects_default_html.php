@@ -91,7 +91,10 @@
 							print "<div id='detailRepresentationThumbnail".$vn_icon_rep_id."' class='repThumbnailAudioLinks'>".$vs_icon_link."</div>";
 						}
 						print "</div>";
-					}		
+					}	
+					if($tmp = $this->getVar("audio_full_track_message")){
+						print "<div class='unit'>".$tmp."</div>";	
+					}
 				}else{
 					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
 				}
@@ -153,7 +156,13 @@
 				
 				{{{<ifdef code="ca_objects.rights"><div class="unit"><label>Rights</label>^ca_objects.rights%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.access_conditions"><div class="unit"><label>Access Conditions</label>^ca_objects.access_conditions%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.use_reproduction"><div class="unit"><label>Use and Reproduction Conditions</label>^ca_objects.use_reproduction%delimiter=,_</div></ifdef>}}}
+<?php
+				if($t_object->get("ca_objects.use_reproduction")){
+					print $t_object->getWithTemplate('<ifdef code="ca_objects.use_reproduction"><div class="unit"><label>Use and Reproduction Conditions</label>^ca_objects.use_reproduction%delimiter=,_</div></ifdef>');
+				}else{
+					print "<div class='unit'><label>Use and Reproduction Conditions</label>".$this->getVar("object_use_repro_conditions")."</div>";
+				}
+?>
 				{{{<ifdef code="ca_objects.credit"><div class="unit"><label>Credit Line</label>^ca_objects.credit%delimiter=,_</div></ifdef>}}}
 
 <?php

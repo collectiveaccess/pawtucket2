@@ -62,7 +62,7 @@ class Newspaper extends BaseIIIFManifest {
 			],
 			"service" => [
 				[
-				  "id" => "https://grpl.whirl-i-gig.com/service/IIIF/search/".$identifiers[0],
+				  "id" => "https://grpl.whirl-i-gig.com/service/IIIF/search/{$identifiers[0]}",
 				  "type" => "SearchService2"
 				]
 		  ],
@@ -82,7 +82,7 @@ class Newspaper extends BaseIIIFManifest {
 				throw new \IIIFAccessException(_t('Unknown error'), 400);
 			}
 			
-			$json['label']['en'] = $media['instance']->get('preferred_labels');
+			$json['label']['en'] = $media['instance']->getWithTemplate('^ca_objects.preferred_labels');
 			$json['navDate'] = $media['instance']->get('ca_objects.date.date_value', ['dateFormat' => 'iso8601']);
 			
 			$json['thumbnail'] = [
@@ -155,6 +155,7 @@ class Newspaper extends BaseIIIFManifest {
 										'type' => 'Annotation',
 										'body' => [
 											'id' => $media_url,
+
 											'type' => 'Image',
 											'format' => 'image/jpeg',
 											'service' => [

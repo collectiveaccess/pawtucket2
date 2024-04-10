@@ -54,9 +54,7 @@ const Clover = ({ options, iiifContent, iiifContentSearch, renderAbout, renderCl
 		  };
 
 		return(
-			<div>
-				<Viewer options={options} iiifContent={iiifContent} iiifContentSearch={iiifContentSearch} customTheme={customTheme} />
-			</div>
+			<Viewer options={options} iiifContent={iiifContent} iiifContentSearch={iiifContentSearch} customTheme={customTheme} />
 		);
 	}
 
@@ -74,19 +72,29 @@ export default function _init(appData) {
 			iiifContentSearch={appData.searchUrl} 
 			options={{
 				informationPanel: {
-				  open: false, 
+				  open: true, 
 				  renderAbout: true, 
 				  renderToggle: true
 				},
 				showIIIFBadge: false,
-				showTitle: false,
-				canvasHeight: "640px",
+				showTitle: true,
+				annotationOverlays: {
+					zoomLevel: 5
+				},
+				canvasHeight: (jQuery(window).height() - 120) + "px",
 				openSeadragon: {
 				  gestureSettingsMouse: {
 					scrollToZoom: true,
 				  },
+				  maxZoomPixelRatio: 4
 				}
 			  }}
 		/>
 	);
+	
+// 	jQuery(document).ready(function() {
+// 		jQuery('#newspaper-container').on('change', '#information-toggle', function(e) {
+// 			alert('switch!'); 
+// 		});
+// 	});
 }

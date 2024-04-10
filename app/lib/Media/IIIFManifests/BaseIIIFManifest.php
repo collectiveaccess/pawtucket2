@@ -60,6 +60,7 @@ abstract class BaseIIIFManifest {
 			$this->manifest_url = $this->config->get('site_host').$_SERVER['REQUEST_URI'];
 		} else {
 			//$this->manifest_url = $base_url.join(":", $identifiers)."/manifest";
+
 			$this->manifest_url = $this->base_url."/manifest";
 		}
 	}
