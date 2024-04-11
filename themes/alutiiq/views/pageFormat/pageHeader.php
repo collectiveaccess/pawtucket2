@@ -229,7 +229,7 @@
                         	</div>
                     		<div class="uk-navbar-right">
 								<div class="uk-navbar-item widget widget_search" id="search-4">
-									<form id="search-4" action="https://alutiiqmuseum.or" method="get" role="search" class="uk-search uk-search-default"><span uk-search-icon="" class="uk-icon uk-search-icon"><svg width="20" height="20" viewBox="0 0 20 20"><circle fill="none" stroke="#000" stroke-width="1.1" cx="9" cy="9" r="7"></circle><path fill="none" stroke="#000" stroke-width="1.1" d="M14,14 L18,18 L14,14 Z"></path></svg></span><input name="s" placeholder="Search" required="" aria-label="Search" type="search" class="uk-search-input"></form>
+									<form id="search-4" action="https://alutiiqmuseum.org" method="get" role="search" class="uk-search uk-search-default"><span uk-search-icon="" class="uk-icon uk-search-icon"><svg width="20" height="20" viewBox="0 0 20 20"><circle fill="none" stroke="#000" stroke-width="1.1" cx="9" cy="9" r="7"></circle><path fill="none" stroke="#000" stroke-width="1.1" d="M14,14 L18,18 L14,14 Z"></path></svg></span><input name="s" placeholder="Search" required="" aria-label="Search" type="search" class="uk-search-input"></form>
 								</div>
                         	</div>
                 		</nav>
