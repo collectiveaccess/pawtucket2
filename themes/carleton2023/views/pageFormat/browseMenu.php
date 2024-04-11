@@ -34,7 +34,7 @@
 		switch($vs_format){
 			case "list":
 						foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-							if($vs_browse_name != "collections_all"){
+							if(!in_array($vs_browse_name, ["collections_all", "collections_all_res"])){
 ?>
 								<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == strToLower($vs_browse_name))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, caUcFirstUTF8Safe($va_browse_type['displayName']), "", "", "Browse", $vs_browse_name); ?></li>
 <?php

@@ -26,7 +26,8 @@
  * ----------------------------------------------------------------------
  */
  
-	$t_item = 			$this->getVar("item");
+	$t_item = 				$this->getVar("item");
+	$collection_id = 		$t_item->getPrimaryKey();
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -90,6 +91,39 @@
 		$va_fields["Storage Location"] = "<ifcount code='ca_storage_locations' min='1'><unit relativeTo='ca_collections_x_storage_locations' delimiter='<br/><br/>'>^ca_storage_locations.hierarchy.preferred_labels.name%delimiter=_➜_<ifdef code='ca_collections_x_storage_locations.effective_date'><br>Location Date: ^ca_collections_x_storage_locations.effective_date</ifdef><ifdef code='ca_collections_x_storage_locations.staff'><br>Staff: ^ca_collections_x_storage_locations.staff</ifdef><ifdef code='ca_collections_x_storage_locations.description'><br>Content: ^ca_collections_x_storage_locations.description</ifdef><ifdef code='ca_collections_x_storage_locations.item_extent.extent_value'><br>Extent: ^ca_collections_x_storage_locations.item_extent.extent_value ^ca_collections_x_storage_locations.item_extent.extent_unit<ifdef code='ca_collections_x_storage_locations.item_extent.extent_note'><br/>^ca_collections_x_storage_locations.item_extent.extent_note</ifdef></ifdef></unit></ifcount>";
 		$edit_link = "https://archive.carleton.edu/admin/editor/collections/CollectionEditor/Edit/collection_id/" . "^ca_collections.collection_id";
 		$va_fields["Edit record"] = "<a href='" . $edit_link . "'target=\"_blank\">Click here to edit this record</a>";
+	}
+	
+	// Calculate next/prev in container
+	if(($parent_id = $t_item->get('ca_collections.parent_id')) && ($t_parent = ca_collections::findAsInstance($parent_id))) {
+		if(is_array($child_ids = $t_parent->getHierarchyChildren(null, ['idsOnly' => true])) && sizeof($child_ids)) {
+			if($qr_siblings = caMakeSearchResult('ca_collections', $child_ids, ['sort' => 'ca_collections.id_number'])) {
+				
+				$prev_id = $next_id = null;
+				$child_ids = $qr_siblings->getAllFieldValues('ca_collections.collection_id');
+				if(($i = array_search($collection_id, $child_ids)) !== false) {
+					$prev_id = ($i > 0) ? $child_ids[$i - 1] : null;
+					$next_id = ($i < sizeof($child_ids) -1) ? $child_ids[$i + 1] : null;
+				}
+				
+				if($prev_id || $next_id) {
+?>
+					<div style="text-align: center;">
+<?php
+					if($prev_id) {
+						print caNavLink($this->request, "&lt; Previous in container", "btn btn-default btn-small", "", "*", "collections/{$prev_id}", []);
+					}
+					if($prev_id && $next_id) {
+						print " | ";
+					}
+					if($next_id) {
+						print caNavLink($this->request, "Next in container &gt;", "btn btn-default btn-small", "", "*", "collections/{$next_id}", []);
+					}
+?>
+					</div>
+<?php
+				}
+			}	
+		}
 	}
 ?>
 <div class="row">
