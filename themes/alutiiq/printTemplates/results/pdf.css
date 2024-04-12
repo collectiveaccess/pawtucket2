@@ -1,6 +1,6 @@
 /* universal header/footer styles */
 #header { height: 50px; position:relative; }
-img.headerImg {height:50px; width:auto; position:absolute; left:0px; top:20px;}
+img.headerImg {height:75px; width:auto; margin-top:30px; margin-bottom:-30px;}
 .pagingText { position: absolute; top: 30px; right: 30px; font: "helvetica"; font-size: 11px; text-align: right;  margin: 0px 0px 10px 25px;}
 .searchTermText { position: absolute; top: 20px; left: 30px; font: "helvetica"; font-size: 11px; text-align: left;  margin: 0px 25px 10px 0px;}
 #footer .pagingText{ top:20px; }

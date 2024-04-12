@@ -4216,7 +4216,6 @@ function caRepresentationViewer($po_request, $po_data, $pt_subject, $pa_options=
 	$default_annotation_id		 		= caGetOption('defaultAnnotationID', $pa_options, null);
 	$start_timecode		 				= caGetOption('startTimecode', $pa_options, null);
 	$ps_display_type		 			= caGetOption('display', $pa_options, false);
-	$always_use_clover_viewer		 	= caGetOption('alwaysUseCloverViewer', $pa_options, false);
 
 	$vs_slides = '';
 	$slide_list = [];

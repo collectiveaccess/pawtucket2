@@ -159,11 +159,11 @@
 					<nav class="uk-navbar" uk-navbar="{&quot;container&quot;:&quot;.tm-header-mobile&quot;,&quot;boundary&quot;:&quot;.tm-header-mobile .uk-navbar-container&quot;}">
 						<div class="uk-navbar-left">
 								<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo uk-navbar-item"><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAlutiiq-Museum-Logo.png%22%2C%22type%22%3A%22webp%2C100%22%2C%22thumbnail%22%3A%22%2C98%22%7D&amp;hash=4b20a6ad 134w, /wp-content/themes/yootheme/cache/4b/Alutiiq-Museum-Logo-4b8bdcea.webp 268w" sizes="(min-width: 134px) 134px">
-								<img alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAlutiiq-Museum-Logo.png%22%2C%22thumbnail%22%3A%22%2C98%22%7D&amp;hash=def9242d" width="134" height="98">
+								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png 134w" sizes="(min-width: 134px) 134px">
+								<img alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png" width="134" height="98">
 								</picture><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAlutiiq-Museum-Logo-Inverse.png%22%2C%22type%22%3A%22webp%2C100%22%2C%22thumbnail%22%3A%22%2C98%22%7D&amp;hash=858cccaf 134w, /wp-content/themes/yootheme/cache/f9/Alutiiq-Museum-Logo-Inverse-f9f1b723.webp 268w" sizes="(min-width: 134px) 134px">
-								<img class="uk-logo-inverse" alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAlutiiq-Museum-Logo-Inverse.png%22%2C%22thumbnail%22%3A%22%2C98%22%7D&amp;hash=cb6f67a8" width="134" height="98">
+								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png 134w" sizes="(min-width: 134px) 134px">
+								<img class="uk-logo-inverse" alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png" width="134" height="98">
 								</picture></a>                        
 						</div>
 						<div class="uk-navbar-right">
@@ -182,11 +182,11 @@
                 		<nav class="uk-navbar" uk-navbar="{&quot;align&quot;:&quot;center&quot;,&quot;container&quot;:&quot;.tm-header > [uk-sticky]&quot;,&quot;boundary&quot;:&quot;.tm-header .uk-navbar-container&quot;}">
 							<div class="uk-navbar-left">
 								<a href="https://alutiiqmuseum.org/" aria-label="Back to home" class="uk-logo uk-navbar-item"><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAlutiiq-Museum-Logo.png%22%2C%22type%22%3A%22webp%2C100%22%2C%22thumbnail%22%3A%22%2C98%22%7D&amp;hash=4b20a6ad 134w, /wp-content/themes/yootheme/cache/4b/Alutiiq-Museum-Logo-4b8bdcea.webp 268w" sizes="(min-width: 134px) 134px">
-								<img alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAlutiiq-Museum-Logo.png%22%2C%22thumbnail%22%3A%22%2C98%22%7D&amp;hash=def9242d" width="134" height="98">
+								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png 134w" sizes="(min-width: 134px) 134px">
+								<img alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/AlutiiqMuseum_Logo.png" width="134" height="98">
 								</picture><picture>
-								<source type="image/webp" srcset="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAlutiiq-Museum-Logo-Inverse.png%22%2C%22type%22%3A%22webp%2C100%22%2C%22thumbnail%22%3A%22%2C98%22%7D&amp;hash=858cccaf 134w, /wp-content/themes/yootheme/cache/f9/Alutiiq-Museum-Logo-Inverse-f9f1b723.webp 268w" sizes="(min-width: 134px) 134px">
-								<img class="uk-logo-inverse" alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/wp-admin/admin-ajax.php?action=kernel&amp;p=image&amp;src=%7B%22file%22%3A%22wp-content%2Fuploads%2F2023%2F08%2FAlutiiq-Museum-Logo-Inverse.png%22%2C%22thumbnail%22%3A%22%2C98%22%7D&amp;hash=cb6f67a8" width="134" height="98">
+								<source type="image/webp" srcset="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png 134w, /wp-content/themes/yootheme/cache/f9/Alutiiq-Museum-Logo-Inverse-f9f1b723.webp 268w" sizes="(min-width: 134px) 134px">
+								<img class="uk-logo-inverse" alt="Alutiiq Museum &amp; Archaeological Repository" loading="eager" src="https://alutiiqmuseum.org/collection/themes/alutiiq/assets/pawtucket/graphics/Alutiiq-Museum-Logo-Inverse-ac527412.png" width="134" height="98">
 								</picture></a>                        
                     		</div>
                     		<div class="uk-navbar-center">
@@ -229,7 +229,7 @@
                         	</div>
                     		<div class="uk-navbar-right">
 								<div class="uk-navbar-item widget widget_search" id="search-4">
-									<form id="search-4" action="https://alutiiqmuseum.or" method="get" role="search" class="uk-search uk-search-default"><span uk-search-icon="" class="uk-icon uk-search-icon"><svg width="20" height="20" viewBox="0 0 20 20"><circle fill="none" stroke="#000" stroke-width="1.1" cx="9" cy="9" r="7"></circle><path fill="none" stroke="#000" stroke-width="1.1" d="M14,14 L18,18 L14,14 Z"></path></svg></span><input name="s" placeholder="Search" required="" aria-label="Search" type="search" class="uk-search-input"></form>
+									<form id="search-4" action="https://alutiiqmuseum.org" method="get" role="search" class="uk-search uk-search-default"><span uk-search-icon="" class="uk-icon uk-search-icon"><svg width="20" height="20" viewBox="0 0 20 20"><circle fill="none" stroke="#000" stroke-width="1.1" cx="9" cy="9" r="7"></circle><path fill="none" stroke="#000" stroke-width="1.1" d="M14,14 L18,18 L14,14 Z"></path></svg></span><input name="s" placeholder="Search" required="" aria-label="Search" type="search" class="uk-search-input"></form>
 								</div>
                         	</div>
                 		</nav>
@@ -325,6 +325,36 @@
 					</div>
 				</div>
 			</div>                
+		</div>
+		<div class="uk-section-muted uk-section">           
+			<div class="uk-container">                
+				<div class="uk-grid tm-grid-expand uk-child-width-1-1 uk-grid-margin">
+					<div class="uk-width-1-1">
+						<nav class="uk-text-center">
+							<ul class="uk-margin-remove-bottom uk-subnav  uk-subnav-divider uk-flex-center" uk-margin="">        <li class="el-item uk-first-column">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/holdings/">Holdings</a></li>
+								<li class="el-item ">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/amutat/">Amutat Database</a></li>
+								<li class="el-item ">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/#research" uk-scroll="" target="_blank">Research</a></li>
+								<li class="el-item ">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/alutiiq-technological-inventory/">Alutiiq Tools</a></li>
+								<li class="el-item ">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/contributing/">Contributing</a></li>
+								<li class="el-item">
+							<a class="el-link" href="https://alutiiqmuseum.org/museum/collections/facilities/">Facilities &amp; Policies</a></li>
+								</ul>
+						</nav> 
+					</div>
+				</div>
+            </div>
+		</div>
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="subNavJumpTo">Jump to Amutat: <a href="https://alutiiqmuseum.org/museum/collections/amutat/">Home</a> | <?php print caNavLink($this->request, "Institutions", "", "", "browse", "institutions")." | ".caNavLink($this->request, "Objects", "", "", "browse", "amutatObjects"); ?></div>
+				</div>
+			</div>
 		</div>
 <?php
 	}
