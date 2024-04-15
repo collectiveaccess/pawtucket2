@@ -191,7 +191,7 @@
 if($this->request->getParameter('confirmEnter', pInteger)){
 	Session::setVar('visited_time', time());
 }
-if((!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
+if($show_curtain && (!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 86400)))){
 ?>
 	<div class="disclaimerAlert">
 		<div class="disclaimerAlertMessage">
