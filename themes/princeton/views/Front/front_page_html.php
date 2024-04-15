@@ -86,7 +86,7 @@
 ?>
 	<div class="row hpExplore bgLightGray">
 		<div class="col-md-12 col-lg-8 col-lg-offset-2">
-		<H2 class="frontSubHeading text-center">Explore By</H2>
+		<H2 class="frontSubHeading text-center"><?php print caNavLink($this->request, "Browse Our Collections", "", "", "Collections", "Index"); ?> or Explore By</H2>
 
 			<div class="row">
 				<div class="col-md-3">

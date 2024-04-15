@@ -42,6 +42,7 @@
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 
+	$vs_rep_viewer = 	trim($this->getVar("representationViewer"));
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -68,7 +69,22 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
+
+<?php
+			if($vs_rep_viewer){
+?>
+				<div class='col-sm-6 col-md-6 col-lg-5'>
+					{{{representationViewer}}}
+				</div>
+				<div class='col-sm-6 col-md-6 col-lg-7'>
+				
+<?php
+			}else{
+?>
+				<div class='col-sm-12'>
+<?php
+			}
+?>
 					<div class="unit"><b>{{{^ca_collections.type_id}}}</b></div>
 					{{{<ifdef code="ca_collections.parent_id"><div class="unit">Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
 <?php					

@@ -70,7 +70,7 @@
 							}
 							$va_tmp[] = $vs_age.(($vs_tmp) ? ", Source: ".$vs_tmp : "");
 						}
-						print "<div class='unit'><label>Age</label>".join($va_tmp, "<br/>")."</div>";
+						print "<div class='unit'><label>Age</label>".implode("<br/>", $va_tmp)."</div>";
 					}
 					if($t_item->get("ca_entities.birth_container.birth_date")){
 						$va_date = $t_item->get("ca_entities.birth_container.birth_date", array("returnAsArray" => true, "convertCodesToDisplayText" => true));
@@ -84,7 +84,7 @@
 							}
 							$va_tmp[] = $vs_date.(($vs_tmp) ? ", Source: ".$vs_tmp : "");
 						}
-						print "<div class='unit'><label>Birth Date</label>".join($va_tmp, "<br/>")."</div>";
+						print "<div class='unit'><label>Birth Date</label>".implode("<br/>", $va_tmp)."</div>";
 					}
 					if($t_item->get("ca_entities.death_container.death_date")){
 						$va_date = $t_item->get("ca_entities.death_container.death_date", array("returnAsArray" => true, "convertCodesToDisplayText" => true));
@@ -98,7 +98,7 @@
 							}
 							$va_tmp[] = $vs_date.(($vs_tmp) ? ", Source: ".$vs_tmp : "");
 						}
-						print "<div class='unit'><label>Death Date</label>".join($va_tmp, "<br/>")."</div>";
+						print "<div class='unit'><label>Death Date</label>".implode("<br/>", $va_tmp)."</div>";
 					}
 					if($t_item->get("ca_entities.age_container.age")){
 						$va_age = $t_item->get("ca_entities.age_container.age", array("returnAsArray" => true, "convertCodesToDisplayText" => true));
@@ -112,7 +112,7 @@
 							}
 							$va_tmp[] = $vs_age.(($vs_tmp) ? ", Source: ".$vs_tmp : "");
 						}
-						print "<div class='unit'><label>Age</label>".join($va_tmp, "<br/>")."</div>";
+						print "<div class='unit'><label>Age</label>".implode("<br/>", $va_tmp)."</div>";
 					}
 					
 ?>

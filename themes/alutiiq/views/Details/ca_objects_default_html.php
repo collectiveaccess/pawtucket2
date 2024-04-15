@@ -46,21 +46,21 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1 text-center'>
-					<H1>{{{^ca_objects.preferred_labels.name}}}{{{<ifdef code="ca_objects.alutiiq_title"> - ^ca_objects.alutiiq_title</ifdef>}}}{{{<ifdef code="ca_objects.pronunciation_audio_clip"> <i id="playPronunciation" class="fa fa-volume-up" aria-hidden="true"></i></ifdef>}}}</H1>
-					
+				<div class='col-sm-12 col-md-12 col-lg-12 text-center'>
+					<H2 class="uk-h1">{{{^ca_objects.preferred_labels.name}}}{{{<ifdef code="ca_objects.alutiiq_title"> - ^ca_objects.alutiiq_title</ifdef>}}}{{{<ifdef code="ca_objects.pronunciation_audio_clip"> <span id='playPronunciation'><span class='uk-link el-image uk-icon' uk-icon='icon: microphone;'><svg width='20' height='20' viewBox='0 0 20 20'><line fill='none' stroke='#000' x1='10' x2='10' y1='16.44' y2='18.5'></line><line fill='none' stroke='#000' x1='7' x2='13' y1='18.5' y2='18.5'></line><path fill='none' stroke='#000' stroke-width='1.1' d='M13.5 4.89v5.87a3.5 3.5 0 0 1-7 0V4.89a3.5 3.5 0 0 1 7 0z'></path><path fill='none' stroke='#000' stroke-width='1.1' d='M15.5 10.36V11a5.5 5.5 0 0 1-11 0v-.6'></path></svg></span></span></ifdef>}}}</H2>
+					<hr/>
 					
 	
     				
 					
 					
-					{{{<ifcount code="ca_collections" min="1"><H2><unit relativeTo="ca_collections" delimiter="<br/>"><ifcount code="ca_entities" min="1"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels.displayname</l> > </unit></ifcount>^ca_collections.preferred_labels.name</unit></H2></ifcount>}}}
+					{{{<ifcount code="ca_collections" min="1"><div class="link"><unit relativeTo="ca_collections" delimiter="<br/>"><ifcount code="ca_entities" min="1"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels.displayname</l> > </unit></ifcount>^ca_collections.preferred_labels.name</unit></div></ifcount>}}}
 					<HR>
 				
 				</div>
 			</div>
 			<div class="row">
-				<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+				<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
 				if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
 					print $vs_rep_viewer;
@@ -113,7 +113,7 @@
 
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>				
+			<div class='col-sm-6 col-md-6 col-lg-6'>				
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.material"><div class="unit"><label>Material</label>^ca_objects.material</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.dimensions.measurement_type|ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth|ca_objects.dimensions.dimensions_length|ca_objects.dimensions.dimensions_weight|ca_objects.dimensions.dimensions_diameter|ca_objects.dimensions.dimensions_circumference|ca_objects.dimensions.dimensions_thickness|ca_objects.dimensions.measurement_notes"><div class="unit"><label>Dimensions</label>

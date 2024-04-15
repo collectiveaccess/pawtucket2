@@ -29,7 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
-
 # ---------------------------------------
 /**
  * Generate URL tag for asset in current theme; if asset is not available the graphic in the default theme will be returned.
@@ -157,9 +156,16 @@ function caAddPageCSSClasses($pa_page_classes) {
  * @param RequestHTTP $po_request
  * @return string The "class" attribute with set classes or an empty string if no classes are set
  */
-function caGetPageCSSClasses() {
+function caGetPageCSSClasses(?array $options=null) {
 	global $g_theme_page_css_classes;
-	return (is_array($g_theme_page_css_classes) && sizeof($g_theme_page_css_classes)) ? "class='".join(' ', $g_theme_page_css_classes)."'" : '';
+	if(is_array($g_theme_page_css_classes) && sizeof($g_theme_page_css_classes)) {
+		if(caGetOption('asAttribute', $options, true)) {
+			return "class='".join(' ', $g_theme_page_css_classes)."'";
+		} else {
+			return $g_theme_page_css_classes;
+		}
+	}
+	return null;
 }
 # ---------------------------------------
 /**
@@ -484,7 +490,7 @@ function caObjectRepresentationThumbnails($po_request, $pn_representation_id, $p
 	}
 	$va_links = array();
 	$vn_primary_id = "";
-	foreach($va_reps as $va_rep){
+	foreach($va_reps as $i => $va_rep){
 		if(!isset($va_rep['media']) || !strlen((string)$va_rep['media'])) { continue; }
 		$vn_rep_id = $va_rep["representation_id"];
 		$vs_class = "";
@@ -511,6 +517,10 @@ function caObjectRepresentationThumbnails($po_request, $pn_representation_id, $p
 			# -------------------------------
 			case "carousel":
 				$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".{$ps_current_rep_class}\").removeClass(\"{$ps_current_rep_class}\"); $(this).parent().addClass(\"{$ps_current_rep_class}\"); $(this).addClass(\"{$ps_current_rep_class}\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb.$vs_rep_label."</a>\n";
+				break;
+			# -------------------------------
+			case "basic":
+				$va_links[$vn_rep_id] = "<a href='#' id='repThumb_{$i}' onclick='return setItem({$i});' class='repThumb'>".$vs_thumb.$vs_rep_label."</a>\n";
 				break;
 			# -------------------------------
 			default:
@@ -918,6 +928,7 @@ function caGetDetailForType($pm_table, $pm_type=null, $pa_options=null) {
 			$vs_access_wheres = " AND ca_objects.access IN (".join(",", $pa_access_values).") AND ca_object_representations.access IN (".join(",", $pa_access_values).")";
 		}
 		$vs_table = $t_instance->tableName();
+		$vs_pk = $t_instance->primaryKey();
 		
 		$va_params = array();
 		if ($vs_table === 'ca_objects') {

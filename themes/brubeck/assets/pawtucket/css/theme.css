@@ -89,7 +89,7 @@ a:hover{
 .headerAdvancedSearch{
 	text-align:right;
 }
-.headerAdvancedSearch a{
+.headerAdvancedSearch a, div.headerAdvancedSearch {
 	font-size:12px;
 	color:#FFF;
 }
@@ -118,8 +118,12 @@ a:hover{
 }
 @media (min-width:768px){
 	.navbar-brand{
-		width: 200px;
+		/*width: 200px;*/
 		padding-top: 8px;
+		margin-left: 0px !important;
+	}
+	.navbar > .container .navbar-brand{
+	 	margin-left: 0px !important;
 	}
 }
 @media (min-width:768px){
@@ -232,13 +236,13 @@ a:hover{
 /* footer */
 /* offset needed for fixed footer */
 body{
-	margin-bottom:200px;
+	margin-bottom:250px;
 }
 #footer{
 	background-color: #200d45;
 	color:#FFF;
 	padding-top:35px;
-	height: 140px;
+	height: 190px;
 	border:0px;
 	font-size:14px;
 	font-weight:normal;
@@ -251,11 +255,11 @@ body{
 @media(max-width:991px){
 	/* CHANGE - does the footer height need to change for smaller screen sizes? */
 	#footer{
-		height:250px;
+		height:300px;
 	}
 	/* CHANGE - does the footer offset need to change for smaller screen sizes? */
 	body{
-		margin-bottom:300px;
+		margin-bottom:350px;
 	}
 }
 #footer a{
@@ -280,6 +284,8 @@ body{
 }
 #footer .address{
 	font-size: 14px;
+	padding-top: 3px;
+  	line-height: 1.5em;
 }
 #footer .text-right{
 	padding-top: 13px;
@@ -319,9 +325,12 @@ body{
 	max-width:250px;
 }
 #footer .donorCredit{
-	font-size:12px;
-	text-align:right;
-	padding-right: 17px;
+	font-size: 15px;
+  	text-align: center;
+ 	/*text-align: right;
+ 	padding-right: 17px;*/
+  	font-weight: 500;
+  	padding-top: 25px;
 }
 @media(max-width: 991px) {
 	#footer .donorCredit{
@@ -918,6 +927,11 @@ a:hover .frontGridCaption{
 .gallery #galleryDetailImageGrid img {
   background-color: #fff;
 }
+@media (min-width: 768px) {
+  .gallery #galleryDetailImageArea{
+    height: 460px;
+  }
+}
 /* collections */
 .collectionIntro {
 	font-size: 14px;
@@ -1128,6 +1142,9 @@ a.readmore-js-toggle {
 }
 .vco-text p{
 	color:#000;
+}
+.vco-media .vco-media-content-container .vco-media-content img{
+	margin-top:10px;
 }
 @media(max-width:810px){
 	/* 2 col
@@ -1559,4 +1576,21 @@ a .featuredTile .title {
 /* map */
 .vco-map .vco-mapmarker {
 	color: #200d45;
+}
+/* --------------------------------- */
+/* SEARCH BUILDER */
+/* --------------------------------- */
+.searchIntro{
+	font-size: 17px;
+	padding: 20px 0px 20px 0px;
+}
+.searchBuilderSubmit{
+	margin-top:20px;
+}
+.searchBuilderSubmit a.form-button{
+	/* below are the styles used for btn-default */
+	background-color:#0a4ba0;
+	font-family: "urbane-rounded", sans-serif;
+	font-weight:300;
+	
 }
