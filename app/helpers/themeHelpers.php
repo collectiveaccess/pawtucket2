@@ -1010,7 +1010,7 @@ function caGetDetailForType($pm_table, $pm_type=null, $pa_options=null) {
                     if($versions_set) {
 		        		foreach($versions as $v) {
 		        			$version_info = $qr_res->getMediaInfo("media", $v);
-		        			$va_res[$id][$v]['tag'] = $qr_res->getMediaTag("media", $v);
+		        			$va_res[$id][$v]['tag'] = $qr_res->getMediaTag("media", $v, ['alt' => $alt_text]);
 		        			$va_res[$id][$v]['url'] = $qr_res->getMediaUrl("media", $v);
 		        			$va_res[$id][$v]['path'] = $qr_res->getMediaPath("media", $v);
 		        			$va_res[$id][$v]['width'] = $version_info['WIDTH'];
