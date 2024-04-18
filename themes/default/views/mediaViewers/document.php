@@ -21,7 +21,7 @@ $options = $this->getVar('options');
 	}
 	
 	div.documentviewer-container div.mediaviewer img {
-		object-fit: contain;
+		/*object-position:top;*/
 		width: 100%;
 		height: 100%;
 	}
@@ -44,5 +44,5 @@ $options = $this->getVar('options');
 <?php
 	}
 ?>
-	<div class="mediaviewer"></div>
+	<div class="mediaviewer object-fit-contain w-100 h-100"></div>
 </div>

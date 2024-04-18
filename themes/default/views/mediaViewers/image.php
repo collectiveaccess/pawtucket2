@@ -8,6 +8,7 @@ $options = $this->getVar('options');
 		overflow: clip;
 	}
 	div.imageviewer-container div.mediaviewer img {
+		/*object-position:top; */
 		width:100%;
 		height:100%;
 	}

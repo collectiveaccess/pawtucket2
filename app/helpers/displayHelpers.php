@@ -4291,7 +4291,7 @@ function caRepresentationList($request, $subject, ?array $options=null) : ?array
 		$rep = [
 			'representation_id' => $rep_id,
 			'mimetype' => $mimetype,
-			'media_class' => $qr->get('ca_object_representations.media_class'),
+			'media_class' => caGetMediaClass($qr->get('ca_object_representations.mimetype')),
 			'original_url' => $qr->get("ca_object_representations.media.original.url"),
 			'url' => $qr->get("ca_object_representations.media.{$display_version}.url"),
 			'original_tag' => $qr->get("ca_object_representations.media.original.tag"),
@@ -4395,7 +4395,9 @@ function caRepresentationViewer($request, $subject, ?array $options=null) {
 			array_merge(['displayClass' => $display_class, 'id' => 'mediaviewer'], $opts)
 		);
 		
-		$o_viewer = MediaViewerManager::getViewerByDisplayClass('overlay', $display_class);
+		if(!($o_viewer = MediaViewerManager::getViewerByDisplayClass('overlay', $display_class))) {
+			continue;
+		}
 		$opts = MediaViewerManager::viewerOptionsForDisplayClass('overlay', $display_class);
 		$viewer_overlay_html[$display_class] = $o_viewer->getViewerOverlayHTML(
 			$request,
