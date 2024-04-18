@@ -33,23 +33,23 @@
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
 	if(!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && $this->request->isLoggedIn()){
-		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
-		$va_user_links[] = '<li class="divider nav-divider"></li>';
+		$va_user_links[] = '<li role="presentation" class="dropdown-header" role="none">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
+		$va_user_links[] = '<li class="divider nav-divider" role="none"></li>';
 		if(caDisplayLightbox($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
+			$va_user_links[] = "<li role='none'>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array(), array("role" => "menuitem"))."</li>";
 		}
 		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
+			$va_user_links[] = "<li role='none'>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array(), array("role" => "menuitem"))."</li>";
 		}
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
+		$va_user_links[] = "<li role='none'>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array(), array("role" => "menuitem"))."</li>";
 		
 		if ($this->request->config->get('use_submission_interface')) {
-			$va_user_links[] = "<li>".caNavLink($this->request, _t('Submit content'), '', '', 'Contribute', 'List', array())."</li>";
+			$va_user_links[] = "<li role='none'>".caNavLink($this->request, _t('Submit content'), '', '', 'Contribute', 'List', array(), array("role" => "menuitem"))."</li>";
 		}
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
+		$va_user_links[] = "<li role='none'>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array(), array("role" => "menuitem"))."</li>";
 	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li role='none'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' role='menuitem'>"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li role='none'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' role='menuitem'>"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 	$va_access_values = caGetUserAccessValues($this->request);
@@ -58,16 +58,16 @@
 <html lang="en" <?php print ((strtoLower($this->request->getController()) == "front")) ? "class='frontContainer'" : ""; ?>>
 	<head>
 	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 	
-	<meta property="og:url" content="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" />
-	<meta property="og:type" content="website" />
+	<meta property="og:url" content="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" >
+	<meta property="og:type" content="website" >
 <?php
 	if(!in_array(strToLower($this->request->getAction), array("objects"))){
 		# --- this is set on detail page
 ?>
-	<meta property="og:description" content="<?php print htmlspecialchars((MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name")); ?>" />
-	<meta property="og:title" content="<?php print $this->request->config->get("app_display_name"); ?>" />
+	<meta property="og:description" content="<?php print htmlspecialchars((MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name")); ?>" >
+	<meta property="og:title" content="<?php print $this->request->config->get("app_display_name"); ?>" >
 <?php
 	}
 ?>	
@@ -78,7 +78,7 @@
 
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	
-	<script type="text/javascript">
+	<script>
 		jQuery(document).ready(function() {
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
@@ -129,7 +129,7 @@
 	if ($vb_has_user_links) {
 ?>
 			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav" role="list" aria-label="<?php print _t("Mobile User Navigation"); ?>">
+				<ul class="nav navbar-nav" role="menu" aria-label="<?php print _t("Mobile User Navigation"); ?>">
 					<?php print join("\n", $va_user_links); ?>
 				</ul>
 			</div>
@@ -142,8 +142,8 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span></a>
-						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown" role="button" aria-label="<?php print _t("User options"); ?>"><span class="glyphicon glyphicon-user"></span></a>
+						<ul class="dropdown-menu" role="menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
 <?php
@@ -152,13 +152,14 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
+							<label for="headerSearchInput" class="sr-only">Search</label>
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" >
 						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
+						<button type="submit" class="btn-search" id="headerSearchButton" aria-label="<?php print _t("Submit"); ?>"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 					<div class="headerAdvancedSearch"><?php print caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
 				</form>
-				<script type="text/javascript">
+				<script>
 					$(document).ready(function(){
 						$('#headerSearchButton').prop('disabled',true);
 						$('#headerSearchInput').on('keyup', function(){
@@ -166,20 +167,20 @@
 						})
 					});
 				</script>
-				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "explore")) ? ' active' : ''; ?>">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Explore <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
-						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("Places"), "", "", "Explore", "places"); ?></li>
-							<li><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Types"), "", "", "Explore", "types"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Works"), "", "", "Browse", "works"); ?></li>
+				<ul class="nav navbar-nav navbar-right menuItems" role="menu" aria-label="<?php print _t("Primary Navigation"); ?>">
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?> role="none"><?php print caNavLink($this->request, _t("About"), "", "", "About", "index", null, array("role" => "menuitem")); ?></li>					
+					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?> role="none"><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index", null, array("role" => "menuitem")); ?></li>					
+					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "explore")) ? ' active' : ''; ?>" role="none">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="menuitem" aria-haspopup="true">Explore <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
+						<ul class="dropdown-menu" role="menu">
+							<li role="none"><?php print caNavLink($this->request, _t("Places"), "", "", "Explore", "places", null, array("role" => "menuitem")); ?></li>
+							<li role="none"><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people", null, array("role" => "menuitem")); ?></li>
+							<li role="none"><?php print caNavLink($this->request, _t("Types"), "", "", "Explore", "types", null, array("role" => "menuitem")); ?></li>
+							<li role="none"><?php print caNavLink($this->request, _t("Works"), "", "", "Browse", "works", null, array("role" => "menuitem")); ?></li>
 						</ul>
 					</li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?> role="none"><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index", null, array("role" => "menuitem")); ?></li>
+					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?> role="none"><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form", null, array("role" => "menuitem")); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

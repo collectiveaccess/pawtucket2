@@ -49,7 +49,7 @@
 					<H1>{{{^ca_places.preferred_labels.name}}}</H1>
 					{{{<ifdef code="ca_places.parent_id"><div class="unit"><unit relativeTo="ca_places.hierarchy" delimiter=" &gt; "><l>^ca_places.preferred_labels.name</l></unit></div></ifdef>}}}
 					
-					<HR/>
+					<hr>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
@@ -85,7 +85,7 @@
 ?>
 					
 					
-					{{{<ifcount code="ca_places.nonpreferred_labels" min="1" restrictToTypes="display_variant,butler"><div class="unit"><label>Alternate Name<ifcount code="ca_places.nonpreferred_labels" min="2">s</ifcount></label><unit relativeTo="ca_places.nonpreferred_labels" restrictToTypes="display_variant,butler" delimiter="<br/>">^ca_places_labels.name</unit></div></ifcount>}}}
+					{{{<ifcount code="ca_places.nonpreferred_labels" min="1" restrictToTypes="display_variant,butler"><div class="unit"><label>Alternate Name<ifcount code="ca_places.nonpreferred_labels" min="2">s</ifcount></label><unit relativeTo="ca_places.nonpreferred_labels" restrictToTypes="display_variant,butler" delimiter="<br>">^ca_places_labels.name</unit></div></ifcount>}}}
 
 					{{{<ifdef code="ca_places.description">
 						<div class='unit'><label>Description</label>
@@ -94,22 +94,22 @@
 					</ifdef>}}}
 					
 					{{{<ifcount code="ca_places.children" min="1">
-						<div class="unit"><label>Contains</label><span class="trimText"><unit relativeTo="ca_places.children" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit></span>
+						<div class="unit"><label>Contains</label><span class="trimText"><unit relativeTo="ca_places.children" delimiter="<br>"><l>^ca_places.preferred_labels.name</l></unit></span>
 						</div>
 					</ifcount>}}}
 					{{{<ifcount code="ca_collections" min="1">
-						<div class="unit"><label>Related Collection<ifcount code="ca_collections" min="2">s</ifcount></label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>
+						<div class="unit"><label>Related Collection<ifcount code="ca_collections" min="2">s</ifcount></label><unit relativeTo="ca_collections" delimiter="<br>"><l>^ca_collections.preferred_labels.name</l></unit>
 						</div>
 					</ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="work">
 						<div class="unit"><label>Related Work<ifcount code="ca_occurrences" min="2" restrictToTypes="work">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="work" delimiter="<br/>">
+						<unit relativeTo="ca_occurrences" restrictToTypes="work" delimiter="<br>">
 							<l>^ca_occurrences.preferred_labels.name</l>
 						</unit>
 					</div></ifcount>}}}
 					{{{<ifcount code="ca_entities" min="1">
 						<div class="unit"><label>Related <ifcount code="ca_entities" max="1">Entity</ifcount><ifcount code="ca_entities" min="2">Entities</ifcount></label>
-						<unit relativeTo="ca_entities" delimiter="<br/>">
+						<unit relativeTo="ca_entities" delimiter="<br>">
 							<l>^ca_entities.preferred_labels.displayname</l>
 						</unit>
 					</div></ifcount>}}}
@@ -117,7 +117,7 @@
 			</div><!-- end row -->
 			
 		{{{<ifcount code="ca_objects" min="1">
-			<br/>
+			<br>
 			<div class="row">	
 				<div class="col-sm-6"><H2>Related Object<ifcount code="ca_objects" min="2">s</ifcount></H2></div>
 				<ifcount code="ca_objects" min="9">
@@ -134,7 +134,7 @@
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
-			<script type="text/javascript">
+			<script>
 				jQuery(document).ready(function() {
 					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'place_facet', 'id' => '^ca_places.place_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
@@ -159,7 +159,7 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
-<script type='text/javascript'>
+<script>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,

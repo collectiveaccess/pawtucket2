@@ -92,21 +92,21 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>			
 				{{{<ifcount code="ca_collections" min="1">
-					<div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br/>"><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></unit>
+					<div class="unit"><label>Collection</label><unit relativeTo="ca_collections" delimiter="<br>"><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></unit>
 					</div>
 				</ifcount>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.item_type"><div class="unit"><label>Object Type</label><unit relativeTo="ca_objects.item_type" delimiter=", ">^ca_objects.item_type</unit></div></ifdef>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="contributor,creator">
 					<div class="unit"><label>Creator<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="contributor,creator">s</ifcount></label>
-					<unit relativeTo="ca_entities" restrictToRelationshipTypes="contributor,creator" delimiter="<br/>">
+					<unit relativeTo="ca_entities" restrictToRelationshipTypes="contributor,creator" delimiter="<br>">
 						<l>^ca_entities.preferred_labels.displayname</l>
 					</unit>
 				</div></ifcount>}}}
 				{{{<if rule='^ca_objects.unknown =~ /Yes/'><div class="unit"><label>Creator</label>Unknown</div></if>}}}
 				{{{<ifdef code="ca_objects.date.sort_date|ca_objects.date.display_date">
 					<div class="unit"><label>Date</label>
-						<unit relativeTo="ca_objects.date" delimiter="<br/>">
+						<unit relativeTo="ca_objects.date" delimiter="<br>">
 							<ifdef code="ca_objects.date.date_display">^ca_objects.date.date_display</ifdef><ifnotdef code="ca_objects.date.date_display">^ca_objects.date.sort_date</ifnotdef><ifdef code="ca_objects.date.date_note">, ^ca_objects.date.date_note</ifdef>
 						</unit>
 					</div>
@@ -133,7 +133,7 @@
 		</div><!-- end row -->
 		<div class="row">
 			<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1'>
-				<hr/>
+				<hr>
 			</div>
 		</div>
 		<div class="row">
@@ -143,7 +143,7 @@
 			<div class='col-sm-6 col-md-6 col-lg-5'>		
 				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="work">
 					<div class="unit"><label>Work<ifcount code="ca_occurrences" min="2" restrictToTypes="work">s</ifcount></label>
-					<unit relativeTo="ca_occurrences" restrictToTypes="work" delimiter="<br/>">
+					<unit relativeTo="ca_occurrences" restrictToTypes="work" delimiter="<br>">
 						<l>^ca_occurrences.preferred_labels.name</l>
 					</unit>
 				</div></ifcount>}}}
@@ -167,7 +167,7 @@
 ?>
 				{{{<ifdef code="ca_objects.verbatim_location"><div class="unit"><label>Verbatim Location</label>^ca_objects.verbatim_location%delimiter=,_</div></ifdef>}}}
 				{{{<ifcount code="ca_places" min="1">
-					<div class="unit"><label>Place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>
+					<div class="unit"><label>Place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br>"><l>^ca_places.preferred_labels.name</l></unit>
 					</div>
 				</ifcount>}}}							
 			</div><!-- end col -->				
@@ -175,7 +175,7 @@
 		</div><!-- end row -->
 		<div class="row">
 			<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1'>
-				<hr/>
+				<hr>
 <?php
 				$vs_rights_text = $this->getVar("rights_text");
 				if($tmp = $t_object->get("ca_objects.rights_container.rights")){
@@ -205,7 +205,7 @@
 	</div><!-- end col -->
 </div><!-- end row -->
 
-<script type='text/javascript'>
+<script>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,

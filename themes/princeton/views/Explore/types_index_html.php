@@ -39,7 +39,7 @@
 					}
 				}
 				if(in_array($vn_type_id, $va_type_ids_with_objects)){
-					print caNavLink($this->request, "<span class='glyphicon glyphicon-search' aria-label='Search'></span><br/><span class='typesBrowseLabel'>Browse the Collections</span>", "typesBrowse", "", "Browse", "objects", array("facet" => "type_facet", "id" => $vn_type_id), array("title" => "", "data-toggle" => "popover", "data-content" => "Browse the Collections"));
+					print caNavLink($this->request, "<span class='glyphicon glyphicon-search'></span><br/><span class='typesBrowseLabel'>Browse the Collections</span>", "typesBrowse", "", "Browse", "objects", array("facet" => "type_facet", "id" => $vn_type_id), array("title" => "", "data-toggle" => "popover", "data-content" => "Browse the Collections"));
 				}
 				print "</div><!-- end tile --></div><!-- end col -->";
 			
@@ -52,7 +52,7 @@
 				}
 			}
 		}
-		if($col > 1){
+		if($col_c > 1){
 			print "</div>";
 		}
 	}	
