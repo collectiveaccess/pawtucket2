@@ -238,10 +238,10 @@
 								print "<div class='unit'><label>Subjects/Keywords</label>".$vs_subjects."</div>";	
 							}
 
-							if($vs_rep_viewer){
+							if($vb_media && ($rights = $this->getVar("recording_rights_restrictions"))){
 ?>
 								<div class="unit"><label>Rights and Restrictions</label>
-									{{{media_rights_restrictions}}}
+									<?php print $rights; ?>
 								</div>
 <?php				
 							}

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2023 Whirl-i-Gig
+ * Copyright 2009-2024 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1010,7 +1010,7 @@ function caGetDetailForType($pm_table, $pm_type=null, $pa_options=null) {
                     if($versions_set) {
 		        		foreach($versions as $v) {
 		        			$version_info = $qr_res->getMediaInfo("media", $v);
-		        			$va_res[$id][$v]['tag'] = $qr_res->getMediaTag("media", $v);
+		        			$va_res[$id][$v]['tag'] = $qr_res->getMediaTag("media", $v, ['alt' => $alt_text]);
 		        			$va_res[$id][$v]['url'] = $qr_res->getMediaUrl("media", $v);
 		        			$va_res[$id][$v]['path'] = $qr_res->getMediaPath("media", $v);
 		        			$va_res[$id][$v]['width'] = $version_info['WIDTH'];

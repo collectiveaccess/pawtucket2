@@ -47,7 +47,7 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
-					<HR/>
+					<hr>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
@@ -87,28 +87,28 @@
 					{{{<ifdef code="ca_entities.nonpreferred_labels.displayname" min="1"><div class="unit"><label>Alternate Names</label>^ca_entities.nonpreferred_labels.displayname%delimiter=,_</div></ifcount>}}}
 					{{{<ifdef code="ca_entities.bio_history_container.bio_history">
 						<div class='unit'><label>Biography</label>
-							<span class="trimText">^ca_entities.bio_history_container.bio_history<ifdef code="ca_entities.bio_history_container.bio_history_source"><br/><i>(^ca_entities.bio_history_container.bio_history_source)</i></ifdef></span>
+							<span class="trimText">^ca_entities.bio_history_container.bio_history<ifdef code="ca_entities.bio_history_container.bio_history_source"><br><i>(^ca_entities.bio_history_container.bio_history_source)</i></ifdef></span>
 						</div>
 					</ifdef>}}}
 				
 					{{{<ifcount code="ca_collections" min="1">
-						<div class="unit"><label>Related Collection<ifcount code="ca_collections" min="2">s</ifcount></label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>
+						<div class="unit"><label>Related Collection<ifcount code="ca_collections" min="2">s</ifcount></label><unit relativeTo="ca_collections" delimiter="<br>"><l>^ca_collections.preferred_labels.name</l></unit>
 						</div>
 					</ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="work">
 						<div class="unit"><label>Related Work<ifcount code="ca_occurrences" min="2" restrictToTypes="work">s</ifcount></label>
-						<unit relativeTo="ca_occurrences" restrictToTypes="work" delimiter="<br/>">
+						<unit relativeTo="ca_occurrences" restrictToTypes="work" delimiter="<br>">
 							<l>^ca_occurrences.preferred_labels.name</l>
 						</unit>
 					</div></ifcount>}}}
 					{{{<ifcount code="ca_entities.related" min="1">
 						<div class="unit"><label>Related <ifcount code="ca_entities.related" max="1">Entity</ifcount><ifcount code="ca_entities.related" min="2">Entities</ifcount></label>
-						<unit relativeTo="ca_entities.related" delimiter="<br/>">
+						<unit relativeTo="ca_entities.related" delimiter="<br>">
 							<l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)
 						</unit>
 					</div></ifcount>}}}
 					{{{<ifcount code="ca_places" min="1">
-						<div class="unit"><label>Related Place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>
+						<div class="unit"><label>Related Place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br>"><l>^ca_places.preferred_labels.name</l></unit>
 						</div>
 					</ifcount>}}}
 				</div><!-- end col -->
@@ -125,14 +125,14 @@
 ?>
 				<div class="row">
 					<div class="col-sm-12">
-						<br/><H2>Featured Object<ifcount code="ca_objects" min="2">s</ifcount></H2>
-						<hr/>
+						<br><H2>Featured Objects</H2>
+						<hr>
 					</div>
 				</div>
 				<div class="row featuredObjects">
 <?php
 				while($qr_objects->nextHit()){
-					print "<div class='col-sm-3'>".$qr_objects->getWithTemplate("<l><div class='featuredObject'><div class='featuredObjectImage'>^ca_object_representations.media.medium</div><div class='featuredObjectsCaption'><small>^ca_objects.idno</small><br/>^ca_objects.preferred_labels<ifdef code='ca_objects.date.date_display|ca_objects.date.sort_date'><br/><ifdef code='ca_objects.date.date_display'>^ca_objects.date.date_display</ifdef><ifnotdef code='ca_objects.date.date_display'>^ca_objects.date.sort_date</ifnotdef></ifdef></div></l></div>")."</div>";
+					print "<div class='col-sm-3'>".$qr_objects->getWithTemplate("<l><div class='featuredObject'><div class='featuredObjectImage'>^ca_object_representations.media.medium</div><div class='featuredObjectsCaption'><small>^ca_objects.idno</small><br>^ca_objects.preferred_labels<ifdef code='ca_objects.date.date_display|ca_objects.date.sort_date'><br><ifdef code='ca_objects.date.date_display'>^ca_objects.date.date_display</ifdef><ifnotdef code='ca_objects.date.date_display'>^ca_objects.date.sort_date</ifnotdef></ifdef></div></l></div>")."</div>";
 				}
 ?>					
 				</div>
@@ -157,7 +157,7 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
-<script type='text/javascript'>
+<script>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,

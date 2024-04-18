@@ -161,7 +161,7 @@ if($vs_detailNav = $this->request->getParameter("detailNav", pString)){
 				}
 ?>
 				</div></div></div><!--- end row --></div><!--- end container -->
-	<script type='text/javascript'>	
+	<script>	
 		function loadDetailResults<?php print $vs_browse_type; ?>(url) {
 			jQuery("#browseResultsContainer<?php print $vs_browse_type; ?>").data('jscroll', null);
 			jQuery("#browseResultsContainer<?php print $vs_browse_type; ?>").load(url, function() {
@@ -196,17 +196,18 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='divide'>&nbsp;</li>";
 						}
 					}
-					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction" role="button"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 					print "</ul></div>\n";
 				}
 			}
 ?>
-		<H1>
+		<H1 style="display: inline-block; margin-bottom: 0;">
 <?php
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
-			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-cog bGear" aria-label="Result options"></i></a>
+		</H1>
+			<div class="btn-group" style="margin-bottom: 7px;">
+				<a href="#" data-toggle="dropdown" aria-label="Result options"><i class="fa fa-cog bGear"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
@@ -257,17 +258,17 @@ if (!$vb_ajax) {	// !ajax
 <?php
 			}
 			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
+				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><span class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</span></a>";
 			}
 ?>
-		</H1>
+		<!-- </H1> -->
 <?php
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}
 
 		if($vb_showLetterBar){
-			print "<div id='bLetterBar'>";
+			print "<div id='bLetterBar' role='list'>";
 			foreach(array_keys($va_letter_bar) as $vs_l){
 				if(trim($vs_l)){
 					print caNavLink($this->request, $vs_l, ($vs_letter == $vs_l) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))." ";
@@ -306,9 +307,9 @@ if (!$vb_ajax) {	// !ajax
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
 			foreach($va_views as $vs_view => $va_view_info) {
 				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button"></span></a> ';
+					print '<a href="#" class="active"><span class="glyphicon  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" ></span></a> ';
 				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" role="button"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" ></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 				}
 			}
 		}
@@ -322,7 +323,7 @@ if (!$vb_ajax) {	// !ajax
 	
 </div><!-- end row -->
 
-<script type="text/javascript">
+<script>
 	jQuery(document).ready(function() {
 		jQuery('#browseResultsContainer').jscroll({
 			autoTrigger: true,

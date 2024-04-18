@@ -120,6 +120,8 @@
 		$po_request = caGetOption('request', $pa_options, null);
  		$pa_options['label'] = caGetOption('label', $pa_options, null);
  		$pa_options['content'] = caGetOption('content', $pa_options, null);
+ 		$pa_options['excludeRelationshipTypes'] = caGetOption('excludeRelationshipTypes', $pa_options, null);
+ 		$pa_options['ajaxContentUrl'] = caGetOption('ajaxContentUrl', $pa_options, null);
  		$vs_color = caGetOption('color', $pa_options, null);
  		$vs_group = caGetOption('group', $pa_options, null);
  		$vb_render_label_as_link = caGetOption('renderLabelAsLink', $pa_options, false);

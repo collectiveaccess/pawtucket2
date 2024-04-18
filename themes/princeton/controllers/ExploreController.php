@@ -51,7 +51,7 @@ class ExploreController extends BasePawtucketController {
 			foreach($va_types as $vn_item_id => $va_type){
 				$va_type = array_pop($va_type);
 				$t_list_item->load($vn_item_id);
-				$va_types_for_display[$vn_item_id] = array("name" => $va_type["name_singular"], "image" => $t_list_item->get("ca_list_items.icon.largeicon"), "children" => (($t_list_item->get("ca_list_items.children.item_id")) ? true : false));
+				$va_types_for_display[$vn_item_id] = array("name" => $va_type["name_singular"], "image" => $t_list_item->get("ca_list_items.icon.largeicon", array("alt" => "Image for ".$va_type["name_singular"])), "children" => (($t_list_item->get("ca_list_items.children.item_id")) ? true : false));
 			}
 		}
 				
@@ -90,7 +90,7 @@ class ExploreController extends BasePawtucketController {
 			foreach($va_types as $vn_item_id => $va_type){
 				$va_type = array_pop($va_type);
 				$t_list_item->load($vn_item_id);
-				$va_types_for_display[$vn_item_id] = array("name" => $va_type["name_singular"], "image" => $t_list_item->get("ca_list_items.icon.largeicon"), "children" => (($t_list_item->get("ca_list_items.children.item_id")) ? true : false));
+				$va_types_for_display[$vn_item_id] = array("name" => $va_type["name_singular"], "image" => $t_list_item->get("ca_list_items.icon.largeicon", array("alt" => "Image for ".$va_type["name_singular"])), "children" => (($t_list_item->get("ca_list_items.children.item_id")) ? true : false));
 			}
 		}
 				

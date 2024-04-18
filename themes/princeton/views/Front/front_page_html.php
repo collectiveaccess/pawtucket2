@@ -32,7 +32,7 @@
 	$va_access_values = $this->getVar("access_values");
 	$vs_hero = $this->request->getParameter("hero", pString);
 	if(!$vs_hero){
- 		$vs_hero = rand(1, 5);
+ 		$vs_hero = rand(1, 21);
 	}
 ?>
 
@@ -40,19 +40,19 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
-				
 				<div class="heroSearch">
-					<H1>
-						<div class="line1">Welcome to the</div>
-						<div class="line2">Visual Resources Collections</div>
-						<div class="line3">{{{hp_search_text}}}</div>
-					</H1>
+					<div>
+						<h1 class="line1">Welcome to the</h1>
+						<h1 class="line2">Visual Resources Collections</h1>
+						<h1 class="line3">{{{hp_search_text}}}</h1>
+					</div>
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 						<div class="formOutline">
 							<div class="form-group">
-								<input type="text" class="form-control" id="heroSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
+								<label for="heroSearchInput" class="sr-only">Search</label>
+								<input type="text" class="form-control" id="heroSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" >
 							</div>
-							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
+							<button type="submit" class="btn-search" id="heroSearchButton" aria-label="<?php print _t("Submit Search"); ?>"><span class="glyphicon glyphicon-search"></span></button>
 						</div>
 					</form>
 				</div>
@@ -91,34 +91,35 @@
 			<div class="row">
 				<div class="col-md-3">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>", "", "", "", ""); ?>
-						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Places", "", "", "", ""); ?></div>
-						</div>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'></div>
+																<div class='hpExploreBoxDetails'>
+																	<div class='hpExploreBoxTitle'>Places</div>
+																</div>", "", "", "", ""); ?>
+						
 					</div>
 				</div>
 				<div class="col-md-3">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage2'></div>", "", "", "Browse", "people"); ?>
-						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "People", "", "", "Browse", "people"); ?></div>
-						</div>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage2'></div>
+																<div class='hpExploreBoxDetails'>
+																	<div class='hpExploreBoxTitle'>People</div>
+																</div>", "", "", "Browse", "people"); ?>
 					</div>
 				</div>
 				<div class="col-md-3">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage3'></div>", "", "", "Explore", "Types"); ?>
-						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Types", "", "", "Explore", "Types"); ?></div>
-						</div>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage3'></div>
+																<div class='hpExploreBoxDetails'>
+																	<div class='hpExploreBoxTitle'>Types</div>
+																</div>", "", "", "Explore", "Types"); ?>
 					</div>
 				</div>
 				<div class="col-md-3">
 					<div class="hpExploreBox">
-						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage4'></div>", "", "", "Browse", "Works"); ?>
-						<div class="hpExploreBoxDetails">
-							<div class="hpExploreBoxTitle"><?php print caNavLink($this->request, "Works", "", "", "Browse", "Works"); ?></div>
-						</div>
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage4'></div>
+																<div class='hpExploreBoxDetails'>
+																	<div class='hpExploreBoxTitle'>Works</div>
+																</div>", "", "", "Browse", "Works"); ?>
 					</div>
 				</div>
 			</div>
@@ -137,7 +138,7 @@
 
 <div id="hpScrollBar"><div class="row"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div></div>
 
-		<script type="text/javascript">
+		<script>
 			$(document).ready(function(){
 				$(window).scroll(function(){
 					$("#hpScrollBar").fadeOut();

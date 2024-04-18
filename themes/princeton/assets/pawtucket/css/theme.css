@@ -199,6 +199,12 @@ a:hover{
   	/* change background color on hover or active */
   	/*background-color: #f3f3f3;*/
 }
+.navbar-default .navbar-nav > li > a{
+	border:1px solid transparent;
+}
+.navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li:focus > a:focus{
+	border:1px dashed #dedede;
+}
 .navbar-nav > li > .dropdown-menu{
 	background-color:#ffffff;
 	border:0px;
@@ -219,6 +225,9 @@ a:hover{
 }
 .dropdown-toggle .fa{
 	font-size:10px;
+}
+.navbar-default .navbar-nav > li.dropdown-container:focus > ul {
+  display: block;
 }
 /* header mobile icons navigation */
 .navbar-default .navbar-toggle{
@@ -401,6 +410,10 @@ body{
 	border-radius: 0px;
 	margin-left: -30px;
 }
+
+.results .btn-search-refine:focus{
+	border: 1px dashed #dedede;
+}
 .bSearchWithin, .bSearchWithin:focus {
     width: 80%;
     box-shadow: none;
@@ -416,11 +429,15 @@ body{
 	display:inline-block;
 	padding-right: 30px;
 }
-.browseRemoveFacet, .browseRemoveFacet .btn{
+.browseRemoveFacet, .browseRemoveFacet.btn{
 	display:block;
 	width:100%;
 	font-size:11px;
 	margin:0px 0px 5px 0px;
+	color:#FFF;
+}
+#bRefine a.browseRemoveFacet{
+	color:#FFF;
 }
 .browseRemoveFacet .btn{
 	white-space: normal;
@@ -490,6 +507,54 @@ body.frontContainer #footer{
 }
 .parallax.hero5 {
     background-image: url("../graphics/hero_6.jpg");
+}
+.parallax.hero6 {
+    background-image: url("../graphics/hero_1_princeton.jpg");
+}
+.parallax.hero7 {
+    background-image: url("../graphics/hero_2_princeton.jpg");
+}
+.parallax.hero8 {
+    background-image: url("../graphics/hero_3_princeton.jpg");
+}
+.parallax.hero9 {
+    background-image: url("../graphics/hero_4_princeton.jpg");
+}
+.parallax.hero10 {
+    background-image: url("../graphics/hero_5_princeton.jpg");
+}
+.parallax.hero11 {
+    background-image: url("../graphics/hero_6_princeton.jpg");
+}
+.parallax.hero12 {
+    background-image: url("../graphics/hero_7_princeton.jpg");
+}
+.parallax.hero13 {
+    background-image: url("../graphics/hero_8_princeton.jpg");
+}
+.parallax.hero14 {
+    background-image: url("../graphics/hero_9_princeton.jpg");
+}
+.parallax.hero15 {
+    background-image: url("../graphics/hero_10_princeton.jpg");
+}
+.parallax.hero16 {
+    background-image: url("../graphics/hero_11_princeton.jpg");
+}
+.parallax.hero17 {
+    background-image: url("../graphics/hero_12_princeton.jpg");
+}
+.parallax.hero18 {
+    background-image: url("../graphics/hero_13_princeton.jpg");
+}
+.parallax.hero19 {
+    background-image: url("../graphics/hero_14_princeton.jpg");
+}
+.parallax.hero20 {
+    background-image: url("../graphics/hero_15_princeton.jpg");
+}
+.parallax.hero21 {
+    background-image: url("../graphics/hero_16_princeton.jpg");
 }
 @media(max-width:420px), (max-height:420px){
 	.front .heroSearch .form-group{
@@ -585,7 +650,9 @@ body.frontContainer #footer{
 	color:#000;
 	font-size: 20px;
 }
-
+#heroSearchButton:focus{
+	border: 1px dashed #dedede;
+}
 @media(max-width: 1355px) {
 	.heroSearch H1 .line1, .heroSearch H1 .line3 {
 		font-size:24px;
@@ -1174,4 +1241,12 @@ a .typesTile .title {
 /* lightbox */
 #setInquire .btn .glyphicon{
 	color:#FFF;
+}
+.sr-only {
+	position:absolute;
+	left:-10000px;
+	top:auto;
+	width:1px;
+	height:1px;
+	overflow:hidden;
 }

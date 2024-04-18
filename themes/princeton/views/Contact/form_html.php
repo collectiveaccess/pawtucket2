@@ -38,7 +38,7 @@
 	}
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" method="post">
-	    <input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+	    <input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken($this->request); ?>">
 <?php
 	if($pn_id && $t_item->getPrimaryKey()){
 ?>
@@ -119,7 +119,7 @@
 									<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
 								</div>
 								<div class='col-sm-6'>
-									<input name="security" value="" id="security" type="text" class="form-control input-sm" />
+									<input name="security" value="" id="security" type="text" class="form-control input-sm" >
 								</div>
 							</div><!--end row-->	
 						</div><!-- end form-group -->
