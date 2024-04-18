@@ -50,7 +50,7 @@
 ?>
 	<div class="row justify-content-center text-left">
 		<div class="col-12 hpExplore my-4">
-			<H2 class="mb-3">Explore By Collections</H2>
+			<H2 class="mb-3">Explore By Collection</H2>
 			<div class="row">
 <?php
 			while($qr_res->nextHit()){

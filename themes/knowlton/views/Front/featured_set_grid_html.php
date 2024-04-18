@@ -43,13 +43,7 @@
 					print "<div class='row'>";
 				}
 				print "<div class='col-12 col-sm-6'>";
-				$vs_date = $qr_res->getWithTemplate("^ca_objects.dateSet.displayDate");
-				$vs_designer = $qr_res->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='designer' delimiter=', '>^ca_entities.preferred_labels.displayname</unit>");
-				$vs_desc = "";
-				if($vs_date || $vs_designer){
-					$vs_desc = "<div class='serif'>".$vs_designer.(($vs_designer && $vs_date) ? ", " : "").$vs_date."</div>";
-				}
-				print $qr_res->getWithTemplate("<div class='mb-4'><l class='text-decoration-none'>".$vs_media."<div class='fw-semibold pt-2'>^ca_objects.preferred_labels.name</div>".$vs_desc."</ifdef></l></div>");
+				print $qr_res->getWithTemplate("<div class='mb-4'><l class='text-decoration-none'>".$vs_media."<div class='fw-semibold pt-2'>^ca_objects.preferred_labels.name</div></ifdef></l></div>");
 				print "</div>";
 				$vb_item_output = true;
 				$i++;

@@ -108,17 +108,18 @@ if($show_nav){
 			<div class="row pt-1">
 				<div class="col-sm-6 col-md-12 col-lg-6">				
 					{{{<dl class="mb-3">
-						<ifdef code="ca_objects.date_regular">
-							<dt class="serif fw-medium pb-1"><?= _t('Date'); ?></dt>
-							<dd class="pb-4 fs-5 fw-semibold">^ca_objects.date_regular</dd>
-						</ifdef>
 						<ifdef code="ca_objects.semester">
 							<dt class="serif fw-medium pb-1"><?= _t('Semester'); ?></dt>
 							<dd class="pb-4 fs-5 fw-semibold">^ca_objects.semester</dd>
 						</ifdef>
+						<ifnotdef code="ca_objects.semester"><ifdef code="ca_objects.date_regular">
+							<dt class="serif fw-medium pb-1"><?= _t('Date'); ?></dt>
+							<dd class="pb-4 fs-5 fw-semibold">^ca_objects.date_regular</dd>
+						</ifdef></ifnotdef>
+						
 <?php						
 						if($t_object->get("ca_occurrences", array("restrictToTypes" => array("course"), "checkAccess" => $access_values))){
-							if($links = caGetBrowseLinks($t_object, 'ca_occurrences', ['restrictToTypes' => array("course"), 'template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_occurrences.preferred_labels</button></l>', 'linkTemplate' => '^LINK'])) {
+							if($links = caGetBrowseLinks($t_object, 'ca_occurrences', ['restrictToTypes' => array("course"), 'template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_occurrences.preferred_labels.name</button></l>', 'linkTemplate' => '^LINK'])) {
 ?>
 								<dt class="serif fw-medium pb-1">Course<?= (sizeof($links) > 1 ) ? "s" : ""; ?></dt>
 								<dd class="pb-4 fs-5 fw-semibold"><?= join(" ", $links); ?></dd>

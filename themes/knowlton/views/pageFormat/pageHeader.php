@@ -95,7 +95,7 @@ if($this->request->isLoggedIn()){
 			<div class="collapse navbar-collapse mt-3 mt-md-0" id="navbarSupportedContent">
 				<ul class="navbar-nav ms-auto mb-lg-0">				
 					<li class="nav-item">
-						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "about") ? " active" : ""), "", "About", "index", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
+						<?= caNavlink($this->request, _t('About'), "nav-link".((strToLower($this->request->getController()) == "aboutcollection") ? " active" : ""), "", "AboutCollection", "", "", ((strToLower($this->request->getController()) == "about") ? array("aria-current" => "page") : null)); ?>
 					</li>
 					<?= $this->render("pageFormat/browseMenu.php"); ?>	
 					<li class="nav-item">
@@ -116,42 +116,76 @@ if($this->request->isLoggedIn()){
 					</div>
 				</div>
 				<div class="row pt-5">
-					<div class="col-12 col-md-3">
-						<ul class="list-unstyled">
-							<li><div class="text-body-tertiary">Heading:</div></li>
-							<li><a href="#">&mdash; Link 1</a></li>
-							<li><a href="#">&mdash; Link 2</a></li>
-							<li><a href="#">&mdash; Link 3</a></li>
-							<li><a href="#">&mdash; Link 4</a></li>
-						</ul>
-					</div>
-					<div class="col-12 col-md-3">
-						<ul class="list-unstyled">
-							<li><div class="text-body-tertiary">Heading:</div></li>
-							<li><a href="#">&mdash; Link 1</a></li>
-							<li><a href="#">&mdash; Link 2</a></li>
-							<li><a href="#">&mdash; Link 3</a></li>
-							<li><a href="#">&mdash; Link 4</a></li>
-						</ul>
-					</div>
-					<div class="col-12 col-md-3">
-						<ul class="list-unstyled">
-							<li><div class="text-body-tertiary">Heading:</div></li>
-							<li><a href="#">&mdash; Link 1</a></li>
-							<li><a href="#">&mdash; Link 2</a></li>
-							<li><a href="#">&mdash; Link 3</a></li>
-							<li><a href="#">&mdash; Link 4</a></li>
-						</ul>
-					</div>
-					<div class="col-12 col-md-3">
-						<ul class="list-unstyled">
-							<li><div class="text-body-tertiary">Heading:</div></li>
-							<li><a href="#">&mdash; Link 1</a></li>
-							<li><a href="#">&mdash; Link 2</a></li>
-							<li><a href="#">&mdash; Link 3</a></li>
-							<li><a href="#">&mdash; Link 4</a></li>
-						</ul>
-					</div>
+<?php
+				# --- Suggested search terms
+				# --- entity set
+				$access_values = caGetUserAccessValues($this->request);
+				if($search_terms_entity_set_code = $this->request->config->get("search_terms_entity_set")){
+					$search_terms_entity_ids =array();
+					$t_set = new ca_sets();
+					$t_set->load(['set_code' => $search_terms_entity_set_code]);
+					// Enforce access control on set
+					if((sizeof($access_values) == 0) || (sizeof($access_values) && in_array($t_set->get("access"), $access_values))){
+						$search_terms_entity_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => true])) ? $tmp : []);
+						$entity_results = caMakeSearchResult('ca_entities', $search_terms_entity_ids);
+						if($entity_results->numHits()){
+?>
+							<div class="col-12 col-md-6">
+								<ul class="list-unstyled">
+									<li><div class="text-body-tertiary">Featured Faculty:</div></li>
+<?php
+									$i = 0;
+									while($entity_results->nextHit()){
+										print "<li>&mdash; ".caNavlink($this->request, $entity_results->get("ca_entities.preferred_labels.displayname"), "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $entity_results->get("ca_entities.entity_id")))."</li>";
+										$i++;
+										if($i == 5){
+											break;
+										}
+									}
+?>
+								</ul>
+							</div>
+
+<?php				
+						}
+					}
+				}
+		
+				# --- collections set - same as one shown on home page
+				if($search_terms_collection_set_code = $this->request->config->get("search_terms_collections_set")){
+					$search_terms_collection_ids =array();
+					$t_set = new ca_sets();
+					$t_set->load(['set_code' => $search_terms_collection_set_code]);
+					// Enforce access control on set
+					if((sizeof($access_values) == 0) || (sizeof($access_values) && in_array($t_set->get("access"), $access_values))){
+						$search_terms_collection_ids = array_keys(is_array($tmp = $t_set->getItemRowIDs(['checkAccess' => $access_values, 'shuffle' => true])) ? $tmp : []);
+						$collection_results = caMakeSearchResult('ca_collections', $search_terms_collection_ids);
+						if($collection_results->numHits()){
+?>
+							<div class="col-12 col-md-6">
+								<ul class="list-unstyled">
+									<li><div class="text-body-tertiary">Collections:</div></li>
+<?php
+									$i = 0;
+									while($collection_results->nextHit()){
+										print "<li>&mdash; ".caNavlink($this->request, $collection_results->get("ca_collections.preferred_labels.name"), "", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $collection_results->get("ca_collections.collection_id")))."</li>";
+										$i++;
+										if($i == 10){
+											break;
+										}
+									}
+?>
+								</ul>
+							</div>
+
+<?php				
+						}
+					}
+				}
+
+
+
+?>
 				</div>
 			</div>
 		</div>
