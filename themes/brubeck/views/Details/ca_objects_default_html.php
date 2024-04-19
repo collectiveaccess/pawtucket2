@@ -77,7 +77,7 @@
 				
 <?php 
 				if(strToLower($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))) == "audio"){
-					$va_rep_icons = caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "array", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+					$va_rep_icons = caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, ["returnAs" => "array", "linkTo" => "basic", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0]);
 					if($va_rep_icons && sizeof($va_rep_icons)){
 						print "<label>Track List</label><div id='detailRepresentationThumbnails'>";
 						foreach($va_rep_icons as $vn_icon_rep_id => $vs_icon_link){
@@ -96,7 +96,7 @@
 						print "<div class='unit'>".$tmp."</div>";	
 					}
 				}else{
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, ["returnAs" => "bsCols", "linkTo" => "basic", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0]);
 				}
 ?>
 				
