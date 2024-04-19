@@ -64,7 +64,7 @@
 				{{{representationViewer}}}
 				
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-2 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "basic", "bsColClasses" => "smallpadding col-sm-3 col-md-2 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				
 <?php
 				# Comment and Share Tools
@@ -145,6 +145,12 @@
 					<div class="unit"><label>Work<ifcount code="ca_occurrences" min="2" restrictToTypes="work">s</ifcount></label>
 					<unit relativeTo="ca_occurrences" restrictToTypes="work" delimiter="<br>">
 						<l>^ca_occurrences.preferred_labels.name</l>
+					</unit>
+				</div></ifcount>}}}
+				{{{<ifcount code="ca_objects.related" min="1">
+					<div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label>
+					<unit relativeTo="ca_objects.related" delimiter=" ">
+						<div class="unit"><l><div class="row relatedObjects"><ifdef code="ca_object_representations.media.small"><div class="col-sm-4 col-md-3">^ca_object_representations.media.small</div></ifdef><div class="col-sm-8 col-md-9">^ca_objects.preferred_labels.name</div></l></div>
 					</unit>
 				</div></ifcount>}}}
 				{{{<ifdef code="ca_objects.view"><div class="unit"><label>View</label>^ca_objects.view%delimiter=,_</div></ifdef>}}}

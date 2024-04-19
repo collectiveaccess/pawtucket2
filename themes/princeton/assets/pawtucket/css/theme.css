@@ -975,6 +975,10 @@ a:hover .featuredObjectsCaption, a:focus .featuredObjectsCaption{
 	color:#FFF;
 	text-decoration:none;
 }
+.relatedObjects img{
+	width: 100%;
+	height:auto;
+}
 /* explore places */
 .placesIntro {
 	font-size: 16px;
