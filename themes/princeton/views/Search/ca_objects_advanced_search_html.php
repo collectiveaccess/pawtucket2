@@ -19,7 +19,7 @@
 			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_objects.date.dates_value[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records of a particular date or date range.') ?>"><?php _p('Date range <i>(e.g. 1970-1979)</i>') ?></label>
+			<label for='ca_objects_date_sort_date[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records of a particular date or date range.') ?>"><?php _p('Date range <i>(e.g. 1970-1979)</i>') ?></label>
 			{{{ca_objects.date.sort_date%width=200px&height=40px&useDatePicker=0}}}
 		</div>
 	</div>
@@ -29,13 +29,13 @@
 			{{{ca_objects.idno%width=210px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_objects_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to object types.') ?>"><?php _p('Type') ?></label>
+			<label for='ca_objects_item_type[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to object types.') ?>"><?php _p('Type') ?></label>
 			{{{ca_objects.item_type%height=30px&id=ca_objects_item_type&inUse=1}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_collections_preferred_labels' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records within a particular collection.') ?>"><?php _p('Collection') ?></label>
+			<label for='ca_collections_preferred_labels_autocomplete' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Search records within a particular collection.') ?>"><?php _p('Collection') ?></label>
 			<div class="help-block">Collection names will be suggested as you start typing.  You must select an option from the list to search.</div>
 			{{{ca_collections.preferred_labels%restrictToTypes=collection%width=200px&height=1&autocomplete=1&inUse=1}}}
 		</div>
@@ -44,7 +44,7 @@
 			{{{ca_occurrences.preferred_labels%restrictToTypes=work%width=200px&height=1}}}
 		</div>
 	</div>
-	<br style="clear: both;"/>
+	<br style="clear: both;">
 	<div class='advancedFormSubmit'>
 		<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
 		<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</span>
