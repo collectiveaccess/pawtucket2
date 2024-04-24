@@ -118,10 +118,10 @@
 
 ?>
 
-				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="">
+				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="author,publisher,artist,craftsperson">
 					<div class='unit'>
 						<h6>Related Entities</h6>
-						<unit delimiter="<br/>" restrictToRelationshipTypes="">
+						<unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="author,publisher,artist,craftsperson">
 							^ca_entities.preferred_labels (^relationship_typename)
 						</unit>
 					</div>
