@@ -67,7 +67,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'entity_facet', 'id' => '^ca_entities.entity_id', 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facets' => 'entity_facet:^ca_entities.entity_id;object_status_facet:269', 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

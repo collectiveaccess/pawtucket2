@@ -51,7 +51,8 @@
 		print "<div {$vs_color}>".$vs_description."</div>";		
 		print "</div>";
 		print "</div><!-- end col --></div><!-- end row --></div><!-- end container -->";
-	} elseif ($t_set_item->get('ca_set_items.set_item_template', array('convertCodesToDisplayText' => true)) == 'Object Record') {
+	#} elseif ($t_set_item->get('ca_set_items.set_item_template', array('convertCodesToDisplayText' => true)) == 'Object Record') {
+	} else {
 		print "<div class='container objectSlide'><div class='row'><div class='col-sm-8'>";
 	
 		print "<div id='galleryDetailImageWrapper'>";
