@@ -56,50 +56,77 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<div class="row">
-						<div class='col-md-10'>
+						<div class='col-md-9 col-lg-10'>
 							<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
 							<H2>{{{^ca_collections.type_id}}}</H2>
 							{{{<ifdef code="ca_collections.parent_id"><div class="unit">Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
-						</div>
-						<div class='col-md-2'>
-<?php
-							print "<div id='detailTools'><div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask / Comment", "", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";
+							<hr/>
+							{{{<ifdef code="ca_collections.idno"><div class="unit"><label>Identifier</label>^ca_collections.idno</div></ifdef>}}}
+							{{{<ifdef code="ca_collections.display_date"><div class="unit"><label>Date</label>^ca_collections.display_date%delimiter=,_</div></ifdef>}}}
+							{{{<ifnotdef code="ca_collections.display_date"><ifdef code="ca_collections.date"><div class="unit"><label>Date</label>^ca_collections.date%delimiter=,_</div></ifdef></ifnotdef>}}}
+							{{{<ifdef code="ca_collections.date_note"><div class="unit"><label>Date Note</label><unit relativeTo="ca_collections.date_note" delimiter="<br/>">^ca_collections.date_note</unit></div></ifdef>}}}
 					
+							{{{<ifdef code="ca_collections.phys_desc"><div class="unit"><label>Physical Description</label>^ca_collections.phys_desc</div></ifdef>}}}
+							{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,contributor"><div class="unit"><label>Creator<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="creator,contributor">s</ifcount></label>
+								<unit relativeTo="ca_entities_x_collections" restrictToRelationshipTypes="creator,contributor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l><if rule='^ca_collections.type_id =~ /Collection/'><ifdef code="ca_entities.bio_history_container.bio_history"><br/>^ca_entities.bio_history_container.bio_history</ifdef></if></unit>
+							</div></ifcount>}}}
+					
+							{{{<ifdef code="ca_collections.description"><div class="unit"><label>Scope & Content</label>^ca_collections.description</div></ifdef>}}}
+							{{{<ifdef code="ca_collections.provenance"><div class="unit"><label>Provenance</label>^ca_collections.provenance</div></ifdef>}}}
+							{{{<ifdef code="ca_collections.language"><div class="unit"><label>Language</label>^ca_collections.language%delimiter=,_</div></ifdef>}}}
+							{{{<ifdef code="ca_collections.arrangement"><div class="unit"><label>System of Arrangement</label>^ca_collections.arrangement</div></ifdef>}}}
+							{{{<ifdef code="ca_collections.accruals"><div class="unit"><label>Accruals</label>^ca_collections.accruals</div></ifdef>}}}
+							{{{<ifdef code="ca_collections.descriptive_note"><div class="unit"><label>Descriptive Notes</label><unit relativeTo="ca_collections.descriptive_note" delimiter="<br/><br/>">^ca_collections.descriptive_note</unit></div></ifdef>}}}
+							{{{<ifdef code="ca_collections.rights_container.access_conditions"><div class="unit"><label>Access Conditions</label>^ca_collections.rights_container.access_conditions</div></ifdef>}}}
+							{{{<ifdef code="ca_collections.rights_container.use_reproduction"><div class="unit"><label>Use and Reproduction Conditions</label>^ca_collections.rights_container.use_reproduction</div></ifdef>}}}					
+							{{{<if rule='^ca_collections.type_id =~ /File/'><ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
+								<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.preferred_labels.name</unit>
+							</div></ifcount></if>}}}
+							{{{<ifcount code="ca_object_lots" min="1"><div class="unit"><label>Related Accession<ifcount code="ca_object_lots" min="2">s</ifcount></label>
+								<unit relativeTo="ca_object_lots" delimiter="<br/>"><ifdef code="ca_object_lots.preferred_labels">^ca_object_lots.preferred_labels </ifdef><ifdef code="ca_object_lots.idno_stub">(^ca_object_lots.idno_stub)</ifdef></unit>
+							</div></ifcount>}}}
+<?php
+						if($vn_parent_collection_id = $t_item->get("ca_collections.parent.collection_id")){
+							print "<div class='unit'>".caDetailLink($this->request, "More from this ".$t_item->get("ca_collections.parent.type_id", array("convertCodesToDisplayText" => true)), "btn btn-default", "ca_collections", $vn_parent_collection_id)."</div>";
+						}
+?>
+
+						</div>
+						<div class='col-md-3 col-lg-2'>
+							<div id='detailTools' class='bg_beige'>
+<?php	
+							print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";
+							print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Request Permissions", "", "", "Contact", "Form", array("inquire_type" => "request_permissions", "table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";
 							if ($vn_pdf_enabled) {
 								print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 							}
-							print "</div>";
+							
+							if ($vn_comments_enabled) {
+								#$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
+?>				
+								<div class="detailTool discussion">
+									<label>Discussion</label>
+											<div>{{{detail_discussion}}}</div>
+<?php
+							
+											if($this->request->isLoggedIn()){
+												print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_collections", "item_id" => $t_item->getPrimaryKey()))."\"); return false;' ><i class='fa fa-comments-o' aria-hidden='true'></i> "._t("Add your comment")."</a>";
+											}else{
+												print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' ><i class='fa fa-comments-o' aria-hidden='true'></i> "._t("Login/register to comment")."</a>";
+											}
+											#if($vn_num_comments){
+											#	print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
+											#}
 ?>
+								</div>
+<?php				
+							}
+
+?>
+							</div>
 						</div><!-- end col -->
 					</div>
-					<hr/>
-					{{{<ifdef code="ca_collections.idno"><div class="unit"><label>Identifier</label>^ca_collections.idno</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.display_date"><div class="unit"><label>Date</label>^ca_collections.display_date%delimiter=,_</div></ifdef>}}}
-					{{{<ifnotdef code="ca_collections.display_date"><ifdef code="ca_collections.date"><div class="unit"><label>Date</label>^ca_collections.date%delimiter=,_</div></ifdef></ifnotdef>}}}
-					{{{<ifdef code="ca_collections.date_note"><div class="unit"><label>Date Note</label><unit relativeTo="ca_collections.date_note" delimiter="<br/>">^ca_collections.date_note</unit></div></ifdef>}}}
 					
-					{{{<ifdef code="ca_collections.phys_desc"><div class="unit"><label>Physical Description</label>^ca_collections.phys_desc</div></ifdef>}}}
-					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator,contributor"><div class="unit"><label>Creator<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="creator,contributor">s</ifcount></label>
-						<unit relativeTo="ca_entities_x_collections" restrictToRelationshipTypes="creator,contributor" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l><if rule='^ca_collections.type_id =~ /Collection/'><ifdef code="ca_entities.bio_history_container.bio_history"><br/>^ca_entities.bio_history_container.bio_history</ifdef></if></unit>
-					</div></ifcount>}}}
-					
-					{{{<ifdef code="ca_collections.description"><div class="unit"><label>Scope & Content</label>^ca_collections.description</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.provenance"><div class="unit"><label>Provenance</label>^ca_collections.provenance</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.language"><div class="unit"><label>Language</label>^ca_collections.language%delimiter=,_</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.arrangement"><div class="unit"><label>System of Arrangement</label>^ca_collections.arrangement</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.accruals"><div class="unit"><label>Accruals</label>^ca_collections.accruals</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.descriptive_note"><div class="unit"><label>Descriptive Notes</label><unit relativeTo="ca_collections.descriptive_note" delimiter="<br/><br/>">^ca_collections.descriptive_note</unit></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.rights_container.access_conditions"><div class="unit"><label>Access Conditions</label>^ca_collections.rights_container.access_conditions</div></ifdef>}}}
-					{{{<ifdef code="ca_collections.rights_container.use_reproduction"><div class="unit"><label>Use and Reproduction Conditions</label>^ca_collections.rights_container.use_reproduction</div></ifdef>}}}					
-					{{{<if rule='^ca_collections.type_id =~ /File/'><ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
-						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.preferred_labels.name</unit>
-					</div></ifcount></if>}}}
-<?php
-				if($vn_parent_collection_id = $t_item->get("ca_collections.parent.collection_id")){
-					print "<div class='unit'>".caDetailLink($this->request, "More from this ".$t_item->get("ca_collections.parent.type_id", array("convertCodesToDisplayText" => true)), "btn btn-default", "ca_collections", $vn_parent_collection_id)."</div>";
-				}
-?>
-
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
@@ -142,13 +169,18 @@
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
+				<div class="col-sm-12">
+					<label>Related Records</label><hr/>
+				</div>
+			</div>
+			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

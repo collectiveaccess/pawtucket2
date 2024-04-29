@@ -40,7 +40,7 @@
 }
 
 body{
-	margin-bottom:250px;
+	margin-bottom:275px;
     color:#000;
 }
 #pageArea{
@@ -177,7 +177,7 @@ ul.menuItems{
 	font-size: 14px;
 	padding-top:25px;
 	border:0px;
-	height:250px;
+	height:275px;
 	padding-top:30px;
 }
 #footer a{
@@ -185,6 +185,13 @@ ul.menuItems{
 	font-family: din-next-w01-light, din-next-w02-light, din-next-w10-light, sans-serif;
 	line-height:1.2em;
 	font-size: 14px;
+}
+#footer .logo{
+	margin-bottom:10px;
+}
+#footer .logo img{
+	width:250px;
+	height:auto;
 }
 #footer .funder img{
 	width:200px;
@@ -204,7 +211,7 @@ ul.menuItems{
 		text-align:center;
 	}
 	#footer{
-		height:375px;
+		height:410px;
 	}
 	#footer .funder{
 		margin-top:0px;
@@ -214,7 +221,7 @@ ul.menuItems{
 		margin-bottom:30px;
 	}
 	body{
-		margin-bottom:375px;
+		margin-bottom:410px;
 	}
 }
 
@@ -222,6 +229,11 @@ ul.menuItems{
     font-size: 18px;
     color:#000;
     line-height: 1.7em;
+}
+.staticPage img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
 }
 .front H1 {
     font-size: 42px;

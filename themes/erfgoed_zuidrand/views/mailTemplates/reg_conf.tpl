@@ -30,9 +30,9 @@ if($this->request->config->get("dont_approve_logins_on_registration")){
 	$vs_active_message = _t("Your account will be activated after review.");
 }
 
-print "Bedankt om te registreren op de \"Erfgoedbank Meetjesland\". ".$vs_active_message."
+print "Bedankt om te registreren op de \"Erfgoedbank Zuidrand\". ".$vs_active_message."
 
-Als lid van de Erfgoedbank Meetjesland kan je reacties achterlaten bij foto’s, luister- en filmfragmenten. Je kan ook een eigen album met audiovisueel materiaal samenstellen.
+Als lid van de Erfgoedbank Zuidrand kan je reacties achterlaten bij foto's, luister- en filmfragmenten. Je kan ook een eigen album met audiovisueel materiaal samenstellen.
 ";
 
 	print $this->request->config->get("site_host");

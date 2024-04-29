@@ -257,7 +257,7 @@
                                     list($lng, $radius) = explode('~', $va_coord[1]);
                                     if (!$radius) { list($lng, $angle) = explode('*', $va_coord[1]); }
                                     
-                                    if($fuzz > 0) { $va_coord[0] = round($va_coord[0], $fuzz); $lng = round($lng, $fuzz); }
+                                    if($fuzz > 0) { $va_coord[0] = ''.round($va_coord[0], $fuzz); $lng = ''.round($lng, $fuzz); }
                              
                                     $d = ['latitude' => $va_coord[0], 'longitude' => $lng, 'label' => $vs_label, 'content' => $vs_content, 'ajaxContentUrl' => $vs_ajax_content, 'ajaxContentID' => $vn_id, 'color' => $vs_color, 'group' => $vs_group];
                                     if ($radius) { $d['radius'] = $radius; }

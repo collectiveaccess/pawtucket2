@@ -34,6 +34,7 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
+	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -46,7 +47,7 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+			<div class='col-sm-6 col-md-5 col-lg-5'>
 <?php
 				if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
 					print "<div>".$vs_rep_viewer."</div>";
@@ -84,26 +85,88 @@
 						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
+				{{{<ifcount code="ca_collections" min="1">
+					<div class="unit"><label>Part of</label>
+						<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>
+					</div></ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="interviewee,interviewer,knowledge_sharer"><div class="unit"><label>Speakers</label>
 						<unit relativeTo="ca_entities" restrictToRelationshipTypes="interviewee,interviewer,knowledge_sharer" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>
 					</div></ifcount>}}}
+<?php
+				$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "excludeRelationshipTypes" => array("interviewee", "interviewer", "knowledge_sharer")));
+				if(is_array($va_entities) && sizeof($va_entities)){
+					$va_entities_by_type = array();
+					foreach($va_entities as $va_entity_info){
+						$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caDetailLink($this->request, $va_entity_info["displayname"], "", "ca_entities", $va_entity_info["entity_id"]);
+					}
+					foreach($va_entities_by_type as $vs_type => $va_entity_links){
+						print "<div class='unit'><label>".$vs_type.((sizeof($va_entity_links) > 1) ? "s" : "")."</label>".join(", ", $va_entity_links)."</div>";
+					}
+				}
+?>
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.date"><div class="unit"><label>Date</label>^ca_objects.date%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.date_note"><div class="unit"><label>Date Note</label><unit relativeTo="ca_objects.date_note" delimiter="<br/>">^ca_objects.date_note</unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.GMD"><div class="unit"><label>General Material Designation</label>^ca_objects.GMD%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.phys_desc"><div class="unit"><label>Physical Description</label>^ca_objects.phys_desc%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.oral_history_type"><div class="unit"><label>Oral History Type</label>^ca_objects.oral_history_type%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.theme"><div class="unit"><label>Themes</label>^ca_objects.theme%delimiter=,_</div></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.language"><div class="unit"><label>Language</label>^ca_objects.language%delimiter=,_</div></ifdef>}}}
-				
+				{{{<ifdef code="ca_objects.rights_container.access_conditions|ca_objects.rights_container.use_reproduction"><div class="unit"><label>Restrictions</label>
+					<ifdef code="ca_objects.rights_container.access_conditions">Access: ^ca_objects.rights_container.access_conditions</ifdef>
+					<ifdef code="ca_objects.rights_container.use_reproduction"><ifdef code="ca_objects.rights_container.access_conditions"><br/></ifdef>Reproduction: ^ca_objects.rights_container.use_reproduction</ifdef>
+				</div></ifdef>}}}
 				{{{<ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location / Box-Folder</label>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.preferred_labels.name</unit>
 					</div></ifcount>}}}
+<?php
+				if($vn_collection_id = $t_object->get("ca_collections.collection_id", array("limit" => 1))){
+					print "<div class='unit'>".caDetailLink($this->request, "More from this ".$t_object->get("ca_collections.type_id", array("limit" => 1, "convertCodesToDisplayText" => true)), "btn btn-default", "ca_collections", $vn_collection_id)."</div>";
+				}
+?>
 				
 				<div class="unit">{{{map}}}</div>
 						
 			</div><!-- end col -->
-		</div><!-- end row --></div><!-- end container -->
+			<div class='col-sm-12 col-md-2 col-lg-2'>
+				<div id='detailTools' class='bg_beige'>
+<?php
+				#print "<div class='detailTool'>".caNavLink($this->request, "<i class='fa fa-comments-o' aria-hidden='true'></i> Share Your Cultural Narrative", "", "", "Contact", "Form", array("inquire_type" => "cultural_narrative", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+				print "<div class='detailTool'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array('object_id' => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]." ".$va_add_to_set_link_info["link_text"]."</a></div>";
+					
+				print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("inquire_type" => "item_inquiry", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+				print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Request Permissions", "", "", "Contact", "Form", array("inquire_type" => "request_permissions", "table" => "ca_objects", "id" => $t_object->get("ca_objects.object_id")))."</div>";
+				if ($vn_comments_enabled) {
+					#$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
+?>				
+					<div class="detailTool discussion">
+						<label>Discussion</label>
+								<div>{{{detail_discussion}}}</div>
+<?php
+							
+								if($this->request->isLoggedIn()){
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_objects", "item_id" => $t_object->getPrimaryKey()))."\"); return false;' ><i class='fa fa-comments-o' aria-hidden='true'></i> "._t("Add your comment")."</a>";
+								}else{
+									print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' ><i class='fa fa-comments-o' aria-hidden='true'></i> "._t("Login/register to comment")."</a>";
+								}
+								#if($vn_num_comments){
+								#	print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
+								#}
+?>
+					</div>
+<?php				
+				}
+
+?>
+				</div>				
+			</div>
+		</div><!-- end row -->
+<?php
+		include("related_objects_html.php");
+?>
+		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">

@@ -44,9 +44,10 @@
 			<div class="row">
 				<div class="col-sm-12 text-center">	
 					<ul class="list-inline">
-						<li><?php print caNavLink($this->request, _t("Impressum & Credits"), "", "", "", "impressum_credits"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Imprint & Credits"), "", "", "", "imprint_credits"); ?></li>
 						<li><?php print caNavLink($this->request, _t("Acknowledgements"), "", "", "", "acknowledgements"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "", "contact_us"); ?></li>
+						<!-- <li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li> -->
 					</ul>
 				</div>
 				<br><br>

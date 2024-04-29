@@ -31,13 +31,18 @@
 		<footer id="footer" role="contentinfo">
 			<div class="row">
 				<div class="col-sm-12 text-center">
-					&copy; <?php print date("Y"); ?> by Mel Fisher Maritime Museum
+					<div class='logo'><a href="https://www.melfisher.org/"><?php print caGetThemeGraphic($this->request, 'mel_fisher_logo.png'); ?></a></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 text-center">
+					&copy; <?php print date("Y"); ?> by <a href="https://www.melfisher.org">Mel Fisher Maritime Museum</a>
 					<br/>200 Greene Street | Key West, Florida 33040
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-sm-6 text-right">
-					<div class='funder'>
+					<div class='funder'> 
 						<a href="https://www.neh.gov/" target="_blank"><?php print caGetThemeGraphic($this->request, 'neh.jpg', array("alt" => "National Endowment for the Humanities Logo")); ?></a>
 					</div>
 				</div>

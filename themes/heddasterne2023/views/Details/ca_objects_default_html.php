@@ -47,33 +47,30 @@
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
 				{{{representationViewer}}}
-				
-				
 				<div id="detailAnnotations"></div>
-				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				
 				<!-- # Comment and Share Tools -->
-<?php
-				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?php print _t("Comments and tags"); ?>"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div>
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div>
-<?php				
-					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt" aria-label="'._t("Share").'"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
-					}
-					print '</div><!-- end detailTools -->';
-				}				
+				<?php
+					if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
+							
+						print '<div id="detailTools">';
+						if ($vn_comments_enabled) {
+				?>				
+							<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?php print _t("Comments and tags"); ?>"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div>
+							<div id='detailComments'><?php print $this->getVar("itemComments");?></div>
+				<?php				
+						}
+						if ($vn_share_enabled) {
+							print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt" aria-label="'._t("Share").'"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+						}
+						if ($vn_pdf_enabled) {
+							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download")."'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+						}
+						print '</div><!-- end detailTools -->';
+					}				
 
-?>
+				?>
 
 			</div><!-- end col -->
 			
@@ -87,15 +84,12 @@
 					<div class="unit">
 						<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator">
 							^ca_entities.preferred_labels
-							<!-- (^relationship_typename) -->
 						</unit>
 					</div>
 				</ifcount>}}}
-
 										
 				{{{<ifdef code="ca_objects.preferred_labels.name" >
 					<div class="unit">
-						<!-- <label>Date</label> -->
 						<unit relativeTo="ca_objects.preferred_labels.name" delimiter="<br/>">
 							<h4>^ca_objects.preferred_labels.name</h4>
 						</unit>
@@ -104,7 +98,6 @@
 
 				{{{<ifdef code="ca_objects.date" >
 					<div class="unit">
-						<!-- <label>Date</label> -->
 						<unit relativeTo="ca_objects.date" delimiter="<br/>">
 							^ca_objects.date.dates_value
 						</unit>
@@ -113,14 +106,12 @@
 				
 				{{{<ifdef code="ca_objects.displayMedium" >
 					<div class="unit">			
-						<!-- <label>Medium</label> -->
 						<unit relativeTo="ca_objects.displayMedium" delimiter="<br/>">^ca_objects.displayMedium</unit>
 					</div>
 				</ifdef>}}}	
 
 				{{{<ifdef code="ca_objects.dimensions">
 					<div class="unit">
-						<!-- <label>Dimensions</label> -->
 						<unit relativeTo="ca_objects.dimensions" delimiter="<br/>">
 							<ifdef code="ca_objects.dimensions.dimensionsType">
 								<if rule='^ca_objects.dimensions.dimensionsType !~ /\-/'>
@@ -134,7 +125,6 @@
 				
 				{{{<ifdef code="ca_objects.signaturesMarkings" >
 					<div class="unit">			
-						<!-- <label>Signed</label> -->
 						<unit relativeTo="ca_objects.signaturesMarkings" delimiter="<br/>">
 							^ca_objects.signaturesMarkings.sigMarkText
 						</unit>
@@ -143,23 +133,26 @@
 
 				{{{<ifdef code="ca_objects.currentColl" >
 					<div class="unit">			
-						<!-- <label>Signed</label> -->
 						<unit relativeTo="ca_objects.currentColl" delimiter="<br/>">
 							^ca_objects.currentColl.creditLine
 						</unit>
 					</div>
 				</ifdef>}}}	
 
+				{{{<ifdef code="ca_objects.cataloguingNotes.cat_notes">
+					<hr/>
+				</ifdef>}}}
+
 				<?php
 					if($this->request->user->hasRole("admin")){
 				?>
-						{{{<ifdef code="ca_objects.internalNotes.notes">
+						{{{<ifdef code="ca_objects.cataloguingNotes.cat_notes">
 							<div class="unit">
 								<label>Notes</label>
 								<unit relativeTo="ca_objects" delimiter="<br/>">							
-									<span class="trimText">^ca_objects.internalNotes.notes</span>
-									<ifdef code="ca_objects.internalNotes.noteSource"><small><br/> - ^ca_objects.internalNotes.noteSource</small></ifdef>
-									<ifdef code="ca_objects.internalNotes.noteDate"><small>, ^ca_objects.internalNotes.noteDate</small></ifdef>
+									<span class="trimText">^ca_objects.cataloguingNotes.cat_notes</span>
+									<ifdef code="ca_objects.cataloguingNotes.Cat_noteSource"><small><br/> - ^ca_objects.cataloguingNotes.Cat_noteSource</small></ifdef>
+									<ifdef code="ca_objects.cataloguingNotes.Cat_noteDate"><small>, ^ca_objects.cataloguingNotes.Cat_noteDate</small></ifdef>
 								</unit>
 							</div>
 						</ifdef>}}}
@@ -167,53 +160,48 @@
 					}
 				?>
 
-				<div class="row">
-					<div class="col-sm-12">		
+				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition">
+					<hr/>
+				</ifcount>}}}
 						
-						<!-- Exhibitions - type of occurrence -->
+				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition">
+					<label>Exhibitions</label>
+					<div class="unit">
+						<unit relativeTo="ca_occurrences" delimiter="<br/><br/>" restrictToTypes="exhibition">
+							<ifdef code="ca_occurrences.preferred_labels"><l><i>^ca_occurrences.preferred_labels</i>, </l></ifdef>	
+							<ifdef code="ca_occurrences.PrimaryVenue.venueName">^ca_occurrences.PrimaryVenue.venueName</ifdef>	
+							<ifdef code="ca_occurrences.DisplayDate">(^ca_occurrences.DisplayDate)</ifdef>	
+						</unit>
+					</div>
+				</ifcount>}}}
 
-						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition">
-							<label>Exhibitions</label>
-							<div class="unit">
-								<unit relativeTo="ca_occurrences" delimiter="<br/><br/>" restrictToTypes="exhibition">
-									<ifdef code="ca_occurrences.preferred_labels"><l><i>^ca_occurrences.preferred_labels</i>, </l></ifdef>	
-									<ifdef code="ca_occurrences.PrimaryVenue.venueName">^ca_occurrences.PrimaryVenue.venueName</ifdef>	
-									<ifdef code="ca_occurrences.DisplayDate">(^ca_occurrences.DisplayDate)</ifdef>	
-								</unit>
-							</div>
-							<br/>
-						</ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="bibliography">
+					<hr/>
+				</ifcount>}}}
 
-						<!-- Publications - type of occurrence -->
+				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="bibliography">
+					<label>Publications</label>
+					<div class="unit">
+						<unit relativeTo="ca_occurrences" delimiter="<br/><br/>" restrictToTypes="bibliography">
+							<l>^ca_occurrences.formalCite</l> 
+						</unit>
+					</div>
+				</ifcount>}}}
 
-						{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="bibliography">
-							<label>Publications</label>
-							<div class="unit">
-								<unit relativeTo="ca_occurrences" delimiter="<br/><br/>" restrictToTypes="bibliography">
-									<l>^ca_occurrences.formalCite</l> 
-								</unit>
-							</div>
-							</br></br>
-						</ifcount>}}}
-						
-						<!-- Archival Material - type of related object -->
 
-						{{{<ifcount code="ca_objects.related" min="1" restrictToTypes="archivalObjects,archivalCorrespondence,archivalInterview,archivalPhotograph,archivalWriting">
-							<label>Archival Material</label>
-							<div class="unit">
-								<unit relativeTo="ca_objects.related" delimiter="<br/><br/>" restrictToTypes="archivalObjects,archivalCorrespondence,archivalInterview,archivalPhotograph,archivalWriting">
-									(^ca_objects.idno) <l>^ca_objects.preferred_labels</l>
-								</unit>
-							</div>
-							</br></br>
-						</ifcount>}}}
-						
-					</div><!-- end col -->				
-					<!-- <div class="col-sm-6 colBorderLeft">
-						{{{map}}}
-					</div> -->
-				</div><!-- end row -->
-						
+				{{{<ifcount code="ca_objects.related" min="1" restrictToTypes="archivalObjects,archivalCorrespondence,archivalInterview,archivalPhotograph,archivalWriting">
+					<hr/>
+				</ifcount>}}}
+				
+				{{{<ifcount code="ca_objects.related" min="1" restrictToTypes="archivalObjects,archivalCorrespondence,archivalInterview,archivalPhotograph,archivalWriting">
+					<label>Archival Material</label>
+					<div class="unit">
+						<unit relativeTo="ca_objects.related" delimiter="<br/><br/>" restrictToTypes="archivalObjects,archivalCorrespondence,archivalInterview,archivalPhotograph,archivalWriting">
+							(^ca_objects.idno) <l>^ca_objects.preferred_labels</l>
+						</unit>
+					</div>
+				</ifcount>}}}
+
 			</div><!-- end col -->
 		</div><!-- end row -->
 	</div><!-- end container -->

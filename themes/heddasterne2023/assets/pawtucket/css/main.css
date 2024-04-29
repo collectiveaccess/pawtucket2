@@ -2427,10 +2427,27 @@ a.browseRemoveFacet .glyphicon {
 }
 
 /* --------------------------------- */
+/* login-reg */
+/* --------------------------------- */
+
+.loginreg{
+	margin: auto;
+	width: 50%;
+}
+
+@media screen and (min-width: 1201px) {
+	/* Your CSS rules for screens 1201px or larger go here */
+	.login-label{
+		padding-left: 4%;
+	}
+}
+
+
+/* --------------------------------- */
 /* multi-search */
 /* --------------------------------- */
 .multisearch {
-	/*padding:0px 30px 0px 25px;*/
+	padding:0px 30px 0px 25px;
 }
 .multisearch H3, .multisearch H2{
 	margin:0px;
@@ -2441,8 +2458,9 @@ a.browseRemoveFacet .glyphicon {
 	text-decoration:none;
 	color:#757575;
 }
+
 .multisearch .blockResults {
-	height:170px;
+	height:200px;
 	margin-bottom:15px;
 	overflow:hidden;
 	clear:both;
@@ -2567,11 +2585,16 @@ a.browseRemoveFacet .glyphicon {
 	/* max-height: 400px; */
 }
 .objects .blockResultsScroller {
+	
 	max-height:400px;
 }
 .multisearch .objects.blockResults {
-	height:200px
+	height: 100% !important;
 }
+/* .multisearch .objects.blockResults {
+	height:200px
+} */
+
 .multisearch .objects .scrollButtonNext, .multisearch .objects .scrollButtonPrevious {
 	height:190px;
 	padding-top:85px;
@@ -2587,8 +2610,6 @@ a.browseRemoveFacet .glyphicon {
 	height: auto;
 	object-fit: contain;
 }
-
-
 
 .multisearch .authoritySet {
 	float:left;

@@ -67,8 +67,8 @@ body{
 	color:#794683;
 }
 .navbar-brand{
-	width:175px;
-	padding-top: 0px;
+	width: 105px;
+	padding-top: 8px;
 }
 @media (min-width:768px){
 	.navbar-brand{
@@ -101,6 +101,24 @@ body{
 	.yamm .nav.navbar-right.menuItems .dropdown-menu {
 		left: 0;
 		right: auto;
+	}
+}
+.navHomeLink{
+	float: right;
+	font-size: 24px;
+	padding-top: 33px;
+	color: #000;
+	display:none;
+}
+@media (min-width:768px){
+	.navHomeLink{
+		display:block;
+	}
+}
+
+@media (max-width:1010px){
+	.navHomeLink{
+		padding-right:15px;
 	}
 }
 .navbar-default .navbar-toggle{
@@ -187,45 +205,65 @@ a:hover{
 
 #footer{
 	background-color: #FFF;
-	color: #FFF;
+	color: #000;
 	padding-top:25px;
 	padding-bottom:25px;
-	height:250px;
+	height:380px;
 	border-top:0px;
 	text-align:center;
 	margin-top:0px;
 	border:0px;
 }
 .footerBg{
-	background-color: #794683;
+	background-color: #A07DA2;
 	padding-top:25px;
 	padding-bottom:25px;
 }
 body{
-	margin-bottom:250px;
+	margin-bottom:410px;
 	color:#000
 }
-@media(max-width:768px){
+@media(max-width:1475px){
 	#footer{
-		height:350px;
+		height:400px;
 	}
 	body{
-		margin-bottom:350px;
+		margin-bottom:450px;
+	}
+}
+@media(max-width:914px){
+	#footer{
+		height:650px;
+	}
+	body{
+		margin-bottom:700px;
+	}
+}
+@media(max-width:550px){
+	#footer{
+		height:700px;
+	}
+	body{
+		margin-bottom:750px;
 	}
 }
 #footer{
 	border:0px;
+	font-family:'Neris SemiBold';
 }
 #footer .footerHeading{
-	font-family:'lovelo-black';
-	font-size:20px;
-	color:#FFF;
+	font-size:16px;
+	font-family:'Neris Thin';
+	color:#000;
 	padding-bottom:10px;
 	text-align:center;
 	padding-top:15px;
 }
-#footer .footerCopyright{
-	font-family:Lato;
+#footer .footerHeading a{
+	font-family:'lovelo-black';
+	font-size:20px;
+	color:#FFF;
+	text-decoration:none;
 }
 #footer .footerLinks{
 	text-align:center;
@@ -234,28 +272,28 @@ body{
 	padding:0px;
 }
 #footer .footerLinks a, #footer a{
-	color:#fff;
+	color:#000;
 	font-size:14px;
-	text-decoration:none;
-	font-family:'Neris Thin';
+	font-family:'Neris SemiBold';
 	text-decoration:underline;
 	transition:all .3s ease;
 }
 
 #footer .social a{
 	font-size: 20px;
-	color:#fff;
+	color:#000;
 	font-size:25px;
 	transition:all .3s ease;
 }
 #footer .footerLinks a:hover, #footer a:hover, #footer .social a:hover{
-	color:#88B485;
+	color:#fff;
 }
 #footer .funder{
 	text-transform:uppercase;
 	font-family: 'Neris Thin';
 	margin-top:10px;
 	text-align:center;
+	margin-bottom: 5px;
 }
 #footer .funder img{
 	width:200px;
@@ -270,9 +308,9 @@ body{
 #footer .footerContact{
 	text-align:left;
 	font-size:14px;
-	color:#f2f1ec;
+	color:#000;
 	line-height:1.2em;
-	margin-top:10px;
+	margin-top:5px;
 }
 @media(max-width:768px){
 	#footer .footerContact{
@@ -291,6 +329,12 @@ body{
 .footerPartnerLogos img{
 	height: 50px;
 	width: auto;
+}
+@media(max-width:768px){
+	.footerPartnerLogos img{
+		height: 40px;
+		width: auto;
+	}
 }
 /* detail page */
 .detail{
@@ -427,6 +471,14 @@ body.frontContainer #footer{
 .parallax.hero1 {
 	background-image: url("../graphics/hero_1.jpg");
 }
+.parallax.hero2 {
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0.1)), url("../graphics/hero_2.jpg");
+}
+.parallax.hero3 {
+	background-image: url("../graphics/hero_3.jpg");
+	background-image: linear-gradient(to bottom, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0)), url("../graphics/hero_3.jpg");
+
+}
 @media(min-width:1025px){
 	.parallax.hero1 {
 		background-position: center 40px;
@@ -454,6 +506,16 @@ body.frontContainer #footer{
 	box-shadow:0 2px 14px 0 rgba(0,0,0,.3);
 	margin-left:40px;
 	margin-right:40px;
+	border-radius: 40px;
+}
+.heroSearchDivide{
+	height:4px;
+	background-color:#A07DA2;
+	width:50%;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top: 30px;
+	margin-bottom: 20px;
 }
 .heroAdvancedSearchLink{
 	text-align: right;
@@ -513,7 +575,7 @@ body.frontContainer #footer{
 	text-align: center;
 	line-height: 1.1em;
 	margin:0px;
-	padding:0px 15px 0px 15px;
+	padding:0px 15px 10px 15px;
 }
 .heroSearch H1 .line1, .heroSearch H1 .line3 {
     font-size: 28px;
@@ -526,7 +588,7 @@ body.frontContainer #footer{
 	text-transform:none;
 	color:#88B485;
 	padding-top:20px;
-	padding-bottom:20px;
+	padding-bottom:10px;
 	font-family: "lovelo-black";
 }
 .heroSearch .formOutline {
@@ -594,9 +656,9 @@ body.frontContainer #footer{
 
 .hpIntro .callout{
 	text-align:center;
-	font-size: 28px;
-	margin:120px 0px 150px 0px;
-	line-height:1.8em;
+	font-size: 26px;
+	margin:80px 0px 100px 0px;
+	line-height:1.6em;
 }
 .hpIntro .callout2{
 	text-align:center;
@@ -790,6 +852,11 @@ div.ligthboxAlertClose{
 	font-size:16px;
 	color:#777;
 }
+.viewButtonsLabel{
+	font-size: 14px;
+	top: -4px;
+	position: relative;
+}
 /* gallery */
 .gallery{
 	font-size:15px;
@@ -808,7 +875,7 @@ div.ligthboxAlertClose{
 .galleryList img{
 	width:100%;
 	height:auto;
-	max-width:250px;
+	max-width:280px;
 }
 .galleryList a.labelLink{
 	display:inline-block;
@@ -913,6 +980,11 @@ div.caMediaOverlayControls{
 	color:#56925D;
 	font-size:15px;
 	line-height: 1.4em;
+}
+.collectionIntro, .galleryIntro{
+	font-size:18px;
+	margin-top:10px;
+	margin-bottom:20px;
 }
 
 .bodytext a, #caFormOverlay a{

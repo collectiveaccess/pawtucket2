@@ -130,28 +130,8 @@
 					$vs_typecode = "";
 					#$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
-					$vs_image = $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values));
-					if(!$vs_image && ($vs_table != 'ca_objects')){
-						if($vs_table == 'ca_collections'){
-							$collection_ids = array_merge([$qr_res->getPrimaryKey()], $qr_res->get("ca_collections.children.collection_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "sort" => "ca_collection_labels.name")));
-				
-							foreach($collection_ids as $collection_id) {
-								$refs = $coll->getAuthorityElementReferences(['row_id' => $collection_id]);
-								if(isset($refs['57']) && sizeof($refs['57'])) { // 57 = ca_objects
-									$qr_objects = caMakeSearchResult('ca_objects', array_keys($refs['57']), array("checkAccess" => $va_access_values, "sort" => 'ca_objects.idno'));
-									while($qr_objects->nextHit()) {
-										if(in_array($qr_objects->get("ca_objects.access"), $va_access_values)){
-											if($vs_image = $qr_objects->get('ca_object_representations.media.small')) {
-												break(2);
-											}
-										}
-									}
-								}
-							}
-						}else{
-							$vs_image = $va_images[$vn_id];
-						}
-					}
+					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					
 				
 					if(!$vs_image){
 						if ($vs_table == 'ca_objects') {

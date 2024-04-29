@@ -93,21 +93,30 @@
 					<div class="unit">^ca_objects.Archive_Citation</div>
 				</ifdef>}}}
 
+				{{{<ifdef code="ca_objects.cataloguingNotes.cat_notes">
+					<hr/>
+				</ifdef>}}}
+
 				<?php
 					if($this->request->user->hasRole("admin")){
 				?>
-						{{{<ifdef code="ca_objects.internalNotes.notes">
+						{{{<ifdef code="ca_objects.cataloguingNotes.cat_notes">
 							<div class="unit">
+								<label>Notes</label>
 								<unit relativeTo="ca_objects" delimiter="<br/>">							
-									<span class="trimText">^ca_objects.internalNotes.notes</span>
-									<ifdef code="ca_objects.internalNotes.noteSource"><small>, ^ca_objects.internalNotes.noteSource</small></ifdef>
-									<ifdef code="ca_objects.internalNotes.noteDate"><small>, ^ca_objects.internalNotes.noteDate</small></ifdef>
+									<span class="trimText">^ca_objects.cataloguingNotes.cat_notes</span>
+									<ifdef code="ca_objects.cataloguingNotes.Cat_noteSource"><small><br/> - ^ca_objects.cataloguingNotes.Cat_noteSource</small></ifdef>
+									<ifdef code="ca_objects.cataloguingNotes.Cat_noteDate"><small>, ^ca_objects.cataloguingNotes.Cat_noteDate</small></ifdef>
 								</unit>
 							</div>
 						</ifdef>}}}
 				<?php
 					}
 				?>
+
+				{{{<ifcount code="ca_objects.related" min="1">
+					<hr/>
+				</ifcount>}}}
 
 				{{{<ifcount code="ca_objects.related" min="1">
 					<div class="unit">
@@ -137,37 +146,35 @@
 							});
 						});
 					</script>
-				</ifcount>}}}		
+				</ifcount>}}}	
+				
+				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition">
+					<hr/>
+				</ifcount>}}}
 
-					<div class="row">
-						<div class="col-sm-12">		
-							
-							<!-- Exhibitions - type of occurrence -->
+				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition">
+					<label>Exhibitions</label>
+					<div class="unit">
+						<unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="exhibition">
+							<ifdef code="ca_occurrences.preferred_labels"><l><i>^ca_occurrences.preferred_labels</i>, </l></ifdef>	
+							<ifdef code="ca_occurrences.PrimaryVenue.venueName">^ca_occurrences.PrimaryVenue.venueName</ifdef>	
+							<ifdef code="ca_occurrences.DisplayDate">(^ca_occurrences.DisplayDate)</ifdef>	
+						</unit>
+					</div>
+				</ifcount>}}}
 
-							{{{<ifcount code="ca_occurrences" min="1">
-								<label>Exhibitions</label>
-								<div class="unit">
-									<unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="exhibition">
-										<ifdef code="ca_occurrences.preferred_labels"><l><i>^ca_occurrences.preferred_labels</i>, </l></ifdef>	
-										<ifdef code="ca_occurrences.PrimaryVenue.venueName">^ca_occurrences.PrimaryVenue.venueName</ifdef>	
-										<ifdef code="ca_occurrences.DisplayDate">(^ca_occurrences.DisplayDate)</ifdef>	
-									</unit>
-								</div>
-							</ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="bibliography">
+					<hr/>
+				</ifcount>}}}
 
-							<!-- Publications - type of occurrence -->
-
-							{{{<ifcount code="ca_occurrences" min="1">
-								<label>Publications</label>
-								<div class="unit">
-									<unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="bibliography">
-										<l>^ca_occurrences.formalCite</l> 
-									</unit>
-								</div>
-							</ifcount>}}}
-							
-						</div><!-- end col -->				
-					</div><!-- end row -->
+				{{{<ifcount code="ca_occurrences" min="1" restrictToTypes="bibliography">
+					<label>Publications</label>
+					<div class="unit">
+						<unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="bibliography">
+							<l>^ca_occurrences.formalCite</l> 
+						</unit>
+					</div>
+				</ifcount>}}}
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->

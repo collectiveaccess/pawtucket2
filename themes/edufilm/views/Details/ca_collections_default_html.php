@@ -87,6 +87,19 @@
 				
 					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 
+<?php
+				if($t_item->get("ca_collections.collection_id") == 4){
+?>
+					<div class="row">
+						<div class="col-sm-6 col-md-4 fullWidthImg">
+							<br/><br/><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'map.png', array("alt" => "map")), '', '', 'Browse', 'Places', array('sort' => 'default', 'view' => 'map')); ?>
+							<br/><label><?php print caNavLink($this->request, _t("Locations")." <i class='fa fa-external-link'></i>", '', '', 'Browse', 'Places', array('sort' => 'default', 'view' => 'map')); ?></label>
+							
+						</div>
+					</div>
+<?php
+				}
+?>
 				</div><!-- end col -->
 
 				<div class='col-md-6'>
@@ -321,7 +334,7 @@
 										</div><!-- end row -->
 										<script type="text/javascript">
 											jQuery(document).ready(function() {
-												jQuery("#browseResultsContainerImages").load("<?php print caNavUrl($this->request, '', 'Search', 'images', array('search' => 'collection_id:'.$t_item->get('ca_collections.collection_id'), 'view' => 'images', 'sort' => 'CollectionSort', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+												jQuery("#browseResultsContainerImages").load("<?php print caNavUrl($this->request, '', 'Browse', 'images', array('facet' => 'collection_facet', 'id' => $t_item->get('ca_collections.collection_id'), 'view' => 'images', 'sort' => 'CollectionSort', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 													jQuery('#browseResultsContainerImages').jscroll({
 														autoTrigger: true,
 														loadingHtml: '',
@@ -344,7 +357,7 @@
 										</div><!-- end row -->
 										<script type="text/javascript">
 											jQuery(document).ready(function() {
-												jQuery("#browseResultsContainerTexts").load("<?php print caNavUrl($this->request, '', 'Search', 'texts', array('search' => 'collection_id:'.$t_item->get('ca_collections.collection_id'), 'view' => 'images', 'sort' => 'CollectionSort', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+												jQuery("#browseResultsContainerTexts").load("<?php print caNavUrl($this->request, '', 'Browse', 'texts', array('facet' => 'collection_facet', 'id' => $t_item->get('ca_collections.collection_id'), 'view' => 'images', 'sort' => 'CollectionSort', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 													jQuery('#browseResultsContainerTexts').jscroll({
 														autoTrigger: true,
 														loadingHtml: '',

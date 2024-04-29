@@ -75,6 +75,7 @@
 					<div id="detailAnnotations"></div>
 					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 					
+					<div class="map"></div>
 					{{{map}}}
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
@@ -143,7 +144,7 @@
 					{{{<ifdef code="ca_places.vhh_UseOfSpace">
 						<div class="unit"><label><t>Use Of Space</t></label>
 							<unit relativeTo="ca_places.vhh_UseOfSpace" delimiter="<br/>">
-								^UOS_TypeList.preferred_labels.name_singular
+								<b>^UOS_TypeList.preferred_labels.name_singular</b>
 								<ifdef code="ca_places.vhh_UseOfSpace.UOS_TypeText"> - ^ca_places.vhh_UseOfSpace.UOS_TypeText</ifdef>
 								
 								<ifdef code="^ca_places.vhh_UseOfSpace"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>

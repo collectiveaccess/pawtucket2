@@ -49,7 +49,8 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
 		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		#if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li>".caNavLink($this->request, _t("Register"), '', '', 'LoginReg', 'registerForm', array())."</li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 	$va_access_values = caGetUserAccessValues($this->request);
@@ -141,19 +142,21 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span><span class='userIconLabel'>LOGIN</span></a>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" role="graphics-document" aria-label="<?php print _t("User options"); ?>"></span><span class='userIconLabel'><?php print ($this->request->isLoggedIn()) ? "ACCOUNT" : "LOGIN"; ?></span></a>
 						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
 <?php
 	}
+	$vs_set_type = $this->request->getParameter('set_type', pString);
 ?>
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
 					<div class="formOutline">
 						<div class="form-group">
+							<label for="headerSearchInput" class="sr-only">Search:</label>
 							<input type="text" class="form-control" id="headerSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search text"); ?>" />
 						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
+						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" role="graphics-document" aria-label="<?php print _t("Submit"); ?>"></span></button>
 					</div>
 					<div class="headerAdvancedSearch"><?php print caNavLink($this->request, _t("Advanced search"), "", "", "Search", "advanced/objects"); ?></div>
 				</form>
@@ -166,23 +169,28 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li class="dropdown-container<?php print ((strToLower($this->request->getController()) == "about") || strToLower($this->request->getController()) == "contact" || strToLower($this->request->getController()) == "guide") ? ' active' : ''; ?>">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">About <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
-						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("About Ta X̱ay Sxwimálatn Chet"), "", "", "About", ""); ?></li>
-							<li><?php print caNavLink($this->request, _t("User Guide"), "", "", "Guide", ""); ?></li>
-							<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "About", "Contact"); ?></li>
-						</ul>
-					</li>
+					<li <?php print ((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) != "contact")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+					<li <?php print (strToLower($this->request->getAction()) == "contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact Us"), "", "", "About", "Contact"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="dropdown-container<?php print (strToLower($this->request->getController()) == "listing") ? ' active' : ''; ?>">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
+					<li class="dropdown-container<?php print (((strToLower($this->request->getController()) == "guide")) || (in_array(strToLower($vs_set_type), array('research_guides'))) || (in_array(strToLower($this->request->getController()), array("listing")))) ? ' active' : ''; ?>">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Research Help <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("Curriculum"), "", "", "", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("How to Use this Database"), "", "", "Guide", ""); ?></li>
+							<li><?php print caNavLink($this->request, _t("Research Guides"), "", "", "Gallery", "Index", array("set_type" => "research_guides")); ?></li>
 							<li><?php print caNavLink($this->request, _t("External Resources"), "", "", "Listing", "Resources"); ?></li>
 						</ul>
 					</li>
-					<li <?php print ($this->request->getController() == "Storytelling") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Storytelling & Research Guides"), "", "", "", ""); ?></li>
+
+					<li class="dropdown-container<?php print (((strToLower($this->request->getController()) == "gallery") && (in_array($vs_set_type, array("timelines", "highlights", "maps")))) || ((strToLower($this->request->getAction()) == "curriculum")) || ((strToLower($this->request->getController()) == "language"))) ? ' active' : ''; ?>">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <i class='fa fa-chevron-down' aria-hidden='true'></i></a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("Curriculum"), "", "", "Browse", "curriculum"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Sḵwx̱wú7mesh sníchim"), "", "", "Language", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Highlights"), "", "", "Gallery", "Index", array("set_type" => "highlights")); ?></li>
+							<li><?php print caNavLink($this->request, _t("Maps"), "", "", "Gallery", "Index", array("set_type" => "maps")); ?></li>
+							<li><?php print caNavLink($this->request, _t("Timelines"), "", "", "Gallery", "Index", array("set_type" => "timelines")); ?></li>
+						</ul>
+					</li>
 					
 				</ul>
 			</div><!-- /.navbar-collapse -->

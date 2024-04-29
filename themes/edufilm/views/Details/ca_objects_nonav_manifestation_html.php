@@ -251,7 +251,7 @@
 				{{{<ifdef code="ca_objects.vhh_Extent">
 					<div class="unit"><label><t>Extent</t></label>
 					<unit relativeTo="ca_objects.vhh_Extent" delimiter="<br/>">
-						^ext_Value <ifdef code="ca_objects.vhh_Extent">(^ext_Unit)</ifdef>
+						^ext_Value <ifdef code="ca_objects.vhh_Extent">^ext_Unit</ifdef>
 						<ifdef code="ca_objects.vhh_Extent.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 								<ifdef code="ca_objects.vhh_Extent.__source__">
@@ -284,9 +284,8 @@
 
 				{{{<ifdef code="ca_objects.vhh_URL">
 					<div class="unit"><label><t>URL</t></label>
-					<unit relativeTo="ca_objects" delimiter="<br/>">
+					<unit relativeTo="ca_objects.vhh_URL" delimiter="<br/>">
 						<a href="^ca_objects.vhh_URL" target="_blank">^ca_objects.vhh_URL</a>
-
 						<ifdef code="ca_objects.vhh_URL.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 						<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 							<ifdef code="ca_objects.vhh_URL.__source__">
@@ -414,7 +413,7 @@
 					<div class="unit"><label><t>Education Type</t></label>
 					<unit relativeTo="ca_objects.edu_EducationType" delimiter="<br/>">
 
-						<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeType"><t>Type</t> - (^ca_objects.edu_EducationType.edu_EducationTypeType)</ifdef>
+						<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeType|ca_objects.edu_EducationType.edu_EducationTypeText"><t>Type</t> &mdash; (<b>^ca_objects.edu_EducationType.edu_EducationTypeType</b><ifdef code="ca_objects.edu_EducationType.edu_EducationTypeText,ca_objects.edu_EducationType.edu_EducationTypeType"> - </ifdef>^ca_objects.edu_EducationType.edu_EducationTypeText)</ifdef>
 						<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeGrade"><t>Grade</t> - (^ca_objects.edu_EducationType.edu_EducationTypeGrade)</ifdef>
 						<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeAge"><t>Age</t> - (^ca_objects.edu_EducationType.edu_EducationTypeAge)</ifdef>
 

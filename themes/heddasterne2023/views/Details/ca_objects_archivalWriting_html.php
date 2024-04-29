@@ -47,8 +47,6 @@
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
 				{{{representationViewer}}}
-				
-				
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
@@ -105,36 +103,37 @@
 					<div class="unit"><?= strip_tags($t_object->get('ca_objects.transcription'),['u', 'br', 'b', 'i', 'strong', 'em', 'strike', 's', 'small']); ?></div>
 				</ifdef>}}}
 
+				{{{<ifdef code="ca_objects.transcription, ca_objects.cataloguingNotes.cat_notes">
+					<hr/>
+				</ifdef>}}}
+
 				<?php
 					if($this->request->user->hasRole("admin")){
 				?>
-						{{{<ifdef code="ca_objects.internalNotes.notes">
+						{{{<ifdef code="ca_objects.cataloguingNotes.cat_notes">
 							<div class="unit">
+								<label>Notes</label>
 								<unit relativeTo="ca_objects" delimiter="<br/>">							
-									<span class="trimText">^ca_objects.internalNotes.notes</span>
-									<ifdef code="ca_objects.internalNotes.noteSource"><small>, ^ca_objects.internalNotes.noteSource</small></ifdef>
-									<ifdef code="ca_objects.internalNotes.noteDate"><small>, ^ca_objects.internalNotes.noteDate</small></ifdef>
+									<span class="trimText">^ca_objects.cataloguingNotes.cat_notes</span>
+									<ifdef code="ca_objects.cataloguingNotes.Cat_noteSource"><small><br/> - ^ca_objects.cataloguingNotes.Cat_noteSource</small></ifdef>
+									<ifdef code="ca_objects.cataloguingNotes.Cat_noteDate"><small>, ^ca_objects.cataloguingNotes.Cat_noteDate</small></ifdef>
 								</unit>
 							</div>
 						</ifdef>}}}
 				<?php
 					}
 				?>
-
-				<div class="row">
-					<div class="col-sm-12">		
-						
-					</div><!-- end col -->				
-				</div><!-- end row -->
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
+
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">
 			{{{nextLink}}}
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
+
 </div><!-- end row -->
 
 <script type='text/javascript'>

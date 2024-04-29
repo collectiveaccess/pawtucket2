@@ -33,7 +33,7 @@
 		}
 	}
 ?>
-<div class="row"><div class="col-sm-12">
+<div class="row"><div class="col-sm-12 col-md-8 col-md-offset-2">
 	<H1><?php print $vs_page_title; ?></H1>
 <?php
 	if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
@@ -62,6 +62,7 @@
 				<input type="hidden" name="itemURL" value="<?php print ($vs_admin_url) ? $vs_admin_url : $vs_url; ?>">
 				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
+				<input type="hidden" name="contactType" value="<?php print $vs_page_title; ?>">
 				<hr/><br/><br/>
 	
 			</div>

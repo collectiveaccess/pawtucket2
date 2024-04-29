@@ -1,10 +1,11 @@
 <?php
+	$vs_table = $this->getVar("table");
 	$t_item = $this->getVar("instance");
 	$t_set_item = $this->getVar("set_item");
 	$config = $this->getVar("config");
 	
 	$views = $config->get('views');
-	$views_info = $views['slideshow']['ca_objects'];
+	$views_info = $views['slideshow'][$vs_table];
 	
 	$vs_label = $t_item->getWithTemplate($views_info["labelTemplate"]);
 	$vs_content = $t_item->getWithTemplate($views_info["contentTemplate"]);
@@ -21,6 +22,6 @@
 		print $vs_set_item_content;
 	}
 
-	print "<div class='unit galleryViewRecord'>".caDetailLink($this->request, _t("VIEW RECORD"), 'btn btn-default', $this->getVar("table"),  $this->getVar("row_id"))."</unit>";
+	print "<div class='unit galleryViewRecord'>".caDetailLink($this->request, _t("VIEW RECORD"), 'btn btn-default', $vs_table,  $this->getVar("row_id"))."</unit>";
 	
 ?>

@@ -43,13 +43,6 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 
-			<!-- <div class="row">
-				<div class='col-md-12 col-lg-12'>
-					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
-					<H2>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno">, ^ca_occurrences.idno</ifdef>}}}</H2>
-				</div>
-			</div> -->
-
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					
@@ -85,25 +78,26 @@
 						<div class="unit">^ca_occurrences.idno</div>
 					</ifdef>}}}
 
-					<!-- {{{<ifdef code="ca_occurrences.bib_types">
-						<div class="unit">^ca_occurrences.bib_types</div>
-					</ifdef>}}} -->
-
 					{{{<ifdef code="ca_occurrences.formalCite">
 						<div class="unit">
-							^ca_occurrences.formalCite
+							<h4>^ca_occurrences.formalCite</h4>
 						</div>
+					</ifdef>}}}
+
+					{{{<ifdef code="ca_occurrences.cataloguingNotes.cat_notes">
+						<hr/>
 					</ifdef>}}}
 
 					<?php
 						if($this->request->user->hasRole("admin")){
 					?>
-							{{{<ifdef code="ca_occurrences.internalNotes.notes">
+							{{{<ifdef code="ca_occurrences.cataloguingNotes.cat_notes">
 								<div class="unit">
+									<label>Notes</label>
 									<unit relativeTo="ca_occurrences" delimiter="<br/>">							
-										<span class="trimText">^ca_occurrences.internalNotes.notes</span>
-										<ifdef code="ca_occurrences.internalNotes.noteSource"><small>, ^ca_occurrences.internalNotes.noteSource</small></ifdef>
-										<ifdef code="ca_occurrences.internalNotes.noteDate"><small>, ^ca_occurrences.internalNotes.noteDate</small></ifdef>
+										<span class="trimText">^ca_occurrences.cataloguingNotes.cat_notes</span>
+										<ifdef code="ca_occurrences.cataloguingNotes.Cat_noteSource"><small><br/> - ^ca_occurrences.cataloguingNotes.Cat_noteSource</small></ifdef>
+										<ifdef code="ca_occurrences.cataloguingNotes.Cat_noteDate"><small>, ^ca_occurrences.cataloguingNotes.Cat_noteDate</small></ifdef>
 									</unit>
 								</div>
 							</ifdef>}}}
@@ -112,14 +106,17 @@
 					?>
 
 					{{{<ifcount code="ca_objects" min="1">
-						<br/>
-						<label>Artwork</label>
+						<hr/>
+					</ifcount>}}}
 
+					{{{<ifcount code="ca_objects" min="1">
+						<label>Artwork</label>
 						<div class="row">
 							<div id="browseResultsContainer">
 								<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 							</div><!-- end browseResultsContainer -->
 						</div><!-- end row -->
+						
 						<script type="text/javascript">
 							jQuery(document).ready(function() {
 								jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'artworks', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
@@ -134,7 +131,9 @@
 						</script>
 					</ifcount>}}}		
 
-					<!-- Exhibitions - type of occurrence -->
+					{{{<ifcount code="ca_occurrences.related" min="1" restrictToRelationshipTypes="included">
+						<hr/>
+					</ifcount>}}}
 
 					{{{<ifcount code="ca_occurrences.related" min="1" restrictToRelationshipTypes="included">
 						<label>Exhibitions</label>
@@ -147,7 +146,9 @@
 						</div>
 					</ifcount>}}}
 
-					<!-- Archival Material - type of related object -->
+					{{{<ifcount code="ca_objects" min="1" restrictToTypes="archivalObjects,archivalCorrespondence,archivalInterview,archivalPhotograph,archivalWriting">
+						<hr/>
+					</ifcount>}}}
 
 					{{{<ifcount code="ca_objects" min="1" restrictToTypes="archivalObjects,archivalCorrespondence,archivalInterview,archivalPhotograph,archivalWriting">
 						<label>Archival Material</label>

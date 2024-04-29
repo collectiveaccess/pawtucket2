@@ -154,22 +154,22 @@
 					</ifdef></ifdef>}}}
 					
 					{{{<ifdef code="ca_entities.vhh_Description">
-						<div class="unit"><label><t>Description</t></label>
 							<unit relativeTo="ca_entities.vhh_Description" delimiter=" ">
 								<if rule='^ca_entities.vhh_Description.DescriptionType !~ /(history|Geschichte)/i'>
+								<div class="unit"><label><t>Description</t></label>
 									<div><ifdef code="ca_entities.vhh_Description.DescriptionType"><b>^ca_entities.vhh_Description.DescriptionType</b> &mdash;</ifdef>^ca_entities.vhh_Description.DescriptionText
-									<ifdef code="ca_entities.vhh_Description.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
-									<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
-										<ifdef code="ca_entities.vhh_Description.__source__">
-											<br/>
-											<small><t>Source:</t></small>
-											<small>^ca_entities.vhh_Description.__source__</small>
-										</ifdef>
+										<ifdef code="ca_entities.vhh_Description.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+										<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
+											<ifdef code="ca_entities.vhh_Description.__source__">
+												<br/>
+												<small><t>Source:</t></small>
+												<small>^ca_entities.vhh_Description.__source__</small>
+											</ifdef>
+										</div>
 									</div>
-									</div>
+								</div>
 								</if>
 							</unit>
-						</div>
 					</ifdef>}}}
 
 					{{{<ifdef code="ca_entities.vhh_URL">
@@ -193,7 +193,7 @@
 						<unit relativeTo="ca_entities.vhh_Description" delimiter=" ">
 							<if rule='^ca_entities.vhh_Description.DescriptionType =~ /(history|Geschichte)/i'>
 								<div class="unit"><label><t>Historical overview</t></label>
-									^ca_entities.vhh_Description.DescriptionText
+									<span class="trimText">^ca_entities.vhh_Description.DescriptionText</span>
 									<ifdef code="ca_entities.vhh_Description.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 									<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 										<ifdef code="ca_entities.vhh_Description.__source__">
@@ -310,12 +310,21 @@
 							</ifdef>
 						</div>
 					</unit></div></ifcount>}}}
-
-					{{{<ifcount code="ca_entities.related" min="1"><div class="unit"><ifcount code="ca_entities.related" min="1" max="1"><label><t>Person/Organization</t></label></ifcount>
-						<ifcount code="ca_entities.related" min="2"><label><t>People/Organizations</t></label></ifcount>
-						<unit relativeTo="ca_entities_x_entities" delimiter="<br/>">
-						<l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)
-						<ifdef code="ca_entities_x_entities.vhh_TemporalScope|ca_entities_x_entities.vhh_TemporalScope.__source__|ca_entities_x_entities.vhh_Note.vhh_NoteText|ca_entities_x_entities.vhh_Note.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
+<?php
+$va_related_entities = $t_item->get("ca_entities.related", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+if(is_array($va_related_entities) && sizeof($va_related_entities)){
+?>
+	<div class="unit">
+<?php
+	if(sizeof($va_related_entities) > 1){
+		print "<label>"._t("People/Organizations")."</label>";
+	}else{
+		print "<label>"._t("Person/Organization")."</label>";
+	}
+	foreach($va_related_entities as $va_related_entity){
+		print caDetailLink($this->request, $va_related_entity['displayname'], '', 'ca_entities', $va_related_entity['entity_id'])." (".$va_related_entity["relationship_typename"].") ";
+		$t_relation = new ca_entities_x_entities($va_related_entity['relation_id']);
+		print $t_relation->getWithTemplate('<ifdef code="ca_entities_x_entities.vhh_TemporalScope|ca_entities_x_entities.vhh_TemporalScope.__source__|ca_entities_x_entities.vhh_Note.vhh_NoteText|ca_entities_x_entities.vhh_Note.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 						<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 							<ifdef code="ca_entities_x_entities.vhh_TemporalScope|ca_entities_x_entities.vhh_TemporalScope.__source__">
 								<br/>
@@ -329,7 +338,7 @@
 							</ifdef>
 
 							<ifdef code="ca_entities_x_entities.vhh_Note.vhh_NoteText|ca_entities_x_entities.vhh_Note.__source__">
-								
+								<br/>
 								<unit relativeTo="ca_entities_x_entities.vhh_Note.vhh_NoteText" delimiter=",">
 									<ifdef code="ca_entities_x_entities.vhh_Note.vhh_NoteText">
 										<small><t>Note:</t></small><br/>
@@ -339,8 +348,14 @@
 									<small>^ca_entities_x_entities.vhh_Note.__source__</small>
 								</unit>
 							</ifdef>
-						</div>
-					</unit></div></ifcount>}}}
+						</div>');
+		print "<br/>";
+	}
+?>
+	</div>
+<?php
+}
+?>
 
 					<!-- TODO: where do we stick the visualization? -->
 					<?= $this->render('Details/entity_viz_html.php'); ?>

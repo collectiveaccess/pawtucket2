@@ -84,7 +84,7 @@
 					<div class="indiv-blog">
 						<div class="post-image hpBgImgEvents"></div>
 						<div class="post-details">
-							<h4 class="post-title"><?php print caNavLink($this->request, "Events & Broadcasts", "", "", "Browse", "events"); ?></h4>
+							<h4 class="post-title"><?php print caNavLink($this->request, "Events", "", "", "Browse", "events"); ?></h4>
 							<p class="post-excerpt">{{{home_event_intro}}}</p>
 							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Browse", "events"); ?>">More</a>
 						</div>
@@ -116,9 +116,9 @@
 					<div href="#" class="indiv-blog">
 						<div class="post-image hpBgImgResources"></div>
 						<div class="post-details">
-							<h4 class="post-title"><?php print caNavLink($this->request, "Resources", "", "", "About", "resources"); ?></h4>
-							<p class="post-excerpt">{{{home_resources_intro}}}</p>
-							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "About", "resources"); ?>">More</a>
+							<h4 class="post-title"><?php print caNavLink($this->request, "WRVR-FM Recordings", "", "", "Browse", "objects", array("facet" => "collection_facet", "id" => 134)); ?></h4>
+							<p class="post-excerpt">{{{home_recordings_intro}}}</p>
+							<a class="fig-text-btn" href="<?php print caNavUrl($this->request, "", "Browse", "objects", array("facet" => "collection_facet", "id" => 134)); ?>">More</a>
 						</div>
 					</div>
 				</div>

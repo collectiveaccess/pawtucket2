@@ -33,9 +33,9 @@
 	$o_config = caGetGalleryConfig();
 	
 	# --- what is the gallery section called
-	if(!$section_name = $o_config->get('gallery_section_name')){
-		$section_name = _t("Featured Galleries");
-	}
+	#if(!$section_name = $o_config->get('gallery_section_name')){
+	#	$section_name = _t("Highlights");
+	#}
 	
 	# --- which type of set is configured for display in gallery section
  	$t_list = new ca_lists();
@@ -66,7 +66,7 @@
 
 <div class="row">
 	<div class="col-sm-12 col-md-8 col-md-offset-2"> 
-		<H2><?php print $section_name; ?></H2>
+		<H2>Highlights</H2>
 
 <div class="frontGrid">	
 <?php

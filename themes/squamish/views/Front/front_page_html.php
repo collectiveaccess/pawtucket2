@@ -34,11 +34,11 @@
 	$this->config = caGetFrontConfig();
 	$vs_hero = $this->request->getParameter("hero", pString);
 	if(!$vs_hero){
-		$vs_hero = rand(1, 2);
+		$vs_hero = rand(1, 6);
 	}
  
  # --- timeline set - occurrences
-	if($vs_timeline_set_code = $this->config->get("front_page_set_code")){
+	if($vs_timeline_set_code = $this->config->get("front_page_timeline_set_code")){
 		$t_set = new ca_sets();
 		$t_set->load(array('set_code' => $vs_timeline_set_code));
 		if(is_array($va_access_values) && sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values)){
@@ -56,15 +56,16 @@
 				<div class="heroSearch">
 					<H1>
 						<div class="line1">Welcome to</div>
-						<div class="line2">Ta X̱ay Sxwimálatn Chet</div>
+						<div class="line2">Ta X̱ay Sxwimálatncht</div>
 						<div class="line3">{{{hp_search_text}}}</div>
 					</H1>
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 						<div class="formOutline">
 							<div class="form-group">
+								<label for="heroSearchInput" class="sr-only">Search:</label>
 								<input type="text" class="form-control" id="heroSearchInput" placeholder="<?php print _t("Search"); ?>" name="search" autocomplete="off" aria-label="<?php print _t("Search"); ?>" />
 							</div>
-							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
+							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" role="graphics-document" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
 					</form>
 					<div class="heroSearchAdvancedSearch"><?php print caNavLink($this->request, "Advanced Search", "", "Search", "Advanced", "objects"); ?></div>
@@ -97,39 +98,41 @@
 <?php
 	}
 ?>
-	<div class="row hpExplore bg_beige_eye">
-		<div class="col-md-12 col-lg-8 col-lg-offset-2">
+	<div class="row hpExplore bg_beige">
+		<div class="col-md-12">
+		<H2 class="frontSubHeading text-center">Explore The Collections</H2>
+
 			<div class="row">
 				<div class="col-md-4">
-					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Archives &<br/>Oral History", "", "", "BrowseAll", "Archives"); ?>
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage1'><div class='hpExploreBoxTitle btn btn-default'>Archives & Oral History</div></div>", "", "", "BrowseAll", "Archives"); ?>
 					</div>
 				</div>
 				<div class="col-md-4">
-					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Cultural<br/>Collection", "", "", "Browse", "cultural"); ?>
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage2'><div class='hpExploreBoxTitle btn btn-default'>Cultural Collection</div></div>", "", "", "Browse", "cultural"); ?>
 					</div>
 				</div>
 				<div class="col-md-4">
-					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Library<br/>Collections", "", "", "Browse", "library"); ?>
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage3'><div class='hpExploreBoxTitle btn btn-default'>Reference Library</div></div>", "", "", "Browse", "library"); ?>
 					</div>
 				</div>
 			</div>
 			<div class="row">
 				<div class="col-md-4">
-					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Community<br/>Resources", "", "", "Listing", "Resources"); ?>
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage4'><div class='hpExploreBoxTitle btn btn-default'>External Resources</div></div>", "", "", "Listing", "Resources"); ?>
 					</div>
 				</div>
 				<div class="col-md-4">
-					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Curriculum &<br/>Teaching Materials", "", "", "", ""); ?>
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage5'><div class='hpExploreBoxTitle btn btn-default'>Curriculum & Teaching Materials</div></div>", "", "", "Browse", "Curriculum"); ?>
 					</div>
 				</div>
 				<div class="col-md-4">
-					<div class="bg_side_pattern hpExploreBox">
-						<?php print caNavLink($this->request, "Academic<br/>Works", "", "", "Browse", "academic"); ?>
+					<div class="hpExploreBox">
+						<?php print caNavLink($this->request, "<div class='hpExploreBoxImage hpExploreBoxImage6'><div class='hpExploreBoxTitle btn btn-default'>Academic Works</div></div>", "", "", "Browse", "academic"); ?>
 					</div>
 				</div>
 			</div>
@@ -137,7 +140,10 @@
 	</div>
 
 <?php
-
+	# --- display galleries as a grid?
+	#print $this->render("Front/gallery_grid_html.php");
+	
+	
 	if($vn_timeline_set_id){
 
 ?>
@@ -164,11 +170,9 @@
 <?php
 	}
 
-	# --- display slideshow of random images
-	#print $this->render("Front/featured_set_slideshow_html.php");
+# --- display slideshow of random images
+	print $this->render("Front/featured_set_slideshow_html.php");
 
-	# --- display galleries as a grid?
-	#print $this->render("Front/gallery_grid_html.php");
 	# --- display galleries as a slideshow?
 	#print $this->render("Front/gallery_slideshow_html.php");
 ?>

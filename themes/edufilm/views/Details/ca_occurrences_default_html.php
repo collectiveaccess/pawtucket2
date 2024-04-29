@@ -50,12 +50,13 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_objects" min="1" max="1">
-						<div class='unit'><unit relativeTo="ca_objects" delimiter=" ">
-							<l>^ca_object_representations.media.large</l>
-							<!-- <div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div> -->
-						</unit></div>
-					</ifcount>}}}
+					{{{representationViewer}}}
+					
+					
+					<div id="detailAnnotations"></div>
+					
+					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+					
 
 <?php
 				# Comment and Share Tools
@@ -202,7 +203,7 @@
 						<div class="unit"><label><t>Education Type</t></label>
 						<unit relativeTo="ca_occurrences.edu_EducationType" delimiter="<br/>">
 
-							<ifdef code="ca_occurrences.edu_EducationType.edu_EducationTypeType"><t>Type</t> - (^ca_occurrences.edu_EducationType.edu_EducationTypeType)</ifdef>
+							<ifdef code="ca_occurrences.edu_EducationType.edu_EducationTypeType|ca_occurrences.edu_EducationType.edu_EducationTypeText"><t>Type</t> &mdash; (<b>^ca_occurrences.edu_EducationType.edu_EducationTypeType</b><ifdef code="ca_occurrences.edu_EducationType.edu_EducationTypeText,ca_occurrences.edu_EducationType.edu_EducationTypeType"> - </ifdef>^ca_occurrences.edu_EducationType.edu_EducationTypeText)</ifdef>
 							<ifdef code="ca_occurrences.edu_EducationType.edu_EducationTypeGrade"><t>Grade</t> - (^ca_occurrences.edu_EducationType.edu_EducationTypeGrade)</ifdef>
 							<ifdef code="ca_occurrences.edu_EducationType.edu_EducationTypeAge"><t>Age</t> - (^ca_occurrences.edu_EducationType.edu_EducationTypeAge)</ifdef>
 

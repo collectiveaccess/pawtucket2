@@ -80,7 +80,9 @@
  						$va_intrinsic_restrictions[$vs_instrinsic_field] = $vs_intrinsic_value;
  					}
  				}
- 				$va_featured_ids = array_keys($t_object->getRandomItems(10, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1, 'restrictByIntrinsic' => $va_intrinsic_restrictions)));
+ 				$va_featured_ids = array_keys($t_object->getRandomItems(200, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1, 'restrictByIntrinsic' => $va_intrinsic_restrictions)));
+ 				shuffle($va_featured_ids);
+ 				$va_featured_ids = array_slice($va_featured_ids, 0, 10);
  				$this->view->setVar('featured_set_item_ids', $va_featured_ids);
 				$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
  			}

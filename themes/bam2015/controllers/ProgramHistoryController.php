@@ -67,18 +67,22 @@
 				if($qr_res->numHits()){
 					$va_seasons = array();
 					while($qr_res->nextHit()){
+						if(!in_array($qr_res->get("ca_occurrences.access"), $this->opa_access_values)){
+							continue;
+						}
 						$vs_season_sort = "";
 						$o_search_series = caGetSearchInstance("ca_occurrences");
  						#$o_search_series->addResultFilter('ca_occurrences.type_id', '=', $vn_event_series_type_id);
  						$o_search_series->addResultFilter('ca_occurrences.parent_id', '=', $qr_res->get("ca_occurrences.occurrence_id"));
- 						$qr_res_series = $o_search_series->search("ca_occurrences.type_id:".$vn_event_series_type_id, array("sort" => "ca_occurrence_labels.name", "sort_direction" => "desc"));
+ 						$qr_res_series = $o_search_series->search("ca_occurrences.type_id:".$vn_event_series_type_id, array("sort" => "ca_occurrence_labels.name", "sort_direction" => "desc", "checkAccess" => $this->opa_access_values));
 						$va_children = array();
 						if($qr_res_series->numHits()){
 							while($qr_res_series->nextHit()){
 								if(in_array($qr_res_series->get("ca_occurrences.access"), $this->opa_access_values)){
-									$va_children[$qr_res_series->get("ca_occurrences.occurrence_id")] = array("id" => $qr_res_series->get("ca_occurrences.occurrence_id"),
-														"name" => $qr_res_series->get("ca_occurrences.preferred_labels")
-														);
+									$va_children[$qr_res_series->get("ca_occurrences.occurrence_id")] = array(
+										"id" => $qr_res_series->get("ca_occurrences.occurrence_id"),
+										"name" => $qr_res_series->get("ca_occurrences.preferred_labels"
+									));
 								}
 							}
 						}

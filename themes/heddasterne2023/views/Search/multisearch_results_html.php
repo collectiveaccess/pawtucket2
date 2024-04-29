@@ -1,3 +1,4 @@
+
 <?php
 	$va_results = $this->getVar('results');
 	$va_result_count = $va_results['_info_']['totalCount'];
@@ -16,7 +17,7 @@
 		}
 ?>
 		</small>
-		<h1><?php print _t("Search results for %1", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h1>
+		<h1><?php print _t("Search results for \"%1\"", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h1>
 		<br/>
 <?php
 		// 

@@ -29,16 +29,25 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
-		    <div class="row">
-		        <div class="col-sm-4">
-                    <div><h6>The Florida Slave Trade Documentation and Education Center is funded in part by the Florida Department of Economic Opportunity.</h6></div>
-        
-                    <div><h6>A Project of <a href="http://melfisher.org" target="_blank">The Mel Fisher Maritime Museum</a>, Key West, FL</a></h6></div>
-                </div>
-                <div class="col-sm-8 footer-logo">
-			        <div class="deo"><?php print caGetThemeGraphic($this->request, 'deo.png'); ?></div>
-			        <div class="aam"><?php print caGetThemeGraphic($this->request, 'aam_logo.png'); ?></div>
-			        <div class="mel"><?php print caGetThemeGraphic($this->request, 'mel_fisher_logo.png'); ?></div>
+		    <div class="container">
+		    	<div class="row">
+					<div class="col-sm-12 text-center">
+						<div>The Florida Slave Trade Documentation and Education Center has been made possible by grants from the Florida Department of Economic Opportunity and the Institute of Museum and Library Services.</div>
+		
+						<div>© 2023 by <a href="http://melfisher.org" target="_blank">Mel Fisher Maritime Museum</a> | 200 Greene Street | Key West, Florida 33040</div>
+					</div>
+				</div>
+			</div>
+			<div class="footerBottom">
+				 <div class="container">
+		    		<div class="row">
+		    			<div class="col-sm-12 footer-logo text-center">
+			       			<div class="deo"><?php print caGetThemeGraphic($this->request, 'deo.png'); ?></div>
+			       			<div class="aam"><?php print caGetThemeGraphic($this->request, 'aam_logo.png'); ?></div>
+			        		<div class="mel"><a href="https://www.melfisher.org/"><?php print caGetThemeGraphic($this->request, 'mel_fisher_logo.png'); ?></a></div>
+			        		<div class="mel"><?php print caGetThemeGraphic($this->request, 'imls_logo_2c.jpg'); ?></div>
+			    		</div>
+			    	</div>
 			    </div>
 			</div>
 		</footer><!-- end footer -->

@@ -25,7 +25,10 @@
  *
  * ----------------------------------------------------------------------
  */
-	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	global $g_ui_locale;
+	#print $g_ui_locale;
+	
+ 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$va_classroomDisplayName = caGetClassroomDisplayName();
 	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
@@ -48,6 +51,7 @@
 		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 		$va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'About', 'userTools', array())."\"); return false;' >"._t("Hoe werkt dit?")."</a></li>";
 	}
+	$va_user_links[] = "<li><a href='/admin' target='_blank'>Login databank</a></li>";
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 	$va_access_values = caGetUserAccessValues($this->request);
 
@@ -142,6 +146,8 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
 <?php
+	print caNavLink($this->request, "<i class='fa fa-home' aria-hidden='true' aria-label='"._t("Home")."'></i>", "navHomeLink", "", "","");
+			
 	if ($vb_has_user_links) {
 ?>
 			<div class="collapse navbar-collapse" id="user-navbar-toggle" aria-label="<?php print _t("Mobile User Navigation"); ?>">
@@ -172,7 +178,7 @@
 						</div>
 						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
 					</div>
-					<div class="headerAdvancedSearch"><?php print caNavLink($this->request, "Geavanceerd zoeken", "", "", "Search", "advanced/objects"); ?></div>
+					<div class="headerAdvancedSearch"><?php print caNavLink($this->request, "Uitgebreid zoeken", "", "", "Search", "advanced/objects"); ?></div>
 				</form>
 				<script type="text/javascript">
 					$(document).ready(function(){
@@ -183,16 +189,17 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
+					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Bladeren", "", "", "Browse", "Objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Expo's", "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Bladeren", "", "", "Browse", "Objects"); ?></li>
 					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, "About page", "", "", "About", ""); ?></li>
-							<li><?php print caNavLink($this->request, "About page", "", "", "About", ""); ?></li>
+							<li><?php print caNavLink($this->request, "Over Erfgoedcel Zuidrand", "", "", "OverErfgoedcelZuidrand", ""); ?></li>
+							<li><?php print caNavLink($this->request, "Over Erfgoedbank Zuidrand", "", "", "OverErfgoedbankZuidrand", ""); ?></li>
 						</ul>
 					</li>
+					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Contact", "", "", "Contact", "Form"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

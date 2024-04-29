@@ -93,7 +93,7 @@
 							^ca_objects.vhh_Title.TitleText 
 							<ifdef code="ca_objects.vhh_Title.TitleType">(^ca_objects.vhh_Title.TitleType)</ifdef>
 						</ifdef>
-
+						
 						
 							<ifdef code="ca_objects.vhh_Title.TitleTemporalScope|ca_objects.vhh_Title.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
@@ -169,10 +169,10 @@
 					{{{<ifdef code="ca_objects.vhh_Description">
 						<div class='unit'>
 							<label><t>Description</t></label>
-							<span class="trimText">^ca_objects.vhh_Description.DescriptionText</span>
+							
 
-							<unit relativeTo="ca_objects.vhh_Description" delimiter="<br/>">
-
+							<unit relativeTo="ca_objects.vhh_Description" delimiter="<br/><br/>">
+								<span class="trimText">^ca_objects.vhh_Description.DescriptionText</span>
 								<ifdef code="ca_objects.vhh_Description.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 								<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 									<ifdef code="ca_objects.vhh_Description.__source__">
@@ -187,14 +187,13 @@
 				
 					{{{<ifdef code="ca_objects.vhh_URL">
 						<div class="unit"><label><t>URL</t></label>
-						<unit relativeTo="ca_objects" delimiter="<br/>">
+						<unit relativeTo="ca_objects.vhh_URL" delimiter="<br/>">
 							<a href="^ca_objects.vhh_URL" target="_blank">^ca_objects.vhh_URL</a>
-
 							<ifdef code="ca_objects.vhh_URL.__source__"><a href="#" class="entityInfoButton"><i class="fa fa-info-circle" aria-hidden="true"></i></a></ifdef>
 							<div class="entityInfo" style="padding-left: 20px !important;display: none !important;">
 								<ifdef code="ca_objects.vhh_URL.__source__">
 									<br/>
-									<small><t>Source</t>:</small>
+									<small>Source:</small>
 									<small>^ca_objects.vhh_URL.__source__</small>
 								</ifdef>
 							</div>
@@ -262,7 +261,7 @@
 						<div class="unit"><label><t>Education Type</t></label>
 						<unit relativeTo="ca_objects.edu_EducationType" delimiter="<br/>">
 
-							<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeType|ca_objects.edu_EducationType.edu_EducationTypeText"><b><t>Type</t></b> &mdash; (^ca_objects.edu_EducationType.edu_EducationTypeType<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeText,ca_objects.edu_EducationType.edu_EducationTypeType"> - </ifdef>^ca_objects.edu_EducationType.edu_EducationTypeText)</ifdef>
+							<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeType|ca_objects.edu_EducationType.edu_EducationTypeText"><t>Type</t> &mdash; (<b>^ca_objects.edu_EducationType.edu_EducationTypeType</b><ifdef code="ca_objects.edu_EducationType.edu_EducationTypeText,ca_objects.edu_EducationType.edu_EducationTypeType"> - </ifdef>^ca_objects.edu_EducationType.edu_EducationTypeText)</ifdef>
 							<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeGrade"><b><t>Grade</t></b> &mdash; (^ca_objects.edu_EducationType.edu_EducationTypeGrade)</ifdef>
 							<ifdef code="ca_objects.edu_EducationType.edu_EducationTypeAge"><b><t>Age</t></b> &mdash; (^ca_objects.edu_EducationType.edu_EducationTypeAge)</ifdef>
 
@@ -403,7 +402,7 @@
 							<ifdef code="ca_objects.vhh_URL">
 								<br/>
 								<t>URL</t>:
-								<unit relativeTo="ca_objects.vhh_URL">
+								<unit relativeTo="ca_objects.vhh_URL" delimiter="<br/>">
 									<a href="^ca_objects.vhh_URL" target="_blank">^ca_objects.vhh_URL</a>
 									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
 										<ifdef code="ca_objects.vhh_URL">
@@ -500,7 +499,7 @@
 								<br/>
 								<t>Extent</t>:
 								<unit relativeTo="ca_objects.vhh_Extent" delimiter="<br/>">
-									^ext_Value <ifdef code="ca_objects.vhh_Extent">(^ext_Unit)</ifdef>
+									^ext_Value <ifdef code="ca_objects.vhh_Extent">^ext_Unit</ifdef>
 									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
 										<ifdef code="ca_objects.vhh_Extent">
 											<small><t>Source</t>:</small>
@@ -646,7 +645,7 @@
 							<ifdef code="ca_objects.vhh_URL">
 								<br/>
 								<t>URL</t>:
-								<unit relativeTo="ca_objects" delimiter="<br/>">
+								<unit relativeTo="ca_objects.vhh_URL" delimiter="<br/>">
 									<a href="^ca_objects.vhh_URL">^ca_objects.vhh_URL</a>
 									<p style="padding-left: 20px !important; margin-bottom: 0px !important;">
 										<ifdef code="ca_objects.vhh_URL.__source__">

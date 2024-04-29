@@ -89,7 +89,7 @@
 								array_merge($va_opts, $va_media_display_info, 
 									array(
 										'display' => 'detail',
-										'showAnnotations' => true, 
+										'showAnnotations' => true,
 										'primaryOnly' => true, 
 										'dontShowPlaceholder' => true, 
 										'captionTemplate' => false
@@ -123,30 +123,13 @@
 				</div>
 			</div>
 			<div class="row bgOffWhiteLight">
-				<div class='col-sm-12 col-md-4'>					
-					{{{<ifdef code="ca_occurrences.broadcast_details%delimiter="><div class="unit"><label>Broadcast Details</label>
-						<unit relativeTo="ca_occurrences.broadcast_details" delimiter="<br/>">
-							<ifdef code="ca_occurrences.broadcast_details.aapb_asset"><b>Asset Type: </b>^ca_occurrences.broadcast_details.aapb_asset<br/></ifdef>
-							<ifdef code="ca_occurrences.broadcast_details.episode_name"><b>Episode Name: </b>^ca_occurrences.broadcast_details.episode_name<br/></ifdef>
-							<ifdef code="ca_occurrences.broadcast_details.episode_number"><b>Episode Number: </b>^ca_occurrences.broadcast_details.episode_number<br/></ifdef>
-							<ifdef code="ca_occurrences.broadcast_details.series_title"><b>Series Title: </b>^ca_occurrences.broadcast_details.series_title<br/></ifdef>
-							<ifdef code="ca_occurrences.broadcast_details.date_created"><b>Date Created: </b>^ca_occurrences.broadcast_details.date_created<br/></ifdef>
-							<ifdef code="ca_occurrences.broadcast_details.date_broadcast"><b>Date Broadcast: </b>^ca_occurrences.broadcast_details.date_broadcast<br/></ifdef>
-							<ifdef code="ca_occurrences.broadcast_details.date_rebroadcast"><b>Date Rebroadcast: </b>^ca_occurrences.broadcast_details.date_rebroadcast<br/></ifdef>
-							<ifdef code="ca_occurrences.broadcast_details.av_description_text"><b>^ca_occurrences.broadcast_details.description_type<ifnotdef code="ca_occurrences.broadcast_details.description_type">Description</ifnotdef>: </b>^ca_occurrences.broadcast_details.av_description_text<br/></ifdef>
-						</unit></div></ifdef>}}}
-					
-					
-					{{{<ifdef code="ca_occurrences.language"><div class="unit"><label>Language</label>^ca_occurrences.language%delimiter=,_</div></ifdef>}}}
-				</div>
-				<div class='col-sm-12 col-md-4'>
+				<div class='col-sm-12 col-md-6'>
 					{{{<ifdef code="ca_occurrences.event_type"><div class="unit"><label>Event Type</label>^event_type%delimiter=,_</div></ifdef>}}}
 					{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="subject"><div class="unit"><label>Creators & Contributors</label><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="subject"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
 					{{{<ifdef code="ca_occurrences.description"><div class="unit"><label>Description</label>^ca_occurrences.description<br/></div></ifdef>}}}
 
 				</div>
-				<div class='col-sm-12 col-md-4'>
-					
+				<div class='col-sm-12 col-md-6'>
 <?php
 					
 					$va_all_subjects = array();
@@ -199,27 +182,7 @@
 										
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Related Collection<ifcount code="ca_collections" min="2">s</ifcount></label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					
-					{{{<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences.related" min="2" restrictToTypes="event">s</ifcount>/Broadcast<ifcount code="ca_occurrences.related" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.related.preferred_labels.name</l></unit></div></ifcount>}}}
-<?php				
-					if(sizeof($va_related_dig_audio_no_media)){
-						print "<div class='unit'><label>Digital Audio Recording".((sizeof($va_related_dig_audio_no_media) > 1) ? "s" : "")."</label>".join("<br/>", $va_related_dig_audio_no_media)."</div>";
-					}
-?>
-					{{{<ifcount code="ca_objects" min="1" restrictToTypes="audio_physical">
-						<div class="unit"><label>Analog Audio Recording<ifcount code="ca_objects" min="2" restrictToTypes="audio_physical">s</ifcount></label>
-							<unit relativeTo="ca_objects" restrictToTypes="audio_physical" delimiter="<br/>"><l>^ca_objects.idno<ifdef code="ca_objects.instantiationPhysAudio">, </ifdef>^ca_objects.instantiationPhysAudio</l></unit>
-						</div>
-					</ifcount>}}}
-<?php
-					if(sizeof($va_related_dig_movingimage_no_media)){
-						print "<div class='unit'><label>Digital Moving Image".((sizeof($va_related_dig_movingimage_no_media) > 1) ? "s" : "")."</label>".join("<br/>", $va_related_dig_movingimage_no_media)."</div>";
-					}
-?>
-					{{{<ifcount code="ca_objects" min="1" restrictToTypes="movingimage_physical">
-						<div class="unit"><label>Analog Moving Image Recording<ifcount code="ca_objects" min="2" restrictToTypes="movingimage_physical">s</ifcount></label><HR/>
-							<unit relativeTo="ca_objects" restrictToTypes="movingimage_physical" delimiter="<br/>"><l>^ca_objects.idno<ifdef code="ca_objects.instantiationPhysMovingImages">, </ifdef^ca_objects.instantiationPhysMovingImages</l></unit>
-						</div>
-					</ifcount>}}}
+					{{{<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences.related" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.related.preferred_labels.name</l></unit></div></ifcount>}}}
 <?php
 					if($vb_media){
 ?>
@@ -245,7 +208,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects_non_audio_video', array('facet' => 'occurrence_facet_114', 'id' => '^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'occurrence_facet_114', 'id' => '^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

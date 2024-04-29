@@ -1,12 +1,45 @@
 <?php
+	$pn_set_id = $this->getVar("set_id");	
+	# -- get all the sets so you can make next and previous buttons between them:
+	$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_sets");
+	$vn_previous_id = $o_context->getPreviousID($pn_set_id);
+	$vn_next_id = $o_context->getNextID($pn_set_id);
+	if($vn_previous_id){
+		$vs_previousLink = caNavLink($this->request, "<i class='fa fa-angle-left'></i><div class='small'>Prev</div>", "", "", "Gallery", $vn_previous_id, [], ["aria-label" => _t("Previous")]);
+ 	}
+ 	if($vn_next_id){
+ 		$vs_nextLink = caNavLink($this->request, "<i class='fa fa-angle-right'></i><div class='small'>Next</div>", "", "", "Gallery", $vn_next_id, [], ["aria-label" => _t("Next")]);
+	}
+	$vs_backLink = caNavLink($this->request, "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Gallery", "Index", [], ["aria-label" => _t("Back")]);
+	
 	$pa_set_items = $this->getVar("set_items");
-	$pn_set_id = $this->getVar("set_id");
 	$t_set = $this->getVar("set");
 	$ps_label = $this->getVar("label");
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
+	
+	
 ?>
-    
+ <div class="row detail">
+	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
+		<?php print $vs_previousLink.$vs_backLink.$vs_nextLink; ?>
+	</div><!-- end detailTop -->
+	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+		<div class="detailNavBgLeft">
+			<?php print $vs_previousLink.$vs_backLink; ?>
+		</div><!-- end detailNavBgLeft -->
+	</div><!-- end col -->
+	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+
+		
+	</div><!-- end col -->
+	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+		<div class="detailNavBgRight">
+			<?php print $vs_nextLink; ?>
+		</div><!-- end detailNavBgLeft -->
+	</div><!-- end col -->
+</div><!-- end row -->
+   
     <div class="row">
         <div class="col-sm-10 col-sm-offset-1">
             <H1><?php print $this->getVar("label")."</H1>"; ?>

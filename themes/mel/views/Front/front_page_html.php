@@ -32,11 +32,15 @@
 		#print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 	<div class="row">
-		<div class="col-sm-8 col-sm-offset-2">
+		<div class="col-sm-10 col-sm-offset-1">
 		    <div class="row">
 		        <div class="col-xs-12">
+                    <div class="hpCallOut">{{{homepage_callout}}}</div>
+                </div>
+            </div>
+            <div class="row">
+		        <div class="col-xs-12 col-md-10 col-md-offset-1 hpIntro">
                     {{{homepage_text}}}
-                    <hr/>
                 </div>
             </div>
             <div class="row front-features">
@@ -45,17 +49,7 @@
                         <a href="/Gallery/Index">
                         <?php print caGetThemeGraphic($this->request, 'collection_front.jpg'); ?>
                         <div class="front-feature-title">
-                            <h3>Exhibitions</h3>
-                        </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="front-feature-box">
-                        <a href="/Learn/Index">
-                        <?php print caGetThemeGraphic($this->request, 'learn_front.jpg'); ?>
-                        <div class="front-feature-title">
-                            <h3>Lesson Plans</h3>
+                            <h3>Exhibition</h3>
                         </div>
                         </a>
                     </div>
@@ -66,6 +60,16 @@
                         <?php print caGetThemeGraphic($this->request, 'exhibition_front.jpg'); ?>
                         <div class="front-feature-title">
                             <h3>Database</h3>
+                        </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="front-feature-box">
+                        <a href="/Learn/Index">
+                        <?php print caGetThemeGraphic($this->request, 'learn_front.jpg'); ?>
+                        <div class="front-feature-title">
+                            <h3>Learn</h3>
                         </div>
                         </a>
                     </div>

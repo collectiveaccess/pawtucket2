@@ -2,16 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CollectiveAccess Pawtucket2 Default Theme\n"
 "POT-Creation-Date: 2019-06-06 10:45-0400\n"
-"PO-Revision-Date: 2021-06-25 11:38-0400\n"
+"PO-Revision-Date: 2023-05-26 09:02-0400\n"
 "Last-Translator: Maria Passarotti <maria@whirl-i-gig.com>\n"
 "Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
 "Language: nl_BE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.3\n"
-"X-Poedit-Basepath: ../../../..\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.1.1\n"
+"X-Poedit-Basepath: ../../../..\n"
 "X-Poedit-KeywordsList: _t;_\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: themes/erfgoed_noorderkempen\n"
@@ -1255,7 +1255,7 @@ msgstr "Sorteervolgorde:"
 #: themes/default/views/Classroom/set_detail_html.php:140
 #: themes/default/views/Lightbox/set_detail_html.php:128
 msgid "Ascending"
-msgstr "Steigend"
+msgstr "Stijgend"
 
 #: themes/default/views/Browse/browse_results_html.php:121
 #: themes/default/views/Classroom/set_detail_html.php:141
@@ -1514,7 +1514,9 @@ msgstr "Geen collecties beschikbaar"
 
 #: themes/default/views/Contact/success_html.php:2
 msgid "Your message has been sent."
-msgstr "Uw bericht werd verstuurd."
+msgstr ""
+"Bedankt, uw bericht is verzonden. We proberen uw bericht zo snel mogelijk te "
+"beantwoorden."
 
 #: themes/default/views/Contribute/spam_check_html.php:40
 msgid "Simple Math Quiz (to prevent SPAMbots)"
@@ -1776,7 +1778,11 @@ msgstr "%1 objecten"
 
 #: themes/default/views/Lightbox/form_add_set_item_html.php:39
 msgid "Add item to %1"
-msgstr "Voeg object toe %1"
+msgstr "Voeg object toe aan %1"
+
+#: themes/default/views/Lightbox/form_add_set_item_html.php:61
+msgid "OR Create a New %1"
+msgstr "Of maak een nieuw %1 aan"
 
 #: themes/default/views/Lightbox/form_add_set_item_html.php:50
 msgid "Select a %1"
@@ -2032,7 +2038,7 @@ msgstr "E-mail"
 #: themes/default/views/Search/ca_occurrences_search_subview_html.php:49
 #: themes/default/views/Search/ca_places_search_subview_html.php:49
 msgid "Full results"
-msgstr "Alle resultaten"
+msgstr "Filter- en weergaveopties"
 
 #: themes/default/views/Search/ca_collections_search_subview_html.php:59
 #: themes/default/views/Search/ca_collections_search_subview_list_html.php:55
@@ -2046,7 +2052,7 @@ msgstr "sorteren volgens:"
 
 #: themes/default/views/Search/multisearch_results_html.php:19
 msgid "Search results for %1"
-msgstr "Resultaten voor %1"
+msgstr "Zoekresultaten voor %1"
 
 #: themes/default/views/Search/multisearch_results_html.php:33
 msgid "Your search for %1 returned no results"
@@ -2192,11 +2198,11 @@ msgstr "Deze website gebruikt cookies"
 
 #: views/Cookies/banner_html.php:20
 msgid "Manage"
-msgstr "Beheren"
+msgstr "Aanpassen"
 
 #: views/Cookies/banner_html.php:20
 msgid "Accept"
-msgstr "Accepteren"
+msgstr "Aanvaarden"
 
 #: views/Cookies/form_manage_html.php:38 views/pageFormat/pageFooter.php:57
 msgid "Manage Cookies"

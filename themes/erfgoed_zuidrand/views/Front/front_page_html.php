@@ -29,11 +29,12 @@
  *
  * ----------------------------------------------------------------------
  */
+ global $g_ui_locale;
  require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
  $va_access_values = $this->getVar("access_values");
  $vs_hero = $this->request->getParameter("hero", pString);
  if(!$vs_hero){
- 	$vs_hero = rand(1, 1);
+ 	$vs_hero = rand(1, 3);
  }
 ?>
 
@@ -44,9 +45,9 @@
 				
 				<div class="heroSearch">
 					<H1>
-						<div class="line1">Welkom bij</div>
-						<div class="line2">De Zuidrand</div>
-						<div class="line3">{{{hp_search_intro}}}</div>
+						<div class="line2">Erfgoedbank Zuidrand</div>
+						<div class="heroSearchDivide"></div>
+						<div class="line3">een blik achteruit</div>
 					</H1>
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 						<div class="formOutline">
@@ -56,7 +57,7 @@
 							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
 					</form>
-					<div class="heroAdvancedSearchLink"><?php print caNavLink($this->request, "Geavanceerd zoeken", "", "", "Search", "advanced/objects"); ?></div>
+					<div class="heroAdvancedSearchLink"><?php print caNavLink($this->request, "Uitgebreid zoeken", "", "", "Search", "advanced/objects"); ?></div>
 				</div>
 			</div>
 		</div>
@@ -72,6 +73,7 @@
 			}
 ?>
 				<p>{{{hometext}}}</p>
+				<p><?php print caNavLink($this->request, "Contacteer ons", "btn btn-default", "", "Contact", "Form"); ?></p>
 			</div>
 		</div>
 	</div>
@@ -128,7 +130,30 @@
 </div></div>
 <?php
 		print $this->render("Front/gallery_slideshow_html.php");
+
+if(!Session::getVar('visited_time') || (Session::getVar('visited_time') < (time() - 14400))){
+	# --- display lightbox alert
+	if(!CookieOptionsManager::showBanner()){
+		Session::setVar('visited_time', time());
+	}
+
 ?>
+	<div class="lightboxAlert">
+		<div class="pull-right pointer ligthboxAlertClose" onclick="$('.lightboxAlert').remove(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+		{{{lightbox_alert}}}
+		<div><?php print "<a href='#' onclick='$(\".lightboxAlert\").hide(); caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'About', 'userTools', array())."\"); return false;' class='btn-default'><span class='glyphicon glyphicon-user'></span> "._t("Hoe werkt dit?")."</a>"; ?></div>	
+	</div>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$(window).scroll(function(){
+					$(".lightboxAlert").fadeIn();
+				});
+			});
+		</script>
+<?php
+}
+?>
+
 <div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>
 		<script type="text/javascript">
 			$(document).ready(function(){

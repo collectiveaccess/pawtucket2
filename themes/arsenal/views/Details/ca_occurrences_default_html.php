@@ -146,7 +146,6 @@ $t_item = $this->getVar("item");
 								print "&nbsp;&nbsp;&nbsp;<a id='bioshow$vn_entity_id' href='#'>&rarr; Biografie anzeigen</a>";
 								print "&nbsp;&nbsp;&nbsp;<a id='biohide$vn_entity_id' style='display:none' href='#'>&larr; Biografie schließen</a>";
 							}
-							print "<br />";
 
 	?>
 	<script type="text/javascript">
@@ -182,10 +181,14 @@ $t_item = $this->getVar("item");
 			
 			// other credits
 			if(is_array($credits = $t_item->getRelatedItems('ca_entities', ['excludeRelationshipTypes' => ['director']]))) {
+				$by_credit = [];
 				foreach($credits as $credit) {
+					$by_credit[$credit['relationship_typename']][] = caNavLink($this->request,$credit['label'],'','','Browse','works',array("facet" => "entity_facet", "id" => $credit['entity_id']));
+				}
+				foreach($by_credit as $credit => $links) {
 ?><div class='unit'>
-	<label><?= ucfirst($credit['relationship_typename']); ?></label>
-	<?= caNavLink($this->request,$credit['label'],'','','Browse','works',array("facet" => "entity_facet", "id" => $credit['entity_id'])); ?>
+	<label><?= ucfirst($credit); ?></label>
+	<?= join("<br/>\n", $links); ?>
 </div><?php
 				}
 			}
@@ -203,13 +206,13 @@ $t_item = $this->getVar("item");
 			if(strlen($t_item->get('ca_occurrences.forum_year'))>0){
 				print "<div class='unit'><label>".$t_item->getAttributeLabel('forum_year')."</label>".$t_item->get('ca_occurrences.forum_year', array('delimiter' => ', '))."</div><!-- end unit -->";
 			}
-			if(strlen($t_item->get('ca_occurrences.forum_pdf'))>0){
-				print "<div class='unit'><label>".$t_item->getAttributeLabel('forum_pdf')."</label>".$t_item->get('ca_occurrences.forum_pdf', array('delimiter' => ', '))."</div><!-- end unit -->";
+			if(strlen($murl = $t_item->get('ca_occurrences.forum_catalogue_pdf.original.url'))>0){
+				print "<div class='unit'><label>".$t_item->getAttributeLabel('forum_catalogue_pdf')."</label><a href='{$murl}' target='_new'>"._t('PDF')."</a></div><!-- end unit -->";  
 			}
 			
 			// TODO: need final text and formatting for link
 			if($url = $t_item->get('ca_occurrences.film_page_url')) {
-				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}' target='_blank'>".($g_ui_locale == "de_DE" ? "For more information on the film visit the Forum page" : "Mehr Informationen zum Film auf der Webseite des Forums")."</a></div></div>";
+				print "<div class='unit'><label>".($g_ui_locale == "de_DE" ? "Forum" : "Forum")."</label><div class='trimText'><a href='{$url}' target='_blank'>".($g_ui_locale == "de_DE" ? "Mehr Informationen zum Film auf der Webseite des Forums" : "For more information on the film visit the Forum page")."</a></div></div>";
 			}	
 			
 			if(strlen($t_item->get('ca_occurrences.world_premiere'))>0){

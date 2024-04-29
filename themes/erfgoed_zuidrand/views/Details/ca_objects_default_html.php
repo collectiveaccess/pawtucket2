@@ -133,18 +133,23 @@
 						<span class="trimText"><unit relativeTo="ca_objects.content_description" delimiter="<br/><br/>">^ca_objects.content_description</unit></span>
 					</div>
 				</ifdef>}}}				
-				{{{<ifdef code="ca_objects.object_type_AAT"><div class="unit"><label>Objectnaam</label><unit relativeTo="ca_objects.object_type_AAT" delimiter=", ">^ca_objects.object_type_AAT</unit></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.dimensions"><div class="unit"><label>Afmetingen</label><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.dimensions.dimensions_name">^ca_objects.dimensions.dimensions_name: </ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth</ifdef><ifdef code="ca_objects.dimensions.dimensions_unit"> ^ca_objects.dimensions.dimensions_unit</ifdef><ifdef code="ca_objects.dimensions.weight"> ^ca_objects.dimensions.weight</ifdef><ifdef code="ca_objects.dimensions.weight,ca_objects.dimensions.weight_unit"> ^ca_objects.dimensions.weight_unit</ifdef></unit></div></ifdef>}}}
+<?php
+					if($links = caGetBrowseLinks($t_object, 'ca_objects.object_type_AAT', ['linkTemplate' => '^LINK'])) {
+?>
+						<div class="unit">
+							<label>Objectnaam</label>
+							<?= join(", ", $links); ?>
+						</div>
+<?php
+					}
+?>
+
+				{{{<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth|ca_objects.dimensions.weight"><div class="unit"><label>Afmetingen</label><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.dimensions.dimensions_name">^ca_objects.dimensions.dimensions_name: </ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth</ifdef><ifdef code="ca_objects.dimensions.dimensions_unit"> ^ca_objects.dimensions.dimensions_unit</ifdef><ifdef code="ca_objects.dimensions.weight"> ^ca_objects.dimensions.weight</ifdef><ifdef code="ca_objects.dimensions.weight,ca_objects.dimensions.weight_unit"> ^ca_objects.dimensions.weight_unit</ifdef></unit></div></ifdef>}}}
+
 				{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Plaatsen</label><unit relativeTo="ca_places" delimiter="<br/>">
-					<unit relativeTo="ca_places.parent">
-						<ifdef code="^ca_places.parent_id">
-							<unit relativeTo="ca_places.parent"><if rule="^ca_places.type_id !~ /land/"><?php print caNavLink($this->request, "^ca_places.preferred_labels", "", "", "Browse", "objects/facet/place_facet/id/^ca_places.place_id"); ?> > </if></unit>
-							<?php print caNavLink($this->request, "^ca_places.preferred_labels", "", "", "Browse", "objects/facet/place_facet/id/^ca_places.place_id"); ?> > 
-						</ifdef>
+					<unit relativeTo="ca_places.hierarchy" delimiter=" ">
+						<ifdef code="^ca_places.parent_id"><if rule="^ca_places.preferred_labels !~ /België/"><if rule="^ca_places.parent.preferred_labels !~ /België/"> > </if><?php print caNavLink($this->request, "^ca_places.preferred_labels", "", "", "Browse", "objects/facet/place_facet/id/^ca_places.place_id"); ?></if></ifdef>
 					</unit>
-					<if rule="^ca_places.type_id !~ /straat/"><?php print caNavLink($this->request, "^ca_places.preferred_labels", "", "", "Browse", "objects/facet/place_facet/id/^ca_places.place_id"); ?></if>
-					<if rule="^ca_places.type_id =~ /straat/"><unit relativeTo="ca_places">^ca_places.preferred_labels</unit></if>
-				
 				</unit></div></ifcount>}}}
 				
 				
@@ -180,14 +185,14 @@
 						}
 					}
 				}
-				print $t_object->getWithTemplate('<ifdef code="ca_objects.management_acquisition.acquisition_source|ca_objects.management_acquisition.acquisition_method_type|ca_objects.management_acquisition.acquisition_date|ca_objects.management_acquisition.acquisition_note"><div class="unit"><label>Verwerving</label>
-														<unit relativeTo="ca_objects" delimiter="<br/>">
-															<ifdef code="ca_objects.management_acquisition.acquisition_source">^ca_objects.management_acquisition.acquisition_source</ifdef>
-															<ifdef code="ca_objects.management_acquisition.acquisition_method_type"><ifdef code="ca_objects.management_acquisition.acquisition_source">, </ifdef>^ca_objects.management_acquisition.acquisition_method_type</ifdef>
-															<ifdef code="ca_objects.management_acquisition.acquisition_date"><ifdef code="ca_objects.management_acquisition.acquisition_source|ca_objects.management_acquisition.acquisition_method_type">, </ifdef>^ca_objects.management_acquisition.acquisition_date</ifdef>
-															<ifdef code="ca_objects.management_acquisition.acquisition_note"><ifdef code="ca_objects.management_acquisition.acquisition_source|ca_objects.management_acquisition.acquisition_method_type|ca_objects.management_acquisition.acquisition_date">, </ifdef>^ca_objects.management_acquisition.acquisition_note</ifdef></unit></div></ifdef>');
+#				print $t_object->getWithTemplate('<ifdef code="ca_objects.management_acquisition.acquisition_source|ca_objects.management_acquisition.acquisition_method_type|ca_objects.management_acquisition.acquisition_date|ca_objects.management_acquisition.acquisition_note"><div class="unit"><label>Verwerving</label>
+#														<unit relativeTo="ca_objects" delimiter="<br/>">
+#															<ifdef code="ca_objects.management_acquisition.acquisition_source">^ca_objects.management_acquisition.acquisition_source</ifdef>
+#															<ifdef code="ca_objects.management_acquisition.acquisition_method_type"><ifdef code="ca_objects.management_acquisition.acquisition_source">, </ifdef>^ca_objects.management_acquisition.acquisition_method_type</ifdef>
+#															<ifdef code="ca_objects.management_acquisition.acquisition_date"><ifdef code="ca_objects.management_acquisition.acquisition_source|ca_objects.management_acquisition.acquisition_method_type">, </ifdef>^ca_objects.management_acquisition.acquisition_date</ifdef>
+#															<ifdef code="ca_objects.management_acquisition.acquisition_note"><ifdef code="ca_objects.management_acquisition.acquisition_source|ca_objects.management_acquisition.acquisition_method_type|ca_objects.management_acquisition.acquisition_date">, </ifdef>^ca_objects.management_acquisition.acquisition_note</ifdef></unit></div></ifdef>');
 	if($vs_map = $this->getVar("map")){								
-		print "<hr></hr><div class='unit'>".$vs_map."</div><br/>";
+		print "<div class='unit'>".$vs_map."</div><br/>";
 	}
 ?>
 				{{{<ifcount code="ca_objects.related" min="1">

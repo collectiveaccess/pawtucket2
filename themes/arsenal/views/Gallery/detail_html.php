@@ -41,9 +41,9 @@
 				$vs_rep = $t_set_item->get('ca_set_items.set_item_media', array('version' => 'iconlarge'));
 			}
 			$t_instance->load($pa_set_item["row_id"]);
-			$vs_rep = $t_instance->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values));
+			$vs_rep = $t_instance->getWithTemplate("<unit relativeTo='ca_occurrences'>^ca_object_representations.media.iconlarge.tag</unit>", array("checkAccess" => $va_access_values));
 			if(!$vs_rep || ($vs_rep = "No media available")){
-				$vs_rep = $t_instance->get("ca_object_representations.media.icon", array("checkAccess" => $va_access_values));
+				$vs_rep = $t_instance->getWithTemplate("<unit relativeTo='ca_occurrences'>^ca_object_representations.media.icon.tag</unit>", array("checkAccess" => $va_access_values));
 			}
 			
 			if($vs_rep){

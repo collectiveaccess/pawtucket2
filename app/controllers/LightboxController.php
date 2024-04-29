@@ -1354,7 +1354,8 @@ class LightboxController extends FindController {
 	 * Download (accessible) media for all records in this set
 	 */
 	public function getLightboxMedia() {
-		set_time_limit(600); // allow a lot of time for this because the sets can be potentially large
+		$o_app_plugin_manager = new ApplicationPluginManager();
+		set_time_limit(7200); // allow a lot of time for this because the sets can be potentially large
 		$t_set = new ca_sets($this->request->getParameter('set_id', pInteger));
 		if (!$t_set->getPrimaryKey()) {
 			$this->notification->addNotification(_t('No set defined'), __NOTIFICATION_TYPE_ERROR__);
@@ -1363,6 +1364,10 @@ class LightboxController extends FindController {
 		}
 
 		$va_record_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values, 'limit' => 100000)));
+				
+		// Allow plugins to modify object_id list
+		$va_record_ids =  $o_app_plugin_manager->hookDetailDownloadMediaObjectIDs($va_record_ids);
+		
 		if(!is_array($va_record_ids) || !sizeof($va_record_ids)) {
 			$this->notification->addNotification(_t('No media is available for download'), __NOTIFICATION_TYPE_ERROR__);
 			$this->opo_response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index'));
@@ -1399,8 +1404,8 @@ class LightboxController extends FindController {
 				
 				# -- get version to download configured in media_display.conf
 				$va_download_display_info = caGetMediaDisplayInfo('download', $va_rep["mimetype"]);
-				$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
-
+				$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info, 'original');
+			
 				$t_rep = new ca_object_representations($va_rep['representation_id']);
 				$va_rep_info = $t_rep->getMediaInfo("media", $vs_download_version);
 
@@ -1419,7 +1424,6 @@ class LightboxController extends FindController {
 			}
 			$va_paths[$qr_res->get($t_instance->primaryKey())] = $va_file_paths;
 		}	
-
 		if (sizeof($va_paths) > 0){
 			$o_zip = new ZipStream();
 

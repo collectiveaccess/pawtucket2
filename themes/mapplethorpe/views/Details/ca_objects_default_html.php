@@ -86,7 +86,7 @@
 								print "</div>";
 							}
 							if($t_object->get("ca_objects.related")){
-								print "<div class='unit text-center'>".caNavLink($this->request, "Related Artwork", "btn btn-light btn-sm", "", "Browse",  "artwork", array('facet' => 'related_object_facet', 'id' => $t_object->get("ca_objects.object_id")))."</div>";
+								print "<div class='unit text-center'>".caNavLink($this->request, "Related Artwork", "btn btn-light btn-sm", "", "Browse",  "artwork", array('dontSetFind' => 1, 'facet' => 'related_object_facet', 'id' => $t_object->get("ca_objects.object_id")))."</div>";
 							}
 	?>						
 						</div><!-- end col -->
@@ -96,8 +96,10 @@
 			<div class='col-sm-12 col-md-3'>
 <?php
 				print '<div id="detailTools">';
-				if($this->getVar("representation_id")){
+				if($this->getVar("representation_id") && (($t_object->get('ca_objects.download_for_artestar', ['convertCodesToIdno' => true]) === 'yes') && $this->request->user->hasRole('limited_access')) || $this->request->user->hasRole('full_access')){
 					print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Image")."'></span>".caNavLink($this->request, "Download Image", "", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
+				} else {
+					print "<div class='detailTool' style='opacity: 0.5;'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Image (disabled)")."'></span>Download Image</div>";
 				}
 				if ($vn_pdf_enabled) {
 					print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Download PDF")."'></span>".caDetailLink($this->request, "Download PDF Summary", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_fullpage'))."</div>";
@@ -115,7 +117,6 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
-
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({

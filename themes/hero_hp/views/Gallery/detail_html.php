@@ -5,6 +5,8 @@
 	$ps_label = $this->getVar("label");
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
+	if (!($t_instance = Datamodel::getInstanceByTableNum($t_set->get('table_num')))) { throw new ApplicationException(_t('Invalid item')); }
+	
 ?>
 	<div class="row">
 		<div class="col-sm-12">
@@ -46,10 +48,21 @@
 			} else {
 				$vs_rep = $pa_set_item["representation_tag_".$vs_icon];
 			}
-			if($pa_set_item["representation_tag_".$vs_icon]){
+			if (!$vs_rep) {
+				$t_instance->load($pa_set_item["row_id"]);		
+ 				$vs_rep = $t_instance->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values));
+ 				if(!$vs_rep){
+ 					# --- if there is no rep and this is not an objects table, try to show a related object rep instead
+ 					$vs_rep = $t_instance->getWithTemplate("<unit relativeTo='ca_objects.related' limit='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values));
+ 				}
+ 				if(!$vs_rep){
+ 					$vs_rep = caGetThemeGraphic($this->request, 'spacer.png', array("alt" => "No media available"));
+ 				}
+			}
+			if($vs_rep){
 				$vn_i++;
 				print "<div class='smallpadding col-xs-3 col-sm-2 col-md-1".(($vn_i > 24) ? " galleryIconHidden" : "")."'>";
-				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$vs_rep."</a>";
+				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' title='".$pa_set_item["set_item_label"]."'  onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$vs_rep."</a>";
 				print "</div>\n";
 				
 				if($vn_i == 24){

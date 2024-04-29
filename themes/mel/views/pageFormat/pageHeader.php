@@ -54,6 +54,15 @@
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-TBLJZ6MF7Z"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'G-TBLJZ6MF7Z');
+	</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
@@ -76,9 +85,17 @@
 		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
 		print $o_debugbar_renderer->renderHead();
 	}
+
+$vb_black = false;
+if((in_array(strToLower($this->request->getController()), array("front", "learn"))) || ((strToLower($this->request->getController()) == "gallery") && (strToLower($this->request->getAction()) == "index"))){
+	$vb_black = true;
+}
 ?>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+DW+Pica+SC&display=swap" rel="stylesheet">
 </head>
-<body>
+<body <?php print ($vb_black) ? "class='black'" : ""; ?>>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -99,7 +116,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<div class='site-header'><?php print caNavLink($this->request, 'Florida Slave Trade<br/>Documentation and Education Center', '', '', '', '');?></div>
+				<div class='site-header'><?php print caNavLink($this->request, 'Florida Slave Trade<br/>Documentation &<br/>Education Center', '', '', '', '');?></div>
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -140,7 +157,7 @@
 					<li <?php print (($this->request->getController() == "Browse") || ($this->request->getAction() == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Database"), "", "", "Browse", "objects"); ?></li>
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibition"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print (($this->request->getController() == "Learn") || ($this->request->getAction() == "occurrences")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Learn"), "", "", "Learn", "Index"); ?></li>					
+					<li <?php print ($this->request->getController() == "Learn") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Learn"), "", "", "Learn", ""); ?></li>					
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
 				
 				</ul>

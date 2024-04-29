@@ -112,6 +112,9 @@
 				</ifcount>}}}
 				{{{<ifdef code="ca_objects.publication"><div class="unit"><label>Publication</label><unit relativeTo="ca_objects.publication" delimiter="<br/>">^ca_objects.publication</unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.call_number"><div class="unit"><label>Call Number</label>^ca_objects.call_number</div></ifdef>}}}
+				
+				{{{<ifdef code="ca_objects.isbn_number"><div class="unit"><label>ISBN</label><unit relativeTo="ca_objects.isbn_number" delimiter="<br/>">^ca_objects.isbn_number</unit></div></ifdef>}}}
+	
 				{{{<ifdef code="ca_objects.dimensions.display_dimensions"><div class="unit"><label>Dimensions</label><unit relativeTo="ca_objects.dimensions" delimiter="<br/>">^ca_objects.dimensions.display_dimensions</unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.editionInformation"><div class="unit"><label>Edition</label>^ca_objects.editionInformation</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.series.series_title|ca_objects.series.series_id"><div class="unit"><label>Series</label>^ca_objects.series.series_title<ifdef code="ca_objects.series.series_id,ca_objects.series.series_title">, </ifdef>^ca_objects.series.series_id</div></ifdef>}}}

@@ -34,7 +34,7 @@
 								<span class="trimText">^ca_entities.biography.bio_text<ifdef code="ca_entities.biography.bio_source"><br/><br/>^ca_entities.biography.bio_source</ifdef></span>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_entities.company_date.company_dates_value"><div class="unit"><label>Date</label><unit relativeTo="ca_objects.company_date" delimiter="<br/>"><if rule="^company_date_types !~ /-/">^ca_entities.company_date.company_date_types: </if>^ca_entities.company_date.company_dates_value</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_entities.company_date.company_dates_value"><div class="unit"><label>Date</label><unit relativeTo="ca_entities.company_date" delimiter="<br/>"><if rule="^company_date_types !~ /-/">^ca_entities.company_date.company_date_types: </if>^ca_entities.company_date.company_dates_value</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_entities.orgDate.org_dates_value"><div class="unit"><label>Date</label><unit relativeTo="ca_objects.orgDate" delimiter="<br/>"><ifdef code="ca_entities.orgDate.org_dates_types">^ca_entities.orgDate.org_dates_types: </ifdef>^ca_entities.orgDate.org_dates_value</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_entities.lifedates.ind_dates_value"><div class="unit"><label>Lifespan</label><unit relativeTo="ca_entities.lifedates" delimiter="<br/>"><ifdef code="ca_entities.lifespan.ind_dates_types">^ca_entities.lifedates.ind_dates_types: </ifdef>^ca_entities.lifedates.ind_dates_value</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_entities.idno"><div class="unit"><label>Identifier</label>^ca_entities.idno</div></ifdef>}}}
@@ -73,7 +73,7 @@
 										if($vs_lc_terms && (strpos($vs_lc_terms, " [") !== false)){
 											$vs_lc_term = mb_substr($vs_lc_terms, 0, strpos($vs_lc_terms, " ["));
 										}
-										$va_all_subjects[] = caNavLink($this->request, $vs_lc_term, "", "", "Multisearch", "Index", array("search" => $vs_lc_term));
+										$va_all_subjects[] = caNavLink($this->request, $vs_lc_term, "", "", "MultiSearch", "Index", array("search" => $vs_lc_term));
 									}
 								}
 							}
