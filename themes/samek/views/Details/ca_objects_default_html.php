@@ -37,9 +37,15 @@ $copy_link_enabled = 	$this->getVar("copyLinkEnabled");
 $id =				$t_object->get('ca_objects.object_id');
 $show_nav = 		($this->getVar("previousLink") || $this->getVar("resultsLink") || $this->getVar("nextLink")) ? true : false;
 $map_options = $this->getVar('mapOptions') ?? [];
+$media_options = $this->getVar('media_options') ?? [];
+
+$media_options = array_merge($media_options, [
+	'id' => 'mediaviewer'
+]);
 ?>
 <script>
 	pawtucketUIApps['geoMapper'] = <?= json_encode($map_options); ?>;
+	pawtucketUIApps['mediaViewerManager'] = <?= json_encode($media_options); ?>;
 </script>
 <?php
 if($show_nav){
@@ -81,11 +87,9 @@ if($show_nav){
 
 	<div class="row mt-3">
 
-		{{{<ifdef code="ca_object_representations.media.large">
-			<div class="col-md-6 justify-content-center">
-				<div class='detailPrimaryImage object-fit-contain'>^ca_object_representations.media.large</div>
-			</div>
-		</ifdef>}}}
+		<div class="col-md-6">
+			{{{media_viewer}}}
+		</div>
 
 		<div class="col-md-6">
 			<div class="bg-body-tertiary py-3 px-4 mb-3">
@@ -127,13 +131,6 @@ if($show_nav){
 
 							<hr>
 
-							<!-- <ifdef code="ca_objects.on_view.on_view_type">
-								<dt><?= _t('On View/Off View'); ?></dt>
-								<dd>
-									^ca_objects.on_view.on_view_type
-								</dd>
-							</ifdef> -->
-
 							<?php
 									if($t_object->get("ca_objects.on_view.on_view_type")){
 										if($links = caGetBrowseLinks($t_object, 'ca_objects.on_view.on_view_type', ['template' => '<l>^ca_objects.on_view.on_view_type</l>', 'linkTemplate' => '^LINK'])) {
@@ -145,37 +142,48 @@ if($show_nav){
 									}
 							?>
 
+							<ifdef code="ca_objects.on_view.view_location">
+								<dt><?= _t('View Location'); ?></dt>
+								<dd>^ca_objects.on_view.view_location</dd>
+							</ifdef>
+
 							<ifdef code="ca_objects.copyright_text">
 								<dt><?= _t('Copyright'); ?></dt>
 								<dd>^ca_objects.copyright_type ^ca_objects.copyright_text</dd>
 							</ifdef>
 
-							<ifdef code="ca_objects.academic_tags">
-								<dt><?= _t('Academic Tags'); ?></dt>
-								<dd>
-									<unit relativeTo="ca_objects" delimiter=", ">
-											^ca_objects.academic_tags
-									</unit>
-								</dd>
-							</ifdef>
+							<?php
+								if($t_object->get("ca_objects.academic_tags")){
+									if($acc_links = caGetBrowseLinks($t_object, 'ca_objects.academic_tags', ['template' => '<l>^ca_objects.academic_tags</l>', 'linkTemplate' => '^LINK'])) {
+							?>
+										<dt><?= _t('Academic Tags'); ?></dt>
+										<dd><?= join(" ", $acc_links); ?></dd>
+							<?php
+									}
+								}
+							?>
 
-							<ifdef code="ca_objects.object_classification">
-								<dt><?= _t('Object Classification'); ?></dt>
-								<dd>
-									<unit relativeTo="ca_objects.object_classification" delimiter=" &gt; ">
-										^ca_objects.object_classification.hierarchy.preferred_labels.name_plural
-									</unit>
-								</dd>
-							</ifdef>
+							<?php
+								if($t_object->get("ca_objects.object_classification")){
+									if($class_links = caGetBrowseLinks($t_object, 'ca_objects.object_classification', ['template' => '<l>^ca_objects.object_classification.hierarchy.preferred_labels.name_plural%delimiter=_➜_</l>', 'linkTemplate' => '^LINK'])) {
+							?>
+										<dt><?= _t('Object Classification'); ?></dt>
+										<dd><?= join("<br>", $class_links); ?></dd>
+							<?php
+									}
+								}
+							?>
 
-							<ifdef code="ca_objects.specific_subject.subject_AAT">
-								<dt><?= _t('Subject'); ?></dt>
-								<dd>
-									<unit delimiter=", ">
-										^ca_objects.specific_subject.subject_AAT
-									</unit>
-								</dd>
-							</ifdef>
+							<?php
+								if($t_object->get("ca_objects.specific_subject.subject_AAT")){
+									if($sub_links = caGetBrowseLinks($t_object, 'ca_objects.specific_subject.subject_AAT', ['template' => '<l>^ca_objects.specific_subject.subject_AAT</l>', 'linkTemplate' => '^LINK'])) {
+							?>
+										<dt><?= _t('Subject'); ?></dt>
+										<dd><?= join("<br>", $sub_links); ?></dd>
+							<?php
+									}
+								}
+							?>
 
 							<ifdef code="ca_objects.marks_inscription.marks_text">
 								<dt><?= _t('Marks/Inscription'); ?></dt>
@@ -193,6 +201,14 @@ if($show_nav){
 							</ifdef>
 
 						</dl>}}}
+
+						{{{<dl class="mb-0">
+							<ifcount code="ca_collections" min="1">
+								<dt><ifcount code="ca_collections" min="1" max="1"><?= _t('Related Collection'); ?></ifcount><ifcount code="ca_collections" min="2"><?= _t('Related Collections'); ?></ifcount></dt>
+								<unit relativeTo="ca_collections" delimiter=""><dd><unit relativeTo="ca_collections.hierarchy" delimiter=" ➔ "><l>^ca_collections.preferred_labels.name</l></unit></dd></unit>
+							</ifcount>
+						</dl>}}}
+						
 						
 					</div>
 				</div>

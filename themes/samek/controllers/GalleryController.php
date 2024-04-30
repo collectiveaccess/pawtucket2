@@ -157,6 +157,23 @@
 					MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
 					$this->render("Gallery/list_html.php");
  				break;
+ 				# ---------------------------------
+ 				case "intro":
+					$set_id = $this->request->getParameter('set_id', pInteger);
+					$t_set = $this->_getSet($set_id);
+					if (!($table = Datamodel::getTableName($t_set->get('table_num')))) { throw new ApplicationException(_t('Invalid set')); }
+				
+					$this->view->setVar("set_id", $set_id);
+					$this->view->setVar("set", $t_set);
+					$this->view->setVar("table", $table);
+					$this->view->setVar("instance", Datamodel::getInstanceByTableNum($t_set->get('table_num')));
+					$this->view->setVar("label", $t_set->getLabelForDisplay());
+					$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code'), array("delimiter" => "<br/><br/>")));
+					$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
+				
+					
+					$this->render("Gallery/detail_intro_html.php");
+				break;
  				# -------------------------------
  				default:
 					$set_id = (int)$function;
@@ -331,7 +348,7 @@
 			if($t_rep && !(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && !in_array($t_rep->get("access"), $this->opa_access_values))){
 				$this->view->setVar("rep_object", $t_rep);
 				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
-				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery', 'set_id' => $set_id]));
+				#$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery', 'set_id' => $set_id]));
 				$this->view->setVar("representation_id", $t_rep->get("representation_id"));
 			}
  			
@@ -412,64 +429,6 @@
  			$this->render("Gallery/detail_item_info_html.php");
  		}
  		# -------------------------------------------------------
- 	 	/**
- 		 *
- 		 */ 
- 		public function xxxgetSetItemInfo(){
- 			$item_id = $this->request->getParameter('item_id', pInteger);
- 			$set_id = $this->request->getParameter('set_id', pInteger);
- 			
- 			$t_set = $this->_getSet($set_id);
- 			$t_set_item = $this->_getSetItem($set_id, $item_id);
- 			
-			if (!($t_instance = Datamodel::getInstanceByTableNum($t_set->get("table_num")))) { throw new ApplicationException(_t('Invalid set type')); }
-			if (!($table = Datamodel::getTableName($t_set_item->get('table_num')))) { throw new ApplicationException(_t('Invalid set type')); }
-			if (!$t_instance->load($t_set_item->get("row_id"))) { throw new ApplicationException(_t('Invalid item')); }
-			
- 			$set_item_ids = array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values)));
- 			$this->view->setVar("item_id", $item_id);
- 			$this->view->setVar("set_num_items", sizeof($set_item_ids));
- 			$this->view->setVar("set_item_num", (array_search($item_id, $set_item_ids) + 1));
- 			
- 			$this->view->setVar("set_item", $t_set_item);
- 			$this->view->setVar("object", $t_instance);
- 			$this->view->setVar("instance", $t_instance);
- 			$this->view->setVar("object_id", $t_set_item->get("row_id"));
- 			$this->view->setVar("row_id", $t_set_item->get("row_id"));
- 			$this->view->setVar("label", $t_instance->getLabelForDisplay());
- 			$this->view->setVar("table", $table);
- 			$this->view->setVar("config", $this->config);
- 			
- 			Session::setVar("last_item_for_set_{$set_id}", $item_id);
- 			Session::save();
- 			
- 			//
- 			// Tag substitution
- 			//
- 			// Views can contain tags in the form {{{tagname}}}. Some tags, such as "label" are defined by
- 			// this controller. More usefully, you can pull data from the item being detailed by using a valid "get" expression
- 			// as a tag (Eg. {{{ca_objects.idno}}}. Even more usefully for some, you can also use a valid bundle display template
- 			// (see http://docs.collectiveaccess.org/wiki/Bundle_Display_Templates) as a tag. The template will be evaluated in the 
- 			// context of the item being detailed.
- 			//
- 			$va_defined_vars = array_keys($this->view->getAllVars());		// get list defined vars (we don't want to copy over them)
- 			$va_tag_list = $this->getTagListForView("Gallery/set_item_info_html.php");				// get list of tags in view
- 			foreach($va_tag_list as $vs_tag) {
- 				if (in_array($vs_tag, $va_defined_vars)) { continue; }
- 				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
- 					$this->view->setVar($vs_tag, $t_instance->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
- 				} elseif (strpos($vs_tag, ".") !== false) {
- 					if(!strlen($v = $t_set_item->get($vs_tag, array('checkAccess' => $this->opa_access_values)))) {
- 						$v = $t_instance->get($vs_tag, array('checkAccess' => $this->opa_access_values));
- 					}
- 					$this->view->setVar($vs_tag, $v);
- 				} else {
- 					$this->view->setVar($vs_tag, "?{$vs_tag}");
- 				}
- 			}
- 			
- 			$this->render("Gallery/set_item_info_html.php");
- 		}
  		# -------------------------------------------------------
 		/** 
 		 * Generate the URL for the "back to results" link

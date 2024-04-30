@@ -43,16 +43,16 @@
 						$t_set = new ca_sets();
 						$va_first_item = array_shift($va_first_items_from_set[$vn_featured_set_id]);
 						$t_set->load($vn_featured_set_id);
-						print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-cover w-100'>", "", "", "Gallery", $vn_featured_set_id)."</div>";
+						print "<div class='col-sm-6 img-fluid'>".caNavLink($this->request, "<img src='".$va_first_item["representation_url"]."' alt='Image from ".$va_set["name"]."' class='object-fit-cover w-100'>", "", "", "Gallery", "Intro", array("set_id" => $vn_featured_set_id))."</div>";
 						
-						print "<div class='col-sm-6'>".caNavLink($this->request, $va_set["name"], "fs-4 fw-medium", "", "Gallery", $vn_featured_set_id);
+						print "<div class='col-sm-6'>".caNavLink($this->request, $va_set["name"], "fs-4 fw-medium", "", "Gallery", "Intro", array("set_id" => $vn_featured_set_id));
 						if($vs_desc = $t_set->get("ca_sets.".$vs_description_element_code)){
 							if(mb_strlen($vs_desc) > 400){
 								$vs_desc = mb_substr($vs_desc, 0, 400)."...";						
 							}
 							print "<div class='py-2 fs-4'>".$vs_desc."</div>";
 						}
-						print "<div class='text-center py-2 text-capitalize'>".caNavLink($this->request, _t("View ").$o_gallery_config->get("gallery_section_item_name")." <i class='bi bi-arrow-right'></i>", "btn btn-primary", "", "Gallery", $vn_featured_set_id)."</div>";
+						print "<div class='text-center py-2 text-capitalize'>".caNavLink($this->request, _t("View").$o_gallery_config->get("gallery_section_item_name")." <i class='bi bi-arrow-right'></i>", "btn btn-primary", "", "Gallery", "Intro", array("set_id" => $vn_featured_set_id))."</div>";
 						print "</div>";
 						
 ?>
@@ -86,7 +86,7 @@
 								<button class='btn btn-primary'>View <i class='bi bi-arrow-right small'></i></button>
 							</div>
 						</div>";
-			print caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", $vn_set_id);
+			print caNavLink($this->request, $vs_tmp, "text-decoration-none d-flex w-100", "", "gallery", "Intro", array("set_id" => $vn_set_id));
 			print "</div>";
 		}
 ?>
