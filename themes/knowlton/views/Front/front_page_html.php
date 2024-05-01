@@ -45,7 +45,7 @@
 			<div class="col-12 my-5 text-left">
 <?php
 				if($vs_hp_intro){
-					print "<div class='display-4'>".$vs_hp_intro."</div>";
+					print "<div class='display-5 my-5 lh-sm'>".$vs_hp_intro."</div>";
 				}
 ?>		
 			</div>

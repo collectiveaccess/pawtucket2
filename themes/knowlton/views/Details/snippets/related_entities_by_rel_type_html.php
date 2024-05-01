@@ -7,10 +7,10 @@
 	if(is_array($va_entities) && sizeof($va_entities)){
 		$va_entities_by_type = array();
 		foreach($va_entities as $va_entity_info){
-			$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caNavLink($this->request, $va_entity_info["displayname"], "btn btn-secondary btn-sm me-4 fw-semibold", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_entity_info["entity_id"]));
+			$va_entities_by_type[$va_entity_info["relationship_typename"]][] = caNavLink($this->request, $va_entity_info["displayname"], "btn btn-secondary btn-sm me-4 fw-semibold mb-1", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_entity_info["entity_id"]));
 		}
 		foreach($va_entities_by_type as $vs_type => $va_entity_links){
-			print "<dt class='text-capitalize serif fw-medium pb-1'>".$vs_type."</dt><dd class='pb-4 fs-5 fw-semibold'>".join(", ", $va_entity_links)."</dd>";
+			print "<dt class='text-capitalize serif fw-medium pb-1'>".$vs_type."</dt><dd class='pb-4 fs-5 fw-semibold'>".join(" ", $va_entity_links)."</dd>";
 		}
 
 	}

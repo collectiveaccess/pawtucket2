@@ -72,7 +72,7 @@ body{
 	padding: 4px 0.75em 4px 0.75em;
 	background-color:transparent;
 }
-.btn-primary:hover, .btn-secondary:hover{
+.btn-primary:hover, .btn-secondary:hover, .btn-primary:focus, .btn-secondary:focus{
 	background-color: rgb(10, 10, 10);
 	color:#FFF;
 }
@@ -180,7 +180,7 @@ nav{
 	}
 	#navbarSearch{
 		top:155px;
-		z-index:10;
+		z-index:1000;
 		input{
 			padding: 1rem;
 			font-size: 1em;
@@ -356,11 +356,8 @@ footer{
 		text-decoration:none;
 	}
 	H2, dl{
-		font-size:13px;
-		line-height:1.25;
 	}
 	dd{
-		margin:0px;
 	}
 }
 /* --- detail ---*/
@@ -372,4 +369,7 @@ footer{
  		font-size:1.1rem !important;
 	}
 }
-		
+/* static page */
+.staticPage{
+	line-height:1.4;
+}	
