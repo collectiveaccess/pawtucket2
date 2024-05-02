@@ -123,7 +123,7 @@
 					<a href="https://library.arlingtonva.us/" class="navbar-brand">
 						<img src="/themes/arlington/assets/pawtucket/graphics/apl_logo.png" alt="Arlington TEST System">
 					</a>
-					<div class="col">
+					<div class="col" style="margin-left: 45px;">
 						<a href="/index.php">
 							<H1>Center for Local History </H1>
 							<H2>Community Archives</H2>
