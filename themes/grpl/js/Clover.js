@@ -1,26 +1,18 @@
+
 import React, { useEffect, useContext, useState } from 'react'
 import { createRoot } from 'react-dom/client';
 import Viewer from "@samvera/cloverIIIF/viewer";
+import * as Annotorious from '@recogito/annotorious-openseadragon';
 
-const Clover = ({ options, iiifContent, iiifContentSearch, renderAbout, renderClips, showTitle, showIIIFBadge, showInformationToggle, renderResources, backgroundColor, height }) => {
-		// let options = {
-// 			renderAbout: renderAbout,
-// 			showIIIFBadge: showIIIFBadge,
-// 			showInformationToggle: showInformationToggle,
-// 			showTitle: showTitle,
-// 			renderResources: renderResources,
-// 			renderClips: renderClips,
-// 			showPdfToolBar: true,
-// 			showPdfZoom: true,
-// 			showPdfRotate: true,
-// 			showPdfFullScreen: true,
-// 			showPdfPaging: true,
-// 			showPdfThumbnails: true,
-// 			showPdfTwoPageSpread: true,
-// 			canvasBackgroundColor: backgroundColor,
-// 			canvasHeight: height
-// 		};
-		
+import '@recogito/annotorious-openseadragon/dist/annotorious.min.css';
+
+import {
+  InformationPanel,
+  AnnotationEditor,
+  EditorProvider,
+} from "annotation-editor-clover";
+
+const Clover = ({ options, iiifContent, iiifContentSearch, iiifClippingService, renderAbout, renderClips, showTitle, showIIIFBadge, showInformationToggle, renderResources, backgroundColor, height, plugins }) => {		
 		const customTheme = {
 			colors: {
 			  /**
@@ -54,7 +46,10 @@ const Clover = ({ options, iiifContent, iiifContentSearch, renderAbout, renderCl
 		  };
 
 		return(
-			<Viewer options={options} iiifContent={iiifContent} iiifContentSearch={iiifContentSearch} customTheme={customTheme} />
+			
+    <EditorProvider>
+		<Viewer options={options} plugins={plugins} iiifContent={iiifContent} iiifContentSearch={iiifContentSearch} iiifClippingService={iiifClippingService} customTheme={customTheme} />		
+    </EditorProvider>
 		);
 	}
 
@@ -70,11 +65,37 @@ export default function _init(appData) {
 		<Clover
 			iiifContent={appData.url} 
 			iiifContentSearch={appData.searchUrl} 
+			iiifClippingService={appData.clipUrl} 
+			
+			plugins={[
+			  {
+				id: "AnnotationEditor",
+				imageViewer: {
+				  menu: {
+					component: AnnotationEditor,
+					componentProps: {
+					  annotationServer: appData.clipUrl,
+					  token: "abc123"
+					},
+				  },
+				},
+				informationPanel: {
+				  component: InformationPanel,
+				  label: { none: ["Clippings"] },
+				  componentProps: {
+					annotationServer: appData.clipUrl,
+					token: "abc123"
+				  },
+				},
+			  } 
+			]}
+			
 			options={{
 				informationPanel: {
 				  open: true, 
-				  renderAbout: true, 
-				  renderToggle: true
+				  renderAbout: false, 
+				  renderToggle: true,
+				  renderAnnotation: true
 				},
 				showIIIFBadge: false,
 				showTitle: true,
@@ -85,16 +106,11 @@ export default function _init(appData) {
 				openSeadragon: {
 				  gestureSettingsMouse: {
 					scrollToZoom: true,
+					clickToZoom: true
 				  },
 				  maxZoomPixelRatio: 4
 				}
 			  }}
 		/>
 	);
-	
-// 	jQuery(document).ready(function() {
-// 		jQuery('#newspaper-container').on('change', '#information-toggle', function(e) {
-// 			alert('switch!'); 
-// 		});
-// 	});
 }

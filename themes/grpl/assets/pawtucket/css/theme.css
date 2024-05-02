@@ -538,15 +538,29 @@ div.caMediaOverlayControls .close {
 	padding: 0px;
 }
 
-.container.newspapers {
+.container.newspapers, .container.periodical {
 	width: 100% !important;
 	max-width: unset;
 }
 
 #newspaper-container {
 	padding:0 34px 0 34px;
+	width: 100% !important;
 }
 
 .newspaper-metadata-container {
 	margin-top: 10px;
+}
+
+.clipping .clipping-text {
+	cursor: pointer;
+}
+
+.clipping .clipping-text:hover {
+	color: #555;
+}
+
+/* Hide Annotorius "reply" UI */
+.r6o-widget:nth-child(2) {
+	display: none;
 }

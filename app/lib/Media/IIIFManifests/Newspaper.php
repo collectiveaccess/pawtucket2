@@ -62,7 +62,7 @@ class Newspaper extends BaseIIIFManifest {
 			],
 			"service" => [
 				[
-				  "id" => "https://grpl.whirl-i-gig.com/service/IIIF/search/{$identifiers[0]}",
+				  "id" => "{$this->base_url}/service.php/IIIF/search/{$identifiers[0]}",
 				  "type" => "SearchService2"
 				]
 		  ],

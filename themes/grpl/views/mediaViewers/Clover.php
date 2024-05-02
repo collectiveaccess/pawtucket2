@@ -49,7 +49,7 @@ $terms = array_map(function($v) {
     	id: 'clover<?= $display_type; ?>',
     	url: <?= json_encode($this->getVar('data_url').'/render/Newspaper'); ?>,
     	searchUrl: <?= json_encode($this->getVar('search_url').'?q='.urlencode(join(' ', $terms))); ?>,
-    	annotationUrl: <?= json_encode($this->getVar('data_url').'render/Annotations'); ?>,
+    	clipUrl: <?= json_encode($this->getVar('clip_url').'/mode/iiif'); ?>,
     	renderAbout: false,
     	renderResources: false,
     	renderClips: true,   	

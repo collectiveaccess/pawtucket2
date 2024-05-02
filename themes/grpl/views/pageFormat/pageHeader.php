@@ -64,14 +64,13 @@ $vb_has_user_links = (sizeof($va_user_links) > 0);
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	
-	
 	<script type="text/javascript">
 			let pawtucketUIApps = {};
 	</script>
 	
 	<script src="<?= $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
 	<script src="<?= $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
-
+	
 <!-- code to set open graph tags (primarily for facebook sharing) -->
 <meta property="og:url" content="<?= $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" />
 <meta property="og:type" content="website" />
@@ -109,7 +108,6 @@ if((strToLower($this->request->getController()) == "detail") && (strToLower($thi
 			$vs_og_image_w = $t_subject->get("ca_object_representations.media.large.width", array("checkAccess" => $va_access_values));
 			$vs_og_description = $t_subject->get("ca_objects.description", array("checkAccess" => $va_access_values));
 		}
-
 	}
 }
 ?>

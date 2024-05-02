@@ -31,6 +31,7 @@
  */
 require_once(__CA_LIB_DIR__."/Media.php");
 require_once(__CA_LIB_DIR__."/Parsers/TilepicParser.php");
+require_once(__CA_LIB_DIR__.'/Search/Common/Stemmer/SnoballStemmer.php');
 
 class IIIFService {
 	# -------------------------------------------------------
@@ -648,7 +649,8 @@ class IIIFService {
 		$media = self::getMediaInstance($identifier, $g_request);
 		$target = caGetOption('target', $options, null);
 		$q = caGetOption('q', $options, null);
-	
+		$exact = caGetOption('exact', $options, 1, ['castAs' => 'integer']);
+
 		$tokens = self::_tokenize($q);
 		$token_count = sizeof($tokens);
 		
@@ -669,16 +671,18 @@ class IIIFService {
 			
 			$offset = 0;
 			foreach($tokens as $tindex => $t) {
-				if(isset($locations[$t])) {
-					foreach($locations[$t] as $c) {
+				$token_locations = self::_getLocations($t, $locations, ['exact' => $exact]);
+				if($token_locations) {
+					foreach($token_locations as $c) {
 						$is_ok = true;
 						if(($tindex > 0) && (!isset($data[$p+1][$c['i']-$tindex]))) { 
 							$is_ok = false;
 						} elseif($tindex < ($token_count - 1)){
 							$is_ok = false;
 							$ft = $tokens[$tindex + 1];
-							if(is_array($locations[$ft])) {
-								foreach($locations[$ft] as $fl) {
+							$forward_locations = self::_getLocations($ft, $locations, ['exact' => $exact]);
+							if(is_array($forward_locations)) {
+								foreach($forward_locations as $fl) {
 									if($fl['i'] == ($c['i'] + 1)) {
 										$is_ok = true;
 										break;
@@ -698,7 +702,6 @@ class IIIFService {
 									$data[$p+1][$c['i'] - ($tindex - $offset)]['c']++;
 								} else {
 									// new line
-									//print "new";
 									$data[$p+1][$c['i']] = [
 										'value' => $t,
 										'x' => (int)($c['x'] * $sw),
@@ -741,35 +744,173 @@ class IIIFService {
 	/**
 	 *
 	 */
+	private static function _getLocations($token, $locations, ?array $options=null) {
+		$exact = caGetOption('exact', $options, true);
+		
+		if($exact) {
+			return $locations[$token] ?? null;
+		}
+		
+		$stemmer = new SnoballStemmer();
+		
+		$token = $stemmer->stem($token);
+		$words = array_keys($locations);
+		$fwords = array_filter($words, function($v) use ($token, $stemmer) {
+			$v = $stemmer->stem($v);
+			return preg_match("!^".preg_quote($token, '!')."!i", $v);
+		});
+	
+		$acc = [];
+		foreach($fwords as $fword) {
+			$acc = array_merge($acc, $locations[$fword]);
+		}
+		return $acc;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
 	public static function cliplist($identifier, RequestHTTP $request, ?array $options=null) {
+		global $g_locale_id;
+		
 		if(!is_array($media = self::getMediaInstance($identifier, $request))) {
 			throw new IIIFAccessException(_t('Unknown error'), 400);
 		}
+		$data = json_decode($request->getRawPostData() ?? null, true);
 		
-		$vtt = caGetOption('vtt', $options, false);
+		$mode = caGetOption('mode', $options, $request->getParameter('mode', pString));
+		$canvas = caGetOption('canvas', $data, $request->getParameter('canvas', pString));
+		$canvas_bits = explode('-', $canvas);
+		$filter_to_page = $canvas_bits[2] ?? null;
+		if(intval($filter_to_page) < 1) {
+			$filter_to_page = null;	
+		}
 		
 		$t_media = $media['instance'];
-
-  		$clip_list = [];
-		if(is_array($annotations = $t_media->getAnnotations(['vtt' => true]))) {
-			foreach($annotations as $annotation) {
-				if($vtt) {
-					$clip_list[] = "{$annotation['startTimecode_vtt']} --> {$annotation['endTimecode_vtt']}\n{$annotation['label']}";
-				} else {
-					$clip_list[] = [
-						'identifier' => $annotation['annotation_id'],
-						'text' => $annotation['label'],
-						'start' => $annotation['startTimecode_vtt'],
-						'end' => $annotation['endTimecode_vtt']
-					];
+		$representation_id = $t_media->getPrimaryKey();
+		
+		$annotation_type = $t_media->getAnnotationType();
+		$is_timebased = in_array($annotation_type, ['TimeBasedAudio', 'TimeBasedVideo']);
+		
+  		$annotations = $t_media->getAnnotations(['vtt' => $is_timebased]) ?? [];
+  		$t_media->annotationMode('user');
+  		$annotations = array_merge($annotations, $t_media->getAnnotations(['vtt' => $is_timebased]) ?? []);
+  		
+  		$method = $request->getRequestMethod();
+  		
+  		$files = $t_media->getFileList(null, $page, 1, ['returnAllVersions' => true]) ?? [];
+		$files = array_values($files);
+		
+		if(is_array($data)) {
+			
+			if(is_array($data) && sizeof($data)) {
+				switch(strtoupper($method)) {
+					case 'DELETE':
+						if($id = ($data['annotation']['id'] ?? null)) {
+							if($t_anno = ca_user_representation_annotations::findAsInstance(['representation_id' => $representation_id, 'annotation_id' => $id])) {
+								// TODO: check ownership
+								$t_anno->delete(true);
+							}
+						}
+						break;
+					case 'GET':
+					case 'POST':
+					case 'PUT':
+						if(($coords = $data['annotation']['target']['selector']['value'] ?? null)) {
+							$id = ($data['annotation']['id'] ?? null);
+							
+							$coords = preg_replace('!^xywh=!', '', $coords);
+							$coords = explode(',', $coords);
+							
+							$tmp = explode('-', $data['canvas']);
+							
+							$page = $tmp[2] ?? 1;
+							$page_info = $files[$page - 1];
+							$page_width = $page_info['original_width'];
+							$page_height = $page_info['original_height'];
+							
+							$properties = [
+								'page' => $page,
+								'x' => $coords[0]/$page_width,
+								'y' => $coords[1]/$page_height,
+								'w' => $coords[2]/$page_width,
+								'h' => $coords[3]/$page_height
+							];
+							$title = $data['annotation']['body']['value'] ?? _t('Clipping');
+							
+							if($id && is_numeric($id) && ($t_anno = $t_media->editAnnotation($id, 'en_US', $properties, 0, 0, [], ['returnAnnotation' => true]))) {
+								$t_anno->replaceLabel(['name' => $title], 'en_US', null, true);
+							} else {
+								$t_media->addAnnotation($title, 'en_US', $request->getUserID(), $properties, 0, 0, [], []);
+							}
+						}
+						break;
 				}
 			}
 		}
-		
-		if($vtt) {
-			return "WEBVTT \n\n".join("\n\n", $clip_list);
+
+
+  		$clip_list = [];
+  		
+		if(is_array($annotations) && sizeof($annotations)) {
+			foreach($annotations as $annotation) {
+				if(!is_null($filter_to_page) && ($filter_to_page != (int)$annotation['page'])) { continue; }
+				switch($annotation_type) {
+					case 'TimeBasedAudio':
+					case 'TimeBasedVideo':
+						if($mode === 'vtt') {
+							$clip_list[] = "{$annotation['startTimecode_vtt']} --> {$annotation['endTimecode_vtt']}\n{$annotation['label']}";
+						} else {
+							$clip_list[] = [
+								'identifier' => $annotation['annotation_id'],
+								'text' => $annotation['label'],
+								'start' => $annotation['startTimecode_vtt'],
+								'end' => $annotation['endTimecode_vtt']
+							];
+						}
+						break;
+					case 'Document':
+						$page_info = $files[$annotation['page'] - 1];
+						$page_width = $page_info['original_width'];
+						$page_height = $page_info['original_height'];
+						$mimetype = $page_info['original_mimetype'];
+						
+						$clip_list[] = [
+							'label' => $annotation['label'],
+							'identifier' => $annotation['annotation_id'],
+							'representation_id' => $annotation['representation_id'],
+							'x' => $annotation['x'] * $page_width,
+							'y' => $annotation['y'] * $page_height,
+							'w' => $annotation['w'] * $page_width,
+							'h' => $annotation['h'] * $page_height,
+							'mimetype' => $mimetype,
+							'page' => $annotation['page']
+						];
+						break;
+				}
+			}
 		}
-		return $clip_list;
+		switch($mode) {
+			case 'iiif':
+				$clip_response = new \CA\Media\IIIFResponses\Clips();
+				return $clip_response->response([], ['identifiers' => [$identifier], 'clip_list' => $clip_list]);
+			case 'vtt':
+				return "WEBVTT \n\n".join("\n\n", $clip_list);
+			default:
+				return $clip_list;
+		}
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function manifestUrl() : string {
+		$config = Configuration::load();
+		if(isset($_SERVER['REQUEST_URI'])) {
+			return  $config->get('site_host').$_SERVER['REQUEST_URI'];
+		} else {
+			return $config->get('site_host').$config->get('ca_url_root')."/manifest";
+		}
 	}
 	# -------------------------------------------------------
 }
