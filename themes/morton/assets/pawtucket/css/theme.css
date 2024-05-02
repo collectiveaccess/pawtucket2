@@ -697,6 +697,11 @@ body{
 		font-size:20px;
 	}
 }
+@media (max-width: 767px) {
+  #bRefine{
+  	z-index:100;
+  }
+}
 #bRefine.fixed {
 	box-shadow: 0px 0px 20px 0px rgba(0,46,18,0.15);
 }
@@ -1238,6 +1243,7 @@ a.faDownload:hover {
 	line-height:1.1em !important;
 	font-weight:normal;
 	text-transform:none;
+	z-index: 1000;
 }
 
 /* collections */
@@ -1271,4 +1277,17 @@ div.caMediaOverlayControls .close a .fa{
 	.advancedSearchFormCol{
 		border-right:1px solid #ddd;
 	}
+}
+
+/* zoom media overlay */
+div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
+	background-color:#FFF;
+	color:#000;
+}
+div.caMediaOverlayControls .objectInfo, div.caMediaOverlayControls .repNav{
+	color:#000;
+}
+div.caMediaOverlayControls .close{
+	text-shadow: none;
+	margin-top:-3px;
 }
