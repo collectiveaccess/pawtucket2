@@ -171,9 +171,6 @@ if (!$vb_ajax) {	// !ajax
 	<div class='col-sm-12 col-md-8 col-lg-9 col-xl-9'>
 <?php
 
-		if($vb_start_over){
-			$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-secondary btn-sm">'._t("Start Over").'</button>', 'browseRemoveFacet', '', 'Browse', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0));
-		}
 		if($vs_criteria){
 			print "<div class='mt-n5 mb-3 pt-2'>".$vs_criteria."</div>";	
 		}

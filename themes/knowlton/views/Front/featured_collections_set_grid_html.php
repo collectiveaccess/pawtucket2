@@ -48,16 +48,16 @@
 		$qr_res = caMakeSearchResult('ca_collections', $featured_ids);
 		if($qr_res && $qr_res->numHits()){
 ?>
-	<div class="row justify-content-center text-left">
-		<div class="col-12 hpExplore my-4">
+	<div class="row justify-content-center text-left mb-5">
+		<div class="col-12 hpExplore mt-4 mb-5">
 			<H2 class="mb-3">Explore By Collection</H2>
-			<div class="row">
+			<div class="row mb-5">
 <?php
 			while($qr_res->nextHit()){
 				if(!($vs_thumbnail = $qr_res->get("ca_object_representations.media.medium", array("checkAccess" => $va_access_values, "class" => "object-fit-cover w-100")))){
 					$vs_thumbnail = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' length='1'><ifdef code='ca_object_representations.media.medium'>^ca_object_representations.media.medium</ifdef></unit>", array("checkAccess" => $va_access_values, "class" => "object-fit-cover w-100"));
 				}
-				print "<div class='col-md-3'>".caNavLink($this->request, $qr_res->getWithTemplate($vs_thumbnail."<div class='fw-semibold pt-2 text-start pb-5'>^ca_collections.preferred_labels.name</div>"), "text-decoration-none", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => $qr_res->get("ca_collections.collection_id")))."</div>";
+				print "<div class='col-md-3'>".caNavLink($this->request, $qr_res->getWithTemplate($vs_thumbnail."<div class='pb-5'><div class='fw-semibold pt-2 text-start'>^ca_collections.preferred_labels.name <span class='fw-normal'>(<unit relativeTo='ca_objects' limit='1'>^count</unit>)</span></div><ifdef code='ca_collections.short_des'><div class='fs-5 fw-light blurb'>^ca_collections.short_des</ifdef></div>", array("checkAccess" => $va_access_values)), "text-decoration-none", "", "Browse", "Objects", array("facet" => "collection_facet", "id" => $qr_res->get("ca_collections.collection_id")))."</div>";
 			}
 ?>
 			</div>

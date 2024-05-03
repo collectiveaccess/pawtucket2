@@ -108,24 +108,34 @@ if($show_nav){
 			<div class="row pt-1">
 				<div class="col-sm-6 col-md-12 col-lg-6">				
 					{{{<dl class="mb-3">
-						<ifdef code="ca_objects.semester">
-							<dt class="serif fw-medium pb-1"><?= _t('Semester'); ?></dt>
-							<dd class="pb-4 fs-5 fw-semibold">^ca_objects.semester</dd>
-						</ifdef>
-						<ifnotdef code="ca_objects.semester"><ifdef code="ca_objects.date_regular">
-							<dt class="serif fw-medium pb-1"><?= _t('Date'); ?></dt>
-							<dd class="pb-4 fs-5 fw-semibold">^ca_objects.date_regular</dd>
-						</ifdef></ifnotdef>
-						
 <?php						
-						if($t_object->get("ca_occurrences", array("restrictToTypes" => array("course"), "checkAccess" => $access_values))){
-							if($links = caGetBrowseLinks($t_object, 'ca_occurrences', ['restrictToTypes' => array("course"), 'template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_occurrences.preferred_labels.name</button></l>', 'linkTemplate' => '^LINK'])) {
+						if($t_object->get("ca_objects.department")){
+							if($links = caGetBrowseLinks($t_object, 'ca_objects.department', ['template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.department</button></l>', 'linkTemplate' => '^LINK'])) {
 ?>
-								<dt class="serif fw-medium pb-1">Course<?= (sizeof($links) > 1 ) ? "s" : ""; ?></dt>
+								<dt class="serif fw-medium pb-1">Discipline</dt>
 								<dd class="pb-4 fs-5 fw-semibold"><?= join(" ", $links); ?></dd>
 <?php
 							}
 						}
+						if($t_object->get("ca_objects.semester")){
+							if($links = caGetBrowseLinks($t_object, 'ca_objects.semester', ['template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.semester</button></l>', 'linkTemplate' => '^LINK'])) {
+?>
+								<dt class="serif fw-medium pb-1">Semester</dt>
+								<dd class="pb-4 fs-5 fw-semibold"><?= join(" ", $links); ?></dd>
+<?php
+							}
+						}
+?>
+
+						<ifnotdef code="ca_objects.semester"><ifdef code="ca_objects.date_regular">
+							<dt class="serif fw-medium pb-1"><?= _t('Date'); ?></dt>
+							<dd class="pb-4 fs-5 fw-semibold">^ca_objects.date_regular</dd>
+						</ifdef></ifnotdef>
+						<ifcount code="ca_occurrences" restrictToTypes="course" min="1">
+							<dt class="serif fw-medium pb-1">Course<ifcount code="ca_occurrences" restrictToTypes="course" min="2">s</ifcount></dt>
+							<dd class="pb-4 fs-5 fw-semibold"><unit relativeTo="ca_occurrences" restrictToTypes="course" delimiter=", ">^ca_occurrences.preferred_labels</unit></dd>
+						</ifcount>
+<?php						
 						if($t_object->get("ca_objects.work_type")){
 							if($links = caGetBrowseLinks($t_object, 'ca_objects.work_type', ['template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.work_type</button></l>', 'linkTemplate' => '^LINK'])) {
 ?>
@@ -141,8 +151,8 @@ if($show_nav){
 					{{{<dl class="mb-3">
 <?php
 						print $this->render("Details/snippets/related_entities_by_rel_type_html.php");
-						if($t_object->get("ca_places", array("checkAccess" => $access_values))){
-							if($links = caGetBrowseLinks($t_object, 'ca_places', ['template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold"><ifdef code="ca_places.parent.preferred_labels">^ca_places.parent.preferred_labels > </ifdef>^ca_places.preferred_labels</button></l>', 'linkTemplate' => '^LINK'])) {
+						if($t_object->get("ca_objects.geonames", array("checkAccess" => $access_values))){
+							if($links = caGetBrowseLinks($t_object, 'ca_objects.geonames', ['template' => '<l><button class="btn btn-secondary btn-sm me-4 fw-semibold">^ca_objects.geonames</button></l>', 'linkTemplate' => '^LINK'])) {
 ?>
 								<dt class="serif fw-medium pb-1">Location<?= (sizeof($links) > 1 ) ? "s" : ""; ?></dt>
 								<dd class="pb-4 fs-5 fw-semibold"><?= join(" ", $links); ?></dd>

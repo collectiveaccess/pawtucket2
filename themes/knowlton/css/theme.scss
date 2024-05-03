@@ -52,6 +52,7 @@
 $body-color: #0a0a0a;
 body{
 	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing:aliased;
 }
 @media (min-width: 1400px) {
 	.main-container {
@@ -76,7 +77,7 @@ body{
 	background-color: rgb(10, 10, 10);
 	color:#FFF;
 }
-.display-4{
+.display-4, .display-5{
 	letter-spacing: -0.5px;
 }
 H1{
@@ -151,6 +152,7 @@ H1{
   		padding-top: 1.5em;
 		background: rgba(255,255,255,0.95);
 		line-height:1.15;
+		z-index:2000;
 	}
 }
 @media (min-width: 1550px) {
@@ -179,7 +181,7 @@ nav{
 		}
 	}
 	#navbarSearch{
-		top:155px;
+		top:148px;
 		z-index:1000;
 		input{
 			padding: 1rem;
@@ -350,6 +352,10 @@ footer{
 		height:450px;
 	}
 }
+.blurb{
+	line-height:1.3em;
+	padding-top:12px;
+}
 /* --- Search / Browse ---*/
 .results{
 	a{
@@ -358,6 +364,11 @@ footer{
 	H2, dl{
 	}
 	dd{
+	}
+}
+@media (min-width: 768px) {
+	#bRefine{
+		top: 150px;
 	}
 }
 /* --- detail ---*/
@@ -372,4 +383,7 @@ footer{
 /* static page */
 .staticPage{
 	line-height:1.4;
+	H2{
+		letter-spacing: -0.84px
+	}
 }	

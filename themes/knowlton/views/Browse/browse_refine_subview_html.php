@@ -41,7 +41,7 @@ $vn_facet_display_length_maximum = 12;
 if((is_array($va_facets) && sizeof($va_facets)) || ($qr_res->numHits() > 1)){
 ?>		
 	<div id='bRefine' class='sticky-md-top vh-100 collapse overflow-y-auto'>
-		<div id='bMorePanel' class='position-absolute w-100 z-3 bg-light h-100 collapse'><!-- long lists of facets are loaded here --></div>
+		<div id='bMorePanel' class='position-absolute w-100 z-3 bg-light h-100 collapse fs-5'><!-- long lists of facets are loaded here --></div>
 		<div class="text-end d-md-none "><button class="btn btn-lg btn-light" type="button" aria-expanded="false" aria-controls="bRefine" data-bs-toggle="collapse" data-bs-target="#bRefine"><i class="bi bi-x-circle-fill"></i></button></div>
 <?php
 	if($qr_res->numHits() > 1){
@@ -57,7 +57,7 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($qr_res->numHits() > 1)){
 <?php
 	}
 	if((is_array($va_facets) && sizeof($va_facets))){
-		print "<H2 class='fs-4 fw-normal px-3 pt-2 text-uppercase'>"._t("Filter by")."</H2>";
+		print "<H2 class='fs-5 fw-normal px-3 pt-2 text-uppercase'>"._t("Filter by")."</H2>";
 		
 		print '<div id="browseRefineFacets" class="px-3 fs-5">';
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
@@ -68,11 +68,6 @@ if((is_array($va_facets) && sizeof($va_facets)) || ($qr_res->numHits() > 1)){
 
 				
 ?>
-					<script>
-						jQuery(document).ready(function() {
-							jQuery("#bHierarchyList_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'linkTo' => 'morePanel')); ?>");
-						});
-					</script>
 					<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 <?php
 				print "</dl>";

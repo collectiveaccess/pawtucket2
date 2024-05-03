@@ -39,11 +39,13 @@
 			
 			<nav class="footerNav">
 				<ul>
-        			<li><?= caNavlink($this->request, _t('About'), "text-light", "", "About", "index", ""); ?></li>
-                    <li><a href="https://knowlton.osu.edu/siteinfo/accessibility" class="text-light">Accessibility</a></li>
-                	<li><?= caNavlink($this->request, _t('Contact'), "text-light", "", "Contact", "form", ""); ?></li>
-                    <li><a href="https://it.osu.edu/privacy" class="text-light">Privacy Policy</a></li>
-        			<li><?= caNavlink($this->request, _t('Login'), "text-light", "", "LoginReg", "LoginForm", ""); ?></li>
+        			<li><a href="https://knowlton.osu.edu/siteinfo/accessibility" class="text-light">Accessibility</a></li>
+                	<li><a href="https://it.osu.edu/privacy" class="text-light">Privacy Policy</a></li>
+        			<li><a hreff="https://equity.osu.edu/sites/default/files/documents/non-discrimination-notice.pdf">Non-Discrimination Notice</a></li>
+        			<li><?= caNavlink($this->request, _t('About'), "text-light", "", "AboutCollection", ""); ?></li>
+        			<li><?= caNavlink($this->request, _t('Contact'), "text-light", "", "ContactKnowltonArchives", ""); ?></li>
+                    <li><?= ($this->request->isLoggedIn()) ? caNavlink($this->request, _t('Logout'), "text-light", "", "LoginReg", "Logout", "") : caNavlink($this->request, _t('Login'), "text-light", "", "LoginReg", "LoginForm", ""); ?></li>
+                    
          		</ul>
 			</nav>
 			<div class="footerSocial">

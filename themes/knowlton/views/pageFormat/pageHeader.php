@@ -64,7 +64,7 @@ if($this->request->isLoggedIn()){
 		let pawtucketUIApps = {};
 	</script>
 </head>
-<body id="pawtucketApp" class="d-flex flex-column h-100">
+<body id="pawtucketApp" class="d-flex flex-column">
 	<div role="navigation" id="osu_navbar" aria-labelledby="osu_navbar_heading" class="bg-black">
 		<div id="osu_navbar_heading" class="visually-hidden">Ohio State nav bar</div>
 		<a href="#page-content" id="skip" class="visually-hidden">Skip to main content</a>
@@ -86,7 +86,7 @@ if($this->request->isLoggedIn()){
     		</div>	
     	</div>
 	</div>
-	<nav class="navbar navbar-expand-md">
+	<nav class="navbar navbar-expand-md sticky-md-top">
 		<div class="container-fluid px-md-0">
 			<?= caNavlink($this->request, caGetThemeGraphic($this->request, 'knowlton_dl_logo_draft.svg', array("alt" => "Knowlton School Digital Library and Archive", "role" => "banner")), "navbar-brand  img-fluid p-0 m-0", "", "", ""); ?>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
