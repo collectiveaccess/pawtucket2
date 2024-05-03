@@ -254,7 +254,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 			if(is_array($va_facets) && sizeof($va_facets)){
 ?>
-			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
+			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;' role='button'><i class="fa fa-table" aria-label="Filter results"></i></a>
 <?php
 			}
 			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
@@ -279,7 +279,7 @@ if (!$vb_ajax) {	// !ajax
 		}
 ?>
 		<form id="setsSelectMultiple">
-		<div class="row">
+		<div class="row"><div id="skipNavigationBrowse"><a href="#bRefine">Skip to filters</a></div>
 			<div id="browseResultsContainer">
 <?php
 } // !ajax
