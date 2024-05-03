@@ -100,7 +100,7 @@
 				{{{<ifdef code="ca_objects.transcription">
 					<br/>
 					<label>Transcription</label>
-					<div class="unit"><?= strip_tags($t_object->get('ca_objects.transcription'),['u', 'br', 'b', 'i', 'strong', 'em', 'strike', 's', 'small']); ?></div>
+					<div class="unit"><?= strip_tags($t_object->get('ca_objects.transcription'),['a', 'u', 'br', 'b', 'i', 'strong', 'em', 'strike', 's', 'small']); ?></div>
 				</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.transcription, ca_objects.cataloguingNotes.cat_notes">
